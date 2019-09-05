@@ -17,6 +17,7 @@ addons:
   apt:
     packages:
       - expect-dev # for unbuffer, see https://github.com/travis-ci/travis-ci/issues/7967
+      - graphviz
 
 matrix:
   include:
