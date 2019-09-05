@@ -8,5 +8,3 @@ pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip
 
 #download nltk data packages
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
-
-if [ $CYTHONIZE_NLTK == "true" ]; then pip install --upgrade Cython>=0.28.5; fi
