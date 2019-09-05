@@ -85,7 +85,6 @@ MODULES_TO_COMPILE = [
     'nltk.util',
 ]
 
-
 class build_cythonized(build_orig):
     def __init__(self, *args, **kwargs) -> None:
         super(build_cythonized, self).__init__(*args, **kwargs)
@@ -106,7 +105,7 @@ class build_cythonized(build_orig):
             from Cython.Build import cythonize
             files = [name.replace('.', os.path.sep) + '.py' for name in MODULES_TO_COMPILE]
             self.announce("Compiling %d modules using Cython %s" % (len(files), Cython.__version__), level=INFO)
-            self.distribution.ext_modules = cythonize(files, language_level=3)
+            self.distribution.ext_modules = cythonize(files, language_level=3, exclude=['**/__init__.py'])
         super(build_cythonized, self).finalize_options()
 
     def run(self):
