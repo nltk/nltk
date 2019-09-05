@@ -28,6 +28,8 @@ with open(version_file) as fh:
 
 # setuptools
 from setuptools import setup, find_packages
+from distutils.command.build import build as build_orig
+from distutils.log import INFO
 
 # Specify groups of optional dependencies
 extras_require = {
@@ -46,6 +48,11 @@ extras_require["all"] = set(
 
 # Add a group made up of all optional dependencies
 extras_require["cythonize"] = extras_require["all"] | set(['Cython >= 0.28.5'])
+
+setup_reqs = []
+# if CYTHONIZE_NLTK is set, require Cython in build deps
+if os.getenv('CYTHONIZE_NLTK') == 'true':
+    setup_reqs.append('Cython >= 0.28.5')
 
 # Adds CLI commands
 console_scripts = """
@@ -79,20 +86,37 @@ MODULES_TO_COMPILE = [
 ]
 
 
-def compile_modules(modules):
-    """
-    Compile the named modules using Cython, using the clearer Python 3 semantics.
-    """
-    import Cython
-    from Cython.Build import cythonize
-    files = [name.replace('.', os.path.sep) + '.py' for name in modules]
-    print("Compiling %d modules using Cython %s" % (len(modules), Cython.__version__))
-    return cythonize(files, language_level=3)
+class build_cythonized(build_orig):
+    def __init__(self, *args, **kwargs) -> None:
+        super(build_cythonized, self).__init__(*args, **kwargs)
+        self.stored_options = {}
+        self.should_cythonize = os.getenv('CYTHONIZE_NLTK') == 'true'
 
-if os.getenv('CYTHONIZE_NLTK') == "true":
-    ext_modules = compile_modules(MODULES_TO_COMPILE)
-else:
-    ext_modules = None
+    def finalize_options(self):
+        if self.should_cythonize:
+            # store teh original options we will modify
+            # we will restore them when this command is done
+            self.stored_options.update({
+                'cmdclass': self.distribution.cmdclass.copy() if self.distribution.cmdclass else None,
+                'ext_modules': self.distribution.ext_modules.copy() if self.distribution.ext_modules else None,
+            })
+
+            # translate python sources into c code
+            import Cython
+            from Cython.Build import cythonize
+            files = [name.replace('.', os.path.sep) + '.py' for name in MODULES_TO_COMPILE]
+            self.announce("Compiling %d modules using Cython %s" % (len(files), Cython.__version__), level=INFO)
+            self.distribution.ext_modules = cythonize(files, language_level=3)
+        super(build_cythonized, self).finalize_options()
+
+    def run(self):
+        super(build_cythonized, self).run()
+        if self.should_cythonize:
+            # restore original options so we don't break next
+            # commands in chain probably calling build_ext
+            self.distribution.cmdclass = self.stored_options['cmdclass']
+            self.distribution.ext_modules = self.stored_options['ext_modules']
+
 
 setup(
     name="nltk",
@@ -147,9 +171,12 @@ natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
         "six",
         'singledispatch; python_version < "3.4"',
     ],
+    setup_requires=setup_reqs,
     extras_require=extras_require,
     packages=find_packages(),
-    ext_modules=ext_modules,
     zip_safe=False,  # since normal files will be present too?
     entry_points=console_scripts,
+    cmdclass={
+        'build': build_cythonized,
+    },
 )
