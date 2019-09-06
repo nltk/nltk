@@ -20,7 +20,6 @@ import re
 import sys
 import time
 from copy import deepcopy
-from itertools import tee
 
 import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
@@ -159,13 +158,6 @@ def timer(method):
     return timed
 
 
-def pairwise(iterable):
-    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
-
-
 # ////////////////////////////////////////////////////////////
 # { Feature extractor functions
 # ////////////////////////////////////////////////////////////
@@ -292,16 +284,6 @@ def output_markdown(filename, **kwargs):
             else:
                 text += "  - **{0}:** {1} \n".format(k, kwargs[k])
         outfile.write(text)
-
-
-def save_file(content, filename):
-    """
-    Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
-    """
-    print("Saving", filename)
-    with codecs.open(filename, "wb") as storage_file:
-        # The protocol=2 parameter is for python2 compatibility
-        pickle.dump(content, storage_file, protocol=2)
 
 
 def split_train_test(all_instances, n=None):

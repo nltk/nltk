@@ -13,6 +13,7 @@ using NLTK features and classifiers, especially for teaching and demonstrative
 purposes.
 """
 
+import sys
 from collections import defaultdict
 
 from nltk.classify.util import apply_features, accuracy as eval_accuracy
@@ -25,8 +26,6 @@ from nltk.metrics import (
 )
 
 from nltk.probability import FreqDist
-
-from nltk.sentiment.util import save_file, timer
 
 
 class SentimentAnalyzer(object):
@@ -181,9 +180,18 @@ class SentimentAnalyzer(object):
         print("Training classifier")
         self.classifier = trainer(training_set, **kwargs)
         if save_classifier:
-            save_file(self.classifier, save_classifier)
+            self.save_file(self.classifier, save_classifier)
 
         return self.classifier
+
+    def save_file(self, content, filename):
+        """
+        Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
+        """
+        print("Saving", filename, file=sys.stderr)
+        with open(filename, 'wb') as storage_file:
+            # The protocol=2 parameter is for python2 compatibility
+            pickle.dump(content, storage_file, protocol=2)
 
     def evaluate(
         self,

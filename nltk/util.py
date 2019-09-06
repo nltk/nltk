@@ -15,7 +15,7 @@ import pydoc
 import bisect
 import os
 
-from itertools import islice, chain, combinations
+from itertools import islice, chain, combinations, tee
 from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
@@ -824,6 +824,17 @@ def choose(n, k):
     else:
         return 0
 
+
+######################################################################
+# Iteration utilities
+######################################################################
+
+
+def pairwise(iterable):
+    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 ######################################################################
 # Parallization.
