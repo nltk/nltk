@@ -85,6 +85,12 @@ MODULES_TO_COMPILE = [
     'nltk.util',
 ]
 
+MODULES_TO_EXCLUDE = [
+    '**/__init__.py',
+    'nltk/tbl/feature.py',
+    'nltk/metrics/association.py'
+]
+
 
 class build_cythonized(build_orig):
     def finalize_options(self):
@@ -94,7 +100,7 @@ class build_cythonized(build_orig):
             from Cython.Build import cythonize
             files = [name.replace('.', os.path.sep) + '.py' for name in MODULES_TO_COMPILE]
             self.announce("Compiling %d modules using Cython %s" % (len(files), Cython.__version__), level=INFO)
-            self.distribution.ext_modules = cythonize(files, language_level=3, exclude=['**/__init__.py'])
+            self.distribution.ext_modules = cythonize(files, language_level=3, exclude=MODULES_TO_EXCLUDE)
         super(build_cythonized, self).finalize_options()
 
 
