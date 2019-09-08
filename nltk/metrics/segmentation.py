@@ -225,7 +225,7 @@ def pk(ref, hyp, k=None, boundary="1"):
 
 
 # skip doctests if numpy is not installed
-def setup_module(module):
+def setup_module():
     from nose import SkipTest
 
     try:
