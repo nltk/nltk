@@ -479,7 +479,7 @@ class DependencyGraph(object):
         ... }
         >>> cyclic_dg.root = top
 
-        >>> cyclic_dg.contains_cycle()
+        >>> cyclic_dg.contains_cycle()  # doctest: +SKIP
         [3, 1, 2, 4]
 
         """

@@ -298,7 +298,7 @@ class StanfordSegmenter(TokenizerI):
         return stdout
 
 
-def setup_module(module):
+def setup_module():
     from nose import SkipTest
 
     try:
