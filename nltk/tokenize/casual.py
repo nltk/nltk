@@ -35,7 +35,7 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-import re
+import regex  # https://github.com/nltk/nltk/issues/2409
 
 from six import int2byte, unichr
 from six.moves import html_entities
@@ -165,17 +165,17 @@ REGEXPS = (
 ######################################################################
 # This is the core tokenizing regex:
 
-WORD_RE = re.compile(r"""(%s)""" % "|".join(REGEXPS), re.VERBOSE | re.I | re.UNICODE)
+WORD_RE = regex.compile(r"""(%s)""" % "|".join(REGEXPS), regex.VERBOSE | regex.I | regex.UNICODE)
 
 # WORD_RE performs poorly on these patterns:
-HANG_RE = re.compile(r"([^a-zA-Z0-9])\1{3,}")
+HANG_RE = regex.compile(r"([^a-zA-Z0-9])\1{3,}")
 
 # The emoticon string gets its own regex so that we can preserve case for
 # them as needed:
-EMOTICON_RE = re.compile(EMOTICONS, re.VERBOSE | re.I | re.UNICODE)
+EMOTICON_RE = regex.compile(EMOTICONS, regex.VERBOSE | regex.I | regex.UNICODE)
 
 # These are for regularizing HTML entities to Unicode:
-ENT_RE = re.compile(r"&(#?(x?))([^&;\s]+);")
+ENT_RE = regex.compile(r"&(#?(x?))([^&;\s]+);")
 
 
 ######################################################################
@@ -314,7 +314,7 @@ def reduce_lengthening(text):
     Replace repeated character sequences of length 3 or greater with sequences
     of length 3.
     """
-    pattern = re.compile(r"(.)\1{2,}")
+    pattern = regex.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1\1", text)
 
 
@@ -322,7 +322,7 @@ def remove_handles(text):
     """
     Remove Twitter username handles from text.
     """
-    pattern = re.compile(
+    pattern = regex.compile(
         r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)"
     )
     # Substitute handles with ' ' to ensure that text on either side of removed handles are tokenized correctly
