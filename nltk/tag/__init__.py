@@ -166,8 +166,8 @@ def pos_tag_sents(sentences, tagset=None, lang="eng"):
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
 
-    :param tokens: List of sentences to be tagged
-    :type tokens: list(list(str))
+    :param sentences: List of sentences to be tagged
+    :type sentences: list(list(str))
     :param tagset: the tagset to be used, e.g. universal, wsj, brown
     :type tagset: str
     :param lang: the ISO 639 code of the language, e.g. 'eng' for English, 'rus' for Russian
