@@ -641,7 +641,7 @@ class Text(object):
 
         hits = self._token_searcher.findall(regexp)
         hits = [" ".join(h) for h in hits]
-        print(tokenwrap(hits, "; "))
+        return hits
 
     # ////////////////////////////////////////////////////////////
     # Helper Methods
