@@ -14,6 +14,7 @@ import sys
 import fractions
 import warnings
 from collections import Counter
+from typing import List, Union, Tuple
 
 from nltk.util import ngrams
 
@@ -107,12 +108,12 @@ def sentence_bleu(
 
 
 def corpus_bleu(
-    list_of_references,
-    hypotheses,
-    weights=(0.25, 0.25, 0.25, 0.25),
+    list_of_references: List[List[List[str]]],
+    hypotheses: List[List[str]],
+    weights: Union[Tuple[float, ...], List[Tuple[float, ...]]] = (0.25, 0.25, 0.25, 0.25),
     smoothing_function=None,
-    auto_reweigh=False,
-):
+    auto_reweigh: bool = False,
+) -> Union[float, List[float]]:
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -157,20 +158,26 @@ def corpus_bleu(
     :type list_of_references: list(list(list(str)))
     :param hypotheses: a list of hypothesis sentences
     :type hypotheses: list(list(str))
-    :param weights: weights for unigrams, bigrams, trigrams and so on
-    :type weights: list(float)
+    :param weights: weights for unigrams, bigrams, trigrams and so on. Can either be a single tuple of weights
+    or a list of tuples of specified weights
+    :type weights: tuple(float) or list(tuple(float))
     :param smoothing_function:
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
-    :return: The corpus-level BLEU score.
-    :rtype: float
+    :return: The corpus-level BLEU score(s) for the weight(s) provided
+    :rtype: float or list(float)
     """
     # Before proceeding to compute BLEU, perform sanity checks.
 
     p_numerators = Counter()  # Key = ngram order, and value = no. of ngram matches.
     p_denominators = Counter()  # Key = ngram order, and value = no. of ngram in ref.
     hyp_lengths, ref_lengths = 0, 0
+
+    # check to see if param weights provided is a tuple, if so raise it into a list
+    if isinstance(weights, tuple):
+        weights = [weights]
+    max_weights_length = max(len(w) for w in weights)
 
     assert len(list_of_references) == len(hypotheses), (
         "The number of hypotheses and their reference(s) should be the " "same "
@@ -180,7 +187,7 @@ def corpus_bleu(
     for references, hypothesis in zip(list_of_references, hypotheses):
         # For each order of ngram, calculate the numerator and
         # denominator for the corpus-level modified precision.
-        for i, _ in enumerate(weights, start=1):
+        for i in range(1, max_weights_length + 1):
             p_i = modified_precision(references, hypothesis, i)
             p_numerators[i] += p_i.numerator
             p_denominators[i] += p_i.denominator
@@ -194,23 +201,18 @@ def corpus_bleu(
     # Calculate corpus-level brevity penalty.
     bp = brevity_penalty(ref_lengths, hyp_lengths)
 
-    # Uniformly re-weighting based on maximum hypothesis lengths if largest
-    # order of n-grams < 4 and weights is set at default.
-    if auto_reweigh:
-        if hyp_lengths < 4 and weights == (0.25, 0.25, 0.25, 0.25):
-            weights = (1 / hyp_lengths,) * hyp_lengths
 
     # Collects the various precision values for the different ngram orders.
     p_n = [
         Fraction(p_numerators[i], p_denominators[i], _normalize=False)
-        for i, _ in enumerate(weights, start=1)
+        for i in range(1, max_weights_length + 1)
     ]
 
     # Returns 0 if there's no matching n-grams
     # We only need to check for p_numerators[1] == 0, since if there's
     # no unigrams, there won't be any higher order ngrams.
     if p_numerators[1] == 0:
-        return 0
+        return 0 if len(weights) == 1 else [0] * len(weights)
 
     # If there's no smoothing, set use method0 from SmoothinFunction class.
     if not smoothing_function:
@@ -222,9 +224,19 @@ def corpus_bleu(
     p_n = smoothing_function(
         p_n, references=references, hypothesis=hypothesis, hyp_len=hyp_lengths
     )
-    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
-    s = bp * math.exp(math.fsum(s))
-    return s
+    bleu_scores = []
+    for weight in weights:
+        # Uniformly re-weighting based on maximum hypothesis lengths if largest
+        # order of n-grams < 4 and weights is set at default.
+        if auto_reweigh:
+            if hyp_lengths < 4 and weight == (0.25, 0.25, 0.25, 0.25):
+                weight = (1 / hyp_lengths,) * hyp_lengths
+
+
+        s = (w_i * math.log(p_i) for w_i, p_i in zip(weight, p_n))
+        s = bp * math.exp(math.fsum(s))
+        bleu_scores.append(s)
+    return bleu_scores[0] if len(weights) == 1 else bleu_scores
 
 
 def modified_precision(references, hypothesis, n):
