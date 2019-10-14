@@ -132,7 +132,7 @@ class StanfordTagger(TaggerI):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
                 word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append(("".join(word_tags[:-1]), word_tags[-1]))
+                sentence.append(("".join(word_tags[:-1]), word_tags[-1].replace('0', '').upper()))
             tagged_sentences.append(sentence)
         return tagged_sentences
 
