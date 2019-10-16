@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -5,6 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Model Interface."""
+from __future__ import division, unicode_literals
 
 import random
 from abc import ABCMeta, abstractmethod
@@ -16,15 +18,37 @@ from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
 
-from itertools import accumulate
+try:
+    from itertools import accumulate, repeat
+except ImportError:
+    import operator
+
+    def accumulate(iterable, func=operator.add):
+        """Return running totals"""
+        # accumulate([1,2,3,4,5]) --> 1 3 6 10 15
+        # accumulate([1,2,3,4,5], operator.mul) --> 1 2 6 24 120
+        it = iter(iterable)
+        try:
+            total = next(it)
+        except StopIteration:
+            return
+        yield total
+        for element in it:
+            total = func(total, element)
+            yield total
+
+    def repeat(value, count):
+        """An iterator with the specified value repeated for count time"""
+        for _ in range(count):
+            yield (value)
 
 
 @add_metaclass(ABCMeta)
-class Smoothing:
+class Smoothing(object):
     """Ngram Smoothing Interface
 
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
-    certain features in common. This should ideally allow smoothing algorithms to
+    certain features in common. This should ideally allow smoothing algoritms to
     work both with Backoff and Interpolation.
     """
 
@@ -58,23 +82,52 @@ def _random_generator(seed_or_generator):
     return random.Random(seed_or_generator)
 
 
-def _weighted_choice(population, weights, random_generator=None):
-    """Like random.choice, but with weights.
-
-    Heavily inspired by python 3.6 `random.choices`.
+def _weighted_choice(population, weights=None, random_generator=None, k=1):
+    """Return a k sized list of population elements chosen with replacement.
+    If the relative weights or cumulative weights are not specified,
+    the selections are made with equal probability.
     """
+    random = random_generator.random
+    n = len(population)
+    if weights is None:
+        _int = int
+        n += 0.0  # convert to float for a small speed improvement
+        return [population[_int(random() * n)] for i in repeat(None, k)]
+    cum_weights = list(accumulate(weights))
     if not population:
         raise ValueError("Can't choose from empty population")
-    if len(population) != len(weights):
-        raise ValueError("The number of weights does not match the population")
-    cum_weights = list(accumulate(weights))
-    total = cum_weights[-1]
-    threshold = random_generator.random()
-    return population[bisect(cum_weights, total * threshold)]
+    if len(cum_weights) != n:
+        raise ValueError('The number of weights does not match the population')
+    total = cum_weights[-1] + 0.0  # convert to float
+    hi = n - 1
+    if k == 1:
+        return population[bisect(cum_weights, random() * total, 0, hi)]
+    return [population[bisect(cum_weights, random() * total, 0, hi)]
+            for i in repeat(None, k)]
+
+
+def _weighted_sample(population, weights=None, random_generator=None, k=1):
+    """Return a k sized list of population elements chosen with replacement.
+    If the relative weights or cumulative weights are not specified,
+    the selections are made with equal probability.
+    The algorithm is based on this paper:  https://www.sciencedirect.com/science/article/pii/S002001900500298X
+    """
+    random = random_generator.random
+    n = len(population)
+    if weights is None:
+        weights = [1] * n
+    if not population:
+        raise ValueError("Can't choose from empty population")
+    if len(weights) != n:
+        raise ValueError('The number of weights does not match the population')
+
+    elt = [(random() / weights[i], i) for i in range(len(weights))]
+    selections = sorted(elt)[:k]
+    return [population[x] for _, x in selections]
 
 
 @add_metaclass(ABCMeta)
-class LanguageModel:
+class LanguageModel(object):
     """ABC for Language Models.
 
     Cannot be directly instantiated itself.
@@ -109,7 +162,7 @@ class LanguageModel:
         if not self.vocab:
             if vocabulary_text is None:
                 raise ValueError(
-                    "Cannot fit without a vocabulary or text to create it from."
+                    "Cannot fit without a vocabulary or text to " "create it from."
                 )
             self.vocab.update(vocabulary_text)
         self.counts.update(self.vocab.lookup(sent) for sent in text)
@@ -157,7 +210,8 @@ class LanguageModel:
 
         """
         return (
-            self.counts[len(context) + 1][context] if context else self.counts.unigrams
+            self.counts[len(context) +
+                        1][context] if context else self.counts.unigrams
         )
 
     def entropy(self, text_ngrams):
@@ -202,10 +256,10 @@ class LanguageModel:
         """
         text_seed = [] if text_seed is None else list(text_seed)
         random_generator = _random_generator(random_seed)
-        # This is the base recursion case.
+        # base recursion case
         if num_words == 1:
             context = (
-                text_seed[-self.order + 1 :]
+                text_seed[-self.order + 1:]
                 if len(text_seed) >= self.order
                 else text_seed
             )
@@ -213,16 +267,15 @@ class LanguageModel:
             while context and not samples:
                 context = context[1:] if len(context) > 1 else []
                 samples = self.context_counts(self.vocab.lookup(context))
-            # Sorting samples achieves two things:
+            # sorting achieves two things:
             # - reproducible randomness when sampling
-            # - turns Mapping into Sequence which `_weighted_choice` expects
+            # - turning Mapping into Sequence which _weighted_choice expects
             samples = sorted(samples)
             return _weighted_choice(
-                samples,
-                tuple(self.score(w, context) for w in samples),
-                random_generator,
+                samples, tuple(self.score(w, context)
+                               for w in samples), random_generator
             )
-        # We build up text one word at a time using the preceding context.
+        # build up text one word at a time
         generated = []
         for _ in range(num_words):
             generated.append(
@@ -233,3 +286,48 @@ class LanguageModel:
                 )
             )
         return generated
+
+    def suggest(self, context=None, k=None, sample_method="random", random_seed=None, ignore_unknown=True):
+        """Return a list of words that could follow the given context. Sampled randomly based on these word frequency distribution.
+
+        :param context: tuple(str) or None
+        :param k: the length of the suggestion list. If not specified, return all of the possible option.
+        :param sample_method: "random" or "top". If "top" is use, return the options with highest score. If "random" is used, the score will be used as weight for random sample
+        :param random_seed: A random seed or an instance of `random.Random`. If provided,
+        makes the random sampling part of generation reproducible.
+        :param ignore_unknown: If set to true, ignore unknown words in the suggestions
+        :return: list(str): a list of suggestions paired with their score.  
+
+        Examples:
+
+        >>> from nltk.lm import MLE
+        >>> lm = MLE(2)
+        >>> lm.fit([[("a", "b"), ("b", "c")]], vocabulary_text=['a', 'b', 'c', 'd'])
+        >>> lm.fit([[("a", "c"), ("b", "d")]])
+        >>> lm.suggest(context=['a'])
+        [('b', 0.5), ('c', 0.5)]
+
+        """
+        context = [] if context is None else list(context)
+        random_generator = _random_generator(random_seed)
+        samples = self.context_counts(self.vocab.lookup(context))
+        while context and not samples:
+            context = context[1:] if len(context) > 1 else []
+            samples = self.context_counts(self.vocab.lookup(context))
+        # sorting achieves two things:
+        # - reproducible randomness when sampling
+        # - turning Mapping into Sequence which _weighted_choice expects
+        if ignore_unknown:
+            del samples["<UNK>"]
+        samples = sorted(samples)
+        scores = tuple(self.score(w, context) for w in samples)
+        # zipping create an iterator of elements combined from the two iterators.
+        suggestions = list(zip(samples, scores))
+        if k is None:
+            k = len(samples)
+        k = min(k, len(samples))
+        if sample_method == "random":
+            return sorted(_weighted_sample(suggestions, scores, random_generator, k), key=lambda x: x[1], reverse=True)
+        else:
+            return sorted(suggestions, key=lambda x: x[1], reverse=True)[:k]
+        return
