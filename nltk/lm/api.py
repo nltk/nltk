@@ -16,37 +16,15 @@ from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
 
-try:
-    from itertools import accumulate, repeat
-except ImportError:
-    import operator
-
-    def accumulate(iterable, func=operator.add):
-        """Return running totals"""
-        # accumulate([1,2,3,4,5]) --> 1 3 6 10 15
-        # accumulate([1,2,3,4,5], operator.mul) --> 1 2 6 24 120
-        it = iter(iterable)
-        try:
-            total = next(it)
-        except StopIteration:
-            return
-        yield total
-        for element in it:
-            total = func(total, element)
-            yield total
-
-    def repeat(value, count):
-        """An iterator with the specified value repeated for count time"""
-        for _ in range(count):
-            yield (value)
+from itertools import accumulate, repeat
 
 
 @add_metaclass(ABCMeta)
-class Smoothing(object):
+class Smoothing:
     """Ngram Smoothing Interface
 
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
-    certain features in common. This should ideally allow smoothing algoritms to
+    certain features in common. This should ideally allow smoothing algorithms to
     work both with Backoff and Interpolation.
     """
 
@@ -125,7 +103,7 @@ def _weighted_sample(population, weights=None, random_generator=None, k=1):
 
 
 @add_metaclass(ABCMeta)
-class LanguageModel(object):
+class LanguageModel:
     """ABC for Language Models.
 
     Cannot be directly instantiated itself.
@@ -160,8 +138,7 @@ class LanguageModel(object):
         if not self.vocab:
             if vocabulary_text is None:
                 raise ValueError(
-                    "Cannot fit without a vocabulary or text to " "create it from."
-                )
+                    "Cannot fit without a vocabulary or text to create it from.")
             self.vocab.update(vocabulary_text)
         self.counts.update(self.vocab.lookup(sent) for sent in text)
 
@@ -172,8 +149,8 @@ class LanguageModel(object):
         method.
         """
         return self.unmasked_score(
-            self.vocab.lookup(word), self.vocab.lookup(
-                context) if context else None
+            self.vocab.lookup(word),
+            self.vocab.lookup(context) if context else None
         )
 
     @abstractmethod
@@ -209,8 +186,8 @@ class LanguageModel(object):
 
         """
         return (
-            self.counts[len(context) +
-                        1][context] if context else self.counts.unigrams
+            self.counts[len(context) + 1][context]
+            if context else self.counts.unigrams
         )
 
     def entropy(self, text_ngrams):
@@ -221,7 +198,8 @@ class LanguageModel(object):
 
         """
         return -1 * _mean(
-            [self.logscore(ngram[-1], ngram[:-1]) for ngram in text_ngrams]
+            [self.logscore(ngram[-1], ngram[:-1])
+             for ngram in text_ngrams]
         )
 
     def perplexity(self, text_ngrams):
@@ -255,7 +233,7 @@ class LanguageModel(object):
         """
         text_seed = [] if text_seed is None else list(text_seed)
         random_generator = _random_generator(random_seed)
-        # base recursion case
+        # This is the base recursion case.
         if num_words == 1:
             context = (
                 text_seed[-self.order + 1:]
@@ -266,15 +244,16 @@ class LanguageModel(object):
             while context and not samples:
                 context = context[1:] if len(context) > 1 else []
                 samples = self.context_counts(self.vocab.lookup(context))
-            # sorting achieves two things:
+            # Sorting samples achieves two things:
             # - reproducible randomness when sampling
-            # - turning Mapping into Sequence which _weighted_choice expects
+            # - turns Mapping into Sequence which `_weighted_choice` expects
             samples = sorted(samples)
             return _weighted_choice(
-                samples, tuple(self.score(w, context)
-                               for w in samples), random_generator
+                samples,
+                tuple(self.score(w, context) for w in samples),
+                random_generator
             )
-        # build up text one word at a time
+        # We build up text one word at a time using the preceding context.
         generated = []
         for _ in range(num_words):
             generated.append(
@@ -303,7 +282,7 @@ class LanguageModel(object):
         >>> lm = MLE(2)
         >>> lm.fit([[("a", "b"), ("b", "c")]], vocabulary_text=['a', 'b', 'c', 'd'])
         >>> lm.fit([[("a", "c"), ("b", "d")]])
-        >>> sorted(lm.suggest(context=['a']))
+        >>> sorted(lm.suggest(context=['a'])) # this is to ensure the documentation pass the doc test
         [('b', 0.5), ('c', 0.5)]
 
         """
@@ -313,14 +292,14 @@ class LanguageModel(object):
         while context and not samples:
             context = context[1:] if len(context) > 1 else []
             samples = self.context_counts(self.vocab.lookup(context))
-        # sorting achieves two things:
+        # Sorting samples achieves two things:
         # - reproducible randomness when sampling
-        # - turning Mapping into Sequence which _weighted_choice expects
+        # - turns Mapping into Sequence which `_weighted_choice` expects
         if ignore_unknown:
             del samples["<UNK>"]
         samples = sorted(samples)
         scores = tuple(self.score(w, context) for w in samples)
-        # zipping create an iterator of elements combined from the two iterators.
+        # Zipping create an iterator of elements combined from the two iterators.
         suggestions = list(zip(samples, scores))
         if k is None:
             k = len(samples)
