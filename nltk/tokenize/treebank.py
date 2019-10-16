@@ -19,25 +19,7 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 import re
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import align_tokens
-
-
-class MacIntyreContractions:
-    """
-    List of contractions adapted from Robert MacIntyre's tokenizer.
-    """
-
-    CONTRACTIONS2 = [
-        r"(?i)\b(can)(?#X)(not)\b",
-        r"(?i)\b(d)(?#X)('ye)\b",
-        r"(?i)\b(gim)(?#X)(me)\b",
-        r"(?i)\b(gon)(?#X)(na)\b",
-        r"(?i)\b(got)(?#X)(ta)\b",
-        r"(?i)\b(lem)(?#X)(me)\b",
-        r"(?i)\b(mor)(?#X)('n)\b",
-        r"(?i)\b(wan)(?#X)(na)\s",
-    ]
-    CONTRACTIONS3 = [r"(?i) ('t)(?#X)(is)\b", r"(?i) ('t)(?#X)(was)\b"]
-    CONTRACTIONS4 = [r"(?i)\b(whad)(dd)(ya)\b", r"(?i)\b(wha)(t)(cha)\b"]
+from nltk.tokenize.destructive import MacIntyreContractions
 
 
 class TreebankWordTokenizer(TokenizerI):
@@ -337,7 +319,7 @@ class TreebankWordDetokenizer(TokenizerI):
 
     def tokenize(self, tokens, convert_parentheses=False):
         """
-        Treebank detokenizer, created by undoing the regexes from 
+        Treebank detokenizer, created by undoing the regexes from
         the TreebankWordTokenizer.tokenize.
 
         :param tokens: A list of strings, i.e. tokenized text.
