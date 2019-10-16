@@ -303,7 +303,7 @@ class LanguageModel(object):
         >>> lm = MLE(2)
         >>> lm.fit([[("a", "b"), ("b", "c")]], vocabulary_text=['a', 'b', 'c', 'd'])
         >>> lm.fit([[("a", "c"), ("b", "d")]])
-        >>> lm.suggest(context=['a'])
+        >>> sorted(lm.suggest(context=['a']))
         [('b', 0.5), ('c', 0.5)]
 
         """
