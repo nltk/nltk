@@ -1,9 +1,13 @@
-Version 3.5 2019-08-07
+Version 3.5 2019-10-16
 * drop support for Python 2
+* create NLTK's own Tokenizer class distinct from the Treebank reference tokeniser
+* update Vader sentiment analyser
+* fix JSON serialization of some PoS taggers
 * minor bug fixes and clean ups
 
 Thanks to the following contributors to 3.5:
-Nicolas Darr, Gerhard Kremer, Liling Tan
+Nicolas Darr, Gerhard Kremer, Liling Tan, Christopher Hench, Alexandre Dias,
+Hervé Nicol, BLKSerene, hoefling
 
 Version 3.4.5 2019-08-20
 * Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
