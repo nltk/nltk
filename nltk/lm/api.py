@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -6,7 +5,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Model Interface."""
-from __future__ import division, unicode_literals
 
 import random
 from abc import ABCMeta, abstractmethod
