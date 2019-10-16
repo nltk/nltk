@@ -172,7 +172,8 @@ class LanguageModel(object):
         method.
         """
         return self.unmasked_score(
-            self.vocab.lookup(word), self.vocab.lookup(context) if context else None
+            self.vocab.lookup(word), self.vocab.lookup(
+                context) if context else None
         )
 
     @abstractmethod
