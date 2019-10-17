@@ -130,11 +130,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
     def _resolve(self, fileids, categories, textids=None):
         tmp = None
         if (
-            len(
+            len(list(
                 filter(
                     lambda accessor: accessor is None, (fileids, categories, textids)
                 )
-            )
+            ))
             != 1
         ):
 
