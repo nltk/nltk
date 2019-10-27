@@ -883,7 +883,7 @@ def load(
     elif format == "yaml":
         import yaml
 
-        resource_val = yaml.load(opened_resource)
+        resource_val = yaml.safe_load(opened_resource)
     else:
         # The resource is a text format.
         binary_data = opened_resource.read()
