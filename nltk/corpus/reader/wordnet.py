@@ -1560,12 +1560,14 @@ class WordNetCorpusReader(CorpusReader):
     # Retrieve synsets and lemmas.
     #############################################################
 
-    def synsets(self, lemma, pos=None, lang="eng", check_exceptions=True):
+    def synsets(self, lemma, pos=None, lang="eng", stem=True, check_exceptions=True):
         """Load all synsets with a given lemma and part of speech tag.
         If no pos is specified, all synsets for all parts of speech
         will be loaded.
         If lang is specified, all the synsets associated with the lemma name
         of that language will be returned.
+        If stem is False, then the synsets associated with the morphological
+        stems of lemma are *not* included in the query.
         """
         lemma = lemma.lower()
 
@@ -1577,7 +1579,7 @@ class WordNetCorpusReader(CorpusReader):
             return [
                 get_synset(p, offset)
                 for p in pos
-                for form in self._morphy(lemma, p, check_exceptions)
+                for form in (self._morphy(lemma, p, check_exceptions) if stem else [lemma])
                 for offset in index[form].get(p, [])
             ]
 
