@@ -109,7 +109,11 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     :raise OSError: If the java command returns a nonzero return code.
     """
 
-    subprocess_output_dict = {'pipe': subprocess.PIPE, 'stdout': subprocess.STDOUT, 'devnull': subprocess.DEVNULL}
+    try:
+        from subprocess import DEVNULL
+    except ImportError:
+        DEVNULL = open(os.devnull, 'wb')
+    subprocess_output_dict = {'pipe': subprocess.PIPE, 'stdout': subprocess.STDOUT, 'devnull': DEVNULL}
 
     stdin = subprocess_output_dict.get(stdin, stdin)
     stdout = subprocess_output_dict.get(stdout, stdout)
