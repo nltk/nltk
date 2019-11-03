@@ -851,7 +851,7 @@ class CFG(object):
             result.append(rule)
         if need_to_add:
             start = Nonterminal("S0_SIGMA")
-            result.append(Production(start, grammar.start()))
+            result.append(Production(start, [grammar.start()]))
             n_grammar = CFG(start, result)
             return n_grammar
         return grammar
