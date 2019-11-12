@@ -757,7 +757,7 @@ class CFG(object):
             Customise new rule formation during binarisation
         """
         if self.is_chomsky_normal_form():
-            return
+            return self
         if self.productions(empty=True):
             raise ValueError(
                 ("Grammar has Empty rules. " "Cannot deal with them at the moment")
