@@ -57,6 +57,7 @@
 - Campion Fellin
 - Michelle Fullwood
 - Dan Garrette
+- Maciej Gawinecki
 - Jean Mark Gawron
 - Sumukh Ghodke
 - Yoav Goldberg
