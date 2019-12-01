@@ -439,6 +439,15 @@ class FreqDist(Counter):
         """
         return "<FreqDist with %d samples and %d outcomes>" % (len(self), self.N())
 
+    def __iter__(self):
+        """
+        Return an iterator which yields tokens ordered by frequency.
+
+        :rtype: iterator
+        """
+        for token, _ in self.most_common(self.B()):
+            yield token
+
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distributions
