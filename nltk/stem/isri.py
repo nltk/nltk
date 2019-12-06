@@ -3,7 +3,7 @@
 # Natural Language Toolkit: The ISRI Arabic Stemmer
 #
 # Copyright (C) 2001-2019 NLTK Proejct
-# Algorithm: Kazem Taghva, Rania Elkhoury, and Jeffrey Coombs (2005)
+# Algorithm: Kazem Taghva, Rania Elkhoury, Jeffrey Coombs, and Mohammad Modallal (2005)
 # Author: Hosam Algasaier <hosam_hme@yahoo.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -27,6 +27,13 @@ Additional adjustments were made to improve the algorithm:
 2- Adding the pattern (تفاعيل) to ISRI pattern set.
 3- The step 2 in the original algorithm was normalizing all hamza. This step is discarded because it
 increases the word ambiguities and changes the original root.
+4- Adding general Diacritics strip that strip KASRATAN, FATHA, DAMMA, KASRA, FATHATAN, DAMMATAN, SUKUN, VOWELS, SHADDA, and HAMZA. 
+5- Adding normalize function that did the following:
+              - Remove Stops.
+              - Remove Semicolon 
+              - Remove Question Mark
+              - Remove Commas
+              - Remove Diacritics (KASRATAN, FATHA, DAMMA, KASRA, FATHATAN, DAMMATAN, SUKUN, VOWELS, SHADDA, HAMZA) 
 
 """
 import re
@@ -180,6 +187,44 @@ class ISRIStemmer(StemmerI):
             "\u0628\u0647\u0630\u0627",
             "\u0627\u0644\u0630\u0649",
         ]
+
+        #Ligatures
+        self.LIGUATURES = [
+            "\ufefb",
+            "\ufef7",
+            "\ufef9",
+            "\ufef5",
+        ]
+        self.re_ligatures_pattern = re.compile(u"[" + u"".join(LIGUATURES) + u"]", re.UNICODE)
+
+        self.FATHATAN = u'\u064b'
+        self.DAMMATAN = u'\u064c'
+        self.KASRATAN = u'\u064d'
+        self.FATHA = u'\u064e'
+        self.DAMMA = u'\u064f'
+        self.KASRA = u'\u0650'
+        self.SHADDA = u'\u0651'
+        self.SUKUN = u'\u0652'
+        self.TATWEEL = u'\u0640'
+        self.ALEF_MADDA = u'\u0622'
+        self.HAMZA = u'\u0621'
+        self.ALEF_HAMZA_ABOVE = u'\u0623'
+        self.WAW_HAMZA = u'\u0624'
+        self.ALEF_HAMZA_BELOW = u'\u0625'
+        self.YEH_HAMZA = u'\u0626'
+        self.ALEF = u'\u0627'
+
+	#Ligatures
+        LAM_ALEF = u'\ufefb'
+        LAM_ALEF_HAMZA_ABOVE = u'\ufef7'
+        LAM_ALEF_HAMZA_BELOW = u'\ufef9'
+        LAM_ALEF_MADDA_ABOVE = u'\ufef5'
+
+        FULL_STOP = u'\u06d4'
+        COMMA = u'\u060C'
+	SEMICOLON = u'\u061B'
+	QUESTION = u'\u061F'
+        self.DIACRITICS = (FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN)
 
     def stem(self, token):
         """
@@ -394,3 +439,46 @@ class ISRIStemmer(StemmerI):
             if word.startswith(sp1):
                 return word[1:]
         return word
+
+    def strip_diacritics(text):
+	    """
+            This function Strip Arabic language Diacritics (KASRATAN, FATHA, DAMMA, KASRA, FATHATAN, DAMMATAN, SUKUN, VOWELS, SHADDA, HAMZA) 
+
+	    """
+	    if not text:
+                 return text
+	    else:
+                 for char in this.re_short_vowels:         #Strip Diacritics (KASRATAN, FATHA, DAMMA, KASRA, FATHATAN, DAMMATAN, and SUKUN) from Arabic text.
+                         text = text.replace(char, '')
+                 text=text.replace(TATWEEL, '')  #Strip tatweel from Arabic text.
+                 text=text.replace(SHADDA, '')   #Strip Shadda from Arabic text.
+                 if text.startswith(ALEF_MADDA): #Normalize the Hamzat into one form of hamza,
+			if len(text) >= 3 and (text[1] not in DIACRITICS) and (text[2] == SHADDA or len(text) == 3):
+		              text = HAMZA + ALEF + text[1:]
+			else:
+		              text = HAMZA + HAMZA + text[1:]
+		        # convert all Hamza from into one form
+		        text = text.replace(ALEF_MADDA, HAMZA + HAMZA)
+		        text = re_hamza.sub(HAMZA, text)
+                 
+	    return text
+
+    def normalization(text):
+	    """
+            This function normalize Arabic language text by removing the following from the input text:
+              - Stops
+              - Semicolon 
+              - Question Mark
+              - Commas
+              - Diacritics (KASRATAN, FATHA, DAMMA, KASRA, FATHATAN, DAMMATAN, SUKUN, VOWELS, SHADDA, HAMZA) 
+
+	    """
+	    if not text:
+                 return text
+	    else:
+                 text=strip_diacritics(text) #Strip Arabic language Diacritics
+                 text=text.replace(FULL_STOP, '') #Remove full stop
+                 text=text.replace(COMMA, '')     #Remove Comma
+                 text=text.replace(SEMICOLON, '') #Remove Semicolon
+                 text=text.replace(QUESTION, '')  #Remove Question Mark
+	    return text    
