@@ -1,18 +1,18 @@
 # Natural Language Toolkit: TnT Tagger
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-'''
+"""
 Implementation of 'TnT - A Statisical Part of Speech Tagger'
 by Thorsten Brants
 
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
-'''
-from __future__ import print_function, division
+"""
+
 from math import log
 
 from operator import itemgetter
@@ -20,8 +20,9 @@ from operator import itemgetter
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.tag.api import TaggerI
 
+
 class TnT(TaggerI):
-    '''
+    """
     TnT - Statistical POS tagger
 
     IMPORTANT NOTES:
@@ -80,10 +81,10 @@ class TnT(TaggerI):
     It is possible to differentiate the tags which are assigned to
     capitalized words. However this does not result in a significant
     gain in the accuracy of the results.
-    '''
+    """
 
     def __init__(self, unk=None, Trained=False, N=1000, C=False):
-        '''
+        """
         Construct a TnT statistical tagger. Tagger must be trained
         before being used to tag input.
 
@@ -110,19 +111,19 @@ class TnT(TaggerI):
         information for tagging.
         NOTE: using capitalization may not increase the accuracy
         of the tagger
-        '''
+        """
 
-        self._uni  = FreqDist()
-        self._bi   = ConditionalFreqDist()
-        self._tri  = ConditionalFreqDist()
-        self._wd   = ConditionalFreqDist()
-        self._eos  = ConditionalFreqDist()
-        self._l1   = 0.0
-        self._l2   = 0.0
-        self._l3   = 0.0
-        self._N    = N
-        self._C    = C
-        self._T    = Trained
+        self._uni = FreqDist()
+        self._bi = ConditionalFreqDist()
+        self._tri = ConditionalFreqDist()
+        self._wd = ConditionalFreqDist()
+        self._eos = ConditionalFreqDist()
+        self._l1 = 0.0
+        self._l2 = 0.0
+        self._l3 = 0.0
+        self._N = N
+        self._C = C
+        self._T = Trained
 
         self._unk = unk
 
@@ -131,14 +132,14 @@ class TnT(TaggerI):
         self.known = 0
 
     def train(self, data):
-        '''
+        """
         Uses a set of tagged data to train the tagger.
         If an unknown word tagger is specified,
         it is trained on the same data.
 
         :param data: List of lists of (word, tag) tuples
         :type data: tuple(str)
-        '''
+        """
 
         # Ensure that local C flag is initialized before use
         C = False
@@ -147,38 +148,33 @@ class TnT(TaggerI):
             self._unk.train(data)
 
         for sent in data:
-            history = [('BOS',False), ('BOS',False)]
+            history = [("BOS", False), ("BOS", False)]
             for w, t in sent:
 
                 # if capitalization is requested,
                 # and the word begins with a capital
                 # set local flag C to True
-                if self._C and w[0].isupper(): C=True
+                if self._C and w[0].isupper():
+                    C = True
 
                 self._wd[w][t] += 1
-                self._uni[(t,C)] += 1
-                self._bi[history[1]][(t,C)] += 1
-                self._tri[tuple(history)][(t,C)] += 1
+                self._uni[(t, C)] += 1
+                self._bi[history[1]][(t, C)] += 1
+                self._tri[tuple(history)][(t, C)] += 1
 
-                history.append((t,C))
+                history.append((t, C))
                 history.pop(0)
 
                 # set local flag C to false for the next word
                 C = False
 
-            self._eos[t]['EOS'] += 1
-
+            self._eos[t]["EOS"] += 1
 
         # compute lambda values from the trained frequency distributions
         self._compute_lambda()
 
-        #(debugging -- ignore or delete me)
-        #print "lambdas"
-        #print i, self._l1, i, self._l2, i, self._l3
-
-
     def _compute_lambda(self):
-        '''
+        """
         creates lambda values based upon training data
 
         NOTE: no need to explicitly reference C,
@@ -195,7 +191,7 @@ class TnT(TaggerI):
         ISSUES -- Resolutions:
         if 2 values are equal, increment both lambda values
         by (f(t1,t2,t3) / 2)
-        '''
+        """
 
         # temporary lambda variables
         tl1 = 0.0
@@ -218,10 +214,11 @@ class TnT(TaggerI):
 
                 # safe_div provides a safe floating point division
                 # it returns -1 if the denominator is 0
-                c3 = self._safe_div((self._tri[history][tag]-1), (self._tri[history].N()-1))
-                c2 = self._safe_div((self._bi[h2][tag]-1), (self._bi[h2].N()-1))
-                c1 = self._safe_div((self._uni[tag]-1), (self._uni.N()-1))
-
+                c3 = self._safe_div(
+                    (self._tri[history][tag] - 1), (self._tri[history].N() - 1)
+                )
+                c2 = self._safe_div((self._bi[h2][tag] - 1), (self._bi[h2].N() - 1))
+                c1 = self._safe_div((self._uni[tag] - 1), (self._uni.N() - 1))
 
                 # if c1 is the maximum value:
                 if (c1 > c3) and (c1 > c2):
@@ -249,29 +246,26 @@ class TnT(TaggerI):
                 # otherwise there might be a problem
                 # eg: all values = 0
                 else:
-                    #print "Problem", c1, c2 ,c3
                     pass
 
         # Lambda normalisation:
         # ensures that l1+l2+l3 = 1
-        self._l1 = tl1 / (tl1+tl2+tl3)
-        self._l2 = tl2 / (tl1+tl2+tl3)
-        self._l3 = tl3 / (tl1+tl2+tl3)
-
-
+        self._l1 = tl1 / (tl1 + tl2 + tl3)
+        self._l2 = tl2 / (tl1 + tl2 + tl3)
+        self._l3 = tl3 / (tl1 + tl2 + tl3)
 
     def _safe_div(self, v1, v2):
-        '''
+        """
         Safe floating point division function, does not allow division by 0
         returns -1 if the denominator is 0
-        '''
+        """
         if v2 == 0:
             return -1
         else:
             return v1 / v2
 
     def tagdata(self, data):
-        '''
+        """
         Tags each sentence in a list of sentences
 
         :param data:list of list of words
@@ -281,16 +275,15 @@ class TnT(TaggerI):
         Invokes tag(sent) function for each sentence
         compiles the results into a list of tagged sentences
         each tagged sentence is a list of (word, tag) tuples
-        '''
+        """
         res = []
         for sent in data:
             res1 = self.tag(sent)
             res.append(res1)
         return res
 
-
     def tag(self, data):
-        '''
+        """
         Tags a single sentence
 
         :param data: list of words
@@ -305,9 +298,9 @@ class TnT(TaggerI):
         with the correct words in the input sequence
 
         returns a list of (word, tag) tuples
-        '''
+        """
 
-        current_state = [(['BOS', 'BOS'], 0.0)]
+        current_state = [(["BOS", "BOS"], 0.0)]
 
         sent = list(data)
 
@@ -316,14 +309,13 @@ class TnT(TaggerI):
         res = []
         for i in range(len(sent)):
             # unpack and discard the C flags
-            (t,C) = tags[i+2]
+            (t, C) = tags[i + 2]
             res.append((sent[i], t))
 
         return res
 
-
     def _tagword(self, sent, current_states):
-        '''
+        """
         :param sent : List of words remaining in the sentence
         :type sent  : [word,]
         :param current_states : List of possible tag combinations for
@@ -336,7 +328,7 @@ class TnT(TaggerI):
 
         Uses formula specified above to calculate the probability
         of a particular tag
-        '''
+        """
 
         # if this word marks the end of the sentance,
         # return the most probable tag
@@ -352,7 +344,8 @@ class TnT(TaggerI):
         # if the Capitalisation is requested,
         # initalise the flag for this word
         C = False
-        if self._C and word[0].isupper(): C=True
+        if self._C and word[0].isupper():
+            C = True
 
         # if word is known
         # compute the set of possible tags
@@ -364,17 +357,16 @@ class TnT(TaggerI):
                 logprobs = []
 
                 for t in self._wd[word].keys():
-                    tC = (t,C)
+                    tC = (t, C)
                     p_uni = self._uni.freq(tC)
                     p_bi = self._bi[history[-1]].freq(tC)
                     p_tri = self._tri[tuple(history[-2:])].freq(tC)
                     p_wd = self._wd[word][t] / self._uni[tC]
-                    p = self._l1 *p_uni + self._l2 *p_bi + self._l3 *p_tri
+                    p = self._l1 * p_uni + self._l2 * p_bi + self._l3 * p_tri
                     p2 = log(p, 2) + log(p_wd, 2)
 
                     # compute the result of appending each tag to this history
-                    new_states.append((history + [tC],
-                                       curr_sent_logprob + p2))
+                    new_states.append((history + [tC], curr_sent_logprob + p2))
 
         # otherwise a new word, set of possible tags is unknown
         else:
@@ -389,12 +381,12 @@ class TnT(TaggerI):
             # if no unknown word tagger has been specified
             # then use the tag 'Unk'
             if self._unk is None:
-                tag = ('Unk',C)
+                tag = ("Unk", C)
 
             # otherwise apply the unknown word tagger
             else:
                 [(_w, t)] = list(self._unk.tag([word]))
-                tag = (t,C)
+                tag = (t, C)
 
             for (history, logprob) in current_states:
                 history.append(tag)
@@ -410,7 +402,7 @@ class TnT(TaggerI):
         # del everything after N (threshold)
         # this is the beam search cut
         if len(new_states) > self._N:
-            new_states = new_states[:self._N]
+            new_states = new_states[: self._N]
 
         # compute the tags for the rest of the sentence
         # return the best list of tags for the sentence
@@ -421,8 +413,9 @@ class TnT(TaggerI):
 # helper function -- basic sentence tokenizer
 ########################################
 
+
 def basic_sent_chop(data, raw=True):
-    '''
+    """
     Basic method for tokenizing input into sentences
     for this tagger:
 
@@ -444,12 +437,11 @@ def basic_sent_chop(data, raw=True):
 
     This is a simple method which enhances the performance of the TnT
     tagger. Better sentence tokenization will further enhance the results.
-    '''
+    """
 
     new_data = []
     curr_sent = []
-    sent_mark = [',','.','?','!']
-
+    sent_mark = [",", ".", "?", "!"]
 
     if raw:
         for word in data:
@@ -461,35 +453,32 @@ def basic_sent_chop(data, raw=True):
                 curr_sent.append(word)
 
     else:
-        for (word,tag) in data:
+        for (word, tag) in data:
             if word in sent_mark:
-                curr_sent.append((word,tag))
+                curr_sent.append((word, tag))
                 new_data.append(curr_sent)
                 curr_sent = []
             else:
-                curr_sent.append((word,tag))
+                curr_sent.append((word, tag))
     return new_data
-
 
 
 def demo():
     from nltk.corpus import brown
+
     sents = list(brown.tagged_sents())
     test = list(brown.sents())
 
-    # create and train the tagger
     tagger = TnT()
     tagger.train(sents[200:1000])
 
-    # tag some data
     tagged_data = tagger.tagdata(test[100:120])
 
-    # print results
     for j in range(len(tagged_data)):
         s = tagged_data[j]
-        t = sents[j+100]
+        t = sents[j + 100]
         for i in range(len(s)):
-            print(s[i],'--', t[i])
+            print(s[i], "--", t[i])
         print()
 
 
@@ -500,33 +489,34 @@ def demo2():
 
     t = TnT(N=1000, C=False)
     s = TnT(N=1000, C=True)
-    t.train(d[(11)*100:])
-    s.train(d[(11)*100:])
+    t.train(d[(11) * 100 :])
+    s.train(d[(11) * 100 :])
 
     for i in range(10):
-        tacc = t.evaluate(d[i*100:((i+1)*100)])
+        tacc = t.evaluate(d[i * 100 : ((i + 1) * 100)])
         tp_un = t.unknown / (t.known + t.unknown)
         tp_kn = t.known / (t.known + t.unknown)
         t.unknown = 0
         t.known = 0
 
-        print('Capitalization off:')
-        print('Accuracy:', tacc)
-        print('Percentage known:', tp_kn)
-        print('Percentage unknown:', tp_un)
-        print('Accuracy over known words:', (tacc / tp_kn))
+        print("Capitalization off:")
+        print("Accuracy:", tacc)
+        print("Percentage known:", tp_kn)
+        print("Percentage unknown:", tp_un)
+        print("Accuracy over known words:", (tacc / tp_kn))
 
-        sacc = s.evaluate(d[i*100:((i+1)*100)])
+        sacc = s.evaluate(d[i * 100 : ((i + 1) * 100)])
         sp_un = s.unknown / (s.known + s.unknown)
         sp_kn = s.known / (s.known + s.unknown)
         s.unknown = 0
         s.known = 0
 
-        print('Capitalization on:')
-        print('Accuracy:', sacc)
-        print('Percentage known:', sp_kn)
-        print('Percentage unknown:', sp_un)
-        print('Accuracy over known words:', (sacc / sp_kn))
+        print("Capitalization on:")
+        print("Accuracy:", sacc)
+        print("Percentage known:", sp_kn)
+        print("Percentage unknown:", sp_un)
+        print("Accuracy over known words:", (sacc / sp_kn))
+
 
 def demo3():
     from nltk.corpus import treebank, brown
@@ -537,8 +527,8 @@ def demo3():
     d = d[:1000]
     e = e[:1000]
 
-    d10 = int(len(d)*0.1)
-    e10 = int(len(e)*0.1)
+    d10 = int(len(d) * 0.1)
+    e10 = int(len(e) * 0.1)
 
     tknacc = 0
     sknacc = 0
@@ -552,11 +542,11 @@ def demo3():
         t = TnT(N=1000, C=False)
         s = TnT(N=1000, C=False)
 
-        dtest = d[(i*d10):((i+1)*d10)]
-        etest = e[(i*e10):((i+1)*e10)]
+        dtest = d[(i * d10) : ((i + 1) * d10)]
+        etest = e[(i * e10) : ((i + 1) * e10)]
 
-        dtrain = d[:(i*d10)] + d[((i+1)*d10):]
-        etrain = e[:(i*e10)] + e[((i+1)*e10):]
+        dtrain = d[: (i * d10)] + d[((i + 1) * d10) :]
+        etrain = e[: (i * e10)] + e[((i + 1) * e10) :]
 
         t.train(dtrain)
         s.train(etrain)
@@ -575,13 +565,12 @@ def demo3():
         s.unknown = 0
         s.known = 0
 
-        tknacc += (tacc / tp_kn)
-        sknacc += (sacc / tp_kn)
+        tknacc += tacc / tp_kn
+        sknacc += sacc / tp_kn
         tallacc += tacc
         sallacc += sacc
 
-        #print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
-
+        # print(i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc)
 
     print("brown: acc over words known:", 10 * tknacc)
     print("     : overall accuracy:", 10 * tallacc)
@@ -589,7 +578,3 @@ def demo3():
     print("treebank: acc over words known:", 10 * sknacc)
     print("        : overall accuracy:", 10 * sallacc)
     print("        : words known:", 10 * sknown)
-
-
-
-

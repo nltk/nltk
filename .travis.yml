@@ -1,0 +1,55 @@
+sudo: false
+
+language: python
+
+cache:
+  apt: true
+  directories:
+  - $HOME/.cache/pip
+  - $HOME/.ccache
+  - $HOME/.pip-cache
+  - $HOME/third
+  - $HOME/nltk_data
+
+dist: xenial
+
+addons:
+  apt:
+    packages:
+      - expect-dev # for unbuffer, see https://github.com/travis-ci/travis-ci/issues/7967
+
+matrix:
+  include:
+#    - python: '2.7'
+#      env: TOXENV="flake8"
+
+#    - python: '2.7'
+#      env: TOXENV="py-travis"
+
+    - python: '3.5'
+      env: TOXENV="py-travis"
+
+    - python: '3.6'
+      env: TOXENV="py-travis"
+
+    - python: '3.7'
+      env: TOXENV="py-travis"
+
+    - python: '3.7' # Only runs checks on 3rd party for latest Python distribution
+      env: TOXENV="py-travis-third-party"
+
+before_install:
+  - source tools/travis/pre-install.sh # Checks Java and Python versions.
+  - chmod +x tools/travis/coverage-pylint.sh
+  - chmod +x tools/travis/third-party.sh
+
+install:
+  - source tools/travis/install.sh
+  #- source tools/travis/third-party.sh
+  - pip install tox
+
+script:
+  - unbuffer tox -e $TOXENV tox.ini -vv
+
+after_success:
+  - tools/travis/travis-ci-commenter.sh

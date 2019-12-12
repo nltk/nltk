@@ -2,11 +2,9 @@
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-from __future__ import division
 
 import unicodedata
 
@@ -63,8 +61,10 @@ class DependencyEvaluator(object):
     >>> de = DependencyEvaluator([parsed_sent],[gold_sent])
     >>> las, uas = de.eval()
     >>> las
+    0.6...
+    >>> uas
     0.8...
-    >>> abs(uas - 0.6) < 0.00001
+    >>> abs(uas - 0.8) < 0.00001
     True
     """
 
@@ -91,8 +91,10 @@ class DependencyEvaluator(object):
 
         :return : tuple(float,float)
         """
-        if (len(self._parsed_sents) != len(self._gold_sents)):
-            raise ValueError(" Number of parsed sentence is different with number of gold sentence.")
+        if len(self._parsed_sents) != len(self._gold_sents):
+            raise ValueError(
+                " Number of parsed sentence is different with number of gold sentence."
+            )
 
         corr = 0
         corrL = 0
@@ -102,7 +104,7 @@ class DependencyEvaluator(object):
             parsed_sent_nodes = self._parsed_sents[i].nodes
             gold_sent_nodes = self._gold_sents[i].nodes
 
-            if (len(parsed_sent_nodes) != len(gold_sent_nodes)):
+            if len(parsed_sent_nodes) != len(gold_sent_nodes):
                 raise ValueError("Sentences must have equal length.")
 
             for parsed_node_address, parsed_node in parsed_sent_nodes.items():
@@ -124,6 +126,4 @@ class DependencyEvaluator(object):
                     if parsed_node["rel"] == gold_node["rel"]:
                         corrL += 1
 
-        return corr / total, corrL / total
-
-
+        return corrL / total, corr / total

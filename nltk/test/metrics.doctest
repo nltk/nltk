@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2017 NLTK Project
+.. Copyright (C) 2001-2019 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======
@@ -52,6 +52,14 @@ String edit distance (Levenshtein):
 
     >>> edit_distance("rain", "shine")
     3
+    >>> edit_distance_align("shine", "shine")
+    [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
+    >>> edit_distance_align("rain", "brainy")
+    [(0, 0), (1, 1), (1, 2), (2, 3), (3, 4), (4, 5), (4, 6)]
+    >>> edit_distance_align("", "brainy")
+    [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6)]
+    >>> edit_distance_align("", "")
+    [(0, 0)]
 
 Other distance measures:
 
@@ -62,7 +70,7 @@ Other distance measures:
     >>> print(jaccard_distance(s1, s2))
     0.6
     >>> print(masi_distance(s1, s2))
-    0.198
+    0.868
 
 ----------------------
 Miscellaneous Measures
@@ -267,4 +275,19 @@ For trigrams, we have to provide more count information:
     >>> tam.poisson_stirling(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.poisson_stirling(n_w1_w2_w3, pair_counts, uni_counts, N)
     True
     >>> tam.jaccard(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.jaccard(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+
+
+For fourgrams, we have to provide more count information:
+
+    >>> n_w1_w2_w3_w4 = 5
+    >>> n_w1_w2, n_w1_w3, n_w2_w3 = 35, 60, 40
+    >>> n_w1_w2_w3, n_w2_w3_w4 = 20, 10 
+    >>> pair_counts = (n_w1_w2, n_w1_w3, n_w2_w3)
+    >>> triplet_counts = (n_w1_w2_w3, n_w2_w3_w4)
+    >>> n_w1, n_w2, n_w3, n_w4 = 100, 200, 300, 400
+    >>> uni_counts = (n_w1, n_w2, n_w3, n_w4)
+    >>> N = 14307668
+    >>> qam = QuadgramAssocMeasures
+    >>> qam.raw_freq(n_w1_w2_w3_w4, pair_counts, triplet_counts, uni_counts, N) == 1. * n_w1_w2_w3_w4 / N
     True

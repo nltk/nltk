@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagger Interface
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -11,12 +11,12 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 from itertools import chain
+
+from six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.metrics import accuracy
-
 from nltk.tag.util import untag
 
 
@@ -35,6 +35,7 @@ class TaggerI(object):
     Subclasses must define:
       - either ``tag()`` or ``tag_sents()`` (or both)
     """
+
     @abstractmethod
     def tag(self, tokens):
         """
@@ -73,8 +74,7 @@ class TaggerI(object):
 
     def _check_params(self, train, model):
         if (train and model) or (not train and not model):
-            raise ValueError(
-                    'Must specify either training data or trained model.')
+            raise ValueError("Must specify either training data or trained model.")
 
 
 class FeaturesetTaggerI(TaggerI):

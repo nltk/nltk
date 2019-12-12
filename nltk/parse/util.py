@@ -2,7 +2,7 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -10,7 +10,6 @@
 """
 Utility functions for parsers.
 """
-from __future__ import print_function
 
 from nltk.grammar import CFG, FeatureGrammar, PCFG
 from nltk.data import load
@@ -19,9 +18,10 @@ from nltk.parse.chart import Chart, ChartParser
 from nltk.parse.pchart import InsideChartParser
 from nltk.parse.featurechart import FeatureChart, FeatureChartParser
 
-def load_parser(grammar_url, trace=0,
-                parser=None, chart_class=None,
-                beam_size=0, **load_args):
+
+def load_parser(
+    grammar_url, trace=0, parser=None, chart_class=None, beam_size=0, **load_args
+):
     """
     Load a grammar from a file, and build a parser based on that grammar.
     The parser depends on the grammar format, and might also depend
@@ -55,8 +55,7 @@ def load_parser(grammar_url, trace=0,
     """
     grammar = load(grammar_url, **load_args)
     if not isinstance(grammar, CFG):
-        raise ValueError("The grammar must be a CFG, "
-                         "or a subclass thereof.")
+        raise ValueError("The grammar must be a CFG, " "or a subclass thereof.")
     if isinstance(grammar, PCFG):
         if parser is None:
             parser = InsideChartParser
@@ -69,85 +68,89 @@ def load_parser(grammar_url, trace=0,
             chart_class = FeatureChart
         return parser(grammar, trace=trace, chart_class=chart_class)
 
-    else: # Plain CFG.
+    else:  # Plain CFG.
         if parser is None:
             parser = ChartParser
         if chart_class is None:
             chart_class = Chart
         return parser(grammar, trace=trace, chart_class=chart_class)
 
+
 def taggedsent_to_conll(sentence):
-	"""
-	A module to convert a single POS tagged sentence into CONLL format.
-	
-	>>> from nltk import word_tokenize, pos_tag
-	>>> text = "This is a foobar sentence."
-	>>> for line in taggedsent_to_conll(pos_tag(word_tokenize(text))):
-	... 	print(line, end="")
+    """
+    A module to convert a single POS tagged sentence into CONLL format.
+
+    >>> from nltk import word_tokenize, pos_tag
+    >>> text = "This is a foobar sentence."
+    >>> for line in taggedsent_to_conll(pos_tag(word_tokenize(text))):
+    ... 	print(line, end="")
         1	This	_	DT	DT	_	0	a	_	_
         2	is	_	VBZ	VBZ	_	0	a	_	_
         3	a	_	DT	DT	_	0	a	_	_
         4	foobar	_	JJ	JJ	_	0	a	_	_
         5	sentence	_	NN	NN	_	0	a	_	_
         6	.		_	.	.	_	0	a	_	_
-	
-	:param sentence: A single input sentence to parse
-	:type sentence: list(tuple(str, str))
-	:rtype: iter(str) 
-	:return: a generator yielding a single sentence in CONLL format.
-	"""
-	for (i, (word, tag)) in enumerate(sentence, start=1):
-		input_str = [str(i), word, '_', tag, tag, '_', '0', 'a', '_', '_']
-		input_str = "\t".join(input_str) + "\n"
-		yield input_str
+
+    :param sentence: A single input sentence to parse
+    :type sentence: list(tuple(str, str))
+    :rtype: iter(str)
+    :return: a generator yielding a single sentence in CONLL format.
+    """
+    for (i, (word, tag)) in enumerate(sentence, start=1):
+        input_str = [str(i), word, "_", tag, tag, "_", "0", "a", "_", "_"]
+        input_str = "\t".join(input_str) + "\n"
+        yield input_str
 
 
 def taggedsents_to_conll(sentences):
-	"""
-	A module to convert the a POS tagged document stream
-	(i.e. list of list of tuples, a list of sentences) and yield lines 
-	in CONLL format. This module yields one line per word and two newlines 
-	for end of sentence. 
+    """
+    A module to convert the a POS tagged document stream
+    (i.e. list of list of tuples, a list of sentences) and yield lines
+    in CONLL format. This module yields one line per word and two newlines
+    for end of sentence.
 
-	>>> from nltk import word_tokenize, sent_tokenize, pos_tag
-	>>> text = "This is a foobar sentence. Is that right?"
-	>>> sentences = [pos_tag(word_tokenize(sent)) for sent in sent_tokenize(text)]
-	>>> for line in taggedsents_to_conll(sentences):
-        ...     if line:
-	...         print(line, end="")
-        1	This	_	DT	DT	_	0	a	_	_
-        2	is	_	VBZ	VBZ	_	0	a	_	_
-        3	a	_	DT	DT	_	0	a	_	_
-        4	foobar	_	JJ	JJ	_	0	a	_	_
-        5	sentence	_	NN	NN	_	0	a	_	_
-        6	.		_	.	.	_	0	a	_	_
-        <BLANKLINE>
-        <BLANKLINE>
-        1	Is	_	VBZ	VBZ	_	0	a	_	_
-        2	that	_	IN	IN	_	0	a	_	_
-        3	right	_	NN	NN	_	0	a	_	_
-        4	?	_	.	.	_	0	a	_	_
-        <BLANKLINE>
-        <BLANKLINE>
+    >>> from nltk import word_tokenize, sent_tokenize, pos_tag
+    >>> text = "This is a foobar sentence. Is that right?"
+    >>> sentences = [pos_tag(word_tokenize(sent)) for sent in sent_tokenize(text)]
+    >>> for line in taggedsents_to_conll(sentences):
+    ...     if line:
+    ...         print(line, end="")
+    1	This	_	DT	DT	_	0	a	_	_
+    2	is	_	VBZ	VBZ	_	0	a	_	_
+    3	a	_	DT	DT	_	0	a	_	_
+    4	foobar	_	JJ	JJ	_	0	a	_	_
+    5	sentence	_	NN	NN	_	0	a	_	_
+    6	.		_	.	.	_	0	a	_	_
+    <BLANKLINE>
+    <BLANKLINE>
+    1	Is	_	VBZ	VBZ	_	0	a	_	_
+    2	that	_	IN	IN	_	0	a	_	_
+    3	right	_	NN	NN	_	0	a	_	_
+    4	?	_	.	.	_	0	a	_	_
+    <BLANKLINE>
+    <BLANKLINE>
 
-	:param sentences: Input sentences to parse
-	:type sentence: list(list(tuple(str, str)))
-	:rtype: iter(str) 
-	:return: a generator yielding sentences in CONLL format.
-	"""
-	for sentence in sentences:
-		for input_str in taggedsent_to_conll(sentence):
-			yield input_str
-		yield '\n\n'		
+    :param sentences: Input sentences to parse
+    :type sentence: list(list(tuple(str, str)))
+    :rtype: iter(str)
+    :return: a generator yielding sentences in CONLL format.
+    """
+    for sentence in sentences:
+        for input_str in taggedsent_to_conll(sentence):
+            yield input_str
+        yield "\n\n"
+
 
 ######################################################################
-#{ Test Suites
+# { Test Suites
 ######################################################################
+
 
 class TestGrammar(object):
     """
     Unit tests for  CFG.
     """
+
     def __init__(self, grammar, suite, accept=None, reject=None):
         self.test_grammar = grammar
 
@@ -155,7 +158,6 @@ class TestGrammar(object):
         self.suite = suite
         self._accept = accept
         self._reject = reject
-
 
     def run(self, show_trees=False):
         """
@@ -167,8 +169,8 @@ class TestGrammar(object):
         according to the grammar, then the value of ``trees`` will be None.
         """
         for test in self.suite:
-            print(test['doc'] + ":", end=' ')
-            for key in ['accept', 'reject']:
+            print(test["doc"] + ":", end=" ")
+            for key in ["accept", "reject"]:
                 for sent in test[key]:
                     tokens = sent.split()
                     trees = list(self.cp.parse(tokens))
@@ -177,7 +179,7 @@ class TestGrammar(object):
                         print(sent)
                         for tree in trees:
                             print(tree)
-                    if key == 'accept':
+                    if key == "accept":
                         if trees == []:
                             raise ValueError("Sentence '%s' failed to parse'" % sent)
                         else:
@@ -189,6 +191,7 @@ class TestGrammar(object):
                             rejected = True
             if accepted and rejected:
                 print("All tests passed!")
+
 
 def extract_test_sentences(string, comment_chars="#%;", encoding=None):
     """
@@ -209,14 +212,14 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
     if encoding is not None:
         string = string.decode(encoding)
     sentences = []
-    for sentence in string.split('\n'):
-        if sentence == '' or sentence[0] in comment_chars:
+    for sentence in string.split("\n"):
+        if sentence == "" or sentence[0] in comment_chars:
             continue
-        split_info = sentence.split(':', 1)
+        split_info = sentence.split(":", 1)
         result = None
         if len(split_info) == 2:
-            if split_info[0] in ['True','true','False','false']:
-                result = split_info[0] in ['True','true']
+            if split_info[0] in ["True", "true", "False", "false"]:
+                result = split_info[0] in ["True", "true"]
                 sentence = split_info[1]
             else:
                 result = int(split_info[0])
@@ -226,6 +229,7 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
             continue
         sentences += [(tokens, result)]
     return sentences
+
 
 # nose thinks it is a test
 extract_test_sentences.__test__ = False

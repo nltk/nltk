@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Opinion Lexicon Corpus Reader
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -32,10 +32,12 @@ from six import string_types
 from nltk.corpus.reader import WordListCorpusReader
 from nltk.corpus.reader.api import *
 
+
 class IgnoreReadmeCorpusView(StreamBackedCorpusView):
     """
     This CorpusView is used to skip the initial readme block of the corpus.
     """
+
     def __init__(self, *args, **kwargs):
         StreamBackedCorpusView.__init__(self, *args, **kwargs)
         # open self._stream
@@ -82,10 +84,16 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat(
+            [
+                self.CorpusView(path, self._read_word_block, encoding=enc)
+                for (path, enc, fileid) in self.abspaths(fileids, True, True)
+            ]
+        )
 
     def positive(self):
         """
@@ -94,7 +102,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: a list of positive words.
         :rtype: list(str)
         """
-        return self.words('positive-words.txt')
+        return self.words("positive-words.txt")
 
     def negative(self):
         """
@@ -103,11 +111,11 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: a list of negative words.
         :rtype: list(str)
         """
-        return self.words('negative-words.txt')
+        return self.words("negative-words.txt")
 
     def _read_word_block(self, stream):
         words = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
             if not line:
                 continue

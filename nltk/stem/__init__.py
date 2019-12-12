@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -29,3 +29,4 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.rslp import RSLPStemmer
+from nltk.stem.cistem import Cistem

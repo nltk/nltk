@@ -51,14 +51,16 @@ class TestIBMModel3(unittest.TestCase):
         src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
         trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
         corpus = [AlignedSent(trg_sentence, src_sentence)]
-        alignment_info = AlignmentInfo((0, 1, 4, 0, 2, 5, 5),
-                                       [None] + src_sentence,
-                                       ['UNUSED'] + trg_sentence,
-                                       [[3], [1], [4], [], [2], [5, 6]])
+        alignment_info = AlignmentInfo(
+            (0, 1, 4, 0, 2, 5, 5),
+            [None] + src_sentence,
+            ['UNUSED'] + trg_sentence,
+            [[3], [1], [4], [], [2], [5, 6]],
+        )
 
         distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(
-                lambda: defaultdict(float))))
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
+        )
         distortion_table[1][1][5][6] = 0.97  # i -> ich
         distortion_table[2][4][5][6] = 0.97  # love -> gern
         distortion_table[3][0][5][6] = 0.97  # to -> NULL
@@ -87,7 +89,7 @@ class TestIBMModel3(unittest.TestCase):
             'translation_table': translation_table,
             'distortion_table': distortion_table,
             'fertility_table': fertility_table,
-            'alignment_table': None
+            'alignment_table': None,
         }
 
         model3 = IBMModel3(corpus, 0, probabilities)
@@ -97,9 +99,10 @@ class TestIBMModel3(unittest.TestCase):
 
         # assert
         null_generation = 5 * pow(0.167, 1) * pow(0.833, 4)
-        fertility = 1*0.99 * 1*0.99 * 1*0.99 * 1*0.99 * 2*0.999
+        fertility = 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 2 * 0.999
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         distortion = 0.97 * 0.97 * 0.97 * 0.97 * 0.97 * 0.97
-        expected_probability = (null_generation * fertility *
-                                lexical_translation * distortion)
+        expected_probability = (
+            null_generation * fertility * lexical_translation * distortion
+        )
         self.assertEqual(round(probability, 4), round(expected_probability, 4))

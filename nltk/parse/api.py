@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Parser API
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -10,6 +10,7 @@
 import itertools
 
 from nltk.internals import overridden
+
 
 class ParserI(object):
     """
@@ -26,6 +27,7 @@ class ParserI(object):
     Subclasses may define:
       - ``grammar()``
     """
+
     def grammar(self):
         """
         :return: The grammar used by this parser.
@@ -44,7 +46,11 @@ class ParserI(object):
         if overridden(self.parse_sents):
             return next(self.parse_sents([sent], *args, **kwargs))
         elif overridden(self.parse_one):
-            return (tree for tree in [self.parse_one(sent, *args, **kwargs)] if tree is not None)
+            return (
+                tree
+                for tree in [self.parse_one(sent, *args, **kwargs)]
+                if tree is not None
+            )
         elif overridden(self.parse_all):
             return iter(self.parse_all(sent, *args, **kwargs))
         else:

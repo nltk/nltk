@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizer Utilities
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
 from re import finditer
 from xml.sax.saxutils import escape, unescape
+
 
 def string_span_tokenize(s, sep):
     r"""
@@ -42,6 +43,7 @@ def string_span_tokenize(s, sep):
 
         left = right + len(sep)
 
+
 def regexp_span_tokenize(s, regexp):
     r"""
     Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
@@ -67,6 +69,7 @@ def regexp_span_tokenize(s, regexp):
             yield left, right
         left = next
     yield left, len(s)
+
 
 def spans_to_relative(spans):
     r"""
@@ -98,8 +101,9 @@ class CJKChars(object):
     This is a Python port of the CJK code point enumerations of Moses tokenizer:
     https://github.com/moses-smt/mosesdecoder/blob/master/scripts/tokenizer/detokenizer.perl#L309
     """
+
     # Hangul Jamo (1100–11FF)
-    Hangul_Jamo = (4352, 4607) # (ord(u"\u1100"), ord(u"\u11ff"))
+    Hangul_Jamo = (4352, 4607)  # (ord(u"\u1100"), ord(u"\u11ff"))
 
     # CJK Radicals Supplement (2E80–2EFF)
     # Kangxi Radicals (2F00–2FDF)
@@ -120,30 +124,39 @@ class CJKChars(object):
     # CJK Unified Ideographs (4E00–9FFF)
     # Yi Syllables (A000–A48F)
     # Yi Radicals (A490–A4CF)
-    CJK_Radicals = (11904, 42191) # (ord(u"\u2e80"), ord(u"\ua4cf"))
+    CJK_Radicals = (11904, 42191)  # (ord(u"\u2e80"), ord(u"\ua4cf"))
 
     # Phags-pa (A840–A87F)
-    Phags_Pa = (43072, 43135) # (ord(u"\ua840"), ord(u"\ua87f"))
+    Phags_Pa = (43072, 43135)  # (ord(u"\ua840"), ord(u"\ua87f"))
 
     # Hangul Syllables (AC00–D7AF)
-    Hangul_Syllables = (44032, 55215) # (ord(u"\uAC00"), ord(u"\uD7AF"))
+    Hangul_Syllables = (44032, 55215)  # (ord(u"\uAC00"), ord(u"\uD7AF"))
 
     # CJK Compatibility Ideographs (F900–FAFF)
-    CJK_Compatibility_Ideographs = (63744, 64255) # (ord(u"\uF900"), ord(u"\uFAFF"))
+    CJK_Compatibility_Ideographs = (63744, 64255)  # (ord(u"\uF900"), ord(u"\uFAFF"))
 
     # CJK Compatibility Forms (FE30–FE4F)
-    CJK_Compatibility_Forms = (65072, 65103) # (ord(u"\uFE30"), ord(u"\uFE4F"))
+    CJK_Compatibility_Forms = (65072, 65103)  # (ord(u"\uFE30"), ord(u"\uFE4F"))
 
     # Range U+FF65–FFDC encodes halfwidth forms, of Katakana and Hangul characters
-    Katakana_Hangul_Halfwidth = (65381, 65500) # (ord(u"\uFF65"), ord(u"\uFFDC"))
+    Katakana_Hangul_Halfwidth = (65381, 65500)  # (ord(u"\uFF65"), ord(u"\uFFDC"))
 
     # Supplementary Ideographic Plane 20000–2FFFF
-    Supplementary_Ideographic_Plane = (131072, 196607) # (ord(u"\U00020000"), ord(u"\U0002FFFF"))
+    Supplementary_Ideographic_Plane = (
+        131072,
+        196607,
+    )  # (ord(u"\U00020000"), ord(u"\U0002FFFF"))
 
-    ranges = [Hangul_Jamo, CJK_Radicals, Phags_Pa, Hangul_Syllables,
-              CJK_Compatibility_Ideographs, CJK_Compatibility_Forms,
-              Katakana_Hangul_Halfwidth, Supplementary_Ideographic_Plane]
-
+    ranges = [
+        Hangul_Jamo,
+        CJK_Radicals,
+        Phags_Pa,
+        Hangul_Syllables,
+        CJK_Compatibility_Ideographs,
+        CJK_Compatibility_Forms,
+        Katakana_Hangul_Halfwidth,
+        Supplementary_Ideographic_Plane,
+    ]
 
 
 def is_cjk(character):
@@ -161,11 +174,21 @@ def is_cjk(character):
     :type character: char
     :return: bool
     """
-    return any([start <= ord(character) <= end for start, end in
-                [(4352, 4607), (11904, 42191), (43072, 43135), (44032, 55215),
-                 (63744, 64255), (65072, 65103), (65381, 65500),
-                 (131072, 196607)]
-                ])
+    return any(
+        [
+            start <= ord(character) <= end
+            for start, end in [
+                (4352, 4607),
+                (11904, 42191),
+                (43072, 43135),
+                (44032, 55215),
+                (63744, 64255),
+                (65072, 65103),
+                (65381, 65500),
+                (131072, 196607),
+            ]
+        ]
+    )
 
 
 def xml_escape(text):
@@ -188,9 +211,16 @@ def xml_escape(text):
     :type text: str
     :rtype: str
     """
-    return escape(text, entities={ r"'": r"&apos;", r'"': r"&quot;",
-                                   r"|": r"&#124;",
-                                   r"[": r"&#91;",  r"]": r"&#93;", })
+    return escape(
+        text,
+        entities={
+            r"'": r"&apos;",
+            r'"': r"&quot;",
+            r"|": r"&#124;",
+            r"[": r"&#91;",
+            r"]": r"&#93;",
+        },
+    )
 
 
 def xml_unescape(text):
@@ -212,9 +242,16 @@ def xml_unescape(text):
     :type text: str
     :rtype: str
     """
-    return unescape(text, entities={ r"&apos;":r"'", r"&quot;":r'"',
-                                     r"&#124;":r"|",
-                                     r"&#91;":r"[",  r"&#93;":r"]", })
+    return unescape(
+        text,
+        entities={
+            r"&apos;": r"'",
+            r"&quot;": r'"',
+            r"&#124;": r"|",
+            r"&#91;": r"[",
+            r"&#93;": r"]",
+        },
+    )
 
 
 def align_tokens(tokens, sentence):

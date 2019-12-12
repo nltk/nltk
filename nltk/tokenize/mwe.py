@@ -1,6 +1,6 @@
 # Multi-Word Expression tokenizer
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Rob Malouf <rmalouf@mail.sdsu.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -38,7 +38,7 @@ class MWETokenizer(TokenizerI):
     into single tokens.
     """
 
-    def __init__(self, mwes=None, separator='_'):
+    def __init__(self, mwes=None, separator="_"):
         """Initialize the multi-word tokenizer with a list of expressions and a
         separator
 
@@ -71,7 +71,7 @@ class MWETokenizer(TokenizerI):
         >>> tokenizer.add_mwe(('a', 'b', 'c'))
         >>> tokenizer.add_mwe(('a', 'x'))
         >>> expected = {'a': {'x': {True: None}, 'b': {True: None, 'c': {True: None}}}}
-        >>> tokenizer._mwes.as_dict() == expected
+        >>> tokenizer._mwes == expected
         True
 
         """

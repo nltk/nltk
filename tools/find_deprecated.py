@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Deprecated Function & Class Finder
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -28,7 +28,6 @@ import re
 import sys
 import tokenize
 import textwrap
-import nltk
 import nltk.corpus
 from doctest import DocTestParser, register_optionflag
 from cStringIO import StringIO
@@ -39,9 +38,14 @@ from nltk import defaultdict
 ######################################################################
 
 #: A little over-simplified, but it'll do.
-STRING_PAT = (r'\s*[ur]{0,2}(?:'
-              '"""[\s\S]*?"""|'  '"[^"\n]+?"|'
-              "'''[\s\S]*?'''|"  "'[^'\n]+?'" ")\s*")
+STRING_PAT = (
+    r'\s*[ur]{0,2}(?:'
+    '"""[\s\S]*?"""|'
+    '"[^"\n]+?"|'
+    "'''[\s\S]*?'''|"
+    "'[^'\n]+?'"
+    ")\s*"
+)
 STRING_RE = re.compile(STRING_PAT)
 
 STRINGS_PAT = '{}(?:[+]?{})*'.format(STRING_PAT, STRING_PAT)
@@ -49,14 +53,16 @@ STRINGS_RE = re.compile(STRINGS_PAT)
 
 # Define a regexp to search for deprecated definitions.
 DEPRECATED_DEF_PAT = (
-    r'^\s*@deprecated\s*\(\s*({})\s*\)\s*\n+'.format(STRINGS_PAT) +
-    r'\s*def\s*(\w+).*' +
-    r'|' +
-    r'^\s*class\s+(\w+)\s*\(.*Deprecated.*\):\s*')
+    r'^\s*@deprecated\s*\(\s*({})\s*\)\s*\n+'.format(STRINGS_PAT)
+    + r'\s*def\s*(\w+).*'
+    + r'|'
+    + r'^\s*class\s+(\w+)\s*\(.*Deprecated.*\):\s*'
+)
 DEPRECATED_DEF_RE = re.compile(DEPRECATED_DEF_PAT, re.MULTILINE)
 
 CORPUS_READ_METHOD_RE = re.compile(
-    '({})\.read\('.format('|'.join(re.escape(n) for n in dir(nltk.corpus))))
+    '({})\.read\('.format('|'.join(re.escape(n) for n in dir(nltk.corpus)))
+)
 
 CLASS_DEF_RE = re.compile('^\s*class\s+(\w+)\s*[:\(]')
 
@@ -73,9 +79,11 @@ deprecated_methods = defaultdict(set)
 try:
     from epydoc.cli import TerminalController
 except ImportError:
-    class TerminalController:
 
-        def __getattr__(self, attr): return ''
+    class TerminalController:
+        def __getattr__(self, attr):
+            return ''
+
 
 term = TerminalController()
 
@@ -90,9 +98,9 @@ if sys.version_info[:2] < (2, 5):
 
 def strip_quotes(s):
     s = s.strip()
-    while (s and (s[0] in "ur") and (s[-1] in "'\"")):
+    while s and (s[0] in "ur") and (s[-1] in "'\""):
         s = s[1:]
-    while (s and (s[0] in "'\"" and (s[0] == s[-1]))):
+    while s and (s[0] in "'\"" and (s[0] == s[-1])):
         s = s[1:-1]
     s = s.strip()
     return s
@@ -123,8 +131,9 @@ def find_deprecated_defs(pkg_dir):
                 for m in DEPRECATED_DEF_RE.finditer(s):
                     if m.group(2):
                         name = m.group(2)
-                        msg = ' '.join(strip_quotes(s) for s in
-                                       STRING_RE.findall(m.group(1)))
+                        msg = ' '.join(
+                            strip_quotes(s) for s in STRING_RE.findall(m.group(1))
+                        )
                         msg = ' '.join(msg.split())
                         if m.group()[0] in ' \t':
                             cls = find_class(s, m.start())
@@ -147,25 +156,27 @@ def print_deprecated_uses(paths):
     dep_files = set()
     for path in sorted(paths):
         if os.path.isdir(path):
-            dep_names.update(print_deprecated_uses(
-                [os.path.join(path, f) for f in os.listdir(path)]))
+            dep_names.update(
+                print_deprecated_uses([os.path.join(path, f) for f in os.listdir(path)])
+            )
         elif path.endswith('.py'):
-            print_deprecated_uses_in(open(path).readline, path,
-                                     dep_files, dep_names, 0)
+            print_deprecated_uses_in(open(path).readline, path, dep_files, dep_names, 0)
         elif path.endswith('.doctest') or path.endswith('.txt'):
             for example in DocTestParser().get_examples(open(path).read()):
                 ex = StringIO(example.source)
                 try:
-                    print_deprecated_uses_in(ex.readline, path, dep_files,
-                                             dep_names, example.lineno)
+                    print_deprecated_uses_in(
+                        ex.readline, path, dep_files, dep_names, example.lineno
+                    )
                 except tokenize.TokenError:
-                    print(term.RED + 'Caught TokenError -- '
-                          'malformatted doctest?' + term.NORMAL)
+                    print(
+                        term.RED + 'Caught TokenError -- '
+                        'malformatted doctest?' + term.NORMAL
+                    )
     return dep_names
 
 
-def print_deprecated_uses_in(readline, path, dep_files, dep_names,
-                             lineno_offset):
+def print_deprecated_uses_in(readline, path, dep_files, dep_names, lineno_offset):
     tokiter = tokenize.generate_tokens(readline)
     context = ['']
     for (typ, tok, start, end, line) in tokiter:
@@ -177,11 +188,16 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
                 del context[0]
         esctok = re.escape(tok)
         # Ignore all tokens except deprecated names.
-        if not (tok in deprecated_classes or
-                (tok in deprecated_funcs and
-                 re.search(r'\b{}\s*\('.format(esctok), line)) or
-                (tok in deprecated_methods and
-                 re.search(r'(?!<\bself)[.]\s*{}\s*\('.format(esctok), line))):
+        if not (
+            tok in deprecated_classes
+            or (
+                tok in deprecated_funcs and re.search(r'\b{}\s*\('.format(esctok), line)
+            )
+            or (
+                tok in deprecated_methods
+                and re.search(r'(?!<\bself)[.]\s*{}\s*\('.format(esctok), line)
+            )
+        ):
             continue
         # Hack: only complain about read if it's used after a corpus.
         if tok == 'read' and not CORPUS_READ_METHOD_RE.search(line):
@@ -204,8 +220,11 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
             sub = '<<' + tok + '>>'
         line = re.sub(r'\b{}\b'.format(esctok), sub, line)
         # Print the offending line.
-        print('  {}[{:5d}]{} {}'.format(term.YELLOW, start[0] + lineno_offset,
-                                  term.NORMAL, line.rstrip()))
+        print(
+            '  {}[{:5d}]{} {}'.format(
+                term.YELLOW, start[0] + lineno_offset, term.NORMAL, line.rstrip()
+            )
+        )
 
 
 def main():
@@ -229,14 +248,20 @@ def main():
     else:
         print("\n" + term.BOLD + "What you should use instead:" + term.NORMAL)
         for name in sorted(dep_names):
-            msgs = deprecated_funcs[name].union(
-                deprecated_classes[name]).union(
-                deprecated_methods[name])
+            msgs = (
+                deprecated_funcs[name]
+                .union(deprecated_classes[name])
+                .union(deprecated_methods[name])
+            )
             for msg, prefix, suffix in msgs:
-                print(textwrap.fill(term.RED + prefix + name + suffix +
-                                    term.NORMAL + ': ' + msg,
-                                    width=75, initial_indent=' ' * 2,
-                                    subsequent_indent=' ' * 6))
+                print(
+                    textwrap.fill(
+                        term.RED + prefix + name + suffix + term.NORMAL + ': ' + msg,
+                        width=75,
+                        initial_indent=' ' * 2,
+                        subsequent_indent=' ' * 6,
+                    )
+                )
 
 
 if __name__ == '__main__':

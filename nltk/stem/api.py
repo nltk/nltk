@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmer Interface
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -18,6 +18,7 @@ class StemmerI(object):
     words.  This process is known as stemming.
 
     """
+
     @abstractmethod
     def stem(self, token):
         """

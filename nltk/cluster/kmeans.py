@@ -1,10 +1,9 @@
 # Natural Language Toolkit: K-Means Clusterer
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals, division
 
 import copy
 import random
@@ -17,10 +16,8 @@ except ImportError:
 
 
 from nltk.cluster.util import VectorSpaceClusterer
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class KMeansClusterer(VectorSpaceClusterer):
     """
     The K-means clusterer starts with k arbitrary chosen means then allocates
@@ -32,10 +29,18 @@ class KMeansClusterer(VectorSpaceClusterer):
     commonly occurring output means are chosen.
     """
 
-    def __init__(self, num_means, distance, repeats=1,
-                       conv_test=1e-6, initial_means=None,
-                       normalise=False, svd_dimensions=None,
-                       rng=None, avoid_empty_clusters=False):
+    def __init__(
+        self,
+        num_means,
+        distance,
+        repeats=1,
+        conv_test=1e-6,
+        initial_means=None,
+        normalise=False,
+        svd_dimensions=None,
+        rng=None,
+        avoid_empty_clusters=False,
+    ):
 
         """
         :param  num_means:  the number of means to use (may use fewer)
@@ -70,16 +75,17 @@ class KMeansClusterer(VectorSpaceClusterer):
         assert repeats >= 1
         assert not (initial_means and repeats > 1)
         self._repeats = repeats
-        self._rng = (rng if rng else random.Random())
+        self._rng = rng if rng else random.Random()
         self._avoid_empty_clusters = avoid_empty_clusters
 
     def cluster_vectorspace(self, vectors, trace=False):
         if self._means and self._repeats > 1:
-            print('Warning: means will be discarded for subsequent trials')
+            print("Warning: means will be discarded for subsequent trials")
 
         meanss = []
         for trial in range(self._repeats):
-            if trace: print('k-means trial', trial)
+            if trace:
+                print("k-means trial", trial)
             if not self._means or trial > 1:
                 self._means = self._rng.sample(list(vectors), self._num_means)
             self._cluster_vectorspace(vectors, trace)
@@ -116,9 +122,10 @@ class KMeansClusterer(VectorSpaceClusterer):
                     index = self.classify_vectorspace(vector)
                     clusters[index].append(vector)
 
-                if trace: print('iteration')
-                #for i in range(self._num_means):
-                    #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
+                if trace:
+                    print("iteration")
+                # for i in range(self._num_means):
+                # print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
                 new_means = list(map(self._centroid, clusters, self._means))
@@ -165,22 +172,25 @@ class KMeansClusterer(VectorSpaceClusterer):
             centroid = copy.copy(mean)
             for vector in cluster:
                 centroid += vector
-            return centroid / (1+len(cluster))
+            return centroid / (1 + len(cluster))
         else:
             if not len(cluster):
-                sys.stderr.write('Error: no centroid defined for empty cluster.\n')
-                sys.stderr.write('Try setting argument \'avoid_empty_clusters\' to True\n')
-                assert(False)
+                sys.stderr.write("Error: no centroid defined for empty cluster.\n")
+                sys.stderr.write(
+                    "Try setting argument 'avoid_empty_clusters' to True\n"
+                )
+                assert False
             centroid = copy.copy(cluster[0])
             for vector in cluster[1:]:
                 centroid += vector
             return centroid / len(cluster)
 
     def __repr__(self):
-        return '<KMeansClusterer means=%s repeats=%d>' % \
-                    (self._means, self._repeats)
+        return "<KMeansClusterer means=%s repeats=%d>" % (self._means, self._repeats)
+
 
 #################################################################################
+
 
 def demo():
     # example from figure 14.9, page 517, Manning and Schutze
@@ -193,9 +203,9 @@ def demo():
     clusterer = KMeansClusterer(2, euclidean_distance, initial_means=means)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
-    print('Clustered:', vectors)
-    print('As:', clusters)
-    print('Means:', clusterer.means())
+    print("Clustered:", vectors)
+    print("As:", clusters)
+    print("Means:", clusterer.means())
     print()
 
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
@@ -205,17 +215,17 @@ def demo():
 
     clusterer = KMeansClusterer(2, euclidean_distance, repeats=10)
     clusters = clusterer.cluster(vectors, True)
-    print('Clustered:', vectors)
-    print('As:', clusters)
-    print('Means:', clusterer.means())
+    print("Clustered:", vectors)
+    print("As:", clusters)
+    print("Means:", clusterer.means())
     print()
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print('classify(%s):' % vector, end=' ')
+    print("classify(%s):" % vector, end=" ")
     print(clusterer.classify(vector))
     print()
 
-if __name__ == '__main__':
-    demo()
 
+if __name__ == "__main__":
+    demo()

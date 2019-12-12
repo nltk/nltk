@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2017 NLTK Project
+.. Copyright (C) 2001-2019 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ========
@@ -69,10 +69,14 @@ To get a list of all of the Frames in FrameNet, you can use the
 that pattern:
 
     >>> from pprint import pprint
+    >>> from operator import itemgetter
     >>> from nltk.corpus import framenet as fn
+    >>> from nltk.corpus.reader.framenet import PrettyList
     >>> x = fn.frames(r'(?i)crim')
-    >>> x.sort(key=lambda f: f.ID)
+    >>> x.sort(key=itemgetter('ID'))
     >>> x
+    [<frame ID=200 name=Criminal_process>, <frame ID=500 name=Criminal_investigation>, ...]
+    >>> PrettyList(sorted(x, key=itemgetter('ID')))
     [<frame ID=200 name=Criminal_process>, <frame ID=500 name=Criminal_investigation>, ...]
 
 To get the details of a particular Frame, you can use the `frame()`
@@ -116,8 +120,7 @@ expression. Note that LU names are composed of "lemma.POS", where the
 "lemma" part can be made up of either a single lexeme (e.g. 'run') or
 multiple lexemes (e.g. 'a little') (see below).
 
-    >>> from nltk.corpus import framenet as fn
-    >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
+    >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'), key=itemgetter('ID'))) # doctest: +ELLIPSIS
     [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
 -------------
@@ -186,9 +189,8 @@ Details for a specific lexical unit can be obtained using this class's
 pattern that will be matched against the name of the lexical unit:
 
     >>> from pprint import pprint
-    >>> from nltk.corpus import framenet as fn
-    >>> pprint(fn.lus(r'(?i)a little'))
-    [<lu ID=14744 name=a little bit.adv>, <lu ID=14733 name=a little.n>, ...]
+    >>> PrettyList(sorted(fn.lus(r'(?i)a little'), key=itemgetter('ID')))
+    [<lu ID=14733 name=a little.n>, <lu ID=14743 name=a little.adv>, ...]
 
 You can obtain detailed information on a particular LU by calling the
 `lu()` function and passing in an LU's 'ID' number:

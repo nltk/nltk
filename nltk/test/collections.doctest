@@ -1,0 +1,20 @@
+.. Copyright (C) 2001-2019 NLTK Project
+.. For license information, see LICENSE.TXT
+
+===========
+Collections
+===========
+
+    >>> import nltk
+    >>> from nltk.collections import *
+
+Trie
+----
+
+Trie can be pickled:
+
+    >>> import pickle
+    >>> trie = nltk.collections.Trie(['a'])
+    >>> s = pickle.dumps(trie)
+    >>> pickle.loads(s)
+    {'a': {True: None}}

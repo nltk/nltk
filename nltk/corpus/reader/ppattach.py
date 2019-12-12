@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PP Attachment Corpus Reader
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -37,16 +37,13 @@ Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """
-from __future__ import unicode_literals
 
 from six import string_types
 
-from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
-@compat.python_2_unicode_compatible
 class PPAttachment(object):
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
         self.sent = sent
@@ -57,28 +54,39 @@ class PPAttachment(object):
         self.attachment = attachment
 
     def __repr__(self):
-        return ('PPAttachment(sent=%r, verb=%r, noun1=%r, prep=%r, '
-                'noun2=%r, attachment=%r)' %
-                (self.sent, self.verb, self.noun1, self.prep,
-                 self.noun2, self.attachment))
+        return (
+            "PPAttachment(sent=%r, verb=%r, noun1=%r, prep=%r, "
+            "noun2=%r, attachment=%r)"
+            % (self.sent, self.verb, self.noun1, self.prep, self.noun2, self.attachment)
+        )
+
 
 class PPAttachmentCorpusReader(CorpusReader):
     """
     sentence_id verb noun1 preposition noun2 attachment
     """
+
     def attachments(self, fileids):
-        return concat([StreamBackedCorpusView(fileid, self._read_obj_block,
-                                              encoding=enc)
-                       for (fileid, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                StreamBackedCorpusView(fileid, self._read_obj_block, encoding=enc)
+                for (fileid, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def tuples(self, fileids):
-        return concat([StreamBackedCorpusView(fileid, self._read_tuple_block,
-                                              encoding=enc)
-                       for (fileid, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                StreamBackedCorpusView(fileid, self._read_tuple_block, encoding=enc)
+                for (fileid, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):

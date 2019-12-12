@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
@@ -30,7 +30,6 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 For error codes see Twitter's
 `Error Codes and Responses <https://dev.twitter.com/overview/api/response-codes>`
 """
-from __future__ import print_function
 
 import datetime
 from functools import wraps
@@ -38,14 +37,22 @@ import json
 
 from nltk.compat import StringIO
 
-from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     credsfromfile
+from nltk.twitter import (
+    Query,
+    Streamer,
+    Twitter,
+    TweetViewer,
+    TweetWriter,
+    credsfromfile,
+)
 
 
-SPACER = '###################################'
+SPACER = "###################################"
+
 
 def verbose(func):
     """Decorator for demo functions"""
+
     @wraps(func)
     def with_formatting(*args, **kwargs):
         print()
@@ -53,16 +60,19 @@ def verbose(func):
         print("Using %s" % (func.__name__))
         print(SPACER)
         return func(*args, **kwargs)
+
     return with_formatting
+
 
 def yesterday():
     """
     Get yesterday's datetime as a 5-tuple.
     """
-    date =  datetime.datetime.now()
+    date = datetime.datetime.now()
     date -= datetime.timedelta(days=1)
     date_tuple = date.timetuple()[:6]
     return date_tuple
+
 
 def setup():
     """
@@ -70,10 +80,10 @@ def setup():
     """
     global USERIDS, FIELDS
 
-    USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800']
+    USERIDS = ["759251", "612473", "15108702", "6017542", "2673523800"]
     # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-    FIELDS = ['id_str']
+    FIELDS = ["id_str"]
 
 
 @verbose
@@ -83,16 +93,18 @@ def twitterclass_demo():
     """
     tw = Twitter()
     print("Track from the public stream\n")
-    tw.tweets(keywords='love, hate', limit=10) #public stream
+    tw.tweets(keywords="love, hate", limit=10)  # public stream
     print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
-    tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
+    tw.tweets(keywords="love, hate", stream=False, limit=10)  # search past tweets
     print(SPACER)
-    print("Follow two accounts in the public stream" +
-          " -- be prepared to wait a few minutes\n")
+    print(
+        "Follow two accounts in the public stream"
+        + " -- be prepared to wait a few minutes\n"
+    )
     tw = Twitter()
-    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5) #public stream
+    tw.tweets(follow=["759251", "6017542"], stream=True, limit=5)  # public stream
 
 
 @verbose
@@ -118,18 +130,18 @@ def tracktoscreen_demo(track="taylor swift", limit=10):
 
 
 @verbose
-def search_demo(keywords='nltk'):
+def search_demo(keywords="nltk"):
     """
     Use the REST API to search for past tweets containing a given keyword.
     """
     oauth = credsfromfile()
     client = Query(**oauth)
     for tweet in client.search_tweets(keywords=keywords, limit=10):
-        print(tweet['text'])
+        print(tweet["text"])
 
 
 @verbose
-def tweets_by_user_demo(user='NLTK_org', count=200):
+def tweets_by_user_demo(user="NLTK_org", count=200):
     """
     Use the REST API to search for past tweets by a given user.
     """
@@ -148,9 +160,9 @@ def lookup_by_userid_demo():
     client = Query(**oauth)
     user_info = client.user_info_from_id(USERIDS)
     for info in user_info:
-        name = info['screen_name']
-        followers = info['followers_count']
-        following = info['friends_count']
+        name = info["screen_name"]
+        followers = info["followers_count"]
+        following = info["friends_count"]
         print("{0}, followers: {1}, following: {2}".format(name, followers, following))
 
 
@@ -198,7 +210,7 @@ def limit_by_time_demo(keywords="nltk"):
     print("Cutoff date: {}\n".format(dt_date))
 
     for tweet in client.search_tweets(keywords=keywords):
-        print("{} ".format(tweet['created_at']), end='')
+        print("{} ".format(tweet["created_at"]), end="")
         client.handler.handle(tweet)
 
 
@@ -240,8 +252,8 @@ def expand_tweetids_demo():
     corresponding full Tweets, if available.
 
     """
-    ids_f =\
-        StringIO("""\
+    ids_f = StringIO(
+        """\
         588665495492124672
         588665495487909888
         588665495508766721
@@ -251,24 +263,34 @@ def expand_tweetids_demo():
         588665495525588992
         588665495487844352
         588665495492014081
-        588665495512948737""")
+        588665495512948737"""
+    )
     oauth = credsfromfile()
     client = Query(**oauth)
     hydrated = client.expand_tweetids(ids_f)
 
     for tweet in hydrated:
-            id_str = tweet['id_str']
-            print('id: {}'.format(id_str))
-            text = tweet['text']
-            if text.startswith('@null'):
-                text = "[Tweet not available]"
-            print(text + '\n')
+        id_str = tweet["id_str"]
+        print("id: {}".format(id_str))
+        text = tweet["text"]
+        if text.startswith("@null"):
+            text = "[Tweet not available]"
+        print(text + "\n")
 
 
-
-ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
-       search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
-       streamtofile_demo, limit_by_time_demo, corpusreader_demo, expand_tweetids_demo]
+ALL = [
+    twitterclass_demo,
+    sampletoscreen_demo,
+    tracktoscreen_demo,
+    search_demo,
+    tweets_by_user_demo,
+    lookup_by_userid_demo,
+    followtoscreen_demo,
+    streamtofile_demo,
+    limit_by_time_demo,
+    corpusreader_demo,
+    expand_tweetids_demo,
+]
 
 """
 Select demo functions to run. E.g. replace the following line with "DEMOS =
@@ -285,4 +307,3 @@ if __name__ == "__main__":
     print("\n" + SPACER)
     print("All demos completed")
     print(SPACER)
-

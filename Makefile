@@ -1,6 +1,6 @@
 # Natural Language Toolkit: source Makefile
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #	 Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -38,10 +38,11 @@ demotest:
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist gztardist windist
+dist: zipdist windist
 
-gztardist: clean_code
-	$(PYTHON) setup.py -q sdist --format=gztar
+# twine only permits one source distribution
+#gztardist: clean_code
+#	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 windist: clean_code

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
@@ -11,16 +11,14 @@
 Utility functions for the :module:`twitterclient` module which do not require
 the `twython` library to have been installed.
 """
-from __future__ import print_function
-
 import csv
 import gzip
 import json
 
-import nltk.compat as compat
-
+from nltk import compat
 
 HIER_SEPARATOR = "."
+
 
 def extract_fields(tweet, fields):
     """
@@ -35,8 +33,11 @@ def extract_fields(tweet, fields):
         try:
             _add_field_to_out(tweet, field, out)
         except TypeError:
-            raise RuntimeError('Fatal error when extracting fields. Cannot find field ', field)
+            raise RuntimeError(
+                "Fatal error when extracting fields. Cannot find field ", field
+            )
     return out
+
 
 def _add_field_to_out(json, field, out):
     if _is_composed_key(field):
@@ -45,10 +46,12 @@ def _add_field_to_out(json, field, out):
     else:
         out += [json[field]]
 
+
 def _is_composed_key(field):
     if HIER_SEPARATOR in field:
         return True
     return False
+
 
 def _get_key_value_composed(field):
     out = field.split(HIER_SEPARATOR)
@@ -56,6 +59,7 @@ def _get_key_value_composed(field):
     key = out[0]
     value = HIER_SEPARATOR.join(out[1:])
     return key, value
+
 
 def _get_entity_recursive(json, entity):
     if not json:
@@ -68,7 +72,7 @@ def _get_entity_recursive(json, entity):
             # structure that contain other Twitter objects. See:
             # https://dev.twitter.com/overview/api/entities-in-twitter-objects
 
-            if key == 'entities' or key == 'extended_entities':
+            if key == "entities" or key == "extended_entities":
                 candidate = _get_entity_recursive(value, entity)
                 if candidate is not None:
                     return candidate
@@ -82,8 +86,10 @@ def _get_entity_recursive(json, entity):
     else:
         return None
 
-def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
-             gzip_compress=False):
+
+def json2csv(
+    fp, outfile, fields, encoding="utf8", errors="replace", gzip_compress=False
+):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -107,7 +113,7 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.\
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']\
-    Additonally, it allows IDs from other Twitter objects, e. g.,\
+    Additionally, it allows IDs from other Twitter objects, e. g.,\
     ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
     :param error: Behaviour for encoding errors, see\
@@ -132,21 +138,29 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
     """
     if compat.PY3:
         if gzip_compress:
-            outf = gzip.open(outfile, 'wt', encoding=encoding, errors=errors)
+            outf = gzip.open(outfile, "wt", encoding=encoding, errors=errors)
         else:
-            outf = open(outfile, 'w', encoding=encoding, errors=errors)
+            outf = open(outfile, "w", encoding=encoding, errors=errors)
         writer = csv.writer(outf)
     else:
         if gzip_compress:
-            outf = gzip.open(outfile, 'wb')
+            outf = gzip.open(outfile, "wb")
         else:
-            outf = open(outfile, 'wb')
+            outf = open(outfile, "wb")
         writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
     return (writer, outf)
 
 
-def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fields,
-                      encoding='utf8', errors='replace', gzip_compress=False):
+def json2csv_entities(
+    tweets_file,
+    outfile,
+    main_fields,
+    entity_type,
+    entity_fields,
+    encoding="utf8",
+    errors="replace",
+    gzip_compress=False,
+):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -207,6 +221,7 @@ def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fie
             _write_to_file(tweet_fields, items, entity_fields, writer)
     outf.close()
 
+
 def get_header_field_list(main_fields, entity_type, entity_fields):
     if _is_composed_key(entity_type):
         key, value = _get_key_value_composed(entity_type)
@@ -222,6 +237,7 @@ def get_header_field_list(main_fields, entity_type, entity_fields):
         output1 = main_fields
     output2 = [HIER_SEPARATOR.join([sub_entity, x]) for x in entity_fields]
     return output1 + output2
+
 
 def _write_to_file(object_fields, items, entity_fields, writer):
     if not items:
@@ -246,8 +262,12 @@ def _write_to_file(object_fields, items, entity_fields, writer):
             kd, vd = _get_key_value_composed(d)
             json_dict = items[kd]
             if not isinstance(json_dict, dict):
-                raise RuntimeError("""Key {0} does not contain a dictionary
-                in the json file""".format(kd))
+                raise RuntimeError(
+                    """Key {0} does not contain a dictionary
+                in the json file""".format(
+                        kd
+                    )
+                )
             row += [json_dict[vd]]
         writer.writerow(row)
         return
@@ -255,4 +275,3 @@ def _write_to_file(object_fields, items, entity_fields, writer):
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
         writer.writerow(row)
-

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2017 NLTK Project
+.. Copyright (C) 2001-2019 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============
@@ -16,6 +16,7 @@ measured using Pointwise Mutual Information.
     >>> from nltk.collocations import *
     >>> bigram_measures = nltk.collocations.BigramAssocMeasures()
     >>> trigram_measures = nltk.collocations.TrigramAssocMeasures()
+    >>> fourgram_measures = nltk.collocations.QuadgramAssocMeasures()
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.genesis.words('english-web.txt'))
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
@@ -126,6 +127,12 @@ A closer look at the finder's ngram frequencies:
      ((',', 'do', 'not'), 1), (('I', 'am', '!'), 1), (('Sam', 'I', '!'), 1),
      (('Sam', 'I', 'am'), 1)]
 
+A similar interface is provided for fourgrams:
+
+    >>> finder_4grams = QuadgramCollocationFinder.from_words(tokens)
+    >>> scored_4grams = finder_4grams.score_ngrams(fourgram_measures.raw_freq)
+    >>> set(fourgram for fourgram, score in scored_4grams) == set(nltk.ngrams(tokens, n=4))
+    True
 
 Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~

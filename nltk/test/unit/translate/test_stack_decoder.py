@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Stack decoder
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Tah Wei Hoon <hoon.tw@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -76,12 +76,18 @@ class TestStackDecoder(unittest.TestCase):
         # assert
         self.assertEqual(
             future_scores[1][2],
-            (phrase_table.translations_for(('hovercraft',))[0].log_prob +
-             language_model.probability(('hovercraft',))))
+            (
+                phrase_table.translations_for(('hovercraft',))[0].log_prob
+                + language_model.probability(('hovercraft',))
+            ),
+        )
         self.assertEqual(
             future_scores[0][2],
-            (phrase_table.translations_for(('my', 'hovercraft'))[0].log_prob +
-             language_model.probability(('my', 'hovercraft'))))
+            (
+                phrase_table.translations_for(('my', 'hovercraft'))[0].log_prob
+                + language_model.probability(('my', 'hovercraft'))
+            ),
+        )
 
     def test_compute_future_costs_for_phrases_not_in_phrase_table(self):
         # arrange
@@ -96,7 +102,8 @@ class TestStackDecoder(unittest.TestCase):
         # assert
         self.assertEqual(
             future_scores[1][3],  # 'hovercraft is' is not in phrase table
-            future_scores[1][2] + future_scores[2][3])  # backoff
+            future_scores[1][2] + future_scores[2][3],
+        )  # backoff
 
     def test_future_score(self):
         # arrange: sentence with 8 words; words 2, 3, 4 already translated
@@ -108,8 +115,7 @@ class TestStackDecoder(unittest.TestCase):
         stack_decoder = StackDecoder(None, None)
 
         # act
-        future_score = stack_decoder.future_score(
-            hypothesis, future_score_table, 8)
+        future_score = stack_decoder.future_score(hypothesis, future_score_table, 8)
 
         # assert
         self.assertEqual(future_score, 0.4 + 0.5)
@@ -118,19 +124,8 @@ class TestStackDecoder(unittest.TestCase):
         # arrange
         hypothesis = _Hypothesis()
         # mock untranslated_spans method
-        hypothesis.untranslated_spans = lambda _: [
-            (0, 2),
-            (3, 6)
-        ]
-        all_phrases_from = [
-            [1, 4],
-            [2],
-            [],
-            [5],
-            [5, 6, 7],
-            [],
-            [7]
-        ]
+        hypothesis.untranslated_spans = lambda _: [(0, 2), (3, 6)]
+        all_phrases_from = [[1, 4], [2], [], [5], [5, 6, 7], [], [7]]
 
         # act
         phrase_spans = StackDecoder.valid_phrases(all_phrases_from, hypothesis)
@@ -163,10 +158,10 @@ class TestStackDecoder(unittest.TestCase):
         language_prob[('full',)] = log(0.1)
         language_prob[('of',)] = log(0.1)
         language_prob[('eels',)] = log(0.1)
-        language_prob[('my', 'hovercraft',)] = log(0.3)
+        language_prob[('my', 'hovercraft')] = log(0.3)
         language_model = type(
-            '', (object,),
-            {'probability': lambda _, phrase: language_prob[phrase]})()
+            '', (object,), {'probability': lambda _, phrase: language_prob[phrase]}
+        )()
         return language_model
 
 
@@ -177,13 +172,13 @@ class TestHypothesis(unittest.TestCase):
             raw_score=0.5,
             src_phrase_span=(3, 7),
             trg_phrase=('hello', 'world'),
-            previous=root
+            previous=root,
         )
         grandchild = _Hypothesis(
             raw_score=0.4,
             src_phrase_span=(1, 2),
             trg_phrase=('and', 'goodbye'),
-            previous=child
+            previous=child,
         )
         self.hypothesis_chain = grandchild
 

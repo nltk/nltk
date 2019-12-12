@@ -2,11 +2,9 @@
 #
 # Author: David McClosky <dmcc@bigasterisk.com>
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-from __future__ import print_function
 
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
@@ -81,7 +79,7 @@ See http://pypi.python.org/pypi/bllipparser/ for more information
 on BLLIP Parser's Python interface.
 """
 
-__all__ = ['BllipParser']
+__all__ = ["BllipParser"]
 
 # this block allows this module to be imported even if bllipparser isn't
 # available
@@ -91,21 +89,28 @@ try:
 
     def _ensure_bllip_import_or_error():
         pass
+
+
 except ImportError as ie:
+
     def _ensure_bllip_import_or_error(ie=ie):
         raise ImportError("Couldn't import bllipparser module: %s" % ie)
+
 
 def _ensure_ascii(words):
     try:
         for i, word in enumerate(words):
-            word.decode('ascii')
+            word.decode("ascii")
     except UnicodeDecodeError:
-        raise ValueError("Token %d (%r) is non-ASCII. BLLIP Parser "
-                         "currently doesn't support non-ASCII inputs." %
-                         (i, word))
+        raise ValueError(
+            "Token %d (%r) is non-ASCII. BLLIP Parser "
+            "currently doesn't support non-ASCII inputs." % (i, word)
+        )
+
 
 def _scored_parse_to_nltk_tree(scored_parse):
     return Tree.fromstring(str(scored_parse.ptb_parse))
+
 
 class BllipParser(ParserI):
     """
@@ -113,9 +118,15 @@ class BllipParser(ParserI):
     constructed with the ``BllipParser.from_unified_model_dir`` class
     method or manually using the ``BllipParser`` constructor.
     """
-    def __init__(self, parser_model=None, reranker_features=None,
-                 reranker_weights=None, parser_options=None,
-                 reranker_options=None):
+
+    def __init__(
+        self,
+        parser_model=None,
+        reranker_features=None,
+        reranker_weights=None,
+        parser_options=None,
+        reranker_options=None,
+    ):
         """
         Load a BLLIP Parser model from scratch. You'll typically want to
         use the ``from_unified_model_dir()`` class method to construct
@@ -149,9 +160,11 @@ class BllipParser(ParserI):
         self.rrp = RerankingParser()
         self.rrp.load_parser_model(parser_model, **parser_options)
         if reranker_features and reranker_weights:
-            self.rrp.load_reranker_model(features_filename=reranker_features,
-                                         weights_filename=reranker_weights,
-                                         **reranker_options)
+            self.rrp.load_reranker_model(
+                features_filename=reranker_features,
+                weights_filename=reranker_weights,
+                **reranker_options
+            )
 
     def parse(self, sentence):
         """
@@ -200,8 +213,9 @@ class BllipParser(ParserI):
             yield _scored_parse_to_nltk_tree(scored_parse)
 
     @classmethod
-    def from_unified_model_dir(this_class, model_dir, parser_options=None,
-                               reranker_options=None):
+    def from_unified_model_dir(
+        cls, model_dir, parser_options=None, reranker_options=None
+    ):
         """
         Create a ``BllipParser`` object from a unified parsing model
         directory. Unified parsing model directories are a standardized
@@ -224,11 +238,19 @@ class BllipParser(ParserI):
         :type reranker_options: dict(str)
         :rtype: BllipParser
         """
-        (parser_model_dir, reranker_features_filename,
-         reranker_weights_filename) = get_unified_model_parameters(model_dir)
-        return this_class(parser_model_dir, reranker_features_filename,
-                          reranker_weights_filename, parser_options,
-                          reranker_options)
+        (
+            parser_model_dir,
+            reranker_features_filename,
+            reranker_weights_filename,
+        ) = get_unified_model_parameters(model_dir)
+        return cls(
+            parser_model_dir,
+            reranker_features_filename,
+            reranker_weights_filename,
+            parser_options,
+            reranker_options,
+        )
+
 
 def demo():
     """This assumes the Python module bllipparser is installed."""
@@ -237,19 +259,20 @@ def demo():
     # sudo python -m nltk.downloader bllip_wsj_no_aux
 
     from nltk.data import find
-    model_dir = find('models/bllip_wsj_no_aux').path
 
-    print('Loading BLLIP Parsing models...')
+    model_dir = find("models/bllip_wsj_no_aux").path
+
+    print("Loading BLLIP Parsing models...")
     # the easiest way to get started is to use a unified model
     bllip = BllipParser.from_unified_model_dir(model_dir)
-    print('Done.')
+    print("Done.")
 
-    sentence1 = 'British left waffles on Falklands .'.split()
-    sentence2 = 'I saw the man with the telescope .'.split()
+    sentence1 = "British left waffles on Falklands .".split()
+    sentence2 = "I saw the man with the telescope .".split()
     # this sentence is known to fail under the WSJ parsing model
-    fail1 = '# ! ? : -'.split()
+    fail1 = "# ! ? : -".split()
     for sentence in (sentence1, sentence2, fail1):
-        print('Sentence: %r' % ' '.join(sentence))
+        print("Sentence: %r" % " ".join(sentence))
         try:
             tree = next(bllip.parse(sentence))
             print(tree)
@@ -258,17 +281,24 @@ def demo():
 
     # n-best parsing demo
     for i, parse in enumerate(bllip.parse(sentence1)):
-        print('parse %d:\n%s' % (i, parse))
+        print("parse %d:\n%s" % (i, parse))
 
     # using external POS tag constraints
-    print("forcing 'tree' to be 'NN':",
-          next(bllip.tagged_parse([('A', None), ('tree', 'NN')])))
-    print("forcing 'A' to be 'DT' and 'tree' to be 'NNP':",
-          next(bllip.tagged_parse([('A', 'DT'), ('tree', 'NNP')])))
+    print(
+        "forcing 'tree' to be 'NN':",
+        next(bllip.tagged_parse([("A", None), ("tree", "NN")])),
+    )
+    print(
+        "forcing 'A' to be 'DT' and 'tree' to be 'NNP':",
+        next(bllip.tagged_parse([("A", "DT"), ("tree", "NNP")])),
+    )
     # constraints don't have to make sense... (though on more complicated
     # sentences, they may cause the parse to fail)
-    print("forcing 'A' to be 'NNP':",
-          next(bllip.tagged_parse([('A', 'NNP'), ('tree', None)])))
+    print(
+        "forcing 'A' to be 'NNP':",
+        next(bllip.tagged_parse([("A", "NNP"), ("tree", None)])),
+    )
+
 
 def setup_module(module):
     from nose import SkipTest
@@ -276,7 +306,7 @@ def setup_module(module):
     try:
         _ensure_bllip_import_or_error()
     except ImportError:
-        raise SkipTest('doctests from nltk.parse.bllip are skipped because '
-                       'the bllipparser module is not installed')
-
-
+        raise SkipTest(
+            "doctests from nltk.parse.bllip are skipped because "
+            "the bllipparser module is not installed"
+        )

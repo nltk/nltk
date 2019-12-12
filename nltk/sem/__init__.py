@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Semantic Interpretation
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -41,16 +41,30 @@ is then created with domain and valuation as parameters.
     >>> m = Model(dom, val)
 """
 
-from nltk.sem.util import (parse_sents, interpret_sents, evaluate_sents,
-                           root_semrep)
-from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
-                               is_rel, set2rel, arity, read_valuation)
-from nltk.sem.logic import (boolean_ops, binding_ops, equality_preds,
-                           read_logic, Variable, Expression,
-                           ApplicationExpression, LogicalExpressionException)
+from nltk.sem.util import parse_sents, interpret_sents, evaluate_sents, root_semrep
+from nltk.sem.evaluate import (
+    Valuation,
+    Assignment,
+    Model,
+    Undefined,
+    is_rel,
+    set2rel,
+    arity,
+    read_valuation,
+)
+from nltk.sem.logic import (
+    boolean_ops,
+    binding_ops,
+    equality_preds,
+    read_logic,
+    Variable,
+    Expression,
+    ApplicationExpression,
+    LogicalExpressionException,
+)
 from nltk.sem.skolemize import skolemize
 from nltk.sem.lfg import FStructure
-from nltk.sem.relextract import (extract_rels, rtuple, clause)
+from nltk.sem.relextract import extract_rels, rtuple, clause
 from nltk.sem.boxer import Boxer
 from nltk.sem.drt import DrtExpression, DRS
 

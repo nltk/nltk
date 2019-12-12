@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Yoav Goldberg <yoavg@cs.bgu.ac.il>
 #         Steven Bird <stevenbird1@gmail.com> (minor edits)
 # URL: <http://nltk.sourceforge.net>
@@ -53,6 +53,7 @@ import re
 
 from nltk.tokenize.api import TokenizerI
 
+
 class SExprTokenizer(TokenizerI):
     """
     A tokenizer that divides strings into s-expressions.
@@ -75,14 +76,15 @@ class SExprTokenizer(TokenizerI):
     :param strict: If true, then raise an exception when tokenizing an ill-formed sexpr.
     """
 
-    def __init__(self, parens='()', strict=True):
+    def __init__(self, parens="()", strict=True):
         if len(parens) != 2:
-            raise ValueError('parens must contain exactly two strings')
+            raise ValueError("parens must contain exactly two strings")
         self._strict = strict
         self._open_paren = parens[0]
         self._close_paren = parens[1]
-        self._paren_regexp = re.compile('%s|%s' % (re.escape(parens[0]),
-                                                   re.escape(parens[1])))
+        self._paren_regexp = re.compile(
+            "%s|%s" % (re.escape(parens[0]), re.escape(parens[1]))
+        )
 
     def tokenize(self, text):
         """
@@ -117,26 +119,22 @@ class SExprTokenizer(TokenizerI):
         for m in self._paren_regexp.finditer(text):
             paren = m.group()
             if depth == 0:
-                result += text[pos:m.start()].split()
+                result += text[pos : m.start()].split()
                 pos = m.start()
             if paren == self._open_paren:
                 depth += 1
             if paren == self._close_paren:
                 if self._strict and depth == 0:
-                    raise ValueError('Un-matched close paren at char %d'
-                                     % m.start())
-                depth = max(0, depth-1)
+                    raise ValueError("Un-matched close paren at char %d" % m.start())
+                depth = max(0, depth - 1)
                 if depth == 0:
-                    result.append(text[pos:m.end()])
+                    result.append(text[pos : m.end()])
                     pos = m.end()
         if self._strict and depth > 0:
-            raise ValueError('Un-matched open paren at char %d' % pos)
+            raise ValueError("Un-matched open paren at char %d" % pos)
         if pos < len(text):
             result.append(text[pos:])
         return result
 
+
 sexpr_tokenize = SExprTokenizer().tokenize
-
-
-
-

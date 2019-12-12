@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sinica Treebank Reader
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -18,7 +18,7 @@ at http://www.sinica.edu.tw/SinicaCorpus/modern_e_wordtype.html
 Language and Knowledge Processing Group, Institute of Information
 Science, Academia Sinica
 
-It is distributed with the Natural Language Toolkit under the terms of
+The data is distributed with the Natural Language Toolkit under the terms of
 the Creative Commons Attribution-NonCommercial-ShareAlike License
 [http://creativecommons.org/licenses/by-nc-sa/2.5/].
 
@@ -38,37 +38,38 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
-import os
-import re
-
 from nltk.tree import sinica_parse
 from nltk.tag import map_tag
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
-IDENTIFIER = re.compile(r'^#\S+\s')
-APPENDIX = re.compile(r'(?<=\))#.*$')
-TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
-WORD = re.compile(r':[^:()|]+:([^:()|]+)')
+IDENTIFIER = re.compile(r"^#\S+\s")
+APPENDIX = re.compile(r"(?<=\))#.*$")
+TAGWORD = re.compile(r":([^:()|]+):([^:()|]+)")
+WORD = re.compile(r":[^:()|]+:([^:()|]+)")
+
 
 class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     """
     Reader for the sinica treebank.
     """
+
     def _read_block(self, stream):
         sent = stream.readline()
-        sent = IDENTIFIER.sub('', sent)
-        sent = APPENDIX.sub('', sent)
+        sent = IDENTIFIER.sub("", sent)
+        sent = APPENDIX.sub("", sent)
         return [sent]
 
     def _parse(self, sent):
         return sinica_parse(sent)
 
     def _tag(self, sent, tagset=None):
-        tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(sent)]
+        tagged_sent = [(w, t) for (t, w) in TAGWORD.findall(sent)]
         if tagset and tagset != self._tagset:
-            tagged_sent = [(w, map_tag(self._tagset, tagset, t)) for (w,t) in tagged_sent]
+            tagged_sent = [
+                (w, map_tag(self._tagset, tagset, t)) for (w, t) in tagged_sent
+            ]
         return tagged_sent
 
     def _word(self, sent):

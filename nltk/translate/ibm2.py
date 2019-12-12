@@ -46,14 +46,14 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__ import division
+import warnings
 from collections import defaultdict
+
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel1
 from nltk.translate.ibm_model import Counts
-import warnings
 
 
 class IBMModel2(IBMModel):
@@ -96,8 +96,7 @@ class IBMModel2(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations,
-                 probability_tables=None):
+    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model and an alignment model.
@@ -130,13 +129,13 @@ class IBMModel2(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables['translation_table']
-            self.alignment_table = probability_tables['alignment_table']
+            self.translation_table = probability_tables["translation_table"]
+            self.alignment_table = probability_tables["alignment_table"]
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
 
-        self.__align_all(sentence_aligned_corpus)
+        self.align_all(sentence_aligned_corpus)
 
     def set_uniform_probabilities(self, sentence_aligned_corpus):
         # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
@@ -148,8 +147,11 @@ class IBMModel2(IBMModel):
                 l_m_combinations.add((l, m))
                 initial_prob = 1 / (l + 1)
                 if initial_prob < IBMModel.MIN_PROB:
-                    warnings.warn("A source sentence is too long (" + str(l) +
-                                  " words). Results may be less accurate.")
+                    warnings.warn(
+                        "A source sentence is too long ("
+                        + str(l)
+                        + " words). Results may be less accurate."
+                    )
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
@@ -159,7 +161,7 @@ class IBMModel2(IBMModel):
         counts = Model2Counts()
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
+            trg_sentence = ["UNUSED"] + aligned_sentence.words  # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
@@ -171,8 +173,7 @@ class IBMModel2(IBMModel):
                 t = trg_sentence[j]
                 for i in range(0, l + 1):
                     s = src_sentence[i]
-                    count = self.prob_alignment_point(
-                        i, j, src_sentence, trg_sentence)
+                    count = self.prob_alignment_point(i, j, src_sentence, trg_sentence)
                     normalized_count = count / total_count[t]
 
                     counts.update_lexical_translation(normalized_count, s, t)
@@ -188,10 +189,11 @@ class IBMModel2(IBMModel):
             for j, src_sentence_lengths in j_s.items():
                 for l, trg_sentence_lengths in src_sentence_lengths.items():
                     for m in trg_sentence_lengths:
-                        estimate = (counts.alignment[i][j][l][m] /
-                                    counts.alignment_for_any_i[j][l][m])
-                        self.alignment_table[i][j][l][m] = max(estimate,
-                                                               MIN_PROB)
+                        estimate = (
+                            counts.alignment[i][j][l][m]
+                            / counts.alignment_for_any_i[j][l][m]
+                        )
+                        self.alignment_table[i][j][l][m] = max(estimate, MIN_PROB)
 
     def prob_all_alignments(self, src_sentence, trg_sentence):
         """
@@ -212,7 +214,8 @@ class IBMModel2(IBMModel):
             t = trg_sentence[j]
             for i in range(0, len(src_sentence)):
                 alignment_prob_for_t[t] += self.prob_alignment_point(
-                    i, j, src_sentence, trg_sentence)
+                    i, j, src_sentence, trg_sentence
+                )
         return alignment_prob_for_t
 
     def prob_alignment_point(self, i, j, src_sentence, trg_sentence):
@@ -240,16 +243,18 @@ class IBMModel2(IBMModel):
                 continue  # skip the dummy zeroeth element
             trg_word = alignment_info.trg_sentence[j]
             src_word = alignment_info.src_sentence[i]
-            prob *= (self.translation_table[trg_word][src_word] *
-                     self.alignment_table[i][j][l][m])
+            prob *= (
+                self.translation_table[trg_word][src_word]
+                * self.alignment_table[i][j][l][m]
+            )
 
         return max(prob, IBMModel.MIN_PROB)
 
-    def __align_all(self, parallel_corpus):
+    def align_all(self, parallel_corpus):
         for sentence_pair in parallel_corpus:
-            self.__align(sentence_pair)
+            self.align(sentence_pair)
 
-    def __align(self, sentence_pair):
+    def align(self, sentence_pair):
         """
         Determines the best word alignment for one sentence pair from
         the corpus that the model was trained on.
@@ -270,13 +275,17 @@ class IBMModel2(IBMModel):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_prob = (self.translation_table[trg_word][None] *
-                         self.alignment_table[0][j + 1][l][m])
+            best_prob = (
+                self.translation_table[trg_word][None]
+                * self.alignment_table[0][j + 1][l][m]
+            )
             best_prob = max(best_prob, IBMModel.MIN_PROB)
             best_alignment_point = None
             for i, src_word in enumerate(sentence_pair.mots):
-                align_prob = (self.translation_table[trg_word][src_word] *
-                              self.alignment_table[i + 1][j + 1][l][m])
+                align_prob = (
+                    self.translation_table[trg_word][src_word]
+                    * self.alignment_table[i + 1][j + 1][l][m]
+                )
                 if align_prob >= best_prob:
                     best_prob = align_prob
                     best_alignment_point = i
@@ -291,13 +300,15 @@ class Model2Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for alignment.
     """
+
     def __init__(self):
         super(Model2Counts, self).__init__()
         self.alignment = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: 0.0))))
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+        )
         self.alignment_for_any_i = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+        )
 
     def update_lexical_translation(self, count, s, t):
         self.t_given_s[t][s] += count

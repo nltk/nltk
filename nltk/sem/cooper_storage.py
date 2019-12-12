@@ -1,19 +1,20 @@
 # Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
 from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 
+
 class CooperStore(object):
     """
     A container for handling quantifier ambiguity via Cooper storage.
     """
+
     def __init__(self, featstruct):
         """
         :param featstruct: The value of the ``sem`` node in a tree from
@@ -24,8 +25,8 @@ class CooperStore(object):
         self.featstruct = featstruct
         self.readings = []
         try:
-            self.core = featstruct['CORE']
-            self.store = featstruct['STORE']
+            self.core = featstruct["CORE"]
+            self.store = featstruct["STORE"]
         except KeyError:
             print("%s is not a Cooper storage structure" % featstruct)
 
@@ -35,12 +36,13 @@ class CooperStore(object):
         :type lst: list
         :rtype: iter
         """
-        remove = lambda lst0, index: lst0[:index] + lst0[index+1:]
+        remove = lambda lst0, index: lst0[:index] + lst0[index + 1 :]
         if lst:
             for index, x in enumerate(lst):
                 for y in self._permute(remove(lst, index)):
-                    yield (x,)+y
-        else: yield ()
+                    yield (x,) + y
+        else:
+            yield ()
 
     def s_retrieve(self, trace=False):
         """
@@ -59,14 +61,16 @@ class CooperStore(object):
         """
         for perm, store_perm in enumerate(self._permute(self.store)):
             if trace:
-                print("Permutation %s" % (perm+1))
+                print("Permutation %s" % (perm + 1))
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
                 quant, varex = tuple(bindop.args)
                 # use var to make an abstraction over the current term and then
                 # apply the quantifier to it
-                term = ApplicationExpression(quant, LambdaExpression(varex.variable, term))
+                term = ApplicationExpression(
+                    quant, LambdaExpression(varex.variable, term)
+                )
                 if trace:
                     print("  ", term)
                 term = term.simplify()
@@ -78,7 +82,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     Use a grammar with Binding Operators to parse a sentence.
     """
     if not grammar:
-        grammar = 'grammars/book_grammars/storage.fcfg'
+        grammar = "grammars/book_grammars/storage.fcfg"
     parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
@@ -87,14 +91,15 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
 
 def demo():
     from nltk.sem import cooper_storage as cs
+
     sentence = "every girl chases a dog"
-    #sentence = "a man gives a bone to every dog"
+    # sentence = "a man gives a bone to every dog"
     print()
     print("Analyis of sentence '%s'" % sentence)
     print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
-        semrep = cs.CooperStore(tree.label()['SEM'])
+        semrep = cs.CooperStore(tree.label()["SEM"])
         print()
         print("Binding operators:")
         print("-" * 15)
@@ -112,7 +117,8 @@ def demo():
         print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print("%s: %s" % (i+1, reading))
+            print("%s: %s" % (i + 1, reading))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     demo()

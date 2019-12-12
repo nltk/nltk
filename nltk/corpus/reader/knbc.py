@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
-from __future__ import print_function
 
 import re
 from six import string_types
@@ -21,7 +20,7 @@ from nltk.corpus.reader.util import (
 from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
 
 # default function to convert morphlist to str for tree representation
-_morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'EOS')
+_morphs2str_default = lambda morphs: "/".join(m[0] for m in morphs if m[0] != "EOS")
 
 
 class KNBCorpusReader(SyntaxCorpusReader):
@@ -56,12 +55,14 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
     """
 
-    def __init__(self, root, fileids, encoding='utf8', morphs2str=_morphs2str_default):
+    def __init__(self, root, fileids, encoding="utf8", morphs2str=_morphs2str_default):
         """
         Initialize KNBCorpusReader
         morphs2str is a function to convert morphlist to str for tree representation
         for _parse()
         """
+        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
+        #       from CorpusReader?
         CorpusReader.__init__(self, root, fileids, encoding)
         self.morphs2str = morphs2str
 
@@ -87,7 +88,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
             if not re.match(r"EOS|\*|\#|\+", line):
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
-                res.append((cells[0], ' '.join(cells[1:])))
+                res.append((cells[0], " ".join(cells[1:])))
 
         return res
 
@@ -95,7 +96,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         dg = DependencyGraph()
         i = 0
         for line in t.splitlines():
-            if line[0] in '*+':
+            if line[0] in "*+":
                 # start of bunsetsu or tag
 
                 cells = line.strip().split(" ", 3)
@@ -104,34 +105,29 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 assert m is not None
 
                 node = dg.nodes[i]
-                node.update(
-                    {
-                        'address': i,
-                        'rel': m.group(2),
-                        'word': [],
-                    }
-                )
+                node.update({"address": i, "rel": m.group(2), "word": []})
 
                 dep_parent = int(m.group(1))
 
                 if dep_parent == -1:
                     dg.root = node
                 else:
-                    dg.nodes[dep_parent]['deps'].append(i)
+                    dg.nodes[dep_parent]["deps"].append(i)
 
                 i += 1
-            elif line[0] != '#':
+            elif line[0] != "#":
                 # normal morph
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
-                morph = cells[0], ' '.join(cells[1:])
-                dg.nodes[i - 1]['word'].append(morph)
+                morph = cells[0], " ".join(cells[1:])
+                dg.nodes[i - 1]["word"].append(morph)
 
         if self.morphs2str:
             for node in dg.nodes.values():
-                node['word'] = self.morphs2str(node['word'])
+                node["word"] = self.morphs2str(node["word"])
 
         return dg.tree()
+
 
 ######################################################################
 # Demo
@@ -143,31 +139,38 @@ def demo():
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
-    root = nltk.data.find('corpora/knbc/corpus1')
-    fileids = [f for f in find_corpus_fileids(FileSystemPathPointer(root), ".*")
-               if re.search(r"\d\-\d\-[\d]+\-[\d]+", f)]
+    root = nltk.data.find("corpora/knbc/corpus1")
+    fileids = [
+        f
+        for f in find_corpus_fileids(FileSystemPathPointer(root), ".*")
+        if re.search(r"\d\-\d\-[\d]+\-[\d]+", f)
+    ]
 
     def _knbc_fileids_sort(x):
-        cells = x.split('-')
+        cells = x.split("-")
         return (cells[0], int(cells[1]), int(cells[2]), int(cells[3]))
 
-    knbc = LazyCorpusLoader('knbc/corpus1', KNBCorpusReader,
-                            sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
+    knbc = LazyCorpusLoader(
+        "knbc/corpus1",
+        KNBCorpusReader,
+        sorted(fileids, key=_knbc_fileids_sort),
+        encoding="euc-jp",
+    )
 
     print(knbc.fileids()[:10])
-    print(''.join(knbc.words()[:100]))
+    print("".join(knbc.words()[:100]))
 
-    print('\n\n'.join(str(tree) for tree in knbc.parsed_sents()[:2]))
+    print("\n\n".join(str(tree) for tree in knbc.parsed_sents()[:2]))
 
-    knbc.morphs2str = lambda morphs: '/'.join(
-        "%s(%s)" % (m[0], m[1].split(' ')[2]) for m in morphs if m[0] != 'EOS'
-    ).encode('utf-8')
+    knbc.morphs2str = lambda morphs: "/".join(
+        "%s(%s)" % (m[0], m[1].split(" ")[2]) for m in morphs if m[0] != "EOS"
+    ).encode("utf-8")
 
-    print('\n\n'.join('%s' % tree for tree in knbc.parsed_sents()[:2]))
+    print("\n\n".join("%s" % tree for tree in knbc.parsed_sents()[:2]))
 
     print(
-        '\n'.join(
-            ' '.join("%s/%s" % (w[0], w[1].split(' ')[2]) for w in sent)
+        "\n".join(
+            " ".join("%s/%s" % (w[0], w[1].split(" ")[2]) for w in sent)
             for sent in knbc.tagged_sents()[0:2]
         )
     )
@@ -176,12 +179,15 @@ def demo():
 def test():
 
     from nltk.corpus.util import LazyCorpusLoader
+
     knbc = LazyCorpusLoader(
-        'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
+        "knbc/corpus1", KNBCorpusReader, r".*/KN.*", encoding="euc-jp"
+    )
     assert isinstance(knbc.words()[0], string_types)
     assert isinstance(knbc.sents()[0][0], string_types)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     demo()

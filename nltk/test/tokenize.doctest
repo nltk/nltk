@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2017 NLTK Project
+.. Copyright (C) 2001-2019 NLTK Project
 .. For license information, see LICENSE.TXT
 
     >>> from __future__ import print_function
@@ -199,6 +199,23 @@ Two instances of PunktSentenceTokenizer should not share PunktParameters.
     >>> pst2 = PunktSentenceTokenizer()
     >>> pst._params is pst2._params
     False
+    
+Testing mutable default arguments for https://github.com/nltk/nltk/pull/2067
+
+    >>> from nltk.tokenize.punkt import PunktBaseClass, PunktTrainer, PunktSentenceTokenizer
+    >>> from nltk.tokenize.punkt import PunktLanguageVars, PunktParameters
+    >>> pbc = PunktBaseClass(lang_vars=None, params=None)
+    >>> type(pbc._params)
+    <class 'nltk.tokenize.punkt.PunktParameters'>
+    >>> type(pbc._lang_vars)
+    <class 'nltk.tokenize.punkt.PunktLanguageVars'>
+    >>> pt = PunktTrainer(lang_vars=None)
+    >>> type(pt._lang_vars)
+    <class 'nltk.tokenize.punkt.PunktLanguageVars'>
+    >>> pst = PunktSentenceTokenizer(lang_vars=None)
+    >>> type(pst._lang_vars)
+    <class 'nltk.tokenize.punkt.PunktLanguageVars'>
+    
 
 Regression Tests: align_tokens
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -233,3 +250,41 @@ Post-hoc alignment of tokens with a source string
     ValueError: substring "gh" not found in "ab cd ef"
     >>> list(align_tokens(['The', 'plane', ',', 'bound', 'for', 'St', 'Petersburg', ',', 'crashed', 'in', 'Egypt', "'s", 'Sinai', 'desert', 'just', '23', 'minutes', 'after', 'take-off', 'from', 'Sharm', 'el-Sheikh', 'on', 'Saturday', '.'], "The plane, bound for St Petersburg, crashed in Egypt's Sinai desert just 23 minutes after take-off from Sharm el-Sheikh on Saturday."))
     [(0, 3), (4, 9), (9, 10), (11, 16), (17, 20), (21, 23), (24, 34), (34, 35), (36, 43), (44, 46), (47, 52), (52, 54), (55, 60), (61, 67), (68, 72), (73, 75), (76, 83), (84, 89), (90, 98), (99, 103), (104, 109), (110, 119), (120, 122), (123, 131), (131, 132)]
+
+
+Regression Tests: MWETokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pickle an MWETokenizer
+
+    >>> from nltk.tokenize import MWETokenizer
+    >>> import pickle
+
+    >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
+    >>> p = pickle.dumps(tokenizer)
+    >>> unpickeled = pickle.loads(p)
+    >>> unpickeled.tokenize("An hors d'oeuvre tonight, sir?".split())
+    ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
+
+
+Regression Tests: TextTilingTokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TextTilingTokneizer tokenizes text into coherent subtopic chunks based upon Hearst's TextTiling algorithm.
+
+    >>> from nltk.tokenize import TextTilingTokenizer
+    >>> from nltk.corpus import brown
+    >>> tt = TextTilingTokenizer()
+    >>> tt.tokenize(brown.raw()[0:1000])
+    ["\n\n\tThe/at Fulton/np-tl County/nn-tl Grand/jj-tl Jury/nn-tl said/vbd Friday/nr an/at investigation/nn of/in Atlanta's/np$ recent/jj primary/nn election/nn produced/vbd ``/`` no/at evidence/nn ''/'' that/cs any/dti irregularities/nns took/vbd place/nn ./.\n\n\n\tThe/at jury/nn further/rbr said/vbd in/in term-end/nn presentments/nns that/cs the/at City/nn-tl Executive/jj-tl Committee/nn-tl ,/, which/wdt had/hvd over-all/jj charge/nn of/in the/at election/nn ,/, ``/`` deserves/vbz the/at praise/nn and/cc thanks/nns of/in the/at City/nn-tl of/in-tl Atlanta/np-tl ''/'' for/in the/at manner/nn in/in which/wdt the/at election/nn was/bedz conducted/vbn ./.\n\n\n\tThe/at September-October/np term/nn jury/nn had/hvd been/ben charged/vbn by/in Fulton/np-tl Superior/jj-tl Court/nn-tl Judge/nn-tl Durwood/np Pye/np to/to investigate/vb reports/nns of/in possible/jj ``/`` irregularities/nns ''/'' in/in the/at hard-fought/jj primary/nn which/wdt was/bedz won/vbn by/in Mayor-nominate/nn-tl Ivan/np Allen/np Jr./"]
+
+Test that `ValueError` exceptions are raised when illegal arguments are used.
+
+    >>> TextTilingTokenizer(similarity_method='foo').tokenize(brown.raw()[0:1000])
+    Traceback (most recent call last):
+      ...
+    ValueError: Similarity method foo not recognized
+    >>> TextTilingTokenizer(smoothing_method='bar').tokenize(brown.raw()[0:1000])
+    Traceback (most recent call last):
+      ...
+    ValueError: Smoothing method bar not recognized
+

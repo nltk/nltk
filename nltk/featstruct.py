@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>,
 #         Rob Speer,
 #         Steven Bird <stevenbird1@gmail.com>
@@ -88,7 +88,6 @@ In general, if your feature structures will contain any reentrances,
 or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
-from __future__ import print_function, unicode_literals, division
 
 import re
 import copy
@@ -97,13 +96,20 @@ from functools import total_ordering
 from six import integer_types, string_types
 
 from nltk.internals import read_str, raise_unorderable_types
-from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
-                            LogicParser, LogicalExpressionException)
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.sem.logic import (
+    Variable,
+    Expression,
+    SubstituteBindingsI,
+    LogicParser,
+    LogicalExpressionException,
+)
+from nltk.compat import unicode_repr
+
 
 ######################################################################
 # Feature Structure
 ######################################################################
+
 
 @total_ordering
 class FeatStruct(SubstituteBindingsI):
@@ -146,7 +152,7 @@ class FeatStruct(SubstituteBindingsI):
        feature structue."""
 
     ##////////////////////////////////////////////////////////////
-    #{ Constructor
+    # { Constructor
     ##////////////////////////////////////////////////////////////
 
     def __new__(cls, features=None, **morefeatures):
@@ -175,8 +181,10 @@ class FeatStruct(SubstituteBindingsI):
             elif _is_mapping(features):
                 return FeatDict.__new__(FeatDict, features, **morefeatures)
             elif morefeatures:
-                raise TypeError('Keyword arguments may only be specified '
-                                'if features is None or is a mapping.')
+                raise TypeError(
+                    "Keyword arguments may only be specified "
+                    "if features is None or is a mapping."
+                )
             if isinstance(features, string_types):
                 if FeatStructReader._START_FDICT_RE.match(features):
                     return FeatDict.__new__(FeatDict, features, **morefeatures)
@@ -185,15 +193,14 @@ class FeatStruct(SubstituteBindingsI):
             elif _is_sequence(features):
                 return FeatList.__new__(FeatList, features)
             else:
-                raise TypeError('Expected string or mapping or sequence')
+                raise TypeError("Expected string or mapping or sequence")
 
         # Otherwise, construct the object as normal.
         else:
-            return super(FeatStruct, cls).__new__(cls, features,
-                                                  **morefeatures)
+            return super(FeatStruct, cls).__new__(cls, features, **morefeatures)
 
     ##////////////////////////////////////////////////////////////
-    #{ Uniform Accessor Methods
+    # { Uniform Accessor Methods
     ##////////////////////////////////////////////////////////////
     # These helper functions allow the methods defined by FeatStruct
     # to treat all feature structures as mappings, even if they're
@@ -202,21 +209,21 @@ class FeatStruct(SubstituteBindingsI):
     def _keys(self):
         """Return an iterable of the feature identifiers used by this
         FeatStruct."""
-        raise NotImplementedError() # Implemented by subclasses.
+        raise NotImplementedError()  # Implemented by subclasses.
 
     def _values(self):
         """Return an iterable of the feature values directly defined
         by this FeatStruct."""
-        raise NotImplementedError() # Implemented by subclasses.
+        raise NotImplementedError()  # Implemented by subclasses.
 
     def _items(self):
         """Return an iterable of (fid,fval) pairs, where fid is a
         feature identifier and fval is the corresponding feature
         value, for all features defined by this FeatStruct."""
-        raise NotImplementedError() # Implemented by subclasses.
+        raise NotImplementedError()  # Implemented by subclasses.
 
     ##////////////////////////////////////////////////////////////
-    #{ Equality & Hashing
+    # { Equality & Hashing
     ##////////////////////////////////////////////////////////////
 
     def equal_values(self, other, check_reentrance=False):
@@ -264,15 +271,16 @@ class FeatStruct(SubstituteBindingsI):
         otherwise, raise ``TypeError``.
         """
         if not self._frozen:
-            raise TypeError('FeatStructs must be frozen before they '
-                            'can be hashed.')
-        try: return self._hash
+            raise TypeError("FeatStructs must be frozen before they " "can be hashed.")
+        try:
+            return self._hash
         except AttributeError:
             self._hash = self._calculate_hashvalue(set())
             return self._hash
 
-    def _equal(self, other, check_reentrance, visited_self,
-               visited_other, visited_pairs):
+    def _equal(
+        self, other, check_reentrance, visited_self, visited_other, visited_pairs
+    ):
         """
         Return True iff self and other have equal values.
 
@@ -284,16 +292,20 @@ class FeatStruct(SubstituteBindingsI):
             for all pairs of feature structures we've already visited.
         """
         # If we're the same object, then we're equal.
-        if self is other: return True
+        if self is other:
+            return True
 
         # If we have different classes, we're definitely not equal.
-        if self.__class__ != other.__class__: return False
+        if self.__class__ != other.__class__:
+            return False
 
         # If we define different features, we're definitely not equal.
         # (Perform len test first because it's faster -- we should
         # do profiling to see if this actually helps)
-        if len(self) != len(other): return False
-        if set(self._keys()) != set(other._keys()): return False
+        if len(self) != len(other):
+            return False
+        if set(self._keys()) != set(other._keys()):
+            return False
 
         # If we're checking reentrance, then any time we revisit a
         # structure, make sure that it was paired with the same
@@ -315,19 +327,24 @@ class FeatStruct(SubstituteBindingsI):
         # Keep track of which nodes we've visited.
         visited_self.add(id(self))
         visited_other.add(id(other))
-        visited_pairs.add( (id(self), id(other)) )
+        visited_pairs.add((id(self), id(other)))
 
         # Now we have to check all values.  If any of them don't match,
         # then return false.
         for (fname, self_fval) in self._items():
             other_fval = other[fname]
             if isinstance(self_fval, FeatStruct):
-                if not self_fval._equal(other_fval, check_reentrance,
-                                        visited_self, visited_other,
-                                        visited_pairs):
+                if not self_fval._equal(
+                    other_fval,
+                    check_reentrance,
+                    visited_self,
+                    visited_other,
+                    visited_pairs,
+                ):
                     return False
             else:
-                if self_fval != other_fval: return False
+                if self_fval != other_fval:
+                    return False
 
         # Everything matched up; return true.
         return True
@@ -340,7 +357,8 @@ class FeatStruct(SubstituteBindingsI):
         :param visited: A set containing the ids of all feature
             structures we've already visited while hashing.
         """
-        if id(self) in visited: return 1
+        if id(self) in visited:
+            return 1
         visited.add(id(self))
 
         hashval = 5831
@@ -353,11 +371,11 @@ class FeatStruct(SubstituteBindingsI):
             else:
                 hashval += hash(fval)
             # Convert to a 32 bit int.
-            hashval = int(hashval & 0x7fffffff)
+            hashval = int(hashval & 0x7FFFFFFF)
         return hashval
 
     ##////////////////////////////////////////////////////////////
-    #{ Freezing
+    # { Freezing
     ##////////////////////////////////////////////////////////////
 
     #: Error message used by mutating methods when called on a frozen
@@ -371,7 +389,8 @@ class FeatStruct(SubstituteBindingsI):
         'freeze' any feature value that is not a ``FeatStruct``; it
         is recommended that you use only immutable feature values.
         """
-        if self._frozen: return
+        if self._frozen:
+            return
         self._freeze(set())
 
     def frozen(self):
@@ -391,7 +410,8 @@ class FeatStruct(SubstituteBindingsI):
         :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
-        if id(self) in visited: return
+        if id(self) in visited:
+            return
         visited.add(id(self))
         self._frozen = True
         for (fname, fval) in sorted(self._items()):
@@ -399,7 +419,7 @@ class FeatStruct(SubstituteBindingsI):
                 fval._freeze(visited)
 
     ##////////////////////////////////////////////////////////////
-    #{ Copying
+    # { Copying
     ##////////////////////////////////////////////////////////////
 
     def copy(self, deep=True):
@@ -417,10 +437,10 @@ class FeatStruct(SubstituteBindingsI):
     # Subclasses should define __deepcopy__ to ensure that the new
     # copy will not be frozen.
     def __deepcopy__(self, memo):
-        raise NotImplementedError() # Implemented by subclasses.
+        raise NotImplementedError()  # Implemented by subclasses.
 
     ##////////////////////////////////////////////////////////////
-    #{ Structural Information
+    # { Structural Information
     ##////////////////////////////////////////////////////////////
 
     def cyclic(self):
@@ -445,10 +465,11 @@ class FeatStruct(SubstituteBindingsI):
         :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
-        raise NotImplementedError() # Implemented by subclasses.
+        raise NotImplementedError()  # Implemented by subclasses.
 
     def _walk(self, visited):
-        if id(self) in visited: return
+        if id(self) in visited:
+            return
         visited.add(id(self))
         yield self
         for fval in self._values():
@@ -480,7 +501,7 @@ class FeatStruct(SubstituteBindingsI):
         return reentrances
 
     ##////////////////////////////////////////////////////////////
-    #{ Variables & Bindings
+    # { Variables & Bindings
     ##////////////////////////////////////////////////////////////
 
     def substitute_bindings(self, bindings):
@@ -509,11 +530,10 @@ class FeatStruct(SubstituteBindingsI):
         return remove_variables(self)
 
     ##////////////////////////////////////////////////////////////
-    #{ Unification
+    # { Unification
     ##////////////////////////////////////////////////////////////
 
-    def unify(self, other, bindings=None, trace=False,
-              fail=None, rename_vars=True):
+    def unify(self, other, bindings=None, trace=False, fail=None, rename_vars=True):
         return unify(self, other, bindings, trace, fail, rename_vars)
 
     def subsumes(self, other):
@@ -525,7 +545,7 @@ class FeatStruct(SubstituteBindingsI):
         return subsumes(self, other)
 
     ##////////////////////////////////////////////////////////////
-    #{ String Representations
+    # { String Representations
     ##////////////////////////////////////////////////////////////
 
     def __repr__(self):
@@ -549,21 +569,28 @@ class FeatStruct(SubstituteBindingsI):
         """
         raise NotImplementedError()
 
+
 # Mutation: disable if frozen.
 _FROZEN_ERROR = "Frozen FeatStructs may not be modified."
 _FROZEN_NOTICE = "\n%sIf self is frozen, raise ValueError."
-def _check_frozen(method, indent=''):
+
+
+def _check_frozen(method, indent=""):
     """
     Given a method function, return a new method function that first
     checks if ``self._frozen`` is true; and if so, raises ``ValueError``
     with an appropriate message.  Otherwise, call the method and return
     its result.
     """
+
     def wrapped(self, *args, **kwargs):
-        if self._frozen: raise ValueError(_FROZEN_ERROR)
-        else: return method(self, *args, **kwargs)
+        if self._frozen:
+            raise ValueError(_FROZEN_ERROR)
+        else:
+            return method(self, *args, **kwargs)
+
     wrapped.__name__ = method.__name__
-    wrapped.__doc__ = (method.__doc__ or '') + (_FROZEN_NOTICE % indent)
+    wrapped.__doc__ = (method.__doc__ or "") + (_FROZEN_NOTICE % indent)
     return wrapped
 
 
@@ -571,7 +598,8 @@ def _check_frozen(method, indent=''):
 # Feature Dictionary
 ######################################################################
 
-@python_2_unicode_compatible
+
+
 class FeatDict(FeatStruct, dict):
     """
     A feature structure that acts like a Python dictionary.  I.e., a
@@ -587,6 +615,7 @@ class FeatDict(FeatStruct, dict):
     :see: ``FeatStruct`` for information about feature paths, reentrance,
         cyclic feature structures, mutability, freezing, and hashing.
     """
+
     def __init__(self, features=None, **morefeatures):
         """
         Create a new feature dictionary, with the specified features.
@@ -610,9 +639,9 @@ class FeatDict(FeatStruct, dict):
             # update() checks the types of features.
             self.update(features, **morefeatures)
 
-    #////////////////////////////////////////////////////////////
-    #{ Dict methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
+    # { Dict methods
+    # ////////////////////////////////////////////////////////////
     _INDEX_ERROR = str("Expected feature name or path.  Got %r.")
 
     def __getitem__(self, name_or_path):
@@ -625,7 +654,7 @@ class FeatDict(FeatStruct, dict):
                 val = self
                 for fid in name_or_path:
                     if not isinstance(val, FeatStruct):
-                        raise KeyError # path contains base value
+                        raise KeyError  # path contains base value
                     val = val[fid]
                 return val
             except (KeyError, IndexError):
@@ -636,13 +665,18 @@ class FeatDict(FeatStruct, dict):
     def get(self, name_or_path, default=None):
         """If the feature with the given name or path exists, return its
         value; otherwise, return ``default``."""
-        try: return self[name_or_path]
-        except KeyError: return default
+        try:
+            return self[name_or_path]
+        except KeyError:
+            return default
 
     def __contains__(self, name_or_path):
         """Return true if a feature with the given name or path exists."""
-        try: self[name_or_path]; return True
-        except KeyError: return False
+        try:
+            self[name_or_path]
+            return True
+        except KeyError:
+            return False
 
     def has_key(self, name_or_path):
         """Return true if a feature with the given name or path exists."""
@@ -651,7 +685,8 @@ class FeatDict(FeatStruct, dict):
     def __delitem__(self, name_or_path):
         """If the feature with the given name or path exists, delete
         its value; otherwise, raise ``KeyError``."""
-        if self._frozen: raise ValueError(_FROZEN_ERROR)
+        if self._frozen:
+            raise ValueError(_FROZEN_ERROR)
         if isinstance(name_or_path, (string_types, Feature)):
             return dict.__delitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
@@ -660,7 +695,7 @@ class FeatDict(FeatStruct, dict):
             else:
                 parent = self[name_or_path[:-1]]
                 if not isinstance(parent, FeatStruct):
-                    raise KeyError(name_or_path) # path contains base value
+                    raise KeyError(name_or_path)  # path contains base value
                 del parent[name_or_path[-1]]
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
@@ -669,7 +704,8 @@ class FeatDict(FeatStruct, dict):
         """Set the value for the feature with the given name or path
         to ``value``.  If ``name_or_path`` is an invalid path, raise
         ``KeyError``."""
-        if self._frozen: raise ValueError(_FROZEN_ERROR)
+        if self._frozen:
+            raise ValueError(_FROZEN_ERROR)
         if isinstance(name_or_path, (string_types, Feature)):
             return dict.__setitem__(self, name_or_path, value)
         elif isinstance(name_or_path, tuple):
@@ -678,7 +714,7 @@ class FeatDict(FeatStruct, dict):
             else:
                 parent = self[name_or_path[:-1]]
                 if not isinstance(parent, FeatStruct):
-                    raise KeyError(name_or_path) # path contains base value
+                    raise KeyError(name_or_path)  # path contains base value
                 parent[name_or_path[-1]] = value
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
@@ -689,45 +725,51 @@ class FeatDict(FeatStruct, dict):
     setdefault = _check_frozen(dict.setdefault)
 
     def update(self, features=None, **morefeatures):
-        if self._frozen: raise ValueError(_FROZEN_ERROR)
+        if self._frozen:
+            raise ValueError(_FROZEN_ERROR)
         if features is None:
             items = ()
-        elif hasattr(features, 'items') and callable(features.items):
+        elif hasattr(features, "items") and callable(features.items):
             items = features.items()
-        elif hasattr(features, '__iter__'):
+        elif hasattr(features, "__iter__"):
             items = features
         else:
-            raise ValueError('Expected mapping or list of tuples')
+            raise ValueError("Expected mapping or list of tuples")
 
         for key, val in items:
             if not isinstance(key, (string_types, Feature)):
-                raise TypeError('Feature names must be strings')
+                raise TypeError("Feature names must be strings")
             self[key] = val
         for key, val in morefeatures.items():
             if not isinstance(key, (string_types, Feature)):
-                raise TypeError('Feature names must be strings')
+                raise TypeError("Feature names must be strings")
             self[key] = val
 
     ##////////////////////////////////////////////////////////////
-    #{ Copying
+    # { Copying
     ##////////////////////////////////////////////////////////////
 
     def __deepcopy__(self, memo):
         memo[id(self)] = selfcopy = self.__class__()
         for (key, val) in self._items():
-            selfcopy[copy.deepcopy(key,memo)] = copy.deepcopy(val,memo)
+            selfcopy[copy.deepcopy(key, memo)] = copy.deepcopy(val, memo)
         return selfcopy
 
     ##////////////////////////////////////////////////////////////
-    #{ Uniform Accessor Methods
+    # { Uniform Accessor Methods
     ##////////////////////////////////////////////////////////////
 
-    def _keys(self): return self.keys()
-    def _values(self): return self.values()
-    def _items(self): return self.items()
+    def _keys(self):
+        return self.keys()
+
+    def _values(self):
+        return self.values()
+
+    def _items(self):
+        return self.items()
 
     ##////////////////////////////////////////////////////////////
-    #{ String Representations
+    # { String Representations
     ##////////////////////////////////////////////////////////////
 
     def __str__(self):
@@ -735,51 +777,53 @@ class FeatDict(FeatStruct, dict):
         Display a multi-line representation of this feature dictionary
         as an FVM (feature value matrix).
         """
-        return '\n'.join(self._str(self._find_reentrances({}), {}))
+        return "\n".join(self._str(self._find_reentrances({}), {}))
 
     def _repr(self, reentrances, reentrance_ids):
         segments = []
-        prefix = ''
-        suffix = ''
+        prefix = ""
+        suffix = ""
 
         # If this is the first time we've seen a reentrant structure,
         # then assign it a unique identifier.
         if reentrances[id(self)]:
             assert id(self) not in reentrance_ids
-            reentrance_ids[id(self)] = repr(len(reentrance_ids)+1)
+            reentrance_ids[id(self)] = repr(len(reentrance_ids) + 1)
 
         # sorting note: keys are unique strings, so we'll never fall
         # through to comparing values.
         for (fname, fval) in sorted(self.items()):
-            display = getattr(fname, 'display', None)
+            display = getattr(fname, "display", None)
             if id(fval) in reentrance_ids:
-                segments.append('%s->(%s)' %
-                                (fname, reentrance_ids[id(fval)]))
-            elif (display == 'prefix' and not prefix and
-                  isinstance(fval, (Variable, string_types))):
-                    prefix = '%s' % fval
-            elif display == 'slash' and not suffix:
+                segments.append("%s->(%s)" % (fname, reentrance_ids[id(fval)]))
+            elif (
+                display == "prefix"
+                and not prefix
+                and isinstance(fval, (Variable, string_types))
+            ):
+                prefix = "%s" % fval
+            elif display == "slash" and not suffix:
                 if isinstance(fval, Variable):
-                    suffix = '/%s' % fval.name
+                    suffix = "/%s" % fval.name
                 else:
-                    suffix = '/%s' % unicode_repr(fval)
+                    suffix = "/%s" % unicode_repr(fval)
             elif isinstance(fval, Variable):
-                segments.append('%s=%s' % (fname, fval.name))
+                segments.append("%s=%s" % (fname, fval.name))
             elif fval is True:
-                segments.append('+%s' % fname)
+                segments.append("+%s" % fname)
             elif fval is False:
-                segments.append('-%s' % fname)
+                segments.append("-%s" % fname)
             elif isinstance(fval, Expression):
-                segments.append('%s=<%s>' % (fname, fval))
+                segments.append("%s=<%s>" % (fname, fval))
             elif not isinstance(fval, FeatStruct):
-                segments.append('%s=%s' % (fname, unicode_repr(fval)))
+                segments.append("%s=%s" % (fname, unicode_repr(fval)))
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
-                segments.append('%s=%s' % (fname, fval_repr))
+                segments.append("%s=%s" % (fname, fval_repr))
         # If it's reentrant, then add on an identifier tag.
         if reentrances[id(self)]:
-            prefix = '(%s)%s' % (reentrance_ids[id(self)], prefix)
-        return '%s[%s]%s' % (prefix, ', '.join(segments), suffix)
+            prefix = "(%s)%s" % (reentrance_ids[id(self)], prefix)
+        return "%s[%s]%s" % (prefix, ", ".join(segments), suffix)
 
     def _str(self, reentrances, reentrance_ids):
         """
@@ -798,14 +842,14 @@ class FeatDict(FeatStruct, dict):
         # then tack on an id string.
         if reentrances[id(self)]:
             assert id(self) not in reentrance_ids
-            reentrance_ids[id(self)] = repr(len(reentrance_ids)+1)
+            reentrance_ids[id(self)] = repr(len(reentrance_ids) + 1)
 
         # Special case: empty feature dict.
         if len(self) == 0:
             if reentrances[id(self)]:
-                return ['(%s) []' % reentrance_ids[id(self)]]
+                return ["(%s) []" % reentrance_ids[id(self)]]
             else:
-                return ['[]']
+                return ["[]"]
 
         # What's the longest feature name?  Use this to align names.
         maxfnamelen = max(len("%s" % k) for k in self.keys())
@@ -816,59 +860,62 @@ class FeatDict(FeatStruct, dict):
         for (fname, fval) in sorted(self.items()):
             fname = ("%s" % fname).ljust(maxfnamelen)
             if isinstance(fval, Variable):
-                lines.append('%s = %s' % (fname,fval.name))
+                lines.append("%s = %s" % (fname, fval.name))
 
             elif isinstance(fval, Expression):
-                lines.append('%s = <%s>' % (fname, fval))
+                lines.append("%s = <%s>" % (fname, fval))
 
             elif isinstance(fval, FeatList):
                 fval_repr = fval._repr(reentrances, reentrance_ids)
-                lines.append('%s = %s' % (fname, unicode_repr(fval_repr)))
+                lines.append("%s = %s" % (fname, unicode_repr(fval_repr)))
 
             elif not isinstance(fval, FeatDict):
                 # It's not a nested feature structure -- just print it.
-                lines.append('%s = %s' % (fname, unicode_repr(fval)))
+                lines.append("%s = %s" % (fname, unicode_repr(fval)))
 
             elif id(fval) in reentrance_ids:
                 # It's a feature structure we've seen before -- print
                 # the reentrance id.
-                lines.append('%s -> (%s)' % (fname, reentrance_ids[id(fval)]))
+                lines.append("%s -> (%s)" % (fname, reentrance_ids[id(fval)]))
 
             else:
                 # It's a new feature structure.  Separate it from
                 # other values by a blank line.
-                if lines and lines[-1] != '': lines.append('')
+                if lines and lines[-1] != "":
+                    lines.append("")
 
                 # Recursively print the feature's value (fval).
                 fval_lines = fval._str(reentrances, reentrance_ids)
 
                 # Indent each line to make room for fname.
-                fval_lines = [(' '*(maxfnamelen+3))+l for l in fval_lines]
+                fval_lines = [(" " * (maxfnamelen + 3)) + l for l in fval_lines]
 
                 # Pick which line we'll display fname on, & splice it in.
-                nameline = (len(fval_lines)-1) // 2
+                nameline = (len(fval_lines) - 1) // 2
                 fval_lines[nameline] = (
-                        fname+' ='+fval_lines[nameline][maxfnamelen+2:])
+                    fname + " =" + fval_lines[nameline][maxfnamelen + 2 :]
+                )
 
                 # Add the feature structure to the output.
                 lines += fval_lines
 
                 # Separate FeatStructs by a blank line.
-                lines.append('')
+                lines.append("")
 
         # Get rid of any excess blank lines.
-        if lines[-1] == '': lines.pop()
+        if lines[-1] == "":
+            lines.pop()
 
         # Add brackets around everything.
         maxlen = max(len(line) for line in lines)
-        lines = ['[ %s%s ]' % (line, ' '*(maxlen-len(line))) for line in lines]
+        lines = ["[ %s%s ]" % (line, " " * (maxlen - len(line))) for line in lines]
 
         # If it's reentrant, then add on an identifier tag.
         if reentrances[id(self)]:
-            idstr = '(%s) ' % reentrance_ids[id(self)]
-            lines = [(' '*len(idstr))+l for l in lines]
-            idline = (len(lines)-1) // 2
-            lines[idline] = idstr + lines[idline][len(idstr):]
+            idstr = "(%s) " % reentrance_ids[id(self)]
+            lines = [(" " * len(idstr)) + l for l in lines]
+            idline = (len(lines) - 1) // 2
+            lines[idline] = idstr + lines[idline][len(idstr) :]
 
         return lines
 
@@ -876,6 +923,7 @@ class FeatDict(FeatStruct, dict):
 ######################################################################
 # Feature List
 ######################################################################
+
 
 class FeatList(FeatStruct, list):
     """
@@ -893,6 +941,7 @@ class FeatList(FeatStruct, list):
     :see: ``FeatStruct`` for information about feature paths, reentrance,
         cyclic feature structures, mutability, freezing, and hashing.
     """
+
     def __init__(self, features=()):
         """
         Create a new feature list, with the specified features.
@@ -907,9 +956,9 @@ class FeatList(FeatStruct, list):
         else:
             list.__init__(self, features)
 
-    #////////////////////////////////////////////////////////////
-    #{ List methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
+    # { List methods
+    # ////////////////////////////////////////////////////////////
     _INDEX_ERROR = "Expected int or feature path.  Got %r."
 
     def __getitem__(self, name_or_path):
@@ -920,7 +969,7 @@ class FeatList(FeatStruct, list):
                 val = self
                 for fid in name_or_path:
                     if not isinstance(val, FeatStruct):
-                        raise KeyError # path contains base value
+                        raise KeyError  # path contains base value
                     val = val[fid]
                 return val
             except (KeyError, IndexError):
@@ -931,7 +980,8 @@ class FeatList(FeatStruct, list):
     def __delitem__(self, name_or_path):
         """If the feature with the given name or path exists, delete
         its value; otherwise, raise ``KeyError``."""
-        if self._frozen: raise ValueError(_FROZEN_ERROR)
+        if self._frozen:
+            raise ValueError(_FROZEN_ERROR)
         if isinstance(name_or_path, (integer_types, slice)):
             return list.__delitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
@@ -940,7 +990,7 @@ class FeatList(FeatStruct, list):
             else:
                 parent = self[name_or_path[:-1]]
                 if not isinstance(parent, FeatStruct):
-                    raise KeyError(name_or_path) # path contains base value
+                    raise KeyError(name_or_path)  # path contains base value
                 del parent[name_or_path[-1]]
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
@@ -949,7 +999,8 @@ class FeatList(FeatStruct, list):
         """Set the value for the feature with the given name or path
         to ``value``.  If ``name_or_path`` is an invalid path, raise
         ``KeyError``."""
-        if self._frozen: raise ValueError(_FROZEN_ERROR)
+        if self._frozen:
+            raise ValueError(_FROZEN_ERROR)
         if isinstance(name_or_path, (integer_types, slice)):
             return list.__setitem__(self, name_or_path, value)
         elif isinstance(name_or_path, tuple):
@@ -958,13 +1009,13 @@ class FeatList(FeatStruct, list):
             else:
                 parent = self[name_or_path[:-1]]
                 if not isinstance(parent, FeatStruct):
-                    raise KeyError(name_or_path) # path contains base value
+                    raise KeyError(name_or_path)  # path contains base value
                 parent[name_or_path[-1]] = value
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
 
-#    __delslice__ = _check_frozen(list.__delslice__, '               ')
-#    __setslice__ = _check_frozen(list.__setslice__, '               ')
+    #    __delslice__ = _check_frozen(list.__delslice__, '               ')
+    #    __setslice__ = _check_frozen(list.__setslice__, '               ')
     __iadd__ = _check_frozen(list.__iadd__)
     __imul__ = _check_frozen(list.__imul__)
     append = _check_frozen(list.append)
@@ -976,24 +1027,29 @@ class FeatList(FeatStruct, list):
     sort = _check_frozen(list.sort)
 
     ##////////////////////////////////////////////////////////////
-    #{ Copying
+    # { Copying
     ##////////////////////////////////////////////////////////////
 
     def __deepcopy__(self, memo):
         memo[id(self)] = selfcopy = self.__class__()
-        selfcopy.extend(copy.deepcopy(fval,memo) for fval in self)
+        selfcopy.extend(copy.deepcopy(fval, memo) for fval in self)
         return selfcopy
 
     ##////////////////////////////////////////////////////////////
-    #{ Uniform Accessor Methods
+    # { Uniform Accessor Methods
     ##////////////////////////////////////////////////////////////
 
-    def _keys(self): return list(range(len(self)))
-    def _values(self): return self
-    def _items(self): return enumerate(self)
+    def _keys(self):
+        return list(range(len(self)))
+
+    def _values(self):
+        return self
+
+    def _items(self):
+        return enumerate(self)
 
     ##////////////////////////////////////////////////////////////
-    #{ String Representations
+    # { String Representations
     ##////////////////////////////////////////////////////////////
 
     # Special handling for: reentrances, variables, expressions.
@@ -1002,31 +1058,33 @@ class FeatList(FeatStruct, list):
         # then assign it a unique identifier.
         if reentrances[id(self)]:
             assert id(self) not in reentrance_ids
-            reentrance_ids[id(self)] = repr(len(reentrance_ids)+1)
-            prefix = '(%s)' % reentrance_ids[id(self)]
+            reentrance_ids[id(self)] = repr(len(reentrance_ids) + 1)
+            prefix = "(%s)" % reentrance_ids[id(self)]
         else:
-            prefix = ''
+            prefix = ""
 
         segments = []
         for fval in self:
             if id(fval) in reentrance_ids:
-                segments.append('->(%s)' % reentrance_ids[id(fval)])
+                segments.append("->(%s)" % reentrance_ids[id(fval)])
             elif isinstance(fval, Variable):
                 segments.append(fval.name)
             elif isinstance(fval, Expression):
-                segments.append('%s' % fval)
+                segments.append("%s" % fval)
             elif isinstance(fval, FeatStruct):
                 segments.append(fval._repr(reentrances, reentrance_ids))
             else:
-                segments.append('%s' % unicode_repr(fval))
+                segments.append("%s" % unicode_repr(fval))
 
-        return '%s[%s]' % (prefix, ', '.join(segments))
+        return "%s[%s]" % (prefix, ", ".join(segments))
+
 
 ######################################################################
 # Variables & Bindings
 ######################################################################
 
-def substitute_bindings(fstruct, bindings, fs_class='default'):
+
+def substitute_bindings(fstruct, bindings, fs_class="default"):
     """
     Return the feature structure that is obtained by replacing each
     variable bound by ``bindings`` with its binding.  If a variable is
@@ -1037,28 +1095,35 @@ def substitute_bindings(fstruct, bindings, fs_class='default'):
     :type bindings: dict(Variable -> any)
     :param bindings: A dictionary mapping from variables to values.
     """
-    if fs_class == 'default': fs_class = _default_fs_class(fstruct)
+    if fs_class == "default":
+        fs_class = _default_fs_class(fstruct)
     fstruct = copy.deepcopy(fstruct)
     _substitute_bindings(fstruct, bindings, fs_class, set())
     return fstruct
 
+
 def _substitute_bindings(fstruct, bindings, fs_class, visited):
     # Visit each node only once:
-    if id(fstruct) in visited: return
+    if id(fstruct) in visited:
+        return
     visited.add(id(fstruct))
 
-    if _is_mapping(fstruct): items = fstruct.items()
-    elif _is_sequence(fstruct): items = enumerate(fstruct)
-    else: raise ValueError('Expected mapping or sequence')
+    if _is_mapping(fstruct):
+        items = fstruct.items()
+    elif _is_sequence(fstruct):
+        items = enumerate(fstruct)
+    else:
+        raise ValueError("Expected mapping or sequence")
     for (fname, fval) in items:
-        while (isinstance(fval, Variable) and fval in bindings):
+        while isinstance(fval, Variable) and fval in bindings:
             fval = fstruct[fname] = bindings[fval]
         if isinstance(fval, fs_class):
             _substitute_bindings(fval, bindings, fs_class, visited)
         elif isinstance(fval, SubstituteBindingsI):
             fstruct[fname] = fval.substitute_bindings(bindings)
 
-def retract_bindings(fstruct, bindings, fs_class='default'):
+
+def retract_bindings(fstruct, bindings, fs_class="default"):
     """
     Return the feature structure that is obtained by replacing each
     feature structure value that is bound by ``bindings`` with the
@@ -1070,21 +1135,27 @@ def retract_bindings(fstruct, bindings, fs_class='default'):
     values in ``bindings`` may be modified if they are contained in
     ``fstruct``.
     """
-    if fs_class == 'default': fs_class = _default_fs_class(fstruct)
+    if fs_class == "default":
+        fs_class = _default_fs_class(fstruct)
     (fstruct, new_bindings) = copy.deepcopy((fstruct, bindings))
     bindings.update(new_bindings)
-    inv_bindings = dict((id(val),var) for (var,val) in bindings.items())
+    inv_bindings = dict((id(val), var) for (var, val) in bindings.items())
     _retract_bindings(fstruct, inv_bindings, fs_class, set())
     return fstruct
 
+
 def _retract_bindings(fstruct, inv_bindings, fs_class, visited):
     # Visit each node only once:
-    if id(fstruct) in visited: return
+    if id(fstruct) in visited:
+        return
     visited.add(id(fstruct))
 
-    if _is_mapping(fstruct): items = fstruct.items()
-    elif _is_sequence(fstruct): items = enumerate(fstruct)
-    else: raise ValueError('Expected mapping or sequence')
+    if _is_mapping(fstruct):
+        items = fstruct.items()
+    elif _is_sequence(fstruct):
+        items = enumerate(fstruct)
+    else:
+        raise ValueError("Expected mapping or sequence")
     for (fname, fval) in items:
         if isinstance(fval, fs_class):
             if id(fval) in inv_bindings:
@@ -1092,21 +1163,27 @@ def _retract_bindings(fstruct, inv_bindings, fs_class, visited):
             _retract_bindings(fval, inv_bindings, fs_class, visited)
 
 
-def find_variables(fstruct, fs_class='default'):
+def find_variables(fstruct, fs_class="default"):
     """
     :return: The set of variables used by this feature structure.
     :rtype: set(Variable)
     """
-    if fs_class == 'default': fs_class = _default_fs_class(fstruct)
+    if fs_class == "default":
+        fs_class = _default_fs_class(fstruct)
     return _variables(fstruct, set(), fs_class, set())
+
 
 def _variables(fstruct, vars, fs_class, visited):
     # Visit each node only once:
-    if id(fstruct) in visited: return
+    if id(fstruct) in visited:
+        return
     visited.add(id(fstruct))
-    if _is_mapping(fstruct): items = fstruct.items()
-    elif _is_sequence(fstruct): items = enumerate(fstruct)
-    else: raise ValueError('Expected mapping or sequence')
+    if _is_mapping(fstruct):
+        items = fstruct.items()
+    elif _is_sequence(fstruct):
+        items = enumerate(fstruct)
+    else:
+        raise ValueError("Expected mapping or sequence")
     for (fname, fval) in items:
         if isinstance(fval, Variable):
             vars.add(fval)
@@ -1116,8 +1193,10 @@ def _variables(fstruct, vars, fs_class, visited):
             vars.update(fval.variables())
     return vars
 
-def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
-                     fs_class='default'):
+
+def rename_variables(
+    fstruct, vars=None, used_vars=(), new_vars=None, fs_class="default"
+):
     """
     Return the feature structure that is obtained by replacing
     any of this feature structure's variables that are in ``vars``
@@ -1159,26 +1238,36 @@ def rename_variables(fstruct, vars=None, used_vars=(), new_vars=None,
 
     If new_vars is not specified, then an empty dictionary is used.
     """
-    if fs_class == 'default': fs_class = _default_fs_class(fstruct)
+    if fs_class == "default":
+        fs_class = _default_fs_class(fstruct)
 
     # Default values:
-    if new_vars is None: new_vars = {}
-    if vars is None: vars = find_variables(fstruct, fs_class)
-    else: vars = set(vars)
+    if new_vars is None:
+        new_vars = {}
+    if vars is None:
+        vars = find_variables(fstruct, fs_class)
+    else:
+        vars = set(vars)
 
     # Add our own variables to used_vars.
     used_vars = find_variables(fstruct, fs_class).union(used_vars)
 
     # Copy ourselves, and rename variables in the copy.
-    return _rename_variables(copy.deepcopy(fstruct), vars, used_vars,
-                             new_vars, fs_class, set())
+    return _rename_variables(
+        copy.deepcopy(fstruct), vars, used_vars, new_vars, fs_class, set()
+    )
+
 
 def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
-    if id(fstruct) in visited: return
+    if id(fstruct) in visited:
+        return
     visited.add(id(fstruct))
-    if _is_mapping(fstruct): items = fstruct.items()
-    elif _is_sequence(fstruct): items = enumerate(fstruct)
-    else: raise ValueError('Expected mapping or sequence')
+    if _is_mapping(fstruct):
+        items = fstruct.items()
+    elif _is_sequence(fstruct):
+        items = enumerate(fstruct)
+    else:
+        raise ValueError("Expected mapping or sequence")
     for (fname, fval) in items:
         if isinstance(fval, Variable):
             # If it's in new_vars, then rebind it.
@@ -1190,8 +1279,7 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
                 fstruct[fname] = new_vars[fval]
                 used_vars.add(new_vars[fval])
         elif isinstance(fval, fs_class):
-            _rename_variables(fval, vars, used_vars, new_vars,
-                              fs_class, visited)
+            _rename_variables(fval, vars, used_vars, new_vars, fs_class, visited)
         elif isinstance(fval, SubstituteBindingsI):
             # Pick new names for any variables in `vars`
             for var in fval.variables():
@@ -1202,20 +1290,26 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
             fstruct[fname] = fval.substitute_bindings(new_vars)
     return fstruct
 
-def _rename_variable(var, used_vars):
-    name, n = re.sub('\d+$', '', var.name), 2
-    if not name: name = '?'
-    while Variable('%s%s' % (name, n)) in used_vars: n += 1
-    return Variable('%s%s' % (name, n))
 
-def remove_variables(fstruct, fs_class='default'):
+def _rename_variable(var, used_vars):
+    name, n = re.sub("\d+$", "", var.name), 2
+    if not name:
+        name = "?"
+    while Variable("%s%s" % (name, n)) in used_vars:
+        n += 1
+    return Variable("%s%s" % (name, n))
+
+
+def remove_variables(fstruct, fs_class="default"):
     """
     :rtype: FeatStruct
     :return: The feature structure that is obtained by deleting
         all features whose values are ``Variables``.
     """
-    if fs_class == 'default': fs_class = _default_fs_class(fstruct)
+    if fs_class == "default":
+        fs_class = _default_fs_class(fstruct)
     return _remove_variables(copy.deepcopy(fstruct), fs_class, set())
+
 
 def _remove_variables(fstruct, fs_class, visited):
     if id(fstruct) in visited:
@@ -1227,7 +1321,7 @@ def _remove_variables(fstruct, fs_class, visited):
     elif _is_sequence(fstruct):
         items = list(enumerate(fstruct))
     else:
-        raise ValueError('Expected mapping or sequence')
+        raise ValueError("Expected mapping or sequence")
 
     for (fname, fval) in items:
         if isinstance(fval, Variable):
@@ -1241,23 +1335,33 @@ def _remove_variables(fstruct, fs_class, visited):
 # Unification
 ######################################################################
 
-@python_2_unicode_compatible
+
+
 class _UnificationFailure(object):
     def __repr__(self):
-        return 'nltk.featstruct.UnificationFailure'
+        return "nltk.featstruct.UnificationFailure"
+
 
 UnificationFailure = _UnificationFailure()
 """A unique value used to indicate unification failure.  It can be
    returned by ``Feature.unify_base_values()`` or by custom ``fail()``
    functions to indicate that unificaiton should fail."""
 
+
 # The basic unification algorithm:
 #   1. Make copies of self and other (preserving reentrance)
 #   2. Destructively unify self and other
 #   3. Apply forward pointers, to preserve reentrance.
 #   4. Replace bound variables with their values.
-def unify(fstruct1, fstruct2, bindings=None, trace=False,
-          fail=None, rename_vars=True, fs_class='default'):
+def unify(
+    fstruct1,
+    fstruct2,
+    bindings=None,
+    trace=False,
+    fail=None,
+    rename_vars=True,
+    fs_class="default",
+):
     """
     Unify ``fstruct1`` with ``fstruct2``, and return the resulting feature
     structure.  This unified feature structure is the minimal
@@ -1302,25 +1406,29 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
     """
     # Decide which class(es) will be treated as feature structures,
     # for the purposes of unification.
-    if fs_class == 'default':
+    if fs_class == "default":
         fs_class = _default_fs_class(fstruct1)
         if _default_fs_class(fstruct2) != fs_class:
-            raise ValueError("Mixing FeatStruct objects with Python "
-                             "dicts and lists is not supported.")
+            raise ValueError(
+                "Mixing FeatStruct objects with Python "
+                "dicts and lists is not supported."
+            )
     assert isinstance(fstruct1, fs_class)
     assert isinstance(fstruct2, fs_class)
 
     # If bindings are unspecified, use an empty set of bindings.
-    user_bindings = (bindings is not None)
-    if bindings is None: bindings = {}
+    user_bindings = bindings is not None
+    if bindings is None:
+        bindings = {}
 
     # Make copies of fstruct1 and fstruct2 (since the unification
     # algorithm is destructive). Do it all at once, to preserve
     # reentrance links between fstruct1 and fstruct2.  Copy bindings
     # as well, in case there are any bound vars that contain parts
     # of fstruct1 or fstruct2.
-    (fstruct1copy, fstruct2copy, bindings_copy) = (
-        copy.deepcopy((fstruct1, fstruct2, bindings)))
+    (fstruct1copy, fstruct2copy, bindings_copy) = copy.deepcopy(
+        (fstruct1, fstruct2, bindings)
+    )
 
     # Copy the bindings back to the original bindings dict.
     bindings.update(bindings_copy)
@@ -1332,37 +1440,49 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
 
     # Do the actual unification.  If it fails, return None.
     forward = {}
-    if trace: _trace_unify_start((), fstruct1copy, fstruct2copy)
-    try: result = _destructively_unify(fstruct1copy, fstruct2copy, bindings,
-                                       forward, trace, fail, fs_class, ())
-    except _UnificationFailureError: return None
+    if trace:
+        _trace_unify_start((), fstruct1copy, fstruct2copy)
+    try:
+        result = _destructively_unify(
+            fstruct1copy, fstruct2copy, bindings, forward, trace, fail, fs_class, ()
+        )
+    except _UnificationFailureError:
+        return None
 
     # _destructively_unify might return UnificationFailure, e.g. if we
     # tried to unify a mapping with a sequence.
     if result is UnificationFailure:
-        if fail is None: return None
-        else: return fail(fstruct1copy, fstruct2copy, ())
+        if fail is None:
+            return None
+        else:
+            return fail(fstruct1copy, fstruct2copy, ())
 
     # Replace any feature structure that has a forward pointer
     # with the target of its forward pointer.
     result = _apply_forwards(result, forward, fs_class, set())
-    if user_bindings: _apply_forwards_to_bindings(forward, bindings)
+    if user_bindings:
+        _apply_forwards_to_bindings(forward, bindings)
 
     # Replace bound vars with values.
     _resolve_aliases(bindings)
     _substitute_bindings(result, bindings, fs_class, set())
 
     # Return the result.
-    if trace: _trace_unify_succeed((), result)
-    if trace: _trace_bindings((), bindings)
+    if trace:
+        _trace_unify_succeed((), result)
+    if trace:
+        _trace_bindings((), bindings)
     return result
+
 
 class _UnificationFailureError(Exception):
     """An exception that is used by ``_destructively_unify`` to abort
     unification when a failure is encountered."""
 
-def _destructively_unify(fstruct1, fstruct2, bindings, forward,
-                         trace, fail, fs_class, path):
+
+def _destructively_unify(
+    fstruct1, fstruct2, bindings, forward, trace, fail, fs_class, path
+):
     """
     Attempt to unify ``fstruct1`` and ``fstruct2`` by modifying them
     in-place.  If the unification succeeds, then ``fstruct1`` will
@@ -1388,7 +1508,8 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
     # Note: this, together with the forward pointers, ensures
     # that unification will terminate even for cyclic structures.
     if fstruct1 is fstruct2:
-        if trace: _trace_unify_identity(path, fstruct1)
+        if trace:
+            _trace_unify_identity(path, fstruct1)
         return fstruct1
 
     # Set fstruct2's forward pointer to point to fstruct1; this makes
@@ -1400,10 +1521,10 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
     # Unifying two mappings:
     if _is_mapping(fstruct1) and _is_mapping(fstruct2):
         for fname in fstruct1:
-            if getattr(fname, 'default', None) is not None:
+            if getattr(fname, "default", None) is not None:
                 fstruct2.setdefault(fname, fname.default)
         for fname in fstruct2:
-            if getattr(fname, 'default', None) is not None:
+            if getattr(fname, "default", None) is not None:
                 fstruct1.setdefault(fname, fname.default)
 
         # Unify any values that are defined in both fstruct1 and
@@ -1414,12 +1535,20 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
         for fname, fval2 in sorted(fstruct2.items()):
             if fname in fstruct1:
                 fstruct1[fname] = _unify_feature_values(
-                    fname, fstruct1[fname], fval2, bindings,
-                    forward, trace, fail, fs_class, path+(fname,))
+                    fname,
+                    fstruct1[fname],
+                    fval2,
+                    bindings,
+                    forward,
+                    trace,
+                    fail,
+                    fs_class,
+                    path + (fname,),
+                )
             else:
                 fstruct1[fname] = fval2
 
-        return fstruct1 # Contains the unified value.
+        return fstruct1  # Contains the unified value.
 
     # Unifying two sequences:
     elif _is_sequence(fstruct1) and _is_sequence(fstruct2):
@@ -1430,22 +1559,33 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
         # Unify corresponding values in fstruct1 and fstruct2.
         for findex in range(len(fstruct1)):
             fstruct1[findex] = _unify_feature_values(
-                findex, fstruct1[findex], fstruct2[findex], bindings,
-                forward, trace, fail, fs_class, path+(findex,))
+                findex,
+                fstruct1[findex],
+                fstruct2[findex],
+                bindings,
+                forward,
+                trace,
+                fail,
+                fs_class,
+                path + (findex,),
+            )
 
-        return fstruct1 # Contains the unified value.
+        return fstruct1  # Contains the unified value.
 
     # Unifying sequence & mapping: fail.  The failure function
     # doesn't get a chance to recover in this case.
-    elif ((_is_sequence(fstruct1) or _is_mapping(fstruct1)) and
-          (_is_sequence(fstruct2) or _is_mapping(fstruct2))):
+    elif (_is_sequence(fstruct1) or _is_mapping(fstruct1)) and (
+        _is_sequence(fstruct2) or _is_mapping(fstruct2)
+    ):
         return UnificationFailure
 
     # Unifying anything else: not allowed!
-    raise TypeError('Expected mappings or sequences')
+    raise TypeError("Expected mappings or sequences")
 
-def _unify_feature_values(fname, fval1, fval2, bindings, forward,
-                          trace, fail, fs_class, fpath):
+
+def _unify_feature_values(
+    fname, fval1, fval2, bindings, forward, trace, fail, fs_class, fpath
+):
     """
     Attempt to unify ``fval1`` and and ``fval2``, and return the
     resulting unified value.  The method of unification will depend on
@@ -1462,11 +1602,14 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
       5. If they're both base values, then unify them.  By default,
          this will succeed if they are equal, and fail otherwise.
     """
-    if trace: _trace_unify_start(fpath, fval1, fval2)
+    if trace:
+        _trace_unify_start(fpath, fval1, fval2)
 
     # Look up the "canonical" copy of fval1 and fval2
-    while id(fval1) in forward: fval1 = forward[id(fval1)]
-    while id(fval2) in forward: fval2 = forward[id(fval2)]
+    while id(fval1) in forward:
+        fval1 = forward[id(fval1)]
+    while id(fval2) in forward:
+        fval2 = forward[id(fval2)]
 
     # If fval1 or fval2 is a bound variable, then
     # replace it by the variable's bound value.  This
@@ -1482,13 +1625,14 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
 
     # Case 1: Two feature structures (recursive case)
     if isinstance(fval1, fs_class) and isinstance(fval2, fs_class):
-        result = _destructively_unify(fval1, fval2, bindings, forward,
-                                      trace, fail, fs_class, fpath)
+        result = _destructively_unify(
+            fval1, fval2, bindings, forward, trace, fail, fs_class, fpath
+        )
 
     # Case 2: Two unbound variables (create alias)
-    elif (isinstance(fval1, Variable) and
-          isinstance(fval2, Variable)):
-        if fval1 != fval2: bindings[fval2] = fval1
+    elif isinstance(fval1, Variable) and isinstance(fval2, Variable):
+        if fval1 != fval2:
+            bindings[fval2] = fval1
         result = fval1
 
     # Case 3: An unbound variable and a value (bind)
@@ -1512,12 +1656,12 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
         elif isinstance(fval1, CustomFeatureValue):
             result = fval1.unify(fval2)
             # Sanity check: unify value should be symmetric
-            if (isinstance(fval2, CustomFeatureValue) and
-                result != fval2.unify(fval1)):
+            if isinstance(fval2, CustomFeatureValue) and result != fval2.unify(fval1):
                 raise AssertionError(
-                    'CustomFeatureValue objects %r and %r disagree '
-                    'about unification value: %r vs. %r' %
-                    (fval1, fval2, result, fval2.unify(fval1)))
+                    "CustomFeatureValue objects %r and %r disagree "
+                    "about unification value: %r vs. %r"
+                    % (fval1, fval2, result, fval2.unify(fval1))
+                )
         elif isinstance(fval2, CustomFeatureValue):
             result = fval2.unify(fval1)
         # Case 5c: Simple values -- check if they're equal.
@@ -1541,8 +1685,10 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
     # If we unification failed, call the failure function; it
     # might decide to continue anyway.
     if result is UnificationFailure:
-        if fail is not None: result = fail(fval1, fval2, fpath)
-        if trace: _trace_unify_fail(fpath[:-1], result)
+        if fail is not None:
+            result = fail(fval1, fval2, fpath)
+        if trace:
+            _trace_unify_fail(fpath[:-1], result)
         if result is UnificationFailure:
             raise _UnificationFailureError
 
@@ -1550,11 +1696,13 @@ def _unify_feature_values(fname, fval1, fval2, bindings, forward,
     if isinstance(result, fs_class):
         result = _apply_forwards(result, forward, fs_class, set())
 
-    if trace: _trace_unify_succeed(fpath, result)
+    if trace:
+        _trace_unify_succeed(fpath, result)
     if trace and isinstance(result, fs_class):
         _trace_bindings(fpath, bindings)
 
     return result
+
 
 def _apply_forwards_to_bindings(forward, bindings):
     """
@@ -1566,21 +1714,27 @@ def _apply_forwards_to_bindings(forward, bindings):
             value = forward[id(value)]
         bindings[var] = value
 
+
 def _apply_forwards(fstruct, forward, fs_class, visited):
     """
     Replace any feature structure that has a forward pointer with
     the target of its forward pointer (to preserve reentrancy).
     """
     # Follow our own forwards pointers (if any)
-    while id(fstruct) in forward: fstruct = forward[id(fstruct)]
+    while id(fstruct) in forward:
+        fstruct = forward[id(fstruct)]
 
     # Visit each node only once:
-    if id(fstruct) in visited: return
+    if id(fstruct) in visited:
+        return
     visited.add(id(fstruct))
 
-    if _is_mapping(fstruct): items = fstruct.items()
-    elif _is_sequence(fstruct): items = enumerate(fstruct)
-    else: raise ValueError('Expected mapping or sequence')
+    if _is_mapping(fstruct):
+        items = fstruct.items()
+    elif _is_sequence(fstruct):
+        items = enumerate(fstruct)
+    else:
+        raise ValueError("Expected mapping or sequence")
     for fname, fval in items:
         if isinstance(fval, fs_class):
             # Replace w/ forwarded value.
@@ -1592,6 +1746,7 @@ def _apply_forwards(fstruct, forward, fs_class, visited):
 
     return fstruct
 
+
 def _resolve_aliases(bindings):
     """
     Replace any bound aliased vars with their binding; and replace
@@ -1601,42 +1756,56 @@ def _resolve_aliases(bindings):
         while isinstance(value, Variable) and value in bindings:
             value = bindings[var] = bindings[value]
 
+
 def _trace_unify_start(path, fval1, fval2):
     if path == ():
-        print('\nUnification trace:')
+        print("\nUnification trace:")
     else:
-        fullname = '.'.join("%s" % n for n in path)
-        print('  '+'|   '*(len(path)-1)+'|')
-        print('  '+'|   '*(len(path)-1)+'| Unify feature: %s' % fullname)
-    print('  '+'|   '*len(path)+' / '+_trace_valrepr(fval1))
-    print('  '+'|   '*len(path)+'|\\ '+_trace_valrepr(fval2))
+        fullname = ".".join("%s" % n for n in path)
+        print("  " + "|   " * (len(path) - 1) + "|")
+        print("  " + "|   " * (len(path) - 1) + "| Unify feature: %s" % fullname)
+    print("  " + "|   " * len(path) + " / " + _trace_valrepr(fval1))
+    print("  " + "|   " * len(path) + "|\\ " + _trace_valrepr(fval2))
+
+
 def _trace_unify_identity(path, fval1):
-    print('  '+'|   '*len(path)+'|')
-    print('  '+'|   '*len(path)+'| (identical objects)')
-    print('  '+'|   '*len(path)+'|')
-    print('  '+'|   '*len(path)+'+-->'+unicode_repr(fval1))
+    print("  " + "|   " * len(path) + "|")
+    print("  " + "|   " * len(path) + "| (identical objects)")
+    print("  " + "|   " * len(path) + "|")
+    print("  " + "|   " * len(path) + "+-->" + unicode_repr(fval1))
+
+
 def _trace_unify_fail(path, result):
-    if result is UnificationFailure: resume = ''
-    else: resume = ' (nonfatal)'
-    print('  '+'|   '*len(path)+'|   |')
-    print('  '+'X   '*len(path)+'X   X <-- FAIL'+resume)
+    if result is UnificationFailure:
+        resume = ""
+    else:
+        resume = " (nonfatal)"
+    print("  " + "|   " * len(path) + "|   |")
+    print("  " + "X   " * len(path) + "X   X <-- FAIL" + resume)
+
+
 def _trace_unify_succeed(path, fval1):
     # Print the result.
-    print('  '+'|   '*len(path)+'|')
-    print('  '+'|   '*len(path)+'+-->'+unicode_repr(fval1))
+    print("  " + "|   " * len(path) + "|")
+    print("  " + "|   " * len(path) + "+-->" + unicode_repr(fval1))
+
+
 def _trace_bindings(path, bindings):
     # Print the bindings (if any).
     if len(bindings) > 0:
-        binditems = sorted(bindings.items(), key=lambda v:v[0].name)
-        bindstr = '{%s}' % ', '.join(
-            '%s: %s' % (var, _trace_valrepr(val))
-            for (var, val) in binditems)
-        print('  '+'|   '*len(path)+'    Bindings: '+bindstr)
+        binditems = sorted(bindings.items(), key=lambda v: v[0].name)
+        bindstr = "{%s}" % ", ".join(
+            "%s: %s" % (var, _trace_valrepr(val)) for (var, val) in binditems
+        )
+        print("  " + "|   " * len(path) + "    Bindings: " + bindstr)
+
+
 def _trace_valrepr(val):
     if isinstance(val, Variable):
-        return '%s' % val
+        return "%s" % val
     else:
-        return '%s' % unicode_repr(val)
+        return "%s" % unicode_repr(val)
+
 
 def subsumes(fstruct1, fstruct2):
     """
@@ -1648,6 +1817,7 @@ def subsumes(fstruct1, fstruct2):
     """
     return fstruct2 == unify(fstruct1, fstruct2)
 
+
 def conflicts(fstruct1, fstruct2, trace=0):
     """
     Return a list of the feature paths of all features which are
@@ -1656,42 +1826,64 @@ def conflicts(fstruct1, fstruct2, trace=0):
     :rtype: list(tuple)
     """
     conflict_list = []
+
     def add_conflict(fval1, fval2, path):
         conflict_list.append(path)
         return fval1
+
     unify(fstruct1, fstruct2, fail=add_conflict, trace=trace)
     return conflict_list
+
 
 ######################################################################
 # Helper Functions
 ######################################################################
 
+
 def _is_mapping(v):
-    return hasattr(v, '__contains__') and hasattr(v, 'keys')
+    return hasattr(v, "__contains__") and hasattr(v, "keys")
+
 
 def _is_sequence(v):
-    return (hasattr(v, '__iter__') and hasattr(v, '__len__') and
-            not isinstance(v, string_types))
+    return (
+        hasattr(v, "__iter__")
+        and hasattr(v, "__len__")
+        and not isinstance(v, string_types)
+    )
+
 
 def _default_fs_class(obj):
-    if isinstance(obj, FeatStruct): return FeatStruct
-    if isinstance(obj, (dict, list)): return (dict, list)
+    if isinstance(obj, FeatStruct):
+        return FeatStruct
+    if isinstance(obj, (dict, list)):
+        return (dict, list)
     else:
-        raise ValueError('To unify objects of type %s, you must specify '
-                         'fs_class explicitly.' % obj.__class__.__name__)
+        raise ValueError(
+            "To unify objects of type %s, you must specify "
+            "fs_class explicitly." % obj.__class__.__name__
+        )
+
+
 ######################################################################
 # FeatureValueSet & FeatureValueTuple
 ######################################################################
+
 
 class SubstituteBindingsSequence(SubstituteBindingsI):
     """
     A mixin class for sequence clases that distributes variables() and
     substitute_bindings() over the object's elements.
     """
+
     def variables(self):
-        return ([elt for elt in self if isinstance(elt, Variable)] +
-                sum([list(elt.variables()) for elt in self
-                     if isinstance(elt, SubstituteBindingsI)], []))
+        return [elt for elt in self if isinstance(elt, Variable)] + sum(
+            [
+                list(elt.variables())
+                for elt in self
+                if isinstance(elt, SubstituteBindingsI)
+            ],
+            [],
+        )
 
     def substitute_bindings(self, bindings):
         return self.__class__([self.subst(v, bindings) for v in self])
@@ -1702,7 +1894,8 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
         else:
             return bindings.get(v, v)
 
-@python_2_unicode_compatible
+
+
 class FeatureValueTuple(SubstituteBindingsSequence, tuple):
     """
     A base feature value that is a tuple of other base feature values.
@@ -1710,12 +1903,14 @@ class FeatureValueTuple(SubstituteBindingsSequence, tuple):
     variable substitutions will be propagated to the elements
     contained by the set.  A ``FeatureValueTuple`` is immutable.
     """
-    def __repr__(self): # [xx] really use %s here?
-        if len(self) == 0: return '()'
-        return '(%s)' % ', '.join('%s' % (b,) for b in self)
+
+    def __repr__(self):  # [xx] really use %s here?
+        if len(self) == 0:
+            return "()"
+        return "(%s)" % ", ".join("%s" % (b,) for b in self)
 
 
-@python_2_unicode_compatible
+
 class FeatureValueSet(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that is a set of other base feature values.
@@ -1723,19 +1918,24 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
     variable substitutions will be propagated to the elements
     contained by the set.  A ``FeatureValueSet`` is immutable.
     """
-    def __repr__(self): # [xx] really use %s here?
-        if len(self) == 0: return '{/}' # distinguish from dict.
+
+    def __repr__(self):  # [xx] really use %s here?
+        if len(self) == 0:
+            return "{/}"  # distinguish from dict.
         # n.b., we sort the string reprs of our elements, to ensure
         # that our own repr is deterministic.
-        return '{%s}' % ', '.join(sorted('%s' % (b,) for b in self))
+        return "{%s}" % ", ".join(sorted("%s" % (b,) for b in self))
+
     __str__ = __repr__
 
-@python_2_unicode_compatible
+
+
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that represents the union of two or more
     ``FeatureValueSet`` or ``Variable``.
     """
+
     def __new__(cls, values):
         # If values contains FeatureValueUnions, then collapse them.
         values = _flatten(values, FeatureValueUnion)
@@ -1757,14 +1957,16 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         # n.b., we sort the string reprs of our elements, to ensure
         # that our own repr is deterministic.  also, note that len(self)
         # is guaranteed to be 2 or more.
-        return '{%s}' % '+'.join(sorted('%s' % (b,) for b in self))
+        return "{%s}" % "+".join(sorted("%s" % (b,) for b in self))
 
-@python_2_unicode_compatible
+
+
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
     """
     A base feature value that represents the concatenation of two or
     more ``FeatureValueTuple`` or ``Variable``.
     """
+
     def __new__(cls, values):
         # If values contains FeatureValueConcats, then collapse them.
         values = _flatten(values, FeatureValueConcat)
@@ -1784,7 +1986,7 @@ class FeatureValueConcat(SubstituteBindingsSequence, tuple):
 
     def __repr__(self):
         # n.b.: len(self) is guaranteed to be 2 or more.
-        return '(%s)' % '+'.join('%s' % (b,) for b in self)
+        return "(%s)" % "+".join("%s" % (b,) for b in self)
 
 
 def _flatten(lst, cls):
@@ -1794,31 +1996,36 @@ def _flatten(lst, cls):
     """
     result = []
     for elt in lst:
-        if isinstance(elt, cls): result.extend(elt)
-        else: result.append(elt)
+        if isinstance(elt, cls):
+            result.extend(elt)
+        else:
+            result.append(elt)
     return result
+
 
 ######################################################################
 # Specialized Features
 ######################################################################
 
+
 @total_ordering
-@python_2_unicode_compatible
+
 class Feature(object):
     """
     A feature identifier that's specialized to put additional
     constraints, default values, etc.
     """
-    def __init__(self, name, default=None, display=None):
-        assert display in (None, 'prefix', 'slash')
 
-        self._name = name # [xx] rename to .identifier?
-        self._default = default # [xx] not implemented yet.
+    def __init__(self, name, default=None, display=None):
+        assert display in (None, "prefix", "slash")
+
+        self._name = name  # [xx] rename to .identifier?
+        self._default = default  # [xx] not implemented yet.
         self._display = display
 
-        if self._display == 'prefix':
+        if self._display == "prefix":
             self._sortkey = (-1, self._name)
-        elif self._display == 'slash':
+        elif self._display == "slash":
             self._sortkey = (1, self._name)
         else:
             self._sortkey = (0, self._name)
@@ -1839,7 +2046,7 @@ class Feature(object):
         return self._display
 
     def __repr__(self):
-        return '*%s*' % self.name
+        return "*%s*" % self.name
 
     def __lt__(self, other):
         if isinstance(other, string_types):
@@ -1857,9 +2064,9 @@ class Feature(object):
     def __hash__(self):
         return hash(self._name)
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # These can be overridden by subclasses:
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def read_value(self, s, position, reentrances, parser):
         return parser.read_value(s, position, reentrances)
@@ -1869,34 +2076,45 @@ class Feature(object):
         If possible, return a single value..  If not, return
         the value ``UnificationFailure``.
         """
-        if fval1 == fval2: return fval1
-        else: return UnificationFailure
+        if fval1 == fval2:
+            return fval1
+        else:
+            return UnificationFailure
 
 
 class SlashFeature(Feature):
     def read_value(self, s, position, reentrances, parser):
         return parser.read_partial(s, position, reentrances)
 
+
 class RangeFeature(Feature):
-    RANGE_RE = re.compile('(-?\d+):(-?\d+)')
+    RANGE_RE = re.compile("(-?\d+):(-?\d+)")
+
     def read_value(self, s, position, reentrances, parser):
         m = self.RANGE_RE.match(s, position)
-        if not m: raise ValueError('range', position)
+        if not m:
+            raise ValueError("range", position)
         return (int(m.group(1)), int(m.group(2))), m.end()
 
     def unify_base_values(self, fval1, fval2, bindings):
-        if fval1 is None: return fval2
-        if fval2 is None: return fval1
+        if fval1 is None:
+            return fval2
+        if fval2 is None:
+            return fval1
         rng = max(fval1[0], fval2[0]), min(fval1[1], fval2[1])
-        if rng[1] < rng[0]: return UnificationFailure
+        if rng[1] < rng[0]:
+            return UnificationFailure
         return rng
 
-SLASH = SlashFeature('slash', default=False, display='slash')
-TYPE = Feature('type', display='prefix')
+
+SLASH = SlashFeature("slash", default=False, display="slash")
+TYPE = Feature("type", display="prefix")
+
 
 ######################################################################
 # Specialized Feature Values
 ######################################################################
+
 
 @total_ordering
 class CustomFeatureValue(object):
@@ -1917,48 +2135,57 @@ class CustomFeatureValue(object):
     Subclasses must define ``unify()``, ``__eq__()`` and ``__lt__()``.
     Subclasses may also wish to define ``__hash__()``.
     """
+
     def unify(self, other):
         """
         If this base value unifies with ``other``, then return the
         unified value.  Otherwise, return ``UnificationFailure``.
         """
-        raise NotImplementedError('abstract base class')
+        raise NotImplementedError("abstract base class")
 
     def __eq__(self, other):
-        raise NotImplementedError('abstract base class')
+        raise NotImplementedError("abstract base class")
 
     def __ne__(self, other):
         return not self == other
 
     def __lt__(self, other):
-        raise NotImplementedError('abstract base class')
+        raise NotImplementedError("abstract base class")
 
     def __hash__(self):
-        raise TypeError('%s objects or unhashable' % self.__class__.__name__)
+        raise TypeError("%s objects or unhashable" % self.__class__.__name__)
+
 
 ######################################################################
 # Feature Structure Reader
 ######################################################################
 
+
 class FeatStructReader(object):
-    def __init__(self, features=(SLASH, TYPE), fdict_class=FeatStruct,
-                 flist_class=FeatList, logic_parser=None):
-        self._features = dict((f.name,f) for f in features)
+    def __init__(
+        self,
+        features=(SLASH, TYPE),
+        fdict_class=FeatStruct,
+        flist_class=FeatList,
+        logic_parser=None,
+    ):
+        self._features = dict((f.name, f) for f in features)
         self._fdict_class = fdict_class
         self._flist_class = flist_class
         self._prefix_feature = None
         self._slash_feature = None
         for feature in features:
-            if feature.display == 'slash':
+            if feature.display == "slash":
                 if self._slash_feature:
-                    raise ValueError('Multiple features w/ display=slash')
+                    raise ValueError("Multiple features w/ display=slash")
                 self._slash_feature = feature
-            if feature.display == 'prefix':
+            if feature.display == "prefix":
                 if self._prefix_feature:
-                    raise ValueError('Multiple features w/ display=prefix')
+                    raise ValueError("Multiple features w/ display=prefix")
                 self._prefix_feature = feature
-        self._features_with_defaults = [feature for feature in features
-                                        if feature.default is not None]
+        self._features_with_defaults = [
+            feature for feature in features if feature.default is not None
+        ]
         if logic_parser is None:
             logic_parser = LogicParser()
         self._logic_parser = logic_parser
@@ -1985,22 +2212,28 @@ class FeatStructReader(object):
         s = s.strip()
         value, position = self.read_partial(s, 0, {}, fstruct)
         if position != len(s):
-            self._error(s, 'end of string', position)
+            self._error(s, "end of string", position)
         return value
 
-    _START_FSTRUCT_RE = re.compile(r'\s*(?:\((\d+)\)\s*)?(\??[\w-]+)?(\[)')
-    _END_FSTRUCT_RE = re.compile(r'\s*]\s*')
-    _SLASH_RE = re.compile(r'/')
+    _START_FSTRUCT_RE = re.compile(r"\s*(?:\((\d+)\)\s*)?(\??[\w-]+)?(\[)")
+    _END_FSTRUCT_RE = re.compile(r"\s*]\s*")
+    _SLASH_RE = re.compile(r"/")
     _FEATURE_NAME_RE = re.compile(r'\s*([+-]?)([^\s\(\)<>"\'\-=\[\],]+)\s*')
-    _REENTRANCE_RE = re.compile(r'\s*->\s*')
-    _TARGET_RE = re.compile(r'\s*\((\d+)\)\s*')
-    _ASSIGN_RE = re.compile(r'\s*=\s*')
-    _COMMA_RE = re.compile(r'\s*,\s*')
-    _BARE_PREFIX_RE = re.compile(r'\s*(?:\((\d+)\)\s*)?(\??[\w-]+\s*)()')
+    _REENTRANCE_RE = re.compile(r"\s*->\s*")
+    _TARGET_RE = re.compile(r"\s*\((\d+)\)\s*")
+    _ASSIGN_RE = re.compile(r"\s*=\s*")
+    _COMMA_RE = re.compile(r"\s*,\s*")
+    _BARE_PREFIX_RE = re.compile(r"\s*(?:\((\d+)\)\s*)?(\??[\w-]+\s*)()")
     # This one is used to distinguish fdicts from flists:
-    _START_FDICT_RE = re.compile(r'(%s)|(%s\s*(%s\s*(=|->)|[+-]%s|\]))' % (
-        _BARE_PREFIX_RE.pattern, _START_FSTRUCT_RE.pattern,
-        _FEATURE_NAME_RE.pattern, _FEATURE_NAME_RE.pattern))
+    _START_FDICT_RE = re.compile(
+        r"(%s)|(%s\s*(%s\s*(=|->)|[+-]%s|\]))"
+        % (
+            _BARE_PREFIX_RE.pattern,
+            _START_FSTRUCT_RE.pattern,
+            _FEATURE_NAME_RE.pattern,
+            _FEATURE_NAME_RE.pattern,
+        )
+    )
 
     def read_partial(self, s, position=0, reentrances=None, fstruct=None):
         """
@@ -2014,11 +2247,13 @@ class FeatStructReader(object):
             parsing and the position where the parsed feature structure ends.
         :rtype: bool
         """
-        if reentrances is None: reentrances = {}
+        if reentrances is None:
+            reentrances = {}
         try:
             return self._read_partial(s, position, reentrances, fstruct)
         except ValueError as e:
-            if len(e.args) != 2: raise
+            if len(e.args) != 2:
+                raise
             self._error(s, *e.args)
 
     def _read_partial(self, s, position, reentrances, fstruct=None):
@@ -2034,31 +2269,30 @@ class FeatStructReader(object):
         if not match:
             match = self._BARE_PREFIX_RE.match(s, position)
             if not match:
-                raise ValueError('open bracket or identifier', position)
+                raise ValueError("open bracket or identifier", position)
         position = match.end()
 
         # If there as an identifier, record it.
         if match.group(1):
             identifier = match.group(1)
             if identifier in reentrances:
-                raise ValueError('new identifier', match.start(1))
+                raise ValueError("new identifier", match.start(1))
             reentrances[identifier] = fstruct
 
         if isinstance(fstruct, FeatDict):
             fstruct.clear()
-            return self._read_partial_featdict(s, position, match,
-                                                reentrances, fstruct)
+            return self._read_partial_featdict(s, position, match, reentrances, fstruct)
         else:
             del fstruct[:]
-            return self._read_partial_featlist(s, position, match,
-                                                reentrances, fstruct)
+            return self._read_partial_featlist(s, position, match, reentrances, fstruct)
 
-    def _read_partial_featlist(self, s, position, match,
-                                reentrances, fstruct):
+    def _read_partial_featlist(self, s, position, match, reentrances, fstruct):
         # Prefix features are not allowed:
-        if match.group(2): raise ValueError('open bracket')
+        if match.group(2):
+            raise ValueError("open bracket")
         # Bare prefixes are not allowed:
-        if not match.group(3): raise ValueError('open bracket')
+        if not match.group(3):
+            raise ValueError("open bracket")
 
         # Build a list of the features defined by the structure.
         while position < len(s):
@@ -2072,17 +2306,17 @@ class FeatStructReader(object):
             if match:
                 position = match.end()
                 match = self._TARGET_RE.match(s, position)
-                if not match: raise ValueError('identifier', position)
+                if not match:
+                    raise ValueError("identifier", position)
                 target = match.group(1)
                 if target not in reentrances:
-                    raise ValueError('bound identifier', position)
+                    raise ValueError("bound identifier", position)
                 position = match.end()
                 fstruct.append(reentrances[target])
 
             # Anything else is a value.
             else:
-                value, position = (
-                    self._read_value(0, s, position, reentrances))
+                value, position = self._read_value(0, s, position, reentrances)
                 fstruct.append(value)
 
             # If there's a close bracket, handle it at the top of the loop.
@@ -2091,20 +2325,20 @@ class FeatStructReader(object):
 
             # Otherwise, there should be a comma
             match = self._COMMA_RE.match(s, position)
-            if match is None: raise ValueError('comma', position)
+            if match is None:
+                raise ValueError("comma", position)
             position = match.end()
 
         # We never saw a close bracket.
-        raise ValueError('close bracket', position)
+        raise ValueError("close bracket", position)
 
-    def _read_partial_featdict(self, s, position, match,
-                                reentrances, fstruct):
+    def _read_partial_featdict(self, s, position, match, reentrances, fstruct):
         # If there was a prefix feature, record it.
         if match.group(2):
             if self._prefix_feature is None:
-                raise ValueError('open bracket or identifier', match.start(2))
+                raise ValueError("open bracket or identifier", match.start(2))
             prefixval = match.group(2).strip()
-            if prefixval.startswith('?'):
+            if prefixval.startswith("?"):
                 prefixval = Variable(prefixval)
             fstruct[self._prefix_feature] = prefixval
 
@@ -2130,23 +2364,26 @@ class FeatStructReader(object):
 
             # Get the feature name's name
             match = self._FEATURE_NAME_RE.match(s, position)
-            if match is None: raise ValueError('feature name', position)
+            if match is None:
+                raise ValueError("feature name", position)
             name = match.group(2)
             position = match.end()
 
             # Check if it's a special feature.
-            if name[0] == '*' and name[-1] == '*':
+            if name[0] == "*" and name[-1] == "*":
                 name = self._features.get(name[1:-1])
                 if name is None:
-                    raise ValueError('known special feature', match.start(2))
+                    raise ValueError("known special feature", match.start(2))
 
             # Check if this feature has a value already.
             if name in fstruct:
-                raise ValueError('new name', match.start(2))
+                raise ValueError("new name", match.start(2))
 
             # Boolean value ("+name" or "-name")
-            if match.group(1) == '+': value = True
-            if match.group(1) == '-': value = False
+            if match.group(1) == "+":
+                value = True
+            if match.group(1) == "-":
+                value = False
 
             # Reentrance link ("-> (target)")
             if value is None:
@@ -2155,10 +2392,10 @@ class FeatStructReader(object):
                     position = match.end()
                     match = self._TARGET_RE.match(s, position)
                     if not match:
-                        raise ValueError('identifier', position)
+                        raise ValueError("identifier", position)
                     target = match.group(1)
                     if target not in reentrances:
-                        raise ValueError('bound identifier', position)
+                        raise ValueError("bound identifier", position)
                     position = match.end()
                     value = reentrances[target]
 
@@ -2167,11 +2404,10 @@ class FeatStructReader(object):
                 match = self._ASSIGN_RE.match(s, position)
                 if match:
                     position = match.end()
-                    value, position = (
-                        self._read_value(name, s, position, reentrances))
+                    value, position = self._read_value(name, s, position, reentrances)
                 # None of the above: error.
                 else:
-                    raise ValueError('equals sign', position)
+                    raise ValueError("equals sign", position)
 
             # Store the value.
             fstruct[name] = value
@@ -2182,11 +2418,12 @@ class FeatStructReader(object):
 
             # Otherwise, there should be a comma
             match = self._COMMA_RE.match(s, position)
-            if match is None: raise ValueError('comma', position)
+            if match is None:
+                raise ValueError("comma", position)
             position = match.end()
 
         # We never saw a close bracket.
-        raise ValueError('close bracket', position)
+        raise ValueError("close bracket", position)
 
     def _finalize(self, s, pos, reentrances, fstruct):
         """
@@ -2200,7 +2437,7 @@ class FeatStructReader(object):
             v, pos = self._read_value(name, s, match.end(), reentrances)
             fstruct[name] = v
         ## Add any default features.  -- handle in unficiation instead?
-        #for feature in self._features_with_defaults:
+        # for feature in self._features_with_defaults:
         #    fstruct.setdefault(feature, feature.default)
         # Return the value.
         return fstruct, pos
@@ -2217,20 +2454,25 @@ class FeatStructReader(object):
             if match:
                 handler_func = getattr(self, handler)
                 return handler_func(s, position, reentrances, match)
-        raise ValueError('value', position)
+        raise ValueError("value", position)
 
     def _error(self, s, expected, position):
-        lines = s.split('\n')
+        lines = s.split("\n")
         while position > len(lines[0]):
-            position -= len(lines.pop(0))+1 # +1 for the newline.
-        estr = ('Error parsing feature structure\n    ' +
-                lines[0] + '\n    ' + ' '*position + '^ ' +
-                'Expected %s' % expected)
+            position -= len(lines.pop(0)) + 1  # +1 for the newline.
+        estr = (
+            "Error parsing feature structure\n    "
+            + lines[0]
+            + "\n    "
+            + " " * position
+            + "^ "
+            + "Expected %s" % expected
+        )
         raise ValueError(estr)
 
-    #////////////////////////////////////////////////////////////
-    #{ Value Readers
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
+    # { Value Readers
+    # ////////////////////////////////////////////////////////////
 
     #: A table indicating how feature values should be processed.  Each
     #: entry in the table is a pair (handler, regexp).  The first entry
@@ -2243,19 +2485,21 @@ class FeatStructReader(object):
     #: the string position where the value ended.  (n.b.: order is
     #: important here!)
     VALUE_HANDLERS = [
-        ('read_fstruct_value', _START_FSTRUCT_RE),
-        ('read_var_value', re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*')),
-        ('read_str_value', re.compile("[uU]?[rR]?(['\"])")),
-        ('read_int_value', re.compile(r'-?\d+')),
-        ('read_sym_value', re.compile(r'[a-zA-Z_][a-zA-Z0-9_]*')),
-        ('read_app_value', re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,'
-                                       r'\s*(\?[a-z][a-z]*)\)>')),
-#       ('read_logic_value', re.compile(r'<([^>]*)>')),
-        #lazily match any character after '<' until we hit a '>' not preceded by '-'
-        ('read_logic_value', re.compile(r'<(.*?)(?<!-)>')),
-        ('read_set_value', re.compile(r'{')),
-        ('read_tuple_value', re.compile(r'\(')),
-        ]
+        ("read_fstruct_value", _START_FSTRUCT_RE),
+        ("read_var_value", re.compile(r"\?[a-zA-Z_][a-zA-Z0-9_]*")),
+        ("read_str_value", re.compile("[uU]?[rR]?(['\"])")),
+        ("read_int_value", re.compile(r"-?\d+")),
+        ("read_sym_value", re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")),
+        (
+            "read_app_value",
+            re.compile(r"<(app)\((\?[a-z][a-z]*)\s*," r"\s*(\?[a-z][a-z]*)\)>"),
+        ),
+        #       ('read_logic_value', re.compile(r'<([^>]*)>')),
+        # lazily match any character after '<' until we hit a '>' not preceded by '-'
+        ("read_logic_value", re.compile(r"<(.*?)(?<!-)>")),
+        ("read_set_value", re.compile(r"{")),
+        ("read_tuple_value", re.compile(r"\(")),
+    ]
 
     def read_fstruct_value(self, s, position, reentrances, match):
         return self.read_partial(s, position, reentrances)
@@ -2270,14 +2514,15 @@ class FeatStructReader(object):
     def read_var_value(self, s, position, reentrances, match):
         return Variable(match.group()), match.end()
 
-    _SYM_CONSTS = {'None':None, 'True':True, 'False':False}
+    _SYM_CONSTS = {"None": None, "True": True, "False": False}
+
     def read_sym_value(self, s, position, reentrances, match):
         val, end = match.group(), match.end()
         return self._SYM_CONSTS.get(val, val), end
 
     def read_app_value(self, s, position, reentrances, match):
         """Mainly included for backwards compat."""
-        return self._logic_parser.parse('%s(%s)' % match.group(2,3)), match.end()
+        return self._logic_parser.parse("%s(%s)" % match.group(2, 3)), match.end()
 
     def read_logic_value(self, s, position, reentrances, match):
         try:
@@ -2287,94 +2532,107 @@ class FeatStructReader(object):
                 raise ValueError()
             return expr, match.end()
         except ValueError:
-            raise ValueError('logic expression', match.start(1))
+            raise ValueError("logic expression", match.start(1))
 
     def read_tuple_value(self, s, position, reentrances, match):
-        return self._read_seq_value(s, position, reentrances, match, ')',
-                                     FeatureValueTuple, FeatureValueConcat)
+        return self._read_seq_value(
+            s, position, reentrances, match, ")", FeatureValueTuple, FeatureValueConcat
+        )
 
     def read_set_value(self, s, position, reentrances, match):
-        return self._read_seq_value(s, position, reentrances, match, '}',
-                                     FeatureValueSet, FeatureValueUnion)
+        return self._read_seq_value(
+            s, position, reentrances, match, "}", FeatureValueSet, FeatureValueUnion
+        )
 
-    def _read_seq_value(self, s, position, reentrances, match,
-                         close_paren, seq_class, plus_class):
+    def _read_seq_value(
+        self, s, position, reentrances, match, close_paren, seq_class, plus_class
+    ):
         """
         Helper function used by read_tuple_value and read_set_value.
         """
         cp = re.escape(close_paren)
         position = match.end()
         # Special syntax fo empty tuples:
-        m = re.compile(r'\s*/?\s*%s' % cp).match(s, position)
-        if m: return seq_class(), m.end()
+        m = re.compile(r"\s*/?\s*%s" % cp).match(s, position)
+        if m:
+            return seq_class(), m.end()
         # Read values:
         values = []
         seen_plus = False
         while True:
             # Close paren: return value.
-            m = re.compile(r'\s*%s' % cp).match(s, position)
+            m = re.compile(r"\s*%s" % cp).match(s, position)
             if m:
-                if seen_plus: return plus_class(values), m.end()
-                else: return seq_class(values), m.end()
+                if seen_plus:
+                    return plus_class(values), m.end()
+                else:
+                    return seq_class(values), m.end()
 
             # Read the next value.
             val, position = self.read_value(s, position, reentrances)
             values.append(val)
 
             # Comma or looking at close paren
-            m = re.compile(r'\s*(,|\+|(?=%s))\s*' % cp).match(s, position)
-            if not m: raise ValueError("',' or '+' or '%s'" % cp, position)
-            if m.group(1) == '+': seen_plus = True
+            m = re.compile(r"\s*(,|\+|(?=%s))\s*" % cp).match(s, position)
+            if not m:
+                raise ValueError("',' or '+' or '%s'" % cp, position)
+            if m.group(1) == "+":
+                seen_plus = True
             position = m.end()
 
+
 ######################################################################
-#{ Demo
+# { Demo
 ######################################################################
 
-def display_unification(fs1, fs2, indent='  '):
+
+def display_unification(fs1, fs2, indent="  "):
     # Print the two input feature structures, side by side.
-    fs1_lines = ("%s" % fs1).split('\n')
-    fs2_lines = ("%s" % fs2).split('\n')
+    fs1_lines = ("%s" % fs1).split("\n")
+    fs2_lines = ("%s" % fs2).split("\n")
     if len(fs1_lines) > len(fs2_lines):
-        blankline = '['+' '*(len(fs2_lines[0])-2)+']'
-        fs2_lines += [blankline]*len(fs1_lines)
+        blankline = "[" + " " * (len(fs2_lines[0]) - 2) + "]"
+        fs2_lines += [blankline] * len(fs1_lines)
     else:
-        blankline = '['+' '*(len(fs1_lines[0])-2)+']'
-        fs1_lines += [blankline]*len(fs2_lines)
+        blankline = "[" + " " * (len(fs1_lines[0]) - 2) + "]"
+        fs1_lines += [blankline] * len(fs2_lines)
     for (fs1_line, fs2_line) in zip(fs1_lines, fs2_lines):
-        print(indent + fs1_line + '   ' + fs2_line)
-    print(indent+'-'*len(fs1_lines[0])+'   '+'-'*len(fs2_lines[0]))
+        print(indent + fs1_line + "   " + fs2_line)
+    print(indent + "-" * len(fs1_lines[0]) + "   " + "-" * len(fs2_lines[0]))
 
-    linelen = len(fs1_lines[0])*2+3
-    print(indent+'|               |'.center(linelen))
-    print(indent+'+-----UNIFY-----+'.center(linelen))
-    print(indent+'|'.center(linelen))
-    print(indent+'V'.center(linelen))
+    linelen = len(fs1_lines[0]) * 2 + 3
+    print(indent + "|               |".center(linelen))
+    print(indent + "+-----UNIFY-----+".center(linelen))
+    print(indent + "|".center(linelen))
+    print(indent + "V".center(linelen))
 
     bindings = {}
 
     result = fs1.unify(fs2, bindings)
     if result is None:
-        print(indent+'(FAILED)'.center(linelen))
+        print(indent + "(FAILED)".center(linelen))
     else:
-        print('\n'.join(indent+l.center(linelen)
-                         for l in ("%s" % result).split('\n')))
+        print(
+            "\n".join(indent + l.center(linelen) for l in ("%s" % result).split("\n"))
+        )
         if bindings and len(bindings.bound_variables()) > 0:
             print(repr(bindings).center(linelen))
     return result
 
+
 def interactive_demo(trace=False):
     import random, sys
 
-    HELP = '''
+    HELP = """
     1-%d: Select the corresponding feature structure
     q: Quit
     t: Turn tracing on or off
     l: List all feature structures
     ?: Help
-    '''
+    """
 
-    print('''
+    print(
+        """
     This demo will repeatedly present you with a list of feature
     structures, and ask you to choose two for unification.  Whenever a
     new feature structure is generated, it is added to the list of
@@ -2383,34 +2641,40 @@ def interactive_demo(trace=False):
     random subset for you to choose between at a given time.  If you
     want to see the complete lists, type "l".  For a list of valid
     commands, type "?".
-    ''')
+    """
+    )
     print('Press "Enter" to continue...')
     sys.stdin.readline()
 
     fstruct_strings = [
-        '[agr=[number=sing, gender=masc]]',
-        '[agr=[gender=masc, person=3]]',
-        '[agr=[gender=fem, person=3]]',
-        '[subj=[agr=(1)[]], agr->(1)]',
-        '[obj=?x]', '[subj=?x]',
-        '[/=None]', '[/=NP]',
-        '[cat=NP]', '[cat=VP]', '[cat=PP]',
-        '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
-        '[gender=masc, agr=?C]',
-        '[gender=?S, agr=[gender=?S,person=3]]'
-        ]
+        "[agr=[number=sing, gender=masc]]",
+        "[agr=[gender=masc, person=3]]",
+        "[agr=[gender=fem, person=3]]",
+        "[subj=[agr=(1)[]], agr->(1)]",
+        "[obj=?x]",
+        "[subj=?x]",
+        "[/=None]",
+        "[/=NP]",
+        "[cat=NP]",
+        "[cat=VP]",
+        "[cat=PP]",
+        "[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]",
+        "[gender=masc, agr=?C]",
+        "[gender=?S, agr=[gender=?S,person=3]]",
+    ]
 
-    all_fstructs = [(i, FeatStruct(fstruct_strings[i]))
-                    for i in range(len(fstruct_strings))]
+    all_fstructs = [
+        (i, FeatStruct(fstruct_strings[i])) for i in range(len(fstruct_strings))
+    ]
 
     def list_fstructs(fstructs):
         for i, fstruct in fstructs:
             print()
-            lines = ("%s" % fstruct).split('\n')
-            print('%3d: %s' % (i+1, lines[0]))
-            for line in lines[1:]: print('     '+line)
+            lines = ("%s" % fstruct).split("\n")
+            print("%3d: %s" % (i + 1, lines[0]))
+            for line in lines[1:]:
+                print("     " + line)
         print()
-
 
     while True:
         # Pick 5 feature structures at random from the master list.
@@ -2420,32 +2684,40 @@ def interactive_demo(trace=False):
         else:
             fstructs = all_fstructs
 
-        print('_'*75)
+        print("_" * 75)
 
-        print('Choose two feature structures to unify:')
+        print("Choose two feature structures to unify:")
         list_fstructs(fstructs)
 
-        selected = [None,None]
-        for (nth,i) in (('First',0), ('Second',1)):
+        selected = [None, None]
+        for (nth, i) in (("First", 0), ("Second", 1)):
             while selected[i] is None:
-                print(('%s feature structure (1-%d,q,t,l,?): '
-                       % (nth, len(all_fstructs))), end=' ')
+                print(
+                    (
+                        "%s feature structure (1-%d,q,t,l,?): "
+                        % (nth, len(all_fstructs))
+                    ),
+                    end=" ",
+                )
                 try:
                     input = sys.stdin.readline().strip()
-                    if input in ('q', 'Q', 'x', 'X'): return
-                    if input in ('t', 'T'):
+                    if input in ("q", "Q", "x", "X"):
+                        return
+                    if input in ("t", "T"):
                         trace = not trace
-                        print('   Trace = %s' % trace)
+                        print("   Trace = %s" % trace)
                         continue
-                    if input in ('h', 'H', '?'):
-                        print(HELP % len(fstructs)); continue
-                    if input in ('l', 'L'):
-                        list_fstructs(all_fstructs); continue
-                    num = int(input)-1
+                    if input in ("h", "H", "?"):
+                        print(HELP % len(fstructs))
+                        continue
+                    if input in ("l", "L"):
+                        list_fstructs(all_fstructs)
+                        continue
+                    num = int(input) - 1
                     selected[i] = all_fstructs[num][1]
                     print()
                 except:
-                    print('Bad sentence number')
+                    print("Bad sentence number")
                     continue
 
         if trace:
@@ -2454,49 +2726,70 @@ def interactive_demo(trace=False):
             result = display_unification(selected[0], selected[1])
         if result is not None:
             for i, fstruct in all_fstructs:
-                if repr(result) == repr(fstruct): break
+                if repr(result) == repr(fstruct):
+                    break
             else:
                 all_fstructs.append((len(all_fstructs), result))
 
         print('\nType "Enter" to continue unifying; or "q" to quit.')
         input = sys.stdin.readline().strip()
-        if input in ('q', 'Q', 'x', 'X'): return
+        if input in ("q", "Q", "x", "X"):
+            return
+
 
 def demo(trace=False):
     """
     Just for testing
     """
-    #import random
+    # import random
 
     # processor breaks with values like '3rd'
     fstruct_strings = [
-        '[agr=[number=sing, gender=masc]]',
-        '[agr=[gender=masc, person=3]]',
-        '[agr=[gender=fem, person=3]]',
-        '[subj=[agr=(1)[]], agr->(1)]',
-        '[obj=?x]', '[subj=?x]',
-        '[/=None]', '[/=NP]',
-        '[cat=NP]', '[cat=VP]', '[cat=PP]',
-        '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
-        '[gender=masc, agr=?C]',
-        '[gender=?S, agr=[gender=?S,person=3]]'
+        "[agr=[number=sing, gender=masc]]",
+        "[agr=[gender=masc, person=3]]",
+        "[agr=[gender=fem, person=3]]",
+        "[subj=[agr=(1)[]], agr->(1)]",
+        "[obj=?x]",
+        "[subj=?x]",
+        "[/=None]",
+        "[/=NP]",
+        "[cat=NP]",
+        "[cat=VP]",
+        "[cat=PP]",
+        "[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]",
+        "[gender=masc, agr=?C]",
+        "[gender=?S, agr=[gender=?S,person=3]]",
     ]
     all_fstructs = [FeatStruct(fss) for fss in fstruct_strings]
-    #MAX_CHOICES = 5
-    #if len(all_fstructs) > MAX_CHOICES:
-        #fstructs = random.sample(all_fstructs, MAX_CHOICES)
-        #fstructs.sort()
-    #else:
-        #fstructs = all_fstructs
+    # MAX_CHOICES = 5
+    # if len(all_fstructs) > MAX_CHOICES:
+    # fstructs = random.sample(all_fstructs, MAX_CHOICES)
+    # fstructs.sort()
+    # else:
+    # fstructs = all_fstructs
 
     for fs1 in all_fstructs:
         for fs2 in all_fstructs:
-            print("\n*******************\nfs1 is:\n%s\n\nfs2 is:\n%s\n\nresult is:\n%s" % (fs1, fs2, unify(fs1, fs2)))
+            print(
+                "\n*******************\nfs1 is:\n%s\n\nfs2 is:\n%s\n\nresult is:\n%s"
+                % (fs1, fs2, unify(fs1, fs2))
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
 
-__all__ = ['FeatStruct', 'FeatDict', 'FeatList', 'unify', 'subsumes', 'conflicts',
-           'Feature', 'SlashFeature', 'RangeFeature', 'SLASH', 'TYPE',
-           'FeatStructReader']
+__all__ = [
+    "FeatStruct",
+    "FeatDict",
+    "FeatList",
+    "unify",
+    "subsumes",
+    "conflicts",
+    "Feature",
+    "SlashFeature",
+    "RangeFeature",
+    "SLASH",
+    "TYPE",
+    "FeatStructReader",
+]

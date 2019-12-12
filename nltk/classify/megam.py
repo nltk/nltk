@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Megam Classifier
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -22,24 +22,24 @@ for details.
 
 .. _megam: http://www.umiacs.umd.edu/~hal/megam/index.html
 """
-from __future__ import print_function
-
 import subprocess
 
 from six import string_types
 
-from nltk import compat
 from nltk.internals import find_binary
+
 try:
     import numpy
 except ImportError:
     numpy = None
 
 ######################################################################
-#{ Configuration
+# { Configuration
 ######################################################################
 
 _megam_bin = None
+
+
 def config_megam(bin=None):
     """
     Configure NLTK's interface to the ``megam`` maxent optimization
@@ -52,17 +52,20 @@ def config_megam(bin=None):
     """
     global _megam_bin
     _megam_bin = find_binary(
-        'megam', bin,
-        env_vars=['MEGAM'],
-        binary_names=['megam.opt', 'megam', 'megam_686', 'megam_i686.opt'],
-        url='http://www.umiacs.umd.edu/~hal/megam/index.html')
+        "megam",
+        bin,
+        env_vars=["MEGAM"],
+        binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
+        url="http://www.umiacs.umd.edu/~hal/megam/index.html",
+    )
+
 
 ######################################################################
-#{ Megam Interface Functions
+# { Megam Interface Functions
 ######################################################################
 
-def write_megam_file(train_toks, encoding, stream,
-                     bernoulli=True, explicit=True):
+
+def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True):
     """
     Generate an input file for ``megam`` based on the given corpus of
     classified tokens.
@@ -99,28 +102,28 @@ def write_megam_file(train_toks, encoding, stream,
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
         # First, the instance number (or, in the weighted multiclass case, the cost of each label).
-        if hasattr(encoding, 'cost'):
-            stream.write(':'.join(str(encoding.cost(featureset, label, l))
-                                  for l in labels))
+        if hasattr(encoding, "cost"):
+            stream.write(
+                ":".join(str(encoding.cost(featureset, label, l)) for l in labels)
+            )
         else:
-            stream.write('%d' % labelnum[label])
+            stream.write("%d" % labelnum[label])
 
         # For implicit file formats, just list the features that fire
         # for this instance's actual label.
         if not explicit:
-            _write_megam_features(encoding.encode(featureset, label),
-                                  stream, bernoulli)
+            _write_megam_features(encoding.encode(featureset, label), stream, bernoulli)
 
         # For explicit formats, list the features that would fire for
         # any of the possible labels.
         else:
             for l in labels:
-                stream.write(' #')
-                _write_megam_features(encoding.encode(featureset, l),
-                                      stream, bernoulli)
+                stream.write(" #")
+                _write_megam_features(encoding.encode(featureset, l), stream, bernoulli)
 
         # End of the instance.
-        stream.write('\n')
+        stream.write("\n")
+
 
 def parse_megam_weights(s, features_count, explicit=True):
     """
@@ -129,36 +132,40 @@ def parse_megam_weights(s, features_count, explicit=True):
     vector.  This function does not currently handle bias features.
     """
     if numpy is None:
-        raise ValueError('This function requires that numpy be installed')
-    assert explicit, 'non-explicit not supported yet'
-    lines = s.strip().split('\n')
-    weights = numpy.zeros(features_count, 'd')
+        raise ValueError("This function requires that numpy be installed")
+    assert explicit, "non-explicit not supported yet"
+    lines = s.strip().split("\n")
+    weights = numpy.zeros(features_count, "d")
     for line in lines:
         if line.strip():
             fid, weight = line.split()
             weights[int(fid)] = float(weight)
     return weights
 
+
 def _write_megam_features(vector, stream, bernoulli):
     if not vector:
-        raise ValueError('MEGAM classifier requires the use of an '
-                         'always-on feature.')
+        raise ValueError(
+            "MEGAM classifier requires the use of an " "always-on feature."
+        )
     for (fid, fval) in vector:
         if bernoulli:
             if fval == 1:
-                stream.write(' %s' % fid)
+                stream.write(" %s" % fid)
             elif fval != 0:
-                raise ValueError('If bernoulli=True, then all'
-                                 'features must be binary.')
+                raise ValueError(
+                    "If bernoulli=True, then all" "features must be binary."
+                )
         else:
-            stream.write(' %s %s' % (fid, fval))
+            stream.write(" %s %s" % (fid, fval))
+
 
 def call_megam(args):
     """
     Call the ``megam`` binary with the given arguments.
     """
     if isinstance(args, string_types):
-        raise TypeError('args should be a list of strings')
+        raise TypeError("args should be a list of strings")
     if _megam_bin is None:
         config_megam()
 
@@ -171,9 +178,9 @@ def call_megam(args):
     if p.returncode != 0:
         print()
         print(stderr)
-        raise OSError('megam command failed!')
+        raise OSError("megam command failed!")
 
     if isinstance(stdout, string_types):
         return stdout
     else:
-        return stdout.decode('utf-8')
+        return stdout.decode("utf-8")

@@ -1,4 +1,4 @@
-﻿# Natural Language Toolkit (NLTK) Authors
+# Natural Language Toolkit (NLTK) Authors
 
 ## Original Authors
 
@@ -9,7 +9,6 @@
 
 ## Contributors
 
-- Hyuckin David Lim
 - Rami Al-Rfou'
 - Mark Amery
 - Greg Aumann
@@ -55,8 +54,10 @@
 - Pablo Duboue
 - Long Duong
 - Christian Federmann
+- Campion Fellin
 - Michelle Fullwood
 - Dan Garrette
+- Maciej Gawinecki
 - Jean Mark Gawron
 - Sumukh Ghodke
 - Yoav Goldberg
@@ -78,6 +79,7 @@
 - Helder
 - Michael Heilman
 - Ofer Helman
+- Christopher Hench
 - Bruce Hill
 - Amy Holland
 - Kristy Hollingshead
@@ -94,6 +96,7 @@
 - Chris Koenig
 - Mikhail Korobov
 - Denis Krusko
+- Ilia Kurenkov
 - Stefano Lattarini
 - Pierre-François Laquerre
 - Stefano Lattarini
@@ -101,6 +104,7 @@
 - Jackson Lee
 - Max Leonov
 - Chris Liechti
+- Hyuckin David Lim
 - Tom Lippincott
 - Peter Ljunglöf
 - Alex Louden
@@ -178,6 +182,7 @@
 - Chuck Wooters
 - Steven Xu
 - Beracah Yankama
+- Lei Ye (叶磊)
 - Patrick Ye
 - Geraldine Sim Wei Ying
 - Jason Yoder
@@ -202,6 +207,7 @@
 - Linghao Zhang
 - Colin Carroll
 - Heguang Miao
+- Hannah Aizenman (story645)
 - George Berry
 - Adam Nelson
 - J Richard Snape
@@ -212,15 +218,17 @@
 - Arthur Tilley
 - Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
+- Chintan Shah <https://github.com/chintanshah24>
 - sbagan
 - Zicheng Xu
 - Albert Au Yeung <https://github.com/albertauyeung>
-- Shenjian Zhao 
+- Shenjian Zhao
 - Deng Wang <https://github.com/lmatt-bit>
 - Ali Abdullah
 - Stoytcho Stoytchev
 - Lakhdar Benzahia
 - Kheireddine Abainia <https://github.com/xprogramer>
+
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

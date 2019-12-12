@@ -1,3 +1,114 @@
+Version 3.5 2019-10-16
+* drop support for Python 2
+* create NLTK's own Tokenizer class distinct from the Treebank reference tokeniser
+* update Vader sentiment analyser
+* fix JSON serialization of some PoS taggers
+* minor bug fixes and clean ups
+
+Thanks to the following contributors to 3.5:
+Nicolas Darr, Gerhard Kremer, Liling Tan, Christopher Hench, Alexandre Dias,
+Hervé Nicol, BLKSerene, hoefling
+
+Version 3.4.5 2019-08-20
+* Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
+  situation where a user configures their downloader to use a compromised server
+  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-14751)
+	        
+Thanks to the following contributors to 3.4.5:
+Mike Salvatore
+
+Version 3.4.4 2019-07-04
+* fix bug in plot function (probability.py)
+* add improved PanLex Swadesh corpus reader
+
+Thanks to the following contributors to 3.4.4:
+Devashish Lal, Liling Tan
+
+Version 3.4.3 2019-06-07
+
+* add Text.generate()
+* add QuadgramAssocMeasures
+* add SSP to tokenizers
+* return confidence of best tag from AveragedPerceptron
+* make plot methods return Axes objects
+* don't require list arguments to PositiveNaiveBayesClassifier.train
+* fix Tree classes to work with native Python copy library
+* fix inconsistency for NomBank
+* fix random seeding in LanguageModel.generate
+* fix ConditionalFreqDist mutation on tabulate/plot call
+* fix broken links in documentation
+* fix misc Wordnet issues
+* update installation instructions
+
+Thanks to the following contributors to 3.4.3:
+alvations, Bharat123rox, cifkao, drewmiller, free-variation, henchc
+irisxzhou, nick-ulle, ppartarr, simonepri, yigitsever, zhaoyanpeng
+	
+Version 3.4.1 2019-04-17
+
+* add chomsky_normal_form for CFGs
+* add meteor score
+* add minimum edit/Levenshtein distance based alignment function
+* allow access to collocation list via text.collocation_list()
+* support corenlp server options
+* drop support for Python 3.4
+* other minor fixes
+
+Thanks to the following contributors to 3.4.1:
+Adrian Ellis, Andrew Martin, Ayush Kaushal, BLKSerene, Bharat
+Raghunathan, Franklin Chen, KMiNT21 Kevin Brown, Liling Tan,
+Matan Rak, Nat Quayle Nelson, Osman Zubair, Purificant,
+Uday Krishna, Viresh Gupta
+	
+Version 3.4 2018-11-17
+* Support Python 3.7	
+* Language Modeling incl Kneser-Ney, Witten-Bell, Good-Turing
+* Cistem Stemmer for German
+* Support Russian National Corpus incl POS tag model
+* Decouple sentiment and twitter packages
+* Minor extensions for WordNet
+* K-alpha
+* Fix warning messages for corenlp
+* Comprehensive code cleanups
+* Many other minor fixes
+* Switch continuous integration from Jenkins to Travis
+
+Special thanks to Ilia Kurenkov (Language Model package), Liling Tan (Python 3.7, Travis-CI),
+and purificant (code cleanups). Thanks also to: Afshin Sadeghi, Ales Tamchyna, Alok Debnath,
+aquatiko, Coykto, Denis Kataev, dnc1994, Fabian Howard, Frankie Robertson, Iaroslav Tymchenko,
+Jayakrishna Sahit, LBenzahia, Leonie Weißweiler, Linghao Zhang, Rohit Kumar, sahitpj,
+Tim Gianitsos, vagrant, 53X
+
+Version 3.3 2018-05-06
+* Support Python 3.6
+* New interface to CoreNLP
+* Support synset retrieval by sense key
+* Minor fixes to CoNLL Corpus Reader, AlignedSent
+* Fixed minor inconsistencies in APIs and API documentation
+* Better conformance to PEP8
+* Drop moses.py (incompatible license)
+
+Special thanks to Liling Tan for leading our transition to Python 3.6.
+Thanks to other contributors listed here: https://github.com/nltk/nltk/blob/develop/AUTHORS.md
+
+Version 3.2.5 2017-09-24
+
+* Arabic stemmers (ARLSTem, Snowball)
+* NIST MT evaluation metric and added NIST international_tokenize
+* Moses tokenizer
+* Document Russian tagger
+* Fix to Stanford segmenter
+* Improve treebank detokenizer, VerbNet, Vader
+* Misc code and documentation cleanups
+* Implement fixes suggested by LGTM
+
+Thanks to the following contributors to 3.2.5:
+Ali Abdullah, Lakhdar Benzahia, Henry Elder, Campion Fellin,
+Tsolak Ghukasyan, Thanh Ha, Jean Helie, Nelson Liu,
+Nathan Schneider, Chintan Shah, Fábio Silva, Liling Tan,
+Ziyao Wei, Zicheng Xu, Albert Au Yeung, AbdealiJK,
+porqupine, sbagan, xprogramer
+
 Version 3.2.4 2017-05-21
 
 * remove load-time dependency on Python requests library

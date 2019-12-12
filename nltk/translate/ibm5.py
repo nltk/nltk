@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: IBM Model 5
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Tah Wei Hoon <hoon.tw@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -111,16 +111,16 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__ import division
+import warnings
 from collections import defaultdict
 from math import factorial
+
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel4
 from nltk.translate.ibm_model import Counts
 from nltk.translate.ibm_model import longest_target_sentence_length
-import warnings
 
 
 class IBMModel5(IBMModel):
@@ -167,14 +167,20 @@ class IBMModel5(IBMModel):
     Alignment([(0, 0), (1, 1), (2, 2), (3, None), (4, 3)])
 
     """
+
     MIN_SCORE_FACTOR = 0.2
     """
     Alignments with scores below this factor are pruned during sampling
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations,
-                 source_word_classes, target_word_classes,
-                 probability_tables=None):
+    def __init__(
+        self,
+        sentence_aligned_corpus,
+        iterations,
+        source_word_classes,
+        target_word_classes,
+        probability_tables=None,
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, vacancy models, a fertility model, and a
@@ -215,8 +221,12 @@ class IBMModel5(IBMModel):
 
         if probability_tables is None:
             # Get probabilities from IBM model 4
-            ibm4 = IBMModel4(sentence_aligned_corpus, iterations,
-                             source_word_classes, target_word_classes)
+            ibm4 = IBMModel4(
+                sentence_aligned_corpus,
+                iterations,
+                source_word_classes,
+                target_word_classes,
+            )
             self.translation_table = ibm4.translation_table
             self.alignment_table = ibm4.alignment_table
             self.fertility_table = ibm4.fertility_table
@@ -226,18 +236,16 @@ class IBMModel5(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables['translation_table']
-            self.alignment_table = probability_tables['alignment_table']
-            self.fertility_table = probability_tables['fertility_table']
-            self.p1 = probability_tables['p1']
-            self.head_distortion_table = probability_tables[
-                'head_distortion_table']
+            self.translation_table = probability_tables["translation_table"]
+            self.alignment_table = probability_tables["alignment_table"]
+            self.fertility_table = probability_tables["fertility_table"]
+            self.p1 = probability_tables["p1"]
+            self.head_distortion_table = probability_tables["head_distortion_table"]
             self.non_head_distortion_table = probability_tables[
-                'non_head_distortion_table']
-            self.head_vacancy_table = probability_tables[
-                'head_vacancy_table']
-            self.non_head_vacancy_table = probability_tables[
-                'non_head_vacancy_table']
+                "non_head_distortion_table"
+            ]
+            self.head_vacancy_table = probability_tables["head_vacancy_table"]
+            self.non_head_vacancy_table = probability_tables["non_head_vacancy_table"]
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
@@ -245,7 +253,8 @@ class IBMModel5(IBMModel):
     def reset_probabilities(self):
         super(IBMModel5, self).reset_probabilities()
         self.head_vacancy_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB)))
+            lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
+        )
         """
         dict[int][int][int]: float. Probability(vacancy difference |
         number of remaining valid positions,target word class).
@@ -253,7 +262,8 @@ class IBMModel5(IBMModel):
         """
 
         self.non_head_vacancy_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB)))
+            lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
+        )
         """
         dict[int][int][int]: float. Probability(vacancy difference |
         number of remaining valid positions,target word class).
@@ -276,20 +286,25 @@ class IBMModel5(IBMModel):
         # Thus, the number of possible vacancy difference values is
         # (max_v) - (1-max_v) + 1 = 2 * max_v.
         if max_m > 0 and (1 / (2 * max_m)) < IBMModel.MIN_PROB:
-            warnings.warn("A target sentence is too long (" + str(max_m) +
-                          " words). Results may be less accurate.")
+            warnings.warn(
+                "A target sentence is too long ("
+                + str(max_m)
+                + " words). Results may be less accurate."
+            )
 
         for max_v in range(1, max_m + 1):
             for dv in range(1, max_m + 1):
                 initial_prob = 1 / (2 * max_v)
-                self.head_vacancy_table[dv][max_v] = defaultdict(
-                    lambda: initial_prob)
-                self.head_vacancy_table[-(dv-1)][max_v] = defaultdict(
-                    lambda: initial_prob)
+                self.head_vacancy_table[dv][max_v] = defaultdict(lambda: initial_prob)
+                self.head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
+                    lambda: initial_prob
+                )
                 self.non_head_vacancy_table[dv][max_v] = defaultdict(
-                    lambda: initial_prob)
-                self.non_head_vacancy_table[-(dv-1)][max_v] = defaultdict(
-                    lambda: initial_prob)
+                    lambda: initial_prob
+                )
+                self.non_head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
+                    lambda: initial_prob
+                )
 
     def train(self, parallel_corpus):
         counts = Model5Counts()
@@ -301,7 +316,8 @@ class IBMModel5(IBMModel):
             sampled_alignments, best_alignment = self.sample(aligned_sentence)
             # Record the most probable alignment
             aligned_sentence.alignment = Alignment(
-                best_alignment.zero_indexed_alignment())
+                best_alignment.zero_indexed_alignment()
+            )
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)
@@ -313,13 +329,14 @@ class IBMModel5(IBMModel):
 
                 for j in range(1, m + 1):
                     counts.update_lexical_translation(
-                        normalized_count, alignment_info, j)
+                        normalized_count, alignment_info, j
+                    )
 
                 slots = Slots(m)
                 for i in range(1, l + 1):
                     counts.update_vacancy(
-                        normalized_count, alignment_info, i,
-                        self.trg_classes, slots)
+                        normalized_count, alignment_info, i, self.trg_classes, slots
+                    )
 
                 counts.update_null_generation(normalized_count, alignment_info)
                 counts.update_fertility(normalized_count, alignment_info)
@@ -359,8 +376,9 @@ class IBMModel5(IBMModel):
             and the best alignment of the set for convenience
         :rtype: set(AlignmentInfo), AlignmentInfo
         """
-        sampled_alignments, best_alignment = super(
-            IBMModel5, self).sample(sentence_pair)
+        sampled_alignments, best_alignment = super(IBMModel5, self).sample(
+            sentence_pair
+        )
         return self.prune(sampled_alignments), best_alignment
 
     def prune(self, alignment_infos):
@@ -410,7 +428,8 @@ class IBMModel5(IBMModel):
             old_alignment = alignment
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
                 neighbor_probability = IBMModel4.model4_prob_t_a_given_s(
-                    neighbor_alignment, self)
+                    neighbor_alignment, self
+                )
 
                 if neighbor_probability > max_probability:
                     alignment = neighbor_alignment
@@ -439,7 +458,7 @@ class IBMModel5(IBMModel):
             p0 = 1 - p1
             null_fertility = alignment_info.fertility_of_i(0)
             m = len(alignment_info.trg_sentence) - 1
-            value *= (pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility))
+            value *= pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility)
             if value < MIN_PROB:
                 return MIN_PROB
 
@@ -453,8 +472,10 @@ class IBMModel5(IBMModel):
             src_sentence = alignment_info.src_sentence
             for i in range(1, len(src_sentence)):
                 fertility = alignment_info.fertility_of_i(i)
-                value *= (factorial(fertility) *
-                          self.fertility_table[fertility][src_sentence[i]])
+                value *= (
+                    factorial(fertility)
+                    * self.fertility_table[fertility][src_sentence[i]]
+                )
                 if value < MIN_PROB:
                     return MIN_PROB
             return value
@@ -494,8 +515,7 @@ class IBMModel5(IBMModel):
                 previous_vacancies = slots.vacancies_at(previous_position)
                 j = tablet[k]
                 dv = slots.vacancies_at(j) - previous_vacancies
-                max_v = (total_vacancies - tablet_length + k + 1 -
-                         previous_vacancies)
+                max_v = total_vacancies - tablet_length + k + 1 - previous_vacancies
                 trg_class = self.trg_classes[alignment_info.trg_sentence[j]]
                 value *= self.non_head_vacancy_table[dv][max_v][trg_class]
                 slots.occupy(j)  # mark position as occupied
@@ -504,6 +524,7 @@ class IBMModel5(IBMModel):
                     return MIN_PROB
 
             return value
+
         # end nested functions
 
         # Abort computation whenever probability falls below MIN_PROB at
@@ -534,20 +555,21 @@ class IBMModel5(IBMModel):
         for dv, max_vs in counts.head_vacancy.items():
             for max_v, trg_classes in max_vs.items():
                 for t_cls in trg_classes:
-                    estimate = (counts.head_vacancy[dv][max_v][t_cls] /
-                                counts.head_vacancy_for_any_dv[max_v][t_cls])
-                    head_vacancy_table[dv][max_v][t_cls] = max(estimate,
-                                                               MIN_PROB)
+                    estimate = (
+                        counts.head_vacancy[dv][max_v][t_cls]
+                        / counts.head_vacancy_for_any_dv[max_v][t_cls]
+                    )
+                    head_vacancy_table[dv][max_v][t_cls] = max(estimate, MIN_PROB)
 
         non_head_vacancy_table = self.non_head_vacancy_table
         for dv, max_vs in counts.non_head_vacancy.items():
             for max_v, trg_classes in max_vs.items():
                 for t_cls in trg_classes:
                     estimate = (
-                        counts.non_head_vacancy[dv][max_v][t_cls] /
-                        counts.non_head_vacancy_for_any_dv[max_v][t_cls])
-                    non_head_vacancy_table[dv][max_v][t_cls] = max(estimate,
-                                                                   MIN_PROB)
+                        counts.non_head_vacancy[dv][max_v][t_cls]
+                        / counts.non_head_vacancy_for_any_dv[max_v][t_cls]
+                    )
+                    non_head_vacancy_table[dv][max_v][t_cls] = max(estimate, MIN_PROB)
 
 
 class Model5Counts(Counts):
@@ -555,16 +577,17 @@ class Model5Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for vacancies.
     """
+
     def __init__(self):
         super(Model5Counts, self).__init__()
         self.head_vacancy = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
-        self.head_vacancy_for_any_dv = defaultdict(
-            lambda: defaultdict(lambda: 0.0))
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+        )
+        self.head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(lambda: 0.0))
         self.non_head_vacancy = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
-        self.non_head_vacancy_for_any_dv = defaultdict(
-            lambda: defaultdict(lambda: 0.0))
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+        )
+        self.non_head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(lambda: 0.0))
 
     def update_vacancy(self, count, alignment_info, i, trg_classes, slots):
         """
@@ -602,8 +625,7 @@ class Model5Counts(Counts):
             previous_vacancies = slots.vacancies_at(previous_position)
             j = tablet[k]
             dv = slots.vacancies_at(j) - previous_vacancies
-            max_v = (total_vacancies - tablet_length + k + 1 -
-                     previous_vacancies)
+            max_v = total_vacancies - tablet_length + k + 1 - previous_vacancies
             trg_class = trg_classes[alignment_info.trg_sentence[j]]
             self.non_head_vacancy[dv][max_v][trg_class] += count
             self.non_head_vacancy_for_any_dv[max_v][trg_class] += count
@@ -616,6 +638,7 @@ class Slots(object):
     Represents positions in a target sentence. Used to keep track of
     which slot (position) is occupied.
     """
+
     def __init__(self, target_sentence_length):
         self._slots = [False] * (target_sentence_length + 1)  # 1-indexed
 

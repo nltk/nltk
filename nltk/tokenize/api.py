@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizer Interface
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -23,6 +23,7 @@ class TokenizerI(object):
     A processing interface for tokenizing a string.
     Subclasses must define ``tokenize()`` or ``tokenize_sents()`` (or both).
     """
+
     @abstractmethod
     def tokenize(self, s):
         """

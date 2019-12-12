@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Interface
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -21,8 +21,9 @@ that each text belongs to zero or more categories.
 from nltk.internals import overridden
 
 ##//////////////////////////////////////////////////////
-#{ Classification Interfaces
+# { Classification Interfaces
 ##//////////////////////////////////////////////////////
+
 
 class ClassifierI(object):
     """
@@ -38,6 +39,7 @@ class ClassifierI(object):
     Subclasses may define:
       - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
+
     def labels(self):
         """
         :return: the list of category labels used by this classifier.
@@ -101,6 +103,7 @@ class MultiClassifierI(object):
     Subclasses may define:
       - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
+
     def labels(self):
         """
         :return: the list of category labels used by this classifier.
@@ -190,4 +193,3 @@ class MultiClassifierI(object):
 #         of ``featuresets``.
 #         """
 #         raise NotImplementedError()
-

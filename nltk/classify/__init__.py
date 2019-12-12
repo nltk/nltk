@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifiers
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -57,7 +57,7 @@ to the classifier:
     >>> from nltk.corpus import gutenberg
     >>> for fileid in gutenberg.fileids(): # doctest: +SKIP
     ...     doc = gutenberg.words(fileid) # doctest: +SKIP
-    ...     print fileid, classifier.classify(document_features(doc)) # doctest: +SKIP
+    ...     print(fileid, classifier.classify(document_features(doc))) # doctest: +SKIP
 
 The parameters that a feature detector expects will vary, depending on
 the task and the needs of the feature detector.  For example, a
@@ -91,8 +91,11 @@ from nltk.classify.decisiontree import DecisionTreeClassifier
 from nltk.classify.rte_classify import rte_classifier, rte_features, RTEFeatureExtractor
 from nltk.classify.util import accuracy, apply_features, log_likelihood
 from nltk.classify.scikitlearn import SklearnClassifier
-from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
-                                  TypedMaxentFeatureEncoding,
-                                  ConditionalExponentialClassifier)
+from nltk.classify.maxent import (
+    MaxentClassifier,
+    BinaryMaxentFeatureEncoding,
+    TypedMaxentFeatureEncoding,
+    ConditionalExponentialClassifier,
+)
 from nltk.classify.senna import Senna
 from nltk.classify.textcat import TextCat

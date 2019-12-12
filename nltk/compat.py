@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Compatibility
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import absolute_import, print_function
 import os
 import sys
 from functools import update_wrapper, wraps
@@ -20,19 +19,23 @@ from six import string_types, text_type
 PY3 = sys.version_info[0] == 3
 
 if PY3:
+
     def get_im_class(meth):
         return meth.__self__.__class__
 
     import io
+
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 
     from datetime import timezone
+
     UTC = timezone.utc
 
     from tempfile import TemporaryDirectory
 
 else:
+
     def get_im_class(meth):
         return meth.im_class
 
@@ -73,8 +76,9 @@ else:
         see https://docs.python.org/2/library/csv.html
         """
 
-        def __init__(self, f, dialect=csv.excel, encoding="utf-8",
-                     errors='replace', **kwds):
+        def __init__(
+            self, f, dialect=csv.excel, encoding="utf-8", errors="replace", **kwds
+        ):
             # Redirect output to a queue
             self.queue = cStringIO.StringIO()
             self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
@@ -94,7 +98,7 @@ else:
             data = self.queue.getvalue()
             data = data.decode("utf-8")
             # ... and reencode it into the target encoding
-            data = self.encoder.encode(data, 'replace')
+            data = self.encoder.encode(data, "replace")
             # write to the target stream
             self.stream.write(data)
             # empty queue
@@ -139,14 +143,14 @@ else:
                     # up due to missing globals
                     if "None" not in str(ex):
                         raise
-                    print("ERROR: {!r} while cleaning up {!r}".format(ex,
-                                                                      self),
-                          file=sys.stderr)
+                    print(
+                        "ERROR: {!r} while cleaning up {!r}".format(ex, self),
+                        file=sys.stderr,
+                    )
                     return
                 self._closed = True
                 if _warn:
-                    self._warn("Implicitly cleaning up {!r}".format(self),
-                               Warning)
+                    self._warn("Implicitly cleaning up {!r}".format(self), Warning)
 
         def __exit__(self, exc, value, tb):
             self.cleanup()
@@ -173,8 +177,7 @@ else:
             for name in self._listdir(path):
                 fullname = self._path_join(path, name)
                 try:
-                    isdir = (self._isdir(fullname) and not
-                             self._islink(fullname))
+                    isdir = self._isdir(fullname) and not self._islink(fullname)
                 except OSError:
                     isdir = False
                 if isdir:
@@ -189,14 +192,17 @@ else:
             except OSError:
                 pass
 
+
 # ======= Compatibility for datasets that care about Python versions ========
 
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
-DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
-                ("help", "tagsets"),
-                ("taggers", "maxent_treebank_pos_tagger"),
-                ("tokenizers", "punkt")]
+DATA_UPDATES = [
+    ("chunkers", "maxent_ne_chunker"),
+    ("help", "tagsets"),
+    ("taggers", "maxent_treebank_pos_tagger"),
+    ("tokenizers", "punkt"),
+]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
 
@@ -206,7 +212,7 @@ def add_py3_data(path):
         for item in _PY3_DATA_UPDATES:
             if item in str(path) and "/PY3" not in str(path):
                 pos = path.index(item) + len(item)
-                if path[pos:pos + 4] == ".zip":
+                if path[pos : pos + 4] == ".zip":
                     pos += 4
                 path = path[:pos] + "/PY3" + path[pos:]
                 break
@@ -219,6 +225,7 @@ def py3_data(init_func):
     def _decorator(*args, **kwargs):
         args = (args[0], add_py3_data(args[1])) + args[2:]
         return init_func(*args, **kwargs)
+
     return wraps(init_func)(_decorator)
 
 
@@ -226,11 +233,11 @@ def py3_data(init_func):
 def remove_accents(text):
 
     if isinstance(text, bytes):
-        text = text.decode('ascii')
+        text = text.decode("ascii")
 
     category = unicodedata.category  # this gives a small (~10%) speedup
-    return ''.join(
-        c for c in unicodedata.normalize('NFKD', text) if category(c) != 'Mn'
+    return "".join(
+        c for c in unicodedata.normalize("NFKD", text) if category(c) != "Mn"
     )
 
 
@@ -299,7 +306,7 @@ def unicode_repr(obj):
         return repr(obj)
 
     # Python 2.x
-    if hasattr(obj, 'unicode_repr'):
+    if hasattr(obj, "unicode_repr"):
         return obj.unicode_repr()
 
     if isinstance(obj, text_type):
@@ -322,22 +329,21 @@ def _transliterated(method):
 
 def _7bit(method):
     def wrapper(self):
-        return method(self).encode('ascii', 'backslashreplace')
+        return method(self).encode("ascii", "backslashreplace")
 
     update_wrapper(wrapper, method, ["__name__", "__doc__"])
 
     if hasattr(method, "_nltk_compat_transliterated"):
-        wrapper._nltk_compat_transliterated = (
-            method._nltk_compat_transliterated
-        )
+        wrapper._nltk_compat_transliterated = method._nltk_compat_transliterated
 
     wrapper._nltk_compat_7bit = True
     return wrapper
 
 
 def _was_fixed(method):
-    return (getattr(method, "_nltk_compat_7bit", False) or
-            getattr(method, "_nltk_compat_transliterated", False))
+    return getattr(method, "_nltk_compat_7bit", False) or getattr(
+        method, "_nltk_compat_transliterated", False
+    )
 
 
 class Fraction(fractions.Fraction):
@@ -355,6 +361,7 @@ class Fraction(fractions.Fraction):
     This objects should be deprecated once NLTK stops supporting Python < 3.5
     See https://github.com/nltk/nltk/issues/1330
     """
+
     def __new__(cls, numerator=0, denominator=None, _normalize=True):
         cls = super(Fraction, cls).__new__(cls, numerator, denominator)
         # To emulate fraction.Fraction.from_float across Python >=2.7,

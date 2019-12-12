@@ -3,7 +3,7 @@
 # Authors: Liling Tan <alvations@gmail.com>,
 #          Dmitrijs Milajevs <dimazest@gmail.com>
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -14,7 +14,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     """Return a synset for an ambiguous word in a context.
 
     :param iter context_sentence: The context sentence where the ambiguous word
-    occurs, passed as an iterable of words.
+         occurs, passed as an iterable of words.
     :param str ambiguous_word: The ambiguous word that requires WSD.
     :param str pos: A specified Part-of-Speech (POS).
     :param iter synsets: Possible synsets of the ambiguous word.
@@ -49,5 +49,3 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     )
 
     return sense
-
-

@@ -1,11 +1,12 @@
 # Natural Language Toolkit: Minimal Sets
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 from collections import defaultdict
+
 
 class MinimalSet(object):
     """
@@ -17,6 +18,7 @@ class MinimalSet(object):
     cases like wind (noun) 'air in rapid motion', vs wind (verb)
     'coil, wrap'.
     """
+
     def __init__(self, parameters=None):
         """
         Create a new minimal set.
@@ -25,9 +27,9 @@ class MinimalSet(object):
         :type parameters: list(tuple(str, str, str))
         """
         self._targets = set()  # the contrastive information
-        self._contexts = set() # what we are controlling for
+        self._contexts = set()  # what we are controlling for
         self._seen = defaultdict(set)  # to record what we have seen
-        self._displays = {}    # what we will display
+        self._displays = {}  # what we will display
 
         if parameters:
             for context, target, display in parameters:
@@ -75,9 +77,9 @@ class MinimalSet(object):
         result = []
         for target in self._targets:
             x = self.display(context, target)
-            if x: result.append(x)
+            if x:
+                result.append(x)
         return result
 
     def targets(self):
         return self._targets
-

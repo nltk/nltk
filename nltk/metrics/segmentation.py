@@ -1,12 +1,11 @@
 # Natural Language Toolkit: Text Segmentation Metrics
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
 
 
 """
@@ -82,19 +81,21 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     if len(seg1) != len(seg2):
         raise ValueError("Segmentations have unequal length")
     if k > len(seg1):
-        raise ValueError("Window width k should be smaller or equal than segmentation lengths")
+        raise ValueError(
+            "Window width k should be smaller or equal than segmentation lengths"
+        )
     wd = 0
     for i in range(len(seg1) - k + 1):
-        ndiff = abs(seg1[i:i+k].count(boundary) - seg2[i:i+k].count(boundary))
+        ndiff = abs(seg1[i : i + k].count(boundary) - seg2[i : i + k].count(boundary))
         if weighted:
             wd += ndiff
         else:
             wd += min(1, ndiff)
-    return wd / (len(seg1) - k + 1.)
-
+    return wd / (len(seg1) - k + 1.0)
 
 
 # Generalized Hamming Distance
+
 
 def _init_mat(nrows, ncols, ins_cost, del_cost):
     mat = np.empty((nrows, ncols))
@@ -119,7 +120,7 @@ def _ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
             mat[i + 1, j + 1] = min(tcost, shift_cost)
 
 
-def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary='1'):
+def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"):
     """
     Compute the Generalized Hamming Distance for a reference and a hypothetical
     segmentation, corresponding to the cost related to the transformation
@@ -185,7 +186,8 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary='1'
 
 # Beeferman's Pk text segmentation evaluation metric
 
-def pk(ref, hyp, k=None, boundary='1'):
+
+def pk(ref, hyp, k=None, boundary="1"):
     """
     Compute the Pk metric for a pair of segmentations A segmentation
     is any sequence over a vocabulary of two items (e.g. "0", "1"),
@@ -211,20 +213,21 @@ def pk(ref, hyp, k=None, boundary='1'):
     """
 
     if k is None:
-        k = int(round(len(ref) / (ref.count(boundary) * 2.)))
+        k = int(round(len(ref) / (ref.count(boundary) * 2.0)))
 
     err = 0
-    for i in range(len(ref)-k +1):
-        r = ref[i:i+k].count(boundary) > 0
-        h = hyp[i:i+k].count(boundary) > 0
+    for i in range(len(ref) - k + 1):
+        r = ref[i : i + k].count(boundary) > 0
+        h = hyp[i : i + k].count(boundary) > 0
         if r != h:
-           err += 1
-    return err / (len(ref)-k +1.)
+            err += 1
+    return err / (len(ref) - k + 1.0)
 
 
 # skip doctests if numpy is not installed
 def setup_module(module):
     from nose import SkipTest
+
     try:
         import numpy
     except ImportError:

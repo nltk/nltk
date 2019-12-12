@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,11 +8,9 @@
 CCG Combinators
 """
 
-from __future__ import unicode_literals
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.ccg.api import FunctionalCategory
 
 
@@ -28,6 +26,7 @@ class UndirectedBinaryCombinator(object):
     of the combinators; these restrictions must be added in the rule
     class.
     """
+
     @abstractmethod
     def can_combine(self, function, argument):
         pass
@@ -45,6 +44,7 @@ class DirectedBinaryCombinator(object):
     the function, and which the argument.
     It then decides whether or not they can be combined.
     """
+
     @abstractmethod
     def can_combine(self, left, right):
         pass
@@ -54,7 +54,6 @@ class DirectedBinaryCombinator(object):
         pass
 
 
-@python_2_unicode_compatible
 class ForwardCombinator(DirectedBinaryCombinator):
     """
     Class representing combinators where the primary functor is on the left.
@@ -62,14 +61,16 @@ class ForwardCombinator(DirectedBinaryCombinator):
     Takes an undirected combinator, and a predicate which adds constraints
     restricting the cases in which it may apply.
     """
-    def __init__(self, combinator, predicate, suffix=''):
+
+    def __init__(self, combinator, predicate, suffix=""):
         self._combinator = combinator
         self._predicate = predicate
         self._suffix = suffix
 
     def can_combine(self, left, right):
-        return (self._combinator.can_combine(left, right) and
-                self._predicate(left, right))
+        return self._combinator.can_combine(left, right) and self._predicate(
+            left, right
+        )
 
     def combine(self, left, right):
         for cat in self._combinator.combine(left, right):
@@ -79,19 +80,20 @@ class ForwardCombinator(DirectedBinaryCombinator):
         return ">%s%s" % (self._combinator, self._suffix)
 
 
-@python_2_unicode_compatible
 class BackwardCombinator(DirectedBinaryCombinator):
     """
     The backward equivalent of the ForwardCombinator class.
     """
-    def __init__(self, combinator, predicate, suffix=''):
+
+    def __init__(self, combinator, predicate, suffix=""):
         self._combinator = combinator
         self._predicate = predicate
         self._suffix = suffix
 
     def can_combine(self, left, right):
-        return (self._combinator.can_combine(right, left) and
-                self._predicate(left, right))
+        return self._combinator.can_combine(right, left) and self._predicate(
+            left, right
+        )
 
     def combine(self, left, right):
         for cat in self._combinator.combine(right, left):
@@ -101,7 +103,6 @@ class BackwardCombinator(DirectedBinaryCombinator):
         return "<%s%s" % (self._combinator, self._suffix)
 
 
-@python_2_unicode_compatible
 class UndirectedFunctionApplication(UndirectedBinaryCombinator):
     """
     Class representing function application.
@@ -127,7 +128,7 @@ class UndirectedFunctionApplication(UndirectedBinaryCombinator):
         yield function.res().substitute(subs)
 
     def __str__(self):
-        return ''
+        return ""
 
 
 # Predicates for function application.
@@ -143,13 +144,10 @@ def backwardOnly(left, right):
 
 
 # Application combinator instances
-ForwardApplication = ForwardCombinator(UndirectedFunctionApplication(),
-                                       forwardOnly)
-BackwardApplication = BackwardCombinator(UndirectedFunctionApplication(),
-                                         backwardOnly)
+ForwardApplication = ForwardCombinator(UndirectedFunctionApplication(), forwardOnly)
+BackwardApplication = BackwardCombinator(UndirectedFunctionApplication(), backwardOnly)
 
 
-@python_2_unicode_compatible
 class UndirectedComposition(UndirectedBinaryCombinator):
     """
     Functional composition (harmonic) combinator.
@@ -157,6 +155,7 @@ class UndirectedComposition(UndirectedBinaryCombinator):
     X/Y Y/Z -> X/Z (B>)
     And the corresponding backwards and crossed variations.
     """
+
     def can_combine(self, function, argument):
         # Can only combine two functions, and both functions must
         # allow composition.
@@ -172,12 +171,14 @@ class UndirectedComposition(UndirectedBinaryCombinator):
         if function.dir().can_compose() and argument.dir().can_compose():
             subs = function.arg().can_unify(argument.res())
             if subs is not None:
-                yield FunctionalCategory(function.res().substitute(subs),
-                                         argument.arg().substitute(subs),
-                                         argument.dir())
+                yield FunctionalCategory(
+                    function.res().substitute(subs),
+                    argument.arg().substitute(subs),
+                    argument.dir(),
+                )
 
     def __str__(self):
-        return 'B'
+        return "B"
 
 
 # Predicates for restricting application of straight composition.
@@ -206,17 +207,15 @@ def backwardBxConstraint(left, right):
 
 
 # Straight composition combinators
-ForwardComposition = ForwardCombinator(UndirectedComposition(),
-                                       forwardOnly)
-BackwardComposition = BackwardCombinator(UndirectedComposition(),
-                                         backwardOnly)
+ForwardComposition = ForwardCombinator(UndirectedComposition(), forwardOnly)
+BackwardComposition = BackwardCombinator(UndirectedComposition(), backwardOnly)
 
 # Backward crossed composition
-BackwardBx = BackwardCombinator(UndirectedComposition(), backwardBxConstraint,
-                                suffix='x')
+BackwardBx = BackwardCombinator(
+    UndirectedComposition(), backwardBxConstraint, suffix="x"
+)
 
 
-@python_2_unicode_compatible
 class UndirectedSubstitution(UndirectedBinaryCombinator):
     """
     Substitution (permutation) combinator.
@@ -224,6 +223,7 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
     Y/Z (X\Y)/Z -> X/Z (<Sx)
     And other variations.
     """
+
     def can_combine(self, function, argument):
         if function.is_primitive() or argument.is_primitive():
             return False
@@ -237,15 +237,18 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
 
         if not (function.dir().can_compose() and argument.dir().can_compose()):
             return False
-        return (function.res().arg() == argument.res()) and (function.arg() == argument.arg())
+        return (function.res().arg() == argument.res()) and (
+            function.arg() == argument.arg()
+        )
 
     def combine(self, function, argument):
         if self.can_combine(function, argument):
-            yield FunctionalCategory(function.res().res(), argument.arg(),
-                                     argument.dir())
+            yield FunctionalCategory(
+                function.res().res(), argument.arg(), argument.dir()
+            )
 
     def __str__(self):
-        return 'S'
+        return "S"
 
 
 # Predicate for forward substitution
@@ -265,10 +268,8 @@ def backwardSxConstraint(left, right):
 
 
 # Instances of substitution combinators
-ForwardSubstitution = ForwardCombinator(UndirectedSubstitution(),
-                                        forwardSConstraint)
-BackwardSx = BackwardCombinator(UndirectedSubstitution(),
-                                backwardSxConstraint, 'x')
+ForwardSubstitution = ForwardCombinator(UndirectedSubstitution(), forwardSConstraint)
+BackwardSx = BackwardCombinator(UndirectedSubstitution(), backwardSxConstraint, "x")
 
 
 # Retrieves the left-most functional category.
@@ -279,11 +280,11 @@ def innermostFunction(categ):
     return categ
 
 
-@python_2_unicode_compatible
 class UndirectedTypeRaise(UndirectedBinaryCombinator):
     """
     Undirected combinator for type raising.
     """
+
     def can_combine(self, function, arg):
         # The argument must be a function.
         # The restriction that arg.res() must be a function
@@ -304,8 +305,9 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
         return False
 
     def combine(self, function, arg):
-        if not (function.is_primitive() and
-                arg.is_function() and arg.res().is_function()):
+        if not (
+            function.is_primitive() and arg.is_function() and arg.res().is_function()
+        ):
             return
 
         # Type-raising matches only the innermost application.
@@ -314,13 +316,12 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
         subs = function.can_unify(arg.arg())
         if subs is not None:
             xcat = arg.res().substitute(subs)
-            yield FunctionalCategory(xcat,
-                                     FunctionalCategory(xcat, function,
-                                                        arg.dir()),
-                                     -(arg.dir()))
+            yield FunctionalCategory(
+                xcat, FunctionalCategory(xcat, function, arg.dir()), -(arg.dir())
+            )
 
     def __str__(self):
-        return 'T'
+        return "T"
 
 
 # Predicates for type-raising

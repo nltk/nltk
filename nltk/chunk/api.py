@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -14,6 +14,7 @@ from nltk.parse import ParserI
 
 from nltk.chunk.util import ChunkScore
 
+
 class ChunkParserI(ParserI):
     """
     A processing interface for identifying non-overlapping groups in
@@ -22,6 +23,7 @@ class ChunkParserI(ParserI):
     ``ParserI``, ``ChunkParserI`` guarantees that the ``parse()`` method
     will always generate a parse.
     """
+
     def parse(self, tokens):
         """
         Return the best chunk structure for the given tokens
@@ -48,4 +50,3 @@ class ChunkParserI(ParserI):
         for correct in gold:
             chunkscore.score(correct, self.parse(correct.leaves()))
         return chunkscore
-

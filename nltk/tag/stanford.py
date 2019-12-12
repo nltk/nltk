@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
@@ -27,9 +27,8 @@ from six import text_type
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
-from nltk.parse.corenlp import CoreNLPParser
 
-_stanford_url = 'https://nlp.stanford.edu/software'
+_stanford_url = "https://nlp.stanford.edu/software"
 
 
 class StanfordTagger(TaggerI):
@@ -43,31 +42,41 @@ class StanfordTagger(TaggerI):
     - ``_JAR`` file: Class constant that represents the jar file name.
     """
 
-    _SEPARATOR = ''
-    _JAR = ''
+    _SEPARATOR = ""
+    _JAR = ""
 
-    def __init__(self, model_filename, path_to_jar=None, encoding='utf8',
-                 verbose=False, java_options='-mx1000m'):
+    def __init__(
+        self,
+        model_filename,
+        path_to_jar=None,
+        encoding="utf8",
+        verbose=False,
+        java_options="-mx1000m",
+    ):
         # Raise deprecation warning.
-        warnings.simplefilter('always', DeprecationWarning)
-        warnings.warn(str("\nThe StanfordTokenizer will "
-                          "be deprecated in version 3.2.5.\n"
-                          "Please use \033[91mnltk.tag.corenlp.CoreNLPPOSTagger\033[0m "
-                          "or \033[91mnltk.tag.corenlp.CoreNLPNERTagger\033[0m instead."),
-                      DeprecationWarning, stacklevel=2)
-        warnings.simplefilter('ignore', DeprecationWarning)
-        if not self._JAR:
-            warnings.warn('The StanfordTagger class is not meant to be '
-                          'instantiated directly. Did you mean '
-                          'StanfordPOSTagger or StanfordNERTagger?')
-        self._stanford_jar = find_jar(
-                self._JAR, path_to_jar,
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+        warnings.warn(
+            str(
+                "\nThe StanfordTokenizer will "
+                "be deprecated in version 3.2.6.\n"
+                "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
-        self._stanford_model = find_file(model_filename,
-                                         env_vars=('STANFORD_MODELS',),
-                                         verbose=verbose)
+        if not self._JAR:
+            warnings.warn(
+                "The StanfordTagger class is not meant to be "
+                "instantiated directly. Did you mean "
+                "StanfordPOSTagger or StanfordNERTagger?"
+            )
+        self._stanford_jar = find_jar(
+            self._JAR, path_to_jar, searchpath=(), url=_stanford_url, verbose=verbose
+        )
+
+        self._stanford_model = find_file(
+            model_filename, env_vars=("STANFORD_MODELS",), verbose=verbose
+        )
 
         self._encoding = encoding
         self.java_options = java_options
@@ -85,26 +94,27 @@ class StanfordTagger(TaggerI):
 
     def tag_sents(self, sentences):
         encoding = self._encoding
-        default_options = ' '.join(_java_options)
+        default_options = " ".join(_java_options)
         config_java(options=self.java_options, verbose=False)
 
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
         cmd = list(self._cmd)
-        cmd.extend(['-encoding', encoding])
+        cmd.extend(["-encoding", encoding])
 
         # Write the actual sentences to the temporary input file
-        _input_fh = os.fdopen(_input_fh, 'wb')
-        _input = '\n'.join((' '.join(x) for x in sentences))
+        _input_fh = os.fdopen(_input_fh, "wb")
+        _input = "\n".join((" ".join(x) for x in sentences))
         if isinstance(_input, text_type) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
 
         # Run the tagger and get the output
-        stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
-                                       stdout=PIPE, stderr=PIPE)
+        stanpos_output, _stderr = java(
+            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
+        )
         stanpos_output = stanpos_output.decode(encoding)
 
         # Delete the temporary file
@@ -122,7 +132,7 @@ class StanfordTagger(TaggerI):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
                 word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append((''.join(word_tags[:-1]), word_tags[-1]))
+                sentence.append(("".join(word_tags[:-1]), word_tags[-1]))
             tagged_sentences.append(sentence)
         return tagged_sentences
 
@@ -142,18 +152,26 @@ class StanfordPOSTagger(StanfordTagger):
         >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
-    _SEPARATOR = '_'
-    _JAR = 'stanford-postagger.jar'
+
+    _SEPARATOR = "_"
+    _JAR = "stanford-postagger.jar"
 
     def __init__(self, *args, **kwargs):
         super(StanfordPOSTagger, self).__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
-        return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
-                '-model', self._stanford_model, '-textFile',
-                self._input_file_path, '-tokenize', 'false',
-                '-outputFormatOptions', 'keepEmptySentences']
+        return [
+            "edu.stanford.nlp.tagger.maxent.MaxentTagger",
+            "-model",
+            self._stanford_model,
+            "-textFile",
+            self._input_file_path,
+            "-tokenize",
+            "false",
+            "-outputFormatOptions",
+            "keepEmptySentences",
+        ]
 
 
 class StanfordNERTagger(StanfordTagger):
@@ -175,9 +193,9 @@ class StanfordNERTagger(StanfordTagger):
          ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'LOCATION')]
     """
 
-    _SEPARATOR = '/'
-    _JAR = 'stanford-ner.jar'
-    _FORMAT = 'slashTags'
+    _SEPARATOR = "/"
+    _JAR = "stanford-ner.jar"
+    _FORMAT = "slashTags"
 
     def __init__(self, *args, **kwargs):
         super(StanfordNERTagger, self).__init__(*args, **kwargs)
@@ -185,106 +203,47 @@ class StanfordNERTagger(StanfordTagger):
     @property
     def _cmd(self):
         # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer
-        return ['edu.stanford.nlp.ie.crf.CRFClassifier',
-                '-loadClassifier', self._stanford_model, '-textFile',
-                self._input_file_path, '-outputFormat', self._FORMAT,
-                '-tokenizerFactory',
-                'edu.stanford.nlp.process.WhitespaceTokenizer',
-                '-tokenizerOptions', '\"tokenizeNLs=false\"']
+        return [
+            "edu.stanford.nlp.ie.crf.CRFClassifier",
+            "-loadClassifier",
+            self._stanford_model,
+            "-textFile",
+            self._input_file_path,
+            "-outputFormat",
+            self._FORMAT,
+            "-tokenizerFactory",
+            "edu.stanford.nlp.process.WhitespaceTokenizer",
+            "-tokenizerOptions",
+            '"tokenizeNLs=false"',
+        ]
 
     def parse_output(self, text, sentences):
-        if self._FORMAT == 'slashTags':
+        if self._FORMAT == "slashTags":
             # Joint together to a big list
             tagged_sentences = []
             for tagged_sentence in text.strip().split("\n"):
                 for tagged_word in tagged_sentence.strip().split():
                     word_tags = tagged_word.strip().split(self._SEPARATOR)
-                    tagged_sentences.append((''.join(word_tags[:-1]),
-                                             word_tags[-1]))
+                    tagged_sentences.append(("".join(word_tags[:-1]), word_tags[-1]))
 
             # Separate it according to the input
             result = []
             start = 0
             for sent in sentences:
-                result.append(tagged_sentences[start:start + len(sent)])
+                result.append(tagged_sentences[start : start + len(sent)])
                 start += len(sent)
             return result
 
         raise NotImplementedError
-
-class CoreNLPTagger(CoreNLPParser, TaggerI):
-    def __init__(self, tagtype, url='http://localhost:9000', encoding='utf8'):
-        """
-        An abstract interface to POS/NER taggers of CoreNLP that returns the
-        POS/NER tags from the Stanford CoreNLP API at nltk.parse.corenlp.
-        """
-        self.tagtype = tagtype
-        super(CoreNLPTagger, self).__init__(url, encoding)
-
-    def tag_sents(self, sentences):
-        # Converting list(list(str)) -> list(str)
-        sentences = (' '.join(words) for words in sentences)
-        return list(self.raw_tag_sents(sentences))
-
-
-    def tag(self, sentence):
-        return self.tag_sents([sentence])[0]
-
-    def raw_tag_sents(self, sentences):
-        """
-        This function will interface the `GenericCoreNLPParser.api_call` to
-        retreive the JSON output and return the annotations required.
-        """
-        default_properties = {'ssplit.isOneSentence': 'true',
-                              'annotators': 'tokenize,ssplit,' }
-        # Supports only 'pos' or 'ner' tags.
-        assert self.tagtype in ['pos', 'ner']
-        default_properties['annotators'] += self.tagtype
-        for sentence in sentences:
-            tagged_data = self.api_call(sentence, properties=default_properties)
-            assert len(tagged_data['sentences']) == 1
-            # Taggers only need to return 1-best sentence.
-            yield [(token['word'], token[self.tagtype]) for token in tagged_data['sentences'][0]['tokens']]
-
-
-class CoreNLPPOSTagger(CoreNLPTagger):
-    """
-    This is a subclass of the CoreNLPTagger that wraps around the
-    nltk.parse.CoreNLPParser for Part-of-Sppech tagging.
-
-        >>> from nltk.tag.stanford import CoreNLPPOSTagger
-        >>> CoreNLPPOSTagger(url='http://localhost:9000').tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
-        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
-    """
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        super(CoreNLPPOSTagger, self).__init__('pos', url, encoding)
-
-
-class CoreNLPNERTagger(CoreNLPTagger):
-    """
-    This is a subclass of the CoreNLPTagger that wraps around the
-    nltk.parse.CoreNLPParser for Named-Entity tagging.
-
-        >>> from nltk.tag.stanford import CoreNLPNERTagger
-        >>> CoreNLPNERTagger(url='http://localhost:9000').tag('Rami Eid is studying at Stony Brook University in NY'.split()) # doctest: +SKIP
-        [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'), ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'O')]
-    """
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        super(CoreNLPNERTagger, self).__init__('ner', url, encoding)
 
 
 def setup_module(module):
     from nose import SkipTest
 
     try:
-        StanfordPOSTagger('english-bidirectional-distsim.tagger')
+        StanfordPOSTagger("english-bidirectional-distsim.tagger")
     except LookupError:
-        raise SkipTest('Doctests from nltk.tag.stanford are skipped because one \
-                       of the stanford jars cannot be found.')
-
-    try:
-        CoreNLPPOSTagger()
-        CoreNLPNERTagger()
-    except LookupError:
-        raise SkipTest('Doctests from nltk.tag.stanford.CoreNLPTokenizer'
-                       'are skipped because the stanford corenlp server not started')
+        raise SkipTest(
+            "Doctests from nltk.tag.stanford are skipped because one \
+                       of the stanford jars cannot be found."
+        )

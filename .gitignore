@@ -47,3 +47,12 @@ web/api/*.rst
 
 # pyenv files
 .python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

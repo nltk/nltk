@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterers
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -79,8 +79,12 @@ objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
-from nltk.cluster.util import (VectorSpaceClusterer, Dendrogram,
-                               euclidean_distance, cosine_distance)
+from nltk.cluster.util import (
+    VectorSpaceClusterer,
+    Dendrogram,
+    euclidean_distance,
+    cosine_distance,
+)
 from nltk.cluster.kmeans import KMeansClusterer
 from nltk.cluster.gaac import GAAClusterer
 from nltk.cluster.em import EMClusterer

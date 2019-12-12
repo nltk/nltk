@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter Corpus Reader
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -58,9 +58,9 @@ class TwitterCorpusReader(CorpusReader):
     The corpus view class used by this reader.
     """
 
-    def __init__(self, root, fileids=None,
-                 word_tokenizer=TweetTokenizer(),
-                 encoding='utf8'):
+    def __init__(
+        self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding="utf8"
+    ):
         """
 
         :param root: The root directory for this corpus.
@@ -82,8 +82,6 @@ class TwitterCorpusReader(CorpusReader):
 
         self._word_tokenizer = word_tokenizer
 
-
-
     def docs(self, fileids=None):
         """
         Returns the full Tweet objects, as specified by `Twitter
@@ -94,9 +92,12 @@ class TwitterCorpusReader(CorpusReader):
         from JSON.
         :rtype: list(dict)
         """
-        return concat([self.CorpusView(path, self._read_tweets, encoding=enc)
-                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
-
+        return concat(
+            [
+                self.CorpusView(path, self._read_tweets, encoding=enc)
+                for (path, enc, fileid) in self.abspaths(fileids, True, True)
+            ]
+        )
 
     def strings(self, fileids=None):
         """
@@ -109,14 +110,13 @@ class TwitterCorpusReader(CorpusReader):
         tweets = []
         for jsono in fulltweets:
             try:
-                text = jsono['text']
+                text = jsono["text"]
                 if isinstance(text, bytes):
                     text = text.decode(self.encoding)
                 tweets.append(text)
             except KeyError:
                 pass
         return tweets
-
 
     def tokenized(self, fileids=None):
         """
@@ -129,7 +129,6 @@ class TwitterCorpusReader(CorpusReader):
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
 
-
     def raw(self, fileids=None):
         """
         Return the corpora in their raw form.
@@ -139,7 +138,6 @@ class TwitterCorpusReader(CorpusReader):
         elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
-
 
     def _read_tweets(self, stream):
         """

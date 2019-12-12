@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterer Interfaces
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Porting: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -11,11 +11,13 @@ from six import add_metaclass
 
 from nltk.probability import DictionaryProbDist
 
+
 @add_metaclass(ABCMeta)
 class ClusterI(object):
     """
     Interface covering basic clustering functionality.
     """
+
     @abstractmethod
     def cluster(self, vectors, assign_clusters=False):
         """
@@ -63,6 +65,7 @@ class ClusterI(object):
     def cluster_names(self):
         """
         Returns the names of the clusters.
+        :rtype: list
         """
         return list(range(self.num_clusters()))
 
