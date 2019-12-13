@@ -365,8 +365,10 @@ class ARLSTem2(StemmerI):
             if token.endswith('\u0646'):
                 return token[1:-1]
         # ^Yaa, Noon$
-        if len(token) > 4 and token.startswith('\u064A')
-        and token.endswith('\u0646'):
+        if (
+            len(token) > 4 and token.startswith('\u064A')
+            and token.endswith('\u0646')
+        ):
             return token[1:-1]
         # ^Taa, Noon$
         if (
