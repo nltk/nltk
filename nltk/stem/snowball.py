@@ -206,7 +206,7 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
         r1 = ""
         for i in range(1, len(word)):
             if word[i] not in vowels and word[i - 1] in vowels:
-                if len(word[: i + 1]) < 3 and len(word[: i + 1]) > 0:
+                if 3 > len(word[: i + 1]) > 0:
                     r1 = word[3:]
                 elif len(word[: i + 1]) >= 3:
                     r1 = word[i + 1 :]
@@ -1144,7 +1144,7 @@ class DutchStemmer(_StandardStemmer):
         # contains at least 3 letters.
         for i in range(1, len(word)):
             if word[i] not in self.__vowels and word[i - 1] in self.__vowels:
-                if len(word[: i + 1]) < 3 and len(word[: i + 1]) > 0:
+                if 3 > len(word[: i + 1]) > 0:
                     r1 = word[3:]
                 elif len(word[: i + 1]) == 0:
                     return word
@@ -2682,7 +2682,7 @@ class GermanStemmer(_StandardStemmer):
         # contains at least 3 letters.
         for i in range(1, len(word)):
             if word[i] not in self.__vowels and word[i - 1] in self.__vowels:
-                if len(word[: i + 1]) < 3 and len(word[: i + 1]) > 0:
+                if 3 > len(word[: i + 1]) > 0:
                     r1 = word[3:]
                 elif len(word[: i + 1]) == 0:
                     return word
