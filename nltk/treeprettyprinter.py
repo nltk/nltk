@@ -19,7 +19,10 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
 import re
-from cgi import escape
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
 from collections import defaultdict
 from operator import itemgetter
 
@@ -453,7 +456,7 @@ class TreePrettyPrinter(object):
                 if isinstance(node, Tree) and node.label().startswith("-"):
                     color = funccolor
                 if html:
-                    text = [escape(a) for a in text]
+                    text = [escape(a, quote=False) for a in text]
                     if n in self.highlight:
                         text = ["<font color=%s>%s</font>" % (color, a) for a in text]
                 elif ansi and n in self.highlight:
@@ -572,7 +575,7 @@ class TreePrettyPrinter(object):
                     fontsize,
                     x,
                     y,
-                    escape(node.label() if isinstance(node, Tree) else node),
+                    escape(node.label() if isinstance(node, Tree) else node, quote=False),
                 )
             ]
 
