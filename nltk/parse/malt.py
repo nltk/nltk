@@ -201,7 +201,7 @@ class MaltParser(ParserI):
                 ret = self._execute(cmd, verbose)  # Run command.
                 os.chdir(_current_path)  # Change back to current path.
 
-                if ret is not 0:
+                if ret != 0:
                     raise Exception(
                         "MaltParser parsing (%s) failed with exit "
                         "code %d" % (" ".join(cmd), ret)
