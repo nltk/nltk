@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: ARLSTem Stemmer v2
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 #
 # Author: Kheireddine Abainia (x-programer) <k.abainia@gmail.com>
 # Algorithms: Kheireddine Abainia <k.abainia@gmail.com>
@@ -18,8 +18,8 @@ K. Abainia and H. Rebbani, Comparing the Effectiveness of the Improved ARLSTem
 Algorithm with Existing Arabic Light Stemmers, International Conference on
 Theoretical and Applicative Aspects of Computer Science (ICTAACS'19), Skikda,
 Algeria, December 15-16, 2019.
-ARLSTem2 is an Arabic light stemmer that is based on removing the affixes from
-the words (i.e. prefixes, suffixes and infixes). ARLSTem2 is an improvement
+ARLSTem2 is an Arabic light stemmer based on removing the affixes from
+the words (i.e. prefixes, suffixes and infixes). It is an improvement
 of the previous Arabic light stemmer (ARLSTem). The new version was compared to
 the original algorithm and several existing Arabic light stemmers, where the
 results showed that the new version considerably improves the under-stemming
@@ -33,13 +33,20 @@ from nltk.stem.api import StemmerI
 
 
 class ARLSTem2(StemmerI):
-    '''
-    ARLSTem2 stemmer : an improved Arabic light Stemming algorithm without
-    the use of any dictionary. Department of Telecommunication & Electronics.
-    Université 8 Mai 1945 Guelma, Guelma, 24000, Algeria.
-    ARLSTem2.stem(token) returns the Arabic stem for the input token.
-    All the tokens should be encoded using Unicode (UTF-8).
-    '''
+    """
+    Return a stemmed Arabic word after removing affixes. This an improved
+    version of the previous algorithm, which reduces under-stemming errors.
+    Typically used in Arabic search engine, information retrieval and NLP.
+    
+        >>> from nltk.stem import arlstem2
+        >>> stemmer = ARLSTem2()
+        >>> word = stemmer.stem('يعمل')
+        >>> print(word)
+
+    :param token: The input Arabic word (unicode) to be stemmed
+    :type token: unicode
+    :return: A unicode Arabic word
+    """
 
     def __init__(self):
         # different Alif with hamza
