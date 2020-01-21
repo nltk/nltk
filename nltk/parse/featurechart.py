@@ -14,6 +14,7 @@ feature structures as nodes.
 
 from six.moves import range
 
+from nltk.compat import time_clock
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree
@@ -640,12 +641,12 @@ def demo(
     if print_sentence:
         print("Sentence:", sent)
     tokens = sent.split()
-    t = time.clock()
+    t = time_clock()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
     trees = list(chart.parses(grammar.start()))
     if print_times:
-        print("Time: %s" % (time.clock() - t))
+        print("Time: %s" % (time_clock() - t))
     if print_trees:
         for tree in trees:
             print(tree)

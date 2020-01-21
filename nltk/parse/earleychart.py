@@ -29,6 +29,7 @@ from __future__ import print_function, division
 
 from six.moves import range
 
+from nltk.compat import time_clock
 from nltk.parse.chart import (
     Chart,
     ChartParser,
@@ -535,10 +536,10 @@ def demo(
 
     # Do the parsing.
     earley = EarleyChartParser(grammar, trace=trace)
-    t = time.clock()
+    t = time_clock()
     chart = earley.chart_parse(tokens)
     parses = list(chart.parses(grammar.start()))
-    t = time.clock() - t
+    t = time_clock() - t
 
     # Print results.
     if numparses:
