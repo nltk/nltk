@@ -19,7 +19,10 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
 import re
-from html import escape
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
 from collections import defaultdict
 from operator import itemgetter
 

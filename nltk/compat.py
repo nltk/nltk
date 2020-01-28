@@ -28,6 +28,7 @@ if PY3:
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 
+    from time import perf_counter as time_clock
     from datetime import timezone
 
     UTC = timezone.utc
@@ -45,6 +46,7 @@ else:
         from StringIO import StringIO
     BytesIO = StringIO
 
+    from time import clock as time_clock
     from datetime import tzinfo, timedelta
 
     ZERO = timedelta(0)

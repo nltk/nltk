@@ -328,7 +328,7 @@ class FreqDist(Counter):
             freqs = [self[sample] for sample in samples]
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
-        width = max(len("%s" % s) for s in samples)
+        width = max(len("{}".format(s)) for s in samples)
         width = max(width, max(len("%d" % f) for f in freqs))
 
         for i in range(len(samples)):
@@ -438,6 +438,15 @@ class FreqDist(Counter):
         :rtype: string
         """
         return "<FreqDist with %d samples and %d outcomes>" % (len(self), self.N())
+
+    def __iter__(self):
+        """
+        Return an iterator which yields tokens ordered by frequency.
+
+        :rtype: iterator
+        """
+        for token, _ in self.most_common(self.B()):
+            yield token
 
 
 ##//////////////////////////////////////////////////////
