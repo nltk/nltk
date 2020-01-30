@@ -1459,7 +1459,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # token doesn't match, see if adding whitespace helps.
             # If so, then use the version with whitespace.
             if text[pos : pos + len(tok)] != tok:
-                pat = "\s*".join(re.escape(c) for c in tok)
+                pat = r"\s*".join(re.escape(c) for c in tok)
                 m = re.compile(pat).match(text, pos)
                 if m:
                     tok = m.group()

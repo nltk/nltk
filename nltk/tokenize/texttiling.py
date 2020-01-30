@@ -93,7 +93,7 @@ class TextTilingTokenizer(TokenizerI):
 
         # Remove punctuation
         nopunct_text = "".join(
-            c for c in lowercase_text if re.match("[a-z\-' \n\t]", c)
+            c for c in lowercase_text if re.match(r"[a-z\-' \n\t]", c)
         )
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
@@ -226,7 +226,7 @@ class TextTilingTokenizer(TokenizerI):
         "Divides the text into pseudosentences of fixed size"
         w = self.w
         wrdindex_list = []
-        matches = re.finditer("\w+", text)
+        matches = re.finditer(r"\w+", text)
         for match in matches:
             wrdindex_list.append((match.group(), match.start()))
         return [

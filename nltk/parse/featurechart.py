@@ -248,7 +248,7 @@ class FeatureChart(Chart):
 
 
 class FeatureFundamentalRule(FundamentalRule):
-    """
+    r"""
     A specialized version of the fundamental rule that operates on
     nonterminals whose symbols are ``FeatStructNonterminal``s.  Rather
     tha simply comparing the nonterminals for equality, they are
@@ -350,7 +350,7 @@ class FeatureTopDownInitRule(TopDownInitRule):
 
 
 class FeatureTopDownPredictRule(CachedTopDownPredictRule):
-    """
+    r"""
     A specialized version of the (cached) top down predict rule that operates
     on nonterminals whose symbols are ``FeatStructNonterminal``s.  Rather
     than simply comparing the nonterminals for equality, they are

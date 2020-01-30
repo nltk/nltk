@@ -54,7 +54,7 @@ class StandardFormat(object):
         self._file = StringIO(s)
 
     def raw_fields(self):
-        """
+        u"""
         Return an iterator that returns the next field in a (marker, value)
         tuple. Linebreaks and trailing white space are preserved except
         for the final newline in each field.
@@ -62,7 +62,7 @@ class StandardFormat(object):
         :rtype: iter(tuple(str, str))
         """
         join_string = "\n"
-        line_regexp = r"^%s(?:\\(\S+)\s*)?(.*)$"
+        line_regexp = r"^%s(?:\(\S+)\s*)?(.*)$"
         # discard a BOM in the first line
         first_line_pat = re.compile(line_regexp % "(?:\xef\xbb\xbf)?")
         line_pat = re.compile(line_regexp % "")
@@ -156,7 +156,7 @@ class ToolboxData(StandardFormat):
             return self._record_parse(**kwargs)
 
     def _record_parse(self, key=None, **kwargs):
-        """
+        r"""
         Returns an element tree structure corresponding to a toolbox data file with
         all markers at the same level.
 

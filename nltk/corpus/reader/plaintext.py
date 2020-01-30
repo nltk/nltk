@@ -44,7 +44,7 @@ class PlaintextCorpusReader(CorpusReader):
         para_block_reader=read_blankline_block,
         encoding="utf8",
     ):
-        """
+        r"""
         Construct a new plaintext corpus reader for a set of documents
         located at the given root directory.  Example usage:
 

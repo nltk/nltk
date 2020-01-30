@@ -73,7 +73,7 @@ from nltk.tokenize.util import regexp_span_tokenize
 
 
 class RegexpTokenizer(TokenizerI):
-    """
+    r"""
     A tokenizer that splits a string using a regular expression, which
     matches either the tokens or the separators between tokens.
 
@@ -181,12 +181,12 @@ class BlanklineTokenizer(RegexpTokenizer):
 
 
 class WordPunctTokenizer(RegexpTokenizer):
-    """
+    r"""
     Tokenize a text into a sequence of alphabetic and
     non-alphabetic characters, using the regexp ``\w+|[^\w\s]+``.
 
         >>> from nltk.tokenize import WordPunctTokenizer
-        >>> s = "Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks."
+        >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
         >>> WordPunctTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
         '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']

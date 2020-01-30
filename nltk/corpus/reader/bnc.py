@@ -12,7 +12,7 @@ from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTr
 
 
 class BNCCorpusReader(XMLCorpusReader):
-    """Corpus reader for the XML version of the British National Corpus.
+    r"""Corpus reader for the XML version of the British National Corpus.
 
     For access to the complete XML data structure, use the ``xml()``
     method.  For access to simple word lists and tagged word lists, use

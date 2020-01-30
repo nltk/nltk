@@ -368,7 +368,7 @@ def tagstr2tree(
 
 ### CONLL
 
-_LINE_RE = re.compile("(\S+)\s+(\S+)\s+([IOB])-?(\S+)?")
+_LINE_RE = re.compile(r"(\S+)\s+(\S+)\s+([IOB])-?(\S+)?")
 
 
 def conllstr2tree(s, chunk_types=("NP", "PP", "VP"), root_label="S"):
@@ -514,7 +514,7 @@ _IEER_DOC_RE = re.compile(
     re.DOTALL,
 )
 
-_IEER_TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
+_IEER_TYPE_RE = re.compile(r'<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
 
 
 def _ieer_read_text(s, root_label):
@@ -523,7 +523,7 @@ def _ieer_read_text(s, root_label):
     # return the empty list in place of a Tree
     if s is None:
         return []
-    for piece_m in re.finditer("<[^>]+>|[^\s<]+", s):
+    for piece_m in re.finditer(r"<[^>]+>|[^\s<]+", s):
         piece = piece_m.group()
         try:
             if piece.startswith("<b_"):

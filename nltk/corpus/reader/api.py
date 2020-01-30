@@ -74,7 +74,7 @@ class CorpusReader(object):
         """
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, string_types) and not isinstance(root, PathPointer):
-            m = re.match("(.*\.zip)/?(.*)$|", root)
+            m = re.match(r"(.*\.zip)/?(.*)$|", root)
             zipfile, zipentry = m.groups()
             if zipfile:
                 root = ZipFilePathPointer(zipfile, zipentry)

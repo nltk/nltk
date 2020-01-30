@@ -713,8 +713,8 @@ class DrtLambdaExpression(DrtExpression, LambdaExpression):
         blank = " " * len(var_string)
         return (
             ["    " + blank + line for line in term_lines[:1]]
-            + [" \  " + blank + line for line in term_lines[1:2]]
-            + [" /\ " + var_string + line for line in term_lines[2:3]]
+            + [r" \  " + blank + line for line in term_lines[1:2]]
+            + [r" /\ " + var_string + line for line in term_lines[2:3]]
             + ["    " + blank + line for line in term_lines[3:]]
         )
 

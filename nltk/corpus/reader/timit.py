@@ -162,7 +162,7 @@ class TimitCorpusReader(CorpusReader):
         """
         # Ensure that wave files don't get treated as unicode data:
         if isinstance(encoding, string_types):
-            encoding = [(".*\.wav", None), (".*", encoding)]
+            encoding = [(r".*\.wav", None), (".*", encoding)]
 
         CorpusReader.__init__(
             self, root, find_corpus_fileids(root, self._FILE_RE), encoding=encoding

@@ -49,7 +49,7 @@ pairs = (
     (
         r"(.*) don\'t you (.*)",
         (
-            "u think I can%2??! really?? kekeke \<_\<",
+            r"u think I can%2??! really?? kekeke \<_\<",
             "what do u mean%2??!",
             "i could if i wanted, don't you think!! kekeke",
         ),

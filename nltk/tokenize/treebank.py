@@ -191,7 +191,7 @@ class TreebankWordTokenizer(TokenizerI):
 
 
 class TreebankWordDetokenizer(TokenizerI):
-    """
+    r"""
     The Treebank detokenizer uses the reverse regex operations corresponding to
     the Treebank tokenizer's regexes.
 
@@ -252,11 +252,11 @@ class TreebankWordDetokenizer(TokenizerI):
 
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [
-        re.compile(pattern.replace("(?#X)", "\s"))
+        re.compile(pattern.replace("(?#X)", r"\s"))
         for pattern in _contractions.CONTRACTIONS2
     ]
     CONTRACTIONS3 = [
-        re.compile(pattern.replace("(?#X)", "\s"))
+        re.compile(pattern.replace("(?#X)", r"\s"))
         for pattern in _contractions.CONTRACTIONS3
     ]
 
