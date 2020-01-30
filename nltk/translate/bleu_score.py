@@ -542,9 +542,9 @@ class SmoothingFunction:
     def method2(self, p_n, *args, **kwargs):
         """
         Smoothing method 2: Add 1 to both numerator and denominator from
-        Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of
-        machine translation quality using longest common subsequence and
-        skip-bigram statistics. In ACL04.
+        Chin-Yew Lin and Franz Josef Och (2004) ORANGE: a Method for
+        Evaluating Automatic Evaluation Metrics for Machine Translation.
+        In COLING 2004.
         """
         return [
             Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False)
