@@ -46,7 +46,7 @@ class Lidstone(LanguageModel):
         counts = self.context_counts(context)
         word_count = counts[word]
         norm_count = counts.N()
-        return (word_count + self.gamma) / (norm_count + len(self.vocab) * self.gamma)
+        return (word_count + self.gamma) / (norm_count + self.cache.vocab_len * self.gamma)
 
 
 class Laplace(Lidstone):
@@ -70,7 +70,7 @@ class InterpolatedLanguageModel(LanguageModel):
         assert issubclass(smoothing_cls, Smoothing)
         params = kwargs.pop("params", {})
         super().__init__(order, **kwargs)
-        self.estimator = smoothing_cls(self.vocab, self.counts, **params)
+        self.estimator = smoothing_cls(self.vocab, self.counts, self.cache, **params)
 
     def unmasked_score(self, word, context=None):
         if not context:

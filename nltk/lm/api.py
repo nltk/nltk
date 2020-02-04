@@ -28,7 +28,7 @@ class Smoothing:
     work both with Backoff and Interpolation.
     """
 
-    def __init__(self, vocabulary, counter):
+    def __init__(self, vocabulary, counter, cache):
         """
         :param vocabulary: The Ngram vocabulary object.
         :type vocabulary: nltk.lm.vocab.Vocabulary
@@ -37,6 +37,7 @@ class Smoothing:
         """
         self.vocab = vocabulary
         self.counts = counter
+        self.cache = cache
 
     @abstractmethod
     def unigram_score(self, word):
@@ -80,6 +81,15 @@ class LanguageModel:
     Cannot be directly instantiated itself.
 
     """
+    
+    class Cache:
+    
+        def __init__(self, order, vocab, counts):
+            self.update(order, vocab, counts)
+            
+        def update(self, order, vocab, counts):
+            self.vocab_len = len(vocab)
+            self.countsN = {n: counts[n].N() for n in range(1, order+1)}
 
     def __init__(self, order, vocabulary=None, counter=None):
         """Creates new LanguageModel.
@@ -99,6 +109,7 @@ class LanguageModel:
         self.order = order
         self.vocab = Vocabulary() if vocabulary is None else vocabulary
         self.counts = NgramCounter() if counter is None else counter
+        self.cache = self.Cache(self.order, self.vocab, self.counts)
 
     def fit(self, text, vocabulary_text=None):
         """Trains the model on a text.
@@ -113,6 +124,7 @@ class LanguageModel:
                 )
             self.vocab.update(vocabulary_text)
         self.counts.update(self.vocab.lookup(sent) for sent in text)
+        self.cache.update(self.order, self.vocab, self.counts)
 
     def score(self, word, context=None):
         """Masks out of vocab (OOV) words and computes their model score.
