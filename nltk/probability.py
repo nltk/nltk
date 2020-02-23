@@ -389,16 +389,47 @@ class FreqDist(Counter):
         return self.__class__(super(FreqDist, self).__and__(other))
 
     def __le__(self, other):
+        """
+        Returns True if this frequency distribution is a subset of the other
+        and for no key the value exceeds the value of the same key from
+        the other frequency distribution.
+
+        The <= operator forms partial order and satisfying the axioms
+        reflexivity, antisymmetry and transitivity.
+
+        >>> FreqDist('a') <= FreqDist('a')
+        True
+        >>> a = FreqDist('abc')
+        >>> b = FreqDist('aabc')
+        >>> (a <= b, b <= a)
+        (True, False)
+        >>> FreqDist('a') <= FreqDist('abcd')
+        True
+        >>> FreqDist('abc') <= FreqDist('xyz')
+        False
+        >>> FreqDist('xyz') <= FreqDist('abc')
+        False
+        >>> c = FreqDist('a')
+        >>> d = FreqDist('aa')
+        >>> e = FreqDist('aaa')
+        >>> c <= d and d <= e and c <= e
+        True
+        """
         if not isinstance(other, FreqDist):
             raise_unorderable_types("<=", self, other)
         return set(self).issubset(other) and all(
             self[key] <= other[key] for key in self
         )
 
-    # @total_ordering doesn't work here, since the class inherits from a builtin class
-    __ge__ = lambda self, other: not self <= other or self == other
+    def __ge__(self, other):
+        if not isinstance(other, FreqDist):
+            raise_unorderable_types(">=", self, other)
+        return set(self).issuperset(other) and all(
+            self[key] >= other[key] for key in other
+        )
+
     __lt__ = lambda self, other: self <= other and not self == other
-    __gt__ = lambda self, other: not self <= other
+    __gt__ = lambda self, other: self >= other and not self == other
 
     def __repr__(self):
         """
