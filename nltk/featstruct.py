@@ -93,8 +93,6 @@ import re
 import copy
 from functools import total_ordering
 
-from six import integer_types
-
 from nltk.internals import read_str, raise_unorderable_types
 from nltk.sem.logic import (
     Variable,
@@ -962,7 +960,7 @@ class FeatList(FeatStruct, list):
     _INDEX_ERROR = "Expected int or feature path.  Got %r."
 
     def __getitem__(self, name_or_path):
-        if isinstance(name_or_path, integer_types):
+        if isinstance(name_or_path, int):
             return list.__getitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
             try:
@@ -982,7 +980,7 @@ class FeatList(FeatStruct, list):
         its value; otherwise, raise ``KeyError``."""
         if self._frozen:
             raise ValueError(_FROZEN_ERROR)
-        if isinstance(name_or_path, (integer_types, slice)):
+        if isinstance(name_or_path, (int, slice)):
             return list.__delitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
             if len(name_or_path) == 0:
@@ -1001,7 +999,7 @@ class FeatList(FeatStruct, list):
         ``KeyError``."""
         if self._frozen:
             raise ValueError(_FROZEN_ERROR)
-        if isinstance(name_or_path, (integer_types, slice)):
+        if isinstance(name_or_path, (int, slice)):
             return list.__setitem__(self, name_or_path, value)
         elif isinstance(name_or_path, tuple):
             if len(name_or_path) == 0:

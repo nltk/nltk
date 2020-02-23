@@ -20,7 +20,6 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
-from six import class_types
 from six.moves.urllib.request import (
     build_opener,
     install_opener,
@@ -43,7 +42,7 @@ from nltk.collections import *
 def usage(obj, selfname="self"):
     str(obj)  # In case it's lazy, this will load it.
 
-    if not isinstance(obj, class_types):
+    if not isinstance(obj, type):
         obj = obj.__class__
 
     print("%s supports the following operations:" % obj.__name__)

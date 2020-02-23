@@ -46,8 +46,6 @@ from collections import defaultdict, Counter
 from functools import reduce
 from abc import ABCMeta, abstractmethod
 
-from six import itervalues
-
 from nltk.internals import raise_unorderable_types
 
 _NINF = float("-1e300")
@@ -1894,7 +1892,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in itervalues(self))
+        return sum(fdist.N() for fdist in self.values())
 
     def plot(self, *args, **kwargs):
         """
