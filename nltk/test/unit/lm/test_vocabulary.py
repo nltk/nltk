@@ -60,8 +60,8 @@ class NgramModelVocabularyTests(unittest.TestCase):
         vocab_counts = ["a", "b", "c", "d", "e", "f", "g", "w", "z"]
         vocab_items = ["a", "b", "d", "e", "<UNK>"]
 
-        six.assertCountEqual(self, vocab_counts, list(self.vocab.counts.keys()))
-        six.assertCountEqual(self, vocab_items, list(self.vocab))
+        self.assertCountEqual(vocab_counts, list(self.vocab.counts.keys()))
+        self.assertCountEqual(vocab_items, list(self.vocab))
 
     def test_update_empty_vocab(self):
         empty = Vocabulary(unk_cutoff=2)

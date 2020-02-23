@@ -7,8 +7,6 @@
 
 import unittest
 
-import six
-
 from nltk import FreqDist
 from nltk.lm import NgramCounter
 from nltk.util import everygrams
@@ -53,8 +51,8 @@ class NgramCounterTests(unittest.TestCase):
         bigrams = self.trigram_counter[2]
         trigrams = self.trigram_counter[3]
 
-        six.assertCountEqual(self, expected_bigram_contexts, bigrams.conditions())
-        six.assertCountEqual(self, expected_trigram_contexts, trigrams.conditions())
+        self.assertCountEqual(expected_bigram_contexts, bigrams.conditions())
+        self.assertCountEqual(expected_trigram_contexts, trigrams.conditions())
 
     def test_bigram_counts_seen_ngrams(self):
         b_given_a_count = 1
@@ -104,7 +102,7 @@ class NgramCounterTrainingTests(unittest.TestCase):
 
         self.assertFalse(bool(counter[3]))
         self.assertFalse(bool(counter[2]))
-        six.assertCountEqual(self, words, counter[1].keys())
+        self.assertCountEqual(words, counter[1].keys())
 
     def test_train_on_illegal_sentences(self):
         str_sent = ["Check", "this", "out", "!"]
@@ -129,6 +127,6 @@ class NgramCounterTrainingTests(unittest.TestCase):
         bigram_contexts = [("a",), ("c",)]
         trigram_contexts = [("e", "f")]
 
-        six.assertCountEqual(self, unigrams, counter[1].keys())
-        six.assertCountEqual(self, bigram_contexts, counter[2].keys())
-        six.assertCountEqual(self, trigram_contexts, counter[3].keys())
+        self.assertCountEqual(unigrams, counter[1].keys())
+        self.assertCountEqual(bigram_contexts, counter[2].keys())
+        self.assertCountEqual(trigram_contexts, counter[3].keys())
