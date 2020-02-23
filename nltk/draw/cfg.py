@@ -48,7 +48,7 @@ Visualization tools for CFGs.
 
 import re
 
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Entry,

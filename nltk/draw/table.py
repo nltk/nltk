@@ -11,7 +11,7 @@ Tkinter widgets for displaying multi-column listboxes and tables.
 
 import operator
 
-from six.moves.tkinter import Frame, Label, Listbox, Scrollbar, Tk
+from tkinter import Frame, Label, Listbox, Scrollbar, Tk
 
 
 ######################################################################

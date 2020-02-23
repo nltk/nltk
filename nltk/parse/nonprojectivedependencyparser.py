@@ -10,8 +10,6 @@
 import math
 import logging
 
-from six.moves import range
-
 from nltk.parse.dependencygraph import DependencyGraph
 
 logger = logging.getLogger(__name__)

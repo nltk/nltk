@@ -40,8 +40,8 @@ from nltk.sem.logic import (
 
 # Import Tkinter-based modules if they are available
 try:
-    from six.moves.tkinter import Canvas, Tk
-    from six.moves.tkinter_font import Font
+    from tkinter import Canvas, Tk
+    from tkinter.font import Font
     from nltk.util import in_idle
 
 except ImportError:
@@ -1426,7 +1426,7 @@ def demo():
 
 def test_draw():
     try:
-        from six.moves.tkinter import Tk
+        from tkinter import Tk
     except ImportError:
         from nose import SkipTest
 

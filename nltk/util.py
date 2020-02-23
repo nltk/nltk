@@ -20,7 +20,7 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
-from six.moves.urllib.request import (
+from urllib.request import (
     build_opener,
     install_opener,
     getproxies,

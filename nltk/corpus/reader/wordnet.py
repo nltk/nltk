@@ -36,8 +36,6 @@ from functools import total_ordering
 from operator import itemgetter
 from collections import defaultdict, deque
 
-from six.moves import range
-
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist

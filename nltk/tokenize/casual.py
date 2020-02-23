@@ -36,8 +36,7 @@ domains and tasks. The basic logic is this:
 ######################################################################
 
 import regex  # https://github.com/nltk/nltk/issues/2409
-
-from six.moves import html_entities
+import html
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -238,7 +237,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
             if entity_body in keep:
                 return match.group(0)
             else:
-                number = html_entities.name2codepoint.get(entity_body)
+                number = html.entities.name2codepoint.get(entity_body)
         if number is not None:
             try:
                 return chr(number)

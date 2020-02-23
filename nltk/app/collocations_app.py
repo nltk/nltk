@@ -9,9 +9,9 @@
 
 import threading
 
-from six.moves import queue as q
-from six.moves.tkinter_font import Font
-from six.moves.tkinter import (
+import queue as q
+from tkinter.font import Font
+from tkinter import (
     Button,
     END,
     Frame,

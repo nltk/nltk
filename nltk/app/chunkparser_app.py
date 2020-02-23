@@ -20,7 +20,7 @@ import textwrap
 import re
 import random
 
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Checkbutton,
@@ -32,8 +32,8 @@ from six.moves.tkinter import (
     Text,
     Tk,
 )
-from six.moves.tkinter_tkfiledialog import askopenfilename, asksaveasfilename
-from six.moves.tkinter_font import Font
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.font import Font
 
 from nltk.tree import Tree
 from nltk.util import in_idle
@@ -1460,7 +1460,7 @@ class RegexpChunkApp(object):
         ABOUT = "NLTK RegExp Chunk Parser Application\n" + "Written by Edward Loper"
         TITLE = "About: Regular Expression Chunk Parser Application"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except:

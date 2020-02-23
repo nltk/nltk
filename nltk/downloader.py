@@ -165,7 +165,7 @@ from xml.etree import ElementTree
 
 try:
     TKINTER = True
-    from six.moves.tkinter import (
+    from tkinter import (
         Tk,
         Frame,
         Label,
@@ -176,16 +176,15 @@ try:
         IntVar,
         TclError,
     )
-    from six.moves.tkinter_messagebox import showerror
+    from tkinter.messagebox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
 except ImportError:
     TKINTER = False
     TclError = ValueError
 
-from six.moves import input
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.error import HTTPError, URLError
+from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
 
 import nltk
 
@@ -1984,7 +1983,7 @@ class DownloaderGUI(object):
         ABOUT = "NLTK Downloader\n" + "Written by Edward Loper"
         TITLE = "About: NLTK Downloader"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except ImportError:

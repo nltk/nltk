@@ -19,8 +19,8 @@ import sys
 import types
 from collections import defaultdict, OrderedDict
 from operator import itemgetter
+from itertools import zip_longest
 
-from six.moves import zip_longest
 from pprint import pprint
 
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView

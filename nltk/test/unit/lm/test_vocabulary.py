@@ -8,7 +8,6 @@
 import unittest
 from collections import Counter
 
-import six
 from nltk.lm import Vocabulary
 
 

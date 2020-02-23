@@ -34,7 +34,7 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
 from abc import ABCMeta, abstractmethod
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Entry,
@@ -50,7 +50,7 @@ from six.moves.tkinter import (
     Widget,
     RAISED,
 )
-from six.moves.tkinter_tkfiledialog import asksaveasfilename
+from tkinter.filedialog import asksaveasfilename
 
 from nltk.util import in_idle
 

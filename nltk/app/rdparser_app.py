@@ -64,8 +64,8 @@ Keyboard Shortcuts::
       [q]\t Quit
 """
 
-from six.moves.tkinter_font import Font
-from six.moves.tkinter import Listbox, IntVar, Button, Frame, Label, Menu, Scrollbar, Tk
+from tkinter.font import Font
+from tkinter import Listbox, IntVar, Button, Frame, Label, Menu, Scrollbar, Tk
 
 from nltk.tree import Tree
 from nltk.util import in_idle
@@ -705,7 +705,7 @@ class RecursiveDescentApp(object):
         )
         TITLE = "About: Recursive Descent Parser Application"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except:

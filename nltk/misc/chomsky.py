@@ -118,8 +118,6 @@ scope of a complex symbol.
 import textwrap, random
 from itertools import chain, islice
 
-from six.moves import zip
-
 
 def generate_chomsky(times=5, line_length=72):
     parts = []

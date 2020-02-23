@@ -26,8 +26,6 @@ The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
 
-from six.moves import range
-
 from nltk.compat import time_clock
 from nltk.parse.chart import (
     Chart,

@@ -22,7 +22,7 @@ wordnet:      WordNet Browser
 
 # Import Tkinter-based modules if Tkinter is installed
 try:
-    from six.moves import tkinter
+    import tkinter
 except ImportError:
     import warnings
 

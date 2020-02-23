@@ -62,8 +62,8 @@ Keyboard Shortcuts::
 
 """
 
-from six.moves.tkinter_font import Font
-from six.moves.tkinter import IntVar, Listbox, Button, Frame, Label, Menu, Scrollbar, Tk
+from tkinter.font import Font
+from tkinter import IntVar, Listbox, Button, Frame, Label, Menu, Scrollbar, Tk
 
 from nltk.tree import Tree
 from nltk.parse import SteppingShiftReduceParser
@@ -665,7 +665,7 @@ class ShiftReduceApp(object):
         ABOUT = "NLTK Shift-Reduce Parser Application\n" + "Written by Edward Loper"
         TITLE = "About: Shift-Reduce Parser Application"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except:

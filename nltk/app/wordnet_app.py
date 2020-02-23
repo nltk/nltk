@@ -62,7 +62,7 @@ import base64
 import pickle
 import copy
 
-from six.moves.urllib.parse import unquote_plus
+from urllib.parse import unquote_plus
 
 from nltk import compat
 from nltk.corpus import wordnet as wn

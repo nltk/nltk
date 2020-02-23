@@ -43,7 +43,7 @@ import codecs
 from abc import ABCMeta, abstractmethod
 from gzip import GzipFile, WRITE as GZ_WRITE
 
-from six.moves.urllib.request import urlopen, url2pathname
+from urllib.request import urlopen, url2pathname
 
 try:
     import cPickle as pickle

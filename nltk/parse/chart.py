@@ -41,8 +41,6 @@ import re
 import warnings
 from functools import total_ordering
 
-from six.moves import range
-
 from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
