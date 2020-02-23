@@ -12,8 +12,6 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
-from six.moves import range
-
 from nltk.compat import time_clock
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic

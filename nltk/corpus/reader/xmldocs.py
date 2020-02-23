@@ -19,8 +19,6 @@ try:
 except ImportError:
     from xml.etree import ElementTree
 
-from six import string_types
-
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer
 from nltk.internals import ElementWrapper
@@ -46,7 +44,7 @@ class XMLCorpusReader(CorpusReader):
         # Make sure we have exactly one file -- no concatenating XML.
         if fileid is None and len(self._fileids) == 1:
             fileid = self._fileids[0]
-        if not isinstance(fileid, string_types):
+        if not isinstance(fileid, str):
             raise TypeError("Expected a single file identifier string")
         # Read the XML in using ElementTree.
         elt = ElementTree.parse(self.abspath(fileid).open()).getroot()
@@ -84,7 +82,7 @@ class XMLCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

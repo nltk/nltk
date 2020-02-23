@@ -4,7 +4,6 @@
 # configured to automatically set mime types
 # http://code.google.com/p/support/wiki/FAQ
 
-from __future__ import print_function
 
 import os
 import sys

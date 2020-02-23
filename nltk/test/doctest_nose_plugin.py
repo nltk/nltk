@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
 import re
 import sys
 import os
@@ -113,7 +112,7 @@ class DoctestPluginHelper(object):
 
     def _patchTestCase(self, case):
         if case:
-            case._dt_test.globs["print_function"] = print_function
+            case._dt_test.globs["print_function"] = print
             case._dt_checker = _checker
         return case
 

@@ -15,7 +15,6 @@ import math as _math
 from abc import ABCMeta, abstractmethod
 from functools import reduce
 
-from six import add_metaclass
 
 _log2 = lambda x: _math.log(x, 2.0)
 _ln = _math.log
@@ -44,8 +43,7 @@ TOTAL = -1
 """Marginals index for the number of words in the data"""
 
 
-@add_metaclass(ABCMeta)
-class NgramAssocMeasures(object):
+class NgramAssocMeasures(metaclass=ABCMeta):
     """
     An abstract class defining a collection of generic association measures.
     Each public method returns a score, taking the following arguments::

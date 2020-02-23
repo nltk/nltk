@@ -32,8 +32,6 @@ In order to provide globally unique IDs for each pair, a new attribute
 file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
-from six import string_types
-
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
@@ -142,6 +140,6 @@ class RTECorpusReader(XMLCorpusReader):
         :type: list
         :rtype: list(RTEPair)
         """
-        if isinstance(fileids, string_types):
+        if isinstance(fileids, str):
             fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])

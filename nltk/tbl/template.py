@@ -9,14 +9,12 @@
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 import itertools as it
 from nltk.tbl.feature import Feature
 from nltk.tbl.rule import Rule
 
 
-@add_metaclass(ABCMeta)
-class BrillTemplateI:
+class BrillTemplateI(metaclass=ABCMeta):
     """
     An interface for generating lists of transformational rules that
     apply at given sentence positions.  ``BrillTemplateI`` is used by

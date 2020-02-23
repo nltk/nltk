@@ -4,7 +4,6 @@ Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
 """
 
-from __future__ import unicode_literals
 
 import unittest
 

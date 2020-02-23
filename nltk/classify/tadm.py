@@ -8,8 +8,6 @@
 import sys
 import subprocess
 
-from six import string_types
-
 from nltk.internals import find_binary
 
 try:
@@ -77,7 +75,7 @@ def call_tadm(args):
     """
     Call the ``tadm`` binary with the given arguments.
     """
-    if isinstance(args, string_types):
+    if isinstance(args, str):
         raise TypeError("args should be a list of strings")
     if _tadm_bin is None:
         config_tadm()

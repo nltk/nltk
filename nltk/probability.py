@@ -46,8 +46,6 @@ from collections import defaultdict, Counter
 from functools import reduce
 from abc import ABCMeta, abstractmethod
 
-from six import itervalues, text_type, add_metaclass
-
 from nltk.internals import raise_unorderable_types
 
 _NINF = float("-1e300")
@@ -297,7 +295,7 @@ class FreqDist(Counter):
 
         ax.plot(freqs, **kwargs)
         ax.set_xticks(range(len(samples)))
-        ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+        ax.set_xticklabels([str(s) for s in samples], rotation=90)
         ax.set_xlabel("Samples")
         ax.set_ylabel(ylabel)
 
@@ -454,8 +452,7 @@ class FreqDist(Counter):
 ##//////////////////////////////////////////////////////
 
 
-@add_metaclass(ABCMeta)
-class ProbDistI(object):
+class ProbDistI(metaclass=ABCMeta):
     """
     A probability distribution for the outcomes of an experiment.  A
     probability distribution specifies how likely it is that an
@@ -1895,7 +1892,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in itervalues(self))
+        return sum(fdist.N() for fdist in self.values())
 
     def plot(self, *args, **kwargs):
         """
@@ -1955,7 +1952,7 @@ class ConditionalFreqDist(defaultdict):
             ax.legend(loc=legend_loc)
             ax.grid(True, color="silver")
             ax.set_xticks(range(len(samples)))
-            ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+            ax.set_xticklabels([str(s) for s in samples], rotation=90)
             if title:
                 ax.set_title(title)
             ax.set_xlabel("Samples")
@@ -2106,8 +2103,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 
-@add_metaclass(ABCMeta)
-class ConditionalProbDistI(dict):
+class ConditionalProbDistI(dict, metaclass=ABCMeta):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability

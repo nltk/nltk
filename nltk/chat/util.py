@@ -11,8 +11,6 @@
 import re
 import random
 
-from six.moves import input
-
 
 reflections = {
     "i am": "you are",

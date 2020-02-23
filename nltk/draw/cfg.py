@@ -48,8 +48,7 @@ Visualization tools for CFGs.
 
 import re
 
-from six import string_types
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Entry,
@@ -676,7 +675,7 @@ class CFGDemo(object):
                 ):
                     pass  # matching nonterminal
                 elif (
-                    isinstance(node, string_types)
+                    isinstance(node, str)
                     and isinstance(widget, TextWidget)
                     and node == widget.text()
                 ):

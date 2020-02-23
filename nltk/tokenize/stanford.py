@@ -13,8 +13,6 @@ import json
 from subprocess import PIPE
 import warnings
 
-from six import text_type
-
 from nltk.internals import find_jar, config_java, java, _java_options
 from nltk.tokenize.api import TokenizerI
 from nltk.parse.corenlp import CoreNLPParser
@@ -99,7 +97,7 @@ class StanfordTokenizer(TokenizerI):
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
             # Write the actual sentences to the temporary input file
-            if isinstance(input_, text_type) and encoding:
+            if isinstance(input_, str) and encoding:
                 input_ = input_.encode(encoding)
             input_file.write(input_)
             input_file.flush()

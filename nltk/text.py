@@ -20,8 +20,6 @@ from functools import reduce
 import re
 import sys
 
-from six import text_type
-
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
 from nltk.probability import FreqDist
@@ -341,9 +339,9 @@ class Text(object):
             self.name = name
         elif "]" in tokens[:20]:
             end = tokens[:20].index("]")
-            self.name = " ".join(text_type(tok) for tok in tokens[1:end])
+            self.name = " ".join(str(tok) for tok in tokens[1:end])
         else:
-            self.name = " ".join(text_type(tok) for tok in tokens[:8]) + "..."
+            self.name = " ".join(str(tok) for tok in tokens[:8]) + "..."
 
     # ////////////////////////////////////////////////////////////
     # Support item & slice access

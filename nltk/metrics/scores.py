@@ -11,8 +11,6 @@ import operator
 from random import shuffle
 from functools import reduce
 
-from six.moves import range, zip
-
 try:
     from scipy.stats.stats import betai
 except ImportError:

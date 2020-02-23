@@ -61,8 +61,6 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
 
 import re
 
-from six import string_types
-
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
@@ -176,7 +174,6 @@ class ReviewsCorpusReader(CorpusReader):
 
     We can compute stats for specific product features:
 
-        >>> from __future__ import division
         >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
         >>> tot = sum([int(score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
         >>> # We use float for backward compatibility with division in Python2.7
@@ -213,7 +210,7 @@ class ReviewsCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [
@@ -231,7 +228,7 @@ class ReviewsCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

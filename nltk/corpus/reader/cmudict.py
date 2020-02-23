@@ -69,7 +69,7 @@ class CMUDictCorpusReader(CorpusReader):
         :return: the cmudict lexicon as a raw string.
         """
         fileids = self._fileids
-        if isinstance(fileids, string_types):
+        if isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

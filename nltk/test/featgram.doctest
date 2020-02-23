@@ -9,7 +9,6 @@
 
 Grammars can be parsed from strings.
 
-    >>> from __future__ import print_function
     >>> import nltk
     >>> from nltk import grammar, parse
     >>> g = """

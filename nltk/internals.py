@@ -24,8 +24,6 @@ try:
 except ImportError:
     from xml.etree import ElementTree
 
-from six import string_types
-
 from nltk import compat
 
 ##########################################################################
@@ -62,7 +60,7 @@ def config_java(bin=None, options=None, verbose=False):
     )
 
     if options is not None:
-        if isinstance(options, string_types):
+        if isinstance(options, str):
             options = options.split()
         _java_options = list(options)
 
@@ -118,7 +116,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     stdout = subprocess_output_dict.get(stdout, stdout)
     stderr = subprocess_output_dict.get(stderr, stderr)
 
-    if isinstance(cmd, string_types):
+    if isinstance(cmd, str):
         raise TypeError("cmd should be a list of strings")
 
     # Make sure we know where a java binary is.
@@ -126,7 +124,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
         config_java()
 
     # Set up the classpath.
-    if isinstance(classpath, string_types):
+    if isinstance(classpath, str):
         classpaths = [classpath]
     else:
         classpaths = list(classpath)
@@ -531,10 +529,10 @@ def find_file_iter(
     :param verbose: Whether or not to print path when a file is found.
     """
     file_names = [filename] + (file_names or [])
-    assert isinstance(filename, string_types)
-    assert not isinstance(file_names, string_types)
-    assert not isinstance(searchpath, string_types)
-    if isinstance(env_vars, string_types):
+    assert isinstance(filename, str)
+    assert not isinstance(file_names, str)
+    assert not isinstance(searchpath, str)
+    if isinstance(env_vars, str):
         env_vars = env_vars.split()
     yielded = False
 
@@ -723,9 +721,9 @@ def find_jar_iter(
     :param is_regex: Whether name is a regular expression.
     """
 
-    assert isinstance(name_pattern, string_types)
-    assert not isinstance(searchpath, string_types)
-    if isinstance(env_vars, string_types):
+    assert isinstance(name_pattern, str)
+    assert not isinstance(searchpath, str)
+    if isinstance(env_vars, str):
         env_vars = env_vars.split()
     yielded = False
 
@@ -941,7 +939,7 @@ class ElementWrapper(object):
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
-        if isinstance(etree, string_types):
+        if isinstance(etree, str):
             etree = ElementTree.fromstring(etree)
         self.__dict__["_etree"] = etree
 

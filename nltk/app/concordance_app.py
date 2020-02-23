@@ -8,9 +8,9 @@
 import re
 import threading
 
-from six.moves import queue as q
-from six.moves.tkinter_font import Font
-from six.moves.tkinter import (
+import queue as q
+from tkinter.font import Font
+from tkinter import (
     Tk,
     Button,
     END,
@@ -399,7 +399,7 @@ class ConcordanceSearchView(object):
         ABOUT = "NLTK Concordance Search Demo\n"
         TITLE = "About: NLTK Concordance Search Demo"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE, parent=self.main_frame).show()
         except:

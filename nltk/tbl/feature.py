@@ -9,11 +9,9 @@
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 
-@add_metaclass(ABCMeta)
-class Feature:
+class Feature(metaclass=ABCMeta):
     """
     An abstract base class for Features. A Feature is a combination of
     a specific property-computing method and a list of relative positions

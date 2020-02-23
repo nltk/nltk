@@ -100,7 +100,6 @@ natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
     install_requires=[
-        "six",
         'singledispatch; python_version < "3.4"',
         "click",
         "joblib",

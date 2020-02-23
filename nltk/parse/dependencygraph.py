@@ -20,8 +20,6 @@ from pprint import pformat
 import subprocess
 import warnings
 
-from six import string_types
-
 from nltk.tree import Tree
 
 #################################################################
@@ -328,7 +326,7 @@ class DependencyGraph(object):
             10: extract_10_cells,
         }
 
-        if isinstance(input_, string_types):
+        if isinstance(input_, str):
             input_ = (line for line in input_.split("\n"))
 
         lines = (l.rstrip() for l in input_)

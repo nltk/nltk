@@ -20,8 +20,7 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
-from six import class_types, string_types, text_type
-from six.moves.urllib.request import (
+from urllib.request import (
     build_opener,
     install_opener,
     getproxies,
@@ -43,7 +42,7 @@ from nltk.collections import *
 def usage(obj, selfname="self"):
     str(obj)  # In case it's lazy, this will load it.
 
-    if not isinstance(obj, class_types):
+    if not isinstance(obj, type):
         obj = obj.__class__
 
     print("%s supports the following operations:" % obj.__name__)
@@ -202,7 +201,7 @@ def re_show(regexp, string, left="{", right="}"):
 def filestring(f):
     if hasattr(f, "read"):
         return f.read()
-    elif isinstance(f, string_types):
+    elif isinstance(f, str):
         with open(f, "r") as infile:
             return infile.read()
     else:
@@ -281,7 +280,7 @@ def guess_encoding(data):
         if not enc:
             continue
         try:
-            decoded = text_type(data, enc)
+            decoded = str(data, enc)
             successful_encoding = enc
 
         except (UnicodeError, LookupError):

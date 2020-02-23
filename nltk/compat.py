@@ -12,8 +12,6 @@ from functools import update_wrapper, wraps
 import fractions
 import unicodedata
 
-from six import string_types, text_type
-
 # Python 2/3 compatibility layer. Based on six.
 
 PY3 = sys.version_info[0] == 3
@@ -89,7 +87,7 @@ else:
             self.encoder = encoder_cls(errors=errors)
 
         def encode(self, data):
-            if isinstance(data, string_types):
+            if isinstance(data, str):
                 return data.encode("utf-8")
             else:
                 return data
@@ -298,21 +296,8 @@ def python_2_unicode_compatible(klass):
 
 def unicode_repr(obj):
     """
-    For classes that was fixed with @python_2_unicode_compatible
-    ``unicode_repr`` returns ``obj.unicode_repr()``; for unicode strings
-    the result is returned without "u" letter (to make output the
-    same under Python 2.x and Python 3.x); for other variables
-    it is the same as ``repr``.
+    Compatibility alias for ``repr``.
     """
-    if PY3:
-        return repr(obj)
-
-    # Python 2.x
-    if hasattr(obj, "unicode_repr"):
-        return obj.unicode_repr()
-
-    if isinstance(obj, text_type):
-        return repr(obj)[1:]  # strip "u" letter from output
 
     return repr(obj)
 

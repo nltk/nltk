@@ -24,8 +24,6 @@ for details.
 """
 import subprocess
 
-from six import string_types
-
 from nltk.internals import find_binary
 
 try:
@@ -164,7 +162,7 @@ def call_megam(args):
     """
     Call the ``megam`` binary with the given arguments.
     """
-    if isinstance(args, string_types):
+    if isinstance(args, str):
         raise TypeError("args should be a list of strings")
     if _megam_bin is None:
         config_megam()
@@ -180,7 +178,7 @@ def call_megam(args):
         print(stderr)
         raise OSError("megam command failed!")
 
-    if isinstance(stdout, string_types):
+    if isinstance(stdout, str):
         return stdout
     else:
         return stdout.decode("utf-8")

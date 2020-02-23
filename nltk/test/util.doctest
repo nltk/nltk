@@ -5,7 +5,6 @@
 Utility functions
 =================
 
-    >>> from __future__ import print_function
     >>> from nltk.util import *
     >>> from nltk.tree import Tree
 

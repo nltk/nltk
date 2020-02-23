@@ -27,8 +27,6 @@ Related papers:
 """
 import re
 
-from six import string_types
-
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
@@ -84,7 +82,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [
@@ -108,7 +106,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [

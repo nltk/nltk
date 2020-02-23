@@ -22,7 +22,6 @@ Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 """
 
 import re
-from six import text_type
 
 from nltk.tokenize.api import TokenizerI
 
@@ -88,7 +87,7 @@ class ToktokTokenizer(TokenizerI):
 
     # This is the \p{Open_Punctuation} from Perl's perluniprops
     # see http://perldoc.perl.org/perluniprops.html
-    OPEN_PUNCT = text_type(
+    OPEN_PUNCT = str(
         u"([{\u0f3a\u0f3c\u169b\u201a\u201e\u2045\u207d"
         u"\u208d\u2329\u2768\u276a\u276c\u276e\u2770\u2772"
         u"\u2774\u27c5\u27e6\u27e8\u27ea\u27ec\u27ee\u2983"
@@ -100,7 +99,7 @@ class ToktokTokenizer(TokenizerI):
         u"\ufe5d\uff08\uff3b\uff5b\uff5f\uff62"
     )
     # This is the \p{Close_Punctuation} from Perl's perluniprops
-    CLOSE_PUNCT = text_type(
+    CLOSE_PUNCT = str(
         u")]}\u0f3b\u0f3d\u169c\u2046\u207e\u208e\u232a"
         u"\u2769\u276b\u276d\u276f\u2771\u2773\u2775\u27c6"
         u"\u27e7\u27e9\u27eb\u27ed\u27ef\u2984\u2986\u2988"
@@ -112,7 +111,7 @@ class ToktokTokenizer(TokenizerI):
         u"\uff09\uff3d\uff5d\uff60\uff63"
     )
     # This is the \p{Close_Punctuation} from Perl's perluniprops
-    CURRENCY_SYM = text_type(
+    CURRENCY_SYM = str(
         u"$\xa2\xa3\xa4\xa5\u058f\u060b\u09f2\u09f3\u09fb"
         u"\u0af1\u0bf9\u0e3f\u17db\u20a0\u20a1\u20a2\u20a3"
         u"\u20a4\u20a5\u20a6\u20a7\u20a8\u20a9\u20aa\u20ab"
@@ -172,10 +171,10 @@ class ToktokTokenizer(TokenizerI):
     ]
 
     def tokenize(self, text, return_str=False):
-        text = text_type(text)  # Converts input string into unicode.
+        text = str(text)  # Converts input string into unicode.
         for regexp, subsitution in self.TOKTOK_REGEXES:
             text = regexp.sub(subsitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
-        text = text_type(text.strip())
+        text = str(text.strip())
         return text if return_str else text.split()

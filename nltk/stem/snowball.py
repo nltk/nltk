@@ -25,7 +25,6 @@ There is also a demo function: `snowball.demo()`.
 """
 
 import re
-from six.moves import input
 
 from nltk.corpus import stopwords
 from nltk.stem import porter

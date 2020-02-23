@@ -16,7 +16,6 @@ import time as _time
 from abc import ABCMeta, abstractmethod
 from datetime import tzinfo, timedelta, datetime
 
-from six import add_metaclass
 
 from nltk.compat import UTC
 
@@ -51,8 +50,7 @@ class LocalTimezoneOffsetWithUTC(tzinfo):
 LOCAL = LocalTimezoneOffsetWithUTC()
 
 
-@add_metaclass(ABCMeta)
-class BasicTweetHandler(object):
+class BasicTweetHandler(metaclass=ABCMeta):
     """
     Minimal implementation of `TweetHandler`.
 

@@ -12,11 +12,8 @@
 Unit tests for nltk.tgrep.
 '''
 
-from __future__ import absolute_import, print_function, unicode_literals
 
 import unittest
-
-from six import b
 
 from nltk.tree import ParentedTree
 from nltk import tgrep
@@ -66,7 +63,7 @@ class TestSequenceFunctions(unittest.TestCase):
         Test that tokenization handles bytes and strs the same way.
         '''
         self.assertEqual(
-            tgrep.tgrep_tokenize(b('A .. (B !< C . D) | ![<< (E , F) $ G]')),
+            tgrep.tgrep_tokenize(b'A .. (B !< C . D) | ![<< (E , F) $ G]'),
             tgrep.tgrep_tokenize('A .. (B !< C . D) | ![<< (E , F) $ G]'),
         )
 
@@ -269,15 +266,15 @@ class TestSequenceFunctions(unittest.TestCase):
             '(S (NP (DT the) (JJ big) (NN dog)) ' '(VP bit) (NP (DT a) (NN cat)))'
         )
         self.assertEqual(
-            list(tgrep.tgrep_positions(b('NN'), [tree])),
-            list(tgrep.tgrep_positions('NN', [tree])),
+            list(tgrep.tgrep_positions(b'NN', [tree])),
+            list(tgrep.tgrep_positions(b'NN', [tree])),
         )
         self.assertEqual(
-            list(tgrep.tgrep_nodes(b('NN'), [tree])),
+            list(tgrep.tgrep_nodes(b'NN', [tree])),
             list(tgrep.tgrep_nodes('NN', [tree])),
         )
         self.assertEqual(
-            list(tgrep.tgrep_positions(b('NN|JJ'), [tree])),
+            list(tgrep.tgrep_positions(b'NN|JJ', [tree])),
             list(tgrep.tgrep_positions('NN|JJ', [tree])),
         )
 

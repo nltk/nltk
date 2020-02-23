@@ -14,8 +14,6 @@ Toolbox databases and settings files.
 import re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
-from six import u
-
 from nltk.compat import StringIO, PY3
 from nltk.data import PathPointer, find
 
@@ -321,11 +319,11 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                     cur_encoding = encoding
                 if re.search(_is_value, value):
                     l.append(
-                        (u("\\%s %s\n") % (mkr, value)).encode(cur_encoding, errors)
+                        ("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors)
                     )
                 else:
                     l.append(
-                        (u("\\%s%s\n") % (mkr, value)).encode(cur_encoding, errors)
+                        ("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors)
                     )
             else:
                 if re.search(_is_value, value):

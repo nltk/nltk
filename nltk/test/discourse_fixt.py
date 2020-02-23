@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
 
 
 # FIXME: the entire discourse.doctest is skipped if Prover9/Mace4 is

@@ -29,7 +29,6 @@ The input is:
 
 Note: Unit tests for this module can be found in test/unit/test_senna.py
 
-    >>> from __future__ import unicode_literals
     >>> from nltk.classify import Senna
     >>> pipeline = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     >>> sent = 'Dusseldorf is an international business center'.split()
@@ -41,8 +40,6 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
 from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
-
-from six import text_type
 
 from nltk.tag.api import TaggerI
 
@@ -137,7 +134,7 @@ class Senna(TaggerI):
 
         # Serialize the actual sentences to a temporary string
         _input = "\n".join((" ".join(x) for x in sentences)) + "\n"
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 
         # Run the tagger and get the output

@@ -72,8 +72,6 @@ which includes extensive demonstration code.
 import re
 import itertools
 
-from six.moves import map, zip
-
 try:
     import numpy as np
 except ImportError:

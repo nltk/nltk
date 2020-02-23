@@ -5,8 +5,6 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT
 
-from six import string_types
-
 from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
 from nltk.translate import AlignedSent, Alignment
 
@@ -57,7 +55,7 @@ class AlignedCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

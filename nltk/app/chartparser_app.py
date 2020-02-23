@@ -37,11 +37,10 @@ edge you wish to apply a rule to.
 # widget system.
 
 
-from __future__ import division
 import pickle
 import os.path
 
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Checkbutton,
@@ -53,9 +52,9 @@ from six.moves.tkinter import (
     Tk,
     Toplevel,
 )
-from six.moves.tkinter_font import Font
-from six.moves.tkinter_messagebox import showerror, showinfo
-from six.moves.tkinter_tkfiledialog import asksaveasfilename, askopenfilename
+from tkinter.font import Font
+from tkinter.messagebox import showerror, showinfo
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 
 from nltk.parse.chart import (
     BottomUpPredictCombineRule,
