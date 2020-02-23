@@ -18,7 +18,7 @@ import re
 import sys
 from abc import ABCMeta, abstractmethod
 
-from six import string_types, add_metaclass
+from six import add_metaclass
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
@@ -103,7 +103,7 @@ class Tree(list):
             raise TypeError(
                 "%s: Expected a node value and child list " % type(self).__name__
             )
-        elif isinstance(children, string_types):
+        elif isinstance(children, str):
             raise TypeError(
                 "%s() argument 2 should be a list, not a "
                 "string" % type(self).__name__
@@ -374,7 +374,7 @@ class Tree(list):
         :rtype: list(Production)
         """
 
-        if not isinstance(self._label, string_types):
+        if not isinstance(self._label, str):
             raise TypeError(
                 "Productions can only be generated from trees having node labels that are strings"
             )
@@ -647,7 +647,7 @@ class Tree(list):
             then it will return a tree of that type.
         :rtype: Tree
         """
-        if not isinstance(brackets, string_types) or len(brackets) != 2:
+        if not isinstance(brackets, str) or len(brackets) != 2:
             raise TypeError("brackets must be a length-2 string")
         if re.search("\s", brackets):
             raise TypeError("whitespace brackets not allowed")
@@ -860,7 +860,7 @@ class Tree(list):
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.
-        if isinstance(self._label, string_types):
+        if isinstance(self._label, str):
             s = "%s%s%s" % (parens[0], self._label, nodesep)
         else:
             s = "%s%s%s" % (parens[0], unicode_repr(self._label), nodesep)
@@ -873,7 +873,7 @@ class Tree(list):
                 )
             elif isinstance(child, tuple):
                 s += "\n" + " " * (indent + 2) + "/".join(child)
-            elif isinstance(child, string_types) and not quotes:
+            elif isinstance(child, str) and not quotes:
                 s += "\n" + " " * (indent + 2) + "%s" % child
             else:
                 s += "\n" + " " * (indent + 2) + unicode_repr(child)
@@ -909,11 +909,11 @@ class Tree(list):
                 childstrs.append(child._pformat_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
-            elif isinstance(child, string_types) and not quotes:
+            elif isinstance(child, str) and not quotes:
                 childstrs.append("%s" % child)
             else:
                 childstrs.append(unicode_repr(child))
-        if isinstance(self._label, string_types):
+        if isinstance(self._label, str):
             return "%s%s%s %s%s" % (
                 parens[0],
                 self._label,

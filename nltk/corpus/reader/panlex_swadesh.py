@@ -10,8 +10,6 @@
 
 from collections import namedtuple, defaultdict
 import re
-from six import string_types
-
 
 from nltk.tokenize import line_tokenize
 

@@ -10,8 +10,6 @@ import operator
 from functools import reduce
 from itertools import chain
 
-from six import string_types
-
 from nltk.sem.logic import (
     APP,
     AbstractVariableExpression,
@@ -1157,7 +1155,7 @@ class DrsDrawer(object):
         :param y: the left side of the current drawing area
         :return: the bottom-rightmost point
         """
-        if isinstance(item, string_types):
+        if isinstance(item, str):
             self.canvas.create_text(x, y, anchor="nw", font=self.canvas.font, text=item)
         elif isinstance(item, tuple):
             # item is the lower-right of a box
@@ -1179,7 +1177,7 @@ class DrsDrawer(object):
         :param y: the left side of the current drawing area
         :return: the bottom-rightmost point
         """
-        if isinstance(item, string_types):
+        if isinstance(item, str):
             return (x + self.canvas.font.measure(item), y + self._get_text_height())
         elif isinstance(item, tuple):
             return item

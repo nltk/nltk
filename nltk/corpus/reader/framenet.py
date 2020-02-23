@@ -20,7 +20,6 @@ import types
 from collections import defaultdict, OrderedDict
 from operator import itemgetter
 
-from six import string_types, text_type
 from six.moves import zip_longest
 from pprint import pprint
 
@@ -84,7 +83,7 @@ def _pretty_any(obj):
 
     outstr = ""
     for k in obj:
-        if isinstance(obj[k], string_types) and len(obj[k]) > 65:
+        if isinstance(obj[k], str) and len(obj[k]) > 65:
             outstr += "[{0}]\n".format(k)
             outstr += "{0}".format(_pretty_longstring(obj[k], prefix="  "))
             outstr += "\n"
@@ -1001,10 +1000,10 @@ class PrettyList(list):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if self._MAX_REPR_SIZE and length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(
+                return "[%s, ...]" % str(
                     ",\n " if self._BREAK_LINES else ", "
                 ).join(pieces[:-1])
-        return "[%s]" % text_type(",\n " if self._BREAK_LINES else ", ").join(pieces)
+        return "[%s]" % str(",\n " if self._BREAK_LINES else ", ").join(pieces)
 
 
 class PrettyLazyMap(LazyMap):
@@ -1029,8 +1028,8 @@ class PrettyLazyMap(LazyMap):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % str(", ").join(pieces[:-1])
+        return "[%s]" % str(", ").join(pieces)
 
 
 class PrettyLazyIteratorList(LazyIteratorList):
@@ -1055,8 +1054,8 @@ class PrettyLazyIteratorList(LazyIteratorList):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % str(", ").join(pieces[:-1])
+        return "[%s]" % str(", ").join(pieces)
 
 
 class PrettyLazyConcatenation(LazyConcatenation):
@@ -1081,8 +1080,8 @@ class PrettyLazyConcatenation(LazyConcatenation):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % str(", ").join(pieces[:-1])
+        return "[%s]" % str(", ").join(pieces)
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
@@ -1580,7 +1579,7 @@ warnings(True) to display corpus consistency warnings when loading data
         """
 
         # get the frame info by name or id number
-        if isinstance(fn_fid_or_fname, string_types):
+        if isinstance(fn_fid_or_fname, str):
             f = self.frame_by_name(fn_fid_or_fname, ignorekeys)
         else:
             f = self.frame_by_id(fn_fid_or_fname, ignorekeys)
@@ -2111,7 +2110,7 @@ warnings(True) to display corpus consistency warnings when loading data
         if frame is not None:
             if isinstance(frame, int):
                 frames = [self.frame(frame)]
-            elif isinstance(frame, string_types):
+            elif isinstance(frame, str):
                 frames = self.frames(frame)
             else:
                 frames = [frame]
@@ -2240,7 +2239,7 @@ warnings(True) to display corpus consistency warnings when loading data
             if frame is not None:
                 if isinstance(frame, int):
                     frameIDs = {frame}
-                elif isinstance(frame, string_types):
+                elif isinstance(frame, str):
                     frameIDs = {f.ID for f in self.frames(frame)}
                 else:
                     frameIDs = {frame.ID}
@@ -2248,7 +2247,7 @@ warnings(True) to display corpus consistency warnings when loading data
         elif frame is not None:  # all LUs in matching frames
             if isinstance(frame, int):
                 frames = [self.frame(frame)]
-            elif isinstance(frame, string_types):
+            elif isinstance(frame, str):
                 frames = self.frames(frame)
             else:
                 frames = [frame]
@@ -2386,15 +2385,15 @@ warnings(True) to display corpus consistency warnings when loading data
         if fe is None and fe2 is not None:
             raise FramenetError("exemplars(..., fe=None, fe2=<value>) is not allowed")
         elif fe is not None and fe2 is not None:
-            if not isinstance(fe2, string_types):
-                if isinstance(fe, string_types):
+            if not isinstance(fe2, str):
+                if isinstance(fe, str):
                     # fe2 is specific to a particular frame. swap fe and fe2 so fe is always used to determine the frame.
                     fe, fe2 = fe2, fe
                 elif fe.frame is not fe2.frame:  # ensure frames match
                     raise FramenetError(
                         "exemplars() call with inconsistent `fe` and `fe2` specification (frames must match)"
                     )
-        if frame is None and fe is not None and not isinstance(fe, string_types):
+        if frame is None and fe is not None and not isinstance(fe, str):
             frame = fe.frame
 
         # narrow down to frames matching criteria
@@ -2403,7 +2402,7 @@ warnings(True) to display corpus consistency warnings when loading data
             list
         )  # frame name -> matching LUs, if luNamePattern is specified
         if frame is not None or luNamePattern is not None:
-            if frame is None or isinstance(frame, string_types):
+            if frame is None or isinstance(frame, str):
                 if luNamePattern is not None:
                     frames = set()
                     for lu in self.lus(luNamePattern, frame=frame):
@@ -2422,7 +2421,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     lusByFrame = {frame.name: self.lus(luNamePattern, frame=frame)}
 
             if fe is not None:  # narrow to frames that define this FE
-                if isinstance(fe, string_types):
+                if isinstance(fe, str):
                     frames = PrettyLazyIteratorList(
                         f
                         for f in frames
@@ -2437,7 +2436,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     frames = [fe.frame]
 
                 if fe2 is not None:  # narrow to frames that ALSO define this FE
-                    if isinstance(fe2, string_types):
+                    if isinstance(fe2, str):
                         frames = PrettyLazyIteratorList(
                             f
                             for f in frames
@@ -2464,13 +2463,13 @@ warnings(True) to display corpus consistency warnings when loading data
                 if fe is not None:
                     fes = (
                         {ffe for ffe in f.FE.keys() if re.search(fe, ffe, re.I)}
-                        if isinstance(fe, string_types)
+                        if isinstance(fe, str)
                         else {fe.name}
                     )
                     if fe2 is not None:
                         fes2 = (
                             {ffe for ffe in f.FE.keys() if re.search(fe2, ffe, re.I)}
-                            if isinstance(fe2, string_types)
+                            if isinstance(fe2, str)
                             else {fe2.name}
                         )
 
@@ -3046,7 +3045,7 @@ warnings(True) to display corpus consistency warnings when loading data
                 luinfo["sentenceCount"] = self._load_xml_attributes(PrettyDict(), sub)
             elif sub.tag.endswith("lexeme"):
                 lexemeinfo = self._load_xml_attributes(PrettyDict(), sub)
-                if not isinstance(lexemeinfo.name, string_types):
+                if not isinstance(lexemeinfo.name, str):
                     # some lexeme names are ints by default: e.g.,
                     # thousand.num has lexeme with name="1000"
                     lexemeinfo.name = str(lexemeinfo.name)

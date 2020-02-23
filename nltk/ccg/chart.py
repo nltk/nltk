@@ -32,8 +32,6 @@ python chart.py
 
 import itertools
 
-from six import string_types
-
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree

@@ -128,8 +128,6 @@ import shelve
 import os
 import sys
 
-from six import string_types
-
 import nltk.data
 
 ###########################################################################
@@ -727,7 +725,7 @@ def concepts(items=items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list(Concept)
     """
-    if isinstance(items, string_types):
+    if isinstance(items, str):
         items = (items,)
 
     rels = [item_metadata[r] for r in items]

@@ -46,7 +46,7 @@ from collections import defaultdict, Counter
 from functools import reduce
 from abc import ABCMeta, abstractmethod
 
-from six import itervalues, text_type, add_metaclass
+from six import itervalues, add_metaclass
 
 from nltk.internals import raise_unorderable_types
 
@@ -297,7 +297,7 @@ class FreqDist(Counter):
 
         ax.plot(freqs, **kwargs)
         ax.set_xticks(range(len(samples)))
-        ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+        ax.set_xticklabels([str(s) for s in samples], rotation=90)
         ax.set_xlabel("Samples")
         ax.set_ylabel(ylabel)
 
@@ -1955,7 +1955,7 @@ class ConditionalFreqDist(defaultdict):
             ax.legend(loc=legend_loc)
             ax.grid(True, color="silver")
             ax.set_xticks(range(len(samples)))
-            ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+            ax.set_xticklabels([str(s) for s in samples], rotation=90)
             if title:
                 ax.set_title(title)
             ax.set_xlabel("Samples")

@@ -44,7 +44,6 @@ from abc import ABCMeta, abstractmethod
 from gzip import GzipFile, WRITE as GZ_WRITE
 
 from six import add_metaclass
-from six import string_types, text_type
 from six.moves.urllib.request import urlopen, url2pathname
 
 try:
@@ -313,7 +312,7 @@ class PathPointer(object):
         """
 
 
-class FileSystemPathPointer(PathPointer, text_type):
+class FileSystemPathPointer(PathPointer, str):
     """
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
@@ -501,7 +500,7 @@ class ZipFilePathPointer(PathPointer):
         :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
-        if isinstance(zipfile, string_types):
+        if isinstance(zipfile, str):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Check that the entry exists:
@@ -1049,7 +1048,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 
     @py3_data
     def __init__(self, filename):
-        if not isinstance(filename, string_types):
+        if not isinstance(filename, str):
             raise TypeError("ReopenableZipFile filename must be a string")
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename

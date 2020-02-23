@@ -8,8 +8,6 @@
 
 import re
 
-from six import string_types
-
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
 from nltk.compat import unicode_repr
@@ -298,7 +296,7 @@ class RegexpChunkRule(object):
         :param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        if isinstance(regexp, string_types):
+        if isinstance(regexp, str):
             regexp = re.compile(regexp)
         self._repl = repl
         self._descr = descr
@@ -1196,7 +1194,7 @@ class RegexpParser(ChunkParserI):
         self._grammar = grammar
         self._loop = loop
 
-        if isinstance(grammar, string_types):
+        if isinstance(grammar, str):
             self._read_grammar(grammar, root_label, trace)
         else:
             # Make sur the grammar looks like it has the right type:

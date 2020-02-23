@@ -27,7 +27,6 @@ Related papers:
     Comparing Opinions on the Web". Proceedings of the 14th International World
     Wide Web conference (WWW-2005), May 10-14, 2005, Chiba, Japan.
 """
-from six import string_types
 
 from nltk.corpus.reader import WordListCorpusReader
 from nltk.corpus.reader.api import *
@@ -86,7 +85,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [

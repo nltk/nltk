@@ -6,8 +6,6 @@
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from six import string_types
-
 from nltk.tokenize import line_tokenize
 
 from nltk.corpus.reader.util import *
@@ -29,7 +27,7 @@ class WordListCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

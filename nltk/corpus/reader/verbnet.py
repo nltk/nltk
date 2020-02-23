@@ -16,8 +16,6 @@ import re
 import textwrap
 from collections import defaultdict
 
-from six import string_types
-
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 
@@ -80,7 +78,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return sorted(self._lemma_to_class.keys())
         else:
             # [xx] should this include subclass members?
-            if isinstance(vnclass, string_types):
+            if isinstance(vnclass, str):
                 vnclass = self.vnclass(vnclass)
             return [member.get("name") for member in vnclass.findall("MEMBERS/MEMBER")]
 
@@ -93,7 +91,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return sorted(self._wordnet_to_class.keys())
         else:
             # [xx] should this include subclass members?
-            if isinstance(vnclass, string_types):
+            if isinstance(vnclass, str):
                 vnclass = self.vnclass(vnclass)
             return sum(
                 [
@@ -172,7 +170,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         if vnclass_ids is None:
             return self._fileids
-        elif isinstance(vnclass_ids, string_types):
+        elif isinstance(vnclass_ids, str):
             return [self._class_to_fileid[self.longid(vnclass_ids)]]
         else:
             return [
@@ -193,7 +191,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             containing the xml contents of a VerbNet class.
         :return: frames - a list of frame dictionaries
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
         frames = []
         vnframes = vnclass.findall("FRAMES/FRAME")
@@ -218,7 +216,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             containing the xml contents of a VerbNet class.
         :return: list of subclasses
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
 
         subclasses = [
@@ -237,7 +235,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             containing the xml contents of a VerbNet class.
         :return: themroles: A list of thematic roles in the VerbNet class
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
 
         themroles = []
@@ -444,7 +442,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
         containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
 
         s = vnclass.get("ID") + "\n"
@@ -465,7 +463,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
 
         subclasses = self.subclasses(vnclass)
@@ -485,7 +483,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
 
         members = self.lemmas(vnclass)
@@ -505,7 +503,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
 
         pieces = []
@@ -529,7 +527,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, string_types):
+        if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)
         pieces = []
         for vnframe in self.frames(vnclass):

@@ -72,7 +72,7 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         raw_texts = []
         for f in fileids:

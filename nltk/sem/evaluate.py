@@ -20,8 +20,6 @@ import textwrap
 import re
 import sys
 
-from six import string_types
-
 from nltk.decorators import decorator  # this used in code that is commented out
 
 from nltk.sem.logic import (
@@ -97,7 +95,7 @@ def set2rel(s):
     """
     new = set()
     for elem in s:
-        if isinstance(elem, string_types):
+        if isinstance(elem, str):
             new.add((elem,))
         elif isinstance(elem, int):
             new.add((str(elem)))
@@ -135,7 +133,7 @@ class Valuation(dict):
         """
         super(Valuation, self).__init__()
         for (sym, val) in xs:
-            if isinstance(val, string_types) or isinstance(val, bool):
+            if isinstance(val, str) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
                 self[sym] = set2rel(val)
@@ -162,7 +160,7 @@ class Valuation(dict):
         """Set-theoretic domain of the value-space of a Valuation."""
         dom = []
         for val in self.values():
-            if isinstance(val, string_types):
+            if isinstance(val, str):
                 dom.append(val)
             elif not isinstance(val, bool):
                 dom.extend(
@@ -550,7 +548,7 @@ class Model(object):
         indent = spacer + (spacer * nesting)
         candidates = []
 
-        if isinstance(varex, string_types):
+        if isinstance(varex, str):
             var = Variable(varex)
         else:
             var = varex

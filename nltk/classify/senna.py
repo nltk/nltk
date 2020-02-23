@@ -41,8 +41,6 @@ from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
 
-from six import text_type
-
 from nltk.tag.api import TaggerI
 
 _senna_url = "http://ml.nec-labs.com/senna/"
@@ -136,7 +134,7 @@ class Senna(TaggerI):
 
         # Serialize the actual sentences to a temporary string
         _input = "\n".join((" ".join(x) for x in sentences)) + "\n"
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 
         # Run the tagger and get the output

@@ -25,8 +25,6 @@ is tagged with a sense identifier, and supplied with context.
 import re
 from xml.etree import ElementTree
 
-from six import string_types
-
 from nltk.tokenize import *
 
 from nltk.corpus.reader.util import *
@@ -64,7 +62,7 @@ class SensevalCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

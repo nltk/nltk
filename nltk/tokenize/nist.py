@@ -18,7 +18,6 @@ https://github.com/lium-lst/nmtpy/blob/master/nmtpy/metrics/mtevalbleu.py#L162
 
 import io
 import re
-from six import text_type
 
 from nltk.corpus import perluniprops
 from nltk.tokenize.api import TokenizerI
@@ -31,7 +30,6 @@ class NISTTokenizer(TokenizerI):
     paragraph-based tokenization from mteval-14.pl; The sentence-based
     tokenization is consistent with the other tokenizers available in NLTK.
 
-    >>> from six import text_type
     >>> from nltk.tokenize.nist import NISTTokenizer
     >>> nist = NISTTokenizer()
     >>> s = "Good muffins cost $3.88 in New York."
@@ -93,9 +91,9 @@ class NISTTokenizer(TokenizerI):
     ]
 
     # Perluniprops characters used in NIST tokenizer.
-    pup_number = text_type("".join(set(perluniprops.chars("Number"))))  # i.e. \p{N}
-    pup_punct = text_type("".join(set(perluniprops.chars("Punctuation"))))  # i.e. \p{P}
-    pup_symbol = text_type("".join(set(perluniprops.chars("Symbol"))))  # i.e. \p{S}
+    pup_number = str("".join(set(perluniprops.chars("Number"))))  # i.e. \p{N}
+    pup_punct = str("".join(set(perluniprops.chars("Punctuation"))))  # i.e. \p{P}
+    pup_symbol = str("".join(set(perluniprops.chars("Symbol"))))  # i.e. \p{S}
 
     # Python regexes needs to escape some special symbols, see
     # see https://stackoverflow.com/q/45670950/610569
@@ -108,8 +106,8 @@ class NISTTokenizer(TokenizerI):
     #       (ii) de-deuplicate spaces.
     #       In Python, this would do: ' '.join(str.strip().split())
     # Thus, the next two lines were commented out.
-    # Line_Separator = text_type(''.join(perluniprops.chars('Line_Separator'))) # i.e. \p{Zl}
-    # Separator = text_type(''.join(perluniprops.chars('Separator'))) # i.e. \p{Z}
+    # Line_Separator = str(''.join(perluniprops.chars('Line_Separator'))) # i.e. \p{Zl}
+    # Separator = str(''.join(perluniprops.chars('Separator'))) # i.e. \p{Z}
 
     # Pads non-ascii strings with space.
     NONASCII = re.compile("([\x00-\x7f]+)"), r" \1 "
@@ -140,7 +138,7 @@ class NISTTokenizer(TokenizerI):
         return text
 
     def tokenize(self, text, lowercase=False, western_lang=True, return_str=False):
-        text = text_type(text)
+        text = str(text)
         # Language independent regex.
         text = self.lang_independent_sub(text)
         # Language dependent regex.
@@ -155,13 +153,13 @@ class NISTTokenizer(TokenizerI):
         text = " ".join(text.split())
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
-        text = text_type(text.strip())
+        text = str(text.strip())
         return text if return_str else text.split()
 
     def international_tokenize(
         self, text, lowercase=False, split_non_ascii=True, return_str=False
     ):
-        text = text_type(text)
+        text = str(text)
         # Different from the 'normal' tokenize(), STRIP_EOL_HYPHEN is applied
         # first before unescaping.
         regexp, substitution = self.STRIP_SKIP

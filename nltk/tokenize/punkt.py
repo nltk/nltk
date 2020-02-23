@@ -108,8 +108,6 @@ import re
 import math
 from collections import defaultdict
 
-from six import string_types
-
 from nltk.compat import unicode_repr
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
@@ -1258,7 +1256,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         given. Repeated calls to this method destroy previous parameters. For
         incremental training, instantiate a separate PunktTrainer instance.
         """
-        if not isinstance(train_text, string_types):
+        if not isinstance(train_text, str):
             return train_text
         return PunktTrainer(
             train_text, lang_vars=self._lang_vars, token_cls=self._Token

@@ -70,7 +70,7 @@ class ToolboxCorpusReader(CorpusReader):
     def raw(self, fileids):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

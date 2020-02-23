@@ -9,8 +9,6 @@
 from xml.etree import ElementTree
 from functools import total_ordering
 
-from six import string_types
-
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
 
@@ -58,7 +56,7 @@ class NombankCorpusReader(CorpusReader):
         """
 
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, string_types):
+        if isinstance(framefiles, str):
             self._fileids = find_corpus_fileids(root, framefiles)
         self._fileids = list(framefiles)
         # Initialze the corpus reader.
@@ -76,7 +74,7 @@ class NombankCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
