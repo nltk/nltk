@@ -4,8 +4,7 @@
 ==================================
  Feature Structures & Unification
 ==================================
-    >>> from __future__ import print_function
-    >>> from nltk.featstruct import FeatStruct
+     >>> from nltk.featstruct import FeatStruct
     >>> from nltk.sem.logic import Variable, VariableExpression, Expression
 
 .. note:: For now, featstruct uses the older lambdalogic semantics

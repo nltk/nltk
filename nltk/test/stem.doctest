@@ -11,8 +11,7 @@ Overview
 Stemmers remove morphological affixes from words, leaving only the
 word stem.
 
-    >>> from __future__ import print_function
-    >>> from nltk.stem import *
+     >>> from nltk.stem import *
 
 Unit tests for the Porter stemmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

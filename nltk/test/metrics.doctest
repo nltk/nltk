@@ -8,7 +8,6 @@ Metrics
 The `nltk.metrics` package provides a variety of *evaluation measures*
 which can be used for a wide variety of NLP tasks.
 
-   >>> from __future__ import print_function
    >>> from nltk.metrics import *
 
 ------------------

@@ -20,8 +20,7 @@ takes as its first argument a URL specifying what file should be
 loaded.  The ``nltk:`` protocol loads files from the NLTK data
 distribution:
 
-    >>> from __future__ import print_function
-    >>> tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
+     >>> tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
     >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
     ['Hello.', 'This is a test.', 'It works!']
 
