@@ -3,7 +3,6 @@
 Unit tests for nltk.compat.
 See also nltk/test/compat.doctest.
 """
-from __future__ import absolute_import, unicode_literals
 import unittest
 
 from nltk.text import Text

@@ -15,7 +15,6 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
-from __future__ import division
 import time
 import textwrap
 import re

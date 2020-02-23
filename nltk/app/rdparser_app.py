@@ -63,7 +63,6 @@ Keyboard Shortcuts::
       [Ctrl-p]\t Print
       [q]\t Quit
 """
-from __future__ import division
 
 from six.moves.tkinter_font import Font
 from six.moves.tkinter import Listbox, IntVar, Button, Frame, Label, Menu, Scrollbar, Tk

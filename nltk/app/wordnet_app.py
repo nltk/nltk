@@ -44,7 +44,6 @@ Options::
 # modifying to be compliant with NLTK's coding standards.  Tests also
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
-from __future__ import print_function
 
 # Allow this program to run inside the NLTK source tree.
 from sys import path

@@ -25,7 +25,6 @@ This is appealing for, say, speech recognizer hypothesis filtering.
 The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
-from __future__ import print_function, division
 
 from six.moves import range
 

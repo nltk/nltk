@@ -15,7 +15,6 @@ which was also ported into Python in
 https://github.com/lium-lst/nmtpy/blob/master/nmtpy/metrics/mtevalbleu.py#L162
 """
 
-from __future__ import unicode_literals
 
 import io
 import re

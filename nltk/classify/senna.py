@@ -29,7 +29,6 @@ The input is:
 
 Note: Unit tests for this module can be found in test/unit/test_senna.py
 
-    >>> from __future__ import unicode_literals
     >>> from nltk.classify import Senna
     >>> pipeline = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     >>> sent = 'Dusseldorf is an international business center'.split()

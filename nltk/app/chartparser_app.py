@@ -37,7 +37,6 @@ edge you wish to apply a rule to.
 # widget system.
 
 
-from __future__ import division
 import pickle
 import os.path
 

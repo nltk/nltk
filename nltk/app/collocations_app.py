@@ -7,8 +7,6 @@
 #
 
 
-from __future__ import division
-
 import threading
 
 from six.moves import queue as q

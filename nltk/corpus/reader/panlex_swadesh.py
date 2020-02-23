@@ -8,7 +8,6 @@
 # For license information, see LICENSE.TXT
 
 
-from __future__ import print_function
 from collections import namedtuple, defaultdict
 import re
 from six import string_types

@@ -3,7 +3,6 @@
 Unit tests for nltk.corpus.nombank
 """
 
-from __future__ import unicode_literals
 import unittest
 
 from nltk.corpus import nombank
