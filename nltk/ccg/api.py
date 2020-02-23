@@ -8,15 +8,13 @@
 from functools import total_ordering
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 from nltk.internals import raise_unorderable_types
 from nltk.compat import unicode_repr
 
 
-@add_metaclass(ABCMeta)
 @total_ordering
-class AbstractCCGCategory(object):
+class AbstractCCGCategory(metaclass=ABCMeta):
     """
     Interface for categories in combinatory grammars.
     """

@@ -9,7 +9,6 @@
 import math
 import unittest
 
-from six import add_metaclass
 
 from nltk.lm import (
     Vocabulary,
@@ -77,8 +76,7 @@ class ParametrizeTestsMeta(type):
         return test
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class MleBigramTests(unittest.TestCase):
+class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     """Unit tests for MLE ngram model."""
 
     score_tests = [
@@ -157,8 +155,7 @@ class MleBigramTests(unittest.TestCase):
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class MleTrigramTests(unittest.TestCase):
+class MleTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     """MLE trigram model tests"""
 
     score_tests = [
@@ -182,8 +179,7 @@ class MleTrigramTests(unittest.TestCase):
         self.model.fit(training_text)
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class LidstoneBigramTests(unittest.TestCase):
+class LidstoneBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     """Unit tests for Lidstone class"""
 
     score_tests = [
@@ -241,8 +237,7 @@ class LidstoneBigramTests(unittest.TestCase):
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class LidstoneTrigramTests(unittest.TestCase):
+class LidstoneTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     score_tests = [
         # Logic behind this is the same as for bigram model
         ("d", ["c"], 1.1 / 1.8),
@@ -259,8 +254,7 @@ class LidstoneTrigramTests(unittest.TestCase):
         self.model.fit(training_text)
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class LaplaceBigramTests(unittest.TestCase):
+class LaplaceBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     """Unit tests for Laplace class"""
 
     score_tests = [
@@ -320,8 +314,7 @@ class LaplaceBigramTests(unittest.TestCase):
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class WittenBellInterpolatedTrigramTests(unittest.TestCase):
+class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = WittenBellInterpolated(3, vocabulary=vocab)
@@ -352,8 +345,7 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase):
     ]
 
 
-@add_metaclass(ParametrizeTestsMeta)
-class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
+class KneserNeyInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = KneserNeyInterpolated(3, vocabulary=vocab)

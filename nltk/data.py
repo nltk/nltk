@@ -43,7 +43,6 @@ import codecs
 from abc import ABCMeta, abstractmethod
 from gzip import GzipFile, WRITE as GZ_WRITE
 
-from six import add_metaclass
 from six.moves.urllib.request import urlopen, url2pathname
 
 try:
@@ -270,8 +269,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 ######################################################################
 
 
-@add_metaclass(ABCMeta)
-class PathPointer(object):
+class PathPointer(metaclass=ABCMeta):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
     package to identify specific paths.  Two subclasses exist:

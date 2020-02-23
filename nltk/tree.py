@@ -18,7 +18,6 @@ import re
 import sys
 from abc import ABCMeta, abstractmethod
 
-from six import add_metaclass
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
@@ -995,8 +994,7 @@ class ImmutableTree(Tree):
 ######################################################################
 ## Parented trees
 ######################################################################
-@add_metaclass(ABCMeta)
-class AbstractParentedTree(Tree):
+class AbstractParentedTree(Tree, metaclass=ABCMeta):
     """
     An abstract base class for a ``Tree`` that automatically maintains
     pointers to parent nodes.  These parent pointers are updated

@@ -8,11 +8,9 @@
 # For license information, see LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 
-@add_metaclass(ABCMeta)
-class StemmerI(object):
+class StemmerI(metaclass=ABCMeta):
     """
     A processing interface for removing morphological affixes from
     words.  This process is known as stemming.

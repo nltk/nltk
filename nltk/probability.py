@@ -46,7 +46,7 @@ from collections import defaultdict, Counter
 from functools import reduce
 from abc import ABCMeta, abstractmethod
 
-from six import itervalues, add_metaclass
+from six import itervalues
 
 from nltk.internals import raise_unorderable_types
 
@@ -454,8 +454,7 @@ class FreqDist(Counter):
 ##//////////////////////////////////////////////////////
 
 
-@add_metaclass(ABCMeta)
-class ProbDistI(object):
+class ProbDistI(metaclass=ABCMeta):
     """
     A probability distribution for the outcomes of an experiment.  A
     probability distribution specifies how likely it is that an
@@ -2106,8 +2105,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 
-@add_metaclass(ABCMeta)
-class ConditionalProbDistI(dict):
+class ConditionalProbDistI(dict, metaclass=ABCMeta):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability

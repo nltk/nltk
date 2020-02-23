@@ -48,7 +48,6 @@ from abc import ABCMeta, abstractmethod
 from operator import and_, add
 from functools import reduce
 
-from six import add_metaclass
 
 from nltk.data import show_cfg
 from nltk.tag import RegexpTagger
@@ -62,8 +61,7 @@ from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
 
 
-@add_metaclass(ABCMeta)
-class ReadingCommand(object):
+class ReadingCommand(metaclass=ABCMeta):
     @abstractmethod
     def parse_to_readings(self, sentence):
         """

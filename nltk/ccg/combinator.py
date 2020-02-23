@@ -9,13 +9,11 @@ CCG Combinators
 """
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 from nltk.ccg.api import FunctionalCategory
 
 
-@add_metaclass(ABCMeta)
-class UndirectedBinaryCombinator(object):
+class UndirectedBinaryCombinator(metaclass=ABCMeta):
     """
     Abstract class for representing a binary combinator.
     Merely defines functions for checking if the function and argument
@@ -36,8 +34,7 @@ class UndirectedBinaryCombinator(object):
         pass
 
 
-@add_metaclass(ABCMeta)
-class DirectedBinaryCombinator(object):
+class DirectedBinaryCombinator(metaclass=ABCMeta):
     """
     Wrapper for the undirected binary combinator.
     It takes left and right categories, and decides which is to be

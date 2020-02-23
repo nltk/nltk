@@ -9,7 +9,6 @@
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 from nltk.compat import unicode_repr
 from nltk import jsontags
@@ -18,8 +17,7 @@ from nltk import jsontags
 ######################################################################
 # Tag Rules
 ######################################################################
-@add_metaclass(ABCMeta)
-class TagRule:
+class TagRule(metaclass=ABCMeta):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by tbl taggers.  Each transformation finds all tokens

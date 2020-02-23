@@ -10,7 +10,6 @@ import random
 from abc import ABCMeta, abstractmethod
 from bisect import bisect
 
-from six import add_metaclass
 
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
@@ -19,8 +18,7 @@ from nltk.lm.vocabulary import Vocabulary
 from itertools import accumulate
 
 
-@add_metaclass(ABCMeta)
-class Smoothing:
+class Smoothing(metaclass=ABCMeta):
     """Ngram Smoothing Interface
 
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
@@ -73,8 +71,7 @@ def _weighted_choice(population, weights, random_generator=None):
     return population[bisect(cum_weights, total * threshold)]
 
 
-@add_metaclass(ABCMeta)
-class LanguageModel:
+class LanguageModel(metaclass=ABCMeta):
     """ABC for Language Models.
 
     Cannot be directly instantiated itself.

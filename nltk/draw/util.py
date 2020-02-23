@@ -34,7 +34,6 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 from six.moves.tkinter import (
     Button,
     Canvas,
@@ -60,8 +59,7 @@ from nltk.util import in_idle
 ##//////////////////////////////////////////////////////
 
 
-@add_metaclass(ABCMeta)
-class CanvasWidget(object):
+class CanvasWidget(metaclass=ABCMeta):
     """
     A collection of graphical elements and bindings used to display a
     complex object on a Tkinter ``Canvas``.  A canvas widget is
