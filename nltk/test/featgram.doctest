@@ -9,7 +9,7 @@
 
 Grammars can be parsed from strings.
 
-     >>> import nltk
+    >>> import nltk
     >>> from nltk import grammar, parse
     >>> g = """
     ... % start DP

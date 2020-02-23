@@ -5,7 +5,7 @@
 Utility functions
 =================
 
-     >>> from nltk.util import *
+    >>> from nltk.util import *
     >>> from nltk.tree import Tree
 
     >>> print_string("This is a long string, therefore it should break", 25)
