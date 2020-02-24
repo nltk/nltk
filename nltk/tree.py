@@ -1562,7 +1562,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         return ImmutableProbabilisticTree
 
     def __repr__(self):
-        return "%s (p=%r)" % (Tree.unicode_repr(self), self.prob())
+        return "%s (p=%r)" % (Tree.__repr__(self), self.prob())
 
     def __str__(self):
         return "%s (p=%.6g)" % (self.pformat(margin=60), self.prob())
@@ -1616,7 +1616,7 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
         return ImmutableProbabilisticTree
 
     def __repr__(self):
-        return "%s [%s]" % (Tree.unicode_repr(self), self.prob())
+        return "%s [%s]" % (Tree.__repr__(self), self.prob())
 
     def __str__(self):
         return "%s [%s]" % (self.pformat(margin=60), self.prob())

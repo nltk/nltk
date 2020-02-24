@@ -352,10 +352,7 @@ class FileSystemPathPointer(PathPointer, str):
         return FileSystemPathPointer(_path)
 
     def __repr__(self):
-        # This should be a byte string under Python 2.x;
-        # we don't want transliteration here so
-        # @python_2_unicode_compatible is not used.
-        return str("FileSystemPathPointer(%r)" % self._path)
+        return "FileSystemPathPointer(%r)" % self._path
 
     def __str__(self):
         return self._path
@@ -998,9 +995,6 @@ def _open(resource_url):
 ######################################################################
 # Lazy Resource Loader
 ######################################################################
-
-# We shouldn't apply @python_2_unicode_compatible
-# decorator to LazyLoader, this is resource.__class__ responsibility.
 
 
 class LazyLoader(object):

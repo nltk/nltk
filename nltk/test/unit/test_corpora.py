@@ -12,7 +12,6 @@ from nltk.corpus import (
     udhr,
 )  # mwa_ppdb
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
 from nltk.test.unit.utils import skipIf
 
