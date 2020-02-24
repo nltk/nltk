@@ -1625,7 +1625,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> lu # doctest: +ELLIPSIS
         {'ID': 256,
          'POS': 'V',
-         'URL': u'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
+         'URL': 'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
          '_type': 'lu',
          'cBy': ...,
          'cDate': '02/08/2001 01:27:50 PST Thu',

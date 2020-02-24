@@ -14,8 +14,6 @@ NLTK_TEST_DIR = os.path.join(NLTK_ROOT, "nltk")
 
 if __name__ == "__main__":
     # there shouldn't be import from NLTK for coverage to work properly
-    from doctest_nose_plugin import DoctestFix
-
     try:
         # Import RedNose plugin for colored test output
         from rednose import RedNose
@@ -32,9 +30,7 @@ if __name__ == "__main__":
 
         def loadPlugins(self):
             for plug in builtin.plugins:
-                if plug != Doctest:
-                    self.addPlugin(plug())
-            self.addPlugin(DoctestFix())
+                self.addPlugin(plug())
             if rednose_available:
                 self.addPlugin(RedNose())
 
@@ -72,8 +68,7 @@ if __name__ == "__main__":
         # '--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
         "--doctest-extension=.doctest",
         "--doctest-fixtures=_fixt",
-        "--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE,"
-        "doctestencoding=utf-8",
+        "--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL",
         # '--verbosity=3',
     ] + args
 
