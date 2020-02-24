@@ -171,7 +171,7 @@ class FStructure(dict):
             return letter
 
     def __repr__(self):
-        return self.__unicode__().replace("\n", "")
+        return self.__str__().replace("\n", "")
 
     def __str__(self):
         return self.pretty_format()
