@@ -26,7 +26,8 @@ The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
 
-from nltk.compat import time_clock
+from time import perf_counter
+
 from nltk.parse.chart import (
     Chart,
     ChartParser,
@@ -533,10 +534,10 @@ def demo(
 
     # Do the parsing.
     earley = EarleyChartParser(grammar, trace=trace)
-    t = time_clock()
+    t = perf_counter()
     chart = earley.chart_parse(tokens)
     parses = list(chart.parses(grammar.start()))
-    t = time_clock() - t
+    t = perf_counter() - t
 
     # Print results.
     if numparses:

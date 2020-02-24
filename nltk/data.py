@@ -34,6 +34,7 @@ to a local file.
 import functools
 import textwrap
 import io
+from io import BytesIO
 import os
 import re
 import sys
@@ -71,7 +72,7 @@ except ImportError:
 
 # this import should be more specific:
 import nltk
-from nltk.compat import py3_data, add_py3_data, BytesIO
+from nltk.compat import py3_data, add_py3_data
 
 ######################################################################
 # Search Path

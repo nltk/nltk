@@ -13,8 +13,8 @@ Toolbox databases and settings files.
 
 import re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
+from io import StringIO
 
-from nltk.compat import StringIO
 from nltk.data import PathPointer, find
 
 
