@@ -61,17 +61,12 @@ import getopt
 import base64
 import pickle
 import copy
-
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import unquote_plus
 
 from nltk import compat
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
-
-if compat.PY3:
-    from http.server import HTTPServer, BaseHTTPRequestHandler
-else:
-    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 # now included in local file
 # from util import html_header, html_trailer, \

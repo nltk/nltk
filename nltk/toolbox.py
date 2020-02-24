@@ -14,7 +14,7 @@ Toolbox databases and settings files.
 import re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
-from nltk.compat import StringIO, PY3
+from nltk.compat import StringIO
 from nltk.data import PathPointer, find
 
 
@@ -125,12 +125,6 @@ class StandardFormat(object):
             raise ValueError("unicode_fields is set but not encoding.")
         unwrap_pat = re.compile(r"\n+")
         for mkr, val in self.raw_fields():
-            if encoding and not PY3:  # kludge - already decoded in PY3?
-                if unicode_fields is not None and mkr in unicode_fields:
-                    val = val.decode("utf8", errors)
-                else:
-                    val = val.decode(encoding, errors)
-                mkr = mkr.decode(encoding, errors)
             if unwrap:
                 val = unwrap_pat.sub(" ", val)
             if strip:
