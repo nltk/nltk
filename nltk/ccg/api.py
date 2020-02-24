@@ -10,8 +10,6 @@ from functools import total_ordering
 from abc import ABCMeta, abstractmethod
 
 from nltk.internals import raise_unorderable_types
-from nltk.compat import unicode_repr
-
 
 @total_ordering
 class AbstractCCGCategory(metaclass=ABCMeta):
@@ -298,7 +296,7 @@ class PrimitiveCategory(AbstractCCGCategory):
     def __str__(self):
         if self._restrs == []:
             return "%s" % self._categ
-        restrictions = "[%s]" % ",".join(unicode_repr(r) for r in self._restrs)
+        restrictions = "[%s]" % ",".join(repr(r) for r in self._restrs)
         return "%s%s" % (self._categ, restrictions)
 
 

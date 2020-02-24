@@ -101,8 +101,6 @@ from nltk.sem.logic import (
     LogicParser,
     LogicalExpressionException,
 )
-from nltk.compat import unicode_repr
-
 
 ######################################################################
 # Feature Structure
@@ -804,7 +802,7 @@ class FeatDict(FeatStruct, dict):
                 if isinstance(fval, Variable):
                     suffix = "/%s" % fval.name
                 else:
-                    suffix = "/%s" % unicode_repr(fval)
+                    suffix = "/%s" % repr(fval)
             elif isinstance(fval, Variable):
                 segments.append("%s=%s" % (fname, fval.name))
             elif fval is True:
@@ -814,7 +812,7 @@ class FeatDict(FeatStruct, dict):
             elif isinstance(fval, Expression):
                 segments.append("%s=<%s>" % (fname, fval))
             elif not isinstance(fval, FeatStruct):
-                segments.append("%s=%s" % (fname, unicode_repr(fval)))
+                segments.append("%s=%s" % (fname, repr(fval)))
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
                 segments.append("%s=%s" % (fname, fval_repr))
@@ -865,11 +863,11 @@ class FeatDict(FeatStruct, dict):
 
             elif isinstance(fval, FeatList):
                 fval_repr = fval._repr(reentrances, reentrance_ids)
-                lines.append("%s = %s" % (fname, unicode_repr(fval_repr)))
+                lines.append("%s = %s" % (fname, repr(fval_repr)))
 
             elif not isinstance(fval, FeatDict):
                 # It's not a nested feature structure -- just print it.
-                lines.append("%s = %s" % (fname, unicode_repr(fval)))
+                lines.append("%s = %s" % (fname, repr(fval)))
 
             elif id(fval) in reentrance_ids:
                 # It's a feature structure we've seen before -- print
@@ -1072,7 +1070,7 @@ class FeatList(FeatStruct, list):
             elif isinstance(fval, FeatStruct):
                 segments.append(fval._repr(reentrances, reentrance_ids))
             else:
-                segments.append("%s" % unicode_repr(fval))
+                segments.append("%s" % repr(fval))
 
         return "%s[%s]" % (prefix, ", ".join(segments))
 
@@ -1770,7 +1768,7 @@ def _trace_unify_identity(path, fval1):
     print("  " + "|   " * len(path) + "|")
     print("  " + "|   " * len(path) + "| (identical objects)")
     print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "+-->" + unicode_repr(fval1))
+    print("  " + "|   " * len(path) + "+-->" + repr(fval1))
 
 
 def _trace_unify_fail(path, result):
@@ -1785,7 +1783,7 @@ def _trace_unify_fail(path, result):
 def _trace_unify_succeed(path, fval1):
     # Print the result.
     print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "+-->" + unicode_repr(fval1))
+    print("  " + "|   " * len(path) + "+-->" + repr(fval1))
 
 
 def _trace_bindings(path, bindings):
@@ -1802,7 +1800,7 @@ def _trace_valrepr(val):
     if isinstance(val, Variable):
         return "%s" % val
     else:
-        return "%s" % unicode_repr(val)
+        return "%s" % repr(val)
 
 
 def subsumes(fstruct1, fstruct2):

@@ -72,7 +72,6 @@ import re
 from functools import total_ordering
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -154,7 +153,7 @@ class Nonterminal(object):
         if isinstance(self._symbol, str):
             return "%s" % self._symbol
         else:
-            return "%s" % unicode_repr(self._symbol)
+            return "%s" % repr(self._symbol)
 
     def __str__(self):
         """
@@ -165,7 +164,7 @@ class Nonterminal(object):
         if isinstance(self._symbol, str):
             return "%s" % self._symbol
         else:
-            return "%s" % unicode_repr(self._symbol)
+            return "%s" % repr(self._symbol)
 
     def __div__(self, rhs):
         """
@@ -339,8 +338,8 @@ class Production(object):
 
         :rtype: str
         """
-        result = "%s -> " % unicode_repr(self._lhs)
-        result += " ".join(unicode_repr(el) for el in self._rhs)
+        result = "%s -> " % repr(self._lhs)
+        result += " ".join(repr(el) for el in self._rhs)
         return result
 
     def __repr__(self):

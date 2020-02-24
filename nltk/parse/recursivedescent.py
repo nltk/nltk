@@ -8,7 +8,6 @@
 
 from nltk.grammar import Nonterminal
 from nltk.tree import Tree, ImmutableTree
-from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -282,14 +281,14 @@ class RecursiveDescentParser(ParserI):
             print("*", end=" ")
         if isinstance(tree, Tree):
             if len(tree) == 0:
-                print(unicode_repr(Nonterminal(tree.label())), end=" ")
+                print(repr(Nonterminal(tree.label())), end=" ")
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
                 else:
                     self._trace_fringe(tree[i])
         else:
-            print(unicode_repr(tree), end=" ")
+            print(repr(tree), end=" ")
 
     def _trace_tree(self, tree, frontier, operation):
         """

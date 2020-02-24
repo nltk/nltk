@@ -10,7 +10,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from nltk.compat import unicode_repr
 from nltk import jsontags
 
 
@@ -206,12 +205,12 @@ class Rule(TagRule):
             self.__repr = "{0}('{1}', {2}, {3}, [{4}])".format(
                 self.__class__.__name__,
                 self.templateid,
-                unicode_repr(self.original_tag),
-                unicode_repr(self.replacement_tag),
+                repr(self.original_tag),
+                repr(self.replacement_tag),
                 # list(self._conditions) would be simpler but will not generate
                 # the same Rule.__repr__ in python 2 and 3 and thus break some tests
                 ", ".join(
-                    "({0},{1})".format(f, unicode_repr(v))
+                    "({0},{1})".format(f, repr(v))
                     for (f, v) in self._conditions
                 ),
             )

@@ -22,7 +22,6 @@ from abc import ABCMeta, abstractmethod
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
-from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 # TODO: add LabelledTree (can be used for dependency trees)
@@ -761,10 +760,10 @@ class Tree(list):
         print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
 
     def __repr__(self):
-        childstr = ", ".join(unicode_repr(c) for c in self)
+        childstr = ", ".join(repr(c) for c in self)
         return "%s(%s, [%s])" % (
             type(self).__name__,
-            unicode_repr(self._label),
+            repr(self._label),
             childstr,
         )
 
@@ -862,7 +861,7 @@ class Tree(list):
         if isinstance(self._label, str):
             s = "%s%s%s" % (parens[0], self._label, nodesep)
         else:
-            s = "%s%s%s" % (parens[0], unicode_repr(self._label), nodesep)
+            s = "%s%s%s" % (parens[0], repr(self._label), nodesep)
         for child in self:
             if isinstance(child, Tree):
                 s += (
@@ -875,7 +874,7 @@ class Tree(list):
             elif isinstance(child, str) and not quotes:
                 s += "\n" + " " * (indent + 2) + "%s" % child
             else:
-                s += "\n" + " " * (indent + 2) + unicode_repr(child)
+                s += "\n" + " " * (indent + 2) + repr(child)
         return s + parens[1]
 
     def pformat_latex_qtree(self):
@@ -911,7 +910,7 @@ class Tree(list):
             elif isinstance(child, str) and not quotes:
                 childstrs.append("%s" % child)
             else:
-                childstrs.append(unicode_repr(child))
+                childstrs.append(repr(child))
         if isinstance(self._label, str):
             return "%s%s%s %s%s" % (
                 parens[0],
@@ -923,7 +922,7 @@ class Tree(list):
         else:
             return "%s%s%s %s%s" % (
                 parens[0],
-                unicode_repr(self._label),
+                repr(self._label),
                 nodesep,
                 " ".join(childstrs),
                 parens[1],
