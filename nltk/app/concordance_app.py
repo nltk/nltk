@@ -27,7 +27,6 @@ from tkinter import (
     Text,
 )
 
-import nltk.compat
 from nltk.corpus import (
     cess_cat,
     brown,

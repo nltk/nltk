@@ -24,8 +24,6 @@ try:
 except ImportError:
     from xml.etree import ElementTree
 
-from nltk import compat
-
 ##########################################################################
 # Java Via Command-Line
 ##########################################################################

@@ -22,7 +22,6 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
 import nltk
-from nltk import compat
 from nltk.corpus.reader.api import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
