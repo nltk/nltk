@@ -730,8 +730,6 @@ def set_proxy(proxy, user=None, password=""):
         authentication.
     :param password: The password to authenticate with.
     """
-    from nltk import compat
-
     if proxy is None:
         # Try and find the system proxy settings
         try:

@@ -64,7 +64,6 @@ import copy
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import unquote_plus
 
-from nltk import compat
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
 

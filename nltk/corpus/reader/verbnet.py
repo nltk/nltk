@@ -259,9 +259,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         Initialize the indexes ``_lemma_to_class``,
         ``_wordnet_to_class``, and ``_class_to_fileid`` by scanning
-        through the corpus fileids.  This is fast with cElementTree
-        (<0.1 secs), but quite slow (>10 secs) with the python
-        implementation of ElementTree.
+        through the corpus fileids.  This is fast if ElementTree
+        uses the C implementation (<0.1 secs), but quite slow (>10 secs)
+        if only the python implementation is available.
         """
         for fileid in self._fileids:
             self._index_helper(self.xml(fileid), fileid)
@@ -285,8 +285,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
         through the corpus fileids.  This doesn't do proper xml parsing,
         but is good enough to find everything in the standard VerbNet
         corpus -- and it runs about 30 times faster than xml parsing
-        (with the python ElementTree; only 2-3 times faster with
-        cElementTree).
+        (with the python ElementTree; only 2-3 times faster
+        if ElementTree uses the C implementation).
         """
         # nb: if we got rid of wordnet_to_class, this would run 2-3
         # times faster.

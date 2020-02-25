@@ -10,17 +10,9 @@ import os
 import bisect
 import re
 import tempfile
+import pickle
 from functools import reduce
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-try:  # Use the c version of ElementTree, which is faster, if possible.
-    from xml.etree import cElementTree as ElementTree
-except ImportError:
-    from xml.etree import ElementTree
+from xml.etree import ElementTree
 
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds

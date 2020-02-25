@@ -17,14 +17,7 @@ import types
 import sys
 import stat
 import locale
-
-# Use the c version of ElementTree, which is faster, if possible:
-try:
-    from xml.etree import cElementTree as ElementTree
-except ImportError:
-    from xml.etree import ElementTree
-
-from nltk import compat
+from xml.etree import ElementTree
 
 ##########################################################################
 # Java Via Command-Line
