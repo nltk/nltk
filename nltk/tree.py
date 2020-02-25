@@ -31,7 +31,6 @@ from nltk.internals import raise_unorderable_types
 ######################################################################
 
 
-
 class Tree(list):
     """
     A Tree represents a hierarchical grouping of leaves and subtrees.
@@ -761,11 +760,7 @@ class Tree(list):
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
-        return "%s(%s, [%s])" % (
-            type(self).__name__,
-            repr(self._label),
-            childstr,
-        )
+        return "%s(%s, [%s])" % (type(self).__name__, repr(self._label), childstr,)
 
     def _repr_png_(self):
         """
@@ -1551,7 +1546,6 @@ class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
 ######################################################################
 
 
-
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __init__(self, node, children=None, **prob_kwargs):
         Tree.__init__(self, node, children)
@@ -1602,7 +1596,6 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
             )
         else:
             return self.__class__.__name__ < other.__class__.__name__
-
 
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):

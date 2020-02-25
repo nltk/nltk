@@ -342,6 +342,7 @@ class FileSystemPathPointer(PathPointer, str):
     def __str__(self):
         return self._path
 
+
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
 class BufferedGzipFile(GzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.
@@ -371,7 +372,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        stream = GzipFile(self._path, "rb")    
+        stream = GzipFile(self._path, "rb")
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream

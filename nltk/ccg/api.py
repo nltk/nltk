@@ -11,6 +11,7 @@ from abc import ABCMeta, abstractmethod
 
 from nltk.internals import raise_unorderable_types
 
+
 @total_ordering
 class AbstractCCGCategory(metaclass=ABCMeta):
     """

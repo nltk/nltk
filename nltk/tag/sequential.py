@@ -208,7 +208,11 @@ class ContextTagger(SequentialBackoffTagger):
             backoff = 100 - (hit_count * 100.0) / token_count
             pruning = 100 - (size * 100.0) / len(fd.conditions())
             print("[Trained Unigram tagger:", end=" ")
-            print("size={}, backoff={:.2f}%, pruning={:.2f}%]".format(size, backoff, pruning))
+            print(
+                "size={}, backoff={:.2f}%, pruning={:.2f}%]".format(
+                    size, backoff, pruning
+                )
+            )
 
 
 ######################################################################
@@ -540,7 +544,8 @@ class RegexpTagger(SequentialBackoffTagger):
             self._regexps = [(re.compile(regexp), tag,) for regexp, tag in regexps]
         except Exception as e:
             raise Exception(
-                'Invalid RegexpTagger regexp:', str(e), 'regexp:', regexp, 'tag:', tag)
+                'Invalid RegexpTagger regexp:', str(e), 'regexp:', regexp, 'tag:', tag
+            )
 
     def encode_json_obj(self):
         return [(regexp.pattern, tag) for regexp, tag in self._regexps], self.backoff

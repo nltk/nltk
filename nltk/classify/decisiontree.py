@@ -81,11 +81,12 @@ class DecisionTreeClassifier(ClassifierI):
             n = width - len(prefix) - 15
             return '{0}{1} {2}\n'.format(prefix, '.' * n, self._label)
         s = ''
-        for i, (fval, result) in enumerate(sorted(self._decisions.items(), 
-                                                  key=lambda item: 
-                                                  (item[0] in [None, False, True], str(item[0]).lower())
-                                                 )
-                                          ):
+        for i, (fval, result) in enumerate(
+            sorted(
+                self._decisions.items(),
+                key=lambda item: (item[0] in [None, False, True], str(item[0]).lower()),
+            )
+        ):
             hdr = '{0}{1}={2}? '.format(prefix, self._fname, fval)
             n = width - 15 - len(hdr)
             s += "{0}{1} {2}\n".format(hdr, "." * (n), result._label)
@@ -107,10 +108,10 @@ class DecisionTreeClassifier(ClassifierI):
         if self._fname is None:
             return "{0}return {1!r}\n".format(prefix, self._label)
         s = ''
-        for (fval, result) in sorted(self._decisions.items(),
-                                    key=lambda item: 
-                                     (item[0] in [None, False, True], str(item[0]).lower())
-                                    ):
+        for (fval, result) in sorted(
+            self._decisions.items(),
+            key=lambda item: (item[0] in [None, False, True], str(item[0]).lower()),
+        ):
             s += '{0}if {1} == {2!r}: '.format(prefix, self._fname, fval)
             if result._fname is not None and depth > 1:
                 s += "\n" + result.pseudocode(prefix + "  ", depth - 1)

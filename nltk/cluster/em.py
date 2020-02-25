@@ -214,5 +214,6 @@ def demo():
     for sample in pdist.samples():
         print("%s => %.0f%%" % (sample, pdist.prob(sample) * 100))
 
+
 if __name__ == "__main__":
     demo()

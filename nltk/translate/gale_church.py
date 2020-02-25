@@ -263,4 +263,3 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
         ]
         for block_it in split_at(stream, hard_delimiter)
     ]
-

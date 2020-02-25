@@ -6,8 +6,10 @@ Unit tests for nltk.corpus.nombank
 import unittest
 
 from nltk.corpus import nombank
+
 # Load the nombank once.
 nombank.nouns()
+
 
 class NombankDemo(unittest.TestCase):
     def test_numbers(self):
@@ -17,7 +19,6 @@ class NombankDemo(unittest.TestCase):
         self.assertEqual(len(nombank.rolesets()), 5577)
         # No. of nouns.
         self.assertEqual(len(nombank.nouns()), 4704)
-
 
     def test_instance(self):
         self.assertEqual(nombank.instances()[0].roleset, 'perc-sign.01')
