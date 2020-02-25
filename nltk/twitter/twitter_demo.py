@@ -34,8 +34,7 @@ For error codes see Twitter's
 import datetime
 from functools import wraps
 import json
-
-from nltk.compat import StringIO
+from io import StringIO
 
 from nltk.twitter import (
     Query,

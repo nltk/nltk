@@ -108,7 +108,6 @@ import re
 import math
 from collections import defaultdict
 
-from nltk.compat import unicode_repr
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -491,17 +490,17 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        typestr = " type=%s," % unicode_repr(self.type) if self.type != self.tok else ""
+        typestr = " type=%s," % repr(self.type) if self.type != self.tok else ""
 
         propvals = ", ".join(
-            "%s=%s" % (p, unicode_repr(getattr(self, p)))
+            "%s=%s" % (p, repr(getattr(self, p)))
             for p in self._properties
             if getattr(self, p)
         )
 
         return "%s(%s,%s %s)" % (
             self.__class__.__name__,
-            unicode_repr(self.tok),
+            repr(self.tok),
             typestr,
             propvals,
         )

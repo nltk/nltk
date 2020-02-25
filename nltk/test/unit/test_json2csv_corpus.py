@@ -14,8 +14,8 @@ package.
 
 import os
 import unittest
+from tempfile import TemporaryDirectory
 
-from nltk.compat import TemporaryDirectory
 from nltk.corpus import twitter_samples
 from nltk.twitter.common import json2csv, json2csv_entities
 

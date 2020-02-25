@@ -10,7 +10,6 @@ import re
 
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
-from nltk.compat import unicode_repr
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
@@ -228,7 +227,7 @@ class ChunkString(object):
 
         :rtype: str
         """
-        return "<ChunkString: %s>" % unicode_repr(self._str)
+        return "<ChunkString: %s>" % repr(self._str)
 
     def __str__(self):
         """
@@ -340,9 +339,9 @@ class RegexpChunkRule(object):
         """
         return (
             "<RegexpChunkRule: "
-            + unicode_repr(self._regexp.pattern)
+            + repr(self._regexp.pattern)
             + "->"
-            + unicode_repr(self._repl)
+            + repr(self._repl)
             + ">"
         )
 
@@ -435,7 +434,7 @@ class ChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChunkRule: " + unicode_repr(self._pattern) + ">"
+        return "<ChunkRule: " + repr(self._pattern) + ">"
 
 
 class ChinkRule(RegexpChunkRule):
@@ -480,7 +479,7 @@ class ChinkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChinkRule: " + unicode_repr(self._pattern) + ">"
+        return "<ChinkRule: " + repr(self._pattern) + ">"
 
 
 class UnChunkRule(RegexpChunkRule):
@@ -520,7 +519,7 @@ class UnChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<UnChunkRule: " + unicode_repr(self._pattern) + ">"
+        return "<UnChunkRule: " + repr(self._pattern) + ">"
 
 
 class MergeRule(RegexpChunkRule):
@@ -586,9 +585,9 @@ class MergeRule(RegexpChunkRule):
         """
         return (
             "<MergeRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -655,9 +654,9 @@ class SplitRule(RegexpChunkRule):
         """
         return (
             "<SplitRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -725,9 +724,9 @@ class ExpandLeftRule(RegexpChunkRule):
         """
         return (
             "<ExpandLeftRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -795,9 +794,9 @@ class ExpandRightRule(RegexpChunkRule):
         """
         return (
             "<ExpandRightRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -1030,7 +1029,7 @@ class RegexpChunkParser(ChunkParserI):
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print("#", rule.descr() + " (" + unicode_repr(rule) + "):")
+                print("#", rule.descr() + " (" + repr(rule) + "):")
             else:
                 print("#", rule.descr() + ":")
             print(chunkstr)
@@ -1121,7 +1120,7 @@ class RegexpChunkParser(ChunkParserI):
         else:
             format = "    %s\n      %s\n"
         for rule in self._rules:
-            s += format % (rule.descr(), unicode_repr(rule))
+            s += format % (rule.descr(), repr(rule))
         return s[:-1]
 
 

@@ -45,7 +45,6 @@ from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
-from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -352,7 +351,7 @@ class TreeEdge(EdgeI):
         for i in range(len(self._rhs)):
             if i == self._dot:
                 str += " *"
-            str += " %s" % unicode_repr(self._rhs[i])
+            str += " %s" % repr(self._rhs[i])
         if len(self._rhs) == self._dot:
             str += " *"
         return str
@@ -420,7 +419,7 @@ class LeafEdge(EdgeI):
 
     # String representations
     def __str__(self):
-        return "[%s:%s] %s" % (self._index, self._index + 1, unicode_repr(self._leaf))
+        return "[%s:%s] %s" % (self._index, self._index + 1, repr(self._leaf))
 
     def __repr__(self):
         return "[Edge: %s]" % (self)

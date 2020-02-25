@@ -52,10 +52,7 @@ def usage(obj, selfname="self"):
         if getattr(method, "__deprecated__", False):
             continue
 
-        if sys.version_info[0] >= 3:
-            getargspec = inspect.getfullargspec
-        else:
-            getargspec = inspect.getargspec
+        getargspec = inspect.getfullargspec
         args, varargs, varkw, defaults = getargspec(method)[:4]
         if (
             args

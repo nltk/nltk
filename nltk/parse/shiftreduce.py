@@ -8,7 +8,6 @@
 
 from nltk.grammar import Nonterminal
 from nltk.tree import Tree
-from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -227,9 +226,9 @@ class ShiftReduceParser(ParserI):
         s = "  " + marker + " [ "
         for elt in stack:
             if isinstance(elt, Tree):
-                s += unicode_repr(Nonterminal(elt.label())) + " "
+                s += repr(Nonterminal(elt.label())) + " "
             else:
-                s += unicode_repr(elt) + " "
+                s += repr(elt) + " "
         s += "* " + " ".join(remaining_text) + "]"
         print(s)
 

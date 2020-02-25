@@ -50,10 +50,7 @@ class Undefined(Error):
 
 
 def trace(f, *args, **kw):
-    if sys.version_info[0] >= 3:
-        argspec = inspect.getfullargspec(f)
-    else:
-        argspec = inspect.getargspec(f)
+    argspec = inspect.getfullargspec(f)
     d = dict(zip(argspec[0], args))
     if d.pop("trace", None):
         print()

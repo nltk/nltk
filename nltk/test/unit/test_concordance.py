@@ -3,16 +3,12 @@
 import unittest
 import contextlib
 import sys
+from io import StringIO
 
 from nose import with_setup
 
 from nltk.corpus import gutenberg
 from nltk.text import Text
-
-try:
-    from StringIO import StringIO
-except ImportError as e:
-    from io import StringIO
 
 
 @contextlib.contextmanager

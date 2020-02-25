@@ -217,12 +217,6 @@ class Vocabulary:
             and self.counts == other.counts
         )
 
-    if sys.version_info[0] == 2:
-        # see https://stackoverflow.com/a/35781654/4501212
-        def __ne__(self, other):
-            equal = self.__eq__(other)
-            return equal if equal is NotImplemented else not equal
-
     def __str__(self):
         return "<{0} with cutoff={1} unk_label='{2}' and {3} items>".format(
             self.__class__.__name__, self.cutoff, self.unk_label, len(self)
