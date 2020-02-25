@@ -11,17 +11,11 @@
 
 import math
 import sys
-import fractions
+from fractions import Fraction
 import warnings
 from collections import Counter
 
 from nltk.util import ngrams
-
-try:
-    fractions.Fraction(0, 1000, _normalize=False)
-    from fractions import Fraction
-except TypeError:
-    from nltk.compat import Fraction
 
 
 def sentence_bleu(
