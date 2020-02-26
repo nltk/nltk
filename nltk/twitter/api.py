@@ -125,10 +125,12 @@ class TweetHandlerI(BasicTweetHandler):
         """
         if self.upper_date_limit or self.lower_date_limit:
             date_fmt = "%a %b %d %H:%M:%S +0000 %Y"
-            tweet_date = datetime.strptime(data["created_at"], date_fmt).replace(
-                tzinfo=timezone.utc
-            )
-            if (self.upper_date_limit and tweet_date > self.upper_date_limit) or (
+            tweet_date = datetime.strptime(
+                data["created_at"], date_fmt
+            ).replace(tzinfo=timezone.utc)
+            if (
+                self.upper_date_limit and tweet_date > self.upper_date_limit
+            ) or (
                 self.lower_date_limit and tweet_date < self.lower_date_limit
             ):
                 if self.upper_date_limit:

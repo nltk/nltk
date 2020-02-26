@@ -236,7 +236,9 @@ class ToolboxData(StandardFormat):
                 e.text = text
         return root
 
-    def _chunk_parse(self, grammar=None, root_label="record", trace=0, **kwargs):
+    def _chunk_parse(
+        self, grammar=None, root_label="record", trace=0, **kwargs
+    ):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
@@ -313,11 +315,15 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                     cur_encoding = encoding
                 if re.search(_is_value, value):
                     l.append(
-                        ("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors)
+                        ("\\%s %s\n" % (mkr, value)).encode(
+                            cur_encoding, errors
+                        )
                     )
                 else:
                     l.append(
-                        ("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors)
+                        ("\\%s%s\n" % (mkr, value)).encode(
+                            cur_encoding, errors
+                        )
                     )
             else:
                 if re.search(_is_value, value):
@@ -346,7 +352,9 @@ class ToolboxSettings(StandardFormat):
         :rtype: ElementTree._ElementInterface
         """
         builder = TreeBuilder()
-        for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
+        for mkr, value in self.fields(
+            encoding=encoding, errors=errors, **kwargs
+        ):
             # Check whether the first char of the field marker
             # indicates a block start (+) or end (-)
             block = mkr[0]
@@ -367,7 +375,9 @@ class ToolboxSettings(StandardFormat):
         return builder.close()
 
 
-def to_settings_string(tree, encoding=None, errors="strict", unicode_fields=None):
+def to_settings_string(
+    tree, encoding=None, errors="strict", unicode_fields=None
+):
     # write XML to file
     l = list()
     _to_settings_string(
@@ -456,7 +466,10 @@ def _sort_fields(elem, orders_dicts):
         pass
     else:
         tmp = sorted(
-            [((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)]
+            [
+                ((order.get(child.tag, 1e9), i), child)
+                for i, child in enumerate(elem)
+            ]
         )
         elem[:] = [child for key, child in tmp]
     for child in elem:

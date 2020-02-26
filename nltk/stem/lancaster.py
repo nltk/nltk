@@ -177,7 +177,9 @@ class LancasterStemmer(StemmerI):
         # Check if a user wants to strip prefix
         self._strip_prefix = strip_prefix_flag
         # Check if a user wants to use his/her own rule tuples.
-        self._rule_tuple = rule_tuple if rule_tuple else self.default_rule_tuple
+        self._rule_tuple = (
+            rule_tuple if rule_tuple else self.default_rule_tuple
+        )
 
     def parseRules(self, rule_tuple=None):
         """Validate the set of rules used in this stemmer.
@@ -260,8 +262,9 @@ class LancasterStemmer(StemmerI):
                         # Proceed if word's ending matches rule's word ending
                         if word.endswith(ending_string[::-1]):
                             if intact_flag:
-                                if word == intact_word and self.__isAcceptable(
-                                    word, remove_total
+                                if (
+                                    word == intact_word
+                                    and self.__isAcceptable(word, remove_total)
                                 ):
                                     word = self.__applyRule(
                                         word, remove_total, append_string

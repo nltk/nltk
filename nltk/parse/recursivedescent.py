@@ -507,7 +507,9 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
             self._tried_e.setdefault(self._freeze(self._tree), []).append(prod)
 
             # Try expanding.
-            for _result in self._expand(self._rtext, self._tree, self._frontier, prod):
+            for _result in self._expand(
+                self._rtext, self._tree, self._frontier, prod
+            ):
                 return prod
 
         # We didn't expand anything.
@@ -582,7 +584,11 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
 
         tried_expansions = self._tried_e.get(self._freeze(self._tree), [])
-        return [p for p in self.expandable_productions() if p not in tried_expansions]
+        return [
+            p
+            for p in self.expandable_productions()
+            if p not in tried_expansions
+        ]
 
     def untried_match(self):
         """

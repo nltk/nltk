@@ -318,7 +318,12 @@ def _chunksets(t, count, chunk_label):
 
 
 def tagstr2tree(
-    s, chunk_label="NP", root_label="S", sep="/", source_tagset=None, target_tagset=None
+    s,
+    chunk_label="NP",
+    root_label="S",
+    sep="/",
+    source_tagset=None,
+    target_tagset=None,
 ):
     """
     Divide a string of bracketted tagged text into
@@ -344,13 +349,17 @@ def tagstr2tree(
         text = match.group()
         if text[0] == "[":
             if len(stack) != 1:
-                raise ValueError("Unexpected [ at char {:d}".format(match.start()))
+                raise ValueError(
+                    "Unexpected [ at char {:d}".format(match.start())
+                )
             chunk = Tree(chunk_label, [])
             stack[-1].append(chunk)
             stack.append(chunk)
         elif text[0] == "]":
             if len(stack) != 2:
-                raise ValueError("Unexpected ] at char {:d}".format(match.start()))
+                raise ValueError(
+                    "Unexpected ] at char {:d}".format(match.start())
+                )
             stack.pop()
         else:
             if sep is None:
@@ -542,7 +551,9 @@ def _ieer_read_text(s, root_label):
                 stack[-1].append(piece)
         except (IndexError, ValueError):
             raise ValueError(
-                "Bad IEER string (error at character {:d})".format(piece_m.start())
+                "Bad IEER string (error at character {:d})".format(
+                    piece_m.start()
+                )
             )
     if len(stack) != 1:
         raise ValueError("Bad IEER string")

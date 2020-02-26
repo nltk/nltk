@@ -85,7 +85,9 @@ class IBMModel(object):
 
         self.alignment_table = defaultdict(
             lambda: defaultdict(
-                lambda: defaultdict(lambda: defaultdict(lambda: IBMModel.MIN_PROB))
+                lambda: defaultdict(
+                    lambda: defaultdict(lambda: IBMModel.MIN_PROB)
+                )
             )
         )
         """
@@ -94,7 +96,9 @@ class IBMModel(object):
         Used in model 2 and hill climbing in models 3 and above
         """
 
-        self.fertility_table = defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
+        self.fertility_table = defaultdict(
+            lambda: defaultdict(lambda: self.MIN_PROB)
+        )
         """
         dict[int][str]: float. Probability(fertility | source word).
         Values accessed as ``fertility_table[fertility][source_word]``.
@@ -172,7 +176,9 @@ class IBMModel(object):
         # with the constraint that j is aligned (pegged) to i
         for j in range(1, m + 1):
             for i in range(0, l + 1):
-                initial_alignment = self.best_model2_alignment(sentence_pair, j, i)
+                initial_alignment = self.best_model2_alignment(
+                    sentence_pair, j, i
+                )
                 potential_alignment = self.hillclimb(initial_alignment, j)
                 neighbors = self.neighboring(potential_alignment, j)
                 sampled_alignments.update(neighbors)
@@ -221,7 +227,8 @@ class IBMModel(object):
                 for i in range(0, l + 1):
                     s = src_sentence[i]
                     alignment_prob = (
-                        self.translation_table[t][s] * self.alignment_table[i][j][l][m]
+                        self.translation_table[t][s]
+                        * self.alignment_table[i][j][l][m]
                     )
 
                     if alignment_prob >= max_alignment_prob:
@@ -257,7 +264,9 @@ class IBMModel(object):
         while True:
             old_alignment = alignment
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
-                neighbor_probability = self.prob_t_a_given_s(neighbor_alignment)
+                neighbor_probability = self.prob_t_a_given_s(
+                    neighbor_alignment
+                )
 
                 if neighbor_probability > max_probability:
                     alignment = neighbor_alignment
@@ -352,7 +361,9 @@ class IBMModel(object):
     def maximize_fertility_probabilities(self, counts):
         for phi, src_words in counts.fertility.items():
             for s in src_words:
-                estimate = counts.fertility[phi][s] / counts.fertility_for_any_phi[s]
+                estimate = (
+                    counts.fertility[phi][s] / counts.fertility_for_any_phi[s]
+                )
                 self.fertility_table[phi][s] = max(estimate, IBMModel.MIN_PROB)
 
     def maximize_null_generation_probabilities(self, counts):

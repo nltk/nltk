@@ -206,21 +206,25 @@ class CFGEditor(object):
 
     def _init_buttons(self):
         frame = self._buttonframe = Frame(self._top)
-        Button(frame, text="Ok", command=self._ok, underline=0, takefocus=0).pack(
-            side="left"
-        )
-        Button(frame, text="Apply", command=self._apply, underline=0, takefocus=0).pack(
-            side="left"
-        )
-        Button(frame, text="Reset", command=self._reset, underline=0, takefocus=0).pack(
-            side="left"
-        )
         Button(
-            frame, text="Cancel", command=self._cancel, underline=0, takefocus=0
+            frame, text="Ok", command=self._ok, underline=0, takefocus=0
         ).pack(side="left")
-        Button(frame, text="Help", command=self._help, underline=0, takefocus=0).pack(
-            side="right"
-        )
+        Button(
+            frame, text="Apply", command=self._apply, underline=0, takefocus=0
+        ).pack(side="left")
+        Button(
+            frame, text="Reset", command=self._reset, underline=0, takefocus=0
+        ).pack(side="left")
+        Button(
+            frame,
+            text="Cancel",
+            command=self._cancel,
+            underline=0,
+            takefocus=0,
+        ).pack(side="left")
+        Button(
+            frame, text="Help", command=self._help, underline=0, takefocus=0
+        ).pack(side="right")
 
     def _init_bindings(self):
         self._top.title("CFG Editor")
@@ -250,7 +254,9 @@ class CFGEditor(object):
         self._textwidget = Text(
             self._prodframe, background="#e0e0e0", exportselection=1
         )
-        self._textscroll = Scrollbar(self._prodframe, takefocus=0, orient="vertical")
+        self._textscroll = Scrollbar(
+            self._prodframe, takefocus=0, orient="vertical"
+        )
         self._textwidget.config(yscrollcommand=self._textscroll.set)
         self._textscroll.config(command=self._textwidget.yview)
         self._textscroll.pack(side="right", fill="y")
@@ -372,7 +378,9 @@ class CFGEditor(object):
 
         arrow = "1.0"
         while True:
-            arrow = self._textwidget.search(self.ARROW, arrow + "+1char", "end+1char")
+            arrow = self._textwidget.search(
+                self.ARROW, arrow + "+1char", "end+1char"
+            )
             if arrow == "":
                 break
             self._textwidget.tag_add("arrow", arrow, arrow + "+1char")
@@ -402,7 +410,9 @@ class CFGEditor(object):
         self._textwidget.tag_add(tag, start, end)
 
     def _init_nonterminal_tag(self, tag, foreground="blue"):
-        self._textwidget.tag_config(tag, foreground=foreground, font=CFGEditor._BOLD)
+        self._textwidget.tag_config(
+            tag, foreground=foreground, font=CFGEditor._BOLD
+        )
         if not self._highlight_matching_nonterminals:
             return
 
@@ -423,7 +433,9 @@ class CFGEditor(object):
         self._clear_tags(linenum)
 
         # Get the line line's text string.
-        line = self._textwidget.get(repr(linenum) + ".0", repr(linenum) + ".end")
+        line = self._textwidget.get(
+            repr(linenum) + ".0", repr(linenum) + ".end"
+        )
 
         # If it's a valid production, then colorize each token.
         if CFGEditor._PRODUCTION_RE.match(line):
@@ -732,7 +744,9 @@ def demo2():
     from nltk import Nonterminal, Production, CFG
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = [
+        Nonterminal(s) for s in nonterminals.split()
+    ]
     productions = (
         # Syntactic Productions
         Production(S, [NP, VP]),
@@ -773,7 +787,9 @@ def demo():
     from nltk import Nonterminal, CFG
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = [
+        Nonterminal(s) for s in nonterminals.split()
+    ]
 
     grammar = CFG.fromstring(
         """

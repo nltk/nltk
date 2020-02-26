@@ -36,7 +36,9 @@ class CrubadanCorpusReader(CorpusReader):
     _all_lang_freq = {}
 
     def __init__(self, root, fileids, encoding="utf8", tagset=None):
-        super(CrubadanCorpusReader, self).__init__(root, fileids, encoding="utf8")
+        super(CrubadanCorpusReader, self).__init__(
+            root, fileids, encoding="utf8"
+        )
         self._lang_mapping_data = []
         self._load_lang_mapping_data()
 
@@ -74,7 +76,9 @@ class CrubadanCorpusReader(CorpusReader):
 
         mapper_file = path.join(self.root, self._LANG_MAPPER_FILE)
         if self._LANG_MAPPER_FILE not in self.fileids():
-            raise RuntimeError("Could not find language mapper file: " + mapper_file)
+            raise RuntimeError(
+                "Could not find language mapper file: " + mapper_file
+            )
 
         raw = open(mapper_file, "r", encoding="utf-8").read().strip()
 

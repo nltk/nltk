@@ -46,9 +46,9 @@ class TEICorpusView(StreamBackedCorpusView):
     def read_block(self, stream):
         block = stream.readlines(self._pagesize)
         block = concat(block)
-        while (block.count("<text id") > block.count("</text>")) or block.count(
-            "<text id"
-        ) == 0:
+        while (
+            block.count("<text id") > block.count("</text>")
+        ) or block.count("<text id") == 0:
             tmp = stream.readline()
             if len(tmp) <= 0:
                 break
@@ -71,7 +71,9 @@ class TEICorpusView(StreamBackedCorpusView):
                 if not self._tagged:
                     sent = WORD.findall(sent_str)
                 else:
-                    sent = list(map(self._parse_tag, TAGGEDWORD.findall(sent_str)))
+                    sent = list(
+                        map(self._parse_tag, TAGGEDWORD.findall(sent_str))
+                    )
                 if self._group_by_sent:
                     para.append(sent)
                 else:
@@ -128,11 +130,14 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
     def _resolve(self, fileids, categories, textids=None):
         tmp = None
         if (
-            len(list(
-                filter(
-                    lambda accessor: accessor is None, (fileids, categories, textids)
+            len(
+                list(
+                    filter(
+                        lambda accessor: accessor is None,
+                        (fileids, categories, textids),
+                    )
                 )
-            ))
+            )
             != 1
         ):
 
@@ -235,7 +240,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return concat(
                 [
                     TEICorpusView(
-                        self.abspath(fileid), False, True, False, head_len=self.head_len
+                        self.abspath(fileid),
+                        False,
+                        True,
+                        False,
+                        head_len=self.head_len,
                     )
                     for fileid in fileids
                 ]
@@ -266,7 +275,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return concat(
                 [
                     TEICorpusView(
-                        self.abspath(fileid), False, True, True, head_len=self.head_len
+                        self.abspath(fileid),
+                        False,
+                        True,
+                        True,
+                        head_len=self.head_len,
                     )
                     for fileid in fileids
                 ]
@@ -297,7 +310,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return concat(
                 [
                     TEICorpusView(
-                        self.abspath(fileid), True, False, False, head_len=self.head_len
+                        self.abspath(fileid),
+                        True,
+                        False,
+                        False,
+                        head_len=self.head_len,
                     )
                     for fileid in fileids
                 ]
@@ -328,7 +345,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return concat(
                 [
                     TEICorpusView(
-                        self.abspath(fileid), True, True, False, head_len=self.head_len
+                        self.abspath(fileid),
+                        True,
+                        True,
+                        False,
+                        head_len=self.head_len,
                     )
                     for fileid in fileids
                 ]
@@ -359,7 +380,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return concat(
                 [
                     TEICorpusView(
-                        self.abspath(fileid), True, True, True, head_len=self.head_len
+                        self.abspath(fileid),
+                        True,
+                        True,
+                        True,
+                        head_len=self.head_len,
                     )
                     for fileid in fileids
                 ]

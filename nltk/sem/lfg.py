@@ -87,7 +87,8 @@ class FStructure(dict):
                         n._to_depgraph(nodes, index, feature)
                 else:
                     raise Exception(
-                        "feature %s is not an FStruct, a list, or a tuple" % feature
+                        "feature %s is not an FStruct, a list, or a tuple"
+                        % feature
                     )
 
     @staticmethod
@@ -119,11 +120,15 @@ class FStructure(dict):
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodes[idx] for idx in chain(*node["deps"].values())]
+            children = [
+                depgraph.nodes[idx] for idx in chain(*node["deps"].values())
+            ]
             for child in children:
                 fstruct.safeappend(
                     child["rel"],
-                    FStructure._read_depgraph(child, depgraph, label_counter, fstruct),
+                    FStructure._read_depgraph(
+                        child, depgraph, label_counter, fstruct
+                    ),
                 )
 
             return fstruct
@@ -201,11 +206,14 @@ class FStructure(dict):
                     accum += "\n%s%s {%s}" % (
                         " " * (indent),
                         feature,
-                        ("\n%s" % (" " * (indent + len(feature) + 2))).join(item),
+                        ("\n%s" % (" " * (indent + len(feature) + 2))).join(
+                            item
+                        ),
                     )
                 else:  # ERROR
                     raise Exception(
-                        "feature %s is not an FStruct, a list, or a tuple" % feature
+                        "feature %s is not an FStruct, a list, or a tuple"
+                        % feature
                     )
         return accum + "]"
 

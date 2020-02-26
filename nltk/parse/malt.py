@@ -76,7 +76,9 @@ def find_maltparser(parser_dirname):
 
     assert malt_dependencies.issubset(_jars)
     assert any(
-        filter(lambda i: i.startswith("maltparser-") and i.endswith(".jar"), _jars)
+        filter(
+            lambda i: i.startswith("maltparser-") and i.endswith(".jar"), _jars
+        )
     )
     return list(_malt_jars)
 
@@ -90,7 +92,9 @@ def find_malt_model(model_filename):
     elif os.path.exists(model_filename):  # If a full path is given.
         return model_filename
     else:  # Try to find path to malt model in environment variables.
-        return find_file(model_filename, env_vars=("MALT_MODEL",), verbose=False)
+        return find_file(
+            model_filename, env_vars=("MALT_MODEL",), verbose=False
+        )
 
 
 class MaltParser(ParserI):
@@ -155,7 +159,9 @@ class MaltParser(ParserI):
         # Initialize POS tagger.
         self.tagger = tagger if tagger is not None else malt_regex_tagger()
 
-    def parse_tagged_sents(self, sentences, verbose=False, top_relation_label="null"):
+    def parse_tagged_sents(
+        self, sentences, verbose=False, top_relation_label="null"
+    ):
         """
         Use MaltParser to parse multiple POS tagged sentences. Takes multiple
         sentences where each sentence is a list of (word, tag) tuples.
@@ -170,7 +176,10 @@ class MaltParser(ParserI):
             raise Exception("Parser has not been trained. Call train() first.")
 
         with tempfile.NamedTemporaryFile(
-            prefix="malt_input.conll.", dir=self.working_dir, mode="w", delete=False
+            prefix="malt_input.conll.",
+            dir=self.working_dir,
+            mode="w",
+            delete=False,
         ) as input_file:
             with tempfile.NamedTemporaryFile(
                 prefix="malt_output.conll.",
@@ -212,7 +221,8 @@ class MaltParser(ParserI):
                             iter(
                                 [
                                     DependencyGraph(
-                                        tree_str, top_relation_label=top_relation_label
+                                        tree_str,
+                                        top_relation_label=top_relation_label,
                                     )
                                 ]
                             )
@@ -237,7 +247,9 @@ class MaltParser(ParserI):
             tagged_sentences, verbose, top_relation_label=top_relation_label
         )
 
-    def generate_malt_command(self, inputfilename, outputfilename=None, mode=None):
+    def generate_malt_command(
+        self, inputfilename, outputfilename=None, mode=None
+    ):
         """
         This function generates the maltparser command use at the terminal.
 
@@ -285,7 +297,10 @@ class MaltParser(ParserI):
 
         # Write the conll_str to malt_train.conll file in /tmp/
         with tempfile.NamedTemporaryFile(
-            prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
+            prefix="malt_train.conll.",
+            dir=self.working_dir,
+            mode="w",
+            delete=False,
         ) as input_file:
             input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
             input_file.write(str(input_str))
@@ -305,7 +320,10 @@ class MaltParser(ParserI):
         # then we need to do some extra massaging
         if isinstance(conll_file, ZipFilePathPointer):
             with tempfile.NamedTemporaryFile(
-                prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
+                prefix="malt_train.conll.",
+                dir=self.working_dir,
+                mode="w",
+                delete=False,
             ) as input_file:
                 with conll_file.open() as conll_input_file:
                     conll_str = conll_input_file.read()
@@ -323,7 +341,7 @@ class MaltParser(ParserI):
         self._trained = True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     A demonstration function to show how NLTK users can use the malt parser API.
 
@@ -392,4 +410,5 @@ if __name__ == '__main__':
     """
 
     import doctest
+
     doctest.testmod()

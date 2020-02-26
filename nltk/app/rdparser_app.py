@@ -136,7 +136,9 @@ class RecursiveDescentApp(object):
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget("size"))
 
-        self._boldfont = Font(family="helvetica", weight="bold", size=self._size.get())
+        self._boldfont = Font(
+            family="helvetica", weight="bold", size=self._size.get()
+        )
         self._font = Font(family="helvetica", size=self._size.get())
         if self._size.get() < 0:
             big = self._size.get() - 2
@@ -278,7 +280,10 @@ class RecursiveDescentApp(object):
         lastoperframe = Frame(feedbackframe, relief="sunken", border=1)
         lastoperframe.pack(fill="x", side="right", expand=1, padx=5)
         self._lastoper1 = Label(
-            lastoperframe, foreground="#007070", background="#f0f0f0", font=self._font
+            lastoperframe,
+            foreground="#007070",
+            background="#f0f0f0",
+            font=self._font,
         )
         self._lastoper2 = Label(
             lastoperframe,
@@ -313,7 +318,10 @@ class RecursiveDescentApp(object):
 
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label="Reset Parser", underline=0, command=self.reset, accelerator="Del"
+            label="Reset Parser",
+            underline=0,
+            command=self.reset,
+            accelerator="Del",
         )
         filemenu.add_command(
             label="Print to Postscript",
@@ -322,7 +330,10 @@ class RecursiveDescentApp(object):
             accelerator="Ctrl-p",
         )
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-x",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -347,14 +358,23 @@ class RecursiveDescentApp(object):
         )
         rulemenu.add_separator()
         rulemenu.add_command(
-            label="Match", underline=0, command=self.match, accelerator="Ctrl-m"
+            label="Match",
+            underline=0,
+            command=self.match,
+            accelerator="Ctrl-m",
         )
         rulemenu.add_command(
-            label="Expand", underline=0, command=self.expand, accelerator="Ctrl-e"
+            label="Expand",
+            underline=0,
+            command=self.expand,
+            accelerator="Ctrl-e",
         )
         rulemenu.add_separator()
         rulemenu.add_command(
-            label="Backtrack", underline=0, command=self.backtrack, accelerator="Ctrl-b"
+            label="Backtrack",
+            underline=0,
+            command=self.backtrack,
+            accelerator="Ctrl-b",
         )
         menubar.add_cascade(label="Apply", underline=0, menu=rulemenu)
 
@@ -405,7 +425,10 @@ class RecursiveDescentApp(object):
 
         animatemenu = Menu(menubar, tearoff=0)
         animatemenu.add_radiobutton(
-            label="No Animation", underline=0, variable=self._animation_frames, value=0
+            label="No Animation",
+            underline=0,
+            variable=self._animation_frames,
+            value=0,
         )
         animatemenu.add_radiobutton(
             label="Slow Animation",
@@ -433,7 +456,10 @@ class RecursiveDescentApp(object):
         helpmenu = Menu(menubar, tearoff=0)
         helpmenu.add_command(label="About", underline=0, command=self.about)
         helpmenu.add_command(
-            label="Instructions", underline=0, command=self.help, accelerator="F1"
+            label="Instructions",
+            underline=0,
+            command=self.help,
+            accelerator="F1",
         )
         menubar.add_cascade(label="Help", underline=0, menu=helpmenu)
 
@@ -490,7 +516,9 @@ class RecursiveDescentApp(object):
             y = min(y, twidget.bbox()[1])
 
         # Draw a line over the text, to separate it from the tree.
-        self._textline = canvas.create_line(-5000, y - 5, 5000, y - 5, dash=".")
+        self._textline = canvas.create_line(
+            -5000, y - 5, 5000, y - 5, dash="."
+        )
 
         # Highlight appropriate nodes.
         self._highlight_nodes()
@@ -527,7 +555,9 @@ class RecursiveDescentApp(object):
                 if productions[index] in untried:
                     self._prodlist.insert(index, " %s" % productions[index])
                 else:
-                    self._prodlist.insert(index, " %s (TRIED)" % productions[index])
+                    self._prodlist.insert(
+                        index, " %s (TRIED)" % productions[index]
+                    )
                 self._prodlist.selection_set(index)
             else:
                 self._prodlist.insert(index, " %s" % productions[index])
@@ -701,7 +731,8 @@ class RecursiveDescentApp(object):
 
     def about(self, *e):
         ABOUT = (
-            "NLTK Recursive Descent Parser Application\n" + "Written by Edward Loper"
+            "NLTK Recursive Descent Parser Application\n"
+            + "Written by Edward Loper"
         )
         TITLE = "About: Recursive Descent Parser Application"
         try:
@@ -945,7 +976,9 @@ class RecursiveDescentApp(object):
             self._animating_lock = 1
             for widget in widgets:
                 widget["color"] = colors[0]
-            self._top.after(50, self._animate_backtrack_frame, widgets, colors[1:])
+            self._top.after(
+                50, self._animate_backtrack_frame, widgets, colors[1:]
+            )
         else:
             for widget in widgets[0].subtrees():
                 widgets[0].remove_child(widget)
@@ -961,7 +994,9 @@ class RecursiveDescentApp(object):
         dy = (node.bbox()[3] - widget.bbox()[1] + 14) / max(
             1, self._animation_frames.get()
         )
-        self._animate_match_backtrack_frame(self._animation_frames.get(), widget, dy)
+        self._animate_match_backtrack_frame(
+            self._animation_frames.get(), widget, dy
+        )
 
     def _animate_match(self, treeloc):
         widget = self._get(self._tree, treeloc)
@@ -975,7 +1010,9 @@ class RecursiveDescentApp(object):
         if frame > 0:
             self._animating_lock = 1
             widget.move(0, dy)
-            self._top.after(10, self._animate_match_frame, frame - 1, widget, dy)
+            self._top.after(
+                10, self._animate_match_frame, frame - 1, widget, dy
+            )
         else:
             widget["color"] = "#006040"
             self._redraw_quick()

@@ -100,7 +100,9 @@ class ChunkString(object):
         elif isinstance(tok, Tree):
             return tok.label()
         else:
-            raise ValueError("chunk structures must contain tagged " "tokens or trees")
+            raise ValueError(
+                "chunk structures must contain tagged " "tokens or trees"
+            )
 
     def _verify(self, s, verify_tags):
         """
@@ -132,7 +134,8 @@ class ChunkString(object):
             substr = brackets[i * 5000 : i * 5000 + 5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError(
-                    "Transformation generated invalid " "chunkstring:\n  %s" % s
+                    "Transformation generated invalid "
+                    "chunkstring:\n  %s" % s
                 )
 
         if verify_tags <= 0:
@@ -418,7 +421,10 @@ class ChunkRule(RegexpChunkRule):
         self._pattern = tag_pattern
         regexp = re.compile(
             "(?P<chunk>%s)%s"
-            % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHINK_PATTERN)
+            % (
+                tag_pattern2re_pattern(tag_pattern),
+                ChunkString.IN_CHINK_PATTERN,
+            )
         )
         RegexpChunkRule.__init__(self, regexp, "{\g<chunk>}", descr)
 
@@ -463,7 +469,10 @@ class ChinkRule(RegexpChunkRule):
         self._pattern = tag_pattern
         regexp = re.compile(
             "(?P<chink>%s)%s"
-            % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHUNK_PATTERN)
+            % (
+                tag_pattern2re_pattern(tag_pattern),
+                ChunkString.IN_CHUNK_PATTERN,
+            )
         )
         RegexpChunkRule.__init__(self, regexp, "}\g<chink>{", descr)
 
@@ -504,7 +513,9 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile("\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+        regexp = re.compile(
+            "\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern)
+        )
         RegexpChunkRule.__init__(self, regexp, "\g<chunk>", descr)
 
     def __repr__(self):
@@ -1198,7 +1209,8 @@ class RegexpParser(ChunkParserI):
         else:
             # Make sur the grammar looks like it has the right type:
             type_err = (
-                "Expected string or list of RegexpChunkParsers " "for the grammar."
+                "Expected string or list of RegexpChunkParsers "
+                "for the grammar."
             )
             try:
                 grammar = list(grammar)
@@ -1337,7 +1349,9 @@ def demo_eval(chunkparser, text):
     print("/" + ("=" * 75) + "\\")
     print("Scoring", chunkparser)
     print(("-" * 77))
-    print("Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" ")
+    print(
+        "Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" "
+    )
     print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")
     print("F-Measure: %5.1f%%" % (chunkscore.f_measure() * 100))
 
@@ -1426,7 +1440,11 @@ def demo():
     print("Demonstration of empty grammar:")
 
     cp = chunk.RegexpParser("")
-    print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",))))
+    print(
+        chunk.accuracy(
+            cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",))
+        )
+    )
 
     print()
     print("Demonstration of accuracy evaluation using CoNLL tags:")

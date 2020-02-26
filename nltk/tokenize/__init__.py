@@ -128,5 +128,7 @@ def word_tokenize(text, language="english", preserve_line=False):
     """
     sentences = [text] if preserve_line else sent_tokenize(text, language)
     return [
-        token for sent in sentences for token in _treebank_word_tokenizer.tokenize(sent)
+        token
+        for sent in sentences
+        for token in _treebank_word_tokenizer.tokenize(sent)
     ]

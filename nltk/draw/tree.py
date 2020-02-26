@@ -77,7 +77,9 @@ class TreeSegmentWidget(CanvasWidget):
         self._ordered = False
 
         # Create canvas objects.
-        self._lines = [canvas.create_line(0, 0, 0, 0, fill="#006060") for c in subtrees]
+        self._lines = [
+            canvas.create_line(0, 0, 0, 0, fill="#006060") for c in subtrees
+        ]
         self._polygon = canvas.create_polygon(
             0, 0, fill="", state="hidden", outline="#006060"
         )
@@ -251,11 +253,27 @@ class TreeSegmentWidget(CanvasWidget):
 
         if self._horizontal:
             self.canvas().coords(
-                self._polygon, nodex, nodey, xmin, ymin, xmin, ymax, nodex, nodey
+                self._polygon,
+                nodex,
+                nodey,
+                xmin,
+                ymin,
+                xmin,
+                ymax,
+                nodex,
+                nodey,
             )
         else:
             self.canvas().coords(
-                self._polygon, nodex, nodey, xmin, ymin, xmax, ymin, nodex, nodey
+                self._polygon,
+                nodex,
+                nodey,
+                xmin,
+                ymin,
+                xmax,
+                ymin,
+                nodex,
+                nodey,
             )
 
         # Redraw all lines that need it.
@@ -666,7 +684,9 @@ class TreeWidget(CanvasWidget):
 
         node = make_node(canvas, t.label(), **self._nodeattribs)
         self._nodes.append(node)
-        leaves = [make_leaf(canvas, l, **self._leafattribs) for l in t.leaves()]
+        leaves = [
+            make_leaf(canvas, l, **self._leafattribs) for l in t.leaves()
+        ]
         self._leaves += leaves
         treeseg = TreeSegmentWidget(
             canvas,
@@ -701,7 +721,11 @@ class TreeWidget(CanvasWidget):
                 for i in range(len(children))
             ]
             treeseg = TreeSegmentWidget(
-                canvas, node, subtrees, color=self._line_color, width=self._line_width
+                canvas,
+                node,
+                subtrees,
+                color=self._line_color,
+                width=self._line_width,
             )
             self._expanded_trees[key] = treeseg
             self._keys[treeseg] = key
@@ -918,7 +942,10 @@ class TreeView(object):
             accelerator="Ctrl-p",
         )
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-x",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -1043,12 +1070,16 @@ def demo():
 
     def boxit(canvas, text):
         big = ("helvetica", -16, "bold")
-        return BoxWidget(canvas, TextWidget(canvas, text, font=big), fill="green")
+        return BoxWidget(
+            canvas, TextWidget(canvas, text, font=big), fill="green"
+        )
 
     def ovalit(canvas, text):
         return OvalWidget(canvas, TextWidget(canvas, text), fill="cyan")
 
-    treetok = Tree.fromstring("(S (NP this tree) (VP (V is) (AdjP shapeable)))")
+    treetok = Tree.fromstring(
+        "(S (NP this tree) (VP (V is) (AdjP shapeable)))"
+    )
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
 
     def color(node):
@@ -1087,7 +1118,9 @@ def demo():
             treewidget["orientation"] = "vertical"
         else:
             treewidget.expanded_tree(1, 1).subtrees()[0].set_text("horizontal")
-            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text("horizontal")
+            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text(
+                "horizontal"
+            )
             treewidget.collapsed_tree(1).subtrees()[1].set_text("horizontal")
             treewidget.collapsed_tree().subtrees()[3].set_text("horizontal")
             treewidget["orientation"] = "horizontal"

@@ -70,7 +70,10 @@ class MTEFileReader:
         if cls.__tags == "" and cls.__tagset == "msd":
             return (elt.text, elt.attrib["ana"])
         elif cls.__tags == "" and cls.__tagset == "universal":
-            return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
+            return (
+                elt.text,
+                MTETagConverter.msd_to_universal(elt.attrib["ana"]),
+            )
         else:
             tags = re.compile("^" + re.sub("-", ".", cls.__tags) + ".*$")
             if tags.match(elt.attrib["ana"]):
@@ -89,7 +92,10 @@ class MTEFileReader:
         return list(
             filter(
                 lambda x: x is not None,
-                [cls._tagged_word_elt(w, None) for w in xpath(elt, "*", cls.ns)],
+                [
+                    cls._tagged_word_elt(w, None)
+                    for w in xpath(elt, "*", cls.ns)
+                ],
             )
         )
 
@@ -98,7 +104,10 @@ class MTEFileReader:
         return list(
             filter(
                 lambda x: x is not None,
-                [cls._tagged_sent_elt(s, None) for s in xpath(elt, "*", cls.ns)],
+                [
+                    cls._tagged_sent_elt(s, None)
+                    for s in xpath(elt, "*", cls.ns)
+                ],
             )
         )
 
@@ -134,38 +143,50 @@ class MTEFileReader:
 
     def lemma_words(self):
         return MTECorpusView(
-            self.__file_path, MTEFileReader.word_path, MTEFileReader._lemma_word_elt
+            self.__file_path,
+            MTEFileReader.word_path,
+            MTEFileReader._lemma_word_elt,
         )
 
     def tagged_words(self, tagset, tags):
         MTEFileReader.__tagset = tagset
         MTEFileReader.__tags = tags
         return MTECorpusView(
-            self.__file_path, MTEFileReader.word_path, MTEFileReader._tagged_word_elt
+            self.__file_path,
+            MTEFileReader.word_path,
+            MTEFileReader._tagged_word_elt,
         )
 
     def lemma_sents(self):
         return MTECorpusView(
-            self.__file_path, MTEFileReader.sent_path, MTEFileReader._lemma_sent_elt
+            self.__file_path,
+            MTEFileReader.sent_path,
+            MTEFileReader._lemma_sent_elt,
         )
 
     def tagged_sents(self, tagset, tags):
         MTEFileReader.__tagset = tagset
         MTEFileReader.__tags = tags
         return MTECorpusView(
-            self.__file_path, MTEFileReader.sent_path, MTEFileReader._tagged_sent_elt
+            self.__file_path,
+            MTEFileReader.sent_path,
+            MTEFileReader._tagged_sent_elt,
         )
 
     def lemma_paras(self):
         return MTECorpusView(
-            self.__file_path, MTEFileReader.para_path, MTEFileReader._lemma_para_elt
+            self.__file_path,
+            MTEFileReader.para_path,
+            MTEFileReader._lemma_para_elt,
         )
 
     def tagged_paras(self, tagset, tags):
         MTEFileReader.__tagset = tagset
         MTEFileReader.__tags = tags
         return MTECorpusView(
-            self.__file_path, MTEFileReader.para_path, MTEFileReader._tagged_para_elt
+            self.__file_path,
+            MTEFileReader.para_path,
+            MTEFileReader._tagged_para_elt,
         )
 
 
@@ -235,7 +256,9 @@ class MTECorpusReader(TaggedCorpusReader):
         # filter wrong userinput
         fileids = filter(lambda x: x in self._fileids, fileids)
         # filter multext-east sourcefiles that are not compatible to the teip5 specification
-        fileids = filter(lambda x: x not in ["oana-bg.xml", "oana-mk.xml"], fileids)
+        fileids = filter(
+            lambda x: x not in ["oana-bg.xml", "oana-mk.xml"], fileids
+        )
         if not fileids:
             print("No valid multext-east file specified")
         return fileids
@@ -254,7 +277,9 @@ class MTECorpusReader(TaggedCorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        return reduce([self.open(f).read() for f in self.__fileids(fileids)], [])
+        return reduce(
+            [self.open(f).read() for f in self.__fileids(fileids)], []
+        )
 
     def words(self, fileids=None):
         """

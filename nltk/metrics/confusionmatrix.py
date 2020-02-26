@@ -91,7 +91,10 @@ class ConfusionMatrix(object):
         return self._confusion[i][j]
 
     def __repr__(self):
-        return "<ConfusionMatrix: %s/%s correct>" % (self._correct, self._total)
+        return "<ConfusionMatrix: %s/%s correct>" % (
+            self._correct,
+            self._total,
+        )
 
     def __str__(self):
         return self.pretty_format()
@@ -158,7 +161,10 @@ class ConfusionMatrix(object):
             s += " |\n"
 
         # Write a dividing line
-        s += "%s-+-%s+\n" % ("-" * valuelen, "-" * ((entrylen + 1) * len(values)))
+        s += "%s-+-%s+\n" % (
+            "-" * valuelen,
+            "-" * ((entrylen + 1) * len(values)),
+        )
 
         # Write the entries.
         for val, li in zip(value_strings, values):
@@ -180,7 +186,10 @@ class ConfusionMatrix(object):
             s += "|\n"
 
         # Write a dividing line
-        s += "%s-+-%s+\n" % ("-" * valuelen, "-" * ((entrylen + 1) * len(values)))
+        s += "%s-+-%s+\n" % (
+            "-" * valuelen,
+            "-" * ((entrylen + 1) * len(values)),
+        )
 
         # Write a key
         s += "(row = reference; col = test)\n"

@@ -170,7 +170,9 @@ from nltk.chunk.regexp import RegexpChunkParser, RegexpParser
 
 # Standard treebank POS tagger
 _BINARY_NE_CHUNKER = "chunkers/maxent_ne_chunker/english_ace_binary.pickle"
-_MULTICLASS_NE_CHUNKER = "chunkers/maxent_ne_chunker/english_ace_multiclass.pickle"
+_MULTICLASS_NE_CHUNKER = (
+    "chunkers/maxent_ne_chunker/english_ace_multiclass.pickle"
+)
 
 
 def ne_chunk(tagged_tokens, binary=False):

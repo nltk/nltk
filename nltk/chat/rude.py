@@ -67,7 +67,10 @@ pairs = (
             "I'm not even going to dignify that with an answer.",
         ),
     ),
-    (r"What (.*)", ("Do I look like an encyclopedia?", "Figure it out yourself.")),
+    (
+        r"What (.*)",
+        ("Do I look like an encyclopedia?", "Figure it out yourself."),
+    ),
     (
         r"Why (.*)",
         (
@@ -93,7 +96,10 @@ pairs = (
     ),
     (
         r"Hello(.*)",
-        ("Oh good, somebody else to talk to. Joy.", "'Hello'? How original..."),
+        (
+            "Oh good, somebody else to talk to. Joy.",
+            "'Hello'? How original...",
+        ),
     ),
     (
         r"(.*)",
@@ -109,7 +115,9 @@ rude_chatbot = Chat(pairs, reflections)
 
 
 def rude_chat():
-    print("Talk to the program by typing in plain English, using normal upper-")
+    print(
+        "Talk to the program by typing in plain English, using normal upper-"
+    )
     print('and lower-case letters and punctuation.  Enter "quit" when done.')
     print("=" * 72)
     print("I suppose I should say hello.")

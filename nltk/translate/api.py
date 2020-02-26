@@ -97,7 +97,10 @@ class AlignedSent(object):
 
         # Alignment
         for u, v in self._alignment:
-            s += '"%s_source" -- "%s_target" \n' % (self._words[u], self._mots[v])
+            s += '"%s_source" -- "%s_target" \n' % (
+                self._words[u],
+                self._mots[v],
+            )
 
         # Connect the source words
         for i in range(len(self._words) - 1):
@@ -114,8 +117,12 @@ class AlignedSent(object):
             )
 
         # Put it in the same rank
-        s += "{rank = same; %s}\n" % (" ".join('"%s_source"' % w for w in self._words))
-        s += "{rank = same; %s}\n" % (" ".join('"%s_target"' % w for w in self._mots))
+        s += "{rank = same; %s}\n" % (
+            " ".join('"%s_source"' % w for w in self._words)
+        )
+        s += "{rank = same; %s}\n" % (
+            " ".join('"%s_target"' % w for w in self._mots)
+        )
 
         s += "}"
 
@@ -284,7 +291,9 @@ def _check_alignment(num_words, num_mots, alignment):
 
     if not all(0 <= pair[0] < num_words for pair in alignment):
         raise IndexError("Alignment is outside boundary of words")
-    if not all(pair[1] is None or 0 <= pair[1] < num_mots for pair in alignment):
+    if not all(
+        pair[1] is None or 0 <= pair[1] < num_mots for pair in alignment
+    ):
         raise IndexError("Alignment is outside boundary of mots")
 
 
@@ -328,7 +337,9 @@ class PhraseTable(object):
         if src_phrase not in self.src_phrases:
             self.src_phrases[src_phrase] = []
         self.src_phrases[src_phrase].append(entry)
-        self.src_phrases[src_phrase].sort(key=lambda e: e.log_prob, reverse=True)
+        self.src_phrases[src_phrase].sort(
+            key=lambda e: e.log_prob, reverse=True
+        )
 
     def __contains__(self, src_phrase):
         return src_phrase in self.src_phrases

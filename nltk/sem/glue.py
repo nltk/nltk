@@ -68,7 +68,8 @@ class GlueFormula(object):
         """
         if self.indices & arg.indices:  # if the sets are NOT disjoint
             raise linearlogic.LinearLogicApplicationException(
-                "'%s' applied to '%s'.  Indices are not disjoint." % (self, arg)
+                "'%s' applied to '%s'.  Indices are not disjoint."
+                % (self, arg)
             )
         else:  # if the sets ARE disjoint
             return_indices = self.indices | arg.indices
@@ -142,7 +143,9 @@ class GlueFormula(object):
         assert isinstance(self.indices, set)
         accum = "%s : %s" % (self.meaning, self.glue)
         if self.indices:
-            accum += " : {" + ", ".join(str(index) for index in self.indices) + "}"
+            accum += (
+                " : {" + ", ".join(str(index) for index in self.indices) + "}"
+            )
         return accum
 
     def __repr__(self):
@@ -167,7 +170,9 @@ class GlueDict(dict):
         except LookupError as e:
             try:
                 contents = nltk.data.load(
-                    "file:" + self.filename, format="text", encoding=self.file_encoding
+                    "file:" + self.filename,
+                    format="text",
+                    encoding=self.file_encoding,
                 )
             except LookupError:
                 raise e
@@ -195,7 +200,9 @@ class GlueDict(dict):
             if len(parts) > 1:
                 for (i, c) in enumerate(parts[1]):
                     if c == "(":
-                        if paren_count == 0:  # if it's the first '(' of a tuple
+                        if (
+                            paren_count == 0
+                        ):  # if it's the first '(' of a tuple
                             tuple_start = i + 1  # then save the index
                         paren_count += 1
                     elif c == ")":
@@ -204,7 +211,9 @@ class GlueDict(dict):
                             meaning_term = parts[1][
                                 tuple_start:tuple_comma
                             ]  # '\\x.(<word> x)'
-                            glue_term = parts[1][tuple_comma + 1 : i]  # '(v-r)'
+                            glue_term = parts[1][
+                                tuple_comma + 1 : i
+                            ]  # '(v-r)'
                             glue_formulas.append(
                                 [meaning_term, glue_term]
                             )  # add the GlueFormula to the list
@@ -229,7 +238,8 @@ class GlueDict(dict):
                     relationships = frozenset()
                 else:
                     relationships = frozenset(
-                        r.strip() for r in parts[2][rel_start:rel_end].split(",")
+                        r.strip()
+                        for r in parts[2][rel_start:rel_end].split(",")
                     )
 
             try:
@@ -267,7 +277,9 @@ class GlueDict(dict):
                 if relationships not in self[sem]:
                     self[sem][relationships] = []
                 if supertype:
-                    self[sem][relationships].extend(self[supertype][relationships])
+                    self[sem][relationships].extend(
+                        self[supertype][relationships]
+                    )
                 self[sem][relationships].extend(
                     glue_formulas
                 )  # add the glue entry to the dictionary
@@ -290,7 +302,9 @@ class GlueDict(dict):
                     i += 1
         return accum
 
-    def to_glueformula_list(self, depgraph, node=None, counter=None, verbose=False):
+    def to_glueformula_list(
+        self, depgraph, node=None, counter=None, verbose=False
+    ):
         if node is None:
             # TODO: should it be depgraph.root? Is this code tested?
             top = depgraph.nodes[0]
@@ -326,7 +340,8 @@ class GlueDict(dict):
         if not len(lookup):
             raise KeyError(
                 "There is no GlueDict entry for sem type of '%s' "
-                "with tag '%s', and rel '%s'" % (node["word"], node["tag"], node["rel"])
+                "with tag '%s', and rel '%s'"
+                % (node["word"], node["tag"], node["rel"])
             )
 
         return self.get_glueformulas_from_semtype_entry(
@@ -399,13 +414,17 @@ class GlueDict(dict):
 
         glueFormulaFactory = self.get_GlueFormula_factory()
         for meaning, glue in lookup:
-            gf = glueFormulaFactory(self.get_meaning_formula(meaning, word), glue)
+            gf = glueFormulaFactory(
+                self.get_meaning_formula(meaning, word), glue
+            )
             if not len(glueformulas):
                 gf.word = word
             else:
                 gf.word = "%s%s" % (word, len(glueformulas) + 1)
 
-            gf.glue = self.initialize_labels(gf.glue, node, depgraph, counter.get())
+            gf.glue = self.initialize_labels(
+                gf.glue, node, depgraph, counter.get()
+            )
 
             glueformulas.append(gf)
         return glueformulas
@@ -421,15 +440,21 @@ class GlueDict(dict):
 
     def initialize_labels(self, expr, node, depgraph, unique_index):
         if isinstance(expr, linearlogic.AtomicExpression):
-            name = self.find_label_name(expr.name.lower(), node, depgraph, unique_index)
+            name = self.find_label_name(
+                expr.name.lower(), node, depgraph, unique_index
+            )
             if name[0].isupper():
                 return linearlogic.VariableExpression(name)
             else:
                 return linearlogic.ConstantExpression(name)
         else:
             return linearlogic.ImpExpression(
-                self.initialize_labels(expr.antecedent, node, depgraph, unique_index),
-                self.initialize_labels(expr.consequent, node, depgraph, unique_index),
+                self.initialize_labels(
+                    expr.antecedent, node, depgraph, unique_index
+                ),
+                self.initialize_labels(
+                    expr.consequent, node, depgraph, unique_index
+                ),
             )
 
     def find_label_name(self, name, node, depgraph, unique_index):
@@ -440,7 +465,10 @@ class GlueDict(dict):
             after_dot = name[dot + 1 :]
             if before_dot == "super":
                 return self.find_label_name(
-                    after_dot, depgraph.nodes[node["head"]], depgraph, unique_index
+                    after_dot,
+                    depgraph.nodes[node["head"]],
+                    depgraph,
+                    unique_index,
                 )
             else:
                 return self.find_label_name(
@@ -462,9 +490,13 @@ class GlueDict(dict):
             elif name == "var":
                 return "%s%s" % (lbl.upper(), unique_index)
             elif name == "a":
-                return self.get_label(self.lookup_unique("conja", node, depgraph))
+                return self.get_label(
+                    self.lookup_unique("conja", node, depgraph)
+                )
             elif name == "b":
-                return self.get_label(self.lookup_unique("conjb", node, depgraph))
+                return self.get_label(
+                    self.lookup_unique("conjb", node, depgraph)
+                )
             else:
                 return self.get_label(self.lookup_unique(name, node, depgraph))
 
@@ -522,7 +554,9 @@ class GlueDict(dict):
         ]
 
         if len(deps) == 0:
-            raise KeyError("'%s' doesn't contain a feature '%s'" % (node["word"], rel))
+            raise KeyError(
+                "'%s' doesn't contain a feature '%s'" % (node["word"], rel)
+            )
         elif len(deps) > 1:
             raise KeyError(
                 "'%s' should only have one feature '%s'" % (node["word"], rel)
@@ -536,7 +570,11 @@ class GlueDict(dict):
 
 class Glue(object):
     def __init__(
-        self, semtype_file=None, remove_duplicates=False, depparser=None, verbose=False
+        self,
+        semtype_file=None,
+        remove_duplicates=False,
+        depparser=None,
+        verbose=False,
     ):
         self.verbose = verbose
         self.remove_duplicates = remove_duplicates
@@ -559,7 +597,9 @@ class Glue(object):
         else:
             self.depparser.train_from_file(
                 nltk.data.find(
-                    os.path.join("grammars", "sample_grammars", "glue_train.conll")
+                    os.path.join(
+                        "grammars", "sample_grammars", "glue_train.conll"
+                    )
                 )
             )
 
@@ -582,7 +622,9 @@ class Glue(object):
             ):  # if cur.glue is non-atomic
                 for key in atomics:
                     try:
-                        if isinstance(cur.glue, linearlogic.ApplicationExpression):
+                        if isinstance(
+                            cur.glue, linearlogic.ApplicationExpression
+                        ):
                             bindings = cur.glue.bindings
                         else:
                             bindings = linearlogic.BindingDict()
@@ -607,7 +649,8 @@ class Glue(object):
                     for nonatomic in nonatomics[key]:
                         try:
                             if isinstance(
-                                nonatomic.glue, linearlogic.ApplicationExpression
+                                nonatomic.glue,
+                                linearlogic.ApplicationExpression,
                             ):
                                 bindings = nonatomic.glue.bindings
                             else:
@@ -649,7 +692,9 @@ class Glue(object):
                     # if there is an exception, the syntax of the formula
                     # may not be understandable by the prover, so don't
                     # throw out the reading.
-                    print("Error when checking logical equality of statements", e)
+                    print(
+                        "Error when checking logical equality of statements", e
+                    )
 
         if add_reading:
             reading_list.append(glueformula.meaning)
@@ -718,7 +763,10 @@ class Glue(object):
 
         # Override particular words
         main_tagger = RegexpTagger(
-            [(r"(A|a|An|an)$", "ex_quant"), (r"(Every|every|All|all)$", "univ_quant")],
+            [
+                (r"(A|a|An|an)$", "ex_quant"),
+                (r"(Every|every|All|all)$", "univ_quant"),
+            ],
             backoff=trigram_tagger,
         )
 
@@ -766,13 +814,19 @@ class DrtGlueDict(GlueDict):
 
 class DrtGlue(Glue):
     def __init__(
-        self, semtype_file=None, remove_duplicates=False, depparser=None, verbose=False
+        self,
+        semtype_file=None,
+        remove_duplicates=False,
+        depparser=None,
+        verbose=False,
     ):
         if not semtype_file:
             semtype_file = os.path.join(
                 "grammars", "sample_grammars", "drt_glue.semtype"
             )
-        Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
+        Glue.__init__(
+            self, semtype_file, remove_duplicates, depparser, verbose
+        )
 
     def get_glue_dict(self):
         return DrtGlueDict(self.semtype_file)

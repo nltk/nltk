@@ -254,7 +254,6 @@ def is_terminal(item):
 
 
 @total_ordering
-
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
@@ -379,7 +378,6 @@ class Production(object):
         return self._hash
 
 
-
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -396,7 +394,6 @@ class DependencyProduction(Production):
         for elt in self._rhs:
             result += " '%s'" % (elt,)
         return result
-
 
 
 class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
@@ -447,7 +444,6 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 # Grammars
 #################################################################
-
 
 
 class CFG(object):
@@ -528,14 +524,18 @@ class CFG(object):
                 else:
                     self._immediate_leftcorner_words[cat].add(left)
 
-        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        lc = transitive_closure(
+            self._immediate_leftcorner_categories, reflexive=True
+        )
         self._leftcorners = lc
         self._leftcorner_parents = invert_graph(lc)
 
         nr_leftcorner_categories = sum(
             map(len, self._immediate_leftcorner_categories.values())
         )
-        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        nr_leftcorner_words = sum(
+            map(len, self._immediate_leftcorner_words.values())
+        )
         if nr_leftcorner_words > nr_leftcorner_categories > 10000:
             # If the grammar is big, the leftcorner-word dictionary will be too large.
             # In that case it is better to calculate the relation on demand.
@@ -585,7 +585,8 @@ class CFG(object):
         """
         if rhs and empty:
             raise ValueError(
-                "You cannot select empty and non-empty " "productions at the same time."
+                "You cannot select empty and non-empty "
+                "productions at the same time."
             )
 
         # no constraints so return everything
@@ -675,7 +676,8 @@ class CFG(object):
         if missing:
             missing = ", ".join("%r" % (w,) for w in missing)
             raise ValueError(
-                "Grammar does not cover some of the " "input words: %r." % missing
+                "Grammar does not cover some of the "
+                "input words: %r." % missing
             )
 
     def _calculate_grammar_forms(self):
@@ -684,10 +686,14 @@ class CFG(object):
         """
         prods = self._productions
         self._is_lexical = all(p.is_lexical() for p in prods)
-        self._is_nonlexical = all(p.is_nonlexical() for p in prods if len(p) != 1)
+        self._is_nonlexical = all(
+            p.is_nonlexical() for p in prods if len(p) != 1
+        )
         self._min_len = min(len(p) for p in prods)
         self._max_len = max(len(p) for p in prods)
-        self._all_unary_are_lexical = all(p.is_lexical() for p in prods if len(p) == 1)
+        self._all_unary_are_lexical = all(
+            p.is_lexical() for p in prods if len(p) == 1
+        )
 
     def is_lexical(self):
         """
@@ -738,14 +744,19 @@ class CFG(object):
         Return True if all productions are of the forms
         A -> B C, A -> B, or A -> "s".
         """
-        return self.is_nonempty() and self.is_nonlexical() and self.is_binarised()
+        return (
+            self.is_nonempty() and self.is_nonlexical() and self.is_binarised()
+        )
 
     def is_chomsky_normal_form(self):
         """
         Return True if the grammar is of Chomsky Normal Form, i.e. all productions
         are of the form A -> B C, or A -> "s".
         """
-        return self.is_flexible_chomsky_normal_form() and self._all_unary_are_lexical
+        return (
+            self.is_flexible_chomsky_normal_form()
+            and self._all_unary_are_lexical
+        )
 
     def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
         """
@@ -757,14 +768,19 @@ class CFG(object):
             return self
         if self.productions(empty=True):
             raise ValueError(
-                ("Grammar has Empty rules. " "Cannot deal with them at the moment")
+                (
+                    "Grammar has Empty rules. "
+                    "Cannot deal with them at the moment"
+                )
             )
 
         # check for mixed rules
         for rule in self.productions():
             if rule.is_lexical() and len(rule.rhs()) > 1:
                 raise ValueError(
-                    "Cannot handled mixed rule {} => {}".format(rule.lhs(), rule.rhs())
+                    "Cannot handled mixed rule {} => {}".format(
+                        rule.lhs(), rule.rhs()
+                    )
                 )
 
         step1 = CFG.eliminate_start(self)
@@ -820,7 +836,9 @@ class CFG(object):
                 left_side = rule.lhs()
                 for k in range(0, len(rule.rhs()) - 2):
                     tsym = rule.rhs()[k]
-                    new_sym = Nonterminal(left_side.symbol() + padding + tsym.symbol())
+                    new_sym = Nonterminal(
+                        left_side.symbol() + padding + tsym.symbol()
+                    )
                     new_production = Production(left_side, (tsym, new_sym))
                     left_side = new_sym
                     result.append(new_production)
@@ -922,7 +940,12 @@ class FeatureGrammar(CFG):
 
     @classmethod
     def fromstring(
-        cls, input, features=None, logic_parser=None, fstruct_reader=None, encoding=None
+        cls,
+        input,
+        features=None,
+        logic_parser=None,
+        fstruct_reader=None,
+        encoding=None,
     ):
         """
         Return a feature structure based grammar.
@@ -965,7 +988,8 @@ class FeatureGrammar(CFG):
         """
         if rhs and empty:
             raise ValueError(
-                "You cannot select empty and non-empty " "productions at the same time."
+                "You cannot select empty and non-empty "
+                "productions at the same time."
             )
 
         # no constraints so return everything
@@ -978,7 +1002,9 @@ class FeatureGrammar(CFG):
         # only lhs specified so look up its index
         elif lhs and not rhs:
             if empty:
-                return self._empty_index.get(self._get_type_if_possible(lhs), [])
+                return self._empty_index.get(
+                    self._get_type_if_possible(lhs), []
+                )
             else:
                 return self._lhs_index.get(self._get_type_if_possible(lhs), [])
 
@@ -990,8 +1016,11 @@ class FeatureGrammar(CFG):
         else:
             return [
                 prod
-                for prod in self._lhs_index.get(self._get_type_if_possible(lhs), [])
-                if prod in self._rhs_index.get(self._get_type_if_possible(rhs), [])
+                for prod in self._lhs_index.get(
+                    self._get_type_if_possible(lhs), []
+                )
+                if prod
+                in self._rhs_index.get(self._get_type_if_possible(rhs), [])
             ]
 
     def leftcorners(self, cat):
@@ -1020,7 +1049,6 @@ class FeatureGrammar(CFG):
 
 
 @total_ordering
-
 class FeatureValueType(object):
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -1050,7 +1078,6 @@ class FeatureValueType(object):
         return self._hash
 
 
-
 class DependencyGrammar(object):
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
@@ -1077,7 +1104,9 @@ class DependencyGrammar(object):
             try:
                 productions += _read_dependency_production(line)
             except ValueError:
-                raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+                raise ValueError(
+                    "Unable to parse line %s: %s" % (linenum, line)
+                )
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1142,8 +1171,9 @@ class DependencyGrammar(object):
         """
         Return a concise string representation of the ``DependencyGrammar``
         """
-        return "Dependency grammar with %d productions" % len(self._productions)
-
+        return "Dependency grammar with %d productions" % len(
+            self._productions
+        )
 
 
 class ProbabilisticDependencyGrammar(object):
@@ -1244,7 +1274,9 @@ class PCFG(CFG):
         # Make sure that the probabilities sum to one.
         probs = {}
         for production in productions:
-            probs[production.lhs()] = probs.get(production.lhs(), 0) + production.prob()
+            probs[production.lhs()] = (
+                probs.get(production.lhs(), 0) + production.prob()
+            )
         for (lhs, p) in probs.items():
             if not ((1 - PCFG.EPSILON) < p < (1 + PCFG.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
@@ -1259,7 +1291,10 @@ class PCFG(CFG):
              as a list of strings.
         """
         start, productions = read_grammar(
-            input, standard_nonterm_parser, probabilistic=True, encoding=encoding
+            input,
+            standard_nonterm_parser,
+            probabilistic=True,
+            encoding=encoding,
         )
         return cls(start, productions)
 
@@ -1297,7 +1332,9 @@ def induce_pcfg(start, productions):
         pcount[prod] = pcount.get(prod, 0) + 1
 
     prods = [
-        ProbabilisticProduction(p.lhs(), p.rhs(), prob=pcount[p] / lcount[p.lhs()])
+        ProbabilisticProduction(
+            p.lhs(), p.rhs(), prob=pcount[p] / lcount[p.lhs()]
+        )
         for p in pcount
     ]
     return PCFG(start, prods)
@@ -1446,9 +1483,13 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                     raise ValueError("Bad directive")
             else:
                 # expand out the disjunctions on the RHS
-                productions += _read_production(line, nonterm_parser, probabilistic)
+                productions += _read_production(
+                    line, nonterm_parser, probabilistic
+                )
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s\n%s" % (linenum + 1, line, e))
+            raise ValueError(
+                "Unable to parse line %s: %s\n%s" % (linenum + 1, line, e)
+            )
 
     if not productions:
         raise ValueError("No productions found!")

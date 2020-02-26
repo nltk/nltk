@@ -103,7 +103,9 @@ class DrtGlueDemo(object):
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget("size"))
 
-        self._boldfont = Font(family="helvetica", weight="bold", size=self._size.get())
+        self._boldfont = Font(
+            family="helvetica", weight="bold", size=self._size.get()
+        )
         self._font = Font(family="helvetica", size=self._size.get())
         if self._size.get() < 0:
             big = self._size.get() - 2
@@ -247,10 +249,16 @@ class DrtGlueDemo(object):
 
         actionmenu = Menu(menubar, tearoff=0)
         actionmenu.add_command(
-            label="Next", underline=0, command=self.next, accelerator="n, Space"
+            label="Next",
+            underline=0,
+            command=self.next,
+            accelerator="n, Space",
         )
         actionmenu.add_command(
-            label="Previous", underline=0, command=self.prev, accelerator="p, Backspace"
+            label="Previous",
+            underline=0,
+            command=self.prev,
+            accelerator="p, Backspace",
         )
         menubar.add_cascade(label="Action", underline=0, menu=actionmenu)
 
@@ -478,7 +486,9 @@ class DrtGlueDemo(object):
                     self._readingCache[index] = self._readings
                 except Exception as e:
                     self._readings = []
-                    self._error = DrtVariableExpression(Variable("Error: " + str(e)))
+                    self._error = DrtVariableExpression(
+                        Variable("Error: " + str(e))
+                    )
                     self._readingCache[index] = self._error
 
                     # add a star to the end of the example

@@ -163,7 +163,9 @@ REGEXPS = (
 ######################################################################
 # This is the core tokenizing regex:
 
-WORD_RE = regex.compile(r"""(%s)""" % "|".join(REGEXPS), regex.VERBOSE | regex.I | regex.UNICODE)
+WORD_RE = regex.compile(
+    r"""(%s)""" % "|".join(REGEXPS), regex.VERBOSE | regex.I | regex.UNICODE
+)
 
 # WORD_RE performs poorly on these patterns:
 HANG_RE = regex.compile(r"([^a-zA-Z0-9])\1{3,}")
@@ -189,7 +191,9 @@ def _str_to_unicode(text, encoding=None, errors="strict"):
     return text
 
 
-def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8"):
+def _replace_html_entities(
+    text, keep=(), remove_illegal=True, encoding="utf-8"
+):
     """
     Remove entities from text by converting them to their
     corresponding unicode character.
@@ -270,7 +274,9 @@ class TweetTokenizer:
         [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
     """
 
-    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False):
+    def __init__(
+        self, preserve_case=True, reduce_len=False, strip_handles=False
+    ):
         self.preserve_case = preserve_case
         self.reduce_len = reduce_len
         self.strip_handles = strip_handles
@@ -297,7 +303,10 @@ class TweetTokenizer:
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(
-                map((lambda x: x if EMOTICON_RE.search(x) else x.lower()), words)
+                map(
+                    (lambda x: x if EMOTICON_RE.search(x) else x.lower()),
+                    words,
+                )
             )
         return words
 
@@ -332,12 +341,16 @@ def remove_handles(text):
 ######################################################################
 
 
-def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=False):
+def casual_tokenize(
+    text, preserve_case=True, reduce_len=False, strip_handles=False
+):
     """
     Convenience function for wrapping the tokenizer.
     """
     return TweetTokenizer(
-        preserve_case=preserve_case, reduce_len=reduce_len, strip_handles=strip_handles
+        preserve_case=preserve_case,
+        reduce_len=reduce_len,
+        strip_handles=strip_handles,
     ).tokenize(text)
 
 

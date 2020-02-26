@@ -39,9 +39,10 @@ titles = {
 documents = sorted(titles)
 
 
-
 class IEERDocument(object):
-    def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
+    def __init__(
+        self, text, docno=None, doctype=None, date_time=None, headline=""
+    ):
         self.text = text
         self.docno = docno
         self.doctype = doctype
@@ -53,7 +54,8 @@ class IEERDocument(object):
             headline = " ".join(self.headline.leaves())
         else:
             headline = (
-                " ".join([w for w in self.text.leaves() if w[:1] != "<"][:12]) + "..."
+                " ".join([w for w in self.text.leaves() if w[:1] != "<"][:12])
+                + "..."
             )
         if self.docno is not None:
             return "<IEERDocument %s: %r>" % (self.docno, headline)
@@ -83,7 +85,9 @@ class IEERCorpusReader(CorpusReader):
     def parsed_docs(self, fileids=None):
         return concat(
             [
-                StreamBackedCorpusView(fileid, self._read_parsed_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, self._read_parsed_block, encoding=enc
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )

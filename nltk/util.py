@@ -187,7 +187,9 @@ def re_show(regexp, string, left="{", right="}"):
     :type right: str
     :rtype: str
     """
-    print(re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
+    print(
+        re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
+    )
 
 
 ##########################################################################
@@ -629,7 +631,9 @@ def skipgrams(sequence, n, k, **kwargs):
     # the **kwargs padding, it's for the algorithm to detect the SENTINEL
     # object on the right pad to stop inner loop.
     SENTINEL = object()
-    for ngram in ngrams(sequence, n + k, pad_right=True, right_pad_symbol=SENTINEL):
+    for ngram in ngrams(
+        sequence, n + k, pad_right=True, right_pad_symbol=SENTINEL
+    ):
         head = ngram[:1]
         tail = ngram[1:]
         for skip_tail in combinations(tail, n - 1):
@@ -744,7 +748,9 @@ def set_proxy(proxy, user=None, password=""):
     if user is not None:
         # Set up basic proxy authentication if provided
         password_manager = HTTPPasswordMgrWithDefaultRealm()
-        password_manager.add_password(realm=None, uri=proxy, user=user, passwd=password)
+        password_manager.add_password(
+            realm=None, uri=proxy, user=user, passwd=password
+        )
         opener.add_handler(ProxyBasicAuthHandler(password_manager))
         opener.add_handler(ProxyDigestAuthHandler(password_manager))
 
@@ -829,6 +835,7 @@ def pairwise(iterable):
     a, b = tee(iterable)
     next(b, None)
     return zip(a, b)
+
 
 ######################################################################
 # Parallization.

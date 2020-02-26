@@ -6,8 +6,10 @@ Unit tests for nltk.corpus.nombank
 import unittest
 
 from nltk.corpus import nombank
+
 # Load the nombank once.
 nombank.nouns()
+
 
 class NombankDemo(unittest.TestCase):
     def test_numbers(self):
@@ -18,10 +20,11 @@ class NombankDemo(unittest.TestCase):
         # No. of nouns.
         self.assertEqual(len(nombank.nouns()), 4704)
 
-
     def test_instance(self):
-        self.assertEqual(nombank.instances()[0].roleset, 'perc-sign.01')
+        self.assertEqual(nombank.instances()[0].roleset, "perc-sign.01")
 
     def test_framefiles_fileids(self):
         self.assertEqual(len(nombank.fileids()), 4705)
-        self.assertTrue(all(fileid.endswith('.xml') for fileid in nombank.fileids()))
+        self.assertTrue(
+            all(fileid.endswith(".xml") for fileid in nombank.fileids())
+        )

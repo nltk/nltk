@@ -117,7 +117,9 @@ class SklearnClassifier(ClassifierI):
 
     def _make_probdist(self, y_proba):
         classes = self._encoder.classes_
-        return DictionaryProbDist(dict((classes[i], p) for i, p in enumerate(y_proba)))
+        return DictionaryProbDist(
+            dict((classes[i], p) for i, p in enumerate(y_proba))
+        )
 
 
 # skip doctests if scikit-learn is not installed

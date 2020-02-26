@@ -23,7 +23,13 @@ import tempfile
 from subprocess import PIPE
 import warnings
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import (
+    find_file,
+    find_jar,
+    config_java,
+    java,
+    _java_options,
+)
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -69,7 +75,11 @@ class StanfordTagger(TaggerI):
                 "StanfordPOSTagger or StanfordNERTagger?"
             )
         self._stanford_jar = find_jar(
-            self._JAR, path_to_jar, searchpath=(), url=_stanford_url, verbose=verbose
+            self._JAR,
+            path_to_jar,
+            searchpath=(),
+            url=_stanford_url,
+            verbose=verbose,
         )
 
         self._stanford_model = find_file(
@@ -222,7 +232,9 @@ class StanfordNERTagger(StanfordTagger):
             for tagged_sentence in text.strip().split("\n"):
                 for tagged_word in tagged_sentence.strip().split():
                     word_tags = tagged_word.strip().split(self._SEPARATOR)
-                    tagged_sentences.append(("".join(word_tags[:-1]), word_tags[-1]))
+                    tagged_sentences.append(
+                        ("".join(word_tags[:-1]), word_tags[-1])
+                    )
 
             # Separate it according to the input
             result = []

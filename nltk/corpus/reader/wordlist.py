@@ -171,4 +171,7 @@ class MWAPPDBCorpusReader(WordListCorpusReader):
         """
         :return: a tuple of synonym word pairs.
         """
-        return [tuple(line.split("\t")) for line in line_tokenize(self.raw(fileids))]
+        return [
+            tuple(line.split("\t"))
+            for line in line_tokenize(self.raw(fileids))
+        ]

@@ -29,7 +29,9 @@ class ChasenCorpusReader(CorpusReader):
     def words(self, fileids=None):
         return concat(
             [
-                ChasenCorpusView(fileid, enc, False, False, False, self._sent_splitter)
+                ChasenCorpusView(
+                    fileid, enc, False, False, False, self._sent_splitter
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -37,7 +39,9 @@ class ChasenCorpusReader(CorpusReader):
     def tagged_words(self, fileids=None):
         return concat(
             [
-                ChasenCorpusView(fileid, enc, True, False, False, self._sent_splitter)
+                ChasenCorpusView(
+                    fileid, enc, True, False, False, self._sent_splitter
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -45,7 +49,9 @@ class ChasenCorpusReader(CorpusReader):
     def sents(self, fileids=None):
         return concat(
             [
-                ChasenCorpusView(fileid, enc, False, True, False, self._sent_splitter)
+                ChasenCorpusView(
+                    fileid, enc, False, True, False, self._sent_splitter
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -53,7 +59,9 @@ class ChasenCorpusReader(CorpusReader):
     def tagged_sents(self, fileids=None):
         return concat(
             [
-                ChasenCorpusView(fileid, enc, True, True, False, self._sent_splitter)
+                ChasenCorpusView(
+                    fileid, enc, True, True, False, self._sent_splitter
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -61,7 +69,9 @@ class ChasenCorpusReader(CorpusReader):
     def paras(self, fileids=None):
         return concat(
             [
-                ChasenCorpusView(fileid, enc, False, True, True, self._sent_splitter)
+                ChasenCorpusView(
+                    fileid, enc, False, True, True, self._sent_splitter
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -69,7 +79,9 @@ class ChasenCorpusReader(CorpusReader):
     def tagged_paras(self, fileids=None):
         return concat(
             [
-                ChasenCorpusView(fileid, enc, True, True, True, self._sent_splitter)
+                ChasenCorpusView(
+                    fileid, enc, True, True, True, self._sent_splitter
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -143,7 +155,9 @@ def demo():
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
-    jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
+    jeita = LazyCorpusLoader(
+        "jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8"
+    )
     print("/".join(jeita.words()[22100:22140]))
 
     print(
@@ -158,7 +172,9 @@ def test():
 
     from nltk.corpus.util import LazyCorpusLoader
 
-    jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
+    jeita = LazyCorpusLoader(
+        "jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8"
+    )
 
     assert isinstance(jeita.tagged_words()[0][1], str)
 

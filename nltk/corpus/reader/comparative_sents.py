@@ -149,7 +149,9 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             fileids = [fileids]
         return concat(
             [
-                self.CorpusView(path, self._read_comparison_block, encoding=enc)
+                self.CorpusView(
+                    path, self._read_comparison_block, encoding=enc
+                )
                 for (path, enc, fileid) in self.abspaths(fileids, True, True)
             ]
         )
@@ -170,7 +172,9 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             ]
         )
 
-        keywords_set = set(keyword.lower() for keyword in all_keywords if keyword)
+        keywords_set = set(
+            keyword.lower() for keyword in all_keywords if keyword
+        )
         return keywords_set
 
     def keywords_readme(self):
@@ -250,7 +254,9 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 # Advance to the next line (it contains the comparative sentence)
                 comparison_text = stream.readline().strip()
                 if self._word_tokenizer:
-                    comparison_text = self._word_tokenizer.tokenize(comparison_text)
+                    comparison_text = self._word_tokenizer.tokenize(
+                        comparison_text
+                    )
                 # Skip the next line (it contains closing comparison tags)
                 stream.readline()
                 # If gradable comparisons are found, create Comparison instances

@@ -82,7 +82,9 @@ if sys.platform.startswith("win"):
         os.path.join(sys.prefix, str("nltk_data")),
         os.path.join(sys.prefix, str("share"), str("nltk_data")),
         os.path.join(sys.prefix, str("lib"), str("nltk_data")),
-        os.path.join(os.environ.get(str("APPDATA"), str("C:\\")), str("nltk_data")),
+        os.path.join(
+            os.environ.get(str("APPDATA"), str("C:\\")), str("nltk_data")
+        ),
         str(r"C:\nltk_data"),
         str(r"D:\nltk_data"),
         str(r"E:\nltk_data"),
@@ -202,7 +204,9 @@ def normalize_resource_url(resource_url):
     return "".join([protocol, name])
 
 
-def normalize_resource_name(resource_name, allow_relative=True, relative_path=None):
+def normalize_resource_name(
+    resource_name, allow_relative=True, relative_path=None
+):
     """
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
@@ -229,9 +233,9 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
-        os.path.sep
-    )
+    is_dir = bool(
+        re.search(r"[\\/.]$", resource_name)
+    ) or resource_name.endswith(os.path.sep)
     if sys.platform.startswith("win"):
         resource_name = resource_name.lstrip("/")
     else:
@@ -241,7 +245,9 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     else:
         if relative_path is None:
             relative_path = os.curdir
-        resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
+        resource_name = os.path.abspath(
+            os.path.join(relative_path, resource_name)
+        )
     resource_name = resource_name.replace("\\", "/").replace(os.path.sep, "/")
     if sys.platform.startswith("win") and os.path.isabs(resource_name):
         resource_name = "/" + resource_name
@@ -342,6 +348,7 @@ class FileSystemPathPointer(PathPointer, str):
     def __str__(self):
         return self._path
 
+
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
 class BufferedGzipFile(GzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.
@@ -371,7 +378,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        stream = GzipFile(self._path, "rb")    
+        stream = GzipFile(self._path, "rb")
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -415,7 +422,8 @@ class ZipFilePathPointer(PathPointer):
                 else:
                     # Otherwise, complain.
                     raise IOError(
-                        "Zipfile %r does not contain %r" % (zipfile.filename, entry)
+                        "Zipfile %r does not contain %r"
+                        % (zipfile.filename, entry)
                     )
         self._zipfile = zipfile
         self._entry = entry
@@ -453,10 +461,15 @@ class ZipFilePathPointer(PathPointer):
         return ZipFilePathPointer(self._zipfile, entry)
 
     def __repr__(self):
-        return str("ZipFilePathPointer(%r, %r)") % (self._zipfile.filename, self._entry)
+        return str("ZipFilePathPointer(%r, %r)") % (
+            self._zipfile.filename,
+            self._entry,
+        )
 
     def __str__(self):
-        return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
+        return os.path.normpath(
+            os.path.join(self._zipfile.filename, self._entry)
+        )
 
 
 ######################################################################
@@ -552,7 +565,9 @@ def find(resource_name, paths=None):
     if zipfile is None:
         pieces = resource_name.split("/")
         for i in range(len(pieces)):
-            modified_name = "/".join(pieces[:i] + [pieces[i] + ".zip"] + pieces[i:])
+            modified_name = "/".join(
+                pieces[:i] + [pieces[i] + ".zip"] + pieces[i:]
+            )
             try:
                 return find(modified_name, paths)
             except LookupError:
@@ -782,9 +797,13 @@ def load(
         if format == "text":
             resource_val = string_data
         elif format == "cfg":
-            resource_val = nltk.grammar.CFG.fromstring(string_data, encoding=encoding)
+            resource_val = nltk.grammar.CFG.fromstring(
+                string_data, encoding=encoding
+            )
         elif format == "pcfg":
-            resource_val = nltk.grammar.PCFG.fromstring(string_data, encoding=encoding)
+            resource_val = nltk.grammar.PCFG.fromstring(
+                string_data, encoding=encoding
+            )
         elif format == "fcfg":
             resource_val = nltk.grammar.FeatureGrammar.fromstring(
                 string_data,
@@ -803,7 +822,9 @@ def load(
                 string_data, logic_parser=logic_parser, encoding=encoding
             )
         elif format == "val":
-            resource_val = nltk.sem.read_valuation(string_data, encoding=encoding)
+            resource_val = nltk.sem.read_valuation(
+                string_data, encoding=encoding
+            )
         else:
             raise AssertionError(
                 "Internal NLTK error: Format %s isn't "
@@ -1110,7 +1131,9 @@ class SeekableUnicodeStreamReader(object):
             if len(lines) > 1:
                 line = lines[0]
                 self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                self._rewind_numchars = len(new_chars) - (
+                    len(chars) - len(line)
+                )
                 self._rewind_checkpoint = startpos
                 break
             elif len(lines) == 1:
@@ -1287,10 +1310,16 @@ class SeekableUnicodeStreamReader(object):
         orig_filepos = self.stream.tell()
 
         # Calculate an estimate of where we think the newline is.
-        bytes_read = (orig_filepos - len(self.bytebuffer)) - self._rewind_checkpoint
+        bytes_read = (
+            orig_filepos - len(self.bytebuffer)
+        ) - self._rewind_checkpoint
         buf_size = sum(len(line) for line in self.linebuffer)
         est_bytes = int(
-            (bytes_read * self._rewind_numchars / (self._rewind_numchars + buf_size))
+            (
+                bytes_read
+                * self._rewind_numchars
+                / (self._rewind_numchars + buf_size)
+            )
         )
 
         self.stream.seek(self._rewind_checkpoint)
@@ -1385,10 +1414,16 @@ class SeekableUnicodeStreamReader(object):
 
     _BOM_TABLE = {
         "utf8": [(codecs.BOM_UTF8, None)],
-        "utf16": [(codecs.BOM_UTF16_LE, "utf16-le"), (codecs.BOM_UTF16_BE, "utf16-be")],
+        "utf16": [
+            (codecs.BOM_UTF16_LE, "utf16-le"),
+            (codecs.BOM_UTF16_BE, "utf16-be"),
+        ],
         "utf16le": [(codecs.BOM_UTF16_LE, None)],
         "utf16be": [(codecs.BOM_UTF16_BE, None)],
-        "utf32": [(codecs.BOM_UTF32_LE, "utf32-le"), (codecs.BOM_UTF32_BE, "utf32-be")],
+        "utf32": [
+            (codecs.BOM_UTF32_LE, "utf32-le"),
+            (codecs.BOM_UTF32_BE, "utf32-be"),
+        ],
         "utf32le": [(codecs.BOM_UTF32_LE, None)],
         "utf32be": [(codecs.BOM_UTF32_BE, None)],
     }

@@ -146,7 +146,11 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print("[TIMER] {0}(): {:.3f} seconds".format(method.__name__, tot_time))
+            print(
+                "[TIMER] {0}(): {:.3f} seconds".format(
+                    method.__name__, tot_time
+                )
+            )
         else:
             print(
                 "[TIMER] {0}(): {1}h {2}m {3}s".format(
@@ -212,9 +216,9 @@ def extract_bigram_feats(document, bigrams):
     """
     features = {}
     for bigr in bigrams:
-        features["contains({0} - {1})".format(bigr[0], bigr[1])] = bigr in nltk.bigrams(
-            document
-        )
+        features[
+            "contains({0} - {1})".format(bigr[0], bigr[1])
+        ] = bigr in nltk.bigrams(document)
     return features
 
 
@@ -276,7 +280,9 @@ def output_markdown(filename, **kwargs):
                 dictionary = kwargs[k]
                 text += "  - **{0}:**\n".format(k)
                 for entry in sorted(dictionary):
-                    text += "    - {0}: {1} \n".format(entry, dictionary[entry])
+                    text += "    - {0}: {1} \n".format(
+                        entry, dictionary[entry]
+                    )
             elif isinstance(kwargs[k], list):
                 text += "  - **{0}:**\n".format(k)
                 for entry in kwargs[k]:
@@ -397,7 +403,9 @@ def json2csv_preprocess(
                 if skip_ambiguous_tweets == True:
                     all_emoticons = EMOTICON_RE.findall(text)
                     if all_emoticons:
-                        if (set(all_emoticons) & HAPPY) and (set(all_emoticons) & SAD):
+                        if (set(all_emoticons) & HAPPY) and (
+                            set(all_emoticons) & SAD
+                        ):
                             continue
                 # Strip off emoticons from all tweets
                 if strip_off_emoticons == True:
@@ -505,8 +513,12 @@ def demo_tweets(trainer, n_instances=None, output=None):
     negative_csv = "negative_tweets.csv"
     json2csv_preprocess(negative_json, negative_csv, fields, limit=n_instances)
 
-    neg_docs = parse_tweets_set(negative_csv, label="neg", word_tokenizer=tokenizer)
-    pos_docs = parse_tweets_set(positive_csv, label="pos", word_tokenizer=tokenizer)
+    neg_docs = parse_tweets_set(
+        negative_csv, label="neg", word_tokenizer=tokenizer
+    )
+    pos_docs = parse_tweets_set(
+        positive_csv, label="pos", word_tokenizer=tokenizer
+    )
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -523,7 +535,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
 
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, top_n=1000)
-    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    sentim_analyzer.add_feat_extractor(
+        extract_unigram_feats, unigrams=unigram_feats
+    )
 
     # Add bigram collocation features
     bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats(
@@ -600,7 +614,9 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
 
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, min_freq=4)
-    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    sentim_analyzer.add_feat_extractor(
+        extract_unigram_feats, unigrams=unigram_feats
+    )
     # Apply features to obtain a feature-value representation of our datasets
     training_set = sentim_analyzer.apply_features(training_docs)
     test_set = sentim_analyzer.apply_features(testing_docs)
@@ -627,7 +643,9 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
         )
 
 
-def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=None):
+def demo_subjectivity(
+    trainer, save_analyzer=False, n_instances=None, output=None
+):
     """
     Train and test a classifier on instances of the Subjective Dataset by Pang and
     Lee. The dataset is made of 5000 subjective and 5000 objective sentences.
@@ -648,10 +666,12 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         n_instances = int(n_instances / 2)
 
     subj_docs = [
-        (sent, "subj") for sent in subjectivity.sents(categories="subj")[:n_instances]
+        (sent, "subj")
+        for sent in subjectivity.sents(categories="subj")[:n_instances]
     ]
     obj_docs = [
-        (sent, "obj") for sent in subjectivity.sents(categories="obj")[:n_instances]
+        (sent, "obj")
+        for sent in subjectivity.sents(categories="obj")[:n_instances]
     ]
 
     # We separately split subjective and objective instances to keep a balanced
@@ -668,8 +688,12 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     )
 
     # Add simple unigram word features handling negation
-    unigram_feats = sentim_analyzer.unigram_word_feats(all_words_neg, min_freq=4)
-    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    unigram_feats = sentim_analyzer.unigram_word_feats(
+        all_words_neg, min_freq=4
+    )
+    sentim_analyzer.add_feat_extractor(
+        extract_unigram_feats, unigrams=unigram_feats
+    )
 
     # Apply features to obtain a feature-value representation of our datasets
     training_set = sentim_analyzer.apply_features(training_docs)
@@ -765,7 +789,10 @@ def demo_liu_hu_lexicon(sentence, plot=False):
 
     if plot == True:
         _show_plot(
-            x, y, x_labels=tokenized_sent, y_labels=["Negative", "Neutral", "Positive"]
+            x,
+            y,
+            x_labels=tokenized_sent,
+            y_labels=["Negative", "Neutral", "Positive"],
         )
 
 
@@ -857,11 +884,15 @@ def demo_vader_tweets(n_instances=None, output=None):
     for label in labels:
         accuracy_score = eval_accuracy(acc_gold_results, acc_test_results)
         metrics_results["Accuracy"] = accuracy_score
-        precision_score = eval_precision(gold_results[label], test_results[label])
+        precision_score = eval_precision(
+            gold_results[label], test_results[label]
+        )
         metrics_results["Precision [{0}]".format(label)] = precision_score
         recall_score = eval_recall(gold_results[label], test_results[label])
         metrics_results["Recall [{0}]".format(label)] = recall_score
-        f_measure_score = eval_f_measure(gold_results[label], test_results[label])
+        f_measure_score = eval_f_measure(
+            gold_results[label], test_results[label]
+        )
         metrics_results["F-measure [{0}]".format(label)] = f_measure_score
 
     for result in sorted(metrics_results):

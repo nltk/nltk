@@ -43,12 +43,16 @@ class YCOECorpusReader(CorpusReader):
         self._psd_reader = YCOEParseCorpusReader(
             self.root.join("psd"), ".*", ".psd", encoding=encoding
         )
-        self._pos_reader = YCOETaggedCorpusReader(self.root.join("pos"), ".*", ".pos")
+        self._pos_reader = YCOETaggedCorpusReader(
+            self.root.join("pos"), ".*", ".pos"
+        )
 
         # Make sure we have a consistent set of items:
         documents = set(f[:-4] for f in self._psd_reader.fileids())
         if set(f[:-4] for f in self._pos_reader.fileids()) != documents:
-            raise ValueError('Items in "psd" and "pos" ' "subdirectories do not match.")
+            raise ValueError(
+                'Items in "psd" and "pos" ' "subdirectories do not match."
+            )
 
         fileids = sorted(
             ["%s.psd" % doc for doc in documents]
@@ -108,7 +112,9 @@ class YCOECorpusReader(CorpusReader):
                             "a list of document identifiers."
                         )
                     else:
-                        raise ValueError("Document identifier %s not found" % document)
+                        raise ValueError(
+                            "Document identifier %s not found" % document
+                        )
         return ["%s.%s" % (d, subcorpus) for d in documents]
 
     # Delegate to one of our two sub-readers:
@@ -122,16 +128,24 @@ class YCOECorpusReader(CorpusReader):
         return self._pos_reader.paras(self._getfileids(documents, "pos"))
 
     def tagged_words(self, documents=None):
-        return self._pos_reader.tagged_words(self._getfileids(documents, "pos"))
+        return self._pos_reader.tagged_words(
+            self._getfileids(documents, "pos")
+        )
 
     def tagged_sents(self, documents=None):
-        return self._pos_reader.tagged_sents(self._getfileids(documents, "pos"))
+        return self._pos_reader.tagged_sents(
+            self._getfileids(documents, "pos")
+        )
 
     def tagged_paras(self, documents=None):
-        return self._pos_reader.tagged_paras(self._getfileids(documents, "pos"))
+        return self._pos_reader.tagged_paras(
+            self._getfileids(documents, "pos")
+        )
 
     def parsed_sents(self, documents=None):
-        return self._psd_reader.parsed_sents(self._getfileids(documents, "psd"))
+        return self._psd_reader.parsed_sents(
+            self._getfileids(documents, "psd")
+        )
 
 
 class YCOEParseCorpusReader(BracketParseCorpusReader):

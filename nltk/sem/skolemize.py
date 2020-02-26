@@ -42,9 +42,9 @@ def skolemize(expression, univ_scope=None, used_variables=None):
             VariableExpression(unique_variable(ignore=used_variables)),
         )
     elif isinstance(expression, AndExpression):
-        return skolemize(expression.first, univ_scope, used_variables) & skolemize(
-            expression.second, univ_scope, used_variables
-        )
+        return skolemize(
+            expression.first, univ_scope, used_variables
+        ) & skolemize(expression.second, univ_scope, used_variables)
     elif isinstance(expression, OrExpression):
         return to_cnf(
             skolemize(expression.first, univ_scope, used_variables),
@@ -69,10 +69,14 @@ def skolemize(expression, univ_scope=None, used_variables=None):
         negated = expression.term
         if isinstance(negated, AllExpression):
             term = skolemize(
-                -negated.term, univ_scope, used_variables | set([negated.variable])
+                -negated.term,
+                univ_scope,
+                used_variables | set([negated.variable]),
             )
             if univ_scope:
-                return term.replace(negated.variable, skolem_function(univ_scope))
+                return term.replace(
+                    negated.variable, skolem_function(univ_scope)
+                )
             else:
                 skolem_constant = VariableExpression(
                     unique_variable(ignore=used_variables)
@@ -84,13 +88,13 @@ def skolemize(expression, univ_scope=None, used_variables=None):
                 skolemize(-negated.second, univ_scope, used_variables),
             )
         elif isinstance(negated, OrExpression):
-            return skolemize(-negated.first, univ_scope, used_variables) & skolemize(
-                -negated.second, univ_scope, used_variables
-            )
+            return skolemize(
+                -negated.first, univ_scope, used_variables
+            ) & skolemize(-negated.second, univ_scope, used_variables)
         elif isinstance(negated, ImpExpression):
-            return skolemize(negated.first, univ_scope, used_variables) & skolemize(
-                -negated.second, univ_scope, used_variables
-            )
+            return skolemize(
+                negated.first, univ_scope, used_variables
+            ) & skolemize(-negated.second, univ_scope, used_variables)
         elif isinstance(negated, IffExpression):
             return to_cnf(
                 skolemize(-negated.first, univ_scope, used_variables),
@@ -119,12 +123,18 @@ def skolemize(expression, univ_scope=None, used_variables=None):
             raise Exception("'%s' cannot be skolemized" % expression)
     elif isinstance(expression, ExistsExpression):
         term = skolemize(
-            expression.term, univ_scope, used_variables | set([expression.variable])
+            expression.term,
+            univ_scope,
+            used_variables | set([expression.variable]),
         )
         if univ_scope:
-            return term.replace(expression.variable, skolem_function(univ_scope))
+            return term.replace(
+                expression.variable, skolem_function(univ_scope)
+            )
         else:
-            skolem_constant = VariableExpression(unique_variable(ignore=used_variables))
+            skolem_constant = VariableExpression(
+                unique_variable(ignore=used_variables)
+            )
             return term.replace(expression.variable, skolem_constant)
     elif isinstance(expression, ApplicationExpression):
         return expression

@@ -130,12 +130,16 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
         # it gets the implicit value 'None'.
         for fname in fnames:
             count = positive_feature_freqdist[fname].N()
-            positive_feature_freqdist[fname][None] += num_positive_examples - count
+            positive_feature_freqdist[fname][None] += (
+                num_positive_examples - count
+            )
             feature_values[fname].add(None)
 
         for fname in fnames:
             count = unlabeled_feature_freqdist[fname].N()
-            unlabeled_feature_freqdist[fname][None] += num_unlabeled_examples - count
+            unlabeled_feature_freqdist[fname][None] += (
+                num_unlabeled_examples - count
+            )
             feature_values[fname].add(None)
 
         negative_prob_prior = 1.0 - positive_prob_prior
@@ -152,12 +156,15 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
             feature_probdist[True, fname] = probdist
 
         for fname, freqdist in unlabeled_feature_freqdist.items():
-            global_probdist = estimator(freqdist, bins=len(feature_values[fname]))
+            global_probdist = estimator(
+                freqdist, bins=len(feature_values[fname])
+            )
             negative_feature_probs = {}
             for fval in feature_values[fname]:
                 prob = (
                     global_probdist.prob(fval)
-                    - positive_prob_prior * feature_probdist[True, fname].prob(fval)
+                    - positive_prob_prior
+                    * feature_probdist[True, fname].prob(fval)
                 ) / negative_prob_prior
                 # TODO: We need to add some kind of smoothing here, instead of
                 # setting negative probabilities to zero and normalizing.

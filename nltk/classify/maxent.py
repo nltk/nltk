@@ -66,7 +66,11 @@ from nltk.probability import DictionaryProbDist
 
 from nltk.classify.api import ClassifierI
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.classify.megam import call_megam, write_megam_file, parse_megam_weights
+from nltk.classify.megam import (
+    call_megam,
+    write_megam_file,
+    parse_megam_weights,
+)
 from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 
 __docformat__ = "epytext en"
@@ -158,7 +162,9 @@ class MaxentClassifier(ClassifierI):
                 prob_dict[label] = prod
 
         # Normalize the dictionary to give a probability distribution
-        return DictionaryProbDist(prob_dict, log=self._logarithmic, normalize=True)
+        return DictionaryProbDist(
+            prob_dict, log=self._logarithmic, normalize=True
+        )
 
     def explain(self, featureset, columns=4):
         """
@@ -197,7 +203,8 @@ class MaxentClassifier(ClassifierI):
                 sums[label] += score
         print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
         print(
-            "  TOTAL:".ljust(descr_width) + "".join("%8.3f" % sums[l] for l in labels)
+            "  TOTAL:".ljust(descr_width)
+            + "".join("%8.3f" % sums[l] for l in labels)
         )
         print(
             "  PROBS:".ljust(descr_width)
@@ -232,7 +239,9 @@ class MaxentClassifier(ClassifierI):
         elif show == "neg":
             fids = [fid for fid in fids if self._weights[fid] < 0]
         for fid in fids[:n]:
-            print("%8.3f %s" % (self._weights[fid], self._encoding.describe(fid)))
+            print(
+                "%8.3f %s" % (self._weights[fid], self._encoding.describe(fid))
+            )
 
     def __repr__(self):
         return "<ConditionalExponentialClassifier: %d labels, %d features>" % (
@@ -253,7 +262,7 @@ class MaxentClassifier(ClassifierI):
         encoding=None,
         labels=None,
         gaussian_prior_sigma=0,
-        **cutoffs
+        **cutoffs,
     ):
         """
         Train a new maxent classifier based on the given corpus of
@@ -332,7 +341,12 @@ class MaxentClassifier(ClassifierI):
             )
         elif algorithm == "megam":
             return train_maxent_classifier_with_megam(
-                train_toks, trace, encoding, labels, gaussian_prior_sigma, **cutoffs
+                train_toks,
+                trace,
+                encoding,
+                labels,
+                gaussian_prior_sigma,
+                **cutoffs,
             )
         elif algorithm == "tadm":
             kwargs = cutoffs
@@ -515,7 +529,9 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
     the prior probabilities of each label.
     """
 
-    def __init__(self, labels, mapping, unseen_features=False, alwayson_features=False):
+    def __init__(
+        self, labels, mapping, unseen_features=False, alwayson_features=False
+    ):
         """
         :param labels: A list of the \"known labels\" for this encoding.
 
@@ -695,7 +711,12 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
     """
 
     def __init__(
-        self, labels, mapping, unseen_features=False, alwayson_features=False, C=None
+        self,
+        labels,
+        mapping,
+        unseen_features=False,
+        alwayson_features=False,
+        C=None,
     ):
         """
         :param C: The correction constant.  The value of the correction
@@ -741,7 +762,9 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
 
 
 class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
-    def __init__(self, labels, mapping, unseen_features=False, alwayson_features=False):
+    def __init__(
+        self, labels, mapping, unseen_features=False, alwayson_features=False
+    ):
         self._mapping = OrderedDict(mapping)
         self._label_mapping = OrderedDict()
         BinaryMaxentFeatureEncoding.__init__(
@@ -853,7 +876,9 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     the prior probabilities of each label.
     """
 
-    def __init__(self, labels, mapping, unseen_features=False, alwayson_features=False):
+    def __init__(
+        self, labels, mapping, unseen_features=False, alwayson_features=False
+    ):
         """
         :param labels: A list of the \"known labels\" for this encoding.
 
@@ -913,7 +938,9 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
             if isinstance(fval, (int, float)):
                 # Known feature name & value:
                 if (fname, type(fval), label) in self._mapping:
-                    encoding.append((self._mapping[fname, type(fval), label], fval))
+                    encoding.append(
+                        (self._mapping[fname, type(fval), label], fval)
+                    )
             else:
                 # Known feature name & value:
                 if (fname, fval, label) in self._mapping:
@@ -1177,7 +1204,9 @@ def train_maxent_classifier_with_iis(
         encoding = BinaryMaxentFeatureEncoding.train(train_toks, labels=labels)
 
     # Count how many times each feature occurs in the training data.
-    empirical_ffreq = calculate_empirical_fcount(train_toks, encoding) / len(train_toks)
+    empirical_ffreq = calculate_empirical_fcount(train_toks, encoding) / len(
+        train_toks
+    )
 
     # Find the nf map, and related variables nfarray and nfident.
     # nf is the sum of the features for a given labeled text.
@@ -1396,7 +1425,9 @@ def calculate_deltas(
         deltas -= (ffreq_empirical - sum1) / -sum2
 
         # We can stop once we converge.
-        n_error = numpy.sum(abs((ffreq_empirical - sum1))) / numpy.sum(abs(deltas))
+        n_error = numpy.sum(abs((ffreq_empirical - sum1))) / numpy.sum(
+            abs(deltas)
+        )
         if n_error < NEWTON_CONVERGE:
             return deltas
 
@@ -1412,7 +1443,12 @@ def calculate_deltas(
 # we may need this for other maxent classifier trainers that require
 # implicit formats anyway.
 def train_maxent_classifier_with_megam(
-    train_toks, trace=3, encoding=None, labels=None, gaussian_prior_sigma=0, **kwargs
+    train_toks,
+    trace=3,
+    encoding=None,
+    labels=None,
+    gaussian_prior_sigma=0,
+    **kwargs,
 ):
     """
     Train a new ``ConditionalExponentialClassifier``, using the given
@@ -1448,7 +1484,11 @@ def train_maxent_classifier_with_megam(
         fd, trainfile_name = tempfile.mkstemp(prefix="nltk-")
         with open(trainfile_name, "w") as trainfile:
             write_megam_file(
-                train_toks, encoding, trainfile, explicit=explicit, bernoulli=bernoulli
+                train_toks,
+                encoding,
+                trainfile,
+                explicit=explicit,
+                bernoulli=bernoulli,
             )
         os.close(fd)
     except (OSError, IOError, ValueError) as e:
@@ -1524,7 +1564,9 @@ class TadmMaxentClassifier(MaxentClassifier):
         trainfile_fd, trainfile_name = tempfile.mkstemp(
             prefix="nltk-tadm-events-", suffix=".gz"
         )
-        weightfile_fd, weightfile_name = tempfile.mkstemp(prefix="nltk-tadm-weights-")
+        weightfile_fd, weightfile_name = tempfile.mkstemp(
+            prefix="nltk-tadm-weights-"
+        )
 
         trainfile = gzip_open_unicode(trainfile_name, "w")
         write_tadm_file(train_toks, encoding, trainfile)

@@ -20,7 +20,9 @@ import textwrap
 import re
 import sys
 
-from nltk.decorators import decorator  # this used in code that is commented out
+from nltk.decorators import (
+    decorator,
+)  # this used in code that is commented out
 
 from nltk.sem.logic import (
     AbstractVariableExpression,
@@ -161,7 +163,12 @@ class Valuation(dict):
                 dom.append(val)
             elif not isinstance(val, bool):
                 dom.extend(
-                    [elem for tuple_ in val for elem in tuple_ if elem is not None]
+                    [
+                        elem
+                        for tuple_ in val
+                        for elem in tuple_
+                        if elem is not None
+                    ]
                 )
         return set(dom)
 
@@ -370,8 +377,13 @@ class Assignment(dict):
         ``self.variant``.
 
         """
-        assert val in self.domain, "%s is not in the domain %s" % (val, self.domain)
-        assert is_indvar(var), "Wrong format for an Individual Variable: '%s'" % var
+        assert val in self.domain, "%s is not in the domain %s" % (
+            val,
+            self.domain,
+        )
+        assert is_indvar(var), (
+            "Wrong format for an Individual Variable: '%s'" % var
+        )
         self[var] = val
         self._addvariant()
         return self
@@ -464,15 +476,25 @@ class Model(object):
         elif isinstance(parsed, NegatedExpression):
             return not self.satisfy(parsed.term, g)
         elif isinstance(parsed, AndExpression):
-            return self.satisfy(parsed.first, g) and self.satisfy(parsed.second, g)
+            return self.satisfy(parsed.first, g) and self.satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, OrExpression):
-            return self.satisfy(parsed.first, g) or self.satisfy(parsed.second, g)
+            return self.satisfy(parsed.first, g) or self.satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, ImpExpression):
-            return (not self.satisfy(parsed.first, g)) or self.satisfy(parsed.second, g)
+            return (not self.satisfy(parsed.first, g)) or self.satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, IffExpression):
-            return self.satisfy(parsed.first, g) == self.satisfy(parsed.second, g)
+            return self.satisfy(parsed.first, g) == self.satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, EqualityExpression):
-            return self.satisfy(parsed.first, g) == self.satisfy(parsed.second, g)
+            return self.satisfy(parsed.first, g) == self.satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, AllExpression):
             new_g = g.copy()
             for u in self.domain:
@@ -573,7 +595,9 @@ class Model(object):
                 if value == False:
                     if trace:
                         print(
-                            indent + "value of '%s' under %s is False" % (parsed, new_g)
+                            indent
+                            + "value of '%s' under %s is False"
+                            % (parsed, new_g)
                         )
 
                 # so g[u/var] is a satisfying assignment
@@ -582,7 +606,8 @@ class Model(object):
                     if trace:
                         print(
                             indent
-                            + "value of '%s' under %s is %s" % (parsed, new_g, value)
+                            + "value of '%s' under %s is %s"
+                            % (parsed, new_g, value)
                         )
 
             result = set(c for c in candidates)
@@ -662,7 +687,10 @@ def folmodel(quiet=False, trace=None):
         ("girl", set(["g1", "g2"])),
         ("boy", set(["b1", "b2"])),
         ("dog", set(["d1"])),
-        ("love", set([("b1", "g1"), ("b2", "g2"), ("g1", "b1"), ("g2", "b1")])),
+        (
+            "love",
+            set([("b1", "g1"), ("b2", "g2"), ("g1", "b1"), ("g2", "b1")]),
+        ),
     ]
     val2 = Valuation(v2)
     dom2 = val2.domain
@@ -700,8 +728,12 @@ def folmodel(quiet=False, trace=None):
         for (fun, args) in applications:
             try:
                 funval = m2.i(Expression.fromstring(fun), g2)
-                argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)
-                print("%s(%s) evaluates to %s" % (fun, args, argsval in funval))
+                argsval = tuple(
+                    m2.i(Expression.fromstring(arg), g2) for arg in args
+                )
+                print(
+                    "%s(%s) evaluates to %s" % (fun, args, argsval in funval)
+                )
             except Undefined:
                 print("%s(%s) evaluates to Undefined" % (fun, args))
 
@@ -797,7 +829,10 @@ def satdemo(trace=None):
 
     for p in parsed:
         g2.purge()
-        print("The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, "x", g2, trace)))
+        print(
+            "The satisfiers of '%s' are: %s"
+            % (p, m2.satisfiers(p, "x", g2, trace))
+        )
 
 
 def demo(num=0, trace=None):

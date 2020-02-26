@@ -40,7 +40,8 @@ def compute_composition_semantics(function, argument):
         "`" + str(argument) + "` must be a lambda expression"
     )
     return LambdaExpression(
-        argument.variable, ApplicationExpression(function, argument.term).simplify()
+        argument.variable,
+        ApplicationExpression(function, argument.term).simplify(),
     )
 
 

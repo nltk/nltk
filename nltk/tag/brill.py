@@ -176,7 +176,9 @@ def describe_template_sets():
     import sys
 
     # a bit of magic to get all functions in this module
-    templatesets = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
+    templatesets = inspect.getmembers(
+        sys.modules[__name__], inspect.isfunction
+    )
     for (name, obj) in templatesets:
         if name == "describe_template_sets":
             continue
@@ -367,7 +369,9 @@ class BrillTagger(TaggerI):
             for (tid, score) in zip(tids, testscores):
                 weighted_testcounts[tid] += score
             tottestscores = sum(testscores)
-            head = "#ID | Score (test) | Score (train) |  #Rules     | Template"
+            head = (
+                "#ID | Score (test) | Score (train) |  #Rules     | Template"
+            )
             print(head, "\n", "-" * len(head), sep="")
             test_tplscores = sorted(
                 weighted_testcounts.items(), key=det_tplsort, reverse=True
@@ -424,12 +428,16 @@ class BrillTagger(TaggerI):
         """
 
         def counterrors(xs):
-            return sum(t[1] != g[1] for pair in zip(xs, gold) for (t, g) in zip(*pair))
+            return sum(
+                t[1] != g[1] for pair in zip(xs, gold) for (t, g) in zip(*pair)
+            )
 
         testing_stats = {}
         testing_stats["tokencount"] = sum(len(t) for t in sequences)
         testing_stats["sequencecount"] = len(sequences)
-        tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
+        tagged_tokenses = [
+            self._initial_tagger.tag(tokens) for tokens in sequences
+        ]
         testing_stats["initialerrors"] = counterrors(tagged_tokenses)
         testing_stats["initialacc"] = (
             1 - testing_stats["initialerrors"] / testing_stats["tokencount"]

@@ -72,7 +72,9 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             # Strip any comments out of the tokens.
             if self._comment_char:
                 toks = [
-                    re.sub("(?m)^%s.*" % re.escape(self._comment_char), "", tok)
+                    re.sub(
+                        "(?m)^%s.*" % re.escape(self._comment_char), "", tok
+                    )
                     for tok in toks
                 ]
             return toks
@@ -90,7 +92,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         try:
             tree = Tree.fromstring(self._normalize(t))
             # If there's an empty node at the top, strip it off
-            if tree.label() == '' and len(tree) == 1:
+            if tree.label() == "" and len(tree) == 1:
                 return tree[0]
             else:
                 return tree
@@ -114,7 +116,9 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             return Tree("S", self._tag(t))
 
     def _tag(self, t, tagset=None):
-        tagged_sent = [(w, p) for (p, w) in TAGWORD.findall(self._normalize(t))]
+        tagged_sent = [
+            (w, p) for (p, w) in TAGWORD.findall(self._normalize(t))
+        ]
         if tagset and tagset != self._tagset:
             tagged_sent = [
                 (w, map_tag(self._tagset, tagset, p)) for (w, p) in tagged_sent
@@ -155,16 +159,24 @@ class CategorizedBracketParseCorpusReader(
             return fileids
 
     def raw(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.raw(self, self._resolve(fileids, categories))
+        return BracketParseCorpusReader.raw(
+            self, self._resolve(fileids, categories)
+        )
 
     def words(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.words(self, self._resolve(fileids, categories))
+        return BracketParseCorpusReader.words(
+            self, self._resolve(fileids, categories)
+        )
 
     def sents(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.sents(self, self._resolve(fileids, categories))
+        return BracketParseCorpusReader.sents(
+            self, self._resolve(fileids, categories)
+        )
 
     def paras(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.paras(self, self._resolve(fileids, categories))
+        return BracketParseCorpusReader.paras(
+            self, self._resolve(fileids, categories)
+        )
 
     def tagged_words(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_words(
@@ -246,7 +258,9 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
                 t,
             )
         else:
-            t = re.sub(r'  <node .*?pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2)", t)
+            t = re.sub(
+                r'  <node .*?pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2)", t
+            )
         t = re.sub(r"  </node>", r")", t)
         t = re.sub(r"<sentence>.*</sentence>", r"", t)
         t = re.sub(r"</?alpino_ds.*>", r"", t)
@@ -255,12 +269,15 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     def _tag(self, t, tagset=None):
         tagged_sent = [
             (int(o), w, p)
-            for (o, p, w) in SORTTAGWRD.findall(self._normalize(t, ordered=True))
+            for (o, p, w) in SORTTAGWRD.findall(
+                self._normalize(t, ordered=True)
+            )
         ]
         tagged_sent.sort()
         if tagset and tagset != self._tagset:
             tagged_sent = [
-                (w, map_tag(self._tagset, tagset, p)) for (o, w, p) in tagged_sent
+                (w, map_tag(self._tagset, tagset, p))
+                for (o, w, p) in tagged_sent
             ]
         else:
             tagged_sent = [(w, p) for (o, w, p) in tagged_sent]

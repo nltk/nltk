@@ -157,7 +157,9 @@ class PlaintextCorpusReader(CorpusReader):
         return paras
 
 
-class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusReader):
+class CategorizedPlaintextCorpusReader(
+    CategorizedCorpusReader, PlaintextCorpusReader
+):
     """
     A reader for plaintext corpora whose documents are divided into
     categories based on their file identifiers.
@@ -182,22 +184,32 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
             return fileids
 
     def raw(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.raw(self, self._resolve(fileids, categories))
+        return PlaintextCorpusReader.raw(
+            self, self._resolve(fileids, categories)
+        )
 
     def words(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.words(self, self._resolve(fileids, categories))
+        return PlaintextCorpusReader.words(
+            self, self._resolve(fileids, categories)
+        )
 
     def sents(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.sents(self, self._resolve(fileids, categories))
+        return PlaintextCorpusReader.sents(
+            self, self._resolve(fileids, categories)
+        )
 
     def paras(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.paras(self, self._resolve(fileids, categories))
+        return PlaintextCorpusReader.paras(
+            self, self._resolve(fileids, categories)
+        )
 
 
 # FIXME: Is there a better way? How to not hardcode this?
 #       Possibly, add a language kwargs to CategorizedPlaintextCorpusReader to
 #       override the `sent_tokenizer`.
-class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
+class PortugueseCategorizedPlaintextCorpusReader(
+    CategorizedPlaintextCorpusReader
+):
     def __init__(self, *args, **kwargs):
         CategorizedCorpusReader.__init__(self, kwargs)
         kwargs["sent_tokenizer"] = nltk.data.LazyLoader(

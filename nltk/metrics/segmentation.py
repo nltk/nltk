@@ -84,7 +84,9 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
         )
     wd = 0
     for i in range(len(seg1) - k + 1):
-        ndiff = abs(seg1[i : i + k].count(boundary) - seg2[i : i + k].count(boundary))
+        ndiff = abs(
+            seg1[i : i + k].count(boundary) - seg2[i : i + k].count(boundary)
+        )
         if weighted:
             wd += ndiff
         else:
@@ -118,7 +120,9 @@ def _ghd_aux(mat, rowv, colv, ins_cost, del_cost, shift_cost_coeff):
             mat[i + 1, j + 1] = min(tcost, shift_cost)
 
 
-def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"):
+def ghd(
+    ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"
+):
     """
     Compute the Generalized Hamming Distance for a reference and a hypothetical
     segmentation, corresponding to the cost related to the transformation

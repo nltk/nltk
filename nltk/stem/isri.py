@@ -104,7 +104,15 @@ class ISRIStemmer(StemmerI):
         ]
 
         # length one suffixes
-        self.s1 = ["\u0629", "\u0647", "\u064a", "\u0643", "\u062a", "\u0627", "\u0646"]
+        self.s1 = [
+            "\u0629",
+            "\u0647",
+            "\u064a",
+            "\u0643",
+            "\u062a",
+            "\u0627",
+            "\u0646",
+        ]
 
         # groups of length four patterns
         self.pr4 = {
@@ -284,11 +292,17 @@ class ISRIStemmer(StemmerI):
         """process length five patterns and extract length three roots"""
         if word[2] in self.pr53[0] and word[0] == "\u0627":  # افتعل - افاعل
             word = word[1] + word[3:]
-        elif word[3] in self.pr53[1] and word[0] == "\u0645":  # مفعول - مفعال - مفعيل
+        elif (
+            word[3] in self.pr53[1] and word[0] == "\u0645"
+        ):  # مفعول - مفعال - مفعيل
             word = word[1:3] + word[4]
-        elif word[0] in self.pr53[2] and word[4] == "\u0629":  # مفعلة - تفعلة - افعلة
+        elif (
+            word[0] in self.pr53[2] and word[4] == "\u0629"
+        ):  # مفعلة - تفعلة - افعلة
             word = word[1:4]
-        elif word[0] in self.pr53[3] and word[2] == "\u062a":  # مفتعل - يفتعل - تفتعل
+        elif (
+            word[0] in self.pr53[3] and word[2] == "\u062a"
+        ):  # مفتعل - يفتعل - تفتعل
             word = word[1] + word[3:]
         elif word[0] in self.pr53[4] and word[2] == "\u0627":  # مفاعل - تفاعل
             word = word[1] + word[3:]

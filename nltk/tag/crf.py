@@ -158,11 +158,15 @@ class CRFTagger(TaggerI):
         # We need the list of sentences instead of the list generator for matching the input and output
         result = []
         for tokens in sents:
-            features = [self._feature_func(tokens, i) for i in range(len(tokens))]
+            features = [
+                self._feature_func(tokens, i) for i in range(len(tokens))
+            ]
             labels = self._tagger.tag(features)
 
             if len(labels) != len(tokens):
-                raise Exception(" Predicted Length Not Matched, Expect Errors !")
+                raise Exception(
+                    " Predicted Length Not Matched, Expect Errors !"
+                )
 
             tagged_sent = list(zip(tokens, labels))
             result.append(tagged_sent)
@@ -182,7 +186,9 @@ class CRFTagger(TaggerI):
 
         for sent in train_data:
             tokens, labels = zip(*sent)
-            features = [self._feature_func(tokens, i) for i in range(len(tokens))]
+            features = [
+                self._feature_func(tokens, i) for i in range(len(tokens))
+            ]
             trainer.append(features, labels)
 
         # Now train the model, the output should be model_file

@@ -111,7 +111,12 @@ from nltk.tree import Tree
 
 
 def chomsky_normal_form(
-    tree, factor="right", horzMarkov=None, vertMarkov=0, childChar="|", parentChar="^"
+    tree,
+    factor="right",
+    horzMarkov=None,
+    vertMarkov=0,
+    childChar="|",
+    parentChar="^",
 ):
     # assume all subtrees have homogeneous children
     # assume all terminals have no siblings
@@ -158,7 +163,9 @@ def chomsky_normal_form(
                             originalNode,
                             childChar,
                             "-".join(
-                                childNodes[i : min([i + horzMarkov, numChildren])]
+                                childNodes[
+                                    i : min([i + horzMarkov, numChildren])
+                                ]
                             ),
                             parentString,
                         )  # create new head
@@ -169,7 +176,9 @@ def chomsky_normal_form(
                             originalNode,
                             childChar,
                             "-".join(
-                                childNodes[max([numChildren - i - horzMarkov, 0]) : -i]
+                                childNodes[
+                                    max([numChildren - i - horzMarkov, 0]) : -i
+                                ]
                             ),
                             parentString,
                         )

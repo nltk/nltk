@@ -286,7 +286,8 @@ class LazySubsequence(AbstractLazySequence):
 
     def iterate_from(self, start):
         return islice(
-            self._source.iterate_from(start + self._start), max(0, len(self) - start)
+            self._source.iterate_from(start + self._start),
+            max(0, len(self) - start),
         )
 
 

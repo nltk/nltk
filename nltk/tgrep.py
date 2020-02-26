@@ -196,7 +196,9 @@ def _rightmost_descendants(node):
         rightmost_leaf = max(node.treepositions())
     except AttributeError:
         return []
-    return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
+    return [
+        node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)
+    ]
 
 
 def _istree(obj):
@@ -226,7 +228,9 @@ def _before(node):
         tree = node.root()
     except AttributeError:
         return []
-    return [tree[x] for x in tree.treepositions() if x[: len(pos)] < pos[: len(x)]]
+    return [
+        tree[x] for x in tree.treepositions() if x[: len(pos)] < pos[: len(x)]
+    ]
 
 
 def _immediately_before(node):
@@ -264,7 +268,9 @@ def _after(node):
         tree = node.root()
     except AttributeError:
         return []
-    return [tree[x] for x in tree.treepositions() if x[: len(pos)] > pos[: len(x)]]
+    return [
+        tree[x] for x in tree.treepositions() if x[: len(pos)] > pos[: len(x)]
+    ]
 
 
 def _immediately_after(node):
@@ -332,9 +338,13 @@ def _tgrep_node_action(_s, _l, tokens):
         # disjunctive definition of a node name
         assert list(set(tokens[1::2])) == ["|"]
         # recursively call self to interpret each node name definition
-        tokens = [_tgrep_node_action(None, None, [node]) for node in tokens[::2]]
+        tokens = [
+            _tgrep_node_action(None, None, [node]) for node in tokens[::2]
+        ]
         # capture tokens and return the disjunction
-        return (lambda t: lambda n, m=None, l=None: any(f(n, m, l) for f in t))(tokens)
+        return (
+            lambda t: lambda n, m=None, l=None: any(f(n, m, l) for f in t)
+        )(tokens)
     else:
         if hasattr(tokens[0], "__call__"):
             # this is a previously interpreted parenthetical node
@@ -344,9 +354,14 @@ def _tgrep_node_action(_s, _l, tokens):
             return lambda n, m=None, l=None: True
         elif tokens[0].startswith('"'):
             assert tokens[0].endswith('"')
-            node_lit = tokens[0][1:-1].replace('\\"', '"').replace("\\\\", "\\")
+            node_lit = (
+                tokens[0][1:-1].replace('\\"', '"').replace("\\\\", "\\")
+            )
             return (
-                lambda s: lambda n, m=None, l=None: _tgrep_node_literal_value(n) == s
+                lambda s: lambda n, m=None, l=None: _tgrep_node_literal_value(
+                    n
+                )
+                == s
             )(node_lit)
         elif tokens[0].startswith("/"):
             assert tokens[0].endswith("/")
@@ -365,7 +380,10 @@ def _tgrep_node_action(_s, _l, tokens):
             )(node_func)
         else:
             return (
-                lambda s: lambda n, m=None, l=None: _tgrep_node_literal_value(n) == s
+                lambda s: lambda n, m=None, l=None: _tgrep_node_literal_value(
+                    n
+                )
+                == s
             )(tokens[0])
 
 
@@ -531,7 +549,8 @@ def _tgrep_relation_action(_s, _l, tokens):
         # A <<, B     B is a left-most descendant of A.
         elif operator == "<<," or operator == "<<1":
             retval = lambda n, m=None, l=None: (
-                _istree(n) and any(predicate(x, m, l) for x in _leftmost_descendants(n))
+                _istree(n)
+                and any(predicate(x, m, l) for x in _leftmost_descendants(n))
             )
         # A >>, B     A is a left-most descendant of B.
         elif operator == ">>,":
@@ -554,7 +573,8 @@ def _tgrep_relation_action(_s, _l, tokens):
         # A <<: B     There is a single path of descent from A and B is on it.
         elif operator == "<<:":
             retval = lambda n, m=None, l=None: (
-                _istree(n) and any(predicate(x, m, l) for x in _unique_descendants(n))
+                _istree(n)
+                and any(predicate(x, m, l) for x in _unique_descendants(n))
             )
         # A >>: B     There is a single path of descent from B and A is on it.
         elif operator == ">>:":
@@ -608,7 +628,10 @@ def _tgrep_relation_action(_s, _l, tokens):
                 hasattr(n, "parent")
                 and hasattr(n, "parent_index")
                 and bool(n.parent())
-                and any(predicate(x, m, l) for x in n.parent()[n.parent_index() + 1 :])
+                and any(
+                    predicate(x, m, l)
+                    for x in n.parent()[n.parent_index() + 1 :]
+                )
             )
         # A $,, B     A is a sister of and follows B.
         elif operator == "$,," or operator == "%,,":
@@ -616,7 +639,9 @@ def _tgrep_relation_action(_s, _l, tokens):
                 hasattr(n, "parent")
                 and hasattr(n, "parent_index")
                 and bool(n.parent())
-                and any(predicate(x, m, l) for x in n.parent()[: n.parent_index()])
+                and any(
+                    predicate(x, m, l) for x in n.parent()[: n.parent_index()]
+                )
             )
         else:
             raise TgrepException(
@@ -807,9 +832,9 @@ def _tgrep_rel_disjunction_action(_s, _l, tokens):
     if len(tokens) == 1:
         return tokens[0]
     elif len(tokens) == 2:
-        return (lambda a, b: lambda n, m=None, l=None: a(n, m, l) or b(n, m, l))(
-            tokens[0], tokens[1]
-        )
+        return (
+            lambda a, b: lambda n, m=None, l=None: a(n, m, l) or b(n, m, l)
+        )(tokens[0], tokens[1])
 
 
 def _macro_defn_action(_s, _l, tokens):
@@ -857,15 +882,21 @@ def _build_tgrep_parser(set_parse_actions=True):
     Builds a pyparsing-based parser object for tokenizing and
     interpreting tgrep search strings.
     """
-    tgrep_op = pyparsing.Optional("!") + pyparsing.Regex("[$%,.<>][%,.<>0-9-':]*")
+    tgrep_op = pyparsing.Optional("!") + pyparsing.Regex(
+        "[$%,.<>][%,.<>0-9-':]*"
+    )
     tgrep_qstring = pyparsing.QuotedString(
         quoteChar='"', escChar="\\", unquoteResults=False
     )
     tgrep_node_regex = pyparsing.QuotedString(
         quoteChar="/", escChar="\\", unquoteResults=False
     )
-    tgrep_qstring_icase = pyparsing.Regex('i@\\"(?:[^"\\n\\r\\\\]|(?:\\\\.))*\\"')
-    tgrep_node_regex_icase = pyparsing.Regex("i@\\/(?:[^/\\n\\r\\\\]|(?:\\\\.))*\\/")
+    tgrep_qstring_icase = pyparsing.Regex(
+        'i@\\"(?:[^"\\n\\r\\\\]|(?:\\\\.))*\\"'
+    )
+    tgrep_node_regex_icase = pyparsing.Regex(
+        "i@\\/(?:[^/\\n\\r\\\\]|(?:\\\\.))*\\/"
+    )
     tgrep_node_literal = pyparsing.Regex("[^][ \r\t\n;:.,&|<>()$!@%'^=]+")
     tgrep_expr = pyparsing.Forward()
     tgrep_relations = pyparsing.Forward()
@@ -876,7 +907,9 @@ def _build_tgrep_parser(set_parse_actions=True):
             pyparsing.Word(pyparsing.nums)
             + ","
             + pyparsing.Optional(
-                pyparsing.delimitedList(pyparsing.Word(pyparsing.nums), delim=",")
+                pyparsing.delimitedList(
+                    pyparsing.Word(pyparsing.nums), delim=","
+                )
                 + pyparsing.Optional(",")
             )
         )
@@ -921,20 +954,29 @@ def _build_tgrep_parser(set_parse_actions=True):
         "|" + tgrep_relations
     )
     tgrep_expr << tgrep_node + pyparsing.Optional(tgrep_relations)
-    tgrep_expr_labeled = tgrep_node_label_use + pyparsing.Optional(tgrep_relations)
+    tgrep_expr_labeled = tgrep_node_label_use + pyparsing.Optional(
+        tgrep_relations
+    )
     tgrep_expr2 = tgrep_expr + pyparsing.ZeroOrMore(":" + tgrep_expr_labeled)
     macro_defn = (
-        pyparsing.Literal("@") + pyparsing.White().suppress() + macro_name + tgrep_expr2
+        pyparsing.Literal("@")
+        + pyparsing.White().suppress()
+        + macro_name
+        + tgrep_expr2
     )
     tgrep_exprs = (
-        pyparsing.Optional(macro_defn + pyparsing.ZeroOrMore(";" + macro_defn) + ";")
+        pyparsing.Optional(
+            macro_defn + pyparsing.ZeroOrMore(";" + macro_defn) + ";"
+        )
         + tgrep_expr2
         + pyparsing.ZeroOrMore(";" + (macro_defn | tgrep_expr2))
         + pyparsing.ZeroOrMore(";").suppress()
     )
     if set_parse_actions:
         tgrep_node_label_use.setParseAction(_tgrep_node_label_use_action)
-        tgrep_node_label_use_pred.setParseAction(_tgrep_node_label_pred_use_action)
+        tgrep_node_label_use_pred.setParseAction(
+            _tgrep_node_label_pred_use_action
+        )
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_node_expr2.setParseAction(_tgrep_bind_node_label_action)
@@ -1014,7 +1056,9 @@ def tgrep_positions(pattern, trees, search_leaves=True):
                 positions = tree.treepositions()
             else:
                 positions = treepositions_no_leaves(tree)
-            yield [position for position in positions if pattern(tree[position])]
+            yield [
+                position for position in positions if pattern(tree[position])
+            ]
         except AttributeError:
             yield []
 
@@ -1041,6 +1085,10 @@ def tgrep_nodes(pattern, trees, search_leaves=True):
                 positions = tree.treepositions()
             else:
                 positions = treepositions_no_leaves(tree)
-            yield [tree[position] for position in positions if pattern(tree[position])]
+            yield [
+                tree[position]
+                for position in positions
+                if pattern(tree[position])
+            ]
         except AttributeError:
             yield []

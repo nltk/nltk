@@ -59,7 +59,9 @@ class PropbankCorpusReader(CorpusReader):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
-        CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles, encoding)
+        CorpusReader.__init__(
+            self, root, [propfile, verbsfile] + framefiles, encoding
+        )
 
         # Record our frame fileids & prop file.
         self._propfile = propfile
@@ -118,7 +120,9 @@ class PropbankCorpusReader(CorpusReader):
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
-        raise ValueError("Roleset %s not found in %s" % (roleset_id, framefile))
+        raise ValueError(
+            "Roleset %s not found in %s" % (roleset_id, framefile)
+        )
 
     def rolesets(self, baseform=None):
         """
@@ -170,7 +174,6 @@ class PropbankCorpusReader(CorpusReader):
 ######################################################################
 # { Propbank Instance & related datatypes
 ######################################################################
-
 
 
 class PropbankInstance(object):
@@ -345,7 +348,6 @@ class PropbankPointer(object):
             raise NotImplementedError()
 
 
-
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -363,7 +365,6 @@ class PropbankChainTreePointer(PropbankPointer):
         if tree is None:
             raise ValueError("Parse tree not avaialable")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
-
 
 
 class PropbankSplitTreePointer(PropbankPointer):
@@ -385,7 +386,6 @@ class PropbankSplitTreePointer(PropbankPointer):
 
 
 @total_ordering
-
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -426,7 +426,9 @@ class PropbankTreePointer(PropbankPointer):
         return "PropbankTreePointer(%d, %d)" % (self.wordnum, self.height)
 
     def __eq__(self, other):
-        while isinstance(other, (PropbankChainTreePointer, PropbankSplitTreePointer)):
+        while isinstance(
+            other, (PropbankChainTreePointer, PropbankSplitTreePointer)
+        ):
             other = other.pieces[0]
 
         if not isinstance(other, PropbankTreePointer):
@@ -438,7 +440,9 @@ class PropbankTreePointer(PropbankPointer):
         return not self == other
 
     def __lt__(self, other):
-        while isinstance(other, (PropbankChainTreePointer, PropbankSplitTreePointer)):
+        while isinstance(
+            other, (PropbankChainTreePointer, PropbankSplitTreePointer)
+        ):
             other = other.pieces[0]
 
         if not isinstance(other, PropbankTreePointer):
@@ -484,7 +488,6 @@ class PropbankTreePointer(PropbankPointer):
                 else:
                     wordnum += 1
                     stack.pop()
-
 
 
 class PropbankInflection(object):

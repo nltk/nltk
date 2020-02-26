@@ -102,7 +102,9 @@ class IncrementalChart(Chart):
                 raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
-        index = self._indexes[restr_keys] = tuple({} for x in self._positions())
+        index = self._indexes[restr_keys] = tuple(
+            {} for x in self._positions()
+        )
 
         # Add all existing edges to the index.
         for end, edgelist in enumerate(self._edgelists):
@@ -152,7 +154,9 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
                 raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
-        index = self._indexes[restr_keys] = tuple({} for x in self._positions())
+        index = self._indexes[restr_keys] = tuple(
+            {} for x in self._positions()
+        )
 
         # Add all existing edges to the index.
         for end, edgelist in enumerate(self._edgelists):
@@ -168,7 +172,8 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         end = edge.end()
         for (restr_keys, index) in self._indexes.items():
             vals = tuple(
-                self._get_type_if_possible(getattr(edge, key)()) for key in restr_keys
+                self._get_type_if_possible(getattr(edge, key)())
+                for key in restr_keys
             )
             index[end].setdefault(vals, []).append(edge)
 
@@ -345,7 +350,8 @@ class IncrementalChartParser(ChartParser):
                 self._inference_rules.append(rule)
             else:
                 raise ValueError(
-                    "Incremental inference rules must have " "NUM_EDGES == 0 or 1"
+                    "Incremental inference rules must have "
+                    "NUM_EDGES == 0 or 1"
                 )
 
     def chart_parse(self, tokens, trace=None):
@@ -376,7 +382,9 @@ class IncrementalChartParser(ChartParser):
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
-                    trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                    trace_new_edges(
+                        chart, rule, new_edges, trace, trace_edge_width
+                    )
                     for new_edge in new_edges:
                         if new_edge.end() == end:
                             agenda.append(new_edge)
@@ -386,7 +394,9 @@ class IncrementalChartParser(ChartParser):
 
 class EarleyChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
-        IncrementalChartParser.__init__(self, grammar, EARLEY_STRATEGY, **parser_args)
+        IncrementalChartParser.__init__(
+            self, grammar, EARLEY_STRATEGY, **parser_args
+        )
 
 
 class IncrementalTopDownChartParser(IncrementalChartParser):
@@ -453,14 +463,16 @@ BU_LC_INCREMENTAL_FEATURE_STRATEGY = [
 ]
 
 
-class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
+class FeatureIncrementalChartParser(
+    IncrementalChartParser, FeatureChartParser
+):
     def __init__(
         self,
         grammar,
         strategy=BU_LC_INCREMENTAL_FEATURE_STRATEGY,
         trace_chart_width=20,
         chart_class=FeatureIncrementalChart,
-        **parser_args
+        **parser_args,
     ):
         IncrementalChartParser.__init__(
             self,
@@ -468,7 +480,7 @@ class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
             strategy=strategy,
             trace_chart_width=trace_chart_width,
             chart_class=chart_class,
-            **parser_args
+            **parser_args,
         )
 
 
@@ -493,7 +505,9 @@ class FeatureIncrementalBottomUpChartParser(FeatureIncrementalChartParser):
         )
 
 
-class FeatureIncrementalBottomUpLeftCornerChartParser(FeatureIncrementalChartParser):
+class FeatureIncrementalBottomUpLeftCornerChartParser(
+    FeatureIncrementalChartParser
+):
     def __init__(self, grammar, **parser_args):
         FeatureIncrementalChartParser.__init__(
             self, grammar, BU_LC_INCREMENTAL_FEATURE_STRATEGY, **parser_args

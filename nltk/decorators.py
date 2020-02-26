@@ -25,6 +25,7 @@ import inspect
 
 sys.path = OLD_SYS_PATH
 
+
 def __legacysignature(signature):
     """
     For retrocompatibility reasons, we don't use a standard Signature.
@@ -34,7 +35,7 @@ def __legacysignature(signature):
     listsignature = str(signature)[1:-1].split(",")
     for counter, param in enumerate(listsignature):
         if param.count("=") > 0:
-            listsignature[counter] = param[0:param.index("=")].strip()
+            listsignature[counter] = param[0 : param.index("=")].strip()
         else:
             listsignature[counter] = param.strip()
     return ", ".join(listsignature)
@@ -81,7 +82,6 @@ def getinfo(func):
     fullsignature = inspect.signature(func)
     # Convert Signature to str
     signature = __legacysignature(fullsignature)
-
 
     # pypy compatibility
     if hasattr(func, "__closure__"):
@@ -155,7 +155,9 @@ def decorator_factory(cls):
             "You cannot decorate a class with a nontrivial " "__call__ method"
         )
     if "call" not in attrs:
-        raise TypeError("You cannot decorate a class without a " ".call method")
+        raise TypeError(
+            "You cannot decorate a class without a " ".call method"
+        )
     cls.__call__ = __call__
     return cls
 

@@ -52,7 +52,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids,
         word_tokenizer=WordPunctTokenizer(),
         encoding="utf8",
-        **kwargs
+        **kwargs,
     ):
         """
         :param root: The root directory for the corpus.
@@ -121,9 +121,13 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
             line = stream.readline()
             if not line:
                 continue
-            sent = re.match(r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
+            sent = re.match(
+                r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line
+            )
             if sent:
-                sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
+                sents.append(
+                    self._word_tokenizer.tokenize(sent.group(2).strip())
+                )
         return sents
 
     def _read_word_block(self, stream):

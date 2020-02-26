@@ -49,8 +49,12 @@ class KneserNey(Smoothing):
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]
         prefix_total_ngrams = prefix_counts.N()
-        alpha = max(prefix_counts[word] - self.discount, 0.0) / prefix_total_ngrams
+        alpha = (
+            max(prefix_counts[word] - self.discount, 0.0) / prefix_total_ngrams
+        )
         gamma = (
-            self.discount * _count_non_zero_vals(prefix_counts) / prefix_total_ngrams
+            self.discount
+            * _count_non_zero_vals(prefix_counts)
+            / prefix_total_ngrams
         )
         return alpha, gamma

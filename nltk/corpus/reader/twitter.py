@@ -15,7 +15,11 @@ import os
 
 from nltk.tokenize import TweetTokenizer
 
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
+from nltk.corpus.reader.util import (
+    StreamBackedCorpusView,
+    concat,
+    ZipFilePathPointer,
+)
 from nltk.corpus.reader.api import CorpusReader
 
 
@@ -57,7 +61,11 @@ class TwitterCorpusReader(CorpusReader):
     """
 
     def __init__(
-        self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding="utf8"
+        self,
+        root,
+        fileids=None,
+        word_tokenizer=TweetTokenizer(),
+        encoding="utf8",
     ):
         """
 

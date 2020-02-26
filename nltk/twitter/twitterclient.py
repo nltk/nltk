@@ -130,7 +130,9 @@ class Query(Twython):
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
         self.handler = None
         self.do_continue = True
-        Twython.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
+        Twython.__init__(
+            self, app_key, app_secret, oauth_token, oauth_token_secret
+        )
 
     def register(self, handler):
         """
@@ -179,7 +181,10 @@ class Query(Twython):
         """
         while True:
             tweets = self.search_tweets(
-                keywords=keywords, limit=limit, lang=lang, max_id=self.handler.max_id
+                keywords=keywords,
+                limit=limit,
+                lang=lang,
+                max_id=self.handler.max_id,
             )
             for tweet in tweets:
                 self.handler.handle(tweet)
@@ -220,11 +225,16 @@ class Query(Twython):
             self.handler.max_id = max_id
         else:
             results = self.search(
-                q=keywords, count=min(100, limit), lang=lang, result_type="recent"
+                q=keywords,
+                count=min(100, limit),
+                lang=lang,
+                result_type="recent",
             )
             count = len(results["statuses"])
             if count == 0:
-                print("No Tweets available through REST API for those keywords")
+                print(
+                    "No Tweets available through REST API for those keywords"
+                )
                 return
             count_from_query = count
             self.handler.max_id = results["statuses"][count - 1]["id"] - 1
@@ -405,7 +415,9 @@ class Twitter(object):
         else:
             self.query.register(handler)
             if keywords == "":
-                raise ValueError("Please supply at least one keyword to search for.")
+                raise ValueError(
+                    "Please supply at least one keyword to search for."
+                )
             else:
                 self.query._search_tweets(keywords, limit=limit, lang=lang)
 

@@ -141,8 +141,12 @@ def backwardOnly(left, right):
 
 
 # Application combinator instances
-ForwardApplication = ForwardCombinator(UndirectedFunctionApplication(), forwardOnly)
-BackwardApplication = BackwardCombinator(UndirectedFunctionApplication(), backwardOnly)
+ForwardApplication = ForwardCombinator(
+    UndirectedFunctionApplication(), forwardOnly
+)
+BackwardApplication = BackwardCombinator(
+    UndirectedFunctionApplication(), backwardOnly
+)
 
 
 class UndirectedComposition(UndirectedBinaryCombinator):
@@ -265,8 +269,12 @@ def backwardSxConstraint(left, right):
 
 
 # Instances of substitution combinators
-ForwardSubstitution = ForwardCombinator(UndirectedSubstitution(), forwardSConstraint)
-BackwardSx = BackwardCombinator(UndirectedSubstitution(), backwardSxConstraint, "x")
+ForwardSubstitution = ForwardCombinator(
+    UndirectedSubstitution(), forwardSConstraint
+)
+BackwardSx = BackwardCombinator(
+    UndirectedSubstitution(), backwardSxConstraint, "x"
+)
 
 
 # Retrieves the left-most functional category.
@@ -303,7 +311,9 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
 
     def combine(self, function, arg):
         if not (
-            function.is_primitive() and arg.is_function() and arg.res().is_function()
+            function.is_primitive()
+            and arg.is_function()
+            and arg.res().is_function()
         ):
             return
 
@@ -314,7 +324,9 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
         if subs is not None:
             xcat = arg.res().substitute(subs)
             yield FunctionalCategory(
-                xcat, FunctionalCategory(xcat, function, arg.dir()), -(arg.dir())
+                xcat,
+                FunctionalCategory(xcat, function, arg.dir()),
+                -(arg.dir()),
             )
 
     def __str__(self):

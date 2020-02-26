@@ -10,7 +10,9 @@ A utility for displaying lexical dispersion.
 """
 
 
-def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Plot"):
+def dispersion_plot(
+    text, words, ignore_case=False, title="Lexical Dispersion Plot"
+):
     """
     Generate a lexical dispersion plot.
 

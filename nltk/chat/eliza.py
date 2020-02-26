@@ -120,7 +120,11 @@ pairs = (
     ),
     (
         r"I think (.*)",
-        ("Do you doubt %1?", "Do you really think so?", "But you're not sure %1?"),
+        (
+            "Do you doubt %1?",
+            "Do you really think so?",
+            "But you're not sure %1?",
+        ),
     ),
     (
         r"(.*) friend (.*)",
@@ -242,7 +246,10 @@ pairs = (
             "Why do you care whether I %1?",
         ),
     ),
-    (r"Why (.*)", ("Why don't you tell me the reason why %1?", "Why do you think %1?")),
+    (
+        r"Why (.*)",
+        ("Why don't you tell me the reason why %1?", "Why do you think %1?"),
+    ),
     (
         r"I want (.*)",
         (
@@ -321,7 +328,9 @@ eliza_chatbot = Chat(pairs, reflections)
 
 def eliza_chat():
     print("Therapist\n---------")
-    print("Talk to the program by typing in plain English, using normal upper-")
+    print(
+        "Talk to the program by typing in plain English, using normal upper-"
+    )
     print('and lower-case letters and punctuation.  Enter "quit" when done.')
     print("=" * 72)
     print("Hello.  How are you feeling today?")

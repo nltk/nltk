@@ -241,7 +241,9 @@ class Paice(object):
         text.append("Understemming Index (GUMT / GDMT): %s\n" % self.ui)
         text.append("Overstemming Index (GWMT / GDNT): %s\n" % self.oi)
         text.append("Stemming Weight (OI / UI): %s\n" % self.sw)
-        text.append("Error-Rate Relative to Truncation (ERRT): %s\r\n" % self.errt)
+        text.append(
+            "Error-Rate Relative to Truncation (ERRT): %s\r\n" % self.errt
+        )
         coordinates = " ".join(["(%s, %s)" % item for item in self.coords])
         text.append("Truncation line: %s" % coordinates)
         return "".join(text)
@@ -335,8 +337,12 @@ class Paice(object):
 
     def update(self):
         """Update statistics after lemmas and stems have been set."""
-        self.gumt, self.gdmt, self.gwmt, self.gdnt = _calculate(self.lemmas, self.stems)
-        self.ui, self.oi, self.sw = _indexes(self.gumt, self.gdmt, self.gwmt, self.gdnt)
+        self.gumt, self.gdmt, self.gwmt, self.gdnt = _calculate(
+            self.lemmas, self.stems
+        )
+        self.ui, self.oi, self.sw = _indexes(
+            self.gumt, self.gdmt, self.gwmt, self.gdnt
+        )
         self.errt = self._errt()
 
 

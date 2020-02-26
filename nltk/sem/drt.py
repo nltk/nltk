@@ -281,7 +281,9 @@ class DrtExpression(object):
         return resolve_anaphora(self)
 
     def eliminate_equality(self):
-        return self.visit_structured(lambda e: e.eliminate_equality(), self.__class__)
+        return self.visit_structured(
+            lambda e: e.eliminate_equality(), self.__class__
+        )
 
     def pretty_format(self):
         """
@@ -310,7 +312,9 @@ class DRS(DrtExpression, Expression):
         self.conds = conds
         self.consequent = consequent
 
-    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
+    def replace(
+        self, variable, expression, replace_bound=False, alpha_convert=True
+    ):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         if variable in self.refs:
@@ -366,7 +370,9 @@ class DRS(DrtExpression, Expression):
             return DRS(
                 self.refs,
                 [
-                    cond.replace(variable, expression, replace_bound, alpha_convert)
+                    cond.replace(
+                        variable, expression, replace_bound, alpha_convert
+                    )
                     for cond in self.conds
                 ],
                 consequent,
@@ -374,7 +380,9 @@ class DRS(DrtExpression, Expression):
 
     def free(self):
         """:see: Expression.free()"""
-        conds_free = reduce(operator.or_, [c.free() for c in self.conds], set())
+        conds_free = reduce(
+            operator.or_, [c.free() for c in self.conds], set()
+        )
         if self.consequent:
             conds_free.update(self.consequent.free())
         return conds_free - set(self.refs)
@@ -401,7 +409,9 @@ class DRS(DrtExpression, Expression):
     def visit_structured(self, function, combinator):
         """:see: Expression.visit_structured()"""
         consequent = function(self.consequent) if self.consequent else None
-        return combinator(self.refs, list(map(function, self.conds)), consequent)
+        return combinator(
+            self.refs, list(map(function, self.conds)), consequent
+        )
 
     def eliminate_equality(self):
         drs = self
@@ -419,7 +429,9 @@ class DRS(DrtExpression, Expression):
                     drs.consequent,
                 )
                 if cond.second.variable != cond.first.variable:
-                    drs = drs.replace(cond.second.variable, cond.first, False, False)
+                    drs = drs.replace(
+                        cond.second.variable, cond.first, False, False
+                    )
                     i = 0
                 i -= 1
             i += 1
@@ -436,7 +448,9 @@ class DRS(DrtExpression, Expression):
             ):
                 conds.append(new_cond)
 
-        consequent = drs.consequent.eliminate_equality() if drs.consequent else None
+        consequent = (
+            drs.consequent.eliminate_equality() if drs.consequent else None
+        )
         return DRS(drs.refs, conds, consequent)
 
     def fol(self):
@@ -457,7 +471,9 @@ class DRS(DrtExpression, Expression):
 
         else:
             if not self.conds:
-                raise Exception("Cannot convert DRS with no conditions to FOL.")
+                raise Exception(
+                    "Cannot convert DRS with no conditions to FOL."
+                )
             accum = reduce(AndExpression, [c.fol() for c in self.conds])
             for ref in map(Variable, self._order_ref_strings(self.refs)[::-1]):
                 accum = ExistsExpression(ref, accum)
@@ -469,7 +485,8 @@ class DRS(DrtExpression, Expression):
         cond_lines = [
             cond
             for cond_line in [
-                filter(lambda s: s.strip(), cond._pretty()) for cond in self.conds
+                filter(lambda s: s.strip(), cond._pretty())
+                for cond in self.conds
             ]
             for cond in cond_line
         ]
@@ -506,9 +523,17 @@ class DRS(DrtExpression, Expression):
                 other_vars.append(s)
         return (
             sorted(other_vars)
-            + sorted(event_vars, key=lambda v: int([v[2:], -1][len(v[2:]) == 0]))
-            + sorted(func_vars, key=lambda v: (v[0], int([v[1:], -1][len(v[1:]) == 0])))
-            + sorted(ind_vars, key=lambda v: (v[0], int([v[1:], -1][len(v[1:]) == 0])))
+            + sorted(
+                event_vars, key=lambda v: int([v[2:], -1][len(v[2:]) == 0])
+            )
+            + sorted(
+                func_vars,
+                key=lambda v: (v[0], int([v[1:], -1][len(v[1:]) == 0])),
+            )
+            + sorted(
+                ind_vars,
+                key=lambda v: (v[0], int([v[1:], -1][len(v[1:]) == 0])),
+            )
         )
 
     def __eq__(self, other):
@@ -611,19 +636,25 @@ class DrtProposition(DrtExpression, Expression):
         self.variable = variable
         self.drs = drs
 
-    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
+    def replace(
+        self, variable, expression, replace_bound=False, alpha_convert=True
+    ):
         if self.variable == variable:
             assert isinstance(
                 expression, DrtAbstractVariableExpression
             ), "Can only replace a proposition label with a variable"
             return DrtProposition(
                 expression.variable,
-                self.drs.replace(variable, expression, replace_bound, alpha_convert),
+                self.drs.replace(
+                    variable, expression, replace_bound, alpha_convert
+                ),
             )
         else:
             return DrtProposition(
                 self.variable,
-                self.drs.replace(variable, expression, replace_bound, alpha_convert),
+                self.drs.replace(
+                    variable, expression, replace_bound, alpha_convert
+                ),
             )
 
     def eliminate_equality(self):
@@ -694,7 +725,9 @@ class DrtLambdaExpression(DrtExpression, LambdaExpression):
         """
         return self.__class__(
             newvar,
-            self.term.replace(self.variable, DrtVariableExpression(newvar), True),
+            self.term.replace(
+                self.variable, DrtVariableExpression(newvar), True
+            ),
         )
 
     def fol(self):
@@ -721,7 +754,9 @@ class DrtBinaryExpression(DrtExpression, BinaryExpression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
         return (
-            self.first.get_refs(True) + self.second.get_refs(True) if recursive else []
+            self.first.get_refs(True) + self.second.get_refs(True)
+            if recursive
+            else []
         )
 
     def _pretty(self):
@@ -783,7 +818,9 @@ class DrtConcatenation(DrtBooleanExpression):
         DrtBooleanExpression.__init__(self, first, second)
         self.consequent = consequent
 
-    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
+    def replace(
+        self, variable, expression, replace_bound=False, alpha_convert=True
+    ):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         first = self.first
@@ -811,10 +848,16 @@ class DrtConcatenation(DrtBooleanExpression):
                     first = first.replace(ref, v, True, alpha_convert)
                     second = second.replace(ref, v, True, alpha_convert)
                     if consequent:
-                        consequent = consequent.replace(ref, v, True, alpha_convert)
+                        consequent = consequent.replace(
+                            ref, v, True, alpha_convert
+                        )
 
-            first = first.replace(variable, expression, replace_bound, alpha_convert)
-            second = second.replace(variable, expression, replace_bound, alpha_convert)
+            first = first.replace(
+                variable, expression, replace_bound, alpha_convert
+            )
+            second = second.replace(
+                variable, expression, replace_bound, alpha_convert
+            )
             if consequent:
                 consequent = consequent.replace(
                     variable, expression, replace_bound, alpha_convert
@@ -840,7 +883,11 @@ class DrtConcatenation(DrtBooleanExpression):
                 newvar = DrtVariableExpression(unique_variable(ref))
                 second = second.replace(ref, newvar, True)
 
-            return DRS(first.refs + second.refs, first.conds + second.conds, consequent)
+            return DRS(
+                first.refs + second.refs,
+                first.conds + second.conds,
+                consequent,
+            )
         else:
             return self.__class__(first, second, consequent)
 
@@ -904,7 +951,11 @@ class DrtConcatenation(DrtBooleanExpression):
         """:see: Expression.visit()"""
         if self.consequent:
             return combinator(
-                [function(self.first), function(self.second), function(self.consequent)]
+                [
+                    function(self.first),
+                    function(self.second),
+                    function(self.consequent),
+                ]
             )
         else:
             return combinator([function(self.first), function(self.second)])
@@ -912,7 +963,15 @@ class DrtConcatenation(DrtBooleanExpression):
     def __str__(self):
         first = self._str_subex(self.first)
         second = self._str_subex(self.second)
-        drs = Tokens.OPEN + first + " " + self.getOp() + " " + second + Tokens.CLOSE
+        drs = (
+            Tokens.OPEN
+            + first
+            + " "
+            + self.getOp()
+            + " "
+            + second
+            + Tokens.CLOSE
+        )
         if self.consequent:
             return (
                 DrtTokens.OPEN
@@ -950,7 +1009,9 @@ class DrtApplicationExpression(DrtExpression, ApplicationExpression):
         args_lines = [arg._pretty() for arg in args]
         max_lines = max(map(len, [function_lines] + args_lines))
         function_lines = _pad_vertically(function_lines, max_lines)
-        args_lines = [_pad_vertically(arg_lines, max_lines) for arg_lines in args_lines]
+        args_lines = [
+            _pad_vertically(arg_lines, max_lines) for arg_lines in args_lines
+        ]
         func_args_lines = list(zip(function_lines, list(zip(*args_lines))))
         return (
             [
@@ -978,7 +1039,9 @@ class PossibleAntecedents(list, DrtExpression, Expression):
         """Set of free variables."""
         return set(self)
 
-    def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
+    def replace(
+        self, variable, expression, replace_bound=False, alpha_convert=True
+    ):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         result = PossibleAntecedents()
@@ -1013,8 +1076,9 @@ def resolve_anaphora(expression, trail=[]):
                     # ==========================================================
                     # Don't allow resolution to itself or other types
                     # ==========================================================
-                    if refex.__class__ == expression.argument.__class__ and not (
-                        refex == expression.argument
+                    if (
+                        refex.__class__ == expression.argument.__class__
+                        and not (refex == expression.argument)
                     ):
                         possible_antecedents.append(refex)
 
@@ -1022,10 +1086,16 @@ def resolve_anaphora(expression, trail=[]):
                 resolution = possible_antecedents[0]
             else:
                 resolution = possible_antecedents
-            return expression.make_EqualityExpression(expression.argument, resolution)
+            return expression.make_EqualityExpression(
+                expression.argument, resolution
+            )
         else:
-            r_function = resolve_anaphora(expression.function, trail + [expression])
-            r_argument = resolve_anaphora(expression.argument, trail + [expression])
+            r_function = resolve_anaphora(
+                expression.function, trail + [expression]
+            )
+            r_argument = resolve_anaphora(
+                expression.argument, trail + [expression]
+            )
             return expression.__class__(r_function, r_argument)
 
     elif isinstance(expression, DRS):
@@ -1049,7 +1119,9 @@ def resolve_anaphora(expression, trail=[]):
 
             r_conds.append(r_cond)
         if expression.consequent:
-            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+            consequent = resolve_anaphora(
+                expression.consequent, trail + [expression]
+            )
         else:
             consequent = None
         return expression.__class__(expression.refs, r_conds, consequent)
@@ -1064,7 +1136,9 @@ def resolve_anaphora(expression, trail=[]):
 
     elif isinstance(expression, DrtConcatenation):
         if expression.consequent:
-            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+            consequent = resolve_anaphora(
+                expression.consequent, trail + [expression]
+            )
         else:
             consequent = None
         return expression.__class__(
@@ -1081,7 +1155,8 @@ def resolve_anaphora(expression, trail=[]):
 
     elif isinstance(expression, LambdaExpression):
         return expression.__class__(
-            expression.variable, resolve_anaphora(expression.term, trail + [expression])
+            expression.variable,
+            resolve_anaphora(expression.term, trail + [expression]),
         )
 
 
@@ -1107,11 +1182,15 @@ class DrsDrawer(object):
                 canvas = Canvas(master, width=0, height=0)
                 canvas.font = font
                 self.canvas = canvas
-                (right, bottom) = self._visit(drs, self.OUTERSPACE, self.TOPSPACE)
+                (right, bottom) = self._visit(
+                    drs, self.OUTERSPACE, self.TOPSPACE
+                )
 
                 width = max(right + self.OUTERSPACE, 100)
                 height = bottom + self.OUTERSPACE
-                canvas = Canvas(master, width=width, height=height)  # , bg='white')
+                canvas = Canvas(
+                    master, width=width, height=height
+                )  # , bg='white')
             else:
                 canvas = Canvas(master, width=300, height=300)
 
@@ -1156,7 +1235,9 @@ class DrsDrawer(object):
         :return: the bottom-rightmost point
         """
         if isinstance(item, str):
-            self.canvas.create_text(x, y, anchor="nw", font=self.canvas.font, text=item)
+            self.canvas.create_text(
+                x, y, anchor="nw", font=self.canvas.font, text=item
+            )
         elif isinstance(item, tuple):
             # item is the lower-right of a box
             (right, bottom) = item
@@ -1178,7 +1259,10 @@ class DrsDrawer(object):
         :return: the bottom-rightmost point
         """
         if isinstance(item, str):
-            return (x + self.canvas.font.measure(item), y + self._get_text_height())
+            return (
+                x + self.canvas.font.measure(item),
+                y + self._get_text_height(),
+            )
         elif isinstance(item, tuple):
             return item
 
@@ -1308,7 +1392,9 @@ class DrsDrawer(object):
 
             if i + 1 < len(args):
                 # since it's not the last arg, add a comma
-                right = command(DrtTokens.COMMA + " ", right, centred_string_top)[0]
+                right = command(
+                    DrtTokens.COMMA + " ", right, centred_string_top
+                )[0]
 
         # Handle close paren
         right = command(DrtTokens.CLOSE, right, centred_string_top)[0]
@@ -1317,7 +1403,9 @@ class DrsDrawer(object):
 
     def _handle_LambdaExpression(self, expression, command, x, y):
         # Find the width of the lambda symbol and abstracted variables
-        variables = DrtTokens.LAMBDA + "%s" % expression.variable + DrtTokens.DOT
+        variables = (
+            DrtTokens.LAMBDA + "%s" % expression.variable + DrtTokens.DOT
+        )
         right = self._visit_command(variables, x, y)[0]
 
         # Handle term
@@ -1325,7 +1413,9 @@ class DrsDrawer(object):
 
         # Handle variables now that we know the y-coordinate
         command(
-            variables, x, self._get_centered_top(y, bottom - y, self._get_text_height())
+            variables,
+            x,
+            self._get_centered_top(y, bottom - y, self._get_text_height()),
         )
 
         return (right, bottom)
@@ -1352,7 +1442,9 @@ class DrsDrawer(object):
         )
 
         # Handle the operator
-        right = command(" %s " % expression.getOp(), right, centred_string_top)[0]
+        right = command(
+            " %s " % expression.getOp(), right, centred_string_top
+        )[0]
 
         # Handle the second operand
         second_height = expression.second._drawing_height
@@ -1400,7 +1492,11 @@ def demo():
     print("=" * 20 + "Test fol()" + "=" * 20)
     print(dexpr(r"([x,y],[sees(x,y)])").fol())
 
-    print("=" * 20 + "Test alpha conversion and lambda expression equality" + "=" * 20)
+    print(
+        "=" * 20
+        + "Test alpha conversion and lambda expression equality"
+        + "=" * 20
+    )
     e1 = dexpr(r"\x.([],[P(x)])")
     print(e1)
     e2 = e1.alpha_convert(Variable("z"))
@@ -1408,9 +1504,15 @@ def demo():
     print(e1 == e2)
 
     print("=" * 20 + "Test resolve_anaphora()" + "=" * 20)
-    print(resolve_anaphora(dexpr(r"([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])")))
     print(
-        resolve_anaphora(dexpr(r"([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])"))
+        resolve_anaphora(
+            dexpr(r"([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])")
+        )
+    )
+    print(
+        resolve_anaphora(
+            dexpr(r"([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])")
+        )
     )
     print(resolve_anaphora(dexpr(r"(([x,y],[]) + ([],[PRO(x)]))")))
 
@@ -1420,7 +1522,9 @@ def demo():
         r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])"
     ).pretty_print()
     dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pretty_print()
-    dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pretty_print()
+    dexpr(
+        r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])"
+    ).pretty_print()
     dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pretty_print()
 
 

@@ -83,7 +83,9 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     """
     if not grammar:
         grammar = "grammars/book_grammars/storage.fcfg"
-    parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
+    parser = load_parser(
+        grammar, trace=trace, chart_class=InstantiateVarsChart
+    )
     # Parse the sentence.
     tokens = sentence.split()
     return list(parser.parse(tokens))

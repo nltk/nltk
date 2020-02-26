@@ -162,7 +162,9 @@ class CorpusReader(object):
         """
         return self._root.join(fileid)
 
-    def abspaths(self, fileids=None, include_encoding=False, include_fileid=False):
+    def abspaths(
+        self, fileids=None, include_encoding=False, include_fileid=False
+    ):
         """
         Return a list of the absolute paths for all fileids in this corpus;
         or for the given list of fileids, if specified.
@@ -188,7 +190,9 @@ class CorpusReader(object):
         paths = [self._root.join(f) for f in fileids]
 
         if include_encoding and include_fileid:
-            return list(zip(paths, [self.encoding(f) for f in fileids], fileids))
+            return list(
+                zip(paths, [self.encoding(f) for f in fileids], fileids)
+            )
         elif include_fileid:
             return list(zip(paths, fileids))
         elif include_encoding:
@@ -297,10 +301,15 @@ class CategorizedCorpusReader(object):
                 del kwargs["cat_delimiter"]
         else:
             raise ValueError(
-                "Expected keyword argument cat_pattern or " "cat_map or cat_file."
+                "Expected keyword argument cat_pattern or "
+                "cat_map or cat_file."
             )
 
-        if "cat_pattern" in kwargs or "cat_map" in kwargs or "cat_file" in kwargs:
+        if (
+            "cat_pattern" in kwargs
+            or "cat_map" in kwargs
+            or "cat_file" in kwargs
+        ):
             raise ValueError(
                 "Specify exactly one of: cat_pattern, " "cat_map, cat_file."
             )
@@ -450,7 +459,9 @@ class SyntaxCorpusReader(CorpusReader):
     def words(self, fileids=None):
         return concat(
             [
-                StreamBackedCorpusView(fileid, self._read_word_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, self._read_word_block, encoding=enc
+                )
                 for fileid, enc in self.abspaths(fileids, True)
             ]
         )
@@ -465,15 +476,21 @@ class SyntaxCorpusReader(CorpusReader):
         return list(chain(*self._read_tagged_sent_block(stream, tagset)))
 
     def _read_sent_block(self, stream):
-        return list(filter(None, [self._word(t) for t in self._read_block(stream)]))
+        return list(
+            filter(None, [self._word(t) for t in self._read_block(stream)])
+        )
 
     def _read_tagged_sent_block(self, stream, tagset=None):
         return list(
-            filter(None, [self._tag(t, tagset) for t in self._read_block(stream)])
+            filter(
+                None, [self._tag(t, tagset) for t in self._read_block(stream)]
+            )
         )
 
     def _read_parsed_sent_block(self, stream):
-        return list(filter(None, [self._parse(t) for t in self._read_block(stream)]))
+        return list(
+            filter(None, [self._parse(t) for t in self._read_block(stream)])
+        )
 
     # } End of Block Readers
     # ------------------------------------------------------------

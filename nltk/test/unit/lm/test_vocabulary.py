@@ -91,10 +91,15 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     def test_lookup_recursive(self):
         self.assertEqual(
-            self.vocab.lookup([["a", "b"], ["a", "c"]]), (("a", "b"), ("a", "<UNK>"))
+            self.vocab.lookup([["a", "b"], ["a", "c"]]),
+            (("a", "b"), ("a", "<UNK>")),
         )
-        self.assertEqual(self.vocab.lookup([["a", "b"], "c"]), (("a", "b"), "<UNK>"))
-        self.assertEqual(self.vocab.lookup([[[[["a", "b"]]]]]), ((((("a", "b"),),),),))
+        self.assertEqual(
+            self.vocab.lookup([["a", "b"], "c"]), (("a", "b"), "<UNK>")
+        )
+        self.assertEqual(
+            self.vocab.lookup([[[[["a", "b"]]]]]), ((((("a", "b"),),),),)
+        )
 
     def test_lookup_None(self):
         with self.assertRaises(TypeError):
@@ -123,7 +128,8 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     def test_str(self):
         self.assertEqual(
-            str(self.vocab), "<Vocabulary with cutoff=2 unk_label='<UNK>' and 5 items>"
+            str(self.vocab),
+            "<Vocabulary with cutoff=2 unk_label='<UNK>' and 5 items>",
         )
 
     def test_creation_with_counter(self):
@@ -131,7 +137,21 @@ class NgramModelVocabularyTests(unittest.TestCase):
             self.vocab,
             Vocabulary(
                 Counter(
-                    ["z", "a", "b", "c", "f", "d", "e", "g", "a", "d", "b", "e", "w"]
+                    [
+                        "z",
+                        "a",
+                        "b",
+                        "c",
+                        "f",
+                        "d",
+                        "e",
+                        "g",
+                        "a",
+                        "d",
+                        "b",
+                        "e",
+                        "w",
+                    ]
                 ),
                 unk_cutoff=2,
             ),

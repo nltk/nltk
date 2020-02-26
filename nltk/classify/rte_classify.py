@@ -55,7 +55,9 @@ class RTEFeatureExtractor(object):
             ]
         )
 
-        self.negwords = set(["no", "not", "never", "failed", "rejected", "denied"])
+        self.negwords = set(
+            ["no", "not", "never", "failed", "rejected", "denied"]
+        )
         # Try to tokenize so that abbreviations, monetary amounts, email
         # addresses, URLs are single tokens.
         tokenizer = RegexpTokenizer("[\w.@:/]+|\w+|\$[\d.]+")
@@ -67,8 +69,12 @@ class RTEFeatureExtractor(object):
         self.hyp_words = set(self.hyp_tokens)
 
         if use_lemmatize:
-            self.text_words = set(self._lemmatize(token) for token in self.text_tokens)
-            self.hyp_words = set(self._lemmatize(token) for token in self.hyp_tokens)
+            self.text_words = set(
+                self._lemmatize(token) for token in self.text_tokens
+            )
+            self.hyp_words = set(
+                self._lemmatize(token) for token in self.hyp_tokens
+            )
 
         if self.stop:
             self.text_words = self.text_words - self.stopwords
@@ -155,8 +161,12 @@ def rte_featurize(rte_pairs):
 def rte_classifier(algorithm):
     from nltk.corpus import rte as rte_corpus
 
-    train_set = rte_corpus.pairs(["rte1_dev.xml", "rte2_dev.xml", "rte3_dev.xml"])
-    test_set = rte_corpus.pairs(["rte1_test.xml", "rte2_test.xml", "rte3_test.xml"])
+    train_set = rte_corpus.pairs(
+        ["rte1_dev.xml", "rte2_dev.xml", "rte3_dev.xml"]
+    )
+    test_set = rte_corpus.pairs(
+        ["rte1_test.xml", "rte2_test.xml", "rte3_test.xml"]
+    )
     featurized_train_set = rte_featurize(train_set)
     featurized_test_set = rte_featurize(test_set)
     # Train the classifier

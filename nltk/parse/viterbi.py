@@ -121,7 +121,12 @@ class ViterbiParser(ParserI):
         # Initialize the constituents dictionary with the words from
         # the text.
         if self._trace:
-            print(("Inserting tokens into the most likely" + " constituents table..."))
+            print(
+                (
+                    "Inserting tokens into the most likely"
+                    + " constituents table..."
+                )
+            )
         for index in range(len(tokens)):
             token = tokens[index]
             constituents[index, index + 1, token] = token
@@ -197,7 +202,9 @@ class ViterbiParser(ParserI):
             # probability.
             for (production, children) in instantiations:
                 subtrees = [c for c in children if isinstance(c, Tree)]
-                p = reduce(lambda pr, t: pr * t.prob(), subtrees, production.prob())
+                p = reduce(
+                    lambda pr, t: pr * t.prob(), subtrees, production.prob()
+                )
                 node = production.lhs().symbol()
                 tree = ProbabilisticTree(node, children, prob=p)
 
@@ -210,7 +217,9 @@ class ViterbiParser(ParserI):
                             print("   Insert:", end=" ")
                         else:
                             print("  Discard:", end=" ")
-                        self._trace_production(production, p, span, len(tokens))
+                        self._trace_production(
+                            production, p, span, len(tokens)
+                        )
                 if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
                     changed = True
@@ -315,7 +324,13 @@ class ViterbiParser(ParserI):
         print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
-        str = "   Insert: |" + "." * index + "=" + "." * (width - index - 1) + "| "
+        str = (
+            "   Insert: |"
+            + "." * index
+            + "="
+            + "." * (width - index - 1)
+            + "| "
+        )
         str += "%s" % (token,)
         print(str)
 
@@ -343,7 +358,10 @@ def demo():
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [
         ("I saw the man with my telescope", toy_pcfg1),
-        ("the boy saw Jack with Bob under the table with a telescope", toy_pcfg2),
+        (
+            "the boy saw Jack with Bob under the table with a telescope",
+            toy_pcfg2,
+        ),
     ]
 
     # Ask the user which demo they want to use.
@@ -372,7 +390,9 @@ def demo():
     parses = parser.parse_all(tokens)
     time = time.time() - t
     average = (
-        reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses) if parses else 0
+        reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
+        if parses
+        else 0
     )
     num_parses = len(parses)
     for p in parses:

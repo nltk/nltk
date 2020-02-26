@@ -55,7 +55,14 @@ class PPAttachment(object):
         return (
             "PPAttachment(sent=%r, verb=%r, noun1=%r, prep=%r, "
             "noun2=%r, attachment=%r)"
-            % (self.sent, self.verb, self.noun1, self.prep, self.noun2, self.attachment)
+            % (
+                self.sent,
+                self.verb,
+                self.noun1,
+                self.prep,
+                self.noun2,
+                self.attachment,
+            )
         )
 
 
@@ -67,7 +74,9 @@ class PPAttachmentCorpusReader(CorpusReader):
     def attachments(self, fileids):
         return concat(
             [
-                StreamBackedCorpusView(fileid, self._read_obj_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, self._read_obj_block, encoding=enc
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -75,7 +84,9 @@ class PPAttachmentCorpusReader(CorpusReader):
     def tuples(self, fileids):
         return concat(
             [
-                StreamBackedCorpusView(fileid, self._read_tuple_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, self._read_tuple_block, encoding=enc
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )

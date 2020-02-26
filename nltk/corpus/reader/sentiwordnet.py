@@ -47,7 +47,9 @@ class SentiWordNetCorpusReader(CorpusReader):
         Construct a new SentiWordNet Corpus Reader, using data from
    	the specified file.
         """
-        super(SentiWordNetCorpusReader, self).__init__(root, fileids, encoding=encoding)
+        super(SentiWordNetCorpusReader, self).__init__(
+            root, fileids, encoding=encoding
+        )
         if len(self._fileids) != 1:
             raise ValueError("Exactly one file must be specified")
         self._db = {}
@@ -61,7 +63,9 @@ class SentiWordNetCorpusReader(CorpusReader):
             try:
                 pos, offset, pos_score, neg_score, synset_terms, gloss = fields
             except:
-                raise ValueError("Line %s formatted incorrectly: %s\n" % (i, line))
+                raise ValueError(
+                    "Line %s formatted incorrectly: %s\n" % (i, line)
+                )
             if pos and offset:
                 offset = int(offset)
                 self._db[(pos, offset)] = (float(pos_score), float(neg_score))

@@ -19,6 +19,7 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
 import re
+
 try:
     from html import escape
 except ImportError:
@@ -238,7 +239,9 @@ class TreePrettyPrinter(object):
                 terminals.append(a)
 
         for n in levels:
-            levels[n].sort(key=lambda n: max(tree[n].leaves()) - min(tree[n].leaves()))
+            levels[n].sort(
+                key=lambda n: max(tree[n].leaves()) - min(tree[n].leaves())
+            )
         terminals.sort()
         positions = set(positions)
 
@@ -260,7 +263,10 @@ class TreePrettyPrinter(object):
             nodesatdepth = levels[n]
             startoflevel = len(matrix)
             matrix.append(
-                [vertline if a not in (corner, None) else None for a in matrix[-1]]
+                [
+                    vertline if a not in (corner, None) else None
+                    for a in matrix[-1]
+                ]
             )
             for m in nodesatdepth:  # [::-1]:
                 if n < maxdepth - 1 and childcols[m]:
@@ -409,7 +415,9 @@ class TreePrettyPrinter(object):
                 label = wrapre.sub(r"\1\n", label).strip()
             label = label.split("\n")
             maxnodeheight[row] = max(maxnodeheight[row], len(label))
-            maxnodewith[column] = max(maxnodewith[column], max(map(len, label)))
+            maxnodewith[column] = max(
+                maxnodewith[column], max(map(len, label))
+            )
             labels[a] = label
             if a not in self.edges:
                 continue  # e.g., root
@@ -423,7 +431,9 @@ class TreePrettyPrinter(object):
                 ["".center(maxnodewith[col]) for col in range(maxcol + 1)]
                 for _ in range(maxnodeheight[row])
             ]
-            branchrow = ["".center(maxnodewith[col]) for col in range(maxcol + 1)]
+            branchrow = [
+                "".center(maxnodewith[col]) for col in range(maxcol + 1)
+            ]
             for col in matrix[row]:
                 n = matrix[row][col]
                 node = self.nodes[n]
@@ -432,7 +442,10 @@ class TreePrettyPrinter(object):
                     # draw horizontal branch towards children for this node
                     if n in minchildcol and minchildcol[n] < maxchildcol[n]:
                         i, j = minchildcol[n], maxchildcol[n]
-                        a, b = (maxnodewith[i] + 1) // 2 - 1, maxnodewith[j] // 2
+                        a, b = (
+                            (maxnodewith[i] + 1) // 2 - 1,
+                            maxnodewith[j] // 2,
+                        )
                         branchrow[i] = ((" " * a) + leftcorner).ljust(
                             maxnodewith[i], horzline
                         )
@@ -440,7 +453,9 @@ class TreePrettyPrinter(object):
                             maxnodewith[j], horzline
                         )
                         for i in range(minchildcol[n] + 1, maxchildcol[n]):
-                            if i == col and any(a == i for _, a in childcols[n]):
+                            if i == col and any(
+                                a == i for _, a in childcols[n]
+                            ):
                                 line = cross
                             elif i == col:
                                 line = bottom
@@ -448,7 +463,9 @@ class TreePrettyPrinter(object):
                                 line = tee
                             else:
                                 line = horzline
-                            branchrow[i] = line.center(maxnodewith[i], horzline)
+                            branchrow[i] = line.center(
+                                maxnodewith[i], horzline
+                            )
                     else:  # if n and n in minchildcol:
                         branchrow[col] = crosscell(branchrow[col])
                 text = [a.center(maxnodewith[col]) for a in text]
@@ -458,9 +475,15 @@ class TreePrettyPrinter(object):
                 if html:
                     text = [escape(a, quote=False) for a in text]
                     if n in self.highlight:
-                        text = ["<font color=%s>%s</font>" % (color, a) for a in text]
+                        text = [
+                            "<font color=%s>%s</font>" % (color, a)
+                            for a in text
+                        ]
                 elif ansi and n in self.highlight:
-                    text = ["\x1b[%d;1m%s\x1b[0m" % (ANSICOLOR[color], a) for a in text]
+                    text = [
+                        "\x1b[%d;1m%s\x1b[0m" % (ANSICOLOR[color], a)
+                        for a in text
+                    ]
                 for x in range(maxnodeheight[row]):
                     # draw vertical lines in partially filled multiline node
                     # labels, but only if it's not a frontier node.
@@ -475,7 +498,10 @@ class TreePrettyPrinter(object):
             # above us, draw a vertical branch in that column.
             if row != max(matrix):
                 for n, (childrow, col) in self.coords.items():
-                    if n > 0 and self.coords[self.edges[n]][0] < row < childrow:
+                    if (
+                        n > 0
+                        and self.coords[self.edges[n]][0] < row < childrow
+                    ):
                         branchrow[col] = crosscell(branchrow[col])
                         if col not in matrix[row]:
                             for noderow in noderows:
@@ -486,7 +512,8 @@ class TreePrettyPrinter(object):
                 ]
                 result.append("".join(branchrow))
             result.extend(
-                (" " * nodedist).join(noderow) for noderow in reversed(noderows)
+                (" " * nodedist).join(noderow)
+                for noderow in reversed(noderows)
             )
         return "\n".join(reversed(result)) + "\n"
 
@@ -575,7 +602,10 @@ class TreePrettyPrinter(object):
                     fontsize,
                     x,
                     y,
-                    escape(node.label() if isinstance(node, Tree) else node, quote=False),
+                    escape(
+                        node.label() if isinstance(node, Tree) else node,
+                        quote=False,
+                    ),
                 )
             ]
 

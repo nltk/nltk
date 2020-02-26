@@ -199,7 +199,9 @@ def semi_rel2reldict(pairs, window=5, trace=False):
     return result
 
 
-def extract_rels(subjclass, objclass, doc, corpus="ace", pattern=None, window=10):
+def extract_rels(
+    subjclass, objclass, doc, corpus="ace", pattern=None, window=10
+):
     """
     Filter the output of ``semi_rel2reldict`` according to specified NE classes and a filler pattern.
 
@@ -238,7 +240,8 @@ def extract_rels(subjclass, objclass, doc, corpus="ace", pattern=None, window=10
             objclass = _expand(objclass)
         else:
             raise ValueError(
-                "your value for the object type has not been recognized: %s" % objclass
+                "your value for the object type has not been recognized: %s"
+                % objclass
             )
 
     if corpus == "ace" or corpus == "conll2002":
@@ -341,7 +344,9 @@ def in_demo(trace=0, sql=True):
             if trace:
                 print(doc.docno)
                 print("=" * 15)
-            for rel in extract_rels("ORG", "LOC", doc, corpus="ieer", pattern=IN):
+            for rel in extract_rels(
+                "ORG", "LOC", doc, corpus="ieer", pattern=IN
+            ):
                 print(clause(rel, relsym="IN"))
                 if sql:
                     try:
@@ -417,7 +422,9 @@ def roles_demo(trace=0):
                 print(doc.docno)
                 print("=" * 15)
                 lcon = rcon = True
-            for rel in extract_rels("PER", "ORG", doc, corpus="ieer", pattern=ROLES):
+            for rel in extract_rels(
+                "PER", "ORG", doc, corpus="ieer", pattern=ROLES
+            ):
                 print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
@@ -506,7 +513,9 @@ def conllesp():
     rels = [
         rel
         for doc in conll2002.chunked_sents("esp.train")
-        for rel in extract_rels("ORG", "LOC", doc, corpus="conll2002", pattern=DE)
+        for rel in extract_rels(
+            "ORG", "LOC", doc, corpus="conll2002", pattern=DE
+        )
     ]
     for r in rels[:10]:
         print(clause(r, relsym="DE"))
@@ -523,7 +532,9 @@ def ne_chunked():
     rels = []
     for i, sent in enumerate(nltk.corpus.treebank.tagged_sents()[:1500]):
         sent = nltk.ne_chunk(sent)
-        rels = extract_rels("PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7)
+        rels = extract_rels(
+            "PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7
+        )
         for rel in rels:
             print("{0:<5}{1}".format(i, rtuple(rel)))
 

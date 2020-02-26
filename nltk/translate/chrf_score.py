@@ -15,7 +15,12 @@ from nltk.util import ngrams
 
 
 def sentence_chrf(
-    reference, hypothesis, min_len=1, max_len=6, beta=3.0, ignore_whitespace=True
+    reference,
+    hypothesis,
+    min_len=1,
+    max_len=6,
+    beta=3.0,
+    ignore_whitespace=True,
 ):
     """
     Calculates the sentence level CHRF (Character n-gram F-score) described in
@@ -153,7 +158,12 @@ def chrf_precision_recall_fscore_support(
 
 
 def corpus_chrf(
-    references, hypotheses, min_len=1, max_len=6, beta=3.0, ignore_whitespace=True
+    references,
+    hypotheses,
+    min_len=1,
+    max_len=6,
+    beta=3.0,
+    ignore_whitespace=True,
 ):
     """
     Calculates the corpus level CHRF (Character n-gram F-score), it is the

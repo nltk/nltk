@@ -107,7 +107,9 @@ class ConllCorpusReader(CorpusReader):
 
     def words(self, fileids=None):
         self._require(self.WORDS)
-        return LazyConcatenation(LazyMap(self._get_words, self._grids(fileids)))
+        return LazyConcatenation(
+            LazyMap(self._get_words, self._grids(fileids))
+        )
 
     def sents(self, fileids=None):
         self._require(self.WORDS)
@@ -119,7 +121,9 @@ class ConllCorpusReader(CorpusReader):
         def get_tagged_words(grid):
             return self._get_tagged_words(grid, tagset)
 
-        return LazyConcatenation(LazyMap(get_tagged_words, self._grids(fileids)))
+        return LazyConcatenation(
+            LazyMap(get_tagged_words, self._grids(fileids))
+        )
 
     def tagged_sents(self, fileids=None, tagset=None):
         self._require(self.WORDS, self.POS)
@@ -137,7 +141,9 @@ class ConllCorpusReader(CorpusReader):
         def get_chunked_words(grid):  # capture chunk_types as local var
             return self._get_chunked_words(grid, chunk_types, tagset)
 
-        return LazyConcatenation(LazyMap(get_chunked_words, self._grids(fileids)))
+        return LazyConcatenation(
+            LazyMap(get_chunked_words, self._grids(fileids))
+        )
 
     def chunked_sents(self, fileids=None, chunk_types=None, tagset=None):
         self._require(self.WORDS, self.POS, self.CHUNK)
@@ -214,7 +220,9 @@ class ConllCorpusReader(CorpusReader):
         # different things (eg srl and parse trees).
         return concat(
             [
-                StreamBackedCorpusView(fileid, self._read_grid_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, self._read_grid_block, encoding=enc
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -236,7 +244,9 @@ class ConllCorpusReader(CorpusReader):
             # Check that the grid is consistent.
             for row in grid:
                 if len(row) != len(grid[0]):
-                    raise ValueError("Inconsistent number of columns:\n%s" % block)
+                    raise ValueError(
+                        "Inconsistent number of columns:\n%s" % block
+                    )
             grids.append(grid)
         return grids
 
@@ -253,7 +263,9 @@ class ConllCorpusReader(CorpusReader):
         pos_tags = self._get_column(grid, self._colmap["pos"])
         if tagset and tagset != self._tagset:
             pos_tags = [map_tag(self._tagset, tagset, t) for t in pos_tags]
-        return list(zip(self._get_column(grid, self._colmap["words"]), pos_tags))
+        return list(
+            zip(self._get_column(grid, self._colmap["words"]), pos_tags)
+        )
 
     def _get_iob_words(self, grid, tagset=None):
         pos_tags = self._get_column(grid, self._colmap["pos"])
@@ -324,7 +336,9 @@ class ConllCorpusReader(CorpusReader):
         try:
             tree = self._tree_class.fromstring(treestr)
         except (ValueError, IndexError):
-            tree = self._tree_class.fromstring("(%s %s)" % (self._root_label, treestr))
+            tree = self._tree_class.fromstring(
+                "(%s %s)" % (self._root_label, treestr)
+            )
 
         if not pos_in_tree:
             for subtree in tree.subtrees():
@@ -397,7 +411,9 @@ class ConllCorpusReader(CorpusReader):
             else:
                 raise ValueError("No srl column found for %r" % predicate)
             instances.append(
-                ConllSRLInstance(tree, wordnum, predicate, rolesets[wordnum], spanlist)
+                ConllSRLInstance(
+                    tree, wordnum, predicate, rolesets[wordnum], spanlist
+                )
             )
 
         return instances
@@ -492,7 +508,9 @@ class ConllSRLInstance(object):
                 word = "<<%s>>" % word
             s += word + " "
         return hdr + textwrap.fill(
-            s.replace(" ]", "]"), initial_indent="    ", subsequent_indent="    "
+            s.replace(" ]", "]"),
+            initial_indent="    ",
+            subsequent_indent="    ",
         )
 
 
@@ -573,7 +591,13 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     """
 
     def __init__(
-        self, root, fileids, chunk_types, encoding="utf8", tagset=None, separator=None
+        self,
+        root,
+        fileids,
+        chunk_types,
+        encoding="utf8",
+        tagset=None,
+        separator=None,
     ):
         ConllCorpusReader.__init__(
             self,

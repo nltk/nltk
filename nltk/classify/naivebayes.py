@@ -32,7 +32,12 @@ sum to one:
 
 from collections import defaultdict
 
-from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
+from nltk.probability import (
+    FreqDist,
+    DictionaryProbDist,
+    ELEProbDist,
+    sum_logs,
+)
 from nltk.classify.api import ClassifierI
 
 ##//////////////////////////////////////////////////////
@@ -132,9 +137,13 @@ class NaiveBayesClassifier(ClassifierI):
                 return cpdist[l, fname].prob(fval)
 
             labels = sorted(
-                [l for l in self._labels if fval in cpdist[l, fname].samples()],
+                [
+                    l
+                    for l in self._labels
+                    if fval in cpdist[l, fname].samples()
+                ],
                 key=lambda element: (-labelprob(element), element),
-                reverse=True
+                reverse=True,
             )
             if len(labels) == 1:
                 continue
@@ -186,8 +195,13 @@ class NaiveBayesClassifier(ClassifierI):
             # Convert features to a list, & sort it by how informative
             # features are.
             self._most_informative_features = sorted(
-                features, key=lambda feature_: (minprob[feature_] / maxprob[feature_], feature_[0],
-                                                feature_[1] in [None, False, True], str(feature_[1]).lower())
+                features,
+                key=lambda feature_: (
+                    minprob[feature_] / maxprob[feature_],
+                    feature_[0],
+                    feature_[1] in [None, False, True],
+                    str(feature_[1]).lower(),
+                ),
             )
         return self._most_informative_features[:n]
 

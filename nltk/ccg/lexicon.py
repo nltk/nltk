@@ -11,7 +11,12 @@ CCG Lexicons
 import re
 from collections import defaultdict
 
-from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
+from nltk.ccg.api import (
+    PrimitiveCategory,
+    Direction,
+    CCGVar,
+    FunctionalCategory,
+)
 from nltk.internals import deprecated
 
 from nltk.sem.logic import Expression
@@ -75,7 +80,9 @@ class Token(object):
     def __cmp__(self, other):
         if not isinstance(other, Token):
             return -1
-        return cmp((self._categ, self._semantics), other.categ(), other.semantics())
+        return cmp(
+            (self._categ, self._semantics), other.categ(), other.semantics()
+        )
 
 
 class CCGLexicon(object):
@@ -215,7 +222,9 @@ def augParseCategory(line, primitives, families, var=None):
     (cat_string, rest) = nextCategory(line)
 
     if cat_string.startswith("("):
-        (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+        (res, var) = augParseCategory(
+            cat_string[1:-1], primitives, families, var
+        )
 
     else:
         (res, var) = parsePrimitiveCategory(
@@ -229,7 +238,9 @@ def augParseCategory(line, primitives, families, var=None):
 
         (cat_string, rest) = nextCategory(rest)
         if cat_string.startswith("("):
-            (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+            (arg, var) = augParseCategory(
+                cat_string[1:-1], primitives, families, var
+            )
         else:
             (arg, var) = parsePrimitiveCategory(
                 PRIM_RE.match(cat_string).groups(), primitives, families, var

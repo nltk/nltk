@@ -184,7 +184,11 @@ class ReviewsCorpusReader(CorpusReader):
     CorpusView = StreamBackedCorpusView
 
     def __init__(
-        self, root, fileids, word_tokenizer=WordPunctTokenizer(), encoding="utf8"
+        self,
+        root,
+        fileids,
+        word_tokenizer=WordPunctTokenizer(),
+        encoding="utf8",
     ):
         """
         :param root: The root directory for the corpus.

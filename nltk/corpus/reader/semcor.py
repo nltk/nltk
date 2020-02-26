@@ -151,7 +151,9 @@ class SemcorCorpusReader(XMLCorpusReader):
             tkn = ""  # fixes issue 337?
 
         lemma = xmlword.get("lemma", tkn)  # lemma or NE class
-        lexsn = xmlword.get("lexsn")  # lex_sense (locator for the lemma's sense)
+        lexsn = xmlword.get(
+            "lexsn"
+        )  # lex_sense (locator for the lemma's sense)
         if lexsn is not None:
             sense_key = lemma + "%" + lexsn
             wnpos = ("n", "v", "a", "r", "s")[
@@ -167,7 +169,9 @@ class SemcorCorpusReader(XMLCorpusReader):
         # the "rdf" attribute holds its inflected form and "lemma" holds its lemma.
         # For NEs, "rdf", "lemma", and "pn" all hold the same value (the NE class).
         sensenum = xmlword.get("wnsn")  # WordNet sense number
-        isOOVEntity = "pn" in xmlword.keys()  # a "personal name" (NE) not in WordNet
+        isOOVEntity = (
+            "pn" in xmlword.keys()
+        )  # a "personal name" (NE) not in WordNet
         pos = xmlword.get(
             "pos"
         )  # part of speech for the whole chunk (None for punctuation)
@@ -179,17 +183,25 @@ class SemcorCorpusReader(XMLCorpusReader):
                 itm = (
                     (tkn,)
                     + ((pos,) if pos_tag else ())
-                    + ((lemma, wnpos, sensenum, isOOVEntity) if sem_tag else ())
+                    + (
+                        (lemma, wnpos, sensenum, isOOVEntity)
+                        if sem_tag
+                        else ()
+                    )
                 )
             return itm
         else:
-            ww = tkn.split("_")  # TODO: case where punctuation intervenes in MWE
+            ww = tkn.split(
+                "_"
+            )  # TODO: case where punctuation intervenes in MWE
             if unit == "word":
                 return ww
             else:
                 if sensenum is not None:
                     try:
-                        sense = wordnet.lemma_from_key(sense_key)  # Lemma object
+                        sense = wordnet.lemma_from_key(
+                            sense_key
+                        )  # Lemma object
                     except Exception:
                         # cannot retrieve the wordnet.Lemma object. possible reasons:
                         #  (a) the wordnet corpus is not downloaded;

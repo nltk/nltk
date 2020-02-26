@@ -29,7 +29,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 
     _interpformat_bin = None
 
-    def __init__(self, goal=None, assumptions=None, max_models=500, model_builder=None):
+    def __init__(
+        self, goal=None, assumptions=None, max_models=500, model_builder=None
+    ):
         """
         :param goal: Input expression to prove
         :type goal: sem.Expression
@@ -45,7 +47,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         else:
             model_builder = Mace(max_models)
 
-        BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
+        BaseModelBuilderCommand.__init__(
+            self, model_builder, goal, assumptions
+        )
 
     @property
     def valuation(mbc):
@@ -58,7 +62,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :return: A model if one is generated; None otherwise.
         :rtype: sem.Valuation
         """
-        valuation_standard_format = self._transform_output(valuation_str, "standard")
+        valuation_standard_format = self._transform_output(
+            valuation_str, "standard"
+        )
 
         val = []
         for line in valuation_standard_format.splitlines(False):
@@ -86,7 +92,12 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
                         for v in l[l.index("[") + 1 : l.index("]")].split(",")
                     ]
                     val.append(
-                        (name, MaceCommand._make_relation_set(num_entities, values))
+                        (
+                            name,
+                            MaceCommand._make_relation_set(
+                                num_entities, values
+                            ),
+                        )
                     )
                 else:
                     # relation is nullary
@@ -109,7 +120,11 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         r = set()
         for position in [pos for (pos, v) in enumerate(values) if v == 1]:
             r.add(
-                tuple(MaceCommand._make_relation_tuple(position, values, num_entities))
+                tuple(
+                    MaceCommand._make_relation_tuple(
+                        position, values, num_entities
+                    )
+                )
             )
         return r
 
@@ -123,7 +138,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             sublist_position = int(position % sublist_size)
 
             sublist = values[
-                sublist_start * sublist_size : (sublist_start + 1) * sublist_size
+                sublist_start
+                * sublist_size : (sublist_start + 1)
+                * sublist_size
             ]
             return [
                 MaceCommand._make_model_var(sublist_start)
@@ -281,9 +298,11 @@ def decode_result(found):
     :param found: The output of model_found()
     :type found: bool
     """
-    return {True: "Countermodel found", False: "No countermodel found", None: "None"}[
-        found
-    ]
+    return {
+        True: "Countermodel found",
+        False: "No countermodel found",
+        None: "None",
+    }[found]
 
 
 def test_model_found(arguments):
@@ -363,14 +382,19 @@ def test_make_relation_set():
         == set([("c", "a")])
     )
     print(
-        MaceCommand._make_relation_set(num_entities=2, values=[0, 0, 1, 0, 0, 0, 1, 0])
+        MaceCommand._make_relation_set(
+            num_entities=2, values=[0, 0, 1, 0, 0, 0, 1, 0]
+        )
         == set([("a", "b", "a"), ("b", "b", "a")])
     )
 
 
 arguments = [
     ("mortal(Socrates)", ["all x.(man(x) -> mortal(x))", "man(Socrates)"]),
-    ("(not mortal(Socrates))", ["all x.(man(x) -> mortal(x))", "man(Socrates)"]),
+    (
+        "(not mortal(Socrates))",
+        ["all x.(man(x) -> mortal(x))", "man(Socrates)"],
+    ),
 ]
 
 

@@ -65,7 +65,9 @@ class PanLexLiteCorpusReader(CorpusReader):
         """
 
         if lc is None:
-            return self._c.execute("SELECT uid, tt FROM lv ORDER BY uid").fetchall()
+            return self._c.execute(
+                "SELECT uid, tt FROM lv ORDER BY uid"
+            ).fetchall()
         else:
             return self._c.execute(
                 "SELECT uid, tt FROM lv WHERE lc = ? ORDER BY uid", (lc,)
@@ -123,7 +125,9 @@ class PanLexLiteCorpusReader(CorpusReader):
         from_lv = self._uid_lv[from_uid]
         to_lv = self._uid_lv[to_uid]
 
-        return self._c.execute(self.TRANSLATION_Q, (from_lv, from_tt, to_lv)).fetchall()
+        return self._c.execute(
+            self.TRANSLATION_Q, (from_lv, from_tt, to_lv)
+        ).fetchall()
 
 
 class Meaning(dict):

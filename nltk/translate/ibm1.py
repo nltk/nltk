@@ -104,7 +104,9 @@ class IBMModel1(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
+    def __init__(
+        self, sentence_aligned_corpus, iterations, probability_tables=None
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model.
@@ -237,7 +239,9 @@ class IBMModel1(IBMModel):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_prob = max(self.translation_table[trg_word][None], IBMModel.MIN_PROB)
+            best_prob = max(
+                self.translation_table[trg_word][None], IBMModel.MIN_PROB
+            )
             best_alignment_point = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]

@@ -175,7 +175,9 @@ class KMeansClusterer(VectorSpaceClusterer):
             return centroid / (1 + len(cluster))
         else:
             if not len(cluster):
-                sys.stderr.write("Error: no centroid defined for empty cluster.\n")
+                sys.stderr.write(
+                    "Error: no centroid defined for empty cluster.\n"
+                )
                 sys.stderr.write(
                     "Try setting argument 'avoid_empty_clusters' to True\n"
                 )
@@ -186,7 +188,10 @@ class KMeansClusterer(VectorSpaceClusterer):
             return centroid / len(cluster)
 
     def __repr__(self):
-        return "<KMeansClusterer means=%s repeats=%d>" % (self._means, self._repeats)
+        return "<KMeansClusterer means=%s repeats=%d>" % (
+            self._means,
+            self._repeats,
+        )
 
 
 #################################################################################
@@ -208,7 +213,10 @@ def demo():
     print("Means:", clusterer.means())
     print()
 
-    vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+    vectors = [
+        numpy.array(f)
+        for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]
+    ]
 
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds

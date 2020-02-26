@@ -131,7 +131,9 @@ class CfgReadingCommand(ReadingCommand):
 
 
 class DrtGlueReadingCommand(ReadingCommand):
-    def __init__(self, semtype_file=None, remove_duplicates=False, depparser=None):
+    def __init__(
+        self, semtype_file=None, remove_duplicates=False, depparser=None
+    ):
         """
         :param semtype_file: name of file where grammar can be loaded
         :param remove_duplicates: should duplicates be removed?
@@ -183,7 +185,9 @@ class DiscourseTester(object):
         :type background: list(Expression)
         """
         self._input = input
-        self._sentences = dict([("s%s" % i, sent) for i, sent in enumerate(input)])
+        self._sentences = dict(
+            [("s%s" % i, sent) for i, sent in enumerate(input)]
+        )
         self._models = None
         self._readings = {}
         self._reading_command = (
@@ -226,10 +230,14 @@ class DiscourseTester(object):
         if informchk:
             self.readings(verbose=False)
             for tid in sorted(self._threads):
-                assumptions = [reading for (rid, reading) in self.expand_threads(tid)]
+                assumptions = [
+                    reading for (rid, reading) in self.expand_threads(tid)
+                ]
                 assumptions += self._background
                 for sent_reading in self._get_readings(sentence):
-                    tp = Prover9Command(goal=sent_reading, assumptions=assumptions)
+                    tp = Prover9Command(
+                        goal=sent_reading, assumptions=assumptions
+                    )
                     if tp.prove():
                         print(
                             "Sentence '%s' under reading '%s':"
@@ -314,7 +322,9 @@ class DiscourseTester(object):
         """
         thread_list = [[]]
         for sid in sorted(self._readings):
-            thread_list = self.multiply(thread_list, sorted(self._readings[sid]))
+            thread_list = self.multiply(
+                thread_list, sorted(self._readings[sid])
+            )
         self._threads = dict(
             [("d%s" % tid, thread) for tid, thread in enumerate(thread_list)]
         )
@@ -332,7 +342,9 @@ class DiscourseTester(object):
         """
         if sentence is not None:
             print("The sentence '%s' has these readings:" % sentence)
-            for r in [str(reading) for reading in (self._get_readings(sentence))]:
+            for r in [
+                str(reading) for reading in (self._get_readings(sentence))
+            ]:
                 print("    %s" % r)
         else:
             for sid in sorted(self._readings):
@@ -351,12 +363,15 @@ class DiscourseTester(object):
         for tid in sorted(threads):
             if show_thread_readings:
                 readings = [
-                    self._readings[rid.split("-")[0]][rid] for rid in self._threads[tid]
+                    self._readings[rid.split("-")[0]][rid]
+                    for rid in self._threads[tid]
                 ]
                 try:
                     thread_reading = (
                         ": %s"
-                        % self._reading_command.combine_readings(readings).normalize()
+                        % self._reading_command.combine_readings(
+                            readings
+                        ).normalize()
                     )
                 except Exception as e:
                     thread_reading = ": INVALID: %s" % e.__class__.__name__
@@ -423,7 +438,8 @@ class DiscourseTester(object):
         results = []
         for tid in sorted(threads):
             assumptions = [
-                reading for (rid, reading) in self.expand_threads(tid, threads=threads)
+                reading
+                for (rid, reading) in self.expand_threads(tid, threads=threads)
             ]
             assumptions = list(
                 map(
@@ -463,7 +479,11 @@ class DiscourseTester(object):
         """
         self._construct_readings()
         self._construct_threads()
-        threads = {thread_id: self._threads[thread_id]} if thread_id else self._threads
+        threads = (
+            {thread_id: self._threads[thread_id]}
+            if thread_id
+            else self._threads
+        )
 
         for (tid, modelfound) in self._check_consistency(
             threads, show=show, verbose=verbose
@@ -601,13 +621,20 @@ def discourse_demo(reading_command=None):
     print()
     dt.add_sentence("A person dances", informchk=True)
     dt = DiscourseTester(
-        ["Vincent is a boxer", "Fido is a boxer", "Vincent is married", "Fido barks"],
+        [
+            "Vincent is a boxer",
+            "Fido is a boxer",
+            "Vincent is married",
+            "Fido barks",
+        ],
         reading_command,
     )
     dt.readings(filter=True)
     import nltk.data
 
-    background_file = os.path.join("grammars", "book_grammars", "background.fol")
+    background_file = os.path.join(
+        "grammars", "book_grammars", "background.fol"
+    )
     background = nltk.data.load(background_file)
 
     print()
@@ -623,7 +650,9 @@ def drt_discourse_demo(reading_command=None):
     """
     Illustrate the various methods of ``DiscourseTester``
     """
-    dt = DiscourseTester(["every dog chases a boy", "he runs"], reading_command)
+    dt = DiscourseTester(
+        ["every dog chases a boy", "he runs"], reading_command
+    )
     dt.models()
     print()
     dt.sentences()

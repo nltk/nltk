@@ -167,10 +167,12 @@ class StackDecoder(object):
                     all_phrases, hypothesis
                 )
                 for src_phrase_span in possible_expansions:
-                    src_phrase = sentence[src_phrase_span[0] : src_phrase_span[1]]
-                    for translation_option in self.phrase_table.translations_for(
-                        src_phrase
-                    ):
+                    src_phrase = sentence[
+                        src_phrase_span[0] : src_phrase_span[1]
+                    ]
+                    for (
+                        translation_option
+                    ) in self.phrase_table.translations_for(src_phrase):
                         raw_score = self.expansion_score(
                             hypothesis, translation_option, src_phrase_span
                         )
@@ -319,7 +321,9 @@ class StackDecoder(object):
             cover untranslated positions.
         :rtype: list(tuple(int, int))
         """
-        untranslated_spans = hypothesis.untranslated_spans(len(all_phrases_from))
+        untranslated_spans = hypothesis.untranslated_spans(
+            len(all_phrases_from)
+        )
         valid_phrases = []
         for available_span in untranslated_spans:
             start = available_span[0]
@@ -431,7 +435,9 @@ class _Hypothesis(object):
         current_hypothesis = self
         while current_hypothesis.previous is not None:
             translated_span = current_hypothesis.src_phrase_span
-            translated_positions.extend(range(translated_span[0], translated_span[1]))
+            translated_positions.extend(
+                range(translated_span[0], translated_span[1])
+            )
             current_hypothesis = current_hypothesis.previous
         return translated_positions
 

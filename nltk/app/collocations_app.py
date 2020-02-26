@@ -55,12 +55,18 @@ _CORPORA = {
     "English: Brown Corpus (Press)": lambda: brown.words(
         categories=["news", "editorial", "reviews"]
     ),
-    "English: Brown Corpus (Religion)": lambda: brown.words(categories="religion"),
-    "English: Brown Corpus (Learned)": lambda: brown.words(categories="learned"),
+    "English: Brown Corpus (Religion)": lambda: brown.words(
+        categories="religion"
+    ),
+    "English: Brown Corpus (Learned)": lambda: brown.words(
+        categories="learned"
+    ),
     "English: Brown Corpus (Science Fiction)": lambda: brown.words(
         categories="science_fiction"
     ),
-    "English: Brown Corpus (Romance)": lambda: brown.words(categories="romance"),
+    "English: Brown Corpus (Romance)": lambda: brown.words(
+        categories="romance"
+    ),
     "English: Brown Corpus (Humor)": lambda: brown.words(categories="humor"),
     "English: NPS Chat Corpus": lambda: nps_chat.words(),
     "English: Wall Street Journal Corpus": lambda: treebank.words(),
@@ -96,7 +102,8 @@ class CollocationsView:
 
     def _init_widgets(self, parent):
         self.main_frame = Frame(
-            parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1)
+            parent,
+            dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1),
         )
         self._init_corpus_select(self.main_frame)
         self._init_results_box(self.main_frame)
@@ -126,7 +133,7 @@ class CollocationsView:
             self.var,
             self.model.DEFAULT_CORPUS,
             command=self.corpus_selected,
-            *self.model.non_default_corpora()
+            *self.model.non_default_corpora(),
         )
         om["borderwidth"] = 0
         om["highlightthickness"] = 1
@@ -151,7 +158,10 @@ class CollocationsView:
 
         filemenu = Menu(menubar, tearoff=0, borderwidth=0)
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-q"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-q",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -179,7 +189,9 @@ class CollocationsView:
             command=self.set_result_size,
         )
         rescntmenu.invoke(1)
-        editmenu.add_cascade(label="Result Count", underline=0, menu=rescntmenu)
+        editmenu.add_cascade(
+            label="Result Count", underline=0, menu=rescntmenu
+        )
 
         menubar.add_cascade(label="Edit", underline=0, menu=editmenu)
         self.top.config(menu=menubar)
@@ -343,7 +355,9 @@ class CollocationsView:
         self.results_box["state"] = "normal"
         row = 1
         for each in results:
-            self.results_box.insert(str(row) + ".0", each[0] + " " + each[1] + "\n")
+            self.results_box.insert(
+                str(row) + ".0", each[0] + " " + each[1] + "\n"
+            )
             row += 1
         self.results_box["state"] = "disabled"
 
@@ -411,7 +425,9 @@ class CollocationsModel:
                 from operator import itemgetter
 
                 text = [w for w in words if len(w) > 2]
-                fd = FreqDist(tuple(text[i : i + 2]) for i in range(len(text) - 1))
+                fd = FreqDist(
+                    tuple(text[i : i + 2]) for i in range(len(text) - 1)
+                )
                 vocab = FreqDist(text)
                 scored = [
                     ((w1, w2), fd[(w1, w2)] ** 3 / (vocab[w1] * vocab[w2]))

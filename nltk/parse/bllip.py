@@ -163,7 +163,7 @@ class BllipParser(ParserI):
             self.rrp.load_reranker_model(
                 features_filename=reranker_features,
                 weights_filename=reranker_weights,
-                **reranker_options
+                **reranker_options,
             )
 
     def parse(self, sentence):

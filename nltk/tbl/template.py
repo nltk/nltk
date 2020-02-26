@@ -159,7 +159,9 @@ class Template(BrillTemplateI):
 
         applicable_conditions = self._applicable_conditions(tokens, index)
         xs = list(it.product(*applicable_conditions))
-        return [Rule(self.id, tokens[index][1], correct_tag, tuple(x)) for x in xs]
+        return [
+            Rule(self.id, tokens[index][1], correct_tag, tuple(x)) for x in xs
+        ]
 
     def _applicable_conditions(self, tokens, index):
         """
@@ -186,7 +188,9 @@ class Template(BrillTemplateI):
         # applicable_rules(tokens, i, ...) depends on index if
         # i+start < index <= i+end.
 
-        allpositions = [0] + [p for feat in self._features for p in feat.positions]
+        allpositions = [0] + [
+            p for feat in self._features for p in feat.positions
+        ]
         start, end = min(allpositions), max(allpositions)
         s = max(0, index + (-end))
         e = min(index + (-start) + 1, len(tokens))
@@ -278,7 +282,10 @@ class Template(BrillTemplateI):
             combrange = (
                 (1, len(xs) + 1)
                 if k is None
-                else (k, k + 1)  # n over 1 .. n over n (all non-empty combinations)
+                else (
+                    k,
+                    k + 1,
+                )  # n over 1 .. n over n (all non-empty combinations)
                 if isinstance(k, int)
                 else (k[0], k[1] + 1)  # n over k (only
             )  # n over k1, n over k1+1... n over k2

@@ -80,7 +80,8 @@ class EMClusterer(VectorSpaceClusterer):
         priors = self._priors
         if not priors:
             priors = self._priors = (
-                numpy.ones(self._num_clusters, numpy.float64) / self._num_clusters
+                numpy.ones(self._num_clusters, numpy.float64)
+                / self._num_clusters
             )
         covariances = self._covariance_matrices
         if not covariances:
@@ -108,12 +109,16 @@ class EMClusterer(VectorSpaceClusterer):
             # M-step, update parameters - cvm, p, mean
             for j in range(self._num_clusters):
                 covariance_before = covariances[j]
-                new_covariance = numpy.zeros((dimensions, dimensions), numpy.float64)
+                new_covariance = numpy.zeros(
+                    (dimensions, dimensions), numpy.float64
+                )
                 new_mean = numpy.zeros(dimensions, numpy.float64)
                 sum_hj = 0.0
                 for i in range(len(vectors)):
                     delta = vectors[i] - means[j]
-                    new_covariance += h[i, j] * numpy.multiply.outer(delta, delta)
+                    new_covariance += h[i, j] * numpy.multiply.outer(
+                        delta, delta
+                    )
                     sum_hj += h[i, j]
                     new_mean += h[i, j] * vectors[i]
                 covariances[j] = new_covariance / sum_hj
@@ -121,7 +126,9 @@ class EMClusterer(VectorSpaceClusterer):
                 priors[j] = sum_hj / len(vectors)
 
                 # bias term to stop covariance matrix being singular
-                covariances[j] += self._bias * numpy.identity(dimensions, numpy.float64)
+                covariances[j] += self._bias * numpy.identity(
+                    dimensions, numpy.float64
+                )
 
             # calculate likelihood - FIXME: may be broken
             l = self._loglikelihood(vectors, priors, means, covariances)
@@ -149,7 +156,9 @@ class EMClusterer(VectorSpaceClusterer):
 
     def _gaussian(self, mean, cvm, x):
         m = len(mean)
-        assert cvm.shape == (m, m), "bad sized covariance matrix, %s" % str(cvm.shape)
+        assert cvm.shape == (m, m), "bad sized covariance matrix, %s" % str(
+            cvm.shape
+        )
         try:
             det = numpy.linalg.det(cvm)
             inv = numpy.linalg.inv(cvm)
@@ -168,7 +177,9 @@ class EMClusterer(VectorSpaceClusterer):
         for vector in vectors:
             p = 0
             for j in range(len(priors)):
-                p += priors[j] * self._gaussian(means[j], covariances[j], vector)
+                p += priors[j] * self._gaussian(
+                    means[j], covariances[j], vector
+                )
             llh += numpy.log(p)
         return llh
 
@@ -213,6 +224,7 @@ def demo():
     pdist = clusterer.classification_probdist(vector)
     for sample in pdist.samples():
         print("%s => %.0f%%" % (sample, pdist.prob(sample) * 100))
+
 
 if __name__ == "__main__":
     demo()

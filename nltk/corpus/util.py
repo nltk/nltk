@@ -72,7 +72,9 @@ class LazyCorpusLoader(object):
                 root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
             except LookupError as e:
                 try:
-                    root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
+                    root = nltk.data.find(
+                        "{}/{}".format(self.subdir, self.__name)
+                    )
                 except LookupError:
                     raise e
         else:
@@ -80,7 +82,9 @@ class LazyCorpusLoader(object):
                 root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
             except LookupError as e:
                 try:
-                    root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
+                    root = nltk.data.find(
+                        "{}/{}".format(self.subdir, zip_name)
+                    )
                 except LookupError:
                     raise e
 
@@ -115,7 +119,9 @@ class LazyCorpusLoader(object):
         # Without this fix tests may take extra 1.5GB RAM
         # because all corpora gets loaded during test collection.
         if attr == "__bases__":
-            raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
+            raise AttributeError(
+                "LazyCorpusLoader object has no attribute '__bases__'"
+            )
 
         self.__load()
         # This looks circular, but its not, since __load() changes our

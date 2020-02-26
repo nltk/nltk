@@ -35,7 +35,9 @@ class LinThesaurusCorpusReader(CorpusReader):
         """
 
         super(LinThesaurusCorpusReader, self).__init__(root, r"sim[A-Z]\.lsp")
-        self._thesaurus = defaultdict(LinThesaurusCorpusReader.__defaultdict_factory)
+        self._thesaurus = defaultdict(
+            LinThesaurusCorpusReader.__defaultdict_factory
+        )
         self._badscore = badscore
         for path, encoding, fileid in self.abspaths(
             include_encoding=True, include_fileid=True
@@ -56,9 +58,9 @@ class LinThesaurusCorpusReader(CorpusReader):
                         split_line = line.split("\t")
                         if len(split_line) == 2:
                             ngram, score = split_line
-                            self._thesaurus[fileid][key][ngram.strip('"')] = float(
-                                score
-                            )
+                            self._thesaurus[fileid][key][
+                                ngram.strip('"')
+                            ] = float(score)
 
     def similarity(self, ngram1, ngram2, fileid=None):
         """

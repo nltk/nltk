@@ -195,6 +195,7 @@ import nltk
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
+
 class Package(object):
     """
     A directory entry for a downloadable package.  These entries are
@@ -219,7 +220,7 @@ class Package(object):
         license="Unknown",
         author="Unknown",
         unzip=True,
-        **kw
+        **kw,
     ):
         self.id = id
         """A unique identifier for this package."""
@@ -454,7 +455,9 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
 
-    DEFAULT_URL = "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml"
+    DEFAULT_URL = (
+        "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml"
+    )
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        ``Downloader`` object."""
@@ -560,7 +563,9 @@ class Downloader(object):
                     self.NOT_INSTALLED: " ",
                 }[status]
                 name = textwrap.fill(
-                    "-" * 27 + (info.name or info.id), 75, subsequent_indent=27 * " "
+                    "-" * 27 + (info.name or info.id),
+                    75,
+                    subsequent_indent=27 * " ",
                 )[27:]
                 print("  [%s] %s %s" % (prefix, info.id.ljust(20, "."), name))
                 lines += len(name.split("\n"))  # for more_prompt
@@ -583,11 +588,19 @@ class Downloader(object):
 
     def corpora(self):
         self._update_index()
-        return [pkg for (id, pkg) in self._packages.items() if pkg.subdir == "corpora"]
+        return [
+            pkg
+            for (id, pkg) in self._packages.items()
+            if pkg.subdir == "corpora"
+        ]
 
     def models(self):
         self._update_index()
-        return [pkg for (id, pkg) in self._packages.items() if pkg.subdir != "corpora"]
+        return [
+            pkg
+            for (id, pkg) in self._packages.items()
+            if pkg.subdir != "corpora"
+        ]
 
     def collections(self):
         self._update_index()
@@ -716,12 +729,15 @@ class Downloader(object):
                     if not s:
                         break
                     if block % 2 == 0:  # how often?
-                        yield ProgressMessage(min(80, 5 + 75 * (block / num_blocks)))
+                        yield ProgressMessage(
+                            min(80, 5 + 75 * (block / num_blocks))
+                        )
             infile.close()
         except IOError as e:
             yield ErrorMessage(
                 info,
-                "Error downloading %r from <%s>:" "\n  %s" % (info.id, info.url, e),
+                "Error downloading %r from <%s>:"
+                "\n  %s" % (info.id, info.url, e),
             )
             return
         yield FinishDownloadMessage(info)
@@ -818,7 +834,10 @@ class Downloader(object):
                                 % msg.collection.id
                             )
                         else:
-                            show("Done downloading collection %s" % msg.collection.id)
+                            show(
+                                "Done downloading collection %s"
+                                % msg.collection.id
+                            )
 
                     # Package downloading messages:
                     elif isinstance(msg, StartPackageMessage):
@@ -827,7 +846,11 @@ class Downloader(object):
                             % (msg.package.id, download_dir)
                         )
                     elif isinstance(msg, UpToDateMessage):
-                        show("Package %s is already up-to-date!" % msg.package.id, "  ")
+                        show(
+                            "Package %s is already up-to-date!"
+                            % msg.package.id,
+                            "  ",
+                        )
                     # elif isinstance(msg, StaleMessage):
                     #    show('Package %s is out-of-date or corrupt' %
                     #         msg.package.id, '  ')
@@ -868,7 +891,10 @@ class Downloader(object):
                 return self.STALE
             elif self.PARTIAL in pkg_status:
                 return self.PARTIAL
-            elif self.INSTALLED in pkg_status and self.NOT_INSTALLED in pkg_status:
+            elif (
+                self.INSTALLED in pkg_status
+                and self.NOT_INSTALLED in pkg_status
+            ):
                 return self.PARTIAL
             elif self.NOT_INSTALLED in pkg_status:
                 return self.NOT_INSTALLED
@@ -882,7 +908,9 @@ class Downloader(object):
                 return self._pkg_status(info, filepath)
             else:
                 if info.id not in self._status_cache:
-                    self._status_cache[info.id] = self._pkg_status(info, filepath)
+                    self._status_cache[info.id] = self._pkg_status(
+                        info, filepath
+                    )
                 return self._status_cache[info.id]
 
     def _pkg_status(self, info, filepath):
@@ -956,12 +984,15 @@ class Downloader(object):
         self._index_timestamp = time.time()
 
         # Build a dictionary of packages.
-        packages = [Package.fromxml(p) for p in self._index.findall("packages/package")]
+        packages = [
+            Package.fromxml(p) for p in self._index.findall("packages/package")
+        ]
         self._packages = dict((p.id, p) for p in packages)
 
         # Build a dictionary of collections.
         collections = [
-            Collection.fromxml(c) for c in self._index.findall("collections/collection")
+            Collection.fromxml(c)
+            for c in self._index.findall("collections/collection")
         ]
         self._collections = dict((c.id, c) for c in collections)
 
@@ -1149,7 +1180,9 @@ class DownloaderShell(object):
             try:
                 if command == "l":
                     print()
-                    self._ds.list(self._ds.download_dir, header=False, more_prompt=True)
+                    self._ds.list(
+                        self._ds.download_dir, header=False, more_prompt=True
+                    )
                 elif command == "h":
                     self._simple_interactive_help()
                 elif command == "c":
@@ -1245,8 +1278,15 @@ class DownloaderShell(object):
         print()
         print("Data Server:")
         print("  - URL: <%s>" % self._ds.url)
-        print(("  - %d Package Collections Available" % len(self._ds.collections())))
-        print(("  - %d Individual Packages Available" % len(self._ds.packages())))
+        print(
+            (
+                "  - %d Package Collections Available"
+                % len(self._ds.collections())
+            )
+        )
+        print(
+            ("  - %d Individual Packages Available" % len(self._ds.packages()))
+        )
         print()
         print("Local Machine:")
         print("  - Data directory: %s" % self._ds.download_dir)
@@ -1256,7 +1296,10 @@ class DownloaderShell(object):
         while True:
             print()
             self._simple_interactive_menu(
-                "s) Show Config", "u) Set Server URL", "d) Set Data Dir", "m) Main Menu"
+                "s) Show Config",
+                "u) Set Server URL",
+                "d) Set Data Dir",
+                "m) Main Menu",
             )
             user_input = input("Config> ").strip().lower()
             if user_input == "s":
@@ -1268,7 +1311,12 @@ class DownloaderShell(object):
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
                 else:
-                    print(("Directory %r not found!  Create it first." % new_dl_dir))
+                    print(
+                        (
+                            "Directory %r not found!  Create it first."
+                            % new_dl_dir
+                        )
+                    )
             elif user_input == "u":
                 new_url = input("  New URL> ").strip()
                 if new_url in ("", "x", "q", "X", "Q"):
@@ -1466,7 +1514,9 @@ class DownloaderGUI(object):
             self._tabs[tab.lower()] = label
 
         # Create the table.
-        column_weights = [self.COLUMN_WEIGHTS.get(column, 1) for column in self.COLUMNS]
+        column_weights = [
+            self.COLUMN_WEIGHTS.get(column, 1) for column in self.COLUMNS
+        ]
         self._table = Table(
             tableframe,
             self.COLUMNS,
@@ -1499,7 +1549,10 @@ class DownloaderGUI(object):
         for (i, (key, label, callback)) in enumerate(info):
             Label(infoframe, text=label).grid(column=0, row=i, sticky="e")
             entry = Entry(
-                infoframe, font="courier", relief="groove", disabledforeground="black"
+                infoframe,
+                font="courier",
+                relief="groove",
+                disabledforeground="black",
             )
             self._info[key] = (entry, callback)
             entry.bind("<Return>", self._info_save)
@@ -1544,7 +1597,10 @@ class DownloaderGUI(object):
 
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label="Download", underline=0, command=self._download, accelerator="Return"
+            label="Download",
+            underline=0,
+            command=self._download,
+            accelerator="Return",
         )
         filemenu.add_separator()
         filemenu.add_command(
@@ -1558,10 +1614,15 @@ class DownloaderGUI(object):
             command=lambda: self._info_edit("download_dir"),
         )
         filemenu.add_separator()
-        filemenu.add_command(label="Show Log", underline=5, command=self._show_log)
+        filemenu.add_command(
+            label="Show Log", underline=5, command=self._show_log
+        )
         filemenu.add_separator()
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-x",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -1576,7 +1637,10 @@ class DownloaderGUI(object):
             if column in self.INITIAL_COLUMNS:
                 var.set(1)
             viewmenu.add_checkbutton(
-                label=column, underline=0, variable=var, command=self._select_columns
+                label=column,
+                underline=0,
+                variable=var,
+                command=self._select_columns,
             )
         menubar.add_cascade(label="View", underline=0, menu=viewmenu)
 
@@ -1594,14 +1658,19 @@ class DownloaderGUI(object):
         for column in self._table.column_names[1:]:
             sortmenu.add_command(
                 label="Reverse sort by %s" % column,
-                command=(lambda c=column: self._table.sort_by(c, "descending")),
+                command=(
+                    lambda c=column: self._table.sort_by(c, "descending")
+                ),
             )
         menubar.add_cascade(label="Sort", underline=0, menu=sortmenu)
 
         helpmenu = Menu(menubar, tearoff=0)
         helpmenu.add_command(label="About", underline=0, command=self.about)
         helpmenu.add_command(
-            label="Instructions", underline=0, command=self.help, accelerator="F1"
+            label="Instructions",
+            underline=0,
+            command=self.help,
+            accelerator="F1",
         )
         menubar.add_cascade(label="Help", underline=0, menu=helpmenu)
         self.top.bind("<F1>", self.help)
@@ -1769,8 +1838,12 @@ class DownloaderGUI(object):
         # though.  (This is on OS X w/ python 2.5)  The length of
         # delay that's necessary seems to depend on how fast the
         # comptuer is. :-/
-        self.top.after(150, self._table._scrollbar.set, *self._table._mlb.yview())
-        self.top.after(300, self._table._scrollbar.set, *self._table._mlb.yview())
+        self.top.after(
+            150, self._table._scrollbar.set, *self._table._mlb.yview()
+        )
+        self.top.after(
+            300, self._table._scrollbar.set, *self._table._mlb.yview()
+        )
 
     def _update_table_status(self):
         for row_num in range(len(self._table)):
@@ -1840,7 +1913,9 @@ class DownloaderGUI(object):
             self._clear_mark(msg.collection.id)
         elif isinstance(msg, FinishPackageMessage):
             self._clear_mark(msg.package.id)
-        afterid = self.top.after(self._DL_DELAY, self._download_cb, download_iter, ids)
+        afterid = self.top.after(
+            self._DL_DELAY, self._download_cb, download_iter, ids
+        )
         self._afterid["_download_cb"] = afterid
 
     def _select(self, id):
@@ -1863,7 +1938,10 @@ class DownloaderGUI(object):
             )
             # Color the marked column
             self._table.itemconfigure(
-                row, 0, foreground=self._MARK_COLOR[0], background=self._MARK_COLOR[1]
+                row,
+                0,
+                foreground=self._MARK_COLOR[0],
+                background=self._MARK_COLOR[1],
             )
 
     def _clear_mark(self, id):
@@ -1977,7 +2055,9 @@ class DownloaderGUI(object):
                 font="fixed",
             )
         except:
-            ShowText(self.top, "Help: NLTK Downloader", self.HELP.strip(), width=75)
+            ShowText(
+                self.top, "Help: NLTK Downloader", self.HELP.strip(), width=75
+            )
 
     def about(self, *e):
         ABOUT = "NLTK Downloader\n" + "Written by Edward Loper"
@@ -2012,7 +2092,8 @@ class DownloaderGUI(object):
 
         # This is used to display progress
         c.addtag_withtag(
-            "redbox", c.create_rectangle(0, 0, 0, 0, fill=self._PROGRESS_COLOR[0])
+            "redbox",
+            c.create_rectangle(0, 0, 0, 0, fill=self._PROGRESS_COLOR[0]),
         )
 
     def _show_progress(self, percent):
@@ -2191,7 +2272,9 @@ class DownloaderGUI(object):
         self._download_lock.release()
 
         # Check the queue again after MONITOR_QUEUE_DELAY msec.
-        afterid = self.top.after(self._MONITOR_QUEUE_DELAY, self._monitor_message_queue)
+        afterid = self.top.after(
+            self._MONITOR_QUEUE_DELAY, self._monitor_message_queue
+        )
         self._afterid["_monitor_message_queue"] = afterid
 
 
@@ -2362,7 +2445,10 @@ def _check_package(pkg_xml, zipfilename, zf):
         )
 
     # Zip file must expand to a subdir whose name matches uid.
-    if sum((name != uid and not name.startswith(uid + "/")) for name in zf.namelist()):
+    if sum(
+        (name != uid and not name.startswith(uid + "/"))
+        for name in zf.namelist()
+    ):
         raise ValueError(
             "Zipfile %s.zip does not expand to a single "
             "subdirectory %s/" % (uid, uid)
@@ -2425,11 +2511,15 @@ def _find_packages(root):
                 try:
                     zf = zipfile.ZipFile(zipfilename)
                 except Exception as e:
-                    raise ValueError("Error reading file %r!\n%s" % (zipfilename, e))
+                    raise ValueError(
+                        "Error reading file %r!\n%s" % (zipfilename, e)
+                    )
                 try:
                     pkg_xml = ElementTree.parse(xmlfilename).getroot()
                 except Exception as e:
-                    raise ValueError("Error reading file %r!\n%s" % (xmlfilename, e))
+                    raise ValueError(
+                        "Error reading file %r!\n%s" % (xmlfilename, e)
+                    )
 
                 # Check that the UID matches the filename
                 uid = os.path.split(xmlfilename[:-4])[1]

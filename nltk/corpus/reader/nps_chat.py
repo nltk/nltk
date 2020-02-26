@@ -69,7 +69,9 @@ class NPSChatCorpusReader(XMLCorpusReader):
         return ElementWrapper(elt)
 
     def _elt_to_words(self, elt, handler):
-        return [self._simplify_username(t.attrib["word"]) for t in elt.findall("t")]
+        return [
+            self._simplify_username(t.attrib["word"]) for t in elt.findall("t")
+        ]
 
     def _elt_to_tagged_words(self, elt, handler, tagset=None):
         tagged_post = [

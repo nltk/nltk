@@ -117,7 +117,11 @@ class AnnotationTask(object):
         return "\r\n".join(
             map(
                 lambda x: "%s\t%s\t%s"
-                % (x["coder"], x["item"].replace("_", "\t"), ",".join(x["labels"])),
+                % (
+                    x["coder"],
+                    x["item"].replace("_", "\t"),
+                    ",".join(x["labels"]),
+                ),
                 self.data,
             )
         )
@@ -142,16 +146,23 @@ class AnnotationTask(object):
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = next((x for x in data if x["coder"] in (cA, cB) and x["item"] == i))
+        k1 = next(
+            (x for x in data if x["coder"] in (cA, cB) and x["item"] == i)
+        )
         if k1["coder"] == cA:
             k2 = next((x for x in data if x["coder"] == cB and x["item"] == i))
         else:
             k2 = next((x for x in data if x["coder"] == cA and x["item"] == i))
 
         ret = 1.0 - float(self.distance(k1["labels"], k2["labels"]))
-        log.debug("Observed agreement between %s and %s on %s: %f", cA, cB, i, ret)
         log.debug(
-            'Distance between "%r" and "%r": %f', k1["labels"], k2["labels"], 1.0 - ret
+            "Observed agreement between %s and %s on %s: %f", cA, cB, i, ret
+        )
+        log.debug(
+            'Distance between "%r" and "%r": %f',
+            k1["labels"],
+            k2["labels"],
+            1.0 - ret,
         )
         return ret
 
@@ -159,10 +170,14 @@ class AnnotationTask(object):
         return float(sum(1 for x in self.data if x["labels"] == k))
 
     def Nik(self, i, k):
-        return float(sum(1 for x in self.data if x["item"] == i and x["labels"] == k))
+        return float(
+            sum(1 for x in self.data if x["item"] == i and x["labels"] == k)
+        )
 
     def Nck(self, c, k):
-        return float(sum(1 for x in self.data if x["coder"] == c and x["labels"] == k))
+        return float(
+            sum(1 for x in self.data if x["coder"] == c and x["labels"] == k)
+        )
 
     @deprecated("Use Nk, Nik or Nck instead")
     def N(self, k=None, i=None, c=None):
@@ -177,7 +192,8 @@ class AnnotationTask(object):
             ret = self.Nck(c, k)
         else:
             raise ValueError(
-                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c)
+                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)"
+                % (k, i, c)
             )
         log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
@@ -193,9 +209,9 @@ class AnnotationTask(object):
         data = self._grouped_data(
             "item", (x for x in self.data if x["coder"] in (cA, cB))
         )
-        ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(
-            self.I
-        )
+        ret = sum(
+            self.agr(cA, cB, item, item_data) for item, item_data in data
+        ) / len(self.I)
         log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
@@ -230,7 +246,9 @@ class AnnotationTask(object):
         data = (x for x in self.data if x["coder"] in (cA, cB))
         for i, itemdata in self._grouped_data("item", data):
             # we should have two items; distance doesn't care which comes first
-            total += self.distance(next(itemdata)["labels"], next(itemdata)["labels"])
+            total += self.distance(
+                next(itemdata)["labels"], next(itemdata)["labels"]
+            )
 
         ret = total / (len(self.I) * max_distance)
         log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
@@ -270,7 +288,9 @@ class AnnotationTask(object):
     def Ae_kappa(self, cA, cB):
         Ae = 0.0
         nitems = float(len(self.I))
-        label_freqs = ConditionalFreqDist((x["labels"], x["coder"]) for x in self.data)
+        label_freqs = ConditionalFreqDist(
+            (x["labels"], x["coder"]) for x in self.data
+        )
         for k in label_freqs.conditions():
             Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
         return Ae
@@ -318,7 +338,9 @@ class AnnotationTask(object):
             log.debug("Only one annotation value, allpha returning 1.")
             return 1
         if len(self.C) == 1 and len(self.I) == 1:
-            raise ValueError("Cannot calculate alpha, only one coder and item present!")
+            raise ValueError(
+                "Cannot calculate alpha, only one coder and item present!"
+            )
 
         total_disagreement = 0.0
         total_ratings = 0
@@ -347,11 +369,17 @@ class AnnotationTask(object):
         """
         total = 0.0
         label_freqs = ConditionalFreqDist(
-            (x["coder"], x["labels"]) for x in self.data if x["coder"] in (cA, cB)
+            (x["coder"], x["labels"])
+            for x in self.data
+            if x["coder"] in (cA, cB)
         )
         for j in self.K:
             for l in self.K:
-                total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
+                total += (
+                    label_freqs[cA][j]
+                    * label_freqs[cB][l]
+                    * self.distance(j, l)
+                )
         De = total / (max_distance * pow(len(self.I), 2))
         log.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)

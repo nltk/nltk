@@ -36,6 +36,6 @@ def alignment_error_rate(reference, hypothesis, possible=None):
     else:
         assert reference.issubset(possible)  # sanity check
 
-    return 1.0 - (len(hypothesis & reference) + len(hypothesis & possible)) / float(
-        len(hypothesis) + len(reference)
-    )
+    return 1.0 - (
+        len(hypothesis & reference) + len(hypothesis & possible)
+    ) / float(len(hypothesis) + len(reference))

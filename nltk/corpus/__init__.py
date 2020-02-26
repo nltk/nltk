@@ -158,7 +158,10 @@ framenet = LazyCorpusLoader(
     ],
 )
 gazetteers = LazyCorpusLoader(
-    "gazetteers", WordListCorpusReader, r"(?!LICENSE|\.).*\.txt", encoding="ISO-8859-2"
+    "gazetteers",
+    WordListCorpusReader,
+    r"(?!LICENSE|\.).*\.txt",
+    encoding="ISO-8859-2",
 )
 genesis = LazyCorpusLoader(
     "genesis",
@@ -179,12 +182,22 @@ inaugural = LazyCorpusLoader(
 )
 # [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
-    "indian", IndianCorpusReader, r"(?!\.).*\.pos", tagset="unknown", encoding="utf8"
+    "indian",
+    IndianCorpusReader,
+    r"(?!\.).*\.pos",
+    tagset="unknown",
+    encoding="utf8",
 )
 
-jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*\.chasen", encoding="utf-8")
-knbc = LazyCorpusLoader("knbc/corpus1", KNBCorpusReader, r".*/KN.*", encoding="euc-jp")
-lin_thesaurus = LazyCorpusLoader("lin_thesaurus", LinThesaurusCorpusReader, r".*\.lsp")
+jeita = LazyCorpusLoader(
+    "jeita", ChasenCorpusReader, r".*\.chasen", encoding="utf-8"
+)
+knbc = LazyCorpusLoader(
+    "knbc/corpus1", KNBCorpusReader, r".*/KN.*", encoding="euc-jp"
+)
+lin_thesaurus = LazyCorpusLoader(
+    "lin_thesaurus", LinThesaurusCorpusReader, r".*\.lsp"
+)
 mac_morpho = LazyCorpusLoader(
     "mac_morpho",
     MacMorphoCorpusReader,
@@ -234,10 +247,16 @@ ppattach = LazyCorpusLoader(
     "ppattach", PPAttachmentCorpusReader, ["training", "test", "devset"]
 )
 product_reviews_1 = LazyCorpusLoader(
-    "product_reviews_1", ReviewsCorpusReader, r"^(?!Readme).*\.txt", encoding="utf8"
+    "product_reviews_1",
+    ReviewsCorpusReader,
+    r"^(?!Readme).*\.txt",
+    encoding="utf8",
 )
 product_reviews_2 = LazyCorpusLoader(
-    "product_reviews_2", ReviewsCorpusReader, r"^(?!Readme).*\.txt", encoding="utf8"
+    "product_reviews_2",
+    ReviewsCorpusReader,
+    r"^(?!Readme).*\.txt",
+    encoding="utf8",
 )
 pros_cons = LazyCorpusLoader(
     "pros_cons",
@@ -254,7 +273,10 @@ ptb = LazyCorpusLoader(  # Penn Treebank v3: WSJ and Brown portions
     tagset="wsj",
 )
 qc = LazyCorpusLoader(
-    "qc", StringCategoryCorpusReader, ["train.txt", "test.txt"], encoding="ISO-8859-2"
+    "qc",
+    StringCategoryCorpusReader,
+    ["train.txt", "test.txt"],
+    encoding="ISO-8859-2",
 )
 reuters = LazyCorpusLoader(
     "reuters",
@@ -273,9 +295,14 @@ sentence_polarity = LazyCorpusLoader(
     encoding="utf-8",
 )
 sentiwordnet = LazyCorpusLoader(
-    "sentiwordnet", SentiWordNetCorpusReader, "SentiWordNet_3.0.0.txt", encoding="utf-8"
+    "sentiwordnet",
+    SentiWordNetCorpusReader,
+    "SentiWordNet_3.0.0.txt",
+    encoding="utf-8",
 )
-shakespeare = LazyCorpusLoader("shakespeare", XMLCorpusReader, r"(?!\.).*\.xml")
+shakespeare = LazyCorpusLoader(
+    "shakespeare", XMLCorpusReader, r"(?!\.).*\.xml"
+)
 sinica_treebank = LazyCorpusLoader(
     "sinica_treebank",
     SinicaTreebankCorpusReader,
@@ -284,7 +311,10 @@ sinica_treebank = LazyCorpusLoader(
     encoding="utf-8",
 )
 state_union = LazyCorpusLoader(
-    "state_union", PlaintextCorpusReader, r"(?!\.).*\.txt", encoding="ISO-8859-2"
+    "state_union",
+    PlaintextCorpusReader,
+    r"(?!\.).*\.txt",
+    encoding="ISO-8859-2",
 )
 stopwords = LazyCorpusLoader(
     "stopwords", WordListCorpusReader, r"(?!README|\.).*", encoding="utf8"
@@ -300,15 +330,27 @@ swadesh = LazyCorpusLoader(
     "swadesh", SwadeshCorpusReader, r"(?!README|\.).*", encoding="utf8"
 )
 swadesh110 = LazyCorpusLoader(
-    'panlex_swadesh', PanlexSwadeshCorpusReader, r'swadesh110/.*\.txt', encoding='utf8'
+    "panlex_swadesh",
+    PanlexSwadeshCorpusReader,
+    r"swadesh110/.*\.txt",
+    encoding="utf8",
 )
 swadesh207 = LazyCorpusLoader(
-    'panlex_swadesh', PanlexSwadeshCorpusReader, r'swadesh207/.*\.txt', encoding='utf8'
+    "panlex_swadesh",
+    PanlexSwadeshCorpusReader,
+    r"swadesh207/.*\.txt",
+    encoding="utf8",
 )
-switchboard = LazyCorpusLoader("switchboard", SwitchboardCorpusReader, tagset="wsj")
+switchboard = LazyCorpusLoader(
+    "switchboard", SwitchboardCorpusReader, tagset="wsj"
+)
 timit = LazyCorpusLoader("timit", TimitCorpusReader)
 timit_tagged = LazyCorpusLoader(
-    "timit", TimitTaggedCorpusReader, ".+\.tags", tagset="wsj", encoding="ascii"
+    "timit",
+    TimitTaggedCorpusReader,
+    ".+\.tags",
+    tagset="wsj",
+    encoding="ascii",
 )
 toolbox = LazyCorpusLoader(
     "toolbox", ToolboxCorpusReader, r"(?!.*(README|\.)).*\.(dic|txt)"
@@ -332,9 +374,13 @@ treebank_chunk = LazyCorpusLoader(
 treebank_raw = LazyCorpusLoader(
     "treebank/raw", PlaintextCorpusReader, r"wsj_.*", encoding="ISO-8859-2"
 )
-twitter_samples = LazyCorpusLoader("twitter_samples", TwitterCorpusReader, ".*\.json")
+twitter_samples = LazyCorpusLoader(
+    "twitter_samples", TwitterCorpusReader, ".*\.json"
+)
 udhr = LazyCorpusLoader("udhr", UdhrCorpusReader)
-udhr2 = LazyCorpusLoader("udhr2", PlaintextCorpusReader, r".*\.txt", encoding="utf8")
+udhr2 = LazyCorpusLoader(
+    "udhr2", PlaintextCorpusReader, r".*\.txt", encoding="utf8"
+)
 universal_treebanks = LazyCorpusLoader(
     "universal_treebanks_v20",
     ConllCorpusReader,
@@ -354,12 +400,17 @@ universal_treebanks = LazyCorpusLoader(
 )
 verbnet = LazyCorpusLoader("verbnet", VerbnetCorpusReader, r"(?!\.).*\.xml")
 webtext = LazyCorpusLoader(
-    "webtext", PlaintextCorpusReader, r"(?!README|\.).*\.txt", encoding="ISO-8859-2"
+    "webtext",
+    PlaintextCorpusReader,
+    r"(?!README|\.).*\.txt",
+    encoding="ISO-8859-2",
 )
 wordnet = LazyCorpusLoader(
     "wordnet",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader(
+        "omw", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"
+    ),
 )
 wordnet_ic = LazyCorpusLoader("wordnet_ic", WordNetICCorpusReader, ".*\.dat")
 words = LazyCorpusLoader(

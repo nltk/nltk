@@ -37,7 +37,9 @@ class GAAClusterer(VectorSpaceClusterer):
         self._dendrogram = Dendrogram(
             [numpy.array(vector, numpy.float64) for vector in vectors]
         )
-        return VectorSpaceClusterer.cluster(self, vectors, assign_clusters, trace)
+        return VectorSpaceClusterer.cluster(
+            self, vectors, assign_clusters, trace
+        )
 
     def cluster_vectorspace(self, vectors, trace=False):
         # variables describing the initial situation
@@ -93,7 +95,9 @@ class GAAClusterer(VectorSpaceClusterer):
             dist[i, i + 1 : j] * i_weight + dist[i + 1 : j, j] * j_weight
         )
         # update for i<j<x
-        dist[i, j + 1 :] = dist[i, j + 1 :] * i_weight + dist[j, j + 1 :] * j_weight
+        dist[i, j + 1 :] = (
+            dist[i, j + 1 :] * i_weight + dist[j, j + 1 :] * j_weight
+        )
         dist[i, i + 1 :] /= weight_sum
 
     def update_clusters(self, num_clusters):
@@ -134,7 +138,9 @@ class GAAClusterer(VectorSpaceClusterer):
         return self._num_clusters
 
     def __repr__(self):
-        return "<GroupAverageAgglomerative Clusterer n=%d>" % self._num_clusters
+        return (
+            "<GroupAverageAgglomerative Clusterer n=%d>" % self._num_clusters
+        )
 
 
 def demo():
@@ -145,7 +151,10 @@ def demo():
     from nltk.cluster import GAAClusterer
 
     # use a set of tokens with 2D indices
-    vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+    vectors = [
+        numpy.array(f)
+        for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]
+    ]
 
     # test the GAAC clusterer with 4 clusters
     clusterer = GAAClusterer(4)

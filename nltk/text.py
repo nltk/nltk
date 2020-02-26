@@ -50,7 +50,9 @@ class ContextIndex(object):
         right = tokens[i + 1].lower() if i != len(tokens) - 1 else "*END*"
         return (left, right)
 
-    def __init__(self, tokens, context_func=None, filter=None, key=lambda x: x):
+    def __init__(
+        self, tokens, context_func=None, filter=None, key=lambda x: x
+    ):
         self._key = key
         self._tokens = tokens
         if context_func:
@@ -60,10 +62,12 @@ class ContextIndex(object):
         if filter:
             tokens = [t for t in tokens if filter(t)]
         self._word_to_contexts = CFD(
-            (self._key(w), self._context_func(tokens, i)) for i, w in enumerate(tokens)
+            (self._key(w), self._context_func(tokens, i))
+            for i, w in enumerate(tokens)
         )
         self._context_to_words = CFD(
-            (self._context_func(tokens, i), self._key(w)) for i, w in enumerate(tokens)
+            (self._context_func(tokens, i), self._key(w))
+            for i, w in enumerate(tokens)
         )
 
     def tokens(self):
@@ -95,7 +99,8 @@ class ContextIndex(object):
             for w in self._context_to_words[c]:
                 if w != word:
                     scores[w] += (
-                        self._context_to_words[c][word] * self._context_to_words[c][w]
+                        self._context_to_words[c][word]
+                        * self._context_to_words[c][w]
                     )
         return sorted(scores, key=scores.get, reverse=True)[:n]
 
@@ -115,16 +120,20 @@ class ContextIndex(object):
         empty = [words[i] for i in range(len(words)) if not contexts[i]]
         common = reduce(set.intersection, contexts)
         if empty and fail_on_unknown:
-            raise ValueError("The following word(s) were not found:", " ".join(words))
+            raise ValueError(
+                "The following word(s) were not found:", " ".join(words)
+            )
         elif not common:
             # nothing in common -- just return an empty freqdist.
             return FreqDist()
         else:
             fd = FreqDist(
-                c for w in words for c in self._word_to_contexts[w] if c in common
+                c
+                for w in words
+                for c in self._word_to_contexts[w]
+                if c in common
             )
             return fd
-
 
 
 class ConcordanceIndex(object):
@@ -235,7 +244,11 @@ class ConcordanceIndex(object):
             print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines, len(concordance_list)))
+            print(
+                "Displaying {} of {} matches:".format(
+                    lines, len(concordance_list)
+                )
+            )
             for i, concordance_line in enumerate(concordance_list[:lines]):
                 print(concordance_line.line)
 
@@ -295,7 +308,6 @@ class TokenSearcher(object):
         # postprocess the output
         hits = [h[1:-1].split("><") for h in hits]
         return hits
-
 
 
 class Text(object):
@@ -424,11 +436,17 @@ class Text(object):
             from nltk.corpus import stopwords
 
             ignored_words = stopwords.words("english")
-            finder = BigramCollocationFinder.from_words(self.tokens, window_size)
+            finder = BigramCollocationFinder.from_words(
+                self.tokens, window_size
+            )
             finder.apply_freq_filter(2)
-            finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
+            finder.apply_word_filter(
+                lambda w: len(w) < 3 or w.lower() in ignored_words
+            )
             bigram_measures = BigramAssocMeasures()
-            self._collocations = list(finder.nbest(bigram_measures.likelihood_ratio, num))
+            self._collocations = list(
+                finder.nbest(bigram_measures.likelihood_ratio, num)
+            )
         return self._collocations
 
     def collocations(self, num=20, window_size=2):
@@ -480,7 +498,9 @@ class Text(object):
         if "_word_context_index" not in self.__dict__:
             # print('Building word-context index...')
             self._word_context_index = ContextIndex(
-                self.tokens, filter=lambda x: x.isalpha(), key=lambda s: s.lower()
+                self.tokens,
+                filter=lambda x: x.isalpha(),
+                key=lambda s: s.lower(),
             )
 
         # words = self._word_context_index.similar_words(word, num)
@@ -542,7 +562,9 @@ class Text(object):
         dispersion_plot(self, words)
 
     def _train_default_ngram_lm(self, tokenized_sents, n=3):
-        train_data, padded_sents = padded_everygram_pipeline(n, tokenized_sents)
+        train_data, padded_sents = padded_everygram_pipeline(
+            n, tokenized_sents
+        )
         model = MLE(order=n)
         model.fit(train_data, padded_sents)
         return model

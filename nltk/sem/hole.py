@@ -169,7 +169,9 @@ class HoleSemantics(object):
         holes) of this semantics given the constraints.
         """
         record = []
-        self._plug_nodes([(self.top_hole, [])], self.top_most_labels, {}, record)
+        self._plug_nodes(
+            [(self.top_hole, [])], self.top_most_labels, {}, record
+        )
         return record
 
     def _plug_nodes(self, queue, potential_labels, plug_acc, record):
@@ -193,7 +195,12 @@ class HoleSemantics(object):
             if node in self.holes:
                 # The node is a hole, try to plug it.
                 self._plug_hole(
-                    node, ancestors, queue[1:], potential_labels, plug_acc, record
+                    node,
+                    ancestors,
+                    queue[1:],
+                    potential_labels,
+                    plug_acc,
+                    record,
                 )
             else:
                 assert node in self.labels
@@ -201,11 +208,15 @@ class HoleSemantics(object):
                 # labels in the formula fragment named by that label.
                 args = self.fragments[node][1]
                 head = [(a, ancestors) for a in args if self.is_node(a)]
-                self._plug_nodes(head + queue[1:], potential_labels, plug_acc, record)
+                self._plug_nodes(
+                    head + queue[1:], potential_labels, plug_acc, record
+                )
         else:
             raise Exception("queue empty")
 
-    def _plug_hole(self, hole, ancestors0, queue, potential_labels0, plug_acc0, record):
+    def _plug_hole(
+        self, hole, ancestors0, queue, potential_labels0, plug_acc0, record
+    ):
         """
         Try all possible ways of plugging a single hole.
         See _plug_nodes for the meanings of the parameters.
@@ -245,7 +256,10 @@ class HoleSemantics(object):
                 # A depth-first search would work as well since the trees must
                 # be finite but the bookkeeping would be harder.
                 self._plug_nodes(
-                    queue + [(l, ancestors)], potential_labels, plug_acc, record
+                    queue + [(l, ancestors)],
+                    potential_labels,
+                    plug_acc,
+                    record,
                 )
 
     def _violates_constraints(self, label, ancestors):

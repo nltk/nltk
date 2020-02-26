@@ -102,9 +102,9 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
         :see BaseProverCommand.decorate_proof()
         """
         if simplify:
-            return self._prover._call_prooftrans(proof_string, ["striplabels"])[
-                0
-            ].rstrip()
+            return self._prover._call_prooftrans(
+                proof_string, ["striplabels"]
+            )[0].rstrip()
         else:
             return proof_string.rstrip()
 
@@ -205,7 +205,10 @@ class Prover9Parent(object):
         except AttributeError:
             pass
         p = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            stdin=subprocess.PIPE,
         )
         (stdout, stderr) = p.communicate(input=input_str)
 
@@ -229,14 +232,19 @@ def convert_to_prover9(input):
             try:
                 result.append(_convert_to_prover9(s.simplify()))
             except:
-                print("input %s cannot be converted to Prover9 input syntax" % input)
+                print(
+                    "input %s cannot be converted to Prover9 input syntax"
+                    % input
+                )
                 raise
         return result
     else:
         try:
             return _convert_to_prover9(input.simplify())
         except:
-            print("input %s cannot be converted to Prover9 input syntax" % input)
+            print(
+                "input %s cannot be converted to Prover9 input syntax" % input
+            )
             raise
 
 

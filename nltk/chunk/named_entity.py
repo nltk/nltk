@@ -145,7 +145,11 @@ class NEChunkParser(ChunkParserI):
             elif tag.startswith("B-"):
                 sent.append(Tree(tag[2:], [tok]))
             elif tag.startswith("I-"):
-                if sent and isinstance(sent[-1], Tree) and sent[-1].label() == tag[2:]:
+                if (
+                    sent
+                    and isinstance(sent[-1], Tree)
+                    and sent[-1].label() == tag[2:]
+                ):
                     sent[-1].append(tok)
                 else:
                     sent.append(Tree(tag[2:], [tok]))

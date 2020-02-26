@@ -19,11 +19,17 @@ dutch = LazyCorpusLoader(
 )
 
 english = LazyCorpusLoader(
-    "europarl_raw/english", EuroparlCorpusReader, r"ep-.*\.en", encoding="utf-8"
+    "europarl_raw/english",
+    EuroparlCorpusReader,
+    r"ep-.*\.en",
+    encoding="utf-8",
 )
 
 finnish = LazyCorpusLoader(
-    "europarl_raw/finnish", EuroparlCorpusReader, r"ep-.*\.fi", encoding="utf-8"
+    "europarl_raw/finnish",
+    EuroparlCorpusReader,
+    r"ep-.*\.fi",
+    encoding="utf-8",
 )
 
 french = LazyCorpusLoader(
@@ -39,17 +45,29 @@ greek = LazyCorpusLoader(
 )
 
 italian = LazyCorpusLoader(
-    "europarl_raw/italian", EuroparlCorpusReader, r"ep-.*\.it", encoding="utf-8"
+    "europarl_raw/italian",
+    EuroparlCorpusReader,
+    r"ep-.*\.it",
+    encoding="utf-8",
 )
 
 portuguese = LazyCorpusLoader(
-    "europarl_raw/portuguese", EuroparlCorpusReader, r"ep-.*\.pt", encoding="utf-8"
+    "europarl_raw/portuguese",
+    EuroparlCorpusReader,
+    r"ep-.*\.pt",
+    encoding="utf-8",
 )
 
 spanish = LazyCorpusLoader(
-    "europarl_raw/spanish", EuroparlCorpusReader, r"ep-.*\.es", encoding="utf-8"
+    "europarl_raw/spanish",
+    EuroparlCorpusReader,
+    r"ep-.*\.es",
+    encoding="utf-8",
 )
 
 swedish = LazyCorpusLoader(
-    "europarl_raw/swedish", EuroparlCorpusReader, r"ep-.*\.sv", encoding="utf-8"
+    "europarl_raw/swedish",
+    EuroparlCorpusReader,
+    r"ep-.*\.sv",
+    encoding="utf-8",
 )

@@ -21,14 +21,14 @@ class TestBrill(unittest.TestCase):
         )
         brill_tagger = trainer.train(train_sents)
         # Example from https://github.com/nltk/nltk/issues/769
-        result = brill_tagger.tag('This is a foo bar sentence'.split())
+        result = brill_tagger.tag("This is a foo bar sentence".split())
         expected = [
-            ('This', 'DT'),
-            ('is', 'VBZ'),
-            ('a', 'DT'),
-            ('foo', None),
-            ('bar', 'NN'),
-            ('sentence', None),
+            ("This", "DT"),
+            ("is", "VBZ"),
+            ("a", "DT"),
+            ("foo", None),
+            ("bar", "NN"),
+            ("sentence", None),
         ]
         self.assertEqual(result, expected)
 

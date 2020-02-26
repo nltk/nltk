@@ -50,7 +50,9 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         return concat(
             [
                 DependencyCorpusView(fileid, False, False, False, encoding=enc)
-                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+                for fileid, enc in self.abspaths(
+                    fileids, include_encoding=True
+                )
             ]
         )
 
@@ -58,7 +60,9 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         return concat(
             [
                 DependencyCorpusView(fileid, True, False, False, encoding=enc)
-                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+                for fileid, enc in self.abspaths(
+                    fileids, include_encoding=True
+                )
             ]
         )
 
@@ -66,7 +70,9 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         return concat(
             [
                 DependencyCorpusView(fileid, False, True, False, encoding=enc)
-                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+                for fileid, enc in self.abspaths(
+                    fileids, include_encoding=True
+                )
             ]
         )
 
@@ -74,7 +80,9 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         return concat(
             [
                 DependencyCorpusView(fileid, True, True, False, encoding=enc)
-                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+                for fileid, enc in self.abspaths(
+                    fileids, include_encoding=True
+                )
             ]
         )
 
@@ -82,7 +90,9 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         sents = concat(
             [
                 DependencyCorpusView(fileid, False, True, True, encoding=enc)
-                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+                for fileid, enc in self.abspaths(
+                    fileids, include_encoding=True
+                )
             ]
         )
         return [DependencyGraph(sent) for sent in sents]
@@ -121,7 +131,9 @@ class DependencyCorpusView(StreamBackedCorpusView):
             elif len(lines[0]) == 10:
                 sent = [(line[1], line[4]) for line in lines]
             else:
-                raise ValueError("Unexpected number of fields in dependency tree file")
+                raise ValueError(
+                    "Unexpected number of fields in dependency tree file"
+                )
 
             # discard tags if they weren't requested
             if not self._tagged:

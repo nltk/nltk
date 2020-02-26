@@ -99,13 +99,19 @@ responses = (
     # e.g. "am I a duck?", "am I going to die?"
     (
         r"am i (.*)\?",
-        ("Perhaps%1, perhaps not%1.", "Whether you are%1 or not is not for me to say."),
+        (
+            "Perhaps%1, perhaps not%1.",
+            "Whether you are%1 or not is not for me to say.",
+        ),
     ),
     # what questions, e.g. "what time is it?"
     # problems:
     #     person:  "What do you want?"
     #    chatbot: "Seek truth, not what do me want."
-    (r"what (.*)\?", ("Seek truth, not what%1.", "What%1 should not concern you.")),
+    (
+        r"what (.*)\?",
+        ("Seek truth, not what%1.", "What%1 should not concern you."),
+    ),
     # how questions, e.g. "how do you do?"
     (
         r"how (.*)\?",
@@ -143,7 +149,10 @@ responses = (
     # e.g. "is there a doctor in the house?"
     (
         r"is there (.*)\?",
-        ("There is%1 if you believe there is.", "It is possible that there is%1."),
+        (
+            "There is%1 if you believe there is.",
+            "It is possible that there is%1.",
+        ),
     ),
     # e.g. "is it possible?", "is this true?"
     (r"is(.*)\?", ("%1 is not relevant.", "Does this matter?")),
@@ -278,7 +287,10 @@ responses = (
     # e.g. "you stink!"
     (
         r"you (.*)",
-        ("My path is not of conern to you.", "I am but one, and you but one more."),
+        (
+            "My path is not of conern to you.",
+            "I am but one, and you but one more.",
+        ),
     ),
     # say goodbye with some extra Zen wisdom.
     (
@@ -312,7 +324,9 @@ def zen_chat():
     print("*" * 75)
     print("Zen Chatbot!".center(75))
     print("*" * 75)
-    print('"Look beyond mere words and letters - look into your mind"'.center(75))
+    print(
+        '"Look beyond mere words and letters - look into your mind"'.center(75)
+    )
     print("* Talk your way to truth with Zen Chatbot.")
     print("* Type 'quit' when you have had enough.")
     print("*" * 75)

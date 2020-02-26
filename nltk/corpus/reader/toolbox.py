@@ -42,7 +42,9 @@ class ToolboxCorpusReader(CorpusReader):
                         strip, unwrap, encoding, errors, unicode_fields
                     )
                 )
-                for (fileid, enc) in self.abspaths(fileids, include_encoding=True)
+                for (fileid, enc) in self.abspaths(
+                    fileids, include_encoding=True
+                )
             ]
         )
 
@@ -65,7 +67,11 @@ class ToolboxCorpusReader(CorpusReader):
         return entries
 
     def words(self, fileids, key="lx"):
-        return [contents for marker, contents in self.fields(fileids) if marker == key]
+        return [
+            contents
+            for marker, contents in self.fields(fileids)
+            if marker == key
+        ]
 
     def raw(self, fileids):
         if fileids is None:

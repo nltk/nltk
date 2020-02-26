@@ -93,7 +93,9 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     total_reference_words = 0
     for (
         references
-    ) in list_of_references:  # For each source sent, there's a list of reference sents.
+    ) in (
+        list_of_references
+    ):  # For each source sent, there's a list of reference sents.
         for reference in references:
             # For each order of ngram, count the ngram occurrences.
             for i in range(1, n + 1):
@@ -116,7 +118,9 @@ def corpus_nist(list_of_references, hypotheses, n=5):
             numerator = ngram_freq[_mgram]
         else:
             numerator = total_reference_words
-        information_weights[_ngram] = math.log(numerator / ngram_freq[_ngram], 2)
+        information_weights[_ngram] = math.log(
+            numerator / ngram_freq[_ngram], 2
+        )
 
     # Micro-average.
     nist_precision_numerator_per_ngram = Counter()
@@ -139,7 +143,9 @@ def corpus_nist(list_of_references, hypotheses, n=5):
                     else Counter()
                 )
                 ref_ngrams = (
-                    Counter(ngrams(reference, i)) if len(reference) >= i else Counter()
+                    Counter(ngrams(reference, i))
+                    if len(reference) >= i
+                    else Counter()
                 )
                 ngram_overlaps = hyp_ngrams & ref_ngrams
                 # Precision part of the score in Eqn 3
@@ -148,12 +154,16 @@ def corpus_nist(list_of_references, hypotheses, n=5):
                     for _ngram, count in ngram_overlaps.items()
                 )
                 _denominator = sum(hyp_ngrams.values())
-                _precision = 0 if _denominator == 0 else _numerator / _denominator
+                _precision = (
+                    0 if _denominator == 0 else _numerator / _denominator
+                )
                 nist_score_per_ref.append(
                     (_precision, _numerator, _denominator, _ref_len)
                 )
             # Best reference.
-            precision, numerator, denominator, ref_len = max(nist_score_per_ref)
+            precision, numerator, denominator, ref_len = max(
+                nist_score_per_ref
+            )
             nist_precision_numerator_per_ngram[i] += numerator
             nist_precision_denominator_per_ngram[i] += denominator
             l_ref += ref_len

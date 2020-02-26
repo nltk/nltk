@@ -45,7 +45,9 @@ class Configuration(object):
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
-        self.buffer = list(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
+        self.buffer = list(
+            range(1, len(dep_graph.nodes))
+        )  # The rest is in the buffer
         self.arcs = []  # empty set of arc
         self._tokens = dep_graph.nodes
         self._max_address = len(self.buffer)
@@ -420,7 +422,9 @@ class TransitionParser(ParserI):
 
                         if precondition:
                             key = Transition.RIGHT_ARC + ":" + rel
-                            self._write_to_file(key, binary_features, input_file)
+                            self._write_to_file(
+                                key, binary_features, input_file
+                            )
                             operation.right_arc(conf, rel)
                             training_seq.append(key)
                             continue
@@ -509,7 +513,9 @@ class TransitionParser(ParserI):
 
         try:
             input_file = tempfile.NamedTemporaryFile(
-                prefix="transition_parse.train", dir=tempfile.gettempdir(), delete=False
+                prefix="transition_parse.train",
+                dir=tempfile.gettempdir(),
+                delete=False,
             )
 
             if self._algorithm == self.ARC_STANDARD:
@@ -570,7 +576,8 @@ class TransitionParser(ParserI):
                 np_data = array(data)
 
                 x_test = sparse.csr_matrix(
-                    (np_data, (np_row, np_col)), shape=(1, len(self._dictionary))
+                    (np_data, (np_row, np_col)),
+                    shape=(1, len(self._dictionary)),
                 )
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
@@ -595,7 +602,9 @@ class TransitionParser(ParserI):
                 pred_prob = model.predict_proba(x_test)[0]
                 for i in range(len(pred_prob)):
                     prob_dict[i] = pred_prob[i]
-                sorted_Prob = sorted(prob_dict.items(), key=itemgetter(1), reverse=True)
+                sorted_Prob = sorted(
+                    prob_dict.items(), key=itemgetter(1), reverse=True
+                )
 
                 # Note that SHIFT is always a valid operation
                 for (y_pred_idx, confidence) in sorted_Prob:
@@ -609,13 +618,17 @@ class TransitionParser(ParserI):
 
                         if baseTransition == Transition.LEFT_ARC:
                             if (
-                                operation.left_arc(conf, strTransition.split(":")[1])
+                                operation.left_arc(
+                                    conf, strTransition.split(":")[1]
+                                )
                                 != -1
                             ):
                                 break
                         elif baseTransition == Transition.RIGHT_ARC:
                             if (
-                                operation.right_arc(conf, strTransition.split(":")[1])
+                                operation.right_arc(
+                                    conf, strTransition.split(":")[1]
+                                )
                                 != -1
                             ):
                                 break

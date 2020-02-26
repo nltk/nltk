@@ -105,7 +105,9 @@ class SnowballStemmer(StemmerI):
 
     def __init__(self, language, ignore_stopwords=False):
         if language not in self.languages:
-            raise ValueError("The language '{0}' is not supported.".format(language))
+            raise ValueError(
+                "The language '{0}' is not supported.".format(language)
+            )
         stemmerclass = globals()[language.capitalize() + "Stemmer"]
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
@@ -324,10 +326,18 @@ class ArabicStemmer(_StandardStemmer):
 
     __kasheeda = re.compile(r"[\u0640]")  # ـ tatweel/kasheeda
 
-    __arabic_punctuation_marks = re.compile(r"[\u060C-\u061B-\u061F]")  #  ؛ ، ؟
+    __arabic_punctuation_marks = re.compile(
+        r"[\u060C-\u061B-\u061F]"
+    )  #  ؛ ، ؟
 
     # Normalize_post
-    __last_hamzat = ("\u0623", "\u0625", "\u0622", "\u0624", "\u0626")  # أ، إ، آ، ؤ، ئ
+    __last_hamzat = (
+        "\u0623",
+        "\u0625",
+        "\u0622",
+        "\u0624",
+        "\u0626",
+    )  # أ، إ، آ، ؤ، ئ
 
     # normalize other hamza's
     __initial_hamzat = re.compile(r"^[\u0622\u0623\u0625]")  #  أ، إ، آ
@@ -583,17 +593,26 @@ class ArabicStemmer(_StandardStemmer):
     def __Suffix_Verb_Step1(self, token):
         for suffix in self.__suffix_verb_step1:
             if token.endswith(suffix):
-                if suffix in self.__conjugation_suffix_verb_1 and len(token) >= 4:
+                if (
+                    suffix in self.__conjugation_suffix_verb_1
+                    and len(token) >= 4
+                ):
                     token = token[:-1]
                     self.suffixes_verb_step1_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_verb_2 and len(token) >= 5:
+                if (
+                    suffix in self.__conjugation_suffix_verb_2
+                    and len(token) >= 5
+                ):
                     token = token[:-2]
                     self.suffixes_verb_step1_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_verb_3 and len(token) >= 6:
+                if (
+                    suffix in self.__conjugation_suffix_verb_3
+                    and len(token) >= 6
+                ):
                     token = token[:-3]
                     self.suffixes_verb_step1_success = True
                     break
@@ -607,17 +626,26 @@ class ArabicStemmer(_StandardStemmer):
                     self.suffix_verb_step2a_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_verb_4 and len(token) >= 4:
+                if (
+                    suffix in self.__conjugation_suffix_verb_4
+                    and len(token) >= 4
+                ):
                     token = token[:-1]
                     self.suffix_verb_step2a_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_verb_past and len(token) >= 5:
+                if (
+                    suffix in self.__conjugation_suffix_verb_past
+                    and len(token) >= 5
+                ):
                     token = token[:-2]  # past
                     self.suffix_verb_step2a_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_verb_present and len(token) > 5:
+                if (
+                    suffix in self.__conjugation_suffix_verb_present
+                    and len(token) > 5
+                ):
                     token = token[:-2]  # present
                     self.suffix_verb_step2a_success = True
                     break
@@ -659,17 +687,26 @@ class ArabicStemmer(_StandardStemmer):
     def __Suffix_Noun_Step1a(self, token):
         for suffix in self.__suffix_noun_step1a:
             if token.endswith(suffix):
-                if suffix in self.__conjugation_suffix_noun_1 and len(token) >= 4:
+                if (
+                    suffix in self.__conjugation_suffix_noun_1
+                    and len(token) >= 4
+                ):
                     token = token[:-1]
                     self.suffix_noun_step1a_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_noun_2 and len(token) >= 5:
+                if (
+                    suffix in self.__conjugation_suffix_noun_2
+                    and len(token) >= 5
+                ):
                     token = token[:-2]
                     self.suffix_noun_step1a_success = True
                     break
 
-                if suffix in self.__conjugation_suffix_noun_3 and len(token) >= 6:
+                if (
+                    suffix in self.__conjugation_suffix_noun_3
+                    and len(token) >= 6
+                ):
                     token = token[:-3]
                     self.suffix_noun_step1a_success = True
                     break
@@ -860,28 +897,42 @@ class ArabicStemmer(_StandardStemmer):
                     # if self.suffix_noun_step1a_success:
                     modified_word = self.__Suffix_Noun_Step2a(modified_word)
                     if not self.suffix_noun_step2a_success:
-                        modified_word = self.__Suffix_Noun_Step2b(modified_word)
+                        modified_word = self.__Suffix_Noun_Step2b(
+                            modified_word
+                        )
                     if (
                         not self.suffix_noun_step2b_success
                         and not self.suffix_noun_step2a_success
                     ):
-                        modified_word = self.__Suffix_Noun_Step2c1(modified_word)
+                        modified_word = self.__Suffix_Noun_Step2c1(
+                            modified_word
+                        )
                     # or next ? todo : how to deal with or next
                 else:
                     modified_word = self.__Suffix_Noun_Step1b(modified_word)
                     if self.suffixe_noun_step1b_success:
-                        modified_word = self.__Suffix_Noun_Step2a(modified_word)
+                        modified_word = self.__Suffix_Noun_Step2a(
+                            modified_word
+                        )
                         if not self.suffix_noun_step2a_success:
-                            modified_word = self.__Suffix_Noun_Step2b(modified_word)
+                            modified_word = self.__Suffix_Noun_Step2b(
+                                modified_word
+                            )
                         if (
                             not self.suffix_noun_step2b_success
                             and not self.suffix_noun_step2a_success
                         ):
-                            modified_word = self.__Suffix_Noun_Step2c1(modified_word)
+                            modified_word = self.__Suffix_Noun_Step2c1(
+                                modified_word
+                            )
                     else:
                         if not self.is_defined:
-                            modified_word = self.__Suffix_Noun_Step2a(modified_word)
-                        modified_word = self.__Suffix_Noun_Step2b(modified_word)
+                            modified_word = self.__Suffix_Noun_Step2a(
+                                modified_word
+                            )
+                        modified_word = self.__Suffix_Noun_Step2b(
+                            modified_word
+                        )
             modified_word = self.__Suffix_Noun_Step3(modified_word)
         if not self.is_noun and self.is_verb:
             modified_word = self.__Suffix_All_alef_maqsura(modified_word)
@@ -1293,7 +1344,17 @@ class EnglishStemmer(_StandardStemmer):
     """
 
     __vowels = "aeiouy"
-    __double_consonants = ("bb", "dd", "ff", "gg", "mm", "nn", "pp", "rr", "tt")
+    __double_consonants = (
+        "bb",
+        "dd",
+        "ff",
+        "gg",
+        "mm",
+        "nn",
+        "pp",
+        "rr",
+        "tt",
+    )
     __li_ending = "cdeghkmnrt"
     __step0_suffixes = ("'s'", "'s", "'")
     __step1a_suffixes = ("sses", "ied", "ies", "us", "ss", "s")
@@ -1557,7 +1618,11 @@ class EnglishStemmer(_StandardStemmer):
                 break
 
         # STEP 1c
-        if len(word) > 2 and word[-1] in "yY" and word[-2] not in self.__vowels:
+        if (
+            len(word) > 2
+            and word[-1] in "yY"
+            and word[-2] not in self.__vowels
+        ):
             word = "".join((word[:-1], "i"))
             if len(r1) >= 1:
                 r1 = "".join((r1[:-1], "i"))
@@ -1846,7 +1911,17 @@ class FinnishStemmer(_StandardStemmer):
         "pa",
         "p\xE4",
     )
-    __step2_suffixes = ("nsa", "ns\xE4", "mme", "nne", "si", "ni", "an", "\xE4n", "en")
+    __step2_suffixes = (
+        "nsa",
+        "ns\xE4",
+        "mme",
+        "nne",
+        "si",
+        "ni",
+        "an",
+        "\xE4n",
+        "en",
+    )
     __step3_suffixes = (
         "siin",
         "tten",
@@ -2024,7 +2099,10 @@ class FinnishStemmer(_StandardStemmer):
                         continue
 
                 elif suffix in ("a", "\xE4"):
-                    if word[-2] in self.__vowels and word[-3] in self.__consonants:
+                    if (
+                        word[-2] in self.__vowels
+                        and word[-3] in self.__consonants
+                    ):
                         word = word[:-1]
                         r1 = r1[:-1]
                         r2 = r2[:-1]
@@ -2094,7 +2172,11 @@ class FinnishStemmer(_StandardStemmer):
             word = word[:-1]
             r1 = r1[:-1]
 
-        if len(r1) >= 2 and r1[-2] in self.__consonants and r1[-1] in "a\xE4ei":
+        if (
+            len(r1) >= 2
+            and r1[-2] in self.__consonants
+            and r1[-1] in "a\xE4ei"
+        ):
             word = word[:-1]
             r1 = r1[:-1]
 
@@ -2405,7 +2487,14 @@ class FrenchStemmer(_StandardStemmer):
 
                 elif (
                     suffix
-                    in ("atrice", "ateur", "ation", "atrices", "ateurs", "ations")
+                    in (
+                        "atrice",
+                        "ateur",
+                        "ation",
+                        "atrices",
+                        "ateurs",
+                        "ations",
+                    )
                     and suffix in r2
                 ):
                     word = word[: -len(suffix)]
@@ -2421,7 +2510,10 @@ class FrenchStemmer(_StandardStemmer):
                     word = suffix_replace(word, suffix, "log")
                     step1_success = True
 
-                elif suffix in ("usion", "ution", "usions", "utions") and suffix in r2:
+                elif (
+                    suffix in ("usion", "ution", "usions", "utions")
+                    and suffix in r2
+                ):
                     word = suffix_replace(word, suffix, "u")
                     step1_success = True
 
@@ -2544,7 +2636,11 @@ class FrenchStemmer(_StandardStemmer):
 
         # STEP 4: Residual suffixes
         else:
-            if len(word) >= 2 and word[-1] == "s" and word[-2] not in "aiou\xE8s":
+            if (
+                len(word) >= 2
+                and word[-1] == "s"
+                and word[-2] not in "aiou\xE8s"
+            ):
                 word = word[:-1]
 
             for suffix in self.__step4_suffixes:
@@ -2646,7 +2742,16 @@ class GermanStemmer(_StandardStemmer):
 
     __step1_suffixes = ("ern", "em", "er", "en", "es", "e", "s")
     __step2_suffixes = ("est", "en", "er", "st")
-    __step3_suffixes = ("isch", "lich", "heit", "keit", "end", "ung", "ig", "ik")
+    __step3_suffixes = (
+        "isch",
+        "lich",
+        "heit",
+        "keit",
+        "end",
+        "ung",
+        "ig",
+        "ik",
+    )
 
     def stem(self, word):
         """
@@ -3085,11 +3190,23 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step7_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix in ("\xE1nk", "\xE1juk", "\xE1m", "\xE1d", "\xE1"):
+                    if suffix in (
+                        "\xE1nk",
+                        "\xE1juk",
+                        "\xE1m",
+                        "\xE1d",
+                        "\xE1",
+                    ):
                         word = suffix_replace(word, suffix, "a")
                         r1 = suffix_replace(r1, suffix, "a")
 
-                    elif suffix in ("\xE9nk", "\xE9j\xFCk", "\xE9m", "\xE9d", "\xE9"):
+                    elif suffix in (
+                        "\xE9nk",
+                        "\xE9j\xFCk",
+                        "\xE9m",
+                        "\xE9d",
+                        "\xE9",
+                    ):
                         word = suffix_replace(word, suffix, "e")
                         r1 = suffix_replace(r1, suffix, "e")
                     else:
@@ -3475,9 +3592,12 @@ class ItalianStemmer(_StandardStemmer):
                         word = word[:-4]
                         rv = rv[:-4]
 
-                elif suffix in ("amento", "amenti", "imento", "imenti") and rv.endswith(
-                    suffix
-                ):
+                elif suffix in (
+                    "amento",
+                    "amenti",
+                    "imento",
+                    "imenti",
+                ) and rv.endswith(suffix):
                     step1_success = True
                     word = word[:-6]
                     rv = rv[:-6]
@@ -4335,7 +4455,14 @@ class RomanianStemmer(_StandardStemmer):
                         else:
                             rv = ""
 
-                    elif suffix in ("ii", "iua", "iei", "iile", "iilor", "ilor"):
+                    elif suffix in (
+                        "ii",
+                        "iua",
+                        "iei",
+                        "iile",
+                        "iilor",
+                        "ilor",
+                    ):
                         word = suffix_replace(word, suffix, "i")
 
                         if suffix in rv:
@@ -4496,7 +4623,8 @@ class RomanianStemmer(_StandardStemmer):
                         else:
                             if (
                                 not rv.startswith(suffix)
-                                and rv[rv.index(suffix) - 1] not in "aeio\u0103\xE2\xEE"
+                                and rv[rv.index(suffix) - 1]
+                                not in "aeio\u0103\xE2\xEE"
                             ):
                                 word = word[: -len(suffix)]
                         break
@@ -5698,7 +5826,10 @@ class SpanishStemmer(_StandardStemmer):
         # STEP 2a: Verb suffixes beginning 'y'
         if not step1_success:
             for suffix in self.__step2a_suffixes:
-                if rv.endswith(suffix) and word[-len(suffix) - 1 : -len(suffix)] == "u":
+                if (
+                    rv.endswith(suffix)
+                    and word[-len(suffix) - 1 : -len(suffix)] == "u"
+                ):
                     word = word[: -len(suffix)]
                     rv = rv[: -len(suffix)]
                     break

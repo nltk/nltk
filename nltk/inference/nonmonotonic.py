@@ -45,7 +45,9 @@ def get_domain(goal, assumptions):
         all_expressions = assumptions
     else:
         all_expressions = assumptions + [-goal]
-    return reduce(operator.or_, (a.constants() for a in all_expressions), set())
+    return reduce(
+        operator.or_, (a.constants() for a in all_expressions), set()
+    )
 
 
 class ClosedDomainProver(ProverCommandDecorator):
@@ -78,7 +80,8 @@ class ClosedDomainProver(ProverCommandDecorator):
         """
         if isinstance(ex, AllExpression):
             conjuncts = [
-                ex.term.replace(ex.variable, VariableExpression(d)) for d in domain
+                ex.term.replace(ex.variable, VariableExpression(d))
+                for d in domain
             ]
             conjuncts = [self.replace_quants(c, domain) for c in conjuncts]
             return reduce(lambda x, y: x & y, conjuncts)
@@ -91,7 +94,8 @@ class ClosedDomainProver(ProverCommandDecorator):
             return -self.replace_quants(ex.term, domain)
         elif isinstance(ex, ExistsExpression):
             disjuncts = [
-                ex.term.replace(ex.variable, VariableExpression(d)) for d in domain
+                ex.term.replace(ex.variable, VariableExpression(d))
+                for d in domain
             ]
             disjuncts = [self.replace_quants(d, domain) for d in disjuncts]
             return reduce(lambda x, y: x | y, disjuncts)
@@ -244,7 +248,9 @@ class ClosedWorldProver(ProverCommandDecorator):
         This method figures out how many arguments the predicate takes and
         returns a tuple containing that number of unique variables.
         """
-        return tuple(unique_variable() for i in range(predHolder.signature_len))
+        return tuple(
+            unique_variable() for i in range(predHolder.signature_len)
+        )
 
     def _make_antecedent(self, predicate, signature):
         """
@@ -284,9 +290,9 @@ class ClosedWorldProver(ProverCommandDecorator):
                 sig.append(term.variable)
                 term = term.term
             if isinstance(term, ImpExpression):
-                if isinstance(term.first, ApplicationExpression) and isinstance(
-                    term.second, ApplicationExpression
-                ):
+                if isinstance(
+                    term.first, ApplicationExpression
+                ) and isinstance(term.second, ApplicationExpression):
                     func1, args1 = term.first.uncurry()
                     func2, args2 = term.second.uncurry()
                     if (
@@ -335,7 +341,11 @@ class PredHolder(object):
             raise Exception("Signature lengths do not match")
 
     def __str__(self):
-        return "(%s,%s,%s)" % (self.signatures, self.properties, self.signature_len)
+        return "(%s,%s,%s)" % (
+            self.signatures,
+            self.properties,
+            self.signature_len,
+        )
 
     def __repr__(self):
         return "%s" % self
@@ -522,8 +532,12 @@ def default_reasoning_demo():
 
     # specify abnormal entities
     premises.append(lexpr(r"all x.(bird(x)           -> Ab1(x))"))  # flight
-    premises.append(lexpr(r"all x.(ostrich(x)        -> Ab2(x))"))  # non-flying bird
-    premises.append(lexpr(r"all x.(flying_ostrich(x) -> Ab3(x))"))  # flying ostrich
+    premises.append(
+        lexpr(r"all x.(ostrich(x)        -> Ab2(x))")
+    )  # non-flying bird
+    premises.append(
+        lexpr(r"all x.(flying_ostrich(x) -> Ab3(x))")
+    )  # flying ostrich
 
     # define entities
     premises.append(lexpr(r"elephant(E)"))

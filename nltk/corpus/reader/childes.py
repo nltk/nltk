@@ -70,7 +70,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [
                 self._get_words(
-                    fileid, speaker, sent, stem, relation, pos, strip_space, replace
+                    fileid,
+                    speaker,
+                    sent,
+                    stem,
+                    relation,
+                    pos,
+                    strip_space,
+                    replace,
                 )
                 for fileid in self.abspaths(fileids)
             ]
@@ -112,7 +119,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [
                 self._get_words(
-                    fileid, speaker, sent, stem, relation, pos, strip_space, replace
+                    fileid,
+                    speaker,
+                    sent,
+                    stem,
+                    relation,
+                    pos,
+                    strip_space,
+                    replace,
                 )
                 for fileid in self.abspaths(fileids)
             ]
@@ -154,7 +168,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [
                 self._get_words(
-                    fileid, speaker, sent, stem, relation, pos, strip_space, replace
+                    fileid,
+                    speaker,
+                    sent,
+                    stem,
+                    relation,
+                    pos,
+                    strip_space,
+                    replace,
                 )
                 for fileid in self.abspaths(fileids)
             ]
@@ -196,7 +217,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [
                 self._get_words(
-                    fileid, speaker, sent, stem, relation, pos, strip_space, replace
+                    fileid,
+                    speaker,
+                    sent,
+                    stem,
+                    relation,
+                    pos,
+                    strip_space,
+                    replace,
                 )
                 for fileid in self.abspaths(fileids)
             ]
@@ -212,7 +240,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :rtype: list(dict)
         """
         if not self._lazy:
-            return [self._get_corpus(fileid) for fileid in self.abspaths(fileids)]
+            return [
+                self._get_corpus(fileid) for fileid in self.abspaths(fileids)
+            ]
         return LazyMap(self._get_corpus, self.abspaths(fileids))
 
     def _get_corpus(self, fileid):
@@ -229,7 +259,10 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :rtype: list(dict)
         """
         if not self._lazy:
-            return [self._get_participants(fileid) for fileid in self.abspaths(fileids)]
+            return [
+                self._get_participants(fileid)
+                for fileid in self.abspaths(fileids)
+            ]
         return LazyMap(self._get_participants, self.abspaths(fileids))
 
     def _get_participants(self, fileid):
@@ -264,7 +297,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_age(self, fileid, speaker, month):
         xmldoc = ElementTree.parse(fileid).getroot()
-        for pat in xmldoc.findall(".//{%s}Participants/{%s}participant" % (NS, NS)):
+        for pat in xmldoc.findall(
+            ".//{%s}Participants/{%s}participant" % (NS, NS)
+        ):
             try:
                 if pat.get("id") == speaker:
                     age = pat.get("age")
@@ -339,7 +374,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             # count number of morphemes
             # (e.g., 'read' = 1 morpheme but 'read-PAST' is 2 morphemes)
             numWords = (
-                len(flatten([word.split("-") for word in thisWordList])) - numFillers
+                len(flatten([word.split("-") for word in thisWordList]))
+                - numFillers
             )
             numSents = len(results) - sentDiscount
             mlu = numWords / numSents
@@ -367,11 +403,15 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     suffixStem = None
                     suffixTag = None
                     # getting replaced words
-                    if replace and xmlsent.find(".//{%s}w/{%s}replacement" % (NS, NS)):
+                    if replace and xmlsent.find(
+                        ".//{%s}w/{%s}replacement" % (NS, NS)
+                    ):
                         xmlword = xmlsent.find(
                             ".//{%s}w/{%s}replacement/{%s}w" % (NS, NS, NS)
                         )
-                    elif replace and xmlsent.find(".//{%s}w/{%s}wk" % (NS, NS)):
+                    elif replace and xmlsent.find(
+                        ".//{%s}w/{%s}wk" % (NS, NS)
+                    ):
                         xmlword = xmlsent.find(".//{%s}w/{%s}wk" % (NS, NS))
                     # get text
                     if xmlword.text:
@@ -429,7 +469,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             )
                             if xmlsuffixpos2:
                                 suffixTag = (
-                                    xmlsuffixpos[0].text + ":" + xmlsuffixpos2[0].text
+                                    xmlsuffixpos[0].text
+                                    + ":"
+                                    + xmlsuffixpos2[0].text
                                 )
                             else:
                                 suffixTag = xmlsuffixpos[0].text
@@ -470,7 +512,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                 )
                         try:
                             for xmlpost_rel in xmlword.findall(
-                                ".//{%s}mor/{%s}mor-post/{%s}gra" % (NS, NS, NS)
+                                ".//{%s}mor/{%s}mor-post/{%s}gra"
+                                % (NS, NS, NS)
                             ):
                                 if not xmlpost_rel.get("type") == "grt":
                                     suffixStem = (
@@ -543,9 +586,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
             full = re.sub(r"\\", "/", full)
             if "/childes/" in full.lower():
                 # Discard /data-xml/ if present
-                path = re.findall(r"(?i)/childes(?:/data-xml)?/(.*)\.xml", full)[0]
+                path = re.findall(
+                    r"(?i)/childes(?:/data-xml)?/(.*)\.xml", full
+                )[0]
             elif "eng-usa" in full.lower():
-                path = "Eng-USA/" + re.findall(r"/(?i)Eng-USA/(.*)\.xml", full)[0]
+                path = (
+                    "Eng-USA/" + re.findall(r"/(?i)Eng-USA/(.*)\.xml", full)[0]
+                )
             else:
                 path = fileid
 
@@ -592,9 +639,19 @@ def demo(corpus_root=None):
                 childes.words(file, replace=True)[:7],
                 " ...",
             )
-            print("words with pos tags:", childes.tagged_words(file)[:7], " ...")
-            print("words (only MOT):", childes.words(file, speaker="MOT")[:7], "...")
-            print("words (only CHI):", childes.words(file, speaker="CHI")[:7], "...")
+            print(
+                "words with pos tags:", childes.tagged_words(file)[:7], " ..."
+            )
+            print(
+                "words (only MOT):",
+                childes.words(file, speaker="MOT")[:7],
+                "...",
+            )
+            print(
+                "words (only CHI):",
+                childes.words(file, speaker="CHI")[:7],
+                "...",
+            )
             print("stemmed words:", childes.words(file, stem=True)[:7], " ...")
             print(
                 "words with relations and pos-tag:",

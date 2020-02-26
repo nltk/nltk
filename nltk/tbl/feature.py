@@ -91,7 +91,9 @@ class Feature(metaclass=ABCMeta):
                 )
 
         # set property name given in subclass, or otherwise name of subclass
-        self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
+        self.PROPERTY_NAME = (
+            self.__class__.PROPERTY_NAME or self.__class__.__name__
+        )
 
     def encode_json_obj(self):
         return self.positions
@@ -155,8 +157,14 @@ class Feature(metaclass=ABCMeta):
         :raises ValueError: for non-positive window lengths
         """
         if not all(x > 0 for x in winlens):
-            raise ValueError("non-positive window length in {0}".format(winlens))
-        xs = (starts[i : i + w] for w in winlens for i in range(len(starts) - w + 1))
+            raise ValueError(
+                "non-positive window length in {0}".format(winlens)
+            )
+        xs = (
+            starts[i : i + w]
+            for w in winlens
+            for i in range(len(starts) - w + 1)
+        )
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 
     def issuperset(self, other):
@@ -187,9 +195,9 @@ class Feature(metaclass=ABCMeta):
 
 
         """
-        return self.__class__ is other.__class__ and set(self.positions) >= set(
-            other.positions
-        )
+        return self.__class__ is other.__class__ and set(
+            self.positions
+        ) >= set(other.positions)
 
     def intersects(self, other):
         """
@@ -230,7 +238,10 @@ class Feature(metaclass=ABCMeta):
     # Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),
     # it will be enough to define __lt__ and __eq__
     def __eq__(self, other):
-        return self.__class__ is other.__class__ and self.positions == other.positions
+        return (
+            self.__class__ is other.__class__
+            and self.positions == other.positions
+        )
 
     def __lt__(self, other):
         return (

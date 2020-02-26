@@ -193,7 +193,9 @@ class FeatStruct(SubstituteBindingsI):
 
         # Otherwise, construct the object as normal.
         else:
-            return super(FeatStruct, cls).__new__(cls, features, **morefeatures)
+            return super(FeatStruct, cls).__new__(
+                cls, features, **morefeatures
+            )
 
     ##////////////////////////////////////////////////////////////
     # { Uniform Accessor Methods
@@ -267,7 +269,9 @@ class FeatStruct(SubstituteBindingsI):
         otherwise, raise ``TypeError``.
         """
         if not self._frozen:
-            raise TypeError("FeatStructs must be frozen before they " "can be hashed.")
+            raise TypeError(
+                "FeatStructs must be frozen before they " "can be hashed."
+            )
         try:
             return self._hash
         except AttributeError:
@@ -275,7 +279,12 @@ class FeatStruct(SubstituteBindingsI):
             return self._hash
 
     def _equal(
-        self, other, check_reentrance, visited_self, visited_other, visited_pairs
+        self,
+        other,
+        check_reentrance,
+        visited_self,
+        visited_other,
+        visited_pairs,
     ):
         """
         Return True iff self and other have equal values.
@@ -529,7 +538,9 @@ class FeatStruct(SubstituteBindingsI):
     # { Unification
     ##////////////////////////////////////////////////////////////
 
-    def unify(self, other, bindings=None, trace=False, fail=None, rename_vars=True):
+    def unify(
+        self, other, bindings=None, trace=False, fail=None, rename_vars=True
+    ):
         return unify(self, other, bindings, trace, fail, rename_vars)
 
     def subsumes(self, other):
@@ -593,7 +604,6 @@ def _check_frozen(method, indent=""):
 ######################################################################
 # Feature Dictionary
 ######################################################################
-
 
 
 class FeatDict(FeatStruct, dict):
@@ -884,7 +894,9 @@ class FeatDict(FeatStruct, dict):
                 fval_lines = fval._str(reentrances, reentrance_ids)
 
                 # Indent each line to make room for fname.
-                fval_lines = [(" " * (maxfnamelen + 3)) + l for l in fval_lines]
+                fval_lines = [
+                    (" " * (maxfnamelen + 3)) + l for l in fval_lines
+                ]
 
                 # Pick which line we'll display fname on, & splice it in.
                 nameline = (len(fval_lines) - 1) // 2
@@ -904,7 +916,9 @@ class FeatDict(FeatStruct, dict):
 
         # Add brackets around everything.
         maxlen = max(len(line) for line in lines)
-        lines = ["[ %s%s ]" % (line, " " * (maxlen - len(line))) for line in lines]
+        lines = [
+            "[ %s%s ]" % (line, " " * (maxlen - len(line))) for line in lines
+        ]
 
         # If it's reentrant, then add on an identifier tag.
         if reentrances[id(self)]:
@@ -1275,7 +1289,9 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
                 fstruct[fname] = new_vars[fval]
                 used_vars.add(new_vars[fval])
         elif isinstance(fval, fs_class):
-            _rename_variables(fval, vars, used_vars, new_vars, fs_class, visited)
+            _rename_variables(
+                fval, vars, used_vars, new_vars, fs_class, visited
+            )
         elif isinstance(fval, SubstituteBindingsI):
             # Pick new names for any variables in `vars`
             for var in fval.variables():
@@ -1330,7 +1346,6 @@ def _remove_variables(fstruct, fs_class, visited):
 ######################################################################
 # Unification
 ######################################################################
-
 
 
 class _UnificationFailure(object):
@@ -1440,7 +1455,14 @@ def unify(
         _trace_unify_start((), fstruct1copy, fstruct2copy)
     try:
         result = _destructively_unify(
-            fstruct1copy, fstruct2copy, bindings, forward, trace, fail, fs_class, ()
+            fstruct1copy,
+            fstruct2copy,
+            bindings,
+            forward,
+            trace,
+            fail,
+            fs_class,
+            (),
         )
     except _UnificationFailureError:
         return None
@@ -1652,7 +1674,9 @@ def _unify_feature_values(
         elif isinstance(fval1, CustomFeatureValue):
             result = fval1.unify(fval2)
             # Sanity check: unify value should be symmetric
-            if isinstance(fval2, CustomFeatureValue) and result != fval2.unify(fval1):
+            if isinstance(fval2, CustomFeatureValue) and result != fval2.unify(
+                fval1
+            ):
                 raise AssertionError(
                     "CustomFeatureValue objects %r and %r disagree "
                     "about unification value: %r vs. %r"
@@ -1759,7 +1783,9 @@ def _trace_unify_start(path, fval1, fval2):
     else:
         fullname = ".".join("%s" % n for n in path)
         print("  " + "|   " * (len(path) - 1) + "|")
-        print("  " + "|   " * (len(path) - 1) + "| Unify feature: %s" % fullname)
+        print(
+            "  " + "|   " * (len(path) - 1) + "| Unify feature: %s" % fullname
+        )
     print("  " + "|   " * len(path) + " / " + _trace_valrepr(fval1))
     print("  " + "|   " * len(path) + "|\\ " + _trace_valrepr(fval2))
 
@@ -1891,7 +1917,6 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
             return bindings.get(v, v)
 
 
-
 class FeatureValueTuple(SubstituteBindingsSequence, tuple):
     """
     A base feature value that is a tuple of other base feature values.
@@ -1904,7 +1929,6 @@ class FeatureValueTuple(SubstituteBindingsSequence, tuple):
         if len(self) == 0:
             return "()"
         return "(%s)" % ", ".join("%s" % (b,) for b in self)
-
 
 
 class FeatureValueSet(SubstituteBindingsSequence, frozenset):
@@ -1923,7 +1947,6 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
         return "{%s}" % ", ".join(sorted("%s" % (b,) for b in self))
 
     __str__ = __repr__
-
 
 
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
@@ -1954,7 +1977,6 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         # that our own repr is deterministic.  also, note that len(self)
         # is guaranteed to be 2 or more.
         return "{%s}" % "+".join(sorted("%s" % (b,) for b in self))
-
 
 
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
@@ -2005,7 +2027,6 @@ def _flatten(lst, cls):
 
 
 @total_ordering
-
 class Feature(object):
     """
     A feature identifier that's specialized to put additional
@@ -2277,10 +2298,14 @@ class FeatStructReader(object):
 
         if isinstance(fstruct, FeatDict):
             fstruct.clear()
-            return self._read_partial_featdict(s, position, match, reentrances, fstruct)
+            return self._read_partial_featdict(
+                s, position, match, reentrances, fstruct
+            )
         else:
             del fstruct[:]
-            return self._read_partial_featlist(s, position, match, reentrances, fstruct)
+            return self._read_partial_featlist(
+                s, position, match, reentrances, fstruct
+            )
 
     def _read_partial_featlist(self, s, position, match, reentrances, fstruct):
         # Prefix features are not allowed:
@@ -2400,7 +2425,9 @@ class FeatStructReader(object):
                 match = self._ASSIGN_RE.match(s, position)
                 if match:
                     position = match.end()
-                    value, position = self._read_value(name, s, position, reentrances)
+                    value, position = self._read_value(
+                        name, s, position, reentrances
+                    )
                 # None of the above: error.
                 else:
                     raise ValueError("equals sign", position)
@@ -2488,7 +2515,9 @@ class FeatStructReader(object):
         ("read_sym_value", re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")),
         (
             "read_app_value",
-            re.compile(r"<(app)\((\?[a-z][a-z]*)\s*," r"\s*(\?[a-z][a-z]*)\)>"),
+            re.compile(
+                r"<(app)\((\?[a-z][a-z]*)\s*," r"\s*(\?[a-z][a-z]*)\)>"
+            ),
         ),
         #       ('read_logic_value', re.compile(r'<([^>]*)>')),
         # lazily match any character after '<' until we hit a '>' not preceded by '-'
@@ -2518,7 +2547,10 @@ class FeatStructReader(object):
 
     def read_app_value(self, s, position, reentrances, match):
         """Mainly included for backwards compat."""
-        return self._logic_parser.parse("%s(%s)" % match.group(2, 3)), match.end()
+        return (
+            self._logic_parser.parse("%s(%s)" % match.group(2, 3)),
+            match.end(),
+        )
 
     def read_logic_value(self, s, position, reentrances, match):
         try:
@@ -2532,16 +2564,35 @@ class FeatStructReader(object):
 
     def read_tuple_value(self, s, position, reentrances, match):
         return self._read_seq_value(
-            s, position, reentrances, match, ")", FeatureValueTuple, FeatureValueConcat
+            s,
+            position,
+            reentrances,
+            match,
+            ")",
+            FeatureValueTuple,
+            FeatureValueConcat,
         )
 
     def read_set_value(self, s, position, reentrances, match):
         return self._read_seq_value(
-            s, position, reentrances, match, "}", FeatureValueSet, FeatureValueUnion
+            s,
+            position,
+            reentrances,
+            match,
+            "}",
+            FeatureValueSet,
+            FeatureValueUnion,
         )
 
     def _read_seq_value(
-        self, s, position, reentrances, match, close_paren, seq_class, plus_class
+        self,
+        s,
+        position,
+        reentrances,
+        match,
+        close_paren,
+        seq_class,
+        plus_class,
     ):
         """
         Helper function used by read_tuple_value and read_set_value.
@@ -2609,7 +2660,9 @@ def display_unification(fs1, fs2, indent="  "):
         print(indent + "(FAILED)".center(linelen))
     else:
         print(
-            "\n".join(indent + l.center(linelen) for l in ("%s" % result).split("\n"))
+            "\n".join(
+                indent + l.center(linelen) for l in ("%s" % result).split("\n")
+            )
         )
         if bindings and len(bindings.bound_variables()) > 0:
             print(repr(bindings).center(linelen))
@@ -2660,7 +2713,8 @@ def interactive_demo(trace=False):
     ]
 
     all_fstructs = [
-        (i, FeatStruct(fstruct_strings[i])) for i in range(len(fstruct_strings))
+        (i, FeatStruct(fstruct_strings[i]))
+        for i in range(len(fstruct_strings))
     ]
 
     def list_fstructs(fstructs):

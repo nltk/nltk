@@ -224,7 +224,9 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         :type retracted: list(sem.Expression)
         """
         retracted = set(retracted)
-        result_list = list(filter(lambda a: a not in retracted, self._assumptions))
+        result_list = list(
+            filter(lambda a: a not in retracted, self._assumptions)
+        )
         if debug and result_list == self._assumptions:
             print(Warning("Assumptions list has not been changed:"))
             self.print_assumptions()
@@ -350,7 +352,9 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         :return: str
         """
         if self._result is None:
-            raise LookupError("You have to call build_model() first to " "get a model!")
+            raise LookupError(
+                "You have to call build_model() first to " "get a model!"
+            )
         else:
             return self._decorate_model(self._model, format)
 
@@ -448,7 +452,9 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
         return self._command.get_prover()
 
 
-class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderCommand):
+class ModelBuilderCommandDecorator(
+    TheoremToolCommandDecorator, ModelBuilderCommand
+):
     """
     A base decorator for the ``ModelBuilderCommand`` class from which other
     prover command decorators can extend.
@@ -484,7 +490,9 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         :return: str
         """
         if self._result is None:
-            raise LookupError("You have to call build_model() first to " "get a model!")
+            raise LookupError(
+                "You have to call build_model() first to " "get a model!"
+            )
         else:
             return self._decorate_model(self._model, format)
 
@@ -522,7 +530,9 @@ class ParallelProverBuilder(Prover, ModelBuilder):
     def _run(self, goal, assumptions, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
         tp_thread = TheoremToolThread(
-            lambda: self._prover.prove(goal, assumptions, verbose), verbose, "TP"
+            lambda: self._prover.prove(goal, assumptions, verbose),
+            verbose,
+            "TP",
         )
         mb_thread = TheoremToolThread(
             lambda: self._modelbuilder.build_model(goal, assumptions, verbose),
@@ -572,7 +582,9 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
             lambda: BaseProverCommand.prove(self, verbose), verbose, "TP"
         )
         mb_thread = TheoremToolThread(
-            lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, "MB"
+            lambda: BaseModelBuilderCommand.build_model(self, verbose),
+            verbose,
+            "MB",
         )
 
         tp_thread.start()

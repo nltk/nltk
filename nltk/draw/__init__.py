@@ -12,7 +12,9 @@ try:
 except ImportError:
     import warnings
 
-    warnings.warn("nltk.draw package not loaded " "(please install Tkinter library).")
+    warnings.warn(
+        "nltk.draw package not loaded " "(please install Tkinter library)."
+    )
 else:
     from nltk.draw.cfg import ProductionList, CFGEditor, CFGDemo
     from nltk.draw.tree import (

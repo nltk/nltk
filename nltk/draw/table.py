@@ -35,7 +35,9 @@ class MultiListbox(Frame):
     # /////////////////////////////////////////////////////////////////
 
     #: Default configuration values for the frame.
-    FRAME_CONFIG = dict(background="#888", takefocus=True, highlightthickness=1)
+    FRAME_CONFIG = dict(
+        background="#888", takefocus=True, highlightthickness=1
+    )
 
     #: Default configurations for the column labels.
     LABEL_CONFIG = dict(
@@ -182,7 +184,8 @@ class MultiListbox(Frame):
         if self._resize_column_index is not None:
             event.widget.bind("<Motion>", self._resize_column_motion_cb)
             event.widget.bind(
-                "<ButtonRelease-%d>" % event.num, self._resize_column_buttonrelease_cb
+                "<ButtonRelease-%d>" % event.num,
+                self._resize_column_buttonrelease_cb,
             )
             return True
         else:
@@ -456,7 +459,9 @@ class MultiListbox(Frame):
             functions (if any), allowing for their deletion (to
             prevent a memory leak).
         """
-        return [label.bind(sequence, func, add) for label in self.column_labels]
+        return [
+            label.bind(sequence, func, add) for label in self.column_labels
+        ]
 
     def bind_to_listboxes(self, sequence=None, func=None, add=None):
         """
@@ -481,9 +486,9 @@ class MultiListbox(Frame):
             functions (if any), allowing for their deletion (to
             prevent a memory leak).
         """
-        return self.bind_to_labels(sequence, func, add) + self.bind_to_listboxes(
+        return self.bind_to_labels(
             sequence, func, add
-        )
+        ) + self.bind_to_listboxes(sequence, func, add)
 
     # /////////////////////////////////////////////////////////////////
     # Simple Delegation
@@ -628,7 +633,7 @@ class Table(object):
         click_to_sort=True,
         reprfunc=None,
         cnf={},
-        **kw
+        **kw,
     ):
         """
         Construct a new Table widget.
@@ -665,7 +670,9 @@ class Table(object):
         self._reprfunc = reprfunc
         self._frame = Frame(master)
 
-        self._column_name_to_index = dict((c, i) for (i, c) in enumerate(column_names))
+        self._column_name_to_index = dict(
+            (c, i) for (i, c) in enumerate(column_names)
+        )
 
         # Make a copy of the rows & check that it's valid.
         if rows is None:
@@ -676,12 +683,16 @@ class Table(object):
             self._checkrow(row)
 
         # Create our multi-list box.
-        self._mlb = MultiListbox(self._frame, column_names, column_weights, cnf, **kw)
+        self._mlb = MultiListbox(
+            self._frame, column_names, column_weights, cnf, **kw
+        )
         self._mlb.pack(side="left", expand=True, fill="both")
 
         # Optional scrollbar
         if scrollbar:
-            sb = Scrollbar(self._frame, orient="vertical", command=self._mlb.yview)
+            sb = Scrollbar(
+                self._frame, orient="vertical", command=self._mlb.yview
+            )
             self._mlb.listboxes[0]["yscrollcommand"] = sb.set
             # for listbox in self._mlb.listboxes:
             #    listbox['yscrollcommand'] = sb.set
@@ -769,7 +780,8 @@ class Table(object):
         self._rows.insert(row_index, rowvalue)
         if self._reprfunc is not None:
             rowvalue = [
-                self._reprfunc(row_index, j, v) for (j, v) in enumerate(rowvalue)
+                self._reprfunc(row_index, j, v)
+                for (j, v) in enumerate(rowvalue)
             ]
         self._mlb.insert(row_index, rowvalue)
         if self._DEBUG:
@@ -858,7 +870,9 @@ class Table(object):
             self._checkrow(val)
             self._rows[index] = list(val)
             if self._reprfunc is not None:
-                val = [self._reprfunc(index, j, v) for (j, v) in enumerate(val)]
+                val = [
+                    self._reprfunc(index, j, v) for (j, v) in enumerate(val)
+                ]
             self._mlb.insert(index, val)
             self._mlb.delete(index + 1)
             self._restore_config_info(config_cookie)
@@ -968,7 +982,8 @@ class Table(object):
         """
         if order not in ("ascending", "descending", "toggle"):
             raise ValueError(
-                'sort_by(): order should be "ascending", ' '"descending", or "toggle".'
+                'sort_by(): order should be "ascending", '
+                '"descending", or "toggle".'
             )
         column_index = self.column_index(column_index)
         config_cookie = self._save_config_info(index_by_id=True)
@@ -978,7 +993,8 @@ class Table(object):
             self._rows.reverse()
         else:
             self._rows.sort(
-                key=operator.itemgetter(column_index), reverse=(order == "descending")
+                key=operator.itemgetter(column_index),
+                reverse=(order == "descending"),
             )
             self._sortkey = column_index
 
@@ -1062,13 +1078,22 @@ class Table(object):
             config = dict(
                 (
                     id(self._rows[r]),
-                    [self._get_itemconfig(r, c) for c in range(self._num_columns)],
+                    [
+                        self._get_itemconfig(r, c)
+                        for c in range(self._num_columns)
+                    ],
                 )
                 for r in row_indices
             )
         else:
             config = dict(
-                (r, [self._get_itemconfig(r, c) for c in range(self._num_columns)])
+                (
+                    r,
+                    [
+                        self._get_itemconfig(r, c)
+                        for c in range(self._num_columns)
+                    ],
+                )
                 for r in row_indices
             )
 

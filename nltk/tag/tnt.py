@@ -217,7 +217,9 @@ class TnT(TaggerI):
                 c3 = self._safe_div(
                     (self._tri[history][tag] - 1), (self._tri[history].N() - 1)
                 )
-                c2 = self._safe_div((self._bi[h2][tag] - 1), (self._bi[h2].N() - 1))
+                c2 = self._safe_div(
+                    (self._bi[h2][tag] - 1), (self._bi[h2].N() - 1)
+                )
                 c1 = self._safe_div((self._uni[tag] - 1), (self._uni.N() - 1))
 
                 # if c1 is the maximum value:

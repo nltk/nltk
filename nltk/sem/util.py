@@ -124,13 +124,27 @@ def demo_model0():
         ("dog", set(["d1", "d2"])),
         ("bark", set(["d1", "d2"])),
         ("walk", set(["b1", "g2", "d1"])),
-        ("chase", set([("b1", "g1"), ("b2", "g1"), ("g1", "d1"), ("g2", "d2")])),
+        (
+            "chase",
+            set([("b1", "g1"), ("b2", "g1"), ("g1", "d1"), ("g2", "d2")]),
+        ),
         (
             "see",
-            set([("b1", "g1"), ("b2", "d2"), ("g1", "b1"), ("d2", "b1"), ("g2", "n")]),
+            set(
+                [
+                    ("b1", "g1"),
+                    ("b2", "d2"),
+                    ("g1", "b1"),
+                    ("d2", "b1"),
+                    ("g2", "n"),
+                ]
+            ),
         ),
         ("in", set([("b1", "n"), ("b2", "n"), ("d2", "n")])),
-        ("with", set([("b1", "g1"), ("g1", "b1"), ("d1", "b1"), ("b1", "d1")])),
+        (
+            "with",
+            set([("b1", "g1"), ("g1", "b1"), ("d1", "b1"), ("b1", "d1")]),
+        ),
     ]
     # Read in the data from ``v``
     val = evaluate.Valuation(v)
@@ -281,7 +295,9 @@ def demo():
     g = g0
 
     if options.evaluate:
-        evaluations = evaluate_sents(sents, gramfile, model, g, trace=options.semtrace)
+        evaluations = evaluate_sents(
+            sents, gramfile, model, g, trace=options.semtrace
+        )
     else:
         semreps = interpret_sents(sents, gramfile, trace=options.syntrace)
 

@@ -47,7 +47,9 @@ class VectorSpaceClusterer(ClusterI):
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
-            [u, d, vt] = numpy.linalg.svd(numpy.transpose(numpy.array(vectors)))
+            [u, d, vt] = numpy.linalg.svd(
+                numpy.transpose(numpy.array(vectors))
+            )
             S = d[: self._svd_dimensions] * numpy.identity(
                 self._svd_dimensions, numpy.float64
             )
@@ -128,7 +130,9 @@ def cosine_distance(u, v):
     Returns 1 minus the cosine of the angle between vectors v and u. This is
     equal to 1 - (u.v / |u||v|).
     """
-    return 1 - (numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
+    return 1 - (
+        numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v)))
+    )
 
 
 class _DendrogramNode(object):
@@ -259,7 +263,9 @@ class Dendrogram(object):
         verticals = [format(" ") for leaf in leaves]
         while queue:
             priority, node = queue.pop()
-            child_left_leaf = list(map(lambda c: c.leaves(False)[0], node._children))
+            child_left_leaf = list(
+                map(lambda c: c.leaves(False)[0], node._children)
+            )
             indices = list(map(leaves.index, child_left_leaf))
             if child_left_leaf:
                 min_idx = min(indices)

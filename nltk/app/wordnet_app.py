@@ -168,7 +168,11 @@ class MyServerHandler(BaseHTTPRequestHandler):
         if logfile:
             logfile.write(
                 "%s - - [%s] %s\n"
-                % (self.address_string(), self.log_date_time_string(), format % args)
+                % (
+                    self.address_string(),
+                    self.log_date_time_string(),
+                    format % args,
+                )
             )
 
 
@@ -221,7 +225,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         try:
             logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
         except IOError as e:
-            sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
+            sys.stderr.write(
+                "Couldn't open %s for writing: %s", logfilename, e
+            )
             sys.exit(1)
     else:
         logfile = None
@@ -239,7 +245,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Start the server.
     server = HTTPServer(("", port), MyServerHandler)
     if logfile:
-        logfile.write("NLTK Wordnet browser server running serving: %s\n" % url)
+        logfile.write(
+            "NLTK Wordnet browser server running serving: %s\n" % url
+        )
     if runBrowser:
         server_ready.set()
 
@@ -367,7 +375,11 @@ def get_relations_data(word, synset):
     if synset.pos() == wn.NOUN:
         return (
             (HYPONYM, "Hyponyms", synset.hyponyms()),
-            (INSTANCE_HYPONYM, "Instance hyponyms", synset.instance_hyponyms()),
+            (
+                INSTANCE_HYPONYM,
+                "Instance hyponyms",
+                synset.instance_hyponyms(),
+            ),
             (HYPERNYM, "Direct hypernyms", synset.hypernyms()),
             (
                 INDIRECT_HYPERNYMS,
@@ -375,16 +387,32 @@ def get_relations_data(word, synset):
                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1],
             ),
             #  hypernyms', 'Sister terms',
-            (INSTANCE_HYPERNYM, "Instance hypernyms", synset.instance_hypernyms()),
+            (
+                INSTANCE_HYPERNYM,
+                "Instance hypernyms",
+                synset.instance_hypernyms(),
+            ),
             #            (CLASS_REGIONAL, ['domain term region'], ),
             (PART_HOLONYM, "Part holonyms", synset.part_holonyms()),
             (PART_MERONYM, "Part meronyms", synset.part_meronyms()),
-            (SUBSTANCE_HOLONYM, "Substance holonyms", synset.substance_holonyms()),
-            (SUBSTANCE_MERONYM, "Substance meronyms", synset.substance_meronyms()),
+            (
+                SUBSTANCE_HOLONYM,
+                "Substance holonyms",
+                synset.substance_holonyms(),
+            ),
+            (
+                SUBSTANCE_MERONYM,
+                "Substance meronyms",
+                synset.substance_meronyms(),
+            ),
             (MEMBER_HOLONYM, "Member holonyms", synset.member_holonyms()),
             (MEMBER_MERONYM, "Member meronyms", synset.member_meronyms()),
             (ATTRIBUTE, "Attributes", synset.attributes()),
-            (ANTONYM, "Antonyms", lemma_property(word, synset, lambda l: l.antonyms())),
+            (
+                ANTONYM,
+                "Antonyms",
+                lemma_property(word, synset, lambda l: l.antonyms()),
+            ),
             (
                 DERIVATIONALLY_RELATED_FORM,
                 "Derivationally related form",
@@ -395,7 +423,11 @@ def get_relations_data(word, synset):
         )
     elif synset.pos() == wn.VERB:
         return (
-            (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
+            (
+                ANTONYM,
+                "Antonym",
+                lemma_property(word, synset, lambda l: l.antonyms()),
+            ),
             (HYPONYM, "Hyponym", synset.hyponyms()),
             (HYPERNYM, "Direct hypernyms", synset.hypernyms()),
             (
@@ -417,7 +449,11 @@ def get_relations_data(word, synset):
         )
     elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return (
-            (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
+            (
+                ANTONYM,
+                "Antonym",
+                lemma_property(word, synset, lambda l: l.antonyms()),
+            ),
             (SIMILAR, "Similar to", synset.similar_tos()),
             # Participle of verb - not supported by corpus
             (
@@ -432,7 +468,11 @@ def get_relations_data(word, synset):
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return (
-            (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
+            (
+                ANTONYM,
+                "Antonym",
+                lemma_property(word, synset, lambda l: l.antonyms()),
+            ),
         )
         # Derived from adjective - not supported by corpus
     else:
@@ -526,7 +566,9 @@ def _abbc(txt):
     return _center(_bold("<br>" * 10 + "*" * 10 + " " + txt + " " + "*" * 10))
 
 
-full_hyponym_cont_text = _ul(_li(_italic("(has full hyponym continuation)"))) + "\n"
+full_hyponym_cont_text = (
+    _ul(_li(_italic("(has full hyponym continuation)"))) + "\n"
+)
 
 
 def _get_synset(synset_key):
@@ -556,7 +598,9 @@ def _collect_one_synset(word, synset, synset_relations):
 
     typ = "S"
     pos_tuple = _pos_match((synset.pos(), None, None))
-    assert pos_tuple is not None, "pos_tuple is null: synset.pos(): %s" % synset.pos()
+    assert pos_tuple is not None, (
+        "pos_tuple is null: synset.pos(): %s" % synset.pos()
+    )
     descr = pos_tuple[2]
     ref = copy.deepcopy(Reference(word, synset_relations))
     ref.toggle_synset(synset)
@@ -579,7 +623,9 @@ def _collect_one_synset(word, synset, synset_relations):
         synset.definition(),
         "; ".join('"%s"' % e for e in synset.examples()),
     )
-    return s + gl + _synset_relations(word, synset, synset_relations) + "</li>\n"
+    return (
+        s + gl + _synset_relations(word, synset, synset_relations) + "</li>\n"
+    )
 
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):
@@ -615,7 +661,9 @@ def _synset_relations(word, synset, synset_relations):
 
     def relation_html(r):
         if isinstance(r, Synset):
-            return make_lookup_link(Reference(r.lemma_names()[0]), r.lemma_names()[0])
+            return make_lookup_link(
+                Reference(r.lemma_names()[0]), r.lemma_names()[0]
+            )
         elif isinstance(r, Lemma):
             return relation_html(r.synset())
         elif isinstance(r, tuple):
@@ -633,7 +681,9 @@ def _synset_relations(word, synset, synset_relations):
 
     def make_synset_html(db_name, disp_name, rels):
         synset_html = "<i>%s</i>\n" % make_lookup_link(
-            copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
+            copy.deepcopy(ref)
+            .toggle_synset_relation(synset, db_name)
+            .encode(),
             disp_name,
         )
 
@@ -770,7 +820,11 @@ def page_from_reference(href):
     word = href.word
     pos_forms = defaultdict(list)
     words = word.split(",")
-    words = [w for w in [w.strip().lower().replace(" ", "_") for w in words] if w != ""]
+    words = [
+        w
+        for w in [w.strip().lower().replace(" ", "_") for w in words]
+        if w != ""
+    ]
     if len(words) == 0:
         # No words were found.
         return "", "Please specify a word to search for."
@@ -794,7 +848,9 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' where not found in the dictonary." % word
+        body = (
+            "The word or words '%s' where not found in the dictonary." % word
+        )
     return body, word
 
 

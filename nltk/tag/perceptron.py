@@ -26,6 +26,7 @@ except ImportError:
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
+
 @jsontags.register_tag
 class AveragedPerceptron:
 
@@ -67,7 +68,9 @@ class AveragedPerceptron:
                 scores[label] += value * weight
 
         # Do a secondary alphabetic sort, for stability
-        best_label = max(self.classes, key=lambda label: (scores[label], label))
+        best_label = max(
+            self.classes, key=lambda label: (scores[label], label)
+        )
         # compute the confidence
         conf = max(self._softmax(scores)) if return_conf == True else None
 
@@ -151,7 +154,7 @@ class PerceptronTagger(TaggerI):
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     """
 
-    json_tag = "nltk.tag.sequential.PerceptronTagger" 
+    json_tag = "nltk.tag.sequential.PerceptronTagger"
 
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]
@@ -181,12 +184,16 @@ class PerceptronTagger(TaggerI):
         context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
             tag, conf = (
-                (self.tagdict.get(word), 1.0) if use_tagdict == True else (None, None)
+                (self.tagdict.get(word), 1.0)
+                if use_tagdict == True
+                else (None, None)
             )
             if not tag:
                 features = self._get_features(i, word, context, prev, prev2)
                 tag, conf = self.model.predict(features, return_conf)
-            output.append((word, tag, conf) if return_conf == True else (word, tag))
+            output.append(
+                (word, tag, conf) if return_conf == True else (word, tag)
+            )
 
             prev2 = prev
             prev = tag
@@ -219,11 +226,15 @@ class PerceptronTagger(TaggerI):
                 words, tags = zip(*sentence)
 
                 prev, prev2 = self.START
-                context = self.START + [self.normalize(w) for w in words] + self.END
+                context = (
+                    self.START + [self.normalize(w) for w in words] + self.END
+                )
                 for i, word in enumerate(words):
                     guess = self.tagdict.get(word)
                     if not guess:
-                        feats = self._get_features(i, word, context, prev, prev2)
+                        feats = self._get_features(
+                            i, word, context, prev, prev2
+                        )
                         guess, _ = self.model.predict(feats)
                         self.model.update(tags[i], guess, feats)
                     prev2 = prev
@@ -231,7 +242,9 @@ class PerceptronTagger(TaggerI):
                     c += guess == tags[i]
                     n += 1
             random.shuffle(self._sentences)
-            logging.info("Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
+            logging.info(
+                "Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n))
+            )
 
         # We don't need the training sentences anymore, and we don't want to
         # waste space on them when we pickle the trained tagger.
@@ -242,7 +255,9 @@ class PerceptronTagger(TaggerI):
         if save_loc is not None:
             with open(save_loc, "wb") as fout:
                 # changed protocol from -1 to 2 to make pickling Python 2 compatible
-                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, 2)
+                pickle.dump(
+                    (self.model.weights, self.tagdict, self.classes), fout, 2
+                )
 
     def load(self, loc):
         """
@@ -362,7 +377,9 @@ def _get_pretrain_model():
     tagger = PerceptronTagger()
     training = _load_data_conll_format("english_ptb_train.conll")
     testing = _load_data_conll_format("english_ptb_test.conll")
-    print("Size of training and testing (sentence)", len(training), len(testing))
+    print(
+        "Size of training and testing (sentence)", len(training), len(testing)
+    )
     # Train and save the model
     tagger.train(training, PICKLE)
     print("Accuracy : ", tagger.evaluate(testing))

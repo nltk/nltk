@@ -1108,16 +1108,22 @@ def align(str1, str2, epsilon=0):
             edit2 = S[i, j - 1] + sigma_skip(str2[j - 1])
             edit3 = S[i - 1, j - 1] + sigma_sub(str1[i - 1], str2[j - 1])
             if i > 1:
-                edit4 = S[i - 2, j - 1] + sigma_exp(str2[j - 1], str1[i - 2 : i])
+                edit4 = S[i - 2, j - 1] + sigma_exp(
+                    str2[j - 1], str1[i - 2 : i]
+                )
             else:
                 edit4 = -inf
             if j > 1:
-                edit5 = S[i - 1, j - 2] + sigma_exp(str1[i - 1], str2[j - 2 : j])
+                edit5 = S[i - 1, j - 2] + sigma_exp(
+                    str1[i - 1], str2[j - 2 : j]
+                )
             else:
                 edit5 = -inf
             S[i, j] = max(edit1, edit2, edit3, edit4, edit5, 0)
 
-    T = (1 - epsilon) * np.amax(S)  # Threshold score for near-optimal alignments
+    T = (1 - epsilon) * np.amax(
+        S
+    )  # Threshold score for near-optimal alignments
 
     alignments = []
     for i in range(1, m + 1):
@@ -1137,7 +1143,11 @@ def _retrieve(i, j, s, S, T, str1, str2, out):
     if S[i, j] == 0:
         return out
     else:
-        if j > 1 and S[i - 1, j - 2] + sigma_exp(str1[i - 1], str2[j - 2 : j]) + s >= T:
+        if (
+            j > 1
+            and S[i - 1, j - 2] + sigma_exp(str1[i - 1], str2[j - 2 : j]) + s
+            >= T
+        ):
             out.insert(0, (str1[i - 1], str2[j - 2 : j]))
             _retrieve(
                 i - 1,
@@ -1150,7 +1160,9 @@ def _retrieve(i, j, s, S, T, str1, str2, out):
                 out,
             )
         elif (
-            i > 1 and S[i - 2, j - 1] + sigma_exp(str2[j - 1], str1[i - 2 : i]) + s >= T
+            i > 1
+            and S[i - 2, j - 1] + sigma_exp(str2[j - 1], str1[i - 2 : i]) + s
+            >= T
         ):
             out.insert(0, (str1[i - 2 : i], str2[j - 1]))
             _retrieve(
@@ -1165,10 +1177,14 @@ def _retrieve(i, j, s, S, T, str1, str2, out):
             )
         elif S[i, j - 1] + sigma_skip(str2[j - 1]) + s >= T:
             out.insert(0, ("-", str2[j - 1]))
-            _retrieve(i, j - 1, s + sigma_skip(str2[j - 1]), S, T, str1, str2, out)
+            _retrieve(
+                i, j - 1, s + sigma_skip(str2[j - 1]), S, T, str1, str2, out
+            )
         elif S[i - 1, j] + sigma_skip(str1[i - 1]) + s >= T:
             out.insert(0, (str1[i - 1], "-"))
-            _retrieve(i - 1, j, s + sigma_skip(str1[i - 1]), S, T, str1, str2, out)
+            _retrieve(
+                i - 1, j, s + sigma_skip(str1[i - 1]), S, T, str1, str2, out
+            )
         elif S[i - 1, j - 1] + sigma_sub(str1[i - 1], str2[j - 1]) + s >= T:
             out.insert(0, (str1[i - 1], str2[j - 1]))
             _retrieve(
@@ -1233,7 +1249,9 @@ def diff(p, q, f):
     (Kondrak 2002: 52, 54)
     """
     p_features, q_features = feature_matrix[p], feature_matrix[q]
-    return abs(similarity_matrix[p_features[f]] - similarity_matrix[q_features[f]])
+    return abs(
+        similarity_matrix[p_features[f]] - similarity_matrix[q_features[f]]
+    )
 
 
 def R(p, q):

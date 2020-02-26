@@ -245,8 +245,12 @@ def _write_to_file(object_fields, items, entity_fields, writer):
         # this happens e.g. for "place" of a tweet
         row = object_fields
         # there might be composed keys in de list of required fields
-        entity_field_values = [x for x in entity_fields if not _is_composed_key(x)]
-        entity_field_composed = [x for x in entity_fields if _is_composed_key(x)]
+        entity_field_values = [
+            x for x in entity_fields if not _is_composed_key(x)
+        ]
+        entity_field_composed = [
+            x for x in entity_fields if _is_composed_key(x)
+        ]
         for field in entity_field_values:
             value = items[field]
             if isinstance(value, list):

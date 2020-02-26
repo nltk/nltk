@@ -173,7 +173,9 @@ class BinaryCombinatorRule(AbstractChartRule):
         # Check if the two edges are permitted to combine.
         # If so, generate the corresponding edge.
         if self._combinator.can_combine(left_edge.categ(), right_edge.categ()):
-            for res in self._combinator.combine(left_edge.categ(), right_edge.categ()):
+            for res in self._combinator.combine(
+                left_edge.categ(), right_edge.categ()
+            ):
                 new_edge = CCGEdge(
                     span=(left_edge.start(), right_edge.end()),
                     categ=res,
@@ -205,8 +207,12 @@ class ForwardTypeRaiseRule(AbstractChartRule):
         if not (left_edge.end() == right_edge.start()):
             return
 
-        for res in self._combinator.combine(left_edge.categ(), right_edge.categ()):
-            new_edge = CCGEdge(span=left_edge.span(), categ=res, rule=self._combinator)
+        for res in self._combinator.combine(
+            left_edge.categ(), right_edge.categ()
+        ):
+            new_edge = CCGEdge(
+                span=left_edge.span(), categ=res, rule=self._combinator
+            )
             if chart.insert(new_edge, (left_edge,)):
                 yield new_edge
 
@@ -228,8 +234,12 @@ class BackwardTypeRaiseRule(AbstractChartRule):
         if not (left_edge.end() == right_edge.start()):
             return
 
-        for res in self._combinator.combine(left_edge.categ(), right_edge.categ()):
-            new_edge = CCGEdge(span=right_edge.span(), categ=res, rule=self._combinator)
+        for res in self._combinator.combine(
+            left_edge.categ(), right_edge.categ()
+        ):
+            new_edge = CCGEdge(
+                span=right_edge.span(), categ=res, rule=self._combinator
+            )
             if chart.insert(new_edge, (right_edge,)):
                 yield new_edge
 
@@ -255,7 +265,10 @@ TypeRaiseRuleSet = [ForwardTypeRaiseRule(), BackwardTypeRaiseRule()]
 
 # The standard English rule set.
 DefaultRuleSet = (
-    ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet + TypeRaiseRuleSet
+    ApplicationRuleSet
+    + CompositionRuleSet
+    + SubstitutionRuleSet
+    + TypeRaiseRuleSet
 )
 
 
@@ -300,7 +313,9 @@ class CCGChartParser(ParserI):
                             # Generate all possible combinations of the two edges
                             for rule in self._rules:
                                 edges_added_by_rule = 0
-                                for newedge in rule.apply(chart, lex, left, right):
+                                for newedge in rule.apply(
+                                    chart, lex, left, right
+                                ):
                                     edges_added_by_rule += 1
 
         # Output the resulting parses
@@ -330,7 +345,9 @@ class CCGChart(Chart):
         trees = []
 
         for cpl in self.child_pointer_lists(edge):
-            child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
+            child_choices = [
+                self._trees(cp, complete, memo, tree_class) for cp in cpl
+            ]
             for children in itertools.product(*child_choices):
                 lhs = (
                     Token(
@@ -367,7 +384,9 @@ def compute_semantics(children, edge):
         else:
             raise AssertionError("Unsupported combinator '" + combinator + "'")
     else:
-        return compute_type_raised_semantics(children[0].label()[0].semantics())
+        return compute_type_raised_semantics(
+            children[0].label()[0].semantics()
+        )
 
 
 # --------
@@ -414,7 +433,9 @@ def printCCGTree(lwidth, tree):
     # Don't print anything, but account for the space occupied.
     if not isinstance(tree.label(), tuple):
         return max(
-            rwidth, 2 + lwidth + len("%s" % tree.label()), 2 + lwidth + len(tree[0])
+            rwidth,
+            2 + lwidth + len("%s" % tree.label()),
+            2 + lwidth + len(tree[0]),
         )
 
     (token, op) = tree.label()

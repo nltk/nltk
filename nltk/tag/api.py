@@ -72,7 +72,9 @@ class TaggerI(metaclass=ABCMeta):
 
     def _check_params(self, train, model):
         if (train and model) or (not train and not model):
-            raise ValueError("Must specify either training data or trained model.")
+            raise ValueError(
+                "Must specify either training data or trained model."
+            )
 
 
 class FeaturesetTaggerI(TaggerI):

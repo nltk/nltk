@@ -98,7 +98,9 @@ _CORPORA = {
     "Dutch: Alpino Corpus (simplified)": lambda: alpino.tagged_sents(
         tagset="universal"
     ),
-    "Hindi: Indian Languages Corpus": lambda: indian.tagged_sents(files="hindi.pos"),
+    "Hindi: Indian Languages Corpus": lambda: indian.tagged_sents(
+        files="hindi.pos"
+    ),
     "Hindi: Indian Languages Corpus (simplified)": lambda: indian.tagged_sents(
         files="hindi.pos", tagset="universal"
     ),
@@ -148,7 +150,8 @@ class ConcordanceSearchView(object):
 
     def _init_widgets(self, parent):
         self.main_frame = Frame(
-            parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1)
+            parent,
+            dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1),
         )
         self._init_corpus_select(self.main_frame)
         self._init_query_box(self.main_frame)
@@ -165,7 +168,10 @@ class ConcordanceSearchView(object):
 
         filemenu = Menu(menubar, tearoff=0, borderwidth=0)
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-q"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-q",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -193,7 +199,9 @@ class ConcordanceSearchView(object):
             command=self.set_result_size,
         )
         rescntmenu.invoke(1)
-        editmenu.add_cascade(label="Result Count", underline=0, menu=rescntmenu)
+        editmenu.add_cascade(
+            label="Result Count", underline=0, menu=rescntmenu
+        )
 
         cntxmenu = Menu(editmenu, tearoff=0)
         cntxbfmenu = Menu(cntxmenu, tearoff=0)
@@ -283,7 +291,7 @@ class ConcordanceSearchView(object):
             self.var,
             self.model.DEFAULT_CORPUS,
             command=self.corpus_selected,
-            *self.model.non_default_corpora()
+            *self.model.non_default_corpora(),
         )
         om["borderwidth"] = 0
         om["highlightthickness"] = 1
@@ -314,8 +322,12 @@ class ConcordanceSearchView(object):
             borderwidth=1,
             highlightthickness=1,
         )
-        self.search_button.pack(side="left", fill="x", pady=25, anchor="center")
-        self.query_box.bind("<KeyPress-Return>", self.search_enter_keypress_handler)
+        self.search_button.pack(
+            side="left", fill="x", pady=25, anchor="center"
+        )
+        self.query_box.bind(
+            "<KeyPress-Return>", self.search_enter_keypress_handler
+        )
         another.pack()
         innerframe.pack(side="top", fill="x", anchor="n")
 
@@ -408,7 +420,9 @@ class ConcordanceSearchView(object):
         self.top.bind(CORPUS_LOADED_EVENT, self.handle_corpus_loaded)
         self.top.bind(SEARCH_TERMINATED_EVENT, self.handle_search_terminated)
         self.top.bind(SEARCH_ERROR_EVENT, self.handle_search_error)
-        self.top.bind(ERROR_LOADING_CORPUS_EVENT, self.handle_error_loading_corpus)
+        self.top.bind(
+            ERROR_LOADING_CORPUS_EVENT, self.handle_error_loading_corpus
+        )
 
     def _poll(self):
         try:
@@ -483,11 +497,15 @@ class ConcordanceSearchView(object):
             if len(sent) != 0:
                 if pos1 < self._char_before:
                     sent, pos1, pos2 = self.pad(sent, pos1, pos2)
-                sentence = sent[pos1 - self._char_before : pos1 + self._char_after]
+                sentence = sent[
+                    pos1 - self._char_before : pos1 + self._char_after
+                ]
                 if not row == len(results):
                     sentence += "\n"
                 self.results_box.insert(str(row) + ".0", sentence)
-                word_markers, label_markers = self.words_and_labels(sent, pos1, pos2)
+                word_markers, label_markers = self.words_and_labels(
+                    sent, pos1, pos2
+                )
                 for marker in word_markers:
                     self.results_box.tag_add(
                         self._HIGHLIGHT_WORD_TAG,
@@ -514,11 +532,17 @@ class ConcordanceSearchView(object):
             else:
                 word, label = each.split("/")
                 words.append(
-                    (self._char_before + index, self._char_before + index + len(word))
+                    (
+                        self._char_before + index,
+                        self._char_before + index + len(word),
+                    )
                 )
                 index += len(word) + 1
                 labels.append(
-                    (self._char_before + index, self._char_before + index + len(label))
+                    (
+                        self._char_before + index,
+                        self._char_before + index + len(label),
+                    )
                 )
                 index += len(label)
             index += 1
@@ -664,7 +688,9 @@ class ConcordanceSearchModel(object):
         def run(self):
             q = self.processed_query()
             sent_pos, i, sent_count = [], 0, 0
-            for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
+            for sent in self.model.tagged_sents[
+                self.model.last_sent_searched :
+            ]:
                 try:
                     m = re.search(q, sent)
                 except re.error:

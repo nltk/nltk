@@ -7,7 +7,9 @@ from nose.plugins.manager import PluginManager
 from nose.plugins.doctests import Doctest
 from nose.plugins import builtin
 
-NLTK_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+NLTK_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..")
+)
 sys.path.insert(0, NLTK_ROOT)
 
 NLTK_TEST_DIR = os.path.join(NLTK_ROOT, "nltk")

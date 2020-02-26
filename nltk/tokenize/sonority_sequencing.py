@@ -103,7 +103,9 @@ class SyllableTokenizer(TokenizerI):
                         "Character not defined in sonority_hierarchy,"
                         " assigning as vowel: '{}'".format(c)
                     )
-                    syllables_values.append((c, max(self.phoneme_map.values())))
+                    syllables_values.append(
+                        (c, max(self.phoneme_map.values()))
+                    )
                     self.vowels += c
                 else:  # If it's a punctuation, assing -1.
                     syllables_values.append((c, -1))

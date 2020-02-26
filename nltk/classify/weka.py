@@ -52,7 +52,10 @@ def config_weka(classpath=None):
                 version = _check_weka_version(_weka_classpath)
                 if version:
                     print(
-                        ("[Found Weka: %s (version %s)]" % (_weka_classpath, version))
+                        (
+                            "[Found Weka: %s (version %s)]"
+                            % (_weka_classpath, version)
+                        )
                     )
                 else:
                     print("[Found Weka: %s]" % _weka_classpath)
@@ -128,10 +131,14 @@ class WekaClassifier(ClassifierI):
                         "output."
                     )
                 else:
-                    raise ValueError("Weka failed to generate output:\n%s" % stderr)
+                    raise ValueError(
+                        "Weka failed to generate output:\n%s" % stderr
+                    )
 
             # Parse weka's output.
-            return self.parse_weka_output(stdout.decode(stdin.encoding).split("\n"))
+            return self.parse_weka_output(
+                stdout.decode(stdin.encoding).split("\n")
+            )
 
         finally:
             for f in os.listdir(temp_dir):
@@ -150,8 +157,18 @@ class WekaClassifier(ClassifierI):
                 lines = lines[i:]
                 break
 
-        if lines[0].split() == ["inst#", "actual", "predicted", "error", "prediction"]:
-            return [line.split()[2].split(":")[1] for line in lines[1:] if line.strip()]
+        if lines[0].split() == [
+            "inst#",
+            "actual",
+            "predicted",
+            "error",
+            "prediction",
+        ]:
+            return [
+                line.split()[2].split(":")[1]
+                for line in lines[1:]
+                if line.strip()
+            ]
         elif lines[0].split() == [
             "inst#",
             "actual",

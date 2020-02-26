@@ -162,12 +162,17 @@ def corpus_bleu(
     """
     # Before proceeding to compute BLEU, perform sanity checks.
 
-    p_numerators = Counter()  # Key = ngram order, and value = no. of ngram matches.
-    p_denominators = Counter()  # Key = ngram order, and value = no. of ngram in ref.
+    p_numerators = (
+        Counter()
+    )  # Key = ngram order, and value = no. of ngram matches.
+    p_denominators = (
+        Counter()
+    )  # Key = ngram order, and value = no. of ngram in ref.
     hyp_lengths, ref_lengths = 0, 0
 
     assert len(list_of_references) == len(hypotheses), (
-        "The number of hypotheses and their reference(s) should be the " "same "
+        "The number of hypotheses and their reference(s) should be the "
+        "same "
     )
 
     # Iterate through each hypothesis and their corresponding references.
@@ -308,7 +313,9 @@ def modified_precision(references, hypothesis, n):
     """
     # Extracts all ngrams in hypothesis
     # Set an empty Counter if hypothesis is empty.
-    counts = Counter(ngrams(hypothesis, n)) if len(hypothesis) >= n else Counter()
+    counts = (
+        Counter(ngrams(hypothesis, n)) if len(hypothesis) >= n else Counter()
+    )
     # Extract a union of references' counts.
     # max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
@@ -317,7 +324,9 @@ def modified_precision(references, hypothesis, n):
             Counter(ngrams(reference, n)) if len(reference) >= n else Counter()
         )
         for ngram in counts:
-            max_counts[ngram] = max(max_counts.get(ngram, 0), reference_counts[ngram])
+            max_counts[ngram] = max(
+                max_counts.get(ngram, 0), reference_counts[ngram]
+            )
 
     # Assigns the intersection between hypothesis and references' counts.
     clipped_counts = {
@@ -567,7 +576,9 @@ class SmoothingFunction:
                 incvnt += 1
         return p_n
 
-    def method4(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method4(
+        self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs
+    ):
         """
         Smoothing method 4:
         Shorter translations may have inflated precision values due to having
@@ -584,7 +595,9 @@ class SmoothingFunction:
                 p_n[i] = incvnt / p_i.denominator
         return p_n
 
-    def method5(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method5(
+        self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs
+    ):
         """
         Smoothing method 5:
         The matched counts for similar values of n should be similar. To a
@@ -601,7 +614,9 @@ class SmoothingFunction:
             m[i] = p_n[i]
         return p_n
 
-    def method6(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method6(
+        self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs
+    ):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
@@ -614,7 +629,9 @@ class SmoothingFunction:
         # This smoothing only works when p_1 and p_2 is non-zero.
         # Raise an error with an appropriate message when the input is too short
         # to use this smoothing technique.
-        assert p_n[2], "This smoothing method requires non-zero precision for bigrams."
+        assert p_n[
+            2
+        ], "This smoothing method requires non-zero precision for bigrams."
         for i, p_i in enumerate(p_n):
             if i in [0, 1]:  # Skips the first 2 orders of ngrams.
                 continue
@@ -628,7 +645,9 @@ class SmoothingFunction:
                 p_n[i] = (m + self.alpha * pi0) / (l + self.alpha)
         return p_n
 
-    def method7(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method7(
+        self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs
+    ):
         """
         Smoothing method 7:
         Interpolates methods 5 and 6.

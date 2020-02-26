@@ -44,7 +44,9 @@ class IndianCorpusReader(CorpusReader):
             tag_mapping_function = None
         return concat(
             [
-                IndianCorpusView(fileid, enc, True, False, tag_mapping_function)
+                IndianCorpusView(
+                    fileid, enc, True, False, tag_mapping_function
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
@@ -79,7 +81,12 @@ class IndianCorpusReader(CorpusReader):
 
 class IndianCorpusView(StreamBackedCorpusView):
     def __init__(
-        self, corpus_file, encoding, tagged, group_by_sent, tag_mapping_function=None
+        self,
+        corpus_file,
+        encoding,
+        tagged,
+        group_by_sent,
+        tag_mapping_function=None,
     ):
         self._tagged = tagged
         self._group_by_sent = group_by_sent

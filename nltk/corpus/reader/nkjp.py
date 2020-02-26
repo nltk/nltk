@@ -109,7 +109,9 @@ class NKJPCorpusReader(XMLCorpusReader):
         return concat(
             [
                 self._view(
-                    self.add_root(fileid), mode=NKJPCorpusReader.HEADER_MODE, **kwargs
+                    self.add_root(fileid),
+                    mode=NKJPCorpusReader.HEADER_MODE,
+                    **kwargs,
                 ).handle_query()
                 for fileid in fileids
             ]
@@ -123,7 +125,9 @@ class NKJPCorpusReader(XMLCorpusReader):
         return concat(
             [
                 self._view(
-                    self.add_root(fileid), mode=NKJPCorpusReader.SENTS_MODE, **kwargs
+                    self.add_root(fileid),
+                    mode=NKJPCorpusReader.SENTS_MODE,
+                    **kwargs,
                 ).handle_query()
                 for fileid in fileids
             ]
@@ -138,7 +142,9 @@ class NKJPCorpusReader(XMLCorpusReader):
         return concat(
             [
                 self._view(
-                    self.add_root(fileid), mode=NKJPCorpusReader.WORDS_MODE, **kwargs
+                    self.add_root(fileid),
+                    mode=NKJPCorpusReader.WORDS_MODE,
+                    **kwargs,
                 ).handle_query()
                 for fileid in fileids
             ]
@@ -157,7 +163,7 @@ class NKJPCorpusReader(XMLCorpusReader):
                     self.add_root(fileid),
                     mode=NKJPCorpusReader.WORDS_MODE,
                     tags=tags,
-                    **kwargs
+                    **kwargs,
                 ).handle_query()
                 for fileid in fileids
             ]
@@ -171,7 +177,9 @@ class NKJPCorpusReader(XMLCorpusReader):
         return concat(
             [
                 self._view(
-                    self.add_root(fileid), mode=NKJPCorpusReader.RAW_MODE, **kwargs
+                    self.add_root(fileid),
+                    mode=NKJPCorpusReader.RAW_MODE,
+                    **kwargs,
                 ).handle_query()
                 for fileid in fileids
             ]
@@ -218,7 +226,9 @@ class NKJPCorpus_Header_View(XMLCorpusView):
         publishers = elt.findall("bibl/publisher")
         publisher = []
         if publishers:
-            publisher = "\n".join(publisher.text.strip() for publisher in publishers)
+            publisher = "\n".join(
+                publisher.text.strip() for publisher in publishers
+            )
 
         idnos = elt.findall("bibl/idno")
         idno = []
@@ -327,7 +337,10 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
         for word in segm:
             txt_nr = self.get_segm_id(word)
             # get increasing sequence of ids: in case of choice get first possibility
-            if self.get_sent_beg(word) > prev_txt_end - 1 or prev_txt_nr != txt_nr:
+            if (
+                self.get_sent_beg(word) > prev_txt_end - 1
+                or prev_txt_nr != txt_nr
+            ):
                 ret.append(word)
                 prev_txt_end = self.get_sent_end(word)
             prev_txt_nr = txt_nr
@@ -465,7 +478,10 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
                         word = symbol.text
             elif "name" in child.keys() and child.attrib["name"] == "interps":
                 for symbol in child:
-                    if "type" in symbol.keys() and symbol.attrib["type"] == "lex":
+                    if (
+                        "type" in symbol.keys()
+                        and symbol.attrib["type"] == "lex"
+                    ):
                         for symbol2 in symbol:
                             if (
                                 "name" in symbol2.keys()
@@ -475,7 +491,8 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
                                     if (
                                         "value" in symbol3.keys()
                                         and self.tags is not None
-                                        and symbol3.attrib["value"] in self.tags
+                                        and symbol3.attrib["value"]
+                                        in self.tags
                                     ):
                                         flag = True
                                     elif (

@@ -119,17 +119,23 @@ class TextTilingTokenizer(TokenizerI):
         if self.similarity_method == BLOCK_COMPARISON:
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
-            raise NotImplementedError("Vocabulary introduction not implemented")
+            raise NotImplementedError(
+                "Vocabulary introduction not implemented"
+            )
         else:
             raise ValueError(
-                "Similarity method {} not recognized".format(self.similarity_method)
+                "Similarity method {} not recognized".format(
+                    self.similarity_method
+                )
             )
 
         if self.smoothing_method == DEFAULT_SMOOTHING:
             smooth_scores = self._smooth_scores(gap_scores)
         else:
             raise ValueError(
-                "Smoothing method {} not recognized".format(self.smoothing_method)
+                "Smoothing method {} not recognized".format(
+                    self.smoothing_method
+                )
             )
         # End of Lexical score Determination
 
@@ -164,7 +170,9 @@ class TextTilingTokenizer(TokenizerI):
         """Implements the block comparison method"""
 
         def blk_frq(tok, block):
-            ts_occs = filter(lambda o: o[0] in block, token_table[tok].ts_occurences)
+            ts_occs = filter(
+                lambda o: o[0] in block, token_table[tok].ts_occurences
+            )
             freq = sum([tsocc[1] for tsocc in ts_occs])
             return freq
 
@@ -182,15 +190,23 @@ class TextTilingTokenizer(TokenizerI):
             else:
                 window_size = self.k
 
-            b1 = [ts.index for ts in tokseqs[curr_gap - window_size + 1 : curr_gap + 1]]
-            b2 = [ts.index for ts in tokseqs[curr_gap + 1 : curr_gap + window_size + 1]]
+            b1 = [
+                ts.index
+                for ts in tokseqs[curr_gap - window_size + 1 : curr_gap + 1]
+            ]
+            b2 = [
+                ts.index
+                for ts in tokseqs[curr_gap + 1 : curr_gap + window_size + 1]
+            ]
 
             for t in token_table:
                 score_dividend += blk_frq(t, b1) * blk_frq(t, b2)
                 score_divisor_b1 += blk_frq(t, b1) ** 2
                 score_divisor_b2 += blk_frq(t, b2) ** 2
             try:
-                score = score_dividend / math.sqrt(score_divisor_b1 * score_divisor_b2)
+                score = score_dividend / math.sqrt(
+                    score_divisor_b1 * score_divisor_b2
+                )
             except ZeroDivisionError:
                 pass  # score += 0.0
 
@@ -201,7 +217,9 @@ class TextTilingTokenizer(TokenizerI):
     def _smooth_scores(self, gap_scores):
         "Wraps the smooth function from the SciPy Cookbook"
         return list(
-            smooth(numpy.array(gap_scores[:]), window_len=self.smoothing_width + 1)
+            smooth(
+                numpy.array(gap_scores[:]), window_len=self.smoothing_width + 1
+            )
         )
 
     def _mark_paragraph_breaks(self, text):
@@ -267,7 +285,9 @@ class TextTilingTokenizer(TokenizerI):
 
                     if token_table[word].last_tok_seq != current_tok_seq:
                         token_table[word].last_tok_seq = current_tok_seq
-                        token_table[word].ts_occurences.append([current_tok_seq, 1])
+                        token_table[word].ts_occurences.append(
+                            [current_tok_seq, 1]
+                        )
                     else:
                         token_table[word].ts_occurences[-1][1] += 1
                 else:  # new word
@@ -446,7 +466,9 @@ def smooth(x, window_len=11, window="flat"):
             "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
         )
 
-    s = numpy.r_[2 * x[0] - x[window_len:1:-1], x, 2 * x[-1] - x[-1:-window_len:-1]]
+    s = numpy.r_[
+        2 * x[0] - x[window_len:1:-1], x, 2 * x[-1] - x[-1:-window_len:-1]
+    ]
 
     # print(len(s))
     if window == "flat":  # moving average

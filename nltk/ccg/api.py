@@ -11,6 +11,7 @@ from abc import ABCMeta, abstractmethod
 
 from nltk.internals import raise_unorderable_types
 
+
 @total_ordering
 class AbstractCCGCategory(metaclass=ABCMeta):
     """
@@ -339,7 +340,9 @@ class FunctionalCategory(AbstractCCGCategory):
             sa = self._res.can_unify(other.res())
             sd = self._dir.can_unify(other.dir())
             if sa is not None and sd is not None:
-                sb = self._arg.substitute(sa).can_unify(other.arg().substitute(sa))
+                sb = self._arg.substitute(sa).can_unify(
+                    other.arg().substitute(sa)
+                )
                 if sb is not None:
                     return sa + sb
         return None

@@ -83,7 +83,11 @@ from nltk.tag.brill import BrillTagger
 from nltk.tag.brill_trainer import BrillTaggerTrainer
 from nltk.tag.tnt import TnT
 from nltk.tag.hunpos import HunposTagger
-from nltk.tag.stanford import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
+from nltk.tag.stanford import (
+    StanfordTagger,
+    StanfordPOSTagger,
+    StanfordNERTagger,
+)
 from nltk.tag.hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 from nltk.tag.senna import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping import tagset_mapping, map_tag
@@ -92,9 +96,7 @@ from nltk.tag.perceptron import PerceptronTagger
 
 from nltk.data import load, find
 
-RUS_PICKLE = (
-    "taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle"
-)
+RUS_PICKLE = "taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle"
 
 
 def _get_tagger(lang=None):
@@ -126,7 +128,10 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
                 # Note that the new Russion pos tags from the model contains suffixes,
                 # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
                 tagged_tokens = [
-                    (token, map_tag("ru-rnc-new", tagset, tag.partition("=")[0]))
+                    (
+                        token,
+                        map_tag("ru-rnc-new", tagset, tag.partition("=")[0]),
+                    )
                     for (token, tag) in tagged_tokens
                 ]
         return tagged_tokens

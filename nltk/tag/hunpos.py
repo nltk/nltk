@@ -51,7 +51,11 @@ class HunposTagger(TaggerI):
     """
 
     def __init__(
-        self, path_to_model, path_to_bin=None, encoding=_hunpos_charset, verbose=False
+        self,
+        path_to_model,
+        path_to_bin=None,
+        encoding=_hunpos_charset,
+        verbose=False,
     ):
         """
         Starts the hunpos-tag executable and establishes a connection with it.

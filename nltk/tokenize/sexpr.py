@@ -125,7 +125,9 @@ class SExprTokenizer(TokenizerI):
                 depth += 1
             if paren == self._close_paren:
                 if self._strict and depth == 0:
-                    raise ValueError("Un-matched close paren at char %d" % m.start())
+                    raise ValueError(
+                        "Un-matched close paren at char %d" % m.start()
+                    )
                 depth = max(0, depth - 1)
                 if depth == 0:
                     result.append(text[pos : m.end()])

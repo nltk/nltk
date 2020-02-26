@@ -21,7 +21,11 @@ _tadm_bin = None
 def config_tadm(bin=None):
     global _tadm_bin
     _tadm_bin = find_binary(
-        "tadm", bin, env_vars=["TADM"], binary_names=["tadm"], url="http://tadm.sf.net"
+        "tadm",
+        bin,
+        env_vars=["TADM"],
+        binary_names=["tadm"],
+        url="http://tadm.sf.net",
     )
 
 

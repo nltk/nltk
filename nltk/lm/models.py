@@ -46,7 +46,9 @@ class Lidstone(LanguageModel):
         counts = self.context_counts(context)
         word_count = counts[word]
         norm_count = counts.N()
-        return (word_count + self.gamma) / (norm_count + len(self.vocab) * self.gamma)
+        return (word_count + self.gamma) / (
+            norm_count + len(self.vocab) * self.gamma
+        )
 
 
 class Laplace(Lidstone):
@@ -96,4 +98,6 @@ class KneserNeyInterpolated(InterpolatedLanguageModel):
     """Interpolated version of Kneser-Ney smoothing."""
 
     def __init__(self, order, discount=0.1, **kwargs):
-        super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)
+        super().__init__(
+            KneserNey, order, params={"discount": discount}, **kwargs
+        )

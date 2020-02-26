@@ -59,7 +59,9 @@ class CMUDictCorpusReader(CorpusReader):
         """
         return concat(
             [
-                StreamBackedCorpusView(fileid, read_cmudict_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, read_cmudict_block, encoding=enc
+                )
                 for fileid, enc in self.abspaths(None, True)
             ]
         )

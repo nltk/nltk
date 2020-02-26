@@ -96,14 +96,18 @@ def twitterclass_demo():
     print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
-    tw.tweets(keywords="love, hate", stream=False, limit=10)  # search past tweets
+    tw.tweets(
+        keywords="love, hate", stream=False, limit=10
+    )  # search past tweets
     print(SPACER)
     print(
         "Follow two accounts in the public stream"
         + " -- be prepared to wait a few minutes\n"
     )
     tw = Twitter()
-    tw.tweets(follow=["759251", "6017542"], stream=True, limit=5)  # public stream
+    tw.tweets(
+        follow=["759251", "6017542"], stream=True, limit=5
+    )  # public stream
 
 
 @verbose
@@ -162,7 +166,11 @@ def lookup_by_userid_demo():
         name = info["screen_name"]
         followers = info["followers_count"]
         following = info["friends_count"]
-        print("{0}, followers: {1}, following: {2}".format(name, followers, following))
+        print(
+            "{0}, followers: {1}, following: {2}".format(
+                name, followers, following
+            )
+        )
 
 
 @verbose

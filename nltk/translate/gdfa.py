@@ -70,7 +70,16 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     e2f = [tuple(map(int, a.split("-"))) for a in e2f.split()]
     f2e = [tuple(map(int, a.split("-"))) for a in f2e.split()]
 
-    neighbors = [(-1, 0), (0, -1), (1, 0), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+    neighbors = [
+        (-1, 0),
+        (0, -1),
+        (1, 0),
+        (0, 1),
+        (-1, -1),
+        (-1, 1),
+        (1, -1),
+        (1, 1),
+    ]
     alignment = set(e2f).intersection(set(f2e))  # Find the intersection.
     union = set(e2f).union(set(f2e))
 
@@ -97,7 +106,9 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
                     if (e, f) in alignment:
                         # for each neighboring point (e-new, f-new)
                         for neighbor in neighbors:
-                            neighbor = tuple(i + j for i, j in zip((e, f), neighbor))
+                            neighbor = tuple(
+                                i + j for i, j in zip((e, f), neighbor)
+                            )
                             e_new, f_new = neighbor
                             # if ( ( e-new not aligned and f-new not aligned)
                             # and (e-new, f-new in union(e2f, f2e) )

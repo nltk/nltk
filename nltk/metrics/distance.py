@@ -35,7 +35,9 @@ def _edit_dist_init(len1, len2):
     return lev
 
 
-def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False):
+def _edit_dist_step(
+    lev, i, j, s1, s2, substitution_cost=1, transpositions=False
+):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
@@ -192,9 +194,9 @@ def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
-    return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(
-        label1.union(label2)
-    )
+    return (
+        len(label1.union(label2)) - len(label1.intersection(label2))
+    ) / len(label1.union(label2))
 
 
 def masi_distance(label1, label2):
@@ -459,12 +461,18 @@ def demo():
         ("language", "lngauage"),
     ]
     for s1, s2 in string_distance_examples:
-        print("Edit distance btwn '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
+        print(
+            "Edit distance btwn '%s' and '%s':" % (s1, s2),
+            edit_distance(s1, s2),
+        )
         print(
             "Edit dist with transpositions btwn '%s' and '%s':" % (s1, s2),
             edit_distance(s1, s2, transpositions=True),
         )
-        print("Jaro similarity btwn '%s' and '%s':" % (s1, s2), jaro_similarity(s1, s2))
+        print(
+            "Jaro similarity btwn '%s' and '%s':" % (s1, s2),
+            jaro_similarity(s1, s2),
+        )
         print(
             "Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
             jaro_winkler_similarity(s1, s2),

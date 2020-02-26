@@ -45,7 +45,8 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
         return None
 
     _, sense = max(
-        (len(context.intersection(ss.definition().split())), ss) for ss in synsets
+        (len(context.intersection(ss.definition().split())), ss)
+        for ss in synsets
     )
 
     return sense

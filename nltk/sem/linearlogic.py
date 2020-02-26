@@ -211,7 +211,8 @@ class ImpExpression(Expression):
 
     def simplify(self, bindings=None):
         return self.__class__(
-            self.antecedent.simplify(bindings), self.consequent.simplify(bindings)
+            self.antecedent.simplify(bindings),
+            self.consequent.simplify(bindings),
         )
 
     def unify(self, other, bindings):
@@ -241,8 +242,12 @@ class ImpExpression(Expression):
         :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
         :return: (``Expression``,set) for the compiled linear logic and any newly created glue formulas
         """
-        (a, a_new) = self.antecedent.compile_neg(index_counter, glueFormulaFactory)
-        (c, c_new) = self.consequent.compile_pos(index_counter, glueFormulaFactory)
+        (a, a_new) = self.antecedent.compile_neg(
+            index_counter, glueFormulaFactory
+        )
+        (c, c_new) = self.consequent.compile_pos(
+            index_counter, glueFormulaFactory
+        )
         return (ImpExpression(a, c), a_new + c_new)
 
     def compile_neg(self, index_counter, glueFormulaFactory):
@@ -253,8 +258,12 @@ class ImpExpression(Expression):
         :param glueFormulaFactory: ``GlueFormula`` for creating new glue formulas
         :return: (``Expression``,list of ``GlueFormula``) for the compiled linear logic and any newly created glue formulas
         """
-        (a, a_new) = self.antecedent.compile_pos(index_counter, glueFormulaFactory)
-        (c, c_new) = self.consequent.compile_neg(index_counter, glueFormulaFactory)
+        (a, a_new) = self.antecedent.compile_pos(
+            index_counter, glueFormulaFactory
+        )
+        (c, c_new) = self.consequent.compile_neg(
+            index_counter, glueFormulaFactory
+        )
         fresh_index = index_counter.get()
         c.dependencies.append(fresh_index)
         new_v = glueFormulaFactory("v%s" % fresh_index, a, set([fresh_index]))
@@ -285,7 +294,8 @@ class ImpExpression(Expression):
 
     def __hash__(self):
         return hash(
-            "%s%s%s" % (hash(self.antecedent), Tokens.IMP, hash(self.consequent))
+            "%s%s%s"
+            % (hash(self.antecedent), Tokens.IMP, hash(self.consequent))
         )
 
 
@@ -319,7 +329,10 @@ class ApplicationExpression(Expression):
         # If you are running it on complied premises, more conditions apply
         if argument_indices:
             # A.dependencies of (A -o (B -o C)) must be a proper subset of argument_indices
-            if not set(function_simp.antecedent.dependencies) < argument_indices:
+            if (
+                not set(function_simp.antecedent.dependencies)
+                < argument_indices
+            ):
                 raise LinearLogicApplicationException(
                     "Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s"
                     % (function_simp, argument_simp)
@@ -359,11 +372,17 @@ class ApplicationExpression(Expression):
         return not self == other
 
     def __str__(self):
-        return "%s" % self.function + Tokens.OPEN + "%s" % self.argument + Tokens.CLOSE
+        return (
+            "%s" % self.function
+            + Tokens.OPEN
+            + "%s" % self.argument
+            + Tokens.CLOSE
+        )
 
     def __hash__(self):
         return hash(
-            "%s%s%s" % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent))
+            "%s%s%s"
+            % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent))
         )
 
 
@@ -462,7 +481,9 @@ class VariableBindingException(Exception):
 
 class UnificationException(Exception):
     def __init__(self, a, b, bindings):
-        Exception.__init__(self, "Cannot unify %s with %s given %s" % (a, b, bindings))
+        Exception.__init__(
+            self, "Cannot unify %s with %s given %s" % (a, b, bindings)
+        )
 
 
 class LinearLogicApplicationException(Exception):

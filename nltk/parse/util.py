@@ -20,7 +20,12 @@ from nltk.parse.featurechart import FeatureChart, FeatureChartParser
 
 
 def load_parser(
-    grammar_url, trace=0, parser=None, chart_class=None, beam_size=0, **load_args
+    grammar_url,
+    trace=0,
+    parser=None,
+    chart_class=None,
+    beam_size=0,
+    **load_args,
 ):
     """
     Load a grammar from a file, and build a parser based on that grammar.
@@ -55,7 +60,9 @@ def load_parser(
     """
     grammar = load(grammar_url, **load_args)
     if not isinstance(grammar, CFG):
-        raise ValueError("The grammar must be a CFG, " "or a subclass thereof.")
+        raise ValueError(
+            "The grammar must be a CFG, " "or a subclass thereof."
+        )
     if isinstance(grammar, PCFG):
         if parser is None:
             parser = InsideChartParser
@@ -181,12 +188,16 @@ class TestGrammar(object):
                             print(tree)
                     if key == "accept":
                         if trees == []:
-                            raise ValueError("Sentence '%s' failed to parse'" % sent)
+                            raise ValueError(
+                                "Sentence '%s' failed to parse'" % sent
+                            )
                         else:
                             accepted = True
                     else:
                         if trees:
-                            raise ValueError("Sentence '%s' received a parse'" % sent)
+                            raise ValueError(
+                                "Sentence '%s' received a parse'" % sent
+                            )
                         else:
                             rejected = True
             if accepted and rejected:

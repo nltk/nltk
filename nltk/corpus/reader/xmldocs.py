@@ -361,7 +361,9 @@ class XMLCorpusView(StreamBackedCorpusView):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
                         if re.match(tagspec, "/".join(context) + "/" + name):
-                            elts.append((piece.group(), "/".join(context) + "/" + name))
+                            elts.append(
+                                (piece.group(), "/".join(context) + "/" + name)
+                            )
 
             if elt_start is not None:
                 # If we haven't found any elements yet, then keep
@@ -396,7 +398,9 @@ class XMLCorpusView(StreamBackedCorpusView):
 
         return [
             elt_handler(
-                ElementTree.fromstring(elt.encode("ascii", "xmlcharrefreplace")),
+                ElementTree.fromstring(
+                    elt.encode("ascii", "xmlcharrefreplace")
+                ),
                 context,
             )
             for (elt, context) in elts

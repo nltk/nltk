@@ -12,14 +12,16 @@ from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel(unittest.TestCase):
-    __TEST_SRC_SENTENCE = ["j'", 'aime', 'bien', 'jambon']
-    __TEST_TRG_SENTENCE = ['i', 'love', 'ham']
+    __TEST_SRC_SENTENCE = ["j'", "aime", "bien", "jambon"]
+    __TEST_TRG_SENTENCE = ["i", "love", "ham"]
 
     def test_vocabularies_are_initialized(self):
         parallel_corpora = [
-            AlignedSent(['one', 'two', 'three', 'four'], ['un', 'deux', 'trois']),
-            AlignedSent(['five', 'one', 'six'], ['quatre', 'cinq', 'six']),
-            AlignedSent([], ['sept']),
+            AlignedSent(
+                ["one", "two", "three", "four"], ["un", "deux", "trois"]
+            ),
+            AlignedSent(["five", "one", "six"], ["quatre", "cinq", "six"]),
+            AlignedSent([], ["sept"]),
         ]
 
         ibm_model = IBMModel(parallel_corpora)
@@ -40,12 +42,26 @@ class TestIBMModel(unittest.TestCase):
         )
         # None and 'bien' have zero fertility
         translation_table = {
-            'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
-            'love': {"j'": 0.05, 'aime': 0.9, 'bien': 0.01, 'jambon': 0.01, None: 0.03},
-            'ham': {"j'": 0, 'aime': 0.01, 'bien': 0, 'jambon': 0.99, None: 0},
+            "i": {
+                "j'": 0.9,
+                "aime": 0.05,
+                "bien": 0.02,
+                "jambon": 0.03,
+                None: 0,
+            },
+            "love": {
+                "j'": 0.05,
+                "aime": 0.9,
+                "bien": 0.01,
+                "jambon": 0.01,
+                None: 0.03,
+            },
+            "ham": {"j'": 0, "aime": 0.01, "bien": 0, "jambon": 0.99, None: 0},
         }
         alignment_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.2)))
+            lambda: defaultdict(
+                lambda: defaultdict(lambda: defaultdict(lambda: 0.2))
+            )
         )
 
         ibm_model = IBMModel([])
@@ -65,12 +81,26 @@ class TestIBMModel(unittest.TestCase):
             TestIBMModel.__TEST_TRG_SENTENCE, TestIBMModel.__TEST_SRC_SENTENCE
         )
         translation_table = {
-            'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
-            'love': {"j'": 0.05, 'aime': 0.9, 'bien': 0.01, 'jambon': 0.01, None: 0.03},
-            'ham': {"j'": 0, 'aime': 0.01, 'bien': 0, 'jambon': 0.99, None: 0},
+            "i": {
+                "j'": 0.9,
+                "aime": 0.05,
+                "bien": 0.02,
+                "jambon": 0.03,
+                None: 0,
+            },
+            "love": {
+                "j'": 0.05,
+                "aime": 0.9,
+                "bien": 0.01,
+                "jambon": 0.01,
+                None: 0.03,
+            },
+            "ham": {"j'": 0, "aime": 0.01, "bien": 0, "jambon": 0.99, None: 0},
         }
         alignment_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.2)))
+            lambda: defaultdict(
+                lambda: defaultdict(lambda: defaultdict(lambda: 0.2))
+            )
         )
 
         ibm_model = IBMModel([])
@@ -86,19 +116,39 @@ class TestIBMModel(unittest.TestCase):
     def test_best_model2_alignment_handles_fertile_words(self):
         # arrange
         sentence_pair = AlignedSent(
-            ['i', 'really', ',', 'really', 'love', 'ham'],
+            ["i", "really", ",", "really", "love", "ham"],
             TestIBMModel.__TEST_SRC_SENTENCE,
         )
         # 'bien' produces 2 target words: 'really' and another 'really'
         translation_table = {
-            'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
-            'really': {"j'": 0, 'aime': 0, 'bien': 0.9, 'jambon': 0.01, None: 0.09},
-            ',': {"j'": 0, 'aime': 0, 'bien': 0.3, 'jambon': 0, None: 0.7},
-            'love': {"j'": 0.05, 'aime': 0.9, 'bien': 0.01, 'jambon': 0.01, None: 0.03},
-            'ham': {"j'": 0, 'aime': 0.01, 'bien': 0, 'jambon': 0.99, None: 0},
+            "i": {
+                "j'": 0.9,
+                "aime": 0.05,
+                "bien": 0.02,
+                "jambon": 0.03,
+                None: 0,
+            },
+            "really": {
+                "j'": 0,
+                "aime": 0,
+                "bien": 0.9,
+                "jambon": 0.01,
+                None: 0.09,
+            },
+            ",": {"j'": 0, "aime": 0, "bien": 0.3, "jambon": 0, None: 0.7},
+            "love": {
+                "j'": 0.05,
+                "aime": 0.9,
+                "bien": 0.01,
+                "jambon": 0.01,
+                None: 0.03,
+            },
+            "ham": {"j'": 0, "aime": 0.01, "bien": 0, "jambon": 0.99, None: 0},
         }
         alignment_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.2)))
+            lambda: defaultdict(
+                lambda: defaultdict(lambda: defaultdict(lambda: 0.2))
+            )
         )
 
         ibm_model = IBMModel([])
@@ -140,8 +190,8 @@ class TestIBMModel(unittest.TestCase):
         # arrange
         a_info = AlignmentInfo(
             (0, 3, 2),
-            (None, 'des', 'œufs', 'verts'),
-            ('UNUSED', 'green', 'eggs'),
+            (None, "des", "œufs", "verts"),
+            ("UNUSED", "green", "eggs"),
             [[], [], [2], [1]],
         )
         ibm_model = IBMModel([])
@@ -174,8 +224,8 @@ class TestIBMModel(unittest.TestCase):
         # arrange
         a_info = AlignmentInfo(
             (0, 3, 2),
-            (None, 'des', 'œufs', 'verts'),
-            ('UNUSED', 'green', 'eggs'),
+            (None, "des", "œufs", "verts"),
+            ("UNUSED", "green", "eggs"),
             [[], [], [2], [1]],
         )
         ibm_model = IBMModel([])
@@ -197,8 +247,8 @@ class TestIBMModel(unittest.TestCase):
         # arrange
         a_info = AlignmentInfo(
             (0, 3, 2),
-            (None, 'des', 'œufs', 'verts'),
-            ('UNUSED', 'green', 'eggs'),
+            (None, "des", "œufs", "verts"),
+            ("UNUSED", "green", "eggs"),
             [[], [], [2], [1]],
         )
         ibm_model = IBMModel([])

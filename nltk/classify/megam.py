@@ -63,7 +63,9 @@ def config_megam(bin=None):
 ######################################################################
 
 
-def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True):
+def write_megam_file(
+    train_toks, encoding, stream, bernoulli=True, explicit=True
+):
     """
     Generate an input file for ``megam`` based on the given corpus of
     classified tokens.
@@ -102,7 +104,9 @@ def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True
         # First, the instance number (or, in the weighted multiclass case, the cost of each label).
         if hasattr(encoding, "cost"):
             stream.write(
-                ":".join(str(encoding.cost(featureset, label, l)) for l in labels)
+                ":".join(
+                    str(encoding.cost(featureset, label, l)) for l in labels
+                )
             )
         else:
             stream.write("%d" % labelnum[label])
@@ -110,14 +114,18 @@ def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True
         # For implicit file formats, just list the features that fire
         # for this instance's actual label.
         if not explicit:
-            _write_megam_features(encoding.encode(featureset, label), stream, bernoulli)
+            _write_megam_features(
+                encoding.encode(featureset, label), stream, bernoulli
+            )
 
         # For explicit formats, list the features that would fire for
         # any of the possible labels.
         else:
             for l in labels:
                 stream.write(" #")
-                _write_megam_features(encoding.encode(featureset, l), stream, bernoulli)
+                _write_megam_features(
+                    encoding.encode(featureset, l), stream, bernoulli
+                )
 
         # End of the instance.
         stream.write("\n")

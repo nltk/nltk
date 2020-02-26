@@ -31,7 +31,6 @@ from nltk.internals import raise_unorderable_types
 ######################################################################
 
 
-
 class Tree(list):
     """
     A Tree represents a hierarchical grouping of leaves and subtrees.
@@ -99,7 +98,8 @@ class Tree(list):
     def __init__(self, node, children=None):
         if children is None:
             raise TypeError(
-                "%s: Expected a node value and child list " % type(self).__name__
+                "%s: Expected a node value and child list "
+                % type(self).__name__
             )
         elif isinstance(children, str):
             raise TypeError(
@@ -115,10 +115,10 @@ class Tree(list):
     # ////////////////////////////////////////////////////////////
 
     def __eq__(self, other):
-        return self.__class__ is other.__class__ and (self._label, list(self)) == (
-            other._label,
-            list(other),
-        )
+        return self.__class__ is other.__class__ and (
+            self._label,
+            list(self),
+        ) == (other._label, list(other),)
 
     def __lt__(self, other):
         if not isinstance(other, Tree):
@@ -178,7 +178,9 @@ class Tree(list):
             return list.__setitem__(self, index, value)
         elif isinstance(index, (list, tuple)):
             if len(index) == 0:
-                raise IndexError("The tree position () may not be " "assigned to.")
+                raise IndexError(
+                    "The tree position () may not be " "assigned to."
+                )
             elif len(index) == 1:
                 self[index[0]] = value
             else:
@@ -215,7 +217,9 @@ class Tree(list):
 
     def _set_node(self, value):
         """Outdated method to set the node value; use the set_label() method instead."""
-        raise NotImplementedError("Use set_label() method to set a node label.")
+        raise NotImplementedError(
+            "Use set_label() method to set a node label."
+        )
 
     node = property(_get_node, _set_node)
 
@@ -484,7 +488,9 @@ class Tree(list):
         """
         from nltk.treetransforms import chomsky_normal_form
 
-        chomsky_normal_form(self, factor, horzMarkov, vertMarkov, childChar, parentChar)
+        chomsky_normal_form(
+            self, factor, horzMarkov, vertMarkov, childChar, parentChar
+        )
 
     def un_chomsky_normal_form(
         self, expandUnary=True, childChar="|", parentChar="^", unaryChar="+"
@@ -509,9 +515,13 @@ class Tree(list):
         """
         from nltk.treetransforms import un_chomsky_normal_form
 
-        un_chomsky_normal_form(self, expandUnary, childChar, parentChar, unaryChar)
+        un_chomsky_normal_form(
+            self, expandUnary, childChar, parentChar, unaryChar
+        )
 
-    def collapse_unary(self, collapsePOS=False, collapseRoot=False, joinChar="+"):
+    def collapse_unary(
+        self, collapsePOS=False, collapseRoot=False, joinChar="+"
+    ):
         """
         Collapse subtrees with a single child (ie. unary productions)
         into a new non-terminal (Tree node) joined by 'joinChar'.
@@ -701,7 +711,11 @@ class Tree(list):
 
         # If the tree has an extra level with node='', then get rid of
         # it.  E.g.: "((S (NP ...) (VP ...)))"
-        if remove_empty_top_bracketing and tree._label == "" and len(tree) == 1:
+        if (
+            remove_empty_top_bracketing
+            and tree._label == ""
+            and len(tree) == 1
+        ):
             tree = tree[0]
         # return the tree.
         return tree
@@ -757,7 +771,10 @@ class Tree(list):
         """
         from nltk.treeprettyprinter import TreePrettyPrinter
 
-        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
+        print(
+            TreePrettyPrinter(self, sentence, highlight).text(**kwargs),
+            file=stream,
+        )
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
@@ -837,7 +854,9 @@ class Tree(list):
             stream = None
         print(self.pformat(**kwargs), file=stream)
 
-    def pformat(self, margin=70, indent=0, nodesep="", parens="()", quotes=False):
+    def pformat(
+        self, margin=70, indent=0, nodesep="", parens="()", quotes=False
+    ):
         """
         :return: A pretty-printed string representation of this tree.
         :rtype: str
@@ -867,7 +886,9 @@ class Tree(list):
                 s += (
                     "\n"
                     + " " * (indent + 2)
-                    + child.pformat(margin, indent + 2, nodesep, parens, quotes)
+                    + child.pformat(
+                        margin, indent + 2, nodesep, parens, quotes
+                    )
                 )
             elif isinstance(child, tuple):
                 s += "\n" + " " * (indent + 2) + "/".join(child)
@@ -938,7 +959,8 @@ class ImmutableTree(Tree):
             self._hash = hash((self._label, tuple(self)))
         except (TypeError, ValueError):
             raise ValueError(
-                "%s: node value and children " "must be immutable" % type(self).__name__
+                "%s: node value and children "
+                "must be immutable" % type(self).__name__
             )
 
     def __setitem__(self, index, value):
@@ -1164,7 +1186,9 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
         elif isinstance(index, (list, tuple)):
             # ptree[()] = value
             if len(index) == 0:
-                raise IndexError("The tree position () may not be assigned to.")
+                raise IndexError(
+                    "The tree position () may not be assigned to."
+                )
             # ptree[(i,)] = value
             elif len(index) == 1:
                 self[index[0]] = value
@@ -1352,7 +1376,9 @@ class ParentedTree(AbstractParentedTree):
 
         # If child already has a parent, then complain.
         if child._parent is not None:
-            raise ValueError("Can not insert a subtree that already " "has a parent.")
+            raise ValueError(
+                "Can not insert a subtree that already " "has a parent."
+            )
 
         # Set child's parent pointer & index.
         if not dry_run:
@@ -1482,7 +1508,9 @@ class MultiParentedTree(AbstractParentedTree):
         if parent not in self._parents:
             return []
         else:
-            return [index for (index, child) in enumerate(parent) if child is self]
+            return [
+                index for (index, child) in enumerate(parent) if child is self
+            ]
 
     def treepositions(self, root):
         """
@@ -1526,7 +1554,8 @@ class MultiParentedTree(AbstractParentedTree):
         # If the child's type is incorrect, then complain.
         if not isinstance(child, MultiParentedTree):
             raise TypeError(
-                "Can not insert a non-MultiParentedTree " + "into a MultiParentedTree"
+                "Can not insert a non-MultiParentedTree "
+                + "into a MultiParentedTree"
             )
 
         # Add self as a parent pointer if it's not already listed.
@@ -1549,7 +1578,6 @@ class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
 ######################################################################
 ## Probabilistic trees
 ######################################################################
-
 
 
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
@@ -1602,7 +1630,6 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
             )
         else:
             return self.__class__.__name__ < other.__class__.__name__
-
 
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
@@ -1658,7 +1685,9 @@ def bracket_parse(s):
     """
     Use Tree.read(s, remove_empty_top_bracketing=True) instead.
     """
-    raise NameError("Use Tree.read(s, remove_empty_top_bracketing=True) instead.")
+    raise NameError(
+        "Use Tree.read(s, remove_empty_top_bracketing=True) instead."
+    )
 
 
 def sinica_parse(s):

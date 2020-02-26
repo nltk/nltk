@@ -236,7 +236,9 @@ class PorterStemmer(StemmerI):
 
     def _replace_suffix(self, word, suffix, replacement):
         """Replaces `suffix` of `word` with `replacement"""
-        assert word.endswith(suffix), "Given word doesn't end with given suffix"
+        assert word.endswith(
+            suffix
+        ), "Given word doesn't end with given suffix"
         if suffix == "":
             return word + replacement
         else:
@@ -376,7 +378,9 @@ class PorterStemmer(StemmerI):
                 (
                     "",
                     "e",
-                    lambda stem: (self._measure(stem) == 1 and self._ends_cvc(stem)),
+                    lambda stem: (
+                        self._measure(stem) == 1 and self._ends_cvc(stem)
+                    ),
                 ),
             ],
         )
@@ -501,7 +505,11 @@ class PorterStemmer(StemmerI):
             # so that short stems like 'geo' 'theo' etc work like
             # 'archaeo' 'philo' etc.
             rules.append(
-                ("logi", "log", lambda stem: self._has_positive_measure(word[:-3]))
+                (
+                    "logi",
+                    "log",
+                    lambda stem: self._has_positive_measure(word[:-3]),
+                )
             )
 
         if self.mode == self.MARTIN_EXTENSIONS:
@@ -585,7 +593,8 @@ class PorterStemmer(StemmerI):
                 (
                     "ion",
                     "",
-                    lambda stem: self._measure(stem) > 1 and stem[-1] in ("s", "t"),
+                    lambda stem: self._measure(stem) > 1
+                    and stem[-1] in ("s", "t"),
                 ),
                 ("ou", "", measure_gt_1),
                 ("ism", "", measure_gt_1),

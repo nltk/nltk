@@ -134,7 +134,9 @@ class IBMModel3(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
+    def __init__(
+        self, sentence_aligned_corpus, iterations, probability_tables=None
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, a distortion model, a fertility model, and a
@@ -246,7 +248,9 @@ class IBMModel3(IBMModel):
                     counts.update_lexical_translation(
                         normalized_count, alignment_info, j
                     )
-                    counts.update_distortion(normalized_count, alignment_info, j, l, m)
+                    counts.update_distortion(
+                        normalized_count, alignment_info, j, l, m
+                    )
 
                 counts.update_null_generation(normalized_count, alignment_info)
                 counts.update_fertility(normalized_count, alignment_info)
@@ -272,7 +276,9 @@ class IBMModel3(IBMModel):
                             counts.distortion[j][i][l][m]
                             / counts.distortion_for_any_j[i][l][m]
                         )
-                        self.distortion_table[j][i][l][m] = max(estimate, MIN_PROB)
+                        self.distortion_table[j][i][l][m] = max(
+                            estimate, MIN_PROB
+                        )
 
     def prob_t_a_given_s(self, alignment_info):
         """
@@ -291,7 +297,9 @@ class IBMModel3(IBMModel):
 
         # Combine NULL insertion probability
         null_fertility = alignment_info.fertility_of_i(0)
-        probability *= pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility)
+        probability *= pow(p1, null_fertility) * pow(
+            p0, m - 2 * null_fertility
+        )
         if probability < MIN_PROB:
             return MIN_PROB
 
@@ -305,7 +313,8 @@ class IBMModel3(IBMModel):
         for i in range(1, l + 1):
             fertility = alignment_info.fertility_of_i(i)
             probability *= (
-                factorial(fertility) * self.fertility_table[fertility][src_sentence[i]]
+                factorial(fertility)
+                * self.fertility_table[fertility][src_sentence[i]]
             )
             if probability < MIN_PROB:
                 return MIN_PROB
@@ -317,7 +326,8 @@ class IBMModel3(IBMModel):
             s = src_sentence[i]
 
             probability *= (
-                self.translation_table[t][s] * self.distortion_table[j][i][l][m]
+                self.translation_table[t][s]
+                * self.distortion_table[j][i][l][m]
             )
             if probability < MIN_PROB:
                 return MIN_PROB
@@ -334,7 +344,9 @@ class Model3Counts(Counts):
     def __init__(self):
         super(Model3Counts, self).__init__()
         self.distortion = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+            lambda: defaultdict(
+                lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+            )
         )
         self.distortion_for_any_j = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0))

@@ -38,9 +38,9 @@ class ParametrizeTestsMeta(type):
         contexts = (
             ("a",),
             ("c",),
-            (u"<s>",),
+            ("<s>",),
             ("b",),
-            (u"<UNK>",),
+            ("<UNK>",),
             ("d",),
             ("e",),
             ("r",),
@@ -71,7 +71,9 @@ class ParametrizeTestsMeta(type):
     def add_sum_to_1_test(cls, context):
         def test(self):
             s = sum(self.model.score(w, context) for w in self.model.vocab)
-            self.assertAlmostEqual(s, 1.0, msg="The context is {}".format(context))
+            self.assertAlmostEqual(
+                s, 1.0, msg="The context is {}".format(context)
+            )
 
         return test
 
@@ -126,7 +128,9 @@ class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         perplexity = 2.1398
 
         self.assertAlmostEqual(H, self.model.entropy(trained), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(trained), places=4)
+        self.assertAlmostEqual(
+            perplexity, self.model.perplexity(trained), places=4
+        )
 
     def test_entropy_perplexity_unseen(self):
         # In MLE, even one unseen ngram should make entropy and perplexity infinite
@@ -152,7 +156,9 @@ class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         text = [("<s>",), ("a",), ("c",), ("-",), ("d",), ("c",), ("</s>",)]
 
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+        self.assertAlmostEqual(
+            perplexity, self.model.perplexity(text), places=4
+        )
 
 
 class MleTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
@@ -234,7 +240,9 @@ class LidstoneBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         H = 4.0917
         perplexity = 17.0504
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+        self.assertAlmostEqual(
+            perplexity, self.model.perplexity(text), places=4
+        )
 
 
 class LidstoneTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
@@ -311,10 +319,14 @@ class LaplaceBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         H = 3.1275
         perplexity = 8.7393
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+        self.assertAlmostEqual(
+            perplexity, self.model.perplexity(text), places=4
+        )
 
 
-class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class WittenBellInterpolatedTrigramTests(
+    unittest.TestCase, metaclass=ParametrizeTestsMeta
+):
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = WittenBellInterpolated(3, vocabulary=vocab)
@@ -338,14 +350,20 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         # building on that, let's try 'a b c' as the trigram
         # gamma(['a', 'b']) = 0.0667
         # mle("c", ["a", "b"]) = 1
-        ("c", ["a", "b"], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        (
+            "c",
+            ["a", "b"],
+            (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18),
+        ),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
         ("c", ["z", "b"], ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
     ]
 
 
-class KneserNeyInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class KneserNeyInterpolatedTrigramTests(
+    unittest.TestCase, metaclass=ParametrizeTestsMeta
+):
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = KneserNeyInterpolated(3, vocabulary=vocab)
@@ -401,7 +419,9 @@ class NgramModelTextGenerationTests(unittest.TestCase):
 
     def test_generate_cycle(self):
         # Add a cycle to the model: bd -> b, db -> d
-        more_training_text = [list(padded_everygrams(self.model.order, list("bdbdbd")))]
+        more_training_text = [
+            list(padded_everygrams(self.model.order, list("bdbdbd")))
+        ]
         self.model.fit(more_training_text)
         # Test that we can escape the cycle
         self.assertEqual(

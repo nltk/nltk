@@ -54,7 +54,10 @@ pairs = (
             "i could if i wanted, don't you think!! kekeke",
         ),
     ),
-    (r"ye[as] [iI] (.*)", ("u%1? cool!! how?", "how come u%1??", "u%1? so do i!!")),
+    (
+        r"ye[as] [iI] (.*)",
+        ("u%1? cool!! how?", "how come u%1??", "u%1? so do i!!"),
+    ),
     (
         r"do (you|u) (.*)\??",
         ("do i%2? only on tuesdays! kekeke *_*", "i dunno! do u%2??"),
@@ -99,7 +102,11 @@ pairs = (
     ),
     (
         r"I (like|love|watch|play) (.*)",
-        ("yay! %2 rocks!", "yay! %2 is neat!", "cool! do u like other stuff?? ^_^"),
+        (
+            "yay! %2 rocks!",
+            "yay! %2 is neat!",
+            "cool! do u like other stuff?? ^_^",
+        ),
     ),
     (
         r"anime sucks|(.*) (hate|detest) anime",
@@ -111,11 +118,17 @@ pairs = (
     ),
     (
         r"(are|r) (you|u) (.*)",
-        ("am i%1??! how come u ask that!", "maybe!  y shud i tell u?? kekeke >_>"),
+        (
+            "am i%1??! how come u ask that!",
+            "maybe!  y shud i tell u?? kekeke >_>",
+        ),
     ),
     (
         r"what (.*)",
-        ("hee u think im gonna tell u? .v.", "booooooooring! ask me somethin else!"),
+        (
+            "hee u think im gonna tell u? .v.",
+            "booooooooring! ask me somethin else!",
+        ),
     ),
     (r"how (.*)", ("not tellin!! kekekekekeke ^_^",)),
     (r"(hi|hello|hey) (.*)", ("hi!!! how r u!!",)),
@@ -144,7 +157,9 @@ iesha_chatbot = Chat(pairs, reflections)
 
 def iesha_chat():
     print("Iesha the TeenBoT\n---------")
-    print("Talk to the program by typing in plain English, using normal upper-")
+    print(
+        "Talk to the program by typing in plain English, using normal upper-"
+    )
     print('and lower-case letters and punctuation.  Enter "quit" when done.')
     print("=" * 72)
     print("hi!! i'm iesha! who r u??!")

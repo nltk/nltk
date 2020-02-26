@@ -19,25 +19,25 @@ def check_reader(unicode_string, encoding, n=1000):
     while True:
         pos = reader.tell()
         chars.append((pos, reader.read(1)))
-        if chars[-1][1] == '':
+        if chars[-1][1] == "":
             break
     # Find all strings
-    strings = dict((pos, '') for (pos, c) in chars)
+    strings = dict((pos, "") for (pos, c) in chars)
     for pos1, char in chars:
         for pos2, _ in chars:
             if pos2 <= pos1:
                 strings[pos2] += char
     while True:
-        op = random.choice('tsrr')
+        op = random.choice("tsrr")
         # Check our position?
-        if op == 't':  # tell
+        if op == "t":  # tell
             reader.tell()
         # Perform a seek?
-        if op == 's':  # seek
+        if op == "s":  # seek
             new_pos = random.choice([p for (p, c) in chars])
             reader.seek(new_pos)
         # Perform a read?
-        if op == 'r':  # read
+        if op == "r":  # read
             if random.random() < 0.3:
                 pos = reader.tell()
             else:
@@ -58,13 +58,13 @@ def check_reader(unicode_string, encoding, n=1000):
                 assert strings[pos].startswith(s)
                 n -= 1
                 if n == 0:
-                    return 'passed'
+                    return "passed"
 
 
 # Call the randomized test function `check_reader` with a variety of
 # input strings and encodings.
 
-ENCODINGS = ['ascii', 'latin1', 'greek', 'hebrew', 'utf-16', 'utf-8']
+ENCODINGS = ["ascii", "latin1", "greek", "hebrew", "utf-16", "utf-8"]
 
 STRINGS = [
     """
@@ -127,7 +127,7 @@ def test_reader_on_large_string():
 
 
 def test_reader_stream_is_closed():
-    reader = SeekableUnicodeStreamReader(BytesIO(b''), 'ascii')
+    reader = SeekableUnicodeStreamReader(BytesIO(b""), "ascii")
     assert reader.stream.closed is False
     reader.__del__()
     assert reader.stream.closed is True

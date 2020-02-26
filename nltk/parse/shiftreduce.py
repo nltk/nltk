@@ -382,7 +382,9 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :rtype: Production or None
         """
         self._history.append((self._stack[:], self._remaining_text[:]))
-        return_val = self._reduce(self._stack, self._remaining_text, production)
+        return_val = self._reduce(
+            self._stack, self._remaining_text, production
+        )
 
         if not return_val:
             self._history.pop()

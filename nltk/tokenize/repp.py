@@ -112,7 +112,9 @@ class ReppTokenizer(TokenizerI):
 
     @staticmethod
     def _execute(cmd):
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         stdout, stderr = p.communicate()
         return stdout
 

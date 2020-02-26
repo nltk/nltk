@@ -138,7 +138,13 @@ class HiddenMarkovModelTagger(TaggerI):
     """
 
     def __init__(
-        self, symbols, states, transitions, outputs, priors, transform=_identity
+        self,
+        symbols,
+        states,
+        transitions,
+        outputs,
+        priors,
+        transform=_identity,
     ):
         self._symbols = unique_list(symbols)
         self._states = unique_list(states)
@@ -156,7 +162,7 @@ class HiddenMarkovModelTagger(TaggerI):
         unlabeled_sequence=None,
         transform=_identity,
         estimator=None,
-        **kwargs
+        **kwargs,
     ):
 
         if estimator is None:
@@ -165,8 +171,12 @@ class HiddenMarkovModelTagger(TaggerI):
                 return LidstoneProbDist(fd, 0.1, bins)
 
         labeled_sequence = LazyMap(transform, labeled_sequence)
-        symbols = unique_list(word for sent in labeled_sequence for word, tag in sent)
-        tag_set = unique_list(tag for sent in labeled_sequence for word, tag in sent)
+        symbols = unique_list(
+            word for sent in labeled_sequence for word, tag in sent
+        )
+        tag_set = unique_list(
+            tag for sent in labeled_sequence for word, tag in sent
+        )
 
         trainer = HiddenMarkovModelTrainer(tag_set, symbols)
         hmm = trainer.train_supervised(labeled_sequence, estimator=estimator)
@@ -194,7 +204,11 @@ class HiddenMarkovModelTagger(TaggerI):
 
     @classmethod
     def train(
-        cls, labeled_sequence, test_sequence=None, unlabeled_sequence=None, **kwargs
+        cls,
+        labeled_sequence,
+        test_sequence=None,
+        unlabeled_sequence=None,
+        **kwargs,
     ):
         """
         Train a new HiddenMarkovModelTagger using the given labeled and
@@ -224,7 +238,9 @@ class HiddenMarkovModelTagger(TaggerI):
         :param max_iterations: number of Baum-Welch interations to perform
         :type max_iterations: int
         """
-        return cls._train(labeled_sequence, test_sequence, unlabeled_sequence, **kwargs)
+        return cls._train(
+            labeled_sequence, test_sequence, unlabeled_sequence, **kwargs
+        )
 
     def probability(self, sequence):
         """
@@ -437,7 +453,9 @@ class HiddenMarkovModelTagger(TaggerI):
         # find the starting log probabilities for each state
         symbol = unlabeled_sequence[0]
         for i, state in enumerate(self._states):
-            V[0, i] = self._priors.logprob(state) + self._output_logprob(state, symbol)
+            V[0, i] = self._priors.logprob(state) + self._output_logprob(
+                state, symbol
+            )
             B[0, state] = None
 
         # find the maximum log probabilities for reaching each state at time t
@@ -519,7 +537,9 @@ class HiddenMarkovModelTagger(TaggerI):
             if cum_p <= p <= cum_p + add_p:
                 return sample
             cum_p += add_p
-        raise Exception("Invalid probability distribution - " "does not sum to one")
+        raise Exception(
+            "Invalid probability distribution - " "does not sum to one"
+        )
 
     def entropy(self, unlabeled_sequence):
         """
@@ -574,7 +594,9 @@ class HiddenMarkovModelTagger(TaggerI):
                     p = 2 ** (
                         alpha[t0, i0]
                         + self._transitions[s0].logprob(s1)
-                        + self._outputs[s1].logprob(unlabeled_sequence[t1][_TEXT])
+                        + self._outputs[s1].logprob(
+                            unlabeled_sequence[t1][_TEXT]
+                        )
                         + beta[t1, i1]
                         - normalisation
                     )
@@ -682,7 +704,9 @@ class HiddenMarkovModelTagger(TaggerI):
         entropies = np.zeros(T, np.float64)
         for t in range(T):
             for s in range(N):
-                entropies[t] -= 2 ** (probabilities[t, s]) * probabilities[t, s]
+                entropies[t] -= (
+                    2 ** (probabilities[t, s]) * probabilities[t, s]
+                )
 
         return entropies
 
@@ -801,22 +825,34 @@ class HiddenMarkovModelTagger(TaggerI):
         predicted_sequence = list(map(self._tag, map(words, test_sequence)))
 
         if verbose:
-            for test_sent, predicted_sent in zip(test_sequence, predicted_sequence):
+            for test_sent, predicted_sent in zip(
+                test_sequence, predicted_sequence
+            ):
                 print(
                     "Test:",
-                    " ".join("%s/%s" % (token, tag) for (token, tag) in test_sent),
+                    " ".join(
+                        "%s/%s" % (token, tag) for (token, tag) in test_sent
+                    ),
                 )
                 print()
-                print("Untagged:", " ".join("%s" % token for (token, tag) in test_sent))
+                print(
+                    "Untagged:",
+                    " ".join("%s" % token for (token, tag) in test_sent),
+                )
                 print()
                 print(
                     "HMM-tagged:",
-                    " ".join("%s/%s" % (token, tag) for (token, tag) in predicted_sent),
+                    " ".join(
+                        "%s/%s" % (token, tag)
+                        for (token, tag) in predicted_sent
+                    ),
                 )
                 print()
                 print(
                     "Entropy:",
-                    self.entropy([(token, None) for (token, tag) in predicted_sent]),
+                    self.entropy(
+                        [(token, None) for (token, tag) in predicted_sent]
+                    ),
                 )
                 print()
                 print("-" * 60)
@@ -855,7 +891,9 @@ class HiddenMarkovModelTrainer(object):
         self._states = states if states else []
         self._symbols = symbols if symbols else []
 
-    def train(self, labeled_sequences=None, unlabeled_sequences=None, **kwargs):
+    def train(
+        self, labeled_sequences=None, unlabeled_sequences=None, **kwargs
+    ):
         """
         Trains the HMM using both (or either of) supervised and unsupervised
         techniques.
@@ -928,7 +966,9 @@ class HiddenMarkovModelTrainer(object):
 
         return lpk, A_numer, A_denom, B_numer, B_denom
 
-    def train_unsupervised(self, unlabeled_sequences, update_outputs=True, **kwargs):
+    def train_unsupervised(
+        self, unlabeled_sequences, update_outputs=True, **kwargs
+    ):
         """
         Trains the HMM using the Baum-Welch algorithm to maximise the
         probability of the data sequence. This is a variant of the EM
@@ -958,10 +998,16 @@ class HiddenMarkovModelTrainer(object):
         if not model:
             priors = RandomProbDist(self._states)
             transitions = DictionaryConditionalProbDist(
-                dict((state, RandomProbDist(self._states)) for state in self._states)
+                dict(
+                    (state, RandomProbDist(self._states))
+                    for state in self._states
+                )
             )
             outputs = DictionaryConditionalProbDist(
-                dict((state, RandomProbDist(self._symbols)) for state in self._states)
+                dict(
+                    (state, RandomProbDist(self._symbols))
+                    for state in self._states
+                )
             )
             model = HiddenMarkovModelTagger(
                 self._symbols, self._states, transitions, outputs, priors
@@ -1023,8 +1069,12 @@ class HiddenMarkovModelTrainer(object):
 
                 # add these sums to the global A and B values
                 for i in range(N):
-                    A_numer[i] = np.logaddexp2(A_numer[i], seq_A_numer[i] - lpk)
-                    B_numer[i] = np.logaddexp2(B_numer[i], seq_B_numer[i] - lpk)
+                    A_numer[i] = np.logaddexp2(
+                        A_numer[i], seq_A_numer[i] - lpk
+                    )
+                    B_numer[i] = np.logaddexp2(
+                        B_numer[i], seq_B_numer[i] - lpk
+                    )
 
                 A_denom = np.logaddexp2(A_denom, seq_A_denom - lpk)
                 B_denom = np.logaddexp2(B_denom, seq_B_denom - lpk)
@@ -1181,8 +1231,12 @@ def _market_hmm_example():
     """
     states = ["bull", "bear", "static"]
     symbols = ["up", "down", "unchanged"]
-    A = np.array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], np.float64)
-    B = np.array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], np.float64)
+    A = np.array(
+        [[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], np.float64
+    )
+    B = np.array(
+        [[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], np.float64
+    )
     pi = np.array([0.5, 0.2, 0.3], np.float64)
 
     model = _create_hmm_tagger(states, symbols, A, B, pi)
@@ -1327,4 +1381,6 @@ def demo_bw():
 
     # train on those examples, starting with the model that generated them
     trainer = HiddenMarkovModelTrainer(states, symbols)
-    hmm = trainer.train_unsupervised(training, model=model, max_iterations=1000)
+    hmm = trainer.train_unsupervised(
+        training, model=model, max_iterations=1000
+    )

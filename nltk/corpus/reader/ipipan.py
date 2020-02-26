@@ -85,11 +85,16 @@ class IPIPANCorpusReader(CorpusReader):
         if not fileids:
             fileids = self.fileids()
         return [
-            self._map_category(cat) for cat in self._parse_header(fileids, "keyTerm")
+            self._map_category(cat)
+            for cat in self._parse_header(fileids, "keyTerm")
         ]
 
     def fileids(self, channels=None, domains=None, categories=None):
-        if channels is not None and domains is not None and categories is not None:
+        if (
+            channels is not None
+            and domains is not None
+            and categories is not None
+        ):
             raise ValueError(
                 "You can specify only one of channels, domains "
                 "and categories parameter at once"
@@ -116,7 +121,10 @@ class IPIPANCorpusReader(CorpusReader):
         return concat(
             [
                 self._view(
-                    fileid, mode=IPIPANCorpusView.SENTS_MODE, tags=False, **kwargs
+                    fileid,
+                    mode=IPIPANCorpusView.SENTS_MODE,
+                    tags=False,
+                    **kwargs,
                 )
                 for fileid in self._list_morph_files(fileids)
             ]
@@ -127,7 +135,10 @@ class IPIPANCorpusReader(CorpusReader):
         return concat(
             [
                 self._view(
-                    fileid, mode=IPIPANCorpusView.PARAS_MODE, tags=False, **kwargs
+                    fileid,
+                    mode=IPIPANCorpusView.PARAS_MODE,
+                    tags=False,
+                    **kwargs,
                 )
                 for fileid in self._list_morph_files(fileids)
             ]
@@ -163,7 +174,10 @@ class IPIPANCorpusReader(CorpusReader):
     @_parse_args
     def tagged_words(self, fileids=None, **kwargs):
         return concat(
-            [self._view(fileid, **kwargs) for fileid in self._list_morph_files(fileids)]
+            [
+                self._view(fileid, **kwargs)
+                for fileid in self._list_morph_files(fileids)
+            ]
         )
 
     def _list_morph_files(self, fileids):
@@ -229,7 +243,8 @@ class IPIPANCorpusReader(CorpusReader):
             raise ValueError("Unexpected arguments: %s" % kwargs.keys())
         if not one_tag and not disamb_only:
             raise ValueError(
-                "You cannot specify both one_tag=False and " "disamb_only=False"
+                "You cannot specify both one_tag=False and "
+                "disamb_only=False"
             )
         if not tags and (simplify_tags or not one_tag or not disamb_only):
             raise ValueError(

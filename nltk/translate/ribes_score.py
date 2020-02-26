@@ -116,7 +116,9 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     corpus_best_ribes = 0.0
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
-        corpus_best_ribes += sentence_ribes(references, hypothesis, alpha, beta)
+        corpus_best_ribes += sentence_ribes(
+            references, hypothesis, alpha, beta
+        )
     return corpus_best_ribes / len(hypotheses)
 
 
@@ -205,9 +207,13 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
         else:
             max_window_size = max(i, hyp_len - i + 1)
             for window in range(1, max_window_size):
-                if i + window < hyp_len:  # If searching the right context is possible.
+                if (
+                    i + window < hyp_len
+                ):  # If searching the right context is possible.
                     # Retrieve the right context window.
-                    right_context_ngram = tuple(islice(hypothesis, i, i + window + 1))
+                    right_context_ngram = tuple(
+                        islice(hypothesis, i, i + window + 1)
+                    )
                     num_times_in_ref = ref_ngrams.count(right_context_ngram)
                     num_times_in_hyp = hyp_ngrams.count(right_context_ngram)
                     # If ngram appears only once in both ref and hyp.
@@ -218,7 +224,9 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
                         break
                 if window <= i:  # If searching the left context is possible.
                     # Retrieve the left context window.
-                    left_context_ngram = tuple(islice(hypothesis, i - window, i + 1))
+                    left_context_ngram = tuple(
+                        islice(hypothesis, i - window, i + 1)
+                    )
                     num_times_in_ref = ref_ngrams.count(left_context_ngram)
                     num_times_in_hyp = hyp_ngrams.count(left_context_ngram)
                     if num_times_in_ref == num_times_in_hyp == 1:
@@ -283,7 +291,9 @@ def kendall_tau(worder, normalize=True):
     # Extract the groups of increasing/monotonic sequences.
     increasing_sequences = find_increasing_sequences(worder)
     # Calculate no. of increasing_pairs in *worder* list.
-    num_increasing_pairs = sum(choose(len(seq), 2) for seq in increasing_sequences)
+    num_increasing_pairs = sum(
+        choose(len(seq), 2) for seq in increasing_sequences
+    )
     # Calculate no. of possible pairs.
     num_possible_pairs = choose(worder_len, 2)
     # Kendall's Tau computation.
@@ -316,7 +326,9 @@ def spearman_rho(worder, normalize=True):
     :param type: list(int)
     """
     worder_len = len(worder)
-    sum_d_square = sum((wi - i) ** 2 for wi, i in zip(worder, range(worder_len)))
+    sum_d_square = sum(
+        (wi - i) ** 2 for wi, i in zip(worder, range(worder_len))
+    )
     rho = 1 - sum_d_square / choose(worder_len + 1, 3)
 
     if normalize:  # If normalized, the rho output falls between 0.0 to 1.0

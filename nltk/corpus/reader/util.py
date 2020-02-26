@@ -18,7 +18,12 @@ from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
-from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
+from nltk.util import (
+    AbstractLazySequence,
+    LazySubsequence,
+    LazyConcatenation,
+    py25,
+)
 
 ######################################################################
 # { Corpus View
@@ -170,7 +175,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
             else:
                 self._eofpos = os.stat(self._fileid).st_size
         except Exception as exc:
-            raise ValueError("Unable to open or access %r -- %s" % (fileid, exc))
+            raise ValueError(
+                "Unable to open or access %r -- %s" % (fileid, exc)
+            )
 
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
@@ -440,7 +447,9 @@ def concat(docs):
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
     for typ in types:
-        if not issubclass(typ, (StreamBackedCorpusView, ConcatenatedCorpusView)):
+        if not issubclass(
+            typ, (StreamBackedCorpusView, ConcatenatedCorpusView)
+        ):
             break
     else:
         return ConcatenatedCorpusView(docs)

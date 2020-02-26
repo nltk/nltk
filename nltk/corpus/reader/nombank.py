@@ -122,7 +122,9 @@ class NombankCorpusReader(CorpusReader):
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
-        raise ValueError("Roleset %s not found in %s" % (roleset_id, framefile))
+        raise ValueError(
+            "Roleset %s not found in %s" % (roleset_id, framefile)
+        )
 
     def rolesets(self, baseform=None):
         """
@@ -233,7 +235,9 @@ class NombankInstance(object):
         Use ``nombank.roleset() <NombankCorpusReader.roleset>`` to
         look up information about the roleset."""
         r = self.baseform.replace("%", "perc-sign")
-        r = r.replace("1/10", "1-slash-10").replace("1-slash-10", "oneslashonezero")
+        r = r.replace("1/10", "1-slash-10").replace(
+            "1-slash-10", "oneslashonezero"
+        )
         return "%s.%s" % (r, self.sensenumber)
 
     def __repr__(self):
@@ -415,7 +419,9 @@ class NombankTreePointer(NombankPointer):
         return "NombankTreePointer(%d, %d)" % (self.wordnum, self.height)
 
     def __eq__(self, other):
-        while isinstance(other, (NombankChainTreePointer, NombankSplitTreePointer)):
+        while isinstance(
+            other, (NombankChainTreePointer, NombankSplitTreePointer)
+        ):
             other = other.pieces[0]
 
         if not isinstance(other, NombankTreePointer):
@@ -427,7 +433,9 @@ class NombankTreePointer(NombankPointer):
         return not self == other
 
     def __lt__(self, other):
-        while isinstance(other, (NombankChainTreePointer, NombankSplitTreePointer)):
+        while isinstance(
+            other, (NombankChainTreePointer, NombankSplitTreePointer)
+        ):
             other = other.pieces[0]
 
         if not isinstance(other, NombankTreePointer):

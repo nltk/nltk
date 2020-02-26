@@ -206,7 +206,12 @@ ocean = {
     "filename": "world1.pl",
 }
 
-sea = {"rel_name": "sea", "closures": [], "schema": ["sea"], "filename": "world1.pl"}
+sea = {
+    "rel_name": "sea",
+    "closures": [],
+    "schema": ["sea"],
+    "filename": "world1.pl",
+}
 
 
 items = [
@@ -249,7 +254,9 @@ class Concept(object):
     (http://www.w3.org/TR/swbp-skos-core-guide/).
     """
 
-    def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):
+    def __init__(
+        self, prefLabel, arity, altLabels=[], closures=[], extension=set()
+    ):
         """
         :param prefLabel: the preferred label for the concept
         :type prefLabel: str
@@ -460,7 +467,8 @@ def sql_query(dbname, query):
         import warnings
 
         warnings.warn(
-            "Make sure the database file %s is installed and uncompressed." % dbname
+            "Make sure the database file %s is installed and uncompressed."
+            % dbname
         )
         raise
 
@@ -749,7 +757,11 @@ Valuation object for use in the NLTK semantics package.
     opts = OptionParser(description=description)
     opts.set_defaults(verbose=True, lex=False, vocab=False)
     opts.add_option(
-        "-s", "--store", dest="outdb", help="store a valuation in DB", metavar="DB"
+        "-s",
+        "--store",
+        dest="outdb",
+        help="store a valuation in DB",
+        metavar="DB",
     )
     opts.add_option(
         "-l",
@@ -848,7 +860,9 @@ def sql_demo():
     """
     print()
     print("Using SQL to extract rows from 'city.db' RDB.")
-    for row in sql_query("corpora/city_database/city.db", "SELECT * FROM city_table"):
+    for row in sql_query(
+        "corpora/city_database/city.db", "SELECT * FROM city_table"
+    ):
         print(row)
 
 

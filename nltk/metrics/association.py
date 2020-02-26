@@ -69,7 +69,8 @@ class NgramAssocMeasures(metaclass=ABCMeta):
     def _contingency(*marginals):
         """Calculates values of a contingency table from marginal values."""
         raise NotImplementedError(
-            "The contingency table is not available" "in the general ngram case"
+            "The contingency table is not available"
+            "in the general ngram case"
         )
 
     @staticmethod
@@ -77,7 +78,8 @@ class NgramAssocMeasures(metaclass=ABCMeta):
     def _marginals(*contingency):
         """Calculates values of contingency table marginals from its values."""
         raise NotImplementedError(
-            "The contingency table is not available" "in the general ngram case"
+            "The contingency table is not available"
+            "in the general ngram case"
         )
 
     @classmethod
@@ -91,7 +93,11 @@ class NgramAssocMeasures(metaclass=ABCMeta):
             # Yield the expected value
             yield (
                 _product(
-                    sum(cont[x] for x in range(2 ** cls._n) if (x & j) == (i & j))
+                    sum(
+                        cont[x]
+                        for x in range(2 ** cls._n)
+                        if (x & j) == (i & j)
+                    )
                     for j in bits
                 )
                 / (n_all ** (cls._n - 1))
@@ -109,7 +115,8 @@ class NgramAssocMeasures(metaclass=ABCMeta):
         """
         return (
             marginals[NGRAM]
-            - _product(marginals[UNIGRAMS]) / (marginals[TOTAL] ** (cls._n - 1))
+            - _product(marginals[UNIGRAMS])
+            / (marginals[TOTAL] ** (cls._n - 1))
         ) / (marginals[NGRAM] + _SMALL) ** 0.5
 
     @classmethod
@@ -119,7 +126,9 @@ class NgramAssocMeasures(metaclass=ABCMeta):
         """
         cont = cls._contingency(*marginals)
         exps = cls._expected_values(cont)
-        return sum((obs - exp) ** 2 / (exp + _SMALL) for obs, exp in zip(cont, exps))
+        return sum(
+            (obs - exp) ** 2 / (exp + _SMALL) for obs, exp in zip(cont, exps)
+        )
 
     @staticmethod
     def mi_like(*marginals, **kwargs):
@@ -136,9 +145,9 @@ class NgramAssocMeasures(metaclass=ABCMeta):
         """Scores ngrams by pointwise mutual information, as in Manning and
         Schutze 5.4.
         """
-        return _log2(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) - _log2(
-            _product(marginals[UNIGRAMS])
-        )
+        return _log2(
+            marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)
+        ) - _log2(_product(marginals[UNIGRAMS]))
 
     @classmethod
     def likelihood_ratio(cls, *marginals):
@@ -153,7 +162,9 @@ class NgramAssocMeasures(metaclass=ABCMeta):
     @classmethod
     def poisson_stirling(cls, *marginals):
         """Scores ngrams using the Poisson-Stirling measure."""
-        exp = _product(marginals[UNIGRAMS]) / (marginals[TOTAL] ** (cls._n - 1))
+        exp = _product(marginals[UNIGRAMS]) / (
+            marginals[TOTAL] ** (cls._n - 1)
+        )
         return marginals[NGRAM] * (_log2(marginals[NGRAM] / exp) - 1)
 
     @classmethod
@@ -242,7 +253,9 @@ class BigramAssocMeasures(NgramAssocMeasures):
 
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        (odds, pvalue) = fisher_exact([[n_ii, n_io], [n_oi, n_oo]], alternative="less")
+        (odds, pvalue) = fisher_exact(
+            [[n_ii, n_io], [n_oi, n_oo]], alternative="less"
+        )
         return pvalue
 
     @staticmethod
@@ -347,14 +360,50 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         n_ooii = n_xxii - n_iiii - n_oiii - n_ioii
         n_oioi = n_xixi - n_iiii - n_oiii - n_iioi
         n_iooi = n_ixxi - n_iiii - n_ioii - n_iioi
-        n_oooi = n_xxxi - n_iiii - n_oiii - n_ioii - n_iioi - n_ooii - n_iooi - n_oioi
+        n_oooi = (
+            n_xxxi
+            - n_iiii
+            - n_oiii
+            - n_ioii
+            - n_iioi
+            - n_ooii
+            - n_iooi
+            - n_oioi
+        )
         n_iiio = n_iiix - n_iiii
         n_oiio = n_xiix - n_iiii - n_oiii - n_iiio
         n_ioio = n_ixix - n_iiii - n_ioii - n_iiio
-        n_ooio = n_xxix - n_iiii - n_oiii - n_ioii - n_iiio - n_ooii - n_ioio - n_oiio
+        n_ooio = (
+            n_xxix
+            - n_iiii
+            - n_oiii
+            - n_ioii
+            - n_iiio
+            - n_ooii
+            - n_ioio
+            - n_oiio
+        )
         n_iioo = n_iixx - n_iiii - n_iioi - n_iiio
-        n_oioo = n_xixx - n_iiii - n_oiii - n_iioi - n_iiio - n_oioi - n_oiio - n_iioo
-        n_iooo = n_ixxx - n_iiii - n_ioii - n_iioi - n_iiio - n_iooi - n_iioo - n_ioio
+        n_oioo = (
+            n_xixx
+            - n_iiii
+            - n_oiii
+            - n_iioi
+            - n_iiio
+            - n_oioi
+            - n_oiio
+            - n_iioo
+        )
+        n_iooo = (
+            n_ixxx
+            - n_iiii
+            - n_ioii
+            - n_iioi
+            - n_iiio
+            - n_iooi
+            - n_iioo
+            - n_ioio
+        )
         n_oooo = (
             n_xxxx
             - n_iiii
@@ -399,9 +448,24 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         QuadgramAssocMeasures._marginals(1, 0, 2, 46, 552, 825, 2577, 34967, 1, 0, 2, 48, 7250, 9031, 28585, 356653)
         (1, (2, 553, 3, 1), (7804, 6, 3132, 1378, 49, 2), (38970, 17660, 100, 38970), 440540)
         """
-        n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi, n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo = (
-            contingency
-        )
+        (
+            n_iiii,
+            n_oiii,
+            n_ioii,
+            n_ooii,
+            n_iioi,
+            n_oioi,
+            n_iooi,
+            n_oooi,
+            n_iiio,
+            n_oiio,
+            n_ioio,
+            n_ooio,
+            n_iioo,
+            n_oioo,
+            n_iooo,
+            n_oooo,
+        ) = contingency
 
         n_iiix = n_iiii + n_iiio
         n_iixi = n_iiii + n_iioi
@@ -415,10 +479,46 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         n_xxii = n_iiii + n_oiii + n_ioii + n_ooii
         n_xiix = n_iiii + n_oiii + n_iiio + n_oiio
 
-        n_ixxx = n_iiii + n_ioii + n_iioi + n_iiio + n_iooi + n_iioo + n_ioio + n_iooo
-        n_xixx = n_iiii + n_oiii + n_iioi + n_iiio + n_oioi + n_oiio + n_iioo + n_oioo
-        n_xxix = n_iiii + n_oiii + n_ioii + n_iiio + n_ooii + n_ioio + n_oiio + n_ooio
-        n_xxxi = n_iiii + n_oiii + n_ioii + n_iioi + n_ooii + n_iooi + n_oioi + n_oooi
+        n_ixxx = (
+            n_iiii
+            + n_ioii
+            + n_iioi
+            + n_iiio
+            + n_iooi
+            + n_iioo
+            + n_ioio
+            + n_iooo
+        )
+        n_xixx = (
+            n_iiii
+            + n_oiii
+            + n_iioi
+            + n_iiio
+            + n_oioi
+            + n_oiio
+            + n_iioo
+            + n_oioo
+        )
+        n_xxix = (
+            n_iiii
+            + n_oiii
+            + n_ioii
+            + n_iiio
+            + n_ooii
+            + n_ioio
+            + n_oiio
+            + n_ooio
+        )
+        n_xxxi = (
+            n_iiii
+            + n_oiii
+            + n_ioii
+            + n_iioi
+            + n_ooii
+            + n_iooi
+            + n_oioi
+            + n_oooi
+        )
 
         n_all = sum(contingency)
 

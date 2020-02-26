@@ -58,7 +58,9 @@ def config_java(bin=None, options=None, verbose=False):
         _java_options = list(options)
 
 
-def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
+def java(
+    cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True
+):
     """
     Execute the given java command, by opening a subprocess that calls
     Java.  If java has not yet been configured, it will be configured
@@ -346,7 +348,10 @@ def overridden(method):
 
     :type method: instance method
     """
-    if isinstance(method, types.MethodType) and method.__self__.__class__ is not None:
+    if (
+        isinstance(method, types.MethodType)
+        and method.__self__.__class__ is not None
+    ):
         name = method.__name__
         funcs = [
             cls.__dict__[name]
@@ -415,8 +420,13 @@ def deprecated(message):
     """
 
     def decorator(func):
-        msg = "Function %s() has been deprecated.  %s" % (func.__name__, message)
-        msg = "\n" + textwrap.fill(msg, initial_indent="  ", subsequent_indent="  ")
+        msg = "Function %s() has been deprecated.  %s" % (
+            func.__name__,
+            message,
+        )
+        msg = "\n" + textwrap.fill(
+            msg, initial_indent="  ", subsequent_indent="  "
+        )
 
         def newFunc(*args, **kwargs):
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
@@ -472,7 +482,9 @@ class Deprecated(object):
         # Put it all together.
         msg = "%s has been deprecated.  %s" % (name, doc)
         # Wrap it.
-        msg = "\n" + textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
+        msg = "\n" + textwrap.fill(
+            msg, initial_indent="    ", subsequent_indent="    "
+        )
         warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
         # Do the actual work of __new__.
         return object.__new__(cls)
@@ -627,25 +639,46 @@ def find_file_iter(
             msg += "\n\n  Searched in:"
             msg += "".join("\n    - %s" % d for d in searchpath)
         if url:
-            msg += "\n\n  For more information on %s, see:\n    <%s>" % (filename, url)
+            msg += "\n\n  For more information on %s, see:\n    <%s>" % (
+                filename,
+                url,
+            )
         div = "=" * 75
         raise LookupError("\n\n%s\n%s\n%s" % (div, msg, div))
 
 
 def find_file(
-    filename, env_vars=(), searchpath=(), file_names=None, url=None, verbose=False
+    filename,
+    env_vars=(),
+    searchpath=(),
+    file_names=None,
+    url=None,
+    verbose=False,
 ):
     return next(
-        find_file_iter(filename, env_vars, searchpath, file_names, url, verbose)
+        find_file_iter(
+            filename, env_vars, searchpath, file_names, url, verbose
+        )
     )
 
 
 def find_dir(
-    filename, env_vars=(), searchpath=(), file_names=None, url=None, verbose=False
+    filename,
+    env_vars=(),
+    searchpath=(),
+    file_names=None,
+    url=None,
+    verbose=False,
 ):
     return next(
         find_file_iter(
-            filename, env_vars, searchpath, file_names, url, verbose, finding_dir=True
+            filename,
+            env_vars,
+            searchpath,
+            file_names,
+            url,
+            verbose,
+            finding_dir=True,
         )
     )
 
@@ -730,7 +763,8 @@ def find_jar_iter(
             yield path_to_jar
         else:
             raise LookupError(
-                "Could not find %s jar file at %s" % (name_pattern, path_to_jar)
+                "Could not find %s jar file at %s"
+                % (name_pattern, path_to_jar)
             )
 
     # Check environment variables
@@ -755,7 +789,9 @@ def find_jar_iter(
                         if not is_regex:
                             if os.path.isfile(os.path.join(cp, name_pattern)):
                                 if verbose:
-                                    print("[Found %s: %s]" % (name_pattern, cp))
+                                    print(
+                                        "[Found %s: %s]" % (name_pattern, cp)
+                                    )
                                 yielded = True
                                 yield os.path.join(cp, name_pattern)
                         else:
@@ -792,7 +828,10 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print("[Found %s: %s]" % (name_pattern, path_to_jar))
+                                print(
+                                    "[Found %s: %s]"
+                                    % (name_pattern, path_to_jar)
+                                )
                             yielded = True
                             yield path_to_jar
 
@@ -820,7 +859,9 @@ def find_jar_iter(
         msg = "NLTK was unable to find %s!" % name_pattern
         if env_vars:
             msg += " Set the %s environment variable" % env_vars[0]
-        msg = textwrap.fill(msg + ".", initial_indent="  ", subsequent_indent="  ")
+        msg = textwrap.fill(
+            msg + ".", initial_indent="  ", subsequent_indent="  "
+        )
         if searchpath:
             msg += "\n\n  Searched in:"
             msg += "".join("\n    - %s" % d for d in searchpath)
@@ -844,7 +885,13 @@ def find_jar(
 ):
     return next(
         find_jar_iter(
-            name_pattern, path_to_jar, env_vars, searchpath, url, verbose, is_regex
+            name_pattern,
+            path_to_jar,
+            env_vars,
+            searchpath,
+            url,
+            verbose,
+            is_regex,
         )
     )
 
@@ -862,7 +909,9 @@ def _decode_stdoutdata(stdoutdata):
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
 
-    encoding = getattr(sys.__stdout__, "encoding", locale.getpreferredencoding())
+    encoding = getattr(
+        sys.__stdout__, "encoding", locale.getpreferredencoding()
+    )
     if encoding is None:
         return stdoutdata.decode()
     return stdoutdata.decode(encoding)
@@ -893,7 +942,6 @@ def import_from_stdlib(module):
 ##########################################################################
 # Wrapper for ElementTree Elements
 ##########################################################################
-
 
 
 class ElementWrapper(object):
@@ -960,7 +1008,9 @@ class ElementWrapper(object):
         the wrapped Element object.
         """
         return (
-            ElementTree.tostring(self._etree, encoding="utf8").decode("utf8").rstrip()
+            ElementTree.tostring(self._etree, encoding="utf8")
+            .decode("utf8")
+            .rstrip()
         )
 
     ##////////////////////////////////////////////////////////////
@@ -1061,7 +1111,8 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     # Otherwise, make sure that no non-default step value is used.
     elif slice_obj.step not in (None, 1):
         raise ValueError(
-            "slices with steps are not supported by %s" % sequence.__class__.__name__
+            "slices with steps are not supported by %s"
+            % sequence.__class__.__name__
         )
 
     # Supply default offsets.
@@ -1113,7 +1164,9 @@ def is_writable(path):
         elif statdata.st_uid == os.getuid() and (perm & 0o200):
             return True
         # are we in a group that can write to it?
-        elif (statdata.st_gid in [os.getgid()] + os.getgroups()) and (perm & 0o020):
+        elif (statdata.st_gid in [os.getgid()] + os.getgroups()) and (
+            perm & 0o020
+        ):
             return True
         # otherwise, we can't write to it.
         else:

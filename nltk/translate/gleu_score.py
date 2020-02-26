@@ -81,7 +81,9 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     :return: the sentence level GLEU score.
     :rtype: float
     """
-    return corpus_gleu([references], [hypothesis], min_len=min_len, max_len=max_len)
+    return corpus_gleu(
+        [references], [hypothesis], min_len=min_len, max_len=max_len
+    )
 
 
 def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
@@ -159,7 +161,9 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
         hyp_counts = []
         for reference in references:
             ref_ngrams = Counter(everygrams(reference, min_len, max_len))
-            tpfn = sum(ref_ngrams.values())  # True positives + False negatives.
+            tpfn = sum(
+                ref_ngrams.values()
+            )  # True positives + False negatives.
 
             overlap_ngrams = ref_ngrams & hyp_ngrams
             tp = sum(overlap_ngrams.values())  # True positives.

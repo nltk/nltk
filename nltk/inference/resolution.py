@@ -86,7 +86,9 @@ class ResolutionProver(Prover):
                 if tried[i]:
                     j = tried[i][-1] + 1
                 else:
-                    j = i + 1  # nothing tried yet for 'i', so start with the next
+                    j = (
+                        i + 1
+                    )  # nothing tried yet for 'i', so start with the next
 
                 while j < len(clauses):
                     # don't: 1) unify a clause with itself,
@@ -98,9 +100,13 @@ class ResolutionProver(Prover):
                             for newclause in newclauses:
                                 newclause._parents = (i + 1, j + 1)
                                 clauses.append(newclause)
-                                if not len(newclause):  # if there's an empty clause
+                                if not len(
+                                    newclause
+                                ):  # if there's an empty clause
                                     return (True, clauses)
-                            i = -1  # since we added a new clause, restart from the top
+                            i = (
+                                -1
+                            )  # since we added a new clause, restart from the top
                             break
                     j += 1
             i += 1
@@ -147,7 +153,9 @@ class ResolutionProverCommand(BaseProverCommand):
                 if (
                     isinstance(term, ApplicationExpression)
                     and term.function == answer_ex
-                    and not isinstance(term.argument, IndividualVariableExpression)
+                    and not isinstance(
+                        term.argument, IndividualVariableExpression
+                    )
                 ):
                     answers.add(term.argument)
         return answers
@@ -167,7 +175,9 @@ class ResolutionProverCommand(BaseProverCommand):
                 taut = "Tautology"
             if clauses[i]._parents:
                 parents = str(clauses[i]._parents)
-            parents = " " * (max_clause_len - len(str(clauses[i])) + 1) + parents
+            parents = (
+                " " * (max_clause_len - len(str(clauses[i])) + 1) + parents
+            )
             seq = " " * (max_seq_len - len(str(i + 1))) + str(i + 1)
             out += "[%s] %s %s %s\n" % (seq, clauses[i], parents, taut)
         return out
@@ -179,7 +189,9 @@ class Clause(list):
         self._is_tautology = None
         self._parents = None
 
-    def unify(self, other, bindings=None, used=None, skipped=None, debug=False):
+    def unify(
+        self, other, bindings=None, used=None, skipped=None, debug=False
+    ):
         """
         Attempt to unify this Clause with the other, returning a list of
         resulting, unified, Clauses.
@@ -310,7 +322,9 @@ class Clause(list):
         return False
 
     def free(self):
-        return reduce(operator.or_, ((atom.free() | atom.constants()) for atom in self))
+        return reduce(
+            operator.or_, ((atom.free() | atom.constants()) for atom in self)
+        )
 
     def replace(self, variable, expression):
         """
@@ -339,13 +353,17 @@ class Clause(list):
         return "%s" % self
 
 
-def _iterate_first(first, second, bindings, used, skipped, finalize_method, debug):
+def _iterate_first(
+    first, second, bindings, used, skipped, finalize_method, debug
+):
     """
     This method facilitates movement through the terms of 'self'
     """
     debug.line("unify(%s,%s) %s" % (first, second, bindings))
 
-    if not len(first) or not len(second):  # if no more recursions can be performed
+    if not len(first) or not len(
+        second
+    ):  # if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
     else:
         # explore this 'self' atom
@@ -356,7 +374,13 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
         # skip this possible 'self' atom
         newskipped = (skipped[0] + [first[0]], skipped[1])
         result += _iterate_first(
-            first[1:], second, bindings, used, newskipped, finalize_method, debug + 1
+            first[1:],
+            second,
+            bindings,
+            used,
+            newskipped,
+            finalize_method,
+            debug + 1,
         )
 
         try:
@@ -383,19 +407,29 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
         return result
 
 
-def _iterate_second(first, second, bindings, used, skipped, finalize_method, debug):
+def _iterate_second(
+    first, second, bindings, used, skipped, finalize_method, debug
+):
     """
     This method facilitates movement through the terms of 'other'
     """
     debug.line("unify(%s,%s) %s" % (first, second, bindings))
 
-    if not len(first) or not len(second):  # if no more recursions can be performed
+    if not len(first) or not len(
+        second
+    ):  # if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
     else:
         # skip this possible pairing and move to the next
         newskipped = (skipped[0], skipped[1] + [second[0]])
         result = _iterate_second(
-            first, second[1:], bindings, used, newskipped, finalize_method, debug + 1
+            first,
+            second[1:],
+            bindings,
+            used,
+            newskipped,
+            finalize_method,
+            debug + 1,
         )
 
         try:
@@ -443,11 +477,15 @@ def _unify_terms(a, b, bindings=None, used=None):
         used = ([], [])
 
     # Use resolution
-    if isinstance(a, NegatedExpression) and isinstance(b, ApplicationExpression):
+    if isinstance(a, NegatedExpression) and isinstance(
+        b, ApplicationExpression
+    ):
         newbindings = most_general_unification(a.term, b, bindings)
         newused = (used[0] + [a], used[1] + [b])
         unused = ([], [])
-    elif isinstance(a, ApplicationExpression) and isinstance(b, NegatedExpression):
+    elif isinstance(a, ApplicationExpression) and isinstance(
+        b, NegatedExpression
+    ):
         newbindings = most_general_unification(a, b.term, bindings)
         newused = (used[0] + [a], used[1] + [b])
         unused = ([], [])
@@ -571,7 +609,8 @@ class BindingDict(object):
                 self.d[binding.variable] = binding2
             else:
                 raise BindingException(
-                    "Variable %s already bound to another " "value" % (variable)
+                    "Variable %s already bound to another "
+                    "value" % (variable)
                 )
         else:
             raise BindingException(
@@ -617,7 +656,9 @@ class BindingDict(object):
         return len(self.d)
 
     def __str__(self):
-        data_str = ", ".join("%s: %s" % (v, self.d[v]) for v in sorted(self.d.keys()))
+        data_str = ", ".join(
+            "%s: %s" % (v, self.d[v]) for v in sorted(self.d.keys())
+        )
         return "{" + data_str + "}"
 
     def __repr__(self):
@@ -644,7 +685,9 @@ def most_general_unification(a, b, bindings=None):
         return _mgu_var(a, b, bindings)
     elif isinstance(b, IndividualVariableExpression):
         return _mgu_var(b, a, bindings)
-    elif isinstance(a, ApplicationExpression) and isinstance(b, ApplicationExpression):
+    elif isinstance(a, ApplicationExpression) and isinstance(
+        b, ApplicationExpression
+    ):
         return most_general_unification(
             a.function, b.function, bindings
         ) + most_general_unification(a.argument, b.argument, bindings)
@@ -703,14 +746,20 @@ def testResolutionProver():
     p1 = Expression.fromstring(r"all x.(man(x) -> mortal(x))")
     p2 = Expression.fromstring(r"man(Socrates)")
     c = Expression.fromstring(r"mortal(Socrates)")
-    print("%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
+    print(
+        "%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2]))
+    )
 
     p1 = Expression.fromstring(r"all x.(man(x) -> walks(x))")
     p2 = Expression.fromstring(r"man(John)")
     c = Expression.fromstring(r"some y.walks(y)")
-    print("%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
+    print(
+        "%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2]))
+    )
 
-    p = Expression.fromstring(r"some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))")
+    p = Expression.fromstring(
+        r"some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))"
+    )
     c = Expression.fromstring(r"some e0.walk(e0,mary)")
     print("%s |- %s: %s" % (p, c, ResolutionProver().prove(c, [p])))
 

@@ -32,7 +32,13 @@ from setuptools import setup, find_packages
 
 # Specify groups of optional dependencies
 extras_require = {
-    "machine_learning": ["gensim", "numpy", "python-crfsuite", "scikit-learn", "scipy"],
+    "machine_learning": [
+        "gensim",
+        "numpy",
+        "python-crfsuite",
+        "scikit-learn",
+        "scipy",
+    ],
     "plot": ["matplotlib"],
     "tgrep": ["pyparsing"],
     "twitter": ["twython"],
@@ -100,12 +106,7 @@ natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
         "Topic :: Text Processing :: Linguistic",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
-    install_requires=[
-        "click",
-        "joblib",
-        "regex",
-        "tqdm",
-    ],
+    install_requires=["click", "joblib", "regex", "tqdm",],
     extras_require=extras_require,
     packages=find_packages(),
     zip_safe=False,  # since normal files will be present too?

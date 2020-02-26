@@ -39,11 +39,10 @@ class SensevalInstance(object):
         self.context = context
 
     def __repr__(self):
-        return "SensevalInstance(word=%r, position=%r, " "context=%r, senses=%r)" % (
-            self.word,
-            self.position,
-            self.context,
-            self.senses,
+        return (
+            "SensevalInstance(word=%r, position=%r, "
+            "context=%r, senses=%r)"
+            % (self.word, self.position, self.context, self.senses,)
         )
 
 
@@ -86,7 +85,9 @@ class SensevalCorpusView(StreamBackedCorpusView):
 
     def read_block(self, stream):
         # Decide which lexical element we're in.
-        lexelt_num = bisect.bisect_right(self._lexelt_starts, stream.tell()) - 1
+        lexelt_num = (
+            bisect.bisect_right(self._lexelt_starts, stream.tell()) - 1
+        )
         lexelt = self._lexelts[lexelt_num]
 
         instance_lines = []
@@ -149,9 +150,13 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         if cword.text.strip():
                             context.append(cword.text.strip())
                         elif cword[0].tag == "wf":
-                            context.append((cword[0].text, cword[0].attrib["pos"]))
+                            context.append(
+                                (cword[0].text, cword[0].attrib["pos"])
+                            )
                             if cword[0].tail:
-                                context += self._word_tokenizer.tokenize(cword[0].tail)
+                                context += self._word_tokenizer.tokenize(
+                                    cword[0].tail
+                                )
                         else:
                             assert False, "expected CDATA or wf in <head>"
                     elif cword.tag == "wf":
@@ -201,7 +206,9 @@ def _fixXML(text):
     text = re.sub(r"&(?!amp|gt|lt|apos|quot)", r"", text)
     # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
     text = re.sub(
-        r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>', r' <wf pos="\2">\1</wf>', text
+        r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>',
+        r' <wf pos="\2">\1</wf>',
+        text,
     )
     text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
     return text

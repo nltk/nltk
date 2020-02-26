@@ -25,6 +25,8 @@ class TestPreprocessing(unittest.TestCase):
             ]
         ]
         expected_vocab = ["<s>", "a", "b", "c", "</s>"]
-        train_data, vocab_data = padded_everygram_pipeline(2, [["a", "b", "c"]])
+        train_data, vocab_data = padded_everygram_pipeline(
+            2, [["a", "b", "c"]]
+        )
         self.assertEqual([list(sent) for sent in train_data], expected_train)
         self.assertEqual(list(vocab_data), expected_vocab)

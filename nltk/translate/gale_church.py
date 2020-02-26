@@ -50,7 +50,10 @@ except ImportError:
                                 * (
                                     -1.13520398
                                     + t
-                                    * (1.48851587 + t * (-0.82215223 + t * 0.17087277))
+                                    * (
+                                        1.48851587
+                                        + t * (-0.82215223 + t * 0.17087277)
+                                    )
                                 )
                             )
                         )
@@ -148,10 +151,14 @@ def align_log_prob(i, j, source_sents, target_sents, alignment, params):
     except ZeroDivisionError:
         return float("-inf")
 
-    return -(LOG2 + norm_logsf(abs(delta)) + math.log(params.PRIORS[alignment]))
+    return -(
+        LOG2 + norm_logsf(abs(delta)) + math.log(params.PRIORS[alignment])
+    )
 
 
-def align_blocks(source_sents_lens, target_sents_lens, params=LanguageIndependent):
+def align_blocks(
+    source_sents_lens, target_sents_lens, params=LanguageIndependent
+):
     """Return the sentence alignment of two text blocks (usually paragraphs).
 
         >>> align_blocks([5,5,5], [7,7,7])
@@ -263,4 +270,3 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
         ]
         for block_it in split_at(stream, hard_delimiter)
     ]
-

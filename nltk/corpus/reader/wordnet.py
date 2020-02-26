@@ -484,7 +484,9 @@ class Synset(_WordNetObject):
                     self._wordnet_corpus_reader,
                     self,
                     lem,
-                    self._wordnet_corpus_reader._lexnames.index(self.lexname()),
+                    self._wordnet_corpus_reader._lexnames.index(
+                        self.lexname()
+                    ),
                     0,
                     None,
                 )
@@ -616,7 +618,9 @@ class Synset(_WordNetObject):
             )
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
-    def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
+    def lowest_common_hypernyms(
+        self, other, simulate_root=False, use_min_depth=False
+    ):
         """
         Get a list of lowest synset(s) that both synsets have as a hypernym.
         When `use_min_depth == False` this means that the synset which appears
@@ -667,10 +671,14 @@ class Synset(_WordNetObject):
         try:
             if use_min_depth:
                 max_depth = max(s.min_depth() for s in synsets)
-                unsorted_lch = [s for s in synsets if s.min_depth() == max_depth]
+                unsorted_lch = [
+                    s for s in synsets if s.min_depth() == max_depth
+                ]
             else:
                 max_depth = max(s.max_depth() for s in synsets)
-                unsorted_lch = [s for s in synsets if s.max_depth() == max_depth]
+                unsorted_lch = [
+                    s for s in synsets if s.max_depth() == max_depth
+                ]
             return sorted(unsorted_lch)
         except ValueError:
             return []
@@ -689,7 +697,9 @@ class Synset(_WordNetObject):
         """
         distances = set([(self, distance)])
         for hypernym in self._hypernyms() + self._instance_hypernyms():
-            distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
+            distances |= hypernym.hypernym_distances(
+                distance + 1, simulate_root=False
+            )
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
@@ -861,7 +871,9 @@ class Synset(_WordNetObject):
         need_root = self._needs_root()
 
         if self._pos not in self._wordnet_corpus_reader._max_depth:
-            self._wordnet_corpus_reader._compute_max_depth(self._pos, need_root)
+            self._wordnet_corpus_reader._compute_max_depth(
+                self._pos, need_root
+            )
 
         depth = self._wordnet_corpus_reader._max_depth[self._pos]
 
@@ -914,7 +926,9 @@ class Synset(_WordNetObject):
         # It is possible that more accurate results could be obtained by
         # removing this setting and it should be tested later on
         subsumers = self.lowest_common_hypernyms(
-            other, simulate_root=simulate_root and need_root, use_min_depth=True
+            other,
+            simulate_root=simulate_root and need_root,
+            use_min_depth=True,
         )
 
         # If no LCS was found return None
@@ -1038,7 +1052,9 @@ class Synset(_WordNetObject):
             todo = [
                 hypernym
                 for synset in todo
-                for hypernym in (synset.hypernyms() + synset.instance_hypernyms())
+                for hypernym in (
+                    synset.hypernyms() + synset.instance_hypernyms()
+                )
                 if hypernym not in seen
             ]
 
@@ -1225,7 +1241,9 @@ class WordNetCorpusReader(CorpusReader):
                     _next_token()
 
                     # get synset offsets
-                    synset_offsets = [int(_next_token()) for _ in range(n_synsets)]
+                    synset_offsets = [
+                        int(_next_token()) for _ in range(n_synsets)
+                    ]
 
                 # raise more informative error with file name and line number
                 except (AssertionError, ValueError) as e:
@@ -1428,7 +1446,9 @@ class WordNetCorpusReader(CorpusReader):
                 m = re.match(r"(.*?)(\(.*\))?$", lemma_name)
                 lemma_name, syn_mark = m.groups()
                 # create the lemma object
-                lemma = Lemma(self, synset, lemma_name, lexname_index, lex_id, syn_mark)
+                lemma = Lemma(
+                    self, synset, lemma_name, lexname_index, lex_id, syn_mark
+                )
                 synset._lemmas.append(lemma)
                 synset._lemma_names.append(lemma._name)
 
@@ -1468,12 +1488,16 @@ class WordNetCorpusReader(CorpusReader):
                         synset._frame_ids.append(frame_number)
                         for lemma in synset._lemmas:
                             lemma._frame_ids.append(frame_number)
-                            lemma._frame_strings.append(frame_string_fmt % lemma._name)
+                            lemma._frame_strings.append(
+                                frame_string_fmt % lemma._name
+                            )
                     # only a specific word in the synset
                     else:
                         lemma = synset._lemmas[lemma_number - 1]
                         lemma._frame_ids.append(frame_number)
-                        lemma._frame_strings.append(frame_string_fmt % lemma._name)
+                        lemma._frame_strings.append(
+                            frame_string_fmt % lemma._name
+                        )
 
         # raise a more informative error with line text
         except ValueError as e:
@@ -1535,7 +1559,9 @@ class WordNetCorpusReader(CorpusReader):
         """
         sense_key_regex = re.compile(r"(.*)\%(.*):(.*):(.*):(.*):(.*)")
         synset_types = {1: NOUN, 2: VERB, 3: ADJ, 4: ADV, 5: ADJ_SAT}
-        lemma, ss_type, _, lex_id, _, _ = sense_key_regex.match(sense_key).groups()
+        lemma, ss_type, _, lex_id, _, _ = sense_key_regex.match(
+            sense_key
+        ).groups()
 
         # check that information extracted from sense_key is valid
         error = None
@@ -1547,7 +1573,9 @@ class WordNetCorpusReader(CorpusReader):
             error = "lex_id"
         if error:
             raise WordNetError(
-                "valid {} could not be extracted from the sense key".format(error)
+                "valid {} could not be extracted from the sense key".format(
+                    error
+                )
             )
 
         synset_id = ".".join([lemma, synset_types[int(ss_type)], lex_id])
@@ -1713,7 +1741,9 @@ class WordNetCorpusReader(CorpusReader):
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("LICENSE").read()
         elif lang in self._lang_data:
-            raise WordNetError("Cannot determine license for user-provided tab file")
+            raise WordNetError(
+                "Cannot determine license for user-provided tab file"
+            )
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1765,17 +1795,23 @@ class WordNetCorpusReader(CorpusReader):
         else:
             return 0
 
-    def path_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
+    def path_similarity(
+        self, synset1, synset2, verbose=False, simulate_root=True
+    ):
         return synset1.path_similarity(synset2, verbose, simulate_root)
 
     path_similarity.__doc__ = Synset.path_similarity.__doc__
 
-    def lch_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
+    def lch_similarity(
+        self, synset1, synset2, verbose=False, simulate_root=True
+    ):
         return synset1.lch_similarity(synset2, verbose, simulate_root)
 
     lch_similarity.__doc__ = Synset.lch_similarity.__doc__
 
-    def wup_similarity(self, synset1, synset2, verbose=False, simulate_root=True):
+    def wup_similarity(
+        self, synset1, synset2, verbose=False, simulate_root=True
+    ):
         return synset1.wup_similarity(synset2, verbose, simulate_root)
 
     wup_similarity.__doc__ = Synset.wup_similarity.__doc__

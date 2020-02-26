@@ -46,22 +46,30 @@ class SwitchboardCorpusReader(CorpusReader):
         self._tagset = tagset
 
     def words(self):
-        return StreamBackedCorpusView(self.abspath("tagged"), self._words_block_reader)
+        return StreamBackedCorpusView(
+            self.abspath("tagged"), self._words_block_reader
+        )
 
     def tagged_words(self, tagset=None):
         def tagged_words_block_reader(stream):
             return self._tagged_words_block_reader(stream, tagset)
 
-        return StreamBackedCorpusView(self.abspath("tagged"), tagged_words_block_reader)
+        return StreamBackedCorpusView(
+            self.abspath("tagged"), tagged_words_block_reader
+        )
 
     def turns(self):
-        return StreamBackedCorpusView(self.abspath("tagged"), self._turns_block_reader)
+        return StreamBackedCorpusView(
+            self.abspath("tagged"), self._turns_block_reader
+        )
 
     def tagged_turns(self, tagset=None):
         def tagged_turns_block_reader(stream):
             return self._tagged_turns_block_reader(stream, tagset)
 
-        return StreamBackedCorpusView(self.abspath("tagged"), tagged_turns_block_reader)
+        return StreamBackedCorpusView(
+            self.abspath("tagged"), tagged_turns_block_reader
+        )
 
     def discourses(self):
         return StreamBackedCorpusView(

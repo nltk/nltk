@@ -16,7 +16,9 @@ from functools import singledispatch
 @singledispatch
 def _dispatched_lookup(words, vocab):
     raise TypeError(
-        "Unsupported type for looking up in vocabulary: {0}".format(type(words))
+        "Unsupported type for looking up in vocabulary: {0}".format(
+            type(words)
+        )
     )
 
 
@@ -145,7 +147,9 @@ class Vocabulary:
         self.unk_label = unk_label
         if unk_cutoff < 1:
             raise ValueError(
-                "Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff)
+                "Cutoff value cannot be less than 1. Got: {0}".format(
+                    unk_cutoff
+                )
             )
         self._cutoff = unk_cutoff
 

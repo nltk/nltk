@@ -322,7 +322,10 @@ class BottomUpProbabilisticChartParser(ParserI):
             split = len(queue) - self.beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print("  %-50s [DISCARDED]" % chart.pretty_format_edge(edge, 2))
+                    print(
+                        "  %-50s [DISCARDED]"
+                        % chart.pretty_format_edge(edge, 2)
+                    )
             del queue[:split]
 
 
@@ -483,7 +486,10 @@ def demo(choice=None, draw_parses=None, print_parses=None):
 
     demos = [
         ("I saw John with my telescope", toy_pcfg1),
-        ("the boy saw Jack with Bob under the table with a telescope", toy_pcfg2),
+        (
+            "the boy saw Jack with Bob under the table with a telescope",
+            toy_pcfg2,
+        ),
     ]
 
     if choice is None:
@@ -510,7 +516,9 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         pchart.RandomChartParser(grammar),
         pchart.UnsortedChartParser(grammar),
         pchart.LongestChartParser(grammar),
-        pchart.InsideChartParser(grammar, beam_size=len(tokens) + 1),  # was BeamParser
+        pchart.InsideChartParser(
+            grammar, beam_size=len(tokens) + 1
+        ),  # was BeamParser
     ]
 
     # Run the parsers on the tokenized sentence.
@@ -524,7 +532,11 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         t = time.time()
         parses = list(parser.parse(tokens))
         times.append(time.time() - t)
-        p = reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses) if parses else 0
+        p = (
+            reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
+            if parses
+            else 0
+        )
         average_p.append(p)
         num_parses.append(len(parses))
         for p in parses:
@@ -532,8 +544,12 @@ def demo(choice=None, draw_parses=None, print_parses=None):
 
     # Print some summary statistics
     print()
-    print("       Parser      Beam | Time (secs)   # Parses   Average P(parse)")
-    print("------------------------+------------------------------------------")
+    print(
+        "       Parser      Beam | Time (secs)   # Parses   Average P(parse)"
+    )
+    print(
+        "------------------------+------------------------------------------"
+    )
     for i in range(len(parsers)):
         print(
             "%18s %4d |%11.4f%11d%19.14f"
@@ -550,8 +566,12 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         p = reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
     else:
         p = 0
-    print("------------------------+------------------------------------------")
-    print("%18s      |%11s%11d%19.14f" % ("(All Parses)", "n/a", len(parses), p))
+    print(
+        "------------------------+------------------------------------------"
+    )
+    print(
+        "%18s      |%11s%11d%19.14f" % ("(All Parses)", "n/a", len(parses), p)
+    )
 
     if draw_parses is None:
         # Ask the user if we should draw the parses.

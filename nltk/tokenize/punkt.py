@@ -162,7 +162,9 @@ appropriate orthographic context flag."""
 
 REASON_DEFAULT_DECISION = "default decision"
 REASON_KNOWN_COLLOCATION = "known collocation (both words)"
-REASON_ABBR_WITH_ORTHOGRAPHIC_HEURISTIC = "abbreviation + orthographic heuristic"
+REASON_ABBR_WITH_ORTHOGRAPHIC_HEURISTIC = (
+    "abbreviation + orthographic heuristic"
+)
 REASON_ABBR_WITH_SENTENCE_STARTER = "abbreviation + frequent sentence starter"
 REASON_INITIAL_WITH_ORTHOGRAPHIC_HEURISTIC = "initial + orthographic heuristic"
 REASON_NUMBER_WITH_ORTHOGRAPHIC_HEURISTIC = "initial + orthographic heuristic"
@@ -211,7 +213,9 @@ class PunktLanguageVars(object):
     """sentence internal punctuation, which indicates an abbreviation if
     preceded by a period-final token."""
 
-    re_boundary_realignment = re.compile(r'["\')\]}]+?(?:\s+|(?=--)|$)', re.MULTILINE)
+    re_boundary_realignment = re.compile(
+        r'["\')\]}]+?(?:\s+|(?=--)|$)', re.MULTILINE
+    )
     """Used to realign punctuation that should be included in a sentence
     although it follows the period (or ?, !)."""
 
@@ -490,7 +494,9 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        typestr = " type=%s," % repr(self.type) if self.type != self.tok else ""
+        typestr = (
+            " type=%s," % repr(self.type) if self.type != self.tok else ""
+        )
 
         propvals = ", ".join(
             "%s=%s" % (p, repr(getattr(self, p)))
@@ -628,7 +634,11 @@ class PunktTrainer(PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
     def __init__(
-        self, train_text=None, verbose=False, lang_vars=None, token_cls=PunktToken
+        self,
+        train_text=None,
+        verbose=False,
+        lang_vars=None,
+        token_cls=PunktToken,
     ):
 
         PunktBaseClass.__init__(self, lang_vars=lang_vars, token_cls=token_cls)
@@ -768,7 +778,12 @@ class PunktTrainer(PunktBaseClass):
                 if not is_add:
                     self._params.abbrev_types.remove(abbr)
                     if verbose:
-                        print(("  Removed abbreviation: [%6.4f] %s" % (score, abbr)))
+                        print(
+                            (
+                                "  Removed abbreviation: [%6.4f] %s"
+                                % (score, abbr)
+                            )
+                        )
 
         # Make a preliminary pass through the document, marking likely
         # sentence breaks, abbreviations, and ellipsis tokens.
@@ -1064,8 +1079,12 @@ class PunktTrainer(PunktBaseClass):
         p1 = count_b / N
         p2 = 0.99
 
-        null_hypo = count_ab * math.log(p1) + (count_a - count_ab) * math.log(1.0 - p1)
-        alt_hypo = count_ab * math.log(p2) + (count_a - count_ab) * math.log(1.0 - p2)
+        null_hypo = count_ab * math.log(p1) + (count_a - count_ab) * math.log(
+            1.0 - p1
+        )
+        alt_hypo = count_ab * math.log(p2) + (count_a - count_ab) * math.log(
+            1.0 - p2
+        )
 
         likelihood = null_hypo - alt_hypo
 
@@ -1089,7 +1108,9 @@ class PunktTrainer(PunktBaseClass):
             p2 = 1
 
         try:
-            summand1 = count_ab * math.log(p) + (count_a - count_ab) * math.log(1.0 - p)
+            summand1 = count_ab * math.log(p) + (
+                count_a - count_ab
+            ) * math.log(1.0 - p)
         except ValueError as e:
             summand1 = 0
 
@@ -1103,9 +1124,9 @@ class PunktTrainer(PunktBaseClass):
         if count_a == count_ab or p1 <= 0 or p1 >= 1:
             summand3 = 0
         else:
-            summand3 = count_ab * math.log(p1) + (count_a - count_ab) * math.log(
-                1.0 - p1
-            )
+            summand3 = count_ab * math.log(p1) + (
+                count_a - count_ab
+            ) * math.log(1.0 - p1)
 
         if count_b == count_ab or p2 <= 0 or p2 >= 1:
             summand4 = 0
@@ -1131,7 +1152,10 @@ class PunktTrainer(PunktBaseClass):
             (
                 self.INCLUDE_ALL_COLLOCS
                 or (self.INCLUDE_ABBREV_COLLOCS and aug_tok1.abbr)
-                or (aug_tok1.sentbreak and (aug_tok1.is_number or aug_tok1.is_initial))
+                or (
+                    aug_tok1.sentbreak
+                    and (aug_tok1.is_number or aug_tok1.is_initial)
+                )
             )
             and aug_tok1.is_non_punct
             and aug_tok2.is_non_punct
@@ -1156,7 +1180,9 @@ class PunktTrainer(PunktBaseClass):
             if (
                 typ1_count > 1
                 and typ2_count > 1
-                and self.MIN_COLLOC_FREQ < col_count <= min(typ1_count, typ2_count)
+                and self.MIN_COLLOC_FREQ
+                < col_count
+                <= min(typ1_count, typ2_count)
             ):
 
                 ll = self._col_log_likelihood(
@@ -1238,7 +1264,11 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     """
 
     def __init__(
-        self, train_text=None, verbose=False, lang_vars=None, token_cls=PunktToken
+        self,
+        train_text=None,
+        verbose=False,
+        lang_vars=None,
+        token_cls=PunktToken,
     ):
         """
         train_text can either be the sole training text for this sentence
@@ -1296,9 +1326,14 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 in self._params.sent_starters,
                 type2_ortho_heuristic=self._ortho_heuristic(tokens[1]),
                 type2_ortho_contexts=set(
-                    self._params._debug_ortho_context(tokens[1].type_no_sentperiod)
+                    self._params._debug_ortho_context(
+                        tokens[1].type_no_sentperiod
+                    )
                 ),
-                collocation=(tokens[0].type_no_sentperiod, tokens[1].type_no_sentperiod)
+                collocation=(
+                    tokens[0].type_no_sentperiod,
+                    tokens[1].type_no_sentperiod,
+                )
                 in self._params.collocations,
                 reason=self._second_pass_annotation(tokens[0], tokens[1])
                 or REASON_DEFAULT_DECISION,
@@ -1323,7 +1358,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         True, includes in the sentence closing punctuation that
         follows the period.
         """
-        return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
+        return [
+            text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)
+        ]
 
     def _slices_from_text(self, text):
         last_break = 0
@@ -1651,7 +1688,9 @@ def format_debug_decision(d):
 def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     """Builds a punkt model and applies it to the same text"""
     cleanup = (
-        lambda s: re.compile(r"(?:\r|^\s+)", re.MULTILINE).sub("", s).replace("\n", " ")
+        lambda s: re.compile(r"(?:\r|^\s+)", re.MULTILINE)
+        .sub("", s)
+        .replace("\n", " ")
     )
     trainer = train_cls()
     trainer.INCLUDE_ALL_COLLOCS = True

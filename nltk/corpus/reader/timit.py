@@ -149,7 +149,9 @@ class TimitCorpusReader(CorpusReader):
       - <utterance-id>.wav: utterance sound file
     """
 
-    _FILE_RE = r"(\w+-\w+/\w+\.(phn|txt|wav|wrd))|" + r"timitdic\.txt|spkrinfo\.txt"
+    _FILE_RE = (
+        r"(\w+-\w+/\w+\.(phn|txt|wav|wrd))|" + r"timitdic\.txt|spkrinfo\.txt"
+    )
     """A regexp matching fileids that are used by this corpus reader."""
     _UTTERANCE_RE = r"\w+-\w+/\w+\.txt"
 
@@ -163,7 +165,10 @@ class TimitCorpusReader(CorpusReader):
             encoding = [(".*\.wav", None), (".*", encoding)]
 
         CorpusReader.__init__(
-            self, root, find_corpus_fileids(root, self._FILE_RE), encoding=encoding
+            self,
+            root,
+            find_corpus_fileids(root, self._FILE_RE),
+            encoding=encoding,
         )
 
         self._utterances = [
@@ -350,7 +355,9 @@ class TimitCorpusReader(CorpusReader):
                 (sent, sent_start, sent_end) = sent_times.pop(0)
                 trees.append(Tree("S", []))
                 while (
-                    word_times and phone_times and phone_times[0][2] <= word_times[0][1]
+                    word_times
+                    and phone_times
+                    and phone_times[0][2] <= word_times[0][1]
                 ):
                     trees[-1].append(phone_times.pop(0)[0])
                 while word_times and word_times[0][2] <= sent_end:
@@ -462,7 +469,17 @@ class TimitCorpusReader(CorpusReader):
 
 class SpeakerInfo(object):
     def __init__(
-        self, id, sex, dr, use, recdate, birthdate, ht, race, edu, comments=None
+        self,
+        id,
+        sex,
+        dr,
+        use,
+        recdate,
+        birthdate,
+        ht,
+        race,
+        edu,
+        comments=None,
     ):
         self.id = id
         self.sex = sex
@@ -477,7 +494,9 @@ class SpeakerInfo(object):
 
     def __repr__(self):
         attribs = "id sex dr use recdate birthdate ht race edu comments"
-        args = ["%s=%r" % (attr, getattr(self, attr)) for attr in attribs.split()]
+        args = [
+            "%s=%r" % (attr, getattr(self, attr)) for attr in attribs.split()
+        ]
         return "SpeakerInfo(%s)" % (", ".join(args))
 
 

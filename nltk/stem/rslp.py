@@ -65,7 +65,9 @@ class RSLPStemmer(StemmerI):
         self._model.append(self.read_rule("step6.pt"))
 
     def read_rule(self, filename):
-        rules = load("nltk:stemmers/rslp/" + filename, format="raw").decode("utf8")
+        rules = load("nltk:stemmers/rslp/" + filename, format="raw").decode(
+            "utf8"
+        )
         lines = rules.split("\n")
 
         lines = [line for line in lines if line != ""]  # remove blank lines
@@ -132,7 +134,9 @@ class RSLPStemmer(StemmerI):
         for rule in rules:
             suffix_length = len(rule[0])
             if word[-suffix_length:] == rule[0]:  # if suffix matches
-                if len(word) >= suffix_length + rule[1]:  # if we have minimum size
+                if (
+                    len(word) >= suffix_length + rule[1]
+                ):  # if we have minimum size
                     if word not in rule[3]:  # if not an exception
                         word = word[:-suffix_length] + rule[2]
                         break

@@ -118,7 +118,8 @@ class LanguageModel(metaclass=ABCMeta):
         method.
         """
         return self.unmasked_score(
-            self.vocab.lookup(word), self.vocab.lookup(context) if context else None
+            self.vocab.lookup(word),
+            self.vocab.lookup(context) if context else None,
         )
 
     @abstractmethod
@@ -154,7 +155,9 @@ class LanguageModel(metaclass=ABCMeta):
 
         """
         return (
-            self.counts[len(context) + 1][context] if context else self.counts.unigrams
+            self.counts[len(context) + 1][context]
+            if context
+            else self.counts.unigrams
         )
 
     def entropy(self, text_ngrams):

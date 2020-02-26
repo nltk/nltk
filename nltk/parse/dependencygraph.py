@@ -122,7 +122,10 @@ class DependencyGraph(object):
         """
         for node1 in self.nodes.values():
             for node2 in self.nodes.values():
-                if node1["address"] != node2["address"] and node2["rel"] != "TOP":
+                if (
+                    node1["address"] != node2["address"]
+                    and node2["rel"] != "TOP"
+                ):
                     relation = node2["rel"]
                     node1["deps"].setdefault(relation, [])
                     node1["deps"][relation].append(node2["address"])
@@ -177,7 +180,11 @@ class DependencyGraph(object):
             for rel, deps in node["deps"].items():
                 for dep in deps:
                     if rel is not None:
-                        s += '\n%s -> %s [label="%s"]' % (node["address"], dep, rel)
+                        s += '\n%s -> %s [label="%s"]' % (
+                            node["address"],
+                            dep,
+                            rel,
+                        )
                     else:
                         s += "\n%s -> %s " % (node["address"], dep)
         s += "\n}"
@@ -224,7 +231,10 @@ class DependencyGraph(object):
 
     @staticmethod
     def load(
-        filename, zero_based=False, cell_separator=None, top_relation_label="ROOT"
+        filename,
+        zero_based=False,
+        cell_separator=None,
+        top_relation_label="ROOT",
     ):
         """
         :param filename: a name of a file in Malt-TAB format
@@ -350,14 +360,23 @@ class DependencyGraph(object):
                     )
 
             try:
-                index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(
-                    cells, index
-                )
+                (
+                    index,
+                    word,
+                    lemma,
+                    ctag,
+                    tag,
+                    feats,
+                    head,
+                    rel,
+                ) = cell_extractor(cells, index)
             except (TypeError, ValueError):
                 # cell_extractor doesn't take 2 arguments or doesn't return 8
                 # values; assume the cell_extractor is an older external
                 # extractor and doesn't accept or return an index.
-                word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+                word, lemma, ctag, tag, feats, head, rel = cell_extractor(
+                    cells
+                )
 
             if head == "_":
                 continue
@@ -390,7 +409,8 @@ class DependencyGraph(object):
             self.top_relation_label = top_relation_label
         else:
             warnings.warn(
-                "The graph doesn't contain a node " "that depends on the root element."
+                "The graph doesn't contain a node "
+                "that depends on the root element."
             )
 
     def _word(self, node, filter=True):
@@ -500,7 +520,9 @@ class DependencyGraph(object):
             for pair in new_entries:
                 distances[pair] = new_entries[pair]
                 if pair[0] == pair[1]:
-                    path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0])
+                    path = self.get_cycle_path(
+                        self.get_by_address(pair[0]), pair[0]
+                    )
                     return path
 
         return False  # return []?
@@ -510,7 +532,9 @@ class DependencyGraph(object):
             if dep == goal_node_index:
                 return [curr_node["address"]]
         for dep in curr_node["deps"]:
-            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
+            path = self.get_cycle_path(
+                self.get_by_address(dep), goal_node_index
+            )
             if len(path) > 0:
                 path.insert(0, curr_node["address"])
                 return path
@@ -530,9 +554,7 @@ class DependencyGraph(object):
         elif style == 4:
             template = "{word}\t{tag}\t{head}\t{rel}\n"
         elif style == 10:
-            template = (
-                "{i}\t{word}\t{lemma}\t{ctag}\t{tag}\t{feats}\t{head}\t{rel}\t_\t_\n"
-            )
+            template = "{i}\t{word}\t{lemma}\t{ctag}\t{tag}\t{feats}\t{head}\t{rel}\t_\t_\n"
         else:
             raise ValueError(
                 "Number of tab-delimited fields ({0}) not supported by "
@@ -634,7 +656,9 @@ def conll_demo():
 
 def conll_file_demo():
     print("Mass conll_read demo...")
-    graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
+    graphs = [
+        DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry
+    ]
     for graph in graphs:
         tree = graph.tree()
         print("\n")
@@ -646,10 +670,18 @@ def cycle_finding_demo():
     print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "TOP", "address": 0})
-    cyclic_dg.add_node({"word": None, "deps": [2], "rel": "NTOP", "address": 1})
-    cyclic_dg.add_node({"word": None, "deps": [4], "rel": "NTOP", "address": 2})
-    cyclic_dg.add_node({"word": None, "deps": [1], "rel": "NTOP", "address": 3})
-    cyclic_dg.add_node({"word": None, "deps": [3], "rel": "NTOP", "address": 4})
+    cyclic_dg.add_node(
+        {"word": None, "deps": [2], "rel": "NTOP", "address": 1}
+    )
+    cyclic_dg.add_node(
+        {"word": None, "deps": [4], "rel": "NTOP", "address": 2}
+    )
+    cyclic_dg.add_node(
+        {"word": None, "deps": [1], "rel": "NTOP", "address": 3}
+    )
+    cyclic_dg.add_node(
+        {"word": None, "deps": [3], "rel": "NTOP", "address": 4}
+    )
     print(cyclic_dg.contains_cycle())
 
 

@@ -46,7 +46,14 @@ class NgramCounterTests(unittest.TestCase):
             ("g", "d"),
             ("d", "b"),
         ]
-        expected_bigram_contexts = [("a",), ("b",), ("d",), ("e",), ("c",), ("g",)]
+        expected_bigram_contexts = [
+            ("a",),
+            ("b",),
+            ("d",),
+            ("e",),
+            ("c",),
+            ("g",),
+        ]
 
         bigrams = self.trigram_counter[2]
         trigrams = self.trigram_counter[3]

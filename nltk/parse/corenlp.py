@@ -55,7 +55,10 @@ class CoreNLPServer(object):
     ):
 
         if corenlp_options is None:
-            corenlp_options = ["-preload", "tokenize,ssplit,pos,lemma,parse,depparse"]
+            corenlp_options = [
+                "-preload",
+                "tokenize,ssplit,pos,lemma,parse,depparse",
+            ]
 
         jars = list(
             find_jar_iter(
@@ -70,7 +73,9 @@ class CoreNLPServer(object):
         )
 
         # find the most recent code and model jar
-        stanford_jar = max(jars, key=lambda model_name: re.match(self._JAR, model_name))
+        stanford_jar = max(
+            jars, key=lambda model_name: re.match(self._JAR, model_name)
+        )
 
         if port is None:
             try:
@@ -93,7 +98,9 @@ class CoreNLPServer(object):
                 verbose=verbose,
                 is_regex=True,
             ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name),
+            key=lambda model_name: re.match(
+                self._MODEL_JAR_PATTERN, model_name
+            ),
         )
 
         self.verbose = verbose
@@ -143,7 +150,9 @@ class CoreNLPServer(object):
 
         for i in range(30):
             try:
-                response = requests.get(requests.compat.urljoin(self.url, "live"))
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "live")
+                )
             except requests.exceptions.ConnectionError:
                 time.sleep(1)
             else:
@@ -154,7 +163,9 @@ class CoreNLPServer(object):
 
         for i in range(60):
             try:
-                response = requests.get(requests.compat.urljoin(self.url, "ready"))
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "ready")
+                )
             except requests.exceptions.ConnectionError:
                 time.sleep(1)
             else:
@@ -180,7 +191,9 @@ class CoreNLPServer(object):
 class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     """Interface to the CoreNLP Parser."""
 
-    def __init__(self, url="http://localhost:9000", encoding="utf8", tagtype=None):
+    def __init__(
+        self, url="http://localhost:9000", encoding="utf8", tagtype=None
+    ):
         import requests
 
         self.url = url
@@ -281,7 +294,9 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
                 tree = self.make_tree(parse)
                 yield iter([tree])
         """
-        parsed_data = self.api_call("\n".join(sentences), properties=default_properties)
+        parsed_data = self.api_call(
+            "\n".join(sentences), properties=default_properties
+        )
         for parsed_sent in parsed_data["sentences"]:
             tree = self.make_tree(parsed_sent)
             yield iter([tree])
@@ -384,7 +399,9 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         assert self.tagtype in ["pos", "ner"]
         default_properties["annotators"] += self.tagtype
         for sentence in sentences:
-            tagged_data = self.api_call(sentence, properties=default_properties)
+            tagged_data = self.api_call(
+                sentence, properties=default_properties
+            )
             yield [
                 [
                     (token["word"], token[self.tagtype])

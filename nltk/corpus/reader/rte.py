@@ -130,7 +130,10 @@ class RTECorpusReader(XMLCorpusReader):
             challenge = doc.attrib["challenge"]
         except KeyError:
             challenge = None
-        return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]
+        return [
+            RTEPair(pair, challenge=challenge)
+            for pair in doc.getiterator("pair")
+        ]
 
     def pairs(self, fileids):
         """
@@ -142,4 +145,6 @@ class RTECorpusReader(XMLCorpusReader):
         """
         if isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])
+        return concat(
+            [self._read_etree(self.xml(fileid)) for fileid in fileids]
+        )

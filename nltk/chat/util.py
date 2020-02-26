@@ -56,7 +56,8 @@ class Chat(object):
     def _compile_reflections(self):
         sorted_refl = sorted(self._reflections.keys(), key=len, reverse=True)
         return re.compile(
-            r"\b({0})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
+            r"\b({0})\b".format("|".join(map(re.escape, sorted_refl))),
+            re.IGNORECASE,
         )
 
     def _substitute(self, str):
@@ -70,7 +71,8 @@ class Chat(object):
         """
 
         return self._regex.sub(
-            lambda mo: self._reflections[mo.string[mo.start() : mo.end()]], str.lower()
+            lambda mo: self._reflections[mo.string[mo.start() : mo.end()]],
+            str.lower(),
         )
 
     def _wildcards(self, response, match):

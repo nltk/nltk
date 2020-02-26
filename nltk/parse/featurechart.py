@@ -82,7 +82,10 @@ class FeatureTreeEdge(TreeEdge):
         # Initialize the edge.
         TreeEdge.__init__(self, span, lhs, rhs, dot)
         self._bindings = bindings
-        self._comparison_key = (self._comparison_key, tuple(sorted(bindings.items())))
+        self._comparison_key = (
+            self._comparison_key,
+            tuple(sorted(bindings.items())),
+        )
 
     @staticmethod
     def from_production(production, index):
@@ -94,7 +97,10 @@ class FeatureTreeEdge(TreeEdge):
         :rtype: TreeEdge
         """
         return FeatureTreeEdge(
-            span=(index, index), lhs=production.lhs(), rhs=production.rhs(), dot=0
+            span=(index, index),
+            lhs=production.lhs(),
+            rhs=production.rhs(),
+            dot=0,
         )
 
     def move_dot_forward(self, new_end, bindings=None):
@@ -205,7 +211,8 @@ class FeatureChart(Chart):
         # Add all existing edges to the index.
         for edge in self._edges:
             vals = tuple(
-                self._get_type_if_possible(getattr(edge, key)()) for key in restr_keys
+                self._get_type_if_possible(getattr(edge, key)())
+                for key in restr_keys
             )
             index.setdefault(vals, []).append(edge)
 
@@ -216,7 +223,8 @@ class FeatureChart(Chart):
         """
         for (restr_keys, index) in self._indexes.items():
             vals = tuple(
-                self._get_type_if_possible(getattr(edge, key)()) for key in restr_keys
+                self._get_type_if_possible(getattr(edge, key)())
+                for key in restr_keys
             )
             index.setdefault(vals, []).append(edge)
 
@@ -237,7 +245,9 @@ class FeatureChart(Chart):
                 and (edge.lhs()[TYPE] == start[TYPE])
                 and (unify(edge.lhs(), start, rename_vars=True))
             ):
-                for tree in self.trees(edge, complete=True, tree_class=tree_class):
+                for tree in self.trees(
+                    edge, complete=True, tree_class=tree_class
+                ):
                     yield tree
 
 
@@ -494,7 +504,7 @@ class FeatureChartParser(ChartParser):
         strategy=BU_LC_FEATURE_STRATEGY,
         trace_chart_width=20,
         chart_class=FeatureChart,
-        **parser_args
+        **parser_args,
     ):
         ChartParser.__init__(
             self,
@@ -502,18 +512,22 @@ class FeatureChartParser(ChartParser):
             strategy=strategy,
             trace_chart_width=trace_chart_width,
             chart_class=chart_class,
-            **parser_args
+            **parser_args,
         )
 
 
 class FeatureTopDownChartParser(FeatureChartParser):
     def __init__(self, grammar, **parser_args):
-        FeatureChartParser.__init__(self, grammar, TD_FEATURE_STRATEGY, **parser_args)
+        FeatureChartParser.__init__(
+            self, grammar, TD_FEATURE_STRATEGY, **parser_args
+        )
 
 
 class FeatureBottomUpChartParser(FeatureChartParser):
     def __init__(self, grammar, **parser_args):
-        FeatureChartParser.__init__(self, grammar, BU_FEATURE_STRATEGY, **parser_args)
+        FeatureChartParser.__init__(
+            self, grammar, BU_FEATURE_STRATEGY, **parser_args
+        )
 
 
 class FeatureBottomUpLeftCornerChartParser(FeatureChartParser):

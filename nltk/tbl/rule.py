@@ -149,7 +149,7 @@ class Rule(TagRule):
             obj["templateid"],
             obj["original"],
             obj["replacement"],
-            tuple(tuple(feat) for feat in obj["conditions"])
+            tuple(tuple(feat) for feat in obj["conditions"]),
         )
 
     def applies(self, tokens, index):
@@ -317,7 +317,9 @@ class Rule(TagRule):
                 if mx - mn == len(positions) - 1:
                     return "words i%+d...i%+d" % (mn, mx)
                 else:
-                    return "words {%s}" % (",".join("i%+d" % d for d in positions),)
+                    return "words {%s}" % (
+                        ",".join("i%+d" % d for d in positions),
+                    )
 
         replacement = "%s -> %s" % (self.original_tag, self.replacement_tag)
         conditions = (" if " if self._conditions else "") + ", and ".join(

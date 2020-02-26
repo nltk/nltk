@@ -238,7 +238,9 @@ class TaggedCorpusReader(CorpusReader):
         )
 
 
-class CategorizedTaggedCorpusReader(CategorizedCorpusReader, TaggedCorpusReader):
+class CategorizedTaggedCorpusReader(
+    CategorizedCorpusReader, TaggedCorpusReader
+):
     """
     A reader for part-of-speech tagged corpora whose documents are
     divided into categories based on their file identifiers.
@@ -266,13 +268,19 @@ class CategorizedTaggedCorpusReader(CategorizedCorpusReader, TaggedCorpusReader)
         return TaggedCorpusReader.raw(self, self._resolve(fileids, categories))
 
     def words(self, fileids=None, categories=None):
-        return TaggedCorpusReader.words(self, self._resolve(fileids, categories))
+        return TaggedCorpusReader.words(
+            self, self._resolve(fileids, categories)
+        )
 
     def sents(self, fileids=None, categories=None):
-        return TaggedCorpusReader.sents(self, self._resolve(fileids, categories))
+        return TaggedCorpusReader.sents(
+            self, self._resolve(fileids, categories)
+        )
 
     def paras(self, fileids=None, categories=None):
-        return TaggedCorpusReader.paras(self, self._resolve(fileids, categories))
+        return TaggedCorpusReader.paras(
+            self, self._resolve(fileids, categories)
+        )
 
     def tagged_words(self, fileids=None, categories=None, tagset=None):
         return TaggedCorpusReader.tagged_words(
@@ -333,7 +341,9 @@ class TaggedCorpusView(StreamBackedCorpusView):
                     for s in self._word_tokenizer.tokenize(sent_str)
                 ]
                 if self._tag_mapping_function:
-                    sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
+                    sent = [
+                        (w, self._tag_mapping_function(t)) for (w, t) in sent
+                    ]
                 if not self._tagged:
                     sent = [w for (w, t) in sent]
                 if self._group_by_sent:

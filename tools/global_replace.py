@@ -25,10 +25,10 @@ def update(file, pattern, replacement):
             os.chmod(file, old_perm | stat.S_IWRITE)
 
         # write the file
-        s = open(file, 'rb').read().decode('utf-8')
+        s = open(file, "rb").read().decode("utf-8")
         t = s.replace(pattern, replacement)
-        out = open(file, 'wb')
-        out.write(t.encode('utf-8'))
+        out = open(file, "wb")
+        out.write(t.encode("utf-8"))
         out.close()
 
         # restore permissions
@@ -38,11 +38,11 @@ def update(file, pattern, replacement):
 
     except Exception:
         exc_type, exc_obj, exc_tb = sys.exc_info()
-        print('Unable to check {0:s} {1:s}'.format(file, str(exc_type)))
+        print("Unable to check {0:s} {1:s}".format(file, str(exc_type)))
         return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     if len(sys.argv) != 3:
         exit("Usage: %s <pattern> <replacement>" % sys.argv[0])
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     replacement = sys.argv[2]
     count = 0
 
-    for root, dirs, files in os.walk('.'):
-        if not ('/.git' in root or '/.tox' in root):
+    for root, dirs, files in os.walk("."):
+        if not ("/.git" in root or "/.tox" in root):
             for file in files:
                 path = os.path.join(root, file)
                 if update(path, pattern, replacement):

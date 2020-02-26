@@ -63,7 +63,12 @@ class AbstractCollocationFinder(object):
 
     @classmethod
     def _build_new_documents(
-        cls, documents, window_size, pad_left=False, pad_right=False, pad_symbol=None
+        cls,
+        documents,
+        window_size,
+        pad_left=False,
+        pad_right=False,
+        pad_symbol=None,
     ):
         """
         Pad the document with the place holder according to the window_size
@@ -131,7 +136,9 @@ class AbstractCollocationFinder(object):
         """Returns a sequence of (ngram, score) pairs ordered from highest to
         lowest score, as determined by the scoring function provided.
         """
-        return sorted(self._score_ngrams(score_fn), key=lambda t: (-t[1], t[0]))
+        return sorted(
+            self._score_ngrams(score_fn), key=lambda t: (-t[1], t[0])
+        )
 
     def nbest(self, score_fn, n):
         """Returns the top n ngrams when scored by the given function."""
@@ -264,7 +271,9 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         n_ixx = self.word_fd[w1]
         n_xix = self.word_fd[w2]
         n_xxi = self.word_fd[w3]
-        return score_fn(n_iii, (n_iix, n_ixi, n_xii), (n_ixx, n_xix, n_xxi), n_all)
+        return score_fn(
+            n_iii, (n_iix, n_ixi, n_xii), (n_ixx, n_xix, n_xxi), n_all
+        )
 
 
 class QuadgramCollocationFinder(AbstractCollocationFinder):

@@ -146,7 +146,9 @@ class ShiftReduceApp(object):
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget("size"))
 
-        self._boldfont = Font(family="helvetica", weight="bold", size=self._size.get())
+        self._boldfont = Font(
+            family="helvetica", weight="bold", size=self._size.get()
+        )
         self._font = Font(family="helvetica", size=self._size.get())
 
     def _init_grammar(self, parent):
@@ -265,7 +267,10 @@ class ShiftReduceApp(object):
 
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label="Reset Parser", underline=0, command=self.reset, accelerator="Del"
+            label="Reset Parser",
+            underline=0,
+            command=self.reset,
+            accelerator="Del",
         )
         filemenu.add_command(
             label="Print to Postscript",
@@ -274,7 +279,10 @@ class ShiftReduceApp(object):
             accelerator="Ctrl-p",
         )
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-x",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -299,10 +307,16 @@ class ShiftReduceApp(object):
         )
         rulemenu.add_separator()
         rulemenu.add_command(
-            label="Shift", underline=0, command=self.shift, accelerator="Ctrl-s"
+            label="Shift",
+            underline=0,
+            command=self.shift,
+            accelerator="Ctrl-s",
         )
         rulemenu.add_command(
-            label="Reduce", underline=0, command=self.reduce, accelerator="Ctrl-r"
+            label="Reduce",
+            underline=0,
+            command=self.reduce,
+            accelerator="Ctrl-r",
         )
         rulemenu.add_separator()
         rulemenu.add_command(
@@ -385,7 +399,10 @@ class ShiftReduceApp(object):
         helpmenu = Menu(menubar, tearoff=0)
         helpmenu.add_command(label="About", underline=0, command=self.about)
         helpmenu.add_command(
-            label="Instructions", underline=0, command=self.help, accelerator="F1"
+            label="Instructions",
+            underline=0,
+            command=self.help,
+            accelerator="F1",
         )
         menubar.add_cascade(label="Help", underline=0, menu=helpmenu)
 
@@ -401,7 +418,10 @@ class ShiftReduceApp(object):
         lastoperframe = Frame(feedbackframe, relief="sunken", border=1)
         lastoperframe.pack(fill="x", side="right", expand=1, padx=5)
         self._lastoper1 = Label(
-            lastoperframe, foreground="#007070", background="#f0f0f0", font=self._font
+            lastoperframe,
+            foreground="#007070",
+            background="#f0f0f0",
+            font=self._font,
         )
         self._lastoper2 = Label(
             lastoperframe,
@@ -486,7 +506,9 @@ class ShiftReduceApp(object):
                 widget = tree_to_treesegment(self._canvas, tok, **attribs)
                 widget.label()["color"] = "#000000"
             else:
-                widget = TextWidget(self._canvas, tok, color="#000000", font=self._font)
+                widget = TextWidget(
+                    self._canvas, tok, color="#000000", font=self._font
+                )
             widget.bind_click(self._popup_reduce)
             self._stackwidgets.append(widget)
             self._cframe.add_widget(widget, stackx, y)
@@ -495,7 +517,9 @@ class ShiftReduceApp(object):
         # Draw the remaining text.
         rtextwidth = 0
         for tok in self._parser.remaining_text():
-            widget = TextWidget(self._canvas, tok, color="#000000", font=self._font)
+            widget = TextWidget(
+                self._canvas, tok, color="#000000", font=self._font
+            )
             self._rtextwidgets.append(widget)
             self._cframe.add_widget(widget, rtextwidth, y)
             rtextwidth = widget.bbox()[2] + 4
@@ -662,7 +686,10 @@ class ShiftReduceApp(object):
             )
 
     def about(self, *e):
-        ABOUT = "NLTK Shift-Reduce Parser Application\n" + "Written by Edward Loper"
+        ABOUT = (
+            "NLTK Shift-Reduce Parser Application\n"
+            + "Written by Edward Loper"
+        )
         TITLE = "About: Shift-Reduce Parser Application"
         try:
             from tkinter.messagebox import Message
@@ -734,7 +761,9 @@ class ShiftReduceApp(object):
 
         self._reduce_menu.delete(0, "end")
         for production in productions:
-            self._reduce_menu.add_command(label=str(production), command=self.reduce)
+            self._reduce_menu.add_command(
+                label=str(production), command=self.reduce
+            )
         self._reduce_menu.post(
             self._canvas.winfo_pointerx(), self._canvas.winfo_pointery()
         )
@@ -763,7 +792,9 @@ class ShiftReduceApp(object):
         if frame > 0:
             self._animating_lock = 1
             widget.move(dx, 0)
-            self._top.after(10, self._animate_shift_frame, frame - 1, widget, dx)
+            self._top.after(
+                10, self._animate_shift_frame, frame - 1, widget, dx
+            )
         else:
             # but: stacktop??
 
@@ -797,7 +828,9 @@ class ShiftReduceApp(object):
             self._animating_lock = 1
             for widget in widgets:
                 widget.move(0, dy)
-            self._top.after(10, self._animate_reduce_frame, frame - 1, widgets, dy)
+            self._top.after(
+                10, self._animate_reduce_frame, frame - 1, widgets, dy
+            )
         else:
             del self._stackwidgets[-len(widgets) :]
             for widget in widgets:
@@ -806,7 +839,10 @@ class ShiftReduceApp(object):
             if not isinstance(tok, Tree):
                 raise ValueError()
             label = TextWidget(
-                self._canvas, str(tok.label()), color="#006060", font=self._boldfont
+                self._canvas,
+                str(tok.label()),
+                color="#006060",
+                font=self._boldfont,
             )
             widget = TreeSegmentWidget(self._canvas, label, widgets, width=2)
             (x1, y1, x2, y2) = self._stacklabel.bbox()
@@ -898,7 +934,9 @@ def app():
     from nltk.grammar import Nonterminal, Production, CFG
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = [
+        Nonterminal(s) for s in nonterminals.split()
+    ]
 
     productions = (
         # Syntactic Productions

@@ -41,7 +41,9 @@ class StringCategoryCorpusReader(CorpusReader):
             fileids = [fileids]
         return concat(
             [
-                StreamBackedCorpusView(fileid, self._read_tuple_block, encoding=enc)
+                StreamBackedCorpusView(
+                    fileid, self._read_tuple_block, encoding=enc
+                )
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )

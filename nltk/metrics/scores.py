@@ -52,7 +52,9 @@ def precision(reference, test):
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
-    if not hasattr(reference, "intersection") or not hasattr(test, "intersection"):
+    if not hasattr(reference, "intersection") or not hasattr(
+        test, "intersection"
+    ):
         raise TypeError("reference and test should be sets")
 
     if len(test) == 0:
@@ -74,7 +76,9 @@ def recall(reference, test):
     :param test: A set of values to compare against the reference set.
     :rtype: float or None
     """
-    if not hasattr(reference, "intersection") or not hasattr(test, "intersection"):
+    if not hasattr(reference, "intersection") or not hasattr(
+        test, "intersection"
+    ):
         raise TypeError("reference and test should be sets")
 
     if len(reference) == 0:
@@ -132,7 +136,9 @@ def log_likelihood(reference, test):
         raise ValueError("Lists must have the same length.")
 
     # Return the average value of dist.logprob(val).
-    total_likelihood = sum(dist.logprob(val) for (val, dist) in zip(reference, test))
+    total_likelihood = sum(
+        dist.logprob(val) for (val, dist) in zip(reference, test)
+    )
     return total_likelihood / len(reference)
 
 
@@ -159,7 +165,9 @@ def approxrand(a, b, **kwargs):
     """
     shuffles = kwargs.get("shuffles", 999)
     # there's no point in trying to shuffle beyond all possible permutations
-    shuffles = min(shuffles, reduce(operator.mul, range(1, len(a) + len(b) + 1)))
+    shuffles = min(
+        shuffles, reduce(operator.mul, range(1, len(a) + len(b) + 1))
+    )
     stat = kwargs.get("statistic", lambda lst: sum(lst) / len(lst))
     verbose = kwargs.get("verbose", False)
 

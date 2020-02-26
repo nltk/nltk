@@ -42,7 +42,6 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
 from nltk.classify import Senna
 
 
-
 class SennaTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
         super(SennaTagger, self).__init__(path, ["pos"], encoding)
@@ -58,7 +57,6 @@ class SennaTagger(Senna):
                 annotations = tagged_sents[i][j]
                 tagged_sents[i][j] = (annotations["word"], annotations["pos"])
         return tagged_sents
-
 
 
 class SennaChunkTagger(Senna):
@@ -105,7 +103,9 @@ class SennaChunkTagger(Senna):
         current_chunk_position = []
         for idx, word_pos in enumerate(tagged_sent):
             word, pos = word_pos
-            if "-" + chunk_type in pos:  # Append the word to the current_chunk.
+            if (
+                "-" + chunk_type in pos
+            ):  # Append the word to the current_chunk.
                 current_chunk.append((word))
                 current_chunk_position.append((idx))
             else:
@@ -116,8 +116,9 @@ class SennaChunkTagger(Senna):
                     current_chunk = []
                     current_chunk_position = []
         if current_chunk:  # Flush the last chunk.
-            yield " ".join(current_chunk), "-".join(map(str, current_chunk_position))
-
+            yield " ".join(current_chunk), "-".join(
+                map(str, current_chunk_position)
+            )
 
 
 class SennaNERTagger(Senna):

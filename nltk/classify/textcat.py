@@ -83,7 +83,9 @@ class TextCat(object):
 
         fingerprint = FreqDist()
         for t in tokens:
-            token_trigram_tuples = trigrams(self._START_CHAR + t + self._END_CHAR)
+            token_trigram_tuples = trigrams(
+                self._START_CHAR + t + self._END_CHAR
+            )
             token_trigrams = ["".join(tri) for tri in token_trigram_tuples]
 
             for cur_trigram in token_trigrams:

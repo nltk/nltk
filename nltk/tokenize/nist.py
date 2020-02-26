@@ -92,7 +92,9 @@ class NISTTokenizer(TokenizerI):
 
     # Perluniprops characters used in NIST tokenizer.
     pup_number = str("".join(set(perluniprops.chars("Number"))))  # i.e. \p{N}
-    pup_punct = str("".join(set(perluniprops.chars("Punctuation"))))  # i.e. \p{P}
+    pup_punct = str(
+        "".join(set(perluniprops.chars("Punctuation")))
+    )  # i.e. \p{P}
     pup_symbol = str("".join(set(perluniprops.chars("Symbol"))))  # i.e. \p{S}
 
     # Python regexes needs to escape some special symbols, see
@@ -137,7 +139,9 @@ class NISTTokenizer(TokenizerI):
         text = regexp.sub(substitution, text)
         return text
 
-    def tokenize(self, text, lowercase=False, western_lang=True, return_str=False):
+    def tokenize(
+        self, text, lowercase=False, western_lang=True, return_str=False
+    ):
         text = str(text)
         # Language independent regex.
         text = self.lang_independent_sub(text)

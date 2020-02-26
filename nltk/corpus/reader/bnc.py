@@ -8,7 +8,11 @@
 """Corpus reader for the XML version of the British National Corpus."""
 
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTree
+from nltk.corpus.reader.xmldocs import (
+    XMLCorpusReader,
+    XMLCorpusView,
+    ElementTree,
+)
 
 
 class BNCCorpusReader(XMLCorpusReader):
@@ -44,7 +48,9 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         return self._views(fileids, False, None, strip_space, stem)
 
-    def tagged_words(self, fileids=None, c5=False, strip_space=True, stem=False):
+    def tagged_words(
+        self, fileids=None, c5=False, strip_space=True, stem=False
+    ):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
@@ -73,7 +79,9 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         return self._views(fileids, True, None, strip_space, stem)
 
-    def tagged_sents(self, fileids=None, c5=False, strip_space=True, stem=False):
+    def tagged_sents(
+        self, fileids=None, c5=False, strip_space=True, stem=False
+    ):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
@@ -90,7 +98,9 @@ class BNCCorpusReader(XMLCorpusReader):
             fileids, sent=True, tag=tag, strip_space=strip_space, stem=stem
         )
 
-    def _views(self, fileids=None, sent=False, tag=False, strip_space=True, stem=False):
+    def _views(
+        self, fileids=None, sent=False, tag=False, strip_space=True, stem=False
+    ):
         """A helper function that instantiates BNCWordViews or the list of words/sentences."""
         f = BNCWordView if self._lazy else self._words
         return concat(
@@ -223,7 +233,8 @@ class BNCWordView(XMLCorpusView):
         resps = elt.findall("titleStmt/respStmt")
         if resps:
             self.resps = "\n\n".join(
-                "\n".join(resp_elt.text.strip() for resp_elt in resp) for resp in resps
+                "\n".join(resp_elt.text.strip() for resp_elt in resp)
+                for resp in resps
             )
 
     def handle_elt(self, elt, context):

@@ -120,7 +120,8 @@ class StanfordSegmenter(TokenizerI):
         self.java_options = java_options
         options = {} if options is None else options
         self._options_cmd = ",".join(
-            "{0}={1}".format(key, json.dumps(val)) for key, val in options.items()
+            "{0}={1}".format(key, json.dumps(val))
+            for key, val in options.items()
         )
 
     def default_config(self, lang):
@@ -131,7 +132,9 @@ class StanfordSegmenter(TokenizerI):
 
         search_path = ()
         if os.environ.get("STANFORD_SEGMENTER"):
-            search_path = {os.path.join(os.environ.get("STANFORD_SEGMENTER"), "data")}
+            search_path = {
+                os.path.join(os.environ.get("STANFORD_SEGMENTER"), "data")
+            }
 
         # init for Chinese-specific files
         self._dict = None
@@ -173,7 +176,9 @@ class StanfordSegmenter(TokenizerI):
                     verbose=False,
                     env_vars=("STANFORD_SEGMENTER",),
                 )
-                self._sihan_corpora_dict = os.path.join(path_to_sihan_dir, sihan_dir)
+                self._sihan_corpora_dict = os.path.join(
+                    path_to_sihan_dir, sihan_dir
+                )
             except LookupError:
                 raise LookupError(
                     "Could not find '%s' (tried using the "
@@ -193,7 +198,8 @@ class StanfordSegmenter(TokenizerI):
         except LookupError:
             raise LookupError(
                 "Could not find '%s' (tried using env. "
-                "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % model
+                "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)"
+                % model
             )
 
     def tokenize(self, s):

@@ -80,7 +80,9 @@ class GenericStanfordParser(ParserI):
 
         # Adding logging jar files to classpath
         stanford_dir = os.path.split(stanford_jar)[0]
-        self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
+        self._classpath = tuple(
+            [model_jar] + find_jars_within_path(stanford_dir)
+        )
 
         self.model_path = model_path
         self._encoding = encoding
@@ -137,7 +139,9 @@ class GenericStanfordParser(ParserI):
         ]
         return self._parse_trees_output(
             self._execute(
-                cmd, "\n".join(" ".join(sentence) for sentence in sentences), verbose
+                cmd,
+                "\n".join(" ".join(sentence) for sentence in sentences),
+                verbose,
             )
         )
 
@@ -239,7 +243,9 @@ class GenericStanfordParser(ParserI):
         config_java(options=self.java_options, verbose=verbose)
 
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
+        with tempfile.NamedTemporaryFile(
+            mode="wb", delete=False
+        ) as input_file:
             # Write the actual sentences to the temporary input file
             if isinstance(input_, str) and encoding:
                 input_ = input_.encode(encoding)

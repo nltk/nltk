@@ -19,7 +19,9 @@ from nltk.corpus.reader.util import (
 from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
 
 # default function to convert morphlist to str for tree representation
-_morphs2str_default = lambda morphs: "/".join(m[0] for m in morphs if m[0] != "EOS")
+_morphs2str_default = lambda morphs: "/".join(
+    m[0] for m in morphs if m[0] != "EOS"
+)
 
 
 class KNBCorpusReader(SyntaxCorpusReader):
@@ -54,7 +56,9 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
     """
 
-    def __init__(self, root, fileids, encoding="utf8", morphs2str=_morphs2str_default):
+    def __init__(
+        self, root, fileids, encoding="utf8", morphs2str=_morphs2str_default
+    ):
         """
         Initialize KNBCorpusReader
         morphs2str is a function to convert morphlist to str for tree representation

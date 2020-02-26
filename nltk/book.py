@@ -39,7 +39,9 @@ print("text4:", text4.name)
 text5 = Text(nps_chat.words(), name="Chat Corpus")
 print("text5:", text5.name)
 
-text6 = Text(webtext.words("grail.txt"), name="Monty Python and the Holy Grail")
+text6 = Text(
+    webtext.words("grail.txt"), name="Monty Python and the Holy Grail"
+)
 print("text6:", text6.name)
 
 text7 = Text(treebank.words(), name="Wall Street Journal")

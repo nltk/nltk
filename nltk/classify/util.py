@@ -209,7 +209,9 @@ def names_demo(trainer, features=names_demo_features):
     try:
         test_featuresets = [features(n) for (n, g) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
-        ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
+        ll = [
+            pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)
+        ]
         print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
         print()
         print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
@@ -264,7 +266,9 @@ def partial_names_demo(trainer, features=names_demo_features):
     try:
         test_featuresets = [features(n) for (n, m) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
-        ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
+        ll = [
+            pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)
+        ]
         print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
         print()
         print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
@@ -292,7 +296,9 @@ def wsd_demo(trainer, word, features, n=1000):
     print("Reading data...")
     global _inst_cache
     if word not in _inst_cache:
-        _inst_cache[word] = [(i, i.senses[0]) for i in senseval.instances(word)]
+        _inst_cache[word] = [
+            (i, i.senses[0]) for i in senseval.instances(word)
+        ]
     instances = _inst_cache[word][:]
     if n > len(instances):
         n = len(instances)
@@ -320,7 +326,9 @@ def wsd_demo(trainer, word, features, n=1000):
     try:
         test_featuresets = [features(i) for (i, n) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
-        ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
+        ll = [
+            pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)
+        ]
         print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
     except NotImplementedError:
         pass

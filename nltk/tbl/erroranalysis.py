@@ -32,7 +32,9 @@ def error_list(train_sents, test_sents):
             test_pos = test_sent[wordnum][1]
             if train_pos != test_pos:
                 left = " ".join("%s/%s" % w for w in train_sent[:wordnum])
-                right = " ".join("%s/%s" % w for w in train_sent[wordnum + 1 :])
+                right = " ".join(
+                    "%s/%s" % w for w in train_sent[wordnum + 1 :]
+                )
                 mid = "%s/%s->%s" % (word, test_pos, train_pos)
                 errors.append(
                     "%25s | %s | %s" % (left[-25:], mid.center(22), right[:25])

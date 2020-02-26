@@ -615,12 +615,14 @@ class CanvasWidget(metaclass=ABCMeta):
         # Is it a click or a drag?
         if (
             event.time - self.__press.time < 100
-            and abs(event.x - self.__press.x) + abs(event.y - self.__press.y) < 5
+            and abs(event.x - self.__press.x) + abs(event.y - self.__press.y)
+            < 5
         ):
             # Move it back, if we were dragging.
             if self.__draggable and event.num == 1:
                 self.move(
-                    self.__press.x - self.__drag_x, self.__press.y - self.__drag_y
+                    self.__press.x - self.__drag_x,
+                    self.__press.y - self.__drag_y,
                 )
             self.__click(event.num)
         elif event.num == 1:
@@ -1140,7 +1142,11 @@ class OvalWidget(AbstractContainerWidget):
         top = int((y1 * (1 + R) + y2 * (1 - R)) / 2)
         bot = top + int((y2 - y1) * R)
         self.canvas().coords(
-            self._oval, left - margin, top - margin, right + margin, bot + margin
+            self._oval,
+            left - margin,
+            top - margin,
+            right + margin,
+            bot + margin,
         )
         if self._oval2 is not None:
             self.canvas().coords(
@@ -1181,8 +1187,12 @@ class ParenWidget(AbstractContainerWidget):
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
-        self._oparen = canvas.create_arc(1, 1, 1, 1, style="arc", start=90, extent=180)
-        self._cparen = canvas.create_arc(1, 1, 1, 1, style="arc", start=-90, extent=180)
+        self._oparen = canvas.create_arc(
+            1, 1, 1, 1, style="arc", start=90, extent=180
+        )
+        self._cparen = canvas.create_arc(
+            1, 1, 1, 1, style="arc", start=-90, extent=180
+        )
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
 
     def __setitem__(self, attr, value):
@@ -1833,7 +1843,10 @@ class CanvasFrame(object):
             accelerator="Ctrl-p",
         )
         filemenu.add_command(
-            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
+            label="Exit",
+            underline=1,
+            command=self.destroy,
+            accelerator="Ctrl-x",
         )
         menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
@@ -1850,7 +1863,9 @@ class CanvasFrame(object):
         """
         if filename is None:
             ftypes = [("Postscript files", ".ps"), ("All files", "*")]
-            filename = asksaveasfilename(filetypes=ftypes, defaultextension=".ps")
+            filename = asksaveasfilename(
+                filetypes=ftypes, defaultextension=".ps"
+            )
             if not filename:
                 return
         (x0, y0, w, h) = self.scrollregion()
@@ -2010,7 +2025,9 @@ class ShowText(object):
     information.
     """
 
-    def __init__(self, root, title, text, width=None, height=None, **textbox_options):
+    def __init__(
+        self, root, title, text, width=None, height=None, **textbox_options
+    ):
         if width is None or height is None:
             (width, height) = self.find_dimentions(text, width, height)
 
@@ -2028,7 +2045,9 @@ class ShowText(object):
         tbf.pack(expand=1, fill="both")
         scrollbar = Scrollbar(tbf, orient="vertical")
         scrollbar.pack(side="right", fill="y")
-        textbox = Text(tbf, wrap="word", width=width, height=height, **textbox_options)
+        textbox = Text(
+            tbf, wrap="word", width=width, height=height, **textbox_options
+        )
         textbox.insert("end", text)
         textbox["state"] = "disabled"
         textbox.pack(side="left", expand=1, fill="both")
@@ -2092,7 +2111,12 @@ class EntryDialog(object):
     """
 
     def __init__(
-        self, parent, original_text="", instructions="", set_callback=None, title=None
+        self,
+        parent,
+        original_text="",
+        instructions="",
+        set_callback=None,
+        title=None,
     ):
         self._parent = parent
         self._original_text = original_text
@@ -2123,7 +2147,9 @@ class EntryDialog(object):
         buttons.pack(expand=0, fill="x", padx=5, pady=5)
         b = Button(buttons, text="Cancel", command=self._cancel, width=8)
         b.pack(side="right", padx=5)
-        b = Button(buttons, text="Ok", command=self._ok, width=8, default="active")
+        b = Button(
+            buttons, text="Ok", command=self._ok, width=8, default="active"
+        )
         b.pack(side="left", padx=5)
         b = Button(buttons, text="Apply", command=self._apply, width=8)
         b.pack(side="left")
@@ -2379,7 +2405,9 @@ class ColorizedList(object):
         # Create the basic Text widget & scrollbar.
         options.setdefault("background", "#e0e0e0")
         self._textwidget = Text(self._itemframe, **options)
-        self._textscroll = Scrollbar(self._itemframe, takefocus=0, orient="vertical")
+        self._textscroll = Scrollbar(
+            self._itemframe, takefocus=0, orient="vertical"
+        )
         self._textwidget.config(yscrollcommand=self._textscroll.set)
         self._textscroll.config(command=self._textwidget.yview)
         self._textscroll.pack(side="right", fill="y")

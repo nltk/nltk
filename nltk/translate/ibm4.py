@@ -224,7 +224,9 @@ class IBMModel4(IBMModel):
             self.alignment_table = probability_tables["alignment_table"]
             self.fertility_table = probability_tables["fertility_table"]
             self.p1 = probability_tables["p1"]
-            self.head_distortion_table = probability_tables["head_distortion_table"]
+            self.head_distortion_table = probability_tables[
+                "head_distortion_table"
+            ]
             self.non_head_distortion_table = probability_tables[
                 "non_head_distortion_table"
             ]
@@ -283,8 +285,12 @@ class IBMModel4(IBMModel):
             self.head_distortion_table[-dj] = defaultdict(
                 lambda: defaultdict(lambda: initial_prob)
             )
-            self.non_head_distortion_table[dj] = defaultdict(lambda: initial_prob)
-            self.non_head_distortion_table[-dj] = defaultdict(lambda: initial_prob)
+            self.non_head_distortion_table[dj] = defaultdict(
+                lambda: initial_prob
+            )
+            self.non_head_distortion_table[-dj] = defaultdict(
+                lambda: initial_prob
+            )
 
     def train(self, parallel_corpus):
         counts = Model4Counts()
@@ -341,7 +347,9 @@ class IBMModel4(IBMModel):
                         counts.head_distortion[dj][s_cls][t_cls]
                         / counts.head_distortion_for_any_dj[s_cls][t_cls]
                     )
-                    head_d_table[dj][s_cls][t_cls] = max(estimate, IBMModel.MIN_PROB)
+                    head_d_table[dj][s_cls][t_cls] = max(
+                        estimate, IBMModel.MIN_PROB
+                    )
 
         non_head_d_table = self.non_head_distortion_table
         for dj, trg_classes in counts.non_head_distortion.items():
@@ -414,7 +422,9 @@ class IBMModel4(IBMModel):
                     src_class = ibm_model.src_classes[previous_s]
                 trg_class = ibm_model.trg_classes[t]
                 dj = j - alignment_info.center_of_cept(previous_cept)
-                return ibm_model.head_distortion_table[dj][src_class][trg_class]
+                return ibm_model.head_distortion_table[dj][src_class][
+                    trg_class
+                ]
 
             # case 3: t is a subsequent word of a tablet
             previous_position = alignment_info.previous_in_tablet(j)
@@ -457,11 +467,17 @@ class Model4Counts(Counts):
         self.head_distortion = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
         )
-        self.head_distortion_for_any_dj = defaultdict(lambda: defaultdict(lambda: 0.0))
-        self.non_head_distortion = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.head_distortion_for_any_dj = defaultdict(
+            lambda: defaultdict(lambda: 0.0)
+        )
+        self.non_head_distortion = defaultdict(
+            lambda: defaultdict(lambda: 0.0)
+        )
         self.non_head_distortion_for_any_dj = defaultdict(lambda: 0.0)
 
-    def update_distortion(self, count, alignment_info, j, src_classes, trg_classes):
+    def update_distortion(
+        self, count, alignment_info, j, src_classes, trg_classes
+    ):
         i = alignment_info.alignment[j]
         t = alignment_info.trg_sentence[j]
         if i == 0:

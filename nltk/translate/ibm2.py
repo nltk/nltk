@@ -96,7 +96,9 @@ class IBMModel2(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
+    def __init__(
+        self, sentence_aligned_corpus, iterations, probability_tables=None
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model and an alignment model.
@@ -173,7 +175,9 @@ class IBMModel2(IBMModel):
                 t = trg_sentence[j]
                 for i in range(0, l + 1):
                     s = src_sentence[i]
-                    count = self.prob_alignment_point(i, j, src_sentence, trg_sentence)
+                    count = self.prob_alignment_point(
+                        i, j, src_sentence, trg_sentence
+                    )
                     normalized_count = count / total_count[t]
 
                     counts.update_lexical_translation(normalized_count, s, t)
@@ -193,7 +197,9 @@ class IBMModel2(IBMModel):
                             counts.alignment[i][j][l][m]
                             / counts.alignment_for_any_i[j][l][m]
                         )
-                        self.alignment_table[i][j][l][m] = max(estimate, MIN_PROB)
+                        self.alignment_table[i][j][l][m] = max(
+                            estimate, MIN_PROB
+                        )
 
     def prob_all_alignments(self, src_sentence, trg_sentence):
         """
@@ -304,7 +310,9 @@ class Model2Counts(Counts):
     def __init__(self):
         super(Model2Counts, self).__init__()
         self.alignment = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+            lambda: defaultdict(
+                lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+            )
         )
         self.alignment_for_any_i = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0))

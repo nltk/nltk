@@ -289,7 +289,10 @@ class TreeEdge(EdgeI):
         :rtype: TreeEdge
         """
         return TreeEdge(
-            span=(index, index), lhs=production.lhs(), rhs=production.rhs(), dot=0
+            span=(index, index),
+            lhs=production.lhs(),
+            rhs=production.rhs(),
+            dot=0,
         )
 
     def move_dot_forward(self, new_end):
@@ -695,7 +698,9 @@ class Chart(object):
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
-        return iter(self._trees(edge, complete, memo={}, tree_class=tree_class))
+        return iter(
+            self._trees(edge, complete, memo={}, tree_class=tree_class)
+        )
 
     def _trees(self, edge, complete, memo, tree_class):
         """
@@ -733,7 +738,9 @@ class Chart(object):
             # Get the set of child choices for each child pointer.
             # child_choices[i] is the set of choices for the tree's
             # ith child.
-            child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
+            child_choices = [
+                self._trees(cp, complete, memo, tree_class) for cp in cpl
+            ]
 
             # For each combination of children, add a tree.
             for children in itertools.product(*child_choices):
@@ -741,7 +748,9 @@ class Chart(object):
 
         # If the edge is incomplete, then extend it with "partial trees":
         if edge.is_incomplete():
-            unexpanded = [tree_class(elt, []) for elt in edge.rhs()[edge.dot() :]]
+            unexpanded = [
+                tree_class(elt, []) for elt in edge.rhs()[edge.dot() :]
+            ]
             for tree in trees:
                 tree.extend(unexpanded)
 
@@ -790,11 +799,26 @@ class Chart(object):
         # Spanning complete edges are "[===]"; Other edges are
         # "[---]" if complete, "[--->" if incomplete
         elif edge.is_complete() and edge.span() == (0, self._num_leaves):
-            str += "[" + ("=" * width) * (end - start - 1) + "=" * (width - 1) + "]"
+            str += (
+                "["
+                + ("=" * width) * (end - start - 1)
+                + "=" * (width - 1)
+                + "]"
+            )
         elif edge.is_complete():
-            str += "[" + ("-" * width) * (end - start - 1) + "-" * (width - 1) + "]"
+            str += (
+                "["
+                + ("-" * width) * (end - start - 1)
+                + "-" * (width - 1)
+                + "]"
+            )
         else:
-            str += "[" + ("-" * width) * (end - start - 1) + "-" * (width - 1) + ">"
+            str += (
+                "["
+                + ("-" * width) * (end - start - 1)
+                + "-" * (width - 1)
+                + ">"
+            )
 
         str += (" " * (width - 1) + ".") * (self._num_leaves - end)
         return str + "| %s" % edge
@@ -857,7 +881,8 @@ class Chart(object):
                 s += '  node [style=filled, color="black"];\n'
             for x in range(self.num_leaves() + 1):
                 if y == 0 or (
-                    x <= self._edges[y - 1].start() or x >= self._edges[y - 1].end()
+                    x <= self._edges[y - 1].start()
+                    or x >= self._edges[y - 1].end()
                 ):
                     s += '  %04d.%04d [label=""];\n' % (x, y)
 
@@ -869,7 +894,8 @@ class Chart(object):
             s += "  {rank=same;"
             for y in range(self.num_edges() + 1):
                 if y == 0 or (
-                    x <= self._edges[y - 1].start() or x >= self._edges[y - 1].end()
+                    x <= self._edges[y - 1].start()
+                    or x >= self._edges[y - 1].end()
                 ):
                     s += " %04d.%04d" % (x, y)
             s += "}\n"
@@ -1190,7 +1216,9 @@ class CachedTopDownPredictRule(TopDownPredictRule):
             if prod.rhs():
                 first = prod.rhs()[0]
                 if is_terminal(first):
-                    if index >= chart.num_leaves() or first != chart.leaf(index):
+                    if index >= chart.num_leaves() or first != chart.leaf(
+                        index
+                    ):
                         continue
 
             new_edge = TreeEdge.from_production(prod, index)
@@ -1276,9 +1304,13 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         for left_edge in chart.select(
             end=right_edge.start(), is_complete=False, nextsym=right_edge.lhs()
         ):
-            if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()):
+            if _bottomup_filter(
+                grammar, nexttoken, left_edge.rhs(), left_edge.dot()
+            ):
                 new_edge = left_edge.move_dot_forward(right_edge.end())
-                if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
+                if chart.insert_with_backpointer(
+                    new_edge, left_edge, right_edge
+                ):
                     yield new_edge
 
     def _apply_incomplete(self, chart, grammar, left_edge):
@@ -1287,9 +1319,13 @@ class FilteredSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         ):
             end = right_edge.end()
             nexttoken = end < chart.num_leaves() and chart.leaf(end)
-            if _bottomup_filter(grammar, nexttoken, left_edge.rhs(), left_edge.dot()):
+            if _bottomup_filter(
+                grammar, nexttoken, left_edge.rhs(), left_edge.dot()
+            ):
                 new_edge = left_edge.move_dot_forward(right_edge.end())
-                if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
+                if chart.insert_with_backpointer(
+                    new_edge, left_edge, right_edge
+                ):
                     yield new_edge
 
 
@@ -1452,7 +1488,9 @@ class ChartParser(ParserI):
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
                 new_edges = list(axiom.apply(chart, grammar))
-                trace_new_edges(chart, axiom, new_edges, trace, trace_edge_width)
+                trace_new_edges(
+                    chart, axiom, new_edges, trace, trace_edge_width
+                )
 
             inference_rules = self._inference_rules
             agenda = chart.edges()
@@ -1464,7 +1502,9 @@ class ChartParser(ParserI):
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
                     if trace:
-                        trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                        trace_new_edges(
+                            chart, rule, new_edges, trace, trace_edge_width
+                        )
                     agenda += new_edges
 
         else:
@@ -1475,7 +1515,9 @@ class ChartParser(ParserI):
                 for rule in self._strategy:
                     new_edges = list(rule.apply_everywhere(chart, grammar))
                     edges_added = len(new_edges)
-                    trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                    trace_new_edges(
+                        chart, rule, new_edges, trace, trace_edge_width
+                    )
 
         # Return the final chart.
         return chart
@@ -1526,7 +1568,8 @@ class LeftCornerChartParser(ChartParser):
     def __init__(self, grammar, **parser_args):
         if not grammar.is_nonempty():
             raise ValueError(
-                "LeftCornerParser only works for grammars " "without empty productions."
+                "LeftCornerParser only works for grammars "
+                "without empty productions."
             )
         ChartParser.__init__(self, grammar, LC_STRATEGY, **parser_args)
 

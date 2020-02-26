@@ -240,12 +240,16 @@ class IBMModel5(IBMModel):
             self.alignment_table = probability_tables["alignment_table"]
             self.fertility_table = probability_tables["fertility_table"]
             self.p1 = probability_tables["p1"]
-            self.head_distortion_table = probability_tables["head_distortion_table"]
+            self.head_distortion_table = probability_tables[
+                "head_distortion_table"
+            ]
             self.non_head_distortion_table = probability_tables[
                 "non_head_distortion_table"
             ]
             self.head_vacancy_table = probability_tables["head_vacancy_table"]
-            self.non_head_vacancy_table = probability_tables["non_head_vacancy_table"]
+            self.non_head_vacancy_table = probability_tables[
+                "non_head_vacancy_table"
+            ]
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
@@ -295,7 +299,9 @@ class IBMModel5(IBMModel):
         for max_v in range(1, max_m + 1):
             for dv in range(1, max_m + 1):
                 initial_prob = 1 / (2 * max_v)
-                self.head_vacancy_table[dv][max_v] = defaultdict(lambda: initial_prob)
+                self.head_vacancy_table[dv][max_v] = defaultdict(
+                    lambda: initial_prob
+                )
                 self.head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
                     lambda: initial_prob
                 )
@@ -335,7 +341,11 @@ class IBMModel5(IBMModel):
                 slots = Slots(m)
                 for i in range(1, l + 1):
                     counts.update_vacancy(
-                        normalized_count, alignment_info, i, self.trg_classes, slots
+                        normalized_count,
+                        alignment_info,
+                        i,
+                        self.trg_classes,
+                        slots,
                     )
 
                 counts.update_null_generation(normalized_count, alignment_info)
@@ -515,7 +525,13 @@ class IBMModel5(IBMModel):
                 previous_vacancies = slots.vacancies_at(previous_position)
                 j = tablet[k]
                 dv = slots.vacancies_at(j) - previous_vacancies
-                max_v = total_vacancies - tablet_length + k + 1 - previous_vacancies
+                max_v = (
+                    total_vacancies
+                    - tablet_length
+                    + k
+                    + 1
+                    - previous_vacancies
+                )
                 trg_class = self.trg_classes[alignment_info.trg_sentence[j]]
                 value *= self.non_head_vacancy_table[dv][max_v][trg_class]
                 slots.occupy(j)  # mark position as occupied
@@ -559,7 +575,9 @@ class IBMModel5(IBMModel):
                         counts.head_vacancy[dv][max_v][t_cls]
                         / counts.head_vacancy_for_any_dv[max_v][t_cls]
                     )
-                    head_vacancy_table[dv][max_v][t_cls] = max(estimate, MIN_PROB)
+                    head_vacancy_table[dv][max_v][t_cls] = max(
+                        estimate, MIN_PROB
+                    )
 
         non_head_vacancy_table = self.non_head_vacancy_table
         for dv, max_vs in counts.non_head_vacancy.items():
@@ -569,7 +587,9 @@ class IBMModel5(IBMModel):
                         counts.non_head_vacancy[dv][max_v][t_cls]
                         / counts.non_head_vacancy_for_any_dv[max_v][t_cls]
                     )
-                    non_head_vacancy_table[dv][max_v][t_cls] = max(estimate, MIN_PROB)
+                    non_head_vacancy_table[dv][max_v][t_cls] = max(
+                        estimate, MIN_PROB
+                    )
 
 
 class Model5Counts(Counts):
@@ -583,11 +603,15 @@ class Model5Counts(Counts):
         self.head_vacancy = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
         )
-        self.head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.head_vacancy_for_any_dv = defaultdict(
+            lambda: defaultdict(lambda: 0.0)
+        )
         self.non_head_vacancy = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
         )
-        self.non_head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.non_head_vacancy_for_any_dv = defaultdict(
+            lambda: defaultdict(lambda: 0.0)
+        )
 
     def update_vacancy(self, count, alignment_info, i, trg_classes, slots):
         """
@@ -625,7 +649,9 @@ class Model5Counts(Counts):
             previous_vacancies = slots.vacancies_at(previous_position)
             j = tablet[k]
             dv = slots.vacancies_at(j) - previous_vacancies
-            max_v = total_vacancies - tablet_length + k + 1 - previous_vacancies
+            max_v = (
+                total_vacancies - tablet_length + k + 1 - previous_vacancies
+            )
             trg_class = trg_classes[alignment_info.trg_sentence[j]]
             self.non_head_vacancy[dv][max_v][trg_class] += count
             self.non_head_vacancy_for_any_dv[max_v][trg_class] += count
