@@ -2,3 +2,4 @@ tox
 nose
 coverage
 pylint
+pre-commit
