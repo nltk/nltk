@@ -3,7 +3,6 @@ import nltk
 
 
 class TestFreqDist(unittest.TestCase):
-
     def test_iterating_returns_an_iterator_ordered_by_frequency(self):
 
         samples = ['one', 'two', 'two']

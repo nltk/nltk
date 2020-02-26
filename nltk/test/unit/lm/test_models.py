@@ -314,7 +314,9 @@ class LaplaceBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class WittenBellInterpolatedTrigramTests(
+    unittest.TestCase, metaclass=ParametrizeTestsMeta
+):
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = WittenBellInterpolated(3, vocabulary=vocab)
@@ -345,7 +347,9 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
     ]
 
 
-class KneserNeyInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class KneserNeyInterpolatedTrigramTests(
+    unittest.TestCase, metaclass=ParametrizeTestsMeta
+):
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = KneserNeyInterpolated(3, vocabulary=vocab)

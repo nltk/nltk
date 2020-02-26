@@ -254,7 +254,6 @@ def is_terminal(item):
 
 
 @total_ordering
-
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
@@ -379,7 +378,6 @@ class Production(object):
         return self._hash
 
 
-
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -396,7 +394,6 @@ class DependencyProduction(Production):
         for elt in self._rhs:
             result += " '%s'" % (elt,)
         return result
-
 
 
 class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
@@ -447,7 +444,6 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 # Grammars
 #################################################################
-
 
 
 class CFG(object):
@@ -1020,7 +1016,6 @@ class FeatureGrammar(CFG):
 
 
 @total_ordering
-
 class FeatureValueType(object):
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -1048,7 +1043,6 @@ class FeatureValueType(object):
 
     def __hash__(self):
         return self._hash
-
 
 
 class DependencyGrammar(object):
@@ -1143,7 +1137,6 @@ class DependencyGrammar(object):
         Return a concise string representation of the ``DependencyGrammar``
         """
         return "Dependency grammar with %d productions" % len(self._productions)
-
 
 
 class ProbabilisticDependencyGrammar(object):

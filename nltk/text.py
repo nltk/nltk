@@ -126,7 +126,6 @@ class ContextIndex(object):
             return fd
 
 
-
 class ConcordanceIndex(object):
     """
     An index that can be used to look up the offset locations at which
@@ -297,7 +296,6 @@ class TokenSearcher(object):
         return hits
 
 
-
 class Text(object):
     """
     A wrapper around a sequence of simple (string) tokens, which is
@@ -428,7 +426,9 @@ class Text(object):
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
-            self._collocations = list(finder.nbest(bigram_measures.likelihood_ratio, num))
+            self._collocations = list(
+                finder.nbest(bigram_measures.likelihood_ratio, num)
+            )
         return self._collocations
 
     def collocations(self, num=20, window_size=2):

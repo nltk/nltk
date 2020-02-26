@@ -39,7 +39,6 @@ titles = {
 documents = sorted(titles)
 
 
-
 class IEERDocument(object):
     def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
         self.text = text

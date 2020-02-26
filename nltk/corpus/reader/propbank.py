@@ -172,7 +172,6 @@ class PropbankCorpusReader(CorpusReader):
 ######################################################################
 
 
-
 class PropbankInstance(object):
     def __init__(
         self,
@@ -345,7 +344,6 @@ class PropbankPointer(object):
             raise NotImplementedError()
 
 
-
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -363,7 +361,6 @@ class PropbankChainTreePointer(PropbankPointer):
         if tree is None:
             raise ValueError("Parse tree not avaialable")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
-
 
 
 class PropbankSplitTreePointer(PropbankPointer):
@@ -385,7 +382,6 @@ class PropbankSplitTreePointer(PropbankPointer):
 
 
 @total_ordering
-
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -484,7 +480,6 @@ class PropbankTreePointer(PropbankPointer):
                 else:
                     wordnum += 1
                     stack.pop()
-
 
 
 class PropbankInflection(object):

@@ -44,9 +44,15 @@ install:
   - source tools/travis/install.sh
   #- source tools/travis/third-party.sh
   - pip install tox
+  - >
+    [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] &&
+    pip install black
 
 script:
   - unbuffer tox -e $TOXENV tox.ini -vv
+  - >
+    [[ $TRAVIS_PYTHON_VERSION == "3.8" ]] &&
+    black --skip-string-normalization --check .
 
 after_success:
   - tools/travis/travis-ci-commenter.sh

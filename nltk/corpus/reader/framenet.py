@@ -475,13 +475,9 @@ def _annotation_ascii_frames(sent):
             if aset.status == "UNANN" or aset.LU.status == "Problem":
                 indexS += " "
                 if aset.status == "UNANN":
-                    indexS += (
-                        "!"
-                    )  # warning indicator that there is a frame annotation but no FE annotation
+                    indexS += "!"  # warning indicator that there is a frame annotation but no FE annotation
                 if aset.LU.status == "Problem":
-                    indexS += (
-                        "?"
-                    )  # warning indicator that there is a missing LU definition (because the LU has Problem status)
+                    indexS += "?"  # warning indicator that there is a missing LU definition (because the LU has Problem status)
             overt.append((j, k, aset.LU.frame.name, indexS))
     overt = sorted(overt)
 
@@ -611,8 +607,8 @@ def _annotation_ascii_FEs(sent):
                 if any(1 for x, y, felbl in sent.FE[0] if x <= a < y or a <= x < b):
                     # overlap between one of the POS-specific layers and first FE layer
                     posspec_separate = (
-                        True
-                    )  # show POS-specific layers on a separate line
+                        True  # show POS-specific layers on a separate line
+                    )
                 posspec.append(
                     (a, b, lbl.lower().replace("-", ""))
                 )  # lowercase Cop=>cop, Non-Asp=>nonasp, etc. to distinguish from FE names
@@ -1000,9 +996,9 @@ class PrettyList(list):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if self._MAX_REPR_SIZE and length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % str(
-                    ",\n " if self._BREAK_LINES else ", "
-                ).join(pieces[:-1])
+                return "[%s, ...]" % str(",\n " if self._BREAK_LINES else ", ").join(
+                    pieces[:-1]
+                )
         return "[%s]" % str(",\n " if self._BREAK_LINES else ", ").join(pieces)
 
 

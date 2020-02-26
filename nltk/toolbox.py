@@ -312,13 +312,9 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                 else:
                     cur_encoding = encoding
                 if re.search(_is_value, value):
-                    l.append(
-                        ("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors)
-                    )
+                    l.append(("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors))
                 else:
-                    l.append(
-                        ("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors)
-                    )
+                    l.append(("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors))
             else:
                 if re.search(_is_value, value):
                     l.append("\\%s %s\n" % (mkr, value))

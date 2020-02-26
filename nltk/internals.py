@@ -895,7 +895,6 @@ def import_from_stdlib(module):
 ##########################################################################
 
 
-
 class ElementWrapper(object):
     """
     A wrapper around ElementTree Element objects whose main purpose is

@@ -26,6 +26,7 @@ except ImportError:
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
+
 @jsontags.register_tag
 class AveragedPerceptron:
 
@@ -151,7 +152,7 @@ class PerceptronTagger(TaggerI):
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     """
 
-    json_tag = "nltk.tag.sequential.PerceptronTagger" 
+    json_tag = "nltk.tag.sequential.PerceptronTagger"
 
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]
