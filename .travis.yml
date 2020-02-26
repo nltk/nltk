@@ -44,6 +44,7 @@ install:
   - source tools/travis/install.sh
   #- source tools/travis/third-party.sh
   - pip install tox
+  - pip install pre-commit
 
 script:
   - unbuffer tox -e $TOXENV tox.ini -vv
