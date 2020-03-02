@@ -652,13 +652,16 @@ class PorterStemmer(StemmerI):
         stem = word.lower()
 
         if self.mode == self.NLTK_EXTENSIONS and word in self.pool:
-            return self.pool[word]
+            return self.pool[stem]
 
         if self.mode != self.ORIGINAL_ALGORITHM and len(word) <= 2:
             # With this line, strings of length 1 or 2 don't go through
             # the stemming process, although no mention is made of this
             # in the published algorithm.
-            return word
+            if word.isupper()==True:
+                return word
+            else:
+                return stem
 
         stem = self._step1a(stem)
         stem = self._step1b(stem)
