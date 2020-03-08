@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet Browser Application
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
@@ -833,7 +833,7 @@ def get_static_web_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2019 NLTK Project
+            Copyright (C) 2001-2020 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
             URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
@@ -903,7 +903,7 @@ def get_static_index_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2019 NLTK Project
+            Copyright (C) 2001-2020 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
             URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
@@ -936,7 +936,7 @@ def get_static_upper_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2001-2019 NLTK Project
+        Copyright (C) 2001-2020 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
         URL: <http://nltk.org/>
         For license information, see LICENSE.TXT -->

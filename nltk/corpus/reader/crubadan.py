@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Crubadan N-grams Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <http://nltk.org/>
