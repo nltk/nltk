@@ -38,7 +38,7 @@ demotest:
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist windist
+dist: zipdist
 
 # twine only permits one source distribution
 #gztardist: clean_code
