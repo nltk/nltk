@@ -2,14 +2,12 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
 from itertools import chain
-
-from six import string_types
 
 import nltk
 from nltk.internals import Counter
@@ -41,7 +39,7 @@ class GlueFormula(object):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, string_types):
+        if isinstance(meaning, str):
             self.meaning = Expression.fromstring(meaning)
         elif isinstance(meaning, Expression):
             self.meaning = meaning
@@ -51,7 +49,7 @@ class GlueFormula(object):
                 % (meaning, meaning.__class__)
             )
 
-        if isinstance(glue, string_types):
+        if isinstance(glue, str):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
@@ -732,7 +730,7 @@ class DrtGlueFormula(GlueFormula):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, string_types):
+        if isinstance(meaning, str):
             self.meaning = drt.DrtExpression.fromstring(meaning)
         elif isinstance(meaning, drt.DrtExpression):
             self.meaning = meaning
@@ -742,7 +740,7 @@ class DrtGlueFormula(GlueFormula):
                 % (meaning, meaning.__class__)
             )
 
-        if isinstance(glue, string_types):
+        if isinstance(glue, str):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue

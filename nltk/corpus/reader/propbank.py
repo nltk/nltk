@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PropBank Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,8 +8,6 @@
 import re
 from functools import total_ordering
 from xml.etree import ElementTree
-
-from six import string_types
 
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
@@ -57,7 +55,7 @@ class PropbankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, string_types):
+        if isinstance(framefiles, str):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
@@ -529,7 +527,7 @@ class PropbankInflection(object):
 
     @staticmethod
     def parse(s):
-        if not isinstance(s, string_types):
+        if not isinstance(s, str):
             raise TypeError("expected a string")
         if len(s) != 5 or not PropbankInflection._VALIDATE.match(s):
             raise ValueError("Bad propbank inflection string %r" % s)

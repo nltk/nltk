@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============================
@@ -282,7 +282,7 @@ Unicode words are supported.
 
 Lexicons for the tests:
 
-    >>> lex = lexicon.parseLexicon(u'''
+    >>> lex = lexicon.parseLexicon('''
     ...        :- S, N, NP, PP
     ...
     ...        AdjI :: N\\N

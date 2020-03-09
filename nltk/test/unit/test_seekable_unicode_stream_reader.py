@@ -3,7 +3,6 @@
 The following test performs a random series of reads, seeks, and
 tells, and checks that the results are consistent.
 """
-from __future__ import absolute_import, unicode_literals
 import random
 import functools
 from io import BytesIO

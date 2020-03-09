@@ -14,8 +14,6 @@ import sys
 import subprocess
 import tempfile
 
-from six import text_type
-
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir
 
@@ -87,7 +85,7 @@ class ReppTokenizer(TokenizerI):
         ) as input_file:
             # Write sentences to temporary input file.
             for sent in sentences:
-                input_file.write(text_type(sent) + "\n")
+                input_file.write(str(sent) + "\n")
             input_file.close()
             # Generate command to run REPP.
             cmd = self.generate_repp_command(input_file.name)

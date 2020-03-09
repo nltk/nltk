@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -15,8 +15,6 @@ import re
 import operator
 from collections import defaultdict
 from functools import reduce, total_ordering
-
-from six import string_types
 
 from nltk.util import Trie
 from nltk.internals import Counter
@@ -621,7 +619,7 @@ class Variable(object):
         """
         :param name: the name of the variable
         """
-        assert isinstance(name, string_types), "%s is not a string" % name
+        assert isinstance(name, str), "%s is not a string" % name
         self.name = name
 
     def __eq__(self, other):
@@ -836,7 +834,7 @@ ANY_TYPE = AnyType()
 
 
 def read_type(type_string):
-    assert isinstance(type_string, string_types)
+    assert isinstance(type_string, str)
     type_string = type_string.replace(" ", "")  # remove spaces
 
     if type_string[0] == "<":
@@ -1963,7 +1961,7 @@ def is_indvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, string_types), "%s is not a string" % expr
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r"^[a-df-z]\d*$", expr) is not None
 
 
@@ -1975,7 +1973,7 @@ def is_funcvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, string_types), "%s is not a string" % expr
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r"^[A-Z]\d*$", expr) is not None
 
 
@@ -1987,7 +1985,7 @@ def is_eventvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, string_types), "%s is not a string" % expr
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r"^e\d*$", expr) is not None
 
 

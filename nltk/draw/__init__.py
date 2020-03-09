@@ -1,6 +1,6 @@
 # Natural Language Toolkit: graphical representations package
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -8,7 +8,7 @@
 
 # Import Tkinter-based modules if Tkinter is installed
 try:
-    from six.moves import tkinter
+    import tkinter
 except ImportError:
     import warnings
 

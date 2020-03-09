@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagged Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Jacob Perkins <japerk@gmail.com>
@@ -12,8 +12,6 @@ A reader for corpora whose documents contain part-of-speech-tagged words.
 """
 
 import os
-
-from six import string_types
 
 from nltk.tag import str2tuple, map_tag
 from nltk.tokenize import *
@@ -74,7 +72,7 @@ class TaggedCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

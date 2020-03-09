@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
@@ -71,10 +71,7 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 import re
 from functools import total_ordering
 
-from six import string_types
-
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -153,10 +150,10 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, string_types):
+        if isinstance(self._symbol, str):
             return "%s" % self._symbol
         else:
-            return "%s" % unicode_repr(self._symbol)
+            return "%s" % repr(self._symbol)
 
     def __str__(self):
         """
@@ -164,10 +161,10 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, string_types):
+        if isinstance(self._symbol, str):
             return "%s" % self._symbol
         else:
-            return "%s" % unicode_repr(self._symbol)
+            return "%s" % repr(self._symbol)
 
     def __div__(self, rhs):
         """
@@ -287,7 +284,7 @@ class Production(object):
         :param rhs: The right-hand side of the new ``Production``.
         :type rhs: sequence(Nonterminal and terminal)
         """
-        if isinstance(rhs, string_types):
+        if isinstance(rhs, str):
             raise TypeError(
                 "production right hand side should be a list, " "not a string"
             )
@@ -341,8 +338,8 @@ class Production(object):
 
         :rtype: str
         """
-        result = "%s -> " % unicode_repr(self._lhs)
-        result += " ".join(unicode_repr(el) for el in self._rhs)
+        result = "%s -> " % repr(self._lhs)
+        result += " ".join(repr(el) for el in self._rhs)
         return result
 
     def __repr__(self):
@@ -1422,7 +1419,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     if encoding is not None:
         input = input.decode(encoding)
-    if isinstance(input, string_types):
+    if isinstance(input, str):
         lines = input.split("\n")
     else:
         lines = input

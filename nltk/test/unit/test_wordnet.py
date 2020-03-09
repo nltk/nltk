@@ -4,7 +4,6 @@ Unit tests for nltk.corpus.wordnet
 See also nltk/test/wordnet.doctest
 """
 
-from __future__ import unicode_literals
 
 import collections
 import os

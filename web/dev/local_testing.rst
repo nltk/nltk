@@ -7,7 +7,7 @@ NLTK testing
        pip install virtualenv
        pip install tox
 
-3. make sure python2.6, python2.7, python3.2, python3.3
+3. make sure currently supported python versions
    and pypy executables are in system PATH. It is OK not to have all the
    executables, tests will be executed for available interpreters.
 
@@ -25,25 +25,25 @@ Please consult http://tox.testrun.org/ for more info about the tox tool.
 Examples
 --------
 
-Run tests for python 2.7 in verbose mode; executing only tests
+Run tests for python 3.6 in verbose mode; executing only tests
 that failed in the last test run::
 
-    tox -e py27 -- -v --failed
+    tox -e py36 -- -v --failed
 
 
 Run tree doctests for all available interpreters::
 
     tox -- tree.doctest
 
-Run a selected unit test for the Python 3.2::
+Run a selected unit test for Python 3.7::
 
-    tox -e py32 -- -v nltk.test.unit.test_seekable_unicode_stream_reader
+    tox -e py37 -- -v nltk.test.unit.test_seekable_unicode_stream_reader
 
 By default, numpy, scipy and scikit-learn are installed in tox virtualenvs.
 This is slow, requires working build toolchain and is not always feasible.
 In order to skip numpy & friends, use ``..-nodeps`` environments::
 
-    tox -e py26-nodeps,py27-nodeps,py32-nodeps,py33-nodeps,pypy
+    tox -e py36-nodeps,py37,pypy
 
 It is also possible to run tests without tox. This way NLTK would be tested
 only under single interpreter, but it may be easier to have numpy and other
@@ -92,17 +92,6 @@ There are some gotchas with NLTK doctests (and with doctests in general):
       u'Привет'
 
   The proper way is to rewrite such doctest as unittest.
-
-* For better Python 2.x - 3.x compatibility, for NLTK the following
-  tests are the same::
-
-      >>> x
-      [u'foo', u'bar']
-
-      >>> x
-      ['foo', 'bar']
-
-  Feel free to write or omit 'u' letters in output unicode constants.
 
 * In order to conditionally skip a doctest in a separate
   ``nltk/test/foo.doctest`` file, create ``nltk.test/foo_fixt.py``

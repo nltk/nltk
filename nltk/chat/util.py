@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chatbot Utilities
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,8 +10,6 @@
 
 import re
 import random
-
-from six.moves import input
 
 
 reflections = {

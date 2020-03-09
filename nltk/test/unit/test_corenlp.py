@@ -7,11 +7,8 @@ Mock test for Stanford CoreNLP wrappers.
 import sys
 from itertools import chain
 from unittest import TestCase, SkipTest
+from unittest.mock import MagicMock
 
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    raise SkipTest('unittest.mock no supported in Python2')
 from nltk.tree import Tree
 from nltk.parse import corenlp
 

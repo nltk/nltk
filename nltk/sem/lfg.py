@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -171,7 +171,7 @@ class FStructure(dict):
             return letter
 
     def __repr__(self):
-        return self.__unicode__().replace("\n", "")
+        return self.__str__().replace("\n", "")
 
     def __str__(self):
         return self.pretty_format()

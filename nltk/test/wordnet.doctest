@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
@@ -6,7 +6,6 @@ WordNet Interface
 =================
 
 WordNet is just another NLTK corpus reader, and can be imported like this:
-    >>> from __future__ import print_function, unicode_literals
     >>> from nltk.corpus import wordnet
 
 For more compact code, we recommend:

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======================================
@@ -60,7 +60,7 @@ Each word is represented in the space of 300 dimensions:
 Finding the top n words that are similar to a target word is simple. The result is the list of n words with the score.
 
     >>> model.most_similar(positive=['university'], topn = 3)
-    [(u'universities', 0.70039...), (u'faculty', 0.67809...), (u'undergraduate', 0.65870...)]
+    [('universities', 0.70039...), ('faculty', 0.67809...), ('undergraduate', 0.65870...)]
 
 Finding a word that is not in a list is also supported, although, implementing this by yourself is simple.
 
@@ -71,10 +71,10 @@ Mikolov et al. (2013) figured out that word embedding captures much of syntactic
 the vector 'King - Man + Woman' is close to 'Queen' and 'Germany - Berlin + Paris' is close to 'France'.
 
     >>> model.most_similar(positive=['woman','king'], negative=['man'], topn = 1)
-    [(u'queen', 0.71181...)]
+    [('queen', 0.71181...)]
 
     >>> model.most_similar(positive=['Paris','Germany'], negative=['Berlin'], topn = 1)
-    [(u'France', 0.78840...)]
+    [('France', 0.78840...)]
 
 We can visualize the word embeddings using t-SNE (http://lvdmaaten.github.io/tsne/). For this demonstration, we visualize the first 1000 words.
 

@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 #         Lakhdar Benzahia <lakhdar.benzahia@gmail.com>  (co-writer)
@@ -25,7 +25,6 @@ There is also a demo function: `snowball.demo()`.
 """
 
 import re
-from six.moves import input
 
 from nltk.corpus import stopwords
 from nltk.stem import porter

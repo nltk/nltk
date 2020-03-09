@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language ID module using TextCat algorithm
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <http://nltk.org/>
@@ -28,13 +28,9 @@ For details about An Crubadan, see:
 http://borel.slu.edu/crubadan/index.html
 """
 
-from nltk.compat import PY3
-from nltk.util import trigrams
+from sys import maxsize
 
-if PY3:
-    from sys import maxsize
-else:
-    from sys import maxint
+from nltk.util import trigrams
 
 # Note: this is NOT "re" you're likely used to. The regex module
 # is an alternative to the standard re module that supports
@@ -115,10 +111,7 @@ class TextCat(object):
             # Arbitrary but should be larger than
             # any possible trigram file length
             # in terms of total lines
-            if PY3:
-                dist = maxsize
-            else:
-                dist = maxint
+            dist = maxsize
 
         return dist
 

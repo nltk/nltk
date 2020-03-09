@@ -31,8 +31,6 @@ best 1000 features:
 >>> classif = SklearnClassifier(pipeline)
 """
 
-from six.moves import zip
-
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 

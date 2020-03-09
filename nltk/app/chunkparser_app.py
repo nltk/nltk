@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regexp Chunk Parser Application
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,13 +15,12 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
-from __future__ import division
 import time
 import textwrap
 import re
 import random
 
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Checkbutton,
@@ -33,8 +32,8 @@ from six.moves.tkinter import (
     Text,
     Tk,
 )
-from six.moves.tkinter_tkfiledialog import askopenfilename, asksaveasfilename
-from six.moves.tkinter_font import Font
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.font import Font
 
 from nltk.tree import Tree
 from nltk.util import in_idle
@@ -1461,7 +1460,7 @@ class RegexpChunkApp(object):
         ABOUT = "NLTK RegExp Chunk Parser Application\n" + "Written by Edward Loper"
         TITLE = "About: Regular Expression Chunk Parser Application"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except:

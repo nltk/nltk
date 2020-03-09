@@ -1,13 +1,11 @@
 # Natural Language Toolkit: IPI PAN Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Konrad Goluchowski <kodie@mimuw.edu.pl>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import functools
-
-from six import string_types
 
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
@@ -98,11 +96,11 @@ class IPIPANCorpusReader(CorpusReader):
             )
         if channels is None and domains is None and categories is None:
             return CorpusReader.fileids(self)
-        if isinstance(channels, string_types):
+        if isinstance(channels, str):
             channels = [channels]
-        if isinstance(domains, string_types):
+        if isinstance(domains, str):
             domains = [domains]
-        if isinstance(categories, string_types):
+        if isinstance(categories, str):
             categories = [categories]
         if channels:
             return self._list_morph_files_by("channel", channels)

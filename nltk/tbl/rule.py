@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -9,17 +9,14 @@
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
-from nltk.compat import unicode_repr
 from nltk import jsontags
 
 
 ######################################################################
 # Tag Rules
 ######################################################################
-@add_metaclass(ABCMeta)
-class TagRule:
+class TagRule(metaclass=ABCMeta):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by tbl taggers.  Each transformation finds all tokens
@@ -208,12 +205,12 @@ class Rule(TagRule):
             self.__repr = "{0}('{1}', {2}, {3}, [{4}])".format(
                 self.__class__.__name__,
                 self.templateid,
-                unicode_repr(self.original_tag),
-                unicode_repr(self.replacement_tag),
+                repr(self.original_tag),
+                repr(self.replacement_tag),
                 # list(self._conditions) would be simpler but will not generate
                 # the same Rule.__repr__ in python 2 and 3 and thus break some tests
                 ", ".join(
-                    "({0},{1})".format(f, unicode_repr(v))
+                    "({0},{1})".format(f, repr(v))
                     for (f, v) in self._conditions
                 ),
             )

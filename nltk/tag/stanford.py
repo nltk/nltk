@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
@@ -22,8 +22,6 @@ import os
 import tempfile
 from subprocess import PIPE
 import warnings
-
-from six import text_type
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
@@ -106,7 +104,7 @@ class StanfordTagger(TaggerI):
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
         _input = "\n".join((" ".join(x) for x in sentences))
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()

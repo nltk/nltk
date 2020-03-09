@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Crubadan N-grams Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <http://nltk.org/>
@@ -22,7 +22,6 @@ http://borel.slu.edu/crubadan/index.html
 import re
 from os import path
 
-from nltk.compat import PY3
 from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
@@ -77,10 +76,7 @@ class CrubadanCorpusReader(CorpusReader):
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
 
-        if PY3:
-            raw = open(mapper_file, "r", encoding="utf-8").read().strip()
-        else:
-            raw = open(mapper_file, "rU").read().decode("utf-8").strip()
+        raw = open(mapper_file, "r", encoding="utf-8").read().strip()
 
         self._lang_mapping_data = [row.split("\t") for row in raw.split("\n")]
 
@@ -98,16 +94,10 @@ class CrubadanCorpusReader(CorpusReader):
             raise RuntimeError("No N-gram file found for requested language.")
 
         counts = FreqDist()
-        if PY3:
-            f = open(ngram_file, "r", encoding="utf-8")
-        else:
-            f = open(ngram_file, "rU")
+        f = open(ngram_file, "r", encoding="utf-8")
 
         for line in f:
-            if PY3:
-                data = line.split(" ")
-            else:
-                data = line.decode("utf8").split(" ")
+            data = line.split(" ")
 
             ngram = data[1].strip("\n")
             freq = int(data[0])

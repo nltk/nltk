@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Chart Parser for Feature-Based Grammars
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://nltk.org/>
@@ -11,8 +11,7 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
-
-from six.moves import range
+from time import perf_counter
 
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic
@@ -640,12 +639,12 @@ def demo(
     if print_sentence:
         print("Sentence:", sent)
     tokens = sent.split()
-    t = time.clock()
+    t = perf_counter()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
     trees = list(chart.parses(grammar.start()))
     if print_times:
-        print("Time: %s" % (time.clock() - t))
+        print("Time: %s" % (perf_counter() - t))
     if print_trees:
         for tree in trees:
             print(tree)

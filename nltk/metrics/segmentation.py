@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Text Segmentation Metrics
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
@@ -44,8 +44,6 @@ try:
     import numpy as np
 except ImportError:
     pass
-
-from six.moves import range
 
 
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):

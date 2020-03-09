@@ -1,7 +1,6 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
-    >>> from __future__ import print_function
     >>> from nltk.tokenize import *
 
 Regression Tests: Treebank Tokenizer
@@ -43,12 +42,12 @@ Some test strings.
 
 Testing improvement made to the TreebankWordTokenizer
 
-    >>> sx1 = u'\xabNow that I can do.\xbb'
-    >>> expected = [u'\xab', u'Now', u'that', u'I', u'can', u'do', u'.', u'\xbb']
+    >>> sx1 = '\xabNow that I can do.\xbb'
+    >>> expected = ['\xab', 'Now', 'that', 'I', 'can', 'do', '.', '\xbb']
     >>> word_tokenize(sx1) == expected
     True
-    >>> sx2 = u'The unicode 201C and 201D \u201cLEFT(RIGHT) DOUBLE QUOTATION MARK\u201d is also OPEN_PUNCT and CLOSE_PUNCT.'
-    >>> expected = [u'The', u'unicode', u'201C', u'and', u'201D', u'\u201c', u'LEFT', u'(', u'RIGHT', u')', u'DOUBLE', u'QUOTATION', u'MARK', u'\u201d', u'is', u'also', u'OPEN_PUNCT', u'and', u'CLOSE_PUNCT', u'.']
+    >>> sx2 = 'The unicode 201C and 201D \u201cLEFT(RIGHT) DOUBLE QUOTATION MARK\u201d is also OPEN_PUNCT and CLOSE_PUNCT.'
+    >>> expected = ['The', 'unicode', '201C', 'and', '201D', '\u201c', 'LEFT', '(', 'RIGHT', ')', 'DOUBLE', 'QUOTATION', 'MARK', '\u201d', 'is', 'also', 'OPEN_PUNCT', 'and', 'CLOSE_PUNCT', '.']
     >>> word_tokenize(sx2) == expected
     True
 
@@ -176,7 +175,7 @@ It should not hang on long sequences of the same punctuation character.
     >>> tknzr = TweetTokenizer()
     >>> s10 = "Photo: Aujourd'hui sur http://t.co/0gebOFDUzn Projet... http://t.co/bKfIUbydz2.............................. http://fb.me/3b6uXpz0L"
     >>> tknzr.tokenize(s10)
-    [u'Photo', u':', u"Aujourd'hui", u'sur', u'http://t.co/0gebOFDUzn', u'Projet', u'...', u'http://t.co/bKfIUbydz2', u'...', u'http://fb.me/3b6uXpz0L']
+    ['Photo', ':', "Aujourd'hui", 'sur', 'http://t.co/0gebOFDUzn', 'Projet', '...', 'http://t.co/bKfIUbydz2', '...', 'http://fb.me/3b6uXpz0L']
 
 
 Regression Tests: PunktSentenceTokenizer

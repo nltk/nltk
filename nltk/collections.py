@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collections
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,8 +11,6 @@ from functools import total_ordering
 
 # this unused import is for python 2.7
 from collections import defaultdict, deque, Counter
-
-from six import text_type
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 
@@ -230,8 +228,8 @@ class AbstractLazySequence(object):
             pieces.append(repr(elt))
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % ", ".join(pieces[:-1])
+        return "[%s]" % ", ".join(pieces)
 
     def __eq__(self, other):
         return type(self) == type(other) and list(self) == list(other)

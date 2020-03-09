@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizer Interface
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -11,14 +11,12 @@ Tokenizer Interface
 """
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize
 
 
-@add_metaclass(ABCMeta)
-class TokenizerI(object):
+class TokenizerI(metaclass=ABCMeta):
     """
     A processing interface for tokenizing a string.
     Subclasses must define ``tokenize()`` or ``tokenize_sents()`` (or both).

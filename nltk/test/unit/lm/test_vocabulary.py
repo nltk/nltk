@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Model Unit Tests
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,7 +8,6 @@
 import unittest
 from collections import Counter
 
-import six
 from nltk.lm import Vocabulary
 
 
@@ -60,8 +59,8 @@ class NgramModelVocabularyTests(unittest.TestCase):
         vocab_counts = ["a", "b", "c", "d", "e", "f", "g", "w", "z"]
         vocab_items = ["a", "b", "d", "e", "<UNK>"]
 
-        six.assertCountEqual(self, vocab_counts, list(self.vocab.counts.keys()))
-        six.assertCountEqual(self, vocab_items, list(self.vocab))
+        self.assertCountEqual(vocab_counts, list(self.vocab.counts.keys()))
+        self.assertCountEqual(vocab_items, list(self.vocab))
 
     def test_update_empty_vocab(self):
         empty = Vocabulary(unk_cutoff=2)

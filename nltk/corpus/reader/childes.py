@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://nltk.org/>
@@ -14,7 +14,6 @@ __docformat__ = "epytext en"
 
 import re
 from collections import defaultdict
-from six import string_types
 
 from nltk.util import flatten, LazyMap, LazyConcatenation
 
@@ -353,7 +352,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         self, fileid, speaker, sent, stem, relation, pos, strip_space, replace
     ):
         if (
-            isinstance(speaker, string_types) and speaker != "ALL"
+            isinstance(speaker, str) and speaker != "ALL"
         ):  # ensure we have a list of speakers
             speaker = [speaker]
         xmldoc = ElementTree.parse(fileid).getroot()

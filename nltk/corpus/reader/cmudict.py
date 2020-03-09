@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Carnegie Mellon Pronouncing Dictionary Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -69,7 +69,7 @@ class CMUDictCorpusReader(CorpusReader):
         :return: the cmudict lexicon as a raw string.
         """
         fileids = self._fileids
-        if isinstance(fileids, string_types):
+        if isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

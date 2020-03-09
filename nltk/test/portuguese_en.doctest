@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==================================
@@ -140,8 +140,8 @@ We just saw a ``for`` loop above.  Another useful control structure is a
     >>> [w for w in psent1 if w.endswith('a')]
     ['da', 'gl\xf3ria', 'era', 'a', 'coisa', 'humana', 'a', 'sua', 'genu\xedna']
     >>> [w for w in ptext4 if len(w) > 15]
-    [u'norte-irlandeses', u'pan-nacionalismo', u'predominatemente', u'primeiro-ministro',
-    u'primeiro-ministro', u'irlandesa-americana', u'responsabilidades', u'significativamente']
+    ['norte-irlandeses', 'pan-nacionalismo', 'predominatemente', 'primeiro-ministro',
+    'primeiro-ministro', 'irlandesa-americana', 'responsabilidades', 'significativamente']
 
 We can examine the relative frequency of words in a text, using ``FreqDist``:
 
@@ -151,19 +151,19 @@ We can examine the relative frequency of words in a text, using ``FreqDist``:
     >>> fd1['olhos']
     137
     >>> fd1.max()
-    u','
+    ','
     >>> fd1.samples()[:100]
-    [u',', u'.', u'a', u'que', u'de', u'e', u'-', u'o', u';', u'me', u'um', u'n\xe3o',
-    u'\x97', u'se', u'do', u'da', u'uma', u'com', u'os', u'\xe9', u'era', u'as', u'eu',
-    u'lhe', u'ao', u'em', u'para', u'mas', u'...', u'!', u'\xe0', u'na', u'mais', u'?',
-    u'no', u'como', u'por', u'N\xe3o', u'dos', u'ou', u'ele', u':', u'Virg\xedlia',
-    u'meu', u'disse', u'minha', u'das', u'O', u'/', u'A', u'CAP\xcdTULO', u'muito',
-    u'depois', u'coisa', u'foi', u'sem', u'olhos', u'ela', u'nos', u'tinha', u'nem',
-    u'E', u'outro', u'vida', u'nada', u'tempo', u'menos', u'outra', u'casa', u'homem',
-    u'porque', u'quando', u'mim', u'mesmo', u'ser', u'pouco', u'estava', u'dia',
-    u't\xe3o', u'tudo', u'Mas', u'at\xe9', u'D', u'ainda', u's\xf3', u'alguma',
-    u'la', u'vez', u'anos', u'h\xe1', u'Era', u'pai', u'esse', u'lo', u'dizer', u'assim',
-    u'ent\xe3o', u'dizia', u'aos', u'Borba']
+    [',', '.', 'a', 'que', 'de', 'e', '-', 'o', ';', 'me', 'um', 'n\xe3o',
+    '\x97', 'se', 'do', 'da', 'uma', 'com', 'os', '\xe9', 'era', 'as', 'eu',
+    'lhe', 'ao', 'em', 'para', 'mas', '...', '!', '\xe0', 'na', 'mais', '?',
+    'no', 'como', 'por', 'N\xe3o', 'dos', 'o', 'ele', ':', 'Virg\xedlia',
+    'me', 'disse', 'minha', 'das', 'O', '/', 'A', 'CAP\xcdTULO', 'muito',
+    'depois', 'coisa', 'foi', 'sem', 'olhos', 'ela', 'nos', 'tinha', 'nem',
+    'E', 'outro', 'vida', 'nada', 'tempo', 'menos', 'outra', 'casa', 'homem',
+    'porque', 'quando', 'mim', 'mesmo', 'ser', 'pouco', 'estava', 'dia',
+    't\xe3o', 'tudo', 'Mas', 'at\xe9', 'D', 'ainda', 's\xf3', 'alguma',
+    'la', 'vez', 'anos', 'h\xe1', 'Era', 'pai', 'esse', 'lo', 'dizer', 'assim',
+    'ent\xe3o', 'dizia', 'aos', 'Borba']
 
 ---------------
 Reading Corpora
@@ -244,7 +244,7 @@ We can access this corpus as a sequence of words or tagged words as follows:
     [['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', 'milh\xe3o',
     'em', 'a', 'venda', 'de', 'a', 'Pinhal', 'em', 'S\xe3o', 'Paulo'],
     ['Programe', 'sua', 'viagem', 'a', 'a', 'Exposi\xe7\xe3o', 'Nacional',
-    'do', 'Zebu', ',', 'que', 'come\xe7a', 'dia', '25'], ...]
+    'do', 'Zeb', ',', 'que', 'come\xe7a', 'dia', '25'], ...]
     >>> nltk.corpus.mac_morpho.tagged_words()
     [('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ...]
 
@@ -258,7 +258,7 @@ We can also access it in sentence chunks.
       ('Paulo', 'NPROP')],
      [('Programe', 'V'), ('sua', 'PROADJ'), ('viagem', 'N'), ('a', 'PREP|+'),
       ('a', 'ART'), ('Exposi\xe7\xe3o', 'NPROP'), ('Nacional', 'NPROP'),
-      ('do', 'NPROP'), ('Zebu', 'NPROP'), (',', ','), ('que', 'PRO-KS-REL'),
+      ('do', 'NPROP'), ('Zeb', 'NPROP'), (',', ','), ('que', 'PRO-KS-REL'),
       ('come\xe7a', 'V'), ('dia', 'N'), ('25', 'N|AP')], ...]
 
 This data can be used to train taggers (examples below for the Floresta treebank).

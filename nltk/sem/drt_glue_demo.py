@@ -3,12 +3,12 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 try:
-    from six.moves.tkinter import (
+    from tkinter import (
         Button,
         Frame,
         IntVar,
@@ -18,7 +18,7 @@ try:
         Scrollbar,
         Tk,
     )
-    from six.moves.tkinter_font import Font
+    from tkinter.font import Font
     from nltk.draw.util import CanvasFrame, ShowText
 
 except ImportError:
@@ -407,7 +407,7 @@ class DrtGlueDemo(object):
         )
         TITLE = "About: NLTK DRT Glue Demo"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except:

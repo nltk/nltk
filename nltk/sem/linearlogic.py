@@ -2,11 +2,9 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-from six import string_types
 
 from nltk.internals import Counter
 from nltk.sem.logic import LogicParser, APP
@@ -97,7 +95,7 @@ class AtomicExpression(Expression):
         :param name: str for the constant name
         :param dependencies: list of int for the indices on which this atom is dependent
         """
-        assert isinstance(name, string_types)
+        assert isinstance(name, str)
         self.name = name
 
         if not dependencies:

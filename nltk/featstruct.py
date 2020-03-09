@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>,
 #         Rob Speer,
 #         Steven Bird <stevenbird1@gmail.com>
@@ -93,8 +93,6 @@ import re
 import copy
 from functools import total_ordering
 
-from six import integer_types, string_types
-
 from nltk.internals import read_str, raise_unorderable_types
 from nltk.sem.logic import (
     Variable,
@@ -103,8 +101,6 @@ from nltk.sem.logic import (
     LogicParser,
     LogicalExpressionException,
 )
-from nltk.compat import unicode_repr
-
 
 ######################################################################
 # Feature Structure
@@ -185,7 +181,7 @@ class FeatStruct(SubstituteBindingsI):
                     "Keyword arguments may only be specified "
                     "if features is None or is a mapping."
                 )
-            if isinstance(features, string_types):
+            if isinstance(features, str):
                 if FeatStructReader._START_FDICT_RE.match(features):
                     return FeatDict.__new__(FeatDict, features, **morefeatures)
                 else:
@@ -632,7 +628,7 @@ class FeatDict(FeatStruct, dict):
             ``morefeatures``, then the value from ``morefeatures`` will be
             used.
         """
-        if isinstance(features, string_types):
+        if isinstance(features, str):
             FeatStructReader().fromstring(features, self)
             self.update(**morefeatures)
         else:
@@ -647,7 +643,7 @@ class FeatDict(FeatStruct, dict):
     def __getitem__(self, name_or_path):
         """If the feature with the given name or path exists, return
         its value; otherwise, raise ``KeyError``."""
-        if isinstance(name_or_path, (string_types, Feature)):
+        if isinstance(name_or_path, (str, Feature)):
             return dict.__getitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
             try:
@@ -687,7 +683,7 @@ class FeatDict(FeatStruct, dict):
         its value; otherwise, raise ``KeyError``."""
         if self._frozen:
             raise ValueError(_FROZEN_ERROR)
-        if isinstance(name_or_path, (string_types, Feature)):
+        if isinstance(name_or_path, (str, Feature)):
             return dict.__delitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
             if len(name_or_path) == 0:
@@ -706,7 +702,7 @@ class FeatDict(FeatStruct, dict):
         ``KeyError``."""
         if self._frozen:
             raise ValueError(_FROZEN_ERROR)
-        if isinstance(name_or_path, (string_types, Feature)):
+        if isinstance(name_or_path, (str, Feature)):
             return dict.__setitem__(self, name_or_path, value)
         elif isinstance(name_or_path, tuple):
             if len(name_or_path) == 0:
@@ -737,11 +733,11 @@ class FeatDict(FeatStruct, dict):
             raise ValueError("Expected mapping or list of tuples")
 
         for key, val in items:
-            if not isinstance(key, (string_types, Feature)):
+            if not isinstance(key, (str, Feature)):
                 raise TypeError("Feature names must be strings")
             self[key] = val
         for key, val in morefeatures.items():
-            if not isinstance(key, (string_types, Feature)):
+            if not isinstance(key, (str, Feature)):
                 raise TypeError("Feature names must be strings")
             self[key] = val
 
@@ -799,14 +795,14 @@ class FeatDict(FeatStruct, dict):
             elif (
                 display == "prefix"
                 and not prefix
-                and isinstance(fval, (Variable, string_types))
+                and isinstance(fval, (Variable, str))
             ):
                 prefix = "%s" % fval
             elif display == "slash" and not suffix:
                 if isinstance(fval, Variable):
                     suffix = "/%s" % fval.name
                 else:
-                    suffix = "/%s" % unicode_repr(fval)
+                    suffix = "/%s" % repr(fval)
             elif isinstance(fval, Variable):
                 segments.append("%s=%s" % (fname, fval.name))
             elif fval is True:
@@ -816,7 +812,7 @@ class FeatDict(FeatStruct, dict):
             elif isinstance(fval, Expression):
                 segments.append("%s=<%s>" % (fname, fval))
             elif not isinstance(fval, FeatStruct):
-                segments.append("%s=%s" % (fname, unicode_repr(fval)))
+                segments.append("%s=%s" % (fname, repr(fval)))
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
                 segments.append("%s=%s" % (fname, fval_repr))
@@ -867,11 +863,11 @@ class FeatDict(FeatStruct, dict):
 
             elif isinstance(fval, FeatList):
                 fval_repr = fval._repr(reentrances, reentrance_ids)
-                lines.append("%s = %s" % (fname, unicode_repr(fval_repr)))
+                lines.append("%s = %s" % (fname, repr(fval_repr)))
 
             elif not isinstance(fval, FeatDict):
                 # It's not a nested feature structure -- just print it.
-                lines.append("%s = %s" % (fname, unicode_repr(fval)))
+                lines.append("%s = %s" % (fname, repr(fval)))
 
             elif id(fval) in reentrance_ids:
                 # It's a feature structure we've seen before -- print
@@ -951,7 +947,7 @@ class FeatList(FeatStruct, list):
             ``FeatStructReader``.  Otherwise, it should be a sequence
             of basic values and nested feature structures.
         """
-        if isinstance(features, string_types):
+        if isinstance(features, str):
             FeatStructReader().fromstring(features, self)
         else:
             list.__init__(self, features)
@@ -962,7 +958,7 @@ class FeatList(FeatStruct, list):
     _INDEX_ERROR = "Expected int or feature path.  Got %r."
 
     def __getitem__(self, name_or_path):
-        if isinstance(name_or_path, integer_types):
+        if isinstance(name_or_path, int):
             return list.__getitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
             try:
@@ -982,7 +978,7 @@ class FeatList(FeatStruct, list):
         its value; otherwise, raise ``KeyError``."""
         if self._frozen:
             raise ValueError(_FROZEN_ERROR)
-        if isinstance(name_or_path, (integer_types, slice)):
+        if isinstance(name_or_path, (int, slice)):
             return list.__delitem__(self, name_or_path)
         elif isinstance(name_or_path, tuple):
             if len(name_or_path) == 0:
@@ -1001,7 +997,7 @@ class FeatList(FeatStruct, list):
         ``KeyError``."""
         if self._frozen:
             raise ValueError(_FROZEN_ERROR)
-        if isinstance(name_or_path, (integer_types, slice)):
+        if isinstance(name_or_path, (int, slice)):
             return list.__setitem__(self, name_or_path, value)
         elif isinstance(name_or_path, tuple):
             if len(name_or_path) == 0:
@@ -1074,7 +1070,7 @@ class FeatList(FeatStruct, list):
             elif isinstance(fval, FeatStruct):
                 segments.append(fval._repr(reentrances, reentrance_ids))
             else:
-                segments.append("%s" % unicode_repr(fval))
+                segments.append("%s" % repr(fval))
 
         return "%s[%s]" % (prefix, ", ".join(segments))
 
@@ -1772,7 +1768,7 @@ def _trace_unify_identity(path, fval1):
     print("  " + "|   " * len(path) + "|")
     print("  " + "|   " * len(path) + "| (identical objects)")
     print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "+-->" + unicode_repr(fval1))
+    print("  " + "|   " * len(path) + "+-->" + repr(fval1))
 
 
 def _trace_unify_fail(path, result):
@@ -1787,7 +1783,7 @@ def _trace_unify_fail(path, result):
 def _trace_unify_succeed(path, fval1):
     # Print the result.
     print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "+-->" + unicode_repr(fval1))
+    print("  " + "|   " * len(path) + "+-->" + repr(fval1))
 
 
 def _trace_bindings(path, bindings):
@@ -1804,7 +1800,7 @@ def _trace_valrepr(val):
     if isinstance(val, Variable):
         return "%s" % val
     else:
-        return "%s" % unicode_repr(val)
+        return "%s" % repr(val)
 
 
 def subsumes(fstruct1, fstruct2):
@@ -1848,7 +1844,7 @@ def _is_sequence(v):
     return (
         hasattr(v, "__iter__")
         and hasattr(v, "__len__")
-        and not isinstance(v, string_types)
+        and not isinstance(v, str)
     )
 
 
@@ -2049,7 +2045,7 @@ class Feature(object):
         return "*%s*" % self.name
 
     def __lt__(self, other):
-        if isinstance(other, string_types):
+        if isinstance(other, str):
             return True
         if not isinstance(other, Feature):
             raise_unorderable_types("<", self, other)

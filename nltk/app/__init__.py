@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -22,7 +22,7 @@ wordnet:      WordNet Browser
 
 # Import Tkinter-based modules if Tkinter is installed
 try:
-    from six.moves import tkinter
+    import tkinter
 except ImportError:
     import warnings
 

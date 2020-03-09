@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Evaluation
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -10,8 +10,6 @@ from math import fabs
 import operator
 from random import shuffle
 from functools import reduce
-
-from six.moves import range, zip
 
 try:
     from scipy.stats.stats import betai

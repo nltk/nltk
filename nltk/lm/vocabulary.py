@@ -1,6 +1,6 @@
 # Natural Language Toolkit
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -216,12 +216,6 @@ class Vocabulary:
             and self.cutoff == other.cutoff
             and self.counts == other.counts
         )
-
-    if sys.version_info[0] == 2:
-        # see https://stackoverflow.com/a/35781654/4501212
-        def __ne__(self, other):
-            equal = self.__eq__(other)
-            return equal if equal is NotImplemented else not equal
 
     def __str__(self):
         return "<{0} with cutoff={1} unk_label='{2}' and {3} items>".format(

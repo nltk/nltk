@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -45,8 +45,6 @@ import array
 from collections import defaultdict, Counter
 from functools import reduce
 from abc import ABCMeta, abstractmethod
-
-from six import itervalues, text_type, add_metaclass
 
 from nltk.internals import raise_unorderable_types
 
@@ -297,7 +295,7 @@ class FreqDist(Counter):
 
         ax.plot(freqs, **kwargs)
         ax.set_xticks(range(len(samples)))
-        ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+        ax.set_xticklabels([str(s) for s in samples], rotation=90)
         ax.set_xlabel("Samples")
         ax.set_ylabel(ylabel)
 
@@ -389,16 +387,47 @@ class FreqDist(Counter):
         return self.__class__(super(FreqDist, self).__and__(other))
 
     def __le__(self, other):
+        """
+        Returns True if this frequency distribution is a subset of the other
+        and for no key the value exceeds the value of the same key from
+        the other frequency distribution.
+
+        The <= operator forms partial order and satisfying the axioms
+        reflexivity, antisymmetry and transitivity.
+
+        >>> FreqDist('a') <= FreqDist('a')
+        True
+        >>> a = FreqDist('abc')
+        >>> b = FreqDist('aabc')
+        >>> (a <= b, b <= a)
+        (True, False)
+        >>> FreqDist('a') <= FreqDist('abcd')
+        True
+        >>> FreqDist('abc') <= FreqDist('xyz')
+        False
+        >>> FreqDist('xyz') <= FreqDist('abc')
+        False
+        >>> c = FreqDist('a')
+        >>> d = FreqDist('aa')
+        >>> e = FreqDist('aaa')
+        >>> c <= d and d <= e and c <= e
+        True
+        """
         if not isinstance(other, FreqDist):
             raise_unorderable_types("<=", self, other)
         return set(self).issubset(other) and all(
             self[key] <= other[key] for key in self
         )
 
-    # @total_ordering doesn't work here, since the class inherits from a builtin class
-    __ge__ = lambda self, other: not self <= other or self == other
+    def __ge__(self, other):
+        if not isinstance(other, FreqDist):
+            raise_unorderable_types(">=", self, other)
+        return set(self).issuperset(other) and all(
+            self[key] >= other[key] for key in other
+        )
+
     __lt__ = lambda self, other: self <= other and not self == other
-    __gt__ = lambda self, other: not self <= other
+    __gt__ = lambda self, other: self >= other and not self == other
 
     def __repr__(self):
         """
@@ -454,8 +483,7 @@ class FreqDist(Counter):
 ##//////////////////////////////////////////////////////
 
 
-@add_metaclass(ABCMeta)
-class ProbDistI(object):
+class ProbDistI(metaclass=ABCMeta):
     """
     A probability distribution for the outcomes of an experiment.  A
     probability distribution specifies how likely it is that an
@@ -1895,7 +1923,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in itervalues(self))
+        return sum(fdist.N() for fdist in self.values())
 
     def plot(self, *args, **kwargs):
         """
@@ -1955,7 +1983,7 @@ class ConditionalFreqDist(defaultdict):
             ax.legend(loc=legend_loc)
             ax.grid(True, color="silver")
             ax.set_xticks(range(len(samples)))
-            ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+            ax.set_xticklabels([str(s) for s in samples], rotation=90)
             if title:
                 ax.set_title(title)
             ax.set_xlabel("Samples")
@@ -2106,8 +2134,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 
-@add_metaclass(ABCMeta)
-class ConditionalProbDistI(dict):
+class ConditionalProbDistI(dict, metaclass=ABCMeta):
     """
     A collection of probability distributions for a single experiment
     run under different conditions.  Conditional probability

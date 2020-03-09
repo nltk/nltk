@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
@@ -35,9 +35,6 @@ from itertools import islice, chain
 from functools import total_ordering
 from operator import itemgetter
 from collections import defaultdict, deque
-
-from six import iteritems
-from six.moves import range
 
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
@@ -750,7 +747,7 @@ class Synset(_WordNetObject):
 
         inf = float("inf")
         path_distance = inf
-        for synset, d1 in iteritems(dist_dict1):
+        for synset, d1 in dist_dict1.items():
             d2 = dist_dict2.get(synset, inf)
             path_distance = min(path_distance, d1 + d2)
 

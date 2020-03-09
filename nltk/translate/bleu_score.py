@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU Score
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
 # Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
 # URL: <http://nltk.org/>
@@ -11,17 +11,11 @@
 
 import math
 import sys
-import fractions
+from fractions import Fraction
 import warnings
 from collections import Counter
 
 from nltk.util import ngrams
-
-try:
-    fractions.Fraction(0, 1000, _normalize=False)
-    from fractions import Fraction
-except TypeError:
-    from nltk.compat import Fraction
 
 
 def sentence_bleu(

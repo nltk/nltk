@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: substitute a pattern with
 #                           a replacement in every file
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>

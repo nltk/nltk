@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
@@ -108,9 +108,6 @@ import re
 import math
 from collections import defaultdict
 
-from six import string_types
-
-from nltk.compat import unicode_repr
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -493,17 +490,17 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        typestr = " type=%s," % unicode_repr(self.type) if self.type != self.tok else ""
+        typestr = " type=%s," % repr(self.type) if self.type != self.tok else ""
 
         propvals = ", ".join(
-            "%s=%s" % (p, unicode_repr(getattr(self, p)))
+            "%s=%s" % (p, repr(getattr(self, p)))
             for p in self._properties
             if getattr(self, p)
         )
 
         return "%s(%s,%s %s)" % (
             self.__class__.__name__,
-            unicode_repr(self.tok),
+            repr(self.tok),
             typestr,
             propvals,
         )
@@ -1258,7 +1255,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         given. Repeated calls to this method destroy previous parameters. For
         incremental training, instantiate a separate PunktTrainer instance.
         """
-        if not isinstance(train_text, string_types):
+        if not isinstance(train_text, str):
             return train_text
         return PunktTrainer(
             train_text, lang_vars=self._lang_vars, token_cls=self._Token

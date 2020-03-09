@@ -2,7 +2,6 @@
 """
 Unit tests for nltk.classify. See also: nltk/test/classify.doctest
 """
-from __future__ import absolute_import
 from nose import SkipTest
 from nltk import classify
 

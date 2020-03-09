@@ -3,7 +3,7 @@
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #         Alex Constantin <alex@keyworder.ch>
@@ -16,8 +16,6 @@ import os
 import json
 import warnings
 from subprocess import PIPE
-
-from six import text_type
 
 from nltk.internals import (
     find_jar,
@@ -242,7 +240,7 @@ class StanfordSegmenter(TokenizerI):
         # Write the actural sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
         _input = "\n".join((" ".join(x) for x in sentences))
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()

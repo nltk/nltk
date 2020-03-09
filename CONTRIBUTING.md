@@ -76,7 +76,7 @@ Summary of our git branching model:
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
 - Run the tests to make sure nothing breaks
-  (`tox -e py35` if you are on Python 3.5);
+  (`tox -e py36` if you are on Python 3.6);
 - Add your name to the `AUTHORS.md` file as a contributor;
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
@@ -146,7 +146,7 @@ NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration.
 The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
 
  - `matrix: include:` section 
-   - tests against supported Python versions (3.5, 3.6, 3.7)
+   - tests against supported Python versions (3.5, 3.6, 3.7, 3.8)
      - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
    - tests against Python 3.6 for third-party tools APIs
 

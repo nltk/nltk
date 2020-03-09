@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -10,19 +10,9 @@ import os
 import bisect
 import re
 import tempfile
+import pickle
 from functools import reduce
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-try:  # Use the c version of ElementTree, which is faster, if possible.
-    from xml.etree import cElementTree as ElementTree
-except ImportError:
-    from xml.etree import ElementTree
-
-from six import string_types, text_type
+from xml.etree import ElementTree
 
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
@@ -445,7 +435,7 @@ def concat(docs):
     types = set(d.__class__ for d in docs)
 
     # If they're all strings, use string concatenation.
-    if all(isinstance(doc, string_types) for doc in docs):
+    if all(isinstance(doc, str) for doc in docs):
         return "".join(docs)
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
@@ -544,7 +534,7 @@ class PickleCorpusView(StreamBackedCorpusView):
 
     @classmethod
     def write(cls, sequence, output_file):
-        if isinstance(output_file, string_types):
+        if isinstance(output_file, str):
             output_file = open(output_file, "wb")
         for item in sequence:
             pickle.dump(item, output_file, cls.PROTOCOL)
@@ -693,7 +683,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     start = stream.tell()
     block = stream.read(block_size)
     encoding = getattr(stream, "encoding", None)
-    assert encoding is not None or isinstance(block, text_type)
+    assert encoding is not None or isinstance(block, str)
     if encoding not in (None, "utf-8"):
         import warnings
 

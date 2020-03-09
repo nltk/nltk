@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NKJP Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Gabriela Kaczka
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,8 +9,6 @@ import functools
 import os
 import re
 import tempfile
-
-from six import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
@@ -55,7 +53,7 @@ class NKJPCorpusReader(XMLCorpusReader):
         x.header(fileids=['WilkDom', '/home/USER/nltk_data/corpora/nkjp/WilkWilczy'])
         x.tagged_words(fileids=['WilkDom', '/home/USER/nltk_data/corpora/nkjp/WilkWilczy'], tags=['subst', 'comp'])
         """
-        if isinstance(fileids, string_types):
+        if isinstance(fileids, str):
             XMLCorpusReader.__init__(self, root, fileids + ".*/header.xml")
         else:
             XMLCorpusReader.__init__(

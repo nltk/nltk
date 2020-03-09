@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -34,37 +34,18 @@ to a local file.
 import functools
 import textwrap
 import io
+from io import BytesIO
 import os
 import re
 import sys
 import zipfile
 import codecs
+import pickle
 
 from abc import ABCMeta, abstractmethod
 from gzip import GzipFile, WRITE as GZ_WRITE
 
-from six import add_metaclass
-from six import string_types, text_type
-from six.moves.urllib.request import urlopen, url2pathname
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-try:  # Python 3.
-    textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
-except AttributeError:  # Python 2; indent() not available for Python2.
-    textwrap_fill = functools.partial(
-        textwrap.fill,
-        initial_indent="  ",
-        subsequent_indent="  ",
-        replace_whitespace=False,
-    )
-
-    def textwrap_indent(text):
-        return "\n".join(textwrap_fill(line) for line in text.splitlines())
-
+from urllib.request import urlopen, url2pathname
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
@@ -73,7 +54,10 @@ except ImportError:
 
 # this import should be more specific:
 import nltk
-from nltk.compat import py3_data, add_py3_data, BytesIO
+from nltk.compat import py3_data, add_py3_data
+from nltk.internals import deprecated
+
+textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
 ######################################################################
 # Search Path
@@ -271,8 +255,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 ######################################################################
 
 
-@add_metaclass(ABCMeta)
-class PathPointer(object):
+class PathPointer(metaclass=ABCMeta):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
     package to identify specific paths.  Two subclasses exist:
@@ -313,7 +296,7 @@ class PathPointer(object):
         """
 
 
-class FileSystemPathPointer(PathPointer, text_type):
+class FileSystemPathPointer(PathPointer, str):
     """
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
@@ -354,116 +337,30 @@ class FileSystemPathPointer(PathPointer, text_type):
         return FileSystemPathPointer(_path)
 
     def __repr__(self):
-        # This should be a byte string under Python 2.x;
-        # we don't want transliteration here so
-        # @python_2_unicode_compatible is not used.
-        return str("FileSystemPathPointer(%r)" % self._path)
+        return "FileSystemPathPointer(%r)" % self._path
 
     def __str__(self):
         return self._path
 
-
+@deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
 class BufferedGzipFile(GzipFile):
+    """A ``GzipFile`` subclass for compatibility with older nltk releases.
+
+    Use ``GzipFile`` directly as it also buffers in all supported
+    Python versions.
     """
-    A ``GzipFile`` subclass that buffers calls to ``read()`` and ``write()``.
-    This allows faster reads and writes of data to and from gzip-compressed
-    files at the cost of using more memory.
-
-    The default buffer size is 2MB.
-
-    ``BufferedGzipFile`` is useful for loading large gzipped pickle objects
-    as well as writing large encoded feature files for classifier training.
-    """
-
-    MB = 2 ** 20
-    SIZE = 2 * MB
 
     @py3_data
     def __init__(
         self, filename=None, mode=None, compresslevel=9, fileobj=None, **kwargs
     ):
-        """
-        Return a buffered gzip file object.
-
-        :param filename: a filesystem path
-        :type filename: str
-        :param mode: a file mode which can be any of 'r', 'rb', 'a', 'ab',
-            'w', or 'wb'
-        :type mode: str
-        :param compresslevel: The compresslevel argument is an integer from 1
-            to 9 controlling the level of compression; 1 is fastest and
-            produces the least compression, and 9 is slowest and produces the
-            most compression. The default is 9.
-        :type compresslevel: int
-        :param fileobj: a BytesIO stream to read from instead of a file.
-        :type fileobj: BytesIO
-        :param size: number of bytes to buffer during calls to read() and write()
-        :type size: int
-        :rtype: BufferedGzipFile
-        """
+        """Return a buffered gzip file object."""
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
-        self._size = kwargs.get("size", self.SIZE)
-        self._nltk_buffer = BytesIO()
-        # cStringIO does not support len.
-        self._len = 0
 
-    def _reset_buffer(self):
-        # For some reason calling BytesIO.truncate() here will lead to
-        # inconsistent writes so just set _buffer to a new BytesIO object.
-        self._nltk_buffer = BytesIO()
-        self._len = 0
-
-    def _write_buffer(self, data):
-        # Simply write to the buffer and increment the buffer size.
-        if data is not None:
-            self._nltk_buffer.write(data)
-            self._len += len(data)
-
-    def _write_gzip(self, data):
-        # Write the current buffer to the GzipFile.
-        GzipFile.write(self, self._nltk_buffer.getvalue())
-        # Then reset the buffer and write the new data to the buffer.
-        self._reset_buffer()
-        self._write_buffer(data)
-
-    def close(self):
-        # GzipFile.close() doesn't actuallly close anything.
-        if self.mode == GZ_WRITE:
-            self._write_gzip(None)
-            self._reset_buffer()
-        return GzipFile.close(self)
-
-    def flush(self, lib_mode=FLUSH):
-        self._nltk_buffer.flush()
-        GzipFile.flush(self, lib_mode)
-
-    def read(self, size=None):
-        if not size:
-            size = self._size
-            contents = BytesIO()
-            while True:
-                blocks = GzipFile.read(self, size)
-                if not blocks:
-                    contents.flush()
-                    break
-                contents.write(blocks)
-            return contents.getvalue()
-        else:
-            return GzipFile.read(self, size)
-
-    def write(self, data, size=-1):
-        """
-        :param data: bytes to write to file or buffer
-        :type data: bytes
-        :param size: buffer at least size bytes before writing to file
-        :type size: int
-        """
-        if not size:
-            size = self._size
-        if self._len + len(data) <= size:
-            self._write_buffer(data)
-        else:
-            self._write_gzip(data)
+    def write(self, data):
+        # This is identical to GzipFile.write but does not return
+        # the bytes written to retain compatibility.
+        super().write(data)
 
 
 class GzipFileSystemPathPointer(FileSystemPathPointer):
@@ -474,13 +371,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        # Note: In >= Python3.5, GzipFile is already using a
-        # buffered reader in the backend which has a variable self._buffer
-        # See https://github.com/nltk/nltk/issues/1308
-        if sys.version.startswith("3.4"):
-            stream = BufferedGzipFile(self._path, "rb")
-        else:
-            stream = GzipFile(self._path, "rb")
+        stream = GzipFile(self._path, "rb")    
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -501,7 +392,7 @@ class ZipFilePathPointer(PathPointer):
         :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
-        if isinstance(zipfile, string_types):
+        if isinstance(zipfile, str):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Check that the entry exists:
@@ -549,13 +440,7 @@ class ZipFilePathPointer(PathPointer):
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
-            # Note: In >= Python3.5, GzipFile is already using a
-            # buffered reader in the backend which has a variable self._buffer
-            # See https://github.com/nltk/nltk/issues/1308
-            if sys.version.startswith("3.4"):
-                stream = BufferedGzipFile(self._entry, fileobj=stream)
-            else:
-                stream = GzipFile(self._entry, fileobj=stream)
+            stream = GzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -1001,9 +886,6 @@ def _open(resource_url):
 # Lazy Resource Loader
 ######################################################################
 
-# We shouldn't apply @python_2_unicode_compatible
-# decorator to LazyLoader, this is resource.__class__ responsibility.
-
 
 class LazyLoader(object):
     @py3_data
@@ -1049,7 +931,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 
     @py3_data
     def __init__(self, filename):
-        if not isinstance(filename, string_types):
+        if not isinstance(filename, str):
             raise TypeError("ReopenableZipFile filename must be a string")
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename

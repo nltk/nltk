@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
@@ -57,7 +57,7 @@ setup(
     url="http://nltk.org/",
     long_description="""\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
+natural language processing.  NLTK requires Python 3.5, 3.6, 3.7, or 3.8.""",
     license="Apache License, Version 2.0",
     keywords=[
         "NLP",
@@ -88,6 +88,7 @@ natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Human Machine Interfaces",
@@ -100,8 +101,6 @@ natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
     install_requires=[
-        "six",
-        'singledispatch; python_version < "3.4"',
         "click",
         "joblib",
         "regex",

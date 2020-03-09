@@ -1,7 +1,7 @@
 # coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -13,10 +13,8 @@ Toolbox databases and settings files.
 
 import re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
+from io import StringIO
 
-from six import u
-
-from nltk.compat import StringIO, PY3
 from nltk.data import PathPointer, find
 
 
@@ -127,12 +125,6 @@ class StandardFormat(object):
             raise ValueError("unicode_fields is set but not encoding.")
         unwrap_pat = re.compile(r"\n+")
         for mkr, val in self.raw_fields():
-            if encoding and not PY3:  # kludge - already decoded in PY3?
-                if unicode_fields is not None and mkr in unicode_fields:
-                    val = val.decode("utf8", errors)
-                else:
-                    val = val.decode(encoding, errors)
-                mkr = mkr.decode(encoding, errors)
             if unwrap:
                 val = unwrap_pat.sub(" ", val)
             if strip:
@@ -321,11 +313,11 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                     cur_encoding = encoding
                 if re.search(_is_value, value):
                     l.append(
-                        (u("\\%s %s\n") % (mkr, value)).encode(cur_encoding, errors)
+                        ("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors)
                     )
                 else:
                     l.append(
-                        (u("\\%s%s\n") % (mkr, value)).encode(cur_encoding, errors)
+                        ("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors)
                     )
             else:
                 if re.search(_is_value, value):

@@ -5,8 +5,6 @@ import os
 import re
 from functools import reduce
 
-from six import string_types
-
 from nltk.corpus.reader import concat, TaggedCorpusReader
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 
@@ -232,7 +230,7 @@ class MTECorpusReader(TaggedCorpusReader):
     def __fileids(self, fileids):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         # filter wrong userinput
         fileids = filter(lambda x: x in self._fileids, fileids)
