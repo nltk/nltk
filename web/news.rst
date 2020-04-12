@@ -4,7 +4,7 @@ NLTK News
 2020
 ----
 
-NLTK 3.5 release: March 2020
+NLTK 3.5 release: April 2020
   Add support for Python 3.8, drop support for Python 2
 
 2019
