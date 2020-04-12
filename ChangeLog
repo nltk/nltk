@@ -1,17 +1,18 @@
-Version 3.5 2020-03-08
+Version 3.5 2020-04-13
 * add support for Python 3.8
 * drop support for Python 2
 * create NLTK's own Tokenizer class distinct from the Treebank reference tokeniser
 * update Vader sentiment analyser
 * fix JSON serialization of some PoS taggers
-* minor fixes in grammar.CFG, Vader, pl196x corpus reader
+* minor improvements in grammar.CFG, Vader, pl196x corpus reader, StringTokenizer
 * change implementation <= and >= for FreqDist so they are partial orders
 * make FreqDist iterable
 * correctly handle Penn Treebank trees with a unlabeled branching top node.
 
 Thanks to the following contributors to 3.5:
 Nicolas Darr, Gerhard Kremer, Liling Tan, Christopher Hench, Alexandre Dias, Hervé Nicol,
-Bonifacio de Oliveira, Maciej Gawinecki, BLKSerene, hoefling, alvations, pyfisch, srhrshr
+Pierpaolo Pantone, Bonifacio de Oliveira, Maciej Gawinecki, BLKSerene, hoefling, alvations,
+pyfisch, srhrshr
 
 Version 3.4.5 2019-08-20
 * Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
