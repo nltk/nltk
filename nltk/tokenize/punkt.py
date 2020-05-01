@@ -1325,18 +1325,32 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         """
         return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
 
+    def _end_of_next_space_sequence(self, text, offset):
+        space_match = re.compile("\s+").search(text[offset:])
+        if not space_match:
+            return None
+        return offset + space_match.end()
+
     def _slices_from_text(self, text):
-        last_break = 0
-        for match in self._lang_vars.period_context_re().finditer(text):
+        last_break, offset = 0, 0
+        while offset is not None:
+            match = self._lang_vars.period_context_re().match(text[offset:])
+            if not match:
+                offset = self._end_of_next_space_sequence(text, offset)
+                continue
             context = match.group() + match.group("after_tok")
             if self.text_contains_sentbreak(context):
-                yield slice(last_break, match.end())
+                yield slice(last_break, offset + match.end())
                 if match.group("next_tok"):
                     # next sentence starts after whitespace
-                    last_break = match.start("next_tok")
+                    last_break = offset + match.start("next_tok")
                 else:
                     # next sentence starts at following punctuation
-                    last_break = match.end()
+                    last_break = offset + match.end()
+                offset = last_break
+            else:
+                offset += match.end()
+
         # The last sentence should not contain trailing whitespace.
         yield slice(last_break, len(text.rstrip()))
 
