@@ -50,11 +50,18 @@ console_scripts = """
 nltk=nltk.cli:cli
 """
 
+_project_homepage = "http://nltk.org/"
+
 setup(
     name="nltk",
     description="Natural Language Toolkit",
     version=nltk_version,
-    url="http://nltk.org/",
+    url=_project_homepage,
+    project_urls={
+        "Documentation": _project_homepage,
+        "Source Code": "https://github.com/nltk/nltk",
+        "Issue Tracker": "https://github.com/nltk/nltk/issues"
+    },
     long_description="""\
 The Natural Language Toolkit (NLTK) is a Python package for
 natural language processing.  NLTK requires Python 3.5, 3.6, 3.7, or 3.8.""",
