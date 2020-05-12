@@ -44,7 +44,7 @@ dist: zipdist
 #gztardist: clean_code
 #	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
-	$(PYTHON) setup.py -q sdist --format=zip
+	$(PYTHON) setup.py -q sdist --format=zip bdist_wheel
 windist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst --plat-name=win32
 
