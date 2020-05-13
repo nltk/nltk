@@ -631,7 +631,7 @@ class SmoothingFunction:
     def method7(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 7:
-        Interpolates methods 5 and 6.
+        Interpolates methods 4 and 5.
         """
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         p_n = self.method4(p_n, references, hypothesis, hyp_len)
