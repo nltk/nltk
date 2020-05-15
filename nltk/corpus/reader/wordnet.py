@@ -484,7 +484,8 @@ class Synset(_WordNetObject):
                     self._wordnet_corpus_reader,
                     self,
                     lem,
-                    self._wordnet_corpus_reader._lexnames.index(self.lexname()),
+                    self._wordnet_corpus_reader._lexnames.index(
+                        self.lexname()),
                     0,
                     None,
                 )
@@ -667,10 +668,12 @@ class Synset(_WordNetObject):
         try:
             if use_min_depth:
                 max_depth = max(s.min_depth() for s in synsets)
-                unsorted_lch = [s for s in synsets if s.min_depth() == max_depth]
+                unsorted_lch = [
+                    s for s in synsets if s.min_depth() == max_depth]
             else:
                 max_depth = max(s.max_depth() for s in synsets)
-                unsorted_lch = [s for s in synsets if s.max_depth() == max_depth]
+                unsorted_lch = [
+                    s for s in synsets if s.max_depth() == max_depth]
             return sorted(unsorted_lch)
         except ValueError:
             return []
@@ -689,7 +692,8 @@ class Synset(_WordNetObject):
         """
         distances = set([(self, distance)])
         for hypernym in self._hypernyms() + self._instance_hypernyms():
-            distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
+            distances |= hypernym.hypernym_distances(
+                distance + 1, simulate_root=False)
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
@@ -861,7 +865,8 @@ class Synset(_WordNetObject):
         need_root = self._needs_root()
 
         if self._pos not in self._wordnet_corpus_reader._max_depth:
-            self._wordnet_corpus_reader._compute_max_depth(self._pos, need_root)
+            self._wordnet_corpus_reader._compute_max_depth(
+                self._pos, need_root)
 
         depth = self._wordnet_corpus_reader._max_depth[self._pos]
 
@@ -1225,7 +1230,8 @@ class WordNetCorpusReader(CorpusReader):
                     _next_token()
 
                     # get synset offsets
-                    synset_offsets = [int(_next_token()) for _ in range(n_synsets)]
+                    synset_offsets = [int(_next_token())
+                                      for _ in range(n_synsets)]
 
                 # raise more informative error with file name and line number
                 except (AssertionError, ValueError) as e:
@@ -1428,7 +1434,8 @@ class WordNetCorpusReader(CorpusReader):
                 m = re.match(r"(.*?)(\(.*\))?$", lemma_name)
                 lemma_name, syn_mark = m.groups()
                 # create the lemma object
-                lemma = Lemma(self, synset, lemma_name, lexname_index, lex_id, syn_mark)
+                lemma = Lemma(self, synset, lemma_name,
+                              lexname_index, lex_id, syn_mark)
                 synset._lemmas.append(lemma)
                 synset._lemma_names.append(lemma._name)
 
@@ -1468,12 +1475,14 @@ class WordNetCorpusReader(CorpusReader):
                         synset._frame_ids.append(frame_number)
                         for lemma in synset._lemmas:
                             lemma._frame_ids.append(frame_number)
-                            lemma._frame_strings.append(frame_string_fmt % lemma._name)
+                            lemma._frame_strings.append(
+                                frame_string_fmt % lemma._name)
                     # only a specific word in the synset
                     else:
                         lemma = synset._lemmas[lemma_number - 1]
                         lemma._frame_ids.append(frame_number)
-                        lemma._frame_strings.append(frame_string_fmt % lemma._name)
+                        lemma._frame_strings.append(
+                            frame_string_fmt % lemma._name)
 
         # raise a more informative error with line text
         except ValueError as e:
@@ -1507,51 +1516,27 @@ class WordNetCorpusReader(CorpusReader):
 
         return synset
 
-    def synset_from_sense_key(self, sense_key):
+    def synset_from_sense_key(self, key):
         """
-        Retrieves synset based on a given sense_key. Sense keys can be
+        Retrieves synset based on a given sense key. Sense keys can be
         obtained from lemma.key()
-
-        From https://wordnet.princeton.edu/documentation/senseidx5wn:
-        A sense_key is represented as:
-            lemma % lex_sense (e.g. 'dog%1:18:01::')
-        where lex_sense is encoded as:
-            ss_type:lex_filenum:lex_id:head_word:head_id
-
-        lemma:       ASCII text of word/collocation, in lower case
-        ss_type:     synset type for the sense (1 digit int)
-                     The synset type is encoded as follows:
-                     1    NOUN
-                     2    VERB
-                     3    ADJECTIVE
-                     4    ADVERB
-                     5    ADJECTIVE SATELLITE
-        lex_filenum: name of lexicographer file containing the synset for the sense (2 digit int)
-        lex_id:      when paired with lemma, uniquely identifies a sense in the lexicographer file (2 digit int)
-        head_word:   lemma of the first word in satellite's head synset
-                     Only used if sense is in an adjective satellite synset
-        head_id:     uniquely identifies sense in a lexicographer file when paired with head_word
-                     Only used if head_word is present (2 digit int)
         """
-        sense_key_regex = re.compile(r"(.*)\%(.*):(.*):(.*):(.*):(.*)")
-        synset_types = {1: NOUN, 2: VERB, 3: ADJ, 4: ADV, 5: ADJ_SAT}
-        lemma, ss_type, _, lex_id, _, _ = sense_key_regex.match(sense_key).groups()
+        key = key.lower()
 
-        # check that information extracted from sense_key is valid
-        error = None
-        if not lemma:
-            error = "lemma"
-        elif int(ss_type) not in synset_types:
-            error = "ss_type"
-        elif int(lex_id) < 0 or int(lex_id) > 99:
-            error = "lex_id"
-        if error:
-            raise WordNetError(
-                "valid {} could not be extracted from the sense key".format(error)
-            )
+        lex_sense = key.split("%")[1]
+        pos_number = lex_sense.split(":")[0]
+        pos = self._pos_names[int(pos_number)]
 
-        synset_id = ".".join([lemma, synset_types[int(ss_type)], lex_id])
-        return self.synset(synset_id)
+        # open the key -> synset file if necessary
+        if self._key_synset_file is None:
+            self._key_synset_file = self.open("index.sense")
+
+        # Find the synset for the lemma.
+        synset_line = _binary_search_file(self._key_synset_file, key)
+        if not synset_line:
+            raise WordNetError("No synset found for key %r" % key)
+        offset = int(synset_line.split()[1])
+        return self.synset_from_pos_and_offset(pos, offset)
 
     #############################################################
     # Retrieve synsets and lemmas.
@@ -1713,7 +1698,8 @@ class WordNetCorpusReader(CorpusReader):
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("LICENSE").read()
         elif lang in self._lang_data:
-            raise WordNetError("Cannot determine license for user-provided tab file")
+            raise WordNetError(
+                "Cannot determine license for user-provided tab file")
         else:
             raise WordNetError("Language is not supported.")
 
