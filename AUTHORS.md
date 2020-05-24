@@ -261,6 +261,7 @@
 - Alexandre H. T. Dias <https://github.com/alexandredias3d>
 - Jacob Weightman <https://github.com/jacobdweightman>
 - Bonifacio de Oliveira <https://github.com/Bonifacio2>
+- Armins Bagrats Stepanjans <https://github.com/ab-10>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
