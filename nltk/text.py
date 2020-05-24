@@ -401,7 +401,7 @@ class Text(object):
     def collocation_list(self, num=20, window_size=2):
         """
         Return collocations derived from the text, ignoring stopwords.
-        
+
             >>> from nltk.book import text4
             >>> text4.collocation_list()[:2]
             [('United', 'States'), ('fellow', 'citizens')]
@@ -434,7 +434,7 @@ class Text(object):
     def collocations(self, num=20, window_size=2):
         """
         Print collocations derived from the text, ignoring stopwords.
-        
+
             >>> from nltk.book import text4
             >>> text4.collocations() # doctest: +ELLIPSIS
             United States; fellow citizens; four years; ...
@@ -645,7 +645,7 @@ class Text(object):
     # Helper Methods
     # ////////////////////////////////////////////////////////////
 
-    _CONTEXT_RE = re.compile("\w+|[\.\!\?]")
+    _CONTEXT_RE = re.compile(r"\w+|[\.\!\?]")
 
     def _context(self, tokens, i):
         """

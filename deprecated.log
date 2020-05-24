@@ -1,0 +1,538 @@
+./nltk/treetransforms.py:8: DeprecationWarning: invalid escape sequence \ 
+  """
+./nltk/app/chunkparser_app.py:205: DeprecationWarning: invalid escape sequence \#
+  "\t<regexp><\#><CD> # This is a comment...</regexp>\n"
+./nltk/app/chunkparser_app.py:314: DeprecationWarning: invalid escape sequence \s
+  grammar = re.sub("\n\s+", "\n", grammar)
+./nltk/app/chunkparser_app.py:1060: DeprecationWarning: invalid escape sequence \w
+  key=lambda t_w: re.match("\w+", t_w[0])
+./nltk/app/chunkparser_app.py:1421: DeprecationWarning: invalid escape sequence \#
+  "^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
+./nltk/sem/chat80.py:9: DeprecationWarning: invalid escape sequence \P
+  """
+./nltk/sem/chat80.py:703: DeprecationWarning: invalid escape sequence \P
+  template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
+./nltk/sem/cooper_storage.py:48: DeprecationWarning: invalid escape sequence \P
+  """
+./nltk/sem/relextract.py:127: DeprecationWarning: invalid escape sequence \w
+  ENT = re.compile("&(\w+?);")
+./nltk/sem/relextract.py:381: DeprecationWarning: invalid escape sequence \s
+  roles = """
+./nltk/sem/evaluate.py:252: DeprecationWarning: invalid escape sequence \ 
+  """
+./nltk/sem/drt.py:714: DeprecationWarning: invalid escape sequence \ 
+  + [" \  " + blank + line for line in term_lines[1:2]]
+./nltk/sem/drt.py:715: DeprecationWarning: invalid escape sequence \ 
+  + [" /\ " + var_string + line for line in term_lines[2:3]]
+./nltk/sem/boxer.py:776: DeprecationWarning: invalid escape sequence \d
+  assert re.match("^[exps]\d+$", var), var
+./nltk/featstruct.py:1291: DeprecationWarning: invalid escape sequence \d
+  name, n = re.sub("\d+$", "", var.name), 2
+./nltk/featstruct.py:2087: DeprecationWarning: invalid escape sequence \d
+  RANGE_RE = re.compile("(-?\d+):(-?\d+)")
+./nltk/text.py:648: DeprecationWarning: invalid escape sequence \w
+  _CONTEXT_RE = re.compile("\w+|[\.\!\?]")
+./nltk/chunk/regexp.py:67: DeprecationWarning: invalid escape sequence \{
+  _BRACKETS = re.compile("[^\{\}]+")
+./nltk/chunk/regexp.py:212: DeprecationWarning: invalid escape sequence \{
+  s = re.sub("\{\}", "", s)
+./nltk/chunk/regexp.py:423: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "{\g<chunk>}", descr)
+./nltk/chunk/regexp.py:468: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "}\g<chink>{", descr)
+./nltk/chunk/regexp.py:507: DeprecationWarning: invalid escape sequence \{
+  regexp = re.compile("\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+./nltk/chunk/regexp.py:508: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "\g<chunk>", descr)
+./nltk/chunk/regexp.py:572: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "\g<left>", descr)
+./nltk/chunk/regexp.py:705: DeprecationWarning: invalid escape sequence \{
+  "(?P<left>%s)\{(?P<right>%s)"
+./nltk/chunk/regexp.py:711: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "{\g<left>\g<right>", descr)
+./nltk/chunk/regexp.py:775: DeprecationWarning: invalid escape sequence \}
+  "(?P<left>%s)\}(?P<right>%s)"
+./nltk/chunk/regexp.py:781: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "\g<left>\g<right>}", descr)
+./nltk/chunk/regexp.py:893: DeprecationWarning: invalid escape sequence \{
+  r"^((%s|<%s>)*)$" % ("([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", "[^\{\}<>]+")
+./nltk/chunk/regexp.py:893: DeprecationWarning: invalid escape sequence \{
+  r"^((%s|<%s>)*)$" % ("([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", "[^\{\}<>]+")
+./nltk/chunk/regexp.py:1133: DeprecationWarning: invalid escape sequence \.
+  """
+./nltk/chunk/util.py:371: DeprecationWarning: invalid escape sequence \S
+  _LINE_RE = re.compile("(\S+)\s+(\S+)\s+([IOB])-?(\S+)?")
+./nltk/chunk/util.py:517: DeprecationWarning: invalid escape sequence \w
+  _IEER_TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
+./nltk/chunk/util.py:526: DeprecationWarning: invalid escape sequence \s
+  for piece_m in re.finditer("<[^>]+>|[^\s<]+", s):
+./nltk/chunk/named_entity.py:178: DeprecationWarning: invalid escape sequence \w
+  elif re.match("\w+$", word, re.UNICODE):
+./nltk/chunk/named_entity.py:176: DeprecationWarning: invalid escape sequence \W
+  elif re.match("\W+$", word, re.UNICODE):
+./nltk/chunk/named_entity.py:174: DeprecationWarning: invalid escape sequence \.
+  if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
+./nltk/chunk/named_entity.py:250: DeprecationWarning: invalid escape sequence \s
+  text = re.sub("[\s\S]*<TEXT>", subfunc, text)
+./nltk/chunk/named_entity.py:251: DeprecationWarning: invalid escape sequence \s
+  text = re.sub("</TEXT>[\s\S]*", "", text)
+./nltk/tree.py:36: DeprecationWarning: invalid escape sequence \ 
+  """
+./nltk/tree.py:650: DeprecationWarning: invalid escape sequence \s
+  if re.search("\s", brackets):
+./nltk/tree.py:656: DeprecationWarning: invalid escape sequence \s
+  node_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+./nltk/tree.py:658: DeprecationWarning: invalid escape sequence \s
+  leaf_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+./nltk/tree.py:660: DeprecationWarning: invalid escape sequence \s
+  "%s\s*(%s)?|%s|(%s)"
+./nltk/tree.py:898: DeprecationWarning: invalid escape sequence \$
+  reserved_chars = re.compile("([#\$%&~_\{\}])")
+./nltk/tag/sequential.py:730: DeprecationWarning: invalid escape sequence \w
+  elif re.match("\w+$", word):
+./nltk/tag/sequential.py:724: DeprecationWarning: invalid escape sequence \W
+  elif re.match("\W+$", word):
+./nltk/tag/sequential.py:722: DeprecationWarning: invalid escape sequence \.
+  if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
+./nltk/inference/discourse.py:9: DeprecationWarning: invalid escape sequence \ 
+  """
+./nltk/corpus/reader/udhr.py:30: DeprecationWarning: invalid escape sequence \-
+  ("Abkhaz\-Cyrillic\+Abkh", "cp1251"),
+./nltk/corpus/reader/bnc.py:15: DeprecationWarning: invalid escape sequence \w
+  """Corpus reader for the XML version of the British National Corpus.
+./nltk/corpus/reader/timit.py:163: DeprecationWarning: invalid escape sequence \.
+  encoding = [(".*\.wav", None), (".*", encoding)]
+./nltk/corpus/reader/twitter.py:23: DeprecationWarning: invalid escape sequence \.
+  """
+./nltk/corpus/reader/api.py:75: DeprecationWarning: invalid escape sequence \.
+  m = re.match("(.*\.zip)/?(.*)$|", root)
+./nltk/corpus/reader/switchboard.py:113: DeprecationWarning: invalid escape sequence \w
+  _UTTERANCE_RE = re.compile("(\w+)\.(\d+)\:\s*(.*)")
+./nltk/corpus/reader/framenet.py:2747: DeprecationWarning: invalid escape sequence \w
+  """
+./nltk/corpus/reader/util.py:625: DeprecationWarning: invalid escape sequence \d
+  if re.match("^\d+-\d+", line) is not None:
+./nltk/corpus/reader/util.py:849: DeprecationWarning: invalid escape sequence \s
+  if re.match("======+\s*$", line):
+./nltk/corpus/reader/plaintext.py:47: DeprecationWarning: invalid escape sequence \.
+  """
+./nltk/corpus/reader/childes.py:280: DeprecationWarning: invalid escape sequence \d
+  m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+./nltk/corpus/reader/bracket_parse.py:215: DeprecationWarning: invalid escape sequence \.
+  "alpino\.xml",
+./nltk/corpus/reader/xmldocs.py:225: DeprecationWarning: invalid escape sequence \s
+  _XML_TAG_NAME = re.compile("<\s*/?\s*([^\s>]+)")
+./nltk/corpus/__init__.py:116: DeprecationWarning: invalid escape sequence \.
+  ".*\.(test|train).*",
+./nltk/corpus/__init__.py:123: DeprecationWarning: invalid escape sequence \.
+  ".*\.(test|train).*",
+./nltk/corpus/__init__.py:126: DeprecationWarning: invalid escape sequence \.
+  crubadan = LazyCorpusLoader("crubadan", CrubadanCorpusReader, ".*\.txt")
+./nltk/corpus/__init__.py:128: DeprecationWarning: invalid escape sequence \.
+  "dependency_treebank", DependencyCorpusReader, ".*\.dp", encoding="ascii"
+./nltk/corpus/__init__.py:311: DeprecationWarning: invalid escape sequence \.
+  "timit", TimitTaggedCorpusReader, ".+\.tags", tagset="wsj", encoding="ascii"
+./nltk/corpus/__init__.py:335: DeprecationWarning: invalid escape sequence \.
+  twitter_samples = LazyCorpusLoader("twitter_samples", TwitterCorpusReader, ".*\.json")
+./nltk/corpus/__init__.py:364: DeprecationWarning: invalid escape sequence \.
+  wordnet_ic = LazyCorpusLoader("wordnet_ic", WordNetICCorpusReader, ".*\.dat")
+./nltk/corpus/__init__.py:374: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./nltk/corpus/__init__.py:383: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./nltk/corpus/__init__.py:392: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./nltk/corpus/__init__.py:401: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./nltk/draw/cfg.py:165: DeprecationWarning: invalid escape sequence \s
+  _ARROW_RE = re.compile("\s*(->|(" + ARROW + "))\s*")
+./nltk/draw/cfg.py:165: DeprecationWarning: invalid escape sequence \s
+  _ARROW_RE = re.compile("\s*(->|(" + ARROW + "))\s*")
+./nltk/draw/cfg.py:170: DeprecationWarning: invalid escape sequence \s
+  + "))\s*"
+./nltk/tokenize/toktok.py:52: DeprecationWarning: invalid escape sequence \]
+  FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
+./nltk/tokenize/toktok.py:54: DeprecationWarning: invalid escape sequence \[
+  FUNKY_PUNCT_2 = re.compile(u"([({\[“‘„‚«‹「『])"), r" \1 "
+./nltk/tokenize/toktok.py:61: DeprecationWarning: invalid escape sequence \|
+  PIPE = re.compile("\|"), " &#124; "
+./nltk/tokenize/treebank.py:194: DeprecationWarning: invalid escape sequence \]
+  """
+./nltk/tokenize/treebank.py:255: DeprecationWarning: invalid escape sequence \s
+  re.compile(pattern.replace("(?#X)", "\s"))
+./nltk/tokenize/treebank.py:259: DeprecationWarning: invalid escape sequence \s
+  re.compile(pattern.replace("(?#X)", "\s"))
+./nltk/tokenize/punkt.py:1459: DeprecationWarning: invalid escape sequence \s
+  pat = "\s*".join(re.escape(c) for c in tok)
+./nltk/tokenize/texttiling.py:96: DeprecationWarning: invalid escape sequence \-
+  c for c in lowercase_text if re.match("[a-z\-' \n\t]", c)
+./nltk/tokenize/texttiling.py:229: DeprecationWarning: invalid escape sequence \w
+  matches = re.finditer("\w+", text)
+./nltk/tokenize/regexp.py:76: DeprecationWarning: invalid escape sequence \w
+  """
+./nltk/tokenize/regexp.py:184: DeprecationWarning: invalid escape sequence \w
+  """
+./nltk/tokenize/repp.py:131: DeprecationWarning: invalid escape sequence \(
+  line_regex = re.compile("^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+./nltk/tokenize/nist.py:78: DeprecationWarning: invalid escape sequence \{
+  PUNCT = re.compile("([\{-\~\[-\` -\&\(-\+\:-\@\/])"), " \\1 "
+./nltk/tokenize/nist.py:80: DeprecationWarning: invalid escape sequence \.
+  PERIOD_COMMA_PRECEED = re.compile("([^0-9])([\.,])"), "\\1 \\2 "
+./nltk/tokenize/nist.py:82: DeprecationWarning: invalid escape sequence \.
+  PERIOD_COMMA_FOLLOW = re.compile("([\.,])([^0-9])"), " \\1 \\2"
+./nltk/toolbox.py:151: DeprecationWarning: invalid escape sequence \_
+  """
+./nltk/grammar.py:1275: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/grammar.py:1460: DeprecationWarning: invalid escape sequence \w
+  _STANDARD_NONTERM_RE = re.compile("( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+./nltk/chat/iesha.py:52: DeprecationWarning: invalid escape sequence \<
+  "u think I can%2??! really?? kekeke \<_\<",
+./nltk/stem/lancaster.py:192: DeprecationWarning: invalid escape sequence \*
+  valid_rule = re.compile("^[a-z]+\*?\d[a-z]*[>\.]?$")
+./nltk/stem/lancaster.py:225: DeprecationWarning: invalid escape sequence \*
+  valid_rule = re.compile("^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+./nltk/stem/porter.py:145: DeprecationWarning: invalid escape sequence \m
+  """Returns the 'measure' of stem, per definition in the paper
+./nltk/ccg/combinator.py:217: DeprecationWarning: invalid escape sequence \Y
+  """
+./nltk/classify/maxent.py:1290: DeprecationWarning: invalid escape sequence \ 
+  """
+./nltk/classify/rte_classify.py:61: DeprecationWarning: invalid escape sequence \w
+  tokenizer = RegexpTokenizer("[\w.@:/]+|\w+|\$[\d.]+")
+./nltk/parse/featurechart.py:250: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/featurechart.py:352: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/chart.py:1021: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/chart.py:1054: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/chart.py:1120: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/chart.py:1137: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/chart.py:1210: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/parse/chart.py:1229: DeprecationWarning: invalid escape sequence \*
+  """
+./env/lib/python3.7/site-packages/nose/ext/dtcompat.py:686: DeprecationWarning: invalid escape sequence \S
+  _INDENT_RE = re.compile('^([ ]*)(?=\S)', re.MULTILINE)
+./env/lib/python3.7/site-packages/nose/ext/dtcompat.py:1021: DeprecationWarning: invalid escape sequence \s
+  pat = re.compile('(^|.*:)\s*\w*("|\')')
+./env/lib/python3.7/site-packages/nose/ext/dtcompat.py:1430: DeprecationWarning: invalid escape sequence \s
+  want = re.sub('(?m)^%s\s*?$' % re.escape(BLANKLINE_MARKER),
+./env/lib/python3.7/site-packages/nose/ext/dtcompat.py:1434: DeprecationWarning: invalid escape sequence \s
+  got = re.sub('(?m)^\s*?$', '', got)
+./env/lib/python3.7/site-packages/nose/inspector.py:111: DeprecationWarning: invalid escape sequence \ 
+  """Find lines in home that are inspectable.
+./env/lib/python3.7/site-packages/nose/config.py:142: DeprecationWarning: invalid escape sequence \.
+  """nose configuration.
+./env/lib/python3.7/site-packages/boto/sdb/db/property.py:265: DeprecationWarning: invalid escape sequence \/
+  validate_regex = "^s3:\/\/([^\/]*)\/(.*)$"
+./env/lib/python3.7/site-packages/boto/sdb/db/manager/sdbmanager.py:348: DeprecationWarning: invalid escape sequence \/
+  match = re.match("^s3:\/\/([^\/]*)\/(.*)$", value.id)
+./env/lib/python3.7/site-packages/boto/sdb/db/manager/sdbmanager.py:363: DeprecationWarning: invalid escape sequence \/
+  match = re.match("^s3:\/\/([^\/]*)\/(.*)$", value)
+./env/lib/python3.7/site-packages/boto/__init__.py:1105: DeprecationWarning: invalid escape sequence \c
+  """
+./env/lib/python3.7/site-packages/boto/gs/resumable_upload_handler.py:238: DeprecationWarning: invalid escape sequence \d
+  m = re.search('bytes=(\d+)-(\d+)', range_spec)
+./env/lib/python3.7/site-packages/boto/iam/connection.py:1114: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if tld is 'default':
+./env/lib/python3.7/site-packages/boto/https_connection.py:80: DeprecationWarning: invalid escape sequence \.
+  host_re = host.replace('.', '\.').replace('*', '[^.]*')
+./env/lib/python3.7/site-packages/boto/cloudfront/distribution.py:512: DeprecationWarning: invalid escape sequence \*
+  """
+./env/lib/python3.7/site-packages/boto/opsworks/layer1.py:2640: DeprecationWarning: invalid escape sequence \A
+  """
+./env/lib/python3.7/site-packages/boto/connection.py:672: DeprecationWarning: invalid escape sequence \w
+  '(?:(?P<user>[\w\-\.]+):(?P<pass>.*)@)?'
+./env/lib/python3.7/site-packages/boto/connection.py:673: DeprecationWarning: invalid escape sequence \w
+  '(?P<host>[\w\-\.]+)'
+./env/lib/python3.7/site-packages/boto/connection.py:674: DeprecationWarning: invalid escape sequence \d
+  '(?::(?P<port>\d+))?'
+./env/lib/python3.7/site-packages/boto/redshift/layer1.py:327: DeprecationWarning: invalid escape sequence \,
+  """
+./env/lib/python3.7/site-packages/boto/redshift/layer1.py:2164: DeprecationWarning: invalid escape sequence \)
+  """
+./env/lib/python3.7/site-packages/boto/redshift/layer1.py:2264: DeprecationWarning: invalid escape sequence \,
+  """
+./env/lib/python3.7/site-packages/boto/cloudsearchdomain/layer1.py:79: DeprecationWarning: invalid escape sequence \`
+  """
+./env/lib/python3.7/site-packages/boto/pyami/config.py:98: DeprecationWarning: invalid escape sequence \s
+  match = re.match("^#import[\s\t]*([^\s^\t]*)[\s\t]*$", line)
+./env/lib/python3.7/site-packages/pip/_vendor/toml/decoder.py:47: DeprecationWarning: invalid escape sequence \.
+  TIME_RE = re.compile("([0-9]{2}):([0-9]{2}):([0-9]{2})(\.([0-9]{3,6}))?")
+./env/lib/python3.7/site-packages/twython/streaming/types.py:38: DeprecationWarning: invalid escape sequence \*
+  """Stream statuses/filter
+./env/lib/python3.7/site-packages/twython/streaming/types.py:50: DeprecationWarning: invalid escape sequence \*
+  """Stream statuses/sample
+./env/lib/python3.7/site-packages/twython/streaming/types.py:62: DeprecationWarning: invalid escape sequence \*
+  """Stream statuses/firehose
+./env/lib/python3.7/site-packages/twython/streaming/types.py:74: DeprecationWarning: invalid escape sequence \*
+  """Set/update statuses/filter
+./env/lib/python3.7/site-packages/twython/api.py:433: DeprecationWarning: invalid escape sequence \*
+  """Construct a Twitter API url, encoded, with parameters
+./env/lib/python3.7/site-packages/twython/api.py:472: DeprecationWarning: invalid escape sequence \*
+  """Returns a generator for results that match a specified query.
+./tools/find_deprecated.py:42: DeprecationWarning: invalid escape sequence \s
+  '"""[\s\S]*?"""|'
+./tools/find_deprecated.py:44: DeprecationWarning: invalid escape sequence \s
+  "'''[\s\S]*?'''|"
+./tools/find_deprecated.py:46: DeprecationWarning: invalid escape sequence \s
+  ")\s*"
+./tools/find_deprecated.py:63: DeprecationWarning: invalid escape sequence \.
+  '({})\.read\('.format('|'.join(re.escape(n) for n in dir(nltk.corpus)))
+./tools/find_deprecated.py:66: DeprecationWarning: invalid escape sequence \s
+  CLASS_DEF_RE = re.compile('^\s*class\s+(\w+)\s*[:\(]')
+./tools/nltk_term_index.py:51: DeprecationWarning: invalid escape sequence \s
+  SCAN_RE1 = "<programlisting>[\s\S]*?</programlisting>"
+./tools/nltk_term_index.py:52: DeprecationWarning: invalid escape sequence \s
+  SCAN_RE2 = "<literal>[\s\S]*?</literal>"
+./tools/nltk_term_index.py:55: DeprecationWarning: invalid escape sequence \w
+  TOKEN_RE = re.compile('[\w\.]+')
+./.tox/py37/lib/python3.7/site-packages/nltk/treetransforms.py:8: DeprecationWarning: invalid escape sequence \ 
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/app/chunkparser_app.py:205: DeprecationWarning: invalid escape sequence \#
+  "\t<regexp><\#><CD> # This is a comment...</regexp>\n"
+./.tox/py37/lib/python3.7/site-packages/nltk/app/chunkparser_app.py:314: DeprecationWarning: invalid escape sequence \s
+  grammar = re.sub("\n\s+", "\n", grammar)
+./.tox/py37/lib/python3.7/site-packages/nltk/app/chunkparser_app.py:1060: DeprecationWarning: invalid escape sequence \w
+  key=lambda t_w: re.match("\w+", t_w[0])
+./.tox/py37/lib/python3.7/site-packages/nltk/app/chunkparser_app.py:1421: DeprecationWarning: invalid escape sequence \#
+  "^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/chat80.py:9: DeprecationWarning: invalid escape sequence \P
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/chat80.py:703: DeprecationWarning: invalid escape sequence \P
+  template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/cooper_storage.py:48: DeprecationWarning: invalid escape sequence \P
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/relextract.py:127: DeprecationWarning: invalid escape sequence \w
+  ENT = re.compile("&(\w+?);")
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/relextract.py:381: DeprecationWarning: invalid escape sequence \s
+  roles = """
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/evaluate.py:252: DeprecationWarning: invalid escape sequence \ 
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/boxer.py:776: DeprecationWarning: invalid escape sequence \d
+  assert re.match("^[exps]\d+$", var), var
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/drt.py:714: DeprecationWarning: invalid escape sequence \ 
+  + [" \  " + blank + line for line in term_lines[1:2]]
+./.tox/py37/lib/python3.7/site-packages/nltk/sem/drt.py:715: DeprecationWarning: invalid escape sequence \ 
+  + [" /\ " + var_string + line for line in term_lines[2:3]]
+./.tox/py37/lib/python3.7/site-packages/nltk/featstruct.py:1291: DeprecationWarning: invalid escape sequence \d
+  name, n = re.sub("\d+$", "", var.name), 2
+./.tox/py37/lib/python3.7/site-packages/nltk/featstruct.py:2087: DeprecationWarning: invalid escape sequence \d
+  RANGE_RE = re.compile("(-?\d+):(-?\d+)")
+./.tox/py37/lib/python3.7/site-packages/nltk/text.py:648: DeprecationWarning: invalid escape sequence \w
+  _CONTEXT_RE = re.compile("\w+|[\.\!\?]")
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:67: DeprecationWarning: invalid escape sequence \{
+  _BRACKETS = re.compile("[^\{\}]+")
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:212: DeprecationWarning: invalid escape sequence \{
+  s = re.sub("\{\}", "", s)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:423: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "{\g<chunk>}", descr)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:468: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "}\g<chink>{", descr)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:507: DeprecationWarning: invalid escape sequence \{
+  regexp = re.compile("\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:508: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "\g<chunk>", descr)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:572: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "\g<left>", descr)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:705: DeprecationWarning: invalid escape sequence \{
+  "(?P<left>%s)\{(?P<right>%s)"
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:711: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "{\g<left>\g<right>", descr)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:775: DeprecationWarning: invalid escape sequence \}
+  "(?P<left>%s)\}(?P<right>%s)"
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:781: DeprecationWarning: invalid escape sequence \g
+  RegexpChunkRule.__init__(self, regexp, "\g<left>\g<right>}", descr)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:893: DeprecationWarning: invalid escape sequence \{
+  r"^((%s|<%s>)*)$" % ("([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", "[^\{\}<>]+")
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:893: DeprecationWarning: invalid escape sequence \{
+  r"^((%s|<%s>)*)$" % ("([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", "[^\{\}<>]+")
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/regexp.py:1133: DeprecationWarning: invalid escape sequence \.
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/util.py:371: DeprecationWarning: invalid escape sequence \S
+  _LINE_RE = re.compile("(\S+)\s+(\S+)\s+([IOB])-?(\S+)?")
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/util.py:517: DeprecationWarning: invalid escape sequence \w
+  _IEER_TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/util.py:526: DeprecationWarning: invalid escape sequence \s
+  for piece_m in re.finditer("<[^>]+>|[^\s<]+", s):
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/named_entity.py:178: DeprecationWarning: invalid escape sequence \w
+  elif re.match("\w+$", word, re.UNICODE):
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/named_entity.py:176: DeprecationWarning: invalid escape sequence \W
+  elif re.match("\W+$", word, re.UNICODE):
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/named_entity.py:174: DeprecationWarning: invalid escape sequence \.
+  if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/named_entity.py:250: DeprecationWarning: invalid escape sequence \s
+  text = re.sub("[\s\S]*<TEXT>", subfunc, text)
+./.tox/py37/lib/python3.7/site-packages/nltk/chunk/named_entity.py:251: DeprecationWarning: invalid escape sequence \s
+  text = re.sub("</TEXT>[\s\S]*", "", text)
+./.tox/py37/lib/python3.7/site-packages/nltk/tree.py:36: DeprecationWarning: invalid escape sequence \ 
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/tree.py:650: DeprecationWarning: invalid escape sequence \s
+  if re.search("\s", brackets):
+./.tox/py37/lib/python3.7/site-packages/nltk/tree.py:656: DeprecationWarning: invalid escape sequence \s
+  node_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+./.tox/py37/lib/python3.7/site-packages/nltk/tree.py:658: DeprecationWarning: invalid escape sequence \s
+  leaf_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+./.tox/py37/lib/python3.7/site-packages/nltk/tree.py:660: DeprecationWarning: invalid escape sequence \s
+  "%s\s*(%s)?|%s|(%s)"
+./.tox/py37/lib/python3.7/site-packages/nltk/tree.py:898: DeprecationWarning: invalid escape sequence \$
+  reserved_chars = re.compile("([#\$%&~_\{\}])")
+./.tox/py37/lib/python3.7/site-packages/nltk/tag/sequential.py:730: DeprecationWarning: invalid escape sequence \w
+  elif re.match("\w+$", word):
+./.tox/py37/lib/python3.7/site-packages/nltk/tag/sequential.py:724: DeprecationWarning: invalid escape sequence \W
+  elif re.match("\W+$", word):
+./.tox/py37/lib/python3.7/site-packages/nltk/tag/sequential.py:722: DeprecationWarning: invalid escape sequence \.
+  if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
+./.tox/py37/lib/python3.7/site-packages/nltk/inference/discourse.py:9: DeprecationWarning: invalid escape sequence \ 
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/udhr.py:30: DeprecationWarning: invalid escape sequence \-
+  ("Abkhaz\-Cyrillic\+Abkh", "cp1251"),
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/bnc.py:15: DeprecationWarning: invalid escape sequence \w
+  """Corpus reader for the XML version of the British National Corpus.
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/twitter.py:23: DeprecationWarning: invalid escape sequence \.
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/timit.py:163: DeprecationWarning: invalid escape sequence \.
+  encoding = [(".*\.wav", None), (".*", encoding)]
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/api.py:75: DeprecationWarning: invalid escape sequence \.
+  m = re.match("(.*\.zip)/?(.*)$|", root)
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/framenet.py:2747: DeprecationWarning: invalid escape sequence \w
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/switchboard.py:113: DeprecationWarning: invalid escape sequence \w
+  _UTTERANCE_RE = re.compile("(\w+)\.(\d+)\:\s*(.*)")
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/util.py:625: DeprecationWarning: invalid escape sequence \d
+  if re.match("^\d+-\d+", line) is not None:
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/util.py:849: DeprecationWarning: invalid escape sequence \s
+  if re.match("======+\s*$", line):
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/plaintext.py:47: DeprecationWarning: invalid escape sequence \.
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/childes.py:280: DeprecationWarning: invalid escape sequence \d
+  m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/bracket_parse.py:215: DeprecationWarning: invalid escape sequence \.
+  "alpino\.xml",
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/reader/xmldocs.py:225: DeprecationWarning: invalid escape sequence \s
+  _XML_TAG_NAME = re.compile("<\s*/?\s*([^\s>]+)")
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:116: DeprecationWarning: invalid escape sequence \.
+  ".*\.(test|train).*",
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:123: DeprecationWarning: invalid escape sequence \.
+  ".*\.(test|train).*",
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:126: DeprecationWarning: invalid escape sequence \.
+  crubadan = LazyCorpusLoader("crubadan", CrubadanCorpusReader, ".*\.txt")
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:128: DeprecationWarning: invalid escape sequence \.
+  "dependency_treebank", DependencyCorpusReader, ".*\.dp", encoding="ascii"
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:311: DeprecationWarning: invalid escape sequence \.
+  "timit", TimitTaggedCorpusReader, ".+\.tags", tagset="wsj", encoding="ascii"
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:335: DeprecationWarning: invalid escape sequence \.
+  twitter_samples = LazyCorpusLoader("twitter_samples", TwitterCorpusReader, ".*\.json")
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:364: DeprecationWarning: invalid escape sequence \.
+  wordnet_ic = LazyCorpusLoader("wordnet_ic", WordNetICCorpusReader, ".*\.dat")
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:374: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:383: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:392: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./.tox/py37/lib/python3.7/site-packages/nltk/corpus/__init__.py:401: DeprecationWarning: invalid escape sequence \.
+  "frames/.*\.xml",
+./.tox/py37/lib/python3.7/site-packages/nltk/draw/cfg.py:165: DeprecationWarning: invalid escape sequence \s
+  _ARROW_RE = re.compile("\s*(->|(" + ARROW + "))\s*")
+./.tox/py37/lib/python3.7/site-packages/nltk/draw/cfg.py:165: DeprecationWarning: invalid escape sequence \s
+  _ARROW_RE = re.compile("\s*(->|(" + ARROW + "))\s*")
+./.tox/py37/lib/python3.7/site-packages/nltk/draw/cfg.py:170: DeprecationWarning: invalid escape sequence \s
+  + "))\s*"
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/toktok.py:52: DeprecationWarning: invalid escape sequence \]
+  FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/toktok.py:54: DeprecationWarning: invalid escape sequence \[
+  FUNKY_PUNCT_2 = re.compile(u"([({\[“‘„‚«‹「『])"), r" \1 "
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/toktok.py:61: DeprecationWarning: invalid escape sequence \|
+  PIPE = re.compile("\|"), " &#124; "
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/treebank.py:194: DeprecationWarning: invalid escape sequence \]
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/treebank.py:255: DeprecationWarning: invalid escape sequence \s
+  re.compile(pattern.replace("(?#X)", "\s"))
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/treebank.py:259: DeprecationWarning: invalid escape sequence \s
+  re.compile(pattern.replace("(?#X)", "\s"))
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/punkt.py:1459: DeprecationWarning: invalid escape sequence \s
+  pat = "\s*".join(re.escape(c) for c in tok)
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/texttiling.py:96: DeprecationWarning: invalid escape sequence \-
+  c for c in lowercase_text if re.match("[a-z\-' \n\t]", c)
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/texttiling.py:229: DeprecationWarning: invalid escape sequence \w
+  matches = re.finditer("\w+", text)
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/regexp.py:76: DeprecationWarning: invalid escape sequence \w
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/regexp.py:184: DeprecationWarning: invalid escape sequence \w
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/repp.py:131: DeprecationWarning: invalid escape sequence \(
+  line_regex = re.compile("^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/nist.py:78: DeprecationWarning: invalid escape sequence \{
+  PUNCT = re.compile("([\{-\~\[-\` -\&\(-\+\:-\@\/])"), " \\1 "
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/nist.py:80: DeprecationWarning: invalid escape sequence \.
+  PERIOD_COMMA_PRECEED = re.compile("([^0-9])([\.,])"), "\\1 \\2 "
+./.tox/py37/lib/python3.7/site-packages/nltk/tokenize/nist.py:82: DeprecationWarning: invalid escape sequence \.
+  PERIOD_COMMA_FOLLOW = re.compile("([\.,])([^0-9])"), " \\1 \\2"
+./.tox/py37/lib/python3.7/site-packages/nltk/toolbox.py:151: DeprecationWarning: invalid escape sequence \_
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/grammar.py:1275: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/grammar.py:1460: DeprecationWarning: invalid escape sequence \w
+  _STANDARD_NONTERM_RE = re.compile("( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+./.tox/py37/lib/python3.7/site-packages/nltk/chat/iesha.py:52: DeprecationWarning: invalid escape sequence \<
+  "u think I can%2??! really?? kekeke \<_\<",
+./.tox/py37/lib/python3.7/site-packages/nltk/stem/lancaster.py:192: DeprecationWarning: invalid escape sequence \*
+  valid_rule = re.compile("^[a-z]+\*?\d[a-z]*[>\.]?$")
+./.tox/py37/lib/python3.7/site-packages/nltk/stem/lancaster.py:225: DeprecationWarning: invalid escape sequence \*
+  valid_rule = re.compile("^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+./.tox/py37/lib/python3.7/site-packages/nltk/stem/porter.py:145: DeprecationWarning: invalid escape sequence \m
+  """Returns the 'measure' of stem, per definition in the paper
+./.tox/py37/lib/python3.7/site-packages/nltk/ccg/combinator.py:217: DeprecationWarning: invalid escape sequence \Y
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/classify/maxent.py:1290: DeprecationWarning: invalid escape sequence \ 
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/classify/rte_classify.py:61: DeprecationWarning: invalid escape sequence \w
+  tokenizer = RegexpTokenizer("[\w.@:/]+|\w+|\$[\d.]+")
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/featurechart.py:250: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/featurechart.py:352: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/chart.py:1021: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/chart.py:1054: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/chart.py:1120: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/chart.py:1137: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/chart.py:1210: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nltk/parse/chart.py:1229: DeprecationWarning: invalid escape sequence \*
+  """
+./.tox/py37/lib/python3.7/site-packages/nose/ext/dtcompat.py:686: DeprecationWarning: invalid escape sequence \S
+  _INDENT_RE = re.compile('^([ ]*)(?=\S)', re.MULTILINE)
+./.tox/py37/lib/python3.7/site-packages/nose/ext/dtcompat.py:1021: DeprecationWarning: invalid escape sequence \s
+  pat = re.compile('(^|.*:)\s*\w*("|\')')
+./.tox/py37/lib/python3.7/site-packages/nose/ext/dtcompat.py:1430: DeprecationWarning: invalid escape sequence \s
+  want = re.sub('(?m)^%s\s*?$' % re.escape(BLANKLINE_MARKER),
+./.tox/py37/lib/python3.7/site-packages/nose/ext/dtcompat.py:1434: DeprecationWarning: invalid escape sequence \s
+  got = re.sub('(?m)^\s*?$', '', got)
+./.tox/py37/lib/python3.7/site-packages/nose/inspector.py:111: DeprecationWarning: invalid escape sequence \ 
+  """Find lines in home that are inspectable.
+./.tox/py37/lib/python3.7/site-packages/nose/config.py:142: DeprecationWarning: invalid escape sequence \.
+  """nose configuration.
+./.tox/py37/lib/python3.7/site-packages/pip/_vendor/toml/decoder.py:47: DeprecationWarning: invalid escape sequence \.
+  TIME_RE = re.compile("([0-9]{2}):([0-9]{2}):([0-9]{2})(\.([0-9]{3,6}))?")
+./.tox/py37/lib/python3.7/site-packages/twython/api.py:433: DeprecationWarning: invalid escape sequence \*
+  """Construct a Twitter API url, encoded, with parameters
+./.tox/py37/lib/python3.7/site-packages/twython/api.py:472: DeprecationWarning: invalid escape sequence \*
+  """Returns a generator for results that match a specified query.
+./.tox/py37/lib/python3.7/site-packages/twython/streaming/types.py:38: DeprecationWarning: invalid escape sequence \*
+  """Stream statuses/filter
+./.tox/py37/lib/python3.7/site-packages/twython/streaming/types.py:50: DeprecationWarning: invalid escape sequence \*
+  """Stream statuses/sample
+./.tox/py37/lib/python3.7/site-packages/twython/streaming/types.py:62: DeprecationWarning: invalid escape sequence \*
+  """Stream statuses/firehose
+./.tox/py37/lib/python3.7/site-packages/twython/streaming/types.py:74: DeprecationWarning: invalid escape sequence \*
+  """Set/update statuses/filter

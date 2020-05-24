@@ -124,7 +124,7 @@ def list2sym(lst):
     """
     sym = _join(lst, "_", untag=True)
     sym = sym.lower()
-    ENT = re.compile("&(\w+?);")
+    ENT = re.compile(r"&(\w+?);")
     sym = ENT.sub(descape_entity, sym)
     sym = sym.replace(".", "")
     return sym
@@ -378,7 +378,7 @@ def in_demo(trace=0, sql=True):
 def roles_demo(trace=0):
     from nltk.corpus import ieer
 
-    roles = """
+    roles = r"""
     (.*(                   # assorted roles
     analyst|
     chair(wo)?man|

@@ -1,0 +1,52 @@
+./nltk/tokenize/treebank.py:194: DeprecationWarning: invalid escape sequence \]
+  """
+./nltk/tokenize/treebank.py:255: DeprecationWarning: invalid escape sequence \s
+  re.compile(pattern.replace("(?#X)", "\s"))
+./nltk/tokenize/treebank.py:259: DeprecationWarning: invalid escape sequence \s
+  re.compile(pattern.replace("(?#X)", "\s"))
+
+./nltk/tokenize/texttiling.py:96: DeprecationWarning: invalid escape sequence \-
+  c for c in lowercase_text if re.match("[a-z\-' \n\t]", c)
+./nltk/tokenize/texttiling.py:229: DeprecationWarning: invalid escape sequence \w
+  matches = re.finditer("\w+", text)
+
+
+
+./nltk/tokenize/punkt.py:1459: DeprecationWarning: invalid escape sequence \s
+  pat = "\s*".join(re.escape(c) for c in tok)
+./nltk/tokenize/regexp.py:76: DeprecationWarning: invalid escape sequence \w
+  """
+./nltk/tokenize/regexp.py:184: DeprecationWarning: invalid escape sequence \w
+  """
+
+
+./nltk/tokenize/repp.py:131: DeprecationWarning: invalid escape sequence \(
+  line_regex = re.compile("^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+./nltk/tokenize/nist.py:78: DeprecationWarning: invalid escape sequence \{
+  PUNCT = re.compile("([\{-\~\[-\` -\&\(-\+\:-\@\/])"), " \\1 "
+./nltk/tokenize/nist.py:80: DeprecationWarning: invalid escape sequence \.
+  PERIOD_COMMA_PRECEED = re.compile("([^0-9])([\.,])"), "\\1 \\2 "
+./nltk/tokenize/nist.py:82: DeprecationWarning: invalid escape sequence \.
+  PERIOD_COMMA_FOLLOW = re.compile("([\.,])([^0-9])"), " \\1 \\2"
+
+
+./nltk/toolbox.py:151: DeprecationWarning: invalid escape sequence \_
+  """
+./nltk/grammar.py:1275: DeprecationWarning: invalid escape sequence \*
+  """
+./nltk/grammar.py:1460: DeprecationWarning: invalid escape sequence \w
+  _STANDARD_NONTERM_RE = re.compile("( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+./nltk/chat/iesha.py:52: DeprecationWarning: invalid escape sequence \<
+  "u think I can%2??! really?? kekeke \<_\<",
+./nltk/stem/lancaster.py:192: DeprecationWarning: invalid escape sequence \*
+  valid_rule = re.compile("^[a-z]+\*?\d[a-z]*[>\.]?$")
+./nltk/stem/lancaster.py:225: DeprecationWarning: invalid escape sequence \*
+  valid_rule = re.compile("^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+./nltk/stem/porter.py:145: DeprecationWarning: invalid escape sequence \m
+  """Returns the 'measure' of stem, per definition in the paper
+./nltk/ccg/combinator.py:217: DeprecationWarning: invalid escape sequence \Y
+  """
+./nltk/classify/maxent.py:1290: DeprecationWarning: invalid escape sequence \ 
+  """
+./nltk/parse/chart.py:1021: DeprecationWarning: invalid escape sequence \*
+  u"""

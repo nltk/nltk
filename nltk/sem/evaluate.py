@@ -249,7 +249,7 @@ def read_valuation(s, encoding=None):
 
 
 class Assignment(dict):
-    """
+    r"""
     A dictionary which represents an assignment of values to variables.
 
     An assigment can only assign values from its domain.

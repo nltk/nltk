@@ -64,7 +64,7 @@ class ChunkString(object):
     _CHUNK = r"(\{%s+?\})+?" % CHUNK_TAG
     _CHINK = r"(%s+?)+?" % CHUNK_TAG
     _VALID = re.compile(r"^(\{?%s\}?)*?$" % CHUNK_TAG)
-    _BRACKETS = re.compile("[^\{\}]+")
+    _BRACKETS = re.compile(r"[^\{\}]+")
     _BALANCED_BRACKETS = re.compile(r"(\{\})*$")
 
     def __init__(self, chunk_struct, debug_level=1):
@@ -209,7 +209,7 @@ class ChunkString(object):
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
-        s = re.sub("\{\}", "", s)
+        s = re.sub(r"\{\}", "", s)
 
         # Make sure that the transformation was legal.
         if self._debug > 1:
@@ -420,7 +420,7 @@ class ChunkRule(RegexpChunkRule):
             "(?P<chunk>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHINK_PATTERN)
         )
-        RegexpChunkRule.__init__(self, regexp, "{\g<chunk>}", descr)
+        RegexpChunkRule.__init__(self, regexp, r"{\g<chunk>}", descr)
 
     def __repr__(self):
         """
@@ -465,7 +465,7 @@ class ChinkRule(RegexpChunkRule):
             "(?P<chink>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHUNK_PATTERN)
         )
-        RegexpChunkRule.__init__(self, regexp, "}\g<chink>{", descr)
+        RegexpChunkRule.__init__(self, regexp, r"}\g<chink>{", descr)
 
     def __repr__(self):
         """
@@ -504,8 +504,8 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile("\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
-        RegexpChunkRule.__init__(self, regexp, "\g<chunk>", descr)
+        regexp = re.compile(r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+        RegexpChunkRule.__init__(self, regexp, r"\g<chunk>", descr)
 
     def __repr__(self):
         """
@@ -569,7 +569,7 @@ class MergeRule(RegexpChunkRule):
                 tag_pattern2re_pattern(right_tag_pattern),
             )
         )
-        RegexpChunkRule.__init__(self, regexp, "\g<left>", descr)
+        RegexpChunkRule.__init__(self, regexp, r"\g<left>", descr)
 
     def __repr__(self):
         """
@@ -702,13 +702,13 @@ class ExpandLeftRule(RegexpChunkRule):
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile(
-            "(?P<left>%s)\{(?P<right>%s)"
+            r"(?P<left>%s)\{(?P<right>%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
                 tag_pattern2re_pattern(right_tag_pattern),
             )
         )
-        RegexpChunkRule.__init__(self, regexp, "{\g<left>\g<right>", descr)
+        RegexpChunkRule.__init__(self, regexp, r"{\g<left>\g<right>", descr)
 
     def __repr__(self):
         """
@@ -772,13 +772,13 @@ class ExpandRightRule(RegexpChunkRule):
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile(
-            "(?P<left>%s)\}(?P<right>%s)"
+            r"(?P<left>%s)\}(?P<right>%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
                 tag_pattern2re_pattern(right_tag_pattern),
             )
         )
-        RegexpChunkRule.__init__(self, regexp, "\g<left>\g<right>}", descr)
+        RegexpChunkRule.__init__(self, regexp, r"\g<left>\g<right>}", descr)
 
     def __repr__(self):
         """
@@ -890,7 +890,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(
-    r"^((%s|<%s>)*)$" % ("([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", "[^\{\}<>]+")
+    r"^((%s|<%s>)*)$" % (r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
 )
 
 
@@ -1130,7 +1130,7 @@ class RegexpChunkParser(ChunkParserI):
 
 
 class RegexpParser(ChunkParserI):
-    """
+    r"""
     A grammar based chunk parser.  ``chunk.RegexpParser`` uses a set of
     regular expression patterns to specify the behavior of the parser.
     The chunking of the text is encoded using a ``ChunkString``, and

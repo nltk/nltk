@@ -6,7 +6,7 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
-"""
+r"""
 Overview
 ========
 
@@ -700,7 +700,7 @@ def make_lex(symbols):
 
 """
     lex.append(header)
-    template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
+    template = r"PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
 
     for s in symbols:
         parts = s.split("_")
