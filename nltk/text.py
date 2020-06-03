@@ -567,7 +567,7 @@ class Text(object):
         self._tokenized_sents = [
             sent.split(" ") for sent in sent_tokenize(" ".join(self.tokens))
         ]
-        if not hasattr(self, "trigram_model"):
+        if not hasattr(self, "_trigram_model"):
             print("Building ngram index...", file=sys.stderr)
             self._trigram_model = self._train_default_ngram_lm(
                 self._tokenized_sents, n=3
