@@ -171,8 +171,8 @@ class AbstractLazySequence(object):
             # Use iterate_from to extract it.
             try:
                 return next(self.iterate_from(i))
-            except StopIteration:
-                raise IndexError("index out of range")
+            except StopIteration as e:
+                raise IndexError("index out of range") from e
 
     def __iter__(self):
         """Return an iterator that generates the tokens in the corpus
@@ -464,8 +464,8 @@ class LazyMap(AbstractLazySequence):
             # Calculate the value
             try:
                 val = next(self.iterate_from(index))
-            except StopIteration:
-                raise IndexError("index out of range")
+            except StopIteration as e:
+                raise IndexError("index out of range") from e
             # Update the cache
             if self._cache is not None:
                 if len(self._cache) > self._cache_size:
