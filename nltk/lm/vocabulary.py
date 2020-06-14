@@ -136,18 +136,15 @@ class Vocabulary:
         :param unk_label: Label for marking words not part of vocabulary.
 
         """
-        if isinstance(counts, Counter):
-            self.counts = counts
-        else:
-            self.counts = Counter()
-            if isinstance(counts, Iterable):
-                self.counts.update(counts)
         self.unk_label = unk_label
         if unk_cutoff < 1:
             raise ValueError(
                 "Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff)
             )
         self._cutoff = unk_cutoff
+
+        self.counts = Counter()
+        self.update(counts if counts is not None else "")
 
     @property
     def cutoff(self):
@@ -165,6 +162,7 @@ class Vocabulary:
 
         """
         self.counts.update(*counter_args, **counter_kwargs)
+        self._len = sum(1 for _ in self)
 
     def lookup(self, words):
         """Look up one or more words in the vocabulary.
@@ -208,7 +206,7 @@ class Vocabulary:
 
     def __len__(self):
         """Computing size of vocabulary reflects the cutoff."""
-        return sum(1 for _ in self)
+        return self._len
 
     def __eq__(self, other):
         return (
