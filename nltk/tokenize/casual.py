@@ -241,7 +241,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
         if number is not None:
             try:
                 return chr(number)
-            except ValueError:
+            except ValueError, OverflowError:
                 pass
 
         return "" if remove_illegal else match.group(0)
