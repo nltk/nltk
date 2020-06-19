@@ -1387,8 +1387,8 @@ warnings(True) to display corpus consistency warnings when loading data
             # build the index
             self._buildcorpusindex()
             xmlfname = self._fulltext_idx[fn_docid].filename
-        except KeyError:  # probably means that fn_docid was not in the index
-            raise FramenetError("Unknown document id: {0}".format(fn_docid))
+        except KeyError as e:  # probably means that fn_docid was not in the index
+            raise FramenetError("Unknown document id: {0}".format(fn_docid)) from e
 
         # construct the path name for the xml file containing the document info
         locpath = os.path.join("{0}".format(self._root), self._fulltext_dir, xmlfname)
@@ -1438,8 +1438,8 @@ warnings(True) to display corpus consistency warnings when loading data
         except TypeError:
             self._buildframeindex()
             name = self._frame_idx[fn_fid]["name"]
-        except KeyError:
-            raise FramenetError("Unknown frame id: {0}".format(fn_fid))
+        except KeyError as e:
+            raise FramenetError("Unknown frame id: {0}".format(fn_fid)) from e
 
         return self.frame_by_name(name, ignorekeys, check_cache=False)
 
@@ -1483,8 +1483,8 @@ warnings(True) to display corpus consistency warnings when loading data
         # Grab the xml for the frame
         try:
             elt = XMLCorpusView(locpath, "frame")[0]
-        except IOError:
-            raise FramenetError("Unknown frame: {0}".format(fn_fname))
+        except IOError as e:
+            raise FramenetError("Unknown frame: {0}".format(fn_fname)) from e
 
         fentry = self._handle_frame_elt(elt, ignorekeys)
         assert fentry
@@ -1827,8 +1827,8 @@ warnings(True) to display corpus consistency warnings when loading data
 
         try:
             elt = XMLCorpusView(locpath, "lexUnit")[0]
-        except IOError:
-            raise FramenetError("Unknown LU id: {0}".format(fn_luid))
+        except IOError as e:
+            raise FramenetError("Unknown LU id: {0}".format(fn_luid)) from e
 
         lu2 = self._handle_lexunit_elt(elt, ignorekeys)
         lu.URL = self._fnweb_url + "/" + self._lu_dir + "/" + fname

@@ -371,7 +371,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        stream = GzipFile(self._path, "rb")    
+        stream = GzipFile(self._path, "rb")
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -403,7 +403,7 @@ class ZipFilePathPointer(PathPointer):
 
             try:
                 zipfile.getinfo(entry)
-            except Exception:
+            except Exception as e:
                 # Sometimes directories aren't explicitly listed in
                 # the zip file.  So if `entry` is a directory name,
                 # then check if the zipfile contains any files that
@@ -416,7 +416,7 @@ class ZipFilePathPointer(PathPointer):
                     # Otherwise, complain.
                     raise IOError(
                         "Zipfile %r does not contain %r" % (zipfile.filename, entry)
-                    )
+                    ) from e
         self._zipfile = zipfile
         self._entry = entry
 

@@ -126,8 +126,8 @@ def setup_module(module):
 
     try:
         import sklearn
-    except ImportError:
-        raise SkipTest("scikit-learn is not installed")
+    except ImportError as e:
+        raise SkipTest("scikit-learn is not installed") from e
 
 
 if __name__ == "__main__":
