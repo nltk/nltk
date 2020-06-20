@@ -459,10 +459,10 @@ class SyntaxCorpusReader(CorpusReader):
     # { Block Readers
 
     def _read_word_block(self, stream):
-        return list(chain(*self._read_sent_block(stream)))
+        return list(chain.from_iterable(self._read_sent_block(stream)))
 
     def _read_tagged_word_block(self, stream, tagset=None):
-        return list(chain(*self._read_tagged_sent_block(stream, tagset)))
+        return list(chain.from_iterable(self._read_tagged_sent_block(stream, tagset)))
 
     def _read_sent_block(self, stream):
         return list(filter(None, [self._word(t) for t in self._read_block(stream)]))
