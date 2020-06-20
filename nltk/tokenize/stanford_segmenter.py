@@ -158,12 +158,12 @@ class StanfordSegmenter(TokenizerI):
                     verbose=False,
                     env_vars=("STANFORD_MODELS",),
                 )
-            except LookupError:
+            except LookupError as e:
                 raise LookupError(
                     "Could not find '%s' (tried using env. "
                     "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)"
                     % path_to_dict
-                )
+                ) from e
 
             sihan_dir = "./data/"
             try:
@@ -174,11 +174,11 @@ class StanfordSegmenter(TokenizerI):
                     env_vars=("STANFORD_SEGMENTER",),
                 )
                 self._sihan_corpora_dict = os.path.join(path_to_sihan_dir, sihan_dir)
-            except LookupError:
+            except LookupError as e:
                 raise LookupError(
                     "Could not find '%s' (tried using the "
                     "STANFORD_SEGMENTER environment variable)" % sihan_dir
-                )
+                ) from e
         else:
             raise LookupError("Unsupported language {}".format(lang))
 
@@ -190,11 +190,11 @@ class StanfordSegmenter(TokenizerI):
                 verbose=False,
                 env_vars=("STANFORD_MODELS", "STANFORD_SEGMENTER"),
             )
-        except LookupError:
+        except LookupError as e:
             raise LookupError(
                 "Could not find '%s' (tried using env. "
                 "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % model
-            )
+            ) from e
 
     def tokenize(self, s):
         super().tokenize(s)
@@ -306,4 +306,4 @@ def setup_module(module):
     except LookupError as e:
         raise SkipTest(
             "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
-        )
+        ) from e

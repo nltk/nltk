@@ -101,11 +101,11 @@ def _ensure_ascii(words):
     try:
         for i, word in enumerate(words):
             word.decode("ascii")
-    except UnicodeDecodeError:
+    except UnicodeDecodeError as e:
         raise ValueError(
             "Token %d (%r) is non-ASCII. BLLIP Parser "
             "currently doesn't support non-ASCII inputs." % (i, word)
-        )
+        ) from e
 
 
 def _scored_parse_to_nltk_tree(scored_parse):
@@ -305,8 +305,8 @@ def setup_module(module):
 
     try:
         _ensure_bllip_import_or_error()
-    except ImportError:
+    except ImportError as e:
         raise SkipTest(
             "doctests from nltk.parse.bllip are skipped because "
             "the bllipparser module is not installed"
-        )
+        ) from e

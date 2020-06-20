@@ -289,8 +289,10 @@ def align_tokens(tokens, sentence):
     for token in tokens:
         try:
             start = sentence.index(token, point)
-        except ValueError:
-            raise ValueError('substring "{}" not found in "{}"'.format(token, sentence))
+        except ValueError as e:
+            raise ValueError(
+                'substring "{}" not found in "{}"'.format(token, sentence)
+            ) from e
         point = start + len(token)
         offsets.append((start, point))
     return offsets

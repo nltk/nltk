@@ -242,7 +242,7 @@ def read_str(s, start_position):
     try:
         return eval(s[start_position : match.end()]), match.end()
     except ValueError as e:
-        raise ReadError("invalid string (%s)" % e)
+        raise ReadError("invalid string (%s)" % e) from e
 
 
 _READ_INT_RE = re.compile(r"-?\d+")

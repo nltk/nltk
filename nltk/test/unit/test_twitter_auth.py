@@ -10,7 +10,7 @@ from nose import SkipTest
 try:
     import twython
 except ImportError as e:
-    raise SkipTest("The twython library has not been installed.")
+    raise SkipTest("The twython library has not been installed.") from e
 
 from nltk.twitter import Authenticate
 

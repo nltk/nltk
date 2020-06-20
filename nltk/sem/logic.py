@@ -153,7 +153,7 @@ class LogicParser(object):
                 raise UnexpectedTokenException(self._currentIndex + 1, self.token(0))
         except LogicalExpressionException as e:
             msg = "%s\n%s\n%s^" % (e, data, " " * mapping[e.index - 1])
-            raise LogicalExpressionException(None, msg)
+            raise LogicalExpressionException(None, msg) from e
 
         if self.type_check:
             result.typecheck(signature)
@@ -269,8 +269,8 @@ class LogicParser(object):
             else:
                 tok = self._buffer[self._currentIndex + location]
             return tok
-        except IndexError:
-            raise ExpectedMoreTokensException(self._currentIndex + 1)
+        except IndexError as e:
+            raise ExpectedMoreTokensException(self._currentIndex + 1) from e
 
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
@@ -279,10 +279,10 @@ class LogicParser(object):
         """Parse the next complete expression from the stream and return it."""
         try:
             tok = self.token()
-        except ExpectedMoreTokensException:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(
                 self._currentIndex + 1, message="Expression expected."
-            )
+            ) from e
 
         accum = self.handle(tok, context)
 
@@ -360,7 +360,7 @@ class LogicParser(object):
         try:
             tok = self.token()
         except ExpectedMoreTokensException as e:
-            raise ExpectedMoreTokensException(e.index, "Variable expected.")
+            raise ExpectedMoreTokensException(e.index, "Variable expected.") from e
         if isinstance(self.make_VariableExpression(tok), ConstantExpression):
             raise LogicalExpressionException(
                 self._currentIndex,
@@ -558,7 +558,7 @@ class LogicParser(object):
         except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(
                 e.index, message="Expected token '%s'." % expected
-            )
+            ) from e
 
         if isinstance(expected, list):
             if tok not in expected:
@@ -608,8 +608,8 @@ def read_logic(s, logic_parser=None, encoding=None):
             continue
         try:
             statements.append(logic_parser.parse(line))
-        except LogicalExpressionException:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+        except LogicalExpressionException as e:
+            raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
     return statements
 
 
@@ -1271,7 +1271,7 @@ class ApplicationExpression(Expression):
             self.function._set_type(
                 ComplexType(self.argument.type, other_type), signature
             )
-        except TypeResolutionException:
+        except TypeResolutionException as e:
             raise TypeException(
                 "The function '%s' is of type '%s' and cannot be applied "
                 "to '%s' of type '%s'.  Its argument must match type '%s'."
@@ -1282,7 +1282,7 @@ class ApplicationExpression(Expression):
                     self.argument.type,
                     self.function.type.first,
                 )
-            )
+            ) from e
 
     def findtype(self, variable):
         """:see Expression.findtype()"""

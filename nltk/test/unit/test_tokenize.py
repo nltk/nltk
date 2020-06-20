@@ -42,7 +42,7 @@ class TestTokenize(unittest.TestCase):
             'français',
         ]
         self.assertEqual(tokens, expected)
-        
+
     def test_sonority_sequencing_syllable_tokenizer(self):
         """
         Test SyllableTokenizer tokenizer.
@@ -75,7 +75,7 @@ class TestTokenize(unittest.TestCase):
                 'المشكلات',
             ]
         except LookupError as e:
-            raise SkipTest(str(e))
+            raise SkipTest(str(e)) from e
 
     def test_stanford_segmenter_chinese(self):
         """
@@ -88,7 +88,7 @@ class TestTokenize(unittest.TestCase):
             segmented_sent = seg.segment(sent.split())
             assert segmented_sent.split() == ['这', '是', '斯坦福', '中文', '分词器', '测试']
         except LookupError as e:
-            raise SkipTest(str(e))
+            raise SkipTest(str(e)) from e
 
     def test_phone_tokenizer(self):
         """
@@ -108,23 +108,23 @@ class TestTokenize(unittest.TestCase):
         expected = ['(', '393', ')', "928 -3010"]
         result = tokenizer.tokenize(test2)
         self.assertEqual(result, expected)
-        
+
     def test_pad_asterisk(self):
         """
         Test padding of asterisk for word tokenization.
         """
         text = "This is a, *weird sentence with *asterisks in it."
-        expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence', 
+        expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence',
                     'with', '*', 'asterisks', 'in', 'it', '.']
         self.assertEqual(word_tokenize(text), expected)
-        
+
     def test_pad_dotdot(self):
         """
         Test padding of dotdot* for word tokenization.
         """
         text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots....."
-        expected = ['Why', 'did', 'dotdot', '..', 'not', 'get', 
-                    'tokenized', 'but', 'dotdotdot', '...', 'did', '?', 
+        expected = ['Why', 'did', 'dotdot', '..', 'not', 'get',
+                    'tokenized', 'but', 'dotdotdot', '...', 'did', '?',
                     'How', 'about', 'manydots', '.....']
         self.assertEqual(word_tokenize(text), expected)
 
@@ -382,12 +382,12 @@ class TestTokenize(unittest.TestCase):
         """
         Test word_tokenize function
         """
-        
+
         sentence = "The 'v', I've been fooled but I'll seek revenge."
-        expected = ['The', "'", 'v', "'", ',', 'I', "'ve", 'been', 'fooled', 
+        expected = ['The', "'", 'v', "'", ',', 'I', "'ve", 'been', 'fooled',
                     'but', 'I', "'ll", 'seek', 'revenge', '.']
         self.assertEqual(word_tokenize(sentence), expected)
-        
+
         sentence = "'v' 're'"
         expected = ["'", 'v', "'", "'re", "'"]
         self.assertEqual(word_tokenize(sentence), expected)

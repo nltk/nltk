@@ -240,8 +240,8 @@ def setup_module(module):
 
     try:
         StanfordPOSTagger("english-bidirectional-distsim.tagger")
-    except LookupError:
+    except LookupError as e:
         raise SkipTest(
             "Doctests from nltk.tag.stanford are skipped because one \
                        of the stanford jars cannot be found."
-        )
+        ) from e

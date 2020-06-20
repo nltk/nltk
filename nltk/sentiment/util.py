@@ -309,11 +309,11 @@ def split_train_test(all_instances, n=None):
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     try:
         import matplotlib.pyplot as plt
-    except ImportError:
+    except ImportError as e:
         raise ImportError(
             "The plot function requires matplotlib to be installed."
             "See http://matplotlib.org/"
-        )
+        ) from e
 
     plt.locator_params(axis="y", nbins=3)
     axes = plt.axes()

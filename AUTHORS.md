@@ -262,6 +262,7 @@
 - Jacob Weightman <https://github.com/jacobdweightman>
 - Bonifacio de Oliveira <https://github.com/Bonifacio2>
 - Vassilis Palassopoulos <https://github.com/palasso>
+- Ram Rachum <https://github.com/cool-RR>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

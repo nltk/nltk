@@ -77,10 +77,10 @@ class GlueFormula(object):
             return_glue = linearlogic.ApplicationExpression(
                 self.glue, arg.glue, arg.indices
             )
-        except linearlogic.LinearLogicApplicationException:
+        except linearlogic.LinearLogicApplicationException as e:
             raise linearlogic.LinearLogicApplicationException(
                 "'%s' applied to '%s'" % (self.simplify(), arg.simplify())
-            )
+            ) from e
 
         arg_meaning_abstracted = arg.meaning
         if return_indices:

@@ -7,5 +7,5 @@ def setup_module(module):
 
     try:
         import numpy
-    except ImportError:
-        raise SkipTest("segmentation.doctest requires numpy")
+    except ImportError as e:
+        raise SkipTest("segmentation.doctest requires numpy") from e

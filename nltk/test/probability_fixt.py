@@ -10,5 +10,5 @@ def setup_module(module):
 
     try:
         import numpy
-    except ImportError:
-        raise SkipTest("probability.doctest requires numpy")
+    except ImportError as e:
+        raise SkipTest("probability.doctest requires numpy") from e

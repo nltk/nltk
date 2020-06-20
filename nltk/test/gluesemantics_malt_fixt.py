@@ -7,5 +7,5 @@ def setup_module(module):
 
     try:
         depparser = MaltParser("maltparser-1.7.2")
-    except LookupError:
-        raise SkipTest("MaltParser is not available")
+    except LookupError as e:
+        raise SkipTest("MaltParser is not available") from e

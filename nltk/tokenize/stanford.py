@@ -123,7 +123,7 @@ def setup_module(module):
 
     try:
         StanfordTokenizer()
-    except LookupError:
+    except LookupError as e:
         raise SkipTest(
             "doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"
-        )
+        ) from e

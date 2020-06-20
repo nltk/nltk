@@ -141,11 +141,11 @@ class _LanguageSpecificStemmer(StemmerI):
             try:
                 for word in stopwords.words(language):
                     self.stopwords.add(word)
-            except IOError:
+            except IOError as e:
                 raise ValueError(
                     "{!r} has no list of stopwords. Please set"
                     " 'ignore_stopwords' to 'False'.".format(self)
-                )
+                ) from e
 
     def __repr__(self):
         """

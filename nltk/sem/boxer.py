@@ -982,7 +982,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
         except Exception as e:
-            raise LogicalExpressionException(self._currentIndex, str(e))
+            raise LogicalExpressionException(self._currentIndex, str(e)) from e
         assert False, repr(tok)
 
     def nullableIntToken(self):
@@ -993,7 +993,7 @@ class BoxerDrsParser(DrtParser):
         try:
             return self.token()
         except ExpectedMoreTokensException as e:
-            raise ExpectedMoreTokensException(e.index, "Variable expected.")
+            raise ExpectedMoreTokensException(e.index, "Variable expected.") from e
 
 
 class AbstractBoxerDrs(object):

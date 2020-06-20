@@ -2425,11 +2425,15 @@ def _find_packages(root):
                 try:
                     zf = zipfile.ZipFile(zipfilename)
                 except Exception as e:
-                    raise ValueError("Error reading file %r!\n%s" % (zipfilename, e))
+                    raise ValueError(
+                        "Error reading file %r!\n%s" % (zipfilename, e)
+                    ) from e
                 try:
                     pkg_xml = ElementTree.parse(xmlfilename).getroot()
                 except Exception as e:
-                    raise ValueError("Error reading file %r!\n%s" % (xmlfilename, e))
+                    raise ValueError(
+                        "Error reading file %r!\n%s" % (xmlfilename, e)
+                    ) from e
 
                 # Check that the UID matches the filename
                 uid = os.path.split(xmlfilename[:-4])[1]

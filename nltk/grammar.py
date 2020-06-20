@@ -1076,8 +1076,9 @@ class DependencyGrammar(object):
                 continue
             try:
                 productions += _read_dependency_production(line)
-            except ValueError:
-                raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+            except ValueError as e:
+                raise ValueError("Unable to parse line %s: %s" %
+                                 (linenum, line)) from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1448,7 +1449,8 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s\n%s" % (linenum + 1, line, e))
+            raise ValueError("Unable to parse line %s: %s\n%s" %
+                             (linenum + 1, line, e)) from e
 
     if not productions:
         raise ValueError("No productions found!")
