@@ -734,8 +734,8 @@ def set_proxy(proxy, user=None, password=""):
         # Try and find the system proxy settings
         try:
             proxy = getproxies()["http"]
-        except KeyError:
-            raise ValueError("Could not detect default proxy settings")
+        except KeyError as e:
+            raise ValueError("Could not detect default proxy settings") from e
 
     # Set up the proxy handler
     proxy_handler = ProxyHandler({"https": proxy, "http": proxy})

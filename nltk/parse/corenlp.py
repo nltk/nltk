@@ -756,7 +756,7 @@ def setup_module(module):
     try:
         server = CoreNLPServer(port=9000)
     except LookupError as e:
-        raise SkipTest("Could not instantiate CoreNLPServer.")
+        raise SkipTest("Could not instantiate CoreNLPServer.") from e
 
     try:
         server.start()
@@ -765,7 +765,7 @@ def setup_module(module):
             "Skipping CoreNLP tests because the server could not be started. "
             "Make sure that the 9000 port is free. "
             "{}".format(e.strerror)
-        )
+        ) from e
 
 
 @skip("Skipping all CoreNLP tests.")

@@ -206,8 +206,8 @@ class DependencyGraph(object):
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
             )
-        except OSError:
-            raise Exception("Cannot find the dot binary from Graphviz package")
+        except OSError as e:
+            raise Exception("Cannot find the dot binary from Graphviz package") from e
         out, err = process.communicate(dot_string)
         if err:
             raise Exception(
@@ -343,11 +343,11 @@ class DependencyGraph(object):
             if cell_extractor is None:
                 try:
                     cell_extractor = extractors[cell_number]
-                except KeyError:
+                except KeyError as e:
                     raise ValueError(
                         "Number of tab-delimited fields ({0}) not supported by "
                         "CoNLL(10) or Malt-Tab(4) format".format(cell_number)
-                    )
+                    ) from e
 
             try:
                 index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(

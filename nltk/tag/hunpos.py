@@ -145,5 +145,5 @@ def setup_module(module):
 
     try:
         HunposTagger("en_wsj.model")
-    except LookupError:
-        raise SkipTest("HunposTagger is not available")
+    except LookupError as e:
+        raise SkipTest("HunposTagger is not available") from e

@@ -243,8 +243,8 @@ def read_valuation(s, encoding=None):
             continue
         try:
             statements.append(_read_valuation_line(line))
-        except ValueError:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+        except ValueError as e:
+            raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
     return Valuation(statements)
 
 

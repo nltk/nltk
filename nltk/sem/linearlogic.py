@@ -194,8 +194,8 @@ class VariableExpression(AtomicExpression):
                 return bindings
             else:
                 return bindings + BindingDict([(self, other)])
-        except VariableBindingException:
-            raise UnificationException(self, other, bindings)
+        except VariableBindingException as e:
+            raise UnificationException(self, other, bindings) from e
 
 
 class ImpExpression(Expression):
@@ -230,8 +230,8 @@ class ImpExpression(Expression):
                 + self.antecedent.unify(other.antecedent, bindings)
                 + self.consequent.unify(other.consequent, bindings)
             )
-        except VariableBindingException:
-            raise UnificationException(self, other, bindings)
+        except VariableBindingException as e:
+            raise UnificationException(self, other, bindings) from e
 
     def compile_pos(self, index_counter, glueFormulaFactory):
         """
@@ -314,7 +314,7 @@ class ApplicationExpression(Expression):
         except UnificationException as e:
             raise LinearLogicApplicationException(
                 "Cannot apply %s to %s. %s" % (function_simp, argument_simp, e)
-            )
+            ) from e
 
         # If you are running it on complied premises, more conditions apply
         if argument_indices:
@@ -435,11 +435,11 @@ class BindingDict(object):
             for v in other.d:
                 combined[v] = other.d[v]
             return combined
-        except VariableBindingException:
+        except VariableBindingException as e:
             raise VariableBindingException(
                 "Attempting to add two contradicting"
                 " VariableBindingsLists: %s, %s" % (self, other)
-            )
+            ) from e
 
     def __ne__(self, other):
         return not self == other
