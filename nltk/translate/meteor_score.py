@@ -162,15 +162,13 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wo
     word_match = []
     for i in range(len(enum_hypothesis_list))[::-1]:
         hypothesis_syns = set(
-            chain(
-                *[
-                    [
-                        lemma.name()
-                        for lemma in synset.lemmas()
-                        if lemma.name().find("_") < 0
-                    ]
-                    for synset in wordnet.synsets(enum_hypothesis_list[i][1])
-                ]
+            chain.from_iterable(
+                (
+                    lemma.name()
+                    for lemma in synset.lemmas()
+                    if lemma.name().find("_") < 0
+                )
+                for synset in wordnet.synsets(enum_hypothesis_list[i][1])
             )
         ).union({enum_hypothesis_list[i][1]})
         for j in range(len(enum_reference_list))[::-1]:

@@ -125,7 +125,7 @@ def generate_chomsky(times=5, line_length=72):
         phraselist = list(map(str.strip, part.splitlines()))
         random.shuffle(phraselist)
         parts.append(phraselist)
-    output = chain(*islice(zip(*parts), 0, times))
+    output = chain.from_iterable(islice(zip(*parts), 0, times))
     print(textwrap.fill(" ".join(output), line_length))
 
 
