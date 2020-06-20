@@ -323,8 +323,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
             raise ValueError("vnclass identifier %r not found" % shortid)
         try:
             return self._shortid_to_longid[shortid]
-        except KeyError:
-            raise ValueError("vnclass identifier %r not found" % shortid)
+        except KeyError as e:
+            raise ValueError("vnclass identifier %r not found" % shortid) from e
 
     def shortid(self, longid):
         """Returns shortid of a VerbNet class

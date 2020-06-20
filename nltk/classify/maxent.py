@@ -1452,7 +1452,7 @@ def train_maxent_classifier_with_megam(
             )
         os.close(fd)
     except (OSError, IOError, ValueError) as e:
-        raise ValueError("Error while creating megam training file: %s" % e)
+        raise ValueError("Error while creating megam training file: %s" % e) from e
 
     # Run megam on the training file.
     options = []

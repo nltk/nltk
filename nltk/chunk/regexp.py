@@ -388,8 +388,8 @@ class RegexpChunkRule(object):
                 return ChunkRuleWithContext(left, chunk, right, comment)
             else:
                 raise ValueError("Illegal chunk pattern: %s" % rule)
-        except (ValueError, re.error):
-            raise ValueError("Illegal chunk pattern: %s" % rule)
+        except (ValueError, re.error) as e:
+            raise ValueError("Illegal chunk pattern: %s" % rule) from e
 
 
 class ChunkRule(RegexpChunkRule):
@@ -1202,8 +1202,8 @@ class RegexpParser(ChunkParserI):
             )
             try:
                 grammar = list(grammar)
-            except:
-                raise TypeError(type_err)
+            except BaseException as e:
+                raise TypeError(type_err) from e
             for elt in grammar:
                 if not isinstance(elt, RegexpChunkParser):
                     raise TypeError(type_err)

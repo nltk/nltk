@@ -60,8 +60,8 @@ class SentiWordNetCorpusReader(CorpusReader):
             fields = [field.strip() for field in re.split(r"\t+", line)]
             try:
                 pos, offset, pos_score, neg_score, synset_terms, gloss = fields
-            except:
-                raise ValueError("Line %s formatted incorrectly: %s\n" % (i, line))
+            except BaseException as e:
+                raise ValueError("Line %s formatted incorrectly: %s\n" % (i, line)) from e
             if pos and offset:
                 offset = int(offset)
                 self._db[(pos, offset)] = (float(pos_score), float(neg_score))

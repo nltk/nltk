@@ -1230,7 +1230,7 @@ class WordNetCorpusReader(CorpusReader):
                 # raise more informative error with file name and line number
                 except (AssertionError, ValueError) as e:
                     tup = ("index.%s" % suffix), (i + 1), e
-                    raise WordNetError("file %s, line %i: %s" % tup)
+                    raise WordNetError("file %s, line %i: %s" % tup) from e
 
                 # map lemmas and parts of speech to synsets
                 self._lemma_pos_offset_map[lemma][pos] = synset_offsets
@@ -1324,17 +1324,17 @@ class WordNetCorpusReader(CorpusReader):
         # get the offset for this synset
         try:
             offset = self._lemma_pos_offset_map[lemma][pos][synset_index]
-        except KeyError:
+        except KeyError as e:
             message = "no lemma %r with part of speech %r"
-            raise WordNetError(message % (lemma, pos))
-        except IndexError:
+            raise WordNetError(message % (lemma, pos)) from e
+        except IndexError as e:
             n_senses = len(self._lemma_pos_offset_map[lemma][pos])
             message = "lemma %r with part of speech %r has only %i %s"
             if n_senses == 1:
                 tup = lemma, pos, n_senses, "sense"
             else:
                 tup = lemma, pos, n_senses, "senses"
-            raise WordNetError(message % tup)
+            raise WordNetError(message % tup) from e
 
         # load synset information from the appropriate file
         synset = self.synset_from_pos_and_offset(pos, offset)
@@ -1477,7 +1477,7 @@ class WordNetCorpusReader(CorpusReader):
 
         # raise a more informative error with line text
         except ValueError as e:
-            raise WordNetError("line %r: %s" % (data_file_line, e))
+            raise WordNetError("line %r: %s" % (data_file_line, e)) from e
 
         # set sense keys for Lemma objects - note that this has to be
         # done afterwards so that the relations are available
@@ -2135,9 +2135,9 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
 def information_content(synset, ic):
     try:
         icpos = ic[synset._pos]
-    except KeyError:
+    except KeyError as e:
         msg = "Information content file has no entries for part-of-speech: %s"
-        raise WordNetError(msg % synset._pos)
+        raise WordNetError(msg % synset._pos) from e
 
     counts = icpos[synset._offset]
     if counts == 0:
