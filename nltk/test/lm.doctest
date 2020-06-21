@@ -129,3 +129,19 @@ For speed take only the first 100 sentences of reuters. Shouldn't affect the tes
     >>> lm.fit(train_data, vocab_data)
     >>> lm.score("said", ("",)) < 1
     True
+
+
+
+
+Issue 2562
+---------
+https://github.com/nltk/nltk/issues/2562
+
+
+Test that everygrams works for iterables.
+    >>> from nltk import everygrams
+    >>> sent = 'a b c'.split()
+    >>> list(everygrams(iter(sent)))
+    [('a',), ('a', 'b'), ('a', 'b', 'c'), ('b',), ('b', 'c'), ('c',)]
+    >>> list(everygrams(iter(sent), max_len=2))
+    [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
