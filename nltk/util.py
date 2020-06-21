@@ -574,15 +574,23 @@ def trigrams(sequence, **kwargs):
         yield item
 
 
-def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
+def everygrams(
+    sequence,
+    min_len=1,
+    max_len=-1,
+    pad_left=False,
+    pad_right=False,
+    left_pad_symbol=None,
+    right_pad_symbol=None,
+):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
 
         >>> sent = 'a b c'.split()
         >>> list(everygrams(sent))
-        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
+        [('a',), ('a', 'b'), ('a', 'b', 'c'), ('b',), ('b', 'c'), ('c',)]
         >>> list(everygrams(sent, max_len=2))
-        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c')]
+        [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
 
     :param sequence: the source data to be converted into trigrams
     :type sequence: sequence or iter
@@ -593,11 +601,35 @@ def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
     :rtype: iter(tuple)
     """
 
+    # Get max_len for padding.
     if max_len == -1:
-        max_len = len(sequence)
-    for n in range(min_len, max_len + 1):
-        for ng in ngrams(sequence, n, **kwargs):
-            yield ng
+        try:
+            max_len = len(sequence)
+        except TypeError:
+            sequence = list(sequence)
+            max_len = len(sequence)
+
+    # Pad if indicated using max_len.
+    sequence = pad_sequence(
+        sequence, max_len, pad_left, pad_right, left_pad_symbol, right_pad_symbol
+    )
+
+    # Sliding window to store grams.
+    history = list(islice(sequence, max_len))
+
+    # Yield ngrams from sequence.
+    while history:
+        for ngram_len in range(min_len, len(history)+1):
+            yield tuple(history[:ngram_len])
+
+        # Append element to history if sequence has more items.
+        try:
+            history.append(next(sequence))
+        except StopIteration:
+            pass
+
+        del history[0]
+
 
 
 def skipgrams(sequence, n, k, **kwargs):
