@@ -13,16 +13,16 @@ class TestPreprocessing(unittest.TestCase):
     def test_padded_everygram_pipeline(self):
         expected_train = [
             [
-                ("<s>",),
-                ("a",),
-                ("b",),
-                ("c",),
-                ("</s>",),
-                ("<s>", "a"),
-                ("a", "b"),
-                ("b", "c"),
-                ("c", "</s>"),
-            ]
+                 ('<s>',),
+                 ('<s>', 'a'),
+                 ('a',),
+                 ('a', 'b'),
+                 ('b',),
+                 ('b', 'c'),
+                 ('c',),
+                 ('c', '</s>'),
+                 ('</s>',)
+             ]
         ]
         expected_vocab = ["<s>", "a", "b", "c", "</s>"]
         train_data, vocab_data = padded_everygram_pipeline(2, [["a", "b", "c"]])
