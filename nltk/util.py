@@ -592,7 +592,7 @@ def everygrams(
         >>> list(everygrams(sent, max_len=2))
         [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
 
-    :param sequence: the source data to be converted into trigrams
+    :param sequence: the source data to be converted into ngrams
     :type sequence: sequence or iter
     :param min_len: minimum length of the ngrams, aka. n-gram order/degree of ngram
     :type  min_len: int
