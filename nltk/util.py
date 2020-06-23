@@ -471,14 +471,7 @@ def pad_sequence(
 # add a flag to pad the sequence so we get peripheral ngrams?
 
 
-def ngrams(
-    sequence,
-    n,
-    pad_left=False,
-    pad_right=False,
-    left_pad_symbol=None,
-    right_pad_symbol=None,
-):
+def ngrams(sequence, n, **kwargs):
     """
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
@@ -504,34 +497,16 @@ def ngrams(
     :type sequence: sequence or iter
     :param n: the degree of the ngrams
     :type n: int
-    :param pad_left: whether the ngrams should be left-padded
-    :type pad_left: bool
-    :param pad_right: whether the ngrams should be right-padded
-    :type pad_right: bool
-    :param left_pad_symbol: the symbol to use for left padding (default is None)
-    :type left_pad_symbol: any
-    :param right_pad_symbol: the symbol to use for right padding (default is None)
-    :type right_pad_symbol: any
     :rtype: sequence or iter
     """
-    sequence = pad_sequence(
-        sequence, n, pad_left, pad_right, left_pad_symbol, right_pad_symbol
-    )
+    sequence = pad_sequence(sequence, n, **kwargs)
 
-    history = []
-    while n > 1:
-        # PEP 479, prevent RuntimeError from being raised when StopIteration bubbles out of generator
-        try:
-            next_item = next(sequence)
-        except StopIteration:
-            # no more data, terminate the generator
-            return
-        history.append(next_item)
-        n -= 1
-    for item in sequence:
-        history.append(item)
-        yield tuple(history)
-        del history[0]
+    iterables = tee(sequence, n)
+
+    for i, sub_iterable in enumerate(iterables):
+        for _ in range(i):
+            next(sub_iterable, None)
+    return zip(*iterables)
 
 
 def bigrams(sequence, **kwargs):
@@ -574,21 +549,20 @@ def trigrams(sequence, **kwargs):
         yield item
 
 
-def everygrams(
-    sequence,
-    min_len=1,
-    max_len=-1,
-    pad_left=False,
-    pad_right=False,
-    left_pad_symbol=None,
-    right_pad_symbol=None,
-):
+def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
 
         >>> sent = 'a b c'.split()
+
+    New version outputs for everygrams.
         >>> list(everygrams(sent))
         [('a',), ('a', 'b'), ('a', 'b', 'c'), ('b',), ('b', 'c'), ('c',)]
+
+    Old version outputs for everygrams.
+        >>> sorted(everygrams(sent), key=len)
+        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
+
         >>> list(everygrams(sent, max_len=2))
         [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
 
@@ -598,6 +572,10 @@ def everygrams(
     :type  min_len: int
     :param max_len: maximum length of the ngrams (set to length of sequence by default)
     :type  max_len: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
     :rtype: iter(tuple)
     """
 
@@ -610,23 +588,30 @@ def everygrams(
             max_len = len(sequence)
 
     # Pad if indicated using max_len.
-    sequence = pad_sequence(
-        sequence, max_len, pad_left, pad_right, left_pad_symbol, right_pad_symbol
-    )
+    sequence = pad_sequence(sequence, max_len, pad_left, pad_right, **kwargs)
 
     # Sliding window to store grams.
     history = list(islice(sequence, max_len))
 
+    # Prevent ngrams with only the padding symbol.
+    if pad_left:
+        min_len_start = max_len
+    else:
+        min_len_start = min_len
+
     # Yield ngrams from sequence.
     while history:
-        for ngram_len in range(min_len, len(history)+1):
+        for ngram_len in range(min_len_start, len(history)+1):
             yield tuple(history[:ngram_len])
+            min_len_start = max(min_len, min_len_start - 1)
 
         # Append element to history if sequence has more items.
         try:
             history.append(next(sequence))
         except StopIteration:
-            pass
+            # Prevent ngrams with only the padding symbol.
+            if pad_right:
+                return
 
         del history[0]
 
