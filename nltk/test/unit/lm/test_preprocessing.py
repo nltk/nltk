@@ -13,15 +13,15 @@ class TestPreprocessing(unittest.TestCase):
     def test_padded_everygram_pipeline(self):
         expected_train = [
             [
-                 ('<s>',),
-                 ('<s>', 'a'),
-                 ('a',),
-                 ('a', 'b'),
-                 ('b',),
-                 ('b', 'c'),
-                 ('c',),
-                 ('c', '</s>'),
-                 ('</s>',)
+                 ("<s>",),
+                 ("<s>", "a"),
+                 ("a",),
+                 ("a", "b"),
+                 ("b",),
+                 ("b", "c"),
+                 ("c",),
+                 ("c", "</s>"),
+                 ("</s>",)
              ]
         ]
         expected_vocab = ["<s>", "a", "b", "c", "</s>"]
