@@ -200,7 +200,7 @@ class PunktLanguageVars(object):
     def __setstate__(self, state):
         return 1
 
-    sent_end_chars = (".", "?", "!")
+    sent_end_chars = (".", "?", "!", '.\"')
     """Characters which are candidates for sentence boundaries"""
 
     @property
