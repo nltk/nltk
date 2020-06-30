@@ -593,25 +593,17 @@ def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False,
     # Sliding window to store grams.
     history = list(islice(sequence, max_len))
 
-    # Prevent ngrams with only the padding symbol.
-    if pad_left:
-        min_len_start = max_len
-    else:
-        min_len_start = min_len
-
     # Yield ngrams from sequence.
     while history:
-        for ngram_len in range(min_len_start, len(history)+1):
+        for ngram_len in range(min_len, len(history)+1):
             yield tuple(history[:ngram_len])
-            min_len_start = max(min_len, min_len_start - 1)
 
         # Append element to history if sequence has more items.
         try:
             history.append(next(sequence))
         except StopIteration:
             # Prevent ngrams with only the padding symbol.
-            if pad_right:
-                return
+            pass
 
         del history[0]
 
