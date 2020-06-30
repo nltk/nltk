@@ -186,19 +186,29 @@ class ConcordanceIndex(object):
     def find_concordance(self, word, width=80):
         """
         Find all concordance lines given the query word.
+
+        Provided with a list of words, these will be found as a phrase.
         """
-        half_width = (width - len(word) - 2) // 2
+        if isinstance(word, list):
+            phrase = word
+        else:
+            phrase = [word]
+
+        half_width = (width - len(' '.join(word)) - 2) // 2
         context = width // 4  # approx number of words of context
 
         # Find the instances of the word to create the ConcordanceLine
         concordance_list = []
-        offsets = self.offsets(word)
+        offsets = self.offsets(phrase[0])
+        for i, word in enumerate(phrase[1:]):
+            word_offsets = {offset - i - 1 for offset in self.offsets(word)}
+            offsets = sorted(word_offsets.intersection(offsets))
         if offsets:
             for i in offsets:
-                query_word = self._tokens[i]
+                query_word = " ".join(self._tokens[i : i + len(phrase)])
                 # Find the context of query word.
                 left_context = self._tokens[max(0, i - context) : i]
-                right_context = self._tokens[i + 1 : i + context]
+                right_context = self._tokens[i + len(phrase) : i + context]
                 # Create the pretty lines with the query_word in the middle.
                 left_print = " ".join(left_context)[-half_width:]
                 right_print = " ".join(right_context)[:half_width]
@@ -220,8 +230,8 @@ class ConcordanceIndex(object):
     def print_concordance(self, word, width=80, lines=25):
         """
         Print concordance lines given the query word.
-        :param word: The target word
-        :type word: str
+        :param word: The target word or phrase (a list of strings)
+        :type word: str or list
         :param lines: The number of lines to display (default=25)
         :type lines: int
         :param width: The width of each line, in characters (default=80)
@@ -362,8 +372,8 @@ class Text(object):
         Prints a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
 
-        :param word: The target word
-        :type word: str
+        :param word: The target word or phrase (a list of strings)
+        :type word: str or list
         :param width: The width of each line, in characters (default=80)
         :type width: int
         :param lines: The number of lines to display (default=25)
@@ -383,8 +393,8 @@ class Text(object):
         Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
 
-        :param word: The target word
-        :type word: str
+        :param word: The target word or phrase (a list of strings)
+        :type word: str or list
         :param width: The width of each line, in characters (default=80)
         :type width: int
         :param lines: The number of lines to display (default=25)
