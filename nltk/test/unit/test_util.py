@@ -4,11 +4,7 @@ Unit tests for nltk.util.
 """
 
 import unittest
-from nltk.util import (
-    pad_sequence,
-    ngrams,
-    everygrams,
-)
+from nltk.util import everygrams
 
 
 class TestEverygrams(unittest.TestCase):
