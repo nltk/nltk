@@ -610,7 +610,6 @@ def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False,
         try:
             history.append(next(sequence))
         except StopIteration:
-            # Prevent ngrams with only the padding symbol.
             pass
 
         del history[0]
