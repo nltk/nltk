@@ -1,4 +1,4 @@
-include LICENSE.txt INSTALL.txt README.txt MANIFEST.in
+include LICENSE.txt NOTICE.txt INSTALL.txt README.txt MANIFEST.in
 include setup.py
 include nltk/test/*.doctest
 include nltk/VERSION
