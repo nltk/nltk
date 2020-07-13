@@ -194,7 +194,7 @@ class ConcordanceIndex(object):
         else:
             phrase = [word]
 
-        half_width = (width - len(' '.join(word)) - 2) // 2
+        half_width = (width - len(' '.join(phrase)) - 2) // 2
         context = width // 4  # approx number of words of context
 
         # Find the instances of the word to create the ConcordanceLine
