@@ -8,9 +8,7 @@ from nltk.util import everygrams
 
 
 class TestEverygrams(unittest.TestCase):
-    # test_data = 'a b c'.split()
 
-    # @classmethod
     def setUp(self):
         """Form test data for tests."""
         self.test_data = 'a b c'.split()
