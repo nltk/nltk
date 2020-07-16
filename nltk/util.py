@@ -574,7 +574,8 @@ def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False,
         >>> list(everygrams(sent, max_len=2))
         [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
 
-    :param sequence: the source data to be converted into ngrams
+    :param sequence: the source data to be converted into ngrams. If max_len is
+        not provided, this sequence will be loaded into memory
     :type sequence: sequence or iter
     :param min_len: minimum length of the ngrams, aka. n-gram order/degree of ngram
     :type  min_len: int
