@@ -496,14 +496,14 @@ def ngrams(sequence, n, **kwargs):
     :param sequence: the source data to be converted into ngrams
     :type sequence: sequence or iter
     :param n: the degree of the ngrams
-    :type n: int    
-    :param pad_left: whether the ngrams should be left-padded	
-    :type pad_left: bool	
-    :param pad_right: whether the ngrams should be right-padded	
-    :type pad_right: bool	
-    :param left_pad_symbol: the symbol to use for left padding (default is None)	
-    :type left_pad_symbol: any	
-    :param right_pad_symbol: the symbol to use for right padding (default is None)	
+    :type n: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
+    :param left_pad_symbol: the symbol to use for left padding (default is None)
+    :type left_pad_symbol: any
+    :param right_pad_symbol: the symbol to use for right padding (default is None)
     :type right_pad_symbol: any
     :rtype: sequence or iter
     """
