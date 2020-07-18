@@ -33,7 +33,7 @@ class TestEverygrams(unittest.TestCase):
     def test_everygrams_min_len(self):
         expected_output = [('a', 'b'), ('b', 'c'), ('a', 'b', 'c'),]
         output = everygrams(self.test_data, min_len=2)
-        self.assertCountEqual(list(output), expected_output)
+        self.assertCountEqual(output, expected_output)
 
     def test_everygrams_pad_right(self):
         expected_output = [
@@ -51,7 +51,7 @@ class TestEverygrams(unittest.TestCase):
             (None,),
         ]
         output = everygrams(self.test_data, max_len=3, pad_right=True)
-        self.assertCountEqual(list(output), expected_output)
+        self.assertCountEqual(output, expected_output)
 
     def test_everygrams_pad_left(self):
         expected_output = [
@@ -69,4 +69,4 @@ class TestEverygrams(unittest.TestCase):
             ('c',),
         ]
         output = everygrams(self.test_data, max_len=3, pad_left=True)
-        self.assertCountEqual(list(output), expected_output)
+        self.assertCountEqual(output, expected_output)
