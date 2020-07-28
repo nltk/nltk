@@ -95,6 +95,12 @@ Testing treebank's detokenizer
     >>> s = '<A sentence> with (many) [kinds] of {parentheses}. "Sometimes it\'s inside (quotes)". ("Sometimes the otherway around").'
     >>> detokenizer.detokenize(word_tokenize(s))
     '<A sentence> with (many) [kinds] of {parentheses}. "Sometimes it\'s inside (quotes)". ("Sometimes the otherway around").'
+    >>> s = "Sentence ending with (parentheses)"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'Sentence ending with (parentheses)'
+    >>> s = "(Sentence) starting with parentheses."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    '(Sentence) starting with parentheses.'
 
 
 Sentence tokenization in word_tokenize:
