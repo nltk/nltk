@@ -304,10 +304,9 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"\s\.\.\.\s"), r"..."),
         (re.compile(r"\s([:,])\s$"), r"\1"),
         (
-            re.compile(r"\s([:,])\s([^\d])"),
-            r"\1 \2",
-        )  # Keep right pad after comma/colon before non-digits.
-        # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
+            re.compile(r"\s+([:,])"),
+            r"\1",
+        )  # Just remove left padding. Punctuation in numbers aren't padded.
     ]
 
     # starting quotes
