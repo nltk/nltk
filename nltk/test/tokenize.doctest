@@ -86,6 +86,15 @@ Testing treebank's detokenizer
     >>> s = "There were 300,000, but that wasn't enough."
     >>> detokenizer.detokenize(word_tokenize(s))
     "There were 300,000, but that wasn't enough."
+    >>> s = 'How "are" you?'
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'How "are" you?'
+    >>> s = "Hello (world)"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'Hello (world)'
+    >>> s = '<A sentence> with (many) [kinds] of {parentheses}. "Sometimes it\'s inside (quotes)". ("Sometimes the otherway around").'
+    >>> detokenizer.detokenize(word_tokenize(s))
+    '<A sentence> with (many) [kinds] of {parentheses}. "Sometimes it\'s inside (quotes)". ("Sometimes the otherway around").'
 
 
 Sentence tokenization in word_tokenize:
