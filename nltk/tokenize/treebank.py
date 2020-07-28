@@ -287,8 +287,8 @@ class TreebankWordDetokenizer(TokenizerI):
 
     # Undo padding on parentheses.
     PARENS_BRACKETS = [
-        (re.compile(r"\s([\[\(\{\<])\s"), r" \g<1>"),
-        (re.compile(r"\s([\]\)\}\>])\s"), r"\g<1> "),
+        (re.compile(r"([\[\(\{\<])\s"), r"\g<1>"),
+        (re.compile(r"\s([\]\)\}\>])"), r"\g<1>"),
         (re.compile(r"([\]\)\}\>])\s([:;,.])"), r"\1\2"),
     ]
 
@@ -302,8 +302,8 @@ class TreebankWordDetokenizer(TokenizerI):
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
         # pad, so we split this up.
-        (re.compile(r"\s([#$])\s"), r" \g<1>"),  # Left pad.
-        (re.compile(r"\s([;%])\s"), r"\g<1> "),  # Right pad.
+        (re.compile(r"([#$])\s"), r"\g<1>"),  # Left pad.
+        (re.compile(r"\s([;%])"), r"\g<1>"),  # Right pad.
         (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
         (re.compile(r"\s\.\.\.\s"), r"..."),
         (re.compile(r"\s([:,])\s$"), r"\1"),
