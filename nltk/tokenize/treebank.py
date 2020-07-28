@@ -265,7 +265,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
         (re.compile(r"(\S)(\'\')"), r"\1\2 "),
-        (re.compile(r" '' "), '"'),
+        (re.compile(r"\s''"), '"'),
     ]
 
     # Handles double dashes
@@ -312,9 +312,9 @@ class TreebankWordDetokenizer(TokenizerI):
 
     # starting quotes
     STARTING_QUOTES = [
-        (re.compile(r"([ (\[{<])\s``"), r'\1"'),
-        (re.compile(r"\s(``)\s"), r"\1"),
-        (re.compile(r"^``"), r'"'),
+        (re.compile(r"([ (\[{<])\s``"), r'\1``'),
+        (re.compile(r"(``)\s"), r"\1"),
+        (re.compile(r"``"), r'"'),
     ]
 
     def tokenize(self, tokens, convert_parentheses=False):
