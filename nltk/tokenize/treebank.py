@@ -264,8 +264,12 @@ class TreebankWordDetokenizer(TokenizerI):
     ENDING_QUOTES = [
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
-        (re.compile(r"(\S)(\'\')"), r"\1\2 "),
-        (re.compile(r"\s''"), '"'),
+        (re.compile(r"(\S)\s(\'\')"), r"\1\2"),
+        (
+            re.compile(r"(\'\')\s([.,:)\]>};%])"),
+            r"\1\2"
+        ),  # Quotes followed by no-left-padded punctuations.
+        (re.compile(r"''"), '"'),
     ]
 
     # Handles double dashes
