@@ -308,9 +308,9 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"\s\.\.\.\s"), r"..."),
         # (re.compile(r"\s([:,])\s$"), r"\1"),  # .strip() takes care of it.
         (
-            re.compile(r"\s+([:,])"),
+            re.compile(r"\s([:,])"),
             r"\1",
-        )  # Just remove left padding. Punctuation in numbers aren't padded.
+        )  # Just remove left padding. Punctuation in numbers won't be padded.
     ]
 
     # starting quotes
