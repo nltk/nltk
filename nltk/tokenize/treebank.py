@@ -314,7 +314,7 @@ class TreebankWordDetokenizer(TokenizerI):
     STARTING_QUOTES = [
         (re.compile(r"([ (\[{<])\s``"), r'\1"'),
         (re.compile(r"\s(``)\s"), r"\1"),
-        (re.compile(r"^``"), r"\""),
+        (re.compile(r"^``"), r'"'),
     ]
 
     def tokenize(self, tokens, convert_parentheses=False):
