@@ -304,9 +304,9 @@ class TreebankWordDetokenizer(TokenizerI):
         # pad, so we split this up.
         (re.compile(r"([#$])\s"), r"\g<1>"),  # Left pad.
         (re.compile(r"\s([;%])"), r"\g<1>"),  # Right pad.
-        (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
+        # (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
         (re.compile(r"\s\.\.\.\s"), r"..."),
-        (re.compile(r"\s([:,])\s$"), r"\1"),
+        # (re.compile(r"\s([:,])\s$"), r"\1"),  # .strip() takes care of it.
         (
             re.compile(r"\s+([:,])"),
             r"\1",
