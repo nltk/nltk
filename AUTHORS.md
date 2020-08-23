@@ -9,6 +9,7 @@
 
 ## Contributors
 
+- Tom Aarsen
 - Rami Al-Rfou'
 - Mark Amery
 - Greg Aumann
