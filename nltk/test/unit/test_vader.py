@@ -32,13 +32,13 @@ class TestVader(unittest.TestCase):
         self.assertEqual(scores["compound"], 0.6588)
 
     def test_but_can_flip_the_polarity(self):
-        no_but = "The food is great, and the service is horrible"
+        with_and = "The food is great, and the service is horrible"
         but = "The food is great, but the service is horrible"
 
-        no_but_score = self.si.polarity_scores(no_but)
+        and_score = self.si.polarity_scores(with_and)
         but_score = self.si.polarity_scores(but)
 
-        self.assertEqual(no_but_score["compound"], 0.1531)
+        self.assertEqual(and_score["compound"], 0.1531)
         # "but" puts more emphasis on second half of sentence
         self.assertEqual(but_score["compound"], -0.4939)
 
