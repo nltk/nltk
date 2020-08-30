@@ -32,11 +32,6 @@ class TestVader(unittest.TestCase):
         # With the "but", more emphasis given to second half of sentence
         self.assertEqual(but_score["compound"], -0.4939)
 
-    def test_but_flips_the_polarity(self):
-        line = "The food is great, but the service is horrible"
-        scores = self.si.polarity_scores(line)
-        self.assertEqual(scores["compound"], -0.4939)
-
     def test_multiple_buts_negate_after_the_first(self):
         line = "The food is great, but the service is horrible but"
         scores = self.si.polarity_scores(line)
