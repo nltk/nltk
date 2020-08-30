@@ -6,15 +6,25 @@ class TestVader(unittest.TestCase):
     def setUp(self):
         self.si = SentimentIntensityAnalyzer()
 
-    def test_positive_score(self):
-        line = "The food is great"
-        scores = self.si.polarity_scores(line)
-        self.assertEqual(scores["compound"], 0.6249)
+    def test_polarity_score(self):
+        pos = "The food is great"
+        neg = "The service is horrible"
 
-    def test_booster_increases_the_score(self):
-        line = "The food is really great"
-        scores = self.si.polarity_scores(line)
-        self.assertEqual(scores["compound"], 0.659)
+        pos_score = self.si.polarity_scores(pos)
+        neg_score = self.si.polarity_scores(neg)
+
+        self.assertEqual(pos_score["compound"], 0.6249)
+        self.assertEqual(neg_score["compound"], -0.5423)
+
+    def test_booster_boosts_the_score(self):
+        pos = "The food is really great"
+        neg = "The service is really horrible"
+
+        pos_score = self.si.polarity_scores(pos)
+        neg_score = self.si.polarity_scores(neg)
+
+        self.assertEqual(pos_score["compound"], 0.659)
+        self.assertEqual(neg_score["compound"], -0.5849)
 
     def test_punctuation_increases_the_score(self):
         line = "The food is great!"
@@ -29,11 +39,10 @@ class TestVader(unittest.TestCase):
         but_score = self.si.polarity_scores(but)
 
         self.assertEqual(no_but_score["compound"], 0.1531)
-        # With the "but", more emphasis given to second half of sentence
+        # "but" puts more emphasis on second half of sentence
         self.assertEqual(but_score["compound"], -0.4939)
 
     def test_multiple_buts_negate_after_the_first(self):
         line = "The food is great, but the service is horrible but"
         scores = self.si.polarity_scores(line)
-        # Equivalent score as previous test
         self.assertEqual(scores["compound"], -0.4939)
