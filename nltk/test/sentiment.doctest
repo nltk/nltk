@@ -105,6 +105,7 @@ Vader
     ...    "I won't say that the movie is astounding and I wouldn't claim that \
     ...    the movie is too banal either.",
     ...    "I like to hate Michael Bay films, but I couldn't fault this one",
+    ...    "I like to hate Michael Bay films, BUT I couldn't help but fault this one",
     ...    "It's one thing to watch an Uwe Boll film, but another thing entirely \
     ...    to pay for it",
     ...    "The movie was too good",
@@ -168,7 +169,7 @@ Vader
     Today SUX!
     compound: -0.5461, neg: 0.779, neu: 0.221, pos: 0.0,
     Today kinda sux! But I'll get by, lol
-    compound: 0.2228, neg: 0.195, neu: 0.531, pos: 0.274,
+    compound: 0.5249, neg: 0.138, neu: 0.517, pos: 0.344,
     It was one of the worst movies I've seen, despite good reviews.
     compound: -0.7584, neg: 0.394, neu: 0.606, pos: 0.0,
     Unbelievably bad acting!!
@@ -201,6 +202,8 @@ Vader
     compound: 0.4215, neg: 0.0, neu: 0.851, pos: 0.149,
     I like to hate Michael Bay films, but I couldn't fault this one
     compound: 0.3153, neg: 0.157, neu: 0.534, pos: 0.309,
+    I like to hate Michael Bay films, BUT I couldn't help but fault this one
+    compound: -0.1531, neg: 0.277, neu: 0.477, pos: 0.246,
     It's one thing to watch an Uwe Boll film, but another thing entirely to pay for it
     compound: -0.2541, neg: 0.112, neu: 0.888, pos: 0.0,
     The movie was too good
