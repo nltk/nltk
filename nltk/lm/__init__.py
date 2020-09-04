@@ -73,15 +73,7 @@ While not the most efficient, it is conceptually simple.
     >>> from nltk.util import everygrams
     >>> padded_bigrams = list(pad_both_ends(text[0], n=2))
     >>> list(everygrams(padded_bigrams, max_len=2))
-    [('<s>',),
-     ('a',),
-     ('b',),
-     ('c',),
-     ('</s>',),
-     ('<s>', 'a'),
-     ('a', 'b'),
-     ('b', 'c'),
-     ('c', '</s>')]
+    [('<s>',), ('<s>', 'a'), ('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',), ('c', '</s>'), ('</s>',)]
 
 We are almost ready to start counting ngrams, just one more step left.
 During training and evaluation our model will rely on a vocabulary that

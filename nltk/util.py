@@ -471,14 +471,7 @@ def pad_sequence(
 # add a flag to pad the sequence so we get peripheral ngrams?
 
 
-def ngrams(
-    sequence,
-    n,
-    pad_left=False,
-    pad_right=False,
-    left_pad_symbol=None,
-    right_pad_symbol=None,
-):
+def ngrams(sequence, n, **kwargs):
     """
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
@@ -514,24 +507,16 @@ def ngrams(
     :type right_pad_symbol: any
     :rtype: sequence or iter
     """
-    sequence = pad_sequence(
-        sequence, n, pad_left, pad_right, left_pad_symbol, right_pad_symbol
-    )
+    sequence = pad_sequence(sequence, n, **kwargs)
+    
+    # Creates the sliding window, of n no. of items.
+    # `iterables` is a tuple of iterables where each iterable is a window of n items.
+    iterables = tee(sequence, n)
 
-    history = []
-    while n > 1:
-        # PEP 479, prevent RuntimeError from being raised when StopIteration bubbles out of generator
-        try:
-            next_item = next(sequence)
-        except StopIteration:
-            # no more data, terminate the generator
-            return
-        history.append(next_item)
-        n -= 1
-    for item in sequence:
-        history.append(item)
-        yield tuple(history)
-        del history[0]
+    for i, sub_iterable in enumerate(iterables): # For each window,
+        for _ in range(i):                       # iterate through every order of ngrams
+            next(sub_iterable, None)             # generate the ngrams within the window.
+    return zip(*iterables) # Unpack and flattens the iterables.
 
 
 def bigrams(sequence, **kwargs):
@@ -574,30 +559,64 @@ def trigrams(sequence, **kwargs):
         yield item
 
 
-def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
+def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
 
         >>> sent = 'a b c'.split()
-        >>> list(everygrams(sent))
-        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
-        >>> list(everygrams(sent, max_len=2))
-        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c')]
 
-    :param sequence: the source data to be converted into trigrams
+    New version outputs for everygrams.
+        >>> list(everygrams(sent))
+        [('a',), ('a', 'b'), ('a', 'b', 'c'), ('b',), ('b', 'c'), ('c',)]
+
+    Old version outputs for everygrams.
+        >>> sorted(everygrams(sent), key=len)
+        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
+
+        >>> list(everygrams(sent, max_len=2))
+        [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
+
+    :param sequence: the source data to be converted into ngrams. If max_len is
+        not provided, this sequence will be loaded into memory
     :type sequence: sequence or iter
     :param min_len: minimum length of the ngrams, aka. n-gram order/degree of ngram
     :type  min_len: int
     :param max_len: maximum length of the ngrams (set to length of sequence by default)
     :type  max_len: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
     :rtype: iter(tuple)
     """
 
+    # Get max_len for padding.
     if max_len == -1:
-        max_len = len(sequence)
-    for n in range(min_len, max_len + 1):
-        for ng in ngrams(sequence, n, **kwargs):
-            yield ng
+        try:
+            max_len = len(sequence)
+        except TypeError:
+            sequence = list(sequence)
+            max_len = len(sequence)
+
+    # Pad if indicated using max_len.
+    sequence = pad_sequence(sequence, max_len, pad_left, pad_right, **kwargs)
+
+    # Sliding window to store grams.
+    history = list(islice(sequence, max_len))
+
+    # Yield ngrams from sequence.
+    while history:
+        for ngram_len in range(min_len, len(history)+1):
+            yield tuple(history[:ngram_len])
+
+        # Append element to history if sequence has more items.
+        try:
+            history.append(next(sequence))
+        except StopIteration:
+            pass
+
+        del history[0]
+
 
 
 def skipgrams(sequence, n, k, **kwargs):
