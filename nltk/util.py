@@ -508,13 +508,15 @@ def ngrams(sequence, n, **kwargs):
     :rtype: sequence or iter
     """
     sequence = pad_sequence(sequence, n, **kwargs)
-
+    
+    # Creates the sliding window, of n no. of items.
+    # `iterables` is a tuple of iterables where each iterable is a window of n items.
     iterables = tee(sequence, n)
 
-    for i, sub_iterable in enumerate(iterables):
-        for _ in range(i):
-            next(sub_iterable, None)
-    return zip(*iterables)
+    for i, sub_iterable in enumerate(iterables): # For each window,
+        for _ in range(i):                       # iterate through every order of ngrams
+            next(sub_iterable, None)             # generate the ngrams within the window.
+    return zip(*iterables) # Unpack and flattens the iterables.
 
 
 def bigrams(sequence, **kwargs):
