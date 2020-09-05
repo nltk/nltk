@@ -2,3 +2,5 @@ tox
 nose
 coverage
 pylint
+pytest
+pytest-mock

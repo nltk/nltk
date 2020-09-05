@@ -136,6 +136,15 @@ For a better design of your code, we recommend using a technique called
 where you write your tests **before** writing the actual code that implements
 the desired feature.
 
+We recommend `pytest` as the way to run your tests, no matter which type of test it is:
+
+```
+cd nltk/test
+pytest util.doctest  # Run doctest from pytest
+pytest unit/translate/test_nist.py  # Run unittest from pytest
+pytest .  # Run all tests from pytest
+```
+
 
 ## Continuous Integration
 

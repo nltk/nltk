@@ -6,9 +6,9 @@
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         import numpy
-    except ImportError as e:
-        raise SkipTest("probability.doctest requires numpy") from e
+    except ImportError:
+        pytest.skip("probability.doctest requires numpy")

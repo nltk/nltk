@@ -80,9 +80,9 @@ echo "---- NLTK runtests.py ----"
 
 #coverage
 coverage erase
-coverage run --source=nltk nltk/test/runtests.py -v --with-xunit
-coverage xml --omit=nltk/test/*
-iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
+coverage run --source=nltk nltk/test/runtests.py -v
+coverage xml --omit=nltk/test/* -o pytests.xml
+iconv -c -f utf-8 -t utf-8 pytests.xml > pytests_scrubbed.xml
 
 # Create a default pylint configuration file.
 touch ~/.pylintrc

@@ -602,3 +602,11 @@ Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) t
     Synset('french.n.01')
     >>> wn.synsets("slang")[1].in_usage_domains()[18]
     Synset('can-do.s.01')
+
+
+-------------
+Teardown test
+-------------
+
+    >>> from nltk.corpus import wordnet
+    >>> wordnet._unload()

@@ -9,6 +9,12 @@ Discourse Checking
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
 
+Setup
+=====
+
+    >>> from nltk.test.childes_fixt import setup_module
+    >>> setup_module()
+
 Introduction
 ============
 

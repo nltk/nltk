@@ -17,9 +17,9 @@ echo "$(pwd)"  # Know which directory tox is running this shell from.
 
 #coverage
 coverage erase
-coverage run --source=nltk $(pwd)/runtests.py -v --with-xunit
-coverage xml --omit=$(pwd)/*
-iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
+coverage run --source=nltk $(pwd)/runtests.py -v
+coverage xml --omit=$(pwd)/* -o pytests.xml
+iconv -c -f utf-8 -t utf-8 pytests.xml > pytests_scrubbed.xml
 
 # Create a default pylint configuration file.
 ##touch $HOME/.pylintrc

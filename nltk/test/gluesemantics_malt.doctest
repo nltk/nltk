@@ -7,6 +7,9 @@
  Glue Semantics
 ==============================================================================
 
+    >>> from nltk.test.gluesemantics_malt_fixt import setup_module
+    >>> setup_module()
+
     >>> from nltk.sem.glue import *
     >>> nltk.sem.logic._counter._value = 0
 

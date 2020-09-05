@@ -269,7 +269,7 @@
 - Jacob Moorman <https://github.com/jdmoorman>
 - Cory Nezin <https://github.com/corynezin>
 - Matt Chaput
-
+- Danny Sepler <https://github.com/dannysepler>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

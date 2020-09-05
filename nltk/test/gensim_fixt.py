@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-def setup_module(module):
-    from nose import SkipTest
+def setup_module():
+    import pytest
 
     try:
         import gensim
-    except ImportError as e:
-        raise SkipTest("Gensim doctest requires gensim") from e
+    except ImportError:
+        pytest.skip("Gensim doctest requires gensim")
