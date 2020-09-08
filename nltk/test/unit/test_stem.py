@@ -154,3 +154,5 @@ class PorterTest(unittest.TestCase):
         assert porter.stem('On') == 'on'
         assert porter.stem('I') == 'i'
         assert porter.stem('I', to_lowercase=False) == 'I'
+        assert porter.stem('Github') == 'github'
+        assert porter.stem('Github', to_lowercase=False) == 'Github'
