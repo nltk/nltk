@@ -27,7 +27,7 @@ important are:
 ## Development priorities
 
 NLTK consists of the functionality that the Python/NLP community is motivated to contribute.
-Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development)
+Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development).
 
 ## Git and our Branching model
 
@@ -71,7 +71,7 @@ Summary of our git branching model:
   (`git pull upstream develop`);
 - Create a new branch off of `develop` with a descriptive name (for example:
   `feature/portuguese-sentiment-analysis`, `hotfix/bug-on-downloader`). You can
-  do it switching to `develop` branch (`git checkout develop`) and then
+  do it by switching to the `develop` branch (`git checkout develop`) and then
   creating a new branch (`git checkout -b name-of-the-new-branch`);
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
@@ -81,7 +81,7 @@ Summary of our git branching model:
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
 - Create a pull request using the GitHub Web interface (asking us to pull the
-  changes from your new branch and add to our `develop` branch);
+  changes from your new branch and add to them our `develop` branch);
 - Wait for comments.
 
 
@@ -126,7 +126,7 @@ guide](https://github.com/nltk/nltk/wiki/Developers-Guide).
 ## Tests
 
 You should write tests for every feature you add or bug you solve in the code.
-Having automated tests for every line of our code let us make big changes
+Having automated tests for every line of our code lets us make big changes
 without worries: there will always be tests to verify if the changes introduced
 bugs or lack of features. If we don't have tests we will be blind and every
 change will come with some fear of possibly breaking something.
