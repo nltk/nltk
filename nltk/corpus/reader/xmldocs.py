@@ -330,7 +330,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     print("%25s %s" % ("/".join(context)[-20:], piece.group()))
 
                 if piece.group("START_TAG"):
-                    name = self._XML_TAG_NAME.match(piece.group()).group(2)
+                    name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     # Keep context up-to-date.
                     context.append(name)
                     # Is this one of the elts we're looking for?
@@ -340,7 +340,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                             elt_depth = len(context)
 
                 elif piece.group("END_TAG"):
-                    name = self._XML_TAG_NAME.match(piece.group()).group(2)
+                    name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     # sanity checks:
                     if not context:
                         raise ValueError("Unmatched tag </%s>" % name)
@@ -358,7 +358,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     context.pop()
 
                 elif piece.group("EMPTY_ELT_TAG"):
-                    name = self._XML_TAG_NAME.match(piece.group()).group(2)
+                    name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
                         if re.match(tagspec, "/".join(context) + "/" + name):
                             elts.append((piece.group(), "/".join(context) + "/" + name))
