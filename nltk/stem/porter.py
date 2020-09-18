@@ -661,7 +661,7 @@ class PorterStemmer(StemmerI):
             # With this line, strings of length 1 or 2 don't go through
             # the stemming process, although no mention is made of this
             # in the published algorithm.
-            return stem if to_lowercase else word
+            return stem
 
 
         stem = self._step1a(stem)
