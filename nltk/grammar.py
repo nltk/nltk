@@ -113,7 +113,6 @@ class Nonterminal(object):
             hashable.
         """
         self._symbol = symbol
-        self._hash = hash(symbol)
 
     def symbol(self):
         """
@@ -142,7 +141,7 @@ class Nonterminal(object):
         return self._symbol < other._symbol
 
     def __hash__(self):
-        return self._hash
+        return hash(self._symbol)
 
     def __repr__(self):
         """
@@ -291,10 +290,6 @@ class Production(object):
         self._lhs = lhs
         self._rhs = tuple(rhs)
 
-    @property
-    def _hash(self):
-        return hash((self._lhs, self._rhs))
-
     def lhs(self):
         """
         Return the left-hand side of this ``Production``.
@@ -379,7 +374,7 @@ class Production(object):
 
         :rtype: int
         """
-        return self._hash
+        return hash((self._lhs, self._rhs))
 
 
 
@@ -1033,7 +1028,6 @@ class FeatureValueType(object):
 
     def __init__(self, value):
         self._value = value
-        self._hash = hash(value)
 
     def __repr__(self):
         return "<%s>" % self._value
@@ -1050,7 +1044,7 @@ class FeatureValueType(object):
         return self._value < other._value
 
     def __hash__(self):
-        return self._hash
+        return hash(self._value)
 
 
 
