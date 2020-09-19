@@ -267,6 +267,7 @@
 - Ram Rachum <https://github.com/cool-RR>
 - Denali Molitor <https://github.com/dmmolitor>
 - Jacob Moorman <https://github.com/jdmoorman>
+- Cory Nezin <https://github.com/corynezin>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
