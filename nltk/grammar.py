@@ -290,7 +290,10 @@ class Production(object):
             )
         self._lhs = lhs
         self._rhs = tuple(rhs)
-        self._hash = hash((self._lhs, self._rhs))
+
+    @property
+    def _hash(self):
+        return hash((self._lhs, self._rhs))
 
     def lhs(self):
         """
