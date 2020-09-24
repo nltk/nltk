@@ -58,7 +58,7 @@ of ``None``.
 
 We evaluate a tagger on data that was not seen during training:
 
-    >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600])
+    >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600]) # doctest: +SKIP
     0.73...
 
 For more information, please consult chapter 5 of the NLTK Book.
