@@ -11,10 +11,10 @@ For documentation, please visit [nltk.org](http://www.nltk.org/).
 
 ## Contributing
 
-Do you want to contribute to NLTK development? Great! Please read more details
-at [CONTRIBUTING.md](CONTRIBUTING.md).
+Do you want to contribute to NLTK development? Great! 
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
-See also [How to contribute to NLTK](http://www.nltk.org/contribute.html).
+See also [how to contribute to NLTK](http://www.nltk.org/contribute.html).
 
 
 ## Donate
@@ -37,7 +37,7 @@ Copyright (C) 2001-2020 NLTK Project
 
 For license information, see [LICENSE.txt](LICENSE.txt).
 
-[AUTHORS.md](AUTHORS.md) have a list of everyone contributed to NLTK.
+[AUTHORS.md](AUTHORS.md) contains a list of everyone who has contributed to NLTK.
 
 
 ### Redistributing
