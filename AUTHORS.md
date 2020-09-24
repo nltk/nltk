@@ -268,6 +268,8 @@
 - Denali Molitor <https://github.com/dmmolitor>
 - Jacob Moorman <https://github.com/jdmoorman>
 - Cory Nezin <https://github.com/corynezin>
+- Matt Chaput
+
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
@@ -277,10 +279,6 @@
 - Hiranmay Ghosh
 - Chris Emerson
 
-### Contributors to Lancaster Stemmer
-- Matt Chaput, [Whoosh](https://bitbucket.org/mchaput/whoosh/wiki/Home)
-    - Strip prefix
-    - Custom rule.
 ### Authors of snowball arabic stemmer algorithm
 - Assem Chelli
 - Abdelkrim Aries
