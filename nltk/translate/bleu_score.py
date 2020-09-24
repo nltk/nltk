@@ -111,7 +111,7 @@ def corpus_bleu(
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
 
-    Instead of averaging the sentence level BLEU scores (i.e. marco-average
+    Instead of averaging the sentence level BLEU scores (i.e. macro-average
     precision), the original BLEU metric (Papineni et al. 2002) accounts for
     the micro-average precision (i.e. summing the numerators and denominators
     for each hypothesis-reference(s) pairs before the division).
