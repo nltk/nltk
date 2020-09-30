@@ -22,7 +22,7 @@ class MacIntyreContractions:
         r"(?i)\b(gon)(?#X)(na)\b",
         r"(?i)\b(got)(?#X)(ta)\b",
         r"(?i)\b(lem)(?#X)(me)\b",
-        r"(?i)\b(mor)(?#X)('n)\b",
+        r"(?i)\b(more)(?#X)('n)\b",
         r"(?i)\b(wan)(?#X)(na)\s",
     ]
     CONTRACTIONS3 = [r"(?i) ('t)(?#X)(is)\b", r"(?i) ('t)(?#X)(was)\b"]
@@ -46,7 +46,7 @@ class NLTKWordTokenizer(TokenizerI):
         (re.compile(r"^\""), r"``"),
         (re.compile(r"(``)"), r" \1 "),
         (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
-        (re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d)(\w)\b", re.U), r"\1 \2"),
+        (re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d|n)(\w)\b", re.U), r"\1 \2"),
     ]
 
     # Ending quotes.
