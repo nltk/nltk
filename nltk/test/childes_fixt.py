@@ -13,4 +13,4 @@ def setup_module(module):
             "The CHILDES corpus is not found. "
             "It should be manually downloaded and saved/unpacked "
             "to [NLTK_Data_Dir]/corpora/childes/"
-        )
+        ) from e

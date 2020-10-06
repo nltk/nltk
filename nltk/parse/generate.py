@@ -47,7 +47,7 @@ def _generate_all(grammar, items, depth):
                 # Helpful error message while still showing the recursion stack.
                 raise RuntimeError(
                     "The grammar has rule(s) that yield infinite recursion!!"
-                )
+                ) from _error
             else:
                 raise
     else:

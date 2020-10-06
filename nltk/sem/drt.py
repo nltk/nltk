@@ -383,7 +383,7 @@ class DRS(DrtExpression, Expression):
         """:see: AbstractExpression.get_refs()"""
         if recursive:
             conds_refs = self.refs + list(
-                chain(*(c.get_refs(True) for c in self.conds))
+                chain.from_iterable(c.get_refs(True) for c in self.conds)
             )
             if self.consequent:
                 conds_refs.extend(self.consequent.get_refs(True))
@@ -1427,10 +1427,10 @@ def demo():
 def test_draw():
     try:
         from tkinter import Tk
-    except ImportError:
+    except ImportError as e:
         from nose import SkipTest
 
-        raise SkipTest("tkinter is required, but it's not available.")
+        raise SkipTest("tkinter is required, but it's not available.") from e
 
     expressions = [
         r"x",

@@ -806,7 +806,7 @@ class Tree(list):
                         out_path, in_path
                     ).split()
                 )
-            except LookupError:
+            except LookupError as e:
                 pre_error_message = str(
                     "The Ghostscript executable isn't found.\n"
                     "See http://web.mit.edu/ghostscript/www/Install.htm\n"
@@ -814,7 +814,7 @@ class Tree(list):
                     "https://docs.brew.sh/Installation then `brew install ghostscript`"
                 )
                 print(pre_error_message, file=sys.stderr)
-                raise LookupError
+                raise LookupError from e
 
             with open(out_path, "rb") as sr:
                 res = sr.read()
@@ -936,10 +936,10 @@ class ImmutableTree(Tree):
         # immutable.  It also means we only have to calculate it once.
         try:
             self._hash = hash((self._label, tuple(self)))
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as e:
             raise ValueError(
                 "%s: node value and children " "must be immutable" % type(self).__name__
-            )
+            ) from e
 
     def __setitem__(self, index, value):
         raise ValueError("%s may not be modified" % type(self).__name__)

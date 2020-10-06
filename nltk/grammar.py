@@ -113,7 +113,6 @@ class Nonterminal(object):
             hashable.
         """
         self._symbol = symbol
-        self._hash = hash(symbol)
 
     def symbol(self):
         """
@@ -142,7 +141,7 @@ class Nonterminal(object):
         return self._symbol < other._symbol
 
     def __hash__(self):
-        return self._hash
+        return hash(self._symbol)
 
     def __repr__(self):
         """
@@ -290,7 +289,6 @@ class Production(object):
             )
         self._lhs = lhs
         self._rhs = tuple(rhs)
-        self._hash = hash((self._lhs, self._rhs))
 
     def lhs(self):
         """
@@ -376,7 +374,7 @@ class Production(object):
 
         :rtype: int
         """
-        return self._hash
+        return hash((self._lhs, self._rhs))
 
 
 
@@ -1030,7 +1028,6 @@ class FeatureValueType(object):
 
     def __init__(self, value):
         self._value = value
-        self._hash = hash(value)
 
     def __repr__(self):
         return "<%s>" % self._value
@@ -1047,7 +1044,7 @@ class FeatureValueType(object):
         return self._value < other._value
 
     def __hash__(self):
-        return self._hash
+        return hash(self._value)
 
 
 
@@ -1076,8 +1073,9 @@ class DependencyGrammar(object):
                 continue
             try:
                 productions += _read_dependency_production(line)
-            except ValueError:
-                raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+            except ValueError as e:
+                raise ValueError("Unable to parse line %s: %s" %
+                                 (linenum, line)) from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1448,7 +1446,8 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s\n%s" % (linenum + 1, line, e))
+            raise ValueError("Unable to parse line %s: %s\n%s" %
+                             (linenum + 1, line, e)) from e
 
     if not productions:
         raise ValueError("No productions found!")

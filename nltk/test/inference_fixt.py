@@ -8,7 +8,7 @@ def setup_module(module):
     try:
         m = Mace()
         m._find_binary("mace4")
-    except LookupError:
+    except LookupError as e:
         raise SkipTest(
             "Mace4/Prover9 is not available so inference.doctest was skipped"
-        )
+        ) from e

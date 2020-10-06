@@ -24,11 +24,11 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
 
     try:
         from matplotlib import pylab
-    except ImportError:
+    except ImportError as e:
         raise ValueError(
             "The plot function requires matplotlib to be installed."
             "See http://matplotlib.org/"
-        )
+        ) from e
 
     text = list(text)
     words.reverse()

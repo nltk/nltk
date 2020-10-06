@@ -6,5 +6,5 @@ def setup_module(module):
 
     try:
         import gensim
-    except ImportError:
-        raise SkipTest("Gensim doctest requires gensim")
+    except ImportError as e:
+        raise SkipTest("Gensim doctest requires gensim") from e

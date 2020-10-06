@@ -540,10 +540,10 @@ def _ieer_read_text(s, root_label):
             #               raise ValueError # Unexpected HTML
             else:
                 stack[-1].append(piece)
-        except (IndexError, ValueError):
+        except (IndexError, ValueError) as e:
             raise ValueError(
                 "Bad IEER string (error at character {:d})".format(piece_m.start())
-            )
+            ) from e
     if len(stack) != 1:
         raise ValueError("Bad IEER string")
     return stack[0]

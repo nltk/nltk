@@ -335,9 +335,9 @@ def check_megam_config():
     """
     try:
         _megam_bin
-    except NameError:
+    except NameError as e:
         err_msg = str(
             "Please configure your megam binary first, e.g.\n"
             ">>> nltk.config_megam('/usr/bin/local/megam')"
         )
-        raise NameError(err_msg)
+        raise NameError(err_msg) from e

@@ -82,13 +82,13 @@ class Feature(metaclass=ABCMeta):
                 if positions > end:
                     raise TypeError
                 self.positions = tuple(range(positions, end + 1))
-            except TypeError:
+            except TypeError as e:
                 # let any kind of erroneous spec raise ValueError
                 raise ValueError(
                     "illegal interval specification: (start={0}, end={1})".format(
                         positions, end
                     )
-                )
+                ) from e
 
         # set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__

@@ -607,11 +607,11 @@ class BindingDict(object):
             for v in other.d:
                 combined[v] = other.d[v]
             return combined
-        except BindingException:
+        except BindingException as e:
             raise BindingException(
                 "Attempting to add two contradicting "
                 "BindingDicts: '%s' and '%s'" % (self, other)
-            )
+            ) from e
 
     def __len__(self):
         return len(self.d)

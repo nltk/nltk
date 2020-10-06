@@ -272,9 +272,9 @@ class XML_Tool:
             fr.close()
             fw.close()
             return self.write_file.name
-        except Exception:
+        except Exception as e:
             self.remove_preprocessed_file()
-            raise Exception
+            raise Exception from e
 
     def remove_preprocessed_file(self):
         os.remove(self.write_file.name)
@@ -348,9 +348,9 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return sentences
-        except Exception:
+        except Exception as e:
             self.xml_tool.remove_preprocessed_file()
-            raise Exception
+            raise Exception from e
 
     def handle_elt(self, elt, context):
         ret = []
@@ -386,9 +386,9 @@ class NKJPCorpus_Text_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return x
-        except Exception:
+        except Exception as e:
             self.xml_tool.remove_preprocessed_file()
-            raise Exception
+            raise Exception from e
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         """
@@ -444,9 +444,9 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return words
-        except Exception:
+        except Exception as e:
             self.xml_tool.remove_preprocessed_file()
-            raise Exception
+            raise Exception from e
 
     def handle_elt(self, elt, context):
         word = ""

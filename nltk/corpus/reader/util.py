@@ -170,7 +170,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
             else:
                 self._eofpos = os.stat(self._fileid).st_size
         except Exception as exc:
-            raise ValueError("Unable to open or access %r -- %s" % (fileid, exc))
+            raise ValueError(
+                "Unable to open or access %r -- %s" % (fileid, exc)
+            ) from exc
 
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
@@ -253,8 +255,8 @@ class StreamBackedCorpusView(AbstractLazySequence):
             # Use iterate_from to extract it.
             try:
                 return next(self.iterate_from(i))
-            except StopIteration:
-                raise IndexError("index out of range")
+            except StopIteration as e:
+                raise IndexError("index out of range") from e
 
     # If we wanted to be thread-safe, then this method would need to
     # do some locking.
@@ -556,7 +558,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             output_file.close()
             return PickleCorpusView(output_file_name, delete_on_gc)
         except (OSError, IOError) as e:
-            raise ValueError("Error while creating temp file: %s" % e)
+            raise ValueError("Error while creating temp file: %s" % e) from e
 
 
 ######################################################################

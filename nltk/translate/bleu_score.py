@@ -111,7 +111,7 @@ def corpus_bleu(
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
 
-    Instead of averaging the sentence level BLEU scores (i.e. marco-average
+    Instead of averaging the sentence level BLEU scores (i.e. macro-average
     precision), the original BLEU metric (Papineni et al. 2002) accounts for
     the micro-average precision (i.e. summing the numerators and denominators
     for each hypothesis-reference(s) pairs before the division).
@@ -631,7 +631,7 @@ class SmoothingFunction:
     def method7(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 7:
-        Interpolates methods 5 and 6.
+        Interpolates methods 4 and 5.
         """
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         p_n = self.method4(p_n, references, hypothesis, hyp_len)

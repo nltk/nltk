@@ -244,10 +244,10 @@ class TextTilingTokenizer(TokenizerI):
         if current_par_break == 0:
             try:
                 current_par_break = next(pb_iter)  # skip break at 0
-            except StopIteration:
+            except StopIteration as e:
                 raise ValueError(
                     "No paragraph breaks were found(text too short perhaps?)"
-                )
+                ) from e
         for ts in token_sequences:
             for word, index in ts.wrdindex_list:
                 try:

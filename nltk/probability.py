@@ -261,11 +261,11 @@ class FreqDist(Counter):
         """
         try:
             import matplotlib.pyplot as plt
-        except ImportError:
+        except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
                 "See http://matplotlib.org/"
-            )
+            ) from e
 
         if len(args) == 0:
             args = [len(self)]
@@ -317,7 +317,7 @@ class FreqDist(Counter):
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = [item for item, _ in self.most_common(*args)]
+        samples = _get_kwarg(kwargs, 'samples', [item for item, _ in self.most_common(*args)])
 
         cumulative = _get_kwarg(kwargs, "cumulative", False)
         if cumulative:
@@ -1940,18 +1940,18 @@ class ConditionalFreqDist(defaultdict):
         """
         try:
             import matplotlib.pyplot as plt #import statment fix
-        except ImportError:
+        except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
                 "See http://matplotlib.org/"
-            )
+            ) from e
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         percents = _get_kwarg(kwargs, 'percents', False)
         conditions = [c for c in _get_kwarg(kwargs, 'conditions', self.conditions()) if c in self] # conditions should be in self
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(
-            kwargs, 'samples', sorted(set(v 
+            kwargs, 'samples', sorted(set(v
                                             for c in conditions
                                             for v in self[c]))
         )  # this computation could be wasted

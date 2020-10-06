@@ -449,7 +449,8 @@ class SentimentIntensityAnalyzer:
         return valence
 
     def _but_check(self, words_and_emoticons, sentiments):
-        but = {"but", "BUT"} & set(words_and_emoticons)
+        words_and_emoticons = [w_e.lower() for w_e in words_and_emoticons]
+        but = {"but"} & set(words_and_emoticons)
         if but:
             bi = words_and_emoticons.index(next(iter(but)))
             for sidx, sentiment in enumerate(sentiments):

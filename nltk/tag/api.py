@@ -66,8 +66,8 @@ class TaggerI(metaclass=ABCMeta):
         """
 
         tagged_sents = self.tag_sents(untag(sent) for sent in gold)
-        gold_tokens = list(chain(*gold))
-        test_tokens = list(chain(*tagged_sents))
+        gold_tokens = list(chain.from_iterable(gold))
+        test_tokens = list(chain.from_iterable(tagged_sents))
         return accuracy(gold_tokens, test_tokens)
 
     def _check_params(self, train, model):

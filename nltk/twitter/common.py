@@ -32,10 +32,10 @@ def extract_fields(tweet, fields):
     for field in fields:
         try:
             _add_field_to_out(tweet, field, out)
-        except TypeError:
+        except TypeError as e:
             raise RuntimeError(
                 "Fatal error when extracting fields. Cannot find field ", field
-            )
+            ) from e
     return out
 
 

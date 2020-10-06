@@ -25,5 +25,5 @@ def setup_module(module):
 
     try:
         import numpy
-    except ImportError:
-        raise SkipTest("numpy is required for nltk.test.test_tag")
+    except ImportError as e:
+        raise SkipTest("numpy is required for nltk.test.test_tag") from e

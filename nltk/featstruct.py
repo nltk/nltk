@@ -653,8 +653,8 @@ class FeatDict(FeatStruct, dict):
                         raise KeyError  # path contains base value
                     val = val[fid]
                 return val
-            except (KeyError, IndexError):
-                raise KeyError(name_or_path)
+            except (KeyError, IndexError) as e:
+                raise KeyError(name_or_path) from e
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
 
@@ -968,8 +968,8 @@ class FeatList(FeatStruct, list):
                         raise KeyError  # path contains base value
                     val = val[fid]
                 return val
-            except (KeyError, IndexError):
-                raise KeyError(name_or_path)
+            except (KeyError, IndexError) as e:
+                raise KeyError(name_or_path) from e
         else:
             raise TypeError(self._INDEX_ERROR % name_or_path)
 
@@ -2524,11 +2524,11 @@ class FeatStructReader(object):
         try:
             try:
                 expr = self._logic_parser.parse(match.group(1))
-            except LogicalExpressionException:
-                raise ValueError()
+            except LogicalExpressionException as e:
+                raise ValueError from e
             return expr, match.end()
-        except ValueError:
-            raise ValueError("logic expression", match.start(1))
+        except ValueError as e:
+            raise ValueError("logic expression", match.start(1)) from e
 
     def read_tuple_value(self, s, position, reentrances, match):
         return self._read_seq_value(

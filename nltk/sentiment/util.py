@@ -309,11 +309,11 @@ def split_train_test(all_instances, n=None):
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     try:
         import matplotlib.pyplot as plt
-    except ImportError:
+    except ImportError as e:
         raise ImportError(
             "The plot function requires matplotlib to be installed."
             "See http://matplotlib.org/"
-        )
+        ) from e
 
     plt.locator_params(axis="y", nbins=3)
     axes = plt.axes()
@@ -685,7 +685,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     results = sentim_analyzer.evaluate(test_set)
 
     if save_analyzer == True:
-        save_file(sentim_analyzer, "sa_subjectivity.pickle")
+        sentim_analyzer.save_file(sentim_analyzer, "sa_subjectivity.pickle")
 
     if output:
         extr = [f.__name__ for f in sentim_analyzer.feat_extractors]

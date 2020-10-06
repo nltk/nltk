@@ -553,8 +553,9 @@ def load_fol(s):
             continue
         try:
             statements.append(Expression.fromstring(line))
-        except Exception:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+        except Exception as e:
+            raise ValueError("Unable to parse line %s: %s" %
+                             (linenum, line)) from e
     return statements
 
 

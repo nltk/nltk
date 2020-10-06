@@ -218,7 +218,9 @@ class PunktLanguageVars(object):
     _re_word_start = r"[^\(\"\`{\[:;&\#\*@\)}\]\-,]"
     """Excludes some characters from starting word tokens"""
 
-    _re_non_word_chars = r"(?:[?!)\";}\]\*:@\'\({\[])"
+    @property
+    def _re_non_word_chars(self):
+        return "(?:[)\";}\]\*:@\'\({\[%s])" % re.escape("".join(set(self.sent_end_chars) - {"."}))
     """Characters that cannot appear within words"""
 
     _re_multi_char_punct = r"(?:\-{2,}|\.{2,}|(?:\.\s){2,}\.)"
