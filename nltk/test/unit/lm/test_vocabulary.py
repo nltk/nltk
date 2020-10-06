@@ -7,6 +7,7 @@
 
 import unittest
 from collections import Counter
+from timeit import timeit
 
 from nltk.lm import Vocabulary
 
@@ -136,3 +137,17 @@ class NgramModelVocabularyTests(unittest.TestCase):
                 unk_cutoff=2,
             ),
         )
+
+    def test_len_is_constant(self):
+        # Given an obviously small and an obviously large vocabulary.
+        small_vocab = Vocabulary("abcde")
+        from nltk.corpus.europarl_raw import english
+
+        large_vocab = Vocabulary(english.words())
+
+        # If we time calling `len` on them.
+        small_vocab_len_time = timeit("len(small_vocab)", globals=locals())
+        large_vocab_len_time = timeit("len(large_vocab)", globals=locals())
+
+        # The timing should be the same order of magnitude.
+        self.assertAlmostEqual(small_vocab_len_time, large_vocab_len_time, places=1)
