@@ -212,7 +212,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         BracketParseCorpusReader.__init__(
             self,
             root,
-            "alpino\.xml",
+            r"alpino\.xml",
             detect_blocks="blankline",
             encoding=encoding,
             tagset=tagset,

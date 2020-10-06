@@ -171,11 +171,11 @@ class NEChunkParser(ChunkParserI):
 
 
 def shape(word):
-    if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
+    if re.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
         return "number"
-    elif re.match("\W+$", word, re.UNICODE):
+    elif re.match(r"\W+$", word, re.UNICODE):
         return "punct"
-    elif re.match("\w+$", word, re.UNICODE):
+    elif re.match(r"\w+$", word, re.UNICODE):
         if word.istitle():
             return "upcase"
         elif word.islower():
@@ -247,8 +247,8 @@ def load_ace_file(textfile, fmt):
     def subfunc(m):
         return " " * (m.end() - m.start() - 6)
 
-    text = re.sub("[\s\S]*<TEXT>", subfunc, text)
-    text = re.sub("</TEXT>[\s\S]*", "", text)
+    text = re.sub(r"[\s\S]*<TEXT>", subfunc, text)
+    text = re.sub(r"</TEXT>[\s\S]*", "", text)
 
     # Simplify quotes
     text = re.sub("``", ' "', text)

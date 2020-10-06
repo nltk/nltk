@@ -33,7 +33,7 @@ from nltk.internals import raise_unorderable_types
 
 
 class Tree(list):
-    """
+    r"""
     A Tree represents a hierarchical grouping of leaves and subtrees.
     For example, each constituent in a syntax tree is represented by a single Tree.
 
@@ -647,17 +647,17 @@ class Tree(list):
         """
         if not isinstance(brackets, str) or len(brackets) != 2:
             raise TypeError("brackets must be a length-2 string")
-        if re.search("\s", brackets):
+        if re.search(r"\s", brackets):
             raise TypeError("whitespace brackets not allowed")
         # Construct a regexp that will tokenize the string.
         open_b, close_b = brackets
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
         if node_pattern is None:
-            node_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+            node_pattern = r"[^\s%s%s]+" % (open_pattern, close_pattern)
         if leaf_pattern is None:
-            leaf_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+            leaf_pattern = r"[^\s%s%s]+" % (open_pattern, close_pattern)
         token_re = re.compile(
-            "%s\s*(%s)?|%s|(%s)"
+            r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)
         )
         # Walk through each token, updating a stack of trees.
@@ -895,7 +895,7 @@ class Tree(list):
         :return: A latex qtree representation of this tree.
         :rtype: str
         """
-        reserved_chars = re.compile("([#\$%&~_\{\}])")
+        reserved_chars = re.compile(r"([#\$%&~_\{\}])")
 
         pformat = self.pformat(indent=6, nodesep="", parens=("[.", " ]"))
         return r"\Tree " + re.sub(reserved_chars, r"\\\1", pformat)

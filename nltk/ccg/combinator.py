@@ -214,7 +214,7 @@ BackwardBx = BackwardCombinator(
 
 
 class UndirectedSubstitution(UndirectedBinaryCombinator):
-    """
+    r"""
     Substitution (permutation) combinator.
     Implements rules of the form
     Y/Z (X\Y)/Z -> X/Z (<Sx)

@@ -202,7 +202,7 @@ class RegexpChunkApp(object):
             "\t<regexp><RB>?<VBD></regexp>\n"
             '\t\tMatches <match>"ran/VBD"</match>\n'
             '\t\tMatches <match>"slowly/RB ate/VBD"</match>\n'
-            "\t<regexp><\#><CD> # This is a comment...</regexp>\n"
+            r"\t<regexp><\#><CD> # This is a comment...</regexp>\n"
             '\t\tMatches <match>"#/# 100/CD"</match>\n'
             "</hangindent>",
         ),
@@ -311,7 +311,7 @@ class RegexpChunkApp(object):
         grammar = re.sub(r"((\\.|[^#])*)(#.*)?", r"\1", grammar)
         # Normalize whitespace
         grammar = re.sub(" +", " ", grammar)
-        grammar = re.sub("\n\s+", "\n", grammar)
+        grammar = re.sub(r"\n\s+", r"\n", grammar)
         grammar = grammar.strip()
         # [xx] Hack: automatically backslash $!
         grammar = re.sub(r"([^\\])\$", r"\1\\$", grammar)
@@ -1057,7 +1057,7 @@ class RegexpChunkApp(object):
                             "\t%s\t%s" % item
                             for item in sorted(
                                 list(self.tagset.items()),
-                                key=lambda t_w: re.match("\w+", t_w[0])
+                                key=lambda t_w: re.match(r"\w+", t_w[0])
                                 and (0, t_w[0])
                                 or (1, t_w[0]),
                             )
@@ -1418,7 +1418,7 @@ class RegexpChunkApp(object):
         with open(filename, "r") as infile:
             grammar = infile.read()
         grammar = re.sub(
-            "^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
+            r"^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
         ).lstrip()
         self.grammarbox.insert("1.0", grammar)
         self.update()

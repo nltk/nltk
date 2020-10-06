@@ -148,7 +148,7 @@ class ToolboxData(StandardFormat):
             return self._record_parse(**kwargs)
 
     def _record_parse(self, key=None, **kwargs):
-        """
+        r"""
         Returns an element tree structure corresponding to a toolbox data file with
         all markers at the same level.
 
