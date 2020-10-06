@@ -27,7 +27,7 @@ class UdhrCorpusReader(PlaintextCorpusReader):
         ("Japanese_Nihongo-EUC", "EUC-JP"),
         ("Japanese_Nihongo-JIS", "iso2022_jp"),
         ("Chinese_Mandarin-HZ", "hz"),
-        ("Abkhaz\-Cyrillic\+Abkh", "cp1251"),
+        (r"Abkhaz\-Cyrillic\+Abkh", "cp1251"),
     ]
 
     SKIP = set(

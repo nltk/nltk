@@ -45,7 +45,7 @@ class CooperStore(object):
             yield ()
 
     def s_retrieve(self, trace=False):
-        """
+        r"""
         Carry out S-Retrieval of binding operators in store. If hack=True,
         serialize the bindop and core as strings and reparse. Ugh.
 

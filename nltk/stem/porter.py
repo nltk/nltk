@@ -142,7 +142,7 @@ class PorterStemmer(StemmerI):
         return True
 
     def _measure(self, stem):
-        """Returns the 'measure' of stem, per definition in the paper
+        r"""Returns the 'measure' of stem, per definition in the paper
 
         From the paper:
 

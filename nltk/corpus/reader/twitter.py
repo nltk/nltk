@@ -20,7 +20,7 @@ from nltk.corpus.reader.api import CorpusReader
 
 
 class TwitterCorpusReader(CorpusReader):
-    """
+    r"""
     Reader for corpora that consist of Tweets represented as a list of line-delimited JSON.
 
     Individual Tweets can be tokenized using the default tokenizer, or by a
