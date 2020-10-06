@@ -1,6 +1,14 @@
-include LICENSE.txt NOTICE.txt INSTALL.txt README.txt MANIFEST.in
-include setup.py
-include nltk/test/*.doctest
-include nltk/VERSION
-recursive-include *.txt Makefile
+include *.md
+include *.txt
+include *.ini
+include setup.*
+include ChangeLog
+include Makefile
+include MANIFEST.in
+
+
+graft nltk
+graft tools
+graft web
+
 global-exclude *~
