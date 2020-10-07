@@ -753,7 +753,7 @@ class Synset(_WordNetObject):
 
         return None if math.isinf(path_distance) else path_distance
 
-    def tree(self, rel, depth=-1, cut_mark=None, traversed=None):
+    def tree(self, rel, depth=-1, cut_mark=None):
         """
         >>> from nltk.corpus import wordnet as wn
         >>> dog = wn.synset('dog.n.01')
@@ -782,11 +782,14 @@ class Synset(_WordNetObject):
               [Synset('object.n.01'),
                [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
         """
+        return self._tree(rel, depth, cut_mark)
+
+    def _tree(self, rel, depth=-1, cut_mark=None, traversed=None):
         if traversed is None:
             traversed = set()
         tree = [self]
         if depth != 0:
-            tree += [x.tree(rel, depth - 1, cut_mark, {*traversed, x}) for x in rel(self) if x not in traversed]
+            tree += [x._tree(rel, depth - 1, cut_mark, {*traversed, x}) for x in rel(self) if x not in traversed]
         elif cut_mark:
             tree += [cut_mark]
         return tree
