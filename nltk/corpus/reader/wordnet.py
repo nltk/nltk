@@ -564,19 +564,14 @@ class Synset(_WordNetObject):
             Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
         """
+        from nltk.util import breadth_first
 
         synset_offsets = []
-        queue = deque([(self, 0)])
-        while queue:
-            synset, cur_depth = queue.popleft()
-
-            synset_offsets.append(synset._offset)
-            yield synset
-
-            if cur_depth == depth:
-                break
-
-            queue.extend((child, depth + 1) for child in rel(synset) if child._offset not in synset_offsets and child._offset != self._offset)
+        for synset in breadth_first(self, rel, depth):
+            if synset._offset != self._offset:
+                if synset._offset not in synset_offsets:
+                    synset_offsets.append(synset._offset)
+                    yield synset
 
     def hypernym_paths(self):
         """
