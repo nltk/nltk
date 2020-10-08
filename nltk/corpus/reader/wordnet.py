@@ -575,9 +575,9 @@ class Synset(_WordNetObject):
                 yield synset
 
             if cur_depth == depth:
-                break
+                continue
 
-            queue.extend((child, depth + 1) for child in rel(synset) if child._offset not in synset_offsets)
+            queue.extend((child, cur_depth + 1) for child in rel(synset) if child._offset not in synset_offsets)
 
     def hypernym_paths(self):
         """
