@@ -795,7 +795,7 @@ class Synset(_WordNetObject):
 
     def _tree(self, rel, depth=-1, cut_mark=None, traversed=None):
         if traversed is None:
-            traversed = set()
+            traversed = {self}
         tree = [self]
         if depth != 0:
             tree += [x._tree(rel, depth - 1, cut_mark, {*traversed, x}) for x in rel(self) if x not in traversed]
