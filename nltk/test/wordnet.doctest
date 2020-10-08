@@ -764,3 +764,9 @@ Issue 2314: Infinite loop in Wordnet tree
          [Synset('whole.n.02'),
           [Synset('object.n.01'),
            [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
+    
+    Test for issue during development where two different synsets (eg for 'cat' and for 'mouse')
+    on the same depth return the same synset (eg 'fish').
+    >>> lam = lambda s: [wn.synset('cat.n.01'), wn.synset('mouse.n.01')] if s.name() == "dog.n.01" else [wn.synset("fish.n.01")]
+    >>> list(wn.synset('dog.n.01').closure(lam))
+    [Synset('cat.n.01'), Synset('mouse.n.01'), Synset('fish.n.01')]

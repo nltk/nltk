@@ -570,6 +570,9 @@ class Synset(_WordNetObject):
         while queue:
             synset, cur_depth = queue.popleft()
 
+            if synset._offset in synset_offsets:
+                continue
+
             synset_offsets.append(synset._offset)
             if synset._offset != self._offset:
                 yield synset
