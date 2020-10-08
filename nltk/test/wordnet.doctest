@@ -603,7 +603,7 @@ Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) t
     >>> wn.synsets("slang")[1].in_usage_domains()[18]
     Synset('can-do.s.01')
 
-Issue 2314: Infinite loop in Wordnet closure
+Issues 2314, 2565: Infinite loop in Wordnet closure
 
     This used to loop indefinitely
     >>> list(wn.synset('restrain.v.01').closure(lambda s:s.hyponyms())) # doctest: +NORMALIZE_WHITESPACE
@@ -628,6 +628,8 @@ Issue 2314: Infinite loop in Wordnet closure
     >>> topic = lambda s: s.topic_domains()
     >>> list(computer.closure(topic))
     [Synset('computer_science.n.01')]
+
+Issue 2314: Infinite loop in Wordnet tree
 
     This used to throw a RecursionError
     >>> list(wn.synset('restrain.v.01').tree(lambda s:s.hyponyms())) # doctest: +NORMALIZE_WHITESPACE
