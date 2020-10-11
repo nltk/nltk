@@ -559,22 +559,23 @@ class Synset(_WordNetObject):
         >>> print(list(computer.closure(topic)))
 
         UserWarning: Discarded redundant search ([(Synset('computer.n.01'), 2)])
+
         [Synset('computer_science.n.01')]
 
 
+        However, still search pathes once (from 'animal.n.01' to 'entity.n.01'):
+
         >>> dog = wn.synset('dog.n.01')
-        >>> topic = lambda s:s.hypernyms()
-        >>> pprint(computer.tree(hyp))
-        >>> print(list(dog.tree(hyp)))
+        >>> hyp = lambda s:s.hypernyms()
+        >>> print(list(dog.closure(hyp)))
 
-        [Synset('canine.n.02'), Synset('domestic_animal.n.01'),
-        Synset('carnivore.n.01'), Synset('animal.n.01'),
-        Synset('placental.n.01'), Synset('organism.n.01'),
-        Synset('mammal.n.01'), Synset('living_thing.n.01'),
-        Synset('vertebrate.n.01'), Synset('whole.n.02'),
-        Synset('chordate.n.01'), Synset('object.n.01'),
-        Synset('physical_entity.n.01'), Synset('entity.n.01')]
+        UserWarning: Discarded redundant search ([(Synset('animal.n.01'), 7)])
 
+        [Synset('domestic_animal.n.01'), Synset('animal.n.01'), Synset('organism.n.01'),
+        Synset('living_thing.n.01'), Synset('whole.n.02'), Synset('object.n.01'),
+        Synset('physical_entity.n.01'), Synset('entity.n.01'), Synset('canine.n.02'),
+        Synset('carnivore.n.01'), Synset('placental.n.01'), Synset('mammal.n.01'),
+        Synset('vertebrate.n.01'), Synset('chordate.n.01')]
         """
 
         from nltk.util import acyclic_breadth_first
@@ -593,14 +594,14 @@ class Synset(_WordNetObject):
         >>> pprint(computer.tree(topic))
 
         UserWarning: Discarded redundant search ([(Synset('computer.n.01'), -3)])
+
         [Synset('computer.n.01'), [Synset('computer_science.n.01')]]
 
 
         But keep duplicate branches (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
-        >>> topic = lambda s:s.hypernyms()
-        >>> pprint(computer.tree(hyp))
+        >>> hyp = lambda s:s.hypernyms()
         >>> pprint(dog.tree(hyp))
 
         [Synset('dog.n.01'),
@@ -624,11 +625,10 @@ class Synset(_WordNetObject):
              [Synset('whole.n.02'),
               [Synset('object.n.01'),
                [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
-
         """
 
         from nltk.util import acyclic_depth_first
-        return acyclic_depth_first(self, rel, depth)
+        return acyclic_depth_first(self, rel, depth, cut_mark)
 
 
     def hypernym_paths(self):
