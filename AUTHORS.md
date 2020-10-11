@@ -91,6 +91,7 @@
 - Edward Ivanovic
 - Thomas Jakobsen
 - Nick Johnson
+- Eric Kafe
 - Piotr Kasprzyk
 - Angelos Katharopoulos
 - Sudharshan Kaushik

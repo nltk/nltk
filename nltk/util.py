@@ -229,6 +229,69 @@ def breadth_first(tree, children=iter, maxdepth=-1):
             except TypeError:
                 pass
 
+##########################################################################
+# Breadth-First / Depth-first Searches with Cycle Detection
+##########################################################################
+
+import warnings
+
+def acyclic_breadth_first(self, children=iter, maxdepth=-1):
+    """Traverse the nodes of a tree in breadth-first order,
+    discarding eventual cycles ().
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+    """
+    queue = [(self, 0)]
+    traversed = {self}
+    cycles = []
+    while queue:
+        node, depth = queue.pop()
+        if node != self:
+            yield node
+
+        if depth != maxdepth:
+            try:
+                for c in children(node):
+                    if c not in traversed:
+                        queue.append((c, depth + 1))
+                        traversed.add(c)
+                    else:
+                        cycles.append((c, depth + 1))
+            except TypeError:
+                pass
+    if cycles:
+        warnings.warn('Discarded redundant search (%s)' % cycles)
+
+
+def acyclic_depth_first(self, children=iter, depth=-1, cut_mark=None, traversed=None):
+    """Traverse the nodes of a tree in depth-first order,
+    discarding eventual cycles ().
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+    """
+    if traversed is None:
+        traversed = {self}
+    tree = [self]
+    cycles = []
+    if depth != 0:
+        try:
+            for c in children(self):
+                if c not in traversed:
+                    tree += [acyclic_depth_first(c, children, depth - 1, cut_mark, traversed.union({c}))]
+                else:
+                    cycles.append((c, depth - 1))
+        except TypeError:
+            pass
+    elif cut_mark:
+        tree += [cut_mark]
+    if cycles:
+        warnings.warn('Discarded redundant search (%s)' % cycles)
+    return tree
+
 
 ##########################################################################
 # Guess Character Encoding
