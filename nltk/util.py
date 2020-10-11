@@ -229,6 +229,7 @@ def breadth_first(tree, children=iter, maxdepth=-1):
             except TypeError:
                 pass
 
+
 ##########################################################################
 # Breadth-First / Depth-first Searches with Cycle Detection
 ##########################################################################
@@ -247,7 +248,7 @@ def acyclic_breadth_first(self, children=iter, maxdepth=-1):
     traversed = {self}
     cycles = []
     while queue:
-        node, depth = queue.pop()
+        node, depth = queue.pop(0)
         if node != self:
             yield node
 
