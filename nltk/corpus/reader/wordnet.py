@@ -562,7 +562,8 @@ class Synset(_WordNetObject):
         UserWarning: Discarded redundant search ([(Synset('computer.n.01'), 2)])
 
 
-        However, still search pathes once (from 'animal.n.01' to 'entity.n.01'):
+        Include redundant pathes (but only once), avoiding duplicate searches
+        (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
         >>> hyp = lambda s:s.hypernyms()
@@ -577,7 +578,9 @@ class Synset(_WordNetObject):
         """
 
         from nltk.util import acyclic_breadth_first
-        return acyclic_breadth_first(self, rel, depth)
+        for synset in acyclic_breadth_first(self, rel, depth):
+            if synset != self:
+                yield synset
 
 
     def tree(self, rel, depth=-1, cut_mark=None):

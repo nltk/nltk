@@ -212,7 +212,7 @@ def filestring(f):
 
 def breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order.
-    (No need to check for cycles.)
+    (No check for cycles.)
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
@@ -236,62 +236,63 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 import warnings
 
-def acyclic_breadth_first(self, children=iter, maxdepth=-1):
+def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order,
-    discarding eventual cycles ().
+    discarding eventual cycles.
 
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
     """
-    queue = [(self, 0)]
-    traversed = {self}
+    queue = [(tree, 0)]
+    traversed = {tree}
     cycles = []
     while queue:
         node, depth = queue.pop(0)
-        if node != self:
-            yield node
+        yield node
 
         if depth != maxdepth:
             try:
-                for c in children(node):
-                    if c not in traversed:
-                        queue.append((c, depth + 1))
-                        traversed.add(c)
+                for child in children(node):
+                    if child not in traversed:
+                        queue.append((child, depth + 1))
+                        traversed.add(child)
                     else:
-                        cycles.append((c, depth + 1))
+                        cycles.append((child, depth + 1))
             except TypeError:
                 pass
     if cycles:
-        warnings.warn('Discarded redundant search (%s)' % cycles)
+        warnings.warn('Discarded redundant search {0}'.format(str(cycles)))
 
 
-def acyclic_depth_first(self, children=iter, depth=-1, cut_mark=None, traversed=None):
+def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
     """Traverse the nodes of a tree in depth-first order,
-    discarding eventual cycles ().
+    discarding eventual cycles within the same branch, but keep
+    duplicate pathes in different branches.
 
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
     """
     if traversed is None:
-        traversed = {self}
-    tree = [self]
+        traversed = {tree}
+    out_tree = [tree]
     cycles = []
     if depth != 0:
         try:
-            for c in children(self):
-                if c not in traversed:
-                    tree += [acyclic_depth_first(c, children, depth - 1, cut_mark, traversed.union({c}))]
+            for child in children(tree):
+                if child not in traversed:
+#                   Recurse with a different "traversed" set for each child:
+                    out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed.union({child}))]
                 else:
-                    cycles.append((c, depth - 1))
+                    cycles.append((child, depth - 1))
         except TypeError:
             pass
     elif cut_mark:
-        tree += [cut_mark]
+        out_tree += [cut_mark]
     if cycles:
-        warnings.warn('Discarded redundant search (%s)' % cycles)
-    return tree
+        warnings.warn('Discarded redundant search {0}'.format(str(cycles)))
+    return out_tree
 
 
 ##########################################################################
