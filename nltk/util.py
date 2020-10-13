@@ -244,11 +244,11 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
     """
-    queue = [(tree, 0)]
+    queue = deque([(tree, 0)])
     traversed = {tree}
     cycles = []
     while queue:
-        node, depth = queue.pop(0)
+        node, depth = queue.popleft()
         yield node
 
         if depth != maxdepth:
@@ -263,7 +263,6 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
                 pass
     if cycles:
         warnings.warn('Discarded redundant search {0}'.format(str(cycles)))
-
 
 def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
     """Traverse the nodes of a tree in depth-first order,
