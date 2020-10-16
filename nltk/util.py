@@ -244,25 +244,22 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
     """
+    traversed = set()
     queue = deque([(tree, 0)])
-    traversed = {tree}
-    cycles = []
     while queue:
         node, depth = queue.popleft()
         yield node
-
+        traversed.add(node)
         if depth != maxdepth:
             try:
                 for child in children(node):
                     if child not in traversed:
                         queue.append((child, depth + 1))
-                        traversed.add(child)
                     else:
-                        cycles.append((child, depth + 1))
+                        warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
             except TypeError:
                 pass
-    if cycles:
-        warnings.warn('Discarded redundant search {0}'.format(str(cycles)))
+
 
 def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
     """Traverse the nodes of a tree in depth-first order,
@@ -276,7 +273,6 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    cycles = []
     if depth != 0:
         try:
             for child in children(tree):
@@ -284,13 +280,11 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
 #                   Recurse with a different "traversed" set for each child:
                     out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed.union({child}))]
                 else:
-                    cycles.append((child, depth - 1))
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
         except TypeError:
             pass
     elif cut_mark:
         out_tree += [cut_mark]
-    if cycles:
-        warnings.warn('Discarded redundant search {0}'.format(str(cycles)))
     return out_tree
 
 

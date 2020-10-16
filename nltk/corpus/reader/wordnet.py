@@ -559,7 +559,7 @@ class Synset(_WordNetObject):
         >>> print(list(computer.closure(topic)))
         [Synset('computer_science.n.01')]
 
-        UserWarning: Discarded redundant search ([(Synset('computer.n.01'), 2)])
+        UserWarning: Discarded redundant search for Synset('computer.n.01') at depth 2
 
 
         Include redundant pathes (but only once), avoiding duplicate searches
@@ -574,7 +574,7 @@ class Synset(_WordNetObject):
         Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
         Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
-        UserWarning: Discarded redundant search ([(Synset('animal.n.01'), 7)])
+        UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
         """
 
         from nltk.util import acyclic_breadth_first
@@ -595,7 +595,7 @@ class Synset(_WordNetObject):
         >>> pprint(computer.tree(topic))
         [Synset('computer.n.01'), [Synset('computer_science.n.01')]]
 
-        UserWarning: Discarded redundant search ([(Synset('computer.n.01'), -3)])
+        UserWarning: Discarded redundant search for Synset('computer.n.01') at depth -3
 
 
         But keep duplicate branches (from 'animal.n.01' to 'entity.n.01'):
