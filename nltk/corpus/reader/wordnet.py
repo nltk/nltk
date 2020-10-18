@@ -583,6 +583,9 @@ class Synset(_WordNetObject):
                 yield synset
 
 
+    from nltk.util import acyclic_depth_first as acyclic_tree
+
+
     def tree(self, rel, depth=-1, cut_mark=None):
         """
         Return the full relation tree, including self,
@@ -626,8 +629,8 @@ class Synset(_WordNetObject):
                [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
         """
 
-        from nltk.util import acyclic_depth_first
-        return acyclic_depth_first(self, rel, depth, cut_mark)
+        from nltk.util import acyclic_branches_depth_first
+        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
 
     def hypernym_paths(self):

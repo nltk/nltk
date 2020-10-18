@@ -263,8 +263,39 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
 
 def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
     """Traverse the nodes of a tree in depth-first order,
-    discarding eventual cycles within the same branch, but keep
-    duplicate pathes in different branches.
+    discarding eventual cycles within any branch,
+    adding cut_mark (when defined) if cycles were truncated.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+    """
+    if traversed is None:
+        traversed = {tree}
+    out_tree = [tree]
+    if depth != 0:
+        try:
+            for child in children(tree):
+                if child not in traversed:
+#                   Recurse with a common "traversed" set for all children:
+                    traversed.add(child)
+                    out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed)]
+                else:
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    if cut_mark:
+                        out_tree += [cut_mark]
+        except TypeError:
+            pass
+    elif cut_mark:
+        out_tree += [cut_mark]
+    return out_tree
+
+
+def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
+    """Traverse the nodes of a tree in depth-first order,
+    discarding eventual cycles within the same branch,
+    but keep duplicate pathes in different branches.
+    Add cut_mark (when defined) if cycles were truncated.
 
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
@@ -281,6 +312,8 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
                     out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed.union({child}))]
                 else:
                     warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    if cut_mark:
+                        out_tree += [cut_mark]
         except TypeError:
             pass
     elif cut_mark:
