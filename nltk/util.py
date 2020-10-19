@@ -273,9 +273,10 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
     Catches all cycles:
 
     >>> import nltk
+    >>> from nltk.util import acyclic_depth_first as acyclic_tree
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
-    >>> pprint(wn.synset('dog.n.01').acyclic_tree(lambda s:s.hypernyms(),cut_mark='...'))
+    >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:s.hypernyms(),cut_mark='...'))
     [Synset('dog.n.01'),
      [Synset('canine.n.02'),
       [Synset('carnivore.n.01'),
@@ -327,9 +328,10 @@ def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, t
     but keeping cycles from different branches:
 
     >>> import nltk
+    >>> from nltk.util import acyclic_branches_depth_first as tree
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
-    >>> pprint(wn.synset('certified.a.01').tree(lambda s:s.also_sees(),cut_mark='...',depth=4))
+    >>> pprint(tree(wn.synset('certified.a.01'), lambda s:s.also_sees(), cut_mark='...', depth=4))
     [Synset('certified.a.01'),
      [Synset('authorized.a.01'),
       [Synset('lawful.a.01'),
