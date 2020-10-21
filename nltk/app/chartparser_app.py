@@ -267,7 +267,7 @@ class ChartMatrixView(object):
         if (i, j) == self._selected_cell and self._chart.num_edges() == self._num_edges:
             return
 
-        self._selected_cell = (i, j)
+        self._selected_cell = (i, j) 
         self.update()
 
         # Fire the callback.
