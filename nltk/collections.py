@@ -594,10 +594,13 @@ class LazyIteratorList(AbstractLazySequence):
         while i < len(self._cache):
             yield self._cache[i]
             i += 1
-        while True:
-            v = next(self._it)
-            self._cache.append(v)
-            yield v
+        try:
+            while True:
+                v = next(self._it)
+                self._cache.append(v)
+                yield v
+        except StopIteration as e:
+            pass
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
