@@ -327,7 +327,7 @@ class LazyConcatenation(AbstractLazySequence):
             if sublist_index == (len(self._offsets) - 1):
                 assert (
                     index + len(sublist) >= self._offsets[-1]
-                ), "offests not monotonic increasing!"
+                ), "offsets not monotonic increasing!"
                 self._offsets.append(index + len(sublist))
             else:
                 assert self._offsets[sublist_index + 1] == index + len(
