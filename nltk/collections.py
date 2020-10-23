@@ -599,7 +599,7 @@ class LazyIteratorList(AbstractLazySequence):
                 v = next(self._it)
                 self._cache.append(v)
                 yield v
-        except StopIteration as e:
+        except StopIteration:
             pass
 
     def __add__(self, other):
