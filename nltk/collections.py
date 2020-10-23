@@ -598,7 +598,6 @@ class LazyIteratorList(AbstractLazySequence):
             v = next(self._it)
             self._cache.append(v)
             yield v
-            i += 1
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
