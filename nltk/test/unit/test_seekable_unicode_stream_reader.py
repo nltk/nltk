@@ -91,7 +91,7 @@ def test_reader():
             try:
                 # skip strings that can't be encoded with the current encoding
                 string.encode(encoding)
-                yield check_reader, string, encoding
+                check_reader(string, encoding)
             except UnicodeEncodeError:
                 pass
 
@@ -120,7 +120,7 @@ def test_reader_on_large_string():
             def _check(encoding, n=1000):
                 check_reader(LARGE_STRING, encoding, n)
 
-            yield _check, encoding
+            _check(encoding)
 
         except UnicodeEncodeError:
             pass

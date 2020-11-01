@@ -14,8 +14,8 @@ NLTK testing
 4. Make sure all NLTK data is downloaded (see ``nltk.download()``);
 
 5. run 'tox' command from the root nltk folder. It will install dependencies
-   and run ``nltk/test/runtests.py`` script for all available interpreters.
-   You may pass any options to runtests.py script separating them by '--'.
+   and run ``pytest`` for all available interpreters.
+   You may also pass any pytest options here (for example, `-v` for verbose).
 
 It may take a long time at first run, but the subsequent runs will
 be much faster.
@@ -29,7 +29,6 @@ Run tests for python 3.6 in verbose mode; executing only tests
 that failed in the last test run::
 
     tox -e py36 -- -v --failed
-
 
 Run tree doctests for all available interpreters::
 
@@ -48,9 +47,9 @@ In order to skip numpy & friends, use ``..-nodeps`` environments::
 It is also possible to run tests without tox. This way NLTK would be tested
 only under single interpreter, but it may be easier to have numpy and other
 libraries installed this way. In order to run tests without tox, make sure
-``nose >= 1.2.1`` is installed and execute runtests.py script::
+to ``pip install -r test-requirements.txt`` and run ``pytest``::
 
-    nltk/test/runtests.py
+    pytest nltk/test/
 
 
 Writing tests
@@ -71,7 +70,7 @@ unittests. Test should be written as unittest if some of the following apply:
 * test deals with non-ascii unicode and Python 2.x support is required;
 * test is a regression test that is not necessary for documentational purposes.
 
-Unittests currently reside in ``nltk/test/unit/test_*.py`` files; nose
+Unittests currently reside in ``nltk/test/unit/test_*.py`` files; pytest
 is used for test running.
 
 If a test should be written as unittest but also has a documentational value
@@ -85,13 +84,13 @@ There are some gotchas with NLTK doctests (and with doctests in general):
 * Don't write ``+ELLIPSIS``, ``+NORMALIZE_WHITESPACE``,
   ``+IGNORE_EXCEPTION_DETAIL`` flags (they are already ON by default in NLTK).
 
-* Do not write doctests that has non-ascii output (they are not supported in
+* Do not write doctests that have non-ascii output (they are not supported in
   Python 2.x). Incorrect::
 
       >>> greeting
       u'Привет'
 
-  The proper way is to rewrite such doctest as unittest.
+  The proper way is to rewrite such a doctest as a unittest.
 
 * In order to conditionally skip a doctest in a separate
   ``nltk/test/foo.doctest`` file, create ``nltk.test/foo_fixt.py``
@@ -100,10 +99,10 @@ There are some gotchas with NLTK doctests (and with doctests in general):
       # <a comment describing why should the test be skipped>
 
       def setup_module(module):
-          from nose import SkipTest
+          import pytest
 
           if some_condition:
-              raise SkipTest("foo.doctest is skipped because <...>")
+              pytest.skip("foo.doctest is skipped because <...>")
 
 * In order to conditionally skip all doctests from the module/class/function
   docstrings, put the following function in a top-level module namespace::
@@ -111,10 +110,10 @@ There are some gotchas with NLTK doctests (and with doctests in general):
       # <a comment describing why should the tests from this module be skipped>
 
       def setup_module(module):
-          from nose import SkipTest
+          import pytest
 
           if some_condition:
-              raise SkipTest("doctests from nltk.<foo>.<bar> are skipped because <...>")
+              pytest.skip("doctests from nltk.<foo>.<bar> are skipped because <...>")
 
   A good idea is to define ``__all__`` in such module and omit
   ``setup_module`` from ``__all__``.
@@ -150,7 +149,7 @@ If the code requires some external dependencies, then
 
 * tests for this code should be skipped if the dependencies are not available:
   use ``setup_module`` for doctests (as described above) and
-  ``nltk.test.unit.utils.skip / skipIf`` decorators or ``nose.SkipTest``
+  ``@pytest.mark.skipif / @pytest.mark.skip`` decorators or ``pytest.skip``
   exception for unittests;
 * if the dependency is a Python package, it should be added to tox.ini
   (but not to ..-nodeps environments).
