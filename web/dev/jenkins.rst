@@ -68,7 +68,7 @@ installed beforehand, and to make them run a series of extra environment
 variables are initialized. These dependencies will not be detailed until the
 last section.
 
-The test suite itself consists of doctests and unittests. Docstrings are found in
+The test suite itself consists of doctests and unittests. Doctests are found in
 each module as docstrings, and in all the .doctest files under the test folder in
 the nltk repo. We run these tests using pytest_, find code coverage using
 `pytest-cov`_ and check for `PEP-8`_ etc. standard violations using `pylint`_.
