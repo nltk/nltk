@@ -277,7 +277,7 @@ class PerceptronTagger(TaggerI):
             return "!HYPHEN"
         elif word.isdigit() and len(word) == 4:
             return "!YEAR"
-        elif word and word[0].isdigit():
+        elif word[0].isdigit():
             return "!DIGITS"
         else:
             return word.lower()
@@ -296,7 +296,7 @@ class PerceptronTagger(TaggerI):
         # It's useful to have a constant feature, which acts sort of like a prior
         add("bias")
         add("i suffix", word[-3:])
-        add("i pref1", word[0] if word else "")
+        add("i pref1", word[0])
         add("i-1 tag", prev)
         add("i-2 tag", prev2)
         add("i tag+i-2 tag", prev, prev2)
