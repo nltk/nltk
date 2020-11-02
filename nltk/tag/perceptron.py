@@ -275,11 +275,12 @@ class PerceptronTagger(TaggerI):
         """
         if "-" in word and word[0] != "-":
             return "!HYPHEN"
-        if word.isdigit() and len(word) == 4:
+        elif word.isdigit() and len(word) == 4:
             return "!YEAR"
-        if word and word[0].isdigit():
+        elif word and word[0].isdigit():
             return "!DIGITS"
-        return word.lower()
+        else:
+            return word.lower()
 
     def _get_features(self, i, word, context, prev, prev2):
         """Map tokens into a feature representation, implemented as a
