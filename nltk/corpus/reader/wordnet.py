@@ -1532,26 +1532,17 @@ class WordNetCorpusReader(CorpusReader):
                      Only used if sense is in an adjective satellite synset
         head_id:     uniquely identifies sense in a lexicographer file when paired with head_word
                      Only used if head_word is present (2 digit int)
+
+        >>> import nltk
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.synset_from_sense_key("drive%1:04:03::"))
+        Synset('drive.n.06')
+
+        >>> print(wn.synset_from_sense_key("driving%1:04:03::"))
+        Synset('drive.n.06')
         """
-        sense_key_regex = re.compile(r"(.*)\%(.*):(.*):(.*):(.*):(.*)")
-        synset_types = {1: NOUN, 2: VERB, 3: ADJ, 4: ADV, 5: ADJ_SAT}
-        lemma, ss_type, _, lex_id, _, _ = sense_key_regex.match(sense_key).groups()
+        return self.lemma_from_key(sense_key).synset()
 
-        # check that information extracted from sense_key is valid
-        error = None
-        if not lemma:
-            error = "lemma"
-        elif int(ss_type) not in synset_types:
-            error = "ss_type"
-        elif int(lex_id) < 0 or int(lex_id) > 99:
-            error = "lex_id"
-        if error:
-            raise WordNetError(
-                "valid {} could not be extracted from the sense key".format(error)
-            )
-
-        synset_id = ".".join([lemma, synset_types[int(ss_type)], lex_id])
-        return self.synset(synset_id)
 
     #############################################################
     # Retrieve synsets and lemmas.
