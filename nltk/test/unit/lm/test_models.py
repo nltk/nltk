@@ -321,27 +321,31 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         self.model.fit(training_text)
 
     score_tests = [
-        # For unigram scores by default revert to MLE
+        # For unigram scores by default revert to Add-One Smoothed MLE
         # Total unigrams: 18
+        # Vocab Size = 7
         # count('c'): 1
-        ("c", None, 1.0 / 18),
+        ("c", None, (1.0 + 1.0) / 18 + 7),
         # in vocabulary but unseen
         # count("z") = 0
-        ("z", None, 0.0 / 18),
+        ("z", None, 1.0 / 18 + 7),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
-        ("y", None, 3.0 / 18),
-        # gamma(['b']) = 0.1111
+        ("y", None, (3.0 + 1.0) / 18 + 7),
+        # 2 words follow b and b occured a total of 2 times
+        # gamma(['b']) = 2/(2+2) = 0.5
         # mle.score('c', ['b']) = 0.5
-        # (1 - gamma) * mle + gamma * mle('c') ~= 0.45 + .3 / 18
-        ("c", ["b"], (1 - 0.1111) * 0.5 + 0.1111 * 1 / 18),
+        # mle('c') = (1+1)/(18+7) = 0.08
+        # (1 - gamma) * mle + gamma * mle('c') ~= 0.25 + 0.04
+        ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * (1+1) / (18+7)),
         # building on that, let's try 'a b c' as the trigram
-        # gamma(['a', 'b']) = 0.0667
+        # 1 word follow ab and ab occured 1 time
+        # gamma(['a', 'b']) = 1/(1+1) = 0.5
         # mle("c", ["a", "b"]) = 1
-        ("c", ["a", "b"], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * (1+1) / (18+7))),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * (1+1) / (18+7))),
     ]
 
 
