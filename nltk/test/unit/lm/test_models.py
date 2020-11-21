@@ -337,15 +337,15 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         # mle.score('c', ['b']) = 0.5
         # mle('c') = (1+1)/(18+7) = 0.08
         # (1 - gamma) * mle + gamma * mle('c') ~= 0.25 + 0.04
-        ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * (1+1) / (18+7)),
+        ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * (1 + 1) / (18 + 7)),
         # building on that, let's try 'a b c' as the trigram
         # 1 word follow ab and ab occured 1 time
         # gamma(['a', 'b']) = 1/(1+1) = 0.5
         # mle("c", ["a", "b"]) = 1
-        ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * (1+1) / (18+7))),
+        ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * (1 + 1) / (18 + 7))),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * (1+1) / (18+7))),
+        ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * (1 + 1) / (18 + 7))),
     ]
 
 
