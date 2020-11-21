@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
+#         Manu Joseph <manujosephv@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Smoothing algorithms for language modeling.
@@ -30,10 +31,11 @@ class WittenBell(Smoothing):
 
     def _gamma(self, context):
         n_plus = _count_non_zero_vals(self.counts[context])
-        return n_plus / (n_plus + self.counts[len(context) + 1].N())
+        return n_plus / (n_plus + self.counts[context].N())
 
     def unigram_score(self, word):
-        return self.counts.unigrams.freq(word)
+        return (self.counts[word] + 1) / (self.counts[1].N() + len(self.counts[1]))
+
 
 
 class KneserNey(Smoothing):
