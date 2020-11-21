@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
-#         Manu Joseph <manujosephv@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Smoothing algorithms for language modeling.
