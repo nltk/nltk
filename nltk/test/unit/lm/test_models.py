@@ -325,13 +325,13 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         # Total unigrams: 18
         # Vocab Size = 7
         # count('c'): 1
-        ("c", None, (1.0 + 1.0) / 18 + 7),
+        ("c", None, (1.0 + 1.0) / (18 + 7)),
         # in vocabulary but unseen
         # count("z") = 0
-        ("z", None, 1.0 / 18 + 7),
+        ("z", None, 1.0 / (18 + 7)),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
-        ("y", None, (3.0 + 1.0) / 18 + 7),
+        ("y", None, (3.0 + 1.0) / (18 + 7)),
         # 2 words follow b and b occured a total of 2 times
         # gamma(['b']) = 2/(2+2) = 0.5
         # mle.score('c', ['b']) = 0.5
