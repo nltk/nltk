@@ -33,7 +33,7 @@ class WittenBell(Smoothing):
         return n_plus / (n_plus + self.counts[context].N())
 
     def unigram_score(self, word):
-        return (self.counts[word] + 1) / (self.counts[1].N() + len(self.counts[1]))
+        return self.counts.unigrams.freq(word)
 
 
 
