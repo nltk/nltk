@@ -325,27 +325,27 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         # Total unigrams: 18
         # Vocab Size = 7
         # count('c'): 1
-        ("c", None, (1.0 + 1.0) / (18 + 7)),
+        ("c", None, 1.0 / 18),
         # in vocabulary but unseen
         # count("z") = 0
-        ("z", None, 1.0 / (18 + 7)),
+        ("z", None, 0 / 18),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
-        ("y", None, (3.0 + 1.0) / (18 + 7)),
+        ("y", None, 3.0 / 18),
         # 2 words follow b and b occured a total of 2 times
         # gamma(['b']) = 2/(2+2) = 0.5
         # mle.score('c', ['b']) = 0.5
-        # mle('c') = (1+1)/(18+7) = 0.08
-        # (1 - gamma) * mle + gamma * mle('c') ~= 0.25 + 0.04
-        ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * (1 + 1) / (18 + 7)),
+        # mle('c') = 1/18 = 0.055
+        # (1 - gamma) * mle + gamma * mle('c') ~= 0.27 + 0.055
+        ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * 1 / 18),
         # building on that, let's try 'a b c' as the trigram
         # 1 word follow ab and ab occured 1 time
         # gamma(['a', 'b']) = 1/(1+1) = 0.5
         # mle("c", ["a", "b"]) = 1
-        ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * (1 + 1) / (18 + 7))),
+        ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * (1 + 1) / (18 + 7))),
+        ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
     ]
 
 
