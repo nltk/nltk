@@ -133,7 +133,7 @@
       <sourceEncoding>ASCII</sourceEncoding>
     </hudson.plugins.cobertura.CoberturaPublisher>
     <hudson.tasks.junit.JUnitResultArchiver>
-      <testResults>**/nosetests_scrubbed.xml</testResults>
+      <testResults>**/coverage_scrubbed.xml</testResults>
       <keepLongStdio>false</keepLongStdio>
       <testDataPublishers/>
     </hudson.tasks.junit.JUnitResultArchiver>

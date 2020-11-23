@@ -4,6 +4,9 @@
 =======================================
 Demonstrate word embedding using Gensim
 =======================================
+    
+    >>> from nltk.test.gensim_fixt import setup_module
+    >>> setup_module()
 
 We demonstrate three functions:
 - Train the word embeddings using brown corpus;

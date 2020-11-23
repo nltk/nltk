@@ -482,7 +482,7 @@ if __name__ == "__main__":
     # demo()
     pass
 
-# ** this is for nose **
+# ** this is for unit testing **
 # unload all corpus after tests
 def teardown_module(module=None):
     import nltk.corpus

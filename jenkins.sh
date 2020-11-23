@@ -2,15 +2,15 @@
 
 cd `dirname $0`
 
-#download nltk python dependencies
+# Download nltk python dependencies
 pip install --upgrade -r pip-req.txt
 pip install --upgrade matplotlib
 pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip
 
-#download nltk data packages
+# Download nltk data packages
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
 
-#download external dependencies
+# Download external dependencies
 pushd ${HOME}
 [[ ! -d 'third' ]] && mkdir 'third'
 pushd 'third'
@@ -76,17 +76,16 @@ echo "---- CLASSPATH: ----"
 echo $CLASSPATH
 echo "---- MODELS: ----"
 echo $STANFORD_MODELS
-echo "---- NLTK runtests.py ----"
+echo "---- Running tests ----"
 
-#coverage
-coverage erase
-coverage run --source=nltk nltk/test/runtests.py -v --with-xunit
-coverage xml --omit=nltk/test/*
-iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
+# Coverage
+rm -f coverage_scrubbed.xml
+pytest --cov=nltk --cov-report xml nltk/test/
+iconv -c -f utf-8 -t utf-8 coverage.xml > coverage_scrubbed.xml
 
 # Create a default pylint configuration file.
 touch ~/.pylintrc
 pylint -f parseable nltk > pylintoutput
 
-#script always succeeds
+# Script always succeeds
 true

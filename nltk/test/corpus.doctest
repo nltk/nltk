@@ -2196,4 +2196,8 @@ access to its tuples() method
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
 
 
+Teardown
+========
 
+    >>> from nltk.corpus import teardown_module
+    >>> teardown_module()
