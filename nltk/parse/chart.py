@@ -1018,7 +1018,7 @@ class AbstractChartRule(ChartRuleI):
 
 
 class FundamentalRule(AbstractChartRule):
-    """
+    r"""
     A rule that joins two adjacent edges to form a single combined
     edge.  In particular, this rule specifies that any pair of edges
 
@@ -1051,7 +1051,7 @@ class FundamentalRule(AbstractChartRule):
 
 
 class SingleEdgeFundamentalRule(FundamentalRule):
-    """
+    r"""
     A rule that joins a given edge with adjacent edges in the chart,
     to form combined edges.  In particular, this rule specifies that
     either of the edges:
@@ -1117,7 +1117,7 @@ class LeafInitRule(AbstractChartRule):
 
 
 class TopDownInitRule(AbstractChartRule):
-    """
+    r"""
     A rule licensing edges corresponding to the grammar productions for
     the grammar's start symbol.  In particular, this rule specifies that
     ``[S -> \* alpha][0:i]`` is licensed for each grammar production
@@ -1134,7 +1134,7 @@ class TopDownInitRule(AbstractChartRule):
 
 
 class TopDownPredictRule(AbstractChartRule):
-    """
+    r"""
     A rule licensing edges corresponding to the grammar productions
     for the nonterminal following an incomplete edge's dot.  In
     particular, this rule specifies that
@@ -1156,7 +1156,7 @@ class TopDownPredictRule(AbstractChartRule):
 
 
 class CachedTopDownPredictRule(TopDownPredictRule):
-    """
+    r"""
     A cached version of ``TopDownPredictRule``.  After the first time
     this rule is applied to an edge with a given ``end`` and ``next``,
     it will not generate any more edges for edges with that ``end`` and
@@ -1207,7 +1207,7 @@ class CachedTopDownPredictRule(TopDownPredictRule):
 
 
 class BottomUpPredictRule(AbstractChartRule):
-    """
+    r"""
     A rule licensing any edge corresponding to a production whose
     right-hand side begins with a complete edge's left-hand side.  In
     particular, this rule specifies that ``[A -> alpha \*]`` licenses
@@ -1226,7 +1226,7 @@ class BottomUpPredictRule(AbstractChartRule):
 
 
 class BottomUpPredictCombineRule(BottomUpPredictRule):
-    """
+    r"""
     A rule licensing any edge corresponding to a production whose
     right-hand side begins with a complete edge's left-hand side.  In
     particular, this rule specifies that ``[A -> alpha \*]``

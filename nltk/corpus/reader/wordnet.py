@@ -10,6 +10,8 @@
 #         Sim Wei Ying Geraldine
 #         Soe Lynn
 #         Francis Bond <bond@ieee.org>
+#         Eric Kafe <kafe.eric@gmail.com>
+
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -1364,6 +1366,15 @@ class WordNetCorpusReader(CorpusReader):
         return self._data_file_map[pos]
 
     def synset_from_pos_and_offset(self, pos, offset):
+        """
+        - pos: The synset's part of speech, matching one of the module level
+          attributes ADJ, ADJ_SAT, ADV, NOUN or VERB ('a', 's', 'r', 'n', or 'v').
+        - offset: The byte offset of this synset in the WordNet dict file
+          for this pos.
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.synset_from_pos_and_offset('n', 1740))
+        Synset('entity.n.01')
+        """
         # Check to see if the synset is in the cache
         if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
@@ -1371,10 +1382,17 @@ class WordNetCorpusReader(CorpusReader):
         data_file = self._data_file(pos)
         data_file.seek(offset)
         data_file_line = data_file.readline()
-        synset = self._synset_from_pos_and_line(pos, data_file_line)
-        assert synset._offset == offset
-        self._synset_offset_cache[pos][offset] = synset
+        # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
+        line_offset=data_file_line[:8]
+        if line_offset.isalnum() and offset==int(line_offset):
+            synset = self._synset_from_pos_and_line(pos, data_file_line)
+            assert synset._offset == offset
+            self._synset_offset_cache[pos][offset] = synset
+        else:
+            synset=None
+            raise WordNetError("No WordNet synset found for pos={0} at offset={1}.".format(pos,offset))
         return synset
+
 
     @deprecated("Use public method synset_from_pos_and_offset() instead")
     def _synset_from_pos_and_offset(self, *args, **kwargs):
@@ -1532,26 +1550,17 @@ class WordNetCorpusReader(CorpusReader):
                      Only used if sense is in an adjective satellite synset
         head_id:     uniquely identifies sense in a lexicographer file when paired with head_word
                      Only used if head_word is present (2 digit int)
+
+        >>> import nltk
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.synset_from_sense_key("drive%1:04:03::"))
+        Synset('drive.n.06')
+
+        >>> print(wn.synset_from_sense_key("driving%1:04:03::"))
+        Synset('drive.n.06')
         """
-        sense_key_regex = re.compile(r"(.*)\%(.*):(.*):(.*):(.*):(.*)")
-        synset_types = {1: NOUN, 2: VERB, 3: ADJ, 4: ADV, 5: ADJ_SAT}
-        lemma, ss_type, _, lex_id, _, _ = sense_key_regex.match(sense_key).groups()
+        return self.lemma_from_key(sense_key).synset()
 
-        # check that information extracted from sense_key is valid
-        error = None
-        if not lemma:
-            error = "lemma"
-        elif int(ss_type) not in synset_types:
-            error = "ss_type"
-        elif int(lex_id) < 0 or int(lex_id) > 99:
-            error = "lex_id"
-        if error:
-            raise WordNetError(
-                "valid {} could not be extracted from the sense key".format(error)
-            )
-
-        synset_id = ".".join([lemma, synset_types[int(ss_type)], lex_id])
-        return self.synset(synset_id)
 
     #############################################################
     # Retrieve synsets and lemmas.

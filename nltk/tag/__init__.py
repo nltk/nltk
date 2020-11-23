@@ -59,7 +59,7 @@ of ``None``.
 We evaluate a tagger on data that was not seen during training:
 
     >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600])
-    0.73...
+    0.7...
 
 For more information, please consult chapter 5 of the NLTK Book.
 """
@@ -108,7 +108,7 @@ def _get_tagger(lang=None):
 
 
 def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
-    # Currently only supoorts English and Russian.
+    # Currently only supports English and Russian.
     if lang not in ["eng", "rus"]:
         raise NotImplementedError(
             "Currently, NLTK pos_tag only supports English and Russian "

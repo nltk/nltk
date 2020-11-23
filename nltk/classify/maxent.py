@@ -1287,7 +1287,7 @@ def calculate_deltas(
     nftranspose,
     encoding,
 ):
-    """
+    r"""
     Calculate the update values for the classifier weights for
     this iteration of IIS.  These update weights are the value of
     ``delta`` that solves the equation::

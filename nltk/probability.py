@@ -317,7 +317,7 @@ class FreqDist(Counter):
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = [item for item, _ in self.most_common(*args)]
+        samples = _get_kwarg(kwargs, 'samples', [item for item, _ in self.most_common(*args)])
 
         cumulative = _get_kwarg(kwargs, "cumulative", False)
         if cumulative:

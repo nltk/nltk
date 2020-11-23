@@ -128,7 +128,7 @@ class ReppTokenizer(TokenizerI):
         :return: an iterable of the tokenized sentences as tuples of strings
         :rtype: iter(tuple)
         """
-        line_regex = re.compile("^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+        line_regex = re.compile(r"^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
         for section in repp_output.split("\n\n"):
             words_with_positions = [
                 (token, int(start), int(end))

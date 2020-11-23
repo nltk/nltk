@@ -263,6 +263,7 @@
 - Alexandre H. T. Dias <https://github.com/alexandredias3d>
 - Jacob Weightman <https://github.com/jacobdweightman>
 - Bonifacio de Oliveira <https://github.com/Bonifacio2>
+- Armins Bagrats Stepanjans <https://github.com/ab-10>
 - Vassilis Palassopoulos <https://github.com/palasso>
 - Ram Rachum <https://github.com/cool-RR>
 - Denali Molitor <https://github.com/dmmolitor>
@@ -270,7 +271,7 @@
 - Cory Nezin <https://github.com/corynezin>
 - Matt Chaput
 - Danny Sepler <https://github.com/dannysepler>
-
+- Akshita Bhagia <https://github.com/AkshitaB>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
