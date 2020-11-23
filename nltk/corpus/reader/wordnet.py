@@ -10,6 +10,8 @@
 #         Sim Wei Ying Geraldine
 #         Soe Lynn
 #         Francis Bond <bond@ieee.org>
+#         Eric Kafe <kafe.eric@gmail.com>
+
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -1364,6 +1366,15 @@ class WordNetCorpusReader(CorpusReader):
         return self._data_file_map[pos]
 
     def synset_from_pos_and_offset(self, pos, offset):
+        """
+        - pos: The synset's part of speech, matching one of the module level
+          attributes ADJ, ADJ_SAT, ADV, NOUN or VERB ('a', 's', 'r', 'n', or 'v').
+        - offset: The byte offset of this synset in the WordNet dict file
+          for this pos.
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.synset_from_pos_and_offset('n', 1740))
+        Synset('entity.n.01')
+        """
         # Check to see if the synset is in the cache
         if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
@@ -1371,10 +1382,17 @@ class WordNetCorpusReader(CorpusReader):
         data_file = self._data_file(pos)
         data_file.seek(offset)
         data_file_line = data_file.readline()
-        synset = self._synset_from_pos_and_line(pos, data_file_line)
-        assert synset._offset == offset
-        self._synset_offset_cache[pos][offset] = synset
+        # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
+        line_offset=data_file_line[:8]
+        if line_offset.isalnum() and offset==int(line_offset):
+            synset = self._synset_from_pos_and_line(pos, data_file_line)
+            assert synset._offset == offset
+            self._synset_offset_cache[pos][offset] = synset
+        else:
+            synset=None
+            raise WordNetError("No WordNet synset found for pos={0} at offset={1}.".format(pos,offset))
         return synset
+
 
     @deprecated("Use public method synset_from_pos_and_offset() instead")
     def _synset_from_pos_and_offset(self, *args, **kwargs):
