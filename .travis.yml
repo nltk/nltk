@@ -3,13 +3,12 @@ sudo: false
 language: python
 
 cache:
-  apt: true
+  pip: true
   directories:
   - $HOME/.cache/pip
   - $HOME/.ccache
   - $HOME/.pip-cache
   - $HOME/third
-  - $HOME/nltk_data
 
 dist: xenial
 
