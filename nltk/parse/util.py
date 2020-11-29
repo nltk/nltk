@@ -229,7 +229,3 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
             continue
         sentences += [(tokens, result)]
     return sentences
-
-
-# nose thinks it is a test
-extract_test_sentences.__test__ = False

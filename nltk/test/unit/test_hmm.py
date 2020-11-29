@@ -78,9 +78,9 @@ def test_backward_probability():
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         import numpy
-    except ImportError as e:
-        raise SkipTest("numpy is required for nltk.test.test_hmm") from e
+    except ImportError:
+        pytest.skip("numpy is required for nltk.test.test_hmm")

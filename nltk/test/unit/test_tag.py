@@ -21,9 +21,9 @@ def test_basic():
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         import numpy
     except ImportError as e:
-        raise SkipTest("numpy is required for nltk.test.test_tag") from e
+        pytest.skip("numpy is required for nltk.test.test_tag")

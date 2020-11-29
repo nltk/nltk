@@ -12,7 +12,7 @@ Relative Clauses
 
 Construct a lexicon:
 
-    >>> lex = lexicon.parseLexicon('''
+    >>> lex = lexicon.fromstring('''
     ...     :- S, NP, N, VP
     ...
     ...     Det :: NP/N
@@ -182,7 +182,7 @@ Lexicons for the tests:
 Tests handling of conjunctions.
 Note that while the two derivations are different, they are semantically equivalent.
 
-    >>> lex = lexicon.parseLexicon(test1_lex)
+    >>> lex = lexicon.fromstring(test1_lex)
     >>> parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     >>> for parse in parser.parse("I will cook and might eat the mushrooms and parsnips".split()):
     ...     printCCGDerivation(parse)
@@ -231,7 +231,7 @@ Note that while the two derivations are different, they are semantically equival
 Tests handling subject extraction.
 Interesting to point that the two parses are clearly semantically different.
 
-    >>> lex = lexicon.parseLexicon(test2_lex)
+    >>> lex = lexicon.fromstring(test2_lex)
     >>> parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     >>> for parse in parser.parse("articles which I will file and forget without reading".split()):
     ...     printCCGDerivation(parse)
@@ -282,7 +282,7 @@ Unicode words are supported.
 
 Lexicons for the tests:
 
-    >>> lex = lexicon.parseLexicon('''
+    >>> lex = lexicon.fromstring('''
     ...        :- S, N, NP, PP
     ...
     ...        AdjI :: N\\N
