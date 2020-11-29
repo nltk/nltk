@@ -15,7 +15,7 @@ pip -V
 
 echo "$(pwd)"  # Know which directory tox is running this shell from.
 
-#coverage
+# Coverage
 rm -f coverage_scrubbed.xml
 pytest --cov=nltk --cov-report xml
 iconv -c -f utf-8 -t utf-8 coverage.xml > coverage_scrubbed.xml

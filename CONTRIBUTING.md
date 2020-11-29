@@ -145,6 +145,15 @@ pytest unit/translate/test_nist.py  # unittest
 pytest  # all tests
 ```
 
+(For moderately faster tests, you can install [pytest-xdist](https://pypi.org/project/pytest-xdist/) locally and run your tests in parallel.)
+
+```
+pip install pytest-xdist
+
+# Run tests using 3 subprocesses
+pytest  -n3 nltk/test/
+```
+
 
 ## Continuous Integration
 
