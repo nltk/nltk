@@ -138,7 +138,7 @@ the desired feature.
 
 You can use `pytest` to run your tests, no matter which type of test it is:
 
-```
+```shell
 cd nltk/test
 pytest util.doctest  # doctest
 pytest unit/translate/test_nist.py  # unittest
@@ -147,7 +147,7 @@ pytest  # all tests
 
 (For moderately faster tests, you can install [pytest-xdist](https://pypi.org/project/pytest-xdist/) locally and run your tests in parallel.)
 
-```
+```shell
 pip install pytest-xdist
 
 # Run tests using 3 subprocesses
@@ -193,7 +193,7 @@ Then run `tox -e py37`.
 
 For example, using `pipenv`:
 
-```
+```shell
 git clone https://github.com/nltk/nltk.git
 cd nltk
 pipenv install -r pip-req.txt
