@@ -80,7 +80,7 @@ echo "---- Running tests ----"
 
 # Coverage
 rm -f coverage_scrubbed.xml
-pytest --cov=nltk --cov-report xml nltk/test/
+pytest --cov=nltk --cov-report xml
 iconv -c -f utf-8 -t utf-8 coverage.xml > coverage_scrubbed.xml
 
 # Create a default pylint configuration file.

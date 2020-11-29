@@ -49,7 +49,7 @@ only under single interpreter, but it may be easier to have numpy and other
 libraries installed this way. In order to run tests without tox, make sure
 to ``pip install -r test-requirements.txt`` and run ``pytest``::
 
-    pytest nltk/test/
+    pytest
 
 
 Writing tests

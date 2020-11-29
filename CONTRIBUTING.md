@@ -151,7 +151,7 @@ pytest  # all tests
 pip install pytest-xdist
 
 # Run tests using 3 subprocesses
-pytest  -n3 nltk/test/
+pytest  -n3
 ```
 
 
