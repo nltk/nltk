@@ -321,7 +321,7 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         self.model.fit(training_text)
 
     score_tests = [
-        # For unigram scores by default revert to Add-One Smoothed MLE
+        # For unigram scores by default revert to regular MLE
         # Total unigrams: 18
         # Vocab Size = 7
         # count('c'): 1

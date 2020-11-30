@@ -38,7 +38,7 @@ for the entropy.
 
     >>> sent = ngrams("This is a sentence".split(), 3)
     >>> lm.entropy(sent)
-    17.41365588455936
+    10.237013228691053
 
 
 Issue 367
