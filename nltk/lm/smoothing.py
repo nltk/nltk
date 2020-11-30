@@ -36,7 +36,6 @@ class WittenBell(Smoothing):
         return self.counts.unigrams.freq(word)
 
 
-
 class KneserNey(Smoothing):
     """Kneser-Ney Smoothing."""
 
