@@ -339,7 +339,7 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametriz
         # (1 - gamma) * mle + gamma * mle('c') ~= 0.27 + 0.055
         ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * 1 / 18),
         # building on that, let's try 'a b c' as the trigram
-        # 1 word follow ab and ab occured 1 time
+        # 1 word follows 'a b' and 'a b' occured 1 time
         # gamma(['a', 'b']) = 1/(1+1) = 0.5
         # mle("c", ["a", "b"]) = 1
         ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
