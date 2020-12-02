@@ -95,14 +95,13 @@ class CrubadanCorpusReader(CorpusReader):
             raise RuntimeError("No N-gram file found for requested language.")
 
         counts = FreqDist()
-        f = open(ngram_file, "r", encoding="utf-8")
+        with open(ngram_file, "r", encoding="utf-8") as f:
+            for line in f:
+                data = line.split(" ")
 
-        for line in f:
-            data = line.split(" ")
+                ngram = data[1].strip("\n")
+                freq = int(data[0])
 
-            ngram = data[1].strip("\n")
-            freq = int(data[0])
-
-            counts[ngram] = freq
+                counts[ngram] = freq
 
         return counts
