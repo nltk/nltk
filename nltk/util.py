@@ -146,14 +146,6 @@ def py25():
     return version_info[0] == 2 and version_info[1] == 5
 
 
-def py26():
-    return version_info[0] == 2 and version_info[1] == 6
-
-
-def py27():
-    return version_info[0] == 2 and version_info[1] == 7
-
-
 ##########################################################################
 # Indexing
 ##########################################################################

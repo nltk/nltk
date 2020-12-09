@@ -139,9 +139,9 @@ class SennaNERTagger(Senna):
 
 # skip doctests if Senna is not installed
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         tagger = Senna("/usr/share/senna-v3.0", ["pos", "chk", "ner"])
-    except OSError as e:
-        raise SkipTest("Senna executable not found") from e
+    except OSError:
+        pytest.skip("Senna executable not found")

@@ -122,12 +122,12 @@ class SklearnClassifier(ClassifierI):
 
 # skip doctests if scikit-learn is not installed
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         import sklearn
-    except ImportError as e:
-        raise SkipTest("scikit-learn is not installed") from e
+    except ImportError:
+        pytest.skip("scikit-learn is not installed")
 
 
 if __name__ == "__main__":

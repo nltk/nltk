@@ -5,12 +5,12 @@ Tests for static parts of Twitter package
 
 import os
 import unittest
-from nose import SkipTest
+import pytest
 
 try:
     import twython
 except ImportError as e:
-    raise SkipTest("The twython library has not been installed.") from e
+    pytest.skip("The twython library has not been installed.")
 
 from nltk.twitter import Authenticate
 
