@@ -141,9 +141,9 @@ class HunposTagger(TaggerI):
 
 # skip doctests if Hunpos tagger is not installed
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         HunposTagger("en_wsj.model")
-    except LookupError as e:
-        raise SkipTest("HunposTagger is not available") from e
+    except LookupError:
+        pytest.skip("HunposTagger is not available")

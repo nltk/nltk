@@ -142,7 +142,7 @@ class PorterStemmer(StemmerI):
         return True
 
     def _measure(self, stem):
-        """Returns the 'measure' of stem, per definition in the paper
+        r"""Returns the 'measure' of stem, per definition in the paper
 
         From the paper:
 
@@ -648,17 +648,21 @@ class PorterStemmer(StemmerI):
             word, [("ll", "l", lambda stem: self._measure(word[:-1]) > 1)]
         )
 
-    def stem(self, word):
-        stem = word.lower()
+    def stem(self, word, to_lowercase=True):
+        """
+        :param to_lowercase: if `to_lowercase=True` the word always lowercase
+        """
+        stem = word.lower() if to_lowercase else word
 
         if self.mode == self.NLTK_EXTENSIONS and word in self.pool:
-            return self.pool[word]
+            return self.pool[stem]
 
         if self.mode != self.ORIGINAL_ALGORITHM and len(word) <= 2:
             # With this line, strings of length 1 or 2 don't go through
             # the stemming process, although no mention is made of this
             # in the published algorithm.
-            return word
+            return stem
+
 
         stem = self._step1a(stem)
         stem = self._step1b(stem)

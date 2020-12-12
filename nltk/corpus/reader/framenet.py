@@ -2744,7 +2744,7 @@ warnings(True) to display corpus consistency warnings when loading data
         """
 
         try:
-            """
+            r"""
             # Look for boundary issues in markup. (Sometimes FEs are pluralized in definitions.)
             m = re.search(r'\w[<][^/]|[<][/][^>]+[>](s\w|[a-rt-z0-9])', data)
             if m:

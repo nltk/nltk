@@ -9,8 +9,6 @@ import collections
 import os
 import unittest
 
-from nose import SkipTest
-
 from nltk.corpus.reader.wordnet import WordNetCorpusReader
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic as wnic

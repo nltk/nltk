@@ -277,7 +277,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def convert_age(self, age_year):
         "Caclculate age in months from a string in CHILDES format"
-        m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
         age_month = int(m.group(1)) * 12 + int(m.group(2))
         try:
             if int(m.group(3)) > 15:

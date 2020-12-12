@@ -297,13 +297,13 @@ class StanfordSegmenter(TokenizerI):
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         seg = StanfordSegmenter()
         seg.default_config("ar")
         seg.default_config("zh")
     except LookupError as e:
-        raise SkipTest(
+        pytest.skip(
             "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
-        ) from e
+        )

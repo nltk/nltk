@@ -5,8 +5,6 @@ import contextlib
 import sys
 from io import StringIO
 
-from nose import with_setup
-
 from nltk.corpus import gutenberg
 from nltk.text import Text
 
@@ -24,11 +22,11 @@ class TestConcordance(unittest.TestCase):
     """Text constructed using: http://www.nltk.org/book/ch01.html"""
 
     @classmethod
-    def setup_class(cls):
+    def setUpClass(cls):
         cls.corpus = gutenberg.words('melville-moby_dick.txt')
 
     @classmethod
-    def teardown_class(cls):
+    def tearDownClass(cls):
         pass
 
     def setUp(self):

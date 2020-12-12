@@ -1288,7 +1288,7 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
 
 
 def _rename_variable(var, used_vars):
-    name, n = re.sub("\d+$", "", var.name), 2
+    name, n = re.sub(r"\d+$", "", var.name), 2
     if not name:
         name = "?"
     while Variable("%s%s" % (name, n)) in used_vars:
@@ -2084,7 +2084,7 @@ class SlashFeature(Feature):
 
 
 class RangeFeature(Feature):
-    RANGE_RE = re.compile("(-?\d+):(-?\d+)")
+    RANGE_RE = re.compile(r"(-?\d+):(-?\d+)")
 
     def read_value(self, s, position, reentrances, parser):
         m = self.RANGE_RE.match(s, position)

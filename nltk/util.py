@@ -146,14 +146,6 @@ def py25():
     return version_info[0] == 2 and version_info[1] == 5
 
 
-def py26():
-    return version_info[0] == 2 and version_info[1] == 6
-
-
-def py27():
-    return version_info[0] == 2 and version_info[1] == 7
-
-
 ##########################################################################
 # Indexing
 ##########################################################################
@@ -212,7 +204,7 @@ def filestring(f):
 
 def breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order.
-    (No need to check for cycles.)
+    (No check for cycles.)
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
@@ -228,6 +220,148 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 queue.extend((c, depth + 1) for c in children(node))
             except TypeError:
                 pass
+
+
+##########################################################################
+# Breadth-First / Depth-first Searches with Cycle Detection
+##########################################################################
+
+import warnings
+
+def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
+    """Traverse the nodes of a tree in breadth-first order,
+    discarding eventual cycles.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+    """
+    traversed = set()
+    queue = deque([(tree, 0)])
+    while queue:
+        node, depth = queue.popleft()
+        yield node
+        traversed.add(node)
+        if depth != maxdepth:
+            try:
+                for child in children(node):
+                    if child not in traversed:
+                        queue.append((child, depth + 1))
+                    else:
+                        warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+            except TypeError:
+                pass
+
+
+def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
+    """Traverse the nodes of a tree in depth-first order,
+    discarding eventual cycles within any branch,
+    adding cut_mark (when specified) if cycles were truncated.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    Catches all cycles:
+
+    >>> import nltk
+    >>> from nltk.util import acyclic_depth_first as acyclic_tree
+    >>> wn=nltk.corpus.wordnet
+    >>> from pprint import pprint
+    >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:s.hypernyms(),cut_mark='...'))
+    [Synset('dog.n.01'),
+     [Synset('canine.n.02'),
+      [Synset('carnivore.n.01'),
+       [Synset('placental.n.01'),
+        [Synset('mammal.n.01'),
+         [Synset('vertebrate.n.01'),
+          [Synset('chordate.n.01'),
+           [Synset('animal.n.01'),
+            [Synset('organism.n.01'),
+             [Synset('living_thing.n.01'),
+              [Synset('whole.n.02'),
+               [Synset('object.n.01'),
+                [Synset('physical_entity.n.01'),
+                 [Synset('entity.n.01')]]]]]]]]]]]]],
+     [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),-3,...)"]]
+    """
+    if traversed is None:
+        traversed = {tree}
+    out_tree = [tree]
+    if depth != 0:
+        try:
+            for child in children(tree):
+                if child not in traversed:
+#                   Recurse with a common "traversed" set for all children:
+                    traversed.add(child)
+                    out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed)]
+                else:
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    if cut_mark:
+                        out_tree += ['Cycle({0},{1},{2})'.format(child, depth - 1, cut_mark)]
+        except TypeError:
+            pass
+    elif cut_mark:
+        out_tree += [cut_mark]
+    return out_tree
+
+
+def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
+    """Traverse the nodes of a tree in depth-first order,
+    discarding eventual cycles within the same branch,
+    but keep duplicate pathes in different branches.
+    Add cut_mark (when defined) if cycles were truncated.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    Catches only only cycles within the same branch,
+    but keeping cycles from different branches:
+
+    >>> import nltk
+    >>> from nltk.util import acyclic_branches_depth_first as tree
+    >>> wn=nltk.corpus.wordnet
+    >>> from pprint import pprint
+    >>> pprint(tree(wn.synset('certified.a.01'), lambda s:s.also_sees(), cut_mark='...', depth=4))
+    [Synset('certified.a.01'),
+     [Synset('authorized.a.01'),
+      [Synset('lawful.a.01'),
+       [Synset('legal.a.01'),
+        "Cycle(Synset('lawful.a.01'),0,...)",
+        [Synset('legitimate.a.01'), '...']],
+       [Synset('straight.a.06'),
+        [Synset('honest.a.01'), '...'],
+        "Cycle(Synset('lawful.a.01'),0,...)"]],
+      [Synset('legitimate.a.01'),
+       "Cycle(Synset('authorized.a.01'),1,...)",
+       [Synset('legal.a.01'),
+        [Synset('lawful.a.01'), '...'],
+        "Cycle(Synset('legitimate.a.01'),0,...)"],
+       [Synset('valid.a.01'),
+        "Cycle(Synset('legitimate.a.01'),0,...)",
+        [Synset('reasonable.a.01'), '...']]],
+      [Synset('official.a.01'), "Cycle(Synset('authorized.a.01'),1,...)"]],
+     [Synset('documented.a.01')]]
+    """
+    if traversed is None:
+        traversed = {tree}
+    out_tree = [tree]
+    if depth != 0:
+        try:
+            for child in children(tree):
+                if child not in traversed:
+#                   Recurse with a different "traversed" set for each child:
+                    out_tree += [acyclic_branches_depth_first(child, children, depth - 1, cut_mark, traversed.union({child}))]
+                else:
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    if cut_mark:
+                        out_tree += ['Cycle({0},{1},{2})'.format(child, depth - 1, cut_mark)]
+        except TypeError:
+            pass
+    elif cut_mark:
+        out_tree += [cut_mark]
+    return out_tree
 
 
 ##########################################################################
@@ -471,14 +605,7 @@ def pad_sequence(
 # add a flag to pad the sequence so we get peripheral ngrams?
 
 
-def ngrams(
-    sequence,
-    n,
-    pad_left=False,
-    pad_right=False,
-    left_pad_symbol=None,
-    right_pad_symbol=None,
-):
+def ngrams(sequence, n, **kwargs):
     """
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
@@ -514,24 +641,16 @@ def ngrams(
     :type right_pad_symbol: any
     :rtype: sequence or iter
     """
-    sequence = pad_sequence(
-        sequence, n, pad_left, pad_right, left_pad_symbol, right_pad_symbol
-    )
+    sequence = pad_sequence(sequence, n, **kwargs)
+    
+    # Creates the sliding window, of n no. of items.
+    # `iterables` is a tuple of iterables where each iterable is a window of n items.
+    iterables = tee(sequence, n)
 
-    history = []
-    while n > 1:
-        # PEP 479, prevent RuntimeError from being raised when StopIteration bubbles out of generator
-        try:
-            next_item = next(sequence)
-        except StopIteration:
-            # no more data, terminate the generator
-            return
-        history.append(next_item)
-        n -= 1
-    for item in sequence:
-        history.append(item)
-        yield tuple(history)
-        del history[0]
+    for i, sub_iterable in enumerate(iterables): # For each window,
+        for _ in range(i):                       # iterate through every order of ngrams
+            next(sub_iterable, None)             # generate the ngrams within the window.
+    return zip(*iterables) # Unpack and flattens the iterables.
 
 
 def bigrams(sequence, **kwargs):
@@ -574,30 +693,64 @@ def trigrams(sequence, **kwargs):
         yield item
 
 
-def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
+def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
 
         >>> sent = 'a b c'.split()
-        >>> list(everygrams(sent))
-        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
-        >>> list(everygrams(sent, max_len=2))
-        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c')]
 
-    :param sequence: the source data to be converted into trigrams
+    New version outputs for everygrams.
+        >>> list(everygrams(sent))
+        [('a',), ('a', 'b'), ('a', 'b', 'c'), ('b',), ('b', 'c'), ('c',)]
+
+    Old version outputs for everygrams.
+        >>> sorted(everygrams(sent), key=len)
+        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
+
+        >>> list(everygrams(sent, max_len=2))
+        [('a',), ('a', 'b'), ('b',), ('b', 'c'), ('c',)]
+
+    :param sequence: the source data to be converted into ngrams. If max_len is
+        not provided, this sequence will be loaded into memory
     :type sequence: sequence or iter
     :param min_len: minimum length of the ngrams, aka. n-gram order/degree of ngram
     :type  min_len: int
     :param max_len: maximum length of the ngrams (set to length of sequence by default)
     :type  max_len: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
     :rtype: iter(tuple)
     """
 
+    # Get max_len for padding.
     if max_len == -1:
-        max_len = len(sequence)
-    for n in range(min_len, max_len + 1):
-        for ng in ngrams(sequence, n, **kwargs):
-            yield ng
+        try:
+            max_len = len(sequence)
+        except TypeError:
+            sequence = list(sequence)
+            max_len = len(sequence)
+
+    # Pad if indicated using max_len.
+    sequence = pad_sequence(sequence, max_len, pad_left, pad_right, **kwargs)
+
+    # Sliding window to store grams.
+    history = list(islice(sequence, max_len))
+
+    # Yield ngrams from sequence.
+    while history:
+        for ngram_len in range(min_len, len(history)+1):
+            yield tuple(history[:ngram_len])
+
+        # Append element to history if sequence has more items.
+        try:
+            history.append(next(sequence))
+        except StopIteration:
+            pass
+
+        del history[0]
+
 
 
 def skipgrams(sequence, n, k, **kwargs):

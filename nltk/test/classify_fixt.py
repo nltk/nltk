@@ -2,10 +2,10 @@
 
 
 # most of classify.doctest requires numpy
-def setup_module(module):
-    from nose import SkipTest
+def setup_module():
+    import pytest
 
     try:
         import numpy
-    except ImportError as e:
-        raise SkipTest("classify.doctest requires numpy") from e
+    except ImportError:
+        pytest.skip("classify.doctest requires numpy")

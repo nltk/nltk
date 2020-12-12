@@ -13,7 +13,7 @@ from nltk.corpus import (
 )  # mwa_ppdb
 
 from nltk.tree import Tree
-from nltk.test.unit.utils import skipIf
+import pytest
 
 
 class TestUdhr(unittest.TestCase):
@@ -187,7 +187,10 @@ class TestCoNLL2007(unittest.TestCase):
         )
 
 
-@skipIf(not ptb.fileids(), "A full installation of the Penn Treebank is not available")
+@pytest.mark.skipif(
+    not ptb.fileids(),
+    reason="A full installation of the Penn Treebank is not available"
+)
 class TestPTB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(
@@ -241,7 +244,7 @@ class TestPTB(unittest.TestCase):
         )
 
 
-@unittest.skip("Skipping test for mwa_ppdb.")
+@pytest.mark.skip("Skipping test for mwa_ppdb.")
 class TestMWAPPDB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(

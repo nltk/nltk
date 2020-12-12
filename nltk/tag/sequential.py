@@ -720,15 +720,15 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             prevtag = history[index - 1]
             prevprevtag = history[index - 2]
 
-        if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
+        if re.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
             shape = "number"
-        elif re.match("\W+$", word):
+        elif re.match(r"\W+$", word):
             shape = "punct"
         elif re.match("[A-Z][a-z]+$", word):
             shape = "upcase"
         elif re.match("[a-z]+$", word):
             shape = "downcase"
-        elif re.match("\w+$", word):
+        elif re.match(r"\w+$", word):
             shape = "mixedcase"
         else:
             shape = "other"

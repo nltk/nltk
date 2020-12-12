@@ -31,3 +31,14 @@ and does not fail with:
     >>> from nltk.tag import RegexpTagger
     >>> patterns = [(str(i), 'NNP',) for i in range(200)]
     >>> tagger = RegexpTagger(patterns)
+
+Regression Testing for issue #2483
+==================================
+
+Ensure that tagging with pos_tag (PerceptronTagger) does not throw an IndexError
+when attempting tagging an empty string. What it must return instead is not 
+strictly defined.
+
+    >>> from nltk.tag import pos_tag
+    >>> pos_tag(['', 'is', 'a', 'beautiful', 'day'])
+    [...]

@@ -624,7 +624,7 @@ def read_alignedsent_block(stream):
         # Other line:
         else:
             s += line
-            if re.match("^\d+-\d+", line) is not None:
+            if re.match(r"^\d+-\d+", line) is not None:
                 return [s]
 
 
@@ -848,7 +848,7 @@ def tagged_treebank_para_block_reader(stream):
     while True:
         line = stream.readline()
         # End of paragraph:
-        if re.match("======+\s*$", line):
+        if re.match(r"======+\s*$", line):
             if para.strip():
                 return [para]
         # End of file:

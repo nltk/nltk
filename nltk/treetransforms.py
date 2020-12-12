@@ -5,7 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""
+r"""
 A collection of methods for tree (grammar) transformations used
 in parsing natural language.
 

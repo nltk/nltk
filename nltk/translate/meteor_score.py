@@ -421,6 +421,7 @@ def meteor_score(
             single_meteor_score(
                 reference,
                 hypothesis,
+                preprocess=preprocess,
                 stemmer=stemmer,
                 wordnet=wordnet,
                 alpha=alpha,

@@ -3,12 +3,7 @@
 Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
 """
-
-
-import unittest
-
-from nose import SkipTest
-from nose.tools import assert_equal
+import pytest
 
 from nltk.tokenize import (
     punkt,
@@ -20,7 +15,7 @@ from nltk.tokenize import (
 )
 
 
-class TestTokenize(unittest.TestCase):
+class TestTokenize:
     def test_tweet_tokenizer(self):
         """
         Test TweetTokenizer using words with special and accented characters.
@@ -41,7 +36,7 @@ class TestTokenize(unittest.TestCase):
             'München',
             'français',
         ]
-        self.assertEqual(tokens, expected)
+        assert tokens == expected
 
     def test_sonority_sequencing_syllable_tokenizer(self):
         """
@@ -49,7 +44,7 @@ class TestTokenize(unittest.TestCase):
         """
         tokenizer = SyllableTokenizer()
         tokens = tokenizer.tokenize('justification')
-        self.assertEqual(tokens, ['jus', 'ti', 'fi', 'ca', 'tion'])
+        assert tokens == ['jus', 'ti', 'fi', 'ca', 'tion']
 
     def test_stanford_segmenter_arabic(self):
         """
@@ -75,7 +70,7 @@ class TestTokenize(unittest.TestCase):
                 'المشكلات',
             ]
         except LookupError as e:
-            raise SkipTest(str(e)) from e
+            pytest.skip(str(e))
 
     def test_stanford_segmenter_chinese(self):
         """
@@ -88,7 +83,7 @@ class TestTokenize(unittest.TestCase):
             segmented_sent = seg.segment(sent.split())
             assert segmented_sent.split() == ['这', '是', '斯坦福', '中文', '分词器', '测试']
         except LookupError as e:
-            raise SkipTest(str(e)) from e
+            pytest.skip(str(e))
 
     def test_phone_tokenizer(self):
         """
@@ -100,14 +95,14 @@ class TestTokenize(unittest.TestCase):
         test1 = "(393)  928 -3010"
         expected = ['(393)  928 -3010']
         result = tokenizer.tokenize(test1)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Due to newline, first three elements aren't part of a phone number;
         # fourth is
         test2 = "(393)\n928 -3010"
         expected = ['(', '393', ')', "928 -3010"]
         result = tokenizer.tokenize(test2)
-        self.assertEqual(result, expected)
+        assert result == expected
 
     def test_pad_asterisk(self):
         """
@@ -116,7 +111,7 @@ class TestTokenize(unittest.TestCase):
         text = "This is a, *weird sentence with *asterisks in it."
         expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence',
                     'with', '*', 'asterisks', 'in', 'it', '.']
-        self.assertEqual(word_tokenize(text), expected)
+        assert word_tokenize(text) == expected
 
     def test_pad_dotdot(self):
         """
@@ -126,7 +121,7 @@ class TestTokenize(unittest.TestCase):
         expected = ['Why', 'did', 'dotdot', '..', 'not', 'get',
                     'tokenized', 'but', 'dotdotdot', '...', 'did', '?',
                     'How', 'about', 'manydots', '.....']
-        self.assertEqual(word_tokenize(text), expected)
+        assert word_tokenize(text) == expected
 
     def test_remove_handle(self):
         """
@@ -139,7 +134,7 @@ class TestTokenize(unittest.TestCase):
         test1 = "@twitter hello @twi_tter_. hi @12345 @123news"
         expected = ['hello', '.', 'hi']
         result = tokenizer.tokenize(test1)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Handles are allowed to follow any of the following characters
         test2 = "@n`@n~@n(@n)@n-@n=@n+@n\\@n|@n[@n]@n{@n}@n;@n:@n'@n\"@n/@n?@n.@n,@n<@n>@n @n\n@n ñ@n.ü@n.ç@n."
@@ -175,7 +170,7 @@ class TestTokenize(unittest.TestCase):
             '.',
         ]
         result = tokenizer.tokenize(test2)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Handles are NOT allowed to follow any of the following characters
         test3 = "a@n j@n z@n A@n L@n Z@n 1@n 4@n 7@n 9@n 0@n _@n !@n @@n #@n $@n %@n &@n *@n"
@@ -220,13 +215,13 @@ class TestTokenize(unittest.TestCase):
             '@n',
         ]
         result = tokenizer.tokenize(test3)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Handles are allowed to precede the following characters
         test4 = "@n!a @n#a @n$a @n%a @n&a @n*a"
         expected = ['!', 'a', '#', 'a', '$', 'a', '%', 'a', '&', 'a', '*', 'a']
         result = tokenizer.tokenize(test4)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Tests interactions with special symbols and multiple @
         test5 = "@n!@n @n#@n @n$@n @n%@n @n&@n @n*@n @n@n @@n @n@@n @n_@n @n7@n @nj@n"
@@ -258,13 +253,13 @@ class TestTokenize(unittest.TestCase):
             '@n',
         ]
         result = tokenizer.tokenize(test5)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Tests that handles can have a max length of 20
         test6 = "@abcdefghijklmnopqrstuvwxyz @abcdefghijklmnopqrst1234 @abcdefghijklmnopqrst_ @abcdefghijklmnopqrstendofhandle"
         expected = ['uvwxyz', '1234', '_', 'endofhandle']
         result = tokenizer.tokenize(test6)
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Edge case where an @ comes directly after a long handle
         test7 = "@abcdefghijklmnopqrstu@abcde @abcdefghijklmnopqrst@abcde @abcdefghijklmnopqrst_@abcde @abcdefghijklmnopqrst5@abcde"
@@ -279,7 +274,7 @@ class TestTokenize(unittest.TestCase):
             '@abcde',
         ]
         result = tokenizer.tokenize(test7)
-        self.assertEqual(result, expected)
+        assert result == expected
 
     def test_treebank_span_tokenizer(self):
         """
@@ -316,7 +311,7 @@ class TestTokenize(unittest.TestCase):
             (77, 78),
         ]
         result = list(tokenizer.span_tokenize(test1))
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Test case with double quotation
         test2 = "The DUP is similar to the \"religious right\" in the United States and takes a hardline stance on social issues"
@@ -345,7 +340,7 @@ class TestTokenize(unittest.TestCase):
             (103, 109),
         ]
         result = list(tokenizer.span_tokenize(test2))
-        self.assertEqual(result, expected)
+        assert result == expected
 
         # Test case with double qoutation as well as converted quotations
         test3 = "The DUP is similar to the \"religious right\" in the United States and takes a ``hardline'' stance on social issues"
@@ -376,7 +371,7 @@ class TestTokenize(unittest.TestCase):
             (107, 113),
         ]
         result = list(tokenizer.span_tokenize(test3))
-        self.assertEqual(result, expected)
+        assert result == expected
 
     def test_word_tokenize(self):
         """
@@ -386,11 +381,11 @@ class TestTokenize(unittest.TestCase):
         sentence = "The 'v', I've been fooled but I'll seek revenge."
         expected = ['The', "'", 'v', "'", ',', 'I', "'ve", 'been', 'fooled',
                     'but', 'I', "'ll", 'seek', 'revenge', '.']
-        self.assertEqual(word_tokenize(sentence), expected)
+        assert word_tokenize(sentence) == expected
 
         sentence = "'v' 're'"
         expected = ["'", 'v', "'", "'re", "'"]
-        self.assertEqual(word_tokenize(sentence), expected)
+        assert word_tokenize(sentence) == expected
 
     def test_punkt_pair_iter(self):
 
@@ -403,7 +398,7 @@ class TestTokenize(unittest.TestCase):
         for (test_input, expected_output) in test_cases:
             actual_output = [x for x in punkt._pair_iter(test_input)]
 
-            assert_equal(actual_output, expected_output)
+            assert actual_output == expected_output
 
     def test_punkt_pair_iter_handles_stop_iteration_exception(self):
         # test input to trigger StopIteration from next()
@@ -423,3 +418,26 @@ class TestTokenize(unittest.TestCase):
         obj._lang_vars = TestPunktTokenizeWordsMock()
         # unpack generator, ensure that no error is raised
         list(obj._tokenize_words('test'))
+
+    def test_punkt_tokenize_custom_lang_vars(self):
+        
+        # Create LangVars including a full stop end character as used in Bengali
+        class BengaliLanguageVars(punkt.PunktLanguageVars):
+            sent_end_chars = ('.', '?', '!', '\u0964')
+        obj = punkt.PunktSentenceTokenizer(lang_vars = BengaliLanguageVars())
+
+        # We now expect these sentences to be split up into the individual sentences
+        sentences = u"উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"
+        expected = ["উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন।", "অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন।", "এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"]
+        
+        assert obj.tokenize(sentences) == expected
+
+    def test_punkt_tokenize_no_custom_lang_vars(self):
+        
+        obj = punkt.PunktSentenceTokenizer()
+
+        # We expect these sentences to not be split properly, as the Bengali full stop '।' is not included in the default language vars
+        sentences = u"উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"
+        expected = ["উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"]
+        
+        assert obj.tokenize(sentences) == expected

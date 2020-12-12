@@ -240,3 +240,8 @@ Here are some examples:
     *Statistical Machine Translation*, Cambridge University Press
 
 
+Teardown
+========
+
+    >>> from nltk.corpus import teardown_module
+    >>> teardown_module()

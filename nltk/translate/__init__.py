@@ -23,3 +23,9 @@ from nltk.translate.ribes_score import sentence_ribes as ribes
 from nltk.translate.meteor_score import meteor_score as meteor
 from nltk.translate.metrics import alignment_error_rate
 from nltk.translate.stack_decoder import StackDecoder
+from nltk.translate.nist_score import sentence_nist as nist
+from nltk.translate.chrf_score import sentence_chrf as chrf
+from nltk.translate.gale_church import trace
+from nltk.translate.gdfa import grow_diag_final_and
+from nltk.translate.gleu_score import sentence_gleu as gleu
+from nltk.translate.phrase_based import extract
