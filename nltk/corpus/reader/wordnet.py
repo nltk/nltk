@@ -549,31 +549,91 @@ class Synset(_WordNetObject):
                 self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
         return self._min_depth
 
+
     def closure(self, rel, depth=-1):
-        """Return the transitive closure of source under the rel
-        relationship, breadth-first
-
-            >>> from nltk.corpus import wordnet as wn
-            >>> dog = wn.synset('dog.n.01')
-            >>> hyp = lambda s:s.hypernyms()
-            >>> list(dog.closure(hyp))
-            [Synset('canine.n.02'), Synset('domestic_animal.n.01'),
-            Synset('carnivore.n.01'), Synset('animal.n.01'),
-            Synset('placental.n.01'), Synset('organism.n.01'),
-            Synset('mammal.n.01'), Synset('living_thing.n.01'),
-            Synset('vertebrate.n.01'), Synset('whole.n.02'),
-            Synset('chordate.n.01'), Synset('object.n.01'),
-            Synset('physical_entity.n.01'), Synset('entity.n.01')]
-
         """
-        from nltk.util import breadth_first
+        Return the transitive closure of source under the rel
+        relationship, breadth-first, discarding cycles:
 
-        synset_offsets = []
-        for synset in breadth_first(self, rel, depth):
-            if synset._offset != self._offset:
-                if synset._offset not in synset_offsets:
-                    synset_offsets.append(synset._offset)
-                    yield synset
+        >>> from nltk.corpus import wordnet as wn
+        >>> computer = wn.synset('computer.n.01')
+        >>> topic = lambda s:s.topic_domains()
+        >>> print(list(computer.closure(topic)))
+        [Synset('computer_science.n.01')]
+
+        UserWarning: Discarded redundant search for Synset('computer.n.01') at depth 2
+
+
+        Include redundant pathes (but only once), avoiding duplicate searches
+        (from 'animal.n.01' to 'entity.n.01'):
+
+        >>> dog = wn.synset('dog.n.01')
+        >>> hyp = lambda s:s.hypernyms()
+        >>> print(list(dog.closure(hyp)))
+        [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),
+        Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),
+        Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),
+        Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
+        Synset('physical_entity.n.01'), Synset('entity.n.01')]
+
+        UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
+        """
+
+        from nltk.util import acyclic_breadth_first
+        for synset in acyclic_breadth_first(self, rel, depth):
+            if synset != self:
+                yield synset
+
+
+    from nltk.util import acyclic_depth_first as acyclic_tree
+
+
+    def tree(self, rel, depth=-1, cut_mark=None):
+        """
+        Return the full relation tree, including self,
+        discarding cycles:
+
+        >>> from nltk.corpus import wordnet as wn
+        >>> from pprint import pprint
+        >>> computer = wn.synset('computer.n.01')
+        >>> topic = lambda s:s.topic_domains()
+        >>> pprint(computer.tree(topic))
+        [Synset('computer.n.01'), [Synset('computer_science.n.01')]]
+
+        UserWarning: Discarded redundant search for Synset('computer.n.01') at depth -3
+
+
+        But keep duplicate branches (from 'animal.n.01' to 'entity.n.01'):
+
+        >>> dog = wn.synset('dog.n.01')
+        >>> hyp = lambda s:s.hypernyms()
+        >>> pprint(dog.tree(hyp))
+        [Synset('dog.n.01'),
+         [Synset('canine.n.02'),
+          [Synset('carnivore.n.01'),
+           [Synset('placental.n.01'),
+            [Synset('mammal.n.01'),
+             [Synset('vertebrate.n.01'),
+              [Synset('chordate.n.01'),
+               [Synset('animal.n.01'),
+                [Synset('organism.n.01'),
+                 [Synset('living_thing.n.01'),
+                  [Synset('whole.n.02'),
+                   [Synset('object.n.01'),
+                    [Synset('physical_entity.n.01'),
+                     [Synset('entity.n.01')]]]]]]]]]]]]],
+         [Synset('domestic_animal.n.01'),
+          [Synset('animal.n.01'),
+           [Synset('organism.n.01'),
+            [Synset('living_thing.n.01'),
+             [Synset('whole.n.02'),
+              [Synset('object.n.01'),
+               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
+        """
+
+        from nltk.util import acyclic_branches_depth_first
+        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
+
 
     def hypernym_paths(self):
         """
@@ -755,42 +815,6 @@ class Synset(_WordNetObject):
 
         return None if math.isinf(path_distance) else path_distance
 
-    def tree(self, rel, depth=-1, cut_mark=None):
-        """
-        >>> from nltk.corpus import wordnet as wn
-        >>> dog = wn.synset('dog.n.01')
-        >>> hyp = lambda s:s.hypernyms()
-        >>> from pprint import pprint
-        >>> pprint(dog.tree(hyp))
-        [Synset('dog.n.01'),
-         [Synset('canine.n.02'),
-          [Synset('carnivore.n.01'),
-           [Synset('placental.n.01'),
-            [Synset('mammal.n.01'),
-             [Synset('vertebrate.n.01'),
-              [Synset('chordate.n.01'),
-               [Synset('animal.n.01'),
-                [Synset('organism.n.01'),
-                 [Synset('living_thing.n.01'),
-                  [Synset('whole.n.02'),
-                   [Synset('object.n.01'),
-                    [Synset('physical_entity.n.01'),
-                     [Synset('entity.n.01')]]]]]]]]]]]]],
-         [Synset('domestic_animal.n.01'),
-          [Synset('animal.n.01'),
-           [Synset('organism.n.01'),
-            [Synset('living_thing.n.01'),
-             [Synset('whole.n.02'),
-              [Synset('object.n.01'),
-               [Synset('physical_entity.n.01'), [Synset('entity.n.01')]]]]]]]]]
-        """
-
-        tree = [self]
-        if depth != 0:
-            tree += [x.tree(rel, depth - 1, cut_mark) for x in rel(self)]
-        elif cut_mark:
-            tree += [cut_mark]
-        return tree
 
     # interface to similarity methods
     def path_similarity(self, other, verbose=False, simulate_root=True):
