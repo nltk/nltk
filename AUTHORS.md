@@ -267,6 +267,7 @@
 - Armins Bagrats Stepanjans <https://github.com/ab-10>
 - Vassilis Palassopoulos <https://github.com/palasso>
 - Ram Rachum <https://github.com/cool-RR>
+- Or Sharir <https://github.com/orsharir>
 - Denali Molitor <https://github.com/dmmolitor>
 - Jacob Moorman <https://github.com/jdmoorman>
 - Cory Nezin <https://github.com/corynezin>
