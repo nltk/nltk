@@ -5,6 +5,9 @@
 Probability
 ===========
 
+    >>> from nltk.test.probability_fixt import setup_module
+    >>> setup_module()
+
     >>> import nltk
     >>> from nltk.probability import *
 

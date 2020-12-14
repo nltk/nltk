@@ -7,9 +7,7 @@ def mock_plot(mocker):
 
     try:
         import matplotlib.pyplot as plt
-
+        mocker.patch.object(plt, 'gca')
         mocker.patch.object(plt, 'show')
     except ImportError:
-        pytest.skip(
-            "mock_plot imports matplotlib which doesn't exist!"
-        )
+        pass

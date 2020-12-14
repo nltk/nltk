@@ -229,7 +229,3 @@ class TestJSON2CSV(unittest.TestCase):
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
             json2csv(self.infile, outfn, ['text'], gzip_compress=False)
             self.assertFalse(are_files_identical(outfn, ref_fn), msg=self.msg)
-
-
-if __name__ == "__main__":
-    unittest.main()

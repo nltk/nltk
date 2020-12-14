@@ -5,10 +5,6 @@
 # skip probability.doctest if numpy is not available
 
 
-def setup_module(module):
+def setup_module():
     import pytest
-
-    try:
-        import numpy
-    except ImportError:
-        pytest.skip("probability.doctest requires numpy")
+    pytest.importorskip('numpy')

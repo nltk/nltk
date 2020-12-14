@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from nltk.tag import hmm
+import pytest
 
 
 def _wikipedia_example_hmm():
@@ -78,9 +79,4 @@ def test_backward_probability():
 
 
 def setup_module(module):
-    import pytest
-
-    try:
-        import numpy
-    except ImportError:
-        pytest.skip("numpy is required for nltk.test.test_hmm")
+    pytest.importorskip('numpy')

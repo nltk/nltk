@@ -6,8 +6,6 @@
 # For license information, see LICENSE.TXT
 
 
-from functools import partial
-from itertools import chain
 from tqdm import tqdm
 
 import click
