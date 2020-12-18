@@ -678,13 +678,17 @@ by limiting the "depth" parameter to display a small number of levels:
      [Synset('tangible.a.01'), "Cycle(Synset('concrete.a.01'),0,...)"]]
 
 On the other hand, the new acyclic_tree() function is able to also handle
-the untractable cases. The also_sees() tree of 'concrete.a.01' is several
-hundred lines long, so here is a simpler example, concerning a much
+the untractable cases. The also_sees() acyclic tree of 'concrete.a.01' is
+several hundred lines long, so here is a simpler example, concerning a much
 smaller SCC: counting only five members, the SCC that includes 'bound.a.01'
 is tractable with the normal tree() function, as seen above.
 But while tree() only prunes redundancy within local branches, acyclic_tree
-prunes the tree globally, and discards any additional redundancy, thus
-producing a Minimal Spanning Tree (MST):
+prunes the tree globally, thus discarding any additional redundancy, and
+produces a tree that includes all reachable nodes (i. e. a _spanning tree_).
+This tree is _minimal_ because it includes the reachable nodes only once,
+but it is not necessarily a _Minimum Spanning Tree_ (MST), because the
+Depth-first search strategy does not guarentee that nodes are reached
+through the lowest number of links (as Breadth-first search would).
 
     >>> pprint(wn.synset('bound.a.01').acyclic_tree(lambda s:s.also_sees()))
     [Synset('bound.a.01'),
@@ -708,6 +712,7 @@ cycles are mentioned in the output, together with the level where they occur:
        "Cycle(Synset('unfree.a.02'),-4,...)"],
       [Synset('dependent.a.01'), "Cycle(Synset('unfree.a.02'),-4,...)"],
       "Cycle(Synset('restricted.a.01'),-3,...)"]]
+
 
 -------------
 Teardown test
