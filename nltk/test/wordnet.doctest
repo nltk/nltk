@@ -605,7 +605,7 @@ Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) t
 
 
 ------------------------------------------------
-Endlessness vs. Untractability in relation trees
+Endlessness vs. intractability in relation trees
 ------------------------------------------------
 
 1. Endlessness
@@ -613,7 +613,7 @@ Endlessness vs. Untractability in relation trees
 
 Until NLTK v. 3.5, the tree() function looped forever on symmetric
 relations (verb_groups, attributes, and most also_sees). But in
-the current version, tree() now detects these cycles and halts:
+the current version, tree() now detects and discards these cycles:
 
     >>> from pprint import pprint
     >>> pprint(wn.synset('bound.a.01').tree(lambda s:s.also_sees()))
@@ -648,18 +648,19 @@ are mentioned in the output, together with the level where they occur:
        "Cycle(Synset('unfree.a.02'),-4,...)"]]]
 
 
-2. Untractability
+2. Intractability
 -----------------
 
-However, the WordNet also.sees() relation has a number of Strongly
-Connected Components (SCCs), where any member node is transitively
-connected by the same relation, to all other members of the same SCC.
-The largest of these SCCs counts 758 synsets, thus producing 758
-untractable trees, i. e. trees that are too big to compute or display
-on any computer.
+However, even after discarding the infinite cycles, some trees can remain
+intractable, due to combinatorial explosion in a relation. This happens in
+WordNet, because the also.sees() relation has a big Strongly Connected
+Component (_SCC_) consisting in 758 synsets, where any member node is
+transitively connected by the same relation, to all other members of the
+same SCC. This produces intractable relation trees for each of these 758
+synsets, i. e. trees that are too big to compute or display on any computer.
 
 For example, the synset 'concrete.a.01' is a member of the largest SCC,
-so its also_sees() tree is untractable, and can normally only be handled
+so its also_sees() tree is intractable, and can normally only be handled
 by limiting the "depth" parameter to display a small number of levels:
 
     >>> from pprint import pprint
@@ -678,16 +679,17 @@ by limiting the "depth" parameter to display a small number of levels:
      [Synset('tangible.a.01'), "Cycle(Synset('concrete.a.01'),0,...)"]]
 
 On the other hand, the new acyclic_tree() function is able to also handle
-the untractable cases. The also_sees() acyclic tree of 'concrete.a.01' is
+the intractable cases. The also_sees() acyclic tree of 'concrete.a.01' is
 several hundred lines long, so here is a simpler example, concerning a much
 smaller SCC: counting only five members, the SCC that includes 'bound.a.01'
 is tractable with the normal tree() function, as seen above.
+
 But while tree() only prunes redundancy within local branches, acyclic_tree
 prunes the tree globally, thus discarding any additional redundancy, and
 produces a tree that includes all reachable nodes (i. e. a _spanning tree_).
 This tree is _minimal_ because it includes the reachable nodes only once,
 but it is not necessarily a _Minimum Spanning Tree_ (MST), because the
-Depth-first search strategy does not guarentee that nodes are reached
+Depth-first search strategy does not guarantee that nodes are reached
 through the lowest number of links (as Breadth-first search would).
 
     >>> pprint(wn.synset('bound.a.01').acyclic_tree(lambda s:s.also_sees()))
