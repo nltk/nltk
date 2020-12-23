@@ -38,7 +38,9 @@ Some test strings.
     >>> s10 = "There were 300,000, but that wasn't enough."
     >>> word_tokenize(s10)
     ['There', 'were', '300,000', ',', 'but', 'that', 'was', "n't", 'enough', '.']
-
+    >>> s11 = "It's more'n enough."
+    >>> word_tokenize(s11)
+    ['It', "'s", 'more', "'n", 'enough', '.']
 
 Testing improvement made to the TreebankWordTokenizer
 
