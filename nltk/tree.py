@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
@@ -18,12 +18,10 @@ import re
 import sys
 from abc import ABCMeta, abstractmethod
 
-from six import string_types, add_metaclass
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
-from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 # TODO: add LabelledTree (can be used for dependency trees)
@@ -35,7 +33,7 @@ from nltk.internals import raise_unorderable_types
 
 
 class Tree(list):
-    """
+    r"""
     A Tree represents a hierarchical grouping of leaves and subtrees.
     For example, each constituent in a syntax tree is represented by a single Tree.
 
@@ -103,7 +101,7 @@ class Tree(list):
             raise TypeError(
                 "%s: Expected a node value and child list " % type(self).__name__
             )
-        elif isinstance(children, string_types):
+        elif isinstance(children, str):
             raise TypeError(
                 "%s() argument 2 should be a list, not a "
                 "string" % type(self).__name__
@@ -374,7 +372,7 @@ class Tree(list):
         :rtype: list(Production)
         """
 
-        if not isinstance(self._label, string_types):
+        if not isinstance(self._label, str):
             raise TypeError(
                 "Productions can only be generated from trees having node labels that are strings"
             )
@@ -647,19 +645,19 @@ class Tree(list):
             then it will return a tree of that type.
         :rtype: Tree
         """
-        if not isinstance(brackets, string_types) or len(brackets) != 2:
+        if not isinstance(brackets, str) or len(brackets) != 2:
             raise TypeError("brackets must be a length-2 string")
-        if re.search("\s", brackets):
+        if re.search(r"\s", brackets):
             raise TypeError("whitespace brackets not allowed")
         # Construct a regexp that will tokenize the string.
         open_b, close_b = brackets
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
         if node_pattern is None:
-            node_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+            node_pattern = r"[^\s%s%s]+" % (open_pattern, close_pattern)
         if leaf_pattern is None:
-            leaf_pattern = "[^\s%s%s]+" % (open_pattern, close_pattern)
+            leaf_pattern = r"[^\s%s%s]+" % (open_pattern, close_pattern)
         token_re = re.compile(
-            "%s\s*(%s)?|%s|(%s)"
+            r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)
         )
         # Walk through each token, updating a stack of trees.
@@ -762,10 +760,10 @@ class Tree(list):
         print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
 
     def __repr__(self):
-        childstr = ", ".join(unicode_repr(c) for c in self)
+        childstr = ", ".join(repr(c) for c in self)
         return "%s(%s, [%s])" % (
             type(self).__name__,
-            unicode_repr(self._label),
+            repr(self._label),
             childstr,
         )
 
@@ -808,7 +806,7 @@ class Tree(list):
                         out_path, in_path
                     ).split()
                 )
-            except LookupError:
+            except LookupError as e:
                 pre_error_message = str(
                     "The Ghostscript executable isn't found.\n"
                     "See http://web.mit.edu/ghostscript/www/Install.htm\n"
@@ -816,7 +814,7 @@ class Tree(list):
                     "https://docs.brew.sh/Installation then `brew install ghostscript`"
                 )
                 print(pre_error_message, file=sys.stderr)
-                raise LookupError
+                raise LookupError from e
 
             with open(out_path, "rb") as sr:
                 res = sr.read()
@@ -860,10 +858,10 @@ class Tree(list):
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.
-        if isinstance(self._label, string_types):
+        if isinstance(self._label, str):
             s = "%s%s%s" % (parens[0], self._label, nodesep)
         else:
-            s = "%s%s%s" % (parens[0], unicode_repr(self._label), nodesep)
+            s = "%s%s%s" % (parens[0], repr(self._label), nodesep)
         for child in self:
             if isinstance(child, Tree):
                 s += (
@@ -873,10 +871,10 @@ class Tree(list):
                 )
             elif isinstance(child, tuple):
                 s += "\n" + " " * (indent + 2) + "/".join(child)
-            elif isinstance(child, string_types) and not quotes:
+            elif isinstance(child, str) and not quotes:
                 s += "\n" + " " * (indent + 2) + "%s" % child
             else:
-                s += "\n" + " " * (indent + 2) + unicode_repr(child)
+                s += "\n" + " " * (indent + 2) + repr(child)
         return s + parens[1]
 
     def pformat_latex_qtree(self):
@@ -897,7 +895,7 @@ class Tree(list):
         :return: A latex qtree representation of this tree.
         :rtype: str
         """
-        reserved_chars = re.compile("([#\$%&~_\{\}])")
+        reserved_chars = re.compile(r"([#\$%&~_\{\}])")
 
         pformat = self.pformat(indent=6, nodesep="", parens=("[.", " ]"))
         return r"\Tree " + re.sub(reserved_chars, r"\\\1", pformat)
@@ -909,11 +907,11 @@ class Tree(list):
                 childstrs.append(child._pformat_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
-            elif isinstance(child, string_types) and not quotes:
+            elif isinstance(child, str) and not quotes:
                 childstrs.append("%s" % child)
             else:
-                childstrs.append(unicode_repr(child))
-        if isinstance(self._label, string_types):
+                childstrs.append(repr(child))
+        if isinstance(self._label, str):
             return "%s%s%s %s%s" % (
                 parens[0],
                 self._label,
@@ -924,7 +922,7 @@ class Tree(list):
         else:
             return "%s%s%s %s%s" % (
                 parens[0],
-                unicode_repr(self._label),
+                repr(self._label),
                 nodesep,
                 " ".join(childstrs),
                 parens[1],
@@ -938,10 +936,10 @@ class ImmutableTree(Tree):
         # immutable.  It also means we only have to calculate it once.
         try:
             self._hash = hash((self._label, tuple(self)))
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as e:
             raise ValueError(
                 "%s: node value and children " "must be immutable" % type(self).__name__
-            )
+            ) from e
 
     def __setitem__(self, index, value):
         raise ValueError("%s may not be modified" % type(self).__name__)
@@ -995,8 +993,7 @@ class ImmutableTree(Tree):
 ######################################################################
 ## Parented trees
 ######################################################################
-@add_metaclass(ABCMeta)
-class AbstractParentedTree(Tree):
+class AbstractParentedTree(Tree, metaclass=ABCMeta):
     """
     An abstract base class for a ``Tree`` that automatically maintains
     pointers to parent nodes.  These parent pointers are updated
@@ -1565,7 +1562,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         return ImmutableProbabilisticTree
 
     def __repr__(self):
-        return "%s (p=%r)" % (Tree.unicode_repr(self), self.prob())
+        return "%s (p=%r)" % (Tree.__repr__(self), self.prob())
 
     def __str__(self):
         return "%s (p=%.6g)" % (self.pformat(margin=60), self.prob())
@@ -1619,7 +1616,7 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
         return ImmutableProbabilisticTree
 
     def __repr__(self):
-        return "%s [%s]" % (Tree.unicode_repr(self), self.prob())
+        return "%s [%s]" % (Tree.__repr__(self), self.prob())
 
     def __str__(self):
         return "%s [%s]" % (self.pformat(margin=60), self.prob())

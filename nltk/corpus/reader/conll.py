@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CONLL Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -82,7 +82,7 @@ class ConllCorpusReader(CorpusReader):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError("Bad column type %r" % columntype)
-        if isinstance(chunk_types, string_types):
+        if isinstance(chunk_types, str):
             chunk_types = [chunk_types]
         self._chunk_types = chunk_types
         self._colmap = dict((c, i) for (i, c) in enumerate(columntypes))
@@ -101,7 +101,7 @@ class ConllCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
@@ -332,7 +332,7 @@ class ConllCorpusReader(CorpusReader):
                     if (
                         isinstance(child, Tree)
                         and len(child) == 1
-                        and isinstance(child[0], string_types)
+                        and isinstance(child[0], str)
                     ):
                         subtree[i] = (child[0], child.label())
 
@@ -550,7 +550,7 @@ class ConllSRLInstanceList(list):
 
     def _tree2conll(self, tree, wordnum, words, pos, synt):
         assert isinstance(tree, Tree)
-        if len(tree) == 1 and isinstance(tree[0], string_types):
+        if len(tree) == 1 and isinstance(tree[0], str):
             pos[wordnum] = tree.label()
             assert words[wordnum] == tree[0]
             return wordnum + 1

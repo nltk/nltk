@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -212,7 +212,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         BracketParseCorpusReader.__init__(
             self,
             root,
-            "alpino\.xml",
+            r"alpino\.xml",
             detect_blocks="blankline",
             encoding=encoding,
             tagset=tagset,

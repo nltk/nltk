@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Switchboard Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -110,7 +110,7 @@ class SwitchboardCorpusReader(CorpusReader):
     def _tagged_words_block_reader(self, stream, tagset=None):
         return sum(self._tagged_discourses_block_reader(stream, tagset)[0], [])
 
-    _UTTERANCE_RE = re.compile("(\w+)\.(\d+)\:\s*(.*)")
+    _UTTERANCE_RE = re.compile(r"(\w+)\.(\d+)\:\s*(.*)")
     _SEP = "/"
 
     def _parse_utterance(self, utterance, include_tag, tagset=None):

@@ -4,7 +4,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 # Contributor: Liling Tan, Mustufain, osamamukhtar11
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -13,8 +13,6 @@ import sys
 import tempfile
 import subprocess
 import inspect
-
-from six import text_type
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir, find_file, find_jars_within_path
@@ -182,7 +180,7 @@ class MaltParser(ParserI):
             ) as output_file:
                 # Convert list of sentences to CONLL format.
                 for line in taggedsents_to_conll(sentences):
-                    input_file.write(text_type(line))
+                    input_file.write(str(line))
                 input_file.close()
 
                 # Generate command to run maltparser.
@@ -201,7 +199,7 @@ class MaltParser(ParserI):
                 ret = self._execute(cmd, verbose)  # Run command.
                 os.chdir(_current_path)  # Change back to current path.
 
-                if ret is not 0:
+                if ret != 0:
                     raise Exception(
                         "MaltParser parsing (%s) failed with exit "
                         "code %d" % (" ".join(cmd), ret)
@@ -290,7 +288,7 @@ class MaltParser(ParserI):
             prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
             input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
-            input_file.write(text_type(input_str))
+            input_file.write(str(input_str))
         # Trains the model with the malt_train.conll
         self.train_from_file(input_file.name, verbose=verbose)
         # Removes the malt_train.conll once training finishes.
@@ -311,7 +309,7 @@ class MaltParser(ParserI):
             ) as input_file:
                 with conll_file.open() as conll_input_file:
                     conll_str = conll_input_file.read()
-                    input_file.write(text_type(conll_str))
+                    input_file.write(str(conll_str))
                 return self.train_from_file(input_file.name, verbose=verbose)
 
         # Generate command to run maltparser.

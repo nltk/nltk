@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ======================
@@ -65,24 +65,24 @@ this case, the strings are also POS tagged.
     >>> from nltk.corpus import conll2002
     >>> for doc in conll2002.chunked_sents('ned.train')[27]:
     ...     print(doc)
-    (u'Het', u'Art')
+    ('Het', 'Art')
     (ORG Hof/N van/Prep Cassatie/N)
-    (u'verbrak', u'V')
-    (u'het', u'Art')
-    (u'arrest', u'N')
-    (u'zodat', u'Conj')
-    (u'het', u'Pron')
-    (u'moest', u'V')
-    (u'worden', u'V')
-    (u'overgedaan', u'V')
-    (u'door', u'Prep')
-    (u'het', u'Art')
-    (u'hof', u'N')
-    (u'van', u'Prep')
-    (u'beroep', u'N')
-    (u'van', u'Prep')
+    ('verbrak', 'V')
+    ('het', 'Art')
+    ('arrest', 'N')
+    ('zodat', 'Conj')
+    ('het', 'Pron')
+    ('moest', 'V')
+    ('worden', 'V')
+    ('overgedaan', 'V')
+    ('door', 'Prep')
+    ('het', 'Art')
+    ('hof', 'N')
+    ('van', 'Prep')
+    ('beroep', 'N')
+    ('van', 'Prep')
     (LOC Antwerpen/N)
-    (u'.', u'Punc')
+    ('.', 'Punc')
 
 Relation Extraction
 ~~~~~~~~~~~~~~~~~~~
@@ -234,16 +234,16 @@ presented as something that looks more like a clause in a logical language.
     ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     >>> for r in rels[:10]:
     ...     print(relextract.clause(r, relsym='DE'))    # doctest: +NORMALIZE_WHITESPACE
-    DE(u'tribunal_supremo', u'victoria')
-    DE(u'museo_de_arte', u'alcorc\xf3n')
-    DE(u'museo_de_bellas_artes', u'a_coru\xf1a')
-    DE(u'siria', u'l\xedbano')
-    DE(u'uni\xf3n_europea', u'pek\xedn')
-    DE(u'ej\xe9rcito', u'rogberi')
-    DE(u'juzgado_de_instrucci\xf3n_n\xfamero_1', u'san_sebasti\xe1n')
-    DE(u'psoe', u'villanueva_de_la_serena')
-    DE(u'ej\xe9rcito', u'l\xedbano')
-    DE(u'juzgado_de_lo_penal_n\xfamero_2', u'ceuta')
+    DE('tribunal_supremo', 'victoria')
+    DE('museo_de_arte', 'alcorc\xf3n')
+    DE('museo_de_bellas_artes', 'a_coru\xf1a')
+    DE('siria', 'l\xedbano')
+    DE('uni\xf3n_europea', 'pek\xedn')
+    DE('ej\xe9rcito', 'rogberi')
+    DE('juzgado_de_instrucci\xf3n_n\xfamero_1', 'san_sebasti\xe1n')
+    DE('psoe', 'villanueva_de_la_serena')
+    DE('ej\xe9rcito', 'l\xedbano')
+    DE('juzgado_de_lo_penal_n\xfamero_2', 'ceuta')
     >>> vnv = """
     ... (
     ... is/V|
@@ -258,6 +258,6 @@ presented as something that looks more like a clause in a logical language.
     >>> for doc in conll2002.chunked_sents('ned.train'):
     ...     for r in relextract.extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN):
     ...         print(relextract.clause(r, relsym="VAN"))
-    VAN(u"cornet_d'elzius", u'buitenlandse_handel')
-    VAN(u'johan_rottiers', u'kardinaal_van_roey_instituut')
-    VAN(u'annie_lennox', u'eurythmics')
+    VAN("cornet_d'elzius", 'buitenlandse_handel')
+    VAN('johan_rottiers', 'kardinaal_van_roey_instituut')
+    VAN('annie_lennox', 'eurythmics')

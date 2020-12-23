@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Senna POS Tagger
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -139,9 +139,9 @@ class SennaNERTagger(Senna):
 
 # skip doctests if Senna is not installed
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         tagger = Senna("/usr/share/senna-v3.0", ["pos", "chk", "ner"])
     except OSError:
-        raise SkipTest("Senna executable not found")
+        pytest.skip("Senna executable not found")

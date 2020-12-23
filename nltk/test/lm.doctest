@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 .. -*- coding: utf-8 -*-
@@ -38,7 +38,7 @@ for the entropy.
 
     >>> sent = ngrams("This is a sentence".split(), 3)
     >>> lm.entropy(sent)
-    17.41365588455936
+    10.237013228691053
 
 
 Issue 367

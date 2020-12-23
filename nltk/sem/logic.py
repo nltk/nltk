@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -15,8 +15,6 @@ import re
 import operator
 from collections import defaultdict
 from functools import reduce, total_ordering
-
-from six import string_types
 
 from nltk.util import Trie
 from nltk.internals import Counter
@@ -155,7 +153,7 @@ class LogicParser(object):
                 raise UnexpectedTokenException(self._currentIndex + 1, self.token(0))
         except LogicalExpressionException as e:
             msg = "%s\n%s\n%s^" % (e, data, " " * mapping[e.index - 1])
-            raise LogicalExpressionException(None, msg)
+            raise LogicalExpressionException(None, msg) from e
 
         if self.type_check:
             result.typecheck(signature)
@@ -271,8 +269,8 @@ class LogicParser(object):
             else:
                 tok = self._buffer[self._currentIndex + location]
             return tok
-        except IndexError:
-            raise ExpectedMoreTokensException(self._currentIndex + 1)
+        except IndexError as e:
+            raise ExpectedMoreTokensException(self._currentIndex + 1) from e
 
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
@@ -281,10 +279,10 @@ class LogicParser(object):
         """Parse the next complete expression from the stream and return it."""
         try:
             tok = self.token()
-        except ExpectedMoreTokensException:
+        except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(
                 self._currentIndex + 1, message="Expression expected."
-            )
+            ) from e
 
         accum = self.handle(tok, context)
 
@@ -362,7 +360,7 @@ class LogicParser(object):
         try:
             tok = self.token()
         except ExpectedMoreTokensException as e:
-            raise ExpectedMoreTokensException(e.index, "Variable expected.")
+            raise ExpectedMoreTokensException(e.index, "Variable expected.") from e
         if isinstance(self.make_VariableExpression(tok), ConstantExpression):
             raise LogicalExpressionException(
                 self._currentIndex,
@@ -560,7 +558,7 @@ class LogicParser(object):
         except ExpectedMoreTokensException as e:
             raise ExpectedMoreTokensException(
                 e.index, message="Expected token '%s'." % expected
-            )
+            ) from e
 
         if isinstance(expected, list):
             if tok not in expected:
@@ -610,8 +608,8 @@ def read_logic(s, logic_parser=None, encoding=None):
             continue
         try:
             statements.append(logic_parser.parse(line))
-        except LogicalExpressionException:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+        except LogicalExpressionException as e:
+            raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
     return statements
 
 
@@ -621,7 +619,7 @@ class Variable(object):
         """
         :param name: the name of the variable
         """
-        assert isinstance(name, string_types), "%s is not a string" % name
+        assert isinstance(name, str), "%s is not a string" % name
         self.name = name
 
     def __eq__(self, other):
@@ -836,7 +834,7 @@ ANY_TYPE = AnyType()
 
 
 def read_type(type_string):
-    assert isinstance(type_string, string_types)
+    assert isinstance(type_string, str)
     type_string = type_string.replace(" ", "")  # remove spaces
 
     if type_string[0] == "<":
@@ -1273,7 +1271,7 @@ class ApplicationExpression(Expression):
             self.function._set_type(
                 ComplexType(self.argument.type, other_type), signature
             )
-        except TypeResolutionException:
+        except TypeResolutionException as e:
             raise TypeException(
                 "The function '%s' is of type '%s' and cannot be applied "
                 "to '%s' of type '%s'.  Its argument must match type '%s'."
@@ -1284,7 +1282,7 @@ class ApplicationExpression(Expression):
                     self.argument.type,
                     self.function.type.first,
                 )
-            )
+            ) from e
 
     def findtype(self, variable):
         """:see Expression.findtype()"""
@@ -1963,7 +1961,7 @@ def is_indvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, string_types), "%s is not a string" % expr
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r"^[a-df-z]\d*$", expr) is not None
 
 
@@ -1975,7 +1973,7 @@ def is_funcvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, string_types), "%s is not a string" % expr
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r"^[A-Z]\d*$", expr) is not None
 
 
@@ -1987,7 +1985,7 @@ def is_eventvar(expr):
     :param expr: str
     :return: bool True if expr is of the correct form
     """
-    assert isinstance(expr, string_types), "%s is not a string" % expr
+    assert isinstance(expr, str), "%s is not a string" % expr
     return re.match(r"^e\d*$", expr) is not None
 
 

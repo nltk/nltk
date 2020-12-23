@@ -1,9 +1,12 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ====================================
 Logical Inference and Model Building
 ====================================
+
+    >>> from nltk.test.inference_fixt import setup_module
+    >>> setup_module()
 
     >>> from nltk import *
     >>> from nltk.sem.drt import DrtParser

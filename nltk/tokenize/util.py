@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizer Utilities
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -289,8 +289,10 @@ def align_tokens(tokens, sentence):
     for token in tokens:
         try:
             start = sentence.index(token, point)
-        except ValueError:
-            raise ValueError('substring "{}" not found in "{}"'.format(token, sentence))
+        except ValueError as e:
+            raise ValueError(
+                'substring "{}" not found in "{}"'.format(token, sentence)
+            ) from e
         point = start + len(token)
         offsets.append((start, point))
     return offsets

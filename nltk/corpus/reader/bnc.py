@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,7 +12,7 @@ from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTr
 
 
 class BNCCorpusReader(XMLCorpusReader):
-    """Corpus reader for the XML version of the British National Corpus.
+    r"""Corpus reader for the XML version of the British National Corpus.
 
     For access to the complete XML data structure, use the ``xml()``
     method.  For access to simple word lists and tagged word lists, use

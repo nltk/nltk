@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -72,8 +72,6 @@ Expected results from the Artstein and Poesio survey paper:
 import logging
 from itertools import groupby
 from operator import itemgetter
-
-from six import iteritems
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
@@ -264,7 +262,7 @@ class AnnotationTask(object):
         """
         total = 0.0
         label_freqs = FreqDist(x["labels"] for x in self.data)
-        for k, f in iteritems(label_freqs):
+        for k, f in label_freqs.items():
             total += f ** 2
         Ae = total / ((len(self.I) * len(self.C)) ** 2)
         return (self.avg_Ao() - Ae) / (1 - Ae)
@@ -304,8 +302,8 @@ class AnnotationTask(object):
     def Disagreement(self, label_freqs):
         total_labels = sum(label_freqs.values())
         pairs = 0.0
-        for j, nj in iteritems(label_freqs):
-            for l, nl in iteritems(label_freqs):
+        for j, nj in label_freqs.items():
+            for l, nl in label_freqs.items():
                 pairs += float(nj * nl) * self.distance(l, j)
         return 1.0 * pairs / (total_labels * (total_labels - 1))
 

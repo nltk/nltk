@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========
@@ -11,7 +11,6 @@ Overview
 Stemmers remove morphological affixes from words, leaving only the
 word stem.
 
-    >>> from __future__ import print_function
     >>> from nltk.stem import *
 
 Unit tests for the Porter stemmer

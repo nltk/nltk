@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dispersion Plots
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -24,11 +24,11 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
 
     try:
         from matplotlib import pylab
-    except ImportError:
+    except ImportError as e:
         raise ValueError(
             "The plot function requires matplotlib to be installed."
             "See http://matplotlib.org/"
-        )
+        ) from e
 
     text = list(text)
     words.reverse()

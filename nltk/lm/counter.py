@@ -1,6 +1,6 @@
 # Natural Language Toolkit
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,7 +12,6 @@ Language Model Counter
 from collections import defaultdict
 from collections.abc import Sequence
 
-from six import string_types
 from nltk.probability import ConditionalFreqDist, FreqDist
 
 
@@ -147,7 +146,7 @@ class NgramCounter:
         """User-friendly access to ngram counts."""
         if isinstance(item, int):
             return self._counts[item]
-        elif isinstance(item, string_types):
+        elif isinstance(item, str):
             return self._counts.__getitem__(1)[item]
         elif isinstance(item, Sequence):
             return self._counts.__getitem__(len(item) + 1)[tuple(item)]

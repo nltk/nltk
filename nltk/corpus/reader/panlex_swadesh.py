@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Word List Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 
-from __future__ import print_function
 from collections import namedtuple, defaultdict
 import re
-from six import string_types
-
 
 from nltk.tokenize import line_tokenize
 

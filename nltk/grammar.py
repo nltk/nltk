@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
@@ -71,10 +71,7 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 import re
 from functools import total_ordering
 
-from six import string_types
-
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -116,7 +113,6 @@ class Nonterminal(object):
             hashable.
         """
         self._symbol = symbol
-        self._hash = hash(symbol)
 
     def symbol(self):
         """
@@ -145,7 +141,7 @@ class Nonterminal(object):
         return self._symbol < other._symbol
 
     def __hash__(self):
-        return self._hash
+        return hash(self._symbol)
 
     def __repr__(self):
         """
@@ -153,10 +149,10 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, string_types):
+        if isinstance(self._symbol, str):
             return "%s" % self._symbol
         else:
-            return "%s" % unicode_repr(self._symbol)
+            return "%s" % repr(self._symbol)
 
     def __str__(self):
         """
@@ -164,10 +160,10 @@ class Nonterminal(object):
 
         :rtype: str
         """
-        if isinstance(self._symbol, string_types):
+        if isinstance(self._symbol, str):
             return "%s" % self._symbol
         else:
-            return "%s" % unicode_repr(self._symbol)
+            return "%s" % repr(self._symbol)
 
     def __div__(self, rhs):
         """
@@ -287,13 +283,12 @@ class Production(object):
         :param rhs: The right-hand side of the new ``Production``.
         :type rhs: sequence(Nonterminal and terminal)
         """
-        if isinstance(rhs, string_types):
+        if isinstance(rhs, str):
             raise TypeError(
                 "production right hand side should be a list, " "not a string"
             )
         self._lhs = lhs
         self._rhs = tuple(rhs)
-        self._hash = hash((self._lhs, self._rhs))
 
     def lhs(self):
         """
@@ -341,8 +336,8 @@ class Production(object):
 
         :rtype: str
         """
-        result = "%s -> " % unicode_repr(self._lhs)
-        result += " ".join(unicode_repr(el) for el in self._rhs)
+        result = "%s -> " % repr(self._lhs)
+        result += " ".join(repr(el) for el in self._rhs)
         return result
 
     def __repr__(self):
@@ -379,7 +374,7 @@ class Production(object):
 
         :rtype: int
         """
-        return self._hash
+        return hash((self._lhs, self._rhs))
 
 
 
@@ -1033,7 +1028,6 @@ class FeatureValueType(object):
 
     def __init__(self, value):
         self._value = value
-        self._hash = hash(value)
 
     def __repr__(self):
         return "<%s>" % self._value
@@ -1050,7 +1044,7 @@ class FeatureValueType(object):
         return self._value < other._value
 
     def __hash__(self):
-        return self._hash
+        return hash(self._value)
 
 
 
@@ -1079,8 +1073,9 @@ class DependencyGrammar(object):
                 continue
             try:
                 productions += _read_dependency_production(line)
-            except ValueError:
-                raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+            except ValueError as e:
+                raise ValueError("Unable to parse line %s: %s" %
+                                 (linenum, line)) from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1275,7 +1270,7 @@ class PCFG(CFG):
 
 
 def induce_pcfg(start, productions):
-    """
+    r"""
     Induce a PCFG grammar from a list of productions.
 
     The probability of a production A -> B C in a PCFG is:
@@ -1422,7 +1417,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     if encoding is not None:
         input = input.decode(encoding)
-    if isinstance(input, string_types):
+    if isinstance(input, str):
         lines = input.split("\n")
     else:
         lines = input
@@ -1451,7 +1446,8 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s\n%s" % (linenum + 1, line, e))
+            raise ValueError("Unable to parse line %s: %s\n%s" %
+                             (linenum + 1, line, e)) from e
 
     if not productions:
         raise ValueError("No productions found!")
@@ -1460,7 +1456,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     return (start, productions)
 
 
-_STANDARD_NONTERM_RE = re.compile("( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+_STANDARD_NONTERM_RE = re.compile(r"( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
 
 
 def standard_nonterm_parser(string, pos):

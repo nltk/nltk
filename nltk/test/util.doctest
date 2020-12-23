@@ -1,11 +1,10 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
 Utility functions
 =================
 
-    >>> from __future__ import print_function
     >>> from nltk.util import *
     >>> from nltk.tree import Tree
 

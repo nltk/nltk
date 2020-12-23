@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CFG visualization
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -48,8 +48,7 @@ Visualization tools for CFGs.
 
 import re
 
-from six import string_types
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Entry,
@@ -163,12 +162,12 @@ class CFGEditor(object):
     # we can process the text faster.
     ARROW = SymbolWidget.SYMBOLS["rightarrow"]
     _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|(" + ARROW + "))")
-    _ARROW_RE = re.compile("\s*(->|(" + ARROW + "))\s*")
+    _ARROW_RE = re.compile(r"\s*(->|(" + ARROW + r"))\s*")
     _PRODUCTION_RE = re.compile(
         r"(^\s*\w+\s*)"
         + "(->|("  # LHS
         + ARROW
-        + "))\s*"
+        + r"))\s*"
         + r"((\w+|'[\w ]*'|\"[\w ]*\"|\|)\s*)*$"  # arrow
     )  # RHS
     _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|(" + ARROW + ")")
@@ -676,7 +675,7 @@ class CFGDemo(object):
                 ):
                     pass  # matching nonterminal
                 elif (
-                    isinstance(node, string_types)
+                    isinstance(node, str)
                     and isinstance(widget, TextWidget)
                     and node == widget.text()
                 ):

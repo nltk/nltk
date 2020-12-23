@@ -1,14 +1,14 @@
 # Natural Language Toolkit: Language Model Unit Tests
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import unittest
 from collections import Counter
+from timeit import timeit
 
-import six
 from nltk.lm import Vocabulary
 
 
@@ -60,8 +60,8 @@ class NgramModelVocabularyTests(unittest.TestCase):
         vocab_counts = ["a", "b", "c", "d", "e", "f", "g", "w", "z"]
         vocab_items = ["a", "b", "d", "e", "<UNK>"]
 
-        six.assertCountEqual(self, vocab_counts, list(self.vocab.counts.keys()))
-        six.assertCountEqual(self, vocab_items, list(self.vocab))
+        self.assertCountEqual(vocab_counts, list(self.vocab.counts.keys()))
+        self.assertCountEqual(vocab_items, list(self.vocab))
 
     def test_update_empty_vocab(self):
         empty = Vocabulary(unk_cutoff=2)
@@ -137,3 +137,17 @@ class NgramModelVocabularyTests(unittest.TestCase):
                 unk_cutoff=2,
             ),
         )
+
+    def test_len_is_constant(self):
+        # Given an obviously small and an obviously large vocabulary.
+        small_vocab = Vocabulary("abcde")
+        from nltk.corpus.europarl_raw import english
+
+        large_vocab = Vocabulary(english.words())
+
+        # If we time calling `len` on them.
+        small_vocab_len_time = timeit("len(small_vocab)", globals=locals())
+        large_vocab_len_time = timeit("len(large_vocab)", globals=locals())
+
+        # The timing should be the same order of magnitude.
+        self.assertAlmostEqual(small_vocab_len_time, large_vocab_len_time, places=1)

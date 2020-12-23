@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""
+r"""
 Module for incrementally developing simple discourses, and checking for semantic ambiguity,
 consistency and informativeness.
 
@@ -48,7 +48,6 @@ from abc import ABCMeta, abstractmethod
 from operator import and_, add
 from functools import reduce
 
-from six import add_metaclass
 
 from nltk.data import show_cfg
 from nltk.tag import RegexpTagger
@@ -62,8 +61,7 @@ from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
 
 
-@add_metaclass(ABCMeta)
-class ReadingCommand(object):
+class ReadingCommand(metaclass=ABCMeta):
     @abstractmethod
     def parse_to_readings(self, sentence):
         """
@@ -555,8 +553,9 @@ def load_fol(s):
             continue
         try:
             statements.append(Expression.fromstring(line))
-        except Exception:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+        except Exception as e:
+            raise ValueError("Unable to parse line %s: %s" %
+                             (linenum, line)) from e
     return statements
 
 

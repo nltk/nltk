@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -190,6 +190,7 @@ class SentimentAnalyzer(object):
         """
         print("Saving", filename, file=sys.stderr)
         with open(filename, 'wb') as storage_file:
+            import pickle
             # The protocol=2 parameter is for python2 compatibility
             pickle.dump(content, storage_file, protocol=2)
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Maximum Entropy Classifiers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Dmitry Chichkov <dchichkov@gmail.com> (TypedMaxentFeatureEncoding)
 # URL: <http://nltk.org/>
@@ -59,8 +59,6 @@ except ImportError:
 import tempfile
 import os
 from collections import defaultdict
-
-from six import integer_types
 
 from nltk.data import gzip_open_unicode
 from nltk.util import OrderedDict
@@ -597,7 +595,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, integer_types):
+        if not isinstance(f_id, int):
             raise TypeError("describe() expected an int")
         try:
             self._inv_mapping
@@ -912,7 +910,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         # Convert input-features to joint-features:
         for fname, fval in featureset.items():
-            if isinstance(fval, (integer_types, float)):
+            if isinstance(fval, (int, float)):
                 # Known feature name & value:
                 if (fname, type(fval), label) in self._mapping:
                     encoding.append((self._mapping[fname, type(fval), label], fval))
@@ -940,7 +938,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, integer_types):
+        if not isinstance(f_id, int):
             raise TypeError("describe() expected an int")
         try:
             self._inv_mapping
@@ -1289,7 +1287,7 @@ def calculate_deltas(
     nftranspose,
     encoding,
 ):
-    """
+    r"""
     Calculate the update values for the classifier weights for
     this iteration of IIS.  These update weights are the value of
     ``delta`` that solves the equation::
@@ -1454,7 +1452,7 @@ def train_maxent_classifier_with_megam(
             )
         os.close(fd)
     except (OSError, IOError, ValueError) as e:
-        raise ValueError("Error while creating megam training file: %s" % e)
+        raise ValueError("Error while creating megam training file: %s" % e) from e
 
     # Run megam on the training file.
     options = []

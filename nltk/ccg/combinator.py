@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,13 +9,11 @@ CCG Combinators
 """
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 from nltk.ccg.api import FunctionalCategory
 
 
-@add_metaclass(ABCMeta)
-class UndirectedBinaryCombinator(object):
+class UndirectedBinaryCombinator(metaclass=ABCMeta):
     """
     Abstract class for representing a binary combinator.
     Merely defines functions for checking if the function and argument
@@ -36,8 +34,7 @@ class UndirectedBinaryCombinator(object):
         pass
 
 
-@add_metaclass(ABCMeta)
-class DirectedBinaryCombinator(object):
+class DirectedBinaryCombinator(metaclass=ABCMeta):
     """
     Wrapper for the undirected binary combinator.
     It takes left and right categories, and decides which is to be
@@ -217,7 +214,7 @@ BackwardBx = BackwardCombinator(
 
 
 class UndirectedSubstitution(UndirectedBinaryCombinator):
-    """
+    r"""
     Substitution (permutation) combinator.
     Implements rules of the form
     Y/Z (X\Y)/Z -> X/Z (<Sx)

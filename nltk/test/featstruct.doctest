@@ -1,10 +1,9 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==================================
  Feature Structures & Unification
 ==================================
-    >>> from __future__ import print_function
     >>> from nltk.featstruct import FeatStruct
     >>> from nltk.sem.logic import Variable, VariableExpression, Expression
 

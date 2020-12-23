@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CCG Categories
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,15 +8,11 @@
 from functools import total_ordering
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 
 from nltk.internals import raise_unorderable_types
-from nltk.compat import unicode_repr
 
-
-@add_metaclass(ABCMeta)
 @total_ordering
-class AbstractCCGCategory(object):
+class AbstractCCGCategory(metaclass=ABCMeta):
     """
     Interface for categories in combinatory grammars.
     """
@@ -300,7 +296,7 @@ class PrimitiveCategory(AbstractCCGCategory):
     def __str__(self):
         if self._restrs == []:
             return "%s" % self._categ
-        restrictions = "[%s]" % ",".join(unicode_repr(r) for r in self._restrs)
+        restrictions = "[%s]" % ",".join(repr(r) for r in self._restrs)
         return "%s%s" % (self._categ, restrictions)
 
 

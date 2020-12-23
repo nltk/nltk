@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Machine Translation
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Uday Krishna <udaykrishna5@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -162,15 +162,13 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wo
     word_match = []
     for i in range(len(enum_hypothesis_list))[::-1]:
         hypothesis_syns = set(
-            chain(
-                *[
-                    [
-                        lemma.name()
-                        for lemma in synset.lemmas()
-                        if lemma.name().find("_") < 0
-                    ]
-                    for synset in wordnet.synsets(enum_hypothesis_list[i][1])
-                ]
+            chain.from_iterable(
+                (
+                    lemma.name()
+                    for lemma in synset.lemmas()
+                    if lemma.name().find("_") < 0
+                )
+                for synset in wordnet.synsets(enum_hypothesis_list[i][1])
             )
         ).union({enum_hypothesis_list[i][1]})
         for j in range(len(enum_reference_list))[::-1]:
@@ -423,6 +421,7 @@ def meteor_score(
             single_meteor_score(
                 reference,
                 hypothesis,
+                preprocess=preprocess,
                 stemmer=stemmer,
                 wordnet=wordnet,
                 alpha=alpha,

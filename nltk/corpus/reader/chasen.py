@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -7,8 +7,6 @@
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
 
 import sys
-
-from six import string_types
 
 from nltk.corpus.reader import util
 
@@ -24,7 +22,7 @@ class ChasenCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
@@ -162,7 +160,7 @@ def test():
 
     jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
 
-    assert isinstance(jeita.tagged_words()[0][1], string_types)
+    assert isinstance(jeita.tagged_words()[0][1], str)
 
 
 if __name__ == "__main__":
