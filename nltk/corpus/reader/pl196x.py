@@ -1,11 +1,9 @@
 # Natural Language Toolkit:
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Piotr Kasprzyk <p.j.kasprzyk@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
@@ -130,11 +128,11 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
     def _resolve(self, fileids, categories, textids=None):
         tmp = None
         if (
-            len(
+            len(list(
                 filter(
                     lambda accessor: accessor is None, (fileids, categories, textids)
                 )
-            )
+            ))
             != 1
         ):
 
@@ -149,7 +147,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return self.fileids(categories), None
 
         if textids is not None:
-            if isinstance(textids, string_types):
+            if isinstance(textids, str):
                 textids = [textids]
             files = sum((self._t2f[t] for t in textids), [])
             tdict = dict()
@@ -173,7 +171,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         if fileids is None:
             return sorted(self._t2f)
 
-        if isinstance(fileids, string_types):
+        if isinstance(fileids, str):
             fileids = [fileids]
         return sorted(sum((self._f2t[d] for d in fileids), []))
 
@@ -181,7 +179,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
 
         if textids:
@@ -216,7 +214,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
 
         if textids:
@@ -247,7 +245,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
 
         if textids:
@@ -278,7 +276,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
 
         if textids:
@@ -309,7 +307,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
 
         if textids:
@@ -340,7 +338,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
 
         if textids:
@@ -378,6 +376,6 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, _ = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])

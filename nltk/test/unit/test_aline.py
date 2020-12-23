@@ -3,7 +3,6 @@
 Unit tests for nltk.metrics.aline
 """
 
-from __future__ import unicode_literals
 
 import unittest
 

@@ -1,7 +1,7 @@
 Installing NLTK
 ===============
 
-NLTK requires Python versions 3.5, 3.6, or 3.7
+NLTK requires Python versions 3.5, 3.6, 3.7, or 3.8
 
 For Windows users, it is strongly recommended that you go through this guide to install Python 3 successfully https://docs.python-guide.org/starting/install3/win/#install3-windows
 
@@ -29,10 +29,10 @@ These instructions assume that you do not already have Python installed on your 
 32-bit binary installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Install Python 3.7: http://www.python.org/downloads/ (avoid the 64-bit versions)
+#. Install Python 3.8: http://www.python.org/downloads/ (avoid the 64-bit versions)
 #. Install Numpy (optional): https://www.scipy.org/scipylib/download.html
 #. Install NLTK: http://pypi.python.org/pypi/nltk
-#. Test installation: ``Start>Python37``, then type ``import nltk``
+#. Test installation: ``Start>Python38``, then type ``import nltk``
 
 Installing Third-Party Software
 -------------------------------

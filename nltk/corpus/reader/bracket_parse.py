@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -80,10 +80,6 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             assert 0, "bad block type"
 
     def _normalize(self, t):
-        # If there's an empty set of brackets surrounding the actual
-        # parse, then strip them off.
-        if EMPTY_BRACKETS.match(t):
-            t = t.strip()[1:-1]
         # Replace leaves of the form (!), (,), with (! !), (, ,)
         t = re.sub(r"\((.)\)", r"(\1 \1)", t)
         # Replace leaves of the form (tag word root) with (tag word)
@@ -92,7 +88,12 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
 
     def _parse(self, t):
         try:
-            return Tree.fromstring(self._normalize(t))
+            tree = Tree.fromstring(self._normalize(t))
+            # If there's an empty node at the top, strip it off
+            if tree.label() == '' and len(tree) == 1:
+                return tree[0]
+            else:
+                return tree
 
         except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")
@@ -211,7 +212,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         BracketParseCorpusReader.__init__(
             self,
             root,
-            "alpino\.xml",
+            r"alpino\.xml",
             detect_blocks="blankline",
             encoding=encoding,
             tagset=tagset,

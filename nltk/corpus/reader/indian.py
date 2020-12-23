@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -17,8 +17,6 @@ Contents:
   - Marathi: IIT Bombay
   - Telugu: IIIT Hyderabad
 """
-
-from six import string_types
 
 from nltk.tag import str2tuple, map_tag
 
@@ -74,7 +72,7 @@ class IndianCorpusReader(CorpusReader):
     def raw(self, fileids=None):
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

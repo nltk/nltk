@@ -1,9 +1,12 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =============
  Classifiers
 =============
+
+    >>> from nltk.test.classify_fixt import setup_module
+    >>> setup_module()
 
 Classifiers label tokens with category labels (or *class labels*).
 Typically, labels are represented with strings (such as ``"health"``

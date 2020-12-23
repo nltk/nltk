@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collocations and Association Measures
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -31,7 +31,6 @@ measures are provided in bigram_measures and trigram_measures.
 #   and unigram counts (raw_freq, pmi, student_t)
 
 import itertools as _itertools
-from six import iteritems
 
 from nltk.probability import FreqDist
 from nltk.util import ngrams
@@ -98,7 +97,7 @@ class AbstractCollocationFinder(object):
         if the function returns True when passed an ngram tuple.
         """
         tmp_ngram = FreqDist()
-        for ngram, freq in iteritems(self.ngram_fd):
+        for ngram, freq in self.ngram_fd.items():
             if not fn(ngram, freq):
                 tmp_ngram[ngram] = freq
         self.ngram_fd = tmp_ngram

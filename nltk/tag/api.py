@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagger Interface
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -13,15 +13,13 @@ information, such as its part of speech.
 from abc import ABCMeta, abstractmethod
 from itertools import chain
 
-from six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.metrics import accuracy
 from nltk.tag.util import untag
 
 
-@add_metaclass(ABCMeta)
-class TaggerI(object):
+class TaggerI(metaclass=ABCMeta):
     """
     A processing interface for assigning a tag to each token in a list.
     Tags are case sensitive strings that identify some property of each
@@ -68,8 +66,8 @@ class TaggerI(object):
         """
 
         tagged_sents = self.tag_sents(untag(sent) for sent in gold)
-        gold_tokens = list(chain(*gold))
-        test_tokens = list(chain(*tagged_sents))
+        gold_tokens = list(chain.from_iterable(gold))
+        test_tokens = list(chain.from_iterable(tagged_sents))
         return accuracy(gold_tokens, test_tokens)
 
     def _check_params(self, train, model):

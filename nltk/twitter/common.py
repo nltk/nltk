@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
@@ -15,7 +15,7 @@ import csv
 import gzip
 import json
 
-from nltk import compat
+from nltk.internals import deprecated
 
 HIER_SEPARATOR = "."
 
@@ -32,10 +32,10 @@ def extract_fields(tweet, fields):
     for field in fields:
         try:
             _add_field_to_out(tweet, field, out)
-        except TypeError:
+        except TypeError as e:
             raise RuntimeError(
                 "Fatal error when extracting fields. Cannot find field ", field
-            )
+            ) from e
     return out
 
 
@@ -121,7 +121,7 @@ def json2csv(
 
     :param gzip_compress: if `True`, output files are compressed with gzip
     """
-    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+    (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
     writer.writerow(fields)
     # process the file
@@ -132,22 +132,18 @@ def json2csv(
     outf.close()
 
 
+@deprecated("Use open() and csv.writer() directly instead.")
 def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
-    """
-    Identify appropriate CSV writer given the Python version
-    """
-    if compat.PY3:
-        if gzip_compress:
-            outf = gzip.open(outfile, "wt", encoding=encoding, errors=errors)
-        else:
-            outf = open(outfile, "w", encoding=encoding, errors=errors)
-        writer = csv.writer(outf)
+    """Get a CSV writer with optional compression."""
+    return _outf_writer(outfile, encoding, errors, gzip_compress)
+
+
+def _outf_writer(outfile, encoding, errors, gzip_compress=False):
+    if gzip_compress:
+        outf = gzip.open(outfile, "wt", encoding=encoding, errors=errors)
     else:
-        if gzip_compress:
-            outf = gzip.open(outfile, "wb")
-        else:
-            outf = open(outfile, "wb")
-        writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
+        outf = open(outfile, "w", encoding=encoding, errors=errors)
+    writer = csv.writer(outf)
     return (writer, outf)
 
 
@@ -201,7 +197,7 @@ def json2csv_entities(
     :param gzip_compress: if `True`, ouput files are compressed with gzip
     """
 
-    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+    (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
     writer.writerow(header)
     for line in tweets_file:

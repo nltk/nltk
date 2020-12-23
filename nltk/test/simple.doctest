@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
@@ -8,8 +8,7 @@ EasyInstall Tests
 This file contains some simple tests that will be run by EasyInstall in
 order to test the installation when NLTK-Data is absent.
 
-    >>> from __future__ import print_function
-
+ 
 ------------
 Tokenization
 ------------

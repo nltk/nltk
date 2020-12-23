@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter API
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
@@ -14,11 +14,7 @@ handling.
 
 import time as _time
 from abc import ABCMeta, abstractmethod
-from datetime import tzinfo, timedelta, datetime
-
-from six import add_metaclass
-
-from nltk.compat import UTC
+from datetime import tzinfo, timedelta, timezone, datetime
 
 
 class LocalTimezoneOffsetWithUTC(tzinfo):
@@ -51,8 +47,7 @@ class LocalTimezoneOffsetWithUTC(tzinfo):
 LOCAL = LocalTimezoneOffsetWithUTC()
 
 
-@add_metaclass(ABCMeta)
-class BasicTweetHandler(object):
+class BasicTweetHandler(metaclass=ABCMeta):
     """
     Minimal implementation of `TweetHandler`.
 
@@ -131,7 +126,7 @@ class TweetHandlerI(BasicTweetHandler):
         if self.upper_date_limit or self.lower_date_limit:
             date_fmt = "%a %b %d %H:%M:%S +0000 %Y"
             tweet_date = datetime.strptime(data["created_at"], date_fmt).replace(
-                tzinfo=UTC
+                tzinfo=timezone.utc
             )
             if (self.upper_date_limit and tweet_date > self.upper_date_limit) or (
                 self.lower_date_limit and tweet_date < self.lower_date_limit

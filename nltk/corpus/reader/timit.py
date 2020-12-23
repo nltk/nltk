@@ -124,8 +124,6 @@ import re
 import tempfile
 import time
 
-from six import string_types
-
 from nltk.tree import Tree
 from nltk.internals import import_from_stdlib
 
@@ -161,8 +159,8 @@ class TimitCorpusReader(CorpusReader):
         :param root: The root directory for this corpus.
         """
         # Ensure that wave files don't get treated as unicode data:
-        if isinstance(encoding, string_types):
-            encoding = [(".*\.wav", None), (".*", encoding)]
+        if isinstance(encoding, str):
+            encoding = [(r".*\.wav", None), (".*", encoding)]
 
         CorpusReader.__init__(
             self, root, find_corpus_fileids(root, self._FILE_RE), encoding=encoding
@@ -206,15 +204,15 @@ class TimitCorpusReader(CorpusReader):
         region, gender, sentence type, or sentence number, if
         specified.
         """
-        if isinstance(dialect, string_types):
+        if isinstance(dialect, str):
             dialect = [dialect]
-        if isinstance(sex, string_types):
+        if isinstance(sex, str):
             sex = [sex]
-        if isinstance(spkrid, string_types):
+        if isinstance(spkrid, str):
             spkrid = [spkrid]
-        if isinstance(sent_type, string_types):
+        if isinstance(sent_type, str):
             sent_type = [sent_type]
-        if isinstance(sentid, string_types):
+        if isinstance(sentid, str):
             sentid = [sentid]
 
         utterances = self._utterances[:]
@@ -339,7 +337,7 @@ class TimitCorpusReader(CorpusReader):
     def phone_trees(self, utterances=None):
         if utterances is None:
             utterances = self._utterances
-        if isinstance(utterances, string_types):
+        if isinstance(utterances, str):
             utterances = [utterances]
 
         trees = []
@@ -407,7 +405,7 @@ class TimitCorpusReader(CorpusReader):
     def _utterance_fileids(self, utterances, extension):
         if utterances is None:
             utterances = self._utterances
-        if isinstance(utterances, string_types):
+        if isinstance(utterances, str):
             utterances = [utterances]
         return ["%s%s" % (u, extension) for u in utterances]
 

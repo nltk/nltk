@@ -1,6 +1,6 @@
 # Natural Language Toolkit: RTE Classifier
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -58,7 +58,7 @@ class RTEFeatureExtractor(object):
         self.negwords = set(["no", "not", "never", "failed", "rejected", "denied"])
         # Try to tokenize so that abbreviations, monetary amounts, email
         # addresses, URLs are single tokens.
-        tokenizer = RegexpTokenizer("[\w.@:/]+|\w+|\$[\d.]+")
+        tokenizer = RegexpTokenizer(r"[\w.@:/]+|\w+|\$[\d.]+")
 
         # Get the set of word types for text and hypothesis
         self.text_tokens = tokenizer.tokenize(rtepair.text)

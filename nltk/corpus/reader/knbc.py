@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,7 +8,6 @@
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
 
 import re
-from six import string_types
 
 from nltk.parse import DependencyGraph
 
@@ -183,8 +182,8 @@ def test():
     knbc = LazyCorpusLoader(
         "knbc/corpus1", KNBCorpusReader, r".*/KN.*", encoding="euc-jp"
     )
-    assert isinstance(knbc.words()[0], string_types)
-    assert isinstance(knbc.sents()[0][0], string_types)
+    assert isinstance(knbc.words()[0], str)
+    assert isinstance(knbc.sents()[0][0], str)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Generating from a CFG
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://nltk.org/>
@@ -47,7 +47,7 @@ def _generate_all(grammar, items, depth):
                 # Helpful error message while still showing the recursion stack.
                 raise RuntimeError(
                     "The grammar has rule(s) that yield infinite recursion!!"
-                )
+                ) from _error
             else:
                 raise
     else:

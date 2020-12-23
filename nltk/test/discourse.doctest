@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2020 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==================
@@ -8,6 +8,12 @@ Discourse Checking
     >>> from nltk import *
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
+
+Setup
+=====
+
+    >>> from nltk.test.childes_fixt import setup_module
+    >>> setup_module()
 
 Introduction
 ============

@@ -7,13 +7,15 @@ Building an NLTK distribution
    - Optionally test demonstration code locally
      make demotest
    - Optionally test individual modules:
-     tox-3.7 -e py37 nltk.package.module
+     tox-3.8 -e py38 nltk.package.module
    - Check the data index is up-to-date:
      cd ../nltk_data; make; push
 
 2. Update Version Number and ChangeLog
    - Update version number
      edit nltk/VERSION and web/conf.py (version and release)
+   - Check web/install.rst mentions latest version of Python
+   - Check setup.py lists correct range of Python versions
    - Add a new entry to the news page in nltk/web/news.rst
    - Update the ChangeLog (for nltk, nltk_data)
      git log --since=20XX-YY-ZZ
@@ -21,7 +23,7 @@ Building an NLTK distribution
 
 3. Build Documentation
    - Check the copyright year is correct and update if necessary
-     e.g. ./tools/global_replace.py 2001-2018 2001-2019
+     e.g. ./tools/global_replace.py 2001-2020 2001-2021
    - Check that installation instructions are up-to-date
      (including the range of Python versions that are supported)
      edit web/install.rst setup.py

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Dávid Márk Nemeskey <nemeskeyd@gmail.com> (modifications)
 #         Attila Zséder <zseder@gmail.com> (modifications)
@@ -14,8 +14,6 @@ A module for interfacing with the HunPos open-source POS-tagger.
 
 import os
 from subprocess import Popen, PIPE
-
-from six import text_type
 
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
@@ -123,7 +121,7 @@ class HunposTagger(TaggerI):
         """
         for token in tokens:
             assert "\n" not in token, "Tokens should not contain newlines"
-            if isinstance(token, text_type):
+            if isinstance(token, str):
                 token = token.encode(self._encoding)
             self._hunpos.stdin.write(token + b"\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
@@ -143,9 +141,9 @@ class HunposTagger(TaggerI):
 
 # skip doctests if Hunpos tagger is not installed
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         HunposTagger("en_wsj.model")
     except LookupError:
-        raise SkipTest("HunposTagger is not available")
+        pytest.skip("HunposTagger is not available")

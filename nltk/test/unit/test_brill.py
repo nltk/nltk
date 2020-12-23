@@ -6,7 +6,6 @@ Tests for Brill tagger.
 import unittest
 
 from nltk.tag import UnigramTagger, brill, brill_trainer
-from nltk.tbl import Template
 from nltk.corpus import treebank
 
 from nltk.tbl import demo

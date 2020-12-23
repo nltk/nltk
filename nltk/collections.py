@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collections
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,8 +11,6 @@ from functools import total_ordering
 
 # this unused import is for python 2.7
 from collections import defaultdict, deque, Counter
-
-from six import text_type
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 
@@ -173,8 +171,8 @@ class AbstractLazySequence(object):
             # Use iterate_from to extract it.
             try:
                 return next(self.iterate_from(i))
-            except StopIteration:
-                raise IndexError("index out of range")
+            except StopIteration as e:
+                raise IndexError("index out of range") from e
 
     def __iter__(self):
         """Return an iterator that generates the tokens in the corpus
@@ -230,8 +228,8 @@ class AbstractLazySequence(object):
             pieces.append(repr(elt))
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % ", ".join(pieces[:-1])
+        return "[%s]" % ", ".join(pieces)
 
     def __eq__(self, other):
         return type(self) == type(other) and list(self) == list(other)
@@ -307,7 +305,7 @@ class LazyConcatenation(AbstractLazySequence):
 
     def __len__(self):
         if len(self._offsets) <= len(self._list):
-            for tok in self.iterate_from(self._offsets[-1]):
+            for _ in self.iterate_from(self._offsets[-1]):
                 pass
         return self._offsets[-1]
 
@@ -329,7 +327,7 @@ class LazyConcatenation(AbstractLazySequence):
             if sublist_index == (len(self._offsets) - 1):
                 assert (
                     index + len(sublist) >= self._offsets[-1]
-                ), "offests not monotonic increasing!"
+                ), "offsets not monotonic increasing!"
                 self._offsets.append(index + len(sublist))
             else:
                 assert self._offsets[sublist_index + 1] == index + len(
@@ -466,8 +464,8 @@ class LazyMap(AbstractLazySequence):
             # Calculate the value
             try:
                 val = next(self.iterate_from(index))
-            except StopIteration:
-                raise IndexError("index out of range")
+            except StopIteration as e:
+                raise IndexError("index out of range") from e
             # Update the cache
             if self._cache is not None:
                 if len(self._cache) > self._cache_size:
@@ -582,7 +580,7 @@ class LazyIteratorList(AbstractLazySequence):
     def __len__(self):
         if self._len:
             return self._len
-        for x in self.iterate_from(len(self._cache)):
+        for _ in self.iterate_from(len(self._cache)):
             pass
         self._len = len(self._cache)
         return self._len
@@ -596,11 +594,13 @@ class LazyIteratorList(AbstractLazySequence):
         while i < len(self._cache):
             yield self._cache[i]
             i += 1
-        while True:
-            v = next(self._it)
-            self._cache.append(v)
-            yield v
-            i += 1
+        try:
+            while True:
+                v = next(self._it)
+                self._cache.append(v)
+                yield v
+        except StopIteration:
+            pass
 
     def __add__(self, other):
         """Return a list concatenating self with other."""

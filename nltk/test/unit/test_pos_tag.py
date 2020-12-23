@@ -3,7 +3,6 @@
 Tests for nltk.pos_tag
 """
 
-from __future__ import unicode_literals
 
 import unittest
 

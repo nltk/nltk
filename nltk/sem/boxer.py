@@ -3,7 +3,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -773,7 +773,7 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse_variable(self):
         var = self.token()
-        assert re.match("^[exps]\d+$", var), var
+        assert re.match(r"^[exps]\d+$", var), var
         return var
 
     def parse_index(self):
@@ -982,7 +982,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
         except Exception as e:
-            raise LogicalExpressionException(self._currentIndex, str(e))
+            raise LogicalExpressionException(self._currentIndex, str(e)) from e
         assert False, repr(tok)
 
     def nullableIntToken(self):
@@ -993,7 +993,7 @@ class BoxerDrsParser(DrtParser):
         try:
             return self.token()
         except ExpectedMoreTokensException as e:
-            raise ExpectedMoreTokensException(e.index, "Variable expected.")
+            raise ExpectedMoreTokensException(e.index, "Variable expected.") from e
 
 
 class AbstractBoxerDrs(object):

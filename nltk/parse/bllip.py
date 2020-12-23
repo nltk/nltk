@@ -2,7 +2,7 @@
 #
 # Author: David McClosky <dmcc@bigasterisk.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -101,11 +101,11 @@ def _ensure_ascii(words):
     try:
         for i, word in enumerate(words):
             word.decode("ascii")
-    except UnicodeDecodeError:
+    except UnicodeDecodeError as e:
         raise ValueError(
             "Token %d (%r) is non-ASCII. BLLIP Parser "
             "currently doesn't support non-ASCII inputs." % (i, word)
-        )
+        ) from e
 
 
 def _scored_parse_to_nltk_tree(scored_parse):
@@ -301,12 +301,12 @@ def demo():
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         _ensure_bllip_import_or_error()
     except ImportError:
-        raise SkipTest(
+        pytest.skip(
             "doctests from nltk.parse.bllip are skipped because "
             "the bllipparser module is not installed"
         )

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU Score
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
 # Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
 # URL: <http://nltk.org/>
@@ -11,17 +11,11 @@
 
 import math
 import sys
-import fractions
+from fractions import Fraction
 import warnings
 from collections import Counter
 
 from nltk.util import ngrams
-
-try:
-    fractions.Fraction(0, 1000, _normalize=False)
-    from fractions import Fraction
-except TypeError:
-    from nltk.compat import Fraction
 
 
 def sentence_bleu(
@@ -117,7 +111,7 @@ def corpus_bleu(
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
 
-    Instead of averaging the sentence level BLEU scores (i.e. marco-average
+    Instead of averaging the sentence level BLEU scores (i.e. macro-average
     precision), the original BLEU metric (Papineni et al. 2002) accounts for
     the micro-average precision (i.e. summing the numerators and denominators
     for each hypothesis-reference(s) pairs before the division).
@@ -542,13 +536,14 @@ class SmoothingFunction:
     def method2(self, p_n, *args, **kwargs):
         """
         Smoothing method 2: Add 1 to both numerator and denominator from
-        Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of
-        machine translation quality using longest common subsequence and
-        skip-bigram statistics. In ACL04.
+        Chin-Yew Lin and Franz Josef Och (2004) ORANGE: a Method for
+        Evaluating Automatic Evaluation Metrics for Machine Translation.
+        In COLING 2004.
         """
         return [
-            Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False)
-            for p_i in p_n
+            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
+            if i != 0 else p_n[0]
+            for i in range(len(p_n))
         ]
 
     def method3(self, p_n, *args, **kwargs):
@@ -637,7 +632,7 @@ class SmoothingFunction:
     def method7(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 7:
-        Interpolates methods 5 and 6.
+        Interpolates methods 4 and 5.
         """
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         p_n = self.method4(p_n, references, hypothesis, hyp_len)

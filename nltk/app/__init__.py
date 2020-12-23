@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -22,11 +22,11 @@ wordnet:      WordNet Browser
 
 # Import Tkinter-based modules if Tkinter is installed
 try:
-    from six.moves import tkinter
+    import tkinter
 except ImportError:
     import warnings
 
-    warnings.warn("nltk.app package not loaded " "(please install Tkinter library).")
+    warnings.warn("nltk.app package not loaded (please install Tkinter library).")
 else:
     from nltk.app.chartparser_app import app as chartparser
     from nltk.app.chunkparser_app import app as chunkparser
@@ -43,13 +43,14 @@ else:
         import warnings
 
         warnings.warn(
-            "nltk.app.wordfreq not loaded " "(requires the matplotlib library)."
+            "nltk.app.wordfreq not loaded (requires the matplotlib library)."
         )
     else:
         from nltk.app.wordfreq_app import app as wordfreq
 
 # skip doctests from this package
-def setup_module(module):
-    from nose import SkipTest
+import pytest
 
-    raise SkipTest("nltk.app examples are not doctests")
+@pytest.mark.skip("nltk.app examples are not doctests")
+def setup_module(module):
+    pass

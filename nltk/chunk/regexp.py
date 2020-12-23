@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regular Expression Chunkers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -8,11 +8,8 @@
 
 import re
 
-from six import string_types
-
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
-from nltk.compat import unicode_repr
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
@@ -67,7 +64,7 @@ class ChunkString(object):
     _CHUNK = r"(\{%s+?\})+?" % CHUNK_TAG
     _CHINK = r"(%s+?)+?" % CHUNK_TAG
     _VALID = re.compile(r"^(\{?%s\}?)*?$" % CHUNK_TAG)
-    _BRACKETS = re.compile("[^\{\}]+")
+    _BRACKETS = re.compile(r"[^\{\}]+")
     _BALANCED_BRACKETS = re.compile(r"(\{\})*$")
 
     def __init__(self, chunk_struct, debug_level=1):
@@ -212,7 +209,7 @@ class ChunkString(object):
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
-        s = re.sub("\{\}", "", s)
+        s = re.sub(r"\{\}", "", s)
 
         # Make sure that the transformation was legal.
         if self._debug > 1:
@@ -230,7 +227,7 @@ class ChunkString(object):
 
         :rtype: str
         """
-        return "<ChunkString: %s>" % unicode_repr(self._str)
+        return "<ChunkString: %s>" % repr(self._str)
 
     def __str__(self):
         """
@@ -298,7 +295,7 @@ class RegexpChunkRule(object):
         :param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        if isinstance(regexp, string_types):
+        if isinstance(regexp, str):
             regexp = re.compile(regexp)
         self._repl = repl
         self._descr = descr
@@ -342,9 +339,9 @@ class RegexpChunkRule(object):
         """
         return (
             "<RegexpChunkRule: "
-            + unicode_repr(self._regexp.pattern)
+            + repr(self._regexp.pattern)
             + "->"
-            + unicode_repr(self._repl)
+            + repr(self._repl)
             + ">"
         )
 
@@ -391,8 +388,8 @@ class RegexpChunkRule(object):
                 return ChunkRuleWithContext(left, chunk, right, comment)
             else:
                 raise ValueError("Illegal chunk pattern: %s" % rule)
-        except (ValueError, re.error):
-            raise ValueError("Illegal chunk pattern: %s" % rule)
+        except (ValueError, re.error) as e:
+            raise ValueError("Illegal chunk pattern: %s" % rule) from e
 
 
 class ChunkRule(RegexpChunkRule):
@@ -423,7 +420,7 @@ class ChunkRule(RegexpChunkRule):
             "(?P<chunk>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHINK_PATTERN)
         )
-        RegexpChunkRule.__init__(self, regexp, "{\g<chunk>}", descr)
+        RegexpChunkRule.__init__(self, regexp, r"{\g<chunk>}", descr)
 
     def __repr__(self):
         """
@@ -437,7 +434,7 @@ class ChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChunkRule: " + unicode_repr(self._pattern) + ">"
+        return "<ChunkRule: " + repr(self._pattern) + ">"
 
 
 class ChinkRule(RegexpChunkRule):
@@ -468,7 +465,7 @@ class ChinkRule(RegexpChunkRule):
             "(?P<chink>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHUNK_PATTERN)
         )
-        RegexpChunkRule.__init__(self, regexp, "}\g<chink>{", descr)
+        RegexpChunkRule.__init__(self, regexp, r"}\g<chink>{", descr)
 
     def __repr__(self):
         """
@@ -482,7 +479,7 @@ class ChinkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChinkRule: " + unicode_repr(self._pattern) + ">"
+        return "<ChinkRule: " + repr(self._pattern) + ">"
 
 
 class UnChunkRule(RegexpChunkRule):
@@ -507,8 +504,8 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile("\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
-        RegexpChunkRule.__init__(self, regexp, "\g<chunk>", descr)
+        regexp = re.compile(r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+        RegexpChunkRule.__init__(self, regexp, r"\g<chunk>", descr)
 
     def __repr__(self):
         """
@@ -522,7 +519,7 @@ class UnChunkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<UnChunkRule: " + unicode_repr(self._pattern) + ">"
+        return "<UnChunkRule: " + repr(self._pattern) + ">"
 
 
 class MergeRule(RegexpChunkRule):
@@ -572,7 +569,7 @@ class MergeRule(RegexpChunkRule):
                 tag_pattern2re_pattern(right_tag_pattern),
             )
         )
-        RegexpChunkRule.__init__(self, regexp, "\g<left>", descr)
+        RegexpChunkRule.__init__(self, regexp, r"\g<left>", descr)
 
     def __repr__(self):
         """
@@ -588,9 +585,9 @@ class MergeRule(RegexpChunkRule):
         """
         return (
             "<MergeRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -657,9 +654,9 @@ class SplitRule(RegexpChunkRule):
         """
         return (
             "<SplitRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -705,13 +702,13 @@ class ExpandLeftRule(RegexpChunkRule):
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile(
-            "(?P<left>%s)\{(?P<right>%s)"
+            r"(?P<left>%s)\{(?P<right>%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
                 tag_pattern2re_pattern(right_tag_pattern),
             )
         )
-        RegexpChunkRule.__init__(self, regexp, "{\g<left>\g<right>", descr)
+        RegexpChunkRule.__init__(self, regexp, r"{\g<left>\g<right>", descr)
 
     def __repr__(self):
         """
@@ -727,9 +724,9 @@ class ExpandLeftRule(RegexpChunkRule):
         """
         return (
             "<ExpandLeftRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -775,13 +772,13 @@ class ExpandRightRule(RegexpChunkRule):
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
         regexp = re.compile(
-            "(?P<left>%s)\}(?P<right>%s)"
+            r"(?P<left>%s)\}(?P<right>%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
                 tag_pattern2re_pattern(right_tag_pattern),
             )
         )
-        RegexpChunkRule.__init__(self, regexp, "\g<left>\g<right>}", descr)
+        RegexpChunkRule.__init__(self, regexp, r"\g<left>\g<right>}", descr)
 
     def __repr__(self):
         """
@@ -797,9 +794,9 @@ class ExpandRightRule(RegexpChunkRule):
         """
         return (
             "<ExpandRightRule: "
-            + unicode_repr(self._left_tag_pattern)
+            + repr(self._left_tag_pattern)
             + ", "
-            + unicode_repr(self._right_tag_pattern)
+            + repr(self._right_tag_pattern)
             + ">"
         )
 
@@ -893,7 +890,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(
-    r"^((%s|<%s>)*)$" % ("([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", "[^\{\}<>]+")
+    r"^((%s|<%s>)*)$" % (r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
 )
 
 
@@ -1032,7 +1029,7 @@ class RegexpChunkParser(ChunkParserI):
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print("#", rule.descr() + " (" + unicode_repr(rule) + "):")
+                print("#", rule.descr() + " (" + repr(rule) + "):")
             else:
                 print("#", rule.descr() + ":")
             print(chunkstr)
@@ -1123,7 +1120,7 @@ class RegexpChunkParser(ChunkParserI):
         else:
             format = "    %s\n      %s\n"
         for rule in self._rules:
-            s += format % (rule.descr(), unicode_repr(rule))
+            s += format % (rule.descr(), repr(rule))
         return s[:-1]
 
 
@@ -1133,7 +1130,7 @@ class RegexpChunkParser(ChunkParserI):
 
 
 class RegexpParser(ChunkParserI):
-    """
+    r"""
     A grammar based chunk parser.  ``chunk.RegexpParser`` uses a set of
     regular expression patterns to specify the behavior of the parser.
     The chunking of the text is encoded using a ``ChunkString``, and
@@ -1196,7 +1193,7 @@ class RegexpParser(ChunkParserI):
         self._grammar = grammar
         self._loop = loop
 
-        if isinstance(grammar, string_types):
+        if isinstance(grammar, str):
             self._read_grammar(grammar, root_label, trace)
         else:
             # Make sur the grammar looks like it has the right type:
@@ -1205,8 +1202,8 @@ class RegexpParser(ChunkParserI):
             )
             try:
                 grammar = list(grammar)
-            except:
-                raise TypeError(type_err)
+            except BaseException as e:
+                raise TypeError(type_err) from e
             for elt in grammar:
                 if not isinstance(elt, RegexpChunkParser):
                     raise TypeError(type_err)

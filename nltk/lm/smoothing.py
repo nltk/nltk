@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Model Unit Tests
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -30,7 +30,7 @@ class WittenBell(Smoothing):
 
     def _gamma(self, context):
         n_plus = _count_non_zero_vals(self.counts[context])
-        return n_plus / (n_plus + self.counts[len(context) + 1].N())
+        return n_plus / (n_plus + self.counts[context].N())
 
     def unigram_score(self, word):
         return self.counts.unigrams.freq(word)

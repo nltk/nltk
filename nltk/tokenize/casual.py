@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Twitter Tokenizer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2020 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
@@ -36,9 +36,7 @@ domains and tasks. The basic logic is this:
 ######################################################################
 
 import regex  # https://github.com/nltk/nltk/issues/2409
-
-from six import int2byte, unichr
-from six.moves import html_entities
+import html
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -232,18 +230,18 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
                 # to bytes 80-9F in the Windows-1252 encoding. For more info
                 # see: https://en.wikipedia.org/wiki/ISO/IEC_8859-1#Similar_character_sets
                 if 0x80 <= number <= 0x9F:
-                    return int2byte(number).decode("cp1252")
+                    return bytes((number,)).decode("cp1252")
             except ValueError:
                 number = None
         else:
             if entity_body in keep:
                 return match.group(0)
             else:
-                number = html_entities.name2codepoint.get(entity_body)
+                number = html.entities.name2codepoint.get(entity_body)
         if number is not None:
             try:
-                return unichr(number)
-            except ValueError:
+                return chr(number)
+            except (ValueError, OverflowError):
                 pass
 
         return "" if remove_illegal else match.group(0)

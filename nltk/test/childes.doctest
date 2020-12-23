@@ -4,6 +4,12 @@
 
 Read the XML version of the CHILDES corpus.
 
+Setup
+=====
+
+    >>> from nltk.test.childes_fixt import setup_module
+    >>> setup_module()
+
 How to use CHILDESCorpusReader
 ==============================
 
