@@ -225,7 +225,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     _XML_TAG_NAME = re.compile("<\s*(?:/\s*)?([^\s>]+)")
 
     #: A regular expression used to find all start-tags, end-tags, and
-    #: emtpy-elt tags in an XML file.  This regexp is more lenient than
+    #: empty-elt tags in an XML file.  This regexp is more lenient than
     #: the XML spec -- e.g., it allows spaces in some places where the
     #: spec does not.
     _XML_PIECE = re.compile(

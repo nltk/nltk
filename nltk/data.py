@@ -33,8 +33,7 @@ to a local file.
 
 import functools
 import textwrap
-import io
-from io import BytesIO
+from io import BytesIO, TextIOWrapper
 import os
 import re
 import sys
@@ -52,8 +51,7 @@ try:
 except ImportError:
     from zlib import Z_FINISH as FLUSH
 
-# this import should be more specific:
-import nltk
+from nltk import grammar, sem
 from nltk.compat import py3_data, add_py3_data
 from nltk.internals import deprecated
 
@@ -116,7 +114,7 @@ def gzip_open_unicode(
 ):
     if fileobj is None:
         fileobj = GzipFile(filename, mode, compresslevel, fileobj)
-    return io.TextIOWrapper(fileobj, encoding, errors, newline)
+    return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
 def split_resource_url(resource_url):
@@ -782,28 +780,28 @@ def load(
         if format == "text":
             resource_val = string_data
         elif format == "cfg":
-            resource_val = nltk.grammar.CFG.fromstring(string_data, encoding=encoding)
+            resource_val = grammar.CFG.fromstring(string_data, encoding=encoding)
         elif format == "pcfg":
-            resource_val = nltk.grammar.PCFG.fromstring(string_data, encoding=encoding)
+            resource_val = grammar.PCFG.fromstring(string_data, encoding=encoding)
         elif format == "fcfg":
-            resource_val = nltk.grammar.FeatureGrammar.fromstring(
+            resource_val = grammar.FeatureGrammar.fromstring(
                 string_data,
                 logic_parser=logic_parser,
                 fstruct_reader=fstruct_reader,
                 encoding=encoding,
             )
         elif format == "fol":
-            resource_val = nltk.sem.read_logic(
+            resource_val = sem.read_logic(
                 string_data,
-                logic_parser=nltk.sem.logic.LogicParser(),
+                logic_parser=sem.logic.LogicParser(),
                 encoding=encoding,
             )
         elif format == "logic":
-            resource_val = nltk.sem.read_logic(
+            resource_val = sem.read_logic(
                 string_data, logic_parser=logic_parser, encoding=encoding
             )
         elif format == "val":
-            resource_val = nltk.sem.read_valuation(string_data, encoding=encoding)
+            resource_val = sem.read_valuation(string_data, encoding=encoding)
         else:
             raise AssertionError(
                 "Internal NLTK error: Format %s isn't "
@@ -887,7 +885,7 @@ def _open(resource_url):
 ######################################################################
 
 
-class LazyLoader(object):
+class LazyLoader:
     @py3_data
     def __init__(self, _path):
         self._path = _path
@@ -963,11 +961,11 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 
 
 ######################################################################
-# { Seekable Unicode Stream Reader
+# Seekable Unicode Stream Reader
 ######################################################################
 
 
-class SeekableUnicodeStreamReader(object):
+class SeekableUnicodeStreamReader:
     """
     A stream reader that automatically encodes the source byte stream
     into unicode (like ``codecs.StreamReader``); but still supports the

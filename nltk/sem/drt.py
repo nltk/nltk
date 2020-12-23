@@ -711,8 +711,8 @@ class DrtLambdaExpression(DrtExpression, LambdaExpression):
         blank = " " * len(var_string)
         return (
             ["    " + blank + line for line in term_lines[:1]]
-            + [" \  " + blank + line for line in term_lines[1:2]]
-            + [" /\ " + var_string + line for line in term_lines[2:3]]
+            + [r" \  " + blank + line for line in term_lines[1:2]]
+            + [r" /\ " + var_string + line for line in term_lines[2:3]]
             + ["    " + blank + line for line in term_lines[3:]]
         )
 
@@ -1428,9 +1428,9 @@ def test_draw():
     try:
         from tkinter import Tk
     except ImportError as e:
-        from nose import SkipTest
+        import pytest
 
-        raise SkipTest("tkinter is required, but it's not available.") from e
+        pytest.skip("tkinter is required, but it's not available.")
 
     expressions = [
         r"x",

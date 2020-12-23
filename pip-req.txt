@@ -1,6 +1,5 @@
-nose>=1.3.0
+pytest>=6.0.1
 tox>=1.6.1
-coverage>=3.7.1
 pylint>=1.1.0
 numpy>=1.8.0
 scipy>=0.13.2
@@ -11,4 +10,3 @@ gensim>=0.11.1
 pyparsing>=2.0.3
 twython>=3.2.0
 regex>=2019.08.19
-

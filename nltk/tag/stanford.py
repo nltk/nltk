@@ -130,7 +130,7 @@ class StanfordTagger(TaggerI):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
                 word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append(("".join(word_tags[:-1]), word_tags[-1]))
+                sentence.append(("".join(word_tags[:-1]), word_tags[-1].replace('0', '').upper()))
             tagged_sentences.append(sentence)
         return tagged_sentences
 
@@ -236,12 +236,12 @@ class StanfordNERTagger(StanfordTagger):
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         StanfordPOSTagger("english-bidirectional-distsim.tagger")
-    except LookupError as e:
-        raise SkipTest(
+    except LookupError:
+        pytest.skip(
             "Doctests from nltk.tag.stanford are skipped because one \
                        of the stanford jars cannot be found."
-        ) from e
+        )

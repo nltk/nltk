@@ -1,69 +1,37 @@
 # -*- coding: utf-8 -*-
-"""
-The following test performs a random series of reads, seeks, and
-tells, and checks that the results are consistent.
-"""
-import random
-import functools
 from io import BytesIO
+import os
+import pytest
+
 from nltk.corpus.reader import SeekableUnicodeStreamReader
 
 
-def check_reader(unicode_string, encoding, n=1000):
+def check_reader(unicode_string, encoding):
     bytestr = unicode_string.encode(encoding)
-    strlen = len(unicode_string)
     stream = BytesIO(bytestr)
     reader = SeekableUnicodeStreamReader(stream, encoding)
-    # Find all character positions
-    chars = []
-    while True:
-        pos = reader.tell()
-        chars.append((pos, reader.read(1)))
-        if chars[-1][1] == '':
-            break
-    # Find all strings
-    strings = dict((pos, '') for (pos, c) in chars)
-    for pos1, char in chars:
-        for pos2, _ in chars:
-            if pos2 <= pos1:
-                strings[pos2] += char
-    while True:
-        op = random.choice('tsrr')
-        # Check our position?
-        if op == 't':  # tell
-            reader.tell()
-        # Perform a seek?
-        if op == 's':  # seek
-            new_pos = random.choice([p for (p, c) in chars])
-            reader.seek(new_pos)
-        # Perform a read?
-        if op == 'r':  # read
-            if random.random() < 0.3:
-                pos = reader.tell()
-            else:
-                pos = None
-            if random.random() < 0.2:
-                size = None
-            elif random.random() < 0.8:
-                size = random.randint(0, int(strlen / 6))
-            else:
-                size = random.randint(0, strlen + 20)
-            if random.random() < 0.8:
-                s = reader.read(size)
-            else:
-                s = reader.readline(size)
-            # check that everything's consistent
-            if pos is not None:
-                assert pos in strings
-                assert strings[pos].startswith(s)
-                n -= 1
-                if n == 0:
-                    return 'passed'
 
+    # Should open at the start of the file
+    assert reader.tell() == 0
 
-# Call the randomized test function `check_reader` with a variety of
-# input strings and encodings.
+    # Compare original string to contents from `.readlines()`
+    assert unicode_string == "".join(reader.readlines())
 
+    # Should be at the end of the file now
+    stream.seek(0, os.SEEK_END)
+    assert reader.tell() == stream.tell()
+
+    reader.seek(0)  # go back to start
+
+    # Compare original string to contents from `.read()`
+    contents = ""
+    char = None
+    while char != "":
+        char = reader.read(1)
+        contents += char
+    assert unicode_string == contents
+
+# Call `check_reader` with a variety of input strings and encodings.
 ENCODINGS = ['ascii', 'latin1', 'greek', 'hebrew', 'utf-16', 'utf-8']
 
 STRINGS = [
@@ -82,58 +50,34 @@ STRINGS = [
     This is a test file.
     Unicode characters: \xf3 \u2222 \u3333\u4444 \u5555
     """,
+    """\
+    This is a larger file.  It has some lines that are longer \
+    than 72 characters.  It's got lots of repetition.  Here's \
+    some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
+
+    How fun!  Let's repeat it twenty times.
+    """ * 20
 ]
 
 
-def test_reader():
-    for string in STRINGS:
-        for encoding in ENCODINGS:
-            try:
-                # skip strings that can't be encoded with the current encoding
-                string.encode(encoding)
-                yield check_reader, string, encoding
-            except UnicodeEncodeError:
-                pass
-
-
-# nose shows the whole string arguments in a verbose mode; this is annoying,
-# so large string test is separated.
-
-LARGE_STRING = (
-    """\
-This is a larger file.  It has some lines that are longer \
-than 72 characters.  It's got lots of repetition.  Here's \
-some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
-
-How fun!  Let's repeat it twenty times.
-"""
-    * 10
-)
-
-
-def test_reader_on_large_string():
+@pytest.mark.parametrize("string", STRINGS)
+def test_reader(string):
     for encoding in ENCODINGS:
+        # skip strings that can't be encoded with the current encoding
         try:
-            # skip strings that can't be encoded with the current encoding
-            LARGE_STRING.encode(encoding)
-
-            def _check(encoding, n=1000):
-                check_reader(LARGE_STRING, encoding, n)
-
-            yield _check, encoding
-
+            string.encode(encoding)
         except UnicodeEncodeError:
-            pass
+            continue
+        check_reader(string, encoding)
 
 
-def test_reader_stream_is_closed():
+def test_reader_stream_closes_when_deleted():
     reader = SeekableUnicodeStreamReader(BytesIO(b''), 'ascii')
-    assert reader.stream.closed is False
+    assert not reader.stream.closed
     reader.__del__()
-    assert reader.stream.closed is True
+    assert reader.stream.closed
 
 
 def teardown_module(module=None):
     import gc
-
     gc.collect()

@@ -162,12 +162,12 @@ class CFGEditor(object):
     # we can process the text faster.
     ARROW = SymbolWidget.SYMBOLS["rightarrow"]
     _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|(" + ARROW + "))")
-    _ARROW_RE = re.compile("\s*(->|(" + ARROW + "))\s*")
+    _ARROW_RE = re.compile(r"\s*(->|(" + ARROW + r"))\s*")
     _PRODUCTION_RE = re.compile(
         r"(^\s*\w+\s*)"
         + "(->|("  # LHS
         + ARROW
-        + "))\s*"
+        + r"))\s*"
         + r"((\w+|'[\w ]*'|\"[\w ]*\"|\|)\s*)*$"  # arrow
     )  # RHS
     _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|(" + ARROW + ")")

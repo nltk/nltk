@@ -75,11 +75,11 @@ class NISTTokenizer(TokenizerI):
     #  Strip end-of-line hyphenation and join lines
     STRIP_EOL_HYPHEN = re.compile("\u2028"), " "
     # Tokenize punctuation.
-    PUNCT = re.compile("([\{-\~\[-\` -\&\(-\+\:-\@\/])"), " \\1 "
+    PUNCT = re.compile(r"([\{-\~\[-\` -\&\(-\+\:-\@\/])"), " \\1 "
     # Tokenize period and comma unless preceded by a digit.
-    PERIOD_COMMA_PRECEED = re.compile("([^0-9])([\.,])"), "\\1 \\2 "
+    PERIOD_COMMA_PRECEED = re.compile(r"([^0-9])([\.,])"), "\\1 \\2 "
     # Tokenize period and comma unless followed by a digit.
-    PERIOD_COMMA_FOLLOW = re.compile("([\.,])([^0-9])"), " \\1 \\2"
+    PERIOD_COMMA_FOLLOW = re.compile(r"([\.,])([^0-9])"), " \\1 \\2"
     # Tokenize dash when preceded by a digit
     DASH_PRECEED_DIGIT = re.compile("([0-9])(-)"), "\\1 \\2 "
 

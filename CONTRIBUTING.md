@@ -27,7 +27,7 @@ important are:
 ## Development priorities
 
 NLTK consists of the functionality that the Python/NLP community is motivated to contribute.
-Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development)
+Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development).
 
 ## Git and our Branching model
 
@@ -71,7 +71,7 @@ Summary of our git branching model:
   (`git pull upstream develop`);
 - Create a new branch off of `develop` with a descriptive name (for example:
   `feature/portuguese-sentiment-analysis`, `hotfix/bug-on-downloader`). You can
-  do it switching to `develop` branch (`git checkout develop`) and then
+  do it by switching to the `develop` branch (`git checkout develop`) and then
   creating a new branch (`git checkout -b name-of-the-new-branch`);
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
@@ -81,7 +81,7 @@ Summary of our git branching model:
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
 - Create a pull request using the GitHub Web interface (asking us to pull the
-  changes from your new branch and add to our `develop` branch);
+  changes from your new branch and add to them our `develop` branch);
 - Wait for comments.
 
 
@@ -126,7 +126,7 @@ guide](https://github.com/nltk/nltk/wiki/Developers-Guide).
 ## Tests
 
 You should write tests for every feature you add or bug you solve in the code.
-Having automated tests for every line of our code let us make big changes
+Having automated tests for every line of our code lets us make big changes
 without worries: there will always be tests to verify if the changes introduced
 bugs or lack of features. If we don't have tests we will be blind and every
 change will come with some fear of possibly breaking something.
@@ -135,6 +135,15 @@ For a better design of your code, we recommend using a technique called
 [test-driven development](https://en.wikipedia.org/wiki/Test-driven_development),
 where you write your tests **before** writing the actual code that implements
 the desired feature.
+
+You can use `pytest` to run your tests, no matter which type of test it is:
+
+```
+cd nltk/test
+pytest util.doctest  # doctest
+pytest unit/translate/test_nist.py  # unittest
+pytest  # all tests
+```
 
 
 ## Continuous Integration
@@ -162,7 +171,7 @@ The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file c
  - `py-travis` tox test environment generally 
    - the `extras = all` dependencies in needed to emulate `pip install nltk[all]`, see https://tox.readthedocs.io/en/latest/config.html#confval-extras=MULTI-LINE-LIST
    - for the `py-travis-third-party` build, it will run `tools/travis/third-party.sh` to install third-party tools (Stanford NLP tools and CoreNLP and SENNA)
-   - calls `tools/travis/coverage-pylint.sh` shell script that calls the `nltk/nltk/test/runtests.py` with [`coverage`](https://pypi.org/project/coverage/) and 
+   - calls `tools/travis/coverage-pylint.sh` shell script that calls `pytest` with [`pytest-cov`](https://pytest-cov.readthedocs.io/) and
    - calls `pylint` # Currently, disabled because there's lots to clean...
 
    - before returning a `true` to state that the build is successful

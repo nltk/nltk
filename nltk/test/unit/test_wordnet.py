@@ -3,18 +3,10 @@
 Unit tests for nltk.corpus.wordnet
 See also nltk/test/wordnet.doctest
 """
-
-
-import collections
-import os
 import unittest
 
-from nose import SkipTest
-
-from nltk.corpus.reader.wordnet import WordNetCorpusReader
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic as wnic
-from nltk.data import find as find_data
 
 
 wn.ensure_loaded()

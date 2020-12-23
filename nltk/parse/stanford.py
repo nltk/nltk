@@ -10,7 +10,7 @@
 import tempfile
 import os
 import warnings
-from unittest import skip
+import pytest
 from subprocess import PIPE
 
 from nltk.internals import (
@@ -473,16 +473,15 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
         return DependencyGraph(result, top_relation_label="ROOT")
 
 
-@skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
+@pytest.mark.skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
 def setup_module(module):
-    from nose import SkipTest
 
     try:
         StanfordParser(
             model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
         )
         StanfordNeuralDependencyParser()
-    except LookupError as e:
-        raise SkipTest(
+    except LookupError:
+        pytest.skip(
             "doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn't exist"
-        ) from e
+        )

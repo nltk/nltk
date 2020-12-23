@@ -111,7 +111,7 @@ def corpus_bleu(
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
 
-    Instead of averaging the sentence level BLEU scores (i.e. marco-average
+    Instead of averaging the sentence level BLEU scores (i.e. macro-average
     precision), the original BLEU metric (Papineni et al. 2002) accounts for
     the micro-average precision (i.e. summing the numerators and denominators
     for each hypothesis-reference(s) pairs before the division).
@@ -536,13 +536,14 @@ class SmoothingFunction:
     def method2(self, p_n, *args, **kwargs):
         """
         Smoothing method 2: Add 1 to both numerator and denominator from
-        Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of
-        machine translation quality using longest common subsequence and
-        skip-bigram statistics. In ACL04.
+        Chin-Yew Lin and Franz Josef Och (2004) ORANGE: a Method for
+        Evaluating Automatic Evaluation Metrics for Machine Translation.
+        In COLING 2004.
         """
         return [
-            Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False)
-            for p_i in p_n
+            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
+            if i != 0 else p_n[0]
+            for i in range(len(p_n))
         ]
 
     def method3(self, p_n, *args, **kwargs):

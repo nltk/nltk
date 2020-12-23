@@ -4,10 +4,8 @@
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-
 import math
-import unittest
+import pytest
 
 
 from nltk.lm import (
@@ -21,62 +19,57 @@ from nltk.lm import (
 from nltk.lm.preprocessing import padded_everygrams
 
 
+
 def _prepare_test_data(ngram_order):
     return (
         Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1),
         [
-            list(padded_everygrams(ngram_order, sent))
+            padded_everygrams(ngram_order, sent)
             for sent in (list("abcd"), list("egadbe"))
         ],
     )
 
 
-class ParametrizeTestsMeta(type):
+class ParametrizedTests(type):
     """Metaclass for generating parametrized tests."""
+    contexts = [
+        ("a",),
+        ("c",),
+        (u"<s>",),
+        ("b",),
+        (u"<UNK>",),
+        ("d",),
+        ("e",),
+        ("r",),
+        ("w",),
+    ]
 
     def __new__(cls, name, bases, dct):
-        contexts = (
-            ("a",),
-            ("c",),
-            (u"<s>",),
-            ("b",),
-            (u"<UNK>",),
-            ("d",),
-            ("e",),
-            ("r",),
-            ("w",),
-        )
-        for i, c in enumerate(contexts):
-            dct["test_sumto1_{0}".format(i)] = cls.add_sum_to_1_test(c)
         scores = dct.get("score_tests", [])
         for i, (word, context, expected_score) in enumerate(scores):
-            dct["test_score_{0}".format(i)] = cls.add_score_test(
+            dct["test_score_{}".format(i)] = cls.add_score_test(
                 word, context, expected_score
             )
         return super().__new__(cls, name, bases, dct)
 
+    @pytest.mark.parametrize("context", contexts)
+    def test_sum_to_1(self, context):
+        message = "The context is {}".format(context)
+        s = sum(self.model.score(w, context) for w in self.model.vocab)
+        assert pytest.approx(s, 1e-7) == 1.0, message
+
     @classmethod
-    def add_score_test(cls, word, context, expected_score):
-        message = "word='{word}', context={context}"
+    def add_score_test(self, word, context, expected_score):
+        message = "word='{}', context={}".format(word, context)
 
         def test_method(self):
             score = self.model.score(word, context)
-            self.assertAlmostEqual(
-                score, expected_score, msg=message.format(**locals()), places=4
-            )
+            assert pytest.approx(score, 1e-4) == expected_score, message
 
         return test_method
 
-    @classmethod
-    def add_sum_to_1_test(cls, context):
-        def test(self):
-            s = sum(self.model.score(w, context) for w in self.model.vocab)
-            self.assertAlmostEqual(s, 1.0, msg="The context is {}".format(context))
 
-        return test
-
-
-class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class TestMleBigram(metaclass=ParametrizedTests):
     """Unit tests for MLE ngram model."""
 
     score_tests = [
@@ -92,7 +85,8 @@ class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         ("y", None, 3.0 / 14),
     ]
 
-    def setUp(self):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(2)
         self.model = MLE(2, vocabulary=vocab)
         self.model.fit(training_text)
@@ -100,8 +94,7 @@ class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
     def test_logscore_zero_score(self):
         # logscore of unseen ngrams should be -inf
         logscore = self.model.logscore("d", ["e"])
-
-        self.assertTrue(math.isinf(logscore))
+        assert math.isinf(logscore)
 
     def test_entropy_perplexity_seen(self):
         # ngrams seen during training
@@ -124,16 +117,15 @@ class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         # - AVG logscores   = 1.0975
         H = 1.0975
         perplexity = 2.1398
-
-        self.assertAlmostEqual(H, self.model.entropy(trained), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(trained), places=4)
+        assert pytest.approx(self.model.entropy(trained), 1e-4) == H
+        assert pytest.approx(self.model.perplexity(trained), 1e-4) == perplexity
 
     def test_entropy_perplexity_unseen(self):
         # In MLE, even one unseen ngram should make entropy and perplexity infinite
         untrained = [("<s>", "a"), ("a", "c"), ("c", "d"), ("d", "</s>")]
 
-        self.assertTrue(math.isinf(self.model.entropy(untrained)))
-        self.assertTrue(math.isinf(self.model.perplexity(untrained)))
+        assert math.isinf(self.model.entropy(untrained))
+        assert math.isinf(self.model.perplexity(untrained))
 
     def test_entropy_perplexity_unigrams(self):
         # word = score, log score
@@ -151,11 +143,11 @@ class MleBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
 
         text = [("<s>",), ("a",), ("c",), ("-",), ("d",), ("c",), ("</s>",)]
 
-        self.assertAlmostEqual(H, self.model.entropy(text), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+        assert pytest.approx(self.model.entropy(text), 1e-4) == H
+        assert pytest.approx(self.model.perplexity(text), 1e-4) == perplexity
 
 
-class MleTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class TestMleTrigram(metaclass=ParametrizedTests):
     """MLE trigram model tests"""
 
     score_tests = [
@@ -173,13 +165,14 @@ class MleTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         ("y", None, 3.0 / 18),
     ]
 
-    def setUp(self):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = MLE(3, vocabulary=vocab)
         self.model.fit(training_text)
 
 
-class LidstoneBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class TestLidstoneBigram(metaclass=ParametrizedTests):
     """Unit tests for Lidstone class"""
 
     score_tests = [
@@ -204,13 +197,14 @@ class LidstoneBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         ("y", None, 3.1 / 14.8),
     ]
 
-    def setUp(self):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(2)
         self.model = Lidstone(0.1, 2, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_gamma(self):
-        self.assertEqual(0.1, self.model.gamma)
+        assert 0.1 == self.model.gamma
 
     def test_entropy_perplexity(self):
         text = [
@@ -233,11 +227,11 @@ class LidstoneBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         # - AVG logscore: 4.0917
         H = 4.0917
         perplexity = 17.0504
-        self.assertAlmostEqual(H, self.model.entropy(text), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+        assert pytest.approx(self.model.entropy(text), 1e-4) == H
+        assert pytest.approx(self.model.perplexity(text), 1e-4) == perplexity
 
 
-class LidstoneTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class TestLidstoneTrigram(metaclass=ParametrizedTests):
     score_tests = [
         # Logic behind this is the same as for bigram model
         ("d", ["c"], 1.1 / 1.8),
@@ -248,13 +242,14 @@ class LidstoneTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         ("e", ["b", "c"], 0.1 / 1.8),
     ]
 
-    def setUp(self):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = Lidstone(0.1, 3, vocabulary=vocab)
         self.model.fit(training_text)
 
 
-class LaplaceBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
+class TestLaplaceBigram(metaclass=ParametrizedTests):
     """Unit tests for Laplace class"""
 
     score_tests = [
@@ -280,14 +275,15 @@ class LaplaceBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         ("y", None, 4.0 / 22),
     ]
 
-    def setUp(self):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(2)
         self.model = Laplace(2, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_gamma(self):
         # Make sure the gamma is set to 1
-        self.assertEqual(1, self.model.gamma)
+        assert 1 == self.model.gamma
 
     def test_entropy_perplexity(self):
         text = [
@@ -310,43 +306,49 @@ class LaplaceBigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
         # - AVG logscores: 3.1275
         H = 3.1275
         perplexity = 8.7393
-        self.assertAlmostEqual(H, self.model.entropy(text), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+        assert pytest.approx(self.model.entropy(text), 1e-4) == H
+        assert pytest.approx(self.model.perplexity(text), 1e-4) == perplexity
 
 
-class WittenBellInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
-    def setUp(self):
+class TestWittenBellInterpolatedTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = WittenBellInterpolated(3, vocabulary=vocab)
         self.model.fit(training_text)
 
     score_tests = [
-        # For unigram scores by default revert to MLE
+        # For unigram scores by default revert to regular MLE
         # Total unigrams: 18
+        # Vocab Size = 7
         # count('c'): 1
         ("c", None, 1.0 / 18),
         # in vocabulary but unseen
         # count("z") = 0
-        ("z", None, 0.0 / 18),
+        ("z", None, 0 / 18),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
         ("y", None, 3.0 / 18),
-        # gamma(['b']) = 0.1111
+        # 2 words follow b and b occured a total of 2 times
+        # gamma(['b']) = 2/(2+2) = 0.5
         # mle.score('c', ['b']) = 0.5
-        # (1 - gamma) * mle + gamma * mle('c') ~= 0.45 + .3 / 18
-        ("c", ["b"], (1 - 0.1111) * 0.5 + 0.1111 * 1 / 18),
+        # mle('c') = 1/18 = 0.055
+        # (1 - gamma) * mle + gamma * mle('c') ~= 0.27 + 0.055
+        ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * 1 / 18),
         # building on that, let's try 'a b c' as the trigram
-        # gamma(['a', 'b']) = 0.0667
+        # 1 word follows 'a b' and 'a b' occured 1 time
+        # gamma(['a', 'b']) = 1/(1+1) = 0.5
         # mle("c", ["a", "b"]) = 1
-        ("c", ["a", "b"], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
     ]
 
 
-class KneserNeyInterpolatedTrigramTests(unittest.TestCase, metaclass=ParametrizeTestsMeta):
-    def setUp(self):
+class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = KneserNeyInterpolated(3, vocabulary=vocab)
         self.model.fit(training_text)
@@ -376,58 +378,58 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase, metaclass=Parametrize
     ]
 
 
-class NgramModelTextGenerationTests(unittest.TestCase):
+class TestNgramModelTextGeneration:
     """Using MLE model, generate some text."""
 
-    def setUp(self):
+    @classmethod
+    def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = MLE(3, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_generate_one_no_context(self):
-        self.assertEqual(self.model.generate(random_seed=3), "<UNK>")
+        assert self.model.generate(random_seed=3) == "<UNK>"
 
     def test_generate_one_limiting_context(self):
         # We don't need random_seed for contexts with only one continuation
-        self.assertEqual(self.model.generate(text_seed=["c"]), "d")
-        self.assertEqual(self.model.generate(text_seed=["b", "c"]), "d")
-        self.assertEqual(self.model.generate(text_seed=["a", "c"]), "d")
+        assert self.model.generate(text_seed=["c"]) == "d"
+        assert self.model.generate(text_seed=["b", "c"]) == "d"
+        assert self.model.generate(text_seed=["a", "c"]) == "d"
 
     def test_generate_one_varied_context(self):
         # When context doesn't limit our options enough, seed the random choice
-        self.assertEqual(
-            self.model.generate(text_seed=("a", "<s>"), random_seed=2), "a"
-        )
+        assert self.model.generate(text_seed=("a", "<s>"), random_seed=2) == "a"
 
     def test_generate_cycle(self):
         # Add a cycle to the model: bd -> b, db -> d
-        more_training_text = [list(padded_everygrams(self.model.order, list("bdbdbd")))]
+        more_training_text = [padded_everygrams(self.model.order, list("bdbdbd"))]
+
         self.model.fit(more_training_text)
         # Test that we can escape the cycle
-        self.assertEqual(
-            self.model.generate(7, text_seed=("b", "d"), random_seed=5),
-            ["b", "d", "b", "d", "b", "d", "</s>"],
+        assert (
+            self.model.generate(7, text_seed=("b", "d"), random_seed=5)
+            == ["b", "d", "b", "d", "b", "d", "</s>"]
         )
 
     def test_generate_with_text_seed(self):
-        self.assertEqual(
-            self.model.generate(5, text_seed=("<s>", "e"), random_seed=3),
-            ["<UNK>", "a", "d", "b", "<UNK>"],
+        assert (
+            self.model.generate(5, text_seed=("<s>", "e"), random_seed=3)
+            == ["<UNK>", "a", "d", "b", "<UNK>"]
         )
 
     def test_generate_oov_text_seed(self):
-        self.assertEqual(
-            self.model.generate(text_seed=("aliens",), random_seed=3),
-            self.model.generate(text_seed=("<UNK>",), random_seed=3),
+        assert (
+            self.model.generate(text_seed=("aliens",), random_seed=3)
+            == self.model.generate(text_seed=("<UNK>",), random_seed=3)
         )
 
     def test_generate_None_text_seed(self):
         # should crash with type error when we try to look it up in vocabulary
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             self.model.generate(text_seed=(None,))
 
         # This will work
-        self.assertEqual(
-            self.model.generate(text_seed=None, random_seed=3),
-            self.model.generate(random_seed=3),
+        assert (
+            self.model.generate(text_seed=None, random_seed=3)
+            == self.model.generate(random_seed=3)
         )

@@ -38,7 +38,9 @@ Some test strings.
     >>> s10 = "There were 300,000, but that wasn't enough."
     >>> word_tokenize(s10)
     ['There', 'were', '300,000', ',', 'but', 'that', 'was', "n't", 'enough', '.']
-
+    >>> s11 = "It's more'n enough."
+    >>> word_tokenize(s11)
+    ['It', "'s", 'more', "'n", 'enough', '.']
 
 Testing improvement made to the TreebankWordTokenizer
 
@@ -50,6 +52,57 @@ Testing improvement made to the TreebankWordTokenizer
     >>> expected = ['The', 'unicode', '201C', 'and', '201D', '\u201c', 'LEFT', '(', 'RIGHT', ')', 'DOUBLE', 'QUOTATION', 'MARK', '\u201d', 'is', 'also', 'OPEN_PUNCT', 'and', 'CLOSE_PUNCT', '.']
     >>> word_tokenize(sx2) == expected
     True
+
+
+Testing treebank's detokenizer
+
+    >>> from nltk.tokenize.treebank import TreebankWordDetokenizer
+    >>> detokenizer = TreebankWordDetokenizer()
+    >>> s = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88.'
+    >>> s = "\"We beat some pretty good teams to get here,\" Slocum said."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    '"We beat some pretty good teams to get here," Slocum said.'
+    >>> s = "Well, we couldn't have this predictable, cliche-ridden, \"Touched by an Angel\" (a show creator John Masius worked on) wanna-be if she didn't."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'Well, we couldn\'t have this predictable, cliche-ridden, "Touched by an Angel" (a show creator John Masius worked on) wanna-be if she didn\'t.'
+    >>> s = "I cannot cannot work under these conditions!"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'I cannot cannot work under these conditions!'
+    >>> s = "The company spent $30,000,000 last year."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'The company spent $30,000,000 last year.'
+    >>> s = "The company spent 40.75% of its income last year."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'The company spent 40.75% of its income last year.'
+    >>> s = "He arrived at 3:00 pm."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'He arrived at 3:00 pm.'
+    >>> s = "I bought these items: books, pencils, and pens."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'I bought these items: books, pencils, and pens.'
+    >>> s = "Though there were 150, 100 of them were old."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'Though there were 150, 100 of them were old.'
+    >>> s = "There were 300,000, but that wasn't enough."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    "There were 300,000, but that wasn't enough."
+    >>> s = 'How "are" you?'
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'How "are" you?'
+    >>> s = "Hello (world)"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'Hello (world)'
+    >>> s = '<A sentence> with (many) [kinds] of {parentheses}. "Sometimes it\'s inside (quotes)". ("Sometimes the otherway around").'
+    >>> detokenizer.detokenize(word_tokenize(s))
+    '<A sentence> with (many) [kinds] of {parentheses}. "Sometimes it\'s inside (quotes)". ("Sometimes the otherway around").'
+    >>> s = "Sentence ending with (parentheses)"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'Sentence ending with (parentheses)'
+    >>> s = "(Sentence) starting with parentheses."
+    >>> detokenizer.detokenize(word_tokenize(s))
+    '(Sentence) starting with parentheses.'
 
 
 Sentence tokenization in word_tokenize:

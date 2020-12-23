@@ -49,16 +49,16 @@ class ToktokTokenizer(TokenizerI):
     NON_BREAKING = re.compile(u"\u00A0"), " "
 
     # Pad some funky punctuation.
-    FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
+    FUNKY_PUNCT_1 = re.compile(r'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
     # Pad more funky punctuation.
-    FUNKY_PUNCT_2 = re.compile(u"([({\[“‘„‚«‹「『])"), r" \1 "
+    FUNKY_PUNCT_2 = re.compile(r"([({\[“‘„‚«‹「『])"), r" \1 "
     # Pad En dash and em dash
     EN_EM_DASHES = re.compile(u"([–—])"), r" \1 "
 
     # Replace problematic character with numeric character reference.
     AMPERCENT = re.compile("& "), "&amp; "
     TAB = re.compile("\t"), " &#9; "
-    PIPE = re.compile("\|"), " &#124; "
+    PIPE = re.compile(r"\|"), " &#124; "
 
     # Pad numbers with commas to keep them from further tokenization.
     COMMA_IN_NUM = re.compile(r"(?<!,)([,،])(?![,\d])"), r" \1 "

@@ -12,7 +12,7 @@ try:
 except ImportError:
     import warnings
 
-    warnings.warn("nltk.draw package not loaded " "(please install Tkinter library).")
+    warnings.warn("nltk.draw package not loaded (please install Tkinter library).")
 else:
     from nltk.draw.cfg import ProductionList, CFGEditor, CFGDemo
     from nltk.draw.tree import (
@@ -25,9 +25,3 @@ else:
     from nltk.draw.table import Table
 
 from nltk.draw.dispersion import dispersion_plot
-
-# skip doctests from this package
-def setup_module(module):
-    from nose import SkipTest
-
-    raise SkipTest("nltk.draw examples are not doctests")

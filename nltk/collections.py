@@ -305,7 +305,7 @@ class LazyConcatenation(AbstractLazySequence):
 
     def __len__(self):
         if len(self._offsets) <= len(self._list):
-            for tok in self.iterate_from(self._offsets[-1]):
+            for _ in self.iterate_from(self._offsets[-1]):
                 pass
         return self._offsets[-1]
 
@@ -327,7 +327,7 @@ class LazyConcatenation(AbstractLazySequence):
             if sublist_index == (len(self._offsets) - 1):
                 assert (
                     index + len(sublist) >= self._offsets[-1]
-                ), "offests not monotonic increasing!"
+                ), "offsets not monotonic increasing!"
                 self._offsets.append(index + len(sublist))
             else:
                 assert self._offsets[sublist_index + 1] == index + len(
@@ -580,7 +580,7 @@ class LazyIteratorList(AbstractLazySequence):
     def __len__(self):
         if self._len:
             return self._len
-        for x in self.iterate_from(len(self._cache)):
+        for _ in self.iterate_from(len(self._cache)):
             pass
         self._len = len(self._cache)
         return self._len
@@ -594,11 +594,13 @@ class LazyIteratorList(AbstractLazySequence):
         while i < len(self._cache):
             yield self._cache[i]
             i += 1
-        while True:
-            v = next(self._it)
-            self._cache.append(v)
-            yield v
-            i += 1
+        try:
+            while True:
+                v = next(self._it)
+                self._cache.append(v)
+                yield v
+        except StopIteration:
+            pass
 
     def __add__(self, other):
         """Return a list concatenating self with other."""

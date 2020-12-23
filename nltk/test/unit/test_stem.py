@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import unittest
 from contextlib import closing
 
@@ -143,3 +142,16 @@ class PorterTest(unittest.TestCase):
         Ensures that 'oed' can be stemmed without throwing an error.
         """
         assert PorterStemmer().stem('oed') == 'o'
+
+
+    def test_lowercase_option(self):
+        """Test for improvement on https://github.com/nltk/nltk/issues/2507
+
+        Ensures that stems are lowercased when `to_lowercase=True`
+        """
+        porter = PorterStemmer()
+        assert porter.stem('On') == 'on'
+        assert porter.stem('I') == 'i'
+        assert porter.stem('I', to_lowercase=False) == 'I'
+        assert porter.stem('Github') == 'github'
+        assert porter.stem('Github', to_lowercase=False) == 'Github'

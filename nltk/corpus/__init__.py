@@ -113,19 +113,19 @@ conll2000 = LazyCorpusLoader(
 conll2002 = LazyCorpusLoader(
     "conll2002",
     ConllChunkCorpusReader,
-    ".*\.(test|train).*",
+    r".*\.(test|train).*",
     ("LOC", "PER", "ORG", "MISC"),
     encoding="utf-8",
 )
 conll2007 = LazyCorpusLoader(
     "conll2007",
     DependencyCorpusReader,
-    ".*\.(test|train).*",
+    r".*\.(test|train).*",
     encoding=[("eus", "ISO-8859-2"), ("esp", "utf8")],
 )
-crubadan = LazyCorpusLoader("crubadan", CrubadanCorpusReader, ".*\.txt")
+crubadan = LazyCorpusLoader("crubadan", CrubadanCorpusReader, r".*\.txt")
 dependency_treebank = LazyCorpusLoader(
-    "dependency_treebank", DependencyCorpusReader, ".*\.dp", encoding="ascii"
+    "dependency_treebank", DependencyCorpusReader, r".*\.dp", encoding="ascii"
 )
 floresta = LazyCorpusLoader(
     "floresta",
@@ -308,7 +308,7 @@ swadesh207 = LazyCorpusLoader(
 switchboard = LazyCorpusLoader("switchboard", SwitchboardCorpusReader, tagset="wsj")
 timit = LazyCorpusLoader("timit", TimitCorpusReader)
 timit_tagged = LazyCorpusLoader(
-    "timit", TimitTaggedCorpusReader, ".+\.tags", tagset="wsj", encoding="ascii"
+    "timit", TimitTaggedCorpusReader, r".+\.tags", tagset="wsj", encoding="ascii"
 )
 toolbox = LazyCorpusLoader(
     "toolbox", ToolboxCorpusReader, r"(?!.*(README|\.)).*\.(dic|txt)"
@@ -332,7 +332,7 @@ treebank_chunk = LazyCorpusLoader(
 treebank_raw = LazyCorpusLoader(
     "treebank/raw", PlaintextCorpusReader, r"wsj_.*", encoding="ISO-8859-2"
 )
-twitter_samples = LazyCorpusLoader("twitter_samples", TwitterCorpusReader, ".*\.json")
+twitter_samples = LazyCorpusLoader("twitter_samples", TwitterCorpusReader, r".*\.json")
 udhr = LazyCorpusLoader("udhr", UdhrCorpusReader)
 udhr2 = LazyCorpusLoader("udhr2", PlaintextCorpusReader, r".*\.txt", encoding="utf8")
 universal_treebanks = LazyCorpusLoader(
@@ -361,7 +361,7 @@ wordnet = LazyCorpusLoader(
     WordNetCorpusReader,
     LazyCorpusLoader("omw", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
-wordnet_ic = LazyCorpusLoader("wordnet_ic", WordNetICCorpusReader, ".*\.dat")
+wordnet_ic = LazyCorpusLoader("wordnet_ic", WordNetICCorpusReader, r".*\.dat")
 words = LazyCorpusLoader(
     "words", WordListCorpusReader, r"(?!README|\.).*", encoding="ascii"
 )
@@ -371,7 +371,7 @@ propbank = LazyCorpusLoader(
     "propbank",
     PropbankCorpusReader,
     "prop.txt",
-    "frames/.*\.xml",
+    r"frames/.*\.xml",
     "verbs.txt",
     lambda filename: re.sub(r"^wsj/\d\d/", "", filename),
     treebank,
@@ -380,7 +380,7 @@ nombank = LazyCorpusLoader(
     "nombank.1.0",
     NombankCorpusReader,
     "nombank.1.0",
-    "frames/.*\.xml",
+    r"frames/.*\.xml",
     "nombank.1.0.words",
     lambda filename: re.sub(r"^wsj/\d\d/", "", filename),
     treebank,
@@ -389,7 +389,7 @@ propbank_ptb = LazyCorpusLoader(
     "propbank",
     PropbankCorpusReader,
     "prop.txt",
-    "frames/.*\.xml",
+    r"frames/.*\.xml",
     "verbs.txt",
     lambda filename: filename.upper(),
     ptb,
@@ -398,7 +398,7 @@ nombank_ptb = LazyCorpusLoader(
     "nombank.1.0",
     NombankCorpusReader,
     "nombank.1.0",
-    "frames/.*\.xml",
+    r"frames/.*\.xml",
     "nombank.1.0.words",
     lambda filename: filename.upper(),
     ptb,
@@ -482,7 +482,7 @@ if __name__ == "__main__":
     # demo()
     pass
 
-# ** this is for nose **
+# ** this is for unit testing **
 # unload all corpus after tests
 def teardown_module(module=None):
     import nltk.corpus
