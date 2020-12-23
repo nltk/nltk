@@ -20,7 +20,7 @@ class MLE(LanguageModel):
         """Returns the MLE score for a word given a context.
 
         Args:
-        - word is expcected to be a string
+        - word is expected to be a string
         - context is expected to be something reasonably convertible to a tuple
         """
         return self.context_counts(context).freq(word)

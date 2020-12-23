@@ -5,7 +5,6 @@ Unit tests for Senna
 
 from os import environ, path, sep
 
-import logging
 import unittest
 
 from nltk.classify import Senna

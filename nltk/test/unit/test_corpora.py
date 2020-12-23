@@ -19,11 +19,7 @@ import pytest
 class TestUdhr(unittest.TestCase):
     def test_words(self):
         for name in udhr.fileids():
-            try:
-                words = list(udhr.words(name))
-            except AssertionError:
-                print(name)
-                raise
+            words = list(udhr.words(name))
             self.assertTrue(words)
 
     def test_raw_unicode(self):

@@ -3,8 +3,6 @@
 Tests GDFA alignments
 """
 
-import functools
-import io
 import unittest
 
 from nltk.translate.gdfa import grow_diag_final_and

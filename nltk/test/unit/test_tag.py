@@ -22,8 +22,4 @@ def test_basic():
 
 def setup_module(module):
     import pytest
-
-    try:
-        import numpy
-    except ImportError as e:
-        pytest.skip("numpy is required for nltk.test.test_tag")
+    pytest.importorskip("numpy")
