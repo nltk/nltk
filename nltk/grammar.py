@@ -770,7 +770,8 @@ class CFG(object):
         if flexible:
             return step2
         step3 = CFG.remove_unitary_rules(step2)
-        return step3
+        step4 = CFG(step3.start(),list(set(step3.productions())))
+        return step4
 
     @classmethod
     def remove_unitary_rules(cls, grammar):

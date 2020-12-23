@@ -263,6 +263,7 @@
 - Nicolas Darr <https://github.com/ndarr>
 - Hervé Nicol <https://github.com/hervenicol>
 - Alexandre H. T. Dias <https://github.com/alexandredias3d>
+- Daksh Shah <https://github.com/Daksh>
 - Jacob Weightman <https://github.com/jacobdweightman>
 - Bonifacio de Oliveira <https://github.com/Bonifacio2>
 - Armins Bagrats Stepanjans <https://github.com/ab-10>
