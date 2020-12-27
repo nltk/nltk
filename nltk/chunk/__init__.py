@@ -65,7 +65,7 @@ simpler types of rules:
 
     - ``ChunkRule`` chunks anything that matches a given regular
       expression.
-    - ``ChinkRule`` chinks anything that matches a given regular
+    - ``StripRule`` strips anything that matches a given regular
       expression.
     - ``UnChunkRule`` will un-chunk any chunk that matches a given
       regular expression.
