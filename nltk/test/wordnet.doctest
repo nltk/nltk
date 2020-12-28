@@ -678,6 +678,10 @@ by limiting the "depth" parameter to display a small number of levels:
       [Synset('sincere.a.01'), '...']],
      [Synset('tangible.a.01'), "Cycle(Synset('concrete.a.01'),0,...)"]]
 
+
+2.1 First solution: acyclic_tree()
+..................................
+
 On the other hand, the new acyclic_tree() function is able to also handle
 the intractable cases. The also_sees() acyclic tree of 'concrete.a.01' is
 several hundred lines long, so here is a simpler example, concerning a much
@@ -714,6 +718,49 @@ cycles are mentioned in the output, together with the level where they occur:
        "Cycle(Synset('unfree.a.02'),-4,...)"],
       [Synset('dependent.a.01'), "Cycle(Synset('unfree.a.02'),-4,...)"],
       "Cycle(Synset('restricted.a.01'),-3,...)"]]
+
+
+2.1 Better solution: mst()
+..........................
+
+A Minimum Spanning Tree (MST) spans all the nodes of a relation graph once,
+while guaranteeing that each node is reached through the shortest path possible.
+In unweighted relation graphs like WordNet, a MST can be computed very
+efficiently using Breadth-First Search (BFS). Like acyclic_tree(), the new
+"unweighted_minimum_cost_spanning_tree()" function (imported in the Wordnet
+module as "mst") handles untractable trees, as the example discussed above:
+"wn.synset('concrete.a.01').mst(lambda s:s.also_sees())".
+
+But, while the also_sees() acyclic_tree of 'bound.a.01' reaches 
+'classified.a.02' through four links, using depth-first search as seen above
+(bound.a.01 > unfree.a.02 > confined.a.02 > restricted.a.01 > classified.a.02),
+in the following MST, the path to 'classified.a.02' is the shortest possible,
+consisting only in three links (bound.a.01 > unfree.a.02 > restricted.a.01 > 
+classified.a.02):
+
+    >>> pprint(wn.synset('bound.a.01').mst(lambda s:s.also_sees()))
+    [Synset('bound.a.01'),
+     [Synset('unfree.a.02'),
+      [Synset('confined.a.02')],
+      [Synset('dependent.a.01')],
+      [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
+
+
+Here also, specifying the "cut_mark" parameter increases verbosity, so that the
+cycles are mentioned in the output, together with the level where they occur:
+
+    >>> pprint(wn.synset('bound.a.01').mst(lambda s:s.also_sees(),cut_mark='...'))
+    [Synset('bound.a.01'),
+     [Synset('unfree.a.02'),
+      "Cycle(Synset('bound.a.01'),2,...)",
+      [Synset('confined.a.02'),
+       "Cycle(Synset('restricted.a.01'),3,...)",
+       "Cycle(Synset('unfree.a.02'),3,...)"],
+      [Synset('dependent.a.01'), "Cycle(Synset('unfree.a.02'),3,...)"],
+      [Synset('restricted.a.01'),
+       [Synset('classified.a.02')],
+       "Cycle(Synset('confined.a.02'),3,...)",
+       "Cycle(Synset('unfree.a.02'),3,...)"]]]
 
 
 -------------

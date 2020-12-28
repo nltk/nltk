@@ -364,6 +364,68 @@ def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, t
     return out_tree
 
 
+def ms2tree(node, dic):
+    """Convert Minimum Spanning Tree dictionary 'dic' to nested list"""
+    if type(node)==str:
+        return node
+    else:
+        return [node] + [ms2tree(child, dic) for child in dic[node]]
+
+
+def unweighted_minimum_cost_spanning_tree(tree, children=iter, maxdepth=-1, cut_mark=None):
+    """
+    Output a Minimum Spanning Tree (MST) of an unweighted graph,
+    by traversing the nodes of a tree in breadth-first order,
+    discarding eventual cycles.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    Use maxdepth parameter to limit the depth, and cut_mark
+    to mention discarded cycles in the output.
+
+    >>> import nltk
+    >>> from nltk.util import unweighted_minimum_cost_spanning_tree as mst
+    >>> wn=nltk.corpus.wordnet
+    >>> from pprint import pprint
+    >>> pprint(mst(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    [Synset('bound.a.01'),
+     [Synset('unfree.a.02'),
+      [Synset('confined.a.02')],
+      [Synset('dependent.a.01')],
+      [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
+    """
+#   traversed is the set of traversed nodes
+    traversed = set()
+    queue = deque([(0, tree)])
+#   qset is the set of queued nodes
+    qset = {tree}
+    umcst = {} # mst dictionary
+    while queue:
+        depth, node = queue.popleft()
+        if node not in umcst.keys():
+#           Create a dictionary item for node, with an empty list of children:
+            umcst[node]=[]
+        if depth != maxdepth and node not in traversed:
+            traversed.add(node)
+            for child in children(node):
+                if child in qset: # queue nodes only once
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth+1), stacklevel=2)
+                    if cut_mark:
+#                       Mention this cycle in the output:
+                        umcst[node].append('Cycle({0},{1},{2})'.format(child, depth+1, cut_mark))
+                else:
+#                   Add child to the MST and the queue:
+                    umcst[node].append(child)
+                    queue.append((depth+1, child))
+                    qset.add(child)
+        elif cut_mark:
+#           Mention this cut in the output:
+            umcst[node].append(cut_mark)
+    return ms2tree(tree, umcst)
+
+
 ##########################################################################
 # Guess Character Encoding
 ##########################################################################
