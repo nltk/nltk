@@ -129,19 +129,14 @@ class LegalitySyllableTokenizer(TokenizerI):
                     syllable += char
                     current_onset += char_lower
                     onset = True
-                    continue
-
-                elif char_lower in self.vowels:
-                    if not onset:
-                        syllable += char
-                        current_onset += char_lower
-                        continue
-
-                syllables.append(syllable)
-                syllable = char
-                current_onset = ""
-                vowel = bool(char_lower in self.vowels)
-
+                elif char_lower in self.vowels and not onset:
+                    syllable += char
+                    current_onset += char_lower
+                else:
+                    syllables.append(syllable)
+                    syllable = char
+                    current_onset = ""
+                    vowel = bool(char_lower in self.vowels)
         syllables.append(syllable)
         syllables_ordered = [syllable[::-1] for syllable in syllables][::-1]
         return syllables_ordered

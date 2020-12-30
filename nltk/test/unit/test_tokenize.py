@@ -53,7 +53,7 @@ class TestTokenize:
         """
         from nltk.corpus import words
         test_word = "wonderful"
-        tokenizer = LegalitySyllableTokenizer(words)
+        tokenizer = LegalitySyllableTokenizer(words.words())
         tokens = tokenizer.tokenize(test_word)
         assert tokens == ['won', 'der', 'ful']
 
