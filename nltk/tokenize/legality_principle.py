@@ -17,10 +17,10 @@ in Daniel Kahn's 1976 dissertation, ``Syllable-based generalizations in English 
 Kahn further argues that there is a ``strong tendency to syllabify in such a way that
 initial clusters are of maximal length, consistent with the general constraints on
 word-initial consonant clusters.'' Consequently, in addition to being legal onsets,
-the longest legal onset is prefereable, deemed ``Onset Maximization''.
+the longest legal onset is preferable---``Onset Maximization''.
 
 The default implementation assumes an English vowel set, but the `vowels` attribute
-can be modified to IPA or any other alphabet's vowel set for the use-case.
+can be set to IPA or any other alphabet's vowel set for the use-case.
 Both a valid set of vowels as well as a text corpus of words in the language
 are necessary to determine legal onsets and subsequently syllabify words. 
 
@@ -39,6 +39,7 @@ References:
 - Jeremy Goslin and Ulrich Frauenfelder. 2001. A comparison of theoretical and human syllabification. Language and Speech, 44:409–436.
 - Susan Bartlett, et al. 2009. On the Syllabification of Phonemes.
   In HLT-NAACL. pp. 308-316.
+- Christopher Hench. 2017. Resonances in Middle High German: New Methodologies in Prosody. UC Berkeley.
 """
 
 from collections import Counter

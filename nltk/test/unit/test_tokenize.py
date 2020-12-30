@@ -53,9 +53,9 @@ class TestTokenize:
         """
         from nltk.corpus import words
         test_word = "wonderful"
-        tokenizer = LegalityTokenizer(words)
-        syllables = tokenizer.tokenize(test_word)
-        assert syllables == ['won', 'der', 'ful']
+        tokenizer = LegalitySyllableTokenizer(words)
+        tokens = tokenizer.tokenize(test_word)
+        assert tokens == ['won', 'der', 'ful']
 
     def test_stanford_segmenter_arabic(self):
         """
