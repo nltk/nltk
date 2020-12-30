@@ -168,8 +168,6 @@ class WordnNetDemo(unittest.TestCase):
         self.assertEqual(S('germany.n.01').in_region_domains()[23], S('trillion.n.02'))
         self.assertEqual(S('slang.n.02').in_usage_domains()[1], S('airhead.n.01'))
 
-
-
     def test_wordnet_similarities(self):
         # Path based similarities.
         self.assertAlmostEqual(S('cat.n.01').path_similarity(S('cat.n.01')), 1.0)
