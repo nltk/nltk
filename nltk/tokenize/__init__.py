@@ -90,6 +90,7 @@ from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 from nltk.tokenize.sonority_sequencing import SyllableTokenizer
+from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
 
 
 # Standard sentence tokenizer.
