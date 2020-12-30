@@ -843,7 +843,7 @@ class Synset(_WordNetObject):
             could be found. 1 is returned if a ``Synset`` is compared with
             itself.
         """
-
+        print("!!!!!!!!!!")
         distance = self.shortest_path_distance(
             other, simulate_root=simulate_root and self._needs_root()
         )
