@@ -727,7 +727,7 @@ A Minimum Spanning Tree (MST) spans all the nodes of a relation subgraph once,
 while guaranteeing that each node is reached through the shortest path possible.
 In unweighted relation graphs like WordNet, a MST can be computed very efficiently
 in linear time, using Breadth-First Search (BFS). Like acyclic_tree(), the new
-"unweighted_minimum_cost_spanning_tree()" function (imported in the Wordnet
+"unweighted_minimum_spanning_tree()" function (imported in the Wordnet
 module as "mst") handles intractable trees, such as the example discussed above:
 "wn.synset('concrete.a.01').mst(lambda s:s.also_sees())".
 
@@ -744,23 +744,6 @@ classified.a.02):
       [Synset('confined.a.02')],
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
-
-
-Here also, specifying the "cut_mark" parameter increases verbosity, so that the
-cycles are mentioned in the output, together with the level where they occur:
-
-    >>> pprint(wn.synset('bound.a.01').mst(lambda s:s.also_sees(),cut_mark='...'))
-    [Synset('bound.a.01'),
-     [Synset('unfree.a.02'),
-      "Cycle(Synset('bound.a.01'),2,...)",
-      [Synset('confined.a.02'),
-       "Cycle(Synset('restricted.a.01'),3,...)",
-       "Cycle(Synset('unfree.a.02'),3,...)"],
-      [Synset('dependent.a.01'), "Cycle(Synset('unfree.a.02'),3,...)"],
-      [Synset('restricted.a.01'),
-       [Synset('classified.a.02')],
-       "Cycle(Synset('confined.a.02'),3,...)",
-       "Cycle(Synset('unfree.a.02'),3,...)"]]]
 
 
 -------------

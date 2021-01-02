@@ -372,7 +372,7 @@ def ms2tree(node, dic):
         return [node] + [ms2tree(child, dic) for child in dic[node]]
 
 
-def unweighted_minimum_cost_spanning_tree(tree, children=iter, maxdepth=-1, cut_mark=None):
+def unweighted_minimum_spanning_tree(tree, children=iter):
     """
     Output a Minimum Spanning Tree (MST) of an unweighted graph,
     by traversing the nodes of a tree in breadth-first order,
@@ -381,9 +381,6 @@ def unweighted_minimum_cost_spanning_tree(tree, children=iter, maxdepth=-1, cut_
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
-
-    Use maxdepth parameter to limit the depth, and cut_mark
-    to mention discarded cycles in the output.
 
     >>> import nltk
     >>> from nltk.util import unweighted_minimum_cost_spanning_tree as mst
@@ -396,34 +393,21 @@ def unweighted_minimum_cost_spanning_tree(tree, children=iter, maxdepth=-1, cut_
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
     """
-#   traversed is the set of traversed nodes
-    traversed = set()
-    queue = deque([(0, tree)])
-#   qset is the set of queued nodes
-    qset = {tree}
-    umcst = {} # mst dictionary
+    traversed = set()             # Empty set of traversed nodes
+    queue = deque([tree])         # Initialize queue
+    agenda = {tree}               # Set of all nodes ever queued
+    mstdic = {}                   # Empty MST dictionary
     while queue:
-        depth, node = queue.popleft()
-        if node not in umcst.keys():
-#           Create a dictionary item for node, with an empty list of children:
-            umcst[node]=[]
-        if depth != maxdepth and node not in traversed:
+        node = queue.popleft()    # Node is not yet in the MST dictionary,
+        mstdic[node]=[]           # so add it with an empty list of children
+        if node not in traversed: # Avoid cycles
             traversed.add(node)
             for child in children(node):
-                if child in qset: # queue nodes only once
-                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth+1), stacklevel=2)
-                    if cut_mark:
-#                       Mention this cycle in the output:
-                        umcst[node].append('Cycle({0},{1},{2})'.format(child, depth+1, cut_mark))
-                else:
-#                   Add child to the MST and the queue:
-                    umcst[node].append(child)
-                    queue.append((depth+1, child))
-                    qset.add(child)
-        elif cut_mark:
-#           Mention this cut in the output:
-            umcst[node].append(cut_mark)
-    return ms2tree(tree, umcst)
+                if child not in agenda:            # Queue nodes only once
+                    mstdic[node].append(child)     # Add child to the MST
+                    queue.append(child)            # Add child to queue
+                    agenda.add(child)
+    return ms2tree(tree, mstdic)
 
 
 ##########################################################################

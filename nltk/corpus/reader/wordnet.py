@@ -587,7 +587,7 @@ class Synset(_WordNetObject):
 
     from nltk.util import acyclic_depth_first as acyclic_tree
 
-    from nltk.util import unweighted_minimum_cost_spanning_tree as mst
+    from nltk.util import unweighted_minimum_spanning_tree as mst
 
     def tree(self, rel, depth=-1, cut_mark=None):
         """
