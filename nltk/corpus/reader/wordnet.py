@@ -845,7 +845,7 @@ class Synset(_WordNetObject):
         """
 
         distance = self.shortest_path_distance(
-            other, simulate_root=simulate_root and self._needs_root()
+            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root()) 
         )
         if distance is None or distance < 0:
             return None
@@ -934,13 +934,15 @@ class Synset(_WordNetObject):
             the two senses can be found, None is returned.
 
         """
+        need_root = self._needs_root() or other._needs_root()
 
-        need_root = self._needs_root()
         # Note that to preserve behavior from NLTK2 we set use_min_depth=True
         # It is possible that more accurate results could be obtained by
         # removing this setting and it should be tested later on
         subsumers = self.lowest_common_hypernyms(
-            other, simulate_root=simulate_root and need_root, use_min_depth=True
+            other,
+            simulate_root=simulate_root and need_root,
+            use_min_depth=True
         )
 
         # If no LCS was found return None
