@@ -364,9 +364,10 @@ def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, t
     return out_tree
 
 
-def ms2tree(node, dic):
-    """Convert Minimum Spanning Tree dictionary 'dic' to nested list"""
-    return [node] + [ms2tree(child, dic) for child in dic[node]]
+def dic2tree(node, dic):
+    """Convert dictionary 'dic' to tree suitable for pprint,
+    starting at root 'node', with subtrees as nested lists"""
+    return [node] + [dic2tree(child, dic) for child in dic[node]]
 
 
 def unweighted_minimum_spanning_tree(tree, children=iter):
@@ -404,7 +405,7 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
                     mstdic[node].append(child)     # Add child to the MST
                     queue.append(child)            # Add child to queue
                     agenda.add(child)
-    return ms2tree(tree, mstdic)
+    return dic2tree(tree, mstdic)
 
 
 ##########################################################################
