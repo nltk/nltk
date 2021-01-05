@@ -456,7 +456,7 @@ class Synset(_WordNetObject):
             return False
         else:
             return True
-            
+
     def lemma_names(self, lang="eng"):
         """Return all the lemma_names associated with the synset"""
         if lang == "eng":
