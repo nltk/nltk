@@ -104,7 +104,7 @@ class IBMModel1(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
+    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None, stepSize=1):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model.
@@ -125,6 +125,18 @@ class IBMModel1(IBMModel):
             ``translation_table``.
             See ``IBMModel`` for the type and purpose of this table.
         :type probability_tables: dict[str]: object
+
+
+        :param stepSize: Optional. Use this to mix old probability table  
+            and newly calculated probability table.  Step size (eta_k) of 
+            the stepwise EM algorithm is described in Online EM for 
+            Unsupervised Models (Liang and Klein 2009).  Step size was 
+            choosen as (k+2)^-alpha where k is the step index and 
+            0.5 < alpha <=1 which guarantees convergence to a local 
+            optimum.  With such a choice, sentence_aligned_corpus can be
+            treated as a mini-batch.  Previous probability_tables must
+            also be supplied with each new mini-batch.
+        :type stepSize: float
         """
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
 
@@ -133,6 +145,8 @@ class IBMModel1(IBMModel):
         else:
             # Set user-defined probabilities
             self.translation_table = probability_tables["translation_table"]
+
+        self.stepSize = stepSize
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)

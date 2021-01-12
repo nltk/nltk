@@ -73,6 +73,7 @@ class IBMModel(object):
     def __init__(self, sentence_aligned_corpus):
         self.init_vocab(sentence_aligned_corpus)
         self.reset_probabilities()
+        self.stepSize = 1
 
     def reset_probabilities(self):
         self.translation_table = defaultdict(
@@ -347,7 +348,7 @@ class IBMModel(object):
         for t, src_words in counts.t_given_s.items():
             for s in src_words:
                 estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
-                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+                self.translation_table[t][s] = (self.stepSize) * max(estimate, IBMModel.MIN_PROB) + (1-self.stepSize) * self.translation_table[t][s]
 
     def maximize_fertility_probabilities(self, counts):
         for phi, src_words in counts.fertility.items():
