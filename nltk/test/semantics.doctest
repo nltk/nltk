@@ -5,6 +5,10 @@
 Semantics
 =========
 
+    >>> # Setup tests by setting the counter to 0
+    >>> from nltk.sem import logic
+    >>> logic._counter._value = 0
+
     >>> import nltk
     >>> from nltk.sem import Valuation, Model
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),

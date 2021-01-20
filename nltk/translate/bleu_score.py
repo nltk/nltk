@@ -541,8 +541,9 @@ class SmoothingFunction:
         In COLING 2004.
         """
         return [
-            Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False)
-            for p_i in p_n
+            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
+            if i != 0 else p_n[0]
+            for i in range(len(p_n))
         ]
 
     def method3(self, p_n, *args, **kwargs):

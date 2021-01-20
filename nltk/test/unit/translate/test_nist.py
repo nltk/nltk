@@ -7,7 +7,7 @@ import io
 import unittest
 
 from nltk.data import find
-from nltk.translate.nist_score import sentence_nist, corpus_nist
+from nltk.translate.nist_score import corpus_nist
 
 
 class TestNIST(unittest.TestCase):

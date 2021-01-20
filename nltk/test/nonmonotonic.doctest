@@ -5,6 +5,9 @@
 Nonmonotonic Reasoning
 ======================
 
+    >>> from nltk.test.nonmonotonic_fixt import setup_module
+    >>> setup_module()
+
     >>> from nltk import *
     >>> from nltk.inference.nonmonotonic import *
     >>> from nltk.sem import logic

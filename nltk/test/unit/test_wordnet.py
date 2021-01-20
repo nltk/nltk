@@ -3,18 +3,10 @@
 Unit tests for nltk.corpus.wordnet
 See also nltk/test/wordnet.doctest
 """
-
-
-import collections
-import os
 import unittest
 
-from nose import SkipTest
-
-from nltk.corpus.reader.wordnet import WordNetCorpusReader
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic as wnic
-from nltk.data import find as find_data
 
 
 wn.ensure_loaded()
@@ -180,12 +172,16 @@ class WordnNetDemo(unittest.TestCase):
         # Path based similarities.
         self.assertAlmostEqual(S('cat.n.01').path_similarity(S('cat.n.01')), 1.0)
         self.assertAlmostEqual(S('dog.n.01').path_similarity(S('cat.n.01')), 0.2)
+        self.assertAlmostEqual(S('car.n.01').path_similarity(S('automobile.v.01')),
+                               S('automobile.v.01').path_similarity(S('car.n.01')))
         self.assertAlmostEqual(
             S('dog.n.01').lch_similarity(S('cat.n.01')), 2.028, places=3
         )
         self.assertAlmostEqual(
             S('dog.n.01').wup_similarity(S('cat.n.01')), 0.8571, places=3
         )
+        self.assertAlmostEqual(S('car.n.01').wup_similarity(S('automobile.v.01')),
+                               S('automobile.v.01').wup_similarity(S('car.n.01')))
         # Information Content similarities.
         brown_ic = wnic.ic('ic-brown.dat')
         self.assertAlmostEqual(

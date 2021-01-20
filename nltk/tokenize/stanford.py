@@ -119,11 +119,11 @@ class StanfordTokenizer(TokenizerI):
 
 
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         StanfordTokenizer()
-    except LookupError as e:
-        raise SkipTest(
+    except LookupError:
+        pytest.skip(
             "doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"
-        ) from e
+        )

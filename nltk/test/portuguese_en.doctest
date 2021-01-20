@@ -18,6 +18,9 @@ Chapter 1 of the NLTK book contains many elementary programming examples, all
 with English texts.  In this section, we'll see some corresponding examples
 using Portuguese.  Please refer to the chapter for full discussion.  *Vamos!*
 
+    >>> from nltk.test.portuguese_en_fixt import setup_module
+    >>> setup_module()
+
     >>> from nltk.examples.pt import *
     *** Introductory Examples for the NLTK Book ***
     Loading ptext1, ... and psent1, ...
@@ -563,3 +566,9 @@ and print them in descending order of frequency:
     ter 249
     dois 231
 
+
+Teardown
+---------
+
+    >>> from nltk.corpus import teardown_module
+    >>> teardown_module()

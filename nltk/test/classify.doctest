@@ -5,6 +5,9 @@
  Classifiers
 =============
 
+    >>> from nltk.test.classify_fixt import setup_module
+    >>> setup_module()
+
 Classifiers label tokens with category labels (or *class labels*).
 Typically, labels are represented with strings (such as ``"health"``
 or ``"sports"``.  In NLTK, classifiers are defined using classes that

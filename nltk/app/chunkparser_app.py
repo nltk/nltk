@@ -160,7 +160,7 @@ class RegexpChunkApp(object):
             "<indent>\nChunk rule: creates new chunks from words matching "
             "regexp.</indent>\n\n"
             "<h1>}...regexp...{</h1>"
-            "<indent>\nChink rule: removes words matching regexp from existing "
+            "<indent>\nStrip rule: removes words matching regexp from existing "
             "chunks.</indent>\n\n"
             "<h1>...regexp1...}{...regexp2...</h1>"
             "<indent>\nSplit rule: splits chunks that match regexp1 followed by "
