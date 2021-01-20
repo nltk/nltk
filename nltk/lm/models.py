@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2020 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
+#         Manu Joseph <manujosephv@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Models"""
@@ -75,14 +76,25 @@ class InterpolatedLanguageModel(LanguageModel):
     def unmasked_score(self, word, context=None):
         if not context:
             # The base recursion case: no context, we only have a unigram.
+            if self.estimator._recursion_level is not None:
+                assert self.estimator._recursion_level == 0
+            # Resetting recursion counters and flags
+            self.estimator._is_top_recursion = True
+            self.estimator._recursion_level = None
             return self.estimator.unigram_score(word)
+        elif self.estimator._recursion_level is None:
+            self.estimator._recursion_level = len(context)
         if not self.counts[context]:
             # It can also happen that we have no data for this context.
             # In that case we defer to the lower-order ngram.
             # This is the same as setting alpha to 0 and gamma to 1.
-            return self.unmasked_score(word, context[1:])
-        alpha, gamma = self.estimator.alpha_gamma(word, context)
+            alpha, gamma = 0, 1
+        else:
+            alpha, gamma = self.estimator.alpha_gamma(word, context)
+        self.estimator._recursion_level += -1
+        self.estimator._is_top_recursion = False
         return alpha + gamma * self.unmasked_score(word, context[1:])
+
 
 
 class WittenBellInterpolated(InterpolatedLanguageModel):
@@ -95,5 +107,6 @@ class WittenBellInterpolated(InterpolatedLanguageModel):
 class KneserNeyInterpolated(InterpolatedLanguageModel):
     """Interpolated version of Kneser-Ney smoothing."""
 
-    def __init__(self, order, discount=0.1, **kwargs):
+    def __init__(self, order, discount=0.75, **kwargs):
+        assert (discount<=1) and (discount>=0), "Discount should be between 0 and 1 for Kneser-Ney probabilities to sum up to unity"
         super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)

@@ -35,6 +35,10 @@ class Smoothing(metaclass=ABCMeta):
         """
         self.vocab = vocabulary
         self.counts = counter
+        # Used for order-level discounting or weight factors
+        self._recursion_level = None
+        # Kneser-Ney uses different formula for highest order
+        self._is_top_recursion = True
 
     @abstractmethod
     def unigram_score(self, word):
