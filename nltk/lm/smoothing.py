@@ -12,10 +12,22 @@ Interpolation.
 """
 
 from nltk.lm.api import Smoothing
+from nltk import FreqDist, ConditionalFreqDist
 
+def _count_non_zero_vals(distribution):
+    if isinstance(distribution, FreqDist):
+        return sum(1.0 for c in distribution.values() if c > 0)
+    elif isinstance(distribution, ConditionalFreqDist):
+        return sum(
+            1.0 for c in distribution.keys() if sum(distribution[c].values()) > 0
+        )
+    else:
+        raise NotImplementedError(
+            "`distribution` should either be FreqDist or ConditionalFreqDist, but got {} instead.".format(
+                type(distribution)
+            )
+        )
 
-def _count_non_zero_vals(dictionary):
-    return sum(1.0 for c in dictionary.values() if c > 0)
 
 class WittenBell(Smoothing):
     """Witten-Bell smoothing."""
@@ -31,6 +43,30 @@ class WittenBell(Smoothing):
     def _gamma(self, context):
         n_plus = _count_non_zero_vals(self.counts[context])
         return n_plus / (n_plus + self.counts[context].N())
+
+    def unigram_score(self, word):
+        return self.counts.unigrams.freq(word)
+        # return (self.counts[word] + 1) / (self.counts[1].N() + len(self.counts[1]))
+
+
+class AbsoluteDiscounting(Smoothing):
+    """Absolute Discounting smoothing."""
+
+    def __init__(self, vocabulary, counter, discount=0.75, **kwargs):
+        super().__init__(vocabulary, counter, **kwargs)
+        self.discount = discount
+
+    def alpha_gamma(self, word, context):
+        alpha = (
+            max(self.counts[context][word] - self.discount, 0)
+            / self.counts[context].N()
+        )
+        gamma = self._gamma(context)
+        return alpha, gamma
+
+    def _gamma(self, context):
+        n_plus = _count_non_zero_vals(self.counts[context])
+        return (self.discount * n_plus) / self.counts[context].N()
 
     def unigram_score(self, word):
         return self.counts.unigrams.freq(word)
@@ -105,3 +141,28 @@ class KneserNey(Smoothing):
         continuation_count = len(set(continuation_keys))
         unique_continuation_count = len(set(unique_continuation_keys))
         return (continuation_count, unique_continuation_count)
+
+
+class SimpleLinear(Smoothing):
+    """Absolute Discounting smoothing."""
+
+    def __init__(self, vocabulary, counter, lambda_weights, **kwargs):
+        super().__init__(vocabulary, counter, **kwargs)
+        self.lambda_weights = lambda_weights
+
+    def alpha_gamma(self, word, context):
+        if self._is_top_recursion:
+            assert len(self.lambda_weights) == (
+                len(context) + 1
+            ), "Lambda Weights in the model is for a {}-gram model, instead got a {}-gram query".format(
+                len(self.lambda_weights), len(context) + 1
+            )
+        alpha = self.counts[context][word] / self.counts[context].N()
+        gamma = self._gamma(context)
+        return alpha*gamma, 1
+
+    def _gamma(self, context):
+        return self.lambda_weights[self._recursion_level]
+
+    def unigram_score(self, word):
+        return self.counts.unigrams.freq(word) * self.lambda_weights[self._recursion_level]
