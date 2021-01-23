@@ -8,7 +8,7 @@
 """Language Models"""
 
 from nltk.lm.api import LanguageModel, Smoothing
-from nltk.lm.smoothing import KneserNey, WittenBell, AbsoluteDiscounting, SimpleLinear
+from nltk.lm.smoothing import KneserNey, WittenBell, AbsoluteDiscounting
 
 
 class MLE(LanguageModel):
@@ -145,19 +145,3 @@ class KneserNeyInterpolated(InterpolatedLanguageModel):
     def __init__(self, order, discount=0.75, **kwargs):
         assert (discount<=1) and (discount>=0), "Discount should be between 0 and 1 for Kneser-Ney probabilities to sum up to unity"
         super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)
-
-
-class SimpleLinearInterpolation(InterpolatedLanguageModel):
-    """Simple Linear Interpolation smoothing."""
-
-    def __init__(self, order, lambda_weights, **kwargs):
-        assert isinstance(
-            lambda_weights, dict
-        ), "lambda_weights should be a dictionary with recursion level as key and weights as value"
-        assert (
-            len(lambda_weights) == order
-        ), "lambda should be list of length equal to order"
-        assert sum(lambda_weights.values()) == 1, "lambda weights should sum upto 1"
-        super().__init__(
-            SimpleLinear, order, params={"lambda_weights": lambda_weights}, **kwargs
-        )

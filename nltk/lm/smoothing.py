@@ -141,28 +141,3 @@ class KneserNey(Smoothing):
         continuation_count = len(set(continuation_keys))
         unique_continuation_count = len(set(unique_continuation_keys))
         return (continuation_count, unique_continuation_count)
-
-
-class SimpleLinear(Smoothing):
-    """Absolute Discounting smoothing."""
-
-    def __init__(self, vocabulary, counter, lambda_weights, **kwargs):
-        super().__init__(vocabulary, counter, **kwargs)
-        self.lambda_weights = lambda_weights
-
-    def alpha_gamma(self, word, context):
-        if self._is_top_recursion:
-            assert len(self.lambda_weights) == (
-                len(context) + 1
-            ), "Lambda Weights in the model is for a {}-gram model, instead got a {}-gram query".format(
-                len(self.lambda_weights), len(context) + 1
-            )
-        alpha = self.counts[context][word] / self.counts[context].N()
-        gamma = self._gamma(context)
-        return alpha*gamma, 1
-
-    def _gamma(self, context):
-        return self.lambda_weights[self._recursion_level]
-
-    def unigram_score(self, word):
-        return self.counts.unigrams.freq(word) * self.lambda_weights[self._recursion_level]
