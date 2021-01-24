@@ -357,35 +357,35 @@ class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
         # For unigram scores revert to uniform
         # Vocab size: 8
         # count('c'): 1
-        # # of bigrams ending with c = 2
-        # total # of unique bigrams = 21
-        ("c", None, 2.0 / 21),
+        # # of bigrams ending with c = 1
+        # total # of unique bigrams = 14
+        ("c", None, 1.0 / 14),
         # in vocabulary but unseen
         # # of bigrams ending with z = 0
-        ("z", None, 0.0/21),
+        ("z", None, 0.0 / 14),
         # out of vocabulary should use "UNK" score
-        # # of bigrams ending with <UNK> = 5
-        ("y", None, 5 / 21),
-        # alpha = max(count('bc') - discount,0)/# of bigrams starting 'b' 
-        # = (1 - 0.75)/4 = 0.0625
-        # gamma(['b']) = (discount * number of unique continuations after ['b'])/ # of bigrams starting 'b' 
-        # = (0.75 * 4)/4 = 0.75
+        # # of bigrams ending with <UNK> = 3
+        ("y", None, 3 / 14),
+        # alpha = max(count('bc') - discount,0)/# of bigrams starting 'b'
+        # = (1 - 0.75)/2 = 0.125
+        # gamma(['b']) = (discount * number of unique continuations after ['b'])/ # of bigrams starting 'b'
+        # = (0.75 * 2)/2 = 0.75
         # the final should be: (alpha + gamma * unigram_score("c"))
-        ("c", ["b"], (0.0625 + 0.75 * (2 / 21))),
+        ("c", ["b"], (0.125 + 0.75 * (1 / 14))),
         # building on that, let's try 'a b c' as the trigram
-        # alpha = max(count('abc') - discount,0)/# of trigrams starting "ab" 
-        # = max(1 - 0.1, 0)/3 = 0.08333
+        # alpha = max(count('abc') - discount,0)/# of trigrams starting "ab"
+        # = max(1 - 0.1, 0)/1 = 0.25
         # gamma(['a', 'b']) = (discount * number of unique continuations after ['ab'])/ # of bigrams starting 'ab'
-        # = 0.75 * 3/3
+        # = 0.75 * 1/1
         # final: alpha + gamma*(P(c|b))
-        # alpha of P(c|b) = max(# of trigrams ending in "bc" - discount,0)/# unique trigram continuations with 'b' in the middle 
-        # = (1-0.75)/4 =0.0625
-        # gamma of P(c|b) = (discount * # of unique continuations after 'b')/ # of unique bigram continuations with 'b' in the middle 
-        # = 0.75 * 4/4
-        ("c", ["a", "b"], 0.08333 + 0.75*(0.0625 + 0.75 * (2 / 21))),
+        # alpha of P(c|b) = max(# of trigrams ending in "bc" - discount,0)/# unique trigram continuations with 'b' in the middle
+        # = (1-0.75)/2 =0.125
+        # gamma of P(c|b) = (discount * # of unique continuations after 'b')/ # of unique bigram continuations with 'b' in the middle
+        # = 0.75 * 2/2
+        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (1 / 14))),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], (0.0625 + 0.75 * (2 / 21))),
+        ("c", ["z", "b"], (0.125 + 0.75 * (1 / 14))),
     ]
 
 
