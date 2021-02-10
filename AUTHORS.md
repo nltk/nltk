@@ -277,6 +277,7 @@
 - Danny Sepler <https://github.com/dannysepler>
 - Akshita Bhagia <https://github.com/AkshitaB>
 - Pratap Yadav <https://github.com/prtpydv>
+- Hiroki Teranishi <https://github.com/chantera>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
