@@ -382,7 +382,7 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
     and returning an iterator of the node's children.
 
     >>> import nltk
-    >>> from nltk.util import unweighted_minimum_cost_spanning_tree as mst
+    >>> from nltk.util import unweighted_minimum_spanning_tree as mst
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
     >>> pprint(mst(wn.synset('bound.a.01'), lambda s:s.also_sees()))
