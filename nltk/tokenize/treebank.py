@@ -264,8 +264,12 @@ class TreebankWordDetokenizer(TokenizerI):
     ENDING_QUOTES = [
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
-        (re.compile(r"(\S)(\'\')"), r"\1\2 "),
-        (re.compile(r" '' "), '"'),
+        (re.compile(r"(\S)\s(\'\')"), r"\1\2"),
+        (
+            re.compile(r"(\'\')\s([.,:)\]>};%])"),
+            r"\1\2"
+        ),  # Quotes followed by no-left-padded punctuations.
+        (re.compile(r"''"), '"'),
     ]
 
     # Handles double dashes
@@ -283,8 +287,8 @@ class TreebankWordDetokenizer(TokenizerI):
 
     # Undo padding on parentheses.
     PARENS_BRACKETS = [
-        (re.compile(r"\s([\[\(\{\<])\s"), r" \g<1>"),
-        (re.compile(r"\s([\]\)\}\>])\s"), r"\g<1> "),
+        (re.compile(r"([\[\(\{\<])\s"), r"\g<1>"),
+        (re.compile(r"\s([\]\)\}\>])"), r"\g<1>"),
         (re.compile(r"([\]\)\}\>])\s([:;,.])"), r"\1\2"),
     ]
 
@@ -298,23 +302,22 @@ class TreebankWordDetokenizer(TokenizerI):
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
         # pad, so we split this up.
-        (re.compile(r"\s([#$])\s"), r" \g<1>"),  # Left pad.
-        (re.compile(r"\s([;%])\s"), r"\g<1> "),  # Right pad.
-        (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
+        (re.compile(r"([#$])\s"), r"\g<1>"),  # Left pad.
+        (re.compile(r"\s([;%])"), r"\g<1>"),  # Right pad.
+        # (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
         (re.compile(r"\s\.\.\.\s"), r"..."),
-        (re.compile(r"\s([:,])\s$"), r"\1"),
+        # (re.compile(r"\s([:,])\s$"), r"\1"),  # .strip() takes care of it.
         (
-            re.compile(r"\s([:,])\s([^\d])"),
-            r"\1 \2",
-        )  # Keep right pad after comma/colon before non-digits.
-        # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
+            re.compile(r"\s([:,])"),
+            r"\1",
+        )  # Just remove left padding. Punctuation in numbers won't be padded.
     ]
 
     # starting quotes
     STARTING_QUOTES = [
-        (re.compile(r"([ (\[{<])\s``"), r'\1"'),
-        (re.compile(r"\s(``)\s"), r"\1"),
-        (re.compile(r"^``"), r"\""),
+        (re.compile(r"([ (\[{<])\s``"), r'\1``'),
+        (re.compile(r"(``)\s"), r"\1"),
+        (re.compile(r"``"), r'"'),
     ]
 
     def tokenize(self, tokens, convert_parentheses=False):

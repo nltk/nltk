@@ -146,14 +146,6 @@ def py25():
     return version_info[0] == 2 and version_info[1] == 5
 
 
-def py26():
-    return version_info[0] == 2 and version_info[1] == 6
-
-
-def py27():
-    return version_info[0] == 2 and version_info[1] == 7
-
-
 ##########################################################################
 # Indexing
 ##########################################################################
@@ -212,7 +204,7 @@ def filestring(f):
 
 def breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order.
-    (No need to check for cycles.)
+    (No check for cycles.)
     The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
@@ -228,6 +220,148 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 queue.extend((c, depth + 1) for c in children(node))
             except TypeError:
                 pass
+
+
+##########################################################################
+# Breadth-First / Depth-first Searches with Cycle Detection
+##########################################################################
+
+import warnings
+
+def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
+    """Traverse the nodes of a tree in breadth-first order,
+    discarding eventual cycles.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+    """
+    traversed = set()
+    queue = deque([(tree, 0)])
+    while queue:
+        node, depth = queue.popleft()
+        yield node
+        traversed.add(node)
+        if depth != maxdepth:
+            try:
+                for child in children(node):
+                    if child not in traversed:
+                        queue.append((child, depth + 1))
+                    else:
+                        warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+            except TypeError:
+                pass
+
+
+def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
+    """Traverse the nodes of a tree in depth-first order,
+    discarding eventual cycles within any branch,
+    adding cut_mark (when specified) if cycles were truncated.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    Catches all cycles:
+
+    >>> import nltk
+    >>> from nltk.util import acyclic_depth_first as acyclic_tree
+    >>> wn=nltk.corpus.wordnet
+    >>> from pprint import pprint
+    >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:s.hypernyms(),cut_mark='...'))
+    [Synset('dog.n.01'),
+     [Synset('canine.n.02'),
+      [Synset('carnivore.n.01'),
+       [Synset('placental.n.01'),
+        [Synset('mammal.n.01'),
+         [Synset('vertebrate.n.01'),
+          [Synset('chordate.n.01'),
+           [Synset('animal.n.01'),
+            [Synset('organism.n.01'),
+             [Synset('living_thing.n.01'),
+              [Synset('whole.n.02'),
+               [Synset('object.n.01'),
+                [Synset('physical_entity.n.01'),
+                 [Synset('entity.n.01')]]]]]]]]]]]]],
+     [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),-3,...)"]]
+    """
+    if traversed is None:
+        traversed = {tree}
+    out_tree = [tree]
+    if depth != 0:
+        try:
+            for child in children(tree):
+                if child not in traversed:
+#                   Recurse with a common "traversed" set for all children:
+                    traversed.add(child)
+                    out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed)]
+                else:
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    if cut_mark:
+                        out_tree += ['Cycle({0},{1},{2})'.format(child, depth - 1, cut_mark)]
+        except TypeError:
+            pass
+    elif cut_mark:
+        out_tree += [cut_mark]
+    return out_tree
+
+
+def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
+    """Traverse the nodes of a tree in depth-first order,
+    discarding eventual cycles within the same branch,
+    but keep duplicate pathes in different branches.
+    Add cut_mark (when defined) if cycles were truncated.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    Catches only only cycles within the same branch,
+    but keeping cycles from different branches:
+
+    >>> import nltk
+    >>> from nltk.util import acyclic_branches_depth_first as tree
+    >>> wn=nltk.corpus.wordnet
+    >>> from pprint import pprint
+    >>> pprint(tree(wn.synset('certified.a.01'), lambda s:s.also_sees(), cut_mark='...', depth=4))
+    [Synset('certified.a.01'),
+     [Synset('authorized.a.01'),
+      [Synset('lawful.a.01'),
+       [Synset('legal.a.01'),
+        "Cycle(Synset('lawful.a.01'),0,...)",
+        [Synset('legitimate.a.01'), '...']],
+       [Synset('straight.a.06'),
+        [Synset('honest.a.01'), '...'],
+        "Cycle(Synset('lawful.a.01'),0,...)"]],
+      [Synset('legitimate.a.01'),
+       "Cycle(Synset('authorized.a.01'),1,...)",
+       [Synset('legal.a.01'),
+        [Synset('lawful.a.01'), '...'],
+        "Cycle(Synset('legitimate.a.01'),0,...)"],
+       [Synset('valid.a.01'),
+        "Cycle(Synset('legitimate.a.01'),0,...)",
+        [Synset('reasonable.a.01'), '...']]],
+      [Synset('official.a.01'), "Cycle(Synset('authorized.a.01'),1,...)"]],
+     [Synset('documented.a.01')]]
+    """
+    if traversed is None:
+        traversed = {tree}
+    out_tree = [tree]
+    if depth != 0:
+        try:
+            for child in children(tree):
+                if child not in traversed:
+#                   Recurse with a different "traversed" set for each child:
+                    out_tree += [acyclic_branches_depth_first(child, children, depth - 1, cut_mark, traversed.union({child}))]
+                else:
+                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    if cut_mark:
+                        out_tree += ['Cycle({0},{1},{2})'.format(child, depth - 1, cut_mark)]
+        except TypeError:
+            pass
+    elif cut_mark:
+        out_tree += [cut_mark]
+    return out_tree
 
 
 ##########################################################################

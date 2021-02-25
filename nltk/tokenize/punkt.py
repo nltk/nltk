@@ -1479,7 +1479,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 yield sentence
                 sentence = ""
 
-        # If the last sentence is emtpy, discard it.
+        # If the last sentence is empty, discard it.
         if sentence:
             yield sentence
 

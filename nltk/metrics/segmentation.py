@@ -224,9 +224,9 @@ def pk(ref, hyp, k=None, boundary="1"):
 
 # skip doctests if numpy is not installed
 def setup_module(module):
-    from nose import SkipTest
+    import pytest
 
     try:
         import numpy
-    except ImportError as e:
-        raise SkipTest("numpy is required for nltk.metrics.segmentation") from e
+    except ImportError:
+        pytest.skip("numpy is required for nltk.metrics.segmentation")

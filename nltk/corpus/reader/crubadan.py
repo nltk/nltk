@@ -76,9 +76,10 @@ class CrubadanCorpusReader(CorpusReader):
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
 
-        raw = open(mapper_file, "r", encoding="utf-8").read().strip()
+        with open(mapper_file, "r", encoding="utf-8") as raw:
+            strip_raw = raw.read().strip()
 
-        self._lang_mapping_data = [row.split("\t") for row in raw.split("\n")]
+            self._lang_mapping_data = [row.split("\t") for row in strip_raw.split("\n")]
 
     def _load_lang_ngrams(self, lang):
         """ Load single n-gram language file given the ISO 639-3 language code
@@ -94,14 +95,13 @@ class CrubadanCorpusReader(CorpusReader):
             raise RuntimeError("No N-gram file found for requested language.")
 
         counts = FreqDist()
-        f = open(ngram_file, "r", encoding="utf-8")
+        with open(ngram_file, "r", encoding="utf-8") as f:
+            for line in f:
+                data = line.split(" ")
 
-        for line in f:
-            data = line.split(" ")
+                ngram = data[1].strip("\n")
+                freq = int(data[0])
 
-            ngram = data[1].strip("\n")
-            freq = int(data[0])
-
-            counts[ngram] = freq
+                counts[ngram] = freq
 
         return counts

@@ -14,7 +14,7 @@ web/_build
 *.tox
 *.errs
 .noseids
-.coverage
+.coverage*
 nltk/test/*.html
 nltk/test/tweets*
 model.crf.tagger
@@ -56,3 +56,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+#vscode
+.vscode/

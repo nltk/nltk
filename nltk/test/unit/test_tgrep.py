@@ -781,7 +781,3 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(
             list(tgrep.tgrep_positions('NN;;', [tree])), [[(0, 2), (2, 1)]]
         )
-
-
-if __name__ == '__main__':
-    unittest.main()

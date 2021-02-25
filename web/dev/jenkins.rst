@@ -68,25 +68,21 @@ installed beforehand, and to make them run a series of extra environment
 variables are initialized. These dependencies will not be detailed until the
 last section.
 
-The test suite itself consists of doctests. These are found in each module as
-docstrings, and in all the .doctest files under the test folder in the nltk
-repo. We run these tests using nose_, find code coverage using `coverage.py`_
-and check for `PEP-8`_ etc. standard violations using `pylint`_.
+The test suite itself consists of doctests and unittests. Doctests are found in
+each module as docstrings, and in all the .doctest files under the test folder in
+the nltk repo. We run these tests using pytest_, find code coverage using
+`pytest-cov`_ and check for `PEP-8`_ etc. standard violations using `pylint`_.
 
 All these tools are easily installable through pip your favourite OS' software
-packaging system. For testing, only nose_ is really needed. This is also the
-only software that does not work properly out of the box. To use the options
-+ELLIPSIS and +NORMALIZE_WHITESPACE in our doctests, we have installed nose
-from source with `a patch that allows this`_ applied.
+packaging system. For testing, you can install the requirements with ``pip install -r requirements-test.txt``
 
 The results of these programs are parsed and published by the jenkins instance,
 giving us pretty graphs :)
 
-.. _nose: http://readthedocs.org/docs/nose/
-.. _`coverage.py`: http://nedbatchelder.com/code/coverage/
+.. _pytest: https://docs.pytest.org/
+.. _`pytest-cov`: http://pytest-cov.readthedocs.io/
 .. _`PEP-8`: http://www.python.org/dev/peps/pep-0008/
 .. _`pylint`: http://www.logilab.org/project/pylint
-.. _`a patch that allows this`: https://github.com/nose-devs/nose/issues/7
 
 
 The builds

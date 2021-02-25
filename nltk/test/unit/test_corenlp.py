@@ -4,9 +4,7 @@
 Mock test for Stanford CoreNLP wrappers.
 """
 
-import sys
-from itertools import chain
-from unittest import TestCase, SkipTest
+from unittest import TestCase
 from unittest.mock import MagicMock
 
 from nltk.tree import Tree

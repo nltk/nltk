@@ -5,6 +5,9 @@
 Logical Inference and Model Building
 ====================================
 
+    >>> from nltk.test.inference_fixt import setup_module
+    >>> setup_module()
+
     >>> from nltk import *
     >>> from nltk.sem.drt import DrtParser
     >>> from nltk.sem import logic

@@ -9,7 +9,7 @@ HTML = $(TESTS:.doctest=.html) # $(IPYNB:.ipynb=.html)
 IPYNB = $(wildcard *.ipynb)
 
 .doctest.errs:
-	python ./runtests.py $< > $@
+	pytest $< > $@
 
 .doctest.html:
 	rst2html.py $< > $@

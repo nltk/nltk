@@ -1,22 +1,15 @@
-import unittest
 import nltk.data
-from nose.tools import assert_raises
+import pytest
 
 
-class TestData(unittest.TestCase):
+class TestData:
     def test_find_raises_exception(self):
-
-        with assert_raises(LookupError) as context:
+        with pytest.raises(LookupError):
             nltk.data.find('no_such_resource/foo')
-
-        assert type(context.exception) == LookupError, 'Unexpected exception raised'
 
     def test_find_raises_exception_with_full_resource_name(self):
         no_such_thing = 'no_such_thing/bar'
 
-        with assert_raises(LookupError) as context:
+        with pytest.raises(LookupError) as exc:
             nltk.data.find(no_such_thing)
-
-        assert no_such_thing in str(
-            context.exception
-        ), 'Exception message does not include full resource name'
+            assert no_such_thing in str(exc), 'Exception message does not include full resource name'
