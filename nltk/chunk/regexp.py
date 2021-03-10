@@ -11,9 +11,9 @@ import re
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
 
-##//////////////////////////////////////////////////////
-##  ChunkString
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# ChunkString
+# //////////////////////////////////////////////////////
 
 
 class ChunkString(object):
@@ -50,19 +50,19 @@ class ChunkString(object):
 
     :cvar IN_CHUNK_PATTERN: A zero-width regexp pattern string that
         will only match positions that are in chunks.
-    :cvar IN_CHINK_PATTERN: A zero-width regexp pattern string that
-        will only match positions that are in chinks.
+    :cvar IN_STRIP_PATTERN: A zero-width regexp pattern string that
+        will only match positions that are in strips.
     """
 
     CHUNK_TAG_CHAR = r"[^\{\}<>]"
     CHUNK_TAG = r"(<%s+?>)" % CHUNK_TAG_CHAR
 
     IN_CHUNK_PATTERN = r"(?=[^\{]*\})"
-    IN_CHINK_PATTERN = r"(?=[^\}]*(\{|$))"
+    IN_STRIP_PATTERN = r"(?=[^\}]*(\{|$))"
 
     # These are used by _verify
     _CHUNK = r"(\{%s+?\})+?" % CHUNK_TAG
-    _CHINK = r"(%s+?)+?" % CHUNK_TAG
+    _STRIP = r"(%s+?)+?" % CHUNK_TAG
     _VALID = re.compile(r"^(\{?%s\}?)*?$" % CHUNK_TAG)
     _BRACKETS = re.compile(r"[^\{\}]+")
     _BALANCED_BRACKETS = re.compile(r"(\{\})*$")
@@ -100,7 +100,8 @@ class ChunkString(object):
         elif isinstance(tok, Tree):
             return tok.label()
         else:
-            raise ValueError("chunk structures must contain tagged " "tokens or trees")
+            raise ValueError(
+                "chunk structures must contain tagged " "tokens or trees")
 
     def _verify(self, s, verify_tags):
         """
@@ -129,7 +130,7 @@ class ChunkString(object):
         # depth limit for regular expressions.
         brackets = ChunkString._BRACKETS.sub("", s)
         for i in range(1 + len(brackets) // 5000):
-            substr = brackets[i * 5000 : i * 5000 + 5000]
+            substr = brackets[i * 5000: i * 5000 + 5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError(
                     "Transformation generated invalid " "chunkstring:\n  %s" % s
@@ -164,7 +165,7 @@ class ChunkString(object):
 
             # Find the list of tokens contained in this piece.
             length = piece.count("<")
-            subsequence = self._pieces[index : index + length]
+            subsequence = self._pieces[index: index + length]
 
             # Add this list of tokens to our pieces.
             if piece_in_chunk:
@@ -246,9 +247,9 @@ class ChunkString(object):
         return str
 
 
-##//////////////////////////////////////////////////////
-##  Chunking Rules
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Chunking Rules
+# //////////////////////////////////////////////////////
 
 
 class RegexpChunkRule(object):
@@ -352,7 +353,7 @@ class RegexpChunkRule(object):
         Currently, the following formats are supported::
 
           {regexp}         # chunk rule
-          }regexp{         # chink rule
+          }regexp{         # strip rule
           regexp}{regexp   # split rule
           regexp{}regexp   # merge rule
 
@@ -369,14 +370,14 @@ class RegexpChunkRule(object):
         rule = m.group("rule").strip()
         comment = (m.group("comment") or "")[1:].strip()
 
-        # Pattern bodies: chunk, chink, split, merge
+        # Pattern bodies: chunk, strip, split, merge
         try:
             if not rule:
                 raise ValueError("Empty chunk pattern")
             if rule[0] == "{" and rule[-1] == "}":
                 return ChunkRule(rule[1:-1], comment)
             elif rule[0] == "}" and rule[-1] == "{":
-                return ChinkRule(rule[1:-1], comment)
+                return StripRule(rule[1:-1], comment)
             elif "}{" in rule:
                 left, right = rule.split("}{")
                 return SplitRule(left, right, comment)
@@ -402,7 +403,6 @@ class ChunkRule(RegexpChunkRule):
     """
 
     def __init__(self, tag_pattern, descr):
-
         """
         Construct a new ``ChunkRule``.
 
@@ -418,7 +418,7 @@ class ChunkRule(RegexpChunkRule):
         self._pattern = tag_pattern
         regexp = re.compile(
             "(?P<chunk>%s)%s"
-            % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHINK_PATTERN)
+            % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_STRIP_PATTERN)
         )
         RegexpChunkRule.__init__(self, regexp, r"{\g<chunk>}", descr)
 
@@ -437,9 +437,9 @@ class ChunkRule(RegexpChunkRule):
         return "<ChunkRule: " + repr(self._pattern) + ">"
 
 
-class ChinkRule(RegexpChunkRule):
+class StripRule(RegexpChunkRule):
     """
-    A rule specifying how to remove chinks to a ``ChunkString``,
+    A rule specifying how to remove strips to a ``ChunkString``,
     using a matching tag pattern.  When applied to a
     ``ChunkString``, it will find any substring that matches this
     tag pattern and that is contained in a chunk, and remove it
@@ -448,7 +448,7 @@ class ChinkRule(RegexpChunkRule):
 
     def __init__(self, tag_pattern, descr):
         """
-        Construct a new ``ChinkRule``.
+        Construct a new ``StripRule``.
 
         :type tag_pattern: str
         :param tag_pattern: This rule's tag pattern.  When
@@ -462,16 +462,16 @@ class ChinkRule(RegexpChunkRule):
         """
         self._pattern = tag_pattern
         regexp = re.compile(
-            "(?P<chink>%s)%s"
+            "(?P<strip>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHUNK_PATTERN)
         )
-        RegexpChunkRule.__init__(self, regexp, r"}\g<chink>{", descr)
+        RegexpChunkRule.__init__(self, regexp, r"}\g<strip>{", descr)
 
     def __repr__(self):
         """
         Return a string representation of this rule.  It has the form::
 
-            <ChinkRule: '<IN|VB.*>'>
+            <StripRule: '<IN|VB.*>'>
 
         Note that this representation does not include the
         description string; that string can be accessed
@@ -479,7 +479,7 @@ class ChinkRule(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChinkRule: " + repr(self._pattern) + ">"
+        return "<StripRule: " + repr(self._pattern) + ">"
 
 
 class UnChunkRule(RegexpChunkRule):
@@ -504,7 +504,8 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile(r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+        regexp = re.compile(r"\{(?P<chunk>%s)\}" %
+                            tag_pattern2re_pattern(tag_pattern))
         RegexpChunkRule.__init__(self, regexp, r"\g<chunk>", descr)
 
     def __repr__(self):
@@ -666,7 +667,7 @@ class ExpandLeftRule(RegexpChunkRule):
     A rule specifying how to expand chunks in a ``ChunkString`` to the left,
     using two matching tag patterns: a left pattern, and a right pattern.
     When applied to a ``ChunkString``, it will find any chunk whose beginning
-    matches right pattern, and immediately preceded by a chink whose
+    matches right pattern, and immediately preceded by a strip whose
     end matches left pattern.  It will then expand the chunk to incorporate
     the new material on the left.
     """
@@ -679,14 +680,14 @@ class ExpandLeftRule(RegexpChunkRule):
         :param right_tag_pattern: This rule's right tag
             pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose beginning matches
-            ``right_tag_pattern``, and immediately preceded by a chink
+            ``right_tag_pattern``, and immediately preceded by a strip
             whose end matches this pattern.  It will
             then merge those two chunks into a single chunk.
         :type left_tag_pattern: str
         :param left_tag_pattern: This rule's left tag
             pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose beginning matches
-            this pattern, and immediately preceded by a chink
+            this pattern, and immediately preceded by a strip
             whose end matches ``left_tag_pattern``.  It will
             then expand the chunk to incorporate the new material on the left.
 
@@ -737,7 +738,7 @@ class ExpandRightRule(RegexpChunkRule):
     right, using two matching tag patterns: a left pattern, and a
     right pattern.  When applied to a ``ChunkString``, it will find any
     chunk whose end matches left pattern, and immediately followed by
-    a chink whose beginning matches right pattern.  It will then
+    a strip whose beginning matches right pattern.  It will then
     expand the chunk to incorporate the new material on the right.
     """
 
@@ -749,14 +750,14 @@ class ExpandRightRule(RegexpChunkRule):
         :param right_tag_pattern: This rule's right tag
             pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose end matches
-            ``left_tag_pattern``, and immediately followed by a chink
+            ``left_tag_pattern``, and immediately followed by a strip
             whose beginning matches this pattern.  It will
             then merge those two chunks into a single chunk.
         :type left_tag_pattern: str
         :param left_tag_pattern: This rule's left tag
             pattern.  When applied to a ``ChunkString``, this
             rule will find any chunk whose end matches
-            this pattern, and immediately followed by a chink
+            this pattern, and immediately followed by a strip
             whose beginning matches ``right_tag_pattern``.  It will
             then expand the chunk to incorporate the new material on the right.
 
@@ -858,7 +859,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
                 tag_pattern2re_pattern(left_context_tag_pattern),
                 tag_pattern2re_pattern(chunk_tag_pattern),
                 tag_pattern2re_pattern(right_context_tag_pattern),
-                ChunkString.IN_CHINK_PATTERN,
+                ChunkString.IN_STRIP_PATTERN,
             )
         )
         replacement = r"\g<left>{\g<chunk>}\g<right>"
@@ -883,9 +884,9 @@ class ChunkRuleWithContext(RegexpChunkRule):
         )
 
 
-##//////////////////////////////////////////////////////
-##  Tag Pattern Format Conversion
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Tag Pattern Format Conversion
+# //////////////////////////////////////////////////////
 
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
@@ -958,9 +959,9 @@ def tag_pattern2re_pattern(tag_pattern):
     return tag_pattern
 
 
-##//////////////////////////////////////////////////////
-##  RegexpChunkParser
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# RegexpChunkParser
+# //////////////////////////////////////////////////////
 
 
 class RegexpChunkParser(ChunkParserI):
@@ -973,7 +974,7 @@ class RegexpChunkParser(ChunkParserI):
     expression matching and substitution.
 
     The ``RegexpChunkRule`` class and its subclasses (``ChunkRule``,
-    ``ChinkRule``, ``UnChunkRule``, ``MergeRule``, and ``SplitRule``)
+    ``StripRule``, ``UnChunkRule``, ``MergeRule``, and ``SplitRule``)
     define the rules that are used by ``RegexpChunkParser``.  Each rule
     defines an ``apply()`` method, which modifies the chunking encoded
     by a given ``ChunkString``.
@@ -1124,9 +1125,9 @@ class RegexpChunkParser(ChunkParserI):
         return s[:-1]
 
 
-##//////////////////////////////////////////////////////
-##  Chunk Grammar
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Chunk Grammar
+# //////////////////////////////////////////////////////
 
 
 class RegexpParser(ChunkParserI):
@@ -1142,7 +1143,7 @@ class RegexpParser(ChunkParserI):
 
      NP:
        {<DT|JJ>}          # chunk determiners and adjectives
-       }<[\.VI].*>+{      # chink any tag beginning with V, I, or .
+       }<[\.VI].*>+{      # strip any tag beginning with V, I, or .
        <.*>}{<DT>         # split a chunk at a determiner
        <DT|JJ>{}<NN.*>    # merge chunk ending with det/adj
                           # with one starting with a noun
@@ -1295,9 +1296,9 @@ class RegexpParser(ChunkParserI):
         return s[:-1]
 
 
-##//////////////////////////////////////////////////////
-##  Demonstration code
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Demonstration code
+# //////////////////////////////////////////////////////
 
 
 def demo_eval(chunkparser, text):
@@ -1337,7 +1338,8 @@ def demo_eval(chunkparser, text):
     print("/" + ("=" * 75) + "\\")
     print("Scoring", chunkparser)
     print(("-" * 77))
-    print("Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" ")
+    print("Precision: %5.1f%%" %
+          (chunkscore.precision() * 100), " " * 4, end=" ")
     print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")
     print("F-Measure: %5.1f%%" % (chunkscore.f_measure() * 100))
 
@@ -1410,7 +1412,7 @@ def demo():
 
     grammar = r"""
     NP: {<.*>*}             # start by chunking everything
-        }<[\.VI].*>+{       # chink any verbs, prepositions or periods
+        }<[\.VI].*>+{       # strip any verbs, prepositions or periods
         <.*>}{<DT>          # separate on determiners
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
@@ -1426,7 +1428,8 @@ def demo():
     print("Demonstration of empty grammar:")
 
     cp = chunk.RegexpParser("")
-    print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",))))
+    print(chunk.accuracy(cp, conll2000.chunked_sents(
+        "test.txt", chunk_types=("NP",))))
 
     print()
     print("Demonstration of accuracy evaluation using CoNLL tags:")
@@ -1445,7 +1448,7 @@ def demo():
 
     grammar = r"""
     NP: {<.*>*}             # start by chunking everything
-        }<[\.VI].*>+{       # chink any verbs, prepositions or periods
+        }<[\.VI].*>+{       # strip any verbs, prepositions or periods
         <.*>}{<DT>          # separate on determiners
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs

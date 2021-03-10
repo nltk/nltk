@@ -6,7 +6,6 @@
 - Edward Loper <edloper@gmail.com>
 - Ewan Klein <ewan@inf.ed.ac.uk>
 
-
 ## Contributors
 
 - Tom Aarsen
@@ -38,6 +37,7 @@
 - Graham Christensen
 - Trevor Cohn
 - David Coles
+- Tom Conroy <https://github.com/tconroy>
 - Claude Coulombe
 - Lucas Cooper
 - Robin Cooper
@@ -277,9 +277,12 @@
 - Danny Sepler <https://github.com/dannysepler>
 - Akshita Bhagia <https://github.com/AkshitaB>
 - Pratap Yadav <https://github.com/prtpydv>
+- Hiroki Teranishi <https://github.com/chantera>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
+
 ### Contributors to the Porter Stemmer
+
 - Martin Porter
 - Vivake Gupta
 - Barry Wilkins
@@ -287,6 +290,7 @@
 - Chris Emerson
 
 ### Authors of snowball arabic stemmer algorithm
+
 - Assem Chelli
 - Abdelkrim Aries
 - Lakhdar Benzahia

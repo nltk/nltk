@@ -244,6 +244,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             self.url,
             params={"properties": json.dumps(default_properties)},
             data=data.encode(self.encoding),
+            headers={"Content-Type": "text/plain; charset={}".format(self.encoding)},
             timeout=timeout,
         )
 
