@@ -452,12 +452,9 @@ class Synset(_WordNetObject):
         return self._lexname
 
     def _needs_root(self):
-        if self._pos == NOUN:
-            if self._wordnet_corpus_reader.get_version() == "1.6":
-                return True
-            else:
-                return False
-        elif self._pos == VERB:
+        if self._pos == NOUN and self._wordnet_corpus_reader.get_version() != "1.6":
+            return False
+        else:
             return True
 
     def lemma_names(self, lang="eng"):
