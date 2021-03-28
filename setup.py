@@ -32,7 +32,7 @@ from setuptools import setup, find_packages
 
 # Specify groups of optional dependencies
 extras_require = {
-    "machine_learning": ["gensim", "numpy", "python-crfsuite", "scikit-learn", "scipy"],
+    "machine_learning": ["gensim<4.0.0", "numpy", "python-crfsuite", "scikit-learn", "scipy"],
     "plot": ["matplotlib"],
     "tgrep": ["pyparsing"],
     "twitter": ["twython"],
