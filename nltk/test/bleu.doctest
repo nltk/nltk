@@ -21,9 +21,10 @@ http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
 >>> from nltk.translate.bleu_score import sentence_bleu,SmoothingFunction
 
 
->>> sentence_bleu(
+>>> bleu4= sentence_bleu(
 ...     ['It is a place of quiet contemplation .'.split()],
 ...     'It is .'.split(),
 ...     smoothing_function=SmoothingFunction().method4,
-... )*100
-4.426730592500287
+... )
+>>> round(bleu4*100 ,4)
+4.4267
