@@ -579,7 +579,7 @@ class SmoothingFunction:
         incvnt = 1
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         for i, p_i in enumerate(p_n):
-            if p_i.numerator == 0 and hyp_len != 0:
+            if p_i.numerator == 0 and hyp_len >1:
 #                 incvnt = i + 1 * self.k / math.log(
 #                     hyp_len
 #                 )  # Note that this K is different from the K from NIST.
