@@ -32,7 +32,7 @@ from setuptools import setup, find_packages
 
 # Specify groups of optional dependencies
 extras_require = {
-    "machine_learning": ["gensim", "numpy", "python-crfsuite", "scikit-learn", "scipy"],
+    "machine_learning": ["gensim<4.0.0", "numpy", "python-crfsuite", "scikit-learn", "scipy"],
     "plot": ["matplotlib"],
     "tgrep": ["pyparsing"],
     "twitter": ["twython"],
@@ -64,7 +64,7 @@ setup(
     },
     long_description="""\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.5, 3.6, 3.7, or 3.8.""",
+natural language processing.  NLTK requires Python 3.5, 3.6, 3.7, 3.8, or 3.9.""",
     license="Apache License, Version 2.0",
     keywords=[
         "NLP",
@@ -96,6 +96,7 @@ natural language processing.  NLTK requires Python 3.5, 3.6, 3.7, or 3.8.""",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Human Machine Interfaces",

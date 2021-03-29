@@ -114,6 +114,10 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
             "Currently, NLTK pos_tag only supports English and Russian "
             "(i.e. lang='eng' or lang='rus')"
         )
+    # Throws Error if tokens is of string type
+    elif isinstance(tokens, str):
+        raise TypeError('tokens: expected a list of strings, got a string')
+
     else:
         tagged_tokens = tagger.tag(tokens)
         if tagset:  # Maps to the specified tagset.
