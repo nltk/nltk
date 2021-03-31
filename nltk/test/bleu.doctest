@@ -25,6 +25,5 @@ http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
 ...     ['It is a place of quiet contemplation .'.split()],
 ...     'It is .'.split(),
 ...     smoothing_function=SmoothingFunction().method4,
-... )
->>> round(bleu4*100 ,4)
-4.4267
+... )*100
+4.4267...
