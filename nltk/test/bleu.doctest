@@ -21,7 +21,7 @@ http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
 >>> from nltk.translate.bleu_score import sentence_bleu,SmoothingFunction
 
 
->>> bleu4= sentence_bleu(
+>>> sentence_bleu(
 ...     ['It is a place of quiet contemplation .'.split()],
 ...     'It is .'.split(),
 ...     smoothing_function=SmoothingFunction().method4,
