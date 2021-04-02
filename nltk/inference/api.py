@@ -533,7 +533,7 @@ class ParallelProverBuilder(Prover, ModelBuilder):
         tp_thread.start()
         mb_thread.start()
 
-        while tp_thread.isAlive() and mb_thread.isAlive():
+        while tp_thread.is_alive() and mb_thread.is_alive():
             # wait until either the prover or the model builder is done
             pass
 
@@ -578,7 +578,7 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
         tp_thread.start()
         mb_thread.start()
 
-        while tp_thread.isAlive() and mb_thread.isAlive():
+        while tp_thread.is_alive() and mb_thread.is_alive():
             # wait until either the prover or the model builder is done
             pass
 
