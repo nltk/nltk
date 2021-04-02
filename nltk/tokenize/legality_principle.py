@@ -61,12 +61,12 @@ class LegalitySyllableTokenizer(TokenizerI):
         [['This'], ['is'], ['a'], ['won', 'der', 'ful'], ['sen', 'ten', 'ce'], ['.']]
     """
 
-    def __init__(self, tokenized_source_text, vowels=set("aeiouy"), legal_frequency_threshold=.001):
+    def __init__(self, tokenized_source_text, vowels="aeiouy", legal_frequency_threshold=.001):
         """
         :param tokenized_source_text: List of valid tokens in the language
         :type tokenized_source_text: list(str)
         :param vowels: Valid vowels in language or IPA represenation
-        :type vowels: set(str)
+        :type vowels: str
         :param legal_frequency_threshold: Lowest frequency of all onsets to be considered a legal onset
         :type legal_frequency_threshold: float
         """
