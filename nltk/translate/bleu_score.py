@@ -576,13 +576,17 @@ class SmoothingFunction:
         smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry
         suggests dividing by 1/ln(len(T)), where T is the length of the translation.
         """
+        incvnt = 1
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         for i, p_i in enumerate(p_n):
-            if p_i.numerator == 0 and hyp_len != 0:
-                incvnt = i + 1 * self.k / math.log(
-                    hyp_len
-                )  # Note that this K is different from the K from NIST.
-                p_n[i] = incvnt / p_i.denominator
+            if p_i.numerator == 0 and hyp_len >1:
+#                 incvnt = i + 1 * self.k / math.log(
+#                     hyp_len
+#                 )  # Note that this K is different from the K from NIST.
+#                 p_n[i] = incvnt / p_i.denominator\
+                numerator = 1 / (2 ** incvnt * self.k / math.log(hyp_len))
+                p_n[i] = numerator / p_i.denominator
+                incvnt += 1
         return p_n
 
     def method5(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
