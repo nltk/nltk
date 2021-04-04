@@ -273,17 +273,13 @@ The class method `Tree.fromlist()` can be used to parse trees
 that are expressed as nested lists, such as those produced by
 the tree() function from the wordnet module.
 
-    >>> wn=nltk.corpus.wordnet
+    >>> from nltk.corpus import wordnet as wn
     >>> t=Tree.fromlist(wn.synset('dog.n.01').tree(lambda s:s.hypernyms()))
-
     >>> print(t.height())
     14
-
     >>> print(t.leaves())
     ["Synset('entity.n.01')", "Synset('entity.n.01')"]
-
     >>> t.pretty_print()
-
                       Synset('dog.n.01')                  
              _________________|__________________          
     Synset('canine.n.                            |        
