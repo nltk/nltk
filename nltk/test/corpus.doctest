@@ -622,9 +622,9 @@ The Brown Corpus, annotated with WordNet senses.
     ['When', 'several', 'minutes', 'had', 'passed', ...]
     >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
     >>> if 'getchildren' in dir(sent):
-    >>>     children=sent.getchildren()
+    ...     children=sent.getchildren()
     >>> else:
-    >>>     children=sent.iter()
+    ...     children=sent.iter()
     >>> for wordform in children:
     ...     print(wordform.text, end=' ')
     ...     for key in sorted(wordform.keys()):
