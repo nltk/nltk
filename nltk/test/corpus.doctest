@@ -631,31 +631,33 @@ The Brown Corpus, annotated with WordNet senses.
     ...         print(key + '=' + wordform.get(key), end=' ')
     ...     print()
     ...
-    When cmd=ignore pos=WRB
-    several cmd=done lemma=several lexsn=5:00:00:some(a):00 pos=JJ wnsn=1
-    minutes cmd=done lemma=minute lexsn=1:28:00:: pos=NN wnsn=1
-    had cmd=done ot=notag pos=VBD
-    passed cmd=done lemma=pass lexsn=2:38:03:: pos=VB wnsn=4
-    and cmd=ignore pos=CC
-    Curt cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
-    had cmd=done ot=notag pos=VBD
-    n't cmd=done lemma=n't lexsn=4:02:00:: pos=RB wnsn=0
-    emerged cmd=done lemma=emerge lexsn=2:30:00:: pos=VB wnsn=1
-    from cmd=ignore pos=IN
-    the cmd=ignore pos=DT
-    livery_stable cmd=done lemma=livery_stable lexsn=1:06:00:: pos=NN wnsn=1
-    ,
-    Brenner cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
-    re-entered cmd=done lemma=re-enter lexsn=2:38:00:: pos=VB wnsn=1
-    the cmd=ignore pos=DT
-    hotel cmd=done lemma=hotel lexsn=1:06:00:: pos=NN wnsn=1
-    and cmd=ignore pos=CC
-    faced cmd=done lemma=face lexsn=2:42:02:: pos=VB wnsn=4
-    Summers cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
-    across cmd=ignore pos=IN
-    the cmd=ignore pos=DT
-    counter cmd=done lemma=counter lexsn=1:06:00:: pos=NN wnsn=1
-    .
+    
+     snum=1 
+    When cmd=ignore pos=WRB 
+    several cmd=done lemma=several lexsn=5:00:00:some(a):00 pos=JJ wnsn=1 
+    minutes cmd=done lemma=minute lexsn=1:28:00:: pos=NN wnsn=1 
+    had cmd=done ot=notag pos=VBD 
+    passed cmd=done lemma=pass lexsn=2:38:03:: pos=VB wnsn=4 
+    and cmd=ignore pos=CC 
+    Curt cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1 
+    had cmd=done ot=notag pos=VBD 
+    n't cmd=done lemma=n't lexsn=4:02:00:: pos=RB wnsn=0 
+    emerged cmd=done lemma=emerge lexsn=2:30:00:: pos=VB wnsn=1 
+    from cmd=ignore pos=IN 
+    the cmd=ignore pos=DT 
+    livery_stable cmd=done lemma=livery_stable lexsn=1:06:00:: pos=NN wnsn=1 
+    , 
+    Brenner cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1 
+    re-entered cmd=done lemma=re-enter lexsn=2:38:00:: pos=VB wnsn=1 
+    the cmd=ignore pos=DT 
+    hotel cmd=done lemma=hotel lexsn=1:06:00:: pos=NN wnsn=1 
+    and cmd=ignore pos=CC 
+    faced cmd=done lemma=face lexsn=2:42:02:: pos=VB wnsn=4 
+    Summers cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1 
+    across cmd=ignore pos=IN 
+    the cmd=ignore pos=DT 
+    counter cmd=done lemma=counter lexsn=1:06:00:: pos=NN wnsn=1 
+    . 
 
 senseval
 --------
