@@ -621,7 +621,11 @@ The Brown Corpus, annotated with WordNet senses.
     >>> semcor.words('brown2/tagfiles/br-n12.xml')  # doctest: +ELLIPSIS
     ['When', 'several', 'minutes', 'had', 'passed', ...]
     >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
-    >>> for wordform in sent.iter():
+    >>> try:
+    >>>     children=sent.getchildren()
+    >>> except:
+    >>>     children=sent.iter()
+    >>> for wordform in children:
     ...     print(wordform.text, end=' ')
     ...     for key in sorted(wordform.keys()):
     ...         print(key + '=' + wordform.get(key), end=' ')
