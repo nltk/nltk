@@ -266,6 +266,63 @@ It will not remove a top-level empty bracketing with multiple children:
     >>> print(Tree.fromstring('((A a) (B b))'))
     ( (A a) (B b))
 
+
+Tree.fromlist()
+---------------
+The class method `Tree.fromlist()` can be used to parse trees
+that are expressed as nested lists, such as those produced by
+the tree() function from the wordnet module.
+
+    >>> from nltk.corpus import wordnet as wn
+    >>> t=Tree.fromlist(wn.synset('dog.n.01').tree(lambda s:s.hypernyms()))
+    >>> print(t.height())
+    14
+    >>> print(t.leaves())
+    ["Synset('entity.n.01')", "Synset('entity.n.01')"]
+    >>> t.pretty_print()
+                      Synset('dog.n.01')                  
+             _________________|__________________          
+    Synset('canine.n.                            |        
+           02')                                  |        
+            |                                    |         
+     Synset('carnivor                            |        
+         e.n.01')                                |        
+            |                                    |         
+     Synset('placenta                            |        
+         l.n.01')                                |        
+            |                                    |         
+    Synset('mammal.n.                            |        
+           01')                                  |        
+            |                                    |         
+     Synset('vertebra                            |        
+        te.n.01')                                |        
+            |                                    |         
+    Synset('chordate.                     Synset('domestic
+          n.01')                           _animal.n.01') 
+            |                                    |         
+    Synset('animal.n.                    Synset('animal.n.
+           01')                                 01')      
+            |                                    |         
+    Synset('organism.                    Synset('organism.
+          n.01')                               n.01')     
+            |                                    |         
+     Synset('living_t                     Synset('living_t
+       hing.n.01')                          hing.n.01')   
+            |                                    |         
+     Synset('whole.n.                     Synset('whole.n.
+           02')                                 02')      
+            |                                    |         
+    Synset('object.n.                    Synset('object.n.
+           01')                                 01')      
+            |                                    |         
+     Synset('physical                     Synset('physical
+      _entity.n.01')                       _entity.n.01') 
+            |                                    |         
+    Synset('entity.n.                    Synset('entity.n.
+           01')                                 01')      
+
+
+
 Parented Trees
 ==============
 `ParentedTree` is a subclass of `Tree` that automatically maintains

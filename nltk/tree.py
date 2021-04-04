@@ -6,6 +6,7 @@
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 #         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (tree transforms)
+#         Eric Kafe <kafe.eric@gmail.com> (Tree.fromlist())
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -736,6 +737,25 @@ class Tree(list):
             offset = 13
         msg += '\n%s"%s"\n%s^' % (" " * 16, s, " " * (17 + offset))
         raise ValueError(msg)
+
+    @classmethod
+    def fromlist(cls, l):
+        """
+        :type l: list
+        :param l: a tree represented as nested lists
+
+        :return: A tree corresponding to the list representation ``l``.
+        :rtype: Tree
+
+        Convert nested lists to a NLTK Tree
+        """
+        if type(l)==list and len(l)>0:
+            label = repr(l[0])
+            if len(l)>1:
+                return Tree(label, [cls.fromlist(child) for child in l[1:]])
+            else:
+                return label
+
 
     # ////////////////////////////////////////////////////////////
     # Visualization & String Representation
@@ -1696,6 +1716,7 @@ def sinica_parse(s):
 #    s = re.sub(r'\w+:', '', s)       # remove role tags
 
 #    return s
+
 
 ######################################################################
 ## Demonstration
