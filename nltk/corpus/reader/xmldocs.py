@@ -62,7 +62,7 @@ class XMLCorpusReader(CorpusReader):
         elt = self.xml(fileid)
         encoding = self.encoding(fileid)
         word_tokenizer = WordPunctTokenizer()
-        iterator = elt.getiterator()
+        iterator = elt.iter()
         out = []
 
         for node in iterator:
