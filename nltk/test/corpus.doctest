@@ -623,7 +623,7 @@ The Brown Corpus, annotated with WordNet senses.
     >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
     >>> if 'getchildren' in dir(sent):
     ...     children=sent.getchildren()
-    >>> else:
+    ... else:
     ...     children=sent.iter()
     >>> for wordform in children:
     ...     print(wordform.text, end=' ')
