@@ -364,6 +364,51 @@ def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, t
     return out_tree
 
 
+def acyclic_dic2tree(node, dic):
+    """Convert acyclic dictionary 'dic', where the keys are nodes, and the
+    values are lists of children, to output tree suitable for pprint(),
+    starting at root 'node', with subtrees as nested lists."""
+    return [node] + [acyclic_dic2tree(child, dic) for child in dic[node]]
+
+
+def unweighted_minimum_spanning_tree(tree, children=iter):
+    """
+    Output a Minimum Spanning Tree (MST) of an unweighted graph,
+    by traversing the nodes of a tree in breadth-first order,
+    discarding eventual cycles.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    >>> import nltk
+    >>> from nltk.util import unweighted_minimum_spanning_tree as mst
+    >>> wn=nltk.corpus.wordnet
+    >>> from pprint import pprint
+    >>> pprint(mst(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    [Synset('bound.a.01'),
+     [Synset('unfree.a.02'),
+      [Synset('confined.a.02')],
+      [Synset('dependent.a.01')],
+      [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
+    """
+    traversed = set()             # Empty set of traversed nodes
+    queue = deque([tree])         # Initialize queue
+    agenda = {tree}               # Set of all nodes ever queued
+    mstdic = {}                   # Empty MST dictionary
+    while queue:
+        node = queue.popleft()    # Node is not yet in the MST dictionary,
+        mstdic[node]=[]           # so add it with an empty list of children
+        if node not in traversed: # Avoid cycles
+            traversed.add(node)
+            for child in children(node):
+                if child not in agenda:            # Queue nodes only once
+                    mstdic[node].append(child)     # Add child to the MST
+                    queue.append(child)            # Add child to queue
+                    agenda.add(child)
+    return acyclic_dic2tree(tree, mstdic)
+
+
 ##########################################################################
 # Guess Character Encoding
 ##########################################################################
