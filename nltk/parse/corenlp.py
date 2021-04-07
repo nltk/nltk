@@ -20,8 +20,6 @@ from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
-import pytest
-
 _stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
 
 
@@ -748,8 +746,11 @@ def transform(sentence):
         )
 
 
-@pytest.mark.skip("Skipping all CoreNLP tests.")
 def setup_module(module):
+    import pytest
+
+    pytest.skip("Skipping all CoreNLP tests.")
+
     global server
 
     try:
@@ -767,6 +768,9 @@ def setup_module(module):
         )
 
 
-@pytest.mark.skip("Skipping all CoreNLP tests.")
 def teardown_module(module):
+    import pytest
+
+    pytest.skip("Skipping all CoreNLP tests.")
+
     server.stop()
