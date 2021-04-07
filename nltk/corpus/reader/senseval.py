@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2020 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 # URL: <http://nltk.org/>

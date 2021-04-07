@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagset Mapping
 #
-# Copyright (C) 2001-2020 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Nathan Schneider <nathan@cmu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
