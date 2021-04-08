@@ -32,7 +32,7 @@ bigrams which occur less than three times in the corpus:
     >>> finder.apply_freq_filter(3)
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
     [('Beer', 'Lahai'), ('Lahai', 'Roi'), ('gray', 'hairs'),
-     ('Most', 'High'), ('ewe', 'lambs'), ('many', 'colors'),
+     ('ewe', 'lambs'), ('Most', 'High'), ('many', 'colors'),
      ('burnt', 'offering'), ('Paddan', 'Aram'), ('east', 'wind'),
      ('living', 'creature')]
 
