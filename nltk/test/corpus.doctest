@@ -1154,7 +1154,7 @@ uses a different sentence tokenizer as follows:
     >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
     >>> # Create the new corpus reader object.
     >>> my_genesis = nltk.corpus.PlaintextCorpusReader(
-    ...     genesis_dir, '.*\.txt', sent_tokenizer=my_sent_tokenizer)
+    ...     genesis_dir, r'.*\.txt', sent_tokenizer=my_sent_tokenizer)
     >>> # Use the new corpus reader object.
     >>> print(my_genesis.sents('english-kjv.txt')[0]) # doctest: +NORMALIZE_WHITESPACE
     ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven',
@@ -1165,7 +1165,7 @@ directory '/usr/share/some-corpus', then you can create a corpus
 reader for it with::
 
     >>> my_corpus = nltk.corpus.PlaintextCorpusReader(
-    ...     '/usr/share/some-corpus', '.*\.txt') # doctest: +SKIP
+    ...     '/usr/share/some-corpus', r'.*\.txt') # doctest: +SKIP
 
 For a complete list of corpus reader subclasses, see the API
 documentation for `nltk.corpus.reader`.
@@ -1611,7 +1611,7 @@ regexp).  The ``ext`` argument specifies a file extension.
     >>> corpus = PlaintextCorpusReader(root, ['a.txt', 'b.txt'])
     >>> corpus.fileids()
     ['a.txt', 'b.txt']
-    >>> corpus = PlaintextCorpusReader(root, '.*\.txt')
+    >>> corpus = PlaintextCorpusReader(root, r'.*\.txt')
     >>> corpus.fileids()
     ['a.txt', 'b.txt']
 

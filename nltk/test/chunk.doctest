@@ -25,8 +25,8 @@ be chunked.
 
 Construct some new chunking rules.
 
-    >>> chunk_rule = ChunkRule("<.*>+", "Chunk everything")
-    >>> strip_rule = StripRule("<VBD|IN|\.>", "Strip on verbs/prepositions")
+    >>> chunk_rule = ChunkRule(r"<.*>+", "Chunk everything")
+    >>> strip_rule = StripRule(r"<VBD|IN|\.>", "Strip on verbs/prepositions")
     >>> split_rule = SplitRule("<DT><NN>", "<DT><NN>",
     ...                        "Split successive determiner/noun pairs")
 
