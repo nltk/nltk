@@ -130,19 +130,22 @@ class CorpusReader(object):
         """
         Return the contents of the corpus README file, if it exists.
         """
-        return self.open("README").read()
+        with self.open("README") as f:
+            return f.read()
 
     def license(self):
         """
         Return the contents of the corpus LICENSE file, if it exists.
         """
-        return self.open("LICENSE").read()
+        with self.open("LICENSE") as f:
+            return f.read()
 
     def citation(self):
         """
         Return the contents of the corpus citation.bib file, if it exists.
         """
-        return self.open("citation.bib").read()
+        with self.open("citation.bib") as f:
+            return f.read()
 
     def fileids(self):
         """
@@ -320,16 +323,17 @@ class CategorizedCorpusReader(object):
                     self._add(file_id, category)
 
         elif self._file is not None:
-            for line in self.open(self._file).readlines():
-                line = line.strip()
-                file_id, categories = line.split(self._delimiter, 1)
-                if file_id not in self.fileids():
-                    raise ValueError(
-                        "In category mapping file %s: %s "
-                        "not found" % (self._file, file_id)
-                    )
-                for category in categories.split(self._delimiter):
-                    self._add(file_id, category)
+            with self.open(self._file) as f:
+                for line in f.readlines():
+                    line = line.strip()
+                    file_id, categories = line.split(self._delimiter, 1)
+                    if file_id not in self.fileids():
+                        raise ValueError(
+                            "In category mapping file %s: %s "
+                            "not found" % (self._file, file_id)
+                        )
+                    for category in categories.split(self._delimiter):
+                        self._add(file_id, category)
 
     def _add(self, file_id, category):
         self._f2c[file_id].add(category)
@@ -405,7 +409,11 @@ class SyntaxCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block

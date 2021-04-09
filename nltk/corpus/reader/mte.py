@@ -246,7 +246,8 @@ class MTECorpusReader(TaggedCorpusReader):
         :return: the content of the attached README file
         :rtype: str
         """
-        return self.open("00README.txt").read()
+        with self.open("00README.txt") as fp:
+            return fp.read()
 
     def raw(self, fileids=None):
         """
@@ -254,7 +255,11 @@ class MTECorpusReader(TaggedCorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        return reduce([self.open(f).read() for f in self.__fileids(fileids)], [])
+        contents = []
+        for i in self.__fileids(fileids):
+            with self.open(i) as fp:
+                contents.append(fp.read())
+        return reduce(contents, [])
 
     def words(self, fileids=None):
         """

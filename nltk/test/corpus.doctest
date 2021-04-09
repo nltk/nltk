@@ -875,13 +875,13 @@ JSON. These data structures can be accessed via `tweets.docs()`. However, in gen
 is more practical to focus just on the text field of the Tweets, which
 are accessed via the `strings()` method.
 
-    >>> twitter_samples.strings('tweets.20150430-223406.json')
+    >>> twitter_samples.strings('tweets.20150430-223406.json')[:5] # doctest: +ELLIPSIS
     ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain \xa3170 billion per year! #BetterOffOut #UKIP', ...]
 
 The default tokenizer for Tweets is specialised for 'casual' text, and
 the `tokenized()` method returns a list of lists of tokens.
 
-    >>> twitter_samples.tokenized('tweets.20150430-223406.json')
+    >>> twitter_samples.tokenized('tweets.20150430-223406.json')[:5] # doctest: +ELLIPSIS
     [['RT', '@KirkKus', ':', 'Indirect', 'cost', 'of', 'the', 'UK', 'being', 'in', ...],
      ['VIDEO', ':', 'Sturgeon', 'on', 'post-election', 'deals', 'http://t.co/BTJwrpbmOY'], ...]
 

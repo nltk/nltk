@@ -225,6 +225,12 @@ class StreamBackedCorpusView(AbstractLazySequence):
             self._stream.close()
         self._stream = None
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
     def __len__(self):
         if self._len is None:
             # iterate_from() sets self._len when it reaches the end

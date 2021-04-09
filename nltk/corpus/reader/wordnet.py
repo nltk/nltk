@@ -1161,10 +1161,11 @@ class WordNetCorpusReader(CorpusReader):
         self._key_synset_file = None
 
         # Load the lexnames
-        for i, line in enumerate(self.open("lexnames")):
-            index, lexname, _ = line.split()
-            assert int(index) == i
-            self._lexnames.append(lexname)
+        with self.open("lexnames") as fp:
+            for i, line in enumerate(fp):
+                index, lexname, _ = line.split()
+                assert int(index) == i
+                self._lexnames.append(lexname)
 
         # Load the indices for lemmas and synset offsets
         self._load_lemma_pos_offset_map()
@@ -1197,9 +1198,8 @@ class WordNetCorpusReader(CorpusReader):
         if lang not in self.langs():
             raise WordNetError("Language is not supported.")
 
-        f = self._omw_reader.open("{0:}/wn-data-{0:}.tab".format(lang))
-        self.custom_lemmas(f, lang)
-        f.close()
+        with self._omw_reader.open("{0:}/wn-data-{0:}.tab".format(lang)) as fp:
+            self.custom_lemmas(fp, lang)
 
     def langs(self):
         """ return a list of languages supported by Multilingual Wordnet """
@@ -1218,58 +1218,60 @@ class WordNetCorpusReader(CorpusReader):
         for suffix in self._FILEMAP.values():
 
             # parse each line of the file (ignoring comment lines)
-            for i, line in enumerate(self.open("index.%s" % suffix)):
-                if line.startswith(" "):
-                    continue
+            with self.open("index.%s" % suffix) as fp:
+                for i, line in enumerate(fp):
+                    if line.startswith(" "):
+                        continue
 
-                _iter = iter(line.split())
+                    _iter = iter(line.split())
 
-                def _next_token():
-                    return next(_iter)
+                    def _next_token():
+                        return next(_iter)
 
-                try:
+                    try:
 
-                    # get the lemma and part-of-speech
-                    lemma = _next_token()
-                    pos = _next_token()
+                        # get the lemma and part-of-speech
+                        lemma = _next_token()
+                        pos = _next_token()
 
-                    # get the number of synsets for this lemma
-                    n_synsets = int(_next_token())
-                    assert n_synsets > 0
+                        # get the number of synsets for this lemma
+                        n_synsets = int(_next_token())
+                        assert n_synsets > 0
 
-                    # get and ignore the pointer symbols for all synsets of
-                    # this lemma
-                    n_pointers = int(_next_token())
-                    [_next_token() for _ in range(n_pointers)]
+                        # get and ignore the pointer symbols for all synsets of
+                        # this lemma
+                        n_pointers = int(_next_token())
+                        [_next_token() for _ in range(n_pointers)]
 
-                    # same as number of synsets
-                    n_senses = int(_next_token())
-                    assert n_synsets == n_senses
+                        # same as number of synsets
+                        n_senses = int(_next_token())
+                        assert n_synsets == n_senses
 
-                    # get and ignore number of senses ranked according to
-                    # frequency
-                    _next_token()
+                        # get and ignore number of senses ranked according to
+                        # frequency
+                        _next_token()
 
-                    # get synset offsets
-                    synset_offsets = [int(_next_token()) for _ in range(n_synsets)]
+                        # get synset offsets
+                        synset_offsets = [int(_next_token()) for _ in range(n_synsets)]
 
-                # raise more informative error with file name and line number
-                except (AssertionError, ValueError) as e:
-                    tup = ("index.%s" % suffix), (i + 1), e
-                    raise WordNetError("file %s, line %i: %s" % tup) from e
+                    # raise more informative error with file name and line number
+                    except (AssertionError, ValueError) as e:
+                        tup = ("index.%s" % suffix), (i + 1), e
+                        raise WordNetError("file %s, line %i: %s" % tup) from e
 
-                # map lemmas and parts of speech to synsets
-                self._lemma_pos_offset_map[lemma][pos] = synset_offsets
-                if pos == ADJ:
-                    self._lemma_pos_offset_map[lemma][ADJ_SAT] = synset_offsets
+                    # map lemmas and parts of speech to synsets
+                    self._lemma_pos_offset_map[lemma][pos] = synset_offsets
+                    if pos == ADJ:
+                        self._lemma_pos_offset_map[lemma][ADJ_SAT] = synset_offsets
 
     def _load_exception_map(self):
         # load the exception file data into memory
         for pos, suffix in self._FILEMAP.items():
             self._exception_map[pos] = {}
-            for line in self.open("%s.exc" % suffix):
-                terms = line.split()
-                self._exception_map[pos][terms[0]] = terms[1:]
+            with self.open("%s.exc" % suffix) as fp:
+                for line in fp:
+                    terms = line.split()
+                    self._exception_map[pos][terms[0]] = terms[1:]
         self._exception_map[ADJ_SAT] = self._exception_map[ADJ]
 
     def _compute_max_depth(self, pos, simulate_root):
@@ -1739,12 +1741,15 @@ class WordNetCorpusReader(CorpusReader):
         """Return the contents of LICENSE (for omw)
            use lang=lang to get the license for an individual language"""
         if lang == "eng":
-            return self.open("LICENSE").read()
+            with self.open("LICENSE") as fp:
+                return fp.read()
         elif lang in self.langs():
-            return self._omw_reader.open("{}/LICENSE".format(lang)).read()
+            with self._omw_reader.open("{}/LICENSE".format(lang)) as fp:
+                return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
-            return self._omw_reader.open("LICENSE").read()
+            with self._omw_reader.open("LICENSE") as fp:
+                return fp.read()
         elif lang in self._lang_data:
             raise WordNetError("Cannot determine license for user-provided tab file")
         else:
@@ -1754,12 +1759,15 @@ class WordNetCorpusReader(CorpusReader):
         """Return the contents of README (for omw)
            use lang=lang to get the readme for an individual language"""
         if lang == "eng":
-            return self.open("README").read()
+            with self.open("README") as fp:
+                return fp.read()
         elif lang in self.langs():
-            return self._omw_reader.open("{}/README".format(lang)).read()
+            with self._omw_reader.open("{}/README".format(lang)) as fp:
+                return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
-            return self._omw_reader.open("README").read()
+            with self._omw_reader.open("README") as fp:
+                return fp.read()
         elif lang in self._lang_data:
             raise WordNetError("No README for user-provided tab file")
         else:
@@ -1769,12 +1777,15 @@ class WordNetCorpusReader(CorpusReader):
         """Return the contents of citation.bib file (for omw)
            use lang=lang to get the citation for an individual language"""
         if lang == "eng":
-            return self.open("citation.bib").read()
+            with self.open("citation.bib") as fp:
+                return fp.read()
         elif lang in self.langs():
-            return self._omw_reader.open("{}/citation.bib".format(lang)).read()
+            with self._omw_reader.open("{}/citation.bib".format(lang)) as fp:
+                return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
-            return self._omw_reader.open("citation.bib").read()
+            with self._omw_reader.open("citation.bib") as fp:
+                return fp.read()
         elif lang in self._lang_data:
             raise WordNetError("citation not known for user-provided tab file")
         else:
@@ -2067,18 +2078,19 @@ class WordNetICCorpusReader(CorpusReader):
         ic = {}
         ic[NOUN] = defaultdict(float)
         ic[VERB] = defaultdict(float)
-        for num, line in enumerate(self.open(icfile)):
-            if num == 0:  # skip the header
-                continue
-            fields = line.split()
-            offset = int(fields[0][:-1])
-            value = float(fields[1])
-            pos = _get_pos(fields[0])
-            if len(fields) == 3 and fields[2] == "ROOT":
-                # Store root count.
-                ic[pos][0] += value
-            if value != 0:
-                ic[pos][offset] = value
+        with self.open(icfile) as fp:
+            for num, line in enumerate(fp):
+                if num == 0:  # skip the header
+                    continue
+                fields = line.split()
+                offset = int(fields[0][:-1])
+                value = float(fields[1])
+                pos = _get_pos(fields[0])
+                if len(fields) == 3 and fields[2] == "ROOT":
+                    # Store root count.
+                    ic[pos][0] += value
+                if value != 0:
+                    ic[pos][offset] = value
         return ic
 
 

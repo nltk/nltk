@@ -42,7 +42,8 @@ class XMLCorpusReader(CorpusReader):
         if not isinstance(fileid, str):
             raise TypeError("Expected a single file identifier string")
         # Read the XML in using ElementTree.
-        elt = ElementTree.parse(self.abspath(fileid).open()).getroot()
+        with self.abspath(fileid).open() as fp:
+            elt = ElementTree.parse(fp).getroot()
         # If requested, wrap it.
         if self._wrap_etree:
             elt = ElementWrapper(elt)
@@ -82,7 +83,11 @@ class XMLCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
 
 class XMLCorpusView(StreamBackedCorpusView):

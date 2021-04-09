@@ -229,13 +229,18 @@ class ReviewsCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def readme(self):
         """
         Return the contents of the corpus README.txt file.
         """
-        return self.open("README.txt").read()
+        with self.open("README.txt") as fp:
+            return fp.read()
 
     def reviews(self, fileids=None):
         """
