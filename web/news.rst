@@ -1,6 +1,13 @@
 NLTK News
 =========
 
+2021
+----
+
+NLTK 3.6 release: April 2021
+  Add support for Python 3.9
+  Minor enhancements, bug fixes, code cleanups, efficiency improvements
+
 2020
 ----
 

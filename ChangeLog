@@ -1,3 +1,23 @@
+Version 3.6 2021-04-07
+* add support for Python 3.9
+* add Tree.fromlist
+* compute Minimum Spanning Tree of unweighted graph using BFS
+* fix bug with infinite loop in Wordnet closure and tree
+* fix bug in calculating BLEU using smoothing method 4
+* Wordnet synset similarities work for all pos
+* new Arabic light stemmer (ARLSTem2)
+* new syllable tokenizer (LegalitySyllableTokenizer)
+* remove nose in favor of pytest
+* misc bug fixes, code cleanups, test cleanups, efficiency improvements
+
+Thanks to the following contributors to 3.6:
+Tom Aarsen, K Abainia, Akshita Bhagia, Andrew Bird, Thomas Bird,
+Tom Conroy, CubieDev, Christopher Hench, Andrew Jorgensen, Eric Kafe,
+Ilia Kurenkov, Yeting Li, Joseph Manu, Marius Mather, Denali Molitor,
+Jacob Moorman, Philippe Ombredanne, Vassilis Palassopoulos, Ram Rachum,
+Danny Sepler, Or Sharir, Brad Solomon, Hiroki Teranishi, Constantin Weisser,
+Pratap Yadav, Louis Yang
+
 Version 3.5 2020-04-13
 * add support for Python 3.8
 * drop support for Python 2
