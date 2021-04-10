@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
-# Copyright (C) 2001-2020 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -19,8 +19,6 @@ from nltk.parse.api import ParserI
 from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
-
-import pytest
 
 _stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
 
@@ -748,8 +746,11 @@ def transform(sentence):
         )
 
 
-@pytest.mark.skip("Skipping all CoreNLP tests.")
 def setup_module(module):
+    import pytest
+
+    pytest.skip("Skipping all CoreNLP tests.")
+
     global server
 
     try:
@@ -767,6 +768,9 @@ def setup_module(module):
         )
 
 
-@pytest.mark.skip("Skipping all CoreNLP tests.")
 def teardown_module(module):
+    import pytest
+
+    pytest.skip("Skipping all CoreNLP tests.")
+
     server.stop()

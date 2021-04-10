@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2020 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -10,7 +10,6 @@
 import tempfile
 import os
 import warnings
-import pytest
 from subprocess import PIPE
 
 from nltk.internals import (
@@ -473,8 +472,10 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
         return DependencyGraph(result, top_relation_label="ROOT")
 
 
-@pytest.mark.skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
 def setup_module(module):
+    import pytest
+
+    pytest.skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
 
     try:
         StanfordParser(

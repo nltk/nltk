@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2020 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -48,9 +48,9 @@ else:
     else:
         from nltk.app.wordfreq_app import app as wordfreq
 
-# skip doctests from this package
-import pytest
 
-@pytest.mark.skip("nltk.app examples are not doctests")
 def setup_module(module):
-    pass
+    # skip doctests from this package
+    import pytest
+
+    pytest.skip("nltk.app examples are not doctests")

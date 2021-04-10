@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2020 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # Contributors: matthewmc, clouds56
@@ -90,6 +90,7 @@ from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 from nltk.tokenize.sonority_sequencing import SyllableTokenizer
+from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
 
 
 # Standard sentence tokenizer.
