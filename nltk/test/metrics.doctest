@@ -5,9 +5,10 @@
 Metrics
 =======
 
-------------------------
-Check Numpy Is Installed
-------------------------
+-----
+Setup
+-----
+
     >>> import pytest
     >>> _ = pytest.importorskip("numpy")
 
