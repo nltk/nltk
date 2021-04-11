@@ -220,13 +220,3 @@ def pk(ref, hyp, k=None, boundary="1"):
         if r != h:
             err += 1
     return err / (len(ref) - k + 1.0)
-
-
-# skip doctests if numpy is not installed
-def setup_module(module):
-    import pytest
-
-    try:
-        import numpy
-    except ImportError:
-        pytest.skip("numpy is required for nltk.metrics.segmentation")

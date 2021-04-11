@@ -47,10 +47,3 @@ else:
         )
     else:
         from nltk.app.wordfreq_app import app as wordfreq
-
-
-def setup_module(module):
-    # skip doctests from this package
-    import pytest
-
-    pytest.skip("nltk.app examples are not doctests")

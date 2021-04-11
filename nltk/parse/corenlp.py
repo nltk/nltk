@@ -744,33 +744,3 @@ def transform(sentence):
             "_",
             "_",
         )
-
-
-def setup_module(module):
-    import pytest
-
-    pytest.skip("Skipping all CoreNLP tests.")
-
-    global server
-
-    try:
-        server = CoreNLPServer(port=9000)
-    except LookupError:
-        pytest.skip("Could not instantiate CoreNLPServer.")
-
-    try:
-        server.start()
-    except CoreNLPServerError as e:
-        pytest.skip(
-            "Skipping CoreNLP tests because the server could not be started. "
-            "Make sure that the 9000 port is free. "
-            "{}".format(e.strerror)
-        )
-
-
-def teardown_module(module):
-    import pytest
-
-    pytest.skip("Skipping all CoreNLP tests.")
-
-    server.stop()

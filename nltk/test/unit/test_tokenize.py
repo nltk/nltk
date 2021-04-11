@@ -15,6 +15,25 @@ from nltk.tokenize import (
     LegalitySyllableTokenizer,
 )
 
+def setup_module(module):
+    import pytest
+
+    try:
+        seg = StanfordSegmenter()
+        seg.default_config("ar")
+        seg.default_config("zh")
+    except LookupError as e:
+        pytest.skip(
+            "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
+        )
+
+    try:
+        StanfordTokenizer()
+    except LookupError:
+        pytest.skip(
+            "Tests for nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"
+        )
+
 
 class TestTokenize:
     def test_tweet_tokenizer(self):
