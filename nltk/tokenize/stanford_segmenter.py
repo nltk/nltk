@@ -294,16 +294,3 @@ class StanfordSegmenter(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
-
-
-def setup_module(module):
-    import pytest
-
-    try:
-        seg = StanfordSegmenter()
-        seg.default_config("ar")
-        seg.default_config("zh")
-    except LookupError as e:
-        pytest.skip(
-            "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
-        )

@@ -238,10 +238,3 @@ Here are some examples:
 
 .. [KOEHN2010] Koehn, P. (2010)
     *Statistical Machine Translation*, Cambridge University Press
-
-
-Teardown
-========
-
-    >>> from nltk.corpus import teardown_module
-    >>> teardown_module()
