@@ -1428,9 +1428,7 @@ def test_draw():
     try:
         from tkinter import Tk
     except ImportError as e:
-        import pytest
-
-        pytest.skip("tkinter is required, but it's not available.")
+        raise ValueError("tkinter is required, but it's not available.")
 
     expressions = [
         r"x",

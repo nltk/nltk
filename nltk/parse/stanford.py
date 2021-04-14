@@ -10,7 +10,6 @@
 import tempfile
 import os
 import warnings
-import pytest
 from subprocess import PIPE
 
 from nltk.internals import (
@@ -471,17 +470,3 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
 
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label="ROOT")
-
-
-@pytest.mark.skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
-def setup_module(module):
-
-    try:
-        StanfordParser(
-            model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
-        )
-        StanfordNeuralDependencyParser()
-    except LookupError:
-        pytest.skip(
-            "doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn't exist"
-        )

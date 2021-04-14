@@ -2162,10 +2162,3 @@ access to its tuples() method
     >>> from nltk.corpus import qc
     >>> qc.tuples('test.txt')
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
-
-
-Teardown
-========
-
-    >>> from nltk.corpus import teardown_module
-    >>> teardown_module()

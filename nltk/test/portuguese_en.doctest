@@ -565,10 +565,3 @@ and print them in descending order of frequency:
     segundo 256
     ter 249
     dois 231
-
-
-Teardown
----------
-
-    >>> from nltk.corpus import teardown_module
-    >>> teardown_module()

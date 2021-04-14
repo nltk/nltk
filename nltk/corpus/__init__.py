@@ -481,13 +481,3 @@ def demo():
 if __name__ == "__main__":
     # demo()
     pass
-
-# ** this is for unit testing **
-# unload all corpus after tests
-def teardown_module(module=None):
-    import nltk.corpus
-
-    for name in dir(nltk.corpus):
-        obj = getattr(nltk.corpus, name, None)
-        if isinstance(obj, CorpusReader) and hasattr(obj, "_unload"):
-            obj._unload()

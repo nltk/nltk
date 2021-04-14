@@ -20,8 +20,6 @@ from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
-import pytest
-
 _stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
 
 
@@ -746,27 +744,3 @@ def transform(sentence):
             "_",
             "_",
         )
-
-
-@pytest.mark.skip("Skipping all CoreNLP tests.")
-def setup_module(module):
-    global server
-
-    try:
-        server = CoreNLPServer(port=9000)
-    except LookupError:
-        pytest.skip("Could not instantiate CoreNLPServer.")
-
-    try:
-        server.start()
-    except CoreNLPServerError as e:
-        pytest.skip(
-            "Skipping CoreNLP tests because the server could not be started. "
-            "Make sure that the 9000 port is free. "
-            "{}".format(e.strerror)
-        )
-
-
-@pytest.mark.skip("Skipping all CoreNLP tests.")
-def teardown_module(module):
-    server.stop()
