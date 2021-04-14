@@ -2194,10 +2194,3 @@ def _get_pos(field):
             "for field %s" % field
         )
         raise ValueError(msg)
-
-
-# unload corpus after tests
-def teardown_module(module=None):
-    from nltk.corpus import wordnet
-
-    wordnet._unload()

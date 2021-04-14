@@ -263,7 +263,3 @@ class TestMWAPPDB(unittest.TestCase):
                 ('93,65', '93.65'),
             ],
         )
-
-
-# unload corpora
-from nltk.corpus import teardown_module

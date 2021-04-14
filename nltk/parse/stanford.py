@@ -470,19 +470,3 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
 
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label="ROOT")
-
-
-def setup_module(module):
-    import pytest
-
-    pytest.skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
-
-    try:
-        StanfordParser(
-            model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
-        )
-        StanfordNeuralDependencyParser()
-    except LookupError:
-        pytest.skip(
-            "doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn't exist"
-        )

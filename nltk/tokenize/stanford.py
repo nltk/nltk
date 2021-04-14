@@ -116,14 +116,3 @@ class StanfordTokenizer(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
-
-
-def setup_module(module):
-    import pytest
-
-    try:
-        StanfordTokenizer()
-    except LookupError:
-        pytest.skip(
-            "doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"
-        )

@@ -135,13 +135,3 @@ class SennaNERTagger(Senna):
                 annotations = tagged_sents[i][j]
                 tagged_sents[i][j] = (annotations["word"], annotations["ner"])
         return tagged_sents
-
-
-# skip doctests if Senna is not installed
-def setup_module(module):
-    import pytest
-
-    try:
-        tagger = Senna("/usr/share/senna-v3.0", ["pos", "chk", "ner"])
-    except OSError:
-        pytest.skip("Senna executable not found")
