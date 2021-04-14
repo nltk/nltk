@@ -142,7 +142,7 @@ class GlueFormula(object):
         assert isinstance(self.indices, set)
         accum = "%s : %s" % (self.meaning, self.glue)
         if self.indices:
-            accum += " : {" + ", ".join(str(index) for index in self.indices) + "}"
+            accum += " : {" + ", ".join(str(index) for index in sorted(self.indices)) + "}"
         return accum
 
     def __repr__(self):
