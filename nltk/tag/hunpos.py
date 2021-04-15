@@ -137,13 +137,3 @@ class HunposTagger(TaggerI):
         self._hunpos.stdout.readline()
 
         return tagged_tokens
-
-
-# skip doctests if Hunpos tagger is not installed
-def setup_module(module):
-    import pytest
-
-    try:
-        HunposTagger("en_wsj.model")
-    except LookupError:
-        pytest.skip("HunposTagger is not available")

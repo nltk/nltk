@@ -176,13 +176,3 @@ class Senna(TaggerI):
             tagged_sentences[-1].append(result)
             token_index += 1
         return tagged_sentences
-
-
-# skip doctests if Senna is not installed
-def setup_module(module):
-    import pytest
-
-    try:
-        tagger = Senna("/usr/share/senna-v3.0", ["pos", "chk", "ner"])
-    except OSError:
-        pytest.skip("Senna executable not found")

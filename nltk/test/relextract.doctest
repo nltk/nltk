@@ -179,7 +179,7 @@ signature <ORG, LOC>.
 The next example illustrates a case where the patter is a disjunction
 of roles that a PERSON can occupy in an ORGANIZATION.
 
-    >>> roles = """
+    >>> roles = r"""
     ... (.*(
     ... analyst|
     ... chair(wo)?man|

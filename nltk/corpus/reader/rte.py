@@ -130,10 +130,7 @@ class RTECorpusReader(XMLCorpusReader):
             challenge = doc.attrib["challenge"]
         except KeyError:
             challenge = None
-        try:
-            pairiter= doc.getiterator("pair")
-        except:
-            pairiter= doc.iter("pair")
+        pairiter = doc.iter("pair")
         return [RTEPair(pair, challenge=challenge) for pair in pairiter]
 
     def pairs(self, fileids):

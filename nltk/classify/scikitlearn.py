@@ -120,16 +120,6 @@ class SklearnClassifier(ClassifierI):
         return DictionaryProbDist(dict((classes[i], p) for i, p in enumerate(y_proba)))
 
 
-# skip doctests if scikit-learn is not installed
-def setup_module(module):
-    import pytest
-
-    try:
-        import sklearn
-    except ImportError:
-        pytest.skip("scikit-learn is not installed")
-
-
 if __name__ == "__main__":
     from nltk.classify.util import names_demo, names_demo_features
     from sklearn.linear_model import LogisticRegression

@@ -298,15 +298,3 @@ def demo():
         "forcing 'A' to be 'NNP':",
         next(bllip.tagged_parse([("A", "NNP"), ("tree", None)])),
     )
-
-
-def setup_module(module):
-    import pytest
-
-    try:
-        _ensure_bllip_import_or_error()
-    except ImportError:
-        pytest.skip(
-            "doctests from nltk.parse.bllip are skipped because "
-            "the bllipparser module is not installed"
-        )

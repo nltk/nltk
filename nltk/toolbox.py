@@ -36,11 +36,9 @@ class StandardFormat(object):
         :type sfm_file: str
         """
         if isinstance(sfm_file, PathPointer):
-            # [xx] We don't use 'rU' mode here -- do we need to?
-            #      (PathPointer.open doesn't take a mode option)
             self._file = sfm_file.open(self._encoding)
         else:
-            self._file = codecs.open(sfm_file, "rU", self._encoding)
+            self._file = codecs.open(sfm_file, "r", self._encoding)
 
     def open_string(self, s):
         """
