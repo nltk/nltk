@@ -225,7 +225,7 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     #: A regular expression used to extract the tag name from a start tag,
     #: end tag, or empty-elt tag string.
-    _XML_TAG_NAME = re.compile("<\s*(?:/\s*)?([^\s>]+)")
+    _XML_TAG_NAME = re.compile(r"<\s*(?:/\s*)?([^\s>]+)")
 
     #: A regular expression used to find all start-tags, end-tags, and
     #: empty-elt tags in an XML file.  This regexp is more lenient than

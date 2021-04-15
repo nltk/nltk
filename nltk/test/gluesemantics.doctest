@@ -151,7 +151,7 @@ Demo of "John walks"
 Demo of "A dog walks"
 ---------------------
 
-    >>> a = GlueFormula("\P Q.some x.(P(x) and Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
+    >>> a = GlueFormula("\\P Q.some x.(P(x) and Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print(a)
     \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
     >>> man = GlueFormula(r"\x.man(x)", "(gv -o gr)")
@@ -173,7 +173,7 @@ Demo of 'every girl chases a dog'
 
 Individual words:
 
-    >>> every = GlueFormula("\P Q.all x.(P(x) -> Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
+    >>> every = GlueFormula("\\P Q.all x.(P(x) -> Q(x))", "((gv -o gr) -o ((g -o G) -o G))")
     >>> print(every)
     \P Q.all x.(P(x) -> Q(x)) : ((gv -o gr) -o ((g -o G) -o G))
     >>> girl = GlueFormula(r"\x.girl(x)", "(gv -o gr)")
@@ -182,7 +182,7 @@ Individual words:
     >>> chases = GlueFormula(r"\x y.chases(x,y)", "(g -o (h -o f))")
     >>> print(chases)
     \x y.chases(x,y) : (g -o (h -o f))
-    >>> a = GlueFormula("\P Q.some x.(P(x) and Q(x))", "((hv -o hr) -o ((h -o H) -o H))")
+    >>> a = GlueFormula("\\P Q.some x.(P(x) and Q(x))", "((hv -o hr) -o ((h -o H) -o H))")
     >>> print(a)
     \P Q.exists x.(P(x) & Q(x)) : ((hv -o hr) -o ((h -o H) -o H))
     >>> dog = GlueFormula(r"\x.dog(x)", "(hv -o hr)")

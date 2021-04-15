@@ -218,7 +218,7 @@ There is no specific limit to the length of a marker:
 A marker can contain any non white space character:
 
     >>> f = toolbox.StandardFormat()
-    >>> f.open_string('\\`~!@#$%^&*()_-=+[{]}\|,<.>/?;:"0123456789 value\n')
+    >>> f.open_string('\\`~!@#$%^&*()_-=+[{]}\\|,<.>/?;:"0123456789 value\n')
     >>> list(f.fields())
     [('`~!@#$%^&*()_-=+[{]}\\|,<.>/?;:"0123456789', 'value')]
 
