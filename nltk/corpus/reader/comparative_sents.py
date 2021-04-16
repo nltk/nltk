@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Comparative Sentence Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -34,8 +34,6 @@ Related papers:
     (Coling-2008), Manchester, 18-22 August, 2008.
 """
 import re
-
-from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -147,7 +145,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [
@@ -181,7 +179,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         comparison (from listOfkeywords.txt).
         """
         keywords = []
-        raw_text = self.open("listOfkeywords.txt").read()
+        with self.open("listOfkeywords.txt") as fp:
+            raw_text = fp.read()
         for line in raw_text.split("\n"):
             if not line or line.startswith("//"):
                 continue
@@ -197,15 +196,20 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for i in fileids:
+            with self.open(i) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def readme(self):
         """
         Return the contents of the corpus readme file.
         """
-        return self.open("README.txt").read()
+        with self.open("README.txt") as fp:
+            return fp.read()
 
     def sents(self, fileids=None):
         """

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -19,8 +19,6 @@ from nltk.parse.api import ParserI
 from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
-
-from unittest import skip
 
 _stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
 
@@ -244,6 +242,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             self.url,
             params={"properties": json.dumps(default_properties)},
             data=data.encode(self.encoding),
+            headers={"Content-Type": "text/plain; charset={}".format(self.encoding)},
             timeout=timeout,
         )
 
@@ -745,29 +744,3 @@ def transform(sentence):
             "_",
             "_",
         )
-
-
-@skip("Skipping all CoreNLP tests.")
-def setup_module(module):
-    from nose import SkipTest
-
-    global server
-
-    try:
-        server = CoreNLPServer(port=9000)
-    except LookupError as e:
-        raise SkipTest("Could not instantiate CoreNLPServer.")
-
-    try:
-        server.start()
-    except CoreNLPServerError as e:
-        raise SkipTest(
-            "Skipping CoreNLP tests because the server could not be started. "
-            "Make sure that the 9000 port is free. "
-            "{}".format(e.strerror)
-        )
-
-
-@skip("Skipping all CoreNLP tests.")
-def teardown_module(module):
-    server.stop()

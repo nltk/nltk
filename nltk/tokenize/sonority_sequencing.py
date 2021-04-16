@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Christopher Hench <chris.l.hench@gmail.com>
 #         Alex Estes
 # URL: <http://nltk.sourceforge.net>

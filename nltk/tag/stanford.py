@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
@@ -22,8 +22,6 @@ import os
 import tempfile
 from subprocess import PIPE
 import warnings
-
-from six import text_type
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
@@ -106,7 +104,7 @@ class StanfordTagger(TaggerI):
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
         _input = "\n".join((" ".join(x) for x in sentences))
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
@@ -132,7 +130,7 @@ class StanfordTagger(TaggerI):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
                 word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append(("".join(word_tags[:-1]), word_tags[-1]))
+                sentence.append(("".join(word_tags[:-1]), word_tags[-1].replace('0', '').upper()))
             tagged_sentences.append(sentence)
         return tagged_sentences
 
@@ -235,15 +233,3 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
-
-
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        StanfordPOSTagger("english-bidirectional-distsim.tagger")
-    except LookupError:
-        raise SkipTest(
-            "Doctests from nltk.tag.stanford are skipped because one \
-                       of the stanford jars cannot be found."
-        )

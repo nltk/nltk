@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -9,8 +9,6 @@
 
 import math
 import logging
-
-from six.moves import range
 
 from nltk.parse.dependencygraph import DependencyGraph
 

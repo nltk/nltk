@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 #         Lakhdar Benzahia <lakhdar.benzahia@gmail.com>  (co-writer)
@@ -25,7 +25,6 @@ There is also a demo function: `snowball.demo()`.
 """
 
 import re
-from six.moves import input
 
 from nltk.corpus import stopwords
 from nltk.stem import porter
@@ -142,11 +141,11 @@ class _LanguageSpecificStemmer(StemmerI):
             try:
                 for word in stopwords.words(language):
                     self.stopwords.add(word)
-            except IOError:
+            except IOError as e:
                 raise ValueError(
                     "{!r} has no list of stopwords. Please set"
                     " 'ignore_stopwords' to 'False'.".format(self)
-                )
+                ) from e
 
     def __repr__(self):
         """
@@ -206,7 +205,7 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
         r1 = ""
         for i in range(1, len(word)):
             if word[i] not in vowels and word[i - 1] in vowels:
-                if len(word[: i + 1]) < 3 and len(word[: i + 1]) > 0:
+                if 3 > len(word[: i + 1]) > 0:
                     r1 = word[3:]
                 elif len(word[: i + 1]) >= 3:
                     r1 = word[i + 1 :]
@@ -1144,7 +1143,7 @@ class DutchStemmer(_StandardStemmer):
         # contains at least 3 letters.
         for i in range(1, len(word)):
             if word[i] not in self.__vowels and word[i - 1] in self.__vowels:
-                if len(word[: i + 1]) < 3 and len(word[: i + 1]) > 0:
+                if 3 > len(word[: i + 1]) > 0:
                     r1 = word[3:]
                 elif len(word[: i + 1]) == 0:
                     return word
@@ -2682,7 +2681,7 @@ class GermanStemmer(_StandardStemmer):
         # contains at least 3 letters.
         for i in range(1, len(word)):
             if word[i] not in self.__vowels and word[i - 1] in self.__vowels:
-                if len(word[: i + 1]) < 3 and len(word[: i + 1]) > 0:
+                if 3 > len(word[: i + 1]) > 0:
                     r1 = word[3:]
                 elif len(word[: i + 1]) == 0:
                     return word

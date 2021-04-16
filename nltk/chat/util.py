@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chatbot Utilities
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,8 +10,6 @@
 
 import re
 import random
-
-from six.moves import input
 
 
 reflections = {
@@ -56,7 +54,7 @@ class Chat(object):
         self._regex = self._compile_reflections()
 
     def _compile_reflections(self):
-        sorted_refl = sorted(self._reflections.keys(), key=len, reverse=True)
+        sorted_refl = sorted(self._reflections, key=len, reverse=True)
         return re.compile(
             r"\b({0})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
         )

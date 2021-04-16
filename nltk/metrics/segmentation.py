@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Text Segmentation Metrics
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
@@ -44,8 +44,6 @@ try:
     import numpy as np
 except ImportError:
     pass
-
-from six.moves import range
 
 
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
@@ -222,13 +220,3 @@ def pk(ref, hyp, k=None, boundary="1"):
         if r != h:
             err += 1
     return err / (len(ref) - k + 1.0)
-
-
-# skip doctests if numpy is not installed
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        import numpy
-    except ImportError:
-        raise SkipTest("numpy is required for nltk.metrics.segmentation")

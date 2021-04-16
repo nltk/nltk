@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # Contributors: matthewmc, clouds56
@@ -65,6 +65,7 @@ import re
 from nltk.data import load
 from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
 from nltk.tokenize.mwe import MWETokenizer
+from nltk.tokenize.destructive import NLTKWordTokenizer
 from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.tokenize.regexp import (
     RegexpTokenizer,
@@ -89,6 +90,7 @@ from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 from nltk.tokenize.sonority_sequencing import SyllableTokenizer
+from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
 
 
 # Standard sentence tokenizer.
@@ -107,33 +109,7 @@ def sent_tokenize(text, language="english"):
 
 
 # Standard word tokenizer.
-_treebank_word_tokenizer = TreebankWordTokenizer()
-
-# See discussion on https://github.com/nltk/nltk/pull/1437
-# Adding to TreebankWordTokenizer, nltk.word_tokenize now splits on
-# - chervon quotes u'\xab' and u'\xbb' .
-# - unicode quotes u'\u2018', u'\u2019', u'\u201c' and u'\u201d'
-# See https://github.com/nltk/nltk/issues/1995#issuecomment-376741608
-# Also, behavior of splitting on clitics now follows Stanford CoreNLP
-# - clitics covered (?!re|ve|ll|m|t|s|d)(\w)\b
-improved_open_quote_regex = re.compile(u"([«“‘„]|[`]+)", re.U)
-improved_open_single_quote_regex = re.compile(
-    r"(?i)(\')(?!re|ve|ll|m|t|s|d)(\w)\b", re.U
-)
-improved_close_quote_regex = re.compile(u"([»”’])", re.U)
-improved_punct_regex = re.compile(r'([^\.])(\.)([\]\)}>"\'' u"»”’ " r"]*)\s*$", re.U)
-_treebank_word_tokenizer.STARTING_QUOTES.insert(0, (improved_open_quote_regex, r" \1 "))
-_treebank_word_tokenizer.STARTING_QUOTES.append(
-    (improved_open_single_quote_regex, r"\1 \2")
-)
-_treebank_word_tokenizer.ENDING_QUOTES.insert(0, (improved_close_quote_regex, r" \1 "))
-_treebank_word_tokenizer.PUNCTUATION.insert(0, (improved_punct_regex, r"\1 \2 \3 "))
-
-# See https://github.com/nltk/nltk/pull/2322
-addition_punct_regex = re.compile(r"[*]", re.U)
-_treebank_word_tokenizer.PUNCTUATION.append((addition_punct_regex, r" \g<0> "))
-replacement_dotdotdot_regex = re.compile(r"\.{2,}", re.U)
-_treebank_word_tokenizer.PUNCTUATION[3] = (replacement_dotdotdot_regex, r" \g<0> ")
+_treebank_word_tokenizer = NLTKWordTokenizer()
 
 
 def word_tokenize(text, language="english", preserve_line=False):

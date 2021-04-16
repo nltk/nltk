@@ -4,18 +4,37 @@
 Mock test for Stanford CoreNLP wrappers.
 """
 
-import sys
-from itertools import chain
-from unittest import TestCase, SkipTest
+from unittest import TestCase
+from unittest.mock import MagicMock
+import pytest
 
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    raise SkipTest('unittest.mock no supported in Python2')
 from nltk.tree import Tree
 from nltk.parse import corenlp
 
 
+def setup_module(module):
+    global server
+
+    try:
+        server = CoreNLPServer(port=9000)
+    except LookupError:
+        pytest.skip("Could not instantiate CoreNLPServer.")
+
+    try:
+        server.start()
+    except CoreNLPServerError as e:
+        pytest.skip(
+            "Skipping CoreNLP tests because the server could not be started. "
+            "Make sure that the 9000 port is free. "
+            "{}".format(e.strerror)
+        )
+
+
+def teardown_module(module):
+    server.stop()
+
+
+@pytest.mark.skip(reason="Skipping all CoreNLP tests.")
 class TestTokenizerAPI(TestCase):
     def test_tokenize(self):
         corenlp_tokenizer = corenlp.CoreNLPParser()
@@ -235,6 +254,7 @@ class TestTokenizerAPI(TestCase):
         self.assertEqual(expected_output, tokenized_output)
 
 
+@pytest.mark.skip(reason="Skipping all CoreNLP tests.")
 class TestTaggerAPI(TestCase):
     def test_pos_tagger(self):
         corenlp_tagger = corenlp.CoreNLPParser(tagtype='pos')
@@ -732,6 +752,7 @@ class TestTaggerAPI(TestCase):
             corenlp_tagger = corenlp.CoreNLPParser(tagtype='test')
 
 
+@pytest.mark.skip(reason="Skipping all CoreNLP tests.")
 class TestParserAPI(TestCase):
     def test_parse(self):
         corenlp_parser = corenlp.CoreNLPParser()

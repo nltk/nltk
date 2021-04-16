@@ -3,10 +3,8 @@
 Unit tests for Senna
 """
 
-from __future__ import unicode_literals
 from os import environ, path, sep
 
-import logging
 import unittest
 
 from nltk.classify import Senna

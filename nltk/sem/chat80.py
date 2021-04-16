@@ -1,12 +1,12 @@
 # Natural Language Toolkit: Chat-80 KB Reader
 # See http://www.w3.org/TR/swbp-skos-core-guide/
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
-"""
+r"""
 Overview
 ========
 
@@ -127,8 +127,6 @@ import re
 import shelve
 import os
 import sys
-
-from six import string_types
 
 import nltk.data
 
@@ -702,7 +700,7 @@ def make_lex(symbols):
 
 """
     lex.append(header)
-    template = "PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
+    template = r"PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
 
     for s in symbols:
         parts = s.split("_")
@@ -727,7 +725,7 @@ def concepts(items=items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list(Concept)
     """
-    if isinstance(items, string_types):
+    if isinstance(items, str):
         items = (items,)
 
     rels = [item_metadata[r] for r in items]

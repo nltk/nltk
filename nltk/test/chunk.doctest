@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2021 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========
@@ -25,8 +25,8 @@ be chunked.
 
 Construct some new chunking rules.
 
-    >>> chunk_rule = ChunkRule("<.*>+", "Chunk everything")
-    >>> chink_rule = ChinkRule("<VBD|IN|\.>", "Chink on verbs/prepositions")
+    >>> chunk_rule = ChunkRule(r"<.*>+", "Chunk everything")
+    >>> strip_rule = StripRule(r"<VBD|IN|\.>", "Strip on verbs/prepositions")
     >>> split_rule = SplitRule("<DT><NN>", "<DT><NN>",
     ...                        "Split successive determiner/noun pairs")
 
@@ -78,7 +78,7 @@ Create and score a series of chunk parsers, successively more complex.
       chewed/VBD
       ./.)
 
-    >>> chunk_parser = RegexpChunkParser([chunk_rule, chink_rule],
+    >>> chunk_parser = RegexpChunkParser([chunk_rule, strip_rule],
     ...                                  chunk_label='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
     >>> print(chunked_text)
@@ -109,14 +109,14 @@ Create and score a series of chunk parsers, successively more complex.
     >>> for chunk in chunkscore.incorrect(): print(chunk)
     (NP the/DT mat/NN the/DT dog/NN)
 
-    >>> chunk_parser = RegexpChunkParser([chunk_rule, chink_rule, split_rule],
+    >>> chunk_parser = RegexpChunkParser([chunk_rule, strip_rule, split_rule],
     ...                                  chunk_label='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text, trace=True)
     # Input:
      <DT>  <NN>  <VBD>  <IN>  <DT>  <NN>  <DT>  <NN>  <VBD>  <.>
     # Chunk everything:
     {<DT>  <NN>  <VBD>  <IN>  <DT>  <NN>  <DT>  <NN>  <VBD>  <.>}
-    # Chink on verbs/prepositions:
+    # Strip on verbs/prepositions:
     {<DT>  <NN>} <VBD>  <IN> {<DT>  <NN>  <DT>  <NN>} <VBD>  <.>
     # Split successive determiner/noun pairs:
     {<DT>  <NN>} <VBD>  <IN> {<DT>  <NN>}{<DT>  <NN>} <VBD>  <.>
@@ -148,7 +148,7 @@ Create and score a series of chunk parsers, successively more complex.
     []
 
     >>> chunk_parser.rules() # doctest: +NORMALIZE_WHITESPACE
-    [<ChunkRule: '<.*>+'>, <ChinkRule: '<VBD|IN|\\.>'>,
+    [<ChunkRule: '<.*>+'>, <StripRule: '<VBD|IN|\\.>'>,
      <SplitRule: '<DT><NN>', '<DT><NN>'>]
 
 Printing parsers:
@@ -159,8 +159,8 @@ Printing parsers:
     RegexpChunkParser with 3 rules:
         Chunk everything
           <ChunkRule: '<.*>+'>
-        Chink on verbs/prepositions
-          <ChinkRule: '<VBD|IN|\\.>'>
+        Strip on verbs/prepositions
+          <StripRule: '<VBD|IN|\\.>'>
         Split successive determiner/noun pairs
           <SplitRule: '<DT><NN>', '<DT><NN>'>
 
@@ -254,12 +254,12 @@ Chunking Rules
 
 Test the different rule constructors & __repr__ methods:
 
-    >>> r1 = RegexpChunkRule('<a|b>'+ChunkString.IN_CHINK_PATTERN,
+    >>> r1 = RegexpChunkRule('<a|b>'+ChunkString.IN_STRIP_PATTERN,
     ...                      '{<a|b>}', 'chunk <a> and <b>')
-    >>> r2 = RegexpChunkRule(re.compile('<a|b>'+ChunkString.IN_CHINK_PATTERN),
+    >>> r2 = RegexpChunkRule(re.compile('<a|b>'+ChunkString.IN_STRIP_PATTERN),
     ...                      '{<a|b>}', 'chunk <a> and <b>')
     >>> r3 = ChunkRule('<a|b>', 'chunk <a> and <b>')
-    >>> r4 = ChinkRule('<a|b>', 'chink <a> and <b>')
+    >>> r4 = StripRule('<a|b>', 'strip <a> and <b>')
     >>> r5 = UnChunkRule('<a|b>', 'unchunk <a> and <b>')
     >>> r6 = MergeRule('<a>', '<b>', 'merge <a> w/ <b>')
     >>> r7 = SplitRule('<a>', '<b>', 'split <a> from <b>')
@@ -270,7 +270,7 @@ Test the different rule constructors & __repr__ methods:
     <RegexpChunkRule: '<a|b>(?=[^\\}]*(\\{|$))'->'{<a|b>}'>
     <RegexpChunkRule: '<a|b>(?=[^\\}]*(\\{|$))'->'{<a|b>}'>
     <ChunkRule: '<a|b>'>
-    <ChinkRule: '<a|b>'>
+    <StripRule: '<a|b>'>
     <UnChunkRule: '<a|b>'>
     <MergeRule: '<a>', '<b>'>
     <SplitRule: '<a>', '<b>'>
@@ -352,14 +352,14 @@ Test parsing of other rule types:
 
     >>> print(RegexpParser('''
     ... X:
-    ...   }<a><b>{     # chink rule
+    ...   }<a><b>{     # strip rule
     ...   <a>}{<b>     # split rule
     ...   <a>{}<b>     # merge rule
     ...   <a>{<b>}<c>  # chunk rule w/ context
     ... '''))
     chunk.RegexpParser with 1 stages:
     RegexpChunkParser with 4 rules:
-        chink rule              <ChinkRule: '<a><b>'>
+        strip rule              <StripRule: '<a><b>'>
         split rule              <SplitRule: '<a>', '<b>'>
         merge rule              <MergeRule: '<a>', '<b>'>
         chunk rule w/ context   <ChunkRuleWithContext: '<a>', '<b>', '<c>'>

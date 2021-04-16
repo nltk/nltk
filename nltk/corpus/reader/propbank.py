@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PropBank Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,8 +8,6 @@
 import re
 from functools import total_ordering
 from xml.etree import ElementTree
-
-from six import string_types
 
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
@@ -57,7 +55,7 @@ class PropbankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, string_types):
+        if isinstance(framefiles, str):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
@@ -78,7 +76,11 @@ class PropbankCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def instances(self, baseform=None):
         """
@@ -116,7 +118,8 @@ class PropbankCorpusReader(CorpusReader):
 
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
-        etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+        with self.abspath(framefile).open() as fp:
+            etree = ElementTree.parse(fp).getroot()
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
@@ -138,7 +141,8 @@ class PropbankCorpusReader(CorpusReader):
         for framefile in framefiles:
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
-            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            with self.abspath(framefile).open() as fp:
+                etree = ElementTree.parse(fp).getroot()
             rsets.append(etree.findall("predicate/roleset"))
         return LazyConcatenation(rsets)
 
@@ -529,7 +533,7 @@ class PropbankInflection(object):
 
     @staticmethod
     def parse(s):
-        if not isinstance(s, string_types):
+        if not isinstance(s, str):
             raise TypeError("expected a string")
         if len(s) != 5 or not PropbankInflection._VALIDATE.match(s):
             raise ValueError("Bad propbank inflection string %r" % s)

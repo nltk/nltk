@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Drawing utilities
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -34,8 +34,7 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Entry,
@@ -51,7 +50,7 @@ from six.moves.tkinter import (
     Widget,
     RAISED,
 )
-from six.moves.tkinter_tkfiledialog import asksaveasfilename
+from tkinter.filedialog import asksaveasfilename
 
 from nltk.util import in_idle
 
@@ -60,8 +59,7 @@ from nltk.util import in_idle
 ##//////////////////////////////////////////////////////
 
 
-@add_metaclass(ABCMeta)
-class CanvasWidget(object):
+class CanvasWidget(metaclass=ABCMeta):
     """
     A collection of graphical elements and bindings used to display a
     complex object on a Tkinter ``Canvas``.  A canvas widget is

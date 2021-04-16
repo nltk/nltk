@@ -3,7 +3,6 @@
 Tests for BLEU translation evaluation metric
 """
 
-import functools
 import io
 import unittest
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,10 +14,8 @@ package.
 
 import os
 import unittest
+from tempfile import TemporaryDirectory
 
-from six.moves import zip
-
-from nltk.compat import TemporaryDirectory
 from nltk.corpus import twitter_samples
 from nltk.twitter.common import json2csv, json2csv_entities
 
@@ -231,7 +229,3 @@ class TestJSON2CSV(unittest.TestCase):
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
             json2csv(self.infile, outfn, ['text'], gzip_compress=False)
             self.assertFalse(are_files_identical(outfn, ref_fn), msg=self.msg)
-
-
-if __name__ == "__main__":
-    unittest.main()

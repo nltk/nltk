@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -119,7 +119,8 @@ class FStructure(dict):
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodes[idx] for idx in chain(*node["deps"].values())]
+            children = [depgraph.nodes[idx] for idx in
+                        chain.from_iterable(node["deps"].values())]
             for child in children:
                 fstruct.safeappend(
                     child["rel"],
@@ -171,7 +172,7 @@ class FStructure(dict):
             return letter
 
     def __repr__(self):
-        return self.__unicode__().replace("\n", "")
+        return self.__str__().replace("\n", "")
 
     def __str__(self):
         return self.pretty_format()

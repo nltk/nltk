@@ -7,4 +7,4 @@ pip install --upgrade -r pip-req.txt
 pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip
 
 #download nltk data packages
-python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
+python -c "import nltk; nltk.download('all', force=True)" || echo "NLTK data download failed: $?"

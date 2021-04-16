@@ -1,11 +1,21 @@
 NLTK News
 =========
 
-2019
+2021
 ----
 
-NLTK 3.5 release: August 2019
-  Drop support for Python 2
+NLTK 3.6 release: April 2021
+  Add support for Python 3.9
+  Minor enhancements, bug fixes, code cleanups, efficiency improvements
+
+2020
+----
+
+NLTK 3.5 release: April 2020
+  Add support for Python 3.8, drop support for Python 2
+
+2019
+----
 
 NLTK 3.4.5 release: August 2019
   Fixed security bug in downloader: Zip slip vulnerability - for the unlikely

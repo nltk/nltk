@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2021 NLTK Project
 .. For license information, see LICENSE.TXT
 
 .. -*- coding: utf-8 -*-
@@ -238,5 +238,3 @@ Here are some examples:
 
 .. [KOEHN2010] Koehn, P. (2010)
     *Statistical Machine Translation*, Cambridge University Press
-
-

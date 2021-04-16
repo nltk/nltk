@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -165,7 +165,7 @@ from xml.etree import ElementTree
 
 try:
     TKINTER = True
-    from six.moves.tkinter import (
+    from tkinter import (
         Tk,
         Frame,
         Label,
@@ -176,17 +176,15 @@ try:
         IntVar,
         TclError,
     )
-    from six.moves.tkinter_messagebox import showerror
+    from tkinter.messagebox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
 except ImportError:
     TKINTER = False
     TclError = ValueError
 
-from six import string_types, text_type
-from six.moves import input
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.error import HTTPError, URLError
+from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
 
 import nltk
 
@@ -277,10 +275,10 @@ class Package(object):
 
     @staticmethod
     def fromxml(xml):
-        if isinstance(xml, string_types):
+        if isinstance(xml, str):
             xml = ElementTree.parse(xml)
         for key in xml.attrib:
-            xml.attrib[key] = text_type(xml.attrib[key])
+            xml.attrib[key] = str(xml.attrib[key])
         return Package(**xml.attrib)
 
     def __lt__(self, other):
@@ -317,10 +315,10 @@ class Collection(object):
 
     @staticmethod
     def fromxml(xml):
-        if isinstance(xml, string_types):
+        if isinstance(xml, str):
             xml = ElementTree.parse(xml)
         for key in xml.attrib:
-            xml.attrib[key] = text_type(xml.attrib[key])
+            xml.attrib[key] = str(xml.attrib[key])
         children = [child.get("ref") for child in xml.findall("item")]
         return Collection(children=children, **xml.attrib)
 
@@ -600,7 +598,7 @@ class Downloader(object):
     # /////////////////////////////////////////////////////////////////
 
     def _info_or_id(self, info_or_id):
-        if isinstance(info_or_id, string_types):
+        if isinstance(info_or_id, str):
             return self.info(info_or_id)
         else:
             return info_or_id
@@ -1649,7 +1647,7 @@ class DownloaderGUI(object):
 
     def _table_reprfunc(self, row, col, val):
         if self._table.column_names[col].endswith("Size"):
-            if isinstance(val, string_types):
+            if isinstance(val, str):
                 return "  %s" % val
             elif val < 1024 ** 2:
                 return "  %.1f KB" % (val / 1024.0 ** 1)
@@ -1985,7 +1983,7 @@ class DownloaderGUI(object):
         ABOUT = "NLTK Downloader\n" + "Written by Edward Loper"
         TITLE = "About: NLTK Downloader"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except ImportError:
@@ -2208,7 +2206,7 @@ def md5_hexdigest(file):
     Calculate and return the MD5 checksum for a given file.
     ``file`` may either be a filename or an open stream.
     """
-    if isinstance(file, string_types):
+    if isinstance(file, str):
         with open(file, "rb") as infile:
             return _md5_hexdigest(infile)
     return _md5_hexdigest(file)
@@ -2427,11 +2425,15 @@ def _find_packages(root):
                 try:
                     zf = zipfile.ZipFile(zipfilename)
                 except Exception as e:
-                    raise ValueError("Error reading file %r!\n%s" % (zipfilename, e))
+                    raise ValueError(
+                        "Error reading file %r!\n%s" % (zipfilename, e)
+                    ) from e
                 try:
                     pkg_xml = ElementTree.parse(xmlfilename).getroot()
                 except Exception as e:
-                    raise ValueError("Error reading file %r!\n%s" % (xmlfilename, e))
+                    raise ValueError(
+                        "Error reading file %r!\n%s" % (xmlfilename, e)
+                    ) from e
 
                 # Check that the UID matches the filename
                 uid = os.path.split(xmlfilename[:-4])[1]

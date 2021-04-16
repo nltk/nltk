@@ -2,14 +2,12 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
 from itertools import chain
-
-from six import string_types
 
 import nltk
 from nltk.internals import Counter
@@ -41,7 +39,7 @@ class GlueFormula(object):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, string_types):
+        if isinstance(meaning, str):
             self.meaning = Expression.fromstring(meaning)
         elif isinstance(meaning, Expression):
             self.meaning = meaning
@@ -51,7 +49,7 @@ class GlueFormula(object):
                 % (meaning, meaning.__class__)
             )
 
-        if isinstance(glue, string_types):
+        if isinstance(glue, str):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
@@ -79,10 +77,10 @@ class GlueFormula(object):
             return_glue = linearlogic.ApplicationExpression(
                 self.glue, arg.glue, arg.indices
             )
-        except linearlogic.LinearLogicApplicationException:
+        except linearlogic.LinearLogicApplicationException as e:
             raise linearlogic.LinearLogicApplicationException(
                 "'%s' applied to '%s'" % (self.simplify(), arg.simplify())
-            )
+            ) from e
 
         arg_meaning_abstracted = arg.meaning
         if return_indices:
@@ -144,7 +142,7 @@ class GlueFormula(object):
         assert isinstance(self.indices, set)
         accum = "%s : %s" % (self.meaning, self.glue)
         if self.indices:
-            accum += " : {" + ", ".join(str(index) for index in self.indices) + "}"
+            accum += " : {" + ", ".join(str(index) for index in sorted(self.indices)) + "}"
         return accum
 
     def __repr__(self):
@@ -296,13 +294,13 @@ class GlueDict(dict):
         if node is None:
             # TODO: should it be depgraph.root? Is this code tested?
             top = depgraph.nodes[0]
-            depList = list(chain(*top["deps"].values()))
+            depList = list(chain.from_iterable(top["deps"].values()))
             root = depgraph.nodes[depList[0]]
 
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
 
         glueformulas = self.lookup(node, depgraph, counter)
-        for dep_idx in chain(*node["deps"].values()):
+        for dep_idx in chain.from_iterable(node["deps"].values()):
             dep = depgraph.nodes[dep_idx]
             glueformulas.extend(
                 self.to_glueformula_list(depgraph, dep, counter, verbose)
@@ -349,7 +347,7 @@ class GlueDict(dict):
     def _lookup_semtype_option(self, semtype, node, depgraph):
         relationships = frozenset(
             depgraph.nodes[dep]["rel"].lower()
-            for dep in chain(*node["deps"].values())
+            for dep in chain.from_iterable(node["deps"].values())
             if depgraph.nodes[dep]["rel"].lower() not in OPTIONAL_RELATIONSHIPS
         )
 
@@ -519,7 +517,7 @@ class GlueDict(dict):
         """
         deps = [
             depgraph.nodes[dep]
-            for dep in chain(*node["deps"].values())
+            for dep in chain.from_iterable(node["deps"].values())
             if depgraph.nodes[dep]["rel"].lower() == rel.lower()
         ]
 
@@ -732,7 +730,7 @@ class DrtGlueFormula(GlueFormula):
         if not indices:
             indices = set()
 
-        if isinstance(meaning, string_types):
+        if isinstance(meaning, str):
             self.meaning = drt.DrtExpression.fromstring(meaning)
         elif isinstance(meaning, drt.DrtExpression):
             self.meaning = meaning
@@ -742,7 +740,7 @@ class DrtGlueFormula(GlueFormula):
                 % (meaning, meaning.__class__)
             )
 
-        if isinstance(glue, string_types):
+        if isinstance(glue, str):
             self.glue = linearlogic.LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue

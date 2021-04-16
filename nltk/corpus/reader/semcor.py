@@ -1,6 +1,6 @@
 # Natural Language Toolkit: SemCor Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Nathan Schneider <nschneid@cs.cmu.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

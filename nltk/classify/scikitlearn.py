@@ -31,8 +31,6 @@ best 1000 features:
 >>> classif = SklearnClassifier(pipeline)
 """
 
-from six.moves import zip
-
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 
@@ -120,16 +118,6 @@ class SklearnClassifier(ClassifierI):
     def _make_probdist(self, y_proba):
         classes = self._encoder.classes_
         return DictionaryProbDist(dict((classes[i], p) for i, p in enumerate(y_proba)))
-
-
-# skip doctests if scikit-learn is not installed
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        import sklearn
-    except ImportError:
-        raise SkipTest("scikit-learn is not installed")
 
 
 if __name__ == "__main__":

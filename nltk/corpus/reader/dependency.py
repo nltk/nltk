@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #
@@ -40,7 +40,8 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         result = []
         for fileid, encoding in self.abspaths(fileids, include_encoding=True):
             if isinstance(fileid, PathPointer):
-                result.append(fileid.open(encoding=encoding).read())
+                with fileid.open(encoding=encoding) as fp:
+                    result.append(fp.read())
             else:
                 with codecs.open(fileid, "r", encoding) as fp:
                     result.append(fp.read())

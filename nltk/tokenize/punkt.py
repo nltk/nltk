@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
@@ -108,9 +108,6 @@ import re
 import math
 from collections import defaultdict
 
-from six import string_types
-
-from nltk.compat import unicode_repr
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -221,7 +218,9 @@ class PunktLanguageVars(object):
     _re_word_start = r"[^\(\"\`{\[:;&\#\*@\)}\]\-,]"
     """Excludes some characters from starting word tokens"""
 
-    _re_non_word_chars = r"(?:[?!)\";}\]\*:@\'\({\[])"
+    @property
+    def _re_non_word_chars(self):
+        return "(?:[)\";}\]\*:@\'\({\[%s])" % re.escape("".join(set(self.sent_end_chars) - {"."}))
     """Characters that cannot appear within words"""
 
     _re_multi_char_punct = r"(?:\-{2,}|\.{2,}|(?:\.\s){2,}\.)"
@@ -493,17 +492,17 @@ class PunktToken(object):
         with eval(), which lists all the token's non-default
         annotations.
         """
-        typestr = " type=%s," % unicode_repr(self.type) if self.type != self.tok else ""
+        typestr = " type=%s," % repr(self.type) if self.type != self.tok else ""
 
         propvals = ", ".join(
-            "%s=%s" % (p, unicode_repr(getattr(self, p)))
+            "%s=%s" % (p, repr(getattr(self, p)))
             for p in self._properties
             if getattr(self, p)
         )
 
         return "%s(%s,%s %s)" % (
             self.__class__.__name__,
-            unicode_repr(self.tok),
+            repr(self.tok),
             typestr,
             propvals,
         )
@@ -1258,7 +1257,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         given. Repeated calls to this method destroy previous parameters. For
         incremental training, instantiate a separate PunktTrainer instance.
         """
-        if not isinstance(train_text, string_types):
+        if not isinstance(train_text, str):
             return train_text
         return PunktTrainer(
             train_text, lang_vars=self._lang_vars, token_cls=self._Token
@@ -1459,7 +1458,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # token doesn't match, see if adding whitespace helps.
             # If so, then use the version with whitespace.
             if text[pos : pos + len(tok)] != tok:
-                pat = "\s*".join(re.escape(c) for c in tok)
+                pat = r"\s*".join(re.escape(c) for c in tok)
                 m = re.compile(pat).match(text, pos)
                 if m:
                     tok = m.group()
@@ -1480,7 +1479,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 yield sentence
                 sentence = ""
 
-        # If the last sentence is emtpy, discard it.
+        # If the last sentence is empty, discard it.
         if sentence:
             yield sentence
 

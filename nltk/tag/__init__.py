@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -59,7 +59,7 @@ of ``None``.
 We evaluate a tagger on data that was not seen during training:
 
     >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600])
-    0.73...
+    0.7...
 
 For more information, please consult chapter 5 of the NLTK Book.
 """
@@ -108,12 +108,16 @@ def _get_tagger(lang=None):
 
 
 def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
-    # Currently only supoorts English and Russian.
+    # Currently only supports English and Russian.
     if lang not in ["eng", "rus"]:
         raise NotImplementedError(
             "Currently, NLTK pos_tag only supports English and Russian "
             "(i.e. lang='eng' or lang='rus')"
         )
+    # Throws Error if tokens is of string type
+    elif isinstance(tokens, str):
+        raise TypeError('tokens: expected a list of strings, got a string')
+
     else:
         tagged_tokens = tagger.tag(tokens)
         if tagset:  # Maps to the specified tagset.

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
 
 
-def setup_module(module):
-    from nose import SkipTest
+def setup_module():
+    import pytest
     from nltk.parse.malt import MaltParser
 
     try:
         depparser = MaltParser("maltparser-1.7.2")
-    except LookupError:
-        raise SkipTest("MaltParser is not available")
+    except LookupError as e:
+        pytest.skip("MaltParser is not available")

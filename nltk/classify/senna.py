@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Senna Interface
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -29,7 +29,6 @@ The input is:
 
 Note: Unit tests for this module can be found in test/unit/test_senna.py
 
-    >>> from __future__ import unicode_literals
     >>> from nltk.classify import Senna
     >>> pipeline = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     >>> sent = 'Dusseldorf is an international business center'.split()
@@ -41,8 +40,6 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
 from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
-
-from six import text_type
 
 from nltk.tag.api import TaggerI
 
@@ -137,7 +134,7 @@ class Senna(TaggerI):
 
         # Serialize the actual sentences to a temporary string
         _input = "\n".join((" ".join(x) for x in sentences)) + "\n"
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 
         # Run the tagger and get the output
@@ -169,23 +166,13 @@ class Senna(TaggerI):
                 result[tag] = tags[map_[tag]].strip()
             try:
                 result["word"] = sentences[sentence_index][token_index]
-            except IndexError:
+            except IndexError as e:
                 raise IndexError(
                     "Misalignment error occurred at sentence number %d. Possible reason"
                     " is that the sentence size exceeded the maximum size. Check the "
                     "documentation of Senna class for more information."
                     % sentence_index
-                )
+                ) from e
             tagged_sentences[-1].append(result)
             token_index += 1
         return tagged_sentences
-
-
-# skip doctests if Senna is not installed
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        tagger = Senna("/usr/share/senna-v3.0", ["pos", "chk", "ner"])
-    except OSError:
-        raise SkipTest("Senna executable not found")

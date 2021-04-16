@@ -22,11 +22,8 @@ from abc import ABCMeta, abstractmethod
 import threading
 import time
 
-from six import add_metaclass
 
-
-@add_metaclass(ABCMeta)
-class Prover(object):
+class Prover(metaclass=ABCMeta):
     """
     Interface for trying to prove a goal from assumptions.  Both the goal and
     the assumptions are constrained to be formulas of ``logic.Expression``.
@@ -47,8 +44,7 @@ class Prover(object):
         """
 
 
-@add_metaclass(ABCMeta)
-class ModelBuilder(object):
+class ModelBuilder(metaclass=ABCMeta):
     """
     Interface for trying to build a model of set of formulas.
     Open formulas are assumed to be universally quantified.
@@ -73,8 +69,7 @@ class ModelBuilder(object):
         """
 
 
-@add_metaclass(ABCMeta)
-class TheoremToolCommand(object):
+class TheoremToolCommand(metaclass=ABCMeta):
     """
     This class holds a goal and a list of assumptions to be used in proving
     or model building.
@@ -538,7 +533,7 @@ class ParallelProverBuilder(Prover, ModelBuilder):
         tp_thread.start()
         mb_thread.start()
 
-        while tp_thread.isAlive() and mb_thread.isAlive():
+        while tp_thread.is_alive() and mb_thread.is_alive():
             # wait until either the prover or the model builder is done
             pass
 
@@ -583,7 +578,7 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
         tp_thread.start()
         mb_thread.start()
 
-        while tp_thread.isAlive() and mb_thread.isAlive():
+        while tp_thread.is_alive() and mb_thread.is_alive():
             # wait until either the prover or the model builder is done
             pass
 

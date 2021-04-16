@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunked Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -12,8 +12,6 @@ documents.
 """
 
 import os.path, codecs
-
-from six import string_types
 
 import nltk
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
@@ -63,9 +61,13 @@ class ChunkedCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for i in fileids:
+            with self.open(i) as f:
+                contents.append(f.read())
+        return concat(contents)
 
     def words(self, fileids=None):
         """

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
 # URL: <http://nltk.org/>
@@ -11,21 +11,18 @@
 Corpus reader for the FrameNet 1.7 lexicon and corpus.
 """
 
+import itertools
 import os
 import re
-import textwrap
-import itertools
 import sys
+import textwrap
 import types
 from collections import defaultdict, OrderedDict
+from itertools import zip_longest
 from operator import itemgetter
-
-from six import string_types, text_type
-from six.moves import zip_longest
 from pprint import pprint
 
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-
 from nltk.util import LazyConcatenation, LazyMap, LazyIteratorList
 
 __docformat__ = "epytext en"
@@ -84,7 +81,7 @@ def _pretty_any(obj):
 
     outstr = ""
     for k in obj:
-        if isinstance(obj[k], string_types) and len(obj[k]) > 65:
+        if isinstance(obj[k], str) and len(obj[k]) > 65:
             outstr += "[{0}]\n".format(k)
             outstr += "{0}".format(_pretty_longstring(obj[k], prefix="  "))
             outstr += "\n"
@@ -1001,10 +998,10 @@ class PrettyList(list):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if self._MAX_REPR_SIZE and length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(
+                return "[%s, ...]" % str(
                     ",\n " if self._BREAK_LINES else ", "
                 ).join(pieces[:-1])
-        return "[%s]" % text_type(",\n " if self._BREAK_LINES else ", ").join(pieces)
+        return "[%s]" % str(",\n " if self._BREAK_LINES else ", ").join(pieces)
 
 
 class PrettyLazyMap(LazyMap):
@@ -1029,8 +1026,8 @@ class PrettyLazyMap(LazyMap):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % str(", ").join(pieces[:-1])
+        return "[%s]" % str(", ").join(pieces)
 
 
 class PrettyLazyIteratorList(LazyIteratorList):
@@ -1055,8 +1052,8 @@ class PrettyLazyIteratorList(LazyIteratorList):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % str(", ").join(pieces[:-1])
+        return "[%s]" % str(", ").join(pieces)
 
 
 class PrettyLazyConcatenation(LazyConcatenation):
@@ -1081,8 +1078,8 @@ class PrettyLazyConcatenation(LazyConcatenation):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
-        return "[%s]" % text_type(", ").join(pieces)
+                return "[%s, ...]" % str(", ").join(pieces[:-1])
+        return "[%s]" % str(", ").join(pieces)
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
@@ -1240,72 +1237,60 @@ warnings(True) to display corpus consistency warnings when loading data
             self._buildrelationindex()  # always load frame relations before frames,
             # otherwise weird ordering effects might result in incomplete information
         self._frame_idx = {}
-        for f in XMLCorpusView(
-            self.abspath("frameIndex.xml"), "frameIndex/frame", self._handle_elt
-        ):
-            self._frame_idx[f["ID"]] = f
+        with XMLCorpusView(self.abspath("frameIndex.xml"), "frameIndex/frame", self._handle_elt) as view:
+            for f in view:
+                self._frame_idx[f["ID"]] = f
 
     def _buildcorpusindex(self):
         # The total number of fulltext annotated documents in Framenet
         # is fairly small (~90) so this index should not be very large
         self._fulltext_idx = {}
-        for doclist in XMLCorpusView(
-            self.abspath("fulltextIndex.xml"),
-            "fulltextIndex/corpus",
-            self._handle_fulltextindex_elt,
-        ):
-            for doc in doclist:
-                self._fulltext_idx[doc.ID] = doc
+        with XMLCorpusView(self.abspath("fulltextIndex.xml"), "fulltextIndex/corpus", self._handle_fulltextindex_elt,
+                           ) as view:
+            for doclist in view:
+                for doc in doclist:
+                    self._fulltext_idx[doc.ID] = doc
 
     def _buildluindex(self):
         # The number of LUs in Framenet is about 13,000 so this index
         # should not be very large
         self._lu_idx = {}
-        for lu in XMLCorpusView(
-            self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt
-        ):
-            self._lu_idx[
-                lu["ID"]
-            ] = lu  # populate with LU index entries. if any of these
-            # are looked up they will be replaced by full LU objects.
+        with XMLCorpusView(self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt) as view:
+            for lu in view:
+                self._lu_idx[lu["ID"]] = lu  # populate with LU index entries. if any of these
+                # are looked up they will be replaced by full LU objects.
 
     def _buildrelationindex(self):
         # print('building relation index...', file=sys.stderr)
-        freltypes = PrettyList(
-            x
-            for x in XMLCorpusView(
-                self.abspath("frRelation.xml"),
-                "frameRelations/frameRelationType",
-                self._handle_framerelationtype_elt,
-            )
-        )
         self._freltyp_idx = {}
         self._frel_idx = {}
         self._frel_f_idx = defaultdict(set)
         self._ferel_idx = {}
 
-        for freltyp in freltypes:
-            self._freltyp_idx[freltyp.ID] = freltyp
-            for frel in freltyp.frameRelations:
-                supF = frel.superFrame = frel[freltyp.superFrameName] = Future(
-                    (lambda fID: lambda: self.frame_by_id(fID))(frel.supID)
-                )
-                subF = frel.subFrame = frel[freltyp.subFrameName] = Future(
-                    (lambda fID: lambda: self.frame_by_id(fID))(frel.subID)
-                )
-                self._frel_idx[frel.ID] = frel
-                self._frel_f_idx[frel.supID].add(frel.ID)
-                self._frel_f_idx[frel.subID].add(frel.ID)
-                for ferel in frel.feRelations:
-                    ferel.superFrame = supF
-                    ferel.subFrame = subF
-                    ferel.superFE = Future(
-                        (lambda fer: lambda: fer.superFrame.FE[fer.superFEName])(ferel)
+        with XMLCorpusView(self.abspath("frRelation.xml"), "frameRelations/frameRelationType",
+                           self._handle_framerelationtype_elt, ) as view:
+            for freltyp in view:
+                self._freltyp_idx[freltyp.ID] = freltyp
+                for frel in freltyp.frameRelations:
+                    supF = frel.superFrame = frel[freltyp.superFrameName] = Future(
+                        (lambda fID: lambda: self.frame_by_id(fID))(frel.supID)
                     )
-                    ferel.subFE = Future(
-                        (lambda fer: lambda: fer.subFrame.FE[fer.subFEName])(ferel)
+                    subF = frel.subFrame = frel[freltyp.subFrameName] = Future(
+                        (lambda fID: lambda: self.frame_by_id(fID))(frel.subID)
                     )
-                    self._ferel_idx[ferel.ID] = ferel
+                    self._frel_idx[frel.ID] = frel
+                    self._frel_f_idx[frel.supID].add(frel.ID)
+                    self._frel_f_idx[frel.subID].add(frel.ID)
+                    for ferel in frel.feRelations:
+                        ferel.superFrame = supF
+                        ferel.subFrame = subF
+                        ferel.superFE = Future(
+                            (lambda fer: lambda: fer.superFrame.FE[fer.superFEName])(ferel)
+                        )
+                        ferel.subFE = Future(
+                            (lambda fer: lambda: fer.subFrame.FE[fer.subFEName])(ferel)
+                        )
+                        self._ferel_idx[ferel.ID] = ferel
         # print('...done building relation index', file=sys.stderr)
 
     def _warn(self, *message, **kwargs):
@@ -1318,9 +1303,11 @@ warnings(True) to display corpus consistency warnings when loading data
         Return the contents of the corpus README.txt (or README) file.
         """
         try:
-            return self.open("README.txt").read()
+            with self.open("README.txt") as fp:
+                return fp.read()
         except IOError:
-            return self.open("README").read()
+            with self.open("README") as fp:
+                return fp.read()
 
     def buildindexes(self):
         """
@@ -1388,14 +1375,15 @@ warnings(True) to display corpus consistency warnings when loading data
             # build the index
             self._buildcorpusindex()
             xmlfname = self._fulltext_idx[fn_docid].filename
-        except KeyError:  # probably means that fn_docid was not in the index
-            raise FramenetError("Unknown document id: {0}".format(fn_docid))
+        except KeyError as e:  # probably means that fn_docid was not in the index
+            raise FramenetError("Unknown document id: {0}".format(fn_docid)) from e
 
         # construct the path name for the xml file containing the document info
         locpath = os.path.join("{0}".format(self._root), self._fulltext_dir, xmlfname)
 
         # Grab the top-level xml element containing the fulltext annotation
-        elt = XMLCorpusView(locpath, "fullTextAnnotation")[0]
+        with XMLCorpusView(locpath, "fullTextAnnotation") as view:
+            elt = view[0]
         info = self._handle_fulltextannotation_elt(elt)
         # add metadata
         for k, v in self._fulltext_idx[fn_docid].items():
@@ -1439,8 +1427,8 @@ warnings(True) to display corpus consistency warnings when loading data
         except TypeError:
             self._buildframeindex()
             name = self._frame_idx[fn_fid]["name"]
-        except KeyError:
-            raise FramenetError("Unknown frame id: {0}".format(fn_fid))
+        except KeyError as e:
+            raise FramenetError("Unknown frame id: {0}".format(fn_fid)) from e
 
         return self.frame_by_name(name, ignorekeys, check_cache=False)
 
@@ -1483,9 +1471,10 @@ warnings(True) to display corpus consistency warnings when loading data
         # print(locpath, file=sys.stderr)
         # Grab the xml for the frame
         try:
-            elt = XMLCorpusView(locpath, "frame")[0]
-        except IOError:
-            raise FramenetError("Unknown frame: {0}".format(fn_fname))
+            with XMLCorpusView(locpath, "frame") as view:
+                elt = view[0]
+        except IOError as e:
+            raise FramenetError("Unknown frame: {0}".format(fn_fname)) from e
 
         fentry = self._handle_frame_elt(elt, ignorekeys)
         assert fentry
@@ -1580,7 +1569,7 @@ warnings(True) to display corpus consistency warnings when loading data
         """
 
         # get the frame info by name or id number
-        if isinstance(fn_fid_or_fname, string_types):
+        if isinstance(fn_fid_or_fname, str):
             f = self.frame_by_name(fn_fid_or_fname, ignorekeys)
         else:
             f = self.frame_by_id(fn_fid_or_fname, ignorekeys)
@@ -1626,7 +1615,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> lu # doctest: +ELLIPSIS
         {'ID': 256,
          'POS': 'V',
-         'URL': u'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
+         'URL': 'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
          '_type': 'lu',
          'cBy': ...,
          'cDate': '02/08/2001 01:27:50 PST Thu',
@@ -1827,9 +1816,10 @@ warnings(True) to display corpus consistency warnings when loading data
             self._buildluindex()
 
         try:
-            elt = XMLCorpusView(locpath, "lexUnit")[0]
-        except IOError:
-            raise FramenetError("Unknown LU id: {0}".format(fn_luid))
+            with XMLCorpusView(locpath, "lexUnit") as view:
+                elt = view[0]
+        except IOError as e:
+            raise FramenetError("Unknown LU id: {0}".format(fn_luid)) from e
 
         lu2 = self._handle_lexunit_elt(elt, ignorekeys)
         lu.URL = self._fnweb_url + "/" + self._lu_dir + "/" + fname
@@ -1849,23 +1839,16 @@ warnings(True) to display corpus consistency warnings when loading data
     def _loadsemtypes(self):
         """Create the semantic types index."""
         self._semtypes = AttrDict()
-        semtypeXML = [
-            x
-            for x in XMLCorpusView(
-                self.abspath("semTypes.xml"),
-                "semTypes/semType",
-                self._handle_semtype_elt,
-            )
-        ]
-        for st in semtypeXML:
-            n = st["name"]
-            a = st["abbrev"]
-            i = st["ID"]
-            # Both name and abbrev should be able to retrieve the
-            # ID. The ID will retrieve the semantic type dict itself.
-            self._semtypes[n] = i
-            self._semtypes[a] = i
-            self._semtypes[i] = st
+        with XMLCorpusView(self.abspath("semTypes.xml"), "semTypes/semType", self._handle_semtype_elt, ) as view:
+            for st in view:
+                n = st["name"]
+                a = st["abbrev"]
+                i = st["ID"]
+                # Both name and abbrev should be able to retrieve the
+                # ID. The ID will retrieve the semantic type dict itself.
+                self._semtypes[n] = i
+                self._semtypes[a] = i
+                self._semtypes[i] = st
         # now that all individual semtype XML is loaded, we can link them together
         roots = []
         for st in self.semtypes():
@@ -2111,7 +2094,7 @@ warnings(True) to display corpus consistency warnings when loading data
         if frame is not None:
             if isinstance(frame, int):
                 frames = [self.frame(frame)]
-            elif isinstance(frame, string_types):
+            elif isinstance(frame, str):
                 frames = self.frames(frame)
             else:
                 frames = [frame]
@@ -2240,7 +2223,7 @@ warnings(True) to display corpus consistency warnings when loading data
             if frame is not None:
                 if isinstance(frame, int):
                     frameIDs = {frame}
-                elif isinstance(frame, string_types):
+                elif isinstance(frame, str):
                     frameIDs = {f.ID for f in self.frames(frame)}
                 else:
                     frameIDs = {frame.ID}
@@ -2248,7 +2231,7 @@ warnings(True) to display corpus consistency warnings when loading data
         elif frame is not None:  # all LUs in matching frames
             if isinstance(frame, int):
                 frames = [self.frame(frame)]
-            elif isinstance(frame, string_types):
+            elif isinstance(frame, str):
                 frames = self.frames(frame)
             else:
                 frames = [frame]
@@ -2386,15 +2369,15 @@ warnings(True) to display corpus consistency warnings when loading data
         if fe is None and fe2 is not None:
             raise FramenetError("exemplars(..., fe=None, fe2=<value>) is not allowed")
         elif fe is not None and fe2 is not None:
-            if not isinstance(fe2, string_types):
-                if isinstance(fe, string_types):
+            if not isinstance(fe2, str):
+                if isinstance(fe, str):
                     # fe2 is specific to a particular frame. swap fe and fe2 so fe is always used to determine the frame.
                     fe, fe2 = fe2, fe
                 elif fe.frame is not fe2.frame:  # ensure frames match
                     raise FramenetError(
                         "exemplars() call with inconsistent `fe` and `fe2` specification (frames must match)"
                     )
-        if frame is None and fe is not None and not isinstance(fe, string_types):
+        if frame is None and fe is not None and not isinstance(fe, str):
             frame = fe.frame
 
         # narrow down to frames matching criteria
@@ -2403,7 +2386,7 @@ warnings(True) to display corpus consistency warnings when loading data
             list
         )  # frame name -> matching LUs, if luNamePattern is specified
         if frame is not None or luNamePattern is not None:
-            if frame is None or isinstance(frame, string_types):
+            if frame is None or isinstance(frame, str):
                 if luNamePattern is not None:
                     frames = set()
                     for lu in self.lus(luNamePattern, frame=frame):
@@ -2422,7 +2405,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     lusByFrame = {frame.name: self.lus(luNamePattern, frame=frame)}
 
             if fe is not None:  # narrow to frames that define this FE
-                if isinstance(fe, string_types):
+                if isinstance(fe, str):
                     frames = PrettyLazyIteratorList(
                         f
                         for f in frames
@@ -2437,7 +2420,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     frames = [fe.frame]
 
                 if fe2 is not None:  # narrow to frames that ALSO define this FE
-                    if isinstance(fe2, string_types):
+                    if isinstance(fe2, str):
                         frames = PrettyLazyIteratorList(
                             f
                             for f in frames
@@ -2464,13 +2447,13 @@ warnings(True) to display corpus consistency warnings when loading data
                 if fe is not None:
                     fes = (
                         {ffe for ffe in f.FE.keys() if re.search(fe, ffe, re.I)}
-                        if isinstance(fe, string_types)
+                        if isinstance(fe, str)
                         else {fe.name}
                     )
                     if fe2 is not None:
                         fes2 = (
                             {ffe for ffe in f.FE.keys() if re.search(fe2, ffe, re.I)}
-                            if isinstance(fe2, string_types)
+                            if isinstance(fe2, str)
                             else {fe2.name}
                         )
 
@@ -2745,7 +2728,7 @@ warnings(True) to display corpus consistency warnings when loading data
         """
 
         try:
-            """
+            r"""
             # Look for boundary issues in markup. (Sometimes FEs are pluralized in definitions.)
             m = re.search(r'\w[<][^/]|[<][/][^>]+[>](s\w|[a-rt-z0-9])', data)
             if m:
@@ -3046,7 +3029,7 @@ warnings(True) to display corpus consistency warnings when loading data
                 luinfo["sentenceCount"] = self._load_xml_attributes(PrettyDict(), sub)
             elif sub.tag.endswith("lexeme"):
                 lexemeinfo = self._load_xml_attributes(PrettyDict(), sub)
-                if not isinstance(lexemeinfo.name, string_types):
+                if not isinstance(lexemeinfo.name, str):
                     # some lexeme names are ints by default: e.g.,
                     # thousand.num has lexeme with name="1000"
                     lexemeinfo.name = str(lexemeinfo.name)

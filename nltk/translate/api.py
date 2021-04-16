@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for alignment and translation objects
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -134,8 +134,8 @@ class AlignedSent(object):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-        except OSError:
-            raise Exception("Cannot find the dot binary from Graphviz package")
+        except OSError as e:
+            raise Exception("Cannot find the dot binary from Graphviz package") from e
         out, err = process.communicate(dot_string)
 
         return out.decode("utf8")

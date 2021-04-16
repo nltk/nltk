@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Pros and Cons Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -26,8 +26,6 @@ Related papers:
     conference (WWW-2005), May 10-14, 2005, in Chiba, Japan.
 """
 import re
-
-from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -84,7 +82,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [
@@ -108,7 +106,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
         return concat(
             [

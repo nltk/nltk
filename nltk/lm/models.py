@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Models
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,7 +20,7 @@ class MLE(LanguageModel):
         """Returns the MLE score for a word given a context.
 
         Args:
-        - word is expcected to be a string
+        - word is expected to be a string
         - context is expected to be something reasonably convertible to a tuple
         """
         return self.context_counts(context).freq(word)

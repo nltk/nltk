@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 
 import unittest
 import contextlib
 import sys
-
-from nose import with_setup
+from io import StringIO
 
 from nltk.corpus import gutenberg
 from nltk.text import Text
-
-try:
-    from StringIO import StringIO
-except ImportError as e:
-    from io import StringIO
 
 
 @contextlib.contextmanager
@@ -29,11 +22,11 @@ class TestConcordance(unittest.TestCase):
     """Text constructed using: http://www.nltk.org/book/ch01.html"""
 
     @classmethod
-    def setup_class(cls):
+    def setUpClass(cls):
         cls.corpus = gutenberg.words('melville-moby_dick.txt')
 
     @classmethod
-    def teardown_class(cls):
+    def tearDownClass(cls):
         pass
 
     def setUp(self):

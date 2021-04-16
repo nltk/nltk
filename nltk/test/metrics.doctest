@@ -1,14 +1,21 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2021 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======
 Metrics
 =======
 
+-----
+Setup
+-----
+
+    >>> import pytest
+    >>> _ = pytest.importorskip("numpy")
+
+
 The `nltk.metrics` package provides a variety of *evaluation measures*
 which can be used for a wide variety of NLP tasks.
 
-   >>> from __future__ import print_function
    >>> from nltk.metrics import *
 
 ------------------

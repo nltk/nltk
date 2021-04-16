@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Incremental Earley Chart Parser
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Rob Speer <rspeer@mit.edu>
 #         Edward Loper <edloper@gmail.com>
@@ -25,9 +25,8 @@ This is appealing for, say, speech recognizer hypothesis filtering.
 The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
-from __future__ import print_function, division
 
-from six.moves import range
+from time import perf_counter
 
 from nltk.parse.chart import (
     Chart,
@@ -535,10 +534,10 @@ def demo(
 
     # Do the parsing.
     earley = EarleyChartParser(grammar, trace=trace)
-    t = time.clock()
+    t = perf_counter()
     chart = earley.chart_parse(tokens)
     parses = list(chart.parses(grammar.start()))
-    t = time.clock() - t
+    t = perf_counter() - t
 
     # Print results.
     if numparses:

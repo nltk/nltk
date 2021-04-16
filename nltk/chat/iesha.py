@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Teen Chatbot
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Selina Dennis <sjmd@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -49,7 +49,7 @@ pairs = (
     (
         r"(.*) don\'t you (.*)",
         (
-            "u think I can%2??! really?? kekeke \<_\<",
+            r"u think I can%2??! really?? kekeke \<_\<",
             "what do u mean%2??!",
             "i could if i wanted, don't you think!! kekeke",
         ),

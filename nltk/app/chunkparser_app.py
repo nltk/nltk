@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regexp Chunk Parser Application
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,13 +15,12 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
-from __future__ import division
 import time
 import textwrap
 import re
 import random
 
-from six.moves.tkinter import (
+from tkinter import (
     Button,
     Canvas,
     Checkbutton,
@@ -33,8 +32,8 @@ from six.moves.tkinter import (
     Text,
     Tk,
 )
-from six.moves.tkinter_tkfiledialog import askopenfilename, asksaveasfilename
-from six.moves.tkinter_font import Font
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.font import Font
 
 from nltk.tree import Tree
 from nltk.util import in_idle
@@ -161,7 +160,7 @@ class RegexpChunkApp(object):
             "<indent>\nChunk rule: creates new chunks from words matching "
             "regexp.</indent>\n\n"
             "<h1>}...regexp...{</h1>"
-            "<indent>\nChink rule: removes words matching regexp from existing "
+            "<indent>\nStrip rule: removes words matching regexp from existing "
             "chunks.</indent>\n\n"
             "<h1>...regexp1...}{...regexp2...</h1>"
             "<indent>\nSplit rule: splits chunks that match regexp1 followed by "
@@ -203,7 +202,7 @@ class RegexpChunkApp(object):
             "\t<regexp><RB>?<VBD></regexp>\n"
             '\t\tMatches <match>"ran/VBD"</match>\n'
             '\t\tMatches <match>"slowly/RB ate/VBD"</match>\n'
-            "\t<regexp><\#><CD> # This is a comment...</regexp>\n"
+            r"\t<regexp><\#><CD> # This is a comment...</regexp>\n"
             '\t\tMatches <match>"#/# 100/CD"</match>\n'
             "</hangindent>",
         ),
@@ -312,7 +311,7 @@ class RegexpChunkApp(object):
         grammar = re.sub(r"((\\.|[^#])*)(#.*)?", r"\1", grammar)
         # Normalize whitespace
         grammar = re.sub(" +", " ", grammar)
-        grammar = re.sub("\n\s+", "\n", grammar)
+        grammar = re.sub(r"\n\s+", r"\n", grammar)
         grammar = grammar.strip()
         # [xx] Hack: automatically backslash $!
         grammar = re.sub(r"([^\\])\$", r"\1\\$", grammar)
@@ -1058,7 +1057,7 @@ class RegexpChunkApp(object):
                             "\t%s\t%s" % item
                             for item in sorted(
                                 list(self.tagset.items()),
-                                key=lambda t_w: re.match("\w+", t_w[0])
+                                key=lambda t_w: re.match(r"\w+", t_w[0])
                                 and (0, t_w[0])
                                 or (1, t_w[0]),
                             )
@@ -1419,7 +1418,7 @@ class RegexpChunkApp(object):
         with open(filename, "r") as infile:
             grammar = infile.read()
         grammar = re.sub(
-            "^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
+            r"^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
         ).lstrip()
         self.grammarbox.insert("1.0", grammar)
         self.update()
@@ -1461,7 +1460,7 @@ class RegexpChunkApp(object):
         ABOUT = "NLTK RegExp Chunk Parser Application\n" + "Written by Edward Loper"
         TITLE = "About: Regular Expression Chunk Parser Application"
         try:
-            from six.moves.tkinter_messagebox import Message
+            from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
         except:

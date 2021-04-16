@@ -10,7 +10,7 @@ Created by Aristide Grange
 import re
 import itertools
 
-from six.moves.tkinter import (
+from tkinter import (
     Frame,
     Label,
     PhotoImage,

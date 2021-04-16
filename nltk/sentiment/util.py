@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -309,11 +309,11 @@ def split_train_test(all_instances, n=None):
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     try:
         import matplotlib.pyplot as plt
-    except ImportError:
+    except ImportError as e:
         raise ImportError(
             "The plot function requires matplotlib to be installed."
             "See http://matplotlib.org/"
-        )
+        ) from e
 
     plt.locator_params(axis="y", nbins=3)
     axes = plt.axes()
@@ -373,7 +373,7 @@ def json2csv_preprocess(
         subsets of the original tweets json data.
     """
     with codecs.open(json_file, encoding=encoding) as fp:
-        (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+        (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
         # write the list of fields as header
         writer.writerow(fields)
 
@@ -441,49 +441,26 @@ def parse_tweets_set(
     if not sent_tokenizer:
         sent_tokenizer = load("tokenizers/punkt/english.pickle")
 
-    # If we use Python3.x we can proceed using the 'rt' flag
-    if sys.version_info[0] == 3:
-        with codecs.open(filename, "rt") as csvfile:
-            reader = csv.reader(csvfile)
-            if skip_header == True:
-                next(reader, None)  # skip the header
-            i = 0
-            for tweet_id, text in reader:
-                # text = text[1]
-                i += 1
-                sys.stdout.write("Loaded {0} tweets\r".format(i))
-                # Apply sentence and word tokenizer to text
-                if word_tokenizer:
-                    tweet = [
-                        w
-                        for sent in sent_tokenizer.tokenize(text)
-                        for w in word_tokenizer.tokenize(sent)
-                    ]
-                else:
-                    tweet = text
-                tweets.append((tweet, label))
-    # If we use Python2.x we need to handle encoding problems
-    elif sys.version_info[0] < 3:
-        with codecs.open(filename) as csvfile:
-            reader = csv.reader(csvfile)
-            if skip_header == True:
-                next(reader, None)  # skip the header
-            i = 0
-            for row in reader:
-                unicode_row = [x.decode("utf8") for x in row]
-                text = unicode_row[1]
-                i += 1
-                sys.stdout.write("Loaded {0} tweets\r".format(i))
-                # Apply sentence and word tokenizer to text
-                if word_tokenizer:
-                    tweet = [
-                        w.encode("utf8")
-                        for sent in sent_tokenizer.tokenize(text)
-                        for w in word_tokenizer.tokenize(sent)
-                    ]
-                else:
-                    tweet = text
-                tweets.append((tweet, label))
+    with codecs.open(filename, "rt") as csvfile:
+        reader = csv.reader(csvfile)
+        if skip_header == True:
+            next(reader, None)  # skip the header
+        i = 0
+        for tweet_id, text in reader:
+            # text = text[1]
+            i += 1
+            sys.stdout.write("Loaded {0} tweets\r".format(i))
+            # Apply sentence and word tokenizer to text
+            if word_tokenizer:
+                tweet = [
+                    w
+                    for sent in sent_tokenizer.tokenize(text)
+                    for w in word_tokenizer.tokenize(sent)
+                ]
+            else:
+                tweet = text
+            tweets.append((tweet, label))
+
     print("Loaded {0} tweets".format(i))
     return tweets
 
@@ -708,7 +685,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     results = sentim_analyzer.evaluate(test_set)
 
     if save_analyzer == True:
-        save_file(sentim_analyzer, "sa_subjectivity.pickle")
+        sentim_analyzer.save_file(sentim_analyzer, "sa_subjectivity.pickle")
 
     if output:
         extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
@@ -904,7 +881,7 @@ if __name__ == "__main__":
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier
     from nltk.classify.scikitlearn import SklearnClassifier
     from sklearn.svm import LinearSVC
-    from nltk.twitter.common import outf_writer_compat, extract_fields
+    from nltk.twitter.common import _outf_writer, extract_fields
 
     naive_bayes = NaiveBayesClassifier.train
     svm = SklearnClassifier(LinearSVC()).train

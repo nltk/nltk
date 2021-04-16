@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: CISTEM Stemmer for German
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Leonie Weissweiler <l.weissweiler@outlook.de>
 # Algorithm: Leonie Weissweiler <l.weissweiler@outlook.de>
 #            Alexander Fraser <fraser@cis.lmu.de>

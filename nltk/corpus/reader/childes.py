@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://nltk.org/>
@@ -14,7 +14,6 @@ __docformat__ = "epytext en"
 
 import re
 from collections import defaultdict
-from six import string_types
 
 from nltk.util import flatten, LazyMap, LazyConcatenation
 
@@ -278,7 +277,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def convert_age(self, age_year):
         "Caclculate age in months from a string in CHILDES format"
-        m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
         age_month = int(m.group(1)) * 12 + int(m.group(2))
         try:
             if int(m.group(3)) > 15:
@@ -353,7 +352,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         self, fileid, speaker, sent, stem, relation, pos, strip_space, replace
     ):
         if (
-            isinstance(speaker, string_types) and speaker != "ALL"
+            isinstance(speaker, str) and speaker != "ALL"
         ):  # ensure we have a list of speakers
             speaker = [speaker]
         xmldoc = ElementTree.parse(fileid).getroot()

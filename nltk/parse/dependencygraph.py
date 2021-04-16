@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
@@ -19,8 +19,6 @@ from itertools import chain
 from pprint import pformat
 import subprocess
 import warnings
-
-from six import string_types
 
 from nltk.tree import Tree
 
@@ -208,8 +206,8 @@ class DependencyGraph(object):
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
             )
-        except OSError:
-            raise Exception("Cannot find the dot binary from Graphviz package")
+        except OSError as e:
+            raise Exception("Cannot find the dot binary from Graphviz package") from e
         out, err = process.communicate(dot_string)
         if err:
             raise Exception(
@@ -328,7 +326,7 @@ class DependencyGraph(object):
             10: extract_10_cells,
         }
 
-        if isinstance(input_, string_types):
+        if isinstance(input_, str):
             input_ = (line for line in input_.split("\n"))
 
         lines = (l.rstrip() for l in input_)
@@ -345,11 +343,11 @@ class DependencyGraph(object):
             if cell_extractor is None:
                 try:
                     cell_extractor = extractors[cell_number]
-                except KeyError:
+                except KeyError as e:
                     raise ValueError(
                         "Number of tab-delimited fields ({0}) not supported by "
                         "CoNLL(10) or Malt-Tab(4) format".format(cell_number)
-                    )
+                    ) from e
 
             try:
                 index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(

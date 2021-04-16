@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -10,10 +10,7 @@
 import tempfile
 import os
 import warnings
-from unittest import skip
 from subprocess import PIPE
-
-from six import text_type
 
 from nltk.internals import (
     find_jar_iter,
@@ -233,7 +230,7 @@ class GenericStanfordParser(ParserI):
         encoding = self._encoding
         cmd.extend(["-encoding", encoding])
         if self.corenlp_options:
-            cmd.append(self.corenlp_options)
+            cmd.extend(self.corenlp_options.split())
 
         default_options = " ".join(_java_options)
 
@@ -243,7 +240,7 @@ class GenericStanfordParser(ParserI):
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
             # Write the actual sentences to the temporary input file
-            if isinstance(input_, text_type) and encoding:
+            if isinstance(input_, str) and encoding:
                 input_ = input_.encode(encoding)
             input_file.write(input_)
             input_file.flush()
@@ -473,18 +470,3 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
 
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label="ROOT")
-
-
-@skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        StanfordParser(
-            model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
-        )
-        StanfordNeuralDependencyParser()
-    except LookupError:
-        raise SkipTest(
-            "doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn't exist"
-        )

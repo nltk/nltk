@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Graphical Representations for Trees
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,7 +9,7 @@
 Graphically display a Tree.
 """
 
-from six.moves.tkinter import IntVar, Menu, Tk
+from tkinter import IntVar, Menu, Tk
 
 from nltk.util import in_idle
 from nltk.tree import Tree

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -335,9 +335,9 @@ def check_megam_config():
     """
     try:
         _megam_bin
-    except NameError:
+    except NameError as e:
         err_msg = str(
             "Please configure your megam binary first, e.g.\n"
             ">>> nltk.config_megam('/usr/bin/local/megam')"
         )
-        raise NameError(err_msg)
+        raise NameError(err_msg) from e

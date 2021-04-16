@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
@@ -17,16 +17,7 @@ import types
 import sys
 import stat
 import locale
-
-# Use the c version of ElementTree, which is faster, if possible:
-try:
-    from xml.etree import cElementTree as ElementTree
-except ImportError:
-    from xml.etree import ElementTree
-
-from six import string_types
-
-from nltk import compat
+from xml.etree import ElementTree
 
 ##########################################################################
 # Java Via Command-Line
@@ -62,7 +53,7 @@ def config_java(bin=None, options=None, verbose=False):
     )
 
     if options is not None:
-        if isinstance(options, string_types):
+        if isinstance(options, str):
             options = options.split()
         _java_options = list(options)
 
@@ -118,7 +109,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     stdout = subprocess_output_dict.get(stdout, stdout)
     stderr = subprocess_output_dict.get(stderr, stderr)
 
-    if isinstance(cmd, string_types):
+    if isinstance(cmd, str):
         raise TypeError("cmd should be a list of strings")
 
     # Make sure we know where a java binary is.
@@ -126,7 +117,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
         config_java()
 
     # Set up the classpath.
-    if isinstance(classpath, string_types):
+    if isinstance(classpath, str):
         classpaths = [classpath]
     else:
         classpaths = list(classpath)
@@ -251,7 +242,7 @@ def read_str(s, start_position):
     try:
         return eval(s[start_position : match.end()]), match.end()
     except ValueError as e:
-        raise ReadError("invalid string (%s)" % e)
+        raise ReadError("invalid string (%s)" % e) from e
 
 
 _READ_INT_RE = re.compile(r"-?\d+")
@@ -355,12 +346,11 @@ def overridden(method):
 
     :type method: instance method
     """
-    # [xx] breaks on classic classes!
-    if isinstance(method, types.MethodType) and compat.get_im_class(method) is not None:
+    if isinstance(method, types.MethodType) and method.__self__.__class__ is not None:
         name = method.__name__
         funcs = [
             cls.__dict__[name]
-            for cls in _mro(compat.get_im_class(method))
+            for cls in _mro(method.__self__.__class__)
             if name in cls.__dict__
         ]
         return len(funcs) > 1
@@ -531,10 +521,10 @@ def find_file_iter(
     :param verbose: Whether or not to print path when a file is found.
     """
     file_names = [filename] + (file_names or [])
-    assert isinstance(filename, string_types)
-    assert not isinstance(file_names, string_types)
-    assert not isinstance(searchpath, string_types)
-    if isinstance(env_vars, string_types):
+    assert isinstance(filename, str)
+    assert not isinstance(file_names, str)
+    assert not isinstance(searchpath, str)
+    if isinstance(env_vars, str):
         env_vars = env_vars.split()
     yielded = False
 
@@ -723,9 +713,9 @@ def find_jar_iter(
     :param is_regex: Whether name is a regular expression.
     """
 
-    assert isinstance(name_pattern, string_types)
-    assert not isinstance(searchpath, string_types)
-    if isinstance(env_vars, string_types):
+    assert isinstance(name_pattern, str)
+    assert not isinstance(searchpath, str)
+    if isinstance(env_vars, str):
         env_vars = env_vars.split()
     yielded = False
 
@@ -941,7 +931,7 @@ class ElementWrapper(object):
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
-        if isinstance(etree, string_types):
+        if isinstance(etree, str):
             etree = ElementTree.fromstring(etree)
         self.__dict__["_etree"] = etree
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunkers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -65,7 +65,7 @@ simpler types of rules:
 
     - ``ChunkRule`` chunks anything that matches a given regular
       expression.
-    - ``ChinkRule`` chinks anything that matches a given regular
+    - ``StripRule`` strips anything that matches a given regular
       expression.
     - ``UnChunkRule`` will un-chunk any chunk that matches a given
       regular expression.

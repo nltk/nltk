@@ -1,9 +1,13 @@
-.. Copyright (C) 2001-2019 NLTK Project
+.. Copyright (C) 2001-2021 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========
 Semantics
 =========
+
+    >>> # Setup tests by setting the counter to 0
+    >>> from nltk.sem import logic
+    >>> logic._counter._value = 0
 
     >>> import nltk
     >>> from nltk.sem import Valuation, Model

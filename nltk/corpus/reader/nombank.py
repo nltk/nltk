@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NomBank Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Authors: Paul Bedaride <paul.bedaride@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -8,8 +8,6 @@
 
 from xml.etree import ElementTree
 from functools import total_ordering
-
-from six import string_types
 
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
@@ -58,7 +56,7 @@ class NombankCorpusReader(CorpusReader):
         """
 
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, string_types):
+        if isinstance(framefiles, str):
             self._fileids = find_corpus_fileids(root, framefiles)
         self._fileids = list(framefiles)
         # Initialze the corpus reader.
@@ -76,9 +74,13 @@ class NombankCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def instances(self, baseform=None):
         """
@@ -120,7 +122,8 @@ class NombankCorpusReader(CorpusReader):
 
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
-        etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+        with self.abspath(framefile).open() as fp:
+            etree = ElementTree.parse(fp).getroot()
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
@@ -142,7 +145,8 @@ class NombankCorpusReader(CorpusReader):
         for framefile in framefiles:
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
-            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            with self.abspath(framefile).open() as fp:
+                etree = ElementTree.parse(fp).getroot()
             rsets.append(etree.findall("predicate/roleset"))
         return LazyConcatenation(rsets)
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -189,7 +189,7 @@ class LancasterStemmer(StemmerI):
         """
         # If there is no argument for the function, use class' own rule tuple.
         rule_tuple = rule_tuple if rule_tuple else self._rule_tuple
-        valid_rule = re.compile("^[a-z]+\*?\d[a-z]*[>\.]?$")
+        valid_rule = re.compile(r"^[a-z]+\*?\d[a-z]*[>\.]?$")
         # Empty any old rules from the rule set before adding new ones
         self.rule_dictionary = {}
 
@@ -222,7 +222,7 @@ class LancasterStemmer(StemmerI):
         """Perform the actual word stemming
         """
 
-        valid_rule = re.compile("^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+        valid_rule = re.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
 
         proceed = True
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet stemmer interface
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -40,10 +40,3 @@ class WordNetLemmatizer(object):
 
     def __repr__(self):
         return "<WordNetLemmatizer>"
-
-
-# unload wordnet
-def teardown_module(module=None):
-    from nltk.corpus import wordnet
-
-    wordnet._unload()

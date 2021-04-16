@@ -3,7 +3,7 @@
 #
 # Natural Language Toolkit: TGrep search
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Will Roberts <wildwilhelm@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -112,8 +112,6 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 
 import functools
 import re
-
-from six import binary_type, text_type
 
 try:
     import pyparsing
@@ -303,7 +301,7 @@ def _tgrep_node_literal_value(node):
     Gets the string value of a given parse tree node, for comparison
     using the tgrep node literal predicates.
     """
-    return node.label() if _istree(node) else text_type(node)
+    return node.label() if _istree(node) else str(node)
 
 
 def _tgrep_macro_use_action(_s, _l, tokens):
@@ -963,7 +961,7 @@ def tgrep_tokenize(tgrep_string):
     Tokenizes a TGrep search string into separate tokens.
     """
     parser = _build_tgrep_parser(False)
-    if isinstance(tgrep_string, binary_type):
+    if isinstance(tgrep_string, bytes):
         tgrep_string = tgrep_string.decode()
     return list(parser.parseString(tgrep_string))
 
@@ -974,7 +972,7 @@ def tgrep_compile(tgrep_string):
     lambda function.
     """
     parser = _build_tgrep_parser(True)
-    if isinstance(tgrep_string, binary_type):
+    if isinstance(tgrep_string, bytes):
         tgrep_string = tgrep_string.decode()
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
@@ -1007,7 +1005,7 @@ def tgrep_positions(pattern, trees, search_leaves=True):
     :rtype: iter(tree positions)
     """
 
-    if isinstance(pattern, (binary_type, text_type)):
+    if isinstance(pattern, (bytes, str)):
         pattern = tgrep_compile(pattern)
 
     for tree in trees:
@@ -1034,7 +1032,7 @@ def tgrep_nodes(pattern, trees, search_leaves=True):
     :rtype: iter(tree nodes)
     """
 
-    if isinstance(pattern, (binary_type, text_type)):
+    if isinstance(pattern, (bytes, str)):
         pattern = tgrep_compile(pattern)
 
     for tree in trees:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Tokenizer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -12,8 +12,6 @@ import os
 import json
 from subprocess import PIPE
 import warnings
-
-from six import text_type
 
 from nltk.internals import find_jar, config_java, java, _java_options
 from nltk.tokenize.api import TokenizerI
@@ -99,7 +97,7 @@ class StanfordTokenizer(TokenizerI):
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
             # Write the actual sentences to the temporary input file
-            if isinstance(input_, text_type) and encoding:
+            if isinstance(input_, str) and encoding:
                 input_ = input_.encode(encoding)
             input_file.write(input_)
             input_file.flush()
@@ -118,14 +116,3 @@ class StanfordTokenizer(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
-
-
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        StanfordTokenizer()
-    except LookupError:
-        raise SkipTest(
-            "doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"
-        )

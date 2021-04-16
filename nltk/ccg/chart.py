@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -31,8 +31,6 @@ python chart.py
 """
 
 import itertools
-
-from six import string_types
 
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart

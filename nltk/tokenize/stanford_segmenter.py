@@ -3,7 +3,7 @@
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #         Alex Constantin <alex@keyworder.ch>
@@ -16,8 +16,6 @@ import os
 import json
 import warnings
 from subprocess import PIPE
-
-from six import text_type
 
 from nltk.internals import (
     find_jar,
@@ -160,12 +158,12 @@ class StanfordSegmenter(TokenizerI):
                     verbose=False,
                     env_vars=("STANFORD_MODELS",),
                 )
-            except LookupError:
+            except LookupError as e:
                 raise LookupError(
                     "Could not find '%s' (tried using env. "
                     "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)"
                     % path_to_dict
-                )
+                ) from e
 
             sihan_dir = "./data/"
             try:
@@ -176,11 +174,11 @@ class StanfordSegmenter(TokenizerI):
                     env_vars=("STANFORD_SEGMENTER",),
                 )
                 self._sihan_corpora_dict = os.path.join(path_to_sihan_dir, sihan_dir)
-            except LookupError:
+            except LookupError as e:
                 raise LookupError(
                     "Could not find '%s' (tried using the "
                     "STANFORD_SEGMENTER environment variable)" % sihan_dir
-                )
+                ) from e
         else:
             raise LookupError("Unsupported language {}".format(lang))
 
@@ -192,11 +190,11 @@ class StanfordSegmenter(TokenizerI):
                 verbose=False,
                 env_vars=("STANFORD_MODELS", "STANFORD_SEGMENTER"),
             )
-        except LookupError:
+        except LookupError as e:
             raise LookupError(
                 "Could not find '%s' (tried using env. "
                 "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % model
-            )
+            ) from e
 
     def tokenize(self, s):
         super().tokenize(s)
@@ -242,7 +240,7 @@ class StanfordSegmenter(TokenizerI):
         # Write the actural sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
         _input = "\n".join((" ".join(x) for x in sentences))
-        if isinstance(_input, text_type) and encoding:
+        if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
@@ -296,16 +294,3 @@ class StanfordSegmenter(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
-
-
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        seg = StanfordSegmenter()
-        seg.default_config("ar")
-        seg.default_config("zh")
-    except LookupError as e:
-        raise SkipTest(
-            "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
-        )

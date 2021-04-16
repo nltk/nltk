@@ -1,6 +1,6 @@
 # Natural Language Toolkit
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -136,18 +136,15 @@ class Vocabulary:
         :param unk_label: Label for marking words not part of vocabulary.
 
         """
-        if isinstance(counts, Counter):
-            self.counts = counts
-        else:
-            self.counts = Counter()
-            if isinstance(counts, Iterable):
-                self.counts.update(counts)
         self.unk_label = unk_label
         if unk_cutoff < 1:
             raise ValueError(
                 "Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff)
             )
         self._cutoff = unk_cutoff
+
+        self.counts = Counter()
+        self.update(counts if counts is not None else "")
 
     @property
     def cutoff(self):
@@ -165,6 +162,7 @@ class Vocabulary:
 
         """
         self.counts.update(*counter_args, **counter_kwargs)
+        self._len = sum(1 for _ in self)
 
     def lookup(self, words):
         """Look up one or more words in the vocabulary.
@@ -208,7 +206,7 @@ class Vocabulary:
 
     def __len__(self):
         """Computing size of vocabulary reflects the cutoff."""
-        return sum(1 for _ in self)
+        return self._len
 
     def __eq__(self, other):
         return (
@@ -216,12 +214,6 @@ class Vocabulary:
             and self.cutoff == other.cutoff
             and self.counts == other.counts
         )
-
-    if sys.version_info[0] == 2:
-        # see https://stackoverflow.com/a/35781654/4501212
-        def __ne__(self, other):
-            equal = self.__eq__(other)
-            return equal if equal is NotImplemented else not equal
 
     def __str__(self):
         return "<{0} with cutoff={1} unk_label='{2}' and {3} items>".format(

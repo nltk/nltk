@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -19,8 +19,6 @@ import inspect
 import textwrap
 import re
 import sys
-
-from six import string_types
 
 from nltk.decorators import decorator  # this used in code that is commented out
 
@@ -52,10 +50,7 @@ class Undefined(Error):
 
 
 def trace(f, *args, **kw):
-    if sys.version_info[0] >= 3:
-        argspec = inspect.getfullargspec(f)
-    else:
-        argspec = inspect.getargspec(f)
+    argspec = inspect.getfullargspec(f)
     d = dict(zip(argspec[0], args))
     if d.pop("trace", None):
         print()
@@ -97,7 +92,7 @@ def set2rel(s):
     """
     new = set()
     for elem in s:
-        if isinstance(elem, string_types):
+        if isinstance(elem, str):
             new.add((elem,))
         elif isinstance(elem, int):
             new.add((str(elem)))
@@ -135,7 +130,7 @@ class Valuation(dict):
         """
         super(Valuation, self).__init__()
         for (sym, val) in xs:
-            if isinstance(val, string_types) or isinstance(val, bool):
+            if isinstance(val, str) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
                 self[sym] = set2rel(val)
@@ -162,7 +157,7 @@ class Valuation(dict):
         """Set-theoretic domain of the value-space of a Valuation."""
         dom = []
         for val in self.values():
-            if isinstance(val, string_types):
+            if isinstance(val, str):
                 dom.append(val)
             elif not isinstance(val, bool):
                 dom.extend(
@@ -248,13 +243,13 @@ def read_valuation(s, encoding=None):
             continue
         try:
             statements.append(_read_valuation_line(line))
-        except ValueError:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line))
+        except ValueError as e:
+            raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
     return Valuation(statements)
 
 
 class Assignment(dict):
-    """
+    r"""
     A dictionary which represents an assignment of values to variables.
 
     An assigment can only assign values from its domain.
@@ -550,7 +545,7 @@ class Model(object):
         indent = spacer + (spacer * nesting)
         candidates = []
 
-        if isinstance(varex, string_types):
+        if isinstance(varex, str):
             var = Variable(varex)
         else:
             var = varex

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: RTE Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author:  Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -32,8 +32,6 @@ In order to provide globally unique IDs for each pair, a new attribute
 file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
-from six import string_types
-
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
@@ -132,7 +130,8 @@ class RTECorpusReader(XMLCorpusReader):
             challenge = doc.attrib["challenge"]
         except KeyError:
             challenge = None
-        return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]
+        pairiter = doc.iter("pair")
+        return [RTEPair(pair, challenge=challenge) for pair in pairiter]
 
     def pairs(self, fileids):
         """
@@ -142,6 +141,6 @@ class RTECorpusReader(XMLCorpusReader):
         :type: list
         :rtype: list(RTEPair)
         """
-        if isinstance(fileids, string_types):
+        if isinstance(fileids, str):
             fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])

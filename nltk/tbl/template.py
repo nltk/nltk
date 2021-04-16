@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -9,14 +9,12 @@
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 import itertools as it
 from nltk.tbl.feature import Feature
 from nltk.tbl.rule import Rule
 
 
-@add_metaclass(ABCMeta)
-class BrillTemplateI:
+class BrillTemplateI(metaclass=ABCMeta):
     """
     An interface for generating lists of transformational rules that
     apply at given sentence positions.  ``BrillTemplateI`` is used by

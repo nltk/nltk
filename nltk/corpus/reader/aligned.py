@@ -1,11 +1,9 @@
 # Natural Language Toolkit: Aligned Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # URL: <http://nltk.org/>
 # Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT
-
-from six import string_types
 
 from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
 from nltk.translate import AlignedSent, Alignment
@@ -57,9 +55,13 @@ class AlignedCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def words(self, fileids=None):
         """

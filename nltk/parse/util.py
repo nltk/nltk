@@ -2,7 +2,7 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2021 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -229,7 +229,3 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
             continue
         sentences += [(tokens, result)]
     return sentences
-
-
-# nose thinks it is a test
-extract_test_sentences.__test__ = False
