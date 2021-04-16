@@ -76,7 +76,11 @@ class PropbankCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def instances(self, baseform=None):
         """
@@ -114,7 +118,8 @@ class PropbankCorpusReader(CorpusReader):
 
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
-        etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+        with self.abspath(framefile).open() as fp:
+            etree = ElementTree.parse(fp).getroot()
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
@@ -136,7 +141,8 @@ class PropbankCorpusReader(CorpusReader):
         for framefile in framefiles:
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
-            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            with self.abspath(framefile).open() as fp:
+                etree = ElementTree.parse(fp).getroot()
             rsets.append(etree.findall("predicate/roleset"))
         return LazyConcatenation(rsets)
 

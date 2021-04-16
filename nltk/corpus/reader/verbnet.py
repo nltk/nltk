@@ -294,18 +294,19 @@ class VerbnetCorpusReader(XMLCorpusReader):
             vnclass = fileid[:-4]  # strip the '.xml'
             self._class_to_fileid[vnclass] = fileid
             self._shortid_to_longid[self.shortid(vnclass)] = vnclass
-            for m in self._INDEX_RE.finditer(self.open(fileid).read()):
-                groups = m.groups()
-                if groups[0] is not None:
-                    self._lemma_to_class[groups[0]].append(vnclass)
-                    for wn in groups[1].split():
-                        self._wordnet_to_class[wn].append(vnclass)
-                elif groups[2] is not None:
-                    self._class_to_fileid[groups[2]] = fileid
-                    vnclass = groups[2]  # for <MEMBER> elts.
-                    self._shortid_to_longid[self.shortid(vnclass)] = vnclass
-                else:
-                    assert False, "unexpected match condition"
+            with self.open(fileid) as fp:
+                for m in self._INDEX_RE.finditer(fp.read()):
+                    groups = m.groups()
+                    if groups[0] is not None:
+                        self._lemma_to_class[groups[0]].append(vnclass)
+                        for wn in groups[1].split():
+                            self._wordnet_to_class[wn].append(vnclass)
+                    elif groups[2] is not None:
+                        self._class_to_fileid[groups[2]] = fileid
+                        vnclass = groups[2]  # for <MEMBER> elts.
+                        self._shortid_to_longid[self.shortid(vnclass)] = vnclass
+                    else:
+                        assert False, "unexpected match condition"
 
     ######################################################################
     # { Identifier conversion

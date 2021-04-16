@@ -16,7 +16,7 @@ from abc import ABCMeta, abstractmethod
 from functools import reduce
 
 
-_log2 = lambda x: _math.log(x, 2.0)
+_log2 = lambda x: _math.log2(x)
 _ln = _math.log
 
 _product = lambda s: reduce(lambda x, y: x * y, s)

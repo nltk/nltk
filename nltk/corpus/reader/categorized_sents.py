@@ -118,13 +118,17 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def readme(self):
         """
         Return the contents of the corpus Readme.txt file.
         """
-        return self.open("README").read()
+        with self.open("README") as fp:
+            return fp.read()
 
     def sents(self, fileids=None, categories=None):
         """

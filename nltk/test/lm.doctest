@@ -24,6 +24,9 @@ https://github.com/nltk/nltk/issues/167
     >>> lm = WittenBellInterpolated(ngram_order)
     >>> lm.fit(train_data, vocab_data)
 
+
+
+
 Sentence containing an unseen word should result in infinite entropy because
 Witten-Bell is based ultimately on MLE, which cannot handle unseen ngrams.
 Crucially, it shouldn't raise any exceptions for unseen words.
@@ -37,8 +40,8 @@ If we remove all unseen ngrams from the sentence, we'll get a non-infinite value
 for the entropy.
 
     >>> sent = ngrams("This is a sentence".split(), 3)
-    >>> lm.entropy(sent)
-    10.237013228691053
+    >>> round(lm.entropy(sent), 14)
+    10.23701322869105
 
 
 Issue 367
