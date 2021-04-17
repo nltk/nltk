@@ -22,7 +22,7 @@ Train the model
 Here we train a word embedding using the Brown Corpus:
 
     >>> from nltk.corpus import brown
-    >>> train_set = brown.sents()[:10_000]
+    >>> train_set = brown.sents()[:10000]
     >>> model = gensim.models.Word2Vec(train_set)
 
 It might take some time to train the model. So, after it is trained, it can be saved as follows:
