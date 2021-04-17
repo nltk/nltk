@@ -12,7 +12,7 @@ the verb, and the location and identity of its arguments:
 
     >>> from nltk.corpus import propbank
     >>> pb_instances = propbank.instances()
-    >>> print(pb_instances) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(pb_instances)
     [<PropbankInstance: wsj_0001.mrg, sent 0, word 8>,
      <PropbankInstance: wsj_0001.mrg, sent 1, word 10>, ...]
 
@@ -41,7 +41,7 @@ The following examples show the types of these arguments:
     'rise.01'
     >>> inst.predicate
     PropbankTreePointer(16, 0)
-    >>> inst.arguments # doctest: +NORMALIZE_WHITESPACE
+    >>> inst.arguments
     ((PropbankTreePointer(0, 2), 'ARG1'),
      (PropbankTreePointer(13, 1), 'ARGM-DIS'),
      (PropbankTreePointer(17, 1), 'ARG4-to'),
@@ -104,7 +104,7 @@ that is both discontinuous and contains a chain:
     >>> argloc.pieces
     [<PropbankSplitTreePointer: 22:1,24:0,25:1>, PropbankTreePointer(27, 0)]
     >>> argloc.pieces[0].pieces
-    ... # doctest: +NORMALIZE_WHITESPACE
+    ...
     [PropbankTreePointer(22, 1), PropbankTreePointer(24, 0),
      PropbankTreePointer(25, 1)]
     >>> print(argloc.select(inst.tree))
@@ -121,7 +121,7 @@ descriptions of the argument roles, along with examples.
 
     >>> expose_01 = propbank.roleset('expose.01')
     >>> turn_01 = propbank.roleset('turn.01')
-    >>> print(turn_01) # doctest: +ELLIPSIS
+    >>> print(turn_01)
     <Element 'roleset' at ...>
     >>> for role in turn_01.findall("roles/role"):
     ...     print(role.attrib['n'], role.attrib['descr'])
@@ -148,7 +148,7 @@ at 9353:
     >>> inst = pb_instances[9352]
     >>> inst.fileid
     'wsj_0199.mrg'
-    >>> print(inst.tree) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    >>> print(inst.tree)
     (S (NP-SBJ (NNP Trinity)) (VP (VBD said) (SBAR (-NONE- 0) ...))
     >>> print(inst.predicate.select(inst.tree))
     (VB begin)

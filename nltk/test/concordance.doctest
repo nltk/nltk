@@ -15,7 +15,7 @@ concordance, and then placing "monstrous" in parentheses:
 >>> corpus = gutenberg.words('melville-moby_dick.txt')
 >>> text = Text(corpus)
 
->>> text.concordance("monstrous") # doctest:+NORMALIZE_WHITESPACE
+>>> text.concordance("monstrous")
 Displaying 11 of 11 matches:
 ong the former , one was of a most monstrous size . ... This came towards us ,
 ON OF THE PSALMS . " Touching that monstrous bulk of the whale or ork we have r
@@ -29,7 +29,7 @@ ere to enter upon those still more monstrous stories of them which are to be fo
 ght have been rummaged out of this monstrous cabinet there is no telling . But
 of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u
 
->>> text.concordance("monstrous") # doctest:+ELLIPSIS, +NORMALIZE_WHITESPACE
+>>> text.concordance("monstrous")
 Displaying 11 of 11 matches:
 ong the former , one was of a most monstrous size . ... This came towards us ,
 ON OF THE PSALMS . " Touching that monstrous bulk of the whale or ork we have r
@@ -38,7 +38,7 @@ ll over with a heathenish array of monstrous clubs and spears . Some were thick
 
 We can also search for a multi-word phrase by passing a list of strings:
 
->>> text.concordance(["monstrous", "size"]) # doctest:+NORMALIZE_WHITESPACE
+>>> text.concordance(["monstrous", "size"])
 Displaying 2 of 2 matches:
 the former , one was of a most monstrous size . ... This came towards us , op
 Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead upo

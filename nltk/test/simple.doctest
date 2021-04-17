@@ -16,7 +16,7 @@ Tokenization
     >>> from nltk.tokenize import wordpunct_tokenize
     >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
     ...      "two of them.\n\nThanks.")
-    >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    >>> wordpunct_tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
