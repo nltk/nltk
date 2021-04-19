@@ -152,13 +152,19 @@ def rte_featurize(rte_pairs):
     return [(rte_features(pair), pair.value) for pair in rte_pairs]
 
 
-def rte_classifier(algorithm):
+def rte_classifier(algorithm, sample_N=None):
     from nltk.corpus import rte as rte_corpus
 
     train_set = rte_corpus.pairs(["rte1_dev.xml", "rte2_dev.xml", "rte3_dev.xml"])
     test_set = rte_corpus.pairs(["rte1_test.xml", "rte2_test.xml", "rte3_test.xml"])
+
+    if sample_N is not None:
+        train_set = train_set[:sample_N]
+        test_set = test_set[:sample_N]
+
     featurized_train_set = rte_featurize(train_set)
     featurized_test_set = rte_featurize(test_set)
+
     # Train the classifier
     print("Training classifier...")
     if algorithm in ["megam", "BFGS"]:  # MEGAM based algorithms.

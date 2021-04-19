@@ -15,12 +15,15 @@ def mock_plot(mocker):
         pass
 
 
-@pytest.fixture(scope="session", autouse=True)
-def teardown_loaded_corpora(request):
+@pytest.fixture(scope="module", autouse=True)
+def teardown_loaded_corpora():
     """
     After each test session ends (either doctest or unit test),
     unload any loaded corpora
     """
+
+    yield  # first, wait for the test to end
+
     import nltk.corpus
 
     for name in dir(nltk.corpus):
