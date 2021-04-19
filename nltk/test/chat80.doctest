@@ -51,7 +51,7 @@ By analogy with NLTK corpora, ``chat80`` defines a number of 'items'
 which correspond to the relations.
 
     >>> from nltk.sem import chat80
-    >>> print(chat80.items) # doctest: +ELLIPSIS
+    >>> print(chat80.items)
     ('borders', 'circle_of_lat', 'circle_of_long', 'city', ...)
 
 The fields in the table are mapped to binary predicates. The first
@@ -108,7 +108,7 @@ the extraction.
     >>> concepts = chat80.clause2concepts('cities.pl', 'city', schema)
     >>> concepts
     [Concept('city'), Concept('country_of'), Concept('population_of')]
-    >>> for c in concepts: # doctest: +NORMALIZE_WHITESPACE
+    >>> for c in concepts:
     ...     print("%s:\n\t%s" % (c.prefLabel, c.extension[:4]))
     city:
         ['athens', 'bangkok', 'barcelona', 'berlin']

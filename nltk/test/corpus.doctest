@@ -57,9 +57,9 @@ Most corpora consist of a set of files, each containing a document (or
 other pieces of text).  A list of identifiers for these files is
 accessed via the ``fileids()`` method of the corpus reader:
 
-    >>> nltk.corpus.treebank.fileids() # doctest: +ELLIPSIS
+    >>> nltk.corpus.treebank.fileids()
     ['wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...]
-    >>> nltk.corpus.inaugural.fileids() # doctest: +ELLIPSIS
+    >>> nltk.corpus.inaugural.fileids()
     ['1789-Washington.txt', '1793-Washington.txt', '1797-Adams.txt', ...]
 
 Each corpus reader provides a variety of methods to read data from the
@@ -68,13 +68,13 @@ corpora support methods to read the corpus as raw text, a list of
 words, a list of sentences, or a list of paragraphs.
 
     >>> from nltk.corpus import inaugural
-    >>> inaugural.raw('1789-Washington.txt') # doctest: +ELLIPSIS
+    >>> inaugural.raw('1789-Washington.txt')
     'Fellow-Citizens of the Senate ...'
     >>> inaugural.words('1789-Washington.txt')
     ['Fellow', '-', 'Citizens', 'of', 'the', ...]
-    >>> inaugural.sents('1789-Washington.txt') # doctest: +ELLIPSIS
+    >>> inaugural.sents('1789-Washington.txt')
     [['Fellow', '-', 'Citizens'...], ['Among', 'the', 'vicissitudes'...]...]
-    >>> inaugural.paras('1789-Washington.txt') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> inaugural.paras('1789-Washington.txt')
     [[['Fellow', '-', 'Citizens'...]],
      [['Among', 'the', 'vicissitudes'...],
       ['On', 'the', 'one', 'hand', ',', 'I'...]...]...]
@@ -133,17 +133,17 @@ than just bare word strings.
     ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
     >>> print(brown.tagged_words())
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
-    >>> print(brown.sents()) # doctest: +ELLIPSIS
+    >>> print(brown.sents())
     [['The', 'Fulton', 'County'...], ['The', 'jury', 'further'...], ...]
-    >>> print(brown.tagged_sents()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(brown.tagged_sents())
     [[('The', 'AT'), ('Fulton', 'NP-TL')...],
      [('The', 'AT'), ('jury', 'NN'), ('further', 'RBR')...]...]
-    >>> print(brown.paras(categories='reviews')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(brown.paras(categories='reviews'))
     [[['It', 'is', 'not', 'news', 'that', 'Nathan', 'Milstein'...],
       ['Certainly', 'not', 'in', 'Orchestra', 'Hall', 'where'...]],
      [['There', 'was', 'about', 'that', 'song', 'something', ...],
       ['Not', 'the', 'noblest', 'performance', 'we', 'have', ...], ...], ...]
-    >>> print(brown.tagged_paras(categories='reviews')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(brown.tagged_paras(categories='reviews'))
     [[[('It', 'PPS'), ('is', 'BEZ'), ('not', '*'), ...],
       [('Certainly', 'RB'), ('not', '*'), ('in', 'IN'), ...]],
      [[('There', 'EX'), ('was', 'BEDZ'), ('about', 'IN'), ...],
@@ -163,11 +163,11 @@ Indian text annotated with part-of-speech tags:
 Several tagged corpora support access to a simplified, universal tagset, e.g. where all nouns
 tags are collapsed to a single category ``NOUN``:
 
-    >>> print(brown.tagged_sents(tagset='universal')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(brown.tagged_sents(tagset='universal'))
     [[('The', 'DET'), ('Fulton', 'NOUN'), ('County', 'NOUN'), ('Grand', 'ADJ'), ('Jury', 'NOUN'), ...],
      [('The', 'DET'), ('jury', 'NOUN'), ('further', 'ADV'), ('said', 'VERB'), ('in', 'ADP'), ...]...]
     >>> from nltk.corpus import conll2000, switchboard
-    >>> print(conll2000.tagged_words(tagset='universal')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(conll2000.tagged_words(tagset='universal'))
     [('Confidence', 'NOUN'), ('in', 'ADP'), ...]
 
 Use ``nltk.app.pos_concordance()`` to access a GUI for searching tagged corpora.
@@ -180,11 +180,11 @@ flat trees.  The CoNLL 2000 Corpus includes phrasal chunks; and the
 CoNLL 2002 Corpus includes named entity chunks.
 
     >>> from nltk.corpus import conll2000, conll2002
-    >>> print(conll2000.sents()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(conll2000.sents())
     [['Confidence', 'in', 'the', 'pound', 'is', 'widely', ...],
      ['Chancellor', 'of', 'the', 'Exchequer', ...], ...]
     >>> for tree in conll2000.chunked_sents()[:2]:
-    ...     print(tree) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ...     print(tree)
     (S
       (NP Confidence/NN)
       (PP in/IN)
@@ -198,10 +198,10 @@ CoNLL 2002 Corpus includes named entity chunks.
       (PP of/IN)
       (NP the/DT Exchequer/NNP)
       ...)
-    >>> print(conll2002.sents()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(conll2002.sents())
     [['Sao', 'Paulo', '(', 'Brasil', ')', ',', ...], ['-'], ...]
     >>> for tree in conll2002.chunked_sents()[:2]:
-    ...     print(tree) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ...     print(tree)
     (S
       (LOC Sao/NC Paulo/VMI)
       (/Fpa
@@ -227,10 +227,10 @@ to the entire chunk).
     ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
     >>> semcor.chunks()
     [['The'], ['Fulton', 'County', 'Grand', 'Jury'], ...]
-    >>> semcor.sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> semcor.sents()
     [['The', 'Fulton', 'County', 'Grand', 'Jury', 'said', ...],
     ['The', 'jury', 'further', 'said', ...], ...]
-    >>> semcor.chunk_sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> semcor.chunk_sents()
     [[['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ...
     ['.']], [['The'], ['jury'], ['further'], ['said'], ... ['.']], ...]
     >>> list(map(str, semcor.tagged_chunks(tag='both')[:3]))
@@ -247,7 +247,7 @@ corpus defines the `parsed_docs` method, which returns the documents
 in a given item as `IEERDocument` objects:
 
     >>> from nltk.corpus import ieer
-    >>> ieer.fileids() # doctest: +NORMALIZE_WHITESPACE
+    >>> ieer.fileids()
     ['APW_19980314', 'APW_19980424', 'APW_19980429',
      'NYT_19980315', 'NYT_19980403', 'NYT_19980407']
     >>> docs = ieer.parsed_docs('APW_19980314')
@@ -261,7 +261,7 @@ in a given item as `IEERDocument` objects:
     03/14/1998 10:36:00
     >>> print(docs[0].headline)
     (DOCUMENT Kenyans protest tax hikes)
-    >>> print(docs[0].text) # doctest: +ELLIPSIS
+    >>> print(docs[0].text)
     (DOCUMENT
       (LOCATION NAIROBI)
       ,
@@ -288,13 +288,13 @@ NLTK data package includes a 10% sample of the Penn Treebank (in
 Reading the Penn Treebank (Wall Street Journal sample):
 
     >>> from nltk.corpus import treebank
-    >>> print(treebank.fileids()) # doctest: +ELLIPSIS
+    >>> print(treebank.fileids())
     ['wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...]
     >>> print(treebank.words('wsj_0003.mrg'))
     ['A', 'form', 'of', 'asbestos', 'once', 'used', ...]
     >>> print(treebank.tagged_words('wsj_0003.mrg'))
     [('A', 'DT'), ('form', 'NN'), ('of', 'IN'), ...]
-    >>> print(treebank.parsed_sents('wsj_0003.mrg')[0]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(treebank.parsed_sents('wsj_0003.mrg')[0])
     (S
       (S-TPC-1
         (NP-SBJ
@@ -382,18 +382,18 @@ examples illustrate the use of the wordlist corpora:
     >>> from nltk.corpus import names, stopwords, words
     >>> words.fileids()
     ['en', 'en-basic']
-    >>> words.words('en') # doctest: +ELLIPSIS
+    >>> words.words('en')
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
 
-    >>> stopwords.fileids() # doctest: +ELLIPSIS
+    >>> stopwords.fileids()
     ['arabic', 'azerbaijani', 'danish', 'dutch', 'english', 'finnish', 'french', ...]
-    >>> sorted(stopwords.words('portuguese')) # doctest: +ELLIPSIS
+    >>> sorted(stopwords.words('portuguese'))
     ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', ...]
     >>> names.fileids()
     ['female.txt', 'male.txt']
-    >>> names.words('male.txt') # doctest: +ELLIPSIS
+    >>> names.words('male.txt')
     ['Aamir', 'Aaron', 'Abbey', 'Abbie', 'Abbot', 'Abbott', ...]
-    >>> names.words('female.txt') # doctest: +ELLIPSIS
+    >>> names.words('female.txt')
     ['Abagael', 'Abagail', 'Abbe', 'Abbey', 'Abbi', 'Abbie', ...]
 
 The CMU Pronunciation Dictionary corpus contains pronounciation
@@ -404,7 +404,7 @@ transcriptions.  Transcriptions are encoded as tuples of phoneme
 strings.
 
     >>> from nltk.corpus import cmudict
-    >>> print(cmudict.entries()[653:659]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(cmudict.entries()[653:659])
     [('acetate', ['AE1', 'S', 'AH0', 'T', 'EY2', 'T']),
     ('acetic', ['AH0', 'S', 'EH1', 'T', 'IH0', 'K']),
     ('acetic', ['AH0', 'S', 'IY1', 'T', 'IH0', 'K']),
@@ -413,7 +413,7 @@ strings.
     ('acetone', ['AE1', 'S', 'AH0', 'T', 'OW2', 'N'])]
     >>> # Load the entire cmudict corpus into a Python dictionary:
     >>> transcr = cmudict.dict()
-    >>> print([transcr[w][0] for w in 'Natural Language Tool Kit'.lower().split()]) # doctest: +NORMALIZE_WHITESPACE
+    >>> print([transcr[w][0] for w in 'Natural Language Tool Kit'.lower().split()])
     [['N', 'AE1', 'CH', 'ER0', 'AH0', 'L'],
      ['L', 'AE1', 'NG', 'G', 'W', 'AH0', 'JH'],
      ['T', 'UW1', 'L'],
@@ -450,12 +450,12 @@ and their categories (in both directions).  Access the categories using the ``ca
 method, e.g.:
 
     >>> from nltk.corpus import brown, movie_reviews, reuters
-    >>> brown.categories() # doctest: +NORMALIZE_WHITESPACE
+    >>> brown.categories()
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
     'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
     >>> movie_reviews.categories()
     ['neg', 'pos']
-    >>> reuters.categories() # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    >>> reuters.categories()
     ['acq', 'alum', 'barley', 'bop', 'carcass', 'castor-oil', 'cocoa',
     'coconut', 'coconut-oil', 'coffee', 'copper', 'copra-cake', 'corn',
     'cotton', 'cotton-oil', 'cpi', 'cpu', 'crude', 'dfl', 'dlr', ...]
@@ -474,7 +474,7 @@ of documents, allowing us to map from (one or more) documents to (one or more) c
 
 We can go back the other way using the optional argument of the ``fileids()`` method:
 
-    >>> reuters.fileids('barley') # doctest: +ELLIPSIS
+    >>> reuters.fileids('barley')
     ['test/15618', 'test/15649', 'test/15676', 'test/15728', 'test/15871', ...]
 
 Both the ``categories()`` and ``fileids()`` methods return a sorted list containing
@@ -486,7 +486,7 @@ of a corpus by specifying one or more fileids, we can identify one or more categ
 
     >>> brown.tagged_words(categories='news')
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
-    >>> brown.sents(categories=['editorial','reviews']) # doctest: +NORMALIZE_WHITESPACE
+    >>> brown.sents(categories=['editorial','reviews'])
     [['Assembly', 'session', 'brought', 'much', 'good'], ['The', 'General',
     'Assembly', ',', 'which', 'adjourns', 'today', ',', 'has', 'performed',
     'in', 'an', 'atmosphere', 'of', 'crisis', 'and', 'struggle', 'from',
@@ -557,7 +557,7 @@ prepositional phrase attachment decisions.  Each instance in the
 corpus is encoded as a ``PPAttachment`` object:
 
     >>> from nltk.corpus import ppattach
-    >>> ppattach.attachments('training') # doctest: +NORMALIZE_WHITESPACE
+    >>> ppattach.attachments('training')
     [PPAttachment(sent='0', verb='join', noun1='board',
                   prep='as', noun2='director', attachment='V'),
      PPAttachment(sent='1', verb='is', noun1='chairman',
@@ -618,7 +618,7 @@ semcor
 The Brown Corpus, annotated with WordNet senses.
 
     >>> from nltk.corpus import semcor
-    >>> semcor.words('brown2/tagfiles/br-n12.xml')  # doctest: +ELLIPSIS
+    >>> semcor.words('brown2/tagfiles/br-n12.xml')
     ['When', 'several', 'minutes', 'had', 'passed', ...]
 
 senseval
@@ -634,7 +634,7 @@ context.
     >>> senseval.fileids()
     ['hard.pos', 'interest.pos', 'line.pos', 'serve.pos']
     >>> senseval.instances('hard.pos')
-    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ...
     [SensevalInstance(word='hard-a',
         position=20,
         context=[('``', '``'), ('he', 'PRP'), ...('hard', 'JJ'), ...],
@@ -688,22 +688,22 @@ as XML files.  These corpora are returned as ElementTree objects:
 
     >>> from nltk.corpus import shakespeare
     >>> from xml.etree import ElementTree
-    >>> shakespeare.fileids() # doctest: +ELLIPSIS
+    >>> shakespeare.fileids()
     ['a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...]
     >>> play = shakespeare.xml('dream.xml')
-    >>> print(play) # doctest: +ELLIPSIS
+    >>> print(play)
     <Element 'PLAY' at ...>
     >>> print('%s: %s' % (play[0].tag, play[0].text))
     TITLE: A Midsummer Night's Dream
     >>> personae = [persona.text for persona in
     ...             play.findall('PERSONAE/PERSONA')]
-    >>> print(personae) # doctest: +ELLIPSIS
+    >>> print(personae)
     ['THESEUS, Duke of Athens.', 'EGEUS, father to Hermia.', ...]
     >>> # Find and print speakers not listed as personae
     >>> names = [persona.split(',')[0] for persona in personae]
     >>> speakers = set(speaker.text for speaker in
     ...                play.findall('*/*/*/SPEAKER'))
-    >>> print(sorted(speakers.difference(names))) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(sorted(speakers.difference(names)))
     ['ALL', 'COBWEB', 'DEMETRIUS', 'Fairy', 'HERNIA', 'LYSANDER',
      'Lion', 'MOTH', 'MUSTARDSEED', 'Moonshine', 'PEASEBLOSSOM',
      'Prologue', 'Pyramus', 'Thisbe', 'Wall']
@@ -791,13 +791,13 @@ down into small speech samples, each of which is available as a wave
 file, a phonetic transcription, and a tokenized word list.
 
     >>> from nltk.corpus import timit
-    >>> print(timit.utteranceids()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(timit.utteranceids())
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466',
     'dr1-fvmh0/si2096', 'dr1-fvmh0/si836', 'dr1-fvmh0/sx116',
     'dr1-fvmh0/sx206', 'dr1-fvmh0/sx26', 'dr1-fvmh0/sx296', ...]
 
     >>> item = timit.utteranceids()[5]
-    >>> print(timit.phones(item)) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(timit.phones(item))
     ['h#', 'k', 'l', 'ae', 's', 'pcl', 'p', 'dh', 'ax',
      's', 'kcl', 'k', 'r', 'ux', 'ix', 'nx', 'y', 'ax',
      'l', 'eh', 'f', 'tcl', 't', 'hh', 'ae', 'n', 'dcl',
@@ -825,9 +825,9 @@ the phonemes to produce a single tree structure:
 The start time and stop time of each phoneme, word, and sentence are
 also available:
 
-    >>> print(timit.phone_times(item)) # doctest: +ELLIPSIS
+    >>> print(timit.phone_times(item))
     [('h#', 0, 2190), ('k', 2190, 3430), ('l', 3430, 4326), ...]
-    >>> print(timit.word_times(item)) # doctest: +ELLIPSIS
+    >>> print(timit.word_times(item))
     [('clasp', 2190, 8804), ('the', 8804, 9734), ...]
     >>> print(timit.sent_times(item))
     [('Clasp the screw in your left hand.', 0, 32154)]
@@ -843,7 +843,7 @@ speaker and sentence identifier for a given speech sample:
     dr1-fvmh0
     >>> print(timit.sentid(item))
     sx116
-    >>> print(timit.spkrinfo(timit.spkrid(item))) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(timit.spkrinfo(timit.spkrid(item)))
     SpeakerInfo(id='VMH0',
                 sex='F',
                 dr='1',
@@ -856,7 +856,7 @@ speaker and sentence identifier for a given speech sample:
                 comments='BEST NEW ENGLAND ACCENT SO FAR')
 
     >>> # List the speech samples from the same speaker:
-    >>> timit.utteranceids(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
+    >>> timit.utteranceids(spkrid=timit.spkrid(item))
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
 
 twitter_samples
@@ -875,13 +875,13 @@ JSON. These data structures can be accessed via `tweets.docs()`. However, in gen
 is more practical to focus just on the text field of the Tweets, which
 are accessed via the `strings()` method.
 
-    >>> twitter_samples.strings('tweets.20150430-223406.json')[:5] # doctest: +ELLIPSIS
+    >>> twitter_samples.strings('tweets.20150430-223406.json')[:5]
     ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain \xa3170 billion per year! #BetterOffOut #UKIP', ...]
 
 The default tokenizer for Tweets is specialised for 'casual' text, and
 the `tokenized()` method returns a list of lists of tokens.
 
-    >>> twitter_samples.tokenized('tweets.20150430-223406.json')[:5] # doctest: +ELLIPSIS
+    >>> twitter_samples.tokenized('tweets.20150430-223406.json')[:5]
     [['RT', '@KirkKus', ':', 'Indirect', 'cost', 'of', 'the', 'UK', 'being', 'in', ...],
      ['VIDEO', ':', 'Sturgeon', 'on', 'post-election', 'deals', 'http://t.co/BTJwrpbmOY'], ...]
 
@@ -892,10 +892,10 @@ RTE1, RTE2 and RTE3 datasets (dev and test data), and consists of a
 list of XML-formatted 'text'/'hypothesis' pairs.
 
     >>> from nltk.corpus import rte
-    >>> print(rte.fileids()) # doctest: +ELLIPSIS
+    >>> print(rte.fileids())
     ['rte1_dev.xml', 'rte1_test.xml', 'rte2_dev.xml', ..., 'rte3_test.xml']
     >>> rtepairs = rte.pairs(['rte2_test.xml', 'rte3_test.xml'])
-    >>> print(rtepairs)  # doctest: +ELLIPSIS
+    >>> print(rtepairs)
     [<RTEPair: gid=2-8>, <RTEPair: gid=2-9>, <RTEPair: gid=2-15>, ...]
 
 In the gold standard test sets, each pair is labeled according to
@@ -904,7 +904,7 @@ entailment value is mapped to an integer 1 (True) or 0 (False).
 
     >>> rtepairs[5]
     <RTEPair: gid=2-23>
-    >>> rtepairs[5].text # doctest: +NORMALIZE_WHITESPACE
+    >>> rtepairs[5].text
     'His wife Strida won a seat in parliament after forging an alliance
     with the main anti-Syrian coalition in the recent election.'
     >>> rtepairs[5].hyp
@@ -917,7 +917,7 @@ The RTE corpus also supports an ``xml()`` method which produces ElementTrees.
     >>> xmltree = rte.xml('rte3_dev.xml')
     >>> xmltree # doctest: +SKIP
     <Element entailment-corpus at ...>
-    >>> xmltree[7].findtext('t') # doctest: +NORMALIZE_WHITESPACE
+    >>> xmltree[7].findtext('t')
     "Mrs. Bush's approval ratings have remained very high, above 80%,
     even as her husband's have recently dropped below 50%."
 
@@ -954,12 +954,12 @@ The primary object in the lexicon is a class record, which is stored
 as an ElementTree xml object.  The class record for a given class
 identifier is returned by the `vnclass()` method:
 
-    >>> verbnet.vnclass('remove-10.1') # doctest: +ELLIPSIS
+    >>> verbnet.vnclass('remove-10.1')
     <Element 'VNCLASS' at ...>
 
 The `vnclass()` method also accepts "short" identifiers, such as '10.1':
 
-    >>> verbnet.vnclass('10.1') # doctest: +ELLIPSIS
+    >>> verbnet.vnclass('10.1')
     <Element 'VNCLASS' at ...>
 
 See the Verbnet documentation, or the Verbnet files, for information
@@ -1037,7 +1037,7 @@ chat rooms, which have been anonymized, POS-tagged and dialogue-act tagged.
     ['now', 'im', 'left', 'with', 'this', 'gay', ...]
     >>> print(nltk.corpus.nps_chat.tagged_words())
     [('now', 'RB'), ('im', 'PRP'), ('left', 'VBD'), ...]
-    >>> print(nltk.corpus.nps_chat.tagged_posts()) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(nltk.corpus.nps_chat.tagged_posts())
     [[('now', 'RB'), ('im', 'PRP'), ('left', 'VBD'), ('with', 'IN'),
     ('this', 'DT'), ('gay', 'JJ'), ('name', 'NN')], [(':P', 'UH')], ...]
 
@@ -1045,7 +1045,7 @@ We can access the XML elements corresponding to individual posts.  These element
 have ``class`` and ``user`` attributes that we can access using ``p.attrib['class']``
 and ``p.attrib['user']``.  They also have text content, accessed using ``p.text``.
 
-    >>> print(nltk.corpus.nps_chat.xml_posts()) # doctest: +ELLIPSIS
+    >>> print(nltk.corpus.nps_chat.xml_posts())
     [<Element 'Post' at 0...>, <Element 'Post' at 0...>, ...]
     >>> posts = nltk.corpus.nps_chat.xml_posts()
     >>> sorted(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
@@ -1102,15 +1102,15 @@ in the NLTK data distribution.  Here is a small sample of those
 corpus reader instances:
 
     >>> import nltk
-    >>> nltk.corpus.brown # doctest: +ELLIPSIS
+    >>> nltk.corpus.brown
     <CategorizedTaggedCorpusReader ...>
-    >>> nltk.corpus.treebank # doctest: +ELLIPSIS
+    >>> nltk.corpus.treebank
     <BracketParseCorpusReader ...>
-    >>> nltk.corpus.names # doctest: +ELLIPSIS
+    >>> nltk.corpus.names
     <WordListCorpusReader ...>
-    >>> nltk.corpus.genesis # doctest: +ELLIPSIS
+    >>> nltk.corpus.genesis
     <PlaintextCorpusReader ...>
-    >>> nltk.corpus.inaugural # doctest: +ELLIPSIS
+    >>> nltk.corpus.inaugural
     <PlaintextCorpusReader ...>
 
 This sample illustrates that different corpus reader classes are used
@@ -1156,7 +1156,7 @@ uses a different sentence tokenizer as follows:
     >>> my_genesis = nltk.corpus.PlaintextCorpusReader(
     ...     genesis_dir, r'.*\.txt', sent_tokenizer=my_sent_tokenizer)
     >>> # Use the new corpus reader object.
-    >>> print(my_genesis.sents('english-kjv.txt')[0]) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(my_genesis.sents('english-kjv.txt')[0])
     ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven',
      'and', 'the', 'earth']
 
@@ -1218,7 +1218,7 @@ directory (or in subdirectories of that root directory).  The absolute
 path to the root directory is stored in the ``root`` property:
 
     >>> import os
-    >>> str(nltk.corpus.genesis.root).replace(os.path.sep,'/') # doctest: +ELLIPSIS
+    >>> str(nltk.corpus.genesis.root).replace(os.path.sep,'/')
     '.../nltk_data/corpora/genesis'
 
 Each file within the corpus is identified by a platform-independent
@@ -1240,22 +1240,22 @@ metadata files.  For corpora with diverse file types, the ``fileids()``
 method will often take one or more optional arguments, which can be
 used to get a list of the files with a specific file type:
 
-    >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.fileids()
     ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...]
-    >>> nltk.corpus.timit.fileids('phn') # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.fileids('phn')
     ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa2.phn', 'dr1-fvmh0/si1466.phn', ...]
 
 In some corpora, the files are divided into distinct categories.  For
 these corpora, the ``fileids()`` method takes an optional argument,
 which can be used to get a list of the files within a specific category:
 
-    >>> nltk.corpus.brown.fileids('hobbies') # doctest: +ELLIPSIS
+    >>> nltk.corpus.brown.fileids('hobbies')
     ['ce01', 'ce02', 'ce03', 'ce04', 'ce05', 'ce06', 'ce07', ...]
 
 The ``abspath()`` method can be used to find the absolute path to a
 corpus file, given its file identifier:
 
-    >>> str(nltk.corpus.brown.abspath('ce06')).replace(os.path.sep,'/') # doctest: +ELLIPSIS
+    >>> str(nltk.corpus.brown.abspath('ce06')).replace(os.path.sep,'/')
     '.../corpora/brown/ce06'
 
 The ``abspaths()`` method can be used to find the absolute paths for
@@ -1327,7 +1327,7 @@ content, some corpora use different identifiers instead.  For example,
 the data access methods for the ``timit`` corpus uses *utterance
 identifiers* to select which corpus items should be returned:
 
-    >>> nltk.corpus.timit.utteranceids() # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.utteranceids()
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
     >>> nltk.corpus.timit.words('dr1-fvmh0/sa2')
     ["don't", 'ask', 'me', 'to', 'carry', 'an', 'oily', 'rag', 'like', 'that']
@@ -1335,7 +1335,7 @@ identifiers* to select which corpus items should be returned:
 Attempting to call ``timit``\ 's data access methods with a file
 identifier will result in an exception:
 
-    >>> nltk.corpus.timit.fileids() # doctest: +ELLIPSIS
+    >>> nltk.corpus.timit.fileids()
     ['dr1-fvmh0/sa1.phn', 'dr1-fvmh0/sa1.txt', 'dr1-fvmh0/sa1.wav', ...]
     >>> nltk.corpus.timit.words('dr1-fvmh0/sa1.txt') # doctest: +SKIP
     Traceback (most recent call last):
@@ -1347,7 +1347,7 @@ method, which expects a roleset identifier, not a file identifier:
 
     >>> roleset = nltk.corpus.propbank.roleset('eat.01')
     >>> from xml.etree import ElementTree as ET
-    >>> print(ET.tostring(roleset).decode('utf8')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(ET.tostring(roleset).decode('utf8'))
     <roleset id="eat.01" name="consume" vncls="39.1">
       <roles>
         <role descr="consumer, eater" n="0">...</role>...
@@ -1461,12 +1461,12 @@ entire corpus).  The method's implementation converts this argument to
 a list of path names using the `abspaths()` method, which handles all
 three value types (string, list, and None):
 
-    >>> print(str(nltk.corpus.brown.abspaths()).replace('\\\\','/')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(str(nltk.corpus.brown.abspaths()).replace('\\\\','/'))
     [FileSystemPathPointer('.../corpora/brown/ca01'),
      FileSystemPathPointer('.../corpora/brown/ca02'), ...]
-    >>> print(str(nltk.corpus.brown.abspaths('ce06')).replace('\\\\','/')) # doctest: +ELLIPSIS
+    >>> print(str(nltk.corpus.brown.abspaths('ce06')).replace('\\\\','/'))
     [FileSystemPathPointer('.../corpora/brown/ce06')]
-    >>> print(str(nltk.corpus.brown.abspaths(['ce06', 'ce07'])).replace('\\\\','/')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print(str(nltk.corpus.brown.abspaths(['ce06', 'ce07'])).replace('\\\\','/'))
     [FileSystemPathPointer('.../corpora/brown/ce06'),
      FileSystemPathPointer('.../corpora/brown/ce07')]
 
@@ -1699,15 +1699,15 @@ By default, they apply to all documents in the corpus.
     True
     >>> corpus.words()
     ['This', 'is', 'the', 'first', 'sentence', '.', ...]
-    >>> corpus.sents() # doctest: +ELLIPSIS
+    >>> corpus.sents()
     [['This', 'is', 'the', 'first', ...], ['Here', 'is', 'another'...], ...]
-    >>> corpus.paras() # doctest: +ELLIPSIS
+    >>> corpus.paras()
     [[['This', ...], ['Here', ...], ...], [['This', ...], ...], ...]
-    >>> corpus.tagged_words() # doctest: +ELLIPSIS
+    >>> corpus.tagged_words()
     [('This', 'DET'), ('is', 'VERB'), ('the', 'DET'), ...]
-    >>> corpus.tagged_sents() # doctest: +ELLIPSIS
+    >>> corpus.tagged_sents()
     [[('This', 'DET'), ('is', 'VERB'), ...], [('Here', 'DET'), ...], ...]
-    >>> corpus.tagged_paras() # doctest: +ELLIPSIS
+    >>> corpus.tagged_paras()
     [[[('This', 'DET'), ...], ...], [[('This', 'DET'), ...], ...], ...]
     >>> corpus.raw()[:40]
     'This/det is/verb the/det first/adj sente'
@@ -1726,24 +1726,24 @@ By default, they apply to all documents in the corpus.
 The Brown Corpus uses the tagged corpus reader:
 
     >>> from nltk.corpus import brown
-    >>> brown.fileids() # doctest: +ELLIPSIS
+    >>> brown.fileids()
     ['ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...]
-    >>> brown.categories() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> brown.categories()
     ['adventure', 'belles_lettres', 'editorial', 'fiction', 'government', 'hobbies', 'humor',
     'learned', 'lore', 'mystery', 'news', 'religion', 'reviews', 'romance', 'science_fiction']
-    >>> print(repr(brown.root).replace('\\\\','/')) # doctest: +ELLIPSIS
+    >>> print(repr(brown.root).replace('\\\\','/'))
     FileSystemPathPointer('.../corpora/brown')
     >>> brown.words()
     ['The', 'Fulton', 'County', 'Grand', 'Jury', ...]
-    >>> brown.sents() # doctest: +ELLIPSIS
+    >>> brown.sents()
     [['The', 'Fulton', 'County', 'Grand', ...], ...]
-    >>> brown.paras() # doctest: +ELLIPSIS
+    >>> brown.paras()
     [[['The', 'Fulton', 'County', ...]], [['The', 'jury', ...]], ...]
-    >>> brown.tagged_words() # doctest: +ELLIPSIS
+    >>> brown.tagged_words()
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
-    >>> brown.tagged_sents() # doctest: +ELLIPSIS
+    >>> brown.tagged_sents()
     [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...], ...]
-    >>> brown.tagged_paras() # doctest: +ELLIPSIS
+    >>> brown.tagged_paras()
     [[[('The', 'AT'), ...]], [[('The', 'AT'), ...]], ...]
 
 Verbnet Corpus Reader
@@ -1761,7 +1761,7 @@ Make sure we're picking up the right number of elements:
 
 Selecting classids based on various selectors:
 
-    >>> verbnet.classids(lemma='take') # doctest: +NORMALIZE_WHITESPACE
+    >>> verbnet.classids(lemma='take')
     ['bring-11.3', 'characterize-29.2', 'convert-26.6.2', 'cost-54.2',
     'fit-54.3', 'performance-26.7-2', 'steal-10.5']
     >>> verbnet.classids(wordnetid='lead%2:38:01')

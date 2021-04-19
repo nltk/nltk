@@ -94,7 +94,7 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
 
     >>> from nltk.corpus import dependency_treebank
     >>> t = dependency_treebank.parsed_sents()[0]
-    >>> print(t.to_conll(3))  # doctest: +NORMALIZE_WHITESPACE
+    >>> print(t.to_conll(3))
     Pierre      NNP     2
     Vinken      NNP     8
     ,   ,       2
@@ -231,7 +231,7 @@ of MALT parser, it's set to `'null'`.
 >>> dg.root['word'], dg.root['address']
 ('shot', 2)
 
->>> print(dg.to_conll(10))  # doctest: +NORMALIZE_WHITESPACE
+>>> print(dg.to_conll(10))
 1   I       _       NN      NN      _       2       nn      _       _
 2   shot    _       NN      NN      _       0       null    _       _
 3   an      _       AT      AT      _       2       dep     _       _

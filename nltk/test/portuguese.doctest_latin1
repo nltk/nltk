@@ -74,7 +74,7 @@ remover o conteúdo que antecede o sinal de mais:
     ...         return t
     >>> twords = nltk.corpus.floresta.tagged_words()
     >>> twords = [(w.lower(),simplify_tag(t)) for (w,t) in twords]
-    >>> twords[:10] # doctest: +NORMALIZE_WHITESPACE
+    >>> twords[:10]
     [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
     ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
    
@@ -100,21 +100,21 @@ freqüência:
 
     >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
     >>> fd = nltk.FreqDist(tags)
-    >>> fd.sorted()[:20] # doctest: +NORMALIZE_WHITESPACE
+    >>> fd.sorted()[:20]
     ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 'conj-c', 'v-inf',
     'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', '\xbb', 'conj-s', '}']
 
 Também podemos ler o corpus agrupado por enunciados:
 
-    >>> floresta.sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> floresta.sents()
     [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 'um', 'ex-libris',
     'de', 'a', 'noite', 'algarvia', '.'], ...]
-    >>> floresta.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> floresta.tagged_sents()
     [[('Um', '>N+art'), ('revivalismo', 'H+n'), ('refrescante', 'N<+adj')],
     [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'), ('um', '>N+art'),
     ('ex-libris', 'H+n'), ('de', 'H+prp'), ('a', '>N+art'), ('noite', 'H+n'),
     ('algarvia', 'N<+adj'), ('.', '.')], ...]
-    >>> floresta.parsed_sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> floresta.parsed_sents()
     [Tree('UTT+np', [Tree('>N+art', ['Um']), Tree('H+n', ['revivalismo']),
     Tree('N<+adj', ['refrescante'])]), Tree('STA+fcl', [Tree('SUBJ+np',
     [Tree('>N+art', ['O']), Tree('H+prop', ['7_e_Meio'])]), Tree('P+v-fin', ['\xe9']),

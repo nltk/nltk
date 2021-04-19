@@ -19,7 +19,7 @@ Words
 Look up a word using ``synsets()``; this function has an optional ``pos`` argument
 which lets you constrain the part of speech of the word:
 
-    >>> wn.synsets('dog') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> wn.synsets('dog')
     [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'),
     Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
     >>> wn.synsets('dog', pos=wn.VERB)
@@ -46,14 +46,14 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
-    >>> sorted(wn.langs()) # doctest: +NORMALIZE_WHITESPACE
+    >>> sorted(wn.langs())
     ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas',
     'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'ita', 'jpn', 'nld', 'nno',
     'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
     >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
 
-    wn.synset('spy.n.01').lemma_names('jpn') # doctest: +NORMALIZE_WHITESPACE
+    wn.synset('spy.n.01').lemma_names('jpn')
     ['\u3044\u306c', '\u307e\u308f\u3057\u8005', '\u30b9\u30d1\u30a4', '\u56de\u3057\u8005',
     '\u56de\u8005', '\u5bc6\u5075', '\u5de5\u4f5c\u54e1', '\u5efb\u3057\u8005',
     '\u5efb\u8005', '\u63a2', '\u63a2\u308a', '\u72ac', '\u79d8\u5bc6\u635c\u67fb\u54e1',
@@ -61,10 +61,10 @@ WordNet, using ISO-639 language codes.
 
     >>> wn.synset('dog.n.01').lemma_names('ita')
     ['cane', 'Canis_familiaris']
-    >>> wn.lemmas('cane', lang='ita') # doctest: +NORMALIZE_WHITESPACE
+    >>> wn.lemmas('cane', lang='ita')
     [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'), Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'),
     Lemma('incompetent.n.01.cane')]
-    >>> sorted(wn.synset('dog.n.01').lemmas('dan')) # doctest: +NORMALIZE_WHITESPACE
+    >>> sorted(wn.synset('dog.n.01').lemmas('dan'))
     [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
     Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
 
@@ -88,7 +88,7 @@ Synsets
     >>> dog = wn.synset('dog.n.01')
     >>> dog.hypernyms()
     [Synset('canine.n.02'), Synset('domestic_animal.n.01')]
-    >>> dog.hyponyms()  # doctest: +ELLIPSIS
+    >>> dog.hyponyms()
     [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'), Synset('dalmatian.n.02'), ...]
     >>> dog.member_holonyms()
     [Synset('canis.n.01'), Synset('pack.n.06')]
@@ -217,13 +217,13 @@ The old behavior can be achieved by setting simulate_root to be False.
 A score of 1 represents identity i.e. comparing a sense with itself
 will return 1.
 
-    >>> dog.path_similarity(cat)  # doctest: +ELLIPSIS
+    >>> dog.path_similarity(cat)
     0.2...
 
-    >>> hit.path_similarity(slap)  # doctest: +ELLIPSIS
+    >>> hit.path_similarity(slap)
     0.142...
 
-    >>> wn.path_similarity(hit, slap)  # doctest: +ELLIPSIS
+    >>> wn.path_similarity(hit, slap)
     0.142...
 
     >>> print(hit.path_similarity(slap, simulate_root=False))
@@ -240,13 +240,13 @@ of the taxonomy in which the senses occur. The relationship is given
 as -log(p/2d) where p is the shortest path length and d the taxonomy
 depth.
 
-    >>> dog.lch_similarity(cat)  # doctest: +ELLIPSIS
+    >>> dog.lch_similarity(cat)
     2.028...
 
-    >>> hit.lch_similarity(slap)  # doctest: +ELLIPSIS
+    >>> hit.lch_similarity(slap)
     1.312...
 
-    >>> wn.lch_similarity(hit, slap)  # doctest: +ELLIPSIS
+    >>> wn.lch_similarity(hit, slap)
     1.312...
 
     >>> print(hit.lch_similarity(slap, simulate_root=False))
@@ -271,7 +271,7 @@ shortest path to the root node is the longest will be selected. Where
 the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
-    >>> dog.wup_similarity(cat)  # doctest: +ELLIPSIS
+    >>> dog.wup_similarity(cat)
     0.857...
 
     >>> hit.wup_similarity(slap)
@@ -309,9 +309,9 @@ information content, the result is dependent on the corpus used to
 generate the information content and the specifics of how the
 information content was created.
 
-    >>> dog.res_similarity(cat, brown_ic)  # doctest: +ELLIPSIS
+    >>> dog.res_similarity(cat, brown_ic)
     7.911...
-    >>> dog.res_similarity(cat, genesis_ic)  # doctest: +ELLIPSIS
+    >>> dog.res_similarity(cat, genesis_ic)
     7.204...
 
 ``synset1.jcn_similarity(synset2, ic):``
@@ -321,9 +321,9 @@ Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
 
-    >>> dog.jcn_similarity(cat, brown_ic)  # doctest: +ELLIPSIS
+    >>> dog.jcn_similarity(cat, brown_ic)
     0.449...
-    >>> dog.jcn_similarity(cat, genesis_ic)  # doctest: +ELLIPSIS
+    >>> dog.jcn_similarity(cat, genesis_ic)
     0.285...
 
 ``synset1.lin_similarity(synset2, ic):``
@@ -333,7 +333,7 @@ Information Content (IC) of the Least Common Subsumer (most specific
 ancestor node) and that of the two input Synsets. The relationship is
 given by the equation 2 * IC(lcs) / (IC(s1) + IC(s2)).
 
-    >>> dog.lin_similarity(cat, semcor_ic)  # doctest: +ELLIPSIS
+    >>> dog.lin_similarity(cat, semcor_ic)
     0.886...
 
 
@@ -359,7 +359,7 @@ Iterate over all the noun synsets:
 
 Get all synsets for this word, possibly restricted by POS:
 
-    >>> wn.synsets('dog') # doctest: +ELLIPSIS
+    >>> wn.synsets('dog')
     [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
     >>> wn.synsets('dog', pos='v')
     [Synset('chase.v.01')]
@@ -388,7 +388,7 @@ Look up forms not in WordNet, with the help of Morphy:
     deny
     >>> wn.synsets('denied', wn.NOUN)
     []
-    >>> wn.synsets('denied', wn.VERB) # doctest: +NORMALIZE_WHITESPACE
+    >>> wn.synsets('denied', wn.VERB)
     [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'),
     Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
 
@@ -423,13 +423,13 @@ Compute transitive closures of synsets
     True
     >>> list(dog.closure(hyper, depth=1)) == dog.hypernyms()
     True
-    >>> list(dog.closure(hypo)) # doctest: +NORMALIZE_WHITESPACE, +ELLIPSIS
+    >>> list(dog.closure(hypo))
     [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'),
      Synset('dalmatian.n.02'), Synset('great_pyrenees.n.01'),
      Synset('griffon.n.02'), Synset('hunting_dog.n.01'), Synset('lapdog.n.01'),
      Synset('leonberg.n.01'), Synset('mexican_hairless.n.01'),
      Synset('newfoundland.n.01'), Synset('pooch.n.01'), Synset('poodle.n.01'), ...]
-    >>> list(dog.closure(hyper)) # doctest: +NORMALIZE_WHITESPACE
+    >>> list(dog.closure(hyper))
     [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'), Synset('animal.n.01'),
     Synset('placental.n.01'), Synset('organism.n.01'), Synset('mammal.n.01'), Synset('living_thing.n.01'),
     Synset('vertebrate.n.01'), Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
@@ -455,7 +455,7 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
 
     >>> t = wn.synsets('picasso')[0]
     >>> m = wn.synsets('male')[1]
-    >>> t.wup_similarity(m)  # doctest: +ELLIPSIS
+    >>> t.wup_similarity(m)
     0.631...
 
     Issue #2278: wup_similarity not commutative when comparing a noun and a verb.
@@ -470,14 +470,14 @@ Bug 21: "instance of" not included in LCS (very similar to bug 160)
     >>> a = wn.synsets("writings")[0]
     >>> b = wn.synsets("scripture")[0]
     >>> brown_ic = wordnet_ic.ic('ic-brown.dat')
-    >>> a.jcn_similarity(b, brown_ic)  # doctest: +ELLIPSIS
+    >>> a.jcn_similarity(b, brown_ic)
     0.175...
 
 Bug 221: Verb root IC is zero
 
     >>> from nltk.corpus.reader.wordnet import information_content
     >>> s = wn.synsets('say', wn.VERB)[0]
-    >>> information_content(s, brown_ic)  # doctest: +ELLIPSIS
+    >>> information_content(s, brown_ic)
     4.623...
 
 Bug 161: Comparison between WN keys/lemmas should not be case sensitive
@@ -503,7 +503,7 @@ Bug 382: JCN Division by zero error
     >>> shlep = wn.synset('shlep.v.02')
     >>> from nltk.corpus import wordnet_ic
     >>> brown_ic =  wordnet_ic.ic('ic-brown.dat')
-    >>> tow.jcn_similarity(shlep, brown_ic)  # doctest: +ELLIPSIS
+    >>> tow.jcn_similarity(shlep, brown_ic)
     1...e+300
 
 Bug 428: Depth is zero for instance nouns
@@ -525,7 +525,7 @@ Bug 470: shortest_path_distance ignored instance hypernyms
 
     >>> google = wordnet.synsets("google")[0]
     >>> earth = wordnet.synsets("earth")[0]
-    >>> google.wup_similarity(earth)  # doctest: +ELLIPSIS
+    >>> google.wup_similarity(earth)
     0.1...
 
 Bug 484: similarity metrics returned -1 instead of None for no LCS
@@ -557,17 +557,17 @@ Bug 482: Some nouns not being lemmatised by WordNetLemmatizer().lemmatize
 
 Bug 284: instance hypernyms not used in similarity calculations
 
-    >>> wn.synset('john.n.02').lch_similarity(wn.synset('dog.n.01'))  # doctest: +ELLIPSIS
+    >>> wn.synset('john.n.02').lch_similarity(wn.synset('dog.n.01'))
     1.335...
-    >>> wn.synset('john.n.02').wup_similarity(wn.synset('dog.n.01'))  # doctest: +ELLIPSIS
+    >>> wn.synset('john.n.02').wup_similarity(wn.synset('dog.n.01'))
     0.571...
-    >>> wn.synset('john.n.02').res_similarity(wn.synset('dog.n.01'), brown_ic)  # doctest: +ELLIPSIS
+    >>> wn.synset('john.n.02').res_similarity(wn.synset('dog.n.01'), brown_ic)
     2.224...
-    >>> wn.synset('john.n.02').jcn_similarity(wn.synset('dog.n.01'), brown_ic)  # doctest: +ELLIPSIS
+    >>> wn.synset('john.n.02').jcn_similarity(wn.synset('dog.n.01'), brown_ic)
     0.075...
-    >>> wn.synset('john.n.02').lin_similarity(wn.synset('dog.n.01'), brown_ic)  # doctest: +ELLIPSIS
+    >>> wn.synset('john.n.02').lin_similarity(wn.synset('dog.n.01'), brown_ic)
     0.252...
-    >>> wn.synset('john.n.02').hypernym_paths()  # doctest: +ELLIPSIS
+    >>> wn.synset('john.n.02').hypernym_paths()
     [[Synset('entity.n.01'), ..., Synset('john.n.02')]]
 
 Issue 541: add domains to wordnet

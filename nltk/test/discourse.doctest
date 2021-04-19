@@ -40,7 +40,7 @@ As you will see, each sentence receives an identifier `s`\ :subscript:`i`.
 We might also want to check what grammar the ``DiscourseTester`` is
 using (by default, ``book_grammars/discourse.fcfg``):
 
-    >>> dt.grammar() # doctest: +ELLIPSIS
+    >>> dt.grammar()
     % start S
     # Grammar Rules
     S[SEM = <app(?subj,?vp)>] -> NP[NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
@@ -96,7 +96,7 @@ the ``readings()`` method. Again, each thread is assigned an
 identifier of the form `d`\ :sub:`i`. Following the identifier is a
 list of the readings that constitute that thread.
 
-    >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
+    >>> dt.readings(threaded=True)
     d0: ['s0-r0', 's1-r0']
     d1: ['s0-r0', 's1-r1']
     d2: ['s0-r1', 's1-r0']
@@ -198,7 +198,7 @@ couple of them.
     <BLANKLINE>
     s2-r0: boxer(John)
     s2-r1: boxerdog(John)
-    >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
+    >>> dt.readings(threaded=True)
     d0: ['s0-r0', 's1-r0', 's2-r0']
     d1: ['s0-r0', 's1-r0', 's2-r1']
     d2: ['s0-r0', 's1-r1', 's2-r0']
@@ -248,7 +248,7 @@ us to check:
 
 So let's retract the inconsistent sentence:
 
-    >>> dt.retract_sentence('No person dances', verbose=True) # doctest: +NORMALIZE_WHITESPACE
+    >>> dt.retract_sentence('No person dances', verbose=True)
     Current sentences are
     s0: A student dances
     s1: Every student is a person
@@ -353,7 +353,7 @@ Let's build a new discourse, and look at the readings of the component sentences
 
 This gives us a lot of threads:
 
-    >>> dt.readings(threaded=True) # doctest: +NORMALIZE_WHITESPACE
+    >>> dt.readings(threaded=True)
     d0: ['s0-r0', 's1-r0', 's2-r0', 's3-r0']
     d1: ['s0-r0', 's1-r1', 's2-r0', 's3-r0']
     d2: ['s0-r1', 's1-r0', 's2-r0', 's3-r0']
@@ -381,7 +381,7 @@ The background information allows us to reject three of the threads as
 inconsistent. To see what remains, use the ``filter=True`` parameter
 on ``readings()``.
 
-    >>> dt.readings(filter=True) # doctest: +NORMALIZE_WHITESPACE
+    >>> dt.readings(filter=True)
     d1: ['s0-r0', 's1-r1', 's2-r0', 's3-r0']
 
 The ``models()`` method gives us more information about the surviving thread.

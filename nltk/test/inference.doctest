@@ -76,7 +76,7 @@ If the ``prove()`` method has not been called,
 then the prover command will be unable to display a proof.
 
     >>> prover = ResolutionProverCommand(c, [p1,p2])
-    >>> print(prover.proof()) # doctest: +ELLIPSIS
+    >>> print(prover.proof())
     Traceback (most recent call last):
       File "...", line 1212, in __run
         compileflags, 1) in test.globs
@@ -121,7 +121,7 @@ That means that ``proof()`` will be unavailable until ``prove()`` is called and
 a call to ``prove()`` will execute the theorem prover.
 
     >>> prover.retract_assumptions([read_expr('man(socrates)')])
-    >>> print(prover.proof()) # doctest: +ELLIPSIS
+    >>> print(prover.proof())
     Traceback (most recent call last):
       File "...", line 1212, in __run
         compileflags, 1) in test.globs
@@ -156,7 +156,7 @@ Install these into an appropriate location; the
 following locations:
 
     >>> p = Prover9()
-    >>> p.binary_locations() # doctest: +NORMALIZE_WHITESPACE
+    >>> p.binary_locations()
     ['/usr/local/bin/prover9',
      '/usr/local/bin/prover9/bin',
      '/usr/local/bin',
@@ -299,7 +299,7 @@ statements as new assumptions.
     >>> prover.add_assumptions(new)
     >>> print(prover.prove())
     True
-    >>> print(prover.proof()) # doctest: +ELLIPSIS
+    >>> print(prover.proof())
     ============================== prooftrans ============================
     Prover9 (...) version ...
     Process ... was started by ... on ...

@@ -147,7 +147,7 @@ Create and score a series of chunk parsers, successively more complex.
     >>> chunkscore.incorrect()
     []
 
-    >>> chunk_parser.rules() # doctest: +NORMALIZE_WHITESPACE
+    >>> chunk_parser.rules()
     [<ChunkRule: '<.*>+'>, <StripRule: '<VBD|IN|\\.>'>,
      <SplitRule: '<DT><NN>', '<DT><NN>'>]
 

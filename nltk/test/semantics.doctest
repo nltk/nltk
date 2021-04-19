@@ -398,7 +398,7 @@ Satisfier Tests
     >>> g.purge()
     >>> g.add('x', 'b1')
     {'x': 'b1'}
-    >>> for f in formulas: # doctest: +NORMALIZE_WHITESPACE
+    >>> for f in formulas:
     ...     try:
     ...         print("'%s' gets value: %s" % (f, m.evaluate(f, g)))
     ...     except Undefined:
@@ -424,7 +424,7 @@ Satisfier Tests
     'exists y. (love(adam, y) & love(y, x))' gets value: True
 
     >>> from nltk.sem import Expression
-    >>> for fmla in formulas: # doctest: +NORMALIZE_WHITESPACE
+    >>> for fmla in formulas:
     ...     p = Expression.fromstring(fmla)
     ...     g.purge()
     ...     print("Satisfiers of '%s':\n\t%s" % (p, sorted(m.satisfiers(p, 'x', g))))

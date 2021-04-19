@@ -32,7 +32,7 @@ Test the stemmer on various pluralised words.
 
     >>> singles = [stemmer.stem(plural) for plural in plurals]
 
-    >>> print(' '.join(singles))  # doctest: +NORMALIZE_WHITESPACE
+    >>> print(' '.join(singles))
     caress fli die mule deni die agre own humbl size meet
     state siez item sensat tradit refer colon plot
 

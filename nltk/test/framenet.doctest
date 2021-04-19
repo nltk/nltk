@@ -89,7 +89,7 @@ function passing in the frame number:
     202
     >>> f.name
     'Arrest'
-    >>> f.definition # doctest: +ELLIPSIS
+    >>> f.definition
     "Authorities charge a Suspect, who is under suspicion of having committed a crime..."
     >>> len(f.lexUnit)
     11
@@ -120,7 +120,7 @@ expression. Note that LU names are composed of "lemma.POS", where the
 "lemma" part can be made up of either a single lexeme (e.g. 'run') or
 multiple lexemes (e.g. 'a little') (see below).
 
-    >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'), key=itemgetter('ID'))) # doctest: +ELLIPSIS
+    >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'), key=itemgetter('ID')))
     [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
 -------------
@@ -239,7 +239,7 @@ of these documents can be obtained by calling the `docs()` function:
     >>> d = fn.docs('BellRinging')[0]
     >>> d.corpname
     'PropBank'
-    >>> d.sentence[49] # doctest: +ELLIPSIS
+    >>> d.sentence[49]
     full-text sentence (...) in BellRinging:
     <BLANKLINE>
     <BLANKLINE>
@@ -261,7 +261,7 @@ of these documents can be obtained by calling the `docs()` function:
      (Desir=Desiring, Cause_t=Cause_to_make_noise, Cause=Cause_motion, Comple=Completeness)
     <BLANKLINE>
 
-    >>> d.sentence[49].annotationSet[1] # doctest: +ELLIPSIS
+    >>> d.sentence[49].annotationSet[1]
     annotation set (...):
     <BLANKLINE>
     [status] MANUAL
