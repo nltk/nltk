@@ -15,7 +15,6 @@ from nltk.lm import (
     Laplace,
     WittenBellInterpolated,
     KneserNeyInterpolated,
-    SimpleLinearInterpolation,
     AbsoluteDiscountingInterpolated,
     StupidBackoff,
 )
@@ -357,38 +356,35 @@ class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
         self.model.fit(training_text)
 
     score_tests = [
-        # For unigram scores revert to uniform
-        # Vocab size: 8
-        # count('c'): 1
-        # # of bigrams ending with c = 2
-        # total # of unique bigrams = 21
-        ("c", None, 2.0 / 21),
+        # # of bigrams ending with c = 1
+        # total # of unique bigrams = 14
+        ("c", None, 1.0 / 14),
         # in vocabulary but unseen
         # # of bigrams ending with z = 0
-        ("z", None, 0.0 / 21),
+        ("z", None, 0.0 / 14),
         # out of vocabulary should use "UNK" score
-        # # of bigrams ending with <UNK> = 5
-        ("y", None, 5 / 21),
+        # # of bigrams ending with <UNK> = 3
+        ("y", None, 3 / 14),
         # alpha = max(count('bc') - discount,0)/# of bigrams starting 'b'
-        # = (1 - 0.75)/4 = 0.0625
+        # = (1 - 0.75)/2 = 0.125
         # gamma(['b']) = (discount * number of unique continuations after ['b'])/ # of bigrams starting 'b'
-        # = (0.75 * 4)/4 = 0.75
+        # = (0.75 * 2)/2 = 0.75
         # the final should be: (alpha + gamma * unigram_score("c"))
-        ("c", ["b"], (0.0625 + 0.75 * (2 / 21))),
+        ("c", ["b"], (0.125 + 0.75 * (1 / 14))),
         # building on that, let's try 'a b c' as the trigram
         # alpha = max(count('abc') - discount,0)/# of trigrams starting "ab"
-        # = max(1 - 0.1, 0)/3 = 0.08333
+        # = max(1 - 0.1, 0)/1 = 0.25
         # gamma(['a', 'b']) = (discount * number of unique continuations after ['ab'])/ # of bigrams starting 'ab'
-        # = 0.75 * 3/3
+        # = 0.75 * 1/1
         # final: alpha + gamma*(P(c|b))
         # alpha of P(c|b) = max(# of trigrams ending in "bc" - discount,0)/# unique trigram continuations with 'b' in the middle
-        # = (1-0.75)/4 =0.0625
+        # = (1-0.75)/2 =0.125
         # gamma of P(c|b) = (discount * # of unique continuations after 'b')/ # of unique bigram continuations with 'b' in the middle
-        # = 0.75 * 4/4
-        ("c", ["a", "b"], 0.08333 + 0.75 * (0.0625 + 0.75 * (2 / 21))),
+        # = 0.75 * 2/2
+        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (1 / 14))),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], (0.0625 + 0.75 * (2 / 21))),
+        ("c", ["z", "b"], (0.125 + 0.75 * (1 / 14))),
     ]
 
 
@@ -404,37 +400,66 @@ class TestAbsoluteDiscountingTrigram(metaclass=ParametrizedTests):
     score_tests = [
         # For unigram scores revert to uniform
         # Vocab size: 8
-        # count('c'): 2
-        # total # of bigrams = 31
-        ("c", None, 2.0 / 31),
+        # count('c'): 1
+        # total # of bigrams = 18
+        ("c", None, 1.0 / 18),
         # in vocabulary but unseen
         # # of bigrams ending with z = 0
-        ("z", None, 0.0 / 31),
+        ("z", None, 0.0 / 18),
         # out of vocabulary should use "UNK" score
-        # count('<UNK>'): 8
-        ("y", None, 8 / 31),
+        # count('<UNK>'): 3
+        ("y", None, 3 / 18),
         # alpha = max(count('bc') - discount,0)/# of bigrams starting with b
-        # = (1 - 0.75)/4 = 0.0625
+        # = (1 - 0.75)/2 = 0.125
         # gamma(['b']) = (discount * number of unique bigrams starting ['b'])/ # of bigrams starting 'b'
-        # = (0.75 * 4)/4 = 0.75
+        # = 0.75 * (2/2) = 0.375
         # the final should be: (alpha + gamma * unigram_score("c"))
-        ("c", ["b"], (0.0625 + 0.75 * (2 / 31))),
+        ("c", ["b"], (0.125 + 0.75 * (2 / 2)*(1/18))),
         # building on that, let's try 'a b c' as the trigram
         # alpha = max(count('abc') - discount,0)/# of trigrams starting "ab"
-        # = max(1 - 0.1, 0)/3 = 0.08333
+        # = max(1 - 0.1, 0)/1 = 0.25
         # gamma(['a', 'b']) = (discount * number of unique bigrams starting ['ab'])/ # of bigrams starting 'ab'
-        # = 0.75 * 3/3
+        # = 0.75 * 1/1
         # final: alpha + gamma*(P(c|b))
         # alpha of P(c|b) = max(count(bc) - discount,0)/# of trigram starting 'b'
         # = (1-0.75)/4 =0.0625
         # gamma of P(c|b) = (discount * # of unique bigrams starting 'b')/ # of bigram starting 'b'
         # = 0.75 * 4/4
-        ("c", ["a", "b"], 0.08333 + 0.75 * (0.0625 + 0.75 * (2 / 31))),
+        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (2 / 2)*(1/18))),
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], (0.0625 + 0.75 * (2 / 31))),
+        ("c", ["z", "b"], (0.125 + 0.75 * (2 / 2)*(1/18))),
     ]
 
+class TestStupidBackoffTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
+        vocab, training_text = _prepare_test_data(3)
+        self.model = StupidBackoff(
+            order=3, alpha=0.4, vocabulary=vocab
+        )
+        self.model.fit(training_text)
+
+    score_tests = [
+        # For unigram scores revert to uniform
+        # Vocab size: 8
+        # count('c'): 2
+        # total # of bigrams = 18
+        ("c", None, 1.0 / 18),
+        # in vocabulary but unseen
+        # # of bigrams ending with z = 0
+        ("z", None, 0.0 / 18),
+        # out of vocabulary should use "UNK" score
+        # count('<UNK>'): 3
+        ("y", None, 3 / 18),
+        # c follows 1 time out of 2 after b
+        ("c", ["b"], 1 / 2),
+        # c always follows ab
+        ("c", ["a", "b"], 1 / 1),
+        # The ngram 'z b c' was not seen, so we backoff to
+        # the score of the ngram 'b c' * smoothing factor
+        ("c", ["z", "b"], (0.4 * (1 / 2))),
+    ]
 
 class TestNgramModelTextGeneration:
     """Using MLE model, generate some text."""
@@ -464,24 +489,16 @@ class TestNgramModelTextGeneration:
 
         self.model.fit(more_training_text)
         # Test that we can escape the cycle
-        assert self.model.generate(7, text_seed=("b", "d"), random_seed=5) == [
-            "b",
-            "d",
-            "b",
-            "d",
-            "b",
-            "d",
-            "</s>",
-        ]
+        assert (
+            self.model.generate(7, text_seed=("b", "d"), random_seed=5)
+            == ["b", "d", "b", "d", "b", "d", "</s>"]
+        )
 
     def test_generate_with_text_seed(self):
-        assert self.model.generate(5, text_seed=("<s>", "e"), random_seed=3) == [
-            "<UNK>",
-            "a",
-            "d",
-            "b",
-            "<UNK>",
-        ]
+         assert (
+            self.model.generate(5, text_seed=("<s>", "e"), random_seed=3)
+            == ["<UNK>", "a", "d", "b", "<UNK>"]
+        )
 
     def test_generate_oov_text_seed(self):
         assert self.model.generate(
@@ -494,7 +511,8 @@ class TestNgramModelTextGeneration:
             self.model.generate(text_seed=(None,))
 
         # This will work
-        assert self.model.generate(
-            text_seed=None, random_seed=3
-        ) == self.model.generate(random_seed=3)
+        assert (
+            self.model.generate(text_seed=None, random_seed=3)
+            == self.model.generate(random_seed=3)
+        )
 
