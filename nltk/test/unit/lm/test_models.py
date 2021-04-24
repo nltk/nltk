@@ -15,9 +15,10 @@ from nltk.lm import (
     Laplace,
     WittenBellInterpolated,
     KneserNeyInterpolated,
+    AbsoluteDiscountingInterpolated,
+    StupidBackoff,
 )
 from nltk.lm.preprocessing import padded_everygrams
-
 
 
 def _prepare_test_data(ngram_order):
@@ -32,6 +33,7 @@ def _prepare_test_data(ngram_order):
 
 class ParametrizedTests(type):
     """Metaclass for generating parametrized tests."""
+
     contexts = [
         ("a",),
         ("c",),
@@ -354,6 +356,48 @@ class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
         self.model.fit(training_text)
 
     score_tests = [
+        # # of bigrams ending with c = 1
+        # total # of unique bigrams = 14
+        ("c", None, 1.0 / 14),
+        # in vocabulary but unseen
+        # # of bigrams ending with z = 0
+        ("z", None, 0.0 / 14),
+        # out of vocabulary should use "UNK" score
+        # # of bigrams ending with <UNK> = 3
+        ("y", None, 3 / 14),
+        # alpha = max(count('bc') - discount,0)/# of bigrams starting 'b'
+        # = (1 - 0.75)/2 = 0.125
+        # gamma(['b']) = (discount * number of unique continuations after ['b'])/ # of bigrams starting 'b'
+        # = (0.75 * 2)/2 = 0.75
+        # the final should be: (alpha + gamma * unigram_score("c"))
+        ("c", ["b"], (0.125 + 0.75 * (1 / 14))),
+        # building on that, let's try 'a b c' as the trigram
+        # alpha = max(count('abc') - discount,0)/# of trigrams starting "ab"
+        # = max(1 - 0.1, 0)/1 = 0.25
+        # gamma(['a', 'b']) = (discount * number of unique continuations after ['ab'])/ # of bigrams starting 'ab'
+        # = 0.75 * 1/1
+        # final: alpha + gamma*(P(c|b))
+        # alpha of P(c|b) = max(# of trigrams ending in "bc" - discount,0)/# unique trigram continuations with 'b' in the middle
+        # = (1-0.75)/2 =0.125
+        # gamma of P(c|b) = (discount * # of unique continuations after 'b')/ # of unique bigram continuations with 'b' in the middle
+        # = 0.75 * 2/2
+        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (1 / 14))),
+        # The ngram 'z b c' was not seen, so we should simply revert to
+        # the score of the ngram 'b c'. See issue #2332.
+        ("c", ["z", "b"], (0.125 + 0.75 * (1 / 14))),
+    ]
+
+
+class TestAbsoluteDiscountingTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
+        vocab, training_text = _prepare_test_data(3)
+        self.model = AbsoluteDiscountingInterpolated(
+            3, discount=0.75, vocabulary=vocab
+        )
+        self.model.fit(training_text)
+
+    score_tests = [
         # For unigram scores revert to uniform
         # Vocab size: 8
         # count('c'): 1
@@ -388,6 +432,35 @@ class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
         ("c", ["z", "b"], (0.125 + 0.75 * (1 / 14))),
     ]
 
+class TestStupidBackoffTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
+        vocab, training_text = _prepare_test_data(3)
+        self.model = StupidBackoff(
+            order=3, alpha=0.4, vocabulary=vocab
+        )
+        self.model.fit(training_text)
+
+    score_tests = [
+        # For unigram scores revert to uniform
+        # Vocab size: 8
+        # count('c'): 2
+        # total # of bigrams = 18
+        ("c", None, 1.0 / 18),
+        # in vocabulary but unseen
+        # # of bigrams ending with z = 0
+        ("z", None, 0.0 / 18),
+        # out of vocabulary should use "UNK" score
+        # count('<UNK>'): 3
+        ("y", None, 3 / 18),
+        # c follows 1 time out of 2 after b
+        ("c", ["b"], 1 / 2),
+        # c always follows ab
+        ("c", ["a", "b"], 1 / 1),
+        # The ngram 'z b c' was not seen, so we backoff to
+        # the score of the ngram 'b c' * smoothing factor
+        ("c", ["z", "b"], (0.4 * (1 / 2))),
+    ]
 
 class TestNgramModelTextGeneration:
     """Using MLE model, generate some text."""
@@ -423,16 +496,15 @@ class TestNgramModelTextGeneration:
         )
 
     def test_generate_with_text_seed(self):
-        assert (
+         assert (
             self.model.generate(5, text_seed=("<s>", "e"), random_seed=3)
             == ["<UNK>", "a", "d", "b", "<UNK>"]
         )
 
     def test_generate_oov_text_seed(self):
-        assert (
-            self.model.generate(text_seed=("aliens",), random_seed=3)
-            == self.model.generate(text_seed=("<UNK>",), random_seed=3)
-        )
+        assert self.model.generate(
+            text_seed=("aliens",), random_seed=3
+        ) == self.model.generate(text_seed=("<UNK>",), random_seed=3)
 
     def test_generate_None_text_seed(self):
         # should crash with type error when we try to look it up in vocabulary
@@ -444,3 +516,4 @@ class TestNgramModelTextGeneration:
             self.model.generate(text_seed=None, random_seed=3)
             == self.model.generate(random_seed=3)
         )
+
