@@ -48,30 +48,6 @@ class WittenBell(Smoothing):
         return self.counts.unigrams.freq(word)
         # return (self.counts[word] + 1) / (self.counts[1].N() + len(self.counts[1]))
 
-
-class AbsoluteDiscounting(Smoothing):
-    """Absolute Discounting smoothing."""
-
-    def __init__(self, vocabulary, counter, discount=0.75, **kwargs):
-        super().__init__(vocabulary, counter, **kwargs)
-        self.discount = discount
-
-    def alpha_gamma(self, word, context):
-        alpha = (
-            max(self.counts[context][word] - self.discount, 0)
-            / self.counts[context].N()
-        )
-        gamma = self._gamma(context)
-        return alpha, gamma
-
-    def _gamma(self, context):
-        n_plus = _count_non_zero_vals(self.counts[context])
-        return (self.discount * n_plus) / self.counts[context].N()
-
-    def unigram_score(self, word):
-        return self.counts.unigrams.freq(word)
-
-
 class KneserNey(Smoothing):
     """Kneser-Ney Smoothing."""
 

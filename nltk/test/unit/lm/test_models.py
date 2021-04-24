@@ -15,8 +15,6 @@ from nltk.lm import (
     Laplace,
     WittenBellInterpolated,
     KneserNeyInterpolated,
-    AbsoluteDiscountingInterpolated,
-    StupidBackoff,
 )
 from nltk.lm.preprocessing import padded_everygrams
 
@@ -385,80 +383,6 @@ class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
         # The ngram 'z b c' was not seen, so we should simply revert to
         # the score of the ngram 'b c'. See issue #2332.
         ("c", ["z", "b"], (0.125 + 0.75 * (1 / 14))),
-    ]
-
-
-class TestAbsoluteDiscountingTrigram(metaclass=ParametrizedTests):
-    @classmethod
-    def setup_method(self):
-        vocab, training_text = _prepare_test_data(3)
-        self.model = AbsoluteDiscountingInterpolated(
-            3, discount=0.75, vocabulary=vocab
-        )
-        self.model.fit(training_text)
-
-    score_tests = [
-        # For unigram scores revert to uniform
-        # Vocab size: 8
-        # count('c'): 1
-        # total # of bigrams = 18
-        ("c", None, 1.0 / 18),
-        # in vocabulary but unseen
-        # # of bigrams ending with z = 0
-        ("z", None, 0.0 / 18),
-        # out of vocabulary should use "UNK" score
-        # count('<UNK>'): 3
-        ("y", None, 3 / 18),
-        # alpha = max(count('bc') - discount,0)/# of bigrams starting with b
-        # = (1 - 0.75)/2 = 0.125
-        # gamma(['b']) = (discount * number of unique bigrams starting ['b'])/ # of bigrams starting 'b'
-        # = 0.75 * (2/2) = 0.375
-        # the final should be: (alpha + gamma * unigram_score("c"))
-        ("c", ["b"], (0.125 + 0.75 * (2 / 2)*(1/18))),
-        # building on that, let's try 'a b c' as the trigram
-        # alpha = max(count('abc') - discount,0)/# of trigrams starting "ab"
-        # = max(1 - 0.1, 0)/1 = 0.25
-        # gamma(['a', 'b']) = (discount * number of unique bigrams starting ['ab'])/ # of bigrams starting 'ab'
-        # = 0.75 * 1/1
-        # final: alpha + gamma*(P(c|b))
-        # alpha of P(c|b) = max(count(bc) - discount,0)/# of trigram starting 'b'
-        # = (1-0.75)/4 =0.0625
-        # gamma of P(c|b) = (discount * # of unique bigrams starting 'b')/ # of bigram starting 'b'
-        # = 0.75 * 4/4
-        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (2 / 2)*(1/18))),
-        # The ngram 'z b c' was not seen, so we should simply revert to
-        # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], (0.125 + 0.75 * (2 / 2)*(1/18))),
-    ]
-
-class TestStupidBackoffTrigram(metaclass=ParametrizedTests):
-    @classmethod
-    def setup_method(self):
-        vocab, training_text = _prepare_test_data(3)
-        self.model = StupidBackoff(
-            order=3, alpha=0.4, vocabulary=vocab
-        )
-        self.model.fit(training_text)
-
-    score_tests = [
-        # For unigram scores revert to uniform
-        # Vocab size: 8
-        # count('c'): 2
-        # total # of bigrams = 18
-        ("c", None, 1.0 / 18),
-        # in vocabulary but unseen
-        # # of bigrams ending with z = 0
-        ("z", None, 0.0 / 18),
-        # out of vocabulary should use "UNK" score
-        # count('<UNK>'): 3
-        ("y", None, 3 / 18),
-        # c follows 1 time out of 2 after b
-        ("c", ["b"], 1 / 2),
-        # c always follows ab
-        ("c", ["a", "b"], 1 / 1),
-        # The ngram 'z b c' was not seen, so we backoff to
-        # the score of the ngram 'b c' * smoothing factor
-        ("c", ["z", "b"], (0.4 * (1 / 2))),
     ]
 
 class TestNgramModelTextGeneration:
