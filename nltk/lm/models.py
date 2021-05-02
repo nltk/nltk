@@ -102,14 +102,9 @@ class InterpolatedLanguageModel(LanguageModel):
     def unmasked_score(self, word, context=None):
         if not context:
             # The base recursion case: no context, we only have a unigram.
-            if self.estimator._recursion_level is not None:
-                assert self.estimator._recursion_level == 0
             # Resetting recursion counters and flags
             self.estimator._is_top_recursion = True
-            self.estimator._recursion_level = None
             return self.estimator.unigram_score(word)
-        elif self.estimator._recursion_level is None:
-            self.estimator._recursion_level = len(context)
         if not self.counts[context]:
             # It can also happen that we have no data for this context.
             # In that case we defer to the lower-order ngram.
@@ -117,7 +112,6 @@ class InterpolatedLanguageModel(LanguageModel):
             alpha, gamma = 0, 1
         else:
             alpha, gamma = self.estimator.alpha_gamma(word, context)
-        self.estimator._recursion_level += -1
         self.estimator._is_top_recursion = False
         return alpha + gamma * self.unmasked_score(word, context[1:])
 

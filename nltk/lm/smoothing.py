@@ -46,7 +46,6 @@ class WittenBell(Smoothing):
 
     def unigram_score(self, word):
         return self.counts.unigrams.freq(word)
-        # return (self.counts[word] + 1) / (self.counts[1].N() + len(self.counts[1]))
 
 
 class AbsoluteDiscounting(Smoothing):
@@ -78,8 +77,6 @@ class KneserNey(Smoothing):
     def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
         super().__init__(vocabulary, counter, **kwargs)
         self.discount = discount
-        # Useful for order-level discounting or weight factors
-        self._recursion_level = None
         # The first call would be top level.
         self._is_top_recursion = True
 
