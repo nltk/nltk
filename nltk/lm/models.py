@@ -94,7 +94,6 @@ class InterpolatedLanguageModel(LanguageModel):
     """
 
     def __init__(self, smoothing_cls, order, **kwargs):
-        assert issubclass(smoothing_cls, Smoothing)
         params = kwargs.pop("params", {})
         super().__init__(order, **kwargs)
         self.estimator = smoothing_cls(self.vocab, self.counts, **params)
@@ -137,5 +136,8 @@ class KneserNeyInterpolated(InterpolatedLanguageModel):
     """Interpolated version of Kneser-Ney smoothing."""
 
     def __init__(self, order, discount=0.75, **kwargs):
-        assert (discount<=1) and (discount>=0), "Discount should be between 0 and 1 for Kneser-Ney probabilities to sum up to unity"
+        if not (0 <= discount <= 1):
+            raise ValueError(
+                "Discount must be between 0 and 1 for probabilities to sum up to unity."
+            )
         super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)
