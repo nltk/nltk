@@ -10,23 +10,27 @@
 According to Chen & Goodman 1995 these should work with both Backoff and
 Interpolation.
 """
+from operator import methodcaller
 
 from nltk.lm.api import Smoothing
-from nltk import FreqDist, ConditionalFreqDist
+from nltk import ConditionalFreqDist
 
-def _count_non_zero_vals(distribution):
-    if isinstance(distribution, FreqDist):
-        return sum(1.0 for c in distribution.values() if c > 0)
-    elif isinstance(distribution, ConditionalFreqDist):
-        return sum(
-            1.0 for c in distribution.keys() if sum(distribution[c].values()) > 0
-        )
-    else:
-        raise NotImplementedError(
-            "`distribution` should either be FreqDist or ConditionalFreqDist, but got {} instead.".format(
-                type(distribution)
-            )
-        )
+
+def _count_values_gt_zero(distribution):
+    """Count values that are greater than zero in a distribution.
+
+    Assumes distribution is either a mapping with counts as keys or an instance
+    of `nltk.ConditionalFreqDist`.
+    """
+    as_count = (
+        methodcaller("N")
+        if isinstance(distribution, ConditionalFreqDist)
+        else lambda count: count
+    )
+    # We explicitly check that values are > 0 to guard against negative counts.
+    return sum(
+        1 for dist_or_count in distribution.values() if as_count(dist_or_count) > 0
+    )
 
 
 class WittenBell(Smoothing):
@@ -41,7 +45,7 @@ class WittenBell(Smoothing):
         return (1.0 - gamma) * alpha, gamma
 
     def _gamma(self, context):
-        n_plus = _count_non_zero_vals(self.counts[context])
+        n_plus = _count_values_gt_zero(self.counts[context])
         return n_plus / (n_plus + self.counts[context].N())
 
     def unigram_score(self, word):
@@ -64,7 +68,7 @@ class AbsoluteDiscounting(Smoothing):
         return alpha, gamma
 
     def _gamma(self, context):
-        n_plus = _count_non_zero_vals(self.counts[context])
+        n_plus = _count_values_gt_zero(self.counts[context])
         return (self.discount * n_plus) / self.counts[context].N()
 
     def unigram_score(self, word):
@@ -101,7 +105,7 @@ class KneserNey(Smoothing):
             else self._continuation_counts(word, context)
         )
         alpha = max(word_continuation_count - self.discount, 0.0) / total_count
-        gamma = self.discount * _count_non_zero_vals(prefix_counts) / total_count
+        gamma = self.discount * _count_values_gt_zero(prefix_counts) / total_count
         return alpha, gamma
 
     def _continuation_counts(self, word, context=tuple()):
