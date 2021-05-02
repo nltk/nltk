@@ -352,7 +352,7 @@ class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
     @classmethod
     def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
-        self.model = KneserNeyInterpolated(3, vocabulary=vocab)
+        self.model = KneserNeyInterpolated(3, discount=0.75, vocabulary=vocab)
         self.model.fit(training_text)
 
     score_tests = [
