@@ -101,8 +101,6 @@ class InterpolatedLanguageModel(LanguageModel):
     def unmasked_score(self, word, context=None):
         if not context:
             # The base recursion case: no context, we only have a unigram.
-            # Resetting recursion counters and flags
-            self.estimator._is_top_recursion = True
             return self.estimator.unigram_score(word)
         if not self.counts[context]:
             # It can also happen that we have no data for this context.
@@ -111,9 +109,7 @@ class InterpolatedLanguageModel(LanguageModel):
             alpha, gamma = 0, 1
         else:
             alpha, gamma = self.estimator.alpha_gamma(word, context)
-        self.estimator._is_top_recursion = False
         return alpha + gamma * self.unmasked_score(word, context[1:])
-
 
 
 class WittenBellInterpolated(InterpolatedLanguageModel):
@@ -140,4 +136,6 @@ class KneserNeyInterpolated(InterpolatedLanguageModel):
             raise ValueError(
                 "Discount must be between 0 and 1 for probabilities to sum up to unity."
             )
-        super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)
+        super().__init__(
+            KneserNey, order, params={"discount": discount, "order": order}, **kwargs
+        )

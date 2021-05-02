@@ -74,11 +74,10 @@ class AbsoluteDiscounting(Smoothing):
 class KneserNey(Smoothing):
     """Kneser-Ney Smoothing."""
 
-    def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
+    def __init__(self, vocabulary, counter, order, discount=0.1, **kwargs):
         super().__init__(vocabulary, counter, **kwargs)
         self.discount = discount
-        # The first call would be top level.
-        self._is_top_recursion = True
+        self._order = order
 
     def unigram_score(self, word):
         continuation_count, unique_continuation_count = self.continuation_counts(
@@ -87,8 +86,8 @@ class KneserNey(Smoothing):
         return continuation_count / unique_continuation_count
 
     def alpha_gamma(self, word, context):
-        if self._is_top_recursion:
-            prefix_counts = self.counts[context]
+        prefix_counts = self.counts[context]
+        if len(context) + 1 == self._order:
             prefix_total_ngrams = prefix_counts.N()
             alpha = max(prefix_counts[word] - self.discount, 0.0) / prefix_total_ngrams
             gamma = (
@@ -97,8 +96,6 @@ class KneserNey(Smoothing):
                 / prefix_total_ngrams
             )
         else:
-            prefix_counts = self.counts[context]
-            prefix_total_ngrams = prefix_counts.N()
             continuation_count, unique_continuation_count = self.continuation_counts(
                 context + (word,)
             )
