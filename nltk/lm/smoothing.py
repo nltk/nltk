@@ -19,8 +19,8 @@ from nltk import ConditionalFreqDist
 def _count_values_gt_zero(distribution):
     """Count values that are greater than zero in a distribution.
 
-    Assumes distribution is either a mapping with counts as keys or an instance
-    of `nltk.ConditionalFreqDist`.
+    Assumes distribution is either a mapping with counts as values or
+    an instance of `nltk.ConditionalFreqDist`.
     """
     as_count = (
         methodcaller("N")
