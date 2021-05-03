@@ -72,7 +72,17 @@ class AbsoluteDiscounting(Smoothing):
 
 
 class KneserNey(Smoothing):
-    """Kneser-Ney Smoothing."""
+    """Kneser-Ney Smoothing.
+
+    This is an extension of smoothing with a discount.
+
+    Resources:
+    - https://pages.ucsd.edu/~rlevy/lign256/winter2008/kneser_ney_mini_example.pdf
+    - https://www.youtube.com/watch?v=ody1ysUTD7o
+    - https://medium.com/@dennyc/a-simple-numerical-example-for-kneser-ney-smoothing-nlp-4600addf38b8
+    - https://www.cl.uni-heidelberg.de/courses/ss15/smt/scribe6.pdf
+    - https://www-i6.informatik.rwth-aachen.de/publications/download/951/Kneser-ICASSP-1995.pdf
+    """
 
     def __init__(self, vocabulary, counter, order, discount=0.1, **kwargs):
         super().__init__(vocabulary, counter, **kwargs)
@@ -80,58 +90,34 @@ class KneserNey(Smoothing):
         self._order = order
 
     def unigram_score(self, word):
-        continuation_count, unique_continuation_count = self.continuation_counts(
-            (word,)
-        )
-        return continuation_count / unique_continuation_count
+        word_continuation_count, total_count = self._continuation_counts(word)
+        return word_continuation_count / total_count
 
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]
-        if len(context) + 1 == self._order:
-            prefix_total_ngrams = prefix_counts.N()
-            alpha = max(prefix_counts[word] - self.discount, 0.0) / prefix_total_ngrams
-            gamma = (
-                self.discount
-                * _count_non_zero_vals(prefix_counts)
-                / prefix_total_ngrams
-            )
-        else:
-            continuation_count, unique_continuation_count = self.continuation_counts(
-                context + (word,)
-            )
-            alpha = (
-                max(continuation_count - self.discount, 0.0) / unique_continuation_count
-            )
-            gamma = (
-                self.discount
-                * _count_non_zero_vals(prefix_counts)
-                / unique_continuation_count
-            )
+        word_continuation_count, total_count = (
+            (prefix_counts[word], prefix_counts.N())
+            if len(context) + 1 == self._order
+            else self._continuation_counts(word, context)
+        )
+        alpha = max(word_continuation_count - self.discount, 0.0) / total_count
+        gamma = self.discount * _count_non_zero_vals(prefix_counts) / total_count
         return alpha, gamma
 
-    def continuation_counts(self, context):
-        key_len = len(context) + 1
-        continuation_keys = []
-        unique_continuation_keys = []
-        if len(context) == 1:
-            key, value = None, context[-1]
-            for word in self.counts[2].keys():
-                unique_continuation_keys += [
-                    word + (sub_word,) for sub_word in self.counts[2][word]
-                ]
-                if context[-1] in self.counts[2][word].keys():
-                    continuation_keys.append(word + (value,))
-        else:
-            key, value = context[:-1], context[-1]
-            for ngram in self.counts[key_len].keys():
-                is_key = ngram[1:] == key
-                is_value = value in self.counts[key_len][ngram].keys()
-                if is_key:
-                    unique_continuation_keys += [
-                        ngram + (word,) for word in self.counts[key_len][ngram].keys()
-                    ]
-                    if is_value:
-                        continuation_keys.append(ngram + (value,))
-        continuation_count = len(set(continuation_keys))
-        unique_continuation_count = len(set(unique_continuation_keys))
-        return (continuation_count, unique_continuation_count)
+    def _continuation_counts(self, word, context=tuple()):
+        """Count continuations that end with context and word.
+
+        Continuations track unique ngram "types", regardless of how many
+        instances were observed for each "type".
+        This is different than raw ngram counts which track number of instances.
+        """
+        higher_order_ngrams_with_context = (
+            counts
+            for prefix_ngram, counts in self.counts[len(context) + 2].items()
+            if prefix_ngram[1:] == context
+        )
+        higher_order_ngrams_with_word_count, total = 0, 0
+        for counts in higher_order_ngrams_with_context:
+            higher_order_ngrams_with_word_count += int(word in counts)
+            total += len(counts)
+        return higher_order_ngrams_with_word_count, total
