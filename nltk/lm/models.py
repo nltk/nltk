@@ -65,6 +65,8 @@ class StupidBackoff(LanguageModel):
 
     In addition to initialization arguments from BaseNgramModel also requires
     a parameter alpha with which we scale the lower order probabilities.
+    Note that this is not a true probability distribution as scores for ngrams
+    of the same order do not sum up to unity.
     """
 
     def __init__(self, alpha=0.4, *args, **kwargs):
@@ -72,8 +74,6 @@ class StupidBackoff(LanguageModel):
         self.alpha = alpha
 
     def unmasked_score(self, word, context=None):
-        """Stupid Backoff.
-        """
         if not context:
             # Base recursion
             return self.counts.unigrams.freq(word)
@@ -120,7 +120,7 @@ class WittenBellInterpolated(InterpolatedLanguageModel):
 
 
 class AbsoluteDiscountingInterpolated(InterpolatedLanguageModel):
-    """Interpolated version of AbsoluteDiscount smoothing."""
+    """Interpolated version of smoothing with absolute discount."""
 
     def __init__(self, order, discount=0.75, **kwargs):
         super().__init__(

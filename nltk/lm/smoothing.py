@@ -53,7 +53,7 @@ class WittenBell(Smoothing):
 
 
 class AbsoluteDiscounting(Smoothing):
-    """Absolute Discounting smoothing."""
+    """Smoothing with absolute discount."""
 
     def __init__(self, vocabulary, counter, discount=0.75, **kwargs):
         super().__init__(vocabulary, counter, **kwargs)
