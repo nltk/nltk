@@ -48,7 +48,7 @@ except ImportError:
 inf = float("inf")
 
 # Default values for maximum similarity scores (Kondrak 2002: 54)
-C_skip = 10  # Indels
+C_skip = -10  # Indels
 C_sub = 35  # Substitutions
 C_exp = 45  # Expansions/compressions
 C_vwl = 5  # Vowel/consonant relative weight (decreased from 10)
