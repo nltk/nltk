@@ -6,7 +6,7 @@ Unit tests for nltk.metrics.aline
 
 import unittest
 
-import aline
+from nltk.metrics import aline
 
 
 class TestAline(unittest.TestCase):
