@@ -6,7 +6,7 @@ Unit tests for nltk.metrics.aline
 
 import unittest
 
-from nltk.metrics import aline
+import aline
 
 
 class TestAline(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestAline(unittest.TestCase):
     def test_aline(self):
         result = aline.align('θin', 'tenwis')
         expected = [
-            [('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]
+            [('θ', 't'), ('i', 'e'), ('n', 'n')]
         ]
 
         self.assertEqual(result, expected)
@@ -41,7 +41,6 @@ class TestAline(unittest.TestCase):
                 ('w', 'w'),
                 ('e', 'e'),
                 ('n', 'n'),
-                ('i', '-'),
             ]
         ]
 
@@ -50,13 +49,10 @@ class TestAline(unittest.TestCase):
         result = aline.align('tuwθ', 'dentis')
         expected = [
             [
-                ('t', 'd'),
-                ('u', 'e'),
-                ('w', '-'),
-                ('-', 'n'),
-                ('-', 't'),
-                ('-', 'i'),
-                ('θ', 's'),
+                 ('t', 't'),
+                 ('u', 'i'),
+                 ('w', '-'),
+                 ('θ', 's')
             ]
         ]
 
