@@ -122,6 +122,6 @@ class KneserNey(Smoothing):
         )
         higher_order_ngrams_with_word_count, total = 0, 0
         for counts in higher_order_ngrams_with_context:
-            higher_order_ngrams_with_word_count += int(word in counts)
-            total += len(counts)
+            higher_order_ngrams_with_word_count += int(counts[word] > 0)
+            total += _count_values_gt_zero(counts)
         return higher_order_ngrams_with_word_count, total
