@@ -63,7 +63,11 @@ class ChunkedCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for i in fileids:
+            with self.open(i) as f:
+                contents.append(f.read())
+        return concat(contents)
 
     def words(self, fileids=None):
         """

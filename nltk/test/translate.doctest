@@ -21,7 +21,7 @@ Corpus Reader
     I
     declare
     >>> als = comtrans.aligned_sents('alignment-en-fr.txt')[0]
-    >>> als  # doctest: +NORMALIZE_WHITESPACE
+    >>> als
     AlignedSent(['Resumption', 'of', 'the', 'session'],
     ['Reprise', 'de', 'la', 'session'],
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)]))
@@ -43,7 +43,7 @@ Aligned sentences are simply a mapping between words in a sentence:
 Usually we look at them from the perspective of a source to a target language,
 but they are easily inverted:
 
-    >>> als.invert() # doctest: +NORMALIZE_WHITESPACE
+    >>> als.invert()
     AlignedSent(['Reprise', 'de', 'la', 'session'],
     ['Resumption', 'of', 'the', 'session'],
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)]))

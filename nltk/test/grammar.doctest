@@ -22,7 +22,7 @@ Grammars can be parsed from strings:
     <Grammar with 14 productions>
     >>> grammar.start()
     S
-    >>> grammar.productions() # doctest: +NORMALIZE_WHITESPACE
+    >>> grammar.productions()
     [S -> NP VP, PP -> P NP, NP -> Det N, NP -> NP PP, VP -> V NP, VP -> VP PP,
     Det -> 'a', Det -> 'the', N -> 'dog', N -> 'cat', V -> 'chased', V -> 'sat',
     P -> 'on', P -> 'in']

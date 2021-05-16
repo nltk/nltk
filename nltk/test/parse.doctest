@@ -10,6 +10,7 @@ Unit tests for the Context Free Grammar class
 
     >>> import pickle
     >>> import subprocess
+    >>> import sys
     >>> from nltk import Nonterminal, nonterminals, Production, CFG
 
     >>> nt1 = Nonterminal('NP')
@@ -63,7 +64,7 @@ Unit tests for the Context Free Grammar class
     ... """
 
     >>> # Start a subprocess to simulate pickling in another process
-    >>> proc = subprocess.run(['python', '-c', cmd], stdout=subprocess.PIPE)
+    >>> proc = subprocess.run([sys.executable, '-c', cmd], stdout=subprocess.PIPE)
     >>> p1 = pickle.loads(eval(proc.stdout))
     >>> p2 = Production('S', ['NP', 'VP'])
     >>> print(hash(p1) == hash(p2))

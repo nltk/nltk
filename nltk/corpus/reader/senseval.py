@@ -64,7 +64,11 @@ class SensevalCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def _entry(self, tree):
         elts = []

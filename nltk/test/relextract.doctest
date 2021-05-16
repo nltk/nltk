@@ -29,7 +29,7 @@ representation of document NYT_19980315.064:
     >>> from nltk.corpus import ieer
     >>> docs = ieer.parsed_docs('NYT_19980315')
     >>> tree = docs[1].text
-    >>> print(tree) # doctest: +ELLIPSIS
+    >>> print(tree)
     (DOCUMENT
     ...
       ``It's
@@ -116,7 +116,7 @@ stored as left and right context respectively.
 
     >>> reldicts = relextract.semi_rel2reldict(pairs)
     >>> for k, v in sorted(reldicts[0].items()):
-    ...     print(k, '=>', v) # doctest: +ELLIPSIS
+    ...     print(k, '=>', v)
     filler => of messages to their own ``Cyberia'' ...
     lcon => transactions.'' Each week, they post
     objclass => ORGANIZATION
@@ -157,7 +157,7 @@ signature <ORG, LOC>.
     >>> for fileid in ieer.fileids():
     ...     for doc in ieer.parsed_docs(fileid):
     ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = IN):
-    ...             print(relextract.rtuple(rel))  # doctest: +ELLIPSIS
+    ...             print(relextract.rtuple(rel))
     [ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
     [ORG: 'AP'] ') _ Lebanese guerrillas attacked Israeli forces in southern' [LOC: 'Lebanon']
     [ORG: 'Security Council'] 'adopted Resolution 425. Huge yellow banners hung across intersections in' [LOC: 'Beirut']
@@ -209,7 +209,7 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     >>> for fileid in ieer.fileids():
     ...     for doc in ieer.parsed_docs(fileid):
     ...         for rel in relextract.extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
-    ...             print(relextract.rtuple(rel)) # doctest: +ELLIPSIS
+    ...             print(relextract.rtuple(rel))
     [PER: 'Kivutha Kibwana'] ', of the' [ORG: 'National Convention Assembly']
     [PER: 'Boban Boskovic'] ', chief executive of the' [ORG: 'Plastika']
     [PER: 'Annan'] ', the first sub-Saharan African to head the' [ORG: 'United Nations']
@@ -233,7 +233,7 @@ presented as something that looks more like a clause in a logical language.
     >>> rels = [rel for doc in conll2002.chunked_sents('esp.train')
     ...         for rel in relextract.extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     >>> for r in rels[:10]:
-    ...     print(relextract.clause(r, relsym='DE'))    # doctest: +NORMALIZE_WHITESPACE
+    ...     print(relextract.clause(r, relsym='DE'))
     DE('tribunal_supremo', 'victoria')
     DE('museo_de_arte', 'alcorc\xf3n')
     DE('museo_de_bellas_artes', 'a_coru\xf1a')

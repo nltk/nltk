@@ -17,16 +17,16 @@ Overview
 
 The default inventory of logical constants is the following:
 
-    >>> boolean_ops() # doctest: +NORMALIZE_WHITESPACE
+    >>> boolean_ops()
     negation           -
     conjunction        &
     disjunction        |
     implication        ->
     equivalence        <->
-    >>> equality_preds() # doctest: +NORMALIZE_WHITESPACE
+    >>> equality_preds()
     equality           =
     inequality         !=
-    >>> binding_ops() # doctest: +NORMALIZE_WHITESPACE
+    >>> binding_ops()
     existential        exists
     universal          all
     lambda             \
@@ -727,7 +727,7 @@ typecheck()
     >>> c = a & b
     >>> c.first.type
     ?
-    >>> c.typecheck() # doctest: +ELLIPSIS
+    >>> c.typecheck()
     {...}
     >>> c.first.type
     t
@@ -736,7 +736,7 @@ typecheck()
     >>> b = tlp.parse('P(x) & Q(x)')
     >>> a.type
     ?
-    >>> typecheck([a,b]) # doctest: +ELLIPSIS
+    >>> typecheck([a,b])
     {...}
     >>> a.type
     t
@@ -862,9 +862,9 @@ Type error during parsing
 
     >>> a = tlp.parse(r'-P(x)')
     >>> b = tlp.parse(r'-P(x,y)')
-    >>> a.typecheck() # doctest: +ELLIPSIS
+    >>> a.typecheck()
     {...}
-    >>> b.typecheck() # doctest: +ELLIPSIS
+    >>> b.typecheck()
     {...}
     >>> try: typecheck([a,b])
     ... except InconsistentTypeHierarchyException as e: print(e)
@@ -873,7 +873,7 @@ Type error during parsing
     >>> a = tlp.parse(r'P(x)')
     >>> b = tlp.parse(r'P(x,y)')
     >>> signature = {'P': '<e,t>'}
-    >>> a.typecheck(signature) # doctest: +ELLIPSIS
+    >>> a.typecheck(signature)
     {...}
     >>> try: typecheck([a,b], signature)
     ... except InconsistentTypeHierarchyException as e: print(e)

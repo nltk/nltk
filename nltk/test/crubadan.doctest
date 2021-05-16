@@ -8,7 +8,7 @@ Crubadan is an NLTK corpus reader for ngram files provided
 by the Crubadan project. It supports several languages.
 
     >>> from nltk.corpus import crubadan
-    >>> crubadan.langs() # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    >>> crubadan.langs()
     ['abk', 'abn',..., 'zpa', 'zul']
 
 ----------------------------------------

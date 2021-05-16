@@ -23,7 +23,8 @@ Building an NLTK distribution
 
 3. Build Documentation
    - Check the copyright year is correct and update if necessary
-     e.g. ./tools/global_replace.py 2001-2021 2001-2021
+     e.g. ./tools/global_replace.py 2001-2021 2001-2022
+     check web/conf.py copyright line
    - Check that installation instructions are up-to-date
      (including the range of Python versions that are supported)
      edit web/install.rst setup.py

@@ -1159,6 +1159,12 @@ class SeekableUnicodeStreamReader:
         if not self.closed:
             self.close()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
     def xreadlines(self):
         """Return self"""
         return self

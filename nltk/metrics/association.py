@@ -16,7 +16,7 @@ from abc import ABCMeta, abstractmethod
 from functools import reduce
 
 
-_log2 = lambda x: _math.log(x, 2.0)
+_log2 = lambda x: _math.log2(x)
 _ln = _math.log
 
 _product = lambda s: reduce(lambda x, y: x * y, s)
@@ -145,7 +145,7 @@ class NgramAssocMeasures(metaclass=ABCMeta):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
         cont = cls._contingency(*marginals)
-        return cls._n * sum(
+        return 2 * sum(
             obs * _ln(obs / (exp + _SMALL) + _SMALL)
             for obs, exp in zip(cont, cls._expected_values(cont))
         )

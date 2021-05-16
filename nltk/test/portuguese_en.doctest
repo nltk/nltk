@@ -243,7 +243,7 @@ We can access this corpus as a sequence of words or tagged words as follows:
     >>> import nltk.corpus
     >>> nltk.corpus.mac_morpho.words()
     ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
-    >>> nltk.corpus.mac_morpho.sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> nltk.corpus.mac_morpho.sents()
     [['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', 'milh\xe3o',
     'em', 'a', 'venda', 'de', 'a', 'Pinhal', 'em', 'S\xe3o', 'Paulo'],
     ['Programe', 'sua', 'viagem', 'a', 'a', 'Exposi\xe7\xe3o', 'Nacional',
@@ -253,7 +253,7 @@ We can access this corpus as a sequence of words or tagged words as follows:
 
 We can also access it in sentence chunks.
 
-    >>> nltk.corpus.mac_morpho.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> nltk.corpus.mac_morpho.tagged_sents()
     [[('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ('de', 'PREP'),
       ('Cr$', 'CUR'), ('1,4', 'NUM'), ('milh\xe3o', 'N'), ('em', 'PREP|+'),
       ('a', 'ART'), ('venda', 'N'), ('de', 'PREP|+'), ('a', 'ART'),
@@ -316,24 +316,24 @@ List the 20 most frequent tags, in order of decreasing frequency:
 
     >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
     >>> fd = nltk.FreqDist(tags)
-    >>> fd.keys()[:20] # doctest: +NORMALIZE_WHITESPACE
+    >>> fd.keys()[:20]
     ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.',
      'conj-c', 'v-inf', 'pron-det', 'v-pcp', 'num', 'pron-indp',
      'pron-pers', '\xab', '\xbb', 'conj-s', '}']
 
 We can also access the corpus grouped by sentence:
 
-    >>> floresta.sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> floresta.sents()
     [['Um', 'revivalismo', 'refrescante'],
      ['O', '7_e_Meio', '\xe9', 'um', 'ex-libris', 'de', 'a', 'noite',
       'algarvia', '.'], ...]
-    >>> floresta.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> floresta.tagged_sents()
     [[('Um', '>N+art'), ('revivalismo', 'H+n'), ('refrescante', 'N<+adj')],
      [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'),
       ('um', '>N+art'), ('ex-libris', 'H+n'), ('de', 'H+prp'),
       ('a', '>N+art'), ('noite', 'H+n'), ('algarvia', 'N<+adj'), ('.', '.')],
      ...]
-    >>> floresta.parsed_sents() # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    >>> floresta.parsed_sents()
     [Tree('UTT+np', [Tree('>N+art', ['Um']), Tree('H+n', ['revivalismo']),
                      Tree('N<+adj', ['refrescante'])]),
      Tree('STA+fcl',

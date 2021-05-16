@@ -11,20 +11,18 @@
 Corpus reader for the FrameNet 1.7 lexicon and corpus.
 """
 
+import itertools
 import os
 import re
-import textwrap
-import itertools
 import sys
+import textwrap
 import types
 from collections import defaultdict, OrderedDict
-from operator import itemgetter
 from itertools import zip_longest
-
+from operator import itemgetter
 from pprint import pprint
 
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-
 from nltk.util import LazyConcatenation, LazyMap, LazyIteratorList
 
 __docformat__ = "epytext en"
@@ -1239,72 +1237,60 @@ warnings(True) to display corpus consistency warnings when loading data
             self._buildrelationindex()  # always load frame relations before frames,
             # otherwise weird ordering effects might result in incomplete information
         self._frame_idx = {}
-        for f in XMLCorpusView(
-            self.abspath("frameIndex.xml"), "frameIndex/frame", self._handle_elt
-        ):
-            self._frame_idx[f["ID"]] = f
+        with XMLCorpusView(self.abspath("frameIndex.xml"), "frameIndex/frame", self._handle_elt) as view:
+            for f in view:
+                self._frame_idx[f["ID"]] = f
 
     def _buildcorpusindex(self):
         # The total number of fulltext annotated documents in Framenet
         # is fairly small (~90) so this index should not be very large
         self._fulltext_idx = {}
-        for doclist in XMLCorpusView(
-            self.abspath("fulltextIndex.xml"),
-            "fulltextIndex/corpus",
-            self._handle_fulltextindex_elt,
-        ):
-            for doc in doclist:
-                self._fulltext_idx[doc.ID] = doc
+        with XMLCorpusView(self.abspath("fulltextIndex.xml"), "fulltextIndex/corpus", self._handle_fulltextindex_elt,
+                           ) as view:
+            for doclist in view:
+                for doc in doclist:
+                    self._fulltext_idx[doc.ID] = doc
 
     def _buildluindex(self):
         # The number of LUs in Framenet is about 13,000 so this index
         # should not be very large
         self._lu_idx = {}
-        for lu in XMLCorpusView(
-            self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt
-        ):
-            self._lu_idx[
-                lu["ID"]
-            ] = lu  # populate with LU index entries. if any of these
-            # are looked up they will be replaced by full LU objects.
+        with XMLCorpusView(self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt) as view:
+            for lu in view:
+                self._lu_idx[lu["ID"]] = lu  # populate with LU index entries. if any of these
+                # are looked up they will be replaced by full LU objects.
 
     def _buildrelationindex(self):
         # print('building relation index...', file=sys.stderr)
-        freltypes = PrettyList(
-            x
-            for x in XMLCorpusView(
-                self.abspath("frRelation.xml"),
-                "frameRelations/frameRelationType",
-                self._handle_framerelationtype_elt,
-            )
-        )
         self._freltyp_idx = {}
         self._frel_idx = {}
         self._frel_f_idx = defaultdict(set)
         self._ferel_idx = {}
 
-        for freltyp in freltypes:
-            self._freltyp_idx[freltyp.ID] = freltyp
-            for frel in freltyp.frameRelations:
-                supF = frel.superFrame = frel[freltyp.superFrameName] = Future(
-                    (lambda fID: lambda: self.frame_by_id(fID))(frel.supID)
-                )
-                subF = frel.subFrame = frel[freltyp.subFrameName] = Future(
-                    (lambda fID: lambda: self.frame_by_id(fID))(frel.subID)
-                )
-                self._frel_idx[frel.ID] = frel
-                self._frel_f_idx[frel.supID].add(frel.ID)
-                self._frel_f_idx[frel.subID].add(frel.ID)
-                for ferel in frel.feRelations:
-                    ferel.superFrame = supF
-                    ferel.subFrame = subF
-                    ferel.superFE = Future(
-                        (lambda fer: lambda: fer.superFrame.FE[fer.superFEName])(ferel)
+        with XMLCorpusView(self.abspath("frRelation.xml"), "frameRelations/frameRelationType",
+                           self._handle_framerelationtype_elt, ) as view:
+            for freltyp in view:
+                self._freltyp_idx[freltyp.ID] = freltyp
+                for frel in freltyp.frameRelations:
+                    supF = frel.superFrame = frel[freltyp.superFrameName] = Future(
+                        (lambda fID: lambda: self.frame_by_id(fID))(frel.supID)
                     )
-                    ferel.subFE = Future(
-                        (lambda fer: lambda: fer.subFrame.FE[fer.subFEName])(ferel)
+                    subF = frel.subFrame = frel[freltyp.subFrameName] = Future(
+                        (lambda fID: lambda: self.frame_by_id(fID))(frel.subID)
                     )
-                    self._ferel_idx[ferel.ID] = ferel
+                    self._frel_idx[frel.ID] = frel
+                    self._frel_f_idx[frel.supID].add(frel.ID)
+                    self._frel_f_idx[frel.subID].add(frel.ID)
+                    for ferel in frel.feRelations:
+                        ferel.superFrame = supF
+                        ferel.subFrame = subF
+                        ferel.superFE = Future(
+                            (lambda fer: lambda: fer.superFrame.FE[fer.superFEName])(ferel)
+                        )
+                        ferel.subFE = Future(
+                            (lambda fer: lambda: fer.subFrame.FE[fer.subFEName])(ferel)
+                        )
+                        self._ferel_idx[ferel.ID] = ferel
         # print('...done building relation index', file=sys.stderr)
 
     def _warn(self, *message, **kwargs):
@@ -1317,9 +1303,11 @@ warnings(True) to display corpus consistency warnings when loading data
         Return the contents of the corpus README.txt (or README) file.
         """
         try:
-            return self.open("README.txt").read()
+            with self.open("README.txt") as fp:
+                return fp.read()
         except IOError:
-            return self.open("README").read()
+            with self.open("README") as fp:
+                return fp.read()
 
     def buildindexes(self):
         """
@@ -1394,7 +1382,8 @@ warnings(True) to display corpus consistency warnings when loading data
         locpath = os.path.join("{0}".format(self._root), self._fulltext_dir, xmlfname)
 
         # Grab the top-level xml element containing the fulltext annotation
-        elt = XMLCorpusView(locpath, "fullTextAnnotation")[0]
+        with XMLCorpusView(locpath, "fullTextAnnotation") as view:
+            elt = view[0]
         info = self._handle_fulltextannotation_elt(elt)
         # add metadata
         for k, v in self._fulltext_idx[fn_docid].items():
@@ -1482,7 +1471,8 @@ warnings(True) to display corpus consistency warnings when loading data
         # print(locpath, file=sys.stderr)
         # Grab the xml for the frame
         try:
-            elt = XMLCorpusView(locpath, "frame")[0]
+            with XMLCorpusView(locpath, "frame") as view:
+                elt = view[0]
         except IOError as e:
             raise FramenetError("Unknown frame: {0}".format(fn_fname)) from e
 
@@ -1826,7 +1816,8 @@ warnings(True) to display corpus consistency warnings when loading data
             self._buildluindex()
 
         try:
-            elt = XMLCorpusView(locpath, "lexUnit")[0]
+            with XMLCorpusView(locpath, "lexUnit") as view:
+                elt = view[0]
         except IOError as e:
             raise FramenetError("Unknown LU id: {0}".format(fn_luid)) from e
 
@@ -1848,23 +1839,16 @@ warnings(True) to display corpus consistency warnings when loading data
     def _loadsemtypes(self):
         """Create the semantic types index."""
         self._semtypes = AttrDict()
-        semtypeXML = [
-            x
-            for x in XMLCorpusView(
-                self.abspath("semTypes.xml"),
-                "semTypes/semType",
-                self._handle_semtype_elt,
-            )
-        ]
-        for st in semtypeXML:
-            n = st["name"]
-            a = st["abbrev"]
-            i = st["ID"]
-            # Both name and abbrev should be able to retrieve the
-            # ID. The ID will retrieve the semantic type dict itself.
-            self._semtypes[n] = i
-            self._semtypes[a] = i
-            self._semtypes[i] = st
+        with XMLCorpusView(self.abspath("semTypes.xml"), "semTypes/semType", self._handle_semtype_elt, ) as view:
+            for st in view:
+                n = st["name"]
+                a = st["abbrev"]
+                i = st["ID"]
+                # Both name and abbrev should be able to retrieve the
+                # ID. The ID will retrieve the semantic type dict itself.
+                self._semtypes[n] = i
+                self._semtypes[a] = i
+                self._semtypes[i] = st
         # now that all individual semtype XML is loaded, we can link them together
         roots = []
         for st in self.semtypes():

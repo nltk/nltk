@@ -179,7 +179,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         comparison (from listOfkeywords.txt).
         """
         keywords = []
-        raw_text = self.open("listOfkeywords.txt").read()
+        with self.open("listOfkeywords.txt") as fp:
+            raw_text = fp.read()
         for line in raw_text.split("\n"):
             if not line or line.startswith("//"):
                 continue
@@ -197,13 +198,18 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, str):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
+        contents = []
+        for i in fileids:
+            with self.open(i) as fp:
+                contents.append(fp.read())
+        return concat(contents)
 
     def readme(self):
         """
         Return the contents of the corpus readme file.
         """
-        return self.open("README.txt").read()
+        with self.open("README.txt") as fp:
+            return fp.read()
 
     def sents(self, fileids=None):
         """

@@ -450,7 +450,7 @@ class BindingDict(object):
         return self.d == other.d
 
     def __str__(self):
-        return "{" + ", ".join("%s: %s" % (v, self.d[v]) for v in self.d) + "}"
+        return "{" + ", ".join("%s: %s" % (v, self.d[v]) for v in sorted(self.d.keys())) + "}"
 
     def __repr__(self):
         return "BindingDict: %s" % self

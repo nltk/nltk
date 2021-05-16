@@ -119,16 +119,11 @@ The 4 functions are as follows.
 
 """
 import sys
-import os
-import re
-import tempfile
 import time
 
-from nltk.tree import Tree
-from nltk.internals import import_from_stdlib
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.internals import import_from_stdlib
+from nltk.tree import Tree
 
 
 class TimitCorpusReader(CorpusReader):
@@ -234,13 +229,14 @@ class TimitCorpusReader(CorpusReader):
         each word.
         """
         _transcriptions = {}
-        for line in self.open("timitdic.txt"):
-            if not line.strip() or line[0] == ";":
-                continue
-            m = re.match(r"\s*(\S+)\s+/(.*)/\s*$", line)
-            if not m:
-                raise ValueError("Bad line: %r" % line)
-            _transcriptions[m.group(1)] = m.group(2).split()
+        with self.open("timitdic.txt") as fp:
+            for line in fp:
+                if not line.strip() or line[0] == ";":
+                    continue
+                m = re.match(r"\s*(\S+)\s+/(.*)/\s*$", line)
+                if not m:
+                    raise ValueError("Bad line: %r" % line)
+                _transcriptions[m.group(1)] = m.group(2).split()
         return _transcriptions
 
     def spkrid(self, utterance):
@@ -272,57 +268,64 @@ class TimitCorpusReader(CorpusReader):
 
         if self._speakerinfo is None:
             self._speakerinfo = {}
-            for line in self.open("spkrinfo.txt"):
-                if not line.strip() or line[0] == ";":
-                    continue
-                rec = line.strip().split(None, 9)
-                key = "dr%s-%s%s" % (rec[2], rec[1].lower(), rec[0].lower())
-                self._speakerinfo[key] = SpeakerInfo(*rec)
+            with self.open("spkrinfo.txt") as fp:
+                for line in fp:
+                    if not line.strip() or line[0] == ";":
+                        continue
+                    rec = line.strip().split(None, 9)
+                    key = "dr%s-%s%s" % (rec[2], rec[1].lower(), rec[0].lower())
+                    self._speakerinfo[key] = SpeakerInfo(*rec)
 
         return self._speakerinfo[speaker]
 
     def phones(self, utterances=None):
-        return [
-            line.split()[-1]
-            for fileid in self._utterance_fileids(utterances, ".phn")
-            for line in self.open(fileid)
-            if line.strip()
-        ]
+        results = []
+        for fileid in self._utterance_fileids(utterances, ".phn"):
+            with self.open(fileid) as fp:
+                for line in fp:
+                    if line.strip():
+                        results.append(line.split()[-1])
+        return results
 
     def phone_times(self, utterances=None):
         """
         offset is represented as a number of 16kHz samples!
         """
-        return [
-            (line.split()[2], int(line.split()[0]), int(line.split()[1]))
-            for fileid in self._utterance_fileids(utterances, ".phn")
-            for line in self.open(fileid)
-            if line.strip()
-        ]
+        results = []
+        for fileid in self._utterance_fileids(utterances, ".phn"):
+            with self.open(fileid) as fp:
+                for line in fp:
+                    if line.strip():
+                        results.append((line.split()[2], int(line.split()[0]), int(line.split()[1])))
+        return results
 
     def words(self, utterances=None):
-        return [
-            line.split()[-1]
-            for fileid in self._utterance_fileids(utterances, ".wrd")
-            for line in self.open(fileid)
-            if line.strip()
-        ]
+        results = []
+        for fileid in self._utterance_fileids(utterances, ".wrd"):
+            with self.open(fileid) as fp:
+                for line in fp:
+                    if line.strip():
+                        results.append(line.split()[-1])
+        return results
 
     def word_times(self, utterances=None):
-        return [
-            (line.split()[2], int(line.split()[0]), int(line.split()[1]))
-            for fileid in self._utterance_fileids(utterances, ".wrd")
-            for line in self.open(fileid)
-            if line.strip()
-        ]
+        results = []
+        for fileid in self._utterance_fileids(utterances, ".wrd"):
+            with self.open(fileid) as fp:
+                for line in fp:
+                    if line.strip():
+                        results.append((line.split()[2], int(line.split()[0]), int(line.split()[1])))
+        return results
 
     def sents(self, utterances=None):
-        return [
-            [line.split()[-1] for line in self.open(fileid) if line.strip()]
-            for fileid in self._utterance_fileids(utterances, ".wrd")
-        ]
+        results = []
+        for fileid in self._utterance_fileids(utterances, ".wrd"):
+            with self.open(fileid) as fp:
+                results.append([line.split()[-1] for line in fp if line.strip()])
+        return results
 
     def sent_times(self, utterances=None):
+        # TODO: Check this
         return [
             (
                 line.split(None, 2)[-1].strip(),
@@ -396,10 +399,11 @@ class TimitCorpusReader(CorpusReader):
     def audiodata(self, utterance, start=0, end=None):
         assert end is None or end > start
         headersize = 44
-        if end is None:
-            data = self.open(utterance + ".wav").read()
-        else:
-            data = self.open(utterance + ".wav").read(headersize + end * 2)
+        with self.open(utterance + ".wav") as fp:
+            if end is None:
+                data = fp.read()
+            else:
+                data = fp.read(headersize + end * 2)
         return data[headersize + start * 2 :]
 
     def _utterance_fileids(self, utterances, extension):
