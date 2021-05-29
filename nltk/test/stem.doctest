@@ -75,3 +75,32 @@ The 'english' stemmer is better than the original 'porter' stemmer.
 .. note::
 
     Extra stemmer tests can be found in `nltk.test.unit.test_stem`.
+
+Unit tests for ARLSTem Stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.arlstem import ARLSTem
+
+Create a Stemmer instance.
+
+    >>> stemmer = ARLSTem()
+
+Stem a word.
+
+    >>> stemmer.stem('يعمل')
+    'عمل'
+
+Unit tests for ARLSTem2 Stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.arlstem2 import ARLSTem2
+
+Create a Stemmer instance.
+
+    >>> stemmer = ARLSTem2()
+
+Stem a word.
+
+    >>> stemmer.stem('يعمل')
+    'عمل'
+
