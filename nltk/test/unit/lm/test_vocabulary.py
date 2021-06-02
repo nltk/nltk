@@ -152,4 +152,6 @@ class NgramModelVocabularyTests(unittest.TestCase):
         # The timing should be the same order of magnitude.
         self.assertLess(large_vocab_len_time, 10 * small_vocab_len_time, 
             "Computing the length of a small Vocabulary should take within the same order of magnitude as computing the length of a large Vocabulary.")
+        self.assertLess(small_vocab_len_time, 10 * large_vocab_len_time, 
+            "Computing the length of a small Vocabulary should take within the same order of magnitude as computing the length of a large Vocabulary.")
 
