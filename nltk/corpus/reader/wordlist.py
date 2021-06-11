@@ -24,6 +24,13 @@ class WordListCorpusReader(CorpusReader):
             if not line.startswith(ignore_lines_startswith)
         ]
 
+    def words_as_freq(self, fileids=None, ignore_lines_startswith="\n"):
+        freq_list = dict()
+        for line in line_tokenize(self.raw(fileids)):
+            if not line.startswith(ignore_lines_startswith):
+                freq_list[line] = freq_list.get(line, 0) + 1
+        return freq_list
+
     def raw(self, fileids=None):
         if fileids is None:
             fileids = self._fileids
