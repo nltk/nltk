@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Word Sense Disambiguation Algorithms
+# Natural Language Toolkit: Word Sense Disambiguation Algorithm
 #
 # Authors: Liling Tan <alvations@gmail.com>,
 #          Dmitrijs Milajevs <dimazest@gmail.com>
@@ -8,7 +8,8 @@
 # For license information, see LICENSE.TXT
 
 from nltk.corpus import wordnet
-
+from nltk.stem import PorterStemmer
+ps=PorterStemmer()
 
 def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     """Return a synset for an ambiguous word in a context.
@@ -35,6 +36,11 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     """
 
     context = set(context_sentence)
+    
+    new_context =[]
+    for i in context:
+        new_context.append(ps.stem(i))
+    
     if synsets is None:
         synsets = wordnet.synsets(ambiguous_word)
 
@@ -43,9 +49,20 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
 
     if not synsets:
         return None
-
-    _, sense = max(
-        (len(context.intersection(ss.definition().split())), ss) for ss in synsets
-    )
+    
+    max_overlap=0
+    for ss in synsets:
+        gloss=[]
+        for k in (ss.definition().split()):
+            gloss.append(ps.stem(k))
+                    
+        overlap= len(new_context.intersection(gloss))
+            if overlap > max_overlap:
+                    max_overlap = overlap
+                    sense = ss
+           
+        
+        
+    #_, sense = max((len(context.intersection(ss.definition().split())), ss) for ss in synsets)
 
     return sense
