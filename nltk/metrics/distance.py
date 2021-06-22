@@ -181,6 +181,8 @@ def edit_distance_align(s1, s2, substitution_cost=1):
                 j + 1,
                 s1,
                 s2,
+                0,
+                0,
                 substitution_cost=substitution_cost,
                 transpositions=False,
             )
