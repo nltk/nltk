@@ -67,6 +67,7 @@ EMOTICONS = r"""
       [<>]?
       |
       <3                         # heart
+      </3                        # Broken-heart
     )"""
 
 # URL pattern due to John Gruber, modified by Tom Winzig. See
