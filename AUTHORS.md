@@ -280,7 +280,7 @@
 - Hiroki Teranishi <https://github.com/chantera>
 - Ruben Cartuyvels <https://github.com/rubencart>
 - Dalton Pearson <https://github.com/daltonpearson>
-
+- Mohaned Mashaly <https://github.com/12mohaned>
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
 ### Contributors to the Porter Stemmer
