@@ -15,9 +15,10 @@ from nltk.lm import (
     Laplace,
     WittenBellInterpolated,
     KneserNeyInterpolated,
+    AbsoluteDiscountingInterpolated,
+    StupidBackoff,
 )
 from nltk.lm.preprocessing import padded_everygrams
-
 
 
 def _prepare_test_data(ngram_order):
@@ -32,6 +33,7 @@ def _prepare_test_data(ngram_order):
 
 class ParametrizedTests(type):
     """Metaclass for generating parametrized tests."""
+
     contexts = [
         ("a",),
         ("c",),
@@ -330,51 +332,137 @@ class TestWittenBellInterpolatedTrigram(metaclass=ParametrizedTests):
         # count("<UNK>") = 3
         ("y", None, 3.0 / 18),
         # 2 words follow b and b occured a total of 2 times
-        # gamma(['b']) = 2/(2+2) = 0.5
+        # gamma(['b']) = 2 / (2 + 2) = 0.5
         # mle.score('c', ['b']) = 0.5
-        # mle('c') = 1/18 = 0.055
+        # mle('c') = 1 / 18 = 0.055
         # (1 - gamma) * mle + gamma * mle('c') ~= 0.27 + 0.055
         ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * 1 / 18),
         # building on that, let's try 'a b c' as the trigram
         # 1 word follows 'a b' and 'a b' occured 1 time
-        # gamma(['a', 'b']) = 1/(1+1) = 0.5
+        # gamma(['a', 'b']) = 1 / (1 + 1) = 0.5
         # mle("c", ["a", "b"]) = 1
         ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
-        # The ngram 'z b c' was not seen, so we should simply revert to
-        # the score of the ngram 'b c'. See issue #2332.
+        # P(c|zb)
+        # The ngram 'zbc' was not seen, so we use P(c|b). See issue #2332.
         ("c", ["z", "b"], ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
     ]
+
+###############################################################################
+#                              Notation Explained                             #
+###############################################################################
+# For all subsequent calculations we use the following notation:
+# 1. '*': Placeholder for any word/character. E.g. '*b' stands for
+#    all bigrams that end in 'b'. '*b*' stands for all trigrams that
+#    contain 'b' in the middle.
+# 1. count(ngram): Count all instances (tokens) of an ngram.
+# 1. unique(ngram): Count unique instances (types) of an ngram.
 
 
 class TestKneserNeyInterpolatedTrigram(metaclass=ParametrizedTests):
     @classmethod
     def setup_method(self):
         vocab, training_text = _prepare_test_data(3)
-        self.model = KneserNeyInterpolated(3, vocabulary=vocab)
+        self.model = KneserNeyInterpolated(3, discount=0.75, vocabulary=vocab)
+        self.model.fit(training_text)
+
+    score_tests = [
+        # P(c) = count('*c') / unique('**')
+        #      = 1 / 14
+        ("c", None, 1.0 / 14),
+        # P(z) = count('*z') / unique('**')
+        #      = 0 / 14
+        # 'z' is in the vocabulary, but it was not seen during training.
+        ("z", None, 0.0 / 14),
+        # P(y)
+        # Out of vocabulary should use "UNK" score.
+        # P(y) = P(UNK) = count('*UNK') / unique('**')
+        ("y", None, 3 / 14),
+        # We start with P(c|b)
+        # P(c|b) = alpha('bc') + gamma('b') * P(c)
+        # alpha('bc') = max(unique('*bc') - discount, 0) / unique('*b*')
+        #             = max(1 - 0.75, 0) / 2
+        #             = 0.125
+        # gamma('b')  = discount * unique('b*') / unique('*b*')
+        #             = (0.75 * 2) / 2
+        #             = 0.75
+        ("c", ["b"], (0.125 + 0.75 * (1 / 14))),
+        # Building on that, let's try P(c|ab).
+        # P(c|ab) = alpha('abc') + gamma('ab') * P(c|b)
+        # alpha('abc') = max(count('abc') - discount, 0) / count('ab*')
+        #              = max(1 - 0.75, 0) / 1
+        #              = 0.25
+        # gamma('ab')  = (discount * unique('ab*')) / count('ab*')
+        #              = 0.75 * 1 / 1
+        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (1 / 14))),
+        # P(c|zb)
+        # The ngram 'zbc' was not seen, so we use P(c|b). See issue #2332.
+        ("c", ["z", "b"], (0.125 + 0.75 * (1 / 14))),
+    ]
+
+
+class TestAbsoluteDiscountingTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
+        vocab, training_text = _prepare_test_data(3)
+        self.model = AbsoluteDiscountingInterpolated(3, discount=0.75, vocabulary=vocab)
         self.model.fit(training_text)
 
     score_tests = [
         # For unigram scores revert to uniform
-        # Vocab size: 8
-        # count('c'): 1
-        ("c", None, 1.0 / 8),
-        # in vocabulary but unseen, still uses uniform
-        ("z", None, 1 / 8),
-        # out of vocabulary should use "UNK" score, i.e. again uniform
-        ("y", None, 1.0 / 8),
-        # alpha = count('bc') - discount = 1 - 0.1 = 0.9
-        # gamma(['b']) = discount * number of unique words that follow ['b'] = 0.1 * 2
-        # normalizer = total number of bigrams with this context = 2
-        # the final should be: (alpha + gamma * unigram_score("c"))
-        ("c", ["b"], (0.9 + 0.2 * (1 / 8)) / 2),
-        # building on that, let's try 'a b c' as the trigram
-        # alpha = count('abc') - discount = 1 - 0.1 = 0.9
-        # gamma(['a', 'b']) = 0.1 * 1
-        # normalizer = total number of trigrams with prefix "ab" = 1 => we can ignore it!
-        ("c", ["a", "b"], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
-        # The ngram 'z b c' was not seen, so we should simply revert to
-        # the score of the ngram 'b c'. See issue #2332.
-        ("c", ["z", "b"], ((0.9 + 0.2 * (1 / 8)) / 2)),
+        # P(c) = count('c') / count('**')
+        ("c", None, 1.0 / 18),
+        # in vocabulary but unseen
+        # count('z') = 0
+        ("z", None, 0.0 / 18),
+        # out of vocabulary should use "UNK" score
+        # count('<UNK>') = 3
+        ("y", None, 3 / 18),
+        # P(c|b) = alpha('bc') + gamma('b') * P(c)
+        # alpha('bc') = max(count('bc') - discount, 0) / count('b*')
+        #             = max(1 - 0.75, 0) / 2
+        #             = 0.125
+        # gamma('b')  = discount * unique('b*') / count('b*')
+        #             = (0.75 * 2) / 2
+        #             = 0.75
+        ("c", ["b"], (0.125 + 0.75 * (2 / 2) * (1 / 18))),
+        # Building on that, let's try P(c|ab).
+        # P(c|ab) = alpha('abc') + gamma('ab') * P(c|b)
+        # alpha('abc') = max(count('abc') - discount, 0) / count('ab*')
+        #              = max(1 - 0.75, 0) / 1
+        #              = 0.25
+        # gamma('ab')  = (discount * unique('ab*')) / count('ab*')
+        #              = 0.75 * 1 / 1
+        ("c", ["a", "b"], 0.25 + 0.75 * (0.125 + 0.75 * (2 / 2) * (1 / 18))),
+        # P(c|zb)
+        # The ngram 'zbc' was not seen, so we use P(c|b). See issue #2332.
+        ("c", ["z", "b"], (0.125 + 0.75 * (2 / 2) * (1 / 18))),
+    ]
+
+
+class TestStupidBackoffTrigram(metaclass=ParametrizedTests):
+    @classmethod
+    def setup_method(self):
+        vocab, training_text = _prepare_test_data(3)
+        self.model = StupidBackoff(order=3, alpha=0.4, vocabulary=vocab)
+        self.model.fit(training_text)
+
+    score_tests = [
+        # For unigram scores revert to uniform
+        # total bigrams = 18
+        ("c", None, 1.0 / 18),
+        # in vocabulary but unseen
+        # bigrams ending with z = 0
+        ("z", None, 0.0 / 18),
+        # out of vocabulary should use "UNK" score
+        # count('<UNK>'): 3
+        ("y", None, 3 / 18),
+        # c follows 1 time out of 2 after b
+        ("c", ["b"], 1 / 2),
+        # c always follows ab
+        ("c", ["a", "b"], 1 / 1),
+        # The ngram 'z b c' was not seen, so we backoff to
+        # the score of the ngram 'b c' * smoothing factor
+        ("c", ["z", "b"], (0.4 * (1 / 2))),
     ]
 
 
@@ -406,22 +494,29 @@ class TestNgramModelTextGeneration:
 
         self.model.fit(more_training_text)
         # Test that we can escape the cycle
-        assert (
-            self.model.generate(7, text_seed=("b", "d"), random_seed=5)
-            == ["b", "d", "b", "d", "b", "d", "</s>"]
-        )
+        assert self.model.generate(7, text_seed=("b", "d"), random_seed=5) == [
+            "b",
+            "d",
+            "b",
+            "d",
+            "b",
+            "d",
+            "</s>",
+        ]
 
     def test_generate_with_text_seed(self):
-        assert (
-            self.model.generate(5, text_seed=("<s>", "e"), random_seed=3)
-            == ["<UNK>", "a", "d", "b", "<UNK>"]
-        )
+        assert self.model.generate(5, text_seed=("<s>", "e"), random_seed=3) == [
+            "<UNK>",
+            "a",
+            "d",
+            "b",
+            "<UNK>",
+        ]
 
     def test_generate_oov_text_seed(self):
-        assert (
-            self.model.generate(text_seed=("aliens",), random_seed=3)
-            == self.model.generate(text_seed=("<UNK>",), random_seed=3)
-        )
+        assert self.model.generate(
+            text_seed=("aliens",), random_seed=3
+        ) == self.model.generate(text_seed=("<UNK>",), random_seed=3)
 
     def test_generate_None_text_seed(self):
         # should crash with type error when we try to look it up in vocabulary
@@ -429,7 +524,6 @@ class TestNgramModelTextGeneration:
             self.model.generate(text_seed=(None,))
 
         # This will work
-        assert (
-            self.model.generate(text_seed=None, random_seed=3)
-            == self.model.generate(random_seed=3)
-        )
+        assert self.model.generate(
+            text_seed=None, random_seed=3
+        ) == self.model.generate(random_seed=3)

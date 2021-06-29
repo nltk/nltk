@@ -130,7 +130,7 @@ class ARLSTem2(StemmerI):
             if fm is not None:
                 return fm
             # strip the adjective affixes
-            adj = self.adject(token)
+            adj = self.adjective(token)
             if adj is not None:
                 return adj
             # strip the suffixes that are common to nouns and verbs
