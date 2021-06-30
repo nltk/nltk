@@ -222,6 +222,37 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 pass
 
 
+def edge_closure(start, children=iter):
+    """Collect the edges of a graph in breadth-first order.
+    The first argument should be the start node;
+    children should be a function taking as argument a graph node
+    and returning an iterator of the node's children.
+    """
+    queue = set([start])
+    edges = set([])
+    while queue:
+        node = queue.pop()
+        for child in children(node):
+            queue.add(child)
+            edges.add((node, child))
+    return edges
+
+
+def edges2dot(edges):
+    """Output the set of edges of a directed graph as a string in the
+    format expected by the 'dot' program from the Graphviz package.
+    
+    The resulting dot_string can then be converted to an SVG image
+    with nltk.parse.dependencygraph.dot2svg(dot_string).
+    """
+    size = round(len(edges)/2)    # Draw roughly 2 edges per inch
+    dot_string = 'digraph G {size="%s,%s";\n' % (size,size)
+    for (source,target) in edges:
+        dot_string += '"%s" -> "%s";\n' % (target,source)
+    dot_string += '}\n'
+    return dot_string
+
+
 ##########################################################################
 # Breadth-First / Depth-first Searches with Cycle Detection
 ##########################################################################

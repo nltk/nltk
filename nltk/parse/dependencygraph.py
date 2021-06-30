@@ -197,24 +197,8 @@ class DependencyGraph(object):
 
         """
         dot_string = self.to_dot()
+        return dot2svg(dot_string)
 
-        try:
-            process = subprocess.Popen(
-                ["dot", "-Tsvg"],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                universal_newlines=True,
-            )
-        except OSError as e:
-            raise Exception("Cannot find the dot binary from Graphviz package") from e
-        out, err = process.communicate(dot_string)
-        if err:
-            raise Exception(
-                "Cannot create svg representation by running dot from string: {}"
-                "".format(dot_string)
-            )
-        return out
 
     def __str__(self):
         return pformat(self.nodes)
@@ -562,6 +546,26 @@ class DependencyGraph(object):
         g.add_edges_from(nx_edgelist)
 
         return g
+
+
+def dot2svg(dot_string):
+    try:
+        process = subprocess.Popen(
+            ["dot", "-Tsvg"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+        )
+    except OSError as e:
+        raise Exception("Cannot find the dot binary from Graphviz package") from e
+    out, err = process.communicate(dot_string)
+    if err:
+        raise Exception(
+            "Cannot create svg representation by running dot from string: {}"
+            "".format(dot_string)
+        )
+    return out
 
 
 class DependencyGraphError(Exception):

@@ -2047,6 +2047,53 @@ class WordNetCorpusReader(CorpusReader):
         self._lang_data[lang][1].default_factory = None
 
 
+    ######################################################################
+    # Visualize WordNet relation graphs using Graphviz
+    ######################################################################
+
+    def synsets2digraph(self, synsets, rel=lambda s:s.hypernyms(), edges=set([])):
+        """
+        Produce a graphical representation from a list of input Synsets
+        and a relation, for drawing with the 'dot' graph visualisation program
+        from the Graphviz package. The result can be output to an SVG image,
+        using nltk.parse.dependencygraph.dot2svg(dot_string).
+        
+        Optionally, initialize 'edges', f. ex. with links to lemmas.
+        """
+        from nltk.util import edge_closure, edges2dot
+        for ss in synsets:
+            edges=edges.union(edge_closure(ss, rel))
+        dot_string=edges2dot(edges)
+        return dot_string
+
+    def lemmas2digraph(self, lemmas, rel=lambda s:s.hypernyms()):
+        """
+        Produce a graphical representation from a list of input Lemmas
+        and a relation, for drawing with the 'dot' program.
+        """
+        synsets=set([])
+        edges=set([])
+        for lemma in lemmas:
+            ss=lemma.synset()
+            synsets.add(ss)
+            edges.add((lemma,ss))
+        return self.synsets2digraph(synsets, rel, edges)
+
+    def words2digraph(self, words, pos=None, rel=lambda s:s.hypernyms()):
+        """
+        Produce a graphical representation from a list of input words
+        and a relation, for drawing with the 'dot' program.
+        
+        Eventually, restrict pos (Part of Speech) to 'n', 'v', 'a' or 'r'
+        """
+        lemmalist=[]
+        for word in words:
+            for lemma in self.lemmas(word,pos):
+                lemmalist.append(lemma)
+        return self.lemmas2digraph(lemmalist, rel)
+
+
+
 ######################################################################
 # WordNet Information Content Corpus Reader
 ######################################################################
@@ -2206,3 +2253,5 @@ def _get_pos(field):
             "for field %s" % field
         )
         raise ValueError(msg)
+
+
