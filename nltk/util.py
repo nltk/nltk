@@ -242,8 +242,8 @@ def edges2dot(edges):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
     
-    The resulting dot_string can then be converted to an SVG image
-    with nltk.parse.dependencygraph.dot2svg(dot_string).
+    The resulting dot_string can then be converted to an image
+    with nltk.parse.dependencygraph.dot2img(dot_string).
     """
     size = round(len(edges)/2)    # Draw roughly 2 edges per inch
     dot_string = 'digraph G {size="%s,%s";\n' % (size,size)

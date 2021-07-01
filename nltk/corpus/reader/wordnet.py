@@ -2055,8 +2055,8 @@ class WordNetCorpusReader(CorpusReader):
         """
         Produce a graphical representation from a list of input Synsets
         and a relation, for drawing with the 'dot' graph visualisation program
-        from the Graphviz package. The result can be output to an SVG image,
-        using nltk.parse.dependencygraph.dot2svg(dot_string).
+        from the Graphviz package. The result can be output to an image,
+        using nltk.parse.dependencygraph.dot2img(dot_string).
         
         Optionally, initialize 'edges', f. ex. with links to lemmas.
         """
