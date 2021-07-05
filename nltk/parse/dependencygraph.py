@@ -555,10 +555,12 @@ def dot2img(dot_string, t='svg'):
 
     Use the 't' argument to specify the image file format, for ex. 
     'png' or 'jpeg' (Running 'dot -T:' lists all available formats).
+
+    sys.stdout is used instead of subprocess.PIPE, to avoid decoding errors
     """
-    from sys import stdout,stderr
+    from sys import stderr,stdout
     try:
-        process = subprocess.run(
+        proc = subprocess.run(
             ["dot", "-T%s" % t],
             input=dot_string,
             stdout=stdout,
@@ -567,7 +569,7 @@ def dot2img(dot_string, t='svg'):
         )
     except OSError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
-    out, err = process.stdout, process.stderr
+    out, err = proc.stdout,proc.stderr
     if err:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"

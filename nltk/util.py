@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
+#         Eric Kafe <kafe.eric@gmail.com> (acyclic closure)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -223,18 +224,22 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 
 def edge_closure(start, children=iter):
-    """Collect the edges of a graph in breadth-first order.
+    """Collect the edges of a graph in breadth-first order,
+    discarding eventual cycles.
     The first argument should be the start node;
     children should be a function taking as argument a graph node
     and returning an iterator of the node's children.
     """
     queue = set([start])
-    edges = set([])
+    edges = set()
+    traversed = set()
     while queue:
         node = queue.pop()
+        traversed.add(node)
         for child in children(node):
-            queue.add(child)
-            edges.add((node, child))
+            if child not in traversed:
+                queue.add(child)
+                edges.add((node, child))
     return edges
 
 
@@ -245,8 +250,7 @@ def edges2dot(edges):
     The resulting dot_string can then be converted to an image
     with nltk.parse.dependencygraph.dot2img(dot_string).
     """
-    size = round(len(edges)/2)    # Draw roughly 2 edges per inch
-    dot_string = 'digraph G {size="%s,%s";\n' % (size,size)
+    dot_string = 'digraph G {\n'
     for (source,target) in edges:
         dot_string += '"%s" -> "%s";\n' % (target,source)
     dot_string += '}\n'
