@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -303,7 +302,7 @@ class Query(Twython):
             self.handler.handle(item)
 
 
-class Twitter(object):
+class Twitter:
     """
     Wrapper class with restricted functionality and fewer options.
     """

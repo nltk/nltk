@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -2298,7 +2297,7 @@ def sum_logs(logs):
 ##//////////////////////////////////////////////////////
 
 
-class ProbabilisticMixIn(object):
+class ProbabilisticMixIn:
     """
     A mix-in class to associate probabilities with other classes
     (trees, rules, etc.).  To use the ``ProbabilisticMixIn`` class,

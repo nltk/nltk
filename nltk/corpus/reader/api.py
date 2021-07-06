@@ -20,7 +20,7 @@ from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.corpus.reader.util import *
 
 
-class CorpusReader(object):
+class CorpusReader:
     """
     A base class for "corpus reader" classes, each of which can be
     used to read a specific corpus format.  Each individual corpus
@@ -239,7 +239,7 @@ class CorpusReader(object):
 ######################################################################
 
 
-class CategorizedCorpusReader(object):
+class CategorizedCorpusReader:
     """
     A mixin class used to aid in the implementation of corpus readers
     for categorized corpora.  This class defines the method

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 #################################################################
 
 
-class DependencyScorerI(object):
+class DependencyScorerI:
     """
     A scorer for calculated the weights on the edges of a weighted
     dependency graph.  This is used by a
@@ -199,7 +199,7 @@ class DemoScorer(DependencyScorerI):
 #################################################################
 
 
-class ProbabilisticNonprojectiveParser(object):
+class ProbabilisticNonprojectiveParser:
     """A probabilistic non-projective dependency parser.
 
     Nonprojective dependencies allows for "crossing branches" in the parse tree
@@ -559,7 +559,7 @@ class ProbabilisticNonprojectiveParser(object):
 #################################################################
 
 
-class NonprojectiveDependencyParser(object):
+class NonprojectiveDependencyParser:
     """
     A non-projective, rule-based, dependency parser.  This parser
     will return the set of all possible non-projective parses based on

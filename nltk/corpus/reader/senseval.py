@@ -31,7 +31,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
-class SensevalInstance(object):
+class SensevalInstance:
     def __init__(self, word, position, context, senses):
         self.word = word
         self.senses = tuple(senses)

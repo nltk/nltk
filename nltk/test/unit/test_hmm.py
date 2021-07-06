@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from nltk.tag import hmm
 import pytest
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 
 # most of classify.doctest requires numpy

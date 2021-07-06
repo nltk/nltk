@@ -422,7 +422,7 @@ class ConllCorpusReader(CorpusReader):
         return [grid[i][column_index] for i in range(len(grid))]
 
 
-class ConllSRLInstance(object):
+class ConllSRLInstance:
     """
     An SRL instance from a CoNLL corpus, which identifies and
     providing labels for the arguments of a single verb.

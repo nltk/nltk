@@ -195,7 +195,7 @@ import nltk
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
-class Package(object):
+class Package:
     """
     A directory entry for a downloadable package.  These entries are
     extracted from the XML index file that is downloaded by
@@ -288,7 +288,7 @@ class Package(object):
         return "<Package %s>" % self.id
 
 
-class Collection(object):
+class Collection:
     """
     A directory entry for a collection of downloadable packages.
     These entries are extracted from the XML index file that is
@@ -334,7 +334,7 @@ class Collection(object):
 ######################################################################
 
 
-class DownloaderMessage(object):
+class DownloaderMessage:
     """A status message object, used by ``incr_download`` to
        communicate its progress."""
 
@@ -439,7 +439,7 @@ class SelectDownloadDirMessage(DownloaderMessage):
 ######################################################################
 
 
-class Downloader(object):
+class Downloader:
     """
     A class used to access the NLTK data server, which can be used to
     download corpora and other data packages.
@@ -1119,7 +1119,7 @@ class Downloader(object):
             DownloaderShell(self).run()
 
 
-class DownloaderShell(object):
+class DownloaderShell:
     def __init__(self, dataserver):
         self._ds = dataserver
 
@@ -1284,7 +1284,7 @@ class DownloaderShell(object):
                 break
 
 
-class DownloaderGUI(object):
+class DownloaderGUI:
     """
     Graphical interface for downloading packages from the NLTK data
     server.

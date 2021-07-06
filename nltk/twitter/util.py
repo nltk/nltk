@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -25,7 +24,7 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
     )
 
 
-class Authenticate(object):
+class Authenticate:
     """
     Methods for authenticating with Twitter.
     """

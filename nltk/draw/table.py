@@ -579,7 +579,7 @@ class MultiListbox(Frame):
 ######################################################################
 
 
-class Table(object):
+class Table:
     """
     A display widget for a table of values, based on a ``MultiListbox``
     widget.  For many purposes, ``Table`` can be treated as a

@@ -72,7 +72,7 @@ NOTES = re.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
 SENT = re.compile(r"##(.*)$")  # find tokenized sentence
 
 
-class Review(object):
+class Review:
     """
     A Review is the main block of a ReviewsCorpusReader.
     """
@@ -125,7 +125,7 @@ class Review(object):
         )
 
 
-class ReviewLine(object):
+class ReviewLine:
     """
     A ReviewLine represents a sentence of the review, together with (optional)
     annotations of its features and notes about the reviewed item.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: A Chart Parser
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -55,7 +54,7 @@ from nltk.parse.api import ParserI
 
 
 @total_ordering
-class EdgeI(object):
+class EdgeI:
     """
     A hypothesis about the structure of part of a sentence.
     Each edge records the fact that a structure is (partially)
@@ -430,7 +429,7 @@ class LeafEdge(EdgeI):
 ########################################################################
 
 
-class Chart(object):
+class Chart:
     """
     A blackboard for hypotheses about the syntactic constituents of a
     sentence.  A chart contains a set of edges, and each edge encodes
@@ -915,7 +914,7 @@ class Chart(object):
 ########################################################################
 
 
-class ChartRuleI(object):
+class ChartRuleI:
     """
     A rule that specifies what new edges are licensed by any given set
     of existing edges.  Each chart rule expects a fixed number of

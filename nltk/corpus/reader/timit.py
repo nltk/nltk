@@ -464,7 +464,7 @@ class TimitCorpusReader(CorpusReader):
         )
 
 
-class SpeakerInfo(object):
+class SpeakerInfo:
     def __init__(
         self, id, sex, dr, use, recdate, birthdate, ht, race, edu, comments=None
     ):

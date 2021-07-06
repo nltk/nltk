@@ -354,7 +354,7 @@ ConditionalExponentialClassifier = MaxentClassifier
 ######################################################################
 
 
-class MaxentFeatureEncodingI(object):
+class MaxentFeatureEncodingI:
     """
     A mapping that converts a set of input-feature values to a vector
     of joint-feature values, given a label.  This conversion is

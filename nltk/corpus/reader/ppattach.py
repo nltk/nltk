@@ -42,7 +42,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
-class PPAttachment(object):
+class PPAttachment:
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
         self.sent = sent
         self.verb = verb

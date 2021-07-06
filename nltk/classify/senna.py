@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Natural Language Toolkit: Senna Interface
 #
 # Copyright (C) 2001-2021 NLTK Project

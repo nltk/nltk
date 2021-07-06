@@ -26,7 +26,7 @@ from nltk.internals import raise_unorderable_types
 
 
 @total_ordering
-class DependencySpan(object):
+class DependencySpan:
     """
     A contiguous span over some part of the input string representing
     dependency (head -> modifier) relationships amongst words.  An atomic
@@ -104,7 +104,7 @@ class DependencySpan(object):
 #################################################################
 
 
-class ChartCell(object):
+class ChartCell:
     """
     A cell from the parse chart formed when performing the CYK algorithm.
     Each cell keeps track of its x and y coordinates (though this will probably
@@ -152,7 +152,7 @@ class ChartCell(object):
 #################################################################
 
 
-class ProjectiveDependencyParser(object):
+class ProjectiveDependencyParser:
     """
     A projective, rule-based, dependency parser.  A ProjectiveDependencyParser
     is created with a DependencyGrammar, a set of productions specifying
@@ -285,7 +285,7 @@ class ProjectiveDependencyParser(object):
 #################################################################
 
 
-class ProbabilisticProjectiveDependencyParser(object):
+class ProbabilisticProjectiveDependencyParser:
     """A probabilistic, projective dependency parser.
 
     This parser returns the most probable projective parse derived from the
