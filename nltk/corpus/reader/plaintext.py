@@ -157,26 +157,6 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
         CategorizedCorpusReader.__init__(self, kwargs)
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
 
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError("Specify fileids or categories, not both")
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
-
-    def raw(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.raw(self, self._resolve(fileids, categories))
-
-    def words(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.words(self, self._resolve(fileids, categories))
-
-    def sents(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.sents(self, self._resolve(fileids, categories))
-
-    def paras(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.paras(self, self._resolve(fileids, categories))
-
 
 # FIXME: Is there a better way? How to not hardcode this?
 #       Possibly, add a language kwargs to CategorizedPlaintextCorpusReader to

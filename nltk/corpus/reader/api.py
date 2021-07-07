@@ -391,6 +391,26 @@ class CategorizedCorpusReader(object):
                 self._init()
             return sorted(set.union(*[self._c2f[c] for c in categories]))
 
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError("Specify fileids or categories, not both")
+        if categories is not None:
+            return self.fileids(categories)
+        else:
+            return fileids
+
+    def raw(self, fileids=None, categories=None):
+        return super().raw(self._resolve(fileids, categories))
+
+    def words(self, fileids=None, categories=None):
+        return super().words(self._resolve(fileids, categories))
+
+    def sents(self, fileids=None, categories=None):
+        return super().sents(self._resolve(fileids, categories))
+
+    def paras(self, fileids=None, categories=None):
+        return super().paras(self._resolve(fileids, categories))
+
 
 ######################################################################
 # { Treebank readers

@@ -7,8 +7,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import codecs
-
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
 
@@ -31,21 +29,6 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
 
     #########################################################
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        result = []
-        for fileid, encoding in self.abspaths(fileids, include_encoding=True):
-            if isinstance(fileid, PathPointer):
-                with fileid.open(encoding=encoding) as fp:
-                    result.append(fp.read())
-            else:
-                with codecs.open(fileid, "r", encoding) as fp:
-                    result.append(fp.read())
-        return concat(result)
 
     def words(self, fileids=None):
         return concat(
