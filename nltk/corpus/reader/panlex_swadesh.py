@@ -45,10 +45,7 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         self._macro_langauges = self.get_macrolanguages()
 
     def license(self):
-        print('CC0 1.0 Universal')
-
-    def readme(self):
-        print(self.raw('README'))
+        return "CC0 1.0 Universal"
 
     def language_codes(self):
         return self._languages.keys()

@@ -92,6 +92,10 @@ class CorpusReader(object):
         self._root = root
         """The root directory for this corpus."""
 
+        self._readme = "README"
+        self._license = "LICENSE"
+        self._citation = "citation.bib"
+
         # If encoding was specified as a list of regexps, then convert
         # it to a dictionary.
         if isinstance(encoding, list):
@@ -130,21 +134,21 @@ class CorpusReader(object):
         """
         Return the contents of the corpus README file, if it exists.
         """
-        with self.open("README") as f:
+        with self.open(self._readme) as f:
             return f.read()
 
     def license(self):
         """
         Return the contents of the corpus LICENSE file, if it exists.
         """
-        with self.open("LICENSE") as f:
+        with self.open(self._license) as f:
             return f.read()
 
     def citation(self):
         """
         Return the contents of the corpus citation.bib file, if it exists.
         """
-        with self.open("citation.bib") as f:
+        with self.open(self._citation) as f:
             return f.read()
 
     def fileids(self):

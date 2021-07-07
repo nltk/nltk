@@ -1146,6 +1146,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         self._ferel_idx = None  # FE-to-FE relation instances
         self._frel_f_idx = None  # frame-to-frame relations associated with each frame
 
+        self._readme = "README.txt"
+
     def help(self, attrname=None):
         """Display help information summarizing the main methods."""
 
@@ -1297,17 +1299,6 @@ warnings(True) to display corpus consistency warnings when loading data
         if self._warnings:
             kwargs.setdefault("file", sys.stderr)
             print(*message, **kwargs)
-
-    def readme(self):
-        """
-        Return the contents of the corpus README.txt (or README) file.
-        """
-        try:
-            with self.open("README.txt") as fp:
-                return fp.read()
-        except IOError:
-            with self.open("README") as fp:
-                return fp.read()
 
     def buildindexes(self):
         """

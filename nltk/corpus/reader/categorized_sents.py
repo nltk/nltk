@@ -123,13 +123,6 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
                 contents.append(fp.read())
         return concat(contents)
 
-    def readme(self):
-        """
-        Return the contents of the corpus Readme.txt file.
-        """
-        with self.open("README") as fp:
-            return fp.read()
-
     def sents(self, fileids=None, categories=None):
         """
         Return all sentences in the corpus or in the specified file(s).

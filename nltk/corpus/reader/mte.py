@@ -226,6 +226,7 @@ class MTECorpusReader(TaggedCorpusReader):
         :param enconding: The encoding of the given files (default is utf8)
         """
         TaggedCorpusReader.__init__(self, root, fileids, encoding)
+        self._readme = "00README.txt"
 
     def __fileids(self, fileids):
         if fileids is None:
@@ -239,15 +240,6 @@ class MTECorpusReader(TaggedCorpusReader):
         if not fileids:
             print("No valid multext-east file specified")
         return fileids
-
-    def readme(self):
-        """
-        Prints some information about this corpus.
-        :return: the content of the attached README file
-        :rtype: str
-        """
-        with self.open("00README.txt") as fp:
-            return fp.read()
 
     def raw(self, fileids=None):
         """

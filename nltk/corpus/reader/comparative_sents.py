@@ -133,6 +133,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
+        self._readme = "README.txt"
 
     def comparisons(self, fileids=None):
         """
@@ -203,13 +204,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             with self.open(i) as fp:
                 contents.append(fp.read())
         return concat(contents)
-
-    def readme(self):
-        """
-        Return the contents of the corpus readme file.
-        """
-        with self.open("README.txt") as fp:
-            return fp.read()
 
     def sents(self, fileids=None):
         """

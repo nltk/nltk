@@ -196,6 +196,7 @@ class ReviewsCorpusReader(CorpusReader):
 
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
+        self._readme = "README.txt"
 
     def features(self, fileids=None):
         """
@@ -234,13 +235,6 @@ class ReviewsCorpusReader(CorpusReader):
             with self.open(f) as fp:
                 contents.append(fp.read())
         return concat(contents)
-
-    def readme(self):
-        """
-        Return the contents of the corpus README.txt file.
-        """
-        with self.open("README.txt") as fp:
-            return fp.read()
 
     def reviews(self, fileids=None):
         """
