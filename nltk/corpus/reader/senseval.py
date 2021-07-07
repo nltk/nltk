@@ -56,20 +56,6 @@ class SensevalCorpusReader(CorpusReader):
             ]
         )
 
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def _entry(self, tree):
         elts = []
         for lexelt in tree.findall("lexelt"):

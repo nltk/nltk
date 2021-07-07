@@ -203,6 +203,22 @@ class CorpusReader(object):
         else:
             return paths
 
+    def raw(self, fileids=None):
+        """
+        :param fileids: A list specifying the fileids that should be used.
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, str):
+            fileids = [fileids]
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
+
     def open(self, file):
         """
         Return an open stream that can be used to read the given file.
@@ -407,17 +423,6 @@ class SyntaxCorpusReader(CorpusReader):
 
     def _read_block(self, stream):
         raise NotImplementedError()
-
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block

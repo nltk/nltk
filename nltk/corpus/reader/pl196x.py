@@ -371,15 +371,3 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return XMLCorpusReader.xml(self, fileids[0])
         else:
             raise TypeError("Expected a single file")
-
-    def raw(self, fileids=None, categories=None):
-        fileids, _ = self._resolve(fileids, categories)
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)

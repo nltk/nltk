@@ -80,17 +80,6 @@ class PPAttachmentCorpusReader(CorpusReader):
             ]
         )
 
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def _read_tuple_block(self, stream):
         line = stream.readline()
         if line:

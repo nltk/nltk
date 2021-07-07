@@ -24,13 +24,6 @@ class WordListCorpusReader(CorpusReader):
             if not line.startswith(ignore_lines_startswith)
         ]
 
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
 class SwadeshCorpusReader(WordListCorpusReader):
     def entries(self, fileids=None):

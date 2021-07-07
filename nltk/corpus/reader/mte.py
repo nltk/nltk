@@ -241,18 +241,6 @@ class MTECorpusReader(TaggedCorpusReader):
             print("No valid multext-east file specified")
         return fileids
 
-    def raw(self, fileids=None):
-        """
-	    :param fileids: A list specifying the fileids that should be used.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        contents = []
-        for i in self.__fileids(fileids):
-            with self.open(i) as fp:
-                contents.append(fp.read())
-        return reduce(contents, [])
-
     def words(self, fileids=None):
         """
 	    :param fileids: A list specifying the fileids that should be used.

@@ -65,22 +65,6 @@ class PlaintextCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
 
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        raw_texts = []
-        for f in fileids:
-            _fin = self.open(f)
-            raw_texts.append(_fin.read())
-            _fin.close()
-        return concat(raw_texts)
-
     def words(self, fileids=None):
         """
         :return: the given file(s) as a list of words

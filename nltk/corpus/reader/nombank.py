@@ -68,20 +68,6 @@ class NombankCorpusReader(CorpusReader):
         self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
 
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
