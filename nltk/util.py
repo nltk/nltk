@@ -254,7 +254,7 @@ def edge_closure(tree, children=iter, maxdepth=-1):
                 pass
 
 
-def edges2dot(edges, o='back'):
+def edges2dot(edges, o='down'):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
     Use optional parameter 'o' to specify the orientation.
@@ -263,7 +263,7 @@ def edges2dot(edges, o='back'):
     """
     dot_string = 'digraph G {\n'
     for (source,target) in edges:
-        if o == 'back':
+        if o == 'down':
             pair = (target,source)
         else:
             pair = (source,target)

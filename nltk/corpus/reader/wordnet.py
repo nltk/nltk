@@ -2059,7 +2059,7 @@ class WordNetCorpusReader(CorpusReader):
         using nltk.parse.dependencygraph.dot2img(dot_string).
         
         Optionally, initialize 'edges', f. ex. with links to lemmas.
-        'o' specifies the orientation of the graph ('front' or 'back')
+        'o' specifies the orientation of the graph ('up' or 'down')
         'maxdepth' limits the longest path
         """
         from nltk.util import edge_closure, edges2dot
@@ -2072,7 +2072,7 @@ class WordNetCorpusReader(CorpusReader):
         """
         Produce a graphical representation from a list of input Lemmas
         and a relation, for drawing with the 'dot' program.
-        'o' specifies the orientation of the graph ('front' or 'back')
+        'o' specifies the orientation of the graph ('up' or 'down')
         'maxdepth' limits the longest path
         """
         synsets = set()
@@ -2089,7 +2089,7 @@ class WordNetCorpusReader(CorpusReader):
         and a relation, for drawing with the 'dot' program.
         
         Eventually, restrict pos (Part of Speech) to 'n', 'v', 'a' or 'r'
-        'o' specifies the orientation of the graph ('front' or 'back')
+        'o' specifies the orientation of the graph ('up' or 'down')
         'maxdepth' limits the longest path
         """
         lemmalist = []
