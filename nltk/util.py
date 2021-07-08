@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Eric Kafe <kafe.eric@gmail.com> (acyclic closure)
+#         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -15,6 +15,7 @@ import textwrap
 import pydoc
 import bisect
 import os
+import warnings
 
 from itertools import islice, chain, combinations, tee
 from pprint import pprint
@@ -223,36 +224,50 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 pass
 
 
-def edge_closure(start, children=iter):
+
+##########################################################################
+# Graph Drawing
+##########################################################################
+
+
+def edge_closure(tree, children=iter, maxdepth=-1):
     """Collect the edges of a graph in breadth-first order,
     discarding eventual cycles.
     The first argument should be the start node;
     children should be a function taking as argument a graph node
     and returning an iterator of the node's children.
     """
-    queue = set([start])
-    edges = set()
     traversed = set()
+    queue = deque([(tree, 0)])
     while queue:
-        node = queue.pop()
+        node, depth = queue.popleft()
         traversed.add(node)
-        for child in children(node):
-            if child not in traversed:
-                queue.add(child)
-                edges.add((node, child))
-    return edges
+        if depth != maxdepth:
+            try:
+                for child in children(node):
+                    if child not in traversed:
+                        queue.append((child, depth + 1))
+                        yield (node, child)
+                    else:
+                        warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+            except TypeError:
+                pass
 
 
-def edges2dot(edges):
+def edges2dot(edges, o='back'):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
-    
+    Use optional parameter 'o' to specify the orientation.
     The resulting dot_string can then be converted to an image
     with nltk.parse.dependencygraph.dot2img(dot_string).
     """
     dot_string = 'digraph G {\n'
     for (source,target) in edges:
-        dot_string += '"%s" -> "%s";\n' % (target,source)
+        if o == 'back':
+            pair = (target,source)
+        else:
+            pair = (source,target)
+        dot_string += '"%s" -> "%s";\n' % pair
     dot_string += '}\n'
     return dot_string
 
@@ -261,7 +276,6 @@ def edges2dot(edges):
 # Breadth-First / Depth-first Searches with Cycle Detection
 ##########################################################################
 
-import warnings
 
 def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order,
