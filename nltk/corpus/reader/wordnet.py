@@ -2051,7 +2051,7 @@ class WordNetCorpusReader(CorpusReader):
     # Visualize WordNet relation graphs using Graphviz
     ######################################################################
 
-    def synsets2digraph(self, synsets, rel=lambda s:s.hypernyms(), edges=set([]), o='back', maxdepth=-1):
+    def synsets2digraph(self, synsets, rel=lambda s:s.hypernyms(), edges=set([]), o='down', maxdepth=-1):
         """
         Produce a graphical representation from a list of input Synsets
         and a relation, for drawing with the 'dot' graph visualisation program
@@ -2068,7 +2068,7 @@ class WordNetCorpusReader(CorpusReader):
         dot_string = edges2dot(edges, o)
         return dot_string
 
-    def lemmas2digraph(self, lemmas, rel=lambda s:s.hypernyms(), o='back', maxdepth=-1):
+    def lemmas2digraph(self, lemmas, rel=lambda s:s.hypernyms(), o='down', maxdepth=-1):
         """
         Produce a graphical representation from a list of input Lemmas
         and a relation, for drawing with the 'dot' program.
@@ -2083,7 +2083,7 @@ class WordNetCorpusReader(CorpusReader):
             edges.add((lemma,ss))
         return self.synsets2digraph(synsets, rel, edges, o, maxdepth)
 
-    def words2digraph(self, words, pos=None, rel=lambda s:s.hypernyms(), o='back', maxdepth=-1):
+    def words2digraph(self, words, pos=None, rel=lambda s:s.hypernyms(), o='down', maxdepth=-1):
         """
         Produce a graphical representation from a list of input words
         and a relation, for drawing with the 'dot' program.

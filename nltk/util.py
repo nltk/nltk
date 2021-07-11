@@ -230,7 +230,7 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 ##########################################################################
 
 
-def edge_closure(tree, children=iter, maxdepth=-1):
+def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
     """Collect the edges of a graph in breadth-first order,
     discarding eventual cycles.
     The first argument should be the start node;
@@ -249,7 +249,8 @@ def edge_closure(tree, children=iter, maxdepth=-1):
                         queue.append((child, depth + 1))
                         yield (node, child)
                     else:
-                        warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+                        if verbose:
+                            warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
             except TypeError:
                 pass
 
@@ -257,7 +258,10 @@ def edge_closure(tree, children=iter, maxdepth=-1):
 def edges2dot(edges, o='down'):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
-    Use optional parameter 'o' to specify the orientation.
+
+    Use optional parameter 'o' to specify the orientation of the graph:
+    'up' draws source nodes at the top, 'down' draws them at the bottom.
+
     The resulting dot_string can then be converted to an image
     with nltk.parse.dependencygraph.dot2img(dot_string).
     """
