@@ -428,7 +428,7 @@ class TableauProverCommand(BaseProverCommand):
         BaseProverCommand.__init__(self, prover, goal, assumptions)
 
 
-class Agenda(object):
+class Agenda:
     def __init__(self):
         self.sets = tuple(set() for i in range(21))
 
@@ -566,7 +566,7 @@ class Agenda(object):
             raise ProverParseError("cannot categorize %s" % negated.__class__.__name__)
 
 
-class Debug(object):
+class Debug:
     def __init__(self, verbose, indent=0, lines=None):
         self.verbose = verbose
         self.indent = indent
@@ -602,7 +602,7 @@ class Debug(object):
             print(newline)
 
 
-class Categories(object):
+class Categories:
     ATOM = 0
     PROP = 1
     N_ATOM = 2

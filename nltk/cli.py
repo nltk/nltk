@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: NLTK Command-Line Interface
 #
 # Copyright (C) 2001-2021 NLTK Project

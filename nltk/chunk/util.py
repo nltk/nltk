@@ -49,7 +49,7 @@ def accuracy(chunker, gold):
 #
 # SB: use nltk.metrics for precision/recall scoring?
 #
-class ChunkScore(object):
+class ChunkScore:
     """
     A utility class for scoring chunk parsers.  ``ChunkScore`` can
     evaluate a chunk parser's output, based on a number of statistics

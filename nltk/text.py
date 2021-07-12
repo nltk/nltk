@@ -35,7 +35,7 @@ ConcordanceLine = namedtuple(
 )
 
 
-class ContextIndex(object):
+class ContextIndex:
     """
     A bidirectional index between words and their 'contexts' in a text.
     The context of a word is usually defined to be the words that occur
@@ -127,7 +127,7 @@ class ContextIndex(object):
 
 
 
-class ConcordanceIndex(object):
+class ConcordanceIndex:
     """
     An index that can be used to look up the offset locations at which
     a given word occurs in a document.
@@ -250,7 +250,7 @@ class ConcordanceIndex(object):
                 print(concordance_line.line)
 
 
-class TokenSearcher(object):
+class TokenSearcher:
     """
     A class that makes it easier to use regular expressions to search
     over tokenized strings.  The tokenized string is converted to a
@@ -308,7 +308,7 @@ class TokenSearcher(object):
 
 
 
-class Text(object):
+class Text:
     """
     A wrapper around a sequence of simple (string) tokens, which is
     intended to support initial exploration of texts (via the

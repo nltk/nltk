@@ -146,7 +146,7 @@ def taggedsents_to_conll(sentences):
 ######################################################################
 
 
-class TestGrammar(object):
+class TestGrammar:
     """
     Unit tests for  CFG.
     """

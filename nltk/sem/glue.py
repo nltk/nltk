@@ -34,7 +34,7 @@ SPEC_SEMTYPES = {
 OPTIONAL_RELATIONSHIPS = ["nmod", "vmod", "punct"]
 
 
-class GlueFormula(object):
+class GlueFormula:
     def __init__(self, meaning, glue, indices=None):
         if not indices:
             indices = set()
@@ -534,7 +534,7 @@ class GlueDict(dict):
         return GlueFormula
 
 
-class Glue(object):
+class Glue:
     def __init__(
         self, semtype_file=None, remove_duplicates=False, depparser=None, verbose=False
     ):

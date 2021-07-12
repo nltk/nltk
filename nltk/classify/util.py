@@ -96,7 +96,7 @@ def accuracy(classifier, gold):
         return 0
 
 
-class CutoffChecker(object):
+class CutoffChecker:
     """
     A helper class that implements cutoff checks based on number of
     iterations and log likelihood.

@@ -43,7 +43,7 @@ from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
 
 
-class RegexpChunkApp(object):
+class RegexpChunkApp:
     """
     A graphical tool for exploring the regular expression based chunk
     parser ``nltk.chunk.RegexpChunkParser``.

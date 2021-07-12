@@ -90,11 +90,6 @@ term = TerminalController()
 # Code
 ######################################################################
 
-# If we're using py24, then ignore the +SKIP directive.
-if sys.version_info[:2] < (2, 5):
-    register_optionflag('SKIP')
-
-
 def strip_quotes(s):
     s = s.strip()
     while s and (s[0] in "ur") and (s[-1] in "'\""):

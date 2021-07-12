@@ -10,7 +10,7 @@ from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 
 
-class CooperStore(object):
+class CooperStore:
     """
     A container for handling quantifier ambiguity via Cooper storage.
     """

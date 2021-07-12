@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: ARLSTem Stemmer v2
 #
@@ -26,7 +25,6 @@ results showed that the new version considerably improves the under-stemming
 errors that are common to light stemmers. Both ARLSTem and ARLSTem2 can be run
 online and do not use any dictionary.
 """
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language ID module using TextCat algorithm
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -45,7 +44,7 @@ except ImportError:
 ######################################################################
 
 
-class TextCat(object):
+class TextCat:
 
     _corpus = None
     fingerprints = {}

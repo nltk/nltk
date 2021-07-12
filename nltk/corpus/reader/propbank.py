@@ -179,7 +179,7 @@ class PropbankCorpusReader(CorpusReader):
 
 
 
-class PropbankInstance(object):
+class PropbankInstance:
     def __init__(
         self,
         fileid,
@@ -331,7 +331,7 @@ class PropbankInstance(object):
         )
 
 
-class PropbankPointer(object):
+class PropbankPointer:
     """
     A pointer used by propbank to identify one or more constituents in
     a parse tree.  ``PropbankPointer`` is an abstract base class with
@@ -493,7 +493,7 @@ class PropbankTreePointer(PropbankPointer):
 
 
 
-class PropbankInflection(object):
+class PropbankInflection:
     # { Inflection Form
     INFINITIVE = "i"
     GERUND = "g"

@@ -1,4 +1,3 @@
-# coding: utf-8
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
@@ -28,7 +27,7 @@ from nltk.metrics import (
 from nltk.probability import FreqDist
 
 
-class SentimentAnalyzer(object):
+class SentimentAnalyzer:
     """
     A Sentiment Analysis tool based on machine learning approaches.
     """

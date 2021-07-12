@@ -299,7 +299,7 @@ class ClosedWorldProver(ProverCommandDecorator):
                         predDict[func1].validate_sig_len(sig)
 
 
-class PredHolder(object):
+class PredHolder:
     """
     This class will be used by a dictionary that will store information
     about predicates to be used by the ``ClosedWorldProver``.

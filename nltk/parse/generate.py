@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Generating from a CFG
 #
 # Copyright (C) 2001-2021 NLTK Project

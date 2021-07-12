@@ -431,7 +431,7 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         )
 
 
-class ContingencyMeasures(object):
+class ContingencyMeasures:
     """Wraps NgramAssocMeasures classes such that the arguments of association
     measures are contingency table values rather than marginals.
     """

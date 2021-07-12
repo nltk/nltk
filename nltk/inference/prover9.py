@@ -44,7 +44,7 @@ p9_return_codes = {
 }
 
 
-class Prover9CommandParent(object):
+class Prover9CommandParent:
     """
     A common base class used by both ``Prover9Command`` and ``MaceCommand``,
     which is responsible for maintaining a goal and a set of assumptions,
@@ -109,7 +109,7 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
             return proof_string.rstrip()
 
 
-class Prover9Parent(object):
+class Prover9Parent:
     """
     A common class extended by both ``Prover9`` and ``Mace <mace.Mace>``.
     It contains the functionality required to convert NLTK-style

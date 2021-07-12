@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # Natural Language Toolkit: Gale-Church Aligner
 #
@@ -77,7 +76,7 @@ except ImportError:
 LOG2 = math.log(2)
 
 
-class LanguageIndependent(object):
+class LanguageIndependent:
     # These are the language-independent probabilities and parameters
     # given in Gale & Church
 

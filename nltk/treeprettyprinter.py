@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: ASCII visualization of NLTK trees
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -41,7 +40,7 @@ ANSICOLOR = {
 }
 
 
-class TreePrettyPrinter(object):
+class TreePrettyPrinter:
     """
     Pretty-print a tree in text format, either as ASCII or Unicode.
     The tree can be a normal tree, or discontinuous.

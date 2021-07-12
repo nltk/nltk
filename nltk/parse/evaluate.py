@@ -9,7 +9,7 @@
 import unicodedata
 
 
-class DependencyEvaluator(object):
+class DependencyEvaluator:
     """
     Class for measuring labelled and unlabelled attachment score for
     dependency parsing. Note that the evaluation ignores punctuation.

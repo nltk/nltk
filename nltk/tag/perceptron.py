@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This module is a port of the Textblob Averaged Perceptron Tagger
 # Author: Matthew Honnibal <honnibal+gh@gmail.com>,
 #         Long Duong <longdt219@gmail.com> (NLTK port)

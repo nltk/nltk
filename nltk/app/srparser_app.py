@@ -84,7 +84,7 @@ Possible future improvements:
 """
 
 
-class ShiftReduceApp(object):
+class ShiftReduceApp:
     """
     A graphical tool for exploring the shift-reduce parser.  The tool
     displays the parser's stack and the remaining text, and allows the

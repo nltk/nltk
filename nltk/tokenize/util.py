@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizer Utilities
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -93,7 +92,7 @@ def spans_to_relative(spans):
         prev = right
 
 
-class CJKChars(object):
+class CJKChars:
     """
     An object that enumerates the code points of the CJK characters as listed on
     http://en.wikipedia.org/wiki/Basic_Multilingual_Plane#Basic_Multilingual_Plane

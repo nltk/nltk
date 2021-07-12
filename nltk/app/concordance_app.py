@@ -116,7 +116,7 @@ _CORPORA = {
 }
 
 
-class ConcordanceSearchView(object):
+class ConcordanceSearchView:
     _BACKGROUND_COLOUR = "#FFF"  # white
 
     # Colour of highlighted results
@@ -579,7 +579,7 @@ class ConcordanceSearchView(object):
         self.top.mainloop(*args, **kwargs)
 
 
-class ConcordanceSearchModel(object):
+class ConcordanceSearchModel:
     def __init__(self, queue):
         self.queue = queue
         self.CORPORA = _CORPORA

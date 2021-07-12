@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Unit tests for nltk.corpus.wordnet
 See also nltk/test/wordnet.doctest

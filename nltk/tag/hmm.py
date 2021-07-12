@@ -835,7 +835,7 @@ class HiddenMarkovModelTagger(TaggerI):
         )
 
 
-class HiddenMarkovModelTrainer(object):
+class HiddenMarkovModelTrainer:
     """
     Algorithms for learning HMM parameters from training data. These include
     both supervised learning (MLE) and unsupervised learning (Baum-Welch).

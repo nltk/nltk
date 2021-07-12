@@ -182,7 +182,7 @@ class NombankCorpusReader(CorpusReader):
 ######################################################################
 
 
-class NombankInstance(object):
+class NombankInstance:
     def __init__(
         self,
         fileid,
@@ -323,7 +323,7 @@ class NombankInstance(object):
         )
 
 
-class NombankPointer(object):
+class NombankPointer:
     """
     A pointer used by nombank to identify one or more constituents in
     a parse tree.  ``NombankPointer`` is an abstract base class with

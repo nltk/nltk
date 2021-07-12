@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # NLTK documentation build configuration file, created by
 # sphinx-quickstart on Wed Nov  2 17:02:59 2011.
