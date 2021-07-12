@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 
 # FIXME: the entire discourse.doctest is skipped if Prover9/Mace4 is

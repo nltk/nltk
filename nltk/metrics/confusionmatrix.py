@@ -9,7 +9,7 @@
 from nltk.probability import FreqDist
 
 
-class ConfusionMatrix(object):
+class ConfusionMatrix:
     """
     The confusion matrix between a list of reference values and a
     corresponding list of test values.  Entry *[r,t]* of this

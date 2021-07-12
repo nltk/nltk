@@ -16,7 +16,7 @@ from nltk.chunk.api import ChunkParserI
 # //////////////////////////////////////////////////////
 
 
-class ChunkString(object):
+class ChunkString:
     """
     A string-based encoding of a particular chunking of a text.
     Internally, the ``ChunkString`` class uses a single string to
@@ -252,7 +252,7 @@ class ChunkString(object):
 # //////////////////////////////////////////////////////
 
 
-class RegexpChunkRule(object):
+class RegexpChunkRule:
     """
     A rule specifying how to modify the chunking in a ``ChunkString``,
     using a transformational regular expression.  The

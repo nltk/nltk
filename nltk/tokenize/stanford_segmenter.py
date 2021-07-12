@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #

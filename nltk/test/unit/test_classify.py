@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Unit tests for nltk.classify. See also: nltk/test/classify.doctest
 """

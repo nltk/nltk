@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for common methods of IBM translation models
 """

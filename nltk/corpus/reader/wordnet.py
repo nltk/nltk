@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -122,7 +121,7 @@ class WordNetError(Exception):
 
 
 @total_ordering
-class _WordNetObject(object):
+class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
     def hypernyms(self):

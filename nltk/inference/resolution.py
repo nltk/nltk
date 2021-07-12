@@ -528,7 +528,7 @@ def _clausify(expression):
     raise ProverParseError()
 
 
-class BindingDict(object):
+class BindingDict:
     def __init__(self, binding_list=None):
         """
         :param binding_list: list of (``AbstractVariableExpression``, ``AtomicExpression``) to initialize the dictionary
@@ -671,7 +671,7 @@ class UnificationException(Exception):
         Exception.__init__(self, "'%s' cannot unify with '%s'" % (a, b))
 
 
-class DebugObject(object):
+class DebugObject:
     def __init__(self, enabled=True, indent=0):
         self.enabled = enabled
         self.indent = indent

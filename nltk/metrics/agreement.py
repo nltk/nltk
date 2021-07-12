@@ -81,7 +81,7 @@ from nltk.metrics.distance import binary_distance
 log = logging.getLogger(__name__)
 
 
-class AnnotationTask(object):
+class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
 
     Notation tries to match notation in Artstein and Poesio (2007).

@@ -24,7 +24,7 @@ APP = "APP"
 _counter = Counter()
 
 
-class Tokens(object):
+class Tokens:
     LAMBDA = "\\"
     LAMBDA_LIST = ["\\"]
 
@@ -94,7 +94,7 @@ def binding_ops():
         print("%-15s\t%s" % pair)
 
 
-class LogicParser(object):
+class LogicParser:
     """A lambda calculus expression parser."""
 
     def __init__(self, type_check=False):
@@ -614,7 +614,7 @@ def read_logic(s, logic_parser=None, encoding=None):
 
 
 @total_ordering
-class Variable(object):
+class Variable:
     def __init__(self, name):
         """
         :param name: the name of the variable
@@ -686,7 +686,7 @@ def skolem_function(univ_scope=None):
     return skolem
 
 
-class Type(object):
+class Type:
     def __repr__(self):
         return "%s" % self
 
@@ -916,7 +916,7 @@ def typecheck(expressions, signature=None):
     return signature
 
 
-class SubstituteBindingsI(object):
+class SubstituteBindingsI:
     """
     An interface for classes that can perform substitutions for
     variables.

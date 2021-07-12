@@ -48,7 +48,7 @@ ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
 KEYWORD = re.compile(r"\((?!.*\()(.*)\)$")
 
 
-class Comparison(object):
+class Comparison:
     """
     A Comparison represents a comparative sentence and its constituents.
     """

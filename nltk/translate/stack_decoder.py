@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Stack decoder
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -47,7 +46,7 @@ from collections import defaultdict
 from math import log
 
 
-class StackDecoder(object):
+class StackDecoder:
     """
     Phrase-based stack decoder for machine translation
 
@@ -336,7 +335,7 @@ class StackDecoder(object):
         return valid_phrases
 
 
-class _Hypothesis(object):
+class _Hypothesis:
     """
     Partial solution to a translation.
 
@@ -450,7 +449,7 @@ class _Hypothesis(object):
         output.extend(hypothesis.trg_phrase)
 
 
-class _Stack(object):
+class _Stack:
     """
     Collection of _Hypothesis objects
     """

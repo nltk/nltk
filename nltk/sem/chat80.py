@@ -243,7 +243,7 @@ not_unary = ["borders.pl", "contain.pl"]
 ###########################################################################
 
 
-class Concept(object):
+class Concept:
     """
     A Concept class, loosely based on SKOS
     (http://www.w3.org/TR/swbp-skos-core-guide/).

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU Score
 #
 # Copyright (C) 2001-2021 NLTK Project

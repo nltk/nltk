@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2013 NLTK Project
@@ -19,7 +18,7 @@ from nltk.tag import untag, BrillTagger
 ######################################################################
 
 
-class BrillTaggerTrainer(object):
+class BrillTaggerTrainer:
     """
     A trainer for tbl taggers.
     """

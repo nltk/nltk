@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 
 from nltk.metrics.agreement import AnnotationTask

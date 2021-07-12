@@ -24,7 +24,7 @@ except ImportError:
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 
 
-class Configuration(object):
+class Configuration:
     """
     Class for holding configuration which is the partial analysis of the input sentence.
     The transition based parser aims at finding set of operators that transfer the initial
@@ -177,7 +177,7 @@ class Configuration(object):
         return result
 
 
-class Transition(object):
+class Transition:
     """
     This class defines a set of transition which is applied to a configuration to get another configuration
     Note that for different parsing algorithm, the transition is different.

@@ -32,7 +32,7 @@ from nltk.sem.drt import DrsDrawer, DrtVariableExpression
 from nltk.sem.glue import DrtGlue
 
 
-class DrtGlueDemo(object):
+class DrtGlueDemo:
     def __init__(self, examples):
         # Set up the main window.
         self._top = Tk()
@@ -513,7 +513,7 @@ class DrtGlueDemo(object):
             self._redraw()
 
 
-class DrsWidget(object):
+class DrsWidget:
     def __init__(self, canvas, drs, **attribs):
         self._drs = drs
         self._canvas = canvas

@@ -1762,7 +1762,7 @@ class ScrollWatcherWidget(CanvasWidget):
 ##//////////////////////////////////////////////////////
 
 
-class CanvasFrame(object):
+class CanvasFrame:
     """
     A ``Tkinter`` frame containing a canvas and scrollbars.
     ``CanvasFrame`` uses a ``ScrollWatcherWidget`` to ensure that all of
@@ -2003,7 +2003,7 @@ class CanvasFrame(object):
 ##//////////////////////////////////////////////////////
 
 
-class ShowText(object):
+class ShowText:
     """
     A ``Tkinter`` window used to display a text.  ``ShowText`` is
     typically used by graphical tools to display help text, or similar
@@ -2086,7 +2086,7 @@ class ShowText(object):
 ##//////////////////////////////////////////////////////
 
 
-class EntryDialog(object):
+class EntryDialog:
     """
     A dialog box for entering
     """
@@ -2167,7 +2167,7 @@ class EntryDialog(object):
 ##//////////////////////////////////////////////////////
 
 
-class ColorizedList(object):
+class ColorizedList:
     """
     An abstract base class for displaying a colorized list of items.
     Subclasses should define:

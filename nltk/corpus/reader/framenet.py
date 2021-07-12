@@ -905,7 +905,7 @@ class SpecialList(list):
         return self.__str__()
 
 
-class Future(object):
+class Future:
     """
     Wraps and acts as a proxy for a value to be loaded lazily (on demand).
     Adapted from https://gist.github.com/sergey-miryanov/2935416

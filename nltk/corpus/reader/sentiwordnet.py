@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: SentiWordNet
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -108,7 +107,7 @@ class SentiWordNetCorpusReader(CorpusReader):
             yield SentiSynset(pos_score, neg_score, synset)
 
 
-class SentiSynset(object):
+class SentiSynset:
     def __init__(self, pos_score, neg_score, synset):
         self._pos_score = pos_score
         self._neg_score = neg_score

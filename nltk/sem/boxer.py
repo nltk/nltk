@@ -55,7 +55,7 @@ from nltk.sem.drt import (
 )
 
 
-class Boxer(object):
+class Boxer:
     """
     This class is an interface to Johan Bos's program Boxer, a wide-coverage
     semantic parser that produces Discourse Representation Structures (DRSs).
@@ -996,7 +996,7 @@ class BoxerDrsParser(DrtParser):
             raise ExpectedMoreTokensException(e.index, "Variable expected.") from e
 
 
-class AbstractBoxerDrs(object):
+class AbstractBoxerDrs:
     def variables(self):
         """
         :return: (set<variables>, set<events>, set<propositions>)
@@ -1488,12 +1488,12 @@ class BoxerWhq(BoxerIndexed):
         return "whq"
 
 
-class PassthroughBoxerDrsInterpreter(object):
+class PassthroughBoxerDrsInterpreter:
     def interpret(self, ex):
         return ex
 
 
-class NltkDrtBoxerDrsInterpreter(object):
+class NltkDrtBoxerDrsInterpreter:
     def __init__(self, occur_index=False):
         self._occur_index = occur_index
 

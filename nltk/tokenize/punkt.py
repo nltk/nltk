@@ -179,7 +179,7 @@ REASON_INITIAL_WITH_SPECIAL_ORTHOGRAPHIC_HEURISTIC = (
 ######################################################################
 
 
-class PunktLanguageVars(object):
+class PunktLanguageVars:
     """
     Stores variables, mostly regular expressions, which may be
     language-dependent for correct application of the algorithm.
@@ -327,7 +327,7 @@ def _pair_iter(it):
 ######################################################################
 
 
-class PunktParameters(object):
+class PunktParameters:
     """Stores data used to perform sentence boundary detection with Punkt."""
 
     def __init__(self):
@@ -386,7 +386,7 @@ class PunktParameters(object):
 ######################################################################
 
 
-class PunktToken(object):
+class PunktToken:
     """Stores a token of text with annotations produced during
     sentence boundary detection."""
 
@@ -526,7 +526,7 @@ class PunktToken(object):
 ######################################################################
 
 
-class PunktBaseClass(object):
+class PunktBaseClass:
     """
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """

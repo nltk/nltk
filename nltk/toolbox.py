@@ -1,4 +1,3 @@
-# coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -18,7 +17,7 @@ from io import StringIO
 from nltk.data import PathPointer, find
 
 
-class StandardFormat(object):
+class StandardFormat:
     """
     Class for reading and processing standard format marker files and strings.
     """

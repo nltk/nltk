@@ -168,7 +168,7 @@ class DrtGlueReadingCommand(ReadingCommand):
         return expression.fol()
 
 
-class DiscourseTester(object):
+class DiscourseTester:
     """
     Check properties of an ongoing discourse.
     """

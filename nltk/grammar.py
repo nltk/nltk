@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -84,7 +83,7 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
 
 
 @total_ordering
-class Nonterminal(object):
+class Nonterminal:
     """
     A non-terminal symbol for a context free grammar.  ``Nonterminal``
     is a wrapper class for node values; it is used by ``Production``
@@ -254,7 +253,7 @@ def is_terminal(item):
 
 @total_ordering
 
-class Production(object):
+class Production:
     """
     A grammar production.  Each production maps a single symbol
     on the "left-hand side" to a sequence of symbols on the
@@ -448,7 +447,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 
 
 
-class CFG(object):
+class CFG:
     """
     A context-free grammar.  A grammar consists of a start state and
     a set of productions.  The set of terminals and nonterminals is
@@ -1020,7 +1019,7 @@ class FeatureGrammar(CFG):
 
 @total_ordering
 
-class FeatureValueType(object):
+class FeatureValueType:
     """
     A helper class for ``FeatureGrammars``, designed to be different
     from ordinary strings.  This is to stop the ``FeatStruct``
@@ -1049,7 +1048,7 @@ class FeatureValueType(object):
 
 
 
-class DependencyGrammar(object):
+class DependencyGrammar:
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
     productions.  Each production specifies a head/modifier relationship
@@ -1145,7 +1144,7 @@ class DependencyGrammar(object):
 
 
 
-class ProbabilisticDependencyGrammar(object):
+class ProbabilisticDependencyGrammar:
     """
 
     """

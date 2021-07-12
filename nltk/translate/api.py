@@ -12,7 +12,7 @@ import subprocess
 from collections import namedtuple
 
 
-class AlignedSent(object):
+class AlignedSent:
     """
     Return an aligned sentence object, which encapsulates two sentences
     along with an ``Alignment`` between them.
@@ -291,7 +291,7 @@ def _check_alignment(num_words, num_mots, alignment):
 PhraseTableEntry = namedtuple("PhraseTableEntry", ["trg_phrase", "log_prob"])
 
 
-class PhraseTable(object):
+class PhraseTable:
     """
     In-memory store of translations for a given phrase, and the log
     probability of the those translations

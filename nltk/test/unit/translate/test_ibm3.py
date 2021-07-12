@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for IBM Model 3 training methods
 """
