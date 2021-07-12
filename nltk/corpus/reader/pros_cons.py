@@ -131,11 +131,3 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         for sent in self._read_sent_block(stream):
             words.extend(sent)
         return words
-
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError("Specify fileids or categories, not both")
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids

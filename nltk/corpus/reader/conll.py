@@ -98,17 +98,6 @@ class ConllCorpusReader(CorpusReader):
     # Data Access Methods
     # /////////////////////////////////////////////////////////////////
 
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def words(self, fileids=None):
         self._require(self.WORDS)
         return LazyConcatenation(LazyMap(self._get_words, self._grids(fileids)))
