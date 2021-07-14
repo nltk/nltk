@@ -255,9 +255,11 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                 pass
 
 
-def edges2dot(edges, o='down'):
+def edges2dot(edges, boxes=[], o='down'):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
+
+    boxes is a list of strings that trigger a box shape;
 
     Use optional parameter 'o' to specify the orientation of the graph:
     'up' draws source nodes at the top, 'down' draws them at the bottom.
@@ -271,6 +273,10 @@ def edges2dot(edges, o='down'):
             pair = (target,source)
         else:
             pair = (source,target)
+        for box in boxes:
+            for x in range(2):
+                if box in repr(pair[x]):
+                    dot_string += '"%s" [shape = box];\n' % pair[x]
         dot_string += '"%s" -> "%s";\n' % pair
     dot_string += '}\n'
     return dot_string
