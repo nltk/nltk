@@ -2053,8 +2053,8 @@ class WordNetCorpusReader(CorpusReader):
 
     def synsets2digraph(self, synsets, rel=lambda s:s.hypernyms(), edges=set([]), o='down', maxdepth=-1, verbose=False, boxes=[]):
         """
-        Produce a graphical representation from a list of input Synsets
-        and a relation, for drawing with the 'dot' graph visualisation program
+        Produce a graphical representation from a list of input Synsets and a 
+        synset relation, for drawing with the 'dot' graph visualisation program
         from the Graphviz package. The result can be output to an image,
         using nltk.parse.dependencygraph.dot2img(dot_string).
         
@@ -2072,7 +2072,7 @@ class WordNetCorpusReader(CorpusReader):
     def lemmas2digraph(self, lemmas, rel=lambda s:s.hypernyms(), o='down', maxdepth=-1, verbose=False, boxes=[]):
         """
         Produce a graphical representation from a list of input Lemmas
-        and a relation, for drawing with the 'dot' program.
+        and a synset relation, for drawing with the 'dot' program.
         'o' specifies the orientation of the graph ('up' or 'down')
         'maxdepth' limits the longest path
         """
@@ -2087,7 +2087,7 @@ class WordNetCorpusReader(CorpusReader):
     def words2digraph(self, words, pos=None, rel=lambda s:s.hypernyms(), o='down', maxdepth=-1, verbose=False, boxes=[]):
         """
         Produce a graphical representation from a list of input words
-        and a relation, for drawing with the 'dot' program.
+        and a synset relation, for drawing with the 'dot' program.
         
         Eventually, restrict pos (Part of Speech) to 'n', 'v', 'a' or 'r'
         'o' specifies the orientation of the graph ('up' or 'down')

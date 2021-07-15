@@ -259,13 +259,12 @@ def edges2dot(edges, boxes=[], o='down'):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
 
-    boxes is a list of strings that trigger a box shape;
+    :return dot_string: a string which can then be converted
+    to an image by nltk.parse.dependencygraph.dot2img(dot_string).
 
-    Use optional parameter 'o' to specify the orientation of the graph:
-    'up' draws source nodes at the top, 'down' draws them at the bottom.
-
-    The resulting dot_string can then be converted to an image
-    with nltk.parse.dependencygraph.dot2img(dot_string).
+    :param boxes: a list of strings that trigger a box shape.
+    :param o: orientation of the graph ('up' draws source nodes at
+    the top, 'down' draws them at the bottom).
     """
     dot_string = 'digraph G {\n'
     for (source,target) in edges:
