@@ -247,10 +247,10 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                 for child in children(node):
                     if child not in traversed:
                         queue.append((child, depth + 1))
-                        yield (node, child)
                     else:
                         if verbose:
                             warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+                    yield (node, child)
             except TypeError:
                 pass
 
