@@ -1,5 +1,3 @@
-
-
 def test_basic():
     from nltk.tag import pos_tag
     from nltk.tokenize import word_tokenize

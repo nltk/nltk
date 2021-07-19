@@ -1,4 +1,3 @@
-
 import re
 import sys
 import nltk
@@ -48,11 +47,11 @@ def find_all_names(stoplist):
     return names
 
 
-SCAN_RE1 = "<programlisting>[\s\S]*?</programlisting>"
-SCAN_RE2 = "<literal>[\s\S]*?</literal>"
+SCAN_RE1 = r"<programlisting>[\s\S]*?</programlisting>"
+SCAN_RE2 = r"<literal>[\s\S]*?</literal>"
 SCAN_RE = re.compile("({})|({})".format(SCAN_RE1, SCAN_RE2))
 
-TOKEN_RE = re.compile('[\w\.]+')
+TOKEN_RE = re.compile(r'[\w\.]+')
 
 LINE_RE = re.compile('.*')
 

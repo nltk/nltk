@@ -167,10 +167,8 @@ def demo():
         count_quick = quick(a)
 
         print(
-            (
-                ("size=%5d:  selection=%8d,  bubble=%8d,  " "merge=%6d,  quick=%6d")
-                % (size, count_selection, count_bubble, count_merge, count_quick)
-            )
+            ("size=%5d:  selection=%8d,  bubble=%8d,  " "merge=%6d,  quick=%6d")
+            % (size, count_selection, count_bubble, count_merge, count_quick)
         )
 
 

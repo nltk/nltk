@@ -1337,7 +1337,7 @@ def demo_eval(chunkparser, text):
 
     print("/" + ("=" * 75) + "\\")
     print("Scoring", chunkparser)
-    print(("-" * 77))
+    print("-" * 77)
     print("Precision: %5.1f%%" %
           (chunkscore.precision() * 100), " " * 4, end=" ")
     print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")

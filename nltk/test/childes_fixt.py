@@ -1,4 +1,3 @@
-
 def setup_module():
     import pytest
     import nltk.data

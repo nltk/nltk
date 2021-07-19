@@ -1245,8 +1245,8 @@ class DownloaderShell:
         print()
         print("Data Server:")
         print("  - URL: <%s>" % self._ds.url)
-        print(("  - %d Package Collections Available" % len(self._ds.collections())))
-        print(("  - %d Individual Packages Available" % len(self._ds.packages())))
+        print("  - %d Package Collections Available" % len(self._ds.collections()))
+        print("  - %d Individual Packages Available" % len(self._ds.packages()))
         print()
         print("Local Machine:")
         print("  - Data directory: %s" % self._ds.download_dir)
@@ -1268,7 +1268,7 @@ class DownloaderShell:
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
                 else:
-                    print(("Directory %r not found!  Create it first." % new_dl_dir))
+                    print("Directory %r not found!  Create it first." % new_dl_dir)
             elif user_input == "u":
                 new_url = input("  New URL> ").strip()
                 if new_url in ("", "x", "q", "X", "Q"):

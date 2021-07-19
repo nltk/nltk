@@ -206,7 +206,7 @@ class IBMModel:
         m = len(trg_sentence) - 1
 
         alignment = [0] * (m + 1)  # init all alignments to NULL
-        cepts = [[] for i in range((l + 1))]  # init all cepts to empty list
+        cepts = [[] for i in range(l + 1)]  # init all cepts to empty list
 
         for j in range(1, m + 1):
             if j == j_pegged:

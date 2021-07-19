@@ -142,11 +142,11 @@ class AnnotationTask:
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = next((x for x in data if x["coder"] in (cA, cB) and x["item"] == i))
+        k1 = next(x for x in data if x["coder"] in (cA, cB) and x["item"] == i)
         if k1["coder"] == cA:
-            k2 = next((x for x in data if x["coder"] == cB and x["item"] == i))
+            k2 = next(x for x in data if x["coder"] == cB and x["item"] == i)
         else:
-            k2 = next((x for x in data if x["coder"] == cA and x["item"] == i))
+            k2 = next(x for x in data if x["coder"] == cA and x["item"] == i)
 
         ret = 1.0 - float(self.distance(k1["labels"], k2["labels"]))
         log.debug("Observed agreement between %s and %s on %s: %f", cA, cB, i, ret)

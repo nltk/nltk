@@ -1,5 +1,3 @@
-
-
 import unittest
 from nltk.classify.naivebayes import NaiveBayesClassifier
 

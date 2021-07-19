@@ -2491,10 +2491,8 @@ def demo(numsamples=6, numoutcomes=500):
 
     # Print the results in a formatted table.
     print(
-        (
-            "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
-            % (numsamples, numsamples, numoutcomes)
-        )
+        "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
+        % (numsamples, numsamples, numoutcomes)
     )
     print("=" * 9 * (len(pdists) + 2))
     FORMATSTR = "      FreqDist " + "%8s " * (len(pdists) - 1) + "|  Actual"
