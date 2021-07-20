@@ -20,10 +20,10 @@ class TestNgramCounter:
     def setup_class(self):
         text = [list("abcd"), list("egdbe")]
         self.trigram_counter = NgramCounter(
-            (everygrams(sent, max_len=3) for sent in text)
+            everygrams(sent, max_len=3) for sent in text
         )
         self.bigram_counter = NgramCounter(
-            (everygrams(sent, max_len=2) for sent in text)
+            everygrams(sent, max_len=2) for sent in text
         )
         self.case = unittest.TestCase()
 

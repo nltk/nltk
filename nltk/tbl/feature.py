@@ -220,10 +220,8 @@ class Feature(metaclass=ABCMeta):
         """
 
         return bool(
-            (
-                self.__class__ is other.__class__
-                and set(self.positions) & set(other.positions)
-            )
+            self.__class__ is other.__class__
+            and set(self.positions) & set(other.positions)
         )
 
     # Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),

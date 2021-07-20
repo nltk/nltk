@@ -588,10 +588,8 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
     part of speech.
     """
     return "<ul>%s\n</ul>\n" % "".join(
-        (
-            _collect_one_synset(word, synset, synset_relations)
-            for synset in wn.synsets(word, pos)
-        )
+        _collect_one_synset(word, synset, synset_relations)
+        for synset in wn.synsets(word, pos)
     )
 
 
@@ -647,11 +645,9 @@ def _synset_relations(word, synset, synset_relations):
     html = (
         "<ul>"
         + "\n".join(
-            (
-                "<li>%s</li>" % make_synset_html(*rel_data)
-                for rel_data in get_relations_data(word, synset)
-                if rel_data[2] != []
-            )
+            "<li>%s</li>" % make_synset_html(*rel_data)
+            for rel_data in get_relations_data(word, synset)
+            if rel_data[2] != []
         )
         + "</ul>"
     )

@@ -1,4 +1,3 @@
-
 import unittest
 from contextlib import closing
 

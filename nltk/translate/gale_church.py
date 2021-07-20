@@ -1,4 +1,3 @@
-
 # Natural Language Toolkit: Gale-Church Aligner
 #
 # Copyright (C) 2001-2021 NLTK Project

@@ -1,4 +1,3 @@
-
 """
 Mock test for Stanford CoreNLP wrappers.
 """

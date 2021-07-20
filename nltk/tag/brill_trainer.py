@@ -279,7 +279,7 @@ class BrillTaggerTrainer:
             print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
         if self._trace:
-            print(("    Found {} useful rules.".format(len(self._rule_scores))))
+            print("    Found {} useful rules.".format(len(self._rule_scores)))
 
         # Let the user know what we're up to.
         if self._trace > 2:

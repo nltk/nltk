@@ -1,5 +1,3 @@
-
-
 def setup_module():
     import pytest
     from nltk.inference.mace import Mace

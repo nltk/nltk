@@ -1,4 +1,3 @@
-
 import pytest
 
 from nltk.corpus import rte as rte_corpus

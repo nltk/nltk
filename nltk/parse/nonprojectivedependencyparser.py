@@ -150,13 +150,11 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         for head_node in graph.nodes.values():
             for child_node in graph.nodes.values():
                 edges.append(
-                    (
-                        dict(
-                            a=head_node["word"],
-                            b=head_node["tag"],
-                            c=child_node["word"],
-                            d=child_node["tag"],
-                        )
+                    dict(
+                        a=head_node["word"],
+                        b=head_node["tag"],
+                        c=child_node["word"],
+                        d=child_node["tag"],
                     )
                 )
 

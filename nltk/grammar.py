@@ -754,7 +754,7 @@ class CFG:
             return self
         if self.productions(empty=True):
             raise ValueError(
-                ("Grammar has Empty rules. " "Cannot deal with them at the moment")
+                "Grammar has Empty rules. " "Cannot deal with them at the moment"
             )
 
         # check for mixed rules

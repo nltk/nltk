@@ -268,10 +268,8 @@ class DecisionTreeClassifier(ClassifierI):
                 best_stump = stump
         if verbose:
             print(
-                (
-                    "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
-                        len(labeled_featuresets), best_stump._fname, best_error
-                    )
+                "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
+                    len(labeled_featuresets), best_stump._fname, best_error
                 )
             )
         return best_stump
@@ -322,10 +320,8 @@ class DecisionTreeClassifier(ClassifierI):
             else:
                 descr = "(default)"
             print(
-                (
-                    "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
-                        len(labeled_featuresets), descr, best_error
-                    )
+                "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
+                    len(labeled_featuresets), descr, best_error
                 )
             )
         return best_stump
