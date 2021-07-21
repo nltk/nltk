@@ -20,9 +20,6 @@ addons:
 
 matrix:
   include:
-    - python: '3.5'
-      env: TOXENV="py-travis"
-
     - python: '3.6'
       env: TOXENV="py-travis"
 
