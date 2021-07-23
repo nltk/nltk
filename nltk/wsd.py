@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Word Sense Disambiguation Algorithms
+# Natural Language Toolkit: Word Sense Disambiguation Algorithm
 #
 # Authors: Liling Tan <alvations@gmail.com>,
 #          Dmitrijs Milajevs <dimazest@gmail.com>
@@ -27,6 +27,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
         >>> lesk(['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.'], 'bank', 'n')
         Synset('savings_bank.n.02')
 
+    reference:-
     [1] Lesk, Michael. "Automatic sense disambiguation using machine
     readable dictionaries: how to tell a pine cone from an ice cream
     cone." Proceedings of the 5th Annual International Conference on
