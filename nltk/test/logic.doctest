@@ -1094,5 +1094,3 @@ Parse errors
     Unexpected token: '->'.  Expression expected.
     A -> (exists x -> y) -> Z
                    ^
-
-

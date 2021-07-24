@@ -15,30 +15,30 @@ Tree nr 2170 from nltk.corpus.treebank:
     ...     '(JJ good)) (PP-CLR (IN about) (NP (PRP it)))) (. .))')
     >>> tpp = TreePrettyPrinter(tree)
     >>> print(tpp.text())
-                                 S                       
-       __________________________|_____________________   
-      |                          VP                    | 
-      |      ____________________|___________          |  
-      |     |             |                PP-CLR      | 
-      |     |             |             _____|_____    |  
-    NP-SBJ  |          ADJP-PRD        |           NP  | 
-      |     |      _______|______      |           |   |  
-     PRP   VBP    RB             JJ    IN         PRP  . 
-      |     |     |              |     |           |   |  
-      I    feel pretty          good about         it  . 
+                                 S
+       __________________________|_____________________
+      |                          VP                    |
+      |      ____________________|___________          |
+      |     |             |                PP-CLR      |
+      |     |             |             _____|_____    |
+    NP-SBJ  |          ADJP-PRD        |           NP  |
+      |     |      _______|______      |           |   |
+     PRP   VBP    RB             JJ    IN         PRP  .
+      |     |     |              |     |           |   |
+      I    feel pretty          good about         it  .
 
     >>> print(tpp.text(unicodelines=True))
-                                 S                       
-      ┌──────────────────────────┼─────────────────────┐  
-      │                          VP                    │ 
-      │     ┌─────────────┬──────┴───────────┐         │  
-      │     │             │                PP-CLR      │ 
-      │     │             │            ┌─────┴─────┐   │  
-    NP-SBJ  │          ADJP-PRD        │           NP  │ 
-      │     │     ┌───────┴──────┐     │           │   │  
-     PRP   VBP    RB             JJ    IN         PRP  . 
-      │     │     │              │     │           │   │  
-      I    feel pretty          good about         it  . 
+                                 S
+      ┌──────────────────────────┼─────────────────────┐
+      │                          VP                    │
+      │     ┌─────────────┬──────┴───────────┐         │
+      │     │             │                PP-CLR      │
+      │     │             │            ┌─────┴─────┐   │
+    NP-SBJ  │          ADJP-PRD        │           NP  │
+      │     │     ┌───────┴──────┐     │           │   │
+     PRP   VBP    RB             JJ    IN         PRP  .
+      │     │     │              │     │           │   │
+      I    feel pretty          good about         it  .
 
 A tree with long labels:
 
@@ -48,31 +48,31 @@ A tree with long labels:
     ...     '(noun-phrase (singular-noun electricity))))')
     >>> tpp = TreePrettyPrinter(tree)
     >>> print(tpp.text(abbreviate=8, nodedist=2))
-                sentence                      
-         __________|__________                  
-        |                 verb-phr.           
-        |           __________|__________       
+                sentence
+         __________|__________
+        |                 verb-phr.
+        |           __________|__________
     plural-n.      |                 noun-phr.
-        |          |                     |      
+        |          |                     |
     plural-n.  plural-v.             singular.
-        |          |                     |      
+        |          |                     |
     Supercon.   conduct              electric.
 
     >>> print(tpp.text(maxwidth=8, nodedist=2))
-              sentence                   
-        _________|________                 
-       |                verb-            
-       |                phrase           
-       |          ________|_________       
-    plural-      |                noun-  
-     noun-       |                phrase 
-     phrase      |                  |    
-       |         |                  |      
+              sentence
+        _________|________
+       |                verb-
+       |                phrase
+       |          ________|_________
+    plural-      |                noun-
+     noun-       |                phrase
+     phrase      |                  |
+       |         |                  |
     plural-   plural-           singular-
-      noun      verb               noun  
-       |         |                  |      
+      noun      verb               noun
+       |         |                  |
     Supercon  conduct            electric
-    ductors                        ity   
+    ductors                        ity
 
 A discontinuous tree:
 
@@ -84,44 +84,43 @@ A discontinuous tree:
     ...             ' zwemmen of terrassen .'.split())
     >>> tpp = TreePrettyPrinter(tree, sentence)
     >>> print(tpp.text())
-                                          top                                                
-                                      _____|______________________________________________    
-                                   smain                      |                           |  
-      _______________________________|_____                   |                           |   
-     |    |                               inf                 |                           |  
-     |    |                           _____|____              |                           |   
-     |    |                          |         inf            |                           |  
-     |    |                          |      ____|_____        |                           |   
-     |    |                          |     |         conj     |                           |  
-     |    |                    _____ | ___ | _________|______ | __________________        |   
-     |    |                  inf     |     |                  |      |     |      |       |  
-     |    |          _________|_____ | ___ | _________        |      |     |      |       |   
-     |    |         pp               |     |          |       |      |     |      |       |  
-     |    |     ____|____            |     |          |       |      |     |      |       |   
-     |    |    |         np          |     |          |       |     inf    |     inf      |  
-     |    |    |     ____|____       |     |          |       |      |     |      |       |   
+                                          top
+                                      _____|______________________________________________
+                                   smain                      |                           |
+      _______________________________|_____                   |                           |
+     |    |                               inf                 |                           |
+     |    |                           _____|____              |                           |
+     |    |                          |         inf            |                           |
+     |    |                          |      ____|_____        |                           |
+     |    |                          |     |         conj     |                           |
+     |    |                    _____ | ___ | _________|______ | __________________        |
+     |    |                  inf     |     |                  |      |     |      |       |
+     |    |          _________|_____ | ___ | _________        |      |     |      |       |
+     |    |         pp               |     |          |       |      |     |      |       |
+     |    |     ____|____            |     |          |       |      |     |      |       |
+     |    |    |         np          |     |          |       |     inf    |     inf      |
+     |    |    |     ____|____       |     |          |       |      |     |      |       |
     noun verb prep det       noun   verb  verb       verb   punct   verb   vg    verb   punct
-     |    |    |    |         |      |     |          |       |      |     |      |       |   
-     Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .  
+     |    |    |    |         |      |     |          |       |      |     |      |       |
+     Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .
 
     >>> print(tpp.text(unicodelines=True))
-                                          top                                                
-                                     ┌─────┴──────────────────┬───────────────────────────┐   
-                                   smain                      │                           │  
-     ┌────┬──────────────────────────┴─────┐                  │                           │   
-     │    │                               inf                 │                           │  
-     │    │                          ┌─────┴────┐             │                           │   
-     │    │                          │         inf            │                           │  
-     │    │                          │     ┌────┴─────┐       │                           │   
-     │    │                          │     │         conj     │                           │  
-     │    │                   ┌───── │ ─── │ ─────────┴────── │ ─────┬─────┬──────┐       │   
-     │    │                  inf     │     │                  │      │     │      │       │  
-     │    │         ┌─────────┴───── │ ─── │ ─────────┐       │      │     │      │       │   
-     │    │         pp               │     │          │       │      │     │      │       │  
-     │    │    ┌────┴────┐           │     │          │       │      │     │      │       │   
-     │    │    │         np          │     │          │       │     inf    │     inf      │  
-     │    │    │    ┌────┴────┐      │     │          │       │      │     │      │       │   
+                                          top
+                                     ┌─────┴──────────────────┬───────────────────────────┐
+                                   smain                      │                           │
+     ┌────┬──────────────────────────┴─────┐                  │                           │
+     │    │                               inf                 │                           │
+     │    │                          ┌─────┴────┐             │                           │
+     │    │                          │         inf            │                           │
+     │    │                          │     ┌────┴─────┐       │                           │
+     │    │                          │     │         conj     │                           │
+     │    │                   ┌───── │ ─── │ ─────────┴────── │ ─────┬─────┬──────┐       │
+     │    │                  inf     │     │                  │      │     │      │       │
+     │    │         ┌─────────┴───── │ ─── │ ─────────┐       │      │     │      │       │
+     │    │         pp               │     │          │       │      │     │      │       │
+     │    │    ┌────┴────┐           │     │          │       │      │     │      │       │
+     │    │    │         np          │     │          │       │     inf    │     inf      │
+     │    │    │    ┌────┴────┐      │     │          │       │      │     │      │       │
     noun verb prep det       noun   verb  verb       verb   punct   verb   vg    verb   punct
-     │    │    │    │         │      │     │          │       │      │     │      │       │   
-     Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .  
-
+     │    │    │    │         │      │     │          │       │      │     │      │       │
+     Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .

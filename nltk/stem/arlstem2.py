@@ -35,7 +35,7 @@ class ARLSTem2(StemmerI):
     Return a stemmed Arabic word after removing affixes. This an improved
     version of the previous algorithm, which reduces under-stemming errors.
     Typically used in Arabic search engine, information retrieval and NLP.
-    
+
         >>> from nltk.stem import arlstem2
         >>> stemmer = ARLSTem2()
         >>> word = stemmer.stem('يعمل')

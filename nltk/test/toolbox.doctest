@@ -304,4 +304,3 @@ check that guessing the key marker works:
 
 ``toolbox.to_sfm_string()``
 -------------------------------
-

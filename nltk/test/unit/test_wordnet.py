@@ -176,7 +176,7 @@ class WordnNetDemo(unittest.TestCase):
         self.assertAlmostEqual(S('big.a.01').path_similarity(S('dog.n.01')),
                                S('dog.n.01').path_similarity(S('big.a.01')))
         self.assertAlmostEqual(S('big.a.01').path_similarity(S('long.a.01')),
-                               S('long.a.01').path_similarity(S('big.a.01')))                    
+                               S('long.a.01').path_similarity(S('big.a.01')))
         self.assertAlmostEqual(
             S('dog.n.01').lch_similarity(S('cat.n.01')), 2.028, places=3
         )

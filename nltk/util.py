@@ -677,7 +677,7 @@ def ngrams(sequence, n, **kwargs):
     :rtype: sequence or iter
     """
     sequence = pad_sequence(sequence, n, **kwargs)
-    
+
     # Creates the sliding window, of n no. of items.
     # `iterables` is a tuple of iterables where each iterable is a window of n items.
     iterables = tee(sequence, n)

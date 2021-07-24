@@ -33,7 +33,7 @@ Installing via a proxy web server
 If your web connection uses a proxy server, you should specify the proxy address as follows.  In the case of an authenticating proxy, specify a username and password.  If the proxy is set to None then this function will attempt to detect the system proxy.
 
     >>> nltk.set_proxy('http://proxy.example.com:3128', ('USERNAME', 'PASSWORD'))
-    >>> nltk.download() 
+    >>> nltk.download()
 
 Command line installation
 -------------------------
@@ -42,7 +42,7 @@ The downloader will search for an existing ``nltk_data`` directory to install NL
 
 Run the command ``python -m nltk.downloader all``.  To ensure central installation, run the command ``sudo python -m nltk.downloader -d /usr/local/share/nltk_data all``.
 
-Windows: Use the "Run..." option on the Start menu.  Windows Vista users need to first turn on this option, using ``Start -> Properties -> Customize`` to check the box to activate the "Run..." option. 
+Windows: Use the "Run..." option on the Start menu.  Windows Vista users need to first turn on this option, using ``Start -> Properties -> Customize`` to check the box to activate the "Run..." option.
 
 Test the installation: Check that the user environment and privileges are set correctly by logging in to a user account,
 starting the Python interpreter, and accessing the Brown Corpus (see the previous section).
@@ -60,7 +60,3 @@ Unzip them to the appropriate subfolder. For example, the Brown Corpus, found at
 is to be unzipped to ``nltk_data/corpora/brown``.
 
 Set your ``NLTK_DATA`` environment variable to point to your top level ``nltk_data`` folder.
-
-
-
-
