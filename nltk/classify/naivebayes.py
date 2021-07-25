@@ -147,10 +147,8 @@ class NaiveBayesClassifier(ClassifierI):
                     cpdist[l1, fname].prob(fval) / cpdist[l0, fname].prob(fval)
                 )
             print(
-                (
-                    "%24s = %-14r %6s : %-6s = %s : 1.0"
-                    % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
-                )
+                "%24s = %-14r %6s : %-6s = %s : 1.0"
+                % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
             )
 
     def most_informative_features(self, n=100):

@@ -68,20 +68,6 @@ class PropbankCorpusReader(CorpusReader):
         self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
 
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
@@ -179,7 +165,7 @@ class PropbankCorpusReader(CorpusReader):
 
 
 
-class PropbankInstance(object):
+class PropbankInstance:
     def __init__(
         self,
         fileid,
@@ -331,7 +317,7 @@ class PropbankInstance(object):
         )
 
 
-class PropbankPointer(object):
+class PropbankPointer:
     """
     A pointer used by propbank to identify one or more constituents in
     a parse tree.  ``PropbankPointer`` is an abstract base class with
@@ -493,7 +479,7 @@ class PropbankTreePointer(PropbankPointer):
 
 
 
-class PropbankInflection(object):
+class PropbankInflection:
     # { Inflection Form
     INFINITIVE = "i"
     GERUND = "g"

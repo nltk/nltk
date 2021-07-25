@@ -42,25 +42,25 @@ tree object to one of several standard tree encodings:
 There is also a fancy ASCII art representation:
 
     >>> tree.pretty_print()
-                  s               
-          ________|_____           
-         |              vp        
-         |         _____|___       
-         dp       |         dp    
-      ___|___     |      ___|___   
+                  s
+          ________|_____
+         |              vp
+         |         _____|___
+         dp       |         dp
+      ___|___     |      ___|___
      d       np   v     d       np
-     |       |    |     |       |  
+     |       |    |     |       |
     the     dog chased the     cat
 
     >>> tree.pretty_print(unicodelines=True, nodedist=4)
-                           s                        
-            ┌──────────────┴────────┐                   
-            │                       vp              
-            │              ┌────────┴──────┐            
-            dp             │               dp       
-     ┌──────┴──────┐       │        ┌──────┴──────┐     
+                           s
+            ┌──────────────┴────────┐
+            │                       vp
+            │              ┌────────┴──────┐
+            dp             │               dp
+     ┌──────┴──────┐       │        ┌──────┴──────┐
      d             np      v        d             np
-     │             │       │        │             │     
+     │             │       │        │             │
     the           dog    chased    the           cat
 
 Trees can be initialized from treebank strings:
@@ -280,46 +280,46 @@ the tree() function from the wordnet module.
     >>> print(t.leaves())
     ["Synset('entity.n.01')", "Synset('entity.n.01')"]
     >>> t.pretty_print()
-                      Synset('dog.n.01')                  
-             _________________|__________________          
-    Synset('canine.n.                            |        
-           02')                                  |        
-            |                                    |         
-     Synset('carnivor                            |        
-         e.n.01')                                |        
-            |                                    |         
-     Synset('placenta                            |        
-         l.n.01')                                |        
-            |                                    |         
-    Synset('mammal.n.                            |        
-           01')                                  |        
-            |                                    |         
-     Synset('vertebra                            |        
-        te.n.01')                                |        
-            |                                    |         
+                      Synset('dog.n.01')
+             _________________|__________________
+    Synset('canine.n.                            |
+           02')                                  |
+            |                                    |
+     Synset('carnivor                            |
+         e.n.01')                                |
+            |                                    |
+     Synset('placenta                            |
+         l.n.01')                                |
+            |                                    |
+    Synset('mammal.n.                            |
+           01')                                  |
+            |                                    |
+     Synset('vertebra                            |
+        te.n.01')                                |
+            |                                    |
     Synset('chordate.                     Synset('domestic
-          n.01')                           _animal.n.01') 
-            |                                    |         
+          n.01')                           _animal.n.01')
+            |                                    |
     Synset('animal.n.                    Synset('animal.n.
-           01')                                 01')      
-            |                                    |         
+           01')                                 01')
+            |                                    |
     Synset('organism.                    Synset('organism.
-          n.01')                               n.01')     
-            |                                    |         
+          n.01')                               n.01')
+            |                                    |
      Synset('living_t                     Synset('living_t
-       hing.n.01')                          hing.n.01')   
-            |                                    |         
+       hing.n.01')                          hing.n.01')
+            |                                    |
      Synset('whole.n.                     Synset('whole.n.
-           02')                                 02')      
-            |                                    |         
+           02')                                 02')
+            |                                    |
     Synset('object.n.                    Synset('object.n.
-           01')                                 01')      
-            |                                    |         
+           01')                                 01')
+            |                                    |
      Synset('physical                     Synset('physical
-      _entity.n.01')                       _entity.n.01') 
-            |                                    |         
+      _entity.n.01')                       _entity.n.01')
+            |                                    |
     Synset('entity.n.                    Synset('entity.n.
-           01')                                 01')      
+           01')                                 01')
 
 
 
@@ -1155,4 +1155,3 @@ This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
     >>> print(Tree.fromstring('((A a) (B b))'))
     ( (A a) (B b))
-

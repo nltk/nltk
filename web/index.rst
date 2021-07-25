@@ -81,7 +81,7 @@ Contents
    data
    contribute
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>
-   Wiki <https://github.com/nltk/nltk/wiki> 
+   Wiki <https://github.com/nltk/nltk/wiki>
    API <api/nltk>
    HOWTO <http://www.nltk.org/howto>
 

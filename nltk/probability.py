@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -2298,7 +2297,7 @@ def sum_logs(logs):
 ##//////////////////////////////////////////////////////
 
 
-class ProbabilisticMixIn(object):
+class ProbabilisticMixIn:
     """
     A mix-in class to associate probabilities with other classes
     (trees, rules, etc.).  To use the ``ProbabilisticMixIn`` class,
@@ -2492,10 +2491,8 @@ def demo(numsamples=6, numoutcomes=500):
 
     # Print the results in a formatted table.
     print(
-        (
-            "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
-            % (numsamples, numsamples, numoutcomes)
-        )
+        "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
+        % (numsamples, numsamples, numoutcomes)
     )
     print("=" * 9 * (len(pdists) + 2))
     FORMATSTR = "      FreqDist " + "%8s " * (len(pdists) - 1) + "|  Actual"

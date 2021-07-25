@@ -121,7 +121,7 @@ class EdgeList(ColorizedList):
 #######################################################################
 
 
-class ChartMatrixView(object):
+class ChartMatrixView:
     """
     A view of a chart that displays the contents of the corresponding matrix.
     """
@@ -394,7 +394,7 @@ class ChartMatrixView(object):
 #######################################################################
 
 
-class ChartResultsView(object):
+class ChartResultsView:
     def __init__(self, parent, chart, grammar, toplevel=True):
         self._chart = chart
         self._grammar = grammar
@@ -542,7 +542,7 @@ class ChartResultsView(object):
 #######################################################################
 
 
-class ChartComparer(object):
+class ChartComparer:
     """
 
     :ivar _root: The root window
@@ -948,7 +948,7 @@ class ChartComparer(object):
 #######################################################################
 
 
-class ChartView(object):
+class ChartView:
     """
     A component for viewing charts.  This is used by ``ChartParserApp`` to
     allow students to interactively experiment with various chart
@@ -1740,7 +1740,7 @@ class ChartView(object):
 # This lets the user select an edge, and then apply a rule.
 
 
-class EdgeRule(object):
+class EdgeRule:
     """
     To create an edge rule, make an empty base class that uses
     EdgeRule as the first base class, and the basic rule as the
@@ -1784,7 +1784,7 @@ class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule):
 #######################################################################
 
 
-class ChartParserApp(object):
+class ChartParserApp:
     def __init__(self, grammar, tokens, title="Chart Parser Application"):
         # Initialize the parser
         self._init_parser(grammar, tokens)
@@ -2551,7 +2551,7 @@ def app():
     for rule in grammar.productions():
         print(("    ", repr(rule) + ","))
     print(")")
-    print(("tokens = %r" % tokens))
+    print("tokens = %r" % tokens)
     print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 

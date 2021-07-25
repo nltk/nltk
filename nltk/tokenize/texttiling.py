@@ -378,7 +378,7 @@ class TextTilingTokenizer(TokenizerI):
         return norm_boundaries
 
 
-class TokenTableField(object):
+class TokenTableField:
     """A field in the token table holding parameters for each token,
     used later in the process"""
 
@@ -395,7 +395,7 @@ class TokenTableField(object):
         del self.__dict__["self"]
 
 
-class TokenSequence(object):
+class TokenSequence:
     "A token list with its original length and its index"
 
     def __init__(self, index, wrdindex_list, original_length=None):

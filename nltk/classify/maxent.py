@@ -354,7 +354,7 @@ ConditionalExponentialClassifier = MaxentClassifier
 ######################################################################
 
 
-class MaxentFeatureEncodingI(object):
+class MaxentFeatureEncodingI:
     """
     A mapping that converts a set of input-feature values to a vector
     of joint-feature values, given a label.  This conversion is
@@ -1396,7 +1396,7 @@ def calculate_deltas(
         deltas -= (ffreq_empirical - sum1) / -sum2
 
         # We can stop once we converge.
-        n_error = numpy.sum(abs((ffreq_empirical - sum1))) / numpy.sum(abs(deltas))
+        n_error = numpy.sum(abs(ffreq_empirical - sum1)) / numpy.sum(abs(deltas))
         if n_error < NEWTON_CONVERGE:
             return deltas
 

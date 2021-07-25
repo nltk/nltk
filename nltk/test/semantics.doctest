@@ -665,5 +665,3 @@ Cooper Storage
     ...     print(reading)
     exists x.(dog(x) & all z3.(girl(z3) -> chase(z3,x)))
     all x.(girl(x) -> exists z4.(dog(z4) & chase(x,z4)))
-
-

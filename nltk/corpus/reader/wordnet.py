@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -122,7 +121,7 @@ class WordNetError(Exception):
 
 
 @total_ordering
-class _WordNetObject(object):
+class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
     def hypernyms(self):
@@ -843,7 +842,7 @@ class Synset(_WordNetObject):
         """
 
         distance = self.shortest_path_distance(
-            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root()) 
+            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root())
         )
         if distance is None or distance < 0:
             return None

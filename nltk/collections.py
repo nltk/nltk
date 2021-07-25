@@ -117,7 +117,7 @@ class OrderedDict(dict):
 
 
 @total_ordering
-class AbstractLazySequence(object):
+class AbstractLazySequence:
     """
     An abstract base class for read-only sequences whose values are
     computed as needed.  Lazy sequences act like tuples -- they can be

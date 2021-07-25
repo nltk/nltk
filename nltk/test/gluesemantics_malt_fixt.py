@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 def setup_module():
     import pytest
     from nltk.parse.malt import MaltParser

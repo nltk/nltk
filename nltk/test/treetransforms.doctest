@@ -153,4 +153,3 @@ Convert the transformed tree back to its original form
     >>> un_chomsky_normal_form(markovTree)
     >>> tree == markovTree
     True
-

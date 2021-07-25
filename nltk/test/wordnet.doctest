@@ -737,7 +737,7 @@ But, while the also_sees() acyclic_tree of 'bound.a.01' reaches
 'classified.a.02' through four links, using depth-first search as seen above
 (bound.a.01 > unfree.a.02 > confined.a.02 > restricted.a.01 > classified.a.02),
 in the following MST, the path to 'classified.a.02' is the shortest possible,
-consisting only in three links (bound.a.01 > unfree.a.02 > restricted.a.01 > 
+consisting only in three links (bound.a.01 > unfree.a.02 > restricted.a.01 >
 classified.a.02):
 
     >>> pprint(wn.synset('bound.a.01').mst(lambda s:s.also_sees()))

@@ -146,7 +146,7 @@ class CCGVar(AbstractCCGCategory):
 
 
 @total_ordering
-class Direction(object):
+class Direction:
     """
     Class representing the direction of a function application.
     Also contains maintains information as to which combinators

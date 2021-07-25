@@ -67,5 +67,3 @@ default.
 
     >>> readings[0].equiv(readings[1])
     True
-
-

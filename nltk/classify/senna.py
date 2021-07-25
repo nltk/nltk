@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Natural Language Toolkit: Senna Interface
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -133,7 +132,7 @@ class Senna(TaggerI):
         _senna_cmd.extend(["-" + op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
-        _input = "\n".join((" ".join(x) for x in sentences)) + "\n"
+        _input = "\n".join(" ".join(x) for x in sentences) + "\n"
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 

@@ -94,7 +94,7 @@ Simple semantics
                              (S\NP) {\y.have(y,exists z.book(z))}
     -----------------------------------------------------------------------------<
                            S {have(she,exists z.book(z))}
-    
+
     >>> printCCGDerivation(parses[2])
        She                 has                           a                book
      NP {she}  ((S\NP)/NP) {\x y.have(y,x)}  (NP/N) {\P.exists z.P(z)}  N {book}
@@ -363,7 +363,7 @@ An example from "CCGbank: A Corpus of CCG Derivations and Dependency Structures 
     ---------------------------------------------------------------------->
                             S {give(money,them,I)}
 
-    
+
     >>> printCCGDerivation(parses[2])
        I                     give                     them       money
      NP {I}  (((S\NP)/NP)/NP) {\x y z.give(y,x,z)}  NP {them}  NP {money}
@@ -454,10 +454,10 @@ Parse lexicon with semantics
     ...     :- S,NP
     ...
     ...     IntransVsg :: S\\NP[sg]
-    ...     
+    ...
     ...     sleeps => IntransVsg {\\x.sleep(x)}
     ...     eats => S\\NP[sg]/NP {\\x y.eat(x,y)}
-    ...        
+    ...
     ...     and => var\\var/var {\\x y.x & y}
     ...     ''',
     ...     True
@@ -473,10 +473,10 @@ Parse lexicon without semantics
     ...     :- S,NP
     ...
     ...     IntransVsg :: S\\NP[sg]
-    ...     
+    ...
     ...     sleeps => IntransVsg
     ...     eats => S\\NP[sg]/NP {sem=\\x y.eat(x,y)}
-    ...        
+    ...
     ...     and => var\\var/var
     ...     ''',
     ...     False
@@ -490,7 +490,7 @@ Semantics are missing
     >>> print(str(lexicon.fromstring(
     ...     '''
     ...     :- S,NP
-    ...     
+    ...
     ...     eats => S\\NP[sg]/NP
     ...     ''',
     ...     True
@@ -534,7 +534,7 @@ Compute semantics from substitution
 
     >>> print(str(compute_substitution_semantics(read_expr(r'\x y.P(x,y)'), read_expr(r'\x.Q(x)'))))
     \x.P(x,Q(x))
-    
+
     >>> print(str(compute_substitution_semantics(read_expr(r'\x.P(x)'), read_expr(r'read'))))
     Traceback (most recent call last):
       ...
@@ -550,4 +550,3 @@ Compute type-raise semantics
 
     >>> print(str(compute_type_raised_semantics(read_expr(r'\x y z.P(x,y,z)'))))
     \F x y z.F(P(x,y,z))
-

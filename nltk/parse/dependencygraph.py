@@ -27,7 +27,7 @@ from nltk.tree import Tree
 #################################################################
 
 
-class DependencyGraph(object):
+class DependencyGraph:
     """
     A container for the nodes and labelled edges of a dependency structure.
     """

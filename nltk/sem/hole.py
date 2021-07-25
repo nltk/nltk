@@ -47,7 +47,7 @@ from nltk.sem.logic import (
 #
 
 
-class Constants(object):
+class Constants:
     ALL = "ALL"
     EXISTS = "EXISTS"
     NOT = "NOT"
@@ -72,7 +72,7 @@ class Constants(object):
     }
 
 
-class HoleSemantics(object):
+class HoleSemantics:
     """
     This class holds the broken-down components of a hole semantics, i.e. it
     extracts the holes, labels, logic formula fragments and constraints out of
@@ -298,7 +298,7 @@ class HoleSemantics(object):
             return node
 
 
-class Constraint(object):
+class Constraint:
     """
     This class represents a constraint of the form (L =< N),
     where L is a label and N is a node (a label or a hole).

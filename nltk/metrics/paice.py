@@ -213,7 +213,7 @@ def _indexes(gumt, gdmt, gwmt, gdnt):
     return (ui, oi, sw)
 
 
-class Paice(object):
+class Paice:
     """Class for storing lemmas, stems and evaluation metrics."""
 
     def __init__(self, lemmas, stems):

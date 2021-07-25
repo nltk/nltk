@@ -131,7 +131,7 @@ def cosine_distance(u, v):
     return 1 - (numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
 
 
-class _DendrogramNode(object):
+class _DendrogramNode:
     """ Tree node of a dendrogram. """
 
     def __init__(self, value, *children):
@@ -174,7 +174,7 @@ class _DendrogramNode(object):
         return cosine_distance(self._value, comparator._value) < 0
 
 
-class Dendrogram(object):
+class Dendrogram:
     """
     Represents a dendrogram, a tree with a specified branching order.  This
     must be initialised with the leaf items, then iteratively call merge for

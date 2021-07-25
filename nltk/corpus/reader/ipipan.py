@@ -61,16 +61,6 @@ class IPIPANCorpusReader(CorpusReader):
     def __init__(self, root, fileids):
         CorpusReader.__init__(self, root, fileids, None, None)
 
-    def raw(self, fileids=None):
-        if not fileids:
-            fileids = self.fileids()
-
-        filecontents = []
-        for fileid in self._list_morph_files(fileids):
-            with open(fileid, "r") as infile:
-                filecontents.append(infile.read())
-        return "".join(filecontents)
-
     def channels(self, fileids=None):
         if not fileids:
             fileids = self.fileids()

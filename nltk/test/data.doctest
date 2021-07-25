@@ -68,7 +68,7 @@ currently supported by the data module are described by the dictionary
     pickle  A serialized python object, stored using the pickle
     module.
     raw     The raw (byte string) contents of a file.
-    text    The raw (unicode string) contents of a file. 
+    text    The raw (unicode string) contents of a file.
     val     A semantic valuation, parsed by
     nltk.sem.Valuation.fromstring.
     yaml    A serialized python object, stored using the yaml module.
@@ -112,7 +112,7 @@ Note that by explicitly specifying the ``format`` argument, you can
 override the load method's default processing behavior.  For example,
 to get the raw contents of any file, simply use ``format="raw"``:
 
-    >>> s = nltk.data.load('grammars/sample_grammars/toy.cfg', 'text') 
+    >>> s = nltk.data.load('grammars/sample_grammars/toy.cfg', 'text')
     >>> print(s)
     S -> NP VP
     PP -> P NP
@@ -197,7 +197,7 @@ contents of the file.
     '...rural.txt'
     >>> print(path.open().read(60).decode())
     PM denies knowledge of AWB kickbacks
-    The Prime Minister has 
+    The Prime Minister has
 
 Alternatively, the `nltk.data.load()` function can be used with the
 keyword argument ``format="raw"``:
@@ -205,14 +205,14 @@ keyword argument ``format="raw"``:
     >>> s = nltk.data.load('corpora/abc/rural.txt', format='raw')[:60]
     >>> print(s.decode())
     PM denies knowledge of AWB kickbacks
-    The Prime Minister has 
+    The Prime Minister has
 
 Alternatively, you can use the keyword argument ``format="text"``:
 
     >>> s = nltk.data.load('corpora/abc/rural.txt', format='text')[:60]
     >>> print(s)
     PM denies knowledge of AWB kickbacks
-    The Prime Minister has 
+    The Prime Minister has
 
 Resource Caching
 ~~~~~~~~~~~~~~~~
@@ -375,4 +375,3 @@ JSON serialization is used instead of pickle for some classes.
     '{"!JSONSerializable": 1}'
     >>> JSONTaggedDecoder().decode('{"!JSONSerializable": 1}').n
     1
-

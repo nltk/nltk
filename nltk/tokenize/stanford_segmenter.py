@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #
@@ -239,7 +238,7 @@ class StanfordSegmenter(TokenizerI):
 
         # Write the actural sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
-        _input = "\n".join((" ".join(x) for x in sentences))
+        _input = "\n".join(" ".join(x) for x in sentences)
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)

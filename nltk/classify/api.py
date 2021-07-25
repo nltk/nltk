@@ -25,7 +25,7 @@ from nltk.internals import overridden
 ##//////////////////////////////////////////////////////
 
 
-class ClassifierI(object):
+class ClassifierI:
     """
     A processing interface for labeling tokens with a single category
     label (or "class").  Labels are typically strs or
@@ -89,7 +89,7 @@ class ClassifierI(object):
         return [self.prob_classify(fs) for fs in featuresets]
 
 
-class MultiClassifierI(object):
+class MultiClassifierI:
     """
     A processing interface for labeling tokens with zero or more
     category labels (or "labels").  Labels are typically strs
@@ -154,7 +154,7 @@ class MultiClassifierI(object):
 
 
 # # [XX] IN PROGRESS:
-# class SequenceClassifierI(object):
+# class SequenceClassifierI:
 #     """
 #     A processing interface for labeling sequences of tokens with a
 #     single category label (or "class").  Labels are typically

@@ -22,7 +22,7 @@ class TestEmptyCondFreq(unittest.TestCase):
         text = "cow cat mouse cat tiger"
         cfd = ConditionalFreqDist()
 
-        # create cfd with word length as condition 
+        # create cfd with word length as condition
         for word in tokenize.word_tokenize(text):
             condition = len(word)
             cfd[condition][word] += 1

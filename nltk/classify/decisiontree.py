@@ -81,8 +81,8 @@ class DecisionTreeClassifier(ClassifierI):
             n = width - len(prefix) - 15
             return '{0}{1} {2}\n'.format(prefix, '.' * n, self._label)
         s = ''
-        for i, (fval, result) in enumerate(sorted(self._decisions.items(), 
-                                                  key=lambda item: 
+        for i, (fval, result) in enumerate(sorted(self._decisions.items(),
+                                                  key=lambda item:
                                                   (item[0] in [None, False, True], str(item[0]).lower())
                                                  )
                                           ):
@@ -108,7 +108,7 @@ class DecisionTreeClassifier(ClassifierI):
             return "{0}return {1!r}\n".format(prefix, self._label)
         s = ''
         for (fval, result) in sorted(self._decisions.items(),
-                                    key=lambda item: 
+                                    key=lambda item:
                                      (item[0] in [None, False, True], str(item[0]).lower())
                                     ):
             s += '{0}if {1} == {2!r}: '.format(prefix, self._fname, fval)
@@ -268,10 +268,8 @@ class DecisionTreeClassifier(ClassifierI):
                 best_stump = stump
         if verbose:
             print(
-                (
-                    "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
-                        len(labeled_featuresets), best_stump._fname, best_error
-                    )
+                "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
+                    len(labeled_featuresets), best_stump._fname, best_error
                 )
             )
         return best_stump
@@ -322,10 +320,8 @@ class DecisionTreeClassifier(ClassifierI):
             else:
                 descr = "(default)"
             print(
-                (
-                    "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
-                        len(labeled_featuresets), descr, best_error
-                    )
+                "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
+                    len(labeled_featuresets), descr, best_error
                 )
             )
         return best_stump
