@@ -48,21 +48,6 @@ class AlignedCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
         self._alignedsent_block_reader = alignedsent_block_reader
 
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def words(self, fileids=None):
         """
         :return: the given file(s) as a list of words

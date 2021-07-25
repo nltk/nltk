@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Python port of the mteval-v14.pl tokenizer.
 #
 # Copyright (C) 2001-2015 NLTK Project

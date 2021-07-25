@@ -850,7 +850,7 @@ class TreeWidget(CanvasWidget):
 ##//////////////////////////////////////////////////////
 
 
-class TreeView(object):
+class TreeView:
     def __init__(self, *trees):
         from math import sqrt, ceil
 

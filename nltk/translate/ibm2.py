@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: IBM Model 2
 #
 # Copyright (C) 2001-2013 NLTK Project

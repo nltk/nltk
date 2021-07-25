@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: ARLSTem Stemmer v2
 #
@@ -26,7 +25,6 @@ results showed that the new version considerably improves the under-stemming
 errors that are common to light stemmers. Both ARLSTem and ARLSTem2 can be run
 online and do not use any dictionary.
 """
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI
@@ -37,7 +35,7 @@ class ARLSTem2(StemmerI):
     Return a stemmed Arabic word after removing affixes. This an improved
     version of the previous algorithm, which reduces under-stemming errors.
     Typically used in Arabic search engine, information retrieval and NLP.
-    
+
         >>> from nltk.stem import arlstem2
         >>> stemmer = ARLSTem2()
         >>> word = stemmer.stem('يعمل')

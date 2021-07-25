@@ -8,7 +8,7 @@ from nltk.tag import PerceptronTagger
 from nltk.tag import BrillTaggerTrainer, BrillTagger
 from nltk.tag.brill import nltkdemo18
 
-    
+
 class TestJSONSerialization(unittest.TestCase):
     def setUp(self):
         self.corpus = brown.tagged_sents()[:35]
@@ -58,7 +58,7 @@ class TestJSONSerialization(unittest.TestCase):
         self.assertEqual(repr(tritagger), repr(decoded.backoff))
         self.assertEqual(repr(bitagger), repr(decoded.backoff.backoff))
         self.assertEqual(repr(unitagger), repr(decoded.backoff.backoff.backoff))
-        self.assertEqual(repr(self.default_tagger), 
+        self.assertEqual(repr(self.default_tagger),
                          repr(decoded.backoff.backoff.backoff.backoff))
 
     def test_perceptron_tagger(self):
@@ -84,4 +84,3 @@ class TestJSONSerialization(unittest.TestCase):
                          repr(decoded._initial_tagger))
         self.assertEqual(tagger._rules, decoded._rules)
         self.assertEqual(tagger._training_stats, decoded._training_stats)
-

@@ -40,7 +40,7 @@ documents = sorted(titles)
 
 
 
-class IEERDocument(object):
+class IEERDocument:
     def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
         self.text = text
         self.docno = docno
@@ -64,17 +64,6 @@ class IEERDocument(object):
 class IEERCorpusReader(CorpusReader):
     """
     """
-
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def docs(self, fileids=None):
         return concat(

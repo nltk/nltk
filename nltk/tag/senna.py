@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Natural Language Toolkit: Senna POS Tagger
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -106,8 +105,8 @@ class SennaChunkTagger(Senna):
         for idx, word_pos in enumerate(tagged_sent):
             word, pos = word_pos
             if "-" + chunk_type in pos:  # Append the word to the current_chunk.
-                current_chunk.append((word))
-                current_chunk_position.append((idx))
+                current_chunk.append(word)
+                current_chunk_position.append(idx)
             else:
                 if current_chunk:  # Flush the full chunk when out of an NP.
                     _chunk_str = " ".join(current_chunk)

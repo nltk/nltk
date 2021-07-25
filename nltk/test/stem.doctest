@@ -103,4 +103,3 @@ Stem a word.
 
     >>> stemmer.stem('يعمل')
     'عمل'
-

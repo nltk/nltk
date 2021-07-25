@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
@@ -5916,10 +5915,8 @@ def demo():
 
         if language not in SnowballStemmer.languages:
             print(
-                (
-                    "\nOops, there is no stemmer for this language. "
-                    + "Please try again.\n"
-                )
+                "\nOops, there is no stemmer for this language. "
+                + "Please try again.\n"
             )
             continue
 

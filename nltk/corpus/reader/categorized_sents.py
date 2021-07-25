@@ -96,40 +96,6 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
 
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError("Specify fileids or categories, not both")
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
-
-    def raw(self, fileids=None, categories=None):
-        """
-        :param fileids: a list or regexp specifying the fileids that have to be
-            returned as a raw string.
-        :param categories: a list specifying the categories whose files have to
-            be returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        fileids = self._resolve(fileids, categories)
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
-    def readme(self):
-        """
-        Return the contents of the corpus Readme.txt file.
-        """
-        with self.open("README") as fp:
-            return fp.read()
-
     def sents(self, fileids=None, categories=None):
         """
         Return all sentences in the corpus or in the specified file(s).

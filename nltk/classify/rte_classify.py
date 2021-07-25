@@ -22,7 +22,7 @@ from nltk.classify.util import accuracy, check_megam_config
 from nltk.classify.maxent import MaxentClassifier
 
 
-class RTEFeatureExtractor(object):
+class RTEFeatureExtractor:
     """
     This builds a bag of words for both the text and the hypothesis after
     throwing away some stopwords, then calculates overlap and difference.

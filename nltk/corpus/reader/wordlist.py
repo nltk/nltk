@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Word List Corpus Reader
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -23,13 +22,6 @@ class WordListCorpusReader(CorpusReader):
             for line in line_tokenize(self.raw(fileids))
             if not line.startswith(ignore_lines_startswith)
         ]
-
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
 
 class SwadeshCorpusReader(WordListCorpusReader):

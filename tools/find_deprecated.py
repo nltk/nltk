@@ -39,11 +39,11 @@ from nltk import defaultdict
 #: A little over-simplified, but it'll do.
 STRING_PAT = (
     r'\s*[ur]{0,2}(?:'
-    '"""[\s\S]*?"""|'
+    r'"""[\s\S]*?"""|'
     '"[^"\n]+?"|'
-    "'''[\s\S]*?'''|"
+    r"'''[\s\S]*?'''|"
     "'[^'\n]+?'"
-    ")\s*"
+    r")\s*"
 )
 STRING_RE = re.compile(STRING_PAT)
 
@@ -60,10 +60,10 @@ DEPRECATED_DEF_PAT = (
 DEPRECATED_DEF_RE = re.compile(DEPRECATED_DEF_PAT, re.MULTILINE)
 
 CORPUS_READ_METHOD_RE = re.compile(
-    '({})\.read\('.format('|'.join(re.escape(n) for n in dir(nltk.corpus)))
+    r'({})\.read\('.format('|'.join(re.escape(n) for n in dir(nltk.corpus)))
 )
 
-CLASS_DEF_RE = re.compile('^\s*class\s+(\w+)\s*[:\(]')
+CLASS_DEF_RE = re.compile(r'^\s*class\s+(\w+)\s*[:\(]')
 
 ######################################################################
 # Globals
@@ -89,11 +89,6 @@ term = TerminalController()
 ######################################################################
 # Code
 ######################################################################
-
-# If we're using py24, then ignore the +SKIP directive.
-if sys.version_info[:2] < (2, 5):
-    register_optionflag('SKIP')
-
 
 def strip_quotes(s):
     s = s.strip()

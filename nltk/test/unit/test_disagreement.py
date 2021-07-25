@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 
 from nltk.metrics.agreement import AnnotationTask
@@ -41,7 +40,7 @@ class TestDisagreement(unittest.TestCase):
 
     def test_advanced(self):
         '''
-        More advanced test, based on 
+        More advanced test, based on
         http://www.agreestat.com/research_papers/onkrippendorffalpha.pdf
         '''
         data = [('A', '1', '1'),
@@ -138,4 +137,3 @@ class TestDisagreement(unittest.TestCase):
                 ]
         annotation_task = AnnotationTask(data)
         self.assertAlmostEqual(annotation_task.alpha(), 0.743421052632)
-

@@ -1333,7 +1333,7 @@ def _remove_variables(fstruct, fs_class, visited):
 
 
 
-class _UnificationFailure(object):
+class _UnificationFailure:
     def __repr__(self):
         return "nltk.featstruct.UnificationFailure"
 
@@ -2006,7 +2006,7 @@ def _flatten(lst, cls):
 
 @total_ordering
 
-class Feature(object):
+class Feature:
     """
     A feature identifier that's specialized to put additional
     constraints, default values, etc.
@@ -2113,7 +2113,7 @@ TYPE = Feature("type", display="prefix")
 
 
 @total_ordering
-class CustomFeatureValue(object):
+class CustomFeatureValue:
     """
     An abstract base class for base values that define a custom
     unification method.  The custom unification method of
@@ -2157,7 +2157,7 @@ class CustomFeatureValue(object):
 ######################################################################
 
 
-class FeatStructReader(object):
+class FeatStructReader:
     def __init__(
         self,
         features=(SLASH, TYPE),

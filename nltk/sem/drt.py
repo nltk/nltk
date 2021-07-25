@@ -194,7 +194,7 @@ class DrtParser(LogicParser):
         return DrtLambdaExpression(variables, term)
 
 
-class DrtExpression(object):
+class DrtExpression:
     """
     This is the base abstract DRT Expression from which every DRT
     Expression extends.
@@ -1085,7 +1085,7 @@ def resolve_anaphora(expression, trail=[]):
         )
 
 
-class DrsDrawer(object):
+class DrsDrawer:
     BUFFER = 3  # Space between elements
     TOPSPACE = 10  # Space above whole DRS
     OUTERSPACE = 6  # Space to the left, right, and bottom of the whle DRS

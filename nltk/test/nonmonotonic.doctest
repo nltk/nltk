@@ -286,4 +286,3 @@ print the augmented assumptions list
     True
     >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(read_expr('-fly(os)'), premises))).prove()
     True
-

@@ -59,3 +59,9 @@ venv.bak/
 
 #vscode
 .vscode/
+
+# Direnv
+.envrc
+
+# Mypy
+.mypy_cache

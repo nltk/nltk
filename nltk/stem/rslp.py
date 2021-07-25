@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Natural Language Toolkit: RSLP Stemmer
 #
 # Copyright (C) 2001-2021 NLTK Project

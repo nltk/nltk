@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: IBM Model 5
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -633,7 +632,7 @@ class Model5Counts(Counts):
             total_vacancies -= 1
 
 
-class Slots(object):
+class Slots:
     """
     Represents positions in a target sentence. Used to keep track of
     which slot (position) is occupied.

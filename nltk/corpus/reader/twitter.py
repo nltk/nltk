@@ -127,20 +127,6 @@ class TwitterCorpusReader(CorpusReader):
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
 
-    def raw(self, fileids=None):
-        """
-        Return the corpora in their raw form.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def _read_tweets(self, stream):
         """
         Assumes that each line in ``stream`` is a JSON-serialised object.

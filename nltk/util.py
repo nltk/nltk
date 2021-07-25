@@ -18,7 +18,6 @@ import os
 from itertools import islice, chain, combinations, tee
 from pprint import pprint
 from collections import defaultdict, deque
-from sys import version_info
 
 from urllib.request import (
     build_opener,
@@ -135,15 +134,6 @@ def tokenwrap(tokens, separator=" ", width=70):
     :type width: int
     """
     return "\n".join(textwrap.wrap(separator.join(tokens), width=width))
-
-
-##########################################################################
-# Python version
-##########################################################################
-
-
-def py25():
-    return version_info[0] == 2 and version_info[1] == 5
 
 
 ##########################################################################
@@ -687,7 +677,7 @@ def ngrams(sequence, n, **kwargs):
     :rtype: sequence or iter
     """
     sequence = pad_sequence(sequence, n, **kwargs)
-    
+
     # Creates the sliding window, of n no. of items.
     # `iterables` is a tuple of iterables where each iterable is a window of n items.
     iterables = tee(sequence, n)

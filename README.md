@@ -1,5 +1,5 @@
 # Natural Language Toolkit (NLTK)
-[![PyPI](https://img.shields.io/pypi/v/nltk.svg)](https://pypi.python.org/pypi/nltk) 
+[![PyPI](https://img.shields.io/pypi/v/nltk.svg)](https://pypi.python.org/pypi/nltk)
 [![Travis](https://travis-ci.org/nltk/nltk.svg?branch=develop)](https://travis-ci.org/nltk/nltk)
 
 NLTK -- the Natural Language Toolkit -- is a suite of open source Python
@@ -11,7 +11,7 @@ For documentation, please visit [nltk.org](http://www.nltk.org/).
 
 ## Contributing
 
-Do you want to contribute to NLTK development? Great! 
+Do you want to contribute to NLTK development? Great!
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 See also [how to contribute to NLTK](http://www.nltk.org/contribute.html).

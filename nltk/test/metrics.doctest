@@ -289,7 +289,7 @@ For fourgrams, we have to provide more count information:
 
     >>> n_w1_w2_w3_w4 = 5
     >>> n_w1_w2, n_w1_w3, n_w2_w3 = 35, 60, 40
-    >>> n_w1_w2_w3, n_w2_w3_w4 = 20, 10 
+    >>> n_w1_w2_w3, n_w2_w3_w4 = 20, 10
     >>> pair_counts = (n_w1_w2, n_w1_w3, n_w2_w3)
     >>> triplet_counts = (n_w1_w2_w3, n_w2_w3_w4)
     >>> n_w1, n_w2, n_w3, n_w4 = 100, 200, 300, 400
