@@ -58,7 +58,7 @@ class MWETokenizer(TokenizerI):
     def add_mwe(self, mwe):
         """Add a multi-word expression to the lexicon (stored as a word trie)
 
-        We use ``util.Trie`` to represent the trie. Its form is a dict of dicts. 
+        We use ``util.Trie`` to represent the trie. Its form is a dict of dicts.
         The key True marks the end of a valid MWE.
 
         :param mwe: The multi-word expression we're adding into the word trie
@@ -90,7 +90,7 @@ class MWETokenizer(TokenizerI):
         >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
         >>> tokenizer.tokenize("An hors d'oeuvre tonight, sir?".split())
         ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
-        
+
         """
         i = 0
         n = len(text)

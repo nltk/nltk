@@ -13,4 +13,4 @@ regex>=2019.08.19
 click>=7.1.2
 joblib>=1.0.1
 tqdm>=4.59.0
-
+pre-commit>=2.13.0

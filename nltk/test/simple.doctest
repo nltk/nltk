@@ -8,7 +8,7 @@ EasyInstall Tests
 This file contains some simple tests that will be run by EasyInstall in
 order to test the installation when NLTK-Data is absent.
 
- 
+
 ------------
 Tokenization
 ------------
@@ -81,4 +81,3 @@ Parsing
     (S
       (NP the (N cat))
       (VP (V chased) (NP the (N dog)) (PP (P on) (NP the (N rug)))))
-

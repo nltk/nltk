@@ -150,7 +150,7 @@ class PerceptronTagger(TaggerI):
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     """
 
-    json_tag = "nltk.tag.sequential.PerceptronTagger" 
+    json_tag = "nltk.tag.sequential.PerceptronTagger"
 
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]

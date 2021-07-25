@@ -51,6 +51,7 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
   (`git clone https://github.com/<your-github-username>/nltk.git`);
 - Run `cd nltk` to get to the root directory of the `nltk` code base;
 - Install the dependencies (`pip install -r pip-req.txt`);
+- Install the [pre-commit](https://pre-commit.com) hooks: (`pre-commit install`)
 - Download the datasets for running tests
   (`python -m nltk.downloader all`);
 - Create a remote link from your local repository to the
@@ -150,33 +151,33 @@ pytest  # all tests
 
 **Deprecated:** NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
 
-NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration. 
+NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration.
 
 The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
 
- - `matrix: include:` section 
+ - `matrix: include:` section
    - tests against supported Python versions (3.5, 3.6, 3.7, 3.8, 3.9)
      - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
    - tests against Python 3.6 for third-party tools APIs
 
- - `before_install:` section 
+ - `before_install:` section
    - checks the Java and Python version calling the `tools/travis/pre-install.sh` script
    - changes the permission for `tools/travis/coverage-pylint.sh` to allow it to be executable
    - changes the permission for `tools/travis/third-party.sh` to allow it to be executable
-   
+
  - `install` section
    - the `tools/travis/install.sh` installs the `pip-req.txt` for NLTK and the necessary python packages for CI testing
    - install `tox` for testing
-    
- - `py-travis` tox test environment generally 
+
+ - `py-travis` tox test environment generally
    - the `extras = all` dependencies in needed to emulate `pip install nltk[all]`, see https://tox.readthedocs.io/en/latest/config.html#confval-extras=MULTI-LINE-LIST
    - for the `py-travis-third-party` build, it will run `tools/travis/third-party.sh` to install third-party tools (Stanford NLP tools and CoreNLP and SENNA)
    - calls `tools/travis/coverage-pylint.sh` shell script that calls `pytest` with [`pytest-cov`](https://pytest-cov.readthedocs.io/) and
    - calls `pylint` # Currently, disabled because there's lots to clean...
 
    - before returning a `true` to state that the build is successful
-    
-    
+
+
 #### To test with `tox` locally
 
 First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
@@ -191,7 +192,7 @@ pipenv install -r pip-req.txt
 pipenv install tox
 tox -e py37
 ```
- 
+
 
 # Discussion
 

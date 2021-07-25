@@ -64,4 +64,3 @@ The number of sentences of different max depths:
     114
     >>> len(list(generate(grammar)))
     114
-
