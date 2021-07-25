@@ -18,9 +18,12 @@ from nltk.twitter.common import json2csv, json2csv_entities
 
 
 def files_are_identical(pathA, pathB):
-    """ Compare two files, ignoring carriage returns """
-    f1 = pathA.read_bytes().splitlines()
-    f2 = pathB.read_bytes().splitlines()
+    """
+    Compare two files, ignoring carriage returns,
+    leading whitespace, and trailing whitespace
+    """
+    f1 = [l.strip() for l in pathA.read_bytes().splitlines()]
+    f2 = [l.strip() for l in pathB.read_bytes().splitlines()]
     return f1 == f2
 
 
