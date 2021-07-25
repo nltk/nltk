@@ -2050,53 +2050,44 @@ class WordNetCorpusReader(CorpusReader):
     # Visualize WordNet relation graphs using Graphviz
     ######################################################################
 
-    def synsets2digraph(self, synsets, rel=lambda s:s.hypernyms(), edges=set([]), o='down', maxdepth=-1, verbose=False, boxes=[]):
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, edges=set([]), o='down', maxdepth=-1, verbose=False, boxes=[]):
         """
-        Produce a graphical representation from a list of input Synsets and a 
-        synset relation, for drawing with the 'dot' graph visualisation program
+        Produce a graphical representation from a list of inputs (which can
+        be a mix of Synsets, Lemmas and/or words), and a synset relation,
+        for drawing with the 'dot' graph visualisation program
         from the Graphviz package. The result can be output to an image,
         using nltk.parse.dependencygraph.dot2img(dot_string).
-        
+
+        For words, 'pos' restricts Part of Speech to 'n', 'v', 'a' or 'r'
         Optionally, initialize 'edges', f. ex. with links to lemmas.
         'o' specifies the orientation of the graph ('up' or 'down')
         'maxdepth' limits the longest path
         'boxes' is a list of strings that trigger a box shape
         """
         from nltk.util import edge_closure, edges2dot
+        synsets=set()
+        edges = set()
+
+        def add_lemma(x):
+            ss = x.synset()
+            synsets.add(ss)
+            edges.add((x,ss))
+
+        for x in inputs:
+            t=type(x)
+            if t == Synset:
+                synsets.add(x)
+            elif t == Lemma:
+                add_lemma(x)
+            elif t == str:
+                for lemma in self.lemmas(x,pos):
+                    add_lemma(lemma)
+
         for ss in synsets:
             edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
         dot_string = edges2dot(edges, boxes, o)
         return dot_string
 
-    def lemmas2digraph(self, lemmas, rel=lambda s:s.hypernyms(), o='down', maxdepth=-1, verbose=False, boxes=[]):
-        """
-        Produce a graphical representation from a list of input Lemmas
-        and a synset relation, for drawing with the 'dot' program.
-        'o' specifies the orientation of the graph ('up' or 'down')
-        'maxdepth' limits the longest path
-        """
-        synsets = set()
-        edges = set()
-        for lemma in lemmas:
-            ss = lemma.synset()
-            synsets.add(ss)
-            edges.add((lemma,ss))
-        return self.synsets2digraph(synsets, rel, edges, o, maxdepth, verbose, boxes)
-
-    def words2digraph(self, words, pos=None, rel=lambda s:s.hypernyms(), o='down', maxdepth=-1, verbose=False, boxes=[]):
-        """
-        Produce a graphical representation from a list of input words
-        and a synset relation, for drawing with the 'dot' program.
-        
-        Eventually, restrict pos (Part of Speech) to 'n', 'v', 'a' or 'r'
-        'o' specifies the orientation of the graph ('up' or 'down')
-        'maxdepth' limits the longest path
-        """
-        lemmalist = []
-        for word in words:
-            for lemma in self.lemmas(word,pos):
-                lemmalist.append(lemma)
-        return self.lemmas2digraph(lemmalist, rel, o, maxdepth, verbose, boxes)
 
 
 ######################################################################
