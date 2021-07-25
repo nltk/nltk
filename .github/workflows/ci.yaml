@@ -1,0 +1,60 @@
+name: ci-workflow
+# run workflow for these events
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  cache_nltk_data:
+    name: cache nltk_data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache nltk data
+        uses: actions/cache@v2
+        with:
+          path: ~/nltk_data
+          key: nltk_data
+
+      - name: Download nltk data packages
+        run: |
+          pip install regex # dependencies needed to download nltk data
+          python -c "import nltk; nltk.download('all')"
+        shell: bash
+
+  test:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    needs: cache_nltk_data
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-latest, macos-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
+      
+      - name: Install dependencies
+        run: pip install --upgrade --requirement requirements-ci.txt
+
+      - name: Use cached nltk data
+        uses: actions/cache@v2
+        with:
+          path: ~/nltk_data
+          key: nltk_data
+
+      - name: Run pytest
+        run: pytest --numprocesses auto nltk/test
+        shell: bash

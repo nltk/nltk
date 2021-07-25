@@ -1,0 +1,7 @@
+matplotlib
+pytest
+pytest-mock
+pytest-xdist[psutil]
+regex
+scikit-learn
+twython
