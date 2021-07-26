@@ -2050,22 +2050,23 @@ class WordNetCorpusReader(CorpusReader):
     # Visualize WordNet relation graphs using Graphviz
     ######################################################################
 
-    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, edges=set([]), o='down', maxdepth=-1, verbose=False, boxes=[]):
+
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, o='down', maxdepth=-1, verbose=False, boxes=[]):
         """
-        Produce a graphical representation from a list of inputs (which can
-        be a mix of Synsets, Lemmas and/or words), and a synset relation,
-        for drawing with the 'dot' graph visualisation program
-        from the Graphviz package. The result can be output to an image,
-        using nltk.parse.dependencygraph.dot2img(dot_string).
+        Produce a graphical representation from a list of inputs (which can be
+        a mix of Synsets, Lemmas and/or words), and a synset relation, for drawing
+        with the 'dot' graph visualisation program from the Graphviz package.
+
+        Output a string in the DOT graph file language, which can then be converted
+        to an image, for ex. by nltk.parse.dependencygraph.dot2img(dot_string).
 
         For words, 'pos' restricts Part of Speech to 'n', 'v', 'a' or 'r'
-        Optionally, initialize 'edges', f. ex. with links to lemmas.
         'o' specifies the orientation of the graph ('up' or 'down')
         'maxdepth' limits the longest path
         'boxes' is a list of strings that trigger a box shape
         """
         from nltk.util import edge_closure, edges2dot
-        synsets=set()
+        synsets = set()
         edges = set()
 
         def add_lemma(x):
@@ -2074,7 +2075,7 @@ class WordNetCorpusReader(CorpusReader):
             edges.add((x,ss))
 
         for x in inputs:
-            t=type(x)
+            t = type(x)
             if t == Synset:
                 synsets.add(x)
             elif t == Lemma:
@@ -2085,9 +2086,7 @@ class WordNetCorpusReader(CorpusReader):
 
         for ss in synsets:
             edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
-        dot_string = edges2dot(edges, boxes, o)
-        return dot_string
-
+        return edges2dot(edges, boxes, o)
 
 
 ######################################################################

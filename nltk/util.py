@@ -221,11 +221,33 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 
 def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
-    """Collect the edges of a graph in breadth-first order,
+    """Output the edges of a graph in breadth-first order,
     discarding eventual cycles.
     The first argument should be the start node;
     children should be a function taking as argument a graph node
     and returning an iterator of the node's children.
+
+    >>> import nltk
+    >>> from nltk.util import edge_closure
+    >>> from nltk.corpus import wordnet as wn
+    >>> for edge in edge_closure(wn.synset('dog.n.01'), lambda s:s.hypernyms()):
+    >>>     print(edge)
+    (Synset('dog.n.01'), Synset('canine.n.02'))
+    (Synset('dog.n.01'), Synset('domestic_animal.n.01'))
+    (Synset('canine.n.02'), Synset('carnivore.n.01'))
+    (Synset('domestic_animal.n.01'), Synset('animal.n.01'))
+    (Synset('carnivore.n.01'), Synset('placental.n.01'))
+    (Synset('animal.n.01'), Synset('organism.n.01'))
+    (Synset('placental.n.01'), Synset('mammal.n.01'))
+    (Synset('organism.n.01'), Synset('living_thing.n.01'))
+    (Synset('mammal.n.01'), Synset('vertebrate.n.01'))
+    (Synset('living_thing.n.01'), Synset('whole.n.02'))
+    (Synset('vertebrate.n.01'), Synset('chordate.n.01'))
+    (Synset('whole.n.02'), Synset('object.n.01'))
+    (Synset('chordate.n.01'), Synset('animal.n.01'))
+    (Synset('object.n.01'), Synset('physical_entity.n.01'))
+    (Synset('physical_entity.n.01'), Synset('entity.n.01'))
+
     """
     traversed = set()
     queue = deque([(tree, 0)])
@@ -245,7 +267,7 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                 pass
 
 
-def edges2dot(edges, boxes=[], o='down'):
+def edges2dot(edges, boxes=[], o='default'):
     """Output the set of edges of a directed graph as a string in the
     format expected by the 'dot' program from the Graphviz package.
 
@@ -253,12 +275,23 @@ def edges2dot(edges, boxes=[], o='down'):
     to an image by nltk.parse.dependencygraph.dot2img(dot_string).
 
     :param boxes: a list of strings that trigger a box shape.
-    :param o: orientation of the graph ('up' draws source nodes at
-    the top, 'down' draws them at the bottom).
+    :param o: orientation of the graph ('default' draws target nodes at
+    the bottom, 'reverse' draws them at the top).
+
+    >>> import nltk
+    >>> from nltk.util import edges2dot
+    >>> print(edges2dot([('A','B'),('B','C'),('C','D'),('B','D')]))
+    digraph G {
+    "A" -> "B";
+    "B" -> "C";
+    "C" -> "D";
+    "B" -> "D";
+    }
+
     """
     dot_string = 'digraph G {\n'
     for (source,target) in edges:
-        if o == 'down':
+        if o == 'reverse':
             pair = (target,source)
         else:
             pair = (source,target)
