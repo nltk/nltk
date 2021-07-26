@@ -2051,7 +2051,7 @@ class WordNetCorpusReader(CorpusReader):
     ######################################################################
 
 
-    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, o='down', maxdepth=-1, verbose=False, boxes=[]):
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, o='default', maxdepth=-1, verbose=False, boxes=[]):
         """
         Produce a graphical representation from a list of inputs (which can be
         a mix of Synsets, Lemmas and/or words), and a synset relation, for drawing
@@ -2061,7 +2061,7 @@ class WordNetCorpusReader(CorpusReader):
         to an image, for ex. by nltk.parse.dependencygraph.dot2img(dot_string).
 
         For words, 'pos' restricts Part of Speech to 'n', 'v', 'a' or 'r'
-        'o' specifies the orientation of the graph ('up' or 'down')
+        'o' specifies the orientation of the graph ('default' or 'reverse')
         'maxdepth' limits the longest path
         'boxes' is a list of strings that trigger a box shape
         """
