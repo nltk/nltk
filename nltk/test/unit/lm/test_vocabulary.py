@@ -7,8 +7,10 @@
 
 import unittest
 from collections import Counter
-from timeit import timeit
+import timeit
+import statistics as stats
 
+import pytest
 from nltk.lm import Vocabulary
 
 
@@ -138,17 +140,26 @@ class NgramModelVocabularyTests(unittest.TestCase):
             ),
         )
 
-    @unittest.skip(reason = "Test is known to be flaky as it compares (runtime) performance.")
     def test_len_is_constant(self):
+
         # Given an obviously small and an obviously large vocabulary.
         small_vocab = Vocabulary("abcde")
         from nltk.corpus.europarl_raw import english
 
         large_vocab = Vocabulary(english.words())
 
-        # If we time calling `len` on them.
-        small_vocab_len_time = timeit("len(small_vocab)", globals=locals())
-        large_vocab_len_time = timeit("len(large_vocab)", globals=locals())
-
-        # The timing should be the same order of magnitude.
-        self.assertAlmostEqual(small_vocab_len_time, large_vocab_len_time, places=1)
+        attempts = range(3)
+        for _ in attempts:
+            n_samples = 5
+            sm_vocab_samples = timeit.repeat("len(small_vocab)", globals=locals(), repeat=n_samples)
+            sm_vocab_len_mean = stats.mean(sm_vocab_samples)
+            if stats.stdev(sm_vocab_samples, xbar=sm_vocab_len_mean) > 0.1:
+                continue
+            lg_vocab_samples = timeit.repeat("len(large_vocab)", globals=locals(), repeat=n_samples)
+            lg_vocab_len_mean = stats.mean(lg_vocab_samples)
+            if stats.stdev(lg_vocab_samples, xbar=lg_vocab_len_mean) > 0.1:
+                continue
+            self.assertAlmostEqual(sm_vocab_len_mean, lg_vocab_len_mean, places=1)
+            break # TODO: consider returning here for a flatter control flow
+        else:
+            pytest.skip('variance was too high')
