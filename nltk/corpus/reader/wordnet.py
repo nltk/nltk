@@ -2051,19 +2051,23 @@ class WordNetCorpusReader(CorpusReader):
     ######################################################################
 
 
-    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, o='default', maxdepth=-1, verbose=False, boxes=[]):
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, o='default', maxdepth=-1, boxes=[], verbose=False):
         """
-        Produce a graphical representation from a list of inputs (which can be
-        a mix of Synsets, Lemmas and/or words), and a synset relation, for drawing
-        with the 'dot' graph visualisation program from the Graphviz package.
+        Produce a graphical representation from 'inputs' (a list of
+        start nodes, which can be a mix of Synsets, Lemmas and/or words),
+        and a synset relation, for drawing with the 'dot' graph visualisation
+        program from the Graphviz package.
 
-        Output a string in the DOT graph file language, which can then be converted
-        to an image, for ex. by nltk.parse.dependencygraph.dot2img(dot_string).
+        Return a string in the DOT graph file language, which can then be
+        converted to an image by nltk.parse.dependencygraph.dot2img(dot_string).
 
-        For words, 'pos' restricts Part of Speech to 'n', 'v', 'a' or 'r'
-        'o' specifies the orientation of the graph ('default' or 'reverse')
-        'maxdepth' limits the longest path
-        'boxes' is a list of strings that trigger a box shape
+        Optional Parameters:
+        :rel: Wordnet synset relation
+        :pos: for words, restricts Part of Speech to 'n', 'v', 'a' or 'r'
+        :o: orientation of the graph ('default' or 'reverse')
+        :maxdepth: limit the longest path
+        :boxes: draw boxes around specified strings
+        :verbose: warn about cycles
         """
         from nltk.util import edge_closure, edges2dot
         synsets = set()
