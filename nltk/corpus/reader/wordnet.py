@@ -2068,6 +2068,28 @@ class WordNetCorpusReader(CorpusReader):
         :maxdepth: limit the longest path
         :boxes: draw boxes around specified strings
         :verbose: warn about cycles
+
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.digraph([wn.synset('dog.n.01')]))
+        digraph G {
+        "Synset('dog.n.01')" -> "Synset('domestic_animal.n.01')";
+        "Synset('organism.n.01')" -> "Synset('living_thing.n.01')";
+        "Synset('mammal.n.01')" -> "Synset('vertebrate.n.01')";
+        "Synset('placental.n.01')" -> "Synset('mammal.n.01')";
+        "Synset('animal.n.01')" -> "Synset('organism.n.01')";
+        "Synset('vertebrate.n.01')" -> "Synset('chordate.n.01')";
+        "Synset('chordate.n.01')" -> "Synset('animal.n.01')";
+        "Synset('canine.n.02')" -> "Synset('carnivore.n.01')";
+        "Synset('living_thing.n.01')" -> "Synset('whole.n.02')";
+        "Synset('physical_entity.n.01')" -> "Synset('entity.n.01')";
+        "Synset('carnivore.n.01')" -> "Synset('placental.n.01')";
+        "Synset('object.n.01')" -> "Synset('physical_entity.n.01')";
+        "Synset('whole.n.02')" -> "Synset('object.n.01')";
+        "Synset('dog.n.01')" -> "Synset('canine.n.02')";
+        "Synset('domestic_animal.n.01')" -> "Synset('animal.n.01')";
+        }
+
+
         """
         from nltk.util import edge_closure, edges2dot
         synsets = set()
@@ -2090,7 +2112,8 @@ class WordNetCorpusReader(CorpusReader):
 
         for ss in synsets:
             edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
-        return edges2dot(edges, boxes, o)
+        dot_string = edges2dot(edges, boxes, o)
+        return dot_string
 
 
 ######################################################################
