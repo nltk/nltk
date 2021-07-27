@@ -393,7 +393,7 @@ class HiddenMarkovModelTagger(TaggerI):
         P, O, X, S = self._cache
 
         V = np.zeros((T, N), np.float32)
-        B = -np.ones((T, N), np.int)
+        B = -np.ones((T, N), int)
 
         V[0] = P + O[:, S[unlabeled_sequence[0]]]
         for t in range(1, T):

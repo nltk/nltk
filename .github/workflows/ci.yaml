@@ -12,15 +12,17 @@ jobs:
 
       - name: Cache nltk data
         uses: actions/cache@v2
+        id: restore-cache
         with:
           path: ~/nltk_data
           key: nltk_data
 
-      - name: Download nltk data packages
+      - name: Download nltk data packages on cache miss
         run: |
           pip install regex # dependencies needed to download nltk data
           python -c "import nltk; nltk.download('all')"
         shell: bash
+        if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
@@ -42,12 +44,14 @@ jobs:
 
       - name: Cache dependencies
         uses: actions/cache@v2
+        id: restore-cache
         with:
           path: ${{ env.pythonLocation }}
           key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
       
-      - name: Install dependencies
+      - name: Install dependencies on cache miss
         run: pip install --upgrade --requirement requirements-ci.txt
+        if: steps.restore-cache.outputs.cache-hit != 'true'
 
       - name: Use cached nltk data
         uses: actions/cache@v2
@@ -56,5 +60,5 @@ jobs:
           key: nltk_data
 
       - name: Run pytest
-        run: pytest --numprocesses auto nltk/test
+        run: pytest --numprocesses auto -rsx nltk/test
         shell: bash
