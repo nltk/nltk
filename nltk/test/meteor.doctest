@@ -43,3 +43,11 @@ Testing on `wikipedia examples <https://en.wikipedia.org/wiki/METEOR#Examples>`_
     ...       'The cat was sat on the mat'
     ...       ),4)
     0.9654
+
+Test corresponding to issue #2751, where METEOR score > 1
+
+    >>> round(meteor(
+    ...       ['create or update a vm set'],
+    ...       'creates or updates a virtual machine scale set'
+    ...       ),4)
+    0.7806
