@@ -48,7 +48,7 @@ class GAAClusterer(VectorSpaceClusterer):
 
         # construct the similarity matrix
         dims = (N, N)
-        dist = numpy.ones(dims, dtype=numpy.float) * numpy.inf
+        dist = numpy.ones(dims, dtype=float) * numpy.inf
         for i in range(N):
             for j in range(i + 1, N):
                 dist[i, j] = cosine_distance(vectors[i], vectors[j])
