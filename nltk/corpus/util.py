@@ -129,7 +129,7 @@ class LazyCorpusLoader:
         )
 
     def _unload(self):
-        # If an exception occures during corpus loading then
+        # If an exception occurs during corpus loading then
         # '_unload' method may be unattached, so __getattr__ can be called;
         # we shouldn't trigger corpus loading again in this case.
         pass

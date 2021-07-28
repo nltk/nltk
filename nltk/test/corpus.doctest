@@ -396,7 +396,7 @@ examples illustrate the use of the wordlist corpora:
     >>> names.words('female.txt')
     ['Abagael', 'Abagail', 'Abbe', 'Abbey', 'Abbi', 'Abbie', ...]
 
-The CMU Pronunciation Dictionary corpus contains pronounciation
+The CMU Pronunciation Dictionary corpus contains pronunciation
 transcriptions for over 100,000 words.  It can be accessed as a list
 of entries (where each entry consists of a word, an identifier, and a
 transcription) or as a dictionary from words to lists of

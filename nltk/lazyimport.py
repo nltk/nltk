@@ -45,7 +45,7 @@ class LazyModule:
 
     """
 
-    # Flag which inidicates whether the LazyModule is initialized or not
+    # Flag which indicates whether the LazyModule is initialized or not
     __lazymodule_init = 0
 
     # Name of the module to load

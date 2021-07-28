@@ -1938,7 +1938,7 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            import matplotlib.pyplot as plt #import statment fix
+            import matplotlib.pyplot as plt #import statement fix
         except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
@@ -2530,7 +2530,7 @@ def gt_demo():
     emma_words = corpus.gutenberg.words("austen-emma.txt")
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    print("%18s %8s  %14s" % ("word", "freqency", "SimpleGoodTuring"))
+    print("%18s %8s  %14s" % ("word", "frequency", "SimpleGoodTuring"))
     fd_keys_sorted = (
         key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True)
     )

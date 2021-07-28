@@ -124,7 +124,7 @@ class StanfordSegmenter(TokenizerI):
 
     def default_config(self, lang):
         """
-        Attempt to intialize Stanford Word Segmenter for the specified language
+        Attempt to initialize Stanford Word Segmenter for the specified language
         using the STANFORD_SEGMENTER and STANFORD_MODELS environment variables
         """
 

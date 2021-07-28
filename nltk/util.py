@@ -299,7 +299,7 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
 def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
     """Traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within the same branch,
-    but keep duplicate pathes in different branches.
+    but keep duplicate paths in different branches.
     Add cut_mark (when defined) if cycles were truncated.
 
     The first argument should be the tree root;
@@ -936,7 +936,7 @@ def set_proxy(proxy, user=None, password=""):
         opener.add_handler(ProxyBasicAuthHandler(password_manager))
         opener.add_handler(ProxyDigestAuthHandler(password_manager))
 
-    # Overide the existing url opener
+    # Override the existing url opener
     install_opener(opener)
 
 
@@ -1019,7 +1019,7 @@ def pairwise(iterable):
     return zip(a, b)
 
 ######################################################################
-# Parallization.
+# Parallelization.
 ######################################################################
 
 

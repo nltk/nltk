@@ -191,7 +191,7 @@ def json2csv_entities(
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
 
-    :param gzip_compress: if `True`, ouput files are compressed with gzip
+    :param gzip_compress: if `True`, output files are compressed with gzip
     """
 
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)

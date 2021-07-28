@@ -141,7 +141,7 @@ def mle_trigram_model(trigram_training_data, vocabulary):
         # count(d | c) = 1
         # count(c) = 1
         ("d", ["c"], 1),
-        # total number of tokens is 18, of which "a" occured 2 times
+        # total number of tokens is 18, of which "a" occurred 2 times
         ("a", None, 2.0 / 18),
         # in vocabulary but unseen
         ("z", None, 0),
@@ -330,14 +330,14 @@ def wittenbell_trigram_model(trigram_training_data, vocabulary):
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
         ("y", None, 3.0 / 18),
-        # 2 words follow b and b occured a total of 2 times
+        # 2 words follow b and b occurred a total of 2 times
         # gamma(['b']) = 2 / (2 + 2) = 0.5
         # mle.score('c', ['b']) = 0.5
         # mle('c') = 1 / 18 = 0.055
         # (1 - gamma) * mle + gamma * mle('c') ~= 0.27 + 0.055
         ("c", ["b"], (1 - 0.5) * 0.5 + 0.5 * 1 / 18),
         # building on that, let's try 'a b c' as the trigram
-        # 1 word follows 'a b' and 'a b' occured 1 time
+        # 1 word follows 'a b' and 'a b' occurred 1 time
         # gamma(['a', 'b']) = 1 / (1 + 1) = 0.5
         # mle("c", ["a", "b"]) = 1
         ("c", ["a", "b"], (1 - 0.5) + 0.5 * ((1 - 0.5) * 0.5 + 0.5 * 1 / 18)),
@@ -528,7 +528,7 @@ def kneserney_bigram_model(bigram_training_data, vocabulary):
         "kneserney_bigram_model",
         pytest.param(
             "stupid_backoff_trigram_model",
-            marks=pytest.mark.xfail(reason="Stupid Backoff is not a valid distibution"),
+            marks=pytest.mark.xfail(reason="Stupid Backoff is not a valid distribution"),
         ),
     ],
 )

@@ -91,7 +91,7 @@ class TestDisagreement(unittest.TestCase):
     def test_advanced2(self):
         '''
         Same more advanced example, but with 1 rating removed.
-        Again, removal of that 1 rating shoudl not matter.
+        Again, removal of that 1 rating should not matter.
         '''
         data = [('A', '1', '1'),
                 ('B', '1', '1'),

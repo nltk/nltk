@@ -560,7 +560,7 @@ class Synset(_WordNetObject):
         UserWarning: Discarded redundant search for Synset('computer.n.01') at depth 2
 
 
-        Include redundant pathes (but only once), avoiding duplicate searches
+        Include redundant paths (but only once), avoiding duplicate searches
         (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')

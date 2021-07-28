@@ -135,7 +135,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         assert not (cword.text.strip() and len(cword) == 1)
                         # Record the position of the head:
                         position = len(context)
-                        # Addd on the head word itself:
+                        # Add on the head word itself:
                         if cword.text.strip():
                             context.append(cword.text.strip())
                         elif cword[0].tag == "wf":

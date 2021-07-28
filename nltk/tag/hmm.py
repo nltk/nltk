@@ -221,7 +221,7 @@ class HiddenMarkovModelTagger(TaggerI):
         :param verbose: boolean flag indicating whether training should be
             verbose or include printed output
         :type verbose: bool
-        :param max_iterations: number of Baum-Welch interations to perform
+        :param max_iterations: number of Baum-Welch iterations to perform
         :type max_iterations: int
         """
         return cls._train(labeled_sequence, test_sequence, unlabeled_sequence, **kwargs)

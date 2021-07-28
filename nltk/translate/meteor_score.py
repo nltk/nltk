@@ -264,11 +264,11 @@ def allign_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet
 def _count_chunks(matches):
     """
     Counts the fewest possible number of chunks such that matched unigrams
-    of each chunk are adjacent to each other. This is used to caluclate the
+    of each chunk are adjacent to each other. This is used to calculate the
     fragmentation part of the metric.
 
     :param matches: list containing a mapping of matched words (output of allign_words)
-    :return: Number of chunks a sentence is divided into post allignment
+    :return: Number of chunks a sentence is divided into post alignment
     :rtype: int
     """
     i = 0
@@ -332,7 +332,7 @@ def single_meteor_score(
     :param beta: parameter for controlling shape of penalty as a
                  function of as a function of fragmentation.
     :type beta: float
-    :param gamma: relative weight assigned to fragmentation penality.
+    :param gamma: relative weight assigned to fragmentation penalty.
     :type gamma: float
     :return: The sentence-level METEOR score.
     :rtype: float
@@ -410,7 +410,7 @@ def meteor_score(
     :param beta: parameter for controlling shape of penalty as a function
                  of as a function of fragmentation.
     :type beta: float
-    :param gamma: relative weight assigned to fragmentation penality.
+    :param gamma: relative weight assigned to fragmentation penalty.
     :type gamma: float
     :return: The sentence-level METEOR score.
     :rtype: float

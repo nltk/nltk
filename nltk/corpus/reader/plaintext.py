@@ -23,7 +23,7 @@ class PlaintextCorpusReader(CorpusReader):
     Reader for corpora that consist of plaintext documents.  Paragraphs
     are assumed to be split using blank lines.  Sentences and words can
     be tokenized using the default tokenizers, or by custom tokenizers
-    specificed as parameters to the constructor.
+    specified as parameters to the constructor.
 
     This corpus reader can be customized (e.g., to skip preface
     sections of specific document formats) by creating a subclass and

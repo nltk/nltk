@@ -746,7 +746,7 @@ class ChartComparer:
         Frame(buttons, width=20).pack(side="left")
         Button(buttons, text="Swap Charts", command=self._swapcharts).pack(side="left")
 
-        Button(buttons, text="Detatch Output", command=self._detatch_out).pack(
+        Button(buttons, text="Detach Output", command=self._detatch_out).pack(
             side="right"
         )
 

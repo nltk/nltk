@@ -91,7 +91,7 @@ class NgramCounter:
         If `ngram_text` is specified, counts ngrams from it, otherwise waits for
         `update` method to be called explicitly.
 
-        :param ngram_text: Optional text containing senteces of ngrams, as for `update` method.
+        :param ngram_text: Optional text containing sentences of ngrams, as for `update` method.
         :type ngram_text: Iterable(Iterable(tuple(str))) or None
 
         """
@@ -107,7 +107,7 @@ class NgramCounter:
         Expects `ngram_text` to be a sequence of sentences (sequences).
         Each sentence consists of ngrams as tuples of strings.
 
-        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing senteces of ngrams.
+        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing sentences of ngrams.
         :raises TypeError: if the ngrams are not tuples.
 
         """
