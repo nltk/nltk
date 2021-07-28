@@ -158,19 +158,19 @@ NLTK uses [GitHub Actions](https://github.com/nltk/nltk/actions) for continuous 
 The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.github/workflows/ci.yaml) file configures the CI:
 
  - `on:` section
-   - Ensures that this CI is run on code pushes, pull request, or through the GitHub website via a button.
+   - ensures that this CI is run on code pushes, pull request, or through the GitHub website via a button.
 
  - The `cache_nltk_data` job
-   - Steps:
+   - performs these steps:
      - Downloads the `nltk` source code.
      - Load `nltk_data` via cache.
        - Otherwise, download all the data packages through `nltk.download('all')`.
 
   - The `test` job
-    - Tests against supported Python versions (`3.6`, `3.7`, `3.8`, `3.9`).
-    - Tests on `ubuntu-latest` and `macos-latest`.
-    - Relies on the `cache_nltk_data` job to ensure that `nltk_data` is available.
-    - Steps:
+    - tests against supported Python versions (`3.6`, `3.7`, `3.8`, `3.9`).
+    - tests on `ubuntu-latest` and `macos-latest`.
+    - relies on the `cache_nltk_data` job to ensure that `nltk_data` is available.
+    - performs these steps:
       - Downloads the `nltk` source code.
       - Set up Python using whatever version is being checked in the current execution.
       - Load module dependencies via cache.
