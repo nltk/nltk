@@ -746,7 +746,7 @@ class ChartComparer:
         Frame(buttons, width=20).pack(side="left")
         Button(buttons, text="Swap Charts", command=self._swapcharts).pack(side="left")
 
-        Button(buttons, text="Detach Output", command=self._detatch_out).pack(
+        Button(buttons, text="Detach Output", command=self._detach_out).pack(
             side="right"
         )
 
@@ -939,7 +939,7 @@ class ChartComparer:
         self._op_label["text"] = " "
         self._out_matrix.inactivate()
 
-    def _detatch_out(self):
+    def _detach_out(self):
         ChartMatrixView(self._root, self._out_chart, title=self._out_label["text"])
 
 
