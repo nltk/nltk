@@ -1085,7 +1085,7 @@ def align(str1, str2, epsilon=0):
     :type epsilon: float (0.0 to 1.0)
     :param epsilon: Adjusts threshold similarity score for near-optimal alignments
 
-    :rtpye: list(list(tuple(str, str)))
+    :rtype: list(list(tuple(str, str)))
     :return: Alignment(s) of str1 and str2
 
     (Kondrak 2002: 51)
