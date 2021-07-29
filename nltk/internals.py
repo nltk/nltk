@@ -618,7 +618,7 @@ def find_file_iter(
         msg = (
             "NLTK was unable to find the %s file!"
             "\nUse software specific "
-            "configuration paramaters" % filename
+            "configuration parameters" % filename
         )
         if env_vars:
             msg += " or set the %s environment variable" % env_vars[0]

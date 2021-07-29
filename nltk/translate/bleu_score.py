@@ -58,7 +58,7 @@ def sentence_bleu(
     value 0. This is because the precision for the order of n-grams without
     overlap is 0, and the geometric mean in the final BLEU score computation
     multiplies the 0 with the precision of other n-grams. This results in 0
-    (independently of the precision of the othe n-gram orders). The following
+    (independently of the precision of the other n-gram orders). The following
     example has zero 3-gram and 4-gram overlaps:
 
     >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS

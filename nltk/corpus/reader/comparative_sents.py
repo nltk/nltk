@@ -63,7 +63,7 @@ class Comparison:
         keyword=None,
     ):
         """
-        :param text: a string (optionally tokenized) containing a comparation.
+        :param text: a string (optionally tokenized) containing a comparison.
         :param comp_type: an integer defining the type of comparison expressed.
             Values can be: 1 (Non-equal gradable), 2 (Equative), 3 (Superlative),
             4 (Non-gradable).

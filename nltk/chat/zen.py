@@ -278,7 +278,7 @@ responses = (
     # e.g. "you stink!"
     (
         r"you (.*)",
-        ("My path is not of conern to you.", "I am but one, and you but one more."),
+        ("My path is not of concern to you.", "I am but one, and you but one more."),
     ),
     # say goodbye with some extra Zen wisdom.
     (

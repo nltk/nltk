@@ -477,7 +477,7 @@ class Downloader:
        installed (i.e., only some of its packages are installed.)"""
 
     # /////////////////////////////////////////////////////////////////
-    # Cosntructor
+    # Constructor
     # /////////////////////////////////////////////////////////////////
 
     def __init__(self, server_index_url=None, download_dir=None):
@@ -938,7 +938,7 @@ class Downloader:
         """A helper function that ensures that self._index is
         up-to-date.  If the index is older than self.INDEX_TIMEOUT,
         then download it again."""
-        # Check if the index is aleady up-to-date.  If so, do nothing.
+        # Check if the index is already up-to-date.  If so, do nothing.
         if not (
             self._index is None
             or url is not None
@@ -1971,7 +1971,7 @@ class DownloaderGUI:
         try:
             ShowText(
                 self.top,
-                "Help: NLTK Dowloader",
+                "Help: NLTK Downloader",
                 self.HELP.strip(),
                 width=75,
                 font="fixed",

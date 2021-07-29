@@ -58,7 +58,7 @@ class PropbankCorpusReader(CorpusReader):
         if isinstance(framefiles, str):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
-        # Initialze the corpus reader.
+        # Initialize the corpus reader.
         CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles, encoding)
 
         # Record our frame fileids & prop file.
@@ -353,7 +353,7 @@ class PropbankChainTreePointer(PropbankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
 
 
@@ -372,7 +372,7 @@ class PropbankSplitTreePointer(PropbankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*SPLIT*", [p.select(tree) for p in self.pieces])
 
 
@@ -440,7 +440,7 @@ class PropbankTreePointer(PropbankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return tree[self.treepos(tree)]
 
     def treepos(self, tree):
@@ -449,7 +449,7 @@ class PropbankTreePointer(PropbankPointer):
         given that it points to the given tree.
         """
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         stack = [tree]
         treepos = []
 
