@@ -221,14 +221,15 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 
 def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
-    """Return the set of edges of a graph, discarding eventual cycles.
+    """Yield the edges of a graph in breadth-first order,
+    discarding eventual cycles.
     The first argument should be the start node;
     children should be a function taking as argument a graph node
     and returning an iterator of the node's children.
 
     >>> from nltk.util import edge_closure
-    >>> print(edge_closure('A', lambda x:{'A':['B','C'], 'B':'C', 'C':'B'}[x]))
-    {('C', 'B'), ('B', 'C'), ('A', 'C'), ('A', 'B')}
+    >>> print(list(edge_closure('A', lambda x:{'A':['B','C'], 'B':'C', 'C':'B'}[x])))
+    [('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'B')]
     """
     traversed = set()
     edges = set()
@@ -244,15 +245,17 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                     else:
                         if verbose:
                             warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
-                    edges.add((node, child))
+                    edge = (node, child)
+                    if edge not in edges:
+                        yield edge
+                        edges.add(edge)
             except TypeError:
                 pass
-    return edges
 
 
 def edges2dot(edges, boxes=[], o='default'):
     """
-    :param edges: the set of edges of a directed graph
+    :param edges: the set (or list) of edges of a directed graph.
 
     :return dot_string: a representation of 'edges' as a string in the DOT
     graph language, which can be converted to an image by the 'dot' program
@@ -264,12 +267,12 @@ def edges2dot(edges, boxes=[], o='default'):
 
     >>> import nltk
     >>> from nltk.util import edges2dot
-    >>> print(edges2dot({('C', 'B'), ('B', 'C'), ('A', 'C'), ('A', 'B')}))
+    >>> print(edges2dot([('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'B')]))
     digraph G {
     "A" -> "B";
-    "C" -> "B";
     "A" -> "C";
     "B" -> "C";
+    "C" -> "B";
     }
 
     """
