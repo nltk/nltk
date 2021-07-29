@@ -1988,6 +1988,8 @@ class WordNetCorpusReader(CorpusReader):
 
         # Initialize the counts with the smoothing value
         if smoothing > 0.0:
+            for pp in POS_LIST:
+                ic[pp][0] = smoothing
             for ss in self.all_synsets():
                 pos = ss._pos
                 if pos == ADJ_SAT:

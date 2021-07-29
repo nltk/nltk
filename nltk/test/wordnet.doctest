@@ -605,6 +605,16 @@ Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) t
     >>> wn.synsets("slang")[1].in_usage_domains()[18]
     Synset('can-do.s.01')
 
+Issue 2721: WordNetCorpusReader.ic() does not add smoothing to N
+
+    >>> class FakeCorpus:
+    ...     def words(self): return ['word']
+    ...
+    >>> fake_ic = wn.ic(FakeCorpus(), False, 1.0)
+    >>> word = wn.synset('word.n.01')
+    >>> information_content(word, fake_ic) > 0
+    True
+
 
 ------------------------------------------------
 Endlessness vs. intractability in relation trees
