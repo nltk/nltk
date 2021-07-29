@@ -192,7 +192,7 @@ class TestBLEUFringeCases(unittest.TestCase):
         assert sentence_bleu(references, hypothesis) == 0
 
     def test_reference_or_hypothesis_shorter_than_fourgrams(self):
-        # Tese case where the length of reference or hypothesis
+        # Test case where the length of reference or hypothesis
         # is shorter than 4.
         references = ['let it go'.split()]
         hypothesis = 'let go it'.split()

@@ -315,7 +315,7 @@ def single_meteor_score(
     :param beta: parameter for controlling shape of penalty as a
                  function of as a function of fragmentation.
     :type beta: float
-    :param gamma: relative weight assigned to fragmentation penality.
+    :param gamma: relative weight assigned to fragmentation penalty.
     :type gamma: float
     :return: The sentence-level METEOR score.
     :rtype: float
@@ -393,7 +393,7 @@ def meteor_score(
     :param beta: parameter for controlling shape of penalty as a function
                  of as a function of fragmentation.
     :type beta: float
-    :param gamma: relative weight assigned to fragmentation penality.
+    :param gamma: relative weight assigned to fragmentation penalty.
     :type gamma: float
     :return: The sentence-level METEOR score.
     :rtype: float

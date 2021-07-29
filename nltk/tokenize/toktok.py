@@ -171,8 +171,8 @@ class ToktokTokenizer(TokenizerI):
 
     def tokenize(self, text, return_str=False):
         text = str(text)  # Converts input string into unicode.
-        for regexp, subsitution in self.TOKTOK_REGEXES:
-            text = regexp.sub(subsitution, text)
+        for regexp, substitution in self.TOKTOK_REGEXES:
+            text = regexp.sub(substitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
         text = str(text.strip())

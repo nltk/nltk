@@ -223,7 +223,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
         :param root: The root directory for this corpus. (default points to location in multext config file)
         :param fileids: A list or regexp specifying the fileids in this corpus. (default is oana-en.xml)
-        :param enconding: The encoding of the given files (default is utf8)
+        :param encoding: The encoding of the given files (default is utf8)
         """
         TaggedCorpusReader.__init__(self, root, fileids, encoding)
         self._readme = "00README.txt"

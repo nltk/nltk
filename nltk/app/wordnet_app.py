@@ -38,7 +38,7 @@ Options::
 
     -s or --server-mode
         Do not start a web browser, and do not allow a user to
-        shotdown the server through the web interface.
+        shutdown the server through the web interface.
 """
 # TODO: throughout this package variable names and docstrings need
 # modifying to be compliant with NLTK's coding standards.  Tests also
@@ -78,7 +78,7 @@ firstClient = True
 # gets set by demo().
 server_mode = None
 
-# If set this is a file object for writting log messages.
+# If set this is a file object for writing log messages.
 logfile = None
 
 
@@ -532,7 +532,7 @@ full_hyponym_cont_text = _ul(_li(_italic("(has full hyponym continuation)"))) + 
 def _get_synset(synset_key):
     """
     The synset key is the unique name of the synset, this can be
-    retrived via synset.name()
+    retrieved via synset.name()
     """
     return wn.synset(synset_key)
 
@@ -790,7 +790,7 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' where not found in the dictonary." % word
+        body = "The word or words '%s' where not found in the dictionary." % word
     return body, word
 
 

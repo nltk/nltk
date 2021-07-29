@@ -115,7 +115,7 @@ detailed information about the Frame. See the documentation on the
 
 You can also search for Frames by their Lexical Units (LUs). The
 `frames_by_lemma()` function returns a list of all frames that contain
-LUs in which the 'name' attribute of the LU matchs the given regular
+LUs in which the 'name' attribute of the LU matches the given regular
 expression. Note that LU names are composed of "lemma.POS", where the
 "lemma" part can be made up of either a single lexeme (e.g. 'run') or
 multiple lexemes (e.g. 'a little') (see below).
@@ -207,7 +207,7 @@ You can obtain detailed information on a particular LU by calling the
     'foresee'
 
 Note that LU names take the form of a dotted string (e.g. "run.v" or "a
-little.adv") in which a lemma preceeds the "." and a part of speech
+little.adv") in which a lemma precedes the "." and a part of speech
 (POS) follows the dot. The lemma may be composed of a single lexeme
 (e.g. "run") or of multiple lexemes (e.g. "a little"). The list of
 POSs used in the LUs is:

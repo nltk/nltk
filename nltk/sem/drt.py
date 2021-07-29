@@ -1088,7 +1088,7 @@ def resolve_anaphora(expression, trail=[]):
 class DrsDrawer:
     BUFFER = 3  # Space between elements
     TOPSPACE = 10  # Space above whole DRS
-    OUTERSPACE = 6  # Space to the left, right, and bottom of the whle DRS
+    OUTERSPACE = 6  # Space to the left, right, and bottom of the while DRS
 
     def __init__(self, drs, size_canvas=True, canvas=None):
         """

@@ -252,7 +252,7 @@ class Assignment(dict):
     r"""
     A dictionary which represents an assignment of values to variables.
 
-    An assigment can only assign values from its domain.
+    An assignment can only assign values from its domain.
 
     If an unknown expression *a* is passed to a model *M*\ 's
     interpretation function *i*, *i* will first check whether *M*\ 's

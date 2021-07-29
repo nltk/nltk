@@ -574,7 +574,7 @@ class TransitionParser(ParserI):
                 )
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
-                # Using decision funcion to build the votes array
+                # Using decision function to build the votes array
                 # dec_func = model.decision_function(x_test)[0]
                 # votes = {}
                 # k = 0

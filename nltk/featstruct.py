@@ -145,7 +145,7 @@ class FeatStruct(SubstituteBindingsI):
     """:ivar: A flag indicating whether this feature structure is
        frozen or not.  Once this flag is set, it should never be
        un-set; and no further modification should be made to this
-       feature structue."""
+       feature structure."""
 
     ##////////////////////////////////////////////////////////////
     # { Constructor
@@ -2548,7 +2548,7 @@ class FeatStructReader:
         """
         cp = re.escape(close_paren)
         position = match.end()
-        # Special syntax fo empty tuples:
+        # Special syntax of empty tuples:
         m = re.compile(r"\s*/?\s*%s" % cp).match(s, position)
         if m:
             return seq_class(), m.end()

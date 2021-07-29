@@ -89,7 +89,7 @@ class LanguageModel(metaclass=ABCMeta):
         :param ngrams_fn: If given, defines how sentences in training text are turned to ngram
                           sequences.
         :type ngrams_fn: function or None
-        :param pad_fn: If given, defines how senteces in training text are padded.
+        :param pad_fn: If given, defines how sentences in training text are padded.
         :type pad_fn: function or None
 
         """
