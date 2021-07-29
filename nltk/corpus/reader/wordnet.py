@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -122,7 +121,7 @@ class WordNetError(Exception):
 
 
 @total_ordering
-class _WordNetObject(object):
+class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
     def hypernyms(self):
@@ -561,7 +560,7 @@ class Synset(_WordNetObject):
         UserWarning: Discarded redundant search for Synset('computer.n.01') at depth 2
 
 
-        Include redundant pathes (but only once), avoiding duplicate searches
+        Include redundant paths (but only once), avoiding duplicate searches
         (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
@@ -843,7 +842,7 @@ class Synset(_WordNetObject):
         """
 
         distance = self.shortest_path_distance(
-            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root()) 
+            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root())
         )
         if distance is None or distance < 0:
             return None
@@ -1989,6 +1988,8 @@ class WordNetCorpusReader(CorpusReader):
 
         # Initialize the counts with the smoothing value
         if smoothing > 0.0:
+            for pp in POS_LIST:
+                ic[pp][0] = smoothing
             for ss in self.all_synsets():
                 pos = ss._pos
                 if pos == ADJ_SAT:

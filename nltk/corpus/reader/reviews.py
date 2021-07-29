@@ -72,7 +72,7 @@ NOTES = re.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
 SENT = re.compile(r"##(.*)$")  # find tokenized sentence
 
 
-class Review(object):
+class Review:
     """
     A Review is the main block of a ReviewsCorpusReader.
     """
@@ -125,7 +125,7 @@ class Review(object):
         )
 
 
-class ReviewLine(object):
+class ReviewLine:
     """
     A ReviewLine represents a sentence of the review, together with (optional)
     annotations of its features and notes about the reviewed item.
@@ -196,6 +196,7 @@ class ReviewsCorpusReader(CorpusReader):
 
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
+        self._readme = "README.txt"
 
     def features(self, fileids=None):
         """
@@ -217,30 +218,6 @@ class ReviewsCorpusReader(CorpusReader):
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
-
-    def raw(self, fileids=None):
-        """
-        :param fileids: a list or regexp specifying the fileids of the files that
-            have to be returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
-    def readme(self):
-        """
-        Return the contents of the corpus README.txt file.
-        """
-        with self.open("README.txt") as fp:
-            return fp.read()
 
     def reviews(self, fileids=None):
         """

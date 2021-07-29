@@ -98,17 +98,6 @@ class ConllCorpusReader(CorpusReader):
     # Data Access Methods
     # /////////////////////////////////////////////////////////////////
 
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
     def words(self, fileids=None):
         self._require(self.WORDS)
         return LazyConcatenation(LazyMap(self._get_words, self._grids(fileids)))
@@ -422,7 +411,7 @@ class ConllCorpusReader(CorpusReader):
         return [grid[i][column_index] for i in range(len(grid))]
 
 
-class ConllSRLInstance(object):
+class ConllSRLInstance:
     """
     An SRL instance from a CoNLL corpus, which identifies and
     providing labels for the arguments of a single verb.

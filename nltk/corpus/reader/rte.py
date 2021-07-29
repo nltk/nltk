@@ -51,7 +51,7 @@ def norm(value_string):
     return valdict[value_string.upper()]
 
 
-class RTEPair(object):
+class RTEPair:
     """
     Container for RTE text-hypothesis pairs.
 

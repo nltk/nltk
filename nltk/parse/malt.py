@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to MaltParser
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
@@ -37,8 +36,8 @@ def malt_regex_tagger():
             (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
             (r"(The|the|A|a|An|an)$", "DT"),  # articles
             (r"(He|he|She|she|It|it|I|me|Me|You|you)$", "PRP"),  # pronouns
-            (r"(His|his|Her|her|Its|its)$", "PRP$"),  # possesive
-            (r"(my|Your|your|Yours|yours)$", "PRP$"),  # possesive
+            (r"(His|his|Her|her|Its|its)$", "PRP$"),  # possessive
+            (r"(my|Your|your|Yours|yours)$", "PRP$"),  # possessive
             (r"(on|On|in|In|at|At|since|Since)$", "IN"),  # time prepopsitions
             (r"(for|For|ago|Ago|before|Before)$", "IN"),  # time prepopsitions
             (r"(till|Till|until|Until)$", "IN"),  # time prepopsitions

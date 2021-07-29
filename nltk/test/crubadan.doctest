@@ -18,7 +18,7 @@ Language code mapping and helper methods
 The web crawler that generates the 3-gram frequencies works at the
 level of "writing systems" rather than languages. Writing systems
 are assigned internal 2-3 letter codes that require mapping to the
-standard ISO 639-3 codes. For more information, please refer to 
+standard ISO 639-3 codes. For more information, please refer to
 the README in nltk_data/crubadan folder after installing it.
 
 To translate ISO 639-3 codes to "Crubadan Code":

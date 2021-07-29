@@ -43,7 +43,7 @@ from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
 
 
-class RegexpChunkApp(object):
+class RegexpChunkApp:
     """
     A graphical tool for exploring the regular expression based chunk
     parser ``nltk.chunk.RegexpChunkParser``.
@@ -230,7 +230,7 @@ class RegexpChunkApp(object):
     ]
 
     ##/////////////////////////////////////////////////////////////////
-    ##  Config Parmeters
+    ##  Config Parameters
     ##/////////////////////////////////////////////////////////////////
 
     _EVAL_DELAY = 1
@@ -404,7 +404,7 @@ class RegexpChunkApp(object):
         top.title("Regexp Chunk Parser App")
         top.bind("<Control-q>", self.destroy)
 
-        # Varaible that restricts how much of the devset we look at.
+        # Variable that restricts how much of the devset we look at.
         self._devset_size = IntVar(top)
         self._devset_size.set(100)
 
@@ -1053,14 +1053,12 @@ class RegexpChunkApp(object):
                 text = text.replace(
                     "<<TAGSET>>",
                     "\n".join(
-                        (
-                            "\t%s\t%s" % item
-                            for item in sorted(
-                                list(self.tagset.items()),
-                                key=lambda t_w: re.match(r"\w+", t_w[0])
-                                and (0, t_w[0])
-                                or (1, t_w[0]),
-                            )
+                        "\t%s\t%s" % item
+                        for item in sorted(
+                            list(self.tagset.items()),
+                            key=lambda t_w: re.match(r"\w+", t_w[0])
+                            and (0, t_w[0])
+                            or (1, t_w[0]),
                         )
                     ),
                 )

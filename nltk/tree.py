@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Text Trees
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -503,7 +502,7 @@ class Tree(list):
         :type  expandUnary: bool
         :param childChar: A string separating the head node from its children in an artificial node (default = "|")
         :type  childChar: str
-        :param parentChar: A sting separating the node label from its parent annotation (default = "^")
+        :param parentChar: A string separating the node label from its parent annotation (default = "^")
         :type  parentChar: str
         :param unaryChar: A string joining two non-terminals in a unary production (default = "+")
         :type  unaryChar: str

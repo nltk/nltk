@@ -71,9 +71,9 @@ according to the grammar, then the value of ``trees`` will be ``None``.
     ... 'der Hunde kommt',
     ... 'der Hunde kommen',
     ... 'die Katzen kommt',
-    ... 'ich sehe der Hunde', 
+    ... 'ich sehe der Hunde',
     ... 'ich folge den Hund',
-    ... 'ich sehen der Hunde', 
+    ... 'ich sehen der Hunde',
     ... 'ich folgen den Hund',
     ... 'wir sehe die Katzen',
     ... 'wir folge den Katzen'
@@ -81,7 +81,7 @@ according to the grammar, then the value of ``trees`` will be ``None``.
     >>> germantest3 = {}
     >>> germantest3['doc'] = "Tests for case government and subcategorization"
     >>> germantest3['accept'] = [
-    ... 'der Hund sieht mich', 
+    ... 'der Hund sieht mich',
     ... 'der Hund kommt',
     ... 'ich sehe den Hund',
     ... 'ich helfe dem Hund',
@@ -95,8 +95,8 @@ according to the grammar, then the value of ``trees`` will be ``None``.
     ... 'du siehst mir',
     ... 'du siehst ich',
     ... 'der Hunde kommt mich',
-    ... 'die Hunde sehe die Hunde', 
-    ... 'der Hund sehe die Hunde', 
+    ... 'die Hunde sehe die Hunde',
+    ... 'der Hund sehe die Hunde',
     ... 'ich hilft den Hund',
     ... 'ich hilft der Hund',
     ... 'ich sehe dem Hund',

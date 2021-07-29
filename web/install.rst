@@ -1,7 +1,7 @@
 Installing NLTK
 ===============
 
-NLTK requires Python versions 3.5, 3.6, 3.7, 3.8, or 3.9
+NLTK requires Python versions 3.6, 3.7, 3.8, or 3.9
 
 For Windows users, it is strongly recommended that you go through this guide to install Python 3 successfully https://docs.python-guide.org/starting/install3/win/#install3-windows
 
@@ -10,7 +10,7 @@ Setting up a Python Environment (Mac/Unix/Windows)
 
 Please go through this guide to learn how to manage your virtual environment managers before you install NLTK,  https://docs.python-guide.org/dev/virtualenvs/
 
-Alternatively, you can use the Anaconda distribution installer that comes "batteries included" https://www.anaconda.com/distribution/ 
+Alternatively, you can use the Anaconda distribution installer that comes "batteries included" https://www.anaconda.com/distribution/
 
 Mac/Unix
 --------
@@ -43,7 +43,7 @@ Please see: https://github.com/nltk/nltk/wiki/Installing-Third-Party-Software
 Installing NLTK Data
 -------------------------------
 
-After installing the NLTK package, please do install the necessary datasets/models for specific functions to work. 
+After installing the NLTK package, please do install the necessary datasets/models for specific functions to work.
 
 If you're unsure of which datasets/models you'll need, you can install the "popular" subset of NLTK data, on the command line type `python -m nltk.downloader popular`, or in the Python interpreter `import nltk; nltk.download('popular')`
 

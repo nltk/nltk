@@ -59,7 +59,7 @@ class NombankCorpusReader(CorpusReader):
         if isinstance(framefiles, str):
             self._fileids = find_corpus_fileids(root, framefiles)
         self._fileids = list(framefiles)
-        # Initialze the corpus reader.
+        # Initialize the corpus reader.
         CorpusReader.__init__(self, root, framefiles, encoding)
 
         # Record our nom file & nouns file.
@@ -67,20 +67,6 @@ class NombankCorpusReader(CorpusReader):
         self._nounsfile = nounsfile
         self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
-
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def instances(self, baseform=None):
         """
@@ -182,7 +168,7 @@ class NombankCorpusReader(CorpusReader):
 ######################################################################
 
 
-class NombankInstance(object):
+class NombankInstance:
     def __init__(
         self,
         fileid,
@@ -323,7 +309,7 @@ class NombankInstance(object):
         )
 
 
-class NombankPointer(object):
+class NombankPointer:
     """
     A pointer used by nombank to identify one or more constituents in
     a parse tree.  ``NombankPointer`` is an abstract base class with
@@ -358,7 +344,7 @@ class NombankChainTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
 
 
@@ -376,7 +362,7 @@ class NombankSplitTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*SPLIT*", [p.select(tree) for p in self.pieces])
 
 
@@ -443,7 +429,7 @@ class NombankTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return tree[self.treepos(tree)]
 
     def treepos(self, tree):
@@ -452,7 +438,7 @@ class NombankTreePointer(NombankPointer):
         given that it points to the given tree.
         """
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         stack = [tree]
         treepos = []
 

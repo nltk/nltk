@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CRFSuite Tagger
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -102,7 +101,7 @@ class CRFTagger(TaggerI):
              - Has Punctuation ?
              - Has Number ?
              - Suffixes up to length 3
-        Note that : we might include feature over previous word, next word ect.
+        Note that : we might include feature over previous word, next word etc.
 
         :return : a list which contains the features
         :rtype : list(str)

@@ -345,7 +345,7 @@ Lexicons for the tests:
 
     >>> parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
     >>> for parse in parser.parse(u"el ministro anunció pero el presidente desmintió la nueva ley".split()):
-    ...     printCCGDerivation(parse) # doctest: +SKIP 
+    ...     printCCGDerivation(parse) # doctest: +SKIP
     ...     # it fails on python2.7 because of the unicode problem explained in https://github.com/nltk/nltk/pull/1354
     ...     break
        el    ministro    anunció              pero              el    presidente   desmintió     la    nueva  ley

@@ -195,7 +195,7 @@ import nltk
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
-class Package(object):
+class Package:
     """
     A directory entry for a downloadable package.  These entries are
     extracted from the XML index file that is downloaded by
@@ -288,7 +288,7 @@ class Package(object):
         return "<Package %s>" % self.id
 
 
-class Collection(object):
+class Collection:
     """
     A directory entry for a collection of downloadable packages.
     These entries are extracted from the XML index file that is
@@ -334,7 +334,7 @@ class Collection(object):
 ######################################################################
 
 
-class DownloaderMessage(object):
+class DownloaderMessage:
     """A status message object, used by ``incr_download`` to
        communicate its progress."""
 
@@ -439,7 +439,7 @@ class SelectDownloadDirMessage(DownloaderMessage):
 ######################################################################
 
 
-class Downloader(object):
+class Downloader:
     """
     A class used to access the NLTK data server, which can be used to
     download corpora and other data packages.
@@ -477,7 +477,7 @@ class Downloader(object):
        installed (i.e., only some of its packages are installed.)"""
 
     # /////////////////////////////////////////////////////////////////
-    # Cosntructor
+    # Constructor
     # /////////////////////////////////////////////////////////////////
 
     def __init__(self, server_index_url=None, download_dir=None):
@@ -938,7 +938,7 @@ class Downloader(object):
         """A helper function that ensures that self._index is
         up-to-date.  If the index is older than self.INDEX_TIMEOUT,
         then download it again."""
-        # Check if the index is aleady up-to-date.  If so, do nothing.
+        # Check if the index is already up-to-date.  If so, do nothing.
         if not (
             self._index is None
             or url is not None
@@ -1119,7 +1119,7 @@ class Downloader(object):
             DownloaderShell(self).run()
 
 
-class DownloaderShell(object):
+class DownloaderShell:
     def __init__(self, dataserver):
         self._ds = dataserver
 
@@ -1245,8 +1245,8 @@ class DownloaderShell(object):
         print()
         print("Data Server:")
         print("  - URL: <%s>" % self._ds.url)
-        print(("  - %d Package Collections Available" % len(self._ds.collections())))
-        print(("  - %d Individual Packages Available" % len(self._ds.packages())))
+        print("  - %d Package Collections Available" % len(self._ds.collections()))
+        print("  - %d Individual Packages Available" % len(self._ds.packages()))
         print()
         print("Local Machine:")
         print("  - Data directory: %s" % self._ds.download_dir)
@@ -1268,7 +1268,7 @@ class DownloaderShell(object):
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
                 else:
-                    print(("Directory %r not found!  Create it first." % new_dl_dir))
+                    print("Directory %r not found!  Create it first." % new_dl_dir)
             elif user_input == "u":
                 new_url = input("  New URL> ").strip()
                 if new_url in ("", "x", "q", "X", "Q"):
@@ -1284,7 +1284,7 @@ class DownloaderShell(object):
                 break
 
 
-class DownloaderGUI(object):
+class DownloaderGUI:
     """
     Graphical interface for downloading packages from the NLTK data
     server.
@@ -1971,7 +1971,7 @@ class DownloaderGUI(object):
         try:
             ShowText(
                 self.top,
-                "Help: NLTK Dowloader",
+                "Help: NLTK Downloader",
                 self.HELP.strip(),
                 width=75,
                 font="fixed",

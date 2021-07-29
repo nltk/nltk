@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: ALINE
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -1238,7 +1237,7 @@ def diff(p, q, f):
 
 def R(p, q):
     """
-    Return relevant features for segment comparsion.
+    Return relevant features for segment comparison.
 
     (Kondrak 2002: 54)
     """

@@ -8,7 +8,7 @@
 from collections import defaultdict
 
 
-class MinimalSet(object):
+class MinimalSet:
     """
     Find contexts where more than one possible target value can
     appear.  E.g. if targets are word-initial letters, and contexts

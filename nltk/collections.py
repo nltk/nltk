@@ -117,7 +117,7 @@ class OrderedDict(dict):
 
 
 @total_ordering
-class AbstractLazySequence(object):
+class AbstractLazySequence:
     """
     An abstract base class for read-only sequences whose values are
     computed as needed.  Lazy sequences act like tuples -- they can be
@@ -530,7 +530,7 @@ class LazyZip(LazyMap):
 
 class LazyEnumerate(LazyZip):
     """
-    A lazy sequence whose elements are tuples, each ontaining a count (from
+    A lazy sequence whose elements are tuples, each containing a count (from
     zero) and a value yielded by underlying sequence.  ``LazyEnumerate`` is
     useful for obtaining an indexed list. The tuples are constructed lazily
     -- i.e., when you read a value from the list, ``LazyEnumerate`` will

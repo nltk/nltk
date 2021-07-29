@@ -146,55 +146,23 @@ class CategorizedBracketParseCorpusReader(
         CategorizedCorpusReader.__init__(self, kwargs)
         BracketParseCorpusReader.__init__(self, *args, **kwargs)
 
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError("Specify fileids or categories, not both")
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
-
-    def raw(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.raw(self, self._resolve(fileids, categories))
-
-    def words(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.words(self, self._resolve(fileids, categories))
-
-    def sents(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.sents(self, self._resolve(fileids, categories))
-
-    def paras(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.paras(self, self._resolve(fileids, categories))
-
     def tagged_words(self, fileids=None, categories=None, tagset=None):
-        return BracketParseCorpusReader.tagged_words(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super().tagged_words(self._resolve(fileids, categories), tagset)
 
     def tagged_sents(self, fileids=None, categories=None, tagset=None):
-        return BracketParseCorpusReader.tagged_sents(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super().tagged_sents(self._resolve(fileids, categories), tagset)
 
     def tagged_paras(self, fileids=None, categories=None, tagset=None):
-        return BracketParseCorpusReader.tagged_paras(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super().tagged_paras(self._resolve(fileids, categories), tagset)
 
     def parsed_words(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.parsed_words(
-            self, self._resolve(fileids, categories)
-        )
+        return super().parsed_words(self._resolve(fileids, categories))
 
     def parsed_sents(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.parsed_sents(
-            self, self._resolve(fileids, categories)
-        )
+        return super().parsed_sents(self._resolve(fileids, categories))
 
     def parsed_paras(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.parsed_paras(
-            self, self._resolve(fileids, categories)
-        )
+        return super().parsed_paras(self._resolve(fileids, categories))
 
 
 class AlpinoCorpusReader(BracketParseCorpusReader):
@@ -221,7 +189,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     def _normalize(self, t, ordered=False):
         """Normalize the xml sentence element in t.
         The sentence elements <alpino_ds>, although embedded in a few overall
-        xml elements, are seperated by blank lines. That's how the reader can
+        xml elements, are separated by blank lines. That's how the reader can
         deliver them one at a time.
         Each sentence has a few category subnodes that are of no use to us.
         The remaining word nodes may or may not appear in the proper order.

@@ -290,7 +290,7 @@ class PathPointer(metaclass=ABCMeta):
         identified by this pointer, and then following the relative
         path given by ``fileid``.  The path components of ``fileid``
         should be separated by forward slashes, regardless of
-        the underlying file system's path seperator character.
+        the underlying file system's path separator character.
         """
 
 
@@ -1294,7 +1294,7 @@ class SeekableUnicodeStreamReader:
         bytes_read = (orig_filepos - len(self.bytebuffer)) - self._rewind_checkpoint
         buf_size = sum(len(line) for line in self.linebuffer)
         est_bytes = int(
-            (bytes_read * self._rewind_numchars / (self._rewind_numchars + buf_size))
+            bytes_read * self._rewind_numchars / (self._rewind_numchars + buf_size)
         )
 
         self.stream.seek(self._rewind_checkpoint)

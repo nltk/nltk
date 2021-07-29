@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Natural Language Toolkit: Gale-Church Aligner
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -77,7 +75,7 @@ except ImportError:
 LOG2 = math.log(2)
 
 
-class LanguageIndependent(object):
+class LanguageIndependent:
     # These are the language-independent probabilities and parameters
     # given in Gale & Church
 
@@ -263,4 +261,3 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
         ]
         for block_it in split_at(stream, hard_delimiter)
     ]
-

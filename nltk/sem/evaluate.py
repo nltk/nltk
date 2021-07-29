@@ -95,7 +95,7 @@ def set2rel(s):
         if isinstance(elem, str):
             new.add((elem,))
         elif isinstance(elem, int):
-            new.add((str(elem)))
+            new.add(str(elem))
         else:
             new.add(elem)
     return new
@@ -252,7 +252,7 @@ class Assignment(dict):
     r"""
     A dictionary which represents an assignment of values to variables.
 
-    An assigment can only assign values from its domain.
+    An assignment can only assign values from its domain.
 
     If an unknown expression *a* is passed to a model *M*\ 's
     interpretation function *i*, *i* will first check whether *M*\ 's
@@ -377,7 +377,7 @@ class Assignment(dict):
         return self
 
 
-class Model(object):
+class Model:
     """
     A first order model is a domain *D* of discourse and a valuation *V*.
 

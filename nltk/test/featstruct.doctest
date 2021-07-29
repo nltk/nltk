@@ -261,7 +261,7 @@ used to combine sets & tuples:
     [x=(1, 2, 3, 4, 5), z=(3, 4, 5)]
 
 Thus, feature value tuples and sets can be used to build up tuples
-and sets of values over the corse of unification.  For example, when
+and sets of values over the course of unification.  For example, when
 parsing sentences using a semantic feature grammar, feature sets or
 feature tuples can be used to build a list of semantic predicates as
 the sentence is parsed.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -37,7 +36,7 @@ def try_port(port=0):
     return p
 
 
-class CoreNLPServer(object):
+class CoreNLPServer:
 
     _MODEL_JAR_PATTERN = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar"
     _JAR = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -221,10 +220,8 @@ class Feature(metaclass=ABCMeta):
         """
 
         return bool(
-            (
-                self.__class__ is other.__class__
-                and set(self.positions) & set(other.positions)
-            )
+            self.__class__ is other.__class__
+            and set(self.positions) & set(other.positions)
         )
 
     # Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),

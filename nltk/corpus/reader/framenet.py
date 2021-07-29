@@ -58,7 +58,7 @@ def _pretty_longstring(defstr, prefix="", wrap_at=65):
 
     :param defstr: The string to be printed.
     :type defstr: str
-    :return: A nicely formated string representation of the long string.
+    :return: A nicely formatted string representation of the long string.
     :rtype: str
     """
 
@@ -75,7 +75,7 @@ def _pretty_any(obj):
 
     :param obj: The obj to be printed.
     :type obj: AttrDict
-    :return: A nicely formated string representation of the AttrDict object.
+    :return: A nicely formatted string representation of the AttrDict object.
     :rtype: str
     """
 
@@ -98,7 +98,7 @@ def _pretty_semtype(st):
 
     :param st: The semantic type to be printed.
     :type st: AttrDict
-    :return: A nicely formated string representation of the semantic type.
+    :return: A nicely formatted string representation of the semantic type.
     :rtype: str
     """
 
@@ -134,7 +134,7 @@ def _pretty_frame_relation_type(freltyp):
 
     :param freltyp: The frame relation type to be printed.
     :type freltyp: AttrDict
-    :return: A nicely formated string representation of the frame relation type.
+    :return: A nicely formatted string representation of the frame relation type.
     :rtype: str
     """
     outstr = "<frame relation type ({0.ID}): {0.superFrameName} -- {0.name} -> {0.subFrameName}>".format(
@@ -150,7 +150,7 @@ def _pretty_frame_relation(frel):
 
     :param frel: The frame relation to be printed.
     :type frel: AttrDict
-    :return: A nicely formated string representation of the frame relation.
+    :return: A nicely formatted string representation of the frame relation.
     :rtype: str
     """
     outstr = "<{0.type.superFrameName}={0.superFrameName} -- {0.type.name} -> {0.type.subFrameName}={0.subFrameName}>".format(
@@ -166,7 +166,7 @@ def _pretty_fe_relation(ferel):
 
     :param ferel: The FE relation to be printed.
     :type ferel: AttrDict
-    :return: A nicely formated string representation of the FE relation.
+    :return: A nicely formatted string representation of the FE relation.
     :rtype: str
     """
     outstr = "<{0.type.superFrameName}={0.frameRelation.superFrameName}.{0.superFEName} -- {0.type.name} -> {0.type.subFrameName}={0.frameRelation.subFrameName}.{0.subFEName}>".format(
@@ -182,7 +182,7 @@ def _pretty_lu(lu):
 
     :param lu: The lu to be printed.
     :type lu: AttrDict
-    :return: A nicely formated string representation of the lexical unit.
+    :return: A nicely formatted string representation of the lexical unit.
     :rtype: str
     """
 
@@ -346,7 +346,7 @@ def _pretty_annotation(sent, aset_level=False):
     :param sent: An annotation set or exemplar sentence to be printed.
     :param aset_level: If True, 'sent' is actually an annotation set within a sentence.
     :type sent: AttrDict
-    :return: A nicely formated string representation of the exemplar sentence
+    :return: A nicely formatted string representation of the exemplar sentence
     with its target, frame, and FE annotations.
     :rtype: str
     """
@@ -664,7 +664,7 @@ def _pretty_fe(fe):
 
     :param fe: The frame element to be printed.
     :type fe: AttrDict
-    :return: A nicely formated string representation of the frame element.
+    :return: A nicely formatted string representation of the frame element.
     :rtype: str
     """
     fekeys = fe.keys()
@@ -708,7 +708,7 @@ def _pretty_frame(frame):
 
     :param frame: The frame to be printed.
     :type frame: AttrDict
-    :return: A nicely formated string representation of the frame.
+    :return: A nicely formatted string representation of the frame.
     :rtype: str
     """
 
@@ -905,7 +905,7 @@ class SpecialList(list):
         return self.__str__()
 
 
-class Future(object):
+class Future:
     """
     Wraps and acts as a proxy for a value to be loaded lazily (on demand).
     Adapted from https://gist.github.com/sergey-miryanov/2935416
@@ -1146,6 +1146,8 @@ class FramenetCorpusReader(XMLCorpusReader):
         self._ferel_idx = None  # FE-to-FE relation instances
         self._frel_f_idx = None  # frame-to-frame relations associated with each frame
 
+        self._readme = "README.txt"
+
     def help(self, attrname=None):
         """Display help information summarizing the main methods."""
 
@@ -1297,17 +1299,6 @@ warnings(True) to display corpus consistency warnings when loading data
         if self._warnings:
             kwargs.setdefault("file", sys.stderr)
             print(*message, **kwargs)
-
-    def readme(self):
-        """
-        Return the contents of the corpus README.txt (or README) file.
-        """
-        try:
-            with self.open("README.txt") as fp:
-                return fp.read()
-        except IOError:
-            with self.open("README") as fp:
-                return fp.read()
 
     def buildindexes(self):
         """
@@ -1579,7 +1570,7 @@ warnings(True) to display corpus consistency warnings when loading data
     def frames_by_lemma(self, pat):
         """
         Returns a list of all frames that contain LUs in which the
-        ``name`` attribute of the LU matchs the given regular expression
+        ``name`` attribute of the LU matches the given regular expression
         ``pat``. Note that LU names are composed of "lemma.POS", where
         the "lemma" part can be made up of either a single lexeme
         (e.g. 'run') or multiple lexemes (e.g. 'a little').
@@ -2187,7 +2178,7 @@ warnings(True) to display corpus consistency warnings when loading data
         :param name: A regular expression pattern used to search the LU
             names. Note that LU names take the form of a dotted
             string (e.g. "run.v" or "a little.adv") in which a
-            lemma preceeds the "." and a POS follows the
+            lemma precedes the "." and a POS follows the
             dot. The lemma may be composed of a single lexeme
             (e.g. "run") or of multiple lexemes (e.g. "a
             little"). If 'name' is not given, then all LUs will
@@ -3314,7 +3305,7 @@ def demo():
     #
     # It is not necessary to explicitly build the indexes by calling
     # buildindexes(). We do this here just for demo purposes. If the
-    # indexes are not built explicitely, they will be built as needed.
+    # indexes are not built explicitly, they will be built as needed.
     #
     print("Building the indexes...")
     fn.buildindexes()

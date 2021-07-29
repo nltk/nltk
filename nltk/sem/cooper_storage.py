@@ -10,7 +10,7 @@ from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 
 
-class CooperStore(object):
+class CooperStore:
     """
     A container for handling quantifier ambiguity via Cooper storage.
     """
@@ -95,7 +95,7 @@ def demo():
     sentence = "every girl chases a dog"
     # sentence = "a man gives a bone to every dog"
     print()
-    print("Analyis of sentence '%s'" % sentence)
+    print("Analysis of sentence '%s'" % sentence)
     print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:

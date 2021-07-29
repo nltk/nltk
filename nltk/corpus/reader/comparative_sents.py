@@ -48,7 +48,7 @@ ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
 KEYWORD = re.compile(r"\((?!.*\()(.*)\)$")
 
 
-class Comparison(object):
+class Comparison:
     """
     A Comparison represents a comparative sentence and its constituents.
     """
@@ -63,7 +63,7 @@ class Comparison(object):
         keyword=None,
     ):
         """
-        :param text: a string (optionally tokenized) containing a comparation.
+        :param text: a string (optionally tokenized) containing a comparison.
         :param comp_type: an integer defining the type of comparison expressed.
             Values can be: 1 (Non-equal gradable), 2 (Equative), 3 (Superlative),
             4 (Non-gradable).
@@ -133,6 +133,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
+        self._readme = "README.txt"
 
     def comparisons(self, fileids=None):
         """
@@ -186,30 +187,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 continue
             keywords.append(line.strip())
         return keywords
-
-    def raw(self, fileids=None):
-        """
-        :param fileids: a list or regexp specifying the fileids that have to be
-            returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for i in fileids:
-            with self.open(i) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
-    def readme(self):
-        """
-        Return the contents of the corpus readme file.
-        """
-        with self.open("README.txt") as fp:
-            return fp.read()
 
     def sents(self, fileids=None):
         """

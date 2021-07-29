@@ -28,7 +28,7 @@ Grammars can be parsed from strings:
     P -> 'on', P -> 'in']
 
 Probabilistic CFGs:
-   
+
     >>> from nltk import PCFG
     >>> toy_pcfg1 = PCFG.fromstring("""
     ... S -> NP VP [1.0]

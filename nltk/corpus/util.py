@@ -16,7 +16,7 @@ import nltk
 TRY_ZIPFILE_FIRST = False
 
 
-class LazyCorpusLoader(object):
+class LazyCorpusLoader:
     """
     To see the API documentation for this lazily loaded corpus, first
     run corpus.ensure_loaded(), and then run help(this_corpus).
@@ -129,7 +129,7 @@ class LazyCorpusLoader(object):
         )
 
     def _unload(self):
-        # If an exception occures during corpus loading then
+        # If an exception occurs during corpus loading then
         # '_unload' method may be unattached, so __getattr__ can be called;
         # we shouldn't trigger corpus loading again in this case.
         pass
@@ -140,7 +140,7 @@ def _make_bound_method(func, self):
     Magic for creating bound methods (used for _unload).
     """
 
-    class Foo(object):
+    class Foo:
         def meth(self):
             pass
 

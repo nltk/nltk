@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: NLTK Command-Line Interface
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -45,7 +44,7 @@ def tokenize_file(language, preserve_line, processes, encoding, delimiter):
     """ This command tokenizes text stream using nltk.word_tokenize """
     with click.get_text_stream("stdin", encoding=encoding) as fin:
         with click.get_text_stream("stdout", encoding=encoding) as fout:
-            # If it's single process, joblib parallization is slower,
+            # If it's single process, joblib parallelization is slower,
             # so just process line by line normally.
             if processes == 1:
                 for line in tqdm(fin.readlines()):

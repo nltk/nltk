@@ -45,7 +45,7 @@ from nltk.metrics import (
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
 
-class AbstractCollocationFinder(object):
+class AbstractCollocationFinder:
     """
     An abstract base class for collocation finders whose purpose is to
     collect collocation candidate frequencies, filter and rank them.

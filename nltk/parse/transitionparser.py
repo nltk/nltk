@@ -24,7 +24,7 @@ except ImportError:
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 
 
-class Configuration(object):
+class Configuration:
     """
     Class for holding configuration which is the partial analysis of the input sentence.
     The transition based parser aims at finding set of operators that transfer the initial
@@ -177,7 +177,7 @@ class Configuration(object):
         return result
 
 
-class Transition(object):
+class Transition:
     """
     This class defines a set of transition which is applied to a configuration to get another configuration
     Note that for different parsing algorithm, the transition is different.
@@ -574,7 +574,7 @@ class TransitionParser(ParserI):
                 )
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
-                # Using decision funcion to build the votes array
+                # Using decision function to build the votes array
                 # dec_func = model.decision_function(x_test)[0]
                 # votes = {}
                 # k = 0

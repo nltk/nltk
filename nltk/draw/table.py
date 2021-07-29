@@ -125,14 +125,14 @@ class MultiListbox(Frame):
             # Clicking or dragging selects:
             lb.bind("<Button-1>", self._select)
             lb.bind("<B1-Motion>", self._select)
-            # Scroll whell scrolls:
+            # Scroll wheel scrolls:
             lb.bind("<Button-4>", lambda e: self._scroll(-1))
             lb.bind("<Button-5>", lambda e: self._scroll(+1))
             lb.bind("<MouseWheel>", lambda e: self._scroll(e.delta))
             # Button 2 can be used to scan:
             lb.bind("<Button-2>", lambda e: self.scan_mark(e.x, e.y))
             lb.bind("<B2-Motion>", lambda e: self.scan_dragto(e.x, e.y))
-            # Dragging outside the window has no effect (diable
+            # Dragging outside the window has no effect (disable
             # the default listbox behavior, which scrolls):
             lb.bind("<B1-Leave>", lambda e: "break")
             # Columns can be resized by dragging them:
@@ -579,12 +579,12 @@ class MultiListbox(Frame):
 ######################################################################
 
 
-class Table(object):
+class Table:
     """
     A display widget for a table of values, based on a ``MultiListbox``
     widget.  For many purposes, ``Table`` can be treated as a
     list-of-lists.  E.g., table[i] is a list of the values for row i;
-    and table.append(row) adds a new row with the given lits of
+    and table.append(row) adds a new row with the given list of
     values.  Individual cells can be accessed using table[i,j], which
     refers to the j-th column of the i-th row.  This can be used to
     both read and write values from the table.  E.g.:
@@ -641,7 +641,7 @@ class Table(object):
             and can be used as an index when reading or writing
             cell values from the table.
         :type rows: list(list)
-        :param rows: A list of row values used to initialze the table.
+        :param rows: A list of row values used to initialize the table.
             Each row value should be a tuple of cell values, one for
             each column in the row.
         :type scrollbar: bool
@@ -779,7 +779,7 @@ class Table(object):
         """
         Add new rows at the end of the table.
 
-        :param rowvalues: A list of row values used to initialze the
+        :param rowvalues: A list of row values used to initialize the
             table.  Each row value should be a tuple of cell values,
             one for each column in the row.
         """

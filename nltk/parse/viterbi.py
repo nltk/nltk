@@ -121,7 +121,7 @@ class ViterbiParser(ParserI):
         # Initialize the constituents dictionary with the words from
         # the text.
         if self._trace:
-            print(("Inserting tokens into the most likely" + " constituents table..."))
+            print("Inserting tokens into the most likely" + " constituents table...")
         for index in range(len(tokens)):
             token = tokens[index]
             constituents[index, index + 1, token] = token
@@ -133,10 +133,8 @@ class ViterbiParser(ParserI):
         for length in range(1, len(tokens) + 1):
             if self._trace:
                 print(
-                    (
-                        "Finding the most likely constituents"
-                        + " spanning %d text elements..." % length
-                    )
+                    "Finding the most likely constituents"
+                    + " spanning %d text elements..." % length
                 )
             for start in range(len(tokens) - length + 1):
                 span = (start, start + length)

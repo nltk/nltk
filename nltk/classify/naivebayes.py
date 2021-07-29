@@ -101,7 +101,7 @@ class NaiveBayesClassifier(ClassifierI):
                 # print('Ignoring unseen feature %s' % fname)
                 del featureset[fname]
 
-        # Find the log probabilty of each label, given the features.
+        # Find the log probability of each label, given the features.
         # Start with the log probability of the label itself.
         logprob = {}
         for label in self._labels:
@@ -147,10 +147,8 @@ class NaiveBayesClassifier(ClassifierI):
                     cpdist[l1, fname].prob(fval) / cpdist[l0, fname].prob(fval)
                 )
             print(
-                (
-                    "%24s = %-14r %6s : %-6s = %s : 1.0"
-                    % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
-                )
+                "%24s = %-14r %6s : %-6s = %s : 1.0"
+                % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
             )
 
     def most_informative_features(self, n=100):

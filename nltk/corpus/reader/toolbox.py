@@ -67,17 +67,6 @@ class ToolboxCorpusReader(CorpusReader):
     def words(self, fileids, key="lx"):
         return [contents for marker, contents in self.fields(fileids) if marker == key]
 
-    def raw(self, fileids):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
-
 
 def demo():
     pass

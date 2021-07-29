@@ -223,9 +223,10 @@ class MTECorpusReader(TaggedCorpusReader):
 
         :param root: The root directory for this corpus. (default points to location in multext config file)
         :param fileids: A list or regexp specifying the fileids in this corpus. (default is oana-en.xml)
-        :param enconding: The encoding of the given files (default is utf8)
+        :param encoding: The encoding of the given files (default is utf8)
         """
         TaggedCorpusReader.__init__(self, root, fileids, encoding)
+        self._readme = "00README.txt"
 
     def __fileids(self, fileids):
         if fileids is None:
@@ -239,27 +240,6 @@ class MTECorpusReader(TaggedCorpusReader):
         if not fileids:
             print("No valid multext-east file specified")
         return fileids
-
-    def readme(self):
-        """
-        Prints some information about this corpus.
-        :return: the content of the attached README file
-        :rtype: str
-        """
-        with self.open("00README.txt") as fp:
-            return fp.read()
-
-    def raw(self, fileids=None):
-        """
-	    :param fileids: A list specifying the fileids that should be used.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        contents = []
-        for i in self.__fileids(fileids):
-            with self.open(i) as fp:
-                contents.append(fp.read())
-        return reduce(contents, [])
 
     def words(self, fileids=None):
         """

@@ -18,7 +18,7 @@ universal syllabification algorithm, but that does not mean it performs equally
 across languages. Bartlett et al. (2009) is a good benchmark for English accuracy
 if utilizing IPA (pg. 311).
 
-Importantly, if a custom hiearchy is supplied and vowels span across more than
+Importantly, if a custom hierarchy is supplied and vowels span across more than
 one level, they should be given separately to the `vowels` class attribute.
 
 References:
@@ -105,7 +105,7 @@ class SyllableTokenizer(TokenizerI):
                     )
                     syllables_values.append((c, max(self.phoneme_map.values())))
                     self.vowels += c
-                else:  # If it's a punctuation, assing -1.
+                else:  # If it's a punctuation, assign -1.
                     syllables_values.append((c, -1))
         return syllables_values
 

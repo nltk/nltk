@@ -161,7 +161,7 @@ at 9353:
     >>> print(inst.predicate.select(inst.tree))
     Traceback (most recent call last):
       . . .
-    ValueError: Parse tree not avaialable
+    ValueError: Parse tree not available
 
 However, if you supply your own version of the treebank corpus (by
 putting it before the nltk-provided version on `nltk.data.path`, or

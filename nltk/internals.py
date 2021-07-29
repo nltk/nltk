@@ -434,13 +434,13 @@ def deprecated(message):
     return decorator
 
 
-class Deprecated(object):
+class Deprecated:
     """
     A base class used to mark deprecated classes.  A typical usage is to
     alert users that the name of a class has changed:
 
         >>> from nltk.internals import Deprecated
-        >>> class NewClassName(object):
+        >>> class NewClassName:
         ...     pass # All logic goes here.
         ...
         >>> class OldClassName(Deprecated, NewClassName):
@@ -618,7 +618,7 @@ def find_file_iter(
         msg = (
             "NLTK was unable to find the %s file!"
             "\nUse software specific "
-            "configuration paramaters" % filename
+            "configuration parameters" % filename
         )
         if env_vars:
             msg += " or set the %s environment variable" % env_vars[0]
@@ -896,7 +896,7 @@ def import_from_stdlib(module):
 
 
 
-class ElementWrapper(object):
+class ElementWrapper:
     """
     A wrapper around ElementTree Element objects whose main purpose is
     to provide nicer __repr__ and __str__ methods.  In addition, any

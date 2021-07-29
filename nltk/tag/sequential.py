@@ -524,7 +524,7 @@ class RegexpTagger(SequentialBackoffTagger):
     :type regexps: list(tuple(str, str))
     :param regexps: A list of ``(regexp, tag)`` pairs, each of
         which indicates that a word matching ``regexp`` should
-        be tagged with ``tag``.  The pairs will be evalutated in
+        be tagged with ``tag``.  The pairs will be evaluated in
         order.  If none of the regexps match a word, then the
         optional backoff tagger is invoked, else it is
         assigned the tag None.

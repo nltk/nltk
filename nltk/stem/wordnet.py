@@ -10,7 +10,7 @@ from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
 
 
-class WordNetLemmatizer(object):
+class WordNetLemmatizer:
     """
     WordNet Lemmatizer
 

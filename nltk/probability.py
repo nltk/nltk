@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -1939,7 +1938,7 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            import matplotlib.pyplot as plt #import statment fix
+            import matplotlib.pyplot as plt #import statement fix
         except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
@@ -2298,7 +2297,7 @@ def sum_logs(logs):
 ##//////////////////////////////////////////////////////
 
 
-class ProbabilisticMixIn(object):
+class ProbabilisticMixIn:
     """
     A mix-in class to associate probabilities with other classes
     (trees, rules, etc.).  To use the ``ProbabilisticMixIn`` class,
@@ -2492,10 +2491,8 @@ def demo(numsamples=6, numoutcomes=500):
 
     # Print the results in a formatted table.
     print(
-        (
-            "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
-            % (numsamples, numsamples, numoutcomes)
-        )
+        "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
+        % (numsamples, numsamples, numoutcomes)
     )
     print("=" * 9 * (len(pdists) + 2))
     FORMATSTR = "      FreqDist " + "%8s " * (len(pdists) - 1) + "|  Actual"
@@ -2533,7 +2530,7 @@ def gt_demo():
     emma_words = corpus.gutenberg.words("austen-emma.txt")
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    print("%18s %8s  %14s" % ("word", "freqency", "SimpleGoodTuring"))
+    print("%18s %8s  %14s" % ("word", "frequency", "SimpleGoodTuring"))
     fd_keys_sorted = (
         key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True)
     )

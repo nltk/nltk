@@ -12,7 +12,7 @@ from nltk.sem.logic import LogicParser, APP
 _counter = Counter()
 
 
-class Tokens(object):
+class Tokens:
     # Punctuation
     OPEN = "("
     CLOSE = ")"
@@ -71,7 +71,7 @@ class LinearLogicParser(LogicParser):
             return ConstantExpression(name)
 
 
-class Expression(object):
+class Expression:
 
     _linear_logic_parser = LinearLogicParser()
 
@@ -367,7 +367,7 @@ class ApplicationExpression(Expression):
         )
 
 
-class BindingDict(object):
+class BindingDict:
     def __init__(self, bindings=None):
         """
         :param bindings:

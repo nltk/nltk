@@ -605,6 +605,16 @@ Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) t
     >>> wn.synsets("slang")[1].in_usage_domains()[18]
     Synset('can-do.s.01')
 
+Issue 2721: WordNetCorpusReader.ic() does not add smoothing to N
+
+    >>> class FakeCorpus:
+    ...     def words(self): return ['word']
+    ...
+    >>> fake_ic = wn.ic(FakeCorpus(), False, 1.0)
+    >>> word = wn.synset('word.n.01')
+    >>> information_content(word, fake_ic) > 0
+    True
+
 
 ------------------------------------------------
 Endlessness vs. intractability in relation trees
@@ -737,7 +747,7 @@ But, while the also_sees() acyclic_tree of 'bound.a.01' reaches
 'classified.a.02' through four links, using depth-first search as seen above
 (bound.a.01 > unfree.a.02 > confined.a.02 > restricted.a.01 > classified.a.02),
 in the following MST, the path to 'classified.a.02' is the shortest possible,
-consisting only in three links (bound.a.01 > unfree.a.02 > restricted.a.01 > 
+consisting only in three links (bound.a.01 > unfree.a.02 > restricted.a.01 >
 classified.a.02):
 
     >>> pprint(wn.synset('bound.a.01').mst(lambda s:s.also_sees()))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -303,7 +302,7 @@ class Query(Twython):
             self.handler.handle(item)
 
 
-class Twitter(object):
+class Twitter:
     """
     Wrapper class with restricted functionality and fewer options.
     """
@@ -475,7 +474,7 @@ class TweetWriter(TweetHandlerI):
         written. If `True`, the length of each file will be set by the value\
         of `limit`. See also :py:func:`handle`.
 
-        :param gzip_compress: if `True`, ouput files are compressed with gzip.
+        :param gzip_compress: if `True`, output files are compressed with gzip.
         """
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)

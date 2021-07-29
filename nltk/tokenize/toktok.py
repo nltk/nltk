@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Python port of the tok-tok.pl tokenizer.
 #
 # Copyright (C) 2001-2015 NLTK Project
@@ -172,8 +171,8 @@ class ToktokTokenizer(TokenizerI):
 
     def tokenize(self, text, return_str=False):
         text = str(text)  # Converts input string into unicode.
-        for regexp, subsitution in self.TOKTOK_REGEXES:
-            text = regexp.sub(subsitution, text)
+        for regexp, substitution in self.TOKTOK_REGEXES:
+            text = regexp.sub(substitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
         text = str(text.strip())

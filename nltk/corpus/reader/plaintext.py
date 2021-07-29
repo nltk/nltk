@@ -23,7 +23,7 @@ class PlaintextCorpusReader(CorpusReader):
     Reader for corpora that consist of plaintext documents.  Paragraphs
     are assumed to be split using blank lines.  Sentences and words can
     be tokenized using the default tokenizers, or by custom tokenizers
-    specificed as parameters to the constructor.
+    specified as parameters to the constructor.
 
     This corpus reader can be customized (e.g., to skip preface
     sections of specific document formats) by creating a subclass and
@@ -64,22 +64,6 @@ class PlaintextCorpusReader(CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        raw_texts = []
-        for f in fileids:
-            _fin = self.open(f)
-            raw_texts.append(_fin.read())
-            _fin.close()
-        return concat(raw_texts)
 
     def words(self, fileids=None):
         """
@@ -172,26 +156,6 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
         """
         CategorizedCorpusReader.__init__(self, kwargs)
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
-
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError("Specify fileids or categories, not both")
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
-
-    def raw(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.raw(self, self._resolve(fileids, categories))
-
-    def words(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.words(self, self._resolve(fileids, categories))
-
-    def sents(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.sents(self, self._resolve(fileids, categories))
-
-    def paras(self, fileids=None, categories=None):
-        return PlaintextCorpusReader.paras(self, self._resolve(fileids, categories))
 
 
 # FIXME: Is there a better way? How to not hardcode this?
