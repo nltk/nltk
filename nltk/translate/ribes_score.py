@@ -279,11 +279,9 @@ def kendall_tau(worder, normalize=True):
     :rtype: float
     """
     worder_len = len(worder)
-    # If the length of the word order list is less than 2,
-    # then num_possible_pairs will be 0. This produces a ZeroDivisionError.
-    # So, instead, we want to return the lowest possible score.
-    # From worder_len as 2 or higher, `choose(worder_len, 2)` will no longer
-    # be 0.
+    # With worder_len < 2, `choose(worder_len, 2)` will be 0.
+    # As we divide by this, it will give a ZeroDivisionError.
+    # To avoid this, we can just return the lowest possible score.
     if worder_len < 2:
         tau = -1
     else:
