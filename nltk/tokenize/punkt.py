@@ -1285,27 +1285,27 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             decision_text = match.group() + match.group("after_tok")
             tokens = self._tokenize_words(decision_text)
             tokens = list(self._annotate_first_pass(tokens))
-            while not tokens[0].period_final:
+            while not tokens[0].tok.endswith(self._lang_vars.sent_end_chars):
                 tokens.pop(0)
-            yield dict(
-                period_index=match.end() - 1,
-                text=decision_text,
-                type1=tokens[0].type,
-                type2=tokens[1].type,
-                type1_in_abbrs=bool(tokens[0].abbr),
-                type1_is_initial=bool(tokens[0].is_initial),
-                type2_is_sent_starter=tokens[1].type_no_sentperiod
-                in self._params.sent_starters,
-                type2_ortho_heuristic=self._ortho_heuristic(tokens[1]),
-                type2_ortho_contexts=set(
+            yield {
+                "period_index": match.end() - 1,
+                "text": decision_text,
+                "type1": tokens[0].type,
+                "type2": tokens[1].type,
+                "type1_in_abbrs": bool(tokens[0].abbr),
+                "type1_is_initial": bool(tokens[0].is_initial),
+                "type2_is_sent_starter": tokens[1].type_no_sentperiod 
+                                         in self._params.sent_starters,
+                "type2_ortho_heuristic": self._ortho_heuristic(tokens[1]),
+                "type2_ortho_contexts": set(
                     self._params._debug_ortho_context(tokens[1].type_no_sentperiod)
                 ),
-                collocation=(tokens[0].type_no_sentperiod, tokens[1].type_no_sentperiod)
-                in self._params.collocations,
-                reason=self._second_pass_annotation(tokens[0], tokens[1])
-                or REASON_DEFAULT_DECISION,
-                break_decision=tokens[0].sentbreak,
-            )
+                "collocation": (tokens[0].type_no_sentperiod, tokens[1].type_no_sentperiod)
+                               in self._params.collocations,
+                "reason": self._second_pass_annotation(tokens[0], tokens[1])
+                          or REASON_DEFAULT_DECISION,
+                "break_decision": tokens[0].sentbreak,
+            }
 
     def span_tokenize(self, text, realign_boundaries=True):
         """
@@ -1633,21 +1633,21 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         return "unknown"
 
 
-DEBUG_DECISION_FMT = """Text: %(text)r (at offset %(period_index)d)
-Sentence break? %(break_decision)s (%(reason)s)
-Collocation? %(collocation)s
-%(type1)r:
-    known abbreviation: %(type1_in_abbrs)s
-    is initial: %(type1_is_initial)s
-%(type2)r:
-    known sentence starter: %(type2_is_sent_starter)s
-    orthographic heuristic suggests is a sentence starter? %(type2_ortho_heuristic)s
-    orthographic contexts in training: %(type2_ortho_contexts)s
+DEBUG_DECISION_FMT = """Text: {text!r} (at offset {period_index})
+Sentence break? {break_decision} ({reason})
+Collocation? {collocation}
+{type1!r}:
+    known abbreviation: {type1_in_abbrs}
+    is initial: {type1_is_initial}
+{type2!r}:
+    known sentence starter: {type2_is_sent_starter}
+    orthographic heuristic suggests is a sentence starter? {type2_ortho_heuristic}
+    orthographic contexts in training: {type2_ortho_contexts}
 """
 
 
 def format_debug_decision(d):
-    return DEBUG_DECISION_FMT % d
+    return DEBUG_DECISION_FMT.format(**d)
 
 
 def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
