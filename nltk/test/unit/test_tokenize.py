@@ -499,3 +499,14 @@ class TestTokenize:
         # with one split and hence one decision.
         assert len(tokenizer.tokenize(txt)) == 2
         assert len(list(tokenizer.debug_decisions(txt))) == 1
+
+    def test_punkt_debug_decisions_no_split(self):
+        # Test debug_decisions on a text with one sentences, 
+        # which is not split.
+        tokenizer = punkt.PunktSentenceTokenizer()
+
+        txt = "This is just a normal sentence, just like any other."
+
+        # Test that the sentence is not split.
+        assert len(tokenizer.tokenize(txt)) == 1
+        assert len(list(tokenizer.debug_decisions(txt))) == 0
