@@ -25,7 +25,7 @@ def load_stanford_segmenter():
         return False
 
 
-stanford_segmenter = pytest.mark.skipif(
+check_stanford_segmenter = pytest.mark.skipif(
     not load_stanford_segmenter(), reason="NLTK was unable to find stanford-segmenter.jar."
 )
 
@@ -71,7 +71,7 @@ class TestTokenize:
         tokens = tokenizer.tokenize(test_word)
         assert tokens == ['won', 'der', 'ful']
 
-    @stanford_segmenter
+    @check_stanford_segmenter
     def test_stanford_segmenter_arabic(self):
         """
         Test the Stanford Word Segmenter for Arabic (default config)
@@ -95,7 +95,7 @@ class TestTokenize:
             'المشكلات',
         ]
 
-    @stanford_segmenter
+    @check_stanford_segmenter
     def test_stanford_segmenter_chinese(self):
         """
         Test the Stanford Word Segmenter for Chinese (default config)
@@ -468,7 +468,7 @@ class TestTokenize:
         tokenizer = punkt.PunktSentenceTokenizer()
         txt = "Subject: Some subject. Attachments: Some attachemnts"
 
-        # Test that the sentence is split into two sections, 
+        # Test that the sentence is split into two sections,
         # with one split and hence one decision.
         assert len(tokenizer.tokenize(txt)) == 2
         assert len(list(tokenizer.debug_decisions(txt))) == 1
@@ -478,16 +478,16 @@ class TestTokenize:
         tokenizer = punkt.PunktSentenceTokenizer()
         txt = "Subject: Some subject! Attachments: Some attachemnts"
 
-        # Test that the sentence is split into two sections, 
+        # Test that the sentence is split into two sections,
         # with one split and hence one decision.
         assert len(tokenizer.tokenize(txt)) == 2
         assert len(list(tokenizer.debug_decisions(txt))) == 1
 
     def test_punkt_debug_decisions_custom_end(self):
-        # Test debug_decisions on a text with two sentences, 
+        # Test debug_decisions on a text with two sentences,
         # split by a custom end character, based on Issue #2519
         tokenizer = punkt.PunktSentenceTokenizer()
-        
+
         class ExtLangVars(punkt.PunktLanguageVars):
             sent_end_chars = ('.', '?', '!', '^')
 
@@ -495,13 +495,13 @@ class TestTokenize:
 
         txt = "Subject: Some subject^ Attachments: Some attachemnts"
 
-        # Test that the sentence is split into two sections, 
+        # Test that the sentence is split into two sections,
         # with one split and hence one decision.
         assert len(tokenizer.tokenize(txt)) == 2
         assert len(list(tokenizer.debug_decisions(txt))) == 1
 
     def test_punkt_debug_decisions_no_split(self):
-        # Test debug_decisions on a text with one sentences, 
+        # Test debug_decisions on a text with one sentences,
         # which is not split.
         tokenizer = punkt.PunktSentenceTokenizer()
 
