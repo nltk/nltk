@@ -14,24 +14,20 @@ from nltk.tokenize import (
     LegalitySyllableTokenizer,
 )
 
-def setup_module(module):
-    import pytest
 
+def load_stanford_segmenter():
     try:
         seg = StanfordSegmenter()
         seg.default_config("ar")
         seg.default_config("zh")
-    except LookupError as e:
-        pytest.skip(
-            "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
-        )
-
-    try:
-        StanfordTokenizer()
+        return True
     except LookupError:
-        pytest.skip(
-            "Tests for nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"
-        )
+        return False
+
+
+stanford_segmenter = pytest.mark.skipif(
+    not load_stanford_segmenter(), reason="NLTK was unable to find stanford-segmenter.jar."
+)
 
 
 class TestTokenize:
@@ -75,44 +71,40 @@ class TestTokenize:
         tokens = tokenizer.tokenize(test_word)
         assert tokens == ['won', 'der', 'ful']
 
+    @stanford_segmenter
     def test_stanford_segmenter_arabic(self):
         """
         Test the Stanford Word Segmenter for Arabic (default config)
         """
-        try:
-            seg = StanfordSegmenter()
-            seg.default_config('ar')
-            sent = u'يبحث علم الحاسوب استخدام الحوسبة بجميع اشكالها لحل المشكلات'
-            segmented_sent = seg.segment(sent.split())
-            assert segmented_sent.split() == [
-                'يبحث',
-                'علم',
-                'الحاسوب',
-                'استخدام',
-                'الحوسبة',
-                'ب',
-                'جميع',
-                'اشكال',
-                'ها',
-                'ل',
-                'حل',
-                'المشكلات',
-            ]
-        except LookupError as e:
-            pytest.skip(str(e))
+        seg = StanfordSegmenter()
+        seg.default_config('ar')
+        sent = u'يبحث علم الحاسوب استخدام الحوسبة بجميع اشكالها لحل المشكلات'
+        segmented_sent = seg.segment(sent.split())
+        assert segmented_sent.split() == [
+            'يبحث',
+            'علم',
+            'الحاسوب',
+            'استخدام',
+            'الحوسبة',
+            'ب',
+            'جميع',
+            'اشكال',
+            'ها',
+            'ل',
+            'حل',
+            'المشكلات',
+        ]
 
+    @stanford_segmenter
     def test_stanford_segmenter_chinese(self):
         """
         Test the Stanford Word Segmenter for Chinese (default config)
         """
-        try:
-            seg = StanfordSegmenter()
-            seg.default_config('zh')
-            sent = u"这是斯坦福中文分词器测试"
-            segmented_sent = seg.segment(sent.split())
-            assert segmented_sent.split() == ['这', '是', '斯坦福', '中文', '分词器', '测试']
-        except LookupError as e:
-            pytest.skip(str(e))
+        seg = StanfordSegmenter()
+        seg.default_config('zh')
+        sent = u"这是斯坦福中文分词器测试"
+        segmented_sent = seg.segment(sent.split())
+        assert segmented_sent.split() == ['这', '是', '斯坦福', '中文', '分词器', '测试']
 
     def test_phone_tokenizer(self):
         """
@@ -470,3 +462,40 @@ class TestTokenize:
         expected = ["উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"]
 
         assert obj.tokenize(sentences) == expected
+
+    def test_punkt_debug_decisions_dot(self):
+        # Test debug_decisions on a text with two sentences, split by a dot.
+        tokenizer = punkt.PunktSentenceTokenizer()
+        txt = "Subject: Some subject. Attachments: Some attachemnts"
+
+        # Test that the sentence is split into two sections, 
+        # with one split and hence one decision.
+        assert len(tokenizer.tokenize(txt)) == 2
+        assert len(list(tokenizer.debug_decisions(txt))) == 1
+
+    def test_punkt_debug_decisions_exclamation_mark(self):
+        # Test debug_decisions on a text with two sentences, split by a dot.
+        tokenizer = punkt.PunktSentenceTokenizer()
+        txt = "Subject: Some subject! Attachments: Some attachemnts"
+
+        # Test that the sentence is split into two sections, 
+        # with one split and hence one decision.
+        assert len(tokenizer.tokenize(txt)) == 2
+        assert len(list(tokenizer.debug_decisions(txt))) == 1
+
+    def test_punkt_debug_decisions_custom_end(self):
+        # Test debug_decisions on a text with two sentences, 
+        # split by a custom end character, based on Issue #2519
+        tokenizer = punkt.PunktSentenceTokenizer()
+        
+        class ExtLangVars(punkt.PunktLanguageVars):
+            sent_end_chars = ('.', '?', '!', '^')
+
+        tokenizer._lang_vars = ExtLangVars()
+
+        txt = "Subject: Some subject^ Attachments: Some attachemnts"
+
+        # Test that the sentence is split into two sections, 
+        # with one split and hence one decision.
+        assert len(tokenizer.tokenize(txt)) == 2
+        assert len(list(tokenizer.debug_decisions(txt))) == 1
