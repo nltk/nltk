@@ -1285,7 +1285,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             decision_text = match.group() + match.group("after_tok")
             tokens = self._tokenize_words(decision_text)
             tokens = list(self._annotate_first_pass(tokens))
-            while not tokens[0].tok.endswith(self._lang_vars.sent_end_chars):
+            while tokens and not tokens[0].tok.endswith(self._lang_vars.sent_end_chars):
                 tokens.pop(0)
             yield {
                 "period_index": match.end() - 1,
