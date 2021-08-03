@@ -1176,7 +1176,7 @@ class PunktTrainer(PunktBaseClass):
 
     def _is_potential_sent_starter(self, cur_tok, prev_tok):
         """
-        Returns True given a token and the token that preceds it if it
+        Returns True given a token and the token that precedes it if it
         seems clear that the token is beginning a sentence.
         """
         # If a token (i) is preceded by a sentece break that is
@@ -1586,7 +1586,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                     return REASON_NUMBER_WITH_ORTHOGRAPHIC_HEURISTIC
 
             # Special heuristic for initials: if orthogrpahic
-            # heuristc is unknown, and next word is always
+            # heuristic is unknown, and next word is always
             # capitalized, then mark as abbrev (eg: J. Bach).
             if (
                 is_sent_starter == "unknown"

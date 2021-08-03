@@ -383,7 +383,7 @@ Parented Tree Methods
 ------------------------
 In addition to all the methods defined by the `Tree` class, the
 `ParentedTree` class adds six new methods whose values are
-automatically updated whenver a parented tree is modified: `parent()`,
+automatically updated whenever a parented tree is modified: `parent()`,
 `parent_index()`, `left_sibling()`, `right_sibling()`, `root()`, and
 `treeposition()`.
 
@@ -542,7 +542,7 @@ variable:
 
     >>> all_ptrees = []
 
-Define a helper funciton to create new parented trees:
+Define a helper function to create new parented trees:
 
     >>> def make_ptree(s):
     ...     ptree = ParentedTree.convert(Tree.fromstring(s))
@@ -826,7 +826,7 @@ variable:
 
     >>> all_mptrees = []
 
-Define a helper funciton to create new parented trees:
+Define a helper function to create new parented trees:
 
     >>> def make_mptree(s):
     ...     mptree = MultiParentedTree.convert(Tree.fromstring(s))

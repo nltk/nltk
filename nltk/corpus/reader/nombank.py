@@ -59,7 +59,7 @@ class NombankCorpusReader(CorpusReader):
         if isinstance(framefiles, str):
             self._fileids = find_corpus_fileids(root, framefiles)
         self._fileids = list(framefiles)
-        # Initialze the corpus reader.
+        # Initialize the corpus reader.
         CorpusReader.__init__(self, root, framefiles, encoding)
 
         # Record our nom file & nouns file.
@@ -344,7 +344,7 @@ class NombankChainTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
 
 
@@ -362,7 +362,7 @@ class NombankSplitTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*SPLIT*", [p.select(tree) for p in self.pieces])
 
 
@@ -429,7 +429,7 @@ class NombankTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return tree[self.treepos(tree)]
 
     def treepos(self, tree):
@@ -438,7 +438,7 @@ class NombankTreePointer(NombankPointer):
         given that it points to the given tree.
         """
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         stack = [tree]
         treepos = []
 

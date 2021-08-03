@@ -906,8 +906,8 @@ def tag_pattern2re_pattern(tag_pattern):
           ``'<NN>+'`` matches one or more repetitions of ``'<NN>'``, not
           ``'<NN'`` followed by one or more repetitions of ``'>'``.
         - Whitespace in tag patterns is ignored.  So
-          ``'<DT> | <NN>'`` is equivalant to ``'<DT>|<NN>'``
-        - In tag patterns, ``'.'`` is equivalant to ``'[^{}<>]'``; so
+          ``'<DT> | <NN>'`` is equivalent to ``'<DT>|<NN>'``
+        - In tag patterns, ``'.'`` is equivalent to ``'[^{}<>]'``; so
           ``'<NN.*>'`` matches any single tag starting with ``'NN'``.
 
     In particular, ``tag_pattern2re_pattern`` performs the following
@@ -1057,7 +1057,7 @@ class RegexpChunkParser(ChunkParserI):
         :param trace: The level of tracing that should be used when
             parsing a text.  ``0`` will generate no tracing output;
             ``1`` will generate normal tracing output; and ``2`` or
-            highter will generate verbose tracing output.  This value
+            higher will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor.
         :rtype: Tree
@@ -1263,7 +1263,7 @@ class RegexpParser(ChunkParserI):
         :param trace: The level of tracing that should be used when
             parsing a text.  ``0`` will generate no tracing output;
             ``1`` will generate normal tracing output; and ``2`` or
-            highter will generate verbose tracing output.  This value
+            higher will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor.
         :return: the chunked output.

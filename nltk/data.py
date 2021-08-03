@@ -290,7 +290,7 @@ class PathPointer(metaclass=ABCMeta):
         identified by this pointer, and then following the relative
         path given by ``fileid``.  The path components of ``fileid``
         should be separated by forward slashes, regardless of
-        the underlying file system's path seperator character.
+        the underlying file system's path separator character.
         """
 
 

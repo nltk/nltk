@@ -1237,7 +1237,7 @@ def diff(p, q, f):
 
 def R(p, q):
     """
-    Return relevant features for segment comparsion.
+    Return relevant features for segment comparison.
 
     (Kondrak 2002: 54)
     """

@@ -249,7 +249,7 @@ class FeatureFundamentalRule(FundamentalRule):
     r"""
     A specialized version of the fundamental rule that operates on
     nonterminals whose symbols are ``FeatStructNonterminal``s.  Rather
-    tha simply comparing the nonterminals for equality, they are
+    than simply comparing the nonterminals for equality, they are
     unified.  Variable bindings from these unifications are collected
     and stored in the chart using a ``FeatureTreeEdge``.  When a
     complete edge is generated, these bindings are applied to all

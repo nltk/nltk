@@ -1416,7 +1416,7 @@ class SequenceWidget(CanvasWidget):
     def remove_child(self, child):
         """
         Remove the given child canvas widget.  ``child``'s parent will
-        be set ot None.
+        be set to None.
 
         :type child: CanvasWidget
         :param child: The child canvas widget to remove.
@@ -1588,7 +1588,7 @@ class StackWidget(CanvasWidget):
     def remove_child(self, child):
         """
         Remove the given child canvas widget.  ``child``'s parent will
-        be set ot None.
+        be set to None.
 
         :type child: CanvasWidget
         :param child: The child canvas widget to remove.
