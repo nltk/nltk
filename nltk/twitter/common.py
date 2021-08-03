@@ -137,9 +137,9 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
 
 def _outf_writer(outfile, encoding, errors, gzip_compress=False):
     if gzip_compress:
-        outf = gzip.open(outfile, "wt", encoding=encoding, errors=errors)
+        outf = gzip.open(outfile, "wt", newline="", encoding=encoding, errors=errors)
     else:
-        outf = open(outfile, "w", encoding=encoding, errors=errors)
+        outf = open(outfile, "w", newline="", encoding=encoding, errors=errors)
     writer = csv.writer(outf)
     return (writer, outf)
 
