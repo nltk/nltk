@@ -253,7 +253,7 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                 pass
 
 
-def edges2dot(edges, shapes=dict(), attr=dict()):
+def edges2dot(edges, shapes=None, attr=None):
     """
     :param edges: the set (or list) of edges of a directed graph.
 
@@ -275,15 +275,23 @@ def edges2dot(edges, shapes=dict(), attr=dict()):
     }
 
     """
+    if not shapes:
+        shapes = dict()
+    if not attr:
+        attr = dict()
+
     dot_string = 'digraph G {\n'
+
     for tup in attr.items():
-        dot_string += "%s=%s;\n" % tup
+        dot_string += f'{tup[0]} = {tup[1]};\n'
+
     for pair in edges:
         for shape in shapes.items():
             for x in range(2):
                 if shape[0] in repr(pair[x]):
-                    dot_string += '"%s" [shape = %s];\n' % (pair[x], shape[1])
-        dot_string += '"%s" -> "%s";\n' % pair
+                    dot_string += f'"{pair[x]}" [shape = {shape[1]}];\n'
+        dot_string += f'"{pair[0]}" -> "{pair[1]}";\n'
+
     dot_string += '}\n'
     return dot_string
 

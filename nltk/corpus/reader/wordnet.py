@@ -2053,7 +2053,7 @@ class WordNetCorpusReader(CorpusReader):
     ######################################################################
 
 
-    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, maxdepth=-1, shapes=dict(), attr=dict(), verbose=False):
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, maxdepth=-1, shapes=None, attr=None, verbose=False):
         """
         Produce a graphical representation from 'inputs' (a list of
         start nodes, which can be a mix of Synsets, Lemmas and/or words),
@@ -2096,6 +2096,10 @@ class WordNetCorpusReader(CorpusReader):
         from nltk.util import edge_closure, edges2dot
         synsets = set()
         edges = set()
+        if not shapes:
+            shapes = dict()
+        if not attr:
+            attr = dict()
 
         def add_lemma(x):
             ss = x.synset()
