@@ -453,7 +453,9 @@ class ProbabilisticProjectiveDependencyParser:
         for dg in graphs:
             for node_index in range(1, len(dg.nodes)):
                 # children = dg.nodes[node_index]['deps']
-                children = list(chain.from_iterable(dg.nodes[node_index]["deps"].values()))
+                children = list(
+                    chain.from_iterable(dg.nodes[node_index]["deps"].values())
+                )
 
                 nr_left_children = dg.left_children(node_index)
                 nr_right_children = dg.right_children(node_index)

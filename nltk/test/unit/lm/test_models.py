@@ -528,7 +528,9 @@ def kneserney_bigram_model(bigram_training_data, vocabulary):
         "kneserney_bigram_model",
         pytest.param(
             "stupid_backoff_trigram_model",
-            marks=pytest.mark.xfail(reason="Stupid Backoff is not a valid distribution"),
+            marks=pytest.mark.xfail(
+                reason="Stupid Backoff is not a valid distribution"
+            ),
         ),
     ],
 )

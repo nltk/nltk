@@ -66,7 +66,7 @@ def is_rel(s):
     :param s: a set containing tuples of str elements
     :type s: set
     :rtype: bool
-        """
+    """
     # we have the empty relation, i.e. set()
     if len(s) == 0:
         return True

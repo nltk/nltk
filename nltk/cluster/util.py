@@ -132,7 +132,7 @@ def cosine_distance(u, v):
 
 
 class _DendrogramNode:
-    """ Tree node of a dendrogram. """
+    """Tree node of a dendrogram."""
 
     def __init__(self, value, *children):
         self._value = value

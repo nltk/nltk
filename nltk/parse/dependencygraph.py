@@ -401,7 +401,7 @@ class DependencyGraph:
         return w
 
     def _tree(self, i):
-        """ Turn dependency graphs into NLTK trees.
+        """Turn dependency graphs into NLTK trees.
 
         :param int i: index of a node
         :return: either a word (if the indexed node is a leaf) or a ``Tree``.

@@ -115,7 +115,7 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
         )
     # Throws Error if tokens is of string type
     elif isinstance(tokens, str):
-        raise TypeError('tokens: expected a list of strings, got a string')
+        raise TypeError("tokens: expected a list of strings, got a string")
 
     else:
         tagged_tokens = tagger.tag(tokens)

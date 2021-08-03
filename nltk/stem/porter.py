@@ -663,7 +663,6 @@ class PorterStemmer(StemmerI):
             # in the published algorithm.
             return stem
 
-
         stem = self._step1a(stem)
         stem = self._step1b(stem)
         stem = self._step1c(stem)

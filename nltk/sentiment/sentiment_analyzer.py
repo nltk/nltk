@@ -188,8 +188,9 @@ class SentimentAnalyzer:
         Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
         """
         print("Saving", filename, file=sys.stderr)
-        with open(filename, 'wb') as storage_file:
+        with open(filename, "wb") as storage_file:
             import pickle
+
             # The protocol=2 parameter is for python2 compatibility
             pickle.dump(content, storage_file, protocol=2)
 

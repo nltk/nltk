@@ -70,11 +70,11 @@ class TextCat:
             self._corpus.lang_freq(lang)
 
     def remove_punctuation(self, text):
-        """ Get rid of punctuation except apostrophes """
+        """Get rid of punctuation except apostrophes"""
         return re.sub(r"[^\P{P}\']+", "", text)
 
     def profile(self, text):
-        """ Create FreqDist of trigrams within text """
+        """Create FreqDist of trigrams within text"""
         from nltk import word_tokenize, FreqDist
 
         clean_text = self.remove_punctuation(text)
@@ -94,8 +94,8 @@ class TextCat:
         return fingerprint
 
     def calc_dist(self, lang, trigram, text_profile):
-        """ Calculate the "out-of-place" measure between the
-            text and language profile for a single trigram """
+        """Calculate the "out-of-place" measure between the
+        text and language profile for a single trigram"""
 
         lang_fd = self._corpus.lang_freq(lang)
         dist = 0
@@ -115,8 +115,8 @@ class TextCat:
         return dist
 
     def lang_dists(self, text):
-        """ Calculate the "out-of-place" measure between
-            the text and all languages """
+        """Calculate the "out-of-place" measure between
+        the text and all languages"""
 
         distances = {}
         profile = self.profile(text)
@@ -133,8 +133,8 @@ class TextCat:
         return distances
 
     def guess_language(self, text):
-        """ Find the language with the min distance
-            to the text and return its ISO 639-3 code """
+        """Find the language with the min distance
+        to the text and return its ISO 639-3 code"""
         self.last_distances = self.lang_dists(text)
 
         return min(self.last_distances, key=self.last_distances.get)

@@ -99,7 +99,7 @@ class ARLSTem(StemmerI):
 
     def stem(self, token):
         """
-            call this function to get the word's stem based on ARLSTem .
+        call this function to get the word's stem based on ARLSTem .
         """
         try:
             if token is None:
@@ -134,9 +134,9 @@ class ARLSTem(StemmerI):
 
     def norm(self, token):
         """
-            normalize the word by removing diacritics, replacing hamzated Alif
-            with Alif replacing AlifMaqsura with Yaa and removing Waaw at the
-            beginning.
+        normalize the word by removing diacritics, replacing hamzated Alif
+        with Alif replacing AlifMaqsura with Yaa and removing Waaw at the
+        beginning.
         """
         # strip Arabic diacritics
         token = self.re_diacritics.sub("", token)
@@ -152,7 +152,7 @@ class ARLSTem(StemmerI):
 
     def pref(self, token):
         """
-            remove prefixes from the words' beginning.
+        remove prefixes from the words' beginning.
         """
         if len(token) > 5:
             for p3 in self.pr3:
@@ -173,7 +173,7 @@ class ARLSTem(StemmerI):
 
     def suff(self, token):
         """
-            remove suffixes from the word's end.
+        remove suffixes from the word's end.
         """
         if token.endswith("\u0643") and len(token) > 3:
             return token[:-1]
@@ -202,14 +202,14 @@ class ARLSTem(StemmerI):
 
     def fem2masc(self, token):
         """
-            transform the word from the feminine form to the masculine form.
+        transform the word from the feminine form to the masculine form.
         """
         if token.endswith("\u0629") and len(token) > 3:
             return token[:-1]
 
     def plur2sing(self, token):
         """
-            transform the word from the plural form to the singular form.
+        transform the word from the plural form to the singular form.
         """
         if len(token) > 4:
             for ps2 in self.pl_si2:
@@ -228,7 +228,7 @@ class ARLSTem(StemmerI):
 
     def verb(self, token):
         """
-            stem the verb prefixes and suffixes or both
+        stem the verb prefixes and suffixes or both
         """
         vb = self.verb_t1(token)
         if vb is not None:
@@ -249,7 +249,7 @@ class ARLSTem(StemmerI):
 
     def verb_t1(self, token):
         """
-            stem the present prefixes and suffixes
+        stem the present prefixes and suffixes
         """
         if len(token) > 5 and token.startswith("\u062A"):  # Taa
             for s2 in self.pl_si2:
@@ -281,7 +281,7 @@ class ARLSTem(StemmerI):
 
     def verb_t2(self, token):
         """
-            stem the future prefixes and suffixes
+        stem the future prefixes and suffixes
         """
         if len(token) > 6:
             for s2 in self.pl_si2:
@@ -311,7 +311,7 @@ class ARLSTem(StemmerI):
 
     def verb_t3(self, token):
         """
-            stem the present suffixes
+        stem the present suffixes
         """
         if len(token) > 5:
             for su3 in self.verb_suf3:
@@ -328,7 +328,7 @@ class ARLSTem(StemmerI):
 
     def verb_t4(self, token):
         """
-            stem the present prefixes
+        stem the present prefixes
         """
         if len(token) > 3:
             for pr1 in self.verb_suf1:
@@ -339,7 +339,7 @@ class ARLSTem(StemmerI):
 
     def verb_t5(self, token):
         """
-            stem the future prefixes
+        stem the future prefixes
         """
         if len(token) > 4:
             for pr2 in self.verb_pr22:
@@ -352,7 +352,7 @@ class ARLSTem(StemmerI):
 
     def verb_t6(self, token):
         """
-            stem the order prefixes
+        stem the order prefixes
         """
         if len(token) > 4:
             for pr3 in self.verb_pr33:

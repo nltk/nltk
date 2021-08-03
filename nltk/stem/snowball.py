@@ -308,12 +308,12 @@ class _StandardStemmer(_LanguageSpecificStemmer):
 
 class ArabicStemmer(_StandardStemmer):
     """
-        https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
-        The Snowball Arabic light Stemmer
-        Algorithm : Assem Chelli
-                   Abdelkrim Aries
-                   Lakhdar Benzahia
-        Nltk Version Author : Lakhdar Benzahia
+    https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
+    The Snowball Arabic light Stemmer
+    Algorithm : Assem Chelli
+               Abdelkrim Aries
+               Lakhdar Benzahia
+    Nltk Version Author : Lakhdar Benzahia
     """
 
     # Normalize_pre stes

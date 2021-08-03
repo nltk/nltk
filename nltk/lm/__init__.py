@@ -217,7 +217,7 @@ from nltk.lm.models import (
     WittenBellInterpolated,
     KneserNeyInterpolated,
     AbsoluteDiscountingInterpolated,
-    StupidBackoff
+    StupidBackoff,
 )
 from nltk.lm.counter import NgramCounter
 from nltk.lm.vocabulary import Vocabulary
@@ -231,5 +231,5 @@ __all__ = [
     "WittenBellInterpolated",
     "KneserNeyInterpolated",
     "AbsoluteDiscountingInterpolated",
-    "StupidBackoff"
+    "StupidBackoff",
 ]

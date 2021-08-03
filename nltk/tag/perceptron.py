@@ -25,6 +25,7 @@ except ImportError:
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
+
 @jsontags.register_tag
 class AveragedPerceptron:
 

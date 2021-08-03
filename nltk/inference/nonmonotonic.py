@@ -107,8 +107,8 @@ class UniqueNamesProver(ProverCommandDecorator):
 
     def assumptions(self):
         """
-         - Domain = union([e.free()|e.constants() for e in all_expressions])
-         - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
+        - Domain = union([e.free()|e.constants() for e in all_expressions])
+        - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
         assumptions = self._command.assumptions()
 

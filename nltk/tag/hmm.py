@@ -687,7 +687,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropies
 
     def _transitions_matrix(self):
-        """ Return a matrix of transition log probabilities. """
+        """Return a matrix of transition log probabilities."""
         trans_iter = (
             self._transitions[sj].logprob(si)
             for sj in self._states

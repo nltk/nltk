@@ -199,8 +199,7 @@ class StanfordSegmenter(TokenizerI):
         super().tokenize(s)
 
     def segment_file(self, input_file_path):
-        """
-        """
+        """ """
         cmd = [
             self._java_class,
             "-loadClassifier",
@@ -230,8 +229,7 @@ class StanfordSegmenter(TokenizerI):
         return self.segment_sents([tokens])
 
     def segment_sents(self, sentences):
-        """
-        """
+        """ """
         encoding = self._encoding
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)

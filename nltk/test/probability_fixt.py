@@ -4,4 +4,5 @@
 
 def setup_module():
     import pytest
-    pytest.importorskip('numpy')
+
+    pytest.importorskip("numpy")

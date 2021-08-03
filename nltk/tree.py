@@ -31,7 +31,6 @@ from nltk.internals import raise_unorderable_types
 ######################################################################
 
 
-
 class Tree(list):
     r"""
     A Tree represents a hierarchical grouping of leaves and subtrees.
@@ -748,13 +747,12 @@ class Tree(list):
 
         Convert nested lists to a NLTK Tree
         """
-        if type(l)==list and len(l)>0:
+        if type(l) == list and len(l) > 0:
             label = repr(l[0])
-            if len(l)>1:
+            if len(l) > 1:
                 return Tree(label, [cls.fromlist(child) for child in l[1:]])
             else:
                 return label
-
 
     # ////////////////////////////////////////////////////////////
     # Visualization & String Representation
@@ -1570,7 +1568,6 @@ class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
 ######################################################################
 
 
-
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __init__(self, node, children=None, **prob_kwargs):
         Tree.__init__(self, node, children)
@@ -1604,11 +1601,15 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
             return val
 
     def __eq__(self, other):
-        return self.__class__ is other.__class__ and (
-            self._label,
-            list(self),
-            self.prob(),
-        ) == (other._label, list(other), other.prob())
+        return (
+            self.__class__ is other.__class__
+            and (
+                self._label,
+                list(self),
+                self.prob(),
+            )
+            == (other._label, list(other), other.prob())
+        )
 
     def __lt__(self, other):
         if not isinstance(other, Tree):
@@ -1621,7 +1622,6 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
             )
         else:
             return self.__class__.__name__ < other.__class__.__name__
-
 
 
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):

@@ -340,6 +340,7 @@ class FileSystemPathPointer(PathPointer, str):
     def __str__(self):
         return self._path
 
+
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
 class BufferedGzipFile(GzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.

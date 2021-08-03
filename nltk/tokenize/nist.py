@@ -125,7 +125,7 @@ class NISTTokenizer(TokenizerI):
     INTERNATIONAL_REGEXES = [NONASCII, PUNCT_1, PUNCT_2, SYMBOLS]
 
     def lang_independent_sub(self, text):
-        """Performs the language independent string substituitions. """
+        """Performs the language independent string substituitions."""
         # It's a strange order of regexes.
         # It'll be better to unescape after STRIP_EOL_HYPHEN
         # but let's keep it close to the original NIST implementation.

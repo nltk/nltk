@@ -188,9 +188,7 @@ def binary_distance(label1, label2):
 
 
 def jaccard_distance(label1, label2):
-    """Distance metric comparing set-similarity.
-
-    """
+    """Distance metric comparing set-similarity."""
     return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(
         label1.union(label2)
     )
@@ -242,16 +240,14 @@ def interval_distance(label1, label2):
 
 
 def presence(label):
-    """Higher-order function to test presence of a given label
-    """
+    """Higher-order function to test presence of a given label"""
 
     return lambda x, y: 1.0 * ((label in x) == (label in y))
 
 
 def fractional_presence(label):
     return (
-        lambda x, y: abs((1.0 / len(x)) - (1.0 / len(y)))
-        * (label in x and label in y)
+        lambda x, y: abs((1.0 / len(x)) - (1.0 / len(y))) * (label in x and label in y)
         or 0.0 * (label not in x and label not in y)
         or abs(1.0 / len(x)) * (label in x and label not in y)
         or (1.0 / len(y)) * (label not in x and label in y)
@@ -271,7 +267,7 @@ def custom_distance(file):
 
 def jaro_similarity(s1, s2):
     """
-   Computes the Jaro similarity between 2 sequences from:
+    Computes the Jaro similarity between 2 sequences from:
 
         Matthew A. Jaro (1989). Advances in record linkage methodology
         as applied to the 1985 census of Tampa Florida. Journal of the

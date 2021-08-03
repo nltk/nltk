@@ -18,6 +18,7 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
 import re
+
 try:
     from html import escape
 except ImportError:
@@ -574,7 +575,9 @@ class TreePrettyPrinter:
                     fontsize,
                     x,
                     y,
-                    escape(node.label() if isinstance(node, Tree) else node, quote=False),
+                    escape(
+                        node.label() if isinstance(node, Tree) else node, quote=False
+                    ),
                 )
             ]
 

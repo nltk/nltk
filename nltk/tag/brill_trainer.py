@@ -599,7 +599,10 @@ class BrillTaggerTrainer:
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
             print(
-                "{:4d}{:4d}{:4d}{:4d}  |".format(score, num_fixed, num_broken, num_other), end=" "
+                "{:4d}{:4d}{:4d}{:4d}  |".format(
+                    score, num_fixed, num_broken, num_other
+                ),
+                end=" ",
             )
             print(
                 textwrap.fill(

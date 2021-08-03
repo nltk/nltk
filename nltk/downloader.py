@@ -195,6 +195,7 @@ import nltk
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
+
 class Package:
     """
     A directory entry for a downloadable package.  These entries are
@@ -336,7 +337,7 @@ class Collection:
 
 class DownloaderMessage:
     """A status message object, used by ``incr_download`` to
-       communicate its progress."""
+    communicate its progress."""
 
 
 class StartCollectionMessage(DownloaderMessage):
@@ -1007,7 +1008,7 @@ class Downloader:
 
     def info(self, id):
         """Return the ``Package`` or ``Collection`` record for the
-           given item."""
+        given item."""
         self._update_index()
         if id in self._packages:
             return self._packages[id]

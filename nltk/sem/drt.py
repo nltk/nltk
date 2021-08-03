@@ -263,7 +263,7 @@ class DrtExpression:
         raise NotImplementedError()
 
     def is_pronoun_function(self):
-        """ Is self of the form "PRO(x)"? """
+        """Is self of the form "PRO(x)"?"""
         return (
             isinstance(self, DrtApplicationExpression)
             and isinstance(self.function, DrtAbstractVariableExpression)

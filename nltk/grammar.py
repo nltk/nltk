@@ -252,7 +252,6 @@ def is_terminal(item):
 
 
 @total_ordering
-
 class Production:
     """
     A grammar production.  Each production maps a single symbol
@@ -376,7 +375,6 @@ class Production:
         return hash((self._lhs, self._rhs))
 
 
-
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -393,7 +391,6 @@ class DependencyProduction(Production):
         for elt in self._rhs:
             result += " '%s'" % (elt,)
         return result
-
 
 
 class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
@@ -444,7 +441,6 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 # Grammars
 #################################################################
-
 
 
 class CFG:
@@ -769,7 +765,7 @@ class CFG:
         if flexible:
             return step2
         step3 = CFG.remove_unitary_rules(step2)
-        step4 = CFG(step3.start(),list(set(step3.productions())))
+        step4 = CFG(step3.start(), list(set(step3.productions())))
         return step4
 
     @classmethod
@@ -1018,7 +1014,6 @@ class FeatureGrammar(CFG):
 
 
 @total_ordering
-
 class FeatureValueType:
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -1047,7 +1042,6 @@ class FeatureValueType:
         return hash(self._value)
 
 
-
 class DependencyGrammar:
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
@@ -1074,8 +1068,7 @@ class DependencyGrammar:
             try:
                 productions += _read_dependency_production(line)
             except ValueError as e:
-                raise ValueError("Unable to parse line %s: %s" %
-                                 (linenum, line)) from e
+                raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1143,11 +1136,8 @@ class DependencyGrammar:
         return "Dependency grammar with %d productions" % len(self._productions)
 
 
-
 class ProbabilisticDependencyGrammar:
-    """
-
-    """
+    """ """
 
     def __init__(self, productions, events, tags):
         self._productions = productions
@@ -1446,8 +1436,9 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s\n%s" %
-                             (linenum + 1, line, e)) from e
+            raise ValueError(
+                "Unable to parse line %s: %s\n%s" % (linenum + 1, line, e)
+            ) from e
 
     if not productions:
         raise ValueError("No productions found!")

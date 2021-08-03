@@ -322,7 +322,7 @@ class MaltParser(ParserI):
         self._trained = True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     A demonstration function to show how NLTK users can use the malt parser API.
 
@@ -391,4 +391,5 @@ if __name__ == '__main__':
     """
 
     import doctest
+
     doctest.testmod()
