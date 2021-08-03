@@ -496,6 +496,6 @@ class TestTokenize:
         self.punkt_debug_decisions("Subject: Some subject^ Attachments: Some attachments",
                                    n_sents=2,
                                    n_splits=1,
-                                   lang_vars=ExtLangVars()),
+                                   lang_vars=ExtLangVars())
         # The sentence should be split into two sections,
         # with one split and hence one decision.
