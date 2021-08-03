@@ -463,50 +463,39 @@ class TestTokenize:
 
         assert obj.tokenize(sentences) == expected
 
-    def test_punkt_debug_decisions_dot(self):
+    @pytest.mark.parametrize("input_text,n_sents,n_splits,lang_vars", [
         # Test debug_decisions on a text with two sentences, split by a dot.
-        tokenizer = punkt.PunktSentenceTokenizer()
-        txt = "Subject: Some subject. Attachments: Some attachemnts"
-
-        # Test that the sentence is split into two sections,
+        ("Subject: Some subject. Attachments: Some attachments", 2, 1),
+        # The sentence should be split into two sections,
         # with one split and hence one decision.
-        assert len(tokenizer.tokenize(txt)) == 2
-        assert len(list(tokenizer.debug_decisions(txt))) == 1
 
-    def test_punkt_debug_decisions_exclamation_mark(self):
-        # Test debug_decisions on a text with two sentences, split by a dot.
-        tokenizer = punkt.PunktSentenceTokenizer()
-        txt = "Subject: Some subject! Attachments: Some attachemnts"
-
-        # Test that the sentence is split into two sections,
+        # Test debug_decisions on a text with two sentences, split by an exclamation mark.
+        ("Subject: Some subject! Attachments: Some attachments", 2, 1),
+        # The sentence should be split into two sections,
         # with one split and hence one decision.
-        assert len(tokenizer.tokenize(txt)) == 2
-        assert len(list(tokenizer.debug_decisions(txt))) == 1
+
+        # Test debug_decisions on a text with one sentences,
+        # which is not split.
+        ("This is just a normal sentence, just like any other.", 1, 0)
+        # Hence just 1
+    ])
+    def punkt_debug_decisions(self, input_text, n_sents, n_splits, lang_vars=None):
+        tokenizer = punkt.PunktSentenceTokenizer()
+        if lang_vars != None:
+            tokenizer._lang_vars = lang_vars
+
+        assert len(tokenizer.tokenize(input_text)) == n_sents
+        assert len(list(tokenizer.debug_decisions(input_text))) == n_splits
 
     def test_punkt_debug_decisions_custom_end(self):
         # Test debug_decisions on a text with two sentences,
         # split by a custom end character, based on Issue #2519
-        tokenizer = punkt.PunktSentenceTokenizer()
-
         class ExtLangVars(punkt.PunktLanguageVars):
             sent_end_chars = ('.', '?', '!', '^')
 
-        tokenizer._lang_vars = ExtLangVars()
-
-        txt = "Subject: Some subject^ Attachments: Some attachemnts"
-
-        # Test that the sentence is split into two sections,
+        self.punkt_debug_decisions("Subject: Some subject^ Attachments: Some attachments",
+                                   n_sents=2,
+                                   n_splits=1,
+                                   lang_vars=ExtLangVars()),
+        # The sentence should be split into two sections,
         # with one split and hence one decision.
-        assert len(tokenizer.tokenize(txt)) == 2
-        assert len(list(tokenizer.debug_decisions(txt))) == 1
-
-    def test_punkt_debug_decisions_no_split(self):
-        # Test debug_decisions on a text with one sentences,
-        # which is not split.
-        tokenizer = punkt.PunktSentenceTokenizer()
-
-        txt = "This is just a normal sentence, just like any other."
-
-        # Test that the sentence is not split.
-        assert len(tokenizer.tokenize(txt)) == 1
-        assert len(list(tokenizer.debug_decisions(txt))) == 0
