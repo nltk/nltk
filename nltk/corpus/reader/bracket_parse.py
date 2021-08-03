@@ -90,7 +90,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         try:
             tree = Tree.fromstring(self._normalize(t))
             # If there's an empty node at the top, strip it off
-            if tree.label() == '' and len(tree) == 1:
+            if tree.label() == "" and len(tree) == 1:
                 return tree[0]
             else:
                 return tree

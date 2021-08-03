@@ -148,7 +148,7 @@ class Rule(TagRule):
             obj["templateid"],
             obj["original"],
             obj["replacement"],
-            tuple(tuple(feat) for feat in obj["conditions"])
+            tuple(tuple(feat) for feat in obj["conditions"]),
         )
 
     def applies(self, tokens, index):
@@ -209,8 +209,7 @@ class Rule(TagRule):
                 # list(self._conditions) would be simpler but will not generate
                 # the same Rule.__repr__ in python 2 and 3 and thus break some tests
                 ", ".join(
-                    "({0},{1})".format(f, repr(v))
-                    for (f, v) in self._conditions
+                    "({0},{1})".format(f, repr(v)) for (f, v) in self._conditions
                 ),
             )
 

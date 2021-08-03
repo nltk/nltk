@@ -473,13 +473,9 @@ def _annotation_ascii_frames(sent):
             if aset.status == "UNANN" or aset.LU.status == "Problem":
                 indexS += " "
                 if aset.status == "UNANN":
-                    indexS += (
-                        "!"
-                    )  # warning indicator that there is a frame annotation but no FE annotation
+                    indexS += "!"  # warning indicator that there is a frame annotation but no FE annotation
                 if aset.LU.status == "Problem":
-                    indexS += (
-                        "?"
-                    )  # warning indicator that there is a missing LU definition (because the LU has Problem status)
+                    indexS += "?"  # warning indicator that there is a missing LU definition (because the LU has Problem status)
             overt.append((j, k, aset.LU.frame.name, indexS))
     overt = sorted(overt)
 
@@ -609,8 +605,8 @@ def _annotation_ascii_FEs(sent):
                 if any(1 for x, y, felbl in sent.FE[0] if x <= a < y or a <= x < b):
                     # overlap between one of the POS-specific layers and first FE layer
                     posspec_separate = (
-                        True
-                    )  # show POS-specific layers on a separate line
+                        True  # show POS-specific layers on a separate line
+                    )
                 posspec.append(
                     (a, b, lbl.lower().replace("-", ""))
                 )  # lowercase Cop=>cop, Non-Asp=>nonasp, etc. to distinguish from FE names
@@ -998,9 +994,9 @@ class PrettyList(list):
             )  # key difference from inherited version: call to _short_repr()
             length += len(pieces[-1]) + 2
             if self._MAX_REPR_SIZE and length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return "[%s, ...]" % str(
-                    ",\n " if self._BREAK_LINES else ", "
-                ).join(pieces[:-1])
+                return "[%s, ...]" % str(",\n " if self._BREAK_LINES else ", ").join(
+                    pieces[:-1]
+                )
         return "[%s]" % str(",\n " if self._BREAK_LINES else ", ").join(pieces)
 
 
@@ -1239,7 +1235,9 @@ warnings(True) to display corpus consistency warnings when loading data
             self._buildrelationindex()  # always load frame relations before frames,
             # otherwise weird ordering effects might result in incomplete information
         self._frame_idx = {}
-        with XMLCorpusView(self.abspath("frameIndex.xml"), "frameIndex/frame", self._handle_elt) as view:
+        with XMLCorpusView(
+            self.abspath("frameIndex.xml"), "frameIndex/frame", self._handle_elt
+        ) as view:
             for f in view:
                 self._frame_idx[f["ID"]] = f
 
@@ -1247,8 +1245,11 @@ warnings(True) to display corpus consistency warnings when loading data
         # The total number of fulltext annotated documents in Framenet
         # is fairly small (~90) so this index should not be very large
         self._fulltext_idx = {}
-        with XMLCorpusView(self.abspath("fulltextIndex.xml"), "fulltextIndex/corpus", self._handle_fulltextindex_elt,
-                           ) as view:
+        with XMLCorpusView(
+            self.abspath("fulltextIndex.xml"),
+            "fulltextIndex/corpus",
+            self._handle_fulltextindex_elt,
+        ) as view:
             for doclist in view:
                 for doc in doclist:
                     self._fulltext_idx[doc.ID] = doc
@@ -1257,9 +1258,13 @@ warnings(True) to display corpus consistency warnings when loading data
         # The number of LUs in Framenet is about 13,000 so this index
         # should not be very large
         self._lu_idx = {}
-        with XMLCorpusView(self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt) as view:
+        with XMLCorpusView(
+            self.abspath("luIndex.xml"), "luIndex/lu", self._handle_elt
+        ) as view:
             for lu in view:
-                self._lu_idx[lu["ID"]] = lu  # populate with LU index entries. if any of these
+                self._lu_idx[
+                    lu["ID"]
+                ] = lu  # populate with LU index entries. if any of these
                 # are looked up they will be replaced by full LU objects.
 
     def _buildrelationindex(self):
@@ -1269,8 +1274,11 @@ warnings(True) to display corpus consistency warnings when loading data
         self._frel_f_idx = defaultdict(set)
         self._ferel_idx = {}
 
-        with XMLCorpusView(self.abspath("frRelation.xml"), "frameRelations/frameRelationType",
-                           self._handle_framerelationtype_elt, ) as view:
+        with XMLCorpusView(
+            self.abspath("frRelation.xml"),
+            "frameRelations/frameRelationType",
+            self._handle_framerelationtype_elt,
+        ) as view:
             for freltyp in view:
                 self._freltyp_idx[freltyp.ID] = freltyp
                 for frel in freltyp.frameRelations:
@@ -1287,7 +1295,9 @@ warnings(True) to display corpus consistency warnings when loading data
                         ferel.superFrame = supF
                         ferel.subFrame = subF
                         ferel.superFE = Future(
-                            (lambda fer: lambda: fer.superFrame.FE[fer.superFEName])(ferel)
+                            (lambda fer: lambda: fer.superFrame.FE[fer.superFEName])(
+                                ferel
+                            )
                         )
                         ferel.subFE = Future(
                             (lambda fer: lambda: fer.subFrame.FE[fer.subFEName])(ferel)
@@ -1830,7 +1840,11 @@ warnings(True) to display corpus consistency warnings when loading data
     def _loadsemtypes(self):
         """Create the semantic types index."""
         self._semtypes = AttrDict()
-        with XMLCorpusView(self.abspath("semTypes.xml"), "semTypes/semType", self._handle_semtype_elt, ) as view:
+        with XMLCorpusView(
+            self.abspath("semTypes.xml"),
+            "semTypes/semType",
+            self._handle_semtype_elt,
+        ) as view:
             for st in view:
                 n = st["name"]
                 a = st["abbrev"]

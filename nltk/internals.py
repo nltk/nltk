@@ -858,7 +858,7 @@ def find_jars_within_path(path_to_jars):
 
 
 def _decode_stdoutdata(stdoutdata):
-    """ Convert data read from stdout/stderr to unicode """
+    """Convert data read from stdout/stderr to unicode"""
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
 
@@ -893,7 +893,6 @@ def import_from_stdlib(module):
 ##########################################################################
 # Wrapper for ElementTree Elements
 ##########################################################################
-
 
 
 class ElementWrapper:

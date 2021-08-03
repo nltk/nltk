@@ -8,6 +8,4 @@ def setup_module():
         m = Mace()
         m._find_binary("mace4")
     except LookupError as e:
-        pytest.skip(
-            "Mace4/Prover9 is not available so discourse.doctest is skipped"
-        )
+        pytest.skip("Mace4/Prover9 is not available so discourse.doctest is skipped")

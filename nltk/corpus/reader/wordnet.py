@@ -545,7 +545,6 @@ class Synset(_WordNetObject):
                 self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
         return self._min_depth
 
-
     def closure(self, rel, depth=-1):
         """
         Return the transitive closure of source under the rel
@@ -576,10 +575,10 @@ class Synset(_WordNetObject):
         """
 
         from nltk.util import acyclic_breadth_first
+
         for synset in acyclic_breadth_first(self, rel, depth):
             if synset != self:
                 yield synset
-
 
     from nltk.util import acyclic_depth_first as acyclic_tree
 
@@ -629,8 +628,8 @@ class Synset(_WordNetObject):
         """
 
         from nltk.util import acyclic_branches_depth_first
-        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
+        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
     def hypernym_paths(self):
         """
@@ -812,7 +811,6 @@ class Synset(_WordNetObject):
 
         return None if math.isinf(path_distance) else path_distance
 
-
     # interface to similarity methods
     def path_similarity(self, other, verbose=False, simulate_root=True):
         """
@@ -842,7 +840,8 @@ class Synset(_WordNetObject):
         """
 
         distance = self.shortest_path_distance(
-            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root())
+            other,
+            simulate_root=simulate_root and (self._needs_root() or other._needs_root()),
         )
         if distance is None or distance < 0:
             return None
@@ -937,9 +936,7 @@ class Synset(_WordNetObject):
         # It is possible that more accurate results could be obtained by
         # removing this setting and it should be tested later on
         subsumers = self.lowest_common_hypernyms(
-            other,
-            simulate_root=simulate_root and need_root,
-            use_min_depth=True
+            other, simulate_root=simulate_root and need_root, use_min_depth=True
         )
 
         # If no LCS was found return None
@@ -1176,11 +1173,11 @@ class WordNetCorpusReader(CorpusReader):
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
 
     def of2ss(self, of):
-        """ take an id and return the synsets """
+        """take an id and return the synsets"""
         return self.synset_from_pos_and_offset(of[-1], int(of[:8]))
 
     def ss2of(self, ss, lang=None):
-        """ return the ID of the synset """
+        """return the ID of the synset"""
         pos = ss.pos()
         # Only these 3 WordNets retain the satellite pos tag
         if lang not in ["nld", "lit", "slk"] and pos == "s":
@@ -1188,8 +1185,8 @@ class WordNetCorpusReader(CorpusReader):
         return "{:08d}-{}".format(ss.offset(), pos)
 
     def _load_lang_data(self, lang):
-        """ load the wordnet data of the requested language from the file to
-        the cache, _lang_data """
+        """load the wordnet data of the requested language from the file to
+        the cache, _lang_data"""
 
         if lang in self._lang_data.keys():
             return
@@ -1201,7 +1198,7 @@ class WordNetCorpusReader(CorpusReader):
             self.custom_lemmas(fp, lang)
 
     def langs(self):
-        """ return a list of languages supported by Multilingual Wordnet """
+        """return a list of languages supported by Multilingual Wordnet"""
         import os
 
         langs = ["eng"]
@@ -1408,16 +1405,17 @@ class WordNetCorpusReader(CorpusReader):
         data_file.seek(offset)
         data_file_line = data_file.readline()
         # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
-        line_offset=data_file_line[:8]
-        if line_offset.isalnum() and offset==int(line_offset):
+        line_offset = data_file_line[:8]
+        if line_offset.isalnum() and offset == int(line_offset):
             synset = self._synset_from_pos_and_line(pos, data_file_line)
             assert synset._offset == offset
             self._synset_offset_cache[pos][offset] = synset
         else:
-            synset=None
-            raise WordNetError("No WordNet synset found for pos={0} at offset={1}.".format(pos,offset))
+            synset = None
+            raise WordNetError(
+                "No WordNet synset found for pos={0} at offset={1}.".format(pos, offset)
+            )
         return synset
-
 
     @deprecated("Use public method synset_from_pos_and_offset() instead")
     def _synset_from_pos_and_offset(self, *args, **kwargs):
@@ -1586,7 +1584,6 @@ class WordNetCorpusReader(CorpusReader):
         """
         return self.lemma_from_key(sense_key).synset()
 
-
     #############################################################
     # Retrieve synsets and lemmas.
     #############################################################
@@ -1738,7 +1735,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def license(self, lang="eng"):
         """Return the contents of LICENSE (for omw)
-           use lang=lang to get the license for an individual language"""
+        use lang=lang to get the license for an individual language"""
         if lang == "eng":
             with self.open("LICENSE") as fp:
                 return fp.read()
@@ -1756,7 +1753,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def readme(self, lang="omw"):
         """Return the contents of README (for omw)
-           use lang=lang to get the readme for an individual language"""
+        use lang=lang to get the readme for an individual language"""
         if lang == "eng":
             with self.open("README") as fp:
                 return fp.read()
@@ -1774,7 +1771,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def citation(self, lang="omw"):
         """Return the contents of citation.bib file (for omw)
-           use lang=lang to get the citation for an individual language"""
+        use lang=lang to get the citation for an individual language"""
         if lang == "eng":
             with self.open("citation.bib") as fp:
                 return fp.read()

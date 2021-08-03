@@ -480,7 +480,7 @@ class Agenda:
                 self[Categories.ATOM].add((atom, None))
 
     def pop_first(self):
-        """ Pop the first expression that appears in the agenda """
+        """Pop the first expression that appears in the agenda"""
         for i, s in enumerate(self.sets):
             if s:
                 if i in [Categories.N_EQ, Categories.ALL]:

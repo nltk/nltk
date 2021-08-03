@@ -22,9 +22,7 @@ class TestNgramCounter:
         self.trigram_counter = NgramCounter(
             everygrams(sent, max_len=3) for sent in text
         )
-        self.bigram_counter = NgramCounter(
-            everygrams(sent, max_len=2) for sent in text
-        )
+        self.bigram_counter = NgramCounter(everygrams(sent, max_len=2) for sent in text)
         self.case = unittest.TestCase()
 
     def test_N(self):

@@ -304,9 +304,10 @@ class BrillTagger(TaggerI):
         train_stats = self.train_stats()
 
         trainscores = train_stats["rulescores"]
-        assert len(trainscores) == len(tids), (
-            "corrupt statistics: "
-            "{0} train scores for {1} rules".format(trainscores, tids)
+        assert len(trainscores) == len(
+            tids
+        ), "corrupt statistics: " "{0} train scores for {1} rules".format(
+            trainscores, tids
         )
         template_counts = Counter(tids)
         weighted_traincounts = Counter()

@@ -51,9 +51,7 @@ def config_weka(classpath=None):
                 _weka_classpath = os.path.join(path, "weka.jar")
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print(
-                        "[Found Weka: %s (version %s)]" % (_weka_classpath, version)
-                    )
+                    print("[Found Weka: %s (version %s)]" % (_weka_classpath, version))
                 else:
                     print("[Found Weka: %s]" % _weka_classpath)
                 _check_weka_version(_weka_classpath)

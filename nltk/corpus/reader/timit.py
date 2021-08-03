@@ -296,7 +296,13 @@ class TimitCorpusReader(CorpusReader):
             with self.open(fileid) as fp:
                 for line in fp:
                     if line.strip():
-                        results.append((line.split()[2], int(line.split()[0]), int(line.split()[1])))
+                        results.append(
+                            (
+                                line.split()[2],
+                                int(line.split()[0]),
+                                int(line.split()[1]),
+                            )
+                        )
         return results
 
     def words(self, utterances=None):
@@ -314,7 +320,13 @@ class TimitCorpusReader(CorpusReader):
             with self.open(fileid) as fp:
                 for line in fp:
                     if line.strip():
-                        results.append((line.split()[2], int(line.split()[0]), int(line.split()[1])))
+                        results.append(
+                            (
+                                line.split()[2],
+                                int(line.split()[0]),
+                                int(line.split()[1]),
+                            )
+                        )
         return results
 
     def sents(self, utterances=None):

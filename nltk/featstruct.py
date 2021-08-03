@@ -595,7 +595,6 @@ def _check_frozen(method, indent=""):
 ######################################################################
 
 
-
 class FeatDict(FeatStruct, dict):
     """
     A feature structure that acts like a Python dictionary.  I.e., a
@@ -793,9 +792,7 @@ class FeatDict(FeatStruct, dict):
             if id(fval) in reentrance_ids:
                 segments.append("%s->(%s)" % (fname, reentrance_ids[id(fval)]))
             elif (
-                display == "prefix"
-                and not prefix
-                and isinstance(fval, (Variable, str))
+                display == "prefix" and not prefix and isinstance(fval, (Variable, str))
             ):
                 prefix = "%s" % fval
             elif display == "slash" and not suffix:
@@ -1332,7 +1329,6 @@ def _remove_variables(fstruct, fs_class, visited):
 ######################################################################
 
 
-
 class _UnificationFailure:
     def __repr__(self):
         return "nltk.featstruct.UnificationFailure"
@@ -1841,11 +1837,7 @@ def _is_mapping(v):
 
 
 def _is_sequence(v):
-    return (
-        hasattr(v, "__iter__")
-        and hasattr(v, "__len__")
-        and not isinstance(v, str)
-    )
+    return hasattr(v, "__iter__") and hasattr(v, "__len__") and not isinstance(v, str)
 
 
 def _default_fs_class(obj):
@@ -1891,7 +1883,6 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
             return bindings.get(v, v)
 
 
-
 class FeatureValueTuple(SubstituteBindingsSequence, tuple):
     """
     A base feature value that is a tuple of other base feature values.
@@ -1904,7 +1895,6 @@ class FeatureValueTuple(SubstituteBindingsSequence, tuple):
         if len(self) == 0:
             return "()"
         return "(%s)" % ", ".join("%s" % (b,) for b in self)
-
 
 
 class FeatureValueSet(SubstituteBindingsSequence, frozenset):
@@ -1923,7 +1913,6 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
         return "{%s}" % ", ".join(sorted("%s" % (b,) for b in self))
 
     __str__ = __repr__
-
 
 
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
@@ -1954,7 +1943,6 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         # that our own repr is deterministic.  also, note that len(self)
         # is guaranteed to be 2 or more.
         return "{%s}" % "+".join(sorted("%s" % (b,) for b in self))
-
 
 
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
@@ -2005,7 +1993,6 @@ def _flatten(lst, cls):
 
 
 @total_ordering
-
 class Feature:
     """
     A feature identifier that's specialized to put additional

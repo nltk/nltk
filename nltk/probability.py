@@ -54,7 +54,6 @@ _NINF = float("-1e300")
 ##//////////////////////////////////////////////////////
 
 
-
 class FreqDist(Counter):
     """
     A frequency distribution for the outcomes of an experiment.  A
@@ -316,7 +315,9 @@ class FreqDist(Counter):
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = _get_kwarg(kwargs, 'samples', [item for item, _ in self.most_common(*args)])
+        samples = _get_kwarg(
+            kwargs, "samples", [item for item, _ in self.most_common(*args)]
+        )
 
         cumulative = _get_kwarg(kwargs, "cumulative", False)
         if cumulative:
@@ -585,7 +586,6 @@ class ProbDistI(metaclass=ABCMeta):
         return random.choice(list(self.samples()))
 
 
-
 class UniformProbDist(ProbDistI):
     """
     A probability distribution that assigns equal probability to each
@@ -622,7 +622,6 @@ class UniformProbDist(ProbDistI):
 
     def __repr__(self):
         return "<UniformProbDist with %d samples>" % len(self._sampleset)
-
 
 
 class RandomProbDist(ProbDistI):
@@ -675,7 +674,6 @@ class RandomProbDist(ProbDistI):
 
     def __repr__(self):
         return "<RandomUniformProbDist with %d samples>" % len(self._probs)
-
 
 
 class DictionaryProbDist(ProbDistI):
@@ -756,7 +754,6 @@ class DictionaryProbDist(ProbDistI):
         return "<ProbDist with %d samples>" % len(self._prob_dict)
 
 
-
 class MLEProbDist(ProbDistI):
     """
     The maximum likelihood estimate for the probability distribution
@@ -801,7 +798,6 @@ class MLEProbDist(ProbDistI):
         :return: A string representation of this ``ProbDist``.
         """
         return "<MLEProbDist based on %d samples>" % self._freqdist.N()
-
 
 
 class LidstoneProbDist(ProbDistI):
@@ -904,7 +900,6 @@ class LidstoneProbDist(ProbDistI):
         return "<LidstoneProbDist based on %d samples>" % self._freqdist.N()
 
 
-
 class LaplaceProbDist(LidstoneProbDist):
     """
     The Laplace estimate for the probability distribution of the
@@ -939,7 +934,6 @@ class LaplaceProbDist(LidstoneProbDist):
         :return: A string representation of this ``ProbDist``.
         """
         return "<LaplaceProbDist based on %d samples>" % self._freqdist.N()
-
 
 
 class ELEProbDist(LidstoneProbDist):
@@ -977,7 +971,6 @@ class ELEProbDist(LidstoneProbDist):
         :rtype: str
         """
         return "<ELEProbDist based on %d samples>" % self._freqdist.N()
-
 
 
 class HeldoutProbDist(ProbDistI):
@@ -1144,7 +1137,6 @@ class HeldoutProbDist(ProbDistI):
         return s % (self._base_fdist.N(), self._heldout_fdist.N())
 
 
-
 class CrossValidationProbDist(ProbDistI):
     """
     The cross-validation estimate for the probability distribution of
@@ -1213,7 +1205,6 @@ class CrossValidationProbDist(ProbDistI):
         :rtype: str
         """
         return "<CrossValidationProbDist: %d-way>" % len(self._freqdists)
-
 
 
 class WittenBellProbDist(ProbDistI):
@@ -1357,7 +1348,6 @@ class WittenBellProbDist(ProbDistI):
 ##//////////////////////////////////////////////////////
 ##  Simple Good-Turing Probablity Distributions
 ##//////////////////////////////////////////////////////
-
 
 
 class SimpleGoodTuringProbDist(ProbDistI):
@@ -1695,7 +1685,6 @@ class MutableProbDist(ProbDistI):
 # where possible.
 
 
-
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
@@ -1834,7 +1823,6 @@ def entropy(pdist):
 ##//////////////////////////////////////////////////////
 
 
-
 class ConditionalFreqDist(defaultdict):
     """
     A collection of frequency distributions for a single experiment
@@ -1938,45 +1926,45 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            import matplotlib.pyplot as plt #import statement fix
+            import matplotlib.pyplot as plt  # import statement fix
         except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
                 "See http://matplotlib.org/"
             ) from e
 
-        cumulative = _get_kwarg(kwargs, 'cumulative', False)
-        percents = _get_kwarg(kwargs, 'percents', False)
-        conditions = [c for c in _get_kwarg(kwargs, 'conditions', self.conditions()) if c in self] # conditions should be in self
-        title = _get_kwarg(kwargs, 'title', '')
+        cumulative = _get_kwarg(kwargs, "cumulative", False)
+        percents = _get_kwarg(kwargs, "percents", False)
+        conditions = [
+            c for c in _get_kwarg(kwargs, "conditions", self.conditions()) if c in self
+        ]  # conditions should be in self
+        title = _get_kwarg(kwargs, "title", "")
         samples = _get_kwarg(
-            kwargs, 'samples', sorted(set(v
-                                            for c in conditions
-                                            for v in self[c]))
+            kwargs, "samples", sorted(set(v for c in conditions for v in self[c]))
         )  # this computation could be wasted
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
         ax = plt.gca()
-        if (len(conditions) != 0):
+        if len(conditions) != 0:
             freqs = []
             for condition in conditions:
                 if cumulative:
                     # freqs should be a list of list where each sub list will be a frequency of a condition
                     freqs.append(list(self[condition]._cumulative_frequencies(samples)))
                     ylabel = "Cumulative Counts"
-                    legend_loc = 'lower right'
+                    legend_loc = "lower right"
                     if percents:
                         freqs[-1] = [f / freqs[len(freqs) - 1] * 100 for f in freqs]
                         ylabel = "Cumulative Percents"
                 else:
                     freqs.append([self[condition][sample] for sample in samples])
                     ylabel = "Counts"
-                    legend_loc = 'upper right'
+                    legend_loc = "upper right"
                 # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
 
             i = 0
             for freq in freqs:
-                kwargs['label'] = conditions[i] #label for each condition
+                kwargs["label"] = conditions[i]  # label for each condition
                 i += 1
                 ax.plot(freq, *args, **kwargs)
             ax.legend(loc=legend_loc)
@@ -2130,7 +2118,6 @@ class ConditionalFreqDist(defaultdict):
         :rtype: str
         """
         return "<ConditionalFreqDist with %d conditions>" % len(self)
-
 
 
 class ConditionalProbDistI(dict, metaclass=ABCMeta):

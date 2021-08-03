@@ -11,6 +11,7 @@ from abc import ABCMeta, abstractmethod
 
 from nltk.internals import raise_unorderable_types
 
+
 @total_ordering
 class AbstractCCGCategory(metaclass=ABCMeta):
     """
@@ -131,7 +132,7 @@ class CCGVar(AbstractCCGCategory):
         return self
 
     def can_unify(self, other):
-        """ If the variable can be replaced with other
+        """If the variable can be replaced with other
         a substitution is returned.
         """
         if other.is_primitive() or not self._prim_only:

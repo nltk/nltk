@@ -62,9 +62,9 @@ class GlueFormula:
         self.indices = indices
 
     def applyto(self, arg):
-        """ self = (\\x.(walk x), (subj -o f))
-            arg  = (john        ,  subj)
-            returns ((walk john),          f)
+        """self = (\\x.(walk x), (subj -o f))
+        arg  = (john        ,  subj)
+        returns ((walk john),          f)
         """
         if self.indices & arg.indices:  # if the sets are NOT disjoint
             raise linearlogic.LinearLogicApplicationException(
@@ -142,7 +142,9 @@ class GlueFormula:
         assert isinstance(self.indices, set)
         accum = "%s : %s" % (self.meaning, self.glue)
         if self.indices:
-            accum += " : {" + ", ".join(str(index) for index in sorted(self.indices)) + "}"
+            accum += (
+                " : {" + ", ".join(str(index) for index in sorted(self.indices)) + "}"
+            )
         return accum
 
     def __repr__(self):

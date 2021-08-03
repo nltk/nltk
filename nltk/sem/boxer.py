@@ -106,7 +106,7 @@ class Boxer:
         :return: ``drt.DrtExpression``
         """
         discourse_ids = [discourse_id] if discourse_id is not None else None
-        d, = self.interpret_multi_sents([[input]], discourse_ids, question, verbose)
+        (d,) = self.interpret_multi_sents([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "{0}"'.format(input))
         return d
@@ -121,7 +121,7 @@ class Boxer:
         :return: ``drt.DrtExpression``
         """
         discourse_ids = [discourse_id] if discourse_id is not None else None
-        d, = self.interpret_multi_sents([input], discourse_ids, question, verbose)
+        (d,) = self.interpret_multi_sents([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "{0}"'.format(input))
         return d
@@ -541,7 +541,7 @@ class BoxerOutputDrsParser(DrtParser):
     def _handle_date(self, arg):
         # []: (+), []:'XXXX', [1004]:'04', []:'XX'
         conds = []
-        (sent_index, word_indices), = self._sent_and_word_indices(
+        ((sent_index, word_indices),) = self._sent_and_word_indices(
             self._parse_index_list()
         )
         self.assertToken(self.token(), "(")
@@ -560,7 +560,7 @@ class BoxerOutputDrsParser(DrtParser):
         )
         self.assertToken(self.token(), ",")
 
-        (sent_index, word_indices), = self._sent_and_word_indices(
+        ((sent_index, word_indices),) = self._sent_and_word_indices(
             self._parse_index_list()
         )
         year = self.token()
@@ -579,7 +579,7 @@ class BoxerOutputDrsParser(DrtParser):
             )
         self.assertToken(self.token(), ",")
 
-        (sent_index, word_indices), = self._sent_and_word_indices(
+        ((sent_index, word_indices),) = self._sent_and_word_indices(
             self._parse_index_list()
         )
         month = self.token()
@@ -597,7 +597,7 @@ class BoxerOutputDrsParser(DrtParser):
             )
         self.assertToken(self.token(), ",")
 
-        (sent_index, word_indices), = self._sent_and_word_indices(
+        ((sent_index, word_indices),) = self._sent_and_word_indices(
             self._parse_index_list()
         )
         day = self.token()

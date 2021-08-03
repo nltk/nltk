@@ -39,7 +39,6 @@ titles = {
 documents = sorted(titles)
 
 
-
 class IEERDocument:
     def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
         self.text = text
@@ -62,8 +61,7 @@ class IEERDocument:
 
 
 class IEERCorpusReader(CorpusReader):
-    """
-    """
+    """ """
 
     def docs(self, fileids=None):
         return concat(

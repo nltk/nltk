@@ -101,7 +101,7 @@ class CoreNLPServer:
         self.java_options = java_options or ["-mx2g"]
 
     def start(self, stdout="devnull", stderr="devnull"):
-        """ Starts the CoreNLP server
+        """Starts the CoreNLP server
 
         :param stdout, stderr: Specifies where CoreNLP output is redirected. Valid values are 'devnull', 'stdout', 'pipe'
         """

@@ -13,7 +13,7 @@ from nltk.corpus.reader import CorpusReader
 
 
 class LinThesaurusCorpusReader(CorpusReader):
-    """ Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin. """
+    """Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin."""
 
     # Compiled regular expression for extracting the key from the first line of each
     # thesaurus entry
@@ -21,7 +21,7 @@ class LinThesaurusCorpusReader(CorpusReader):
 
     @staticmethod
     def __defaultdict_factory():
-        """ Factory for creating defaultdict of defaultdict(dict)s """
+        """Factory for creating defaultdict of defaultdict(dict)s"""
         return defaultdict(dict)
 
     def __init__(self, root, badscore=0.0):

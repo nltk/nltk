@@ -14,6 +14,7 @@ from nltk.tokenize import (
     LegalitySyllableTokenizer,
 )
 
+
 def setup_module(module):
     import pytest
 
@@ -22,9 +23,7 @@ def setup_module(module):
         seg.default_config("ar")
         seg.default_config("zh")
     except LookupError as e:
-        pytest.skip(
-            "Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e)
-        )
+        pytest.skip("Tests for nltk.tokenize.stanford_segmenter skipped: %s" % str(e))
 
     try:
         StanfordTokenizer()
@@ -44,16 +43,16 @@ class TestTokenize:
         s9 = "@myke: Let's test these words: resumé España München français"
         tokens = tokenizer.tokenize(s9)
         expected = [
-            ':',
+            ":",
             "Let's",
-            'test',
-            'these',
-            'words',
-            ':',
-            'resumé',
-            'España',
-            'München',
-            'français',
+            "test",
+            "these",
+            "words",
+            ":",
+            "resumé",
+            "España",
+            "München",
+            "français",
         ]
         assert tokens == expected
 
@@ -62,18 +61,19 @@ class TestTokenize:
         Test SyllableTokenizer tokenizer.
         """
         tokenizer = SyllableTokenizer()
-        tokens = tokenizer.tokenize('justification')
-        assert tokens == ['jus', 'ti', 'fi', 'ca', 'tion']
+        tokens = tokenizer.tokenize("justification")
+        assert tokens == ["jus", "ti", "fi", "ca", "tion"]
 
     def test_legality_principle_syllable_tokenizer(self):
         """
         Test LegalitySyllableTokenizer tokenizer.
         """
         from nltk.corpus import words
+
         test_word = "wonderful"
         tokenizer = LegalitySyllableTokenizer(words.words())
         tokens = tokenizer.tokenize(test_word)
-        assert tokens == ['won', 'der', 'ful']
+        assert tokens == ["won", "der", "ful"]
 
     def test_stanford_segmenter_arabic(self):
         """
@@ -81,22 +81,22 @@ class TestTokenize:
         """
         try:
             seg = StanfordSegmenter()
-            seg.default_config('ar')
-            sent = u'يبحث علم الحاسوب استخدام الحوسبة بجميع اشكالها لحل المشكلات'
+            seg.default_config("ar")
+            sent = u"يبحث علم الحاسوب استخدام الحوسبة بجميع اشكالها لحل المشكلات"
             segmented_sent = seg.segment(sent.split())
             assert segmented_sent.split() == [
-                'يبحث',
-                'علم',
-                'الحاسوب',
-                'استخدام',
-                'الحوسبة',
-                'ب',
-                'جميع',
-                'اشكال',
-                'ها',
-                'ل',
-                'حل',
-                'المشكلات',
+                "يبحث",
+                "علم",
+                "الحاسوب",
+                "استخدام",
+                "الحوسبة",
+                "ب",
+                "جميع",
+                "اشكال",
+                "ها",
+                "ل",
+                "حل",
+                "المشكلات",
             ]
         except LookupError as e:
             pytest.skip(str(e))
@@ -107,10 +107,10 @@ class TestTokenize:
         """
         try:
             seg = StanfordSegmenter()
-            seg.default_config('zh')
+            seg.default_config("zh")
             sent = u"这是斯坦福中文分词器测试"
             segmented_sent = seg.segment(sent.split())
-            assert segmented_sent.split() == ['这', '是', '斯坦福', '中文', '分词器', '测试']
+            assert segmented_sent.split() == ["这", "是", "斯坦福", "中文", "分词器", "测试"]
         except LookupError as e:
             pytest.skip(str(e))
 
@@ -122,14 +122,14 @@ class TestTokenize:
         # Should be recognized as a phone number, albeit one with multiple spaces
         tokenizer = TweetTokenizer()
         test1 = "(393)  928 -3010"
-        expected = ['(393)  928 -3010']
+        expected = ["(393)  928 -3010"]
         result = tokenizer.tokenize(test1)
         assert result == expected
 
         # Due to newline, first three elements aren't part of a phone number;
         # fourth is
         test2 = "(393)\n928 -3010"
-        expected = ['(', '393', ')', "928 -3010"]
+        expected = ["(", "393", ")", "928 -3010"]
         result = tokenizer.tokenize(test2)
         assert result == expected
 
@@ -138,8 +138,21 @@ class TestTokenize:
         Test padding of asterisk for word tokenization.
         """
         text = "This is a, *weird sentence with *asterisks in it."
-        expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence',
-                    'with', '*', 'asterisks', 'in', 'it', '.']
+        expected = [
+            "This",
+            "is",
+            "a",
+            ",",
+            "*",
+            "weird",
+            "sentence",
+            "with",
+            "*",
+            "asterisks",
+            "in",
+            "it",
+            ".",
+        ]
         assert word_tokenize(text) == expected
 
     def test_pad_dotdot(self):
@@ -147,9 +160,24 @@ class TestTokenize:
         Test padding of dotdot* for word tokenization.
         """
         text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots....."
-        expected = ['Why', 'did', 'dotdot', '..', 'not', 'get',
-                    'tokenized', 'but', 'dotdotdot', '...', 'did', '?',
-                    'How', 'about', 'manydots', '.....']
+        expected = [
+            "Why",
+            "did",
+            "dotdot",
+            "..",
+            "not",
+            "get",
+            "tokenized",
+            "but",
+            "dotdotdot",
+            "...",
+            "did",
+            "?",
+            "How",
+            "about",
+            "manydots",
+            ".....",
+        ]
         assert word_tokenize(text) == expected
 
     def test_remove_handle(self):
@@ -161,42 +189,42 @@ class TestTokenize:
 
         # Simple example. Handles with just numbers should be allowed
         test1 = "@twitter hello @twi_tter_. hi @12345 @123news"
-        expected = ['hello', '.', 'hi']
+        expected = ["hello", ".", "hi"]
         result = tokenizer.tokenize(test1)
         assert result == expected
 
         # Handles are allowed to follow any of the following characters
         test2 = "@n`@n~@n(@n)@n-@n=@n+@n\\@n|@n[@n]@n{@n}@n;@n:@n'@n\"@n/@n?@n.@n,@n<@n>@n @n\n@n ñ@n.ü@n.ç@n."
         expected = [
-            '`',
-            '~',
-            '(',
-            ')',
-            '-',
-            '=',
-            '+',
-            '\\',
-            '|',
-            '[',
-            ']',
-            '{',
-            '}',
-            ';',
-            ':',
+            "`",
+            "~",
+            "(",
+            ")",
+            "-",
+            "=",
+            "+",
+            "\\",
+            "|",
+            "[",
+            "]",
+            "{",
+            "}",
+            ";",
+            ":",
             "'",
             '"',
-            '/',
-            '?',
-            '.',
-            ',',
-            '<',
-            '>',
-            'ñ',
-            '.',
-            'ü',
-            '.',
-            'ç',
-            '.',
+            "/",
+            "?",
+            ".",
+            ",",
+            "<",
+            ">",
+            "ñ",
+            ".",
+            "ü",
+            ".",
+            "ç",
+            ".",
         ]
         result = tokenizer.tokenize(test2)
         assert result == expected
@@ -204,103 +232,103 @@ class TestTokenize:
         # Handles are NOT allowed to follow any of the following characters
         test3 = "a@n j@n z@n A@n L@n Z@n 1@n 4@n 7@n 9@n 0@n _@n !@n @@n #@n $@n %@n &@n *@n"
         expected = [
-            'a',
-            '@n',
-            'j',
-            '@n',
-            'z',
-            '@n',
-            'A',
-            '@n',
-            'L',
-            '@n',
-            'Z',
-            '@n',
-            '1',
-            '@n',
-            '4',
-            '@n',
-            '7',
-            '@n',
-            '9',
-            '@n',
-            '0',
-            '@n',
-            '_',
-            '@n',
-            '!',
-            '@n',
-            '@',
-            '@n',
-            '#',
-            '@n',
-            '$',
-            '@n',
-            '%',
-            '@n',
-            '&',
-            '@n',
-            '*',
-            '@n',
+            "a",
+            "@n",
+            "j",
+            "@n",
+            "z",
+            "@n",
+            "A",
+            "@n",
+            "L",
+            "@n",
+            "Z",
+            "@n",
+            "1",
+            "@n",
+            "4",
+            "@n",
+            "7",
+            "@n",
+            "9",
+            "@n",
+            "0",
+            "@n",
+            "_",
+            "@n",
+            "!",
+            "@n",
+            "@",
+            "@n",
+            "#",
+            "@n",
+            "$",
+            "@n",
+            "%",
+            "@n",
+            "&",
+            "@n",
+            "*",
+            "@n",
         ]
         result = tokenizer.tokenize(test3)
         assert result == expected
 
         # Handles are allowed to precede the following characters
         test4 = "@n!a @n#a @n$a @n%a @n&a @n*a"
-        expected = ['!', 'a', '#', 'a', '$', 'a', '%', 'a', '&', 'a', '*', 'a']
+        expected = ["!", "a", "#", "a", "$", "a", "%", "a", "&", "a", "*", "a"]
         result = tokenizer.tokenize(test4)
         assert result == expected
 
         # Tests interactions with special symbols and multiple @
         test5 = "@n!@n @n#@n @n$@n @n%@n @n&@n @n*@n @n@n @@n @n@@n @n_@n @n7@n @nj@n"
         expected = [
-            '!',
-            '@n',
-            '#',
-            '@n',
-            '$',
-            '@n',
-            '%',
-            '@n',
-            '&',
-            '@n',
-            '*',
-            '@n',
-            '@n',
-            '@n',
-            '@',
-            '@n',
-            '@n',
-            '@',
-            '@n',
-            '@n_',
-            '@n',
-            '@n7',
-            '@n',
-            '@nj',
-            '@n',
+            "!",
+            "@n",
+            "#",
+            "@n",
+            "$",
+            "@n",
+            "%",
+            "@n",
+            "&",
+            "@n",
+            "*",
+            "@n",
+            "@n",
+            "@n",
+            "@",
+            "@n",
+            "@n",
+            "@",
+            "@n",
+            "@n_",
+            "@n",
+            "@n7",
+            "@n",
+            "@nj",
+            "@n",
         ]
         result = tokenizer.tokenize(test5)
         assert result == expected
 
         # Tests that handles can have a max length of 20
         test6 = "@abcdefghijklmnopqrstuvwxyz @abcdefghijklmnopqrst1234 @abcdefghijklmnopqrst_ @abcdefghijklmnopqrstendofhandle"
-        expected = ['uvwxyz', '1234', '_', 'endofhandle']
+        expected = ["uvwxyz", "1234", "_", "endofhandle"]
         result = tokenizer.tokenize(test6)
         assert result == expected
 
         # Edge case where an @ comes directly after a long handle
         test7 = "@abcdefghijklmnopqrstu@abcde @abcdefghijklmnopqrst@abcde @abcdefghijklmnopqrst_@abcde @abcdefghijklmnopqrst5@abcde"
         expected = [
-            'u',
-            '@abcde',
-            '@abcdefghijklmnopqrst',
-            '@abcde',
-            '_',
-            '@abcde',
-            '5',
-            '@abcde',
+            "u",
+            "@abcde",
+            "@abcdefghijklmnopqrst",
+            "@abcde",
+            "_",
+            "@abcde",
+            "5",
+            "@abcde",
         ]
         result = tokenizer.tokenize(test7)
         assert result == expected
@@ -343,7 +371,7 @@ class TestTokenize:
         assert result == expected
 
         # Test case with double quotation
-        test2 = "The DUP is similar to the \"religious right\" in the United States and takes a hardline stance on social issues"
+        test2 = 'The DUP is similar to the "religious right" in the United States and takes a hardline stance on social issues'
         expected = [
             (0, 3),
             (4, 7),
@@ -408,20 +436,35 @@ class TestTokenize:
         """
 
         sentence = "The 'v', I've been fooled but I'll seek revenge."
-        expected = ['The', "'", 'v', "'", ',', 'I', "'ve", 'been', 'fooled',
-                    'but', 'I', "'ll", 'seek', 'revenge', '.']
+        expected = [
+            "The",
+            "'",
+            "v",
+            "'",
+            ",",
+            "I",
+            "'ve",
+            "been",
+            "fooled",
+            "but",
+            "I",
+            "'ll",
+            "seek",
+            "revenge",
+            ".",
+        ]
         assert word_tokenize(sentence) == expected
 
         sentence = "'v' 're'"
-        expected = ["'", 'v', "'", "'re", "'"]
+        expected = ["'", "v", "'", "'re", "'"]
         assert word_tokenize(sentence) == expected
 
     def test_punkt_pair_iter(self):
 
         test_cases = [
-            ('12', [('1', '2'), ('2', None)]),
-            ('123', [('1', '2'), ('2', '3'), ('3', None)]),
-            ('1234', [('1', '2'), ('2', '3'), ('3', '4'), ('4', None)]),
+            ("12", [("1", "2"), ("2", None)]),
+            ("123", [("1", "2"), ("2", "3"), ("3", None)]),
+            ("1234", [("1", "2"), ("2", "3"), ("3", "4"), ("4", None)]),
         ]
 
         for (test_input, expected_output) in test_cases:
@@ -446,18 +489,23 @@ class TestTokenize:
 
         obj._lang_vars = TestPunktTokenizeWordsMock()
         # unpack generator, ensure that no error is raised
-        list(obj._tokenize_words('test'))
+        list(obj._tokenize_words("test"))
 
     def test_punkt_tokenize_custom_lang_vars(self):
 
         # Create LangVars including a full stop end character as used in Bengali
         class BengaliLanguageVars(punkt.PunktLanguageVars):
-            sent_end_chars = ('.', '?', '!', '\u0964')
-        obj = punkt.PunktSentenceTokenizer(lang_vars = BengaliLanguageVars())
+            sent_end_chars = (".", "?", "!", "\u0964")
+
+        obj = punkt.PunktSentenceTokenizer(lang_vars=BengaliLanguageVars())
 
         # We now expect these sentences to be split up into the individual sentences
         sentences = u"উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"
-        expected = ["উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন।", "অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন।", "এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"]
+        expected = [
+            "উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন।",
+            "অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন।",
+            "এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।",
+        ]
 
         assert obj.tokenize(sentences) == expected
 
@@ -467,6 +515,8 @@ class TestTokenize:
 
         # We expect these sentences to not be split properly, as the Bengali full stop '।' is not included in the default language vars
         sentences = u"উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"
-        expected = ["উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"]
+        expected = [
+            "উপরাষ্ট্রপতি শ্রী এম ভেঙ্কাইয়া নাইডু সোমবার আই আই টি দিল্লির হীরক জয়ন্তী উদযাপনের উদ্বোধন করেছেন। অনলাইনের মাধ্যমে এই অনুষ্ঠানে কেন্দ্রীয় মানব সম্পদ উন্নয়নমন্ত্রী শ্রী রমেশ পোখরিয়াল ‘নিশাঙ্ক’  উপস্থিত ছিলেন। এই উপলক্ষ্যে উপরাষ্ট্রপতি হীরকজয়ন্তীর লোগো এবং ২০৩০-এর জন্য প্রতিষ্ঠানের লক্ষ্য ও পরিকল্পনার নথি প্রকাশ করেছেন।"
+        ]
 
         assert obj.tokenize(sentences) == expected

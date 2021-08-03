@@ -317,7 +317,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         raise NotImplementedError()
 
     def _prune(self, queue, chart):
-        """ Discard items in the queue if the queue is longer than the beam."""
+        """Discard items in the queue if the queue is longer than the beam."""
         if len(queue) > self.beam_size:
             split = len(queue) - self.beam_size
             if self._trace > 2:

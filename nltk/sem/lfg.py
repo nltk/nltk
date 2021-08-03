@@ -119,8 +119,10 @@ class FStructure(dict):
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodes[idx] for idx in
-                        chain.from_iterable(node["deps"].values())]
+            children = [
+                depgraph.nodes[idx]
+                for idx in chain.from_iterable(node["deps"].values())
+            ]
             for child in children:
                 fstruct.safeappend(
                     child["rel"],

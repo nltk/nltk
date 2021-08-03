@@ -101,17 +101,17 @@ class MWETokenizer(TokenizerI):
                 # possible MWE match
                 j = i
                 trie = self._mwes
-                last_match =-1
-                while j < n and text[j] in trie :# and len(trie[text[j]]) > 0 :
+                last_match = -1
+                while j < n and text[j] in trie:  # and len(trie[text[j]]) > 0 :
                     trie = trie[text[j]]
                     j = j + 1
                     if Trie.LEAF in trie:
                         last_match = j
                 else:
-                    if last_match > -1 :
+                    if last_match > -1:
                         j = last_match
 
-                    if Trie.LEAF in trie or  last_match > -1:
+                    if Trie.LEAF in trie or last_match > -1:
                         # success!
                         result.append(self._separator.join(text[i:j]))
                         i = j

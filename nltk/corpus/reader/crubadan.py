@@ -40,8 +40,8 @@ class CrubadanCorpusReader(CorpusReader):
         self._load_lang_mapping_data()
 
     def lang_freq(self, lang):
-        """ Return n-gram FreqDist for a specific language
-            given ISO 639-3 language code """
+        """Return n-gram FreqDist for a specific language
+        given ISO 639-3 language code"""
 
         if lang not in self._all_lang_freq:
             self._all_lang_freq[lang] = self._load_lang_ngrams(lang)
@@ -49,23 +49,23 @@ class CrubadanCorpusReader(CorpusReader):
         return self._all_lang_freq[lang]
 
     def langs(self):
-        """ Return a list of supported languages as ISO 639-3 codes """
+        """Return a list of supported languages as ISO 639-3 codes"""
         return [row[1] for row in self._lang_mapping_data]
 
     def iso_to_crubadan(self, lang):
-        """ Return internal Crubadan code based on ISO 639-3 code """
+        """Return internal Crubadan code based on ISO 639-3 code"""
         for i in self._lang_mapping_data:
             if i[1].lower() == lang.lower():
                 return i[0]
 
     def crubadan_to_iso(self, lang):
-        """ Return ISO 639-3 code given internal Crubadan code """
+        """Return ISO 639-3 code given internal Crubadan code"""
         for i in self._lang_mapping_data:
             if i[0].lower() == lang.lower():
                 return i[1]
 
     def _load_lang_mapping_data(self):
-        """ Load language mappings between codes and description from table.txt """
+        """Load language mappings between codes and description from table.txt"""
         if isinstance(self.root, ZipFilePathPointer):
             raise RuntimeError(
                 "Please install the 'crubadan' corpus first, use nltk.download()"
@@ -81,8 +81,8 @@ class CrubadanCorpusReader(CorpusReader):
             self._lang_mapping_data = [row.split("\t") for row in strip_raw.split("\n")]
 
     def _load_lang_ngrams(self, lang):
-        """ Load single n-gram language file given the ISO 639-3 language code
-            and return its FreqDist """
+        """Load single n-gram language file given the ISO 639-3 language code
+        and return its FreqDist"""
 
         if lang not in self.langs():
             raise RuntimeError("Unsupported language.")
