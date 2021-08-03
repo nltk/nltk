@@ -2051,7 +2051,7 @@ class WordNetCorpusReader(CorpusReader):
     ######################################################################
 
 
-    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, o='default', maxdepth=-1, boxes=[], verbose=False):
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, maxdepth=-1, shapes=dict(), attr=dict(), verbose=False):
         """
         Produce a graphical representation from 'inputs' (a list of
         start nodes, which can be a mix of Synsets, Lemmas and/or words),
@@ -2064,9 +2064,9 @@ class WordNetCorpusReader(CorpusReader):
         Optional Parameters:
         :rel: Wordnet synset relation
         :pos: for words, restricts Part of Speech to 'n', 'v', 'a' or 'r'
-        :o: orientation of the graph ('default' or 'reverse')
         :maxdepth: limit the longest path
-        :boxes: draw boxes around specified strings
+        :shapes: dictionary of strings that trigger a specified shape
+        :attr: dictionary with global graph attributes
         :verbose: warn about cycles
 
         >>> from nltk.corpus import wordnet as wn
@@ -2112,7 +2112,7 @@ class WordNetCorpusReader(CorpusReader):
 
         for ss in synsets:
             edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
-        dot_string = edges2dot(edges, boxes, o)
+        dot_string = edges2dot(edges, shapes=shapes, attr=attr)
         return dot_string
 
 

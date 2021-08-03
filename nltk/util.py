@@ -253,7 +253,7 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                 pass
 
 
-def edges2dot(edges, boxes=[], o='default'):
+def edges2dot(edges, shapes=dict(), attr=dict()):
     """
     :param edges: the set (or list) of edges of a directed graph.
 
@@ -261,9 +261,8 @@ def edges2dot(edges, boxes=[], o='default'):
     graph language, which can be converted to an image by the 'dot' program
     from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
 
-    :param boxes: a list of strings that trigger a box shape.
-    :param o: orientation of the graph ('default' draws target nodes at
-    the bottom, 'reverse' draws them at the top).
+    :param shapes: dictionary of strings that trigger a specified shape.
+    :param attr: dictionary with global graph attributes
 
     >>> import nltk
     >>> from nltk.util import edges2dot
@@ -277,15 +276,13 @@ def edges2dot(edges, boxes=[], o='default'):
 
     """
     dot_string = 'digraph G {\n'
-    for (source,target) in edges:
-        if o == 'reverse':
-            pair = (target,source)
-        else:
-            pair = (source,target)
-        for box in boxes:
+    for tup in attr.items():
+        dot_string += "%s=%s;\n" % tup
+    for pair in edges:
+        for shape in shapes.items():
             for x in range(2):
-                if box in repr(pair[x]):
-                    dot_string += '"%s" [shape = box];\n' % pair[x]
+                if shape[0] in repr(pair[x]):
+                    dot_string += '"%s" [shape = %s];\n' % (pair[x], shape[1])
         dot_string += '"%s" -> "%s";\n' % pair
     dot_string += '}\n'
     return dot_string
