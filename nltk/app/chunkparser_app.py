@@ -230,7 +230,7 @@ class RegexpChunkApp:
     ]
 
     ##/////////////////////////////////////////////////////////////////
-    ##  Config Parmeters
+    ##  Config Parameters
     ##/////////////////////////////////////////////////////////////////
 
     _EVAL_DELAY = 1
@@ -404,7 +404,7 @@ class RegexpChunkApp:
         top.title("Regexp Chunk Parser App")
         top.bind("<Control-q>", self.destroy)
 
-        # Varaible that restricts how much of the devset we look at.
+        # Variable that restricts how much of the devset we look at.
         self._devset_size = IntVar(top)
         self._devset_size.set(100)
 

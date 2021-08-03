@@ -189,7 +189,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     def _normalize(self, t, ordered=False):
         """Normalize the xml sentence element in t.
         The sentence elements <alpino_ds>, although embedded in a few overall
-        xml elements, are seperated by blank lines. That's how the reader can
+        xml elements, are separated by blank lines. That's how the reader can
         deliver them one at a time.
         Each sentence has a few category subnodes that are of no use to us.
         The remaining word nodes may or may not appear in the proper order.

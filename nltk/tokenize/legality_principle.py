@@ -65,7 +65,7 @@ class LegalitySyllableTokenizer(TokenizerI):
         """
         :param tokenized_source_text: List of valid tokens in the language
         :type tokenized_source_text: list(str)
-        :param vowels: Valid vowels in language or IPA represenation
+        :param vowels: Valid vowels in language or IPA representation
         :type vowels: str
         :param legal_frequency_threshold: Lowest frequency of all onsets to be considered a legal onset
         :type legal_frequency_threshold: float

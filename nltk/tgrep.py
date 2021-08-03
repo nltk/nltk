@@ -385,7 +385,7 @@ def _tgrep_nltk_tree_pos_action(_s, _l, tokens):
     which returns true if the node is located at a specific tree
     position.
     """
-    # recover the tuple from the parsed sting
+    # recover the tuple from the parsed string
     node_tree_position = tuple(int(x) for x in tokens if x.isdigit())
     # capture the node's tree position
     return (
@@ -999,7 +999,7 @@ def tgrep_positions(pattern, trees, search_leaves=True):
     :type pattern: str or output of tgrep_compile()
     :param trees: a sequence of NLTK trees (usually ParentedTrees)
     :type trees: iter(ParentedTree) or iter(Tree)
-    :param search_leaves: whether ot return matching leaf nodes
+    :param search_leaves: whether to return matching leaf nodes
     :type search_leaves: bool
     :rtype: iter(tree positions)
     """
@@ -1026,7 +1026,7 @@ def tgrep_nodes(pattern, trees, search_leaves=True):
     :type pattern: str or output of tgrep_compile()
     :param trees: a sequence of NLTK trees (usually ParentedTrees)
     :type trees: iter(ParentedTree) or iter(Tree)
-    :param search_leaves: whether ot return matching leaf nodes
+    :param search_leaves: whether to return matching leaf nodes
     :type search_leaves: bool
     :rtype: iter(tree nodes)
     """

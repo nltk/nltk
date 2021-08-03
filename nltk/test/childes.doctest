@@ -114,14 +114,14 @@ POS tags in the CHILDES are automatically assigned by MOR and POST programs
     ('a', 'det'), ('month', 'n'), ('ago', 'adv')]]
 
 When the argument *stem* is true, the word stems (e.g., 'is' -> 'be-3PS') are
-used instread of the original words.
+used instead of the original words.
 
     >>> valian.words('Valian/01a.xml')[:30]
     ['at', 'Parent', "Lastname's", 'house', 'with', 'Child', 'Lastname', 'and', 'it', 'is', ...
     >>> valian.words('Valian/01a.xml',stem=True)[:30]
     ['at', 'Parent', 'Lastname', 's', 'house', 'with', 'Child', 'Lastname', 'and', 'it', 'be-3S', ...
 
-When the argument *replace* is true, the replaced words are used instread of
+When the argument *replace* is true, the replaced words are used instead of
 the original words.
 
     >>> valian.words('Valian/01a.xml',speaker='CHI')[247]

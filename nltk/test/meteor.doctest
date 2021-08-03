@@ -7,7 +7,7 @@
 METEOR tests
 =============
 
-No Allignment test
+No Alignment test
 ------------------
 
     >>> from nltk.translate import meteor

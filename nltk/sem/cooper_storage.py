@@ -95,7 +95,7 @@ def demo():
     sentence = "every girl chases a dog"
     # sentence = "a man gives a bone to every dog"
     print()
-    print("Analyis of sentence '%s'" % sentence)
+    print("Analysis of sentence '%s'" % sentence)
     print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:

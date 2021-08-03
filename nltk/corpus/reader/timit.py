@@ -108,7 +108,7 @@ The 4 functions are as follows.
  - audiodata(item, start=0, end=None)
 
    Given an item, returns a chunk of audio samples formatted into a string.
-   When the fuction is called, if start and end are omitted, the entire
+   When the function is called, if start and end are omitted, the entire
    samples of the recording will be returned.  If only end is omitted,
    samples from the start offset to the end of the recording will be returned.
 

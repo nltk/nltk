@@ -474,7 +474,7 @@ class TweetWriter(TweetHandlerI):
         written. If `True`, the length of each file will be set by the value\
         of `limit`. See also :py:func:`handle`.
 
-        :param gzip_compress: if `True`, ouput files are compressed with gzip.
+        :param gzip_compress: if `True`, output files are compressed with gzip.
         """
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)

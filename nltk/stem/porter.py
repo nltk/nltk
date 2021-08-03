@@ -187,7 +187,7 @@ class PorterStemmer(StemmerI):
             else:
                 cv_sequence += "v"
 
-        # Count the number of 'vc' occurences, which is equivalent to
+        # Count the number of 'vc' occurrences, which is equivalent to
         # the number of 'VC' occurrences in Porter's reduced form in the
         # docstring above, which is in turn equivalent to `m`
         return cv_sequence.count("vc")

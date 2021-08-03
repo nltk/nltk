@@ -746,7 +746,7 @@ class CFG:
 
     def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
         """
-        Returns a new Grammer that is in chomsky normal
+        Returns a new Grammar that is in chomsky normal
         :param: new_token_padding
             Customise new rule formation during binarisation
         """

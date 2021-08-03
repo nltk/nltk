@@ -230,7 +230,7 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
     :param document: a list of words/tokens, or a tuple (words, label).
     :param shallow: if True, the method will modify the original document in place.
     :param double_neg_flip: if True, double negation is considered affirmation
-        (we activate/deactivate negation scope everytime we find a negation).
+        (we activate/deactivate negation scope every time we find a negation).
     :return: if `shallow == True` the method will modify the original document
         and return it. If `shallow == False` the method will return a modified
         document, leaving the original unmodified.

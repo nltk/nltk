@@ -330,7 +330,7 @@ class TnT(TaggerI):
         of a particular tag
         """
 
-        # if this word marks the end of the sentance,
+        # if this word marks the end of the sentence,
         # return the most probable tag
         if sent == []:
             (h, logp) = current_states[0]
@@ -342,7 +342,7 @@ class TnT(TaggerI):
         new_states = []
 
         # if the Capitalisation is requested,
-        # initalise the flag for this word
+        # initialise the flag for this word
         C = False
         if self._C and word[0].isupper():
             C = True
