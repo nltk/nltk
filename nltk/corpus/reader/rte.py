@@ -82,7 +82,7 @@ class RTEPair:
         """
         self.challenge = challenge
         self.id = pair.attrib["id"]
-        self.gid = "%s-%s" % (self.challenge, self.id)
+        self.gid = f"{self.challenge}-{self.id}"
         self.text = pair[0].text
         self.hyp = pair[1].text
 
@@ -103,7 +103,7 @@ class RTEPair:
 
     def __repr__(self):
         if self.challenge:
-            return "<RTEPair: gid=%s-%s>" % (self.challenge, self.id)
+            return f"<RTEPair: gid={self.challenge}-{self.id}>"
         else:
             return "<RTEPair: id=%s>" % self.id
 

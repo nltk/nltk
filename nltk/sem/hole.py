@@ -321,7 +321,7 @@ class Constraint:
         return hash(repr(self))
 
     def __repr__(self):
-        return "(%s < %s)" % (self.lhs, self.rhs)
+        return f"({self.lhs} < {self.rhs})"
 
 
 def hole_readings(sentence, grammar_filename=None, verbose=False):
@@ -369,7 +369,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
             print("Top labels:  ", hole_sem.top_most_labels)
             print("Fragments:")
             for l, f in hole_sem.fragments.items():
-                print("\t%s: %s" % (l, f))
+                print(f"\t{l}: {f}")
 
         # Find all the possible ways to plug the formulas together.
         pluggings = hole_sem.pluggings()

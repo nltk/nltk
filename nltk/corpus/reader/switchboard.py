@@ -33,7 +33,7 @@ class SwitchboardTurn(list):
             text = " ".join("%s/%s" % w for w in self)
         else:
             text = " ".join(self)
-        return "<%s.%s: %r>" % (self.speaker, self.id, text)
+        return f"<{self.speaker}.{self.id}: {text!r}>"
 
 
 class SwitchboardCorpusReader(CorpusReader):

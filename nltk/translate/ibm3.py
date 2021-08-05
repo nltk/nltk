@@ -157,7 +157,7 @@ class IBMModel3(IBMModel):
             See ``IBMModel`` for the type and purpose of these tables.
         :type probability_tables: dict[str]: object
         """
-        super(IBMModel3, self).__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus)
         self.reset_probabilities()
 
         if probability_tables is None:
@@ -178,7 +178,7 @@ class IBMModel3(IBMModel):
             self.train(sentence_aligned_corpus)
 
     def reset_probabilities(self):
-        super(IBMModel3, self).reset_probabilities()
+        super().reset_probabilities()
         self.distortion_table = defaultdict(
             lambda: defaultdict(
                 lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
@@ -331,7 +331,7 @@ class Model3Counts(Counts):
     """
 
     def __init__(self):
-        super(Model3Counts, self).__init__()
+        super().__init__()
         self.distortion = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
         )

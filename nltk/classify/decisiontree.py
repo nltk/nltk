@@ -79,7 +79,7 @@ class DecisionTreeClassifier(ClassifierI):
         # [xx] display default!!
         if self._fname is None:
             n = width - len(prefix) - 15
-            return "{0}{1} {2}\n".format(prefix, "." * n, self._label)
+            return "{}{} {}\n".format(prefix, "." * n, self._label)
         s = ""
         for i, (fval, result) in enumerate(
             sorted(
@@ -87,14 +87,14 @@ class DecisionTreeClassifier(ClassifierI):
                 key=lambda item: (item[0] in [None, False, True], str(item[0]).lower()),
             )
         ):
-            hdr = "{0}{1}={2}? ".format(prefix, self._fname, fval)
+            hdr = f"{prefix}{self._fname}={fval}? "
             n = width - 15 - len(hdr)
-            s += "{0}{1} {2}\n".format(hdr, "." * (n), result._label)
+            s += "{}{} {}\n".format(hdr, "." * (n), result._label)
             if result._fname is not None and depth > 1:
                 s += result.pretty_format(width, prefix + "  ", depth - 1)
         if self._default is not None:
             n = width - len(prefix) - 21
-            s += "{0}else: {1} {2}\n".format(prefix, "." * n, self._default._label)
+            s += "{}else: {} {}\n".format(prefix, "." * n, self._default._label)
             if self._default._fname is not None and depth > 1:
                 s += self._default.pretty_format(width, prefix + "  ", depth - 1)
         return s
@@ -106,28 +106,28 @@ class DecisionTreeClassifier(ClassifierI):
         if statements.
         """
         if self._fname is None:
-            return "{0}return {1!r}\n".format(prefix, self._label)
+            return f"{prefix}return {self._label!r}\n"
         s = ""
         for (fval, result) in sorted(
             self._decisions.items(),
             key=lambda item: (item[0] in [None, False, True], str(item[0]).lower()),
         ):
-            s += "{0}if {1} == {2!r}: ".format(prefix, self._fname, fval)
+            s += f"{prefix}if {self._fname} == {fval!r}: "
             if result._fname is not None and depth > 1:
                 s += "\n" + result.pseudocode(prefix + "  ", depth - 1)
             else:
-                s += "return {0!r}\n".format(result._label)
+                s += f"return {result._label!r}\n"
         if self._default is not None:
             if len(self._decisions) == 1:
-                s += "{0}if {1} != {2!r}: ".format(
+                s += "{}if {} != {!r}: ".format(
                     prefix, self._fname, list(self._decisions.keys())[0]
                 )
             else:
-                s += "{0}else: ".format(prefix)
+                s += f"{prefix}else: "
             if self._default._fname is not None and depth > 1:
                 s += "\n" + self._default.pseudocode(prefix + "  ", depth - 1)
             else:
-                s += "return {0!r}\n".format(self._default._label)
+                s += f"return {self._default._label!r}\n"
         return s
 
     def __str__(self):
@@ -200,9 +200,7 @@ class DecisionTreeClassifier(ClassifierI):
             feature_value = featureset.get(feature_name)
             freqs[feature_value][label] += 1
 
-        decisions = dict(
-            (val, DecisionTreeClassifier(freqs[val].max())) for val in freqs
-        )
+        decisions = {val: DecisionTreeClassifier(freqs[val].max()) for val in freqs}
         return DecisionTreeClassifier(label, feature_name, decisions)
 
     def refine(
@@ -315,7 +313,7 @@ class DecisionTreeClassifier(ClassifierI):
                     best_stump = stump
         if verbose:
             if best_stump._decisions:
-                descr = "{0}={1}".format(
+                descr = "{}={}".format(
                     best_stump._fname, list(best_stump._decisions.keys())[0]
                 )
             else:

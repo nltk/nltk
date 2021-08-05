@@ -119,7 +119,7 @@ class StanfordSegmenter(TokenizerI):
         self.java_options = java_options
         options = {} if options is None else options
         self._options_cmd = ",".join(
-            "{0}={1}".format(key, json.dumps(val)) for key, val in options.items()
+            f"{key}={json.dumps(val)}" for key, val in options.items()
         )
 
     def default_config(self, lang):
@@ -179,7 +179,7 @@ class StanfordSegmenter(TokenizerI):
                     "STANFORD_SEGMENTER environment variable)" % sihan_dir
                 ) from e
         else:
-            raise LookupError("Unsupported language {}".format(lang))
+            raise LookupError(f"Unsupported language {lang}")
 
         try:
             self._model = find_file(

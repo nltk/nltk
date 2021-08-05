@@ -69,18 +69,18 @@ class LazyCorpusLoader:
         zip_name = re.sub(r"(([^/]+)(/.*)?)", r"\2.zip/\1/", self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
-                root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
+                root = nltk.data.find(f"{self.subdir}/{zip_name}")
             except LookupError as e:
                 try:
-                    root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
+                    root = nltk.data.find(f"{self.subdir}/{self.__name}")
                 except LookupError:
                     raise e
         else:
             try:
-                root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
+                root = nltk.data.find(f"{self.subdir}/{self.__name}")
             except LookupError as e:
                 try:
-                    root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
+                    root = nltk.data.find(f"{self.subdir}/{zip_name}")
                 except LookupError:
                     raise e
 
@@ -123,7 +123,7 @@ class LazyCorpusLoader:
         return getattr(self, attr)
 
     def __repr__(self):
-        return "<%s in %r (not loaded yet)>" % (
+        return "<{} in {!r} (not loaded yet)>".format(
             self.__reader_cls.__name__,
             ".../corpora/" + self.__name,
         )

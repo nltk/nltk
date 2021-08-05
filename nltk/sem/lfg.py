@@ -193,15 +193,15 @@ class FStructure(dict):
             for item in self[feature]:
                 if isinstance(item, FStructure):
                     next_indent = indent + len(feature) + 3 + len(self.label)
-                    accum += "\n%s%s %s" % (
+                    accum += "\n{}{} {}".format(
                         " " * (indent),
                         feature,
                         item.pretty_format(next_indent),
                     )
                 elif isinstance(item, tuple):
-                    accum += "\n%s%s '%s'" % (" " * (indent), feature, item[0])
+                    accum += "\n{}{} '{}'".format(" " * (indent), feature, item[0])
                 elif isinstance(item, list):
-                    accum += "\n%s%s {%s}" % (
+                    accum += "\n{}{} {{{}}}".format(
                         " " * (indent),
                         feature,
                         ("\n%s" % (" " * (indent + len(feature) + 2))).join(item),

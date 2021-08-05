@@ -75,7 +75,7 @@ class Feature(metaclass=ABCMeta):
         """
         self.positions = None  # to avoid warnings
         if end is None:
-            self.positions = tuple(sorted(set(int(i) for i in positions)))
+            self.positions = tuple(sorted({int(i) for i in positions}))
         else:  # positions was actually not a list, but only the start index
             try:
                 if positions > end:
@@ -84,7 +84,7 @@ class Feature(metaclass=ABCMeta):
             except TypeError as e:
                 # let any kind of erroneous spec raise ValueError
                 raise ValueError(
-                    "illegal interval specification: (start={0}, end={1})".format(
+                    "illegal interval specification: (start={}, end={})".format(
                         positions, end
                     )
                 ) from e
@@ -101,7 +101,7 @@ class Feature(metaclass=ABCMeta):
         return cls(positions)
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, list(self.positions))
+        return f"{self.__class__.__name__}({list(self.positions)!r})"
 
     @classmethod
     def expand(cls, starts, winlens, excludezero=False):
@@ -154,7 +154,7 @@ class Feature(metaclass=ABCMeta):
         :raises ValueError: for non-positive window lengths
         """
         if not all(x > 0 for x in winlens):
-            raise ValueError("non-positive window length in {0}".format(winlens))
+            raise ValueError(f"non-positive window length in {winlens}")
         xs = (starts[i : i + w] for w in winlens for i in range(len(starts) - w + 1))
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 

@@ -72,13 +72,13 @@ class CoreNLPServer:
         if port is None:
             try:
                 port = try_port(9000)
-            except socket.error:
+            except OSError:
                 port = try_port()
                 corenlp_options.append(str(port))
         else:
             try_port(port)
 
-        self.url = "http://localhost:{}".format(port)
+        self.url = f"http://localhost:{port}"
 
         model_jar = max(
             find_jar_iter(
@@ -241,7 +241,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             self.url,
             params={"properties": json.dumps(default_properties)},
             data=data.encode(self.encoding),
-            headers={"Content-Type": "text/plain; charset={}".format(self.encoding)},
+            headers={"Content-Type": f"text/plain; charset={self.encoding}"},
             timeout=timeout,
         )
 

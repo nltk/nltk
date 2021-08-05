@@ -79,7 +79,7 @@ class AlignedSent:
         words = "[%s]" % (", ".join("'%s'" % w for w in self._words))
         mots = "[%s]" % (", ".join("'%s'" % w for w in self._mots))
 
-        return "AlignedSent(%s, %s, %r)" % (words, mots, self._alignment)
+        return f"AlignedSent({words}, {mots}, {self._alignment!r})"
 
     def _to_dot(self):
         """
@@ -90,25 +90,25 @@ class AlignedSent:
 
         # Declare node
         for w in self._words:
-            s += '"%s_source" [label="%s"] \n' % (w, w)
+            s += f'"{w}_source" [label="{w}"] \n'
 
         for w in self._mots:
-            s += '"%s_target" [label="%s"] \n' % (w, w)
+            s += f'"{w}_target" [label="{w}"] \n'
 
         # Alignment
         for u, v in self._alignment:
-            s += '"%s_source" -- "%s_target" \n' % (self._words[u], self._mots[v])
+            s += f'"{self._words[u]}_source" -- "{self._mots[v]}_target" \n'
 
         # Connect the source words
         for i in range(len(self._words) - 1):
-            s += '"%s_source" -- "%s_source" [style=invis]\n' % (
+            s += '"{}_source" -- "{}_source" [style=invis]\n'.format(
                 self._words[i],
                 self._words[i + 1],
             )
 
         # Connect the target words
         for i in range(len(self._mots) - 1):
-            s += '"%s_target" -- "%s_target" [style=invis]\n' % (
+            s += '"{}_target" -- "{}_target" [style=invis]\n'.format(
                 self._mots[i],
                 self._mots[i + 1],
             )
@@ -148,7 +148,7 @@ class AlignedSent:
         """
         source = " ".join(self._words)[:20] + "..."
         target = " ".join(self._mots)[:20] + "..."
-        return "<AlignedSent: '%s' -> '%s'>" % (source, target)
+        return f"<AlignedSent: '{source}' -> '{target}'>"
 
     def invert(self):
         """

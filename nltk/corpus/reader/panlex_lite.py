@@ -133,7 +133,7 @@ class Meaning(dict):
     """
 
     def __init__(self, mn, attr):
-        super(Meaning, self).__init__(**attr)
+        super().__init__(**attr)
         self["mn"] = mn
 
     def id(self):

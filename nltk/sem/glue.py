@@ -68,7 +68,7 @@ class GlueFormula:
         """
         if self.indices & arg.indices:  # if the sets are NOT disjoint
             raise linearlogic.LinearLogicApplicationException(
-                "'%s' applied to '%s'.  Indices are not disjoint." % (self, arg)
+                f"'{self}' applied to '{arg}'.  Indices are not disjoint."
             )
         else:  # if the sets ARE disjoint
             return_indices = self.indices | arg.indices
@@ -79,7 +79,7 @@ class GlueFormula:
             )
         except linearlogic.LinearLogicApplicationException as e:
             raise linearlogic.LinearLogicApplicationException(
-                "'%s' applied to '%s'" % (self.simplify(), arg.simplify())
+                f"'{self.simplify()}' applied to '{arg.simplify()}'"
             ) from e
 
         arg_meaning_abstracted = arg.meaning
@@ -116,7 +116,7 @@ class GlueFormula:
             counter, self.__class__
         )
         return new_forms + [
-            self.__class__(self.meaning, compiled_glue, set([counter.get()]))
+            self.__class__(self.meaning, compiled_glue, {counter.get()})
         ]
 
     def simplify(self):
@@ -140,7 +140,7 @@ class GlueFormula:
 
     def __str__(self):
         assert isinstance(self.indices, set)
-        accum = "%s : %s" % (self.meaning, self.glue)
+        accum = f"{self.meaning} : {self.glue}"
         if self.indices:
             accum += (
                 " : {" + ", ".join(str(index) for index in sorted(self.indices)) + "}"
@@ -361,7 +361,7 @@ class GlueDict(dict):
             # most relations of any possible relationship set that is a subset
             # of the actual depgraph
             best_match = frozenset()
-            for relset_option in set(semtype) - set([None]):
+            for relset_option in set(semtype) - {None}:
                 if (
                     len(relset_option) > len(best_match)
                     and relset_option < relationships
@@ -405,7 +405,7 @@ class GlueDict(dict):
             if not len(glueformulas):
                 gf.word = word
             else:
-                gf.word = "%s%s" % (word, len(glueformulas) + 1)
+                gf.word = f"{word}{len(glueformulas) + 1}"
 
             gf.glue = self.initialize_labels(gf.glue, node, depgraph, counter.get())
 
@@ -462,7 +462,7 @@ class GlueDict(dict):
             elif name == "super":
                 return self.get_label(depgraph.nodes[node["head"]])
             elif name == "var":
-                return "%s%s" % (lbl.upper(), unique_index)
+                return f"{lbl.upper()}{unique_index}"
             elif name == "a":
                 return self.get_label(self.lookup_unique("conja", node, depgraph))
             elif name == "b":
@@ -524,10 +524,12 @@ class GlueDict(dict):
         ]
 
         if len(deps) == 0:
-            raise KeyError("'%s' doesn't contain a feature '%s'" % (node["word"], rel))
+            raise KeyError(
+                "'{}' doesn't contain a feature '{}'".format(node["word"], rel)
+            )
         elif len(deps) > 1:
             raise KeyError(
-                "'%s' should only have one feature '%s'" % (node["word"], rel)
+                "'{}' should only have one feature '{}'".format(node["word"], rel)
             )
         else:
             return deps[0]
@@ -824,7 +826,7 @@ def demo(show_example=-1):
 
     for (i, sentence) in enumerate(examples):
         if i == show_example or show_example == -1:
-            print("[[[Example %s]]]  %s" % (i, sentence))
+            print(f"[[[Example {i}]]]  {sentence}")
             for reading in glue.parse_to_meaning(sentence.split()):
                 print(reading.simplify())
             print("")

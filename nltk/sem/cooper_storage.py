@@ -117,7 +117,7 @@ def demo():
         print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print("%s: %s" % (i + 1, reading))
+            print(f"{i + 1}: {reading}")
 
 
 if __name__ == "__main__":

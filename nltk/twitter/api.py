@@ -138,7 +138,7 @@ class TweetHandlerI(BasicTweetHandler):
                     date_limit = self.lower_date_limit
                 if verbose:
                     print(
-                        "Date limit {0} is {1} than date of current tweet {2}".format(
+                        "Date limit {} is {} than date of current tweet {}".format(
                             date_limit, message, tweet_date
                         )
                     )

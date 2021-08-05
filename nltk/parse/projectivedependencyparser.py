@@ -120,7 +120,7 @@ class ChartCell:
         """
         self._x = x
         self._y = y
-        self._entries = set([])
+        self._entries = set()
 
     def add(self, span):
         """
@@ -468,7 +468,7 @@ class ProbabilisticProjectiveDependencyParser:
                     if head_word in tags:
                         tags[head_word].add(head_tag)
                     else:
-                        tags[head_word] = set([head_tag])
+                        tags[head_word] = {head_tag}
                     child = "STOP"
                     child_tag = "STOP"
                     prev_word = "START"
@@ -483,14 +483,14 @@ class ProbabilisticProjectiveDependencyParser:
                             prev_tag = dg.nodes[children[array_index + 1]]["tag"]
                         if child != "STOP":
                             productions.append(DependencyProduction(head_word, [child]))
-                        head_event = "(head (%s %s) (mods (%s, %s, %s) left))" % (
+                        head_event = "(head ({} {}) (mods ({}, {}, {}) left))".format(
                             child,
                             child_tag,
                             prev_tag,
                             head_word,
                             head_tag,
                         )
-                        mod_event = "(mods (%s, %s, %s) left))" % (
+                        mod_event = "(mods ({}, {}, {}) left))".format(
                             prev_tag,
                             head_word,
                             head_tag,
@@ -507,14 +507,14 @@ class ProbabilisticProjectiveDependencyParser:
                             prev_tag = dg.nodes[children[array_index - 1]]["tag"]
                         if child != "STOP":
                             productions.append(DependencyProduction(head_word, [child]))
-                        head_event = "(head (%s %s) (mods (%s, %s, %s) right))" % (
+                        head_event = "(head ({} {}) (mods ({}, {}, {}) right))".format(
                             child,
                             child_tag,
                             prev_tag,
                             head_word,
                             head_tag,
                         )
-                        mod_event = "(mods (%s, %s, %s) right))" % (
+                        mod_event = "(mods ({}, {}, {}) right))".format(
                             prev_tag,
                             head_word,
                             head_tag,
@@ -557,14 +557,14 @@ class ProbabilisticProjectiveDependencyParser:
                     if child_index != -1:
                         prev_word = dg.nodes[children[array_index + 1]]["word"]
                         prev_tag = dg.nodes[children[array_index + 1]]["tag"]
-                    head_event = "(head (%s %s) (mods (%s, %s, %s) left))" % (
+                    head_event = "(head ({} {}) (mods ({}, {}, {}) left))".format(
                         child,
                         child_tag,
                         prev_tag,
                         head_word,
                         head_tag,
                     )
-                    mod_event = "(mods (%s, %s, %s) left))" % (
+                    mod_event = "(mods ({}, {}, {}) left))".format(
                         prev_tag,
                         head_word,
                         head_tag,
@@ -586,14 +586,14 @@ class ProbabilisticProjectiveDependencyParser:
                     if child_index != 1:
                         prev_word = dg.nodes[children[array_index - 1]]["word"]
                         prev_tag = dg.nodes[children[array_index - 1]]["tag"]
-                    head_event = "(head (%s %s) (mods (%s, %s, %s) right))" % (
+                    head_event = "(head ({} {}) (mods ({}, {}, {}) right))".format(
                         child,
                         child_tag,
                         prev_tag,
                         head_word,
                         head_tag,
                     )
-                    mod_event = "(mods (%s, %s, %s) right))" % (
+                    mod_event = "(mods ({}, {}, {}) right))".format(
                         prev_tag,
                         head_word,
                         head_tag,

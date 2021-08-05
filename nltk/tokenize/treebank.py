@@ -186,8 +186,7 @@ class TreebankWordTokenizer(TokenizerI):
         else:
             tokens = raw_tokens
 
-        for tok in align_tokens(tokens, text):
-            yield tok
+        yield from align_tokens(tokens, text)
 
 
 class TreebankWordDetokenizer(TokenizerI):

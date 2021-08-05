@@ -123,28 +123,28 @@ class FreqDist(Counter):
         Override ``Counter.__setitem__()`` to invalidate the cached N
         """
         self._N = None
-        super(FreqDist, self).__setitem__(key, val)
+        super().__setitem__(key, val)
 
     def __delitem__(self, key):
         """
         Override ``Counter.__delitem__()`` to invalidate the cached N
         """
         self._N = None
-        super(FreqDist, self).__delitem__(key)
+        super().__delitem__(key)
 
     def update(self, *args, **kwargs):
         """
         Override ``Counter.update()`` to invalidate the cached N
         """
         self._N = None
-        super(FreqDist, self).update(*args, **kwargs)
+        super().update(*args, **kwargs)
 
     def setdefault(self, key, val):
         """
         Override ``Counter.setdefault()`` to invalidate the cached N
         """
         self._N = None
-        super(FreqDist, self).setdefault(key, val)
+        super().setdefault(key, val)
 
     def B(self):
         """
@@ -326,7 +326,7 @@ class FreqDist(Counter):
             freqs = [self[sample] for sample in samples]
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
-        width = max(len("{}".format(s)) for s in samples)
+        width = max(len(f"{s}") for s in samples)
         width = max(width, max(len("%d" % f) for f in freqs))
 
         for i in range(len(samples)):
@@ -354,7 +354,7 @@ class FreqDist(Counter):
         FreqDist({'b': 4, 'c': 2, 'a': 1})
 
         """
-        return self.__class__(super(FreqDist, self).__add__(other))
+        return self.__class__(super().__add__(other))
 
     def __sub__(self, other):
         """
@@ -364,7 +364,7 @@ class FreqDist(Counter):
         FreqDist({'b': 2, 'a': 1})
 
         """
-        return self.__class__(super(FreqDist, self).__sub__(other))
+        return self.__class__(super().__sub__(other))
 
     def __or__(self, other):
         """
@@ -374,7 +374,7 @@ class FreqDist(Counter):
         FreqDist({'b': 3, 'c': 2, 'a': 1})
 
         """
-        return self.__class__(super(FreqDist, self).__or__(other))
+        return self.__class__(super().__or__(other))
 
     def __and__(self, other):
         """
@@ -384,7 +384,7 @@ class FreqDist(Counter):
         FreqDist({'b': 1})
 
         """
-        return self.__class__(super(FreqDist, self).__and__(other))
+        return self.__class__(super().__and__(other))
 
     def __le__(self, other):
         """
@@ -455,7 +455,7 @@ class FreqDist(Counter):
         :type maxlen: int
         :rtype: string
         """
-        items = ["{0!r}: {1!r}".format(*item) for item in self.most_common(maxlen)]
+        items = ["{!r}: {!r}".format(*item) for item in self.most_common(maxlen)]
         if len(self) > maxlen:
             items.append("...")
         return "FreqDist({{{0}}})".format(", ".join(items))
@@ -659,7 +659,7 @@ class RandomProbDist(ProbDistI):
             # can be subtracted from any element without risking probs not (0 1)
             randrow[-1] -= total - 1
 
-        return dict((s, randrow[i]) for i, s in enumerate(samples))
+        return {s: randrow[i] for i, s in enumerate(samples)}
 
     def max(self):
         if not hasattr(self, "_max"):
@@ -1185,7 +1185,7 @@ class CrossValidationProbDist(ProbDistI):
 
     def samples(self):
         # [xx] nb: this is not too efficient
-        return set(sum([list(fd) for fd in self._freqdists], []))
+        return set(sum((list(fd) for fd in self._freqdists), []))
 
     def prob(self, sample):
         # Find the average probability estimate returned by each
@@ -1595,8 +1595,8 @@ class MutableProbDist(ProbDistI):
         :type store_logs: bool
         """
         self._samples = samples
-        self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
-        self._data = array.array(str("d"), [0.0]) * len(samples)
+        self._sample_dict = {samples[i]: i for i in range(len(samples))}
+        self._data = array.array("d", [0.0]) * len(samples)
         for i in range(len(samples)):
             if store_logs:
                 self._data[i] = prob_dist.logprob(samples[i])
@@ -1796,7 +1796,7 @@ class KneserNeyProbDist(ProbDistI):
 
         :rtype: str
         """
-        return "<KneserNeyProbDist based on {0} trigrams".format(self._trigrams.N())
+        return f"<KneserNeyProbDist based on {self._trigrams.N()} trigrams"
 
 
 ##//////////////////////////////////////////////////////
@@ -1940,7 +1940,7 @@ class ConditionalFreqDist(defaultdict):
         ]  # conditions should be in self
         title = _get_kwarg(kwargs, "title", "")
         samples = _get_kwarg(
-            kwargs, "samples", sorted(set(v for c in conditions for v in self[c]))
+            kwargs, "samples", sorted({v for c in conditions for v in self[c]})
         )  # this computation could be wasted
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
@@ -1996,7 +1996,7 @@ class ConditionalFreqDist(defaultdict):
         samples = _get_kwarg(
             kwargs,
             "samples",
-            sorted(set(v for c in conditions if c in self for v in self[c])),
+            sorted({v for c in conditions if c in self for v in self[c]}),
         )  # this computation could be wasted
 
         width = max(len("%s" % s) for s in samples)
@@ -2507,7 +2507,7 @@ def demo(numsamples=6, numoutcomes=500):
     print("Generating:")
     for pdist in pdists:
         fdist = FreqDist(pdist.generate() for i in range(5000))
-        print("%20s %s" % (pdist.__class__.__name__[:20], ("%s" % fdist)[:55]))
+        print("{:>20} {}".format(pdist.__class__.__name__[:20], ("%s" % fdist)[:55]))
     print()
 
 
@@ -2517,7 +2517,7 @@ def gt_demo():
     emma_words = corpus.gutenberg.words("austen-emma.txt")
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    print("%18s %8s  %14s" % ("word", "frequency", "SimpleGoodTuring"))
+    print("{:>18} {:>8}  {:>14}".format("word", "frequency", "SimpleGoodTuring"))
     fd_keys_sorted = (
         key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True)
     )

@@ -113,7 +113,7 @@ class NombankCorpusReader(CorpusReader):
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
-        raise ValueError("Roleset %s not found in %s" % (roleset_id, framefile))
+        raise ValueError(f"Roleset {roleset_id} not found in {framefile}")
 
     def rolesets(self, baseform=None):
         """
@@ -226,17 +226,17 @@ class NombankInstance:
         look up information about the roleset."""
         r = self.baseform.replace("%", "perc-sign")
         r = r.replace("1/10", "1-slash-10").replace("1-slash-10", "oneslashonezero")
-        return "%s.%s" % (r, self.sensenumber)
+        return f"{r}.{self.sensenumber}"
 
     def __repr__(self):
-        return "<NombankInstance: %s, sent %s, word %s>" % (
+        return "<NombankInstance: {}, sent {}, word {}>".format(
             self.fileid,
             self.sentnum,
             self.wordnum,
         )
 
     def __str__(self):
-        s = "%s %s %s %s %s" % (
+        s = "{} {} {} {} {}".format(
             self.fileid,
             self.sentnum,
             self.wordnum,
@@ -245,7 +245,7 @@ class NombankInstance:
         )
         items = self.arguments + ((self.predicate, "rel"),)
         for (argloc, argid) in sorted(items):
-            s += " %s-%s" % (argloc, argid)
+            s += f" {argloc}-{argid}"
         return s
 
     def _get_tree(self):
@@ -401,7 +401,7 @@ class NombankTreePointer(NombankPointer):
         return NombankTreePointer(int(pieces[0]), int(pieces[1]))
 
     def __str__(self):
-        return "%s:%s" % (self.wordnum, self.height)
+        return f"{self.wordnum}:{self.height}"
 
     def __repr__(self):
         return "NombankTreePointer(%d, %d)" % (self.wordnum, self.height)

@@ -238,7 +238,7 @@ class Direction:
         r_str = ""
         for r in self._restrs:
             r_str = r_str + "%s" % r
-        return "%s%s" % (self._dir, r_str)
+        return f"{self._dir}{r_str}"
 
     # The negation operator reverses the direction of the application
     def __neg__(self):
@@ -298,7 +298,7 @@ class PrimitiveCategory(AbstractCCGCategory):
         if self._restrs == []:
             return "%s" % self._categ
         restrictions = "[%s]" % ",".join(repr(r) for r in self._restrs)
-        return "%s%s" % (self._categ, restrictions)
+        return f"{self._categ}{restrictions}"
 
 
 class FunctionalCategory(AbstractCCGCategory):
@@ -356,4 +356,4 @@ class FunctionalCategory(AbstractCCGCategory):
         return self._dir
 
     def __str__(self):
-        return "(%s%s%s)" % (self._res, self._dir, self._arg)
+        return f"({self._res}{self._dir}{self._arg})"

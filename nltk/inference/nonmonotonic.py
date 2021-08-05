@@ -157,7 +157,7 @@ class SetHolder(list):
             if item in s:
                 return s
         # item is not found in any existing set.  so create a new set
-        new = set([item])
+        new = {item}
         self.append(new)
         return new
 
@@ -335,7 +335,7 @@ class PredHolder:
             raise Exception("Signature lengths do not match")
 
     def __str__(self):
-        return "(%s,%s,%s)" % (self.signatures, self.properties, self.signature_len)
+        return f"({self.signatures},{self.properties},{self.signature_len})"
 
     def __repr__(self):
         return "%s" % self

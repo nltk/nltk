@@ -48,7 +48,7 @@ jobs:
         with:
           path: ${{ env.pythonLocation }}
           key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
-      
+
       - name: Install dependencies on cache miss
         run: pip install --upgrade --requirement requirements-ci.txt
         if: steps.restore-cache.outputs.cache-hit != 'true'

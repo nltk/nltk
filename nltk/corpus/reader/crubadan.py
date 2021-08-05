@@ -35,7 +35,7 @@ class CrubadanCorpusReader(CorpusReader):
     _all_lang_freq = {}
 
     def __init__(self, root, fileids, encoding="utf8", tagset=None):
-        super(CrubadanCorpusReader, self).__init__(root, fileids, encoding="utf8")
+        super().__init__(root, fileids, encoding="utf8")
         self._lang_mapping_data = []
         self._load_lang_mapping_data()
 
@@ -75,7 +75,7 @@ class CrubadanCorpusReader(CorpusReader):
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
 
-        with open(mapper_file, "r", encoding="utf-8") as raw:
+        with open(mapper_file, encoding="utf-8") as raw:
             strip_raw = raw.read().strip()
 
             self._lang_mapping_data = [row.split("\t") for row in strip_raw.split("\n")]
@@ -94,7 +94,7 @@ class CrubadanCorpusReader(CorpusReader):
             raise RuntimeError("No N-gram file found for requested language.")
 
         counts = FreqDist()
-        with open(ngram_file, "r", encoding="utf-8") as f:
+        with open(ngram_file, encoding="utf-8") as f:
             for line in f:
                 data = line.split(" ")
 

@@ -136,8 +136,7 @@ def taggedsents_to_conll(sentences):
     :return: a generator yielding sentences in CONLL format.
     """
     for sentence in sentences:
-        for input_str in taggedsent_to_conll(sentence):
-            yield input_str
+        yield from taggedsent_to_conll(sentence)
         yield "\n\n"
 
 

@@ -149,7 +149,7 @@ class ContextTagger(SequentialBackoffTagger):
         return len(self._context_to_tag)
 
     def __repr__(self):
-        return "<{}: size={}>".format(self.__class__.__name__, self.size())
+        return f"<{self.__class__.__name__}: size={self.size()}>"
 
     def _train(self, tagged_corpus, cutoff=0, verbose=False):
         """
@@ -256,7 +256,7 @@ class DefaultTagger(SequentialBackoffTagger):
         return self._tag  # ignore token and history
 
     def __repr__(self):
-        return "<DefaultTagger: tag={}>".format(self._tag)
+        return f"<DefaultTagger: tag={self._tag}>"
 
 
 @jsontags.register_tag
@@ -567,7 +567,7 @@ class RegexpTagger(SequentialBackoffTagger):
         return None
 
     def __repr__(self):
-        return "<Regexp Tagger: size={}>".format(len(self._regexps))
+        return f"<Regexp Tagger: size={len(self._regexps)}>"
 
 
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
@@ -680,11 +680,11 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
                 history.append(tags[index])
 
         if verbose:
-            print("Training classifier ({} instances)".format(len(classifier_corpus)))
+            print(f"Training classifier ({len(classifier_corpus)} instances)")
         self._classifier = classifier_builder(classifier_corpus)
 
     def __repr__(self):
-        return "<ClassifierBasedTagger: {}>".format(self._classifier)
+        return f"<ClassifierBasedTagger: {self._classifier}>"
 
     def feature_detector(self, tokens, index, history):
         """
@@ -752,9 +752,9 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             "suffix1": word.lower()[-1:],
             "prevprevword": prevprevword,
             "prevword": prevword,
-            "prevtag+word": "{}+{}".format(prevtag, word.lower()),
-            "prevprevtag+word": "{}+{}".format(prevprevtag, word.lower()),
-            "prevword+word": "{}+{}".format(prevword, word.lower()),
+            "prevtag+word": f"{prevtag}+{word.lower()}",
+            "prevprevtag+word": f"{prevprevtag}+{word.lower()}",
+            "prevword+word": f"{prevword}+{word.lower()}",
             "shape": shape,
         }
         return features

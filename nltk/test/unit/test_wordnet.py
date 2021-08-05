@@ -218,10 +218,10 @@ class WordnNetDemo(unittest.TestCase):
     def test_omw_lemma_no_trailing_underscore(self):
         expected = sorted(
             [
-                u"popolna_sprememba_v_mišljenju",
-                u"popoln_obrat",
-                u"preobrat",
-                u"preobrat_v_mišljenju",
+                "popolna_sprememba_v_mišljenju",
+                "popoln_obrat",
+                "preobrat",
+                "preobrat_v_mišljenju",
             ]
         )
         self.assertEqual(sorted(S("about-face.n.02").lemma_names(lang="slv")), expected)

@@ -59,11 +59,11 @@ def usage(obj, selfname="self"):
             and (defaults is None or len(args) > len(defaults))
         ):
             args = args[1:]
-            name = "%s.%s" % (selfname, name)
+            name = f"{selfname}.{name}"
         argspec = inspect.formatargspec(args, varargs, varkw, defaults)
         print(
             textwrap.fill(
-                "%s%s" % (name, argspec),
+                f"{name}{argspec}",
                 initial_indent="  - ",
                 subsequent_indent=" " * (len(name) + 5),
             )
@@ -181,7 +181,7 @@ def filestring(f):
     if hasattr(f, "read"):
         return f.read()
     elif isinstance(f, str):
-        with open(f, "r") as infile:
+        with open(f) as infile:
             return infile.read()
     else:
         raise ValueError("Must be called with a filename or file-like object")
@@ -240,7 +240,7 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
                         queue.append((child, depth + 1))
                     else:
                         warnings.warn(
-                            "Discarded redundant search for {0} at depth {1}".format(
+                            "Discarded redundant search for {} at depth {}".format(
                                 child, depth + 1
                             ),
                             stacklevel=2,
@@ -297,15 +297,13 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
                     ]
                 else:
                     warnings.warn(
-                        "Discarded redundant search for {0} at depth {1}".format(
+                        "Discarded redundant search for {} at depth {}".format(
                             child, depth - 1
                         ),
                         stacklevel=3,
                     )
                     if cut_mark:
-                        out_tree += [
-                            "Cycle({0},{1},{2})".format(child, depth - 1, cut_mark)
-                        ]
+                        out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
             pass
     elif cut_mark:
@@ -372,15 +370,13 @@ def acyclic_branches_depth_first(
                     ]
                 else:
                     warnings.warn(
-                        "Discarded redundant search for {0} at depth {1}".format(
+                        "Discarded redundant search for {} at depth {}".format(
                             child, depth - 1
                         ),
                         stacklevel=3,
                     )
                     if cut_mark:
-                        out_tree += [
-                            "Cycle({0},{1},{2})".format(child, depth - 1, cut_mark)
-                        ]
+                        out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
             pass
     elif cut_mark:
@@ -545,13 +541,13 @@ def transitive_closure(graph, reflexive=False):
     :rtype: dict(set)
     """
     if reflexive:
-        base_set = lambda k: set([k])
+        base_set = lambda k: {k}
     else:
         base_set = lambda k: set()
     # The graph U_i in the article:
-    agenda_graph = dict((k, graph[k].copy()) for k in graph)
+    agenda_graph = {k: graph[k].copy() for k in graph}
     # The graph M_i in the article:
-    closure_graph = dict((k, base_set(k)) for k in graph)
+    closure_graph = {k: base_set(k) for k in graph}
     for i in graph:
         agenda = agenda_graph[i]
         closure = closure_graph[i]
@@ -738,8 +734,7 @@ def bigrams(sequence, **kwargs):
     :rtype: iter(tuple)
     """
 
-    for item in ngrams(sequence, 2, **kwargs):
-        yield item
+    yield from ngrams(sequence, 2, **kwargs)
 
 
 def trigrams(sequence, **kwargs):
@@ -758,8 +753,7 @@ def trigrams(sequence, **kwargs):
     :rtype: iter(tuple)
     """
 
-    for item in ngrams(sequence, 3, **kwargs):
-        yield item
+    yield from ngrams(sequence, 3, **kwargs)
 
 
 def everygrams(

@@ -732,7 +732,7 @@ def demo2():
     from nltk import Nonterminal, Production, CFG
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = (Nonterminal(s) for s in nonterminals.split())
     productions = (
         # Syntactic Productions
         Production(S, [NP, VP]),
@@ -773,7 +773,7 @@ def demo():
     from nltk import Nonterminal, CFG
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = (Nonterminal(s) for s in nonterminals.split())
 
     grammar = CFG.fromstring(
         """

@@ -59,7 +59,7 @@ class TestRTEClassifier:
     def test_rte_feature_extraction(self):
         pairs = rte_corpus.pairs(["rte1_dev.xml"])[:6]
         test_output = [
-            "%-15s => %s" % (key, rte_features(pair)[key])
+            f"{key:<15} => {rte_features(pair)[key]}"
             for pair in pairs
             for key in sorted(rte_features(pair))
         ]

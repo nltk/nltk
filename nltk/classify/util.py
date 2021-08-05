@@ -78,7 +78,7 @@ def attested_labels(tokens):
         labels.  A classified token has the form ``(token, label)``.
     :type tokens: list
     """
-    return tuple(set(label for (tok, label) in tokens))
+    return tuple({label for (tok, label) in tokens})
 
 
 def log_likelihood(classifier, gold):
@@ -296,7 +296,7 @@ def wsd_demo(trainer, word, features, n=1000):
     instances = _inst_cache[word][:]
     if n > len(instances):
         n = len(instances)
-    senses = list(set(l for (i, l) in instances))
+    senses = list({l for (i, l) in instances})
     print("  Senses: " + " ".join(senses))
 
     # Randomly split the names into a test & train set.

@@ -74,8 +74,7 @@ class CharTokenizer(StringTokenizer):
         return list(s)
 
     def span_tokenize(self, s):
-        for i, j in enumerate(range(1, len(s) + 1)):
-            yield i, j
+        yield from enumerate(range(1, len(s) + 1))
 
 
 class LineTokenizer(TokenizerI):
@@ -123,11 +122,9 @@ class LineTokenizer(TokenizerI):
     # discard-eof not implemented
     def span_tokenize(self, s):
         if self._blanklines == "keep":
-            for span in string_span_tokenize(s, r"\n"):
-                yield span
+            yield from string_span_tokenize(s, r"\n")
         else:
-            for span in regexp_span_tokenize(s, r"\n(\s+\n)*"):
-                yield span
+            yield from regexp_span_tokenize(s, r"\n(\s+\n)*")
 
 
 ######################################################################

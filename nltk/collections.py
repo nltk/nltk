@@ -334,8 +334,7 @@ class LazyConcatenation(AbstractLazySequence):
                     sublist
                 ), "inconsistent list value (num elts)"
 
-            for value in sublist[max(0, start_index - index) :]:
-                yield value
+            yield from sublist[max(0, start_index - index) :]
 
             index += len(sublist)
             sublist_index += 1
@@ -631,7 +630,7 @@ class Trie(dict):
         :type strings: list(str)
 
         """
-        super(Trie, self).__init__()
+        super().__init__()
         if strings:
             for string in strings:
                 self.insert(string)

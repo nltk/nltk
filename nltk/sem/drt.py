@@ -414,7 +414,7 @@ class DRS(DrtExpression, Expression):
                 and isinstance(cond.second, AbstractVariableExpression)
             ):
                 drs = DRS(
-                    list(set(drs.refs) - set([cond.second.variable])),
+                    list(set(drs.refs) - {cond.second.variable}),
                     drs.conds[:i] + drs.conds[i + 1 :],
                     drs.consequent,
                 )
@@ -535,7 +535,7 @@ class DRS(DrtExpression, Expression):
     __hash__ = Expression.__hash__
 
     def __str__(self):
-        drs = "([%s],[%s])" % (
+        drs = "([{}],[{}])".format(
             ",".join(self._order_ref_strings(self.refs)),
             ", ".join("%s" % cond for cond in self.conds),
         )  # map(str, self.conds)))
@@ -665,7 +665,7 @@ class DrtProposition(DrtExpression, Expression):
         return combinator(self.variable, function(self.drs))
 
     def __str__(self):
-        return "prop(%s, %s)" % (self.variable, self.drs)
+        return f"prop({self.variable}, {self.drs})"
 
 
 class DrtNegatedExpression(DrtExpression, NegatedExpression):

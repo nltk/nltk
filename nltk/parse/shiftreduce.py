@@ -254,7 +254,7 @@ class ShiftReduceParser(ParserI):
         """
         if self._trace > 2:
             rhs = " ".join(production.rhs())
-            print("Reduce %r <- %s" % (production.lhs(), rhs))
+            print(f"Reduce {production.lhs()!r} <- {rhs}")
         if self._trace == 2:
             self._trace_stack(stack, remaining_text, "R")
         elif self._trace > 1:
@@ -303,7 +303,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     """
 
     def __init__(self, grammar, trace=0):
-        super(SteppingShiftReduceParser, self).__init__(grammar, trace)
+        super().__init__(grammar, trace)
         self._stack = None
         self._remaining_text = None
         self._history = []

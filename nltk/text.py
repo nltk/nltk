@@ -244,7 +244,7 @@ class ConcordanceIndex:
             print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines, len(concordance_list)))
+            print(f"Displaying {lines} of {len(concordance_list)} matches:")
             for i, concordance_line in enumerate(concordance_list[:lines]):
                 print(concordance_line.line)
 

@@ -439,7 +439,7 @@ def test_prove(arguments):
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
             print("   %s" % a)
-        print("|- %s: %s\n" % (g, p))
+        print(f"|- {g}: {p}\n")
 
 
 arguments = [
