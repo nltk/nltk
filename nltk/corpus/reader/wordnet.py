@@ -585,6 +585,9 @@ class Synset(_WordNetObject):
 
     from nltk.util import unweighted_minimum_spanning_tree as mst
 
+# Also add this shortcut?
+#    from nltk.util import unweighted_minimum_spanning_digraph as umsd
+
     def tree(self, rel, depth=-1, cut_mark=None):
         """
         Return the full relation tree, including self,
