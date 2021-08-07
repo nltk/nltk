@@ -112,15 +112,15 @@ class NISTTokenizer(TokenizerI):
     NONASCII = re.compile("([\x00-\x7f]+)"), r" \1 "
     #  Tokenize any punctuation unless followed AND preceded by a digit.
     PUNCT_1 = (
-        re.compile("([{n}])([{p}])".format(n=number_regex, p=punct_regex)),
+        re.compile(f"([{number_regex}])([{punct_regex}])"),
         "\\1 \\2 ",
     )
     PUNCT_2 = (
-        re.compile("([{p}])([{n}])".format(n=number_regex, p=punct_regex)),
+        re.compile(f"([{punct_regex}])([{number_regex}])"),
         " \\1 \\2",
     )
     # Tokenize symbols
-    SYMBOLS = re.compile("([{s}])".format(s=symbol_regex)), " \\1 "
+    SYMBOLS = re.compile(f"([{symbol_regex}])"), " \\1 "
 
     INTERNATIONAL_REGEXES = [NONASCII, PUNCT_1, PUNCT_2, SYMBOLS]
 

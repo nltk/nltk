@@ -875,7 +875,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChunkRuleWithContext:  %r, %r, %r>" % (
+        return "<ChunkRuleWithContext:  {!r}, {!r}, {!r}>".format(
             self._left_context_tag_pattern,
             self._chunk_tag_pattern,
             self._right_context_tag_pattern,
@@ -889,7 +889,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(
-    r"^((%s|<%s>)*)$" % (r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
+    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
 )
 
 

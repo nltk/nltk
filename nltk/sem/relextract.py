@@ -525,7 +525,7 @@ def ne_chunked():
         sent = nltk.ne_chunk(sent)
         rels = extract_rels("PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7)
         for rel in rels:
-            print("{0:<5}{1}".format(i, rtuple(rel)))
+            print(f"{i:<5}{rtuple(rel)}")
 
 
 if __name__ == "__main__":

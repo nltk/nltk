@@ -256,7 +256,7 @@ def _write_to_file(object_fields, items, entity_fields, writer):
             json_dict = items[kd]
             if not isinstance(json_dict, dict):
                 raise RuntimeError(
-                    """Key {0} does not contain a dictionary
+                    """Key {} does not contain a dictionary
                 in the json file""".format(
                         kd
                     )

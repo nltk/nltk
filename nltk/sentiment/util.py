@@ -47,87 +47,83 @@ CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 # Happy and sad emoticons
 
-HAPPY = set(
-    [
-        ":-)",
-        ":)",
-        ";)",
-        ":o)",
-        ":]",
-        ":3",
-        ":c)",
-        ":>",
-        "=]",
-        "8)",
-        "=)",
-        ":}",
-        ":^)",
-        ":-D",
-        ":D",
-        "8-D",
-        "8D",
-        "x-D",
-        "xD",
-        "X-D",
-        "XD",
-        "=-D",
-        "=D",
-        "=-3",
-        "=3",
-        ":-))",
-        ":'-)",
-        ":')",
-        ":*",
-        ":^*",
-        ">:P",
-        ":-P",
-        ":P",
-        "X-P",
-        "x-p",
-        "xp",
-        "XP",
-        ":-p",
-        ":p",
-        "=p",
-        ":-b",
-        ":b",
-        ">:)",
-        ">;)",
-        ">:-)",
-        "<3",
-    ]
-)
+HAPPY = {
+    ":-)",
+    ":)",
+    ";)",
+    ":o)",
+    ":]",
+    ":3",
+    ":c)",
+    ":>",
+    "=]",
+    "8)",
+    "=)",
+    ":}",
+    ":^)",
+    ":-D",
+    ":D",
+    "8-D",
+    "8D",
+    "x-D",
+    "xD",
+    "X-D",
+    "XD",
+    "=-D",
+    "=D",
+    "=-3",
+    "=3",
+    ":-))",
+    ":'-)",
+    ":')",
+    ":*",
+    ":^*",
+    ">:P",
+    ":-P",
+    ":P",
+    "X-P",
+    "x-p",
+    "xp",
+    "XP",
+    ":-p",
+    ":p",
+    "=p",
+    ":-b",
+    ":b",
+    ">:)",
+    ">;)",
+    ">:-)",
+    "<3",
+}
 
-SAD = set(
-    [
-        ":L",
-        ":-/",
-        ">:/",
-        ":S",
-        ">:[",
-        ":@",
-        ":-(",
-        ":[",
-        ":-||",
-        "=L",
-        ":<",
-        ":-[",
-        ":-<",
-        "=\\",
-        "=/",
-        ">:(",
-        ":(",
-        ">.<",
-        ":'-(",
-        ":'(",
-        ":\\",
-        ":-c",
-        ":c",
-        ":{",
-        ">:\\",
-        ";(",
-    ]
-)
+SAD = {
+    ":L",
+    ":-/",
+    ">:/",
+    ":S",
+    ">:[",
+    ":@",
+    ":-(",
+    ":[",
+    ":-||",
+    "=L",
+    ":<",
+    ":-[",
+    ":-<",
+    "=\\",
+    "=/",
+    ">:(",
+    ":(",
+    ">.<",
+    ":'-(",
+    ":'(",
+    ":\\",
+    ":-c",
+    ":c",
+    ":{",
+    ">:\\",
+    ";(",
+}
 
 
 def timer(method):
@@ -145,13 +141,9 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print("[TIMER] {0}(): {:.3f} seconds".format(method.__name__, tot_time))
+            print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
         else:
-            print(
-                "[TIMER] {0}(): {1}h {2}m {3}s".format(
-                    method.__name__, hours, mins, secs
-                )
-            )
+            print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
         return result
 
     return timed
@@ -188,7 +180,7 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
     if handle_negation:
         document = mark_negation(document)
     for word in unigrams:
-        features["contains({0})".format(word)] = word in set(document)
+        features[f"contains({word})"] = word in set(document)
     return features
 
 
@@ -211,9 +203,7 @@ def extract_bigram_feats(document, bigrams):
     """
     features = {}
     for bigr in bigrams:
-        features["contains({0} - {1})".format(bigr[0], bigr[1])] = bigr in nltk.bigrams(
-            document
-        )
+        features[f"contains({bigr[0]} - {bigr[1]})"] = bigr in nltk.bigrams(document)
     return features
 
 
@@ -269,19 +259,19 @@ def output_markdown(filename, **kwargs):
     """
     with codecs.open(filename, "at") as outfile:
         text = "\n*** \n\n"
-        text += "{0} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
+        text += "{} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
             if isinstance(kwargs[k], dict):
                 dictionary = kwargs[k]
-                text += "  - **{0}:**\n".format(k)
+                text += f"  - **{k}:**\n"
                 for entry in sorted(dictionary):
-                    text += "    - {0}: {1} \n".format(entry, dictionary[entry])
+                    text += f"    - {entry}: {dictionary[entry]} \n"
             elif isinstance(kwargs[k], list):
-                text += "  - **{0}:**\n".format(k)
+                text += f"  - **{k}:**\n"
                 for entry in kwargs[k]:
-                    text += "    - {0}\n".format(entry)
+                    text += f"    - {entry}\n"
             else:
-                text += "  - **{0}:** {1} \n".format(k, kwargs[k])
+                text += f"  - **{k}:** {kwargs[k]} \n"
         outfile.write(text)
 
 
@@ -448,7 +438,7 @@ def parse_tweets_set(
         for tweet_id, text in reader:
             # text = text[1]
             i += 1
-            sys.stdout.write("Loaded {0} tweets\r".format(i))
+            sys.stdout.write(f"Loaded {i} tweets\r")
             # Apply sentence and word tokenizer to text
             if word_tokenizer:
                 tweet = [
@@ -460,7 +450,7 @@ def parse_tweets_set(
                 tweet = text
             tweets.append((tweet, label))
 
-    print("Loaded {0} tweets".format(i))
+    print(f"Loaded {i} tweets")
     return tweets
 
 
@@ -857,14 +847,14 @@ def demo_vader_tweets(n_instances=None, output=None):
         accuracy_score = eval_accuracy(acc_gold_results, acc_test_results)
         metrics_results["Accuracy"] = accuracy_score
         precision_score = eval_precision(gold_results[label], test_results[label])
-        metrics_results["Precision [{0}]".format(label)] = precision_score
+        metrics_results[f"Precision [{label}]"] = precision_score
         recall_score = eval_recall(gold_results[label], test_results[label])
-        metrics_results["Recall [{0}]".format(label)] = recall_score
+        metrics_results[f"Recall [{label}]"] = recall_score
         f_measure_score = eval_f_measure(gold_results[label], test_results[label])
-        metrics_results["F-measure [{0}]".format(label)] = f_measure_score
+        metrics_results[f"F-measure [{label}]"] = f_measure_score
 
     for result in sorted(metrics_results):
-        print("{0}: {1}".format(result, metrics_results[result]))
+        print(f"{result}: {metrics_results[result]}")
 
     if output:
         output_markdown(

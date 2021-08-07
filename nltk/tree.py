@@ -354,8 +354,7 @@ class Tree(list):
             yield self
         for child in self:
             if isinstance(child, Tree):
-                for subtree in child.subtrees(filter):
-                    yield subtree
+                yield from child.subtrees(filter)
 
     def productions(self):
         """
@@ -652,9 +651,9 @@ class Tree(list):
         open_b, close_b = brackets
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
         if node_pattern is None:
-            node_pattern = r"[^\s%s%s]+" % (open_pattern, close_pattern)
+            node_pattern = fr"[^\s{open_pattern}{close_pattern}]+"
         if leaf_pattern is None:
-            leaf_pattern = r"[^\s%s%s]+" % (open_pattern, close_pattern)
+            leaf_pattern = fr"[^\s{open_pattern}{close_pattern}]+"
         token_re = re.compile(
             r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)
@@ -733,7 +732,7 @@ class Tree(list):
         if pos > 10:
             s = "..." + s[pos - 10 :]
             offset = 13
-        msg += '\n%s"%s"\n%s^' % (" " * 16, s, " " * (17 + offset))
+        msg += '\n{}"{}"\n{}^'.format(" " * 16, s, " " * (17 + offset))
         raise ValueError(msg)
 
     @classmethod
@@ -778,7 +777,7 @@ class Tree(list):
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
-        return "%s(%s, [%s])" % (
+        return "{}({}, [{}])".format(
             type(self).__name__,
             repr(self._label),
             childstr,
@@ -805,8 +804,8 @@ class Tree(list):
         # print_to_file uses scrollregion to set the width and height of the pdf.
         _canvas_frame.canvas()["scrollregion"] = (0, 0, w, h)
         with tempfile.NamedTemporaryFile() as file:
-            in_path = "{0:}.ps".format(file.name)
-            out_path = "{0:}.png".format(file.name)
+            in_path = f"{file.name}.ps"
+            out_path = f"{file.name}.png"
             _canvas_frame.print_to_file(in_path)
             _canvas_frame.destroy_widget(widget)
             try:
@@ -819,7 +818,7 @@ class Tree(list):
                             verbose=False,
                         )
                     ]
-                    + "-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}".format(
+                    + "-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={} {}".format(
                         out_path, in_path
                     ).split()
                 )
@@ -876,9 +875,9 @@ class Tree(list):
 
         # If it doesn't fit on one line, then write it on multi-lines.
         if isinstance(self._label, str):
-            s = "%s%s%s" % (parens[0], self._label, nodesep)
+            s = f"{parens[0]}{self._label}{nodesep}"
         else:
-            s = "%s%s%s" % (parens[0], repr(self._label), nodesep)
+            s = f"{parens[0]}{repr(self._label)}{nodesep}"
         for child in self:
             if isinstance(child, Tree):
                 s += (
@@ -929,7 +928,7 @@ class Tree(list):
             else:
                 childstrs.append(repr(child))
         if isinstance(self._label, str):
-            return "%s%s%s %s%s" % (
+            return "{}{}{} {}{}".format(
                 parens[0],
                 self._label,
                 nodesep,
@@ -937,7 +936,7 @@ class Tree(list):
                 parens[1],
             )
         else:
-            return "%s%s%s %s%s" % (
+            return "{}{}{} {}{}".format(
                 parens[0],
                 repr(self._label),
                 nodesep,
@@ -948,7 +947,7 @@ class Tree(list):
 
 class ImmutableTree(Tree):
     def __init__(self, node, children=None):
-        super(ImmutableTree, self).__init__(node, children)
+        super().__init__(node, children)
         # Precompute our hash value.  This ensures that we're really
         # immutable.  It also means we only have to calculate it once.
         try:
@@ -1036,7 +1035,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
     """
 
     def __init__(self, node, children=None):
-        super(AbstractParentedTree, self).__init__(node, children)
+        super().__init__(node, children)
         # If children is None, the tree is read from node, and
         # all parents will be set during parsing.
         if children is not None:
@@ -1104,7 +1103,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
                 if isinstance(self[i], Tree):
                     self._delparent(self[i], i)
             # Delete the children from our child list.
-            super(AbstractParentedTree, self).__delitem__(index)
+            super().__delitem__(index)
 
         # del ptree[i]
         elif isinstance(index, int):
@@ -1116,7 +1115,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
             if isinstance(self[index], Tree):
                 self._delparent(self[index], index)
             # Remove the child from our child list.
-            super(AbstractParentedTree, self).__delitem__(index)
+            super().__delitem__(index)
 
         elif isinstance(index, (list, tuple)):
             # del ptree[()]
@@ -1158,7 +1157,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
                 if isinstance(child, Tree):
                     self._setparent(child, start + i * step)
             # finally, update the content of the child list itself.
-            super(AbstractParentedTree, self).__setitem__(index, value)
+            super().__setitem__(index, value)
 
         # ptree[i] = value
         elif isinstance(index, int):
@@ -1176,7 +1175,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
             if isinstance(self[index], Tree):
                 self._delparent(self[index], index)
             # Update our child list.
-            super(AbstractParentedTree, self).__setitem__(index, value)
+            super().__setitem__(index, value)
 
         elif isinstance(index, (list, tuple)):
             # ptree[()] = value
@@ -1198,13 +1197,13 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
     def append(self, child):
         if isinstance(child, Tree):
             self._setparent(child, len(self))
-        super(AbstractParentedTree, self).append(child)
+        super().append(child)
 
     def extend(self, children):
         for child in children:
             if isinstance(child, Tree):
                 self._setparent(child, len(self))
-            super(AbstractParentedTree, self).append(child)
+            super().append(child)
 
     def insert(self, index, child):
         # Handle negative indexes.  Note that if index < -len(self),
@@ -1217,7 +1216,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
         # Set the child's parent, and update our child list.
         if isinstance(child, Tree):
             self._setparent(child, index)
-        super(AbstractParentedTree, self).insert(index, child)
+        super().insert(index, child)
 
     def pop(self, index=-1):
         if index < 0:
@@ -1226,7 +1225,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
             raise IndexError("index out of range")
         if isinstance(self[index], Tree):
             self._delparent(self[index], index)
-        return super(AbstractParentedTree, self).pop(index)
+        return super().pop(index)
 
     # n.b.: like `list`, this is done by equality, not identity!
     # To remove a specific child, use del ptree[i].
@@ -1234,7 +1233,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
         index = self.index(child)
         if isinstance(self[index], Tree):
             self._delparent(self[index], index)
-        super(AbstractParentedTree, self).remove(child)
+        super().remove(child)
 
     # We need to implement __getslice__ and friends, even though
     # they're deprecated, because otherwise list.__getslice__ will get
@@ -1275,7 +1274,7 @@ class ParentedTree(AbstractParentedTree):
     def __init__(self, node, children=None):
         self._parent = None
         """The parent of this Tree, or None if it has no parent."""
-        super(ParentedTree, self).__init__(node, children)
+        super().__init__(node, children)
         if children is None:
             # If children is None, the tree is read from node.
             # After parsing, the parent of the immediate children
@@ -1399,7 +1398,7 @@ class MultiParentedTree(AbstractParentedTree):
         """A list of this tree's parents.  This list should not
            contain duplicates, even if a parent contains this tree
            multiple times."""
-        super(MultiParentedTree, self).__init__(node, children)
+        super().__init__(node, children)
         if children is None:
             # If children is None, the tree is read from node.
             # After parsing, the parent(s) of the immediate children
@@ -1578,10 +1577,10 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
         return ImmutableProbabilisticTree
 
     def __repr__(self):
-        return "%s (p=%r)" % (Tree.__repr__(self), self.prob())
+        return f"{Tree.__repr__(self)} (p={self.prob()!r})"
 
     def __str__(self):
-        return "%s (p=%.6g)" % (self.pformat(margin=60), self.prob())
+        return f"{self.pformat(margin=60)} (p={self.prob():.6g})"
 
     def copy(self, deep=False):
         if not deep:
@@ -1635,10 +1634,10 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
         return ImmutableProbabilisticTree
 
     def __repr__(self):
-        return "%s [%s]" % (Tree.__repr__(self), self.prob())
+        return f"{Tree.__repr__(self)} [{self.prob()}]"
 
     def __str__(self):
-        return "%s [%s]" % (self.pformat(margin=60), self.prob())
+        return f"{self.pformat(margin=60)} [{self.prob()}]"
 
     def copy(self, deep=False):
         if not deep:

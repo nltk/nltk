@@ -194,7 +194,7 @@ class LancasterStemmer(StemmerI):
 
         for rule in rule_tuple:
             if not valid_rule.match(rule):
-                raise ValueError("The rule {0} is invalid".format(rule))
+                raise ValueError(f"The rule {rule} is invalid")
             first_letter = rule[0:1]
             if first_letter in self.rule_dictionary:
                 self.rule_dictionary[first_letter].append(rule)

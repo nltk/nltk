@@ -256,7 +256,7 @@ def fractional_presence(label):
 
 def custom_distance(file):
     data = {}
-    with open(file, "r") as infile:
+    with open(file) as infile:
         for l in infile:
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])
@@ -454,22 +454,22 @@ def demo():
         ("language", "lngauage"),
     ]
     for s1, s2 in string_distance_examples:
-        print("Edit distance btwn '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
+        print(f"Edit distance btwn '{s1}' and '{s2}':", edit_distance(s1, s2))
         print(
-            "Edit dist with transpositions btwn '%s' and '%s':" % (s1, s2),
+            f"Edit dist with transpositions btwn '{s1}' and '{s2}':",
             edit_distance(s1, s2, transpositions=True),
         )
-        print("Jaro similarity btwn '%s' and '%s':" % (s1, s2), jaro_similarity(s1, s2))
+        print(f"Jaro similarity btwn '{s1}' and '{s2}':", jaro_similarity(s1, s2))
         print(
-            "Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
+            f"Jaro-Winkler similarity btwn '{s1}' and '{s2}':",
             jaro_winkler_similarity(s1, s2),
         )
         print(
-            "Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
+            f"Jaro-Winkler distance btwn '{s1}' and '{s2}':",
             1 - jaro_winkler_similarity(s1, s2),
         )
-    s1 = set([1, 2, 3, 4])
-    s2 = set([3, 4, 5])
+    s1 = {1, 2, 3, 4}
+    s2 = {3, 4, 5}
     print("s1:", s1)
     print("s2:", s2)
     print("Binary distance:", binary_distance(s1, s2))

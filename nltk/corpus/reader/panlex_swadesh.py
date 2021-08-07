@@ -42,7 +42,7 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
     """
 
     def __init__(self, *args, **kwargs):
-        super(PanlexSwadeshCorpusReader, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Find the swadesh size using the fileids' path.
         self.swadesh_size = re.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(1)
         self._languages = {lang.panlex_uid: lang for lang in self.get_languages()}
@@ -55,7 +55,7 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         return self._languages.keys()
 
     def get_languages(self):
-        for line in self.raw("langs{}.txt".format(self.swadesh_size)).split("\n"):
+        for line in self.raw(f"langs{self.swadesh_size}.txt").split("\n"):
             if not line.strip():  # Skip empty lines.
                 continue
             yield PanlexLanguage(*line.strip().split("\t"))
@@ -70,7 +70,7 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         """
         :return: a list of list(str)
         """
-        fileid = "swadesh{}/{}.txt".format(self.swadesh_size, lang_code)
+        fileid = f"swadesh{self.swadesh_size}/{lang_code}.txt"
         return [concept.split("\t") for concept in self.words(fileid)]
 
     def words_by_iso639(self, iso63_code):
@@ -78,7 +78,7 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         :return: a list of list(str)
         """
         fileids = [
-            "swadesh{}/{}.txt".format(self.swadesh_size, lang_code)
+            f"swadesh{self.swadesh_size}/{lang_code}.txt"
             for lang_code in self._macro_langauges[iso63_code]
         ]
         return [

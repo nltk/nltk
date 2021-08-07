@@ -51,7 +51,7 @@ def config_weka(classpath=None):
                 _weka_classpath = os.path.join(path, "weka.jar")
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print("[Found Weka: %s (version %s)]" % (_weka_classpath, version))
+                    print(f"[Found Weka: {_weka_classpath} (version {version})]")
                 else:
                     print("[Found Weka: %s]" % _weka_classpath)
                 _check_weka_version(_weka_classpath)
@@ -287,7 +287,7 @@ class ARFF_Formatter:
         string (note: not nominal) types.
         """
         # Find the set of all attested labels.
-        labels = set(label for (tok, label) in tokens)
+        labels = {label for (tok, label) in tokens}
 
         # Determine the types of all features.
         features = {}

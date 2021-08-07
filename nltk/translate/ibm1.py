@@ -125,7 +125,7 @@ class IBMModel1(IBMModel):
             See ``IBMModel`` for the type and purpose of this table.
         :type probability_tables: dict[str]: object
         """
-        super(IBMModel1, self).__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus)
 
         if probability_tables is None:
             self.set_uniform_probabilities(sentence_aligned_corpus)

@@ -173,7 +173,7 @@ class AnnotationTask:
             ret = self.Nck(c, k)
         else:
             raise ValueError(
-                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c)
+                f"You must pass either i or c, not both! (k={k!r},i={i!r},c={c!r})"
             )
         log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
@@ -435,7 +435,7 @@ if __name__ == "__main__":
 
     # read in data from the specified file
     data = []
-    with open(options.file, "r") as infile:
+    with open(options.file) as infile:
         for l in infile:
             toks = l.split(options.columnsep)
             coder, object_, labels = (

@@ -156,7 +156,7 @@ class StanfordPOSTagger(StanfordTagger):
     _JAR = "stanford-postagger.jar"
 
     def __init__(self, *args, **kwargs):
-        super(StanfordPOSTagger, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
@@ -197,7 +197,7 @@ class StanfordNERTagger(StanfordTagger):
     _FORMAT = "slashTags"
 
     def __init__(self, *args, **kwargs):
-        super(StanfordNERTagger, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def _cmd(self):

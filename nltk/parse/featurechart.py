@@ -149,7 +149,7 @@ class FeatureTreeEdge(TreeEdge):
             bindings = "{%s}" % ", ".join(
                 "%s: %r" % item for item in sorted(self._bindings.items())
             )
-            return "%s %s" % (super().__str__(), bindings)
+            return f"{super().__str__()} {bindings}"
 
 
 # ////////////////////////////////////////////////////////////
@@ -236,8 +236,7 @@ class FeatureChart(Chart):
                 and (edge.lhs()[TYPE] == start[TYPE])
                 and (unify(edge.lhs(), start, rename_vars=True))
             ):
-                for tree in self.trees(edge, complete=True, tree_class=tree_class):
-                    yield tree
+                yield from self.trees(edge, complete=True, tree_class=tree_class)
 
 
 # ////////////////////////////////////////////////////////////
@@ -322,16 +321,14 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         for left_edge in chart.select(
             end=right_edge.start(), is_complete=False, nextsym=right_edge.lhs()
         ):
-            for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
-                yield new_edge
+            yield from fr.apply(chart, grammar, left_edge, right_edge)
 
     def _apply_incomplete(self, chart, grammar, left_edge):
         fr = self._fundamental_rule
         for right_edge in chart.select(
             start=left_edge.end(), is_complete=True, lhs=left_edge.nextsym()
         ):
-            for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
-                yield new_edge
+            yield from fr.apply(chart, grammar, left_edge, right_edge)
 
 
 # ////////////////////////////////////////////////////////////
@@ -493,7 +490,7 @@ class FeatureChartParser(ChartParser):
         strategy=BU_LC_FEATURE_STRATEGY,
         trace_chart_width=20,
         chart_class=FeatureChart,
-        **parser_args
+        **parser_args,
     ):
         ChartParser.__init__(
             self,
@@ -501,7 +498,7 @@ class FeatureChartParser(ChartParser):
             strategy=strategy,
             trace_chart_width=trace_chart_width,
             chart_class=chart_class,
-            **parser_args
+            **parser_args,
         )
 
 
@@ -579,11 +576,11 @@ class InstantiateVarsChart(FeatureChart):
         edge._lhs = edge.lhs().substitute_bindings(inst_vars)
 
     def inst_vars(self, edge):
-        return dict(
-            (var, logic.unique_variable())
+        return {
+            var: logic.unique_variable()
             for var in edge.lhs().variables()
             if var.name.startswith("@")
-        )
+        }
 
 
 # ////////////////////////////////////////////////////////////

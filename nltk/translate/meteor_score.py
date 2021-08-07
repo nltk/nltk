@@ -416,17 +416,15 @@ def meteor_score(
     :rtype: float
     """
     return max(
-        [
-            single_meteor_score(
-                reference,
-                hypothesis,
-                preprocess=preprocess,
-                stemmer=stemmer,
-                wordnet=wordnet,
-                alpha=alpha,
-                beta=beta,
-                gamma=gamma,
-            )
-            for reference in references
-        ]
+        single_meteor_score(
+            reference,
+            hypothesis,
+            preprocess=preprocess,
+            stemmer=stemmer,
+            wordnet=wordnet,
+            alpha=alpha,
+            beta=beta,
+            gamma=gamma,
+        )
+        for reference in references
     )

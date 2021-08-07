@@ -78,7 +78,7 @@ class PorterTest(unittest.TestCase):
             our_stem = stemmer.stem(word)
             assert (
                 our_stem == true_stem
-            ), "%s should stem to %s in %s mode but got %s" % (
+            ), "{} should stem to {} in {} mode but got {}".format(
                 word,
                 true_stem,
                 stemmer_mode,

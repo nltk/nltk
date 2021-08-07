@@ -416,7 +416,7 @@ class TreeSegmentWidget(CanvasWidget):
         self._managing = False
 
     def __repr__(self):
-        return "[TreeSeg %s: %s]" % (self._label, self._subtrees)
+        return f"[TreeSeg {self._label}: {self._subtrees}]"
 
 
 def _tree_to_treeseg(

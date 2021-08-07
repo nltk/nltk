@@ -322,12 +322,10 @@ class TestSequenceFunctions(unittest.TestCase):
         """
         tree = ParentedTree.fromstring("(S (NP-SBJ x) (NP x) (NNP x) (VP x))")
         # test all tree positions that are not leaves
-        leaf_positions = set(
-            tree.leaf_treeposition(x) for x in range(len(tree.leaves()))
-        )
+        leaf_positions = {tree.leaf_treeposition(x) for x in range(len(tree.leaves()))}
         tree_positions = [x for x in tree.treepositions() if x not in leaf_positions]
         for position in tree_positions:
-            node_id = "N{0}".format(position)
+            node_id = f"N{position}"
             tgrep_positions = list(tgrep.tgrep_positions(node_id, [tree]))
             self.assertEqual(len(tgrep_positions[0]), 1)
             self.assertEqual(tgrep_positions[0][0], position)

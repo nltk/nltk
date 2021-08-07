@@ -204,7 +204,7 @@ class IBMModel4(IBMModel):
             ``IBMModel4`` for the type and purpose of these tables.
         :type probability_tables: dict[str]: object
         """
-        super(IBMModel4, self).__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus)
         self.reset_probabilities()
         self.src_classes = source_word_classes
         self.trg_classes = target_word_classes
@@ -232,7 +232,7 @@ class IBMModel4(IBMModel):
             self.train(sentence_aligned_corpus)
 
     def reset_probabilities(self):
-        super(IBMModel4, self).reset_probabilities()
+        super().reset_probabilities()
         self.head_distortion_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
         )
@@ -452,7 +452,7 @@ class Model4Counts(Counts):
     """
 
     def __init__(self):
-        super(Model4Counts, self).__init__()
+        super().__init__()
         self.head_distortion = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
         )

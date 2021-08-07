@@ -103,7 +103,7 @@ def sent_tokenize(text, language="english"):
     :param text: text to split into sentences
     :param language: the model name in the Punkt corpus
     """
-    tokenizer = load("tokenizers/punkt/{0}.pickle".format(language))
+    tokenizer = load(f"tokenizers/punkt/{language}.pickle")
     return tokenizer.tokenize(text)
 
 

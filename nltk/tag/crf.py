@@ -123,7 +123,7 @@ class CRFTagger(TaggerI):
             feature_list.append("HAS_NUM")
 
         # Punctuation
-        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        punc_cat = {"Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"}
         if all(unicodedata.category(x) in punc_cat for x in token):
             feature_list.append("PUNCTUATION")
 

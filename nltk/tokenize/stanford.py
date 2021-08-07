@@ -66,9 +66,7 @@ class StanfordTokenizer(TokenizerI):
         self.java_options = java_options
 
         options = {} if options is None else options
-        self._options_cmd = ",".join(
-            "{0}={1}".format(key, val) for key, val in options.items()
-        )
+        self._options_cmd = ",".join(f"{key}={val}" for key, val in options.items())
 
     @staticmethod
     def _parse_tokenized_output(s):

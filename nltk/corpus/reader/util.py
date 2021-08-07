@@ -170,9 +170,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             else:
                 self._eofpos = os.stat(self._fileid).st_size
         except Exception as exc:
-            raise ValueError(
-                "Unable to open or access %r -- %s" % (fileid, exc)
-            ) from exc
+            raise ValueError(f"Unable to open or access {fileid!r} -- {exc}") from exc
 
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
@@ -419,8 +417,7 @@ class ConcatenatedCorpusView(AbstractLazySequence):
                 self._open_piece = piece
 
             # Get everything we can from this piece.
-            for tok in piece.iterate_from(max(0, start_tok - offset)):
-                yield tok
+            yield from piece.iterate_from(max(0, start_tok - offset))
 
             # Update the offset table.
             if piecenum + 1 == len(self._offsets):
@@ -442,7 +439,7 @@ def concat(docs):
     if len(docs) == 0:
         raise ValueError("concat() expects at least one object!")
 
-    types = set(d.__class__ for d in docs)
+    types = {d.__class__ for d in docs}
 
     # If they're all strings, use string concatenation.
     if all(isinstance(doc, str) for doc in docs):
@@ -538,7 +535,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             if os.path.exists(self._fileid):
                 try:
                     os.remove(self._fileid)
-                except (OSError, IOError):
+                except OSError:
                     pass
         self.__dict__.clear()  # make the garbage collector's job easier
 
@@ -565,7 +562,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             cls.write(sequence, output_file)
             output_file.close()
             return PickleCorpusView(output_file_name, delete_on_gc)
-        except (OSError, IOError) as e:
+        except OSError as e:
             raise ValueError("Error while creating temp file: %s" % e) from e
 
 

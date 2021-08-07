@@ -211,7 +211,7 @@ class ChartMatrixView:
                 if cell_edges[i][j] == 0:
                     color = "gray20"
                 else:
-                    color = "#00%02x%02x" % (
+                    color = "#00{:02x}{:02x}".format(
                         min(255, 50 + 128 * cell_edges[i][j] / 10),
                         max(0, 128 - 128 * cell_edges[i][j] / 10),
                     )
@@ -494,7 +494,7 @@ class ChartResultsView:
             c.delete(self._selectbox)
             (x1, y1, x2, y2) = self._selection.bbox()
             self._selection.move(10 - x1, 10 - y1)
-            c["scrollregion"] = "0 0 %s %s" % (x2 - x1 + 20, y2 - y1 + 20)
+            c["scrollregion"] = f"0 0 {x2 - x1 + 20} {y2 - y1 + 20}"
             self._cframe.print_to_file()
 
             # Restore our state.
@@ -798,9 +798,7 @@ class ChartComparer:
             with open(filename, "wb") as outfile:
                 pickle.dump(self._out_chart, outfile)
         except Exception as e:
-            showerror(
-                "Error Saving Chart", "Unable to open file: %r\n%s" % (filename, e)
-            )
+            showerror("Error Saving Chart", f"Unable to open file: {filename!r}\n{e}")
 
     def load_chart_dialog(self, *args):
         filename = askopenfilename(
@@ -811,9 +809,7 @@ class ChartComparer:
         try:
             self.load_chart(filename)
         except Exception as e:
-            showerror(
-                "Error Loading Chart", "Unable to open file: %r\n%s" % (filename, e)
-            )
+            showerror("Error Loading Chart", f"Unable to open file: {filename!r}\n{e}")
 
     def load_chart(self, filename):
         with open(filename, "rb") as infile:
@@ -927,7 +923,7 @@ class ChartComparer:
         self._op_label["text"] = self._OPSYMBOL[operator]
         self._out_chart = out_chart
         self._out_matrix.set_chart(out_chart)
-        self._out_label["text"] = "%s %s %s" % (
+        self._out_label["text"] = "{} {} {}".format(
             self._left_name,
             self._operator,
             self._right_name,
@@ -1755,8 +1751,7 @@ class EdgeRule:
     def apply(self, chart, grammar, *edges):
         super = self.__class__.__bases__[1]
         edges += (self._edge,)
-        for e in super.apply(self, chart, grammar, *edges):
-            yield e
+        yield from super.apply(self, chart, grammar, *edges)
 
     def __str__(self):
         super = self.__class__.__bases__[1]
@@ -2315,7 +2310,7 @@ class ChartParserApp:
                 with open(filename, "rb") as infile:
                     grammar = pickle.load(infile)
             else:
-                with open(filename, "r") as infile:
+                with open(filename) as infile:
                     grammar = CFG.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:

@@ -383,7 +383,7 @@ def demo(scorer=None, compare_scorer=None):
         )
         print(file)
         print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
-        print("\t Correlation to %s: %0.4f" % (compare_scorer.__name__, corr))
+        print(f"\t Correlation to {compare_scorer.__name__}: {corr:0.4f}")
 
 
 # Slows down loading too much

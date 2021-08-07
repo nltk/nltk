@@ -33,7 +33,7 @@ class JSONTaggedEncoder(json.JSONEncoder):
     def default(self, obj):
         obj_tag = getattr(obj, "json_tag", None)
         if obj_tag is None:
-            return super(JSONTaggedEncoder, self).default(obj)
+            return super().default(obj)
         obj_tag = TAG_PREFIX + obj_tag
         obj = obj.encode_json_obj()
         return {obj_tag: obj}
@@ -41,13 +41,13 @@ class JSONTaggedEncoder(json.JSONEncoder):
 
 class JSONTaggedDecoder(json.JSONDecoder):
     def decode(self, s):
-        return self.decode_obj(super(JSONTaggedDecoder, self).decode(s))
+        return self.decode_obj(super().decode(s))
 
     @classmethod
     def decode_obj(cls, obj):
         # Decode nested objects first.
         if isinstance(obj, dict):
-            obj = dict((key, cls.decode_obj(val)) for (key, val) in obj.items())
+            obj = {key: cls.decode_obj(val) for (key, val) in obj.items()}
         elif isinstance(obj, list):
             obj = list(cls.decode_obj(val) for val in obj)
         # Check if we have a tagged object.

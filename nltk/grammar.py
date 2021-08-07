@@ -174,7 +174,7 @@ class Nonterminal:
         :type rhs: Nonterminal
         :rtype: Nonterminal
         """
-        return Nonterminal("%s/%s" % (self._symbol, rhs._symbol))
+        return Nonterminal(f"{self._symbol}/{rhs._symbol}")
 
     def __truediv__(self, rhs):
         """
@@ -387,9 +387,9 @@ class DependencyProduction(Production):
 
         :rtype: str
         """
-        result = "'%s' ->" % (self._lhs,)
+        result = f"'{self._lhs}' ->"
         for elt in self._rhs:
-            result += " '%s'" % (elt,)
+            result += f" '{elt}'"
         return result
 
 
@@ -474,7 +474,7 @@ class CFG:
 
         self._start = start
         self._productions = productions
-        self._categories = set(prod.lhs() for prod in productions)
+        self._categories = {prod.lhs() for prod in productions}
         self._calculate_indexes()
         self._calculate_grammar_forms()
         if calculate_leftcorners:
@@ -507,12 +507,8 @@ class CFG:
 
     def _calculate_leftcorners(self):
         # Calculate leftcorner relations, for use in optimized parsing.
-        self._immediate_leftcorner_categories = dict(
-            (cat, set([cat])) for cat in self._categories
-        )
-        self._immediate_leftcorner_words = dict(
-            (cat, set()) for cat in self._categories
-        )
+        self._immediate_leftcorner_categories = {cat: {cat} for cat in self._categories}
+        self._immediate_leftcorner_words = {cat: set() for cat in self._categories}
         for prod in self.productions():
             if len(prod) > 0:
                 cat, left = prod.lhs(), prod.rhs()[0]
@@ -622,7 +618,7 @@ class CFG:
         :return: the set of all leftcorners
         :rtype: set(Nonterminal)
         """
-        return self._leftcorners.get(cat, set([cat]))
+        return self._leftcorners.get(cat, {cat})
 
     def is_leftcorner(self, cat, left):
         """
@@ -655,7 +651,7 @@ class CFG:
         :return: the set of all parents to the leftcorner
         :rtype: set(Nonterminal)
         """
-        return self._leftcorner_parents.get(cat, set([cat]))
+        return self._leftcorner_parents.get(cat, {cat})
 
     def check_coverage(self, tokens):
         """
@@ -666,7 +662,7 @@ class CFG:
         """
         missing = [tok for tok in tokens if not self._lexical_index.get(tok)]
         if missing:
-            missing = ", ".join("%r" % (w,) for w in missing)
+            missing = ", ".join(f"{w!r}" for w in missing)
             raise ValueError(
                 "Grammar does not cover some of the " "input words: %r." % missing
             )
@@ -757,7 +753,7 @@ class CFG:
         for rule in self.productions():
             if rule.is_lexical() and len(rule.rhs()) > 1:
                 raise ValueError(
-                    "Cannot handled mixed rule {} => {}".format(rule.lhs(), rule.rhs())
+                    f"Cannot handled mixed rule {rule.lhs()} => {rule.rhs()}"
                 )
 
         step1 = CFG.eliminate_start(self)
@@ -1068,7 +1064,7 @@ class DependencyGrammar:
             try:
                 productions += _read_dependency_production(line)
             except ValueError as e:
-                raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
+                raise ValueError(f"Unable to parse line {linenum}: {line}") from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1177,7 +1173,7 @@ class ProbabilisticDependencyGrammar:
             str += "\n  %d:%s" % (self._events[event], event)
         str += "\nTags:"
         for tag_word in self._tags:
-            str += "\n %s:\t(%s)" % (tag_word, self._tags[tag_word])
+            str += f"\n {tag_word}:\t({self._tags[tag_word]})"
         return str
 
     def __repr__(self):
@@ -1436,9 +1432,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError(
-                "Unable to parse line %s: %s\n%s" % (linenum + 1, line, e)
-            ) from e
+            raise ValueError(f"Unable to parse line {linenum + 1}: {line}\n{e}") from e
 
     if not productions:
         raise ValueError("No productions found!")

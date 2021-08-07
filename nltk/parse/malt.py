@@ -70,8 +70,8 @@ def find_maltparser(parser_dirname):
     # Checks that that the found directory contains all the necessary .jar
     malt_dependencies = ["", "", ""]
     _malt_jars = set(find_jars_within_path(_malt_dir))
-    _jars = set(os.path.split(jar)[1] for jar in _malt_jars)
-    malt_dependencies = set(["log4j.jar", "libsvm.jar", "liblinear-1.8.jar"])
+    _jars = {os.path.split(jar)[1] for jar in _malt_jars}
+    malt_dependencies = {"log4j.jar", "libsvm.jar", "liblinear-1.8.jar"}
 
     assert malt_dependencies.issubset(_jars)
     assert any(

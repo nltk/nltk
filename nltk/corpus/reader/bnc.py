@@ -165,9 +165,16 @@ class BNCWordView(XMLCorpusView):
     A stream backed corpus view specialized for use with the BNC corpus.
     """
 
-    tags_to_ignore = set(
-        ["pb", "gap", "vocal", "event", "unclear", "shift", "pause", "align"]
-    )
+    tags_to_ignore = {
+        "pb",
+        "gap",
+        "vocal",
+        "event",
+        "unclear",
+        "shift",
+        "pause",
+        "align",
+    }
     """These tags are ignored. For their description refer to the
     technical documentation, for example,
     http://www.natcorp.ox.ac.uk/docs/URG/ref-vocal.html

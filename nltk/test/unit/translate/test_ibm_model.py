@@ -152,21 +152,19 @@ class TestIBMModel(unittest.TestCase):
         neighbor_alignments = set()
         for neighbor in neighbors:
             neighbor_alignments.add(neighbor.alignment)
-        expected_alignments = set(
-            [
-                # moves
-                (0, 0, 2),
-                (0, 1, 2),
-                (0, 2, 2),
-                (0, 3, 0),
-                (0, 3, 1),
-                (0, 3, 3),
-                # swaps
-                (0, 2, 3),
-                # original alignment
-                (0, 3, 2),
-            ]
-        )
+        expected_alignments = {
+            # moves
+            (0, 0, 2),
+            (0, 1, 2),
+            (0, 2, 2),
+            (0, 3, 0),
+            (0, 3, 1),
+            (0, 3, 3),
+            # swaps
+            (0, 2, 3),
+            # original alignment
+            (0, 3, 2),
+        }
         self.assertEqual(neighbor_alignments, expected_alignments)
 
     def test_neighboring_sets_neighbor_alignment_info(self):
@@ -209,17 +207,15 @@ class TestIBMModel(unittest.TestCase):
         neighbor_alignments = set()
         for neighbor in neighbors:
             neighbor_alignments.add(neighbor.alignment)
-        expected_alignments = set(
-            [
-                # moves
-                (0, 0, 2),
-                (0, 1, 2),
-                (0, 2, 2),
-                # no swaps
-                # original alignment
-                (0, 3, 2),
-            ]
-        )
+        expected_alignments = {
+            # moves
+            (0, 0, 2),
+            (0, 1, 2),
+            (0, 2, 2),
+            # no swaps
+            # original alignment
+            (0, 3, 2),
+        }
         self.assertEqual(neighbor_alignments, expected_alignments)
 
     def test_hillclimb(self):
@@ -228,19 +224,15 @@ class TestIBMModel(unittest.TestCase):
 
         def neighboring_mock(a, j):
             if a.alignment == (0, 3, 2):
-                return set(
-                    [
-                        AlignmentInfo((0, 2, 2), None, None, None),
-                        AlignmentInfo((0, 1, 1), None, None, None),
-                    ]
-                )
+                return {
+                    AlignmentInfo((0, 2, 2), None, None, None),
+                    AlignmentInfo((0, 1, 1), None, None, None),
+                }
             elif a.alignment == (0, 2, 2):
-                return set(
-                    [
-                        AlignmentInfo((0, 3, 3), None, None, None),
-                        AlignmentInfo((0, 4, 4), None, None, None),
-                    ]
-                )
+                return {
+                    AlignmentInfo((0, 3, 3), None, None, None),
+                    AlignmentInfo((0, 4, 4), None, None, None),
+                }
             return set()
 
         def prob_t_a_given_s_mock(a):

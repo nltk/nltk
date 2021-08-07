@@ -156,7 +156,7 @@ class HiddenMarkovModelTagger(TaggerI):
         unlabeled_sequence=None,
         transform=_identity,
         estimator=None,
-        **kwargs
+        **kwargs,
     ):
 
         if estimator is None:
@@ -804,14 +804,14 @@ class HiddenMarkovModelTagger(TaggerI):
             for test_sent, predicted_sent in zip(test_sequence, predicted_sequence):
                 print(
                     "Test:",
-                    " ".join("%s/%s" % (token, tag) for (token, tag) in test_sent),
+                    " ".join(f"{token}/{tag}" for (token, tag) in test_sent),
                 )
                 print()
                 print("Untagged:", " ".join("%s" % token for (token, tag) in test_sent))
                 print()
                 print(
                     "HMM-tagged:",
-                    " ".join("%s/%s" % (token, tag) for (token, tag) in predicted_sent),
+                    " ".join(f"{token}/{tag}" for (token, tag) in predicted_sent),
                 )
                 print()
                 print(
@@ -958,10 +958,10 @@ class HiddenMarkovModelTrainer:
         if not model:
             priors = RandomProbDist(self._states)
             transitions = DictionaryConditionalProbDist(
-                dict((state, RandomProbDist(self._states)) for state in self._states)
+                {state: RandomProbDist(self._states) for state in self._states}
             )
             outputs = DictionaryConditionalProbDist(
-                dict((state, RandomProbDist(self._symbols)) for state in self._states)
+                {state: RandomProbDist(self._symbols) for state in self._states}
             )
             model = HiddenMarkovModelTagger(
                 self._symbols, self._states, transitions, outputs, priors
@@ -972,24 +972,24 @@ class HiddenMarkovModelTrainer:
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
+        symbol_numbers = {sym: i for i, sym in enumerate(self._symbols)}
 
         # update model prob dists so that they can be modified
         # model._priors = MutableProbDist(model._priors, self._states)
 
         model._transitions = DictionaryConditionalProbDist(
-            dict(
-                (s, MutableProbDist(model._transitions[s], self._states))
+            {
+                s: MutableProbDist(model._transitions[s], self._states)
                 for s in self._states
-            )
+            }
         )
 
         if update_outputs:
             model._outputs = DictionaryConditionalProbDist(
-                dict(
-                    (s, MutableProbDist(model._outputs[s], self._symbols))
+                {
+                    s: MutableProbDist(model._outputs[s], self._symbols)
                     for s in self._states
-                )
+                }
             )
 
         model.reset_cache()

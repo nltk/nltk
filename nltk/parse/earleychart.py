@@ -195,8 +195,7 @@ class CompleterRule(CompleteFundamentalRule):
 
     def apply(self, chart, grammar, edge):
         if not isinstance(edge, LeafEdge):
-            for new_edge in self._fundamental_rule.apply(chart, grammar, edge):
-                yield new_edge
+            yield from self._fundamental_rule.apply(chart, grammar, edge)
 
 
 class ScannerRule(CompleteFundamentalRule):
@@ -204,8 +203,7 @@ class ScannerRule(CompleteFundamentalRule):
 
     def apply(self, chart, grammar, edge):
         if isinstance(edge, LeafEdge):
-            for new_edge in self._fundamental_rule.apply(chart, grammar, edge):
-                yield new_edge
+            yield from self._fundamental_rule.apply(chart, grammar, edge)
 
 
 class PredictorRule(CachedTopDownPredictRule):
@@ -217,8 +215,7 @@ class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
         # Since the Filtered rule only works for grammars without empty productions,
         # we only have to bother with complete edges here.
         if edge.is_complete():
-            for new_edge in self._apply_complete(chart, grammar, edge):
-                yield new_edge
+            yield from self._apply_complete(chart, grammar, edge)
 
 
 # ////////////////////////////////////////////////////////////
@@ -235,8 +232,7 @@ class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
         for right_edge in chart.select(
             start=end, end=end, is_complete=True, lhs=left_edge.nextsym()
         ):
-            for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
-                yield new_edge
+            yield from fr.apply(chart, grammar, left_edge, right_edge)
 
 
 class FeatureCompleterRule(CompleterRule):

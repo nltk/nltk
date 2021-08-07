@@ -169,7 +169,7 @@ class TimitCorpusReader(CorpusReader):
 
         self._speakerinfo = None
         self._root = root
-        self.speakers = sorted(set(u.split("/")[0] for u in self._utterances))
+        self.speakers = sorted({u.split("/")[0] for u in self._utterances})
 
     def fileids(self, filetype=None):
         """
@@ -184,7 +184,7 @@ class TimitCorpusReader(CorpusReader):
         if filetype is None:
             return CorpusReader.fileids(self)
         elif filetype in ("txt", "wrd", "phn", "wav"):
-            return ["%s.%s" % (u, filetype) for u in self._utterances]
+            return [f"{u}.{filetype}" for u in self._utterances]
         elif filetype == "metadata":
             return ["timitdic.txt", "spkrinfo.txt"]
         else:
@@ -246,7 +246,7 @@ class TimitCorpusReader(CorpusReader):
         return utterance.split("/")[1]
 
     def utterance(self, spkrid, sentid):
-        return "%s/%s" % (spkrid, sentid)
+        return f"{spkrid}/{sentid}"
 
     def spkrutteranceids(self, speaker):
         """
@@ -273,7 +273,7 @@ class TimitCorpusReader(CorpusReader):
                     if not line.strip() or line[0] == ";":
                         continue
                     rec = line.strip().split(None, 9)
-                    key = "dr%s-%s%s" % (rec[2], rec[1].lower(), rec[0].lower())
+                    key = f"dr{rec[2]}-{rec[1].lower()}{rec[0].lower()}"
                     self._speakerinfo[key] = SpeakerInfo(*rec)
 
         return self._speakerinfo[speaker]
@@ -423,7 +423,7 @@ class TimitCorpusReader(CorpusReader):
             utterances = self._utterances
         if isinstance(utterances, str):
             utterances = [utterances]
-        return ["%s%s" % (u, extension) for u in utterances]
+        return [f"{u}{extension}" for u in utterances]
 
     def play(self, utterance, start=0, end=None):
         """
@@ -442,7 +442,7 @@ class TimitCorpusReader(CorpusReader):
                 dsp.speed(16000)
                 dsp.write(self.audiodata(utterance, start, end))
                 dsp.close()
-            except IOError as e:
+            except OSError as e:
                 print(
                     (
                         "can't acquire the audio device; please "
@@ -493,7 +493,7 @@ class SpeakerInfo:
 
     def __repr__(self):
         attribs = "id sex dr use recdate birthdate ht race edu comments"
-        args = ["%s=%r" % (attr, getattr(self, attr)) for attr in attribs.split()]
+        args = [f"{attr}={getattr(self, attr)!r}" for attr in attribs.split()]
         return "SpeakerInfo(%s)" % (", ".join(args))
 
 

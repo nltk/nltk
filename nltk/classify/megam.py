@@ -95,7 +95,7 @@ def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True
     """
     # Look up the set of labels.
     labels = encoding.labels()
-    labelnum = dict((label, i) for (i, label) in enumerate(labels))
+    labelnum = {label: i for (i, label) in enumerate(labels)}
 
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
@@ -155,7 +155,7 @@ def _write_megam_features(vector, stream, bernoulli):
                     "If bernoulli=True, then all" "features must be binary."
                 )
         else:
-            stream.write(" %s %s" % (fid, fval))
+            stream.write(f" {fid} {fval}")
 
 
 def call_megam(args):

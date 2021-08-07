@@ -56,7 +56,7 @@ class Chat:
     def _compile_reflections(self):
         sorted_refl = sorted(self._reflections, key=len, reverse=True)
         return re.compile(
-            r"\b({0})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
+            r"\b({})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
         )
 
     def _substitute(self, str):

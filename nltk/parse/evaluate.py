@@ -82,7 +82,7 @@ class DependencyEvaluator:
         :param input: the input string
         :return: Unicode string after remove all punctuation
         """
-        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        punc_cat = {"Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"}
         return "".join(x for x in inStr if unicodedata.category(x) not in punc_cat)
 
     def eval(self):

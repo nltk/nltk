@@ -75,7 +75,7 @@ class TwitterCorpusReader(CorpusReader):
             if isinstance(path, ZipFilePathPointer):
                 pass
             elif os.path.getsize(path) == 0:
-                raise ValueError("File {} is empty".format(path))
+                raise ValueError(f"File {path} is empty")
         """Check that all user-created corpus files are non-empty."""
 
         self._word_tokenizer = word_tokenizer

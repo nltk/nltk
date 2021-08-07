@@ -55,7 +55,7 @@ class TextCat:
 
     def __init__(self):
         if not re:
-            raise EnvironmentError(
+            raise OSError(
                 "classify.textcat requires the regex module that "
                 "supports unicode. Try '$ pip install regex' and "
                 "see https://pypi.python.org/pypi/regex for "
@@ -189,7 +189,7 @@ def demo():
         # Try to detect what it is
         print("Language snippet: " + sample[0:140] + "...")
         guess = tc.guess_language(sample)
-        print("Language detection: %s (%s)" % (guess, friendly[guess]))
+        print(f"Language detection: {guess} ({friendly[guess]})")
         print("#" * 140)
 
 

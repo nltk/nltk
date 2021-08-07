@@ -498,12 +498,12 @@ class PunktToken:
         typestr = " type=%s," % repr(self.type) if self.type != self.tok else ""
 
         propvals = ", ".join(
-            "%s=%s" % (p, repr(getattr(self, p)))
+            f"{p}={repr(getattr(self, p))}"
             for p in self._properties
             if getattr(self, p)
         )
 
-        return "%s(%s,%s %s)" % (
+        return "{}({},{} {})".format(
             self.__class__.__name__,
             repr(self.tok),
             typestr,
@@ -768,12 +768,12 @@ class PunktTrainer(PunktBaseClass):
                 if is_add:
                     self._params.abbrev_types.add(abbr)
                     if verbose:
-                        print("  Abbreviation: [%6.4f] %s" % (score, abbr))
+                        print(f"  Abbreviation: [{score:6.4f}] {abbr}")
             else:
                 if not is_add:
                     self._params.abbrev_types.remove(abbr)
                     if verbose:
-                        print("  Removed abbreviation: [%6.4f] %s" % (score, abbr))
+                        print(f"  Removed abbreviation: [{score:6.4f}] {abbr}")
 
         # Make a preliminary pass through the document, marking likely
         # sentence breaks, abbreviations, and ellipsis tokens.
@@ -809,7 +809,7 @@ class PunktTrainer(PunktBaseClass):
                 ] += 1
 
     def _unique_types(self, tokens):
-        return set(aug_tok.type for aug_tok in tokens)
+        return {aug_tok.type for aug_tok in tokens}
 
     def finalize_training(self, verbose=False):
         """
@@ -820,13 +820,13 @@ class PunktTrainer(PunktBaseClass):
         for typ, ll in self._find_sent_starters():
             self._params.sent_starters.add(typ)
             if verbose:
-                print("  Sent Starter: [%6.4f] %r" % (ll, typ))
+                print(f"  Sent Starter: [{ll:6.4f}] {typ!r}")
 
         self._params.clear_collocations()
         for (typ1, typ2), ll in self._find_collocations():
             self._params.collocations.add((typ1, typ2))
             if verbose:
-                print("  Collocation: [%6.4f] %r+%r" % (ll, typ1, typ2))
+                print(f"  Collocation: [{ll:6.4f}] {typ1!r}+{typ2!r}")
 
         self._finalized = True
 
@@ -1297,16 +1297,19 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 "type2": tokens[1].type,
                 "type1_in_abbrs": bool(tokens[0].abbr),
                 "type1_is_initial": bool(tokens[0].is_initial),
-                "type2_is_sent_starter": tokens[1].type_no_sentperiod 
-                                         in self._params.sent_starters,
+                "type2_is_sent_starter": tokens[1].type_no_sentperiod
+                in self._params.sent_starters,
                 "type2_ortho_heuristic": self._ortho_heuristic(tokens[1]),
                 "type2_ortho_contexts": set(
                     self._params._debug_ortho_context(tokens[1].type_no_sentperiod)
                 ),
-                "collocation": (tokens[0].type_no_sentperiod, tokens[1].type_no_sentperiod)
-                               in self._params.collocations,
+                "collocation": (
+                    tokens[0].type_no_sentperiod,
+                    tokens[1].type_no_sentperiod,
+                )
+                in self._params.collocations,
                 "reason": self._second_pass_annotation(tokens[0], tokens[1])
-                          or REASON_DEFAULT_DECISION,
+                or REASON_DEFAULT_DECISION,
                 "break_decision": tokens[0].sentbreak,
             }
 

@@ -661,17 +661,17 @@ class Synset(_WordNetObject):
         :return: The synsets that are hypernyms of both synsets.
         """
         if not self._all_hypernyms:
-            self._all_hypernyms = set(
+            self._all_hypernyms = {
                 self_synset
                 for self_synsets in self._iter_hypernym_lists()
                 for self_synset in self_synsets
-            )
+            }
         if not other._all_hypernyms:
-            other._all_hypernyms = set(
+            other._all_hypernyms = {
                 other_synset
                 for other_synsets in other._iter_hypernym_lists()
                 for other_synset in other_synsets
-            )
+            }
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
@@ -745,7 +745,7 @@ class Synset(_WordNetObject):
         :return: A set of ``(Synset, int)`` tuples where each ``Synset`` is
            a hypernym of the first ``Synset``.
         """
-        distances = set([(self, distance)])
+        distances = {(self, distance)}
         for hypernym in self._hypernyms() + self._instance_hypernyms():
             distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
         if simulate_root:
@@ -1065,7 +1065,7 @@ class Synset(_WordNetObject):
             ]
 
     def __repr__(self):
-        return "%s('%s')" % (type(self).__name__, self._name)
+        return f"{type(self).__name__}('{self._name}')"
 
     def _related(self, relation_symbol, sort=True):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
@@ -1128,9 +1128,7 @@ class WordNetCorpusReader(CorpusReader):
         Construct a new wordnet corpus reader, with the given root
         directory.
         """
-        super(WordNetCorpusReader, self).__init__(
-            root, self._FILES, encoding=self._ENCODING
-        )
+        super().__init__(root, self._FILES, encoding=self._ENCODING)
 
         # A index that provides the file offset
         # Map from lemma -> pos -> synset_index -> offset
@@ -1182,7 +1180,7 @@ class WordNetCorpusReader(CorpusReader):
         # Only these 3 WordNets retain the satellite pos tag
         if lang not in ["nld", "lit", "slk"] and pos == "s":
             pos = "a"
-        return "{:08d}-{}".format(ss.offset(), pos)
+        return f"{ss.offset():08d}-{pos}"
 
     def _load_lang_data(self, lang):
         """load the wordnet data of the requested language from the file to
@@ -1310,7 +1308,7 @@ class WordNetCorpusReader(CorpusReader):
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
                 return lemma
-        raise WordNetError("no lemma %r in %r" % (lemma_name, synset_name))
+        raise WordNetError(f"no lemma {lemma_name!r} in {synset_name!r}")
 
     def lemma_from_key(self, key):
         # Keys are case sensitive and always lower-case
@@ -1413,7 +1411,7 @@ class WordNetCorpusReader(CorpusReader):
         else:
             synset = None
             raise WordNetError(
-                "No WordNet synset found for pos={0} at offset={1}.".format(pos, offset)
+                f"No WordNet synset found for pos={pos} at offset={offset}."
             )
         return synset
 
@@ -1518,7 +1516,7 @@ class WordNetCorpusReader(CorpusReader):
 
         # raise a more informative error with line text
         except ValueError as e:
-            raise WordNetError("line %r: %s" % (data_file_line, e)) from e
+            raise WordNetError(f"line {data_file_line!r}: {e}") from e
 
         # set sense keys for Lemma objects - note that this has to be
         # done afterwards so that the relations are available
@@ -1740,7 +1738,7 @@ class WordNetCorpusReader(CorpusReader):
             with self.open("LICENSE") as fp:
                 return fp.read()
         elif lang in self.langs():
-            with self._omw_reader.open("{}/LICENSE".format(lang)) as fp:
+            with self._omw_reader.open(f"{lang}/LICENSE") as fp:
                 return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
@@ -1758,7 +1756,7 @@ class WordNetCorpusReader(CorpusReader):
             with self.open("README") as fp:
                 return fp.read()
         elif lang in self.langs():
-            with self._omw_reader.open("{}/README".format(lang)) as fp:
+            with self._omw_reader.open(f"{lang}/README") as fp:
                 return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
@@ -1776,7 +1774,7 @@ class WordNetCorpusReader(CorpusReader):
             with self.open("citation.bib") as fp:
                 return fp.read()
         elif lang in self.langs():
-            with self._omw_reader.open("{}/citation.bib".format(lang)) as fp:
+            with self._omw_reader.open(f"{lang}/citation.bib") as fp:
                 return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
