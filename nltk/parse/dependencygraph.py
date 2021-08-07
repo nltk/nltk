@@ -553,7 +553,7 @@ def dot2img(dot_string, t='svg'):
     Create image representation fom dot_string, using the 'dot' program
     from the Graphviz package.
 
-    Use the 't' argument to specify the image file format, for ex. 
+    Use the 't' argument to specify the image file format, for ex.
     'png' or 'jpeg' (Running 'dot -T:' lists all available formats).
 
     sys.stdout is used instead of subprocess.PIPE, to avoid decoding errors

@@ -2104,19 +2104,19 @@ class WordNetCorpusReader(CorpusReader):
         if not attr:
             attr = dict()
 
-        def add_lemma(x):
-            ss = x.synset()
+        def add_lemma(lem):
+            ss = lem.synset()
             synsets.add(ss)
-            edges.add((x,ss))
+            edges.add((lem,ss))
 
-        for x in inputs:
-            t = type(x)
-            if t == Synset:
-                synsets.add(x)
-            elif t == Lemma:
-                add_lemma(x)
-            elif t == str:
-                for lemma in self.lemmas(x,pos):
+        for node in inputs:
+            typ = type(node)
+            if typ == Synset:
+                synsets.add(node)
+            elif typ == Lemma:
+                add_lemma(node)
+            elif typ == str:
+                for lemma in self.lemmas(node,pos):
                     add_lemma(lemma)
 
         for ss in synsets:
@@ -2284,5 +2284,3 @@ def _get_pos(field):
             "for field %s" % field
         )
         raise ValueError(msg)
-
-

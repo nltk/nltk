@@ -228,7 +228,7 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
     and returning an iterator of the node's children.
 
     >>> from nltk.util import edge_closure
-    >>> print(list(edge_closure('A', lambda x:{'A':['B','C'], 'B':'C', 'C':'B'}[x])))
+    >>> print(list(edge_closure('A', lambda node:{'A':['B','C'], 'B':'C', 'C':'B'}[node])))
     [('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'B')]
     """
     traversed = set()
@@ -282,15 +282,15 @@ def edges2dot(edges, shapes=None, attr=None):
 
     dot_string = 'digraph G {\n'
 
-    for tup in attr.items():
-        dot_string += f'{tup[0]} = {tup[1]};\n'
+    for pair in attr.items():
+        dot_string += f'{pair[0]} = {pair[1]};\n'
 
-    for pair in edges:
+    for edge in edges:
         for shape in shapes.items():
-            for x in range(2):
-                if shape[0] in repr(pair[x]):
-                    dot_string += f'"{pair[x]}" [shape = {shape[1]}];\n'
-        dot_string += f'"{pair[0]}" -> "{pair[1]}";\n'
+            for node in range(2):
+                if shape[0] in repr(edge[node]):
+                    dot_string += f'"{edge[node]}" [shape = {shape[1]}];\n'
+        dot_string += f'"{edge[0]}" -> "{edge[1]}";\n'
 
     dot_string += '}\n'
     return dot_string
@@ -324,7 +324,9 @@ def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=N
     }
 
     """
-    return edges2dot(edge_closure(tree, lambda x:unweighted_minimum_spanning_dict(tree, children)[x]), shapes, attr)
+    return edges2dot(
+        edge_closure(tree, lambda node:unweighted_minimum_spanning_dict(tree, children)[node]),
+        shapes, attr)
 
 
 ##########################################################################
