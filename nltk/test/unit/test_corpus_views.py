@@ -2,11 +2,12 @@
 Corpus View Regression Tests
 """
 import unittest
+
 import nltk.data
 from nltk.corpus.reader.util import (
     StreamBackedCorpusView,
-    read_whitespace_block,
     read_line_block,
+    read_whitespace_block,
 )
 
 

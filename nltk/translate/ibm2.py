@@ -48,10 +48,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 import warnings
 from collections import defaultdict
 
-from nltk.translate import AlignedSent
-from nltk.translate import Alignment
-from nltk.translate import IBMModel
-from nltk.translate import IBMModel1
+from nltk.translate import AlignedSent, Alignment, IBMModel, IBMModel1
 from nltk.translate.ibm_model import Counts
 
 

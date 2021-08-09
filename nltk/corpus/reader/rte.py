@@ -32,8 +32,8 @@ In order to provide globally unique IDs for each pair, a new attribute
 file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 from nltk.corpus.reader.xmldocs import *
 
 

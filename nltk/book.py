@@ -7,16 +7,16 @@
 # For license information, see LICENSE.TXT
 
 from nltk.corpus import (
-    gutenberg,
     genesis,
+    gutenberg,
     inaugural,
     nps_chat,
-    webtext,
     treebank,
+    webtext,
     wordnet,
 )
-from nltk.text import Text
 from nltk.probability import FreqDist
+from nltk.text import Text
 from nltk.util import bigrams
 
 print("*** Introductory Examples for the NLTK Book ***")

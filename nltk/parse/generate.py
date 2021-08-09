@@ -9,6 +9,7 @@
 
 import itertools
 import sys
+
 from nltk.grammar import Nonterminal
 
 

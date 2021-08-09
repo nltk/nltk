@@ -20,12 +20,11 @@ to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 import os
 import re
 
-from nltk.tokenize import RegexpTokenizer
+from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
-
 from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+from nltk.tokenize import RegexpTokenizer
 
 
 class YCOECorpusReader(CorpusReader):

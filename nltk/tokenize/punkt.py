@@ -104,8 +104,8 @@ The algorithm for this tokenizer is described in::
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
 # FIXME: Problem with ending string with e.g. '!!!' -> '!! !'
 
-import re
 import math
+import re
 from collections import defaultdict
 
 from nltk.probability import FreqDist

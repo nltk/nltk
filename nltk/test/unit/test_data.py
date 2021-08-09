@@ -1,5 +1,6 @@
-import nltk.data
 import pytest
+
+import nltk.data
 
 
 def test_find_raises_exception():

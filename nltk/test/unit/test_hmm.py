@@ -1,5 +1,6 @@
-from nltk.tag import hmm
 import pytest
+
+from nltk.tag import hmm
 
 
 def _wikipedia_example_hmm():

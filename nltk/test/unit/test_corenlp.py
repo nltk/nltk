@@ -4,10 +4,11 @@ Mock test for Stanford CoreNLP wrappers.
 
 from unittest import TestCase
 from unittest.mock import MagicMock
+
 import pytest
 
-from nltk.tree import Tree
 from nltk.parse import corenlp
+from nltk.tree import Tree
 
 
 def setup_module(module):

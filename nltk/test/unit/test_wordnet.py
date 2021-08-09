@@ -7,7 +7,6 @@ import unittest
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic as wnic
 
-
 wn.ensure_loaded()
 S = wn.synset
 L = wn.lemma

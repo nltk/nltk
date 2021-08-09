@@ -9,8 +9,8 @@
 import sys
 from collections import Counter
 from collections.abc import Iterable
-from itertools import chain
 from functools import singledispatch
+from itertools import chain
 
 
 @singledispatch

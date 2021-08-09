@@ -14,23 +14,21 @@ import operator
 from collections import defaultdict
 from functools import reduce
 
+from nltk.inference.api import BaseProverCommand, Prover
 from nltk.sem import skolemize
 from nltk.sem.logic import (
-    VariableExpression,
-    EqualityExpression,
-    ApplicationExpression,
-    Expression,
-    NegatedExpression,
-    Variable,
     AndExpression,
-    unique_variable,
-    OrExpression,
-    is_indvar,
-    IndividualVariableExpression,
+    ApplicationExpression,
+    EqualityExpression,
     Expression,
+    IndividualVariableExpression,
+    NegatedExpression,
+    OrExpression,
+    Variable,
+    VariableExpression,
+    is_indvar,
+    unique_variable,
 )
-
-from nltk.inference.api import Prover, BaseProverCommand
 
 
 class ProverParseError(Exception):

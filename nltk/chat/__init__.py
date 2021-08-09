@@ -16,11 +16,11 @@ These chatbots may not work using the windows command line or the
 windows IDLE GUI.
 """
 
-from nltk.chat.util import Chat
 from nltk.chat.eliza import eliza_chat
 from nltk.chat.iesha import iesha_chat
 from nltk.chat.rude import rude_chat
 from nltk.chat.suntsu import suntsu_chat
+from nltk.chat.util import Chat
 from nltk.chat.zen import zen_chat
 
 bots = [

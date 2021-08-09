@@ -9,8 +9,9 @@
 # { Lazy Corpus Loader
 ######################################################################
 
-import re
 import gc
+import re
+
 import nltk
 
 TRY_ZIPFILE_FIRST = False

@@ -37,13 +37,13 @@ implementation of the ``ConditionalProbDistI`` interface is
 
 """
 
+import array
 import math
 import random
 import warnings
-import array
-from collections import defaultdict, Counter
-from functools import reduce
 from abc import ABCMeta, abstractmethod
+from collections import Counter, defaultdict
+from functools import reduce
 
 from nltk.internals import raise_unorderable_types
 

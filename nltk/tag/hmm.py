@@ -69,29 +69,28 @@ For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
 
-import re
 import itertools
+import re
 
 try:
     import numpy as np
 except ImportError:
     pass
 
+from nltk.metrics import accuracy
 from nltk.probability import (
-    FreqDist,
     ConditionalFreqDist,
     ConditionalProbDist,
-    DictionaryProbDist,
     DictionaryConditionalProbDist,
+    DictionaryProbDist,
+    FreqDist,
     LidstoneProbDist,
-    MutableProbDist,
     MLEProbDist,
+    MutableProbDist,
     RandomProbDist,
 )
-from nltk.metrics import accuracy
-from nltk.util import LazyMap, unique_list
 from nltk.tag.api import TaggerI
-
+from nltk.util import LazyMap, unique_list
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1  # index of tag in a tuple

@@ -10,9 +10,9 @@
 
 import math
 import sys
-from fractions import Fraction
 import warnings
 from collections import Counter
+from fractions import Fraction
 
 from nltk.util import ngrams
 

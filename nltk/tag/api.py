@@ -13,7 +13,6 @@ information, such as its part of speech.
 from abc import ABCMeta, abstractmethod
 from itertools import chain
 
-
 from nltk.internals import overridden
 from nltk.metrics import accuracy
 from nltk.tag.util import untag

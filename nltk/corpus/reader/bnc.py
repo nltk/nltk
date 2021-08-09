@@ -8,7 +8,7 @@
 """Corpus reader for the XML version of the British National Corpus."""
 
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTree
+from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader, XMLCorpusView
 
 
 class BNCCorpusReader(XMLCorpusReader):

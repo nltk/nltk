@@ -473,9 +473,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
         negative.
     :param output: the output file where results have to be reported.
     """
-    from nltk.tokenize import TweetTokenizer
+    from nltk.corpus import stopwords, twitter_samples
     from nltk.sentiment import SentimentAnalyzer
-    from nltk.corpus import twitter_samples, stopwords
+    from nltk.tokenize import TweetTokenizer
 
     # Different customizations for the TweetTokenizer
     tokenizer = TweetTokenizer(preserve_case=False)
@@ -630,8 +630,8 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         and negative.
     :param output: the output file where results have to be reported.
     """
-    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import subjectivity
+    from nltk.sentiment import SentimentAnalyzer
 
     if n_instances is not None:
         n_instances = int(n_instances / 2)
@@ -778,14 +778,13 @@ def demo_vader_tweets(n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from collections import defaultdict
+
     from nltk.corpus import twitter_samples
+    from nltk.metrics import accuracy as eval_accuracy
+    from nltk.metrics import f_measure as eval_f_measure
+    from nltk.metrics import precision as eval_precision
+    from nltk.metrics import recall as eval_recall
     from nltk.sentiment import SentimentIntensityAnalyzer
-    from nltk.metrics import (
-        accuracy as eval_accuracy,
-        precision as eval_precision,
-        recall as eval_recall,
-        f_measure as eval_f_measure,
-    )
 
     if n_instances is not None:
         n_instances = int(n_instances / 2)
@@ -867,9 +866,10 @@ def demo_vader_tweets(n_instances=None, output=None):
 
 
 if __name__ == "__main__":
-    from nltk.classify import NaiveBayesClassifier, MaxentClassifier
-    from nltk.classify.scikitlearn import SklearnClassifier
     from sklearn.svm import LinearSVC
+
+    from nltk.classify import MaxentClassifier, NaiveBayesClassifier
+    from nltk.classify.scikitlearn import SklearnClassifier
     from nltk.twitter.common import _outf_writer, extract_fields
 
     naive_bayes = NaiveBayesClassifier.train

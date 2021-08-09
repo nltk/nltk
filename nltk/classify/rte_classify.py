@@ -17,9 +17,9 @@ TO DO: better Named Entity classification
 TO DO: add lemmatization
 """
 
-from nltk.tokenize import RegexpTokenizer
-from nltk.classify.util import accuracy, check_megam_config
 from nltk.classify.maxent import MaxentClassifier
+from nltk.classify.util import accuracy, check_megam_config
+from nltk.tokenize import RegexpTokenizer
 
 
 class RTEFeatureExtractor:

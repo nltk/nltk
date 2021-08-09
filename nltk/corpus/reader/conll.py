@@ -12,12 +12,11 @@ Read CoNLL-style chunk fileids.
 
 import textwrap
 
-from nltk.tree import Tree
-from nltk.util import LazyMap, LazyConcatenation
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag
+from nltk.tree import Tree
+from nltk.util import LazyConcatenation, LazyMap
 
 
 class ConllCorpusReader(CorpusReader):

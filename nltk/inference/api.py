@@ -18,9 +18,9 @@ goal *G*, the model builder tries to find a counter-model, in the sense of a mod
 the assumptions plus the negation of *G*.
 """
 
-from abc import ABCMeta, abstractmethod
 import threading
 import time
+from abc import ABCMeta, abstractmethod
 
 
 class Prover(metaclass=ABCMeta):

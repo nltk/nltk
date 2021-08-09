@@ -17,9 +17,10 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 """
 
 import re
+
 from nltk.tokenize.api import TokenizerI
-from nltk.tokenize.util import align_tokens
 from nltk.tokenize.destructive import MacIntyreContractions
+from nltk.tokenize.util import align_tokens
 
 
 class TreebankWordTokenizer(TokenizerI):

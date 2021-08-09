@@ -9,13 +9,12 @@
 
 import os
 import re
-import sys
 import subprocess
+import sys
 import tempfile
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir
-
 from nltk.tokenize.api import TokenizerI
 
 

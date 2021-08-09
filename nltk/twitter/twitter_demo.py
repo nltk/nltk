@@ -31,19 +31,18 @@ For error codes see Twitter's
 """
 
 import datetime
-from functools import wraps
 import json
+from functools import wraps
 from io import StringIO
 
 from nltk.twitter import (
     Query,
     Streamer,
-    Twitter,
     TweetViewer,
     TweetWriter,
+    Twitter,
     credsfromfile,
 )
-
 
 SPACER = "###################################"
 

@@ -31,9 +31,8 @@ References:
   In HLT-NAACL. pp. 308-316.
 """
 
-import warnings
-
 import re
+import warnings
 from string import punctuation
 
 from nltk.tokenize.api import TokenizerI

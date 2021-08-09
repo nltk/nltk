@@ -5,8 +5,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import sys
 import subprocess
+import sys
 
 from nltk.internals import find_binary
 
@@ -93,14 +93,15 @@ def call_tadm(args):
 
 
 def names_demo():
-    from nltk.classify.util import names_demo
     from nltk.classify.maxent import TadmMaxentClassifier
+    from nltk.classify.util import names_demo
 
     classifier = names_demo(TadmMaxentClassifier.train)
 
 
 def encoding_demo():
     import sys
+
     from nltk.classify.maxent import TadmEventMaxentFeatureEncoding
 
     tokens = [

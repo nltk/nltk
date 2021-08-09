@@ -13,8 +13,8 @@ on feature values, and leaves correspond to label assignments.
 
 from collections import defaultdict
 
-from nltk.probability import FreqDist, MLEProbDist, entropy
 from nltk.classify.api import ClassifierI
+from nltk.probability import FreqDist, MLEProbDist, entropy
 
 
 class DecisionTreeClassifier(ClassifierI):
@@ -336,7 +336,7 @@ def f(x):
 
 
 def demo():
-    from nltk.classify.util import names_demo, binary_names_demo_features
+    from nltk.classify.util import binary_names_demo_features, names_demo
 
     classifier = names_demo(
         f, binary_names_demo_features  # DecisionTreeClassifier.train,

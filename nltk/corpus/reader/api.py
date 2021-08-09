@@ -15,9 +15,8 @@ import re
 from collections import defaultdict
 from itertools import chain
 
-from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-
 from nltk.corpus.reader.util import *
+from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
 
 
 class CorpusReader:

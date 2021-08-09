@@ -7,15 +7,14 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+import inspect
 import os
+import subprocess
 import sys
 import tempfile
-import subprocess
-import inspect
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir, find_file, find_jars_within_path
-
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll

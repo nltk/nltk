@@ -458,7 +458,8 @@ class TimitCorpusReader(CorpusReader):
         # Method 2: pygame
         try:
             # FIXME: this won't work under python 3
-            import pygame.mixer, StringIO
+            import pygame.mixer
+            import StringIO
 
             pygame.mixer.init(16000)
             f = StringIO.StringIO(self.wav(utterance, start, end))

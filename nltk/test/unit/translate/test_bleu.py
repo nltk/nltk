@@ -7,11 +7,13 @@ import unittest
 
 from nltk.data import find
 from nltk.translate.bleu_score import (
-    modified_precision,
+    SmoothingFunction,
     brevity_penalty,
     closest_ref_length,
+    corpus_bleu,
+    modified_precision,
+    sentence_bleu,
 )
-from nltk.translate.bleu_score import sentence_bleu, corpus_bleu, SmoothingFunction
 
 
 class TestBLEU(unittest.TestCase):

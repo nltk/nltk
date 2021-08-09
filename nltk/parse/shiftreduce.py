@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 from nltk.grammar import Nonterminal
+from nltk.parse.api import ParserI
 from nltk.tree import Tree
 
-from nltk.parse.api import ParserI
 
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
@@ -452,7 +452,7 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse, CFG
+    from nltk import CFG, parse
 
     grammar = CFG.fromstring(
         """

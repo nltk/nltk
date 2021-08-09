@@ -63,33 +63,33 @@ import re
 
 from nltk.data import load
 from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
-from nltk.tokenize.mwe import MWETokenizer
 from nltk.tokenize.destructive import NLTKWordTokenizer
+from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
+from nltk.tokenize.mwe import MWETokenizer
 from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.tokenize.regexp import (
+    BlanklineTokenizer,
     RegexpTokenizer,
     WhitespaceTokenizer,
-    BlanklineTokenizer,
     WordPunctTokenizer,
-    wordpunct_tokenize,
-    regexp_tokenize,
     blankline_tokenize,
+    regexp_tokenize,
+    wordpunct_tokenize,
 )
 from nltk.tokenize.repp import ReppTokenizer
 from nltk.tokenize.sexpr import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.simple import (
+    LineTokenizer,
     SpaceTokenizer,
     TabTokenizer,
-    LineTokenizer,
     line_tokenize,
 )
+from nltk.tokenize.sonority_sequencing import SyllableTokenizer
+from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 from nltk.tokenize.texttiling import TextTilingTokenizer
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.tokenize.treebank import TreebankWordTokenizer
-from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
-from nltk.tokenize.stanford_segmenter import StanfordSegmenter
-from nltk.tokenize.sonority_sequencing import SyllableTokenizer
-from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
+from nltk.tokenize.util import regexp_span_tokenize, string_span_tokenize
 
 
 # Standard sentence tokenizer.

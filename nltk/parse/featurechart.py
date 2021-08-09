@@ -12,31 +12,31 @@ feature structures as nodes.
 """
 from time import perf_counter
 
-from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
-from nltk.sem import logic
-from nltk.tree import Tree
+from nltk.featstruct import TYPE, FeatStruct, find_variables, unify
 from nltk.grammar import (
-    Nonterminal,
-    Production,
     CFG,
     FeatStructNonterminal,
+    Nonterminal,
+    Production,
     is_nonterminal,
     is_terminal,
 )
 from nltk.parse.chart import (
-    TreeEdge,
+    BottomUpPredictCombineRule,
+    BottomUpPredictRule,
+    CachedTopDownPredictRule,
     Chart,
     ChartParser,
     EdgeI,
+    EmptyPredictRule,
     FundamentalRule,
     LeafInitRule,
-    EmptyPredictRule,
-    BottomUpPredictRule,
     SingleEdgeFundamentalRule,
-    BottomUpPredictCombineRule,
-    CachedTopDownPredictRule,
     TopDownInitRule,
+    TreeEdge,
 )
+from nltk.sem import logic
+from nltk.tree import Tree
 
 # ////////////////////////////////////////////////////////////
 # Tree Edge
@@ -624,7 +624,8 @@ def demo(
     parser=FeatureChartParser,
     sent="I saw John with a dog with my cookie",
 ):
-    import sys, time
+    import sys
+    import time
 
     print()
     grammar = demo_grammar()

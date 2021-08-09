@@ -12,7 +12,7 @@ A module for interfacing with the HunPos open-source POS-tagger.
 """
 
 import os
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI

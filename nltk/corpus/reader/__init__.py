@@ -51,6 +51,7 @@ For example, to read a list of the words in the Brown Corpus, use
     >>> print(", ".join(brown.words()))
     The, Fulton, County, Grand, Jury, said, ...
 
+isort:skip_file
 """
 
 from nltk.corpus.reader.plaintext import *

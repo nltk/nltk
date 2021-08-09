@@ -5,33 +5,30 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import sys
+import bisect
 import inspect
 import locale
-import re
-import types
-import textwrap
-import pydoc
-import bisect
 import os
-
-from itertools import islice, chain, combinations, tee
-from pprint import pprint
+import pydoc
+import re
+import sys
+import textwrap
+import types
 from collections import defaultdict, deque
-
+from itertools import chain, combinations, islice, tee
+from pprint import pprint
 from urllib.request import (
-    build_opener,
-    install_opener,
-    getproxies,
-    ProxyHandler,
+    HTTPPasswordMgrWithDefaultRealm,
     ProxyBasicAuthHandler,
     ProxyDigestAuthHandler,
-    HTTPPasswordMgrWithDefaultRealm,
+    ProxyHandler,
+    build_opener,
+    getproxies,
+    install_opener,
 )
 
-from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.collections import *
-
+from nltk.internals import raise_unorderable_types, slice_bounds
 
 ######################################################################
 # Short usage message
@@ -1054,8 +1051,8 @@ def pairwise(iterable):
 
 
 def parallelize_preprocess(func, iterator, processes, progress_bar=False):
-    from tqdm import tqdm
     from joblib import Parallel, delayed
+    from tqdm import tqdm
 
     iterator = tqdm(iterator) if progress_bar else iterator
     if processes <= 1:

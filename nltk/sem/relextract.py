@@ -22,9 +22,9 @@ The two serialization outputs are "rtuple" and "clause".
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
-from collections import defaultdict
 import html
 import re
+from collections import defaultdict
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {

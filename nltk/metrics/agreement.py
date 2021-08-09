@@ -73,10 +73,9 @@ import logging
 from itertools import groupby
 from operator import itemgetter
 
-from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
-
 from nltk.metrics.distance import binary_distance
+from nltk.probability import ConditionalFreqDist, FreqDist
 
 log = logging.getLogger(__name__)
 
@@ -347,8 +346,9 @@ class AnnotationTask:
 
 if __name__ == "__main__":
 
-    import re
     import optparse
+    import re
+
     from nltk.metrics import distance
 
     # process command-line arguments

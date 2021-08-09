@@ -35,8 +35,8 @@ to specify the tokenization conventions when building a `CorpusReader`.
 
 """
 
-from nltk.tokenize.api import TokenizerI, StringTokenizer
-from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
+from nltk.tokenize.api import StringTokenizer, TokenizerI
+from nltk.tokenize.util import regexp_span_tokenize, string_span_tokenize
 
 
 class SpaceTokenizer(StringTokenizer):

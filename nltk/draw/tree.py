@@ -11,16 +11,16 @@ Graphically display a Tree.
 
 from tkinter import IntVar, Menu, Tk
 
-from nltk.util import in_idle
-from nltk.tree import Tree
 from nltk.draw.util import (
+    BoxWidget,
     CanvasFrame,
     CanvasWidget,
-    BoxWidget,
-    TextWidget,
-    ParenWidget,
     OvalWidget,
+    ParenWidget,
+    TextWidget,
 )
+from nltk.tree import Tree
+from nltk.util import in_idle
 
 ##//////////////////////////////////////////////////////
 ##  Tree Segment
@@ -852,7 +852,7 @@ class TreeWidget(CanvasWidget):
 
 class TreeView:
     def __init__(self, *trees):
-        from math import sqrt, ceil
+        from math import ceil, sqrt
 
         self._trees = trees
 

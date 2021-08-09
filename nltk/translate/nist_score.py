@@ -8,8 +8,8 @@
 
 """NIST score implementation."""
 
-import math
 import fractions
+import math
 from collections import Counter
 
 from nltk.util import ngrams

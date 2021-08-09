@@ -28,29 +28,29 @@ algorithm, originally formulated by Jay Earley (1970).
 from time import perf_counter
 
 from nltk.parse.chart import (
+    BottomUpPredictCombineRule,
+    BottomUpPredictRule,
+    CachedTopDownPredictRule,
     Chart,
     ChartParser,
     EdgeI,
+    EmptyPredictRule,
+    FilteredBottomUpPredictCombineRule,
+    FilteredSingleEdgeFundamentalRule,
     LeafEdge,
     LeafInitRule,
-    BottomUpPredictRule,
-    BottomUpPredictCombineRule,
-    TopDownInitRule,
     SingleEdgeFundamentalRule,
-    EmptyPredictRule,
-    CachedTopDownPredictRule,
-    FilteredSingleEdgeFundamentalRule,
-    FilteredBottomUpPredictCombineRule,
+    TopDownInitRule,
 )
 from nltk.parse.featurechart import (
+    FeatureBottomUpPredictCombineRule,
+    FeatureBottomUpPredictRule,
     FeatureChart,
     FeatureChartParser,
+    FeatureEmptyPredictRule,
+    FeatureSingleEdgeFundamentalRule,
     FeatureTopDownInitRule,
     FeatureTopDownPredictRule,
-    FeatureEmptyPredictRule,
-    FeatureBottomUpPredictRule,
-    FeatureBottomUpPredictCombineRule,
-    FeatureSingleEdgeFundamentalRule,
 )
 
 # ////////////////////////////////////////////////////////////
@@ -511,7 +511,9 @@ def demo(
     """
     A demonstration of the Earley parsers.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk.parse.chart import demo_grammar
 
     # The grammar for ChartParser and SteppingChartParser:

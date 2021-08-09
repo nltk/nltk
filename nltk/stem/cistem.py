@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import re
+
 from nltk.stem.api import StemmerI
 
 

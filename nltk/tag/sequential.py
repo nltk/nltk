@@ -18,16 +18,13 @@ consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
 import ast
+import re
 from abc import abstractmethod
 
-import re
-
-from nltk.probability import ConditionalFreqDist
-from nltk.classify import NaiveBayesClassifier
-
-from nltk.tag.api import TaggerI, FeaturesetTaggerI
-
 from nltk import jsontags
+from nltk.classify import NaiveBayesClassifier
+from nltk.probability import ConditionalFreqDist
+from nltk.tag.api import FeaturesetTaggerI, TaggerI
 
 
 ######################################################################

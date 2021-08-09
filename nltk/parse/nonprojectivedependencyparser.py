@@ -7,8 +7,8 @@
 # For license information, see LICENSE.TXT
 #
 
-import math
 import logging
+import math
 
 from nltk.parse.dependencygraph import DependencyGraph
 

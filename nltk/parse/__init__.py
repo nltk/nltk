@@ -44,59 +44,59 @@ three sub-modules for specialized kinds of parsing:
 """
 
 from nltk.parse.api import ParserI
+from nltk.parse.bllip import BllipParser
 from nltk.parse.chart import (
-    ChartParser,
-    SteppingChartParser,
-    TopDownChartParser,
     BottomUpChartParser,
     BottomUpLeftCornerChartParser,
+    ChartParser,
     LeftCornerChartParser,
+    SteppingChartParser,
+    TopDownChartParser,
 )
-from nltk.parse.featurechart import (
-    FeatureChartParser,
-    FeatureTopDownChartParser,
-    FeatureBottomUpChartParser,
-    FeatureBottomUpLeftCornerChartParser,
-)
+from nltk.parse.corenlp import CoreNLPDependencyParser, CoreNLPParser
+from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.earleychart import (
-    IncrementalChartParser,
     EarleyChartParser,
-    IncrementalTopDownChartParser,
-    IncrementalBottomUpChartParser,
-    IncrementalBottomUpLeftCornerChartParser,
-    IncrementalLeftCornerChartParser,
-    FeatureIncrementalChartParser,
     FeatureEarleyChartParser,
-    FeatureIncrementalTopDownChartParser,
     FeatureIncrementalBottomUpChartParser,
     FeatureIncrementalBottomUpLeftCornerChartParser,
+    FeatureIncrementalChartParser,
+    FeatureIncrementalTopDownChartParser,
+    IncrementalBottomUpChartParser,
+    IncrementalBottomUpLeftCornerChartParser,
+    IncrementalChartParser,
+    IncrementalLeftCornerChartParser,
+    IncrementalTopDownChartParser,
+)
+from nltk.parse.evaluate import DependencyEvaluator
+from nltk.parse.featurechart import (
+    FeatureBottomUpChartParser,
+    FeatureBottomUpLeftCornerChartParser,
+    FeatureChartParser,
+    FeatureTopDownChartParser,
+)
+from nltk.parse.malt import MaltParser
+from nltk.parse.nonprojectivedependencyparser import (
+    NaiveBayesDependencyScorer,
+    NonprojectiveDependencyParser,
+    ProbabilisticNonprojectiveParser,
 )
 from nltk.parse.pchart import (
     BottomUpProbabilisticChartParser,
     InsideChartParser,
+    LongestChartParser,
     RandomChartParser,
     UnsortedChartParser,
-    LongestChartParser,
+)
+from nltk.parse.projectivedependencyparser import (
+    ProbabilisticProjectiveDependencyParser,
+    ProjectiveDependencyParser,
 )
 from nltk.parse.recursivedescent import (
     RecursiveDescentParser,
     SteppingRecursiveDescentParser,
 )
 from nltk.parse.shiftreduce import ShiftReduceParser, SteppingShiftReduceParser
-from nltk.parse.util import load_parser, TestGrammar, extract_test_sentences
-from nltk.parse.viterbi import ViterbiParser
-from nltk.parse.dependencygraph import DependencyGraph
-from nltk.parse.projectivedependencyparser import (
-    ProjectiveDependencyParser,
-    ProbabilisticProjectiveDependencyParser,
-)
-from nltk.parse.nonprojectivedependencyparser import (
-    NonprojectiveDependencyParser,
-    NaiveBayesDependencyScorer,
-    ProbabilisticNonprojectiveParser,
-)
-from nltk.parse.malt import MaltParser
-from nltk.parse.evaluate import DependencyEvaluator
 from nltk.parse.transitionparser import TransitionParser
-from nltk.parse.bllip import BllipParser
-from nltk.parse.corenlp import CoreNLPParser, CoreNLPDependencyParser
+from nltk.parse.util import TestGrammar, extract_test_sentences, load_parser
+from nltk.parse.viterbi import ViterbiParser

@@ -5,9 +5,8 @@
 # For license information, see LICENSE.TXT
 
 
-from tqdm import tqdm
-
 import click
+from tqdm import tqdm
 
 from nltk import word_tokenize
 from nltk.util import parallelize_preprocess

@@ -62,12 +62,11 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import Alignment
-from nltk.translate import IBMModel
-from nltk.translate.ibm_model import Counts
 import warnings
+from collections import defaultdict
+
+from nltk.translate import AlignedSent, Alignment, IBMModel
+from nltk.translate.ibm_model import Counts
 
 
 class IBMModel1(IBMModel):

@@ -7,12 +7,11 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 
+from nltk import jsontags
 from nltk.tag import TaggerI
 from nltk.tbl import Feature, Template
-from nltk import jsontags
-
 
 ######################################################################
 # Brill Templates

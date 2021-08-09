@@ -7,14 +7,13 @@
 # For license information, see LICENSE.TXT
 
 
-from collections import namedtuple, defaultdict
 import re
+from collections import defaultdict, namedtuple
 
-from nltk.tokenize import line_tokenize
-
-from nltk.corpus.reader.wordlist import WordListCorpusReader
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.wordlist import WordListCorpusReader
+from nltk.tokenize import line_tokenize
 
 PanlexLanguage = namedtuple(
     "PanlexLanguage",

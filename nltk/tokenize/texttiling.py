@@ -6,8 +6,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 import math
+import re
 
 try:
     import numpy
@@ -458,8 +458,9 @@ def smooth(x, window_len=11, window="flat"):
 
 
 def demo(text=None):
-    from nltk.corpus import brown
     from matplotlib import pylab
+
+    from nltk.corpus import brown
 
     tt = TextTilingTokenizer(demo_mode=True)
     if text is None:

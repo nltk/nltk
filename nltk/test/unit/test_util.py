@@ -3,6 +3,7 @@ Unit tests for nltk.util.
 """
 
 import unittest
+
 from nltk.util import everygrams
 
 

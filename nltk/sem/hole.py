@@ -23,8 +23,6 @@ convert that representation into first-order logic formulas.
 from functools import reduce
 
 from nltk.parse import load_parser
-
-from nltk.sem.skolemize import skolemize
 from nltk.sem.logic import (
     AllExpression,
     AndExpression,
@@ -36,7 +34,7 @@ from nltk.sem.logic import (
     NegatedExpression,
     OrExpression,
 )
-
+from nltk.sem.skolemize import skolemize
 
 # Note that in this code there may be multiple types of trees being referred to:
 #

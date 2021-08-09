@@ -13,10 +13,9 @@ have been serialised into line-delimited JSON.
 import json
 import os
 
-from nltk.tokenize import TweetTokenizer
-
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, ZipFilePathPointer, concat
+from nltk.tokenize import TweetTokenizer
 
 
 class TwitterCorpusReader(CorpusReader):

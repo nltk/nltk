@@ -12,8 +12,8 @@ Tests for stack decoder
 import unittest
 from collections import defaultdict
 from math import log
-from nltk.translate import PhraseTable
-from nltk.translate import StackDecoder
+
+from nltk.translate import PhraseTable, StackDecoder
 from nltk.translate.stack_decoder import _Hypothesis, _Stack
 
 

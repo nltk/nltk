@@ -14,12 +14,11 @@ Corpus reader for corpora whose documents are xml files.
 import codecs
 from xml.etree import ElementTree
 
-from nltk.data import SeekableUnicodeStreamReader
-from nltk.tokenize import WordPunctTokenizer
-from nltk.internals import ElementWrapper
-
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
+from nltk.data import SeekableUnicodeStreamReader
+from nltk.internals import ElementWrapper
+from nltk.tokenize import WordPunctTokenizer
 
 
 class XMLCorpusReader(CorpusReader):

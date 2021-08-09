@@ -56,18 +56,17 @@ try:
 except ImportError:
     pass
 
-import tempfile
 import os
+import tempfile
 from collections import defaultdict
 
-from nltk.data import gzip_open_unicode
-from nltk.util import OrderedDict
-from nltk.probability import DictionaryProbDist
-
 from nltk.classify.api import ClassifierI
+from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
+from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.classify.megam import call_megam, write_megam_file, parse_megam_weights
-from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
+from nltk.data import gzip_open_unicode
+from nltk.probability import DictionaryProbDist
+from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
 

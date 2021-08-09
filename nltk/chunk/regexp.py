@@ -8,8 +8,8 @@
 
 import re
 
-from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
+from nltk.tree import Tree
 
 # //////////////////////////////////////////////////////
 # ChunkString
@@ -1369,7 +1369,7 @@ def demo():
     and strategies.
     """
 
-    from nltk import chunk, Tree
+    from nltk import Tree, chunk
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.

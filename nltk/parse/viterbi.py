@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 from functools import reduce
-from nltk.tree import Tree, ProbabilisticTree
 
 from nltk.parse.api import ParserI
+from nltk.tree import ProbabilisticTree, Tree
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -333,10 +333,12 @@ def demo():
     be found; and then each parser is run on the same demo, and a
     summary of the results are displayed.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk import tokenize
-    from nltk.parse import ViterbiParser
     from nltk.grammar import toy_pcfg1, toy_pcfg2
+    from nltk.parse import ViterbiParser
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [

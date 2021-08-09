@@ -25,10 +25,9 @@ is tagged with a sense identifier, and supplied with context.
 import re
 from xml.etree import ElementTree
 
-from nltk.tokenize import *
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tokenize import *
 
 
 class SensevalInstance:

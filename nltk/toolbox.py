@@ -10,9 +10,10 @@ Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
 
-import re, codecs
-from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
+import codecs
+import re
 from io import StringIO
+from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk.data import PathPointer, find
 

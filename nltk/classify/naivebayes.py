@@ -32,8 +32,8 @@ sum to one:
 
 from collections import defaultdict
 
-from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
 from nltk.classify.api import ClassifierI
+from nltk.probability import DictionaryProbDist, ELEProbDist, FreqDist, sum_logs
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier

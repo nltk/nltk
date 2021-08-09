@@ -22,8 +22,8 @@ import re
 from os import path
 
 from nltk.corpus.reader import CorpusReader
-from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
+from nltk.probability import FreqDist
 
 
 class CrubadanCorpusReader(CorpusReader):

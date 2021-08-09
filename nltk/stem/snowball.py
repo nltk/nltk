@@ -27,9 +27,8 @@ import re
 
 from nltk.corpus import stopwords
 from nltk.stem import porter
-from nltk.stem.util import suffix_replace, prefix_replace
-
 from nltk.stem.api import StemmerI
+from nltk.stem.util import prefix_replace, suffix_replace
 
 
 class SnowballStemmer(StemmerI):

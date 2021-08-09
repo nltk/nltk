@@ -17,13 +17,13 @@ import re
 import sys
 import textwrap
 import types
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict, defaultdict
 from itertools import zip_longest
 from operator import itemgetter
 from pprint import pprint
 
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-from nltk.util import LazyConcatenation, LazyMap, LazyIteratorList
+from nltk.util import LazyConcatenation, LazyIteratorList, LazyMap
 
 __docformat__ = "epytext en"
 

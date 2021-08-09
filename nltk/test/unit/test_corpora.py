@@ -1,18 +1,18 @@
 import unittest
 
-from nltk.corpus import (
-    sinica_treebank,
-    conll2007,
-    indian,
+import pytest
+
+from nltk.corpus import (  # mwa_ppdb
     cess_cat,
     cess_esp,
+    conll2007,
     floresta,
+    indian,
     ptb,
+    sinica_treebank,
     udhr,
-)  # mwa_ppdb
-
+)
 from nltk.tree import Tree
-import pytest
 
 
 class TestUdhr(unittest.TestCase):

@@ -8,7 +8,7 @@
 """Language Models"""
 
 from nltk.lm.api import LanguageModel, Smoothing
-from nltk.lm.smoothing import KneserNey, WittenBell, AbsoluteDiscounting
+from nltk.lm.smoothing import AbsoluteDiscounting, KneserNey, WittenBell
 
 
 class MLE(LanguageModel):

@@ -6,14 +6,13 @@
 # For license information, see LICENSE.TXT
 
 import bisect
-from itertools import islice, chain
-from functools import total_ordering
 
 # this unused import is for python 2.7
-from collections import defaultdict, deque, Counter
+from collections import Counter, defaultdict, deque
+from functools import total_ordering
+from itertools import chain, islice
 
-from nltk.internals import slice_bounds, raise_unorderable_types
-
+from nltk.internals import raise_unorderable_types, slice_bounds
 
 ##########################################################################
 # Ordered Dictionary

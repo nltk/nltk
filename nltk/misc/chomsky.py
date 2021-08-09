@@ -115,7 +115,8 @@ scope of a complex symbol.
     the strong generative capacity of the theory."""
 # List of OBJECTs selected for profound sententiousness.
 
-import textwrap, random
+import random
+import textwrap
 from itertools import chain, islice
 
 

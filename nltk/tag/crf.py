@@ -9,8 +9,9 @@
 A module for POS tagging using CRFSuite
 """
 
-import unicodedata
 import re
+import unicodedata
+
 from nltk.tag.api import TaggerI
 
 try:

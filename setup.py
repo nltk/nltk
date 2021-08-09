@@ -28,7 +28,7 @@ with open(version_file) as fh:
     nltk_version = fh.read().strip()
 
 # setuptools
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # Specify groups of optional dependencies
 extras_require = {

@@ -684,8 +684,8 @@ def demo():
     the Penn Treebank corpus.
     """
 
-    from nltk.corpus import treebank
     from nltk import stem
+    from nltk.corpus import treebank
 
     stemmer = stem.PorterStemmer()
 

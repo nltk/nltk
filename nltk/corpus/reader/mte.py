@@ -5,7 +5,7 @@ import os
 import re
 from functools import reduce
 
-from nltk.corpus.reader import concat, TaggedCorpusReader
+from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 
 

@@ -2,6 +2,7 @@
 # not installed, but there are pure-python parts that don't need Prover9.
 def setup_module():
     import pytest
+
     from nltk.inference.mace import Mace
 
     try:

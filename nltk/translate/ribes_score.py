@@ -7,10 +7,10 @@
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
 
-from itertools import islice
 import math
+from itertools import islice
 
-from nltk.util import ngrams, choose
+from nltk.util import choose, ngrams
 
 
 def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):

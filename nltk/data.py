@@ -31,20 +31,19 @@ adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 
+import codecs
 import functools
-import textwrap
-from io import BytesIO, TextIOWrapper
 import os
+import pickle
 import re
 import sys
+import textwrap
 import zipfile
-import codecs
-import pickle
-
 from abc import ABCMeta, abstractmethod
-from gzip import GzipFile, WRITE as GZ_WRITE
-
-from urllib.request import urlopen, url2pathname
+from gzip import WRITE as GZ_WRITE
+from gzip import GzipFile
+from io import BytesIO, TextIOWrapper
+from urllib.request import url2pathname, urlopen
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
@@ -52,7 +51,7 @@ except ImportError:
     from zlib import Z_FINISH as FLUSH
 
 from nltk import grammar, sem
-from nltk.compat import py3_data, add_py3_data
+from nltk.compat import add_py3_data, py3_data
 from nltk.internals import deprecated
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
@@ -756,6 +755,7 @@ def load(
         resource_val = pickle.load(opened_resource)
     elif format == "json":
         import json
+
         from nltk.jsontags import json_tags
 
         resource_val = json.load(opened_resource)

@@ -9,14 +9,13 @@
 
 import re
 
-from nltk.parse import DependencyGraph
-
+from nltk.corpus.reader.api import CorpusReader, SyntaxCorpusReader
 from nltk.corpus.reader.util import (
     FileSystemPathPointer,
     find_corpus_fileids,
     read_blankline_block,
 )
-from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
+from nltk.parse import DependencyGraph
 
 # default function to convert morphlist to str for tree representation
 _morphs2str_default = lambda morphs: "/".join(m[0] for m in morphs if m[0] != "EOS")

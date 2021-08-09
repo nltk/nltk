@@ -75,7 +75,7 @@ class TextCat:
 
     def profile(self, text):
         """Create FreqDist of trigrams within text"""
-        from nltk import word_tokenize, FreqDist
+        from nltk import FreqDist, word_tokenize
 
         clean_text = self.remove_punctuation(text)
         tokens = word_tokenize(clean_text)

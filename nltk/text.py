@@ -14,20 +14,20 @@ regular expression search over tokenized strings, and
 distributional similarity.
 """
 
-from math import log
-from collections import defaultdict, Counter, namedtuple
-from functools import reduce
 import re
 import sys
+from collections import Counter, defaultdict, namedtuple
+from functools import reduce
+from math import log
 
+from nltk.collocations import BigramCollocationFinder
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
-from nltk.probability import FreqDist
+from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
-from nltk.util import tokenwrap, LazyConcatenation
-from nltk.metrics import f_measure, BigramAssocMeasures
-from nltk.collocations import BigramCollocationFinder
+from nltk.probability import FreqDist
 from nltk.tokenize import sent_tokenize
+from nltk.util import LazyConcatenation, tokenwrap
 
 ConcordanceLine = namedtuple(
     "ConcordanceLine",

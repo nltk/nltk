@@ -11,16 +11,15 @@ from itertools import chain
 
 import nltk
 from nltk.internals import Counter
-from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
+from nltk.sem import drt, linearlogic
 from nltk.sem.logic import (
+    AbstractVariableExpression,
     Expression,
+    LambdaExpression,
     Variable,
     VariableExpression,
-    LambdaExpression,
-    AbstractVariableExpression,
 )
-from nltk.sem import drt
-from nltk.sem import linearlogic
+from nltk.tag import BigramTagger, RegexpTagger, TrigramTagger, UnigramTagger
 
 SPEC_SEMTYPES = {
     "a": "ex_quant",

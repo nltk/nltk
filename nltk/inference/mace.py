@@ -13,11 +13,10 @@ A model builder that makes use of the external 'Mace4' package.
 import os
 import tempfile
 
-from nltk.sem.logic import is_indvar
-from nltk.sem import Valuation, Expression
-
-from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
+from nltk.inference.api import BaseModelBuilderCommand, ModelBuilder
 from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
+from nltk.sem import Expression, Valuation
+from nltk.sem.logic import is_indvar
 
 
 class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):

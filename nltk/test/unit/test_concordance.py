@@ -1,6 +1,6 @@
-import unittest
 import contextlib
 import sys
+import unittest
 from io import StringIO
 
 from nltk.corpus import gutenberg

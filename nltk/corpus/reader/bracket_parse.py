@@ -11,11 +11,10 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 
 import sys
 
-from nltk.tree import Tree
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag
+from nltk.tree import Tree
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
 SORTTAGWRD = re.compile(r"\((\d+) ([^\s()]+) ([^\s()]+)\)")
