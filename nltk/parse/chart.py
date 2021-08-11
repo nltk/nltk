@@ -40,13 +40,11 @@ import re
 import warnings
 from functools import total_ordering
 
-from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
-from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
-
 from nltk.parse.api import ParserI
-
+from nltk.tree import Tree
+from nltk.util import OrderedDict
 
 ########################################################################
 ##  Edges
@@ -1734,8 +1732,10 @@ def demo(
     """
     A demonstration of the chart parsers.
     """
-    import sys, time
-    from nltk import nonterminals, Production, CFG
+    import sys
+    import time
+
+    from nltk import CFG, Production, nonterminals
 
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()

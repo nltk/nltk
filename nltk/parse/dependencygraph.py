@@ -14,11 +14,11 @@ The input is assumed to be in Malt-TAB format
 (http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
+import subprocess
+import warnings
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
-import subprocess
-import warnings
 
 from nltk.tree import Tree
 

@@ -70,12 +70,10 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 import re
 from functools import total_ordering
 
-from nltk.util import transitive_closure, invert_graph
+from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
 from nltk.internals import raise_unorderable_types
-
 from nltk.probability import ImmutableProbabilisticMixIn
-from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
-
+from nltk.util import invert_graph, transitive_closure
 
 #################################################################
 # Nonterminal
@@ -1496,7 +1494,7 @@ def cfg_demo():
     A demonstration showing how ``CFGs`` can be created and used.
     """
 
-    from nltk import nonterminals, Production, CFG
+    from nltk import CFG, Production, nonterminals
 
     # Create some nonterminals
     S, NP, VP, PP = nonterminals("S, NP, VP, PP")
@@ -1578,9 +1576,8 @@ def pcfg_demo():
     A demonstration showing how a ``PCFG`` can be created and used.
     """
 
+    from nltk import induce_pcfg, treetransforms
     from nltk.corpus import treebank
-    from nltk import treetransforms
-    from nltk import induce_pcfg
     from nltk.parse import pchart
 
     pcfg_prods = toy_pcfg1.productions()

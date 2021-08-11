@@ -25,11 +25,13 @@ identifier will be highlighted in red.
 import os
 import re
 import sys
-import tokenize
 import textwrap
-import nltk.corpus
+import tokenize
 from doctest import DocTestParser, register_optionflag
+
 from cStringIO import StringIO
+
+import nltk.corpus
 from nltk import defaultdict
 
 ######################################################################

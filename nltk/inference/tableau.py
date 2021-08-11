@@ -10,28 +10,26 @@
 Module for a tableau-based First Order theorem prover.
 """
 
+from nltk.inference.api import BaseProverCommand, Prover
 from nltk.internals import Counter
-
 from nltk.sem.logic import (
-    VariableExpression,
-    EqualityExpression,
-    ApplicationExpression,
-    Expression,
     AbstractVariableExpression,
     AllExpression,
-    NegatedExpression,
-    ExistsExpression,
-    Variable,
-    ImpExpression,
     AndExpression,
-    unique_variable,
-    LambdaExpression,
-    IffExpression,
-    OrExpression,
+    ApplicationExpression,
+    EqualityExpression,
+    ExistsExpression,
+    Expression,
     FunctionVariableExpression,
+    IffExpression,
+    ImpExpression,
+    LambdaExpression,
+    NegatedExpression,
+    OrExpression,
+    Variable,
+    VariableExpression,
+    unique_variable,
 )
-
-from nltk.inference.api import Prover, BaseProverCommand
 
 _counter = Counter()
 

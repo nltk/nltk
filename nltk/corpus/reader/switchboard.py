@@ -6,10 +6,9 @@
 # For license information, see LICENSE.TXT
 import re
 
-from nltk.tag import str2tuple, map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag, str2tuple
 
 
 class SwitchboardTurn(list):

@@ -89,17 +89,17 @@ or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
 
-import re
 import copy
+import re
 from functools import total_ordering
 
-from nltk.internals import read_str, raise_unorderable_types
+from nltk.internals import raise_unorderable_types, read_str
 from nltk.sem.logic import (
-    Variable,
     Expression,
-    SubstituteBindingsI,
-    LogicParser,
     LogicalExpressionException,
+    LogicParser,
+    SubstituteBindingsI,
+    Variable,
 )
 
 ######################################################################
@@ -2603,7 +2603,8 @@ def display_unification(fs1, fs2, indent="  "):
 
 
 def interactive_demo(trace=False):
-    import random, sys
+    import random
+    import sys
 
     HELP = """
     1-%d: Select the corresponding feature structure

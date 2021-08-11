@@ -10,9 +10,8 @@
 ##  Chunk Parser Interface
 ##//////////////////////////////////////////////////////
 
-from nltk.parse import ParserI
-
 from nltk.chunk.util import ChunkScore
+from nltk.parse import ParserI
 
 
 class ChunkParserI(ParserI):

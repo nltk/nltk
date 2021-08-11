@@ -34,8 +34,9 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-import regex  # https://github.com/nltk/nltk/issues/2409
 import html
+
+import regex  # https://github.com/nltk/nltk/issues/2409
 
 ######################################################################
 # The following strings are components in the regular expression

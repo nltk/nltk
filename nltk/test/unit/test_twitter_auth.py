@@ -3,6 +3,7 @@ Tests for static parts of Twitter package
 """
 
 import os
+
 import pytest
 
 pytest.importorskip("twython")

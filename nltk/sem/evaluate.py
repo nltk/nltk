@@ -14,22 +14,21 @@ This module provides data structures for representing first-order
 models.
 """
 
-from pprint import pformat
 import inspect
-import textwrap
 import re
 import sys
+import textwrap
+from pprint import pformat
 
 from nltk.decorators import decorator  # this used in code that is commented out
-
 from nltk.sem.logic import (
     AbstractVariableExpression,
     AllExpression,
-    Expression,
     AndExpression,
     ApplicationExpression,
     EqualityExpression,
     ExistsExpression,
+    Expression,
     IffExpression,
     ImpExpression,
     IndividualVariableExpression,

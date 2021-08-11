@@ -35,6 +35,7 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 """
 from abc import ABCMeta, abstractmethod
 from tkinter import (
+    RAISED,
     Button,
     Canvas,
     Entry,
@@ -48,7 +49,6 @@ from tkinter import (
     Tk,
     Toplevel,
     Widget,
-    RAISED,
 )
 from tkinter.filedialog import asksaveasfilename
 

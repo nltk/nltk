@@ -13,7 +13,7 @@ handling.
 
 import time as _time
 from abc import ABCMeta, abstractmethod
-from datetime import tzinfo, timedelta, timezone, datetime
+from datetime import datetime, timedelta, timezone, tzinfo
 
 
 class LocalTimezoneOffsetWithUTC(tzinfo):

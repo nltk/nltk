@@ -181,8 +181,9 @@ def binary_names_demo_features(name):
 
 
 def names_demo(trainer, features=names_demo_features):
-    from nltk.corpus import names
     import random
+
+    from nltk.corpus import names
 
     # Construct a list of classified names, using the names corpus.
     namelist = [(name, "male") for name in names.words("male.txt")] + [
@@ -227,8 +228,9 @@ def names_demo(trainer, features=names_demo_features):
 
 
 def partial_names_demo(trainer, features=names_demo_features):
-    from nltk.corpus import names
     import random
+
+    from nltk.corpus import names
 
     male_names = names.words("male.txt")
     female_names = names.words("female.txt")
@@ -285,8 +287,9 @@ _inst_cache = {}
 
 
 def wsd_demo(trainer, word, features, n=1000):
-    from nltk.corpus import senseval
     import random
+
+    from nltk.corpus import senseval
 
     # Get the instances.
     print("Reading data...")

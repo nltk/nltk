@@ -5,11 +5,10 @@
 # Contributor: J Richard Snape
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from abc import abstractmethod
-
 import copy
-from sys import stdout
+from abc import abstractmethod
 from math import sqrt
+from sys import stdout
 
 try:
     import numpy

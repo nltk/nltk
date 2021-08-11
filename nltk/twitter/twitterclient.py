@@ -23,19 +23,18 @@ divided into 15 minute windows.
 """
 
 import datetime
+import gzip
 import itertools
 import json
 import os
 import time
-import gzip
 
 import requests
-
 from twython import Twython, TwythonStreamer
-from twython.exceptions import TwythonRateLimitError, TwythonError
+from twython.exceptions import TwythonError, TwythonRateLimitError
 
+from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
-from nltk.twitter.api import TweetHandlerI, BasicTweetHandler
 
 
 class Streamer(TwythonStreamer):

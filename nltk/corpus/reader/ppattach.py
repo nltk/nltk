@@ -38,8 +38,8 @@ The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """
 
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 
 
 class PPAttachment:

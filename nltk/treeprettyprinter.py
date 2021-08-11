@@ -23,11 +23,12 @@ try:
     from html import escape
 except ImportError:
     from cgi import escape
+
 from collections import defaultdict
 from operator import itemgetter
 
-from nltk.util import OrderedDict
 from nltk.tree import Tree
+from nltk.util import OrderedDict
 
 ANSICOLOR = {
     "black": 30,

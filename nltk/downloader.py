@@ -158,33 +158,32 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, os, zipfile, sys, textwrap, threading, itertools, shutil, functools
+import functools
+import itertools
+import os
+import shutil
 import subprocess
+import sys
+import textwrap
+import threading
+import time
+import zipfile
 from hashlib import md5
 from xml.etree import ElementTree
 
 try:
     TKINTER = True
-    from tkinter import (
-        Tk,
-        Frame,
-        Label,
-        Entry,
-        Button,
-        Canvas,
-        Menu,
-        IntVar,
-        TclError,
-    )
+    from tkinter import Button, Canvas, Entry, Frame, IntVar, Label, Menu, TclError, Tk
     from tkinter.messagebox import showerror
+
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
 except ImportError:
     TKINTER = False
     TclError = ValueError
 
-from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 
 import nltk
 

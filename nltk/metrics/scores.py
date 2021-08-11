@@ -6,10 +6,10 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from math import fabs
 import operator
-from random import shuffle
 from functools import reduce
+from math import fabs
+from random import shuffle
 
 try:
     from scipy.stats.stats import betai

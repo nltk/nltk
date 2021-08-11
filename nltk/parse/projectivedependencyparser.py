@@ -8,17 +8,16 @@
 #
 
 from collections import defaultdict
-from itertools import chain
 from functools import total_ordering
+from itertools import chain
 
 from nltk.grammar import (
-    DependencyProduction,
     DependencyGrammar,
+    DependencyProduction,
     ProbabilisticDependencyGrammar,
 )
-from nltk.parse.dependencygraph import DependencyGraph
 from nltk.internals import raise_unorderable_types
-
+from nltk.parse.dependencygraph import DependencyGraph
 
 #################################################################
 # Dependency Span

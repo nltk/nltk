@@ -16,13 +16,13 @@ list of paths).
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
-from abc import abstractmethod
 import os
 import tempfile
-from subprocess import PIPE
 import warnings
+from abc import abstractmethod
+from subprocess import PIPE
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import _java_options, config_java, find_file, find_jar, java
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"

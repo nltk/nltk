@@ -1,9 +1,11 @@
 import re
 import sys
-import nltk
-import epydoc.docbuilder
+
 import epydoc.cli
+import epydoc.docbuilder
 from epydoc import log
+
+import nltk
 
 STOPLIST = "../../tools/nltk_term_index.stoplist"
 FILENAMES = ["ch%02d.xml" % n for n in range(13)]

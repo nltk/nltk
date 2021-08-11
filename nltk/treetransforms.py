@@ -283,9 +283,10 @@ def demo():
     A demonstration showing how each tree transform can be used.
     """
 
-    from nltk.draw.tree import draw_trees
-    from nltk import tree, treetransforms
     from copy import deepcopy
+
+    from nltk import tree, treetransforms
+    from nltk.draw.tree import draw_trees
 
     # original tree from WSJ bracketed text
     sentence = """(TOP

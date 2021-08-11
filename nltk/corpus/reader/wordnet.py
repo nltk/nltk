@@ -32,15 +32,15 @@ http://compling.hss.ntu.edu.sg/omw/
 
 import math
 import re
-from itertools import islice, chain
-from functools import total_ordering
-from operator import itemgetter
 from collections import defaultdict, deque
+from functools import total_ordering
+from itertools import chain, islice
+from operator import itemgetter
 
 from nltk.corpus.reader import CorpusReader
-from nltk.util import binary_search_file as _binary_search_file
-from nltk.probability import FreqDist
 from nltk.internals import deprecated
+from nltk.probability import FreqDist
+from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
 # Table of Contents
@@ -581,7 +581,6 @@ class Synset(_WordNetObject):
                 yield synset
 
     from nltk.util import acyclic_depth_first as acyclic_tree
-
     from nltk.util import unweighted_minimum_spanning_tree as mst
 
     def tree(self, rel, depth=-1, cut_mark=None):

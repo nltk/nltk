@@ -2,8 +2,8 @@ import unittest
 
 from nltk.metrics import (
     BigramAssocMeasures,
-    TrigramAssocMeasures,
     QuadgramAssocMeasures,
+    TrigramAssocMeasures,
 )
 
 ## Test the likelihood ratio metric

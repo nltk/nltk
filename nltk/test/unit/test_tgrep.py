@@ -14,8 +14,8 @@ Unit tests for nltk.tgrep.
 
 import unittest
 
-from nltk.tree import ParentedTree
 from nltk import tgrep
+from nltk.tree import ParentedTree
 
 
 class TestSequenceFunctions(unittest.TestCase):

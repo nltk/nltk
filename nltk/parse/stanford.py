@@ -6,19 +6,18 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
 import os
+import tempfile
 import warnings
 from subprocess import PIPE
 
 from nltk.internals import (
-    find_jar_iter,
-    config_java,
-    java,
     _java_options,
+    config_java,
+    find_jar_iter,
     find_jars_within_path,
+    java,
 )
-
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree

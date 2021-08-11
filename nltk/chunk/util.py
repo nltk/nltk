@@ -8,15 +8,14 @@
 
 import re
 
-from nltk.tree import Tree
+from nltk.metrics import accuracy as _accuracy
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
+from nltk.tree import Tree
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION
 ##//////////////////////////////////////////////////////
-
-from nltk.metrics import accuracy as _accuracy
 
 
 def accuracy(chunker, gold):

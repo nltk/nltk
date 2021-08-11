@@ -19,8 +19,8 @@ As metrics, they must satisfy the following three requirements:
 3. d(a, c) <= d(a, b) + d(b, c)
 """
 
-import warnings
 import operator
+import warnings
 
 
 def _edit_dist_init(len1, len2):

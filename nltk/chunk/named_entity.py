@@ -9,7 +9,9 @@
 Named entity chunker
 """
 
-import os, re, pickle
+import os
+import pickle
+import re
 from xml.etree import ElementTree as ET
 
 from nltk.tag import ClassifierBasedTagger, pos_tag
@@ -19,12 +21,11 @@ try:
 except ImportError:
     pass
 
-from nltk.tree import Tree
-from nltk.tokenize import word_tokenize
-from nltk.data import find
-
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
+from nltk.data import find
+from nltk.tokenize import word_tokenize
+from nltk.tree import Tree
 
 
 class NEChunkParserTagger(ClassifierBasedTagger):

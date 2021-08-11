@@ -7,8 +7,9 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from abc import ABCMeta, abstractmethod
 import itertools as it
+from abc import ABCMeta, abstractmethod
+
 from nltk.tbl.feature import Feature
 from nltk.tbl.rule import Rule
 

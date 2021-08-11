@@ -3,9 +3,9 @@
 run doctests
 """
 
-import sys
-import subprocess
 import os
+import subprocess
+import sys
 
 for root, dirs, filenames in os.walk("."):
     for filename in filenames:

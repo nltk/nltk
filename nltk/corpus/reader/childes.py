@@ -15,10 +15,9 @@ __docformat__ = "epytext en"
 import re
 from collections import defaultdict
 
-from nltk.util import flatten, LazyMap, LazyConcatenation
-
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
+from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader
+from nltk.util import LazyConcatenation, LazyMap, flatten
 
 # to resolve the namespace issue
 NS = "http://www.talkbank.org/ns/talkbank"

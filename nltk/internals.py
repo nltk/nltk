@@ -7,16 +7,16 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import subprocess
-import os
 import fnmatch
+import locale
+import os
 import re
-import warnings
+import stat
+import subprocess
+import sys
 import textwrap
 import types
-import sys
-import stat
-import locale
+import warnings
 from xml.etree import ElementTree
 
 ##########################################################################

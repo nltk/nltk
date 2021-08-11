@@ -123,9 +123,9 @@ current directory.
 
 """
 
+import os
 import re
 import shelve
-import os
 import sys
 
 import nltk.data

@@ -15,7 +15,6 @@ import math as _math
 from abc import ABCMeta, abstractmethod
 from functools import reduce
 
-
 _log2 = lambda x: _math.log2(x)
 _ln = _math.log
 

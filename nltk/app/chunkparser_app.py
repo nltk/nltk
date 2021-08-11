@@ -15,11 +15,10 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
-import time
-import textwrap
-import re
 import random
-
+import re
+import textwrap
+import time
 from tkinter import (
     Button,
     Canvas,
@@ -35,12 +34,12 @@ from tkinter import (
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter.font import Font
 
-from nltk.tree import Tree
-from nltk.util import in_idle
-from nltk.draw.util import ShowText
-from nltk.corpus import conll2000, treebank_chunk
 from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
+from nltk.corpus import conll2000, treebank_chunk
+from nltk.draw.util import ShowText
+from nltk.tree import Tree
+from nltk.util import in_idle
 
 
 class RegexpChunkApp:

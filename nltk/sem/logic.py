@@ -11,13 +11,13 @@ A version of first order predicate logic, built on
 top of the typed lambda calculus.
 """
 
-import re
 import operator
+import re
 from collections import defaultdict
 from functools import reduce, total_ordering
 
-from nltk.util import Trie
 from nltk.internals import Counter
+from nltk.util import Trie
 
 APP = "APP"
 

@@ -10,22 +10,21 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
-import os
 import json
+import os
+import tempfile
 import warnings
 from subprocess import PIPE
 
 from nltk.internals import (
-    find_jar,
-    find_file,
-    find_dir,
-    config_java,
-    java,
     _java_options,
+    config_java,
+    find_dir,
+    find_file,
+    find_jar,
+    java,
 )
 from nltk.tokenize.api import TokenizerI
-
 
 _stanford_url = "https://nlp.stanford.edu/software"
 

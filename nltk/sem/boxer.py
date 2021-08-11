@@ -25,23 +25,15 @@ Usage:
             boxer/
 """
 
+import operator
 import os
 import re
-import operator
 import subprocess
-from optparse import OptionParser
 import tempfile
 from functools import reduce
+from optparse import OptionParser
 
 from nltk.internals import find_binary
-
-from nltk.sem.logic import (
-    ExpectedMoreTokensException,
-    LogicalExpressionException,
-    UnexpectedTokenException,
-    Variable,
-)
-
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -52,6 +44,12 @@ from nltk.sem.drt import (
     DrtProposition,
     DrtTokens,
     DrtVariableExpression,
+)
+from nltk.sem.logic import (
+    ExpectedMoreTokensException,
+    LogicalExpressionException,
+    UnexpectedTokenException,
+    Variable,
 )
 
 

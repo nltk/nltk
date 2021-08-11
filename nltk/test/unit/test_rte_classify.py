@@ -1,7 +1,7 @@
 import pytest
 
+from nltk.classify.rte_classify import RTEFeatureExtractor, rte_classifier, rte_features
 from nltk.corpus import rte as rte_corpus
-from nltk.classify.rte_classify import RTEFeatureExtractor, rte_features, rte_classifier
 
 expected_from_rte_feature_extration = """
 alwayson        => True

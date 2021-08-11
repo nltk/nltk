@@ -62,14 +62,14 @@ Keyboard Shortcuts::
 
 """
 
+from tkinter import Button, Frame, IntVar, Label, Listbox, Menu, Scrollbar, Tk
 from tkinter.font import Font
-from tkinter import IntVar, Listbox, Button, Frame, Label, Menu, Scrollbar, Tk
 
-from nltk.tree import Tree
-from nltk.parse import SteppingShiftReduceParser
-from nltk.util import in_idle
-from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
 from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
+from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
+from nltk.parse import SteppingShiftReduceParser
+from nltk.tree import Tree
+from nltk.util import in_idle
 
 """
 Possible future improvements:
@@ -895,7 +895,7 @@ def app():
     text.
     """
 
-    from nltk.grammar import Nonterminal, Production, CFG
+    from nltk.grammar import CFG, Nonterminal, Production
 
     nonterminals = "S VP NP PP P N Name V Det"
     (S, VP, NP, PP, P, N, Name, V, Det) = (Nonterminal(s) for s in nonterminals.split())

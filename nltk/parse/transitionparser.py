@@ -6,22 +6,21 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
 import pickle
-
-from os import remove
+import tempfile
 from copy import deepcopy
 from operator import itemgetter
+from os import remove
 
 try:
     from numpy import array
     from scipy import sparse
-    from sklearn.datasets import load_svmlight_file
     from sklearn import svm
+    from sklearn.datasets import load_svmlight_file
 except ImportError:
     pass
 
-from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
+from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 
 
 class Configuration:

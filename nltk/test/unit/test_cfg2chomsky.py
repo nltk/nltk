@@ -1,4 +1,5 @@
 import unittest
+
 import nltk
 from nltk.grammar import CFG
 

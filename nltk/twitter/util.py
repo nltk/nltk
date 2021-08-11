@@ -12,6 +12,7 @@ Authentication utilities to accompany :module:`twitterclient`.
 
 import os
 import pprint
+
 from twython import Twython
 
 

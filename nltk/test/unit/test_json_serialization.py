@@ -2,10 +2,18 @@ import unittest
 
 from nltk.corpus import brown
 from nltk.jsontags import JSONTaggedDecoder, JSONTaggedEncoder
-from nltk.tag import DefaultTagger, RegexpTagger, AffixTagger
-from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, NgramTagger
-from nltk.tag import PerceptronTagger
-from nltk.tag import BrillTaggerTrainer, BrillTagger
+from nltk.tag import (
+    AffixTagger,
+    BigramTagger,
+    BrillTagger,
+    BrillTaggerTrainer,
+    DefaultTagger,
+    NgramTagger,
+    PerceptronTagger,
+    RegexpTagger,
+    TrigramTagger,
+    UnigramTagger,
+)
 from nltk.tag.brill import nltkdemo18
 
 

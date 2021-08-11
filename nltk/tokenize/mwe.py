@@ -28,9 +28,8 @@ of MWEs:
     ['In', 'a_little', 'or', 'a_little_bit', 'or', 'a_lot', 'in_spite_of']
 
 """
-from nltk.util import Trie
-
 from nltk.tokenize.api import TokenizerI
+from nltk.util import Trie
 
 
 class MWETokenizer(TokenizerI):

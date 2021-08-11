@@ -5,8 +5,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import pytest
 import unittest
+
+import pytest
 
 from nltk import FreqDist
 from nltk.lm import NgramCounter

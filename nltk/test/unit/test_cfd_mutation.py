@@ -1,5 +1,7 @@
-import pytest
 import unittest
+
+import pytest
+
 from nltk import ConditionalFreqDist, tokenize
 
 

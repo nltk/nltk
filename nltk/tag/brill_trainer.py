@@ -11,7 +11,7 @@ import bisect
 import textwrap
 from collections import defaultdict
 
-from nltk.tag import untag, BrillTagger
+from nltk.tag import BrillTagger, untag
 
 ######################################################################
 #  Brill Tagger Trainer

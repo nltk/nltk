@@ -14,10 +14,9 @@ http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 """
 
 from math import log
-
 from operator import itemgetter
 
-from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk.probability import ConditionalFreqDist, FreqDist
 from nltk.tag.api import TaggerI
 
 
@@ -519,7 +518,7 @@ def demo2():
 
 
 def demo3():
-    from nltk.corpus import treebank, brown
+    from nltk.corpus import brown, treebank
 
     d = list(treebank.tagged_sents())
     e = list(brown.tagged_sents())

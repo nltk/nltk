@@ -61,6 +61,8 @@ We evaluate a tagger on data that was not seen during training:
     0.7...
 
 For more information, please consult chapter 5 of the NLTK Book.
+
+isort:skip_file
 """
 
 from nltk.tag.api import TaggerI

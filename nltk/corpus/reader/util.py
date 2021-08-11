@@ -6,19 +6,23 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import os
 import bisect
+import os
+import pickle
 import re
 import tempfile
-import pickle
 from functools import reduce
 from xml.etree import ElementTree
 
-from nltk.tokenize import wordpunct_tokenize
+from nltk.data import (
+    FileSystemPathPointer,
+    PathPointer,
+    SeekableUnicodeStreamReader,
+    ZipFilePathPointer,
+)
 from nltk.internals import slice_bounds
-from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-from nltk.data import SeekableUnicodeStreamReader
-from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation
+from nltk.tokenize import wordpunct_tokenize
+from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
 
 ######################################################################
 # { Corpus View

@@ -2,12 +2,11 @@
 Unit tests for Senna
 """
 
+import unittest
 from os import environ, path, sep
 
-import unittest
-
 from nltk.classify import Senna
-from nltk.tag import SennaTagger, SennaChunkTagger, SennaNERTagger
+from nltk.tag import SennaChunkTagger, SennaNERTagger, SennaTagger
 
 # Set Senna executable path for tests if it is not specified as an environment variable
 if "SENNA" in environ:

@@ -18,11 +18,10 @@ import re
 import sys
 from abc import ABCMeta, abstractmethod
 
-
-from nltk.grammar import Production, Nonterminal
+from nltk.grammar import Nonterminal, Production
+from nltk.internals import raise_unorderable_types
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
-from nltk.internals import raise_unorderable_types
 
 # TODO: add LabelledTree (can be used for dependency trees)
 
@@ -789,10 +788,11 @@ class Tree(list):
         PNG is used instead of PDF, since it can be displayed in the qt console and
         has wider browser support.
         """
-        import os
         import base64
+        import os
         import subprocess
         import tempfile
+
         from nltk.draw.tree import tree_to_treesegment
         from nltk.draw.util import CanvasFrame
         from nltk.internals import find_binary
@@ -1729,7 +1729,7 @@ def demo():
     and shows the results of calling several of their methods.
     """
 
-    from nltk import Tree, ProbabilisticTree
+    from nltk import ProbabilisticTree, Tree
 
     # Demonstrate tree parsing.
     s = "(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))"

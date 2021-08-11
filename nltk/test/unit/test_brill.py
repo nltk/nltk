@@ -4,9 +4,8 @@ Tests for Brill tagger.
 
 import unittest
 
-from nltk.tag import UnigramTagger, brill, brill_trainer
 from nltk.corpus import treebank
-
+from nltk.tag import UnigramTagger, brill, brill_trainer
 from nltk.tbl import demo
 
 

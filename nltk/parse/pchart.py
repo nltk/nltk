@@ -39,11 +39,12 @@ argument beam_size.  If non-zero, this controls the size of the beam
 
 import random
 from functools import reduce
-from nltk.tree import Tree, ProbabilisticTree
-from nltk.grammar import Nonterminal, PCFG
 
+from nltk.grammar import PCFG, Nonterminal
 from nltk.parse.api import ParserI
-from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
+from nltk.parse.chart import AbstractChartRule, Chart, LeafEdge, TreeEdge
+from nltk.tree import ProbabilisticTree, Tree
+
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
@@ -433,7 +434,9 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     be found; and then each parser is run on the same demo, and a
     summary of the results are displayed.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk import tokenize
     from nltk.parse import pchart
 

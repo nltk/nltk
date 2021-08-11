@@ -11,12 +11,11 @@
 Utility functions for parsers.
 """
 
-from nltk.grammar import CFG, FeatureGrammar, PCFG
 from nltk.data import load
-
+from nltk.grammar import CFG, PCFG, FeatureGrammar
 from nltk.parse.chart import Chart, ChartParser
-from nltk.parse.pchart import InsideChartParser
 from nltk.parse.featurechart import FeatureChart, FeatureChartParser
+from nltk.parse.pchart import InsideChartParser
 
 
 def load_parser(

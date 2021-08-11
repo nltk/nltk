@@ -27,10 +27,10 @@ from nltk.sem.logic import (
     ImpExpression,
     IndividualVariableExpression,
     LambdaExpression,
-    Tokens,
     LogicParser,
     NegatedExpression,
     OrExpression,
+    Tokens,
     Variable,
     is_eventvar,
     is_funcvar,
@@ -42,6 +42,7 @@ from nltk.sem.logic import (
 try:
     from tkinter import Canvas, Tk
     from tkinter.font import Font
+
     from nltk.util import in_idle
 
 except ImportError:

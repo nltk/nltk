@@ -5,13 +5,13 @@ See also nltk/test/tokenize.doctest
 import pytest
 
 from nltk.tokenize import (
+    LegalitySyllableTokenizer,
+    StanfordSegmenter,
+    SyllableTokenizer,
+    TreebankWordTokenizer,
+    TweetTokenizer,
     punkt,
     word_tokenize,
-    TweetTokenizer,
-    StanfordSegmenter,
-    TreebankWordTokenizer,
-    SyllableTokenizer,
-    LegalitySyllableTokenizer,
 )
 
 

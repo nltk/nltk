@@ -2,8 +2,8 @@ import unittest
 from contextlib import closing
 
 from nltk import data
-from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.porter import PorterStemmer
+from nltk.stem.snowball import SnowballStemmer
 
 
 class SnowballTest(unittest.TestCase):

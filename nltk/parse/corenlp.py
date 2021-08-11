@@ -6,17 +6,16 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 import json
-import time
+import re
 import socket
+import time
 
-from nltk.internals import find_jar_iter, config_java, java, _java_options
-
-from nltk.tag.api import TaggerI
+from nltk.internals import _java_options, config_java, find_jar_iter, java
 from nltk.parse.api import ParserI
-from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.tag.api import TaggerI
+from nltk.tokenize.api import TokenizerI
 from nltk.tree import Tree
 
 _stanford_url = "http://stanfordnlp.github.io/CoreNLP/"

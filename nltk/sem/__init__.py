@@ -41,32 +41,32 @@ is then created with domain and valuation as parameters.
     >>> m = Model(dom, val)
 """
 
-from nltk.sem.util import parse_sents, interpret_sents, evaluate_sents, root_semrep
+from nltk.sem.boxer import Boxer
+from nltk.sem.drt import DRS, DrtExpression
 from nltk.sem.evaluate import (
-    Valuation,
     Assignment,
     Model,
     Undefined,
-    is_rel,
-    set2rel,
+    Valuation,
     arity,
+    is_rel,
     read_valuation,
+    set2rel,
 )
+from nltk.sem.lfg import FStructure
 from nltk.sem.logic import (
-    boolean_ops,
+    ApplicationExpression,
+    Expression,
+    LogicalExpressionException,
+    Variable,
     binding_ops,
+    boolean_ops,
     equality_preds,
     read_logic,
-    Variable,
-    Expression,
-    ApplicationExpression,
-    LogicalExpressionException,
 )
+from nltk.sem.relextract import clause, extract_rels, rtuple
 from nltk.sem.skolemize import skolemize
-from nltk.sem.lfg import FStructure
-from nltk.sem.relextract import extract_rels, rtuple, clause
-from nltk.sem.boxer import Boxer
-from nltk.sem.drt import DrtExpression, DRS
+from nltk.sem.util import evaluate_sents, interpret_sents, parse_sents, root_semrep
 
 # from nltk.sem.glue import Glue
 # from nltk.sem.hole import HoleSemantics
