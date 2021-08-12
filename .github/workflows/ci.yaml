@@ -5,7 +5,10 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   cache_nltk_data:
     name: cache nltk_data
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -15,12 +18,12 @@ jobs:
         id: restore-cache
         with:
           path: ~/nltk_data
-          key: nltk_data
+          key: nltk_data_${{ secrets.CACHE_VERSION }}
 
       - name: Download nltk data packages on cache miss
         run: |
           pip install regex # dependencies needed to download nltk data
-          python -c "import nltk; nltk.download('all')"
+          python -c "import nltk; from pathlib import Path; path = Path('~/nltk_data').expanduser(); path.mkdir(exist_ok=True); nltk.download('all', download_dir=path)"
         shell: bash
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
@@ -30,7 +33,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -57,7 +60,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/nltk_data
-          key: nltk_data
+          key: nltk_data_${{ secrets.CACHE_VERSION }}
 
       - name: Run pytest
         run: pytest --numprocesses auto -rsx nltk/test
