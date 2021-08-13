@@ -17,9 +17,11 @@ DESC:def What is an atom ?
 NUM:date When did Hawaii become a state ?
 """
 
+from nltk.corpus.reader.api import *
+
 # based on PPAttachmentCorpusReader
 from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+
 
 # [xx] Should the order of the tuple be reversed -- in most other places
 # in nltk, we use the form (data, tag) -- e.g., tagged words and

@@ -7,8 +7,8 @@
 
 import functools
 
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 
 
 def _parse_args(fun):
@@ -188,7 +188,7 @@ class IPIPANCorpusReader(CorpusReader):
 
     def _get_tag(self, f, tag):
         tags = []
-        with open(f, "r") as infile:
+        with open(f) as infile:
             header = infile.read()
         tag_end = 0
         while True:

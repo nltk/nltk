@@ -22,9 +22,9 @@ The two serialization outputs are "rtuple" and "clause".
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
-from collections import defaultdict
 import html
 import re
+from collections import defaultdict
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -525,7 +525,7 @@ def ne_chunked():
         sent = nltk.ne_chunk(sent)
         rels = extract_rels("PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7)
         for rel in rels:
-            print("{0:<5}{1}".format(i, rtuple(rel)))
+            print(f"{i:<5}{rtuple(rel)}")
 
 
 if __name__ == "__main__":

@@ -18,8 +18,8 @@ http://aclweb.org/anthology/J93-1004.pdf
 import math
 
 try:
-    from scipy.stats import norm
     from norm import logsf as norm_logsf
+    from scipy.stats import norm
 except ImportError:
 
     def erfcc(x):

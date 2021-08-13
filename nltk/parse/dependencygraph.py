@@ -14,11 +14,11 @@ The input is assumed to be in Malt-TAB format
 (http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
+import subprocess
+import warnings
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
-import subprocess
-import warnings
 
 from nltk.tree import Tree
 
@@ -169,7 +169,7 @@ class DependencyGraph:
 
         # Draw the remaining nodes
         for node in sorted(self.nodes.values(), key=lambda v: v["address"]):
-            s += '\n%s [label="%s (%s)"]' % (
+            s += '\n{} [label="{} ({})"]'.format(
                 node["address"],
                 node["address"],
                 node["word"],
@@ -177,9 +177,9 @@ class DependencyGraph:
             for rel, deps in node["deps"].items():
                 for dep in deps:
                     if rel is not None:
-                        s += '\n%s -> %s [label="%s"]' % (node["address"], dep, rel)
+                        s += '\n{} -> {} [label="{}"]'.format(node["address"], dep, rel)
                     else:
-                        s += "\n%s -> %s " % (node["address"], dep)
+                        s += "\n{} -> {} ".format(node["address"], dep)
         s += "\n}"
 
         return s
@@ -220,7 +220,7 @@ class DependencyGraph:
         return pformat(self.nodes)
 
     def __repr__(self):
-        return "<DependencyGraph with {0} nodes>".format(len(self.nodes))
+        return f"<DependencyGraph with {len(self.nodes)} nodes>"
 
     @staticmethod
     def load(
@@ -345,7 +345,7 @@ class DependencyGraph:
                     cell_extractor = extractors[cell_number]
                 except KeyError as e:
                     raise ValueError(
-                        "Number of tab-delimited fields ({0}) not supported by "
+                        "Number of tab-delimited fields ({}) not supported by "
                         "CoNLL(10) or Malt-Tab(4) format".format(cell_number)
                     ) from e
 
@@ -401,7 +401,7 @@ class DependencyGraph:
         return w
 
     def _tree(self, i):
-        """ Turn dependency graphs into NLTK trees.
+        """Turn dependency graphs into NLTK trees.
 
         :param int i: index of a node
         :return: either a word (if the indexed node is a leaf) or a ``Tree``.
@@ -439,8 +439,7 @@ class DependencyGraph:
         for i in sorted(chain.from_iterable(node["deps"].values())):
             dep = self.get_by_address(i)
             yield (head, dep["rel"], (dep["word"], dep["ctag"]))
-            for triple in self.triples(node=dep):
-                yield triple
+            yield from self.triples(node=dep)
 
     def _hd(self, i):
         try:
@@ -535,7 +534,7 @@ class DependencyGraph:
             )
         else:
             raise ValueError(
-                "Number of tab-delimited fields ({0}) not supported by "
+                "Number of tab-delimited fields ({}) not supported by "
                 "CoNLL(10) or Malt-Tab(4) format".format(style)
             )
 

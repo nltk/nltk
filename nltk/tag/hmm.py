@@ -69,29 +69,28 @@ For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
 
-import re
 import itertools
+import re
 
 try:
     import numpy as np
 except ImportError:
     pass
 
+from nltk.metrics import accuracy
 from nltk.probability import (
-    FreqDist,
     ConditionalFreqDist,
     ConditionalProbDist,
-    DictionaryProbDist,
     DictionaryConditionalProbDist,
+    DictionaryProbDist,
+    FreqDist,
     LidstoneProbDist,
-    MutableProbDist,
     MLEProbDist,
+    MutableProbDist,
     RandomProbDist,
 )
-from nltk.metrics import accuracy
-from nltk.util import LazyMap, unique_list
 from nltk.tag.api import TaggerI
-
+from nltk.util import LazyMap, unique_list
 
 _TEXT = 0  # index of text in a tuple
 _TAG = 1  # index of tag in a tuple
@@ -156,7 +155,7 @@ class HiddenMarkovModelTagger(TaggerI):
         unlabeled_sequence=None,
         transform=_identity,
         estimator=None,
-        **kwargs
+        **kwargs,
     ):
 
         if estimator is None:
@@ -687,7 +686,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return entropies
 
     def _transitions_matrix(self):
-        """ Return a matrix of transition log probabilities. """
+        """Return a matrix of transition log probabilities."""
         trans_iter = (
             self._transitions[sj].logprob(si)
             for sj in self._states
@@ -804,14 +803,14 @@ class HiddenMarkovModelTagger(TaggerI):
             for test_sent, predicted_sent in zip(test_sequence, predicted_sequence):
                 print(
                     "Test:",
-                    " ".join("%s/%s" % (token, tag) for (token, tag) in test_sent),
+                    " ".join(f"{token}/{tag}" for (token, tag) in test_sent),
                 )
                 print()
                 print("Untagged:", " ".join("%s" % token for (token, tag) in test_sent))
                 print()
                 print(
                     "HMM-tagged:",
-                    " ".join("%s/%s" % (token, tag) for (token, tag) in predicted_sent),
+                    " ".join(f"{token}/{tag}" for (token, tag) in predicted_sent),
                 )
                 print()
                 print(
@@ -958,10 +957,10 @@ class HiddenMarkovModelTrainer:
         if not model:
             priors = RandomProbDist(self._states)
             transitions = DictionaryConditionalProbDist(
-                dict((state, RandomProbDist(self._states)) for state in self._states)
+                {state: RandomProbDist(self._states) for state in self._states}
             )
             outputs = DictionaryConditionalProbDist(
-                dict((state, RandomProbDist(self._symbols)) for state in self._states)
+                {state: RandomProbDist(self._symbols) for state in self._states}
             )
             model = HiddenMarkovModelTagger(
                 self._symbols, self._states, transitions, outputs, priors
@@ -972,24 +971,24 @@ class HiddenMarkovModelTrainer:
 
         N = len(self._states)
         M = len(self._symbols)
-        symbol_numbers = dict((sym, i) for i, sym in enumerate(self._symbols))
+        symbol_numbers = {sym: i for i, sym in enumerate(self._symbols)}
 
         # update model prob dists so that they can be modified
         # model._priors = MutableProbDist(model._priors, self._states)
 
         model._transitions = DictionaryConditionalProbDist(
-            dict(
-                (s, MutableProbDist(model._transitions[s], self._states))
+            {
+                s: MutableProbDist(model._transitions[s], self._states)
                 for s in self._states
-            )
+            }
         )
 
         if update_outputs:
             model._outputs = DictionaryConditionalProbDist(
-                dict(
-                    (s, MutableProbDist(model._outputs[s], self._symbols))
+                {
+                    s: MutableProbDist(model._outputs[s], self._symbols)
                     for s in self._states
-                )
+                }
             )
 
         model.reset_cache()

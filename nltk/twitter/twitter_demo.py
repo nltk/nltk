@@ -31,19 +31,18 @@ For error codes see Twitter's
 """
 
 import datetime
-from functools import wraps
 import json
+from functools import wraps
 from io import StringIO
 
 from nltk.twitter import (
     Query,
     Streamer,
-    Twitter,
     TweetViewer,
     TweetWriter,
+    Twitter,
     credsfromfile,
 )
-
 
 SPACER = "###################################"
 
@@ -161,7 +160,7 @@ def lookup_by_userid_demo():
         name = info["screen_name"]
         followers = info["followers_count"]
         following = info["friends_count"]
-        print("{0}, followers: {1}, following: {2}".format(name, followers, following))
+        print(f"{name}, followers: {followers}, following: {following}")
 
 
 @verbose
@@ -205,7 +204,7 @@ def limit_by_time_demo(keywords="nltk"):
     client = Query(**oauth)
     client.register(TweetViewer(limit=100, lower_date_limit=date))
 
-    print("Cutoff date: {}\n".format(dt_date))
+    print(f"Cutoff date: {dt_date}\n")
 
     for tweet in client.search_tweets(keywords=keywords):
         print("{} ".format(tweet["created_at"]), end="")
@@ -269,7 +268,7 @@ def expand_tweetids_demo():
 
     for tweet in hydrated:
         id_str = tweet["id_str"]
-        print("id: {}".format(id_str))
+        print(f"id: {id_str}")
         text = tweet["text"]
         if text.startswith("@null"):
             text = "[Tweet not available]"

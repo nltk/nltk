@@ -12,12 +12,11 @@ Read CoNLL-style chunk fileids.
 
 import textwrap
 
-from nltk.tree import Tree
-from nltk.util import LazyMap, LazyConcatenation
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag
+from nltk.tree import Tree
+from nltk.util import LazyConcatenation, LazyMap
 
 
 class ConllCorpusReader(CorpusReader):
@@ -85,7 +84,7 @@ class ConllCorpusReader(CorpusReader):
         if isinstance(chunk_types, str):
             chunk_types = [chunk_types]
         self._chunk_types = chunk_types
-        self._colmap = dict((c, i) for (i, c) in enumerate(columntypes))
+        self._colmap = {c: i for (i, c) in enumerate(columntypes)}
         self._pos_in_tree = pos_in_tree
         self._root_label = root_label  # for chunks
         self._srl_includes_roleset = srl_includes_roleset
@@ -313,11 +312,11 @@ class ConllCorpusReader(CorpusReader):
                 pos_tag = "-RRB-"
             (left, right) = parse_tag.split("*")
             right = right.count(")") * ")"  # only keep ')'.
-            treestr += "%s (%s %s) %s" % (left, pos_tag, word, right)
+            treestr += f"{left} ({pos_tag} {word}) {right}"
         try:
             tree = self._tree_class.fromstring(treestr)
         except (ValueError, IndexError):
-            tree = self._tree_class.fromstring("(%s %s)" % (self._root_label, treestr))
+            tree = self._tree_class.fromstring(f"({self._root_label} {treestr})")
 
         if not pos_in_tree:
             for subtree in tree.subtrees():
@@ -471,7 +470,7 @@ class ConllSRLInstance:
 
     def pprint(self):
         verbstr = " ".join(self.words[i][0] for i in self.verb)
-        hdr = "SRL for %r (stem=%r):\n" % (verbstr, self.verb_stem)
+        hdr = f"SRL for {verbstr!r} (stem={self.verb_stem!r}):\n"
         s = ""
         for i, word in enumerate(self.words):
             if isinstance(word, tuple):
@@ -534,7 +533,7 @@ class ConllSRLInstanceList(list):
                 argstr = "*"
                 for (start, end), argid in inst.tagged_spans:
                     if i == start:
-                        argstr = "(%s%s" % (argid, argstr)
+                        argstr = f"({argid}{argstr}"
                     if i == (end - 1):
                         argstr += ")"
                 s += "%-12s " % argstr
@@ -552,7 +551,7 @@ class ConllSRLInstanceList(list):
             pos[wordnum], pos[wordnum] = tree[0]
             return wordnum + 1
         else:
-            synt[wordnum] = "(%s%s" % (tree.label(), synt[wordnum])
+            synt[wordnum] = f"({tree.label()}{synt[wordnum]}"
             for child in tree:
                 wordnum = self._tree2conll(child, wordnum, words, pos, synt)
             synt[wordnum - 1] += ")"

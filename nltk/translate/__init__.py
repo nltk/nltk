@@ -8,6 +8,8 @@
 """
 Experimental features for machine translation.
 These interfaces are prone to change.
+
+isort:skip_file
 """
 
 from nltk.translate.api import AlignedSent, Alignment, PhraseTable

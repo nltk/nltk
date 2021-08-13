@@ -7,42 +7,40 @@
 #
 
 
-import threading
-
 import queue as q
-from tkinter.font import Font
+import threading
 from tkinter import (
-    Button,
     END,
+    LEFT,
+    SUNKEN,
+    Button,
     Frame,
     IntVar,
-    LEFT,
     Label,
     Menu,
     OptionMenu,
-    SUNKEN,
     Scrollbar,
     StringVar,
     Text,
     Tk,
 )
+from tkinter.font import Font
 
 from nltk.corpus import (
-    cess_cat,
-    brown,
-    nps_chat,
-    treebank,
-    sinica_treebank,
     alpino,
-    indian,
+    brown,
+    cess_cat,
+    cess_esp,
     floresta,
+    indian,
     mac_morpho,
     machado,
-    cess_esp,
+    nps_chat,
+    sinica_treebank,
+    treebank,
 )
-from nltk.util import in_idle
 from nltk.probability import FreqDist
-
+from nltk.util import in_idle
 
 CORPUS_LOADED_EVENT = "<<CL_EVENT>>"
 ERROR_LOADING_CORPUS_EVENT = "<<ELC_EVENT>>"

@@ -7,23 +7,26 @@
 # For license information, see LICENSE.TXT
 
 
-from collections import namedtuple, defaultdict
 import re
+from collections import defaultdict, namedtuple
 
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.wordlist import WordListCorpusReader
 from nltk.tokenize import line_tokenize
 
-from nltk.corpus.reader.wordlist import WordListCorpusReader
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+PanlexLanguage = namedtuple(
+    "PanlexLanguage",
+    [
+        "panlex_uid",  # (1) PanLex UID
+        "iso639",  # (2) ISO 639 language code
+        "iso639_type",  # (3) ISO 639 language type, see README
+        "script",  # (4) normal scripts of expressions
+        "name",  # (5) PanLex default name
+        "langvar_uid",  # (6) UID of the language variety in which the default name is an expression
+    ],
+)
 
-PanlexLanguage = namedtuple('PanlexLanguage',
-                          ['panlex_uid',  # (1) PanLex UID
-                           'iso639',      # (2) ISO 639 language code
-                           'iso639_type', # (3) ISO 639 language type, see README
-                           'script',      # (4) normal scripts of expressions
-                           'name',        # (5) PanLex default name
-                           'langvar_uid'  # (6) UID of the language variety in which the default name is an expression
-                           ])
 
 class PanlexSwadeshCorpusReader(WordListCorpusReader):
     """
@@ -36,11 +39,12 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
     License: CC0 1.0 Universal
     https://creativecommons.org/publicdomain/zero/1.0/legalcode
     """
+
     def __init__(self, *args, **kwargs):
-        super(PanlexSwadeshCorpusReader, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Find the swadesh size using the fileids' path.
-        self.swadesh_size = re.match(r'swadesh([0-9].*)\/', self.fileids()[0]).group(1)
-        self._languages = {lang.panlex_uid:lang for lang in self.get_languages()}
+        self.swadesh_size = re.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(1)
+        self._languages = {lang.panlex_uid: lang for lang in self.get_languages()}
         self._macro_langauges = self.get_macrolanguages()
 
     def license(self):
@@ -50,10 +54,10 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         return self._languages.keys()
 
     def get_languages(self):
-        for line in self.raw('langs{}.txt'.format(self.swadesh_size)).split('\n'):
-            if not line.strip(): # Skip empty lines.
+        for line in self.raw(f"langs{self.swadesh_size}.txt").split("\n"):
+            if not line.strip():  # Skip empty lines.
                 continue
-            yield PanlexLanguage(*line.strip().split('\t'))
+            yield PanlexLanguage(*line.strip().split("\t"))
 
     def get_macrolanguages(self):
         macro_langauges = defaultdict(list)
@@ -65,16 +69,20 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         """
         :return: a list of list(str)
         """
-        fileid = 'swadesh{}/{}.txt'.format(self.swadesh_size, lang_code)
-        return [concept.split('\t') for concept in self.words(fileid)]
+        fileid = f"swadesh{self.swadesh_size}/{lang_code}.txt"
+        return [concept.split("\t") for concept in self.words(fileid)]
 
     def words_by_iso639(self, iso63_code):
         """
         :return: a list of list(str)
         """
-        fileids = ['swadesh{}/{}.txt'.format(self.swadesh_size, lang_code)
-                   for lang_code in self._macro_langauges[iso63_code]]
-        return [concept.split('\t') for fileid in fileids for concept in self.words(fileid)]
+        fileids = [
+            f"swadesh{self.swadesh_size}/{lang_code}.txt"
+            for lang_code in self._macro_langauges[iso63_code]
+        ]
+        return [
+            concept.split("\t") for fileid in fileids for concept in self.words(fileid)
+        ]
 
     def entries(self, fileids=None):
         """

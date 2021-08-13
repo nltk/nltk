@@ -15,11 +15,10 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
-import time
-import textwrap
-import re
 import random
-
+import re
+import textwrap
+import time
 from tkinter import (
     Button,
     Canvas,
@@ -35,12 +34,12 @@ from tkinter import (
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter.font import Font
 
-from nltk.tree import Tree
-from nltk.util import in_idle
-from nltk.draw.util import ShowText
-from nltk.corpus import conll2000, treebank_chunk
 from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
+from nltk.corpus import conll2000, treebank_chunk
+from nltk.draw.util import ShowText
+from nltk.tree import Tree
+from nltk.util import in_idle
 
 
 class RegexpChunkApp:
@@ -823,13 +822,13 @@ class RegexpChunkApp:
             frame3,
             text="Prev Grammar",
             command=self._history_prev,
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         ).pack(side="left")
         Button(
             frame3,
             text="Next Grammar",
             command=self._history_next,
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         ).pack(side="left")
 
         # Help box
@@ -891,20 +890,20 @@ class RegexpChunkApp:
             frame1,
             text="Prev Example (Ctrl-p)",
             command=self._devset_prev,
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         ).pack(side="left")
         Button(
             frame1,
             text="Next Example (Ctrl-n)",
             command=self._devset_next,
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         ).pack(side="left")
         self.devset_button = Button(
             frame1,
             text="Show example",
             command=self.show_devset,
             state="disabled",
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         )
         self.devset_button.pack(side="right")
         self.trace_button = Button(
@@ -935,7 +934,7 @@ class RegexpChunkApp:
             variable=self._autoscale,
             command=self._eval_plot,
             text="Zoom",
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         ).pack(side="left")
         self._eval_lines = IntVar(self.top)
         self._eval_lines.set(False)
@@ -944,7 +943,7 @@ class RegexpChunkApp:
             variable=self._eval_lines,
             command=self._eval_plot,
             text="Lines",
-            **self._BUTTON_PARAMS
+            **self._BUTTON_PARAMS,
         ).pack(side="left")
         Button(frame2, text="History", **self._BUTTON_PARAMS).pack(side="right")
 
@@ -1008,12 +1007,12 @@ class RegexpChunkApp:
         for wordnum, (word, pos) in enumerate(gold_tree.leaves()):
             tagseq += "%s " % pos
             charnum.append(len(tagseq))
-        self.charnum = dict(
-            ((i, j), charnum[j])
+        self.charnum = {
+            (i, j): charnum[j]
             for i in range(len(rules) + 1)
             for j in range(len(charnum))
-        )
-        self.linenum = dict((i, i * 2 + 2) for i in range(len(rules) + 1))
+        }
+        self.linenum = {i: i * 2 + 2 for i in range(len(rules) + 1)}
 
         for i in range(len(rules) + 1):
             if i == 0:
@@ -1068,7 +1067,7 @@ class RegexpChunkApp:
                 self.helpbox.insert("1.0", text + "\n" * 20)
                 C = "1.0 + %d chars"
                 for (tag, params) in self.HELP_AUTOTAG:
-                    pattern = "(?s)(<%s>)(.*?)(</%s>)" % (tag, tag)
+                    pattern = f"(?s)(<{tag}>)(.*?)(</{tag}>)"
                     for m in re.finditer(pattern, text):
                         self.helpbox.tag_add("elide", C % m.start(1), C % m.end(1))
                         self.helpbox.tag_add(
@@ -1121,7 +1120,7 @@ class RegexpChunkApp:
             self.show_trace()
         # Update the grammar label
         if self._history_index < len(self._history) - 1:
-            self.grammarlabel["text"] = "Grammar %s/%s:" % (
+            self.grammarlabel["text"] = "Grammar {}/{}:".format(
                 self._history_index + 1,
                 len(self._history),
             )
@@ -1152,7 +1151,7 @@ class RegexpChunkApp:
         elif command == "moveto":
             self.show_devset(int(float(args[0]) * self._devset_size.get()))
         else:
-            assert 0, "bad scroll command %s %s" % (command, args)
+            assert 0, f"bad scroll command {command} {args}"
         if showing_trace:
             self.show_trace()
 
@@ -1187,7 +1186,7 @@ class RegexpChunkApp:
             linestr = ""
             for wordnum, (word, pos) in enumerate(sent.leaves()):
                 self.charnum[sentnum, wordnum] = len(linestr)
-                linestr += "%s/%s " % (word, pos)
+                linestr += f"{word}/{pos} "
                 self.charnum[sentnum, wordnum + 1] = len(linestr)
             self.devsetbox.insert("end", linestr[:-1] + "\n\n")
 
@@ -1346,8 +1345,8 @@ class RegexpChunkApp:
         start, end = chunk
         self.devsetbox.tag_add(
             tag,
-            "%s.%s" % (self.linenum[sentnum], self.charnum[sentnum, start]),
-            "%s.%s" % (self.linenum[sentnum], self.charnum[sentnum, end] - 1),
+            f"{self.linenum[sentnum]}.{self.charnum[sentnum, start]}",
+            f"{self.linenum[sentnum]}.{self.charnum[sentnum, end] - 1}",
         )
 
     def reset(self):
@@ -1384,9 +1383,9 @@ class RegexpChunkApp:
         if self._history and self.normalized_grammar == self.normalize_grammar(
             self._history[-1][0]
         ):
-            precision, recall, fscore = [
+            precision, recall, fscore = (
                 "%.2f%%" % (100 * v) for v in self._history[-1][1:]
-            ]
+            )
         elif self.chunker is None:
             precision = recall = fscore = "Grammar not well formed"
         else:
@@ -1413,7 +1412,7 @@ class RegexpChunkApp:
                 return
         self.grammarbox.delete("1.0", "end")
         self.update()
-        with open(filename, "r") as infile:
+        with open(filename) as infile:
             grammar = infile.read()
         grammar = re.sub(
             r"^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar

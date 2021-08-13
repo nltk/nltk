@@ -2,18 +2,19 @@
 Unit tests for nltk.classify. See also: nltk/test/classify.doctest
 """
 import pytest
+
 from nltk import classify
 
 TRAIN = [
-    (dict(a=1, b=1, c=1), 'y'),
-    (dict(a=1, b=1, c=1), 'x'),
-    (dict(a=1, b=1, c=0), 'y'),
-    (dict(a=0, b=1, c=1), 'x'),
-    (dict(a=0, b=1, c=1), 'y'),
-    (dict(a=0, b=0, c=1), 'y'),
-    (dict(a=0, b=1, c=0), 'x'),
-    (dict(a=0, b=0, c=0), 'x'),
-    (dict(a=0, b=1, c=1), 'y'),
+    (dict(a=1, b=1, c=1), "y"),
+    (dict(a=1, b=1, c=1), "x"),
+    (dict(a=1, b=1, c=0), "y"),
+    (dict(a=0, b=1, c=1), "x"),
+    (dict(a=0, b=1, c=1), "y"),
+    (dict(a=0, b=0, c=1), "y"),
+    (dict(a=0, b=1, c=0), "x"),
+    (dict(a=0, b=0, c=0), "x"),
+    (dict(a=0, b=1, c=1), "y"),
 ]
 
 TEST = [
@@ -36,13 +37,13 @@ def assert_classifier_correct(algorithm):
 
     for (px, py), featureset in zip(RESULTS, TEST):
         pdist = classifier.prob_classify(featureset)
-        assert abs(pdist.prob('x') - px) < 1e-2, (pdist.prob('x'), px)
-        assert abs(pdist.prob('y') - py) < 1e-2, (pdist.prob('y'), py)
+        assert abs(pdist.prob("x") - px) < 1e-2, (pdist.prob("x"), px)
+        assert abs(pdist.prob("y") - py) < 1e-2, (pdist.prob("y"), py)
 
 
 def test_megam():
-    assert_classifier_correct('MEGAM')
+    assert_classifier_correct("MEGAM")
 
 
 def test_tadm():
-    assert_classifier_correct('TADM')
+    assert_classifier_correct("TADM")

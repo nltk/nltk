@@ -7,8 +7,9 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from abc import ABCMeta, abstractmethod
 import itertools as it
+from abc import ABCMeta, abstractmethod
+
 from nltk.tbl.feature import Feature
 from nltk.tbl.rule import Rule
 
@@ -138,11 +139,11 @@ class Template(BrillTemplateI):
             raise TypeError(
                 "expected either Feature1(args), Feature2(args), ... or Feature, (start1, end1), (start2, end2), ..."
             )
-        self.id = "{0:03d}".format(len(self.ALLTEMPLATES))
+        self.id = f"{len(self.ALLTEMPLATES):03d}"
         self.ALLTEMPLATES.append(self)
 
     def __repr__(self):
-        return "%s(%s)" % (
+        return "{}({})".format(
             self.__class__.__name__,
             ",".join([str(f) for f in self._features]),
         )
@@ -180,7 +181,7 @@ class Template(BrillTemplateI):
         # inherit docs from BrillTemplateI
 
         # applicable_rules(tokens, index, ...) depends on index.
-        neighborhood = set([index])  # set literal for python 2.7+
+        neighborhood = {index}  # set literal for python 2.7+
 
         # applicable_rules(tokens, i, ...) depends on index if
         # i+start < index <= i+end.

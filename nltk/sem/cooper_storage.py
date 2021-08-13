@@ -5,9 +5,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
+from nltk.sem.logic import ApplicationExpression, LambdaExpression, Variable
 
 
 class CooperStore:
@@ -117,7 +117,7 @@ def demo():
         print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print("%s: %s" % (i + 1, reading))
+            print(f"{i + 1}: {reading}")
 
 
 if __name__ == "__main__":

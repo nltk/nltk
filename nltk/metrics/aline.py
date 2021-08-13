@@ -1268,9 +1268,9 @@ def demo():
     data = [pair.split(",") for pair in cognate_data.split("\n")]
     for pair in data:
         alignment = align(pair[0], pair[1])[0]
-        alignment = ["({}, {})".format(a[0], a[1]) for a in alignment]
+        alignment = [f"({a[0]}, {a[1]})" for a in alignment]
         alignment = " ".join(alignment)
-        print("{} ~ {} : {}".format(pair[0], pair[1], alignment))
+        print(f"{pair[0]} ~ {pair[1]} : {alignment}")
 
 
 cognate_data = """jo,ʒə

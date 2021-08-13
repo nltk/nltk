@@ -30,7 +30,6 @@
 # do NLTK para o português para qualquer debate.
 
 from nltk.data import load
-
 from nltk.stem.api import StemmerI
 
 

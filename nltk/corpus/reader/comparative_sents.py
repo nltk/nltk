@@ -171,7 +171,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             ]
         )
 
-        keywords_set = set(keyword.lower() for keyword in all_keywords if keyword)
+        keywords_set = {keyword.lower() for keyword in all_keywords if keyword}
         return keywords_set
 
     def keywords_readme(self):

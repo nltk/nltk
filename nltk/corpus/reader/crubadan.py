@@ -22,8 +22,8 @@ import re
 from os import path
 
 from nltk.corpus.reader import CorpusReader
-from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
+from nltk.probability import FreqDist
 
 
 class CrubadanCorpusReader(CorpusReader):
@@ -35,13 +35,13 @@ class CrubadanCorpusReader(CorpusReader):
     _all_lang_freq = {}
 
     def __init__(self, root, fileids, encoding="utf8", tagset=None):
-        super(CrubadanCorpusReader, self).__init__(root, fileids, encoding="utf8")
+        super().__init__(root, fileids, encoding="utf8")
         self._lang_mapping_data = []
         self._load_lang_mapping_data()
 
     def lang_freq(self, lang):
-        """ Return n-gram FreqDist for a specific language
-            given ISO 639-3 language code """
+        """Return n-gram FreqDist for a specific language
+        given ISO 639-3 language code"""
 
         if lang not in self._all_lang_freq:
             self._all_lang_freq[lang] = self._load_lang_ngrams(lang)
@@ -49,23 +49,23 @@ class CrubadanCorpusReader(CorpusReader):
         return self._all_lang_freq[lang]
 
     def langs(self):
-        """ Return a list of supported languages as ISO 639-3 codes """
+        """Return a list of supported languages as ISO 639-3 codes"""
         return [row[1] for row in self._lang_mapping_data]
 
     def iso_to_crubadan(self, lang):
-        """ Return internal Crubadan code based on ISO 639-3 code """
+        """Return internal Crubadan code based on ISO 639-3 code"""
         for i in self._lang_mapping_data:
             if i[1].lower() == lang.lower():
                 return i[0]
 
     def crubadan_to_iso(self, lang):
-        """ Return ISO 639-3 code given internal Crubadan code """
+        """Return ISO 639-3 code given internal Crubadan code"""
         for i in self._lang_mapping_data:
             if i[0].lower() == lang.lower():
                 return i[1]
 
     def _load_lang_mapping_data(self):
-        """ Load language mappings between codes and description from table.txt """
+        """Load language mappings between codes and description from table.txt"""
         if isinstance(self.root, ZipFilePathPointer):
             raise RuntimeError(
                 "Please install the 'crubadan' corpus first, use nltk.download()"
@@ -75,14 +75,14 @@ class CrubadanCorpusReader(CorpusReader):
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
 
-        with open(mapper_file, "r", encoding="utf-8") as raw:
+        with open(mapper_file, encoding="utf-8") as raw:
             strip_raw = raw.read().strip()
 
             self._lang_mapping_data = [row.split("\t") for row in strip_raw.split("\n")]
 
     def _load_lang_ngrams(self, lang):
-        """ Load single n-gram language file given the ISO 639-3 language code
-            and return its FreqDist """
+        """Load single n-gram language file given the ISO 639-3 language code
+        and return its FreqDist"""
 
         if lang not in self.langs():
             raise RuntimeError("Unsupported language.")
@@ -94,7 +94,7 @@ class CrubadanCorpusReader(CorpusReader):
             raise RuntimeError("No N-gram file found for requested language.")
 
         counts = FreqDist()
-        with open(ngram_file, "r", encoding="utf-8") as f:
+        with open(ngram_file, encoding="utf-8") as f:
             for line in f:
                 data = line.split(" ")
 

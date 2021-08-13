@@ -62,12 +62,11 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import Alignment
-from nltk.translate import IBMModel
-from nltk.translate.ibm_model import Counts
 import warnings
+from collections import defaultdict
+
+from nltk.translate import AlignedSent, Alignment, IBMModel
+from nltk.translate.ibm_model import Counts
 
 
 class IBMModel1(IBMModel):
@@ -125,7 +124,7 @@ class IBMModel1(IBMModel):
             See ``IBMModel`` for the type and purpose of this table.
         :type probability_tables: dict[str]: object
         """
-        super(IBMModel1, self).__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus)
 
         if probability_tables is None:
             self.set_uniform_probabilities(sentence_aligned_corpus)

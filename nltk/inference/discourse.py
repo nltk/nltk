@@ -45,20 +45,18 @@ those threads which are consistent (taking into account any background assumptio
 
 import os
 from abc import ABCMeta, abstractmethod
-from operator import and_, add
 from functools import reduce
-
+from operator import add, and_
 
 from nltk.data import show_cfg
-from nltk.tag import RegexpTagger
-from nltk.parse import load_parser
-from nltk.parse.malt import MaltParser
-from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
-from nltk.sem.glue import DrtGlue
-from nltk.sem.logic import Expression
-
 from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
+from nltk.parse import load_parser
+from nltk.parse.malt import MaltParser
+from nltk.sem.drt import AnaphoraResolutionException, resolve_anaphora
+from nltk.sem.glue import DrtGlue
+from nltk.sem.logic import Expression
+from nltk.tag import RegexpTagger
 
 
 class ReadingCommand(metaclass=ABCMeta):
@@ -183,7 +181,7 @@ class DiscourseTester:
         :type background: list(Expression)
         """
         self._input = input
-        self._sentences = dict([("s%s" % i, sent) for i, sent in enumerate(input)])
+        self._sentences = {"s%s" % i: sent for i, sent in enumerate(input)}
         self._models = None
         self._readings = {}
         self._reading_command = (
@@ -209,7 +207,7 @@ class DiscourseTester:
         Display the list of sentences in the current discourse.
         """
         for id in sorted(self._sentences):
-            print("%s: %s" % (id, self._sentences[id]))
+            print(f"{id}: {self._sentences[id]}")
 
     def add_sentence(self, sentence, informchk=False, consistchk=False):
         """
@@ -238,9 +236,7 @@ class DiscourseTester:
                         print("Not informative relative to thread '%s'" % tid)
 
         self._input.append(sentence)
-        self._sentences = dict(
-            [("s%s" % i, sent) for i, sent in enumerate(self._input)]
-        )
+        self._sentences = {"s%s" % i: sent for i, sent in enumerate(self._input)}
         # check whether adding the new sentence to the discourse preserves consistency (i.e. a model can be found for the combined set of
         # of assumptions
         if consistchk:
@@ -265,9 +261,7 @@ class DiscourseTester:
             )
             self.sentences()
             return None
-        self._sentences = dict(
-            [("s%s" % i, sent) for i, sent in enumerate(self._input)]
-        )
+        self._sentences = {"s%s" % i: sent for i, sent in enumerate(self._input)}
         self.readings(verbose=False)
         if verbose:
             print("Current sentences are ")
@@ -300,12 +294,10 @@ class DiscourseTester:
         for sid in sorted(self._sentences):
             sentence = self._sentences[sid]
             readings = self._get_readings(sentence)
-            self._readings[sid] = dict(
-                [
-                    ("%s-r%s" % (sid, rid), reading.simplify())
-                    for rid, reading in enumerate(sorted(readings, key=str))
-                ]
-            )
+            self._readings[sid] = {
+                f"{sid}-r{rid}": reading.simplify()
+                for rid, reading in enumerate(sorted(readings, key=str))
+            }
 
     def _construct_threads(self):
         """
@@ -315,9 +307,7 @@ class DiscourseTester:
         thread_list = [[]]
         for sid in sorted(self._readings):
             thread_list = self.multiply(thread_list, sorted(self._readings[sid]))
-        self._threads = dict(
-            [("d%s" % tid, thread) for tid, thread in enumerate(thread_list)]
-        )
+        self._threads = {"d%s" % tid: thread for tid, thread in enumerate(thread_list)}
         # re-initialize the filtered threads
         self._filtered_threads = {}
         # keep the same ids, but only include threads which get models
@@ -341,7 +331,7 @@ class DiscourseTester:
                 print()  #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
-                    print("%s: %s" % (rid, lf.normalize()))
+                    print(f"{rid}: {lf.normalize()}")
 
     def _show_threads(self, filter=False, show_thread_readings=False):
         """
@@ -471,14 +461,14 @@ class DiscourseTester:
             idlist = [rid for rid in threads[tid]]
 
             if not modelfound:
-                print("Inconsistent discourse: %s %s:" % (tid, idlist))
+                print(f"Inconsistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
-                    print("    %s: %s" % (rid, reading.normalize()))
+                    print(f"    {rid}: {reading.normalize()}")
                 print()
             else:
-                print("Consistent discourse: %s %s:" % (tid, idlist))
+                print(f"Consistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
-                    print("    %s: %s" % (rid, reading.normalize()))
+                    print(f"    {rid}: {reading.normalize()}")
                 print()
 
     def add_background(self, background, verbose=False):
@@ -554,8 +544,7 @@ def load_fol(s):
         try:
             statements.append(Expression.fromstring(line))
         except Exception as e:
-            raise ValueError("Unable to parse line %s: %s" %
-                             (linenum, line)) from e
+            raise ValueError(f"Unable to parse line {linenum}: {line}") from e
     return statements
 
 

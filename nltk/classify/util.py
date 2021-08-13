@@ -78,7 +78,7 @@ def attested_labels(tokens):
         labels.  A classified token has the form ``(token, label)``.
     :type tokens: list
     """
-    return tuple(set(label for (tok, label) in tokens))
+    return tuple({label for (tok, label) in tokens})
 
 
 def log_likelihood(classifier, gold):
@@ -181,8 +181,9 @@ def binary_names_demo_features(name):
 
 
 def names_demo(trainer, features=names_demo_features):
-    from nltk.corpus import names
     import random
+
+    from nltk.corpus import names
 
     # Construct a list of classified names, using the names corpus.
     namelist = [(name, "male") for name in names.words("male.txt")] + [
@@ -227,8 +228,9 @@ def names_demo(trainer, features=names_demo_features):
 
 
 def partial_names_demo(trainer, features=names_demo_features):
-    from nltk.corpus import names
     import random
+
+    from nltk.corpus import names
 
     male_names = names.words("male.txt")
     female_names = names.words("female.txt")
@@ -285,8 +287,9 @@ _inst_cache = {}
 
 
 def wsd_demo(trainer, word, features, n=1000):
-    from nltk.corpus import senseval
     import random
+
+    from nltk.corpus import senseval
 
     # Get the instances.
     print("Reading data...")
@@ -296,7 +299,7 @@ def wsd_demo(trainer, word, features, n=1000):
     instances = _inst_cache[word][:]
     if n > len(instances):
         n = len(instances)
-    senses = list(set(l for (i, l) in instances))
+    senses = list({l for (i, l) in instances})
     print("  Senses: " + " ".join(senses))
 
     # Randomly split the names into a test & train set.

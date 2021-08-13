@@ -8,15 +8,14 @@
 #
 # This module is provided under the terms of the MIT License.
 
+import logging
+import pickle
 import random
 from collections import defaultdict
-import pickle
-import logging
-
-from nltk.tag.api import TaggerI
-from nltk.data import find, load
 
 from nltk import jsontags
+from nltk.data import find, load
+from nltk.tag.api import TaggerI
 
 try:
     import numpy as np
@@ -24,6 +23,7 @@ except ImportError:
     pass
 
 PICKLE = "averaged_perceptron_tagger.pickle"
+
 
 @jsontags.register_tag
 class AveragedPerceptron:
@@ -230,7 +230,7 @@ class PerceptronTagger(TaggerI):
                     c += guess == tags[i]
                     n += 1
             random.shuffle(self._sentences)
-            logging.info("Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
+            logging.info(f"Iter {iter_}: {c}/{n}={_pc(c, n)}")
 
         # We don't need the training sentences anymore, and we don't want to
         # waste space on them when we pickle the trained tagger.

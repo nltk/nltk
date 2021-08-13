@@ -5,15 +5,14 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT
 
-from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
-from nltk.translate import AlignedSent, Alignment
-
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import (
     StreamBackedCorpusView,
     concat,
     read_alignedsent_block,
 )
+from nltk.tokenize import RegexpTokenizer, WhitespaceTokenizer
+from nltk.translate import AlignedSent, Alignment
 
 
 class AlignedCorpusReader(CorpusReader):

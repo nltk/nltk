@@ -5,33 +5,30 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import sys
+import bisect
 import inspect
 import locale
-import re
-import types
-import textwrap
-import pydoc
-import bisect
 import os
-
-from itertools import islice, chain, combinations, tee
-from pprint import pprint
+import pydoc
+import re
+import sys
+import textwrap
+import types
 from collections import defaultdict, deque
-
+from itertools import chain, combinations, islice, tee
+from pprint import pprint
 from urllib.request import (
-    build_opener,
-    install_opener,
-    getproxies,
-    ProxyHandler,
+    HTTPPasswordMgrWithDefaultRealm,
     ProxyBasicAuthHandler,
     ProxyDigestAuthHandler,
-    HTTPPasswordMgrWithDefaultRealm,
+    ProxyHandler,
+    build_opener,
+    getproxies,
+    install_opener,
 )
 
-from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.collections import *
-
+from nltk.internals import raise_unorderable_types, slice_bounds
 
 ######################################################################
 # Short usage message
@@ -59,11 +56,11 @@ def usage(obj, selfname="self"):
             and (defaults is None or len(args) > len(defaults))
         ):
             args = args[1:]
-            name = "%s.%s" % (selfname, name)
+            name = f"{selfname}.{name}"
         argspec = inspect.formatargspec(args, varargs, varkw, defaults)
         print(
             textwrap.fill(
-                "%s%s" % (name, argspec),
+                f"{name}{argspec}",
                 initial_indent="  - ",
                 subsequent_indent=" " * (len(name) + 5),
             )
@@ -181,7 +178,7 @@ def filestring(f):
     if hasattr(f, "read"):
         return f.read()
     elif isinstance(f, str):
-        with open(f, "r") as infile:
+        with open(f) as infile:
             return infile.read()
     else:
         raise ValueError("Must be called with a filename or file-like object")
@@ -218,6 +215,7 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 import warnings
 
+
 def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order,
     discarding eventual cycles.
@@ -238,7 +236,12 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
                     if child not in traversed:
                         queue.append((child, depth + 1))
                     else:
-                        warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+                        warnings.warn(
+                            "Discarded redundant search for {} at depth {}".format(
+                                child, depth + 1
+                            ),
+                            stacklevel=2,
+                        )
             except TypeError:
                 pass
 
@@ -282,13 +285,22 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
         try:
             for child in children(tree):
                 if child not in traversed:
-#                   Recurse with a common "traversed" set for all children:
+                    # Recurse with a common "traversed" set for all children:
                     traversed.add(child)
-                    out_tree += [acyclic_depth_first(child, children, depth - 1, cut_mark, traversed)]
+                    out_tree += [
+                        acyclic_depth_first(
+                            child, children, depth - 1, cut_mark, traversed
+                        )
+                    ]
                 else:
-                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    warnings.warn(
+                        "Discarded redundant search for {} at depth {}".format(
+                            child, depth - 1
+                        ),
+                        stacklevel=3,
+                    )
                     if cut_mark:
-                        out_tree += ['Cycle({0},{1},{2})'.format(child, depth - 1, cut_mark)]
+                        out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
             pass
     elif cut_mark:
@@ -296,7 +308,9 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
     return out_tree
 
 
-def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
+def acyclic_branches_depth_first(
+    tree, children=iter, depth=-1, cut_mark=None, traversed=None
+):
     """Traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within the same branch,
     but keep duplicate paths in different branches.
@@ -341,12 +355,25 @@ def acyclic_branches_depth_first(tree, children=iter, depth=-1, cut_mark=None, t
         try:
             for child in children(tree):
                 if child not in traversed:
-#                   Recurse with a different "traversed" set for each child:
-                    out_tree += [acyclic_branches_depth_first(child, children, depth - 1, cut_mark, traversed.union({child}))]
+                    # Recurse with a different "traversed" set for each child:
+                    out_tree += [
+                        acyclic_branches_depth_first(
+                            child,
+                            children,
+                            depth - 1,
+                            cut_mark,
+                            traversed.union({child}),
+                        )
+                    ]
                 else:
-                    warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth - 1), stacklevel=3)
+                    warnings.warn(
+                        "Discarded redundant search for {} at depth {}".format(
+                            child, depth - 1
+                        ),
+                        stacklevel=3,
+                    )
                     if cut_mark:
-                        out_tree += ['Cycle({0},{1},{2})'.format(child, depth - 1, cut_mark)]
+                        out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
             pass
     elif cut_mark:
@@ -382,19 +409,19 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
     """
-    traversed = set()             # Empty set of traversed nodes
-    queue = deque([tree])         # Initialize queue
-    agenda = {tree}               # Set of all nodes ever queued
-    mstdic = {}                   # Empty MST dictionary
+    traversed = set()  # Empty set of traversed nodes
+    queue = deque([tree])  # Initialize queue
+    agenda = {tree}  # Set of all nodes ever queued
+    mstdic = {}  # Empty MST dictionary
     while queue:
-        node = queue.popleft()    # Node is not yet in the MST dictionary,
-        mstdic[node]=[]           # so add it with an empty list of children
-        if node not in traversed: # Avoid cycles
+        node = queue.popleft()  # Node is not yet in the MST dictionary,
+        mstdic[node] = []  # so add it with an empty list of children
+        if node not in traversed:  # Avoid cycles
             traversed.add(node)
             for child in children(node):
-                if child not in agenda:            # Queue nodes only once
-                    mstdic[node].append(child)     # Add child to the MST
-                    queue.append(child)            # Add child to queue
+                if child not in agenda:  # Queue nodes only once
+                    mstdic[node].append(child)  # Add child to the MST
+                    queue.append(child)  # Add child to queue
                     agenda.add(child)
     return acyclic_dic2tree(tree, mstdic)
 
@@ -511,13 +538,13 @@ def transitive_closure(graph, reflexive=False):
     :rtype: dict(set)
     """
     if reflexive:
-        base_set = lambda k: set([k])
+        base_set = lambda k: {k}
     else:
         base_set = lambda k: set()
     # The graph U_i in the article:
-    agenda_graph = dict((k, graph[k].copy()) for k in graph)
+    agenda_graph = {k: graph[k].copy() for k in graph}
     # The graph M_i in the article:
-    closure_graph = dict((k, base_set(k)) for k in graph)
+    closure_graph = {k: base_set(k) for k in graph}
     for i in graph:
         agenda = agenda_graph[i]
         closure = closure_graph[i]
@@ -682,10 +709,10 @@ def ngrams(sequence, n, **kwargs):
     # `iterables` is a tuple of iterables where each iterable is a window of n items.
     iterables = tee(sequence, n)
 
-    for i, sub_iterable in enumerate(iterables): # For each window,
-        for _ in range(i):                       # iterate through every order of ngrams
-            next(sub_iterable, None)             # generate the ngrams within the window.
-    return zip(*iterables) # Unpack and flattens the iterables.
+    for i, sub_iterable in enumerate(iterables):  # For each window,
+        for _ in range(i):  # iterate through every order of ngrams
+            next(sub_iterable, None)  # generate the ngrams within the window.
+    return zip(*iterables)  # Unpack and flattens the iterables.
 
 
 def bigrams(sequence, **kwargs):
@@ -704,8 +731,7 @@ def bigrams(sequence, **kwargs):
     :rtype: iter(tuple)
     """
 
-    for item in ngrams(sequence, 2, **kwargs):
-        yield item
+    yield from ngrams(sequence, 2, **kwargs)
 
 
 def trigrams(sequence, **kwargs):
@@ -724,11 +750,12 @@ def trigrams(sequence, **kwargs):
     :rtype: iter(tuple)
     """
 
-    for item in ngrams(sequence, 3, **kwargs):
-        yield item
+    yield from ngrams(sequence, 3, **kwargs)
 
 
-def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs):
+def everygrams(
+    sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs
+):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
 
@@ -775,7 +802,7 @@ def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False,
 
     # Yield ngrams from sequence.
     while history:
-        for ngram_len in range(min_len, len(history)+1):
+        for ngram_len in range(min_len, len(history) + 1):
             yield tuple(history[:ngram_len])
 
         # Append element to history if sequence has more items.
@@ -785,7 +812,6 @@ def everygrams(sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False,
             pass
 
         del history[0]
-
 
 
 def skipgrams(sequence, n, k, **kwargs):
@@ -1018,14 +1044,15 @@ def pairwise(iterable):
     next(b, None)
     return zip(a, b)
 
+
 ######################################################################
 # Parallelization.
 ######################################################################
 
 
 def parallelize_preprocess(func, iterator, processes, progress_bar=False):
-    from tqdm import tqdm
     from joblib import Parallel, delayed
+    from tqdm import tqdm
 
     iterator = tqdm(iterator) if progress_bar else iterator
     if processes <= 1:

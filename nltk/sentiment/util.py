@@ -47,87 +47,83 @@ CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 # Happy and sad emoticons
 
-HAPPY = set(
-    [
-        ":-)",
-        ":)",
-        ";)",
-        ":o)",
-        ":]",
-        ":3",
-        ":c)",
-        ":>",
-        "=]",
-        "8)",
-        "=)",
-        ":}",
-        ":^)",
-        ":-D",
-        ":D",
-        "8-D",
-        "8D",
-        "x-D",
-        "xD",
-        "X-D",
-        "XD",
-        "=-D",
-        "=D",
-        "=-3",
-        "=3",
-        ":-))",
-        ":'-)",
-        ":')",
-        ":*",
-        ":^*",
-        ">:P",
-        ":-P",
-        ":P",
-        "X-P",
-        "x-p",
-        "xp",
-        "XP",
-        ":-p",
-        ":p",
-        "=p",
-        ":-b",
-        ":b",
-        ">:)",
-        ">;)",
-        ">:-)",
-        "<3",
-    ]
-)
+HAPPY = {
+    ":-)",
+    ":)",
+    ";)",
+    ":o)",
+    ":]",
+    ":3",
+    ":c)",
+    ":>",
+    "=]",
+    "8)",
+    "=)",
+    ":}",
+    ":^)",
+    ":-D",
+    ":D",
+    "8-D",
+    "8D",
+    "x-D",
+    "xD",
+    "X-D",
+    "XD",
+    "=-D",
+    "=D",
+    "=-3",
+    "=3",
+    ":-))",
+    ":'-)",
+    ":')",
+    ":*",
+    ":^*",
+    ">:P",
+    ":-P",
+    ":P",
+    "X-P",
+    "x-p",
+    "xp",
+    "XP",
+    ":-p",
+    ":p",
+    "=p",
+    ":-b",
+    ":b",
+    ">:)",
+    ">;)",
+    ">:-)",
+    "<3",
+}
 
-SAD = set(
-    [
-        ":L",
-        ":-/",
-        ">:/",
-        ":S",
-        ">:[",
-        ":@",
-        ":-(",
-        ":[",
-        ":-||",
-        "=L",
-        ":<",
-        ":-[",
-        ":-<",
-        "=\\",
-        "=/",
-        ">:(",
-        ":(",
-        ">.<",
-        ":'-(",
-        ":'(",
-        ":\\",
-        ":-c",
-        ":c",
-        ":{",
-        ">:\\",
-        ";(",
-    ]
-)
+SAD = {
+    ":L",
+    ":-/",
+    ">:/",
+    ":S",
+    ">:[",
+    ":@",
+    ":-(",
+    ":[",
+    ":-||",
+    "=L",
+    ":<",
+    ":-[",
+    ":-<",
+    "=\\",
+    "=/",
+    ">:(",
+    ":(",
+    ">.<",
+    ":'-(",
+    ":'(",
+    ":\\",
+    ":-c",
+    ":c",
+    ":{",
+    ">:\\",
+    ";(",
+}
 
 
 def timer(method):
@@ -145,13 +141,9 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print("[TIMER] {0}(): {:.3f} seconds".format(method.__name__, tot_time))
+            print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
         else:
-            print(
-                "[TIMER] {0}(): {1}h {2}m {3}s".format(
-                    method.__name__, hours, mins, secs
-                )
-            )
+            print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
         return result
 
     return timed
@@ -188,7 +180,7 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
     if handle_negation:
         document = mark_negation(document)
     for word in unigrams:
-        features["contains({0})".format(word)] = word in set(document)
+        features[f"contains({word})"] = word in set(document)
     return features
 
 
@@ -211,9 +203,7 @@ def extract_bigram_feats(document, bigrams):
     """
     features = {}
     for bigr in bigrams:
-        features["contains({0} - {1})".format(bigr[0], bigr[1])] = bigr in nltk.bigrams(
-            document
-        )
+        features[f"contains({bigr[0]} - {bigr[1]})"] = bigr in nltk.bigrams(document)
     return features
 
 
@@ -269,19 +259,19 @@ def output_markdown(filename, **kwargs):
     """
     with codecs.open(filename, "at") as outfile:
         text = "\n*** \n\n"
-        text += "{0} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
+        text += "{} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
             if isinstance(kwargs[k], dict):
                 dictionary = kwargs[k]
-                text += "  - **{0}:**\n".format(k)
+                text += f"  - **{k}:**\n"
                 for entry in sorted(dictionary):
-                    text += "    - {0}: {1} \n".format(entry, dictionary[entry])
+                    text += f"    - {entry}: {dictionary[entry]} \n"
             elif isinstance(kwargs[k], list):
-                text += "  - **{0}:**\n".format(k)
+                text += f"  - **{k}:**\n"
                 for entry in kwargs[k]:
-                    text += "    - {0}\n".format(entry)
+                    text += f"    - {entry}\n"
             else:
-                text += "  - **{0}:** {1} \n".format(k, kwargs[k])
+                text += f"  - **{k}:** {kwargs[k]} \n"
         outfile.write(text)
 
 
@@ -448,7 +438,7 @@ def parse_tweets_set(
         for tweet_id, text in reader:
             # text = text[1]
             i += 1
-            sys.stdout.write("Loaded {0} tweets\r".format(i))
+            sys.stdout.write(f"Loaded {i} tweets\r")
             # Apply sentence and word tokenizer to text
             if word_tokenizer:
                 tweet = [
@@ -460,7 +450,7 @@ def parse_tweets_set(
                 tweet = text
             tweets.append((tweet, label))
 
-    print("Loaded {0} tweets".format(i))
+    print(f"Loaded {i} tweets")
     return tweets
 
 
@@ -483,9 +473,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
         negative.
     :param output: the output file where results have to be reported.
     """
-    from nltk.tokenize import TweetTokenizer
+    from nltk.corpus import stopwords, twitter_samples
     from nltk.sentiment import SentimentAnalyzer
-    from nltk.corpus import twitter_samples, stopwords
+    from nltk.tokenize import TweetTokenizer
 
     # Different customizations for the TweetTokenizer
     tokenizer = TweetTokenizer(preserve_case=False)
@@ -640,8 +630,8 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         and negative.
     :param output: the output file where results have to be reported.
     """
-    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import subjectivity
+    from nltk.sentiment import SentimentAnalyzer
 
     if n_instances is not None:
         n_instances = int(n_instances / 2)
@@ -788,14 +778,13 @@ def demo_vader_tweets(n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from collections import defaultdict
+
     from nltk.corpus import twitter_samples
+    from nltk.metrics import accuracy as eval_accuracy
+    from nltk.metrics import f_measure as eval_f_measure
+    from nltk.metrics import precision as eval_precision
+    from nltk.metrics import recall as eval_recall
     from nltk.sentiment import SentimentIntensityAnalyzer
-    from nltk.metrics import (
-        accuracy as eval_accuracy,
-        precision as eval_precision,
-        recall as eval_recall,
-        f_measure as eval_f_measure,
-    )
 
     if n_instances is not None:
         n_instances = int(n_instances / 2)
@@ -857,14 +846,14 @@ def demo_vader_tweets(n_instances=None, output=None):
         accuracy_score = eval_accuracy(acc_gold_results, acc_test_results)
         metrics_results["Accuracy"] = accuracy_score
         precision_score = eval_precision(gold_results[label], test_results[label])
-        metrics_results["Precision [{0}]".format(label)] = precision_score
+        metrics_results[f"Precision [{label}]"] = precision_score
         recall_score = eval_recall(gold_results[label], test_results[label])
-        metrics_results["Recall [{0}]".format(label)] = recall_score
+        metrics_results[f"Recall [{label}]"] = recall_score
         f_measure_score = eval_f_measure(gold_results[label], test_results[label])
-        metrics_results["F-measure [{0}]".format(label)] = f_measure_score
+        metrics_results[f"F-measure [{label}]"] = f_measure_score
 
     for result in sorted(metrics_results):
-        print("{0}: {1}".format(result, metrics_results[result]))
+        print(f"{result}: {metrics_results[result]}")
 
     if output:
         output_markdown(
@@ -877,9 +866,10 @@ def demo_vader_tweets(n_instances=None, output=None):
 
 
 if __name__ == "__main__":
-    from nltk.classify import NaiveBayesClassifier, MaxentClassifier
-    from nltk.classify.scikitlearn import SklearnClassifier
     from sklearn.svm import LinearSVC
+
+    from nltk.classify import MaxentClassifier, NaiveBayesClassifier
+    from nltk.classify.scikitlearn import SklearnClassifier
     from nltk.twitter.common import _outf_writer, extract_fields
 
     naive_bayes = NaiveBayesClassifier.train

@@ -77,9 +77,8 @@ What about this one?
 
 from collections import defaultdict
 
-from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist
-
 from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.probability import DictionaryProbDist, ELEProbDist, FreqDist
 
 ##//////////////////////////////////////////////////////
 ##  Positive Naive Bayes Classifier

@@ -28,11 +28,17 @@ with open(version_file) as fh:
     nltk_version = fh.read().strip()
 
 # setuptools
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # Specify groups of optional dependencies
 extras_require = {
-    "machine_learning": ["gensim<4.0.0", "numpy", "python-crfsuite", "scikit-learn", "scipy"],
+    "machine_learning": [
+        "gensim<4.0.0",
+        "numpy",
+        "python-crfsuite",
+        "scikit-learn",
+        "scipy",
+    ],
     "plot": ["matplotlib"],
     "tgrep": ["pyparsing"],
     "twitter": ["twython"],
@@ -40,9 +46,9 @@ extras_require = {
 }
 
 # Add a group made up of all optional dependencies
-extras_require["all"] = set(
+extras_require["all"] = {
     package for group in extras_require.values() for package in group
-)
+}
 
 # Adds CLI commands
 console_scripts = """
@@ -60,7 +66,7 @@ setup(
     project_urls={
         "Documentation": _project_homepage,
         "Source Code": "https://github.com/nltk/nltk",
-        "Issue Tracker": "https://github.com/nltk/nltk/issues"
+        "Issue Tracker": "https://github.com/nltk/nltk/issues",
     },
     long_description="""\
 The Natural Language Toolkit (NLTK) is a Python package for
@@ -107,7 +113,7 @@ natural language processing.  NLTK requires Python 3.6, 3.7, 3.8, or 3.9.""",
         "Topic :: Text Processing :: Linguistic",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=[
         "click",
         "joblib",

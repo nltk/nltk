@@ -152,21 +152,19 @@ zero-length assertions).
      pattern is valid.
 """
 
-from nltk.data import load
-
 from nltk.chunk.api import ChunkParserI
+from nltk.chunk.regexp import RegexpChunkParser, RegexpParser
 from nltk.chunk.util import (
     ChunkScore,
     accuracy,
-    tagstr2tree,
     conllstr2tree,
     conlltags2tree,
-    tree2conlltags,
+    ieerstr2tree,
+    tagstr2tree,
     tree2conllstr,
     tree2conlltags,
-    ieerstr2tree,
 )
-from nltk.chunk.regexp import RegexpChunkParser, RegexpParser
+from nltk.data import load
 
 # Standard treebank POS tagger
 _BINARY_NE_CHUNKER = "chunkers/maxent_ne_chunker/english_ace_binary.pickle"

@@ -15,15 +15,13 @@ purposes.
 import sys
 from collections import defaultdict
 
-from nltk.classify.util import apply_features, accuracy as eval_accuracy
+from nltk.classify.util import accuracy as eval_accuracy
+from nltk.classify.util import apply_features
 from nltk.collocations import BigramCollocationFinder
-from nltk.metrics import (
-    BigramAssocMeasures,
-    precision as eval_precision,
-    recall as eval_recall,
-    f_measure as eval_f_measure,
-)
-
+from nltk.metrics import BigramAssocMeasures
+from nltk.metrics import f_measure as eval_f_measure
+from nltk.metrics import precision as eval_precision
+from nltk.metrics import recall as eval_recall
 from nltk.probability import FreqDist
 
 
@@ -188,8 +186,9 @@ class SentimentAnalyzer:
         Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
         """
         print("Saving", filename, file=sys.stderr)
-        with open(filename, 'wb') as storage_file:
+        with open(filename, "wb") as storage_file:
             import pickle
+
             # The protocol=2 parameter is for python2 compatibility
             pickle.dump(content, storage_file, protocol=2)
 
@@ -217,7 +216,7 @@ class SentimentAnalyzer:
         """
         if classifier is None:
             classifier = self.classifier
-        print("Evaluating {0} results...".format(type(classifier).__name__))
+        print(f"Evaluating {type(classifier).__name__} results...")
         metrics_results = {}
         if accuracy == True:
             accuracy_score = eval_accuracy(classifier, test_set)
@@ -237,19 +236,19 @@ class SentimentAnalyzer:
                 precision_score = eval_precision(
                     gold_results[label], test_results[label]
                 )
-                metrics_results["Precision [{0}]".format(label)] = precision_score
+                metrics_results[f"Precision [{label}]"] = precision_score
             if recall == True:
                 recall_score = eval_recall(gold_results[label], test_results[label])
-                metrics_results["Recall [{0}]".format(label)] = recall_score
+                metrics_results[f"Recall [{label}]"] = recall_score
             if f_measure == True:
                 f_measure_score = eval_f_measure(
                     gold_results[label], test_results[label]
                 )
-                metrics_results["F-measure [{0}]".format(label)] = f_measure_score
+                metrics_results[f"F-measure [{label}]"] = f_measure_score
 
         # Print evaluation results (in alphabetical order)
         if verbose == True:
             for result in sorted(metrics_results):
-                print("{0}: {1}".format(result, metrics_results[result]))
+                print(f"{result}: {metrics_results[result]}")
 
         return metrics_results

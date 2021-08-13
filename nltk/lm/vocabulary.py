@@ -9,15 +9,13 @@
 import sys
 from collections import Counter
 from collections.abc import Iterable
-from itertools import chain
 from functools import singledispatch
+from itertools import chain
 
 
 @singledispatch
 def _dispatched_lookup(words, vocab):
-    raise TypeError(
-        "Unsupported type for looking up in vocabulary: {0}".format(type(words))
-    )
+    raise TypeError(f"Unsupported type for looking up in vocabulary: {type(words)}")
 
 
 @_dispatched_lookup.register(Iterable)
@@ -138,9 +136,7 @@ class Vocabulary:
         """
         self.unk_label = unk_label
         if unk_cutoff < 1:
-            raise ValueError(
-                "Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff)
-            )
+            raise ValueError(f"Cutoff value cannot be less than 1. Got: {unk_cutoff}")
         self._cutoff = unk_cutoff
 
         self.counts = Counter()
@@ -216,6 +212,6 @@ class Vocabulary:
         )
 
     def __str__(self):
-        return "<{0} with cutoff={1} unk_label='{2}' and {3} items>".format(
+        return "<{} with cutoff={} unk_label='{}' and {} items>".format(
             self.__class__.__name__, self.cutoff, self.unk_label, len(self)
         )

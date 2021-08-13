@@ -11,12 +11,11 @@
 Utility functions for parsers.
 """
 
-from nltk.grammar import CFG, FeatureGrammar, PCFG
 from nltk.data import load
-
+from nltk.grammar import CFG, PCFG, FeatureGrammar
 from nltk.parse.chart import Chart, ChartParser
-from nltk.parse.pchart import InsideChartParser
 from nltk.parse.featurechart import FeatureChart, FeatureChartParser
+from nltk.parse.pchart import InsideChartParser
 
 
 def load_parser(
@@ -136,8 +135,7 @@ def taggedsents_to_conll(sentences):
     :return: a generator yielding sentences in CONLL format.
     """
     for sentence in sentences:
-        for input_str in taggedsent_to_conll(sentence):
-            yield input_str
+        yield from taggedsent_to_conll(sentence)
         yield "\n\n"
 
 

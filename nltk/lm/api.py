@@ -9,13 +9,11 @@
 import random
 from abc import ABCMeta, abstractmethod
 from bisect import bisect
-
+from itertools import accumulate
 
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
-
-from itertools import accumulate
 
 
 class Smoothing(metaclass=ABCMeta):

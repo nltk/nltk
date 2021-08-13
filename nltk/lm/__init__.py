@@ -210,16 +210,16 @@ on 2 preceding words. If you pass in a 4-word context, the first two words
 will be ignored.
 """
 
+from nltk.lm.counter import NgramCounter
 from nltk.lm.models import (
     MLE,
-    Lidstone,
-    Laplace,
-    WittenBellInterpolated,
-    KneserNeyInterpolated,
     AbsoluteDiscountingInterpolated,
-    StupidBackoff
+    KneserNeyInterpolated,
+    Laplace,
+    Lidstone,
+    StupidBackoff,
+    WittenBellInterpolated,
 )
-from nltk.lm.counter import NgramCounter
 from nltk.lm.vocabulary import Vocabulary
 
 __all__ = [
@@ -231,5 +231,5 @@ __all__ = [
     "WittenBellInterpolated",
     "KneserNeyInterpolated",
     "AbsoluteDiscountingInterpolated",
-    "StupidBackoff"
+    "StupidBackoff",
 ]

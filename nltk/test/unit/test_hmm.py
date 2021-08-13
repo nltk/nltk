@@ -1,19 +1,20 @@
-from nltk.tag import hmm
 import pytest
+
+from nltk.tag import hmm
 
 
 def _wikipedia_example_hmm():
     # Example from wikipedia
     # (http://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm)
 
-    states = ['rain', 'no rain']
-    symbols = ['umbrella', 'no umbrella']
+    states = ["rain", "no rain"]
+    symbols = ["umbrella", "no umbrella"]
 
     A = [[0.7, 0.3], [0.3, 0.7]]  # transition probabilities
     B = [[0.9, 0.1], [0.2, 0.8]]  # emission probabilities
     pi = [0.5, 0.5]  # initial probabilities
 
-    seq = ['umbrella', 'umbrella', 'no umbrella', 'umbrella', 'umbrella']
+    seq = ["umbrella", "umbrella", "no umbrella", "umbrella", "umbrella"]
     seq = list(zip(seq, [None] * len(seq)))
 
     model = hmm._create_hmm_tagger(states, symbols, A, B, pi)
@@ -25,7 +26,7 @@ def test_forward_probability():
 
     # example from p. 385, Huang et al
     model, states, symbols = hmm._market_hmm_example()
-    seq = [('up', None), ('up', None)]
+    seq = [("up", None), ("up", None)]
     expected = [[0.35, 0.02, 0.09], [0.1792, 0.0085, 0.0357]]
 
     fp = 2 ** model._forward_probability(seq)
@@ -78,4 +79,4 @@ def test_backward_probability():
 
 
 def setup_module(module):
-    pytest.importorskip('numpy')
+    pytest.importorskip("numpy")

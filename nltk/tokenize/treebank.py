@@ -17,9 +17,10 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 """
 
 import re
+
 from nltk.tokenize.api import TokenizerI
-from nltk.tokenize.util import align_tokens
 from nltk.tokenize.destructive import MacIntyreContractions
+from nltk.tokenize.util import align_tokens
 
 
 class TreebankWordTokenizer(TokenizerI):
@@ -186,8 +187,7 @@ class TreebankWordTokenizer(TokenizerI):
         else:
             tokens = raw_tokens
 
-        for tok in align_tokens(tokens, text):
-            yield tok
+        yield from align_tokens(tokens, text)
 
 
 class TreebankWordDetokenizer(TokenizerI):
@@ -267,7 +267,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"(\S)\s(\'\')"), r"\1\2"),
         (
             re.compile(r"(\'\')\s([.,:)\]>};%])"),
-            r"\1\2"
+            r"\1\2",
         ),  # Quotes followed by no-left-padded punctuations.
         (re.compile(r"''"), '"'),
     ]
@@ -310,12 +310,12 @@ class TreebankWordDetokenizer(TokenizerI):
         (
             re.compile(r"\s([:,])"),
             r"\1",
-        )  # Just remove left padding. Punctuation in numbers won't be padded.
+        ),  # Just remove left padding. Punctuation in numbers won't be padded.
     ]
 
     # starting quotes
     STARTING_QUOTES = [
-        (re.compile(r"([ (\[{<])\s``"), r'\1``'),
+        (re.compile(r"([ (\[{<])\s``"), r"\1``"),
         (re.compile(r"(``)\s"), r"\1"),
         (re.compile(r"``"), r'"'),
     ]
@@ -367,5 +367,5 @@ class TreebankWordDetokenizer(TokenizerI):
         return text.strip()
 
     def detokenize(self, tokens, convert_parentheses=False):
-        """ Duck-typing the abstract *tokenize()*."""
+        """Duck-typing the abstract *tokenize()*."""
         return self.tokenize(tokens, convert_parentheses)

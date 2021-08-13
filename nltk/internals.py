@@ -7,16 +7,16 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import subprocess
-import os
 import fnmatch
+import locale
+import os
 import re
-import warnings
+import stat
+import subprocess
+import sys
 import textwrap
 import types
-import sys
-import stat
-import locale
+import warnings
 from xml.etree import ElementTree
 
 ##########################################################################
@@ -181,7 +181,7 @@ class ReadError(ValueError):
         self.position = position
 
     def __str__(self):
-        return "Expected %s at %s" % (self.expected, self.position)
+        return f"Expected {self.expected} at {self.position}"
 
 
 _STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
@@ -396,7 +396,7 @@ def _add_epytext_field(obj, field, message):
         obj.__doc__ = ""
 
     obj.__doc__ += textwrap.fill(
-        "@%s: %s" % (field, message),
+        f"@{field}: {message}",
         initial_indent=indent,
         subsequent_indent=indent + "    ",
     )
@@ -415,7 +415,7 @@ def deprecated(message):
     """
 
     def decorator(func):
-        msg = "Function %s() has been deprecated.  %s" % (func.__name__, message)
+        msg = f"Function {func.__name__}() has been deprecated.  {message}"
         msg = "\n" + textwrap.fill(msg, initial_indent="  ", subsequent_indent="  ")
 
         def newFunc(*args, **kwargs):
@@ -470,7 +470,7 @@ class Deprecated:
         if cls != dep_cls:
             name += " (base class for %s)" % cls.__name__
         # Put it all together.
-        msg = "%s has been deprecated.  %s" % (name, doc)
+        msg = f"{name} has been deprecated.  {doc}"
         # Wrap it.
         msg = "\n" + textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
         warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
@@ -533,20 +533,20 @@ def find_file_iter(
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print("[Found %s: %s]" % (filename, path_to_file))
+                print(f"[Found {filename}: {path_to_file}]")
             yielded = True
             yield path_to_file
         # Check the bare alternatives
         if os.path.isfile(alternative):
             if verbose:
-                print("[Found %s: %s]" % (filename, alternative))
+                print(f"[Found {filename}: {alternative}]")
             yielded = True
             yield alternative
         # Check if the alternative is inside a 'file' directory
         path_to_file = os.path.join(filename, "file", alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print("[Found %s: %s]" % (filename, path_to_file))
+                print(f"[Found {filename}: {path_to_file}]")
             yielded = True
             yield path_to_file
 
@@ -561,7 +561,7 @@ def find_file_iter(
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
                     if verbose:
-                        print("[Found %s: %s]" % (filename, env_dir))
+                        print(f"[Found {filename}: {env_dir}]")
                     yielded = True
                     yield env_dir
                 # Check if the possible bin names exist inside the environment variable directories
@@ -569,7 +569,7 @@ def find_file_iter(
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print("[Found %s: %s]" % (filename, path_to_file))
+                            print(f"[Found {filename}: {path_to_file}]")
                         yielded = True
                         yield path_to_file
                     # Check if the alternative is inside a 'file' directory
@@ -580,7 +580,7 @@ def find_file_iter(
 
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print("[Found %s: %s]" % (filename, path_to_file))
+                            print(f"[Found {filename}: {path_to_file}]")
                         yielded = True
                         yield path_to_file
 
@@ -606,7 +606,7 @@ def find_file_iter(
                 path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose:
-                        print("[Found %s: %s]" % (filename, path))
+                        print(f"[Found {filename}: {path}]")
                     yielded = True
                     yield path
             except (KeyboardInterrupt, SystemExit, OSError):
@@ -627,9 +627,9 @@ def find_file_iter(
             msg += "\n\n  Searched in:"
             msg += "".join("\n    - %s" % d for d in searchpath)
         if url:
-            msg += "\n\n  For more information on %s, see:\n    <%s>" % (filename, url)
+            msg += f"\n\n  For more information on {filename}, see:\n    <{url}>"
         div = "=" * 75
-        raise LookupError("\n\n%s\n%s\n%s" % (div, msg, div))
+        raise LookupError(f"\n\n{div}\n{msg}\n{div}")
 
 
 def find_file(
@@ -670,10 +670,9 @@ def find_binary_iter(
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    for file in find_file_iter(
+    yield from find_file_iter(
         path_to_bin or name, env_vars, searchpath, binary_names, url, verbose
-    ):
-        yield file
+    )
 
 
 def find_binary(
@@ -730,7 +729,7 @@ def find_jar_iter(
             yield path_to_jar
         else:
             raise LookupError(
-                "Could not find %s jar file at %s" % (name_pattern, path_to_jar)
+                f"Could not find {name_pattern} jar file at {path_to_jar}"
             )
 
     # Check environment variables
@@ -747,7 +746,7 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print("[Found %s: %s]" % (name_pattern, cp))
+                                print(f"[Found {name_pattern}: {cp}]")
                             yielded = True
                             yield cp
                     # The case where user put directory containing the jar file in the classpath
@@ -755,7 +754,7 @@ def find_jar_iter(
                         if not is_regex:
                             if os.path.isfile(os.path.join(cp, name_pattern)):
                                 if verbose:
-                                    print("[Found %s: %s]" % (name_pattern, cp))
+                                    print(f"[Found {name_pattern}: {cp}]")
                                 yielded = True
                                 yield os.path.join(cp, name_pattern)
                         else:
@@ -792,7 +791,7 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print("[Found %s: %s]" % (name_pattern, path_to_jar))
+                                print(f"[Found {name_pattern}: {path_to_jar}]")
                             yielded = True
                             yield path_to_jar
 
@@ -804,14 +803,14 @@ def find_jar_iter(
                 if os.path.isfile(path_to_jar):
                     if re.match(name_pattern, filename):
                         if verbose:
-                            print("[Found %s: %s]" % (filename, path_to_jar))
+                            print(f"[Found {filename}: {path_to_jar}]")
                 yielded = True
                 yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
                 if verbose:
-                    print("[Found %s: %s]" % (name_pattern, path_to_jar))
+                    print(f"[Found {name_pattern}: {path_to_jar}]")
                 yielded = True
                 yield path_to_jar
 
@@ -825,12 +824,12 @@ def find_jar_iter(
             msg += "\n\n  Searched in:"
             msg += "".join("\n    - %s" % d for d in searchpath)
         if url:
-            msg += "\n\n  For more information, on %s, see:\n    <%s>" % (
+            msg += "\n\n  For more information, on {}, see:\n    <{}>".format(
                 name_pattern,
                 url,
             )
         div = "=" * 75
-        raise LookupError("\n\n%s\n%s\n%s" % (div, msg, div))
+        raise LookupError(f"\n\n{div}\n{msg}\n{div}")
 
 
 def find_jar(
@@ -858,7 +857,7 @@ def find_jars_within_path(path_to_jars):
 
 
 def _decode_stdoutdata(stdoutdata):
-    """ Convert data read from stdout/stderr to unicode """
+    """Convert data read from stdout/stderr to unicode"""
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
 
@@ -893,7 +892,6 @@ def import_from_stdlib(module):
 ##########################################################################
 # Wrapper for ElementTree Elements
 ##########################################################################
-
 
 
 class ElementWrapper:
@@ -951,7 +949,7 @@ class ElementWrapper:
             e = s.rfind("<")
             if (len(s) - e) > 30:
                 e = -20
-            s = "%s...%s" % (s[:30], s[e:])
+            s = f"{s[:30]}...{s[e:]}"
         return "<Element %r>" % s
 
     def __str__(self):

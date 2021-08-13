@@ -15,9 +15,8 @@ import re
 from collections import defaultdict
 from itertools import chain
 
-from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-
 from nltk.corpus.reader.util import *
+from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
 
 
 class CorpusReader:
@@ -116,10 +115,10 @@ class CorpusReader:
 
     def __repr__(self):
         if isinstance(self._root, ZipFilePathPointer):
-            path = "%s/%s" % (self._root.zipfile.filename, self._root.entry)
+            path = f"{self._root.zipfile.filename}/{self._root.entry}"
         else:
             path = "%s" % self._root.path
-        return "<%s in %r>" % (self.__class__.__name__, path)
+        return f"<{self.__class__.__name__} in {path!r}>"
 
     def ensure_loaded(self):
         """
@@ -370,7 +369,7 @@ class CategorizedCorpusReader:
             return sorted(self._c2f)
         if isinstance(fileids, str):
             fileids = [fileids]
-        return sorted(set.union(*[self._f2c[d] for d in fileids]))
+        return sorted(set.union(*(self._f2c[d] for d in fileids)))
 
     def fileids(self, categories=None):
         """
@@ -378,7 +377,7 @@ class CategorizedCorpusReader:
         this corpus, or that make up the given category(s) if specified.
         """
         if categories is None:
-            return super(CategorizedCorpusReader, self).fileids()
+            return super().fileids()
         elif isinstance(categories, str):
             if self._f2c is None:
                 self._init()
@@ -389,7 +388,7 @@ class CategorizedCorpusReader:
         else:
             if self._f2c is None:
                 self._init()
-            return sorted(set.union(*[self._c2f[c] for c in categories]))
+            return sorted(set.union(*(self._c2f[c] for c in categories)))
 
     def _resolve(self, fileids, categories):
         if fileids is not None and categories is not None:

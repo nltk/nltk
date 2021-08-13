@@ -1,5 +1,6 @@
-from io import BytesIO
 import os
+from io import BytesIO
+
 import pytest
 
 from nltk.corpus.reader import SeekableUnicodeStreamReader
@@ -30,8 +31,9 @@ def check_reader(unicode_string, encoding):
         contents += char
     assert unicode_string == contents
 
+
 # Call `check_reader` with a variety of input strings and encodings.
-ENCODINGS = ['ascii', 'latin1', 'greek', 'hebrew', 'utf-16', 'utf-8']
+ENCODINGS = ["ascii", "latin1", "greek", "hebrew", "utf-16", "utf-8"]
 
 STRINGS = [
     """
@@ -55,7 +57,8 @@ STRINGS = [
     some unicode chars: \xee \u0123 \uffe3 \ueeee \u2345
 
     How fun!  Let's repeat it twenty times.
-    """ * 20
+    """
+    * 20,
 ]
 
 
@@ -71,7 +74,7 @@ def test_reader(string):
 
 
 def test_reader_stream_closes_when_deleted():
-    reader = SeekableUnicodeStreamReader(BytesIO(b''), 'ascii')
+    reader = SeekableUnicodeStreamReader(BytesIO(b""), "ascii")
     assert not reader.stream.closed
     reader.__del__()
     assert reader.stream.closed
@@ -79,4 +82,5 @@ def test_reader_stream_closes_when_deleted():
 
 def teardown_module(module=None):
     import gc
+
     gc.collect()

@@ -25,6 +25,7 @@ import inspect
 
 sys.path = OLD_SYS_PATH
 
+
 def __legacysignature(signature):
     """
     For retrocompatibility reasons, we don't use a standard Signature.
@@ -34,7 +35,7 @@ def __legacysignature(signature):
     listsignature = str(signature)[1:-1].split(",")
     for counter, param in enumerate(listsignature):
         if param.count("=") > 0:
-            listsignature[counter] = param[0:param.index("=")].strip()
+            listsignature[counter] = param[0 : param.index("=")].strip()
         else:
             listsignature[counter] = param.strip()
     return ", ".join(listsignature)
@@ -82,7 +83,6 @@ def getinfo(func):
     # Convert Signature to str
     signature = __legacysignature(fullsignature)
 
-
     # pypy compatibility
     if hasattr(func, "__closure__"):
         _closure = func.__closure__
@@ -106,7 +106,7 @@ def getinfo(func):
 
 
 def update_wrapper(wrapper, model, infodict=None):
-    " akin to functools.update_wrapper "
+    "akin to functools.update_wrapper"
     infodict = infodict or getinfo(model)
     wrapper.__name__ = infodict["name"]
     wrapper.__doc__ = infodict["doc"]

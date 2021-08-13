@@ -6,19 +6,18 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
 import os
+import tempfile
 import warnings
 from subprocess import PIPE
 
 from nltk.internals import (
-    find_jar_iter,
-    config_java,
-    java,
     _java_options,
+    config_java,
+    find_jar_iter,
     find_jars_within_path,
+    java,
 )
-
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
@@ -333,7 +332,7 @@ class StanfordParser(GenericStanfordParser):
             stacklevel=2,
         )
 
-        super(StanfordParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _make_tree(self, result):
         return Tree.fromstring(result)
@@ -399,7 +398,7 @@ class StanfordDependencyParser(GenericStanfordParser):
             stacklevel=2,
         )
 
-        super(StanfordDependencyParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label="root")
@@ -452,7 +451,7 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
             stacklevel=2,
         )
 
-        super(StanfordNeuralDependencyParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.corenlp_options += "-annotators tokenize,ssplit,pos,depparse"
 
     def tagged_parse_sents(self, sentences, verbose=False):

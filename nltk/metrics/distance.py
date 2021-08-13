@@ -19,8 +19,8 @@ As metrics, they must satisfy the following three requirements:
 3. d(a, c) <= d(a, b) + d(b, c)
 """
 
-import warnings
 import operator
+import warnings
 
 
 def _edit_dist_init(len1, len2):
@@ -188,9 +188,7 @@ def binary_distance(label1, label2):
 
 
 def jaccard_distance(label1, label2):
-    """Distance metric comparing set-similarity.
-
-    """
+    """Distance metric comparing set-similarity."""
     return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(
         label1.union(label2)
     )
@@ -242,16 +240,14 @@ def interval_distance(label1, label2):
 
 
 def presence(label):
-    """Higher-order function to test presence of a given label
-    """
+    """Higher-order function to test presence of a given label"""
 
     return lambda x, y: 1.0 * ((label in x) == (label in y))
 
 
 def fractional_presence(label):
     return (
-        lambda x, y: abs((1.0 / len(x)) - (1.0 / len(y)))
-        * (label in x and label in y)
+        lambda x, y: abs((1.0 / len(x)) - (1.0 / len(y))) * (label in x and label in y)
         or 0.0 * (label not in x and label not in y)
         or abs(1.0 / len(x)) * (label in x and label not in y)
         or (1.0 / len(y)) * (label not in x and label in y)
@@ -260,7 +256,7 @@ def fractional_presence(label):
 
 def custom_distance(file):
     data = {}
-    with open(file, "r") as infile:
+    with open(file) as infile:
         for l in infile:
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])
@@ -271,7 +267,7 @@ def custom_distance(file):
 
 def jaro_similarity(s1, s2):
     """
-   Computes the Jaro similarity between 2 sequences from:
+    Computes the Jaro similarity between 2 sequences from:
 
         Matthew A. Jaro (1989). Advances in record linkage methodology
         as applied to the 1985 census of Tampa Florida. Journal of the
@@ -458,22 +454,22 @@ def demo():
         ("language", "lngauage"),
     ]
     for s1, s2 in string_distance_examples:
-        print("Edit distance btwn '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
+        print(f"Edit distance btwn '{s1}' and '{s2}':", edit_distance(s1, s2))
         print(
-            "Edit dist with transpositions btwn '%s' and '%s':" % (s1, s2),
+            f"Edit dist with transpositions btwn '{s1}' and '{s2}':",
             edit_distance(s1, s2, transpositions=True),
         )
-        print("Jaro similarity btwn '%s' and '%s':" % (s1, s2), jaro_similarity(s1, s2))
+        print(f"Jaro similarity btwn '{s1}' and '{s2}':", jaro_similarity(s1, s2))
         print(
-            "Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
+            f"Jaro-Winkler similarity btwn '{s1}' and '{s2}':",
             jaro_winkler_similarity(s1, s2),
         )
         print(
-            "Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
+            f"Jaro-Winkler distance btwn '{s1}' and '{s2}':",
             1 - jaro_winkler_similarity(s1, s2),
         )
-    s1 = set([1, 2, 3, 4])
-    s2 = set([3, 4, 5])
+    s1 = {1, 2, 3, 4}
+    s2 = {3, 4, 5}
     print("s1:", s1)
     print("s2:", s2)
     print("Binary distance:", binary_distance(s1, s2))

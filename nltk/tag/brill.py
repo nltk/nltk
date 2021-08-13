@@ -7,12 +7,11 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 
+from nltk import jsontags
 from nltk.tag import TaggerI
 from nltk.tbl import Feature, Template
-from nltk import jsontags
-
 
 ######################################################################
 # Brill Templates
@@ -304,9 +303,10 @@ class BrillTagger(TaggerI):
         train_stats = self.train_stats()
 
         trainscores = train_stats["rulescores"]
-        assert len(trainscores) == len(tids), (
-            "corrupt statistics: "
-            "{0} train scores for {1} rules".format(trainscores, tids)
+        assert len(trainscores) == len(
+            tids
+        ), "corrupt statistics: " "{} train scores for {} rules".format(
+            trainscores, tids
         )
         template_counts = Counter(tids)
         weighted_traincounts = Counter()
@@ -323,7 +323,7 @@ class BrillTagger(TaggerI):
 
         def print_train_stats():
             print(
-                "TEMPLATE STATISTICS (TRAIN)  {0} templates, {1} rules)".format(
+                "TEMPLATE STATISTICS (TRAIN)  {} templates, {} rules)".format(
                     len(template_counts), len(tids)
                 )
             )
@@ -337,7 +337,7 @@ class BrillTagger(TaggerI):
                 weighted_traincounts.items(), key=det_tplsort, reverse=True
             )
             for (tid, trainscore) in train_tplscores:
-                s = "{0} | {1:5d}   {2:5.3f} |{3:4d}   {4:.3f} | {5}".format(
+                s = "{} | {:5d}   {:5.3f} |{:4d}   {:.3f} | {}".format(
                     tid,
                     trainscore,
                     trainscore / tottrainscores,
@@ -350,7 +350,7 @@ class BrillTagger(TaggerI):
         def print_testtrain_stats():
             testscores = test_stats["rulescores"]
             print(
-                "TEMPLATE STATISTICS (TEST AND TRAIN) ({0} templates, {1} rules)".format(
+                "TEMPLATE STATISTICS (TEST AND TRAIN) ({} templates, {} rules)".format(
                     len(template_counts), len(tids)
                 )
             )
@@ -372,7 +372,7 @@ class BrillTagger(TaggerI):
                 weighted_testcounts.items(), key=det_tplsort, reverse=True
             )
             for (tid, testscore) in test_tplscores:
-                s = "{0:s} |{1:5d}  {2:6.3f} |  {3:4d}   {4:.3f} |{5:4d}   {6:.3f} | {7:s}".format(
+                s = "{:s} |{:5d}  {:6.3f} |  {:4d}   {:.3f} |{:4d}   {:.3f} | {:s}".format(
                     tid,
                     testscore,
                     testscore / tottestscores,
@@ -385,16 +385,16 @@ class BrillTagger(TaggerI):
                 print(s)
 
         def print_unused_templates():
-            usedtpls = set(int(tid) for tid in tids)
+            usedtpls = {int(tid) for tid in tids}
             unused = [
                 (tid, tpl)
                 for (tid, tpl) in enumerate(Template.ALLTEMPLATES)
                 if tid not in usedtpls
             ]
-            print("UNUSED TEMPLATES ({0})".format(len(unused)))
+            print(f"UNUSED TEMPLATES ({len(unused)})")
 
             for (tid, tpl) in unused:
-                print("{0:03d} {1:s}".format(tid, str(tpl)))
+                print(f"{tid:03d} {str(tpl):s}")
 
         if test_stats is None:
             print_train_stats()

@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 from functools import reduce
-from nltk.tree import Tree, ProbabilisticTree
 
 from nltk.parse.api import ParserI
+from nltk.tree import ProbabilisticTree, Tree
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -308,13 +308,13 @@ class ViterbiParser(ParserI):
         str += "." * (width - span[1]) + "| "
         str += "%s" % production
         if self._trace > 2:
-            str = "%-40s %12.10f " % (str, p)
+            str = f"{str:<40} {p:12.10f} "
 
         print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
         str = "   Insert: |" + "." * index + "=" + "." * (width - index - 1) + "| "
-        str += "%s" % (token,)
+        str += f"{token}"
         print(str)
 
     def __repr__(self):
@@ -333,10 +333,12 @@ def demo():
     be found; and then each parser is run on the same demo, and a
     summary of the results are displayed.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk import tokenize
-    from nltk.parse import ViterbiParser
     from nltk.grammar import toy_pcfg1, toy_pcfg2
+    from nltk.parse import ViterbiParser
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [
@@ -347,7 +349,7 @@ def demo():
     # Ask the user which demo they want to use.
     print()
     for i in range(len(demos)):
-        print("%3s: %s" % (i + 1, demos[i][0]))
+        print(f"{i + 1:>3}: {demos[i][0]}")
         print("     %r" % demos[i][1])
         print()
     print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
@@ -364,7 +366,7 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print("\nsent: %s\nparser: %s\ngrammar: %s" % (sent, parser, grammar))
+    print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
     parser.trace(3)
     t = time.time()
     parses = parser.parse_all(tokens)

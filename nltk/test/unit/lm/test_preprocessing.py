@@ -21,8 +21,8 @@ class TestPreprocessing(unittest.TestCase):
                 ("b", "c"),
                 ("c",),
                 ("c", "</s>"),
-                ("</s>",)
-             ]
+                ("</s>",),
+            ]
         ]
         expected_vocab = ["<s>", "a", "b", "c", "</s>"]
         train_data, vocab_data = padded_everygram_pipeline(2, [["a", "b", "c"]])

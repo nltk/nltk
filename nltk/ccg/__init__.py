@@ -11,24 +11,24 @@ Combinatory Categorial Grammar.
 For more information see nltk/doc/contrib/ccg/ccg.pdf
 """
 
+from nltk.ccg.chart import CCGChart, CCGChartParser, CCGEdge, CCGLeafEdge
 from nltk.ccg.combinator import (
-    UndirectedBinaryCombinator,
-    DirectedBinaryCombinator,
-    ForwardCombinator,
-    BackwardCombinator,
-    UndirectedFunctionApplication,
-    ForwardApplication,
     BackwardApplication,
-    UndirectedComposition,
-    ForwardComposition,
-    BackwardComposition,
     BackwardBx,
-    UndirectedSubstitution,
-    ForwardSubstitution,
+    BackwardCombinator,
+    BackwardComposition,
     BackwardSx,
-    UndirectedTypeRaise,
-    ForwardT,
     BackwardT,
+    DirectedBinaryCombinator,
+    ForwardApplication,
+    ForwardCombinator,
+    ForwardComposition,
+    ForwardSubstitution,
+    ForwardT,
+    UndirectedBinaryCombinator,
+    UndirectedComposition,
+    UndirectedFunctionApplication,
+    UndirectedSubstitution,
+    UndirectedTypeRaise,
 )
-from nltk.ccg.chart import CCGEdge, CCGLeafEdge, CCGChartParser, CCGChart
 from nltk.ccg.lexicon import CCGLexicon

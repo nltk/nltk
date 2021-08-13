@@ -11,11 +11,10 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 
 import sys
 
-from nltk.tree import Tree
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag
+from nltk.tree import Tree
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
 SORTTAGWRD = re.compile(r"\((\d+) ([^\s()]+) ([^\s()]+)\)")
@@ -90,7 +89,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         try:
             tree = Tree.fromstring(self._normalize(t))
             # If there's an empty node at the top, strip it off
-            if tree.label() == '' and len(tree) == 1:
+            if tree.label() == "" and len(tree) == 1:
                 return tree[0]
             else:
                 return tree

@@ -148,7 +148,7 @@ class Rule(TagRule):
             obj["templateid"],
             obj["original"],
             obj["replacement"],
-            tuple(tuple(feat) for feat in obj["conditions"])
+            tuple(tuple(feat) for feat in obj["conditions"]),
         )
 
     def applies(self, tokens, index):
@@ -201,17 +201,14 @@ class Rule(TagRule):
         try:
             return self.__repr
         except AttributeError:
-            self.__repr = "{0}('{1}', {2}, {3}, [{4}])".format(
+            self.__repr = "{}('{}', {}, {}, [{}])".format(
                 self.__class__.__name__,
                 self.templateid,
                 repr(self.original_tag),
                 repr(self.replacement_tag),
                 # list(self._conditions) would be simpler but will not generate
                 # the same Rule.__repr__ in python 2 and 3 and thus break some tests
-                ", ".join(
-                    "({0},{1})".format(f, repr(v))
-                    for (f, v) in self._conditions
-                ),
+                ", ".join(f"({f},{repr(v)})" for (f, v) in self._conditions),
             )
 
             return self.__repr
@@ -222,7 +219,7 @@ class Rule(TagRule):
             Return a compact, predicate-logic styled string representation
             of the given condition.
             """
-            return "{0}:{1}@[{2}]".format(
+            return "{}:{}@[{}]".format(
                 feature.PROPERTY_NAME,
                 value,
                 ",".join(str(w) for w in feature.positions),
@@ -231,9 +228,7 @@ class Rule(TagRule):
         conditions = " & ".join(
             [_condition_to_logic(f, v) for (f, v) in self._conditions]
         )
-        s = "{0}->{1} if {2}".format(
-            self.original_tag, self.replacement_tag, conditions
-        )
+        s = f"{self.original_tag}->{self.replacement_tag} if {conditions}"
 
         return s
 
@@ -279,7 +274,7 @@ class Rule(TagRule):
         elif fmt == "verbose":
             return self._verbose_format()
         else:
-            raise ValueError("unknown rule format spec: {0}".format(fmt))
+            raise ValueError(f"unknown rule format spec: {fmt}")
 
     def _verbose_format(self):
         """
@@ -290,7 +285,7 @@ class Rule(TagRule):
         """
 
         def condition_to_str(feature, value):
-            return 'the %s of %s is "%s"' % (
+            return 'the {} of {} is "{}"'.format(
                 feature.PROPERTY_NAME,
                 range_to_str(feature.positions),
                 value,
@@ -316,9 +311,11 @@ class Rule(TagRule):
                 if mx - mn == len(positions) - 1:
                     return "words i%+d...i%+d" % (mn, mx)
                 else:
-                    return "words {%s}" % (",".join("i%+d" % d for d in positions),)
+                    return "words {{{}}}".format(
+                        ",".join("i%+d" % d for d in positions)
+                    )
 
-        replacement = "%s -> %s" % (self.original_tag, self.replacement_tag)
+        replacement = f"{self.original_tag} -> {self.replacement_tag}"
         conditions = (" if " if self._conditions else "") + ", and ".join(
             condition_to_str(f, v) for (f, v) in self._conditions
         )
