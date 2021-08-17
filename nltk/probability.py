@@ -244,7 +244,9 @@ class FreqDist(Counter):
             )
         return self.most_common(1)[0][0]
 
-    def plot(self, *args, **kwargs):
+    def plot(
+        self, *args, title="", cumulative=False, percents=False, show=True, **kwargs
+    ):
         """
         Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
@@ -252,10 +254,14 @@ class FreqDist(Counter):
         plotted.  For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
-        :param title: The title for the graph
+        :param title: The title for the graph.
         :type title: str
-        :param cumulative: A flag to specify whether the plot is cumulative (default = False)
-        :type title: bool
+        :param cumulative: Whether the plot is cumulative. (default = False)
+        :type cumulative: bool
+        :param percents: Whether the plot uses percents instead of counts. Only when cumulative is True.
+        :type percents: bool
+        :param show: Whether to show the plot, or only return the ax.
+        :type show: bool
         """
         try:
             import matplotlib.pyplot as plt
@@ -269,8 +275,6 @@ class FreqDist(Counter):
             args = [len(self)]
         samples = [item for item, _ in self.most_common(*args)]
 
-        cumulative = _get_kwarg(kwargs, "cumulative", False)
-        percents = _get_kwarg(kwargs, "percents", False)
         if cumulative:
             freqs = list(self._cumulative_frequencies(samples))
             ylabel = "Cumulative Counts"
@@ -287,9 +291,8 @@ class FreqDist(Counter):
 
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
-        if "title" in kwargs:
-            ax.set_title(kwargs["title"])
-            del kwargs["title"]
+        if title:
+            ax.set_title(title)
 
         ax.plot(freqs, **kwargs)
         ax.set_xticks(range(len(samples)))
@@ -297,7 +300,8 @@ class FreqDist(Counter):
         ax.set_xlabel("Samples")
         ax.set_ylabel(ylabel)
 
-        plt.show()
+        if show:
+            plt.show()
 
         return ax
 
