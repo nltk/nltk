@@ -15,6 +15,7 @@ import re
 import sys
 import textwrap
 import types
+import warnings
 from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee
 from pprint import pprint
