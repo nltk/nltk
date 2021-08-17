@@ -21,6 +21,7 @@ DATA_UPDATES = [
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
 
+
 def add_py3_data(path):
     for item in _PY3_DATA_UPDATES:
         if item in str(path) and "/PY3" not in str(path):

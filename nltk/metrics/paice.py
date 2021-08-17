@@ -56,7 +56,7 @@ def _truncate(words, cutlength):
         try:
             stems[stem].update([word])
         except KeyError:
-            stems[stem] = set([word])
+            stems[stem] = {word}
     return stems
 
 
@@ -358,11 +358,11 @@ def demo():
     }
     print("Words grouped by their lemmas:")
     for lemma in sorted(lemmas):
-        print("%s => %s" % (lemma, " ".join(lemmas[lemma])))
+        print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
     print()
     print("Same words grouped by a stemming algorithm:")
     for stem in sorted(stems):
-        print("%s => %s" % (stem, " ".join(stems[stem])))
+        print("{} => {}".format(stem, " ".join(stems[stem])))
     print()
     p = Paice(lemmas, stems)
     print(p)
@@ -378,7 +378,7 @@ def demo():
     }
     print("Counting stats after changing stemming results:")
     for stem in sorted(stems):
-        print("%s => %s" % (stem, " ".join(stems[stem])))
+        print("{} => {}".format(stem, " ".join(stems[stem])))
     print()
     p.stems = stems
     p.update()

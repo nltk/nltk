@@ -8,15 +8,14 @@
 
 import re
 
-from nltk.tree import Tree
+from nltk.metrics import accuracy as _accuracy
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
+from nltk.tree import Tree
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION
 ##//////////////////////////////////////////////////////
-
-from nltk.metrics import accuracy as _accuracy
 
 
 def accuracy(chunker, gold):
@@ -295,10 +294,10 @@ class ChunkScore:
         """
         return (
             "ChunkParse score:\n"
-            + ("    IOB Accuracy: {:5.1f}%%\n".format(self.accuracy() * 100))
-            + ("    Precision:    {:5.1f}%%\n".format(self.precision() * 100))
-            + ("    Recall:       {:5.1f}%%\n".format(self.recall() * 100))
-            + ("    F-Measure:    {:5.1f}%%".format(self.f_measure() * 100))
+            + (f"    IOB Accuracy: {self.accuracy() * 100:5.1f}%%\n")
+            + (f"    Precision:    {self.precision() * 100:5.1f}%%\n")
+            + (f"    Recall:       {self.recall() * 100:5.1f}%%\n")
+            + (f"    F-Measure:    {self.f_measure() * 100:5.1f}%%")
         )
 
 
@@ -344,13 +343,13 @@ def tagstr2tree(
         text = match.group()
         if text[0] == "[":
             if len(stack) != 1:
-                raise ValueError("Unexpected [ at char {:d}".format(match.start()))
+                raise ValueError(f"Unexpected [ at char {match.start():d}")
             chunk = Tree(chunk_label, [])
             stack[-1].append(chunk)
             stack.append(chunk)
         elif text[0] == "]":
             if len(stack) != 2:
-                raise ValueError("Unexpected ] at char {:d}".format(match.start()))
+                raise ValueError(f"Unexpected ] at char {match.start():d}")
             stack.pop()
         else:
             if sep is None:
@@ -362,7 +361,7 @@ def tagstr2tree(
                 stack[-1].append((word, tag))
 
     if len(stack) != 1:
-        raise ValueError("Expected ] at char {:d}".format(len(s)))
+        raise ValueError(f"Expected ] at char {len(s):d}")
     return stack[0]
 
 
@@ -398,7 +397,7 @@ def conllstr2tree(s, chunk_types=("NP", "PP", "VP"), root_label="S"):
         # Decode the line.
         match = _LINE_RE.match(line)
         if match is None:
-            raise ValueError("Error on line {:d}".format(lineno))
+            raise ValueError(f"Error on line {lineno:d}")
         (word, tag, state, chunk_type) = match.groups()
 
         # If it's a chunk type we don't care about, treat it as O.
@@ -483,7 +482,7 @@ def conlltags2tree(
         elif chunktag == "O":
             tree.append((word, postag))
         else:
-            raise ValueError("Bad conll tag {0!r}".format(chunktag))
+            raise ValueError(f"Bad conll tag {chunktag!r}")
     return tree
 
 
@@ -542,7 +541,7 @@ def _ieer_read_text(s, root_label):
                 stack[-1].append(piece)
         except (IndexError, ValueError) as e:
             raise ValueError(
-                "Bad IEER string (error at character {:d})".format(piece_m.start())
+                f"Bad IEER string (error at character {piece_m.start():d})"
             ) from e
     if len(stack) != 1:
         raise ValueError("Bad IEER string")

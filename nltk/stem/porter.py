@@ -663,7 +663,6 @@ class PorterStemmer(StemmerI):
             # in the published algorithm.
             return stem
 
-
         stem = self._step1a(stem)
         stem = self._step1b(stem)
         stem = self._step1c(stem)
@@ -685,8 +684,8 @@ def demo():
     the Penn Treebank corpus.
     """
 
-    from nltk.corpus import treebank
     from nltk import stem
+    from nltk.corpus import treebank
 
     stemmer = stem.PorterStemmer()
 

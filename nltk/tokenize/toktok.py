@@ -45,14 +45,14 @@ class ToktokTokenizer(TokenizerI):
     """
 
     # Replace non-breaking spaces with normal spaces.
-    NON_BREAKING = re.compile(u"\u00A0"), " "
+    NON_BREAKING = re.compile("\u00A0"), " "
 
     # Pad some funky punctuation.
     FUNKY_PUNCT_1 = re.compile(r'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
     # Pad more funky punctuation.
     FUNKY_PUNCT_2 = re.compile(r"([({\[“‘„‚«‹「『])"), r" \1 "
     # Pad En dash and em dash
-    EN_EM_DASHES = re.compile(u"([–—])"), r" \1 "
+    EN_EM_DASHES = re.compile("([–—])"), r" \1 "
 
     # Replace problematic character with numeric character reference.
     AMPERCENT = re.compile("& "), "&amp; "
@@ -87,44 +87,44 @@ class ToktokTokenizer(TokenizerI):
     # This is the \p{Open_Punctuation} from Perl's perluniprops
     # see http://perldoc.perl.org/perluniprops.html
     OPEN_PUNCT = str(
-        u"([{\u0f3a\u0f3c\u169b\u201a\u201e\u2045\u207d"
-        u"\u208d\u2329\u2768\u276a\u276c\u276e\u2770\u2772"
-        u"\u2774\u27c5\u27e6\u27e8\u27ea\u27ec\u27ee\u2983"
-        u"\u2985\u2987\u2989\u298b\u298d\u298f\u2991\u2993"
-        u"\u2995\u2997\u29d8\u29da\u29fc\u2e22\u2e24\u2e26"
-        u"\u2e28\u3008\u300a\u300c\u300e\u3010\u3014\u3016"
-        u"\u3018\u301a\u301d\ufd3e\ufe17\ufe35\ufe37\ufe39"
-        u"\ufe3b\ufe3d\ufe3f\ufe41\ufe43\ufe47\ufe59\ufe5b"
-        u"\ufe5d\uff08\uff3b\uff5b\uff5f\uff62"
+        "([{\u0f3a\u0f3c\u169b\u201a\u201e\u2045\u207d"
+        "\u208d\u2329\u2768\u276a\u276c\u276e\u2770\u2772"
+        "\u2774\u27c5\u27e6\u27e8\u27ea\u27ec\u27ee\u2983"
+        "\u2985\u2987\u2989\u298b\u298d\u298f\u2991\u2993"
+        "\u2995\u2997\u29d8\u29da\u29fc\u2e22\u2e24\u2e26"
+        "\u2e28\u3008\u300a\u300c\u300e\u3010\u3014\u3016"
+        "\u3018\u301a\u301d\ufd3e\ufe17\ufe35\ufe37\ufe39"
+        "\ufe3b\ufe3d\ufe3f\ufe41\ufe43\ufe47\ufe59\ufe5b"
+        "\ufe5d\uff08\uff3b\uff5b\uff5f\uff62"
     )
     # This is the \p{Close_Punctuation} from Perl's perluniprops
     CLOSE_PUNCT = str(
-        u")]}\u0f3b\u0f3d\u169c\u2046\u207e\u208e\u232a"
-        u"\u2769\u276b\u276d\u276f\u2771\u2773\u2775\u27c6"
-        u"\u27e7\u27e9\u27eb\u27ed\u27ef\u2984\u2986\u2988"
-        u"\u298a\u298c\u298e\u2990\u2992\u2994\u2996\u2998"
-        u"\u29d9\u29db\u29fd\u2e23\u2e25\u2e27\u2e29\u3009"
-        u"\u300b\u300d\u300f\u3011\u3015\u3017\u3019\u301b"
-        u"\u301e\u301f\ufd3f\ufe18\ufe36\ufe38\ufe3a\ufe3c"
-        u"\ufe3e\ufe40\ufe42\ufe44\ufe48\ufe5a\ufe5c\ufe5e"
-        u"\uff09\uff3d\uff5d\uff60\uff63"
+        ")]}\u0f3b\u0f3d\u169c\u2046\u207e\u208e\u232a"
+        "\u2769\u276b\u276d\u276f\u2771\u2773\u2775\u27c6"
+        "\u27e7\u27e9\u27eb\u27ed\u27ef\u2984\u2986\u2988"
+        "\u298a\u298c\u298e\u2990\u2992\u2994\u2996\u2998"
+        "\u29d9\u29db\u29fd\u2e23\u2e25\u2e27\u2e29\u3009"
+        "\u300b\u300d\u300f\u3011\u3015\u3017\u3019\u301b"
+        "\u301e\u301f\ufd3f\ufe18\ufe36\ufe38\ufe3a\ufe3c"
+        "\ufe3e\ufe40\ufe42\ufe44\ufe48\ufe5a\ufe5c\ufe5e"
+        "\uff09\uff3d\uff5d\uff60\uff63"
     )
     # This is the \p{Close_Punctuation} from Perl's perluniprops
     CURRENCY_SYM = str(
-        u"$\xa2\xa3\xa4\xa5\u058f\u060b\u09f2\u09f3\u09fb"
-        u"\u0af1\u0bf9\u0e3f\u17db\u20a0\u20a1\u20a2\u20a3"
-        u"\u20a4\u20a5\u20a6\u20a7\u20a8\u20a9\u20aa\u20ab"
-        u"\u20ac\u20ad\u20ae\u20af\u20b0\u20b1\u20b2\u20b3"
-        u"\u20b4\u20b5\u20b6\u20b7\u20b8\u20b9\u20ba\ua838"
-        u"\ufdfc\ufe69\uff04\uffe0\uffe1\uffe5\uffe6"
+        "$\xa2\xa3\xa4\xa5\u058f\u060b\u09f2\u09f3\u09fb"
+        "\u0af1\u0bf9\u0e3f\u17db\u20a0\u20a1\u20a2\u20a3"
+        "\u20a4\u20a5\u20a6\u20a7\u20a8\u20a9\u20aa\u20ab"
+        "\u20ac\u20ad\u20ae\u20af\u20b0\u20b1\u20b2\u20b3"
+        "\u20b4\u20b5\u20b6\u20b7\u20b8\u20b9\u20ba\ua838"
+        "\ufdfc\ufe69\uff04\uffe0\uffe1\uffe5\uffe6"
     )
 
     # Pad spaces after opening punctuations.
-    OPEN_PUNCT_RE = re.compile(u"([{}])".format(OPEN_PUNCT)), r"\1 "
+    OPEN_PUNCT_RE = re.compile(f"([{OPEN_PUNCT}])"), r"\1 "
     # Pad spaces before closing punctuations.
-    CLOSE_PUNCT_RE = re.compile(u"([{}])".format(CLOSE_PUNCT)), r"\1 "
+    CLOSE_PUNCT_RE = re.compile(f"([{CLOSE_PUNCT}])"), r"\1 "
     # Pad spaces after currency symbols.
-    CURRENCY_SYM_RE = re.compile(u"([{}])".format(CURRENCY_SYM)), r"\1 "
+    CURRENCY_SYM_RE = re.compile(f"([{CURRENCY_SYM}])"), r"\1 "
 
     # Use for tokenizing URL-unfriendly characters: [:/?#]
     URL_FOE_1 = re.compile(r":(?!//)"), r" : "  # in perl s{:(?!//)}{ : }g;

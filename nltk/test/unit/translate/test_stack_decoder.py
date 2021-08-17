@@ -12,8 +12,8 @@ Tests for stack decoder
 import unittest
 from collections import defaultdict
 from math import log
-from nltk.translate import PhraseTable
-from nltk.translate import StackDecoder
+
+from nltk.translate import PhraseTable, StackDecoder
 from nltk.translate.stack_decoder import _Hypothesis, _Stack
 
 
@@ -22,7 +22,7 @@ class TestStackDecoder(unittest.TestCase):
         # arrange
         phrase_table = TestStackDecoder.create_fake_phrase_table()
         stack_decoder = StackDecoder(phrase_table, None)
-        sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
+        sentence = ("my", "hovercraft", "is", "full", "of", "eels")
 
         # act
         src_phrase_spans = stack_decoder.find_all_src_phrases(sentence)
@@ -67,7 +67,7 @@ class TestStackDecoder(unittest.TestCase):
         phrase_table = TestStackDecoder.create_fake_phrase_table()
         language_model = TestStackDecoder.create_fake_language_model()
         stack_decoder = StackDecoder(phrase_table, language_model)
-        sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
+        sentence = ("my", "hovercraft", "is", "full", "of", "eels")
 
         # act
         future_scores = stack_decoder.compute_future_scores(sentence)
@@ -76,15 +76,15 @@ class TestStackDecoder(unittest.TestCase):
         self.assertEqual(
             future_scores[1][2],
             (
-                phrase_table.translations_for(('hovercraft',))[0].log_prob
-                + language_model.probability(('hovercraft',))
+                phrase_table.translations_for(("hovercraft",))[0].log_prob
+                + language_model.probability(("hovercraft",))
             ),
         )
         self.assertEqual(
             future_scores[0][2],
             (
-                phrase_table.translations_for(('my', 'hovercraft'))[0].log_prob
-                + language_model.probability(('my', 'hovercraft'))
+                phrase_table.translations_for(("my", "hovercraft"))[0].log_prob
+                + language_model.probability(("my", "hovercraft"))
             ),
         )
 
@@ -93,7 +93,7 @@ class TestStackDecoder(unittest.TestCase):
         phrase_table = TestStackDecoder.create_fake_phrase_table()
         language_model = TestStackDecoder.create_fake_language_model()
         stack_decoder = StackDecoder(phrase_table, language_model)
-        sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
+        sentence = ("my", "hovercraft", "is", "full", "of", "eels")
 
         # act
         future_scores = stack_decoder.compute_future_scores(sentence)
@@ -135,31 +135,31 @@ class TestStackDecoder(unittest.TestCase):
     @staticmethod
     def create_fake_phrase_table():
         phrase_table = PhraseTable()
-        phrase_table.add(('hovercraft',), ('',), 0.8)
-        phrase_table.add(('my', 'hovercraft'), ('', ''), 0.7)
-        phrase_table.add(('my', 'cheese'), ('', ''), 0.7)
-        phrase_table.add(('is',), ('',), 0.8)
-        phrase_table.add(('is',), ('',), 0.5)
-        phrase_table.add(('full', 'of'), ('', ''), 0.01)
-        phrase_table.add(('full', 'of', 'eels'), ('', '', ''), 0.5)
-        phrase_table.add(('full', 'of', 'spam'), ('', ''), 0.5)
-        phrase_table.add(('eels',), ('',), 0.5)
-        phrase_table.add(('spam',), ('',), 0.5)
+        phrase_table.add(("hovercraft",), ("",), 0.8)
+        phrase_table.add(("my", "hovercraft"), ("", ""), 0.7)
+        phrase_table.add(("my", "cheese"), ("", ""), 0.7)
+        phrase_table.add(("is",), ("",), 0.8)
+        phrase_table.add(("is",), ("",), 0.5)
+        phrase_table.add(("full", "of"), ("", ""), 0.01)
+        phrase_table.add(("full", "of", "eels"), ("", "", ""), 0.5)
+        phrase_table.add(("full", "of", "spam"), ("", ""), 0.5)
+        phrase_table.add(("eels",), ("",), 0.5)
+        phrase_table.add(("spam",), ("",), 0.5)
         return phrase_table
 
     @staticmethod
     def create_fake_language_model():
         # nltk.model should be used here once it is implemented
         language_prob = defaultdict(lambda: -999.0)
-        language_prob[('my',)] = log(0.1)
-        language_prob[('hovercraft',)] = log(0.1)
-        language_prob[('is',)] = log(0.1)
-        language_prob[('full',)] = log(0.1)
-        language_prob[('of',)] = log(0.1)
-        language_prob[('eels',)] = log(0.1)
-        language_prob[('my', 'hovercraft')] = log(0.3)
+        language_prob[("my",)] = log(0.1)
+        language_prob[("hovercraft",)] = log(0.1)
+        language_prob[("is",)] = log(0.1)
+        language_prob[("full",)] = log(0.1)
+        language_prob[("of",)] = log(0.1)
+        language_prob[("eels",)] = log(0.1)
+        language_prob[("my", "hovercraft")] = log(0.3)
         language_model = type(
-            '', (object,), {'probability': lambda _, phrase: language_prob[phrase]}
+            "", (object,), {"probability": lambda _, phrase: language_prob[phrase]}
         )()
         return language_model
 
@@ -170,13 +170,13 @@ class TestHypothesis(unittest.TestCase):
         child = _Hypothesis(
             raw_score=0.5,
             src_phrase_span=(3, 7),
-            trg_phrase=('hello', 'world'),
+            trg_phrase=("hello", "world"),
             previous=root,
         )
         grandchild = _Hypothesis(
             raw_score=0.4,
             src_phrase_span=(1, 2),
-            trg_phrase=('and', 'goodbye'),
+            trg_phrase=("and", "goodbye"),
             previous=child,
         )
         self.hypothesis_chain = grandchild
@@ -186,7 +186,7 @@ class TestHypothesis(unittest.TestCase):
         translation = self.hypothesis_chain.translation_so_far()
 
         # assert
-        self.assertEqual(translation, ['hello', 'world', 'and', 'goodbye'])
+        self.assertEqual(translation, ["hello", "world", "and", "goodbye"])
 
     def test_translation_so_far_for_empty_hypothesis(self):
         # arrange

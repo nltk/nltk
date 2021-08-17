@@ -313,7 +313,7 @@ def _tgrep_macro_use_action(_s, _l, tokens):
 
     def macro_use(n, m=None, l=None):
         if m is None or macro_name not in m:
-            raise TgrepException("macro {0} not defined".format(macro_name))
+            raise TgrepException(f"macro {macro_name} not defined")
         return m[macro_name](n, m, l)
 
     return macro_use
@@ -618,9 +618,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                 and any(predicate(x, m, l) for x in n.parent()[: n.parent_index()])
             )
         else:
-            raise TgrepException(
-                'cannot interpret tgrep operator "{0}"'.format(operator)
-            )
+            raise TgrepException(f'cannot interpret tgrep operator "{operator}"')
     # now return the built function
     if negated:
         return (lambda r: (lambda n, m=None, l=None: not r(n, m, l)))(retval)
@@ -697,9 +695,7 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
         """This predicate function ignores its node argument."""
         # look up the bound node using its label
         if l is None or node_label not in l:
-            raise TgrepException(
-                "node_label ={0} not bound in pattern".format(node_label)
-            )
+            raise TgrepException(f"node_label ={node_label} not bound in pattern")
         node = l[node_label]
         # match the relation predicates against the node
         return all(pred(node, m, l) for pred in reln_preds)
@@ -747,9 +743,7 @@ def _tgrep_node_label_pred_use_action(_s, _l, tokens):
     def node_label_use_pred(n, m=None, l=None):
         # look up the bound node using its label
         if l is None or node_label not in l:
-            raise TgrepException(
-                "node_label ={0} not bound in pattern".format(node_label)
-            )
+            raise TgrepException(f"node_label ={node_label} not bound in pattern")
         node = l[node_label]
         # truth means the given node is this node
         return n is node
@@ -784,7 +778,7 @@ def _tgrep_bind_node_label_action(_s, _l, tokens):
                 # bind `n` into the dictionary `l`
                 if l is None:
                     raise TgrepException(
-                        "cannot bind node_label {0}: label_dict is None".format(
+                        "cannot bind node_label {}: label_dict is None".format(
                             node_label
                         )
                     )

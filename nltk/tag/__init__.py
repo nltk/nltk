@@ -61,6 +61,8 @@ We evaluate a tagger on data that was not seen during training:
     0.7...
 
 For more information, please consult chapter 5 of the NLTK Book.
+
+isort:skip_file
 """
 
 from nltk.tag.api import TaggerI
@@ -115,7 +117,7 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
         )
     # Throws Error if tokens is of string type
     elif isinstance(tokens, str):
-        raise TypeError('tokens: expected a list of strings, got a string')
+        raise TypeError("tokens: expected a list of strings, got a string")
 
     else:
         tagged_tokens = tagger.tag(tokens)

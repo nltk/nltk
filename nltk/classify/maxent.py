@@ -56,18 +56,17 @@ try:
 except ImportError:
     pass
 
-import tempfile
 import os
+import tempfile
 from collections import defaultdict
 
-from nltk.data import gzip_open_unicode
-from nltk.util import OrderedDict
-from nltk.probability import DictionaryProbDist
-
 from nltk.classify.api import ClassifierI
+from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
+from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.classify.megam import call_megam, write_megam_file, parse_megam_weights
-from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
+from nltk.data import gzip_open_unicode
+from nltk.probability import DictionaryProbDist
+from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
 
@@ -232,7 +231,7 @@ class MaxentClassifier(ClassifierI):
         elif show == "neg":
             fids = [fid for fid in fids if self._weights[fid] < 0]
         for fid in fids[:n]:
-            print("%8.3f %s" % (self._weights[fid], self._encoding.describe(fid)))
+            print(f"{self._weights[fid]:8.3f} {self._encoding.describe(fid)}")
 
     def __repr__(self):
         return "<ConditionalExponentialClassifier: %d labels, %d features>" % (
@@ -253,7 +252,7 @@ class MaxentClassifier(ClassifierI):
         encoding=None,
         labels=None,
         gaussian_prior_sigma=0,
-        **cutoffs
+        **cutoffs,
     ):
         """
         Train a new maxent classifier based on the given corpus of
@@ -554,16 +553,14 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict(
-                (label, i + self._length) for (i, label) in enumerate(labels)
-            )
+            self._alwayson = {
+                label: i + self._length for (i, label) in enumerate(labels)
+            }
             self._length += len(self._alwayson)
 
         if unseen_features:
-            fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict(
-                (fname, i + self._length) for (i, fname) in enumerate(fnames)
-            )
+            fnames = {fname for (fname, fval, label) in mapping}
+            self._unseen = {fname: i + self._length for (i, fname) in enumerate(fnames)}
             self._length += len(fnames)
 
     def encode(self, featureset, label):
@@ -606,7 +603,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         if f_id < len(self._mapping):
             (fname, fval, label) = self._inv_mapping[f_id]
-            return "%s==%r and label is %r" % (fname, fval, label)
+            return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
             for (label, f_id2) in self._alwayson.items():
                 if f_id == f_id2:
@@ -707,7 +704,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
             self, labels, mapping, unseen_features, alwayson_features
         )
         if C is None:
-            C = len(set(fname for (fname, fval, label) in mapping)) + 1
+            C = len({fname for (fname, fval, label) in mapping}) + 1
         self._C = C
 
     @property
@@ -892,16 +889,14 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict(
-                (label, i + self._length) for (i, label) in enumerate(labels)
-            )
+            self._alwayson = {
+                label: i + self._length for (i, label) in enumerate(labels)
+            }
             self._length += len(self._alwayson)
 
         if unseen_features:
-            fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict(
-                (fname, i + self._length) for (i, fname) in enumerate(fnames)
-            )
+            fnames = {fname for (fname, fval, label) in mapping}
+            self._unseen = {fname: i + self._length for (i, fname) in enumerate(fnames)}
             self._length += len(fnames)
 
     def encode(self, featureset, label):
@@ -949,7 +944,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         if f_id < len(self._mapping):
             (fname, fval, label) = self._inv_mapping[f_id]
-            return "%s==%r and label is %r" % (fname, fval, label)
+            return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
             for (label, f_id2) in self._alwayson.items():
                 if f_id == f_id2:
@@ -1123,7 +1118,7 @@ def train_maxent_classifier_with_gis(
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print("         Final    %14.5f    %9.3f" % (ll, acc))
+        print(f"         Final    {ll:14.5f}    {acc:9.3f}")
 
     # Return the classifier.
     return classifier
@@ -1243,7 +1238,7 @@ def train_maxent_classifier_with_iis(
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print("         Final    %14.5f    %9.3f" % (ll, acc))
+        print(f"         Final    {ll:14.5f}    {acc:9.3f}")
 
     # Return the classifier.
     return classifier
@@ -1274,7 +1269,7 @@ def calculate_nfmap(train_toks, encoding):
     for tok, _ in train_toks:
         for label in encoding.labels():
             nfset.add(sum(val for (id, val) in encoding.encode(tok, label)))
-    return dict((nf, i) for (i, nf) in enumerate(nfset))
+    return {nf: i for (i, nf) in enumerate(nfset)}
 
 
 def calculate_deltas(
@@ -1451,7 +1446,7 @@ def train_maxent_classifier_with_megam(
                 train_toks, encoding, trainfile, explicit=explicit, bernoulli=bernoulli
             )
         os.close(fd)
-    except (OSError, IOError, ValueError) as e:
+    except (OSError, ValueError) as e:
         raise ValueError("Error while creating megam training file: %s" % e) from e
 
     # Run megam on the training file.
@@ -1485,8 +1480,8 @@ def train_maxent_classifier_with_megam(
     # Delete the training file
     try:
         os.remove(trainfile_name)
-    except (OSError, IOError) as e:
-        print("Warning: unable to delete %s: %s" % (trainfile_name, e))
+    except OSError as e:
+        print(f"Warning: unable to delete {trainfile_name}: {e}")
 
     # Parse the generated weight vector.
     weights = parse_megam_weights(stdout, encoding.length(), explicit)
@@ -1548,7 +1543,7 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        with open(weightfile_name, "r") as weightfile:
+        with open(weightfile_name) as weightfile:
             weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)

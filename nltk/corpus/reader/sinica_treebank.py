@@ -38,11 +38,10 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
-from nltk.tree import sinica_parse
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag
+from nltk.tree import sinica_parse
 
 IDENTIFIER = re.compile(r"^#\S+\s")
 APPENDIX = re.compile(r"(?<=\))#.*$")

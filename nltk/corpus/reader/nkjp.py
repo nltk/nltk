@@ -253,7 +253,7 @@ class XML_Tool:
 
     def build_preprocessed_file(self):
         try:
-            fr = open(self.read_file, "r")
+            fr = open(self.read_file)
             fw = self.write_file
             line = " "
             while len(line):

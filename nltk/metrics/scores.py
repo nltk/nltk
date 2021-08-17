@@ -6,10 +6,10 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from math import fabs
 import operator
-from random import shuffle
 from functools import reduce
+from math import fabs
+from random import shuffle
 
 try:
     from scipy.stats.stats import betai
@@ -200,7 +200,7 @@ def approxrand(a, b, **kwargs):
         print("significance: %f" % significance)
         if betai:
             for phi in [0.01, 0.05, 0.10, 0.15, 0.25, 0.50]:
-                print("prob(phi<=%f): %f" % (phi, betai(c, shuffles, phi)))
+                print(f"prob(phi<={phi:f}): {betai(c, shuffles, phi):f}")
 
     return (significance, c, shuffles)
 

@@ -14,18 +14,18 @@ import os
 import subprocess
 
 import nltk
-from nltk.sem.logic import (
-    Expression,
-    ExistsExpression,
-    AllExpression,
-    NegatedExpression,
-    AndExpression,
-    IffExpression,
-    OrExpression,
-    EqualityExpression,
-    ImpExpression,
-)
 from nltk.inference.api import BaseProverCommand, Prover
+from nltk.sem.logic import (
+    AllExpression,
+    AndExpression,
+    EqualityExpression,
+    ExistsExpression,
+    Expression,
+    IffExpression,
+    ImpExpression,
+    NegatedExpression,
+    OrExpression,
+)
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
@@ -439,7 +439,7 @@ def test_prove(arguments):
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
             print("   %s" % a)
-        print("|- %s: %s\n" % (g, p))
+        print(f"|- {g}: {p}\n")
 
 
 arguments = [

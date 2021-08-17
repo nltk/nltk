@@ -9,9 +9,8 @@
 import sys
 
 from nltk.corpus.reader import util
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 
 
 class ChasenCorpusReader(CorpusReader):
@@ -141,7 +140,7 @@ def demo():
 
     print(
         "\nEOS\n".join(
-            "\n".join("%s/%s" % (w[0], w[1].split("\t")[2]) for w in sent)
+            "\n".join("{}/{}".format(w[0], w[1].split("\t")[2]) for w in sent)
             for sent in jeita.tagged_sents()[2170:2173]
         )
     )

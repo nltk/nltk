@@ -94,10 +94,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
             if isinstance(vnclass, str):
                 vnclass = self.vnclass(vnclass)
             return sum(
-                [
+                (
                     member.get("wn", "").split()
                     for member in vnclass.findall("MEMBERS/MEMBER")
-                ],
+                ),
                 [],
             )
 
@@ -160,7 +160,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
                     assert False  # we saw it during _index()!
 
         else:
-            raise ValueError("Unknown identifier {}".format(fileid_or_classid))
+            raise ValueError(f"Unknown identifier {fileid_or_classid}")
 
     def fileids(self, vnclass_ids=None):
         """
@@ -622,4 +622,4 @@ class VerbnetCorpusReader(XMLCorpusReader):
             pieces.append(
                 "{}({})".format(predicate["predicate_value"], ", ".join(arguments))
             )
-        return "\n".join("{}* {}".format(indent, piece) for piece in pieces)
+        return "\n".join(f"{indent}* {piece}" for piece in pieces)

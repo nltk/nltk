@@ -24,24 +24,24 @@ _debug = 0
 
 class LazyModule:
 
-    """ Lazy module class.
+    """Lazy module class.
 
-        Lazy modules are imported into the given namespaces whenever a
-        non-special attribute (there are some attributes like __doc__
-        that class instances handle without calling __getattr__) is
-        requested. The module is then registered under the given name
-        in locals usually replacing the import wrapper instance. The
-        import itself is done using globals as global namespace.
+    Lazy modules are imported into the given namespaces whenever a
+    non-special attribute (there are some attributes like __doc__
+    that class instances handle without calling __getattr__) is
+    requested. The module is then registered under the given name
+    in locals usually replacing the import wrapper instance. The
+    import itself is done using globals as global namespace.
 
-        Example of creating a lazy load module:
+    Example of creating a lazy load module:
 
-        ISO = LazyModule('ISO',locals(),globals())
+    ISO = LazyModule('ISO',locals(),globals())
 
-        Later, requesting an attribute from ISO will load the module
-        automatically into the locals() namespace, overriding the
-        LazyModule instance:
+    Later, requesting an attribute from ISO will load the module
+    automatically into the locals() namespace, overriding the
+    LazyModule instance:
 
-        t = ISO.Week(1998,1,1)
+    t = ISO.Week(1998,1,1)
 
     """
 
@@ -62,12 +62,12 @@ class LazyModule:
 
     def __init__(self, name, locals, globals=None):
 
-        """ Create a LazyModule instance wrapping module name.
+        """Create a LazyModule instance wrapping module name.
 
-            The module will later on be registered in locals under the
-            given module name.
+        The module will later on be registered in locals under the
+        given module name.
 
-            globals is optional and defaults to locals.
+        globals is optional and defaults to locals.
 
         """
         self.__lazymodule_locals = locals
@@ -84,8 +84,7 @@ class LazyModule:
 
     def __lazymodule_import(self):
 
-        """ Import the module now.
-        """
+        """Import the module now."""
         # Load and register module
         name = self.__lazymodule_name
         if self.__lazymodule_loaded:
@@ -109,8 +108,7 @@ class LazyModule:
 
     def __getattr__(self, name):
 
-        """ Import the module on demand and get the attribute.
-        """
+        """Import the module on demand and get the attribute."""
         if self.__lazymodule_loaded:
             raise AttributeError(name)
         if _debug:
@@ -123,8 +121,7 @@ class LazyModule:
 
     def __setattr__(self, name, value):
 
-        """ Import the module on demand and set the attribute.
-        """
+        """Import the module on demand and set the attribute."""
         if not self.__lazymodule_init:
             self.__dict__[name] = value
             return

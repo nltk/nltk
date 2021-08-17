@@ -48,10 +48,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 import warnings
 from collections import defaultdict
 
-from nltk.translate import AlignedSent
-from nltk.translate import Alignment
-from nltk.translate import IBMModel
-from nltk.translate import IBMModel1
+from nltk.translate import AlignedSent, Alignment, IBMModel, IBMModel1
 from nltk.translate.ibm_model import Counts
 
 
@@ -117,7 +114,7 @@ class IBMModel2(IBMModel):
             See ``IBMModel`` for the type and purpose of these tables.
         :type probability_tables: dict[str]: object
         """
-        super(IBMModel2, self).__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus)
 
         if probability_tables is None:
             # Get translation probabilities from IBM Model 1
@@ -301,7 +298,7 @@ class Model2Counts(Counts):
     """
 
     def __init__(self):
-        super(Model2Counts, self).__init__()
+        super().__init__()
         self.alignment = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
         )

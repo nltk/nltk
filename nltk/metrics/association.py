@@ -15,7 +15,6 @@ import math as _math
 from abc import ABCMeta, abstractmethod
 from functools import reduce
 
-
 _log2 = lambda x: _math.log2(x)
 _ln = _math.log
 
@@ -142,8 +141,7 @@ class NgramAssocMeasures(metaclass=ABCMeta):
 
     @classmethod
     def likelihood_ratio(cls, *marginals):
-        """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
-        """
+        """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4."""
         cont = cls._contingency(*marginals)
         return 2 * sum(
             obs * _ln(obs / (exp + _SMALL) + _SMALL)
@@ -399,9 +397,24 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         QuadgramAssocMeasures._marginals(1, 0, 2, 46, 552, 825, 2577, 34967, 1, 0, 2, 48, 7250, 9031, 28585, 356653)
         (1, (2, 553, 3, 1), (7804, 6, 3132, 1378, 49, 2), (38970, 17660, 100, 38970), 440540)
         """
-        n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi, n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo = (
-            contingency
-        )
+        (
+            n_iiii,
+            n_oiii,
+            n_ioii,
+            n_ooii,
+            n_iioi,
+            n_oioi,
+            n_iooi,
+            n_oooi,
+            n_iiio,
+            n_oiio,
+            n_ioio,
+            n_ooio,
+            n_iioo,
+            n_oioo,
+            n_iooo,
+            n_oooo,
+        ) = contingency
 
         n_iiix = n_iiii + n_iiio
         n_iixi = n_iiii + n_iioi

@@ -11,15 +11,16 @@ A reader for corpora that contain chunked (and optionally tagged)
 documents.
 """
 
-import os.path, codecs
+import codecs
+import os.path
 
 import nltk
-from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
-from nltk.tree import Tree
-from nltk.tokenize import *
 from nltk.chunk import tagstr2tree
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
+from nltk.corpus.reader.util import *
+from nltk.tokenize import *
+from nltk.tree import Tree
 
 
 class ChunkedCorpusReader(CorpusReader):

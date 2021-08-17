@@ -18,15 +18,17 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
 import re
+
 try:
     from html import escape
 except ImportError:
     from cgi import escape
+
 from collections import defaultdict
 from operator import itemgetter
 
-from nltk.util import OrderedDict
 from nltk.tree import Tree
+from nltk.util import OrderedDict
 
 ANSICOLOR = {
     "black": 30,
@@ -223,11 +225,11 @@ class TreePrettyPrinter:
         childcols = defaultdict(set)
         matrix = [[None] * (len(sentence) * scale)]
         nodes = {}
-        ids = dict((a, n) for n, a in enumerate(positions))
-        highlighted_nodes = set(
+        ids = {a: n for n, a in enumerate(positions)}
+        highlighted_nodes = {
             n for a, n in ids.items() if not highlight or tree[a] in highlight
-        )
-        levels = dict((n, []) for n in range(maxdepth - 1))
+        }
+        levels = {n: [] for n in range(maxdepth - 1)}
         terminals = []
         for a in positions:
             node = tree[a]
@@ -264,17 +266,17 @@ class TreePrettyPrinter:
             for m in nodesatdepth:  # [::-1]:
                 if n < maxdepth - 1 and childcols[m]:
                     _, pivot = min(childcols[m], key=itemgetter(1))
-                    if set(
+                    if {
                         a[:-1]
                         for row in matrix[:-1]
                         for a in row[:pivot]
                         if isinstance(a, tuple)
-                    ) & set(
+                    } & {
                         a[:-1]
                         for row in matrix[:-1]
                         for a in row[pivot:]
                         if isinstance(a, tuple)
-                    ):
+                    }:
                         crossed.add(m)
 
                 rowidx, i = findcell(m, matrix, startoflevel, childcols)
@@ -315,7 +317,7 @@ class TreePrettyPrinter:
 
         # move crossed edges last
         positions = sorted(
-            [a for level in levels.values() for a in level],
+            (a for level in levels.values() for a in level),
             key=lambda a: a[:-1] in crossed,
         )
 
@@ -457,7 +459,7 @@ class TreePrettyPrinter:
                 if html:
                     text = [escape(a, quote=False) for a in text]
                     if n in self.highlight:
-                        text = ["<font color=%s>%s</font>" % (color, a) for a in text]
+                        text = [f"<font color={color}>{a}</font>" for a in text]
                 elif ansi and n in self.highlight:
                     text = ["\x1b[%d;1m%s\x1b[0m" % (ANSICOLOR[color], a) for a in text]
                 for x in range(maxnodeheight[row]):
@@ -574,7 +576,9 @@ class TreePrettyPrinter:
                     fontsize,
                     x,
                     y,
-                    escape(node.label() if isinstance(node, Tree) else node, quote=False),
+                    escape(
+                        node.label() if isinstance(node, Tree) else node, quote=False
+                    ),
                 )
             ]
 
@@ -587,7 +591,7 @@ def test():
 
     def print_tree(n, tree, sentence=None, ansi=True, **xargs):
         print()
-        print('{0}: "{1}"'.format(n, " ".join(sentence or tree.leaves())))
+        print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
         print(tree)
         print()
         drawtree = TreePrettyPrinter(tree, sentence)

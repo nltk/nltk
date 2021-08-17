@@ -62,14 +62,14 @@ Keyboard Shortcuts::
 
 """
 
+from tkinter import Button, Frame, IntVar, Label, Listbox, Menu, Scrollbar, Tk
 from tkinter.font import Font
-from tkinter import IntVar, Listbox, Button, Frame, Label, Menu, Scrollbar, Tk
 
-from nltk.tree import Tree
-from nltk.parse import SteppingShiftReduceParser
-from nltk.util import in_idle
-from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
 from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
+from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
+from nltk.parse import SteppingShiftReduceParser
+from nltk.tree import Tree
+from nltk.util import in_idle
 
 """
 Possible future improvements:
@@ -449,7 +449,7 @@ class ShiftReduceApp:
 
     def _redraw(self):
         scrollregion = self._canvas["scrollregion"].split()
-        (cx1, cy1, cx2, cy2) = [int(c) for c in scrollregion]
+        (cx1, cy1, cx2, cy2) = (int(c) for c in scrollregion)
 
         # Delete the old stack & rtext widgets.
         for stackwidget in self._stackwidgets:
@@ -895,10 +895,10 @@ def app():
     text.
     """
 
-    from nltk.grammar import Nonterminal, Production, CFG
+    from nltk.grammar import CFG, Nonterminal, Production
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = (Nonterminal(s) for s in nonterminals.split())
 
     productions = (
         # Syntactic Productions

@@ -70,12 +70,10 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 import re
 from functools import total_ordering
 
-from nltk.util import transitive_closure, invert_graph
+from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
 from nltk.internals import raise_unorderable_types
-
 from nltk.probability import ImmutableProbabilisticMixIn
-from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
-
+from nltk.util import invert_graph, transitive_closure
 
 #################################################################
 # Nonterminal
@@ -174,7 +172,7 @@ class Nonterminal:
         :type rhs: Nonterminal
         :rtype: Nonterminal
         """
-        return Nonterminal("%s/%s" % (self._symbol, rhs._symbol))
+        return Nonterminal(f"{self._symbol}/{rhs._symbol}")
 
     def __truediv__(self, rhs):
         """
@@ -252,7 +250,6 @@ def is_terminal(item):
 
 
 @total_ordering
-
 class Production:
     """
     A grammar production.  Each production maps a single symbol
@@ -376,7 +373,6 @@ class Production:
         return hash((self._lhs, self._rhs))
 
 
-
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -389,11 +385,10 @@ class DependencyProduction(Production):
 
         :rtype: str
         """
-        result = "'%s' ->" % (self._lhs,)
+        result = f"'{self._lhs}' ->"
         for elt in self._rhs:
-            result += " '%s'" % (elt,)
+            result += f" '{elt}'"
         return result
-
 
 
 class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
@@ -446,7 +441,6 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 
 
-
 class CFG:
     """
     A context-free grammar.  A grammar consists of a start state and
@@ -478,7 +472,7 @@ class CFG:
 
         self._start = start
         self._productions = productions
-        self._categories = set(prod.lhs() for prod in productions)
+        self._categories = {prod.lhs() for prod in productions}
         self._calculate_indexes()
         self._calculate_grammar_forms()
         if calculate_leftcorners:
@@ -511,12 +505,8 @@ class CFG:
 
     def _calculate_leftcorners(self):
         # Calculate leftcorner relations, for use in optimized parsing.
-        self._immediate_leftcorner_categories = dict(
-            (cat, set([cat])) for cat in self._categories
-        )
-        self._immediate_leftcorner_words = dict(
-            (cat, set()) for cat in self._categories
-        )
+        self._immediate_leftcorner_categories = {cat: {cat} for cat in self._categories}
+        self._immediate_leftcorner_words = {cat: set() for cat in self._categories}
         for prod in self.productions():
             if len(prod) > 0:
                 cat, left = prod.lhs(), prod.rhs()[0]
@@ -626,7 +616,7 @@ class CFG:
         :return: the set of all leftcorners
         :rtype: set(Nonterminal)
         """
-        return self._leftcorners.get(cat, set([cat]))
+        return self._leftcorners.get(cat, {cat})
 
     def is_leftcorner(self, cat, left):
         """
@@ -659,7 +649,7 @@ class CFG:
         :return: the set of all parents to the leftcorner
         :rtype: set(Nonterminal)
         """
-        return self._leftcorner_parents.get(cat, set([cat]))
+        return self._leftcorner_parents.get(cat, {cat})
 
     def check_coverage(self, tokens):
         """
@@ -670,7 +660,7 @@ class CFG:
         """
         missing = [tok for tok in tokens if not self._lexical_index.get(tok)]
         if missing:
-            missing = ", ".join("%r" % (w,) for w in missing)
+            missing = ", ".join(f"{w!r}" for w in missing)
             raise ValueError(
                 "Grammar does not cover some of the " "input words: %r." % missing
             )
@@ -761,7 +751,7 @@ class CFG:
         for rule in self.productions():
             if rule.is_lexical() and len(rule.rhs()) > 1:
                 raise ValueError(
-                    "Cannot handled mixed rule {} => {}".format(rule.lhs(), rule.rhs())
+                    f"Cannot handled mixed rule {rule.lhs()} => {rule.rhs()}"
                 )
 
         step1 = CFG.eliminate_start(self)
@@ -769,7 +759,7 @@ class CFG:
         if flexible:
             return step2
         step3 = CFG.remove_unitary_rules(step2)
-        step4 = CFG(step3.start(),list(set(step3.productions())))
+        step4 = CFG(step3.start(), list(set(step3.productions())))
         return step4
 
     @classmethod
@@ -1018,7 +1008,6 @@ class FeatureGrammar(CFG):
 
 
 @total_ordering
-
 class FeatureValueType:
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -1047,7 +1036,6 @@ class FeatureValueType:
         return hash(self._value)
 
 
-
 class DependencyGrammar:
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
@@ -1074,8 +1062,7 @@ class DependencyGrammar:
             try:
                 productions += _read_dependency_production(line)
             except ValueError as e:
-                raise ValueError("Unable to parse line %s: %s" %
-                                 (linenum, line)) from e
+                raise ValueError(f"Unable to parse line {linenum}: {line}") from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1143,11 +1130,8 @@ class DependencyGrammar:
         return "Dependency grammar with %d productions" % len(self._productions)
 
 
-
 class ProbabilisticDependencyGrammar:
-    """
-
-    """
+    """ """
 
     def __init__(self, productions, events, tags):
         self._productions = productions
@@ -1187,7 +1171,7 @@ class ProbabilisticDependencyGrammar:
             str += "\n  %d:%s" % (self._events[event], event)
         str += "\nTags:"
         for tag_word in self._tags:
-            str += "\n %s:\t(%s)" % (tag_word, self._tags[tag_word])
+            str += f"\n {tag_word}:\t({self._tags[tag_word]})"
         return str
 
     def __repr__(self):
@@ -1446,8 +1430,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s\n%s" %
-                             (linenum + 1, line, e)) from e
+            raise ValueError(f"Unable to parse line {linenum + 1}: {line}\n{e}") from e
 
     if not productions:
         raise ValueError("No productions found!")
@@ -1511,7 +1494,7 @@ def cfg_demo():
     A demonstration showing how ``CFGs`` can be created and used.
     """
 
-    from nltk import nonterminals, Production, CFG
+    from nltk import CFG, Production, nonterminals
 
     # Create some nonterminals
     S, NP, VP, PP = nonterminals("S, NP, VP, PP")
@@ -1593,9 +1576,8 @@ def pcfg_demo():
     A demonstration showing how a ``PCFG`` can be created and used.
     """
 
+    from nltk import induce_pcfg, treetransforms
     from nltk.corpus import treebank
-    from nltk import treetransforms
-    from nltk import induce_pcfg
     from nltk.parse import pchart
 
     pcfg_prods = toy_pcfg1.productions()

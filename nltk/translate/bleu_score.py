@@ -10,9 +10,9 @@
 
 import math
 import sys
-from fractions import Fraction
 import warnings
 from collections import Counter
+from fractions import Fraction
 
 from nltk.util import ngrams
 
@@ -541,7 +541,8 @@ class SmoothingFunction:
         """
         return [
             Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
-            if i != 0 else p_n[0]
+            if i != 0
+            else p_n[0]
             for i in range(len(p_n))
         ]
 
@@ -578,11 +579,11 @@ class SmoothingFunction:
         incvnt = 1
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         for i, p_i in enumerate(p_n):
-            if p_i.numerator == 0 and hyp_len >1:
-#                 incvnt = i + 1 * self.k / math.log(
-#                     hyp_len
-#                 )  # Note that this K is different from the K from NIST.
-#                 p_n[i] = incvnt / p_i.denominator\
+            if p_i.numerator == 0 and hyp_len > 1:
+                # incvnt = i + 1 * self.k / math.log(
+                #     hyp_len
+                # )  # Note that this K is different from the K from NIST.
+                # p_n[i] = incvnt / p_i.denominator\
                 numerator = 1 / (2 ** incvnt * self.k / math.log(hyp_len))
                 p_n[i] = numerator / p_i.denominator
                 incvnt += 1

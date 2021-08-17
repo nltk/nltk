@@ -7,10 +7,10 @@
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
 
-from itertools import islice
 import math
+from itertools import islice
 
-from nltk.util import ngrams, choose
+from nltk.util import choose, ngrams
 
 
 def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
@@ -293,7 +293,7 @@ def kendall_tau(worder, normalize=True):
         num_possible_pairs = choose(worder_len, 2)
         # Kendall's Tau computation.
         tau = 2 * num_increasing_pairs / num_possible_pairs - 1
-    if normalize: # If normalized, the tau output falls between 0.0 to 1.0
+    if normalize:  # If normalized, the tau output falls between 0.0 to 1.0
         return (tau + 1) / 2
     else:  # Otherwise, the tau outputs falls between -1.0 to +1.0
         return tau

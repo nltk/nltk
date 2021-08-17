@@ -15,10 +15,9 @@ __docformat__ = "epytext en"
 import re
 from collections import defaultdict
 
-from nltk.util import flatten, LazyMap, LazyConcatenation
-
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
+from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader
+from nltk.util import LazyConcatenation, LazyMap, flatten
 
 # to resolve the namespace issue
 NS = "http://www.talkbank.org/ns/talkbank"
@@ -241,7 +240,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         # getting participants' data
         pat = dictOfDicts()
         for participant in xmldoc.findall(
-            ".//{%s}Participants/{%s}participant" % (NS, NS)
+            f".//{{{NS}}}Participants/{{{NS}}}participant"
         ):
             for (key, value) in participant.items():
                 pat[participant.get("id")][key] = value
@@ -264,7 +263,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_age(self, fileid, speaker, month):
         xmldoc = ElementTree.parse(fileid).getroot()
-        for pat in xmldoc.findall(".//{%s}Participants/{%s}participant" % (NS, NS)):
+        for pat in xmldoc.findall(f".//{{{NS}}}Participants/{{{NS}}}participant"):
             try:
                 if pat.get("id") == speaker:
                     age = pat.get("age")
@@ -329,7 +328,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             else:
                 results.append([word for (word, pos) in sent])
                 # count number of fillers
-                if len(set(["co", None]).intersection(posList)) > 0:
+                if len({"co", None}.intersection(posList)) > 0:
                     numFillers += posList.count("co")
                     numFillers += posList.count(None)
                     sentDiscount += 1
@@ -367,12 +366,12 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     suffixStem = None
                     suffixTag = None
                     # getting replaced words
-                    if replace and xmlsent.find(".//{%s}w/{%s}replacement" % (NS, NS)):
+                    if replace and xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement"):
                         xmlword = xmlsent.find(
-                            ".//{%s}w/{%s}replacement/{%s}w" % (NS, NS, NS)
+                            f".//{{{NS}}}w/{{{NS}}}replacement/{{{NS}}}w"
                         )
-                    elif replace and xmlsent.find(".//{%s}w/{%s}wk" % (NS, NS)):
-                        xmlword = xmlsent.find(".//{%s}w/{%s}wk" % (NS, NS))
+                    elif replace and xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk"):
+                        xmlword = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk")
                     # get text
                     if xmlword.text:
                         word = xmlword.text
@@ -391,7 +390,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         # if there is an inflection
                         try:
                             xmlinfl = xmlword.find(
-                                ".//{%s}mor/{%s}mw/{%s}mk" % (NS, NS, NS)
+                                f".//{{{NS}}}mor/{{{NS}}}mw/{{{NS}}}mk"
                             )
                             word += "-" + xmlinfl.text
                         except:
@@ -443,7 +442,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     # <mor></mor><mor type="trn"><gra type="grt">
                     if relation == True:
                         for xmlstem_rel in xmlword.findall(
-                            ".//{%s}mor/{%s}gra" % (NS, NS)
+                            f".//{{{NS}}}mor/{{{NS}}}gra"
                         ):
                             if not xmlstem_rel.get("type") == "grt":
                                 word = (
@@ -470,7 +469,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                 )
                         try:
                             for xmlpost_rel in xmlword.findall(
-                                ".//{%s}mor/{%s}mor-post/{%s}gra" % (NS, NS, NS)
+                                f".//{{{NS}}}mor/{{{NS}}}mor-post/{{{NS}}}gra"
                             ):
                                 if not xmlpost_rel.get("type") == "grt":
                                     suffixStem = (

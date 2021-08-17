@@ -528,13 +528,15 @@ def kneserney_bigram_model(bigram_training_data, vocabulary):
         "kneserney_bigram_model",
         pytest.param(
             "stupid_backoff_trigram_model",
-            marks=pytest.mark.xfail(reason="Stupid Backoff is not a valid distribution"),
+            marks=pytest.mark.xfail(
+                reason="Stupid Backoff is not a valid distribution"
+            ),
         ),
     ],
 )
 @pytest.mark.parametrize(
     "context",
-    [("a",), ("c",), (u"<s>",), ("b",), (u"<UNK>",), ("d",), ("e",), ("r",), ("w",)],
+    [("a",), ("c",), ("<s>",), ("b",), ("<UNK>",), ("d",), ("e",), ("r",), ("w",)],
     ids=itemgetter(0),
 )
 def test_sums_to_1(model_fixture, context, request):

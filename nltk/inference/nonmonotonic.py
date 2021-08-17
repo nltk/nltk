@@ -15,25 +15,24 @@ Michael R. Genesereth and Nils J. Nilsson.
 from collections import defaultdict
 from functools import reduce
 
+from nltk.inference.api import Prover, ProverCommandDecorator
 from nltk.inference.prover9 import Prover9, Prover9Command
 from nltk.sem.logic import (
-    VariableExpression,
-    EqualityExpression,
-    ApplicationExpression,
-    Expression,
     AbstractVariableExpression,
     AllExpression,
-    BooleanExpression,
-    NegatedExpression,
-    ExistsExpression,
-    Variable,
-    ImpExpression,
     AndExpression,
-    unique_variable,
+    ApplicationExpression,
+    BooleanExpression,
+    EqualityExpression,
+    ExistsExpression,
+    Expression,
+    ImpExpression,
+    NegatedExpression,
+    Variable,
+    VariableExpression,
     operator,
+    unique_variable,
 )
-
-from nltk.inference.api import Prover, ProverCommandDecorator
 
 
 class ProverParseError(Exception):
@@ -107,8 +106,8 @@ class UniqueNamesProver(ProverCommandDecorator):
 
     def assumptions(self):
         """
-         - Domain = union([e.free()|e.constants() for e in all_expressions])
-         - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
+        - Domain = union([e.free()|e.constants() for e in all_expressions])
+        - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
         assumptions = self._command.assumptions()
 
@@ -157,7 +156,7 @@ class SetHolder(list):
             if item in s:
                 return s
         # item is not found in any existing set.  so create a new set
-        new = set([item])
+        new = {item}
         self.append(new)
         return new
 
@@ -335,7 +334,7 @@ class PredHolder:
             raise Exception("Signature lengths do not match")
 
     def __str__(self):
-        return "(%s,%s,%s)" % (self.signatures, self.properties, self.signature_len)
+        return f"({self.signatures},{self.properties},{self.signature_len})"
 
     def __repr__(self):
         return "%s" % self

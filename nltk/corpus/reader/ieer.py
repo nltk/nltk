@@ -39,7 +39,6 @@ titles = {
 documents = sorted(titles)
 
 
-
 class IEERDocument:
     def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
         self.text = text
@@ -56,14 +55,13 @@ class IEERDocument:
                 " ".join([w for w in self.text.leaves() if w[:1] != "<"][:12]) + "..."
             )
         if self.docno is not None:
-            return "<IEERDocument %s: %r>" % (self.docno, headline)
+            return f"<IEERDocument {self.docno}: {headline!r}>"
         else:
             return "<IEERDocument: %r>" % headline
 
 
 class IEERCorpusReader(CorpusReader):
-    """
-    """
+    """ """
 
     def docs(self, fileids=None):
         return concat(

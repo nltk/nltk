@@ -116,8 +116,7 @@ class NgramCounter:
             for ngram in sent:
                 if not isinstance(ngram, tuple):
                     raise TypeError(
-                        "Ngram <{0}> isn't a tuple, "
-                        "but {1}".format(ngram, type(ngram))
+                        "Ngram <{}> isn't a tuple, " "but {}".format(ngram, type(ngram))
                     )
 
                 ngram_order = len(ngram)
@@ -152,7 +151,7 @@ class NgramCounter:
             return self._counts.__getitem__(len(item) + 1)[tuple(item)]
 
     def __str__(self):
-        return "<{0} with {1} ngram orders and {2} ngrams>".format(
+        return "<{} with {} ngram orders and {} ngrams>".format(
             self.__class__.__name__, len(self._counts), self.N()
         )
 

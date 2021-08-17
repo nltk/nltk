@@ -6,15 +6,15 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
-import os
 import json
-from subprocess import PIPE
+import os
+import tempfile
 import warnings
+from subprocess import PIPE
 
-from nltk.internals import find_jar, config_java, java, _java_options
-from nltk.tokenize.api import TokenizerI
+from nltk.internals import _java_options, config_java, find_jar, java
 from nltk.parse.corenlp import CoreNLPParser
+from nltk.tokenize.api import TokenizerI
 
 _stanford_url = "https://nlp.stanford.edu/software/tokenizer.shtml"
 
@@ -66,9 +66,7 @@ class StanfordTokenizer(TokenizerI):
         self.java_options = java_options
 
         options = {} if options is None else options
-        self._options_cmd = ",".join(
-            "{0}={1}".format(key, val) for key, val in options.items()
-        )
+        self._options_cmd = ",".join(f"{key}={val}" for key, val in options.items())
 
     @staticmethod
     def _parse_tokenized_output(s):

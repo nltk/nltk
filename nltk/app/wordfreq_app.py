@@ -6,8 +6,9 @@
 # For license information, see LICENSE.TXT
 
 from matplotlib import pylab
-from nltk.text import Text
+
 from nltk.corpus import gutenberg
+from nltk.text import Text
 
 
 def plot_word_freq_dist(text):

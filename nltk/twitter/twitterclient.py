@@ -23,19 +23,18 @@ divided into 15 minute windows.
 """
 
 import datetime
+import gzip
 import itertools
 import json
 import os
 import time
-import gzip
 
 import requests
-
 from twython import Twython, TwythonStreamer
-from twython.exceptions import TwythonRateLimitError, TwythonError
+from twython.exceptions import TwythonError, TwythonRateLimitError
 
+from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
-from nltk.twitter.api import TweetHandlerI, BasicTweetHandler
 
 
 class Streamer(TwythonStreamer):
@@ -100,7 +99,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print("Error (stream will continue): {0}".format(e))
+                    print(f"Error (stream will continue): {e}")
                 continue
 
     def filter(self, track="", follow="", lang="en"):
@@ -117,7 +116,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.filter(track=track, follow=follow, lang=lang)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print("Error (stream will continue): {0}".format(e))
+                    print(f"Error (stream will continue): {e}")
                 continue
 
 
@@ -156,7 +155,7 @@ class Query(Twython):
         ids = [line.strip() for line in ids_f if line]
 
         if verbose:
-            print("Counted {0} Tweet IDs in {1}.".format(len(ids), ids_f))
+            print(f"Counted {len(ids)} Tweet IDs in {ids_f}.")
 
         # The Twitter endpoint takes lists of up to 100 ids, so we chunk the
         # ids.
@@ -248,11 +247,11 @@ class Query(Twython):
                     result_type="recent",
                 )
             except TwythonRateLimitError as e:
-                print("Waiting for 15 minutes -{0}".format(e))
+                print(f"Waiting for 15 minutes -{e}")
                 time.sleep(15 * 60)  # wait 15 minutes
                 continue
             except TwythonError as e:
-                print("Fatal error in Twython request -{0}".format(e))
+                print(f"Fatal error in Twython request -{e}")
                 if retries_after_twython_exception == retries:
                     raise e
                 retries += 1
@@ -430,7 +429,7 @@ class TweetViewer(TweetHandlerI):
             return
 
     def on_finish(self):
-        print("Written {0} Tweets".format(self.counter))
+        print(f"Written {self.counter} Tweets")
 
 
 class TweetWriter(TweetHandlerI):
@@ -502,7 +501,7 @@ class TweetWriter(TweetHandlerI):
             suffix = ".gz"
         else:
             suffix = ""
-        outfile = "{0}.{1}.json{2}".format(fname, timestamp, suffix)
+        outfile = f"{fname}.{timestamp}.json{suffix}"
         return outfile
 
     def handle(self, data):
@@ -517,7 +516,7 @@ class TweetWriter(TweetHandlerI):
                 self.output = gzip.open(self.fname, "w")
             else:
                 self.output = open(self.fname, "w")
-            print("Writing to {0}".format(self.fname))
+            print(f"Writing to {self.fname}")
 
         json_data = json.dumps(data)
         if self.gzip_compress:
@@ -532,7 +531,7 @@ class TweetWriter(TweetHandlerI):
         self.startingup = False
 
     def on_finish(self):
-        print("Written {0} Tweets".format(self.counter))
+        print(f"Written {self.counter} Tweets")
         if self.output:
             self.output.close()
 

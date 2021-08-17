@@ -53,4 +53,4 @@ class RegexpStemmer(StemmerI):
             return self._regexp.sub("", word)
 
     def __repr__(self):
-        return "<RegexpStemmer: {!r}>".format(self._regexp.pattern)
+        return f"<RegexpStemmer: {self._regexp.pattern!r}>"

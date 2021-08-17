@@ -9,18 +9,17 @@
 Classifiers that make use of the external 'Weka' package.
 """
 
-import time
-import tempfile
 import os
-import subprocess
 import re
+import subprocess
+import tempfile
+import time
 import zipfile
 from sys import stdin
 
-from nltk.probability import DictionaryProbDist
-from nltk.internals import java, config_java
-
 from nltk.classify.api import ClassifierI
+from nltk.internals import config_java, java
+from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
 _weka_search = [
@@ -51,9 +50,7 @@ def config_weka(classpath=None):
                 _weka_classpath = os.path.join(path, "weka.jar")
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print(
-                        "[Found Weka: %s (version %s)]" % (_weka_classpath, version)
-                    )
+                    print(f"[Found Weka: {_weka_classpath} (version {version})]")
                 else:
                     print("[Found Weka: %s]" % _weka_classpath)
                 _check_weka_version(_weka_classpath)
@@ -289,7 +286,7 @@ class ARFF_Formatter:
         string (note: not nominal) types.
         """
         # Find the set of all attested labels.
-        labels = set(label for (tok, label) in tokens)
+        labels = {label for (tok, label) in tokens}
 
         # Determine the types of all features.
         features = {}
@@ -372,7 +369,7 @@ class ARFF_Formatter:
 
 
 if __name__ == "__main__":
-    from nltk.classify.util import names_demo, binary_names_demo_features
+    from nltk.classify.util import binary_names_demo_features, names_demo
 
     def make_classifier(featuresets):
         return WekaClassifier.train("/tmp/name.model", featuresets, "C4.5")

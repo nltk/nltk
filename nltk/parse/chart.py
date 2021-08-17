@@ -40,13 +40,11 @@ import re
 import warnings
 from functools import total_ordering
 
-from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
-from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
-
 from nltk.parse.api import ParserI
-
+from nltk.tree import Tree
+from nltk.util import OrderedDict
 
 ########################################################################
 ##  Edges
@@ -344,7 +342,7 @@ class TreeEdge(EdgeI):
 
     # String representation
     def __str__(self):
-        str = "[%s:%s] " % (self._span[0], self._span[1])
+        str = f"[{self._span[0]}:{self._span[1]}] "
         str += "%-2r ->" % (self._lhs,)
 
         for i in range(len(self._rhs)):
@@ -418,7 +416,7 @@ class LeafEdge(EdgeI):
 
     # String representations
     def __str__(self):
-        return "[%s:%s] %s" % (self._index, self._index + 1, repr(self._leaf))
+        return f"[{self._index}:{self._index + 1}] {repr(self._leaf)}"
 
     def __repr__(self):
         return "[Edge: %s]" % (self)
@@ -676,8 +674,7 @@ class Chart:
         the entire chart, and whose root node is ``root``.
         """
         for edge in self.select(start=0, end=self._num_leaves, lhs=root):
-            for tree in self.trees(edge, tree_class=tree_class, complete=True):
-                yield tree
+            yield from self.trees(edge, tree_class=tree_class, complete=True)
 
     def trees(self, edge, tree_class=Tree, complete=False):
         """
@@ -829,7 +826,7 @@ class Chart:
             width = 50 // (self.num_leaves() + 1)
         # sort edges: primary key=length, secondary key=start index.
         # (and filter out the token edges)
-        edges = sorted([(e.length(), e.start(), e) for e in self])
+        edges = sorted((e.length(), e.start(), e) for e in self)
         edges = [e for (_, _, e) in edges]
 
         return (
@@ -981,26 +978,22 @@ class AbstractChartRule(ChartRuleI):
     # self.apply() for each set of edges.
     def apply_everywhere(self, chart, grammar):
         if self.NUM_EDGES == 0:
-            for new_edge in self.apply(chart, grammar):
-                yield new_edge
+            yield from self.apply(chart, grammar)
 
         elif self.NUM_EDGES == 1:
             for e1 in chart:
-                for new_edge in self.apply(chart, grammar, e1):
-                    yield new_edge
+                yield from self.apply(chart, grammar, e1)
 
         elif self.NUM_EDGES == 2:
             for e1 in chart:
                 for e2 in chart:
-                    for new_edge in self.apply(chart, grammar, e1, e2):
-                        yield new_edge
+                    yield from self.apply(chart, grammar, e1, e2)
 
         elif self.NUM_EDGES == 3:
             for e1 in chart:
                 for e2 in chart:
                     for e3 in chart:
-                        for new_edge in self.apply(chart, grammar, e1, e2, e3):
-                            yield new_edge
+                        yield from self.apply(chart, grammar, e1, e2, e3)
 
         else:
             raise AssertionError("NUM_EDGES>3 is not currently supported")
@@ -1072,11 +1065,9 @@ class SingleEdgeFundamentalRule(FundamentalRule):
 
     def apply(self, chart, grammar, edge):
         if edge.is_incomplete():
-            for new_edge in self._apply_incomplete(chart, grammar, edge):
-                yield new_edge
+            yield from self._apply_incomplete(chart, grammar, edge)
         else:
-            for new_edge in self._apply_complete(chart, grammar, edge):
-                yield new_edge
+            yield from self._apply_complete(chart, grammar, edge)
 
     def _apply_complete(self, chart, grammar, right_edge):
         for left_edge in chart.select(
@@ -1741,8 +1732,10 @@ def demo(
     """
     A demonstration of the chart parsers.
     """
-    import sys, time
-    from nltk import nonterminals, Production, CFG
+    import sys
+    import time
+
+    from nltk import CFG, Production, nonterminals
 
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()

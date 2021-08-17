@@ -11,13 +11,13 @@ A version of first order predicate logic, built on
 top of the typed lambda calculus.
 """
 
-import re
 import operator
+import re
 from collections import defaultdict
 from functools import reduce, total_ordering
 
-from nltk.util import Trie
 from nltk.internals import Counter
+from nltk.util import Trie
 
 APP = "APP"
 
@@ -152,7 +152,7 @@ class LogicParser:
             if self.inRange(0):
                 raise UnexpectedTokenException(self._currentIndex + 1, self.token(0))
         except LogicalExpressionException as e:
-            msg = "%s\n%s\n%s^" % (e, data, " " * mapping[e.index - 1])
+            msg = "{}\n{}\n{}^".format(e, data, " " * mapping[e.index - 1])
             raise LogicalExpressionException(None, msg) from e
 
         if self.type_check:
@@ -609,7 +609,7 @@ def read_logic(s, logic_parser=None, encoding=None):
         try:
             statements.append(logic_parser.parse(line))
         except LogicalExpressionException as e:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
+            raise ValueError(f"Unable to parse line {linenum}: {line}") from e
     return statements
 
 
@@ -668,9 +668,9 @@ def unique_variable(pattern=None, ignore=None):
     else:
         prefix = "z"
 
-    v = Variable("%s%s" % (prefix, _counter.get()))
+    v = Variable(f"{prefix}{_counter.get()}")
     while ignore is not None and v in ignore:
-        v = Variable("%s%s" % (prefix, _counter.get()))
+        v = Variable(f"{prefix}{_counter.get()}")
     return v
 
 
@@ -742,13 +742,13 @@ class ComplexType(Type):
         if self == ANY_TYPE:
             return "%s" % ANY_TYPE
         else:
-            return "<%s,%s>" % (self.first, self.second)
+            return f"<{self.first},{self.second}>"
 
     def str(self):
         if self == ANY_TYPE:
             return ANY_TYPE.str()
         else:
-            return "(%s -> %s)" % (self.first.str(), self.second.str())
+            return f"({self.first.str()} -> {self.second.str()})"
 
 
 class BasicType(Type):
@@ -866,7 +866,7 @@ def read_type(type_string):
 
 class TypeException(Exception):
     def __init__(self, msg):
-        super(TypeException, self).__init__(msg)
+        super().__init__(msg)
 
 
 class InconsistentTypeHierarchyException(TypeException):
@@ -881,12 +881,12 @@ class InconsistentTypeHierarchyException(TypeException):
                 "The variable '%s' was found in multiple places with different"
                 " types." % (variable)
             )
-        super(InconsistentTypeHierarchyException, self).__init__(msg)
+        super().__init__(msg)
 
 
 class TypeResolutionException(TypeException):
     def __init__(self, expression, other_type):
-        super(TypeResolutionException, self).__init__(
+        super().__init__(
             "The type of '%s', '%s', cannot be resolved with type '%s'"
             % (expression, expression.type, other_type)
         )
@@ -894,7 +894,7 @@ class TypeResolutionException(TypeException):
 
 class IllegalTypeException(TypeException):
     def __init__(self, expression, other_type, allowed_type):
-        super(IllegalTypeException, self).__init__(
+        super().__init__(
             "Cannot set type of %s '%s' to '%s'; must match type '%s'."
             % (expression.__class__.__name__, expression, other_type, allowed_type)
         )
@@ -1055,7 +1055,7 @@ class Expression(SubstituteBindingsI):
 
         self._set_type(signature=sig)
 
-        return dict((key, sig[key][0].type) for key in sig)
+        return {key: sig[key][0].type for key in sig}
 
     def findtype(self, variable):
         """
@@ -1099,7 +1099,7 @@ class Expression(SubstituteBindingsI):
 
         def get_indiv_vars(e):
             if isinstance(e, IndividualVariableExpression):
-                return set([e])
+                return {e}
             elif isinstance(e, AbstractVariableExpression):
                 return set()
             else:
@@ -1151,7 +1151,7 @@ class Expression(SubstituteBindingsI):
         return self.visit(function, lambda parts: combinator(*parts))
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self)
+        return f"<{self.__class__.__name__} {self}>"
 
     def __str__(self):
         return self.str()
@@ -1163,9 +1163,9 @@ class Expression(SubstituteBindingsI):
         variables and any variable starting with '?' or '@'.
         :return: set of ``Variable`` objects
         """
-        return self.free() | set(
+        return self.free() | {
             p for p in self.predicates() | self.constants() if re.match("^[?@]", p.name)
-        )
+        }
 
     def free(self):
         """
@@ -1322,7 +1322,7 @@ class ApplicationExpression(Expression):
     def predicates(self):
         """:see: Expression.predicates()"""
         if isinstance(self.function, ConstantExpression):
-            function_preds = set([self.function.variable])
+            function_preds = {self.function.variable}
         else:
             function_preds = self.function.predicates()
         return function_preds | self.argument.predicates()
@@ -1506,7 +1506,7 @@ class IndividualVariableExpression(AbstractVariableExpression):
 
     def free(self):
         """:see: Expression.free()"""
-        return set([self.variable])
+        return {self.variable}
 
     def constants(self):
         """:see: Expression.constants()"""
@@ -1521,7 +1521,7 @@ class FunctionVariableExpression(AbstractVariableExpression):
 
     def free(self):
         """:see: Expression.free()"""
-        return set([self.variable])
+        return {self.variable}
 
     def constants(self):
         """:see: Expression.constants()"""
@@ -1571,7 +1571,7 @@ class ConstantExpression(AbstractVariableExpression):
 
     def constants(self):
         """:see: Expression.constants()"""
-        return set([self.variable])
+        return {self.variable}
 
 
 def VariableExpression(variable):
@@ -1646,7 +1646,7 @@ class VariableBinderExpression(Expression):
 
     def free(self):
         """:see: Expression.free()"""
-        return self.term.free() - set([self.variable])
+        return self.term.free() - {self.variable}
 
     def findtype(self, variable):
         """:see Expression.findtype()"""
@@ -2043,11 +2043,11 @@ def demoException(s):
     try:
         Expression.fromstring(s)
     except LogicalExpressionException as e:
-        print("%s: %s" % (e.__class__.__name__, e))
+        print(f"{e.__class__.__name__}: {e}")
 
 
 def printtype(ex):
-    print("%s : %s" % (ex.str(), ex.type))
+    print(f"{ex.str()} : {ex.type}")
 
 
 if __name__ == "__main__":

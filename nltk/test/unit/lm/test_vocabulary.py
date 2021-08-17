@@ -138,7 +138,9 @@ class NgramModelVocabularyTests(unittest.TestCase):
             ),
         )
 
-    @unittest.skip(reason = "Test is known to be flaky as it compares (runtime) performance.")
+    @unittest.skip(
+        reason="Test is known to be flaky as it compares (runtime) performance."
+    )
     def test_len_is_constant(self):
         # Given an obviously small and an obviously large vocabulary.
         small_vocab = Vocabulary("abcde")

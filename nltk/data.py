@@ -31,20 +31,19 @@ adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 
+import codecs
 import functools
-import textwrap
-from io import BytesIO, TextIOWrapper
 import os
+import pickle
 import re
 import sys
+import textwrap
 import zipfile
-import codecs
-import pickle
-
 from abc import ABCMeta, abstractmethod
-from gzip import GzipFile, WRITE as GZ_WRITE
-
-from urllib.request import urlopen, url2pathname
+from gzip import WRITE as GZ_WRITE
+from gzip import GzipFile
+from io import BytesIO, TextIOWrapper
+from urllib.request import url2pathname, urlopen
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
@@ -52,7 +51,7 @@ except ImportError:
     from zlib import Z_FINISH as FLUSH
 
 from nltk import grammar, sem
-from nltk.compat import py3_data, add_py3_data
+from nltk.compat import add_py3_data, py3_data
 from nltk.internals import deprecated
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
@@ -69,32 +68,32 @@ path = []
    (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
-_paths_from_env = os.environ.get("NLTK_DATA", str("")).split(os.pathsep)
+_paths_from_env = os.environ.get("NLTK_DATA", "").split(os.pathsep)
 path += [d for d in _paths_from_env if d]
 if "APPENGINE_RUNTIME" not in os.environ and os.path.expanduser("~/") != "~/":
-    path.append(os.path.expanduser(str("~/nltk_data")))
+    path.append(os.path.expanduser("~/nltk_data"))
 
 if sys.platform.startswith("win"):
     # Common locations on Windows:
     path += [
-        os.path.join(sys.prefix, str("nltk_data")),
-        os.path.join(sys.prefix, str("share"), str("nltk_data")),
-        os.path.join(sys.prefix, str("lib"), str("nltk_data")),
-        os.path.join(os.environ.get(str("APPDATA"), str("C:\\")), str("nltk_data")),
-        str(r"C:\nltk_data"),
-        str(r"D:\nltk_data"),
-        str(r"E:\nltk_data"),
+        os.path.join(sys.prefix, "nltk_data"),
+        os.path.join(sys.prefix, "share", "nltk_data"),
+        os.path.join(sys.prefix, "lib", "nltk_data"),
+        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
+        r"C:\nltk_data",
+        r"D:\nltk_data",
+        r"E:\nltk_data",
     ]
 else:
     # Common locations on UNIX & OS X:
     path += [
-        os.path.join(sys.prefix, str("nltk_data")),
-        os.path.join(sys.prefix, str("share"), str("nltk_data")),
-        os.path.join(sys.prefix, str("lib"), str("nltk_data")),
-        str("/usr/share/nltk_data"),
-        str("/usr/local/share/nltk_data"),
-        str("/usr/lib/nltk_data"),
-        str("/usr/local/lib/nltk_data"),
+        os.path.join(sys.prefix, "nltk_data"),
+        os.path.join(sys.prefix, "share", "nltk_data"),
+        os.path.join(sys.prefix, "lib", "nltk_data"),
+        "/usr/share/nltk_data",
+        "/usr/local/share/nltk_data",
+        "/usr/lib/nltk_data",
+        "/usr/local/lib/nltk_data",
     ]
 
 
@@ -310,7 +309,7 @@ class FileSystemPathPointer(PathPointer, str):
 
         _path = os.path.abspath(_path)
         if not os.path.exists(_path):
-            raise IOError("No such file or directory: %r" % _path)
+            raise OSError("No such file or directory: %r" % _path)
         self._path = _path
 
         # There's no need to call str.__init__(), since it's a no-op;
@@ -339,6 +338,7 @@ class FileSystemPathPointer(PathPointer, str):
 
     def __str__(self):
         return self._path
+
 
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
 class BufferedGzipFile(GzipFile):
@@ -412,8 +412,8 @@ class ZipFilePathPointer(PathPointer):
                     pass  # zipfile contains a file in that directory.
                 else:
                     # Otherwise, complain.
-                    raise IOError(
-                        "Zipfile %r does not contain %r" % (zipfile.filename, entry)
+                    raise OSError(
+                        f"Zipfile {zipfile.filename!r} does not contain {entry!r}"
                     ) from e
         self._zipfile = zipfile
         self._entry = entry
@@ -447,11 +447,11 @@ class ZipFilePathPointer(PathPointer):
         return self._zipfile.getinfo(self._entry).file_size
 
     def join(self, fileid):
-        entry = "%s/%s" % (self._entry, fileid)
+        entry = f"{self._entry}/{fileid}"
         return ZipFilePathPointer(self._zipfile, entry)
 
     def __repr__(self):
-        return str("ZipFilePathPointer(%r, %r)") % (self._zipfile.filename, self._entry)
+        return f"ZipFilePathPointer({self._zipfile.filename!r}, {self._entry!r})"
 
     def __str__(self):
         return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
@@ -522,7 +522,7 @@ def find(resource_name, paths=None):
         if path_ and (os.path.isfile(path_) and path_.endswith(".zip")):
             try:
                 return ZipFilePathPointer(path_, resource_name)
-            except IOError:
+            except OSError:
                 # resource not in zipfile
                 continue
 
@@ -540,7 +540,7 @@ def find(resource_name, paths=None):
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
-                    except IOError:
+                    except OSError:
                         # resource not in zipfile
                         continue
 
@@ -579,7 +579,7 @@ def find(resource_name, paths=None):
 
     msg += "\n  Searched in:" + "".join("\n    - %r" % d for d in paths)
     sep = "*" * 70
-    resource_not_found = "\n%s\n%s\n%s\n" % (sep, msg, sep)
+    resource_not_found = f"\n{sep}\n{msg}\n{sep}\n"
     raise LookupError(resource_not_found)
 
 
@@ -605,7 +605,7 @@ def retrieve(resource_url, filename=None, verbose=True):
         raise ValueError("File %r already exists!" % filename)
 
     if verbose:
-        print("Retrieving %r, saving to %r" % (resource_url, filename))
+        print(f"Retrieving {resource_url!r}, saving to {filename!r}")
 
     # Open the input & output streams.
     infile = _open(resource_url)
@@ -732,19 +732,19 @@ def load(
             )
 
     if format not in FORMATS:
-        raise ValueError("Unknown format type: %s!" % (format,))
+        raise ValueError(f"Unknown format type: {format}!")
 
     # If we've cached the resource, then just return it.
     if cache:
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                print("<<Using cached copy of %s>>" % (resource_url,))
+                print(f"<<Using cached copy of {resource_url}>>")
             return resource_val
 
     # Let the user know what's going on.
     if verbose:
-        print("<<Loading %s>>" % (resource_url,))
+        print(f"<<Loading {resource_url}>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
@@ -755,6 +755,7 @@ def load(
         resource_val = pickle.load(opened_resource)
     elif format == "json":
         import json
+
         from nltk.jsontags import json_tags
 
         resource_val = json.load(opened_resource)
@@ -957,7 +958,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         raise NotImplementedError("OpenOnDemandZipfile is read-only")
 
     def __repr__(self):
-        return repr(str("OpenOnDemandZipFile(%r)") % self.filename)
+        return repr("OpenOnDemandZipFile(%r)" % self.filename)
 
 
 ######################################################################

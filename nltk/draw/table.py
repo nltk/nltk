@@ -10,9 +10,7 @@ Tkinter widgets for displaying multi-column listboxes and tables.
 """
 
 import operator
-
 from tkinter import Frame, Label, Listbox, Scrollbar, Tk
-
 
 ######################################################################
 # Multi-Column Listbox
@@ -665,7 +663,7 @@ class Table:
         self._reprfunc = reprfunc
         self._frame = Frame(master)
 
-        self._column_name_to_index = dict((c, i) for (i, c) in enumerate(column_names))
+        self._column_name_to_index = {c: i for (i, c) in enumerate(column_names)}
 
         # Make a copy of the rows & check that it's valid.
         if rows is None:
@@ -1023,15 +1021,15 @@ class Table:
             self._mlb.insert("end", row)
 
     def _get_itemconfig(self, r, c):
-        return dict(
-            (k, self._mlb.itemconfig(r, c, k)[-1])
+        return {
+            k: self._mlb.itemconfig(r, c, k)[-1]
             for k in (
                 "foreground",
                 "selectforeground",
                 "background",
                 "selectbackground",
             )
-        )
+        }
 
     def _save_config_info(self, row_indices=None, index_by_id=False):
         """
@@ -1059,18 +1057,17 @@ class Table:
 
         # Look up the color configuration info for each row.
         if index_by_id:
-            config = dict(
-                (
-                    id(self._rows[r]),
-                    [self._get_itemconfig(r, c) for c in range(self._num_columns)],
-                )
+            config = {
+                id(self._rows[r]): [
+                    self._get_itemconfig(r, c) for c in range(self._num_columns)
+                ]
                 for r in row_indices
-            )
+            }
         else:
-            config = dict(
-                (r, [self._get_itemconfig(r, c) for c in range(self._num_columns)])
+            config = {
+                r: [self._get_itemconfig(r, c) for c in range(self._num_columns)]
                 for r in row_indices
-            )
+            }
 
         return selection, config
 
@@ -1145,8 +1142,7 @@ def demo():
     )
     table.pack(expand=True, fill="both")
 
-    from nltk.corpus import wordnet
-    from nltk.corpus import brown
+    from nltk.corpus import brown, wordnet
 
     for word, pos in sorted(set(brown.tagged_words()[:500])):
         if pos[0] != "N":

@@ -1,6 +1,10 @@
 import unittest
 
-from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures, QuadgramAssocMeasures
+from nltk.metrics import (
+    BigramAssocMeasures,
+    QuadgramAssocMeasures,
+    TrigramAssocMeasures,
+)
 
 ## Test the likelihood ratio metric
 
@@ -12,12 +16,10 @@ class TestLikelihoodRatio(unittest.TestCase):
         self.assertAlmostEqual(
             BigramAssocMeasures.likelihood_ratio(2, (4, 4), 20),
             2.4142743368419755,
-            delta=_DELTA
+            delta=_DELTA,
         )
         self.assertAlmostEqual(
-            BigramAssocMeasures.likelihood_ratio(1, (1, 1), 1),
-            0.0,
-            delta=_DELTA
+            BigramAssocMeasures.likelihood_ratio(1, (1, 1), 1), 0.0, delta=_DELTA
         )
         self.assertRaises(
             ValueError,
@@ -29,29 +31,33 @@ class TestLikelihoodRatio(unittest.TestCase):
         self.assertAlmostEqual(
             TrigramAssocMeasures.likelihood_ratio(1, (1, 1, 1), (1, 1, 1), 2),
             5.545177444479562,
-            delta=_DELTA
+            delta=_DELTA,
         )
         self.assertAlmostEqual(
             TrigramAssocMeasures.likelihood_ratio(1, (1, 1, 1), (1, 1, 1), 1),
             0.0,
-            delta=_DELTA
+            delta=_DELTA,
         )
         self.assertRaises(
             ValueError,
             TrigramAssocMeasures.likelihood_ratio,
-            *(1, (1, 1, 2), (1, 1, 2), 2)
+            *(1, (1, 1, 2), (1, 1, 2), 2),
         )
 
     def test_lr_quadgram(self):
         self.assertAlmostEqual(
-            QuadgramAssocMeasures.likelihood_ratio(1, (1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1), 2),
+            QuadgramAssocMeasures.likelihood_ratio(
+                1, (1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1), 2
+            ),
             8.317766166719343,
-            delta=_DELTA
+            delta=_DELTA,
         )
         self.assertAlmostEqual(
-            QuadgramAssocMeasures.likelihood_ratio(1, (1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1), 1),
+            QuadgramAssocMeasures.likelihood_ratio(
+                1, (1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (1, 1, 1, 1), 1
+            ),
             0.0,
-            delta=_DELTA
+            delta=_DELTA,
         )
         self.assertRaises(
             ValueError,
