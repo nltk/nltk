@@ -3,8 +3,17 @@ name: ci-workflow
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  pre-commit:
+    name: Run pre-commit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: pre-commit/action@v2.0.0
+
   cache_nltk_data:
     name: cache nltk_data
+    needs: pre-commit
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]

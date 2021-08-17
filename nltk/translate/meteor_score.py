@@ -8,6 +8,7 @@
 
 
 from itertools import chain, product
+
 from nltk.corpus import wordnet
 from nltk.stem.porter import PorterStemmer
 
@@ -102,9 +103,7 @@ def _enum_stem_match(
         (word_pair[0], stemmer.stem(word_pair[1])) for word_pair in enum_reference_list
     ]
 
-    return _match_enums(
-        stemmed_enum_list1, stemmed_enum_list2
-    )
+    return _match_enums(stemmed_enum_list1, stemmed_enum_list2)
 
 
 def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
@@ -325,7 +324,9 @@ def single_meteor_score(
     )
     translation_length = len(enum_hypothesis)
     reference_length = len(enum_reference)
-    matches, _, _ = _enum_align_words(enum_hypothesis, enum_reference, stemmer=stemmer, wordnet=wordnet)
+    matches, _, _ = _enum_align_words(
+        enum_hypothesis, enum_reference, stemmer=stemmer, wordnet=wordnet
+    )
     matches_count = len(matches)
     try:
         precision = float(matches_count) / translation_length

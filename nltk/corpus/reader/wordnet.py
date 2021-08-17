@@ -583,8 +583,8 @@ class Synset(_WordNetObject):
     from nltk.util import acyclic_depth_first as acyclic_tree
     from nltk.util import unweighted_minimum_spanning_tree as mst
 
-# Also add this shortcut?
-#    from nltk.util import unweighted_minimum_spanning_digraph as umsd
+    # Also add this shortcut?
+    #    from nltk.util import unweighted_minimum_spanning_digraph as umsd
 
     def tree(self, rel, depth=-1, cut_mark=None):
         """
@@ -2044,13 +2044,20 @@ class WordNetCorpusReader(CorpusReader):
         self._lang_data[lang][0].default_factory = None
         self._lang_data[lang][1].default_factory = None
 
-
     ######################################################################
     # Visualize WordNet relation graphs using Graphviz
     ######################################################################
 
-
-    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, maxdepth=-1, shapes=None, attr=None, verbose=False):
+    def digraph(
+        self,
+        inputs,
+        rel=lambda s: s.hypernyms(),
+        pos=None,
+        maxdepth=-1,
+        shapes=None,
+        attr=None,
+        verbose=False,
+    ):
         """
         Produce a graphical representation from 'inputs' (a list of
         start nodes, which can be a mix of Synsets, Lemmas and/or words),
@@ -2091,6 +2098,7 @@ class WordNetCorpusReader(CorpusReader):
 
         """
         from nltk.util import edge_closure, edges2dot
+
         synsets = set()
         edges = set()
         if not shapes:
@@ -2101,7 +2109,7 @@ class WordNetCorpusReader(CorpusReader):
         def add_lemma(lem):
             ss = lem.synset()
             synsets.add(ss)
-            edges.add((lem,ss))
+            edges.add((lem, ss))
 
         for node in inputs:
             typ = type(node)
@@ -2110,7 +2118,7 @@ class WordNetCorpusReader(CorpusReader):
             elif typ == Lemma:
                 add_lemma(node)
             elif typ == str:
-                for lemma in self.lemmas(node,pos):
+                for lemma in self.lemmas(node, pos):
                     add_lemma(lemma)
 
         for ss in synsets:

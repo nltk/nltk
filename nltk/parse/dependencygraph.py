@@ -199,7 +199,6 @@ class DependencyGraph:
         dot_string = self.to_dot()
         return dot2img(dot_string)
 
-
     def __str__(self):
         return pformat(self.nodes)
 
@@ -547,7 +546,7 @@ class DependencyGraph:
         return g
 
 
-def dot2img(dot_string, t='svg'):
+def dot2img(dot_string, t="svg"):
     """
     Create image representation fom dot_string, using the 'dot' program
     from the Graphviz package.
@@ -557,7 +556,8 @@ def dot2img(dot_string, t='svg'):
 
     sys.stdout is used instead of subprocess.PIPE, to avoid decoding errors
     """
-    from sys import stderr,stdout
+    from sys import stderr, stdout
+
     try:
         proc = subprocess.run(
             ["dot", "-T%s" % t],
@@ -568,7 +568,7 @@ def dot2img(dot_string, t='svg'):
         )
     except OSError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
-    out, err = proc.stdout,proc.stderr
+    out, err = proc.stdout, proc.stderr
     if err:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"
