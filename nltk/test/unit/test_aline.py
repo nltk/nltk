@@ -6,9 +6,7 @@ from nltk.metrics import aline
 
 def test_aline():
     result = aline.align("θin", "tenwis")
-    expected = [
-        [("θ", "t"), ("i", "e"), ("n", "n"), ("-", "w"), ("-", "i"), ("-", "s")]
-    ]
+    expected = [[("θ", "t"), ("i", "e"), ("n", "n")]]
 
     assert result == expected
 
@@ -31,24 +29,13 @@ def test_aline():
             ("w", "w"),
             ("e", "e"),
             ("n", "n"),
-            ("i", "-"),
         ]
     ]
 
     assert result == expected
 
     result = aline.align("tuwθ", "dentis")
-    expected = [
-        [
-            ("t", "d"),
-            ("u", "e"),
-            ("w", "-"),
-            ("-", "n"),
-            ("-", "t"),
-            ("-", "i"),
-            ("θ", "s"),
-        ]
-    ]
+    expected = [[("t", "t"), ("u", "i"), ("w", "-"), ("θ", "s")]]
 
     assert result == expected
 
