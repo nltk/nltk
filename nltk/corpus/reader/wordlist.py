@@ -5,10 +5,9 @@
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from nltk.tokenize import line_tokenize
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tokenize import line_tokenize
 
 
 class WordListCorpusReader(CorpusReader):

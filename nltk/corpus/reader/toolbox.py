@@ -12,9 +12,9 @@ Module for reading, writing and manipulating
 Toolbox databases and settings fileids.
 """
 
-from nltk.toolbox import ToolboxData
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.toolbox import ToolboxData
 
 
 class ToolboxCorpusReader(CorpusReader):

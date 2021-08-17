@@ -42,8 +42,6 @@ else:
     except ImportError:
         import warnings
 
-        warnings.warn(
-            "nltk.app.wordfreq not loaded (requires the matplotlib library)."
-        )
+        warnings.warn("nltk.app.wordfreq not loaded (requires the matplotlib library).")
     else:
         from nltk.app.wordfreq_app import app as wordfreq

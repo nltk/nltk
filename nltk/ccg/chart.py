@@ -32,26 +32,25 @@ python chart.py
 
 import itertools
 
-from nltk.parse import ParserI
-from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
-from nltk.tree import Tree
-
-from nltk.ccg.lexicon import fromstring, Token
+from nltk.ccg.combinator import *
 from nltk.ccg.combinator import (
-    ForwardT,
+    BackwardApplication,
+    BackwardBx,
+    BackwardComposition,
+    BackwardSx,
     BackwardT,
     ForwardApplication,
-    BackwardApplication,
     ForwardComposition,
-    BackwardComposition,
     ForwardSubstitution,
-    BackwardBx,
-    BackwardSx,
+    ForwardT,
 )
-
-from nltk.ccg.combinator import *
+from nltk.ccg.lexicon import Token, fromstring
 from nltk.ccg.logic import *
+from nltk.parse import ParserI
+from nltk.parse.chart import AbstractChartRule, Chart, EdgeI
 from nltk.sem.logic import *
+from nltk.tree import Tree
+
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't

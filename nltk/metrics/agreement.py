@@ -73,10 +73,9 @@ import logging
 from itertools import groupby
 from operator import itemgetter
 
-from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
-
 from nltk.metrics.distance import binary_distance
+from nltk.probability import ConditionalFreqDist, FreqDist
 
 log = logging.getLogger(__name__)
 
@@ -135,9 +134,7 @@ class AnnotationTask:
             self.data.append({"coder": coder, "labels": labels, "item": item})
 
     def agr(self, cA, cB, i, data=None):
-        """Agreement between two coders on a given item
-
-        """
+        """Agreement between two coders on a given item"""
         data = data or self.data
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
@@ -166,9 +163,7 @@ class AnnotationTask:
 
     @deprecated("Use Nk, Nik or Nck instead")
     def N(self, k=None, i=None, c=None):
-        """Implements the "n-notation" used in Artstein and Poesio (2007)
-
-        """
+        """Implements the "n-notation" used in Artstein and Poesio (2007)"""
         if k is not None and i is None and c is None:
             ret = self.Nk(k)
         elif k is not None and i is not None and c is None:
@@ -177,7 +172,7 @@ class AnnotationTask:
             ret = self.Nck(c, k)
         else:
             raise ValueError(
-                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c)
+                f"You must pass either i or c, not both! (k={k!r},i={i!r},c={c!r})"
             )
         log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
@@ -187,9 +182,7 @@ class AnnotationTask:
         return groupby(sorted(data, key=itemgetter(field)), itemgetter(field))
 
     def Ao(self, cA, cB):
-        """Observed agreement between two coders on all items.
-
-        """
+        """Observed agreement between two coders on all items."""
         data = self._grouped_data(
             "item", (x for x in self.data if x["coder"] in (cA, cB))
         )
@@ -215,17 +208,13 @@ class AnnotationTask:
         return ret
 
     def avg_Ao(self):
-        """Average observed agreement across all coders and items.
-
-        """
+        """Average observed agreement across all coders and items."""
         ret = self._pairwise_average(self.Ao)
         log.debug("Average observed agreement: %f", ret)
         return ret
 
     def Do_Kw_pairwise(self, cA, cB, max_distance=1.0):
-        """The observed disagreement for the weighted kappa coefficient.
-
-        """
+        """The observed disagreement for the weighted kappa coefficient."""
         total = 0.0
         data = (x for x in self.data if x["coder"] in (cA, cB))
         for i, itemdata in self._grouped_data("item", data):
@@ -237,9 +226,7 @@ class AnnotationTask:
         return ret
 
     def Do_Kw(self, max_distance=1.0):
-        """Averaged over all labelers
-
-        """
+        """Averaged over all labelers"""
         ret = self._pairwise_average(
             lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance)
         )
@@ -248,9 +235,7 @@ class AnnotationTask:
 
     # Agreement Coefficients
     def S(self):
-        """Bennett, Albert and Goldstein 1954
-
-        """
+        """Bennett, Albert and Goldstein 1954"""
         Ae = 1.0 / len(self.K)
         ret = (self.avg_Ao() - Ae) / (1.0 - Ae)
         return ret
@@ -276,9 +261,7 @@ class AnnotationTask:
         return Ae
 
     def kappa_pairwise(self, cA, cB):
-        """
-
-        """
+        """ """
         Ae = self.Ae_kappa(cA, cB)
         ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
         log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
@@ -308,9 +291,7 @@ class AnnotationTask:
         return 1.0 * pairs / (total_labels * (total_labels - 1))
 
     def alpha(self):
-        """Krippendorff 1980
-
-        """
+        """Krippendorff 1980"""
         # check for degenerate cases
         if len(self.K) == 0:
             raise ValueError("Cannot calculate alpha, no data present!")
@@ -342,9 +323,7 @@ class AnnotationTask:
         return k_alpha
 
     def weighted_kappa_pairwise(self, cA, cB, max_distance=1.0):
-        """Cohen 1968
-
-        """
+        """Cohen 1968"""
         total = 0.0
         label_freqs = ConditionalFreqDist(
             (x["coder"], x["labels"]) for x in self.data if x["coder"] in (cA, cB)
@@ -359,9 +338,7 @@ class AnnotationTask:
         return ret
 
     def weighted_kappa(self, max_distance=1.0):
-        """Cohen 1968
-
-        """
+        """Cohen 1968"""
         return self._pairwise_average(
             lambda cA, cB: self.weighted_kappa_pairwise(cA, cB, max_distance)
         )
@@ -369,8 +346,9 @@ class AnnotationTask:
 
 if __name__ == "__main__":
 
-    import re
     import optparse
+    import re
+
     from nltk.metrics import distance
 
     # process command-line arguments
@@ -457,7 +435,7 @@ if __name__ == "__main__":
 
     # read in data from the specified file
     data = []
-    with open(options.file, "r") as infile:
+    with open(options.file) as infile:
         for l in infile:
             toks = l.split(options.columnsep)
             coder, object_, labels = (

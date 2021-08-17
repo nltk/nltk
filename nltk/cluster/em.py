@@ -212,7 +212,8 @@ def demo():
     print("classification_probdist(%s):" % vector)
     pdist = clusterer.classification_probdist(vector)
     for sample in pdist.samples():
-        print("%s => %.0f%%" % (sample, pdist.prob(sample) * 100))
+        print(f"{sample} => {pdist.prob(sample) * 100:.0f}%")
+
 
 if __name__ == "__main__":
     demo()

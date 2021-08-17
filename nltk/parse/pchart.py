@@ -39,11 +39,12 @@ argument beam_size.  If non-zero, this controls the size of the beam
 
 import random
 from functools import reduce
-from nltk.tree import Tree, ProbabilisticTree
-from nltk.grammar import Nonterminal, PCFG
 
+from nltk.grammar import PCFG, Nonterminal
 from nltk.parse.api import ParserI
-from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
+from nltk.parse.chart import AbstractChartRule, Chart, LeafEdge, TreeEdge
+from nltk.tree import ProbabilisticTree, Tree
+
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
@@ -140,15 +141,13 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
             for edge2 in chart.select(
                 start=edge1.end(), is_complete=True, lhs=edge1.nextsym()
             ):
-                for new_edge in fr.apply(chart, grammar, edge1, edge2):
-                    yield new_edge
+                yield from fr.apply(chart, grammar, edge1, edge2)
         else:
             # edge2 = left_edge; edge1 = right_edge
             for edge2 in chart.select(
                 end=edge1.start(), is_complete=False, nextsym=edge1.lhs()
             ):
-                for new_edge in fr.apply(chart, grammar, edge2, edge1):
-                    yield new_edge
+                yield from fr.apply(chart, grammar, edge2, edge1)
 
     def __str__(self):
         return "Fundamental Rule"
@@ -317,7 +316,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         raise NotImplementedError()
 
     def _prune(self, queue, chart):
-        """ Discard items in the queue if the queue is longer than the beam."""
+        """Discard items in the queue if the queue is longer than the beam."""
         if len(queue) > self.beam_size:
             split = len(queue) - self.beam_size
             if self._trace > 2:
@@ -435,7 +434,9 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     be found; and then each parser is run on the same demo, and a
     summary of the results are displayed.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk import tokenize
     from nltk.parse import pchart
 
@@ -490,7 +491,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         # Ask the user which demo they want to use.
         print()
         for i in range(len(demos)):
-            print("%3s: %s" % (i + 1, demos[i][0]))
+            print(f"{i + 1:>3}: {demos[i][0]}")
             print("     %r" % demos[i][1])
             print()
         print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
@@ -519,7 +520,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     num_parses = []
     all_parses = {}
     for parser in parsers:
-        print("\ns: %s\nparser: %s\ngrammar: %s" % (sent, parser, grammar))
+        print(f"\ns: {sent}\nparser: {parser}\ngrammar: {grammar}")
         parser.trace(3)
         t = time.time()
         parses = list(parser.parse(tokens))

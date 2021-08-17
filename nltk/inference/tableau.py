@@ -10,28 +10,26 @@
 Module for a tableau-based First Order theorem prover.
 """
 
+from nltk.inference.api import BaseProverCommand, Prover
 from nltk.internals import Counter
-
 from nltk.sem.logic import (
-    VariableExpression,
-    EqualityExpression,
-    ApplicationExpression,
-    Expression,
     AbstractVariableExpression,
     AllExpression,
-    NegatedExpression,
-    ExistsExpression,
-    Variable,
-    ImpExpression,
     AndExpression,
-    unique_variable,
-    LambdaExpression,
-    IffExpression,
-    OrExpression,
+    ApplicationExpression,
+    EqualityExpression,
+    ExistsExpression,
+    Expression,
     FunctionVariableExpression,
+    IffExpression,
+    ImpExpression,
+    LambdaExpression,
+    NegatedExpression,
+    OrExpression,
+    Variable,
+    VariableExpression,
+    unique_variable,
 )
-
-from nltk.inference.api import Prover, BaseProverCommand
 
 _counter = Counter()
 
@@ -121,7 +119,7 @@ class TableauProver(Prover):
             return self._attempt_proof(
                 agenda,
                 accessible_vars | set(current.args),
-                atoms | set([(current, False)]),
+                atoms | {(current, False)},
                 debug + 1,
             )
 
@@ -144,7 +142,7 @@ class TableauProver(Prover):
             return self._attempt_proof(
                 agenda,
                 accessible_vars | set(current.term.args),
-                atoms | set([(current.term, True)]),
+                atoms | {(current.term, True)},
                 debug + 1,
             )
 
@@ -159,7 +157,7 @@ class TableauProver(Prover):
         # mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
         agenda.mark_alls_fresh()
         return self._attempt_proof(
-            agenda, accessible_vars, atoms | set([(current, False)]), debug + 1
+            agenda, accessible_vars, atoms | {(current, False)}, debug + 1
         )
 
     def _attempt_proof_n_prop(
@@ -173,7 +171,7 @@ class TableauProver(Prover):
         # mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
         agenda.mark_alls_fresh()
         return self._attempt_proof(
-            agenda, accessible_vars, atoms | set([(current.term, True)]), debug + 1
+            agenda, accessible_vars, atoms | {(current.term, True)}, debug + 1
         )
 
     def _attempt_proof_app(
@@ -225,7 +223,7 @@ class TableauProver(Prover):
         current._exhausted = True
         return self._attempt_proof(
             agenda,
-            accessible_vars | set([current.term.first, current.term.second]),
+            accessible_vars | {current.term.first, current.term.second},
             atoms,
             debug + 1,
         )
@@ -347,7 +345,7 @@ class TableauProver(Prover):
         agenda.put(current.term.replace(current.variable, new_unique_variable), context)
         agenda.mark_alls_fresh()
         return self._attempt_proof(
-            agenda, accessible_vars | set([new_unique_variable]), atoms, debug + 1
+            agenda, accessible_vars | {new_unique_variable}, atoms, debug + 1
         )
 
     def _attempt_proof_all(
@@ -366,7 +364,7 @@ class TableauProver(Prover):
             if bv_available:
                 variable_to_use = list(bv_available)[0]
                 debug.line("--> Using '%s'" % variable_to_use, 2)
-                current._used_vars |= set([variable_to_use])
+                current._used_vars |= {variable_to_use}
                 agenda.put(
                     current.term.replace(current.variable, variable_to_use), context
                 )
@@ -383,14 +381,14 @@ class TableauProver(Prover):
         else:
             new_unique_variable = VariableExpression(unique_variable())
             debug.line("--> Using '%s'" % new_unique_variable, 2)
-            current._used_vars |= set([new_unique_variable])
+            current._used_vars |= {new_unique_variable}
             agenda.put(
                 current.term.replace(current.variable, new_unique_variable), context
             )
             agenda[Categories.ALL].add((current, context))
             agenda.mark_alls_fresh()
             return self._attempt_proof(
-                agenda, accessible_vars | set([new_unique_variable]), atoms, debug + 1
+                agenda, accessible_vars | {new_unique_variable}, atoms, debug + 1
             )
 
     @staticmethod
@@ -440,16 +438,16 @@ class Agenda:
         for allEx, _ in set_list[Categories.ALL]:
             new_allEx = AllExpression(allEx.variable, allEx.term)
             try:
-                new_allEx._used_vars = set(used for used in allEx._used_vars)
+                new_allEx._used_vars = {used for used in allEx._used_vars}
             except AttributeError:
                 new_allEx._used_vars = set()
             new_allExs.add((new_allEx, None))
         set_list[Categories.ALL] = new_allExs
 
-        set_list[Categories.N_EQ] = set(
+        set_list[Categories.N_EQ] = {
             (NegatedExpression(n_eq.term), ctx)
             for (n_eq, ctx) in set_list[Categories.N_EQ]
-        )
+        }
 
         new_agenda.sets = tuple(set_list)
         return new_agenda
@@ -461,7 +459,7 @@ class Agenda:
         if isinstance(expression, AllExpression):
             ex_to_add = AllExpression(expression.variable, expression.term)
             try:
-                ex_to_add._used_vars = set(used for used in expression._used_vars)
+                ex_to_add._used_vars = {used for used in expression._used_vars}
             except AttributeError:
                 ex_to_add._used_vars = set()
         else:
@@ -480,7 +478,7 @@ class Agenda:
                 self[Categories.ATOM].add((atom, None))
 
     def pop_first(self):
-        """ Pop the first expression that appears in the agenda """
+        """Pop the first expression that appears in the agenda"""
         for i, s in enumerate(self.sets):
             if s:
                 if i in [Categories.N_EQ, Categories.ALL]:
@@ -582,7 +580,7 @@ class Debug:
         if isinstance(data, tuple):
             ex, ctx = data
             if ctx:
-                data = "%s, %s" % (ex, ctx)
+                data = f"{ex}, {ctx}"
             else:
                 data = "%s" % ex
 
@@ -595,7 +593,7 @@ class Debug:
                 except AttributeError:
                     data += ":   []"
 
-        newline = "%s%s" % ("   " * (self.indent + indent), data)
+        newline = "{}{}".format("   " * (self.indent + indent), data)
         self.lines.append(newline)
 
         if self.verbose:

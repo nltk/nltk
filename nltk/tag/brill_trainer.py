@@ -11,7 +11,7 @@ import bisect
 import textwrap
 from collections import defaultdict
 
-from nltk.tag import untag, BrillTagger
+from nltk.tag import BrillTagger, untag
 
 ######################################################################
 #  Brill Tagger Trainer
@@ -279,7 +279,7 @@ class BrillTaggerTrainer:
             print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
         if self._trace:
-            print("    Found {} useful rules.".format(len(self._rule_scores)))
+            print(f"    Found {len(self._rule_scores)} useful rules.")
 
         # Let the user know what we're up to.
         if self._trace > 2:
@@ -317,7 +317,7 @@ class BrillTaggerTrainer:
 
         # The user can cancel training manually:
         except KeyboardInterrupt:
-            print("Training stopped manually -- {} rules found".format(len(rules)))
+            print(f"Training stopped manually -- {len(rules)} rules found")
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
@@ -370,8 +370,7 @@ class BrillTaggerTrainer:
         in the sentence *sent* and generate the tag *new_tag*.
         """
         for template in self._templates:
-            for rule in template.applicable_rules(sent, wordnum, new_tag):
-                yield rule
+            yield from template.applicable_rules(sent, wordnum, new_tag)
 
     def _update_rule_applies(self, rule, sentnum, wordnum, train_sents):
         """
@@ -599,7 +598,10 @@ class BrillTaggerTrainer:
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
             print(
-                "{:4d}{:4d}{:4d}{:4d}  |".format(score, num_fixed, num_broken, num_other), end=" "
+                "{:4d}{:4d}{:4d}{:4d}  |".format(
+                    score, num_fixed, num_broken, num_other
+                ),
+                end=" ",
             )
             print(
                 textwrap.fill(
@@ -615,14 +617,14 @@ class BrillTaggerTrainer:
     def _trace_apply(self, num_updates):
         prefix = " " * 18 + "|"
         print(prefix)
-        print(prefix, "Applying rule to {} positions.".format(num_updates))
+        print(prefix, f"Applying rule to {num_updates} positions.")
 
     def _trace_update_rules(self, num_obsolete, num_new, num_unseen):
         prefix = " " * 18 + "|"
         print(prefix, "Updated rule tables:")
-        print(prefix, ("  - {} rule applications removed".format(num_obsolete)))
+        print(prefix, (f"  - {num_obsolete} rule applications removed"))
         print(
             prefix,
-            ("  - {} rule applications added ({} novel)".format(num_new, num_unseen)),
+            (f"  - {num_new} rule applications added ({num_unseen} novel)"),
         )
         print(prefix)

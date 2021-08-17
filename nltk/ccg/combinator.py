@@ -70,11 +70,10 @@ class ForwardCombinator(DirectedBinaryCombinator):
         )
 
     def combine(self, left, right):
-        for cat in self._combinator.combine(left, right):
-            yield cat
+        yield from self._combinator.combine(left, right)
 
     def __str__(self):
-        return ">%s%s" % (self._combinator, self._suffix)
+        return f">{self._combinator}{self._suffix}"
 
 
 class BackwardCombinator(DirectedBinaryCombinator):
@@ -93,11 +92,10 @@ class BackwardCombinator(DirectedBinaryCombinator):
         )
 
     def combine(self, left, right):
-        for cat in self._combinator.combine(right, left):
-            yield cat
+        yield from self._combinator.combine(right, left)
 
     def __str__(self):
-        return "<%s%s" % (self._combinator, self._suffix)
+        return f"<{self._combinator}{self._suffix}"
 
 
 class UndirectedFunctionApplication(UndirectedBinaryCombinator):

@@ -14,8 +14,8 @@ a first-order model.
 """
 
 import codecs
-from nltk.sem import evaluate
 
+from nltk.sem import evaluate
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -119,18 +119,18 @@ def demo_model0():
         ("fido", "d1"),
         ("tess", "d2"),
         ("noosa", "n"),
-        ("girl", set(["g1", "g2"])),
-        ("boy", set(["b1", "b2"])),
-        ("dog", set(["d1", "d2"])),
-        ("bark", set(["d1", "d2"])),
-        ("walk", set(["b1", "g2", "d1"])),
-        ("chase", set([("b1", "g1"), ("b2", "g1"), ("g1", "d1"), ("g2", "d2")])),
+        ("girl", {"g1", "g2"}),
+        ("boy", {"b1", "b2"}),
+        ("dog", {"d1", "d2"}),
+        ("bark", {"d1", "d2"}),
+        ("walk", {"b1", "g2", "d1"}),
+        ("chase", {("b1", "g1"), ("b2", "g1"), ("g1", "d1"), ("g2", "d2")}),
         (
             "see",
-            set([("b1", "g1"), ("b2", "d2"), ("g1", "b1"), ("d2", "b1"), ("g2", "n")]),
+            {("b1", "g1"), ("b2", "d2"), ("g1", "b1"), ("d2", "b1"), ("g2", "n")},
         ),
-        ("in", set([("b1", "n"), ("b2", "n"), ("d2", "n")])),
-        ("with", set([("b1", "g1"), ("g1", "b1"), ("d1", "b1"), ("b1", "d1")])),
+        ("in", {("b1", "n"), ("b2", "n"), ("d2", "n")}),
+        ("with", {("b1", "g1"), ("g1", "b1"), ("d1", "b1"), ("b1", "d1")}),
     ]
     # Read in the data from ``v``
     val = evaluate.Valuation(v)

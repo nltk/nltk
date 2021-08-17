@@ -29,10 +29,12 @@ from itertools import product
 import nltk.data
 from nltk.util import pairwise
 
+
 class VaderConstants:
     """
     A class to keep the Vader lists and constants.
     """
+
     ##Constants##
     # (empirically derived mean sentiment intensity rating increase for booster words)
     B_INCR = 0.293
@@ -190,7 +192,7 @@ class VaderConstants:
     }
 
     # for removing punctuation
-    REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
+    REGEX_REMOVE_PUNCTUATION = re.compile(f"[{re.escape(string.punctuation)}]")
 
     PUNC_LIST = [
         ".",
@@ -237,7 +239,6 @@ class VaderConstants:
         """
         norm_score = score / math.sqrt((score * score) + alpha)
         return norm_score
-
 
     def scalar_inc_dec(self, word, valence, is_cap_diff):
         """
@@ -287,7 +288,7 @@ class SentiText:
         # removes punctuation (but loses emoticons & contractions)
         words_only = no_punc_text.split()
         # remove singletons
-        words_only = set(w for w in words_only if len(w) > 1)
+        words_only = {w for w in words_only if len(w) > 1}
         # the product gives ('cat', ',') and (',', 'cat')
         punc_before = {"".join(p): p[1] for p in product(self.PUNC_LIST, words_only)}
         punc_after = {"".join(p): p[0] for p in product(words_only, self.PUNC_LIST)}
@@ -333,7 +334,8 @@ class SentimentIntensityAnalyzer:
     """
 
     def __init__(
-        self, lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt",
+        self,
+        lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt",
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
@@ -356,8 +358,9 @@ class SentimentIntensityAnalyzer:
         valence.
         """
         # text, words_and_emoticons, is_cap_diff = self.preprocess(text)
-        sentitext = SentiText(text, self.constants.PUNC_LIST,
-                              self.constants.REGEX_REMOVE_PUNCTUATION)
+        sentitext = SentiText(
+            text, self.constants.PUNC_LIST, self.constants.REGEX_REMOVE_PUNCTUATION
+        )
         sentiments = []
         words_and_emoticons = sentitext.words_and_emoticons
         for item in words_and_emoticons:
@@ -460,25 +463,23 @@ class SentimentIntensityAnalyzer:
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
-        onezero = "{0} {1}".format(words_and_emoticons[i - 1], words_and_emoticons[i])
+        onezero = f"{words_and_emoticons[i - 1]} {words_and_emoticons[i]}"
 
-        twoonezero = "{0} {1} {2}".format(
+        twoonezero = "{} {} {}".format(
             words_and_emoticons[i - 2],
             words_and_emoticons[i - 1],
             words_and_emoticons[i],
         )
 
-        twoone = "{0} {1}".format(
-            words_and_emoticons[i - 2], words_and_emoticons[i - 1]
-        )
+        twoone = f"{words_and_emoticons[i - 2]} {words_and_emoticons[i - 1]}"
 
-        threetwoone = "{0} {1} {2}".format(
+        threetwoone = "{} {} {}".format(
             words_and_emoticons[i - 3],
             words_and_emoticons[i - 2],
             words_and_emoticons[i - 1],
         )
 
-        threetwo = "{0} {1}".format(
+        threetwo = "{} {}".format(
             words_and_emoticons[i - 3], words_and_emoticons[i - 2]
         )
 
@@ -490,13 +491,11 @@ class SentimentIntensityAnalyzer:
                 break
 
         if len(words_and_emoticons) - 1 > i:
-            zeroone = "{0} {1}".format(
-                words_and_emoticons[i], words_and_emoticons[i + 1]
-            )
+            zeroone = f"{words_and_emoticons[i]} {words_and_emoticons[i + 1]}"
             if zeroone in self.constants.SPECIAL_CASE_IDIOMS:
                 valence = self.constants.SPECIAL_CASE_IDIOMS[zeroone]
         if len(words_and_emoticons) - 1 > i + 1:
-            zeroonetwo = "{0} {1} {2}".format(
+            zeroonetwo = "{} {} {}".format(
                 words_and_emoticons[i],
                 words_and_emoticons[i + 1],
                 words_and_emoticons[i + 2],
@@ -505,7 +504,10 @@ class SentimentIntensityAnalyzer:
                 valence = self.constants.SPECIAL_CASE_IDIOMS[zeroonetwo]
 
         # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
-        if threetwo in self.constants.BOOSTER_DICT or twoone in self.constants.BOOSTER_DICT:
+        if (
+            threetwo in self.constants.BOOSTER_DICT
+            or twoone in self.constants.BOOSTER_DICT
+        ):
             valence = valence + self.constants.B_DECR
         return valence
 

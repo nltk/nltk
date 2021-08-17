@@ -6,8 +6,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 import math
+import re
 
 try:
     import numpy
@@ -122,15 +122,13 @@ class TextTilingTokenizer(TokenizerI):
             raise NotImplementedError("Vocabulary introduction not implemented")
         else:
             raise ValueError(
-                "Similarity method {} not recognized".format(self.similarity_method)
+                f"Similarity method {self.similarity_method} not recognized"
             )
 
         if self.smoothing_method == DEFAULT_SMOOTHING:
             smooth_scores = self._smooth_scores(gap_scores)
         else:
-            raise ValueError(
-                "Smoothing method {} not recognized".format(self.smoothing_method)
-            )
+            raise ValueError(f"Smoothing method {self.smoothing_method} not recognized")
         # End of Lexical score Determination
 
         # Boundary identification
@@ -165,7 +163,7 @@ class TextTilingTokenizer(TokenizerI):
 
         def blk_frq(tok, block):
             ts_occs = filter(lambda o: o[0] in block, token_table[tok].ts_occurences)
-            freq = sum([tsocc[1] for tsocc in ts_occs])
+            freq = sum(tsocc[1] for tsocc in ts_occs)
             return freq
 
         gap_scores = []
@@ -460,8 +458,9 @@ def smooth(x, window_len=11, window="flat"):
 
 
 def demo(text=None):
-    from nltk.corpus import brown
     from matplotlib import pylab
+
+    from nltk.corpus import brown
 
     tt = TextTilingTokenizer(demo_mode=True)
     if text is None:

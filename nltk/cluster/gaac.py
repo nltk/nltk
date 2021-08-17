@@ -10,7 +10,7 @@ try:
 except ImportError:
     pass
 
-from nltk.cluster.util import VectorSpaceClusterer, Dendrogram, cosine_distance
+from nltk.cluster.util import Dendrogram, VectorSpaceClusterer, cosine_distance
 
 
 class GAAClusterer(VectorSpaceClusterer):

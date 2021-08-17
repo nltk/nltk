@@ -9,11 +9,10 @@ import re
 from functools import total_ordering
 from xml.etree import ElementTree
 
-from nltk.tree import Tree
-from nltk.internals import raise_unorderable_types
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.internals import raise_unorderable_types
+from nltk.tree import Tree
 
 
 class PropbankCorpusReader(CorpusReader):
@@ -109,7 +108,7 @@ class PropbankCorpusReader(CorpusReader):
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
-        raise ValueError("Roleset %s not found in %s" % (roleset_id, framefile))
+        raise ValueError(f"Roleset {roleset_id} not found in {framefile}")
 
     def rolesets(self, baseform=None):
         """
@@ -162,7 +161,6 @@ class PropbankCorpusReader(CorpusReader):
 ######################################################################
 # { Propbank Instance & related datatypes
 ######################################################################
-
 
 
 class PropbankInstance:
@@ -236,14 +234,14 @@ class PropbankInstance:
         return "rel"
 
     def __repr__(self):
-        return "<PropbankInstance: %s, sent %s, word %s>" % (
+        return "<PropbankInstance: {}, sent {}, word {}>".format(
             self.fileid,
             self.sentnum,
             self.wordnum,
         )
 
     def __str__(self):
-        s = "%s %s %s %s %s %s" % (
+        s = "{} {} {} {} {} {}".format(
             self.fileid,
             self.sentnum,
             self.wordnum,
@@ -253,7 +251,7 @@ class PropbankInstance:
         )
         items = self.arguments + ((self.predicate, "rel"),)
         for (argloc, argid) in sorted(items):
-            s += " %s-%s" % (argloc, argid)
+            s += f" {argloc}-{argid}"
         return s
 
     def _get_tree(self):
@@ -337,7 +335,6 @@ class PropbankPointer:
             raise NotImplementedError()
 
 
-
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -355,7 +352,6 @@ class PropbankChainTreePointer(PropbankPointer):
         if tree is None:
             raise ValueError("Parse tree not available")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
-
 
 
 class PropbankSplitTreePointer(PropbankPointer):
@@ -377,7 +373,6 @@ class PropbankSplitTreePointer(PropbankPointer):
 
 
 @total_ordering
-
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -412,7 +407,7 @@ class PropbankTreePointer(PropbankPointer):
         return PropbankTreePointer(int(pieces[0]), int(pieces[1]))
 
     def __str__(self):
-        return "%s:%s" % (self.wordnum, self.height)
+        return f"{self.wordnum}:{self.height}"
 
     def __repr__(self):
         return "PropbankTreePointer(%d, %d)" % (self.wordnum, self.height)
@@ -476,7 +471,6 @@ class PropbankTreePointer(PropbankPointer):
                 else:
                     wordnum += 1
                     stack.pop()
-
 
 
 class PropbankInflection:

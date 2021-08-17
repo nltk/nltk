@@ -1,13 +1,15 @@
 import re
 import sys
-import nltk
-import epydoc.docbuilder
+
 import epydoc.cli
+import epydoc.docbuilder
 from epydoc import log
 
-STOPLIST = '../../tools/nltk_term_index.stoplist'
-FILENAMES = ['ch%02d.xml' % n for n in range(13)]
-TARGET_DIR = 'nlp/'
+import nltk
+
+STOPLIST = "../../tools/nltk_term_index.stoplist"
+FILENAMES = ["ch%02d.xml" % n for n in range(13)]
+TARGET_DIR = "nlp/"
 # FILENAMES = ['../doc/book/ll.xml']
 
 logger = epydoc.cli.ConsoleLogger(0)
@@ -16,7 +18,7 @@ log.register_logger(logger)
 
 
 def find_all_names(stoplist):
-    ROOT = ['nltk']
+    ROOT = ["nltk"]
     logger._verbosity = 0
     docindex = epydoc.docbuilder.build_doc_index(ROOT, add_submodules=True)
     valdocs = sorted(
@@ -32,7 +34,7 @@ def find_all_names(stoplist):
     n = 0
     for valdoc in valdocs:
         name = valdoc.canonical_name
-        if name is not epydoc.apidoc.UNKNOWN and name is not None and name[0] == 'nltk':
+        if name is not epydoc.apidoc.UNKNOWN and name is not None and name[0] == "nltk":
             n += 1
             for i in range(len(name)):
                 key = str(name[i:])
@@ -42,18 +44,18 @@ def find_all_names(stoplist):
                     continue
                 names[key].append(valdoc)
 
-    log.info('Found {} names from {} objects'.format(len(names), n))
+    log.info(f"Found {len(names)} names from {n} objects")
 
     return names
 
 
 SCAN_RE1 = r"<programlisting>[\s\S]*?</programlisting>"
 SCAN_RE2 = r"<literal>[\s\S]*?</literal>"
-SCAN_RE = re.compile("({})|({})".format(SCAN_RE1, SCAN_RE2))
+SCAN_RE = re.compile(f"({SCAN_RE1})|({SCAN_RE2})")
 
-TOKEN_RE = re.compile(r'[\w\.]+')
+TOKEN_RE = re.compile(r"[\w\.]+")
 
-LINE_RE = re.compile('.*')
+LINE_RE = re.compile(".*")
 
 INDEXTERM = '<indexterm type="nltk"><primary>%s</primary></indexterm>'
 
@@ -69,9 +71,9 @@ def scan_xml(filenames, names):
                 fdist.inc(token)
                 if len(targets) > 1:
                     log.warning(
-                        '{} is ambiguous: {}'.format(
+                        "{} is ambiguous: {}".format(
                             token,
-                            ', '.join(str(v.canonical_name) for v in names[token]),
+                            ", ".join(str(v.canonical_name) for v in names[token]),
                         )
                     )
                 line += INDEXTERM % token
@@ -82,31 +84,31 @@ def scan_xml(filenames, names):
         return LINE_RE.sub(linesub, match.group())
 
     for filename in filenames:
-        log.info('  {}'.format(filename))
-        src = open(filename, 'rb').read()
+        log.info(f"  {filename}")
+        src = open(filename, "rb").read()
         src = SCAN_RE.sub(scansub, src)
         #        out = open(filename[:-4]+'.li.xml', 'wb')
-        out = open(TARGET_DIR + filename, 'wb')
+        out = open(TARGET_DIR + filename, "wb")
         out.write(src)
         out.close()
 
     for word in fdist:
-        namestr = ('\n' + 38 * ' ').join(
+        namestr = ("\n" + 38 * " ").join(
             [str(v.canonical_name[:-1]) for v in names[word][:1]]
         )
-        print('[%3d]  %-30s %s' % (fdist[word], word, namestr))
+        print("[%3d]  %-30s %s" % (fdist[word], word, namestr))
         sys.stdout.flush()
 
 
 def main():
-    log.info('Loading stoplist...')
+    log.info("Loading stoplist...")
     stoplist = open(STOPLIST).read().split()
-    log.info('  Stoplist contains {} words'.format(len(stoplist)))
+    log.info(f"  Stoplist contains {len(stoplist)} words")
 
-    log.info('Running epydoc to build a name index...')
+    log.info("Running epydoc to build a name index...")
     names = find_all_names(stoplist)
 
-    log.info('Scanning xml files...')
+    log.info("Scanning xml files...")
     scan_xml(FILENAMES, names)
 
 

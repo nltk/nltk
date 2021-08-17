@@ -34,8 +34,9 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-import regex  # https://github.com/nltk/nltk/issues/2409
 import html
+
+import regex  # https://github.com/nltk/nltk/issues/2409
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -162,7 +163,9 @@ REGEXPS = (
 ######################################################################
 # This is the core tokenizing regex:
 
-WORD_RE = regex.compile(r"""(%s)""" % "|".join(REGEXPS), regex.VERBOSE | regex.I | regex.UNICODE)
+WORD_RE = regex.compile(
+    r"""(%s)""" % "|".join(REGEXPS), regex.VERBOSE | regex.I | regex.UNICODE
+)
 
 # WORD_RE performs poorly on these patterns:
 HANG_RE = regex.compile(r"([^a-zA-Z0-9])\1{3,}")

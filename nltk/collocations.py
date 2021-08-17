@@ -32,17 +32,16 @@ measures are provided in bigram_measures and trigram_measures.
 
 import itertools as _itertools
 
-from nltk.probability import FreqDist
-from nltk.util import ngrams
-
 # these two unused imports are referenced in collocations.doctest
 from nltk.metrics import (
-    ContingencyMeasures,
     BigramAssocMeasures,
-    TrigramAssocMeasures,
+    ContingencyMeasures,
     QuadgramAssocMeasures,
+    TrigramAssocMeasures,
 )
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
+from nltk.probability import FreqDist
+from nltk.util import ngrams
 
 
 class AbstractCollocationFinder:
@@ -356,8 +355,8 @@ def demo(scorer=None, compare_scorer=None):
     """Finds bigram collocations in the files of the WebText corpus."""
     from nltk.metrics import (
         BigramAssocMeasures,
-        spearman_correlation,
         ranks_from_scores,
+        spearman_correlation,
     )
 
     if scorer is None:
@@ -383,7 +382,7 @@ def demo(scorer=None, compare_scorer=None):
         )
         print(file)
         print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
-        print("\t Correlation to %s: %0.4f" % (compare_scorer.__name__, corr))
+        print(f"\t Correlation to {compare_scorer.__name__}: {corr:0.4f}")
 
 
 # Slows down loading too much
@@ -392,6 +391,7 @@ def demo(scorer=None, compare_scorer=None):
 
 if __name__ == "__main__":
     import sys
+
     from nltk.metrics import BigramAssocMeasures
 
     try:

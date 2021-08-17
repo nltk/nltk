@@ -14,22 +14,21 @@ This module provides data structures for representing first-order
 models.
 """
 
-from pprint import pformat
 import inspect
-import textwrap
 import re
 import sys
+import textwrap
+from pprint import pformat
 
 from nltk.decorators import decorator  # this used in code that is commented out
-
 from nltk.sem.logic import (
     AbstractVariableExpression,
     AllExpression,
-    Expression,
     AndExpression,
     ApplicationExpression,
     EqualityExpression,
     ExistsExpression,
+    Expression,
     IffExpression,
     ImpExpression,
     IndividualVariableExpression,
@@ -66,7 +65,7 @@ def is_rel(s):
     :param s: a set containing tuples of str elements
     :type s: set
     :rtype: bool
-        """
+    """
     # we have the empty relation, i.e. set()
     if len(s) == 0:
         return True
@@ -128,7 +127,7 @@ class Valuation(dict):
         """
         :param xs: a list of (symbol, value) pairs.
         """
-        super(Valuation, self).__init__()
+        super().__init__()
         for (sym, val) in xs:
             if isinstance(val, str) or isinstance(val, bool):
                 self[sym] = val
@@ -244,7 +243,7 @@ def read_valuation(s, encoding=None):
         try:
             statements.append(_read_valuation_line(line))
         except ValueError as e:
-            raise ValueError("Unable to parse line %s: %s" % (linenum, line)) from e
+            raise ValueError(f"Unable to parse line {linenum}: {line}") from e
     return Valuation(statements)
 
 
@@ -302,11 +301,11 @@ class Assignment(dict):
     """
 
     def __init__(self, domain, assign=None):
-        super(Assignment, self).__init__()
+        super().__init__()
         self.domain = domain
         if assign:
             for (var, val) in assign:
-                assert val in self.domain, "'%s' is not in the domain: %s" % (
+                assert val in self.domain, "'{}' is not in the domain: {}".format(
                     val,
                     self.domain,
                 )
@@ -350,7 +349,7 @@ class Assignment(dict):
         # Deterministic output for unit testing.
         variant = sorted(self.variant)
         for (val, var) in variant:
-            gstring += "[%s/%s]" % (val, var)
+            gstring += f"[{val}/{var}]"
         return gstring
 
     def _addvariant(self):
@@ -370,7 +369,7 @@ class Assignment(dict):
         ``self.variant``.
 
         """
-        assert val in self.domain, "%s is not in the domain %s" % (val, self.domain)
+        assert val in self.domain, f"{val} is not in the domain {self.domain}"
         assert is_indvar(var), "Wrong format for an Individual Variable: '%s'" % var
         self[var] = val
         self._addvariant()
@@ -406,10 +405,10 @@ class Model:
             )
 
     def __repr__(self):
-        return "(%r, %r)" % (self.domain, self.valuation)
+        return f"({self.domain!r}, {self.valuation!r})"
 
     def __str__(self):
-        return "Domain = %s,\nValuation = \n%s" % (self.domain, self.valuation)
+        return f"Domain = {self.domain},\nValuation = \n{self.valuation}"
 
     def evaluate(self, expr, g, trace=None):
         """
@@ -425,12 +424,12 @@ class Model:
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
                 print()
-                print("'%s' evaluates to %s under M, %s" % (expr, value, g))
+                print(f"'{expr}' evaluates to {value} under M, {g}")
             return value
         except Undefined:
             if trace:
                 print()
-                print("'%s' is undefined under M, %s" % (expr, g))
+                print(f"'{expr}' is undefined under M, {g}")
             return "Undefined"
 
     def satisfy(self, parsed, g, trace=None):
@@ -555,7 +554,7 @@ class Model:
                 print()
                 print(
                     (spacer * nesting)
-                    + "Open formula is '%s' with assignment %s" % (parsed, g)
+                    + f"Open formula is '{parsed}' with assignment {g}"
                 )
             for u in self.domain:
                 new_g = g.copy()
@@ -572,23 +571,18 @@ class Model:
                 # parsed == False under g[u/var]?
                 if value == False:
                     if trace:
-                        print(
-                            indent + "value of '%s' under %s is False" % (parsed, new_g)
-                        )
+                        print(indent + f"value of '{parsed}' under {new_g} is False")
 
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print(
-                            indent
-                            + "value of '%s' under %s is %s" % (parsed, new_g, value)
-                        )
+                        print(indent + f"value of '{parsed}' under {new_g} is {value}")
 
-            result = set(c for c in candidates)
+            result = {c for c in candidates}
         # var isn't free in parsed
         else:
-            raise Undefined("%s is not free in %s" % (var.name, parsed))
+            raise Undefined(f"{var.name} is not free in {parsed}")
 
         return result
 
@@ -606,7 +600,7 @@ def propdemo(trace=None):
 
     global val1, dom1, m1, g1
     val1 = Valuation([("P", True), ("Q", True), ("R", False)])
-    dom1 = set([])
+    dom1 = set()
     m1 = Model(dom1, val1)
     g1 = Assignment(dom1)
 
@@ -643,7 +637,7 @@ def propdemo(trace=None):
             print()
             m1.evaluate(sent, g1, trace)
         else:
-            print("The value of '%s' is: %s" % (sent, m1.evaluate(sent, g1)))
+            print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
 
 
 # Demo 2: FOL Model
@@ -659,10 +653,10 @@ def folmodel(quiet=False, trace=None):
         ("adam", "b1"),
         ("betty", "g1"),
         ("fido", "d1"),
-        ("girl", set(["g1", "g2"])),
-        ("boy", set(["b1", "b2"])),
-        ("dog", set(["d1"])),
-        ("love", set([("b1", "g1"), ("b2", "g2"), ("g1", "b1"), ("g2", "b1")])),
+        ("girl", {"g1", "g2"}),
+        ("boy", {"b1", "b2"}),
+        ("dog", {"d1"}),
+        ("love", {("b1", "g1"), ("b2", "g2"), ("g1", "b1"), ("g2", "b1")}),
     ]
     val2 = Valuation(v2)
     dom2 = val2.domain
@@ -701,9 +695,9 @@ def folmodel(quiet=False, trace=None):
             try:
                 funval = m2.i(Expression.fromstring(fun), g2)
                 argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)
-                print("%s(%s) evaluates to %s" % (fun, args, argsval in funval))
+                print(f"{fun}({args}) evaluates to {argsval in funval}")
             except Undefined:
-                print("%s(%s) evaluates to Undefined" % (fun, args))
+                print(f"{fun}({args}) evaluates to Undefined")
 
 
 # Demo 3: FOL
@@ -747,7 +741,7 @@ def foldemo(trace=None):
         if trace:
             m2.evaluate(fmla, g2, trace)
         else:
-            print("The value of '%s' is: %s" % (fmla, m2.evaluate(fmla, g2)))
+            print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
 
 
 # Demo 3: Satisfaction
@@ -797,7 +791,9 @@ def satdemo(trace=None):
 
     for p in parsed:
         g2.purge()
-        print("The satisfiers of '%s' are: %s" % (p, m2.satisfiers(p, "x", g2, trace)))
+        print(
+            "The satisfiers of '{}' are: {}".format(p, m2.satisfiers(p, "x", g2, trace))
+        )
 
 
 def demo(num=0, trace=None):

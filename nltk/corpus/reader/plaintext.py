@@ -12,10 +12,9 @@ A reader for corpora that consist of plaintext documents.
 """
 
 import nltk.data
-from nltk.tokenize import *
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tokenize import *
 
 
 class PlaintextCorpusReader(CorpusReader):

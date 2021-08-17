@@ -6,14 +6,13 @@
 # For license information, see LICENSE.TXT
 
 import bisect
-from itertools import islice, chain
-from functools import total_ordering
 
 # this unused import is for python 2.7
-from collections import defaultdict, deque, Counter
+from collections import Counter, defaultdict, deque
+from functools import total_ordering
+from itertools import chain, islice
 
-from nltk.internals import slice_bounds, raise_unorderable_types
-
+from nltk.internals import raise_unorderable_types, slice_bounds
 
 ##########################################################################
 # Ordered Dictionary
@@ -334,8 +333,7 @@ class LazyConcatenation(AbstractLazySequence):
                     sublist
                 ), "inconsistent list value (num elts)"
 
-            for value in sublist[max(0, start_index - index) :]:
-                yield value
+            yield from sublist[max(0, start_index - index) :]
 
             index += len(sublist)
             sublist_index += 1
@@ -631,7 +629,7 @@ class Trie(dict):
         :type strings: list(str)
 
         """
-        super(Trie, self).__init__()
+        super().__init__()
         if strings:
             for string in strings:
                 self.insert(string)

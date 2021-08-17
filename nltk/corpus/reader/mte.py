@@ -5,7 +5,7 @@ import os
 import re
 from functools import reduce
 
-from nltk.corpus.reader import concat, TaggedCorpusReader
+from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 
 
@@ -243,7 +243,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def words(self, fileids=None):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
@@ -256,7 +256,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def sents(self, fileids=None):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :return: the given file(s) as a list of sentences or utterances,
                  each encoded as a list of word strings
         :rtype: list(list(str))
@@ -270,7 +270,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def paras(self, fileids=None):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :return: the given file(s) as a list of paragraphs, each encoded as a list
                  of sentences, which are in turn encoded as lists of word string
         :rtype: list(list(list(str)))
@@ -284,7 +284,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def lemma_words(self, fileids=None):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :return: the given file(s) as a list of words, the corresponding lemmas
                  and punctuation symbols, encoded as tuples (word, lemma)
         :rtype: list(tuple(str,str))
@@ -298,7 +298,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def tagged_words(self, fileids=None, tagset="msd", tags=""):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :param tagset: The tagset that should be used in the returned object,
                        either "universal" or "msd", "msd" is the default
         :param tags: An MSD Tag that is used to filter all parts of the used corpus
@@ -321,7 +321,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def lemma_sents(self, fileids=None):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :return: the given file(s) as a list of sentences or utterances, each
                  encoded as a list of tuples of the word and the corresponding
                  lemma (word, lemma)
@@ -336,7 +336,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def tagged_sents(self, fileids=None, tagset="msd", tags=""):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :param tagset: The tagset that should be used in the returned object,
                        either "universal" or "msd", "msd" is the default
         :param tags: An MSD Tag that is used to filter all parts of the used corpus
@@ -359,7 +359,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def lemma_paras(self, fileids=None):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :return: the given file(s) as a list of paragraphs, each encoded as a
                  list of sentences, which are in turn encoded as a list of
                  tuples of the word and the corresponding lemma (word, lemma)
@@ -374,7 +374,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def tagged_paras(self, fileids=None, tagset="msd", tags=""):
         """
-	    :param fileids: A list specifying the fileids that should be used.
+        :param fileids: A list specifying the fileids that should be used.
         :param tagset: The tagset that should be used in the returned object,
                        either "universal" or "msd", "msd" is the default
         :param tags: An MSD Tag that is used to filter all parts of the used corpus

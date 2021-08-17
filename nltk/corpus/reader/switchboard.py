@@ -6,10 +6,9 @@
 # For license information, see LICENSE.TXT
 import re
 
-from nltk.tag import str2tuple, map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag, str2tuple
 
 
 class SwitchboardTurn(list):
@@ -33,7 +32,7 @@ class SwitchboardTurn(list):
             text = " ".join("%s/%s" % w for w in self)
         else:
             text = " ".join(self)
-        return "<%s.%s: %r>" % (self.speaker, self.id, text)
+        return f"<{self.speaker}.{self.id}: {text!r}>"
 
 
 class SwitchboardCorpusReader(CorpusReader):

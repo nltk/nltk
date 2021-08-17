@@ -123,9 +123,9 @@ current directory.
 
 """
 
+import os
 import re
 import shelve
-import os
 import sys
 
 import nltk.data
@@ -280,7 +280,7 @@ class Concept:
         # _extension += element + ', '
         # _extension = _extension[:-1]
 
-        return "Label = '%s'\nArity = %s\nExtension = %s" % (
+        return "Label = '{}'\nArity = {}\nExtension = {}".format(
             self.prefLabel,
             self.arity,
             self.extension,
@@ -819,7 +819,7 @@ Valuation object for use in the NLTK semantics package.
             concepts = concept_map.values()
             # just print out the vocabulary
             if options.vocab:
-                items = sorted([(c.arity, c.prefLabel) for c in concepts])
+                items = sorted((c.arity, c.prefLabel) for c in concepts)
                 for (arity, label) in items:
                     print(label, arity)
                 sys.exit(0)

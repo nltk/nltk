@@ -7,6 +7,7 @@
 
 
 import re
+
 from nltk.tokenize.api import TokenizerI
 
 
@@ -42,7 +43,7 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Starting quotes.
     STARTING_QUOTES = [
-        (re.compile(u"([«“‘„]|[`]+)", re.U), r" \1 "),
+        (re.compile("([«“‘„]|[`]+)", re.U), r" \1 "),
         (re.compile(r"^\""), r"``"),
         (re.compile(r"(``)"), r" \1 "),
         (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
@@ -51,7 +52,7 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Ending quotes.
     ENDING_QUOTES = [
-        (re.compile(u"([»”’])", re.U), r" \1 "),
+        (re.compile("([»”’])", re.U), r" \1 "),
         (re.compile(r'"'), " '' "),
         (re.compile(r"(\S)(\'\')"), r"\1 \2 "),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
@@ -69,10 +70,13 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Punctuation.
     PUNCTUATION = [
-        (re.compile(r'([^\.])(\.)([\]\)}>"\'' u"»”’ " r"]*)\s*$", re.U), r"\1 \2 \3 "),
+        (re.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U), r"\1 \2 \3 "),
         (re.compile(r"([:,])([^\d])"), r" \1 \2"),
         (re.compile(r"([:,])$"), r" \1 "),
-        (re.compile(r"\.{2,}", re.U), r" \g<0> "), # See https://github.com/nltk/nltk/pull/2322
+        (
+            re.compile(r"\.{2,}", re.U),
+            r" \g<0> ",
+        ),  # See https://github.com/nltk/nltk/pull/2322
         (re.compile(r"[;@#$%&]"), r" \g<0> "),
         (
             re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
@@ -80,7 +84,10 @@ class NLTKWordTokenizer(TokenizerI):
         ),  # Handles the final period.
         (re.compile(r"[?!]"), r" \g<0> "),
         (re.compile(r"([^'])' "), r"\1 ' "),
-        (re.compile(r"[*]", re.U), r" \g<0> "), # See https://github.com/nltk/nltk/pull/2322
+        (
+            re.compile(r"[*]", re.U),
+            r" \g<0> ",
+        ),  # See https://github.com/nltk/nltk/pull/2322
     ]
 
     # Pads parentheses

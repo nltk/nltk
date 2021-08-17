@@ -7,11 +7,10 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
-
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 
 
 class DependencyCorpusReader(SyntaxCorpusReader):

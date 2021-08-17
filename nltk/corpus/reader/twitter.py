@@ -13,10 +13,9 @@ have been serialised into line-delimited JSON.
 import json
 import os
 
-from nltk.tokenize import TweetTokenizer
-
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, ZipFilePathPointer, concat
+from nltk.tokenize import TweetTokenizer
 
 
 class TwitterCorpusReader(CorpusReader):
@@ -75,7 +74,7 @@ class TwitterCorpusReader(CorpusReader):
             if isinstance(path, ZipFilePathPointer):
                 pass
             elif os.path.getsize(path) == 0:
-                raise ValueError("File {} is empty".format(path))
+                raise ValueError(f"File {path} is empty")
         """Check that all user-created corpus files are non-empty."""
 
         self._word_tokenizer = word_tokenizer

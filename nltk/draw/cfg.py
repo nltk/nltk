@@ -47,7 +47,6 @@ Visualization tools for CFGs.
 #     - if connected to top & bottom, then disconnect
 
 import re
-
 from tkinter import (
     Button,
     Canvas,
@@ -61,8 +60,6 @@ from tkinter import (
     Toplevel,
 )
 
-from nltk.grammar import CFG, _read_cfg_production, Nonterminal, nonterminals
-from nltk.tree import Tree
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
 from nltk.draw.util import (
     CanvasFrame,
@@ -71,6 +68,8 @@ from nltk.draw.util import (
     SymbolWidget,
     TextWidget,
 )
+from nltk.grammar import CFG, Nonterminal, _read_cfg_production, nonterminals
+from nltk.tree import Tree
 
 ######################################################################
 # Production List
@@ -729,10 +728,10 @@ class CFGDemo:
 
 
 def demo2():
-    from nltk import Nonterminal, Production, CFG
+    from nltk import CFG, Nonterminal, Production
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = (Nonterminal(s) for s in nonterminals.split())
     productions = (
         # Syntactic Productions
         Production(S, [NP, VP]),
@@ -770,10 +769,10 @@ def demo2():
 
 
 def demo():
-    from nltk import Nonterminal, CFG
+    from nltk import CFG, Nonterminal
 
     nonterminals = "S VP NP PP P N Name V Det"
-    (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s) for s in nonterminals.split()]
+    (S, VP, NP, PP, P, N, Name, V, Det) = (Nonterminal(s) for s in nonterminals.split())
 
     grammar = CFG.fromstring(
         """

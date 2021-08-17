@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.internals import Counter
-from nltk.sem.logic import LogicParser, APP
+from nltk.sem.logic import APP, LogicParser
 
 _counter = Counter()
 
@@ -86,7 +86,7 @@ class Expression:
         return self.applyto(other)
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self)
+        return f"<{self.__class__.__name__} {self}>"
 
 
 class AtomicExpression(Expression):
@@ -257,7 +257,7 @@ class ImpExpression(Expression):
         (c, c_new) = self.consequent.compile_neg(index_counter, glueFormulaFactory)
         fresh_index = index_counter.get()
         c.dependencies.append(fresh_index)
-        new_v = glueFormulaFactory("v%s" % fresh_index, a, set([fresh_index]))
+        new_v = glueFormulaFactory("v%s" % fresh_index, a, {fresh_index})
         return (c, a_new + c_new + [new_v])
 
     def initialize_labels(self, fstruct):
@@ -275,7 +275,7 @@ class ImpExpression(Expression):
         return not self == other
 
     def __str__(self):
-        return "%s%s %s %s%s" % (
+        return "{}{} {} {}{}".format(
             Tokens.OPEN,
             self.antecedent,
             Tokens.IMP,
@@ -284,9 +284,7 @@ class ImpExpression(Expression):
         )
 
     def __hash__(self):
-        return hash(
-            "%s%s%s" % (hash(self.antecedent), Tokens.IMP, hash(self.consequent))
-        )
+        return hash(f"{hash(self.antecedent)}{Tokens.IMP}{hash(self.consequent)}")
 
 
 class ApplicationExpression(Expression):
@@ -313,7 +311,7 @@ class ApplicationExpression(Expression):
             bindings += function_simp.antecedent.unify(argument_simp, bindings)
         except UnificationException as e:
             raise LinearLogicApplicationException(
-                "Cannot apply %s to %s. %s" % (function_simp, argument_simp, e)
+                f"Cannot apply {function_simp} to {argument_simp}. {e}"
             ) from e
 
         # If you are running it on complied premises, more conditions apply
@@ -362,9 +360,7 @@ class ApplicationExpression(Expression):
         return "%s" % self.function + Tokens.OPEN + "%s" % self.argument + Tokens.CLOSE
 
     def __hash__(self):
-        return hash(
-            "%s%s%s" % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent))
-        )
+        return hash(f"{hash(self.antecedent)}{Tokens.OPEN}{hash(self.consequent)}")
 
 
 class BindingDict:
@@ -450,7 +446,7 @@ class BindingDict:
         return self.d == other.d
 
     def __str__(self):
-        return "{" + ", ".join("%s: %s" % (v, self.d[v]) for v in sorted(self.d.keys())) + "}"
+        return "{" + ", ".join(f"{v}: {self.d[v]}" for v in sorted(self.d.keys())) + "}"
 
     def __repr__(self):
         return "BindingDict: %s" % self
@@ -462,7 +458,7 @@ class VariableBindingException(Exception):
 
 class UnificationException(Exception):
     def __init__(self, a, b, bindings):
-        Exception.__init__(self, "Cannot unify %s with %s given %s" % (a, b, bindings))
+        Exception.__init__(self, f"Cannot unify {a} with {b} given {bindings}")
 
 
 class LinearLogicApplicationException(Exception):

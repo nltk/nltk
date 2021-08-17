@@ -57,7 +57,7 @@ class ConfusionMatrix:
             values = sorted(set(reference + test))
 
         # Construct a value->index dictionary
-        indices = dict((val, i) for (i, val) in enumerate(values))
+        indices = {val: i for (i, val) in enumerate(values)}
 
         # Make a confusion matrix table.
         confusion = [[0 for val in values] for val in values]
@@ -91,7 +91,7 @@ class ConfusionMatrix:
         return self._confusion[i][j]
 
     def __repr__(self):
-        return "<ConfusionMatrix: %s/%s correct>" % (self._correct, self._total)
+        return f"<ConfusionMatrix: {self._correct}/{self._total} correct>"
 
     def __str__(self):
         return self.pretty_format()
@@ -158,7 +158,7 @@ class ConfusionMatrix:
             s += " |\n"
 
         # Write a dividing line
-        s += "%s-+-%s+\n" % ("-" * valuelen, "-" * ((entrylen + 1) * len(values)))
+        s += "{}-+-{}+\n".format("-" * valuelen, "-" * ((entrylen + 1) * len(values)))
 
         # Write the entries.
         for val, li in zip(value_strings, values):
@@ -180,7 +180,7 @@ class ConfusionMatrix:
             s += "|\n"
 
         # Write a dividing line
-        s += "%s-+-%s+\n" % ("-" * valuelen, "-" * ((entrylen + 1) * len(values)))
+        s += "{}-+-{}+\n".format("-" * valuelen, "-" * ((entrylen + 1) * len(values)))
 
         # Write a key
         s += "(row = reference; col = test)\n"

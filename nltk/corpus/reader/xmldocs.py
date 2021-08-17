@@ -14,12 +14,11 @@ Corpus reader for corpora whose documents are xml files.
 import codecs
 from xml.etree import ElementTree
 
-from nltk.data import SeekableUnicodeStreamReader
-from nltk.tokenize import WordPunctTokenizer
-from nltk.internals import ElementWrapper
-
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
+from nltk.data import SeekableUnicodeStreamReader
+from nltk.internals import ElementWrapper
+from nltk.tokenize import WordPunctTokenizer
 
 
 class XMLCorpusReader(CorpusReader):
@@ -324,7 +323,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
                 if self._DEBUG:
-                    print("%25s %s" % ("/".join(context)[-20:], piece.group()))
+                    print("{:>25} {}".format("/".join(context)[-20:], piece.group()))
 
                 if piece.group("START_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
@@ -342,9 +341,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     if not context:
                         raise ValueError("Unmatched tag </%s>" % name)
                     if name != context[-1]:
-                        raise ValueError(
-                            "Unmatched tag <%s>...</%s>" % (context[-1], name)
-                        )
+                        raise ValueError(f"Unmatched tag <{context[-1]}>...</{name}>")
                     # Is this the end of an element?
                     if elt_start is not None and elt_depth == len(context):
                         elt_text += xml_fragment[elt_start : piece.end()]

@@ -6,9 +6,10 @@ runs all of our doctests, and return it for processing by the setuptools
 test harness.
 
 """
-import doctest, unittest
-from glob import glob
+import doctest
 import os.path
+import unittest
+from glob import glob
 
 
 def additional_tests():

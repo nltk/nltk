@@ -14,23 +14,21 @@ import operator
 from collections import defaultdict
 from functools import reduce
 
+from nltk.inference.api import BaseProverCommand, Prover
 from nltk.sem import skolemize
 from nltk.sem.logic import (
-    VariableExpression,
-    EqualityExpression,
-    ApplicationExpression,
-    Expression,
-    NegatedExpression,
-    Variable,
     AndExpression,
-    unique_variable,
-    OrExpression,
-    is_indvar,
-    IndividualVariableExpression,
+    ApplicationExpression,
+    EqualityExpression,
     Expression,
+    IndividualVariableExpression,
+    NegatedExpression,
+    OrExpression,
+    Variable,
+    VariableExpression,
+    is_indvar,
+    unique_variable,
 )
-
-from nltk.inference.api import Prover, BaseProverCommand
 
 
 class ProverParseError(Exception):
@@ -158,7 +156,7 @@ class ResolutionProverCommand(BaseProverCommand):
         Decorate the proof output.
         """
         out = ""
-        max_clause_len = max([len(str(clause)) for clause in clauses])
+        max_clause_len = max(len(str(clause)) for clause in clauses)
         max_seq_len = len(str(len(clauses)))
         for i in range(len(clauses)):
             parents = "A"
@@ -169,7 +167,7 @@ class ResolutionProverCommand(BaseProverCommand):
                 parents = str(clauses[i]._parents)
             parents = " " * (max_clause_len - len(str(clauses[i])) + 1) + parents
             seq = " " * (max_seq_len - len(str(i + 1))) + str(i + 1)
-            out += "[%s] %s %s %s\n" % (seq, clauses[i], parents, taut)
+            out += f"[{seq}] {clauses[i]} {parents} {taut}\n"
         return out
 
 
@@ -343,7 +341,7 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
     """
     This method facilitates movement through the terms of 'self'
     """
-    debug.line("unify(%s,%s) %s" % (first, second, bindings))
+    debug.line(f"unify({first},{second}) {bindings}")
 
     if not len(first) or not len(second):  # if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
@@ -387,7 +385,7 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
     """
     This method facilitates movement through the terms of 'other'
     """
-    debug.line("unify(%s,%s) %s" % (first, second, bindings))
+    debug.line(f"unify({first},{second}) {bindings}")
 
     if not len(first) or not len(second):  # if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
@@ -617,7 +615,7 @@ class BindingDict:
         return len(self.d)
 
     def __str__(self):
-        data_str = ", ".join("%s: %s" % (v, self.d[v]) for v in sorted(self.d.keys()))
+        data_str = ", ".join(f"{v}: {self.d[v]}" for v in sorted(self.d.keys()))
         return "{" + data_str + "}"
 
     def __repr__(self):
@@ -668,7 +666,7 @@ class BindingException(Exception):
 
 class UnificationException(Exception):
     def __init__(self, a, b):
-        Exception.__init__(self, "'%s' cannot unify with '%s'" % (a, b))
+        Exception.__init__(self, f"'{a}' cannot unify with '{b}'")
 
 
 class DebugObject:
@@ -703,22 +701,22 @@ def testResolutionProver():
     p1 = Expression.fromstring(r"all x.(man(x) -> mortal(x))")
     p2 = Expression.fromstring(r"man(Socrates)")
     c = Expression.fromstring(r"mortal(Socrates)")
-    print("%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
+    print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
 
     p1 = Expression.fromstring(r"all x.(man(x) -> walks(x))")
     p2 = Expression.fromstring(r"man(John)")
     c = Expression.fromstring(r"some y.walks(y)")
-    print("%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
+    print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
 
     p = Expression.fromstring(r"some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))")
     c = Expression.fromstring(r"some e0.walk(e0,mary)")
-    print("%s |- %s: %s" % (p, c, ResolutionProver().prove(c, [p])))
+    print(f"{p} |- {c}: {ResolutionProver().prove(c, [p])}")
 
 
 def resolution_test(e):
     f = Expression.fromstring(e)
     t = ResolutionProver().prove(f)
-    print("|- %s: %s" % (f, t))
+    print(f"|- {f}: {t}")
 
 
 def test_clausify():

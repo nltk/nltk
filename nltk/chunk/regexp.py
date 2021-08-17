@@ -8,8 +8,8 @@
 
 import re
 
-from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
+from nltk.tree import Tree
 
 # //////////////////////////////////////////////////////
 # ChunkString
@@ -100,8 +100,7 @@ class ChunkString:
         elif isinstance(tok, Tree):
             return tok.label()
         else:
-            raise ValueError(
-                "chunk structures must contain tagged " "tokens or trees")
+            raise ValueError("chunk structures must contain tagged " "tokens or trees")
 
     def _verify(self, s, verify_tags):
         """
@@ -130,7 +129,7 @@ class ChunkString:
         # depth limit for regular expressions.
         brackets = ChunkString._BRACKETS.sub("", s)
         for i in range(1 + len(brackets) // 5000):
-            substr = brackets[i * 5000: i * 5000 + 5000]
+            substr = brackets[i * 5000 : i * 5000 + 5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError(
                     "Transformation generated invalid " "chunkstring:\n  %s" % s
@@ -165,7 +164,7 @@ class ChunkString:
 
             # Find the list of tokens contained in this piece.
             length = piece.count("<")
-            subsequence = self._pieces[index: index + length]
+            subsequence = self._pieces[index : index + length]
 
             # Add this list of tokens to our pieces.
             if piece_in_chunk:
@@ -237,7 +236,7 @@ class ChunkString:
         tags will line up with the representation of other
         ``ChunkStrings`` for the same text, regardless of the chunking.
 
-       :rtype: str
+        :rtype: str
         """
         # Add spaces to make everything line up.
         str = re.sub(r">(?!\})", r"> ", self._str)
@@ -504,8 +503,7 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile(r"\{(?P<chunk>%s)\}" %
-                            tag_pattern2re_pattern(tag_pattern))
+        regexp = re.compile(r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
         RegexpChunkRule.__init__(self, regexp, r"\g<chunk>", descr)
 
     def __repr__(self):
@@ -651,7 +649,7 @@ class SplitRule(RegexpChunkRule):
         description string; that string can be accessed
         separately with the ``descr()`` method.
 
-       :rtype: str
+        :rtype: str
         """
         return (
             "<SplitRule: "
@@ -877,7 +875,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChunkRuleWithContext:  %r, %r, %r>" % (
+        return "<ChunkRuleWithContext:  {!r}, {!r}, {!r}>".format(
             self._left_context_tag_pattern,
             self._chunk_tag_pattern,
             self._right_context_tag_pattern,
@@ -891,7 +889,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(
-    r"^((%s|<%s>)*)$" % (r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
+    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
 )
 
 
@@ -1338,8 +1336,7 @@ def demo_eval(chunkparser, text):
     print("/" + ("=" * 75) + "\\")
     print("Scoring", chunkparser)
     print("-" * 77)
-    print("Precision: %5.1f%%" %
-          (chunkscore.precision() * 100), " " * 4, end=" ")
+    print("Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" ")
     print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")
     print("F-Measure: %5.1f%%" % (chunkscore.f_measure() * 100))
 
@@ -1372,7 +1369,7 @@ def demo():
     and strategies.
     """
 
-    from nltk import chunk, Tree
+    from nltk import Tree, chunk
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
@@ -1428,8 +1425,7 @@ def demo():
     print("Demonstration of empty grammar:")
 
     cp = chunk.RegexpParser("")
-    print(chunk.accuracy(cp, conll2000.chunked_sents(
-        "test.txt", chunk_types=("NP",))))
+    print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",))))
 
     print()
     print("Demonstration of accuracy evaluation using CoNLL tags:")

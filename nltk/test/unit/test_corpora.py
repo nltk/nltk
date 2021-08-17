@@ -1,18 +1,18 @@
 import unittest
 
-from nltk.corpus import (
-    sinica_treebank,
-    conll2007,
-    indian,
+import pytest
+
+from nltk.corpus import (  # mwa_ppdb
     cess_cat,
     cess_esp,
+    conll2007,
     floresta,
+    indian,
     ptb,
+    sinica_treebank,
     udhr,
-)  # mwa_ppdb
-
+)
 from nltk.tree import Tree
-import pytest
 
 
 class TestUdhr(unittest.TestCase):
@@ -30,12 +30,12 @@ class TestUdhr(unittest.TestCase):
 class TestIndian(unittest.TestCase):
     def test_words(self):
         words = indian.words()[:3]
-        self.assertEqual(words, ['মহিষের', 'সন্তান', ':'])
+        self.assertEqual(words, ["মহিষের", "সন্তান", ":"])
 
     def test_tagged_words(self):
         tagged_words = indian.tagged_words()[:3]
         self.assertEqual(
-            tagged_words, [('মহিষের', 'NN'), ('সন্তান', 'NN'), (':', 'SYM')]
+            tagged_words, [("মহিষের", "NN"), ("সন্তান", "NN"), (":", "SYM")]
         )
 
 
@@ -64,7 +64,7 @@ class TestSinicaTreebank(unittest.TestCase):
     def test_sents(self):
         first_3_sents = sinica_treebank.sents()[:3]
         self.assertEqual(
-            first_3_sents, [['一'], ['友情'], ['嘉珍', '和', '我', '住在', '同一條', '巷子']]
+            first_3_sents, [["一"], ["友情"], ["嘉珍", "和", "我", "住在", "同一條", "巷子"]]
         )
 
     def test_parsed_sents(self):
@@ -72,11 +72,11 @@ class TestSinicaTreebank(unittest.TestCase):
         self.assertEqual(
             parsed_sents,
             Tree(
-                'S',
+                "S",
                 [
-                    Tree('NP', [Tree('Nba', ['嘉珍'])]),
-                    Tree('V‧地', [Tree('VA11', ['不停']), Tree('DE', ['的'])]),
-                    Tree('VA4', ['哭泣']),
+                    Tree("NP", [Tree("Nba", ["嘉珍"])]),
+                    Tree("V‧地", [Tree("VA11", ["不停"]), Tree("DE", ["的"])]),
+                    Tree("VA4", ["哭泣"]),
                 ],
             ),
         )
@@ -86,33 +86,33 @@ class TestCoNLL2007(unittest.TestCase):
     # Reading the CoNLL 2007 Dependency Treebanks
 
     def test_sents(self):
-        sents = conll2007.sents('esp.train')[0]
+        sents = conll2007.sents("esp.train")[0]
         self.assertEqual(
-            sents[:6], ['El', 'aumento', 'del', 'índice', 'de', 'desempleo']
+            sents[:6], ["El", "aumento", "del", "índice", "de", "desempleo"]
         )
 
     def test_parsed_sents(self):
 
-        parsed_sents = conll2007.parsed_sents('esp.train')[0]
+        parsed_sents = conll2007.parsed_sents("esp.train")[0]
 
         self.assertEqual(
             parsed_sents.tree(),
             Tree(
-                'fortaleció',
+                "fortaleció",
                 [
                     Tree(
-                        'aumento',
+                        "aumento",
                         [
-                            'El',
+                            "El",
                             Tree(
-                                'del',
+                                "del",
                                 [
                                     Tree(
-                                        'índice',
+                                        "índice",
                                         [
                                             Tree(
-                                                'de',
-                                                [Tree('desempleo', ['estadounidense'])],
+                                                "de",
+                                                [Tree("desempleo", ["estadounidense"])],
                                             )
                                         ],
                                     )
@@ -120,49 +120,49 @@ class TestCoNLL2007(unittest.TestCase):
                             ),
                         ],
                     ),
-                    'hoy',
-                    'considerablemente',
+                    "hoy",
+                    "considerablemente",
                     Tree(
-                        'al',
+                        "al",
                         [
                             Tree(
-                                'euro',
+                                "euro",
                                 [
                                     Tree(
-                                        'cotizaba',
+                                        "cotizaba",
                                         [
-                                            ',',
-                                            'que',
-                                            Tree('a', [Tree('15.35', ['las', 'GMT'])]),
-                                            'se',
+                                            ",",
+                                            "que",
+                                            Tree("a", [Tree("15.35", ["las", "GMT"])]),
+                                            "se",
                                             Tree(
-                                                'en',
+                                                "en",
                                                 [
                                                     Tree(
-                                                        'mercado',
+                                                        "mercado",
                                                         [
-                                                            'el',
-                                                            Tree('de', ['divisas']),
-                                                            Tree('de', ['Fráncfort']),
+                                                            "el",
+                                                            Tree("de", ["divisas"]),
+                                                            Tree("de", ["Fráncfort"]),
                                                         ],
                                                     )
                                                 ],
                                             ),
-                                            Tree('a', ['0,9452_dólares']),
+                                            Tree("a", ["0,9452_dólares"]),
                                             Tree(
-                                                'frente_a',
+                                                "frente_a",
                                                 [
-                                                    ',',
+                                                    ",",
                                                     Tree(
-                                                        '0,9349_dólares',
+                                                        "0,9349_dólares",
                                                         [
-                                                            'los',
+                                                            "los",
                                                             Tree(
-                                                                'de',
+                                                                "de",
                                                                 [
                                                                     Tree(
-                                                                        'mañana',
-                                                                        ['esta'],
+                                                                        "mañana",
+                                                                        ["esta"],
                                                                     )
                                                                 ],
                                                             ),
@@ -176,7 +176,7 @@ class TestCoNLL2007(unittest.TestCase):
                             )
                         ],
                     ),
-                    '.',
+                    ".",
                 ],
             ),
         )
@@ -184,58 +184,58 @@ class TestCoNLL2007(unittest.TestCase):
 
 @pytest.mark.skipif(
     not ptb.fileids(),
-    reason="A full installation of the Penn Treebank is not available"
+    reason="A full installation of the Penn Treebank is not available",
 )
 class TestPTB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(
             ptb.fileids()[:4],
             [
-                'BROWN/CF/CF01.MRG',
-                'BROWN/CF/CF02.MRG',
-                'BROWN/CF/CF03.MRG',
-                'BROWN/CF/CF04.MRG',
+                "BROWN/CF/CF01.MRG",
+                "BROWN/CF/CF02.MRG",
+                "BROWN/CF/CF03.MRG",
+                "BROWN/CF/CF04.MRG",
             ],
         )
 
     def test_words(self):
         self.assertEqual(
-            ptb.words('WSJ/00/WSJ_0003.MRG')[:7],
-            ['A', 'form', 'of', 'asbestos', 'once', 'used', '*'],
+            ptb.words("WSJ/00/WSJ_0003.MRG")[:7],
+            ["A", "form", "of", "asbestos", "once", "used", "*"],
         )
 
     def test_tagged_words(self):
         self.assertEqual(
-            ptb.tagged_words('WSJ/00/WSJ_0003.MRG')[:3],
-            [('A', 'DT'), ('form', 'NN'), ('of', 'IN')],
+            ptb.tagged_words("WSJ/00/WSJ_0003.MRG")[:3],
+            [("A", "DT"), ("form", "NN"), ("of", "IN")],
         )
 
     def test_categories(self):
         self.assertEqual(
             ptb.categories(),
             [
-                'adventure',
-                'belles_lettres',
-                'fiction',
-                'humor',
-                'lore',
-                'mystery',
-                'news',
-                'romance',
-                'science_fiction',
+                "adventure",
+                "belles_lettres",
+                "fiction",
+                "humor",
+                "lore",
+                "mystery",
+                "news",
+                "romance",
+                "science_fiction",
             ],
         )
 
     def test_news_fileids(self):
         self.assertEqual(
-            ptb.fileids('news')[:3],
-            ['WSJ/00/WSJ_0001.MRG', 'WSJ/00/WSJ_0002.MRG', 'WSJ/00/WSJ_0003.MRG'],
+            ptb.fileids("news")[:3],
+            ["WSJ/00/WSJ_0001.MRG", "WSJ/00/WSJ_0002.MRG", "WSJ/00/WSJ_0003.MRG"],
         )
 
     def test_category_words(self):
         self.assertEqual(
-            ptb.words(categories=['humor', 'fiction'])[:6],
-            ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back'],
+            ptb.words(categories=["humor", "fiction"])[:6],
+            ["Thirty-three", "Scotty", "did", "not", "go", "back"],
         )
 
 
@@ -243,22 +243,22 @@ class TestPTB(unittest.TestCase):
 class TestMWAPPDB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(
-            mwa_ppdb.fileids(), ['ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs']
+            mwa_ppdb.fileids(), ["ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs"]
         )
 
     def test_entries(self):
         self.assertEqual(
             mwa_ppdb.entries()[:10],
             [
-                ('10/17/01', '17/10/2001'),
-                ('102,70', '102.70'),
-                ('13,53', '13.53'),
-                ('3.2.5.3.2.1', '3.2.5.3.2.1.'),
-                ('53,76', '53.76'),
-                ('6.9.5', '6.9.5.'),
-                ('7.7.6.3', '7.7.6.3.'),
-                ('76,20', '76.20'),
-                ('79,85', '79.85'),
-                ('93,65', '93.65'),
+                ("10/17/01", "17/10/2001"),
+                ("102,70", "102.70"),
+                ("13,53", "13.53"),
+                ("3.2.5.3.2.1", "3.2.5.3.2.1."),
+                ("53,76", "53.76"),
+                ("6.9.5", "6.9.5."),
+                ("7.7.6.3", "7.7.6.3."),
+                ("76,20", "76.20"),
+                ("79,85", "79.85"),
+                ("93,65", "93.65"),
             ],
         )

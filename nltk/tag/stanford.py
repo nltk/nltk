@@ -16,13 +16,13 @@ list of paths).
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
-from abc import abstractmethod
 import os
 import tempfile
-from subprocess import PIPE
 import warnings
+from abc import abstractmethod
+from subprocess import PIPE
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import _java_options, config_java, find_file, find_jar, java
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -129,7 +129,9 @@ class StanfordTagger(TaggerI):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
                 word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append(("".join(word_tags[:-1]), word_tags[-1].replace('0', '').upper()))
+                sentence.append(
+                    ("".join(word_tags[:-1]), word_tags[-1].replace("0", "").upper())
+                )
             tagged_sentences.append(sentence)
         return tagged_sentences
 
@@ -154,7 +156,7 @@ class StanfordPOSTagger(StanfordTagger):
     _JAR = "stanford-postagger.jar"
 
     def __init__(self, *args, **kwargs):
-        super(StanfordPOSTagger, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
@@ -195,7 +197,7 @@ class StanfordNERTagger(StanfordTagger):
     _FORMAT = "slashTags"
 
     def __init__(self, *args, **kwargs):
-        super(StanfordNERTagger, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def _cmd(self):

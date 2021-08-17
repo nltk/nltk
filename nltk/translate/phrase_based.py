@@ -73,9 +73,7 @@ def extract(
             src_phrase = " ".join(srctext[e_start : e_end + 1])
             trg_phrase = " ".join(trgtext[fs : fe + 1])
             # Include more data for later ordering.
-            phrases.add(
-                ((e_start, e_end + 1), (fs, fe + 1), src_phrase, trg_phrase)
-            )
+            phrases.add(((e_start, e_end + 1), (fs, fe + 1), src_phrase, trg_phrase))
             fe += 1
             if fe in f_aligned or fe >= trglen:
                 break
