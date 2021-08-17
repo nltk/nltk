@@ -47,7 +47,7 @@ except ImportError:
 inf = float("inf")
 
 # Default values for maximum similarity scores (Kondrak 2002: 54)
-C_skip = 10  # Indels
+C_skip = -10  # Indels
 C_sub = 35  # Substitutions
 C_exp = 45  # Expansions/compressions
 C_vwl = 5  # Vowel/consonant relative weight (decreased from 10)
@@ -1084,7 +1084,7 @@ def align(str1, str2, epsilon=0):
     :type epsilon: float (0.0 to 1.0)
     :param epsilon: Adjusts threshold similarity score for near-optimal alignments
 
-    :rtpye: list(list(tuple(str, str)))
+    :rtype: list(list(tuple(str, str)))
     :return: Alignment(s) of str1 and str2
 
     (Kondrak 2002: 51)
