@@ -15,6 +15,7 @@ import re
 import sys
 import textwrap
 import types
+import warnings
 from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee
 from pprint import pprint
@@ -210,7 +211,6 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 pass
 
 
-
 ##########################################################################
 # Graph Drawing
 ##########################################################################
@@ -240,7 +240,10 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                         queue.append((child, depth + 1))
                     else:
                         if verbose:
-                            warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+                            warnings.warn(
+                                f"Discarded redundant search for {child} at depth {depth + 1}",
+                                stacklevel=2,
+                            )
                     edge = (node, child)
                     if edge not in edges:
                         yield edge
@@ -276,10 +279,10 @@ def edges2dot(edges, shapes=None, attr=None):
     if not attr:
         attr = dict()
 
-    dot_string = 'digraph G {\n'
+    dot_string = "digraph G {\n"
 
     for pair in attr.items():
-        dot_string += f'{pair[0]} = {pair[1]};\n'
+        dot_string += f"{pair[0]} = {pair[1]};\n"
 
     for edge in edges:
         for shape in shapes.items():
@@ -288,7 +291,7 @@ def edges2dot(edges, shapes=None, attr=None):
                     dot_string += f'"{edge[node]}" [shape = {shape[1]}];\n'
         dot_string += f'"{edge[0]}" -> "{edge[1]}";\n'
 
-    dot_string += '}\n'
+    dot_string += "}\n"
     return dot_string
 
 
@@ -321,14 +324,17 @@ def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=N
 
     """
     return edges2dot(
-        edge_closure(tree, lambda node:unweighted_minimum_spanning_dict(tree, children)[node]),
-        shapes, attr)
+        edge_closure(
+            tree, lambda node: unweighted_minimum_spanning_dict(tree, children)[node]
+        ),
+        shapes,
+        attr,
+    )
 
 
 ##########################################################################
 # Breadth-First / Depth-first Searches with Cycle Detection
 ##########################################################################
-
 
 
 def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
@@ -567,7 +573,6 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
     """
     return acyclic_dic2tree(tree, unweighted_minimum_spanning_dict(tree, children))
-
 
 
 ##########################################################################

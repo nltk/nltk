@@ -112,9 +112,11 @@ Summary of our git branching model:
   code](http://www.codinghorror.com/blog/2008/07/coding-without-comments.html);
 - Name identifiers (variables, classes, functions, module names) with readable
   names (`x` is always wrong);
-- When manipulating strings, use [Python's new-style
+- When manipulating strings, we prefer either [f-string
+  formatting](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals)
+  (f`'{a} = {b}'`) or [new-style
   formatting](http://docs.python.org/library/string.html#format-string-syntax)
-  (`'{} = {}'.format(a, b)` instead of `'%s = %s' % (a, b)`);
+  (`'{} = {}'.format(a, b)`), instead of the old-style formatting (`'%s = %s' % (a, b)`);
 - All `#TODO` comments should be turned into issues (use our
   [GitHub issue system](https://github.com/nltk/nltk/issues));
 - Run all tests before pushing (just execute `tox`) so you will know if your
@@ -177,6 +179,12 @@ The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.git
         - Otherwise, install dependencies via `pip install -U -r requirements-ci.txt`.
       - Load cached `nltk_data` loaded via `cache_nltk_data`.
       - Run `pytest --numprocesses auto -rsx nltk/test`.
+
+ - The `pre-commit` job
+   - performs these steps:
+     - Downloads the `nltk` source code.
+     - Runs pre-commit on all files in the repository. (Similar to `pre-commit run --all-files`)
+     - Fails if any hooks performed a change.
 
 #### To test with `tox` locally
 
