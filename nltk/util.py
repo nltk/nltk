@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
+#         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -209,11 +210,125 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 pass
 
 
+
+##########################################################################
+# Graph Drawing
+##########################################################################
+
+
+def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
+    """Yield the edges of a graph in breadth-first order,
+    discarding eventual cycles.
+    The first argument should be the start node;
+    children should be a function taking as argument a graph node
+    and returning an iterator of the node's children.
+
+    >>> from nltk.util import edge_closure
+    >>> print(list(edge_closure('A', lambda node:{'A':['B','C'], 'B':'C', 'C':'B'}[node])))
+    [('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'B')]
+    """
+    traversed = set()
+    edges = set()
+    queue = deque([(tree, 0)])
+    while queue:
+        node, depth = queue.popleft()
+        traversed.add(node)
+        if depth != maxdepth:
+            try:
+                for child in children(node):
+                    if child not in traversed:
+                        queue.append((child, depth + 1))
+                    else:
+                        if verbose:
+                            warnings.warn('Discarded redundant search for {0} at depth {1}'.format(child, depth + 1), stacklevel=2)
+                    edge = (node, child)
+                    if edge not in edges:
+                        yield edge
+                        edges.add(edge)
+            except TypeError:
+                pass
+
+
+def edges2dot(edges, shapes=None, attr=None):
+    """
+    :param edges: the set (or list) of edges of a directed graph.
+
+    :return dot_string: a representation of 'edges' as a string in the DOT
+    graph language, which can be converted to an image by the 'dot' program
+    from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
+
+    :param shapes: dictionary of strings that trigger a specified shape.
+    :param attr: dictionary with global graph attributes
+
+    >>> import nltk
+    >>> from nltk.util import edges2dot
+    >>> print(edges2dot([('A', 'B'), ('A', 'C'), ('B', 'C'), ('C', 'B')]))
+    digraph G {
+    "A" -> "B";
+    "A" -> "C";
+    "B" -> "C";
+    "C" -> "B";
+    }
+
+    """
+    if not shapes:
+        shapes = dict()
+    if not attr:
+        attr = dict()
+
+    dot_string = 'digraph G {\n'
+
+    for pair in attr.items():
+        dot_string += f'{pair[0]} = {pair[1]};\n'
+
+    for edge in edges:
+        for shape in shapes.items():
+            for node in range(2):
+                if shape[0] in repr(edge[node]):
+                    dot_string += f'"{edge[node]}" [shape = {shape[1]}];\n'
+        dot_string += f'"{edge[0]}" -> "{edge[1]}";\n'
+
+    dot_string += '}\n'
+    return dot_string
+
+
+def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=None):
+    """
+
+    Build a Minimum Spanning Tree (MST) of an unweighted graph,
+    by traversing the nodes of a tree in breadth-first order,
+    discarding eventual cycles.
+
+    Return a representation of this MST as a string in the DOT graph language,
+    which can be converted to an image by the 'dot' program from the Graphviz
+    package, or nltk.parse.dependencygraph.dot2img(dot_string).
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    >>> import nltk
+    >>> wn=nltk.corpus.wordnet
+    >>> from nltk.util import unweighted_minimum_spanning_digraph as umsd
+    >>> print(umsd(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    digraph G {
+    "Synset('bound.a.01')" -> "Synset('unfree.a.02')";
+    "Synset('unfree.a.02')" -> "Synset('confined.a.02')";
+    "Synset('unfree.a.02')" -> "Synset('dependent.a.01')";
+    "Synset('unfree.a.02')" -> "Synset('restricted.a.01')";
+    "Synset('restricted.a.01')" -> "Synset('classified.a.02')";
+    }
+
+    """
+    return edges2dot(
+        edge_closure(tree, lambda node:unweighted_minimum_spanning_dict(tree, children)[node]),
+        shapes, attr)
+
+
 ##########################################################################
 # Breadth-First / Depth-first Searches with Cycle Detection
 ##########################################################################
 
-import warnings
 
 
 def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
@@ -388,6 +503,48 @@ def acyclic_dic2tree(node, dic):
     return [node] + [acyclic_dic2tree(child, dic) for child in dic[node]]
 
 
+def unweighted_minimum_spanning_dict(tree, children=iter):
+    """
+    Output a dictionary representing a Minimum Spanning Tree (MST)
+    of an unweighted graph, by traversing the nodes of a tree in
+    breadth-first order, discarding eventual cycles.
+
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
+
+    >>> import nltk
+    >>> from nltk.corpus import wordnet as wn
+    >>> from nltk.util import unweighted_minimum_spanning_dict as umsd
+    >>> from pprint import pprint
+    >>> pprint(umsd(wn.synset('bound.a.01'), lambda s:s.also_sees()))
+    {Synset('bound.a.01'): [Synset('unfree.a.02')],
+     Synset('classified.a.02'): [],
+     Synset('confined.a.02'): [],
+     Synset('dependent.a.01'): [],
+     Synset('restricted.a.01'): [Synset('classified.a.02')],
+     Synset('unfree.a.02'): [Synset('confined.a.02'),
+                             Synset('dependent.a.01'),
+                             Synset('restricted.a.01')]}
+
+    """
+    traversed = set()  # Empty set of traversed nodes
+    queue = deque([tree])  # Initialize queue
+    agenda = {tree}  # Set of all nodes ever queued
+    mstdic = {}  # Empty MST dictionary
+    while queue:
+        node = queue.popleft()  # Node is not yet in the MST dictionary,
+        mstdic[node] = []  # so add it with an empty list of children
+        if node not in traversed:  # Avoid cycles
+            traversed.add(node)
+            for child in children(node):
+                if child not in agenda:  # Queue nodes only once
+                    mstdic[node].append(child)  # Add child to the MST
+                    queue.append(child)  # Add child to queue
+                    agenda.add(child)
+    return mstdic
+
+
 def unweighted_minimum_spanning_tree(tree, children=iter):
     """
     Output a Minimum Spanning Tree (MST) of an unweighted graph,
@@ -409,21 +566,8 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
     """
-    traversed = set()  # Empty set of traversed nodes
-    queue = deque([tree])  # Initialize queue
-    agenda = {tree}  # Set of all nodes ever queued
-    mstdic = {}  # Empty MST dictionary
-    while queue:
-        node = queue.popleft()  # Node is not yet in the MST dictionary,
-        mstdic[node] = []  # so add it with an empty list of children
-        if node not in traversed:  # Avoid cycles
-            traversed.add(node)
-            for child in children(node):
-                if child not in agenda:  # Queue nodes only once
-                    mstdic[node].append(child)  # Add child to the MST
-                    queue.append(child)  # Add child to queue
-                    agenda.add(child)
-    return acyclic_dic2tree(tree, mstdic)
+    return acyclic_dic2tree(tree, unweighted_minimum_spanning_dict(tree, children))
+
 
 
 ##########################################################################

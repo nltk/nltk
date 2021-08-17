@@ -583,6 +583,9 @@ class Synset(_WordNetObject):
     from nltk.util import acyclic_depth_first as acyclic_tree
     from nltk.util import unweighted_minimum_spanning_tree as mst
 
+# Also add this shortcut?
+#    from nltk.util import unweighted_minimum_spanning_digraph as umsd
+
     def tree(self, rel, depth=-1, cut_mark=None):
         """
         Return the full relation tree, including self,
@@ -2040,6 +2043,80 @@ class WordNetCorpusReader(CorpusReader):
         # Make sure no more entries are accidentally added subsequently
         self._lang_data[lang][0].default_factory = None
         self._lang_data[lang][1].default_factory = None
+
+
+    ######################################################################
+    # Visualize WordNet relation graphs using Graphviz
+    ######################################################################
+
+
+    def digraph(self, inputs, rel=lambda s:s.hypernyms(), pos=None, maxdepth=-1, shapes=None, attr=None, verbose=False):
+        """
+        Produce a graphical representation from 'inputs' (a list of
+        start nodes, which can be a mix of Synsets, Lemmas and/or words),
+        and a synset relation, for drawing with the 'dot' graph visualisation
+        program from the Graphviz package.
+
+        Return a string in the DOT graph file language, which can then be
+        converted to an image by nltk.parse.dependencygraph.dot2img(dot_string).
+
+        Optional Parameters:
+        :rel: Wordnet synset relation
+        :pos: for words, restricts Part of Speech to 'n', 'v', 'a' or 'r'
+        :maxdepth: limit the longest path
+        :shapes: dictionary of strings that trigger a specified shape
+        :attr: dictionary with global graph attributes
+        :verbose: warn about cycles
+
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.digraph([wn.synset('dog.n.01')]))
+        digraph G {
+        "Synset('dog.n.01')" -> "Synset('domestic_animal.n.01')";
+        "Synset('organism.n.01')" -> "Synset('living_thing.n.01')";
+        "Synset('mammal.n.01')" -> "Synset('vertebrate.n.01')";
+        "Synset('placental.n.01')" -> "Synset('mammal.n.01')";
+        "Synset('animal.n.01')" -> "Synset('organism.n.01')";
+        "Synset('vertebrate.n.01')" -> "Synset('chordate.n.01')";
+        "Synset('chordate.n.01')" -> "Synset('animal.n.01')";
+        "Synset('canine.n.02')" -> "Synset('carnivore.n.01')";
+        "Synset('living_thing.n.01')" -> "Synset('whole.n.02')";
+        "Synset('physical_entity.n.01')" -> "Synset('entity.n.01')";
+        "Synset('carnivore.n.01')" -> "Synset('placental.n.01')";
+        "Synset('object.n.01')" -> "Synset('physical_entity.n.01')";
+        "Synset('whole.n.02')" -> "Synset('object.n.01')";
+        "Synset('dog.n.01')" -> "Synset('canine.n.02')";
+        "Synset('domestic_animal.n.01')" -> "Synset('animal.n.01')";
+        }
+
+
+        """
+        from nltk.util import edge_closure, edges2dot
+        synsets = set()
+        edges = set()
+        if not shapes:
+            shapes = dict()
+        if not attr:
+            attr = dict()
+
+        def add_lemma(lem):
+            ss = lem.synset()
+            synsets.add(ss)
+            edges.add((lem,ss))
+
+        for node in inputs:
+            typ = type(node)
+            if typ == Synset:
+                synsets.add(node)
+            elif typ == Lemma:
+                add_lemma(node)
+            elif typ == str:
+                for lemma in self.lemmas(node,pos):
+                    add_lemma(lemma)
+
+        for ss in synsets:
+            edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
+        dot_string = edges2dot(edges, shapes=shapes, attr=attr)
+        return dot_string
 
 
 ######################################################################
