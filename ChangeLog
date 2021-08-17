@@ -1,3 +1,23 @@
+Version 3.6.3 2021-08-??
+* Dropped support for Python 3.5
+* Run CI tests on Windows, too
+* Moved from Travis CI to GitHub Actions
+* Code and comment cleanups
+* Visualize WordNet relation graphs using Graphviz
+* Fixed large error in METEOR score
+* Apply isort, pyupgrade, black, added as pre-commit hooks
+* Prevent debug_decisions in Punkt from throwing IndexError
+* Resolved ZeroDivisionError in RIBES with dissimilar sentences
+* Initialize WordNet IC total counts with smoothing value
+* Fixed AttributeError for Arabic ARLSTem2 stemmer
+* Many fixes and improvements to lm language model package
+* Fix bug in nltk.metrics.aline, C_skip = -10
+
+Thanks to the following contributors to 3.6.3
+Tom Aarsen, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne, Manu Joseph,
+Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, purificant, Danny Sepler,
+Anthony Sottile
+
 Version 3.6.2 2021-04-20
 * move test code to nltk/test
 * clean up some doctests
