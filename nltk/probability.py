@@ -1916,7 +1916,17 @@ class ConditionalFreqDist(defaultdict):
         """
         return sum(fdist.N() for fdist in self.values())
 
-    def plot(self, *args, **kwargs):
+    def plot(
+        self,
+        *args,
+        samples=None,
+        title="",
+        cumulative=False,
+        percents=False,
+        conditions=None,
+        show=True,
+        **kwargs,
+    ):
         """
         Plot the given samples from the conditional frequency distribution.
         For a cumulative plot, specify cumulative=True.
@@ -1926,8 +1936,14 @@ class ConditionalFreqDist(defaultdict):
         :type samples: list
         :param title: The title for the graph
         :type title: str
+        :param cumulative: Whether the plot is cumulative. (default = False)
+        :type cumulative: bool
+        :param percents: Whether the plot uses percents instead of counts. Only when cumulative is True.
+        :type percents: bool
         :param conditions: The conditions to plot (default is all)
         :type conditions: list
+        :param show: Whether to show the plot, or only return the ax.
+        :type show: bool
         """
         try:
             import matplotlib.pyplot as plt  # import statement fix
@@ -1937,19 +1953,14 @@ class ConditionalFreqDist(defaultdict):
                 "See http://matplotlib.org/"
             ) from e
 
-        cumulative = _get_kwarg(kwargs, "cumulative", False)
-        percents = _get_kwarg(kwargs, "percents", False)
-        conditions = [
-            c for c in _get_kwarg(kwargs, "conditions", self.conditions()) if c in self
-        ]  # conditions should be in self
-        title = _get_kwarg(kwargs, "title", "")
-        samples = _get_kwarg(
-            kwargs, "samples", sorted({v for c in conditions for v in self[c]})
-        )  # this computation could be wasted
+        if not conditions:
+            conditions = self.conditions()
+        if not samples:
+            samples = sorted({v for c in conditions for v in self[c]})
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
         ax = plt.gca()
-        if len(conditions) != 0:
+        if conditions:
             freqs = []
             for condition in conditions:
                 if cumulative:
@@ -1979,7 +1990,9 @@ class ConditionalFreqDist(defaultdict):
                 ax.set_title(title)
             ax.set_xlabel("Samples")
             ax.set_ylabel(ylabel)
-        plt.show()
+
+        if show:
+            plt.show()
 
         return ax
 
