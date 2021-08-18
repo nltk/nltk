@@ -1955,6 +1955,8 @@ class ConditionalFreqDist(defaultdict):
 
         if not conditions:
             conditions = self.conditions()
+        else:
+            conditions = [c for c in conditions if c in self]
         if not samples:
             samples = sorted({v for c in conditions for v in self[c]})
         if "linewidth" not in kwargs:
