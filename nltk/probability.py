@@ -252,14 +252,14 @@ class FreqDist(Counter):
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
         plotted.  For a cumulative plot, specify cumulative=True. Additional
-        *args and **kwargs are passed to matplotlib's plot function.
+        **kwargs are passed to matplotlib's plot function.
         (Requires Matplotlib to be installed.)
 
         :param title: The title for the graph.
         :type title: str
         :param cumulative: Whether the plot is cumulative. (default = False)
         :type cumulative: bool
-        :param percents: Whether the plot uses percents instead of counts. Only when cumulative is True.
+        :param percents: Whether the plot uses percents instead of counts. (default = False)
         :type percents: bool
         :param show: Whether to show the plot, or only return the ax.
         :type show: bool
@@ -278,14 +278,16 @@ class FreqDist(Counter):
 
         if cumulative:
             freqs = list(self._cumulative_frequencies(samples))
-            ylabel = "Cumulative Counts"
-            if percents:
-                freqs = [f / freqs[len(freqs) - 1] * 100 for f in freqs]
-                ylabel = "Cumulative Percents"
+            ylabel = "Cumulative "
         else:
             freqs = [self[sample] for sample in samples]
-            ylabel = "Counts"
-        # percents = [f * 100 for f in freqs]  only in ProbDist?
+            ylabel = ""
+
+        if percents:
+            freqs = [f / self.N() * 100 for f in freqs]
+            ylabel += "Percents"
+        else:
+            ylabel += "Counts"
 
         ax = plt.gca()
         ax.grid(True, color="silver")
@@ -1940,7 +1942,7 @@ class ConditionalFreqDist(defaultdict):
         :type title: str
         :param cumulative: Whether the plot is cumulative. (default = False)
         :type cumulative: bool
-        :param percents: Whether the plot uses percents instead of counts. Only when cumulative is True.
+        :param percents: Whether the plot uses percents instead of counts. (default = False)
         :type percents: bool
         :param conditions: The conditions to plot (default is all)
         :type conditions: list
@@ -1969,17 +1971,26 @@ class ConditionalFreqDist(defaultdict):
             for condition in conditions:
                 if cumulative:
                     # freqs should be a list of list where each sub list will be a frequency of a condition
-                    freqs.append(list(self[condition]._cumulative_frequencies(samples)))
-                    ylabel = "Cumulative Counts"
-                    legend_loc = "lower right"
-                    if percents:
-                        freqs[-1] = [f / freqs[len(freqs) - 1] * 100 for f in freqs]
-                        ylabel = "Cumulative Percents"
+                    freq = list(self[condition]._cumulative_frequencies(samples))
                 else:
-                    freqs.append([self[condition][sample] for sample in samples])
-                    ylabel = "Counts"
-                    legend_loc = "upper right"
-                # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
+                    freq = [self[condition][sample] for sample in samples]
+
+                if percents:
+                    freq = [f / self[condition].N() * 100 for f in freq]
+
+                freqs.append(freq)
+
+            if cumulative:
+                ylabel = "Cumulative "
+                legend_loc = "lower right"
+            else:
+                ylabel = ""
+                legend_loc = "upper right"
+
+            if percents:
+                ylabel += "Percents"
+            else:
+                ylabel += "Counts"
 
             i = 0
             for freq in freqs:
