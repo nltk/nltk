@@ -251,7 +251,8 @@ class FreqDist(Counter):
         Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  For a cumulative plot, specify cumulative=True.
+        plotted.  For a cumulative plot, specify cumulative=True. Additional
+        *args and **kwargs are passed to matplotlib's plot function.
         (Requires Matplotlib to be installed.)
 
         :param title: The title for the graph.
@@ -1929,7 +1930,8 @@ class ConditionalFreqDist(defaultdict):
     ):
         """
         Plot the given samples from the conditional frequency distribution.
-        For a cumulative plot, specify cumulative=True.
+        For a cumulative plot, specify cumulative=True. Additional *args and
+        **kwargs are passed to matplotlib's plot function.
         (Requires Matplotlib to be installed.)
 
         :param samples: The samples to plot
