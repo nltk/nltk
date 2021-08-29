@@ -280,6 +280,7 @@
 - Hiroki Teranishi <https://github.com/chantera>
 - Ruben Cartuyvels <https://github.com/rubencart>
 - Dalton Pearson <https://github.com/daltonpearson>
+- Abdul Rafey Khan <https://github.com/BatMrE>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
