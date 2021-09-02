@@ -238,8 +238,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
         else:
             if entity_body in keep:
                 return match.group(0)
-            else:
-                number = html.entities.name2codepoint.get(entity_body)
+            number = html.entities.name2codepoint.get(entity_body)
         if number is not None:
             try:
                 return chr(number)
