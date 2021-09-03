@@ -238,8 +238,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
         else:
             if entity_body in keep:
                 return match.group(0)
-            else:
-                number = html.entities.name2codepoint.get(entity_body)
+            number = html.entities.name2codepoint.get(entity_body)
         if number is not None:
             try:
                 return chr(number)
@@ -262,7 +261,8 @@ class TweetTokenizer:
         >>> tknzr = TweetTokenizer()
         >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
         >>> tknzr.tokenize(s0)
-        ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
+        ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3'
+        , 'and', 'some', 'arrows', '<', '>', '->', '<--']
 
     Examples using `strip_handles` and `reduce_len parameters`:
 
@@ -323,9 +323,11 @@ def remove_handles(text):
     Remove Twitter username handles from text.
     """
     pattern = regex.compile(
-        r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)"
+        r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|"
+        r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)"
     )
-    # Substitute handles with ' ' to ensure that text on either side of removed handles are tokenized correctly
+    # Substitute handles with ' ' to ensure that text on either
+    # side of removed handles are tokenized correctly
     return pattern.sub(" ", text)
 
 
