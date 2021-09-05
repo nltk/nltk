@@ -7,12 +7,12 @@ jobs:
     name: Run pre-commit
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-    - uses: pre-commit/action@v2.0.0
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: pre-commit/action@v2.0.0
 
   cache_nltk_data:
-    name: cache nltk_data
+    name: Cache nltk_data
     needs: pre-commit
     strategy:
       matrix:
@@ -36,9 +36,35 @@ jobs:
         shell: bash
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
+  cache_third_party:
+    name: Cache third party downloads
+    needs: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Java
+        uses: actions/setup-java@v1
+
+      - name: Cache third party downloads
+        uses: actions/cache@v2
+        id: restore-cache
+        with:
+          path: ~/third_party
+          key: third_party_${{ secrets.CACHE_VERSION }}
+
+      - name: Download third party data
+        run: |
+          # Ensure a third_party folder exists.
+          mkdir -p third_party
+          cd third_party
+          # Download the zip
+          wget "https://huggingface.co/stanfordnlp/CoreNLP/resolve/main/stanford-corenlp-latest.zip" -O core_nlp.zip
+          unzip core_nlp.zip -d ./core_nlp
+          rm core_nlp.zip
+          export CLASSNAME="~/third_party/core_nlp"
+
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    needs: cache_nltk_data
+    needs: [cache_nltk_data, cache_third_party]
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
