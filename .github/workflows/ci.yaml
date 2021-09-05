@@ -100,7 +100,10 @@ jobs:
           key: nltk_data_${{ secrets.CACHE_VERSION }}
 
       - name: Run pytest
-        run: pytest -v --numprocesses auto -rsx nltk/test
+        run: |
+          ls $CLASSPATH
+          # pytest -v --numprocesses auto -rsx nltk/test
+          python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000); print(server)"
         shell: bash
         env:
           CLASSPATH: "~/third_party/core_nlp"
