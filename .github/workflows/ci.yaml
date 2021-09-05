@@ -103,4 +103,4 @@ jobs:
         run: pytest -v --numprocesses auto -rsx nltk/test
         shell: bash
         env:
-          CLASSNAME: "~/third_party/core_nlp"
+          CLASSPATH: "~/third_party/core_nlp"
