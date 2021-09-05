@@ -41,8 +41,10 @@ jobs:
     needs: pre-commit
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Java
+      - name: Set up JDK 16
         uses: actions/setup-java@v1
+        with:
+          java-version: 16
 
       - name: Cache third party downloads
         uses: actions/cache@v2
