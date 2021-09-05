@@ -62,7 +62,9 @@ jobs:
           wget "https://huggingface.co/stanfordnlp/CoreNLP/resolve/main/stanford-corenlp-latest.zip" -O core_nlp.zip
           unzip core_nlp.zip -d ./core_nlp
           rm core_nlp.zip
-          export CLASSNAME="~/third_party/core_nlp"
+        env:
+          CLASSNAME: "~/third_party/core_nlp"
+        # if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
@@ -100,5 +102,5 @@ jobs:
           key: nltk_data_${{ secrets.CACHE_VERSION }}
 
       - name: Run pytest
-        run: pytest --numprocesses auto -rsx nltk/test
+        run: pytest -v --numprocesses auto -rsx nltk/test
         shell: bash
