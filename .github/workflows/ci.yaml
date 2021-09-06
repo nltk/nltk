@@ -52,7 +52,10 @@ jobs:
           key: third_${{ secrets.CACHE_VERSION }}
 
       - name: Download third party data
-        run: ./tools/github_actions/third-party.sh
+        run: |
+          pwd
+          ls
+          ./tools/github_actions/third-party.sh
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
