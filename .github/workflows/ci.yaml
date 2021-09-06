@@ -104,6 +104,7 @@ jobs:
           key: third_${{ secrets.CACHE_VERSION }}
 
       - name: Set up third party environment variables
+        shell: bash
         run: |
           cat ~/third/envs.sh
           ~/third/envs.sh
