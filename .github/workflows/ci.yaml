@@ -51,7 +51,7 @@ jobs:
       - name: Download third party data
         run: |
           # Ensure a third_party folder exists.
-          mkdir -p third_party
+          mkdir -p ~/third_party
 
           # Download the zip
           wget "https://huggingface.co/stanfordnlp/CoreNLP/resolve/main/stanford-corenlp-latest.zip" -O ~/third_party/core_nlp.zip
