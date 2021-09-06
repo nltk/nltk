@@ -55,7 +55,8 @@ jobs:
         run: |
           pwd
           ls
-          ./tools/github_actions/third-party.sh
+          file ./tools/github_actions/third-party.sh
+          dos2unix ./tools/github_actions/third-party.sh
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
