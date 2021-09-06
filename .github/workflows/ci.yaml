@@ -101,6 +101,12 @@ jobs:
           path: ~/nltk_data
           key: nltk_data_${{ secrets.CACHE_VERSION }}
 
+      - name: Use cached third party data
+        uses: actions/cache@v2
+        with:
+          path: ~/third_party
+          key: third_party_${{ secrets.CACHE_VERSION }}
+
       - name: Run pytest
         run: |
           ls $CLASSPATH
