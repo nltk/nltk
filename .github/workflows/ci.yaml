@@ -107,9 +107,11 @@ jobs:
         run: |
           cat ~/third/envs.sh
           ~/third/envs.sh
+          printenv CLASSPATH
 
       - name: Run pytest
         run: |
+          printenv CLASSPATH
           # pytest -v --numprocesses auto -rsx nltk/test
           python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000); print(server)"
         shell: bash
