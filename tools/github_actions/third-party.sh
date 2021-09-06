@@ -52,6 +52,7 @@ if [[ ! -d $senna_folder_name ]]; then
 fi
 
 # Setup the Enviroment variable
+touch ./envs.sh
 "#!/bin/bash
 export CLASSPATH=$(pwd)'/${stanford_corenlp_package_name}'
 export CLASSPATH=${CLASSPATH}:$(pwd)'/${stanford_parser_package_name}'
@@ -61,7 +62,6 @@ export STANFORD_PARSER=$(pwd)'/stanford-parser'
 export STANFORD_MODELS=$(pwd)'/stanford-postagger/models'
 export STANFORD_POSTAGGER=$(pwd)'/stanford-postagger'
 export SENNA=$(pwd)'/senna'" > ./envs.sh
-
 chmod +x ./envs.sh
 
 popd
