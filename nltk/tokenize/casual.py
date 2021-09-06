@@ -175,6 +175,7 @@ REGEXPS = (
     (?:\S)                         # Everything else that isn't whitespace.
     """,
 )
+
 REGEXPS_PHONE = (
     URLS,
     # ASCII Emoticons
@@ -322,8 +323,13 @@ class TweetTokenizer:
         [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
     """
 
-    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False,
-                 phone_number_regex=False):
+    def __init__(
+        self,
+        preserve_case=True,
+        reduce_len=False,
+        strip_handles=False,
+        phone_number_regex=False,
+    ):
         self.preserve_case = preserve_case
         self.reduce_len = reduce_len
         self.strip_handles = strip_handles
@@ -347,8 +353,10 @@ class TweetTokenizer:
         # Enable recognising phone numbers
         if self.phone_number_regex:
             global WORD_RE
-            WORD_RE = regex.compile(r"""(%s)""" % "|".join(REGEXPS_PHONE),
-                                    regex.VERBOSE | regex.I | regex.UNICODE)
+            WORD_RE = regex.compile(
+                r"""(%s)""" % "|".join(REGEXPS_PHONE),
+                regex.VERBOSE | regex.I | regex.UNICODE,
+            )
         # Shorten problematic sequences of characters
         safe_text = HANG_RE.sub(r"\1\1\1", text)
         # Tokenize:
