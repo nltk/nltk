@@ -53,10 +53,8 @@ jobs:
 
       - name: Download third party data
         run: |
-          pwd
-          ls
-          file ./tools/github_actions/third-party.sh
-          dos2unix ./tools/github_actions/third-party.sh
+          chmod +x ./tools/github_actions/third-party.sh
+          ./tools/github_actions/third-party.sh
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
