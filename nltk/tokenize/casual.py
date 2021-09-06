@@ -114,6 +114,22 @@ URLS = r"""			# Capture 1: entire matched URL
                             # avoid matching "foo.na" in "foo.na@example.com"
   )
 """
+# Regex for recognizing phone numbers:
+PHONE_REGEX = r"""
+    (?:
+      (?:            # (international)
+        \+?[01]
+        [ *\-.\)]*
+      )?
+      (?:            # (area code)
+        [\(]?
+        \d{3}
+        [ *\-.\)]*
+      )?
+      \d{3}          # exchange
+      [ *\-.\)]*
+      \d{4}          # base
+    )"""
 
 # The components of the tokenizer:
 REGEXPS = (
@@ -136,6 +152,35 @@ REGEXPS = (
     )""",
     # ASCII Emoticons
     EMOTICONS,
+    # HTML tags:
+    r"""<[^>\s]+>""",
+    # ASCII Arrows
+    r"""[\-]+>|<[\-]+""",
+    # Twitter username:
+    r"""(?:@[\w_]+)""",
+    # Twitter hashtags:
+    r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
+    # email addresses
+    r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]""",
+    # Remaining word types:
+    r"""
+    (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
+    |
+    (?:[+\-]?\d+[,/.:-]\d+[+\-]?)  # Numbers, including fractions, decimals.
+    |
+    (?:[\w_]+)                     # Words without apostrophes or dashes.
+    |
+    (?:\.(?:\s*\.){1,})            # Ellipsis dots.
+    |
+    (?:\S)                         # Everything else that isn't whitespace.
+    """,
+)
+REGEXPS_PHONE = (
+    URLS,
+    # ASCII Emoticons
+    EMOTICONS,
+    # Phone numbers:
+    PHONE_REGEX,
     # HTML tags:
     r"""<[^>\s]+>""",
     # ASCII Arrows
@@ -277,10 +322,12 @@ class TweetTokenizer:
         [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
     """
 
-    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False):
+    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False,
+                 phone_number_regex=False):
         self.preserve_case = preserve_case
         self.reduce_len = reduce_len
         self.strip_handles = strip_handles
+        self.phone_number_regex = phone_number_regex
 
     def tokenize(self, text):
         """
@@ -297,6 +344,11 @@ class TweetTokenizer:
         # Normalize word lengthening
         if self.reduce_len:
             text = reduce_lengthening(text)
+        # Enable recognising phone numbers
+        if self.phone_number_regex:
+            global WORD_RE
+            WORD_RE = regex.compile(r"""(%s)""" % "|".join(REGEXPS_PHONE),
+                                    regex.VERBOSE | regex.I | regex.UNICODE)
         # Shorten problematic sequences of characters
         safe_text = HANG_RE.sub(r"\1\1\1", text)
         # Tokenize:
