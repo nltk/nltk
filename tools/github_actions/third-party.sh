@@ -54,12 +54,12 @@ fi
 # Setup the Enviroment variable
 cat > ./envs.sh <<EOL
 #!/bin/bash
-export CLASSPATH=$(pwd)/${stanford_corenlp_package_name}:$(pwd)/${stanford_parser_package_name}:$(pwd)/${stanford_tagger_package_name}
-export STANFORD_CORENLP=$(pwd)/stanford-corenlp
-export STANFORD_PARSER=$(pwd)/stanford-parser
-export STANFORD_MODELS=$(pwd)/stanford-postagger/models
-export STANFORD_POSTAGGER=$(pwd)/stanford-postagger
-export SENNA=$(pwd)/senna
+echo "CLASSPATH=$(pwd)/${stanford_corenlp_package_name}:$(pwd)/${stanford_parser_package_name}:$(pwd)/${stanford_tagger_package_name}" >> $GITHUB_ENV
+echo "STANFORD_CORENLP=$(pwd)/stanford-corenlp" >> $GITHUB_ENV
+echo "STANFORD_PARSER=$(pwd)/stanford-parser" >> $GITHUB_ENV
+echo "STANFORD_MODELS=$(pwd)/stanford-postagger/models" >> $GITHUB_ENV
+echo "STANFORD_POSTAGGER=$(pwd)/stanford-postagger" >> $GITHUB_ENV
+echo "SENNA=$(pwd)/senna" >> $GITHUB_ENV
 EOL
 
 chmod +x ./envs.sh
