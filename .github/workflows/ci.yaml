@@ -41,29 +41,18 @@ jobs:
     needs: pre-commit
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Cache third party downloads
         uses: actions/cache@v2
         id: restore-cache
         with:
-          path: ~/third_party
-          key: third_party_${{ secrets.CACHE_VERSION }}
+          path: ~/third
+          key: third_${{ secrets.CACHE_VERSION }}
 
       - name: Download third party data
-        run: |
-          # Ensure a third_party folder exists.
-          mkdir -p ~/third_party
-          cd ~/third_party
-
-          # Download the zip, and unzip it to e.g. ~/third_party/stanford-corenlp-4.2.2
-          wget "https://huggingface.co/stanfordnlp/CoreNLP/resolve/main/stanford-corenlp-latest.zip" -O ~/third_party/core_nlp.zip
-          unzip ~/third_party/core_nlp.zip -d ~/third_party
-          # Rename e.g. ~/third_party/stanford-corenlp-4.2.2 to ~/third_party/stanford-corenlp
-          tree ~/third_party
-          find . -regex "\.\/stanford-corenlp-[0-9]+\.[0-9]+\.[0-9]+" -execdir bash -c 'mv "$1" "stanford-corenlp"' _ {} \; 2>/dev/null || true
-          tree ~/third_party
-          rm ~/third_party/core_nlp.zip
-
-          ls ~/third_party
+        run: ./tools/github_actions/third-party.sh
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
@@ -78,18 +67,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Use cached nltk data
-        uses: actions/cache@v2
-        with:
-          path: ~/nltk_data
-          key: nltk_data_${{ secrets.CACHE_VERSION }}
-
-      - name: Use cached third party data
-        uses: actions/cache@v2
-        with:
-          path: ~/third_party
-          key: third_party_${{ secrets.CACHE_VERSION }}
 
       - name: Setup python
         uses: actions/setup-python@v2
@@ -112,11 +89,25 @@ jobs:
         run: pip install --upgrade --requirement requirements-ci.txt
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
+      - name: Use cached nltk data
+        uses: actions/cache@v2
+        with:
+          path: ~/nltk_data
+          key: nltk_data_${{ secrets.CACHE_VERSION }}
+
+      - name: Use cached third party data
+        uses: actions/cache@v2
+        with:
+          path: ~/third
+          key: third_${{ secrets.CACHE_VERSION }}
+
+      - name: Set up third party environment variables
+        run: |
+          ls ~/third
+          ~/third/envs.sh
+
       - name: Run pytest
         run: |
-          tree $CLASSPATH
           # pytest -v --numprocesses auto -rsx nltk/test
           python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000); print(server)"
         shell: bash
-        env:
-          CLASSPATH: "~/third_party/stanford-corenlp"
