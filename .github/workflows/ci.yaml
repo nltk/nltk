@@ -107,7 +107,7 @@ jobs:
         shell: bash
         run: |
           cat ~/third/envs.sh
-          ~/third/envs.sh
+          ~/third/envs.sh || true
           printenv CLASSPATH
 
       - name: Run pytest
