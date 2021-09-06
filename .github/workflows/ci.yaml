@@ -58,7 +58,9 @@ jobs:
           wget "https://huggingface.co/stanfordnlp/CoreNLP/resolve/main/stanford-corenlp-latest.zip" -O ~/third_party/core_nlp.zip
           unzip ~/third_party/core_nlp.zip -d ~/third_party
           # Rename e.g. ~/third_party/stanford-corenlp-4.2.2 to ~/third_party/stanford-corenlp
-          find . -regex "\.\/stanford-corenlp-[0-9]+\.[0-9]+\.[0-9]+" -execdir bash -c 'mv "$1" "stanford-corenlp"' _ {} \; 2>/dev/null
+          tree ~/third_party
+          find . -regex "\.\/stanford-corenlp-[0-9]+\.[0-9]+\.[0-9]+" -execdir bash -c 'mv "$1" "stanford-corenlp"' _ {} || true
+          tree ~/third_party
           rm ~/third_party/core_nlp.zip
 
           ls ~/third_party
