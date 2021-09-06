@@ -106,12 +106,12 @@ jobs:
       - name: Set up third party environment variables
         shell: bash
         run: |
-          echo "CLASSPATH=/home/runner/third/stanford-corenlp-full-2017-06-09:/home/runner/third/stanford-parser-full-2017-06-09:/home/runner/third/stanford-postagger-full-2017-06-09" >> $GITHUB_ENV
-          echo "STANFORD_CORENLP=/home/runner/third/stanford-corenlp" >> $GITHUB_ENV
-          echo "STANFORD_PARSER=/home/runner/third/stanford-parser" >> $GITHUB_ENV
-          echo "STANFORD_MODELS=/home/runner/third/stanford-postagger/models" >> $GITHUB_ENV
-          echo "STANFORD_POSTAGGER=/home/runner/third/stanford-postagger" >> $GITHUB_ENV
-          echo "SENNA=/home/runner/third/senna" >> $GITHUB_ENV
+          echo "CLASSPATH=$(pwd)/third/stanford-corenlp-full-2017-06-09:$(pwd)/third/stanford-parser-full-2017-06-09:$(pwd)/third/stanford-postagger-full-2017-06-09" >> $GITHUB_ENV
+          echo "STANFORD_CORENLP=$(pwd)/third/stanford-corenlp" >> $GITHUB_ENV
+          echo "STANFORD_PARSER=$(pwd)/third/stanford-parser" >> $GITHUB_ENV
+          echo "STANFORD_MODELS=$(pwd)/third/stanford-postagger/models" >> $GITHUB_ENV
+          echo "STANFORD_POSTAGGER=$(pwd)/third/stanford-postagger" >> $GITHUB_ENV
+          echo "SENNA=$(pwd)/third/senna" >> $GITHUB_ENV
 
       - name: Run pytest
         run: |
