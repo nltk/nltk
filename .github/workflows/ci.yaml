@@ -59,7 +59,7 @@ jobs:
           unzip ~/third_party/core_nlp.zip -d ~/third_party
           # Rename e.g. ~/third_party/stanford-corenlp-4.2.2 to ~/third_party/stanford-corenlp
           tree ~/third_party
-          find . -regex "\.\/stanford-corenlp-[0-9]+\.[0-9]+\.[0-9]+" -execdir bash -c 'mv "$1" "stanford-corenlp"' _ {} || true
+          find . -regex "\.\/stanford-corenlp-[0-9]+\.[0-9]+\.[0-9]+" -execdir bash -c 'mv "$1" "stanford-corenlp"' _ {} \; || true
           tree ~/third_party
           rm ~/third_party/core_nlp.zip
 
