@@ -317,13 +317,13 @@ def reduce_lengthening(text):
     return pattern.sub(r"\1\1\1", text)
 
 
-def remove_handles(text, pattern):
+def remove_handles(text):
     """
     Remove Twitter username handles from text.
     """
-    word = regex.findall(pattern, text)
+    word = regex.findall(r"@[\w]*", text)
     for i in word:
-        text = regex.sub(i, " ", result_text)
+        text = regex.sub(i, " ", text)
     return text
 
 
