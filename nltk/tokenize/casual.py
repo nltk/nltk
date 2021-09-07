@@ -134,22 +134,6 @@ PHONE_REGEX = r"""
 # The components of the tokenizer:
 REGEXPS = (
     URLS,
-    # Phone numbers:
-    r"""
-    (?:
-      (?:            # (international)
-        \+?[01]
-        [ *\-.\)]*
-      )?
-      (?:            # (area code)
-        [\(]?
-        \d{3}
-        [ *\-.\)]*
-      )?
-      \d{3}          # exchange
-      [ *\-.\)]*
-      \d{4}          # base
-    )""",
     # ASCII Emoticons
     EMOTICONS,
     # HTML tags:
@@ -350,17 +334,14 @@ class TweetTokenizer:
         # Normalize word lengthening
         if self.reduce_len:
             text = reduce_lengthening(text)
-        # Enable recognising phone numbers
-        if self.phone_number_regex:
-            global WORD_RE
-            WORD_RE = regex.compile(
-                r"""(%s)""" % "|".join(REGEXPS_PHONE),
-                regex.VERBOSE | regex.I | regex.UNICODE,
-            )
         # Shorten problematic sequences of characters
         safe_text = HANG_RE.sub(r"\1\1\1", text)
         # Tokenize:
         words = WORD_RE.findall(safe_text)
+        # Enable recognising phone numbers
+        if self.phone_number_regex:
+            PHONE_WORD_RE = phone_regex()
+            words = PHONE_WORD_RE.findall(safe_text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(
@@ -406,3 +387,9 @@ def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=Fa
 
 
 ###############################################################################
+
+
+def phone_regex():
+    return regex.compile(
+        r"""(%s)""" % "|".join(REGEXPS_PHONE), regex.VERBOSE | regex.I | regex.UNICODE
+    )
