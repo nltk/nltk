@@ -177,12 +177,6 @@ EMOTICON_RE = regex.compile(EMOTICONS, regex.VERBOSE | regex.I | regex.UNICODE)
 # These are for regularizing HTML entities to Unicode:
 ENT_RE = regex.compile(r"&(#?(x?))([^&;\s]+);")
 
-# For stripping away handles from a tweet:
-HANDLES_RE = regex.compile(
-    r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|"
-    r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)"
-)
-
 ######################################################################
 # Functions for converting html entities
 ######################################################################
@@ -323,12 +317,14 @@ def reduce_lengthening(text):
     return pattern.sub(r"\1\1\1", text)
 
 
-def remove_handles(text):
+def remove_handles(text, pattern):
     """
     Remove Twitter username handles from text.
     """
-    # Substitute handles with ' ' to ensure that text on either side of removed handles are tokenized correctly
-    return HANDLES_RE.sub(" ", text)
+    word = regex.findall(pattern, text)
+    for i in word:
+        text = regex.sub(i, " ", result_text)
+    return text
 
 
 ######################################################################
