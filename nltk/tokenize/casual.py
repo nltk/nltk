@@ -336,12 +336,12 @@ class TweetTokenizer:
             text = reduce_lengthening(text)
         # Shorten problematic sequences of characters
         safe_text = HANG_RE.sub(r"\1\1\1", text)
-        # Tokenize:
-        words = WORD_RE.findall(safe_text)
-        # Enable recognising phone numbers
+        # Recognise phone numbers during tokenization
         if self.phone_number_regex:
             PHONE_WORD_RE = phone_regex()
             words = PHONE_WORD_RE.findall(safe_text)
+        else:
+            words = WORD_RE.findall(safe_text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(
