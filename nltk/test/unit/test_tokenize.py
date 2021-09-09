@@ -306,18 +306,18 @@ class TestTokenize:
         result = tokenizer.tokenize(test5)
         assert result == expected
 
-        # Tests that handles can have a max length of 20
-        test6 = "@abcdefghijklmnopqrstuvwxyz @abcdefghijklmnopqrst1234 @abcdefghijklmnopqrst_ @abcdefghijklmnopqrstendofhandle"
-        expected = ["uvwxyz", "1234", "_", "endofhandle"]
+        # Tests that handles can have a max length of 15
+        test6 = "@abcdefghijklmnopqrstuvwxyz @abcdefghijklmno1234 @abcdefghijklmno_ @abcdefghijklmnoendofhandle"
+        expected = ["pqrstuvwxyz", "1234", "_", "endofhandle"]
         result = tokenizer.tokenize(test6)
         assert result == expected
 
         # Edge case where an @ comes directly after a long handle
-        test7 = "@abcdefghijklmnopqrstu@abcde @abcdefghijklmnopqrst@abcde @abcdefghijklmnopqrst_@abcde @abcdefghijklmnopqrst5@abcde"
+        test7 = "@abcdefghijklmnop@abcde @abcdefghijklmno@abcde @abcdefghijklmno_@abcde @abcdefghijklmno5@abcde"
         expected = [
-            "u",
+            "p",
             "@abcde",
-            "@abcdefghijklmnopqrst",
+            "@abcdefghijklmno",
             "@abcde",
             "_",
             "@abcde",
