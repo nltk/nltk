@@ -54,6 +54,77 @@ class TestTokenize:
         ]
         assert tokens == expected
 
+    @pytest.mark.parametrize(
+        "match_phone_numbers,test_input,expected",
+        [
+            (
+                True,
+                "My text 0106404243030 is great text",
+                ["My", "text", "01064042430", "30", "is", "great", "text"],
+            ),
+            (
+                False,
+                "My text 0106404243030 is great text",
+                ["My", "text", "0106404243030", "is", "great", "text"],
+            ),
+            (
+                True,
+                "My ticket id is 1234543124123",
+                ["My", "ticket", "id", "is", "12345431241", "23"],
+            ),
+            (
+                False,
+                "My ticket id is 1234543124123",
+                ["My", "ticket", "id", "is", "1234543124123"],
+            ),
+            (
+                True,
+                "@remy: This is waaaaayyyy too much for you!!!!!! 01064042430",
+                [
+                    ":",
+                    "This",
+                    "is",
+                    "waaayyy",
+                    "too",
+                    "much",
+                    "for",
+                    "you",
+                    "!",
+                    "!",
+                    "!",
+                    "01064042430",
+                ],
+            ),
+            (
+                False,
+                "@remy: This is waaaaayyyy too much for you!!!!!! 01064042430",
+                [
+                    ":",
+                    "This",
+                    "is",
+                    "waaayyy",
+                    "too",
+                    "much",
+                    "for",
+                    "you",
+                    "!",
+                    "!",
+                    "!",
+                    "01064042430",
+                ],
+            ),
+        ],
+    )
+    def test_tweet_tokenizer_expanded(self, match_phone_numbers, test_input, expected):
+        """
+        Test `match_phone_numbers` in TweetTokenizer.
+        """
+        tokenizer = TweetTokenizer(
+            strip_handles=True, reduce_len=True, match_phone_numbers=match_phone_numbers
+        )
+        predicted = tokenizer.tokenize(test_input)
+        assert predicted == expected
+
     def test_sonority_sequencing_syllable_tokenizer(self):
         """
         Test SyllableTokenizer tokenizer.
@@ -114,7 +185,7 @@ class TestTokenize:
         """
 
         # Should be recognized as a phone number, albeit one with multiple spaces
-        tokenizer = TweetTokenizer()
+        tokenizer = TweetTokenizer(match_phone_numbers=True)
         test1 = "(393)  928 -3010"
         expected = ["(393)  928 -3010"]
         result = tokenizer.tokenize(test1)
