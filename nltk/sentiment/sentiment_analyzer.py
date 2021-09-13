@@ -47,10 +47,10 @@ class SentimentAnalyzer:
         all_words = []
         if labeled is None:
             labeled = documents and isinstance(documents[0], tuple)
-        if labeled is True:
+        if labeled:
             for words in documents:
                 all_words.extend(words[0])
-        elif labeled is False:
+        elif labeled:
             for words in documents:
                 all_words.extend(words)
         return all_words
@@ -218,7 +218,7 @@ class SentimentAnalyzer:
             classifier = self.classifier
         print(f"Evaluating {type(classifier).__name__} results...")
         metrics_results = {}
-        if accuracy is True:
+        if accuracy:
             accuracy_score = eval_accuracy(classifier, test_set)
             metrics_results["Accuracy"] = accuracy_score
 
@@ -232,22 +232,22 @@ class SentimentAnalyzer:
             test_results[observed].add(i)
 
         for label in labels:
-            if precision is True:
+            if precision:
                 precision_score = eval_precision(
                     gold_results[label], test_results[label]
                 )
                 metrics_results[f"Precision [{label}]"] = precision_score
-            if recall is True:
+            if recall:
                 recall_score = eval_recall(gold_results[label], test_results[label])
                 metrics_results[f"Recall [{label}]"] = recall_score
-            if f_measure is True:
+            if f_measure:
                 f_measure_score = eval_f_measure(
                     gold_results[label], test_results[label]
                 )
                 metrics_results[f"F-measure [{label}]"] = f_measure_score
 
         # Print evaluation results (in alphabetical order)
-        if verbose is True:
+        if verbose:
             for result in sorted(metrics_results):
                 print(f"{result}: {metrics_results[result]}")
 
