@@ -50,7 +50,7 @@ class SentimentAnalyzer:
         if labeled:
             for words in documents:
                 all_words.extend(words[0])
-        elif labeled:
+        elif not labeled:
             for words in documents:
                 all_words.extend(words)
         return all_words
