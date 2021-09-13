@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Machine Translation
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -9,6 +8,8 @@
 """
 Experimental features for machine translation.
 These interfaces are prone to change.
+
+isort:skip_file
 """
 
 from nltk.translate.api import AlignedSent, Alignment, PhraseTable

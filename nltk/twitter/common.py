@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -48,9 +47,7 @@ def _add_field_to_out(json, field, out):
 
 
 def _is_composed_key(field):
-    if HIER_SEPARATOR in field:
-        return True
-    return False
+    return HIER_SEPARATOR in field
 
 
 def _get_key_value_composed(field):
@@ -140,9 +137,9 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
 
 def _outf_writer(outfile, encoding, errors, gzip_compress=False):
     if gzip_compress:
-        outf = gzip.open(outfile, "wt", encoding=encoding, errors=errors)
+        outf = gzip.open(outfile, "wt", newline="", encoding=encoding, errors=errors)
     else:
-        outf = open(outfile, "w", encoding=encoding, errors=errors)
+        outf = open(outfile, "w", newline="", encoding=encoding, errors=errors)
     writer = csv.writer(outf)
     return (writer, outf)
 
@@ -194,7 +191,7 @@ def json2csv_entities(
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
 
-    :param gzip_compress: if `True`, ouput files are compressed with gzip
+    :param gzip_compress: if `True`, output files are compressed with gzip
     """
 
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
@@ -259,7 +256,7 @@ def _write_to_file(object_fields, items, entity_fields, writer):
             json_dict = items[kd]
             if not isinstance(json_dict, dict):
                 raise RuntimeError(
-                    """Key {0} does not contain a dictionary
+                    """Key {} does not contain a dictionary
                 in the json file""".format(
                         kd
                     )

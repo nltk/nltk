@@ -370,4 +370,3 @@ Illegal patterns give an error message:
     Traceback (most recent call last):
       . . .
     ValueError: Illegal chunk pattern: {<foo>} {<bar>}
-

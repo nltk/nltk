@@ -14,10 +14,9 @@ http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 """
 
 from math import log
-
 from operator import itemgetter
 
-from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk.probability import ConditionalFreqDist, FreqDist
 from nltk.tag.api import TaggerI
 
 
@@ -330,7 +329,7 @@ class TnT(TaggerI):
         of a particular tag
         """
 
-        # if this word marks the end of the sentance,
+        # if this word marks the end of the sentence,
         # return the most probable tag
         if sent == []:
             (h, logp) = current_states[0]
@@ -342,7 +341,7 @@ class TnT(TaggerI):
         new_states = []
 
         # if the Capitalisation is requested,
-        # initalise the flag for this word
+        # initialise the flag for this word
         C = False
         if self._C and word[0].isupper():
             C = True
@@ -519,7 +518,7 @@ def demo2():
 
 
 def demo3():
-    from nltk.corpus import treebank, brown
+    from nltk.corpus import brown, treebank
 
     d = list(treebank.tagged_sents())
     e = list(brown.tagged_sents())

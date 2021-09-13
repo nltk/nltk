@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 import unittest
+
 import nltk
 from nltk.grammar import CFG
 
@@ -41,7 +41,7 @@ class ChomskyNormalFormForCFGTest(unittest.TestCase):
         self.assertTrue(grammar2.is_chomsky_normal_form())
 
     def test_complex(self):
-        grammar = nltk.data.load('grammars/large_grammars/atis.cfg')
+        grammar = nltk.data.load("grammars/large_grammars/atis.cfg")
         self.assertFalse(grammar.is_flexible_chomsky_normal_form())
         self.assertFalse(grammar.is_chomsky_normal_form())
         grammar = grammar.chomsky_normal_form(flexible=True)

@@ -12,6 +12,6 @@ on support vector machines SVMs use nltk.classify.scikitlearn
 """
 
 
-class SvmClassifier(object):
+class SvmClassifier:
     def __init__(self, *args, **kwargs):
         raise NotImplementedError(__doc__)

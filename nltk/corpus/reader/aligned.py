@@ -5,15 +5,14 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT
 
-from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
-from nltk.translate import AlignedSent, Alignment
-
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import (
     StreamBackedCorpusView,
     concat,
     read_alignedsent_block,
 )
+from nltk.tokenize import RegexpTokenizer, WhitespaceTokenizer
+from nltk.translate import AlignedSent, Alignment
 
 
 class AlignedCorpusReader(CorpusReader):
@@ -47,21 +46,6 @@ class AlignedCorpusReader(CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._alignedsent_block_reader = alignedsent_block_reader
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def words(self, fileids=None):
         """

@@ -117,13 +117,14 @@ class SklearnClassifier(ClassifierI):
 
     def _make_probdist(self, y_proba):
         classes = self._encoder.classes_
-        return DictionaryProbDist(dict((classes[i], p) for i, p in enumerate(y_proba)))
+        return DictionaryProbDist({classes[i]: p for i, p in enumerate(y_proba)})
 
 
 if __name__ == "__main__":
-    from nltk.classify.util import names_demo, names_demo_features
     from sklearn.linear_model import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
+
+    from nltk.classify.util import names_demo, names_demo_features
 
     # Bernoulli Naive Bayes is designed for binary classification. We set the
     # binarize option to False since we know we're passing boolean features.

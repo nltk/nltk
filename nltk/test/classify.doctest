@@ -103,8 +103,8 @@ Test the Decision Tree classifier (without None):
     Traceback (most recent call last):
       . . .
     NotImplementedError
-    
-    
+
+
 Test the Decision Tree classifier (with None):
 
     >>> classifier = nltk.classify.DecisionTreeClassifier.train(

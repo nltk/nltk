@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Tests for IBM Model 3 training methods
 """
 
 import unittest
-
 from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import IBMModel
-from nltk.translate import IBMModel3
+
+from nltk.translate import AlignedSent, IBMModel, IBMModel3
 from nltk.translate.ibm_model import AlignmentInfo
 
 
@@ -16,8 +13,8 @@ class TestIBMModel3(unittest.TestCase):
     def test_set_uniform_distortion_probabilities(self):
         # arrange
         corpus = [
-            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
-            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+            AlignedSent(["ham", "eggs"], ["schinken", "schinken", "eier"]),
+            AlignedSent(["spam", "spam", "spam", "spam"], ["spam", "spam"]),
         ]
         model3 = IBMModel3(corpus, 0)
 
@@ -32,8 +29,8 @@ class TestIBMModel3(unittest.TestCase):
     def test_set_uniform_distortion_probabilities_of_non_domain_values(self):
         # arrange
         corpus = [
-            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
-            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+            AlignedSent(["ham", "eggs"], ["schinken", "schinken", "eier"]),
+            AlignedSent(["spam", "spam", "spam", "spam"], ["spam", "spam"]),
         ]
         model3 = IBMModel3(corpus, 0)
 
@@ -48,13 +45,13 @@ class TestIBMModel3(unittest.TestCase):
 
     def test_prob_t_a_given_s(self):
         # arrange
-        src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
-        trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
+        src_sentence = ["ich", "esse", "ja", "gern", "räucherschinken"]
+        trg_sentence = ["i", "love", "to", "eat", "smoked", "ham"]
         corpus = [AlignedSent(trg_sentence, src_sentence)]
         alignment_info = AlignmentInfo(
             (0, 1, 4, 0, 2, 5, 5),
             [None] + src_sentence,
-            ['UNUSED'] + trg_sentence,
+            ["UNUSED"] + trg_sentence,
             [[3], [1], [4], [], [2], [5, 6]],
         )
 
@@ -69,27 +66,27 @@ class TestIBMModel3(unittest.TestCase):
         distortion_table[6][5][5][6] = 0.97  # ham -> räucherschinken
 
         translation_table = defaultdict(lambda: defaultdict(float))
-        translation_table['i']['ich'] = 0.98
-        translation_table['love']['gern'] = 0.98
-        translation_table['to'][None] = 0.98
-        translation_table['eat']['esse'] = 0.98
-        translation_table['smoked']['räucherschinken'] = 0.98
-        translation_table['ham']['räucherschinken'] = 0.98
+        translation_table["i"]["ich"] = 0.98
+        translation_table["love"]["gern"] = 0.98
+        translation_table["to"][None] = 0.98
+        translation_table["eat"]["esse"] = 0.98
+        translation_table["smoked"]["räucherschinken"] = 0.98
+        translation_table["ham"]["räucherschinken"] = 0.98
 
         fertility_table = defaultdict(lambda: defaultdict(float))
-        fertility_table[1]['ich'] = 0.99
-        fertility_table[1]['esse'] = 0.99
-        fertility_table[0]['ja'] = 0.99
-        fertility_table[1]['gern'] = 0.99
-        fertility_table[2]['räucherschinken'] = 0.999
+        fertility_table[1]["ich"] = 0.99
+        fertility_table[1]["esse"] = 0.99
+        fertility_table[0]["ja"] = 0.99
+        fertility_table[1]["gern"] = 0.99
+        fertility_table[2]["räucherschinken"] = 0.999
         fertility_table[1][None] = 0.99
 
         probabilities = {
-            'p1': 0.167,
-            'translation_table': translation_table,
-            'distortion_table': distortion_table,
-            'fertility_table': fertility_table,
-            'alignment_table': None,
+            "p1": 0.167,
+            "translation_table": translation_table,
+            "distortion_table": distortion_table,
+            "fertility_table": fertility_table,
+            "alignment_table": None,
         }
 
         model3 = IBMModel3(corpus, 0, probabilities)

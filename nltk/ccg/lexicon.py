@@ -11,9 +11,8 @@ CCG Lexicons
 import re
 from collections import defaultdict
 
-from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
+from nltk.ccg.api import CCGVar, Direction, FunctionalCategory, PrimitiveCategory
 from nltk.internals import deprecated
-
 from nltk.sem.logic import Expression
 
 # ------------
@@ -43,7 +42,7 @@ SEMANTICS_RE = re.compile(r"""\{([^}]+)\}""", re.UNICODE)
 COMMENTS_RE = re.compile("""([^#]*)(?:#.*)?""")
 
 
-class Token(object):
+class Token:
     """
     Class representing a token.
 
@@ -78,7 +77,7 @@ class Token(object):
         return cmp((self._categ, self._semantics), other.categ(), other.semantics())
 
 
-class CCGLexicon(object):
+class CCGLexicon:
     """
     Class representing a lexicon for CCG grammars.
 

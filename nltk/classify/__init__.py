@@ -83,19 +83,19 @@ as lists of ``(featuredict, label)`` tuples.
 """
 
 from nltk.classify.api import ClassifierI, MultiClassifierI
-from nltk.classify.megam import config_megam, call_megam
-from nltk.classify.weka import WekaClassifier, config_weka
+from nltk.classify.decisiontree import DecisionTreeClassifier
+from nltk.classify.maxent import (
+    BinaryMaxentFeatureEncoding,
+    ConditionalExponentialClassifier,
+    MaxentClassifier,
+    TypedMaxentFeatureEncoding,
+)
+from nltk.classify.megam import call_megam, config_megam
 from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.classify.positivenaivebayes import PositiveNaiveBayesClassifier
-from nltk.classify.decisiontree import DecisionTreeClassifier
-from nltk.classify.rte_classify import rte_classifier, rte_features, RTEFeatureExtractor
-from nltk.classify.util import accuracy, apply_features, log_likelihood
+from nltk.classify.rte_classify import RTEFeatureExtractor, rte_classifier, rte_features
 from nltk.classify.scikitlearn import SklearnClassifier
-from nltk.classify.maxent import (
-    MaxentClassifier,
-    BinaryMaxentFeatureEncoding,
-    TypedMaxentFeatureEncoding,
-    ConditionalExponentialClassifier,
-)
 from nltk.classify.senna import Senna
 from nltk.classify.textcat import TextCat
+from nltk.classify.util import accuracy, apply_features, log_likelihood
+from nltk.classify.weka import WekaClassifier, config_weka

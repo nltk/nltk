@@ -1,3 +1,23 @@
+Version 3.6.3 2021-08-??
+* Dropped support for Python 3.5
+* Run CI tests on Windows, too
+* Moved from Travis CI to GitHub Actions
+* Code and comment cleanups
+* Visualize WordNet relation graphs using Graphviz
+* Fixed large error in METEOR score
+* Apply isort, pyupgrade, black, added as pre-commit hooks
+* Prevent debug_decisions in Punkt from throwing IndexError
+* Resolved ZeroDivisionError in RIBES with dissimilar sentences
+* Initialize WordNet IC total counts with smoothing value
+* Fixed AttributeError for Arabic ARLSTem2 stemmer
+* Many fixes and improvements to lm language model package
+* Fix bug in nltk.metrics.aline, C_skip = -10
+
+Thanks to the following contributors to 3.6.3
+Tom Aarsen, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne, Manu Joseph,
+Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, purificant, Danny Sepler,
+Anthony Sottile
+
 Version 3.6.2 2021-04-20
 * move test code to nltk/test
 * clean up some doctests
@@ -77,7 +97,7 @@ Version 3.4.3 2019-06-07
 Thanks to the following contributors to 3.4.3:
 alvations, Bharat123rox, cifkao, drewmiller, free-variation, henchc
 irisxzhou, nick-ulle, ppartarr, simonepri, yigitsever, zhaoyanpeng
-	
+
 Version 3.4.1 2019-04-17
 
 * add chomsky_normal_form for CFGs
@@ -93,9 +113,9 @@ Adrian Ellis, Andrew Martin, Ayush Kaushal, BLKSerene, Bharat
 Raghunathan, Franklin Chen, KMiNT21 Kevin Brown, Liling Tan,
 Matan Rak, Nat Quayle Nelson, Osman Zubair, Purificant,
 Uday Krishna, Viresh Gupta
-	
+
 Version 3.4 2018-11-17
-* Support Python 3.7	
+* Support Python 3.7
 * Language Modeling incl Kneser-Ney, Witten-Bell, Good-Turing
 * Cistem Stemmer for German
 * Support Russian National Corpus incl POS tag model
@@ -148,10 +168,10 @@ Version 3.2.4 2017-05-21
 * remove load-time dependency on Python requests library
 * add support for Arabic in StanfordSegmenter
 * fix MosesDetokenizer on irregular quote tokens
-	
+
 Thanks to the following contributors to 3.2.4:
 Alex Constantin, Hatem Nassrat, Liling Tan
-	
+
 Version 3.2.3 2017-05-16
 
 * new interface to Stanford CoreNLP Web API
@@ -171,7 +191,7 @@ Version 3.2.3 2017-05-16
 * allow for curly bracket quantifiers in chunk.regexp.CHUNK_TAG_PATTERN
 * new corpus reader for MWA subset of PPDB
 * improved testing framework
-	
+
 Thanks to the following contributors to 3.2.3:
 Mark Amery, Carl Bolz, Abdelhak Bougouffa, Matt Chaput, Michael Goodman,
 Jaehoon Hwang, Naoya Kanai, Jackson Lee, Christian Meyer, Dmitrijs Milajevs,
@@ -198,9 +218,9 @@ Version 3.2.2 2016-12-31
 * resolved some issues with Python 3.5 support
 * improvements to testing framework
 * clean up dependencies
-	
+
 Thanks to the following contributors to 3.2.2:
-	
+
 Prasasto Adi, Mark Amery, Geoff Bacon, George Berry, Colin Carroll, Alexis Dimitriadis,
 Nicholas Fabina, German Ferrero, Tsolak Ghukasyan, Hyuckin David Lim, Naoya Kanai,
 Greg Kondrak, Igor Korolev, Tim Leslie, Rob Malouf, Heguang Miao, Dmitrijs Milajevs,
@@ -217,7 +237,7 @@ Thanks to the following contributors to 3.2.1:
 Andrew Giel, Casper Lehmann-Strøm, David Madl, Tanin Na Nakorn,
 Guilherme Nardari, Philippe Ombredanne, Nathan Schneider, Liling Tan,
 Josiah Wang, venticello
-	
+
 Version 3.2 2016-03-03
 * Fixes for Python 3.5
 * Code cleanups now Python 2.6 is no longer supported
@@ -257,14 +277,14 @@ Version 3.1 2015-10-15
 * CorpusReader method to support access to license and citation
 * Multext East Corpus and MTECorpusReader
 * include six module to streamline installation on MS Windows
-	
+
 Thanks to the following contributors to 3.1:
 Le Tuan Anh, Petra Barancikova, Alexander Böhm, Francis Bond,
 Long Duong, Anna Garbar, Matthew Honnibal, Tah Wei Hoon, Ewan Klein,
 Rob Malouf, Dmitrijs Milajevs, Will Monroe, Sergio Oller, Pierpaolo
 Pantone, Jacob Perkins, Lorenzo Rubio, Thomas Stieglmaier, Liling Tan,
 Pratap Vardhan
-	
+
 Version 3.0.5 2015-09-05
 * rewritten IBM models, and new IBM Model 4 and 5 implementations
 * new Twitter package
@@ -276,14 +296,14 @@ Version 3.0.5 2015-09-05
 Thanks to the following contributors to 3.0.5:
 Álvaro Justen, Dmitrijs Milajevs, Ewan Klein, Heran Lin, Justin Hammar,
 Liling Tan, Long Duong, Lorenzo Rubio, Pierpaolo Pantone, Tah Wei Hoon
-	
+
 Version 3.0.4 2015-07-13
 * minor bug fixes and enhancements
 
 Thanks to the following contributors to 3.0.4:
 Nicola Bova, Santiago Castro, Len Remmerswaal, Keith Suderman, kabayan55,
 pln-fing-udelar (NLP Group, Instituto de Computación, Facultad de Ingeniería, Universidad de la República, Uruguay).
-	
+
 Version 3.0.3 2015-06-12
 * bug fixes (Stanford NER, Boxer, Snowball, treebank tokenizer,
     dependency graph, KneserNey, BLEU)
@@ -302,7 +322,7 @@ Long Duong, Pedro Fialho, Dan Garrette, Helder, Saimadhav Heblikar,
 Chris Inskip, David Kamholz, Dmitrijs Milajevs, Smitha Milli,
 Tom Mortimer-Jones, Avital Pekker, Jonathan Pool, Sam Raker,
 Will Roberts, Dmitry Sadovnychyi, Nathan Schneider, Anirudh W
-	
+
 Version 3.0.2 2015-03-13
 * make pretty-printing method names consistent
 * improvements to Portuguese stemmer
@@ -313,14 +333,14 @@ Version 3.0.2 2015-03-13
 * code clean ups, minor bug fixes
 
 Thanks to the following contributors to 3.0.2:
-	
+
 Long Duong, Saimadhav Heblikar, Helder, Mikhail Korobov, Denis Krusko,
 Alex Louden, Felipe Madrigal, David McClosky, Dmitrijs Milajevs,
 Ondrej Platek, Nathan Schneider, Dávid Márk Nemeskey, 0ssifrage, ducki13, kiwipi.
 
 Version 3.0.1 2015-01-12
 * fix setup.py for new version of setuptools
-	
+
 Version 3.0.0 2014-09-07
 * minor bugfixes
 * added phrase extraction code by Liling Tan and Fredrik Hedman
@@ -366,7 +386,7 @@ Nourian, Alexander Oleynikov, Ted Pedersen, Jacob Perkins, Will
 Roberts, Alex Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn
 Soe, Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
 Wang, Chuck Wooters, isnowfy, onesandzeros, pquentin, wvanlint
-	
+
 Version 3.0a4 2014-05-25
 * IBM Models 1-3, BLEU, Gale-Church aligner
 * Lesk algorithm for WSD
@@ -407,13 +427,13 @@ Lars Buitinck, Marcus Huderle, Nick Johnson, Dougal Graham, Ewan Klein,
 Mikhail Korobov, Haejoong Lee, Peter Ljunglöf, Dean Malmgren, Lance Nathan,
 Alexander Oleynikov, Nathan Schneider, Chuck Wooters, Yu Usami, Steven Xu,
 pquentin, wvanlint
-	
+
 Version 3.0a2 2013-07-12
 * speed improvements in word_tokenize, GAAClusterer, TnT tagger, Baum Welch, HMM tagger
 * small improvements in collocation finders, probability, modelling, Porter Stemmer
 * bugfix in lowest common hypernyn calculation (used in path similarity measures)
 * code cleanups, docstring cleanups, demo fixes
-	
+
 Thanks to the following contributors to 3.0a2:
 Mark Amery, Lars Buitinck, Michelle Fullwood, Dan Garrette, Dougal Graham,
 Tyler Hartley, Bruce Hill, Angelos Katharopoulos, Mikhail Korobov,
@@ -422,7 +442,7 @@ Steven Xu, isnowfy, onesandzeros
 
 Version 3.0a1 2013-02-14
 * reinstated tkinter support (Haejoong Lee)
-	
+
 Version 3.0a0 2013-01-14
 * alpha release of first version to support Python 2.6, 2.7, and 3.
 
@@ -620,14 +640,14 @@ NLTK:
 * added words() method to XML corpus reader
 * minor bugfixes and code clean-ups
 * fixed downloader to put data in %APPDATA% on Windows
-	
+
 Data:
 * Updated Punkt models
 * Fixed utf8 encoding issues with UDHR and Stopwords Corpora
 * Renamed CoNLL "cat" files to "esp" (different language)
 * Added Alvey NLT feature-based grammar
 * Added Polish PL196x corpus
-	
+
 Version 2.0b5 2009-07-19
 
 NLTK:
@@ -637,7 +657,7 @@ NLTK:
 * fixed data.py so that it doesn't generate a warning for Windows Python 2.6
 
 NLTK-Contrib:
-* updated Praat reader (contributed by Margaret Mitchell) 
+* updated Praat reader (contributed by Margaret Mitchell)
 
 Version 2.0b4 2009-07-10
 
@@ -741,7 +761,7 @@ Book:
 Version 0.9.7 2008-12-19
 
 NLTK:
-* fixed problems with accessing zipped corpora   
+* fixed problems with accessing zipped corpora
 * improved design and efficiency of grammars and chart parsers
   including new bottom-up combine strategy and a redesigned
   Earley strategy (Peter Ljunglof)
@@ -856,7 +876,7 @@ Distributions:
   installed before the data
 
 Version 0.9.4 2008-08-01
-	
+
 NLTK:
 - Expanded semantics package for first order logic, linear logic,
   glue semantics, DRT, LFG (Dan Garrette)
@@ -867,14 +887,14 @@ NLTK:
 - improved support for chunkers incl flexible chunk corpus reader,
   new rule type: ChunkRuleWithContext
 - new GUI for pos-tagged concordancing nltk.draw.pos_concordance
-- new GUI for developing regexp chunkers nltk.draw.rechunkparser 
+- new GUI for developing regexp chunkers nltk.draw.rechunkparser
 - added bio_sents() and bio_words() methods to ConllChunkCorpusReader in conll.py
-    to allow reading (word, tag, chunk_typ) tuples off of CoNLL-2000 corpus. Also 
+    to allow reading (word, tag, chunk_typ) tuples off of CoNLL-2000 corpus. Also
     modified ConllChunkCorpusView to support these changes.
 - feature structures support values with custom unification methods
 - new flag on tagged corpus readers to use simplified tagsets
 - new package for ngram language modeling with Katz backoff nltk.model
-- added classes for single-parented and multi-parented trees that 
+- added classes for single-parented and multi-parented trees that
   automatically maintain parent pointers (nltk.tree.ParentedTree and
   nltk.tree.MultiParentedTree)
 - new WordNet browser GUI (Jussi Salmela, Paul Bone)
@@ -884,7 +904,7 @@ NLTK:
 - made fixes to docstrings to improve API documentation
 
 Contrib (work in progress)
-- new NLG package, FUF/SURGE (Petro Verkhogliad) 
+- new NLG package, FUF/SURGE (Petro Verkhogliad)
 - new dependency parser package (Jason Narad)
 - new Coreference package, incl support for
   ACE-2, MUC-6 and MUC-7 corpora (Joseph Frazee)
@@ -894,15 +914,15 @@ Contrib (work in progress)
 Data:
 - Nnw NPS Chat Corpus and corpus reader (nltk.corpus.nps_chat)
 - ConllCorpusReader can now be used to read CoNLL 2004 and 2005 corpora.
-- Implemented HMM-based Treebank POS tagger and phrase chunker for 
+- Implemented HMM-based Treebank POS tagger and phrase chunker for
   nltk_contrib.coref in api.py. Pickled versions of these objects are checked
   in in data/taggers and data/chunkers.
 
 Book:
 - misc corrections in response to feedback from readers
-	
+
 Version 0.9.3 2008-06-03
-	
+
 NLTK:
 - modified WordNet similarity code to use pre-built information content files
 - new classifier-based tagger, BNC corpus reader
@@ -920,7 +940,7 @@ Contrib:
 - implementation of incremental algorithm for generating
   referring expressions (contributed by Margaret Mitchell)
 - refactoring WordNet browser (Paul Bone)
-  
+
 Corpora:
 - included WordNet information content files
 
@@ -942,7 +962,7 @@ Contrib:
 
 Distributions:
 - Mac OS 10.5 distribution
-	
+
 Version 0.9.1 2008-01-24
 
 NLTK:
@@ -958,14 +978,14 @@ Data:
 - Brown Corpus (reverted to original file structure: ca01-cr09)
 - Penn Treebank corpus sample (simplified implementation, new readers treebank_raw and treebank_chunk)
 - Minor redesign of corpus readers, to use filenames instead of "items" to identify parts of a corpus
-	
+
 Contrib:
 - theorem_prover: Prover9, tableau, MaltParser, Mace4, glue semantics, docs (Dan Garrette, Ewan Klein)
 - drt: improved drawing, conversion to FOL (Dan Garrette)
 - gluesemantics: GUI demonstration, abstracted LFG code, documentation (Dan Garrette)
 - readability: various text readability scores (Thomas Jakobsen, Thomas Skardal)
 - toolbox: code to normalize toolbox databases (Greg Aumann)
-	
+
 Book:
 - many improvements in early chapters in response to reader feedback
 - updates for revised corpus readers
@@ -1079,7 +1099,7 @@ Version 0.8b1 2007-06-18
 
 Code (major):
 - changed package name to nltk
-- import all top-level modules into nltk, reducing need for import statements  
+- import all top-level modules into nltk, reducing need for import statements
 - reorganization of sub-package structures to simplify imports
 - new featstruct module, unifying old featurelite and featurestructure modules
 - FreqDist now inherits from dict, fd.count(sample) becomes fd[sample]
@@ -1155,7 +1175,7 @@ Distribution:
 - updated for Python 2.5.1, Numpy 1.0.2
 
 Version 0.7.3 2007-04-02
-	
+
 * Code:
  - made chunk.Regexp.parse() more flexible about its input
  - developed new syntax for PCFG grammars, e.g. A -> B C [0.3] | D [0.7]
@@ -1201,7 +1221,7 @@ Version 0.7.2 2007-03-01
       language identification: contrib.langid (Sam Huston)
   - new Lambek calculus system: contrib.lambek
   - new tree implementation based on elementtree: contrib.tree
-	
+
 Version 0.7.1 2007-01-14
 
 * Code:
@@ -1217,9 +1237,9 @@ Version 0.7 2006-12-22
   - expanded tutorials on advanced parsing and structured programming
   - checked all doctest code
   - improved images for chart parsing
-	
+
 Version 0.7b1 2006-12-06
-	
+
 * Code:
   - expanded semantic interpretation package
   - new high-level chunking interface, with cascaded chunking
@@ -1229,7 +1249,7 @@ Version 0.7b1 2006-12-06
     (path distance, Wu + Palmer and Leacock + Chodorow, Resnik similarity measures.)
   - bugfixes (tag.Window, tag.ngram)
   - more doctests
-* Contrib:	
+* Contrib:
   - toolbox language settings module
 * Tutorials:
   - rewrite of chunking chapter, switched from Treebank to CoNLL format as main focus,
@@ -1237,7 +1257,7 @@ Version 0.7b1 2006-12-06
   - substantial updates throughout (esp programming and semantics chapters)
 * Corpora:
   - Chat-80 Prolog data files provided as corpora, plus corpus reader
-	
+
 Version 0.7a2 2006-11-13
 
 * Code:
@@ -1258,7 +1278,7 @@ Version 0.7a1 2006-10-29
 * Tutorials
   - substantial revision, especially in preface, introduction, words,
     and semantics chapters.
-	
+
 Version 0.6.6 2006-10-06
 
 * Code:
@@ -1268,7 +1288,7 @@ Version 0.6.6 2006-10-06
 * Tutorials:
   - continual expansion and revision, especially on introduction to
     programming, advanced programming and the feature-based grammar chapters.
-	
+
 Version 0.6.5 2006-07-09
 
 * Code:
@@ -1282,7 +1302,7 @@ Version 0.6.5 2006-07-09
   - new work on feature structures, unification, lambda calculus
   - new work on shoebox package (Stuart Robinson, Greg Aumann)
 * Corpora:
-  - Sinica treebank sample	
+  - Sinica treebank sample
 * Tutorials:
   - expanded discussion throughout, incl: left-recursion, trees, grammars,
     feature-based grammar, agreement, unification, PCFGs,
@@ -1305,11 +1325,11 @@ Version 0.6.4 2006-04-20
   - many new exercises
   - formatting improvements, including colorized program examples
   - fixed problem with testing on training data, reported by Jason Baldridge
-	
+
 Version 0.6.3 2006-03-09
 
 * switch to new style classes
-* repair FSA model sufficiently for Kimmo module to work	
+* repair FSA model sufficiently for Kimmo module to work
 * port of MIT Kimmo morphological analyzer; still needs lots of code clean-up and inline docs
 * expanded support for shoebox format, developed with Stuart Robinson
 * fixed bug in indexing CFG productions, for empty right-hand-sides
@@ -1318,7 +1338,7 @@ Version 0.6.3 2006-03-09
 * bugfixes in chunk eval
 * simplified call to draw_trees
 * names, stopwords corpora
-	
+
 Version 0.6.2 2006-01-29
 
 * Peter Spiller's concordancer

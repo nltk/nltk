@@ -13,11 +13,10 @@ A model builder that makes use of the external 'Mace4' package.
 import os
 import tempfile
 
-from nltk.sem.logic import is_indvar
-from nltk.sem import Valuation, Expression
-
-from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
+from nltk.inference.api import BaseModelBuilderCommand, ModelBuilder
 from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
+from nltk.sem import Expression, Valuation
+from nltk.sem.logic import is_indvar
 
 
 class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
@@ -297,7 +296,7 @@ def test_model_found(arguments):
         found = m.build_model()
         for a in alist:
             print("   %s" % a)
-        print("|- %s: %s\n" % (g, decode_result(found)))
+        print(f"|- {g}: {decode_result(found)}\n")
 
 
 def test_build_model(arguments):
@@ -324,7 +323,7 @@ def test_build_model(arguments):
     spacer()
     for a in alist:
         print("   %s" % a)
-    print("|- %s: %s\n" % (g, decode_result(m.build_model())))
+    print(f"|- {g}: {decode_result(m.build_model())}\n")
     spacer()
     # print(m.model('standard'))
     # print(m.model('cooked'))
@@ -343,7 +342,7 @@ def test_transform_output(argument_pair):
     m.build_model()
     for a in alist:
         print("   %s" % a)
-    print("|- %s: %s\n" % (g, m.build_model()))
+    print(f"|- {g}: {m.build_model()}\n")
     for format in ["standard", "portable", "xml", "cooked"]:
         spacer()
         print("Using '%s' format" % format)
@@ -354,17 +353,17 @@ def test_transform_output(argument_pair):
 def test_make_relation_set():
     print(
         MaceCommand._make_relation_set(num_entities=3, values=[1, 0, 1])
-        == set([("c",), ("a",)])
+        == {("c",), ("a",)}
     )
     print(
         MaceCommand._make_relation_set(
             num_entities=3, values=[0, 0, 0, 0, 0, 0, 1, 0, 0]
         )
-        == set([("c", "a")])
+        == {("c", "a")}
     )
     print(
         MaceCommand._make_relation_set(num_entities=2, values=[0, 0, 1, 0, 0, 0, 1, 0])
-        == set([("a", "b", "a"), ("b", "b", "a")])
+        == {("a", "b", "a"), ("b", "b", "a")}
     )
 
 

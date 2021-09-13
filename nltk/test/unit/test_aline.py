@@ -1,77 +1,48 @@
-# -*- coding: utf-8 -*-
 """
-Unit tests for nltk.metrics.aline
+Test Aline algorithm for aligning phonetic sequences
 """
-
-
-import unittest
-
 from nltk.metrics import aline
 
 
-class TestAline(unittest.TestCase):
+def test_aline():
+    result = aline.align("θin", "tenwis")
+    expected = [[("θ", "t"), ("i", "e"), ("n", "n")]]
+
+    assert result == expected
+
+    result = aline.align("jo", "ʒə")
+    expected = [[("j", "ʒ"), ("o", "ə")]]
+
+    assert result == expected
+
+    result = aline.align("pematesiweni", "pematesewen")
+    expected = [
+        [
+            ("p", "p"),
+            ("e", "e"),
+            ("m", "m"),
+            ("a", "a"),
+            ("t", "t"),
+            ("e", "e"),
+            ("s", "s"),
+            ("i", "e"),
+            ("w", "w"),
+            ("e", "e"),
+            ("n", "n"),
+        ]
+    ]
+
+    assert result == expected
+
+    result = aline.align("tuwθ", "dentis")
+    expected = [[("t", "t"), ("u", "i"), ("w", "-"), ("θ", "s")]]
+
+    assert result == expected
+
+
+def test_aline_delta():
     """
-    Test Aline algorithm for aligning phonetic sequences
+    Test aline for computing the difference between two segments
     """
-
-    def test_aline(self):
-        result = aline.align('θin', 'tenwis')
-        expected = [
-            [('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]
-        ]
-
-        self.assertEqual(result, expected)
-
-        result = aline.align('jo', 'ʒə')
-        expected = [[('j', 'ʒ'), ('o', 'ə')]]
-
-        self.assertEqual(result, expected)
-
-        result = aline.align('pematesiweni', 'pematesewen')
-        expected = [
-            [
-                ('p', 'p'),
-                ('e', 'e'),
-                ('m', 'm'),
-                ('a', 'a'),
-                ('t', 't'),
-                ('e', 'e'),
-                ('s', 's'),
-                ('i', 'e'),
-                ('w', 'w'),
-                ('e', 'e'),
-                ('n', 'n'),
-                ('i', '-'),
-            ]
-        ]
-
-        self.assertEqual(result, expected)
-
-        result = aline.align('tuwθ', 'dentis')
-        expected = [
-            [
-                ('t', 'd'),
-                ('u', 'e'),
-                ('w', '-'),
-                ('-', 'n'),
-                ('-', 't'),
-                ('-', 'i'),
-                ('θ', 's'),
-            ]
-        ]
-
-        self.assertEqual(result, expected)
-
-    def test_aline_delta(self):
-        """
-        Test aline for computing the difference between two segments
-        """
-        result = aline.delta('p', 'q')
-        expected = 20.0
-
-        self.assertEqual(result, expected)
-
-        result = aline.delta('a', 'A')
-        expected = 0.0
-
-        self.assertEqual(result, expected)
+    assert aline.delta("p", "q") == 20.0
+    assert aline.delta("a", "A") == 0.0

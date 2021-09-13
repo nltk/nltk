@@ -230,5 +230,3 @@ a new ``Valuation`` object which contains the results.
    >>> m = nltk.sem.Model(dom, val)
    >>> m.evaluate(r'population_of(jakarta, 533)', g)
    True
-
-

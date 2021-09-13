@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -7,17 +6,16 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 import json
-import time
+import re
 import socket
+import time
 
-from nltk.internals import find_jar_iter, config_java, java, _java_options
-
-from nltk.tag.api import TaggerI
+from nltk.internals import _java_options, config_java, find_jar_iter, java
 from nltk.parse.api import ParserI
-from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.tag.api import TaggerI
+from nltk.tokenize.api import TokenizerI
 from nltk.tree import Tree
 
 _stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
@@ -37,7 +35,7 @@ def try_port(port=0):
     return p
 
 
-class CoreNLPServer(object):
+class CoreNLPServer:
 
     _MODEL_JAR_PATTERN = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar"
     _JAR = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar"
@@ -73,13 +71,13 @@ class CoreNLPServer(object):
         if port is None:
             try:
                 port = try_port(9000)
-            except socket.error:
+            except OSError:
                 port = try_port()
                 corenlp_options.append(str(port))
         else:
             try_port(port)
 
-        self.url = "http://localhost:{}".format(port)
+        self.url = f"http://localhost:{port}"
 
         model_jar = max(
             find_jar_iter(
@@ -102,7 +100,7 @@ class CoreNLPServer(object):
         self.java_options = java_options or ["-mx2g"]
 
     def start(self, stdout="devnull", stderr="devnull"):
-        """ Starts the CoreNLP server
+        """Starts the CoreNLP server
 
         :param stdout, stderr: Specifies where CoreNLP output is redirected. Valid values are 'devnull', 'stdout', 'pipe'
         """
@@ -242,7 +240,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             self.url,
             params={"properties": json.dumps(default_properties)},
             data=data.encode(self.encoding),
-            headers={"Content-Type": "text/plain; charset={}".format(self.encoding)},
+            headers={"Content-Type": f"text/plain; charset={self.encoding}"},
             timeout=timeout,
         )
 

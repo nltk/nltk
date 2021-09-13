@@ -55,7 +55,7 @@ def tuple2str(tagged_token, sep="/"):
         return word
     else:
         assert sep not in tag, "tag may not contain sep!"
-        return "%s%s%s" % (word, sep, tag)
+        return f"{word}{sep}{tag}"
 
 
 def untag(tagged_sentence):

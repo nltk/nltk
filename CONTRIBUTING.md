@@ -51,6 +51,7 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
   (`git clone https://github.com/<your-github-username>/nltk.git`);
 - Run `cd nltk` to get to the root directory of the `nltk` code base;
 - Install the dependencies (`pip install -r pip-req.txt`);
+- Install the [pre-commit](https://pre-commit.com) hooks: (`pre-commit install`)
 - Download the datasets for running tests
   (`python -m nltk.downloader all`);
 - Create a remote link from your local repository to the
@@ -111,9 +112,11 @@ Summary of our git branching model:
   code](http://www.codinghorror.com/blog/2008/07/coding-without-comments.html);
 - Name identifiers (variables, classes, functions, module names) with readable
   names (`x` is always wrong);
-- When manipulating strings, use [Python's new-style
+- When manipulating strings, we prefer either [f-string
+  formatting](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals)
+  (f`'{a} = {b}'`) or [new-style
   formatting](http://docs.python.org/library/string.html#format-string-syntax)
-  (`'{} = {}'.format(a, b)` instead of `'%s = %s' % (a, b)`);
+  (`'{} = {}'.format(a, b)`), instead of the old-style formatting (`'%s = %s' % (a, b)`);
 - All `#TODO` comments should be turned into issues (use our
   [GitHub issue system](https://github.com/nltk/nltk/issues));
 - Run all tests before pushing (just execute `tox`) so you will know if your
@@ -150,33 +153,39 @@ pytest  # all tests
 
 **Deprecated:** NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
 
-NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration. 
+**Deprecated:** NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration.
 
-The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
+NLTK uses [GitHub Actions](https://github.com/nltk/nltk/actions) for continuous integration. See [here](https://docs.github.com/en/actions) for GitHub's documentation.
 
- - `matrix: include:` section 
-   - tests against supported Python versions (3.5, 3.6, 3.7, 3.8, 3.9)
-     - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
-   - tests against Python 3.6 for third-party tools APIs
+The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.github/workflows/ci.yaml) file configures the CI:
 
- - `before_install:` section 
-   - checks the Java and Python version calling the `tools/travis/pre-install.sh` script
-   - changes the permission for `tools/travis/coverage-pylint.sh` to allow it to be executable
-   - changes the permission for `tools/travis/third-party.sh` to allow it to be executable
-   
- - `install` section
-   - the `tools/travis/install.sh` installs the `pip-req.txt` for NLTK and the necessary python packages for CI testing
-   - install `tox` for testing
-    
- - `py-travis` tox test environment generally 
-   - the `extras = all` dependencies in needed to emulate `pip install nltk[all]`, see https://tox.readthedocs.io/en/latest/config.html#confval-extras=MULTI-LINE-LIST
-   - for the `py-travis-third-party` build, it will run `tools/travis/third-party.sh` to install third-party tools (Stanford NLP tools and CoreNLP and SENNA)
-   - calls `tools/travis/coverage-pylint.sh` shell script that calls `pytest` with [`pytest-cov`](https://pytest-cov.readthedocs.io/) and
-   - calls `pylint` # Currently, disabled because there's lots to clean...
+ - `on:` section
+   - ensures that this CI is run on code pushes, pull request, or through the GitHub website via a button.
 
-   - before returning a `true` to state that the build is successful
-    
-    
+ - The `cache_nltk_data` job
+   - performs these steps:
+     - Downloads the `nltk` source code.
+     - Load `nltk_data` via cache.
+       - Otherwise, download all the data packages through `nltk.download('all')`.
+
+  - The `test` job
+    - tests against supported Python versions (`3.6`, `3.7`, `3.8`, `3.9`).
+    - tests on `ubuntu-latest` and `macos-latest`.
+    - relies on the `cache_nltk_data` job to ensure that `nltk_data` is available.
+    - performs these steps:
+      - Downloads the `nltk` source code.
+      - Set up Python using whatever version is being checked in the current execution.
+      - Load module dependencies via cache.
+        - Otherwise, install dependencies via `pip install -U -r requirements-ci.txt`.
+      - Load cached `nltk_data` loaded via `cache_nltk_data`.
+      - Run `pytest --numprocesses auto -rsx nltk/test`.
+
+ - The `pre-commit` job
+   - performs these steps:
+     - Downloads the `nltk` source code.
+     - Runs pre-commit on all files in the repository. (Similar to `pre-commit run --all-files`)
+     - Fails if any hooks performed a change.
+
 #### To test with `tox` locally
 
 First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
@@ -191,7 +200,7 @@ pipenv install -r pip-req.txt
 pipenv install tox
 tox -e py37
 ```
- 
+
 
 # Discussion
 

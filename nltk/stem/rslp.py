@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Natural Language Toolkit: RSLP Stemmer
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -32,7 +30,6 @@
 # do NLTK para o português para qualquer debate.
 
 from nltk.data import load
-
 from nltk.stem.api import StemmerI
 
 

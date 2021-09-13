@@ -1,25 +1,22 @@
-# -*- coding: utf-8 -*-
 """
 Tests for IBM Model 4 training methods
 """
 
 import unittest
-
 from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import IBMModel
-from nltk.translate import IBMModel4
+
+from nltk.translate import AlignedSent, IBMModel, IBMModel4
 from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel4(unittest.TestCase):
     def test_set_uniform_distortion_probabilities_of_max_displacements(self):
         # arrange
-        src_classes = {'schinken': 0, 'eier': 0, 'spam': 1}
-        trg_classes = {'ham': 0, 'eggs': 1, 'spam': 2}
+        src_classes = {"schinken": 0, "eier": 0, "spam": 1}
+        trg_classes = {"ham": 0, "eggs": 1, "spam": 2}
         corpus = [
-            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
-            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+            AlignedSent(["ham", "eggs"], ["schinken", "schinken", "eier"]),
+            AlignedSent(["spam", "spam", "spam", "spam"], ["spam", "spam"]),
         ]
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes)
 
@@ -39,11 +36,11 @@ class TestIBMModel4(unittest.TestCase):
 
     def test_set_uniform_distortion_probabilities_of_non_domain_values(self):
         # arrange
-        src_classes = {'schinken': 0, 'eier': 0, 'spam': 1}
-        trg_classes = {'ham': 0, 'eggs': 1, 'spam': 2}
+        src_classes = {"schinken": 0, "eier": 0, "spam": 1}
+        trg_classes = {"ham": 0, "eggs": 1, "spam": 2}
         corpus = [
-            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
-            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+            AlignedSent(["ham", "eggs"], ["schinken", "schinken", "eier"]),
+            AlignedSent(["spam", "spam", "spam", "spam"], ["spam", "spam"]),
         ]
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes)
 
@@ -59,15 +56,15 @@ class TestIBMModel4(unittest.TestCase):
 
     def test_prob_t_a_given_s(self):
         # arrange
-        src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
-        trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
-        src_classes = {'räucherschinken': 0, 'ja': 1, 'ich': 2, 'esse': 3, 'gern': 4}
-        trg_classes = {'ham': 0, 'smoked': 1, 'i': 3, 'love': 4, 'to': 2, 'eat': 4}
+        src_sentence = ["ich", "esse", "ja", "gern", "räucherschinken"]
+        trg_sentence = ["i", "love", "to", "eat", "smoked", "ham"]
+        src_classes = {"räucherschinken": 0, "ja": 1, "ich": 2, "esse": 3, "gern": 4}
+        trg_classes = {"ham": 0, "smoked": 1, "i": 3, "love": 4, "to": 2, "eat": 4}
         corpus = [AlignedSent(trg_sentence, src_sentence)]
         alignment_info = AlignmentInfo(
             (0, 1, 4, 0, 2, 5, 5),
             [None] + src_sentence,
-            ['UNUSED'] + trg_sentence,
+            ["UNUSED"] + trg_sentence,
             [[3], [1], [4], [], [2], [5, 6]],
         )
 
@@ -83,28 +80,28 @@ class TestIBMModel4(unittest.TestCase):
         non_head_distortion_table[1][0] = 0.96  # ham
 
         translation_table = defaultdict(lambda: defaultdict(float))
-        translation_table['i']['ich'] = 0.98
-        translation_table['love']['gern'] = 0.98
-        translation_table['to'][None] = 0.98
-        translation_table['eat']['esse'] = 0.98
-        translation_table['smoked']['räucherschinken'] = 0.98
-        translation_table['ham']['räucherschinken'] = 0.98
+        translation_table["i"]["ich"] = 0.98
+        translation_table["love"]["gern"] = 0.98
+        translation_table["to"][None] = 0.98
+        translation_table["eat"]["esse"] = 0.98
+        translation_table["smoked"]["räucherschinken"] = 0.98
+        translation_table["ham"]["räucherschinken"] = 0.98
 
         fertility_table = defaultdict(lambda: defaultdict(float))
-        fertility_table[1]['ich'] = 0.99
-        fertility_table[1]['esse'] = 0.99
-        fertility_table[0]['ja'] = 0.99
-        fertility_table[1]['gern'] = 0.99
-        fertility_table[2]['räucherschinken'] = 0.999
+        fertility_table[1]["ich"] = 0.99
+        fertility_table[1]["esse"] = 0.99
+        fertility_table[0]["ja"] = 0.99
+        fertility_table[1]["gern"] = 0.99
+        fertility_table[2]["räucherschinken"] = 0.999
         fertility_table[1][None] = 0.99
 
         probabilities = {
-            'p1': 0.167,
-            'translation_table': translation_table,
-            'head_distortion_table': head_distortion_table,
-            'non_head_distortion_table': non_head_distortion_table,
-            'fertility_table': fertility_table,
-            'alignment_table': None,
+            "p1": 0.167,
+            "translation_table": translation_table,
+            "head_distortion_table": head_distortion_table,
+            "non_head_distortion_table": non_head_distortion_table,
+            "fertility_table": fertility_table,
+            "alignment_table": None,
         }
 
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes, probabilities)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
@@ -28,9 +27,8 @@ import re
 
 from nltk.corpus import stopwords
 from nltk.stem import porter
-from nltk.stem.util import suffix_replace, prefix_replace
-
 from nltk.stem.api import StemmerI
+from nltk.stem.util import prefix_replace, suffix_replace
 
 
 class SnowballStemmer(StemmerI):
@@ -105,7 +103,7 @@ class SnowballStemmer(StemmerI):
 
     def __init__(self, language, ignore_stopwords=False):
         if language not in self.languages:
-            raise ValueError("The language '{0}' is not supported.".format(language))
+            raise ValueError(f"The language '{language}' is not supported.")
         stemmerclass = globals()[language.capitalize() + "Stemmer"]
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
@@ -141,7 +139,7 @@ class _LanguageSpecificStemmer(StemmerI):
             try:
                 for word in stopwords.words(language):
                     self.stopwords.add(word)
-            except IOError as e:
+            except OSError as e:
                 raise ValueError(
                     "{!r} has no list of stopwords. Please set"
                     " 'ignore_stopwords' to 'False'.".format(self)
@@ -152,7 +150,7 @@ class _LanguageSpecificStemmer(StemmerI):
         Print out the string representation of the respective class.
 
         """
-        return "<{0}>".format(type(self).__name__)
+        return f"<{type(self).__name__}>"
 
 
 class PorterStemmer(_LanguageSpecificStemmer, porter.PorterStemmer):
@@ -309,12 +307,12 @@ class _StandardStemmer(_LanguageSpecificStemmer):
 
 class ArabicStemmer(_StandardStemmer):
     """
-        https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
-        The Snowball Arabic light Stemmer
-        Algorithm : Assem Chelli
-                   Abdelkrim Aries
-                   Lakhdar Benzahia
-        Nltk Version Author : Lakhdar Benzahia
+    https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
+    The Snowball Arabic light Stemmer
+    Algorithm : Assem Chelli
+               Abdelkrim Aries
+               Lakhdar Benzahia
+    Nltk Version Author : Lakhdar Benzahia
     """
 
     # Normalize_pre stes
@@ -5916,10 +5914,8 @@ def demo():
 
         if language not in SnowballStemmer.languages:
             print(
-                (
-                    "\nOops, there is no stemmer for this language. "
-                    + "Please try again.\n"
-                )
+                "\nOops, there is no stemmer for this language. "
+                + "Please try again.\n"
             )
             continue
 

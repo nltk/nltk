@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -13,6 +12,7 @@ Authentication utilities to accompany :module:`twitterclient`.
 
 import os
 import pprint
+
 from twython import Twython
 
 
@@ -25,7 +25,7 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
     )
 
 
-class Authenticate(object):
+class Authenticate:
     """
     Methods for authenticating with Twitter.
     """
@@ -84,11 +84,11 @@ class Authenticate(object):
         )
 
         if not os.path.isfile(self.creds_fullpath):
-            raise OSError("Cannot find file {}".format(self.creds_fullpath))
+            raise OSError(f"Cannot find file {self.creds_fullpath}")
 
         with open(self.creds_fullpath) as infile:
             if verbose:
-                print("Reading credentials file {}".format(self.creds_fullpath))
+                print(f"Reading credentials file {self.creds_fullpath}")
 
             for line in infile:
                 if "=" in line:
@@ -111,11 +111,11 @@ class Authenticate(object):
             oauth2 = True
 
         if not (oauth1 or oauth2):
-            msg = "Missing or incorrect entries in {}\n".format(self.creds_file)
+            msg = f"Missing or incorrect entries in {self.creds_file}\n"
             msg += pprint.pformat(self.oauth)
             raise ValueError(msg)
         elif verbose:
-            print('Credentials file "{}" looks good'.format(self.creds_file))
+            print(f'Credentials file "{self.creds_file}" looks good')
 
 
 def add_access_token(creds_file=None):
@@ -132,7 +132,7 @@ def add_access_token(creds_file=None):
 
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
-    tok = "access_token={}\n".format(access_token)
+    tok = f"access_token={access_token}\n"
     with open(creds_file, "a") as infile:
         print(tok, file=infile)
 

@@ -9,7 +9,9 @@
 Named entity chunker
 """
 
-import os, re, pickle
+import os
+import pickle
+import re
 from xml.etree import ElementTree as ET
 
 from nltk.tag import ClassifierBasedTagger, pos_tag
@@ -19,12 +21,11 @@ try:
 except ImportError:
     pass
 
-from nltk.tree import Tree
-from nltk.tokenize import word_tokenize
-from nltk.data import find
-
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
+from nltk.data import find
+from nltk.tokenize import word_tokenize
+from nltk.tree import Tree
 
 
 class NEChunkParserTagger(ClassifierBasedTagger):
@@ -103,9 +104,9 @@ class NEChunkParserTagger(ClassifierBasedTagger):
             "nextpos": nextpos,
             "prevword": prevword,
             "nextword": nextword,
-            "word+nextpos": "{0}+{1}".format(word.lower(), nextpos),
-            "pos+prevtag": "{0}+{1}".format(pos, prevtag),
-            "shape+prevtag": "{0}+{1}".format(prevshape, prevtag),
+            "word+nextpos": f"{word.lower()}+{nextpos}",
+            "pos+prevtag": f"{pos}+{prevtag}",
+            "shape+prevtag": f"{prevshape}+{prevtag}",
         }
 
         return features
@@ -162,9 +163,9 @@ class NEChunkParser(ChunkParserI):
                 if len(child) == 0:
                     print("Warning -- empty chunk in sentence")
                     continue
-                toks.append((child[0], "B-{0}".format(child.label())))
+                toks.append((child[0], f"B-{child.label()}"))
                 for tok in child[1:]:
-                    toks.append((tok, "I-{0}".format(child.label())))
+                    toks.append((tok, f"I-{child.label()}"))
             else:
                 toks.append((child, "O"))
         return toks
@@ -215,17 +216,16 @@ def load_ace_data(roots, fmt="binary", skip_bnews=True):
                 continue
             for f in files:
                 if f.endswith(".sgm"):
-                    for sent in load_ace_file(os.path.join(root, f), fmt):
-                        yield sent
+                    yield from load_ace_file(os.path.join(root, f), fmt)
 
 
 def load_ace_file(textfile, fmt):
-    print("  - {0}".format(os.path.split(textfile)[1]))
+    print(f"  - {os.path.split(textfile)[1]}")
     annfile = textfile + ".tmx.rdc.xml"
 
     # Read the xml file, and get a list of entities
     entities = []
-    with open(annfile, "r") as infile:
+    with open(annfile) as infile:
         xml = ET.parse(infile).getroot()
     for entity in xml.findall("document/entity"):
         typ = entity.find("entity_type").text
@@ -237,7 +237,7 @@ def load_ace_file(textfile, fmt):
             entities.append((s, e, typ))
 
     # Read the text file, and mark the entities.
-    with open(textfile, "r") as infile:
+    with open(textfile) as infile:
         text = infile.read()
 
     # Strip XML tags, since they don't count towards the indices
@@ -254,7 +254,7 @@ def load_ace_file(textfile, fmt):
     text = re.sub("``", ' "', text)
     text = re.sub("''", '" ', text)
 
-    entity_types = set(typ for (s, e, typ) in entities)
+    entity_types = {typ for (s, e, typ) in entities}
 
     # Binary distinction (NE or not NE)
     if fmt == "binary":
@@ -299,12 +299,12 @@ def cmp_chunks(correct, guessed):
     for (w, ct), (w, gt) in zip(correct, guessed):
         if ct == gt == "O":
             if not ellipsis:
-                print("  {:15} {:15} {2}".format(ct, gt, w))
+                print(f"  {ct:15} {gt:15} {w}")
                 print("  {:15} {:15} {2}".format("...", "...", "..."))
                 ellipsis = True
         else:
             ellipsis = False
-            print("  {:15} {:15} {2}".format(ct, gt, w))
+            print(f"  {ct:15} {gt:15} {w}")
 
 
 def build_model(fmt="binary"):
@@ -335,8 +335,8 @@ def build_model(fmt="binary"):
             cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = "/tmp/ne_chunker_{0}.pickle".format(fmt)
-    print("Saving chunker to {0}...".format(outfilename))
+    outfilename = f"/tmp/ne_chunker_{fmt}.pickle"
+    print(f"Saving chunker to {outfilename}...")
 
     with open(outfilename, "wb") as outfile:
         pickle.dump(cp, outfile, -1)

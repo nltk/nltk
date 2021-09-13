@@ -51,7 +51,7 @@ _UNIVERSAL_TAGS = (
 )
 
 # _MAPPINGS = defaultdict(lambda: defaultdict(dict))
-# the mapping between tagset T1 and T2 returns UNK if appied to an unrecognized tag
+# the mapping between tagset T1 and T2 returns UNK if applied to an unrecognized tag
 _MAPPINGS = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: "UNK")))
 
 
@@ -68,10 +68,10 @@ def _load_universal_map(fileid):
             continue
         fine, coarse = line.split("\t")
 
-        assert coarse in _UNIVERSAL_TAGS, "Unexpected coarse tag: {}".format(coarse)
+        assert coarse in _UNIVERSAL_TAGS, f"Unexpected coarse tag: {coarse}"
         assert (
             fine not in _MAPPINGS[fileid]["universal"]
-        ), "Multiple entries for original tag: {}".format(fine)
+        ), f"Multiple entries for original tag: {fine}"
 
         _MAPPINGS[fileid]["universal"][fine] = coarse
 

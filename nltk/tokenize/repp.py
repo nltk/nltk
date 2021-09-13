@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Repp Tokenizer
 #
 # Copyright (C) 2001-2015 NLTK Project
@@ -10,13 +9,12 @@
 
 import os
 import re
-import sys
 import subprocess
+import sys
 import tempfile
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir
-
 from nltk.tokenize.api import TokenizerI
 
 

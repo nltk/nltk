@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU Score
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -11,9 +10,9 @@
 
 import math
 import sys
-from fractions import Fraction
 import warnings
 from collections import Counter
+from fractions import Fraction
 
 from nltk.util import ngrams
 
@@ -59,7 +58,7 @@ def sentence_bleu(
     value 0. This is because the precision for the order of n-grams without
     overlap is 0, and the geometric mean in the final BLEU score computation
     multiplies the 0 with the precision of other n-grams. This results in 0
-    (independently of the precision of the othe n-gram orders). The following
+    (independently of the precision of the other n-gram orders). The following
     example has zero 3-gram and 4-gram overlaps:
 
     >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS
@@ -542,7 +541,8 @@ class SmoothingFunction:
         """
         return [
             Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
-            if i != 0 else p_n[0]
+            if i != 0
+            else p_n[0]
             for i in range(len(p_n))
         ]
 
@@ -579,11 +579,11 @@ class SmoothingFunction:
         incvnt = 1
         hyp_len = hyp_len if hyp_len else len(hypothesis)
         for i, p_i in enumerate(p_n):
-            if p_i.numerator == 0 and hyp_len >1:
-#                 incvnt = i + 1 * self.k / math.log(
-#                     hyp_len
-#                 )  # Note that this K is different from the K from NIST.
-#                 p_n[i] = incvnt / p_i.denominator\
+            if p_i.numerator == 0 and hyp_len > 1:
+                # incvnt = i + 1 * self.k / math.log(
+                #     hyp_len
+                # )  # Note that this K is different from the K from NIST.
+                # p_n[i] = incvnt / p_i.denominator\
                 numerator = 1 / (2 ** incvnt * self.k / math.log(hyp_len))
                 p_n[i] = numerator / p_i.denominator
                 incvnt += 1

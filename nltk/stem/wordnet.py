@@ -6,11 +6,11 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
+from nltk.corpus.reader.wordnet import NOUN
 
 
-class WordNetLemmatizer(object):
+class WordNetLemmatizer:
     """
     WordNet Lemmatizer
 

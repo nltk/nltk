@@ -9,7 +9,7 @@
 import unicodedata
 
 
-class DependencyEvaluator(object):
+class DependencyEvaluator:
     """
     Class for measuring labelled and unlabelled attachment score for
     dependency parsing. Note that the evaluation ignores punctuation.
@@ -82,7 +82,7 @@ class DependencyEvaluator(object):
         :param input: the input string
         :return: Unicode string after remove all punctuation
         """
-        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        punc_cat = {"Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"}
         return "".join(x for x in inStr if unicodedata.category(x) not in punc_cat)
 
     def eval(self):

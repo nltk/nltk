@@ -1,5 +1,5 @@
-tox
 pylint
 pytest>=6.0.1
-pytest-mock
 pytest-cov>=2.10.1
+pytest-mock
+tox

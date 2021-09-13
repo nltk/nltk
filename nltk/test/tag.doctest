@@ -36,7 +36,7 @@ Regression Testing for issue #2483
 ==================================
 
 Ensure that tagging with pos_tag (PerceptronTagger) does not throw an IndexError
-when attempting tagging an empty string. What it must return instead is not 
+when attempting tagging an empty string. What it must return instead is not
 strictly defined.
 
     >>> from nltk.tag import pos_tag

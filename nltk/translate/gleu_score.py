@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: GLEU Score
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -11,7 +10,7 @@
 
 from collections import Counter
 
-from nltk.util import ngrams, everygrams
+from nltk.util import everygrams, ngrams
 
 
 def sentence_gleu(references, hypothesis, min_len=1, max_len=4):

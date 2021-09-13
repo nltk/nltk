@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -62,6 +61,8 @@ We evaluate a tagger on data that was not seen during training:
     0.7...
 
 For more information, please consult chapter 5 of the NLTK Book.
+
+isort:skip_file
 """
 
 from nltk.tag.api import TaggerI
@@ -116,7 +117,7 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
         )
     # Throws Error if tokens is of string type
     elif isinstance(tokens, str):
-        raise TypeError('tokens: expected a list of strings, got a string')
+        raise TypeError("tokens: expected a list of strings, got a string")
 
     else:
         tagged_tokens = tagger.tag(tokens)
@@ -127,7 +128,7 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
                     for (token, tag) in tagged_tokens
                 ]
             elif lang == "rus":
-                # Note that the new Russion pos tags from the model contains suffixes,
+                # Note that the new Russian pos tags from the model contains suffixes,
                 # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
                 tagged_tokens = [
                     (token, map_tag("ru-rnc-new", tagset, tag.partition("=")[0]))

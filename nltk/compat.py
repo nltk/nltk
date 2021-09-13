@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Compatibility
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -21,6 +20,7 @@ DATA_UPDATES = [
 ]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
+
 
 def add_py3_data(path):
     for item in _PY3_DATA_UPDATES:

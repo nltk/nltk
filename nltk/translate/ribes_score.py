@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: RIBES Score
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -8,10 +7,10 @@
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
 
-from itertools import islice
 import math
+from itertools import islice
 
-from nltk.util import ngrams, choose
+from nltk.util import choose, ngrams
 
 
 def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
@@ -37,7 +36,7 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     to http://www.kecl.ntt.co.jp/icl/lirg/ribes/ for the official script.
 
     :param references: a list of reference sentences
-    :type reference: list(list(str))
+    :type references: list(list(str))
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     :param alpha: hyperparameter used as a prior for the unigram precision.
@@ -259,7 +258,7 @@ def kendall_tau(worder, normalize=True):
     Calculates the Kendall's Tau correlation coefficient given the *worder*
     list of word alignments from word_rank_alignment(), using the formula:
 
-        tau = 2 * num_increasing_pairs / num_possible pairs -1
+        tau = 2 * num_increasing_pairs / num_possible_pairs -1
 
     Note that the no. of increasing pairs can be discontinuous in the *worder*
     list and each each increasing sequence can be tabulated as choose(len(seq), 2)
@@ -274,20 +273,26 @@ def kendall_tau(worder, normalize=True):
 
     :param worder: The worder list output from word_rank_alignment
     :type worder: list(int)
-    :param normalize: Flag to indicate normalization
+    :param normalize: Flag to indicate normalization to between 0.0 and 1.0.
     :type normalize: boolean
     :return: The Kendall's Tau correlation coefficient.
     :rtype: float
     """
     worder_len = len(worder)
-    # Extract the groups of increasing/monotonic sequences.
-    increasing_sequences = find_increasing_sequences(worder)
-    # Calculate no. of increasing_pairs in *worder* list.
-    num_increasing_pairs = sum(choose(len(seq), 2) for seq in increasing_sequences)
-    # Calculate no. of possible pairs.
-    num_possible_pairs = choose(worder_len, 2)
-    # Kendall's Tau computation.
-    tau = 2 * num_increasing_pairs / num_possible_pairs - 1
+    # With worder_len < 2, `choose(worder_len, 2)` will be 0.
+    # As we divide by this, it will give a ZeroDivisionError.
+    # To avoid this, we can just return the lowest possible score.
+    if worder_len < 2:
+        tau = -1
+    else:
+        # Extract the groups of increasing/monotonic sequences.
+        increasing_sequences = find_increasing_sequences(worder)
+        # Calculate no. of increasing_pairs in *worder* list.
+        num_increasing_pairs = sum(choose(len(seq), 2) for seq in increasing_sequences)
+        # Calculate no. of possible pairs.
+        num_possible_pairs = choose(worder_len, 2)
+        # Kendall's Tau computation.
+        tau = 2 * num_increasing_pairs / num_possible_pairs - 1
     if normalize:  # If normalized, the tau output falls between 0.0 to 1.0
         return (tau + 1) / 2
     else:  # Otherwise, the tau outputs falls between -1.0 to +1.0

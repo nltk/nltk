@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CRFSuite Tagger
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -10,8 +9,9 @@
 A module for POS tagging using CRFSuite
 """
 
-import unicodedata
 import re
+import unicodedata
+
 from nltk.tag.api import TaggerI
 
 try:
@@ -102,7 +102,7 @@ class CRFTagger(TaggerI):
              - Has Punctuation ?
              - Has Number ?
              - Suffixes up to length 3
-        Note that : we might include feature over previous word, next word ect.
+        Note that : we might include feature over previous word, next word etc.
 
         :return : a list which contains the features
         :rtype : list(str)
@@ -124,7 +124,7 @@ class CRFTagger(TaggerI):
             feature_list.append("HAS_NUM")
 
         # Punctuation
-        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        punc_cat = {"Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"}
         if all(unicodedata.category(x) in punc_cat for x in token):
             feature_list.append("PUNCTUATION")
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to MaltParser
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
@@ -8,15 +7,14 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+import inspect
 import os
+import subprocess
 import sys
 import tempfile
-import subprocess
-import inspect
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir, find_file, find_jars_within_path
-
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
@@ -37,8 +35,8 @@ def malt_regex_tagger():
             (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
             (r"(The|the|A|a|An|an)$", "DT"),  # articles
             (r"(He|he|She|she|It|it|I|me|Me|You|you)$", "PRP"),  # pronouns
-            (r"(His|his|Her|her|Its|its)$", "PRP$"),  # possesive
-            (r"(my|Your|your|Yours|yours)$", "PRP$"),  # possesive
+            (r"(His|his|Her|her|Its|its)$", "PRP$"),  # possessive
+            (r"(my|Your|your|Yours|yours)$", "PRP$"),  # possessive
             (r"(on|On|in|In|at|At|since|Since)$", "IN"),  # time prepopsitions
             (r"(for|For|ago|Ago|before|Before)$", "IN"),  # time prepopsitions
             (r"(till|Till|until|Until)$", "IN"),  # time prepopsitions
@@ -71,8 +69,8 @@ def find_maltparser(parser_dirname):
     # Checks that that the found directory contains all the necessary .jar
     malt_dependencies = ["", "", ""]
     _malt_jars = set(find_jars_within_path(_malt_dir))
-    _jars = set(os.path.split(jar)[1] for jar in _malt_jars)
-    malt_dependencies = set(["log4j.jar", "libsvm.jar", "liblinear-1.8.jar"])
+    _jars = {os.path.split(jar)[1] for jar in _malt_jars}
+    malt_dependencies = {"log4j.jar", "libsvm.jar", "liblinear-1.8.jar"}
 
     assert malt_dependencies.issubset(_jars)
     assert any(
@@ -323,7 +321,7 @@ class MaltParser(ParserI):
         self._trained = True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     A demonstration function to show how NLTK users can use the malt parser API.
 
@@ -392,4 +390,5 @@ if __name__ == '__main__':
     """
 
     import doctest
+
     doctest.testmod()

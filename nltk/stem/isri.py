@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: The ISRI Arabic Stemmer
 #
-# Copyright (C) 2001-2021 NLTK Proejct
+# Copyright (C) 2001-2021 NLTK Project
 # Algorithm: Kazem Taghva, Rania Elkhoury, and Jeffrey Coombs (2005)
 # Author: Hosam Algasaier <hosam_hme@yahoo.com>
 # URL: <http://nltk.org/>
@@ -259,7 +258,7 @@ class ISRIStemmer(StemmerI):
         return word
 
     def waw(self, word):
-        """remove connective ‘و’ if it precedes a word beginning with ‘و’ """
+        """remove connective ‘و’ if it precedes a word beginning with ‘و’"""
         if len(word) >= 4 and word[:2] == "\u0648\u0648":
             word = word[1:]
         return word

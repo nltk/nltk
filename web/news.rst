@@ -27,7 +27,7 @@ NLTK 3.4.5 release: August 2019
 
 NLTK 3.4.4 release: July 2019
   Fix bug in plot function (probability.py)
-  Add improved PanLex Swadesh corpus reader  
+  Add improved PanLex Swadesh corpus reader
 
 NLTK 3.4.3 release: June 2019
   Add Text.generate(), QuadgramAssocMeasures
@@ -71,14 +71,14 @@ NLTK 3.3 release: May 2018
 ----
 
 NLTK 3.2.5 release: September 2017
-   Arabic stemmers (ARLSTem, Snowball), 
-   NIST MT evaluation metric and added NIST international_tokenize, 
-   Moses tokenizer, 
-   Document Russian tagger, 
-   Fix to Stanford segmenter, 
-   Improve treebank detokenizer, VerbNet, Vader, 
-   Misc code and documentation cleanups, 
-   Implement fixes suggested by LGTM 
+   Arabic stemmers (ARLSTem, Snowball),
+   NIST MT evaluation metric and added NIST international_tokenize,
+   Moses tokenizer,
+   Document Russian tagger,
+   Fix to Stanford segmenter,
+   Improve treebank detokenizer, VerbNet, Vader,
+   Misc code and documentation cleanups,
+   Implement fixes suggested by LGTM
 
 NLTK 3.2.4 released: May 2017
    Remove load-time dependency on Python requests library,
@@ -275,123 +275,123 @@ The NLTK Project has moved : November 2008
     The NLTK project has moved to Google Sites, Google Code and Google Groups.  Content for users and the nltk.org domain is hosted on Google Sites.  The home of NLTK development is now Google Code.  All discussion lists are at Google Groups.  Our old site at nltk.sourceforge.net will continue to be available while we complete this transition.  Old releases are still available via our SourceForge release page.  We're grateful to SourceForge for hosting our project since its inception in 2001.
 
 Version 0.9.5 released : August 2008
-    This version contains several low-level changes to facilitate installation, plus updates to several NLTK-Contrib projects. A new text module gives easy access to text corpora for newcomers to NLP. For full details see the ChangeLog. 
+    This version contains several low-level changes to facilitate installation, plus updates to several NLTK-Contrib projects. A new text module gives easy access to text corpora for newcomers to NLP. For full details see the ChangeLog.
 
 Version 0.9.4 released : August 2008
-    This version contains a substantially expanded semantics package contributed by Dan Garrette, improvements to the chunk, tag, wordnet, tree and feature-structure modules, Mallet interface, ngram language modeling, new GUI tools (WordNet? browser, chunking, POS-concordance). The data distribution includes the new NPS Chat Corpus. NLTK-Contrib includes the following new packages (still undergoing active development) NLG package (Petro Verkhogliad), dependency parsers (Jason Narad), coreference (Joseph Frazee), CCG parser (Graeme Gange), and a first order resolution theorem prover (Dan Garrette). For full details see the ChangeLog. 
+    This version contains a substantially expanded semantics package contributed by Dan Garrette, improvements to the chunk, tag, wordnet, tree and feature-structure modules, Mallet interface, ngram language modeling, new GUI tools (WordNet? browser, chunking, POS-concordance). The data distribution includes the new NPS Chat Corpus. NLTK-Contrib includes the following new packages (still undergoing active development) NLG package (Petro Verkhogliad), dependency parsers (Jason Narad), coreference (Joseph Frazee), CCG parser (Graeme Gange), and a first order resolution theorem prover (Dan Garrette). For full details see the ChangeLog.
 NLTK presented at ACL conference : June 2008
-    A paper on teaching courses using NLTK will be presented at the ACL conference: Multidisciplinary Instruction with the Natural Language Toolkit 
+    A paper on teaching courses using NLTK will be presented at the ACL conference: Multidisciplinary Instruction with the Natural Language Toolkit
 
 Version 0.9.3 released : June 2008
-    This version contains an improved WordNet? similarity module using pre-built information content files (included in the corpus distribution), new/improved interfaces to Weka, MEGAM and Prover9/Mace4 toolkits, improved Unicode support for corpus readers, a BNC corpus reader, and a rewrite of the Punkt sentence segmenter contributed by Joel Nothman. NLTK-Contrib includes an implementation of incremental algorithm for generating referring expression contributed by Margaret Mitchell. For full details see the ChangeLog. 
+    This version contains an improved WordNet? similarity module using pre-built information content files (included in the corpus distribution), new/improved interfaces to Weka, MEGAM and Prover9/Mace4 toolkits, improved Unicode support for corpus readers, a BNC corpus reader, and a rewrite of the Punkt sentence segmenter contributed by Joel Nothman. NLTK-Contrib includes an implementation of incremental algorithm for generating referring expression contributed by Margaret Mitchell. For full details see the ChangeLog.
 
 NLTK presented at LinuxFest Northwest : April 2008
-    Sean Boisen presented NLTK at LinuxFest Northwest, which took place in Bellingham, Washington. His presentation slides are available at: http://semanticbible.com/other/talks/2008/nltk/main.html 
+    Sean Boisen presented NLTK at LinuxFest Northwest, which took place in Bellingham, Washington. His presentation slides are available at: http://semanticbible.com/other/talks/2008/nltk/main.html
 
 NLTK in Google Summer of Code : April 2008
-    Google Summer of Code will sponsor two NLTK projects. Jason Narad won funding for a project on dependency parsers in NLTK (mentored by Sebastian Riedel and Jason Baldridge).  Petro Verkhogliad won funding for a project on natural language generation in NLTK (mentored by Robert Dale and Edward Loper). 
+    Google Summer of Code will sponsor two NLTK projects. Jason Narad won funding for a project on dependency parsers in NLTK (mentored by Sebastian Riedel and Jason Baldridge).  Petro Verkhogliad won funding for a project on natural language generation in NLTK (mentored by Robert Dale and Edward Loper).
 
 Python Software Foundation adopts NLTK for Google Summer of Code application : March 2008
-    The Python Software Foundation has listed NLTK projects for sponsorship from the 2008 Google Summer of Code program. For details please see http://wiki.python.org/moin/SummerOfCode. 
+    The Python Software Foundation has listed NLTK projects for sponsorship from the 2008 Google Summer of Code program. For details please see http://wiki.python.org/moin/SummerOfCode.
 
 Version 0.9.2 released : March 2008
-    This version contains a new inference module linked to the Prover9/Mace4 theorem-prover and model checker (Dan Garrette, Ewan Klein). It also includes the VerbNet? and PropBank? corpora along with corpus readers. A bug in the Reuters corpus reader has been fixed. NLTK-Contrib includes new work on the WordNet? browser (Jussi Salmela). For full details see the ChangeLog 
+    This version contains a new inference module linked to the Prover9/Mace4 theorem-prover and model checker (Dan Garrette, Ewan Klein). It also includes the VerbNet? and PropBank? corpora along with corpus readers. A bug in the Reuters corpus reader has been fixed. NLTK-Contrib includes new work on the WordNet? browser (Jussi Salmela). For full details see the ChangeLog
 
 Youtube video about NLTK : January 2008
-    The video from of the NLTK talk at the Bay Area Python Interest Group last July has been posted at http://www.youtube.com/watch?v=keXW_5-llD0 (1h15m) 
+    The video from of the NLTK talk at the Bay Area Python Interest Group last July has been posted at http://www.youtube.com/watch?v=keXW_5-llD0 (1h15m)
 
 Version 0.9.1 released : January 2008
-    This version contains new support for accessing text categorization corpora, along with several corpora categorized for topic, genre, question type, or sentiment. It includes several new corpora: Question classification data (Li & Roth), Reuters 21578 Corpus, Movie Reviews corpus (Pang & Lee), Recognising Textual Entailment (RTE) Challenges. NLTK-Contrib includes expanded support for semantics (Dan Garrette), readability scoring (Thomas Jakobsen, Thomas Skardal), and SIL Toolbox (Greg Aumann). The book contains many improvements in early chapters in response to reader feedback. For full details see the ChangeLog. 
+    This version contains new support for accessing text categorization corpora, along with several corpora categorized for topic, genre, question type, or sentiment. It includes several new corpora: Question classification data (Li & Roth), Reuters 21578 Corpus, Movie Reviews corpus (Pang & Lee), Recognising Textual Entailment (RTE) Challenges. NLTK-Contrib includes expanded support for semantics (Dan Garrette), readability scoring (Thomas Jakobsen, Thomas Skardal), and SIL Toolbox (Greg Aumann). The book contains many improvements in early chapters in response to reader feedback. For full details see the ChangeLog.
 
 2007
 ----
 
 NLTK-Lite 0.9 released : October 2007
-    This version is substantially revised and expanded from version 0.8. The entire toolkit can be accessed via a single import statement "import nltk", and there is a more convenient naming scheme. Calling deprecated functions generates messages that help programmers update their code. The corpus, tagger, and classifier modules have been redesigned. All functionality of the old NLTK 1.4.3 is now covered by NLTK-Lite 0.9. The book has been revised and expanded. A new data package incorporates the existing corpus collection and contains new sections for pre-specified grammars and pre-computed models. Several new corpora have been added, including treebanks for Portuguese, Spanish, Catalan and Dutch. A Macintosh distribution is provided. For full details see the ChangeLog. 
+    This version is substantially revised and expanded from version 0.8. The entire toolkit can be accessed via a single import statement "import nltk", and there is a more convenient naming scheme. Calling deprecated functions generates messages that help programmers update their code. The corpus, tagger, and classifier modules have been redesigned. All functionality of the old NLTK 1.4.3 is now covered by NLTK-Lite 0.9. The book has been revised and expanded. A new data package incorporates the existing corpus collection and contains new sections for pre-specified grammars and pre-computed models. Several new corpora have been added, including treebanks for Portuguese, Spanish, Catalan and Dutch. A Macintosh distribution is provided. For full details see the ChangeLog.
 
 NLTK-Lite 0.9b2 released : September 2007
-    This version is substantially revised and expanded from version 0.8. The entire toolkit can be accessed via a single import statement "import nltk", and many common NLP functions accessed directly, e.g. nltk.PorterStemmer?, nltk.ShiftReduceParser?. The corpus, tagger, and classifier modules have been redesigned. The book has been revised and expanded, and the chapters have been reordered. NLTK has a new data package incorporating the existing corpus collection and adding new sections for pre-specified grammars and pre-computed models. The Floresta Portuguese Treebank has been added. Release 0.9b2 fixes several minor problems with 0.9b1 and removes the numpy dependency. It includes a new corpus and corpus reader for Brazilian Portuguese news text (MacMorphy?) and an improved corpus reader for the Sinica Treebank, and a trained model for Portuguese sentence segmentation. 
+    This version is substantially revised and expanded from version 0.8. The entire toolkit can be accessed via a single import statement "import nltk", and many common NLP functions accessed directly, e.g. nltk.PorterStemmer?, nltk.ShiftReduceParser?. The corpus, tagger, and classifier modules have been redesigned. The book has been revised and expanded, and the chapters have been reordered. NLTK has a new data package incorporating the existing corpus collection and adding new sections for pre-specified grammars and pre-computed models. The Floresta Portuguese Treebank has been added. Release 0.9b2 fixes several minor problems with 0.9b1 and removes the numpy dependency. It includes a new corpus and corpus reader for Brazilian Portuguese news text (MacMorphy?) and an improved corpus reader for the Sinica Treebank, and a trained model for Portuguese sentence segmentation.
 
 NLTK-Lite 0.9b1 released : August 2007
-    This version is substantially revised and expanded from version 0.8. The entire toolkit can be accessed via a single import statement "import nltk", and many common NLP functions accessed directly, e.g. nltk.PorterStemmer?, nltk.ShiftReduceParser?. The corpus, tagger, and classifier modules have been redesigned. The book has been revised and expanded, and the chapters have been reordered. NLTK has a new data package incorporating the existing corpus collection and adding new sections for pre-specified grammars and pre-computed models. The Floresta Portuguese Treebank has been added. For full details see the ChangeLog?. 
+    This version is substantially revised and expanded from version 0.8. The entire toolkit can be accessed via a single import statement "import nltk", and many common NLP functions accessed directly, e.g. nltk.PorterStemmer?, nltk.ShiftReduceParser?. The corpus, tagger, and classifier modules have been redesigned. The book has been revised and expanded, and the chapters have been reordered. NLTK has a new data package incorporating the existing corpus collection and adding new sections for pre-specified grammars and pre-computed models. The Floresta Portuguese Treebank has been added. For full details see the ChangeLog?.
 
 NLTK talks in São Paulo : August 2007
-    Steven Bird will present NLTK in a series of talks at the First Brazilian School on Computational Linguistics, at the University of São Paulo in the first week of September. 
+    Steven Bird will present NLTK in a series of talks at the First Brazilian School on Computational Linguistics, at the University of São Paulo in the first week of September.
 
 NLTK talk in Bay Area : July 2007
-    Steven Bird, Ewan Klein, and Edward Loper will present NLTK at the Bay Area Python Interest Group, at Google on Thursday 12 July. 
+    Steven Bird, Ewan Klein, and Edward Loper will present NLTK at the Bay Area Python Interest Group, at Google on Thursday 12 July.
 
 NLTK-Lite 0.8 released : July 2007
-    This version is substantially revised and expanded from version 0.7. The code now includes improved interfaces to corpora, chunkers, grammars, frequency distributions, full integration with WordNet? 3.0 and WordNet? similarity measures. The book contains substantial revision of Part I (tokenization, tagging, chunking) and Part II (grammars and parsing). NLTK has several new corpora including the Switchboard Telephone Speech Corpus transcript sample (Talkbank Project), CMU Problem Reports Corpus sample, CONLL2002 POS+NER data, Patient Information Leaflet corpus sample, Indian POS-Tagged data (Bangla, Hindi, Marathi, Telugu), Shakespeare XML corpus sample, and the Universal Declaration of Human Rights corpus with text samples in 300+ languages. 
+    This version is substantially revised and expanded from version 0.7. The code now includes improved interfaces to corpora, chunkers, grammars, frequency distributions, full integration with WordNet? 3.0 and WordNet? similarity measures. The book contains substantial revision of Part I (tokenization, tagging, chunking) and Part II (grammars and parsing). NLTK has several new corpora including the Switchboard Telephone Speech Corpus transcript sample (Talkbank Project), CMU Problem Reports Corpus sample, CONLL2002 POS+NER data, Patient Information Leaflet corpus sample, Indian POS-Tagged data (Bangla, Hindi, Marathi, Telugu), Shakespeare XML corpus sample, and the Universal Declaration of Human Rights corpus with text samples in 300+ languages.
 
 NLTK features in Language Documentation and Conservation article : July 2007
-    An article Managing Fieldwork Data with Toolbox and the Natural Language Toolkit by Stuart Robinson, Greg Aumann, and Steven Bird appears in the inaugural issue of ''Language Documentation and Conservation''. It discusses several small Python programs for manipulating field data. 
+    An article Managing Fieldwork Data with Toolbox and the Natural Language Toolkit by Stuart Robinson, Greg Aumann, and Steven Bird appears in the inaugural issue of ''Language Documentation and Conservation''. It discusses several small Python programs for manipulating field data.
 
 NLTK features in ACM Crossroads article : May 2007
-    An article Getting Started on Natural Language Processing with Python by Nitin Madnani will appear in ''ACM Crossroads'', the ACM Student Journal. It discusses NLTK in detail, and provides several helpful examples including an entertaining free word association program. 
+    An article Getting Started on Natural Language Processing with Python by Nitin Madnani will appear in ''ACM Crossroads'', the ACM Student Journal. It discusses NLTK in detail, and provides several helpful examples including an entertaining free word association program.
 
 NLTK-Lite 0.7.5 released : May 2007
-    This version contains improved interfaces for WordNet 3.0 and WordNet-Similarity, the Lancaster Stemmer (contributed by Steven Tomcavage), and several new corpora including the Switchboard Telephone Speech Corpus transcript sample (Talkbank Project), CMU Problem Reports Corpus sample, CONLL2002 POS+NER data, Patient Information Leaflet corpus sample and WordNet 3.0 data files. With this distribution WordNet no longer needs to be separately installed. 
+    This version contains improved interfaces for WordNet 3.0 and WordNet-Similarity, the Lancaster Stemmer (contributed by Steven Tomcavage), and several new corpora including the Switchboard Telephone Speech Corpus transcript sample (Talkbank Project), CMU Problem Reports Corpus sample, CONLL2002 POS+NER data, Patient Information Leaflet corpus sample and WordNet 3.0 data files. With this distribution WordNet no longer needs to be separately installed.
 
 NLTK-Lite 0.7.4 released : May 2007
-    This release contains new corpora and corpus readers for Indian POS-Tagged data (Bangla, Hindi, Marathi, Telugu), and the Sinica Treebank, and substantial revision of Part II of the book on structured programming, grammars and parsing. 
+    This release contains new corpora and corpus readers for Indian POS-Tagged data (Bangla, Hindi, Marathi, Telugu), and the Sinica Treebank, and substantial revision of Part II of the book on structured programming, grammars and parsing.
 
 NLTK-Lite 0.7.3 released : April 2007
-    This release contains improved chunker and PCFG interfaces, the Shakespeare XML corpus sample and corpus reader, improved tutorials and improved formatting of code samples, and categorization of problem sets by difficulty. 
+    This release contains improved chunker and PCFG interfaces, the Shakespeare XML corpus sample and corpus reader, improved tutorials and improved formatting of code samples, and categorization of problem sets by difficulty.
 
 NLTK-Lite 0.7.2 released : March 2007
-    This release contains new text classifiers (Cosine, NaiveBayes?, Spearman), contributed by Sam Huston, simple feature detectors, the UDHR corpus with text samples in 300+ languages and a corpus interface; improved tutorials (340 pages in total); additions to contrib area including Kimmo finite-state morphology system, Lambek calculus system, and a demonstration of text classifiers for language identification. 
+    This release contains new text classifiers (Cosine, NaiveBayes?, Spearman), contributed by Sam Huston, simple feature detectors, the UDHR corpus with text samples in 300+ languages and a corpus interface; improved tutorials (340 pages in total); additions to contrib area including Kimmo finite-state morphology system, Lambek calculus system, and a demonstration of text classifiers for language identification.
 
 NLTK-Lite 0.7.1 released : January 2007
-    This release contains bugfixes in the WordNet? and HMM modules. 
+    This release contains bugfixes in the WordNet? and HMM modules.
 
 2006
 ----
 
 NLTK-Lite 0.7 released : December 2006
-    This release contains: new semantic interpretation package (Ewan Klein), new support for SIL Toolbox format (Greg Aumann), new chunking package including cascaded chunking (Steven Bird), new interface to WordNet? 2.1 and Wordnet similarity measures (David Ormiston Smith), new support for Penn Treebank format (Yoav Goldberg), bringing the codebase to 48,000 lines; substantial new chapters on semantic interpretation and chunking, and substantial revisions to several other chapters, bringing the textbook documentation to 280 pages; 
+    This release contains: new semantic interpretation package (Ewan Klein), new support for SIL Toolbox format (Greg Aumann), new chunking package including cascaded chunking (Steven Bird), new interface to WordNet? 2.1 and Wordnet similarity measures (David Ormiston Smith), new support for Penn Treebank format (Yoav Goldberg), bringing the codebase to 48,000 lines; substantial new chapters on semantic interpretation and chunking, and substantial revisions to several other chapters, bringing the textbook documentation to 280 pages;
 
 NLTK-Lite 0.7b1 released : December 2006
-    This release contains: new semantic interpretation package (Ewan Klein), new support for SIL Toolbox format (Greg Aumann), new chunking package including cascaded chunking, wordnet package updated for version 2.1 of Wordnet, and prototype wordnet similarity measures (David Ormiston Smith), bringing the codebase to 48,000 lines; substantial new chapters on semantic interpretation and chunking, and substantial revisions to several other chapters, bringing the textbook documentation to 270 pages; 
+    This release contains: new semantic interpretation package (Ewan Klein), new support for SIL Toolbox format (Greg Aumann), new chunking package including cascaded chunking, wordnet package updated for version 2.1 of Wordnet, and prototype wordnet similarity measures (David Ormiston Smith), bringing the codebase to 48,000 lines; substantial new chapters on semantic interpretation and chunking, and substantial revisions to several other chapters, bringing the textbook documentation to 270 pages;
 
 NLTK-Lite 0.6.6 released : October 2006
-    This release contains bugfixes, improvements to Shoebox file format support, and expanded tutorial discussions of programming and feature-based grammars. 
+    This release contains bugfixes, improvements to Shoebox file format support, and expanded tutorial discussions of programming and feature-based grammars.
 
 NLTK-Lite 0.6.5 released : July 2006
-    This release contains improvements to Shoebox file format support (by Stuart Robinson and Greg Aumann); an implementation of hole semantics (by Peter Wang); improvements to lambda calculus and semantic interpretation modules (by Ewan Klein); a new corpus (Sinica Treebank sample); and expanded tutorial discussions of trees, feature-based grammar, unification, PCFGs, and more exercises. 
+    This release contains improvements to Shoebox file format support (by Stuart Robinson and Greg Aumann); an implementation of hole semantics (by Peter Wang); improvements to lambda calculus and semantic interpretation modules (by Ewan Klein); a new corpus (Sinica Treebank sample); and expanded tutorial discussions of trees, feature-based grammar, unification, PCFGs, and more exercises.
 
 NLTK-Lite passes 10k download milestone : May 2006
-    We have now had 10,000 downloads of NLTK-Lite in the nine months since it was first released. 
+    We have now had 10,000 downloads of NLTK-Lite in the nine months since it was first released.
 
 NLTK-Lite 0.6.4 released : April 2006
-    This release contains new corpora (Senseval 2, TIMIT sample), a clusterer, cascaded chunker, and several substantially revised tutorials. 
+    This release contains new corpora (Senseval 2, TIMIT sample), a clusterer, cascaded chunker, and several substantially revised tutorials.
 
 2005
 ----
 
 NLTK 1.4 no longer supported : December 2005
-    The main development has switched to NLTK-Lite. The latest version of NLTK can still be downloaded; see the installation page for instructions. 
+    The main development has switched to NLTK-Lite. The latest version of NLTK can still be downloaded; see the installation page for instructions.
 
 NLTK-Lite 0.6 released : November 2005
-    contains bug-fixes, PDF versions of tutorials, expanded fieldwork tutorial, PCFG grammar induction (by Nathan Bodenstab), and prototype concordance and paradigm display tools (by Peter Spiller and Will Hardy). 
+    contains bug-fixes, PDF versions of tutorials, expanded fieldwork tutorial, PCFG grammar induction (by Nathan Bodenstab), and prototype concordance and paradigm display tools (by Peter Spiller and Will Hardy).
 
 NLTK-Lite 0.5 released : September 2005
-    contains bug-fixes, improved tutorials, more project suggestions, and a pronunciation dictionary. 
+    contains bug-fixes, improved tutorials, more project suggestions, and a pronunciation dictionary.
 
 NLTK-Lite 0.4 released : September 2005
-    contains bug-fixes, improved tutorials, more project suggestions, and probabilistic parsers. 
+    contains bug-fixes, improved tutorials, more project suggestions, and probabilistic parsers.
 
 NLTK-Lite 0.3 released : August 2005
-    contains bug-fixes, documentation clean-up, project suggestions, and the chart parser demos including one for Earley parsing by Jean Mark Gawron. 
+    contains bug-fixes, documentation clean-up, project suggestions, and the chart parser demos including one for Earley parsing by Jean Mark Gawron.
 
 NLTK-Lite 0.2 released : July 2005
-    contains bug-fixes, documentation clean-up, and some translations of tutorials into Brazilian Portuguese by Tiago Tresoldi. 
+    contains bug-fixes, documentation clean-up, and some translations of tutorials into Brazilian Portuguese by Tiago Tresoldi.
 
 NLTK-Lite 0.1 released : July 2005
-    substantially simplified and streamlined version of NLTK has been released 
+    substantially simplified and streamlined version of NLTK has been released
 
 Brazilian Portuguese Translation : April 2005
-    top-level pages of this website have been translated into Brazilian Portuguese by Tiago Tresoldi; translations of the tutorials are in preparation http://hermes.sourceforge.net/nltk-br/ 
+    top-level pages of this website have been translated into Brazilian Portuguese by Tiago Tresoldi; translations of the tutorials are in preparation http://hermes.sourceforge.net/nltk-br/
 
 1.4.3 Release : February 2005
-    NLTK 1.4.3 has been released; this is the first version which is compatible with Python 2.4. 
+    NLTK 1.4.3 has been released; this is the first version which is compatible with Python 2.4.

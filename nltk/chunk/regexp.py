@@ -8,15 +8,15 @@
 
 import re
 
-from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
+from nltk.tree import Tree
 
 # //////////////////////////////////////////////////////
 # ChunkString
 # //////////////////////////////////////////////////////
 
 
-class ChunkString(object):
+class ChunkString:
     """
     A string-based encoding of a particular chunking of a text.
     Internally, the ``ChunkString`` class uses a single string to
@@ -100,8 +100,7 @@ class ChunkString(object):
         elif isinstance(tok, Tree):
             return tok.label()
         else:
-            raise ValueError(
-                "chunk structures must contain tagged " "tokens or trees")
+            raise ValueError("chunk structures must contain tagged " "tokens or trees")
 
     def _verify(self, s, verify_tags):
         """
@@ -130,7 +129,7 @@ class ChunkString(object):
         # depth limit for regular expressions.
         brackets = ChunkString._BRACKETS.sub("", s)
         for i in range(1 + len(brackets) // 5000):
-            substr = brackets[i * 5000: i * 5000 + 5000]
+            substr = brackets[i * 5000 : i * 5000 + 5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError(
                     "Transformation generated invalid " "chunkstring:\n  %s" % s
@@ -165,7 +164,7 @@ class ChunkString(object):
 
             # Find the list of tokens contained in this piece.
             length = piece.count("<")
-            subsequence = self._pieces[index: index + length]
+            subsequence = self._pieces[index : index + length]
 
             # Add this list of tokens to our pieces.
             if piece_in_chunk:
@@ -237,7 +236,7 @@ class ChunkString(object):
         tags will line up with the representation of other
         ``ChunkStrings`` for the same text, regardless of the chunking.
 
-       :rtype: str
+        :rtype: str
         """
         # Add spaces to make everything line up.
         str = re.sub(r">(?!\})", r"> ", self._str)
@@ -252,7 +251,7 @@ class ChunkString(object):
 # //////////////////////////////////////////////////////
 
 
-class RegexpChunkRule(object):
+class RegexpChunkRule:
     """
     A rule specifying how to modify the chunking in a ``ChunkString``,
     using a transformational regular expression.  The
@@ -504,8 +503,7 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile(r"\{(?P<chunk>%s)\}" %
-                            tag_pattern2re_pattern(tag_pattern))
+        regexp = re.compile(r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
         RegexpChunkRule.__init__(self, regexp, r"\g<chunk>", descr)
 
     def __repr__(self):
@@ -651,7 +649,7 @@ class SplitRule(RegexpChunkRule):
         description string; that string can be accessed
         separately with the ``descr()`` method.
 
-       :rtype: str
+        :rtype: str
         """
         return (
             "<SplitRule: "
@@ -877,7 +875,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
         :rtype: str
         """
-        return "<ChunkRuleWithContext:  %r, %r, %r>" % (
+        return "<ChunkRuleWithContext:  {!r}, {!r}, {!r}>".format(
             self._left_context_tag_pattern,
             self._chunk_tag_pattern,
             self._right_context_tag_pattern,
@@ -891,7 +889,7 @@ class ChunkRuleWithContext(RegexpChunkRule):
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(
-    r"^((%s|<%s>)*)$" % (r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
+    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
 )
 
 
@@ -906,8 +904,8 @@ def tag_pattern2re_pattern(tag_pattern):
           ``'<NN>+'`` matches one or more repetitions of ``'<NN>'``, not
           ``'<NN'`` followed by one or more repetitions of ``'>'``.
         - Whitespace in tag patterns is ignored.  So
-          ``'<DT> | <NN>'`` is equivalant to ``'<DT>|<NN>'``
-        - In tag patterns, ``'.'`` is equivalant to ``'[^{}<>]'``; so
+          ``'<DT> | <NN>'`` is equivalent to ``'<DT>|<NN>'``
+        - In tag patterns, ``'.'`` is equivalent to ``'[^{}<>]'``; so
           ``'<NN.*>'`` matches any single tag starting with ``'NN'``.
 
     In particular, ``tag_pattern2re_pattern`` performs the following
@@ -1057,7 +1055,7 @@ class RegexpChunkParser(ChunkParserI):
         :param trace: The level of tracing that should be used when
             parsing a text.  ``0`` will generate no tracing output;
             ``1`` will generate normal tracing output; and ``2`` or
-            highter will generate verbose tracing output.  This value
+            higher will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor.
         :rtype: Tree
@@ -1263,7 +1261,7 @@ class RegexpParser(ChunkParserI):
         :param trace: The level of tracing that should be used when
             parsing a text.  ``0`` will generate no tracing output;
             ``1`` will generate normal tracing output; and ``2`` or
-            highter will generate verbose tracing output.  This value
+            higher will generate verbose tracing output.  This value
             overrides the trace level value that was given to the
             constructor.
         :return: the chunked output.
@@ -1337,9 +1335,8 @@ def demo_eval(chunkparser, text):
 
     print("/" + ("=" * 75) + "\\")
     print("Scoring", chunkparser)
-    print(("-" * 77))
-    print("Precision: %5.1f%%" %
-          (chunkscore.precision() * 100), " " * 4, end=" ")
+    print("-" * 77)
+    print("Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" ")
     print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")
     print("F-Measure: %5.1f%%" % (chunkscore.f_measure() * 100))
 
@@ -1372,7 +1369,7 @@ def demo():
     and strategies.
     """
 
-    from nltk import chunk, Tree
+    from nltk import Tree, chunk
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
@@ -1428,8 +1425,7 @@ def demo():
     print("Demonstration of empty grammar:")
 
     cp = chunk.RegexpParser("")
-    print(chunk.accuracy(cp, conll2000.chunked_sents(
-        "test.txt", chunk_types=("NP",))))
+    print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",))))
 
     print()
     print("Demonstration of accuracy evaluation using CoNLL tags:")

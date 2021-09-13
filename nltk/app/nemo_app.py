@@ -7,20 +7,9 @@ Finding (and Replacing) Nemo
 Instant Regular Expressions
 Created by Aristide Grange
 """
-import re
 import itertools
-
-from tkinter import (
-    Frame,
-    Label,
-    PhotoImage,
-    Scrollbar,
-    Text,
-    Tk,
-    SEL_FIRST,
-    SEL_LAST,
-)
-
+import re
+from tkinter import SEL_FIRST, SEL_LAST, Frame, Label, PhotoImage, Scrollbar, Text, Tk
 
 windowTitle = "Finding (and Replacing) Nemo"
 initialFind = r"n(.*?)e(.*?)m(.*?)o"
@@ -110,7 +99,7 @@ class FindZone(Zone):
         for color in colors:
             self.txt.tag_remove(color, "1.0", "end")
             self.txt.tag_remove("emph" + color, "1.0", "end")
-        self.rex = re.compile("")  # default value in case of misformed regexp
+        self.rex = re.compile("")  # default value in case of malformed regexp
         self.rex = re.compile(self.fld.get("1.0", "end")[:-1], re.MULTILINE)
         try:
             re.compile("(?P<emph>%s)" % self.fld.get(SEL_FIRST, SEL_LAST))

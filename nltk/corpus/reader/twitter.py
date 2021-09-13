@@ -13,10 +13,9 @@ have been serialised into line-delimited JSON.
 import json
 import os
 
-from nltk.tokenize import TweetTokenizer
-
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, ZipFilePathPointer, concat
+from nltk.tokenize import TweetTokenizer
 
 
 class TwitterCorpusReader(CorpusReader):
@@ -75,7 +74,7 @@ class TwitterCorpusReader(CorpusReader):
             if isinstance(path, ZipFilePathPointer):
                 pass
             elif os.path.getsize(path) == 0:
-                raise ValueError("File {} is empty".format(path))
+                raise ValueError(f"File {path} is empty")
         """Check that all user-created corpus files are non-empty."""
 
         self._word_tokenizer = word_tokenizer
@@ -126,20 +125,6 @@ class TwitterCorpusReader(CorpusReader):
         tweets = self.strings(fileids)
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
-
-    def raw(self, fileids=None):
-        """
-        Return the corpora in their raw form.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def _read_tweets(self, stream):
         """

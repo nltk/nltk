@@ -9,26 +9,14 @@
 import sys
 
 from nltk.corpus.reader import util
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 
 
 class ChasenCorpusReader(CorpusReader):
     def __init__(self, root, fileids, encoding="utf8", sent_splitter=None):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
-
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def words(self, fileids=None):
         return concat(
@@ -152,7 +140,7 @@ def demo():
 
     print(
         "\nEOS\n".join(
-            "\n".join("%s/%s" % (w[0], w[1].split("\t")[2]) for w in sent)
+            "\n".join("{}/{}".format(w[0], w[1].split("\t")[2]) for w in sent)
             for sent in jeita.tagged_sents()[2170:2173]
         )
     )

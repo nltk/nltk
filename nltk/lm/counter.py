@@ -91,7 +91,7 @@ class NgramCounter:
         If `ngram_text` is specified, counts ngrams from it, otherwise waits for
         `update` method to be called explicitly.
 
-        :param ngram_text: Optional text containing senteces of ngrams, as for `update` method.
+        :param ngram_text: Optional text containing sentences of ngrams, as for `update` method.
         :type ngram_text: Iterable(Iterable(tuple(str))) or None
 
         """
@@ -107,7 +107,7 @@ class NgramCounter:
         Expects `ngram_text` to be a sequence of sentences (sequences).
         Each sentence consists of ngrams as tuples of strings.
 
-        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing senteces of ngrams.
+        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing sentences of ngrams.
         :raises TypeError: if the ngrams are not tuples.
 
         """
@@ -116,8 +116,7 @@ class NgramCounter:
             for ngram in sent:
                 if not isinstance(ngram, tuple):
                     raise TypeError(
-                        "Ngram <{0}> isn't a tuple, "
-                        "but {1}".format(ngram, type(ngram))
+                        "Ngram <{}> isn't a tuple, " "but {}".format(ngram, type(ngram))
                     )
 
                 ngram_order = len(ngram)
@@ -152,7 +151,7 @@ class NgramCounter:
             return self._counts.__getitem__(len(item) + 1)[tuple(item)]
 
     def __str__(self):
-        return "<{0} with {1} ngram orders and {2} ngrams>".format(
+        return "<{} with {} ngram orders and {} ngrams>".format(
             self.__class__.__name__, len(self._counts), self.N()
         )
 

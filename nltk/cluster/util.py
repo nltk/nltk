@@ -5,11 +5,10 @@
 # Contributor: J Richard Snape
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from abc import abstractmethod
-
 import copy
-from sys import stdout
+from abc import abstractmethod
 from math import sqrt
+from sys import stdout
 
 try:
     import numpy
@@ -131,8 +130,8 @@ def cosine_distance(u, v):
     return 1 - (numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
 
 
-class _DendrogramNode(object):
-    """ Tree node of a dendrogram. """
+class _DendrogramNode:
+    """Tree node of a dendrogram."""
 
     def __init__(self, value, *children):
         self._value = value
@@ -174,7 +173,7 @@ class _DendrogramNode(object):
         return cosine_distance(self._value, comparator._value) < 0
 
 
-class Dendrogram(object):
+class Dendrogram:
     """
     Represents a dendrogram, a tree with a specified branching order.  This
     must be initialised with the leaf items, then iteratively call merge for
@@ -201,7 +200,7 @@ class Dendrogram(object):
         :type   indices: seq of int
         """
         assert len(indices) >= 2
-        node = _DendrogramNode(self._merge, *[self._items[i] for i in indices])
+        node = _DendrogramNode(self._merge, *(self._items[i] for i in indices))
         self._merge += 1
         self._items[indices[0]] = node
         for i in indices[1:]:
@@ -249,7 +248,7 @@ class Dendrogram(object):
 
         # display functions
         def format(centre, left=" ", right=" "):
-            return "%s%s%s" % (lhalf * left, centre, right * rhalf)
+            return f"{lhalf * left}{centre}{right * rhalf}"
 
         def display(str):
             stdout.write(str)

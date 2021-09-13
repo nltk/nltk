@@ -13,7 +13,7 @@ from nltk.corpus.reader import CorpusReader
 
 
 class LinThesaurusCorpusReader(CorpusReader):
-    """ Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin. """
+    """Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin."""
 
     # Compiled regular expression for extracting the key from the first line of each
     # thesaurus entry
@@ -21,7 +21,7 @@ class LinThesaurusCorpusReader(CorpusReader):
 
     @staticmethod
     def __defaultdict_factory():
-        """ Factory for creating defaultdict of defaultdict(dict)s """
+        """Factory for creating defaultdict of defaultdict(dict)s"""
         return defaultdict(dict)
 
     def __init__(self, root, badscore=0.0):
@@ -34,7 +34,7 @@ class LinThesaurusCorpusReader(CorpusReader):
         :type badscore: C{float}
         """
 
-        super(LinThesaurusCorpusReader, self).__init__(root, r"sim[A-Z]\.lsp")
+        super().__init__(root, r"sim[A-Z]\.lsp")
         self._thesaurus = defaultdict(LinThesaurusCorpusReader.__defaultdict_factory)
         self._badscore = badscore
         for path, encoding, fileid in self.abspaths(
@@ -175,7 +175,7 @@ def demo():
     print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
     print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print("Similarity score for %s and %s:" % (word1, word2))
+    print(f"Similarity score for {word1} and {word2}:")
     print(thes.similarity(word1, word2))
 
 

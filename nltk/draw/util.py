@@ -35,6 +35,7 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 """
 from abc import ABCMeta, abstractmethod
 from tkinter import (
+    RAISED,
     Button,
     Canvas,
     Entry,
@@ -48,7 +49,6 @@ from tkinter import (
     Tk,
     Toplevel,
     Widget,
-    RAISED,
 )
 from tkinter.filedialog import asksaveasfilename
 
@@ -680,7 +680,7 @@ class CanvasWidget(metaclass=ABCMeta):
         if not hasattr(self, "_CanvasWidget__children"):
             self.__children = []
         if child.__parent is not None:
-            raise ValueError("{} already has a parent".format(child))
+            raise ValueError(f"{child} already has a parent")
         child.__parent = self
         self.__children.append(child)
 
@@ -975,7 +975,7 @@ class AbstractContainerWidget(CanvasWidget):
         name = self.__class__.__name__
         if name[-6:] == "Widget":
             name = name[:-6]
-        return "[%s: %r]" % (name, self._child)
+        return f"[{name}: {self._child!r}]"
 
 
 class BoxWidget(AbstractContainerWidget):
@@ -1416,7 +1416,7 @@ class SequenceWidget(CanvasWidget):
     def remove_child(self, child):
         """
         Remove the given child canvas widget.  ``child``'s parent will
-        be set ot None.
+        be set to None.
 
         :type child: CanvasWidget
         :param child: The child canvas widget to remove.
@@ -1588,7 +1588,7 @@ class StackWidget(CanvasWidget):
     def remove_child(self, child):
         """
         Remove the given child canvas widget.  ``child``'s parent will
-        be set ot None.
+        be set to None.
 
         :type child: CanvasWidget
         :param child: The child canvas widget to remove.
@@ -1762,7 +1762,7 @@ class ScrollWatcherWidget(CanvasWidget):
 ##//////////////////////////////////////////////////////
 
 
-class CanvasFrame(object):
+class CanvasFrame:
     """
     A ``Tkinter`` frame containing a canvas and scrollbars.
     ``CanvasFrame`` uses a ``ScrollWatcherWidget`` to ensure that all of
@@ -1812,7 +1812,7 @@ class CanvasFrame(object):
         canvas.pack(expand=1, fill="both", side="left")
 
         # Set initial scroll region.
-        scrollregion = "0 0 %s %s" % (canvas["width"], canvas["height"])
+        scrollregion = "0 0 {} {}".format(canvas["width"], canvas["height"])
         canvas["scrollregion"] = scrollregion
 
         self._scrollwatcher = ScrollWatcherWidget(canvas)
@@ -2003,7 +2003,7 @@ class CanvasFrame(object):
 ##//////////////////////////////////////////////////////
 
 
-class ShowText(object):
+class ShowText:
     """
     A ``Tkinter`` window used to display a text.  ``ShowText`` is
     typically used by graphical tools to display help text, or similar
@@ -2086,7 +2086,7 @@ class ShowText(object):
 ##//////////////////////////////////////////////////////
 
 
-class EntryDialog(object):
+class EntryDialog:
     """
     A dialog box for entering
     """
@@ -2167,7 +2167,7 @@ class EntryDialog(object):
 ##//////////////////////////////////////////////////////
 
 
-class ColorizedList(object):
+class ColorizedList:
     """
     An abstract base class for displaying a colorized list of items.
     Subclasses should define:

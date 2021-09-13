@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -13,6 +12,8 @@ Transformation Based Learning
 
 A general purpose package for Transformation Based Learning,
 currently used by nltk.tag.BrillTagger.
+
+isort:skip_file
 """
 
 from nltk.tbl.template import Template

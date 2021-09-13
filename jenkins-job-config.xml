@@ -63,7 +63,6 @@
     <jenkins.plugins.shiningpanda.matrix.ToxAxis plugin="shiningpanda@0.16">
       <name>TOXENV</name>
       <values>
-        <string>py26-jenkins</string>
         <string>py32-jenkins</string>
       </values>
     </jenkins.plugins.shiningpanda.matrix.ToxAxis>

@@ -303,5 +303,3 @@ they don't get smoothed
     >>> cpd2 = pickle.loads(pickle.dumps(cpd))
     >>> cpd['foo'].prob('hello') == cpd2['foo'].prob('hello')
     True
-
-

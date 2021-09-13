@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: IBM Model Core
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -58,7 +57,7 @@ def longest_target_sentence_length(sentence_aligned_corpus):
     return max_m
 
 
-class IBMModel(object):
+class IBMModel:
     """
     Abstract base class for all IBM models
     """
@@ -207,7 +206,7 @@ class IBMModel(object):
         m = len(trg_sentence) - 1
 
         alignment = [0] * (m + 1)  # init all alignments to NULL
-        cepts = [[] for i in range((l + 1))]  # init all cepts to empty list
+        cepts = [[] for i in range(l + 1)]  # init all cepts to empty list
 
         for j in range(1, m + 1):
             if j == j_pegged:
@@ -381,7 +380,7 @@ class IBMModel(object):
         return 0.0
 
 
-class AlignmentInfo(object):
+class AlignmentInfo:
     """
     Helper data object for training IBM Models 3 and up
 
@@ -516,7 +515,7 @@ class AlignmentInfo(object):
         return hash(self.alignment)
 
 
-class Counts(object):
+class Counts:
     """
     Data object to store counts of various parameters during training
     """

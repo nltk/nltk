@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -13,7 +12,7 @@ A module for interfacing with the HunPos open-source POS-tagger.
 """
 
 import os
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI

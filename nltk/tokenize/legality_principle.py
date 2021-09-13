@@ -22,10 +22,10 @@ the longest legal onset is preferable---``Onset Maximization''.
 The default implementation assumes an English vowel set, but the `vowels` attribute
 can be set to IPA or any other alphabet's vowel set for the use-case.
 Both a valid set of vowels as well as a text corpus of words in the language
-are necessary to determine legal onsets and subsequently syllabify words. 
+are necessary to determine legal onsets and subsequently syllabify words.
 
 The legality principle with onset maximization is a universal syllabification algorithm,
-but that does not mean it performs equally across languages. Bartlett et al. (2009) 
+but that does not mean it performs equally across languages. Bartlett et al. (2009)
 is a good benchmark for English accuracy if utilizing IPA (pg. 311).
 
 References:
@@ -61,11 +61,13 @@ class LegalitySyllableTokenizer(TokenizerI):
         [['This'], ['is'], ['a'], ['won', 'der', 'ful'], ['sen', 'ten', 'ce'], ['.']]
     """
 
-    def __init__(self, tokenized_source_text, vowels="aeiouy", legal_frequency_threshold=.001):
+    def __init__(
+        self, tokenized_source_text, vowels="aeiouy", legal_frequency_threshold=0.001
+    ):
         """
         :param tokenized_source_text: List of valid tokens in the language
         :type tokenized_source_text: list(str)
-        :param vowels: Valid vowels in language or IPA represenation
+        :param vowels: Valid vowels in language or IPA representation
         :type vowels: str
         :param legal_frequency_threshold: Lowest frequency of all onsets to be considered a legal onset
         :type legal_frequency_threshold: float
@@ -84,9 +86,11 @@ class LegalitySyllableTokenizer(TokenizerI):
         :rtype: set(str)
         """
         onsets = [self.onset(word) for word in words]
-        legal_onsets = [k for k,v 
-                        in Counter(onsets).items()
-                        if (v / len(onsets)) > self.legal_frequency_threshold]
+        legal_onsets = [
+            k
+            for k, v in Counter(onsets).items()
+            if (v / len(onsets)) > self.legal_frequency_threshold
+        ]
         return set(legal_onsets)
 
     def onset(self, word):

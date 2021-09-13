@@ -14,18 +14,18 @@ import os
 import subprocess
 
 import nltk
-from nltk.sem.logic import (
-    Expression,
-    ExistsExpression,
-    AllExpression,
-    NegatedExpression,
-    AndExpression,
-    IffExpression,
-    OrExpression,
-    EqualityExpression,
-    ImpExpression,
-)
 from nltk.inference.api import BaseProverCommand, Prover
+from nltk.sem.logic import (
+    AllExpression,
+    AndExpression,
+    EqualityExpression,
+    ExistsExpression,
+    Expression,
+    IffExpression,
+    ImpExpression,
+    NegatedExpression,
+    OrExpression,
+)
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
@@ -44,7 +44,7 @@ p9_return_codes = {
 }
 
 
-class Prover9CommandParent(object):
+class Prover9CommandParent:
     """
     A common base class used by both ``Prover9Command`` and ``MaceCommand``,
     which is responsible for maintaining a goal and a set of assumptions,
@@ -109,7 +109,7 @@ class Prover9Command(Prover9CommandParent, BaseProverCommand):
             return proof_string.rstrip()
 
 
-class Prover9Parent(object):
+class Prover9Parent:
     """
     A common class extended by both ``Prover9`` and ``Mace <mace.Mace>``.
     It contains the functionality required to convert NLTK-style
@@ -439,7 +439,7 @@ def test_prove(arguments):
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
             print("   %s" % a)
-        print("|- %s: %s\n" % (g, p))
+        print(f"|- {g}: {p}\n")
 
 
 arguments = [

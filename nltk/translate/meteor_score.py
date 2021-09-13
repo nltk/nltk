@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Machine Translation
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Uday Krishna <udaykrishna5@gmail.com>
+# Contributor: Tom Aarsen
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 
-from nltk.stem.porter import PorterStemmer
-from nltk.corpus import wordnet
 from itertools import chain, product
+
+from nltk.corpus import wordnet
+from nltk.stem.porter import PorterStemmer
 
 
 def _generate_enums(hypothesis, reference, preprocess=str.lower):
@@ -102,27 +103,7 @@ def _enum_stem_match(
         (word_pair[0], stemmer.stem(word_pair[1])) for word_pair in enum_reference_list
     ]
 
-    word_match, enum_unmat_hypo_list, enum_unmat_ref_list = _match_enums(
-        stemmed_enum_list1, stemmed_enum_list2
-    )
-
-    enum_unmat_hypo_list = (
-        list(zip(*enum_unmat_hypo_list)) if len(enum_unmat_hypo_list) > 0 else []
-    )
-
-    enum_unmat_ref_list = (
-        list(zip(*enum_unmat_ref_list)) if len(enum_unmat_ref_list) > 0 else []
-    )
-
-    enum_hypothesis_list = list(
-        filter(lambda x: x[0] not in enum_unmat_hypo_list, enum_hypothesis_list)
-    )
-
-    enum_reference_list = list(
-        filter(lambda x: x[0] not in enum_unmat_ref_list, enum_reference_list)
-    )
-
-    return word_match, enum_hypothesis_list, enum_reference_list
+    return _match_enums(stemmed_enum_list1, stemmed_enum_list2)
 
 
 def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
@@ -199,7 +180,7 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
     )
 
 
-def _enum_allign_words(
+def _enum_align_words(
     enum_hypothesis_list, enum_reference_list, stemmer=PorterStemmer(), wordnet=wordnet
 ):
     """
@@ -240,7 +221,7 @@ def _enum_allign_words(
     )
 
 
-def allign_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet):
+def align_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -257,7 +238,7 @@ def allign_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet
     :rtype: list of tuples, list of tuples, list of tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
-    return _enum_allign_words(
+    return _enum_align_words(
         enum_hypothesis_list, enum_reference_list, stemmer=stemmer, wordnet=wordnet
     )
 
@@ -265,11 +246,11 @@ def allign_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet
 def _count_chunks(matches):
     """
     Counts the fewest possible number of chunks such that matched unigrams
-    of each chunk are adjacent to each other. This is used to caluclate the
+    of each chunk are adjacent to each other. This is used to calculate the
     fragmentation part of the metric.
 
-    :param matches: list containing a mapping of matched words (output of allign_words)
-    :return: Number of chunks a sentence is divided into post allignment
+    :param matches: list containing a mapping of matched words (output of align_words)
+    :return: Number of chunks a sentence is divided into post alignment
     :rtype: int
     """
     i = 0
@@ -318,8 +299,8 @@ def single_meteor_score(
     >>> round(meteor_score('this is a cat', 'non matching hypothesis'),4)
     0.0
 
-    :param references: reference sentences
-    :type references: list(str)
+    :param reference: reference sentence
+    :type reference: str
     :param hypothesis: a hypothesis sentence
     :type hypothesis: str
     :param preprocess: preprocessing function (default str.lower)
@@ -333,7 +314,7 @@ def single_meteor_score(
     :param beta: parameter for controlling shape of penalty as a
                  function of as a function of fragmentation.
     :type beta: float
-    :param gamma: relative weight assigned to fragmentation penality.
+    :param gamma: relative weight assigned to fragmentation penalty.
     :type gamma: float
     :return: The sentence-level METEOR score.
     :rtype: float
@@ -343,7 +324,9 @@ def single_meteor_score(
     )
     translation_length = len(enum_hypothesis)
     reference_length = len(enum_reference)
-    matches, _, _ = _enum_allign_words(enum_hypothesis, enum_reference, stemmer=stemmer)
+    matches, _, _ = _enum_align_words(
+        enum_hypothesis, enum_reference, stemmer=stemmer, wordnet=wordnet
+    )
     matches_count = len(matches)
     try:
         precision = float(matches_count) / translation_length
@@ -411,23 +394,21 @@ def meteor_score(
     :param beta: parameter for controlling shape of penalty as a function
                  of as a function of fragmentation.
     :type beta: float
-    :param gamma: relative weight assigned to fragmentation penality.
+    :param gamma: relative weight assigned to fragmentation penalty.
     :type gamma: float
     :return: The sentence-level METEOR score.
     :rtype: float
     """
     return max(
-        [
-            single_meteor_score(
-                reference,
-                hypothesis,
-                preprocess=preprocess,
-                stemmer=stemmer,
-                wordnet=wordnet,
-                alpha=alpha,
-                beta=beta,
-                gamma=gamma,
-            )
-            for reference in references
-        ]
+        single_meteor_score(
+            reference,
+            hypothesis,
+            preprocess=preprocess,
+            stemmer=stemmer,
+            wordnet=wordnet,
+            alpha=alpha,
+            beta=beta,
+            gamma=gamma,
+        )
+        for reference in references
     )

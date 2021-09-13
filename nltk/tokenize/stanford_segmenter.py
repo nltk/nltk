@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #
@@ -11,22 +10,21 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
-import os
 import json
+import os
+import tempfile
 import warnings
 from subprocess import PIPE
 
 from nltk.internals import (
-    find_jar,
-    find_file,
-    find_dir,
-    config_java,
-    java,
     _java_options,
+    config_java,
+    find_dir,
+    find_file,
+    find_jar,
+    java,
 )
 from nltk.tokenize.api import TokenizerI
-
 
 _stanford_url = "https://nlp.stanford.edu/software"
 
@@ -120,12 +118,12 @@ class StanfordSegmenter(TokenizerI):
         self.java_options = java_options
         options = {} if options is None else options
         self._options_cmd = ",".join(
-            "{0}={1}".format(key, json.dumps(val)) for key, val in options.items()
+            f"{key}={json.dumps(val)}" for key, val in options.items()
         )
 
     def default_config(self, lang):
         """
-        Attempt to intialize Stanford Word Segmenter for the specified language
+        Attempt to initialize Stanford Word Segmenter for the specified language
         using the STANFORD_SEGMENTER and STANFORD_MODELS environment variables
         """
 
@@ -180,7 +178,7 @@ class StanfordSegmenter(TokenizerI):
                     "STANFORD_SEGMENTER environment variable)" % sihan_dir
                 ) from e
         else:
-            raise LookupError("Unsupported language {}".format(lang))
+            raise LookupError(f"Unsupported language {lang}")
 
         try:
             self._model = find_file(
@@ -200,8 +198,7 @@ class StanfordSegmenter(TokenizerI):
         super().tokenize(s)
 
     def segment_file(self, input_file_path):
-        """
-        """
+        """ """
         cmd = [
             self._java_class,
             "-loadClassifier",
@@ -231,15 +228,14 @@ class StanfordSegmenter(TokenizerI):
         return self.segment_sents([tokens])
 
     def segment_sents(self, sentences):
-        """
-        """
+        """ """
         encoding = self._encoding
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
         # Write the actural sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
-        _input = "\n".join((" ".join(x) for x in sentences))
+        _input = "\n".join(" ".join(x) for x in sentences)
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)

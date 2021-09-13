@@ -15,12 +15,11 @@ import re
 from collections import defaultdict
 from itertools import chain
 
-from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-
 from nltk.corpus.reader.util import *
+from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
 
 
-class CorpusReader(object):
+class CorpusReader:
     """
     A base class for "corpus reader" classes, each of which can be
     used to read a specific corpus format.  Each individual corpus
@@ -92,6 +91,10 @@ class CorpusReader(object):
         self._root = root
         """The root directory for this corpus."""
 
+        self._readme = "README"
+        self._license = "LICENSE"
+        self._citation = "citation.bib"
+
         # If encoding was specified as a list of regexps, then convert
         # it to a dictionary.
         if isinstance(encoding, list):
@@ -112,10 +115,10 @@ class CorpusReader(object):
 
     def __repr__(self):
         if isinstance(self._root, ZipFilePathPointer):
-            path = "%s/%s" % (self._root.zipfile.filename, self._root.entry)
+            path = f"{self._root.zipfile.filename}/{self._root.entry}"
         else:
             path = "%s" % self._root.path
-        return "<%s in %r>" % (self.__class__.__name__, path)
+        return f"<{self.__class__.__name__} in {path!r}>"
 
     def ensure_loaded(self):
         """
@@ -130,21 +133,21 @@ class CorpusReader(object):
         """
         Return the contents of the corpus README file, if it exists.
         """
-        with self.open("README") as f:
+        with self.open(self._readme) as f:
             return f.read()
 
     def license(self):
         """
         Return the contents of the corpus LICENSE file, if it exists.
         """
-        with self.open("LICENSE") as f:
+        with self.open(self._license) as f:
             return f.read()
 
     def citation(self):
         """
         Return the contents of the corpus citation.bib file, if it exists.
         """
-        with self.open("citation.bib") as f:
+        with self.open(self._citation) as f:
             return f.read()
 
     def fileids(self):
@@ -199,6 +202,22 @@ class CorpusReader(object):
         else:
             return paths
 
+    def raw(self, fileids=None):
+        """
+        :param fileids: A list specifying the fileids that should be used.
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, str):
+            fileids = [fileids]
+        contents = []
+        for f in fileids:
+            with self.open(f) as fp:
+                contents.append(fp.read())
+        return concat(contents)
+
     def open(self, file):
         """
         Return an open stream that can be used to read the given file.
@@ -239,7 +258,7 @@ class CorpusReader(object):
 ######################################################################
 
 
-class CategorizedCorpusReader(object):
+class CategorizedCorpusReader:
     """
     A mixin class used to aid in the implementation of corpus readers
     for categorized corpora.  This class defines the method
@@ -350,7 +369,7 @@ class CategorizedCorpusReader(object):
             return sorted(self._c2f)
         if isinstance(fileids, str):
             fileids = [fileids]
-        return sorted(set.union(*[self._f2c[d] for d in fileids]))
+        return sorted(set.union(*(self._f2c[d] for d in fileids)))
 
     def fileids(self, categories=None):
         """
@@ -358,7 +377,7 @@ class CategorizedCorpusReader(object):
         this corpus, or that make up the given category(s) if specified.
         """
         if categories is None:
-            return super(CategorizedCorpusReader, self).fileids()
+            return super().fileids()
         elif isinstance(categories, str):
             if self._f2c is None:
                 self._init()
@@ -369,7 +388,27 @@ class CategorizedCorpusReader(object):
         else:
             if self._f2c is None:
                 self._init()
-            return sorted(set.union(*[self._c2f[c] for c in categories]))
+            return sorted(set.union(*(self._c2f[c] for c in categories)))
+
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError("Specify fileids or categories, not both")
+        if categories is not None:
+            return self.fileids(categories)
+        else:
+            return fileids
+
+    def raw(self, fileids=None, categories=None):
+        return super().raw(self._resolve(fileids, categories))
+
+    def words(self, fileids=None, categories=None):
+        return super().words(self._resolve(fileids, categories))
+
+    def sents(self, fileids=None, categories=None):
+        return super().sents(self._resolve(fileids, categories))
+
+    def paras(self, fileids=None, categories=None):
+        return super().paras(self._resolve(fileids, categories))
 
 
 ######################################################################
@@ -403,17 +442,6 @@ class SyntaxCorpusReader(CorpusReader):
 
     def _read_block(self, stream):
         raise NotImplementedError()
-
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block

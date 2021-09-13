@@ -14,20 +14,20 @@ regular expression search over tokenized strings, and
 distributional similarity.
 """
 
-from math import log
-from collections import defaultdict, Counter, namedtuple
-from functools import reduce
 import re
 import sys
+from collections import Counter, defaultdict, namedtuple
+from functools import reduce
+from math import log
 
+from nltk.collocations import BigramCollocationFinder
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
-from nltk.probability import FreqDist
+from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
-from nltk.util import tokenwrap, LazyConcatenation
-from nltk.metrics import f_measure, BigramAssocMeasures
-from nltk.collocations import BigramCollocationFinder
+from nltk.probability import FreqDist
 from nltk.tokenize import sent_tokenize
+from nltk.util import LazyConcatenation, tokenwrap
 
 ConcordanceLine = namedtuple(
     "ConcordanceLine",
@@ -35,7 +35,7 @@ ConcordanceLine = namedtuple(
 )
 
 
-class ContextIndex(object):
+class ContextIndex:
     """
     A bidirectional index between words and their 'contexts' in a text.
     The context of a word is usually defined to be the words that occur
@@ -126,8 +126,7 @@ class ContextIndex(object):
             return fd
 
 
-
-class ConcordanceIndex(object):
+class ConcordanceIndex:
     """
     An index that can be used to look up the offset locations at which
     a given word occurs in a document.
@@ -194,7 +193,7 @@ class ConcordanceIndex(object):
         else:
             phrase = [word]
 
-        half_width = (width - len(' '.join(phrase)) - 2) // 2
+        half_width = (width - len(" ".join(phrase)) - 2) // 2
         context = width // 4  # approx number of words of context
 
         # Find the instances of the word to create the ConcordanceLine
@@ -245,12 +244,12 @@ class ConcordanceIndex(object):
             print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines, len(concordance_list)))
+            print(f"Displaying {lines} of {len(concordance_list)} matches:")
             for i, concordance_line in enumerate(concordance_list[:lines]):
                 print(concordance_line.line)
 
 
-class TokenSearcher(object):
+class TokenSearcher:
     """
     A class that makes it easier to use regular expressions to search
     over tokenized strings.  The tokenized string is converted to a
@@ -307,8 +306,7 @@ class TokenSearcher(object):
         return hits
 
 
-
-class Text(object):
+class Text:
     """
     A wrapper around a sequence of simple (string) tokens, which is
     intended to support initial exploration of texts (via the
@@ -438,7 +436,9 @@ class Text(object):
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
-            self._collocations = list(finder.nbest(bigram_measures.likelihood_ratio, num))
+            self._collocations = list(
+                finder.nbest(bigram_measures.likelihood_ratio, num)
+            )
         return self._collocations
 
     def collocations(self, num=20, window_size=2):
@@ -715,13 +715,13 @@ class TextCollection(Text):
         self._idf_cache = {}
 
     def tf(self, term, text):
-        """ The frequency of the term in text. """
+        """The frequency of the term in text."""
         return text.count(term) / len(text)
 
     def idf(self, term):
-        """ The number of texts in the corpus divided by the
+        """The number of texts in the corpus divided by the
         number of texts that the term appears in.
-        If a term does not appear in the corpus, 0.0 is returned. """
+        If a term does not appear in the corpus, 0.0 is returned."""
         # idf values are cached for performance.
         idf = self._idf_cache.get(term)
         if idf is None:

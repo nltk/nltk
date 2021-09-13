@@ -1,4 +1,3 @@
-# coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -11,14 +10,15 @@ Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
 
-import re, codecs
-from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
+import codecs
+import re
 from io import StringIO
+from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk.data import PathPointer, find
 
 
-class StandardFormat(object):
+class StandardFormat:
     """
     Class for reading and processing standard format marker files and strings.
     """
@@ -310,18 +310,14 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                 else:
                     cur_encoding = encoding
                 if re.search(_is_value, value):
-                    l.append(
-                        ("\\%s %s\n" % (mkr, value)).encode(cur_encoding, errors)
-                    )
+                    l.append((f"\\{mkr} {value}\n").encode(cur_encoding, errors))
                 else:
-                    l.append(
-                        ("\\%s%s\n" % (mkr, value)).encode(cur_encoding, errors)
-                    )
+                    l.append((f"\\{mkr}{value}\n").encode(cur_encoding, errors))
             else:
                 if re.search(_is_value, value):
-                    l.append("\\%s %s\n" % (mkr, value))
+                    l.append(f"\\{mkr} {value}\n")
                 else:
-                    l.append("\\%s%s\n" % (mkr, value))
+                    l.append(f"\\{mkr}{value}\n")
     return "".join(l[1:])
 
 
@@ -329,7 +325,7 @@ class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
 
     def __init__(self):
-        super(ToolboxSettings, self).__init__()
+        super().__init__()
 
     def parse(self, encoding=None, errors="strict", **kwargs):
         """
@@ -384,12 +380,12 @@ def _to_settings_string(node, l, **kwargs):
     text = node.text
     if len(node) == 0:
         if text:
-            l.append("\\%s %s\n" % (tag, text))
+            l.append(f"\\{tag} {text}\n")
         else:
             l.append("\\%s\n" % tag)
     else:
         if text:
-            l.append("\\+%s %s\n" % (tag, text))
+            l.append(f"\\+{tag} {text}\n")
         else:
             l.append("\\+%s\n" % tag)
         for n in node:
@@ -454,7 +450,7 @@ def _sort_fields(elem, orders_dicts):
         pass
     else:
         tmp = sorted(
-            [((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)]
+            ((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)
         )
         elem[:] = [child for key, child in tmp]
     for child in elem:

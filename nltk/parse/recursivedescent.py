@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 from nltk.grammar import Nonterminal
-from nltk.tree import Tree, ImmutableTree
-
 from nltk.parse.api import ParserI
+from nltk.tree import ImmutableTree, Tree
+
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
@@ -123,13 +123,11 @@ class RecursiveDescentParser(ParserI):
 
         # If the next element on the frontier is a tree, expand it.
         elif isinstance(tree[frontier[0]], Tree):
-            for result in self._expand(remaining_text, tree, frontier):
-                yield result
+            yield from self._expand(remaining_text, tree, frontier)
 
         # If the next element on the frontier is a token, match it.
         else:
-            for result in self._match(remaining_text, tree, frontier):
-                yield result
+            yield from self._match(remaining_text, tree, frontier)
 
     def _match(self, rtext, tree, frontier):
         """
@@ -167,8 +165,7 @@ class RecursiveDescentParser(ParserI):
             newtree[frontier[0]] = rtext[0]
             if self._trace:
                 self._trace_match(newtree, frontier[1:], rtext[0])
-            for result in self._parse(rtext[1:], newtree, frontier[1:]):
-                yield result
+            yield from self._parse(rtext[1:], newtree, frontier[1:])
         else:
             # If it's a non-matching terminal, fail.
             if self._trace:
@@ -225,10 +222,9 @@ class RecursiveDescentParser(ParserI):
                 ]
                 if self._trace:
                     self._trace_expand(newtree, new_frontier, production)
-                for result in self._parse(
+                yield from self._parse(
                     remaining_text, newtree, new_frontier + frontier[1:]
-                ):
-                    yield result
+                )
 
     def _production_to_tree(self, production):
         """
@@ -372,7 +368,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     """
 
     def __init__(self, grammar, trace=0):
-        super(SteppingRecursiveDescentParser, self).__init__(grammar, trace)
+        super().__init__(grammar, trace)
         self._rtext = None
         self._tree = None
         self._frontier = [()]
@@ -659,7 +655,7 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse, CFG
+    from nltk import CFG, parse
 
     grammar = CFG.fromstring(
         """

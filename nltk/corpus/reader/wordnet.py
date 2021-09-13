@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -33,15 +32,15 @@ http://compling.hss.ntu.edu.sg/omw/
 
 import math
 import re
-from itertools import islice, chain
-from functools import total_ordering
-from operator import itemgetter
 from collections import defaultdict, deque
+from functools import total_ordering
+from itertools import chain, islice
+from operator import itemgetter
 
 from nltk.corpus.reader import CorpusReader
-from nltk.util import binary_search_file as _binary_search_file
-from nltk.probability import FreqDist
 from nltk.internals import deprecated
+from nltk.probability import FreqDist
+from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
 # Table of Contents
@@ -122,7 +121,7 @@ class WordNetError(Exception):
 
 
 @total_ordering
-class _WordNetObject(object):
+class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
     def hypernyms(self):
@@ -546,7 +545,6 @@ class Synset(_WordNetObject):
                 self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
         return self._min_depth
 
-
     def closure(self, rel, depth=-1):
         """
         Return the transitive closure of source under the rel
@@ -561,7 +559,7 @@ class Synset(_WordNetObject):
         UserWarning: Discarded redundant search for Synset('computer.n.01') at depth 2
 
 
-        Include redundant pathes (but only once), avoiding duplicate searches
+        Include redundant paths (but only once), avoiding duplicate searches
         (from 'animal.n.01' to 'entity.n.01'):
 
         >>> dog = wn.synset('dog.n.01')
@@ -577,14 +575,16 @@ class Synset(_WordNetObject):
         """
 
         from nltk.util import acyclic_breadth_first
+
         for synset in acyclic_breadth_first(self, rel, depth):
             if synset != self:
                 yield synset
 
-
     from nltk.util import acyclic_depth_first as acyclic_tree
-
     from nltk.util import unweighted_minimum_spanning_tree as mst
+
+    # Also add this shortcut?
+    #    from nltk.util import unweighted_minimum_spanning_digraph as umsd
 
     def tree(self, rel, depth=-1, cut_mark=None):
         """
@@ -630,8 +630,8 @@ class Synset(_WordNetObject):
         """
 
         from nltk.util import acyclic_branches_depth_first
-        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
+        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
     def hypernym_paths(self):
         """
@@ -663,17 +663,17 @@ class Synset(_WordNetObject):
         :return: The synsets that are hypernyms of both synsets.
         """
         if not self._all_hypernyms:
-            self._all_hypernyms = set(
+            self._all_hypernyms = {
                 self_synset
                 for self_synsets in self._iter_hypernym_lists()
                 for self_synset in self_synsets
-            )
+            }
         if not other._all_hypernyms:
-            other._all_hypernyms = set(
+            other._all_hypernyms = {
                 other_synset
                 for other_synsets in other._iter_hypernym_lists()
                 for other_synset in other_synsets
-            )
+            }
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
@@ -747,7 +747,7 @@ class Synset(_WordNetObject):
         :return: A set of ``(Synset, int)`` tuples where each ``Synset`` is
            a hypernym of the first ``Synset``.
         """
-        distances = set([(self, distance)])
+        distances = {(self, distance)}
         for hypernym in self._hypernyms() + self._instance_hypernyms():
             distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
         if simulate_root:
@@ -813,7 +813,6 @@ class Synset(_WordNetObject):
 
         return None if math.isinf(path_distance) else path_distance
 
-
     # interface to similarity methods
     def path_similarity(self, other, verbose=False, simulate_root=True):
         """
@@ -843,7 +842,8 @@ class Synset(_WordNetObject):
         """
 
         distance = self.shortest_path_distance(
-            other, simulate_root=simulate_root and (self._needs_root() or other._needs_root()) 
+            other,
+            simulate_root=simulate_root and (self._needs_root() or other._needs_root()),
         )
         if distance is None or distance < 0:
             return None
@@ -938,9 +938,7 @@ class Synset(_WordNetObject):
         # It is possible that more accurate results could be obtained by
         # removing this setting and it should be tested later on
         subsumers = self.lowest_common_hypernyms(
-            other,
-            simulate_root=simulate_root and need_root,
-            use_min_depth=True
+            other, simulate_root=simulate_root and need_root, use_min_depth=True
         )
 
         # If no LCS was found return None
@@ -1069,7 +1067,7 @@ class Synset(_WordNetObject):
             ]
 
     def __repr__(self):
-        return "%s('%s')" % (type(self).__name__, self._name)
+        return f"{type(self).__name__}('{self._name}')"
 
     def _related(self, relation_symbol, sort=True):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
@@ -1132,9 +1130,7 @@ class WordNetCorpusReader(CorpusReader):
         Construct a new wordnet corpus reader, with the given root
         directory.
         """
-        super(WordNetCorpusReader, self).__init__(
-            root, self._FILES, encoding=self._ENCODING
-        )
+        super().__init__(root, self._FILES, encoding=self._ENCODING)
 
         # A index that provides the file offset
         # Map from lemma -> pos -> synset_index -> offset
@@ -1177,20 +1173,20 @@ class WordNetCorpusReader(CorpusReader):
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
 
     def of2ss(self, of):
-        """ take an id and return the synsets """
+        """take an id and return the synsets"""
         return self.synset_from_pos_and_offset(of[-1], int(of[:8]))
 
     def ss2of(self, ss, lang=None):
-        """ return the ID of the synset """
+        """return the ID of the synset"""
         pos = ss.pos()
         # Only these 3 WordNets retain the satellite pos tag
         if lang not in ["nld", "lit", "slk"] and pos == "s":
             pos = "a"
-        return "{:08d}-{}".format(ss.offset(), pos)
+        return f"{ss.offset():08d}-{pos}"
 
     def _load_lang_data(self, lang):
-        """ load the wordnet data of the requested language from the file to
-        the cache, _lang_data """
+        """load the wordnet data of the requested language from the file to
+        the cache, _lang_data"""
 
         if lang in self._lang_data.keys():
             return
@@ -1202,7 +1198,7 @@ class WordNetCorpusReader(CorpusReader):
             self.custom_lemmas(fp, lang)
 
     def langs(self):
-        """ return a list of languages supported by Multilingual Wordnet """
+        """return a list of languages supported by Multilingual Wordnet"""
         import os
 
         langs = ["eng"]
@@ -1314,7 +1310,7 @@ class WordNetCorpusReader(CorpusReader):
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
                 return lemma
-        raise WordNetError("no lemma %r in %r" % (lemma_name, synset_name))
+        raise WordNetError(f"no lemma {lemma_name!r} in {synset_name!r}")
 
     def lemma_from_key(self, key):
         # Keys are case sensitive and always lower-case
@@ -1409,16 +1405,17 @@ class WordNetCorpusReader(CorpusReader):
         data_file.seek(offset)
         data_file_line = data_file.readline()
         # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
-        line_offset=data_file_line[:8]
-        if line_offset.isalnum() and offset==int(line_offset):
+        line_offset = data_file_line[:8]
+        if line_offset.isalnum() and offset == int(line_offset):
             synset = self._synset_from_pos_and_line(pos, data_file_line)
             assert synset._offset == offset
             self._synset_offset_cache[pos][offset] = synset
         else:
-            synset=None
-            raise WordNetError("No WordNet synset found for pos={0} at offset={1}.".format(pos,offset))
+            synset = None
+            raise WordNetError(
+                f"No WordNet synset found for pos={pos} at offset={offset}."
+            )
         return synset
-
 
     @deprecated("Use public method synset_from_pos_and_offset() instead")
     def _synset_from_pos_and_offset(self, *args, **kwargs):
@@ -1521,7 +1518,7 @@ class WordNetCorpusReader(CorpusReader):
 
         # raise a more informative error with line text
         except ValueError as e:
-            raise WordNetError("line %r: %s" % (data_file_line, e)) from e
+            raise WordNetError(f"line {data_file_line!r}: {e}") from e
 
         # set sense keys for Lemma objects - note that this has to be
         # done afterwards so that the relations are available
@@ -1586,7 +1583,6 @@ class WordNetCorpusReader(CorpusReader):
         Synset('drive.n.06')
         """
         return self.lemma_from_key(sense_key).synset()
-
 
     #############################################################
     # Retrieve synsets and lemmas.
@@ -1739,12 +1735,12 @@ class WordNetCorpusReader(CorpusReader):
 
     def license(self, lang="eng"):
         """Return the contents of LICENSE (for omw)
-           use lang=lang to get the license for an individual language"""
+        use lang=lang to get the license for an individual language"""
         if lang == "eng":
             with self.open("LICENSE") as fp:
                 return fp.read()
         elif lang in self.langs():
-            with self._omw_reader.open("{}/LICENSE".format(lang)) as fp:
+            with self._omw_reader.open(f"{lang}/LICENSE") as fp:
                 return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
@@ -1757,12 +1753,12 @@ class WordNetCorpusReader(CorpusReader):
 
     def readme(self, lang="omw"):
         """Return the contents of README (for omw)
-           use lang=lang to get the readme for an individual language"""
+        use lang=lang to get the readme for an individual language"""
         if lang == "eng":
             with self.open("README") as fp:
                 return fp.read()
         elif lang in self.langs():
-            with self._omw_reader.open("{}/README".format(lang)) as fp:
+            with self._omw_reader.open(f"{lang}/README") as fp:
                 return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
@@ -1775,12 +1771,12 @@ class WordNetCorpusReader(CorpusReader):
 
     def citation(self, lang="omw"):
         """Return the contents of citation.bib file (for omw)
-           use lang=lang to get the citation for an individual language"""
+        use lang=lang to get the citation for an individual language"""
         if lang == "eng":
             with self.open("citation.bib") as fp:
                 return fp.read()
         elif lang in self.langs():
-            with self._omw_reader.open("{}/citation.bib".format(lang)) as fp:
+            with self._omw_reader.open(f"{lang}/citation.bib") as fp:
                 return fp.read()
         elif lang == "omw":
             # under the assumption you don't mean Omwunra-Toqura
@@ -1989,6 +1985,8 @@ class WordNetCorpusReader(CorpusReader):
 
         # Initialize the counts with the smoothing value
         if smoothing > 0.0:
+            for pp in POS_LIST:
+                ic[pp][0] = smoothing
             for ss in self.all_synsets():
                 pos = ss._pos
                 if pos == ADJ_SAT:
@@ -2045,6 +2043,88 @@ class WordNetCorpusReader(CorpusReader):
         # Make sure no more entries are accidentally added subsequently
         self._lang_data[lang][0].default_factory = None
         self._lang_data[lang][1].default_factory = None
+
+    ######################################################################
+    # Visualize WordNet relation graphs using Graphviz
+    ######################################################################
+
+    def digraph(
+        self,
+        inputs,
+        rel=lambda s: s.hypernyms(),
+        pos=None,
+        maxdepth=-1,
+        shapes=None,
+        attr=None,
+        verbose=False,
+    ):
+        """
+        Produce a graphical representation from 'inputs' (a list of
+        start nodes, which can be a mix of Synsets, Lemmas and/or words),
+        and a synset relation, for drawing with the 'dot' graph visualisation
+        program from the Graphviz package.
+
+        Return a string in the DOT graph file language, which can then be
+        converted to an image by nltk.parse.dependencygraph.dot2img(dot_string).
+
+        Optional Parameters:
+        :rel: Wordnet synset relation
+        :pos: for words, restricts Part of Speech to 'n', 'v', 'a' or 'r'
+        :maxdepth: limit the longest path
+        :shapes: dictionary of strings that trigger a specified shape
+        :attr: dictionary with global graph attributes
+        :verbose: warn about cycles
+
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.digraph([wn.synset('dog.n.01')]))
+        digraph G {
+        "Synset('dog.n.01')" -> "Synset('domestic_animal.n.01')";
+        "Synset('organism.n.01')" -> "Synset('living_thing.n.01')";
+        "Synset('mammal.n.01')" -> "Synset('vertebrate.n.01')";
+        "Synset('placental.n.01')" -> "Synset('mammal.n.01')";
+        "Synset('animal.n.01')" -> "Synset('organism.n.01')";
+        "Synset('vertebrate.n.01')" -> "Synset('chordate.n.01')";
+        "Synset('chordate.n.01')" -> "Synset('animal.n.01')";
+        "Synset('canine.n.02')" -> "Synset('carnivore.n.01')";
+        "Synset('living_thing.n.01')" -> "Synset('whole.n.02')";
+        "Synset('physical_entity.n.01')" -> "Synset('entity.n.01')";
+        "Synset('carnivore.n.01')" -> "Synset('placental.n.01')";
+        "Synset('object.n.01')" -> "Synset('physical_entity.n.01')";
+        "Synset('whole.n.02')" -> "Synset('object.n.01')";
+        "Synset('dog.n.01')" -> "Synset('canine.n.02')";
+        "Synset('domestic_animal.n.01')" -> "Synset('animal.n.01')";
+        }
+
+
+        """
+        from nltk.util import edge_closure, edges2dot
+
+        synsets = set()
+        edges = set()
+        if not shapes:
+            shapes = dict()
+        if not attr:
+            attr = dict()
+
+        def add_lemma(lem):
+            ss = lem.synset()
+            synsets.add(ss)
+            edges.add((lem, ss))
+
+        for node in inputs:
+            typ = type(node)
+            if typ == Synset:
+                synsets.add(node)
+            elif typ == Lemma:
+                add_lemma(node)
+            elif typ == str:
+                for lemma in self.lemmas(node, pos):
+                    add_lemma(lemma)
+
+        for ss in synsets:
+            edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
+        dot_string = edges2dot(edges, shapes=shapes, attr=attr)
+        return dot_string
 
 
 ######################################################################

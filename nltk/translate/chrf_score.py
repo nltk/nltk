@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: ChrF score
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -8,8 +7,8 @@
 # For license information, see LICENSE.TXT
 
 """ ChrF score implementation """
-from collections import Counter, defaultdict
 import re
+from collections import Counter, defaultdict
 
 from nltk.util import ngrams
 

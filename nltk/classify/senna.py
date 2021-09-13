@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Natural Language Toolkit: Senna Interface
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -37,9 +36,9 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
     ('international', 'I-NP', 'O', 'JJ'), ('business', 'I-NP', 'O', 'NN'), ('center', 'I-NP', 'O', 'NN')]
 """
 
-from os import path, sep, environ
-from subprocess import Popen, PIPE
+from os import environ, path, sep
 from platform import architecture, system
+from subprocess import PIPE, Popen
 
 from nltk.tag.api import TaggerI
 
@@ -133,7 +132,7 @@ class Senna(TaggerI):
         _senna_cmd.extend(["-" + op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
-        _input = "\n".join((" ".join(x) for x in sentences)) + "\n"
+        _input = "\n".join(" ".join(x) for x in sentences) + "\n"
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 

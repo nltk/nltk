@@ -158,33 +158,32 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, os, zipfile, sys, textwrap, threading, itertools, shutil, functools
+import functools
+import itertools
+import os
+import shutil
 import subprocess
+import sys
+import textwrap
+import threading
+import time
+import zipfile
 from hashlib import md5
 from xml.etree import ElementTree
 
 try:
     TKINTER = True
-    from tkinter import (
-        Tk,
-        Frame,
-        Label,
-        Entry,
-        Button,
-        Canvas,
-        Menu,
-        IntVar,
-        TclError,
-    )
+    from tkinter import Button, Canvas, Entry, Frame, IntVar, Label, Menu, TclError, Tk
     from tkinter.messagebox import showerror
+
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
 except ImportError:
     TKINTER = False
     TclError = ValueError
 
-from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 
 import nltk
 
@@ -195,7 +194,8 @@ import nltk
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
-class Package(object):
+
+class Package:
     """
     A directory entry for a downloadable package.  These entries are
     extracted from the XML index file that is downloaded by
@@ -219,7 +219,7 @@ class Package(object):
         license="Unknown",
         author="Unknown",
         unzip=True,
-        **kw
+        **kw,
     ):
         self.id = id
         """A unique identifier for this package."""
@@ -288,7 +288,7 @@ class Package(object):
         return "<Package %s>" % self.id
 
 
-class Collection(object):
+class Collection:
     """
     A directory entry for a collection of downloadable packages.
     These entries are extracted from the XML index file that is
@@ -334,9 +334,9 @@ class Collection(object):
 ######################################################################
 
 
-class DownloaderMessage(object):
+class DownloaderMessage:
     """A status message object, used by ``incr_download`` to
-       communicate its progress."""
+    communicate its progress."""
 
 
 class StartCollectionMessage(DownloaderMessage):
@@ -439,7 +439,7 @@ class SelectDownloadDirMessage(DownloaderMessage):
 ######################################################################
 
 
-class Downloader(object):
+class Downloader:
     """
     A class used to access the NLTK data server, which can be used to
     download corpora and other data packages.
@@ -477,7 +477,7 @@ class Downloader(object):
        installed (i.e., only some of its packages are installed.)"""
 
     # /////////////////////////////////////////////////////////////////
-    # Cosntructor
+    # Constructor
     # /////////////////////////////////////////////////////////////////
 
     def __init__(self, server_index_url=None, download_dir=None):
@@ -562,7 +562,7 @@ class Downloader(object):
                 name = textwrap.fill(
                     "-" * 27 + (info.name or info.id), 75, subsequent_indent=27 * " "
                 )[27:]
-                print("  [%s] %s %s" % (prefix, info.id.ljust(20, "."), name))
+                print("  [{}] {} {}".format(prefix, info.id.ljust(20, "."), name))
                 lines += len(name.split("\n"))  # for more_prompt
                 if more_prompt and lines > 20:
                     user_input = input("Hit Enter to continue: ")
@@ -620,28 +620,25 @@ class Downloader(object):
 
         # If they gave us a list of ids, then download each one.
         if isinstance(info_or_id, (list, tuple)):
-            for msg in self._download_list(info_or_id, download_dir, force):
-                yield msg
+            yield from self._download_list(info_or_id, download_dir, force)
             return
 
         # Look up the requested collection or package.
         try:
             info = self._info_or_id(info_or_id)
-        except (IOError, ValueError) as e:
-            yield ErrorMessage(None, "Error loading %s: %s" % (info_or_id, e))
+        except (OSError, ValueError) as e:
+            yield ErrorMessage(None, f"Error loading {info_or_id}: {e}")
             return
 
         # Handle collections.
         if isinstance(info, Collection):
             yield StartCollectionMessage(info)
-            for msg in self.incr_download(info.children, download_dir, force):
-                yield msg
+            yield from self.incr_download(info.children, download_dir, force)
             yield FinishCollectionMessage(info)
 
         # Handle Packages (delegate to a helper function).
         else:
-            for msg in self._download_package(info, download_dir, force):
-                yield msg
+            yield from self._download_package(info, download_dir, force)
 
     def _num_packages(self, item):
         if isinstance(item, Package):
@@ -654,7 +651,7 @@ class Downloader(object):
         for i in range(len(items)):
             try:
                 items[i] = self._info_or_id(items[i])
-            except (IOError, ValueError) as e:
+            except (OSError, ValueError) as e:
                 yield ErrorMessage(items[i], e)
                 return
 
@@ -718,7 +715,7 @@ class Downloader(object):
                     if block % 2 == 0:  # how often?
                         yield ProgressMessage(min(80, 5 + 75 * (block / num_blocks)))
             infile.close()
-        except IOError as e:
+        except OSError as e:
             yield ErrorMessage(
                 info,
                 "Error downloading %r from <%s>:" "\n  %s" % (info.id, info.url, e),
@@ -938,7 +935,7 @@ class Downloader(object):
         """A helper function that ensures that self._index is
         up-to-date.  If the index is older than self.INDEX_TIMEOUT,
         then download it again."""
-        # Check if the index is aleady up-to-date.  If so, do nothing.
+        # Check if the index is already up-to-date.  If so, do nothing.
         if not (
             self._index is None
             or url is not None
@@ -957,13 +954,13 @@ class Downloader(object):
 
         # Build a dictionary of packages.
         packages = [Package.fromxml(p) for p in self._index.findall("packages/package")]
-        self._packages = dict((p.id, p) for p in packages)
+        self._packages = {p.id: p for p in packages}
 
         # Build a dictionary of collections.
         collections = [
             Collection.fromxml(c) for c in self._index.findall("collections/collection")
         ]
-        self._collections = dict((c.id, c) for c in collections)
+        self._collections = {c.id: c for c in collections}
 
         # Replace identifiers with actual children in collection.children.
         for collection in self._collections.values():
@@ -1007,7 +1004,7 @@ class Downloader(object):
 
     def info(self, id):
         """Return the ``Package`` or ``Collection`` record for the
-           given item."""
+        given item."""
         self._update_index()
         if id in self._packages:
             return self._packages[id]
@@ -1119,7 +1116,7 @@ class Downloader(object):
             DownloaderShell(self).run()
 
 
-class DownloaderShell(object):
+class DownloaderShell:
     def __init__(self, dataserver):
         self._ds = dataserver
 
@@ -1175,7 +1172,7 @@ class DownloaderShell(object):
             for arg in args:
                 try:
                     self._ds.download(arg, prefix="    ")
-                except (IOError, ValueError) as e:
+                except (OSError, ValueError) as e:
                     print(e)
         else:
             while True:
@@ -1196,7 +1193,7 @@ class DownloaderShell(object):
                     for id in user_input.split():
                         try:
                             self._ds.download(id, prefix="    ")
-                        except (IOError, ValueError) as e:
+                        except (OSError, ValueError) as e:
                             print(e)
                     break
 
@@ -1215,7 +1212,7 @@ class DownloaderShell(object):
                     name = textwrap.fill(
                         "-" * 27 + (pname), 75, subsequent_indent=27 * " "
                     )[27:]
-                    print("  [ ] %s %s" % (pid.ljust(20, "."), name))
+                    print("  [ ] {} {}".format(pid.ljust(20, "."), name))
                 print()
 
                 user_input = input("  Identifier> ")
@@ -1223,7 +1220,7 @@ class DownloaderShell(object):
                     for pid, pname in stale_packages:
                         try:
                             self._ds.download(pid, prefix="    ")
-                        except (IOError, ValueError) as e:
+                        except (OSError, ValueError) as e:
                             print(e)
                     break
                 elif user_input.lower() in ("x", "q", ""):
@@ -1245,8 +1242,8 @@ class DownloaderShell(object):
         print()
         print("Data Server:")
         print("  - URL: <%s>" % self._ds.url)
-        print(("  - %d Package Collections Available" % len(self._ds.collections())))
-        print(("  - %d Individual Packages Available" % len(self._ds.packages())))
+        print("  - %d Package Collections Available" % len(self._ds.collections()))
+        print("  - %d Individual Packages Available" % len(self._ds.packages()))
         print()
         print("Local Machine:")
         print("  - Data directory: %s" % self._ds.download_dir)
@@ -1268,7 +1265,7 @@ class DownloaderShell(object):
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
                 else:
-                    print(("Directory %r not found!  Create it first." % new_dl_dir))
+                    print("Directory %r not found!  Create it first." % new_dl_dir)
             elif user_input == "u":
                 new_url = input("  New URL> ").strip()
                 if new_url in ("", "x", "q", "X", "Q"):
@@ -1279,12 +1276,12 @@ class DownloaderShell(object):
                     try:
                         self._ds.url = new_url
                     except Exception as e:
-                        print("Error reading <%r>:\n  %s" % (new_url, e))
+                        print(f"Error reading <{new_url!r}>:\n  {e}")
             elif user_input == "m":
                 break
 
 
-class DownloaderGUI(object):
+class DownloaderGUI:
     """
     Graphical interface for downloading packages from the NLTK data
     server.
@@ -1425,7 +1422,7 @@ class DownloaderGUI(object):
 
     def _log(self, msg):
         self._log_messages.append(
-            "%s %s%s" % (time.ctime(), " | " * self._log_indent, msg)
+            "{} {}{}".format(time.ctime(), " | " * self._log_indent, msg)
         )
 
     # /////////////////////////////////////////////////////////////////
@@ -1667,7 +1664,7 @@ class DownloaderGUI(object):
         try:
             self._ds.url = url
             self._fill_table()
-        except IOError as e:
+        except OSError as e:
             showerror("Error Setting Server Index", str(e))
         self._show_info()
 
@@ -1971,7 +1968,7 @@ class DownloaderGUI(object):
         try:
             ShowText(
                 self.top,
-                "Help: NLTK Dowloader",
+                "Help: NLTK Downloader",
                 self.HELP.strip(),
                 width=75,
                 font="fixed",
@@ -2295,7 +2292,7 @@ def build_index(root, base_url):
     packages = []
     for pkg_xml, zf, subdir in _find_packages(os.path.join(root, "packages")):
         zipstat = os.stat(zf.filename)
-        url = "%s/%s/%s" % (base_url, subdir, os.path.split(zf.filename)[1])
+        url = f"{base_url}/{subdir}/{os.path.split(zf.filename)[1]}"
         unzipped_size = sum(zf_info.file_size for zf_info in zf.infolist())
 
         # Fill in several fields of the package xml with calculated values.
@@ -2358,7 +2355,7 @@ def _check_package(pkg_xml, zipfilename, zf):
     uid = os.path.splitext(os.path.split(zipfilename)[1])[0]
     if pkg_xml.get("id") != uid:
         raise ValueError(
-            "package identifier mismatch (%s vs %s)" % (pkg_xml.get("id"), uid)
+            "package identifier mismatch ({} vs {})".format(pkg_xml.get("id"), uid)
         )
 
     # Zip file must expand to a subdir whose name matches uid.
@@ -2425,15 +2422,11 @@ def _find_packages(root):
                 try:
                     zf = zipfile.ZipFile(zipfilename)
                 except Exception as e:
-                    raise ValueError(
-                        "Error reading file %r!\n%s" % (zipfilename, e)
-                    ) from e
+                    raise ValueError(f"Error reading file {zipfilename!r}!\n{e}") from e
                 try:
                     pkg_xml = ElementTree.parse(xmlfilename).getroot()
                 except Exception as e:
-                    raise ValueError(
-                        "Error reading file %r!\n%s" % (xmlfilename, e)
-                    ) from e
+                    raise ValueError(f"Error reading file {xmlfilename!r}!\n{e}") from e
 
                 # Check that the UID matches the filename
                 uid = os.path.split(xmlfilename[:-4])[1]

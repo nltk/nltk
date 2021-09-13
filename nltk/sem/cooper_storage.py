@@ -5,12 +5,12 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
+from nltk.sem.logic import ApplicationExpression, LambdaExpression, Variable
 
 
-class CooperStore(object):
+class CooperStore:
     """
     A container for handling quantifier ambiguity via Cooper storage.
     """
@@ -95,7 +95,7 @@ def demo():
     sentence = "every girl chases a dog"
     # sentence = "a man gives a bone to every dog"
     print()
-    print("Analyis of sentence '%s'" % sentence)
+    print("Analysis of sentence '%s'" % sentence)
     print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
@@ -117,7 +117,7 @@ def demo():
         print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print("%s: %s" % (i + 1, reading))
+            print(f"{i + 1}: {reading}")
 
 
 if __name__ == "__main__":

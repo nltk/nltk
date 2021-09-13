@@ -38,34 +38,33 @@ Options::
 
     -s or --server-mode
         Do not start a web browser, and do not allow a user to
-        shotdown the server through the web interface.
+        shutdown the server through the web interface.
 """
 # TODO: throughout this package variable names and docstrings need
 # modifying to be compliant with NLTK's coding standards.  Tests also
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
 
-# Allow this program to run inside the NLTK source tree.
-from sys import path
-
-import os
-import sys
-from sys import argv
-from collections import defaultdict
-import webbrowser
+import base64
+import copy
 import datetime
+import getopt
+import os
+import pickle
 import re
+import sys
 import threading
 import time
-import getopt
-import base64
-import pickle
-import copy
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import webbrowser
+from collections import defaultdict
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+# Allow this program to run inside the NLTK source tree.
+from sys import argv, path
 from urllib.parse import unquote_plus
 
 from nltk.corpus import wordnet as wn
-from nltk.corpus.reader.wordnet import Synset, Lemma
+from nltk.corpus.reader.wordnet import Lemma, Synset
 
 # now included in local file
 # from util import html_header, html_trailer, \
@@ -78,7 +77,7 @@ firstClient = True
 # gets set by demo().
 server_mode = None
 
-# If set this is a file object for writting log messages.
+# If set this is a file object for writing log messages.
 logfile = None
 
 
@@ -112,7 +111,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == "NLTK Wordnet Browser Database Info.html":
                 word = "* Database Info *"
                 if os.path.isfile(usp):
-                    with open(usp, "r") as infile:
+                    with open(usp) as infile:
                         page = infile.read()
                 else:
                     page = (
@@ -220,7 +219,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     if logfilename:
         try:
             logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
-        except IOError as e:
+        except OSError as e:
             sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
             sys.exit(1)
     else:
@@ -532,7 +531,7 @@ full_hyponym_cont_text = _ul(_li(_italic("(has full hyponym continuation)"))) + 
 def _get_synset(synset_key):
     """
     The synset key is the unique name of the synset, this can be
-    retrived via synset.name()
+    retrieved via synset.name()
     """
     return wn.synset(synset_key)
 
@@ -563,7 +562,7 @@ def _collect_one_synset(word, synset, synset_relations):
     synset_label = typ + ";"
     if synset.name() in synset_relations:
         synset_label = _bold(synset_label)
-    s = "<li>%s (%s) " % (make_lookup_link(ref, synset_label), descr)
+    s = f"<li>{make_lookup_link(ref, synset_label)} ({descr}) "
 
     def format_lemma(w):
         w = w.replace("_", " ")
@@ -575,7 +574,7 @@ def _collect_one_synset(word, synset, synset_relations):
 
     s += ", ".join(format_lemma(l.name()) for l in synset.lemmas())
 
-    gl = " (%s) <i>%s</i> " % (
+    gl = " ({}) <i>{}</i> ".format(
         synset.definition(),
         "; ".join('"%s"' % e for e in synset.examples()),
     )
@@ -588,10 +587,8 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
     part of speech.
     """
     return "<ul>%s\n</ul>\n" % "".join(
-        (
-            _collect_one_synset(word, synset, synset_relations)
-            for synset in wn.synsets(word, pos)
-        )
+        _collect_one_synset(word, synset, synset_relations)
+        for synset in wn.synsets(word, pos)
     )
 
 
@@ -621,7 +618,7 @@ def _synset_relations(word, synset, synset_relations):
         elif isinstance(r, tuple):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
-            return "%s\n<ul>%s</ul>\n" % (
+            return "{}\n<ul>{}</ul>\n".format(
                 relation_html(r[0]),
                 "".join("<li>%s</li>\n" % relation_html(sr) for sr in r[1]),
             )
@@ -647,11 +644,9 @@ def _synset_relations(word, synset, synset_relations):
     html = (
         "<ul>"
         + "\n".join(
-            (
-                "<li>%s</li>" % make_synset_html(*rel_data)
-                for rel_data in get_relations_data(word, synset)
-                if rel_data[2] != []
-            )
+            "<li>%s</li>" % make_synset_html(*rel_data)
+            for rel_data in get_relations_data(word, synset)
+            if rel_data[2] != []
         )
         + "</ul>"
     )
@@ -659,7 +654,7 @@ def _synset_relations(word, synset, synset_relations):
     return html
 
 
-class Reference(object):
+class Reference:
     """
     A reference to a page that may be generated by page_word
     """
@@ -725,7 +720,7 @@ class Reference(object):
 
 
 def make_lookup_link(ref, label):
-    return '<a href="lookup_%s">%s</a>' % (ref.encode(), label)
+    return f'<a href="lookup_{ref.encode()}">{label}</a>'
 
 
 def page_from_word(word):
@@ -794,7 +789,7 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' where not found in the dictonary." % word
+        body = "The word or words '%s' where not found in the dictionary." % word
     return body, word
 
 

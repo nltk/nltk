@@ -144,7 +144,7 @@ class RegexpTokenizer(TokenizerI):
                 yield m.span()
 
     def __repr__(self):
-        return "%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)" % (
+        return "{}(pattern={!r}, gaps={!r}, discard_empty={!r}, flags={!r})".format(
             self.__class__.__name__,
             self._pattern,
             self._gaps,

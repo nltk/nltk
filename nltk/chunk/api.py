@@ -10,9 +10,8 @@
 ##  Chunk Parser Interface
 ##//////////////////////////////////////////////////////
 
-from nltk.parse import ParserI
-
 from nltk.chunk.util import ChunkScore
+from nltk.parse import ParserI
 
 
 class ChunkParserI(ParserI):
@@ -40,7 +39,7 @@ class ChunkParserI(ParserI):
         Score the accuracy of the chunker against the gold standard.
         Remove the chunking the gold standard text, rechunk it using
         the chunker, and return a ``ChunkScore`` object
-        reflecting the performance of this chunk peraser.
+        reflecting the performance of this chunk parser.
 
         :type gold: list(Tree)
         :param gold: The list of chunked sentences to score the chunker on.

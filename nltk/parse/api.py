@@ -12,7 +12,7 @@ import itertools
 from nltk.internals import overridden
 
 
-class ParserI(object):
+class ParserI:
     """
     A processing class for deriving trees that represent possible
     structures for a sequence of tokens.  These tree structures are

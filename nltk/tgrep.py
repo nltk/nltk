@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: TGrep search
 #
@@ -314,7 +313,7 @@ def _tgrep_macro_use_action(_s, _l, tokens):
 
     def macro_use(n, m=None, l=None):
         if m is None or macro_name not in m:
-            raise TgrepException("macro {0} not defined".format(macro_name))
+            raise TgrepException(f"macro {macro_name} not defined")
         return m[macro_name](n, m, l)
 
     return macro_use
@@ -386,7 +385,7 @@ def _tgrep_nltk_tree_pos_action(_s, _l, tokens):
     which returns true if the node is located at a specific tree
     position.
     """
-    # recover the tuple from the parsed sting
+    # recover the tuple from the parsed string
     node_tree_position = tuple(int(x) for x in tokens if x.isdigit())
     # capture the node's tree position
     return (
@@ -619,9 +618,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                 and any(predicate(x, m, l) for x in n.parent()[: n.parent_index()])
             )
         else:
-            raise TgrepException(
-                'cannot interpret tgrep operator "{0}"'.format(operator)
-            )
+            raise TgrepException(f'cannot interpret tgrep operator "{operator}"')
     # now return the built function
     if negated:
         return (lambda r: (lambda n, m=None, l=None: not r(n, m, l)))(retval)
@@ -698,9 +695,7 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
         """This predicate function ignores its node argument."""
         # look up the bound node using its label
         if l is None or node_label not in l:
-            raise TgrepException(
-                "node_label ={0} not bound in pattern".format(node_label)
-            )
+            raise TgrepException(f"node_label ={node_label} not bound in pattern")
         node = l[node_label]
         # match the relation predicates against the node
         return all(pred(node, m, l) for pred in reln_preds)
@@ -748,9 +743,7 @@ def _tgrep_node_label_pred_use_action(_s, _l, tokens):
     def node_label_use_pred(n, m=None, l=None):
         # look up the bound node using its label
         if l is None or node_label not in l:
-            raise TgrepException(
-                "node_label ={0} not bound in pattern".format(node_label)
-            )
+            raise TgrepException(f"node_label ={node_label} not bound in pattern")
         node = l[node_label]
         # truth means the given node is this node
         return n is node
@@ -785,7 +778,7 @@ def _tgrep_bind_node_label_action(_s, _l, tokens):
                 # bind `n` into the dictionary `l`
                 if l is None:
                     raise TgrepException(
-                        "cannot bind node_label {0}: label_dict is None".format(
+                        "cannot bind node_label {}: label_dict is None".format(
                             node_label
                         )
                     )
@@ -1000,7 +993,7 @@ def tgrep_positions(pattern, trees, search_leaves=True):
     :type pattern: str or output of tgrep_compile()
     :param trees: a sequence of NLTK trees (usually ParentedTrees)
     :type trees: iter(ParentedTree) or iter(Tree)
-    :param search_leaves: whether ot return matching leaf nodes
+    :param search_leaves: whether to return matching leaf nodes
     :type search_leaves: bool
     :rtype: iter(tree positions)
     """
@@ -1027,7 +1020,7 @@ def tgrep_nodes(pattern, trees, search_leaves=True):
     :type pattern: str or output of tgrep_compile()
     :param trees: a sequence of NLTK trees (usually ParentedTrees)
     :type trees: iter(ParentedTree) or iter(Tree)
-    :param search_leaves: whether ot return matching leaf nodes
+    :param search_leaves: whether to return matching leaf nodes
     :type search_leaves: bool
     :rtype: iter(tree nodes)
     """

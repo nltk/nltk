@@ -895,6 +895,3 @@ Alternative 2: directly load the parser.
     >>> fcp2 = nltk.parse.load_parser('grammars/book_grammars/feat0.fcfg')
     >>> print((type(fcp2)))
     <class 'nltk.parse.featurechart.FeatureChartParser'>
-
-
-

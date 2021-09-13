@@ -12,9 +12,9 @@ Module for reading, writing and manipulating
 Toolbox databases and settings fileids.
 """
 
-from nltk.toolbox import ToolboxData
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.toolbox import ToolboxData
 
 
 class ToolboxCorpusReader(CorpusReader):
@@ -66,17 +66,6 @@ class ToolboxCorpusReader(CorpusReader):
 
     def words(self, fileids, key="lx"):
         return [contents for marker, contents in self.fields(fileids) if marker == key]
-
-    def raw(self, fileids):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
 
 def demo():

@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Tests for IBM Model 2 training methods
 """
 
 import unittest
-
 from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import IBMModel
-from nltk.translate import IBMModel2
+
+from nltk.translate import AlignedSent, IBMModel, IBMModel2
 from nltk.translate.ibm_model import AlignmentInfo
 
 
@@ -16,8 +13,8 @@ class TestIBMModel2(unittest.TestCase):
     def test_set_uniform_alignment_probabilities(self):
         # arrange
         corpus = [
-            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
-            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+            AlignedSent(["ham", "eggs"], ["schinken", "schinken", "eier"]),
+            AlignedSent(["spam", "spam", "spam", "spam"], ["spam", "spam"]),
         ]
         model2 = IBMModel2(corpus, 0)
 
@@ -32,8 +29,8 @@ class TestIBMModel2(unittest.TestCase):
     def test_set_uniform_alignment_probabilities_of_non_domain_values(self):
         # arrange
         corpus = [
-            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
-            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+            AlignedSent(["ham", "eggs"], ["schinken", "schinken", "eier"]),
+            AlignedSent(["spam", "spam", "spam", "spam"], ["spam", "spam"]),
         ]
         model2 = IBMModel2(corpus, 0)
 
@@ -47,23 +44,23 @@ class TestIBMModel2(unittest.TestCase):
 
     def test_prob_t_a_given_s(self):
         # arrange
-        src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
-        trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
+        src_sentence = ["ich", "esse", "ja", "gern", "räucherschinken"]
+        trg_sentence = ["i", "love", "to", "eat", "smoked", "ham"]
         corpus = [AlignedSent(trg_sentence, src_sentence)]
         alignment_info = AlignmentInfo(
             (0, 1, 4, 0, 2, 5, 5),
             [None] + src_sentence,
-            ['UNUSED'] + trg_sentence,
+            ["UNUSED"] + trg_sentence,
             None,
         )
 
         translation_table = defaultdict(lambda: defaultdict(float))
-        translation_table['i']['ich'] = 0.98
-        translation_table['love']['gern'] = 0.98
-        translation_table['to'][None] = 0.98
-        translation_table['eat']['esse'] = 0.98
-        translation_table['smoked']['räucherschinken'] = 0.98
-        translation_table['ham']['räucherschinken'] = 0.98
+        translation_table["i"]["ich"] = 0.98
+        translation_table["love"]["gern"] = 0.98
+        translation_table["to"][None] = 0.98
+        translation_table["eat"]["esse"] = 0.98
+        translation_table["smoked"]["räucherschinken"] = 0.98
+        translation_table["ham"]["räucherschinken"] = 0.98
 
         alignment_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float)))

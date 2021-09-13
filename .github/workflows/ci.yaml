@@ -1,0 +1,76 @@
+name: ci-workflow
+# run workflow for these events
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  pre-commit:
+    name: Run pre-commit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: pre-commit/action@v2.0.0
+
+  cache_nltk_data:
+    name: cache nltk_data
+    needs: pre-commit
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache nltk data
+        uses: actions/cache@v2
+        id: restore-cache
+        with:
+          path: ~/nltk_data
+          key: nltk_data_${{ secrets.CACHE_VERSION }}
+
+      - name: Download nltk data packages on cache miss
+        run: |
+          pip install regex # dependencies needed to download nltk data
+          python -c "import nltk; from pathlib import Path; path = Path('~/nltk_data').expanduser(); path.mkdir(exist_ok=True); nltk.download('all', download_dir=path)"
+        shell: bash
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+
+  test:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    needs: cache_nltk_data
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        id: restore-cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
+
+      - name: Install dependencies on cache miss
+        run: pip install --upgrade --requirement requirements-ci.txt
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+
+      - name: Use cached nltk data
+        uses: actions/cache@v2
+        with:
+          path: ~/nltk_data
+          key: nltk_data_${{ secrets.CACHE_VERSION }}
+
+      - name: Run pytest
+        run: pytest --numprocesses auto -rsx nltk/test
+        shell: bash

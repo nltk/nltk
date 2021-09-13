@@ -1,25 +1,23 @@
-# -*- coding: utf-8 -*-
 """
 Tests for common methods of IBM translation models
 """
 
 import unittest
-
 from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import IBMModel
+
+from nltk.translate import AlignedSent, IBMModel
 from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel(unittest.TestCase):
-    __TEST_SRC_SENTENCE = ["j'", 'aime', 'bien', 'jambon']
-    __TEST_TRG_SENTENCE = ['i', 'love', 'ham']
+    __TEST_SRC_SENTENCE = ["j'", "aime", "bien", "jambon"]
+    __TEST_TRG_SENTENCE = ["i", "love", "ham"]
 
     def test_vocabularies_are_initialized(self):
         parallel_corpora = [
-            AlignedSent(['one', 'two', 'three', 'four'], ['un', 'deux', 'trois']),
-            AlignedSent(['five', 'one', 'six'], ['quatre', 'cinq', 'six']),
-            AlignedSent([], ['sept']),
+            AlignedSent(["one", "two", "three", "four"], ["un", "deux", "trois"]),
+            AlignedSent(["five", "one", "six"], ["quatre", "cinq", "six"]),
+            AlignedSent([], ["sept"]),
         ]
 
         ibm_model = IBMModel(parallel_corpora)
@@ -40,9 +38,9 @@ class TestIBMModel(unittest.TestCase):
         )
         # None and 'bien' have zero fertility
         translation_table = {
-            'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
-            'love': {"j'": 0.05, 'aime': 0.9, 'bien': 0.01, 'jambon': 0.01, None: 0.03},
-            'ham': {"j'": 0, 'aime': 0.01, 'bien': 0, 'jambon': 0.99, None: 0},
+            "i": {"j'": 0.9, "aime": 0.05, "bien": 0.02, "jambon": 0.03, None: 0},
+            "love": {"j'": 0.05, "aime": 0.9, "bien": 0.01, "jambon": 0.01, None: 0.03},
+            "ham": {"j'": 0, "aime": 0.01, "bien": 0, "jambon": 0.99, None: 0},
         }
         alignment_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.2)))
@@ -65,9 +63,9 @@ class TestIBMModel(unittest.TestCase):
             TestIBMModel.__TEST_TRG_SENTENCE, TestIBMModel.__TEST_SRC_SENTENCE
         )
         translation_table = {
-            'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
-            'love': {"j'": 0.05, 'aime': 0.9, 'bien': 0.01, 'jambon': 0.01, None: 0.03},
-            'ham': {"j'": 0, 'aime': 0.01, 'bien': 0, 'jambon': 0.99, None: 0},
+            "i": {"j'": 0.9, "aime": 0.05, "bien": 0.02, "jambon": 0.03, None: 0},
+            "love": {"j'": 0.05, "aime": 0.9, "bien": 0.01, "jambon": 0.01, None: 0.03},
+            "ham": {"j'": 0, "aime": 0.01, "bien": 0, "jambon": 0.99, None: 0},
         }
         alignment_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.2)))
@@ -86,16 +84,16 @@ class TestIBMModel(unittest.TestCase):
     def test_best_model2_alignment_handles_fertile_words(self):
         # arrange
         sentence_pair = AlignedSent(
-            ['i', 'really', ',', 'really', 'love', 'ham'],
+            ["i", "really", ",", "really", "love", "ham"],
             TestIBMModel.__TEST_SRC_SENTENCE,
         )
         # 'bien' produces 2 target words: 'really' and another 'really'
         translation_table = {
-            'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
-            'really': {"j'": 0, 'aime': 0, 'bien': 0.9, 'jambon': 0.01, None: 0.09},
-            ',': {"j'": 0, 'aime': 0, 'bien': 0.3, 'jambon': 0, None: 0.7},
-            'love': {"j'": 0.05, 'aime': 0.9, 'bien': 0.01, 'jambon': 0.01, None: 0.03},
-            'ham': {"j'": 0, 'aime': 0.01, 'bien': 0, 'jambon': 0.99, None: 0},
+            "i": {"j'": 0.9, "aime": 0.05, "bien": 0.02, "jambon": 0.03, None: 0},
+            "really": {"j'": 0, "aime": 0, "bien": 0.9, "jambon": 0.01, None: 0.09},
+            ",": {"j'": 0, "aime": 0, "bien": 0.3, "jambon": 0, None: 0.7},
+            "love": {"j'": 0.05, "aime": 0.9, "bien": 0.01, "jambon": 0.01, None: 0.03},
+            "ham": {"j'": 0, "aime": 0.01, "bien": 0, "jambon": 0.99, None: 0},
         }
         alignment_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.2)))
@@ -140,8 +138,8 @@ class TestIBMModel(unittest.TestCase):
         # arrange
         a_info = AlignmentInfo(
             (0, 3, 2),
-            (None, 'des', 'œufs', 'verts'),
-            ('UNUSED', 'green', 'eggs'),
+            (None, "des", "œufs", "verts"),
+            ("UNUSED", "green", "eggs"),
             [[], [], [2], [1]],
         )
         ibm_model = IBMModel([])
@@ -153,29 +151,27 @@ class TestIBMModel(unittest.TestCase):
         neighbor_alignments = set()
         for neighbor in neighbors:
             neighbor_alignments.add(neighbor.alignment)
-        expected_alignments = set(
-            [
-                # moves
-                (0, 0, 2),
-                (0, 1, 2),
-                (0, 2, 2),
-                (0, 3, 0),
-                (0, 3, 1),
-                (0, 3, 3),
-                # swaps
-                (0, 2, 3),
-                # original alignment
-                (0, 3, 2),
-            ]
-        )
+        expected_alignments = {
+            # moves
+            (0, 0, 2),
+            (0, 1, 2),
+            (0, 2, 2),
+            (0, 3, 0),
+            (0, 3, 1),
+            (0, 3, 3),
+            # swaps
+            (0, 2, 3),
+            # original alignment
+            (0, 3, 2),
+        }
         self.assertEqual(neighbor_alignments, expected_alignments)
 
     def test_neighboring_sets_neighbor_alignment_info(self):
         # arrange
         a_info = AlignmentInfo(
             (0, 3, 2),
-            (None, 'des', 'œufs', 'verts'),
-            ('UNUSED', 'green', 'eggs'),
+            (None, "des", "œufs", "verts"),
+            ("UNUSED", "green", "eggs"),
             [[], [], [2], [1]],
         )
         ibm_model = IBMModel([])
@@ -197,8 +193,8 @@ class TestIBMModel(unittest.TestCase):
         # arrange
         a_info = AlignmentInfo(
             (0, 3, 2),
-            (None, 'des', 'œufs', 'verts'),
-            ('UNUSED', 'green', 'eggs'),
+            (None, "des", "œufs", "verts"),
+            ("UNUSED", "green", "eggs"),
             [[], [], [2], [1]],
         )
         ibm_model = IBMModel([])
@@ -210,17 +206,15 @@ class TestIBMModel(unittest.TestCase):
         neighbor_alignments = set()
         for neighbor in neighbors:
             neighbor_alignments.add(neighbor.alignment)
-        expected_alignments = set(
-            [
-                # moves
-                (0, 0, 2),
-                (0, 1, 2),
-                (0, 2, 2),
-                # no swaps
-                # original alignment
-                (0, 3, 2),
-            ]
-        )
+        expected_alignments = {
+            # moves
+            (0, 0, 2),
+            (0, 1, 2),
+            (0, 2, 2),
+            # no swaps
+            # original alignment
+            (0, 3, 2),
+        }
         self.assertEqual(neighbor_alignments, expected_alignments)
 
     def test_hillclimb(self):
@@ -229,19 +223,15 @@ class TestIBMModel(unittest.TestCase):
 
         def neighboring_mock(a, j):
             if a.alignment == (0, 3, 2):
-                return set(
-                    [
-                        AlignmentInfo((0, 2, 2), None, None, None),
-                        AlignmentInfo((0, 1, 1), None, None, None),
-                    ]
-                )
+                return {
+                    AlignmentInfo((0, 2, 2), None, None, None),
+                    AlignmentInfo((0, 1, 1), None, None, None),
+                }
             elif a.alignment == (0, 2, 2):
-                return set(
-                    [
-                        AlignmentInfo((0, 3, 3), None, None, None),
-                        AlignmentInfo((0, 4, 4), None, None, None),
-                    ]
-                )
+                return {
+                    AlignmentInfo((0, 3, 3), None, None, None),
+                    AlignmentInfo((0, 4, 4), None, None, None),
+                }
             return set()
 
         def prob_t_a_given_s_mock(a):

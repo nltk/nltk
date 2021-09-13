@@ -8,7 +8,7 @@
 """Corpus reader for the XML version of the British National Corpus."""
 
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTree
+from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader, XMLCorpusView
 
 
 class BNCCorpusReader(XMLCorpusReader):
@@ -165,9 +165,16 @@ class BNCWordView(XMLCorpusView):
     A stream backed corpus view specialized for use with the BNC corpus.
     """
 
-    tags_to_ignore = set(
-        ["pb", "gap", "vocal", "event", "unclear", "shift", "pause", "align"]
-    )
+    tags_to_ignore = {
+        "pb",
+        "gap",
+        "vocal",
+        "event",
+        "unclear",
+        "shift",
+        "pause",
+        "align",
+    }
     """These tags are ignored. For their description refer to the
     technical documentation, for example,
     http://www.natcorp.ox.ac.uk/docs/URG/ref-vocal.html

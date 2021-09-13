@@ -95,8 +95,8 @@ patterns are:
       ``'<NN>+'`` matches one or more repetitions of ``'<NN>'``, not
       ``'<NN'`` followed by one or more repetitions of ``'>'``.
     - Whitespace in tag patterns is ignored.  So
-      ``'<DT> | <NN>'`` is equivalant to ``'<DT>|<NN>'``
-    - In tag patterns, ``'.'`` is equivalant to ``'[^{}<>]'``; so
+      ``'<DT> | <NN>'`` is equivalent to ``'<DT>|<NN>'``
+    - In tag patterns, ``'.'`` is equivalent to ``'[^{}<>]'``; so
       ``'<NN.*>'`` matches any single tag starting with ``'NN'``.
 
 The function ``tag_pattern2re_pattern`` can be used to transform
@@ -152,21 +152,19 @@ zero-length assertions).
      pattern is valid.
 """
 
-from nltk.data import load
-
 from nltk.chunk.api import ChunkParserI
+from nltk.chunk.regexp import RegexpChunkParser, RegexpParser
 from nltk.chunk.util import (
     ChunkScore,
     accuracy,
-    tagstr2tree,
     conllstr2tree,
     conlltags2tree,
-    tree2conlltags,
+    ieerstr2tree,
+    tagstr2tree,
     tree2conllstr,
     tree2conlltags,
-    ieerstr2tree,
 )
-from nltk.chunk.regexp import RegexpChunkParser, RegexpParser
+from nltk.data import load
 
 # Standard treebank POS tagger
 _BINARY_NE_CHUNKER = "chunkers/maxent_ne_chunker/english_ace_binary.pickle"

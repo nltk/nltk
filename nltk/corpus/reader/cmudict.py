@@ -45,10 +45,9 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-from nltk.util import Index
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.util import Index
 
 
 class CMUDictCorpusReader(CorpusReader):
@@ -63,19 +62,6 @@ class CMUDictCorpusReader(CorpusReader):
                 for fileid, enc in self.abspaths(None, True)
             ]
         )
-
-    def raw(self):
-        """
-        :return: the cmudict lexicon as a raw string.
-        """
-        fileids = self._fileids
-        if isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for i in fileids:
-            with self.open(i) as f:
-                contents.append(f.read())
-        return concat(contents)
 
     def words(self):
         """

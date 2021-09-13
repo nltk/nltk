@@ -10,9 +10,7 @@ Tkinter widgets for displaying multi-column listboxes and tables.
 """
 
 import operator
-
 from tkinter import Frame, Label, Listbox, Scrollbar, Tk
-
 
 ######################################################################
 # Multi-Column Listbox
@@ -125,14 +123,14 @@ class MultiListbox(Frame):
             # Clicking or dragging selects:
             lb.bind("<Button-1>", self._select)
             lb.bind("<B1-Motion>", self._select)
-            # Scroll whell scrolls:
+            # Scroll wheel scrolls:
             lb.bind("<Button-4>", lambda e: self._scroll(-1))
             lb.bind("<Button-5>", lambda e: self._scroll(+1))
             lb.bind("<MouseWheel>", lambda e: self._scroll(e.delta))
             # Button 2 can be used to scan:
             lb.bind("<Button-2>", lambda e: self.scan_mark(e.x, e.y))
             lb.bind("<B2-Motion>", lambda e: self.scan_dragto(e.x, e.y))
-            # Dragging outside the window has no effect (diable
+            # Dragging outside the window has no effect (disable
             # the default listbox behavior, which scrolls):
             lb.bind("<B1-Leave>", lambda e: "break")
             # Columns can be resized by dragging them:
@@ -579,12 +577,12 @@ class MultiListbox(Frame):
 ######################################################################
 
 
-class Table(object):
+class Table:
     """
     A display widget for a table of values, based on a ``MultiListbox``
     widget.  For many purposes, ``Table`` can be treated as a
     list-of-lists.  E.g., table[i] is a list of the values for row i;
-    and table.append(row) adds a new row with the given lits of
+    and table.append(row) adds a new row with the given list of
     values.  Individual cells can be accessed using table[i,j], which
     refers to the j-th column of the i-th row.  This can be used to
     both read and write values from the table.  E.g.:
@@ -641,7 +639,7 @@ class Table(object):
             and can be used as an index when reading or writing
             cell values from the table.
         :type rows: list(list)
-        :param rows: A list of row values used to initialze the table.
+        :param rows: A list of row values used to initialize the table.
             Each row value should be a tuple of cell values, one for
             each column in the row.
         :type scrollbar: bool
@@ -665,7 +663,7 @@ class Table(object):
         self._reprfunc = reprfunc
         self._frame = Frame(master)
 
-        self._column_name_to_index = dict((c, i) for (i, c) in enumerate(column_names))
+        self._column_name_to_index = {c: i for (i, c) in enumerate(column_names)}
 
         # Make a copy of the rows & check that it's valid.
         if rows is None:
@@ -779,7 +777,7 @@ class Table(object):
         """
         Add new rows at the end of the table.
 
-        :param rowvalues: A list of row values used to initialze the
+        :param rowvalues: A list of row values used to initialize the
             table.  Each row value should be a tuple of cell values,
             one for each column in the row.
         """
@@ -1023,15 +1021,15 @@ class Table(object):
             self._mlb.insert("end", row)
 
     def _get_itemconfig(self, r, c):
-        return dict(
-            (k, self._mlb.itemconfig(r, c, k)[-1])
+        return {
+            k: self._mlb.itemconfig(r, c, k)[-1]
             for k in (
                 "foreground",
                 "selectforeground",
                 "background",
                 "selectbackground",
             )
-        )
+        }
 
     def _save_config_info(self, row_indices=None, index_by_id=False):
         """
@@ -1059,18 +1057,17 @@ class Table(object):
 
         # Look up the color configuration info for each row.
         if index_by_id:
-            config = dict(
-                (
-                    id(self._rows[r]),
-                    [self._get_itemconfig(r, c) for c in range(self._num_columns)],
-                )
+            config = {
+                id(self._rows[r]): [
+                    self._get_itemconfig(r, c) for c in range(self._num_columns)
+                ]
                 for r in row_indices
-            )
+            }
         else:
-            config = dict(
-                (r, [self._get_itemconfig(r, c) for c in range(self._num_columns)])
+            config = {
+                r: [self._get_itemconfig(r, c) for c in range(self._num_columns)]
                 for r in row_indices
-            )
+            }
 
         return selection, config
 
@@ -1145,8 +1142,7 @@ def demo():
     )
     table.pack(expand=True, fill="both")
 
-    from nltk.corpus import wordnet
-    from nltk.corpus import brown
+    from nltk.corpus import brown, wordnet
 
     for word, pos in sorted(set(brown.tagged_words()[:500])):
         if pos[0] != "N":

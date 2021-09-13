@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: NIST Score
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -9,8 +8,8 @@
 
 """NIST score implementation."""
 
-import math
 import fractions
+import math
 from collections import Counter
 
 from nltk.util import ngrams

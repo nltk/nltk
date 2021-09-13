@@ -27,10 +27,10 @@ from nltk.sem.logic import (
     ImpExpression,
     IndividualVariableExpression,
     LambdaExpression,
-    Tokens,
     LogicParser,
     NegatedExpression,
     OrExpression,
+    Tokens,
     Variable,
     is_eventvar,
     is_funcvar,
@@ -42,6 +42,7 @@ from nltk.sem.logic import (
 try:
     from tkinter import Canvas, Tk
     from tkinter.font import Font
+
     from nltk.util import in_idle
 
 except ImportError:
@@ -194,7 +195,7 @@ class DrtParser(LogicParser):
         return DrtLambdaExpression(variables, term)
 
 
-class DrtExpression(object):
+class DrtExpression:
     """
     This is the base abstract DRT Expression from which every DRT
     Expression extends.
@@ -263,7 +264,7 @@ class DrtExpression(object):
         raise NotImplementedError()
 
     def is_pronoun_function(self):
-        """ Is self of the form "PRO(x)"? """
+        """Is self of the form "PRO(x)"?"""
         return (
             isinstance(self, DrtApplicationExpression)
             and isinstance(self.function, DrtAbstractVariableExpression)
@@ -414,7 +415,7 @@ class DRS(DrtExpression, Expression):
                 and isinstance(cond.second, AbstractVariableExpression)
             ):
                 drs = DRS(
-                    list(set(drs.refs) - set([cond.second.variable])),
+                    list(set(drs.refs) - {cond.second.variable}),
                     drs.conds[:i] + drs.conds[i + 1 :],
                     drs.consequent,
                 )
@@ -535,7 +536,7 @@ class DRS(DrtExpression, Expression):
     __hash__ = Expression.__hash__
 
     def __str__(self):
-        drs = "([%s],[%s])" % (
+        drs = "([{}],[{}])".format(
             ",".join(self._order_ref_strings(self.refs)),
             ", ".join("%s" % cond for cond in self.conds),
         )  # map(str, self.conds)))
@@ -665,7 +666,7 @@ class DrtProposition(DrtExpression, Expression):
         return combinator(self.variable, function(self.drs))
 
     def __str__(self):
-        return "prop(%s, %s)" % (self.variable, self.drs)
+        return f"prop({self.variable}, {self.drs})"
 
 
 class DrtNegatedExpression(DrtExpression, NegatedExpression):
@@ -1085,10 +1086,10 @@ def resolve_anaphora(expression, trail=[]):
         )
 
 
-class DrsDrawer(object):
+class DrsDrawer:
     BUFFER = 3  # Space between elements
     TOPSPACE = 10  # Space above whole DRS
-    OUTERSPACE = 6  # Space to the left, right, and bottom of the whle DRS
+    OUTERSPACE = 6  # Space to the left, right, and bottom of the while DRS
 
     def __init__(self, drs, size_canvas=True, canvas=None):
         """

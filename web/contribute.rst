@@ -24,8 +24,3 @@ Individual packages are maintained by the following people:
 :Python 3: `Mikhail Korobov <http://kmike.ru/>`_, Ekaterinburg, Russia
 :Releases: `Steven Bird <http://estive.net>`_, Melbourne, Australia
 :NLTK-Users: `Alexis Dimitriadis <A.Dimitriadis@uu.nl>`_, Utrecht, Netherlands
-
-
-
-
-

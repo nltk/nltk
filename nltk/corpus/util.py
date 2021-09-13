@@ -9,14 +9,15 @@
 # { Lazy Corpus Loader
 ######################################################################
 
-import re
 import gc
+import re
+
 import nltk
 
 TRY_ZIPFILE_FIRST = False
 
 
-class LazyCorpusLoader(object):
+class LazyCorpusLoader:
     """
     To see the API documentation for this lazily loaded corpus, first
     run corpus.ensure_loaded(), and then run help(this_corpus).
@@ -69,18 +70,18 @@ class LazyCorpusLoader(object):
         zip_name = re.sub(r"(([^/]+)(/.*)?)", r"\2.zip/\1/", self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
-                root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
+                root = nltk.data.find(f"{self.subdir}/{zip_name}")
             except LookupError as e:
                 try:
-                    root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
+                    root = nltk.data.find(f"{self.subdir}/{self.__name}")
                 except LookupError:
                     raise e
         else:
             try:
-                root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
+                root = nltk.data.find(f"{self.subdir}/{self.__name}")
             except LookupError as e:
                 try:
-                    root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
+                    root = nltk.data.find(f"{self.subdir}/{zip_name}")
                 except LookupError:
                     raise e
 
@@ -123,13 +124,13 @@ class LazyCorpusLoader(object):
         return getattr(self, attr)
 
     def __repr__(self):
-        return "<%s in %r (not loaded yet)>" % (
+        return "<{} in {!r} (not loaded yet)>".format(
             self.__reader_cls.__name__,
             ".../corpora/" + self.__name,
         )
 
     def _unload(self):
-        # If an exception occures during corpus loading then
+        # If an exception occurs during corpus loading then
         # '_unload' method may be unattached, so __getattr__ can be called;
         # we shouldn't trigger corpus loading again in this case.
         pass
@@ -140,7 +141,7 @@ def _make_bound_method(func, self):
     Magic for creating bound methods (used for _unload).
     """
 
-    class Foo(object):
+    class Foo:
         def meth(self):
             pass
 

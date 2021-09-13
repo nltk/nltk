@@ -17,9 +17,11 @@ DESC:def What is an atom ?
 NUM:date When did Hawaii become a state ?
 """
 
+from nltk.corpus.reader.api import *
+
 # based on PPAttachmentCorpusReader
 from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+
 
 # [xx] Should the order of the tuple be reversed -- in most other places
 # in nltk, we use the form (data, tag) -- e.g., tagged words and
@@ -45,20 +47,6 @@ class StringCategoryCorpusReader(CorpusReader):
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
-
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def _read_tuple_block(self, stream):
         line = stream.readline().strip()

@@ -7,8 +7,8 @@
 
 import functools
 
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 
 
 def _parse_args(fun):
@@ -60,16 +60,6 @@ class IPIPANCorpusReader(CorpusReader):
 
     def __init__(self, root, fileids):
         CorpusReader.__init__(self, root, fileids, None, None)
-
-    def raw(self, fileids=None):
-        if not fileids:
-            fileids = self.fileids()
-
-        filecontents = []
-        for fileid in self._list_morph_files(fileids):
-            with open(fileid, "r") as infile:
-                filecontents.append(infile.read())
-        return "".join(filecontents)
 
     def channels(self, fileids=None):
         if not fileids:
@@ -198,7 +188,7 @@ class IPIPANCorpusReader(CorpusReader):
 
     def _get_tag(self, f, tag):
         tags = []
-        with open(f, "r") as infile:
+        with open(f) as infile:
             header = infile.read()
         tag_end = 0
         while True:

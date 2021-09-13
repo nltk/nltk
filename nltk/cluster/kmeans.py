@@ -46,7 +46,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         :param  num_means:  the number of means to use (may use fewer)
         :type   num_means:  int
         :param  distance:   measure of distance between two vectors
-        :type   distance:   function taking two vectors and returing a float
+        :type   distance:   function taking two vectors and returning a float
         :param  repeats:    number of randomised clustering trials to use
         :type   repeats:    int
         :param  conv_test:  maximum variation in mean differences before

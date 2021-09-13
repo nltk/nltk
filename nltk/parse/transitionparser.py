@@ -6,25 +6,24 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import tempfile
 import pickle
-
-from os import remove
+import tempfile
 from copy import deepcopy
 from operator import itemgetter
+from os import remove
 
 try:
     from numpy import array
     from scipy import sparse
-    from sklearn.datasets import load_svmlight_file
     from sklearn import svm
+    from sklearn.datasets import load_svmlight_file
 except ImportError:
     pass
 
-from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
+from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 
 
-class Configuration(object):
+class Configuration:
     """
     Class for holding configuration which is the partial analysis of the input sentence.
     The transition based parser aims at finding set of operators that transfer the initial
@@ -177,7 +176,7 @@ class Configuration(object):
         return result
 
 
-class Transition(object):
+class Transition:
     """
     This class defines a set of transition which is applied to a configuration to get another configuration
     Note that for different parsing algorithm, the transition is different.
@@ -574,7 +573,7 @@ class TransitionParser(ParserI):
                 )
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
-                # Using decision funcion to build the votes array
+                # Using decision function to build the votes array
                 # dec_func = model.decision_function(x_test)[0]
                 # votes = {}
                 # k = 0

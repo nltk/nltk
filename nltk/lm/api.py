@@ -9,13 +9,11 @@
 import random
 from abc import ABCMeta, abstractmethod
 from bisect import bisect
-
+from itertools import accumulate
 
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
-
-from itertools import accumulate
 
 
 class Smoothing(metaclass=ABCMeta):
@@ -89,7 +87,7 @@ class LanguageModel(metaclass=ABCMeta):
         :param ngrams_fn: If given, defines how sentences in training text are turned to ngram
                           sequences.
         :type ngrams_fn: function or None
-        :param pad_fn: If given, defines how senteces in training text are padded.
+        :param pad_fn: If given, defines how sentences in training text are padded.
         :type pad_fn: function or None
 
         """

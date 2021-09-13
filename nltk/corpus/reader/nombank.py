@@ -6,14 +6,13 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from xml.etree import ElementTree
 from functools import total_ordering
+from xml.etree import ElementTree
 
-from nltk.tree import Tree
-from nltk.internals import raise_unorderable_types
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.internals import raise_unorderable_types
+from nltk.tree import Tree
 
 
 class NombankCorpusReader(CorpusReader):
@@ -59,7 +58,7 @@ class NombankCorpusReader(CorpusReader):
         if isinstance(framefiles, str):
             self._fileids = find_corpus_fileids(root, framefiles)
         self._fileids = list(framefiles)
-        # Initialze the corpus reader.
+        # Initialize the corpus reader.
         CorpusReader.__init__(self, root, framefiles, encoding)
 
         # Record our nom file & nouns file.
@@ -67,20 +66,6 @@ class NombankCorpusReader(CorpusReader):
         self._nounsfile = nounsfile
         self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
-
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def instances(self, baseform=None):
         """
@@ -127,7 +112,7 @@ class NombankCorpusReader(CorpusReader):
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
-        raise ValueError("Roleset %s not found in %s" % (roleset_id, framefile))
+        raise ValueError(f"Roleset {roleset_id} not found in {framefile}")
 
     def rolesets(self, baseform=None):
         """
@@ -182,7 +167,7 @@ class NombankCorpusReader(CorpusReader):
 ######################################################################
 
 
-class NombankInstance(object):
+class NombankInstance:
     def __init__(
         self,
         fileid,
@@ -240,17 +225,17 @@ class NombankInstance(object):
         look up information about the roleset."""
         r = self.baseform.replace("%", "perc-sign")
         r = r.replace("1/10", "1-slash-10").replace("1-slash-10", "oneslashonezero")
-        return "%s.%s" % (r, self.sensenumber)
+        return f"{r}.{self.sensenumber}"
 
     def __repr__(self):
-        return "<NombankInstance: %s, sent %s, word %s>" % (
+        return "<NombankInstance: {}, sent {}, word {}>".format(
             self.fileid,
             self.sentnum,
             self.wordnum,
         )
 
     def __str__(self):
-        s = "%s %s %s %s %s" % (
+        s = "{} {} {} {} {}".format(
             self.fileid,
             self.sentnum,
             self.wordnum,
@@ -259,7 +244,7 @@ class NombankInstance(object):
         )
         items = self.arguments + ((self.predicate, "rel"),)
         for (argloc, argid) in sorted(items):
-            s += " %s-%s" % (argloc, argid)
+            s += f" {argloc}-{argid}"
         return s
 
     def _get_tree(self):
@@ -323,7 +308,7 @@ class NombankInstance(object):
         )
 
 
-class NombankPointer(object):
+class NombankPointer:
     """
     A pointer used by nombank to identify one or more constituents in
     a parse tree.  ``NombankPointer`` is an abstract base class with
@@ -358,7 +343,7 @@ class NombankChainTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
 
 
@@ -376,7 +361,7 @@ class NombankSplitTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return Tree("*SPLIT*", [p.select(tree) for p in self.pieces])
 
 
@@ -415,7 +400,7 @@ class NombankTreePointer(NombankPointer):
         return NombankTreePointer(int(pieces[0]), int(pieces[1]))
 
     def __str__(self):
-        return "%s:%s" % (self.wordnum, self.height)
+        return f"{self.wordnum}:{self.height}"
 
     def __repr__(self):
         return "NombankTreePointer(%d, %d)" % (self.wordnum, self.height)
@@ -443,7 +428,7 @@ class NombankTreePointer(NombankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         return tree[self.treepos(tree)]
 
     def treepos(self, tree):
@@ -452,7 +437,7 @@ class NombankTreePointer(NombankPointer):
         given that it points to the given tree.
         """
         if tree is None:
-            raise ValueError("Parse tree not avaialable")
+            raise ValueError("Parse tree not available")
         stack = [tree]
         treepos = []
 

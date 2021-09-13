@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Natural Language Toolkit: Senna POS Tagger
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -42,17 +41,16 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
 from nltk.classify import Senna
 
 
-
 class SennaTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
-        super(SennaTagger, self).__init__(path, ["pos"], encoding)
+        super().__init__(path, ["pos"], encoding)
 
     def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return
         for each sentence a list of tuples of (word, tag).
         """
-        tagged_sents = super(SennaTagger, self).tag_sents(sentences)
+        tagged_sents = super().tag_sents(sentences)
         for i in range(len(tagged_sents)):
             for j in range(len(tagged_sents[i])):
                 annotations = tagged_sents[i][j]
@@ -60,17 +58,16 @@ class SennaTagger(Senna):
         return tagged_sents
 
 
-
 class SennaChunkTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
-        super(SennaChunkTagger, self).__init__(path, ["chk"], encoding)
+        super().__init__(path, ["chk"], encoding)
 
     def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return
         for each sentence a list of tuples of (word, tag).
         """
-        tagged_sents = super(SennaChunkTagger, self).tag_sents(sentences)
+        tagged_sents = super().tag_sents(sentences)
         for i in range(len(tagged_sents)):
             for j in range(len(tagged_sents[i])):
                 annotations = tagged_sents[i][j]
@@ -106,8 +103,8 @@ class SennaChunkTagger(Senna):
         for idx, word_pos in enumerate(tagged_sent):
             word, pos = word_pos
             if "-" + chunk_type in pos:  # Append the word to the current_chunk.
-                current_chunk.append((word))
-                current_chunk_position.append((idx))
+                current_chunk.append(word)
+                current_chunk_position.append(idx)
             else:
                 if current_chunk:  # Flush the full chunk when out of an NP.
                     _chunk_str = " ".join(current_chunk)
@@ -119,17 +116,16 @@ class SennaChunkTagger(Senna):
             yield " ".join(current_chunk), "-".join(map(str, current_chunk_position))
 
 
-
 class SennaNERTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
-        super(SennaNERTagger, self).__init__(path, ["ner"], encoding)
+        super().__init__(path, ["ner"], encoding)
 
     def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return
         for each sentence a list of tuples of (word, tag).
         """
-        tagged_sents = super(SennaNERTagger, self).tag_sents(sentences)
+        tagged_sents = super().tag_sents(sentences)
         for i in range(len(tagged_sents)):
             for j in range(len(tagged_sents[i])):
                 annotations = tagged_sents[i][j]

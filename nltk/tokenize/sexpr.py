@@ -83,7 +83,7 @@ class SExprTokenizer(TokenizerI):
         self._open_paren = parens[0]
         self._close_paren = parens[1]
         self._paren_regexp = re.compile(
-            "%s|%s" % (re.escape(parens[0]), re.escape(parens[1]))
+            f"{re.escape(parens[0])}|{re.escape(parens[1])}"
         )
 
     def tokenize(self, text):

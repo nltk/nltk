@@ -187,7 +187,7 @@ class PorterStemmer(StemmerI):
             else:
                 cv_sequence += "v"
 
-        # Count the number of 'vc' occurences, which is equivalent to
+        # Count the number of 'vc' occurrences, which is equivalent to
         # the number of 'VC' occurrences in Porter's reduced form in the
         # docstring above, which is in turn equivalent to `m`
         return cv_sequence.count("vc")
@@ -663,7 +663,6 @@ class PorterStemmer(StemmerI):
             # in the published algorithm.
             return stem
 
-
         stem = self._step1a(stem)
         stem = self._step1b(stem)
         stem = self._step1c(stem)
@@ -685,8 +684,8 @@ def demo():
     the Penn Treebank corpus.
     """
 
-    from nltk.corpus import treebank
     from nltk import stem
+    from nltk.corpus import treebank
 
     stemmer = stem.PorterStemmer()
 

@@ -25,13 +25,12 @@ is tagged with a sense identifier, and supplied with context.
 import re
 from xml.etree import ElementTree
 
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
 from nltk.tokenize import *
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 
-
-class SensevalInstance(object):
+class SensevalInstance:
     def __init__(self, word, position, context, senses):
         self.word = word
         self.senses = tuple(senses)
@@ -55,20 +54,6 @@ class SensevalCorpusReader(CorpusReader):
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
-
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, str):
-            fileids = [fileids]
-        contents = []
-        for f in fileids:
-            with self.open(f) as fp:
-                contents.append(fp.read())
-        return concat(contents)
 
     def _entry(self, tree):
         elts = []
@@ -149,7 +134,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         assert not (cword.text.strip() and len(cword) == 1)
                         # Record the position of the head:
                         position = len(context)
-                        # Addd on the head word itself:
+                        # Add on the head word itself:
                         if cword.text.strip():
                             context.append(cword.text.strip())
                         elif cword[0].tag == "wf":

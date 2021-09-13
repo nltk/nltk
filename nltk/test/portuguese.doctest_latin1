@@ -61,9 +61,9 @@ informações de tags, da seguinte maneira:
     >>> floresta.tagged_words()
     [('Um', '>N+art'), ('revivalismo', 'H+n'), ...]
 
-As tags são constituídas por certas informações sintáticas, seguidas por 
+As tags são constituídas por certas informações sintáticas, seguidas por
 um sinal
-de mais, seguido por tag costumeira de parte do discurso 
+de mais, seguido por tag costumeira de parte do discurso
 (part-of-speech). Vamos
 remover o conteúdo que antecede o sinal de mais:
 
@@ -77,7 +77,7 @@ remover o conteúdo que antecede o sinal de mais:
     >>> twords[:10]
     [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
     ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
-   
+
 E exibir de maneira mais apropriada as palavras com informações de tags:
 
     >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
@@ -132,7 +132,7 @@ Para ver uma árvore de análise sintática, podemos utilizar o método
 Concordância simples
 --------------------
 
-A seguir, apresentamos uma função que recebe uma palavra e uma 
+A seguir, apresentamos uma função que recebe uma palavra e uma
 quantidade determinada
 de contexto (medido em caracteres) e gera uma concordância para a mesma.
 
@@ -146,27 +146,27 @@ de contexto (medido em caracteres) e gera uma concordância para a mesma.
     ...                 (context, left[-context:], word, context, right[:context])
 
     >>> concordance("dar") # doctest: +SKIP
-    anduru , foi o suficiente para dar a volta a o resultado .      
+    anduru , foi o suficiente para dar a volta a o resultado .
                  1. O P?BLICO veio dar a a imprensa di?ria portuguesa
       A fartura de pensamento pode dar maus resultados e n?s n?o quer
                           Come?a a dar resultados a pol?tica de a Uni
     ial come?ar a incorporar- lo e dar forma a um ' site ' que tem se
-    r com Constantino para ele lhe dar tamb?m os pap?is assinados . 
+    r com Constantino para ele lhe dar tamb?m os pap?is assinados .
     va a brincar , pois n?o lhe ia dar procura??o nenhuma enquanto n?
     ?rica como o ant?doto capaz de dar sentido a o seu enorme poder .
     . . .
     >>> concordance("vender") # doctest: +SKIP
-    er recebido uma encomenda para vender 4000 blindados a o Iraque .  
+    er recebido uma encomenda para vender 4000 blindados a o Iraque .
     m?rico_Amorim caso conseguisse vender o lote de ac??es de o empres?r
-    mpre ter jovens simp?ticos a ? vender ? chega ! }                  
+    mpre ter jovens simp?ticos a ? vender ? chega ! }
            Disse que o governo vai vender ? desde autom?vel at? particip
-    ndiciou ontem duas pessoas por vender carro com ?gio .             
+    ndiciou ontem duas pessoas por vender carro com ?gio .
             A inten??o de Fleury ? vender as a??es para equilibrar as fi
 
 Tagging de partes do discurso
 -----------------------------
 
-Vamos começar obtendo os dados dos enunciados marcados com tags e 
+Vamos começar obtendo os dados dos enunciados marcados com tags e
 simplificando
 estas últimas como descrito anteriormente.
 
@@ -176,16 +176,16 @@ estas últimas como descrito anteriormente.
     >>> train = tsents[100:]
     >>> test = tsents[:100]
 
-Já sabemos que ``n`` é a tag mais comum; desta forma, podemos criar um 
+Já sabemos que ``n`` é a tag mais comum; desta forma, podemos criar um
 tagger por default
-que marque toda palavra como substantivo e, em seguida, avaliar seu 
+que marque toda palavra como substantivo e, em seguida, avaliar seu
 desempenho:
 
     >>> tagger0 = nltk.DefaultTagger('n')
     >>> nltk.tag.accuracy(tagger0, test)
     0.17690941385435169
 
-Como pode-se deduzir facilmente, uma em cada seis palavras é um 
+Como pode-se deduzir facilmente, uma em cada seis palavras é um
 substantivo. Vamos
 aperfeiçoar estes resultados treinando um tagger unigrama:
 
@@ -276,7 +276,7 @@ comuns (à exceção das stopwords) e listá-las em ordem decrescente de freqüência:
     segundo 256
     ter 249
     dois 231
-    
+
 
 Codificações de caracteres
 --------------------------

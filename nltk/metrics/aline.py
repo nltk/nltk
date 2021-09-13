@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: ALINE
 #
 # Copyright (C) 2001-2021 NLTK Project
@@ -48,7 +47,7 @@ except ImportError:
 inf = float("inf")
 
 # Default values for maximum similarity scores (Kondrak 2002: 54)
-C_skip = 10  # Indels
+C_skip = -10  # Indels
 C_sub = 35  # Substitutions
 C_exp = 45  # Expansions/compressions
 C_vwl = 5  # Vowel/consonant relative weight (decreased from 10)
@@ -1085,7 +1084,7 @@ def align(str1, str2, epsilon=0):
     :type epsilon: float (0.0 to 1.0)
     :param epsilon: Adjusts threshold similarity score for near-optimal alignments
 
-    :rtpye: list(list(tuple(str, str)))
+    :rtype: list(list(tuple(str, str)))
     :return: Alignment(s) of str1 and str2
 
     (Kondrak 2002: 51)
@@ -1238,7 +1237,7 @@ def diff(p, q, f):
 
 def R(p, q):
     """
-    Return relevant features for segment comparsion.
+    Return relevant features for segment comparison.
 
     (Kondrak 2002: 54)
     """
@@ -1269,9 +1268,9 @@ def demo():
     data = [pair.split(",") for pair in cognate_data.split("\n")]
     for pair in data:
         alignment = align(pair[0], pair[1])[0]
-        alignment = ["({}, {})".format(a[0], a[1]) for a in alignment]
+        alignment = [f"({a[0]}, {a[1]})" for a in alignment]
         alignment = " ".join(alignment)
-        print("{} ~ {} : {}".format(pair[0], pair[1], alignment))
+        print(f"{pair[0]} ~ {pair[1]} : {alignment}")
 
 
 cognate_data = """jo,ʒə

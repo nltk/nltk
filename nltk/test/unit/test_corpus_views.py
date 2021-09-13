@@ -1,30 +1,30 @@
-# -*- coding: utf-8 -*-
 """
 Corpus View Regression Tests
 """
 import unittest
+
 import nltk.data
 from nltk.corpus.reader.util import (
     StreamBackedCorpusView,
-    read_whitespace_block,
     read_line_block,
+    read_whitespace_block,
 )
 
 
 class TestCorpusViews(unittest.TestCase):
 
-    linetok = nltk.LineTokenizer(blanklines='keep')
+    linetok = nltk.LineTokenizer(blanklines="keep")
     names = [
-        'corpora/inaugural/README',  # A very short file (160 chars)
-        'corpora/inaugural/1793-Washington.txt',  # A relatively short file (791 chars)
-        'corpora/inaugural/1909-Taft.txt',  # A longer file (32k chars)
+        "corpora/inaugural/README",  # A very short file (160 chars)
+        "corpora/inaugural/1793-Washington.txt",  # A relatively short file (791 chars)
+        "corpora/inaugural/1909-Taft.txt",  # A longer file (32k chars)
     ]
 
     def data(self):
         for name in self.names:
             f = nltk.data.find(name)
             with f.open() as fp:
-                file_data = fp.read().decode('utf8')
+                file_data = fp.read().decode("utf8")
             yield f, file_data
 
     def test_correct_values(self):

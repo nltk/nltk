@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: CISTEM Stemmer for German
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Leonie Weissweiler <l.weissweiler@outlook.de>
@@ -8,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import re
+
 from nltk.stem.api import StemmerI
 
 

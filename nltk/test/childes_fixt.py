@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 def setup_module():
     import pytest
+
     import nltk.data
 
     try:
