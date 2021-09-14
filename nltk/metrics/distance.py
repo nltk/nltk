@@ -38,7 +38,9 @@ def _last_left_t_init(sigma):
     return {c: 0 for c in sigma}
 
 
-def _edit_dist_step(lev, i, j, s1, s2, last_left, last_right, substitution_cost=1, transpositions=False):
+def _edit_dist_step(
+    lev, i, j, s1, s2, last_left, last_right, substitution_cost=1, transpositions=False
+):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
