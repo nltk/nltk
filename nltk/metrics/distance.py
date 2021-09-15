@@ -53,7 +53,7 @@ def _edit_dist_step(
 
     # transposition
     d = c + 1  # never picked by default
-    if (transpositions and (last_left > 0)) and (last_right > 0):
+    if transpositions and last_left > 0 and last_right > 0:
         d = lev[last_left - 1][last_right - 1] + i - last_left + j - last_right - 1
 
     # pick the cheapest
