@@ -53,7 +53,7 @@ def _edit_dist_step(
 
     # transposition
     d = c + 1  # never picked by default
-    if transpositions and last_left > 0 and last_right > 0:
+    if (transpositions and (last_left > 0)) and (last_right > 0):
         d = lev[last_left - 1][last_right - 1] + i - last_left + j - last_right - 1
 
     # pick the cheapest
@@ -116,7 +116,7 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
             )
             if s1[i] == s2[j]:
                 last_right = j + 1
-            last_left_t[s2[j]] = i + 1
+            last_left_t[s1[i]] = i + 1
     return lev[len1][len2]
 
 
