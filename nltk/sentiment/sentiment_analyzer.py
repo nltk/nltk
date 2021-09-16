@@ -48,8 +48,8 @@ class SentimentAnalyzer:
         if labeled is None:
             labeled = documents and isinstance(documents[0], tuple)
         if labeled:
-            for words in documents:
-                all_words.extend(words[0])
+            for words, _sentiment in documents:
+                all_words.extend(words)
         elif not labeled:
             for words in documents:
                 all_words.extend(words)
