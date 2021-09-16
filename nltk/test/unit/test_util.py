@@ -49,7 +49,7 @@ def test_usage_with_cls(capsys):
     )
 
 
-def test_usage_on_builtin(capsys):
+def test_usage_on_builtin():
     # just check the func passes, since
     # builtins change each python version
     usage(dict)
