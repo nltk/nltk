@@ -12,6 +12,8 @@ Version 3.6.3 2021-08-??
 * Fixed AttributeError for Arabic ARLSTem2 stemmer
 * Many fixes and improvements to lm language model package
 * Fix bug in nltk.metrics.aline, C_skip = -10
+* Improvements to TweetTokenizer
+* Optional show arg for FreqDist.plot, ConditionalFreqDist.plot
 
 Thanks to the following contributors to 3.6.3
 Tom Aarsen, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne, Manu Joseph,
