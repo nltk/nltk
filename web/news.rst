@@ -5,7 +5,7 @@ NLTK News
 ----
 
 NLTK 3.6.3 release: September 2021
-  Drop support for Python 3.5, 
+  Drop support for Python 3.5,
   added pre-commit hooks (isort, pyupgrade, black),
   improvements to WordNet visualization, RIBES score, edit_distance,
   METEOR score, Punkt, language model package, TweetTokenizer,
