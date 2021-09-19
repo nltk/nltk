@@ -1,4 +1,4 @@
-Version 3.6.3 2021-08-??
+Version 3.6.3 2021-09-19
 * Dropped support for Python 3.5
 * Run CI tests on Windows, too
 * Moved from Travis CI to GitHub Actions
@@ -12,11 +12,14 @@ Version 3.6.3 2021-08-??
 * Fixed AttributeError for Arabic ARLSTem2 stemmer
 * Many fixes and improvements to lm language model package
 * Fix bug in nltk.metrics.aline, C_skip = -10
+* Improvements to TweetTokenizer
+* Optional show arg for FreqDist.plot, ConditionalFreqDist.plot
+* edit_distance now computes Damerau-Levenshtein edit-distance
 
 Thanks to the following contributors to 3.6.3
-Tom Aarsen, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne, Manu Joseph,
-Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, purificant, Danny Sepler,
-Anthony Sottile
+Tom Aarsen, Abhijnan Bajpai, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne,
+Manu Joseph, Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, Mohaned Mashaly,
+purificant, Danny Sepler, Anthony Sottile
 
 Version 3.6.2 2021-04-20
 * move test code to nltk/test
