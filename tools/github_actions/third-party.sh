@@ -52,12 +52,13 @@ if [[ ! -d $senna_folder_name ]]; then
 fi
 
 # Setup the Enviroment variable
+# echo "CLASSPATH=$(pwd)/${stanford_corenlp_package_name}:$(pwd)/${stanford_parser_package_name}:$(pwd)/${stanford_tagger_package_name}" >> $GITHUB_ENV
 cat > ./envs.sh <<EOL
 #!/bin/bash
-echo "CLASSPATH=$(pwd)/${stanford_corenlp_package_name}:$(pwd)/${stanford_parser_package_name}:$(pwd)/${stanford_tagger_package_name}" >> $GITHUB_ENV
-echo "STANFORD_CORENLP=$(pwd)/stanford-corenlp" >> $GITHUB_ENV
+echo "CORENLP=$(pwd)/stanford-corenlp" >> $GITHUB_ENV
+echo "CORENLP_MODELS=$(pwd)/stanford-corenlp" >> $GITHUB_ENV
 echo "STANFORD_PARSER=$(pwd)/stanford-parser" >> $GITHUB_ENV
-echo "STANFORD_MODELS=$(pwd)/stanford-postagger/models" >> $GITHUB_ENV
+echo "STANFORD_MODELS=$(pwd)/stanford-postagger" >> $GITHUB_ENV
 echo "STANFORD_POSTAGGER=$(pwd)/stanford-postagger" >> $GITHUB_ENV
 echo "SENNA=$(pwd)/senna" >> $GITHUB_ENV
 EOL
