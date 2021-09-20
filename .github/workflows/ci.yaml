@@ -117,7 +117,7 @@ jobs:
         run: |
           # echo "$CLASSPATH"
           # echo "${{ env.CLASSPATH }}"
-          ls ~/third
+          tree -a ~/third
           # ls $CORENLP
           # pytest -v --numprocesses auto -rsx nltk/test
           python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000); print(server)"
