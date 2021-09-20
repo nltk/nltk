@@ -115,5 +115,6 @@ jobs:
 
       - name: Run pytest
         run: |
-          python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000); print(server)"
+          ls ~/third
+          python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000, verbose=True); print(server)"
         shell: bash
