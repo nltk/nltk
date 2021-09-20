@@ -786,7 +786,6 @@ def find_jar_iter(
                 for path_to_jar in jar_iter:
                     if os.path.isfile(path_to_jar):
                         filename = os.path.basename(path_to_jar)
-                        print("Checking", filename)
                         if (
                             is_regex
                             and re.match(name_pattern, filename)

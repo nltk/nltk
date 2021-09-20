@@ -39,6 +39,9 @@ jobs:
   cache_third_party:
     name: Cache third party downloads
     needs: pre-commit
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
