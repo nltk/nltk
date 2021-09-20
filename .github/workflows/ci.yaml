@@ -57,7 +57,7 @@ jobs:
       - name: Download third party data
         run: |
           chmod +x ./tools/github_actions/third-party.sh
-          ./tools/github_actions/third-party.sh
+          sh ./tools/github_actions/third-party.sh
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
   test:
