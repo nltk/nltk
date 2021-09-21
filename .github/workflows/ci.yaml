@@ -37,14 +37,14 @@ jobs:
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
   cache_third_party:
-    name: Cache third party downloads
+    name: Cache third party tools
     needs: pre-commit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Cache third party downloads
+      - name: Cache third party tools
         uses: actions/cache@v2
         id: restore-cache
         with:
@@ -97,7 +97,7 @@ jobs:
           path: ~/nltk_data
           key: nltk_data_${{ secrets.CACHE_VERSION }}
 
-      - name: Use cached third party data
+      - name: Use cached third party tools
         uses: actions/cache@v2
         with:
           path: ~/third
@@ -113,11 +113,12 @@ jobs:
           echo "STANFORD_MODELS=~/third/stanford-postagger" >> $GITHUB_ENV
           echo "STANFORD_POSTAGGER=~/third/stanford-postagger" >> $GITHUB_ENV
           echo "SENNA=~/third/senna" >> $GITHUB_ENV
+          echo "PROVER9=$(pdw)/prover9/bin" >> $GITHUB_ENV
         if: runner.os == 'Linux'
 
       - name: Run pytest
+        shell: bash
         run: |
           # ls ~/third
           # python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000, verbose=True); print(server)"
           pytest --numprocesses auto -rsx nltk/test
-        shell: bash
