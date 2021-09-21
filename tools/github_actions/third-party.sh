@@ -70,13 +70,13 @@ fi
 # echo "CLASSPATH=$(pwd)/${stanford_corenlp_package_name}:$(pwd)/${stanford_parser_package_name}:$(pwd)/${stanford_tagger_package_name}" >> $GITHUB_ENV
 cat > ./envs.sh <<EOL
 #!/bin/bash
-export CORENLP=$(pwd)/stanford-corenlp
-export CORENLP_MODELS=$(pwd)/stanford-corenlp
-export STANFORD_PARSER=$(pwd)/stanford-parser
-export STANFORD_MODELS=$(pwd)/stanford-postagger
-export STANFORD_POSTAGGER=$(pwd)/stanford-postagger
-export SENNA=$(pwd)/senna
-export PROVER9=$(pdw)/prover9/bin
+echo "CORENLP=$(pwd)/stanford-corenlp" >> ~/.bashrc
+echo "CORENLP_MODELS=$(pwd)/stanford-corenlp" >> ~/.bashrc
+echo "STANFORD_PARSER=$(pwd)/stanford-parser" >> ~/.bashrc
+echo "STANFORD_MODELS=$(pwd)/stanford-postagger" >> ~/.bashrc
+echo "STANFORD_POSTAGGER=$(pwd)/stanford-postagger" >> ~/.bashrc
+echo "SENNA=$(pwd)/senna" >> ~/.bashrc
+echo "PROVER9=$(pwd)/prover9/bin" >> ~/.bashrc
 EOL
 
 chmod +x ./envs.sh

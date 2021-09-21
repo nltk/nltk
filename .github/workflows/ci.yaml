@@ -110,5 +110,6 @@ jobs:
           if [ "$RUNNER_OS" == "Linux"]; then
             chmod +x ~/third/envs.sh
             ~/third/envs.sh
+            source ~/.bashrc
           fi
           pytest --numprocesses auto -rsx nltk/test
