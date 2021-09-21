@@ -106,6 +106,132 @@ class TestTokenize:
                     ],
                 ),
             ),
+            # Further tests from https://github.com/nltk/nltk/pull/2798#issuecomment-922533085,
+            # showing the TweetTokenizer performance for `match_phone_numbers=True` and
+            # `match_phone_numbers=False`.
+            (
+                # Some phone numbers are always tokenized, even with `match_phone_numbers=`False`
+                "My number is 06-46124080, except it's not.",
+                (
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "06-46124080",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "06-46124080",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # Phone number here is only tokenized correctly if `match_phone_numbers=True`
+                "My number is 601-984-4813, except it's not.",
+                (
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "601-984-4813",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "601-984-",
+                        "4813",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # Phone number here is only tokenized correctly if `match_phone_numbers=True`
+                "My number is (393)  928 -3010, except it's not.",
+                (
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "(393)  928 -3010",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "(",
+                        "393",
+                        ")",
+                        "928",
+                        "-",
+                        "3010",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # A long number is tokenized correctly only if `match_phone_numbers=False`
+                "The product identification number is 48103284512.",
+                (
+                    [
+                        "The",
+                        "product",
+                        "identification",
+                        "number",
+                        "is",
+                        "4810328451",
+                        "2",
+                        ".",
+                    ],
+                    [
+                        "The",
+                        "product",
+                        "identification",
+                        "number",
+                        "is",
+                        "48103284512",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # `match_phone_numbers=True` can have some unforeseen
+                "My favourite substraction is 240 - 1353.",
+                (
+                    ["My", "favourite", "substraction", "is", "240 - 1353", "."],
+                    ["My", "favourite", "substraction", "is", "240", "-", "1353", "."],
+                ),
+            ),
         ],
     )
     def test_tweet_tokenizer_expanded(
