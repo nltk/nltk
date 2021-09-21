@@ -102,6 +102,9 @@ jobs:
         with:
           path: ~/third
           key: third_${{ secrets.CACHE_VERSION }}
+        if: runner.os == 'Linux'
+
+      - name: Set up third party environment variables
         shell: bash
         run: |
           echo "CORENLP=~/third/stanford-corenlp" >> $GITHUB_ENV
