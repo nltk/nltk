@@ -36,7 +36,7 @@ domains and tasks. The basic logic is this:
     * strip_handles. By default, it is set to False. It specifies
         whether to remove Twitter handles of text used in the
         `tokenize` method.
-    * match_phone_numbers. By default, it is set to False. It indicates
+    * match_phone_numbers. By default, it is set to True. It indicates
         whether the `tokenize` method should look for phone numbers.
 """
 
@@ -300,22 +300,22 @@ class TweetTokenizer:
         preserve_case=True,
         reduce_len=False,
         strip_handles=False,
-        match_phone_numbers=False,
+        match_phone_numbers=True,
     ):
         """
         Create a `TweetTokenizer` instance with settings for use in the `tokenize` method.
 
         :param preserve_case: Flag indicating whether to preserve the casing (capitalisation)
-            of text used in the `tokenize` method.
+            of text used in the `tokenize` method. Defaults to True.
         :type preserve_case: bool
         :param reduce_len: Flag indicating whether to replace repeated character sequences
-            of length 3 or greater with sequences of length 3.
+            of length 3 or greater with sequences of length 3. Defaults to False.
         :type reduce_len: bool
         :param strip_handles: Flag indicating whether to remove Twitter handles of text used
-            in the `tokenize` method.
+            in the `tokenize` method. Defaults to False.
         :type strip_handles: bool
         :param match_phone_numbers: Flag indicating whether the `tokenize` method should look
-            for phone numbers.
+            for phone numbers. Defaults to True.
         :type match_phone_numbers: bool
         """
         self.preserve_case = preserve_case
@@ -408,7 +408,7 @@ def casual_tokenize(
     preserve_case=True,
     reduce_len=False,
     strip_handles=False,
-    match_phone_numbers=False,
+    match_phone_numbers=True,
 ):
     """
     Convenience function for wrapping the tokenizer.

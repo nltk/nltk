@@ -321,7 +321,7 @@ class TestTokenize:
         """
 
         # Should be recognized as a phone number, albeit one with multiple spaces
-        tokenizer = TweetTokenizer(match_phone_numbers=True)
+        tokenizer = TweetTokenizer()
         test1 = "(393)  928 -3010"
         expected = ["(393)  928 -3010"]
         result = tokenizer.tokenize(test1)
