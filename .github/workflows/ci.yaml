@@ -107,18 +107,11 @@ jobs:
       - name: Set up third party environment variables
         shell: bash
         run: |
-          echo "CORENLP=~/third/stanford-corenlp" >> $GITHUB_ENV
-          echo "CORENLP_MODELS=~/third/stanford-corenlp" >> $GITHUB_ENV
-          echo "STANFORD_PARSER=~/third/stanford-parser" >> $GITHUB_ENV
-          echo "STANFORD_MODELS=~/third/stanford-postagger" >> $GITHUB_ENV
-          echo "STANFORD_POSTAGGER=~/third/stanford-postagger" >> $GITHUB_ENV
-          echo "SENNA=~/third/senna" >> $GITHUB_ENV
-          echo "PROVER9=$(pdw)/prover9/bin" >> $GITHUB_ENV
+          chmod +x ~/third/envs.sh
+          ~/third/envs.sh
         if: runner.os == 'Linux'
 
       - name: Run pytest
         shell: bash
         run: |
-          # ls ~/third
-          # python -c "from nltk.parse.corenlp import CoreNLPServer; server = CoreNLPServer(port=9000, verbose=True); print(server)"
           pytest --numprocesses auto -rsx nltk/test
