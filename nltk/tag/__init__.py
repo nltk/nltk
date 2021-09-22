@@ -90,7 +90,7 @@ from nltk.tag.senna import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping import tagset_mapping, map_tag
 from nltk.tag.crf import CRFTagger
 from nltk.tag.perceptron import PerceptronTagger
-
+from nltk.tokenize import word_tokenize
 from nltk.data import load, find
 
 RUS_PICKLE = (
@@ -115,26 +115,25 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
             "Currently, NLTK pos_tag only supports English and Russian "
             "(i.e. lang='eng' or lang='rus')"
         )
-    # Throws Error if tokens is of string type
-    elif isinstance(tokens, str):
-        raise TypeError("tokens: expected a list of strings, got a string")
+    # Tokenize the input into tokens, in case it is a string.
+    if isinstance(tokens, str):
+        tokens = word_tokenize(tokens)
 
-    else:
-        tagged_tokens = tagger.tag(tokens)
-        if tagset:  # Maps to the specified tagset.
-            if lang == "eng":
-                tagged_tokens = [
-                    (token, map_tag("en-ptb", tagset, tag))
-                    for (token, tag) in tagged_tokens
-                ]
-            elif lang == "rus":
-                # Note that the new Russian pos tags from the model contains suffixes,
-                # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
-                tagged_tokens = [
-                    (token, map_tag("ru-rnc-new", tagset, tag.partition("=")[0]))
-                    for (token, tag) in tagged_tokens
-                ]
-        return tagged_tokens
+    tagged_tokens = tagger.tag(tokens)
+    if tagset:  # Maps to the specified tagset.
+        if lang == "eng":
+            tagged_tokens = [
+                (token, map_tag("en-ptb", tagset, tag))
+                for (token, tag) in tagged_tokens
+            ]
+        elif lang == "rus":
+            # Note that the new Russian pos tags from the model contains suffixes,
+            # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
+            tagged_tokens = [
+                (token, map_tag("ru-rnc-new", tagset, tag.partition("=")[0]))
+                for (token, tag) in tagged_tokens
+            ]
+    return tagged_tokens
 
 
 def pos_tag(tokens, tagset=None, lang="eng"):

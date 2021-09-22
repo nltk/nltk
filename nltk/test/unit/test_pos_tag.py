@@ -81,3 +81,32 @@ class TestPosTag(unittest.TestCase):
         text = "모르겠 습니 다"
         expected_but_wrong = [("모르겠", "JJ"), ("습니", "NNP"), ("다", "NN")]
         assert pos_tag(word_tokenize(text)) == expected_but_wrong
+
+    def test_pos_tag_string_eng(self):
+        text = "John's big idea isn't all that bad."
+        expected_tagged = [
+            ("John", "NNP"),
+            ("'s", "POS"),
+            ("big", "JJ"),
+            ("idea", "NN"),
+            ("is", "VBZ"),
+            ("n't", "RB"),
+            ("all", "PDT"),
+            ("that", "DT"),
+            ("bad", "JJ"),
+            (".", "."),
+        ]
+        assert pos_tag(text) == expected_tagged
+
+    def test_pos_tag_string_rus(self):
+        text = "Илья оторопел и дважды перечитал бумажку."
+        expected_tagged = [
+            ("Илья", "S"),
+            ("оторопел", "V"),
+            ("и", "CONJ"),
+            ("дважды", "ADV"),
+            ("перечитал", "V"),
+            ("бумажку", "S"),
+            (".", "NONLEX"),
+        ]
+        assert pos_tag(text, lang="rus") == expected_tagged
