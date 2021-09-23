@@ -93,7 +93,7 @@ fi
 # fi
 
 # Download MaltParser to ~/third/maltparser
-malt_file_name="maltparser-1.9.1.tar.gz"
+malt_file_name="maltparser-1.7.2.tar.gz"
 [[ ${malt_file_name} =~ (.+)\.tar\.gz ]]
 malt_folder_name=${BASH_REMATCH[1]}
 if [[ ! -d ${malt_folder_name} ]]; then
@@ -101,7 +101,6 @@ if [[ ! -d ${malt_folder_name} ]]; then
 	tar -xvzf ${malt_file_name}
 	mv ${malt_folder_name} 'maltparser'
 	rm ${malt_file_name}
-	tree 'maltparser'
 fi
 
 ls ~/third
