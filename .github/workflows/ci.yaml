@@ -2,6 +2,15 @@ name: ci-workflow
 # run workflow for these events
 on: [push, pull_request, workflow_dispatch]
 
+env:
+  CORENLP: ${HOME}/third/stanford-corenlp
+  CORENLP_MODELS: ${HOME}/third/stanford-corenlp
+  STANFORD_PARSER: ${HOME}/third/stanford-parser
+  STANFORD_MODELS: ${HOME}/third/stanford-postagger
+  STANFORD_POSTAGGER: ${HOME}/third/stanford-postagger
+  SENNA: ${HOME}/third/senna
+  PROVER9: ${HOME}/third/prover9/bin
+
 jobs:
   pre-commit:
     name: Run pre-commit
@@ -107,9 +116,4 @@ jobs:
       - name: Set up third party environment variables and run pytest
         shell: bash
         run: |
-          if [ "$RUNNER_OS" == "Linux"]; then
-            chmod +x ~/third/envs.sh
-            ~/third/envs.sh
-            source ~/.bashrc
-          fi
           pytest --numprocesses auto -rsx nltk/test
