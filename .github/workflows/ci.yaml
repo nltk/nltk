@@ -10,6 +10,8 @@ env:
   STANFORD_POSTAGGER: /home/runner/third/stanford-postagger
   SENNA: /home/runner/third/senna
   PROVER9: /home/runner/third/prover9/bin
+  MEGAM: /home/runner/third/megam
+  TADM: /home/runner/third/tadm
 
 jobs:
   pre-commit:
@@ -113,7 +115,7 @@ jobs:
           key: third_${{ secrets.CACHE_VERSION }}
         if: runner.os == 'Linux'
 
-      - name: Set up third party environment variables and run pytest
+      - name: Run pytest
         shell: bash
         run: |
-          pytest --numprocesses auto -rsx nltk/test
+          pytest --numprocesses auto -rsx --doctest-modules nltk/test
