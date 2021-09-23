@@ -79,14 +79,29 @@ if [[ ! -d ${megam_folder_name} ]]; then
 	mv ${megam_folder_name} 'megam'
 fi
 
+# TADM requires `libtaopetsc.so` from PETSc v2.3.3, and likely has more
+# tricky to install requirements, so we don't run tests for it.
+
 # Download TADM to ~/third/tadm
-tadm_file_name="tadm-0.9.8.tgz"
-[[ ${tadm_file_name} =~ (.+)\.tgz ]]
-tadm_folder_name=${BASH_REMATCH[1]}
-if [[ ! -d ${tadm_folder_name} ]]; then
-	curl -L "https://master.dl.sourceforge.net/project/tadm/tadm/tadm%200.9.8/$tadm_file_name?viasf=1" -o ${tadm_file_name}
-	tar -xvzf ${tadm_file_name}
-	rm ${tadm_file_name}
+# tadm_file_name="tadm-0.9.8.tgz"
+# [[ ${tadm_file_name} =~ (.+)\.tgz ]]
+# tadm_folder_name=${BASH_REMATCH[1]}
+# if [[ ! -d ${tadm_folder_name} ]]; then
+# 	curl -L "https://master.dl.sourceforge.net/project/tadm/tadm/tadm%200.9.8/$tadm_file_name?viasf=1" -o ${tadm_file_name}
+# 	tar -xvzf ${tadm_file_name}
+# 	rm ${tadm_file_name}
+# fi
+
+# Download MaltParser to ~/third/maltparser
+malt_file_name="maltparser-1.9.1.tar.gz"
+[[ ${malt_file_name} =~ (.+)\.tar\.gz ]]
+malt_folder_name=${BASH_REMATCH[1]}
+if [[ ! -d ${malt_folder_name} ]]; then
+	curl -L "http://maltparser.org/dist/$malt_file_name" -o ${malt_file_name}
+	tar -xvzf ${malt_file_name}
+	mv ${malt_folder_name} 'maltparser'
+	rm ${malt_file_name}
+	tree 'maltparser'
 fi
 
 ls ~/third

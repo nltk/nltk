@@ -11,7 +11,10 @@ env:
   SENNA: /home/runner/third/senna
   PROVER9: /home/runner/third/prover9/bin
   MEGAM: /home/runner/third/megam
-  TADM: /home/runner/third/tadm/bin
+  # TADM requires `libtaopetsc.so` from PETSc v2.3.3, and likely has more
+  # tricky to install requirements, so we don't run tests for it.
+  # TADM: /home/runner/third/tadm/bin
+  MALT_PARSER: /home/runner/third/maltparser
 
 jobs:
   pre-commit:
