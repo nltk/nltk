@@ -77,7 +77,6 @@ if [[ ! -d ${megam_folder_name} ]]; then
 	curl -L "http://hal3.name/megam/$megam_file_name" -o ${megam_file_name}
 	gunzip -vf ${megam_file_name}
 	mv ${megam_folder_name} 'megam'
-	rm ${megam_file_name}
 fi
 
 # Download TADM to ~/third/tadm
@@ -87,7 +86,6 @@ tadm_folder_name=${BASH_REMATCH[1]}
 if [[ ! -d ${tadm_folder_name} ]]; then
 	curl -L "https://master.dl.sourceforge.net/project/tadm/tadm/tadm%200.9.8/$tadm_file_name?viasf=1" -o ${tadm_file_name}
 	tar -xvzf ${tadm_file_name}
-	mv ${tadm_folder_name} 'tadm'
 	rm ${tadm_file_name}
 fi
 

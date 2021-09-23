@@ -5,6 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+import os
 import subprocess
 import sys
 
@@ -23,6 +24,8 @@ def config_tadm(bin=None):
     _tadm_bin = find_binary(
         "tadm", bin, env_vars=["TADM"], binary_names=["tadm"], url="http://tadm.sf.net"
     )
+    # Set _tadm_bin to be executable
+    os.chmod(_tadm_bin, 0o711)
 
 
 def write_tadm_file(train_toks, encoding, stream):
