@@ -1858,7 +1858,7 @@ def _default_fs_class(obj):
 
 class SubstituteBindingsSequence(SubstituteBindingsI):
     """
-    A mixin class for sequence clases that distributes variables() and
+    A mixin class for sequence classes that distributes variables() and
     substitute_bindings() over the object's elements.
     """
 
