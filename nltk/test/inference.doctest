@@ -109,7 +109,7 @@ The assumptions and goal may be accessed using the ``assumptions()`` and
 ``goal()`` methods, respectively.
 
     >>> prover.assumptions()
-    [<ApplicationExpression man(socrates)>, <Alread_expression all x.(man(x) -> mortal(x))>]
+    [<ApplicationExpression man(socrates)>, <AllExpression all x.(man(x) -> mortal(x))>]
     >>> prover.goal()
     <ApplicationExpression mortal(socrates)>
 
