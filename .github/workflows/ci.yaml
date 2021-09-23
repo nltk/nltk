@@ -3,13 +3,13 @@ name: ci-workflow
 on: [push, pull_request, workflow_dispatch]
 
 env:
-  CORENLP: /third/stanford-corenlp
-  CORENLP_MODELS: /third/stanford-corenlp
-  STANFORD_PARSER: /third/stanford-parser
-  STANFORD_MODELS: /third/stanford-postagger
-  STANFORD_POSTAGGER: /third/stanford-postagger
-  SENNA: /third/senna
-  PROVER9: /third/prover9/bin
+  CORENLP: /home/runner/third/stanford-corenlp
+  CORENLP_MODELS: /home/runner/third/stanford-corenlp
+  STANFORD_PARSER: /home/runner/third/stanford-parser
+  STANFORD_MODELS: /home/runner/third/stanford-postagger
+  STANFORD_POSTAGGER: /home/runner/third/stanford-postagger
+  SENNA: /home/runner/third/senna
+  PROVER9: /home/runner/third/prover9/bin
 
 jobs:
   pre-commit:
@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache@v2
         id: restore-cache
         with:
-          path: /third
+          path: ~/third
           key: third_${{ secrets.CACHE_VERSION }}
 
       - name: Download third party data
@@ -109,7 +109,7 @@ jobs:
       - name: Use cached third party tools
         uses: actions/cache@v2
         with:
-          path: /third
+          path: ~/third
           key: third_${{ secrets.CACHE_VERSION }}
         if: runner.os == 'Linux'
 
