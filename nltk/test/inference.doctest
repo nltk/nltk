@@ -315,9 +315,8 @@ statements as new assumptions.
     % Proof 1 at ... seconds.
     % Length of proof is 13.
     % Level of proof is 4.
-    % Maximum clause weight is 0.000.
+    % Maximum clause weight is 0.
     % Given clauses 0.
-    <BLANKLINE>
     <BLANKLINE>
     1 (all x (boxerdog(x) -> dog(x))).  [assumption].
     2 (all x (boxer(x) -> person(x))).  [assumption].
