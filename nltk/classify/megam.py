@@ -57,8 +57,6 @@ def config_megam(bin=None):
         binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
         url="http://www.umiacs.umd.edu/~hal/megam/index.html",
     )
-    # Set _megam_bin to be executable
-    os.chmod(_megam_bin, 0o711)
 
 
 ######################################################################

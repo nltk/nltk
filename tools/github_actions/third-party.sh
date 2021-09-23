@@ -76,7 +76,8 @@ megam_folder_name=${BASH_REMATCH[1]}
 if [[ ! -d ${megam_folder_name} ]]; then
 	curl -L "http://hal3.name/megam/$megam_file_name" -o ${megam_file_name}
 	gunzip -vf ${megam_file_name}
-	mv ${megam_folder_name} 'megam'
+	mv ${megam_folder_name} "megam"
+	chmod -R 711 "megam/$megam_file_name"
 fi
 
 # TADM requires `libtaopetsc.so` from PETSc v2.3.3, and likely has more
@@ -90,6 +91,7 @@ fi
 # 	curl -L "https://master.dl.sourceforge.net/project/tadm/tadm/tadm%200.9.8/$tadm_file_name?viasf=1" -o ${tadm_file_name}
 # 	tar -xvzf ${tadm_file_name}
 # 	rm ${tadm_file_name}
+#	chmod -R 711 "tadm/bin/tadm"
 # fi
 
 # Download MaltParser to ~/third/maltparser
