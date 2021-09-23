@@ -3,13 +3,13 @@ name: ci-workflow
 on: [push, pull_request, workflow_dispatch]
 
 env:
-  CORENLP: ${HOME}/third/stanford-corenlp
-  CORENLP_MODELS: ${HOME}/third/stanford-corenlp
-  STANFORD_PARSER: ${HOME}/third/stanford-parser
-  STANFORD_MODELS: ${HOME}/third/stanford-postagger
-  STANFORD_POSTAGGER: ${HOME}/third/stanford-postagger
-  SENNA: ${HOME}/third/senna
-  PROVER9: ${HOME}/third/prover9/bin
+  CORENLP: ~/third/stanford-corenlp
+  CORENLP_MODELS: ~/third/stanford-corenlp
+  STANFORD_PARSER: ~/third/stanford-parser
+  STANFORD_MODELS: ~/third/stanford-postagger
+  STANFORD_POSTAGGER: ~/third/stanford-postagger
+  SENNA: ~/third/senna
+  PROVER9: ~/third/prover9/bin
 
 jobs:
   pre-commit:
