@@ -11,7 +11,7 @@ env:
   SENNA: /home/runner/third/senna
   PROVER9: /home/runner/third/prover9/bin
   MEGAM: /home/runner/third/megam
-  TADM: /home/runner/third/tadm
+  TADM: /home/runner/third/tadm/bin
 
 jobs:
   pre-commit:
