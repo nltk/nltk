@@ -2168,21 +2168,29 @@ Ensure that KEYWORD from `comparative_sents.py` no longer contains a ReDoS vulne
     >>> import re
     >>> import time
     >>> from nltk.corpus.reader.comparative_sents import KEYWORD
-    >>> exec_times = []
-    >>> for i in range(1, 10):
-    ...     start_t = time.perf_counter()
-    ...     payload = "( " + "(" * (i * 4000)
-    ...     output = KEYWORD.findall(payload)
-    ...     exec_times.append(time.perf_counter() - start_t)
-    >>> norm_exec_times = [t / min(exec_times) for t in exec_times]
+    >>> sizes = {
+    ...     "short": 4000,
+    ...     "long": 40000
+    ... }
+    >>> exec_times = {
+    ...     "short": [],
+    ...     "long": [],
+    ... }
+    >>> for size_name, size in sizes.items():
+    ...     for j in range(9):
+    ...         start_t = time.perf_counter()
+    ...         payload = "( " + "(" * size
+    ...         output = KEYWORD.findall(payload)
+    ...         exec_times[size_name].append(time.perf_counter() - start_t)
+    ...     exec_times[size_name] = sorted(exec_times[size_name])[4] # Get the mean
 
 Ideally, the execution time of such a regular expression is linear
-in the length of the input. As such, with norm_exec_times[0] normalized
-to 1, we would expect norm_exec_times[9] to be roughly 10 (times as long).
-With the ReDoS in place, it took roughly 70 times as long.
+in the length of the input. As such, we would expect exec_times["long"]
+to be roughly 10 times as big as exec_times["short"].
+With the ReDoS in place, it took roughly 80 times as long.
 For now, we accept values below 30 (times as long), due to the potential
 for variance. This ensures that the ReDoS has certainly been reduced,
 if not removed.
 
-    >>> norm_exec_times[-1] < 30
+    >>> exec_times["long"] / exec_times["short"] < 30
     True
