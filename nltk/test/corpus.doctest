@@ -2162,3 +2162,27 @@ access to its tuples() method
     >>> from nltk.corpus import qc
     >>> qc.tuples('test.txt')
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
+
+Ensure that KEYWORD from `comparative_sents.py` no longer contains a ReDoS vulnerability.
+
+    >>> import re
+    >>> import time
+    >>> from nltk.corpus.reader.comparative_sents import KEYWORD
+    >>> exec_times = []
+    >>> for i in range(1, 10):
+    ...     start_t = time.perf_counter()
+    ...     payload = "( " + "(" * (i * 4000)
+    ...     output = KEYWORD.findall(payload)
+    ...     exec_times.append(time.perf_counter() - start_t)
+    >>> norm_exec_times = [t / min(exec_times) for t in exec_times]
+
+Ideally, the execution time of such a regular expression is linear
+in the length of the input. As such, with norm_exec_times[0] normalized
+to 1, we would expect norm_exec_times[9] to be roughly 10 (times as long).
+With the ReDoS in place, it took roughly 70 times as long.
+For now, we accept values below 30 (times as long), due to the potential
+for variance. This ensures that the ReDoS has certainly been reduced,
+if not removed.
+
+    >>> norm_exec_times[-1] < 30
+    True
