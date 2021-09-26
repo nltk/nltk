@@ -1136,7 +1136,7 @@ class WordNetCorpusReader(CorpusReader):
         # Map from lemma -> pos -> synset_index -> offset
         self._lemma_pos_offset_map = defaultdict(dict)
 
-        # A cache so we don't have to reconstuct synsets
+        # A cache so we don't have to reconstruct synsets
         # Map from pos -> offset -> synset
         self._synset_offset_cache = defaultdict(dict)
 

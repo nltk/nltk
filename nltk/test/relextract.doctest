@@ -176,7 +176,7 @@ signature <ORG, LOC>.
     [ORG: 'Open Text'] ', based in' [LOC: 'Waterloo']
     ...
 
-The next example illustrates a case where the patter is a disjunction
+The next example illustrates a case where the pattern is a disjunction
 of roles that a PERSON can occupy in an ORGANIZATION.
 
     >>> roles = r"""

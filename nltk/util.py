@@ -37,32 +37,38 @@ from nltk.internals import raise_unorderable_types, slice_bounds
 ######################################################################
 
 
-def usage(obj, selfname="self"):
+def usage(obj):
     str(obj)  # In case it's lazy, this will load it.
 
     if not isinstance(obj, type):
         obj = obj.__class__
 
-    print("%s supports the following operations:" % obj.__name__)
+    print(f"{obj.__name__} supports the following operations:")
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
         if getattr(method, "__deprecated__", False):
             continue
 
-        getargspec = inspect.getfullargspec
-        args, varargs, varkw, defaults = getargspec(method)[:4]
-        if (
-            args
-            and args[0] == "self"
-            and (defaults is None or len(args) > len(defaults))
-        ):
-            args = args[1:]
-            name = f"{selfname}.{name}"
-        argspec = inspect.formatargspec(args, varargs, varkw, defaults)
+        try:
+            sig = str(inspect.signature(method))
+        except ValueError as e:
+            # builtins sometimes don't support introspection
+            if "builtin" in str(e):
+                continue
+            else:
+                raise
+
+        args = sig.lstrip("(").rstrip(")").split(", ")
+        meth = inspect.getattr_static(obj, name)
+        if isinstance(meth, (classmethod, staticmethod)):
+            name = f"cls.{name}"
+        elif args and args[0] == "self":
+            name = f"self.{name}"
+            args.pop(0)
         print(
             textwrap.fill(
-                f"{name}{argspec}",
+                f"{name}({', '.join(args)})",
                 initial_indent="  - ",
                 subsequent_indent=" " * (len(name) + 5),
             )

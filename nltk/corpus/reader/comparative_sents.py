@@ -45,7 +45,7 @@ CLOSE_COMPARISON = re.compile(r"</cs-[1234]>")
 GRAD_COMPARISON = re.compile(r"<cs-[123]>")
 NON_GRAD_COMPARISON = re.compile(r"<cs-4>")
 ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
-KEYWORD = re.compile(r"\((?!.*\()(.*)\)$")
+KEYWORD = re.compile(r"\(([^\(]*)\)$")
 
 
 class Comparison:
