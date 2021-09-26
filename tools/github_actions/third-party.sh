@@ -76,6 +76,7 @@ megam_folder_name=${BASH_REMATCH[1]}
 if [[ ! -d ${megam_folder_name} ]]; then
 	curl -L "http://hal3.name/megam/$megam_file_name" -o ${megam_file_name}
 	gunzip -vf ${megam_file_name}
+	mkdir -p "megam"
 	mv ${megam_folder_name} "megam/${megam_folder_name}"
 	chmod -R 711 "megam/$megam_folder_name"
 fi
