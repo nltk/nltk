@@ -30,24 +30,50 @@ from urllib.request import (
 )
 
 from nltk.collections import *
-from nltk.internals import raise_unorderable_types, slice_bounds
+from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 
 ######################################################################
 # Short usage message
 ######################################################################
 
 
-def usage(obj, selfname="self"):
-    """Deprecated in favor of `help(obj)`
+@deprecated("Use help(obj) instead.")
+def usage(obj):
+    str(obj)  # In case it's lazy, this will load it.
 
-    Args:
-        obj (object): The object to inspect, e.g. `nltk.tree.Tree`.
-        selfname (str, optional): Unused. Defaults to "self".
-    """
-    warnings.warn(
-        "nltk.usage(obj) is deprecated; use help(obj).", PendingDeprecationWarning
-    )
-    help(obj)
+    if not isinstance(obj, type):
+        obj = obj.__class__
+
+    print(f"{obj.__name__} supports the following operations:")
+    for (name, method) in sorted(pydoc.allmethods(obj).items()):
+        if name.startswith("_"):
+            continue
+        if getattr(method, "__deprecated__", False):
+            continue
+
+        try:
+            sig = str(inspect.signature(method))
+        except ValueError as e:
+            # builtins sometimes don't support introspection
+            if "builtin" in str(e):
+                continue
+            else:
+                raise
+
+        args = sig.lstrip("(").rstrip(")").split(", ")
+        meth = inspect.getattr_static(obj, name)
+        if isinstance(meth, (classmethod, staticmethod)):
+            name = f"cls.{name}"
+        elif args and args[0] == "self":
+            name = f"self.{name}"
+            args.pop(0)
+        print(
+            textwrap.fill(
+                f"{name}({', '.join(args)})",
+                initial_indent="  - ",
+                subsequent_indent=" " * (len(name) + 5),
+            )
+        )
 
 
 ##########################################################################
