@@ -77,7 +77,7 @@ if [[ ! -d ${megam_folder_name} ]]; then
 	curl -L "http://hal3.name/megam/$megam_file_name" -o ${megam_file_name}
 	gunzip -vf ${megam_file_name}
 	mv ${megam_folder_name} "megam"
-	tree "megam"
+	tree ./
 	chmod -R 711 "./megam/$megam_folder_name"
 fi
 
