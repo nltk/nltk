@@ -5,6 +5,7 @@
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
+#         Tom Aarsen <> (modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -14,27 +15,36 @@
 Twitter-aware tokenizer, designed to be flexible and easy to adapt to new
 domains and tasks. The basic logic is this:
 
-1. The tuple regex_strings defines a list of regular expression
+1. The tuple REGEXPS defines a list of regular expression
    strings.
 
-2. The regex_strings strings are put, in order, into a compiled
-   regular expression object called word_re.
+2. The REGEXPS strings are put, in order, into a compiled
+   regular expression object called WORD_RE, under the TweetTokenizer
+   class.
 
-3. The tokenization is done by word_re.findall(s), where s is the
+3. The tokenization is done by WORD_RE.findall(s), where s is the
    user-supplied string, inside the tokenize() method of the class
-   Tokenizer.
+   TweetTokenizer.
 
-4. When instantiating Tokenizer objects, there is a single option:
-   preserve_case.  By default, it is set to True. If it is set to
-   False, then the tokenizer will downcase everything except for
-   emoticons.
-
+4. When instantiating Tokenizer objects, there are several options:
+    * preserve_case. By default, it is set to True. If it is set to
+        False, then the tokenizer will downcase everything except for
+        emoticons.
+    * reduce_len. By default, it is set to False. It specifies whether
+        to replace repeated character sequences of length 3 or greater
+        with sequences of length 3.
+    * strip_handles. By default, it is set to False. It specifies
+        whether to remove Twitter handles of text used in the
+        `tokenize` method.
+    * match_phone_numbers. By default, it is set to True. It indicates
+        whether the `tokenize` method should look for phone numbers.
 """
 
 
 ######################################################################
 
 import html
+from typing import List
 
 import regex  # https://github.com/nltk/nltk/issues/2409
 
@@ -115,11 +125,8 @@ URLS = r"""			# Capture 1: entire matched URL
   )
 """
 
-# The components of the tokenizer:
-REGEXPS = (
-    URLS,
-    # Phone numbers:
-    r"""
+# Regex for recognizing phone numbers:
+PHONE_REGEX = r"""
     (?:
       (?:            # (international)
         \+?[01]
@@ -133,7 +140,11 @@ REGEXPS = (
       \d{3}          # exchange
       [ *\-.\)]*
       \d{4}          # base
-    )""",
+    )"""
+
+# The components of the tokenizer:
+REGEXPS = (
+    URLS,
     # ASCII Emoticons
     EMOTICONS,
     # HTML tags:
@@ -160,12 +171,12 @@ REGEXPS = (
     """,
 )
 
-######################################################################
-# This is the core tokenizing regex:
+# Take the main components and add a phone regex as the second parameter
+REGEXPS_PHONE = (REGEXPS[0], PHONE_REGEX, *REGEXPS[1:])
 
-WORD_RE = regex.compile(
-    r"""(%s)""" % "|".join(REGEXPS), regex.VERBOSE | regex.I | regex.UNICODE
-)
+######################################################################
+# TweetTokenizer.WORD_RE and TweetTokenizer.PHONE_WORD_RE represent
+# the core tokenizing regexes. They are compiled lazily.
 
 # WORD_RE performs poorly on these patterns:
 HANG_RE = regex.compile(r"([^a-zA-Z0-9])\1{3,}")
@@ -177,6 +188,11 @@ EMOTICON_RE = regex.compile(EMOTICONS, regex.VERBOSE | regex.I | regex.UNICODE)
 # These are for regularizing HTML entities to Unicode:
 ENT_RE = regex.compile(r"&(#?(x?))([^&;\s]+);")
 
+# For stripping away handles from a tweet:
+HANDLES_RE = regex.compile(
+    r"(?<![A-Za-z0-9_!@#\$%&*])@"
+    r"(([A-Za-z0-9_]){15}(?!@)|([A-Za-z0-9_]){1,14}(?![A-Za-z0-9_]*@))"
+)
 
 ######################################################################
 # Functions for converting html entities
@@ -238,8 +254,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
         else:
             if entity_body in keep:
                 return match.group(0)
-            else:
-                number = html.entities.name2codepoint.get(entity_body)
+            number = html.entities.name2codepoint.get(entity_body)
         if number is not None:
             try:
                 return chr(number)
@@ -262,7 +277,8 @@ class TweetTokenizer:
         >>> tknzr = TweetTokenizer()
         >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
         >>> tknzr.tokenize(s0)
-        ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
+        ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3'
+        , 'and', 'some', 'arrows', '<', '>', '->', '<--']
 
     Examples using `strip_handles` and `reduce_len parameters`:
 
@@ -272,17 +288,48 @@ class TweetTokenizer:
         [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
     """
 
-    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False):
+    # Values used to lazily compile WORD_RE and PHONE_WORD_RE,
+    # which are the core tokenizing regexes.
+    _WORD_RE = None
+    _PHONE_WORD_RE = None
+
+    ######################################################################
+
+    def __init__(
+        self,
+        preserve_case=True,
+        reduce_len=False,
+        strip_handles=False,
+        match_phone_numbers=True,
+    ):
+        """
+        Create a `TweetTokenizer` instance with settings for use in the `tokenize` method.
+
+        :param preserve_case: Flag indicating whether to preserve the casing (capitalisation)
+            of text used in the `tokenize` method. Defaults to True.
+        :type preserve_case: bool
+        :param reduce_len: Flag indicating whether to replace repeated character sequences
+            of length 3 or greater with sequences of length 3. Defaults to False.
+        :type reduce_len: bool
+        :param strip_handles: Flag indicating whether to remove Twitter handles of text used
+            in the `tokenize` method. Defaults to False.
+        :type strip_handles: bool
+        :param match_phone_numbers: Flag indicating whether the `tokenize` method should look
+            for phone numbers. Defaults to True.
+        :type match_phone_numbers: bool
+        """
         self.preserve_case = preserve_case
         self.reduce_len = reduce_len
         self.strip_handles = strip_handles
+        self.match_phone_numbers = match_phone_numbers
 
-    def tokenize(self, text):
-        """
+    def tokenize(self, text: str) -> List[str]:
+        """Tokenize the input text.
+
         :param text: str
         :rtype: list(str)
-        :return: a tokenized list of strings; concatenating this list returns\
-        the original string if `preserve_case=False`
+        :return: a tokenized list of strings; joining this list returns\
+        the original string if `preserve_case=False`.
         """
         # Fix HTML character entities:
         text = _replace_html_entities(text)
@@ -294,14 +341,39 @@ class TweetTokenizer:
             text = reduce_lengthening(text)
         # Shorten problematic sequences of characters
         safe_text = HANG_RE.sub(r"\1\1\1", text)
-        # Tokenize:
-        words = WORD_RE.findall(safe_text)
+        # Recognise phone numbers during tokenization
+        if self.match_phone_numbers:
+            words = self.PHONE_WORD_RE.findall(safe_text)
+        else:
+            words = self.WORD_RE.findall(safe_text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(
                 map((lambda x: x if EMOTICON_RE.search(x) else x.lower()), words)
             )
         return words
+
+    @property
+    def WORD_RE(self) -> regex.Pattern:
+        """Core TweetTokenizer regex"""
+        # Compiles the regex for this and all future instantiations of TweetTokenizer.
+        if not type(self)._WORD_RE:
+            type(self)._WORD_RE = regex.compile(
+                f"({'|'.join(REGEXPS)})",
+                regex.VERBOSE | regex.I | regex.UNICODE,
+            )
+        return type(self)._WORD_RE
+
+    @property
+    def PHONE_WORD_RE(self) -> regex.Pattern:
+        """Secondary core TweetTokenizer regex"""
+        # Compiles the regex for this and all future instantiations of TweetTokenizer.
+        if not type(self)._PHONE_WORD_RE:
+            type(self)._PHONE_WORD_RE = regex.compile(
+                f"({'|'.join(REGEXPS_PHONE)})",
+                regex.VERBOSE | regex.I | regex.UNICODE,
+            )
+        return type(self)._PHONE_WORD_RE
 
 
 ######################################################################
@@ -322,11 +394,8 @@ def remove_handles(text):
     """
     Remove Twitter username handles from text.
     """
-    pattern = regex.compile(
-        r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)"
-    )
     # Substitute handles with ' ' to ensure that text on either side of removed handles are tokenized correctly
-    return pattern.sub(" ", text)
+    return HANDLES_RE.sub(" ", text)
 
 
 ######################################################################
@@ -334,12 +403,21 @@ def remove_handles(text):
 ######################################################################
 
 
-def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=False):
+def casual_tokenize(
+    text,
+    preserve_case=True,
+    reduce_len=False,
+    strip_handles=False,
+    match_phone_numbers=True,
+):
     """
     Convenience function for wrapping the tokenizer.
     """
     return TweetTokenizer(
-        preserve_case=preserve_case, reduce_len=reduce_len, strip_handles=strip_handles
+        preserve_case=preserve_case,
+        reduce_len=reduce_len,
+        strip_handles=strip_handles,
+        match_phone_numbers=match_phone_numbers,
     ).tokenize(text)
 
 

@@ -94,7 +94,7 @@ Summary of our git branching model:
 - Never use `git add .`: it can add unwanted files;
 - Avoid using `git commit -a` unless you know what you're doing;
 - Check every change with `git diff` before adding them to the index (stage
-  area) and with `git diff --cached` before commiting;
+  area) and with `git diff --cached` before committing;
 - Make sure you add your name to our [list of contributors](https://github.com/nltk/nltk/blob/develop/AUTHORS.md);
 - If you have push access to the main repository, please do not commit directly
   to `develop`: your access should be used only to accept pull requests; if you

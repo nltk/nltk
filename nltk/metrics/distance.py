@@ -34,7 +34,13 @@ def _edit_dist_init(len1, len2):
     return lev
 
 
-def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False):
+def _last_left_t_init(sigma):
+    return {c: 0 for c in sigma}
+
+
+def _edit_dist_step(
+    lev, i, j, s1, s2, last_left, last_right, substitution_cost=1, transpositions=False
+):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
@@ -47,9 +53,8 @@ def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False
 
     # transposition
     d = c + 1  # never picked by default
-    if transpositions and i > 1 and j > 1:
-        if s1[i - 2] == c2 and s2[j - 2] == c1:
-            d = lev[i - 2][j - 2] + 1
+    if transpositions and last_left > 0 and last_right > 0:
+        d = lev[last_left - 1][last_right - 1] + i - last_left + j - last_right - 1
 
     # pick the cheapest
     lev[i][j] = min(a, b, c, d)
@@ -85,18 +90,33 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     len2 = len(s2)
     lev = _edit_dist_init(len1 + 1, len2 + 1)
 
+    # retrieve alphabet
+    sigma = set()
+    sigma.update(s1)
+    sigma.update(s2)
+
+    # set up table to remember positions of last seen occurrence in s1
+    last_left_t = _last_left_t_init(sigma)
+
     # iterate over the array
     for i in range(len1):
+        last_right = 0
         for j in range(len2):
+            last_left = last_left_t[s2[j]]
             _edit_dist_step(
                 lev,
                 i + 1,
                 j + 1,
                 s1,
                 s2,
+                last_left,
+                last_right,
                 substitution_cost=substitution_cost,
                 transpositions=transpositions,
             )
+            if s1[i] == s2[j]:
+                last_right = j + 1
+            last_left_t[s1[i]] = i + 1
     return lev[len1][len2]
 
 
@@ -162,6 +182,8 @@ def edit_distance_align(s1, s2, substitution_cost=1):
                 j + 1,
                 s1,
                 s2,
+                0,
+                0,
                 substitution_cost=substitution_cost,
                 transpositions=False,
             )

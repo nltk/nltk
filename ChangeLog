@@ -1,4 +1,4 @@
-Version 3.6.3 2021-08-??
+Version 3.6.3 2021-09-19
 * Dropped support for Python 3.5
 * Run CI tests on Windows, too
 * Moved from Travis CI to GitHub Actions
@@ -12,11 +12,14 @@ Version 3.6.3 2021-08-??
 * Fixed AttributeError for Arabic ARLSTem2 stemmer
 * Many fixes and improvements to lm language model package
 * Fix bug in nltk.metrics.aline, C_skip = -10
+* Improvements to TweetTokenizer
+* Optional show arg for FreqDist.plot, ConditionalFreqDist.plot
+* edit_distance now computes Damerau-Levenshtein edit-distance
 
 Thanks to the following contributors to 3.6.3
-Tom Aarsen, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne, Manu Joseph,
-Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, purificant, Danny Sepler,
-Anthony Sottile
+Tom Aarsen, Abhijnan Bajpai, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne,
+Manu Joseph, Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, Mohaned Mashaly,
+purificant, Danny Sepler, Anthony Sottile
 
 Version 3.6.2 2021-04-20
 * move test code to nltk/test
@@ -752,7 +755,7 @@ NLTK:
 Data:
 * Corrected identifiers in Dependency Treebank corpus
 * Basque and Catalan Dependency Treebanks (CoNLL 2007)
-* PE08 Parser Evalution data
+* PE08 Parser Evaluation data
 * New models for POS tagger and named-entity tagger
 
 Book:
@@ -1065,7 +1068,7 @@ Code:
 - changed corpus.util to use the 'rb' flag for opening files, to fix problems
   reading corpora under MSWindows
 - updated stale examples in engineering.txt
-- extended feature stucture interface to permit chained features, e.g. fs['F','G']
+- extended feature structure interface to permit chained features, e.g. fs['F','G']
 - further misc improvements to test code plus some bugfixes
 Tutorials:
 - rewritten opening section of tagging chapter

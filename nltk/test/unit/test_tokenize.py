@@ -2,6 +2,8 @@
 Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
 """
+from typing import List, Tuple
+
 import pytest
 
 from nltk.tokenize import (
@@ -53,6 +55,211 @@ class TestTokenize:
             "français",
         ]
         assert tokens == expected
+
+    @pytest.mark.parametrize(
+        "test_input, expecteds",
+        [
+            (
+                "My text 0106404243030 is great text",
+                (
+                    ["My", "text", "01064042430", "30", "is", "great", "text"],
+                    ["My", "text", "0106404243030", "is", "great", "text"],
+                ),
+            ),
+            (
+                "My ticket id is 1234543124123",
+                (
+                    ["My", "ticket", "id", "is", "12345431241", "23"],
+                    ["My", "ticket", "id", "is", "1234543124123"],
+                ),
+            ),
+            (
+                "@remy: This is waaaaayyyy too much for you!!!!!! 01064042430",
+                (
+                    [
+                        ":",
+                        "This",
+                        "is",
+                        "waaayyy",
+                        "too",
+                        "much",
+                        "for",
+                        "you",
+                        "!",
+                        "!",
+                        "!",
+                        "01064042430",
+                    ],
+                    [
+                        ":",
+                        "This",
+                        "is",
+                        "waaayyy",
+                        "too",
+                        "much",
+                        "for",
+                        "you",
+                        "!",
+                        "!",
+                        "!",
+                        "01064042430",
+                    ],
+                ),
+            ),
+            # Further tests from https://github.com/nltk/nltk/pull/2798#issuecomment-922533085,
+            # showing the TweetTokenizer performance for `match_phone_numbers=True` and
+            # `match_phone_numbers=False`.
+            (
+                # Some phone numbers are always tokenized, even with `match_phone_numbers=`False`
+                "My number is 06-46124080, except it's not.",
+                (
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "06-46124080",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "06-46124080",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # Phone number here is only tokenized correctly if `match_phone_numbers=True`
+                "My number is 601-984-4813, except it's not.",
+                (
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "601-984-4813",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "601-984-",
+                        "4813",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # Phone number here is only tokenized correctly if `match_phone_numbers=True`
+                "My number is (393)  928 -3010, except it's not.",
+                (
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "(393)  928 -3010",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                    [
+                        "My",
+                        "number",
+                        "is",
+                        "(",
+                        "393",
+                        ")",
+                        "928",
+                        "-",
+                        "3010",
+                        ",",
+                        "except",
+                        "it's",
+                        "not",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # A long number is tokenized correctly only if `match_phone_numbers=False`
+                "The product identification number is 48103284512.",
+                (
+                    [
+                        "The",
+                        "product",
+                        "identification",
+                        "number",
+                        "is",
+                        "4810328451",
+                        "2",
+                        ".",
+                    ],
+                    [
+                        "The",
+                        "product",
+                        "identification",
+                        "number",
+                        "is",
+                        "48103284512",
+                        ".",
+                    ],
+                ),
+            ),
+            (
+                # `match_phone_numbers=True` can have some unforeseen
+                "My favourite substraction is 240 - 1353.",
+                (
+                    ["My", "favourite", "substraction", "is", "240 - 1353", "."],
+                    ["My", "favourite", "substraction", "is", "240", "-", "1353", "."],
+                ),
+            ),
+        ],
+    )
+    def test_tweet_tokenizer_expanded(
+        self, test_input: str, expecteds: Tuple[List[str], List[str]]
+    ):
+        """
+        Test `match_phone_numbers` in TweetTokenizer.
+
+        Note that TweetTokenizer is also passed the following for these tests:
+            * strip_handles=True
+            * reduce_len=True
+
+        :param test_input: The input string to tokenize using TweetTokenizer.
+        :type test_input: str
+        :param expecteds: A 2-tuple of tokenized sentences. The first of the two
+            tokenized is the expected output of tokenization with `match_phone_numbers=True`.
+            The second of the two tokenized lists is the expected output of tokenization
+            with `match_phone_numbers=False`.
+        :type expecteds: Tuple[List[str], List[str]]
+        """
+        for match_phone_numbers, expected in zip([True, False], expecteds):
+            tokenizer = TweetTokenizer(
+                strip_handles=True,
+                reduce_len=True,
+                match_phone_numbers=match_phone_numbers,
+            )
+            predicted = tokenizer.tokenize(test_input)
+            assert predicted == expected
 
     def test_sonority_sequencing_syllable_tokenizer(self):
         """
@@ -306,18 +513,18 @@ class TestTokenize:
         result = tokenizer.tokenize(test5)
         assert result == expected
 
-        # Tests that handles can have a max length of 20
-        test6 = "@abcdefghijklmnopqrstuvwxyz @abcdefghijklmnopqrst1234 @abcdefghijklmnopqrst_ @abcdefghijklmnopqrstendofhandle"
-        expected = ["uvwxyz", "1234", "_", "endofhandle"]
+        # Tests that handles can have a max length of 15
+        test6 = "@abcdefghijklmnopqrstuvwxyz @abcdefghijklmno1234 @abcdefghijklmno_ @abcdefghijklmnoendofhandle"
+        expected = ["pqrstuvwxyz", "1234", "_", "endofhandle"]
         result = tokenizer.tokenize(test6)
         assert result == expected
 
         # Edge case where an @ comes directly after a long handle
-        test7 = "@abcdefghijklmnopqrstu@abcde @abcdefghijklmnopqrst@abcde @abcdefghijklmnopqrst_@abcde @abcdefghijklmnopqrst5@abcde"
+        test7 = "@abcdefghijklmnop@abcde @abcdefghijklmno@abcde @abcdefghijklmno_@abcde @abcdefghijklmno5@abcde"
         expected = [
-            "u",
+            "p",
             "@abcde",
-            "@abcdefghijklmnopqrst",
+            "@abcdefghijklmno",
             "@abcde",
             "_",
             "@abcde",
