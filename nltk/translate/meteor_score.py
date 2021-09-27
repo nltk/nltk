@@ -56,7 +56,9 @@ def exact_match(hypothesis, reference, preprocess=str.lower):
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    hypothesis_list, reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
+    hypothesis_list, reference_list = _generate_enums(
+        hypothesis, reference, preprocess=preprocess
+    )
     return _match_enums(hypothesis_list, reference_list)
 
 
@@ -134,7 +136,9 @@ def stem_match(hypothesis, reference, stemmer=PorterStemmer(), preprocess=str.lo
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(
+        hypothesis, reference, preprocess=preprocess
+    )
     return _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer=stemmer)
 
 
@@ -190,7 +194,9 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet, preprocess=str.lowe
     :return: list of mapped tuples
     :rtype: list of tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(
+        hypothesis, reference, preprocess=preprocess
+    )
     return _enum_wordnetsyn_match(
         enum_hypothesis_list, enum_reference_list, wordnet=wordnet
     )
@@ -237,7 +243,13 @@ def _enum_align_words(
     )
 
 
-def align_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet, preprocess=str.lower):
+def align_words(
+    hypothesis,
+    reference,
+    stemmer=PorterStemmer(),
+    wordnet=wordnet,
+    preprocess=str.lower
+):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -257,7 +269,9 @@ def align_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet,
     :return: sorted list of matched tuples, unmatched hypothesis list, unmatched reference list
     :rtype: list of tuples, list of tuples, list of tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(
+        hypothesis, reference, preprocess=preprocess
+    )
     return _enum_align_words(
         enum_hypothesis_list, enum_reference_list, stemmer=stemmer, wordnet=wordnet
     )
