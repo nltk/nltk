@@ -1,6 +1,6 @@
 #!/bin/bash
-# This install script is used by the "install" step defined in travis.yml
-# See https://docs.travis-ci.com/user/installing-dependencies/
+# This install script is used in our GitHub Actions CI.
+# See .github/workflows/ci.yaml
 
 # Installing the third-party software and the appropriate env variables.
 pushd ${HOME}
