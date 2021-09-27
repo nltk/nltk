@@ -30,13 +30,14 @@ from urllib.request import (
 )
 
 from nltk.collections import *
-from nltk.internals import raise_unorderable_types, slice_bounds
+from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 
 ######################################################################
 # Short usage message
 ######################################################################
 
 
+@deprecated("Use help(obj) instead.")
 def usage(obj):
     str(obj)  # In case it's lazy, this will load it.
 
