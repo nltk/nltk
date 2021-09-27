@@ -93,6 +93,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 16
+        if: runner.os == 'Linux'
 
       - name: Cache dependencies
         uses: actions/cache@v2
