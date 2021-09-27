@@ -30,7 +30,7 @@ class WordNetLemmatizer:
         hardrock
     """
 
-    def lemmatize(self, word: str, pos: str = wn.NOUN) -> str:
+    def lemmatize(self, word: str, pos: str = "n") -> str:
         """Lemmatize `word` using WordNet's built-in morphy function.
         Returns the input word unchanged if it cannot be found in WordNet.
 
