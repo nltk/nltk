@@ -92,4 +92,3 @@ class TestRTEClassifier:
         except (LookupError, AttributeError) as e:
             pytest.skip("Skipping tests with dependencies on MEGAM")
         clf = rte_classifier("megam", sample_N=100)
-        clf = rte_classifier("BFGS", sample_N=100)
