@@ -5,7 +5,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import os
 import subprocess
 import sys
 

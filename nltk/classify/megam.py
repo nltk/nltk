@@ -22,7 +22,6 @@ for details.
 
 .. _megam: http://www.umiacs.umd.edu/~hal/megam/index.html
 """
-import os
 import subprocess
 
 from nltk.internals import find_binary
