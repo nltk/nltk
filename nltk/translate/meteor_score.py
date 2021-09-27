@@ -18,35 +18,45 @@ def _generate_enums(hypothesis, reference, preprocess=str.lower):
     Takes in string inputs for hypothesis and reference and returns
     enumerated word lists for each of them
 
-    :param hypothesis: hypothesis string
-    :type hypothesis: str
-    :param reference: reference string
-    :type reference: str
+    :param hypothesis: hypothesis string or pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
+    :param reference: reference string or pre-tokenized reference
+    :type reference: str or list(str)
     :preprocess: preprocessing method (default str.lower)
     :type preprocess: method
     :return: enumerated words list
     :rtype: list of 2D tuples, list of 2D tuples
     """
-    hypothesis_list = list(enumerate(preprocess(hypothesis).split()))
-    reference_list = list(enumerate(preprocess(reference).split()))
+    if isinstance(hypothesis, str):
+        hypothesis_list = list(enumerate(preprocess(hypothesis).split()))
+    elif isinstance(hypothesis, list):
+        hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
+
+    if isinstance(reference, str):
+        reference_list = list(enumerate(preprocess(reference).split()))
+    elif isinstance(reference, list):
+        reference_list = list(enumerate(map(preprocess, reference)))
+
     return hypothesis_list, reference_list
 
 
-def exact_match(hypothesis, reference):
+def exact_match(hypothesis, reference, preprocess=str.lower):
     """
     matches exact words in hypothesis and reference
     and returns a word mapping based on the enumerated
     word id between hypothesis and reference
 
-    :param hypothesis: hypothesis string
-    :type hypothesis: str
-    :param reference: reference string
-    :type reference: str
+    :param hypothesis: hypothesis string or pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
+    :param reference: reference string or pre-tokenized reference
+    :type reference: str or list(str)
+    :preprocess: preprocessing method (default str.lower)
+    :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    hypothesis_list, reference_list = _generate_enums(hypothesis, reference)
+    hypothesis_list, reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
     return _match_enums(hypothesis_list, reference_list)
 
 
@@ -106,23 +116,25 @@ def _enum_stem_match(
     return _match_enums(stemmed_enum_list1, stemmed_enum_list2)
 
 
-def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
+def stem_match(hypothesis, reference, stemmer=PorterStemmer(), preprocess=str.lower):
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
 
-    :param hypothesis:
-    :type hypothesis:
-    :param reference:
-    :type reference:
+    :param hypothesis: hypothesis string or pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
+    :param reference: reference string or pre-tokenized reference
+    :type reference: str or list(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that
                    implements a stem method
+    :preprocess: preprocessing method (default str.lower)
+    :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
     return _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer=stemmer)
 
 
@@ -162,19 +174,23 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wo
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
-def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
+def wordnetsyn_match(hypothesis, reference, wordnet=wordnet, preprocess=str.lower):
     """
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
 
-    :param hypothesis: hypothesis string
-    :param reference: reference string
+    :param hypothesis: hypothesis string or pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
+    :param reference: reference string or pre-tokenized reference
+    :type reference: str or list(str)
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
+    :preprocess: preprocessing method (default str.lower)
+    :type preprocess: method
     :return: list of mapped tuples
     :rtype: list of tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
     return _enum_wordnetsyn_match(
         enum_hypothesis_list, enum_reference_list, wordnet=wordnet
     )
@@ -221,23 +237,27 @@ def _enum_align_words(
     )
 
 
-def align_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet):
+def align_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet, preprocess=str.lower):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
     In case there are multiple matches the match which has the least number
     of crossing is chosen.
 
-    :param hypothesis: hypothesis string
-    :param reference: reference string
+    :param hypothesis: hypothesis string or pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
+    :param reference: reference string or pre-tokenized reference
+    :type reference: str or list(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
+    :preprocess: preprocessing method (default str.lower)
+    :type preprocess: method
     :return: sorted list of matched tuples, unmatched hypothesis list, unmatched reference list
     :rtype: list of tuples, list of tuples, list of tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference, preprocess=preprocess)
     return _enum_align_words(
         enum_hypothesis_list, enum_reference_list, stemmer=stemmer, wordnet=wordnet
     )
@@ -299,10 +319,10 @@ def single_meteor_score(
     >>> round(meteor_score('this is a cat', 'non matching hypothesis'),4)
     0.0
 
-    :param reference: reference sentence
-    :type reference: str
-    :param hypothesis: a hypothesis sentence
-    :type hypothesis: str
+    :param reference: reference string or pre-tokenized reference
+    :type reference: str or list(str)
+    :param hypothesis: hypothesis string or pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
     :param preprocess: preprocessing function (default str.lower)
     :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
@@ -379,10 +399,10 @@ def meteor_score(
     >>> round(meteor_score(['this is a cat'], 'non matching hypothesis'),4)
     0.0
 
-    :param references: reference sentences
-    :type references: list(str)
-    :param hypothesis: a hypothesis sentence
-    :type hypothesis: str
+    :param reference: reference sentences or pre-tokenized references
+    :type reference: list(str) or list(list(str))
+    :param hypothesis: a hypothesis sentence or a pre-tokenized hypothesis
+    :type hypothesis: str or list(str)
     :param preprocess: preprocessing function (default str.lower)
     :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
