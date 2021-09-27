@@ -248,7 +248,7 @@ def align_words(
     reference,
     stemmer=PorterStemmer(),
     wordnet=wordnet,
-    preprocess=str.lower
+    preprocess=str.lower,
 ):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
