@@ -35,8 +35,8 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
-apidoc_module_dir = '../nltk'
-apidoc_output_dir = 'api'
+apidoc_module_dir = "../nltk"
+apidoc_output_dir = "api"
 apidoc_separate_modules = False
 
 # Add any paths that contain templates here, relative to this directory.
