@@ -20,6 +20,7 @@ backoff tagger for any other SequentialBackoffTagger.
 import ast
 import re
 from abc import abstractmethod
+from typing import List, Optional, Tuple
 
 from nltk import jsontags
 from nltk.classify import NaiveBayesClassifier
@@ -533,21 +534,18 @@ class RegexpTagger(SequentialBackoffTagger):
 
     json_tag = "nltk.tag.sequential.RegexpTagger"
 
-    def __init__(self, regexps, backoff=None):
-        """ """
+    def __init__(
+        self, regexps: List[Tuple[str, str]], backoff: Optional[TaggerI] = None
+    ):
         super().__init__(backoff)
-        try:
-            self._regexps = [
-                (
-                    re.compile(regexp),
-                    tag,
-                )
-                for regexp, tag in regexps
-            ]
-        except Exception as e:
-            raise Exception(
-                "Invalid RegexpTagger regexp:", str(e), "regexp:", regexp, "tag:", tag
-            ) from e
+        self._regexps = []
+        for regexp, tag in regexps:
+            try:
+                self._regexps.append((re.compile(regexp), tag))
+            except Exception as e:
+                raise Exception(
+                    f"Invalid RegexpTagger regexp: {e}\n- regexp: {regexp!r}\n- tag: {tag!r}"
+                ) from e
 
     def encode_json_obj(self):
         return [(regexp.pattern, tag) for regexp, tag in self._regexps], self.backoff
