@@ -8,6 +8,7 @@
 
 
 from itertools import chain, product
+from typing import Iterable
 
 from nltk.corpus import wordnet
 from nltk.stem.porter import PorterStemmer
@@ -19,17 +20,26 @@ def _generate_enums(hypothesis, reference, preprocess=str.lower):
     enumerated word lists for each of them
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type reference: list(str)
+    :type reference: array-like(str)
     :preprocess: preprocessing method (default str.lower)
     :type preprocess: method
     :return: enumerated words list
     :rtype: list of 2D tuples, list of 2D tuples
     """
+    if isinstance(hypothesis, str):
+        raise TypeError(
+            f'"hypothesis" expects pre-tokenized hypothesis (array-like(str)): {hypothesis}'
+        )
+
+    if isinstance(reference, str):
+        raise TypeError(
+            f'"reference" expects pre-tokenized reference (array-like(str)): {reference}'
+        )
+
     hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
     reference_list = list(enumerate(map(preprocess, reference)))
-
     return hypothesis_list, reference_list
 
 
@@ -40,9 +50,9 @@ def exact_match(hypothesis, reference):
     word id between hypothesis and reference
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type reference: list(str)
+    :type hypothesis: array-like(str)
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
@@ -113,9 +123,9 @@ def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
     and returns a word mapping between hypothesis and reference
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type reference: list(str)
+    :type hypothesis: array-like(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that
                    implements a stem method
@@ -169,9 +179,9 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
     of a hypothesis word is the exact match to the reference word.
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type reference: list(str)
+    :type hypothesis: array-like(str)
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
     :return: list of mapped tuples
@@ -237,9 +247,9 @@ def align_words(
     of crossing is chosen.
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type reference: list(str)
+    :type hypothesis: array-like(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
@@ -310,9 +320,9 @@ def single_meteor_score(
     0.0
 
     :param reference: pre-tokenized reference
-    :type reference: list(str)
+    :type hypothesis: array-like(str)
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param preprocess: preprocessing function (default str.lower)
     :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
@@ -390,9 +400,9 @@ def meteor_score(
     0.0
 
     :param references: pre-tokenized reference sentences
-    :type references: list(list(str))
+    :type hypothesis: 2D array-like(str)
     :param hypothesis: a pre-tokenized hypothesis sentence
-    :type hypothesis: list(str)
+    :type hypothesis: array-like(str)
     :param preprocess: preprocessing function (default str.lower)
     :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
