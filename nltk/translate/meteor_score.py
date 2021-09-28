@@ -229,7 +229,6 @@ def align_words(
     reference,
     stemmer=PorterStemmer(),
     wordnet=wordnet,
-    preprocess=str.lower,
 ):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
@@ -245,14 +244,10 @@ def align_words(
     :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
-    :preprocess: preprocessing method (default str.lower)
-    :type preprocess: method
     :return: sorted list of matched tuples, unmatched hypothesis list, unmatched reference list
     :rtype: list of tuples, list of tuples, list of tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(
-        hypothesis, reference, preprocess=preprocess
-    )
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
     return _enum_align_words(
         enum_hypothesis_list, enum_reference_list, stemmer=stemmer, wordnet=wordnet
     )
