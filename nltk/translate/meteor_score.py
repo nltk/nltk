@@ -33,7 +33,7 @@ def _generate_enums(hypothesis, reference, preprocess=str.lower):
     return hypothesis_list, reference_list
 
 
-def exact_match(hypothesis, reference, preprocess=str.lower):
+def exact_match(hypothesis, reference, preprocess):
     """
     matches exact words in hypothesis and reference
     and returns a word mapping based on the enumerated
@@ -43,7 +43,7 @@ def exact_match(hypothesis, reference, preprocess=str.lower):
     :type hypothesis: list(str)
     :param reference: pre-tokenized reference
     :type reference: list(str)
-    :preprocess: preprocessing method (default str.lower)
+    :preprocess: preprocessing method
     :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
@@ -111,7 +111,7 @@ def _enum_stem_match(
     return _match_enums(stemmed_enum_list1, stemmed_enum_list2)
 
 
-def stem_match(hypothesis, reference, stemmer=PorterStemmer(), preprocess=str.lower):
+def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
@@ -123,15 +123,13 @@ def stem_match(hypothesis, reference, stemmer=PorterStemmer(), preprocess=str.lo
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that
                    implements a stem method
-    :preprocess: preprocessing method (default str.lower)
+    :preprocess: preprocessing method
     :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(
-        hypothesis, reference, preprocess=preprocess
-    )
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
     return _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer=stemmer)
 
 
@@ -171,7 +169,7 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wo
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
-def wordnetsyn_match(hypothesis, reference, wordnet=wordnet, preprocess=str.lower):
+def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
     """
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
@@ -182,14 +180,12 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet, preprocess=str.lowe
     :type reference: list(str)
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
-    :preprocess: preprocessing method (default str.lower)
+    :preprocess: preprocessing method
     :type preprocess: method
     :return: list of mapped tuples
     :rtype: list of tuples
     """
-    enum_hypothesis_list, enum_reference_list = _generate_enums(
-        hypothesis, reference, preprocess=preprocess
-    )
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
     return _enum_wordnetsyn_match(
         enum_hypothesis_list, enum_reference_list, wordnet=wordnet
     )
