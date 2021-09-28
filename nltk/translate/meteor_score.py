@@ -15,27 +15,20 @@ from nltk.stem.porter import PorterStemmer
 
 def _generate_enums(hypothesis, reference, preprocess=str.lower):
     """
-    Takes in string inputs for hypothesis and reference and returns
+    Takes in pre-tokenized inputs for hypothesis and reference and returns
     enumerated word lists for each of them
 
-    :param hypothesis: hypothesis string or pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
-    :param reference: reference string or pre-tokenized reference
-    :type reference: str or list(str)
+    :param hypothesis: pre-tokenized hypothesis
+    :type hypothesis: list(str)
+    :param reference: pre-tokenized reference
+    :type reference: list(str)
     :preprocess: preprocessing method (default str.lower)
     :type preprocess: method
     :return: enumerated words list
     :rtype: list of 2D tuples, list of 2D tuples
     """
-    if isinstance(hypothesis, str):
-        hypothesis_list = list(enumerate(preprocess(hypothesis).split()))
-    elif isinstance(hypothesis, list):
-        hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
-
-    if isinstance(reference, str):
-        reference_list = list(enumerate(preprocess(reference).split()))
-    elif isinstance(reference, list):
-        reference_list = list(enumerate(map(preprocess, reference)))
+    hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
+    reference_list = list(enumerate(map(preprocess, reference)))
 
     return hypothesis_list, reference_list
 
@@ -46,10 +39,10 @@ def exact_match(hypothesis, reference, preprocess=str.lower):
     and returns a word mapping based on the enumerated
     word id between hypothesis and reference
 
-    :param hypothesis: hypothesis string or pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
-    :param reference: reference string or pre-tokenized reference
-    :type reference: str or list(str)
+    :param hypothesis: pre-tokenized hypothesis
+    :type hypothesis: list(str)
+    :param reference: pre-tokenized reference
+    :type reference: list(str)
     :preprocess: preprocessing method (default str.lower)
     :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
@@ -123,10 +116,10 @@ def stem_match(hypothesis, reference, stemmer=PorterStemmer(), preprocess=str.lo
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
 
-    :param hypothesis: hypothesis string or pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
-    :param reference: reference string or pre-tokenized reference
-    :type reference: str or list(str)
+    :param hypothesis: pre-tokenized hypothesis
+    :type hypothesis: list(str)
+    :param reference: pre-tokenized reference
+    :type reference: list(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that
                    implements a stem method
@@ -183,10 +176,10 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet, preprocess=str.lowe
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
 
-    :param hypothesis: hypothesis string or pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
-    :param reference: reference string or pre-tokenized reference
-    :type reference: str or list(str)
+    :param hypothesis: pre-tokenized hypothesis
+    :type hypothesis: list(str)
+    :param reference: pre-tokenized reference
+    :type reference: list(str)
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
     :preprocess: preprocessing method (default str.lower)
@@ -256,10 +249,10 @@ def align_words(
     In case there are multiple matches the match which has the least number
     of crossing is chosen.
 
-    :param hypothesis: hypothesis string or pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
-    :param reference: reference string or pre-tokenized reference
-    :type reference: str or list(str)
+    :param hypothesis: pre-tokenized hypothesis
+    :type hypothesis: list(str)
+    :param reference: pre-tokenized reference
+    :type reference: list(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
@@ -318,9 +311,9 @@ def single_meteor_score(
     http://www.cs.cmu.edu/~alavie/METEOR/pdf/Lavie-Agarwal-2007-METEOR.pdf
 
 
-    >>> hypothesis1 = 'It is a guide to action which ensures that the military always obeys the commands of the party'
+    >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which', 'ensures', 'that', 'the', 'military', 'always', 'obeys', 'the', 'commands', 'of', 'the', 'party']
 
-    >>> reference1 = 'It is a guide to action that ensures that the military will forever heed Party commands'
+    >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that', 'ensures', 'that', 'the', 'military', 'will', 'forever', 'heed', 'Party', 'commands']
 
 
     >>> round(single_meteor_score(reference1, hypothesis1),4)
@@ -330,13 +323,13 @@ def single_meteor_score(
         score as 0. We can safely  return a zero instead of raising a
         division by zero error as no match usually implies a bad translation.
 
-    >>> round(meteor_score('this is a cat', 'non matching hypothesis'),4)
+    >>> round(meteor_score(['this', 'is', 'a', 'cat'], ['non', 'matching', 'hypothesis']),4)
     0.0
 
-    :param reference: reference string or pre-tokenized reference
-    :type reference: str or list(str)
-    :param hypothesis: hypothesis string or pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
+    :param reference: pre-tokenized reference
+    :type reference: list(str)
+    :param hypothesis: pre-tokenized hypothesis
+    :type hypothesis: list(str)
     :param preprocess: preprocessing function (default str.lower)
     :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
@@ -396,12 +389,12 @@ def meteor_score(
     iterates over single_meteor_score and picks the best pair among all
     the references for a given hypothesis
 
-    >>> hypothesis1 = 'It is a guide to action which ensures that the military always obeys the commands of the party'
-    >>> hypothesis2 = 'It is to insure the troops forever hearing the activity guidebook that party direct'
+    >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which', 'ensures', 'that', 'the', 'military', 'always', 'obeys', 'the', 'commands', 'of', 'the', 'party']
+    >>> hypothesis2 = ['It', 'is', 'to', 'insure', 'the', 'troops', 'forever', 'hearing', 'the', 'activity', 'guidebook', 'that', 'party', 'direct']
 
-    >>> reference1 = 'It is a guide to action that ensures that the military will forever heed Party commands'
-    >>> reference2 = 'It is the guiding principle which guarantees the military forces always being under the command of the Party'
-    >>> reference3 = 'It is the practical guide for the army always to heed the directions of the party'
+    >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that', 'ensures', 'that', 'the', 'military', 'will', 'forever', 'heed', 'Party', 'commands']
+    >>> reference2 = ['It', 'is', 'the', 'guiding', 'principle', 'which', 'guarantees', 'the', 'military', 'forces', 'always', 'being', 'under', 'the', 'command', 'of', 'the', 'Party']
+    >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the', 'army', 'always', 'to', 'heed', 'the', 'directions', 'of', 'the', 'party']
 
     >>> round(meteor_score([reference1, reference2, reference3], hypothesis1),4)
     0.7398
@@ -410,13 +403,13 @@ def meteor_score(
         score as 0. We can safely  return a zero instead of raising a
         division by zero error as no match usually implies a bad translation.
 
-    >>> round(meteor_score(['this is a cat'], 'non matching hypothesis'),4)
+    >>> round(meteor_score([['this', 'is', 'a', 'cat']], ['non', 'matching', 'hypothesis']),4)
     0.0
 
-    :param reference: reference sentences or pre-tokenized references
-    :type reference: list(str) or list(list(str))
-    :param hypothesis: a hypothesis sentence or a pre-tokenized hypothesis
-    :type hypothesis: str or list(str)
+    :param reference: pre-tokenized reference sentences
+    :type reference: list(list(str))
+    :param hypothesis: a pre-tokenized hypothesis sentence
+    :type hypothesis: list(str)
     :param preprocess: preprocessing function (default str.lower)
     :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
