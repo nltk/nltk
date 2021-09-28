@@ -33,7 +33,7 @@ def _generate_enums(hypothesis, reference, preprocess=str.lower):
     return hypothesis_list, reference_list
 
 
-def exact_match(hypothesis, reference, preprocess):
+def exact_match(hypothesis, reference):
     """
     matches exact words in hypothesis and reference
     and returns a word mapping based on the enumerated
@@ -43,15 +43,11 @@ def exact_match(hypothesis, reference, preprocess):
     :type hypothesis: list(str)
     :param reference: pre-tokenized reference
     :type reference: list(str)
-    :preprocess: preprocessing method
-    :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    hypothesis_list, reference_list = _generate_enums(
-        hypothesis, reference, preprocess=preprocess
-    )
+    hypothesis_list, reference_list = _generate_enums(hypothesis, reference)
     return _match_enums(hypothesis_list, reference_list)
 
 
@@ -123,8 +119,6 @@ def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
     :type stemmer: nltk.stem.api.StemmerI or any class that
                    implements a stem method
-    :preprocess: preprocessing method
-    :type preprocess: method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
@@ -180,8 +174,6 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
     :type reference: list(str)
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     :type wordnet: WordNetCorpusReader
-    :preprocess: preprocessing method
-    :type preprocess: method
     :return: list of mapped tuples
     :rtype: list of tuples
     """
@@ -402,8 +394,8 @@ def meteor_score(
     >>> round(meteor_score([['this', 'is', 'a', 'cat']], ['non', 'matching', 'hypothesis']),4)
     0.0
 
-    :param reference: pre-tokenized reference sentences
-    :type reference: list(list(str))
+    :param references: pre-tokenized reference sentences
+    :type references: list(list(str))
     :param hypothesis: a pre-tokenized hypothesis sentence
     :type hypothesis: list(str)
     :param preprocess: preprocessing function (default str.lower)
