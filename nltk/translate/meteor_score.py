@@ -82,7 +82,8 @@ def _match_enums(
                 word_match.append(
                     (enum_hypothesis_list[i][0], enum_reference_list[j][0])
                 )
-                (enum_hypothesis_list.pop(i)[1], enum_reference_list.pop(j)[1])
+                enum_hypothesis_list.pop(i)
+                enum_reference_list.pop(j)
                 break
     return word_match, enum_hypothesis_list, enum_reference_list
 
@@ -165,7 +166,8 @@ def _enum_wordnetsyn_match(
                 word_match.append(
                     (enum_hypothesis_list[i][0], enum_reference_list[j][0])
                 )
-                enum_hypothesis_list.pop(i), enum_reference_list.pop(j)
+                enum_hypothesis_list.pop(i)
+                enum_reference_list.pop(j)
                 break
     return word_match, enum_hypothesis_list, enum_reference_list
 
