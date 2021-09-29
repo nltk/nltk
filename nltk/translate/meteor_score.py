@@ -286,7 +286,7 @@ def single_meteor_score(
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
     alpha: float = 0.9,
-    beta: float = 3,
+    beta: float = 3.0,
     gamma: float = 0.5,
 ) -> float:
     """
