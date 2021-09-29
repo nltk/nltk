@@ -31,12 +31,12 @@ def _generate_enums(
     """
     if isinstance(hypothesis, str):
         raise TypeError(
-            f'"hypothesis" expects pre-tokenized hypothesis (array-like(str)): {hypothesis}'
+            f'"hypothesis" expects pre-tokenized hypothesis (Iterable[str]): {hypothesis}'
         )
 
     if isinstance(reference, str):
         raise TypeError(
-            f'"reference" expects pre-tokenized reference (array-like(str)): {reference}'
+            f'"reference" expects pre-tokenized reference (Iterable[str]): {reference}'
         )
 
     enum_hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
