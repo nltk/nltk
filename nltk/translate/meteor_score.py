@@ -8,25 +8,26 @@
 
 
 from itertools import chain, product
-from typing import Iterable
+from typing import Callable, Iterable, List, Tuple
 
-from nltk.corpus import wordnet
+from nltk.corpus import WordNetCorpusReader, wordnet
+from nltk.stem.api import StemmerI
 from nltk.stem.porter import PorterStemmer
 
 
-def _generate_enums(hypothesis, reference, preprocess=str.lower):
+def _generate_enums(
+    hypothesis: Iterable[str],
+    reference: Iterable[str],
+    preprocess: Callable = str.lower,
+) -> Tuple[List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Takes in pre-tokenized inputs for hypothesis and reference and returns
     enumerated word lists for each of them
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type reference: array-like(str)
     :preprocess: preprocessing method (default str.lower)
-    :type preprocess: method
     :return: enumerated words list
-    :rtype: list of 2D tuples, list of 2D tuples
     """
     if isinstance(hypothesis, str):
         raise TypeError(
@@ -38,42 +39,41 @@ def _generate_enums(hypothesis, reference, preprocess=str.lower):
             f'"reference" expects pre-tokenized reference (array-like(str)): {reference}'
         )
 
-    hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
-    reference_list = list(enumerate(map(preprocess, reference)))
-    return hypothesis_list, reference_list
+    enum_hypothesis_list = list(enumerate(map(preprocess, hypothesis)))
+    enum_reference_list = list(enumerate(map(preprocess, reference)))
+    return enum_hypothesis_list, enum_reference_list
 
 
-def exact_match(hypothesis, reference):
+def exact_match(
+    hypothesis: Iterable[str], reference: Iterable[str]
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     matches exact words in hypothesis and reference
     and returns a word mapping based on the enumerated
     word id between hypothesis and reference
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type hypothesis: array-like(str)
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
-    :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    hypothesis_list, reference_list = _generate_enums(hypothesis, reference)
-    return _match_enums(hypothesis_list, reference_list)
+    enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
+    return _match_enums(enum_hypothesis_list, enum_reference_list)
 
 
-def _match_enums(enum_hypothesis_list, enum_reference_list):
+def _match_enums(
+    enum_hypothesis_list: List[Tuple[int, str]],
+    enum_reference_list: List[Tuple[int, str]],
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     matches exact words in hypothesis and reference and returns
     a word mapping between enum_hypothesis_list and enum_reference_list
     based on the enumerated word id.
 
     :param enum_hypothesis_list: enumerated hypothesis list
-    :type enum_hypothesis_list: list of tuples
     :param enum_reference_list: enumerated reference list
-    :type enum_reference_list: list of 2D tuples
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
-    :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
     word_match = []
     for i in range(len(enum_hypothesis_list))[::-1]:
@@ -88,56 +88,57 @@ def _match_enums(enum_hypothesis_list, enum_reference_list):
 
 
 def _enum_stem_match(
-    enum_hypothesis_list, enum_reference_list, stemmer=PorterStemmer()
-):
+    enum_hypothesis_list: List[Tuple[int, str]],
+    enum_reference_list: List[Tuple[int, str]],
+    stemmer: StemmerI = PorterStemmer(),
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between enum_hypothesis_list and
     enum_reference_list based on the enumerated word id. The function also
     returns a enumerated list of unmatched words for hypothesis and reference.
 
-    :param enum_hypothesis_list:
-    :type enum_hypothesis_list:
-    :param enum_reference_list:
-    :type enum_reference_list:
+    :param enum_hypothesis_list: enumerated hypothesis list
+    :param enum_reference_list: enumerated reference list
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
-    :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
-    :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    stemmed_enum_list1 = [
+    stemmed_enum_hypothesis_list = [
         (word_pair[0], stemmer.stem(word_pair[1])) for word_pair in enum_hypothesis_list
     ]
 
-    stemmed_enum_list2 = [
+    stemmed_enum_reference_list = [
         (word_pair[0], stemmer.stem(word_pair[1])) for word_pair in enum_reference_list
     ]
 
-    return _match_enums(stemmed_enum_list1, stemmed_enum_list2)
+    return _match_enums(stemmed_enum_hypothesis_list, stemmed_enum_reference_list)
 
 
-def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
+def stem_match(
+    hypothesis: Iterable[str],
+    reference: Iterable[str],
+    stemmer: StemmerI = PorterStemmer(),
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type hypothesis: array-like(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
-    :type stemmer: nltk.stem.api.StemmerI or any class that
-                   implements a stem method
     :return: enumerated matched tuples, enumerated unmatched hypothesis tuples,
              enumerated unmatched reference tuples
-    :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
     return _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer=stemmer)
 
 
-def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wordnet):
+def _enum_wordnetsyn_match(
+    enum_hypothesis_list: List[Tuple[int, str]],
+    enum_reference_list: List[Tuple[int, str]],
+    wordnet: WordNetCorpusReader = wordnet,
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Matches each word in reference to a word in hypothesis
     if any synonym of a hypothesis word is the exact match
@@ -146,10 +147,6 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wo
     :param enum_hypothesis_list: enumerated hypothesis list
     :param enum_reference_list: enumerated reference list
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
-    :type wordnet: WordNetCorpusReader
-    :return: list of matched tuples, unmatched hypothesis list, unmatched reference list
-    :rtype:  list of tuples, list of tuples, list of tuples
-
     """
     word_match = []
     for i in range(len(enum_hypothesis_list))[::-1]:
@@ -173,19 +170,19 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wo
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
-def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
+def wordnetsyn_match(
+    hypothesis: Iterable[str],
+    reference: Iterable[str],
+    wordnet: WordNetCorpusReader = wordnet,
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type hypothesis: array-like(str)
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
-    :type wordnet: WordNetCorpusReader
     :return: list of mapped tuples
-    :rtype: list of tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
     return _enum_wordnetsyn_match(
@@ -194,8 +191,11 @@ def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
 
 
 def _enum_align_words(
-    enum_hypothesis_list, enum_reference_list, stemmer=PorterStemmer(), wordnet=wordnet
-):
+    enum_hypothesis_list: List[Tuple[int, str]],
+    enum_reference_list: List[Tuple[int, str]],
+    stemmer: StemmerI = PorterStemmer(),
+    wordnet: WordNetCorpusReader = wordnet,
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -206,12 +206,9 @@ def _enum_align_words(
     :param enum_hypothesis_list: enumerated hypothesis list
     :param enum_reference_list: enumerated reference list
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
-    :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
-    :type wordnet: WordNetCorpusReader
     :return: sorted list of matched tuples, unmatched hypothesis list,
              unmatched reference list
-    :rtype: list of tuples, list of tuples, list of tuples
     """
     exact_matches, enum_hypothesis_list, enum_reference_list = _match_enums(
         enum_hypothesis_list, enum_reference_list
@@ -235,11 +232,11 @@ def _enum_align_words(
 
 
 def align_words(
-    hypothesis,
-    reference,
-    stemmer=PorterStemmer(),
-    wordnet=wordnet,
-):
+    hypothesis: Iterable[str],
+    reference: Iterable[str],
+    stemmer: StemmerI = PorterStemmer(),
+    wordnet: WordNetCorpusReader = wordnet,
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -247,15 +244,10 @@ def align_words(
     of crossing is chosen.
 
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: array-like(str)
     :param reference: pre-tokenized reference
-    :type hypothesis: array-like(str)
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
-    :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
-    :type wordnet: WordNetCorpusReader
     :return: sorted list of matched tuples, unmatched hypothesis list, unmatched reference list
-    :rtype: list of tuples, list of tuples, list of tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
     return _enum_align_words(
@@ -263,7 +255,7 @@ def align_words(
     )
 
 
-def _count_chunks(matches):
+def _count_chunks(matches: List[Tuple[int, int]]) -> int:
     """
     Counts the fewest possible number of chunks such that matched unigrams
     of each chunk are adjacent to each other. This is used to calculate the
@@ -271,7 +263,6 @@ def _count_chunks(matches):
 
     :param matches: list containing a mapping of matched words (output of align_words)
     :return: Number of chunks a sentence is divided into post alignment
-    :rtype: int
     """
     i = 0
     chunks = 1
@@ -287,15 +278,15 @@ def _count_chunks(matches):
 
 
 def single_meteor_score(
-    reference,
-    hypothesis,
-    preprocess=str.lower,
-    stemmer=PorterStemmer(),
-    wordnet=wordnet,
-    alpha=0.9,
-    beta=3,
-    gamma=0.5,
-):
+    reference: Iterable[str],
+    hypothesis: Iterable[str],
+    preprocess: Callable = str.lower,
+    stemmer: StemmerI = PorterStemmer(),
+    wordnet: WordNetCorpusReader = wordnet,
+    alpha: float = 0.9,
+    beta: float = 3,
+    gamma: float = 0.5,
+) -> float:
     """
     Calculates METEOR score for single hypothesis and reference as per
     "Meteor: An Automatic Metric for MT Evaluation with HighLevels of
@@ -320,24 +311,15 @@ def single_meteor_score(
     0.0
 
     :param reference: pre-tokenized reference
-    :type hypothesis: array-like(str)
     :param hypothesis: pre-tokenized hypothesis
-    :type hypothesis: array-like(str)
     :param preprocess: preprocessing function (default str.lower)
-    :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
-    :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
-    :type wordnet: WordNetCorpusReader
     :param alpha: parameter for controlling relative weights of precision and recall.
-    :type alpha: float
     :param beta: parameter for controlling shape of penalty as a
                  function of as a function of fragmentation.
-    :type beta: float
     :param gamma: relative weight assigned to fragmentation penalty.
-    :type gamma: float
     :return: The sentence-level METEOR score.
-    :rtype: float
     """
     enum_hypothesis, enum_reference = _generate_enums(
         hypothesis, reference, preprocess=preprocess
@@ -361,15 +343,15 @@ def single_meteor_score(
 
 
 def meteor_score(
-    references,
-    hypothesis,
-    preprocess=str.lower,
-    stemmer=PorterStemmer(),
-    wordnet=wordnet,
-    alpha=0.9,
-    beta=3,
-    gamma=0.5,
-):
+    references: Iterable[Iterable[str]],
+    hypothesis: Iterable[str],
+    preprocess: Callable = str.lower,
+    stemmer: StemmerI = PorterStemmer(),
+    wordnet: WordNetCorpusReader = wordnet,
+    alpha: float = 0.9,
+    beta: float = 3,
+    gamma: float = 0.5,
+) -> float:
     """
     Calculates METEOR score for hypothesis with multiple references as
     described in "Meteor: An Automatic Metric for MT Evaluation with
@@ -400,24 +382,15 @@ def meteor_score(
     0.0
 
     :param references: pre-tokenized reference sentences
-    :type hypothesis: 2D array-like(str)
     :param hypothesis: a pre-tokenized hypothesis sentence
-    :type hypothesis: array-like(str)
     :param preprocess: preprocessing function (default str.lower)
-    :type preprocess: method
     :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
-    :type stemmer: nltk.stem.api.StemmerI or any class that implements a stem method
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
-    :type wordnet: WordNetCorpusReader
     :param alpha: parameter for controlling relative weights of precision and recall.
-    :type alpha: float
     :param beta: parameter for controlling shape of penalty as a function
                  of as a function of fragmentation.
-    :type beta: float
     :param gamma: relative weight assigned to fragmentation penalty.
-    :type gamma: float
     :return: The sentence-level METEOR score.
-    :rtype: float
     """
     return max(
         single_meteor_score(
