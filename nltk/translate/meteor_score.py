@@ -18,7 +18,7 @@ from nltk.stem.porter import PorterStemmer
 def _generate_enums(
     hypothesis: Iterable[str],
     reference: Iterable[str],
-    preprocess: Callable = str.lower,
+    preprocess: Callable[[str], str] = str.lower,
 ) -> Tuple[List[Tuple[int, str]], List[Tuple[int, str]]]:
     """
     Takes in pre-tokenized inputs for hypothesis and reference and returns
@@ -280,7 +280,7 @@ def _count_chunks(matches: List[Tuple[int, int]]) -> int:
 def single_meteor_score(
     reference: Iterable[str],
     hypothesis: Iterable[str],
-    preprocess: Callable = str.lower,
+    preprocess: Callable[[str], str] = str.lower,
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
     alpha: float = 0.9,
@@ -345,7 +345,7 @@ def single_meteor_score(
 def meteor_score(
     references: Iterable[Iterable[str]],
     hypothesis: Iterable[str],
-    preprocess: Callable = str.lower,
+    preprocess: Callable[[str], str] = str.lower,
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
     alpha: float = 0.9,
