@@ -29,15 +29,40 @@ sys.path.insert(0, os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinxcontrib.apidoc",
+    # "sphinxcontrib.apidoc",
     "sphinx.ext.coverage",
     "sphinx.ext.imgmath",
     "sphinx.ext.viewcode",
 ]
 
-apidoc_module_dir = "../nltk"
-apidoc_output_dir = "api"
-apidoc_separate_modules = False
+# apidoc_module_dir = "../nltk"
+# apidoc_output_dir = "api"
+# apidoc_excluded_paths = ["test"]
+# apidoc_separate_modules = True
+# apidoc_toc_file = False
+# Place the documentation for the current module before the documentation of submodules
+# apidoc_module_first = True
+
+
+def run_apidoc(app):
+    """Generage API documentation"""
+    import better_apidoc
+
+    better_apidoc.APP = app
+    better_apidoc.main(
+        [
+            "better-apidoc",
+            "-t",
+            os.path.join(".", "web", "_templates"),
+            "--force",
+            # '--no-toc',
+            "--separate",
+            "-o",
+            os.path.join(".", "web", "api"),
+            os.path.join(".", "nltk"),
+        ]
+    )
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -107,7 +132,8 @@ html_theme = "nltk_theme"
 
 
 def setup(app):
-    app.add_html_theme("nltk_theme", "nltk_theme/insegel")
+    app.add_html_theme("nltk_theme", "nltk_theme/nltk_theme")
+    app.connect("builder-inited", run_apidoc)
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -132,12 +158,12 @@ html_logo = "./images/nltk_lighter.png"
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = "./images/favicon.ico"
+# html_favicon = "./images/favicon.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+# html_static_path = ["_static"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -256,3 +282,22 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 # texinfo_show_urls = 'footnote'
+
+# -- Options for Autodoc output ------------------------------------------------
+# If it's "mixed", then the documentation for each parameter isn't listed
+# e.g. nltk.tokenize.casual.TweetTokenizer(preserve_case=True, reduce_len=False, strip_handles=False, match_phone_numbers=True)
+# and that's it.
+# With "seperated":
+# nltk.tokenize.casual.TweetTokenizer
+# ...
+# __init__(preserve_case=True, reduce_len=False, strip_handles=False, match_phone_numbers=True)
+#     Create a TweetTokenizer instance with settings for use in the tokenize method.
+#     Parameters
+#         preserve_case (bool) – Flag indicating whether to preserve the casing (capitalisation) of text used in the tokenize method. Defaults to True.
+#         reduce_len (bool) – Flag indicating whether to replace repeated character sequences of length 3 or greater with sequences of length 3. Defaults to False.
+#         strip_handles (bool) – Flag indicating whether to remove Twitter handles of text used in the tokenize method. Defaults to False.
+#         match_phone_numbers (bool) – Flag indicating whether the tokenize method should look for phone numbers. Defaults to True.
+autodoc_class_signature = "separated"
+
+# Put the Python 3.5+ type hint in the signature and also at the Parameters list
+autodoc_typehints = "both"

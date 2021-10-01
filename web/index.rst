@@ -75,13 +75,23 @@ Contents
 
 .. toctree::
    :maxdepth: 1
+   :caption: NLTK Documentation
 
    API Reference <api/nltk>
    Example Usage <http://www.nltk.org/howto>
-   install
-   data
-   NLTK Wiki <https://github.com/nltk/nltk/wiki>
+   Wiki <https://github.com/nltk/nltk/wiki>
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Installation
+
+   install
+
+.. toctree::
+   :maxdepth: 1
+   :caption: More
+
    news
    contribute
 
