@@ -70,8 +70,8 @@ __keywords__ = [
 __url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
-__maintainer__ = "Steven Bird"
-__maintainer_email__ = "stevenbird1@gmail.com"
+__maintainer__ = "NLTK Team"
+__maintainer_email__ = "nltk.team@gmail.com"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 

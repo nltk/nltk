@@ -162,7 +162,7 @@ class TestGrammar:
         Sentences in the test suite are divided into two classes:
          - grammatical (``accept``) and
          - ungrammatical (``reject``).
-        If a sentence should parse accordng to the grammar, the value of
+        If a sentence should parse according to the grammar, the value of
         ``trees`` will be a non-empty list. If a sentence should be rejected
         according to the grammar, then the value of ``trees`` will be None.
         """

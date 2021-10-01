@@ -2,8 +2,8 @@ Building an NLTK distribution
 ----------------------------------
 
 1. Testing
-   - Ensure CI server isn't reporting any test failures
-     https://www.travis-ci.org/nltk/nltk
+   - Check no errors are reported in our continuous integration service:
+     https://github.com/nltk/nltk/actions
    - Optionally test demonstration code locally
      make demotest
    - Optionally test individual modules:
@@ -29,17 +29,13 @@ Building an NLTK distribution
      (including the range of Python versions that are supported)
      edit web/install.rst setup.py
    - Rebuild the API docs
-     - make sure you have the current revision of the web pages
-       cd nltk.github.com; git pull
-     - build
-       cd ../nltk/web
-       make (slow; lots of warning messages about cross references)
-     - publish
-       cd ../../nltk.github.com
-       git add _modules _sources _static api *.html objects.inv searchindex.js
-       git status (missing any important looking files?)
-       git commit -m "updates for version 3.X.Y"
-       git push origin master
+     python setup.py build_sphinx -b man --build-dir build/sphinx
+   - Publish them
+     cd nltk.github.com; git pull (begin with current docs repo)
+     <copy them over from build/sphinx to ../nltk.github.com>
+     git add .
+     git commit -m "updates for version 3.X.Y"
+     git push origin master
 
 4. Create a new version
    - (Optionally do this in a release branch, branching from develop branch
@@ -65,12 +61,8 @@ Building an NLTK distribution
      nltk-dev (for beta releases)
      nltk-users (for final releases)
      nltk twitter account
-   - announce to external mailing lists, for major N.N releases only
-     CORPORA@uib.no, linguist@linguistlist.org,
-     PythonSIL@lists.sil.org, edu-sig@python.org
-     mailing lists for any local courses using NLTK
 
-7. Optionally update to new version
+7. Optionally update repo version
    - we don't want builds from the repository to have the same release number
      e.g. after release X.Y.4, update repository version to X.Y.5a (alpha)
 
