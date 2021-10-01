@@ -76,14 +76,14 @@ Contents
 .. toctree::
    :maxdepth: 1
 
-   news
+   API Reference <api/nltk>
+   Example Usage <http://www.nltk.org/howto>
    install
    data
-   contribute
+   NLTK Wiki <https://github.com/nltk/nltk/wiki>
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>
-   Wiki <https://github.com/nltk/nltk/wiki>
-   API <api/nltk>
-   HOWTO <http://www.nltk.org/howto>
+   news
+   contribute
 
 * :ref:`genindex`
 * :ref:`modindex`

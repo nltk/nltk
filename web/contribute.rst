@@ -1,5 +1,5 @@
-Contribute to NLTK
-==================
+Contributing to NLTK
+====================
 
 The Natural Language Toolkit exists thanks to the efforts of dozens
 of voluntary developers who have contributed functionality and
