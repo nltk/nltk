@@ -971,8 +971,8 @@ class PunktTrainer(PunktBaseClass):
             # Let <a> be the candidate without the period, and <b>
             # be the period.  Find a log likelihood ratio that
             # indicates whether <ab> occurs as a single unit (high
-            # value of ll), or as two independent units <a> and
-            # <b> (low value of ll).
+            # value of log_likelihood), or as two independent units <a> and
+            # <b> (low value of log_likelihood).
             count_with_period = self._type_fdist[typ + "."]
             count_without_period = self._type_fdist[typ]
             log_likelihood = self._dunning_log_likelihood(
@@ -1363,7 +1363,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         """
         realign = 0
         for sentence1, sentence2 in _pair_iter(slices):
-            sentence1 = slice(sentence1.start + realign, sentence2.stop)
+            sentence1 = slice(sentence1.start + realign, sentence1.stop)
             if not sentence2:
                 if text[sentence1]:
                     yield sentence1
@@ -1535,7 +1535,6 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         if not aug_tok1.period_final:
             # We only care about words ending in periods.
             return
-
         typ = aug_tok1.type_no_period
         next_typ = aug_tok2.type_no_sentperiod
         tok_is_initial = aug_tok1.is_initial
@@ -1559,7 +1558,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # orthogrpahic evidence about whether the next word
             # starts a sentence or not.
             is_sent_starter = self._ortho_heuristic(aug_tok2)
-            if is_sent_starter:
+            if is_sent_starter == True:
                 aug_tok1.sentbreak = True
                 return REASON_ABBR_WITH_ORTHOGRAPHIC_HEURISTIC
 
@@ -1581,10 +1580,12 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # starts a sentence or not.
             is_sent_starter = self._ortho_heuristic(aug_tok2)
 
-            if not is_sent_starter:
+            if is_sent_starter == False:
                 aug_tok1.sentbreak = False
                 aug_tok1.abbr = True
-                return REASON_INITIAL_WITH_ORTHOGRAPHIC_HEURISTIC
+                if tok_is_initial:
+                    return REASON_INITIAL_WITH_ORTHOGRAPHIC_HEURISTIC
+                return REASON_NUMBER_WITH_ORTHOGRAPHIC_HEURISTIC
 
             # Special heuristic for initials: if orthogrpahic
             # heuristic is unknown, and next word is always
