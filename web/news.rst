@@ -4,6 +4,11 @@ NLTK News
 2021
 ----
 
+NLTK 3.6.4 release: October 2021
+  improved phone number recognition in tweet tokenizer
+  resolved ReDoS vulnerability in Corpus Reader
+  refactored CISTEM stemmer for German
+
 NLTK 3.6.3 release: September 2021
   Drop support for Python 3.5,
   added pre-commit hooks (isort, pyupgrade, black),
