@@ -570,8 +570,8 @@ class PunktBaseClass:
                 yield self._Token(tok, parastart=parastart, linestart=True)
                 parastart = False
 
-                for token in line_toks:
-                    yield self._Token(token)
+                for tok in line_toks:
+                    yield self._Token(tok)
             else:
                 parastart = True
 
@@ -1383,10 +1383,10 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         Returns True if the given text includes a sentence break.
         """
         found = False  # used to ignore last token
-        for text in self._annotate_tokens(self._tokenize_words(text)):
+        for token in self._annotate_tokens(self._tokenize_words(text)):
             if found:
                 return True
-            if text.sentbreak:
+            if token.sentbreak:
                 found = True
         return False
 
