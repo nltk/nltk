@@ -215,7 +215,7 @@ def corpus_bleu(
     p_n = smoothing_function(
         p_n, references=references, hypothesis=hypothesis, hyp_len=hyp_lengths
     )
-    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
+    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n) if p_i > 0)
     s = bp * math.exp(math.fsum(s))
     return s
 
