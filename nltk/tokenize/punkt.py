@@ -1383,10 +1383,10 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         Returns True if the given text includes a sentence break.
         """
         found = False  # used to ignore last token
-        for token in self._annotate_tokens(self._tokenize_words(text)):
+        for tok in self._annotate_tokens(self._tokenize_words(text)):
             if found:
                 return True
-            if token.sentbreak:
+            if tok.sentbreak:
                 found = True
         return False
 
