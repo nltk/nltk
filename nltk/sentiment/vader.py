@@ -6,6 +6,7 @@
 #         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)
 #         George Berry <geb97@cornell.edu> (modifications)
 #         Malavika Suresh <malavika.suresh0794@gmail.com> (modifications)
+#         Mohaned Mashaly <>(modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -269,6 +270,7 @@ class SentiText:
         if not isinstance(text, str):
             text = str(text.encode("utf-8"))
         self.text = text
+        self.text = self.remove_hashtag(text)
         self.PUNC_LIST = punc_list
         self.REGEX_REMOVE_PUNCTUATION = regex_remove_punctuation
         self.words_and_emoticons = self._words_and_emoticons()
@@ -326,6 +328,15 @@ class SentiText:
         if 0 < cap_differential < len(words):
             is_different = True
         return is_different
+
+    def remove_hashtag(self, text):
+        """
+        Remove hastag (#) symbol
+        from the text
+        :param: text
+        :returns: rext after removing hashtags
+        """
+        return re.sub("#", "", text)
 
 
 class SentimentIntensityAnalyzer:
