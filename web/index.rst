@@ -96,3 +96,4 @@ Next Steps
 
    news
    contribute
+   team
