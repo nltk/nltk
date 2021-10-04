@@ -69,21 +69,21 @@ Next Steps
 * `sign up for release announcements <http://groups.google.com/group/nltk>`_
 * `join in the discussion <http://groups.google.com/group/nltk-users>`_
 
-Contents
-========
-
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: NLTK Documentation
 
    API Reference <api/nltk>
    Example Usage <http://www.nltk.org/howto>
+   Module Index <py-modindex>
    Wiki <https://github.com/nltk/nltk/wiki>
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: Installation
 
    install
@@ -91,6 +91,7 @@ Contents
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
    :caption: More
 
    news
