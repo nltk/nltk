@@ -83,10 +83,11 @@ Contents
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Installation
 
    install
+   data
 
 .. toctree::
    :maxdepth: 1
@@ -94,7 +95,3 @@ Contents
 
    news
    contribute
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

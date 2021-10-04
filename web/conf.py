@@ -140,6 +140,7 @@ def setup(app):
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {"navigation_depth": 1}
+html_context = {"github_user": "nltk", "github_repo": "nltk"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -167,7 +168,7 @@ html_logo = "./images/nltk_lighter.png"
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-# html_last_updated_fmt = "%b %d, %Y"
+html_last_updated_fmt = "%b %d, %Y"
 # html_last_updated_fmt = "%d %b %Y"
 
 # If true, SmartyPants will be used to convert quotes and dashes to
@@ -182,7 +183,7 @@ html_use_smartypants = True
 # html_additional_pages = {}
 
 # If false, no module index is generated.
-# html_domain_indices = True
+html_domain_indices = False
 
 # If false, no index is generated.
 # html_use_index = True
