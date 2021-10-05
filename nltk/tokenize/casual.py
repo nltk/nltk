@@ -420,7 +420,9 @@ def merge_emoji_skin_tone_modifiers(words: List[str]):
     words_after_merge = []
     i = len(words) - 1
     while i >= 0:
-        if words[i] in SKIN_TONE_MODIFIERS:
+        # i!=0 to handle corner case where first word is a skin tone modifier
+        # this corner case should be rare as it's a not legal use of skin tone modifier
+        if words[i] in SKIN_TONE_MODIFIERS and i != 0:
             words_after_merge.append(words[i - 1] + words[i])
             i -= 2
         else:
@@ -432,7 +434,9 @@ def merge_emoji_skin_tone_modifiers(words: List[str]):
 def merge_zwj_element_for_emojis(words: List[str]):
     i = len(words) - 1
     while i > 0:
-        if words[i] == ZWJ_ELEMENT:
+        # i!=0 and i != len(words) - 1 to handle corner case where first or last word is a skin tone modifier
+        # those two corner cases should be rare as they are not legal use of zwj element
+        if words[i] == ZWJ_ELEMENT and i != 0 and i != len(words) - 1:
             # merge the two tokens surrounding zwj element
             words[i - 1] = words[i - 1] + words[i] + words[i + 1]
             # delete the merged two tokens
