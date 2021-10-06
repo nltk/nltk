@@ -169,7 +169,9 @@ def corpus_bleu(
         "The number of hypotheses and their reference(s) should be the " "same "
     )
 
-    if isinstance(weights, tuple):
+    if weights and isinstance(weights[0], float):
+        weights = [weights]
+    elif isinstance(weights, tuple):
         weights = [weights]
     max_weight_length = max(len(weight) for weight in weights)
 
