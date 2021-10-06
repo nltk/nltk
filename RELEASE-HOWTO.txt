@@ -31,7 +31,7 @@ Building an NLTK distribution
    - Ensure that nltk_theme is installed and updated
      pip install -U nltk_theme
    - Rebuild the API docs
-     python setup.py build_sphinx -E
+     sphinx-build -E ./web ./build
    - Publish them
      cd nltk.github.com; git pull (begin with current docs repo)
      <copy them over from build to ../nltk.github.com>
