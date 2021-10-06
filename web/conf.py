@@ -132,7 +132,6 @@ html_theme = "nltk_theme"
 
 
 def setup(app):
-    app.add_html_theme("nltk_theme", "nltk_theme/nltk_theme")
     app.connect("builder-inited", run_apidoc)
 
 
