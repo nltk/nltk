@@ -45,6 +45,6 @@ Installing NLTK Data
 
 After installing the NLTK package, please do install the necessary datasets/models for specific functions to work.
 
-If you're unsure of which datasets/models you'll need, you can install the "popular" subset of NLTK data, on the command line type `python -m nltk.downloader popular`, or in the Python interpreter `import nltk; nltk.download('popular')`
+If you're unsure of which datasets/models you'll need, you can install the "popular" subset of NLTK data, on the command line type ``python -m nltk.downloader popular``, or in the Python interpreter ``import nltk; nltk.download('popular')``
 
 For details, see http://www.nltk.org/data.html
