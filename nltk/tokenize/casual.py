@@ -354,7 +354,7 @@ class TweetTokenizer:
         return words
 
     @property
-    def WORD_RE(self) -> regex.Pattern:
+    def WORD_RE(self) -> "regex.Pattern":
         """Core TweetTokenizer regex"""
         # Compiles the regex for this and all future instantiations of TweetTokenizer.
         if not type(self)._WORD_RE:
@@ -365,7 +365,7 @@ class TweetTokenizer:
         return type(self)._WORD_RE
 
     @property
-    def PHONE_WORD_RE(self) -> regex.Pattern:
+    def PHONE_WORD_RE(self) -> "regex.Pattern":
         """Secondary core TweetTokenizer regex"""
         # Compiles the regex for this and all future instantiations of TweetTokenizer.
         if not type(self)._PHONE_WORD_RE:
