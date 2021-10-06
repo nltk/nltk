@@ -44,7 +44,8 @@ Building an NLTK distribution
      git tag -a 3.X.Y -m "version 3.X.Y"
      git push --tags
      verify that it shows up here: https://github.com/nltk/nltk/releases
-     This is important for the documentation, too.
+     This is important for the website, as the footer will link to the
+     tag with the version from web/conf.py.
 
 5. Release
    - Make the distributions
