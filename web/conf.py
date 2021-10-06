@@ -29,19 +29,10 @@ sys.path.insert(0, os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
-    # "sphinxcontrib.apidoc",
     "sphinx.ext.coverage",
     "sphinx.ext.imgmath",
     "sphinx.ext.viewcode",
 ]
-
-# apidoc_module_dir = "../nltk"
-# apidoc_output_dir = "api"
-# apidoc_excluded_paths = ["test"]
-# apidoc_separate_modules = True
-# apidoc_toc_file = False
-# Place the documentation for the current module before the documentation of submodules
-# apidoc_module_first = True
 
 
 def run_apidoc(app):
@@ -55,7 +46,6 @@ def run_apidoc(app):
             "-t",
             os.path.join(".", "web", "_templates"),
             "--force",
-            # '--no-toc',
             "--separate",
             "-o",
             os.path.join(".", "web", "api"),
@@ -139,6 +129,7 @@ def setup(app):
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {"navigation_depth": 1}
+# Required for the theme, used for linking to a specific tag in the website footer
 html_context = {"github_user": "nltk", "github_repo": "nltk"}
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -153,12 +144,12 @@ html_context = {"github_user": "nltk", "github_repo": "nltk"}
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = "./images/nltk_lighter.png"
+# html_logo = None
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = "./images/favicon.ico"
+# html_favicon = None
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
