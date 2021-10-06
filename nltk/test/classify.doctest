@@ -11,16 +11,13 @@
 Classifiers label tokens with category labels (or *class labels*).
 Typically, labels are represented with strings (such as ``"health"``
 or ``"sports"``.  In NLTK, classifiers are defined using classes that
-implement the `ClassifyI` interface:
+implement the `ClassifierI` interface, which supports the following operations:
 
-    >>> import nltk
-    >>> nltk.usage(nltk.classify.ClassifierI)
-    ClassifierI supports the following operations:
-      - self.classify(featureset)
-      - self.classify_many(featuresets)
-      - self.labels()
-      - self.prob_classify(featureset)
-      - self.prob_classify_many(featuresets)
+- self.classify(featureset)
+- self.classify_many(featuresets)
+- self.labels()
+- self.prob_classify(featureset)
+- self.prob_classify_many(featuresets)
 
 NLTK defines several classifier classes:
 
@@ -42,6 +39,7 @@ We define a very simple training corpus with 3 binary features: ['a',
 that the correct answers can be calculated analytically (although we
 haven't done this yet for all tests).
 
+    >>> import nltk
     >>> train = [
     ...     (dict(a=1,b=1,c=1), 'y'),
     ...     (dict(a=1,b=1,c=1), 'x'),

@@ -1,3 +1,17 @@
+Version 3.6.4 2021-10-01
+
+* deprecate `nltk.usage(obj)` in favor of `help(obj)`
+* resolve ReDoS vulnerability in Corpus Reader
+* solidify performance tests
+* improve phone number recognition in tweet tokenizer
+* refactored CISTEM stemmer for German
+* identify NLTK Team as the author
+* replace travis badge with github actions badge
+* add SECURITY.md
+
+Thanks to the following contributors to 3.6.4
+Tom Aarsen, Mohaned Mashaly, Dimitri Papadopoulos Orfanos, purificant, Danny Sepler
+
 Version 3.6.3 2021-09-19
 * Dropped support for Python 3.5
 * Run CI tests on Windows, too
@@ -755,7 +769,7 @@ NLTK:
 Data:
 * Corrected identifiers in Dependency Treebank corpus
 * Basque and Catalan Dependency Treebanks (CoNLL 2007)
-* PE08 Parser Evalution data
+* PE08 Parser Evaluation data
 * New models for POS tagger and named-entity tagger
 
 Book:
@@ -1068,7 +1082,7 @@ Code:
 - changed corpus.util to use the 'rb' flag for opening files, to fix problems
   reading corpora under MSWindows
 - updated stale examples in engineering.txt
-- extended feature stucture interface to permit chained features, e.g. fs['F','G']
+- extended feature structure interface to permit chained features, e.g. fs['F','G']
 - further misc improvements to test code plus some bugfixes
 Tutorials:
 - rewritten opening section of tagging chapter
