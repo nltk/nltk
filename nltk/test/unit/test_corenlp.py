@@ -15,13 +15,13 @@ def setup_module(module):
     global server
 
     try:
-        server = CoreNLPServer(port=9000)
+        server = corenlp.CoreNLPServer(port=9000)
     except LookupError:
         pytest.skip("Could not instantiate CoreNLPServer.")
 
     try:
         server.start()
-    except CoreNLPServerError as e:
+    except corenlp.CoreNLPServerError as e:
         pytest.skip(
             "Skipping CoreNLP tests because the server could not be started. "
             "Make sure that the 9000 port is free. "
@@ -33,7 +33,6 @@ def teardown_module(module):
     server.stop()
 
 
-@pytest.mark.skip(reason="Skipping all CoreNLP tests.")
 class TestTokenizerAPI(TestCase):
     def test_tokenize(self):
         corenlp_tokenizer = corenlp.CoreNLPParser()
@@ -253,7 +252,6 @@ class TestTokenizerAPI(TestCase):
         self.assertEqual(expected_output, tokenized_output)
 
 
-@pytest.mark.skip(reason="Skipping all CoreNLP tests.")
 class TestTaggerAPI(TestCase):
     def test_pos_tagger(self):
         corenlp_tagger = corenlp.CoreNLPParser(tagtype="pos")
@@ -751,7 +749,6 @@ class TestTaggerAPI(TestCase):
             corenlp_tagger = corenlp.CoreNLPParser(tagtype="test")
 
 
-@pytest.mark.skip(reason="Skipping all CoreNLP tests.")
 class TestParserAPI(TestCase):
     def test_parse(self):
         corenlp_parser = corenlp.CoreNLPParser()

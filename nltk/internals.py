@@ -738,6 +738,7 @@ def find_jar_iter(
             if env_var == "CLASSPATH":
                 classpath = os.environ["CLASSPATH"]
                 for cp in classpath.split(os.path.pathsep):
+                    cp = os.path.expanduser(cp)
                     if os.path.isfile(cp):
                         filename = os.path.basename(cp)
                         if (
@@ -773,7 +774,7 @@ def find_jar_iter(
                                     yield os.path.join(cp, file_name)
 
             else:
-                jar_env = os.environ[env_var]
+                jar_env = os.path.expanduser(os.environ[env_var])
                 jar_iter = (
                     (
                         os.path.join(jar_env, path_to_jar)
