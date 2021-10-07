@@ -717,6 +717,12 @@ class DrtLambdaExpression(DrtExpression, LambdaExpression):
             + ["    " + blank + line for line in term_lines[3:]]
         )
 
+    def get_refs(self, recursive=False):
+        """:see: AbstractExpression.get_refs()"""
+        return (
+                [self.variable] + self.term.get_refs(True) if recursive else [self.variable]
+            )
+
 
 class DrtBinaryExpression(DrtExpression, BinaryExpression):
     def get_refs(self, recursive=False):
