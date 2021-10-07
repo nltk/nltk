@@ -94,6 +94,12 @@ class TestEditDistance:
             # (but cost 5 if substitution_cost=2)
             ("kitten", "sitting", 1, (3, 3)),
             ("kitten", "sitting", 2, (5, 5)),
+            #
+            # duplicated letter
+            # e.g. "duplicated" -D-> "duplicated"
+            ("duplicated", "duuplicated", 1, (1, 1)),
+            ("duplicated", "duuplicated", 2, (1, 1)),
+            ("very duplicated", "very duuplicateed", 2, (2, 2)),
         ],
     )
     def test_with_transpositions(
