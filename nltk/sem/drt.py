@@ -720,8 +720,8 @@ class DrtLambdaExpression(DrtExpression, LambdaExpression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
         return (
-                [self.variable] + self.term.get_refs(True) if recursive else [self.variable]
-            )
+            [self.variable] + self.term.get_refs(True) if recursive else [self.variable]
+        )
 
 
 class DrtBinaryExpression(DrtExpression, BinaryExpression):
