@@ -157,6 +157,12 @@ REGEXPS = (
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
     r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]""",
+    # Zero-Width-Joiner and Skin tone modifier emojis
+    """.(?:
+        [\U0001F3FB-\U0001F3FF]?(?:\u200d.[\U0001F3FB-\U0001F3FF]?)+
+        |
+        [\U0001F3FB-\U0001F3FF]
+    )""",
     # Remaining word types:
     r"""
     (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
@@ -194,17 +200,6 @@ HANDLES_RE = regex.compile(
     r"(([A-Za-z0-9_]){15}(?!@)|([A-Za-z0-9_]){1,14}(?![A-Za-z0-9_]*@))"
 )
 
-# Five skin tone modifiers, source http://www.unicode.org/reports/tr51/#Diversity
-SKIN_TONE_MODIFIERS = [
-    "\U0001F3FB",
-    "\U0001F3FC",
-    "\U0001F3FD",
-    "\U0001F3FE",
-    "\U0001F3FF",
-]
-
-# Zero Width Joiner Character for Emoji display
-ZWJ_ELEMENT = "\u200d"
 
 ######################################################################
 # Functions for converting html entities
@@ -358,11 +353,6 @@ class TweetTokenizer:
             words = self.PHONE_WORD_RE.findall(safe_text)
         else:
             words = self.WORD_RE.findall(safe_text)
-        # Merge skin tone modifiers emojis
-        words = merge_emoji_skin_tone_modifiers(words)
-        # Merge zwj element(zero width joining characters for composed emojis)
-        # cf http://www.unicode.org/reports/tr51/#ZWJ_Display
-        words = merge_zwj_element_for_emojis(words)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(
@@ -413,38 +403,6 @@ def remove_handles(text):
     """
     # Substitute handles with ' ' to ensure that text on either side of removed handles are tokenized correctly
     return HANDLES_RE.sub(" ", text)
-
-
-def merge_emoji_skin_tone_modifiers(words: List[str]):
-    """merge skin tone modifier with its preceding emoji character"""
-    words_after_merge = []
-    i = len(words) - 1
-    while i >= 0:
-        # i!=0 to handle corner case where first word is a skin tone modifier
-        # this corner case should be rare as it's a not legal use of skin tone modifier
-        if words[i] in SKIN_TONE_MODIFIERS and i != 0:
-            words_after_merge.append(words[i - 1] + words[i])
-            i -= 2
-        else:
-            words_after_merge.append(words[i])
-            i -= 1
-    return words_after_merge[::-1]
-
-
-def merge_zwj_element_for_emojis(words: List[str]):
-    i = len(words) - 1
-    while i > 0:
-        # i!=0 and i != len(words) - 1 to handle corner case where first or last word is a skin tone modifier
-        # those two corner cases should be rare as they are not legal use of zwj element
-        if words[i] == ZWJ_ELEMENT and i != 0 and i != len(words) - 1:
-            # merge the two tokens surrounding zwj element
-            words[i - 1] = words[i - 1] + words[i] + words[i + 1]
-            # delete the merged two tokens
-            del words[i]
-            # after the first del, previous words[i+1] is now words[i]
-            del words[i]
-        i -= 1
-    return words
 
 
 ######################################################################
