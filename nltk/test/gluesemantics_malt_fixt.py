@@ -4,6 +4,6 @@ def setup_module():
     from nltk.parse.malt import MaltParser
 
     try:
-        depparser = MaltParser("maltparser")
-    except LookupError as e:
+        depparser = MaltParser("maltparser-1.9.2")
+    except (AssertionError, LookupError) as e:
         pytest.skip("MaltParser is not available")
