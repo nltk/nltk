@@ -10,7 +10,7 @@ pushd 'third'
 # Download nltk stanford dependencies
 # Downloaded to ~/third/stanford-corenlp
 # stanford_corenlp_package_zip_name=$(curl -s 'https://stanfordnlp.github.io/CoreNLP/' | grep -o 'stanford-corenlp-full-.*\.zip' | head -n1)
-stanford_corenlp_package_zip_name="stanford-corenlp-full-2017-06-09.zip"
+stanford_corenlp_package_zip_name="stanford-corenlp-full-2018-10-05.zip"
 [[ ${stanford_corenlp_package_zip_name} =~ (.+)\.zip ]]
 stanford_corenlp_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_corenlp_package_name} ]]; then
@@ -24,7 +24,7 @@ fi
 
 # Downloaded to ~/third/stanford-parser
 #stanford_parser_package_zip_name=$(curl -s 'https://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
-stanford_parser_package_zip_name="stanford-parser-full-2017-06-09.zip"
+stanford_parser_package_zip_name="stanford-parser-full-2018-10-17.zip"
 [[ ${stanford_parser_package_zip_name} =~ (.+)\.zip ]]
 stanford_parser_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_parser_package_name} ]]; then
@@ -37,7 +37,7 @@ fi
 
 # Downloaded to ~/third/stanford-postagger
 #stanford_tagger_package_zip_name=$(curl -s 'https://nlp.stanford.edu/software/tagger.shtml' | grep -o 'stanford-postagger-full-.*\.zip' | head -n1)
-stanford_tagger_package_zip_name="stanford-postagger-full-2017-06-09.zip"
+stanford_tagger_package_zip_name="stanford-postagger-full-2018-10-16.zip"
 [[ ${stanford_tagger_package_zip_name} =~ (.+)\.zip ]]
 stanford_tagger_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_tagger_package_name} ]]; then
@@ -96,7 +96,7 @@ fi
 # fi
 
 # Download MaltParser to ~/third/maltparser
-malt_file_name="maltparser-1.7.2.tar.gz"
+malt_file_name="maltparser-1.9.2.tar.gz"
 [[ ${malt_file_name} =~ (.+)\.tar\.gz ]]
 malt_folder_name=${BASH_REMATCH[1]}
 if [[ ! -d ${malt_folder_name} ]]; then
