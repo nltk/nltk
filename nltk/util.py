@@ -1013,7 +1013,7 @@ def skipgrams(sequence, n, k, **kwargs):
 ######################################################################
 
 # inherited from pywordnet, by Oliver Steele
-def binary_search_file(file, key, cache={}, cacheDepth=-1):
+def binary_search_file(file, key, cache=None, cacheDepth=-1):
     """
     Return the line from the file with first word key.
     Searches through a sorted file using the binary search algorithm.
@@ -1035,6 +1035,9 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
         file.seek(0, 2)
         end = file.tell() - 1
         file.seek(0)
+
+    if cache is None:
+        cache = {}
 
     while start < end:
         lastState = start, end
