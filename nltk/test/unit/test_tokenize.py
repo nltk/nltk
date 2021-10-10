@@ -334,6 +334,54 @@ class TestTokenize:
         result = tokenizer.tokenize(test2)
         assert result == expected
 
+    def test_emoji_tokenizer(self):
+        """
+        Test a string that contains Emoji ZWJ Sequences and skin tone modifier
+        """
+        tokenizer = TweetTokenizer()
+
+        # A Emoji ZWJ Sequences, they together build as a single emoji, should not be split.
+        test1 = "👨‍👩‍👧‍👧"
+        expected = ["👨‍👩‍👧‍👧"]
+        result = tokenizer.tokenize(test1)
+        assert result == expected
+
+        # A Emoji with skin tone modifier, the two characters build a single emoji, should not be split.
+        test2 = "👨🏿"
+        expected = ["👨🏿"]
+        result = tokenizer.tokenize(test2)
+        assert result == expected
+
+        # A string containing both skin tone modifier and ZWJ Sequences
+        test3 = "🤔 🙈 me así, se😌 ds 💕👭👙 hello 👩🏾‍🎓 emoji hello 👨‍👩‍👦‍👦 how are 😊 you today🙅🏽🙅🏽"
+        expected = [
+            "🤔",
+            "🙈",
+            "me",
+            "así",
+            ",",
+            "se",
+            "😌",
+            "ds",
+            "💕",
+            "👭",
+            "👙",
+            "hello",
+            "👩🏾\u200d🎓",
+            "emoji",
+            "hello",
+            "👨\u200d👩\u200d👦\u200d👦",
+            "how",
+            "are",
+            "😊",
+            "you",
+            "today",
+            "🙅🏽",
+            "🙅🏽",
+        ]
+        result = tokenizer.tokenize(test3)
+        assert result == expected
+
     def test_pad_asterisk(self):
         """
         Test padding of asterisk for word tokenization.
