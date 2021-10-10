@@ -238,7 +238,7 @@ def read_str(s, start_position):
             break
 
     # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueEerror.
+    # might raise ValueError.
     try:
         return eval(s[start_position : match.end()]), match.end()
     except ValueError as e:
