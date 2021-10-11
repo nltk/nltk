@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import bisect
@@ -586,8 +586,8 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
 # Guess Character Encoding
 ##########################################################################
 
-# adapted from io.py in the docutils extension module (http://docutils.sourceforge.net)
-# http://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
+# adapted from io.py in the docutils extension module (https://docutils.sourceforge.io/)
+# https://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
 
 
 def guess_encoding(data):
@@ -974,7 +974,7 @@ def skipgrams(sequence, n, k, **kwargs):
     """
     Returns all possible skipgrams generated from a sequence of items, as an iterator.
     Skipgrams are ngrams that allows tokens to be skipped.
-    Refer to http://homepages.inf.ed.ac.uk/ballison/pdf/lrec_skipgrams.pdf
+    Refer to https://homepages.inf.ed.ac.uk/ballison/pdf/lrec_skipgrams.pdf
 
         >>> sent = "Insurgents killed in ongoing fighting".split()
         >>> list(skipgrams(sent, 2, 2))
@@ -1098,7 +1098,7 @@ def set_proxy(proxy, user=None, password=""):
     settings.
 
     :param proxy: The HTTP proxy server to use. For example:
-        'http://proxy.example.com:3128/'
+        'https://proxy.example.com:3128/'
     :param user: The username to authenticate with. Use None to disable
         authentication.
     :param password: The password to authenticate with.
@@ -1126,7 +1126,7 @@ def set_proxy(proxy, user=None, password=""):
 
 
 ######################################################################
-# ElementTree pretty printing from http://www.effbot.org/zone/element-lib.htm
+# ElementTree pretty printing from https://www.effbot.org/zone/element-lib.htm
 ######################################################################
 
 

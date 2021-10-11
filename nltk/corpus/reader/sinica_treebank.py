@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,14 +13,14 @@ http://rocling.iis.sinica.edu.tw/CKIP/engversion/treebank.htm
 10,000 parsed sentences, drawn from the Academia Sinica Balanced
 Corpus of Modern Chinese.  Parse tree notation is based on
 Information-based Case Grammar.  Tagset documentation is available
-at http://www.sinica.edu.tw/SinicaCorpus/modern_e_wordtype.html
+at https://www.sinica.edu.tw/SinicaCorpus/modern_e_wordtype.html
 
 Language and Knowledge Processing Group, Institute of Information
 Science, Academia Sinica
 
 The data is distributed with the Natural Language Toolkit under the terms of
 the Creative Commons Attribution-NonCommercial-ShareAlike License
-[http://creativecommons.org/licenses/by-nc-sa/2.5/].
+[https://creativecommons.org/licenses/by-nc-sa/2.5/].
 
 References:
 

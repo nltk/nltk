@@ -3,14 +3,14 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Implementation of 'TnT - A Statisical Part of Speech Tagger'
 by Thorsten Brants
 
-http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
+https://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 """
 
 from math import log

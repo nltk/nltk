@@ -7,7 +7,7 @@
 #         Edward Loper <edloper@gmail.com> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
 #         Arthur Darcet <arthur@darcet.fr> (fixes)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""

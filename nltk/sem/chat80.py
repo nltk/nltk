@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Chat-80 KB Reader
-# See http://www.w3.org/TR/swbp-skos-core-guide/
+# See https://www.w3.org/TR/swbp-skos-core-guide/
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -13,8 +13,8 @@ Overview
 Chat-80 was a natural language system which allowed the user to
 interrogate a Prolog knowledge base in the domain of world
 geography. It was developed in the early '80s by Warren and Pereira; see
-``http://www.aclweb.org/anthology/J82-3002.pdf`` for a description and
-``http://www.cis.upenn.edu/~pereira/oldies.html`` for the source
+``https://www.aclweb.org/anthology/J82-3002.pdf`` for a description and
+``https://www.cis.upenn.edu/~pereira/oldies.html`` for the source
 files.
 
 This module contains functions to extract data from the Chat-80
@@ -246,7 +246,7 @@ not_unary = ["borders.pl", "contain.pl"]
 class Concept:
     """
     A Concept class, loosely based on SKOS
-    (http://www.w3.org/TR/swbp-skos-core-guide/).
+    (https://www.w3.org/TR/swbp-skos-core-guide/).
     """
 
     def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):

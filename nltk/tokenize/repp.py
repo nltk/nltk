@@ -4,7 +4,7 @@
 # Authors: Rebecca Dridan and Stephan Oepen
 # Contributors: Liling Tan
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
@@ -23,7 +23,7 @@ class ReppTokenizer(TokenizerI):
     A class for word tokenization using the REPP parser described in
     Rebecca Dridan and Stephan Oepen (2012) Tokenization: Returning to a
     Long Solved Problem - A Survey, Contrastive  Experiment, Recommendations,
-    and Toolkit. In ACL. http://anthology.aclweb.org/P/P12/P12-2.pdf#page=406
+    and Toolkit. In ACL. https://anthology.aclweb.org/P/P12/P12-2.pdf#page=406
 
     >>> sents = ['Tokenization is widely regarded as a solved problem due to the high accuracy that rulebased tokenizers achieve.' ,
     ... 'But rule-based tokenizers are hard to maintain and their rules language specific.' ,

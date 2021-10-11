@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -30,7 +30,7 @@ its canvas are within the scroll region.
 Acknowledgements: Many of the ideas behind the canvas widget system
 are derived from ``CLIG``, a Tk-based grapher for linguistic data
 structures.  For more information, see the CLIG
-homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
+homepage (https://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
 from abc import ABCMeta, abstractmethod

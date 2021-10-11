@@ -44,7 +44,7 @@ class TestDisagreement(unittest.TestCase):
     def test_advanced(self):
         """
         More advanced test, based on
-        http://www.agreestat.com/research_papers/onkrippendorffalpha.pdf
+        https://www.agreestat.com/research_papers/onkrippendorffalpha.pdf
         """
         data = [
             ("A", "1", "1"),

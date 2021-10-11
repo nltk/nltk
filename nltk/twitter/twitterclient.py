@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -42,7 +42,7 @@ class Streamer(TwythonStreamer):
     Retrieve data from the Twitter Streaming API.
 
     The streaming API requires
-    `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
+    `OAuth 1.0 <https://en.wikipedia.org/wiki/OAuth>`_ authentication.
     """
 
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):

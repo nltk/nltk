@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Interface to scikit-learn classifiers
 #
 # Author: Lars Buitinck <L.J.Buitinck@uva.nl>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """
-scikit-learn (http://scikit-learn.org) is a machine learning library for
+scikit-learn (https://scikit-learn.org) is a machine learning library for
 Python. It supports many classification algorithms, including SVMs,
 Naive Bayes, logistic regression (MaxEnt) and decision trees.
 

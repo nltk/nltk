@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Interface to Boxer
-# <http://svn.ask.it.usyd.edu.au/trac/candc/wiki/boxer>
+# <https://svn.ask.it.usyd.edu.au/trac/candc/wiki/boxer>
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -238,7 +238,7 @@ class Boxer:
             name,
             path_to_bin=bin_dir,
             env_vars=["CANDC"],
-            url="http://svn.ask.it.usyd.edu.au/trac/candc/",
+            url="https://svn.ask.it.usyd.edu.au/trac/candc/",
             binary_names=[name, name + ".exe"],
             verbose=verbose,
         )

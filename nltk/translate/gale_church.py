@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Torsten Marek <marek@ifi.uzh.ch>
 # Contributor: Cassidy Laidlaw, Liling Tan
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -11,7 +11,7 @@
 A port of the Gale-Church Aligner.
 
 Gale & Church (1993), A Program for Aligning Sentences in Bilingual Corpora.
-http://aclweb.org/anthology/J93-1004.pdf
+https://aclweb.org/anthology/J93-1004.pdf
 
 """
 

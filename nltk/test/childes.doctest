@@ -43,7 +43,7 @@ Printing properties of the corpus files.
     Id :  01a
     Lang :  eng
     Version :  2.0.1
-    {http://www.w3.org/2001/XMLSchema-instance}schemaLocation :  http://www.talkbank.org/ns/talkbank http://talkbank.org/software/talkbank.xsd
+    {https://www.w3.org/2001/XMLSchema-instance}schemaLocation :  https://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd
 
 Printing information of participants of the corpus. The most common codes for
 the participants are 'CHI' (target child), 'MOT' (mother), and 'INV' (investigator).

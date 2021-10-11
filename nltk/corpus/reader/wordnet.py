@@ -11,7 +11,7 @@
 #         Francis Bond <bond@ieee.org>
 #         Eric Kafe <kafe.eric@gmail.com>
 
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -22,7 +22,7 @@ Using synsets, helps find conceptual relationships between words
 such as hypernyms, hyponyms, synonyms, antonyms etc.
 
 For details about WordNet see:
-http://wordnet.princeton.edu/
+https://wordnet.princeton.edu/
 
 This module also allows you to find lemmas in languages
 other than English from the Open Multilingual Wordnet
@@ -1421,7 +1421,7 @@ class WordNetCorpusReader(CorpusReader):
     def _synset_from_pos_and_offset(self, *args, **kwargs):
         """
         Hack to help people like the readers of
-        http://stackoverflow.com/a/27145655/1709587
+        https://stackoverflow.com/a/27145655/1709587
         who were using this function before it was officially a public method
         """
         return self.synset_from_pos_and_offset(*args, **kwargs)
@@ -2182,7 +2182,7 @@ class WordNetICCorpusReader(CorpusReader):
 # useful for verb similarity as there exist multiple verb taxonomies.
 
 # More information about the metrics is available at
-# http://marimba.d.umn.edu/similarity/measures.html
+# https://marimba.d.umn.edu/similarity/measures.html
 
 
 def path_similarity(synset1, synset2, verbose=False, simulate_root=True):

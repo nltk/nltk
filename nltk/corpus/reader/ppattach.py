@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -32,7 +32,7 @@ bitstrings: word classes derived from Mutual Information Clustering for the Wall
 
 Ratnaparkhi, Adwait (1994). A Maximum Entropy Model for Prepositional
 Phrase Attachment.  Proceedings of the ARPA Human Language Technology
-Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
+Conference.  [https://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,7 +13,7 @@ SentiWordNet assigns to each synset of WordNet three
 sentiment scores: positivity, negativity, and objectivity.
 
 For details about SentiWordNet see:
-http://sentiwordnet.isti.cnr.it/
+https://sentiwordnet.isti.cnr.it/
 
     >>> from nltk.corpus import sentiwordnet as swn
     >>> print(swn.senti_synset('breakdown.n.03'))

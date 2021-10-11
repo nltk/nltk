@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -25,7 +25,7 @@ Generalized Hamming Distance
 Information Retrieval 5, 2002, pp 353-375
 
 Baseline implementation in C++
-http://digital.cs.usu.edu/~vkulyukin/vkweb/software/ghd/ghd.html
+https://digital.cs.usu.edu/~vkulyukin/vkweb/software/ghd/ghd.html
 
 Study describing benefits of Generalized Hamming Distance Versus
 WindowDiff for evaluating text segmentation tasks

@@ -4,7 +4,7 @@
 #         Tom Aarsen <> (modifications)
 # Algorithm: Leonie Weissweiler <l.weissweiler@outlook.de>
 #            Alexander Fraser <fraser@cis.lmu.de>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import re
@@ -24,7 +24,7 @@ class Cistem(StemmerI):
     In Proceedings of the German Society for Computational Linguistics and Language
     Technology (GSCL)
     which can be read here:
-    http://www.cis.lmu.de/~weissweiler/cistem/
+    https://www.cis.lmu.de/~weissweiler/cistem/
 
     In the paper, we conducted an analysis of publicly available stemmers,
     developed two gold standards for German stemming and evaluated the stemmers

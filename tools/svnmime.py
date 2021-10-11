@@ -2,7 +2,7 @@
 
 # NB, this wouldn't be needed if everyone had .subversion/config
 # configured to automatically set mime types
-# http://code.google.com/p/support/wiki/FAQ
+# https://code.google.com/p/support/wiki/FAQ
 
 
 import os

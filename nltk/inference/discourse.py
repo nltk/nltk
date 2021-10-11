@@ -3,7 +3,7 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Dan Garrette <dhgarrette@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -11,7 +11,7 @@ Module for incrementally developing simple discourses, and checking for semantic
 consistency and informativeness.
 
 Many of the ideas are based on the CURT family of programs of Blackburn and Bos
-(see http://homepages.inf.ed.ac.uk/jbos/comsem/book1.html).
+(see https://homepages.inf.ed.ac.uk/jbos/comsem/book1.html).
 
 Consistency checking is carried out  by using the ``mace`` module to call the Mace4 model builder.
 Informativeness checking is carried out with a call to ``Prover.prove()`` from

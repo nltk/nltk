@@ -3,13 +3,13 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 A WordNet Browser application which launches the default browser
 (if it is not already running) and opens a new tab with a connection
-to http://localhost:port/ .  It also starts an HTTP server on the
+to https://localhost:port/ .  It also starts an HTTP server on the
 specified port and begins serving browser requests.  The default
 port is 8000.  (For command-line help, run "python wordnet -h")
 This application requires that the user's web browser supports
@@ -226,7 +226,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         logfile = None
 
     # Compute URL and start web browser
-    url = "http://localhost:" + str(port)
+    url = "https://localhost:" + str(port)
 
     server_ready = None
     browser_thread = None
@@ -440,7 +440,7 @@ def get_relations_data(word, synset):
 
 html_header = """
 <!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
-'http://www.w3.org/TR/html4/strict.dtd'>
+'https://www.w3.org/TR/html4/strict.dtd'>
 <html>
 <head>
 <meta name='generator' content=
@@ -825,12 +825,12 @@ def get_static_web_help_page():
     Return the static web help page.
     """
     return """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
             Copyright (C) 2001-2021 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.org/>
+            URL: <https://www.nltk.org/>
             For license information, see LICENSE.TXT -->
      <head>
           <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
@@ -840,8 +840,8 @@ def get_static_web_help_page():
 <h2>NLTK Wordnet Browser Help</h2>
 <p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database.
 <p><b>You are using the Javascript client part of the NLTK Wordnet BrowseServer.</b> We assume your browser is in tab sheets enabled mode.</p>
-<p>For background information on Wordnet, see the Wordnet project home page: <a href="http://wordnet.princeton.edu/"><b> http://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
-<a href="http://nltk.sourceforge.net/"><b>http://nltk.sourceforge.net/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
+<p>For background information on Wordnet, see the Wordnet project home page: <a href="https://wordnet.princeton.edu/"><b> https://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
+<a href="https://www.nltk.org/"><b>https://www.nltk.org/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
 <h3>Word search</h3>
 <p>The word to be searched is typed into the <b>New Word</b> field and the search started with Enter or by clicking the <b>Search</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
 <p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination.</p>
@@ -895,12 +895,12 @@ def get_static_index_page(with_shutdown):
     Get the static index page.
     """
     template = """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "https://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
             Copyright (C) 2001-2021 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.org/>
+            URL: <https://www.nltk.org/>
             For license information, see LICENSE.TXT -->
      <HEAD>
          <TITLE>NLTK Wordnet Browser</TITLE>
@@ -928,12 +928,12 @@ def get_static_upper_page(with_shutdown):
     to shutdown the server.
     """
     template = """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
         Copyright (C) 2001-2021 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <http://nltk.org/>
+        URL: <https://www.nltk.org/>
         For license information, see LICENSE.TXT -->
     <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

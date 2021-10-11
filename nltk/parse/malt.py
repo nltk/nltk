@@ -4,7 +4,7 @@
 # Contributor: Liling Tan, Mustufain, osamamukhtar11
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import inspect
@@ -127,7 +127,7 @@ class MaltParser(ParserI):
         :param model_filename: The name of the pre-trained model with .mco file
         extension. If provided, training will not be required.
         (see http://www.maltparser.org/mco/mco.html and
-        see http://www.patful.com/chalk/node/185)
+        see https://www.patful.com/chalk/node/185)
         :type model_filename: str
         :param tagger: The tagger used to POS tag the raw string before
         formatting to CONLL format. It should behave like `nltk.pos_tag`
@@ -135,7 +135,7 @@ class MaltParser(ParserI):
         :param additional_java_args: This is the additional Java arguments that
         one can use when calling Maltparser, usually this is the heapsize
         limits, e.g. `additional_java_args=['-Xmx1024m']`
-        (see http://goo.gl/mpDBvQ)
+        (see https://goo.gl/mpDBvQ)
         :type additional_java_args: list
         """
 

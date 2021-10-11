@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Nathan Schneider <nschneid@cs.cmu.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -156,7 +156,7 @@ class SemcorCorpusReader(XMLCorpusReader):
             sense_key = lemma + "%" + lexsn
             wnpos = ("n", "v", "a", "r", "s")[
                 int(lexsn.split(":")[0]) - 1
-            ]  # see http://wordnet.princeton.edu/man/senseidx.5WN.html
+            ]  # see https://wordnet.princeton.edu/man/senseidx.5WN.html
         else:
             sense_key = wnpos = None
         redef = xmlword.get(

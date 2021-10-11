@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Konrad Goluchowski <kodie@mimuw.edu.pl>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import functools
@@ -25,7 +25,7 @@ def _parse_args(fun):
 class IPIPANCorpusReader(CorpusReader):
     """
     Corpus reader designed to work with corpus created by IPI PAN.
-    See http://korpus.pl/en/ for more details about IPI PAN corpus.
+    See https://korpus.pl/en/ for more details about IPI PAN corpus.
 
     The corpus includes information about text domain, channel and categories.
     You can access possible values using ``domains()``, ``channels()`` and

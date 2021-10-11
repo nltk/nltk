@@ -2,19 +2,19 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Selina Dennis <selina@tranzfusion.net>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Corpus reader for the York-Toronto-Helsinki Parsed Corpus of Old
 English Prose (YCOE), a 1.5 million word syntactically-annotated
 corpus of Old English prose texts. The corpus is distributed by the
-Oxford Text Archive: http://www.ota.ahds.ac.uk/ It is not included
+Oxford Text Archive: https://www.ota.ahds.ac.uk/ It is not included
 with NLTK.
 
 The YCOE corpus is divided into 100 files, each representing
 an Old English prose text. Tags used within each text complies
-to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
+to the YCOE standard: https://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 """
 
 import os

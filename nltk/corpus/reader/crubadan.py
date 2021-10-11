@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -15,7 +15,7 @@ this reader was created with the goal of using it in the
 context of language identification.
 
 For details about An Crubadan, this data, and its potential uses, see:
-http://borel.slu.edu/crubadan/index.html
+https://borel.slu.edu/crubadan/index.html
 """
 
 import re

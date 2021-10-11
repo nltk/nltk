@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,7 +13,7 @@ for Natural Language Processing.  A free online book is available.
 
 Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
-http://nltk.org/book
+https://www.nltk.org/book
 
 isort:skip_file
 """
@@ -67,7 +67,7 @@ __keywords__ = [
     "natural language",
     "text analytics",
 ]
-__url__ = "http://nltk.org/"
+__url__ = "https://www.nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "NLTK Team"

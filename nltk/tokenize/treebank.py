@@ -2,9 +2,9 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-#         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
+#         Michael Heilman <mheilman@cmu.edu> (re-port from https://www.cis.upenn.edu/~treebank/tokenizer.sed)
 #
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -13,7 +13,7 @@ Penn Treebank Tokenizer
 
 The Treebank tokenizer uses regular expressions to tokenize text as in Penn Treebank.
 This implementation is a port of the tokenizer sed script written by Robert McIntyre
-and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
+and available at https://www.cis.upenn.edu/~treebank/tokenizer.sed.
 """
 
 import re

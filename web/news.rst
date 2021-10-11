@@ -172,8 +172,8 @@ NLTK 3.0.0b2 released : August 2014
    Minor bugfixes and clean-ups.
 
 NLTK Book Updates : July 2014
-   The NLTK book is being updated for Python 3 and NLTK 3 `here <http://nltk.org/book>`_.
-   The original Python 2 edition is still available `here <http://nltk.org/book_1ed>`_.
+   The NLTK book is being updated for Python 3 and NLTK 3 `here <https://www.nltk.org/book>`_.
+   The original Python 2 edition is still available `here <https://www.nltk.org/book_1ed>`_.
 
 NLTK 3.0.0b1 released : July 2014
    FrameNet, SentiWordNet, universal tagset, misc efficiency improvements and bugfixes
@@ -184,34 +184,34 @@ NLTK 3.0a4 released : June 2014
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
    For full details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
-   http://nltk.org/nltk3-alpha/
+   https://www.nltk.org/nltk3-alpha/
 
 2013
 ----
 
 NLTK Book Updates : October 2013
    We are updating the NLTK book for Python 3 and NLTK 3; please see
-   http://nltk.org/book3/
+   https://www.nltk.org/book3/
 
 NLTK 3.0a2 released : July 2013
    Misc efficiency improvements and bugfixes; for details see
    https://github.com/nltk/nltk/blob/develop/ChangeLog
-   http://nltk.org/nltk3-alpha/
+   https://www.nltk.org/nltk3-alpha/
 
 NLTK 3.0a1 released : February 2013
    This version adds support for NLTK's graphical user interfaces.
-   http://nltk.org/nltk3-alpha/
+   https://www.nltk.org/nltk3-alpha/
 
 NLTK 3.0a0 released : January 2013
    The first alpha release of NLTK 3.0 is now available for testing. This version of NLTK works with Python 2.6, 2.7, and Python 3.
-   http://nltk.org/nltk3-alpha/
+   https://www.nltk.org/nltk3-alpha/
 
 2012
 ----
 
 Python Grant : November 2012
    The Python Software Foundation is sponsoring Mikhail Korobov's work on porting NLTK to Python 3.
-   http://pyfound.blogspot.hu/2012/11/grants-to-assist-kivy-nltk-in-porting.html
+   https://pyfound.blogspot.hu/2012/11/grants-to-assist-kivy-nltk-in-porting.html
 
 NLTK 2.0.4 released : November 2012
     Minor fix to remove numpy dependency.
@@ -238,7 +238,7 @@ NLTK 2.0.1rc2 released : December 2011
     The second release candidate for NLTK 2.  For full details see the ChangeLog.
 
 NLTK development moved to GitHub : October 2011
-    The development site for NLTK has moved from GoogleCode to GitHub: http://github.com/nltk
+    The development site for NLTK has moved from GoogleCode to GitHub: https://github.com/nltk
 
 NLTK 2.0.1rc1 released : April 2011
     The first release candidate for NLTK 2.  For full details see the ChangeLog.
@@ -250,13 +250,13 @@ Python Text Processing with NLTK 2.0 Cookbook : December 2010
     Jacob Perkins has written a 250-page cookbook full of great recipes for text processing using Python and NLTK, published by Packt Publishing.  Some of the royalties are being donated to the NLTK project.
 
 Japanese translation of NLTK book : November 2010
-    Masato Hagiwara has translated the NLTK book into Japanese, along with an extra chapter on particular issues with Japanese language process.  See http://www.oreilly.co.jp/books/9784873114705/.
+    Masato Hagiwara has translated the NLTK book into Japanese, along with an extra chapter on particular issues with Japanese language process.  See https://www.oreilly.co.jp/books/9784873114705/.
 
 NLTK 2.0b9 released : July 2010
     The last beta release before 2.0 final.  For full details see the ChangeLog.
 
 NLTK in Ubuntu 10.4 (Lucid Lynx) : February 2010
-    NLTK is now in the latest LTS version of Ubuntu, thanks to the efforts of Robin Munn.  See http://packages.ubuntu.com/lucid/python/python-nltk
+    NLTK is now in the latest LTS version of Ubuntu, thanks to the efforts of Robin Munn.  See https://packages.ubuntu.com/lucid/python/python-nltk
 
 NLTK 2.0b? released : June 2009 - February 2010
     Bugfix releases in preparation for 2.0 final.  For full details see the ChangeLog.
@@ -268,7 +268,7 @@ NLTK Book in second printing : December 2009
     The second print run of Natural Language Processing with Python will go on sale in January.  We've taken the opportunity to make about 40 minor corrections.  The online version has been updated.
 
 NLTK Book published : June 2009
-    Natural Language Processing with Python, by Steven Bird, Ewan Klein and Edward Loper, has been published by O'Reilly Media Inc.  It can be purchased in hardcopy, ebook, PDF or for online access, at http://oreilly.com/catalog/9780596516499/.  For information about sellers and prices, see https://isbndb.com/d/book/natural_language_processing_with_python/prices.html.
+    Natural Language Processing with Python, by Steven Bird, Ewan Klein and Edward Loper, has been published by O'Reilly Media Inc.  It can be purchased in hardcopy, ebook, PDF or for online access, at https://oreilly.com/catalog/9780596516499/.  For information about sellers and prices, see https://isbndb.com/d/book/natural_language_processing_with_python/prices.html.
 
 Version 0.9.9 released : May 2009
     This version finalizes NLTK's API ahead of the 2.0 release and the publication of the NLTK book.  There have been dozens of minor enhancements and bugfixes.  Many names of the form nltk.foo.Bar are now available as nltk.Bar.  There is expanded functionality in the decision tree, collocations, and Toolbox modules.  A new translation toy nltk.misc.babelfish has been added.  A new module nltk.help gives access to tagset documentation.  Fixed imports so NLTK will build and install without Tkinter (for running on servers).  New data includes a maximum entropy chunker model and updated grammars.  NLTK Contrib includes updates to the coreference package (Joseph Frazee) and the ISRI Arabic stemmer (Hosam Algasaier).  The book has undergone substantial editorial corrections ahead of final publication.  For full details see the ChangeLog.
@@ -300,19 +300,19 @@ Version 0.9.3 released : June 2008
     This version contains an improved WordNet? similarity module using pre-built information content files (included in the corpus distribution), new/improved interfaces to Weka, MEGAM and Prover9/Mace4 toolkits, improved Unicode support for corpus readers, a BNC corpus reader, and a rewrite of the Punkt sentence segmenter contributed by Joel Nothman. NLTK-Contrib includes an implementation of incremental algorithm for generating referring expression contributed by Margaret Mitchell. For full details see the ChangeLog.
 
 NLTK presented at LinuxFest Northwest : April 2008
-    Sean Boisen presented NLTK at LinuxFest Northwest, which took place in Bellingham, Washington. His presentation slides are available at: http://semanticbible.com/other/talks/2008/nltk/main.html
+    Sean Boisen presented NLTK at LinuxFest Northwest, which took place in Bellingham, Washington. His presentation slides are available at: https://semanticbible.com/other/talks/2008/nltk/main.html
 
 NLTK in Google Summer of Code : April 2008
     Google Summer of Code will sponsor two NLTK projects. Jason Narad won funding for a project on dependency parsers in NLTK (mentored by Sebastian Riedel and Jason Baldridge).  Petro Verkhogliad won funding for a project on natural language generation in NLTK (mentored by Robert Dale and Edward Loper).
 
 Python Software Foundation adopts NLTK for Google Summer of Code application : March 2008
-    The Python Software Foundation has listed NLTK projects for sponsorship from the 2008 Google Summer of Code program. For details please see http://wiki.python.org/moin/SummerOfCode.
+    The Python Software Foundation has listed NLTK projects for sponsorship from the 2008 Google Summer of Code program. For details please see https://wiki.python.org/moin/SummerOfCode.
 
 Version 0.9.2 released : March 2008
     This version contains a new inference module linked to the Prover9/Mace4 theorem-prover and model checker (Dan Garrette, Ewan Klein). It also includes the VerbNet? and PropBank? corpora along with corpus readers. A bug in the Reuters corpus reader has been fixed. NLTK-Contrib includes new work on the WordNet? browser (Jussi Salmela). For full details see the ChangeLog
 
 Youtube video about NLTK : January 2008
-    The video from of the NLTK talk at the Bay Area Python Interest Group last July has been posted at http://www.youtube.com/watch?v=keXW_5-llD0 (1h15m)
+    The video from of the NLTK talk at the Bay Area Python Interest Group last July has been posted at https://www.youtube.com/watch?v=keXW_5-llD0 (1h15m)
 
 Version 0.9.1 released : January 2008
     This version contains new support for accessing text categorization corpora, along with several corpora categorized for topic, genre, question type, or sentiment. It includes several new corpora: Question classification data (Li & Roth), Reuters 21578 Corpus, Movie Reviews corpus (Pang & Lee), Recognising Textual Entailment (RTE) Challenges. NLTK-Contrib includes expanded support for semantics (Dan Garrette), readability scoring (Thomas Jakobsen, Thomas Skardal), and SIL Toolbox (Greg Aumann). The book contains many improvements in early chapters in response to reader feedback. For full details see the ChangeLog.

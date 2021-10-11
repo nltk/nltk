@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -301,7 +301,7 @@ def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     except ImportError as e:
         raise ImportError(
             "The plot function requires matplotlib to be installed."
-            "See http://matplotlib.org/"
+            "See https://matplotlib.org/"
         ) from e
 
     plt.locator_params(axis="y", nbins=3)
