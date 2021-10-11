@@ -34,7 +34,7 @@ Building an NLTK distribution
      sphinx-build -E ./web ./build
    - Publish them
      cd nltk.github.com; git pull (begin with current docs repo)
-     <copy them over from build to ../nltk.github.com>
+     cp -r build/* ../nltk.github.com
      git add .
      git commit -m "updates for version 3.X.Y"
      git push origin master
