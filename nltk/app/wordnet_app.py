@@ -9,7 +9,7 @@
 """
 A WordNet Browser application which launches the default browser
 (if it is not already running) and opens a new tab with a connection
-to https://localhost:port/ .  It also starts an HTTP server on the
+to http://localhost:port/ .  It also starts an HTTP server on the
 specified port and begins serving browser requests.  The default
 port is 8000.  (For command-line help, run "python wordnet -h")
 This application requires that the user's web browser supports
@@ -226,7 +226,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         logfile = None
 
     # Compute URL and start web browser
-    url = "https://localhost:" + str(port)
+    url = "http://localhost:" + str(port)
 
     server_ready = None
     browser_thread = None

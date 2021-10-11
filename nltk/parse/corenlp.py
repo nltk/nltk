@@ -77,7 +77,7 @@ class CoreNLPServer:
         else:
             try_port(port)
 
-        self.url = f"https://localhost:{port}"
+        self.url = f"http://localhost:{port}"
 
         model_jar = max(
             find_jar_iter(
@@ -176,7 +176,7 @@ class CoreNLPServer:
 class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     """Interface to the CoreNLP Parser."""
 
-    def __init__(self, url="https://localhost:9000", encoding="utf8", tagtype=None):
+    def __init__(self, url="http://localhost:9000", encoding="utf8", tagtype=None):
         import requests
 
         self.url = url
@@ -300,7 +300,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     def tokenize(self, text, properties=None):
         """Tokenize a string of text.
 
-        >>> parser = CoreNLPParser(url='https://localhost:9000')
+        >>> parser = CoreNLPParser(url='http://localhost:9000')
 
         >>> text = 'Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'
         >>> list(parser.tokenize(text))
@@ -347,13 +347,13 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         :rtype: list(tuple(str, str))
 
-        >>> parser = CoreNLPParser(url='https://localhost:9000', tagtype='ner')
+        >>> parser = CoreNLPParser(url='http://localhost:9000', tagtype='ner')
         >>> tokens = 'Rami Eid is studying at Stony Brook University in NY'.split()
         >>> parser.tag(tokens)
         [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
         ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'O')]
 
-        >>> parser = CoreNLPParser(url='https://localhost:9000', tagtype='pos')
+        >>> parser = CoreNLPParser(url='http://localhost:9000', tagtype='pos')
         >>> tokens = "What is the airspeed of an unladen swallow ?".split()
         >>> parser.tag(tokens)
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
@@ -393,7 +393,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
 class CoreNLPParser(GenericCoreNLPParser):
     """
-    >>> parser = CoreNLPParser(url='https://localhost:9000')
+    >>> parser = CoreNLPParser(url='http://localhost:9000')
 
     >>> next(
     ...     parser.raw_parse('The quick brown fox jumps over the lazy dog.')
@@ -546,7 +546,7 @@ class CoreNLPParser(GenericCoreNLPParser):
 class CoreNLPDependencyParser(GenericCoreNLPParser):
     """Dependency parser.
 
-    >>> dep_parser = CoreNLPDependencyParser(url='https://localhost:9000')
+    >>> dep_parser = CoreNLPDependencyParser(url='http://localhost:9000')
 
     >>> parse, = dep_parser.raw_parse(
     ...     'The quick brown fox jumps over the lazy dog.'
