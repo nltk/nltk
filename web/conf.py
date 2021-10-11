@@ -29,15 +29,30 @@ sys.path.insert(0, os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinxcontrib.apidoc",
     "sphinx.ext.coverage",
     "sphinx.ext.imgmath",
     "sphinx.ext.viewcode",
 ]
 
-apidoc_module_dir = "../nltk"
-apidoc_output_dir = "api"
-apidoc_separate_modules = False
+
+def run_apidoc(app):
+    """Generage API documentation"""
+    import better_apidoc
+
+    better_apidoc.APP = app
+    better_apidoc.main(
+        [
+            "better-apidoc",
+            "-t",
+            os.path.join(".", "web", "_templates"),
+            "--force",
+            "--separate",
+            "-o",
+            os.path.join(".", "web", "api"),
+            os.path.join(".", "nltk"),
+        ]
+    )
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -103,12 +118,19 @@ modindex_common_prefix = ["nltk."]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "agogo"
+html_theme = "nltk_theme"
+
+
+def setup(app):
+    app.connect("builder-inited", run_apidoc)
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"textalign": "left"}
+html_theme_options = {"navigation_depth": 1}
+# Required for the theme, used for linking to a specific tag in the website footer
+html_context = {"github_user": "nltk", "github_repo": "nltk"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -132,11 +154,12 @@ html_theme_options = {"textalign": "left"}
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+# html_static_path = ["_static"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 html_last_updated_fmt = "%b %d, %Y"
+# html_last_updated_fmt = "%d %b %Y"
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -150,10 +173,11 @@ html_use_smartypants = True
 # html_additional_pages = {}
 
 # If false, no module index is generated.
-# html_domain_indices = True
+html_domain_indices = True
 
 # If false, no index is generated.
-# html_use_index = True
+# We don't use the genindex.
+html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 # html_split_index = False
@@ -250,3 +274,22 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 # texinfo_show_urls = 'footnote'
+
+# -- Options for Autodoc output ------------------------------------------------
+# If it's "mixed", then the documentation for each parameter isn't listed
+# e.g. nltk.tokenize.casual.TweetTokenizer(preserve_case=True, reduce_len=False, strip_handles=False, match_phone_numbers=True)
+# and that's it.
+# With "seperated":
+# nltk.tokenize.casual.TweetTokenizer
+# ...
+# __init__(preserve_case=True, reduce_len=False, strip_handles=False, match_phone_numbers=True)
+#     Create a TweetTokenizer instance with settings for use in the tokenize method.
+#     Parameters
+#         preserve_case (bool) – Flag indicating whether to preserve the casing (capitalisation) of text used in the tokenize method. Defaults to True.
+#         reduce_len (bool) – Flag indicating whether to replace repeated character sequences of length 3 or greater with sequences of length 3. Defaults to False.
+#         strip_handles (bool) – Flag indicating whether to remove Twitter handles of text used in the tokenize method. Defaults to False.
+#         match_phone_numbers (bool) – Flag indicating whether the tokenize method should look for phone numbers. Defaults to True.
+autodoc_class_signature = "separated"
+
+# Put the Python 3.5+ type hint in the signature and also at the Parameters list
+autodoc_typehints = "both"
