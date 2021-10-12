@@ -281,6 +281,7 @@
 - Ruben Cartuyvels <https://github.com/rubencart>
 - Dalton Pearson <https://github.com/daltonpearson>
 - Saibo Geng <https://github.com/Saibo-creator>
+- Ahmet Yildirim <https://github.com/RnDevelover>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
