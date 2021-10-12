@@ -9,7 +9,7 @@
 # For license information, see LICENSE.TXT
 
 # NB Should work on all platforms,
-# https://www.python.org/doc/2.5.2/lib/os-file-dir.html
+# http://www.python.org/doc/2.5.2/lib/os-file-dir.html
 
 import os
 import stat

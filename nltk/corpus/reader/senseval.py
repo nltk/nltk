@@ -9,7 +9,7 @@
 """
 Read from the Senseval 2 Corpus.
 
-SENSEVAL [https://www.senseval.org/]
+SENSEVAL [http://www.senseval.org/]
 Evaluation exercises for Word Sense Disambiguation.
 Organized by ACL-SIGLEX [https://www.siglex.org/]
 

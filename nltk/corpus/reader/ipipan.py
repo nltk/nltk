@@ -25,7 +25,7 @@ def _parse_args(fun):
 class IPIPANCorpusReader(CorpusReader):
     """
     Corpus reader designed to work with corpus created by IPI PAN.
-    See https://korpus.pl/en/ for more details about IPI PAN corpus.
+    See http://korpus.pl/en/ for more details about IPI PAN corpus.
 
     The corpus includes information about text domain, channel and categories.
     You can access possible values using ``domains()``, ``channels()`` and

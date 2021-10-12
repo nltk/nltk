@@ -184,27 +184,27 @@ NLTK 3.0a4 released : June 2014
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
    For full details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
-   https://www.nltk.org/nltk3-alpha/
+   http://nltk.org/nltk3-alpha/
 
 2013
 ----
 
 NLTK Book Updates : October 2013
    We are updating the NLTK book for Python 3 and NLTK 3; please see
-   https://www.nltk.org/book3/
+   https://www.nltk.org/book/
 
 NLTK 3.0a2 released : July 2013
    Misc efficiency improvements and bugfixes; for details see
    https://github.com/nltk/nltk/blob/develop/ChangeLog
-   https://www.nltk.org/nltk3-alpha/
+   http://nltk.org/nltk3-alpha/
 
 NLTK 3.0a1 released : February 2013
    This version adds support for NLTK's graphical user interfaces.
-   https://www.nltk.org/nltk3-alpha/
+   http://nltk.org/nltk3-alpha/
 
 NLTK 3.0a0 released : January 2013
    The first alpha release of NLTK 3.0 is now available for testing. This version of NLTK works with Python 2.6, 2.7, and Python 3.
-   https://www.nltk.org/nltk3-alpha/
+   http://nltk.org/nltk3-alpha/
 
 2012
 ----

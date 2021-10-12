@@ -42,8 +42,6 @@ from subprocess import PIPE, Popen
 
 from nltk.tag.api import TaggerI
 
-_senna_url = "https://ml.nec-labs.com/senna/"
-
 
 class Senna(TaggerI):
 

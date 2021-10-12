@@ -440,7 +440,7 @@ def get_relations_data(word, synset):
 
 html_header = """
 <!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
-'https://www.w3.org/TR/html4/strict.dtd'>
+'http://www.w3.org/TR/html4/strict.dtd'>
 <html>
 <head>
 <meta name='generator' content=
@@ -825,7 +825,7 @@ def get_static_web_help_page():
     Return the static web help page.
     """
     return """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
             Copyright (C) 2001-2021 NLTK Project
@@ -895,7 +895,7 @@ def get_static_index_page(with_shutdown):
     Get the static index page.
     """
     template = """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "https://www.w3.org/TR/html4/frameset.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
             Copyright (C) 2001-2021 NLTK Project
@@ -928,7 +928,7 @@ def get_static_upper_page(with_shutdown):
     to shutdown the server.
     """
     template = """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
         Copyright (C) 2001-2021 NLTK Project

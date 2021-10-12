@@ -10,7 +10,7 @@
 Implementation of 'TnT - A Statisical Part of Speech Tagger'
 by Thorsten Brants
 
-https://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
+https://aclanthology.org/A00-1031.pdf
 """
 
 from math import log

@@ -156,7 +156,7 @@ class SemcorCorpusReader(XMLCorpusReader):
             sense_key = lemma + "%" + lexsn
             wnpos = ("n", "v", "a", "r", "s")[
                 int(lexsn.split(":")[0]) - 1
-            ]  # see https://wordnet.princeton.edu/man/senseidx.5WN.html
+            ]  # see http://wordnet.princeton.edu/man/senseidx.5WN.html
         else:
             sense_key = wnpos = None
         redef = xmlword.get(

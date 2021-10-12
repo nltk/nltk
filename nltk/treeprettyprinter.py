@@ -502,7 +502,7 @@ class TreePrettyPrinter:
         width = max(col for _, col in self.coords.values())
         height = max(row for row, _ in self.coords.values())
         result = [
-            '<svg version="1.1" xmlns="https://www.w3.org/2000/svg" '
+            '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" '
             'width="%dem" height="%dem" viewBox="%d %d %d %d">'
             % (
                 width * 3,

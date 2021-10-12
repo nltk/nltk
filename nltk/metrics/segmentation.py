@@ -25,7 +25,7 @@ Generalized Hamming Distance
 Information Retrieval 5, 2002, pp 353-375
 
 Baseline implementation in C++
-https://digital.cs.usu.edu/~vkulyukin/vkweb/software/ghd/ghd.html
+http://digital.cs.usu.edu/~vkulyukin/vkweb/software/ghd/ghd.html
 
 Study describing benefits of Generalized Hamming Distance Versus
 WindowDiff for evaluating text segmentation tasks

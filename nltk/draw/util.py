@@ -30,7 +30,7 @@ its canvas are within the scroll region.
 Acknowledgements: Many of the ideas behind the canvas widget system
 are derived from ``CLIG``, a Tk-based grapher for linguistic data
 structures.  For more information, see the CLIG
-homepage (https://www.ags.uni-sb.de/~konrad/clig.html).
+homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
 from abc import ABCMeta, abstractmethod

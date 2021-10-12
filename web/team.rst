@@ -8,5 +8,5 @@ Individual packages are maintained by the following people:
 :Parsing: `Peter Ljunglöf <https://www.cse.chalmers.se/~peb/>`_, Gothenburg, Sweden (``nltk.parse, nltk.featstruct``)
 :Metrics: `Joel Nothman <http://joelnothman.com/>`_, Sydney, Australia (``nltk.metrics, nltk.tokenize.punkt``)
 :Python 3: `Mikhail Korobov <http://kmike.ru/>`_, Ekaterinburg, Russia
-:Releases: `Steven Bird <https://estive.net>`_, Melbourne, Australia
+:Releases: `Steven Bird <http://stevenbird.net>`_, Melbourne, Australia
 :NLTK-Users: `Alexis Dimitriadis <A.Dimitriadis@uu.nl>`_, Utrecht, Netherlands

@@ -1,21 +1,21 @@
 ==========================================
-Examplos para o processamento do portugu�s
+Examplos para o processamento do português
 ==========================================
 
     >>> import nltk
 
 (NB. Este material parte do pressuposto de que o leitor esteja
-familiarizado com o livro do NLTK, dispon�vel em
-``https://www.nltk.org/index.php/Book``).
+familiarizado com o livro do NLTK, disponível em
+``http://nltk.org/index.php/Book``).
 
 Utilizando o Corpus MacMorpho Tagged
 ------------------------------------
 
-O NLTK inclui o corpus de not�cias para o portugu�s brasileiro com tags de partes do discurso
-MAC-MORPHO, que conta com mais de um milh�o de palavras de textos jornal�sticos extra�dos
-de dez se��es do jornal di�rio *Folha de S�o Paulo*, do ano de 1994.
+O NLTK inclui o corpus de notícias para o português brasileiro com tags de partes do discurso
+MAC-MORPHO, que conta com mais de um milhão de palavras de textos jornalísticos extraídos
+de dez seções do jornal diário *Folha de São Paulo*, do ano de 1994.
 
-Podemos utilizar este corpus como uma seq��ncia de palavras ou de palavras com tags da
+Podemos utilizar este corpus como uma seqüência de palavras ou de palavras com tags da
 seguinte maneira:
 
     >>> nltk.corpus.mac_morpho.words()
@@ -28,7 +28,7 @@ seguinte maneira:
     >>> nltk.corpus.mac_morpho.tagged_words()
     [('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ...]
 
-Tamb�m � poss�vel utiliz�-lo em chunks de frases.
+Também é possível utilizá-lo em chunks de frases.
 
     >>> nltk.corpus.mac_morpho.tagged_sents()
     [[('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ('de', 'PREP'),
@@ -47,13 +47,13 @@ exemplos abaixo para o Floresta treebank).
 Utilizando o Floresta Portuguese Treebank
 -----------------------------------------
 
-A distribui��o de dados do NLTK inclui o
-"Floresta Sinta(c)tica Corpus" na vers�o 7.4, dispon�vel em
-``https://www.linguateca.pt/Floresta/``.
+A distribuição de dados do NLTK inclui o
+"Floresta Sinta(c)tica Corpus" na versão 7.4, disponível em
+``http://www.linguateca.pt/Floresta/``.
 
-Como para a amostra do Penn Treebank, � poss�vel
-utilizar o conte�do deste corpus como uma seq��ncia de palavras com
-informa��es de tags, da seguinte maneira:
+Como para a amostra do Penn Treebank, é possível
+utilizar o conteúdo deste corpus como uma seqüência de palavras com
+informações de tags, da seguinte maneira:
 
     >>> from nltk.corpus import floresta
     >>> floresta.words()
@@ -61,11 +61,11 @@ informa��es de tags, da seguinte maneira:
     >>> floresta.tagged_words()
     [('Um', '>N+art'), ('revivalismo', 'H+n'), ...]
 
-As tags s�o constitu�das por certas informa��es sint�ticas, seguidas por
+As tags são constituídas por certas informações sintáticas, seguidas por
 um sinal
 de mais, seguido por tag costumeira de parte do discurso
 (part-of-speech). Vamos
-remover o conte�do que antecede o sinal de mais:
+remover o conteúdo que antecede o sinal de mais:
 
     >>> def simplify_tag(t):
     ...     if "+" in t:
@@ -78,12 +78,12 @@ remover o conte�do que antecede o sinal de mais:
     [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
     ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
 
-E exibir de maneira mais apropriada as palavras com informa��es de tags:
+E exibir de maneira mais apropriada as palavras com informações de tags:
 
     >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
     um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop ?/v-fin um/art ex-libris/n de/prp a/art
 
-Em seguida, vamos contar o n�mero de tokens de palavras e tipos, al�m de
+Em seguida, vamos contar o número de tokens de palavras e tipos, além de
 determinar qual a palavra mais comum:
 
     >>> words = floresta.words()
@@ -95,8 +95,8 @@ determinar qual a palavra mais comum:
     >>> fd.max()
     'de'
 
-Podemos tamb�m listar as 20 tags mais freq�entes, em ordem decrescente de
-freq��ncia:
+Podemos também listar as 20 tags mais freqüentes, em ordem decrescente de
+freqüência:
 
     >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
     >>> fd = nltk.FreqDist(tags)
@@ -104,7 +104,7 @@ freq��ncia:
     ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 'conj-c', 'v-inf',
     'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', '\xbb', 'conj-s', '}']
 
-Tamb�m podemos ler o corpus agrupado por enunciados:
+Também podemos ler o corpus agrupado por enunciados:
 
     >>> floresta.sents()
     [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 'um', 'ex-libris',
@@ -122,19 +122,19 @@ Tamb�m podemos ler o corpus agrupado por enunciados:
     Tree('N<+pp', [Tree('H+prp', ['de']), Tree('P<+np', [Tree('>N+art', ['a']),
     Tree('H+n', ['noite']), Tree('N<+adj', ['algarvia'])])])]), Tree('.', ['.'])]), ...]
 
-Para ver uma �rvore de an�lise sint�tica, podemos utilizar o m�todo
+Para ver uma árvore de análise sintática, podemos utilizar o método
 ``draw()``, como no exemplo:
 
     >>> psents = floresta.parsed_sents()
     >>> psents[5].draw() # doctest: +SKIP
 
 
-Concord�ncia simples
+Concordância simples
 --------------------
 
-A seguir, apresentamos uma fun��o que recebe uma palavra e uma
+A seguir, apresentamos uma função que recebe uma palavra e uma
 quantidade determinada
-de contexto (medido em caracteres) e gera uma concord�ncia para a mesma.
+de contexto (medido em caracteres) e gera uma concordância para a mesma.
 
     >>> def concordance(word, context=30):
     ...     for sent in floresta.sents():
@@ -166,9 +166,9 @@ de contexto (medido em caracteres) e gera uma concord�ncia para a mesma.
 Tagging de partes do discurso
 -----------------------------
 
-Vamos come�ar obtendo os dados dos enunciados marcados com tags e
+Vamos começar obtendo os dados dos enunciados marcados com tags e
 simplificando
-estas �ltimas como descrito anteriormente.
+estas últimas como descrito anteriormente.
 
     >>> from nltk.corpus import floresta
     >>> tsents = floresta.tagged_sents()
@@ -176,7 +176,7 @@ estas �ltimas como descrito anteriormente.
     >>> train = tsents[100:]
     >>> test = tsents[:100]
 
-J� sabemos que ``n`` � a tag mais comum; desta forma, podemos criar um
+Já sabemos que ``n`` é a tag mais comum; desta forma, podemos criar um
 tagger por default
 que marque toda palavra como substantivo e, em seguida, avaliar seu
 desempenho:
@@ -185,9 +185,9 @@ desempenho:
     >>> nltk.tag.accuracy(tagger0, test)
     0.17690941385435169
 
-Como pode-se deduzir facilmente, uma em cada seis palavras � um
+Como pode-se deduzir facilmente, uma em cada seis palavras é um
 substantivo. Vamos
-aperfei�oar estes resultados treinando um tagger unigrama:
+aperfeiçoar estes resultados treinando um tagger unigrama:
 
     >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
     >>> nltk.tag.accuracy(tagger1, test)
@@ -199,23 +199,23 @@ E, em seguida, um tagger bigrama:
     >>> nltk.tag.accuracy(tagger2, test)
     0.86856127886323264
 
-Segmenta��o de frases
+Segmentação de frases
 ---------------------
 
-O Punkt � uma ferramenta para segmenta��o de frases ling�isticamente independente, o qual
+O Punkt é uma ferramenta para segmentação de frases lingüisticamente independente, o qual
 requer um treinamento em texto puro.
-O texto de origem (obtido do Floresta Portuguese Treebank) cont�m uma frase por linha. Podemos
-ler o texto, dividi-lo em fun��o de suas linhas e ent�o agrupar estas linhas utilizando
-espa�os. Desta forma as informa��es sobre quebras de frases ter�o sido descartadas; podemos
-ent�o dividir este material em dados para treinamento e para verifica��o:
+O texto de origem (obtido do Floresta Portuguese Treebank) contém uma frase por linha. Podemos
+ler o texto, dividi-lo em função de suas linhas e então agrupar estas linhas utilizando
+espaços. Desta forma as informações sobre quebras de frases terão sido descartadas; podemos
+então dividir este material em dados para treinamento e para verificação:
 
     >>> text = open('floresta.txt').read()
     >>> lines = text.split('\n')
     >>> train = ' '.join(lines[10:])
     >>> test = ' '.join(lines[:10])
 
-� agora poss�vel treinar o segmentador de frases (ou tokenizador de frases) e utiliz�-lo em
-nossas frases de verifica��o. (Para exibir o texto em uma forma leg�vel, pode ser necess�rio
+É agora possível treinar o segmentador de frases (ou tokenizador de frases) e utilizá-lo em
+nossas frases de verificação. (Para exibir o texto em uma forma legível, pode ser necessário
 converter o texto para o UTF-8, utilizando ``print sent.decode('latin-1').encode('utf-8')``.)
 
     >>> stok = nltk.PunktSentenceTokenizer(train)
@@ -223,17 +223,17 @@ converter o texto para o UTF-8, utilizando ``print sent.decode('latin-1').encode
     ...     print sent
 
 
-As vers�es do NLTK a partir da 0.9b1 incluem um modelo treinado para a segmenta��o de frases
-em portugu�s, o qual pode ser carregado pela maneira a seguir. � mais r�pido carregar um modelo
-j� treinado do que repetir o treinamento do mesmo.
+As versões do NLTK a partir da 0.9b1 incluem um modelo treinado para a segmentação de frases
+em português, o qual pode ser carregado pela maneira a seguir. É mais rápido carregar um modelo
+já treinado do que repetir o treinamento do mesmo.
 
     >>> stok = nltk.data.load('tokenizers/punkt/portuguese.pickle')
 
 Stemming
 --------
 
-O NLTK inclui o stemmer para o portugu�s RSLP. Vamos demonstrar sua utiliza��o para algumas
-palavras em portugu�s:
+O NLTK inclui o stemmer para o português RSLP. Vamos demonstrar sua utilização para algumas
+palavras em português:
 
     >>> stemmer = nltk.stem.RSLPStemmer()
     >>> stemmer.stem("copiar")
@@ -244,14 +244,14 @@ palavras em portugu�s:
 Stopwords
 ---------
 
-O NLTK inclui stopword ("palavras limite") para o portugu�s:
+O NLTK inclui stopword ("palavras limite") para o português:
 
     >>> stopwords = nltk.corpus.stopwords.words('portuguese')
     >>> stopwords[:10]
     ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'at\xe9']
 
-A esta altura, � poss�vel utiliz�-las para filtrar textos. Vamos encontrar as palavras mais
-comuns (� exce��o das stopwords) e list�-las em ordem decrescente de freq��ncia:
+A esta altura, é possível utilizá-las para filtrar textos. Vamos encontrar as palavras mais
+comuns (à exceção das stopwords) e listá-las em ordem decrescente de freqüência:
 
     >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
     >>> for word in fd.sorted()[:20]:
@@ -278,10 +278,10 @@ comuns (� exce��o das stopwords) e list�-las em ordem decrescente de fre
     dois 231
 
 
-Codifica��es de caracteres
+Codificações de caracteres
 --------------------------
 
-O Python � capaz de lidar com todas a codifica��es de caracteres mais utilizada para o portugu�s, a
+O Python é capaz de lidar com todas a codificações de caracteres mais utilizada para o português, a
 ISO 8859-1 (ISO Latin 1).
 
     >>> text = open('floresta.txt').read()

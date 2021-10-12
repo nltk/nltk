@@ -19,8 +19,8 @@ Note that many tgrep operators require the tree passed to be a
 External links:
 
 - `Tgrep tutorial <https://www.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html>`_
-- `Tgrep2 manual <https://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf>`_
-- `Tgrep2 source <https://tedlab.mit.edu/~dr/Tgrep2/>`_
+- `Tgrep2 manual <http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf>`_
+- `Tgrep2 source <http://tedlab.mit.edu/~dr/Tgrep2/>`_
 
 Usage
 =====

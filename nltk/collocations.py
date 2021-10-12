@@ -10,7 +10,7 @@ Tools to identify collocations --- words that often appear consecutively
 --- within corpora. They may also be used to find other associations between
 word occurrences.
 See Manning and Schutze ch. 5 at https://nlp.stanford.edu/fsnlp/promo/colloc.pdf
-and the Text::NSP Perl package at https://ngram.sourceforge.net
+and the Text::NSP Perl package at http://ngram.sourceforge.net
 
 Finding collocations requires first calculating the frequencies of words and
 their appearance in the context of other words. Often the collection of words

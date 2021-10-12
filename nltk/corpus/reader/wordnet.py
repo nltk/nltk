@@ -2182,7 +2182,7 @@ class WordNetICCorpusReader(CorpusReader):
 # useful for verb similarity as there exist multiple verb taxonomies.
 
 # More information about the metrics is available at
-# https://marimba.d.umn.edu/similarity/measures.html
+# http://marimba.d.umn.edu/similarity/measures.html
 
 
 def path_similarity(synset1, synset2, verbose=False, simulate_root=True):

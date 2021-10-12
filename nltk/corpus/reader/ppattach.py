@@ -32,7 +32,7 @@ bitstrings: word classes derived from Mutual Information Clustering for the Wall
 
 Ratnaparkhi, Adwait (1994). A Maximum Entropy Model for Prepositional
 Phrase Attachment.  Proceedings of the ARPA Human Language Technology
-Conference.  [https://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
+Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.

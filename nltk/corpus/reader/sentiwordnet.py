@@ -13,7 +13,7 @@ SentiWordNet assigns to each synset of WordNet three
 sentiment scores: positivity, negativity, and objectivity.
 
 For details about SentiWordNet see:
-https://sentiwordnet.isti.cnr.it/
+http://sentiwordnet.isti.cnr.it/
 
     >>> from nltk.corpus import sentiwordnet as swn
     >>> print(swn.senti_synset('breakdown.n.03'))

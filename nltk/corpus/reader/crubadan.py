@@ -15,7 +15,7 @@ this reader was created with the goal of using it in the
 context of language identification.
 
 For details about An Crubadan, this data, and its potential uses, see:
-https://borel.slu.edu/crubadan/index.html
+http://borel.slu.edu/crubadan/index.html
 """
 
 import re

@@ -127,7 +127,7 @@ class MaltParser(ParserI):
         :param model_filename: The name of the pre-trained model with .mco file
         extension. If provided, training will not be required.
         (see http://www.maltparser.org/mco/mco.html and
-        see https://www.patful.com/chalk/node/185)
+        see http://www.patful.com/chalk/node/185)
         :type model_filename: str
         :param tagger: The tagger used to POS tag the raw string before
         formatting to CONLL format. It should behave like `nltk.pos_tag`

@@ -1,5 +1,5 @@
 # Natural Language Toolkit: Interface to Boxer
-# <https://svn.ask.it.usyd.edu.au/trac/candc/wiki/boxer>
+# <http://svn.ask.it.usyd.edu.au/trac/candc/wiki/boxer>
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
@@ -238,7 +238,7 @@ class Boxer:
             name,
             path_to_bin=bin_dir,
             env_vars=["CANDC"],
-            url="https://svn.ask.it.usyd.edu.au/trac/candc/",
+            url="http://svn.ask.it.usyd.edu.au/trac/candc/",
             binary_names=[name, name + ".exe"],
             verbose=verbose,
         )

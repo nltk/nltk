@@ -82,7 +82,7 @@ giving us pretty graphs :)
 .. _pytest: https://docs.pytest.org/
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io/
 .. _`PEP-8`: https://www.python.org/dev/peps/pep-0008/
-.. _`pylint`: https://www.logilab.org/project/pylint
+.. _`pylint`: https://pylint.org/
 
 
 The builds

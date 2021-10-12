@@ -146,7 +146,7 @@ class MWAPPDBCorpusReader(WordListCorpusReader):
     This class is used to read the list of word pairs from the subset of lexical
     pairs of The Paraphrase Database (PPDB) XXXL used in the Monolingual Word
     Alignment (MWA) algorithm described in Sultan et al. (2014a, 2014b, 2015):
-     - https://acl2014.org/acl2014/Q14/pdf/Q14-1017
+     - http://acl2014.org/acl2014/Q14/pdf/Q14-1017
      - https://www.aclweb.org/anthology/S14-2039
      - https://www.aclweb.org/anthology/S15-2027
 
