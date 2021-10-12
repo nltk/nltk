@@ -1,5 +1,5 @@
 # Chomsky random text generator, version 1.1, Raymond Hettinger, 2005/09/13
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440546
+# https://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440546
 
 """
 CHOMSKY is an aid to writing linguistic papers in the style

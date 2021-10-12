@@ -1,6 +1,6 @@
 # This module is from mx/DateTime/LazyModule.py and is
 # distributed under the terms of the eGenix.com Public License Agreement
-# http://www.egenix.com/products/eGenix.com-Public-License-1.1.0.pdf
+# https://www.egenix.com/products/eGenix.com-Public-License-1.1.0.pdf
 
 """ Helper to enable simple lazy module import.
 

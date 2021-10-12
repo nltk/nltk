@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

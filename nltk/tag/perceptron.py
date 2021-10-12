@@ -2,7 +2,7 @@
 # Author: Matthew Honnibal <honnibal+gh@gmail.com>,
 #         Long Duong <longdt219@gmail.com> (NLTK port)
 # URL: <https://github.com/sloria/textblob-aptagger>
-#      <http://nltk.org/>
+#      <https://www.nltk.org/>
 # Copyright 2013 Matthew Honnibal
 # NLTK modifications Copyright 2015 The NLTK Project
 #

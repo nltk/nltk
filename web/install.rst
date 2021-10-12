@@ -19,7 +19,7 @@ Mac/Unix
 #. Install Numpy (optional): run ``pip install --user -U numpy``
 #. Test installation: run ``python`` then type ``import nltk``
 
-For older versions of Python it might be necessary to install setuptools (see http://pypi.python.org/pypi/setuptools) and to install pip (``sudo easy_install pip``).
+For older versions of Python it might be necessary to install setuptools (see https://pypi.python.org/pypi/setuptools) and to install pip (``sudo easy_install pip``).
 
 Windows
 -------
@@ -29,9 +29,9 @@ These instructions assume that you do not already have Python installed on your 
 32-bit binary installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Install Python 3.8: http://www.python.org/downloads/ (avoid the 64-bit versions)
+#. Install Python 3.8: https://www.python.org/downloads/ (avoid the 64-bit versions)
 #. Install Numpy (optional): https://www.scipy.org/scipylib/download.html
-#. Install NLTK: http://pypi.python.org/pypi/nltk
+#. Install NLTK: https://pypi.python.org/pypi/nltk
 #. Test installation: ``Start>Python38``, then type ``import nltk``
 
 Installing Third-Party Software
@@ -47,4 +47,4 @@ After installing the NLTK package, please do install the necessary datasets/mode
 
 If you're unsure of which datasets/models you'll need, you can install the "popular" subset of NLTK data, on the command line type ``python -m nltk.downloader popular``, or in the Python interpreter ``import nltk; nltk.download('popular')``
 
-For details, see http://www.nltk.org/data.html
+For details, see https://www.nltk.org/data.html

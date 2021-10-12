@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -20,7 +20,7 @@ from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader
 from nltk.util import LazyConcatenation, LazyMap, flatten
 
 # to resolve the namespace issue
-NS = "http://www.talkbank.org/ns/talkbank"
+NS = "https://www.talkbank.org/ns/talkbank"
 
 
 class CHILDESCorpusReader(XMLCorpusReader):

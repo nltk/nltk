@@ -239,7 +239,7 @@ Version 3.2.2 2016-12-31
 * rewrite Porter Stemmer
 * rewrite FrameNet corpus reader
   (adds frame parameter to fes(), lus(), exemplars()
-  see http://nltk.org/howto/framenet.html)
+  see https://www.nltk.org/howto/framenet.html)
 * updated FrameNet Corpus to version 1.7
 * fixes to stanford_segmenter.py, SentiText, CoNLL Corpus Reader
 * fixes to BLEU, naivebayes, Krippendorff's alpha, Punkt
@@ -509,9 +509,9 @@ Morten Neergaard, Nathan Schneider, Rico Sennrich.
 
 Version 2.0.1 2012-05-15
 
-* moved NLTK to GitHub: http://github.com/nltk
+* moved NLTK to GitHub: https://github.com/nltk
 * set up integration testing: https://jenkins.shiningpanda.com/nltk/ (Morten Neergaard)
-* converted documentation to Sphinx format: http://nltk.github.com/api/nltk.html
+* converted documentation to Sphinx format: https://www.nltk.org/api/nltk.html
 * dozens of minor enhancements and bugfixes: https://github.com/nltk/nltk/commits/
 * dozens of fixes for conformance with PEP-8
 * dozens of fixes to ensure operation with Python 2.5
@@ -642,7 +642,7 @@ NLTK-Contrib:
 
 Book:
 * updates for second printing, correcting errata
-  http://nltk.googlecode.com/svn/trunk/nltk/doc/book/errata.txt
+  https://nltk.googlecode.com/svn/trunk/nltk/doc/book/errata.txt
 
 Data:
 * added Europarl sample, with 10 docs for each of 11 langs (Nitin Madnani)
@@ -855,7 +855,7 @@ Data:
 * Added movie script "Monty Python and the Holy Grail" to webtext corpus
 * Replaced words corpus data with a much larger list of English words
 * New URL for list of available NLTK corpora
-  http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
+  https://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
 
 Book:
 * complete rewrite of first three chapters to make the book accessible

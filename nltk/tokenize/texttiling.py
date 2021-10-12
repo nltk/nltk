@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: George Boutsioukis
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import math
@@ -402,7 +402,7 @@ class TokenSequence:
         del self.__dict__["self"]
 
 
-# Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
+# Pasted from the SciPy cookbook: https://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x, window_len=11, window="flat"):
     """smooth the data using a window with requested size.
 

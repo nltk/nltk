@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import bisect
@@ -586,7 +586,7 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
 # Guess Character Encoding
 ##########################################################################
 
-# adapted from io.py in the docutils extension module (http://docutils.sourceforge.net)
+# adapted from io.py in the docutils extension module (https://docutils.sourceforge.io/)
 # http://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
 
 
@@ -1126,7 +1126,7 @@ def set_proxy(proxy, user=None, password=""):
 
 
 ######################################################################
-# ElementTree pretty printing from http://www.effbot.org/zone/element-lib.htm
+# ElementTree pretty printing from https://www.effbot.org/zone/element-lib.htm
 ######################################################################
 
 

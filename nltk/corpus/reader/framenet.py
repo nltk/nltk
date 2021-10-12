@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -772,7 +772,7 @@ class AttrDict(dict):
 
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
-       http://stackoverflow.com/a/14620633/8879
+       https://stackoverflow.com/a/14620633/8879
 
     >>> foo = {'a':1, 'b':2, 'c':3}
     >>> bar = AttrDict(foo)

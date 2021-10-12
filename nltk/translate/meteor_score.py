@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Uday Krishna <udaykrishna5@gmail.com>
 # Contributor: Tom Aarsen
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -294,7 +294,7 @@ def single_meteor_score(
     "Meteor: An Automatic Metric for MT Evaluation with HighLevels of
     Correlation with Human Judgments" by Alon Lavie and Abhaya Agarwal,
     in Proceedings of ACL.
-    http://www.cs.cmu.edu/~alavie/METEOR/pdf/Lavie-Agarwal-2007-METEOR.pdf
+    https://www.cs.cmu.edu/~alavie/METEOR/pdf/Lavie-Agarwal-2007-METEOR.pdf
 
 
     >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which', 'ensures', 'that', 'the', 'military', 'always', 'obeys', 'the', 'commands', 'of', 'the', 'party']
@@ -359,7 +359,7 @@ def meteor_score(
     described in "Meteor: An Automatic Metric for MT Evaluation with
     HighLevels of Correlation with Human Judgments" by Alon Lavie and
     Abhaya Agarwal, in Proceedings of ACL.
-    http://www.cs.cmu.edu/~alavie/METEOR/pdf/Lavie-Agarwal-2007-METEOR.pdf
+    https://www.cs.cmu.edu/~alavie/METEOR/pdf/Lavie-Agarwal-2007-METEOR.pdf
 
 
     In case of multiple references the best score is chosen. This method

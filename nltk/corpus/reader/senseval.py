@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -11,10 +11,10 @@ Read from the Senseval 2 Corpus.
 
 SENSEVAL [http://www.senseval.org/]
 Evaluation exercises for Word Sense Disambiguation.
-Organized by ACL-SIGLEX [http://www.siglex.org/]
+Organized by ACL-SIGLEX [https://www.siglex.org/]
 
 Prepared by Ted Pedersen <tpederse@umn.edu>, University of Minnesota,
-http://www.d.umn.edu/~tpederse/data.html
+https://www.d.umn.edu/~tpederse/data.html
 Distributed with permission.
 
 The NLTK version of the Senseval 2 files uses well-formed XML.

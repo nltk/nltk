@@ -1,9 +1,9 @@
 Installing NLTK Data
 ====================
 
-NLTK comes with many corpora, toy grammars, trained models, etc.   A complete list is posted at: http://nltk.org/nltk_data/
+NLTK comes with many corpora, toy grammars, trained models, etc.   A complete list is posted at: https://www.nltk.org/nltk_data/
 
-To install the data, first install NLTK (see http://nltk.org/install.html), then use NLTK's data downloader as described below.
+To install the data, first install NLTK (see https://www.nltk.org/install.html), then use NLTK's data downloader as described below.
 
 Apart from individual data packages, you can download the entire collection (using "all"), or just the data required for the examples and exercises in the book (using "book"), or just the corpora and no grammars or trained models (using "all-corpora").
 
@@ -54,7 +54,7 @@ Create a folder ``nltk_data``, e.g. ``C:\nltk_data``, or ``/usr/local/share/nltk
 and subfolders ``chunkers``, ``grammars``, ``misc``, ``sentiment``, ``taggers``, ``corpora``,
 ``help``, ``models``, ``stemmers``, ``tokenizers``.
 
-Download individual packages from ``http://nltk.org/nltk_data/`` (see the "download" links).
+Download individual packages from ``https://www.nltk.org/nltk_data/`` (see the "download" links).
 Unzip them to the appropriate subfolder. For example, the Brown Corpus, found at:
 ``https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/brown.zip``
 is to be unzipped to ``nltk_data/corpora/brown``.

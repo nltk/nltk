@@ -5,7 +5,7 @@ from nltk.tag import hmm
 
 def _wikipedia_example_hmm():
     # Example from wikipedia
-    # (http://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm)
+    # (https://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm)
 
     states = ["rain", "no rain"]
     symbols = ["umbrella", "no umbrella"]

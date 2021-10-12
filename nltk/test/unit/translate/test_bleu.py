@@ -20,7 +20,7 @@ class TestBLEU(unittest.TestCase):
     def test_modified_precision(self):
         """
         Examples from the original BLEU paper
-        http://www.aclweb.org/anthology/P02-1040.pdf
+        https://www.aclweb.org/anthology/P02-1040.pdf
         """
         # Example 1: the "the*" example.
         # Reference sentences.

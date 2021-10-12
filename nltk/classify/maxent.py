@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Dmitry Chichkov <dchichkov@gmail.com> (TypedMaxentFeatureEncoding)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -1459,7 +1459,7 @@ def train_maxent_classifier_with_megam(
     if gaussian_prior_sigma:
         # Lambda is just the precision of the Gaussian prior, i.e. it's the
         # inverse variance, so the parameter conversion is 1.0/sigma**2.
-        # See http://www.umiacs.umd.edu/~hal/docs/daume04cg-bfgs.pdf.
+        # See https://users.umiacs.umd.edu/~hal/docs/daume04cg-bfgs.pdf
         inv_variance = 1.0 / gaussian_prior_sigma ** 2
     else:
         inv_variance = 0

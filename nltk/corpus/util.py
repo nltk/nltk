@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 ######################################################################
@@ -112,7 +112,7 @@ class LazyCorpusLoader:
     def __getattr__(self, attr):
 
         # Fix for inspect.isclass under Python 2.6
-        # (see http://bugs.python.org/issue1225107).
+        # (see https://bugs.python.org/issue1225107).
         # Without this fix tests may take extra 1.5GB RAM
         # because all corpora gets loaded during test collection.
         if attr == "__bases__":
