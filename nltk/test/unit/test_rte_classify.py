@@ -1,5 +1,6 @@
 import pytest
 
+from nltk import config_megam
 from nltk.classify.rte_classify import RTEFeatureExtractor, rte_classifier, rte_features
 from nltk.corpus import rte as rte_corpus
 
@@ -85,8 +86,9 @@ class TestRTEClassifier:
         clf = rte_classifier("IIS", sample_N=100)
         clf = rte_classifier("GIS", sample_N=100)
 
-    @pytest.mark.skip("Skipping tests with dependencies on MEGAM")
     def test_rte_classification_with_megam(self):
-        nltk.config_megam("/usr/local/bin/megam")
+        try:
+            config_megam()
+        except (LookupError, AttributeError) as e:
+            pytest.skip("Skipping tests with dependencies on MEGAM")
         clf = rte_classifier("megam", sample_N=100)
-        clf = rte_classifier("BFGS", sample_N=100)

@@ -1,3 +1,19 @@
+Version 3.6.5 2021-10-11
+
+* modernised nltk.org website
+* addressed LGTM.com issues
+* support ZWJ sequences emoji and skin tone modifer emoji in TweetTokenizer
+* METEOR evaluation now requires pre-tokenized input
+* Code linting and type hinting
+* implement get_refs function for DrtLambdaExpression
+* Enable automated CoreNLP, Senna, Prover9/Mace4, Megam, MaltParser CI tests
+* specify minimum regex version that supports regex.Pattern
+* avoid re.Pattern and regex.Pattern which fail for Python 3.6, 3.7
+
+Thanks to the following contributors to 3.6.5
+Tom Aarsen, Saibo Geng, Mohaned Mashaly, Dimitri Papadopoulos, Danny Sepler,
+Ahmet Yildirim, RnDevelover, yutanakamura
+
 Version 3.6.4 2021-10-01
 
 * deprecate `nltk.usage(obj)` in favor of `help(obj)`
