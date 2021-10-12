@@ -99,17 +99,19 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     last_left_t = _last_left_t_init(sigma)
 
     # iterate over the array
-    for i in range(len1):
+    # i and j start from 1 and not 0 to stay close to the wikipedia pseudo-code
+    # see https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
+    for i in range(1, len1 + 1):
         last_right_buf = 0
-        for j in range(len2):
-            last_left = last_left_t[s2[j]]
+        for j in range(1, len2 + 1):
+            last_left = last_left_t[s2[j - 1]]
             last_right = last_right_buf
-            if s1[i] == s2[j]:
-                last_right_buf = j + 1
+            if s1[i - 1] == s2[j - 1]:
+                last_right_buf = j
             _edit_dist_step(
                 lev,
-                i + 1,
-                j + 1,
+                i,
+                j,
                 s1,
                 s2,
                 last_left,
@@ -117,7 +119,7 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
                 substitution_cost=substitution_cost,
                 transpositions=transpositions,
             )
-        last_left_t[s1[i]] = i + 1
+        last_left_t[s1[i - 1]] = i
     return lev[len1][len2]
 
 
