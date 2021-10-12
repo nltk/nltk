@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 from re import finditer
@@ -95,7 +95,7 @@ def spans_to_relative(spans):
 class CJKChars:
     """
     An object that enumerates the code points of the CJK characters as listed on
-    http://en.wikipedia.org/wiki/Basic_Multilingual_Plane#Basic_Multilingual_Plane
+    https://en.wikipedia.org/wiki/Basic_Multilingual_Plane#Basic_Multilingual_Plane
 
     This is a Python port of the CJK code point enumerations of Moses tokenizer:
     https://github.com/moses-smt/mosesdecoder/blob/master/scripts/tokenizer/detokenizer.perl#L309

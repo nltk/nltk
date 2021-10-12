@@ -8,7 +8,7 @@ Chat-80
 Chat-80 was a natural language system which allowed the user to
 interrogate a Prolog knowledge base in the domain of world
 geography. It was developed in the early '80s by Warren and Pereira; see
-`<http://acl.ldc.upenn.edu/J/J82/J82-3002.pdf>`_ for a description and
+`<https://aclanthology.org/J82-3002.pdf>`_ for a description and
 `<http://www.cis.upenn.edu/~pereira/oldies.html>`_ for the source
 files.
 

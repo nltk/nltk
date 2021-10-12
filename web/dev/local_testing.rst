@@ -20,7 +20,7 @@ NLTK testing
 It may take a long time at first run, but the subsequent runs will
 be much faster.
 
-Please consult http://tox.testrun.org/ for more info about the tox tool.
+Please consult https://tox.wiki for more info about the tox tool.
 
 Examples
 --------

@@ -4,7 +4,7 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import fnmatch
@@ -238,11 +238,11 @@ def read_str(s, start_position):
             break
 
     # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueEerror.
+    # might raise ValueError.
     try:
         return eval(s[start_position : match.end()]), match.end()
     except ValueError as e:
-        raise ReadError("invalid string (%s)" % e) from e
+        raise ReadError("valid escape sequence", start_position) from e
 
 
 _READ_INT_RE = re.compile(r"-?\d+")

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -27,7 +27,7 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     except ImportError as e:
         raise ValueError(
             "The plot function requires matplotlib to be installed."
-            "See http://matplotlib.org/"
+            "See https://matplotlib.org/"
         ) from e
 
     text = list(text)

@@ -1,5 +1,5 @@
 # Finding (and Replacing) Nemo, Version 1.1, Aristide Grange 2006/06/06
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496783
+# https://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496783
 
 """
 Finding (and Replacing) Nemo

@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import bisect
@@ -586,7 +586,7 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
 # Guess Character Encoding
 ##########################################################################
 
-# adapted from io.py in the docutils extension module (http://docutils.sourceforge.net)
+# adapted from io.py in the docutils extension module (https://docutils.sourceforge.io/)
 # http://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
 
 
@@ -1013,7 +1013,7 @@ def skipgrams(sequence, n, k, **kwargs):
 ######################################################################
 
 # inherited from pywordnet, by Oliver Steele
-def binary_search_file(file, key, cache={}, cacheDepth=-1):
+def binary_search_file(file, key, cache=None, cacheDepth=-1):
     """
     Return the line from the file with first word key.
     Searches through a sorted file using the binary search algorithm.
@@ -1035,6 +1035,9 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
         file.seek(0, 2)
         end = file.tell() - 1
         file.seek(0)
+
+    if cache is None:
+        cache = {}
 
     while start < end:
         lastState = start, end
@@ -1123,7 +1126,7 @@ def set_proxy(proxy, user=None, password=""):
 
 
 ######################################################################
-# ElementTree pretty printing from http://www.effbot.org/zone/element-lib.htm
+# ElementTree pretty printing from https://www.effbot.org/zone/element-lib.htm
 ######################################################################
 
 

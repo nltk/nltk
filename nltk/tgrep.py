@@ -4,7 +4,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Will Roberts <wildwilhelm@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -18,7 +18,7 @@ Note that many tgrep operators require the tree passed to be a
 
 External links:
 
-- `Tgrep tutorial <http://www.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html>`_
+- `Tgrep tutorial <https://www.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html>`_
 - `Tgrep2 manual <http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf>`_
 - `Tgrep2 source <http://tedlab.mit.edu/~dr/Tgrep2/>`_
 

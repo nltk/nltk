@@ -103,7 +103,9 @@ jobs:
           key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
 
       - name: Install dependencies on cache miss
-        run: pip install --upgrade --requirement requirements-ci.txt
+        run: |
+          pip install --no-cache-dir --upgrade pip
+          pip install --no-cache-dir --upgrade --requirement requirements-ci.txt
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
       - name: Use cached nltk data

@@ -34,7 +34,7 @@ The ``nltk:`` protocol is used by default if no protocol is specified:
     <nltk.tokenize.punkt.PunktSentenceTokenizer object at ...>
 
 But it is also possible to load resources from ``http:``, ``ftp:``,
-and ``file:`` URLs, e.g. ``cfg = nltk.data.load('http://example.com/path/to/toy.cfg')``
+and ``file:`` URLs, e.g. ``cfg = nltk.data.load('https://example.com/path/to/toy.cfg')``
 
     >>> # Load a grammar using an absolute path.
     >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')

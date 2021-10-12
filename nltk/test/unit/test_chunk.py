@@ -9,7 +9,7 @@ class TestChunkRule(unittest.TestCase):
 
         Ensures that curly bracket quantifiers can be used inside a chunk rule.
         This type of quantifier has been used for the supplementary example
-        in http://www.nltk.org/book/ch07.html#exploring-text-corpora.
+        in https://www.nltk.org/book/ch07.html#exploring-text-corpora.
         """
         sent = [
             ("The", "AT"),

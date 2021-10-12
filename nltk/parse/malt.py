@@ -4,7 +4,7 @@
 # Contributor: Liling Tan, Mustufain, osamamukhtar11
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import inspect
@@ -135,7 +135,7 @@ class MaltParser(ParserI):
         :param additional_java_args: This is the additional Java arguments that
         one can use when calling Maltparser, usually this is the heapsize
         limits, e.g. `additional_java_args=['-Xmx1024m']`
-        (see http://goo.gl/mpDBvQ)
+        (see https://goo.gl/mpDBvQ)
         :type additional_java_args: list
         """
 

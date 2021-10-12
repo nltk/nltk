@@ -6,7 +6,7 @@
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
 #         Tom Aarsen <> (modifications)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -60,7 +60,7 @@ import regex  # https://github.com/nltk/nltk/issues/2409
 # Most importantly, the final element should always be last, since it
 # does a last ditch whitespace-based tokenization of whatever is left.
 
-# ToDo: Update with http://en.wikipedia.org/wiki/List_of_emoticons ?
+# ToDo: Update with https://en.wikipedia.org/wiki/List_of_emoticons ?
 
 # This particular element is used in a couple ways, so we define it
 # with a name:
@@ -157,6 +157,12 @@ REGEXPS = (
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
     r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]""",
+    # Zero-Width-Joiner and Skin tone modifier emojis
+    """.(?:
+        [\U0001F3FB-\U0001F3FF]?(?:\u200d.[\U0001F3FB-\U0001F3FF]?)+
+        |
+        [\U0001F3FB-\U0001F3FF]
+    )""",
     # Remaining word types:
     r"""
     (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
@@ -193,6 +199,7 @@ HANDLES_RE = regex.compile(
     r"(?<![A-Za-z0-9_!@#\$%&*])@"
     r"(([A-Za-z0-9_]){15}(?!@)|([A-Za-z0-9_]){1,14}(?![A-Za-z0-9_]*@))"
 )
+
 
 ######################################################################
 # Functions for converting html entities

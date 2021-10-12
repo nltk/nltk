@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -15,7 +15,7 @@ supported:
   - ``file:path``: Specifies the file whose path is *path*.
     Both relative and absolute paths may be used.
 
-  - ``http://host/path``: Specifies the file stored on the web
+  - ``https://host/path``: Specifies the file stored on the web
     server *host* at path *path*.
 
   - ``nltk:path``: Specifies the file stored in the NLTK data
@@ -171,8 +171,8 @@ def normalize_resource_url(resource_url):
     'nltk:home/nltk'
     >>> windows or normalize_resource_url('nltk:/home/nltk') == 'file:///home/nltk'
     True
-    >>> normalize_resource_url('http://example.com/dir/file')
-    'http://example.com/dir/file'
+    >>> normalize_resource_url('https://example.com/dir/file')
+    'https://example.com/dir/file'
     >>> normalize_resource_url('dir/file')
     'nltk:dir/file'
     """

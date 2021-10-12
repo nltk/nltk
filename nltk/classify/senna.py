@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -41,8 +41,6 @@ from platform import architecture, system
 from subprocess import PIPE, Popen
 
 from nltk.tag.api import TaggerI
-
-_senna_url = "http://ml.nec-labs.com/senna/"
 
 
 class Senna(TaggerI):

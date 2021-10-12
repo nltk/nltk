@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -60,7 +60,7 @@ def config_weka(classpath=None):
             "Unable to find weka.jar!  Use config_weka() "
             "or set the WEKAHOME environment variable. "
             "For more information about Weka, please see "
-            "http://www.cs.waikato.ac.nz/ml/weka/"
+            "https://www.cs.waikato.ac.nz/ml/weka/"
         )
 
 

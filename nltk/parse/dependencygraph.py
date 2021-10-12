@@ -4,14 +4,14 @@
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
 """
 Tools for reading and writing dependency trees.
 The input is assumed to be in Malt-TAB format
-(http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
+(https://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
 import subprocess

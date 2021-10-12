@@ -28,25 +28,24 @@ Building an NLTK distribution
    - Check that installation instructions are up-to-date
      (including the range of Python versions that are supported)
      edit web/install.rst setup.py
+   - Ensure that nltk_theme is installed and updated
+     pip install -U nltk_theme
    - Rebuild the API docs
-     python setup.py build_sphinx -b man --build-dir build/sphinx
+     sphinx-build -E ./web ./build
    - Publish them
      cd nltk.github.com; git pull (begin with current docs repo)
-     <copy them over from build/sphinx to ../nltk.github.com>
+     cp -r ../nltk/build/* .
      git add .
      git commit -m "updates for version 3.X.Y"
      git push origin master
 
 4. Create a new version
-   - (Optionally do this in a release branch, branching from develop branch
-     git checkout -b release-3.X.Y develop)
    - Tag this version:
      git tag -a 3.X.Y -m "version 3.X.Y"
      git push --tags
      verify that it shows up here: https://github.com/nltk/nltk/releases
-   - (Optionally merge with master branch
-     git checkout master
-     git merge --no-ff release-3.X.Y)
+     This is important for the website, as the footer will link to the
+     tag with the version from web/conf.py.
 
 5. Release
    - Make the distributions

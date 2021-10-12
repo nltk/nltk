@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors:
 # Contributors:
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """NIST score implementation."""
@@ -20,7 +20,7 @@ def sentence_nist(references, hypothesis, n=5):
     Calculate NIST score from
     George Doddington. 2002. "Automatic evaluation of machine translation quality
     using n-gram co-occurrence statistics." Proceedings of HLT.
-    Morgan Kaufmann Publishers Inc. http://dl.acm.org/citation.cfm?id=1289189.1289273
+    Morgan Kaufmann Publishers Inc. https://dl.acm.org/citation.cfm?id=1289189.1289273
 
     DARPA commissioned NIST to develop an MT evaluation facility based on the BLEU
     score. The official script used by NIST to compute BLEU and NIST score is

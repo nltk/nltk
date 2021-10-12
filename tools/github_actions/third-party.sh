@@ -15,7 +15,7 @@ stanford_corenlp_package_zip_name="stanford-corenlp-full-2017-06-09.zip"
 stanford_corenlp_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_corenlp_package_name} ]]; then
 	curl -L "https://nlp.stanford.edu/software/$stanford_corenlp_package_zip_name" -o ${stanford_corenlp_package_zip_name}
-	# wget -nv "http://nlp.stanford.edu/software/$stanford_corenlp_package_zip_name"
+	# wget -nv "https://nlp.stanford.edu/software/$stanford_corenlp_package_zip_name"
 	unzip -q ${stanford_corenlp_package_zip_name}
 	rm ${stanford_corenlp_package_zip_name}
 	mv ${stanford_corenlp_package_name} 'stanford-corenlp'

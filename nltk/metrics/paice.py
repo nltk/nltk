@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Lauri Hallila <laurihallila@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -60,7 +60,7 @@ def _truncate(words, cutlength):
     return stems
 
 
-# Reference: http://en.wikipedia.org/wiki/Line-line_intersection
+# Reference: https://en.wikipedia.org/wiki/Line-line_intersection
 def _count_intersection(l1, l2):
     """Count intersection between two line segments defined by coordinate pairs.
 

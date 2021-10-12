@@ -10,9 +10,9 @@ to their FLOSS program. The setup is not specific to their solutions, it could
 be moved to any `Jenkins`_ instance. The URL of our current instance is
 https://jenkins.shiningpanda.com/nltk/
 
-.. _`continuous integration`: http://en.wikipedia.org/wiki/Continuous_integration
+.. _`continuous integration`: https://en.wikipedia.org/wiki/Continuous_integration
 .. _`Shining Panda`: http://shiningpanda.com
-.. _`Jenkins`: http://jenkins-ci.org
+.. _`Jenkins`: https://jenkins-ci.org
 
 
 Base tasks
@@ -80,9 +80,9 @@ The results of these programs are parsed and published by the jenkins instance,
 giving us pretty graphs :)
 
 .. _pytest: https://docs.pytest.org/
-.. _`pytest-cov`: http://pytest-cov.readthedocs.io/
-.. _`PEP-8`: http://www.python.org/dev/peps/pep-0008/
-.. _`pylint`: http://www.logilab.org/project/pylint
+.. _`pytest-cov`: https://pytest-cov.readthedocs.io/
+.. _`PEP-8`: https://www.python.org/dev/peps/pep-0008/
+.. _`pylint`: https://pylint.org/
 
 
 The builds
@@ -93,7 +93,7 @@ The packages are built using ``make dist``. The outputted builds are all placed
 specifically for mac are not available. File names are made based on the
 ``__version__`` string, so they change every build.
 
-.. _`in our jenkins workspace`: http://example.com/
+.. _`in our jenkins workspace`: https://example.com/
 
 
 Web page builder
@@ -105,5 +105,5 @@ pushes it to the `nltk.github.com repo on github`_. To push it, it needs access
 to the repo – because this cannot be done using a deploy key, it has the ssh
 key of the ``nltk-webdeploy`` user.
 
-.. _Sphinx: http://sphinx.pocoo.org
+.. _Sphinx: https://www.sphinx-doc.org
 .. _`nltk.github.com repo on github`: https://github.com/nltk/nltk.github.com

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -21,7 +21,7 @@ class MultiListbox(Frame):
     """
     A multi-column listbox, where the current selection applies to an
     entire row.  Based on the MultiListbox Tkinter widget
-    recipe from the Python Cookbook (http://code.activestate.com/recipes/52266/)
+    recipe from the Python Cookbook (https://code.activestate.com/recipes/52266/)
 
     For the most part, ``MultiListbox`` methods delegate to its
     contained listboxes.  For any methods that do not have docstrings,

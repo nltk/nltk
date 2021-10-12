@@ -4,7 +4,7 @@
 # Authors: Rebecca Dridan and Stephan Oepen
 # Contributors: Liling Tan
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -14,7 +14,7 @@ Annotated by: Minqing Hu and Bing Liu, 2004.
     University of Illinois at Chicago
 
 Contact: Bing Liu, liub@cs.uic.edu
-        http://www.cs.uic.edu/~liub
+        https://www.cs.uic.edu/~liub
 
 Distributed with permission.
 

@@ -4,7 +4,7 @@
 # Author: Jon Dehdari
 # Contributors: Liling Tan, Selcuk Ayguney, ikegami, Martijn Pieters
 #
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """
@@ -85,7 +85,7 @@ class ToktokTokenizer(TokenizerI):
     MULTI_DOTS = re.compile(r"(\.{2,})"), r" \1 "
 
     # This is the \p{Open_Punctuation} from Perl's perluniprops
-    # see http://perldoc.perl.org/perluniprops.html
+    # see https://perldoc.perl.org/perluniprops.html
     OPEN_PUNCT = str(
         "([{\u0f3a\u0f3c\u169b\u201a\u201e\u2045\u207d"
         "\u208d\u2329\u2768\u276a\u276c\u276e\u2770\u2772"
