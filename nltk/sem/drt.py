@@ -898,7 +898,7 @@ class DrtConcatenation(DrtBooleanExpression):
         )
         if self.consequent:
             drs = DrtBinaryExpression._assemble_pretty(
-                drs, DrtTokens.IMP, self._pretty(self.consequent)
+                drs, DrtTokens.IMP, self.consequent._pretty()
             )
         return drs
 
