@@ -102,7 +102,7 @@ class MaltParser(ParserI):
     Example:
         >>> from nltk.parse import malt
         >>> # With MALT_PARSER and MALT_MODEL environment set.
-        >>> mp = malt.MaltParser('maltparser-1.9.2', 'engmalt.linear-1.7.mco') # doctest: +SKIP
+        >>> mp = malt.MaltParser(model_filename='engmalt.linear-1.7.mco') # doctest: +SKIP
         >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
         (shot I (elephant an) (in (pajamas my)) .)
         >>> # Without MALT_PARSER and MALT_MODEL environment.
@@ -347,8 +347,7 @@ if __name__ == "__main__":
     >>> dg1 = DependencyGraph(_dg1_str)
     >>> dg2 = DependencyGraph(_dg2_str)
     >>> # Initialize a MaltParser object
-    >>> parser_dirname = 'maltparser-1.9.2'
-    >>> mp = MaltParser(parser_dirname=parser_dirname)
+    >>> mp = MaltParser()
     >>>
     >>> # Trains a model.
     >>> mp.train([dg1,dg2], verbose=False)
