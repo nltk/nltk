@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,7 +12,7 @@ Examples to demo the :py:mod:`twitterclient` code.
 These demo functions should all run, with the following caveats:
 
 * You must have obtained API keys from Twitter, and installed them according to
-  the instructions in the `twitter HOWTO <http://www.nltk.org/howto/twitter.html>`_.
+  the instructions in the `twitter HOWTO <https://www.nltk.org/howto/twitter.html>`_.
 
 * If you are on a slow network, some of the calls to the Twitter API may
   timeout.

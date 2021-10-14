@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Nathan Schneider <nathan@cmu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -25,7 +25,7 @@ PRT - particles or other function words
 X - other: foreign words, typos, abbreviations
 . - punctuation
 
-@see: http://arxiv.org/abs/1104.2086 and http://code.google.com/p/universal-pos-tags/
+@see: https://arxiv.org/abs/1104.2086 and https://code.google.com/p/universal-pos-tags/
 
 """
 

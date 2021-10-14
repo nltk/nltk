@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2005-2007 Oregon Graduate Institute
 # Author: Nathan Bodenstab <bodenstab@cslu.ogi.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -90,7 +90,7 @@ The following is a short tutorial on the available transformations.
     these values.  For more information see:
 
     Dan Klein and Chris Manning (2003) "Accurate Unlexicalized
-    Parsing", ACL-03.  http://www.aclweb.org/anthology/P03-1054
+    Parsing", ACL-03.  https://www.aclweb.org/anthology/P03-1054
 
  4. Unary Collapsing
 

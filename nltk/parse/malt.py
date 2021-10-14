@@ -4,7 +4,7 @@
 # Contributor: Liling Tan, Mustufain, osamamukhtar11
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import inspect
@@ -94,7 +94,7 @@ def find_malt_model(model_filename):
 class MaltParser(ParserI):
     """
     A class for dependency parsing with MaltParser. The input is the paths to:
-    - a maltparser directory
+    - (optionally) a maltparser directory
     - (optionally) the path to a pre-trained MaltParser .mco model file
     - (optionally) the tagger to use for POS tagging before parsing
     - (optionally) additional Java arguments
@@ -102,18 +102,18 @@ class MaltParser(ParserI):
     Example:
         >>> from nltk.parse import malt
         >>> # With MALT_PARSER and MALT_MODEL environment set.
-        >>> mp = malt.MaltParser('maltparser-1.7.2', 'engmalt.linear-1.7.mco') # doctest: +SKIP
+        >>> mp = malt.MaltParser(model_filename='engmalt.linear-1.7.mco') # doctest: +SKIP
         >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
         (shot I (elephant an) (in (pajamas my)) .)
         >>> # Without MALT_PARSER and MALT_MODEL environment.
-        >>> mp = malt.MaltParser('/home/user/maltparser-1.7.2/', '/home/user/engmalt.linear-1.7.mco') # doctest: +SKIP
+        >>> mp = malt.MaltParser('/home/user/maltparser-1.9.2/', '/home/user/engmalt.linear-1.7.mco') # doctest: +SKIP
         >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
         (shot I (elephant an) (in (pajamas my)) .)
     """
 
     def __init__(
         self,
-        parser_dirname,
+        parser_dirname="",
         model_filename=None,
         tagger=None,
         additional_java_args=None,
@@ -135,7 +135,7 @@ class MaltParser(ParserI):
         :param additional_java_args: This is the additional Java arguments that
         one can use when calling Maltparser, usually this is the heapsize
         limits, e.g. `additional_java_args=['-Xmx1024m']`
-        (see http://goo.gl/mpDBvQ)
+        (see https://goo.gl/mpDBvQ)
         :type additional_java_args: list
         """
 
@@ -328,7 +328,7 @@ if __name__ == "__main__":
     >>> from nltk import pos_tag
     >>> assert 'MALT_PARSER' in os.environ, str(
     ... "Please set MALT_PARSER in your global environment, e.g.:\n"
-    ... "$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
+    ... "$ export MALT_PARSER='/home/user/maltparser-1.9.2/'")
     >>>
     >>> assert 'MALT_MODEL' in os.environ, str(
     ... "Please set MALT_MODEL in your global environment, e.g.:\n"
@@ -347,8 +347,7 @@ if __name__ == "__main__":
     >>> dg1 = DependencyGraph(_dg1_str)
     >>> dg2 = DependencyGraph(_dg2_str)
     >>> # Initialize a MaltParser object
-    >>> parser_dirname = 'maltparser-1.7.2'
-    >>> mp = MaltParser(parser_dirname=parser_dirname)
+    >>> mp = MaltParser()
     >>>
     >>> # Trains a model.
     >>> mp.train([dg1,dg2], verbose=False)
@@ -372,7 +371,7 @@ if __name__ == "__main__":
     (walks John (dog a) .)
     >>>
     >>> # Initialize a MaltParser object with an English pre-trained model.
-    >>> parser_dirname = 'maltparser-1.7.2'
+    >>> parser_dirname = 'maltparser-1.9.2'
     >>> model_name = 'engmalt.linear-1.7.mco'
     >>> mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name, tagger=pos_tag)
     >>> sent1 = 'I shot an elephant in my pajamas .'.split()

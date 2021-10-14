@@ -2,14 +2,14 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
-# URL: <http://nltk.org>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 """
 Tools to identify collocations --- words that often appear consecutively
 --- within corpora. They may also be used to find other associations between
 word occurrences.
-See Manning and Schutze ch. 5 at http://nlp.stanford.edu/fsnlp/promo/colloc.pdf
+See Manning and Schutze ch. 5 at https://nlp.stanford.edu/fsnlp/promo/colloc.pdf
 and the Text::NSP Perl package at http://ngram.sourceforge.net
 
 Finding collocations requires first calculating the frequencies of words and

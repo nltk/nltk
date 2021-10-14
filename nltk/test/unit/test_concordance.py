@@ -17,7 +17,7 @@ def stdout_redirect(where):
 
 
 class TestConcordance(unittest.TestCase):
-    """Text constructed using: http://www.nltk.org/book/ch01.html"""
+    """Text constructed using: https://www.nltk.org/book/ch01.html"""
 
     @classmethod
     def setUpClass(cls):

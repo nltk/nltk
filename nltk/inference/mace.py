@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -172,7 +172,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     def _decorate_model(self, valuation_str, format):
         """
         Print out a Mace4 model using any Mace4 ``interpformat`` format.
-        See http://www.cs.unm.edu/~mccune/mace4/manual/ for details.
+        See https://www.cs.unm.edu/~mccune/mace4/manual/ for details.
 
         :param valuation_str: str with the model builder's output
         :param format: str indicating the format for displaying

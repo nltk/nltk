@@ -12,7 +12,7 @@ with some optional deviations that can be turned on or off with the
 Martin Porter, the algorithm's inventor, maintains a web page about the
 algorithm at
 
-    http://www.tartarus.org/~martin/PorterStemmer/
+    https://www.tartarus.org/~martin/PorterStemmer/
 
 which includes another Python implementation and other implementations
 in many languages.
@@ -32,7 +32,7 @@ class PorterStemmer(StemmerI):
         Porter, M. "An algorithm for suffix stripping."
         Program 14.3 (1980): 130-137.
 
-    See http://www.tartarus.org/~martin/PorterStemmer/ for the homepage
+    See https://www.tartarus.org/~martin/PorterStemmer/ for the homepage
     of the algorithm.
 
     Martin Porter has endorsed several modifications to the Porter
@@ -50,7 +50,7 @@ class PorterStemmer(StemmerI):
           algorithm. Martin distributes implementations of the Porter
           Stemmer in many languages, hosted at:
 
-            http://www.tartarus.org/~martin/PorterStemmer/
+            https://www.tartarus.org/~martin/PorterStemmer/
 
           and all of these implementations include his extensions. He
           strongly recommends against using the original, published

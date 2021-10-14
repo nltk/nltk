@@ -6,7 +6,7 @@
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 #         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (tree transforms)
 #         Eric Kafe <kafe.eric@gmail.com> (Tree.fromlist())
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -825,7 +825,7 @@ class Tree(list):
             except LookupError as e:
                 pre_error_message = str(
                     "The Ghostscript executable isn't found.\n"
-                    "See http://web.mit.edu/ghostscript/www/Install.htm\n"
+                    "See https://web.mit.edu/ghostscript/www/Install.htm\n"
                     "If you're using a Mac, you can try installing\n"
                     "https://docs.brew.sh/Installation then `brew install ghostscript`"
                 )
@@ -905,7 +905,7 @@ class Tree(list):
           \Tree [.I'' [.N'' [.D The ] [.N' [.N announcement ] ] ]
               [.I' [.V'' [.V' [.V astounded ] [.N'' [.N' [.N us ] ] ] ] ] ] ]
 
-        See http://www.ling.upenn.edu/advice/latex.html for the LaTeX
+        See https://www.ling.upenn.edu/advice/latex.html for the LaTeX
         style file for the qtree package.
 
         :return: A latex qtree representation of this tree.

@@ -3,7 +3,7 @@
 # Author: David McClosky <dmcc@bigasterisk.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 from nltk.parse.api import ParserI
@@ -75,7 +75,7 @@ uses a SWIG interface, it is potentially unsafe to create multiple
 ``BllipParser`` objects in the same process. BLLIP Parser currently
 has issues with non-ASCII text and will raise an error if given any.
 
-See http://pypi.python.org/pypi/bllipparser/ for more information
+See https://pypi.python.org/pypi/bllipparser/ for more information
 on BLLIP Parser's Python interface.
 """
 

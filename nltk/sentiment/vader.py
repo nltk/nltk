@@ -6,7 +6,7 @@
 #         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)
 #         George Berry <geb97@cornell.edu> (modifications)
 #         Malavika Suresh <malavika.suresh0794@gmail.com> (modifications)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 # Modifications to the original VADER code have been made in order to
@@ -109,7 +109,7 @@ class VaderConstants:
     }
 
     # booster/dampener 'intensifiers' or 'degree adverbs'
-    # http://en.wiktionary.org/wiki/Category:English_degree_adverbs
+    # https://en.wiktionary.org/wiki/Category:English_degree_adverbs
 
     BOOSTER_DICT = {
         "absolutely": B_INCR,

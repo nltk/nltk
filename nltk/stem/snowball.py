@@ -10,7 +10,7 @@
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
 #             Assem Chelli <assem.ch@gmail.com>  arabic stemming algorithm
 #             Benzahia Lakhdar <lakhdar.benzahia@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

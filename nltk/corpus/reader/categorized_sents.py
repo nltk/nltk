@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,7 +13,7 @@ Sentence Polarity Dataset.
 - Subjectivity Dataset information -
 
 Authors: Bo Pang and Lillian Lee.
-Url: http://www.cs.cornell.edu/people/pabo/movie-review-data
+Url: https://www.cs.cornell.edu/people/pabo/movie-review-data
 
 Distributed with permission.
 
@@ -26,7 +26,7 @@ Related papers:
 - Sentence Polarity Dataset information -
 
 Authors: Bo Pang and Lillian Lee.
-Url: http://www.cs.cornell.edu/people/pabo/movie-review-data
+Url: https://www.cs.cornell.edu/people/pabo/movie-review-data
 
 Related papers:
 

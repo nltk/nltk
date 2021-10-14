@@ -6,7 +6,7 @@
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
 #         Tom Aarsen <> (modifications)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -60,7 +60,7 @@ import regex  # https://github.com/nltk/nltk/issues/2409
 # Most importantly, the final element should always be last, since it
 # does a last ditch whitespace-based tokenization of whatever is left.
 
-# ToDo: Update with http://en.wikipedia.org/wiki/List_of_emoticons ?
+# ToDo: Update with https://en.wikipedia.org/wiki/List_of_emoticons ?
 
 # This particular element is used in a couple ways, so we define it
 # with a name:

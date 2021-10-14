@@ -38,11 +38,11 @@ class MTEFileReader:
     """
 
     ns = {
-        "tei": "http://www.tei-c.org/ns/1.0",
-        "xml": "http://www.w3.org/XML/1998/namespace",
+        "tei": "https://www.tei-c.org/ns/1.0",
+        "xml": "https://www.w3.org/XML/1998/namespace",
     }
-    tag_ns = "{http://www.tei-c.org/ns/1.0}"
-    xml_ns = "{http://www.w3.org/XML/1998/namespace}"
+    tag_ns = "{https://www.tei-c.org/ns/1.0}"
+    xml_ns = "{https://www.w3.org/XML/1998/namespace}"
     word_path = "TEI/text/body/div/div/p/s/(w|c)"
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"

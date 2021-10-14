@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Contributors: Katsuhito Sudoh, Liling Tan, Kasramvd, J.F.Sebastian
 #               Mark Byers, ekhumoro, P. Ortiz
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
 
@@ -19,7 +19,7 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     Hideki Isozaki, Tsutomu Hirao, Kevin Duh, Katsuhito Sudoh and
     Hajime Tsukada. 2010. "Automatic Evaluation of Translation Quality for
     Distant Language Pairs". In Proceedings of EMNLP.
-    http://www.aclweb.org/anthology/D/D10/D10-1092.pdf
+    https://www.aclweb.org/anthology/D/D10/D10-1092.pdf
 
     The generic RIBES scores used in shared task, e.g. Workshop for
     Asian Translation (WAT) uses the following RIBES calculations:
@@ -33,7 +33,7 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
 
     Users are encouraged to use the official RIBES script instead of this
     implementation when evaluating your machine translation system. Refer
-    to http://www.kecl.ntt.co.jp/icl/lirg/ribes/ for the official script.
+    to https://www.kecl.ntt.co.jp/icl/lirg/ribes/ for the official script.
 
     :param references: a list of reference sentences
     :type references: list(list(str))

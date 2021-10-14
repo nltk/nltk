@@ -4,11 +4,11 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: NLTK Team <nltk.team@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Work around mbcs bug in distutils.
-# http://bugs.python.org/issue10945
+# https://bugs.python.org/issue10945
 import codecs
 
 try:
@@ -54,7 +54,7 @@ console_scripts = """
 nltk=nltk.cli:cli
 """
 
-_project_homepage = "http://nltk.org/"
+_project_homepage = "https://www.nltk.org/"
 
 setup(
     name="nltk",

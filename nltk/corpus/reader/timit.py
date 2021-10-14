@@ -4,7 +4,7 @@
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Jacob Perkins <japerk@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # [xx] this docstring is out-of-date:

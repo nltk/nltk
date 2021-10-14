@@ -80,7 +80,7 @@ the vector 'King - Man + Woman' is close to 'Queen' and 'Germany - Berlin + Pari
     >>> model.most_similar(positive=['Paris','Germany'], negative=['Berlin'], topn = 1)
     [('France', 0.78840...)]
 
-We can visualize the word embeddings using t-SNE (http://lvdmaaten.github.io/tsne/). For this demonstration, we visualize the first 1000 words.
+We can visualize the word embeddings using t-SNE (https://lvdmaaten.github.io/tsne/). For this demonstration, we visualize the first 1000 words.
 
 |    import numpy as np
 |    labels = []
