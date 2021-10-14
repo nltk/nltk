@@ -56,7 +56,7 @@ Display a parse tree:
     >>> t = treebank.parsed_sents('wsj_0001.mrg')[0]
     >>> t.draw()
 
-.. image:: images/tree.gif
+.. image:: _static/images/tree.gif
 
 NB. If you publish work that uses NLTK, please cite the NLTK book as
 follows:

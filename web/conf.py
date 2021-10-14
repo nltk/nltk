@@ -54,6 +54,31 @@ def run_apidoc(app):
     )
 
 
+def build_team_page():
+    import json
+
+    import chevron
+
+    # Load the team JSON data
+    with open(os.path.join(".", "team", "team.json")) as f:
+        full_data = json.load(f)
+    print("Team data loaded!")
+
+    for members_type, members_data in full_data.items():
+        # Load the team format
+        with open(os.path.join(".", "team", "team.mustache")) as f:
+            team_html = chevron.render(f, members_data)
+        print(f"{members_type} members HTML page rendered!")
+
+        # To create the team.html
+        with open(os.path.join(".", "team", f"{members_type}_team.html"), "w") as f:
+            f.write(team_html)
+        print(f"{members_type} team HTML page written!")
+
+
+# Build the Team page before creating the Sphinx build
+build_team_page()
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -154,7 +179,7 @@ html_context = {"github_user": "nltk", "github_repo": "nltk"}
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ["_static"]
+html_static_path = ["_static"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
