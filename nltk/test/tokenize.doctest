@@ -319,9 +319,9 @@ Pickle an MWETokenizer
 
 
 Regression Tests: TextTilingTokenizer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TextTilingTokneizer tokenizes text into coherent subtopic chunks based upon Hearst's TextTiling algorithm.
+TextTilingTokenizer tokenizes text into coherent subtopic chunks based upon Hearst's TextTiling algorithm.
 
     >>> from nltk.tokenize import TextTilingTokenizer
     >>> from nltk.corpus import brown
