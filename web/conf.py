@@ -67,7 +67,7 @@ def generate_howto():
 
     web_folder = os.path.dirname(os.path.abspath(__file__))
 
-    # Load jinja templates
+    # Load jinja template
     with open(os.path.join(web_folder, "_templates", "doctest.rst")) as f:
         doctest_template = Template(f.read())
 
@@ -77,6 +77,9 @@ def generate_howto():
     for path in glob.glob(os.path.join(web_folder, "..", "nltk", "test", "*.doctest")):
         match = pattern.search(path)
         module_name = match.group(1)
+        # Ignore index.doctest, we already have an index, i.e. howto.rst
+        if module_name == "index":
+            continue
         # Write .rst files based on the doctest_template.
         doctest_template.stream(module_name=module_name).dump(
             os.path.join(web_folder, "howto", f"{module_name}.rst")
