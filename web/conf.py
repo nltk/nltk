@@ -66,6 +66,9 @@ def generate_howto():
     modules = []
 
     web_folder = os.path.dirname(os.path.abspath(__file__))
+    howto_folder = os.path.join(web_folder, "howto")
+    if not os.path.exists(howto_folder):
+        os.makedirs(howto_folder)
 
     # Load jinja template
     with open(os.path.join(web_folder, "_templates", "doctest.rst")) as f:
@@ -82,7 +85,7 @@ def generate_howto():
             continue
         # Write .rst files based on the doctest_template.
         doctest_template.stream(module_name=module_name).dump(
-            os.path.join(web_folder, "howto", f"{module_name}.rst")
+            os.path.join(howto_folder, f"{module_name}.rst")
         )
         modules.append(module_name)
 
