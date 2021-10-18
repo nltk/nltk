@@ -172,8 +172,8 @@ NLTK 3.0.0b2 released : August 2014
    Minor bugfixes and clean-ups.
 
 NLTK Book Updates : July 2014
-   The NLTK book is being updated for Python 3 and NLTK 3 `here <https://www.nltk.org/book>`_.
-   The original Python 2 edition is still available `here <https://www.nltk.org/book_1ed>`_.
+   The NLTK book is being updated for Python 3 and NLTK 3 `here <https://www.nltk.org/book>`__.
+   The original Python 2 edition is still available `here <https://www.nltk.org/book_1ed>`__.
 
 NLTK 3.0.0b1 released : July 2014
    FrameNet, SentiWordNet, universal tagset, misc efficiency improvements and bugfixes

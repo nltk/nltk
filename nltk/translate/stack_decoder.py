@@ -233,8 +233,8 @@ class StackDecoder:
         :type src_sentence: tuple(str)
 
         :return: Scores of subsequences referenced by their start and
-        end positions. For example, result[2][5] is the score of the
-        subsequence covering positions 2, 3, and 4.
+            end positions. For example, result[2][5] is the score of the
+            subsequence covering positions 2, 3, and 4.
         :rtype: dict(int: (dict(int): float))
         """
         scores = defaultdict(lambda: defaultdict(lambda: float("-inf")))

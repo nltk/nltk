@@ -965,7 +965,7 @@ class AbstractChartRule(ChartRuleI):
 
     - A default implementation for ``apply``.
     - A default implementation for ``apply_everywhere``,
-      (Currently, this implementation assumes that ``NUM_EDGES``<=3.)
+      (Currently, this implementation assumes that ``NUM_EDGES <= 3``.)
     - A default implementation for ``__str__``, which returns a
       name based on the rule's class name.
     """

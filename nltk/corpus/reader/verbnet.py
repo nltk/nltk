@@ -441,7 +441,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given VerbNet class.
 
         :param vnclass: A VerbNet class identifier; or an ElementTree
-        containing the xml contents of a VerbNet class.
+            containing the xml contents of a VerbNet class.
         """
         if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)

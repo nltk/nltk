@@ -99,16 +99,16 @@ class TestEditDistance:
     def test_with_transpositions(
         self, left: str, right: str, substitution_cost: int, expecteds: Tuple[int, int]
     ):
-        """Test `edit_distance` between two strings, given some `substitution_cost`,
+        """
+        Test `edit_distance` between two strings, given some `substitution_cost`,
         and whether transpositions are allowed.
 
-        Args:
-            left (str): First input string to `edit_distance`.
-            right (str): Second input string to `edit_distance`.
-            substitution_cost (int): The cost of a substitution action in `edit_distance`.
-            expecteds (Tuple[int, int]): A tuple of expected outputs, such that `expecteds[0]` is
-                the expected output with `transpositions=True`, and `expecteds[1]` is
-                the expected output with `transpositions=False`.
+        :param str left: First input string to `edit_distance`.
+        :param str right: Second input string to `edit_distance`.
+        :param int substitution_cost: The cost of a substitution action in `edit_distance`.
+        :param Tuple[int, int] expecteds: A tuple of expected outputs, such that `expecteds[0]` is
+            the expected output with `transpositions=True`, and `expecteds[1]` is
+            the expected output with `transpositions=False`.
         """
         # Test the input strings in both orderings
         for s1, s2 in ((left, right), (right, left)):

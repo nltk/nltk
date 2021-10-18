@@ -142,14 +142,14 @@ class BllipParser(ParserI):
         :type reranker_weights: str
 
         :param parser_options: optional dictionary of parser options, see
-        ``bllipparser.RerankingParser.RerankingParser.load_parser_options()``
-        for more information.
+            ``bllipparser.RerankingParser.RerankingParser.load_parser_options()``
+            for more information.
         :type parser_options: dict(str)
 
         :param reranker_options: optional
-        dictionary of reranker options, see
-        ``bllipparser.RerankingParser.RerankingParser.load_reranker_model()``
-        for more information.
+            dictionary of reranker options, see
+            ``bllipparser.RerankingParser.RerankingParser.load_reranker_model()``
+            for more information.
         :type reranker_options: dict(str)
         """
         _ensure_bllip_import_or_error()
@@ -173,7 +173,7 @@ class BllipParser(ParserI):
         instance's tagger.
 
         :return: An iterator that generates parse trees for the sentence
-        from most likely to least likely.
+            from most likely to least likely.
 
         :param sentence: The sentence to be parsed
         :type sentence: list(str)
@@ -194,7 +194,7 @@ class BllipParser(ParserI):
         to leave a token's tag unconstrained.
 
         :return: An iterator that generates parse trees for the sentence
-        from most likely to least likely.
+            from most likely to least likely.
 
         :param sentence: Input sentence to parse as (word, tag) pairs
         :type sentence: list(tuple(str, str))
@@ -224,17 +224,17 @@ class BllipParser(ParserI):
         for more information about unified model directories.
 
         :return: A ``BllipParser`` object using the parser and reranker
-        models in the model directory.
+            models in the model directory.
 
         :param model_dir: Path to the unified model directory.
         :type model_dir: str
         :param parser_options: optional dictionary of parser options, see
-        ``bllipparser.RerankingParser.RerankingParser.load_parser_options()``
-        for more information.
+            ``bllipparser.RerankingParser.RerankingParser.load_parser_options()``
+            for more information.
         :type parser_options: dict(str)
         :param reranker_options: optional dictionary of reranker options, see
-        ``bllipparser.RerankingParser.RerankingParser.load_reranker_model()``
-        for more information.
+            ``bllipparser.RerankingParser.RerankingParser.load_reranker_model()``
+            for more information.
         :type reranker_options: dict(str)
         :rtype: BllipParser
         """

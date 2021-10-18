@@ -43,30 +43,33 @@ class PorterStemmer(StemmerI):
     passing the appropriate constant to the class constructor's `mode`
     attribute:
 
-        PorterStemmer.ORIGINAL_ALGORITHM
-        - Implementation that is faithful to the original paper.
+    - PorterStemmer.ORIGINAL_ALGORITHM
 
-          Note that Martin Porter has deprecated this version of the
-          algorithm. Martin distributes implementations of the Porter
-          Stemmer in many languages, hosted at:
+        An implementation that is faithful to the original paper.
 
-            https://www.tartarus.org/~martin/PorterStemmer/
+        Note that Martin Porter has deprecated this version of the
+        algorithm. Martin distributes implementations of the Porter
+        Stemmer in many languages, hosted at:
 
-          and all of these implementations include his extensions. He
-          strongly recommends against using the original, published
-          version of the algorithm; only use this mode if you clearly
-          understand why you are choosing to do so.
+        https://www.tartarus.org/~martin/PorterStemmer/
 
-        PorterStemmer.MARTIN_EXTENSIONS
-        - Implementation that only uses the modifications to the
-          algorithm that are included in the implementations on Martin
-          Porter's website. He has declared Porter frozen, so the
-          behaviour of those implementations should never change.
+        and all of these implementations include his extensions. He
+        strongly recommends against using the original, published
+        version of the algorithm; only use this mode if you clearly
+        understand why you are choosing to do so.
 
-        PorterStemmer.NLTK_EXTENSIONS (default)
-        - Implementation that includes further improvements devised by
-          NLTK contributors or taken from other modified implementations
-          found on the web.
+    - PorterStemmer.MARTIN_EXTENSIONS
+
+        An implementation that only uses the modifications to the
+        algorithm that are included in the implementations on Martin
+        Porter's website. He has declared Porter frozen, so the
+        behaviour of those implementations should never change.
+
+    - PorterStemmer.NLTK_EXTENSIONS (default)
+
+        An implementation that includes further improvements devised by
+        NLTK contributors or taken from other modified implementations
+        found on the web.
 
     For the best stemming, you should use the default NLTK_EXTENSIONS
     version. However, if you need to get the same results as either the

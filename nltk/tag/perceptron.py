@@ -125,7 +125,7 @@ class PerceptronTagger(TaggerI):
     """
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
-        https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
+    https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
 
     >>> from nltk.tag.perceptron import PerceptronTagger
 

@@ -304,7 +304,7 @@ class DRS(DrtExpression, Expression):
     def __init__(self, refs, conds, consequent=None):
         """
         :param refs: list of ``DrtIndividualVariableExpression`` for the
-        discourse referents
+            discourse referents
         :param conds: list of ``Expression`` for the conditions
         """
         self.refs = refs
