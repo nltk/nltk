@@ -29,7 +29,7 @@ target word that is produced by NULL.
 
 The EM algorithm used in Model 3 is:
 
-E step - In the training data, collect counts, weighted by prior
+:E step: In the training data, collect counts, weighted by prior
          probabilities.
 
          - (a) count how many times a source language word is translated
@@ -41,7 +41,7 @@ E step - In the training data, collect counts, weighted by prior
                of target words
          - (d) count how many times NULL is aligned to a target word
 
-M step - Estimate new probabilities based on the counts from the E step
+:M step: Estimate new probabilities based on the counts from the E step
 
 Because there are too many possible alignments, only the most probable
 ones are considered. First, the best alignment is determined using prior

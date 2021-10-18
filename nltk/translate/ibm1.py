@@ -36,11 +36,11 @@ Note that an alignment is represented here as
 
 The EM algorithm used in Model 1 is:
 
-E step - In the training data, count how many times a source language
+:E step: In the training data, count how many times a source language
          word is translated into a target language word, weighted by
          the prior probability of the translation.
 
-M step - Estimate the new probability of translation based on the
+:M step: Estimate the new probability of translation based on the
          counts from the Expectation step.
 
 Notations

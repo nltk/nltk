@@ -59,7 +59,7 @@ dv and max_v are defined differently for head and non-head words.
 
 The EM algorithm used in Model 5 is:
 
-E step - In the training data, collect counts, weighted by prior
+:E step: In the training data, collect counts, weighted by prior
          probabilities.
 
          - (a) count how many times a source language word is translated
@@ -74,7 +74,7 @@ E step - In the training data, collect counts, weighted by prior
                of target words
          - (e) count how many times NULL is aligned to a target word
 
-M step - Estimate new probabilities based on the counts from the E step
+:M step: Estimate new probabilities based on the counts from the E step
 
 Like Model 4, there are too many possible alignments to consider. Thus,
 a hill climbing approach is used to sample good candidates. In addition,

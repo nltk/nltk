@@ -14,7 +14,7 @@ a source word position, given its aligned target word's position.
 
 The EM algorithm used in Model 2 is:
 
-E step - In the training data, collect counts, weighted by prior
+:E step: In the training data, collect counts, weighted by prior
          probabilities.
 
          - (a) count how many times a source language word is translated
@@ -23,7 +23,7 @@ E step - In the training data, collect counts, weighted by prior
                sentence is aligned to a particular position in the target
                sentence
 
-M step - Estimate new probabilities based on the counts from the E step
+:M step: Estimate new probabilities based on the counts from the E step
 
 Notations
 ---------
