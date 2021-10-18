@@ -54,6 +54,46 @@ def run_apidoc(app):
     )
 
 
+def generate_howto():
+    """Custom function for generating contents in the ``howto`` folder,
+    based on the ``ntlk/test/*.doctest`` files.
+    """
+    import glob
+    import re
+
+    from jinja2 import Template
+
+    modules = []
+
+    web_folder = os.path.dirname(os.path.abspath(__file__))
+    howto_folder = os.path.join(web_folder, "howto")
+    if not os.path.exists(howto_folder):
+        os.makedirs(howto_folder)
+
+    # Load jinja template
+    with open(os.path.join(web_folder, "_templates", "doctest.rst")) as f:
+        doctest_template = Template(f.read())
+
+    print("Generating HOWTO pages...")
+    # Iterate over .doctest files, and find the module_name.
+    pattern = re.compile(r"(\w+)\.doctest$")
+    for path in glob.glob(os.path.join(web_folder, "..", "nltk", "test", "*.doctest")):
+        match = pattern.search(path)
+        module_name = match.group(1)
+        # Ignore index.doctest, we already have an index, i.e. howto.rst
+        if module_name == "index":
+            continue
+        # Write .rst files based on the doctest_template.
+        doctest_template.stream(module_name=module_name).dump(
+            os.path.join(howto_folder, f"{module_name}.rst")
+        )
+        modules.append(module_name)
+
+    print(f"Generated {len(modules)} HOWTO pages.")
+
+
+generate_howto()
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
