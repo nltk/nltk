@@ -28,7 +28,7 @@ def get_words_from_dictionary(lemmas):
     Get original set of words used for analysis.
 
     :param lemmas: A dictionary where keys are lemmas and values are sets
-    or lists of words corresponding to that lemma.
+        or lists of words corresponding to that lemma.
     :type lemmas: dict(str): list(str)
     :return: Set of words that exist as values in the dictionary
     :rtype: set(str)
@@ -219,9 +219,9 @@ class Paice:
     def __init__(self, lemmas, stems):
         """
         :param lemmas: A dictionary where keys are lemmas and values are sets
-        or lists of words corresponding to that lemma.
+            or lists of words corresponding to that lemma.
         :param stems: A dictionary where keys are stems and values are sets
-        or lists of words corresponding to that stem.
+            or lists of words corresponding to that stem.
         :type lemmas: dict(str): list(str)
         :type stems: dict(str): set(str)
         """

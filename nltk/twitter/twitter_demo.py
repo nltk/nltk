@@ -214,7 +214,7 @@ def limit_by_time_demo(keywords="nltk"):
 @verbose
 def corpusreader_demo():
     """
-    Use :module:`TwitterCorpusReader` tp read a file of tweets, and print out
+    Use `TwitterCorpusReader` tp read a file of tweets, and print out
 
     * some full tweets in JSON format;
     * some raw strings from the tweets (i.e., the value of the `text` field); and
