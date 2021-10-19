@@ -1132,7 +1132,9 @@ class WordNetCorpusReader(CorpusReader):
         directory.
         """
         if omw_reader is None:
-            warnings.warn("The multilingual functions are not available with this Wordnet version")
+            warnings.warn(
+                "The multilingual functions are not available with this Wordnet version"
+            )
 
         super().__init__(root, self._FILES, encoding=self._ENCODING)
 
