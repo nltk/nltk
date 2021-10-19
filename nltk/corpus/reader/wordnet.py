@@ -32,6 +32,7 @@ http://compling.hss.ntu.edu.sg/omw/
 
 import math
 import re
+import warnings
 from collections import defaultdict, deque
 from functools import total_ordering
 from itertools import chain, islice
@@ -1130,6 +1131,9 @@ class WordNetCorpusReader(CorpusReader):
         Construct a new wordnet corpus reader, with the given root
         directory.
         """
+        if omw_reader is None:
+            warnings.warn("The multilingual functions are not available with this Wordnet version")
+
         super().__init__(root, self._FILES, encoding=self._ENCODING)
 
         # A index that provides the file offset
@@ -1288,7 +1292,7 @@ class WordNetCorpusReader(CorpusReader):
     def get_version(self):
         fh = self._data_file(ADJ)
         for line in fh:
-            match = re.search(r"WordNet (\d+\.\d+) Copyright", line)
+            match = re.search(r"Word[nN]et (\d+|\d+\.\d+) Copyright", line)
             if match is not None:
                 version = match.group(1)
                 fh.seek(0)
