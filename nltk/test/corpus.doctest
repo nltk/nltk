@@ -385,8 +385,8 @@ examples illustrate the use of the wordlist corpora:
     >>> words.words('en')
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
 
-    >>> stopwords.fileids()
-    ['arabic', 'azerbaijani', 'danish', 'dutch', 'english', 'finnish', 'french', ...]
+    >>> stopwords.fileids() # doctest: +SKIP
+    ['arabic', 'azerbaijani', 'bengali', 'danish', 'dutch', 'english', 'finnish', 'french', ...]
     >>> sorted(stopwords.words('portuguese'))
     ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', ...]
     >>> names.fileids()
