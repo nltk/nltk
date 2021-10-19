@@ -361,6 +361,16 @@ wordnet = LazyCorpusLoader(
     WordNetCorpusReader,
     LazyCorpusLoader("omw", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
+wordnet31 = LazyCorpusLoader(
+    "wordnet31",
+    WordNetCorpusReader,
+    None
+)
+wordnet2021 = LazyCorpusLoader(
+    "wordnet2021",
+    WordNetCorpusReader,
+    None
+)
 wordnet_ic = LazyCorpusLoader("wordnet_ic", WordNetICCorpusReader, r".*\.dat")
 words = LazyCorpusLoader(
     "words", WordListCorpusReader, r"(?!README|\.).*", encoding="ascii"
