@@ -37,7 +37,7 @@ class ParserI:
     def parse(self, sent, *args, **kwargs):
         """
         :return: An iterator that generates parse trees for the sentence.
-        When possible this list is sorted from most likely to least likely.
+            When possible this list is sorted from most likely to least likely.
 
         :param sent: The sentence to be parsed
         :type sent: list(str)

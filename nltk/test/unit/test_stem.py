@@ -88,12 +88,11 @@ class PorterTest(unittest.TestCase):
     def test_vocabulary_martin_mode(self):
         """Tests all words from the test vocabulary provided by M Porter
 
-        The sample vocabulary and output were sourced from:
-            https://tartarus.org/martin/PorterStemmer/voc.txt
-            https://tartarus.org/martin/PorterStemmer/output.txt
+        The sample vocabulary and output were sourced from
+        https://tartarus.org/martin/PorterStemmer/voc.txt and
+        https://tartarus.org/martin/PorterStemmer/output.txt
         and are linked to from the Porter Stemmer algorithm's homepage
-        at
-            https://tartarus.org/martin/PorterStemmer/
+        at https://tartarus.org/martin/PorterStemmer/
         """
         with closing(
             data.find("stemmers/porter_test/porter_martin_output.txt").open(

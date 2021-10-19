@@ -137,8 +137,8 @@ class Prover9Parent:
     def prover9_input(self, goal, assumptions):
         """
         :return: The input string that should be provided to the
-        prover9 binary.  This string is formed based on the goal,
-        assumptions, and timeout value of this object.
+            prover9 binary.  This string is formed based on the goal,
+            assumptions, and timeout value of this object.
         """
         s = ""
 

@@ -126,6 +126,14 @@ class Query(Twython):
     """
 
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
+        """
+        :param app_key: (optional) Your applications key
+        :param app_secret: (optional) Your applications secret key
+        :param oauth_token: (optional) When using **OAuth 1**, combined with
+            oauth_token_secret to make authenticated calls
+        :param oauth_token_secret: (optional) When using **OAuth 1** combined
+            with oauth_token to make authenticated calls
+        """
         self.handler = None
         self.do_continue = True
         Twython.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
@@ -329,28 +337,28 @@ class Twitter:
         :param str keywords: Keywords to use for searching or filtering
         :param list follow: UserIDs to use for filtering Tweets from the public stream
         :param bool to_screen: If `True`, display the tweet texts on the screen,\
-        otherwise print to a file
+            otherwise print to a file
 
         :param bool stream: If `True`, use the live public stream,\
-        otherwise search past public Tweets
+            otherwise search past public Tweets
 
         :param int limit: The number of data items to process in the current\
-        round of processing.
+            round of processing.
 
         :param tuple date_limit: The date at which to stop collecting\
-        new data. This should be entered as a tuple which can serve as the\
-        argument to `datetime.datetime`.\
-        E.g. `date_limit=(2015, 4, 1, 12, 40)` for 12:30 pm on April 1 2015.
-        Note that, in the case of streaming, this is the maximum date, i.e.\
-        a date in the future; if not, it is the minimum date, i.e. a date\
-        in the past
+            new data. This should be entered as a tuple which can serve as the\
+            argument to `datetime.datetime`.\
+            E.g. `date_limit=(2015, 4, 1, 12, 40)` for 12:30 pm on April 1 2015.
+            Note that, in the case of streaming, this is the maximum date, i.e.\
+            a date in the future; if not, it is the minimum date, i.e. a date\
+            in the past
 
         :param str lang: language
 
         :param bool repeat: A flag to determine whether multiple files should\
-        be written. If `True`, the length of each file will be set by the\
-        value of `limit`. Use only if `to_screen` is `False`. See also
-        :py:func:`handle`.
+            be written. If `True`, the length of each file will be set by the\
+            value of `limit`. Use only if `to_screen` is `False`. See also
+            :py:func:`handle`.
 
         :param gzip_compress: if `True`, output files are compressed with gzip.
         """

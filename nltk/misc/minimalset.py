@@ -63,7 +63,7 @@ class MinimalSet:
 
         :param minimum: the minimum number of distinct target forms
         :type minimum: int
-        :rtype list
+        :rtype: list
         """
         return [c for c in self._contexts if len(self._seen[c]) >= minimum]
 

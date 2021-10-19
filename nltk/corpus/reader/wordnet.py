@@ -520,7 +520,7 @@ class Synset(_WordNetObject):
     def max_depth(self):
         """
         :return: The length of the longest hypernym path from this
-        synset to the root.
+            synset to the root.
         """
 
         if "_max_depth" not in self.__dict__:
@@ -534,7 +534,7 @@ class Synset(_WordNetObject):
     def min_depth(self):
         """
         :return: The length of the shortest hypernym path from this
-        synset to the root.
+            synset to the root.
         """
 
         if "_min_depth" not in self.__dict__:
@@ -1393,6 +1393,7 @@ class WordNetCorpusReader(CorpusReader):
           attributes ADJ, ADJ_SAT, ADV, NOUN or VERB ('a', 's', 'r', 'n', or 'v').
         - offset: The byte offset of this synset in the WordNet dict file
           for this pos.
+
         >>> from nltk.corpus import wordnet as wn
         >>> print(wn.synset_from_pos_and_offset('n', 1740))
         Synset('entity.n.01')
@@ -1554,25 +1555,29 @@ class WordNetCorpusReader(CorpusReader):
         obtained from lemma.key()
 
         From https://wordnet.princeton.edu/documentation/senseidx5wn:
-        A sense_key is represented as:
+        A sense_key is represented as::
+
             lemma % lex_sense (e.g. 'dog%1:18:01::')
-        where lex_sense is encoded as:
+
+        where lex_sense is encoded as::
+
             ss_type:lex_filenum:lex_id:head_word:head_id
 
-        lemma:       ASCII text of word/collocation, in lower case
-        ss_type:     synset type for the sense (1 digit int)
-                     The synset type is encoded as follows:
-                     1    NOUN
-                     2    VERB
-                     3    ADJECTIVE
-                     4    ADVERB
-                     5    ADJECTIVE SATELLITE
-        lex_filenum: name of lexicographer file containing the synset for the sense (2 digit int)
-        lex_id:      when paired with lemma, uniquely identifies a sense in the lexicographer file (2 digit int)
-        head_word:   lemma of the first word in satellite's head synset
-                     Only used if sense is in an adjective satellite synset
-        head_id:     uniquely identifies sense in a lexicographer file when paired with head_word
-                     Only used if head_word is present (2 digit int)
+        :lemma:       ASCII text of word/collocation, in lower case
+        :ss_type:     synset type for the sense (1 digit int)
+                      The synset type is encoded as follows::
+
+                          1    NOUN
+                          2    VERB
+                          3    ADJECTIVE
+                          4    ADVERB
+                          5    ADJECTIVE SATELLITE
+        :lex_filenum: name of lexicographer file containing the synset for the sense (2 digit int)
+        :lex_id:      when paired with lemma, uniquely identifies a sense in the lexicographer file (2 digit int)
+        :head_word:   lemma of the first word in satellite's head synset
+                      Only used if sense is in an adjective satellite synset
+        :head_id:     uniquely identifies sense in a lexicographer file when paired with head_word
+                      Only used if head_word is present (2 digit int)
 
         >>> import nltk
         >>> from nltk.corpus import wordnet as wn
@@ -1964,13 +1969,13 @@ class WordNetCorpusReader(CorpusReader):
 
         :type corpus: CorpusReader
         :param corpus: The corpus from which we create an information
-        content dictionary.
+            content dictionary.
         :type weight_senses_equally: bool
         :param weight_senses_equally: If this is True, gives all
-        possible senses equal weight rather than dividing by the
-        number of possible senses.  (If a word has 3 synses, each
-        sense gets 0.3333 per appearance when this is False, 1.0 when
-        it is true.)
+            possible senses equal weight rather than dividing by the
+            number of possible senses.  (If a word has 3 synses, each
+            sense gets 0.3333 per appearance when this is False, 1.0 when
+            it is true.)
         :param smoothing: How much do we smooth synset counts (default is 1.0)
         :type smoothing: float
         :return: An information content dictionary
@@ -2024,8 +2029,8 @@ class WordNetCorpusReader(CorpusReader):
         documentation on the Multilingual WordNet tab file format.
 
         :param tab_file: Tab file as a file or file-like object
-        :type  lang str
-        :param lang ISO 639-3 code of the language of the tab file
+        :type: lang str
+        :param: lang ISO 639-3 code of the language of the tab file
         """
         if len(lang) != 3:
             raise ValueError("lang should be a (3 character) ISO 639-3 code")

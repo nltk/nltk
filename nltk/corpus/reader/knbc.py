@@ -38,7 +38,6 @@ class KNBCorpusReader(SyntaxCorpusReader):
       tags = (surface, reading, lemma, pos1, posid1, pos2, posid2, pos3, posid3, others ...)
 
     Usage example
-    -------------
 
     >>> from nltk.corpus.util import LazyCorpusLoader
     >>> knbc = LazyCorpusLoader(

@@ -88,13 +88,13 @@ class TnT(TaggerI):
         before being used to tag input.
 
         :param unk: instance of a POS tagger, conforms to TaggerI
-        :type  unk:(TaggerI)
+        :type  unk: TaggerI
         :param Trained: Indication that the POS tagger is trained or not
-        :type  Trained: boolean
+        :type  Trained: bool
         :param N: Beam search degree (see above)
-        :type  N:(int)
+        :type  N: int
         :param C: Capitalization flag
-        :type  C: boolean
+        :type  C: bool
 
         Initializer, creates frequency distributions to be used
         for tagging

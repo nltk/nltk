@@ -22,6 +22,7 @@ Importantly, if a custom hierarchy is supplied and vowels span across more than
 one level, they should be given separately to the `vowels` class attribute.
 
 References:
+
 - Otto Jespersen. 1904. Lehrbuch der Phonetik.
   Leipzig, Teubner. Chapter 13, Silbe, pp. 185-203.
 - Elisabeth Selkirk. 1984. On the major class features and syllable theory.

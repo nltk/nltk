@@ -295,7 +295,7 @@ class ProbabilisticProjectiveDependencyParser:
     to the one utilized by the rule-based projective parser.
 
     Usage example
-    -------------
+
     >>> from nltk.parse.dependencygraph import conll_data2
 
     >>> graphs = [
