@@ -217,6 +217,27 @@ Confusion Matrix
         10: h
     <BLANKLINE>
 
+For "e", the number of true positives should be 6, while the number of false negatives is 3.
+So, the recall ought to be 6 / (6 + 3):
+
+    >>> cm.recall("e") # doctest: +ELLIPSIS
+    0.666666...
+
+For "e", the false positive is just 1, so the precision should be 6 / (6 + 1):
+
+    >>> cm.precision("e") # doctest: +ELLIPSIS
+    0.857142...
+
+The f-measure with default value of ``alpha = 0.5`` should then be:
+
+* *1/(alpha/p + (1-alpha)/r) =*
+* *1/(0.5/p + 0.5/r) =*
+* *2pr / (p + r) =*
+* *2 * 0.857142... * 0.666666... / (0.857142... + 0.666666...) =*
+* *0.749999...*
+
+    >>> cm.f_measure("e") # doctest: +ELLIPSIS
+    0.749999...
 
 --------------------
 Association measures

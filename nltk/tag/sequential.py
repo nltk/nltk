@@ -337,7 +337,7 @@ class UnigramTagger(NgramTagger):
         >>> test_sent = brown.sents(categories='news')[0]
         >>> unigram_tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
         >>> for tok, tag in unigram_tagger.tag(test_sent):
-        ...     print("({}, {}), ".format(tok, tag))
+        ...     print("({}, {}), ".format(tok, tag)) # doctest: +NORMALIZE_WHITESPACE
         (The, AT), (Fulton, NP-TL), (County, NN-TL), (Grand, JJ-TL),
         (Jury, NN-TL), (said, VBD), (Friday, NR), (an, AT),
         (investigation, NN), (of, IN), (Atlanta's, NP$), (recent, JJ),
@@ -515,7 +515,7 @@ class RegexpTagger(SequentialBackoffTagger):
         ... ])
         >>> regexp_tagger
         <Regexp Tagger: size=9>
-        >>> regexp_tagger.tag(test_sent)
+        >>> regexp_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
         [('The', 'AT'), ('Fulton', 'NN'), ('County', 'NN'), ('Grand', 'NN'), ('Jury', 'NN'),
         ('said', 'NN'), ('Friday', 'NN'), ('an', 'AT'), ('investigation', 'NN'), ('of', 'NN'),
         ("Atlanta's", 'NNS'), ('recent', 'NN'), ('primary', 'NN'), ('election', 'NN'),

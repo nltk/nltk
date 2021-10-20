@@ -201,6 +201,81 @@ class ConfusionMatrix:
 
         return str
 
+    def recall(self, value):
+        """Given a value in the confusion matrix, return the recall
+        that corresponds to this value. The recall is defined as:
+
+        - *r* = true positive / (true positive + false positive)
+
+        and can loosely be considered the ratio of how often ``value``
+        was predicted correctly relative to how often ``value`` was
+        the true result.
+
+        :param value: value used in the ConfusionMatrix
+        :return: the recall corresponding to ``value``.
+        :rtype: float
+        """
+        # Number of times `value` was correct, and also predicted
+        TP = self[value, value]
+        # Number of times `value` was correct
+        TP_FN = sum(self[value, pred_value] for pred_value in self._values)
+        if TP_FN == 0:
+            return 0.0
+        return TP / TP_FN
+
+    def precision(self, value):
+        """Given a value in the confusion matrix, return the precision
+        that corresponds to this value. The precision is defined as:
+
+        - *p* = true positive / (true positive + false negative)
+
+        and can loosely be considered the ratio of how often ``value``
+        was predicted correctly relative to the number of predictions
+        for ``value``.
+
+        :param value: value used in the ConfusionMatrix
+        :return: the precision corresponding to ``value``.
+        :rtype: float
+        """
+        # Number of times `value` was correct, and also predicted
+        TP = self[value, value]
+        # Number of times `value` was predicted
+        TP_FP = sum(self[real_value, value] for real_value in self._values)
+        if TP_FP == 0:
+            return 0.0
+        return TP / TP_FP
+
+    def f_measure(self, value, alpha=0.5):
+        """
+        Given a value used in the confusion matrix, return the f-measure
+        that corresponds to this value. The f-measure is the harmonic mean
+        of the ``precision`` and ``recall``, weighted by ``alpha``.
+        In particular, given the precision *p* and recall *r* defined by:
+
+        - *p* = true positive / (true positive + false negative)
+        - *r* = true positive / (true positive + false positive)
+
+        The f-measure is:
+
+        - *1/(alpha/p + (1-alpha)/r)*
+
+        With ``alpha = 0.5``, this reduces to:
+
+        - *2pr / (p + r)*
+
+        :param value: value used in the ConfusionMatrix
+        :param alpha: Ratio of the cost of false negative compared to false
+            positives. Defaults to 0.5, where the costs are equal.
+        :type alpha: float
+        :return: the F-measure corresponding to ``value``.
+        :rtype: float
+        """
+        p = self.precision(value)
+        r = self.recall(value)
+        if p == 0.0 or r == 0.0:
+            return 0.0
+        return 1.0 / (alpha / p + (1 - alpha) / r)
+
 
 def demo():
     reference = "DET NN VB DET JJ NN NN IN DET NN".split()

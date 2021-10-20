@@ -21,7 +21,7 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 An off-the-shelf tagger is available for English. It uses the Penn Treebank tagset:
 
     >>> from nltk import pos_tag, word_tokenize
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +NORMALIZE_WHITESPACE
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
     ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
 
@@ -144,10 +144,10 @@ def pos_tag(tokens, tagset=None, lang="eng"):
 
         >>> from nltk.tag import pos_tag
         >>> from nltk.tokenize import word_tokenize
-        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+        >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +NORMALIZE_WHITESPACE
         [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
         ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
-        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."), tagset='universal')
+        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."), tagset='universal') # doctest: +NORMALIZE_WHITESPACE
         [('John', 'NOUN'), ("'s", 'PRT'), ('big', 'ADJ'), ('idea', 'NOUN'), ('is', 'VERB'),
         ("n't", 'ADV'), ('all', 'DET'), ('that', 'DET'), ('bad', 'ADJ'), ('.', '.')]
 
