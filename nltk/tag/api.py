@@ -274,38 +274,8 @@ class TaggerI(metaclass=ABCMeta):
         :return: A tabulated recall, precision and f-measure string
         :rtype: str
         """
-        # Gather Confusion Matrix and metrics
         cm = self.confusion(gold)
-        recalls = self.recall(gold)
-        precisions = self.precision(gold)
-        f_measures = self.f_measure(gold)
-
-        tags = cm._values
-
-        # Apply keyword parameters
-        if sort_by_count:
-            tags = sorted(tags, key=lambda v: -sum(cm._confusion[cm._indices[v]]))
-        if truncate:
-            tags = tags[:truncate]
-
-        tag_column_len = max(max(len(tag) for tag in tags), 3)
-
-        # Construct the header
-        s = (
-            f"{' ' * (tag_column_len - 3)}Tag | Prec.  | Recall | F-measure\n"
-            f"{'-' * tag_column_len}-+--------+--------+-----------\n"
-        )
-
-        # Construct the body
-        for tag in tags:
-            s += (
-                f"{tag:>{tag_column_len}} | "
-                f"{precisions[tag]:<6.4f} | "
-                f"{recalls[tag]:<6.4f} | "
-                f"{f_measures[tag]:.4f}\n"
-            )
-
-        return s
+        return cm.evaluate(alpha=alpha, truncate=truncate, sort_by_count=sort_by_count)
 
     def _check_params(self, train, model):
         if (train and model) or (not train and not model):

@@ -276,6 +276,65 @@ class ConfusionMatrix:
             return 0.0
         return 1.0 / (alpha / p + (1 - alpha) / r)
 
+    def evaluate(self, alpha=0.5, truncate=None, sort_by_count=False):
+        """
+        Tabulate the **recall**, **precision** and **f-measure**
+        for each value in this confusion matrix.
+
+        >>> reference = "DET NN VB DET JJ NN NN IN DET NN".split()
+        >>> test = "DET VB VB DET NN NN NN IN DET NN".split()
+        >>> cm = ConfusionMatrix(reference, test)
+        >>> print(cm.evaluate())
+        Tag | Prec.  | Recall | F-measure
+        ----+--------+--------+-----------
+        DET | 1.0000 | 1.0000 | 1.0000
+         IN | 1.0000 | 1.0000 | 1.0000
+         JJ | 0.0000 | 0.0000 | 0.0000
+         NN | 0.7500 | 0.7500 | 0.7500
+         VB | 0.5000 | 1.0000 | 0.6667
+        <BLANKLINE>
+
+        :param alpha: Ratio of the cost of false negative compared to false
+            positives, as used in the f-measure computation. Defaults to 0.5,
+            where the costs are equal.
+        :type alpha: float
+        :param truncate: If specified, then only show the specified
+            number of values. Any sorting (e.g., sort_by_count)
+            will be performed before truncation. Defaults to None
+        :type truncate: int, optional
+        :param sort_by_count: Whether to sort the outputs on frequency
+            in the reference label. Defaults to False.
+        :type sort_by_count: bool, optional
+        :return: A tabulated recall, precision and f-measure string
+        :rtype: str
+        """
+        tags = self._values
+
+        # Apply keyword parameters
+        if sort_by_count:
+            tags = sorted(tags, key=lambda v: -sum(self._confusion[self._indices[v]]))
+        if truncate:
+            tags = tags[:truncate]
+
+        tag_column_len = max(max(len(tag) for tag in tags), 3)
+
+        # Construct the header
+        s = (
+            f"{' ' * (tag_column_len - 3)}Tag | Prec.  | Recall | F-measure\n"
+            f"{'-' * tag_column_len}-+--------+--------+-----------\n"
+        )
+
+        # Construct the body
+        for tag in tags:
+            s += (
+                f"{tag:>{tag_column_len}} | "
+                f"{self.precision(tag):<6.4f} | "
+                f"{self.recall(tag):<6.4f} | "
+                f"{self.f_measure(tag, alpha=alpha):.4f}\n"
+            )
+
+        return s
+
 
 def demo():
     reference = "DET NN VB DET JJ NN NN IN DET NN".split()
@@ -285,6 +344,8 @@ def demo():
     print("Confusion matrix:")
     print(ConfusionMatrix(reference, test))
     print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
+
+    print(ConfusionMatrix(reference, test).recall("VB"))
 
 
 if __name__ == "__main__":
