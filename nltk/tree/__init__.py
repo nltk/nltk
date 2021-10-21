@@ -24,6 +24,6 @@ from nltk.tree.immutable import (
     ImmutableTree,
 )
 from nltk.tree.parented import MultiParentedTree, ParentedTree
-from nltk.tree.parse import bracket_parse, sinica_parse
+from nltk.tree.parsing import bracket_parse, sinica_parse
 from nltk.tree.probabilistic import ProbabilisticTree
 from nltk.tree.tree import Tree
