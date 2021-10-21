@@ -113,7 +113,7 @@ type:
     >>> print(tree)
     (VP (V enjoyed) (NP my cookie))
     >>> print(type(tree))
-    <class 'nltk.tree.ImmutableTree'>
+    <class 'nltk.tree.immutable.ImmutableTree'>
     >>> tree[1] = 'x'
     Traceback (most recent call last):
       . . .
@@ -345,7 +345,7 @@ Parented trees can be created from strings using the classmethod
     >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
     >>> print(type(ptree))
-    <class 'nltk.tree.ParentedTree'>
+    <class 'nltk.tree.parented.ParentedTree'>
 
 Parented trees can also be created by using the classmethod
 `ParentedTree.convert` to convert another type of tree to a parented
@@ -356,7 +356,7 @@ tree:
     >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
     >>> print(type(ptree))
-    <class 'nltk.tree.ParentedTree'>
+    <class 'nltk.tree.parented.ParentedTree'>
 
 .. clean-up:
 
@@ -808,7 +808,7 @@ ImmutableParentedTree Regression Tests
 
     >>> iptree = ImmutableParentedTree.convert(ptree)
     >>> type(iptree)
-    <class 'nltk.tree.ImmutableParentedTree'>
+    <class 'nltk.tree.immutable.ImmutableParentedTree'>
     >>> del iptree[0]
     Traceback (most recent call last):
       . . .
@@ -1110,7 +1110,7 @@ ImmutableMultiParentedTree Regression Tests
 
     >>> imptree = ImmutableMultiParentedTree.convert(mptree)
     >>> type(imptree)
-    <class 'nltk.tree.ImmutableMultiParentedTree'>
+    <class 'nltk.tree.immutable.ImmutableMultiParentedTree'>
     >>> del imptree[0]
     Traceback (most recent call last):
       . . .
@@ -1137,7 +1137,7 @@ ProbabilisticTree Regression Tests
 
     >>> imprtree = ImmutableProbabilisticTree.convert(prtree)
     >>> type(imprtree)
-    <class 'nltk.tree.ImmutableProbabilisticTree'>
+    <class 'nltk.tree.immutable.ImmutableProbabilisticTree'>
     >>> del imprtree[0]
     Traceback (most recent call last):
       . . .
