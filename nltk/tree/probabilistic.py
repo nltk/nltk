@@ -11,8 +11,8 @@
 
 from nltk.internals import raise_unorderable_types
 from nltk.probability import ProbabilisticMixIn
-from nltk.tree import Tree
 from nltk.tree.immutable import ImmutableProbabilisticTree
+from nltk.tree.tree import Tree
 
 ######################################################################
 ## Probabilistic trees
