@@ -1252,6 +1252,18 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
         def __setslice__(self, start, stop, value):
             return self.__setitem__(slice(max(0, start), max(0, stop)), value)
 
+    def __getnewargs__(self):
+        """Method used by the pickle module when un-pickling.
+        This method provides the arguments passed to ``__new__``
+        upon un-pickling. Without this method, ParentedTree instances
+        cannot be pickled and unpickled in Python 3.7+ onwards.
+
+        :return: Tuple of arguments for ``__new__``, i.e. the label
+            and the children of this node.
+        :rtype: Tuple[str, List[AbstractParentedTree]]
+        """
+        return (self._label, list(self))
+
 
 class ParentedTree(AbstractParentedTree):
     """
@@ -1362,13 +1374,11 @@ class ParentedTree(AbstractParentedTree):
     def _setparent(self, child, index, dry_run=False):
         # If the child's type is incorrect, then complain.
         if not isinstance(child, ParentedTree):
-            raise TypeError(
-                "Can not insert a non-ParentedTree " + "into a ParentedTree"
-            )
+            raise TypeError("Can not insert a non-ParentedTree into a ParentedTree")
 
         # If child already has a parent, then complain.
-        if child._parent is not None:
-            raise ValueError("Can not insert a subtree that already " "has a parent.")
+        if hasattr(child, "_parent") and child._parent is not None:
+            raise ValueError("Can not insert a subtree that already has a parent.")
 
         # Set child's parent pointer & index.
         if not dry_run:

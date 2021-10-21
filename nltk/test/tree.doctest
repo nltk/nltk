@@ -1155,3 +1155,15 @@ This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
     >>> print(Tree.fromstring('((A a) (B b))'))
     ( (A a) (B b))
+
+Pickling ParentedTree instances didn't work for Python 3.7 onwards (See #2478)
+
+    >>> import pickle
+    >>> tree = ParentedTree.fromstring('(S (NN x) (NP x) (NN x))')
+    >>> print(tree)
+    (S (NN x) (NP x) (NN x))
+
+    >>> pickled = pickle.dumps(tree)
+    >>> tree_loaded = pickle.loads(pickled)
+    >>> print(tree_loaded)
+    (S (NN x) (NP x) (NN x))
