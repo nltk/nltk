@@ -268,7 +268,7 @@ class AbstractParentedTree(Tree, metaclass=ABCMeta):
 
         :return: Tuple of arguments for ``__new__``, i.e. the label
             and the children of this node.
-        :rtype: Tuple[str, List[AbstractParentedTree]]
+        :rtype: Tuple[Any, List[AbstractParentedTree]]
         """
         return (self._label, list(self))
 
