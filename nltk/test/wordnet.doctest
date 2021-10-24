@@ -55,10 +55,9 @@ WordNet, using ISO-639 language codes.
     [Synset('dog.n.01'), Synset('spy.n.01')]
 
     >>> wn.synset('spy.n.01').lemma_names('jpn')
-    ['\u3044\u306c', '\u307e\u308f\u3057\u8005', '\u30b9\u30d1\u30a4', '\u56de\u3057\u8005',
-    '\u56de\u8005', '\u5bc6\u5075', '\u5de5\u4f5c\u54e1', '\u5efb\u3057\u8005',
-    '\u5efb\u8005', '\u63a2', '\u63a2\u308a', '\u72ac', '\u79d8\u5bc6\u635c\u67fb\u54e1',
-    '\u8adc\u5831\u54e1', '\u8adc\u8005', '\u9593\u8005', '\u9593\u8adc', '\u96a0\u5bc6']
+    ['いぬ', 'スパイ', '回者', '回し者', '密偵', '工作員',
+    '廻者', '廻し者', '探', '探り', '犬', '秘密捜査員',
+    'まわし者', '諜報員', '諜者', '間者', '間諜', '隠密']
 
     >>> wn.synset('dog.n.01').lemma_names('ita')
     ['cane', 'Canis_familiaris']
