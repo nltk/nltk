@@ -11,6 +11,7 @@
 ##//////////////////////////////////////////////////////
 
 from nltk.chunk.util import ChunkScore
+from nltk.internals import deprecated
 from nltk.parse import ParserI
 
 
@@ -34,7 +35,11 @@ class ChunkParserI(ParserI):
         """
         raise NotImplementedError()
 
+    @deprecated("Use accuracy(gold) instead.")
     def evaluate(self, gold):
+        return self.accuracy(gold)
+
+    def accuracy(self, gold):
         """
         Score the accuracy of the chunker against the gold standard.
         Remove the chunking the gold standard text, rechunk it using
