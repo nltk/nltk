@@ -414,7 +414,7 @@ class GlueDict(dict):
     def get_meaning_formula(self, generic, word):
         """
         :param generic: A meaning formula string containing the
-        parameter "<word>"
+            parameter "<word>"
         :param word: The actual word to be replace "<word>"
         """
         word = word.replace(".", "")

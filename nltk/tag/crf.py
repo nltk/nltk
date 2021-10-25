@@ -43,39 +43,38 @@ class CRFTagger(TaggerI):
     >>> ct.set_model_file('model.crf.tagger')
     >>> ct.evaluate(gold_sentences)
     1.0
-
     """
 
     def __init__(self, feature_func=None, verbose=False, training_opt={}):
         """
         Initialize the CRFSuite tagger
+
         :param feature_func: The function that extracts features for each token of a sentence. This function should take
-        2 parameters: tokens and index which extract features at index position from tokens list. See the build in
-        _get_features function for more detail.
+            2 parameters: tokens and index which extract features at index position from tokens list. See the build in
+            _get_features function for more detail.
         :param verbose: output the debugging messages during training.
         :type verbose: boolean
         :param training_opt: python-crfsuite training options
-        :type training_opt : dictionary
+        :type training_opt: dictionary
 
         Set of possible training options (using LBFGS training algorithm).
-         'feature.minfreq' : The minimum frequency of features.
-         'feature.possible_states' : Force to generate possible state features.
-         'feature.possible_transitions' : Force to generate possible transition features.
-         'c1' : Coefficient for L1 regularization.
-         'c2' : Coefficient for L2 regularization.
-         'max_iterations' : The maximum number of iterations for L-BFGS optimization.
-         'num_memories' : The number of limited memories for approximating the inverse hessian matrix.
-         'epsilon' : Epsilon for testing the convergence of the objective.
-         'period' : The duration of iterations to test the stopping criterion.
-         'delta' : The threshold for the stopping criterion; an L-BFGS iteration stops when the
-                    improvement of the log likelihood over the last ${period} iterations is no greater than this threshold.
-         'linesearch' : The line search algorithm used in L-BFGS updates:
-                           { 'MoreThuente': More and Thuente's method,
-                              'Backtracking': Backtracking method with regular Wolfe condition,
-                              'StrongBacktracking': Backtracking method with strong Wolfe condition
-                           }
-         'max_linesearch' :  The maximum number of trials for the line search algorithm.
+            :'feature.minfreq': The minimum frequency of features.
+            :'feature.possible_states': Force to generate possible state features.
+            :'feature.possible_transitions': Force to generate possible transition features.
+            :'c1': Coefficient for L1 regularization.
+            :'c2': Coefficient for L2 regularization.
+            :'max_iterations': The maximum number of iterations for L-BFGS optimization.
+            :'num_memories': The number of limited memories for approximating the inverse hessian matrix.
+            :'epsilon': Epsilon for testing the convergence of the objective.
+            :'period': The duration of iterations to test the stopping criterion.
+            :'delta': The threshold for the stopping criterion; an L-BFGS iteration stops when the
+                improvement of the log likelihood over the last ${period} iterations is no greater than this threshold.
+            :'linesearch': The line search algorithm used in L-BFGS updates:
 
+                - 'MoreThuente': More and Thuente's method,
+                - 'Backtracking': Backtracking method with regular Wolfe condition,
+                - 'StrongBacktracking': Backtracking method with strong Wolfe condition
+            :'max_linesearch':  The maximum number of trials for the line search algorithm.
         """
 
         self._model_file = ""
@@ -97,16 +96,16 @@ class CRFTagger(TaggerI):
     def _get_features(self, tokens, idx):
         """
         Extract basic features about this word including
-             - Current Word
-             - Is Capitalized ?
-             - Has Punctuation ?
-             - Has Number ?
-             - Suffixes up to length 3
+            - Current word
+            - is it capitalized?
+            - Does it have punctuation?
+            - Does it have a number?
+            - Suffixes up to length 3
+
         Note that : we might include feature over previous word, next word etc.
 
-        :return : a list which contains the features
-        :rtype : list(str)
-
+        :return: a list which contains the features
+        :rtype: list(str)
         """
         token = tokens[idx]
 
@@ -143,12 +142,14 @@ class CRFTagger(TaggerI):
     def tag_sents(self, sents):
         """
         Tag a list of sentences. NB before using this function, user should specify the mode_file either by
-                       - Train a new model using ``train'' function
-                       - Use the pre-trained model which is set via ``set_model_file'' function
-        :params sentences : list of sentences needed to tag.
-        :type sentences : list(list(str))
-        :return : list of tagged sentences.
-        :rtype : list (list (tuple(str,str)))
+
+        - Train a new model using ``train`` function
+        - Use the pre-trained model which is set via ``set_model_file`` function
+
+        :params sentences: list of sentences needed to tag.
+        :type sentences: list(list(str))
+        :return: list of tagged sentences.
+        :rtype: list(list(tuple(str,str)))
         """
         if self._model_file == "":
             raise Exception(
@@ -193,12 +194,14 @@ class CRFTagger(TaggerI):
     def tag(self, tokens):
         """
         Tag a sentence using Python CRFSuite Tagger. NB before using this function, user should specify the mode_file either by
-                       - Train a new model using ``train'' function
-                       - Use the pre-trained model which is set via ``set_model_file'' function
-        :params tokens : list of tokens needed to tag.
-        :type tokens : list(str)
-        :return : list of tagged tokens.
-        :rtype : list (tuple(str,str))
+
+        - Train a new model using ``train`` function
+        - Use the pre-trained model which is set via ``set_model_file`` function
+
+        :params tokens: list of tokens needed to tag.
+        :type tokens: list(str)
+        :return: list of tagged tokens.
+        :rtype: list(tuple(str,str))
         """
 
         return self.tag_sents([tokens])[0]

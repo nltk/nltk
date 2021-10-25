@@ -264,8 +264,8 @@ def edges2dot(edges, shapes=None, attr=None):
     :param edges: the set (or list) of edges of a directed graph.
 
     :return dot_string: a representation of 'edges' as a string in the DOT
-    graph language, which can be converted to an image by the 'dot' program
-    from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
+        graph language, which can be converted to an image by the 'dot' program
+        from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
 
     :param shapes: dictionary of strings that trigger a specified shape.
     :param attr: dictionary with global graph attributes
@@ -279,7 +279,6 @@ def edges2dot(edges, shapes=None, attr=None):
     "B" -> "C";
     "C" -> "B";
     }
-
     """
     if not shapes:
         shapes = dict()

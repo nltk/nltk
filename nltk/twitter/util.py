@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Authentication utilities to accompany :module:`twitterclient`.
+Authentication utilities to accompany `twitterclient`.
 """
 
 import os
@@ -46,25 +46,22 @@ class Authenticate:
         """
         Read OAuth credentials from a text file.
 
-        ::
-           File format for OAuth 1
-           =======================
+        File format for OAuth 1::
+
            app_key=YOUR_APP_KEY
            app_secret=YOUR_APP_SECRET
            oauth_token=OAUTH_TOKEN
            oauth_token_secret=OAUTH_TOKEN_SECRET
 
 
-        ::
-           File format for OAuth 2
-           =======================
+        File format for OAuth 2::
 
            app_key=YOUR_APP_KEY
            app_secret=YOUR_APP_SECRET
            access_token=ACCESS_TOKEN
 
-        :param str file_name: File containing credentials. ``None`` (default) reads\
-        data from `TWITTER/'credentials.txt'`
+        :param str file_name: File containing credentials. ``None`` (default) reads
+            data from `TWITTER/'credentials.txt'`
         """
         if creds_file is not None:
             self.creds_file = creds_file

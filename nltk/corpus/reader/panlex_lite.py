@@ -108,14 +108,14 @@ class PanLexLiteCorpusReader(CorpusReader):
     def translations(self, from_uid, from_tt, to_uid):
         """
         Return a list of translations for an expression into a single language
-            variety.
+        variety.
 
         :param from_uid: the source expression's language variety, as a
             seven-character uniform identifier.
         :param from_tt: the source expression's text.
         :param to_uid: the target language variety, as a seven-character
             uniform identifier.
-        :return a list of translation tuples. The first element is the expression
+        :return: a list of translation tuples. The first element is the expression
             text and the second element is the translation quality.
         :rtype: list(tuple)
         """

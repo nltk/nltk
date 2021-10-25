@@ -78,12 +78,14 @@ class ChunkString:
         :param debug_level: The level of debugging which should be
             applied to transformations on the ``ChunkString``.  The
             valid levels are:
+
                 - 0: no checks
                 - 1: full check on to_chunkstruct
                 - 2: full check on to_chunkstruct and cursory check after
-                   each transformation.
+                  each transformation.
                 - 3: full check on to_chunkstruct and full check after
-                   each transformation.
+                  each transformation.
+
             We recommend you use at least level 1.  You should
             probably use level 3 if you use any non-standard
             subclasses of ``RegexpChunkRule``.

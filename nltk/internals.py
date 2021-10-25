@@ -214,6 +214,7 @@ def read_str(s, start_position):
         escape sequence) is passed into the ``eval``.
 
     :Example:
+
     >>> from nltk.internals import read_str
     >>> read_str('"Hello", World!', 0)
     ('Hello', 7)
@@ -271,6 +272,7 @@ def read_int(s, start_position):
         match in ``s`` at ``start_position``.
 
     :Example:
+
     >>> from nltk.internals import read_int
     >>> read_int('42 is the answer', 0)
     (42, 2)
@@ -308,6 +310,7 @@ def read_number(s, start_position):
         match in ``s`` at ``start_position``.
 
     :Example:
+
     >>> from nltk.internals import read_number
     >>> read_number('Pi is 3.14159', 6)
     (3.14159, 13)
@@ -330,9 +333,9 @@ def read_number(s, start_position):
 def overridden(method):
     """
     :return: True if ``method`` overrides some method with the same
-    name in a base class.  This is typically used when defining
-    abstract base classes or interfaces, to allow subclasses to define
-    either of two related methods:
+        name in a base class.  This is typically used when defining
+        abstract base classes or interfaces, to allow subclasses to define
+        either of two related methods:
 
         >>> class EaterI:
         ...     '''Subclass must define eat() or batch_eat().'''

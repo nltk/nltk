@@ -37,6 +37,7 @@ class SentimentAnalyzer:
     def all_words(self, documents, labeled=None):
         """
         Return all words/tokens from the documents (with duplicates).
+
         :param documents: a list of (words, label) tuples.
         :param labeled: if `True`, assume that each document is represented by a
             (words, label) tuple: (list(str), str). If `False`, each document is
