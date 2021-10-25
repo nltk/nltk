@@ -11,7 +11,7 @@ Precision, Recall and F-measure for each of the tags.
     >>> from nltk.corpus import treebank
     >>> tagger = PerceptronTagger()
     >>> gold_data = treebank.tagged_sents()[10:20]
-    >>> print(tagger.evaluate(gold_data)) # doctest: +ELLIPSIS
+    >>> print(tagger.accuracy(gold_data)) # doctest: +ELLIPSIS
     0.885931...
 
     >>> print(tagger.evaluate_per_tag(gold_data))
@@ -136,7 +136,7 @@ Brill Trainer with evaluation
 We've now created a simple ``RegexpTagger``, which tags according to the regular expression
 rules it has been supplied. This tagger in and of itself does not have a great accuracy.
 
-    >>> backoff.evaluate(gold_data) #doctest: +ELLIPSIS
+    >>> backoff.accuracy(gold_data) #doctest: +ELLIPSIS
     0.245014...
 
 Neither does a simple ``UnigramTagger``. This tagger is trained on some data,
@@ -144,7 +144,7 @@ and will then first try to match unigrams (i.e. tokens) of the sentence it has
 to tag to the learned data.
 
     >>> unigram_tagger = UnigramTagger(baseline_data)
-    >>> unigram_tagger.evaluate(gold_data) #doctest: +ELLIPSIS
+    >>> unigram_tagger.accuracy(gold_data) #doctest: +ELLIPSIS
     0.581196...
 
 The lackluster accuracy here can be explained with the following example:
@@ -162,7 +162,7 @@ the ``RegexpTagger`` will be used as a backoff for the situations where the ``Un
 encounters an OOV token.
 
     >>> baseline = UnigramTagger(baseline_data, backoff=backoff)
-    >>> baseline.evaluate(gold_data) #doctest: +ELLIPSIS
+    >>> baseline.accuracy(gold_data) #doctest: +ELLIPSIS
     0.7537647...
 
 That is already much better. We can investigate the performance further by running
@@ -329,7 +329,7 @@ templates to attempt to improve the performance of the tagger.
     <BLANKLINE>
     <BLANKLINE>
 
-    >>> tagger1.evaluate(gold_data) # doctest: +ELLIPSIS
+    >>> tagger1.accuracy(gold_data) # doctest: +ELLIPSIS
     0.769230...
 
     >>> print(tagger1.evaluate_per_tag(gold_data, sort_by_count=True))

@@ -261,7 +261,7 @@ def postag(
     if gold_data:
         print(
             "    Accuracy on test set: {:0.4f}".format(
-                baseline_tagger.evaluate(gold_data)
+                baseline_tagger.accuracy(gold_data)
             )
         )
 
@@ -274,7 +274,7 @@ def postag(
     brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
     print(f"Trained tbl tagger in {time.time() - tbrill:0.2f} seconds")
     if gold_data:
-        print("    Accuracy on test set: %.4f" % brill_tagger.evaluate(gold_data))
+        print("    Accuracy on test set: %.4f" % brill_tagger.accuracy(gold_data))
 
     # printing the learned rules, if learned silently
     if trace == 1:

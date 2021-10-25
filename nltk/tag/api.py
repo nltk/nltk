@@ -16,7 +16,7 @@ from functools import lru_cache
 from itertools import chain
 from typing import Dict
 
-from nltk.internals import overridden
+from nltk.internals import deprecated, overridden
 from nltk.metrics import ConfusionMatrix, accuracy
 from nltk.tag.util import untag
 
@@ -56,7 +56,11 @@ class TaggerI(metaclass=ABCMeta):
         """
         return [self.tag(sent) for sent in sentences]
 
+    @deprecated("Use accuracy(gold) instead.")
     def evaluate(self, gold):
+        return self.accuracy(gold)
+
+    def accuracy(self, gold):
         """
         Score the accuracy of the tagger against the gold standard.
         Strip the tags from the gold standard text, retag it using
