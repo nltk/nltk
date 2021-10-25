@@ -758,6 +758,27 @@ classified.a.02):
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
 
 
+----------------------------------------------------------------
+Loading alternative Wordnet versions
+----------------------------------------------------------------
+
+    >>> print("Wordnet {}".format(wn.get_version()))
+    Wordnet 3.0
+
+    >>> from nltk.corpus import wordnet31 as wn31
+    >>> print("Wordnet {}".format(wn31.get_version()))
+    Wordnet 3.1
+
+    >>> print(wn.synset('restrain.v.01').hyponyms())
+    [Synset('confine.v.03'), Synset('control.v.02'), Synset('hold.v.36'), Synset('inhibit.v.04')]
+
+    >>> print(wn31.synset('restrain.v.01').hyponyms())
+    [Synset('enchain.v.01'), Synset('fetter.v.01'), Synset('ground.v.02'), Synset('impound.v.02'), Synset('pen_up.v.01'), Synset('pinion.v.01'), Synset('pound.v.06'), Synset('tie_down.v.01')]
+
+    >>> print(wn31.synset('restrain.v.04').hyponyms())
+    [Synset('baffle.v.03'), Synset('confine.v.02'), Synset('control.v.02'), Synset('hold.v.36'), Synset('rule.v.07'), Synset('swallow.v.06'), Synset('wink.v.04')]
+
+
 -------------
 Teardown test
 -------------
