@@ -1293,6 +1293,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def get_version(self):
         fh = self._data_file(ADJ)
+        fh.seek(0)
         for line in fh:
             match = re.search(r"Word[nN]et (\d+|\d+\.\d+) Copyright", line)
             if match is not None:
