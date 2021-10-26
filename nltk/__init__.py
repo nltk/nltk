@@ -200,7 +200,7 @@ else:
 from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
-from nltk import tag, tbl, text, tokenize, translate, tree, treetransforms, util
+from nltk import tag, tbl, text, tokenize, translate, tree, util
 
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116

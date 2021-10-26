@@ -27,4 +27,9 @@ from nltk.tree.parented import MultiParentedTree, ParentedTree
 from nltk.tree.parsing import bracket_parse, sinica_parse
 from nltk.tree.prettyprinter import TreePrettyPrinter
 from nltk.tree.probabilistic import ProbabilisticTree
+from nltk.tree.transforms import (
+    chomsky_normal_form,
+    collapse_unary,
+    un_chomsky_normal_form,
+)
 from nltk.tree.tree import Tree
