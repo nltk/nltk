@@ -27,7 +27,7 @@ except ImportError:
 from collections import defaultdict
 from operator import itemgetter
 
-from nltk.tree import Tree
+from nltk.tree.tree import Tree
 from nltk.util import OrderedDict
 
 ANSICOLOR = {
