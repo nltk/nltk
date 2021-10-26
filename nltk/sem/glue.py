@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
@@ -414,7 +414,7 @@ class GlueDict(dict):
     def get_meaning_formula(self, generic, word):
         """
         :param generic: A meaning formula string containing the
-        parameter "<word>"
+            parameter "<word>"
         :param word: The actual word to be replace "<word>"
         """
         word = word.replace(".", "")

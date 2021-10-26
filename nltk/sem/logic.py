@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -99,8 +99,9 @@ class LogicParser:
 
     def __init__(self, type_check=False):
         """
-        :param type_check: bool should type checking be performed?
-        to their types.
+        :param type_check: should type checking be performed
+            to their types?
+        :type type_check: bool
         """
         assert isinstance(type_check, bool)
 
@@ -139,7 +140,7 @@ class LogicParser:
 
         :param data: str for the input to be parsed
         :param signature: ``dict<str, str>`` that maps variable names to type
-        strings
+            strings
         :returns: a parsed Expression
         """
         data = data.rstrip()

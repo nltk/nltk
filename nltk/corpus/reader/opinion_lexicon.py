@@ -2,23 +2,26 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 CorpusReader for the Opinion Lexicon.
 
-- Opinion Lexicon information -
+Opinion Lexicon information
+===========================
+
 Authors: Minqing Hu and Bing Liu, 2004.
-    Department of Computer Sicence
+    Department of Computer Science
     University of Illinois at Chicago
 
 Contact: Bing Liu, liub@cs.uic.edu
-        http://www.cs.uic.edu/~liub
+        https://www.cs.uic.edu/~liub
 
 Distributed with permission.
 
 Related papers:
+
 - Minqing Hu and Bing Liu. "Mining and summarizing customer reviews".
     Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery
     & Data Mining (KDD-04), Aug 22-25, 2004, Seattle, Washington, USA.

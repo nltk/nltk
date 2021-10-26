@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Tom Lippincott <tom@cs.columbia.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -34,7 +34,13 @@ def _edit_dist_init(len1, len2):
     return lev
 
 
-def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False):
+def _last_left_t_init(sigma):
+    return {c: 0 for c in sigma}
+
+
+def _edit_dist_step(
+    lev, i, j, s1, s2, last_left, last_right, substitution_cost=1, transpositions=False
+):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
@@ -47,9 +53,8 @@ def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False
 
     # transposition
     d = c + 1  # never picked by default
-    if transpositions and i > 1 and j > 1:
-        if s1[i - 2] == c2 and s2[j - 2] == c1:
-            d = lev[i - 2][j - 2] + 1
+    if transpositions and last_left > 0 and last_right > 0:
+        d = lev[last_left - 1][last_right - 1] + i - last_left + j - last_right - 1
 
     # pick the cheapest
     lev[i][j] = min(a, b, c, d)
@@ -78,25 +83,40 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :type s2: str
     :type substitution_cost: int
     :type transpositions: bool
-    :rtype int
+    :rtype: int
     """
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
     lev = _edit_dist_init(len1 + 1, len2 + 1)
 
+    # retrieve alphabet
+    sigma = set()
+    sigma.update(s1)
+    sigma.update(s2)
+
+    # set up table to remember positions of last seen occurrence in s1
+    last_left_t = _last_left_t_init(sigma)
+
     # iterate over the array
     for i in range(len1):
+        last_right = 0
         for j in range(len2):
+            last_left = last_left_t[s2[j]]
             _edit_dist_step(
                 lev,
                 i + 1,
                 j + 1,
                 s1,
                 s2,
+                last_left,
+                last_right,
                 substitution_cost=substitution_cost,
                 transpositions=transpositions,
             )
+            if s1[i] == s2[j]:
+                last_right = j + 1
+            last_left_t[s1[i]] = i + 1
     return lev[len1][len2]
 
 
@@ -135,9 +155,11 @@ def edit_distance_align(s1, s2, substitution_cost=1):
 
     In case of multiple valid minimum-distance alignments, the
     backtrace has the following operation precedence:
+
     1. Skip s1 character
     2. Skip s2 character
     3. Substitute s1 and s2 characters
+
     The backtrace is carried out in reverse string order.
 
     This function does not support transposition.
@@ -146,7 +168,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
     :type s1: str
     :type s2: str
     :type substitution_cost: int
-    :rtype List[Tuple(int, int)]
+    :rtype: List[Tuple(int, int)]
     """
     # set up a 2-D array
     len1 = len(s1)
@@ -162,6 +184,8 @@ def edit_distance_align(s1, s2, substitution_cost=1):
                 j + 1,
                 s1,
                 s2,
+                0,
+                0,
                 substitution_cost=substitution_cost,
                 transpositions=False,
             )
@@ -277,13 +301,12 @@ def jaro_similarity(s1, s2):
     required to change one word into another. The Jaro similarity formula from
     https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance :
 
-        jaro_sim = 0 if m = 0 else 1/3 * (m/|s_1| + m/s_2 + (m-t)/m)
+        ``jaro_sim = 0 if m = 0 else 1/3 * (m/|s_1| + m/s_2 + (m-t)/m)``
 
-    where:
-        - |s_i| is the length of string s_i
-        - m is the no. of matching characters
-        - t is the half no. of possible transpositions.
-
+    where
+        - `|s_i|` is the length of string `s_i`
+        - `m` is the no. of matching characters
+        - `t` is the half no. of possible transpositions.
     """
     # First, store the length of the strings
     # because they will be re-used several times.
@@ -335,20 +358,21 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
         Decision Rules in the Fellegi-Sunter Model of Record Linkage.
         Proceedings of the Section on Survey Research Methods.
         American Statistical Association: 354-359.
+
     such that:
 
         jaro_winkler_sim = jaro_sim + ( l * p * (1 - jaro_sim) )
 
     where,
 
-        - jaro_sim is the output from the Jaro Similarity,
+    - jaro_sim is the output from the Jaro Similarity,
         see jaro_similarity()
-        - l is the length of common prefix at the start of the string
-            - this implementation provides an upperbound for the l value
-              to keep the prefixes.A common value of this upperbound is 4.
-        - p is the constant scaling factor to overweigh common prefixes.
-          The Jaro-Winkler similarity will fall within the [0, 1] bound,
-          given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
+    - l is the length of common prefix at the start of the string
+        - this implementation provides an upperbound for the l value
+            to keep the prefixes.A common value of this upperbound is 4.
+    - p is the constant scaling factor to overweigh common prefixes.
+        The Jaro-Winkler similarity will fall within the [0, 1] bound,
+        given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
 
 
     Test using outputs from https://www.census.gov/srd/papers/pdf/rr93-8.pdf
@@ -361,8 +385,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     >>> winkler_scores = [1.000, 0.967, 0.947, 0.944, 0.911, 0.893, 0.858, 0.853, 0.000]
     >>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.790, 0.000]
 
-        # One way to match the values on the Winkler's paper is to provide a different
-    # p scaling factor for different pairs of strings, e.g.
+    One way to match the values on the Winkler's paper is to provide a different
+    p scaling factor for different pairs of strings, e.g.
+
     >>> p_factors = [0.1, 0.125, 0.20, 0.125, 0.20, 0.20, 0.20, 0.15, 0.1]
 
     >>> for (s1, s2), jscore, wscore, p in zip(winkler_examples, jaro_scores, winkler_scores, p_factors):
@@ -390,8 +415,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     ... 0.961, 0.921, 0.933, 0.880, 0.858, 0.805, 0.933, 0.000, 0.947, 0.967, 0.943,
     ... 0.913, 0.922, 0.922, 0.900, 0.867, 0.000]
 
-        # One way to match the values on the Winkler's paper is to provide a different
-    # p scaling factor for different pairs of strings, e.g.
+    One way to match the values on the Winkler's paper is to provide a different
+    p scaling factor for different pairs of strings, e.g.
+
     >>> p_factors = [0.1, 0.1, 0.1, 0.1, 0.125, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.20,
     ... 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 
@@ -410,8 +436,6 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 
     >>> round(jaro_winkler_similarity('TANYA', 'TONYA', p=0.1, max_l=100), 3)
     0.88
-
-
     """
     # To ensure that the output of the Jaro-Winkler's similarity
     # falls between [0,1], the product of l * p needs to be

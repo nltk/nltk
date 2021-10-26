@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -569,9 +569,8 @@ class Text:
         :type text_seed: list(str)
 
         :param random_seed: A random seed or an instance of `random.Random`. If provided,
-        makes the random sampling part of generation reproducible. (default=42)
+            makes the random sampling part of generation reproducible. (default=42)
         :type random_seed: int
-
         """
         # Create the model when using it the first time.
         self._tokenized_sents = [

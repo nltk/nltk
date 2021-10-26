@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -441,7 +441,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given VerbNet class.
 
         :param vnclass: A VerbNet class identifier; or an ElementTree
-        containing the xml contents of a VerbNet class.
+            containing the xml contents of a VerbNet class.
         """
         if isinstance(vnclass, str):
             vnclass = self.vnclass(vnclass)

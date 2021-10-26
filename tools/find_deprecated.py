@@ -4,7 +4,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -232,7 +232,7 @@ def main():
         print("Unable to import nltk -- check your PYTHONPATH.")
         sys.exit(-1)
 
-    print("Finding definitions of deprecated funtions & classes in nltk...")
+    print("Finding definitions of deprecated functions & classes in nltk...")
     find_deprecated_defs(nltk.__path__[0])
 
     print("Looking for possible uses of deprecated funcs & classes...")

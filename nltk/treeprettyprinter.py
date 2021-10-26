@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Andreas van Cranenburgh <A.W.vanCranenburgh@uva.nl>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -14,7 +14,7 @@ https://github.com/andreasvc/disco-dop
 Interesting reference (not used for this code):
 T. Eschbach et al., Orth. Hypergraph Drawing, Journal of
 Graph Algorithms and Applications, 10(2) 141--157 (2006)149.
-http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
+https://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
 import re

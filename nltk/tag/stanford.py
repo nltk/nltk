@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -141,7 +141,7 @@ class StanfordPOSTagger(StanfordTagger):
     A class for pos tagging with Stanford Tagger. The input is the paths to:
      - a model trained on training data
      - (optionally) the path to the stanford tagger jar file. If not specified here,
-       then this jar file must be specified in the CLASSPATH envinroment variable.
+       then this jar file must be specified in the CLASSPATH environment variable.
      - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
@@ -179,7 +179,7 @@ class StanfordNERTagger(StanfordTagger):
 
     - a model trained on training data
     - (optionally) the path to the stanford tagger jar file. If not specified here,
-      then this jar file must be specified in the CLASSPATH envinroment variable.
+      then this jar file must be specified in the CLASSPATH environment variable.
     - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:

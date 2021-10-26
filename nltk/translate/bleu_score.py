@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
 # Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """BLEU score implementation."""
@@ -28,7 +28,7 @@ def sentence_bleu(
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
     "BLEU: a method for automatic evaluation of machine translation."
-    In Proceedings of ACL. http://www.aclweb.org/anthology/P02-1040.pdf
+    In Proceedings of ACL. https://www.aclweb.org/anthology/P02-1040.pdf
 
     >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
     ...               'ensures', 'that', 'the', 'military', 'always',
@@ -215,7 +215,7 @@ def corpus_bleu(
     p_n = smoothing_function(
         p_n, references=references, hypothesis=hypothesis, hyp_len=hyp_lengths
     )
-    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
+    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n) if p_i > 0)
     s = bp * math.exp(math.fsum(s))
     return s
 
@@ -362,74 +362,74 @@ def brevity_penalty(closest_ref_len, hyp_len):
     An example from the paper. There are three references with length 12, 15
     and 17. And a concise hypothesis of the length 12. The brevity penalty is 1.
 
-        >>> reference1 = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
-        >>> reference2 = list('aaaaaaaaaaaaaaa')   # i.e. ['a'] * 15
-        >>> reference3 = list('aaaaaaaaaaaaaaaaa') # i.e. ['a'] * 17
-        >>> hypothesis = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
-        >>> references = [reference1, reference2, reference3]
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-        >>> brevity_penalty(closest_ref_len, hyp_len)
-        1.0
+    >>> reference1 = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
+    >>> reference2 = list('aaaaaaaaaaaaaaa')   # i.e. ['a'] * 15
+    >>> reference3 = list('aaaaaaaaaaaaaaaaa') # i.e. ['a'] * 17
+    >>> hypothesis = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
+    >>> references = [reference1, reference2, reference3]
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+    >>> brevity_penalty(closest_ref_len, hyp_len)
+    1.0
 
     In case a hypothesis translation is shorter than the references, penalty is
     applied.
 
-        >>> references = [['a'] * 28, ['a'] * 28]
-        >>> hypothesis = ['a'] * 12
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-        >>> brevity_penalty(closest_ref_len, hyp_len)
-        0.2635971381157267
+    >>> references = [['a'] * 28, ['a'] * 28]
+    >>> hypothesis = ['a'] * 12
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+    >>> brevity_penalty(closest_ref_len, hyp_len)
+    0.2635971381157267
 
     The length of the closest reference is used to compute the penalty. If the
     length of a hypothesis is 12, and the reference lengths are 13 and 2, the
     penalty is applied because the hypothesis length (12) is less then the
     closest reference length (13).
 
-        >>> references = [['a'] * 13, ['a'] * 2]
-        >>> hypothesis = ['a'] * 12
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-        >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
-        0.9200...
+    >>> references = [['a'] * 13, ['a'] * 2]
+    >>> hypothesis = ['a'] * 12
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+    >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+    0.9200...
 
     The brevity penalty doesn't depend on reference order. More importantly,
     when two reference sentences are at the same distance, the shortest
     reference sentence length is used.
 
-        >>> references = [['a'] * 13, ['a'] * 11]
-        >>> hypothesis = ['a'] * 12
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-        >>> bp1 = brevity_penalty(closest_ref_len, hyp_len)
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(reversed(references), hyp_len)
-        >>> bp2 = brevity_penalty(closest_ref_len, hyp_len)
-        >>> bp1 == bp2 == 1
-        True
+    >>> references = [['a'] * 13, ['a'] * 11]
+    >>> hypothesis = ['a'] * 12
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+    >>> bp1 = brevity_penalty(closest_ref_len, hyp_len)
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(reversed(references), hyp_len)
+    >>> bp2 = brevity_penalty(closest_ref_len, hyp_len)
+    >>> bp1 == bp2 == 1
+    True
 
     A test example from mteval-v13a.pl (starting from the line 705):
 
-        >>> references = [['a'] * 11, ['a'] * 8]
-        >>> hypothesis = ['a'] * 7
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-        >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
-        0.8668...
+    >>> references = [['a'] * 11, ['a'] * 8]
+    >>> hypothesis = ['a'] * 7
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+    >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+    0.8668...
 
-        >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
-        >>> hypothesis = ['a'] * 7
-        >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-        >>> brevity_penalty(closest_ref_len, hyp_len)
-        1.0
+    >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
+    >>> hypothesis = ['a'] * 7
+    >>> hyp_len = len(hypothesis)
+    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+    >>> brevity_penalty(closest_ref_len, hyp_len)
+    1.0
 
     :param hyp_len: The length of the hypothesis for a single sentence OR the
-    sum of all the hypotheses' lengths for a corpus
+        sum of all the hypotheses' lengths for a corpus
     :type hyp_len: int
     :param closest_ref_len: The length of the closest reference for a single
-    hypothesis OR the sum of all the closest references for every hypotheses.
+        hypothesis OR the sum of all the closest references for every hypotheses.
     :type closest_ref_len: int
     :return: BLEU's brevity penalty.
     :rtype: float
@@ -552,14 +552,18 @@ class SmoothingFunction:
         The smoothing is computed by taking 1 / ( 2^k ), instead of 0, for each
         precision score whose matching n-gram count is null.
         k is 1 for the first 'n' value for which the n-gram match count is null/
+
         For example, if the text contains:
-         - one 2-gram match
-         - and (consequently) two 1-gram matches
+
+        - one 2-gram match
+        - and (consequently) two 1-gram matches
+
         the n-gram count for each individual precision score would be:
-         - n=1  =>  prec_count = 2     (two unigrams)
-         - n=2  =>  prec_count = 1     (one bigram)
-         - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
-         - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
+
+        - n=1  =>  prec_count = 2     (two unigrams)
+        - n=2  =>  prec_count = 1     (one bigram)
+        - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
+        - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
         """
         incvnt = 1  # From the mteval-v13a.pl, it's referred to as k.
         for i, p_i in enumerate(p_n):

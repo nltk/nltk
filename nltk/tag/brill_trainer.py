@@ -4,7 +4,7 @@
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see  LICENSE.TXT
 
 import bisect
@@ -98,12 +98,12 @@ class BrillTaggerTrainer:
         *min_score*, and each of which has accuracy not lower than
         *min_acc*.
 
-        #imports
+        >>> # Relevant imports
         >>> from nltk.tbl.template import Template
         >>> from nltk.tag.brill import Pos, Word
         >>> from nltk.tag import untag, RegexpTagger, BrillTaggerTrainer
 
-        #some data
+        >>> # Load some data
         >>> from nltk.corpus import treebank
         >>> training_data = treebank.tagged_sents()[:100]
         >>> baseline_data = treebank.tagged_sents()[100:200]
@@ -127,11 +127,11 @@ class BrillTaggerTrainer:
         >>> baseline.evaluate(gold_data) #doctest: +ELLIPSIS
         0.2450142...
 
-        #templates
+        >>> # Set up templates
         >>> Template._cleartemplates() #clear any templates created in earlier tests
         >>> templates = [Template(Pos([-1])), Template(Pos([-1]), Word([0]))]
 
-        #construct a BrillTaggerTrainer
+        >>> # Construct a BrillTaggerTrainer
         >>> tt = BrillTaggerTrainer(baseline, templates, trace=3)
 
         >>> tagger1 = tt.train(training_data, max_rules=10)
@@ -187,7 +187,7 @@ class BrillTaggerTrainer:
         >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
         [1855, 1376, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
 
-        # a high-accuracy tagger
+        >>> # A high-accuracy tagger
         >>> tagger2 = tt.train(training_data, max_rules=10, min_acc=0.99)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: 0.99)
         Finding initial useful rules...
@@ -233,7 +233,6 @@ class BrillTaggerTrainer:
         :type min_acc: float or None
         :return: the learned tagger
         :rtype: BrillTagger
-
         """
         # FIXME: several tests are a bit too dependent on tracing format
         # FIXME: tests in trainer.fast and trainer.brillorig are exact duplicates

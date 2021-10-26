@@ -24,7 +24,7 @@ Initialize the Dependency Parser
     ...      ('^(a)$', 'ex_quant'),
     ...      ('^(every)$', 'univ_quant'),
     ...      ('^(girl|dog)$', 'NN')
-    ... ])
+    ... ]).tag
     >>> depparser = MaltParser(tagger=tagger)
 
 --------------------

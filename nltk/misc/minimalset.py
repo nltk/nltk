@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 from collections import defaultdict
@@ -63,7 +63,7 @@ class MinimalSet:
 
         :param minimum: the minimum number of distinct target forms
         :type minimum: int
-        :rtype list
+        :rtype: list
         """
         return [c for c in self._contexts if len(self._seen[c]) >= minimum]
 

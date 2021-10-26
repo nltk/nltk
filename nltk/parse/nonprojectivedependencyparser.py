@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -39,9 +39,9 @@ class DependencyScorerI:
         """
         :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.
-        Typically the edges present in the graphs can be used as
-        positive training examples, and the edges not present as negative
-        examples.
+            Typically the edges present in the graphs can be used as
+            positive training examples, and the edges not present as negative
+            examples.
         """
         raise NotImplementedError()
 
@@ -49,21 +49,23 @@ class DependencyScorerI:
         """
         :type graph: DependencyGraph
         :param graph: A dependency graph whose set of edges need to be
-        scored.
+            scored.
         :rtype: A three-dimensional list of numbers.
         :return: The score is returned in a multidimensional(3) list, such
-        that the outer-dimension refers to the head, and the
-        inner-dimension refers to the dependencies.  For instance,
-        scores[0][1] would reference the list of scores corresponding to
-        arcs from node 0 to node 1.  The node's 'address' field can be used
-        to determine its number identification.
+            that the outer-dimension refers to the head, and the
+            inner-dimension refers to the dependencies.  For instance,
+            scores[0][1] would reference the list of scores corresponding to
+            arcs from node 0 to node 1.  The node's 'address' field can be used
+            to determine its number identification.
 
         For further illustration, a score list corresponding to Fig.2 of
-        Keith Hall's 'K-best Spanning Tree Parsing' paper:
+        Keith Hall's 'K-best Spanning Tree Parsing' paper::
+
               scores = [[[], [5],  [1],  [1]],
                        [[], [],   [11], [4]],
                        [[], [10], [],   [5]],
                        [[], [8],  [8],  []]]
+
         When used in conjunction with a MaxEntClassifier, each score would
         correspond to the confidence of a particular edge being classified
         with the positive training examples.
@@ -228,7 +230,6 @@ class ProbabilisticNonprojectiveParser:
     1
 
     Rule based example
-    ------------------
 
     >>> from nltk.grammar import DependencyGrammar
 
@@ -349,7 +350,7 @@ class ProbabilisticNonprojectiveParser:
 
         :type new_indexes: A list of integers.
         :param new_indexes: A list of node addresses to check for
-        subsumed nodes.
+            subsumed nodes.
         """
         swapped = True
         while swapped:
@@ -374,10 +375,10 @@ class ProbabilisticNonprojectiveParser:
 
         :type column_index: integer.
         :param column_index: A index representing the column of incoming arcs
-        to a particular node being updated
+            to a particular node being updated
         :type cycle_indexes: A list of integers.
         :param cycle_indexes: Only arcs from cycle nodes are considered.  This
-        is a list of such nodes addresses.
+            is a list of such nodes addresses.
         """
         max_score = -100000
         for row_index in cycle_indexes:
@@ -393,7 +394,7 @@ class ProbabilisticNonprojectiveParser:
 
         :type node_index: integer.
         :param node_index: The address of the 'destination' node,
-        the node that is arced to.
+            the node that is arced to.
         """
         originals = self.compute_original_indexes([node_index])
         logger.debug("originals: %s", originals)

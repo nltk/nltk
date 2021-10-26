@@ -4,7 +4,7 @@
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see  LICENSE.TXT
 
 from collections import Counter, defaultdict
@@ -89,7 +89,7 @@ def nltkdemo18plus():
 def fntbl37():
     """
     Return 37 templates taken from the postagging task of the
-    fntbl distribution http://www.cs.jhu.edu/~rflorian/fntbl/
+    fntbl distribution https://www.cs.jhu.edu/~rflorian/fntbl/
     (37 is after excluding a handful which do not condition on Pos[0];
     fntbl can do that but the current nltk implementation cannot.)
     """

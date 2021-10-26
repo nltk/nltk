@@ -3,18 +3,18 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Corpus reader for the Information Extraction and Entity Recognition Corpus.
 
 NIST 1999 Information Extraction: Entity Recognition Evaluation
-http://www.itl.nist.gov/iad/894.01/tests/ie-er/er_99/er_99.htm
+https://www.itl.nist.gov/iad/894.01/tests/ie-er/er_99/er_99.htm
 
 This corpus contains the NEWSWIRE development test data for the
 NIST 1999 IE-ER Evaluation.  The files were taken from the
-subdirectory: /ie_er_99/english/devtest/newswire/*.ref.nwt
+subdirectory: ``/ie_er_99/english/devtest/newswire/*.ref.nwt``
 and filenames were shortened.
 
 The corpus contains the following files: APW_19980314, APW_19980424,

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 from functools import partial
 from itertools import chain
@@ -35,12 +35,13 @@ def padded_everygram_pipeline(order, text):
     """Default preprocessing for a sequence of sentences.
 
     Creates two iterators:
+
     - sentences padded and turned into sequences of `nltk.util.everygrams`
     - sentences padded as above and chained together for a flat stream of words
 
     :param order: Largest ngram length produced by `everygrams`.
-    :param text: Text to iterate over. Expected to be an iterable of sentences:
-    Iterable[Iterable[str]]
+    :param text: Text to iterate over. Expected to be an iterable of sentences.
+    :type text: Iterable[Iterable[str]]
     :return: iterator over text as ngrams, iterator over text as vocabulary data
     """
     padding_fn = partial(pad_both_ends, n=order)

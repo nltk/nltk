@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # Contributors: matthewmc, clouds56
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -123,7 +123,7 @@ def word_tokenize(text, language="english", preserve_line=False):
     :type text: str
     :param language: the model name in the Punkt corpus
     :type language: str
-    :param preserve_line: An option to keep the preserve the sentence and not sentence tokenize it.
+    :param preserve_line: A flag to decide whether to sentence tokenize the text or not.
     :type preserve_line: bool
     """
     sentences = [text] if preserve_line else sent_tokenize(text, language)

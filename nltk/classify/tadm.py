@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import subprocess
@@ -43,8 +43,8 @@ def write_tadm_file(train_toks, encoding, stream):
     """
     # See the following for a file format description:
     #
-    # http://sf.net/forum/forum.php?thread_id=1391502&forum_id=473054
-    # http://sf.net/forum/forum.php?thread_id=1675097&forum_id=473054
+    # https://sf.net/forum/forum.php?thread_id=1391502&forum_id=473054
+    # https://sf.net/forum/forum.php?thread_id=1675097&forum_id=473054
     labels = encoding.labels()
     for featureset, label in train_toks:
         length_line = "%d\n" % len(labels)

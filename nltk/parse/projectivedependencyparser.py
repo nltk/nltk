@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -295,7 +295,7 @@ class ProbabilisticProjectiveDependencyParser:
     to the one utilized by the rule-based projective parser.
 
     Usage example
-    -------------
+
     >>> from nltk.parse.dependencygraph import conll_data2
 
     >>> graphs = [

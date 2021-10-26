@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -52,6 +52,7 @@ class CorpusReader:
         :param encoding: The default unicode encoding for the files
             that make up the corpus.  The value of ``encoding`` can be any
             of the following:
+
             - A string: ``encoding`` is the encoding name for all files.
             - A dictionary: ``encoding[file_id]`` is the encoding
               name for the file whose identifier is ``file_id``.  If
@@ -67,7 +68,7 @@ class CorpusReader:
               processed using non-unicode byte strings.
         :param tagset: The name of the tagset used by this corpus, to be used
               for normalizing or converting the POS tags returned by the
-              tagged_...() methods.
+              ``tagged_...()`` methods.
         """
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):

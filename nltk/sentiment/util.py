@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -301,7 +301,7 @@ def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     except ImportError as e:
         raise ImportError(
             "The plot function requires matplotlib to be installed."
-            "See http://matplotlib.org/"
+            "See https://matplotlib.org/"
         ) from e
 
     plt.locator_params(axis="y", nbins=3)
@@ -464,8 +464,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
     Train and test Naive Bayes classifier on 10000 tweets, tokenized using
     TweetTokenizer.
     Features are composed of:
-        - 1000 most frequent unigrams
-        - 100 top bigrams (using BigramAssocMeasures.pmi)
+
+    - 1000 most frequent unigrams
+    - 100 top bigrams (using BigramAssocMeasures.pmi)
 
     :param trainer: `train` method of a classifier.
     :param n_instances: the number of total tweets that have to be used for
@@ -554,7 +555,8 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
     Features are composed of:
-        - most frequent unigrams
+
+    - most frequent unigrams
 
     :param trainer: `train` method of a classifier.
     :param n_instances: the number of total reviews that have to be used for

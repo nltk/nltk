@@ -4,7 +4,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """
 A theorem prover that makes use of the external 'Prover9' package.
@@ -128,7 +128,7 @@ class Prover9Parent:
                 name,
                 path_to_bin=binary_location,
                 env_vars=["PROVER9"],
-                url="http://www.cs.unm.edu/~mccune/prover9/",
+                url="https://www.cs.unm.edu/~mccune/prover9/",
                 binary_names=[name, name + ".exe"],
                 verbose=verbose,
             )
@@ -137,8 +137,8 @@ class Prover9Parent:
     def prover9_input(self, goal, assumptions):
         """
         :return: The input string that should be provided to the
-        prover9 binary.  This string is formed based on the goal,
-        assumptions, and timeout value of this object.
+            prover9 binary.  This string is formed based on the goal,
+            assumptions, and timeout value of this object.
         """
         s = ""
 
@@ -178,7 +178,7 @@ class Prover9Parent:
             name,
             searchpath=binary_locations,
             env_vars=["PROVER9"],
-            url="http://www.cs.unm.edu/~mccune/prover9/",
+            url="https://www.cs.unm.edu/~mccune/prover9/",
             binary_names=[name, name + ".exe"],
             verbose=verbose,
         )

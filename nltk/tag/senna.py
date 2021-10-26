@@ -2,40 +2,41 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Senna POS tagger, NER Tagger, Chunk Tagger
 
 The input is:
+
 - path to the directory that contains SENNA executables. If the path is incorrect,
-   SennaTagger will automatically search for executable file specified in SENNA environment variable
+  SennaTagger will automatically search for executable file specified in SENNA environment variable
 - (optionally) the encoding of the input data (default:utf-8)
 
 Note: Unit tests for this module can be found in test/unit/test_senna.py
 
-    >>> from nltk.tag import SennaTagger
-    >>> tagger = SennaTagger('/usr/share/senna-v3.0')
-    >>> tagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
-    [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
-    ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'NN'), ('?', '.')]
+>>> from nltk.tag import SennaTagger
+>>> tagger = SennaTagger('/usr/share/senna-v3.0')
+>>> tagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
+[('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
+('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'NN'), ('?', '.')]
 
-    >>> from nltk.tag import SennaChunkTagger
-    >>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')
-    >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
-    [('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
-    ('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
-    ('?', 'O')]
+>>> from nltk.tag import SennaChunkTagger
+>>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')
+>>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
+[('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
+('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
+('?', 'O')]
 
-    >>> from nltk.tag import SennaNERTagger
-    >>> nertagger = SennaNERTagger('/usr/share/senna-v3.0')
-    >>> nertagger.tag('Shakespeare theatre was in London .'.split()) # doctest: +SKIP
-    [('Shakespeare', 'B-PER'), ('theatre', 'O'), ('was', 'O'), ('in', 'O'),
-    ('London', 'B-LOC'), ('.', 'O')]
-    >>> nertagger.tag('UN headquarters are in NY , USA .'.split()) # doctest: +SKIP
-    [('UN', 'B-ORG'), ('headquarters', 'O'), ('are', 'O'), ('in', 'O'),
-    ('NY', 'B-LOC'), (',', 'O'), ('USA', 'B-LOC'), ('.', 'O')]
+>>> from nltk.tag import SennaNERTagger
+>>> nertagger = SennaNERTagger('/usr/share/senna-v3.0')
+>>> nertagger.tag('Shakespeare theatre was in London .'.split()) # doctest: +SKIP
+[('Shakespeare', 'B-PER'), ('theatre', 'O'), ('was', 'O'), ('in', 'O'),
+('London', 'B-LOC'), ('.', 'O')]
+>>> nertagger.tag('UN headquarters are in NY , USA .'.split()) # doctest: +SKIP
+[('UN', 'B-ORG'), ('headquarters', 'O'), ('are', 'O'), ('in', 'O'),
+('NY', 'B-LOC'), (',', 'O'), ('USA', 'B-LOC'), ('.', 'O')]
 """
 
 from nltk.classify import Senna

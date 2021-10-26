@@ -20,7 +20,7 @@ class TestBLEU(unittest.TestCase):
     def test_modified_precision(self):
         """
         Examples from the original BLEU paper
-        http://www.aclweb.org/anthology/P02-1040.pdf
+        https://www.aclweb.org/anthology/P02-1040.pdf
         """
         # Example 1: the "the*" example.
         # Reference sentences.
@@ -180,6 +180,16 @@ class TestBLEUFringeCases(unittest.TestCase):
         references = ["The candidate has no alignment to any of the references".split()]
         hypothesis = []
         assert sentence_bleu(references, hypothesis) == 0
+
+    def test_length_one_hypothesis(self):
+        # Test case where there's hypothesis is of length 1 in Smoothing method 4.
+        references = ["The candidate has no alignment to any of the references".split()]
+        hypothesis = ["Foo"]
+        method4 = SmoothingFunction().method4
+        try:
+            sentence_bleu(references, hypothesis, smoothing_function=method4)
+        except ValueError:
+            pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
     def test_empty_references(self):
         # Test case where there's reference is empty.

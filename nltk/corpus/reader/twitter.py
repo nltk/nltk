@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -59,14 +59,10 @@ class TwitterCorpusReader(CorpusReader):
         self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding="utf8"
     ):
         """
-
         :param root: The root directory for this corpus.
-
         :param fileids: A list or regexp specifying the fileids in this corpus.
-
         :param word_tokenizer: Tokenizer for breaking the text of Tweets into
-        smaller units, including but not limited to words.
-
+            smaller units, including but not limited to words.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
 
@@ -86,7 +82,7 @@ class TwitterCorpusReader(CorpusReader):
         <https://dev.twitter.com/docs/platform-objects/tweets>`_
 
         :return: the given file(s) as a list of dictionaries deserialised
-        from JSON.
+            from JSON.
         :rtype: list(dict)
         """
         return concat(
@@ -118,7 +114,7 @@ class TwitterCorpusReader(CorpusReader):
     def tokenized(self, fileids=None):
         """
         :return: the given file(s) as a list of the text content of Tweets as
-        as a list of words, screenanames, hashtags, URLs and punctuation symbols.
+            as a list of words, screenanames, hashtags, URLs and punctuation symbols.
 
         :rtype: list(list(str))
         """

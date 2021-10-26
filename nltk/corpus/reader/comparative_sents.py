@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -15,7 +15,7 @@ Annotated by: Nitin Jindal and Bing Liu, 2006.
               University of Illinois at Chicago
 
 Contact: Nitin Jindal, njindal@cs.uic.edu
-         Bing Liu, liub@cs.uic.edu (http://www.cs.uic.edu/~liub)
+         Bing Liu, liub@cs.uic.edu (https://www.cs.uic.edu/~liub)
 
 Distributed with permission.
 
@@ -45,7 +45,7 @@ CLOSE_COMPARISON = re.compile(r"</cs-[1234]>")
 GRAD_COMPARISON = re.compile(r"<cs-[123]>")
 NON_GRAD_COMPARISON = re.compile(r"<cs-4>")
 ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
-KEYWORD = re.compile(r"\((?!.*\()(.*)\)$")
+KEYWORD = re.compile(r"\(([^\(]*)\)$")
 
 
 class Comparison:

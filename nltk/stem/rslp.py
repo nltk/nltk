@@ -2,14 +2,14 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # This code is based on the algorithm presented in the paper "A Stemming
 # Algorithm for the Portuguese Language" by Viviane Moreira Orengo and
 # Christian Huyck, which unfortunately I had no access to. The code is a
 # Python version, with some minor modifications of mine, to the description
-# presented at http://www.webcitation.org/5NnvdIzOb and to the C source code
+# presented at https://www.webcitation.org/5NnvdIzOb and to the C source code
 # available at http://www.inf.ufrgs.br/~arcoelho/rslp/integrando_rslp.html.
 # Please note that this stemmer is intended for demonstration and educational
 # purposes only. Feel free to write me for any comments, including the
@@ -20,7 +20,7 @@
 # Algorithm for the Portuguese Language" de Viviane Moreira Orengo e
 # Christian Huyck, o qual infelizmente não tive a oportunidade de ler. O
 # código é uma conversão para Python, com algumas pequenas modificações
-# minhas, daquele apresentado em http://www.webcitation.org/5NnvdIzOb e do
+# minhas, daquele apresentado em https://www.webcitation.org/5NnvdIzOb e do
 # código para linguagem C disponível em
 # http://www.inf.ufrgs.br/~arcoelho/rslp/integrando_rslp.html. Por favor,
 # lembre-se de que este stemmer foi desenvolvido com finalidades unicamente

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """Corpus reader for the XML version of the British National Corpus."""
@@ -19,7 +19,7 @@ class BNCCorpusReader(XMLCorpusReader):
     ``words()``, ``sents()``, ``tagged_words()``, and ``tagged_sents()``.
 
     You can obtain the full version of the BNC corpus at
-    http://www.ota.ox.ac.uk/desc/2554
+    https://www.ota.ox.ac.uk/desc/2554
 
     If you extracted the archive to a directory called `BNC`, then you can
     instantiate the reader as::

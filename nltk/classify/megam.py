@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -20,7 +20,7 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
-.. _megam: http://www.umiacs.umd.edu/~hal/megam/index.html
+.. _megam: https://www.umiacs.umd.edu/~hal/megam/index.html
 """
 import subprocess
 
@@ -54,7 +54,7 @@ def config_megam(bin=None):
         bin,
         env_vars=["MEGAM"],
         binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
-        url="http://www.umiacs.umd.edu/~hal/megam/index.html",
+        url="https://www.umiacs.umd.edu/~hal/megam/index.html",
     )
 
 

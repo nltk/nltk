@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Maja Popovic
 # Contributors: Liling Tan, Aleš Tamchyna (Memsource)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """ ChrF score implementation """
@@ -20,10 +20,10 @@ def sentence_chrf(
     Calculates the sentence level CHRF (Character n-gram F-score) described in
      - Maja Popovic. 2015. CHRF: Character n-gram F-score for Automatic MT Evaluation.
        In Proceedings of the 10th Workshop on Machine Translation.
-       http://www.statmt.org/wmt15/pdf/WMT49.pdf
+       https://www.statmt.org/wmt15/pdf/WMT49.pdf
      - Maja Popovic. 2016. CHRF Deconstructed: β Parameters and n-gram Weights.
        In Proceedings of the 1st Conference on Machine Translation.
-       http://www.statmt.org/wmt16/pdf/W16-2341.pdf
+       https://www.statmt.org/wmt16/pdf/W16-2341.pdf
 
     This implementation of CHRF only supports a single reference at the moment.
 
@@ -34,7 +34,7 @@ def sentence_chrf(
     following options: -nw 0 -b 3
 
     An example from the original BLEU paper
-    http://www.aclweb.org/anthology/P02-1040.pdf
+    https://www.aclweb.org/anthology/P02-1040.pdf
 
         >>> ref1 = str('It is a guide to action that ensures that the military '
         ...            'will forever heed Party commands').split()

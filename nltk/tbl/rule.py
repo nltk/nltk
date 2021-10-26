@@ -4,7 +4,7 @@
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
@@ -106,9 +106,9 @@ class Rule(TagRule):
 
       - The M{n}th token is tagged with the Rule's original tag; and
       - For each (Feature(positions), M{value}) tuple:
+
         - The value of Feature of at least one token in {n+p for p in positions}
           is M{value}.
-
     """
 
     json_tag = "nltk.tbl.Rule"
@@ -119,15 +119,15 @@ class Rule(TagRule):
         C{original_tag} to C{replacement_tag} if all of the properties
         specified in C{conditions} hold.
 
-        @type templateid: string
-        @param templateid: the template id (a zero-padded string, '001' etc,
-          so it will sort nicely)
+        :param templateid: the template id (a zero-padded string, '001' etc,
+            so it will sort nicely)
+        :type templateid: string
 
-        @type conditions: C{iterable} of C{Feature}
-        @param conditions: A list of Feature(positions),
+        :param conditions: A list of Feature(positions),
             each of which specifies that the property (computed by
             Feature.extract_property()) of at least one
             token in M{n} + p in positions is C{value}.
+        :type conditions: C{iterable} of C{Feature}
 
         """
         TagRule.__init__(self, original_tag, replacement_tag)

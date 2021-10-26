@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -21,19 +21,20 @@ system specific binary should be rebuilt. Otherwise this could introduce
 misalignment errors.
 
 The input is:
+
 - path to the directory that contains SENNA executables. If the path is incorrect,
-   Senna will automatically search for executable file specified in SENNA environment variable
+  Senna will automatically search for executable file specified in SENNA environment variable
 - List of the operations needed to be performed.
 - (optionally) the encoding of the input data (default:utf-8)
 
 Note: Unit tests for this module can be found in test/unit/test_senna.py
 
-    >>> from nltk.classify import Senna
-    >>> pipeline = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
-    >>> sent = 'Dusseldorf is an international business center'.split()
-    >>> [(token['word'], token['chk'], token['ner'], token['pos']) for token in pipeline.tag(sent)] # doctest: +SKIP
-    [('Dusseldorf', 'B-NP', 'B-LOC', 'NNP'), ('is', 'B-VP', 'O', 'VBZ'), ('an', 'B-NP', 'O', 'DT'),
-    ('international', 'I-NP', 'O', 'JJ'), ('business', 'I-NP', 'O', 'NN'), ('center', 'I-NP', 'O', 'NN')]
+>>> from nltk.classify import Senna
+>>> pipeline = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
+>>> sent = 'Dusseldorf is an international business center'.split()
+>>> [(token['word'], token['chk'], token['ner'], token['pos']) for token in pipeline.tag(sent)] # doctest: +SKIP
+[('Dusseldorf', 'B-NP', 'B-LOC', 'NNP'), ('is', 'B-VP', 'O', 'VBZ'), ('an', 'B-NP', 'O', 'DT'),
+('international', 'I-NP', 'O', 'JJ'), ('business', 'I-NP', 'O', 'NN'), ('center', 'I-NP', 'O', 'NN')]
 """
 
 from os import environ, path, sep
@@ -41,8 +42,6 @@ from platform import architecture, system
 from subprocess import PIPE, Popen
 
 from nltk.tag.api import TaggerI
-
-_senna_url = "http://ml.nec-labs.com/senna/"
 
 
 class Senna(TaggerI):

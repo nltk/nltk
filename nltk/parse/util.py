@@ -3,7 +3,7 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -160,9 +160,11 @@ class TestGrammar:
     def run(self, show_trees=False):
         """
         Sentences in the test suite are divided into two classes:
-         - grammatical (``accept``) and
-         - ungrammatical (``reject``).
-        If a sentence should parse accordng to the grammar, the value of
+
+        - grammatical (``accept``) and
+        - ungrammatical (``reject``).
+
+        If a sentence should parse according to the grammar, the value of
         ``trees`` will be a non-empty list. If a sentence should be rejected
         according to the grammar, then the value of ``trees`` will be None.
         """
@@ -195,8 +197,10 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
     """
     Parses a string with one test sentence per line.
     Lines can optionally begin with:
-      - a bool, saying if the sentence is grammatical or not, or
-      - an int, giving the number of parse trees is should have,
+
+    - a bool, saying if the sentence is grammatical or not, or
+    - an int, giving the number of parse trees is should have,
+
     The result information is followed by a colon, and then the sentence.
     Empty lines and lines beginning with a comment char are ignored.
 

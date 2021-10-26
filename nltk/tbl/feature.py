@@ -4,7 +4,7 @@
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see  LICENSE.TXT
 
 from abc import ABCMeta, abstractmethod
@@ -36,23 +36,23 @@ class Feature(metaclass=ABCMeta):
         """
         Construct a Feature which may apply at C{positions}.
 
-        #For instance, importing some concrete subclasses (Feature is abstract)
+        >>> # For instance, importing some concrete subclasses (Feature is abstract)
         >>> from nltk.tag.brill import Word, Pos
 
-        #Feature Word, applying at one of [-2, -1]
+        >>> # Feature Word, applying at one of [-2, -1]
         >>> Word([-2,-1])
         Word([-2, -1])
 
-        #Positions need not be contiguous
+        >>> # Positions need not be contiguous
         >>> Word([-2,-1, 1])
         Word([-2, -1, 1])
 
-        #Contiguous ranges can alternatively be specified giving the
-        #two endpoints (inclusive)
+        >>> # Contiguous ranges can alternatively be specified giving the
+        >>> # two endpoints (inclusive)
         >>> Pos(-3, -1)
         Pos([-3, -2, -1])
 
-        #In two-arg form, start <= end is enforced
+        >>> # In two-arg form, start <= end is enforced
         >>> Pos(2, 1)
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
@@ -71,7 +71,6 @@ class Feature(metaclass=ABCMeta):
         :param start: start of range where this feature should apply
         :type end: int
         :param end: end of range (NOTE: inclusive!) where this feature should apply
-
         """
         self.positions = None  # to avoid warnings
         if end is None:
@@ -113,10 +112,12 @@ class Feature(metaclass=ABCMeta):
         target feature at [0])
 
         For instance, importing a concrete subclass (Feature is abstract)
+
         >>> from nltk.tag.brill import Word
 
         First argument gives the possible start positions, second the
         possible window lengths
+
         >>> Word.expand([-3,-2,-1], [1])
         [Word([-3]), Word([-2]), Word([-1])]
 
@@ -129,7 +130,8 @@ class Feature(metaclass=ABCMeta):
         >>> Word.expand([-2,-1], [1])
         [Word([-2]), Word([-1])]
 
-        a third optional argument excludes all Features whose positions contain zero
+        A third optional argument excludes all Features whose positions contain zero
+
         >>> Word.expand([-2,-1,0], [1,2], excludezero=False)
         [Word([-2]), Word([-1]), Word([0]), Word([-2, -1]), Word([-1, 0])]
 
@@ -137,6 +139,7 @@ class Feature(metaclass=ABCMeta):
         [Word([-2]), Word([-1]), Word([-2, -1])]
 
         All window lengths must be positive
+
         >>> Word.expand([-2,-1], [0])
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>

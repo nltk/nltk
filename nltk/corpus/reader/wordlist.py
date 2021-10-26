@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -97,9 +97,9 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
 class UnicharsCorpusReader(WordListCorpusReader):
     """
     This class is used to read lists of characters from the Perl Unicode
-    Properties (see http://perldoc.perl.org/perluniprops.html).
+    Properties (see https://perldoc.perl.org/perluniprops.html).
     The files in the perluniprop.zip are extracted using the Unicode::Tussle
-    module from http://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
+    module from https://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
     """
 
     # These are categories similar to the Perl Unicode Properties
@@ -146,12 +146,13 @@ class MWAPPDBCorpusReader(WordListCorpusReader):
     This class is used to read the list of word pairs from the subset of lexical
     pairs of The Paraphrase Database (PPDB) XXXL used in the Monolingual Word
     Alignment (MWA) algorithm described in Sultan et al. (2014a, 2014b, 2015):
+
      - http://acl2014.org/acl2014/Q14/pdf/Q14-1017
-     - http://www.aclweb.org/anthology/S14-2039
-     - http://www.aclweb.org/anthology/S15-2027
+     - https://www.aclweb.org/anthology/S14-2039
+     - https://www.aclweb.org/anthology/S15-2027
 
     The original source of the full PPDB corpus can be found on
-    http://www.cis.upenn.edu/~ccb/ppdb/
+    https://www.cis.upenn.edu/~ccb/ppdb/
 
     :return: a list of tuples of similar lexical terms.
     """

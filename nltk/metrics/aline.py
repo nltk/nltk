@@ -3,12 +3,12 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Greg Kondrak <gkondrak@ualberta.ca>
 #         Geoff Bacon <bacon@berkeley.edu> (Python port)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 ALINE
-http://webdocs.cs.ualberta.ca/~kondrak/
+https://webdocs.cs.ualberta.ca/~kondrak/
 Copyright 2002 by Grzegorz Kondrak.
 
 ALINE is an algorithm for aligning phonetic sequences, described in [1].

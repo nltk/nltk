@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Model Vocabulary"""
 
@@ -38,6 +38,7 @@ class Vocabulary:
     """Stores language model vocabulary.
 
     Satisfies two common language modeling requirements for a vocabulary:
+
     - When checking membership and calculating its size, filters items
       by comparing their counts to a cutoff value.
     - Adds a special "unknown" token which unseen words are mapped to.

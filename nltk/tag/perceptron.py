@@ -2,7 +2,7 @@
 # Author: Matthew Honnibal <honnibal+gh@gmail.com>,
 #         Long Duong <longdt219@gmail.com> (NLTK port)
 # URL: <https://github.com/sloria/textblob-aptagger>
-#      <http://nltk.org/>
+#      <https://www.nltk.org/>
 # Copyright 2013 Matthew Honnibal
 # NLTK modifications Copyright 2015 The NLTK Project
 #
@@ -125,7 +125,7 @@ class PerceptronTagger(TaggerI):
     """
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
-        https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
+    https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
 
     >>> from nltk.tag.perceptron import PerceptronTagger
 

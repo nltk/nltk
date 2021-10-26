@@ -1,4 +1,34 @@
-Version 3.6.3 2021-08-??
+Version 3.6.5 2021-10-11
+
+* modernised nltk.org website
+* addressed LGTM.com issues
+* support ZWJ sequences emoji and skin tone modifer emoji in TweetTokenizer
+* METEOR evaluation now requires pre-tokenized input
+* Code linting and type hinting
+* implement get_refs function for DrtLambdaExpression
+* Enable automated CoreNLP, Senna, Prover9/Mace4, Megam, MaltParser CI tests
+* specify minimum regex version that supports regex.Pattern
+* avoid re.Pattern and regex.Pattern which fail for Python 3.6, 3.7
+
+Thanks to the following contributors to 3.6.5
+Tom Aarsen, Saibo Geng, Mohaned Mashaly, Dimitri Papadopoulos, Danny Sepler,
+Ahmet Yildirim, RnDevelover, yutanakamura
+
+Version 3.6.4 2021-10-01
+
+* deprecate `nltk.usage(obj)` in favor of `help(obj)`
+* resolve ReDoS vulnerability in Corpus Reader
+* solidify performance tests
+* improve phone number recognition in tweet tokenizer
+* refactored CISTEM stemmer for German
+* identify NLTK Team as the author
+* replace travis badge with github actions badge
+* add SECURITY.md
+
+Thanks to the following contributors to 3.6.4
+Tom Aarsen, Mohaned Mashaly, Dimitri Papadopoulos Orfanos, purificant, Danny Sepler
+
+Version 3.6.3 2021-09-19
 * Dropped support for Python 3.5
 * Run CI tests on Windows, too
 * Moved from Travis CI to GitHub Actions
@@ -12,11 +42,14 @@ Version 3.6.3 2021-08-??
 * Fixed AttributeError for Arabic ARLSTem2 stemmer
 * Many fixes and improvements to lm language model package
 * Fix bug in nltk.metrics.aline, C_skip = -10
+* Improvements to TweetTokenizer
+* Optional show arg for FreqDist.plot, ConditionalFreqDist.plot
+* edit_distance now computes Damerau-Levenshtein edit-distance
 
 Thanks to the following contributors to 3.6.3
-Tom Aarsen, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne, Manu Joseph,
-Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, purificant, Danny Sepler,
-Anthony Sottile
+Tom Aarsen, Abhijnan Bajpai, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne,
+Manu Joseph, Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, Mohaned Mashaly,
+purificant, Danny Sepler, Anthony Sottile
 
 Version 3.6.2 2021-04-20
 * move test code to nltk/test
@@ -206,7 +239,7 @@ Version 3.2.2 2016-12-31
 * rewrite Porter Stemmer
 * rewrite FrameNet corpus reader
   (adds frame parameter to fes(), lus(), exemplars()
-  see http://nltk.org/howto/framenet.html)
+  see https://www.nltk.org/howto/framenet.html)
 * updated FrameNet Corpus to version 1.7
 * fixes to stanford_segmenter.py, SentiText, CoNLL Corpus Reader
 * fixes to BLEU, naivebayes, Krippendorff's alpha, Punkt
@@ -476,9 +509,9 @@ Morten Neergaard, Nathan Schneider, Rico Sennrich.
 
 Version 2.0.1 2012-05-15
 
-* moved NLTK to GitHub: http://github.com/nltk
+* moved NLTK to GitHub: https://github.com/nltk
 * set up integration testing: https://jenkins.shiningpanda.com/nltk/ (Morten Neergaard)
-* converted documentation to Sphinx format: http://nltk.github.com/api/nltk.html
+* converted documentation to Sphinx format: https://www.nltk.org/api/nltk.html
 * dozens of minor enhancements and bugfixes: https://github.com/nltk/nltk/commits/
 * dozens of fixes for conformance with PEP-8
 * dozens of fixes to ensure operation with Python 2.5
@@ -609,7 +642,7 @@ NLTK-Contrib:
 
 Book:
 * updates for second printing, correcting errata
-  http://nltk.googlecode.com/svn/trunk/nltk/doc/book/errata.txt
+  https://nltk.googlecode.com/svn/trunk/nltk/doc/book/errata.txt
 
 Data:
 * added Europarl sample, with 10 docs for each of 11 langs (Nitin Madnani)
@@ -752,7 +785,7 @@ NLTK:
 Data:
 * Corrected identifiers in Dependency Treebank corpus
 * Basque and Catalan Dependency Treebanks (CoNLL 2007)
-* PE08 Parser Evalution data
+* PE08 Parser Evaluation data
 * New models for POS tagger and named-entity tagger
 
 Book:
@@ -822,7 +855,7 @@ Data:
 * Added movie script "Monty Python and the Holy Grail" to webtext corpus
 * Replaced words corpus data with a much larger list of English words
 * New URL for list of available NLTK corpora
-  http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
+  https://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
 
 Book:
 * complete rewrite of first three chapters to make the book accessible
@@ -1065,7 +1098,7 @@ Code:
 - changed corpus.util to use the 'rb' flag for opening files, to fix problems
   reading corpora under MSWindows
 - updated stale examples in engineering.txt
-- extended feature stucture interface to permit chained features, e.g. fs['F','G']
+- extended feature structure interface to permit chained features, e.g. fs['F','G']
 - further misc improvements to test code plus some bugfixes
 Tutorials:
 - rewritten opening section of tagging chapter

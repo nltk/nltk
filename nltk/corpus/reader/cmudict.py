@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -54,7 +54,7 @@ class CMUDictCorpusReader(CorpusReader):
     def entries(self):
         """
         :return: the cmudict lexicon as a list of entries
-        containing (word, transcriptions) tuples.
+            containing (word, transcriptions) tuples.
         """
         return concat(
             [
@@ -72,7 +72,7 @@ class CMUDictCorpusReader(CorpusReader):
     def dict(self):
         """
         :return: the cmudict lexicon as a dictionary, whose keys are
-        lowercase words and whose values are lists of pronunciations.
+            lowercase words and whose values are lists of pronunciations.
         """
         return dict(Index(self.entries()))
 

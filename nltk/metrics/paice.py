@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Lauri Hallila <laurihallila@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -28,7 +28,7 @@ def get_words_from_dictionary(lemmas):
     Get original set of words used for analysis.
 
     :param lemmas: A dictionary where keys are lemmas and values are sets
-    or lists of words corresponding to that lemma.
+        or lists of words corresponding to that lemma.
     :type lemmas: dict(str): list(str)
     :return: Set of words that exist as values in the dictionary
     :rtype: set(str)
@@ -60,7 +60,7 @@ def _truncate(words, cutlength):
     return stems
 
 
-# Reference: http://en.wikipedia.org/wiki/Line-line_intersection
+# Reference: https://en.wikipedia.org/wiki/Line-line_intersection
 def _count_intersection(l1, l2):
     """Count intersection between two line segments defined by coordinate pairs.
 
@@ -219,9 +219,9 @@ class Paice:
     def __init__(self, lemmas, stems):
         """
         :param lemmas: A dictionary where keys are lemmas and values are sets
-        or lists of words corresponding to that lemma.
+            or lists of words corresponding to that lemma.
         :param stems: A dictionary where keys are stems and values are sets
-        or lists of words corresponding to that stem.
+            or lists of words corresponding to that stem.
         :type lemmas: dict(str): list(str)
         :type stems: dict(str): set(str)
         """

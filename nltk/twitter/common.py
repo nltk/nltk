@@ -3,11 +3,11 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
-Utility functions for the :module:`twitterclient` module which do not require
+Utility functions for the `twitterclient` module which do not require
 the `twython` library to have been installed.
 """
 import csv
@@ -168,28 +168,28 @@ def json2csv_entities(
     :param tweets_file: the file-like object containing full Tweets
 
     :param str outfile: The path of the text file where results should be\
-    written
+        written
 
     :param list main_fields: The list of fields to be extracted from the main\
-    object, usually the tweet. Useful examples: 'id_str' for the tweetID. See\
-    <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
-    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    If `entity_type` is expressed with hierarchy, then it is the list of\
-    fields of the object that corresponds to the key of the entity_type,\
-    (e.g., for entity_type='user.urls', the fields in the main_fields list\
-    belong to the user object; for entity_type='place.bounding_box', the\
-    files in the main_field list belong to the place object of the tweet).
+        object, usually the tweet. Useful examples: 'id_str' for the tweetID. See\
+        <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
+        e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
+        If `entity_type` is expressed with hierarchy, then it is the list of\
+        fields of the object that corresponds to the key of the entity_type,\
+        (e.g., for entity_type='user.urls', the fields in the main_fields list\
+        belong to the user object; for entity_type='place.bounding_box', the\
+        files in the main_field list belong to the place object of the tweet).
 
     :param list entity_type: The name of the entity: 'hashtags', 'media',\
-    'urls' and 'user_mentions' for the tweet object. For a user object,\
-    this needs to be expressed with a hierarchy: `'user.urls'`. For the\
-    bounding box of the Tweet location, use `'place.bounding_box'`.
+        'urls' and 'user_mentions' for the tweet object. For a user object,\
+        this needs to be expressed with a hierarchy: `'user.urls'`. For the\
+        bounding box of the Tweet location, use `'place.bounding_box'`.
 
     :param list entity_fields: The list of fields to be extracted from the\
-    entity. E.g. `['text']` (of the Tweet)
+        entity. E.g. `['text']` (of the Tweet)
 
     :param error: Behaviour for encoding errors, see\
-    https://docs.python.org/3/library/codecs.html#codec-base-classes
+        https://docs.python.org/3/library/codecs.html#codec-base-classes
 
     :param gzip_compress: if `True`, output files are compressed with gzip
     """

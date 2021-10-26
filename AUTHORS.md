@@ -281,6 +281,11 @@
 - Ruben Cartuyvels <https://github.com/rubencart>
 - Dalton Pearson <https://github.com/daltonpearson>
 - Abdul Rafey Khan <https://github.com/BatMrE>
+- Robby Horvath <https://github.com/robbyhorvath>
+- Gavish Poddar <https://github.com/gavishpoddar>
+- Saibo Geng <https://github.com/Saibo-creator>
+- Ahmet Yildirim <https://github.com/RnDevelover>
+- Yuta Nakamura <https://github.com/yutanakamura-tky>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

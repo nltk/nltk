@@ -4,7 +4,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,16 +13,19 @@ An interface to Boxer.
 This interface relies on the latest version of the development (subversion) version of
 C&C and Boxer.
 
-Usage:
-  Set the environment variable CANDC to the bin directory of your CandC installation.
-  The models directory should be in the CandC root directory.
-  For example:
-     /path/to/candc/
-        bin/
-            candc
-            boxer
-        models/
-            boxer/
+Usage
+=====
+
+Set the environment variable CANDC to the bin directory of your CandC installation.
+The models directory should be in the CandC root directory.
+For example::
+
+    /path/to/candc/
+    bin/
+        candc
+        boxer
+    models/
+        boxer/
 """
 
 import operator
@@ -69,14 +72,14 @@ class Boxer:
     ):
         """
         :param boxer_drs_interpreter: A class that converts from the
-        ``AbstractBoxerDrs`` object hierarchy to a different object.  The
-        default is ``NltkDrtBoxerDrsInterpreter``, which converts to the NLTK
-        DRT hierarchy.
+            ``AbstractBoxerDrs`` object hierarchy to a different object.  The
+            default is ``NltkDrtBoxerDrsInterpreter``, which converts to the NLTK
+            DRT hierarchy.
         :param elimeq: When set to true, Boxer removes all equalities from the
-        DRSs and discourse referents standing in the equality relation are
-        unified, but only if this can be done in a meaning-preserving manner.
+            DRSs and discourse referents standing in the equality relation are
+            unified, but only if this can be done in a meaning-preserving manner.
         :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction.
-        Resolution follows Van der Sandt's theory of binding and accommodation.
+            Resolution follows Van der Sandt's theory of binding and accommodation.
         """
         if boxer_drs_interpreter is None:
             boxer_drs_interpreter = NltkDrtBoxerDrsInterpreter()

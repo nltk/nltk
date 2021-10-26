@@ -2,19 +2,21 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 CorpusReader for reviews corpora (syntax based on Customer Review Corpus).
 
-- Customer Review Corpus information -
+Customer Review Corpus information
+==================================
+
 Annotated by: Minqing Hu and Bing Liu, 2004.
-    Department of Computer Sicence
+    Department of Computer Science
     University of Illinois at Chicago
 
 Contact: Bing Liu, liub@cs.uic.edu
-        http://www.cs.uic.edu/~liub
+        https://www.cs.uic.edu/~liub
 
 Distributed with permission.
 
@@ -38,18 +40,18 @@ Related papers:
 
 Symbols used in the annotated reviews:
 
-    [t] : the title of the review: Each [t] tag starts a review.
-    xxxx[+|-n]: xxxx is a product feature.
-    [+n]: Positive opinion, n is the opinion strength: 3 strongest, and 1 weakest.
-          Note that the strength is quite subjective.
-          You may want ignore it, but only considering + and -
-    [-n]: Negative opinion
-    ##  : start of each sentence. Each line is a sentence.
-    [u] : feature not appeared in the sentence.
-    [p] : feature not appeared in the sentence. Pronoun resolution is needed.
-    [s] : suggestion or recommendation.
-    [cc]: comparison with a competing product from a different brand.
-    [cs]: comparison with a competing product from the same brand.
+    :[t]: the title of the review: Each [t] tag starts a review.
+    :xxxx[+|-n]: xxxx is a product feature.
+    :[+n]: Positive opinion, n is the opinion strength: 3 strongest, and 1 weakest.
+           Note that the strength is quite subjective.
+           You may want ignore it, but only considering + and -
+    :[-n]: Negative opinion
+    :##:   start of each sentence. Each line is a sentence.
+    :[u]:  feature not appeared in the sentence.
+    :[p]:  feature not appeared in the sentence. Pronoun resolution is needed.
+    :[s]:  suggestion or recommendation.
+    :[cc]: comparison with a competing product from a different brand.
+    :[cs]: comparison with a competing product from the same brand.
 
 Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     provide separation between different reviews. This is due to the fact that

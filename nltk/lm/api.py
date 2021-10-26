@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Ilia Kurenkov <ilia.kurenkov@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Model Interface."""
 
@@ -80,16 +80,15 @@ class LanguageModel(metaclass=ABCMeta):
         """Creates new LanguageModel.
 
         :param vocabulary: If provided, this vocabulary will be used instead
-        of creating a new one when training.
+            of creating a new one when training.
         :type vocabulary: `nltk.lm.Vocabulary` or None
         :param counter: If provided, use this object to count ngrams.
         :type vocabulary: `nltk.lm.NgramCounter` or None
         :param ngrams_fn: If given, defines how sentences in training text are turned to ngram
-                          sequences.
+            sequences.
         :type ngrams_fn: function or None
         :param pad_fn: If given, defines how sentences in training text are padded.
         :type pad_fn: function or None
-
         """
         self.order = order
         self.vocab = Vocabulary() if vocabulary is None else vocabulary
@@ -129,10 +128,9 @@ class LanguageModel(metaclass=ABCMeta):
 
         :param str word: Word for which we want the score
         :param tuple(str) context: Context the word is in.
-        If `None`, compute unigram score.
+            If `None`, compute unigram score.
         :param context: tuple(str) or None
         :rtype: float
-
         """
         raise NotImplementedError()
 
@@ -180,7 +178,7 @@ class LanguageModel(metaclass=ABCMeta):
         :param int num_words: How many words to generate. By default 1.
         :param text_seed: Generation can be conditioned on preceding context.
         :param random_seed: A random seed or an instance of `random.Random`. If provided,
-        makes the random sampling part of generation reproducible.
+            makes the random sampling part of generation reproducible.
         :return: One (str) word or a list of words generated from model.
 
         Examples:

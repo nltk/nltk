@@ -5,7 +5,7 @@
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -454,7 +454,7 @@ class CFG:
     def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
-        and set of ``Production``s.
+        and set of ``Production`` instances.
 
         :param start: The start symbol
         :type start: Nonterminal
@@ -737,6 +737,7 @@ class CFG:
     def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
         """
         Returns a new Grammar that is in chomsky normal
+
         :param: new_token_padding
             Customise new rule formation during binarisation
         """
@@ -794,11 +795,12 @@ class CFG:
         Convert all non-binary rules into binary by introducing
         new tokens.
         Example::
-        Original:
-            A => B C D
-        After Conversion:
-            A => B A@$@B
-            A@$@B => C D
+
+            Original:
+                A => B C D
+            After Conversion:
+                A => B A@$@B
+                A@$@B => C D
         """
         result = []
 

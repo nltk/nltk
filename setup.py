@@ -3,14 +3,12 @@
 # Setup script for the Natural Language Toolkit
 #
 # Copyright (C) 2001-2021 NLTK Project
-# Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gmail.com>
-#         Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org/>
+# Author: NLTK Team <nltk.team@gmail.com>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Work around mbcs bug in distutils.
-# http://bugs.python.org/issue10945
+# https://bugs.python.org/issue10945
 import codecs
 
 try:
@@ -56,7 +54,7 @@ console_scripts = """
 nltk=nltk.cli:cli
 """
 
-_project_homepage = "http://nltk.org/"
+_project_homepage = "https://www.nltk.org/"
 
 setup(
     name="nltk",
@@ -86,10 +84,10 @@ natural language processing.  NLTK requires Python 3.6, 3.7, 3.8, or 3.9.""",
         "natural language",
         "text analytics",
     ],
-    maintainer="Steven Bird",
-    maintainer_email="stevenbird1@gmail.com",
-    author="Steven Bird",
-    author_email="stevenbird1@gmail.com",
+    maintainer="NLTK Team",
+    maintainer_email="nltk.team@gmail.com",
+    author="NLTK Team",
+    author_email="nltk.team@gmail.com",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -117,7 +115,7 @@ natural language processing.  NLTK requires Python 3.6, 3.7, 3.8, or 3.9.""",
     install_requires=[
         "click",
         "joblib",
-        "regex",
+        "regex>=2021.8.3",
         "tqdm",
     ],
     extras_require=extras_require,

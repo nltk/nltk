@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Contributor: J Richard Snape
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 import copy
 from abc import abstractmethod
@@ -125,7 +125,7 @@ def euclidean_distance(u, v):
 def cosine_distance(u, v):
     """
     Returns 1 minus the cosine of the angle between vectors v and u. This is
-    equal to 1 - (u.v / |u||v|).
+    equal to ``1 - (u.v / |u||v|)``.
     """
     return 1 - (numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
 
@@ -221,6 +221,7 @@ class Dendrogram:
     def show(self, leaf_labels=[]):
         """
         Print the dendrogram in ASCII art to standard out.
+
         :param leaf_labels: an optional list of strings to use for labeling the
                             leaves
         :type leaf_labels: list

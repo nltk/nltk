@@ -10,7 +10,7 @@
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
 #             Assem Chelli <assem.ch@gmail.com>  arabic stemming algorithm
 #             Benzahia Lakhdar <lakhdar.benzahia@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -309,10 +309,15 @@ class ArabicStemmer(_StandardStemmer):
     """
     https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
     The Snowball Arabic light Stemmer
-    Algorithm : Assem Chelli
-               Abdelkrim Aries
-               Lakhdar Benzahia
-    Nltk Version Author : Lakhdar Benzahia
+    Algorithm:
+
+    - Assem Chelli
+    - Abdelkrim Aries
+    - Lakhdar Benzahia
+
+    NLTK Version Author:
+
+    - Lakhdar Benzahia
     """
 
     # Normalize_pre stes
@@ -807,7 +812,8 @@ class ArabicStemmer(_StandardStemmer):
 
     def stem(self, word):
         """
-         Stem an Arabic word and return the stemmed form.
+        Stem an Arabic word and return the stemmed form.
+
         :param word: string
         :return: string
         """

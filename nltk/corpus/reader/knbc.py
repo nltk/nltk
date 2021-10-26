@@ -2,7 +2,7 @@
 # KNB Corpus reader
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
@@ -38,7 +38,6 @@ class KNBCorpusReader(SyntaxCorpusReader):
       tags = (surface, reading, lemma, pos1, posid1, pos2, posid2, pos3, posid3, others ...)
 
     Usage example
-    -------------
 
     >>> from nltk.corpus.util import LazyCorpusLoader
     >>> knbc = LazyCorpusLoader(

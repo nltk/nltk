@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -21,10 +21,10 @@ project. A corpus reader was created separately to read
 those files.
 
 For details regarding the algorithm, see:
-http://www.let.rug.nl/~vannoord/TextCat/textcat.pdf
+https://www.let.rug.nl/~vannoord/TextCat/textcat.pdf
 
 For details about An Crubadan, see:
-http://borel.slu.edu/crubadan/index.html
+https://borel.slu.edu/crubadan/index.html
 """
 
 from sys import maxsize

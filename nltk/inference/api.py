@@ -3,7 +3,7 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Dan Garrette <dhgarrette@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -90,7 +90,7 @@ class TheoremToolCommand(metaclass=ABCMeta):
         Retract assumptions from the assumption list.
 
         :param debug: If True, give warning when ``retracted`` is not present on
-        assumptions list.
+            assumptions list.
         :type debug: bool
         :param retracted: assumptions to be retracted
         :type retracted: list(sem.Expression)
@@ -218,7 +218,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Retract assumptions from the assumption list.
 
         :param debug: If True, give warning when ``retracted`` is not present on
-        assumptions list.
+            assumptions list.
         :type debug: bool
         :param retracted: assumptions to be retracted
         :type retracted: list(sem.Expression)

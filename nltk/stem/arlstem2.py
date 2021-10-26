@@ -6,7 +6,7 @@
 # Author: Kheireddine Abainia (x-programer) <k.abainia@gmail.com>
 # Algorithms: Kheireddine Abainia <k.abainia@gmail.com>
 #                         Hamza Rebbani <hamrebbani@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 

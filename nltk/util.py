@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import bisect
@@ -30,39 +30,46 @@ from urllib.request import (
 )
 
 from nltk.collections import *
-from nltk.internals import raise_unorderable_types, slice_bounds
+from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 
 ######################################################################
 # Short usage message
 ######################################################################
 
 
-def usage(obj, selfname="self"):
+@deprecated("Use help(obj) instead.")
+def usage(obj):
     str(obj)  # In case it's lazy, this will load it.
 
     if not isinstance(obj, type):
         obj = obj.__class__
 
-    print("%s supports the following operations:" % obj.__name__)
+    print(f"{obj.__name__} supports the following operations:")
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
         if getattr(method, "__deprecated__", False):
             continue
 
-        getargspec = inspect.getfullargspec
-        args, varargs, varkw, defaults = getargspec(method)[:4]
-        if (
-            args
-            and args[0] == "self"
-            and (defaults is None or len(args) > len(defaults))
-        ):
-            args = args[1:]
-            name = f"{selfname}.{name}"
-        argspec = inspect.formatargspec(args, varargs, varkw, defaults)
+        try:
+            sig = str(inspect.signature(method))
+        except ValueError as e:
+            # builtins sometimes don't support introspection
+            if "builtin" in str(e):
+                continue
+            else:
+                raise
+
+        args = sig.lstrip("(").rstrip(")").split(", ")
+        meth = inspect.getattr_static(obj, name)
+        if isinstance(meth, (classmethod, staticmethod)):
+            name = f"cls.{name}"
+        elif args and args[0] == "self":
+            name = f"self.{name}"
+            args.pop(0)
         print(
             textwrap.fill(
-                f"{name}{argspec}",
+                f"{name}({', '.join(args)})",
                 initial_indent="  - ",
                 subsequent_indent=" " * (len(name) + 5),
             )
@@ -257,8 +264,8 @@ def edges2dot(edges, shapes=None, attr=None):
     :param edges: the set (or list) of edges of a directed graph.
 
     :return dot_string: a representation of 'edges' as a string in the DOT
-    graph language, which can be converted to an image by the 'dot' program
-    from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
+        graph language, which can be converted to an image by the 'dot' program
+        from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
 
     :param shapes: dictionary of strings that trigger a specified shape.
     :param attr: dictionary with global graph attributes
@@ -272,7 +279,6 @@ def edges2dot(edges, shapes=None, attr=None):
     "B" -> "C";
     "C" -> "B";
     }
-
     """
     if not shapes:
         shapes = dict()
@@ -579,7 +585,7 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
 # Guess Character Encoding
 ##########################################################################
 
-# adapted from io.py in the docutils extension module (http://docutils.sourceforge.net)
+# adapted from io.py in the docutils extension module (https://docutils.sourceforge.io/)
 # http://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
 
 
@@ -1006,7 +1012,7 @@ def skipgrams(sequence, n, k, **kwargs):
 ######################################################################
 
 # inherited from pywordnet, by Oliver Steele
-def binary_search_file(file, key, cache={}, cacheDepth=-1):
+def binary_search_file(file, key, cache=None, cacheDepth=-1):
     """
     Return the line from the file with first word key.
     Searches through a sorted file using the binary search algorithm.
@@ -1028,6 +1034,9 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
         file.seek(0, 2)
         end = file.tell() - 1
         file.seek(0)
+
+    if cache is None:
+        cache = {}
 
     while start < end:
         lastState = start, end
@@ -1116,7 +1125,7 @@ def set_proxy(proxy, user=None, password=""):
 
 
 ######################################################################
-# ElementTree pretty printing from http://www.effbot.org/zone/element-lib.htm
+# ElementTree pretty printing from https://www.effbot.org/zone/element-lib.htm
 ######################################################################
 
 

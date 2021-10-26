@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -165,16 +165,14 @@ def rte_classifier(algorithm, sample_N=None):
 
     # Train the classifier
     print("Training classifier...")
-    if algorithm in ["megam", "BFGS"]:  # MEGAM based algorithms.
-        # Ensure that MEGAM is configured first.
-        check_megam_config()
-        clf = lambda x: MaxentClassifier.train(featurized_train_set, algorithm)
+    if algorithm in ["megam"]:  # MEGAM based algorithms.
+        clf = MaxentClassifier.train(featurized_train_set, algorithm)
     elif algorithm in ["GIS", "IIS"]:  # Use default GIS/IIS MaxEnt algorithm
         clf = MaxentClassifier.train(featurized_train_set, algorithm)
     else:
         err_msg = str(
             "RTEClassifier only supports these algorithms:\n "
-            "'megam', 'BFGS', 'GIS', 'IIS'.\n"
+            "'megam', 'GIS', 'IIS'.\n"
         )
         raise Exception(err_msg)
     print("Testing classifier...")

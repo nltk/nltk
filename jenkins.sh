@@ -24,7 +24,7 @@ if [[ ! -d $senna_folder_name ]]; then
         rm ${senna_file_name}
 fi
 
-# Setup the Enviroment variable
+# Setup the Environment variable
 export SENNA=$(pwd)'/senna'
 
 popd

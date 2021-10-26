@@ -7,7 +7,7 @@
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #         Alex Constantin <alex@keyworder.ch>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import json

@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import json
@@ -18,7 +18,7 @@ from nltk.tag.api import TaggerI
 from nltk.tokenize.api import TokenizerI
 from nltk.tree import Tree
 
-_stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
+_stanford_url = "https://stanfordnlp.github.io/CoreNLP/"
 
 
 class CoreNLPServerError(EnvironmentError):
@@ -522,7 +522,6 @@ class CoreNLPParser(GenericCoreNLPParser):
     Mary walks  .
 
     Special cases
-    -------------
 
     >>> next(
     ...     parser.raw_parse(
@@ -540,7 +539,6 @@ class CoreNLPParser(GenericCoreNLPParser):
     ...     )
     ... ).height()
     9
-
     """
 
     _OUTPUT_FORMAT = "penn"
@@ -655,7 +653,6 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     .   .       2       punct
 
     Special cases
-    -------------
 
     Non-breaking space inside of a token.
 
