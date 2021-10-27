@@ -189,7 +189,7 @@ class PunktLanguageVars:
     constructors.
     """
 
-    __slots__ = ("_re_period_context", "_re_word_tokenizer", "_re_last_word")
+    __slots__ = ("_re_period_context", "_re_word_tokenizer")
 
     def __getstate__(self):
         # All modifications to the class are performed by inheritance.
@@ -291,16 +291,6 @@ class PunktLanguageVars:
                 re.UNICODE | re.VERBOSE,
             )
             return self._re_period_context
-
-    def last_word_re(self):
-        """Compiles and returns a regular expression to return the sequence
-        of non-whitespace characters in a string starting from the right.
-        It returns an empty match if the text ends with whitespace."""
-        try:
-            return self._re_last_word
-        except:
-            self._re_last_word = re.compile(r"\S*$")
-            return self._re_last_word
 
 
 _re_non_punct = re.compile(r"[^\W\d]", re.UNICODE)
@@ -1384,18 +1374,18 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         matches = []
         for match in reversed(list(self._lang_vars.period_context_re().finditer(text))):
             # Ignore matches that have already been captured by matches to the right of this match
-            if matches and match.end() > before_words[matches[-1]].start():
+            if matches and match.end() > before_start:
                 continue
             # Find the word before the current match
-            before_words[match] = self._lang_vars.last_word_re().search(
-                text[: match.start()]
-            )
+            all_before, before_word = text[: match.start()].rsplit(maxsplit=1)
+            before_start = len(all_before)
+            before_words[match] = before_word
             matches.append(match)
 
         return [
             (
                 match,
-                before_words[match].group() + match.group() + match.group("after_tok"),
+                before_words[match] + match.group() + match.group("after_tok"),
             )
             for match in matches[::-1]
         ]
