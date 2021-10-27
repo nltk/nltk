@@ -296,7 +296,7 @@ class AnnotationTask:
         if len(self.K) == 0:
             raise ValueError("Cannot calculate alpha, no data present!")
         if len(self.K) == 1:
-            log.debug("Only one annotation value, allpha returning 1.")
+            log.debug("Only one annotation value, alpha returning 1.")
             return 1
         if len(self.C) == 1 and len(self.I) == 1:
             raise ValueError("Cannot calculate alpha, only one coder and item present!")

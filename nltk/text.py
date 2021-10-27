@@ -608,7 +608,7 @@ class Text:
         See documentation for FreqDist.plot()
         :seealso: nltk.prob.FreqDist.plot()
         """
-        self.vocab().plot(*args)
+        return self.vocab().plot(*args)
 
     def vocab(self):
         """
