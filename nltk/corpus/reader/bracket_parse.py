@@ -53,9 +53,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             for normalizing or converting the POS tags returned by the
             ``tagged_...()`` methods.
         """
-        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
-        #       from CorpusReader?
-        CorpusReader.__init__(self, root, fileids, encoding)
+        SyntaxCorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
         self._tagset = tagset
