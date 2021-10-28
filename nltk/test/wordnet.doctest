@@ -459,8 +459,8 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
     >>> t.wup_similarity(m)
     0.631...
 
-    Issue #2278: wup_similarity not commutative when comparing a noun and a verb.
-    Patch #2650 resolved this error. As a result, the output of the following use of wup_similarity no longer returns None.
+Issue #2278: wup_similarity not commutative when comparing a noun and a verb.
+Patch #2650 resolved this error. As a result, the output of the following use of wup_similarity no longer returns None.
 
     >>> t = wn.synsets('titan')[1]
     >>> s = wn.synsets('say', wn.VERB)[0]
