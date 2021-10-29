@@ -8,6 +8,7 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import warnings
 from abc import ABCMeta, abstractmethod
 
 from nltk.tree.tree import Tree
@@ -310,6 +311,13 @@ class ParentedTree(AbstractParentedTree):
 
         return ImmutableParentedTree
 
+    def copy(self, deep=False):
+        if not deep:
+            warnings.warn(
+                f"{self.__class__.__name__} objects do not support shallow copies. Defaulting to a deep copy."
+            )
+        return super().copy(deep=True)
+
     # /////////////////////////////////////////////////////////////////
     # Methods
     # /////////////////////////////////////////////////////////////////
@@ -564,7 +572,7 @@ class MultiParentedTree(AbstractParentedTree):
         # If the child's type is incorrect, then complain.
         if not isinstance(child, MultiParentedTree):
             raise TypeError(
-                "Can not insert a non-MultiParentedTree " + "into a MultiParentedTree"
+                "Can not insert a non-MultiParentedTree into a MultiParentedTree"
             )
 
         # Add self as a parent pointer if it's not already listed.
