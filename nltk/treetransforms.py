@@ -112,60 +112,15 @@ from nltk.tree.transforms import chomsky_normal_form as cnf
 from nltk.tree.transforms import collapse_unary as cu
 from nltk.tree.transforms import un_chomsky_normal_form as ucnf
 
-
-@deprecated("Import using `from nltk.tree import chomsky_normal_form` instead.")
-def chomsky_normal_form(
-    tree, factor="right", horzMarkov=None, vertMarkov=0, childChar="|", parentChar="^"
-):
-    return cnf(
-        tree,
-        factor=factor,
-        horzMarkov=horzMarkov,
-        vertMarkov=vertMarkov,
-        childChar=childChar,
-        parentChar=parentChar,
-    )
-
-
-@deprecated("Import using `from nltk.tree import un_chomsky_normal_form` instead.")
-def un_chomsky_normal_form(
-    tree, expandUnary=True, childChar="|", parentChar="^", unaryChar="+"
-):
-    return ucnf(
-        tree,
-        expandUnary=expandUnary,
-        childChar=childChar,
-        parentChar=parentChar,
-        unaryChar=unaryChar,
-    )
-
-
-@deprecated("Import using `from nltk.tree import collapse_unary` instead.")
-def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
-    """
-    Collapse subtrees with a single child (ie. unary productions)
-    into a new non-terminal (Tree node) joined by 'joinChar'.
-    This is useful when working with algorithms that do not allow
-    unary productions, and completely removing the unary productions
-    would require loss of useful information.  The Tree is modified
-    directly (since it is passed by reference) and no value is returned.
-
-    :param tree: The Tree to be collapsed
-    :type  tree: Tree
-    :param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie.
-                        Part-of-Speech tags) since they are always unary productions
-    :type  collapsePOS: bool
-    :param collapseRoot: 'False' (default) will not modify the root production
-                         if it is unary.  For the Penn WSJ treebank corpus, this corresponds
-                         to the TOP -> productions.
-    :type collapseRoot: bool
-    :param joinChar: A string used to connect collapsed node values (default = "+")
-    :type  joinChar: str
-    """
-
-    return cu(
-        tree, collapsePOS=collapsePOS, collapseRoot=collapseRoot, joinChar=joinChar
-    )
+chomsky_normal_form = deprecated(
+    "Import using `from nltk.tree import chomsky_normal_form` instead."
+)(cnf)
+un_chomsky_normal_form = deprecated(
+    "Import using `from nltk.tree import un_chomsky_normal_form` instead."
+)(ucnf)
+collapse_unary = deprecated(
+    "Import using `from nltk.tree import collapse_unary` instead."
+)(cu)
 
 
 __all__ = ["chomsky_normal_form", "un_chomsky_normal_form", "collapse_unary"]
