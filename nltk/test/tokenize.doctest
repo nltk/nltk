@@ -3,10 +3,10 @@
 
     >>> from nltk.tokenize import *
 
-Regression Tests: Treebank Tokenizer
+Regression Tests: NLTKWordTokenizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Some test strings.
+Tokenizing some test strings.
 
     >>> s1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
     >>> word_tokenize(s1)
@@ -41,12 +41,35 @@ Some test strings.
     >>> s11 = "It's more'n enough."
     >>> word_tokenize(s11)
     ['It', "'s", 'more', "'n", 'enough', '.']
-    >>> s12 = "''Hello, there!''"
-    >>> word_tokenize(s12)
-    ["''", 'Hello', ',', 'there', '!', "''"]
-    >>> s13 = "''What a wonderful quote, this is'' - Someone (12 BC)"
-    >>> word_tokenize(s13)
-    ["''", 'What', 'a', 'wonderful', 'quote', ',', 'this', 'is', "''", '-', 'Someone', '(', '12', 'BC', ')']
+
+Gathering the spans of the tokenized strings.
+
+    >>> s = '''Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'''
+    >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 23),
+    ... (24, 26), (27, 30), (31, 32), (32, 36), (36, 37), (37, 38),
+    ... (40, 46), (47, 48), (48, 51), (51, 52), (53, 55), (56, 59),
+    ... (60, 62), (63, 68), (69, 70), (70, 76), (76, 77), (77, 78)]
+    >>> list(NLTKWordTokenizer().span_tokenize(s)) == expected
+    True
+    >>> expected = ['Good', 'muffins', 'cost', '$', '3.88', 'in',
+    ... 'New', '(', 'York', ')', '.', 'Please', '(', 'buy', ')',
+    ... 'me', 'two', 'of', 'them.', '(', 'Thanks', ')', '.']
+    >>> [s[start:end] for start, end in NLTKWordTokenizer().span_tokenize(s)] == expected
+    True
+
+    >>> s = '''I said, "I'd like to buy some ''good muffins" which cost $3.88\n each in New (York)."'''
+    >>> expected = [(0, 1), (2, 6), (6, 7), (8, 9), (9, 10), (10, 12),
+    ... (13, 17), (18, 20), (21, 24), (25, 29), (30, 32), (32, 36),
+    ... (37, 44), (44, 45), (46, 51), (52, 56), (57, 58), (58, 62),
+    ... (64, 68), (69, 71), (72, 75), (76, 77), (77, 81), (81, 82),
+    ... (82, 83), (83, 84)]
+    >>> list(NLTKWordTokenizer().span_tokenize(s)) == expected
+    True
+    >>> expected = ['I', 'said', ',', '"', 'I', "'d", 'like', 'to',
+    ... 'buy', 'some', "''", "good", 'muffins', '"', 'which', 'cost',
+    ... '$', '3.88', 'each', 'in', 'New', '(', 'York', ')', '.', '"']
+    >>> [s[start:end] for start, end in NLTKWordTokenizer().span_tokenize(s)] == expected
+    True
 
 Testing improvement made to the TreebankWordTokenizer
 
@@ -58,9 +81,6 @@ Testing improvement made to the TreebankWordTokenizer
     >>> expected = ['The', 'unicode', '201C', 'and', '201D', '\u201c', 'LEFT', '(', 'RIGHT', ')', 'DOUBLE', 'QUOTATION', 'MARK', '\u201d', 'is', 'also', 'OPEN_PUNCT', 'and', 'CLOSE_PUNCT', '.']
     >>> word_tokenize(sx2) == expected
     True
-    >>> sx3 = "''Hello'\""
-    >>> list(TreebankWordTokenizer().span_tokenize(sx3))
-    [(0, 2), (2, 7), (7, 8), (8, 9)]
 
 
 Testing treebank's detokenizer
@@ -76,9 +96,6 @@ Testing treebank's detokenizer
     >>> s = "Well, we couldn't have this predictable, cliche-ridden, \"Touched by an Angel\" (a show creator John Masius worked on) wanna-be if she didn't."
     >>> detokenizer.detokenize(word_tokenize(s))
     'Well, we couldn\'t have this predictable, cliche-ridden, "Touched by an Angel" (a show creator John Masius worked on) wanna-be if she didn\'t.'
-    >>> s = "I wanna watch something"
-    >>> detokenizer.detokenize(word_tokenize(s))
-    'I wanna watch something'
     >>> s = "I cannot cannot work under these conditions!"
     >>> detokenizer.detokenize(word_tokenize(s))
     'I cannot cannot work under these conditions!'
