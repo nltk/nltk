@@ -24,7 +24,7 @@ class MacIntyreContractions:
         r"(?i)\b(got)(?#X)(ta)\b",
         r"(?i)\b(lem)(?#X)(me)\b",
         r"(?i)\b(more)(?#X)('n)\b",
-        r"(?i)\b(wan)(?#X)(na)\s",
+        r"(?i)\b(wan)(?#X)(na)(?=\s)",
     ]
     CONTRACTIONS3 = [r"(?i) ('t)(?#X)(is)\b", r"(?i) ('t)(?#X)(was)\b"]
     CONTRACTIONS4 = [r"(?i)\b(whad)(dd)(ya)\b", r"(?i)\b(wha)(t)(cha)\b"]

@@ -73,6 +73,9 @@ Testing treebank's detokenizer
     >>> s = "Well, we couldn't have this predictable, cliche-ridden, \"Touched by an Angel\" (a show creator John Masius worked on) wanna-be if she didn't."
     >>> detokenizer.detokenize(word_tokenize(s))
     'Well, we couldn\'t have this predictable, cliche-ridden, "Touched by an Angel" (a show creator John Masius worked on) wanna-be if she didn\'t.'
+    >>> s = "I wanna watch something"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    'I wanna watch something'
     >>> s = "I cannot cannot work under these conditions!"
     >>> detokenizer.detokenize(word_tokenize(s))
     'I cannot cannot work under these conditions!'
