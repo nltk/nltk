@@ -58,6 +58,9 @@ Testing improvement made to the TreebankWordTokenizer
     >>> expected = ['The', 'unicode', '201C', 'and', '201D', '\u201c', 'LEFT', '(', 'RIGHT', ')', 'DOUBLE', 'QUOTATION', 'MARK', '\u201d', 'is', 'also', 'OPEN_PUNCT', 'and', 'CLOSE_PUNCT', '.']
     >>> word_tokenize(sx2) == expected
     True
+    >>> sx3 = "''Hello'\""
+    >>> list(TreebankWordTokenizer().span_tokenize(sx3))
+    [(0, 2), (2, 7), (7, 8), (8, 9)]
 
 
 Testing treebank's detokenizer
