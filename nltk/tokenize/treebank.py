@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
+#         Tom Aarsen <> (modifications)
 #
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
