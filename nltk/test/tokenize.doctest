@@ -41,6 +41,12 @@ Some test strings.
     >>> s11 = "It's more'n enough."
     >>> word_tokenize(s11)
     ['It', "'s", 'more', "'n", 'enough', '.']
+    >>> s12 = "''Hello, there!''"
+    >>> word_tokenize(s12)
+    ["''", "Hello", ",", "there", "!", "''"]
+    >>> s13 = "''What a wonderful quote, this is'' - Someone (12 BC)"
+    >>> word_tokenize(s13)
+    ["''", 'What', 'a', 'wonderful', 'quote', ',', 'this', 'is', "''", '-', 'Someone', '(', '12', 'BC', ')']
 
 Testing improvement made to the TreebankWordTokenizer
 

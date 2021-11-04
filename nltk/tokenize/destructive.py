@@ -53,8 +53,8 @@ class NLTKWordTokenizer(TokenizerI):
     # Ending quotes.
     ENDING_QUOTES = [
         (re.compile("([»”’])", re.U), r" \1 "),
+        (re.compile(r"''"), " '' "),
         (re.compile(r'"'), " '' "),
-        (re.compile(r"(\S)(\'\')"), r"\1 \2 "),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
         (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
