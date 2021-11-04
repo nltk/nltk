@@ -778,61 +778,10 @@ class Tree(list):
             childstr,
         )
 
-    def _repr_png_(self):
-        """
-        Draws and outputs in PNG for ipython.
-        PNG is used instead of PDF, since it can be displayed in the qt console and
-        has wider browser support.
-        """
-        import base64
-        import os
-        import subprocess
-        import tempfile
+    def _repr_svg_(self):
+        from svgling import draw_tree
 
-        from nltk.draw.tree import tree_to_treesegment
-        from nltk.draw.util import CanvasFrame
-        from nltk.internals import find_binary
-
-        _canvas_frame = CanvasFrame()
-        widget = tree_to_treesegment(_canvas_frame.canvas(), self)
-        _canvas_frame.add_widget(widget)
-        x, y, w, h = widget.bbox()
-        # print_to_file uses scrollregion to set the width and height of the pdf.
-        _canvas_frame.canvas()["scrollregion"] = (0, 0, w, h)
-        with tempfile.NamedTemporaryFile() as file:
-            in_path = f"{file.name}.ps"
-            out_path = f"{file.name}.png"
-            _canvas_frame.print_to_file(in_path)
-            _canvas_frame.destroy_widget(widget)
-            try:
-                subprocess.call(
-                    [
-                        find_binary(
-                            "gs",
-                            binary_names=["gswin32c.exe", "gswin64c.exe"],
-                            env_vars=["PATH"],
-                            verbose=False,
-                        )
-                    ]
-                    + "-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={} {}".format(
-                        out_path, in_path
-                    ).split()
-                )
-            except LookupError as e:
-                pre_error_message = str(
-                    "The Ghostscript executable isn't found.\n"
-                    "See https://web.mit.edu/ghostscript/www/Install.htm\n"
-                    "If you're using a Mac, you can try installing\n"
-                    "https://docs.brew.sh/Installation then `brew install ghostscript`"
-                )
-                print(pre_error_message, file=sys.stderr)
-                raise LookupError from e
-
-            with open(out_path, "rb") as sr:
-                res = sr.read()
-            os.remove(in_path)
-            os.remove(out_path)
-            return base64.b64encode(res).decode()
+        return draw_tree(self)._repr_svg_()
 
     def __str__(self):
         return self.pformat()
