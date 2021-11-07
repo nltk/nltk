@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
+#         Tom Aarsen <> (modifications)
 #
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
@@ -86,8 +87,8 @@ class TreebankWordTokenizer(TokenizerI):
 
     # ending quotes
     ENDING_QUOTES = [
+        (re.compile(r"''"), " '' "),
         (re.compile(r'"'), " '' "),
-        (re.compile(r"(\S)(\'\')"), r"\1 \2 "),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
         (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]

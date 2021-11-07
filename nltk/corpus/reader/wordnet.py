@@ -1423,6 +1423,7 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError(
                 f"No WordNet synset found for pos={pos} at offset={offset}."
             )
+        data_file.seek(0)
         return synset
 
     @deprecated("Use public method synset_from_pos_and_offset() instead")

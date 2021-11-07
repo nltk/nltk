@@ -1,7 +1,8 @@
 # Natural Language Toolkit: NLTK's very own tokenizer.
 #
 # Copyright (C) 2001-2021 NLTK Project
-# Author:
+# Author: Liling Tan
+#         Tom Aarsen <> (modifications)
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -25,7 +26,7 @@ class MacIntyreContractions:
         r"(?i)\b(got)(?#X)(ta)\b",
         r"(?i)\b(lem)(?#X)(me)\b",
         r"(?i)\b(more)(?#X)('n)\b",
-        r"(?i)\b(wan)(?#X)(na)\s",
+        r"(?i)\b(wan)(?#X)(na)(?=\s)",
     ]
     CONTRACTIONS3 = [r"(?i) ('t)(?#X)(is)\b", r"(?i) ('t)(?#X)(was)\b"]
     CONTRACTIONS4 = [r"(?i)\b(whad)(dd)(ya)\b", r"(?i)\b(wha)(t)(cha)\b"]
@@ -54,8 +55,8 @@ class NLTKWordTokenizer(TokenizerI):
     # Ending quotes.
     ENDING_QUOTES = [
         (re.compile("([»”’])", re.U), r" \1 "),
+        (re.compile(r"''"), " '' "),
         (re.compile(r'"'), " '' "),
-        (re.compile(r"(\S)(\'\')"), r"\1 \2 "),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
         (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
@@ -151,7 +152,6 @@ class NLTKWordTokenizer(TokenizerI):
     def span_tokenize(self, text):
         r"""
         Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.
-
             >>> from nltk.tokenize import NLTKWordTokenizer
             >>> s = '''Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'''
             >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 23),
@@ -165,7 +165,6 @@ class NLTKWordTokenizer(TokenizerI):
             ... 'me', 'two', 'of', 'them.', '(', 'Thanks', ')', '.']
             >>> [s[start:end] for start, end in NLTKWordTokenizer().span_tokenize(s)] == expected
             True
-
             Additional example
             >>> from nltk.tokenize import NLTKWordTokenizer
             >>> s = '''I said, "I'd like to buy some ''good muffins" which cost $3.88\n each in New (York)."'''
