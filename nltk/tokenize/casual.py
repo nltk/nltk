@@ -48,6 +48,8 @@ from typing import List
 
 import regex  # https://github.com/nltk/nltk/issues/2409
 
+from nltk.tokenize.api import TokenizerI
+
 ######################################################################
 # The following strings are components in the regular expression
 # that is used for tokenizing. It's important that phone_number
@@ -276,7 +278,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
 ######################################################################
 
 
-class TweetTokenizer:
+class TweetTokenizer(TokenizerI):
     r"""
     Tokenizer for tweets.
 
