@@ -8,6 +8,7 @@
 
 
 import re
+from typing import Iterator, List, Tuple
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import align_tokens
@@ -35,6 +36,9 @@ class MacIntyreContractions:
 class NLTKWordTokenizer(TokenizerI):
     """
     The NLTK tokenizer that has improved upon the TreebankWordTokenizer.
+
+    This is the method that is invoked by ``word_tokenize()``.  It assumes that the
+    text has already been segmented into sentences, e.g. using ``sent_tokenize()``.
 
     The tokenizer is "destructive" such that the regexes applied will munge the
     input string to a state beyond re-construction. It is possible to apply
@@ -112,7 +116,35 @@ class NLTKWordTokenizer(TokenizerI):
     CONTRACTIONS2 = list(map(re.compile, _contractions.CONTRACTIONS2))
     CONTRACTIONS3 = list(map(re.compile, _contractions.CONTRACTIONS3))
 
-    def tokenize(self, text, convert_parentheses=False, return_str=False):
+    def tokenize(
+        self, text: str, convert_parentheses: bool = False, return_str: bool = False
+    ) -> List[str]:
+        r"""Return a tokenized copy of `text`.
+
+        >>> from nltk.tokenize import TreebankWordTokenizer
+        >>> s = '''Good muffins cost $3.88 (roughly 3,36 euros)\nin New York.  Please buy me\ntwo of them.\nThanks.'''
+        >>> TreebankWordTokenizer().tokenize(s)
+        ['Good', 'muffins', 'cost', '$', '3.88', '(', 'roughly', '3,36',
+        'euros', ')', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
+        'of', 'them.', 'Thanks', '.']
+        >>> TreebankWordTokenizer().tokenize(s, convert_parentheses=True)
+        ['Good', 'muffins', 'cost', '$', '3.88', '-LRB-', 'roughly', '3,36',
+        'euros', '-RRB-', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
+        'of', 'them.', 'Thanks', '.']
+        >>> TreebankWordTokenizer().tokenize(s, return_str=True)
+        ' Good muffins cost  $ 3.88  ( roughly 3,36 euros ) \nin New York.  Please buy me\ntwo of them.\nThanks .  '
+
+        :param text: A string with a sentence or sentences.
+        :type text: str
+        :param convert_parentheses: if True, replace parentheses to PTB symbols,
+            e.g. `(` to `-LRB-`. Defaults to False.
+        :type convert_parentheses: bool, optional
+        :param return_str: If True, return tokens as space-separated string,
+            defaults to False.
+        :type return_str: bool, optional
+        :return: List of tokens from `text`.
+        :rtype: List[str]
+        """
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
 
@@ -149,9 +181,11 @@ class NLTKWordTokenizer(TokenizerI):
 
         return text if return_str else text.split()
 
-    def span_tokenize(self, text):
+    def span_tokenize(self, text: str) -> Iterator[Tuple[int, int]]:
         r"""
+        Returns the spans of the tokens in ``text``.
         Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.
+
             >>> from nltk.tokenize import NLTKWordTokenizer
             >>> s = '''Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'''
             >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 23),
@@ -165,21 +199,10 @@ class NLTKWordTokenizer(TokenizerI):
             ... 'me', 'two', 'of', 'them.', '(', 'Thanks', ')', '.']
             >>> [s[start:end] for start, end in NLTKWordTokenizer().span_tokenize(s)] == expected
             True
-            Additional example
-            >>> from nltk.tokenize import NLTKWordTokenizer
-            >>> s = '''I said, "I'd like to buy some ''good muffins" which cost $3.88\n each in New (York)."'''
-            >>> expected = [(0, 1), (2, 6), (6, 7), (8, 9), (9, 10), (10, 12),
-            ... (13, 17), (18, 20), (21, 24), (25, 29), (30, 32), (32, 36),
-            ... (37, 44), (44, 45), (46, 51), (52, 56), (57, 58), (58, 62),
-            ... (64, 68), (69, 71), (72, 75), (76, 77), (77, 81), (81, 82),
-            ... (82, 83), (83, 84)]
-            >>> list(NLTKWordTokenizer().span_tokenize(s)) == expected
-            True
-            >>> expected = ['I', 'said', ',', '"', 'I', "'d", 'like', 'to',
-            ... 'buy', 'some', "''", "good", 'muffins', '"', 'which', 'cost',
-            ... '$', '3.88', 'each', 'in', 'New', '(', 'York', ')', '.', '"']
-            >>> [s[start:end] for start, end in NLTKWordTokenizer().span_tokenize(s)] == expected
-            True
+
+        :param text: A string with a sentence or sentences.
+        :type text: str
+        :yield: Tuple[int, int]
         """
         raw_tokens = self.tokenize(text)
 
