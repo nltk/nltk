@@ -121,18 +121,18 @@ class NLTKWordTokenizer(TokenizerI):
     ) -> List[str]:
         r"""Return a tokenized copy of `text`.
 
-        >>> from nltk.tokenize import TreebankWordTokenizer
+        >>> from nltk.tokenize import NLTKWordTokenizer
         >>> s = '''Good muffins cost $3.88 (roughly 3,36 euros)\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-        >>> TreebankWordTokenizer().tokenize(s)
+        >>> NLTKWordTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$', '3.88', '(', 'roughly', '3,36',
         'euros', ')', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
         'of', 'them.', 'Thanks', '.']
-        >>> TreebankWordTokenizer().tokenize(s, convert_parentheses=True)
+        >>> NLTKWordTokenizer().tokenize(s, convert_parentheses=True)
         ['Good', 'muffins', 'cost', '$', '3.88', '-LRB-', 'roughly', '3,36',
         'euros', '-RRB-', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
         'of', 'them.', 'Thanks', '.']
-        >>> TreebankWordTokenizer().tokenize(s, return_str=True)
-        ' Good muffins cost  $ 3.88  ( roughly 3,36 euros ) \nin New York.  Please buy me\ntwo of them.\nThanks .  '
+        >>> NLTKWordTokenizer().tokenize(s, return_str=True)
+        ' Good muffins cost  $ 3.88  ( roughly 3,36 euros ) \nin New York.  Please buy me\ntwo of them.\nThanks  .  '
 
         :param text: A string with a sentence or sentences.
         :type text: str
