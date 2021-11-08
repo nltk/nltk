@@ -12,7 +12,7 @@ repository-code: "https://github.com/nltk/nltk"
 url: "https://www.nltk.org"
 license: Apache-2.0
 keywords:
-  - "NLP",
+  - "NLP"
   - "CL"
   - "natural language processing"
   - "computational linguistics"
