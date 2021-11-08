@@ -12,19 +12,19 @@ repository-code: "https://github.com/nltk/nltk"
 url: "https://www.nltk.org"
 license: Apache-2.0
 preferred-citation:
+  title: >-
+    Natural language processing with Python: analyzing
+    text with the natural language toolkit
   type: book
   authors:
     - given-names: Stephen
       family-names: Bird
       orcid: https://orcid.org/0000-0003-3782-7733
-    - given-names: Edward
-      family-names: Loper
     - given-names: Ewan
       family-names: Klein
       orcid: https://orcid.org/0000-0002-0520-8447
-  title: >-
-    Natural language processing with Python: analyzing
-    text with the natural language toolkit
+    - given-names: Edward
+      family-names: Loper
+  year: 2009
   publisher:
     name: "O'Reilly Media, Inc."
-  year: 2009
