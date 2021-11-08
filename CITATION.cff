@@ -11,6 +11,19 @@ authors:
 repository-code: "https://github.com/nltk/nltk"
 url: "https://www.nltk.org"
 license: Apache-2.0
+keywords:
+  - "NLP",
+  - "CL"
+  - "natural language processing"
+  - "computational linguistics"
+  - "parsing"
+  - "tagging"
+  - "tokenizing"
+  - "syntax"
+  - "linguistics"
+  - "language"
+  - "natural language"
+  - "text analytics"
 preferred-citation:
   title: >-
     Natural language processing with Python: analyzing
