@@ -285,6 +285,7 @@
 - Saibo Geng <https://github.com/Saibo-creator>
 - Ahmet Yildirim <https://github.com/RnDevelover>
 - Yuta Nakamura <https://github.com/yutanakamura-tky>
+- Adam Hawley <https://github.com/adamjhawley>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
