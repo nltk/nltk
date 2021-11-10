@@ -150,6 +150,7 @@ Test valid scenarios
     ('valid string', 14)
 
 Now test invalid scenarios
+
     >>> read_str("should error", 0)
     Traceback (most recent call last):
     ...

@@ -569,9 +569,8 @@ class Text:
         :type text_seed: list(str)
 
         :param random_seed: A random seed or an instance of `random.Random`. If provided,
-        makes the random sampling part of generation reproducible. (default=42)
+            makes the random sampling part of generation reproducible. (default=42)
         :type random_seed: int
-
         """
         # Create the model when using it the first time.
         self._tokenized_sents = [
@@ -609,7 +608,7 @@ class Text:
         See documentation for FreqDist.plot()
         :seealso: nltk.prob.FreqDist.plot()
         """
-        self.vocab().plot(*args)
+        return self.vocab().plot(*args)
 
     def vocab(self):
         """

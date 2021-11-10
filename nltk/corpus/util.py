@@ -44,8 +44,8 @@ class LazyCorpusLoader:
     :type reader: nltk.corpus.reader.api.CorpusReader
     :param nltk_data_subdir: The subdirectory where the corpus is stored.
     :type nltk_data_subdir: str
-    :param *args: Any other non-keywords arguments that `reader_cls` might need.
-    :param *kargs: Any other keywords arguments that `reader_cls` might need.
+    :param `*args`: Any other non-keywords arguments that `reader_cls` might need.
+    :param `**kwargs`: Any other keywords arguments that `reader_cls` might need.
     """
 
     def __init__(self, name, reader_cls, *args, **kwargs):

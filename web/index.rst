@@ -76,7 +76,7 @@ Next Steps
    :caption: NLTK Documentation
 
    API Reference <api/nltk>
-   Example Usage <https://www.nltk.org/howto>
+   Example Usage <howto>
    Module Index <py-modindex>
    Wiki <https://github.com/nltk/nltk/wiki>
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>

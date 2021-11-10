@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
+#         Tom Aarsen <> (modifications)
 #
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
@@ -36,16 +37,16 @@ class TreebankWordTokenizer(TokenizerI):
     - split off commas and single quotes, when followed by whitespace
     - separate periods that appear at the end of line
 
-        >>> from nltk.tokenize import TreebankWordTokenizer
-        >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-        >>> TreebankWordTokenizer().tokenize(s)
-        ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
-        >>> s = "They'll save and invest more."
-        >>> TreebankWordTokenizer().tokenize(s)
-        ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
-        >>> s = "hi, my name can't hello,"
-        >>> TreebankWordTokenizer().tokenize(s)
-        ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
+    >>> from nltk.tokenize import TreebankWordTokenizer
+    >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'''
+    >>> TreebankWordTokenizer().tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
+    >>> s = "They'll save and invest more."
+    >>> TreebankWordTokenizer().tokenize(s)
+    ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
+    >>> s = "hi, my name can't hello,"
+    >>> TreebankWordTokenizer().tokenize(s)
+    ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
     """
 
     # starting quotes
@@ -86,8 +87,8 @@ class TreebankWordTokenizer(TokenizerI):
 
     # ending quotes
     ENDING_QUOTES = [
+        (re.compile(r"''"), " '' "),
         (re.compile(r'"'), " '' "),
-        (re.compile(r"(\S)(\'\')"), r"\1 \2 "),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
         (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
@@ -196,22 +197,23 @@ class TreebankWordDetokenizer(TokenizerI):
     the Treebank tokenizer's regexes.
 
     Note:
-    - There're additional assumption mades when undoing the padding of [;@#$%&]
+
+    - There're additional assumption mades when undoing the padding of `[;@#$%&]`
       punctuation symbols that isn't presupposed in the TreebankTokenizer.
     - There're additional regexes added in reversing the parentheses tokenization,
-       - the r'([\]\)\}\>])\s([:;,.])' removes the additional right padding added
-         to the closing parentheses precedding [:;,.].
+       - the `r'([\]\)\}\>])\s([:;,.])'` removes the additional right padding added
+         to the closing parentheses precedding `[:;,.]`.
     - It's not possible to return the original whitespaces as they were because
       there wasn't explicit records of where '\n', '\t' or '\s' were removed at
       the text.split() operation.
 
-        >>> from nltk.tokenize.treebank import TreebankWordTokenizer, TreebankWordDetokenizer
-        >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-        >>> d = TreebankWordDetokenizer()
-        >>> t = TreebankWordTokenizer()
-        >>> toks = t.tokenize(s)
-        >>> d.detokenize(toks)
-        'Good muffins cost $3.88 in New York. Please buy me two of them. Thanks.'
+    >>> from nltk.tokenize.treebank import TreebankWordTokenizer, TreebankWordDetokenizer
+    >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'''
+    >>> d = TreebankWordDetokenizer()
+    >>> t = TreebankWordTokenizer()
+    >>> toks = t.tokenize(s)
+    >>> d.detokenize(toks)
+    'Good muffins cost $3.88 in New York. Please buy me two of them. Thanks.'
 
     The MXPOST parentheses substitution can be undone using the `convert_parentheses`
     parameter:

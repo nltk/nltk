@@ -51,11 +51,10 @@ class DependencyGraph:
         zpar).
 
         :param str cell_separator: the cell separator. If not provided, cells
-        are split by whitespace.
+            are split by whitespace.
 
         :param str top_relation_label: the label by which the top relation is
-        identified, for examlple, `ROOT`, `null` or `TOP`.
-
+            identified, for examlple, `ROOT`, `null` or `TOP`.
         """
         self.nodes = defaultdict(
             lambda: {
@@ -212,11 +211,11 @@ class DependencyGraph:
         """
         :param filename: a name of a file in Malt-TAB format
         :param zero_based: nodes in the input file are numbered starting from 0
-        rather than 1 (as produced by, e.g., zpar)
+            rather than 1 (as produced by, e.g., zpar)
         :param str cell_separator: the cell separator. If not provided, cells
-        are split by whitespace.
+            are split by whitespace.
         :param str top_relation_label: the label by which the top relation is
-        identified, for examlple, `ROOT`, `null` or `TOP`.
+            identified, for examlple, `ROOT`, `null` or `TOP`.
 
         :return: a list of DependencyGraphs
 

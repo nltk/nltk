@@ -122,20 +122,20 @@ class MaltParser(ParserI):
         An interface for parsing with the Malt Parser.
 
         :param parser_dirname: The path to the maltparser directory that
-        contains the maltparser-1.x.jar
+            contains the maltparser-1.x.jar
         :type parser_dirname: str
         :param model_filename: The name of the pre-trained model with .mco file
-        extension. If provided, training will not be required.
-        (see http://www.maltparser.org/mco/mco.html and
-        see http://www.patful.com/chalk/node/185)
+            extension. If provided, training will not be required.
+            (see http://www.maltparser.org/mco/mco.html and
+            see http://www.patful.com/chalk/node/185)
         :type model_filename: str
         :param tagger: The tagger used to POS tag the raw string before
-        formatting to CONLL format. It should behave like `nltk.pos_tag`
+            formatting to CONLL format. It should behave like `nltk.pos_tag`
         :type tagger: function
         :param additional_java_args: This is the additional Java arguments that
-        one can use when calling Maltparser, usually this is the heapsize
-        limits, e.g. `additional_java_args=['-Xmx1024m']`
-        (see https://goo.gl/mpDBvQ)
+            one can use when calling Maltparser, usually this is the heapsize
+            limits, e.g. `additional_java_args=['-Xmx1024m']`
+            (see https://goo.gl/mpDBvQ)
         :type additional_java_args: list
         """
 
@@ -162,7 +162,7 @@ class MaltParser(ParserI):
         :param sentences: Input sentences to parse
         :type sentence: list(list(tuple(str, str)))
         :return: iter(iter(``DependencyGraph``)) the dependency graph
-        representation of each sentence
+            representation of each sentence
         """
         if not self._trained:
             raise Exception("Parser has not been trained. Call train() first.")

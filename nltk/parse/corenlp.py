@@ -515,7 +515,6 @@ class CoreNLPParser(GenericCoreNLPParser):
     Mary walks  .
 
     Special cases
-    -------------
 
     >>> next(
     ...     parser.raw_parse(
@@ -533,7 +532,6 @@ class CoreNLPParser(GenericCoreNLPParser):
     ...     )
     ... ).height()
     9
-
     """
 
     _OUTPUT_FORMAT = "penn"
@@ -648,7 +646,6 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     .   .       2       punct
 
     Special cases
-    -------------
 
     Non-breaking space inside of a token.
 

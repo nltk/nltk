@@ -679,6 +679,7 @@ Special features:
     [ tense   = 'past'            ]
 
 Here the slash feature gets coerced:
+
     >>> FeatStruct('[*slash*=a, x=b, *type*="NP"]')
     NP[x='b']/a[]
 

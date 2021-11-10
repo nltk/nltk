@@ -255,12 +255,12 @@ class Concept:
         :type prefLabel: str
         :param arity: the arity of the concept
         :type arity: int
-        @keyword altLabels: other (related) labels
+        :param altLabels: other (related) labels
         :type altLabels: list
-        @keyword closures: closure properties of the extension \
+        :param closures: closure properties of the extension
             (list items can be ``symmetric``, ``reflexive``, ``transitive``)
         :type closures: list
-        @keyword extension: the extensional value of the concept
+        :param extension: the extensional value of the concept
         :type extension: set
         """
         self.prefLabel = prefLabel
