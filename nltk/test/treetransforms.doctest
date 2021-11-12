@@ -6,8 +6,7 @@ Unit tests for the TreeTransformation class
 -------------------------------------------
 
     >>> from copy import deepcopy
-    >>> from nltk.tree import *
-    >>> from nltk.treetransforms import *
+    >>> from nltk.tree import Tree, collapse_unary, chomsky_normal_form, un_chomsky_normal_form
 
     >>> tree_string = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
 
