@@ -68,6 +68,7 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
 import re
+import itertools
 from functools import total_ordering
 
 from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
@@ -734,114 +735,456 @@ class CFG:
         """
         return self.is_flexible_chomsky_normal_form() and self._all_unary_are_lexical
 
-    def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
-        """
-        Returns a new Grammar that is in chomsky normal
+    ##################################################
+    # Stefan Kaufmann's proposed changes
 
-        :param: new_token_padding
-            Customise new rule formation during binarisation
+    def chomsky_normal_form( self, flexible=False, simplify=True):
         """
+        Return an equivalent grammar in Chomsky Normal Form.
+
+        Keyword Parameters:
+        flexible -- bool: if True, result may contain unit productions.
+        simplify -- bool: if True, remove non-producing and 
+                                        unreachable symbols.
+
+        The class methods invoked are named following the usage in 
+        M. Lange and H. Leiß (2009), "To CNF or not to CNF? An efficient
+        yet presentable version of the CYK algorithm", Informatica 
+        Didactica 8:2008-2010. 
+        """
+        if flexible and self.is_flexible_chomsky_normal_form():
+            return self
         if self.is_chomsky_normal_form():
             return self
-        if self.productions(empty=True):
-            raise ValueError(
-                "Grammar has Empty rules. " "Cannot deal with them at the moment"
-            )
 
-        # check for mixed rules
-        for rule in self.productions():
-            if rule.is_lexical() and len(rule.rhs()) > 1:
-                raise ValueError(
-                    f"Cannot handled mixed rule {rule.lhs()} => {rule.rhs()}"
-                )
+        # counter used in generating new non-terminals
+        ctr = itertools.count()
 
-        step1 = CFG.eliminate_start(self)
-        step2 = CFG.binarize(step1, new_token_padding)
-        if flexible:
-            return step2
-        step3 = CFG.remove_unitary_rules(step2)
-        step4 = CFG(step3.start(), list(set(step3.productions())))
-        return step4
+        result = self
+        
+        # add a new start symbol if the present one
+        # occurs on a right-hand side
+        result = CFG.START( result, ctr)
+
+        if not result.is_nonempty():
+            # remove empty productions (except for startsymbol -> epsilon)
+            result = CFG.DEL( result)
+        
+        if not flexible:
+            # remove unit productions (except with a terminal on the rhs)
+            result = CFG.UNIT( result)
+            
+        if simplify:
+            # remove non-terminals that don't generate output
+            result = CFG.PROD( result)
+            # remove symbols that are not reachable from the start
+            result = CFG.REACH( result)
+
+        if not result.is_binarised():
+            # reduce right-hand sides to at most two
+            result = CFG.BIN( result, ctr)
+
+        if not result.is_nonlexical():
+            # replace non-single terminals with non-terminals
+            result = CFG.TERM( result, ctr)
+
+        # Should there be something like this?
+        result._productions.sort(
+            key=lambda prod : (prod.lhs() != self.start(),
+                               prod.is_lexical(),
+                               prod.lhs()))
+
+        return result
+        
+    @classmethod
+    def _new_nonterminal( cls, grammar, ctr, stem='X'):
+        """
+        Create a new non-terminal symbol that is not yet 
+        used in the grammar. 
+
+        Params:
+        grammar -- CFG
+        ctr     -- [int]
+        stem    -- str
+
+        Return: Nonterminal of the form 'stem+n' for some n.
+        """
+        nonterminals_in_use = grammar._categories.union(
+            child
+            for prod in grammar.productions()
+            for child in prod.rhs()
+            if is_nonterminal(child))
+        while True:
+            new_nt = Nonterminal( f'{stem}{next(ctr)}')
+            if new_nt not in nonterminals_in_use:
+                return new_nt
 
     @classmethod
-    def remove_unitary_rules(cls, grammar):
+    def START( cls, grammar, ctr):
         """
-        Remove nonlexical unitary rules and convert them to
-        lexical
-        """
-        result = []
-        unitary = []
-        for rule in grammar.productions():
-            if len(rule) == 1 and rule.is_nonlexical():
-                unitary.append(rule)
-            else:
-                result.append(rule)
+        Add a new start symbol if the current start symbol 
+        appears on the right-hand side of a production.
 
-        while unitary:
-            rule = unitary.pop(0)
-            for item in grammar.productions(lhs=rule.rhs()[0]):
-                new_rule = Production(rule.lhs(), item.rhs())
-                if len(new_rule) != 1 or new_rule.is_lexical():
-                    result.append(new_rule)
+        Params:
+        grammar -- CFG
+        ctr     -- [int]
+
+        Return: CFG whose start symbol does not occur on the
+        right-hand side of any production.
+        """
+        if any( grammar.start() in prod.rhs()
+                for prod in grammar.productions()):
+            new_start = cls._new_nonterminal( grammar, ctr, stem='S')
+            return cls( new_start,
+                        grammar.productions() + \
+                        [Production( new_start, (grammar.start(),))])
+        else:
+            return grammar
+
+    @classmethod
+    def _DEL_multiply( cls, prod, symbol):
+        """
+        Given a production prod and a (nullable) symbol, generate all 
+        variants of prod whose right-hand sides contain a (possibly empty)
+        subset of the occurrences of the symbol.
+
+        Thus for instance if prod is X -> A B A C A 
+        then _DEL_multiply( prod, A) is the list
+        X -> BC, X -> ABC, X -> BAC, X -> BCA, 
+        X -> ABAC, X -> ABCA, X -> BACA, X -> ABACA
+
+        Parameters:
+        prod    -- Production
+        symbol  -- terminal or Nonterminal
+
+        Yield: Production with some subset of the occurrences of symbol
+
+        Helper function for DEL_multiply.
+        """
+        symbol_indices = [i for i,child in enumerate(prod.rhs())
+                          if child == symbol]
+        for subset in range(2**len(symbol_indices)):
+            new_rhs = []
+            for i,child in enumerate(prod.rhs()):
+                if child == symbol:
+                    if subset & (1 << symbol_indices.index(i)):
+                        new_rhs.append(child)
                 else:
-                    unitary.append(new_rule)
-
-        n_grammar = CFG(grammar.start(), result)
-        return n_grammar
+                    new_rhs.append(child)
+            yield Production( prod.lhs(), new_rhs)
 
     @classmethod
-    def binarize(cls, grammar, padding="@$@"):
+    def DEL( cls, grammar):
         """
-        Convert all non-binary rules into binary by introducing
-        new tokens.
-        Example::
+        Return an equivalent grammar without empty productions.
+        (Startsymbol -> epsilon is not removed, and may in fact
+        be created in the process.)
 
-            Original:
-                A => B C D
-            After Conversion:
-                A => B A@$@B
-                A@$@B => C D
+        Parameter:
+        grammar -- CFG
         """
-        result = []
+        productions = set(grammar.productions())
+        while True:
+            empty_productions = set(
+                prod for prod in productions
+                if len(prod) == 0
+                if prod.lhs() != grammar.start() )
+            if not empty_productions:
+                break
+            productions -= empty_productions
+            new_productions = set()
+            for prod in productions:
+                for empty_prod in empty_productions:
+                    if empty_prod.lhs() in prod.rhs():
+                        new_productions.update(
+                            cls._DEL_multiply(
+                                prod, empty_prod.lhs()) )
+            productions.update(new_productions)
 
-        for rule in grammar.productions():
-            if len(rule.rhs()) > 2:
-                # this rule needs to be broken down
-                left_side = rule.lhs()
-                for k in range(0, len(rule.rhs()) - 2):
-                    tsym = rule.rhs()[k]
-                    new_sym = Nonterminal(left_side.symbol() + padding + tsym.symbol())
-                    new_production = Production(left_side, (tsym, new_sym))
-                    left_side = new_sym
-                    result.append(new_production)
-                last_prd = Production(left_side, rule.rhs()[-2:])
-                result.append(last_prd)
+        return cls( grammar.start(), list(productions))
+
+    @classmethod
+    def _UNIT_paths( cls, grammar, path):
+        """
+        Given a list 'path' of production rules, generate all 
+        unit paths containing 'path' as an intial segment.
+        
+        A unit path is a list [N1 -> N2, N2 -> N3, ..., Nn -> alpha], 
+        where all Ni are non-terminals and alpha is not a non-terminal
+        (i.e., either a list of length != 1, or a terminal).
+
+        Parameters:
+        grammar -- CFG
+        path    -- list of productions
+        """
+        if len(path[-1]) != 1 or path[-1].is_lexical():
+            yield path
+
+        else:
+            for next_prod in grammar.productions():
+                if next_prod.lhs() == path[-1].rhs()[0] and \
+                        next_prod not in path:
+                    for new_path in cls._UNIT_paths( 
+                            grammar, path+[next_prod]):
+                        yield new_path
+
+    @classmethod
+    def UNIT( cls, grammar):
+        """
+        Return an equivalent grammar without unit productions.
+
+        Parameters:
+        grammar -- CFG
+        """
+        productions = set( grammar.productions())
+        while True:
+            new_productions = set()
+            for prod in productions:
+                for path in cls._UNIT_paths( grammar, [prod]):
+                    new_productions.add(
+                        Production( path[0].lhs(), path[-1].rhs()))
+            if productions <= new_productions:
+                break
             else:
-                result.append(rule)
+                productions = new_productions
 
-        n_grammar = CFG(grammar.start(), result)
-        return n_grammar
+        return cls( grammar.start(), list(productions))
 
     @classmethod
-    def eliminate_start(cls, grammar):
+    def PROD( cls, grammar):
         """
-        Eliminate start rule in case it appears on RHS
-        Example: S -> S0 S1 and S0 -> S1 S
-        Then another rule S0_Sigma -> S is added
+        Return an equivalent grammar without non-terminals 
+        that don't generate any output.
+
+        Parameters:
+        grammar -- CFG
         """
-        start = grammar.start()
-        result = []
-        need_to_add = None
-        for rule in grammar.productions():
-            if start in rule.rhs():
-                need_to_add = True
-            result.append(rule)
-        if need_to_add:
-            start = Nonterminal("S0_SIGMA")
-            result.append(Production(start, [grammar.start()]))
-            n_grammar = CFG(start, result)
-            return n_grammar
-        return grammar
+        producing = {grammar.start()}.union(
+            child
+            for prod in grammar.productions()
+            for child in prod.rhs()
+            if is_terminal(child) )
+        productions_used = set()
+        while True:
+            new_producing = set()
+            for prod in grammar.productions():
+                if prod not in productions_used and \
+                        all( child in producing for child in prod.rhs()):
+                    new_producing.add(prod.lhs())
+                    productions_used.add(prod)
+            if new_producing <= producing:
+                break
+            else:
+                producing.update( new_producing)
+
+        return cls( grammar.start(), list(productions_used))
+                      
+    
+    @classmethod
+    def REACH( cls, grammar):
+        """
+        Returnan equivalent grammar without symbols
+        that are not reachable from the start symbol.
+
+        Parameters:
+        grammar -- CFG
+        """
+        reachable = {grammar.start()}
+        productions_used = set()
+        while True:
+            new_reachable = set()
+            for prod in grammar.productions():
+                if prod not in productions_used and \
+                        prod.lhs() in reachable:
+                    new_reachable.update(set(prod.rhs()))
+                    productions_used.add(prod)
+            if new_reachable <= reachable:
+                break
+            else:
+                reachable.update( new_reachable)
+
+        return cls( grammar.start(), list(productions_used))
+
+
+    @classmethod
+    def TERM( cls, grammar, ctr):
+        """
+        Return an equivalent grammar in which terminals do not have 
+        siblings (terminals or non-terminals) on right-hand sides.
+
+        Parameters:
+        grammar -- CFG
+        ctr     -- [int]
+        """
+        new_parents = dict()
+        for prod in grammar.productions():
+            if len(prod) > 1:
+                for child in prod.rhs():
+                    if is_terminal(child) and child not in new_parents:
+                        new_parents[child] = cls._new_nonterminal(
+                            grammar, ctr, stem='T')
+        new_productions = set()
+        for prod in grammar.productions():
+            if len(prod) > 1 and prod.is_lexical():
+                new_productions.add(
+                    Production( prod.lhs(),
+                                tuple( new_parents.get( child, child)
+                                       for child in prod.rhs())))
+            else:
+                new_productions.add( prod)
+                
+        new_productions.update(
+            ( Production( new_parents[child], (child,))
+              for child in new_parents))
+
+        return cls( grammar.start(), list(new_productions))
+
+
+    @classmethod
+    def BIN( cls, grammar, ctr):
+        """
+        Return an equivalent grammar none of whose right-hand sides
+        are longer than 2.
+
+        Parameters:
+        grammar -- CFG
+        ctr     -- [int]
+        """
+        new_productions = set()
+        for prod in grammar.productions():
+            if len(prod) <= 2:
+                new_productions.add(prod)
+            else:
+                current_lhs, current_rhs = prod.lhs(), list(prod.rhs())
+                while len(current_rhs) > 2:
+                    new_parent = cls._new_nonterminal(
+                        grammar, ctr, stem='B')
+                    left_child = current_rhs.pop(0)
+                    new_productions.add(
+                        Production( current_lhs, (left_child,new_parent)) )
+                    current_lhs = new_parent
+                new_productions.add( Production(current_lhs,current_rhs))
+
+        return cls( grammar.start(), list(new_productions))
+
+
+    # End of Stefan Kaufmann's proposed changes
+    ##################################################
+
+    ##################################################
+    # Code to be replaced by Stefan Kaufmann's version
+    
+    # def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
+    #     """
+    #     Returns a new Grammar that is in chomsky normal
+
+    #     :param: new_token_padding
+    #         Customise new rule formation during binarisation
+    #     """
+    #     if self.is_chomsky_normal_form():
+    #         return self
+    #     if self.productions(empty=True):
+    #         raise ValueError(
+    #             "Grammar has Empty rules. " "Cannot deal with them at the moment"
+    #         )
+
+    #     # check for mixed rules
+    #     for rule in self.productions():
+    #         if rule.is_lexical() and len(rule.rhs()) > 1:
+    #             raise ValueError(
+    #                 f"Cannot handled mixed rule {rule.lhs()} => {rule.rhs()}"
+    #             )
+
+    #     step1 = CFG.eliminate_start(self)
+    #     step2 = CFG.binarize(step1, new_token_padding)
+    #     if flexible:
+    #         return step2
+    #     step3 = CFG.remove_unitary_rules(step2)
+    #     step4 = CFG(step3.start(), list(set(step3.productions())))
+    #     return step4
+
+    # @classmethod
+    # def remove_unitary_rules(cls, grammar):
+    #     """
+    #     Remove nonlexical unitary rules and convert them to
+    #     lexical
+    #     """
+    #     result = []
+    #     unitary = []
+    #     for rule in grammar.productions():
+    #         if len(rule) == 1 and rule.is_nonlexical():
+    #             unitary.append(rule)
+    #         else:
+    #             result.append(rule)
+
+    #     while unitary:
+    #         rule = unitary.pop(0)
+    #         for item in grammar.productions(lhs=rule.rhs()[0]):
+    #             new_rule = Production(rule.lhs(), item.rhs())
+    #             if len(new_rule) != 1 or new_rule.is_lexical():
+    #                 result.append(new_rule)
+    #             else:
+    #                 unitary.append(new_rule)
+
+    #     n_grammar = CFG(grammar.start(), result)
+    #     return n_grammar
+
+    # @classmethod
+    # def binarize(cls, grammar, padding="@$@"):
+    #     """
+    #     Convert all non-binary rules into binary by introducing
+    #     new tokens.
+    #     Example::
+
+    #         Original:
+    #             A => B C D
+    #         After Conversion:
+    #             A => B A@$@B
+    #             A@$@B => C D
+    #     """
+    #     result = []
+
+    #     for rule in grammar.productions():
+    #         if len(rule.rhs()) > 2:
+    #             # this rule needs to be broken down
+    #             left_side = rule.lhs()
+    #             for k in range(0, len(rule.rhs()) - 2):
+    #                 tsym = rule.rhs()[k]
+    #                 new_sym = Nonterminal(left_side.symbol() + padding + tsym.symbol())
+    #                 new_production = Production(left_side, (tsym, new_sym))
+    #                 left_side = new_sym
+    #                 result.append(new_production)
+    #             last_prd = Production(left_side, rule.rhs()[-2:])
+    #             result.append(last_prd)
+    #         else:
+    #             result.append(rule)
+
+    #     n_grammar = CFG(grammar.start(), result)
+    #     return n_grammar
+
+    # @classmethod
+    # def eliminate_start(cls, grammar):
+    #     """
+    #     Eliminate start rule in case it appears on RHS
+    #     Example: S -> S0 S1 and S0 -> S1 S
+    #     Then another rule S0_Sigma -> S is added
+    #     """
+    #     start = grammar.start()
+    #     result = []
+    #     need_to_add = None
+    #     for rule in grammar.productions():
+    #         if start in rule.rhs():
+    #             need_to_add = True
+    #         result.append(rule)
+    #     if need_to_add:
+    #         start = Nonterminal("S0_SIGMA")
+    #         result.append(Production(start, [grammar.start()]))
+    #         n_grammar = CFG(start, result)
+    #         return n_grammar
+    #     return grammar
+
+    # End of code to be replaced by Stefan Kaufmann's version
+    ##################################################
 
     def __repr__(self):
         return "<Grammar with %d productions>" % len(self._productions)
