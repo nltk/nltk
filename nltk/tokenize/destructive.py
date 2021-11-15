@@ -115,7 +115,7 @@ class NLTKWordTokenizer(TokenizerI):
 
     def tokenize(self, text, convert_parentheses=False, return_str=False):
 
-        if return_str is not False:
+        if return_str:
             warnings.warn(
                 "Parameter 'return_str' has been deprecated and should no "
                 "longer be used.",
