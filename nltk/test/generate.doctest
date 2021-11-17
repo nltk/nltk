@@ -65,7 +65,7 @@ The number of sentences of different max depths:
     >>> len(list(generate(grammar)))
     114
 
-Infinite grammars will throw a RecursionError when not bounded by some ``depth`` or ``n``:
+Infinite grammars will throw a RecursionError when not bounded by some ``depth``:
 
     >>> grammar = CFG.fromstring("""
     ... S -> A B
