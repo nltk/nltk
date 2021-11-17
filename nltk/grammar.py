@@ -1317,7 +1317,7 @@ def _read_fcfg_production(input, fstruct_reader):
 
 _ARROW_RE = re.compile(r"\s* -> \s*", re.VERBOSE)
 _PROBABILITY_RE = re.compile(r"( \[ [\d\.]+ \] ) \s*", re.VERBOSE)
-_TERMINAL_RE = re.compile(r'( "[^"]+" | \'[^\']+\' ) \s*', re.VERBOSE)
+_TERMINAL_RE = re.compile(r'( "[^"]*" | \'[^\']*\' ) \s*', re.VERBOSE)
 _DISJUNCTION_RE = re.compile(r"\| \s*", re.VERBOSE)
 
 
