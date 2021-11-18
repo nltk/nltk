@@ -673,6 +673,7 @@ class CFG:
         prods = self._productions
         self._is_lexical = all(p.is_lexical() for p in prods)
         self._is_nonlexical = all(p.is_nonlexical() for p in prods if len(p) != 1)
+        # SK Todo: Fix this so that it can deal with empty list of productions
         self._min_len = min(len(p) for p in prods)
         self._max_len = max(len(p) for p in prods)
         self._all_unary_are_lexical = all(p.is_lexical() for p in prods if len(p) == 1)
@@ -764,7 +765,7 @@ class CFG:
 
         # add a new start symbol if the present one
         # occurs on a right-hand side
-        result = CFG.START(result, ctr)
+        result = CFG.START(result)
 
         if not result.is_nonempty():
             # remove empty productions (except for startsymbol -> epsilon)
@@ -782,11 +783,11 @@ class CFG:
 
         if not result.is_binarised():
             # reduce right-hand sides to at most two
-            result = CFG.BIN(result, ctr)
+            result = CFG.BIN(result)
 
         if not result.is_nonlexical():
             # replace non-single terminals with non-terminals
-            result = CFG.TERM(result, ctr)
+            result = CFG.TERM(result)
 
         # Should there be something like this?
         result._productions.sort(
@@ -796,44 +797,61 @@ class CFG:
         return result
 
     @classmethod
-    def _new_nonterminal(cls, grammar, ctr, stem="X"):
+    def _new_nonterminal(
+        cls, grammar, nonterminals_in_use=None, ctr=itertools.count(), stem="X"
+    ):
         """
         Create a new non-terminal symbol that is not yet
         used in the grammar.
 
         Params:
         grammar -- CFG
-        ctr     -- [int]
+
+        Keyword params:
+        nonterminals_in_use -- set of non-terminals currently in the grammar.
+        Note: CFG objects have an attribute "_categories", the set of left-hand
+        sides in the productions. If the grammar contains no useless symbols,
+        categories coincides with the set of non-terminals. Therefore after
+        the elimination of useless symbols (see "PROD" below), _categories
+        can be passed to _new_nonterminals as the value of nonterminals_in_use.
+        But _new_nonterminal is also called prior to the elimination of useless
+        symbols (see "START" below). In that case _categories should not be used
+        and nonterminals_in_use must be calculated.
+
+        ctr     -- itertools.count
         stem    -- str
 
         Return: Nonterminal of the form 'stem+n' for some n.
         """
-        nonterminals_in_use = grammar._categories.union(
-            child
-            for prod in grammar.productions()
-            for child in prod.rhs()
-            if is_nonterminal(child)
-        )
+        if nonterminals_in_use == None:
+            nonterminals_in_use = grammar._categories.union(
+                {
+                    child
+                    for prod in grammar.productions()
+                    for child in prod.rhs()
+                    if is_nonterminal(child)
+                }
+            )
         while True:
             new_nt = Nonterminal(f"{stem}{next(ctr)}")
             if new_nt not in nonterminals_in_use:
+                grammar._categories.add(new_nt)
                 return new_nt
 
     @classmethod
-    def START(cls, grammar, ctr):
+    def START(cls, grammar):
         """
         Add a new start symbol if the current start symbol
         appears on the right-hand side of a production.
 
         Params:
         grammar -- CFG
-        ctr     -- [int]
 
         Return: CFG whose start symbol does not occur on the
         right-hand side of any production.
         """
         if any(grammar.start() in prod.rhs() for prod in grammar.productions()):
-            new_start = cls._new_nonterminal(grammar, ctr, stem="S")
+            new_start = cls._new_nonterminal(grammar, stem="S")
             return cls(
                 new_start,
                 grammar.productions() + [Production(new_start, (grammar.start(),))],
@@ -849,7 +867,7 @@ class CFG:
         subset of the occurrences of the symbol.
 
         Thus for instance if prod is X -> A B A C A
-        then _DEL_multiply( prod, A) is the list
+        then _DEL_multiply( prod, A) generates the productions
         X -> BC, X -> ABC, X -> BAC, X -> BCA,
         X -> ABAC, X -> ABCA, X -> BACA, X -> ABACA
 
@@ -861,13 +879,14 @@ class CFG:
 
         Helper function for DEL_multiply.
         """
-        symbol_indices = [i for i, child in enumerate(prod.rhs()) if child == symbol]
-        for subset in range(2 ** len(symbol_indices)):
+        for subset in range(2 ** prod.rhs().count(symbol)):
             new_rhs = []
-            for i, child in enumerate(prod.rhs()):
+            nth_occurrence = 0
+            for child in prod.rhs():
                 if child == symbol:
-                    if subset & (1 << symbol_indices.index(i)):
+                    if subset & (1 << nth_occurrence):
                         new_rhs.append(child)
+                        nth_occurrence += 1
                 else:
                     new_rhs.append(child)
             yield Production(prod.lhs(), new_rhs)
@@ -1003,26 +1022,59 @@ class CFG:
         return cls(grammar.start(), list(productions_used))
 
     @classmethod
-    def TERM(cls, grammar, ctr):
+    def BIN(cls, grammar):
+        """
+        Return an equivalent grammar none of whose right-hand sides
+        are longer than 2.
+
+        Parameters:
+        grammar -- CFG
+        """
+        new_productions = set()
+        ctr = itertools.count()
+        for prod in grammar.productions():
+            if len(prod) <= 2:
+                new_productions.add(prod)
+            else:
+                current_lhs, current_rhs = prod.lhs(), list(prod.rhs())
+                while len(current_rhs) > 2:
+                    left_child = current_rhs.pop(0)
+                    new_parent = cls._new_nonterminal(
+                        grammar,
+                        nonterminals_in_use=grammar._categories,
+                        ctr=ctr,
+                        stem="B",
+                    )
+                    new_productions.add(
+                        Production(current_lhs, (left_child, new_parent))
+                    )
+                    current_lhs = new_parent
+                new_productions.add(Production(current_lhs, current_rhs))
+
+        return cls(grammar.start(), list(new_productions))
+
+    @classmethod
+    def TERM(cls, grammar):
         """
         Return an equivalent grammar in which terminals do not have
         siblings (terminals or non-terminals) on right-hand sides.
 
         Parameters:
         grammar -- CFG
-        ctr     -- [int]
         """
         new_parents = dict()
+        new_productions = set()
+        ctr = itertools.count()
         for prod in grammar.productions():
-            if len(prod) > 1:
+            if len(prod) > 1 and prod.is_lexical():
                 for child in prod.rhs():
                     if is_terminal(child) and child not in new_parents:
                         new_parents[child] = cls._new_nonterminal(
-                            grammar, ctr, stem="T"
+                            grammar,
+                            nonterminals_in_use=grammar._categories,
+                            ctr=ctr,
+                            stem="T",
                         )
-        new_productions = set()
-        for prod in grammar.productions():
-            if len(prod) > 1 and prod.is_lexical():
                 new_productions.add(
                     Production(
                         prod.lhs(),
@@ -1035,33 +1087,6 @@ class CFG:
         new_productions.update(
             Production(new_parents[child], (child,)) for child in new_parents
         )
-
-        return cls(grammar.start(), list(new_productions))
-
-    @classmethod
-    def BIN(cls, grammar, ctr):
-        """
-        Return an equivalent grammar none of whose right-hand sides
-        are longer than 2.
-
-        Parameters:
-        grammar -- CFG
-        ctr     -- [int]
-        """
-        new_productions = set()
-        for prod in grammar.productions():
-            if len(prod) <= 2:
-                new_productions.add(prod)
-            else:
-                current_lhs, current_rhs = prod.lhs(), list(prod.rhs())
-                while len(current_rhs) > 2:
-                    new_parent = cls._new_nonterminal(grammar, ctr, stem="B")
-                    left_child = current_rhs.pop(0)
-                    new_productions.add(
-                        Production(current_lhs, (left_child, new_parent))
-                    )
-                    current_lhs = new_parent
-                new_productions.add(Production(current_lhs, current_rhs))
 
         return cls(grammar.start(), list(new_productions))
 
