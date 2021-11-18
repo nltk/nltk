@@ -673,9 +673,8 @@ class CFG:
         prods = self._productions
         self._is_lexical = all(p.is_lexical() for p in prods)
         self._is_nonlexical = all(p.is_nonlexical() for p in prods if len(p) != 1)
-        # SK Todo: Fix this so that it can deal with empty list of productions
-        self._min_len = min(len(p) for p in prods)
-        self._max_len = max(len(p) for p in prods)
+        self._min_len = min(len(p) for p in prods) if len(prods) else None
+        self._max_len = max(len(p) for p in prods) if len(prods) else None
         self._all_unary_are_lexical = all(p.is_lexical() for p in prods if len(p) == 1)
 
     def is_lexical(self):
@@ -713,14 +712,14 @@ class CFG:
         """
         Return True if there are no empty productions.
         """
-        return self._min_len > 0
+        return all(len(prod) > 0 for prod in self.productions())
 
     def is_binarised(self):
         """
         Return True if all productions are at most binary.
         Note that there can still be empty and unary productions.
         """
-        return self._max_len <= 2
+        return all(len(prod) <= 2 for prod in self.productions())
 
     def is_flexible_chomsky_normal_form(self):
         """
