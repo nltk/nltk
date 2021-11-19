@@ -752,19 +752,20 @@ class CFG:
         yet presentable version of the CYK algorithm", Informatica
         Didactica 8:2008-2010.
         """
-        if flexible and self.is_flexible_chomsky_normal_form():
-            return self
-        if self.is_chomsky_normal_form():
-            return self
-
-        # counter used in generating new non-terminals
-        ctr = itertools.count()
-
-        result = self
+        if (
+            flexible and self.is_flexible_chomsky_normal_form()
+        ) or self.is_chomsky_normal_form():
+            result = self
+            if simplify:
+                # remove non-terminals that don't generate output
+                result = CFG.PROD(result)
+                # remove symbols that are not reachable from the start
+                result = CFG.REACH(result)
+            return result
 
         # add a new start symbol if the present one
         # occurs on a right-hand side
-        result = CFG.START(result)
+        result = CFG.START(self)
 
         if not result.is_nonempty():
             # remove empty productions (except for startsymbol -> epsilon)
@@ -788,9 +789,25 @@ class CFG:
             # replace non-single terminals with non-terminals
             result = CFG.TERM(result)
 
-        # Should there be something like this?
+        # Sort the productions for nice output
         result._productions.sort(
-            key=lambda prod: (prod.lhs() != self.start(), prod.is_lexical(), prod.lhs())
+            key=lambda prod: (
+                # non-lexical before lexical
+                prod.is_lexical(),
+                # start symbol lhs before other lhs
+                prod.lhs() != result.start(),
+                # lhs alphabetically
+                str(prod.lhs()),
+                # rhs item-wise
+                *(
+                    (  # nonterminal before terminal
+                        is_terminal(child),
+                        # alphabetically
+                        str(child),
+                    )
+                    for child in prod.rhs()
+                ),
+            )
         )
 
         return result
@@ -850,7 +867,8 @@ class CFG:
         right-hand side of any production.
         """
         if any(grammar.start() in prod.rhs() for prod in grammar.productions()):
-            new_start = cls._new_nonterminal(grammar, stem="S")
+            ctr = itertools.count()
+            new_start = cls._new_nonterminal(grammar, ctr=ctr, stem="S")
             return cls(
                 new_start,
                 grammar.productions() + [Production(new_start, (grammar.start(),))],
@@ -900,27 +918,29 @@ class CFG:
         Parameter:
         grammar -- CFG
         """
-        productions = set(grammar.productions())
+        productions = dict.fromkeys(grammar.productions())
         while True:
-            empty_productions = {
+            empty_productions = dict.fromkeys(
                 prod
                 for prod in productions
                 if len(prod) == 0
                 if prod.lhs() != grammar.start()
-            }
+            )
             if not empty_productions:
                 break
-            productions -= empty_productions
-            new_productions = set()
+            for prod in empty_productions:
+                del productions[prod]
+            new_productions = dict()
             for prod in productions:
                 for empty_prod in empty_productions:
                     if empty_prod.lhs() in prod.rhs():
                         new_productions.update(
-                            cls._DEL_multiply(prod, empty_prod.lhs())
+                            (prod, None)
+                            for prod in cls._DEL_multiply(prod, empty_prod.lhs())
                         )
             productions.update(new_productions)
 
-        return cls(grammar.start(), list(productions))
+        return cls(grammar.start(), list(productions.keys()))
 
     @classmethod
     def _UNIT_paths(cls, grammar, path):
@@ -952,13 +972,14 @@ class CFG:
         Parameters:
         grammar -- CFG
         """
-        productions = set(grammar.productions())
+        productions = dict.fromkeys(grammar.productions())
         while True:
-            new_productions = set()
-            for prod in productions:
-                for path in cls._UNIT_paths(grammar, [prod]):
-                    new_productions.add(Production(path[0].lhs(), path[-1].rhs()))
-            if productions <= new_productions:
+            new_productions = dict.fromkeys(
+                Production(path[0].lhs(), path[-1].rhs())
+                for prod in productions
+                for path in cls._UNIT_paths(grammar, [prod])
+            )
+            if all(prod in new_productions for prod in productions):
                 break
             else:
                 productions = new_productions
@@ -980,7 +1001,7 @@ class CFG:
             for child in prod.rhs()
             if is_terminal(child)
         )
-        productions_used = set()
+        productions_used = dict()
         while True:
             new_producing = set()
             for prod in grammar.productions():
@@ -988,7 +1009,7 @@ class CFG:
                     child in producing for child in prod.rhs()
                 ):
                     new_producing.add(prod.lhs())
-                    productions_used.add(prod)
+                    productions_used[prod] = None
             if new_producing <= producing:
                 break
             else:
@@ -1006,13 +1027,13 @@ class CFG:
         grammar -- CFG
         """
         reachable = {grammar.start()}
-        productions_used = set()
+        productions_used = dict()
         while True:
             new_reachable = set()
             for prod in grammar.productions():
                 if prod not in productions_used and prod.lhs() in reachable:
                     new_reachable.update(set(prod.rhs()))
-                    productions_used.add(prod)
+                    productions_used[prod] = None
             if new_reachable <= reachable:
                 break
             else:
@@ -1029,11 +1050,11 @@ class CFG:
         Parameters:
         grammar -- CFG
         """
-        new_productions = set()
+        new_productions = []
         ctr = itertools.count()
         for prod in grammar.productions():
             if len(prod) <= 2:
-                new_productions.add(prod)
+                new_productions.append(prod)
             else:
                 current_lhs, current_rhs = prod.lhs(), list(prod.rhs())
                 while len(current_rhs) > 2:
@@ -1044,13 +1065,13 @@ class CFG:
                         ctr=ctr,
                         stem="B",
                     )
-                    new_productions.add(
+                    new_productions.append(
                         Production(current_lhs, (left_child, new_parent))
                     )
                     current_lhs = new_parent
-                new_productions.add(Production(current_lhs, current_rhs))
+                new_productions.append(Production(current_lhs, current_rhs))
 
-        return cls(grammar.start(), list(new_productions))
+        return cls(grammar.start(), new_productions)
 
     @classmethod
     def TERM(cls, grammar):
@@ -1062,7 +1083,7 @@ class CFG:
         grammar -- CFG
         """
         new_parents = dict()
-        new_productions = set()
+        new_productions = []
         ctr = itertools.count()
         for prod in grammar.productions():
             if len(prod) > 1 and prod.is_lexical():
@@ -1074,20 +1095,20 @@ class CFG:
                             ctr=ctr,
                             stem="T",
                         )
-                new_productions.add(
+                new_productions.append(
                     Production(
                         prod.lhs(),
                         tuple(new_parents.get(child, child) for child in prod.rhs()),
                     )
                 )
             else:
-                new_productions.add(prod)
+                new_productions.append(prod)
 
-        new_productions.update(
+        new_productions.extend(
             Production(new_parents[child], (child,)) for child in new_parents
         )
 
-        return cls(grammar.start(), list(new_productions))
+        return cls(grammar.start(), new_productions)
 
     # End of Stefan Kaufmann's proposed changes
     ##################################################

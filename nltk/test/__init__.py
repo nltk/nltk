@@ -13,6 +13,4 @@ For instructions, please see:
 ../../web/dev/local_testing.rst
 
 https://github.com/nltk/nltk/blob/develop/web/dev/local_testing.rst
-
-
 """
