@@ -940,7 +940,7 @@ class CFG:
                         )
             productions.update(new_productions)
 
-        return cls(grammar.start(), list(productions.keys()))
+        return cls(grammar.start(), list(productions))
 
     @classmethod
     def _UNIT_paths(cls, grammar, path):
