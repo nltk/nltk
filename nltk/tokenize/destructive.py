@@ -8,6 +8,7 @@
 
 
 import re
+import warnings
 from typing import Iterator, List, Tuple
 
 from nltk.tokenize.api import TokenizerI
@@ -145,6 +146,14 @@ class NLTKWordTokenizer(TokenizerI):
         :return: List of tokens from `text`.
         :rtype: List[str]
         """
+        if return_str:
+            warnings.warn(
+                "Parameter 'return_str' has been deprecated and should no "
+                "longer be used.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
 
@@ -179,7 +188,7 @@ class NLTKWordTokenizer(TokenizerI):
         # for regexp in self._contractions.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
-        return text if return_str else text.split()
+        return text.split()
 
     def span_tokenize(self, text: str) -> Iterator[Tuple[int, int]]:
         r"""
