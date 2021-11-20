@@ -54,33 +54,14 @@ def run_apidoc(app):
     )
 
 
-def build_team_page():
-    import json
-
-    import chevron
-
-    # Load the team JSON data
-    with open(os.path.join(".", "team", "team.json")) as f:
-        full_data = json.load(f)
-    print("Team data loaded!")
-
-    for members_type, members_data in full_data.items():
-        # Load the team format
-        with open(os.path.join(".", "team", "team.mustache")) as f:
-            team_html = chevron.render(f, members_data)
-        print(f"{members_type} members HTML page rendered!")
-
-        # To create the team.html
-        with open(os.path.join(".", "team", f"{members_type}_team.html"), "w") as f:
-            f.write(team_html)
-        print(f"{members_type} team HTML page written!")
-
-
-def generate_howto():
-    """Custom function for generating contents in the ``howto`` folder,
-    based on the ``ntlk/test/*.doctest`` files.
+def generate_custom_files():
+    """Generating contents in the ``howto`` folder,
+    based on the ``ntlk/test/*.doctest`` files, as well
+    as contents in the ``team`` folder, based on
+    ``team.json``.
     """
     import glob
+    import json
     import re
 
     from jinja2 import Template
@@ -113,10 +94,24 @@ def generate_howto():
 
     print(f"Generated {len(modules)} HOWTO pages.")
 
+    # Load the team JSON data
+    with open(os.path.join(web_folder, "team", "team.json")) as f:
+        full_data = json.load(f)
+    print("Team data loaded!")
 
-# Build the Team page before creating the Sphinx build
-build_team_page()
-generate_howto()
+    # Load the team jinja template
+    with open(os.path.join(web_folder, "_templates", "team.html")) as f:
+        team_template = Template(f.read())
+
+    for members_type, members_data in full_data.items():
+        team_template.stream(members=members_data).dump(
+            os.path.join(web_folder, "team", f"{members_type}_team.html")
+        )
+        print(f"{members_type.title()} team HTML page written!")
+
+
+# Build the Team & HOWTO page before creating the Sphinx build
+generate_custom_files()
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

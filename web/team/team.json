@@ -1,34 +1,30 @@
 {
-    "current": {
-        "members": [
-            {
-                "full_name": "Tom Aarsen",
-                "github_username": "tomaarsen",
-                "personal_website_url": "https://www.tomaarsen.com",
-                "photo_path": "_static/images/tomaarsen.png",
-                "location": "Nijmegen, Netherlands",
-                "role": "Core Maintainer. Issue triaging, bug fixing, documentation, website.",
-                "active_range": "Since 2020"
-            },
-            {
-                "full_name": "Arbitrary Human",
-                "github_username": "this-user-hopefully-does-not-exist",
-                "personal_website_url": "https://www.google.com",
-                "location": "Within the Milky Way, hypothetically",
-                "role": "Introducing bugs",
-                "active_range": "For far too long"
-            }
-        ]
-    },
-    "former": {
-        "members": [
-            {
-                "full_name": "Someone else",
-                "github_username": "presumably-this-user-doesnt-exist-either",
-                "location": "Earth",
-                "role": "Absolutely nothing",
-                "active_range": "Who knows?"
-            }
-        ]
-    }
+    "current": [
+        {
+            "full_name": "Tom Aarsen",
+            "github_username": "tomaarsen",
+            "personal_website_url": "https://www.tomaarsen.com",
+            "photo_path": "_static/images/tomaarsen.png",
+            "location": "Nijmegen, Netherlands",
+            "role": "Core Maintainer. Issue triaging, bug fixing, documentation, website.",
+            "active_range": "Since 2020"
+        },
+        {
+            "full_name": "Arbitrary Human",
+            "github_username": "this-user-hopefully-does-not-exist",
+            "personal_website_url": "https://www.google.com",
+            "location": "Within the Milky Way, hypothetically",
+            "role": "Introducing bugs",
+            "active_range": "For far too long"
+        }
+    ],
+    "former": [
+        {
+            "full_name": "Someone else",
+            "github_username": "presumably-this-user-doesnt-exist-either",
+            "location": "Earth",
+            "role": "Absolutely nothing",
+            "active_range": "Who knows?"
+        }
+    ]
 }
