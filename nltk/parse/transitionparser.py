@@ -3,7 +3,7 @@
 # Author: Long Duong <longdt219@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import pickle
@@ -206,8 +206,9 @@ class Transition:
     def left_arc(self, conf, relation):
         """
         Note that the algorithm for left-arc is quite similar except for precondition for both arc-standard and arc-eager
-            :param configuration: is the current configuration
-            :return : A new configuration or -1 if the pre-condition is not satisfied
+
+        :param configuration: is the current configuration
+        :return: A new configuration or -1 if the pre-condition is not satisfied
         """
         if (len(conf.buffer) <= 0) or (len(conf.stack) <= 0):
             return -1
@@ -233,8 +234,9 @@ class Transition:
     def right_arc(self, conf, relation):
         """
         Note that the algorithm for right-arc is DIFFERENT for arc-standard and arc-eager
-            :param configuration: is the current configuration
-            :return : A new configuration or -1 if the pre-condition is not satisfied
+
+        :param configuration: is the current configuration
+        :return: A new configuration or -1 if the pre-condition is not satisfied
         """
         if (len(conf.buffer) <= 0) or (len(conf.stack) <= 0):
             return -1
@@ -252,8 +254,9 @@ class Transition:
     def reduce(self, conf):
         """
         Note that the algorithm for reduce is only available for arc-eager
-            :param configuration: is the current configuration
-            :return : A new configuration or -1 if the pre-condition is not satisfied
+
+        :param configuration: is the current configuration
+        :return: A new configuration or -1 if the pre-condition is not satisfied
         """
 
         if self._algo != TransitionParser.ARC_EAGER:
@@ -274,8 +277,9 @@ class Transition:
     def shift(self, conf):
         """
         Note that the algorithm for shift is the SAME for arc-standard and arc-eager
-            :param configuration: is the current configuration
-            :return : A new configuration or -1 if the pre-condition is not satisfied
+
+        :param configuration: is the current configuration
+        :return: A new configuration or -1 if the pre-condition is not satisfied
         """
         if len(conf.buffer) <= 0:
             return -1

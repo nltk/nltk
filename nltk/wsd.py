@@ -4,7 +4,7 @@
 #          Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 from nltk.corpus import wordnet
@@ -31,7 +31,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     readable dictionaries: how to tell a pine cone from an ice cream
     cone." Proceedings of the 5th Annual International Conference on
     Systems Documentation. ACM, 1986.
-    http://dl.acm.org/citation.cfm?id=318728
+    https://dl.acm.org/citation.cfm?id=318728
     """
 
     context = set(context_sentence)

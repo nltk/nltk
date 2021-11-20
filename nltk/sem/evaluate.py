@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 # TODO:

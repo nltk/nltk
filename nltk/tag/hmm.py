@@ -7,7 +7,7 @@
 #         Steven Bird <stevenbird1@gmail.com> (fixes)
 #         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
 #         Steven Xu <xxu@student.unimelb.edu.au> (fixes)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

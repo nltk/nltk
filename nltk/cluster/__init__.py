@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -47,10 +47,11 @@ probabilities. This process continues until the likelihood of the data does
 not significantly increase.
 
 They all extend the ClusterI interface which defines common operations
-available with each clusterer. These operations include.
-   - cluster: clusters a sequence of vectors
-   - classify: assign a vector to a cluster
-   - classification_probdist: give the probability distribution over cluster memberships
+available with each clusterer. These operations include:
+
+- cluster: clusters a sequence of vectors
+- classify: assign a vector to a cluster
+- classification_probdist: give the probability distribution over cluster memberships
 
 The current existing classifiers also extend cluster.VectorSpace, an
 abstract class which allows for singular value decomposition (SVD) and vector
@@ -61,6 +62,7 @@ first d dimensions. Normalisation ensures that vectors fall in the unit
 hypersphere.
 
 Usage example (see also demo())::
+
     from nltk import cluster
     from nltk.cluster import euclidean_distance
     from numpy import array

@@ -9,7 +9,7 @@
 #         Geoffrey Sampson <sampson@cantab.net> (additions)
 #         Ilia Kurenkov <ilia.kurenkov@gmail.com> (additions)
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -252,7 +252,7 @@ class FreqDist(Counter):
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
         plotted.  For a cumulative plot, specify cumulative=True. Additional
-        **kwargs are passed to matplotlib's plot function.
+        ``**kwargs`` are passed to matplotlib's plot function.
         (Requires Matplotlib to be installed.)
 
         :param title: The title for the graph.
@@ -269,7 +269,7 @@ class FreqDist(Counter):
         except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
-                "See http://matplotlib.org/"
+                "See https://matplotlib.org/"
             ) from e
 
         if len(args) == 0:
@@ -1367,7 +1367,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
       Journal of Quantitative Linguistics, vol. 2 pp. 217-237.
     - "Speech and Language Processing (Jurafsky & Martin),
       2nd Edition, Chapter 4.5 p103 (log(Nc) =  a + b*log(c))
-    - http://www.grsampson.net/RGoodTur.html
+    - https://www.grsampson.net/RGoodTur.html
 
     Given a set of pair (xi, yi),  where the xi denotes the frequency and
     yi denotes the frequency of frequency, we want to minimize their
@@ -1932,8 +1932,8 @@ class ConditionalFreqDist(defaultdict):
     ):
         """
         Plot the given samples from the conditional frequency distribution.
-        For a cumulative plot, specify cumulative=True. Additional *args and
-        **kwargs are passed to matplotlib's plot function.
+        For a cumulative plot, specify cumulative=True. Additional ``*args`` and
+        ``**kwargs`` are passed to matplotlib's plot function.
         (Requires Matplotlib to be installed.)
 
         :param samples: The samples to plot
@@ -1954,7 +1954,7 @@ class ConditionalFreqDist(defaultdict):
         except ImportError as e:
             raise ValueError(
                 "The plot function requires matplotlib to be installed."
-                "See http://matplotlib.org/"
+                "See https://matplotlib.org/"
             ) from e
 
         if not conditions:

@@ -5,7 +5,8 @@
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
-# URL: <http://nltk.org/>
+#         Tom Aarsen <>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -454,7 +455,7 @@ class CFG:
     def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
-        and set of ``Production``s.
+        and set of ``Production`` instances.
 
         :param start: The start symbol
         :type start: Nonterminal
@@ -737,6 +738,7 @@ class CFG:
     def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
         """
         Returns a new Grammar that is in chomsky normal
+
         :param: new_token_padding
             Customise new rule formation during binarisation
         """
@@ -794,11 +796,12 @@ class CFG:
         Convert all non-binary rules into binary by introducing
         new tokens.
         Example::
-        Original:
-            A => B C D
-        After Conversion:
-            A => B A@$@B
-            A@$@B => C D
+
+            Original:
+                A => B C D
+            After Conversion:
+                A => B A@$@B
+                A@$@B => C D
         """
         result = []
 
@@ -1315,7 +1318,7 @@ def _read_fcfg_production(input, fstruct_reader):
 
 _ARROW_RE = re.compile(r"\s* -> \s*", re.VERBOSE)
 _PROBABILITY_RE = re.compile(r"( \[ [\d\.]+ \] ) \s*", re.VERBOSE)
-_TERMINAL_RE = re.compile(r'( "[^"]+" | \'[^\']+\' ) \s*', re.VERBOSE)
+_TERMINAL_RE = re.compile(r'( "[^"]*" | \'[^\']*\' ) \s*', re.VERBOSE)
 _DISJUNCTION_RE = re.compile(r"\| \s*", re.VERBOSE)
 
 
@@ -1529,48 +1532,6 @@ def cfg_demo():
     print()
 
 
-toy_pcfg1 = PCFG.fromstring(
-    """
-    S -> NP VP [1.0]
-    NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
-    Det -> 'the' [0.8] | 'my' [0.2]
-    N -> 'man' [0.5] | 'telescope' [0.5]
-    VP -> VP PP [0.1] | V NP [0.7] | V [0.2]
-    V -> 'ate' [0.35] | 'saw' [0.65]
-    PP -> P NP [1.0]
-    P -> 'with' [0.61] | 'under' [0.39]
-    """
-)
-
-toy_pcfg2 = PCFG.fromstring(
-    """
-    S    -> NP VP         [1.0]
-    VP   -> V NP          [.59]
-    VP   -> V             [.40]
-    VP   -> VP PP         [.01]
-    NP   -> Det N         [.41]
-    NP   -> Name          [.28]
-    NP   -> NP PP         [.31]
-    PP   -> P NP          [1.0]
-    V    -> 'saw'         [.21]
-    V    -> 'ate'         [.51]
-    V    -> 'ran'         [.28]
-    N    -> 'boy'         [.11]
-    N    -> 'cookie'      [.12]
-    N    -> 'table'       [.13]
-    N    -> 'telescope'   [.14]
-    N    -> 'hill'        [.5]
-    Name -> 'Jack'        [.52]
-    Name -> 'Bob'         [.48]
-    P    -> 'with'        [.61]
-    P    -> 'under'       [.39]
-    Det  -> 'the'         [.41]
-    Det  -> 'a'           [.31]
-    Det  -> 'my'          [.28]
-    """
-)
-
-
 def pcfg_demo():
     """
     A demonstration showing how a ``PCFG`` can be created and used.
@@ -1579,6 +1540,47 @@ def pcfg_demo():
     from nltk import induce_pcfg, treetransforms
     from nltk.corpus import treebank
     from nltk.parse import pchart
+
+    toy_pcfg1 = PCFG.fromstring(
+        """
+        S -> NP VP [1.0]
+        NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
+        Det -> 'the' [0.8] | 'my' [0.2]
+        N -> 'man' [0.5] | 'telescope' [0.5]
+        VP -> VP PP [0.1] | V NP [0.7] | V [0.2]
+        V -> 'ate' [0.35] | 'saw' [0.65]
+        PP -> P NP [1.0]
+        P -> 'with' [0.61] | 'under' [0.39]
+        """
+    )
+
+    toy_pcfg2 = PCFG.fromstring(
+        """
+        S    -> NP VP         [1.0]
+        VP   -> V NP          [.59]
+        VP   -> V             [.40]
+        VP   -> VP PP         [.01]
+        NP   -> Det N         [.41]
+        NP   -> Name          [.28]
+        NP   -> NP PP         [.31]
+        PP   -> P NP          [1.0]
+        V    -> 'saw'         [.21]
+        V    -> 'ate'         [.51]
+        V    -> 'ran'         [.28]
+        N    -> 'boy'         [.11]
+        N    -> 'cookie'      [.12]
+        N    -> 'table'       [.13]
+        N    -> 'telescope'   [.14]
+        N    -> 'hill'        [.5]
+        Name -> 'Jack'        [.52]
+        Name -> 'Bob'         [.48]
+        P    -> 'with'        [.61]
+        P    -> 'under'       [.39]
+        Det  -> 'the'         [.41]
+        Det  -> 'a'           [.31]
+        Det  -> 'my'          [.28]
+        """
+    )
 
     pcfg_prods = toy_pcfg1.productions()
 

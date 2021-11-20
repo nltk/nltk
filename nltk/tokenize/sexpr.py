@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Yoav Goldberg <yoavg@cs.bgu.ac.il>
 #         Steven Bird <stevenbird1@gmail.com> (minor edits)
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """

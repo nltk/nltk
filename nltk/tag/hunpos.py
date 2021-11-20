@@ -4,7 +4,7 @@
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Dávid Márk Nemeskey <nemeskeyd@gmail.com> (modifications)
 #         Attila Zséder <zseder@gmail.com> (modifications)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -17,7 +17,7 @@ from subprocess import PIPE, Popen
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
 
-_hunpos_url = "http://code.google.com/p/hunpos/"
+_hunpos_url = "https://code.google.com/p/hunpos/"
 
 _hunpos_charset = "ISO-8859-1"
 """The default encoding used by hunpos: ISO-8859-1."""

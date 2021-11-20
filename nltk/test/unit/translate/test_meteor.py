@@ -4,14 +4,17 @@ from nltk.translate.meteor_score import meteor_score
 
 
 class TestMETEOR(unittest.TestCase):
-    def test_preprocess(self):
-        # Using lists instead of strings specifically to demonstrate use of `preprocess`.
-        reference = [["this", "is", "a", "test"], ["this", "is" "test"]]
-        candidate = ["this", "is", "a", "test"]
+    reference = [["this", "is", "a", "test"], ["this", "is" "test"]]
+    candidate = ["THIS", "Is", "a", "tEST"]
 
-        # no `preprocess` argument
-        self.assertRaises(TypeError, meteor_score, reference, candidate)
-
-        # with `preprocess` argument
-        score = meteor_score(reference, candidate, preprocess=lambda x: " ".join(x))
+    def test_meteor(self):
+        score = meteor_score(self.reference, self.candidate, preprocess=str.lower)
         assert score == 0.9921875
+
+    def test_reference_type_check(self):
+        str_reference = [" ".join(ref) for ref in self.reference]
+        self.assertRaises(TypeError, meteor_score, str_reference, self.candidate)
+
+    def test_candidate_type_check(self):
+        str_candidate = " ".join(self.candidate)
+        self.assertRaises(TypeError, meteor_score, self.reference, str_candidate)

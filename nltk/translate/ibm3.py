@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -28,41 +28,45 @@ that a target word produced by a real source word requires another
 target word that is produced by NULL.
 
 The EM algorithm used in Model 3 is:
-E step - In the training data, collect counts, weighted by prior
-         probabilities.
-         (a) count how many times a source language word is translated
-             into a target language word
-         (b) count how many times a particular position in the target
-             sentence is aligned to a particular position in the source
-             sentence
-         (c) count how many times a source word is aligned to phi number
-             of target words
-         (d) count how many times NULL is aligned to a target word
 
-M step - Estimate new probabilities based on the counts from the E step
+:E step: In the training data, collect counts, weighted by prior
+         probabilities.
+
+         - (a) count how many times a source language word is translated
+               into a target language word
+         - (b) count how many times a particular position in the target
+               sentence is aligned to a particular position in the source
+               sentence
+         - (c) count how many times a source word is aligned to phi number
+               of target words
+         - (d) count how many times NULL is aligned to a target word
+
+:M step: Estimate new probabilities based on the counts from the E step
 
 Because there are too many possible alignments, only the most probable
 ones are considered. First, the best alignment is determined using prior
 probabilities. Then, a hill climbing approach is used to find other good
 candidates.
 
+Notations
+---------
 
-Notations:
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-l: Number of words in the source sentence, excluding NULL
-m: Number of words in the target sentence
-s: A word in the source language
-t: A word in the target language
-phi: Fertility, the number of target words produced by a source word
-p1: Probability that a target word produced by a source word is
-    accompanied by another target word that is aligned to NULL
-p0: 1 - p1
+:i: Position in the source sentence
+     Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+:j: Position in the target sentence
+     Valid values are 1, 2, ..., length of target sentence
+:l: Number of words in the source sentence, excluding NULL
+:m: Number of words in the target sentence
+:s: A word in the source language
+:t: A word in the target language
+:phi: Fertility, the number of target words produced by a source word
+:p1: Probability that a target word produced by a source word is
+     accompanied by another target word that is aligned to NULL
+:p0: 1 - p1
 
+References
+----------
 
-References:
 Philipp Koehn. 2010. Statistical Machine Translation.
 Cambridge University Press, New York.
 

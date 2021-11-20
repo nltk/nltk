@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -184,17 +184,17 @@ class Clause(list):
 
         :param other: ``Clause`` with which to unify
         :param bindings: ``BindingDict`` containing bindings that should be used
-        during the unification
+            during the unification
         :param used: tuple of two lists of atoms.  The first lists the
-        atoms from 'self' that were successfully unified with atoms from
-        'other'.  The second lists the atoms from 'other' that were successfully
-        unified with atoms from 'self'.
+            atoms from 'self' that were successfully unified with atoms from
+            'other'.  The second lists the atoms from 'other' that were successfully
+            unified with atoms from 'self'.
         :param skipped: tuple of two ``Clause`` objects.  The first is a list of all
-        the atoms from the 'self' Clause that have not been unified with
-        anything on the path.  The second is same thing for the 'other' Clause.
+            the atoms from the 'self' Clause that have not been unified with
+            anything on the path.  The second is same thing for the 'other' Clause.
         :param debug: bool indicating whether debug statements should print
         :return: list containing all the resulting ``Clause`` objects that could be
-        obtained by unification
+            obtained by unification
         """
         if bindings is None:
             bindings = BindingDict()
@@ -325,7 +325,7 @@ class Clause(list):
         Replace every binding
 
         :param bindings: A list of tuples mapping Variable Expressions to the
-        Expressions to which they are bound
+            Expressions to which they are bound.
         :return: ``Clause``
         """
         return Clause([atom.substitute_bindings(bindings) for atom in self])

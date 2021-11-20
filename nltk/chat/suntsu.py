@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Sam Huston 2007
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -11,7 +11,7 @@ Tsu bot responds to all queries with a Sun Tsu sayings
 Quoted from Sun Tsu's The Art of War
 Translated by LIONEL GILES, M.A. 1910
 Hosted by the Gutenberg Project
-http://www.gutenberg.org/
+https://www.gutenberg.org/
 """
 
 from nltk.chat.util import Chat, reflections

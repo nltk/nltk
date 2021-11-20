@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -37,6 +37,7 @@ class SentimentAnalyzer:
     def all_words(self, documents, labeled=None):
         """
         Return all words/tokens from the documents (with duplicates).
+
         :param documents: a list of (words, label) tuples.
         :param labeled: if `True`, assume that each document is represented by a
             (words, label) tuple: (list(str), str). If `False`, each document is

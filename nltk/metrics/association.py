@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
-# URL: <http://nltk.org>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -173,10 +173,10 @@ class BigramAssocMeasures(NgramAssocMeasures):
     suffix refers to the appearance of the word in question, while x indicates
     the appearance of any word. Thus, for example:
 
-        n_ii counts (w1, w2), i.e. the bigram being scored
-        n_ix counts (w1, *)
-        n_xi counts (*, w2)
-        n_xx counts (*, *), i.e. any bigram
+    - n_ii counts ``(w1, w2)``, i.e. the bigram being scored
+    - n_ix counts ``(w1, *)``
+    - n_xi counts ``(*, w2)``
+    - n_xx counts ``(*, *)``, i.e. any bigram
 
     This may be shown with respect to a contingency table::
 
@@ -264,9 +264,10 @@ class TrigramAssocMeasures(NgramAssocMeasures):
     the occurrences of particular events in a corpus. The letter i in the
     suffix refers to the appearance of the word in question, while x indicates
     the appearance of any word. Thus, for example:
-    n_iii counts (w1, w2, w3), i.e. the trigram being scored
-    n_ixx counts (w1, *, *)
-    n_xxx counts (*, *, *), i.e. any trigram
+
+    - n_iii counts ``(w1, w2, w3)``, i.e. the trigram being scored
+    - n_ixx counts ``(w1, *, *)``
+    - n_xxx counts ``(*, *, *)``, i.e. any trigram
     """
 
     _n = 3
@@ -324,9 +325,10 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
     the occurrences of particular events in a corpus. The letter i in the
     suffix refers to the appearance of the word in question, while x indicates
     the appearance of any word. Thus, for example:
-    n_iiii counts (w1, w2, w3, w4), i.e. the quadgram being scored
-    n_ixxi counts (w1, *, *, w4)
-    n_xxxx counts (*, *, *, *), i.e. any quadgram
+
+    - n_iiii counts ``(w1, w2, w3, w4)``, i.e. the quadgram being scored
+    - n_ixxi counts ``(w1, *, *, w4)``
+    - n_xxxx counts ``(*, *, *, *)``, i.e. any quadgram
     """
 
     _n = 4

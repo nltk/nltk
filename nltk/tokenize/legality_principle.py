@@ -3,21 +3,21 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Christopher Hench <chris.l.hench@gmail.com>
 #         Alex Estes
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """
 The Legality Principle is a language agnostic principle maintaining that syllable
 onsets and codas (the beginning and ends of syllables not including the vowel)
 are only legal if they are found as word onsets or codas in the language. The English
-word ``admit'' must then be syllabified as ``ad-mit'' since ``dm'' is not found
+word ''admit'' must then be syllabified as ''ad-mit'' since ''dm'' is not found
 word-initially in the English language (Bartlett et al.). This principle was first proposed
-in Daniel Kahn's 1976 dissertation, ``Syllable-based generalizations in English phonology''.
+in Daniel Kahn's 1976 dissertation, ''Syllable-based generalizations in English phonology''.
 
-Kahn further argues that there is a ``strong tendency to syllabify in such a way that
+Kahn further argues that there is a ''strong tendency to syllabify in such a way that
 initial clusters are of maximal length, consistent with the general constraints on
 word-initial consonant clusters.'' Consequently, in addition to being legal onsets,
-the longest legal onset is preferable---``Onset Maximization''.
+the longest legal onset is preferable---''Onset Maximization''.
 
 The default implementation assumes an English vowel set, but the `vowels` attribute
 can be set to IPA or any other alphabet's vowel set for the use-case.
@@ -29,10 +29,11 @@ but that does not mean it performs equally across languages. Bartlett et al. (20
 is a good benchmark for English accuracy if utilizing IPA (pg. 311).
 
 References:
+
 - Otto Jespersen. 1904. Lehrbuch der Phonetik.
   Leipzig, Teubner. Chapter 13, Silbe, pp. 185-203.
-- Theo Vennemann, ``On the Theory of Syllabic Phonology,'' 1972, p. 11.
-- Daniel Kahn, ``Syllable-based generalizations in English phonology'', (PhD diss., MIT, 1976).
+- Theo Vennemann, ''On the Theory of Syllabic Phonology,'' 1972, p. 11.
+- Daniel Kahn, ''Syllable-based generalizations in English phonology'', (PhD diss., MIT, 1976).
 - Elisabeth Selkirk. 1984. On the major class features and syllable theory.
   In Aronoff & Oehrle (eds.) Language Sound Structure: Studies in Phonology.
   Cambridge, MIT Press. pp. 107-136.

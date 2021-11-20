@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -15,7 +15,7 @@ Text Segmentation Metrics
 
 Pevzner, L., and Hearst, M., A Critique and Improvement of
   an Evaluation Metric for Text Segmentation,
-Computational Linguistics 28, 19-36
+  Computational Linguistics 28, 19-36
 
 
 2. Generalized Hamming Distance
@@ -156,8 +156,8 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"
     :param del_cost: deletion cost
     :type del_cost: float
     :param shift_cost_coeff: constant used to compute the cost of a shift.
-    shift cost = shift_cost_coeff * |i - j| where i and j are
-    the positions indicating the shift
+        ``shift cost = shift_cost_coeff * |i - j|`` where ``i`` and ``j``
+        are the positions indicating the shift
     :type shift_cost_coeff: float
     :param boundary: boundary value
     :type boundary: str or int or bool

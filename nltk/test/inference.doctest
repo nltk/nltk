@@ -109,7 +109,7 @@ The assumptions and goal may be accessed using the ``assumptions()`` and
 ``goal()`` methods, respectively.
 
     >>> prover.assumptions()
-    [<ApplicationExpression man(socrates)>, <Alread_expression all x.(man(x) -> mortal(x))>]
+    [<ApplicationExpression man(socrates)>, <AllExpression all x.(man(x) -> mortal(x))>]
     >>> prover.goal()
     <ApplicationExpression mortal(socrates)>
 
@@ -147,7 +147,7 @@ Prover9
 Prover9 Installation
 ~~~~~~~~~~~~~~~~~~~~
 
-You can download Prover9 from http://www.cs.unm.edu/~mccune/prover9/.
+You can download Prover9 from https://www.cs.unm.edu/~mccune/prover9/.
 
 Extract the source code into a suitable directory and follow the
 instructions in the Prover9 ``README.make`` file to compile the executables.
@@ -186,7 +186,7 @@ If the executables cannot be found, ``Prover9`` will issue a warning message:
         >> config_prover9('/path/to/prover9')
     <BLANKLINE>
       For more information, on prover9, see:
-        <http://www.cs.unm.edu/~mccune/prover9/>
+        <https://www.cs.unm.edu/~mccune/prover9/>
     ===========================================================================
 
 
@@ -315,9 +315,8 @@ statements as new assumptions.
     % Proof 1 at ... seconds.
     % Length of proof is 13.
     % Level of proof is 4.
-    % Maximum clause weight is 0.000.
+    % Maximum clause weight is 0.
     % Given clauses 0.
-    <BLANKLINE>
     <BLANKLINE>
     1 (all x (boxerdog(x) -> dog(x))).  [assumption].
     2 (all x (boxer(x) -> person(x))).  [assumption].
@@ -435,7 +434,7 @@ Mace4 Installation
 ~~~~~~~~~~~~~~~~~~
 
 Mace4 is packaged with Prover9, and can be downloaded from the same
-source, namely http://www.cs.unm.edu/~mccune/prover9/. It is installed
+source, namely https://www.cs.unm.edu/~mccune/prover9/. It is installed
 in the same manner as Prover9.
 
 Using Mace4

@@ -138,3 +138,24 @@ It works for classic classes, too:
     False
     >>> overridden(D().f)
     True
+
+
+read_str()
+~~~~~~~~~~~~
+    >>> from nltk.internals import read_str
+
+Test valid scenarios
+
+    >>> read_str("'valid string'", 0)
+    ('valid string', 14)
+
+Now test invalid scenarios
+
+    >>> read_str("should error", 0)
+    Traceback (most recent call last):
+    ...
+    nltk.internals.ReadError: Expected open quote at 0
+    >>> read_str("'should error", 0)
+    Traceback (most recent call last):
+    ...
+    nltk.internals.ReadError: Expected close quote at 1

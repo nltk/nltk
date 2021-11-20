@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -772,7 +772,7 @@ class AttrDict(dict):
 
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
-       http://stackoverflow.com/a/14620633/8879
+    https://stackoverflow.com/a/14620633/8879
 
     >>> foo = {'a':1, 'b':2, 'c':3}
     >>> bar = AttrDict(foo)
@@ -1350,8 +1350,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     - 'frameID'  : (only if status is 'MANUAL')
                     - 'frameName': (only if status is 'MANUAL')
                     - 'layer' : a list of labels for the layer
-                       - Each item in the layer is a dict containing the
-                         following keys:
+                       - Each item in the layer is a dict containing the following keys:
                           - '_type': 'layer'
                           - 'rank'
                           - 'name'
@@ -1533,6 +1532,7 @@ warnings(True) to display corpus consistency warnings when loading data
         - 'FE' : a dict containing the Frame Elements that are part of this frame
                  The keys in this dict are the names of the FEs (e.g. 'Body_system')
                  and the values are dicts containing the following keys
+
               - 'definition' : The definition of the FE
               - 'name'       : The name of the FE e.g. 'Body_system'
               - 'ID'         : The id number
@@ -1706,19 +1706,24 @@ warnings(True) to display corpus consistency warnings when loading data
 
         - 'lexemes'  : a list of dicts describing the lemma of this LU.
            Each dict in the list contains these keys:
+
            - 'POS'     : part of speech e.g. 'N'
            - 'name'    : either single-lexeme e.g. 'merger' or
                          multi-lexeme e.g. 'a little'
            - 'order': the order of the lexeme in the lemma (starting from 1)
            - 'headword': a boolean ('true' or 'false')
            - 'breakBefore': Can this lexeme be separated from the previous lexeme?
-                Consider: "take over.v" as in:
+                Consider: "take over.v" as in::
+
                          Germany took over the Netherlands in 2 days.
                          Germany took the Netherlands over in 2 days.
+
                 In this case, 'breakBefore' would be "true" for the lexeme
-                "over". Contrast this with "take after.v" as in:
+                "over". Contrast this with "take after.v" as in::
+
                          Mary takes after her grandmother.
                         *Mary takes her grandmother after.
+
                 In this case, 'breakBefore' would be "false" for the lexeme "after"
 
         - 'lemmaID'    : Can be used to connect lemmas in different LUs
@@ -2518,11 +2523,11 @@ warnings(True) to display corpus consistency warnings when loading data
     def frame_relations(self, frame=None, frame2=None, type=None):
         """
         :param frame: (optional) frame object, name, or ID; only relations involving
-        this frame will be returned
+            this frame will be returned
         :param frame2: (optional; 'frame' must be a different frame) only show relations
-        between the two specified frames, in either direction
+            between the two specified frames, in either direction
         :param type: (optional) frame relation type (name or object); show only relations
-        of this type
+            of this type
         :type frame: int or str or AttrDict
         :return: A list of all of the frame relations in framenet
         :rtype: list(dict)

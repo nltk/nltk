@@ -3,7 +3,7 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
 # Copyright (C) 2001-2021 NLTK Project
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -31,7 +31,7 @@ def parse_sents(inputs, grammar, trace=0):
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
     :type grammar: nltk.grammar.FeatureGrammar
     :rtype: list(nltk.tree.Tree) or dict(list(str)): list(Tree)
-    :return: a mapping from input sentences to a list of ``Tree``s
+    :return: a mapping from input sentences to a list of ``Tree`` instances.
     """
     # put imports here to avoid circult dependencies
     from nltk.grammar import FeatureGrammar

@@ -4,7 +4,7 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import fnmatch
@@ -214,6 +214,7 @@ def read_str(s, start_position):
         escape sequence) is passed into the ``eval``.
 
     :Example:
+
     >>> from nltk.internals import read_str
     >>> read_str('"Hello", World!', 0)
     ('Hello', 7)
@@ -238,11 +239,11 @@ def read_str(s, start_position):
             break
 
     # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueEerror.
+    # might raise ValueError.
     try:
         return eval(s[start_position : match.end()]), match.end()
     except ValueError as e:
-        raise ReadError("invalid string (%s)" % e) from e
+        raise ReadError("valid escape sequence", start_position) from e
 
 
 _READ_INT_RE = re.compile(r"-?\d+")
@@ -271,6 +272,7 @@ def read_int(s, start_position):
         match in ``s`` at ``start_position``.
 
     :Example:
+
     >>> from nltk.internals import read_int
     >>> read_int('42 is the answer', 0)
     (42, 2)
@@ -308,6 +310,7 @@ def read_number(s, start_position):
         match in ``s`` at ``start_position``.
 
     :Example:
+
     >>> from nltk.internals import read_number
     >>> read_number('Pi is 3.14159', 6)
     (3.14159, 13)
@@ -330,9 +333,9 @@ def read_number(s, start_position):
 def overridden(method):
     """
     :return: True if ``method`` overrides some method with the same
-    name in a base class.  This is typically used when defining
-    abstract base classes or interfaces, to allow subclasses to define
-    either of two related methods:
+        name in a base class.  This is typically used when defining
+        abstract base classes or interfaces, to allow subclasses to define
+        either of two related methods:
 
         >>> class EaterI:
         ...     '''Subclass must define eat() or batch_eat().'''
@@ -738,6 +741,7 @@ def find_jar_iter(
             if env_var == "CLASSPATH":
                 classpath = os.environ["CLASSPATH"]
                 for cp in classpath.split(os.path.pathsep):
+                    cp = os.path.expanduser(cp)
                     if os.path.isfile(cp):
                         filename = os.path.basename(cp)
                         if (
@@ -773,7 +777,7 @@ def find_jar_iter(
                                     yield os.path.join(cp, file_name)
 
             else:
-                jar_env = os.environ[env_var]
+                jar_env = os.path.expanduser(os.environ[env_var])
                 jar_iter = (
                     (
                         os.path.join(jar_env, path_to_jar)

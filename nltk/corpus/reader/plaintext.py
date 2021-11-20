@@ -4,7 +4,7 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@umiacs.umd.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -177,15 +177,16 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
     for regular plaintext documents. Chapters are separated using blank
     lines. Everything is inherited from ``PlaintextCorpusReader`` except
     that:
-      - Since the corpus is pre-processed and pre-tokenized, the
-        word tokenizer should just split the line at whitespaces.
-      - For the same reason, the sentence tokenizer should just
-        split the paragraph at line breaks.
-      - There is a new 'chapters()' method that returns chapters instead
-        instead of paragraphs.
-      - The 'paras()' method inherited from PlaintextCorpusReader is
-        made non-functional to remove any confusion between chapters
-        and paragraphs for Europarl.
+
+    - Since the corpus is pre-processed and pre-tokenized, the
+      word tokenizer should just split the line at whitespaces.
+    - For the same reason, the sentence tokenizer should just
+      split the paragraph at line breaks.
+    - There is a new 'chapters()' method that returns chapters instead
+      instead of paragraphs.
+    - The 'paras()' method inherited from PlaintextCorpusReader is
+      made non-functional to remove any confusion between chapters
+      and paragraphs for Europarl.
     """
 
     def _read_word_block(self, stream):

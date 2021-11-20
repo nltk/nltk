@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Paul Bedaride <paul.bedaride@gmail.com>
 #          Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 from functools import total_ordering
@@ -70,7 +70,7 @@ class NombankCorpusReader(CorpusReader):
     def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
-        ``NombankInstance`` objects, one for each noun in the corpus.
+            ``NombankInstance`` objects, one for each noun in the corpus.
         """
         kwargs = {}
         if baseform is not None:
@@ -84,7 +84,7 @@ class NombankCorpusReader(CorpusReader):
     def lines(self):
         """
         :return: a corpus view that acts as a list of strings, one for
-        each line in the predicate-argument annotation file.
+            each line in the predicate-argument annotation file.
         """
         return StreamBackedCorpusView(
             self.abspath(self._nomfile),
@@ -138,7 +138,7 @@ class NombankCorpusReader(CorpusReader):
     def nouns(self):
         """
         :return: a corpus view that acts as a list of all noun lemmas
-        in this corpus (from the nombank.1.0.words file).
+            in this corpus (from the nombank.1.0.words file).
         """
         return StreamBackedCorpusView(
             self.abspath(self._nounsfile),

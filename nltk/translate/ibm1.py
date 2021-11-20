@@ -8,7 +8,7 @@
 # Based on earlier version by:
 #         Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -17,42 +17,45 @@ Lexical translation model that ignores word order.
 In IBM Model 1, word order is ignored for simplicity. As long as the
 word alignments are equivalent, it doesn't matter where the word occurs
 in the source or target sentence. Thus, the following three alignments
-are equally likely.
+are equally likely::
 
-Source: je mange du jambon
-Target: i eat some ham
-Alignment: (0,0) (1,1) (2,2) (3,3)
+    Source: je mange du jambon
+    Target: i eat some ham
+    Alignment: (0,0) (1,1) (2,2) (3,3)
 
-Source: je mange du jambon
-Target: some ham eat i
-Alignment: (0,2) (1,3) (2,1) (3,1)
+    Source: je mange du jambon
+    Target: some ham eat i
+    Alignment: (0,2) (1,3) (2,1) (3,1)
 
-Source: du jambon je mange
-Target: eat i some ham
-Alignment: (0,3) (1,2) (2,0) (3,1)
+    Source: du jambon je mange
+    Target: eat i some ham
+    Alignment: (0,3) (1,2) (2,0) (3,1)
 
 Note that an alignment is represented here as
 (word_index_in_target, word_index_in_source).
 
 The EM algorithm used in Model 1 is:
-E step - In the training data, count how many times a source language
+
+:E step: In the training data, count how many times a source language
          word is translated into a target language word, weighted by
          the prior probability of the translation.
 
-M step - Estimate the new probability of translation based on the
+:M step: Estimate the new probability of translation based on the
          counts from the Expectation step.
 
+Notations
+---------
 
-Notations:
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-s: A word in the source language
-t: A word in the target language
+:i: Position in the source sentence
+     Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+:j: Position in the target sentence
+     Valid values are 1, 2, ..., length of target sentence
+:s: A word in the source language
+:t: A word in the target language
 
+References
+----------
 
-References:
 Philipp Koehn. 2010. Statistical Machine Translation.
 Cambridge University Press, New York.
 

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -117,6 +117,7 @@ class CanvasWidget(metaclass=ABCMeta):
 
       - ``__init__``: Builds a new canvas widget.  It must perform the
         following three tasks (in order):
+
           - Create any new graphical elements.
           - Call ``_add_child_widget`` on each child widget.
           - Call the ``CanvasWidget`` constructor.
@@ -2171,11 +2172,13 @@ class ColorizedList:
     """
     An abstract base class for displaying a colorized list of items.
     Subclasses should define:
-      - ``_init_colortags``, which sets up Text color tags that
-        will be used by the list.
-      - ``_item_repr``, which returns a list of (text,colortag)
-        tuples that make up the colorized representation of the
-        item.
+
+    - ``_init_colortags``, which sets up Text color tags that
+      will be used by the list.
+    - ``_item_repr``, which returns a list of (text,colortag)
+      tuples that make up the colorized representation of the
+      item.
+
     :note: Typically, you will want to register a callback for
         ``'select'`` that calls ``mark`` on the given item.
     """

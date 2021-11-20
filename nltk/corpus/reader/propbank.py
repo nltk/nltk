@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import re
@@ -70,7 +70,7 @@ class PropbankCorpusReader(CorpusReader):
     def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
-        ``PropBankInstance`` objects, one for each noun in the corpus.
+            ``PropBankInstance`` objects, one for each noun in the corpus.
         """
         kwargs = {}
         if baseform is not None:
@@ -84,7 +84,7 @@ class PropbankCorpusReader(CorpusReader):
     def lines(self):
         """
         :return: a corpus view that acts as a list of strings, one for
-        each line in the predicate-argument annotation file.
+            each line in the predicate-argument annotation file.
         """
         return StreamBackedCorpusView(
             self.abspath(self._propfile),
@@ -134,7 +134,7 @@ class PropbankCorpusReader(CorpusReader):
     def verbs(self):
         """
         :return: a corpus view that acts as a list of all verb lemmas
-        in this corpus (from the verbs.txt file).
+            in this corpus (from the verbs.txt file).
         """
         return StreamBackedCorpusView(
             self.abspath(self._verbsfile),

@@ -4,7 +4,7 @@
 # Author: Liling Tan (ported from ftp://jaguar.ncsl.nist.gov/mt/resources/mteval-v14.pl)
 # Contributors: Ozan Caglayan, Wiktor Stribizew
 #
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """

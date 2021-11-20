@@ -4,7 +4,7 @@
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 from nltk.corpus.reader.api import *
@@ -23,9 +23,7 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         sent_tokenizer=RegexpTokenizer("\n", gaps=True),
         para_block_reader=read_blankline_block,
     ):
-        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
-        #       from CorpusReader?
-        CorpusReader.__init__(self, root, fileids, encoding)
+        SyntaxCorpusReader.__init__(self, root, fileids, encoding)
 
     #########################################################
 

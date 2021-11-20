@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """
 Corpus reader for corpora that consist of parenthesis-delineated parse trees.
@@ -46,16 +46,14 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         :param comment_char: The character which can appear at the start of
             a line to indicate that the rest of the line is a comment.
         :param detect_blocks: The method that is used to find blocks
-          in the corpus; can be 'unindented_paren' (every unindented
-          parenthesis starts a new parse) or 'sexpr' (brackets are
-          matched).
+            in the corpus; can be 'unindented_paren' (every unindented
+            parenthesis starts a new parse) or 'sexpr' (brackets are
+            matched).
         :param tagset: The name of the tagset used by this corpus, to be used
-              for normalizing or converting the POS tags returned by the
-              tagged_...() methods.
+            for normalizing or converting the POS tags returned by the
+            ``tagged_...()`` methods.
         """
-        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
-        #       from CorpusReader?
-        CorpusReader.__init__(self, root, fileids, encoding)
+        SyntaxCorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
         self._tagset = tagset
@@ -167,10 +165,10 @@ class CategorizedBracketParseCorpusReader(
 class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
-    This corpus has a lexical breakdown structure embedded, as read by _parse
+    This corpus has a lexical breakdown structure embedded, as read by `_parse`
     Unfortunately this puts punctuation and some other words out of the sentence
-    order in the xml element tree. This is no good for tag_ and word_
-    _tag and _word will be overridden to use a non-default new parameter 'ordered'
+    order in the xml element tree. This is no good for `tag_` and `word_`
+    `_tag` and `_word` will be overridden to use a non-default new parameter 'ordered'
     to the overridden _normalize function. The _parse function can then remain
     untouched.
     """

@@ -173,6 +173,7 @@ Test proof()
 Question Answering
 ------------------
 One answer
+
     >>> p1 = read_expr('father_of(art,john)')
     >>> p2 = read_expr('father_of(bob,kim)')
     >>> p3 = read_expr('all x.all y.(father_of(x,y) -> parent_of(x,y))')
@@ -194,6 +195,7 @@ One answer
     <BLANKLINE>
 
 Multiple answers
+
     >>> p1 = read_expr('father_of(art,john)')
     >>> p2 = read_expr('mother_of(ann,john)')
     >>> p3 = read_expr('all x.all y.(father_of(x,y) -> parent_of(x,y))')

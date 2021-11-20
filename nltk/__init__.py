@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,7 +13,7 @@ for Natural Language Processing.  A free online book is available.
 
 Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
-http://nltk.org/book
+https://www.nltk.org/book
 
 isort:skip_file
 """
@@ -67,7 +67,7 @@ __keywords__ = [
     "natural language",
     "text analytics",
 ]
-__url__ = "http://nltk.org/"
+__url__ = "https://www.nltk.org/"
 
 # Maintainer, contributors, etc.
 __maintainer__ = "NLTK Team"
@@ -135,7 +135,6 @@ from nltk.featstruct import *
 from nltk.grammar import *
 from nltk.probability import *
 from nltk.text import *
-from nltk.tree import *
 from nltk.util import *
 from nltk.jsontags import *
 
@@ -151,6 +150,7 @@ from nltk.parse import *
 from nltk.tag import *
 from nltk.tokenize import *
 from nltk.translate import *
+from nltk.tree import *
 from nltk.sem import *
 from nltk.stem import *
 
@@ -200,7 +200,7 @@ else:
 from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
-from nltk import tag, tbl, text, tokenize, translate, tree, treetransforms, util
+from nltk import tag, tbl, text, tokenize, translate, tree, util
 
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116

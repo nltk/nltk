@@ -4,7 +4,7 @@
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Jacob Perkins <japerk@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 # [xx] this docstring is out-of-date:
@@ -20,7 +20,7 @@ This corpus contains selected portion of the TIMIT corpus.
    are spoken by all speakers.)
  - total 160 recording of sentences (10 recordings per speaker)
  - audio format: NIST Sphere, single channel, 16kHz sampling,
-  16 bit sample, PCM encoding
+   16 bit sample, PCM encoding
 
 
 Module contents
@@ -195,9 +195,9 @@ class TimitCorpusReader(CorpusReader):
     ):
         """
         :return: A list of the utterance identifiers for all
-        utterances in this corpus, or for the given speaker, dialect
-        region, gender, sentence type, or sentence number, if
-        specified.
+            utterances in this corpus, or for the given speaker, dialect
+            region, gender, sentence type, or sentence number, if
+            specified.
         """
         if isinstance(dialect, str):
             dialect = [dialect]
@@ -226,7 +226,7 @@ class TimitCorpusReader(CorpusReader):
     def transcription_dict(self):
         """
         :return: A dictionary giving the 'standard' transcription for
-        each word.
+            each word.
         """
         _transcriptions = {}
         with self.open("timitdic.txt") as fp:
@@ -251,7 +251,7 @@ class TimitCorpusReader(CorpusReader):
     def spkrutteranceids(self, speaker):
         """
         :return: A list of all utterances associated with a given
-        speaker.
+            speaker.
         """
         return [
             utterance

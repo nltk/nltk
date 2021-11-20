@@ -228,6 +228,7 @@ Default Reasoning
     >>> premises = []
 
 define the taxonomy
+
     >>> premises.append(read_expr(r'all x.(elephant(x)        -> animal(x))'))
     >>> premises.append(read_expr(r'all x.(bird(x)            -> animal(x))'))
     >>> premises.append(read_expr(r'all x.(dove(x)            -> bird(x))'))
@@ -235,21 +236,25 @@ define the taxonomy
     >>> premises.append(read_expr(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
 
 default the properties using abnormalities
+
     >>> premises.append(read_expr(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
     >>> premises.append(read_expr(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))'))  #normal birds fly
     >>> premises.append(read_expr(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
 
 specify abnormal entities
+
     >>> premises.append(read_expr(r'all x.(bird(x)           -> Ab1(x))')) #flight
     >>> premises.append(read_expr(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
     >>> premises.append(read_expr(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
 
 define entities
+
     >>> premises.append(read_expr(r'elephant(el)'))
     >>> premises.append(read_expr(r'dove(do)'))
     >>> premises.append(read_expr(r'ostrich(os)'))
 
 print the augmented assumptions list
+
     >>> prover = Prover9Command(None, premises)
     >>> command = UniqueNamesProver(ClosedWorldProver(prover))
     >>> for a in command.assumptions(): print(a) # doctest: +SKIP

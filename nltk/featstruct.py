@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>,
 #         Rob Speer,
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """
@@ -160,10 +160,11 @@ class FeatStruct(SubstituteBindingsI):
 
         :param features: The initial feature values for this feature
             structure:
-              - FeatStruct(string) -> FeatStructReader().read(string)
-              - FeatStruct(mapping) -> FeatDict(mapping)
-              - FeatStruct(sequence) -> FeatList(sequence)
-              - FeatStruct() -> FeatDict()
+
+            - FeatStruct(string) -> FeatStructReader().read(string)
+            - FeatStruct(mapping) -> FeatDict(mapping)
+            - FeatStruct(sequence) -> FeatList(sequence)
+            - FeatStruct() -> FeatDict()
         :param morefeatures: If ``features`` is a mapping or None,
             then ``morefeatures`` provides additional features for the
             ``FeatDict`` constructor.

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -98,11 +98,11 @@ class AnnotationTask:
 
         The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples,
         each representing a coder's labeling of an item:
-            (coder,item,label)
+        ``(coder,item,label)``
 
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
         The distance from a label to itself should be zero:
-            distance(l,l) = 0
+        ``distance(l,l) = 0``
         """
         self.distance = distance
         self.I = set()
@@ -296,7 +296,7 @@ class AnnotationTask:
         if len(self.K) == 0:
             raise ValueError("Cannot calculate alpha, no data present!")
         if len(self.K) == 1:
-            log.debug("Only one annotation value, allpha returning 1.")
+            log.debug("Only one annotation value, alpha returning 1.")
             return 1
         if len(self.C) == 1 and len(self.I) == 1:
             raise ValueError("Cannot calculate alpha, only one coder and item present!")

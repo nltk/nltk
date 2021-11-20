@@ -4,7 +4,7 @@
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # Contributors: matthewmc, clouds56
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -88,7 +88,7 @@ from nltk.tokenize.sonority_sequencing import SyllableTokenizer
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 from nltk.tokenize.texttiling import TextTilingTokenizer
 from nltk.tokenize.toktok import ToktokTokenizer
-from nltk.tokenize.treebank import TreebankWordTokenizer
+from nltk.tokenize.treebank import TreebankWordDetokenizer, TreebankWordTokenizer
 from nltk.tokenize.util import regexp_span_tokenize, string_span_tokenize
 
 

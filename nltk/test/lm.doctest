@@ -121,6 +121,7 @@ Reproducing setup akin to this comment:
 https://github.com/nltk/nltk/issues/380#issue-12879030
 
 For speed take only the first 100 sentences of reuters. Shouldn't affect the test.
+
     >>> from nltk.corpus import reuters
     >>> sents = reuters.sents()[:100]
     >>> ngram_order = 3

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2012 NLTK Project
 # Author: Alessandro Presta <alessandro.presta@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

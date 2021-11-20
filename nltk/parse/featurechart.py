@@ -3,7 +3,7 @@
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -309,7 +309,7 @@ class FeatureFundamentalRule(FundamentalRule):
 class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     """
     A specialized version of the completer / single edge fundamental rule
-    that operates on nonterminals whose symbols are ``FeatStructNonterminal``s.
+    that operates on nonterminals whose symbols are ``FeatStructNonterminal``.
     Rather than simply comparing the nonterminals for equality, they are
     unified.
     """
@@ -347,7 +347,7 @@ class FeatureTopDownInitRule(TopDownInitRule):
 class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     r"""
     A specialized version of the (cached) top down predict rule that operates
-    on nonterminals whose symbols are ``FeatStructNonterminal``s.  Rather
+    on nonterminals whose symbols are ``FeatStructNonterminal``.  Rather
     than simply comparing the nonterminals for equality, they are
     unified.
 
@@ -530,7 +530,7 @@ class InstantiateVarsChart(FeatureChart):
     start with '@', by replacing them with unique new variables.
     In particular, whenever a complete edge is added to the chart, any
     variables in the edge's ``lhs`` whose names start with '@' will be
-    replaced by unique new ``Variable``s.
+    replaced by unique new ``Variable``.
     """
 
     def __init__(self, tokens):

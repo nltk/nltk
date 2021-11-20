@@ -7,7 +7,7 @@ Examples for Portuguese Processing
 
 This HOWTO contains a variety of examples relating to the Portuguese language.
 It is intended to be read in conjunction with the NLTK book
-(``http://nltk.org/book``).  For instructions on running the Python
+(``https://www.nltk.org/book``).  For instructions on running the Python
 interpreter, please see the section *Getting Started with Python*, in Chapter 1.
 
 --------------------------------------------
@@ -240,6 +240,7 @@ journalistic texts extracted from ten sections of
 the daily newspaper *Folha de Sao Paulo*, 1994.
 
 We can access this corpus as a sequence of words or tagged words as follows:
+
     >>> import nltk.corpus
     >>> nltk.corpus.mac_morpho.words()
     ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
@@ -271,7 +272,7 @@ Accessing the Floresta Portuguese Treebank
 
 The NLTK data distribution includes the
 "Floresta Sinta(c)tica Corpus" version 7.4, available from
-``http://www.linguateca.pt/Floresta/``.
+``https://www.linguateca.pt/Floresta/``.
 
 We can access this corpus as a sequence of words or tagged words as follows:
 
