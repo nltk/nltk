@@ -1,6 +1,7 @@
 # Natural Language Toolkit: Parser Utility Functions
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Tom Aarsen <>
 #
 # Copyright (C) 2001-2021 NLTK Project
 # URL: <https://www.nltk.org/>

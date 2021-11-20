@@ -8,6 +8,7 @@
 
 
 import re
+import warnings
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import align_tokens
@@ -113,6 +114,15 @@ class NLTKWordTokenizer(TokenizerI):
     CONTRACTIONS3 = list(map(re.compile, _contractions.CONTRACTIONS3))
 
     def tokenize(self, text, convert_parentheses=False, return_str=False):
+
+        if return_str:
+            warnings.warn(
+                "Parameter 'return_str' has been deprecated and should no "
+                "longer be used.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
 
@@ -147,7 +157,7 @@ class NLTKWordTokenizer(TokenizerI):
         # for regexp in self._contractions.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
-        return text if return_str else text.split()
+        return text.split()
 
     def span_tokenize(self, text):
         r"""
