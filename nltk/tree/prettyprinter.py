@@ -75,7 +75,7 @@ class TreePrettyPrinter:
             leaves = tree.leaves()
             if (
                 leaves
-                and not any(len(a) == 0 for a in tree.subtrees())
+                and any(len(a) > 0 for a in tree.subtrees())
                 and all(isinstance(a, int) for a in leaves)
             ):
                 sentence = [str(a) for a in leaves]
@@ -207,7 +207,7 @@ class TreePrettyPrinter:
             raise ValueError("All leaves must be integer indices.")
         if len(leaves) != len(set(leaves)):
             raise ValueError("Indices must occur at most once.")
-        if not all(0 <= n < len(sentence) for n in leaves):
+        if not all(n in range(0,len(sentence)) for n in leaves):
             raise ValueError(
                 "All leaves must be in the interval 0..n "
                 "with n=len(sentence)\ntokens: %d indices: "
@@ -291,7 +291,7 @@ class TreePrettyPrinter:
                 matrix[rowidx][i] = ids[m]
                 nodes[ids[m]] = tree[m]
                 # add column to the set of children for its parent
-                if m != ():
+                if len(m) > 0:
                     childcols[m[:-1]].add((rowidx, i))
         assert len(positions) == 0
 
