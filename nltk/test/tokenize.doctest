@@ -4,7 +4,7 @@
     >>> from nltk.tokenize import *
 
 Regression Tests: NLTKWordTokenizer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tokenizing some test strings.
 
@@ -258,6 +258,19 @@ It should not hang on long sequences of the same punctuation character.
     >>> s10 = "Photo: Aujourd'hui sur http://t.co/0gebOFDUzn Projet... http://t.co/bKfIUbydz2.............................. http://fb.me/3b6uXpz0L"
     >>> tknzr.tokenize(s10)
     ['Photo', ':', "Aujourd'hui", 'sur', 'http://t.co/0gebOFDUzn', 'Projet', '...', 'http://t.co/bKfIUbydz2', '...', 'http://fb.me/3b6uXpz0L']
+
+Tokenizing multiple sentences at once:
+
+    >>> tknzr = TweetTokenizer()
+    >>> sentences = [
+    ...     "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--",
+    ...     "@jrmy: I'm REALLY HAPPYYY about that! NICEEEE :D :P",
+    ...     "@_willy65: No place for @chuck tonight. Sorry."
+    ... ]
+    >>> tknzr.tokenize_sents(sentences) # doctest: +NORMALIZE_WHITESPACE
+    [['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--'],
+    ['@jrmy', ':', "I'm", 'REALLY', 'HAPPYYY', 'about', 'that', '!', 'NICEEEE', ':D', ':P'],
+    ['@_willy65', ':', 'No', 'place', 'for', '@chuck', 'tonight', '.', 'Sorry', '.']]
 
 
 Regression Tests: PunktSentenceTokenizer
