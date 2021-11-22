@@ -675,7 +675,7 @@ class CFG:
         self._is_lexical = all(p.is_lexical() for p in prods)
         self._is_nonlexical = all(p.is_nonlexical() for p in prods if len(p) != 1)
         self._min_len = min((len(p) for p in prods), default=None)
-        self._max_len = max(len(p) for p in prods) if len(prods) else None
+        self._max_len = max((len(p) for p in prods), default=None)
         self._all_unary_are_lexical = all(p.is_lexical() for p in prods if len(p) == 1)
 
     def is_lexical(self):
