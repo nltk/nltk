@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+title: >-
+  Natural Language ToolKit (NLTK)
+message: >-
+  Please cite this software using the metadata from
+  'preferred-citation'.
+type: software
+authors:
+  - name: "NLTK Team"
+    email: "nltk.team@gmail.com"
+repository-code: "https://github.com/nltk/nltk"
+url: "https://www.nltk.org"
+license: Apache-2.0
+keywords:
+  - "NLP"
+  - "CL"
+  - "natural language processing"
+  - "computational linguistics"
+  - "parsing"
+  - "tagging"
+  - "tokenizing"
+  - "syntax"
+  - "linguistics"
+  - "language"
+  - "natural language"
+  - "text analytics"
+preferred-citation:
+  title: >-
+    Natural Language Processing with Python: Analyzing
+    Text with the Natural Language Toolkit
+  type: book
+  authors:
+    - given-names: Steven
+      family-names: Bird
+      orcid: https://orcid.org/0000-0003-3782-7733
+    - given-names: Ewan
+      family-names: Klein
+      orcid: https://orcid.org/0000-0002-0520-8447
+    - given-names: Edward
+      family-names: Loper
+  year: 2009
+  publisher:
+    name: "O'Reilly Media, Inc."
