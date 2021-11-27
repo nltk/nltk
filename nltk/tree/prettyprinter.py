@@ -77,7 +77,7 @@ class TreePrettyPrinter:
                 leaves
                 and any(len(a) > 0 for a in tree.subtrees())
                 and all(isinstance(a, int) for a in leaves)
-            ): 
+            ):
                 sentence = [str(a) for a in leaves]
             else:
                 # this deals with empty nodes (frontier non-terminals)
@@ -207,7 +207,7 @@ class TreePrettyPrinter:
             raise ValueError("All leaves must be integer indices.")
         if len(leaves) != len(set(leaves)):
             raise ValueError("Indices must occur at most once.")
-        if not all(n in range(0,len(sentence)) for n in leaves):
+        if not all(n in range(0, len(sentence)) for n in leaves):
             raise ValueError(
                 "All leaves must be in the interval 0..n "
                 "with n=len(sentence)\ntokens: %d indices: "
