@@ -1216,7 +1216,7 @@ class WordNetCorpusReader(CorpusReader):
         for of in skmap.keys():
             candidates = skmap[of]
             # map to candidate that covers most lemmas:
-            of2 = sorted((candidates.count(x), x) for x in set(candidates))[-1][1]
+            of2 = max((candidates.count(x), x) for x in set(candidates))[1]
             # warnings.warn(f"Map {of} {of2}")
             map30[of] = of2
             if of[-1] == "s":
