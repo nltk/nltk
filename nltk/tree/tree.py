@@ -196,21 +196,9 @@ class Tree(list):
                 "%s indices must be integers, not %s"
                 % (type(self).__name__, type(index).__name__)
             )
-
     # ////////////////////////////////////////////////////////////
     # Basic tree operations
     # ////////////////////////////////////////////////////////////
-
-    def _get_node(self):
-        """Outdated method to access the node value; use the label() method instead."""
-        raise NotImplementedError("Use label() to access a node label.")
-
-    def _set_node(self, value):
-        """Outdated method to set the node value; use the set_label() method instead."""
-        raise NotImplementedError("Use set_label() method to set a node label.")
-
-    node = property(_get_node, _set_node)
-
     def label(self):
         """
         Return the node label of the tree.
