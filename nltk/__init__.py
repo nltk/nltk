@@ -13,7 +13,7 @@ for Natural Language Processing.  A free online book is available.
 
 Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
-https://www.nltk.org/book
+https://www.nltk.org/book/
 
 isort:skip_file
 """
