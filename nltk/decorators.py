@@ -20,7 +20,7 @@ import sys
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
 OLD_SYS_PATH = sys.path[:]
-sys.path = [p for p in sys.path if p and "nltk" not in p]
+sys.path = [p for p in sys.path if p and "nltk" not in str(p)]
 import inspect
 
 sys.path = OLD_SYS_PATH
