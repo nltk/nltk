@@ -11,6 +11,10 @@ def parser():
     return BllipParser.from_unified_model_dir(model_dir)
 
 
+def setup_module():
+    pytest.importorskip("bllipparser")
+
+
 class TestBllipParser:
     def test_parser_loads_a_valid_tree(self, parser):
         parsed = parser.parse("I saw the man with the telescope")
