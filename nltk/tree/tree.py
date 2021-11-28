@@ -196,6 +196,7 @@ class Tree(list):
                 "%s indices must be integers, not %s"
                 % (type(self).__name__, type(index).__name__)
             )
+
     # ////////////////////////////////////////////////////////////
     # Basic tree operations
     # ////////////////////////////////////////////////////////////
