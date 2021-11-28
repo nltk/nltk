@@ -207,7 +207,7 @@ class TreePrettyPrinter:
             raise ValueError("All leaves must be integer indices.")
         if len(leaves) != len(set(leaves)):
             raise ValueError("Indices must occur at most once.")
-        if not all(n in range(0, len(sentence)) for n in leaves):
+        if not all(0 <= n < len(sentence) for n in leaves):
             raise ValueError(
                 "All leaves must be in the interval 0..n "
                 "with n=len(sentence)\ntokens: %d indices: "
