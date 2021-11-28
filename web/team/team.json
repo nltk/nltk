@@ -4,7 +4,6 @@
             "full_name": "Tom Aarsen",
             "github_username": "tomaarsen",
             "personal_website_url": "https://www.tomaarsen.com",
-            "photo_path": "_static/images/tomaarsen.png",
             "location": "Nijmegen, Netherlands",
             "role": "Core Maintainer. Issue triaging, bug fixing, documentation, website.",
             "active_range": "Since 2020"

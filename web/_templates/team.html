@@ -23,13 +23,11 @@
     </div>
 
     <div class="member-body">
-        {%- if member.photo_path %}
         <div class="member-left-panel">
             <a class="reference internal" href="https://www.github.com/{{ member.github_username }}">
-                <img src="{{ member.photo_path }}" alt="{{ member.full_name }}" width="200" height="200">
+                <img src="https://www.github.com/{{ member.github_username }}.png" alt="{{ member.full_name }}" width="200" height="200">
             </a>
         </div>
-        {%- endif %}
 
         <div class="member-right-panel">
             <dl class="field-list">
