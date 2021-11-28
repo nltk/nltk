@@ -75,7 +75,7 @@ class TreePrettyPrinter:
             leaves = tree.leaves()
             if (
                 leaves
-                and any(len(a) > 0 for a in tree.subtrees())
+                and all(len(a) > 0 for a in tree.subtrees())
                 and all(isinstance(a, int) for a in leaves)
             ):
                 sentence = [str(a) for a in leaves]
