@@ -31,6 +31,7 @@ http://compling.hss.ntu.edu.sg/omw/
 """
 
 import math
+import os
 import re
 import warnings
 from collections import defaultdict, deque
@@ -1175,6 +1176,55 @@ class WordNetCorpusReader(CorpusReader):
         # load the exception file data into memory
         self._load_exception_map()
 
+        # map from WordNet 3.0 for OMW data
+        self.map30 = self.map_wn30()
+
+    def corpus2sk(self, corpus=None):
+        """Read sense key to synset id mapping,
+        from index.sense file in corpus directory"""
+        fn = "index.sense"
+        if corpus:
+            fn = os.path.join(os.pardir, corpus, fn)
+        fp = self.open(fn)
+        sk_map = {}
+        for line in fp:
+            items = line.strip().split(" ")
+            sk = items[0]
+            pos = self._pos_names[int(sk.split("%")[1].split(":")[0])]
+            sk_map[sk] = f"{items[1]}-{pos}"
+        fp.close()
+        return sk_map
+
+    def map_wn30(self):
+        """Mapping from Wordnet 3.0 to currently loaded Wordnet version"""
+        if self.get_version() == "3.0":
+            return None
+        # warnings.warn(f"Mapping WN v. 3.0 to Wordnet v. {self.version}")
+        sk1 = self.corpus2sk("wordnet")
+        sk2 = self.corpus2sk()
+
+        skmap = {}
+        for sk in set(sk1.keys()).intersection(set(sk2.keys())):
+            of1 = sk1[sk]
+            of2 = sk2[sk]
+            if of1 not in skmap.keys():
+                skmap[of1] = [of2]
+            else:
+                skmap[of1].append(of2)
+
+        map30 = {}
+        for of in skmap.keys():
+            candidates = skmap[of]
+            # map to candidate that covers most lemmas:
+            of2 = max((candidates.count(x), x) for x in set(candidates))[1]
+            # warnings.warn(f"Map {of} {of2}")
+            map30[of] = of2
+            if of[-1] == "s":
+                # Add a mapping from "a" for applications like omw,
+                # which don't use the "s" ss_type:
+                map30[of[:-1] + "a"] = of2
+        return map30
+
     # Open Multilingual WordNet functions, contributed by
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
 
@@ -1205,7 +1255,6 @@ class WordNetCorpusReader(CorpusReader):
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
-        import os
 
         langs = ["eng"]
         fileids = self._omw_reader.fileids()
@@ -1337,7 +1386,6 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError("No synset found for key %r" % key)
         offset = int(synset_line.split()[1])
         synset = self.synset_from_pos_and_offset(pos, offset)
-
         # return the corresponding lemma
         for lemma in synset._lemmas:
             if lemma._key == key:
@@ -1595,7 +1643,7 @@ class WordNetCorpusReader(CorpusReader):
         >>> print(wn.synset_from_sense_key("driving%1:04:03::"))
         Synset('drive.n.06')
         """
-        return self.lemma_from_key(sense_key).synset()
+        return lemma_from_key(self, key).synset()
 
     #############################################################
     # Retrieve synsets and lemmas.
@@ -2051,6 +2099,14 @@ class WordNetCorpusReader(CorpusReader):
             if not line.startswith("#"):
                 offset_pos, lemma_type, lemma = line.strip().split("\t")
                 lemma = lemma.strip().replace(" ", "_")
+                if self.map30:
+                    if offset_pos in self.map30.keys():
+                        # Map offset_pos to current Wordnet version:
+                        offset_pos = self.map30[offset_pos]
+                    else:
+                        # Synsets with no mapping keep their Wordnet 3.0 offset
+                        # warnings.warn(f"No map for {offset_pos}, {lang}: {lemma}")
+                        pass
                 self._lang_data[lang][0][offset_pos].append(lemma)
                 self._lang_data[lang][1][lemma.lower()].append(offset_pos)
         # Make sure no more entries are accidentally added subsequently
