@@ -1837,59 +1837,38 @@ class WordNetCorpusReader(CorpusReader):
         """return lemmas of the given language as list of words"""
         return self.all_lemma_names(lang=lang)
 
+    def doc(self, file="README", lang="eng"):
+        """Return the contents of readme, license or citation file
+        use lang=lang to get the file for an individual language"""
+        if lang == "eng":
+            reader = self
+        else:
+            reader = self._omw_reader
+            if lang in self.langs():
+                file = f"{os.path.join(self.provenances[lang],file)}"
+        try:
+            with reader.open(file) as fp:
+                return fp.read()
+        except:
+            if lang in self._lang_data:
+                return f"Cannot determine {file} for {lang}"
+            else:
+                return f"Language {lang} is not supported."
+
     def license(self, lang="eng"):
         """Return the contents of LICENSE (for omw)
         use lang=lang to get the license for an individual language"""
-        if lang == "eng":
-            with self.open("LICENSE") as fp:
-                return fp.read()
-        elif lang in self.langs():
-            with self._omw_reader.open(f"{lang}/LICENSE") as fp:
-                return fp.read()
-        elif lang == "omw":
-            # under the assumption you don't mean Omwunra-Toqura
-            with self._omw_reader.open("LICENSE") as fp:
-                return fp.read()
-        elif lang in self._lang_data:
-            raise WordNetError("Cannot determine license for user-provided tab file")
-        else:
-            raise WordNetError("Language is not supported.")
+        return self.doc(file="LICENSE", lang=lang)
 
-    def readme(self, lang="omw"):
+    def readme(self, lang="eng"):
         """Return the contents of README (for omw)
         use lang=lang to get the readme for an individual language"""
-        if lang == "eng":
-            with self.open("README") as fp:
-                return fp.read()
-        elif lang in self.langs():
-            with self._omw_reader.open(f"{lang}/README") as fp:
-                return fp.read()
-        elif lang == "omw":
-            # under the assumption you don't mean Omwunra-Toqura
-            with self._omw_reader.open("README") as fp:
-                return fp.read()
-        elif lang in self._lang_data:
-            raise WordNetError("No README for user-provided tab file")
-        else:
-            raise WordNetError("Language is not supported.")
+        return self.doc(file="README", lang=lang)
 
-    def citation(self, lang="omw"):
+    def citation(self, lang="eng"):
         """Return the contents of citation.bib file (for omw)
         use lang=lang to get the citation for an individual language"""
-        if lang == "eng":
-            with self.open("citation.bib") as fp:
-                return fp.read()
-        elif lang in self.langs():
-            with self._omw_reader.open(f"{self.provenances[lang]}/citation.bib") as fp:
-                return fp.read()
-        elif lang == "omw":
-            # under the assumption you don't mean Omwunra-Toqura
-            with self._omw_reader.open("citation.bib") as fp:
-                return fp.read()
-        elif lang in self._lang_data:
-            raise WordNetError("citation not known for user-provided tab file")
-        else:
-            raise WordNetError("Language is not supported.")
+        return self.doc(file="citation.bib", lang=lang)
 
     #############################################################
     # Misc
