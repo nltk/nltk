@@ -18,6 +18,7 @@ syntax trees and morphological trees.
 import re
 import sys
 import warnings
+
 from nltk.grammar import Nonterminal, Production
 
 ######################################################################
@@ -201,18 +202,22 @@ class Tree(list):
     # ////////////////////////////////////////////////////////////
     # Basic tree operations
     # ////////////////////////////////////////////////////////////
-    
+
     def _get_node(self):
         """Outdated method to access the node value; use the label() method instead."""
-        warnings.warn("_get_node() is deprecated, use label() instead", 
-        DeprecationWarning,
-        stacklevel=2)
+        warnings.warn(
+            "_get_node() is deprecated, use label() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     def _set_node(self, value):
         """Outdated method to set the node value; use the set_label() method instead."""
-        warnings.warn("_set_node() is deprecated, use set_label() instead", 
-        DeprecationWarning,
-        stacklevel=2)
+        warnings.warn(
+            "_set_node() is deprecated, use set_label() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     node = property(_get_node, _set_node)
 
