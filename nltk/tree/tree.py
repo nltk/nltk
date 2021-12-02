@@ -17,8 +17,9 @@ syntax trees and morphological trees.
 
 import re
 import sys
-from nltk.internals import deprecated
+
 from nltk.grammar import Nonterminal, Production
+from nltk.internals import deprecated
 
 ######################################################################
 ## Trees
@@ -201,11 +202,11 @@ class Tree(list):
     # ////////////////////////////////////////////////////////////
     # Basic tree operations
     # ////////////////////////////////////////////////////////////
-    @deprecated("_get_node() is deprecated, use label() instead") 
+    @deprecated("_get_node() is deprecated, use label() instead")
     def _get_node(self):
         """Outdated method to access the node value; use the label() method instead."""
 
-    @deprecated("_set_node() is deprecated, use set_label() instead") 
+    @deprecated("_set_node() is deprecated, use set_label() instead")
     def _set_node(self, value):
         """Outdated method to set the node value; use the set_label() method instead."""
 
