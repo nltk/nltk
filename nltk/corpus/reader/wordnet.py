@@ -1775,11 +1775,32 @@ class WordNetCorpusReader(CorpusReader):
             lemma = iter(set(lemma))
             return lemma
 
-    def all_synsets(self, pos=None):
+    def all_omw_synsets(self, pos=None, lang=None):
+        if lang not in self.langs():
+            return None
+        self._load_lang_data(lang)
+        for of in self._lang_data[lang][0].keys():
+            try:
+                ss = self.of2ss(of)
+                yield ss
+            except:
+                # A few OMW offsets don't exist in Wordnet 3.0.
+                # Additionally, when mapped to later Wordnets,
+                # increasing numbers of synsets are lost in the mapping.
+                #    warnings.warn(f"Language {lang}: no synset found for {of}")
+                pass
+
+    def all_synsets(self, pos=None, lang="eng"):
         """Iterate over all synsets with a given part of speech tag.
         If no pos is specified, all synsets for all parts of speech
         will be loaded.
         """
+        if lang == "eng":
+            return self.all_eng_synsets(pos=pos)
+        else:
+            return self.all_omw_synsets(pos=pos, lang=lang)
+
+    def all_eng_synsets(self, pos=None):
         if pos is None:
             pos_tags = self._FILEMAP.keys()
         else:
