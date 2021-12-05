@@ -713,7 +713,8 @@ def demo_sent_subjectivity(text):
 
     # Tokenize and convert to lower case
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    print(sentim_analyzer.classify(tokenized_text))
+    return sentim_analyzer.classify(tokenized_text)
+  
 
 
 def demo_liu_hu_lexicon(sentence, plot=False):
