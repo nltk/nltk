@@ -6,6 +6,7 @@
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 #         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (tree transforms)
 #         Eric Kafe <kafe.eric@gmail.com> (Tree.fromlist())
+#         Mohaned mashaly<mohaned.mashaly12@gmail.com> (Deprecating methods)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -18,6 +19,7 @@ import re
 import sys
 
 from nltk.grammar import Nonterminal, Production
+from nltk.internals import deprecated
 
 ######################################################################
 ## Trees
@@ -200,14 +202,13 @@ class Tree(list):
     # ////////////////////////////////////////////////////////////
     # Basic tree operations
     # ////////////////////////////////////////////////////////////
-
+    @deprecated("Use label() instead")
     def _get_node(self):
         """Outdated method to access the node value; use the label() method instead."""
-        raise NotImplementedError("Use label() to access a node label.")
 
+    @deprecated("Use set_label() instead")
     def _set_node(self, value):
         """Outdated method to set the node value; use the set_label() method instead."""
-        raise NotImplementedError("Use set_label() method to set a node label.")
 
     node = property(_get_node, _set_node)
 
