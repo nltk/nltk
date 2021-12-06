@@ -42,6 +42,7 @@ jobs:
         with:
           path: ~/nltk_data
           key: nltk_data_${{ secrets.CACHE_VERSION }}
+        if: !contains(github.event.head_commit.message, '/nocache')
 
       - name: Download nltk data packages on cache miss
         run: |
@@ -64,6 +65,7 @@ jobs:
         with:
           path: ~/third
           key: third_${{ secrets.CACHE_VERSION }}
+        if: !contains(github.event.head_commit.message, '/nocache')
 
       - name: Download third party data
         run: |
@@ -101,6 +103,7 @@ jobs:
         with:
           path: ${{ env.pythonLocation }}
           key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
+        if: !contains(github.event.head_commit.message, '/nocache')
 
       - name: Install dependencies on cache miss
         run: |
