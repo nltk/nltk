@@ -112,7 +112,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/nltk_data
-          key: nltk_data_${{ secrets.CACHE_VERSION }}
+          key: new-nltk_data_${{ secrets.CACHE_VERSION }}
 
       - name: Use cached third party tools
         uses: actions/cache@v2
