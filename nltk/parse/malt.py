@@ -32,7 +32,7 @@ def malt_regex_tagger():
             (r"\)$", ")"),  # round brackets
             (r"\[$", "["),
             (r"\]$", "]"),  # square brackets
-            (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+            (r"^-?[0-9]+(\.[0-9]+)?$", "CD"),  # cardinal numbers
             (r"(The|the|A|a|An|an)$", "DT"),  # articles
             (r"(He|he|She|she|It|it|I|me|Me|You|you)$", "PRP"),  # pronouns
             (r"(His|his|Her|her|Its|its)$", "PRP$"),  # possessive
