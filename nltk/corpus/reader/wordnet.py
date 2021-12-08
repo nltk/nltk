@@ -443,37 +443,29 @@ class Synset(_WordNetObject):
     def frame_ids(self):
         return self._frame_ids
 
-    def definition(self, lang="eng"):
-        """Return definition in specified language"""
+    def _doc(self, doc_type, default, lang="eng"):
+        """Helper method for Synset.definition and Synset.examples"""
         corpus = self._wordnet_corpus_reader
         if lang not in corpus.langs():
             return None
         elif lang == "eng":
-            return self._definition
+            return default
         else:
             corpus._load_lang_data(lang)
             of = corpus.ss2of(self)
-            i = corpus.lg_attrs.index("def")
+            i = corpus.lg_attrs.index(doc_type)
             if of in corpus._lang_data[lang][i].keys():
                 return corpus._lang_data[lang][i][of]
             else:
                 return None
 
+    def definition(self, lang="eng"):
+        """Return definition in specified language"""
+        return self._doc("def", self._definition, lang=lang)
+
     def examples(self, lang="eng"):
-        corpus = self._wordnet_corpus_reader
         """Return examples in specified language"""
-        if lang not in corpus.langs():
-            return None
-        elif lang == "eng":
-            return self._examples
-        else:
-            corpus._load_lang_data(lang)
-            of = corpus.ss2of(self)
-            i = corpus.lg_attrs.index("exe")
-            if of in corpus._lang_data[lang][i].keys():
-                return corpus._lang_data[lang][i][of]
-            else:
-                return None
+        return self._doc("exe", self._examples, lang=lang)
 
     def lexname(self):
         return self._lexname
