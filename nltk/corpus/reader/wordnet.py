@@ -1280,7 +1280,6 @@ class WordNetCorpusReader(CorpusReader):
 
     def omw_prov(self):
         """Return a provenance dictionary of the languages in  Multilingual Wordnet"""
-        langs = ["eng"]
         provdict = {}
         provdict["eng"] = ""
         fileids = self._omw_reader.fileids()
