@@ -41,7 +41,7 @@ jobs:
         id: restore-cache
         with:
           path: ~/nltk_data
-          key: nltk_data_${{ secrets.CACHE_VERSION }}
+          key: try-nltk_data_${{ secrets.CACHE_VERSION }}
 
       - name: Download nltk data packages on cache miss
         run: |

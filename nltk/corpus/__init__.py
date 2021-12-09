@@ -356,7 +356,6 @@ verbnet = LazyCorpusLoader("verbnet", VerbnetCorpusReader, r"(?!\.).*\.xml")
 webtext = LazyCorpusLoader(
     "webtext", PlaintextCorpusReader, r"(?!README|\.).*\.txt", encoding="ISO-8859-2"
 )
-
 wordnet = LazyCorpusLoader(
     "wordnet",
     WordNetCorpusReader,
