@@ -286,6 +286,7 @@
 - Ahmet Yildirim <https://github.com/RnDevelover>
 - Yuta Nakamura <https://github.com/yutanakamura-tky>
 - Adam Hawley <https://github.com/adamjhawley>
+- Panagiotis Simakis <https://github.com/sp1thas>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
