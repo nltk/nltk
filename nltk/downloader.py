@@ -695,9 +695,9 @@ class Downloader:
 
         # Ensure the download_dir exists
         if not os.path.exists(download_dir):
-            os.mkdir(download_dir)
+            os.makedirs(download_dir)
         if not os.path.exists(os.path.join(download_dir, info.subdir)):
-            os.mkdir(os.path.join(download_dir, info.subdir))
+            os.makedirs(os.path.join(download_dir, info.subdir))
 
         # Download the file.  This will raise an IOError if the url
         # is not found.
