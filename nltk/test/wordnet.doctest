@@ -6,6 +6,7 @@ WordNet Interface
 =================
 
 WordNet is just another NLTK corpus reader, and can be imported like this:
+
     >>> from nltk.corpus import wordnet
 
 For more compact code, we recommend:
@@ -47,20 +48,20 @@ The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
     >>> sorted(wn.langs())
-    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas',
-    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'ita', 'jpn', 'nld', 'nno',
-    'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
+    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus',
+    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'isl', 'ita', 'ita_iwn',
+    'jpn', 'lit', 'nld', 'nno', 'nob', 'pol', 'por', 'ron', 'slk',
+    'slv', 'spa', 'swe', 'tha', 'zsm']
     >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
 
-    wn.synset('spy.n.01').lemma_names('jpn')
-    ['\u3044\u306c', '\u307e\u308f\u3057\u8005', '\u30b9\u30d1\u30a4', '\u56de\u3057\u8005',
-    '\u56de\u8005', '\u5bc6\u5075', '\u5de5\u4f5c\u54e1', '\u5efb\u3057\u8005',
-    '\u5efb\u8005', '\u63a2', '\u63a2\u308a', '\u72ac', '\u79d8\u5bc6\u635c\u67fb\u54e1',
-    '\u8adc\u5831\u54e1', '\u8adc\u8005', '\u9593\u8005', '\u9593\u8adc', '\u96a0\u5bc6']
+    >>> wn.synset('spy.n.01').lemma_names('jpn')
+    ['いぬ', 'まわし者', 'スパイ', '回し者', '回者', '密偵',
+    '工作員', '廻し者', '廻者', '探', '探り', '犬', '秘密捜査員',
+    '諜報員', '諜者', '間者', '間諜', '隠密']
 
     >>> wn.synset('dog.n.01').lemma_names('ita')
-    ['cane', 'Canis_familiaris']
+    ['Canis_familiaris', 'cane']
     >>> wn.lemmas('cane', lang='ita')
     [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'), Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'),
     Lemma('incompetent.n.01.cane')]
@@ -68,8 +69,8 @@ WordNet, using ISO-639 language codes.
     [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
     Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
 
-    sorted(wn.synset('dog.n.01').lemmas('por'))
-	[Lemma('dog.n.01.cachorra'), Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cadela'), Lemma('dog.n.01.c\xe3o')]
+    >>> sorted(wn.synset('dog.n.01').lemmas('por'))
+    [Lemma('dog.n.01.cachorra'), Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cadela'), Lemma('dog.n.01.c\xe3o')]
 
     >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'), lang='por')
     >>> dog_lemma
@@ -77,7 +78,7 @@ WordNet, using ISO-639 language codes.
     >>> dog_lemma.lang()
     'por'
     >>> len(list(wordnet.all_lemma_names(pos='n', lang='jpn')))
-    64797
+    66031
 
 -------
 Synsets
@@ -450,6 +451,7 @@ as a base form for a POS for which that word is not defined:
     >>> wn.morphy('book', wn.NOUN)
     'book'
     >>> wn.morphy('book', wn.ADJ)
+    >>>
 
 Bug 160: wup_similarity breaks when the two synsets have no common hypernym
 
@@ -458,8 +460,9 @@ Bug 160: wup_similarity breaks when the two synsets have no common hypernym
     >>> t.wup_similarity(m)
     0.631...
 
-    Issue #2278: wup_similarity not commutative when comparing a noun and a verb.
-    Patch #2650 resolved this error. As a result, the output of the following use of wup_similarity no longer returns None.
+Issue #2278: wup_similarity not commutative when comparing a noun and a verb.
+Patch #2650 resolved this error. As a result, the output of the following use of wup_similarity no longer returns None.
+
     >>> t = wn.synsets('titan')[1]
     >>> s = wn.synsets('say', wn.VERB)[0]
     >>> t.wup_similarity(s)
@@ -598,6 +601,7 @@ Bug https://github.com/nltk/nltk/issues/1641: Non-English lemmas containing capi
     [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
 
 Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) to WordNet class
+
     >>> wn.synsets("computer_science")[0].in_topic_domains()[2]
     Synset('access_time.n.01')
     >>> wn.synsets("France")[0].in_region_domains()[18]
@@ -756,6 +760,27 @@ classified.a.02):
       [Synset('confined.a.02')],
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
+
+
+----------------------------------------------------------------
+Loading alternative Wordnet versions
+----------------------------------------------------------------
+
+    >>> print("Wordnet {}".format(wn.get_version()))
+    Wordnet 3.0
+
+    >>> from nltk.corpus import wordnet31 as wn31
+    >>> print("Wordnet {}".format(wn31.get_version()))
+    Wordnet 3.1
+
+    >>> print(wn.synset('restrain.v.01').hyponyms())
+    [Synset('confine.v.03'), Synset('control.v.02'), Synset('hold.v.36'), Synset('inhibit.v.04')]
+
+    >>> print(wn31.synset('restrain.v.01').hyponyms())
+    [Synset('enchain.v.01'), Synset('fetter.v.01'), Synset('ground.v.02'), Synset('impound.v.02'), Synset('pen_up.v.01'), Synset('pinion.v.01'), Synset('pound.v.06'), Synset('tie_down.v.01')]
+
+    >>> print(wn31.synset('restrain.v.04').hyponyms())
+    [Synset('baffle.v.03'), Synset('confine.v.02'), Synset('control.v.02'), Synset('hold.v.36'), Synset('rule.v.07'), Synset('swallow.v.06'), Synset('wink.v.04')]
 
 
 -------------

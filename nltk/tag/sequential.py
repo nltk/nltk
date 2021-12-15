@@ -491,7 +491,7 @@ class AffixTagger(ContextTagger):
 
 @jsontags.register_tag
 class RegexpTagger(SequentialBackoffTagger):
-    """
+    r"""
     Regular Expression Tagger
 
     The RegexpTagger assigns tags to tokens by comparing their
@@ -503,7 +503,7 @@ class RegexpTagger(SequentialBackoffTagger):
         >>> from nltk.tag import RegexpTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> regexp_tagger = RegexpTagger(
-        ...     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+        ...     [(r'^-?[0-9]+(\.[0-9]+)?$', 'CD'),  # cardinal numbers
         ...      (r'(The|the|A|a|An|an)$', 'AT'),   # articles
         ...      (r'.*able$', 'JJ'),                # adjectives
         ...      (r'.*ness$', 'NN'),                # nouns formed from adjectives

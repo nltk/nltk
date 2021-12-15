@@ -91,7 +91,7 @@ class BrillTaggerTrainer:
     # Training
 
     def train(self, train_sents, max_rules=200, min_score=2, min_acc=None):
-        """
+        r"""
         Trains the Brill tagger on the corpus *train_sents*,
         producing at most *max_rules* transformations, each of which
         reduces the net number of errors in the corpus by at least
@@ -111,7 +111,7 @@ class BrillTaggerTrainer:
         >>> testing_data = [untag(s) for s in gold_data]
 
         >>> backoff = RegexpTagger([
-        ... (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+        ... (r'^-?[0-9]+(\.[0-9]+)?$', 'CD'),  # cardinal numbers
         ... (r'(The|the|A|a|An|an)$', 'AT'),   # articles
         ... (r'.*able$', 'JJ'),                # adjectives
         ... (r'.*ness$', 'NN'),                # nouns formed from adjectives
@@ -123,7 +123,6 @@ class BrillTaggerTrainer:
         ... ])
 
         >>> baseline = backoff #see NOTE1
-
         >>> baseline.accuracy(gold_data) #doctest: +ELLIPSIS
         0.2450142...
 
@@ -137,7 +136,7 @@ class BrillTaggerTrainer:
         >>> tagger1 = tt.train(training_data, max_rules=10)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: None)
         Finding initial useful rules...
-            Found 845 useful rules.
+            Found 847 useful rules.
         <BLANKLINE>
                    B      |
            S   F   r   O  |        Score = Fixed - Broken
@@ -150,7 +149,7 @@ class BrillTaggerTrainer:
           85  85   0   0  | NN->, if Pos:NN@[-1] & Word:,@[0]
           69  69   0   0  | NN->. if Pos:NN@[-1] & Word:.@[0]
           51  51   0   0  | NN->IN if Pos:NN@[-1] & Word:of@[0]
-          47  63  16 161  | NN->IN if Pos:NNS@[-1]
+          47  63  16 162  | NN->IN if Pos:NNS@[-1]
           33  33   0   0  | NN->TO if Pos:NN@[-1] & Word:to@[0]
           26  26   0   0  | IN->. if Pos:NNS@[-1] & Word:.@[0]
           24  24   0   0  | IN->, if Pos:NNS@[-1] & Word:,@[0]
@@ -162,11 +161,11 @@ class BrillTaggerTrainer:
 
         >>> train_stats = tagger1.train_stats()
         >>> [train_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
-        [1775, 1269, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
+        [1776, 1270, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
 
         >>> tagger1.print_template_statistics(printunused=False)
         TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
-        TRAIN (   2417 tokens) initial  1775 0.2656 final:  1269 0.4750
+        TRAIN (   2417 tokens) initial  1776 0.2652 final:  1270 0.4746
         #ID | Score (train) |  #Rules     | Template
         --------------------------------------------
         001 |   305   0.603 |   7   0.700 | Template(Pos([-1]),Word([0]))
@@ -185,13 +184,13 @@ class BrillTaggerTrainer:
         True
 
         >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
-        [1855, 1376, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
+        [1859, 1380, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
 
         >>> # A high-accuracy tagger
         >>> tagger2 = tt.train(training_data, max_rules=10, min_acc=0.99)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: 0.99)
         Finding initial useful rules...
-            Found 845 useful rules.
+            Found 847 useful rules.
         <BLANKLINE>
                    B      |
            S   F   r   O  |        Score = Fixed - Broken
@@ -213,6 +212,7 @@ class BrillTaggerTrainer:
 
         >>> tagger2.accuracy(gold_data)  # doctest: +ELLIPSIS
         0.44159544...
+
         >>> tagger2.rules()[2:4]
         (Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]), Rule('001', 'NN', 'IN', [(Pos([-1]),'NN'), (Word([0]),'of')]))
 

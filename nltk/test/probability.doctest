@@ -194,6 +194,7 @@ our testing accordingly.
     ...         for sent in corpus[:100]]
 
 We will then need to redefine the rest of the training/testing variables
+
     >>> tag_set = unique_list(tag for sent in corpus for (word,tag) in sent)
     >>> len(tag_set)
     906

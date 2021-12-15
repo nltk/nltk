@@ -266,7 +266,6 @@ class PunktLanguageVars:
         return self._word_tokenizer_re().findall(s)
 
     _period_context_fmt = r"""
-        \S*                          # some word material
         %(SentEndChars)s             # a potential sentence ending
         (?=(?P<after_tok>
             %(NonWord)s              # either other punctuation
@@ -1284,8 +1283,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         See format_debug_decision() to help make this output readable.
         """
 
-        for match in self._lang_vars.period_context_re().finditer(text):
-            decision_text = match.group() + match.group("after_tok")
+        for match, decision_text in self._match_potential_end_contexts(text):
             tokens = self._tokenize_words(decision_text)
             tokens = list(self._annotate_first_pass(tokens))
             while tokens and not tokens[0].tok.endswith(self._lang_vars.sent_end_chars):
@@ -1333,10 +1331,68 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         """
         return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
 
+    def _match_potential_end_contexts(self, text):
+        """
+        Given a text, find the matches of potential sentence breaks,
+        alongside the contexts surrounding these sentence breaks.
+
+        Since the fix for the ReDOS discovered in issue #2866, we no longer match
+        the word before a potential end of sentence token. Instead, we use a separate
+        regex for this. As a consequence, `finditer`'s desire to find non-overlapping
+        matches no longer aids us in finding the single longest match.
+        Where previously, we could use::
+
+            >>> pst = PunktSentenceTokenizer()
+            >>> text = "Very bad acting!!! I promise."
+            >>> list(pst._lang_vars.period_context_re().finditer(text)) # doctest: +SKIP
+            [<re.Match object; span=(9, 18), match='acting!!!'>]
+
+        Now we have to find the word before (i.e. 'acting') separately, and `finditer`
+        returns::
+
+            >>> pst = PunktSentenceTokenizer()
+            >>> text = "Very bad acting!!! I promise."
+            >>> list(pst._lang_vars.period_context_re().finditer(text)) # doctest: +NORMALIZE_WHITESPACE
+            [<re.Match object; span=(15, 16), match='!'>,
+            <re.Match object; span=(16, 17), match='!'>,
+            <re.Match object; span=(17, 18), match='!'>]
+
+        So, we need to find the word before the match from right to left, and then manually remove
+        the overlaps. That is what this method does::
+
+            >>> pst = PunktSentenceTokenizer()
+            >>> text = "Very bad acting!!! I promise."
+            >>> pst._match_potential_end_contexts(text)
+            [(<re.Match object; span=(17, 18), match='!'>, 'acting!!! I')]
+
+        :param text: String of one or more sentences
+        :type text: str
+        :return: List of match-context tuples.
+        :rtype: List[Tuple[re.Match, str]]
+        """
+        before_words = {}
+        matches = []
+        for match in reversed(list(self._lang_vars.period_context_re().finditer(text))):
+            # Ignore matches that have already been captured by matches to the right of this match
+            if matches and match.end() > before_start:
+                continue
+            # Find the word before the current match
+            split = text[: match.start()].rsplit(maxsplit=1)
+            before_start = len(split[0]) if len(split) == 2 else 0
+            before_words[match] = split[-1]
+            matches.append(match)
+
+        return [
+            (
+                match,
+                before_words[match] + match.group() + match.group("after_tok"),
+            )
+            for match in matches[::-1]
+        ]
+
     def _slices_from_text(self, text):
         last_break = 0
-        for match in self._lang_vars.period_context_re().finditer(text):
-            context = match.group() + match.group("after_tok")
+        for match, context in self._match_potential_end_contexts(text):
             if self.text_contains_sentbreak(context):
                 yield slice(last_break, match.end())
                 if match.group("next_tok"):

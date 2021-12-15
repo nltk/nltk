@@ -393,11 +393,11 @@ def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     plt.savefig(learning_curve_output)
 
 
-NN_CD_TAGGER = RegexpTagger([(r"^-?[0-9]+(.[0-9]+)?$", "CD"), (r".*", "NN")])
+NN_CD_TAGGER = RegexpTagger([(r"^-?[0-9]+(\.[0-9]+)?$", "CD"), (r".*", "NN")])
 
 REGEXP_TAGGER = RegexpTagger(
     [
-        (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+        (r"^-?[0-9]+(\.[0-9]+)?$", "CD"),  # cardinal numbers
         (r"(The|the|A|a|An|an)$", "AT"),  # articles
         (r".*able$", "JJ"),  # adjectives
         (r".*ness$", "NN"),  # nouns formed from adjectives

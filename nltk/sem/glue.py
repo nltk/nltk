@@ -703,7 +703,7 @@ class Glue:
 
         regexp_tagger = RegexpTagger(
             [
-                (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+                (r"^-?[0-9]+(\.[0-9]+)?$", "CD"),  # cardinal numbers
                 (r"(The|the|A|a|An|an)$", "AT"),  # articles
                 (r".*able$", "JJ"),  # adjectives
                 (r".*ness$", "NN"),  # nouns formed from adjectives

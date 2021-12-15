@@ -31,6 +31,7 @@ It might take some time to train the model. So, after it is trained, it can be s
     >>> new_model = gensim.models.Word2Vec.load('brown.embedding')
 
 The model will be the list of words with their embedding. We can easily get the vector representation of a word.
+
     >>> len(new_model['university'])
     100
 
