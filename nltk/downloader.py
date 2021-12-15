@@ -167,6 +167,7 @@ import sys
 import textwrap
 import threading
 import time
+import warnings
 import zipfile
 from hashlib import md5
 from xml.etree import ElementTree
@@ -2448,6 +2449,18 @@ def _find_packages(root):
                     )
 
                 yield pkg_xml, zf, relpath
+
+            elif filename.endswith(".zip"):
+                # Warn user in case a .xml does not exist for a .zip
+                resourcename = os.path.splitext(filename)[0]
+                xmlfilename = os.path.join(dirname, resourcename + ".xml")
+                if not os.path.exists(xmlfilename):
+                    warnings.warn(
+                        f"{filename} exists, but {resourcename + '.xml'} cannot be found! "
+                        f"This could mean that {resourcename} can not be downloaded.",
+                        stacklevel=2,
+                    )
+
         # Don't recurse into svn subdirectories:
         try:
             subdirs.remove(".svn")
