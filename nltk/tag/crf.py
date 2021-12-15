@@ -35,13 +35,13 @@ class CRFTagger(TaggerI):
     [[('dog', 'Noun'), ('is', 'Verb'), ('good', 'Adj')], [('Cat', 'Noun'), ('eat', 'Verb'), ('meat', 'Noun')]]
 
     >>> gold_sentences = [[('dog','Noun'),('is','Verb'),('good','Adj')] , [('Cat','Noun'),('eat','Verb'), ('meat','Noun')]]
-    >>> ct.evaluate(gold_sentences)
+    >>> ct.accuracy(gold_sentences)
     1.0
 
     Setting learned model file
     >>> ct = CRFTagger()
     >>> ct.set_model_file('model.crf.tagger')
-    >>> ct.evaluate(gold_sentences)
+    >>> ct.accuracy(gold_sentences)
     1.0
     """
 

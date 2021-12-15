@@ -363,7 +363,7 @@ def _get_pretrain_model():
     print("Size of training and testing (sentence)", len(training), len(testing))
     # Train and save the model
     tagger.train(training, PICKLE)
-    print("Accuracy : ", tagger.evaluate(testing))
+    print("Accuracy : ", tagger.accuracy(testing))
 
 
 if __name__ == "__main__":

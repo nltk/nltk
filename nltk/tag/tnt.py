@@ -492,7 +492,7 @@ def demo2():
     s.train(d[(11) * 100 :])
 
     for i in range(10):
-        tacc = t.evaluate(d[i * 100 : ((i + 1) * 100)])
+        tacc = t.accuracy(d[i * 100 : ((i + 1) * 100)])
         tp_un = t.unknown / (t.known + t.unknown)
         tp_kn = t.known / (t.known + t.unknown)
         t.unknown = 0
@@ -504,7 +504,7 @@ def demo2():
         print("Percentage unknown:", tp_un)
         print("Accuracy over known words:", (tacc / tp_kn))
 
-        sacc = s.evaluate(d[i * 100 : ((i + 1) * 100)])
+        sacc = s.accuracy(d[i * 100 : ((i + 1) * 100)])
         sp_un = s.unknown / (s.known + s.unknown)
         sp_kn = s.known / (s.known + s.unknown)
         s.unknown = 0
@@ -550,14 +550,14 @@ def demo3():
         t.train(dtrain)
         s.train(etrain)
 
-        tacc = t.evaluate(dtest)
+        tacc = t.accuracy(dtest)
         tp_un = t.unknown / (t.known + t.unknown)
         tp_kn = t.known / (t.known + t.unknown)
         tknown += tp_kn
         t.unknown = 0
         t.known = 0
 
-        sacc = s.evaluate(etest)
+        sacc = s.accuracy(etest)
         sp_un = s.unknown / (s.known + s.unknown)
         sp_kn = s.known / (s.known + s.unknown)
         sknown += sp_kn

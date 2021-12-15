@@ -123,9 +123,8 @@ class BrillTaggerTrainer:
         ... ])
 
         >>> baseline = backoff #see NOTE1
-
-        >>> baseline.evaluate(gold_data) #doctest: +ELLIPSIS
-        0.2433862...
+        >>> baseline.accuracy(gold_data) #doctest: +ELLIPSIS
+        0.2450142...
 
         >>> # Set up templates
         >>> Template._cleartemplates() #clear any templates created in earlier tests
@@ -174,8 +173,8 @@ class BrillTaggerTrainer:
         <BLANKLINE>
         <BLANKLINE>
 
-        >>> tagger1.evaluate(gold_data) # doctest: +ELLIPSIS
-        0.43833...
+        >>> tagger1.accuracy(gold_data) # doctest: +ELLIPSIS
+        0.43996...
 
         >>> tagged, test_stats = tagger1.batch_tag_incremental(testing_data, gold_data)
 
@@ -211,8 +210,9 @@ class BrillTaggerTrainer:
           18  18   0   0  | CD->-NONE- if Pos:NN@[-1] & Word:0@[0]
           18  18   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
 
-        >>> tagger2.evaluate(gold_data)  # doctest: +ELLIPSIS
-        0.43996743...
+        >>> tagger2.accuracy(gold_data)  # doctest: +ELLIPSIS
+        0.44159544...
+
         >>> tagger2.rules()[2:4]
         (Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]), Rule('001', 'NN', 'IN', [(Pos([-1]),'NN'), (Word([0]),'of')]))
 
