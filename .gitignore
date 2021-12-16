@@ -13,6 +13,7 @@ web/_build
 # Test artifacts and coverage reports
 *.tox
 *.errs
+.hypothesis
 .noseids
 .coverage*
 nltk/test/*.html
