@@ -74,7 +74,9 @@ def generate_custom_files():
         os.makedirs(howto_folder)
 
     # Load jinja template
-    with open(os.path.join(web_folder, "_templates", "doctest.rst")) as f:
+    with open(
+        os.path.join(web_folder, "_templates", "doctest.rst"), encoding="utf8"
+    ) as f:
         doctest_template = Template(f.read())
 
     print("Generating HOWTO pages...")
@@ -95,12 +97,14 @@ def generate_custom_files():
     print(f"Generated {len(modules)} HOWTO pages.")
 
     # Load the team JSON data
-    with open(os.path.join(web_folder, "team", "team.json")) as f:
+    with open(os.path.join(web_folder, "team", "team.json"), encoding="utf8") as f:
         full_data = json.load(f)
     print("Team data loaded!")
 
     # Load the team jinja template
-    with open(os.path.join(web_folder, "_templates", "team.html")) as f:
+    with open(
+        os.path.join(web_folder, "_templates", "team.html"), encoding="utf8"
+    ) as f:
         team_template = Template(f.read())
 
     for members_type, members_data in full_data.items():
