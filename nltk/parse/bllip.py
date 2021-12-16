@@ -103,7 +103,7 @@ def _ensure_ascii(words):
             word.encode("ascii")
     except UnicodeEncodeError as e:
         raise ValueError(
-            f"Token {i} ({word}) is non-ASCII. BLLIP Parser "
+            f"Token {i} ({word!r}) is non-ASCII. BLLIP Parser "
             "currently doesn't support non-ASCII inputs."
         ) from e
 
