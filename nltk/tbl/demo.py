@@ -261,7 +261,7 @@ def postag(
     if gold_data:
         print(
             "    Accuracy on test set: {:0.4f}".format(
-                baseline_tagger.evaluate(gold_data)
+                baseline_tagger.accuracy(gold_data)
             )
         )
 
@@ -274,7 +274,7 @@ def postag(
     brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
     print(f"Trained tbl tagger in {time.time() - tbrill:0.2f} seconds")
     if gold_data:
-        print("    Accuracy on test set: %.4f" % brill_tagger.evaluate(gold_data))
+        print("    Accuracy on test set: %.4f" % brill_tagger.accuracy(gold_data))
 
     # printing the learned rules, if learned silently
     if trace == 1:
@@ -393,11 +393,11 @@ def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     plt.savefig(learning_curve_output)
 
 
-NN_CD_TAGGER = RegexpTagger([(r"^-?[0-9]+(.[0-9]+)?$", "CD"), (r".*", "NN")])
+NN_CD_TAGGER = RegexpTagger([(r"^-?[0-9]+(\.[0-9]+)?$", "CD"), (r".*", "NN")])
 
 REGEXP_TAGGER = RegexpTagger(
     [
-        (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+        (r"^-?[0-9]+(\.[0-9]+)?$", "CD"),  # cardinal numbers
         (r"(The|the|A|a|An|an)$", "AT"),  # articles
         (r".*able$", "JJ"),  # adjectives
         (r".*ness$", "NN"),  # nouns formed from adjectives

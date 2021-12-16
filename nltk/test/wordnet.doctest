@@ -48,19 +48,20 @@ The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
     >>> sorted(wn.langs())
-    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas',
-    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'ita', 'jpn', 'nld', 'nno',
-    'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
+    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus',
+    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'isl', 'ita', 'ita_iwn',
+    'jpn', 'lit', 'nld', 'nno', 'nob', 'pol', 'por', 'ron', 'slk',
+    'slv', 'spa', 'swe', 'tha', 'zsm']
     >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
 
     >>> wn.synset('spy.n.01').lemma_names('jpn')
-    ['いぬ', 'スパイ', '回者', '回し者', '密偵', '工作員',
-    '廻者', '廻し者', '探', '探り', '犬', '秘密捜査員',
-    'まわし者', '諜報員', '諜者', '間者', '間諜', '隠密']
+    ['いぬ', 'まわし者', 'スパイ', '回し者', '回者', '密偵',
+    '工作員', '廻し者', '廻者', '探', '探り', '犬', '秘密捜査員',
+    '諜報員', '諜者', '間者', '間諜', '隠密']
 
     >>> wn.synset('dog.n.01').lemma_names('ita')
-    ['cane', 'Canis_familiaris']
+    ['Canis_familiaris', 'cane']
     >>> wn.lemmas('cane', lang='ita')
     [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'), Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'),
     Lemma('incompetent.n.01.cane')]
@@ -77,7 +78,7 @@ WordNet, using ISO-639 language codes.
     >>> dog_lemma.lang()
     'por'
     >>> len(list(wordnet.all_lemma_names(pos='n', lang='jpn')))
-    64797
+    66031
 
 -------
 Synsets

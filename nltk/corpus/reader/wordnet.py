@@ -31,6 +31,7 @@ http://compling.hss.ntu.edu.sg/omw/
 """
 
 import math
+import os
 import re
 import warnings
 from collections import defaultdict, deque
@@ -442,11 +443,29 @@ class Synset(_WordNetObject):
     def frame_ids(self):
         return self._frame_ids
 
-    def definition(self):
-        return self._definition
+    def _doc(self, doc_type, default, lang="eng"):
+        """Helper method for Synset.definition and Synset.examples"""
+        corpus = self._wordnet_corpus_reader
+        if lang not in corpus.langs():
+            return None
+        elif lang == "eng":
+            return default
+        else:
+            corpus._load_lang_data(lang)
+            of = corpus.ss2of(self)
+            i = corpus.lg_attrs.index(doc_type)
+            if of in corpus._lang_data[lang][i].keys():
+                return corpus._lang_data[lang][i][of]
+            else:
+                return None
 
-    def examples(self):
-        return self._examples
+    def definition(self, lang="eng"):
+        """Return definition in specified language"""
+        return self._doc("def", self._definition, lang=lang)
+
+    def examples(self, lang="eng"):
+        """Return examples in specified language"""
+        return self._doc("exe", self._examples, lang=lang)
 
     def lexname(self):
         return self._lexname
@@ -1131,10 +1150,6 @@ class WordNetCorpusReader(CorpusReader):
         Construct a new wordnet corpus reader, with the given root
         directory.
         """
-        if omw_reader is None:
-            warnings.warn(
-                "The multilingual functions are not available with this Wordnet version"
-            )
 
         super().__init__(root, self._FILES, encoding=self._ENCODING)
 
@@ -1152,6 +1167,13 @@ class WordNetCorpusReader(CorpusReader):
 
         # Corpus reader containing omw data.
         self._omw_reader = omw_reader
+
+        if self._omw_reader is None:
+            warnings.warn(
+                "The multilingual functions are not available with this Wordnet version"
+            )
+        else:
+            self.provenances = self.omw_prov()
 
         # A cache to store the wordnet data of multiple languages
         self._lang_data = defaultdict(list)
@@ -1174,6 +1196,57 @@ class WordNetCorpusReader(CorpusReader):
 
         # load the exception file data into memory
         self._load_exception_map()
+
+        # map from WordNet 3.0 for OMW data
+        self.map30 = self.map_wn30()
+
+        # Language data attributes
+        self.lg_attrs = ["lemma", "none", "def", "exe"]
+
+    def corpus2sk(self, corpus=None):
+        """Read sense key to synset id mapping,
+        from index.sense file in corpus directory"""
+        fn = "index.sense"
+        if corpus:
+            fn = os.path.join(os.pardir, corpus, fn)
+        with self.open(fn) as fp:
+            sk_map = {}
+            for line in fp:
+                items = line.strip().split(" ")
+                sk = items[0]
+                pos = self._pos_names[int(sk.split("%")[1].split(":")[0])]
+                sk_map[sk] = f"{items[1]}-{pos}"
+        return sk_map
+
+    def map_wn30(self):
+        """Mapping from Wordnet 3.0 to currently loaded Wordnet version"""
+        if self.get_version() == "3.0":
+            return None
+        # warnings.warn(f"Mapping WN v. 3.0 to Wordnet v. {self.version}")
+        sk1 = self.corpus2sk("wordnet")
+        sk2 = self.corpus2sk()
+
+        skmap = {}
+        for sk in set(sk1.keys()).intersection(set(sk2.keys())):
+            of1 = sk1[sk]
+            of2 = sk2[sk]
+            if of1 not in skmap.keys():
+                skmap[of1] = [of2]
+            else:
+                skmap[of1].append(of2)
+
+        map30 = {}
+        for of in skmap.keys():
+            candidates = skmap[of]
+            # map to candidate that covers most lemmas:
+            of2 = max((candidates.count(x), x) for x in set(candidates))[1]
+            # warnings.warn(f"Map {of} {of2}")
+            map30[of] = of2
+            if of[-1] == "s":
+                # Add a mapping from "a" for applications like omw,
+                # which don't use the "s" ss_type:
+                map30[of[:-1] + "a"] = of2
+        return map30
 
     # Open Multilingual WordNet functions, contributed by
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
@@ -1200,21 +1273,31 @@ class WordNetCorpusReader(CorpusReader):
         if lang not in self.langs():
             raise WordNetError("Language is not supported.")
 
-        with self._omw_reader.open("{0:}/wn-data-{0:}.tab".format(lang)) as fp:
+        with self._omw_reader.open(
+            f"{self.provenances[lang]}/wn-data-{lang.split('_')[0]}.tab"
+        ) as fp:
             self.custom_lemmas(fp, lang)
+
+    def omw_prov(self):
+        """Return a provenance dictionary of the languages in  Multilingual Wordnet"""
+        provdict = {}
+        provdict["eng"] = ""
+        fileids = self._omw_reader.fileids()
+        for fileid in fileids:
+            prov, langfile = os.path.split(fileid)
+            file_name, file_extension = os.path.splitext(langfile)
+            if file_extension == ".tab":
+                lang = file_name.split("-")[-1]
+                if lang in provdict.keys():
+                    # We already have another resource for this lang,
+                    # so we need to further specify the lang id:
+                    lang = f"{lang}_{prov}"
+                provdict[lang] = prov
+        return provdict
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
-        import os
-
-        langs = ["eng"]
-        fileids = self._omw_reader.fileids()
-        for fileid in fileids:
-            file_name, file_extension = os.path.splitext(fileid)
-            if file_extension == ".tab":
-                langs.append(file_name.split("-")[-1])
-
-        return langs
+        return self.provenances.keys()
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -1337,7 +1420,6 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError("No synset found for key %r" % key)
         offset = int(synset_line.split()[1])
         synset = self.synset_from_pos_and_offset(pos, offset)
-
         # return the corresponding lemma
         for lemma in synset._lemmas:
             if lemma._key == key:
@@ -1595,7 +1677,7 @@ class WordNetCorpusReader(CorpusReader):
         >>> print(wn.synset_from_sense_key("driving%1:04:03::"))
         Synset('drive.n.06')
         """
-        return self.lemma_from_key(sense_key).synset()
+        return lemma_from_key(self, key).synset()
 
     #############################################################
     # Retrieve synsets and lemmas.
@@ -1684,11 +1766,32 @@ class WordNetCorpusReader(CorpusReader):
             lemma = iter(set(lemma))
             return lemma
 
-    def all_synsets(self, pos=None):
+    def all_omw_synsets(self, pos=None, lang=None):
+        if lang not in self.langs():
+            return None
+        self._load_lang_data(lang)
+        for of in self._lang_data[lang][0].keys():
+            try:
+                ss = self.of2ss(of)
+                yield ss
+            except:
+                # A few OMW offsets don't exist in Wordnet 3.0.
+                # Additionally, when mapped to later Wordnets,
+                # increasing numbers of synsets are lost in the mapping.
+                #    warnings.warn(f"Language {lang}: no synset found for {of}")
+                pass
+
+    def all_synsets(self, pos=None, lang="eng"):
         """Iterate over all synsets with a given part of speech tag.
         If no pos is specified, all synsets for all parts of speech
         will be loaded.
         """
+        if lang == "eng":
+            return self.all_eng_synsets(pos=pos)
+        else:
+            return self.all_omw_synsets(pos=pos, lang=lang)
+
+    def all_eng_synsets(self, pos=None):
         if pos is None:
             pos_tags = self._FILEMAP.keys()
         else:
@@ -1746,59 +1849,38 @@ class WordNetCorpusReader(CorpusReader):
         """return lemmas of the given language as list of words"""
         return self.all_lemma_names(lang=lang)
 
+    def doc(self, file="README", lang="eng"):
+        """Return the contents of readme, license or citation file
+        use lang=lang to get the file for an individual language"""
+        if lang == "eng":
+            reader = self
+        else:
+            reader = self._omw_reader
+            if lang in self.langs():
+                file = f"{os.path.join(self.provenances[lang],file)}"
+        try:
+            with reader.open(file) as fp:
+                return fp.read()
+        except:
+            if lang in self._lang_data:
+                return f"Cannot determine {file} for {lang}"
+            else:
+                return f"Language {lang} is not supported."
+
     def license(self, lang="eng"):
         """Return the contents of LICENSE (for omw)
         use lang=lang to get the license for an individual language"""
-        if lang == "eng":
-            with self.open("LICENSE") as fp:
-                return fp.read()
-        elif lang in self.langs():
-            with self._omw_reader.open(f"{lang}/LICENSE") as fp:
-                return fp.read()
-        elif lang == "omw":
-            # under the assumption you don't mean Omwunra-Toqura
-            with self._omw_reader.open("LICENSE") as fp:
-                return fp.read()
-        elif lang in self._lang_data:
-            raise WordNetError("Cannot determine license for user-provided tab file")
-        else:
-            raise WordNetError("Language is not supported.")
+        return self.doc(file="LICENSE", lang=lang)
 
-    def readme(self, lang="omw"):
+    def readme(self, lang="eng"):
         """Return the contents of README (for omw)
         use lang=lang to get the readme for an individual language"""
-        if lang == "eng":
-            with self.open("README") as fp:
-                return fp.read()
-        elif lang in self.langs():
-            with self._omw_reader.open(f"{lang}/README") as fp:
-                return fp.read()
-        elif lang == "omw":
-            # under the assumption you don't mean Omwunra-Toqura
-            with self._omw_reader.open("README") as fp:
-                return fp.read()
-        elif lang in self._lang_data:
-            raise WordNetError("No README for user-provided tab file")
-        else:
-            raise WordNetError("Language is not supported.")
+        return self.doc(file="README", lang=lang)
 
-    def citation(self, lang="omw"):
+    def citation(self, lang="eng"):
         """Return the contents of citation.bib file (for omw)
         use lang=lang to get the citation for an individual language"""
-        if lang == "eng":
-            with self.open("citation.bib") as fp:
-                return fp.read()
-        elif lang in self.langs():
-            with self._omw_reader.open(f"{lang}/citation.bib") as fp:
-                return fp.read()
-        elif lang == "omw":
-            # under the assumption you don't mean Omwunra-Toqura
-            with self._omw_reader.open("citation.bib") as fp:
-                return fp.read()
-        elif lang in self._lang_data:
-            raise WordNetError("citation not known for user-provided tab file")
-        else:
-            raise WordNetError("Language is not supported.")
+        return self.doc(file="citation.bib", lang=lang)
 
     #############################################################
     # Misc
@@ -2040,22 +2122,47 @@ class WordNetCorpusReader(CorpusReader):
         :type: lang str
         :param: lang ISO 639-3 code of the language of the tab file
         """
-        if len(lang) != 3:
+        lg = lang.split("_")[0]
+        if len(lg) != 3:
             raise ValueError("lang should be a (3 character) ISO 639-3 code")
-        self._lang_data[lang] = [defaultdict(list), defaultdict(list)]
+        self._lang_data[lang] = [
+            defaultdict(list),
+            defaultdict(list),
+            defaultdict(list),
+            defaultdict(list),
+        ]
         for line in tab_file.readlines():
             if isinstance(line, bytes):
                 # Support byte-stream files (e.g. as returned by Python 2's
                 # open() function) as well as text-stream ones
                 line = line.decode("utf-8")
             if not line.startswith("#"):
-                offset_pos, lemma_type, lemma = line.strip().split("\t")
-                lemma = lemma.strip().replace(" ", "_")
-                self._lang_data[lang][0][offset_pos].append(lemma)
-                self._lang_data[lang][1][lemma.lower()].append(offset_pos)
+                triple = line.strip().split("\t")
+                if len(triple) < 3:
+                    continue
+                offset_pos, label = triple[:2]
+                val = triple[-1]
+                if self.map30:
+                    if offset_pos in self.map30.keys():
+                        # Map offset_pos to current Wordnet version:
+                        offset_pos = self.map30[offset_pos]
+                    else:
+                        # Synsets with no mapping keep their Wordnet 3.0 offset
+                        # warnings.warn(f"No map for {offset_pos}, {lang}: {lemma}")
+                        pass
+                pair = label.split(":")
+                attr = pair[-1]
+                if len(pair) == 1 or pair[0] == lg:
+                    if attr == "lemma":
+                        val = val.strip().replace(" ", "_")
+                        self._lang_data[lang][1][val.lower()].append(offset_pos)
+                    if attr in self.lg_attrs:
+                        self._lang_data[lang][self.lg_attrs.index(attr)][
+                            offset_pos
+                        ].append(val)
         # Make sure no more entries are accidentally added subsequently
-        self._lang_data[lang][0].default_factory = None
-        self._lang_data[lang][1].default_factory = None
+        for n in range(len(self.lg_attrs)):
+            self._lang_data[lang][n].default_factory = None
 
     ######################################################################
     # Visualize WordNet relation graphs using Graphviz

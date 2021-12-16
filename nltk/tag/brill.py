@@ -329,7 +329,7 @@ class BrillTagger(TaggerI):
             )
             print(
                 "TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
-                "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats)
+                "final: {finalerrors:5d} {finalacc:.4f}".format(**train_stats)
             )
             head = "#ID | Score (train) |  #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
