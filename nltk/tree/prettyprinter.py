@@ -169,7 +169,6 @@ class TreePrettyPrinter:
                         ]
                     )
                 row = matrix[rowidx]
-                i = j = center
                 if len(children[m]) == 1:  # place unaries directly above child
                     return rowidx, next(iter(children[m]))[1]
                 elif all(
