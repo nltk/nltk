@@ -1438,11 +1438,11 @@ class WordNetCorpusReader(CorpusReader):
         try:
             offset = self._lemma_pos_offset_map[lemma][pos][synset_index]
         except KeyError as e:
-            message = "no lemma %r with part of speech %r"
+            message = "No lemma %r with part of speech %r"
             raise WordNetError(message % (lemma, pos)) from e
         except IndexError as e:
             n_senses = len(self._lemma_pos_offset_map[lemma][pos])
-            message = "lemma %r with part of speech %r has only %i %s"
+            message = "Lemma %r with part of speech %r has only %i %s"
             if n_senses == 1:
                 tup = lemma, pos, n_senses, "sense"
             else:
@@ -1455,7 +1455,7 @@ class WordNetCorpusReader(CorpusReader):
         # some basic sanity checks on loaded attributes
         if pos == "s" and synset._pos == "a":
             message = (
-                "adjective satellite requested but only plain "
+                "Adjective satellite requested but only plain "
                 "adjective found for lemma %r"
             )
             raise WordNetError(message % lemma)
