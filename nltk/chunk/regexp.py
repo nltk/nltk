@@ -8,6 +8,8 @@
 
 import re
 
+import regex
+
 from nltk.chunk.api import ChunkParserI
 from nltk.tree import Tree
 
@@ -1217,11 +1219,12 @@ class RegexpParser(ChunkParserI):
         """
         rules = []
         lhs = None
+        pattern = regex.compile("(?P<nonterminal>(\\.|[^:])*)(:(?P<rule>.*))")
         for line in grammar.split("\n"):
             line = line.strip()
 
             # New stage begins if there's an unescaped ':'
-            m = re.match("(?P<nonterminal>(\\.|[^:])*)(:(?P<rule>.*))", line)
+            m = pattern.match(line)
             if m:
                 # Record the stage that we just completed.
                 self._add_stage(rules, lhs, root_label, trace)
