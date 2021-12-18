@@ -1297,7 +1297,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
-        return self.provenances.keys()
+        return list(self.provenances.keys())
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -1771,6 +1771,7 @@ class WordNetCorpusReader(CorpusReader):
             return None
         self._load_lang_data(lang)
         for of in self._lang_data[lang][0].keys():
+            print(of)
             try:
                 ss = self.of2ss(of)
                 yield ss
@@ -1779,6 +1780,7 @@ class WordNetCorpusReader(CorpusReader):
                 # Additionally, when mapped to later Wordnets,
                 # increasing numbers of synsets are lost in the mapping.
                 #    warnings.warn(f"Language {lang}: no synset found for {of}")
+                breakpoint()
                 pass
 
     def all_synsets(self, pos=None, lang="eng"):
