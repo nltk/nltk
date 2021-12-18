@@ -33,3 +33,20 @@ from nltk.tree.transforms import (
     un_chomsky_normal_form,
 )
 from nltk.tree.tree import Tree
+
+__all__ = [
+    "ImmutableMultiParentedTree",
+    "ImmutableParentedTree",
+    "ImmutableProbabilisticTree",
+    "ImmutableTree",
+    "MultiParentedTree",
+    "ParentedTree",
+    "bracket_parse",
+    "sinica_parse",
+    "TreePrettyPrinter",
+    "ProbabilisticTree",
+    "chomsky_normal_form",
+    "collapse_unary",
+    "un_chomsky_normal_form",
+    "Tree",
+]
