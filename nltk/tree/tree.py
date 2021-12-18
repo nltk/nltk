@@ -16,7 +16,6 @@ syntax trees and morphological trees.
 """
 
 import re
-import sys
 
 from nltk.grammar import Nonterminal, Production
 from nltk.internals import deprecated
