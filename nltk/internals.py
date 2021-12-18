@@ -142,27 +142,6 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     return (stdout, stderr)
 
 
-if 0:
-    # config_java(options='-Xmx512m')
-    # Write:
-    # java('weka.classifiers.bayes.NaiveBayes',
-    #     ['-d', '/tmp/names.model', '-t', '/tmp/train.arff'],
-    #     classpath='/Users/edloper/Desktop/weka/weka.jar')
-    # Read:
-    (a, b) = java(
-        [
-            "weka.classifiers.bayes.NaiveBayes",
-            "-l",
-            "/tmp/names.model",
-            "-T",
-            "/tmp/test.arff",
-            "-p",
-            "0",
-        ],  # , '-distribution'],
-        classpath="/Users/edloper/Desktop/weka/weka.jar",
-    )
-
-
 ######################################################################
 # Parsing
 ######################################################################
