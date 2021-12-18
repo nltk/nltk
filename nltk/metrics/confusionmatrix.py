@@ -61,7 +61,7 @@ class ConfusionMatrix:
         indices = {val: i for (i, val) in enumerate(values)}
 
         # Make a confusion matrix table.
-        confusion = [[0] * len(values)] * len(values)
+        confusion = [[0 for val in values] for val in values]
         max_conf = 0  # Maximum confusion
         for w, g in zip(reference, test):
             confusion[indices[w]][indices[g]] += 1
