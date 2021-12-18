@@ -633,7 +633,7 @@ class NonprojectiveDependencyParser:
 
             # Traverse lattice
             analyses = []
-            for root in roots:
+            for _ in roots:
                 stack = []
                 analysis = [[] for i in range(len(possible_heads))]
             i = 0
