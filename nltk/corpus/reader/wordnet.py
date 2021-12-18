@@ -1438,16 +1438,13 @@ class WordNetCorpusReader(CorpusReader):
         try:
             offset = self._lemma_pos_offset_map[lemma][pos][synset_index]
         except KeyError as e:
-            message = "No lemma %r with part of speech %r"
-            raise WordNetError(message % (lemma, pos)) from e
+            raise WordNetError(f"No lemma {lemma!r} with part of speech {pos!r}") from e
         except IndexError as e:
             n_senses = len(self._lemma_pos_offset_map[lemma][pos])
-            message = "Lemma %r with part of speech %r has only %i %s"
-            if n_senses == 1:
-                tup = lemma, pos, n_senses, "sense"
-            else:
-                tup = lemma, pos, n_senses, "senses"
-            raise WordNetError(message % tup) from e
+            raise WordNetError(
+                f"Lemma {lemma!r} with part of speech {pos!r} only "
+                f"has {n_senses} {'sense' if n_senses == 1 else 'senses'}"
+            ) from e
 
         # load synset information from the appropriate file
         synset = self.synset_from_pos_and_offset(pos, offset)
