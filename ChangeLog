@@ -1,3 +1,44 @@
+Version 3.6.6 2021-12-21
+
+* Refactor `gensim.doctest` to work for gensim 4.0.0 and up (#2914)
+* Add Precision, Recall, F-measure, Confusion Matrix to Taggers (#2862)
+* Added warnings if .zip files exist without any corresponding .csv files. (#2908)
+* Fix `FileNotFoundError` when the `download_dir` is a non-existing nested folder (#2910)
+* Rename omw to omw-1.4 (#2907)
+* Resolve ReDoS opportunity by fixing incorrectly specified regex (#2906)
+* Support OMW 1.4 (#2899)
+* Deprecate Tree get and set node methods (#2900)
+* Fix broken inaugural test case (#2903)
+* Use Multilingual Wordnet Data from OMW with newer Wordnet versions (#2889)
+* Keep NLTKs "tokenize" module working with pathlib (#2896)
+* Make prettyprinter to be more readable (#2893)
+* Update links to the nltk book (#2895)
+* Add `CITATION.cff` to nltk (#2880)
+* Resolve serious ReDoS in PunktSentenceTokenizer (#2869)
+* Delete old CI config files (#2881)
+* Improve Tokenize documentation + add TokenizerI as superclass for TweetTokenizer (#2878)
+* Fix expected value for BLEU score doctest after changes from #2572
+* Add multi Bleu functionality and tests (#2793)
+* Deprecate 'return_str' parameter in NLTKWordTokenizer and TreebankWordTokenizer (#2883)
+* Allow empty string in CFG's + more (#2888)
+* Partition `tree.py` module into `tree` package + pickle fix (#2863)
+* Fix several TreebankWordTokenizer and NLTKWordTokenizer bugs (#2877)
+* Rewind Wordnet data file after each lookup (#2868)
+* Correct __init__ call for SyntaxCorpusReader subclasses (#2872)
+* Documentation fixes (#2873)
+* Fix levenstein distance for duplicated letters (#2849)
+* Support alternative Wordnet versions (#2860)
+* Remove hundreds of formatting warnings for nltk.org (#2859)
+* Modernize `nltk.org/howto` pages (#2856)
+* Fix Bleu Score smoothing function from taking log(0) (#2839)
+* Update third party tools to newer versions and removing MaltParser fixed version (#2832)
+* Fix TypeError: _pretty() takes 1 positional argument but 2 were given in sem/drt.py (#2854)
+* Replace `http` with `https` in most URLs (#2852)
+
+Thanks to the following contributors to 3.6.6
+Adam Hawley, BatMrE, Danny Sepler, Eric Kafe, Gavish Poddar, Panagiotis Simakis,
+RnDevelover, Robby Horvath, Tom Aarsen, Yuta Nakamura,	Mohaned Mashaly
+
 Version 3.6.5 2021-10-11
 
 * modernised nltk.org website
