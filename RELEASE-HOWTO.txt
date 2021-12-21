@@ -33,7 +33,7 @@ Building an NLTK distribution
    - Rebuild the API docs
      sphinx-build -E ./web ./build
    - Publish them
-     cd nltk.github.com; git pull (begin with current docs repo)
+     cd ../nltk.github.com; git pull (begin with current docs repo)
      cp -r ../nltk/build/* .
      git add .
      git commit -m "updates for version 3.X.Y"
@@ -41,6 +41,7 @@ Building an NLTK distribution
 
 4. Create a new version
    - Tag this version:
+     cd ../nltk
      git tag -a 3.X.Y -m "version 3.X.Y"
      git push --tags
      verify that it shows up here: https://github.com/nltk/nltk/releases
