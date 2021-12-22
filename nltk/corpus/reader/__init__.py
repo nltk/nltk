@@ -105,6 +105,7 @@ from nltk.corpus.reader.categorized_sents import *
 from nltk.corpus.reader.comparative_sents import *
 from nltk.corpus.reader.panlex_lite import *
 from nltk.corpus.reader.panlex_swadesh import *
+from nltk.corpus.reader.extended_omw import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -181,4 +182,5 @@ __all__ = [
     "UnicharsCorpusReader",
     "MWAPPDBCorpusReader",
     "PanlexSwadeshCorpusReader",
+    "ExtendedOpenMultilingualWordNetCorpusReader"
 ]

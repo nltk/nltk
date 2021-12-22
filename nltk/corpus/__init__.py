@@ -127,6 +127,15 @@ crubadan = LazyCorpusLoader("crubadan", CrubadanCorpusReader, r".*\.txt")
 dependency_treebank = LazyCorpusLoader(
     "dependency_treebank", DependencyCorpusReader, r".*\.dp", encoding="ascii"
 )
+extended_omw = LazyCorpusLoader(
+    'wordnet', ExtendedOpenMultilingualWordNetCorpusReader,
+    LazyCorpusLoader(
+        'omw-1.4', CorpusReader, r'.*/wn-[a-z\-]*\.tab', encoding='utf8'
+    ),
+    LazyCorpusLoader(
+        'extended_omw', CorpusReader, r'.*/wn-[a-z\-]*\.tab', encoding='utf8'
+    )
+)
 floresta = LazyCorpusLoader(
     "floresta",
     BracketParseCorpusReader,
