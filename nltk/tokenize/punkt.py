@@ -1379,7 +1379,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # Find the word before the current match
             split = text[: match.start()].rsplit(maxsplit=1)
             before_start = len(split[0]) if len(split) == 2 else 0
-            before_words[match] = split[-1]
+            before_words[match] = split[-1] if split else ""
             matches.append(match)
 
         return [
