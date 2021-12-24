@@ -310,6 +310,11 @@ Testing mutable default arguments for https://github.com/nltk/nltk/pull/2067
     >>> type(pst._lang_vars)
     <class 'nltk.tokenize.punkt.PunktLanguageVars'>
 
+Testing that inputs can start with dots.
+
+    >>> pst = PunktSentenceTokenizer(lang_vars=None)
+    >>> pst.tokenize(". This input starts with a dot. This used to cause issues.")
+    ['.', 'This input starts with a dot.', 'This used to cause issues.']
 
 Regression Tests: align_tokens
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

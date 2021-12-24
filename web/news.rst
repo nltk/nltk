@@ -4,6 +4,23 @@ Release Notes
 2021
 ----
 
+NLTK 3.6.6 release: December 2021:
+  add precision, recall, F-measure, confusion matrix to Taggers
+  support alternative Wordnet versions (#2860)
+  support OMW 1.4, use Multilingual Wordnet Data from OMW with newer Wordnet versions
+  add multi Bleu functionality
+  allow empty string in CFG's + more
+  fix several TreebankWordTokenizer and NLTKWordTokenizer bugs
+  fix levenstein distance for duplicated letters
+  modernize `nltk.org/howto` pages
+  update third party tools to newer versions
+
+NLTK 3.6.5 release: October 2021:
+  support emoji ZJW sequences and skin tone modifiers in TweetTokenizer
+  METEOR evaluation now requires pre-tokenized input
+  code linting and type hinting
+  avoid re.Pattern and regex.Pattern which fail for Python 3.6, 3.7
+
 NLTK 3.6.4 release: October 2021
   improved phone number recognition in tweet tokenizer
   resolved ReDoS vulnerability in Corpus Reader
