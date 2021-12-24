@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Extened Open Multilingual WordNet Reader
+# Natural Language Toolkit: Exteneded Open Multilingual WordNet Reader
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Freda Shi <freda@ttic.edu>
@@ -10,11 +10,11 @@
 An NLTK interface for Extended Open Multilingual WordNet
 
 Extended Open Multilingual WordNet automatically maps WordNet synsets
-to multiple languages with data extracted from Wikitionary and CLDR. 
+to multiple languages with data extracted from Wikitionary and CLDR.
 
-Currently ignoring all languages marked with "*" in the released corpus. 
-All synsets, whether manually annotated or automatically extracted, are 
-treated equally. 
+Currently ignoring all languages marked with "*" in the released corpus.
+All synsets, whether manually annotated or automatically extracted, are
+treated equally.
 
 For details about WordNet, see:
 https://wordnet.princeton.edu/
@@ -28,9 +28,7 @@ http://compling.hss.ntu.edu.sg/omw/summx.html
 
 import os
 from collections import defaultdict
-from IPython.core.pylabtools import configure_inline_support
 
-from traitlets.traitlets import default
 from nltk.corpus.reader.wordnet import WordNetCorpusReader
 
 
@@ -64,7 +62,7 @@ class ExtendedOpenMultilingualWordNetCorpusReader(WordNetCorpusReader):
             if file_extension == ".tab":
                 lang = file_name.split("-")[-1]
                 # only use wordnet English data -- should be examined.
-                if lang == "eng": 
+                if lang == "eng":
                     continue
                 provdict[lang].append(prov)
         return provdict
@@ -77,12 +75,10 @@ class ExtendedOpenMultilingualWordNetCorpusReader(WordNetCorpusReader):
         for prov in self.provenances[lang]:
             with self._omw_reader.open(f"{prov}/wn-data-{lang}.tab") as fp:
                 self.custom_lemmas(fp, lang)
-                fp.close()
-        # load extended open multilingual wordnet 
+        # load extended open multilingual wordnet
         for prov in self.exomw_provenances[lang]:
             with self._exomw_reader.open(f"{prov}/wn-{prov}-{lang}.tab") as fp:
                 self.custom_lemmas(fp, lang)
-                fp.close()
         for index in range(len(self.lg_attrs)):
             for key in self._lang_data[lang][index]:
                 data_item = self._lang_data[lang][index][key]
@@ -96,7 +92,7 @@ class ExtendedOpenMultilingualWordNetCorpusReader(WordNetCorpusReader):
 
     def custom_lemmas(self, tab_file, lang):
         """
-        Adapted from Open Multilingual WordNet Loader. 
+        Adapted from Open Multilingual WordNet Loader.
 
         :param tab_file: Tab file as a file or file-like object
         :type lang: str
@@ -136,6 +132,6 @@ class ExtendedOpenMultilingualWordNetCorpusReader(WordNetCorpusReader):
                         self._lang_data[lang][index][offset_pos].add(val)
 
     def disable_custom_lemmas(self, lang):
-        """prevent synsets from mistakenly added"""
+        """prevent synsets from being mistakenly added"""
         for n in range(len(self.lg_attrs)):
             self._lang_data[lang][n].default_factory = None
