@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Exteneded Open Multilingual WordNet Reader
+# Natural Language Toolkit: Extended Open Multilingual WordNet Reader
 #
 # Copyright (C) 2001-2021 NLTK Project
 # Author: Freda Shi <freda@ttic.edu>
