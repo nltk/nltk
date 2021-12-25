@@ -66,8 +66,8 @@ follows:
 Next Steps
 ----------
 
-* `sign up for release announcements <https://groups.google.com/group/nltk>`_
-* `join in the discussion <https://groups.google.com/group/nltk-users>`_
+* `Sign up for release announcements <https://groups.google.com/group/nltk>`_
+* `Join in the discussion <https://groups.google.com/group/nltk-users>`_
 
 
 .. toctree::
@@ -80,6 +80,8 @@ Next Steps
    Module Index <py-modindex>
    Wiki <https://github.com/nltk/nltk/wiki>
    FAQ <https://github.com/nltk/nltk/wiki/FAQ>
+   Open Issues <https://github.com/nltk/nltk/issues>
+   NLTK on GitHub <https://github.com/nltk/nltk>
 
 .. toctree::
    :maxdepth: 1
