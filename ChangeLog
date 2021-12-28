@@ -1,3 +1,7 @@
+Version 3.6.7 2021-12-28
+
+* Resolve IndexError in `sent_tokenize` and `word_tokenize` (#2922)
+
 Version 3.6.6 2021-12-21
 
 * Refactor `gensim.doctest` to work for gensim 4.0.0 and up (#2914)

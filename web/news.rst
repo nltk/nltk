@@ -4,6 +4,9 @@ Release Notes
 2021
 ----
 
+NLTK 3.6.7 release: December 2021:
+  resolve issue with `word_tokenize` and `sent_tokenize`
+
 NLTK 3.6.6 release: December 2021:
   add precision, recall, F-measure, confusion matrix to Taggers
   support alternative Wordnet versions (#2860)

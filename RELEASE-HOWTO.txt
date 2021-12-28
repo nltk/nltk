@@ -18,7 +18,7 @@ Building an NLTK distribution
    - Check setup.py lists correct range of Python versions
    - Add a new entry to the news page in nltk/web/news.rst
    - Update the ChangeLog (for nltk, nltk_data)
-     git log --since=20XX-YY-ZZ
+     git log "$(git describe --tags --abbrev=0)..HEAD" --oneline
      edit ChangeLog
 
 3. Build Documentation
