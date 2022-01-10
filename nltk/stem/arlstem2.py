@@ -1,7 +1,7 @@
 #
 # Natural Language Toolkit: ARLSTem Stemmer v2
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 #
 # Author: Kheireddine Abainia (x-programer) <k.abainia@gmail.com>
 # Algorithms: Kheireddine Abainia <k.abainia@gmail.com>

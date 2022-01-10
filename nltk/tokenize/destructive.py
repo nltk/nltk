@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NLTK's very own tokenizer.
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Liling Tan
 #         Tom Aarsen <> (modifications)
 # URL: <https://www.nltk.org>

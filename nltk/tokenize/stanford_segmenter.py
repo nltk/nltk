@@ -2,7 +2,7 @@
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #         Alex Constantin <alex@keyworder.ch>
