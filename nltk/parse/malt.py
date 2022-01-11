@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 # Contributor: Liling Tan, Mustufain, osamamukhtar11
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 

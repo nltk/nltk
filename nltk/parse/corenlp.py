@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # URL: <https://www.nltk.org/>

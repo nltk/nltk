@@ -108,7 +108,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "NLTK"
-copyright = "2021, NLTK Project"
+copyright = "2022, NLTK Project"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
