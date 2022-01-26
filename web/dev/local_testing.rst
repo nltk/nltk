@@ -25,10 +25,10 @@ Please consult https://tox.wiki for more info about the tox tool.
 Examples
 --------
 
-Run tests for python 3.6 in verbose mode; executing only tests
+Run tests for python 3.7 in verbose mode; executing only tests
 that failed in the last test run::
 
-    tox -e py36 -- -v --failed
+    tox -e py37 -- -v --failed
 
 Run tree doctests for all available interpreters::
 
@@ -42,7 +42,7 @@ By default, numpy, scipy and scikit-learn are installed in tox virtualenvs.
 This is slow, requires working build toolchain and is not always feasible.
 In order to skip numpy & friends, use ``..-nodeps`` environments::
 
-    tox -e py36-nodeps,py37,pypy
+    tox -e py37-nodeps,py37,pypy
 
 It is also possible to run tests without tox. This way NLTK would be tested
 only under single interpreter, but it may be easier to have numpy and other

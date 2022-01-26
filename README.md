@@ -4,7 +4,7 @@
 
 NLTK -- the Natural Language Toolkit -- is a suite of open source Python
 modules, data sets, and tutorials supporting research and development in Natural
-Language Processing. NLTK requires Python version 3.6, 3.7, 3.8, or 3.9.
+Language Processing. NLTK requires Python version 3.7, 3.8, 3.9 or 3.10.
 
 For documentation, please visit [nltk.org](https://www.nltk.org/).
 
@@ -33,7 +33,7 @@ If you publish work that uses NLTK, please cite the NLTK book, as follows:
 
 ## Copyright
 
-Copyright (C) 2001-2021 NLTK Project
+Copyright (C) 2001-2022 NLTK Project
 
 For license information, see [LICENSE.txt](LICENSE.txt).
 

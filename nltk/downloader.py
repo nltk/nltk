@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -2321,11 +2321,9 @@ def build_index(root, base_url):
     # Put it all together
     top_elt = ElementTree.Element("nltk_data")
     top_elt.append(ElementTree.Element("packages"))
-    for package in packages:
-        top_elt[0].append(package)
+    top_elt[0].extend(sorted(packages, key=lambda package: package.get("id")))
     top_elt.append(ElementTree.Element("collections"))
-    for collection in collections:
-        top_elt[1].append(collection)
+    top_elt[1].extend(sorted(collections, key=lambda collection: collection.get("id")))
 
     _indent_xml(top_elt)
     return top_elt
@@ -2392,8 +2390,7 @@ def _find_collections(root):
     Helper for ``build_index()``: Yield a list of ElementTree.Element
     objects, each holding the xml for a single package collection.
     """
-    packages = []
-    for dirname, subdirs, files in os.walk(root):
+    for dirname, _subdirs, files in os.walk(root):
         for filename in files:
             if filename.endswith(".xml"):
                 xmlfile = os.path.join(dirname, filename)

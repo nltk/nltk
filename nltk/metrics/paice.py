@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Lauri Hallila <laurihallila@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

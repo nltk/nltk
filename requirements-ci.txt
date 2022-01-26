@@ -1,4 +1,4 @@
-gensim<4.0.0
+gensim>=4.0.0
 matplotlib
 pytest
 pytest-mock

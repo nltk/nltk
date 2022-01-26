@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ASCII visualization of NLTK trees
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Andreas van Cranenburgh <A.W.vanCranenburgh@uva.nl>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 # URL: <https://www.nltk.org/>

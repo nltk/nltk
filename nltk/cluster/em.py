@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Expectation Maximization Clusterer
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

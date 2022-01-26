@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
@@ -1379,7 +1379,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # Find the word before the current match
             split = text[: match.start()].rsplit(maxsplit=1)
             before_start = len(split[0]) if len(split) == 2 else 0
-            before_words[match] = split[-1]
+            before_words[match] = split[-1] if split else ""
             matches.append(match)
 
         return [

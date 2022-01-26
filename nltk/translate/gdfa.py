@@ -1,6 +1,6 @@
 # Natural Language Toolkit: GDFA word alignment symmetrization
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Authors: Liling Tan
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

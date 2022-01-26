@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: NLTK Team <nltk.team@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -31,7 +31,6 @@ from setuptools import find_packages, setup
 # Specify groups of optional dependencies
 extras_require = {
     "machine_learning": [
-        "gensim<4.0.0",
         "numpy",
         "python-crfsuite",
         "scikit-learn",
@@ -68,7 +67,7 @@ setup(
     },
     long_description="""\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.6, 3.7, 3.8, or 3.9.""",
+natural language processing.  NLTK requires Python 3.7, 3.8, 3.9 or 3.10.""",
     license="Apache License, Version 2.0",
     keywords=[
         "NLP",
@@ -96,10 +95,10 @@ natural language processing.  NLTK requires Python 3.6, 3.7, 3.8, or 3.9.""",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Human Machine Interfaces",
@@ -111,7 +110,7 @@ natural language processing.  NLTK requires Python 3.6, 3.7, 3.8, or 3.9.""",
         "Topic :: Text Processing :: Linguistic",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=[
         "click",
         "joblib",

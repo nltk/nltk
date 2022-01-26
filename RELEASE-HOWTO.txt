@@ -18,12 +18,12 @@ Building an NLTK distribution
    - Check setup.py lists correct range of Python versions
    - Add a new entry to the news page in nltk/web/news.rst
    - Update the ChangeLog (for nltk, nltk_data)
-     git log --since=20XX-YY-ZZ
+     git log "$(git describe --tags --abbrev=0)..HEAD" --oneline
      edit ChangeLog
 
 3. Build Documentation
    - Check the copyright year is correct and update if necessary
-     e.g. ./tools/global_replace.py 2001-2021 2001-2022
+     e.g. ./tools/global_replace.py 2001-2022 2001-2022
      check web/conf.py copyright line
    - Check that installation instructions are up-to-date
      (including the range of Python versions that are supported)
@@ -33,7 +33,7 @@ Building an NLTK distribution
    - Rebuild the API docs
      sphinx-build -E ./web ./build
    - Publish them
-     cd nltk.github.com; git pull (begin with current docs repo)
+     cd ../nltk.github.com; git pull (begin with current docs repo)
      cp -r ../nltk/build/* .
      git add .
      git commit -m "updates for version 3.X.Y"
@@ -41,6 +41,7 @@ Building an NLTK distribution
 
 4. Create a new version
    - Tag this version:
+     cd ../nltk
      git tag -a 3.X.Y -m "version 3.X.Y"
      git push --tags
      verify that it shows up here: https://github.com/nltk/nltk/releases
