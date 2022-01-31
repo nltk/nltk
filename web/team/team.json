@@ -20,7 +20,7 @@
             "full_name": "Steven Bird",
             "github_username": "stevenbird",
             "personal_website_url": "http://www.stevenbird.net/",
-            "location": "Melbourne, Australia",
+            "location": "Darwin, Australia",
             "role": "Project lead, manager of NLTK Releases.",
             "active_range": "2001-"
         },
@@ -43,7 +43,7 @@
             "full_name": "Dmitrijs Milajevs",
             "github_username": "dimazest",
             "personal_website_url": null,
-            "location": "",
+            "location": "Oakland, USA",
             "role": "Maintainer, particularly involved with WSD, CoreNLP and DependencyGraphs.",
             "active_range": "2014-"
         },
@@ -70,6 +70,14 @@
             "location": "",
             "role": "",
             "active_range": "2018-"
+        },
+        {
+            "full_name": "Liling Tan",
+            "github_username": "alvations",
+            "personal_website_url": "http://alvations.com",
+            "location": "Saarbrucken, Germany",
+            "role": "",
+            "active_range": "2014-"
         }
     ],
     "former": [
@@ -106,18 +114,10 @@
             "active_range": "2010-2014"
         },
         {
-            "full_name": "Liling Tan",
-            "github_username": "alvations",
-            "personal_website_url": "http://alvations.com",
-            "location": "",
-            "role": "",
-            "active_range": "2014-2020"
-        },
-        {
             "full_name": "Edward Loper",
             "github_username": "edloper",
             "personal_website_url": null,
-            "location": "",
+            "location": "Baltimore, USA",
             "role": "",
             "active_range": "2001-2013"
         },
@@ -125,23 +125,31 @@
             "full_name": "Ewan Klein",
             "github_username": "ewan-klein",
             "personal_website_url": null,
-            "location": "",
+            "location": "Edinburgh, UK",
             "role": "",
             "active_range": "2001-2016"
+        },
+        {
+            "full_name": "Trevor Cohn",
+            "github_username": "trevorcohn",
+            "personal_website_url": "https://people.eng.unimelb.edu.au/tcohn/",
+            "location": "Melbourne, Australia",
+            "role": "parsing, classification",
+            "active_range": "2003-2005"
         },
         {
             "full_name": "Pierpaolo Pantone",
             "github_username": "fievelk",
             "personal_website_url": null,
-            "location": "",
+            "location": "Berlin, Germany",
             "role": "",
-            "active_range": "2015-2020"
+            "active_range": "2014-2020"
         },
         {
             "full_name": "Nathan Schneider",
             "github_username": "nschneid",
             "personal_website_url": null,
-            "location": "",
+            "location": "Georgetown, USA",
             "role": "",
             "active_range": "2012-2018"
         },
@@ -163,3 +171,4 @@
         }
     ]
 }
+
