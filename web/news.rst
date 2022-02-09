@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+2022
+----
+
+NLTK 3.7 release: February 2022:
+  improve and update the NLTK team page on nltk.org
+  drop support for Python 3.6
+  add support for Python 3.10
+
 2021
 ----
 
