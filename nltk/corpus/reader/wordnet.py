@@ -1168,12 +1168,17 @@ class WordNetCorpusReader(CorpusReader):
         # Corpus reader containing omw data.
         self._omw_reader = omw_reader
 
+        # Corpus reader containing extended_omw data.
+        self._exomw_reader = None
+
         if self._omw_reader is None:
             warnings.warn(
                 "The multilingual functions are not available with this Wordnet version"
             )
+            self.omw_langs = set()
         else:
             self.provenances = self.omw_prov()
+            self.omw_langs = set(self.provenances.keys())
 
         # A cache to store the wordnet data of multiple languages
         self._lang_data = defaultdict(list)
@@ -1204,12 +1209,14 @@ class WordNetCorpusReader(CorpusReader):
         self.lg_attrs = ["lemma", "none", "def", "exe"]
 
     def corpus2sk(self, corpus=None):
-        """Read sense key to synset id mapping,
-        from index.sense file in corpus directory"""
+        """Read sense key to synset id mapping from index.sense file in corpus directory"""
         fn = "index.sense"
         if corpus:
-            fn = os.path.join(os.pardir, corpus, fn)
-        with self.open(fn) as fp:
+            from nltk.corpus import CorpusReader, LazyCorpusLoader
+            ixreader = LazyCorpusLoader(corpus, CorpusReader, r".*/" + fn)
+        else:
+            ixreader = self
+        with ixreader.open(fn) as fp:
             sk_map = {}
             for line in fp:
                 items = line.strip().split(" ")
@@ -1273,31 +1280,50 @@ class WordNetCorpusReader(CorpusReader):
         if lang not in self.langs():
             raise WordNetError("Language is not supported.")
 
-        with self._omw_reader.open(
-            f"{self.provenances[lang]}/wn-data-{lang.split('_')[0]}.tab"
-        ) as fp:
+        if self._exomw_reader and lang not in self.omw_langs:
+            reader = self._exomw_reader
+        else:
+            reader = self._omw_reader
+
+        prov = self.provenances[lang]
+        if prov in ["cldr", "wikt"]:
+            prov2 = prov
+        else:
+            prov2 = "data"
+
+        with reader.open(f"{prov}/wn-{prov2}-{lang.split('_')[0]}.tab") as fp:
             self.custom_lemmas(fp, lang)
+        self.disable_custom_lemmas(lang)
 
     def omw_prov(self):
         """Return a provenance dictionary of the languages in  Multilingual Wordnet"""
         provdict = {}
-        provdict["eng"] = ""
-        fileids = self._omw_reader.fileids()
+        return self.add2provs(provdict, self._omw_reader)
+
+    def add2provs(self,  provs, reader):
+        fileids = reader.fileids()
         for fileid in fileids:
             prov, langfile = os.path.split(fileid)
             file_name, file_extension = os.path.splitext(langfile)
             if file_extension == ".tab":
                 lang = file_name.split("-")[-1]
-                if lang in provdict.keys():
+                if lang in provs.keys():
                     # We already have another resource for this lang,
                     # so we need to further specify the lang id:
                     lang = f"{lang}_{prov}"
-                provdict[lang] = prov
-        return provdict
+                provs[lang] = prov
+        return provs
+
+    def add_exomw(self):
+        """Add languages from Extended OMW"""
+        from nltk.corpus import extended_omw
+        self._exomw_reader = extended_omw
+        self.add2provs(self.provenances, self._exomw_reader)
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
         return self.provenances.keys()
+
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -2160,7 +2186,9 @@ class WordNetCorpusReader(CorpusReader):
                         self._lang_data[lang][self.lg_attrs.index(attr)][
                             offset_pos
                         ].append(val)
-        # Make sure no more entries are accidentally added subsequently
+
+    def disable_custom_lemmas(self, lang):
+        """prevent synsets from being mistakenly added"""
         for n in range(len(self.lg_attrs)):
             self._lang_data[lang][n].default_factory = None
 
