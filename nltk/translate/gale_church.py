@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Gale-Church Aligner
 #
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Torsten Marek <marek@ifi.uzh.ch>
 # Contributor: Cassidy Laidlaw, Liling Tan
 # URL: <https://www.nltk.org/>

@@ -1,0 +1,38 @@
+.member-card {
+    background-color: #E6E6E6;
+    margin-bottom: 2.5rem;
+}
+
+.member-header {
+    background-color: #2D2D2D;
+    color: #EBEBEB;
+    padding: 0.5em;
+    font-weight: 500;
+}
+
+.member-header:hover .headerlink {
+    display: inline-block;
+}
+
+.member-body {
+    display: flex;
+    /* Padding on all sides except the bottom,
+    as the right-panel takes care of this padding */
+    padding: 1em 1em 0em 1em;
+}
+
+.member-left-panel {
+    /* This panel only exists if there is an image to fill it. */
+    padding-right: 1em;
+}
+
+.member-right-panel {
+    /* This panel extends as far as it can */
+    flex: 1;
+    /* padding-left: 1em; */
+}
+
+.github-link {
+    font-weight: 200;
+    float: right;
+}

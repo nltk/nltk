@@ -1,5 +1,5 @@
 # Natural Language Toolkit: CISTEM Stemmer for German
-# Copyright (C) 2001-2021 NLTK Project
+# Copyright (C) 2001-2022 NLTK Project
 # Author: Leonie Weissweiler <l.weissweiler@outlook.de>
 #         Tom Aarsen <> (modifications)
 # Algorithm: Leonie Weissweiler <l.weissweiler@outlook.de>
