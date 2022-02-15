@@ -1213,6 +1213,7 @@ class WordNetCorpusReader(CorpusReader):
         fn = "index.sense"
         if corpus:
             from nltk.corpus import CorpusReader, LazyCorpusLoader
+
             ixreader = LazyCorpusLoader(corpus, CorpusReader, r".*/" + fn)
         else:
             ixreader = self
@@ -1300,7 +1301,7 @@ class WordNetCorpusReader(CorpusReader):
         provdict = {}
         return self.add2provs(provdict, self._omw_reader)
 
-    def add2provs(self,  provs, reader):
+    def add2provs(self, provs, reader):
         fileids = reader.fileids()
         for fileid in fileids:
             prov, langfile = os.path.split(fileid)
@@ -1317,13 +1318,13 @@ class WordNetCorpusReader(CorpusReader):
     def add_exomw(self):
         """Add languages from Extended OMW"""
         from nltk.corpus import extended_omw
+
         self._exomw_reader = extended_omw
         self.add2provs(self.provenances, self._exomw_reader)
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
         return self.provenances.keys()
-
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
