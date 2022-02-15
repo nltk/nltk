@@ -1171,13 +1171,16 @@ class WordNetCorpusReader(CorpusReader):
         # Corpus reader containing extended_omw data.
         self._exomw_reader = None
 
+        self.provenances = defaultdict(str)
+        self.provenances["eng"] = ""
+
         if self._omw_reader is None:
             warnings.warn(
                 "The multilingual functions are not available with this Wordnet version"
             )
             self.omw_langs = set()
         else:
-            self.provenances = self.omw_prov()
+            self.add_provs(self._omw_reader)
             self.omw_langs = set(self.provenances.keys())
 
         # A cache to store the wordnet data of multiple languages
@@ -1296,31 +1299,34 @@ class WordNetCorpusReader(CorpusReader):
             self.custom_lemmas(fp, lang)
         self.disable_custom_lemmas(lang)
 
-    def omw_prov(self):
-        """Return a provenance dictionary of the languages in  Multilingual Wordnet"""
-        provdict = {}
-        return self.add2provs(provdict, self._omw_reader)
-
-    def add2provs(self, provs, reader):
+    def add_provs(self, reader):
+        """Add languages from Multilingual Wordnet to the provenance dictionary"""
         fileids = reader.fileids()
         for fileid in fileids:
             prov, langfile = os.path.split(fileid)
             file_name, file_extension = os.path.splitext(langfile)
             if file_extension == ".tab":
                 lang = file_name.split("-")[-1]
-                if lang in provs.keys():
+                if lang in self.provenances.keys():
                     # We already have another resource for this lang,
                     # so we need to further specify the lang id:
                     lang = f"{lang}_{prov}"
-                provs[lang] = prov
-        return provs
+                self.provenances[lang] = prov
 
     def add_exomw(self):
-        """Add languages from Extended OMW"""
+        """
+        Add languages from Extended OMW
+
+        >>> import nltk
+        >>> from nltk.corpus import wordnet as wn
+        >>> wn.add_exomw()
+        >>> print(wn.synset('intrinsically.r.01').lemmas(lang="eng_wikt"))
+        [Lemma('intrinsically.r.01.per_se'), Lemma('intrinsically.r.01.as_such')]
+        """
         from nltk.corpus import extended_omw
 
         self._exomw_reader = extended_omw
-        self.add2provs(self.provenances, self._exomw_reader)
+        self.add_provs(self._exomw_reader)
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
