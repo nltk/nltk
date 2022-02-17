@@ -1254,9 +1254,9 @@ class WordNetCorpusReader(CorpusReader):
             # warnings.warn(f"Map {of} {of2}")
             map30[of] = of2
             if of[-1] == "s":
-                # Add a mapping from "a" for applications like omw,
+                # Add a mapping from "a" to "a" for applications like omw,
                 # which don't use the "s" ss_type:
-                map30[of[:-1] + "a"] = of2
+                map30[f"{of[:-1]}a"] = f"{of2[:-1]}a"
         return map30
 
     # Open Multilingual WordNet functions, contributed by
