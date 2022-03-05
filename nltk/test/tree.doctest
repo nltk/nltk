@@ -39,6 +39,13 @@ tree object to one of several standard tree encodings:
             [.dp [.d the ] [.np dog ] ]
             [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
 
+More flexibility in output is available via `pformat` method:
+
+    >>> print(tree.pformat(indent=2, nodesep="=", parens=("[[","]]"), quotes=True))
+    [[s=
+        [[dp= [[d= 'the']] [[np= 'dog']]]]
+        [[vp= [[v= 'chased']] [[dp= [[d= 'the']] [[np= 'cat']]]]]]]]
+
 There is also a fancy ASCII art representation:
 
     >>> tree.pretty_print()

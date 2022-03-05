@@ -812,6 +812,10 @@ class Tree(list):
         :param nodesep: A string that is used to separate the node
             from the children.  E.g., the default value ``':'`` gives
             trees like ``(S: (NP: I) (VP: (V: saw) (NP: it)))``.
+        :type nodesep: str
+        :param parens: Two-element iterable to surround non-leaf nodes.
+        :param quotes: True to quote leaf nodes as Python strings.
+        :type quotes: bool
         """
 
         # Try writing it on one line.
