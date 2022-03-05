@@ -867,6 +867,30 @@ class Tree(list):
         pformat = self.pformat(indent=6, nodesep="", parens=("[.", " ]"))
         return r"\Tree " + re.sub(reserved_chars, r"\\\1", pformat)
 
+    def pformat_latex_forest(self):
+        r"""
+        Returns a representation of the tree compatible with the
+        LaTeX forest package. This consists of the tree represented
+        in bracketed notation, wrapped in a forest environment.
+
+        For example, the following result was generated from a parse
+        tree of the sentence ``the dog chased the cat``::
+
+          \begin{forest}
+            [S
+              [NP [D [the] ] [N [dog] ] ]
+              [VP [V [chased] ] [NP [D [the] ] [N [cat] ] ] ] ]
+          \end{forest}
+
+        :return: A latex forest representation of this tree.
+        :rtype: str
+        """
+        reserved_chars = re.compile(r"([#\$%&~_\{\}])")
+
+        pformat = self.pformat(indent=2, parens=("[", " ]"), quotes=("[", "]"))
+        pformat = re.sub(reserved_chars, r"\\\1", pformat)
+        return "\\begin{forest}\n  " + pformat + "\n\\end{forest}"
+
     def _pformat_flat(self, nodesep, parens, quotes):
         childstrs = []
         for child in self:
