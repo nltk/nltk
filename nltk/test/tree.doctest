@@ -46,6 +46,11 @@ More flexibility in output is available via `pformat` method:
         [[dp= [[d= 'the']] [[np= 'dog']]]]
         [[vp= [[v= 'chased']] [[dp= [[d= 'the']] [[np= 'cat']]]]]]]]
 
+    >>> print(tree.pformat(indent=3, nodesep="=", parens="{}", quotes="[]"))
+    {s=
+        {dp= {d= [the]} {np= [dog]}}
+        {vp= {v= [chased]} {dp= {d= [the]} {np= [cat]}}}}
+
 There is also a fancy ASCII art representation:
 
     >>> tree.pretty_print()

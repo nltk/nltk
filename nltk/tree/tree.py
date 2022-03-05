@@ -799,7 +799,7 @@ class Tree(list):
             stream = None
         print(self.pformat(**kwargs), file=stream)
 
-    def pformat(self, margin=70, indent=0, nodesep="", parens="()", quotes=False):
+    def pformat(self, margin=70, indent=0, nodesep="", parens="()", quotes=("", "")):
         """
         :return: A pretty-printed string representation of this tree.
         :rtype: str
@@ -814,8 +814,8 @@ class Tree(list):
             trees like ``(S: (NP: I) (VP: (V: saw) (NP: it)))``.
         :type nodesep: str
         :param parens: Two-element iterable to surround non-leaf nodes.
-        :param quotes: True to quote leaf nodes as Python strings.
-        :type quotes: bool
+        :param quotes: Two-element iterable to surround leaf nodes,
+            or True to quote leaf nodes as Python strings.
         """
 
         # Try writing it on one line.
@@ -828,19 +828,20 @@ class Tree(list):
             s = f"{parens[0]}{self._label}{nodesep}"
         else:
             s = f"{parens[0]}{repr(self._label)}{nodesep}"
+        indent_str = " " * (indent + 2)
         for child in self:
             if isinstance(child, Tree):
                 s += (
                     "\n"
-                    + " " * (indent + 2)
+                    + indent_str
                     + child.pformat(margin, indent + 2, nodesep, parens, quotes)
                 )
             elif isinstance(child, tuple):
-                s += "\n" + " " * (indent + 2) + "/".join(child)
-            elif isinstance(child, str) and not quotes:
-                s += "\n" + " " * (indent + 2) + "%s" % child
+                s += "\n" + indent_str + "/".join(child)
+            elif isinstance(child, str) and quotes is not True:
+                s += "\n" + indent_str + quotes[0] + str(child) + quotes[1]
             else:
-                s += "\n" + " " * (indent + 2) + repr(child)
+                s += "\n" + indent_str + repr(child)
         return s + parens[1]
 
     def pformat_latex_qtree(self):
@@ -873,26 +874,17 @@ class Tree(list):
                 childstrs.append(child._pformat_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
-            elif isinstance(child, str) and not quotes:
-                childstrs.append("%s" % child)
+            elif isinstance(child, str) and quotes is not True:
+                childstrs.append(f"{quotes[0]}{child}{quotes[1]}")
             else:
                 childstrs.append(repr(child))
-        if isinstance(self._label, str):
-            return "{}{}{} {}{}".format(
-                parens[0],
-                self._label,
-                nodesep,
-                " ".join(childstrs),
-                parens[1],
-            )
-        else:
-            return "{}{}{} {}{}".format(
-                parens[0],
-                repr(self._label),
-                nodesep,
-                " ".join(childstrs),
-                parens[1],
-            )
+        return "{}{}{} {}{}".format(
+            parens[0],
+            self._label if isinstance(self._label, str) else repr(self._label),
+            nodesep,
+            " ".join(childstrs),
+            parens[1],
+        )
 
 
 def _child_names(tree):
