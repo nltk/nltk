@@ -50,10 +50,14 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
 - Clone your forked repository locally
   (`git clone https://github.com/<your-github-username>/nltk.git`);
 - Run `cd nltk` to get to the root directory of the `nltk` code base;
-- Install the dependencies (`pip install -r pip-req.txt`);
-- Install the [pre-commit](https://pre-commit.com) hooks: (`pre-commit install`)
-- Download the datasets for running tests
-  (`python -m nltk.downloader all`);
+- Install the dependencies directly (`pip install -r pip-req.txt`)
+  or isolated from your other projects via pipenv (`pipenv install -r pip-req.txt --python 3.7`);
+- Install the [Prover9](https://www.cs.unm.edu/~mccune/prover9/manual/2009-11A/install.html) theorem prover (required for inference tests);
+- Install the [pre-commit](https://pre-commit.com) hooks: (`pre-comment install`)
+  or via pipenv (`pipenv install --dev pre-commit --python 3.7; pipenv run pre-commit install`);
+- Remove the first two lines from `.git/hooks/pre-commit` if you have any trouble making commits due to `Syntax error: "(" unexpected` errors
+- Download the datasets (approximately 4GB in size) for running tests (`python -m nltk.downloader all`)
+  or via pipenv (`pipenv run python -m nltk.downloader all`);
 - Create a remote link from your local repository to the
   upstream `nltk/nltk` on GitHub
   (`git remote add upstream https://github.com/nltk/nltk.git`) --
@@ -66,6 +70,31 @@ We use the famous
 [gitflow](https://nvie.com/posts/a-successful-git-branching-model/) to manage our
 branches.
 
+Here's how to set up gitflow in a fresh copy of nltk:
+
+`git checkout develop`
+`git branch main`
+`git flow init`
+```
+Which branch should be used for bringing forth production releases?
+   - develop
+   - main
+Branch name for production releases: [main] main
+
+Which branch should be used for integration of the "next release"?
+   - develop
+Branch name for "next release" development: [develop]
+
+How to name your supporting branch prefixes?
+Feature branches? [feature/]
+Bugfix branches? [bugfix/]
+Release branches? [release/]
+Hotfix branches? [hotfix/]
+Support branches? [support/]
+Version tag prefix? []
+Hooks and filters directory? [/home/<path to your copy>/nltk/.git/hooks]
+```
+
 Summary of our git branching model:
 - Go to the `develop` branch (`git checkout develop`);
 - Get all the latest work from the upstream `nltk/nltk` repository
@@ -73,11 +102,12 @@ Summary of our git branching model:
 - Create a new branch off of `develop` with a descriptive name (for example:
   `feature/portuguese-sentiment-analysis`, `hotfix/bug-on-downloader`). You can
   do it by switching to the `develop` branch (`git checkout develop`) and then
-  creating a new branch (`git checkout -b name-of-the-new-branch`);
+  creating a new branch directly (`git checkout -b name-of-the-new-branch`)
+  or with Gitflow (`git flow feature start name-of-the-new-branch`);
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
 - Run the tests to make sure nothing breaks
-  (`tox -e py37` if you are on Python 3.7);
+  (`tox -e py37` if you are on Python 3.7, within `pipenv shell` if you're using pipenv);
 - Add your name to the `AUTHORS.md` file as a contributor;
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
@@ -196,9 +226,15 @@ For example, using `pipenv`:
 ```
 git clone https://github.com/nltk/nltk.git
 cd nltk
-pipenv install -r pip-req.txt
-pipenv install tox
-tox -e py37
+pipenv install -r pip-req.txt --python 3.7
+pipenv install --dev tox
+pipenv run python -m nltk.downloader all
+pipenv run tox -e py37
+```
+
+Or to run just one test using tox:
+```
+pipenv run tox -e py37 -- nltk/test/inference.doctest
 ```
 
 
