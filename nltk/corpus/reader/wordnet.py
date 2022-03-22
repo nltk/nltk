@@ -1524,6 +1524,26 @@ class WordNetCorpusReader(CorpusReader):
         if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
 
+        # Check if the pos is in the PTB or universal format, and if so,
+        # converts it to the wordnet format
+        map_to_wn = {
+            'noun': 'n',
+            'nn': 'n',
+            'verb': 'v',
+            'vb': 'v',
+            'adj': 'a',
+            'jj': 'a',
+            'adj_sat': 's'
+        }
+
+        valid_tags = {'a', 's', 'r', 'n', 'v'}
+        
+        pos = pos.lower()
+        pos = map_to_wn.get(pos, pos)
+
+        if pos not in valid_tags:
+            raise AttributeError(f"Unable to handle pos='{pos}'. Make sure it is a correct tag.")
+
         data_file = self._data_file(pos)
         data_file.seek(offset)
         data_file_line = data_file.readline()
