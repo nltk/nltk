@@ -2353,15 +2353,15 @@ def wup_similarity(synset1, synset2, verbose=False, simulate_root=True):
 
 
 def res_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.res_similarity(synset2, verbose)
+    return synset1.res_similarity(synset2, ic, verbose)
 
 
 def jcn_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.jcn_similarity(synset2, verbose)
+    return synset1.jcn_similarity(synset2, ic, verbose)
 
 
 def lin_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.lin_similarity(synset2, verbose)
+    return synset1.lin_similarity(synset2, ic, verbose)
 
 
 path_similarity.__doc__ = Synset.path_similarity.__doc__
