@@ -30,7 +30,7 @@ These instructions assume that you do not already have Python installed on your 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. Install Python 3.8: https://www.python.org/downloads/ (avoid the 64-bit versions)
-#. Install Numpy (optional): https://www.scipy.org/scipylib/download.html
+#. Install Numpy (optional): https://numpy.org/install/
 #. Install NLTK: https://pypi.python.org/pypi/nltk
 #. Test installation: ``Start>Python38``, then type ``import nltk``
 
