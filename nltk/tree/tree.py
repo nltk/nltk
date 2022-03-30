@@ -647,9 +647,9 @@ class Tree(list):
         open_b, close_b = brackets
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
         if node_pattern is None:
-            node_pattern = fr"[^\s{open_pattern}{close_pattern}]+"
+            node_pattern = rf"[^\s{open_pattern}{close_pattern}]+"
         if leaf_pattern is None:
-            leaf_pattern = fr"[^\s{open_pattern}{close_pattern}]+"
+            leaf_pattern = rf"[^\s{open_pattern}{close_pattern}]+"
         token_re = re.compile(
             r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)

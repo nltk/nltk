@@ -340,7 +340,7 @@ def single_meteor_score(
         frag_frac = chunk_count / matches_count
     except ZeroDivisionError:
         return 0.0
-    penalty = gamma * frag_frac ** beta
+    penalty = gamma * frag_frac**beta
     return (1 - penalty) * fmean
 
 
