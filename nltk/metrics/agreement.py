@@ -248,7 +248,7 @@ class AnnotationTask:
         total = 0.0
         label_freqs = FreqDist(x["labels"] for x in self.data)
         for k, f in label_freqs.items():
-            total += f ** 2
+            total += f**2
         Ae = total / ((len(self.I) * len(self.C)) ** 2)
         return (self.avg_Ao() - Ae) / (1 - Ae)
 

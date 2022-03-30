@@ -90,7 +90,7 @@ class NgramAssocMeasures(metaclass=ABCMeta):
             # Yield the expected value
             yield (
                 _product(
-                    sum(cont[x] for x in range(2 ** cls._n) if (x & j) == (i & j))
+                    sum(cont[x] for x in range(2**cls._n) if (x & j) == (i & j))
                     for j in bits
                 )
                 / (n_all ** (cls._n - 1))

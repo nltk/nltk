@@ -153,7 +153,7 @@ class EMClusterer(VectorSpaceClusterer):
         try:
             det = numpy.linalg.det(cvm)
             inv = numpy.linalg.inv(cvm)
-            a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0)
+            a = det**-0.5 * (2 * numpy.pi) ** (-m / 2.0)
             dx = x - mean
             print(dx, inv)
             b = -0.5 * numpy.dot(numpy.dot(dx, inv), dx)

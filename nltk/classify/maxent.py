@@ -1378,7 +1378,7 @@ def calculate_deltas(
     #                       nf exp(delta[i]nf)
     for rangenum in range(MAX_NEWTON):
         nf_delta = numpy.outer(nfarray, deltas)
-        exp_nf_delta = 2 ** nf_delta
+        exp_nf_delta = 2**nf_delta
         nf_exp_nf_delta = nftranspose * exp_nf_delta
         sum1 = numpy.sum(exp_nf_delta * A, axis=0)
         sum2 = numpy.sum(nf_exp_nf_delta * A, axis=0)
@@ -1460,7 +1460,7 @@ def train_maxent_classifier_with_megam(
         # Lambda is just the precision of the Gaussian prior, i.e. it's the
         # inverse variance, so the parameter conversion is 1.0/sigma**2.
         # See https://users.umiacs.umd.edu/~hal/docs/daume04cg-bfgs.pdf
-        inv_variance = 1.0 / gaussian_prior_sigma ** 2
+        inv_variance = 1.0 / gaussian_prior_sigma**2
     else:
         inv_variance = 0
     options += ["-lambda", "%.2f" % inv_variance, "-tune"]
@@ -1529,7 +1529,7 @@ class TadmMaxentClassifier(MaxentClassifier):
         options.extend(["-monitor"])
         options.extend(["-method", algorithm])
         if sigma:
-            options.extend(["-l2", "%.6f" % sigma ** 2])
+            options.extend(["-l2", "%.6f" % sigma**2])
         if max_iter:
             options.extend(["-max_it", "%d" % max_iter])
         if ll_delta:
