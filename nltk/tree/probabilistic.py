@@ -52,15 +52,11 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
             return val
 
     def __eq__(self, other):
-        return (
-            self.__class__ is other.__class__
-            and (
-                self._label,
-                list(self),
-                self.prob(),
-            )
-            == (other._label, list(other), other.prob())
-        )
+        return self.__class__ is other.__class__ and (
+            self._label,
+            list(self),
+            self.prob(),
+        ) == (other._label, list(other), other.prob())
 
     def __lt__(self, other):
         if not isinstance(other, Tree):

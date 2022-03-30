@@ -1,0 +1,173 @@
+{
+    "current": [
+        {
+            "full_name": "Tom Aarsen",
+            "github_username": "tomaarsen",
+            "personal_website_url": "https://www.tomaarsen.com",
+            "location": "Nijmegen, Netherlands",
+            "role": "Core Maintainer. Rewrote nltk.org, frequent issue triaging, bug fixing, and enhancements.",
+            "active_range": "2020-"
+        },
+        {
+            "full_name": "Joel Nothman",
+            "github_username": "jnothman",
+            "personal_website_url": null,
+            "location": "Sydney, Australia",
+            "role": "Metrics package maintainer, also responsible for nltk.tokenize.punkt, i.a.",
+            "active_range": "2008-"
+        },
+        {
+            "full_name": "Steven Bird",
+            "github_username": "stevenbird",
+            "personal_website_url": "http://www.stevenbird.net/",
+            "location": "Darwin, Australia",
+            "role": "Project lead, manager of NLTK Releases.",
+            "active_range": "2001-"
+        },
+        {
+            "full_name": "Alexis Dimitradis",
+            "github_username": "alexisdimi",
+            "personal_website_url": null,
+            "location": "Utrecht, Netherlands",
+            "role": "Manager of the NLTK mailing lists."
+        },
+        {
+            "full_name": "Danny Sepler",
+            "github_username": "dannysepler",
+            "personal_website_url": null,
+            "location": "",
+            "role": "Maintainer, primarily involved with tests and quality assurance.",
+            "active_range": "2020-"
+        },
+        {
+            "full_name": "Dmitrijs Milajevs",
+            "github_username": "dimazest",
+            "personal_website_url": null,
+            "location": "Oakland, USA",
+            "role": "Maintainer, particularly involved with WSD, CoreNLP and DependencyGraphs.",
+            "active_range": "2014-"
+        },
+        {
+            "full_name": "Francis Bond",
+            "github_username": "fcbond",
+            "personal_website_url": null,
+            "location": "",
+            "role": "Domain expert of WordNet.",
+            "active_range": "2015-"
+        },
+        {
+            "full_name": "Ilia Kurenkov",
+            "github_username": "iliakur",
+            "personal_website_url": null,
+            "location": "",
+            "role": "Language models package maintainer. Also involved with tests and code quality.",
+            "active_range": "2012-"
+        },
+        {
+            "full_name": "purificant",
+            "github_username": "purificant",
+            "personal_website_url": null,
+            "location": "",
+            "role": "",
+            "active_range": "2018-"
+        },
+        {
+            "full_name": "Liling Tan",
+            "github_username": "alvations",
+            "personal_website_url": "http://alvations.com",
+            "location": "Saarbrucken, Germany",
+            "role": "",
+            "active_range": "2014-"
+        }
+    ],
+    "former": [
+        {
+            "full_name": "Dan Garrette",
+            "github_username": "dhgarrette",
+            "personal_website_url": null,
+            "location": "Austin, USA",
+            "role": "Semantics (nltk.sem, nltk.inference)",
+            "active_range": "2007-2016"
+        },
+        {
+            "full_name": "Peter Ljunglöf",
+            "github_username": "heatherleaf",
+            "personal_website_url": "https://www.cse.chalmers.se/~peb/",
+            "location": "Gothenburg, Sweden",
+            "role": "Parsing package maintainer: nltk.parse, nltk.featstruct, i.a.",
+            "active_range": "2008-2015"
+        },
+        {
+            "full_name": "Mikhail Korobov",
+            "github_username": "kmike",
+            "personal_website_url": "kmike.ru",
+            "location": "Ekaterinburg, Russia",
+            "role": "Porting NLTK to Python 3.",
+            "active_range": "2012-2017"
+        },
+        {
+            "full_name": "Alex Rudnick",
+            "github_username": "alexrudnick",
+            "personal_website_url": null,
+            "location": "",
+            "role": "",
+            "active_range": "2010-2014"
+        },
+        {
+            "full_name": "Edward Loper",
+            "github_username": "edloper",
+            "personal_website_url": null,
+            "location": "Baltimore, USA",
+            "role": "",
+            "active_range": "2001-2013"
+        },
+        {
+            "full_name": "Ewan Klein",
+            "github_username": "ewan-klein",
+            "personal_website_url": null,
+            "location": "Edinburgh, UK",
+            "role": "",
+            "active_range": "2001-2016"
+        },
+        {
+            "full_name": "Trevor Cohn",
+            "github_username": "trevorcohn",
+            "personal_website_url": "https://people.eng.unimelb.edu.au/tcohn/",
+            "location": "Melbourne, Australia",
+            "role": "parsing, classification",
+            "active_range": "2003-2005"
+        },
+        {
+            "full_name": "Pierpaolo Pantone",
+            "github_username": "fievelk",
+            "personal_website_url": null,
+            "location": "Berlin, Germany",
+            "role": "",
+            "active_range": "2014-2020"
+        },
+        {
+            "full_name": "Nathan Schneider",
+            "github_username": "nschneid",
+            "personal_website_url": null,
+            "location": "Georgetown, USA",
+            "role": "",
+            "active_range": "2012-2018"
+        },
+        {
+            "full_name": "Álvaro Justen",
+            "github_username": "turicas",
+            "personal_website_url": null,
+            "location": "",
+            "role": "",
+            "active_range": "2012-2015"
+        },
+        {
+            "full_name": "Morten M. Neergaard",
+            "github_username": "xim",
+            "personal_website_url": null,
+            "location": "",
+            "role": "",
+            "active_range": "2011-2014"
+        }
+    ]
+}

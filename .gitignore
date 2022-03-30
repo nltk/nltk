@@ -44,7 +44,6 @@ web/api/*.rst
 web/howto/*.rst
 
 # iPython notebooks
-
 .ipynb_checkpoints
 
 # pyenv files
@@ -67,3 +66,6 @@ venv.bak/
 
 # Mypy
 .mypy_cache
+
+# macOS
+.DS_Store

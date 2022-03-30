@@ -144,7 +144,7 @@ def chrf_precision_recall_fscore_support(
     try:
         prec = tp / tpfp  # precision
         rec = tp / tpfn  # recall
-        factor = beta ** 2
+        factor = beta**2
         fscore = (1 + factor) * (prec * rec) / (factor * prec + rec)
     except ZeroDivisionError:
         prec = rec = fscore = epsilon
