@@ -291,9 +291,8 @@ class TextTilingTokenizer(TokenizerI):
         avg = sum(depth_scores) / len(depth_scores)
         stdev = numpy.std(depth_scores)
 
-        # SB: what is the purpose of this conditional?
         if self.cutoff_policy == LC:
-            cutoff = avg - stdev / 2.0
+            cutoff = avg - stdev
         else:
             cutoff = avg - stdev / 2.0
 
