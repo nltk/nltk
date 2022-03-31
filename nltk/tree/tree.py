@@ -810,13 +810,17 @@ class Tree(list):
             subsequent lines.
         :type indent: int
         :param nodesep: A string that is used to separate the node
-            from the children.  E.g., the default value ``':'`` gives
+            from the children.  E.g., the value ``':'`` gives
             trees like ``(S: (NP: I) (VP: (V: saw) (NP: it)))``.
         :type nodesep: str
         :param parens: Two-element iterable to surround non-leaf nodes.
         :param quotes: Two-element iterable to surround leaf nodes,
             or True to quote leaf nodes as Python strings.
         """
+
+        # For backwards compatibility
+        if quotes is False:
+            quotes = ("", "")
 
         # Try writing it on one line.
         s = self._pformat_flat(nodesep, parens, quotes)
