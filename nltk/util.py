@@ -6,15 +6,12 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import bisect
 import inspect
 import locale
 import os
 import pydoc
 import re
-import sys
 import textwrap
-import types
 import warnings
 from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee

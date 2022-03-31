@@ -1330,7 +1330,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def langs(self):
         """return a list of languages supported by Multilingual Wordnet"""
-        return self.provenances.keys()
+        return list(self.provenances.keys())
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -1433,7 +1433,7 @@ class WordNetCorpusReader(CorpusReader):
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
                 return lemma
-        raise WordNetError(f"no lemma {lemma_name!r} in {synset_name!r}")
+        raise WordNetError(f"No lemma {lemma_name!r} in {synset_name!r}")
 
     def lemma_from_key(self, key):
         # Keys are case sensitive and always lower-case
@@ -1471,16 +1471,13 @@ class WordNetCorpusReader(CorpusReader):
         try:
             offset = self._lemma_pos_offset_map[lemma][pos][synset_index]
         except KeyError as e:
-            message = "no lemma %r with part of speech %r"
-            raise WordNetError(message % (lemma, pos)) from e
+            raise WordNetError(f"No lemma {lemma!r} with part of speech {pos!r}") from e
         except IndexError as e:
             n_senses = len(self._lemma_pos_offset_map[lemma][pos])
-            message = "lemma %r with part of speech %r has only %i %s"
-            if n_senses == 1:
-                tup = lemma, pos, n_senses, "sense"
-            else:
-                tup = lemma, pos, n_senses, "senses"
-            raise WordNetError(message % tup) from e
+            raise WordNetError(
+                f"Lemma {lemma!r} with part of speech {pos!r} only "
+                f"has {n_senses} {'sense' if n_senses == 1 else 'senses'}"
+            ) from e
 
         # load synset information from the appropriate file
         synset = self.synset_from_pos_and_offset(pos, offset)
@@ -1488,7 +1485,7 @@ class WordNetCorpusReader(CorpusReader):
         # some basic sanity checks on loaded attributes
         if pos == "s" and synset._pos == "a":
             message = (
-                "adjective satellite requested but only plain "
+                "Adjective satellite requested but only plain "
                 "adjective found for lemma %r"
             )
             raise WordNetError(message % lemma)

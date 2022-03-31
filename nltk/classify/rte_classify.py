@@ -18,7 +18,7 @@ TO DO: add lemmatization
 """
 
 from nltk.classify.maxent import MaxentClassifier
-from nltk.classify.util import accuracy, check_megam_config
+from nltk.classify.util import accuracy
 from nltk.tokenize import RegexpTokenizer
 
 
@@ -127,7 +127,9 @@ class RTEFeatureExtractor:
         """
         Use morphy from WordNet to find the base form of verbs.
         """
-        lemma = nltk.corpus.wordnet.morphy(word, pos=nltk.corpus.wordnet.VERB)
+        from nltk.corpus import wordnet as wn
+
+        lemma = wn.morphy(word, pos=wn.VERB)
         if lemma is not None:
             return lemma
         return word
