@@ -80,6 +80,14 @@ WordNet, using ISO-639 language codes.
     >>> len(list(wordnet.all_lemma_names(pos='n', lang='jpn')))
     66031
 
+The synonyms of a word are returned as a nested list of synonyms of the different senses of
+the input word in the given language, since these different senses are not mutual synonyms:
+    >>> wn.synonyms('car')
+    [['auto', 'automobile', 'motorcar', 'machine'], ['railway_car', 'railroad_car', 'railcar'], ['gondola'], ['elevator_car'], ['cable_car']]
+    >>> wn.synonyms('coche', lang='spa')
+    [['máquina', 'turismo', 'auto', 'carro', 'vehículo', 'automóvil'], ['automotor', 'vagón'], ['vagón_de_pasajeros', 'vagón']]
+
+
 -------
 Synsets
 -------
