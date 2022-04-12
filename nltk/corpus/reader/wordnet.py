@@ -1880,7 +1880,7 @@ class WordNetCorpusReader(CorpusReader):
     def synonyms(self, word, lang="eng"):
         """return nested list with the synonyms of the different senses of word in the given language"""
         return [
-            list(set(ss.lemma_names(lang=lang)) - {word})
+            sorted(list(set(ss.lemma_names(lang=lang)) - {word}))
             for ss in self.synsets(word, lang=lang)
         ]
 

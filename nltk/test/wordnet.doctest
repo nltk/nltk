@@ -83,9 +83,9 @@ WordNet, using ISO-639 language codes.
 The synonyms of a word are returned as a nested list of synonyms of the different senses of
 the input word in the given language, since these different senses are not mutual synonyms:
     >>> wn.synonyms('car')
-    [['auto', 'automobile', 'motorcar', 'machine'], ['railway_car', 'railroad_car', 'railcar'], ['gondola'], ['elevator_car'], ['cable_car']]
+    [['auto', 'automobile', 'machine', 'motorcar'], ['railcar', 'railroad_car', 'railway_car'], ['gondola'], ['elevator_car'], ['cable_car']]
     >>> wn.synonyms('coche', lang='spa')
-    [['máquina', 'turismo', 'auto', 'carro', 'vehículo', 'automóvil'], ['automotor', 'vagón'], ['vagón_de_pasajeros', 'vagón']]
+    [['auto', 'automóvil', 'carro', 'máquina', 'turismo', 'vehículo'], ['automotor', 'vagón'], ['vagón', 'vagón_de_pasajeros']]
 
 
 -------
