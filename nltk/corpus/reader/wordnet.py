@@ -1532,9 +1532,7 @@ class WordNetCorpusReader(CorpusReader):
             self._synset_offset_cache[pos][offset] = synset
         else:
             synset = None
-            raise WordNetError(
-                f"No WordNet synset found for pos={pos} at offset={offset}."
-            )
+            warnings.warn(f"No WordNet synset found for pos={pos} at offset={offset}.")
         data_file.seek(0)
         return synset
 
