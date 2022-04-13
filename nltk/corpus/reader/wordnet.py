@@ -1877,6 +1877,13 @@ class WordNetCorpusReader(CorpusReader):
         """return lemmas of the given language as list of words"""
         return self.all_lemma_names(lang=lang)
 
+    def synonyms(self, word, lang="eng"):
+        """return nested list with the synonyms of the different senses of word in the given language"""
+        return [
+            sorted(list(set(ss.lemma_names(lang=lang)) - {word}))
+            for ss in self.synsets(word, lang=lang)
+        ]
+
     def doc(self, file="README", lang="eng"):
         """Return the contents of readme, license or citation file
         use lang=lang to get the file for an individual language"""
