@@ -1527,7 +1527,6 @@ class WordNetCorpusReader(CorpusReader):
         data_file_line = data_file.readline()
         # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
         line_offset = data_file_line[:8]
-        #        if line_offset.isalnum() and offset == int(line_offset):
         if (
             line_offset.isalnum()
             and line_offset == f"{'0'*(8-len(str(offset)))}{str(offset)}"
