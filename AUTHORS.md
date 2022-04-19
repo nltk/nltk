@@ -288,6 +288,7 @@
 - Adam Hawley <https://github.com/adamjhawley>
 - Panagiotis Simakis <https://github.com/sp1thas>
 - Richard Wang <https://github.com/richarddwang>
+- SG Kassel <https://github.com/sgkasselau>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

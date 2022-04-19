@@ -301,23 +301,7 @@ statements as new assumptions.
     True
     >>> print(prover.proof())
     ============================== prooftrans ============================
-    Prover9 (...) version ...
-    Process ... was started by ... on ...
     ...
-    The command was ".../prover9".
-    ============================== end of head ===========================
-    <BLANKLINE>
-    ============================== end of input ==========================
-    <BLANKLINE>
-    ============================== PROOF =================================
-    <BLANKLINE>
-    % -------- Comments from original proof --------
-    % Proof 1 at ... seconds.
-    % Length of proof is 13.
-    % Level of proof is 4.
-    % Maximum clause weight is 0.
-    % Given clauses 0.
-    <BLANKLINE>
     1 (all x (boxerdog(x) -> dog(x))).  [assumption].
     2 (all x (boxer(x) -> person(x))).  [assumption].
     3 (all x -(dog(x) & person(x))).  [assumption].
