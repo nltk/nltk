@@ -210,7 +210,7 @@ class Boxer:
                 prefix="boxer-", suffix=".in", text=True
             )
             f = os.fdopen(fd, "w")
-            f.write(candc_out)
+            f.write(candc_out.decode("utf-8"))
         finally:
             if f:
                 f.close()
@@ -288,7 +288,7 @@ class Boxer:
         return stdout
 
     def _parse_to_drs_dict(self, boxer_out, use_disc_id):
-        lines = boxer_out.split("\n")
+        lines = boxer_out.decode("utf-8").split("\n")
         drs_dict = {}
         i = 0
         while i < len(lines):

@@ -327,7 +327,7 @@ class Paice:
             ((0, 0), (self.ui, self.oi)), self.coords[-2:]
         )
         # Count OP (length of the line from origo to (ui, oi))
-        op = sqrt(self.ui ** 2 + self.oi ** 2)
+        op = sqrt(self.ui**2 + self.oi**2)
         # Count OT (length of the line from origo to truncation line that goes through (ui, oi))
         ot = sqrt(intersection[0] ** 2 + intersection[1] ** 2)
         # OP / OT tells how well the stemming algorithm works compared to just truncating words

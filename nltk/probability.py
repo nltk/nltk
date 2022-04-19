@@ -1481,7 +1481,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         r = float(r)
         nr = float(nr)
         nr_1 = float(nr_1)
-        return (r + 1.0) ** 2 * (nr_1 / nr ** 2) * (1.0 + nr_1 / nr)
+        return (r + 1.0) ** 2 * (nr_1 / nr**2) * (1.0 + nr_1 / nr)
 
     def _renormalize(self, r, nr):
         """
@@ -2059,16 +2059,9 @@ class ConditionalFreqDist(defaultdict):
         """
         if not isinstance(other, ConditionalFreqDist):
             return NotImplemented
-        result = ConditionalFreqDist()
-        for cond in self.conditions():
-            newfreqdist = self[cond] + other[cond]
-            if newfreqdist:
-                result[cond] = newfreqdist
+        result = self.copy()
         for cond in other.conditions():
-            if cond not in self.conditions():
-                for elem, count in other[cond].items():
-                    if count > 0:
-                        result[cond][elem] = count
+            result[cond] += other[cond]
         return result
 
     def __sub__(self, other):
@@ -2077,16 +2070,11 @@ class ConditionalFreqDist(defaultdict):
         """
         if not isinstance(other, ConditionalFreqDist):
             return NotImplemented
-        result = ConditionalFreqDist()
-        for cond in self.conditions():
-            newfreqdist = self[cond] - other[cond]
-            if newfreqdist:
-                result[cond] = newfreqdist
+        result = self.copy()
         for cond in other.conditions():
-            if cond not in self.conditions():
-                for elem, count in other[cond].items():
-                    if count < 0:
-                        result[cond][elem] = 0 - count
+            result[cond] -= other[cond]
+            if not result[cond]:
+                del result[cond]
         return result
 
     def __or__(self, other):
@@ -2095,16 +2083,9 @@ class ConditionalFreqDist(defaultdict):
         """
         if not isinstance(other, ConditionalFreqDist):
             return NotImplemented
-        result = ConditionalFreqDist()
-        for cond in self.conditions():
-            newfreqdist = self[cond] | other[cond]
-            if newfreqdist:
-                result[cond] = newfreqdist
+        result = self.copy()
         for cond in other.conditions():
-            if cond not in self.conditions():
-                for elem, count in other[cond].items():
-                    if count > 0:
-                        result[cond][elem] = count
+            result[cond] |= other[cond]
         return result
 
     def __and__(self, other):
@@ -2142,6 +2123,13 @@ class ConditionalFreqDist(defaultdict):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types(">", self, other)
         return other < self
+
+    def deepcopy(self):
+        from copy import deepcopy
+
+        return deepcopy(self)
+
+    copy = deepcopy
 
     def __repr__(self):
         """

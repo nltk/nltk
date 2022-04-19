@@ -90,7 +90,6 @@ try:
     def _ensure_bllip_import_or_error():
         pass
 
-
 except ImportError as ie:
 
     def _ensure_bllip_import_or_error(ie=ie):

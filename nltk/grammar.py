@@ -1087,22 +1087,23 @@ class DependencyGrammar:
                     return True
         return False
 
-    def __contains__(self, head, mod):
+    def __contains__(self, head_mod):
         """
         Return True if this ``DependencyGrammar`` contains a
         ``DependencyProduction`` mapping 'head' to 'mod'.
 
-        :param head: A head word.
-        :type head: str
-        :param mod: A mod word, to test as a modifier of 'head'.
-        :type mod: str
+        :param head_mod: A tuple of a head word and a mod word,
+            to test as a modifier of 'head'.
+        :type head: Tuple[str, str]
         :rtype: bool
         """
-        for production in self._productions:
-            for possibleMod in production._rhs:
-                if production._lhs == head and possibleMod == mod:
-                    return True
-        return False
+        try:
+            head, mod = head_mod
+        except ValueError as e:
+            raise ValueError(
+                "Must use a tuple of strings, e.g. `('price', 'of') in grammar`"
+            ) from e
+        return self.contains(head, mod)
 
     #   # should be rewritten, the set comp won't work in all comparisons
     # def contains_exactly(self, head, modlist):

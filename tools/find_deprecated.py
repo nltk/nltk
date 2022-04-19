@@ -54,7 +54,7 @@ STRINGS_RE = re.compile(STRINGS_PAT)
 
 # Define a regexp to search for deprecated definitions.
 DEPRECATED_DEF_PAT = (
-    fr"^\s*@deprecated\s*\(\s*({STRINGS_PAT})\s*\)\s*\n+"
+    rf"^\s*@deprecated\s*\(\s*({STRINGS_PAT})\s*\)\s*\n+"
     + r"\s*def\s*(\w+).*"
     + r"|"
     + r"^\s*class\s+(\w+)\s*\(.*Deprecated.*\):\s*"
@@ -187,10 +187,10 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names, lineno_offset
         # Ignore all tokens except deprecated names.
         if not (
             tok in deprecated_classes
-            or (tok in deprecated_funcs and re.search(fr"\b{esctok}\s*\(", line))
+            or (tok in deprecated_funcs and re.search(rf"\b{esctok}\s*\(", line))
             or (
                 tok in deprecated_methods
-                and re.search(fr"(?!<\bself)[.]\s*{esctok}\s*\(", line)
+                and re.search(rf"(?!<\bself)[.]\s*{esctok}\s*\(", line)
             )
         ):
             continue
@@ -213,7 +213,7 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names, lineno_offset
             sub = term.BOLD + tok + term.NORMAL
         else:
             sub = "<<" + tok + ">>"
-        line = re.sub(fr"\b{esctok}\b", sub, line)
+        line = re.sub(rf"\b{esctok}\b", sub, line)
         # Print the offending line.
         print(
             "  {}[{:5d}]{} {}".format(
