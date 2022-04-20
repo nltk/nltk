@@ -1517,7 +1517,6 @@ class WordNetCorpusReader(CorpusReader):
         >>> print(wn.synset_from_pos_and_offset('n', 1740))
         Synset('entity.n.01')
         """
-
         # Check to see if the synset is in the cache
         if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
