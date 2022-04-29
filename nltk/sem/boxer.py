@@ -530,11 +530,15 @@ class BoxerOutputDrsParser(DrtParser):
         else:
             return None
         self.assertToken(self.token(), ")")
+
+        conda_result = []
+        for cond in conds:
+            conda_result.append(lambda sent_index, word_indices: cond)
         return [
             lambda sent_index, word_indices: BoxerPred(
                 self.discourse_id, sent_index, word_indices, arg, tok, "n", 0
             )
-        ] + [lambda sent_index, word_indices: cond for cond in conds]
+        ] + conda_result
 
     def _handle_date(self, arg):
         # []: (+), []:'XXXX', [1004]:'04', []:'XX'
