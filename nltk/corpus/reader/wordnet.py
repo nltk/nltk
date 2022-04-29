@@ -1705,7 +1705,7 @@ class WordNetCorpusReader(CorpusReader):
         >>> print(wn.synset_from_sense_key("driving%1:04:03::"))
         Synset('drive.n.06')
         """
-        return lemma_from_key(self, key).synset()
+        return self.lemma_from_key(sense_key).synset()
 
     #############################################################
     # Retrieve synsets and lemmas.
