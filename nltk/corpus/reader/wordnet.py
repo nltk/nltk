@@ -2343,27 +2343,29 @@ class WordNetICCorpusReader(CorpusReader):
 
 
 def path_similarity(synset1, synset2, verbose=False, simulate_root=True):
-    return synset1.path_similarity(synset2, verbose, simulate_root)
+    return synset1.path_similarity(
+        synset2, verbose=verbose, simulate_root=simulate_root
+    )
 
 
 def lch_similarity(synset1, synset2, verbose=False, simulate_root=True):
-    return synset1.lch_similarity(synset2, verbose, simulate_root)
+    return synset1.lch_similarity(synset2, verbose=verbose, simulate_root=simulate_root)
 
 
 def wup_similarity(synset1, synset2, verbose=False, simulate_root=True):
-    return synset1.wup_similarity(synset2, verbose, simulate_root)
+    return synset1.wup_similarity(synset2, verbose=verbose, simulate_root=simulate_root)
 
 
 def res_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.res_similarity(synset2, verbose)
+    return synset1.res_similarity(synset2, ic, verbose=verbose)
 
 
 def jcn_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.jcn_similarity(synset2, verbose)
+    return synset1.jcn_similarity(synset2, ic, verbose=verbose)
 
 
 def lin_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.lin_similarity(synset2, verbose)
+    return synset1.lin_similarity(synset2, ic, verbose=verbose)
 
 
 path_similarity.__doc__ = Synset.path_similarity.__doc__
