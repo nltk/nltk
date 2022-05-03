@@ -493,7 +493,7 @@ class Synset(_WordNetObject):
         """Return all the lemma objects associated with the synset"""
         if lang == "eng":
             return self._lemmas
-        else:
+        elif self._name:
             self._wordnet_corpus_reader._load_lang_data(lang)
             lemmark = []
             lemmy = self.lemma_names(lang)
@@ -1526,12 +1526,15 @@ class WordNetCorpusReader(CorpusReader):
         data_file_line = data_file.readline()
         # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
         line_offset = data_file_line[:8]
-        if line_offset.isalnum() and offset == int(line_offset):
+        if (
+            line_offset.isalnum()
+            and line_offset == f"{'0'*(8-len(str(offset)))}{str(offset)}"
+        ):
             synset = self._synset_from_pos_and_line(pos, data_file_line)
             assert synset._offset == offset
             self._synset_offset_cache[pos][offset] = synset
         else:
-            synset = None
+            synset = Synset(self)
             warnings.warn(f"No WordNet synset found for pos={pos} at offset={offset}.")
         data_file.seek(0)
         return synset
