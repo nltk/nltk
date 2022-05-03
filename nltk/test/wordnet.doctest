@@ -129,6 +129,11 @@ in NLTK:
     >>> wn.synset_from_pos_and_offset('n', 4543158)
     Synset('wagon.n.01')
 
+Likewise, instantiate a synset from a known sense key:
+    >>> wn.synset_from_sense_key("driving%1:04:03::")
+    Synset('drive.n.06')
+
+
 ------
 Lemmas
 ------
