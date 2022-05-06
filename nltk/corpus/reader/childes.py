@@ -20,7 +20,7 @@ from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader
 from nltk.util import LazyConcatenation, LazyMap, flatten
 
 # to resolve the namespace issue
-NS = "https://www.talkbank.org/ns/talkbank"
+NS = "http://www.talkbank.org/ns/talkbank"
 
 
 class CHILDESCorpusReader(XMLCorpusReader):
