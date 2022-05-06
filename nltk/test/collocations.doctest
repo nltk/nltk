@@ -279,3 +279,29 @@ exact opposite rankings.
     ...        ranks_from_sequence(reversed(results_list)),
     ...        ranks_from_sequence(results_list2)))
     -0.6
+
+Keywords
+~~~~~~~~
+
+Bigram association metrics can also be used to perform keyword analysis. . For example, this finds the keywords
+associated with the "romance" section of the Brown corpus as measured by likelihood ratio:
+
+    >>> romance = nltk.FreqDist(w.lower() for w in nltk.corpus.brown.words(categories='romance') if w.isalpha())
+    >>> freq = nltk.FreqDist(w.lower() for w in nltk.corpus.brown.words() if w.isalpha())
+
+    >>> key = nltk.FreqDist()
+    >>> for w in romance:
+    ...     key[w] = bigram_measures.likelihood_ratio(romance[w], (freq[w], romance.N()), freq.N())
+
+    >>> for k,v in key.most_common(10):
+    ...     print(f'{k:10s} {v:9.3f}')
+    she         1163.325
+    i            995.961
+    her          930.528
+    you          513.149
+    of           501.891
+    is           463.386
+    had          421.615
+    he           411.000
+    the          347.632
+    said         300.811
