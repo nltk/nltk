@@ -2419,11 +2419,14 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
 
 
 def information_content(synset, ic):
+    pos = synset._pos
+    if pos == "s":
+        pos = "a"
     try:
-        icpos = ic[synset._pos]
+        icpos = ic[pos]
     except KeyError as e:
         msg = "Information content file has no entries for part-of-speech: %s"
-        raise WordNetError(msg % synset._pos) from e
+        raise WordNetError(msg % pos) from e
 
     counts = icpos[synset._offset]
     if counts == 0:
