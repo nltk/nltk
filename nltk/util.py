@@ -276,6 +276,7 @@ def edges2dot(edges, shapes=None, attr=None):
     "B" -> "C";
     "C" -> "B";
     }
+    <BLANKLINE>
     """
     if not shapes:
         shapes = dict()
@@ -324,7 +325,7 @@ def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=N
     "Synset('unfree.a.02')" -> "Synset('restricted.a.01')";
     "Synset('restricted.a.01')" -> "Synset('classified.a.02')";
     }
-
+    <BLANKLINE>
     """
     return edges2dot(
         edge_closure(

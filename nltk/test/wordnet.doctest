@@ -80,6 +80,14 @@ WordNet, using ISO-639 language codes.
     >>> len(list(wordnet.all_lemma_names(pos='n', lang='jpn')))
     66031
 
+The synonyms of a word are returned as a nested list of synonyms of the different senses of
+the input word in the given language, since these different senses are not mutual synonyms:
+    >>> wn.synonyms('car')
+    [['auto', 'automobile', 'machine', 'motorcar'], ['railcar', 'railroad_car', 'railway_car'], ['gondola'], ['elevator_car'], ['cable_car']]
+    >>> wn.synonyms('coche', lang='spa')
+    [['auto', 'automóvil', 'carro', 'máquina', 'turismo', 'vehículo'], ['automotor', 'vagón'], ['vagón', 'vagón_de_pasajeros']]
+
+
 -------
 Synsets
 -------
@@ -120,6 +128,11 @@ in NLTK:
 
     >>> wn.synset_from_pos_and_offset('n', 4543158)
     Synset('wagon.n.01')
+
+Likewise, instantiate a synset from a known sense key:
+    >>> wn.synset_from_sense_key("driving%1:04:03::")
+    Synset('drive.n.06')
+
 
 ------
 Lemmas

@@ -493,7 +493,7 @@ class Synset(_WordNetObject):
         """Return all the lemma objects associated with the synset"""
         if lang == "eng":
             return self._lemmas
-        else:
+        elif self._name:
             self._wordnet_corpus_reader._load_lang_data(lang)
             lemmark = []
             lemmy = self.lemma_names(lang)
@@ -585,11 +585,11 @@ class Synset(_WordNetObject):
         >>> dog = wn.synset('dog.n.01')
         >>> hyp = lambda s:s.hypernyms()
         >>> print(list(dog.closure(hyp)))
-        [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),
-        Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),
-        Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),
-        Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
-        Synset('physical_entity.n.01'), Synset('entity.n.01')]
+        [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),\
+ Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),\
+ Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),\
+ Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),\
+ Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
         UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
         """
@@ -1526,15 +1526,16 @@ class WordNetCorpusReader(CorpusReader):
         data_file_line = data_file.readline()
         # If valid, the offset equals the 8-digit 0-padded integer found at the start of the line:
         line_offset = data_file_line[:8]
-        if line_offset.isalnum() and offset == int(line_offset):
+        if (
+            line_offset.isalnum()
+            and line_offset == f"{'0'*(8-len(str(offset)))}{str(offset)}"
+        ):
             synset = self._synset_from_pos_and_line(pos, data_file_line)
             assert synset._offset == offset
             self._synset_offset_cache[pos][offset] = synset
         else:
-            synset = None
-            raise WordNetError(
-                f"No WordNet synset found for pos={pos} at offset={offset}."
-            )
+            synset = Synset(self)
+            warnings.warn(f"No WordNet synset found for pos={pos} at offset={offset}.")
         data_file.seek(0)
         return synset
 
@@ -1707,7 +1708,7 @@ class WordNetCorpusReader(CorpusReader):
         >>> print(wn.synset_from_sense_key("driving%1:04:03::"))
         Synset('drive.n.06')
         """
-        return lemma_from_key(self, key).synset()
+        return self.lemma_from_key(sense_key).synset()
 
     #############################################################
     # Retrieve synsets and lemmas.
@@ -1878,6 +1879,13 @@ class WordNetCorpusReader(CorpusReader):
     def words(self, lang="eng"):
         """return lemmas of the given language as list of words"""
         return self.all_lemma_names(lang=lang)
+
+    def synonyms(self, word, lang="eng"):
+        """return nested list with the synonyms of the different senses of word in the given language"""
+        return [
+            sorted(list(set(ss.lemma_names(lang=lang)) - {word}))
+            for ss in self.synsets(word, lang=lang)
+        ]
 
     def doc(self, file="README", lang="eng"):
         """Return the contents of readme, license or citation file
@@ -2230,24 +2238,23 @@ class WordNetCorpusReader(CorpusReader):
         >>> from nltk.corpus import wordnet as wn
         >>> print(wn.digraph([wn.synset('dog.n.01')]))
         digraph G {
-        "Synset('dog.n.01')" -> "Synset('domestic_animal.n.01')";
-        "Synset('organism.n.01')" -> "Synset('living_thing.n.01')";
-        "Synset('mammal.n.01')" -> "Synset('vertebrate.n.01')";
-        "Synset('placental.n.01')" -> "Synset('mammal.n.01')";
         "Synset('animal.n.01')" -> "Synset('organism.n.01')";
-        "Synset('vertebrate.n.01')" -> "Synset('chordate.n.01')";
-        "Synset('chordate.n.01')" -> "Synset('animal.n.01')";
         "Synset('canine.n.02')" -> "Synset('carnivore.n.01')";
-        "Synset('living_thing.n.01')" -> "Synset('whole.n.02')";
-        "Synset('physical_entity.n.01')" -> "Synset('entity.n.01')";
         "Synset('carnivore.n.01')" -> "Synset('placental.n.01')";
-        "Synset('object.n.01')" -> "Synset('physical_entity.n.01')";
-        "Synset('whole.n.02')" -> "Synset('object.n.01')";
+        "Synset('chordate.n.01')" -> "Synset('animal.n.01')";
         "Synset('dog.n.01')" -> "Synset('canine.n.02')";
+        "Synset('dog.n.01')" -> "Synset('domestic_animal.n.01')";
         "Synset('domestic_animal.n.01')" -> "Synset('animal.n.01')";
+        "Synset('living_thing.n.01')" -> "Synset('whole.n.02')";
+        "Synset('mammal.n.01')" -> "Synset('vertebrate.n.01')";
+        "Synset('object.n.01')" -> "Synset('physical_entity.n.01')";
+        "Synset('organism.n.01')" -> "Synset('living_thing.n.01')";
+        "Synset('physical_entity.n.01')" -> "Synset('entity.n.01')";
+        "Synset('placental.n.01')" -> "Synset('mammal.n.01')";
+        "Synset('vertebrate.n.01')" -> "Synset('chordate.n.01')";
+        "Synset('whole.n.02')" -> "Synset('object.n.01')";
         }
-
-
+        <BLANKLINE>
         """
         from nltk.util import edge_closure, edges2dot
 
@@ -2275,7 +2282,7 @@ class WordNetCorpusReader(CorpusReader):
 
         for ss in synsets:
             edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
-        dot_string = edges2dot(edges, shapes=shapes, attr=attr)
+        dot_string = edges2dot(sorted(list(edges)), shapes=shapes, attr=attr)
         return dot_string
 
 
@@ -2338,27 +2345,29 @@ class WordNetICCorpusReader(CorpusReader):
 
 
 def path_similarity(synset1, synset2, verbose=False, simulate_root=True):
-    return synset1.path_similarity(synset2, verbose, simulate_root)
+    return synset1.path_similarity(
+        synset2, verbose=verbose, simulate_root=simulate_root
+    )
 
 
 def lch_similarity(synset1, synset2, verbose=False, simulate_root=True):
-    return synset1.lch_similarity(synset2, verbose, simulate_root)
+    return synset1.lch_similarity(synset2, verbose=verbose, simulate_root=simulate_root)
 
 
 def wup_similarity(synset1, synset2, verbose=False, simulate_root=True):
-    return synset1.wup_similarity(synset2, verbose, simulate_root)
+    return synset1.wup_similarity(synset2, verbose=verbose, simulate_root=simulate_root)
 
 
 def res_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.res_similarity(synset2, verbose)
+    return synset1.res_similarity(synset2, ic, verbose=verbose)
 
 
 def jcn_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.jcn_similarity(synset2, verbose)
+    return synset1.jcn_similarity(synset2, ic, verbose=verbose)
 
 
 def lin_similarity(synset1, synset2, ic, verbose=False):
-    return synset1.lin_similarity(synset2, verbose)
+    return synset1.lin_similarity(synset2, ic, verbose=verbose)
 
 
 path_similarity.__doc__ = Synset.path_similarity.__doc__
