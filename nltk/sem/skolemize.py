@@ -147,7 +147,10 @@ def richardize(expression, univ_scope=None, used_variables=None):
             univ_scope | {expression.variable},
             used_variables | {expression.variable},
         )
-        return AllExpression(expression.variable, term)
+        if expression.variable in term.variables():
+            return AllExpression(expression.variable, term)
+        else:
+            return term
     elif isinstance(expression, AndExpression):
         return richardize(expression.first, univ_scope, used_variables) & richardize(
             expression.second, univ_scope, used_variables
@@ -178,7 +181,10 @@ def richardize(expression, univ_scope=None, used_variables=None):
             term = richardize(
                 -negated.term, univ_scope, used_variables | {negated.variable}
             )
-            return ExistsExpression(negated.variable, term)
+            if negated.variable in term.variables():
+                return ExistsExpression(negated.variable, term)
+            else:
+                return term
         elif isinstance(negated, AndExpression):
             return to_cnf(
                 richardize(-negated.first, univ_scope, used_variables),
@@ -210,7 +216,10 @@ def richardize(expression, univ_scope=None, used_variables=None):
                 univ_scope | {negated.variable},
                 used_variables | {negated.variable},
             )
-            return AllExpression(negated.variable, term)
+            if negated.variable in term.variables():
+                return AllExpression(negated.variable, term)
+            else:
+                return term
         elif isinstance(negated, ApplicationExpression):
             return expression
         else:
@@ -219,7 +228,10 @@ def richardize(expression, univ_scope=None, used_variables=None):
         term = richardize(
             expression.term, univ_scope, used_variables | {expression.variable}
         )
-        return ExistsExpression(expression.variable, term)
+        if expression.variable in term.variables():
+            return ExistsExpression(expression.variable, term)
+        else:
+            return term
     elif isinstance(expression, ApplicationExpression):
         return expression
     else:
