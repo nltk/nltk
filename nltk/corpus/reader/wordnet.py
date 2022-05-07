@@ -2420,8 +2420,8 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
 
 def information_content(synset, ic):
     pos = synset._pos
-    if pos == "s":
-        pos = "a"
+    if pos == ADJ_SAT:
+        pos = ADJ
     try:
         icpos = ic[pos]
     except KeyError as e:
