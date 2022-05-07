@@ -148,10 +148,6 @@ def richardize(expression, univ_scope=None, used_variables=None):
             used_variables | {expression.variable},
         )
         return AllExpression(expression.variable, term)
-        # term.replace(
-        #     expression.variable,
-        #     VariableExpression(unique_variable(ignore=used_variables)),
-        # )
     elif isinstance(expression, AndExpression):
         return richardize(expression.first, univ_scope, used_variables) & richardize(
             expression.second, univ_scope, used_variables
@@ -185,10 +181,7 @@ def richardize(expression, univ_scope=None, used_variables=None):
             if univ_scope:
                 return term.replace(negated.variable, skolem_function(univ_scope))
             else:
-                # skolem_constant = VariableExpression(
-                #     unique_variable(ignore=used_variables)
-                # )
-                return ExistsExpression(negated.variable, term)#.replace(negated.variable, skolem_constant)
+                return ExistsExpression(negated.variable, term)
         elif isinstance(negated, AndExpression):
             return to_cnf(
                 richardize(-negated.first, univ_scope, used_variables),
@@ -221,10 +214,6 @@ def richardize(expression, univ_scope=None, used_variables=None):
                 used_variables | {negated.variable},
             )
             return AllExpression(negated.variable, term)
-            # term.replace(
-            #     negated.variable,
-            #     VariableExpression(unique_variable(ignore=used_variables)),
-            # )
         elif isinstance(negated, ApplicationExpression):
             return expression
         else:
@@ -237,8 +226,6 @@ def richardize(expression, univ_scope=None, used_variables=None):
             return term.replace(expression.variable, skolem_function(univ_scope))
         else:
             return ExistsExpression(expression.variable, term)
-            # skolem_constant = VariableExpression(unique_variable(ignore=used_variables))
-            # return term.replace(expression.variable, skolem_constant)
     elif isinstance(expression, ApplicationExpression):
         return expression
     else:
