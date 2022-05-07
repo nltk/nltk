@@ -178,10 +178,7 @@ def richardize(expression, univ_scope=None, used_variables=None):
             term = richardize(
                 -negated.term, univ_scope, used_variables | {negated.variable}
             )
-            if univ_scope:
-                return term.replace(negated.variable, skolem_function(univ_scope))
-            else:
-                return ExistsExpression(negated.variable, term)
+            return ExistsExpression(negated.variable, term)
         elif isinstance(negated, AndExpression):
             return to_cnf(
                 richardize(-negated.first, univ_scope, used_variables),
@@ -222,10 +219,7 @@ def richardize(expression, univ_scope=None, used_variables=None):
         term = richardize(
             expression.term, univ_scope, used_variables | {expression.variable}
         )
-        if univ_scope:
-            return term.replace(expression.variable, skolem_function(univ_scope))
-        else:
-            return ExistsExpression(expression.variable, term)
+        return ExistsExpression(expression.variable, term)
     elif isinstance(expression, ApplicationExpression):
         return expression
     else:
