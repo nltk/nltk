@@ -231,7 +231,7 @@ def richardize(expression, univ_scope=None, used_variables=None):
     else:
         raise Exception("'%s' cannot be richardized" % expression)
 
-        
+
 def to_cnf(first, second):
     """
     Convert this split disjunction to conjunctive normal form (CNF)
