@@ -48,6 +48,7 @@ class CoreNLPServer:
         java_options=None,
         corenlp_options=None,
         port=None,
+        strict_json=True,
     ):
 
         if corenlp_options is None:
@@ -98,6 +99,7 @@ class CoreNLPServer:
 
         self.corenlp_options = corenlp_options
         self.java_options = java_options or ["-mx2g"]
+        self.strict_json = strict_json
 
     def start(self, stdout="devnull", stderr="devnull"):
         """Starts the CoreNLP server
@@ -246,7 +248,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         response.raise_for_status()
 
-        return response.json()
+        return response.json(strict=self.strict_json)
 
     def raw_parse_sents(
         self, sentences, verbose=False, properties=None, *args, **kwargs
