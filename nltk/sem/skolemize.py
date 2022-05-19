@@ -252,3 +252,36 @@ def to_cnf(first, second):
         return r_first & r_second
     else:
         return first | second
+
+def conjunctive_form(expressions):
+    if len(expressions) == 1:
+        return expressions.pop()
+    else:
+        return expressions.pop() & conjunctive_form(expressions)
+
+def disjunctive_form(expressions):
+	if len(expressions) == 1:
+		return expressions.pop()
+	else:
+		return expressions.pop() | disjunctive_form(expressions)
+
+def commuted_items(expression):
+	if isinstance(expression, AndExpression) or isinstance(expression, OrExpression):
+		if isinstance(expression.first, expression.__class__):
+			items = commuted_items(expression.first)
+			items.append(expression.second)
+		else:
+			items = [to_sorted(expression.first), expression.second]
+
+	return sorted(set(items), key = lambda x: x.__str__())
+
+def to_sorted(expression):
+	if isinstance(expression, AndExpression):
+		return conjunctive_form(commuted_items(expression))
+	elif isinstance(expression, OrExpression):
+		return disjunctive_form(commuted_items(expression))
+	elif isinstance(expression, ApplicationExpression):
+		return expression
+	else:
+		expression.term = to_sorted(expression.term)
+		return expression
