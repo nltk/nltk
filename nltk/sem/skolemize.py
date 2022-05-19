@@ -270,6 +270,7 @@ def disjunctive_form(expressions):
 
 def commuted_items(expression):
     if isinstance(expression, AndExpression) or isinstance(expression, OrExpression):
+        expression.second = to_sorted(expression.second)
         if isinstance(expression.first, expression.__class__):
             items = commuted_items(expression.first)
             items.append(expression.second)
