@@ -253,21 +253,21 @@ def to_cnf(first, second):
     else:
         return first | second
 
-    
+
 def conjunctive_form(expressions):
     if len(expressions) == 1:
         return expressions.pop()
     else:
         return expressions.pop() & conjunctive_form(expressions)
 
-    
+
 def disjunctive_form(expressions):
     if len(expressions) == 1:
         return expressions.pop()
     else:
         return expressions.pop() | disjunctive_form(expressions)
 
-    
+
 def commuted_items(expression):
     if isinstance(expression, AndExpression) or isinstance(expression, OrExpression):
         if isinstance(expression.first, expression.__class__):
