@@ -319,7 +319,6 @@ def in_demo(trace=0, sql=True):
             import sqlite3
 
             connection = sqlite3.connect(":memory:")
-            connection.text_factory = sqlite3.OptimizedUnicode
             cur = connection.cursor()
             cur.execute(
                 """create table Locations
