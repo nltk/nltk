@@ -276,7 +276,7 @@ def commuted_items(expression):
         else:
             items = [to_sorted(expression.first), expression.second]
 
-    return sorted(set(items), key = lambda x: x.__str__())
+    return sorted(set(items), key=lambda x: x.__str__())
 
 
 def to_sorted(expression):
