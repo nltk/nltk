@@ -285,7 +285,7 @@ def to_sorted(expression):
         return conjunctive_form(commuted_items(expression))
     elif isinstance(expression, OrExpression):
         return disjunctive_form(commuted_items(expression))
-    elif isinstance(expression, ApplicationExpression):
+    elif isinstance(expression, ApplicationExpression) or isinstance(expression, EqualityExpression):
         return expression
     else:
         expression.term = to_sorted(expression.term)
