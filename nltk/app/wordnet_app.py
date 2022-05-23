@@ -630,7 +630,7 @@ def _synset_relations(word, synset, synset_relations):
 
     def make_synset_html(db_name, disp_name, rels):
         synset_html = "<i>%s</i>\n" % make_lookup_link(
-            copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
+            copy.deepcopy(ref).toggle_synset_relation(synset, db_name),
             disp_name,
         )
 
