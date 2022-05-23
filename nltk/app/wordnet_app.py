@@ -349,7 +349,7 @@ def lemma_property(word, synset, func):
         else:
             return l[0] + flattern(l[1:])
 
-    return flattern([func(l) for l in synset.lemmas if l.name == word])
+    return flattern([func(l) for l in synset.lemmas() if l.name == word])
 
 
 def rebuild_tree(orig_tree):
