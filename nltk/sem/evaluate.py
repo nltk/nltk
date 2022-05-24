@@ -32,6 +32,7 @@ from nltk.sem.logic import (
     IffExpression,
     ImpExpression,
     IndividualVariableExpression,
+    IotaExpression,
     LambdaExpression,
     NegatedExpression,
     OrExpression,
@@ -480,6 +481,13 @@ class Model:
                     return False
             return True
         elif isinstance(parsed, ExistsExpression):
+            new_g = g.copy()
+            for u in self.domain:
+                new_g.add(parsed.variable.name, u)
+                if self.satisfy(parsed.term, new_g):
+                    return True
+            return False
+        elif isinstance(parsed, IotaExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
