@@ -349,7 +349,7 @@ def lemma_property(word, synset, func):
         else:
             return l[0] + flattern(l[1:])
 
-    return flattern([func(l) for l in synset.lemmas if l.name == word])
+    return flattern([func(l) for l in synset.lemmas() if l.name == word])
 
 
 def rebuild_tree(orig_tree):
@@ -630,7 +630,7 @@ def _synset_relations(word, synset, synset_relations):
 
     def make_synset_html(db_name, disp_name, rels):
         synset_html = "<i>%s</i>\n" % make_lookup_link(
-            copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
+            copy.deepcopy(ref).toggle_synset_relation(synset, db_name),
             disp_name,
         )
 
