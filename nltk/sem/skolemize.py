@@ -290,3 +290,29 @@ def to_sorted(expression):
     else:
         expression.term = to_sorted(expression.term)
         return expression
+
+import itertools
+
+def conj_elim(expression):
+    _, form, tree = expression.__reduce__()
+    tree = tree.copy()
+    if 'term' in tree:
+        for term in conj_elim(tree['term']):
+            tree['term'] = term
+            yield form[0](**tree)
+    elif 'first' in tree:
+        firsts = conj_elim(tree['first'])
+        seconds = conj_elim(tree['second'])
+        if isinstance(expression, AndExpression):
+            firsts, firsts_ = itertools.tee(firsts)
+            yield from firsts_
+            seconds, seconds_ = itertools.tee(seconds)
+            yield from seconds_
+        for first in firsts:
+            seconds, seconds_ = itertools.tee(seconds)
+            for second in seconds_:
+                tree['first'] = first
+                tree['second'] = second
+                yield form[0](**tree)
+    else:
+        yield expression
