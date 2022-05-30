@@ -110,5 +110,3 @@ def get_basic_assumptions(expression):
         assert not prove(ImpExpression(cond, -x))
 
     return cond
-
-
