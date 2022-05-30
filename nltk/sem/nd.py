@@ -102,12 +102,12 @@ def get_basic_assumptions(expression):
                     var_all = var
                 else:
                     expr_ = ExistsExpression(var_, expr_)
-            basic_assumptions.add(- AllExpression(var_all, expr_))
+            basic_assumptions.add(-AllExpression(var_all, expr_))
         basic_assumptions.add(ExistsExpression(var_all, expr_))
 
     cond = conjunctive_form(basic_assumptions)
     for x in basic_assumptions:
-        assert(not prove(ImpExpression(cond, -x)))
+        assert not prove(ImpExpression(cond, -x))
 
     return cond
 
