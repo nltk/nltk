@@ -86,7 +86,8 @@ def atomics(expression):
         yield from atomics(expression.first)
         yield from atomics(expression.second)
     else:
-        yield expression
+        if isinstance(expression, ApplicationExpression):
+            yield expression
 
 
 def get_basic_assumptions(expression):
