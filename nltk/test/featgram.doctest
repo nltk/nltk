@@ -5,7 +5,15 @@
  Feature Grammar Parsing
 =========================
 
-.. include:: ../../../nltk_book/definitions.rst
+.. definitions from nltk_book/definitions.rst
+
+.. role:: feat
+    :class: feature
+.. role:: fval
+     :class: fval
+.. |rarr| unicode:: U+2192 .. right arrow
+.. |dot| unicode:: U+2022 .. bullet
+.. |pi| unicode:: U+03C0
 
 Grammars can be parsed from strings.
 
@@ -116,7 +124,7 @@ standard CFGs is used to combine an incomplete edge that's expecting a
 nonterminal *B* with a following, complete edge whose left hand side
 matches *B*. In our current setting, rather than checking for a
 complete match, we test whether the expected category *B* will
-`unify`:dt: with the left hand side *B'* of a following complete
+unify with the left hand side *B'* of a following complete
 edge. We will explain in more detail in Section 9.2 how
 unification works; for the moment, it is enough to know that as a
 result of unification, any variable values of features in *B* will be
@@ -237,10 +245,10 @@ Unification is commutative:
     >>> nltk.unify(nltk.unify(fs1, fs2), fs3) == nltk.unify(fs1, nltk.unify(fs2, fs3))
     True
 
-Unification between `FS`:math:\ :subscript:`0` and `FS`:math:\
-:subscript:`1` will fail if the two feature structures share a path |pi|,
-but the value of |pi| in `FS`:math:\ :subscript:`0` is a distinct
-atom from the value of |pi| in `FS`:math:\ :subscript:`1`. In NLTK,
+Unification between *FS*:math:`_0` and *FS*:math:`_1` will fail if the
+two feature structures share a path |pi|,
+but the value of |pi| in *FS*:math:`_0` is a distinct
+atom from the value of |pi| in *FS*:math:`_1`. In NLTK,
 this is implemented by setting the result of unification to be
 ``None``.
 

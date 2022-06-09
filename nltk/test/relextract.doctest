@@ -16,8 +16,8 @@ Information Extraction standardly consists of three subtasks:
 Named Entities
 ~~~~~~~~~~~~~~
 
-The IEER corpus is marked up for a variety of Named Entities. A `Named
-Entity`:dt: (more strictly, a Named Entity mention) is a name of an
+The IEER corpus is marked up for a variety of Named Entities. A Named
+Entity (more strictly, a Named Entity mention) is a name of an
 entity belonging to a specified class. For example, the Named Entity
 classes in IEER include PERSON, LOCATION, ORGANIZATION, DATE and so
 on. Within NLTK, Named Entities are represented as subtrees within a

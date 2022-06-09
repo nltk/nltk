@@ -457,8 +457,7 @@ Regression Testing for issue #1025
 ==================================
 
 We want to ensure that a RegexpTagger can be created with more than 100 patterns
-and does not fail with:
- "AssertionError: sorry, but this version only supports 100 named groups"
+and does not fail with: "AssertionError: sorry, but this version only supports 100 named groups"
 
     >>> from nltk.tag import RegexpTagger
     >>> patterns = [(str(i), 'NNP',) for i in range(200)]
