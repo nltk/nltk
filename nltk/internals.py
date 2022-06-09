@@ -74,9 +74,8 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
         archives, and ZIP archives to search for class files.
     :type classpath: str
 
-    :param stdin, stdout, stderr: Specify the executed programs'
-        standard input, standard output and standard error file
-        handles, respectively.  Valid values are ``subprocess.PIPE``,
+    :param stdin: Specify the executed program's
+        standard input file handles, respectively.  Valid values are ``subprocess.PIPE``,
         an existing file descriptor (a positive integer), an existing
         file object, 'pipe', 'stdout', 'devnull' and None.  ``subprocess.PIPE`` indicates that a
         new pipe to the child should be created.  With None, no
@@ -85,6 +84,13 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
         ``subprocess.STDOUT``, which indicates that the stderr data
         from the applications should be captured into the same file
         handle as for stdout.
+
+    :param stdout: Specify the executed program's standard output file
+        handle. See ``stdin`` for valid values.
+
+    :param stderr: Specify the executed program's standard error file
+        handle. See ``stdin`` for valid values.
+
 
     :param blocking: If ``false``, then return immediately after
         spawning the subprocess.  In this case, the return value is
