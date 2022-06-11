@@ -32,7 +32,13 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.imgmath",
     "sphinx.ext.viewcode",
+    "sphinxcontrib.apidoc"
 ]
+
+apidoc_module_dir = '../nltk'
+apidoc_output_dir = 'api'
+apidoc_separate_modules = True
+apidoc_extra_args = ['--templatedir=_templates','--force']
 
 def generate_custom_files():
     """Generating contents in the ``howto`` folder,
