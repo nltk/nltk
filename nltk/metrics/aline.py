@@ -1079,8 +1079,9 @@ def align(str1, str2, epsilon=0):
     """
     Compute the alignment of two phonetic strings.
 
-    :type str1, str2: str
-    :param str1, str2: Two strings to be aligned
+    :param str str1: First string to be aligned
+    :param str str2: Second string to be aligned
+
     :type epsilon: float (0.0 to 1.0)
     :param epsilon: Adjusts threshold similarity score for near-optimal alignments
 

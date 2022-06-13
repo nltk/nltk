@@ -18,7 +18,6 @@ I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
 
 web: clean_api
-	sphinx-apidoc -o api ../nltk
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(WEB)
 	@echo
 	@echo "Build finished. The HTML pages are in $(WEB)."

@@ -709,7 +709,7 @@ as XML files.  These corpora are returned as ElementTree objects:
      'Prologue', 'Pyramus', 'Thisbe', 'Wall']
 
 subjectivity
------------
+------------
 The Subjectivity Dataset contains 5000 subjective and 5000 objective processed
 sentences.
 
