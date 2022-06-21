@@ -1426,7 +1426,6 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     def _slices_from_text(self, text: str) -> Iterator[slice]:
         last_break = 0
         for match, context in self._match_potential_end_contexts(text):
-            print(context)
             if self.text_contains_sentbreak(context):
                 yield slice(last_break, match.end())
                 if match.group("next_tok"):
