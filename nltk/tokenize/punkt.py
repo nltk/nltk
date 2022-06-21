@@ -7,6 +7,7 @@
 #         Edward Loper <edloper@gmail.com> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
 #         Arthur Darcet <arthur@darcet.fr> (fixes)
+#         Tom Aarsen <> (tackle ReDoS & performance issues)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -106,7 +107,9 @@ The algorithm for this tokenizer is described in::
 
 import math
 import re
+import string
 from collections import defaultdict
+from typing import Any, Dict, Iterator, List, Match, Optional, Tuple, Union
 
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
@@ -578,7 +581,9 @@ class PunktBaseClass:
     # { Annotation Procedures
     # ////////////////////////////////////////////////////////////
 
-    def _annotate_first_pass(self, tokens):
+    def _annotate_first_pass(
+        self, tokens: Iterator[PunktToken]
+    ) -> Iterator[PunktToken]:
         """
         Perform the first pass of annotation, which makes decisions
         based purely based on the word type of each word:
@@ -599,7 +604,7 @@ class PunktBaseClass:
             self._first_pass_annotation(aug_tok)
             yield aug_tok
 
-    def _first_pass_annotation(self, aug_tok):
+    def _first_pass_annotation(self, aug_tok: PunktToken) -> None:
         """
         Performs type-based annotation on a single token.
         """
@@ -1269,13 +1274,13 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     # { Tokenization
     # ////////////////////////////////////////////////////////////
 
-    def tokenize(self, text, realign_boundaries=True):
+    def tokenize(self, text: str, realign_boundaries: bool = True) -> List[str]:
         """
         Given a text, returns a list of the sentences in that text.
         """
         return list(self.sentences_from_text(text, realign_boundaries))
 
-    def debug_decisions(self, text):
+    def debug_decisions(self, text: str) -> Iterator[Dict[str, Any]]:
         """
         Classifies candidate periods as sentence breaks, yielding a dict for
         each that may be used to understand why the decision was made.
@@ -1311,7 +1316,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 "break_decision": tokens[0].sentbreak,
             }
 
-    def span_tokenize(self, text, realign_boundaries=True):
+    def span_tokenize(
+        self, text: str, realign_boundaries: bool = True
+    ) -> Iterator[Tuple[int, int]]:
         """
         Given a text, generates (start, end) spans of sentences
         in the text.
@@ -1322,7 +1329,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         for sentence in slices:
             yield (sentence.start, sentence.stop)
 
-    def sentences_from_text(self, text, realign_boundaries=True):
+    def sentences_from_text(
+        self, text: str, realign_boundaries: bool = True
+    ) -> List[str]:
         """
         Given a text, generates the sentences in that text by only
         testing candidate sentence breaks. If realign_boundaries is
@@ -1331,7 +1340,18 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         """
         return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
 
-    def _match_potential_end_contexts(self, text):
+    def _get_last_whitespace_index(self, text: str) -> int:
+        """
+        Given a text, find the index of the *last* occurrence of *any*
+        whitespace character, i.e. " ", "\n", "\t", "\r", etc.
+        If none is found, return 0.
+        """
+        for i in range(len(text) - 1, -1, -1):
+            if text[i] in string.whitespace:
+                return i
+        return 0
+
+    def _match_potential_end_contexts(self, text: str) -> Iterator[Tuple[Match, str]]:
         """
         Given a text, find the matches of potential sentence breaks,
         alongside the contexts surrounding these sentence breaks.
@@ -1362,37 +1382,51 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
             >>> pst = PunktSentenceTokenizer()
             >>> text = "Very bad acting!!! I promise."
-            >>> pst._match_potential_end_contexts(text)
-            [(<re.Match object; span=(17, 18), match='!'>, 'acting!!! I')]
+            >>> list(pst._match_potential_end_contexts(text))
+            [(<re.Match object; span=(17, 18), match='!'>, 'Very bad acting!!! I')]
 
         :param text: String of one or more sentences
         :type text: str
         :return: List of match-context tuples.
         :rtype: List[Tuple[re.Match, str]]
         """
-        before_words = {}
-        matches = []
-        for match in reversed(list(self._lang_vars.period_context_re().finditer(text))):
-            # Ignore matches that have already been captured by matches to the right of this match
-            if matches and match.end() > before_start:
-                continue
-            # Find the word before the current match
-            split = text[: match.start()].rsplit(maxsplit=1)
-            before_start = len(split[0]) if len(split) == 2 else 0
-            before_words[match] = split[-1] if split else ""
-            matches.append(match)
+        previous_slice = slice(0, 0)
+        previous_match = None
+        for match in self._lang_vars.period_context_re().finditer(text):
 
-        return [
-            (
-                match,
-                before_words[match] + match.group() + match.group("after_tok"),
+            # Get the slice of the previous word
+            before_text = text[previous_slice.stop : match.start()]
+            last_space_index = self._get_last_whitespace_index(before_text)
+            if last_space_index:
+                last_space_index += previous_slice.stop
+            else:
+                last_space_index = previous_slice.start
+            prev_word_slice = slice(last_space_index, match.start())
+
+            # If the previous slice does not overlap with this slice, then
+            # we can yield it
+            if previous_match and previous_slice.stop <= prev_word_slice.start:
+                yield (
+                    previous_match,
+                    text[previous_slice]
+                    + previous_match.group()
+                    + previous_match.group("after_tok"),
+                )
+            previous_match = match
+            previous_slice = prev_word_slice
+
+        if previous_match:
+            yield (
+                previous_match,
+                text[previous_slice]
+                + previous_match.group()
+                + previous_match.group("after_tok"),
             )
-            for match in matches[::-1]
-        ]
 
-    def _slices_from_text(self, text):
+    def _slices_from_text(self, text: str) -> Iterator[slice]:
         last_break = 0
         for match, context in self._match_potential_end_contexts(text):
+            print(context)
             if self.text_contains_sentbreak(context):
                 yield slice(last_break, match.end())
                 if match.group("next_tok"):
@@ -1404,7 +1438,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         # The last sentence should not contain trailing whitespace.
         yield slice(last_break, len(text.rstrip()))
 
-    def _realign_boundaries(self, text, slices):
+    def _realign_boundaries(
+        self, text: str, slices: Iterator[slice]
+    ) -> Iterator[slice]:
         """
         Attempts to realign punctuation that falls after the period but
         should otherwise be included in the same sentence.
@@ -1434,7 +1470,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 if text[sentence1]:
                     yield sentence1
 
-    def text_contains_sentbreak(self, text):
+    def text_contains_sentbreak(self, text: str) -> bool:
         """
         Returns True if the given text includes a sentence break.
         """
@@ -1446,7 +1482,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 found = True
         return False
 
-    def sentences_from_text_legacy(self, text):
+    def sentences_from_text_legacy(self, text: str) -> Iterator[str]:
         """
         Given a text, generates the sentences in that text. Annotates all
         tokens, rather than just those with possible sentence breaks. Should
@@ -1455,7 +1491,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         tokens = self._annotate_tokens(self._tokenize_words(text))
         return self._build_sentence_list(text, tokens)
 
-    def sentences_from_tokens(self, tokens):
+    def sentences_from_tokens(
+        self, tokens: Iterator[PunktToken]
+    ) -> Iterator[PunktToken]:
         """
         Given a sequence of tokens, generates lists of tokens, each list
         corresponding to a sentence.
@@ -1470,7 +1508,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         if sentence:
             yield sentence
 
-    def _annotate_tokens(self, tokens):
+    def _annotate_tokens(self, tokens: Iterator[PunktToken]) -> Iterator[PunktToken]:
         """
         Given a set of tokens augmented with markers for line-start and
         paragraph-start, returns an iterator through those tokens with full
@@ -1491,7 +1529,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
         return tokens
 
-    def _build_sentence_list(self, text, tokens):
+    def _build_sentence_list(
+        self, text: str, tokens: Iterator[PunktToken]
+    ) -> Iterator[str]:
         """
         Given the original text and the list of augmented word tokens,
         construct and return a tokenized list of sentence strings.
@@ -1546,7 +1586,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             yield sentence
 
     # [XX] TESTING
-    def dump(self, tokens):
+    def dump(self, tokens: Iterator[PunktToken]) -> None:
         print("writing to /tmp/punkt.new...")
         with open("/tmp/punkt.new", "w") as outfile:
             for aug_tok in tokens:
@@ -1569,7 +1609,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     # { Annotation Procedures
     # ////////////////////////////////////////////////////////////
 
-    def _annotate_second_pass(self, tokens):
+    def _annotate_second_pass(
+        self, tokens: Iterator[PunktToken]
+    ) -> Iterator[PunktToken]:
         """
         Performs a token-based classification (section 4) over the given
         tokens, making use of the orthographic heuristic (4.1.1), collocation
@@ -1579,7 +1621,9 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             self._second_pass_annotation(token1, token2)
             yield token1
 
-    def _second_pass_annotation(self, aug_tok1, aug_tok2):
+    def _second_pass_annotation(
+        self, aug_tok1: PunktToken, aug_tok2: Optional[PunktToken]
+    ) -> Optional[str]:
         """
         Performs token-based classification over a pair of contiguous tokens
         updating the first.
@@ -1658,7 +1702,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
         return
 
-    def _ortho_heuristic(self, aug_tok):
+    def _ortho_heuristic(self, aug_tok: PunktToken) -> Union[bool, str]:
         """
         Decide whether the given token is the first token in a sentence.
         """
