@@ -1383,12 +1383,12 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             >>> pst = PunktSentenceTokenizer()
             >>> text = "Very bad acting!!! I promise."
             >>> list(pst._match_potential_end_contexts(text))
-            [(<re.Match object; span=(17, 18), match='!'>, 'Very bad acting!!! I')]
+            [(<re.Match object; span=(17, 18), match='!'>, 'acting!!! I')]
 
         :param text: String of one or more sentences
         :type text: str
-        :return: List of match-context tuples.
-        :rtype: List[Tuple[re.Match, str]]
+        :return: Generator of match-context tuples.
+        :rtype: Iterator[Tuple[Match, str]]
         """
         previous_slice = slice(0, 0)
         previous_match = None
@@ -1404,7 +1404,8 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             prev_word_slice = slice(last_space_index, match.start())
 
             # If the previous slice does not overlap with this slice, then
-            # we can yield it
+            # we can yield the previous match and slice. If there is an overlap,
+            # then we do not yield the previous match and slice.
             if previous_match and previous_slice.stop <= prev_word_slice.start:
                 yield (
                     previous_match,
@@ -1415,6 +1416,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             previous_match = match
             previous_slice = prev_word_slice
 
+        # Yield the last match and context, if it exists
         if previous_match:
             yield (
                 previous_match,
