@@ -42,6 +42,7 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 
+import numpy as np
 
 def longest_target_sentence_length(sentence_aligned_corpus):
     """
@@ -457,7 +458,7 @@ class AlignmentInfo:
         if i is None:
             return 0
 
-        average_position = sum(self.cepts[i]) / len(self.cepts[i])
+        average_position = np.mean(self.cepts[i])
         return int(ceil(average_position))
 
     def previous_cept(self, j):
