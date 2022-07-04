@@ -288,7 +288,7 @@ class TextTilingTokenizer(TokenizerI):
 
         boundaries = [0 for x in depth_scores]
 
-        avg = sum(depth_scores) / len(depth_scores)
+        avg = numpy.mean(depth_scores)
         stdev = numpy.std(depth_scores)
 
         if self.cutoff_policy == LC:
