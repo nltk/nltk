@@ -1,12 +1,11 @@
 .. Copyright (C) 2001-2021 NLTK Project
 .. For license information, see LICENSE.TXT
 
-========================================================
- Unit tests for nltk.treeprettyprinter.TreePrettyPrinter
-========================================================
+=========================================================
+ Unit tests for nltk.tree.prettyprinter.TreePrettyPrinter
+=========================================================
 
-    >>> from nltk.tree import Tree
-    >>> from nltk.treeprettyprinter import TreePrettyPrinter
+    >>> from nltk.tree import Tree, TreePrettyPrinter
 
 Tree nr 2170 from nltk.corpus.treebank:
 
@@ -124,3 +123,55 @@ A discontinuous tree:
     noun verb prep det       noun   verb  verb       verb   punct   verb   vg    verb   punct
      │    │    │    │         │      │     │          │       │      │     │      │       │
      Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .
+
+Importing TreePrettyPrinter
+---------------------------
+
+First of all, a simple tree will be constructed::
+
+  >>> from nltk.tree import Tree
+  >>> tree = Tree.fromstring('(S (NP Mary) (VP walks))')
+
+We'll use this sample tree to show that the method of importing `TreePrettyPrinter` work correctly:
+
+- Recommended::
+
+    >>> from nltk.tree import TreePrettyPrinter
+    >>> print(TreePrettyPrinter(tree).text())
+          S
+      ____|____
+     NP        VP
+     |         |
+    Mary     walks
+
+- Alternative but valid options::
+
+    >>> from nltk import TreePrettyPrinter
+    >>> print(TreePrettyPrinter(tree).text())
+          S
+      ____|____
+     NP        VP
+     |         |
+    Mary     walks
+
+    >>> from nltk.tree.prettyprinter import TreePrettyPrinter
+    >>> print(TreePrettyPrinter(tree).text())
+          S
+      ____|____
+     NP        VP
+     |         |
+    Mary     walks
+
+- Deprecated, do not use::
+
+    >>> from nltk.treeprettyprinter import TreePrettyPrinter
+    >>> print(TreePrettyPrinter(tree).text())
+          S
+      ____|____
+     NP        VP
+     |         |
+    Mary     walks
+
+  This method will throw a DeprecationWarning::
+
+    Import `TreePrettyPrinter` using `from nltk.tree import TreePrettyPrinter` instead.

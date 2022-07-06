@@ -113,7 +113,7 @@ type:
     >>> print(tree)
     (VP (V enjoyed) (NP my cookie))
     >>> print(type(tree))
-    <class 'nltk.tree.ImmutableTree'>
+    <class 'nltk.tree.immutable.ImmutableTree'>
     >>> tree[1] = 'x'
     Traceback (most recent call last):
       . . .
@@ -345,7 +345,7 @@ Parented trees can be created from strings using the classmethod
     >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
     >>> print(type(ptree))
-    <class 'nltk.tree.ParentedTree'>
+    <class 'nltk.tree.parented.ParentedTree'>
 
 Parented trees can also be created by using the classmethod
 `ParentedTree.convert` to convert another type of tree to a parented
@@ -356,7 +356,7 @@ tree:
     >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
     >>> print(type(ptree))
-    <class 'nltk.tree.ParentedTree'>
+    <class 'nltk.tree.parented.ParentedTree'>
 
 .. clean-up:
 
@@ -802,13 +802,59 @@ Test that a tree can not be given multiple parents:
 
 [more to be written]
 
+Shallow copying can be tricky for Tree and several of its subclasses.
+For shallow copies of Tree, only the root node is reconstructed, while
+all the children are shared between the two trees. Modify the children
+of one tree - and the shallowly copied tree will also update.
+
+    >>> from nltk.tree import Tree, ParentedTree, MultiParentedTree
+    >>> tree = Tree.fromstring("(TOP (S (NP (NNP Bell,)) (NP (NP (DT a) (NN company)) (SBAR (WHNP (WDT which)) (S (VP (VBZ is) (VP (VBN based) (PP (IN in) (NP (NNP LA,)))))))) (VP (VBZ makes) (CC and) (VBZ distributes) (NP (NN computer))) (. products.)))")
+    >>> copy_tree = tree.copy(deep=False)
+    >>> tree == copy_tree # Ensure identical labels and nodes
+    True
+    >>> id(copy_tree[0]) == id(tree[0]) # Ensure shallow copy - the children are the same objects in memory
+    True
+
+For ParentedTree objects, this behaviour is not possible. With a shallow
+copy, the children of the root node would be reused for both the original
+and the shallow copy. For this to be possible, some children would need
+to have multiple parents. As this is forbidden for ParentedTree objects,
+attempting to make a shallow copy will cause a warning, and a deep copy
+is made instead.
+
+    >>> ptree = ParentedTree.fromstring("(TOP (S (NP (NNP Bell,)) (NP (NP (DT a) (NN company)) (SBAR (WHNP (WDT which)) (S (VP (VBZ is) (VP (VBN based) (PP (IN in) (NP (NNP LA,)))))))) (VP (VBZ makes) (CC and) (VBZ distributes) (NP (NN computer))) (. products.)))")
+    >>> copy_ptree = ptree.copy(deep=False)
+    >>> copy_ptree == ptree # Ensure identical labels and nodes
+    True
+    >>> id(copy_ptree[0]) != id(ptree[0]) # Shallow copying isn't supported - it defaults to deep copy.
+    True
+
+For MultiParentedTree objects, the issue of only allowing one parent that
+can be seen for ParentedTree objects is no more. Shallow copying a
+MultiParentedTree gives the children of the root node two parents:
+the original and the newly copied root.
+
+    >>> mptree = MultiParentedTree.fromstring("(TOP (S (NP (NNP Bell,)) (NP (NP (DT a) (NN company)) (SBAR (WHNP (WDT which)) (S (VP (VBZ is) (VP (VBN based) (PP (IN in) (NP (NNP LA,)))))))) (VP (VBZ makes) (CC and) (VBZ distributes) (NP (NN computer))) (. products.)))")
+    >>> len(mptree[0].parents())
+    1
+    >>> copy_mptree = mptree.copy(deep=False)
+    >>> copy_mptree == mptree # Ensure identical labels and nodes
+    True
+    >>> len(mptree[0].parents())
+    2
+    >>> len(copy_mptree[0].parents())
+    2
+
+Shallow copying a MultiParentedTree is similar to creating a second root
+which is identically labeled as the root on which the copy method was called.
+
 
 ImmutableParentedTree Regression Tests
 --------------------------------------
 
     >>> iptree = ImmutableParentedTree.convert(ptree)
     >>> type(iptree)
-    <class 'nltk.tree.ImmutableParentedTree'>
+    <class 'nltk.tree.immutable.ImmutableParentedTree'>
     >>> del iptree[0]
     Traceback (most recent call last):
       . . .
@@ -1110,7 +1156,7 @@ ImmutableMultiParentedTree Regression Tests
 
     >>> imptree = ImmutableMultiParentedTree.convert(mptree)
     >>> type(imptree)
-    <class 'nltk.tree.ImmutableMultiParentedTree'>
+    <class 'nltk.tree.immutable.ImmutableMultiParentedTree'>
     >>> del imptree[0]
     Traceback (most recent call last):
       . . .
@@ -1137,7 +1183,7 @@ ProbabilisticTree Regression Tests
 
     >>> imprtree = ImmutableProbabilisticTree.convert(prtree)
     >>> type(imprtree)
-    <class 'nltk.tree.ImmutableProbabilisticTree'>
+    <class 'nltk.tree.immutable.ImmutableProbabilisticTree'>
     >>> del imprtree[0]
     Traceback (most recent call last):
       . . .
@@ -1155,3 +1201,23 @@ This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
     >>> print(Tree.fromstring('((A a) (B b))'))
     ( (A a) (B b))
+
+Pickling ParentedTree instances didn't work for Python 3.7 onwards (See #2478)
+
+    >>> import pickle
+    >>> tree = ParentedTree.fromstring('(S (NN x) (NP x) (NN x))')
+    >>> print(tree)
+    (S (NN x) (NP x) (NN x))
+
+    >>> pickled = pickle.dumps(tree)
+    >>> tree_loaded = pickle.loads(pickled)
+    >>> print(tree_loaded)
+    (S (NN x) (NP x) (NN x))
+
+ParentedTree used to be impossible to (deep)copy. (See #1324)
+
+    >>> from nltk.tree import ParentedTree
+    >>> import copy
+    >>> tree = ParentedTree.fromstring("(TOP (S (NP (NNP Bell,)) (NP (NP (DT a) (NN company)) (SBAR (WHNP (WDT which)) (S (VP (VBZ is) (VP (VBN based) (PP (IN in) (NP (NNP LA,)))))))) (VP (VBZ makes) (CC and) (VBZ distributes) (NP (NN computer))) (. products.)))")
+    >>> tree == copy.deepcopy(tree) == copy.copy(tree) == tree.copy(deep=True) == tree.copy()
+    True
