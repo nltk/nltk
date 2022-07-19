@@ -33,15 +33,12 @@ bots = [
 
 
 def chatbots():
-    import sys
-
     print("Which chatbot would you like to talk to?")
     botcount = len(bots)
     for i in range(botcount):
         print("  %d: %s" % (i + 1, bots[i][1]))
     while True:
-        print("\nEnter a number in the range 1-%d: " % botcount, end=" ")
-        choice = sys.stdin.readline().strip()
+        choice = input(f"\nEnter a number in the range 1-{botcount}: ").strip()
         if choice.isdigit() and (int(choice) - 1) in range(botcount):
             break
         else:
