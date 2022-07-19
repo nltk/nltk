@@ -129,9 +129,9 @@ def _edit_dist_backtrace(lev):
 
     while (i, j) != (0, 0):
         directions = [
+            (i - 1, j - 1),  # substitution
             (i - 1, j),  # skip s1
             (i, j - 1),  # skip s2
-            (i - 1, j - 1),  # substitution
         ]
 
         direction_costs = (
@@ -159,9 +159,9 @@ def edit_distance_align(s1, s2, substitution_cost=1):
     In case of multiple valid minimum-distance alignments, the
     backtrace has the following operation precedence:
 
-    1. Skip s1 character
-    2. Skip s2 character
-    3. Substitute s1 and s2 characters
+    1. Substitute s1 and s2 characters
+    2. Skip s1 character
+    3. Skip s2 character
 
     The backtrace is carried out in reverse string order.
 
