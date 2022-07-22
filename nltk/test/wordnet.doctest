@@ -45,13 +45,12 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
     Synset('dog.n.01')
 
 The WordNet corpus reader gives access to the Open Multilingual
-WordNet, using ISO-639 language codes.
+WordNet, using ISO-639 language codes. These languages are not
+loaded by default, but only lazily, when needed.
 
-    >>> sorted(wn.langs())
-    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus',
-    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'isl', 'ita', 'ita_iwn',
-    'jpn', 'lit', 'nld', 'nno', 'nob', 'pol', 'por', 'ron', 'slk',
-    'slv', 'spa', 'swe', 'tha', 'zsm']
+    >>> wn.langs()
+    ['eng']
+
     >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
 
@@ -59,6 +58,12 @@ WordNet, using ISO-639 language codes.
     ['いぬ', 'まわし者', 'スパイ', '回し者', '回者', '密偵',
     '工作員', '廻し者', '廻者', '探', '探り', '犬', '秘密捜査員',
     '諜報員', '諜者', '間者', '間諜', '隠密']
+
+    >>> sorted(wn.langs())
+    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus',
+    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'isl', 'ita', 'ita_iwn',
+    'jpn', 'lit', 'nld', 'nno', 'nob', 'pol', 'por', 'ron', 'slk',
+    'slv', 'spa', 'swe', 'tha', 'zsm']
 
     >>> wn.synset('dog.n.01').lemma_names('ita')
     ['Canis_familiaris', 'cane']
