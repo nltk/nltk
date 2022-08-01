@@ -154,8 +154,8 @@ class IBMModel4(IBMModel):
     >>> print(round(ibm4.fertility_table[1]['book'], 3))
     1.0
 
-    >>> print(ibm4.p1)
-    0.033...
+    >>> print(round(ibm4.p1, 3))
+    0.033
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words
