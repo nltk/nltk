@@ -44,7 +44,7 @@ class RSLPStemmer(StemmerI):
         ... Clarissa risca com giz no quadro-negro a paisagem que os alunos
         ... devem copiar . Uma casinha de porta e janela , em cima duma
         ... coxilha .'''
-        >>> for token in text.split():
+        >>> for token in text.split(): # doctest: +NORMALIZE_WHITESPACE
         ...     print(st.stem(token))
         clariss risc com giz no quadro-negr a pais que os alun dev copi .
         uma cas de port e janel , em cim dum coxilh .

@@ -40,6 +40,7 @@ class ARLSTem2(StemmerI):
         >>> stemmer = ARLSTem2()
         >>> word = stemmer.stem('يعمل')
         >>> print(word)
+        عمل
 
     :param token: The input Arabic word (unicode) to be stemmed
     :type token: unicode
