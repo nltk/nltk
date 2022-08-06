@@ -88,9 +88,8 @@ def scan_xml(filenames, names):
         src = open(filename, "rb").read()
         src = SCAN_RE.sub(scansub, src)
         #        out = open(filename[:-4]+'.li.xml', 'wb')
-        out = open(TARGET_DIR + filename, "wb")
-        out.write(src)
-        out.close()
+        with open(TARGET_DIR + filename, "wb") as out:
+            out.write(src)
 
     for word in fdist:
         namestr = ("\n" + 38 * " ").join(
