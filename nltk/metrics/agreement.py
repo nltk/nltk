@@ -50,10 +50,10 @@ Expected results from the Artstein and Poesio survey paper:
     >>> t = AnnotationTask(data=[x.split() for x in open(os.path.join(os.path.dirname(__file__), "artstein_poesio_example.txt"))])
     >>> t.avg_Ao()
     0.88
-    >>> t.pi()
-    0.7995322418977615...
-    >>> t.S()
-    0.8199999999999998...
+    >>> round(t.pi(), 5)
+    0.79953
+    >>> round(t.S(), 3)
+    0.82
 
     This would have returned a wrong value (0.0) in @785fb79 as coders are in
     the wrong order. Subsequently, all values for pi(), S(), and kappa() would

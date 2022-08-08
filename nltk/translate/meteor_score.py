@@ -303,13 +303,13 @@ def single_meteor_score(
 
 
     >>> round(single_meteor_score(reference1, hypothesis1),4)
-    0.7398
+    0.6944
 
         If there is no words match during the alignment the method returns the
         score as 0. We can safely  return a zero instead of raising a
         division by zero error as no match usually implies a bad translation.
 
-    >>> round(meteor_score(['this', 'is', 'a', 'cat'], ['non', 'matching', 'hypothesis']),4)
+    >>> round(single_meteor_score(['this', 'is', 'a', 'cat'], ['non', 'matching', 'hypothesis']),4)
     0.0
 
     :param reference: pre-tokenized reference
@@ -374,7 +374,7 @@ def meteor_score(
     >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the', 'army', 'always', 'to', 'heed', 'the', 'directions', 'of', 'the', 'party']
 
     >>> round(meteor_score([reference1, reference2, reference3], hypothesis1),4)
-    0.7398
+    0.6944
 
         If there is no words match during the alignment the method returns the
         score as 0. We can safely  return a zero instead of raising a

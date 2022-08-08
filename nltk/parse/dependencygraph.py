@@ -459,7 +459,7 @@ class DependencyGraph:
         >>> cyclic_dg.root = top
 
         >>> cyclic_dg.contains_cycle()
-        [3, 1, 2, 4]
+        [1, 2, 4, 3]
 
         """
         distances = {}

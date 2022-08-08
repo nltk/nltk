@@ -160,10 +160,10 @@ class ReviewsCorpusReader(CorpusReader):
         >>> from nltk.corpus import product_reviews_1
         >>> camera_reviews = product_reviews_1.reviews('Canon_G3.txt')
         >>> review = camera_reviews[0]
-        >>> review.sents()[0]
+        >>> review.sents()[0] # doctest: +NORMALIZE_WHITESPACE
         ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
         'extremely', 'satisfied', 'with', 'the', 'purchase', '.']
-        >>> review.features()
+        >>> review.features() # doctest: +NORMALIZE_WHITESPACE
         [('canon powershot g3', '+3'), ('use', '+2'), ('picture', '+2'),
         ('picture quality', '+1'), ('picture quality', '+1'), ('camera', '+2'),
         ('use', '+2'), ('feature', '+1'), ('picture quality', '+3'), ('use', '+1'),
