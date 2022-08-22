@@ -291,6 +291,7 @@
 - Alexandre Perez-Lebel <https://github.com/aperezlebel>
 - Fernando Carranza <https://github.com/fernandocar86>
 - Martin Kondratzky <https://github.com/martinkondra>
+- Steven Thomas Smith <https://github.com/essandess>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

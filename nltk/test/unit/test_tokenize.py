@@ -383,6 +383,14 @@ class TestTokenize:
         result = tokenizer.tokenize(test3)
         assert result == expected
 
+        # emoji flag sequences, including enclosed letter pairs
+	# Expected behavior from:
+        # https://github.com/nltk/nltk/pull/3034#issuecomment-1223956957
+        test4 = "🇦🇵🇵🇱🇪"
+        expected = ["🇦🇵", "🇵🇱", "🇪"]
+        result = tokenizer.tokenize(test4)
+        assert result == expected
+
     def test_pad_asterisk(self):
         """
         Test padding of asterisk for word tokenization.

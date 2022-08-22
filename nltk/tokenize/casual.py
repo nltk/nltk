@@ -127,6 +127,29 @@ URLS = r"""			# Capture 1: entire matched URL
   )
 """
 
+# emoji flag sequence
+# https://en.wikipedia.org/wiki/Regional_indicator_symbol
+# For regex simplicity, include all possible enclosed letter pairs,
+# not the ISO subset of two-letter regional indicator symbols.
+# See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Current_codes
+# Future regional flag support may be handled with the regex for
+# U+1F3F4 🏴 followed by emoji tag sequences:
+# r'\U0001F3F4[\U000E0000-\U000E007E]{5}\U000E007F'
+FLAGS = r"""
+  (?:
+    [\U0001F1E6-\U0001F1FF]{2}  # all enclosed letter pairs
+    |
+    # English flag
+    \U0001F3F4\U000E0067\U000E0062\U000E0065\U000E006e\U000E0067\U000E007F
+    |
+    # Scottish flag
+    \U0001F3F4\U000E0067\U000E0062\U000E0073\U000E0063\U000E0074\U000E007F
+    |
+    # For Wales? Why Richard, it profit a man nothing to give his soul for the whole world … but for Wales!
+    \U0001F3F4\U000E0067\U000E0062\U000E0077\U000E006C\U000E0073\U000E007F
+  )
+"""
+
 # Regex for recognizing phone numbers:
 PHONE_REGEX = r"""
     (?:
@@ -165,6 +188,8 @@ REGEXPS = (
         |
         [\U0001F3FB-\U0001F3FF]
     )""",
+    # flags
+    FLAGS,
     # Remaining word types:
     r"""
     (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
