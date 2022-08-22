@@ -1179,9 +1179,6 @@ class WordNetCorpusReader(CorpusReader):
                 "The multilingual functions are not available with this Wordnet version"
             )
             self.omw_langs = set()
-        else:
-            self.add_provs(self._omw_reader)
-            self.omw_langs = set(self.provenances.keys())
 
         # A cache to store the wordnet data of multiple languages
         self._lang_data = defaultdict(list)
@@ -1280,6 +1277,10 @@ class WordNetCorpusReader(CorpusReader):
 
         if lang in self._lang_data.keys():
             return
+
+        if self.langs() == ["eng"]:
+            self.add_provs(self._omw_reader)
+            self.omw_langs = set(self.provenances.keys())
 
         if lang not in self.langs():
             raise WordNetError("Language is not supported.")
