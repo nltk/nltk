@@ -1400,8 +1400,10 @@ warnings(True) to display corpus consistency warnings when loading data
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition
-        "This frame includes words that name ..."
+        >>> f.definition # doctest: +NORMALIZE_WHITESPACE
+        "This frame includes words that name medical specialties and is closely related to the
+        Medical_professionals frame.  The FE Type characterizing a sub-are in a Specialty may also be
+        expressed. 'Ralph practices paediatric oncology.'"
 
         :param fn_fid: The Framenet id number of the frame
         :type fn_fid: int
@@ -1441,8 +1443,10 @@ warnings(True) to display corpus consistency warnings when loading data
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition
-        "This frame includes words that name ..."
+        >>> f.definition # doctest: +NORMALIZE_WHITESPACE
+         "This frame includes words that name medical specialties and is closely related to the
+          Medical_professionals frame.  The FE Type characterizing a sub-are in a Specialty may also be
+          expressed. 'Ralph practices paediatric oncology.'"
 
         :param fn_fname: The name of the frame
         :type fn_fname: str
@@ -1510,8 +1514,48 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> f.ID
         256
         >>> # ensure non-ASCII character in definition doesn't trigger an encoding error:
-        >>> fn.frame('Imposing_obligation')
-        frame (1494): Imposing_obligation...
+        >>> fn.frame('Imposing_obligation') # doctest: +NORMALIZE_WHITESPACE
+        frame (1494): Imposing_obligation
+        <BLANKLINE>
+        [URL] https://framenet2.icsi.berkeley.edu/fnReports/data/frame/Imposing_obligation.xml
+        <BLANKLINE>
+        [definition]
+          A Duty is imposed on a Responsible_party according to a Principle
+          which regulates how the Responsible_party should respond to a
+          Situation.  The Situation may be expressed metonymically by
+          reference to an Obligator, whose action invokes the Principle.
+          It is only rarely the case that the Principle and the
+          Situation/Obligator are both expressed overtly.  'They escaped
+          total Soviet invasion and occupation only by entering into a
+          separate agreement that obligated them to military action against
+          the retreating German armies.'  'The lease agreements bound them
+          to make rent payments to Homeowners Rescue.'  'It was also
+          discovered that with out her knowledge, he had committed her to a
+          new TV series and he had already taken an advance on the money.'
+          'The Generality's invitation to give a conference on the theme
+          obligated me to study Gaudí's work even more.'
+        <BLANKLINE>
+        [semTypes] 0 semantic types
+        <BLANKLINE>
+        [frameRelations] 2 frame relations
+          <Parent=Transitive_action -- Inheritance -> Child=Imposing_obligation>
+          <Causative=Imposing_obligation -- Causative_of -> Inchoative/state=Being_obligated>
+        <BLANKLINE>
+        [lexUnit] 8 lexical units
+          bind.v (12207), charge.n (13588), charge.v (13587), commit.v
+          (12209), obligate.v (12208), oblige.v (18651), pledge.v (12210),
+          require.v (12643)
+        <BLANKLINE>
+        <BLANKLINE>
+        [FE] 11 frame elements
+                    Core: Duty (8149), Obligator (8154), Principle (8156), Responsible_party (8148), Situation (8155)
+              Peripheral: Manner (10468), Means (10469), Place (8153), Time (8152)
+          Extra-Thematic: Condition (8150), Purpose (10467)
+        <BLANKLINE>
+        [FEcoreSets] 1 frame element core sets
+          Situation, Obligator, Principle
+        <BLANKLINE>
+
 
         The dict that is returned from this function will contain the
         following information about the Frame:
@@ -1652,7 +1696,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> pprint(list(map(PrettyDict, fn.lu(256).lexemes)))
         [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}]
 
-        >>> fn.lu(227).exemplars[23]
+        >>> fn.lu(227).exemplars[23] # doctest: +NORMALIZE_WHITESPACE
         exemplar sentence (352962):
         [sentNo] 0
         [aPos] 59699508
@@ -2070,14 +2114,14 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> from nltk.corpus import framenet as fn
         >>> fn.fes('Noise_maker')
         [<fe ID=6043 name=Noise_maker>]
-        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound')])
+        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound')]) # doctest: +NORMALIZE_WHITESPACE
         [('Cause_to_make_noise', 'Sound_maker'), ('Make_noise', 'Sound'),
          ('Make_noise', 'Sound_source'), ('Sound_movement', 'Location_of_sound_source'),
          ('Sound_movement', 'Sound'), ('Sound_movement', 'Sound_source'),
          ('Sounds', 'Component_sound'), ('Sounds', 'Location_of_sound_source'),
          ('Sounds', 'Sound_source'), ('Vocalizations', 'Location_of_sound_source'),
          ('Vocalizations', 'Sound_source')]
-        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound',r'(?i)make_noise')])
+        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound',r'(?i)make_noise')]) # doctest: +NORMALIZE_WHITESPACE
         [('Cause_to_make_noise', 'Sound_maker'),
          ('Make_noise', 'Sound'),
          ('Make_noise', 'Sound_source')]
@@ -2550,7 +2594,7 @@ warnings(True) to display corpus consistency warnings when loading data
          <Parent=Apply_heat -- Using -> Child=Cooking_creation>, ...]
         >>> PrettyList(fn.frame_relations('Cooking_creation', type='Inheritance'))
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>]
-        >>> PrettyList(fn.frame_relations('Cooking_creation', 'Apply_heat'), breakLines=True)
+        >>> PrettyList(fn.frame_relations('Cooking_creation', 'Apply_heat'), breakLines=True) # doctest: +NORMALIZE_WHITESPACE
         [<Parent=Apply_heat -- Using -> Child=Cooking_creation>,
         <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>]
         """
@@ -2625,7 +2669,7 @@ warnings(True) to display corpus consistency warnings when loading data
         True
         >>> len(ferels) in (10020, 12393)   # FN 1.5 and 1.7, resp.
         True
-        >>> PrettyDict(ferels[0], breakLines=True)
+        >>> PrettyDict(ferels[0], breakLines=True) # doctest: +NORMALIZE_WHITESPACE
         {'ID': 14642,
         '_type': 'ferelation',
         'frameRelation': <Parent=Abounding_with -- Inheritance -> Child=Lively_place>,
