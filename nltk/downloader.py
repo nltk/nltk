@@ -1497,7 +1497,7 @@ class DownloaderGUI:
         for (i, (key, label, callback)) in enumerate(info):
             Label(infoframe, text=label).grid(column=0, row=i, sticky="e")
             entry = Entry(
-                infoframe, font="courier", relief="groove", disabledforeground="black"
+                infoframe, font="courier", relief="groove", disabledforeground="#007aff"
             )
             self._info[key] = (entry, callback)
             entry.bind("<Return>", self._info_save)
