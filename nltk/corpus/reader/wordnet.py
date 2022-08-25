@@ -1178,7 +1178,8 @@ class WordNetCorpusReader(CorpusReader):
             warnings.warn(
                 "The multilingual functions are not available with this Wordnet version"
             )
-            self.omw_langs = set()
+
+        self.omw_langs = set()
 
         # A cache to store the wordnet data of multiple languages
         self._lang_data = defaultdict(list)
