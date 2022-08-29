@@ -25,10 +25,10 @@ class StanfordTokenizer(TokenizerI):
 
     >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
-    >>> StanfordTokenizer().tokenize(s)
+    >>> StanfordTokenizer().tokenize(s) # doctest: +SKIP
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> s = "The colour of the wall is blue."
-    >>> StanfordTokenizer(options={"americanize": True}).tokenize(s)
+    >>> StanfordTokenizer(options={"americanize": True}).tokenize(s) # doctest: +SKIP
     ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
     """
 

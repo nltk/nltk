@@ -275,9 +275,9 @@ class StanfordParser(GenericStanfordParser):
     """
     >>> parser=StanfordParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
-    ... )
+    ... ) # doctest: +SKIP
 
-    >>> list(parser.raw_parse("the quick brown fox jumps over the lazy dog")) # doctest: +NORMALIZE_WHITESPACE
+    >>> list(parser.raw_parse("the quick brown fox jumps over the lazy dog")) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
     Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])])]
@@ -285,7 +285,7 @@ class StanfordParser(GenericStanfordParser):
     >>> sum([list(dep_graphs) for dep_graphs in parser.raw_parse_sents((
     ...     "the quick brown fox jumps over the lazy dog",
     ...     "the quick grey wolf jumps over the lazy fox"
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
     Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree('NP',
@@ -296,7 +296,7 @@ class StanfordParser(GenericStanfordParser):
     >>> sum([list(dep_graphs) for dep_graphs in parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
     [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']),
@@ -316,7 +316,7 @@ class StanfordParser(GenericStanfordParser):
     ...         ("dog", "NN"),
     ...         (".", "."),
     ...     ),
-    ... ))],[]) # doctest: +NORMALIZE_WHITESPACE
+    ... ))],[]) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
@@ -343,12 +343,12 @@ class StanfordDependencyParser(GenericStanfordParser):
     """
     >>> dep_parser=StanfordDependencyParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
-    ... )
+    ... ) # doctest: +SKIP
 
-    >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])])]
 
-    >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE +SKIP
     [[((u'jumps', u'VBZ'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det', (u'The', u'DT')),
     ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'), u'amod', (u'brown', u'JJ')),
     ((u'jumps', u'VBZ'), u'nmod', (u'dog', u'NN')), ((u'dog', u'NN'), u'case', (u'over', u'IN')),
@@ -357,14 +357,14 @@ class StanfordDependencyParser(GenericStanfordParser):
     >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
     ...     "The quick brown fox jumps over the lazy dog.",
     ...     "The quick grey wolf jumps over the lazy fox."
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])]),
     Tree('jumps', [Tree('wolf', ['The', 'quick', 'grey']), Tree('fox', ['over', 'the', 'lazy'])])]
 
     >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), Tree('tabby', ['the'])])]
 
     >>> sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
@@ -380,7 +380,7 @@ class StanfordDependencyParser(GenericStanfordParser):
     ...         ("dog", "NN"),
     ...         (".", "."),
     ...     ),
-    ... ))],[]) # doctest: +NORMALIZE_WHITESPACE
+    ... ))],[]) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [[((u'jumped', u'VBD'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det', (u'The', u'DT')),
     ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'), u'amod', (u'brown', u'JJ')),
     ((u'jumped', u'VBD'), u'nmod', (u'dog', u'NN')), ((u'dog', u'NN'), u'case', (u'over', u'IN')),
@@ -406,13 +406,13 @@ class StanfordDependencyParser(GenericStanfordParser):
 
 class StanfordNeuralDependencyParser(GenericStanfordParser):
     """
-    >>> from nltk.parse.stanford import StanfordNeuralDependencyParser
-    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx4g')
+    >>> from nltk.parse.stanford import StanfordNeuralDependencyParser # doctest: +SKIP
+    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx4g')# doctest: +SKIP
 
-    >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy']), '.'])]
 
-    >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE +SKIP
     [[((u'jumps', u'VBZ'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det',
     (u'The', u'DT')), ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'),
     u'amod', (u'brown', u'JJ')), ((u'jumps', u'VBZ'), u'nmod', (u'dog', u'NN')),
@@ -423,7 +423,7 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
     >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
     ...     "The quick brown fox jumps over the lazy dog.",
     ...     "The quick grey wolf jumps over the lazy fox."
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over',
     'the', 'lazy']), '.']), Tree('jumps', [Tree('wolf', ['The', 'quick', 'grey']),
     Tree('fox', ['over', 'the', 'lazy']), '.'])]
@@ -431,7 +431,7 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
     >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE +SKIP
     [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends',
     ['my', "'"]), Tree('tabby', ['-LRB-', 'the', '-RRB-'])])]
     """
