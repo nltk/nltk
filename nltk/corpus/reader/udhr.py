@@ -13,6 +13,8 @@ class UdhrCorpusReader(PlaintextCorpusReader):
         (".*-Hebrew$", "hebrew"),
         (".*-Arabic$", "cp1256"),
         ("Czech_Cesky-UTF8", "cp1250"),  # yeah
+        ("Polish-Latin2", "cp1250"),
+        ("Polish_Polski-Latin2", "cp1250"),
         (".*-Cyrillic$", "cyrillic"),
         (".*-SJIS$", "SJIS"),
         (".*-GB2312$", "GB2312"),
