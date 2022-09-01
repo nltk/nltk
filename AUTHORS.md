@@ -292,6 +292,8 @@
 - Fernando Carranza <https://github.com/fernandocar86>
 - Martin Kondratzky <https://github.com/martinkondra>
 - Heungson Lee <https://github.com/heungson>
+- M.K. Pawelkiewicz <https://github.com/hamiltonianflow>
+- Steven Thomas Smith <https://github.com/essandess>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
