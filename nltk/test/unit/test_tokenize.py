@@ -383,6 +383,23 @@ class TestTokenize:
         result = tokenizer.tokenize(test3)
         assert result == expected
 
+        # emoji flag sequences, including enclosed letter pairs
+        # Expected behavior from #3034
+        test4 = "🇦🇵🇵🇱🇪"
+        expected = ["🇦🇵", "🇵🇱", "🇪"]
+        result = tokenizer.tokenize(test4)
+        assert result == expected
+
+        test5 = "Hi 🇨🇦, 😍!!"
+        expected = ["Hi", "🇨🇦", ",", "😍", "!", "!"]
+        result = tokenizer.tokenize(test5)
+        assert result == expected
+
+        test6 = "<3 🇨🇦 🤝 🇵🇱 <3"
+        expected = ["<3", "🇨🇦", "🤝", "🇵🇱", "<3"]
+        result = tokenizer.tokenize(test6)
+        assert result == expected
+
     def test_pad_asterisk(self):
         """
         Test padding of asterisk for word tokenization.
