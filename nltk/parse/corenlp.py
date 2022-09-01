@@ -74,9 +74,10 @@ class CoreNLPServer:
                 port = try_port(9000)
             except OSError:
                 port = try_port()
-                corenlp_options.append(str(port))
+                corenlp_options.extend(["-port", str(port)])
         else:
             try_port(port)
+            corenlp_options.extend(["-port", str(port)])
 
         self.url = f"http://localhost:{port}"
 
