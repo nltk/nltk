@@ -270,6 +270,15 @@ class TestTokenize:
         tokens = tokenizer.tokenize("justification")
         assert tokens == ["jus", "ti", "fi", "ca", "tion"]
 
+    def test_syllable_tokenizer_numbers(self):
+        """
+        Test SyllableTokenizer tokenizer.
+        """
+        tokenizer = SyllableTokenizer()
+        text = "9" * 10000
+        tokens = tokenizer.tokenize(text)
+        assert tokens == [text]
+
     def test_legality_principle_syllable_tokenizer(self):
         """
         Test LegalitySyllableTokenizer tokenizer.
