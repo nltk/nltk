@@ -48,7 +48,6 @@ class CoreNLPServer:
         java_options=None,
         corenlp_options=None,
         port=None,
-        strict_json=True,
     ):
 
         if corenlp_options is None:
@@ -100,7 +99,6 @@ class CoreNLPServer:
 
         self.corenlp_options = corenlp_options
         self.java_options = java_options or ["-mx2g"]
-        self.strict_json = strict_json
 
     def start(self, stdout="devnull", stderr="devnull"):
         """Starts the CoreNLP server
@@ -179,7 +177,13 @@ class CoreNLPServer:
 class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     """Interface to the CoreNLP Parser."""
 
-    def __init__(self, url="http://localhost:9000", encoding="utf8", tagtype=None):
+    def __init__(
+        self,
+        url="http://localhost:9000",
+        encoding="utf8",
+        tagtype=None,
+        strict_json=True,
+    ):
         import requests
 
         self.url = url
@@ -189,6 +193,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             raise ValueError("tagtype must be either 'pos', 'ner' or None")
 
         self.tagtype = tagtype
+        self.strict_json = strict_json
 
         self.session = requests.Session()
 
