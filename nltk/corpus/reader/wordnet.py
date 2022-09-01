@@ -1279,9 +1279,8 @@ class WordNetCorpusReader(CorpusReader):
         if lang in self._lang_data.keys():
             return
 
-        if self.langs() == ["eng"]:
-            self.add_provs(self._omw_reader)
-            self.omw_langs = set(self.provenances.keys())
+        if self._omw_reader and not self.omw_langs:
+            self.add_omw()
 
         if lang not in self.langs():
             raise WordNetError("Language is not supported.")
@@ -1309,11 +1308,15 @@ class WordNetCorpusReader(CorpusReader):
             file_name, file_extension = os.path.splitext(langfile)
             if file_extension == ".tab":
                 lang = file_name.split("-")[-1]
-                if lang in self.provenances.keys():
+                if lang in self.provenances.keys() or prov in ["cldr", "wikt"]:
                     # We already have another resource for this lang,
                     # so we need to further specify the lang id:
                     lang = f"{lang}_{prov}"
                 self.provenances[lang] = prov
+
+    def add_omw(self):
+        self.add_provs(self._omw_reader)
+        self.omw_langs = set(self.provenances.keys())
 
     def add_exomw(self):
         """
@@ -1327,6 +1330,7 @@ class WordNetCorpusReader(CorpusReader):
         """
         from nltk.corpus import extended_omw
 
+        self.add_omw()
         self._exomw_reader = extended_omw
         self.add_provs(self._exomw_reader)
 
