@@ -364,7 +364,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
                 for arg in pred.findall("ARGS/ARG")
             ]
             semantics_within_single_frame.append(
-                {"predicate_value": pred.get("value"), "arguments": arguments}
+                {
+                    "predicate_value": pred.get("value"),
+                    "arguments": arguments,
+                    "negated": pred.get("bool") == "!",
+                }
             )
         return semantics_within_single_frame
 
@@ -620,6 +624,6 @@ class VerbnetCorpusReader(XMLCorpusReader):
         for predicate in vnframe["semantics"]:
             arguments = [argument["value"] for argument in predicate["arguments"]]
             pieces.append(
-                "{}({})".format(predicate["predicate_value"], ", ".join(arguments))
+                f"{'¬' if predicate['negated'] else ''}{predicate['predicate_value']}({', '.join(arguments)})"
             )
         return "\n".join(f"{indent}* {piece}" for piece in pieces)
