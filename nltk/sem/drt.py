@@ -214,7 +214,7 @@ class DrtExpression:
         return DrtNegatedExpression(self)
 
     def __and__(self, other):
-        raise NotImplementedError()
+        return NotImplemented
 
     def __or__(self, other):
         assert isinstance(other, DrtExpression)
