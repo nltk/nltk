@@ -20,13 +20,13 @@ from collections import defaultdict
 from itertools import chain
 from pprint import pformat
 
-import pytest
-
 from nltk.internals import find_binary
 from nltk.tree import Tree
 
 
 def setup_dot():
+    import pytest
+
     try:
         find_binary("dot")
     except:
