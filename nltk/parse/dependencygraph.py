@@ -23,16 +23,6 @@ from pprint import pformat
 from nltk.internals import find_binary
 from nltk.tree import Tree
 
-
-def setup_dot():
-    import pytest
-
-    try:
-        find_binary("dot")
-    except:
-        pytest.skip("Cannot find the dot binary from Graphviz package")
-
-
 #################################################################
 # DependencyGraph Class
 #################################################################
@@ -196,7 +186,8 @@ class DependencyGraph:
 
     def _repr_svg_(self):
         """Show SVG representation of the transducer (IPython magic).
-        >>> setup_dot()
+        >>> from nltk.test.binary_fixt import check_binary
+        >>> check_binary('dot')
         >>> dg = DependencyGraph(
         ...     'John N 2\\n'
         ...     'loves V 0\\n'

@@ -30,6 +30,10 @@ class HunposTagger(TaggerI):
      - (optionally) the path to the hunpos-tag binary
      - (optionally) the encoding of the training data (default: ISO-8859-1)
 
+    Check for available files
+        >>> from nltk.test.hunpos_fixt import setup_module
+        >>> setup_module()
+
     Example:
 
         >>> from nltk.tag import HunposTagger
