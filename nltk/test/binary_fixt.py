@@ -8,3 +8,4 @@ def check_binary(binary):
         find_binary(binary)
     except:
         pytest.skip("Skipping test because the {binary} binary was not found")
+        return False
