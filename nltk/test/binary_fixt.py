@@ -1,3 +1,4 @@
+# Skip doctest when a required binary is not available
 from nltk.internals import find_binary
 
 
@@ -6,6 +7,5 @@ def check_binary(binary):
 
     try:
         find_binary(binary)
-    except:
-        pytest.skip("Skipping test because the {binary} binary was not found")
-        return False
+    except LookupError:
+        pytest.skip(f"Skipping test because the {binary} binary was not found")
