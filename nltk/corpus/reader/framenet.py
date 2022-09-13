@@ -1514,47 +1514,8 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> f.ID
         256
         >>> # ensure non-ASCII character in definition doesn't trigger an encoding error:
-        >>> fn.frame('Imposing_obligation') # doctest: +NORMALIZE_WHITESPACE
-        frame (1494): Imposing_obligation
-        <BLANKLINE>
-        [URL] https://framenet2.icsi.berkeley.edu/fnReports/data/frame/Imposing_obligation.xml
-        <BLANKLINE>
-        [definition]
-          A Duty is imposed on a Responsible_party according to a Principle
-          which regulates how the Responsible_party should respond to a
-          Situation.  The Situation may be expressed metonymically by
-          reference to an Obligator, whose action invokes the Principle.
-          It is only rarely the case that the Principle and the
-          Situation/Obligator are both expressed overtly.  'They escaped
-          total Soviet invasion and occupation only by entering into a
-          separate agreement that obligated them to military action against
-          the retreating German armies.'  'The lease agreements bound them
-          to make rent payments to Homeowners Rescue.'  'It was also
-          discovered that with out her knowledge, he had committed her to a
-          new TV series and he had already taken an advance on the money.'
-          'The Generality's invitation to give a conference on the theme
-          obligated me to study Gaudí's work even more.'
-        <BLANKLINE>
-        [semTypes] 0 semantic types
-        <BLANKLINE>
-        [frameRelations] 2 frame relations
-          <Parent=Transitive_action -- Inheritance -> Child=Imposing_obligation>
-          <Causative=Imposing_obligation -- Causative_of -> Inchoative/state=Being_obligated>
-        <BLANKLINE>
-        [lexUnit] 8 lexical units
-          bind.v (12207), charge.n (13588), charge.v (13587), commit.v
-          (12209), obligate.v (12208), oblige.v (18651), pledge.v (12210),
-          require.v (12643)
-        <BLANKLINE>
-        <BLANKLINE>
-        [FE] 11 frame elements
-                    Core: Duty (8149), Obligator (8154), Principle (8156), Responsible_party (8148), Situation (8155)
-              Peripheral: Manner (10468), Means (10469), Place (8153), Time (8152)
-          Extra-Thematic: Condition (8150), Purpose (10467)
-        <BLANKLINE>
-        [FEcoreSets] 1 frame element core sets
-          Situation, Obligator, Principle
-        <BLANKLINE>
+        >>> fn.frame('Imposing_obligation') # doctest: +ELLIPSIS
+        frame (1494): Imposing_obligation...
 
 
         The dict that is returned from this function will contain the

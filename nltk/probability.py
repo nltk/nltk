@@ -2208,8 +2208,8 @@ class ConditionalProbDist(ConditionalProbDistI):
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
         >>> cpdist['passed'].max()
         'VBD'
-        >>> round(cpdist['passed'].prob('VBD'), 3)
-        0.423
+        >>> cpdist['passed'].prob('VBD') #doctest: +ELLIPSIS
+        0.423...
 
     """
 

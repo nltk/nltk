@@ -52,7 +52,7 @@ Expected results from the Artstein and Poesio survey paper:
     0.88
     >>> round(t.pi(), 5)
     0.79953
-    >>> round(t.S(), 3)
+    >>> round(t.S(), 2)
     0.82
 
     This would have returned a wrong value (0.0) in @785fb79 as coders are in

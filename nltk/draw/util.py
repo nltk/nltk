@@ -90,8 +90,8 @@ class CanvasWidget(metaclass=ABCMeta):
     The current value of an attribute value can be queried using the
     ``__getitem__`` operator:
 
-        >>> print(cn['color'])
-        red
+        >>> cn['color']
+        'red'
 
     For a list of the attributes supported by a type of canvas widget,
     see its class documentation.

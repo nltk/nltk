@@ -123,8 +123,8 @@ class BrillTaggerTrainer:
         ... ])
 
         >>> baseline = backoff #see NOTE1
-        >>> round(baseline.accuracy(gold_data), 7)
-        0.2433862
+        >>> baseline.accuracy(gold_data) #doctest: +ELLIPSIS
+        0.243...
 
         >>> # Set up templates
         >>> Template._cleartemplates() #clear any templates created in earlier tests
