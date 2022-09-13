@@ -2127,13 +2127,13 @@ class CustomFeatureValue:
         raise NotImplementedError("abstract base class")
 
     def __eq__(self, other):
-        raise NotImplementedError("abstract base class")
+        return NotImplemented
 
     def __ne__(self, other):
         return not self == other
 
     def __lt__(self, other):
-        raise NotImplementedError("abstract base class")
+        return NotImplemented
 
     def __hash__(self):
         raise TypeError("%s objects or unhashable" % self.__class__.__name__)

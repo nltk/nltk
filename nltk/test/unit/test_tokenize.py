@@ -270,6 +270,15 @@ class TestTokenize:
         tokens = tokenizer.tokenize("justification")
         assert tokens == ["jus", "ti", "fi", "ca", "tion"]
 
+    def test_syllable_tokenizer_numbers(self):
+        """
+        Test SyllableTokenizer tokenizer.
+        """
+        tokenizer = SyllableTokenizer()
+        text = "9" * 10000
+        tokens = tokenizer.tokenize(text)
+        assert tokens == [text]
+
     def test_legality_principle_syllable_tokenizer(self):
         """
         Test LegalitySyllableTokenizer tokenizer.
@@ -381,6 +390,23 @@ class TestTokenize:
             "🙅🏽",
         ]
         result = tokenizer.tokenize(test3)
+        assert result == expected
+
+        # emoji flag sequences, including enclosed letter pairs
+        # Expected behavior from #3034
+        test4 = "🇦🇵🇵🇱🇪"
+        expected = ["🇦🇵", "🇵🇱", "🇪"]
+        result = tokenizer.tokenize(test4)
+        assert result == expected
+
+        test5 = "Hi 🇨🇦, 😍!!"
+        expected = ["Hi", "🇨🇦", ",", "😍", "!", "!"]
+        result = tokenizer.tokenize(test5)
+        assert result == expected
+
+        test6 = "<3 🇨🇦 🤝 🇵🇱 <3"
+        expected = ["<3", "🇨🇦", "🤝", "🇵🇱", "<3"]
+        result = tokenizer.tokenize(test6)
         assert result == expected
 
     def test_pad_asterisk(self):

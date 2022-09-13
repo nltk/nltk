@@ -68,7 +68,7 @@ class MultiListbox(Frame):
 
         :param columns: Specifies what columns should be included in
             the new multi-column listbox.  If ``columns`` is an integer,
-            the it is the number of columns to include.  If it is
+            the int is the number of columns to include.  If it is
             a list, then its length indicates the number of columns
             to include; and each element of the list will be used as
             a label for the corresponding column.
@@ -76,7 +76,12 @@ class MultiListbox(Frame):
         :param cnf, kw: Configuration parameters for this widget.
             Use ``label_*`` to configure all labels; and ``listbox_*``
             to configure all listboxes.  E.g.:
-
+                >>> from nltk.draw.util import TextWidget, CanvasFrame, SpaceWidget
+                >>> from nltk.draw.table import MultiListbox
+                >>> cf = CanvasFrame(closeenough=10, width=300, height=300)
+                >>> c = cf.canvas()
+                >>> master = TextWidget(c, "hiya there", draggable=1)
+                >>> master = SpaceWidget(c, 0, 30)
                 >>> mlb = MultiListbox(master, 5, label_foreground='red')
         """
         # If columns was specified as an int, convert it to a list.

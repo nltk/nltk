@@ -98,14 +98,15 @@ class SyllableTokenizer(TokenizerI):
             try:
                 syllables_values.append((c, self.phoneme_map[c]))
             except KeyError:
-                if c not in punctuation:
+                if c not in "0123456789" and c not in punctuation:
                     warnings.warn(
                         "Character not defined in sonority_hierarchy,"
                         " assigning as vowel: '{}'".format(c)
                     )
                     syllables_values.append((c, max(self.phoneme_map.values())))
-                    self.vowels += c
-                else:  # If it's a punctuation, assign -1.
+                    if c not in self.vowels:
+                        self.vowels += c
+                else:  # If it's a punctuation or numbers, assign -1.
                     syllables_values.append((c, -1))
         return syllables_values
 
@@ -122,11 +123,12 @@ class SyllableTokenizer(TokenizerI):
         """
         valid_syllables = []
         front = ""
+        vowel_pattern = re.compile("|".join(self.vowels))
         for i, syllable in enumerate(syllable_list):
             if syllable in punctuation:
                 valid_syllables.append(syllable)
                 continue
-            if not re.search("|".join(self.vowels), syllable):
+            if not vowel_pattern.search(syllable):
                 if len(valid_syllables) == 0:
                     front += syllable
                 else:
