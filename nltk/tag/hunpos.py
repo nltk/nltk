@@ -32,7 +32,7 @@ class HunposTagger(TaggerI):
 
     Check whether the required "hunpos-tag" binary is available:
 
-        >>> from nltk.test.binary_fixt import check_binary
+        >>> from nltk.test.setup_fixt import check_binary
         >>> check_binary('hunpos-tag')
 
     Example:

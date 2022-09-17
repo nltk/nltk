@@ -186,7 +186,7 @@ class DependencyGraph:
 
     def _repr_svg_(self):
         """Show SVG representation of the transducer (IPython magic).
-        >>> from nltk.test.binary_fixt import check_binary
+        >>> from nltk.test.setup_fixt import check_binary
         >>> check_binary('dot')
         >>> dg = DependencyGraph(
         ...     'John N 2\\n'

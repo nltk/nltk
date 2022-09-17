@@ -5,7 +5,7 @@
 Logical Inference and Model Building
 ====================================
 
-    >>> from nltk.test.binary_fixt import check_binary
+    >>> from nltk.test.setup_fixt import check_binary
     >>> check_binary('mace4')
 
     >>> from nltk import *
