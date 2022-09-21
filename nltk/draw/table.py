@@ -68,7 +68,7 @@ class MultiListbox(Frame):
 
         :param columns: Specifies what columns should be included in
             the new multi-column listbox.  If ``columns`` is an integer,
-            the int is the number of columns to include.  If it is
+            then it is the number of columns to include.  If it is
             a list, then its length indicates the number of columns
             to include; and each element of the list will be used as
             a label for the corresponding column.
