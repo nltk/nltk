@@ -1654,7 +1654,7 @@ warnings(True) to display corpus consistency warnings when loading data
         'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame.name
         'Expectation'
-        >>> pprint(list(map(PrettyDict, fn.lu(256).lexemes)))
+        >>> list(map(PrettyDict, fn.lu(256).lexemes))
         [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}]
 
         >>> fn.lu(227).exemplars[23] # doctest: +NORMALIZE_WHITESPACE
