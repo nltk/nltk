@@ -99,7 +99,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
 
         >>> from nltk.corpus import comparative_sentences
         >>> comparison = comparative_sentences.comparisons()[0]
-        >>> comparison.text
+        >>> comparison.text # doctest: +NORMALIZE_WHITESPACE
         ['its', 'fast-forward', 'and', 'rewind', 'work', 'much', 'more', 'smoothly',
         'and', 'consistently', 'than', 'those', 'of', 'other', 'models', 'i', "'ve",
         'had', '.']

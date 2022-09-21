@@ -1400,8 +1400,10 @@ warnings(True) to display corpus consistency warnings when loading data
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition
-        "This frame includes words that name ..."
+        >>> f.definition # doctest: +NORMALIZE_WHITESPACE
+        "This frame includes words that name medical specialties and is closely related to the
+        Medical_professionals frame.  The FE Type characterizing a sub-are in a Specialty may also be
+        expressed. 'Ralph practices paediatric oncology.'"
 
         :param fn_fid: The Framenet id number of the frame
         :type fn_fid: int
@@ -1441,8 +1443,10 @@ warnings(True) to display corpus consistency warnings when loading data
         256
         >>> f.name
         'Medical_specialties'
-        >>> f.definition
-        "This frame includes words that name ..."
+        >>> f.definition # doctest: +NORMALIZE_WHITESPACE
+         "This frame includes words that name medical specialties and is closely related to the
+          Medical_professionals frame.  The FE Type characterizing a sub-are in a Specialty may also be
+          expressed. 'Ralph practices paediatric oncology.'"
 
         :param fn_fname: The name of the frame
         :type fn_fname: str
@@ -1510,8 +1514,9 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> f.ID
         256
         >>> # ensure non-ASCII character in definition doesn't trigger an encoding error:
-        >>> fn.frame('Imposing_obligation')
+        >>> fn.frame('Imposing_obligation') # doctest: +ELLIPSIS
         frame (1494): Imposing_obligation...
+
 
         The dict that is returned from this function will contain the
         following information about the Frame:
@@ -1649,10 +1654,10 @@ warnings(True) to display corpus consistency warnings when loading data
         'COD: be aware of beforehand; predict.'
         >>> fn.lu(256).frame.name
         'Expectation'
-        >>> pprint(list(map(PrettyDict, fn.lu(256).lexemes)))
+        >>> list(map(PrettyDict, fn.lu(256).lexemes))
         [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}]
 
-        >>> fn.lu(227).exemplars[23]
+        >>> fn.lu(227).exemplars[23] # doctest: +NORMALIZE_WHITESPACE
         exemplar sentence (352962):
         [sentNo] 0
         [aPos] 59699508
@@ -2070,14 +2075,14 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> from nltk.corpus import framenet as fn
         >>> fn.fes('Noise_maker')
         [<fe ID=6043 name=Noise_maker>]
-        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound')])
+        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound')]) # doctest: +NORMALIZE_WHITESPACE
         [('Cause_to_make_noise', 'Sound_maker'), ('Make_noise', 'Sound'),
          ('Make_noise', 'Sound_source'), ('Sound_movement', 'Location_of_sound_source'),
          ('Sound_movement', 'Sound'), ('Sound_movement', 'Sound_source'),
          ('Sounds', 'Component_sound'), ('Sounds', 'Location_of_sound_source'),
          ('Sounds', 'Sound_source'), ('Vocalizations', 'Location_of_sound_source'),
          ('Vocalizations', 'Sound_source')]
-        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound',r'(?i)make_noise')])
+        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound',r'(?i)make_noise')]) # doctest: +NORMALIZE_WHITESPACE
         [('Cause_to_make_noise', 'Sound_maker'),
          ('Make_noise', 'Sound'),
          ('Make_noise', 'Sound_source')]
@@ -2550,7 +2555,7 @@ warnings(True) to display corpus consistency warnings when loading data
          <Parent=Apply_heat -- Using -> Child=Cooking_creation>, ...]
         >>> PrettyList(fn.frame_relations('Cooking_creation', type='Inheritance'))
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>]
-        >>> PrettyList(fn.frame_relations('Cooking_creation', 'Apply_heat'), breakLines=True)
+        >>> PrettyList(fn.frame_relations('Cooking_creation', 'Apply_heat'), breakLines=True) # doctest: +NORMALIZE_WHITESPACE
         [<Parent=Apply_heat -- Using -> Child=Cooking_creation>,
         <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>]
         """
@@ -2625,7 +2630,7 @@ warnings(True) to display corpus consistency warnings when loading data
         True
         >>> len(ferels) in (10020, 12393)   # FN 1.5 and 1.7, resp.
         True
-        >>> PrettyDict(ferels[0], breakLines=True)
+        >>> PrettyDict(ferels[0], breakLines=True) # doctest: +NORMALIZE_WHITESPACE
         {'ID': 14642,
         '_type': 'ferelation',
         'frameRelation': <Parent=Abounding_with -- Inheritance -> Child=Lively_place>,

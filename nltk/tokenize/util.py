@@ -17,7 +17,7 @@ def string_span_tokenize(s, sep):
         >>> from nltk.tokenize.util import string_span_tokenize
         >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
         ... two of them.\n\nThanks.'''
-        >>> list(string_span_tokenize(s, " "))
+        >>> list(string_span_tokenize(s, " ")) # doctest: +NORMALIZE_WHITESPACE
         [(0, 4), (5, 12), (13, 17), (18, 26), (27, 30), (31, 36), (37, 37),
         (38, 44), (45, 48), (49, 55), (56, 58), (59, 73)]
 
@@ -51,7 +51,7 @@ def regexp_span_tokenize(s, regexp):
         >>> from nltk.tokenize.util import regexp_span_tokenize
         >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
         ... two of them.\n\nThanks.'''
-        >>> list(regexp_span_tokenize(s, r'\s'))
+        >>> list(regexp_span_tokenize(s, r'\s')) # doctest: +NORMALIZE_WHITESPACE
         [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36),
         (38, 44), (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
 
@@ -78,7 +78,7 @@ def spans_to_relative(spans):
         >>> from nltk.tokenize.util import spans_to_relative
         >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
         ... two of them.\n\nThanks.'''
-        >>> list(spans_to_relative(WhitespaceTokenizer().span_tokenize(s)))
+        >>> list(spans_to_relative(WhitespaceTokenizer().span_tokenize(s))) # doctest: +NORMALIZE_WHITESPACE
         [(0, 4), (1, 7), (1, 4), (1, 5), (1, 2), (1, 3), (1, 5), (2, 6),
         (1, 3), (1, 2), (1, 3), (1, 2), (1, 5), (2, 7)]
 

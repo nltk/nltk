@@ -66,10 +66,10 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
 
     Note that words from `words()` method are sorted by file id, not alphabetically:
 
-        >>> opinion_lexicon.words()[0:10]
+        >>> opinion_lexicon.words()[0:10] # doctest: +NORMALIZE_WHITESPACE
         ['2-faced', '2-faces', 'abnormal', 'abolish', 'abominable', 'abominably',
         'abominate', 'abomination', 'abort', 'aborted']
-        >>> sorted(opinion_lexicon.words())[0:10]
+        >>> sorted(opinion_lexicon.words())[0:10] # doctest: +NORMALIZE_WHITESPACE
         ['2-faced', '2-faces', 'a+', 'abnormal', 'abolish', 'abominable', 'abominably',
         'abominate', 'abomination', 'abort']
     """

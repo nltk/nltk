@@ -124,16 +124,15 @@ class NLTKWordTokenizer(TokenizerI):
 
         >>> from nltk.tokenize import NLTKWordTokenizer
         >>> s = '''Good muffins cost $3.88 (roughly 3,36 euros)\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-        >>> NLTKWordTokenizer().tokenize(s)
+        >>> NLTKWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$', '3.88', '(', 'roughly', '3,36',
         'euros', ')', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
         'of', 'them.', 'Thanks', '.']
-        >>> NLTKWordTokenizer().tokenize(s, convert_parentheses=True)
+        >>> NLTKWordTokenizer().tokenize(s, convert_parentheses=True) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$', '3.88', '-LRB-', 'roughly', '3,36',
         'euros', '-RRB-', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
         'of', 'them.', 'Thanks', '.']
-        >>> NLTKWordTokenizer().tokenize(s, return_str=True)
-        ' Good muffins cost  $ 3.88  ( roughly 3,36 euros ) \nin New York.  Please buy me\ntwo of them.\nThanks  .  '
+
 
         :param text: A string with a sentence or sentences.
         :type text: str

@@ -17,14 +17,14 @@ money expressions, and any other non-whitespace sequences:
     >>> from nltk.tokenize import RegexpTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
     >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
-    >>> tokenizer.tokenize(s)
+    >>> tokenizer.tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
 A ``RegexpTokenizer`` can use its regexp to match delimiters instead:
 
     >>> tokenizer = RegexpTokenizer('\s+', gaps=True)
-    >>> tokenizer.tokenize(s)
+    >>> tokenizer.tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
     'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
 
@@ -43,17 +43,17 @@ that use pre-defined regular expressions.
 
     >>> from nltk.tokenize import BlanklineTokenizer
     >>> # Uses '\s*\n\s*\n\s*':
-    >>> BlanklineTokenizer().tokenize(s)
+    >>> BlanklineTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.',
     'Thanks.']
 
 All of the regular expression tokenizers are also available as functions:
 
     >>> from nltk.tokenize import regexp_tokenize, wordpunct_tokenize, blankline_tokenize
-    >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+')
+    >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+') # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
-    >>> wordpunct_tokenize(s)
+    >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
      '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> blankline_tokenize(s)
@@ -160,7 +160,7 @@ class WhitespaceTokenizer(RegexpTokenizer):
 
         >>> from nltk.tokenize import WhitespaceTokenizer
         >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-        >>> WhitespaceTokenizer().tokenize(s)
+        >>> WhitespaceTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
         'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
     """
@@ -187,7 +187,7 @@ class WordPunctTokenizer(RegexpTokenizer):
 
         >>> from nltk.tokenize import WordPunctTokenizer
         >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-        >>> WordPunctTokenizer().tokenize(s)
+        >>> WordPunctTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
         '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     """

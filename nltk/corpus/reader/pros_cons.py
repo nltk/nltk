@@ -36,7 +36,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
     Reader for the Pros and Cons sentence dataset.
 
         >>> from nltk.corpus import pros_cons
-        >>> pros_cons.sents(categories='Cons')
+        >>> pros_cons.sents(categories='Cons') # doctest: +NORMALIZE_WHITESPACE
         [['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
         'to', 'maneuver', '.'], ['Eats', '...', 'no', ',', 'GULPS', 'batteries'],
         ...]

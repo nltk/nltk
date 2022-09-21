@@ -271,7 +271,7 @@ class TokenSearcher:
 
         >>> from nltk.text import TokenSearcher
         >>> print('hack'); from nltk.book import text1, text5, text9
-        hack...
+        hack
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -410,7 +410,20 @@ class Text:
         """
         Return collocations derived from the text, ignoring stopwords.
 
-            >>> from nltk.book import text4
+            >>> from nltk.book import text4 # doctest: +NORMALIZE_WHITESPACE
+            *** Introductory Examples for the NLTK Book ***
+            Loading text1, ..., text9 and sent1, ..., sent9
+            Type the name of the text or sentence to view it.
+            Type: 'texts()' or 'sents()' to list the materials.
+            text1: Moby Dick by Herman Melville 1851
+            text2: Sense and Sensibility by Jane Austen 1811
+            text3: The Book of Genesis
+            text4: Inaugural Address Corpus
+            text5: Chat Corpus
+            text6: Monty Python and the Holy Grail
+            text7: Wall Street Journal
+            text8: Personals Corpus
+            text9: The Man Who Was Thursday by G . K . Chesterton 1908
             >>> text4.collocation_list()[:2]
             [('United', 'States'), ('fellow', 'citizens')]
 
@@ -446,8 +459,13 @@ class Text:
         Print collocations derived from the text, ignoring stopwords.
 
             >>> from nltk.book import text4
-            >>> text4.collocations() # doctest: +ELLIPSIS
-            United States; fellow citizens; four years; ...
+            >>> text4.collocations() # doctest: +NORMALIZE_WHITESPACE
+            United States; fellow citizens; years ago; four years; Federal
+            Government; General Government; American people; Vice President; God
+            bless; Chief Justice; one another; fellow Americans; Old World;
+            Almighty God; Fellow citizens; Chief Magistrate; every citizen; Indian
+            tribes; public debt; foreign nations
+
 
         :param num: The maximum number of collocations to print.
         :type num: int
@@ -626,7 +644,7 @@ class Text:
         a single token must be surrounded by angle brackets.  E.g.
 
         >>> print('hack'); from nltk.book import text1, text5, text9
-        hack...
+        hack
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -697,7 +715,7 @@ class TextCollection(Text):
     >>> import nltk.corpus
     >>> from nltk.text import TextCollection
     >>> print('hack'); from nltk.book import text1, text2, text3
-    hack...
+    hack
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])
 
