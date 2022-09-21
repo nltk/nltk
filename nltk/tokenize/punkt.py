@@ -1396,12 +1396,13 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
             # Get the slice of the previous word
             before_text = text[previous_slice.stop : match.start()]
-            last_space_index = self._get_last_whitespace_index(before_text)
-            if last_space_index:
-                last_space_index += previous_slice.stop
+            index_after_last_space = self._get_last_whitespace_index(before_text)
+            if index_after_last_space:
+                # + 1 to exclude the space itself
+                index_after_last_space += previous_slice.stop + 1
             else:
-                last_space_index = previous_slice.start
-            prev_word_slice = slice(last_space_index, match.start())
+                index_after_last_space = previous_slice.start
+            prev_word_slice = slice(index_after_last_space, match.start())
 
             # If the previous slice does not overlap with this slice, then
             # we can yield the previous match and slice. If there is an overlap,
