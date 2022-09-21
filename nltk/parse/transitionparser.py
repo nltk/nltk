@@ -752,6 +752,7 @@ def demo():
     >>> parser_std.train([gold_sent],'temp.arcstd.model', verbose=False)
      Number of training examples : 1
      Number of valid (projective) examples : 1
+    >>> input_file.close()
     >>> remove(input_file.name)
 
     B. Check the ARC-EAGER training
@@ -767,6 +768,7 @@ def demo():
      Number of training examples : 1
      Number of valid (projective) examples : 1
 
+    >>> input_file.close()
     >>> remove(input_file.name)
 
     ###################### Check The Parsing Function ########################
