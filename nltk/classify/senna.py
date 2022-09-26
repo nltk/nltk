@@ -62,7 +62,7 @@ class Senna(TaggerI):
                 self._path = path.normpath(environ["SENNA"]) + sep
                 exe_file_2 = self.executable(self._path)
                 if not path.isfile(exe_file_2):
-                    raise OSError(
+                    raise LookupError(
                         "Senna executable expected at %s or %s but not found"
                         % (exe_file_1, exe_file_2)
                     )
@@ -115,7 +115,7 @@ class Senna(TaggerI):
         encoding = self._encoding
 
         if not path.isfile(self.executable(self._path)):
-            raise OSError(
+            raise LookupError(
                 "Senna executable expected at %s but not found"
                 % self.executable(self._path)
             )
