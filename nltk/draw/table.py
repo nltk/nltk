@@ -76,13 +76,8 @@ class MultiListbox(Frame):
         :param cnf, kw: Configuration parameters for this widget.
             Use ``label_*`` to configure all labels; and ``listbox_*``
             to configure all listboxes.  E.g.:
-                >>> from nltk.draw.util import TextWidget, CanvasFrame, SpaceWidget
-                >>> from nltk.draw.table import MultiListbox
-                >>> cf = CanvasFrame(closeenough=10, width=300, height=300)
-                >>> c = cf.canvas()
-                >>> master = TextWidget(c, "hiya there", draggable=1)
-                >>> master = SpaceWidget(c, 0, 30)
-                >>> mlb = MultiListbox(master, 5, label_foreground='red')
+                >>> root = Tk()
+                >>> MultiListbox(root, ["Subject", "Sender", "Date"], label_foreground='red').pack()
         """
         # If columns was specified as an int, convert it to a list.
         if isinstance(columns, int):
@@ -139,7 +134,7 @@ class MultiListbox(Frame):
             # the default listbox behavior, which scrolls):
             lb.bind("<B1-Leave>", lambda e: "break")
             # Columns can be resized by dragging them:
-            l.bind("<Button-1>", self._resize_column)
+            lb.bind("<Button-1>", self._resize_column)
 
         # Columns can be resized by dragging them.  (This binding is
         # used if they click on the grid between columns:)
@@ -305,6 +300,7 @@ class MultiListbox(Frame):
         Configure this widget.  Use ``label_*`` to configure all
         labels; and ``listbox_*`` to configure all listboxes.  E.g.:
 
+                >>> master = Tk()
                 >>> mlb = MultiListbox(master, 5)
                 >>> mlb.configure(label_foreground='red')
                 >>> mlb.configure(listbox_foreground='red')
@@ -592,13 +588,13 @@ class Table:
     refers to the j-th column of the i-th row.  This can be used to
     both read and write values from the table.  E.g.:
 
-        >>> table[i,j] = 'hello'
+        >>> table[i,j] = 'hello'  # doctest: +SKIP
 
     The column (j) can be given either as an index number, or as a
     column name.  E.g., the following prints the value in the 3rd row
     for the 'First Name' column:
 
-        >>> print(table[3, 'First Name'])
+        >>> print(table[3, 'First Name'])  # doctest: +SKIP
         John
 
     You can configure the colors for individual rows, columns, or
