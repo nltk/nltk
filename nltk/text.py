@@ -270,8 +270,7 @@ class TokenSearcher:
         a single token must be surrounded by angle brackets.  E.g.
 
         >>> from nltk.text import TokenSearcher
-        >>> print('hack'); from nltk.book import text1, text5, text9
-        hack
+        >>> from nltk.book import text1, text5, text9
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -410,20 +409,7 @@ class Text:
         """
         Return collocations derived from the text, ignoring stopwords.
 
-            >>> from nltk.book import text4 # doctest: +NORMALIZE_WHITESPACE
-            *** Introductory Examples for the NLTK Book ***
-            Loading text1, ..., text9 and sent1, ..., sent9
-            Type the name of the text or sentence to view it.
-            Type: 'texts()' or 'sents()' to list the materials.
-            text1: Moby Dick by Herman Melville 1851
-            text2: Sense and Sensibility by Jane Austen 1811
-            text3: The Book of Genesis
-            text4: Inaugural Address Corpus
-            text5: Chat Corpus
-            text6: Monty Python and the Holy Grail
-            text7: Wall Street Journal
-            text8: Personals Corpus
-            text9: The Man Who Was Thursday by G . K . Chesterton 1908
+            >>> from nltk.book import text4
             >>> text4.collocation_list()[:2]
             [('United', 'States'), ('fellow', 'citizens')]
 
@@ -643,8 +629,7 @@ class Text:
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
 
-        >>> print('hack'); from nltk.book import text1, text5, text9
-        hack
+        >>> from nltk.book import text1, text5, text9
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -714,8 +699,7 @@ class TextCollection(Text):
 
     >>> import nltk.corpus
     >>> from nltk.text import TextCollection
-    >>> print('hack'); from nltk.book import text1, text2, text3
-    hack
+    >>> from nltk.book import text1, text2, text3
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])
 
