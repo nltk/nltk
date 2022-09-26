@@ -76,8 +76,8 @@ class MultiListbox(Frame):
         :param cnf, kw: Configuration parameters for this widget.
             Use ``label_*`` to configure all labels; and ``listbox_*``
             to configure all listboxes.  E.g.:
-                >>> root = Tk()
-                >>> MultiListbox(root, ["Subject", "Sender", "Date"], label_foreground='red').pack()
+                >>> root = Tk()  # doctest: +SKIP
+                >>> MultiListbox(root, ["Subject", "Sender", "Date"], label_foreground='red').pack()  # doctest: +SKIP
         """
         # If columns was specified as an int, convert it to a list.
         if isinstance(columns, int):
@@ -300,10 +300,10 @@ class MultiListbox(Frame):
         Configure this widget.  Use ``label_*`` to configure all
         labels; and ``listbox_*`` to configure all listboxes.  E.g.:
 
-                >>> master = Tk()
-                >>> mlb = MultiListbox(master, 5)
-                >>> mlb.configure(label_foreground='red')
-                >>> mlb.configure(listbox_foreground='red')
+                >>> master = Tk()  # doctest: +SKIP
+                >>> mlb = MultiListbox(master, 5)  # doctest: +SKIP
+                >>> mlb.configure(label_foreground='red')  # doctest: +SKIP
+                >>> mlb.configure(listbox_foreground='red')  # doctest: +SKIP
         """
         cnf = dict(list(cnf.items()) + list(kw.items()))
         for (key, val) in list(cnf.items()):
