@@ -63,7 +63,7 @@ jobs:
         id: restore-cache
         with:
           path: ~/third
-          key: third_${{ secrets.CACHE_VERSION }}
+          key: third_${{ hashFiles('tools/github_actions/third-party.sh') }}_${{ secrets.CACHE_VERSION }}
 
       - name: Download third party data
         run: |
@@ -119,7 +119,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/third
-          key: third_${{ secrets.CACHE_VERSION }}
+          key: third_${{ hashFiles('tools/github_actions/third-party.sh') }}_${{ secrets.CACHE_VERSION }}
         if: runner.os == 'Linux'
 
       - name: Run pytest
