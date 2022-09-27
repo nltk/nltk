@@ -311,7 +311,8 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         """Tokenize a string of text.
 
         Skip these tests if CoreNLP is likely not ready.
-        >>> if "CLASSPATH" not in os.environ: import pytest; pytest.skip("CoreNLP jars unavailable")
+        >>> from nltk.test.setup_fixt import check_jar
+        >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
         The CoreNLP server can be started using the following notation, although
         we recommend the `with CoreNLPServer() as server:` context manager notation
@@ -367,7 +368,8 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         :rtype: list(tuple(str, str))
 
         Skip these tests if CoreNLP is likely not ready.
-        >>> if "CLASSPATH" not in os.environ: import pytest; pytest.skip("CoreNLP jars unavailable")
+        >>> from nltk.test.setup_fixt import check_jar
+        >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
         The CoreNLP server can be started using the following notation, although
         we recommend the `with CoreNLPServer() as server:` context manager notation
@@ -422,7 +424,8 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 class CoreNLPParser(GenericCoreNLPParser):
     """
     Skip these tests if CoreNLP is likely not ready.
-    >>> if "CLASSPATH" not in os.environ: import pytest; pytest.skip("CoreNLP jars unavailable")
+    >>> from nltk.test.setup_fixt import check_jar
+    >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
     The recommended usage of `CoreNLPParser` is using the context manager notation:
     >>> with CoreNLPServer() as server:
@@ -586,7 +589,8 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     """Dependency parser.
 
     Skip these tests if CoreNLP is likely not ready.
-    >>> if "CLASSPATH" not in os.environ: import pytest; pytest.skip("CoreNLP jars unavailable")
+    >>> from nltk.test.setup_fixt import check_jar
+    >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
     The recommended usage of `CoreNLPParser` is using the context manager notation:
     >>> with CoreNLPServer() as server:
