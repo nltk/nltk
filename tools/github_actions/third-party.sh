@@ -10,7 +10,7 @@ pushd 'third'
 # Download nltk stanford dependencies
 # Downloaded to ~/third/stanford-corenlp
 # stanford_corenlp_package_zip_name=$(curl -s 'https://stanfordnlp.github.io/CoreNLP/' | grep -o 'stanford-corenlp-full-.*\.zip' | head -n1)
-stanford_corenlp_package_zip_name="stanford-corenlp-full-2018-10-05.zip"
+stanford_corenlp_package_zip_name="stanford-corenlp-4.5.1.zip"
 [[ ${stanford_corenlp_package_zip_name} =~ (.+)\.zip ]]
 stanford_corenlp_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_corenlp_package_name} ]]; then
