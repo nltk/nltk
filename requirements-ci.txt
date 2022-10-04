@@ -1,8 +1,11 @@
+click
 gensim>=4.0.0
 matplotlib
 pytest
 pytest-mock
 pytest-xdist[psutil]
+python-crfsuite
 regex
 scikit-learn
+tqdm
 twython
