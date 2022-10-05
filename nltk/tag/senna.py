@@ -17,20 +17,20 @@ The input is:
 Note: Unit tests for this module can be found in test/unit/test_senna.py
 
 >>> from nltk.tag import SennaTagger
->>> tagger = SennaTagger('/usr/share/senna-v3.0')
+>>> tagger = SennaTagger('/usr/share/senna-v3.0')  # doctest: +SKIP
 >>> tagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
 [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
 ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'NN'), ('?', '.')]
 
 >>> from nltk.tag import SennaChunkTagger
->>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')
+>>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')  # doctest: +SKIP
 >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
 [('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
 ('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
 ('?', 'O')]
 
 >>> from nltk.tag import SennaNERTagger
->>> nertagger = SennaNERTagger('/usr/share/senna-v3.0')
+>>> nertagger = SennaNERTagger('/usr/share/senna-v3.0')  # doctest: +SKIP
 >>> nertagger.tag('Shakespeare theatre was in London .'.split()) # doctest: +SKIP
 [('Shakespeare', 'B-PER'), ('theatre', 'O'), ('was', 'O'), ('in', 'O'),
 ('London', 'B-LOC'), ('.', 'O')]
@@ -80,14 +80,14 @@ class SennaChunkTagger(Senna):
         Extracts the chunks in a BIO chunk-tagged sentence.
 
         >>> from nltk.tag import SennaChunkTagger
-        >>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')
+        >>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')  # doctest: +SKIP
         >>> sent = 'What is the airspeed of an unladen swallow ?'.split()
-        >>> tagged_sent = chktagger.tag(sent) # doctest: +SKIP
-        >>> tagged_sent # doctest: +SKIP
+        >>> tagged_sent = chktagger.tag(sent)  # doctest: +SKIP
+        >>> tagged_sent  # doctest: +SKIP
         [('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
         ('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
         ('?', 'O')]
-        >>> list(chktagger.bio_to_chunks(tagged_sent, chunk_type='NP')) # doctest: +SKIP
+        >>> list(chktagger.bio_to_chunks(tagged_sent, chunk_type='NP'))  # doctest: +SKIP
         [('What', '0'), ('the airspeed', '2-3'), ('an unladen swallow', '5-6-7')]
 
         :param tagged_sent: A list of tuples of word and BIO chunk tag.

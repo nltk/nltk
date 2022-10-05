@@ -16,14 +16,14 @@ money expressions, and any other non-whitespace sequences:
 
     >>> from nltk.tokenize import RegexpTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-    >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
+    >>> tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|\S+')
     >>> tokenizer.tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
 A ``RegexpTokenizer`` can use its regexp to match delimiters instead:
 
-    >>> tokenizer = RegexpTokenizer('\s+', gaps=True)
+    >>> tokenizer = RegexpTokenizer(r'\s+', gaps=True)
     >>> tokenizer.tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
     'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
@@ -34,7 +34,7 @@ the start or end of the string.
 The material between the tokens is discarded.  For example,
 the following tokenizer selects just the capitalized words:
 
-    >>> capword_tokenizer = RegexpTokenizer('[A-Z]\w+')
+    >>> capword_tokenizer = RegexpTokenizer(r'[A-Z]\w+')
     >>> capword_tokenizer.tokenize(s)
     ['Good', 'New', 'York', 'Please', 'Thanks']
 
@@ -50,7 +50,7 @@ that use pre-defined regular expressions.
 All of the regular expression tokenizers are also available as functions:
 
     >>> from nltk.tokenize import regexp_tokenize, wordpunct_tokenize, blankline_tokenize
-    >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+') # doctest: +NORMALIZE_WHITESPACE
+    >>> regexp_tokenize(s, pattern=r'\w+|\$[\d\.]+|\S+') # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
@@ -77,7 +77,7 @@ class RegexpTokenizer(TokenizerI):
     A tokenizer that splits a string using a regular expression, which
     matches either the tokens or the separators between tokens.
 
-        >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
+        >>> tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|\S+')
 
     :type pattern: str
     :param pattern: The pattern used to build this tokenizer.
