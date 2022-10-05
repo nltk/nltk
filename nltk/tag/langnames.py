@@ -1,5 +1,15 @@
-# Iso 639-3 language codes from https://iso639-3.sil.org/
-langname = {
+def langname(code):
+    """
+    Convert language code to language name,
+    using Iso 639-3 language codes from https://iso639-3.sil.org/
+    >>> from nltk.tag.langnames import langname
+    >>> langname('wln')
+    "Walloon"
+    """
+    return iso639name[code]
+
+
+iso639name = {
     "aaa": "Ghotuo",
     "aab": "Alumu-Tesu",
     "aac": "Ari",
