@@ -1,10 +1,18 @@
+# Natural Language Toolkit: Language Codes
+# iso639-3 language codes obtained from https://iso639-3.sil.org/
+#
+# Copyright (C) 2022 NLTK Project
+# Author: Eric Kafe <kafe.eric@gmail.com>
+# URL: <https://www.nltk.org/>
+# For license information, see LICENSE.TXT
+
+
 def langname(code):
     """
-    Convert language code to language name,
-    using Iso 639-3 language codes from https://iso639-3.sil.org/
+    Convert iso639-3language code to language name
     >>> from nltk.tag.langnames import langname
     >>> langname('wln')
-    "Walloon"
+    'Walloon'
     """
     return iso639name[code]
 
