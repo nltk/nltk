@@ -10,7 +10,7 @@
 def langname(code):
     """
     Convert iso639-3language code to language name
-    >>> from nltk.tag.langnames import langname
+    >>> from nltk.langnames import langname
     >>> langname('wln')
     'Walloon'
     """
