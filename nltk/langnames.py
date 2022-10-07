@@ -17,6 +17,16 @@ def langname(code):
     return iso639name[code]
 
 
+def langcode(name):
+    """
+    Convert language name to iso639-3language code
+    >>> from nltk.langnames import langcode
+    >>> langcode('Modern Greek')
+    'ell'
+    """
+    return iso639code[name]
+
+
 iso639name = {
     "aaa": "Ghotuo",
     "aab": "Alumu-Tesu",
@@ -8301,3 +8311,5 @@ iso639name = {
     "wrd": "Warduji",
     "wya": "Wyandot",
 }
+
+iso639code = {pair[1]: pair[0] for pair in iso639name.items()}
