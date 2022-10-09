@@ -530,11 +530,15 @@ class BoxerOutputDrsParser(DrtParser):
         else:
             return None
         self.assertToken(self.token(), ")")
+
+        def func_gen(x):
+            return lambda sent_index, word_indices: x
+
         return [
             lambda sent_index, word_indices: BoxerPred(
                 self.discourse_id, sent_index, word_indices, arg, tok, "n", 0
             )
-        ] + [lambda sent_index, word_indices: cond for cond in conds]
+        ] + [func_gen(cond) for cond in conds]
 
     def _handle_date(self, arg):
         # []: (+), []:'XXXX', [1004]:'04', []:'XX'
