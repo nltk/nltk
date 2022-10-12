@@ -1,10 +1,30 @@
 # Natural Language Toolkit: Language Codes
-# iso639-3 language codes obtained from https://iso639-3.sil.org/
+# iso639-3 language codes (C) https://iso639-3.sil.org/
 #
 # Copyright (C) 2022 NLTK Project
 # Author: Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
+
+"""
+Translate between language names and iso639-3 language codes, obtained from the
+registration authority at https://iso639-3.sil.org/ and used with permission.
+
+The iso639-3 standard is evolving, so retired language codes are kept in the
+iso639retired dictionary. The wrapper functions langname() and langcode()
+combine that dictionary with a main dictionary, in order to support the lookup
+of retired codes.
+
+However, when looking up a language name, langcode() only returns the current
+iso639-3 code, not the retired code:
+
+    >>> import nltk.langnames as lgn
+    >>> lgn.langname('fri')
+    'Western Frisian'
+
+    >>> lgn.langcode('Western Frisian')
+    'fry'
+"""
 
 
 def langname(code):
