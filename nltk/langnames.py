@@ -9,12 +9,15 @@
 
 def langname(code):
     """
-    Convert iso639-3language code to language name
+    Convert iso639-3 language code to language name
     >>> from nltk.langnames import langname
     >>> langname('wln')
     'Walloon'
     """
-    return iso639name[code] or iso639retired[code]
+    try:
+        return iso639name[code]
+    except:
+        return iso639retired[code]
 
 
 def langcode(name):
@@ -24,7 +27,10 @@ def langcode(name):
     >>> langcode('Modern Greek (1453-)')
     'ell'
     """
-    return iso639code[name]
+    try:
+        return iso639code[name]
+    except:
+        return iso639code_retired[name]
 
 
 iso639name = {
@@ -8315,3 +8321,5 @@ iso639retired = {
 }
 
 iso639code = {pair[1]: pair[0] for pair in iso639name.items()}
+
+iso639code_retired = {pair[1]: pair[0] for pair in iso639retired.items()}
