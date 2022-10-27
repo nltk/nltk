@@ -1,10 +1,11 @@
 # Natural Language Toolkit: Language Codes
-# iso639-3 language codes (C) https://iso639-3.sil.org/
 #
 # Copyright (C) 2022 NLTK Project
 # Author: Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
+#
+# iso639-3 language codes (C) https://iso639-3.sil.org/
 
 """
 Translate between language names and iso639-3 language codes, obtained from the
@@ -15,16 +16,22 @@ iso639retired dictionary. The wrapper functions langname() and langcode()
 combine that dictionary with a main dictionary, in order to support the lookup
 of retired codes.
 
-However, when looking up a language name, langcode() only returns the current
-iso639-3 code, not the retired code:
+However, langcode() only returns the current iso639-3 code, not the retired one,
+and prefers the shortest (2-letter) code by default:
 
     >>> import nltk.langnames as lgn
     >>> lgn.langname('fri')
     'Western Frisian'
 
     >>> lgn.langcode('Western Frisian')
+    'fy'
+
+    >>> lgn.langcode('Western Frisian', typ = 3)
     'fry'
+
 """
+
+from warnings import warn
 
 
 def langname(code):
@@ -34,26 +41,46 @@ def langname(code):
     >>> langname('wln')
     'Walloon'
     """
-    try:
-        return iso639name[code]
-    except:
+    if len(code) not in [2, 3]:
+        warn(f"Bad code '{code}': should be 2 or 3 letters")
+        return None
+    if code in iso639name2.keys():
+        return iso639name2[code]
+    elif code in iso639name3.keys():
+        return iso639name3[code]
+    elif code in iso639retired.keys():
         return iso639retired[code]
+    else:
+        warn(f"Could not find code '{code}'")
+        return None
 
 
-def langcode(name):
+def langcode(name, typ=2):
     """
-    Convert language name to iso639-3language code
+    Convert language name to iso639-3 language code. Returns the short 2-letter
+    code by default, if one is available, and the 3-letter code otherwise:
+
     >>> from nltk.langnames import langcode
     >>> langcode('Modern Greek (1453-)')
+    'el'
+
+    Specify 'typ=3' to get the 3-letter code:
+
+    >>> langcode('Modern Greek (1453-)', typ=3)
     'ell'
     """
-    try:
-        return iso639code[name]
-    except:
-        return iso639code_retired[name]
+    if typ == 2 and name in iso639code2.keys():
+        return iso639code2[name]
+    elif typ == 3 or name in iso639code3.keys():
+        return iso639code3[name]
+    elif name in iso639retired.keys():
+        return iso639retired_code[name]
+    else:
+        warn(f"Could not find language '{name}'")
+        return None
 
 
-iso639name = {
+iso639name3 = {
     "aaa": "Ghotuo",
     "aab": "Alumu-Tesu",
     "aac": "Ari",
@@ -7965,6 +7992,196 @@ iso639name = {
     "zza": "Zaza",
     "zzj": "Zuojiang Zhuang",
 }
+
+
+iso639name2 = {
+    "aa": "Afar",
+    "ab": "Abkhazian",
+    "ae": "Avestan",
+    "af": "Afrikaans",
+    "ak": "Akan",
+    "am": "Amharic",
+    "an": "Aragonese",
+    "ar": "Arabic",
+    "as": "Assamese",
+    "av": "Avaric",
+    "ay": "Aymara",
+    "az": "Azerbaijani",
+    "ba": "Bashkir",
+    "be": "Belarusian",
+    "bg": "Bulgarian",
+    "bi": "Bislama",
+    "bm": "Bambara",
+    "bn": "Bengali",
+    "bo": "Tibetan",
+    "br": "Breton",
+    "bs": "Bosnian",
+    "ca": "Catalan",
+    "ce": "Chechen",
+    "ch": "Chamorro",
+    "co": "Corsican",
+    "cr": "Cree",
+    "cs": "Czech",
+    "cu": "Church Slavic",
+    "cv": "Chuvash",
+    "cy": "Welsh",
+    "da": "Danish",
+    "de": "German",
+    "dv": "Dhivehi",
+    "dz": "Dzongkha",
+    "ee": "Ewe",
+    "el": "Modern Greek (1453-)",
+    "en": "English",
+    "eo": "Esperanto",
+    "es": "Spanish",
+    "et": "Estonian",
+    "eu": "Basque",
+    "fa": "Persian",
+    "ff": "Fulah",
+    "fi": "Finnish",
+    "fj": "Fijian",
+    "fo": "Faroese",
+    "fr": "French",
+    "fy": "Western Frisian",
+    "ga": "Irish",
+    "gd": "Scottish Gaelic",
+    "gl": "Galician",
+    "gn": "Guarani",
+    "gu": "Gujarati",
+    "gv": "Manx",
+    "ha": "Hausa",
+    "he": "Hebrew",
+    "hi": "Hindi",
+    "ho": "Hiri Motu",
+    "hr": "Croatian",
+    "ht": "Haitian",
+    "hu": "Hungarian",
+    "hy": "Armenian",
+    "hz": "Herero",
+    "ia": "Interlingua (International Auxiliary Language Association)",
+    "id": "Indonesian",
+    "ie": "Interlingue",
+    "ig": "Igbo",
+    "ii": "Sichuan Yi",
+    "ik": "Inupiaq",
+    "io": "Ido",
+    "is": "Icelandic",
+    "it": "Italian",
+    "iu": "Inuktitut",
+    "ja": "Japanese",
+    "jv": "Javanese",
+    "ka": "Georgian",
+    "kg": "Kongo",
+    "ki": "Kikuyu",
+    "kj": "Kuanyama",
+    "kk": "Kazakh",
+    "kl": "Kalaallisut",
+    "km": "Khmer",
+    "kn": "Kannada",
+    "ko": "Korean",
+    "kr": "Kanuri",
+    "ks": "Kashmiri",
+    "ku": "Kurdish",
+    "kv": "Komi",
+    "kw": "Cornish",
+    "ky": "Kirghiz",
+    "la": "Latin",
+    "lb": "Luxembourgish",
+    "lg": "Ganda",
+    "li": "Limburgan",
+    "ln": "Lingala",
+    "lo": "Lao",
+    "lt": "Lithuanian",
+    "lu": "Luba-Katanga",
+    "lv": "Latvian",
+    "mg": "Malagasy",
+    "mh": "Marshallese",
+    "mi": "Maori",
+    "mk": "Macedonian",
+    "ml": "Malayalam",
+    "mn": "Mongolian",
+    "mr": "Marathi",
+    "ms": "Malay (macrolanguage)",
+    "mt": "Maltese",
+    "my": "Burmese",
+    "na": "Nauru",
+    "nb": "Norwegian Bokmål",
+    "nd": "North Ndebele",
+    "ne": "Nepali (macrolanguage)",
+    "ng": "Ndonga",
+    "nl": "Dutch",
+    "nn": "Norwegian Nynorsk",
+    "no": "Norwegian",
+    "nr": "South Ndebele",
+    "nv": "Navajo",
+    "ny": "Nyanja",
+    "oc": "Occitan (post 1500)",
+    "oj": "Ojibwa",
+    "om": "Oromo",
+    "or": "Oriya (macrolanguage)",
+    "os": "Ossetian",
+    "pa": "Panjabi",
+    "pi": "Pali",
+    "pl": "Polish",
+    "ps": "Pushto",
+    "pt": "Portuguese",
+    "qu": "Quechua",
+    "rm": "Romansh",
+    "rn": "Rundi",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "rw": "Kinyarwanda",
+    "sa": "Sanskrit",
+    "sc": "Sardinian",
+    "sd": "Sindhi",
+    "se": "Northern Sami",
+    "sg": "Sango",
+    "sh": "Serbo-Croatian",
+    "si": "Sinhala",
+    "sk": "Slovak",
+    "sl": "Slovenian",
+    "sm": "Samoan",
+    "sn": "Shona",
+    "so": "Somali",
+    "sq": "Albanian",
+    "sr": "Serbian",
+    "ss": "Swati",
+    "st": "Southern Sotho",
+    "su": "Sundanese",
+    "sv": "Swedish",
+    "sw": "Swahili (macrolanguage)",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "tg": "Tajik",
+    "th": "Thai",
+    "ti": "Tigrinya",
+    "tk": "Turkmen",
+    "tl": "Tagalog",
+    "tn": "Tswana",
+    "to": "Tonga (Tonga Islands)",
+    "tr": "Turkish",
+    "ts": "Tsonga",
+    "tt": "Tatar",
+    "tw": "Twi",
+    "ty": "Tahitian",
+    "ug": "Uighur",
+    "uk": "Ukrainian",
+    "ur": "Urdu",
+    "uz": "Uzbek",
+    "ve": "Venda",
+    "vi": "Vietnamese",
+    "vo": "Volapük",
+    "wa": "Walloon",
+    "wo": "Wolof",
+    "xh": "Xhosa",
+    "yi": "Yiddish",
+    "yo": "Yoruba",
+    "za": "Zhuang",
+    "zh": "Chinese",
+    "zu": "Zulu",
+}
+
+
 iso639retired = {
     "fri": "Western Frisian",
     "auv": "Auvergnat",
@@ -8340,6 +8557,9 @@ iso639retired = {
     "wya": "Wyandot",
 }
 
-iso639code = {pair[1]: pair[0] for pair in iso639name.items()}
+
+iso639code3 = {pair[1]: pair[0] for pair in iso639name3.items()}
+
+iso639code2 = {pair[1]: pair[0] for pair in iso639name2.items()}
 
 iso639code_retired = {pair[1]: pair[0] for pair in iso639retired.items()}
