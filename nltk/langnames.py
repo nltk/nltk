@@ -16,8 +16,9 @@ iso639retired dictionary. The wrapper functions langname() and langcode()
 combine that dictionary with a main dictionary, in order to support the lookup
 of retired codes.
 
-However, langcode() only returns the current iso639-3 code, not the retired one,
-and prefers the shortest (2-letter) code by default:
+However, langcode() only returns the current iso639-3 code (if there is one),
+but falls back to the retired code when there is no current code. And, in order
+to support BCP-47, it prefers the shortest (2-letter) code by default:
 
     >>> import nltk.langnames as lgn
     >>> lgn.langname('fri')
@@ -77,8 +78,8 @@ def langcode(name, typ=2):
         return iso639code2[name]
     elif typ == 3 or name in iso639code3.keys():
         return iso639code3[name]
-    elif name in iso639retired.keys():
-        return iso639retired_code[name]
+    elif name in iso639code_retired.keys():
+        return iso639code_retired[name]
     else:
         warn(f"Could not find language '{name}'")
         return None
