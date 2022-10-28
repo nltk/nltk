@@ -7,9 +7,11 @@
 # For license information, see LICENSE.TXT
 
 import json
+import os  # required for doctests
 import re
 import socket
 import time
+from typing import List, Tuple
 
 from nltk.internals import _java_options, config_java, find_jar_iter, java
 from nltk.parse.api import ParserI
@@ -308,7 +310,16 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     def tokenize(self, text, properties=None):
         """Tokenize a string of text.
 
-        >>> parser = CoreNLPParser(url='http://localhost:9000')
+        Skip these tests if CoreNLP is likely not ready.
+        >>> from nltk.test.setup_fixt import check_jar
+        >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
+
+        The CoreNLP server can be started using the following notation, although
+        we recommend the `with CoreNLPServer() as server:` context manager notation
+        to ensure that the server is always stopped.
+        >>> server = CoreNLPServer()
+        >>> server.start()
+        >>> parser = CoreNLPParser(url=server.url)
 
         >>> text = 'Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'
         >>> list(parser.tokenize(text))
@@ -321,7 +332,8 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         ...             properties={'tokenize.options': 'americanize=true'},
         ...     )
         ... )
-        ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
+        ['The', 'colour', 'of', 'the', 'wall', 'is', 'blue', '.']
+        >>> server.stop()
 
         """
         default_properties = {"annotators": "tokenize,ssplit"}
@@ -349,24 +361,34 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         sentences = (" ".join(words) for words in sentences)
         return [sentences[0] for sentences in self.raw_tag_sents(sentences)]
 
-    def tag(self, sentence):
+    def tag(self, sentence: str) -> List[Tuple[str, str]]:
         """
         Tag a list of tokens.
 
         :rtype: list(tuple(str, str))
 
-        >>> parser = CoreNLPParser(url='http://localhost:9000', tagtype='ner')
-        >>> tokens = 'Rami Eid is studying at Stony Brook University in NY'.split()
-        >>> parser.tag(tokens)
-        [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
-        ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'O')]
+        Skip these tests if CoreNLP is likely not ready.
+        >>> from nltk.test.setup_fixt import check_jar
+        >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
-        >>> parser = CoreNLPParser(url='http://localhost:9000', tagtype='pos')
+        The CoreNLP server can be started using the following notation, although
+        we recommend the `with CoreNLPServer() as server:` context manager notation
+        to ensure that the server is always stopped.
+        >>> server = CoreNLPServer()
+        >>> server.start()
+        >>> parser = CoreNLPParser(url=server.url, tagtype='ner')
+        >>> tokens = 'Rami Eid is studying at Stony Brook University in NY'.split()
+        >>> parser.tag(tokens)  # doctest: +NORMALIZE_WHITESPACE
+        [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
+        ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'STATE_OR_PROVINCE')]
+
+        >>> parser = CoreNLPParser(url=server.url, tagtype='pos')
         >>> tokens = "What is the airspeed of an unladen swallow ?".split()
-        >>> parser.tag(tokens)
+        >>> parser.tag(tokens)  # doctest: +NORMALIZE_WHITESPACE
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
         ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'),
         ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
+        >>> server.stop()
         """
         return self.tag_sents([sentence])[0]
 
@@ -401,24 +423,36 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
 class CoreNLPParser(GenericCoreNLPParser):
     """
-    >>> parser = CoreNLPParser(url='http://localhost:9000')
+    Skip these tests if CoreNLP is likely not ready.
+    >>> from nltk.test.setup_fixt import check_jar
+    >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
-    >>> next(
-    ...     parser.raw_parse('The quick brown fox jumps over the lazy dog.')
-    ... ).pretty_print()  # doctest: +NORMALIZE_WHITESPACE
-                         ROOT
-                          |
-                          S
-           _______________|__________________________
-          |                         VP               |
-          |                _________|___             |
-          |               |             PP           |
-          |               |     ________|___         |
-          NP              |    |            NP       |
-      ____|__________     |    |     _______|____    |
-     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN  .
-     |    |     |    |    |    |    |       |    |   |
-    The quick brown fox jumps over the     lazy dog  .
+    The recommended usage of `CoreNLPParser` is using the context manager notation:
+    >>> with CoreNLPServer() as server:
+    ...     parser = CoreNLPParser(url=server.url)
+    ...     next(
+    ...         parser.raw_parse('The quick brown fox jumps over the lazy dog.')
+    ...     ).pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+                            ROOT
+                            |
+                            S
+            _______________|__________________________
+            |                         VP               |
+            |                _________|___             |
+            |               |             PP           |
+            |               |     ________|___         |
+            NP              |    |            NP       |
+        ____|__________     |    |     _______|____    |
+        DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN  .
+        |    |     |    |    |    |    |       |    |   |
+        The quick brown fox jumps over the     lazy dog  .
+
+    Alternatively, the server can be started using the following notation.
+    Note that `CoreNLPServer` does not need to be used if the CoreNLP server is started
+    outside of Python.
+    >>> server = CoreNLPServer()
+    >>> server.start()
+    >>> parser = CoreNLPParser(url=server.url)
 
     >>> (parse_fox, ), (parse_wolf, ) = parser.raw_parse_sents(
     ...     [
@@ -485,9 +519,9 @@ class CoreNLPParser(GenericCoreNLPParser):
      |                VP
      |     ___________|_____________
      |    |                         NP
-     |    |                  _______|_________
-     |    |                 NP               PRN
-     |    |            _____|_______      ____|______________
+     |    |                  _______|________________________
+     |    |                 NP           |        |          |
+     |    |            _____|_______     |        |          |
      NP   |           NP            |    |        NP         |
      |    |     ______|_________    |    |     ___|____      |
      DT  VBZ  PRP$   NNS       POS  NN -LRB-  DT       NN  -RRB-
@@ -531,7 +565,7 @@ class CoreNLPParser(GenericCoreNLPParser):
     ...         'that she was raped by her Iraqi captors.'
     ...     )
     ... ).height()
-    20
+    14
 
     >>> next(
     ...     parser.raw_parse(
@@ -539,7 +573,9 @@ class CoreNLPParser(GenericCoreNLPParser):
     ...         '0.05 percent, at 997.02.'
     ...     )
     ... ).height()
-    9
+    11
+
+    >>> server.stop()
     """
 
     _OUTPUT_FORMAT = "penn"
@@ -552,37 +588,49 @@ class CoreNLPParser(GenericCoreNLPParser):
 class CoreNLPDependencyParser(GenericCoreNLPParser):
     """Dependency parser.
 
-    >>> dep_parser = CoreNLPDependencyParser(url='http://localhost:9000')
+    Skip these tests if CoreNLP is likely not ready.
+    >>> from nltk.test.setup_fixt import check_jar
+    >>> check_jar(CoreNLPServer._JAR, env_vars=("CORENLP",), is_regex=True)
 
-    >>> parse, = dep_parser.raw_parse(
-    ...     'The quick brown fox jumps over the lazy dog.'
-    ... )
-    >>> print(parse.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
-    The     DT      4       det
-    quick   JJ      4       amod
-    brown   JJ      4       amod
-    fox     NN      5       nsubj
-    jumps   VBZ     0       ROOT
-    over    IN      9       case
-    the     DT      9       det
-    lazy    JJ      9       amod
-    dog     NN      5       nmod
-    .       .       5       punct
+    The recommended usage of `CoreNLPParser` is using the context manager notation:
+    >>> with CoreNLPServer() as server:
+    ...     dep_parser = CoreNLPDependencyParser(url=server.url)
+    ...     parse, = dep_parser.raw_parse(
+    ...         'The quick brown fox jumps over the lazy dog.'
+    ...     )
+    ...     print(parse.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
+    The        DT      4       det
+    quick      JJ      4       amod
+    brown      JJ      4       amod
+    fox        NN      5       nsubj
+    jumps      VBZ     0       ROOT
+    over       IN      9       case
+    the        DT      9       det
+    lazy       JJ      9       amod
+    dog        NN      5       obl
+    .  .       5       punct
 
+    Alternatively, the server can be started using the following notation.
+    Note that `CoreNLPServer` does not need to be used if the CoreNLP server is started
+    outside of Python.
+    >>> server = CoreNLPServer()
+    >>> server.start()
+    >>> dep_parser = CoreNLPDependencyParser(url=server.url)
+    >>> parse, = dep_parser.raw_parse('The quick brown fox jumps over the lazy dog.')
     >>> print(parse.tree())  # doctest: +NORMALIZE_WHITESPACE
     (jumps (fox The quick brown) (dog over the lazy) .)
 
     >>> for governor, dep, dependent in parse.triples():
     ...     print(governor, dep, dependent)  # doctest: +NORMALIZE_WHITESPACE
-        ('jumps', 'VBZ') nsubj ('fox', 'NN')
-        ('fox', 'NN') det ('The', 'DT')
-        ('fox', 'NN') amod ('quick', 'JJ')
-        ('fox', 'NN') amod ('brown', 'JJ')
-        ('jumps', 'VBZ') nmod ('dog', 'NN')
-        ('dog', 'NN') case ('over', 'IN')
-        ('dog', 'NN') det ('the', 'DT')
-        ('dog', 'NN') amod ('lazy', 'JJ')
-        ('jumps', 'VBZ') punct ('.', '.')
+    ('jumps', 'VBZ') nsubj ('fox', 'NN')
+    ('fox', 'NN') det ('The', 'DT')
+    ('fox', 'NN') amod ('quick', 'JJ')
+    ('fox', 'NN') amod ('brown', 'JJ')
+    ('jumps', 'VBZ') obl ('dog', 'NN')
+    ('dog', 'NN') case ('over', 'IN')
+    ('dog', 'NN') det ('the', 'DT')
+    ('dog', 'NN') amod ('lazy', 'JJ')
+    ('jumps', 'VBZ') punct ('.', '.')
 
     >>> (parse_fox, ), (parse_dog, ) = dep_parser.raw_parse_sents(
     ...     [
@@ -591,28 +639,28 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     ...     ]
     ... )
     >>> print(parse_fox.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
-    The DT      4       det
-    quick       JJ      4       amod
-    brown       JJ      4       amod
-    fox NN      5       nsubj
-    jumps       VBZ     0       ROOT
-    over        IN      9       case
-    the DT      9       det
-    lazy        JJ      9       amod
-    dog NN      5       nmod
-    .   .       5       punct
+    The        DT      4       det
+    quick      JJ      4       amod
+    brown      JJ      4       amod
+    fox        NN      5       nsubj
+    jumps      VBZ     0       ROOT
+    over       IN      9       case
+    the        DT      9       det
+    lazy       JJ      9       amod
+    dog        NN      5       obl
+    .  .       5       punct
 
     >>> print(parse_dog.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
-    The DT      4       det
-    quick       JJ      4       amod
-    grey        JJ      4       amod
-    wolf        NN      5       nsubj
-    jumps       VBZ     0       ROOT
-    over        IN      9       case
-    the DT      9       det
-    lazy        JJ      9       amod
-    fox NN      5       nmod
-    .   .       5       punct
+    The        DT      4       det
+    quick      JJ      4       amod
+    grey       JJ      4       amod
+    wolf       NN      5       nsubj
+    jumps      VBZ     0       ROOT
+    over       IN      9       case
+    the        DT      9       det
+    lazy       JJ      9       amod
+    fox        NN      5       obl
+    .  .       5       punct
 
     >>> (parse_dog, ), (parse_friends, ) = dep_parser.parse_sents(
     ...     [
@@ -627,26 +675,26 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     dog NN      0       ROOT
 
     >>> print(parse_friends.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
-    This        DT      6       nsubj
-    is  VBZ     6       cop
-    my  PRP$    4       nmod:poss
-    friends     NNS     6       nmod:poss
-    '   POS     4       case
-    cat NN      0       ROOT
-    -LRB-       -LRB-   9       punct
-    the DT      9       det
-    tabby       NN      6       appos
-    -RRB-       -RRB-   9       punct
+    This       DT      6       nsubj
+    is VBZ     6       cop
+    my PRP$    4       nmod:poss
+    friends    NNS     6       nmod:poss
+    '  POS     4       case
+    cat        NN      0       ROOT
+    (  -LRB-   9       punct
+    the        DT      9       det
+    tabby      NN      6       dep
+    )  -RRB-   9       punct
 
     >>> parse_john, parse_mary, = dep_parser.parse_text(
     ...     'John loves Mary. Mary walks.'
     ... )
 
     >>> print(parse_john.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
-    John        NNP     2       nsubj
-    loves       VBZ     0       ROOT
-    Mary        NNP     2       dobj
-    .   .       2       punct
+    John       NNP     2       nsubj
+    loves      VBZ     0       ROOT
+    Mary       NNP     2       obj
+    .  .       2       punct
 
     >>> print(parse_mary.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
     Mary        NNP     2       nsubj
@@ -665,7 +713,7 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     ...         )
     ...     ).nodes
     ... )
-    21
+    23
 
     Phone  numbers.
 
@@ -681,35 +729,38 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     ...         dep_parser.raw_parse('The underscore _ should not simply disappear.')
     ...     ).to_conll(4)
     ... )  # doctest: +NORMALIZE_WHITESPACE
-    The         DT  3   det
-    underscore  VBP 3   amod
-    _           NN  7   nsubj
-    should      MD  7   aux
-    not         RB  7   neg
-    simply      RB  7   advmod
-    disappear   VB  0   ROOT
-    .           .   7   punct
+    The        DT      2       det
+    underscore NN      7       nsubj
+    _  NFP     7       punct
+    should     MD      7       aux
+    not        RB      7       advmod
+    simply     RB      7       advmod
+    disappear  VB      0       ROOT
+    .  .       7       punct
 
     >>> print(
-    ...     '\\n'.join(
-    ...         next(
-    ...             dep_parser.raw_parse(
-    ...                 'for all of its insights into the dream world of teen life , and its electronic expression through '
-    ...                 'cyber culture , the film gives no quarter to anyone seeking to pull a cohesive story out of its 2 '
-    ...                 '1/2-hour running time .'
-    ...             )
-    ...         ).to_conll(4).split('\\n')[-8:]
-    ...     )
-    ... )
-    its	PRP$	40	nmod:poss
-    2 1/2	CD	40	nummod
-    -	:	40	punct
-    hour	NN	31	nmod
-    running	VBG	42	amod
-    time	NN	40	dep
-    .	.	24	punct
-    <BLANKLINE>
+    ...     next(
+    ...         dep_parser.raw_parse(
+    ...             'for all of its insights into the dream world of teen life , and its electronic expression through '
+    ...             'cyber culture , the film gives no quarter to anyone seeking to pull a cohesive story out of its 2 '
+    ...             '1/2-hour running time .'
+    ...         )
+    ...     ).to_conll(4)
+    ... )  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    for        IN      2       case
+    all        DT      24      obl
+    of IN      5       case
+    its        PRP$    5       nmod:poss
+    insights   NNS     2       nmod
+    into       IN      9       case
+    the        DT      9       det
+    dream      NN      9       compound
+    world      NN      5       nmod
+    of IN      12      case
+    teen       NN      12      compound
+    ...
 
+    >>> server.stop()
     """
 
     _OUTPUT_FORMAT = "conll2007"
