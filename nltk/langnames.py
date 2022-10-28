@@ -31,7 +31,10 @@ and prefers the shortest (2-letter) code by default:
 
 """
 
+import re
 from warnings import warn
+
+codepattern = re.compile("[a-z][a-z][a-z]?")
 
 
 def langname(code):
@@ -41,14 +44,15 @@ def langname(code):
     >>> langname('wln')
     'Walloon'
     """
-    if len(code) not in [2, 3]:
-        warn(f"Bad code '{code}': should be 2 or 3 letters")
+    code = code.lower()
+    if not codepattern.fullmatch(code):
+        warn(f"Invalid code '{code}': should be 2 or 3 letters")
         return None
-    if code in iso639name2.keys():
+    elif code in iso639name2.keys():  # 2-letter codes
         return iso639name2[code]
-    elif code in iso639name3.keys():
+    elif code in iso639name3.keys():  # 3-letter codes
         return iso639name3[code]
-    elif code in iso639retired.keys():
+    elif code in iso639retired.keys():  # retired  codes
         return iso639retired[code]
     else:
         warn(f"Could not find code '{code}'")
