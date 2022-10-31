@@ -72,6 +72,7 @@ abc = LazyCorpusLoader(
     encoding=[("science", "latin_1"), ("rural", "utf8")],
 )
 alpino = LazyCorpusLoader("alpino", AlpinoCorpusReader, tagset="alpino")
+bcp47 = LazyCorpusLoader("bcp47", Bcp47CorpusReader, r"(cldr|iana)/*")
 brown = LazyCorpusLoader(
     "brown",
     CategorizedTaggedCorpusReader,
