@@ -109,7 +109,11 @@ class Bcp47CorpusReader(CorpusReader):
                         subfields[key].append(val)
                 else:  # multiline field
                     subfields[key][-1] += " " + field[0].strip()
-                if typ == "language" and key == "Description":
+                if (
+                    "Deprecated" not in record
+                    and typ == "language"
+                    and key == "Description"
+                ):
                     self.langcode[subfields[key][-1]] = tag
             for key in subfields:
                 if len(subfields[key]) == 1:  # single value
