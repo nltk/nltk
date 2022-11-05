@@ -1,0 +1,4 @@
+# https://github.com/actions/labeler
+CI:
+  - .github/workflows/*
+  - .github/labeler.yml
