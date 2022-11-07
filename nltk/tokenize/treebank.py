@@ -356,7 +356,7 @@ class TreebankWordDetokenizer(TokenizerI):
         :type convert_parentheses: bool, optional
         :return: str
         """
-        text = " ".join(tokens)
+        text = " " + " ".join(tokens) + " "
         # Reverse the contractions regexes.
         # Note: CONTRACTIONS4 are not used in tokenization.
         for regexp in self.CONTRACTIONS3:
