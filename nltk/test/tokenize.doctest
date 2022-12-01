@@ -132,6 +132,15 @@ Testing treebank's detokenizer
     >>> s = "(Sentence) starting with parentheses."
     >>> detokenizer.detokenize(word_tokenize(s))
     '(Sentence) starting with parentheses.'
+    >>> s = "I've"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    "I've"
+    >>> s = "Don't"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    "Don't"
+    >>> s = "I'd"
+    >>> detokenizer.detokenize(word_tokenize(s))
+    "I'd"
 
 
 Sentence tokenization in word_tokenize:
