@@ -30,28 +30,20 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
             "See https://matplotlib.org/"
         ) from e
 
-    text = list(text)
-    words.reverse()
+    word2y = {
+        word.lower() if ignore_case else word: y
+        for y, word in enumerate(reversed(words))
+    }
+    xs, ys = [], []
+    for x, token in enumerate(text):
+        token = token.lower() if ignore_case else token
+        y = word2y.get(token)
+        if y is not None:
+            xs.append(x)
+            ys.append(y)
 
-    if ignore_case:
-        words_to_comp = list(map(str.lower, words))
-        text_to_comp = list(map(str.lower, text))
-    else:
-        words_to_comp = words
-        text_to_comp = text
-
-    points = [
-        (x, y)
-        for x in range(len(text_to_comp))
-        for y in range(len(words_to_comp))
-        if text_to_comp[x] == words_to_comp[y]
-    ]
-    if points:
-        x, y = list(zip(*points))
-    else:
-        x = y = ()
     _, ax = plt.subplots()
-    ax.plot(x, y, "|")
+    ax.plot(xs, ys, "|")
     ax.set_yticks(list(range(len(words))), words, color="C0")
     ax.set_ylim(-1, len(words))
     ax.set_title(title)
