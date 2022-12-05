@@ -7,6 +7,7 @@
 """Language Model Interface."""
 
 import random
+import warnings
 from abc import ABCMeta, abstractmethod
 from bisect import bisect
 from itertools import accumulate
@@ -91,6 +92,12 @@ class LanguageModel(metaclass=ABCMeta):
         :type pad_fn: function or None
         """
         self.order = order
+        if vocabulary and not isinstance(vocabulary, Vocabulary):
+            warnings.warn(
+                f"The `vocabulary` argument passed to {self.__class__.__name__!r} "
+                "must be an instance of `nltk.lm.Vocabulary`.",
+                stacklevel=3,
+            )
         self.vocab = Vocabulary() if vocabulary is None else vocabulary
         self.counts = NgramCounter() if counter is None else counter
 
