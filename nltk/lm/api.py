@@ -83,7 +83,7 @@ class LanguageModel(metaclass=ABCMeta):
             of creating a new one when training.
         :type vocabulary: `nltk.lm.Vocabulary` or None
         :param counter: If provided, use this object to count ngrams.
-        :type vocabulary: `nltk.lm.NgramCounter` or None
+        :type counter: `nltk.lm.NgramCounter` or None
         :param ngrams_fn: If given, defines how sentences in training text are turned to ngram
             sequences.
         :type ngrams_fn: function or None
