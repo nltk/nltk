@@ -23,7 +23,7 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     """
 
     try:
-        from matplotlib import pylab
+        import matplotlib.pyplot as plt
     except ImportError as e:
         raise ValueError(
             "The plot function requires matplotlib to be installed."
@@ -50,16 +50,20 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
         x, y = list(zip(*points))
     else:
         x = y = ()
-    pylab.plot(x, y, "b|", scalex=0.1)
-    pylab.yticks(list(range(len(words))), words, color="b")
-    pylab.ylim(-1, len(words))
-    pylab.title(title)
-    pylab.xlabel("Word Offset")
-    pylab.show()
+    _, ax = plt.subplots()
+    ax.plot(x, y, "b|")
+    ax.set_yticks(list(range(len(words))), words, color="b")
+    ax.set_ylim(-1, len(words))
+    ax.set_title(title)
+    ax.set_xlabel("Word Offset")
+    return ax
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
     from nltk.corpus import gutenberg
 
     words = ["Elinor", "Marianne", "Edward", "Willoughby"]
     dispersion_plot(gutenberg.words("austen-sense.txt"), words)
+    plt.show()
