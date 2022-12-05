@@ -51,8 +51,8 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     else:
         x = y = ()
     _, ax = plt.subplots()
-    ax.plot(x, y, "b|")
-    ax.set_yticks(list(range(len(words))), words, color="b")
+    ax.plot(x, y, "|")
+    ax.set_yticks(list(range(len(words))), words, color="C0")
     ax.set_ylim(-1, len(words))
     ax.set_title(title)
     ax.set_xlabel("Word Offset")
