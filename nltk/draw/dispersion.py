@@ -31,12 +31,12 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
         ) from e
 
     word2y = {
-        word.lower() if ignore_case else word: y
+        word.casefold() if ignore_case else word: y
         for y, word in enumerate(reversed(words))
     }
     xs, ys = [], []
     for x, token in enumerate(text):
-        token = token.lower() if ignore_case else token
+        token = token.casefold() if ignore_case else token
         y = word2y.get(token)
         if y is not None:
             xs.append(x)
