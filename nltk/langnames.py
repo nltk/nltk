@@ -61,7 +61,7 @@ def langname(tag, typ="full"):
             return iso639retired[code]
         elif code in iso639short.keys():  # 3-letter codes
             code2 = iso639short[code]  # convert to 2-letter code
-            warn(f"Shortening {code} to {code2}")
+            warn(f"Shortening {code!r} to {code2!r}", stacklevel=2)
             tag = "-".join([code2] + tags[1:])
         name = bcp47.name(tag)  # parse according to BCP-47
         if typ == "full":
@@ -69,7 +69,7 @@ def langname(tag, typ="full"):
         elif name:
             return name.split(":")[0]  # only the language subtag
     else:
-        warn(f"Could not find code '{code}'")
+        warn(f"Could not find code in {code!r}", stacklevel=2)
 
 
 def langcode(name, typ=2):
@@ -94,7 +94,7 @@ def langcode(name, typ=2):
     elif name in iso639code_retired.keys():
         return iso639code_retired[name]
     else:
-        warn(f"Could not find language '{name}'")
+        warn(f"Could not find language in {name!r}", stacklevel=2)
 
 
 # =======================================================================
