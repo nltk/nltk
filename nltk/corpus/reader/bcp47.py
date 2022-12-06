@@ -97,13 +97,13 @@ class Bcp47CorpusReader(CorpusReader):
             fields = [field.split(": ") for field in record.strip().split("\n")]
             typ = fields[0][1]
             tag = fields[1][1]
-            if typ not in dic.keys():
+            if typ not in dic:
                 dic[typ] = {}
             subfields = {}
             for field in fields[2:]:
                 if len(field) == 2:
                     [key, val] = field
-                    if key not in subfields.keys():
+                    if key not in subfields:
                         subfields[key] = [val]
                     else:  # multiple value
                         subfields[key].append(val)
@@ -135,7 +135,7 @@ class Bcp47CorpusReader(CorpusReader):
         """Concatenate subtag values"""
         name = f"{lg_record['language']}"
         for label in ["extlang", "script", "region", "variant", "extension"]:
-            if label in lg_record.keys():
+            if label in lg_record:
                 name += f": {lg_record[label]}"
         return name
 
@@ -151,19 +151,16 @@ class Bcp47CorpusReader(CorpusReader):
                 label = labels.pop(0)
                 subtag = self.casing[label](subtag)
                 if self.format[label].fullmatch(subtag):
-                    if subtag in self.db[label].keys():
+                    if subtag in self.db[label]:
                         found = True
                         lang[label] = self.val2str(
                             self.db[label][subtag]["Description"]
                         )
                         break
-                    elif subtag in self.db["deprecated"][label].keys():
+                    elif subtag in self.db["deprecated"][label]:
                         found = True
                         note = f"The '{subtag}' {label} code is deprecated"
-                        if (
-                            "Preferred-Value"
-                            in self.db["deprecated"][label][subtag].keys()
-                        ):
+                        if "Preferred-Value" in self.db["deprecated"][label][subtag]:
                             prefer = self.db["deprecated"][label][subtag][
                                 "Preferred-Value"
                             ]
@@ -176,7 +173,7 @@ class Bcp47CorpusReader(CorpusReader):
             if not found:
                 if subtag == "u" and subtags[0] == "sd":  # CLDR regional subdivisions
                     sd = subtags[1]
-                    if sd in self.subdiv.keys():
+                    if sd in self.subdiv:
                         ext = self.subdiv[sd]
                     else:
                         ext = f"<Unknown subdivision: {ext}>"
@@ -200,13 +197,13 @@ class Bcp47CorpusReader(CorpusReader):
         """
         for label in ["redundant", "grandfathered"]:
             val = None
-            if tag in self.db[label].keys():
+            if tag in self.db[label]:
                 val = f"{self.db[label][tag]['Description']}"
                 note = f"The '{tag}' code is {label}"
-            elif tag in self.db["deprecated"][label].keys():
+            elif tag in self.db["deprecated"][label]:
                 val = f"{self.db['deprecated'][label][tag]['Description']}"
                 note = f"The '{tag}' code is {label} and deprecated"
-                if "Preferred-Value" in self.db["deprecated"][label][tag].keys():
+                if "Preferred-Value" in self.db["deprecated"][label][tag]:
                     prefer = self.db["deprecated"][label][subtag]["Preferred-Value"]
                     note += f"', prefer '{self.val2str(prefer)}'"
             if val:
