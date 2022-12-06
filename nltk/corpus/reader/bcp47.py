@@ -159,7 +159,7 @@ class Bcp47CorpusReader(CorpusReader):
                         break
                     elif subtag in self.db["deprecated"][label]:
                         found = True
-                        note = f"The '{subtag}' {label} code is deprecated"
+                        note = f"The {subtag!r} {label} code is deprecated"
                         if "Preferred-Value" in self.db["deprecated"][label][subtag]:
                             prefer = self.db["deprecated"][label][subtag][
                                 "Preferred-Value"
@@ -199,18 +199,18 @@ class Bcp47CorpusReader(CorpusReader):
             val = None
             if tag in self.db[label]:
                 val = f"{self.db[label][tag]['Description']}"
-                note = f"The '{tag}' code is {label}"
+                note = f"The {tag!r} code is {label}"
             elif tag in self.db["deprecated"][label]:
                 val = f"{self.db['deprecated'][label][tag]['Description']}"
-                note = f"The '{tag}' code is {label} and deprecated"
+                note = f"The {tag!r} code is {label} and deprecated"
                 if "Preferred-Value" in self.db["deprecated"][label][tag]:
                     prefer = self.db["deprecated"][label][tag]["Preferred-Value"]
-                    note += f"', prefer '{self.val2str(prefer)}'"
+                    note += f", prefer {self.val2str(prefer)!r}"
             if val:
                 warn(note)
                 return val
         try:
             return self.lang2str(self.parse_tag(tag))
         except:
-            warn(f"Tag {tag} was not recognized")
+            warn(f"Tag {tag!r} was not recognized")
             return None
