@@ -15,7 +15,7 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     Generate a lexical dispersion plot.
 
     :param text: The source text
-    :type text: list(str) or enum(str)
+    :type text: list(str) or iter(str)
     :param words: The target words
     :type words: list of str
     :param ignore_case: flag to set if case should be ignored when searching text
