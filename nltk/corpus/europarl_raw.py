@@ -11,46 +11,46 @@ from nltk.corpus.reader import *
 from nltk.corpus.util import LazyCorpusLoader
 
 # Create a new corpus reader instance for each European language
-danish = LazyCorpusLoader(
+danish: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/danish", EuroparlCorpusReader, r"ep-.*\.da", encoding="utf-8"
 )
 
-dutch = LazyCorpusLoader(
+dutch: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/dutch", EuroparlCorpusReader, r"ep-.*\.nl", encoding="utf-8"
 )
 
-english = LazyCorpusLoader(
+english: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/english", EuroparlCorpusReader, r"ep-.*\.en", encoding="utf-8"
 )
 
-finnish = LazyCorpusLoader(
+finnish: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/finnish", EuroparlCorpusReader, r"ep-.*\.fi", encoding="utf-8"
 )
 
-french = LazyCorpusLoader(
+french: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/french", EuroparlCorpusReader, r"ep-.*\.fr", encoding="utf-8"
 )
 
-german = LazyCorpusLoader(
+german: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/german", EuroparlCorpusReader, r"ep-.*\.de", encoding="utf-8"
 )
 
-greek = LazyCorpusLoader(
+greek: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/greek", EuroparlCorpusReader, r"ep-.*\.el", encoding="utf-8"
 )
 
-italian = LazyCorpusLoader(
+italian: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/italian", EuroparlCorpusReader, r"ep-.*\.it", encoding="utf-8"
 )
 
-portuguese = LazyCorpusLoader(
+portuguese: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/portuguese", EuroparlCorpusReader, r"ep-.*\.pt", encoding="utf-8"
 )
 
-spanish = LazyCorpusLoader(
+spanish: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/spanish", EuroparlCorpusReader, r"ep-.*\.es", encoding="utf-8"
 )
 
-swedish = LazyCorpusLoader(
+swedish: EuroparlCorpusReader = LazyCorpusLoader(
     "europarl_raw/swedish", EuroparlCorpusReader, r"ep-.*\.sv", encoding="utf-8"
 )
