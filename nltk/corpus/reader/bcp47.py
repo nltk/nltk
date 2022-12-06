@@ -204,7 +204,7 @@ class Bcp47CorpusReader(CorpusReader):
                 val = f"{self.db['deprecated'][label][tag]['Description']}"
                 note = f"The '{tag}' code is {label} and deprecated"
                 if "Preferred-Value" in self.db["deprecated"][label][tag]:
-                    prefer = self.db["deprecated"][label][subtag]["Preferred-Value"]
+                    prefer = self.db["deprecated"][label][tag]["Preferred-Value"]
                     note += f"', prefer '{self.val2str(prefer)}'"
             if val:
                 warn(note)
