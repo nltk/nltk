@@ -294,6 +294,7 @@
 - Heungson Lee <https://github.com/heungson>
 - M.K. Pawelkiewicz <https://github.com/hamiltonianflow>
 - Steven Thomas Smith <https://github.com/essandess>
+- Jan Lennartz <https://github.com/Madnex>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

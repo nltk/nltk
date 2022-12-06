@@ -20,6 +20,7 @@ from collections import defaultdict
 from itertools import chain
 from pprint import pformat
 
+from nltk.internals import find_binary
 from nltk.tree import Tree
 
 #################################################################
@@ -185,7 +186,8 @@ class DependencyGraph:
 
     def _repr_svg_(self):
         """Show SVG representation of the transducer (IPython magic).
-
+        >>> from nltk.test.setup_fixt import check_binary
+        >>> check_binary('dot')
         >>> dg = DependencyGraph(
         ...     'John N 2\\n'
         ...     'loves V 0\\n'
@@ -459,7 +461,7 @@ class DependencyGraph:
         >>> cyclic_dg.root = top
 
         >>> cyclic_dg.contains_cycle()
-        [3, 1, 2, 4]
+        [1, 2, 4, 3]
 
         """
         distances = {}
@@ -550,30 +552,36 @@ def dot2img(dot_string, t="svg"):
     Create image representation fom dot_string, using the 'dot' program
     from the Graphviz package.
 
-    Use the 't' argument to specify the image file format, for ex.
-    'png' or 'jpeg' (Running 'dot -T:' lists all available formats).
+    Use the 't' argument to specify the image file format, for ex. 'jpeg', 'eps',
+    'json', 'png' or 'webp' (Running 'dot -T:' lists all available formats).
 
-    sys.stdout is used instead of subprocess.PIPE, to avoid decoding errors
+    Note that the "capture_output" option of subprocess.run() is only available
+    with text formats (like svg), but not with binary image formats (like png).
     """
-    from sys import stderr, stdout
 
     try:
-        proc = subprocess.run(
-            ["dot", "-T%s" % t],
-            input=dot_string,
-            stdout=stdout,
-            stderr=stderr,
-            text=True,
-        )
+        find_binary("dot")
+        try:
+            if t in ["dot", "dot_json", "json", "svg"]:
+                proc = subprocess.run(
+                    ["dot", "-T%s" % t],
+                    capture_output=True,
+                    input=dot_string,
+                    text=True,
+                )
+            else:
+                proc = subprocess.run(
+                    ["dot", "-T%s" % t],
+                    input=bytes(dot_string, encoding="utf8"),
+                )
+            return proc.stdout
+        except:
+            raise Exception(
+                "Cannot create image representation by running dot from string: {}"
+                "".format(dot_string)
+            )
     except OSError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
-    out, err = proc.stdout, proc.stderr
-    if err:
-        raise Exception(
-            "Cannot create image representation by running dot from string: {}"
-            "".format(dot_string)
-        )
-    return out
 
 
 class DependencyGraphError(Exception):

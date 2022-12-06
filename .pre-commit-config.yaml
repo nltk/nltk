@@ -6,8 +6,9 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
+      - id: check-yaml
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.23.3
+    rev: v3.1.0
     hooks:
     - id: pyupgrade
       args: ["--py37-plus"]

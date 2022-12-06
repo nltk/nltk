@@ -30,8 +30,12 @@ class HunposTagger(TaggerI):
      - (optionally) the path to the hunpos-tag binary
      - (optionally) the encoding of the training data (default: ISO-8859-1)
 
-    Example:
+    Check whether the required "hunpos-tag" binary is available:
 
+        >>> from nltk.test.setup_fixt import check_binary
+        >>> check_binary('hunpos-tag')
+
+    Example:
         >>> from nltk.tag import HunposTagger
         >>> ht = HunposTagger('en_wsj.model')
         >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())

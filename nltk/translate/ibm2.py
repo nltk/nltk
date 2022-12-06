@@ -79,8 +79,8 @@ class IBMModel2(IBMModel):
     >>> print(round(ibm2.translation_table['ja'][None], 3))
     0.0
 
-    >>> print(ibm2.alignment_table[1][1][2][2])
-    0.938...
+    >>> print(round(ibm2.alignment_table[1][1][2][2], 3))
+    0.939
     >>> print(round(ibm2.alignment_table[1][2][2][2], 3))
     0.0
     >>> print(round(ibm2.alignment_table[2][2][4][5], 3))

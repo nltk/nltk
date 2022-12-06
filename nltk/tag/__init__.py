@@ -57,8 +57,8 @@ of ``None``.
 
 We evaluate a tagger on data that was not seen during training:
 
-    >>> tagger.accuracy(brown.tagged_sents(categories='news')[500:600])
-    0.7...
+    >>> round(tagger.accuracy(brown.tagged_sents(categories='news')[500:600]), 3)
+    0.735
 
 For more information, please consult chapter 5 of the NLTK Book.
 

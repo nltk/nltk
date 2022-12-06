@@ -51,7 +51,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     Examples using the Subjectivity Dataset:
 
     >>> from nltk.corpus import subjectivity
-    >>> subjectivity.sents()[23]
+    >>> subjectivity.sents()[23] # doctest: +NORMALIZE_WHITESPACE
     ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
     'happened', 'off', 'screen', '.']
     >>> subjectivity.categories()
@@ -62,7 +62,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     Examples using the Sentence Polarity Dataset:
 
     >>> from nltk.corpus import sentence_polarity
-    >>> sentence_polarity.sents()
+    >>> sentence_polarity.sents() # doctest: +NORMALIZE_WHITESPACE
     [['simplistic', ',', 'silly', 'and', 'tedious', '.'], ["it's", 'so', 'laddish',
     'and', 'juvenile', ',', 'only', 'teenage', 'boys', 'could', 'possibly', 'find',
     'it', 'funny', '.'], ...]

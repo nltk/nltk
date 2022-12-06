@@ -995,7 +995,7 @@ class Expression(SubstituteBindingsI):
         return IffExpression(self, other)
 
     def __eq__(self, other):
-        raise NotImplementedError()
+        return NotImplemented
 
     def __ne__(self, other):
         return not self == other

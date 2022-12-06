@@ -1,0 +1,49 @@
+# https://github.com/actions/labeler
+CI:
+  - .github/workflows/*
+  - .github/labeler.yml
+
+classifier:
+  - nltk/classify/**/*
+
+cli:
+  - nltk/cli.py
+
+cluster:
+  - nltk/cluster/**/*
+
+corpus:
+  - nltk/corpus/**/*
+
+GUI:
+  - nltk/app/**/*
+
+internals:
+  - nltk/internals.py
+
+language-model:
+  - nltk/lm/**/*
+
+metrics:
+  - nltk/metrics/**/*
+
+parsing:
+  - nltk/parse/**/*
+
+sentiment:
+  - nltk/sentiment/**/*
+
+stem/lemma:
+  - nltk/stem/**/*
+
+tagger:
+  - nltk/tag/**/*
+
+tokenizer:
+  - nltk/tokenize/**/*
+
+twitter:
+  - nltk/twitter/**/*
+
+wordnet:
+  - nltk/corpus/reader/wordnet.py

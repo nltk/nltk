@@ -54,8 +54,8 @@ class SnowballStemmer(StemmerI):
 
     The stemmer is invoked as shown below:
 
-    >>> from nltk.stem import SnowballStemmer
-    >>> print(" ".join(SnowballStemmer.languages)) # See which languages are supported
+    >>> from nltk.stem import SnowballStemmer # See which languages are supported
+    >>> print(" ".join(SnowballStemmer.languages)) # doctest: +NORMALIZE_WHITESPACE
     arabic danish dutch english finnish french german hungarian
     italian norwegian porter portuguese romanian russian
     spanish swedish
@@ -5402,6 +5402,7 @@ class SpanishStemmer(_StandardStemmer):
         "imientos",
         "amiento",
         "imiento",
+        "acion",
         "aciones",
         "uciones",
         "adoras",
@@ -5642,6 +5643,7 @@ class SpanishStemmer(_StandardStemmer):
                     "aci\xF3n",
                     "adoras",
                     "adores",
+                    "acion",
                     "aciones",
                     "ante",
                     "antes",

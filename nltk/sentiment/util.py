@@ -197,7 +197,7 @@ def extract_bigram_feats(document, bigrams):
 
     >>> bigrams = [('global', 'warming'), ('police', 'prevented'), ('love', 'you')]
     >>> document = 'ice is melting due to global warming'.split()
-    >>> sorted(extract_bigram_feats(document, bigrams).items())
+    >>> sorted(extract_bigram_feats(document, bigrams).items()) # doctest: +NORMALIZE_WHITESPACE
     [('contains(global - warming)', True), ('contains(love - you)', False),
     ('contains(police - prevented)', False)]
     """

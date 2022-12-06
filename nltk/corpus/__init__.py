@@ -54,7 +54,7 @@ For example, to read a list of the words in the Brown Corpus, use
 ``nltk.corpus.brown.words()``:
 
     >>> from nltk.corpus import brown
-    >>> print(", ".join(brown.words()))
+    >>> print(", ".join(brown.words())) # doctest: +ELLIPSIS
     The, Fulton, County, Grand, Jury, said, ...
 
 """

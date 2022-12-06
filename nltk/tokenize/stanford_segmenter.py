@@ -38,15 +38,15 @@ class StanfordSegmenter(TokenizerI):
         seg = StanfordSegmenter(path_to_slf4j='/YOUR_PATH/slf4j-api.jar')
 
     >>> from nltk.tokenize.stanford_segmenter import StanfordSegmenter
-    >>> seg = StanfordSegmenter()
-    >>> seg.default_config('zh')
+    >>> seg = StanfordSegmenter() # doctest: +SKIP
+    >>> seg.default_config('zh') # doctest: +SKIP
     >>> sent = u'这是斯坦福中文分词器测试'
-    >>> print(seg.segment(sent))
+    >>> print(seg.segment(sent)) # doctest: +SKIP
     \u8fd9 \u662f \u65af\u5766\u798f \u4e2d\u6587 \u5206\u8bcd\u5668 \u6d4b\u8bd5
     <BLANKLINE>
-    >>> seg.default_config('ar')
+    >>> seg.default_config('ar') # doctest: +SKIP
     >>> sent = u'هذا هو تصنيف ستانفورد العربي للكلمات'
-    >>> print(seg.segment(sent.split()))
+    >>> print(seg.segment(sent.split())) # doctest: +SKIP
     \u0647\u0630\u0627 \u0647\u0648 \u062a\u0635\u0646\u064a\u0641 \u0633\u062a\u0627\u0646\u0641\u0648\u0631\u062f \u0627\u0644\u0639\u0631\u0628\u064a \u0644 \u0627\u0644\u0643\u0644\u0645\u0627\u062a
     <BLANKLINE>
     """

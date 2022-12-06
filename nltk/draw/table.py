@@ -68,7 +68,7 @@ class MultiListbox(Frame):
 
         :param columns: Specifies what columns should be included in
             the new multi-column listbox.  If ``columns`` is an integer,
-            the it is the number of columns to include.  If it is
+            then it is the number of columns to include.  If it is
             a list, then its length indicates the number of columns
             to include; and each element of the list will be used as
             a label for the corresponding column.
@@ -76,8 +76,8 @@ class MultiListbox(Frame):
         :param cnf, kw: Configuration parameters for this widget.
             Use ``label_*`` to configure all labels; and ``listbox_*``
             to configure all listboxes.  E.g.:
-
-                >>> mlb = MultiListbox(master, 5, label_foreground='red')
+                >>> root = Tk()  # doctest: +SKIP
+                >>> MultiListbox(root, ["Subject", "Sender", "Date"], label_foreground='red').pack()  # doctest: +SKIP
         """
         # If columns was specified as an int, convert it to a list.
         if isinstance(columns, int):
@@ -134,7 +134,7 @@ class MultiListbox(Frame):
             # the default listbox behavior, which scrolls):
             lb.bind("<B1-Leave>", lambda e: "break")
             # Columns can be resized by dragging them:
-            l.bind("<Button-1>", self._resize_column)
+            lb.bind("<Button-1>", self._resize_column)
 
         # Columns can be resized by dragging them.  (This binding is
         # used if they click on the grid between columns:)
@@ -300,9 +300,10 @@ class MultiListbox(Frame):
         Configure this widget.  Use ``label_*`` to configure all
         labels; and ``listbox_*`` to configure all listboxes.  E.g.:
 
-                >>> mlb = MultiListbox(master, 5)
-                >>> mlb.configure(label_foreground='red')
-                >>> mlb.configure(listbox_foreground='red')
+                >>> master = Tk()  # doctest: +SKIP
+                >>> mlb = MultiListbox(master, 5)  # doctest: +SKIP
+                >>> mlb.configure(label_foreground='red')  # doctest: +SKIP
+                >>> mlb.configure(listbox_foreground='red')  # doctest: +SKIP
         """
         cnf = dict(list(cnf.items()) + list(kw.items()))
         for (key, val) in list(cnf.items()):
@@ -587,13 +588,13 @@ class Table:
     refers to the j-th column of the i-th row.  This can be used to
     both read and write values from the table.  E.g.:
 
-        >>> table[i,j] = 'hello'
+        >>> table[i,j] = 'hello'  # doctest: +SKIP
 
     The column (j) can be given either as an index number, or as a
     column name.  E.g., the following prints the value in the 3rd row
     for the 'First Name' column:
 
-        >>> print(table[3, 'First Name'])
+        >>> print(table[3, 'First Name'])  # doctest: +SKIP
         John
 
     You can configure the colors for individual rows, columns, or

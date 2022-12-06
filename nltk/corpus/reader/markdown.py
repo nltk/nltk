@@ -1,11 +1,6 @@
 from collections import namedtuple
 from functools import partial, wraps
 
-from markdown_it import MarkdownIt
-from mdit_plain.renderer import RendererPlain
-from mdit_py_plugins.front_matter import front_matter_plugin
-from yaml import safe_load
-
 from nltk.corpus.reader.api import CategorizedCorpusReader
 from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 from nltk.corpus.reader.util import concat, read_blankline_block
@@ -113,6 +108,10 @@ List = namedtuple("List", "is_ordered, items")
 
 class MarkdownCorpusReader(PlaintextCorpusReader):
     def __init__(self, *args, parser=None, **kwargs):
+        from markdown_it import MarkdownIt
+        from mdit_plain.renderer import RendererPlain
+        from mdit_py_plugins.front_matter import front_matter_plugin
+
         self.parser = parser
         if self.parser is None:
             self.parser = MarkdownIt("commonmark", renderer_cls=RendererPlain)
@@ -205,6 +204,8 @@ class CategorizedMarkdownCorpusReader(CategorizedCorpusReader, MarkdownCorpusRea
         )
 
     def metadata_reader(self, stream):
+        from yaml import safe_load
+
         return [
             safe_load(t.content)
             for t in self.parser.parse(stream.read())

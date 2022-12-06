@@ -105,16 +105,14 @@ class TreebankWordTokenizer(TokenizerI):
 
         >>> from nltk.tokenize import TreebankWordTokenizer
         >>> s = '''Good muffins cost $3.88 (roughly 3,36 euros)\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-        >>> TreebankWordTokenizer().tokenize(s)
+        >>> TreebankWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$', '3.88', '(', 'roughly', '3,36',
         'euros', ')', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
         'of', 'them.', 'Thanks', '.']
-        >>> TreebankWordTokenizer().tokenize(s, convert_parentheses=True)
+        >>> TreebankWordTokenizer().tokenize(s, convert_parentheses=True) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$', '3.88', '-LRB-', 'roughly', '3,36',
         'euros', '-RRB-', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
         'of', 'them.', 'Thanks', '.']
-        >>> TreebankWordTokenizer().tokenize(s, return_str=True)
-        ' Good muffins cost  $ 3.88  ( roughly 3,36 euros ) \nin New York.  Please buy me\ntwo of them.\nThanks .  '
 
         :param text: A string with a sentence or sentences.
         :type text: str
@@ -359,6 +357,10 @@ class TreebankWordDetokenizer(TokenizerI):
         :return: str
         """
         text = " ".join(tokens)
+
+        # Add extra space to make things easier
+        text = " " + text + " "
+
         # Reverse the contractions regexes.
         # Note: CONTRACTIONS4 are not used in tokenization.
         for regexp in self.CONTRACTIONS3:
