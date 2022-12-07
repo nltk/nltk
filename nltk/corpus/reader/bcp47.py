@@ -153,9 +153,11 @@ class Bcp47CorpusReader(CorpusReader):
                 if self.format[label].fullmatch(subtag):
                     if subtag in self.db[label]:
                         found = True
-                        lang[label] = self.val2str(
-                            self.db[label][subtag]["Description"]
-                        )
+                        valstr = self.val2str(self.db[label][subtag]["Description"])
+                        if label == "variant" and label in lang:
+                            lang[label] += ": " + valstr
+                        else:
+                            lang[label] = valstr
                         break
                     elif subtag in self.db["deprecated"][label]:
                         found = True
