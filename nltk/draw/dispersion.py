@@ -25,8 +25,8 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:
-        raise ValueError(
-            "The plot function requires matplotlib to be installed."
+        raise ImportError(
+            "The plot function requires matplotlib to be installed. "
             "See https://matplotlib.org/"
         ) from e
 
