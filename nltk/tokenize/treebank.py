@@ -357,6 +357,10 @@ class TreebankWordDetokenizer(TokenizerI):
         :return: str
         """
         text = " ".join(tokens)
+
+        # Add extra space to make things easier
+        text = " " + text + " "
+
         # Reverse the contractions regexes.
         # Note: CONTRACTIONS4 are not used in tokenization.
         for regexp in self.CONTRACTIONS3:

@@ -51,6 +51,7 @@ class NgramCounter:
 
     This is equivalent to specifying explicitly the order of the ngram (in this case
     2 for bigram) and indexing on the context.
+
     >>> ngram_counts[2][('a',)] is ngram_counts[['a']]
     True
 
