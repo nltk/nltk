@@ -638,6 +638,24 @@ Issue 2721: WordNetCorpusReader.ic() does not add smoothing to N
     >>> information_content(word, fake_ic) > 0
     True
 
+Issue 3077: Incorrect part-of-speech filtering in all_synsets
+
+    >>> next(wn.all_synsets(pos="a"))
+    Synset('able.a.01')
+    >>> next(wn.all_synsets(pos="s"))
+    Synset('emergent.s.02')
+    >>> wn.add_omw()
+    >>> next(wn.all_synsets(lang="hrv"))
+    Synset('able.a.01')
+    >>> next(wn.all_synsets(lang="hrv", pos="n"))
+    Synset('entity.n.01')
+    >>> next(wn.all_synsets(lang="hrv", pos="v"))
+    Synset('breathe.v.01')
+    >>> next(wn.all_synsets(lang="hrv", pos="s"))
+    Synset('ideological.s.02')
+    >>> next(wn.all_synsets(lang="hrv", pos="a"))
+    Synset('able.a.01')
+
 
 ------------------------------------------------
 Endlessness vs. intractability in relation trees
