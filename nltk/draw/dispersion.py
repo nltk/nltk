@@ -20,6 +20,8 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     :type words: list of str
     :param ignore_case: flag to set if case should be ignored when searching text
     :type ignore_case: bool
+    :return: a matplotlib Axes object that may still be modified before plotting
+    :rtype: Axes
     """
 
     try:
