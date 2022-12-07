@@ -182,5 +182,5 @@ __all__ = [
     "UnicharsCorpusReader",
     "MWAPPDBCorpusReader",
     "PanlexSwadeshCorpusReader",
-    "Bcp47CorpusReader",
+    "BCP47CorpusReader",
 ]

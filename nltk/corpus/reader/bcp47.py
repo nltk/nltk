@@ -12,7 +12,7 @@ from xml.etree import ElementTree as et
 from nltk.corpus.reader import CorpusReader
 
 
-class Bcp47CorpusReader(CorpusReader):
+class BCP47CorpusReader(CorpusReader):
     """
     Parse BCP-47 composite language tags
 
