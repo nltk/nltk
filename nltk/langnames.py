@@ -57,11 +57,11 @@ def langname(tag, typ="full"):
     tags = tag.split("-")
     code = tags[0].lower()
     if codepattern.fullmatch(code):
-        if code in iso639retired.keys():  # retired codes
+        if code in iso639retired:  # retired codes
             return iso639retired[code]
-        elif code in iso639short.keys():  # 3-letter codes
+        elif code in iso639short:  # 3-letter codes
             code2 = iso639short[code]  # convert to 2-letter code
-            warn(f"Shortening {code} to {code2}")
+            warn(f"Shortening {code!r} to {code2!r}", stacklevel=2)
             tag = "-".join([code2] + tags[1:])
         name = bcp47.name(tag)  # parse according to BCP-47
         if typ == "full":
@@ -69,7 +69,7 @@ def langname(tag, typ="full"):
         elif name:
             return name.split(":")[0]  # only the language subtag
     else:
-        warn(f"Could not find code '{code}'")
+        warn(f"Could not find code in {code!r}", stacklevel=2)
 
 
 def langcode(name, typ=2):
@@ -86,15 +86,15 @@ def langcode(name, typ=2):
     >>> langcode('Modern Greek (1453-)', typ=3)
     'ell'
     """
-    if name in bcp47.langcode.keys():
+    if name in bcp47.langcode:
         code = bcp47.langcode[name]
-        if typ == 3 and code in iso639long.keys():
+        if typ == 3 and code in iso639long:
             code = iso639long[code]  # convert to 3-letter code
         return code
-    elif name in iso639code_retired.keys():
+    elif name in iso639code_retired:
         return iso639code_retired[name]
     else:
-        warn(f"Could not find language '{name}'")
+        warn(f"Could not find language in {name!r}", stacklevel=2)
 
 
 # =======================================================================
