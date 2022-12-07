@@ -459,7 +459,7 @@ class Synset(_WordNetObject):
             corpus._load_lang_data(lang)
             of = corpus.ss2of(self)
             i = corpus.lg_attrs.index(doc_type)
-            if of in corpus._lang_data[lang][i].keys():
+            if of in corpus._lang_data[lang][i]:
                 return corpus._lang_data[lang][i][of]
             else:
                 return None
@@ -1217,7 +1217,7 @@ class WordNetCorpusReader(CorpusReader):
         # Language data attributes
         self.lg_attrs = ["lemma", "none", "def", "exe"]
 
-    def indexSense(self, version=None):
+    def index_sense(self, version=None):
         """Read sense key to synset id mapping from index.sense file in corpus directory"""
         fn = "index.sense"
         if version:
@@ -1227,56 +1227,58 @@ class WordNetCorpusReader(CorpusReader):
         else:
             ixreader = self
         with ixreader.open(fn) as fp:
-            sensekeyMap = {}
+            sensekey_map = {}
             for line in fp:
                 fields = line.strip().split()
                 sensekey = fields[0]
                 pos = self._pos_names[int(sensekey.split("%")[1].split(":")[0])]
-                sensekeyMap[sensekey] = f"{fields[1]}-{pos}"
-        return sensekeyMap
+                sensekey_map[sensekey] = f"{fields[1]}-{pos}"
+        return sensekey_map
 
-    def mapToMany(self):
-        sensekeyMap1 = self.indexSense("wordnet")
-        sensekeyMap2 = self.indexSense()
-        synsetToMany = {}
-        for synsetid in set(sensekeyMap1.values()):
-            synsetToMany[synsetid] = []
-        for sensekey in set(sensekeyMap1.keys()).intersection(set(sensekeyMap2.keys())):
-            source = sensekeyMap1[sensekey]
-            target = sensekeyMap2[sensekey]
-            synsetToMany[source].append(target)
-        return synsetToMany
+    def map_to_many(self):
+        sensekey_map1 = self.index_sense("wordnet")
+        sensekey_map2 = self.index_sense()
+        synset_to_many = {}
+        for synsetid in set(sensekey_map1.values()):
+            synset_to_many[synsetid] = []
+        for sensekey in set(sensekey_map1.keys()).intersection(
+            set(sensekey_map2.keys())
+        ):
+            source = sensekey_map1[sensekey]
+            target = sensekey_map2[sensekey]
+            synset_to_many[source].append(target)
+        return synset_to_many
 
-    def mapToOne(self):
-        synsetToMany = self.mapToMany()
-        synsetToOne = {}
-        for source in synsetToMany.keys():
-            candidatesBag = synsetToMany[source]
-            if candidatesBag:
-                candidatesSet = set(candidatesBag)
-                if len(candidatesSet) == 1:
-                    target = candidatesBag[0]
+    def map_to_one(self):
+        synset_to_many = self.map_to_many()
+        synset_to_one = {}
+        for source in synset_to_many:
+            candidates_bag = synset_to_many[source]
+            if candidates_bag:
+                candidates_set = set(candidates_bag)
+                if len(candidates_set) == 1:
+                    target = candidates_bag[0]
                 else:
                     counts = []
-                    for candidate in candidatesSet:
-                        counts.append((candidatesBag.count(candidate), candidate))
+                    for candidate in candidates_set:
+                        counts.append((candidates_bag.count(candidate), candidate))
                     self.splits[source] = counts
                     target = max(counts)[1]
-                synsetToOne[source] = target
+                synset_to_one[source] = target
                 if source[-1] == "s":
                     # Add a mapping from "a" to target for applications like omw,
                     # where only Lithuanian and Slovak use the "s" ss_type.
-                    synsetToOne[f"{source[:-1]}a"] = target
+                    synset_to_one[f"{source[:-1]}a"] = target
             else:
                 self.nomap.append(source)
-        return synsetToOne
+        return synset_to_one
 
     def map_wn30(self):
         """Mapping from Wordnet 3.0 to currently loaded Wordnet version"""
         if self.get_version() == "3.0":
             return None
         else:
-            return self.mapToOne()
+            return self.map_to_one()
 
     # Open Multilingual WordNet functions, contributed by
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
@@ -1294,7 +1296,7 @@ class WordNetCorpusReader(CorpusReader):
         """load the wordnet data of the requested language from the file to
         the cache, _lang_data"""
 
-        if lang in self._lang_data.keys():
+        if lang in self._lang_data:
             return
 
         if self._omw_reader and not self.omw_langs:
@@ -1326,15 +1328,11 @@ class WordNetCorpusReader(CorpusReader):
             file_name, file_extension = os.path.splitext(langfile)
             if file_extension == ".tab":
                 lang = file_name.split("-")[-1]
-                if lang in self.provenances.keys() or prov in ["cldr", "wikt"]:
+                if lang in self.provenances or prov in ["cldr", "wikt"]:
                     # We already have another resource for this lang,
                     # so we need to further specify the lang id:
                     lang = f"{lang}_{prov}"
                 self.provenances[lang] = prov
-
-    def strip_prov(self, lang):
-        #        return lang[:lang.find("_")+1]
-        return lang.split("_")[0]
 
     def add_omw(self):
         self.add_provs(self._omw_reader)
@@ -1829,7 +1827,7 @@ class WordNetCorpusReader(CorpusReader):
         if lang not in self.langs():
             return None
         self._load_lang_data(lang)
-        for of in self._lang_data[lang][0].keys():
+        for of in self._lang_data[lang][0]:
             if not pos or of[-1] == pos:
                 ss = self.of2ss(of)
                 if ss:
@@ -2209,7 +2207,7 @@ class WordNetCorpusReader(CorpusReader):
                 offset_pos, label = triple[:2]
                 val = triple[-1]
                 if self.map30:
-                    if offset_pos in self.map30.keys():
+                    if offset_pos in self.map30:
                         # Map offset_pos to current Wordnet version:
                         offset_pos = self.map30[offset_pos]
                     else:
