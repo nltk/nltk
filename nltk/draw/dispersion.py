@@ -15,51 +15,49 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     Generate a lexical dispersion plot.
 
     :param text: The source text
-    :type text: list(str) or enum(str)
+    :type text: list(str) or iter(str)
     :param words: The target words
     :type words: list of str
     :param ignore_case: flag to set if case should be ignored when searching text
     :type ignore_case: bool
+    :return: a matplotlib Axes object that may still be modified before plotting
+    :rtype: Axes
     """
 
     try:
-        from matplotlib import pylab
+        import matplotlib.pyplot as plt
     except ImportError as e:
-        raise ValueError(
-            "The plot function requires matplotlib to be installed."
+        raise ImportError(
+            "The plot function requires matplotlib to be installed. "
             "See https://matplotlib.org/"
         ) from e
 
-    text = list(text)
-    words.reverse()
+    word2y = {
+        word.casefold() if ignore_case else word: y
+        for y, word in enumerate(reversed(words))
+    }
+    xs, ys = [], []
+    for x, token in enumerate(text):
+        token = token.casefold() if ignore_case else token
+        y = word2y.get(token)
+        if y is not None:
+            xs.append(x)
+            ys.append(y)
 
-    if ignore_case:
-        words_to_comp = list(map(str.lower, words))
-        text_to_comp = list(map(str.lower, text))
-    else:
-        words_to_comp = words
-        text_to_comp = text
-
-    points = [
-        (x, y)
-        for x in range(len(text_to_comp))
-        for y in range(len(words_to_comp))
-        if text_to_comp[x] == words_to_comp[y]
-    ]
-    if points:
-        x, y = list(zip(*points))
-    else:
-        x = y = ()
-    pylab.plot(x, y, "b|", scalex=0.1)
-    pylab.yticks(list(range(len(words))), words, color="b")
-    pylab.ylim(-1, len(words))
-    pylab.title(title)
-    pylab.xlabel("Word Offset")
-    pylab.show()
+    _, ax = plt.subplots()
+    ax.plot(xs, ys, "|")
+    ax.set_yticks(list(range(len(words))), words, color="C0")
+    ax.set_ylim(-1, len(words))
+    ax.set_title(title)
+    ax.set_xlabel("Word Offset")
+    return ax
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
     from nltk.corpus import gutenberg
 
     words = ["Elinor", "Marianne", "Edward", "Willoughby"]
     dispersion_plot(gutenberg.words("austen-sense.txt"), words)
+    plt.show()

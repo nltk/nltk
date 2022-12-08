@@ -74,6 +74,9 @@ abc: PlaintextCorpusReader = LazyCorpusLoader(
 alpino: AlpinoCorpusReader = LazyCorpusLoader(
     "alpino", AlpinoCorpusReader, tagset="alpino"
 )
+bcp47: BCP47CorpusReader = LazyCorpusLoader(
+    "bcp47", BCP47CorpusReader, r"(cldr|iana)/*"
+)
 brown: CategorizedTaggedCorpusReader = LazyCorpusLoader(
     "brown",
     CategorizedTaggedCorpusReader,
