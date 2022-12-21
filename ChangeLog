@@ -1,11 +1,62 @@
+
+Version 3.8 2022-12-12
+
+* Refactor dispersion plot (#3082)
+* Provide type hints for LazyCorpusLoader variables (#3081)
+* Throw warning when LanguageModel is initialized with incorrect vocabulary (#3080)
+* Fix WordNet's all_synsets() function (#3078)
+* Resolve TreebankWordDetokenizer inconsistency with end-of-string contractions (#3070)
+* Support both iso639-3 codes and BCP-47 language tags (#3060)
+* Avoid DeprecationWarning in Regexp tokenizer (#3055)
+* Fix many doctests, add doctests to CI (#3054, #3050, #3048)
+* Fix bool field not being read in VerbNet (#3044)
+* Greatly improve time efficiency of SyllableTokenizer when tokenizing numbers (#3042)
+* Fix encodings of Polish udhr corpus reader (#3038)
+* Allow TweetTokenizer to tokenize emoji flag sequences (#3034)
+* Prevent LazyModule from increasing the size of nltk.__dict__ (#3033)
+* Fix CoreNLPServer non-default port issue (#3031)
+* Add "acion" suffix to the Spanish SnowballStemmer (#3030)
+* Allow loading WordNet without OMW (#3026)
+* Use input() in nltk.chat.chatbot() for Jupyter support (#3022)
+* Fix edit_distance_align() in distance.py (#3017)
+* Tackle performance and accuracy regression of sentence tokenizer since NLTK 3.6.6 (#3014)
+* Add the Iota operator to semantic logic (#3010)
+* Resolve critical errors in WordNet app (#3008)
+* Resolve critical error in CHILDES Corpus (#2998)
+* Make WordNet information_content() accept adjective satellites (#2995)
+* Add "strict=True" parameter to CoreNLP (#2993, #3043)
+* Resolve issue with WordNet's synset_from_sense_key (#2988)
+* Handle WordNet synsets that were lost in mapping (#2985)
+* Resolve TypeError in Boxer (#2979)
+* Add function to retrieve WordNet synonyms (#2978)
+* Warn about nonexistent OMW offsets instead of raising an error (#2974)
+* Fix missing ic argument in res, jcn and lin similarity functions of WordNet (#2970)
+* Add support for the extended OMW (#2946)
+* Fix LC cutoff policy of text tiling (#2936)
+* Optimize ConditionalFreqDist.__add__ performance (#2939)
+* Add Markdown corpus reader (#2902)
+
+Thanks to the following contributors to 3.8:
+Alexandre Perez-Lebel, David Lukes, Eric Kafe, Fernando Carranza, Heungson Lee,
+Hoyeol Kim, James Huang, Jelle Zijlstra, Louis-Justin Tallot, M.K. Pawelkiewicz,
+Jan Lennartz, Malinda Dilhara, Martin Kondratzky, Rob Malouf, Saud Kadiri,
+Siddhesh Mhadnak, Stephan Hasler, Steve Smith, Tom Aarsen, Tyler Sheaffer,
+Yue Zhao, cestwc, elespike, purificant, richardyy1188
+
 Version 3.7 2022-02-09
 
 * Improve and update the NLTK team page on nltk.org (#2855, #2941)
 * Drop support for Python 3.6, support Python 3.10 (#2920)
 
+Thanks to the following contributors to 3.7:
+Tom Aarsen
+
 Version 3.6.7 2021-12-28
 
 * Resolve IndexError in `sent_tokenize` and `word_tokenize` (#2922)
+
+Thanks to the following contributors to 3.6.7:
+Tom Aarsen
 
 Version 3.6.6 2021-12-21
 
@@ -44,9 +95,9 @@ Version 3.6.6 2021-12-21
 * Fix TypeError: _pretty() takes 1 positional argument but 2 were given in sem/drt.py (#2854)
 * Replace `http` with `https` in most URLs (#2852)
 
-Thanks to the following contributors to 3.6.6
+Thanks to the following contributors to 3.6.6:
 Adam Hawley, BatMrE, Danny Sepler, Eric Kafe, Gavish Poddar, Panagiotis Simakis,
-RnDevelover, Robby Horvath, Tom Aarsen, Yuta Nakamura,	Mohaned Mashaly
+RnDevelover, Robby Horvath, Tom Aarsen, Yuta Nakamura, Mohaned Mashaly
 
 Version 3.6.5 2021-10-11
 
@@ -60,7 +111,7 @@ Version 3.6.5 2021-10-11
 * specify minimum regex version that supports regex.Pattern
 * avoid re.Pattern and regex.Pattern which fail for Python 3.6, 3.7
 
-Thanks to the following contributors to 3.6.5
+Thanks to the following contributors to 3.6.5:
 Tom Aarsen, Saibo Geng, Mohaned Mashaly, Dimitri Papadopoulos, Danny Sepler,
 Ahmet Yildirim, RnDevelover, yutanakamura
 
@@ -75,7 +126,7 @@ Version 3.6.4 2021-10-01
 * replace travis badge with github actions badge
 * add SECURITY.md
 
-Thanks to the following contributors to 3.6.4
+Thanks to the following contributors to 3.6.4:
 Tom Aarsen, Mohaned Mashaly, Dimitri Papadopoulos Orfanos, purificant, Danny Sepler
 
 Version 3.6.3 2021-09-19
@@ -96,7 +147,7 @@ Version 3.6.3 2021-09-19
 * Optional show arg for FreqDist.plot, ConditionalFreqDist.plot
 * edit_distance now computes Damerau-Levenshtein edit-distance
 
-Thanks to the following contributors to 3.6.3
+Thanks to the following contributors to 3.6.3:
 Tom Aarsen, Abhijnan Bajpai, Michael Wayne Goodman, Michał Górny, Maarten ter Huurne,
 Manu Joseph, Eric Kafe, Ilia Kurenkov, Daniel Loney, Rob Malouf, Mohaned Mashaly,
 purificant, Danny Sepler, Anthony Sottile
@@ -107,7 +158,7 @@ Version 3.6.2 2021-04-20
 * fix bug in NgramAssocMeasures (order preserving fix)
 * fixes for compatibility with Pypy 7.3.4
 
-Thanks to the following contributors to 3.6.2
+Thanks to the following contributors to 3.6.2:
 Ruben Cartuyvels, Rob Malouf, Dalton Pearson, Danny Sepler
 
 Version 3.6 2021-04-07
@@ -124,7 +175,7 @@ Version 3.6 2021-04-07
 
 Thanks to the following contributors to 3.6:
 Tom Aarsen, K Abainia, Akshita Bhagia, Andrew Bird, Thomas Bird,
-Tom Conroy, CubieDev, Christopher Hench, Andrew Jorgensen, Eric Kafe,
+Tom Conroy, Christopher Hench, Andrew Jorgensen, Eric Kafe,
 Ilia Kurenkov, Yeting Li, Joseph Manu, Marius Mather, Denali Molitor,
 Jacob Moorman, Philippe Ombredanne, Vassilis Palassopoulos, Ram Rachum,
 Danny Sepler, Or Sharir, Brad Solomon, Hiroki Teranishi, Constantin Weisser,
