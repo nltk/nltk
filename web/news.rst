@@ -4,6 +4,33 @@ Release Notes
 2022
 ----
 
+NLTK 3.8 release: December 2022:
+
+- Fix WordNet's all_synsets() function
+- Greatly improve time efficiency of SyllableTokenizer when tokenizing numbers
+- Tackle performance and accuracy regression of sentence tokenizer since NLTK 3.6.6
+- Resolve TreebankWordDetokenizer inconsistency with end-of-string contractions
+- Optimize ConditionalFreqDist.__add__ performance
+- Fix LC cutoff policy of text tiling
+- Add Markdown corpus reader
+- Add support for the extended OMW
+- Support both iso639-3 codes and BCP-47 language tags
+- Fix bool field not being read in VerbNet
+- Fix encodings of Polish udhr corpus reader
+- Allow TweetTokenizer to tokenize emoji flag sequences
+- Add "acion" suffix to the Spanish SnowballStemmer
+- Allow loading WordNet without OMW
+- Fix edit_distance_align() in distance.py
+- Add the Iota operator to semantic logic
+- Resolve critical error in CHILDES Corpus
+- Make WordNet information_content() accept adjective satellites
+- Add "strict=True" parameter to CoreNLP
+- Resolve issue with WordNet's synset_from_sense_key
+- Handle WordNet synsets that were lost in mapping
+- Add function to retrieve WordNet synonyms
+- Warn about nonexistent OMW offsets instead of raising an error
+- Fix missing ic argument in res, jcn and lin similarity functions of WordNet
+
 NLTK 3.7 release: February 2022:
 
 - improve and update the NLTK team page on nltk.org
