@@ -4,7 +4,6 @@ matplotlib
 pytest
 pytest-mock
 pytest-xdist[psutil]
-python-crfsuite
 regex
 scikit-learn
 tqdm
