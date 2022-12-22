@@ -9,8 +9,8 @@
 Functions to find and load NLTK resource files, such as corpora,
 grammars, and saved processing objects.  Resource files are identified
 using URLs, such as ``nltk:corpora/abc/rural.txt`` or
-``http://www.nltk.org/sample/toy.cfg``.  The following URL protocols are
-supported:
+``https://raw.githubusercontent.com/nltk/nltk/develop/nltk/test/toy.cfg``.
+The following URL protocols are supported:
 
   - ``file:path``: Specifies the file whose path is *path*.
     Both relative and absolute paths may be used.
