@@ -127,7 +127,12 @@ class MyServerHandler(BaseHTTPRequestHandler):
             else:
                 # Handle files here.
                 word = sp
-                page = get_static_page_by_path(usp)
+                try:
+                    page = get_static_page_by_path(usp)
+                except FileNotFoundError:
+                    page = "Internal error: Path for static page '%s' is unknown" % usp
+                    # Set type to plain to prevent XSS by printing the path as HTML
+                    type = "text/plain"
         elif sp.startswith("search"):
             # This doesn't seem to work with MWEs.
             type = "text/html"
@@ -816,8 +821,7 @@ def get_static_page_by_path(path):
         return get_static_web_help_page()
     elif path == "wx_help.html":
         return get_static_wx_help_page()
-    else:
-        return "Internal error: Path for static page '%s' is unknown" % path
+    raise FileNotFoundError()
 
 
 def get_static_web_help_page():
