@@ -2179,7 +2179,7 @@ class WordNetCorpusReader(CorpusReader):
         language to Princeton WordNet 3.0 synset offsets, allowing NLTK's
         WordNet functions to then be used with that language.
 
-        See the "Tab files" section at https://omwn.org/omw1.html
+        See the "Tab files" section at https://omwn.org/omw1.html for
         documentation on the Multilingual WordNet tab file format.
 
         :param tab_file: Tab file as a file or file-like object
