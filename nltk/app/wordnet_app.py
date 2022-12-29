@@ -798,7 +798,7 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' where not found in the dictionary." % word
+        body = "The word or words '%s' were not found in the dictionary." % word
     return body, word
 
 
