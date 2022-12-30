@@ -1746,6 +1746,146 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.tagged_paras()
     [[[('The', 'AT'), ...]], [[('The', 'AT'), ...]], ...]
 
+Categorized Markdown Corpus Reader
+==================================
+
+This corpus reader class provides additional methods to select features
+present in markdown documents.
+
+First, let's make a test corpus:
+
+    >>> root = make_testcorpus(ext='.md',
+    ...     a="""\
+    ...     # Section One
+    ...     Here's the first sentence of section one. Then the second sentence.
+    ...
+    ...     First section, second paragraph. Let's add a [link](https://example.com).
+    ...
+    ...     # Section Two
+    ...     This section is more fun. It contains an ![image](https://example.com/image.png) followed by a list:
+    ...
+    ...     1. First list item
+    ...     2. Second list item
+    ...     """,
+    ...     b="""\
+    ...     This is the second file. It starts without a section, but then adds one.
+    ...
+    ...     # Section 1
+    ...     This section has a sub-section!
+    ...
+    ...     ## Section 1a
+    ...     And here's a quote:
+    ...
+    ...     > Carpe diem
+    ...
+    ...     HTML tags <em>are</em> removed.
+    ...     """)
+
+Now, import the ``CategorizedMarkdownCorpusReader`` class.
+
+    >>> from nltk.corpus.reader.markdown import CategorizedMarkdownCorpusReader
+
+Note that this class requires the following Python packages:
+
+- ``markdown-it-py``
+- ``mdit-py-plugins``
+- ``mdit-plain``
+
+The corpus provides usual methods like ``words()``, ``sents()``,
+``paras()``, etc. Each of these methods accepts a list of file IDs
+which can be a Python list or a comma-separated string.
+
+    >>> corpus = CategorizedMarkdownCorpusReader(root, ['a.md', 'b.md'])
+    >>> corpus.fileids()
+    ['a.md', 'b.md']
+    >>> corpus.words()
+    ['Section', 'One', 'Here', "'", 's', 'the', 'first', ...]
+    >>> corpus.words('b.md')
+    ['This', 'is', 'the', 'second', 'file', '.', 'It', ...]
+    >>> corpus.words('a.md, b.md') == corpus.words(['a.md', 'b.md'])
+    True
+
+Here are some methods specific to the
+``CategorizedMarkdownCorpusReader`` class to retrieve markdown features:
+
+    >>> corpus.links()
+    [Link(label='link', href='https://example.com', title=None)]
+    >>> corpus.images()
+    [Image(label='image', src='https://example.com/image.png', title=None)]
+    >>> corpus.lists()
+    [List(is_ordered=True, items=['First list item', 'Second list item'])]
+    >>> corpus.blockquotes()
+    [MarkdownBlock(content='Carpe diem')]
+
+The corpus can also be broken down into sections based on markdown headings:
+
+    >>> corpus.sections('a.md')
+    [MarkdownSection(content='Section One\n\nHer...'), MarkdownSection(content='Section Two\n\nThi...')]
+    >>> for s in corpus.sections():
+    ...     print(F"{s.heading} (level {s.level})")
+    ...
+    Section One (level 1)
+    Section Two (level 1)
+    Section 1 (level 1)
+    Section 1a (level 2)
+
+Categories
+----------
+
+The ``CategorizedMarkdownCorpusReader`` relies on YAML front matter to
+read metadata defined in markdown documents. This metadata is optional,
+and may define one or more categories for each document.
+
+Let's create another test corpus, this time with some metadata:
+
+    >>> del_testcorpus(root)
+    >>> root = make_testcorpus(ext='.md',
+    ...     a="""\
+    ...     ---
+    ...     tags:
+    ...       - tag1
+    ...       - tag2
+    ...     ---
+    ...     Document A: category metadata.
+    ...     """,
+    ...     b="""\
+    ...     ---
+    ...     author: NLTK
+    ...     tags:
+    ...       - tag2
+    ...       - tag3
+    ...     ---
+    ...     Document B: additional metadata.
+    ...     """,
+    ...     c="""\
+    ...     Document C: no metadata.
+    ...     """)
+
+Load the new corpus and see the ``metadata()`` and ``categories()``
+methods in action:
+
+    >>> fileids = ['a.md', 'b.md', 'c.md']
+    >>> corpus = CategorizedMarkdownCorpusReader(root, fileids)
+    >>> corpus.metadata()
+    [{'tags': ['tag1', 'tag2']}, {'author': 'NLTK', 'tags': ['tag2', 'tag3']}]
+    >>> for fid in fileids:
+    ...     print(fid, corpus.metadata(fid))
+    ...
+    a.md [{'tags': ['tag1', 'tag2']}]
+    b.md [{'author': 'NLTK', 'tags': ['tag2', 'tag3']}]
+    c.md []
+    >>> corpus.categories()
+    ['tag1', 'tag2', 'tag3']
+    >>> corpus.categories('a.md')
+    ['tag1', 'tag2']
+
+The ``fileids()`` method also accepts categories and returns all file
+IDs that match any of the specified categories:
+
+    >>> corpus.fileids('tag2')
+    ['a.md', 'b.md']
+    >>> del_testcorpus(root)
+
 Verbnet Corpus Reader
 =====================
 
