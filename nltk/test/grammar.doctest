@@ -47,6 +47,53 @@ Chomsky Normal Form grammar (Test for bug 474)
     >>> g.productions()[0].lhs()
     VP^<TOP>
 
+Conversion to Chomsky Normal Form
+
+    >>> g = CFG.fromstring("S -> 'a' S 'b' | ")
+    >>> print(g)
+    Grammar with 2 productions (start state = S)
+    S -> 'a' S 'b'
+    S ->
+    >>> print(g.chomsky_normal_form())
+    Grammar with 9 productions (start state = S0)
+        S0 ->
+        S0 -> T0 B0
+        S0 -> T0 T1
+        B0 -> S T1
+        B1 -> S T1
+        S -> T0 B1
+        S -> T0 T1
+        T0 -> 'a'
+        T1 -> 'b'
+
+    >>> g = CFG.fromstring("S -> S")
+    >>> print(g)
+    Grammar with 1 productions (start state = S)
+        S -> S
+    >>> print(g.chomsky_normal_form())
+    Grammar with 0 productions (start state = S0)
+
+
+Removal of useless and unreachable symbols is done by default
+even if the grammar is already in CNF.
+
+    >>> g = CFG.fromstring("""
+    ... S -> X Y
+    ... A -> 'a'
+    ... """)
+    >>> print(g)
+    Grammar with 2 productions (start state = S)
+        S -> X Y
+	A -> 'a'
+    >>> g.is_chomsky_normal_form()
+    True
+    >>> print(g.chomsky_normal_form())
+    Grammar with 0 productions (start state = S)
+    >>> print(g.chomsky_normal_form(simplify=False))
+    Grammar with 2 productions (start state = S)
+        S -> X Y
+    	A -> 'a'
+
 Grammars can contain both empty strings and empty productions:
 
     >>> from nltk.grammar import CFG

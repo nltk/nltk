@@ -94,6 +94,7 @@
 - Eric Kafe
 - Piotr Kasprzyk
 - Angelos Katharopoulos
+- Stefan Kaufmann
 - Sudharshan Kaushik
 - Chris Koenig
 - Mikhail Korobov
