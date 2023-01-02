@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <https://www.nltk.org/>

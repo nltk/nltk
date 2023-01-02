@@ -1,6 +1,6 @@
 # Natural Language Toolkit: First-Order Tableau Theorem Prover
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # URL: <https://www.nltk.org/>

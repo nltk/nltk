@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the CRFSuite Tagger
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Long Duong <longdt219@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

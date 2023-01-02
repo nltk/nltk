@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Chat-80 KB Reader
 # See https://www.w3.org/TR/swbp-skos-core-guide/
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT

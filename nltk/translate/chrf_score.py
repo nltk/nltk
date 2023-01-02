@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ChrF score
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Authors: Maja Popovic
 # Contributors: Liling Tan, Aleš Tamchyna (Memsource)
 # URL: <https://www.nltk.org/>
