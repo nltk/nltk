@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+2023
+----
+
+NLTK 3.8.1 release: January 2023:
+
+- Resolve RCE & XSS vulnerabilities in localhost WordNet Browser
+- Add Python 3.11 support
+
 2022
 ----
 
