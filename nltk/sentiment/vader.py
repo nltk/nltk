@@ -1,6 +1,6 @@
 # Natural Language Toolkit: vader
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: C.J. Hutto <Clayton.Hutto@gtri.gatech.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)

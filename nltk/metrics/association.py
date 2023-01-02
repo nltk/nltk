@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Ngram Association Measures
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

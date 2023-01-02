@@ -1,6 +1,6 @@
 # Natural Language Toolkit: SentiWordNet
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
