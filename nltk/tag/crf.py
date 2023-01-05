@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the CRFSuite Tagger
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Long Duong <longdt219@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,23 +25,23 @@ class CRFTagger(TaggerI):
     A module for POS tagging using CRFSuite https://pypi.python.org/pypi/python-crfsuite
 
     >>> from nltk.tag import CRFTagger
-    >>> ct = CRFTagger()
+    >>> ct = CRFTagger()  # doctest: +SKIP
 
     >>> train_data = [[('University','Noun'), ('is','Verb'), ('a','Det'), ('good','Adj'), ('place','Noun')],
     ... [('dog','Noun'),('eat','Verb'),('meat','Noun')]]
 
-    >>> ct.train(train_data,'model.crf.tagger')
-    >>> ct.tag_sents([['dog','is','good'], ['Cat','eat','meat']])
+    >>> ct.train(train_data,'model.crf.tagger')  # doctest: +SKIP
+    >>> ct.tag_sents([['dog','is','good'], ['Cat','eat','meat']])  # doctest: +SKIP
     [[('dog', 'Noun'), ('is', 'Verb'), ('good', 'Adj')], [('Cat', 'Noun'), ('eat', 'Verb'), ('meat', 'Noun')]]
 
     >>> gold_sentences = [[('dog','Noun'),('is','Verb'),('good','Adj')] , [('Cat','Noun'),('eat','Verb'), ('meat','Noun')]]
-    >>> ct.accuracy(gold_sentences)
+    >>> ct.accuracy(gold_sentences)  # doctest: +SKIP
     1.0
 
     Setting learned model file
-    >>> ct = CRFTagger()
-    >>> ct.set_model_file('model.crf.tagger')
-    >>> ct.accuracy(gold_sentences)
+    >>> ct = CRFTagger()  # doctest: +SKIP
+    >>> ct.set_model_file('model.crf.tagger')  # doctest: +SKIP
+    >>> ct.accuracy(gold_sentences)  # doctest: +SKIP
     1.0
     """
 

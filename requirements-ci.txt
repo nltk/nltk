@@ -1,10 +1,13 @@
 click
 gensim>=4.0.0
+markdown-it-py
 matplotlib
+mdit-plain
+mdit-py-plugins
 pytest
 pytest-mock
 pytest-xdist[psutil]
-python-crfsuite
+pyyaml
 regex
 scikit-learn
 tqdm

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <https://www.nltk.org/>

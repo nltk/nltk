@@ -1,7 +1,7 @@
 #
 # Natural Language Toolkit: Twitter Tokenizer
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)

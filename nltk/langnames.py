@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Codes
 #
-# Copyright (C) 2022 NLTK Project
+# Copyright (C) 2022-2023 NLTK Project
 # Author: Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

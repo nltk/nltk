@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Generating from a CFG
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <https://www.nltk.org/>
