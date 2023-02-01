@@ -1,4 +1,14 @@
 
+Version 3.8.1 2023-01-02
+
+* Resolve RCE vulnerability in localhost WordNet Browser (#3100)
+* Remove unused tool scripts (#3099)
+* Resolve XSS vulnerability in localhost WordNet Browser (#3096)
+* Add Python 3.11 support (#3090)
+
+Thanks to the following contributors to 3.8.1:
+Francis Bond, John Vandenberg, Tom Aarsen
+
 Version 3.8 2022-12-12
 
 * Refactor dispersion plot (#3082)

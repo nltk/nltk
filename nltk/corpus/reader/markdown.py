@@ -319,15 +319,17 @@ class CategorizedMarkdownCorpusReader(CategorizedCorpusReader, MarkdownCorpusRea
 
     def section_reader(self, stream):
         section_blocks, block = list(), list()
-        in_heading = False
         for t in self.parser.parse(stream.read()):
             if t.level == 0 and t.type == "heading_open":
-                if block:
+                if not block:
+                    block.append(t)
+                else:
                     section_blocks.append(block)
-                block = list()
-                in_heading = True
-            if in_heading:
+                    block = [t]
+            elif block:
                 block.append(t)
+        if block:
+            section_blocks.append(block)
         return [
             MarkdownSection(
                 block[1].content,

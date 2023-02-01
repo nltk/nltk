@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <https://www.nltk.org/>

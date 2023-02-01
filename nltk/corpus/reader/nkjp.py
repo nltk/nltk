@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NKJP Corpus Reader
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Gabriela Kaczka
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

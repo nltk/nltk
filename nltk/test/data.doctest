@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2022 NLTK Project
+.. Copyright (C) 2001-2023 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================================
@@ -34,7 +34,17 @@ The ``nltk:`` protocol is used by default if no protocol is specified:
     <nltk.tokenize.punkt.PunktSentenceTokenizer object at ...>
 
 But it is also possible to load resources from ``http:``, ``ftp:``,
-and ``file:`` URLs, e.g. ``cfg = nltk.data.load('https://example.com/path/to/toy.cfg')``
+and ``file:`` URLs:
+
+    >>> # Load a grammar from the NLTK webpage.
+    >>> cfg = nltk.data.load('https://raw.githubusercontent.com/nltk/nltk/develop/nltk/test/toy.cfg')
+    >>> print(cfg)  # doctest: +ELLIPSIS
+    Grammar with 14 productions (start state = S)
+        S -> NP VP
+        PP -> P NP
+        ...
+        P -> 'on'
+        P -> 'in'
 
     >>> # Load a grammar using an absolute path.
     >>> url = 'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg')

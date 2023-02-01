@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Dávid Márk Nemeskey <nemeskeyd@gmail.com> (modifications)
 #         Attila Zséder <zseder@gmail.com> (modifications)

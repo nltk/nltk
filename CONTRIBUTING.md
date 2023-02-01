@@ -2,7 +2,7 @@
 
 Hi! Thanks for your interest in contributing to [NLTK](https://www.nltk.org/).
 :-) You'll be joining a [long list of contributors](https://github.com/nltk/nltk/blob/develop/AUTHORS.md).
-In this document we'll try to summarize everything that you need to know to
+In this document, we'll try to summarize everything that you need to know to
 do a good job.
 
 
@@ -36,7 +36,7 @@ Some priority areas for development are listed in the [NLTK Wiki](https://github
 We use [Git](https://git-scm.com/) as our [version control
 system](https://en.wikipedia.org/wiki/Revision_control), so the best way to
 contribute is to learn how to use it and put your changes on a Git repository.
-There's a plenty of documentation about Git -- you can start with the [Pro Git
+There's plenty of documentation about Git -- you can start with the [Pro Git
 book](https://git-scm.com/book/).
 
 
@@ -99,7 +99,7 @@ Summary of our git branching model:
 - If you have push access to the main repository, please do not commit directly
   to `develop`: your access should be used only to accept pull requests; if you
   want to make a new feature, you should use the same process as other
-  developers so you code will be reviewed.
+  developers so your code will be reviewed.
 - See [RELEASE-HOWTO.txt](RELEASE-HOWTO.txt) to see everything you
   need before creating a new NLTK release.
 

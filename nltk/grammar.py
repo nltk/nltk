@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
@@ -69,6 +69,7 @@ with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
 import re
+from collections import deque
 from functools import total_ordering
 
 from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
@@ -771,7 +772,7 @@ class CFG:
         lexical
         """
         result = []
-        unitary = []
+        unitary = deque([])
         for rule in grammar.productions():
             if len(rule) == 1 and rule.is_nonlexical():
                 unitary.append(rule)
@@ -779,7 +780,7 @@ class CFG:
                 result.append(rule)
 
         while unitary:
-            rule = unitary.pop(0)
+            rule = unitary.popleft()
             for item in grammar.productions(lhs=rule.rhs()[0]):
                 new_rule = Production(rule.lhs(), item.rhs())
                 if len(new_rule) != 1 or new_rule.is_lexical():

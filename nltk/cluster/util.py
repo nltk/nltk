@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterer Utilities
 #
-# Copyright (C) 2001-2022 NLTK Project
+# Copyright (C) 2001-2023 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Contributor: J Richard Snape
 # URL: <https://www.nltk.org/>
