@@ -201,6 +201,7 @@
 - Álvaro Justen <https://github.com/turicas>
 - bjut-hz
 - Sergio Oller
+- Izam Mohammed <https://github.com/izam-mohammed>
 - Will Monroe
 - Elijah Rippeth
 - Emil Manukyan
