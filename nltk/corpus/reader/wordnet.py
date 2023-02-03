@@ -1235,8 +1235,8 @@ class WordNetCorpusReader(CorpusReader):
                 sensekey_map[sensekey] = f"{fields[1]}-{pos}"
         return sensekey_map
 
-    def map_to_many(self):
-        sensekey_map1 = self.index_sense("wordnet")
+    def map_to_many(self, version="wordnet"):
+        sensekey_map1 = self.index_sense(version)
         sensekey_map2 = self.index_sense()
         synset_to_many = {}
         for synsetid in set(sensekey_map1.values()):
