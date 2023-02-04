@@ -1208,7 +1208,7 @@ class WordNetCorpusReader(CorpusReader):
         # load the exception file data into memory
         self._load_exception_map()
 
-        self.nomap = []
+        self.nomap = {}
         self.splits = {}
 
         # map from WordNet 3.0 for OMW data
@@ -1249,8 +1249,10 @@ class WordNetCorpusReader(CorpusReader):
             synset_to_many[source].append(target)
         return synset_to_many
 
-    def map_to_one(self):
-        synset_to_many = self.map_to_many()
+    def map_to_one(self, version="wordnet"):
+        self.nomap[version] = []
+        self.splits[version] = {}
+        synset_to_many = self.map_to_many(version)
         synset_to_one = {}
         for source in synset_to_many:
             candidates_bag = synset_to_many[source]
@@ -1262,7 +1264,7 @@ class WordNetCorpusReader(CorpusReader):
                     counts = []
                     for candidate in candidates_set:
                         counts.append((candidates_bag.count(candidate), candidate))
-                    self.splits[source] = counts
+                    self.splits[version][source] = counts
                     target = max(counts)[1]
                 synset_to_one[source] = target
                 if source[-1] == "s":
@@ -1270,7 +1272,7 @@ class WordNetCorpusReader(CorpusReader):
                     # where only Lithuanian and Slovak use the "s" ss_type.
                     synset_to_one[f"{source[:-1]}a"] = target
             else:
-                self.nomap.append(source)
+                self.nomap[version].append(source)
         return synset_to_one
 
     def map_wn30(self):
