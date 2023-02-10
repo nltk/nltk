@@ -1210,9 +1210,10 @@ class WordNetCorpusReader(CorpusReader):
 
         self.nomap = {}
         self.splits = {}
+        self.merges = {}
 
         # map from WordNet 3.0 for OMW data
-        self.map30 = self.map_wn30()
+        self.map30 = self.map_wn()
 
         # Language data attributes
         self.lg_attrs = ["lemma", "none", "def", "exe"]
@@ -1275,12 +1276,26 @@ class WordNetCorpusReader(CorpusReader):
                 self.nomap[version].append(source)
         return synset_to_one
 
-    def map_wn30(self):
-        """Mapping from Wordnet 3.0 to currently loaded Wordnet version"""
-        if self.get_version() == "3.0":
+    def map_wn(self, version="wordnet"):
+        """Mapping from Wordnet 'version' to currently loaded Wordnet version"""
+        if self.get_version() == version:
             return None
         else:
-            return self.map_to_one()
+            return self.map_to_one(version)
+
+    def split_synsets(self, version="wordnet"):
+        if version not in self.splits:
+            _mymap = self.map_to_one(version)
+        return self.splits[version]
+
+    def merged_synsets(self, version="wordnet"):
+        if version not in self.merges:
+            merge = defaultdict(set)
+            for source, targets in self.map_to_many(version).items():
+                for target in targets:
+                    merge[target].add(source)
+            self.merges[version] = {s: t for s, t in merge.items() if len(t) > 1}
+        return self.merges[version]
 
     # Open Multilingual WordNet functions, contributed by
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
