@@ -1208,11 +1208,12 @@ class WordNetCorpusReader(CorpusReader):
         # load the exception file data into memory
         self._load_exception_map()
 
-        self.nomap = []
+        self.nomap = {}
         self.splits = {}
+        self.merges = {}
 
         # map from WordNet 3.0 for OMW data
-        self.map30 = self.map_wn30()
+        self.map30 = self.map_wn()
 
         # Language data attributes
         self.lg_attrs = ["lemma", "none", "def", "exe"]
@@ -1235,8 +1236,8 @@ class WordNetCorpusReader(CorpusReader):
                 sensekey_map[sensekey] = f"{fields[1]}-{pos}"
         return sensekey_map
 
-    def map_to_many(self):
-        sensekey_map1 = self.index_sense("wordnet")
+    def map_to_many(self, version="wordnet"):
+        sensekey_map1 = self.index_sense(version)
         sensekey_map2 = self.index_sense()
         synset_to_many = {}
         for synsetid in set(sensekey_map1.values()):
@@ -1249,8 +1250,10 @@ class WordNetCorpusReader(CorpusReader):
             synset_to_many[source].append(target)
         return synset_to_many
 
-    def map_to_one(self):
-        synset_to_many = self.map_to_many()
+    def map_to_one(self, version="wordnet"):
+        self.nomap[version] = []
+        self.splits[version] = {}
+        synset_to_many = self.map_to_many(version)
         synset_to_one = {}
         for source in synset_to_many:
             candidates_bag = synset_to_many[source]
@@ -1262,7 +1265,7 @@ class WordNetCorpusReader(CorpusReader):
                     counts = []
                     for candidate in candidates_set:
                         counts.append((candidates_bag.count(candidate), candidate))
-                    self.splits[source] = counts
+                    self.splits[version][source] = counts
                     target = max(counts)[1]
                 synset_to_one[source] = target
                 if source[-1] == "s":
@@ -1270,15 +1273,29 @@ class WordNetCorpusReader(CorpusReader):
                     # where only Lithuanian and Slovak use the "s" ss_type.
                     synset_to_one[f"{source[:-1]}a"] = target
             else:
-                self.nomap.append(source)
+                self.nomap[version].append(source)
         return synset_to_one
 
-    def map_wn30(self):
-        """Mapping from Wordnet 3.0 to currently loaded Wordnet version"""
-        if self.get_version() == "3.0":
+    def map_wn(self, version="wordnet"):
+        """Mapping from Wordnet 'version' to currently loaded Wordnet version"""
+        if self.get_version() == version:
             return None
         else:
-            return self.map_to_one()
+            return self.map_to_one(version)
+
+    def split_synsets(self, version="wordnet"):
+        if version not in self.splits:
+            _mymap = self.map_to_one(version)
+        return self.splits[version]
+
+    def merged_synsets(self, version="wordnet"):
+        if version not in self.merges:
+            merge = defaultdict(set)
+            for source, targets in self.map_to_many(version).items():
+                for target in targets:
+                    merge[target].add(source)
+            self.merges[version] = {s: t for s, t in merge.items() if len(t) > 1}
+        return self.merges[version]
 
     # Open Multilingual WordNet functions, contributed by
     # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
