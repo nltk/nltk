@@ -245,7 +245,7 @@ class FreqDist(Counter):
         return self.most_common(1)[0][0]
 
     def plot(
-        self, *args, title="", cumulative=False, percents=False, show=True, **kwargs
+        self, *args, title="", cumulative=False, percents=False, show=False, **kwargs
     ):
         """
         Plot samples from the frequency distribution
@@ -1927,7 +1927,7 @@ class ConditionalFreqDist(defaultdict):
         cumulative=False,
         percents=False,
         conditions=None,
-        show=True,
+        show=False,
         **kwargs,
     ):
         """
