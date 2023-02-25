@@ -2247,11 +2247,15 @@ class WordNetCorpusReader(CorpusReader):
                 if len(pair) == 1 or pair[0] == lg:
                     if attr == "lemma":
                         val = val.strip().replace(" ", "_")
-                        self._lang_data[lang][1][val.lower()].append(offset_pos)
+                        lang_offsets = self._lang_data[lang][1][val.lower()]
+                        if offset_pos not in lang_offsets:
+                            lang_offsets.append(offset_pos)
                     if attr in self.lg_attrs:
-                        self._lang_data[lang][self.lg_attrs.index(attr)][
+                        lang_lemmas = self._lang_data[lang][self.lg_attrs.index(attr)][
                             offset_pos
-                        ].append(val)
+                        ]
+                        if val not in lang_lemmas:
+                            lang_lemmas.append(val)
 
     def disable_custom_lemmas(self, lang):
         """prevent synsets from being mistakenly added"""
