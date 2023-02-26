@@ -1216,7 +1216,7 @@ class WordNetCorpusReader(CorpusReader):
         self.map30 = self.map_wn()
 
         # Language data attributes
-        self.lg_attrs = ["lemma", "none", "def", "exe"]
+        self.lg_attrs = ["lemma", "of", "def", "exe"]
 
     def index_sense(self, version=None):
         """Read sense key to synset id mapping from index.sense file in corpus directory"""
@@ -1251,7 +1251,7 @@ class WordNetCorpusReader(CorpusReader):
         return synset_to_many
 
     def map_to_one(self, version="wordnet"):
-        self.nomap[version] = []
+        self.nomap[version] = set()
         self.splits[version] = {}
         synset_to_many = self.map_to_many(version)
         synset_to_one = {}
@@ -1273,7 +1273,7 @@ class WordNetCorpusReader(CorpusReader):
                     # where only Lithuanian and Slovak use the "s" ss_type.
                     synset_to_one[f"{source[:-1]}a"] = target
             else:
-                self.nomap[version].append(source)
+                self.nomap[version].add(source)
         return synset_to_one
 
     def map_wn(self, version="wordnet"):
@@ -1294,7 +1294,9 @@ class WordNetCorpusReader(CorpusReader):
             for source, targets in self.map_to_many(version).items():
                 for target in targets:
                     merge[target].add(source)
-            self.merges[version] = {s: t for s, t in merge.items() if len(t) > 1}
+            self.merges[version] = {
+                trg: src for trg, src in merge.items() if len(src) > 1
+            }
         return self.merges[version]
 
     # Open Multilingual WordNet functions, contributed by
@@ -2230,8 +2232,9 @@ class WordNetCorpusReader(CorpusReader):
                     else:
                         # Some OMW offsets were never in Wordnet:
                         if (
-                            offset_pos not in self.nomap
-                            and offset_pos.replace("a", "s") not in self.nomap
+                            offset_pos not in self.nomap["wordnet"]
+                            and offset_pos.replace("a", "s")
+                            not in self.nomap["wordnet"]
                         ):
                             warnings.warn(
                                 f"{lang}: invalid offset {offset_pos} in '{line}'"
