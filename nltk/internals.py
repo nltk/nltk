@@ -540,6 +540,7 @@ def find_file_iter(
 
     # Check environment variables
     for env_var in env_vars:
+        env_var = os.path.expanduser(env_var)
         if env_var in os.environ:
             if finding_dir:  # This is to file a directory instead of file
                 yielded = True
@@ -1086,12 +1087,12 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
 
 def is_writable(path):
     # Ensure that it exists.
-    if not os.path.exists(path):
+    if not os.path.exists(os.path.expanduser(path)):
         return False
 
     # If we're on a posix system, check its permissions.
     if hasattr(os, "getuid"):
-        statdata = os.stat(path)
+        statdata = os.stat(os.path.expanduser(path))
         perm = stat.S_IMODE(statdata.st_mode)
         # is it world-writable?
         if perm & 0o002:
