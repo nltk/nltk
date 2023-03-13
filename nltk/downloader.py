@@ -2244,7 +2244,7 @@ def _unzip_iter(filename, root, verbose=True):
 
     try:
         zf = zipfile.ZipFile(filename)
-    except zipfile.error as e:
+    except zipfile.BadZipFile:
         yield ErrorMessage(filename, "Error with downloaded zip file")
         return
     except Exception as e:
