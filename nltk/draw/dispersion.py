@@ -4,6 +4,7 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
+# See issue #3133
 
 """
 A utility for displaying lexical dispersion.
