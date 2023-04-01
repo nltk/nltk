@@ -540,7 +540,6 @@ def find_file_iter(
 
     # Check environment variables
     for env_var in env_vars:
-        env_var = os.path.expanduser(env_var)
         if env_var in os.environ:
             if finding_dir:  # This is to file a directory instead of file
                 yielded = True
