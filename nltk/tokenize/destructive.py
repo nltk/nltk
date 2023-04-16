@@ -189,6 +189,56 @@ class NLTKWordTokenizer(TokenizerI):
 
         return text.split()
 
+    def custom_tokenize(self, text: str, custom_tokens: List) -> List[str]:
+
+        r"""Return a custom tokenized copy of `text`.
+        
+        In this function we can make custome token.
+        For get that we can give list of needed custome token.
+        
+        >>> from nltk.tokenize import custom_tokenize
+        >>> text = "This is first token, need to edited also first token and second token will be edited, but not this first tokens will be created"
+        >>> custom_tokens = ['first token','first token and second token']
+        >>> custom_tokenize(text,custom_tokens)
+        ['This', 'is', 'first token', ',', 'need', 'to', 'edited', 'also', 'first token and second token', 'will', 'be', 'edited', ',', 'but', 'not', 'this', 'first', 'tokens', 'will', 'be', 'created']
+
+
+        :param text: A string with a sentence or sentences.
+        :type text: str
+        :param custom_tokens: The custom tokens
+        :type custom_tokens: List[str]
+        :return: List of tokens from `text`.
+        :rtype: List[str]
+        """
+
+        # Making unique SEP token for adding in text
+        # So that we can't split it
+        def get_sep_token(sep_token: str,text: str) -> str:
+            while(sep_token in text):
+                sep_token = "_" + sep_token + "_"
+            return sep_token
+        
+        # Remove SEP tokens to get needed tokens
+        def remove_sep_token(tokens: List[str],sep_token: str) -> List[str]:
+            tokens_without_sep = [token.replace(sep_token , " ") for token in tokens]
+            return tokens_without_sep
+
+        # Get unique SEP token
+        sep_token = get_sep_token("_SEP_",text)
+
+        # Find and replace text's space between custom tokens using regex
+        for i in custom_tokens:
+            temp = i.replace(" ", sep_token)
+            text = re.sub(f"((^| ){i})([!,. ])",r" {} \3".format(temp),text)
+
+        # Get tokens using tokenize function 
+        raw_tokens = self.tokenize(text)
+
+        # Remove SEP token to get orignial(needed) token
+        final_tokens = remove_sep_token(raw_tokens, sep_token)
+
+        return final_tokens
+
     def span_tokenize(self, text: str) -> Iterator[Tuple[int, int]]:
         r"""
         Returns the spans of the tokens in ``text``.
