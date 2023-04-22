@@ -192,10 +192,10 @@ class NLTKWordTokenizer(TokenizerI):
     def custom_tokenize(self, text: str, custom_tokens: List) -> List[str]:
 
         r"""Return a custom tokenized copy of `text`.
-        
+
         In this function we can make custome token.
         For get that we can give list of needed custome token.
-        
+
         >>> from nltk.tokenize import custom_tokenize
         >>> text = "This is first token, need to edited also first token and second token will be edited, but not this first tokens will be created"
         >>> custom_tokens = ['first token','first token and second token']
@@ -211,13 +211,14 @@ class NLTKWordTokenizer(TokenizerI):
         :rtype: List[str]
         """
 
+        custom_tokens = sorted(custom_tokens,reverse = True)
         # Making unique SEP token for adding in text
         # So that we can't split it
         def get_sep_token(sep_token: str,text: str) -> str:
             while(sep_token in text):
                 sep_token = "_" + sep_token + "_"
             return sep_token
-        
+
         # Remove SEP tokens to get needed tokens
         def remove_sep_token(tokens: List[str],sep_token: str) -> List[str]:
             tokens_without_sep = [token.replace(sep_token , " ") for token in tokens]
@@ -231,7 +232,7 @@ class NLTKWordTokenizer(TokenizerI):
             temp = i.replace(" ", sep_token)
             text = re.sub(f"((^| ){i})([!,. ])",r" {} \3".format(temp),text)
 
-        # Get tokens using tokenize function 
+        # Get tokens using tokenize function
         raw_tokens = self.tokenize(text)
 
         # Remove SEP token to get orignial(needed) token
