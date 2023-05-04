@@ -44,6 +44,8 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
             xs.append(x)
             ys.append(y)
 
+    words = list(word2y.keys())
+    
     _, ax = plt.subplots()
     ax.plot(xs, ys, "|")
     ax.set_yticks(list(range(len(words))), words, color="C0")
