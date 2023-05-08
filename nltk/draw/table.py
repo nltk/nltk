@@ -193,7 +193,7 @@ class MultiListbox(Frame):
         x1 = event.x + event.widget.winfo_x()
         x2 = lb.winfo_x() + lb.winfo_width()
 
-        lb["width"] = max(3, lb["width"] + (x1 - x2) // charwidth)
+        lb["width"] = max(3, int(lb["width"] + (x1 - x2) // charwidth))
 
     def _resize_column_buttonrelease_cb(self, event):
         event.widget.unbind("<ButtonRelease-%d>" % event.num)
