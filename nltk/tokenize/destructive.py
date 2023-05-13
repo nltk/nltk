@@ -211,26 +211,26 @@ class NLTKWordTokenizer(TokenizerI):
         :rtype: List[str]
         """
 
-        custom_tokens = sorted(custom_tokens,reverse = True)
+        custom_tokens = sorted(custom_tokens, reverse = True)
         # Making unique SEP token for adding in text
         # So that we can't split it
-        def get_sep_token(sep_token: str,text: str) -> str:
-            while(sep_token in text):
+        def get_sep_token(sep_token: str, text: str) -> str:
+            while sep_token in text:
                 sep_token = "_" + sep_token + "_"
             return sep_token
 
         # Remove SEP tokens to get needed tokens
-        def remove_sep_token(tokens: List[str],sep_token: str) -> List[str]:
-            tokens_without_sep = [token.replace(sep_token , " ") for token in tokens]
+        def remove_sep_token(tokens: List[str], sep_token: str) -> List[str]:
+            tokens_without_sep = [token.replace(sep_token, " ") for token in tokens]
             return tokens_without_sep
 
         # Get unique SEP token
-        sep_token = get_sep_token("_SEP_",text)
+        sep_token = get_sep_token("_SEP_", text)
 
         # Find and replace text's space between custom tokens using regex
         for i in custom_tokens:
             temp = i.replace(" ", sep_token)
-            text = re.sub(f"((^| ){i})([!,. ])",r" {} \3".format(temp),text)
+            text = re.sub(f"((^| ){i})([!,. ])",rf" {temp} \3", text)
 
         # Get tokens using tokenize function
         raw_tokens = self.tokenize(text)
