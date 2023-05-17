@@ -70,6 +70,8 @@ class CharTokenizer(StringTokenizer):
     is ever required directly, use ``for char in string``.
     """
 
+    _string = None
+
     def tokenize(self, s):
         return list(s)
 
