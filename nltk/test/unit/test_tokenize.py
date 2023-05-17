@@ -16,6 +16,7 @@ from nltk.tokenize import (
     sent_tokenize,
     word_tokenize,
 )
+from nltk.tokenize.simple import CharTokenizer
 
 
 def load_stanford_segmenter():
@@ -865,3 +866,21 @@ class TestTokenize:
     )
     def test_sent_tokenize(self, sentences: str, expected: List[str]):
         assert sent_tokenize(sentences) == expected
+
+    def test_string_tokenizer(self) -> None:
+        sentence = "Hello there"
+        tokenizer = CharTokenizer()
+        assert tokenizer.tokenize(sentence) == list(sentence)
+        assert list(tokenizer.span_tokenize(sentence)) == [
+            (0, 1),
+            (1, 2),
+            (2, 3),
+            (3, 4),
+            (4, 5),
+            (5, 6),
+            (6, 7),
+            (7, 8),
+            (8, 9),
+            (9, 10),
+            (10, 11),
+        ]
