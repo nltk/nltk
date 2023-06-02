@@ -296,6 +296,7 @@
 - M.K. Pawelkiewicz <https://github.com/hamiltonianflow>
 - Steven Thomas Smith <https://github.com/essandess>
 - Jan Lennartz <https://github.com/Madnex>
+- Tim Sockel <https://github.com/TiMauzi>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
