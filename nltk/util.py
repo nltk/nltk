@@ -5,7 +5,6 @@
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 import inspect
 import locale
 import os
@@ -858,14 +857,15 @@ def ngrams(sequence, n, **kwargs):
     """
     sequence = pad_sequence(sequence, n, **kwargs)
 
-    # Creates the sliding window, of n no. of items.
-    # `iterables` is a tuple of iterables where each iterable is a window of n items.
-    iterables = tee(sequence, n)
-
-    for i, sub_iterable in enumerate(iterables):  # For each window,
-        for _ in range(i):  # iterate through every order of ngrams
-            next(sub_iterable, None)  # generate the ngrams within the window.
-    return zip(*iterables)  # Unpack and flattens the iterables.
+    # sliding_window('ABCDEFG', 4) --> ABCD BCDE CDEF DEFG
+    # https://docs.python.org/3/library/itertools.html?highlight=sliding_window#itertools-recipes
+    it = iter(sequence)
+    window = deque(islice(it, n), maxlen=n)
+    if len(window) == n:
+        yield tuple(window)
+    for x in it:
+        window.append(x)
+        yield tuple(window)
 
 
 def bigrams(sequence, **kwargs):
