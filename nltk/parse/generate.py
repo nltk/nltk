@@ -14,13 +14,6 @@ import sys
 from nltk.grammar import Nonterminal
 
 
-def is_recursive(grammar):
-    for prod in grammar.productions():
-        if prod.lhs() in prod.rhs():
-            return True
-    return False
-
-
 def generate(grammar, start=None, depth=None, n=None):
     """
     Generates an iterator of all sentences from a CFG.
@@ -34,7 +27,7 @@ def generate(grammar, start=None, depth=None, n=None):
     if not start:
         start = grammar.start()
     if depth is None:
-        if is_recursive(grammar):
+        if grammar.is_recursive():
             # This seems to be an almost maximal safe default with Python 3:
             depth = (sys.getrecursionlimit() // 3) - 3
         else:

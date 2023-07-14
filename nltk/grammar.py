@@ -6,6 +6,7 @@
 #         Jason Narad <jason.narad@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Tom Aarsen <>
+#         Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -303,6 +304,9 @@ class Production:
         :rtype: sequence(Nonterminal and terminal)
         """
         return self._rhs
+
+    def is_recursive(self):
+        return self.lhs() in self.rhs()
 
     def __len__(self):
         """
@@ -604,6 +608,12 @@ class CFG:
                 for prod in self._lhs_index.get(lhs, [])
                 if prod in self._rhs_index.get(rhs, [])
             ]
+
+    def is_recursive(self):
+        for prod in self.productions():
+            if prod.is_recursive():
+                return True
+        return False
 
     def leftcorners(self, cat):
         """
