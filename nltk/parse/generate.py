@@ -27,11 +27,8 @@ def generate(grammar, start=None, depth=None, n=None):
     if not start:
         start = grammar.start()
     if depth is None:
-        if grammar.is_recursive():
-            # This seems to be an almost maximal safe default with Python 3:
-            depth = (sys.getrecursionlimit() // 3) - 3
-        else:
-            depth = sys.maxsize
+        # Safe default, assuming the grammar may be recursive:
+        depth = (sys.getrecursionlimit() // 3) - 3
 
     iter = _generate_all(grammar, [start], depth)
 
