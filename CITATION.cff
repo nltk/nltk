@@ -39,5 +39,9 @@ preferred-citation:
     - given-names: Edward
       family-names: Loper
   year: 2009
+  month: 6
+  url: "https://www.nltk.org/book/"
+  isbn: "9780596516499"
   publisher:
     name: "O'Reilly Media, Inc."
+    website: "https://www.oreilly.com/"
