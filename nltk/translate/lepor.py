@@ -10,11 +10,12 @@
 import math
 import re
 import sys
+from typing import List
 
 import nltk
 
 
-def length_penalty(reference: list[str], hypothesis: list[str]) -> float:
+def length_penalty(reference: List[str], hypothesis: List[str]) -> float:
     """
     Function will calculate length penalty(LP) one of the components in LEPOR, which is defined to embrace
     the penalty for both longer and shorter hypothesis compared with the reference translations.
@@ -40,15 +41,15 @@ def length_penalty(reference: list[str], hypothesis: list[str]) -> float:
 
 
 def ngram_positional_penalty(
-    ref_words: list[str], hypothesis_words: list[str]
+    ref_words: List[str], hypothesis_words: List[str]
 ) -> (float, float):
     """
     Function will calculate penalty due to difference in positions of ngram in reference and output sentences.
 
     :param ref_words: list of words in reference sentence.
-    :type ref_words: list[str]
+    :type ref_words: List[str]
     :param hypothesis_words: list of words in hypothesis sentence.
-    :type hypothesis_words: list[str]
+    :type hypothesis_words: List[str]
 
     :return: A tuple containing two elements:
              - NPosPenal: N-gram positional penalty.
@@ -167,9 +168,9 @@ def sentence_lepor(
 
     >>> hypothesis = 'a bird is on a stone.'
 
-    >>> references = 'a bird behind the stone.'
+    >>> reference = 'a bird behind the stone.'
 
-    >>> sentence_lepor(references, hypothesis)
+    >>> sentence_lepor(reference, hypothesis)
     0.7824248013113159
 
     :param reference: reference sentence
@@ -208,7 +209,7 @@ def sentence_lepor(
 
 
 def corpus_lepor(
-    references: list[str], hypothesis: list[str], alpha: float = 1.0, beta: float = 1.0
+    references: List[str], hypothesis: List[str], alpha: float = 1.0, beta: float = 1.0
 ) -> list[float]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
@@ -236,7 +237,7 @@ def corpus_lepor(
 
     """
 
-    if len(reference) == 0 or len(hypothesis) == 0:
+    if len(references) == 0 or len(hypothesis) == 0:
         raise ValueError("There is an Empty list. Exit.")
 
     assert len(references) == len(hypothesis), (
