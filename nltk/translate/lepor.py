@@ -17,78 +17,96 @@ import nltk
 
 def length_penalty(reference: List[str], hypothesis: List[str]) -> float:
     """
-    Function will calculate length penalty(LP) one of the components in LEPOR, which is defined to embrace
-    the penalty for both longer and shorter hypothesis compared with the reference translations.
+    This function calculates the length penalty(LP) for the LEPOR metric, which is defined to embrace the penaltyvfor
+    both longer and shorter hypothesis compared with the reference translations.
+    Refer from Eq (2) on https://aclanthology.org/C12-2044
 
-    :param reference: reference sentence
+    :param reference: Reference sentence
     :type reference: str
-    :param hypothesis: hypothesis sentence
+    :param hypothesis: Hypothesis sentence
     :type hypothesis: str
 
-    :return: penalty of difference in length in reference and hypothesis sentence.
+    :return: Penalty of difference in length in reference and hypothesis sentence.
     :rtype: float
     """
 
-    r_len = len(reference)
-    o_len = len(hypothesis)
+    ref_len = len(reference)
+    hyp_len = len(hypothesis)
 
-    if r_len == o_len:
+    if ref_len == hyp_len:
         return 1
-    elif r_len < o_len:
-        return math.exp(1 - (r_len / o_len))
-    else:
-        return math.exp(1 - (o_len / r_len))
+    elif ref_len < hyp_len:
+        return math.exp(1 - (ref_len / hyp_len))
+    else:  # i.e. r_len > hyp_len
+        return math.exp(1 - (hyp_len / ref_len))
 
 
-def ngram_positional_penalty(
-    ref_words: List[str], hypothesis_words: List[str]
-) -> (float, float):
+def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
     """
-    Function will calculate penalty due to difference in positions of ngram in reference and output sentences.
+    This function computes the context-dependent n-gram word alignment tasks that
+    takes into account the surrounding context (neighbouring words) of the potential
+    word to select a better matching pairs between the output and the reference.
 
-    :param ref_words: list of words in reference sentence.
-    :type ref_words: List[str]
-    :param hypothesis_words: list of words in hypothesis sentence.
-    :type hypothesis_words: List[str]
+    This alignment task is used to compute the ngram positional difference penalty
+    component of the LEPOR score. Generally, the function finds the matching tokens
+    between the reference and hypothesis, then find the indices of longest matching
+    n-grams by checking the left and right unigram window of the matching tokens.
 
-    :return: A tuple containing two elements:
-             - NPosPenal: N-gram positional penalty.
-             - match_count: Count of matched n-grams.
-    :rtype: tuple
+    :param ref_tokens: A list of tokens in reference sentence.
+    :type ref_tokens: List[str]
+    :param hyp_tokens: A list of tokens in hypothesis sentence.
+    :type hyp_tokens: List[str]
     """
-
     alignments = []
 
-    for hyp_index, hyp_word in enumerate(hypothesis_words):
+    # Store the reference and hypothesis tokens length.
+    hyp_len = len(hyp_tokens)
+    ref_len = len(ref_tokens)
 
-        if ref_words.count(hyp_word) == 0:
-            # No match
+    for hyp_index, hyp_token in enumerate(hyp_tokens):
+
+        # If no match.
+        if ref_tokens.count(hyp_token) == 0:
             alignments.append(-1)
-        elif ref_words.count(hyp_word) == 1:
-            # If only one match
-            alignments.append(ref_words.index(hyp_word))
+        # If only one match.
+        elif ref_tokens.count(hyp_token) == 1:
+            alignments.append(ref_tokens.index(hyp_token))
+        # Otherwise, compute the multiple possibilities.
         else:
-            # if there are multiple possibilities.
-            ref_indexes = [i for i, word in enumerate(ref_words) if word == hyp_word]
+            # Keeps an index of where the hypothesis token matches the reference.
+            ref_indexes = [
+                i for i, ref_token in enumerate(ref_tokens) if ref_token == hyp_token
+            ]
 
-            is_matched = [False] * len(ref_indexes)
-
-            for ind, ref_word_index in enumerate(ref_indexes):
+            # Iterate through the matched tokens, and check if
+            # the one token to the left/right also matches.
+            is_matched = []
+            for ind, ref_index in enumerate(ref_indexes):
+                # The one to the left token also matches.
                 if (
-                    0 < ref_word_index - 1 < len(ref_words)
-                    and 0 < hyp_index - 1 < len(hypothesis_words)
-                    and ref_words[ref_word_index - 1] == hypothesis_words[hyp_index - 1]
+                    0 < ref_index - 1 < ref_len
+                    and 0 < hyp_index - 1 < hyp_len
+                    and ref_tokens[ref_index - 1] == hyp_tokens[hyp_index - 1]
                 ):
                     is_matched[ind] = True
+                # The one to the right token also matches.
                 elif (
-                    0 < ref_word_index + 1 < len(ref_words)
-                    and 0 < hyp_index + 1 < len(hypothesis_words)
-                    and ref_words[ref_word_index + 1] == hypothesis_words[hyp_index + 1]
+                    0 < ref_index + 1 < ref_len
+                    and 0 < hyp_index + 1 < hyp_len
+                    and ref_tokens[ref_index + 1] == hyp_tokens[hyp_index + 1]
                 ):
                     is_matched[ind] = True
+                # If the left and right tokens don't match.
+                else:
+                    is_matched[ind] = False
 
+            # Stores the alignments that have matching phrases.
+            # If there's only a single matched alignment.
             if is_matched.count(True) == 1:
                 alignments.append(ref_indexes[is_matched.index(True)])
+            # If there's multiple matched alignments that have matching
+            # tokens in the left/right window, we shift the index of the
+            # alignment to the right most matching token.
             elif is_matched.count(True) > 1:
                 min_distance = 0
                 min_index = 0
@@ -99,7 +117,9 @@ def ngram_positional_penalty(
                             min_distance = distance
                             min_index = ref_index
                 alignments.append(min_index)
-
+            # If there's no matched alignments,
+            # we still keep indexes of the matching tokens
+            # without explicitly checking for the left/right window.
             else:
                 min_distance = 0
                 min_index = 0
@@ -110,14 +130,47 @@ def ngram_positional_penalty(
                         min_index = ref_index
                 alignments.append(min_index)
 
+                for ref_index in ref_indexes:
+                    distance = abs(hyp_index - ref_index)
+                    if distance > min_distance:
+                        min_distance = distance
+                        min_index = ref_index
+                alignments.append(min_index)
+
+    # The alignments are one indexed to keep track of the ending slice pointer of the matching ngrams.
     alignments = [a + 1 for a in alignments if a != -1]
+    return alignments
+
+
+def ngram_positional_penalty(
+    ref_tokens: List[str], hyp_tokens: List[str]
+) -> (float, float):
+    """
+    This function calculates the n-gram position difference penalty (NPosPenal) described in the LEPOR paper.
+    The NPosPenal is an exponential of the length normalized n-gram matches between the reference and the hypothesis.
+
+    :param ref_tokens: A list of words in reference sentence.
+    :type ref_tokens: List[str]
+    :param hyp_tokens: A list of words in hypothesis sentence.
+    :type hyp_tokens: List[str]
+
+    :return: A tuple containing two elements:
+             - NPosPenal: N-gram positional penalty.
+             - match_count: Count of matched n-grams.
+    :rtype: tuple
+    """
+
+    alignments = alignment(ref_tokens, hyp_tokens)
     match_count = len(alignments)
-    npd_list = []
 
-    for ind, a in enumerate(alignments):
-        npd_list.append(abs(((ind + 1) / len(hypothesis_words)) - (a / len(ref_words))))
-    npd = sum(npd_list) / len(hypothesis_words)
+    # Stores the n-gram position values (difference values) of aligned words
+    # between output and reference sentences,
+    # aka |PD| of eq (4) in https://aclanthology.org/C12-2044
+    pd = []
+    for i, a in enumerate(alignments):
+        pd.append(abs((i + 1) / len(hyp_tokens) - a / len(ref_tokens)))
 
+    npd = sum(pd) / len(hyp_tokens)
     return math.exp(-npd), match_count
 
 
@@ -132,18 +185,18 @@ def harmonic(
     Function will calculate the precision and recall of matched words and calculate a final score on wighting
     using alpha and beta parameters.
 
-    :param match_count: number of words in hypothesis aligned with reference.
+    :param match_count: Number of words in hypothesis aligned with reference.
     :type match_count: int
-    :param reference_length: length of the reference sentence
+    :param reference_length: Length of the reference sentence
     :type reference_length: int
-    :param hypothesis_length: length of the hypothesis sentence
+    :param hypothesis_length: Length of the hypothesis sentence
     :type hypothesis_length: int
-    :param alpha: a parameter to set weight fot recall.
+    :param alpha: A parameter to set weight fot recall.
     :type alpha: float
-    :param beta: a parameter to set weight fot precision.
+    :param beta: A parameter to set weight fot precision.
     :type beta: float
 
-    :return: harmonic mean.
+    :return: Harmonic mean.
     :rtype: float
     """
 
@@ -160,80 +213,101 @@ def harmonic(
 
 
 def sentence_lepor(
-    reference: str, hypothesis: str, alpha: float = 1.0, beta: float = 1.0
-) -> float:
+    references: List[str],
+    hypothesis: str,
+    alpha: float = 1.0,
+    beta: float = 1.0,
+    use_nltk_tokenize=True,
+) -> List[float]:
     """
     Calculate LEPOR score a sentence from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2
 
     >>> hypothesis = 'a bird is on a stone.'
 
-    >>> reference = 'a bird behind the stone.'
+    >>> reference1 = 'a bird behind the stone.'
+    >>> reference2 = 'a bird is on the rock.'
 
-    >>> sentence_lepor(reference, hypothesis)
-    0.7824248013113159
+    >>> sentence_lepor([reference1, reference2], hypothesis)
+    [0.7824248013113159, 0.7739937377760259]
 
-    :param reference: reference sentence
-    :type reference: list(list(str))
-    :param hypothesis: a hypothesis sentence
-    :type hypothesis: list(str)
-    :param alpha: a parameter to set weight fot recall.
+    :param references: Reference sentences
+    :type references: list(str)
+    :param hypothesis: Hypothesis sentence
+    :type hypothesis: str
+    :param alpha: A parameter to set weight fot recall.
     :type alpha: float
-    :param beta: a parameter to set weight fot precision.
+    :param beta: A parameter to set weight fot precision.
     :type beta: float
+    :param use_nltk_tokenize: A boolean parameter to choose tokenizer
 
-    :return: The Lepor score. Returns a float value of lepor score for a sentence
-    :rtype: float
+    :return: The list of Lepor scores for a hypothesis with all references.
+    :rtype: list(float)
 
     """
 
-    if len(reference) == 0 or len(hypothesis) == 0:
-        raise ValueError("One of the sentence is empty. Exit.")
+    lepor_scores = list()
 
-    # Regex to remove all the unnecessary punctuation from the text.
-    reference = nltk.word_tokenize(reference)
-    hypothesis = nltk.word_tokenize(hypothesis)
+    # Tokenize sentences.
+    if use_nltk_tokenize:
+        hypothesis = nltk.word_tokenize(hypothesis)
+        for index, reference in enumerate(references):
+            references[index] = nltk.word_tokenize(reference)
 
-    # reference = re.findall(r"[\w']+|[.,!?;]", reference)
-    # hypothesis = re.findall(r"[\w']+|[.,!?;]", hypothesis)
+    else:  # if not nltk tokenizer, then simple regex
+        hypothesis = re.findall(r"[\w']+|[.,!?;]", hypothesis)
+        for index, reference in enumerate(references):
+            references[index] = re.findall(r"[\w']+|[.,!?;]", reference)
 
-    # Calculate the length penalty due to the difference in the length of reference and hypothesis.
-    lp = length_penalty(reference, hypothesis)
+    for reference in references:
+        if len(reference) == 0 or len(hypothesis) == 0:
+            raise ValueError("One of the sentence is empty. Exit.")
 
-    # Calculate the penalty on different positions of same word in translation.
-    npd, match_count = ngram_positional_penalty(reference, hypothesis)
+        # Calculate the length penalty due to the difference in the length of reference and hypothesis.
+        lp = length_penalty(reference, hypothesis)
 
-    harmonic_score = harmonic(match_count, len(reference), len(hypothesis), alpha, beta)
+        # Calculate the penalty on different positions of same word in translation.
+        npd, match_count = ngram_positional_penalty(reference, hypothesis)
 
-    return lp * npd * harmonic_score
+        harmonic_score = harmonic(
+            match_count, len(reference), len(hypothesis), alpha, beta
+        )
+
+        lepor_scores.append(lp * npd * harmonic_score)
+
+    return lepor_scores
 
 
 def corpus_lepor(
-    references: List[str], hypothesis: List[str], alpha: float = 1.0, beta: float = 1.0
-) -> List[float]:
+    references: List[List[str]],
+    hypothesis: List[str],
+    alpha: float = 1.0,
+    beta: float = 1.0,
+) -> List[List[float]]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2
 
     >>> hypothesis = ['a bird is on a stone.', 'scary crow was not bad.']
 
-    >>> references = ['a bird behind the stone.', 'scary cow was good.']
+    >>> references = [['a bird behind the stone.', 'a bird is on the rock'],
+    >>>              ['scary cow was good.', 'scary crow was elegant.']]
 
     >>> corpus_lepor(references, hypothesis)
-    [0.7824248013113159, 0.5639427891892225]
+    [[0.7824248013113159, 0.7931427828105261], [0.5639427891892225, 0.7860963170056643]]
 
 
-    :param references: reference sentences
+    :param references: Reference sentences
     :type references: list(list(str))
-    :param hypothesis: hypothesis sentences
+    :param hypothesis: Hypothesis sentences
     :type hypothesis: list(str)
-    :param alpha: a parameter to set weight fot recall.
+    :param alpha: A parameter to set weight fot recall.
     :type alpha: float
-    :param beta: a parameter to set weight fot precision.
+    :param beta: A parameter to set weight fot precision.
     :type beta: float
 
     :return: The Lepor score. Returns a list for all sentences
-    :rtype: list(float)
+    :rtype: list(list(float))
 
     """
 
