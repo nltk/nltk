@@ -10,7 +10,7 @@
 import math
 import re
 import sys
-from typing import List
+from typing import Callable, List
 
 import nltk
 
@@ -217,7 +217,7 @@ def sentence_lepor(
     hypothesis: str,
     alpha: float = 1.0,
     beta: float = 1.0,
-    use_nltk_tokenize=True,
+    tokenizer: Callable[[str], List[str]] = None,
 ) -> List[float]:
     """
     Calculate LEPOR score a sentence from Han, A. L.-F. (2017).
@@ -239,7 +239,8 @@ def sentence_lepor(
     :type alpha: float
     :param beta: A parameter to set weight fot precision.
     :type beta: float
-    :param use_nltk_tokenize: A boolean parameter to choose tokenizer
+    :param tokenizer: A callable tokenizer that will accept a string and returns a list of tokens.
+    :type tokenizer: Callable[[str], List[str]]
 
     :return: The list of Lepor scores for a hypothesis with all references.
     :rtype: list(float)
@@ -249,15 +250,15 @@ def sentence_lepor(
     lepor_scores = list()
 
     # Tokenize sentences.
-    if use_nltk_tokenize:
+    if tokenizer:
+        hypothesis = tokenizer(hypothesis)
+        for index, reference in enumerate(references):
+            references[index] = tokenizer(reference)
+
+    else:  # If tokenizer is not provided, use the one in NLTK.
         hypothesis = nltk.word_tokenize(hypothesis)
         for index, reference in enumerate(references):
             references[index] = nltk.word_tokenize(reference)
-
-    else:  # if not nltk tokenizer, then simple regex
-        hypothesis = re.findall(r"[\w']+|[.,!?;]", hypothesis)
-        for index, reference in enumerate(references):
-            references[index] = re.findall(r"[\w']+|[.,!?;]", reference)
 
     for reference in references:
         if len(reference) == 0 or len(hypothesis) == 0:
@@ -283,6 +284,7 @@ def corpus_lepor(
     hypothesis: List[str],
     alpha: float = 1.0,
     beta: float = 1.0,
+    tokenizer: Callable[[str], List[str]] = None,
 ) -> List[List[float]]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
@@ -305,6 +307,8 @@ def corpus_lepor(
     :type alpha: float
     :param beta: A parameter to set weight fot precision.
     :type beta: float
+    :param tokenizer: A callable tokenizer that will accept a string and returns a list of tokens.
+    :type tokenizer: Callable[[str], List[str]]
 
     :return: The Lepor score. Returns a list for all sentences
     :rtype: list(list(float))
@@ -322,6 +326,8 @@ def corpus_lepor(
 
     for reference_sen, hypothesis_sen in zip(references, hypothesis):
         # Calculate Lepor for each sentence separately and append in a list.
-        lepor_scores.append(sentence_lepor(reference_sen, hypothesis_sen, alpha, beta))
+        lepor_scores.append(
+            sentence_lepor(reference_sen, hypothesis_sen, alpha, beta, tokenizer)
+        )
 
     return lepor_scores
