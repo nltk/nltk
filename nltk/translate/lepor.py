@@ -291,7 +291,7 @@ def corpus_lepor(
     >>> hypothesis = ['a bird is on a stone.', 'scary crow was not bad.']
 
     >>> references = [['a bird behind the stone.', 'a bird is on the rock'],
-    >>>              ['scary cow was good.', 'scary crow was elegant.']]
+    ...              ['scary cow was good.', 'scary crow was elegant.']]
 
     >>> corpus_lepor(references, hypothesis)
     [[0.7824248013113159, 0.7931427828105261], [0.5639427891892225, 0.7860963170056643]]
