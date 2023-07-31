@@ -210,7 +210,7 @@ def sentence_lepor(
 
 def corpus_lepor(
     references: List[str], hypothesis: List[str], alpha: float = 1.0, beta: float = 1.0
-) -> list[float]:
+) -> List[float]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2
