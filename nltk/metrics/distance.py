@@ -127,7 +127,7 @@ def _edit_dist_backtrace(lev, substitution_cost=1):
     i, j = len(lev) - 1, len(lev[0]) - 1
     alignment = [(i, j)]
 
-    if substitution_cost != float("inf"):
+    if substitution_cost < 2:
         directions = lambda i, j: [(i - 1, j - 1), (i - 1, j), (i, j - 1)]
     else:
         directions = lambda i, j: [(i - 1, j), (i, j - 1)]
