@@ -89,8 +89,8 @@ class AlignedSent:
         s += "node[shape=plaintext]\n"
 
         # Declare node
-        s += ''.join([f'"{w}_source" [label="{w}"] \n' for w in self._words])
-        s += ''.join([f'"{w}_target" [label="{w}"] \n' for w in self._mots])
+        s += "".join([f'"{w}_source" [label="{w}"] \n' for w in self._words])
+        s += "".join([f'"{w}_target" [label="{w}"] \n' for w in self._mots])
 
         # Alignment
         s += ''.join([f'"{self._words[u]}_source" -- "{self._mots[v]}_target" \n' 
