@@ -93,8 +93,12 @@ class AlignedSent:
         s += "".join([f'"{w}_target" [label="{w}"] \n' for w in self._mots])
 
         # Alignment
-        s += ''.join([f'"{self._words[u]}_source" -- "{self._mots[v]}_target" \n' 
-                      for u, v in self._alignment])
+        s += "".join(
+            [
+                f'"{self._words[u]}_source" -- "{self._mots[v]}_target" \n'
+                for u, v in self._alignment
+            ]
+        )
 
         # Connect the source words
         for i in range(len(self._words) - 1):
