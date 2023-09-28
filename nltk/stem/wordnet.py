@@ -39,7 +39,7 @@ class WordNetLemmatizer:
         :param pos: The Part Of Speech tag. Valid options are `"n"` for nouns,
             `"v"` for verbs, `"a"` for adjectives, `"r"` for adverbs and `"s"`
             for satellite adjectives.
-        :param pos: str
+        :type pos: str
         :return: The lemma of `word`, for the given `pos`.
         """
         lemmas = wn._morphy(word, pos)
