@@ -298,6 +298,7 @@
 - Jan Lennartz <https://github.com/Madnex>
 - Tim Sockel <https://github.com/TiMauzi>
 - Ron Urbach <https://github.com/sharpblade4>
+- Vivek Kalyan <https://github.com/vivekkalyan>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
