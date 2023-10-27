@@ -884,3 +884,17 @@ class TestTokenize:
             (9, 10),
             (10, 11),
         ]
+
+
+class TestPunktTrainer:
+    def test_punkt_train(self) -> None:
+        trainer = punkt.PunktTrainer()
+        trainer.train("This is a test.")
+
+    def test_punkt_train_single_word(self) -> None:
+        trainer = punkt.PunktTrainer()
+        trainer.train("This.")
+
+    def test_punkt_train_no_punc(self) -> None:
+        trainer = punkt.PunktTrainer()
+        trainer.train("This is a test")
