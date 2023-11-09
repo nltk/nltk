@@ -395,3 +395,52 @@ Test that `ValueError` exceptions are raised when illegal arguments are used.
     Traceback (most recent call last):
       ...
     ValueError: Smoothing method bar not recognized
+
+
+Regression Tests: ToktokTokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> toktok = ToktokTokenizer()
+    >>> text = u'Is 9.5 or 525,600 my favorite number?'
+    >>> print(toktok.tokenize(text, return_str=True))
+    Is 9.5 or 525,600 my favorite number ?
+    >>> text = u'The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things'
+    >>> print(toktok.tokenize(text, return_str=True))
+    The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things
+    >>> text = u'\xa1This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
+    >>> expected = u'\xa1 This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
+    >>> assert toktok.tokenize(text, return_str=True) == expected
+    >>> toktok.tokenize(text) == [u'\xa1', u'This', u',', u'is', u'a', u'sentence', u'with', u'weird', u'\xbb', u'symbols', u'\u2026', u'appearing', u'everywhere', u'\xbf']
+    True
+
+Taking comments from the code and turning them into actual tests...
+
+    # Don't tokenize period unless it ends the line and that it isn't
+    # preceded by another period, e.g.
+    # "something ..." -> "something ..."
+    >>> text = "something ..."
+    >>> print(toktok.tokenize(text, return_str=True))
+    something ...
+
+    # "something." -> "something ."
+    >>> text = "something."
+    >>> print(toktok.tokenize(text, return_str=True))
+    something .
+
+    # Don't tokenize period unless it ends the line eg.
+    # " ... stuff." ->  "... stuff ."
+    >>> text = "also more ... stuff."
+    >>> print(toktok.tokenize(text, return_str=True))
+    also more ... stuff .
+
+Demonstrate that the "FUNKY_PUNCT_1" and "FUNKY_PUNCT_2" patterns do what
+they're supposed to do. For example, FUNKY_PUNCT_1 splits out inverted question
+marks.
+    >>> text = "¿Quieres una taza de café?"
+    >>> print(toktok.tokenize(text, return_str=True))
+    ¿ Quieres una taza de café ?
+
+This one would have failed without the FUNKY_PUNCT_2 pattern included.
+    >>> text = "«Sí, por favor.»"
+    >>> print(toktok.tokenize(text, return_str=True))
+    « Sí , por favor . »
