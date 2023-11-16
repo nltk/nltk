@@ -35,7 +35,9 @@ class Fraction:
         return float(self) < float(other)
 
     def __eq__(self, other):
-        return self.numerator == other.numerator and self.denominator == other.denominator
+        return (
+            self.numerator == other.numerator and self.denominator == other.denominator
+        )
 
     def __gt__(self, other):
         return float(self) > float(other)
@@ -601,10 +603,7 @@ class SmoothingFunction:
         In COLING 2004.
         """
         return [
-            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1)
-            if i != 0
-            else p_n[0]
-            for i in range(len(p_n))
+            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1) if i != 0 else p_n[0] for i in range(len(p_n))
         ]
 
     def method3(self, p_n, *args, **kwargs):
