@@ -7,14 +7,38 @@
 # For license information, see LICENSE.TXT
 
 """BLEU score implementation."""
+from __future__ import annotations
 
 import math
 import sys
 import warnings
 from collections import Counter
-from fractions import Fraction
+from dataclasses import dataclass
 
 from nltk.util import ngrams
+
+
+@dataclass
+class Fraction:
+    """
+    This class is used to represent a fraction with both the numerator and denominator saved for later retrieval.
+    Python 3.12 removed _normalize=False from the standard lib Fraction constructor.
+    """
+
+    numerator: int | float
+    denominator: int = 1
+
+    def __float__(self):
+        return self.numerator / self.denominator
+
+    def __lt__(self, other):
+        return float(self) < float(other)
+
+    def __eq__(self, other):
+        return self.numerator == other.numerator and self.denominator == other.denominator
+
+    def __gt__(self, other):
+        return float(self) > float(other)
 
 
 def sentence_bleu(
@@ -222,7 +246,7 @@ def corpus_bleu(
 
     # Collects the various precision values for the different ngram orders.
     p_n = [
-        Fraction(p_numerators[i], p_denominators[i], _normalize=False)
+        Fraction(p_numerators[i], p_denominators[i])
         for i in range(1, max_weight_length + 1)
     ]
 
@@ -365,7 +389,7 @@ def modified_precision(references, hypothesis, n):
     # Usually this happens when the ngram order is > len(reference).
     denominator = max(1, sum(counts.values()))
 
-    return Fraction(numerator, denominator, _normalize=False)
+    return Fraction(numerator, denominator)
 
 
 def closest_ref_length(references, hyp_len):
@@ -577,7 +601,7 @@ class SmoothingFunction:
         In COLING 2004.
         """
         return [
-            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
+            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1)
             if i != 0
             else p_n[0]
             for i in range(len(p_n))
