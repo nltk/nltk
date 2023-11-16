@@ -31,15 +31,15 @@ class Fraction(_Fraction):
 
     @property
     def numerator(self):
-        if self._normalize:
-            return self._numerator
-        return self._original_numerator
+        if not self._normalize:
+            return self._original_numerator
+        return super().numerator
 
     @property
     def denominator(self):
-        if self._normalize:
-            return self._denominator
-        return self._original_denominator
+        if not self._normalize:
+            return self._original_denominator
+        return super().denominator
 
 
 def sentence_bleu(
@@ -603,7 +603,8 @@ class SmoothingFunction:
         """
         return [
             Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
-            if i != 0 else p_n[0]
+            if i != 0
+            else p_n[0]
             for i in range(len(p_n))
         ]
 
