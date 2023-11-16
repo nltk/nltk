@@ -42,6 +42,14 @@ class Fraction:
     def __gt__(self, other):
         return float(self) > float(other)
 
+    def __add__(self, other):
+        if isinstance(other, int):
+            other = Fraction(other, 1)
+        return Fraction(
+            self.numerator * other.denominator + other.numerator * self.denominator,
+            self.denominator * other.denominator,
+        )
+
 
 def sentence_bleu(
     references,
