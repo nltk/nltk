@@ -198,7 +198,7 @@ def corpus_bleu(
 
     try:
         weights[0][0]
-    except TypeError:
+    except:
         weights = [weights]
     max_weight_length = max(len(weight) for weight in weights)
 
