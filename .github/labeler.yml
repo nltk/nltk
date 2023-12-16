@@ -1,49 +1,64 @@
 # https://github.com/actions/labeler
 CI:
-  - .github/workflows/*
-  - .github/labeler.yml
+  - changed-files:
+    - any-glob-to-any-file: [".github/workflows/*", ".github/labeler.yml"]
 
 classifier:
-  - nltk/classify/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/classify/**/*"
 
 cli:
-  - nltk/cli.py
+  - changed-files:
+    - any-glob-to-any-file: "nltk/cli.py"
 
 cluster:
-  - nltk/cluster/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/cluster/**/*"
 
 corpus:
-  - nltk/corpus/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/corpus/**/*"
 
 GUI:
-  - nltk/app/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/app/**/*"
 
 internals:
-  - nltk/internals.py
+  - changed-files:
+    - any-glob-to-any-file: "nltk/internals.py"
 
 language-model:
-  - nltk/lm/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/lm/**/*"
 
 metrics:
-  - nltk/metrics/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/metrics/**/*"
 
 parsing:
-  - nltk/parse/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/parse/**/*"
 
 sentiment:
-  - nltk/sentiment/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/sentiment/**/*"
 
 stem/lemma:
-  - nltk/stem/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/stem/**/*"
 
 tagger:
-  - nltk/tag/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/tag/**/*"
 
 tokenizer:
-  - nltk/tokenize/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/tokenize/**/*"
 
 twitter:
-  - nltk/twitter/**/*
+  - changed-files:
+    - any-glob-to-any-file: "nltk/twitter/**/*"
 
 wordnet:
-  - nltk/corpus/reader/wordnet.py
+  - changed-files:
+    - any-glob-to-any-file: "nltk/wordnet/**/*"
