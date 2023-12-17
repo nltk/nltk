@@ -30,3 +30,4 @@ from nltk.translate.gale_church import trace
 from nltk.translate.gdfa import grow_diag_final_and
 from nltk.translate.gleu_score import sentence_gleu as gleu
 from nltk.translate.phrase_based import extract
+from nltk.translate.lepor import sentence_lepor as lepor, corpus_lepor
