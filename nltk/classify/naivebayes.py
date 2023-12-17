@@ -168,7 +168,7 @@ class NaiveBayesClassifier(ClassifierI):
             features = set()
             # The max & min probability associated w/ each (fname, fval)
             # pair.  Maps (fname,fval) -> float.
-            maxprob = defaultdict(lambda: 0.0)
+            maxprob = defaultdict(float)
             minprob = defaultdict(lambda: 1.0)
 
             for (label, fname), probdist in self._feature_probdist.items():

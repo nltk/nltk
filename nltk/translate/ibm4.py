@@ -457,11 +457,11 @@ class Model4Counts(Counts):
     def __init__(self):
         super().__init__()
         self.head_distortion = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+            lambda: defaultdict(lambda: defaultdict(float))
         )
-        self.head_distortion_for_any_dj = defaultdict(lambda: defaultdict(lambda: 0.0))
-        self.non_head_distortion = defaultdict(lambda: defaultdict(lambda: 0.0))
-        self.non_head_distortion_for_any_dj = defaultdict(lambda: 0.0)
+        self.head_distortion_for_any_dj = defaultdict(lambda: defaultdict(float))
+        self.non_head_distortion = defaultdict(lambda: defaultdict(float))
+        self.non_head_distortion_for_any_dj = defaultdict(float)
 
     def update_distortion(self, count, alignment_info, j, src_classes, trg_classes):
         i = alignment_info.alignment[j]
