@@ -334,10 +334,10 @@ class Model3Counts(Counts):
     def __init__(self):
         super().__init__()
         self.distortion = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
         )
         self.distortion_for_any_j = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+            lambda: defaultdict(lambda: defaultdict(float))
         )
 
     def update_distortion(self, count, alignment_info, j, l, m):

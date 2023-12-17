@@ -581,14 +581,12 @@ class Model5Counts(Counts):
 
     def __init__(self):
         super().__init__()
-        self.head_vacancy = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
-        )
-        self.head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.head_vacancy = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
+        self.head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(float))
         self.non_head_vacancy = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+            lambda: defaultdict(lambda: defaultdict(float))
         )
-        self.non_head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.non_head_vacancy_for_any_dv = defaultdict(lambda: defaultdict(float))
 
     def update_vacancy(self, count, alignment_info, i, trg_classes, slots):
         """
