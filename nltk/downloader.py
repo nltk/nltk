@@ -695,10 +695,8 @@ class Downloader:
             os.remove(filepath)
 
         # Ensure the download_dir exists
-        if not os.path.exists(download_dir):
-            os.makedirs(download_dir)
-        if not os.path.exists(os.path.join(download_dir, info.subdir)):
-            os.makedirs(os.path.join(download_dir, info.subdir))
+        os.makedirs(download_dir, exist_ok=True)
+        os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
 
         # Download the file.  This will raise an IOError if the url
         # is not found.

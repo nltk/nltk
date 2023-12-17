@@ -297,6 +297,7 @@
 - Steven Thomas Smith <https://github.com/essandess>
 - Jan Lennartz <https://github.com/Madnex>
 - Tim Sockel <https://github.com/TiMauzi>
+- Akihiro Yamazaki <https://github.com/zakkie>
 - Ron Urbach <https://github.com/sharpblade4>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
