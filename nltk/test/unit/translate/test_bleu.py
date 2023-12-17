@@ -2,7 +2,6 @@
 Tests for BLEU translation evaluation metric
 """
 
-import io
 import unittest
 
 import numpy as np
