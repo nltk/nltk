@@ -128,6 +128,7 @@
 - David McClosky
 - Xinfan Meng
 - Dmitrijs Milajevs
+- Matt Miller
 - Margaret Mitchell
 - Tomonori Nagano
 - Jason Narad

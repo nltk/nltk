@@ -12,6 +12,7 @@ import os
 import pydoc
 import re
 import textwrap
+import unicodedata
 import warnings
 from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee
@@ -137,6 +138,41 @@ def tokenwrap(tokens, separator=" ", width=70):
     :type width: int
     """
     return "\n".join(textwrap.wrap(separator.join(tokens), width=width))
+
+
+def cut_string(s, width=70):
+    """
+    Cut off and return a given width of a string
+
+    Return the same as s[:width] if width >= 0 or s[-width:] if
+    width < 0, as long as s has no unicode combining characters.
+    If it has combining characters make sure the returned string's
+    visible width matches the called-for width.
+
+    :param s: the string to cut
+    :type s: str
+    :param width: the display_width
+    :type width: int
+    """
+    chars_sofar = 0
+    width_sofar = 0
+    result = ""
+
+    abs_width = abs(width)
+    max_chars = len(s)
+    while width_sofar < abs_width and chars_sofar < max_chars:
+        if width < 0:
+            char = s[-(chars_sofar + 1)]
+            result = char + result
+        else:
+            char = s[chars_sofar]
+            result = result + char
+
+        chars_sofar += 1
+        if not unicodedata.combining(char):
+            width_sofar += 1
+
+    return result
 
 
 ##########################################################################

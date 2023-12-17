@@ -16,6 +16,7 @@ distributional similarity.
 
 import re
 import sys
+import unicodedata
 from collections import Counter, defaultdict, namedtuple
 from functools import reduce
 from math import log
@@ -27,7 +28,7 @@ from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
 from nltk.tokenize import sent_tokenize
-from nltk.util import LazyConcatenation, tokenwrap
+from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
 ConcordanceLine = namedtuple(
     "ConcordanceLine",
@@ -193,7 +194,9 @@ class ConcordanceIndex:
         else:
             phrase = [word]
 
-        half_width = (width - len(" ".join(phrase)) - 2) // 2
+        phrase_str = " ".join(phrase)
+        phrase_len = sum(1 for char in phrase_str if not unicodedata.combining(char))
+        half_width = (width - phrase_len - 2) // 2
         context = width // 4  # approx number of words of context
 
         # Find the instances of the word to create the ConcordanceLine
@@ -209,8 +212,10 @@ class ConcordanceIndex:
                 left_context = self._tokens[max(0, i - context) : i]
                 right_context = self._tokens[i + len(phrase) : i + context]
                 # Create the pretty lines with the query_word in the middle.
-                left_print = " ".join(left_context)[-half_width:]
-                right_print = " ".join(right_context)[:half_width]
+                left_print = cut_string(" ".join(left_context), -half_width).rjust(
+                    half_width
+                )
+                right_print = cut_string(" ".join(right_context), half_width)
                 # The WYSIWYG line of the concordance.
                 line_print = " ".join([left_print, query_word, right_print])
                 # Create the ConcordanceLine
