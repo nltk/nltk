@@ -60,11 +60,9 @@ def _pretty_longstring(defstr, prefix="", wrap_at=65):
     :return: A nicely formatted string representation of the long string.
     :rtype: str
     """
-
-    outstr = ""
-    for line in textwrap.fill(defstr, wrap_at).split("\n"):
-        outstr += prefix + line + "\n"
-    return outstr
+    return "\n".join(
+        [prefix + line for line in textwrap.fill(defstr, wrap_at).split("\n")]
+    )
 
 
 def _pretty_any(obj):

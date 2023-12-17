@@ -2,8 +2,9 @@
 Tests for BLEU translation evaluation metric
 """
 
-import io
 import unittest
+
+import numpy as np
 
 from nltk.data import find
 from nltk.translate.bleu_score import (
@@ -216,6 +217,14 @@ class TestBLEUFringeCases(unittest.TestCase):
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
             pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+
+    def test_numpy_weights(self):
+        # Test case where there's 0 matches
+        references = ["The candidate has no alignment to any of the references".split()]
+        hypothesis = "John loves Mary".split()
+
+        weights = np.array([0.25] * 4)
+        assert sentence_bleu(references, hypothesis, weights) == 0
 
 
 class TestBLEUvsMteval13a(unittest.TestCase):

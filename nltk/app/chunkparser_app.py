@@ -78,7 +78,7 @@ class RegexpChunkApp:
         "VBD": "Verb, past tense",
         "MD": "Modal",
         "NNS": "Noun, plural",
-        "NN": "Noun, singular or masps",
+        "NN": "Noun, singular or mass",
         "VBN": "Verb, past participle",
         "VBZ": "Verb,3rd ps. sing. present",
         "NNP": "Proper noun, singular",
