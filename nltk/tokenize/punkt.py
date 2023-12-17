@@ -1073,7 +1073,9 @@ class PunktTrainer(PunktBaseClass):
         p1 = count_b / N
         p2 = 0.99
 
-        null_hypo = count_ab * math.log(p1) + (count_a - count_ab) * math.log(1.0 - p1)
+        null_hypo = count_ab * math.log(p1 + 1e-8) + (count_a - count_ab) * math.log(
+            1.0 - p1 + 1e-8
+        )
         alt_hypo = count_ab * math.log(p2) + (count_a - count_ab) * math.log(1.0 - p2)
 
         likelihood = null_hypo - alt_hypo
