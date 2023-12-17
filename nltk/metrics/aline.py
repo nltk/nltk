@@ -1221,7 +1221,7 @@ def delta(p, q):
     """
     features = R(p, q)
     total = 0
-    if np != None:
+    if np is not None:
         return np.dot(
             [diff(p, q, f) for f in features], [salience[f] for f in features]
         )

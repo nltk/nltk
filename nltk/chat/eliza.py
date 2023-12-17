@@ -328,8 +328,10 @@ def eliza_chat():
 
     eliza_chatbot.converse()
 
+
 def demo():
     eliza_chat()
+
 
 if __name__ == "__main__":
     eliza_chat()
