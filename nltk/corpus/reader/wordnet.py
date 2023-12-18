@@ -1379,7 +1379,6 @@ class WordNetCorpusReader(CorpusReader):
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
-
             # parse each line of the file (ignoring comment lines)
             with self.open("index.%s" % suffix) as fp:
                 for i, line in enumerate(fp):
@@ -1392,7 +1391,6 @@ class WordNetCorpusReader(CorpusReader):
                         return next(_iter)
 
                     try:
-
                         # get the lemma and part-of-speech
                         lemma = _next_token()
                         pos = _next_token()
@@ -1599,7 +1597,6 @@ class WordNetCorpusReader(CorpusReader):
 
         # parse the entry for this synset
         try:
-
             # parse out the definitions and examples from the gloss
             columns_str, gloss = data_file_line.strip().split("|")
             definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()

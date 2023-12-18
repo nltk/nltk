@@ -94,7 +94,7 @@ class Chat:
         """
 
         # check each pattern
-        for (pattern, response) in self._pairs:
+        for pattern, response in self._pairs:
             match = pattern.match(str)
 
             # did the pattern match?

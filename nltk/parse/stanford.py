@@ -45,7 +45,6 @@ class GenericStanfordParser(ParserI):
         java_options="-mx4g",
         corenlp_options="",
     ):
-
         # find the most recent code and model jar
         stanford_jar = max(
             find_jar_iter(

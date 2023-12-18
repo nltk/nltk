@@ -286,7 +286,9 @@ class TestBLEUWithBadSentence(unittest.TestCase):
                 self.assertAlmostEqual(
                     corpus_bleu(references, hypotheses), 0.0, places=4
                 )
-        except AttributeError:  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+        except (
+            AttributeError
+        ):  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
             self.assertAlmostEqual(corpus_bleu(references, hypotheses), 0.0, places=4)
 
 

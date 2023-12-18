@@ -12,7 +12,6 @@ from nltk.corpus.reader.util import (
 
 
 class TestCorpusViews(unittest.TestCase):
-
     linetok = nltk.LineTokenizer(blanklines="keep")
     names = [
         "corpora/inaugural/README",  # A very short file (160 chars)

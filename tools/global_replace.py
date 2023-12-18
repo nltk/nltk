@@ -17,7 +17,6 @@ import sys
 
 
 def update(file, pattern, replacement):
-
     try:
         # make sure we can write the file
         old_perm = os.stat(file)[0]
@@ -43,7 +42,6 @@ def update(file, pattern, replacement):
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) != 3:
         exit("Usage: %s <pattern> <replacement>" % sys.argv[0])
 

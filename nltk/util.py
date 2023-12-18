@@ -42,7 +42,7 @@ def usage(obj):
         obj = obj.__class__
 
     print(f"{obj.__name__} supports the following operations:")
-    for (name, method) in sorted(pydoc.allmethods(obj).items()):
+    for name, method in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
         if getattr(method, "__deprecated__", False):
@@ -213,6 +213,7 @@ def re_show(regexp, string, left="{", right="}"):
 ##########################################################################
 # READ FROM FILE OR STRING
 ##########################################################################
+
 
 # recipe from David Mertz
 def filestring(f):
@@ -1044,6 +1045,7 @@ def skipgrams(sequence, n, k, **kwargs):
 ######################################################################
 # Binary Search in a File
 ######################################################################
+
 
 # inherited from pywordnet, by Oliver Steele
 def binary_search_file(file, key, cache=None, cacheDepth=-1):

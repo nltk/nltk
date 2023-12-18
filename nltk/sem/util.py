@@ -290,16 +290,14 @@ def demo():
         print("\nSentence: %s" % sent)
         print(SPACER)
         if options.evaluate:
-
-            for (syntree, semrep, value) in evaluations[i]:
+            for syntree, semrep, value in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
                 print("%d:  %s" % (n, semrep))
                 print(value)
                 n += 1
         else:
-
-            for (syntree, semrep) in semreps[i]:
+            for syntree, semrep in semreps[i]:
                 print("%d:  %s" % (n, semrep))
                 n += 1
 

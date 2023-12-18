@@ -131,7 +131,6 @@ def chomsky_normal_form(
     while nodeList != []:
         node, parent = nodeList.pop()
         if isinstance(node, Tree):
-
             # parent annotation
             parentString = ""
             originalNode = node.label()

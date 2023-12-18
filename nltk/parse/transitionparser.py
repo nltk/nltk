@@ -109,7 +109,7 @@ class Configuration:
             right_most = -1
             dep_left_most = ""
             dep_right_most = ""
-            for (wi, r, wj) in self.arcs:
+            for wi, r, wj in self.arcs:
                 if wi == stack_idx0:
                     if (wj > wi) and (wj > right_most):
                         right_most = wj
@@ -160,7 +160,7 @@ class Configuration:
             right_most = -1
             dep_left_most = ""
             dep_right_most = ""
-            for (wi, r, wj) in self.arcs:
+            for wi, r, wj in self.arcs:
                 if wi == buffer_idx0:
                     if (wj > wi) and (wj > right_most):
                         right_most = wj
@@ -220,7 +220,7 @@ class Transition:
 
         flag = True
         if self._algo == TransitionParser.ARC_EAGER:
-            for (idx_parent, r, idx_child) in conf.arcs:
+            for idx_parent, r, idx_child in conf.arcs:
                 if idx_child == idx_wi:
                     flag = False
 
@@ -266,7 +266,7 @@ class Transition:
 
         idx_wi = conf.stack[len(conf.stack) - 1]
         flag = False
-        for (idx_parent, r, idx_child) in conf.arcs:
+        for idx_parent, r, idx_child in conf.arcs:
             if idx_child == idx_wi:
                 flag = True
         if flag:
@@ -351,7 +351,7 @@ class TransitionParser(ParserI):
                 if parentIdx is not None:
                     arc_list.append((parentIdx, childIdx))
 
-        for (parentIdx, childIdx) in arc_list:
+        for parentIdx, childIdx in arc_list:
             # Ensure that childIdx < parentIdx
             if childIdx > parentIdx:
                 temp = childIdx
@@ -601,7 +601,7 @@ class TransitionParser(ParserI):
                 sorted_Prob = sorted(prob_dict.items(), key=itemgetter(1), reverse=True)
 
                 # Note that SHIFT is always a valid operation
-                for (y_pred_idx, confidence) in sorted_Prob:
+                for y_pred_idx, confidence in sorted_Prob:
                     # y_pred = model.predict(x_test)[0]
                     # From the prediction match to the operation
                     y_pred = model.classes_[y_pred_idx]
@@ -641,7 +641,7 @@ class TransitionParser(ParserI):
                 node["rel"] = ""
                 # With the default, all the token depend on the Root
                 node["head"] = 0
-            for (head, rel, child) in conf.arcs:
+            for head, rel, child in conf.arcs:
                 c_node = new_depgraph.nodes[child]
                 c_node["head"] = head
                 c_node["rel"] = rel

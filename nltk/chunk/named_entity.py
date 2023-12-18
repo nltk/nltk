@@ -140,7 +140,7 @@ class NEChunkParser(ChunkParserI):
         """
         sent = Tree("S", [])
 
-        for (tok, tag) in tagged_tokens:
+        for tok, tag in tagged_tokens:
             if tag == "O":
                 sent.append(tok)
             elif tag.startswith("B-"):
@@ -260,7 +260,7 @@ def load_ace_file(textfile, fmt):
     if fmt == "binary":
         i = 0
         toks = Tree("S", [])
-        for (s, e, typ) in sorted(entities):
+        for s, e, typ in sorted(entities):
             if s < i:
                 s = i  # Overlapping!  Deal with this better?
             if e <= s:
@@ -275,7 +275,7 @@ def load_ace_file(textfile, fmt):
     elif fmt == "multiclass":
         i = 0
         toks = Tree("S", [])
-        for (s, e, typ) in sorted(entities):
+        for s, e, typ in sorted(entities):
             if s < i:
                 s = i  # Overlapping!  Deal with this better?
             if e <= s:

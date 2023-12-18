@@ -61,7 +61,6 @@ class LazyModule:
     __lazymodule_globals = None
 
     def __init__(self, name, locals, globals=None):
-
         """Create a LazyModule instance wrapping module name.
 
         The module will later on be registered in locals under the
@@ -83,7 +82,6 @@ class LazyModule:
         self.__lazymodule_init = 1
 
     def __lazymodule_import(self):
-
         """Import the module now."""
         # Load and register module
         local_name = self.__lazymodule_name  # e.g. "toolbox"
@@ -108,7 +106,6 @@ class LazyModule:
         return module
 
     def __getattr__(self, name):
-
         """Import the module on demand and get the attribute."""
         if self.__lazymodule_loaded:
             raise AttributeError(name)
@@ -121,7 +118,6 @@ class LazyModule:
         return getattr(module, name)
 
     def __setattr__(self, name, value):
-
         """Import the module on demand and set the attribute."""
         if not self.__lazymodule_init:
             self.__dict__[name] = value

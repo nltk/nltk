@@ -157,7 +157,6 @@ class HiddenMarkovModelTagger(TaggerI):
         estimator=None,
         **kwargs,
     ):
-
         if estimator is None:
 
             def estimator(fd, bins):
@@ -882,7 +881,6 @@ class HiddenMarkovModelTrainer:
         return model
 
     def _baum_welch_step(self, sequence, model, symbol_to_number):
-
         N = len(model._states)
         M = len(model._symbols)
         T = len(sequence)
@@ -1205,7 +1203,6 @@ def demo():
         ["down"] * 5,
         ["unchanged"] * 5 + ["up"],
     ]:
-
         sequence = [(t, None) for t in test]
 
         print("Testing with state sequence", test)

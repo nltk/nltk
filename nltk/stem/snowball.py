@@ -1404,7 +1404,6 @@ class EnglishStemmer(_StandardStemmer):
     }
 
     def stem(self, word):
-
         """
         Stem an English word and return the stemmed form.
 
@@ -1469,7 +1468,6 @@ class EnglishStemmer(_StandardStemmer):
         # STEP 1a
         for suffix in self.__step1a_suffixes:
             if word.endswith(suffix):
-
                 if suffix == "sses":
                     word = word[:-2]
                     r1 = r1[:-2]
@@ -1501,7 +1499,6 @@ class EnglishStemmer(_StandardStemmer):
         for suffix in self.__step1b_suffixes:
             if word.endswith(suffix):
                 if suffix in ("eed", "eedly"):
-
                     if r1.endswith(suffix):
                         word = suffix_replace(word, suffix, "ee")
 
@@ -1550,7 +1547,6 @@ class EnglishStemmer(_StandardStemmer):
                             and word[0] in self.__vowels
                             and word[1] not in self.__vowels
                         ):
-
                             word = "".join((word, "e"))
 
                             if len(r1) > 0:
@@ -4353,7 +4349,6 @@ class RomanianStemmer(_StandardStemmer):
 
         # STEP 1: Reduction of combining suffixes
         while True:
-
             replacement_done = False
 
             for suffix in self.__step1_suffixes:
@@ -5604,7 +5599,6 @@ class SpanishStemmer(_StandardStemmer):
                 rv[: -len(suffix)].endswith("yendo")
                 and word[: -len(suffix)].endswith("uyendo")
             ):
-
                 word = self.__replace_accented(word[: -len(suffix)])
                 r1 = self.__replace_accented(r1[: -len(suffix)])
                 r2 = self.__replace_accented(r2[: -len(suffix)])
@@ -5908,7 +5902,6 @@ def demo():
     print("******************************")
 
     while True:
-
         language = input(
             "Please enter the name of the language "
             + "to be demonstrated\n"

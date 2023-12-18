@@ -149,7 +149,6 @@ class TnT(TaggerI):
         for sent in data:
             history = [("BOS", False), ("BOS", False)]
             for w, t in sent:
-
                 # if capitalization is requested,
                 # and the word begins with a capital
                 # set local flag C to True
@@ -205,7 +204,6 @@ class TnT(TaggerI):
             # (NOTE: tag actually represents (tag,C))
             # However no effect within this function
             for tag in self._tri[history].keys():
-
                 # if there has only been 1 occurrence of this tag in the data
                 # then ignore this trigram.
                 if self._uni[tag] == 1:
@@ -352,7 +350,7 @@ class TnT(TaggerI):
         if word in self._wd:
             self.known += 1
 
-            for (history, curr_sent_logprob) in current_states:
+            for history, curr_sent_logprob in current_states:
                 logprobs = []
 
                 for t in self._wd[word].keys():
@@ -387,7 +385,7 @@ class TnT(TaggerI):
                 [(_w, t)] = list(self._unk.tag([word]))
                 tag = (t, C)
 
-            for (history, logprob) in current_states:
+            for history, logprob in current_states:
                 history.append(tag)
 
             new_states = current_states
@@ -452,7 +450,7 @@ def basic_sent_chop(data, raw=True):
                 curr_sent.append(word)
 
     else:
-        for (word, tag) in data:
+        for word, tag in data:
             if word in sent_mark:
                 curr_sent.append((word, tag))
                 new_data.append(curr_sent)
@@ -537,7 +535,6 @@ def demo3():
     sknown = 0
 
     for i in range(10):
-
         t = TnT(N=1000, C=False)
         s = TnT(N=1000, C=False)
 

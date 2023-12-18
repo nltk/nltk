@@ -224,7 +224,6 @@ class LancasterStemmer(StemmerI):
         proceed = True
 
         while proceed:
-
             # Find the position of the last letter of the word to be stemmed
             last_letter_position = self.__getLastLetter(word)
 

@@ -180,7 +180,6 @@ class NombankInstance:
         arguments,
         parse_corpus=None,
     ):
-
         self.fileid = fileid
         """The name of the file containing the parse tree for this
         instance's sentence."""
@@ -243,7 +242,7 @@ class NombankInstance:
             self.sensenumber,
         )
         items = self.arguments + ((self.predicate, "rel"),)
-        for (argloc, argid) in sorted(items):
+        for argloc, argid in sorted(items):
             s += f" {argloc}-{argid}"
         return s
 

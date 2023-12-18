@@ -72,7 +72,6 @@ class LinearLogicParser(LogicParser):
 
 
 class Expression:
-
     _linear_logic_parser = LinearLogicParser()
 
     @classmethod
@@ -376,7 +375,7 @@ class BindingDict:
             bindings = bindings.items()
 
         if bindings:
-            for (v, b) in bindings:
+            for v, b in bindings:
                 self[v] = b
 
     def __setitem__(self, variable, binding):

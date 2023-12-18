@@ -7,7 +7,6 @@ from nltk.corpus.reader.util import find_corpus_fileids
 
 
 class UdhrCorpusReader(PlaintextCorpusReader):
-
     ENCODINGS = [
         (".*-Latin1$", "latin-1"),
         (".*-Hebrew$", "hebrew"),

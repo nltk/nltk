@@ -395,7 +395,6 @@ class ZipFilePathPointer(PathPointer):
 
         # Check that the entry exists:
         if entry:
-
             # Normalize the entry string, it should be relative:
             entry = normalize_resource_name(entry, True, "/").lstrip("/")
 
@@ -1411,7 +1410,7 @@ class SeekableUnicodeStreamReader:
             self.stream.seek(0)
 
             # Check for each possible BOM.
-            for (bom, new_encoding) in bom_info:
+            for bom, new_encoding in bom_info:
                 if bytes.startswith(bom):
                     if new_encoding:
                         self.encoding = new_encoding

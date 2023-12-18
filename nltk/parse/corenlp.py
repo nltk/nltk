@@ -38,7 +38,6 @@ def try_port(port=0):
 
 
 class CoreNLPServer:
-
     _MODEL_JAR_PATTERN = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar"
     _JAR = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar"
 
@@ -51,7 +50,6 @@ class CoreNLPServer:
         corenlp_options=None,
         port=None,
     ):
-
         if corenlp_options is None:
             corenlp_options = ["-preload", "tokenize,ssplit,pos,lemma,parse,depparse"]
 
@@ -767,7 +765,6 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     parser_annotator = "depparse"
 
     def make_tree(self, result):
-
         return DependencyGraph(
             (
                 " ".join(n_items[1:])  # NLTK expects an iterable of strings...
@@ -779,7 +776,6 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
 
 def transform(sentence):
     for dependency in sentence["basicDependencies"]:
-
         dependent_index = dependency["dependent"]
         token = sentence["tokens"][dependent_index - 1]
 
