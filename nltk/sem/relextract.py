@@ -300,6 +300,7 @@ def clause(reldict, relsym):
 # Demos of relation extraction with regular expressions
 #######################################################
 
+
 ############################################
 # Example of in(ORG, LOC)
 ############################################
@@ -426,7 +427,6 @@ def roles_demo(trace=0):
 
 
 def ieer_headlines():
-
     from nltk.corpus import ieer
     from nltk.tree import Tree
 

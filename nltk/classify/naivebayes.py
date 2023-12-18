@@ -109,7 +109,7 @@ class NaiveBayesClassifier(ClassifierI):
 
         # Then add in the log probability of features given labels.
         for label in self._labels:
-            for (fname, fval) in featureset.items():
+            for fname, fval in featureset.items():
                 if (label, fname) in self._feature_probdist:
                     feature_probs = self._feature_probdist[label, fname]
                     logprob[label] += feature_probs.logprob(fval)
@@ -126,7 +126,7 @@ class NaiveBayesClassifier(ClassifierI):
         cpdist = self._feature_probdist
         print("Most Informative Features")
 
-        for (fname, fval) in self.most_informative_features(n):
+        for fname, fval in self.most_informative_features(n):
 
             def labelprob(l):
                 return cpdist[l, fname].prob(fval)
@@ -237,7 +237,7 @@ class NaiveBayesClassifier(ClassifierI):
 
         # Create the P(fval|label, fname) distribution
         feature_probdist = {}
-        for ((label, fname), freqdist) in feature_freqdist.items():
+        for (label, fname), freqdist in feature_freqdist.items():
             probdist = estimator(freqdist, bins=len(feature_values[fname]))
             feature_probdist[label, fname] = probdist
 

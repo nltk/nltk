@@ -194,7 +194,7 @@ class GlueDict(dict):
             relationships = None
 
             if len(parts) > 1:
-                for (i, c) in enumerate(parts[1]):
+                for i, c in enumerate(parts[1]):
                     if c == "(":
                         if paren_count == 0:  # if it's the first '(' of a tuple
                             tuple_start = i + 1  # then save the index
@@ -823,7 +823,7 @@ def demo(show_example=-1):
     depparser = MaltParser(tagger=tagger)
     glue = Glue(depparser=depparser, verbose=False)
 
-    for (i, sentence) in enumerate(examples):
+    for i, sentence in enumerate(examples):
         if i == show_example or show_example == -1:
             print(f"[[[Example {i}]]]  {sentence}")
             for reading in glue.parse_to_meaning(sentence.split()):

@@ -40,7 +40,6 @@ class RegexpStemmer(StemmerI):
     """
 
     def __init__(self, regexp, min=0):
-
         if not hasattr(regexp, "pattern"):
             regexp = re.compile(regexp)
         self._regexp = regexp

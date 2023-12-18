@@ -45,7 +45,6 @@ except ImportError:
 
 
 class TextCat:
-
     _corpus = None
     fingerprints = {}
     _START_CHAR = "<"

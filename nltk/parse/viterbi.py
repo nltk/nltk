@@ -193,7 +193,7 @@ class ViterbiParser(ParserI):
             # ProbabilisticTree whose probability is the product
             # of the childrens' probabilities and the production's
             # probability.
-            for (production, children) in instantiations:
+            for production, children in instantiations:
                 subtrees = [c for c in children if isinstance(c, Tree)]
                 p = reduce(lambda pr, t: pr * t.prob(), subtrees, production.prob())
                 node = production.lhs().symbol()

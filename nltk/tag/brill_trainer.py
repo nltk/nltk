@@ -345,7 +345,6 @@ class BrillTaggerTrainer:
         # mapping and all the rule-related mappings.
         for sentnum, sent in enumerate(test_sents):
             for wordnum, (word, tag) in enumerate(sent):
-
                 # Initialize tag_positions
                 self._tag_positions[tag].append((sentnum, wordnum))
 
@@ -492,7 +491,7 @@ class BrillTaggerTrainer:
             self._trace_apply(len(update_positions))
 
         # Update test_sents.
-        for (sentnum, wordnum) in update_positions:
+        for sentnum, wordnum in update_positions:
             text = test_sents[sentnum][wordnum][0]
             test_sents[sentnum][wordnum] = (text, new_tag)
 

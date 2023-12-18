@@ -289,7 +289,7 @@ def test_model_found(arguments):
     """
     Try some proofs and exhibit the results.
     """
-    for (goal, assumptions) in arguments:
+    for goal, assumptions in arguments:
         g = Expression.fromstring(goal)
         alist = [lp.parse(a) for a in assumptions]
         m = MaceCommand(g, assumptions=alist, max_models=50)

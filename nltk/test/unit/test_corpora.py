@@ -102,7 +102,6 @@ class TestCoNLL2007(unittest.TestCase):
         )
 
     def test_parsed_sents(self):
-
         parsed_sents = conll2007.parsed_sents("esp.train")[0]
 
         self.assertEqual(

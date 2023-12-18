@@ -380,7 +380,7 @@ def printCCGDerivation(tree):
 
     # Construct a string with both the leaf word and corresponding
     # category aligned.
-    for (leaf, cat) in leafcats:
+    for leaf, cat in leafcats:
         str_cat = "%s" % cat
         nextlen = 2 + max(len(leaf), len(str_cat))
         lcatlen = (nextlen - len(str_cat)) // 2

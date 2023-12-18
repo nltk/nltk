@@ -1232,7 +1232,7 @@ class PCFG(CFG):
         probs = {}
         for production in productions:
             probs[production.lhs()] = probs.get(production.lhs(), 0) + production.prob()
-        for (lhs, p) in probs.items():
+        for lhs, p in probs.items():
             if not ((1 - PCFG.EPSILON) < p < (1 + PCFG.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
 

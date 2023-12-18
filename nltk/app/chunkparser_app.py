@@ -713,7 +713,7 @@ class RegexpChunkApp:
         if self.normalized_grammar != self._eval_normalized_grammar:
             # Check if we've seen this grammar already.  If so, then
             # just use the old evaluation values.
-            for (g, p, r, f) in self._history:
+            for g, p, r, f in self._history:
                 if self.normalized_grammar == self.normalize_grammar(g):
                     self._history.append((g, p, r, f))
                     self._history_index = len(self._history) - 1
@@ -850,7 +850,7 @@ class RegexpChunkApp:
             ).grid(column=i * 2 + 1, row=0)
         self.helptabs[self.HELP[0][0]].configure(font=self._font)
         self.helpbox.tag_config("elide", elide=True)
-        for (tag, params) in self.HELP_AUTOTAG:
+        for tag, params in self.HELP_AUTOTAG:
             self.helpbox.tag_config("tag-%s" % tag, **params)
         self.show_help(self.HELP[0][0])
 
@@ -1047,7 +1047,7 @@ class RegexpChunkApp:
     def show_help(self, tab):
         self.helpbox["state"] = "normal"
         self.helpbox.delete("1.0", "end")
-        for (name, tabstops, text) in self.HELP:
+        for name, tabstops, text in self.HELP:
             if name == tab:
                 text = text.replace(
                     "<<TAGSET>>",
@@ -1066,7 +1066,7 @@ class RegexpChunkApp:
                 self.helpbox.config(tabs=tabstops)
                 self.helpbox.insert("1.0", text + "\n" * 20)
                 C = "1.0 + %d chars"
-                for (tag, params) in self.HELP_AUTOTAG:
+                for tag, params in self.HELP_AUTOTAG:
                     pattern = f"(?s)(<{tag}>)(.*?)(</{tag}>)"
                     for m in re.finditer(pattern, text):
                         self.helpbox.tag_add("elide", C % m.start(1), C % m.end(1))

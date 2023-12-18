@@ -269,7 +269,7 @@ class ConllCorpusReader(CorpusReader):
 
         stack = [Tree(self._root_label, [])]
 
-        for (word, pos_tag, chunk_tag) in zip(words, pos_tags, chunk_tags):
+        for word, pos_tag, chunk_tag in zip(words, pos_tags, chunk_tags):
             if chunk_tag == "O":
                 state, chunk_type = "O", ""
             else:
@@ -301,7 +301,7 @@ class ConllCorpusReader(CorpusReader):
         parse_tags = self._get_column(grid, self._colmap["tree"])
 
         treestr = ""
-        for (word, pos_tag, parse_tag) in zip(words, pos_tags, parse_tags):
+        for word, pos_tag, parse_tag in zip(words, pos_tags, parse_tags):
             if word == "(":
                 word = "-LRB-"
             if word == ")":

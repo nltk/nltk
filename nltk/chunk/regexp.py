@@ -165,7 +165,6 @@ class ChunkString:
         index = 0
         piece_in_chunk = 0
         for piece in re.split("[{}]", self._str):
-
             # Find the list of tokens contained in this piece.
             length = piece.count("<")
             subsequence = self._pieces[index : index + length]

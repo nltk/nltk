@@ -534,7 +534,7 @@ class BindingDict:
         self.d = {}
 
         if binding_list:
-            for (v, b) in binding_list:
+            for v, b in binding_list:
                 self[v] = b
 
     def __setitem__(self, variable, binding):

@@ -76,7 +76,6 @@ class Template(BrillTemplateI):
     # _ids = it.count(0)
 
     def __init__(self, *features):
-
         """
         Construct a Template for generating Rules.
 
@@ -202,7 +201,6 @@ class Template(BrillTemplateI):
 
     @classmethod
     def expand(cls, featurelists, combinations=None, skipintersecting=True):
-
         """
         Factory method to mass generate Templates from a list L of lists of  Features.
 

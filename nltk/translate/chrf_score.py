@@ -198,7 +198,6 @@ def corpus_chrf(
 
     # Iterate through each hypothesis and their corresponding references.
     for reference, hypothesis in zip(references, hypotheses):
-
         # preprocess both reference and hypothesis
         reference = _preprocess(reference, ignore_whitespace)
         hypothesis = _preprocess(hypothesis, ignore_whitespace)

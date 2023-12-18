@@ -518,7 +518,7 @@ class DRS(DrtExpression, Expression):
         if isinstance(other, DRS):
             if len(self.refs) == len(other.refs):
                 converted_other = other
-                for (r1, r2) in zip(self.refs, converted_other.refs):
+                for r1, r2 in zip(self.refs, converted_other.refs):
                     varex = self.make_VariableExpression(r1)
                     converted_other = converted_other.replace(r2, varex, True)
                 if self.consequent == converted_other.consequent and len(
@@ -869,7 +869,7 @@ class DrtConcatenation(DrtBooleanExpression):
             other_refs = other.get_refs()
             if len(self_refs) == len(other_refs):
                 converted_other = other
-                for (r1, r2) in zip(self_refs, other_refs):
+                for r1, r2 in zip(self_refs, other_refs):
                     varex = self.make_VariableExpression(r1)
                     converted_other = converted_other.replace(r2, varex, True)
                 return (
@@ -1307,7 +1307,7 @@ class DrsDrawer:
         right = command(DrtTokens.OPEN, right, centred_string_top)[0]
 
         # Handle each arg
-        for (i, arg) in enumerate(args):
+        for i, arg in enumerate(args):
             arg_drawing_top = self._get_centered_top(
                 y, line_height, arg._drawing_height
             )

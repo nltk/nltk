@@ -249,7 +249,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                         line = stream.readline()
                         entities_feats = ENTITIES_FEATS.findall(line)
                         if entities_feats:
-                            for (code, entity_feat) in entities_feats:
+                            for code, entity_feat in entities_feats:
                                 if code == "1":
                                     comparison.entity_1 = entity_feat.strip()
                                 elif code == "2":

@@ -215,7 +215,7 @@ class CanvasWidget(metaclass=ABCMeta):
         self.__draggable = 0
 
         # Set up attributes.
-        for (attr, value) in list(attribs.items()):
+        for attr, value in list(attribs.items()):
             self[attr] = value
 
         # Manage this canvas widget
@@ -2253,7 +2253,7 @@ class ColorizedList:
         self._textwidget["state"] = "normal"
         self._textwidget.delete("1.0", "end")
         for item in items:
-            for (text, colortag) in self._item_repr(item):
+            for text, colortag in self._item_repr(item):
                 assert "\n" not in text, "item repr may not contain newline"
                 self._textwidget.insert("end", text, colortag)
             self._textwidget.insert("end", "\n")

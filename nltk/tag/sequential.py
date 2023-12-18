@@ -450,7 +450,6 @@ class AffixTagger(ContextTagger):
         cutoff=0,
         verbose=False,
     ):
-
         self._check_params(train, model)
 
         super().__init__(model, backoff)

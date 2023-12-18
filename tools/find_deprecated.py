@@ -176,7 +176,7 @@ def print_deprecated_uses(paths):
 def print_deprecated_uses_in(readline, path, dep_files, dep_names, lineno_offset):
     tokiter = tokenize.generate_tokens(readline)
     context = [""]
-    for (typ, tok, start, end, line) in tokiter:
+    for typ, tok, start, end, line in tokiter:
         # Remember the previous line -- it might contain
         # the @deprecated decorator.
         if line is not context[-1]:

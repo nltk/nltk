@@ -25,6 +25,8 @@ from xml.etree import ElementTree
 
 _java_bin = None
 _java_options = []
+
+
 # [xx] add classpath option to config_java?
 def config_java(bin=None, options=None, verbose=False):
     """

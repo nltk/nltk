@@ -130,7 +130,6 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
 
 def demo():
-
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
@@ -172,7 +171,6 @@ def demo():
 
 
 def test():
-
     from nltk.corpus.util import LazyCorpusLoader
 
     knbc = LazyCorpusLoader(

@@ -698,7 +698,7 @@ class CFGDemo:
 
         # Convert the production to a tree.
         rhs = production.rhs()
-        for (i, elt) in enumerate(rhs):
+        for i, elt in enumerate(rhs):
             if isinstance(elt, Nonterminal):
                 elt = Tree(elt)
         tree = Tree(production.lhs().symbol(), *rhs)

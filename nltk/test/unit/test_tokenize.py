@@ -737,14 +737,13 @@ class TestTokenize:
         assert word_tokenize(sentence) == expected
 
     def test_punkt_pair_iter(self):
-
         test_cases = [
             ("12", [("1", "2"), ("2", None)]),
             ("123", [("1", "2"), ("2", "3"), ("3", None)]),
             ("1234", [("1", "2"), ("2", "3"), ("3", "4"), ("4", None)]),
         ]
 
-        for (test_input, expected_output) in test_cases:
+        for test_input, expected_output in test_cases:
             actual_output = [x for x in punkt._pair_iter(test_input)]
 
             assert actual_output == expected_output
@@ -769,7 +768,6 @@ class TestTokenize:
         list(obj._tokenize_words("test"))
 
     def test_punkt_tokenize_custom_lang_vars(self):
-
         # Create LangVars including a full stop end character as used in Bengali
         class BengaliLanguageVars(punkt.PunktLanguageVars):
             sent_end_chars = (".", "?", "!", "\u0964")
@@ -787,7 +785,6 @@ class TestTokenize:
         assert obj.tokenize(sentences) == expected
 
     def test_punkt_tokenize_no_custom_lang_vars(self):
-
         obj = punkt.PunktSentenceTokenizer()
 
         # We expect these sentences to not be split properly, as the Bengali full stop '।' is not included in the default language vars

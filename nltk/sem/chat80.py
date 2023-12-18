@@ -307,7 +307,7 @@ class Concept:
         Convert a set of pairs into an adjacency linked list encoding of a graph.
         """
         g = {}
-        for (x, y) in s:
+        for x, y in s:
             if x in g:
                 g[x].append(y)
             else:
@@ -349,7 +349,7 @@ class Concept:
         assert is_rel(self._extension)
         if "symmetric" in self.closures:
             pairs = []
-            for (x, y) in self._extension:
+            for x, y in self._extension:
                 pairs.append((y, x))
             sym = set(pairs)
             self._extension = self._extension.union(sym)
@@ -820,7 +820,7 @@ Valuation object for use in the NLTK semantics package.
             # just print out the vocabulary
             if options.vocab:
                 items = sorted((c.arity, c.prefLabel) for c in concepts)
-                for (arity, label) in items:
+                for arity, label in items:
                     print(label, arity)
                 sys.exit(0)
             # show all the concepts

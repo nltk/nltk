@@ -45,7 +45,6 @@ from nltk.tag.api import TaggerI
 
 
 class Senna(TaggerI):
-
     SUPPORTED_OPERATIONS = ["pos", "chk", "ner"]
 
     def __init__(self, senna_path, operations, encoding="utf-8"):

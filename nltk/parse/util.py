@@ -96,7 +96,7 @@ def taggedsent_to_conll(sentence):
     :rtype: iter(str)
     :return: a generator yielding a single sentence in CONLL format.
     """
-    for (i, (word, tag)) in enumerate(sentence, start=1):
+    for i, (word, tag) in enumerate(sentence, start=1):
         input_str = [str(i), word, "_", tag, tag, "_", "0", "a", "_", "_"]
         input_str = "\t".join(input_str) + "\n"
         yield input_str

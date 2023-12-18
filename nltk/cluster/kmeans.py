@@ -41,7 +41,6 @@ class KMeansClusterer(VectorSpaceClusterer):
         rng=None,
         avoid_empty_clusters=False,
     ):
-
         """
         :param  num_means:  the number of means to use (may use fewer)
         :type   num_means:  int

@@ -620,7 +620,6 @@ class PunktBaseClass:
                 tok[:-1].lower() in self._params.abbrev_types
                 or tok[:-1].lower().split("-")[-1] in self._params.abbrev_types
             ):
-
                 aug_tok.abbr = True
             else:
                 aug_tok.sentbreak = True
@@ -639,7 +638,6 @@ class PunktTrainer(PunktBaseClass):
     def __init__(
         self, train_text=None, verbose=False, lang_vars=None, token_cls=PunktToken
     ):
-
         PunktBaseClass.__init__(self, lang_vars=lang_vars, token_cls=token_cls)
 
         self._type_fdist = FreqDist()
@@ -1169,7 +1167,6 @@ class PunktTrainer(PunktBaseClass):
                 and typ2_count > 1
                 and self.MIN_COLLOC_FREQ < col_count <= min(typ1_count, typ2_count)
             ):
-
                 log_likelihood = self._col_log_likelihood(
                     typ1_count, typ2_count, col_count, self._type_fdist.N()
                 )
@@ -1395,7 +1392,6 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         previous_slice = slice(0, 0)
         previous_match = None
         for match in self._lang_vars.period_context_re().finditer(text):
-
             # Get the slice of the previous word
             before_text = text[previous_slice.stop : match.start()]
             index_after_last_space = self._get_last_whitespace_index(before_text)
@@ -1678,7 +1674,6 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         # Check if any initials or ordinals tokens that are marked
         # as sentbreaks should be reclassified as abbreviations.
         if tok_is_initial or typ == "##number##":
-
             # [4.1.1. Orthographic Heuristic] Check if there's
             # orthogrpahic evidence about whether the next word
             # starts a sentence or not.

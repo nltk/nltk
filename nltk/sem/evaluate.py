@@ -129,7 +129,7 @@ class Valuation(dict):
         :param xs: a list of (symbol, value) pairs.
         """
         super().__init__()
-        for (sym, val) in xs:
+        for sym, val in xs:
             if isinstance(val, str) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
@@ -305,7 +305,7 @@ class Assignment(dict):
         super().__init__()
         self.domain = domain
         if assign:
-            for (var, val) in assign:
+            for var, val in assign:
                 assert val in self.domain, "'{}' is not in the domain: {}".format(
                     val,
                     self.domain,
@@ -349,7 +349,7 @@ class Assignment(dict):
         gstring = "g"
         # Deterministic output for unit testing.
         variant = sorted(self.variant)
-        for (val, var) in variant:
+        for val, var in variant:
             gstring += f"[{val}/{var}]"
         return gstring
 
@@ -601,6 +601,7 @@ class Model:
 # number of spacer chars
 mult = 30
 
+
 # Demo 1: Propositional Logic
 #################
 def propdemo(trace=None):
@@ -699,7 +700,7 @@ def folmodel(quiet=False, trace=None):
             ("love", ("y", "adam")),
         ]
 
-        for (fun, args) in applications:
+        for fun, args in applications:
             try:
                 funval = m2.i(Expression.fromstring(fun), g2)
                 argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)

@@ -146,13 +146,13 @@ class MaxentClassifier(ClassifierI):
 
             if self._logarithmic:
                 total = 0.0
-                for (f_id, f_val) in feature_vector:
+                for f_id, f_val in feature_vector:
                     total += self._weights[f_id] * f_val
                 prob_dict[label] = total
 
             else:
                 prod = 1.0
-                for (f_id, f_val) in feature_vector:
+                for f_id, f_val in feature_vector:
                     prod *= self._weights[f_id] ** f_val
                 prob_dict[label] = prod
 
@@ -182,7 +182,7 @@ class MaxentClassifier(ClassifierI):
             feature_vector.sort(
                 key=lambda fid__: abs(self._weights[fid__[0]]), reverse=True
             )
-            for (f_id, f_val) in feature_vector:
+            for f_id, f_val in feature_vector:
                 if self._logarithmic:
                     score = self._weights[f_id] * f_val
                 else:
@@ -598,18 +598,18 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
             self._inv_mapping
         except AttributeError:
             self._inv_mapping = [-1] * len(self._mapping)
-            for (info, i) in self._mapping.items():
+            for info, i in self._mapping.items():
                 self._inv_mapping[i] = info
 
         if f_id < len(self._mapping):
             (fname, fval, label) = self._inv_mapping[f_id]
             return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
-            for (label, f_id2) in self._alwayson.items():
+            for label, f_id2 in self._alwayson.items():
                 if f_id == f_id2:
                     return "label is %r" % label
         elif self._unseen and f_id in self._unseen.values():
-            for (fname, f_id2) in self._unseen.items():
+            for fname, f_id2 in self._unseen.items():
                 if f_id == f_id2:
                     return "%s is unseen" % fname
         else:
@@ -655,14 +655,13 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         seen_labels = set()  # The set of labels we've encountered
         count = defaultdict(int)  # maps (fname, fval) -> count
 
-        for (tok, label) in train_toks:
+        for tok, label in train_toks:
             if labels and label not in labels:
                 raise ValueError("Unexpected label %s" % label)
             seen_labels.add(label)
 
             # Record each of the features.
-            for (fname, fval) in tok.items():
-
+            for fname, fval in tok.items():
                 # If a count cutoff is given, then only add a joint
                 # feature once the corresponding (fname, fval, label)
                 # tuple exceeds that cutoff.
@@ -764,7 +763,7 @@ class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
         return self._labels
 
     def describe(self, fid):
-        for (feature, label) in self._mapping:
+        for feature, label in self._mapping:
             if self._mapping[(feature, label)] == fid:
                 return (feature, label)
 
@@ -780,11 +779,11 @@ class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
         # This gets read twice, so compute the values in case it's lazy.
         train_toks = list(train_toks)
 
-        for (featureset, label) in train_toks:
+        for featureset, label in train_toks:
             if label not in labels:
                 labels.append(label)
 
-        for (featureset, label) in train_toks:
+        for featureset, label in train_toks:
             for label in labels:
                 for feature in featureset:
                     if (feature, label) not in mapping:
@@ -939,18 +938,18 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
             self._inv_mapping
         except AttributeError:
             self._inv_mapping = [-1] * len(self._mapping)
-            for (info, i) in self._mapping.items():
+            for info, i in self._mapping.items():
                 self._inv_mapping[i] = info
 
         if f_id < len(self._mapping):
             (fname, fval, label) = self._inv_mapping[f_id]
             return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
-            for (label, f_id2) in self._alwayson.items():
+            for label, f_id2 in self._alwayson.items():
                 if f_id == f_id2:
                     return "label is %r" % label
         elif self._unseen and f_id in self._unseen.values():
-            for (fname, f_id2) in self._unseen.items():
+            for fname, f_id2 in self._unseen.items():
                 if f_id == f_id2:
                     return "%s is unseen" % fname
         else:
@@ -999,13 +998,13 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         seen_labels = set()  # The set of labels we've encountered
         count = defaultdict(int)  # maps (fname, fval) -> count
 
-        for (tok, label) in train_toks:
+        for tok, label in train_toks:
             if labels and label not in labels:
                 raise ValueError("Unexpected label %s" % label)
             seen_labels.add(label)
 
             # Record each of the features.
-            for (fname, fval) in tok.items():
+            for fname, fval in tok.items():
                 if type(fval) in (int, float):
                     fval = type(fval)
                 # If a count cutoff is given, then only add a joint
@@ -1128,7 +1127,7 @@ def calculate_empirical_fcount(train_toks, encoding):
     fcount = numpy.zeros(encoding.length(), "d")
 
     for tok, label in train_toks:
-        for (index, val) in encoding.encode(tok, label):
+        for index, val in encoding.encode(tok, label):
             fcount[index] += val
 
     return fcount
@@ -1141,7 +1140,7 @@ def calculate_estimated_fcount(classifier, train_toks, encoding):
         pdist = classifier.prob_classify(tok)
         for label in pdist.samples():
             prob = pdist.prob(label)
-            for (fid, fval) in encoding.encode(tok, label):
+            for fid, fval in encoding.encode(tok, label):
                 fcount[fid] += prob * fval
 
     return fcount
@@ -1364,7 +1363,7 @@ def calculate_deltas(
             # Find the number of active features
             nf = sum(val for (id, val) in feature_vector)
             # Update the A matrix
-            for (id, val) in feature_vector:
+            for id, val in feature_vector:
                 A[nfmap[nf], id] += dist.prob(label) * val
     A /= len(train_toks)
 
@@ -1401,6 +1400,7 @@ def calculate_deltas(
 ######################################################################
 # { Classifier Trainer: megam
 ######################################################################
+
 
 # [xx] possible extension: add support for using implicit file format;
 # this would need to put requirements on what encoding is used.  But

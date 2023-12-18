@@ -306,7 +306,7 @@ class MultiListbox(Frame):
                 >>> mlb.configure(listbox_foreground='red')  # doctest: +SKIP
         """
         cnf = dict(list(cnf.items()) + list(kw.items()))
-        for (key, val) in list(cnf.items()):
+        for key, val in list(cnf.items()):
             if key.startswith("label_") or key.startswith("label-"):
                 for label in self._labels:
                     label.configure({key[6:]: val})
@@ -341,7 +341,7 @@ class MultiListbox(Frame):
         lb = self._listboxes[col_index]
 
         cnf = dict(list(cnf.items()) + list(kw.items()))
-        for (key, val) in list(cnf.items()):
+        for key, val in list(cnf.items()):
             if key in (
                 "background",
                 "bg",
@@ -382,7 +382,7 @@ class MultiListbox(Frame):
                     "rows should be tuples whose length "
                     "is equal to the number of columns"
                 )
-        for (lb, elts) in zip(self._listboxes, list(zip(*rows))):
+        for lb, elts in zip(self._listboxes, list(zip(*rows))):
             lb.insert(index, *elts)
 
     def get(self, first, last=None):
@@ -1129,6 +1129,7 @@ class Table:
 ######################################################################
 # Demo/Test Function
 ######################################################################
+
 
 # update this to use new WordNet API
 def demo():

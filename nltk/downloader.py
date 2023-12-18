@@ -749,7 +749,6 @@ class Downloader:
         raise_on_error=False,
         print_error_to=sys.stderr,
     ):
-
         print_to = functools.partial(print, file=print_error_to)
         # If no info or id is given, then use the interactive shell.
         if info_or_id is None:
@@ -1492,7 +1491,7 @@ class DownloaderGUI:
             ("download_dir", "Download Directory:", self._set_download_dir),
         ]
         self._info = {}
-        for (i, (key, label, callback)) in enumerate(info):
+        for i, (key, label, callback) in enumerate(info):
             Label(infoframe, text=label).grid(column=0, row=i, sticky="e")
             entry = Entry(
                 infoframe,
@@ -1609,7 +1608,7 @@ class DownloaderGUI:
         self.top.config(menu=menubar)
 
     def _select_columns(self):
-        for (column, var) in self._column_vars.items():
+        for column, var in self._column_vars.items():
             if var.get():
                 self._table.show_column(column)
             else:
@@ -2127,7 +2126,6 @@ class DownloaderGUI:
         if not self._download_lock.acquire():
             return
         for msg in self._download_msg_queue:
-
             # Done downloading?
             if msg == "finished" or msg == "aborted":
                 # self._fill_table(sort=False)
