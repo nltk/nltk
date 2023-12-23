@@ -93,25 +93,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Set up JDK 16
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '16'
-        if: runner.os == 'Linux'
-
-      - name: Cache dependencies
+      - name: Restore cached dependencies
         uses: actions/cache@v3
         id: restore-cache
         with:
           path: ${{ env.pythonLocation }}
           key: python-dependencies-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('requirements-ci.txt') }}-${{ env.pythonLocation }}
 
-      - name: Install dependencies on cache miss
+      - name: Install dependencies
         run: |
-          pip install --no-cache-dir --upgrade pip
-          pip install --no-cache-dir --upgrade --requirement requirements-ci.txt
-        if: steps.restore-cache.outputs.cache-hit != 'true'
+          pip install --upgrade pip
+          pip install --upgrade --requirement requirements-ci.txt
+        #if: steps.restore-cache.outputs.cache-hit != 'true' # disabled due to a persistent issue with restoring cache on macos runner
 
       - name: Use cached nltk data
         uses: actions/cache@v3
@@ -124,6 +117,13 @@ jobs:
         with:
           path: ~/third
           key: third_${{ hashFiles('tools/github_actions/third-party.sh') }}_${{ secrets.CACHE_VERSION }}
+        if: runner.os == 'Linux'
+
+      - name: Set up JDK 16
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '16'
         if: runner.os == 'Linux'
 
       - name: Run pytest
