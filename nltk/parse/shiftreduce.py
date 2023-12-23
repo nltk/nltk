@@ -185,7 +185,6 @@ class ShiftReduceParser(ParserI):
 
             # check if the RHS of a production matches the top of the stack
             if self._match_rhs(production.rhs(), stack[-rhslen:]):
-
                 # combine the tree to reflect the reduction
                 tree = Tree(production.lhs().symbol(), stack[-rhslen:])
                 stack[-rhslen:] = [tree]

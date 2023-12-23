@@ -241,7 +241,6 @@ class IPIPANCorpusReader(CorpusReader):
 
 
 class IPIPANCorpusView(StreamBackedCorpusView):
-
     WORDS_MODE = 0
     SENTS_MODE = 1
     PARAS_MODE = 2
@@ -271,7 +270,6 @@ class IPIPANCorpusView(StreamBackedCorpusView):
         lines = self._read_data(stream)
 
         while True:
-
             # we may have only part of last line
             if len(lines) <= 1:
                 self._seek(stream)

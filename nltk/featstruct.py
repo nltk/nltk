@@ -328,7 +328,7 @@ class FeatStruct(SubstituteBindingsI):
 
         # Now we have to check all values.  If any of them don't match,
         # then return false.
-        for (fname, self_fval) in self._items():
+        for fname, self_fval in self._items():
             other_fval = other[fname]
             if isinstance(self_fval, FeatStruct):
                 if not self_fval._equal(
@@ -359,7 +359,7 @@ class FeatStruct(SubstituteBindingsI):
         visited.add(id(self))
 
         hashval = 5831
-        for (fname, fval) in sorted(self._items()):
+        for fname, fval in sorted(self._items()):
             hashval *= 37
             hashval += hash(fname)
             hashval *= 37
@@ -411,7 +411,7 @@ class FeatStruct(SubstituteBindingsI):
             return
         visited.add(id(self))
         self._frozen = True
-        for (fname, fval) in sorted(self._items()):
+        for fname, fval in sorted(self._items()):
             if isinstance(fval, FeatStruct):
                 fval._freeze(visited)
 
@@ -746,7 +746,7 @@ class FeatDict(FeatStruct, dict):
 
     def __deepcopy__(self, memo):
         memo[id(self)] = selfcopy = self.__class__()
-        for (key, val) in self._items():
+        for key, val in self._items():
             selfcopy[copy.deepcopy(key, memo)] = copy.deepcopy(val, memo)
         return selfcopy
 
@@ -787,7 +787,7 @@ class FeatDict(FeatStruct, dict):
 
         # sorting note: keys are unique strings, so we'll never fall
         # through to comparing values.
-        for (fname, fval) in sorted(self.items()):
+        for fname, fval in sorted(self.items()):
             display = getattr(fname, "display", None)
             if id(fval) in reentrance_ids:
                 segments.append(f"{fname}->({reentrance_ids[id(fval)]})")
@@ -850,7 +850,7 @@ class FeatDict(FeatStruct, dict):
         lines = []
         # sorting note: keys are unique strings, so we'll never fall
         # through to comparing values.
-        for (fname, fval) in sorted(self.items()):
+        for fname, fval in sorted(self.items()):
             fname = ("%s" % fname).ljust(maxfnamelen)
             if isinstance(fval, Variable):
                 lines.append(f"{fname} = {fval.name}")
@@ -1107,7 +1107,7 @@ def _substitute_bindings(fstruct, bindings, fs_class, visited):
         items = enumerate(fstruct)
     else:
         raise ValueError("Expected mapping or sequence")
-    for (fname, fval) in items:
+    for fname, fval in items:
         while isinstance(fval, Variable) and fval in bindings:
             fval = fstruct[fname] = bindings[fval]
         if isinstance(fval, fs_class):
@@ -1149,7 +1149,7 @@ def _retract_bindings(fstruct, inv_bindings, fs_class, visited):
         items = enumerate(fstruct)
     else:
         raise ValueError("Expected mapping or sequence")
-    for (fname, fval) in items:
+    for fname, fval in items:
         if isinstance(fval, fs_class):
             if id(fval) in inv_bindings:
                 fstruct[fname] = inv_bindings[id(fval)]
@@ -1177,7 +1177,7 @@ def _variables(fstruct, vars, fs_class, visited):
         items = enumerate(fstruct)
     else:
         raise ValueError("Expected mapping or sequence")
-    for (fname, fval) in items:
+    for fname, fval in items:
         if isinstance(fval, Variable):
             vars.add(fval)
         elif isinstance(fval, fs_class):
@@ -1261,7 +1261,7 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
         items = enumerate(fstruct)
     else:
         raise ValueError("Expected mapping or sequence")
-    for (fname, fval) in items:
+    for fname, fval in items:
         if isinstance(fval, Variable):
             # If it's in new_vars, then rebind it.
             if fval in new_vars:
@@ -1316,7 +1316,7 @@ def _remove_variables(fstruct, fs_class, visited):
     else:
         raise ValueError("Expected mapping or sequence")
 
-    for (fname, fval) in items:
+    for fname, fval in items:
         if isinstance(fval, Variable):
             del fstruct[fname]
         elif isinstance(fval, fs_class):
@@ -1701,7 +1701,7 @@ def _apply_forwards_to_bindings(forward, bindings):
     Replace any feature structure that has a forward pointer with
     the target of its forward pointer (to preserve reentrancy).
     """
-    for (var, value) in bindings.items():
+    for var, value in bindings.items():
         while id(value) in forward:
             value = forward[id(value)]
         bindings[var] = value
@@ -1744,7 +1744,7 @@ def _resolve_aliases(bindings):
     Replace any bound aliased vars with their binding; and replace
     any unbound aliased vars with their representative var.
     """
-    for (var, value) in bindings.items():
+    for var, value in bindings.items():
         while isinstance(value, Variable) and value in bindings:
             value = bindings[var] = bindings[value]
 
@@ -2432,7 +2432,7 @@ class FeatStructReader:
             return self.read_value(s, position, reentrances)
 
     def read_value(self, s, position, reentrances):
-        for (handler, regexp) in self.VALUE_HANDLERS:
+        for handler, regexp in self.VALUE_HANDLERS:
             match = regexp.match(s, position)
             if match:
                 handler_func = getattr(self, handler)
@@ -2579,7 +2579,7 @@ def display_unification(fs1, fs2, indent="  "):
     else:
         blankline = "[" + " " * (len(fs1_lines[0]) - 2) + "]"
         fs1_lines += [blankline] * len(fs2_lines)
-    for (fs1_line, fs2_line) in zip(fs1_lines, fs2_lines):
+    for fs1_line, fs2_line in zip(fs1_lines, fs2_lines):
         print(indent + fs1_line + "   " + fs2_line)
     print(indent + "-" * len(fs1_lines[0]) + "   " + "-" * len(fs2_lines[0]))
 
@@ -2674,7 +2674,7 @@ def interactive_demo(trace=False):
         list_fstructs(fstructs)
 
         selected = [None, None]
-        for (nth, i) in (("First", 0), ("Second", 1)):
+        for nth, i in (("First", 0), ("Second", 1)):
             while selected[i] is None:
                 print(
                     (

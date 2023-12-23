@@ -5,13 +5,13 @@
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
 import inspect
 import locale
 import os
 import pydoc
 import re
 import textwrap
+import unicodedata
 import warnings
 from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee
@@ -42,7 +42,7 @@ def usage(obj):
         obj = obj.__class__
 
     print(f"{obj.__name__} supports the following operations:")
-    for (name, method) in sorted(pydoc.allmethods(obj).items()):
+    for name, method in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
         if getattr(method, "__deprecated__", False):
@@ -139,6 +139,41 @@ def tokenwrap(tokens, separator=" ", width=70):
     return "\n".join(textwrap.wrap(separator.join(tokens), width=width))
 
 
+def cut_string(s, width=70):
+    """
+    Cut off and return a given width of a string
+
+    Return the same as s[:width] if width >= 0 or s[-width:] if
+    width < 0, as long as s has no unicode combining characters.
+    If it has combining characters make sure the returned string's
+    visible width matches the called-for width.
+
+    :param s: the string to cut
+    :type s: str
+    :param width: the display_width
+    :type width: int
+    """
+    chars_sofar = 0
+    width_sofar = 0
+    result = ""
+
+    abs_width = abs(width)
+    max_chars = len(s)
+    while width_sofar < abs_width and chars_sofar < max_chars:
+        if width < 0:
+            char = s[-(chars_sofar + 1)]
+            result = char + result
+        else:
+            char = s[chars_sofar]
+            result = result + char
+
+        chars_sofar += 1
+        if not unicodedata.combining(char):
+            width_sofar += 1
+
+    return result
+
+
 ##########################################################################
 # Indexing
 ##########################################################################
@@ -178,6 +213,7 @@ def re_show(regexp, string, left="{", right="}"):
 ##########################################################################
 # READ FROM FILE OR STRING
 ##########################################################################
+
 
 # recipe from David Mertz
 def filestring(f):
@@ -858,14 +894,15 @@ def ngrams(sequence, n, **kwargs):
     """
     sequence = pad_sequence(sequence, n, **kwargs)
 
-    # Creates the sliding window, of n no. of items.
-    # `iterables` is a tuple of iterables where each iterable is a window of n items.
-    iterables = tee(sequence, n)
-
-    for i, sub_iterable in enumerate(iterables):  # For each window,
-        for _ in range(i):  # iterate through every order of ngrams
-            next(sub_iterable, None)  # generate the ngrams within the window.
-    return zip(*iterables)  # Unpack and flattens the iterables.
+    # sliding_window('ABCDEFG', 4) --> ABCD BCDE CDEF DEFG
+    # https://docs.python.org/3/library/itertools.html?highlight=sliding_window#itertools-recipes
+    it = iter(sequence)
+    window = deque(islice(it, n), maxlen=n)
+    if len(window) == n:
+        yield tuple(window)
+    for x in it:
+        window.append(x)
+        yield tuple(window)
 
 
 def bigrams(sequence, **kwargs):
@@ -1008,6 +1045,7 @@ def skipgrams(sequence, n, k, **kwargs):
 ######################################################################
 # Binary Search in a File
 ######################################################################
+
 
 # inherited from pywordnet, by Oliver Steele
 def binary_search_file(file, key, cache=None, cacheDepth=-1):

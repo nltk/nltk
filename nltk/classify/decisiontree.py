@@ -108,7 +108,7 @@ class DecisionTreeClassifier(ClassifierI):
         if self._fname is None:
             return f"{prefix}return {self._label!r}\n"
         s = ""
-        for (fval, result) in sorted(
+        for fval, result in sorted(
             self._decisions.items(),
             key=lambda item: (item[0] in [None, False, True], str(item[0]).lower()),
         ):

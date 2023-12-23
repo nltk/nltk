@@ -1216,7 +1216,7 @@ class WordNetCorpusReader(CorpusReader):
         self.map30 = self.map_wn()
 
         # Language data attributes
-        self.lg_attrs = ["lemma", "none", "def", "exe"]
+        self.lg_attrs = ["lemma", "of", "def", "exe"]
 
     def index_sense(self, version=None):
         """Read sense key to synset id mapping from index.sense file in corpus directory"""
@@ -1251,7 +1251,7 @@ class WordNetCorpusReader(CorpusReader):
         return synset_to_many
 
     def map_to_one(self, version="wordnet"):
-        self.nomap[version] = []
+        self.nomap[version] = set()
         self.splits[version] = {}
         synset_to_many = self.map_to_many(version)
         synset_to_one = {}
@@ -1273,7 +1273,7 @@ class WordNetCorpusReader(CorpusReader):
                     # where only Lithuanian and Slovak use the "s" ss_type.
                     synset_to_one[f"{source[:-1]}a"] = target
             else:
-                self.nomap[version].append(source)
+                self.nomap[version].add(source)
         return synset_to_one
 
     def map_wn(self, version="wordnet"):
@@ -1294,7 +1294,9 @@ class WordNetCorpusReader(CorpusReader):
             for source, targets in self.map_to_many(version).items():
                 for target in targets:
                     merge[target].add(source)
-            self.merges[version] = {s: t for s, t in merge.items() if len(t) > 1}
+            self.merges[version] = {
+                trg: src for trg, src in merge.items() if len(src) > 1
+            }
         return self.merges[version]
 
     # Open Multilingual WordNet functions, contributed by
@@ -1377,7 +1379,6 @@ class WordNetCorpusReader(CorpusReader):
 
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
-
             # parse each line of the file (ignoring comment lines)
             with self.open("index.%s" % suffix) as fp:
                 for i, line in enumerate(fp):
@@ -1390,7 +1391,6 @@ class WordNetCorpusReader(CorpusReader):
                         return next(_iter)
 
                     try:
-
                         # get the lemma and part-of-speech
                         lemma = _next_token()
                         pos = _next_token()
@@ -1597,7 +1597,6 @@ class WordNetCorpusReader(CorpusReader):
 
         # parse the entry for this synset
         try:
-
             # parse out the definitions and examples from the gloss
             columns_str, gloss = data_file_line.strip().split("|")
             definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()
@@ -2230,8 +2229,9 @@ class WordNetCorpusReader(CorpusReader):
                     else:
                         # Some OMW offsets were never in Wordnet:
                         if (
-                            offset_pos not in self.nomap
-                            and offset_pos.replace("a", "s") not in self.nomap
+                            offset_pos not in self.nomap["wordnet"]
+                            and offset_pos.replace("a", "s")
+                            not in self.nomap["wordnet"]
                         ):
                             warnings.warn(
                                 f"{lang}: invalid offset {offset_pos} in '{line}'"
@@ -2247,11 +2247,15 @@ class WordNetCorpusReader(CorpusReader):
                 if len(pair) == 1 or pair[0] == lg:
                     if attr == "lemma":
                         val = val.strip().replace(" ", "_")
-                        self._lang_data[lang][1][val.lower()].append(offset_pos)
+                        lang_offsets = self._lang_data[lang][1][val.lower()]
+                        if offset_pos not in lang_offsets:
+                            lang_offsets.append(offset_pos)
                     if attr in self.lg_attrs:
-                        self._lang_data[lang][self.lg_attrs.index(attr)][
+                        lang_lemmas = self._lang_data[lang][self.lg_attrs.index(attr)][
                             offset_pos
-                        ].append(val)
+                        ]
+                        if val not in lang_lemmas:
+                            lang_lemmas.append(val)
 
     def disable_custom_lemmas(self, lang):
         """prevent synsets from being mistakenly added"""

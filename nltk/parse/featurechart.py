@@ -213,7 +213,7 @@ class FeatureChart(Chart):
         A helper function for ``insert``, which registers the new
         edge with all existing indexes.
         """
-        for (restr_keys, index) in self._indexes.items():
+        for restr_keys, index in self._indexes.items():
             vals = tuple(
                 self._get_type_if_possible(getattr(edge, key)()) for key in restr_keys
             )

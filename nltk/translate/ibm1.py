@@ -187,7 +187,7 @@ class IBMModel1(IBMModel):
         :return: Probability of t for all s in ``src_sentence``
         :rtype: dict(str): float
         """
-        alignment_prob_for_t = defaultdict(lambda: 0.0)
+        alignment_prob_for_t = defaultdict(float)
         for t in trg_sentence:
             for s in src_sentence:
                 alignment_prob_for_t[t] += self.prob_alignment_point(s, t)

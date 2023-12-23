@@ -408,7 +408,6 @@ class Prover9LimitExceededException(Prover9Exception):
 
 
 def test_config():
-
     a = Expression.fromstring("(walk(j) & sing(j))")
     g = Expression.fromstring("walk(j)")
     p = Prover9Command(g, assumptions=[a])
@@ -433,7 +432,7 @@ def test_prove(arguments):
     """
     Try some proofs and exhibit the results.
     """
-    for (goal, assumptions) in arguments:
+    for goal, assumptions in arguments:
         g = Expression.fromstring(goal)
         alist = [Expression.fromstring(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()

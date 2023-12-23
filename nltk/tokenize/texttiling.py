@@ -73,7 +73,6 @@ class TextTilingTokenizer(TokenizerI):
         cutoff_policy=HC,
         demo_mode=False,
     ):
-
         if stopwords is None:
             from nltk.corpus import stopwords
 

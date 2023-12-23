@@ -457,7 +457,6 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
             flag = True
 
         for child in elt:
-
             # get word
             if "name" in child.keys() and child.attrib["name"] == "orth":
                 for symbol in child:

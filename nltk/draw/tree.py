@@ -478,7 +478,7 @@ def tree_to_treesegment(
     leaf_attribs = {}
     loc_attribs = {}
 
-    for (key, value) in list(attribs.items()):
+    for key, value in list(attribs.items()):
         if key[:5] == "tree_":
             tree_attribs[key[5:]] = value
         elif key[:5] == "node_":

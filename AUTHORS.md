@@ -110,6 +110,7 @@
 - Tom Lippincott
 - Peter Ljunglöf
 - Alex Louden
+- David Lukeš
 - Joseph Lynch
 - Nitin Madnani
 - Felipe Madrigal
@@ -127,6 +128,7 @@
 - David McClosky
 - Xinfan Meng
 - Dmitrijs Milajevs
+- Matt Miller
 - Margaret Mitchell
 - Tomonori Nagano
 - Jason Narad
@@ -296,6 +298,10 @@
 - M.K. Pawelkiewicz <https://github.com/hamiltonianflow>
 - Steven Thomas Smith <https://github.com/essandess>
 - Jan Lennartz <https://github.com/Madnex>
+- Tim Sockel <https://github.com/TiMauzi>
+- Akihiro Yamazaki <https://github.com/zakkie>
+- Ron Urbach <https://github.com/sharpblade4>
+- Vivek Kalyan <https://github.com/vivekkalyan>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

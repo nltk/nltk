@@ -281,6 +281,7 @@ This provides a backend to both wxbrowse and browserver.py.
 # Main logic for wordnet browser.
 #
 
+
 # This is wrapped inside a function since wn is only available if the
 # WordNet corpus is installed.
 def _pos_tuples():
@@ -983,7 +984,7 @@ def app():
     server_mode = False
     help_mode = False
     logfilename = None
-    for (opt, value) in opts:
+    for opt, value in opts:
         if (opt == "-l") or (opt == "--logfile"):
             logfilename = str(value)
         elif (opt == "-p") or (opt == "--port"):

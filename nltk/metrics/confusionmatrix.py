@@ -197,9 +197,7 @@ class ConfusionMatrix:
         str = "Value key:\n"
         indexlen = len(repr(len(values) - 1))
         key_format = "  %" + repr(indexlen) + "d: %s\n"
-        for i in range(len(values)):
-            str += key_format % (i, values[i])
-
+        str += "".join([key_format % (i, values[i]) for i in range(len(values))])
         return str
 
     def recall(self, value):

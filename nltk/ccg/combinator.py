@@ -128,6 +128,7 @@ class UndirectedFunctionApplication(UndirectedBinaryCombinator):
 
 # Predicates for function application.
 
+
 # Ensures the left functor takes an argument on the right
 def forwardOnly(left, right):
     return left.dir().is_forward()

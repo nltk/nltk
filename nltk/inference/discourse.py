@@ -312,7 +312,7 @@ class DiscourseTester:
         self._filtered_threads = {}
         # keep the same ids, but only include threads which get models
         consistency_checked = self._check_consistency(self._threads)
-        for (tid, thread) in self._threads.items():
+        for tid, thread in self._threads.items():
             if (tid, True) in consistency_checked:
                 self._filtered_threads[tid] = thread
 
@@ -455,7 +455,7 @@ class DiscourseTester:
         self._construct_threads()
         threads = {thread_id: self._threads[thread_id]} if thread_id else self._threads
 
-        for (tid, modelfound) in self._check_consistency(
+        for tid, modelfound in self._check_consistency(
             threads, show=show, verbose=verbose
         ):
             idlist = [rid for rid in threads[tid]]
@@ -481,7 +481,7 @@ class DiscourseTester:
         """
         from nltk.sem.logic import Expression
 
-        for (count, e) in enumerate(background):
+        for count, e in enumerate(background):
             assert isinstance(e, Expression)
             if verbose:
                 print("Adding assumption %s to background" % count)

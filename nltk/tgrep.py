@@ -836,6 +836,7 @@ def _tgrep_exprs_action(_s, _l, tokens):
         macro_dict.update(macro_def)
     # collect all tgrep expressions
     tgrep_exprs = [tok for tok in tokens if not isinstance(tok, dict)]
+
     # create a new scope for the node label dictionary
     def top_level_pred(n, m=macro_dict, l=None):
         label_dict = {}

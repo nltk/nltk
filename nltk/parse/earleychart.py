@@ -112,7 +112,7 @@ class IncrementalChart(Chart):
 
     def _register_with_indexes(self, edge):
         end = edge.end()
-        for (restr_keys, index) in self._indexes.items():
+        for restr_keys, index in self._indexes.items():
             vals = tuple(getattr(edge, key)() for key in restr_keys)
             index[end].setdefault(vals, []).append(edge)
 
@@ -165,7 +165,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
 
     def _register_with_indexes(self, edge):
         end = edge.end()
-        for (restr_keys, index) in self._indexes.items():
+        for restr_keys, index in self._indexes.items():
             vals = tuple(
                 self._get_type_if_possible(getattr(edge, key)()) for key in restr_keys
             )

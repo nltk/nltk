@@ -77,7 +77,7 @@ Summary of our git branching model:
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
 - Run the tests to make sure nothing breaks
-  (`tox -e py37` if you are on Python 3.7);
+  (`tox -e py312` if you are on Python 3.12);
 - Add your name to the `AUTHORS.md` file as a contributor;
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
@@ -109,7 +109,7 @@ Summary of our git branching model:
 - Use [PEP8](https://www.python.org/dev/peps/pep-0008/);
 - Write tests for your new features (please see "Tests" topic below);
 - Always remember that [commented code is dead
-  code](https://www.codinghorror.com/blog/2008/07/coding-without-comments.html);
+  code](https://blog.codinghorror.com/coding-without-comments/);
 - Name identifiers (variables, classes, functions, module names) with readable
   names (`x` is always wrong);
 - When manipulating strings, we prefer either [f-string
@@ -169,7 +169,7 @@ The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.git
        - Otherwise, download all the data packages through `nltk.download('all')`.
 
   - The `test` job
-    - tests against supported Python versions (`3.7`, `3.8`, `3.9`).
+    - tests against supported Python versions (`3.8`, `3.9`, `3.10`, `3.11`, `3.12`).
     - tests on `ubuntu-latest` and `macos-latest`.
     - relies on the `cache_nltk_data` job to ensure that `nltk_data` is available.
     - performs these steps:
@@ -189,7 +189,7 @@ The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.git
 #### To test with `tox` locally
 
 First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
-Then run `tox -e py37`.
+Then run `tox -e py312`.
 
 For example, using `pipenv`:
 
@@ -198,7 +198,7 @@ git clone https://github.com/nltk/nltk.git
 cd nltk
 pipenv install -r pip-req.txt
 pipenv install tox
-tox -e py37
+tox -e py312
 ```
 
 

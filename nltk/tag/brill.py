@@ -175,7 +175,7 @@ def describe_template_sets():
 
     # a bit of magic to get all functions in this module
     templatesets = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
-    for (name, obj) in templatesets:
+    for name, obj in templatesets:
         if name == "describe_template_sets":
             continue
         print(name, obj.__doc__, "\n")
@@ -310,7 +310,7 @@ class BrillTagger(TaggerI):
         )
         template_counts = Counter(tids)
         weighted_traincounts = Counter()
-        for (tid, score) in zip(tids, trainscores):
+        for tid, score in zip(tids, trainscores):
             weighted_traincounts[tid] += score
         tottrainscores = sum(trainscores)
 
@@ -336,7 +336,7 @@ class BrillTagger(TaggerI):
             train_tplscores = sorted(
                 weighted_traincounts.items(), key=det_tplsort, reverse=True
             )
-            for (tid, trainscore) in train_tplscores:
+            for tid, trainscore in train_tplscores:
                 s = "{} | {:5d}   {:5.3f} |{:4d}   {:.3f} | {}".format(
                     tid,
                     trainscore,
@@ -363,7 +363,7 @@ class BrillTagger(TaggerI):
                 "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats)
             )
             weighted_testcounts = Counter()
-            for (tid, score) in zip(tids, testscores):
+            for tid, score in zip(tids, testscores):
                 weighted_testcounts[tid] += score
             tottestscores = sum(testscores)
             head = "#ID | Score (test) | Score (train) |  #Rules     | Template"
@@ -371,7 +371,7 @@ class BrillTagger(TaggerI):
             test_tplscores = sorted(
                 weighted_testcounts.items(), key=det_tplsort, reverse=True
             )
-            for (tid, testscore) in test_tplscores:
+            for tid, testscore in test_tplscores:
                 s = "{:s} |{:5d}  {:6.3f} |  {:4d}   {:.3f} |{:4d}   {:.3f} | {:s}".format(
                     tid,
                     testscore,
@@ -393,7 +393,7 @@ class BrillTagger(TaggerI):
             ]
             print(f"UNUSED TEMPLATES ({len(unused)})")
 
-            for (tid, tpl) in unused:
+            for tid, tpl in unused:
                 print(f"{tid:03d} {str(tpl):s}")
 
         if test_stats is None:

@@ -2,7 +2,8 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Jon Dehdari
-# Contributors: Liling Tan, Selcuk Ayguney, ikegami, Martijn Pieters
+# Contributors: Liling Tan, Selcuk Ayguney, ikegami, Martijn Pieters,
+# Alex Rudnick
 #
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
@@ -145,6 +146,7 @@ class ToktokTokenizer(TokenizerI):
     TOKTOK_REGEXES = [
         NON_BREAKING,
         FUNKY_PUNCT_1,
+        FUNKY_PUNCT_2,
         URL_FOE_1,
         URL_FOE_2,
         URL_FOE_3,
@@ -156,7 +158,6 @@ class ToktokTokenizer(TokenizerI):
         CLOSE_PUNCT_RE,
         MULTI_COMMAS,
         COMMA_IN_NUM,
-        FINAL_PERIOD_2,
         PROB_SINGLE_QUOTES,
         STUPID_QUOTES_1,
         STUPID_QUOTES_2,

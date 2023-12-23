@@ -125,7 +125,7 @@ class CCGVar(AbstractCCGCategory):
         """If there is a substitution corresponding to this variable,
         return the substituted category.
         """
-        for (var, cat) in substitutions:
+        for var, cat in substitutions:
             if var == self:
                 return cat
         return self
@@ -197,7 +197,7 @@ class Direction:
         if not self.is_variable():
             return self
 
-        for (var, restrs) in subs:
+        for var, restrs in subs:
             if var == "_":
                 return Direction(self._dir, restrs)
         return self

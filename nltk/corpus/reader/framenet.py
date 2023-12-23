@@ -51,7 +51,6 @@ def mimic_wrap(lines, wrap_at=65, **kwargs):
 
 
 def _pretty_longstring(defstr, prefix="", wrap_at=65):
-
     """
     Helper function for pretty-printing a long string.
 
@@ -60,15 +59,12 @@ def _pretty_longstring(defstr, prefix="", wrap_at=65):
     :return: A nicely formatted string representation of the long string.
     :rtype: str
     """
-
-    outstr = ""
-    for line in textwrap.fill(defstr, wrap_at).split("\n"):
-        outstr += prefix + line + "\n"
-    return outstr
+    return "\n".join(
+        [prefix + line for line in textwrap.fill(defstr, wrap_at).split("\n")]
+    )
 
 
 def _pretty_any(obj):
-
     """
     Helper function for pretty-printing any AttrDict object.
 
@@ -91,7 +87,6 @@ def _pretty_any(obj):
 
 
 def _pretty_semtype(st):
-
     """
     Helper function for pretty-printing a semantic type.
 
@@ -127,7 +122,6 @@ def _pretty_semtype(st):
 
 
 def _pretty_frame_relation_type(freltyp):
-
     """
     Helper function for pretty-printing a frame relation type.
 
@@ -143,7 +137,6 @@ def _pretty_frame_relation_type(freltyp):
 
 
 def _pretty_frame_relation(frel):
-
     """
     Helper function for pretty-printing a frame relation.
 
@@ -159,7 +152,6 @@ def _pretty_frame_relation(frel):
 
 
 def _pretty_fe_relation(ferel):
-
     """
     Helper function for pretty-printing an FE relation.
 
@@ -175,7 +167,6 @@ def _pretty_fe_relation(ferel):
 
 
 def _pretty_lu(lu):
-
     """
     Helper function for pretty-printing a lexical unit.
 
@@ -651,7 +642,6 @@ def _annotation_ascii_FEs(sent):
 
 
 def _pretty_fe(fe):
-
     """
     Helper function for pretty-printing a frame element.
 
@@ -695,7 +685,6 @@ def _pretty_fe(fe):
 
 
 def _pretty_frame(frame):
-
     """
     Helper function for pretty-printing a frame.
 
@@ -2715,7 +2704,6 @@ warnings(True) to display corpus consistency warnings when loading data
         ]
 
         for attr in attr_dict:
-
             if any(attr.endswith(x) for x in ignore_attrs):
                 continue
 

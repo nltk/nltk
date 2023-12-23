@@ -46,7 +46,6 @@ class Streamer(TwythonStreamer):
     """
 
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
-
         self.handler = None
         self.do_continue = True
         TwythonStreamer.__init__(
@@ -90,7 +89,6 @@ class Streamer(TwythonStreamer):
         Wrapper for 'statuses / sample' API call
         """
         while self.do_continue:
-
             # Stream in an endless loop until limit is reached. See twython
             # issue 288: https://github.com/ryanmcgrath/twython/issues/288
             # colditzjb commented on 9 Dec 2014

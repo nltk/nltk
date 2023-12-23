@@ -146,7 +146,7 @@ def _write_megam_features(vector, stream, bernoulli):
         raise ValueError(
             "MEGAM classifier requires the use of an " "always-on feature."
         )
-    for (fid, fval) in vector:
+    for fid, fval in vector:
         if bernoulli:
             if fval == 1:
                 stream.write(" %s" % fid)
