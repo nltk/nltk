@@ -263,7 +263,6 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
     :param maxdepth: to limit the search depth
     :param verbose: to print warnings when cycles are discarded
 
-
     Yield the edges of a graph in breadth-first order,
     discarding eventual cycles.
     The first argument should be the start node;
@@ -302,13 +301,13 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
 def edges2dot(edges, shapes=None, attr=None):
     """
     :param edges: the set (or list) of edges of a directed graph.
-
-    :return dot_string: a representation of 'edges' as a string in the DOT
-        graph language, which can be converted to an image by the 'dot' program
-        from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
-
     :param shapes: dictionary of strings that trigger a specified shape.
-    :param attr: dictionary with global graph attributes
+    :param attr: dictionary with global graph attributes.
+    :return: a representation of 'edges' as a string in the DOT graph language.
+
+    Returns a representation of 'edges' as a string in the DOT
+    graph language, which can be converted to an image by the 'dot' program
+    from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
 
     >>> import nltk
     >>> from nltk.util import edges2dot
@@ -394,6 +393,7 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1, verbose=False):
     :param children: a function taking as argument a tree node
     :param maxdepth: to limit the search depth
     :param verbose: to print warnings when cycles are discarded
+    :return: the tree in breadth-first order
 
         Adapted from breadth_first() above, to discard cycles.
     Traverse the nodes of a tree in breadth-first order,
@@ -435,6 +435,8 @@ def acyclic_depth_first(
     :param depth: the maximum depth of the search
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
+    :param verbose: to print warnings when cycles are discarded
+    :return: the tree in depth-first order
 
         Traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within any branch,
@@ -507,6 +509,7 @@ def acyclic_branches_depth_first(
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
+    :return: the tree in depth-first order
 
         Adapted from acyclic_depth_first() above, to
     traverse the nodes of a tree in depth-first order,
