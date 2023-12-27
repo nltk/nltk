@@ -118,7 +118,7 @@ class TextTilingTokenizer(TokenizerI):
         if self.similarity_method == BLOCK_COMPARISON:
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
-            raise NotImplementedError("Vocabulary introduction not implemented")
+            gap_scores = self._vocabulariy_introduction_comparision(tokseqs)
         else:
             raise ValueError(
                 f"Similarity method {self.similarity_method} not recognized"
@@ -156,6 +156,36 @@ class TextTilingTokenizer(TokenizerI):
         if self.demo_mode:
             return gap_scores, smooth_scores, depth_scores, segment_boundaries
         return segmented_text
+
+    def _vocabulariy_introduction_comparision(self, tokseqs):
+        """
+        Implements the Vocabulary Introduction method. Based on the implementation by https://github.com/stylianipantela/texttiling/blob/master/texttiling.py#L140
+        Measures and scores the amount of new vocabulary introduced by each token sequence, indicating a potential transition from one topic to another.
+        """
+        tokseq_sets = [set(token for token, _ in seq.wrdindex_list) for seq in tokseqs]
+        seqlen_doubled = self.w * 2
+        
+        known_words_left_of_gap = set()        
+        known_words_right_of_gap = tokseq_sets[0]
+
+        gap_scores = []
+        for gap_index in range(1, len(tokseqs) - 1):
+            new_words_left_of_gap = tokseq_sets[gap_index-1].difference(known_words_left_of_gap)
+            new_words_right_of_gap = tokseq_sets[gap_index+1].difference(known_words_right_of_gap)
+
+            gap_score = (len(new_words_left_of_gap) + len(new_words_right_of_gap)) / seqlen_doubled
+            gap_scores.append(gap_score)
+
+            known_words_left_of_gap.update(tokseq_sets[gap_index-1])
+            known_words_right_of_gap.update(tokseq_sets[gap_index+1])
+        
+        # special case last element
+        new_words_left_of_gap = len(tokseq_sets[-1].difference(known_words_left_of_gap))
+        gap_scores.append(new_words_left_of_gap/seqlen_doubled)
+
+        return gap_scores
+
+
 
     def _block_comparison(self, tokseqs, token_table):
         """Implements the block comparison method"""
@@ -429,10 +459,10 @@ def smooth(x, window_len=11, window="flat"):
     """
 
     if x.ndim != 1:
-        raise ValueError("smooth only accepts 1 dimension arrays.")
+        raise ValueError(f"smooth only accepts 1 dimension arrays, was {x.ndim}.")
 
     if x.size < window_len:
-        raise ValueError("Input vector needs to be bigger than window size.")
+        raise ValueError(f"Input vector ({len(x)}) needs to be bigger than window size ({window_len}).")
 
     if window_len < 3:
         return x
@@ -455,15 +485,17 @@ def smooth(x, window_len=11, window="flat"):
     return y[window_len - 1 : -window_len + 1]
 
 
-def demo(text=None):
+def demo(text=None, similarity_method=BLOCK_COMPARISON):
     from matplotlib import pylab
 
     from nltk.corpus import brown
-
-    tt = TextTilingTokenizer(demo_mode=True)
+    
+    pylab.figure()
+    tt = TextTilingTokenizer(demo_mode=True, similarity_method=similarity_method)
     if text is None:
         text = brown.raw()[:10000]
     s, ss, d, b = tt.tokenize(text)
+    pylab.title(f'TextTiling {similarity_method} Similarity')
     pylab.xlabel("Sentence Gap index")
     pylab.ylabel("Gap Scores")
     pylab.plot(range(len(s)), s, label="Gap Scores")

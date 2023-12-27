@@ -302,6 +302,7 @@
 - Akihiro Yamazaki <https://github.com/zakkie>
 - Ron Urbach <https://github.com/sharpblade4>
 - Vivek Kalyan <https://github.com/vivekkalyan>
+- Peter Pollak <https://github.com/Syzygy2048/>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
