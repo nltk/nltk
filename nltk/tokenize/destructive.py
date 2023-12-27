@@ -53,6 +53,7 @@ class NLTKWordTokenizer(TokenizerI):
         (re.compile("([«“‘„]|[`]+)", re.U), r" \1 "),
         (re.compile(r"^\""), r"``"),
         (re.compile(r"(``)"), r" \1 "),
+        (re.compile(r"[\t\n\f\r]"), ""),
         (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
         (re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d|n)(\w)\b", re.U), r"\1 \2"),
     ]
@@ -62,6 +63,7 @@ class NLTKWordTokenizer(TokenizerI):
         (re.compile("([»”’])", re.U), r" \1 "),
         (re.compile(r"''"), " '' "),
         (re.compile(r'"'), " '' "),
+        (re.compile(r"[\t\n\f\r]"), ""),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
         (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
