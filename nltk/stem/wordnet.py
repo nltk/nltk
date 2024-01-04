@@ -13,7 +13,8 @@ class WordNetLemmatizer:
     """
     WordNet Lemmatizer
 
-    Lemmatize using WordNet's built-in morphy function.
+    Lemmatize by picking the shortest of the possible lemmas,
+    using the wordnet corpus reader's built-in _morphy function.
     Returns the input word unchanged if it cannot be found in WordNet.
 
         >>> from nltk.stem import WordNetLemmatizer
