@@ -31,7 +31,8 @@ class WordNetLemmatizer:
     """
 
     def lemmatize(self, word: str, pos: str = "n") -> str:
-        """Lemmatize `word` using WordNet's built-in morphy function.
+        """Lemmatize `word` by picking the shortest of the possible lemmas,
+        using the wordnet corpus reader's built-in _morphy function.
         Returns the input word unchanged if it cannot be found in WordNet.
 
         :param word: The input word to lemmatize.
@@ -40,7 +41,7 @@ class WordNetLemmatizer:
             `"v"` for verbs, `"a"` for adjectives, `"r"` for adverbs and `"s"`
             for satellite adjectives.
         :type pos: str
-        :return: The lemma of `word`, for the given `pos`.
+        :return: The shortest lemma of `word`, for the given `pos`.
         """
         lemmas = wn._morphy(word, pos)
         return min(lemmas, key=len) if lemmas else word
