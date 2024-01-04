@@ -2082,8 +2082,7 @@ class WordNetCorpusReader(CorpusReader):
         # Given an original string x
         # 1. Apply rules once to the input to get y1, y2, y3, etc.
         # 2. Return all that are in the database
-        # 3. If there are no matches, keep applying rules until you either
-        #    find a match or you can't go any further
+        # 3. If there are no matches: (edited by ekaf) don't recurse, return an empty list.
 
         exceptions = self._exception_map[pos]
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
@@ -2119,13 +2118,6 @@ class WordNetCorpusReader(CorpusReader):
         results = filter_forms([form] + forms)
         if results:
             return results
-
-        # 3. If there are no matches, keep applying rules until we find a match
-        while forms:
-            forms = apply_rules(forms)
-            results = filter_forms(forms)
-            if results:
-                return results
 
         # Return an empty list if we can't find anything
         return []
