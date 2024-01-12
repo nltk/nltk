@@ -2082,7 +2082,7 @@ class WordNetCorpusReader(CorpusReader):
         # Given an original string x
         # 1. Apply rules once to the input to get y1, y2, y3, etc.
         # 2. Return all that are in the database
-        # 3. If there are no matches: (edited by ekaf) don't recurse, return an empty list.
+        #    (edited by ekaf) If there are no matches return an empty list.
 
         exceptions = self._exception_map[pos]
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
@@ -2096,7 +2096,7 @@ class WordNetCorpusReader(CorpusReader):
             ]
 
         def filter_forms(forms):
-            result = []
+            result = []  # Return an empty list if we can't find anything
             seen = set()
             for form in forms:
                 if form in self._lemma_pos_offset_map:
@@ -2106,21 +2106,15 @@ class WordNetCorpusReader(CorpusReader):
                             seen.add(form)
             return result
 
-        # 0. Check the exception lists
-        if check_exceptions:
-            if form in exceptions:
-                return filter_forms([form] + exceptions[form])
-
-        # 1. Apply rules once to the input to get y1, y2, y3, etc.
-        forms = apply_rules([form])
+        if check_exceptions and form in exceptions:
+            # 0. Check the exception lists
+            forms = exceptions[form]
+        else:
+            # 1. Apply rules once to the input to get y1, y2, y3, etc.
+            forms = apply_rules([form])
 
         # 2. Return all that are in the database (and check the original too)
-        results = filter_forms([form] + forms)
-        if results:
-            return results
-
-        # Return an empty list if we can't find anything
-        return []
+        return filter_forms([form] + forms)
 
     #############################################################
     # Create information content from corpus
