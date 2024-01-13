@@ -2018,8 +2018,8 @@ class WordNetCorpusReader(CorpusReader):
         """
         Find a possible base form for the given form, with the given
         part of speech, by checking WordNet's list of exceptional
-        forms, and by recursively stripping affixes for this part of
-        speech until a form in WordNet is found.
+        forms, or by substituting affixes for this part of speech.
+        Return the first form found in WordNet, or eventually None.
 
         >>> from nltk.corpus import wordnet as wn
         >>> print(wn.morphy('dogs'))
@@ -2037,17 +2037,17 @@ class WordNetCorpusReader(CorpusReader):
         """
 
         if pos is None:
-            morphy = self._morphy
-            analyses = chain(a for p in POS_LIST for a in morphy(form, p))
+            posl = POS_LIST
         else:
+            posl = [pos]
+        analyses = []
+        for pos in posl:
             analyses = self._morphy(form, pos, check_exceptions)
-
-        # get the first one we find
-        first = list(islice(analyses, 1))
-        if len(first) == 1:
-            return first[0]
-        else:
-            return None
+            if analyses:
+                return analyses[0]
+            else:
+                continue
+        return None
 
     MORPHOLOGICAL_SUBSTITUTIONS = {
         NOUN: [
@@ -2096,7 +2096,7 @@ class WordNetCorpusReader(CorpusReader):
             ]
 
         def filter_forms(forms):
-            result = []  # Return an empty list if we can't find anything
+            result = []
             seen = set()
             for form in forms:
                 if form in self._lemma_pos_offset_map:
