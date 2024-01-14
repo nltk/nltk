@@ -1423,6 +1423,7 @@ class WordNetCorpusReader(CorpusReader):
                     # map lemmas and parts of speech to synsets
                     self._lemma_pos_offset_map[lemma][pos] = synset_offsets
                     if pos == ADJ:
+                        # Duplicate all adjectives indiscriminately?:
                         self._lemma_pos_offset_map[lemma][ADJ_SAT] = synset_offsets
 
     def _load_exception_map(self):
@@ -2018,7 +2019,8 @@ class WordNetCorpusReader(CorpusReader):
         """
         Find a possible base form for the given form, with the given
         part of speech, by checking WordNet's list of exceptional
-        forms, or by substituting affixes for this part of speech.
+        forms, or by substituting suffixes for this part of speech.
+        If pos=None, try every part of speech until finding lemmas.
         Return the first form found in WordNet, or eventually None.
 
         >>> from nltk.corpus import wordnet as wn
@@ -2035,19 +2037,11 @@ class WordNetCorpusReader(CorpusReader):
         book
         >>> wn.morphy('book', wn.ADJ)
         """
-
-        if pos is None:
-            posl = POS_LIST
-        else:
-            posl = [pos]
-        analyses = []
-        for pos in posl:
+        for pos in [pos] if pos else POS_LIST:
             analyses = self._morphy(form, pos, check_exceptions)
             if analyses:
+                # Stop (don't try more parts of speech):
                 return analyses[0]
-            else:
-                continue
-        return None
 
     MORPHOLOGICAL_SUBSTITUTIONS = {
         NOUN: [
