@@ -12,6 +12,7 @@ from abc import ABCMeta, abstractmethod
 from bisect import bisect
 from itertools import accumulate
 
+from nltk import FreqDist
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
@@ -182,6 +183,41 @@ class LanguageModel(metaclass=ABCMeta):
         """
         return pow(2.0, self.entropy(text_ngrams))
 
+    def entropy_extended(self, text_ngrams, text_fdist, length_normalisation=True, rel_freq_weighting=False):
+        """Calculate cross-entropy of model for given evaluation text.
+
+        This implementation is based on the standard Shannon entropy,
+        extended with the possibility to normalise the entropy by sentence length,
+        and/or weight the output by the relative frequency of the ngram.
+        In case of <UNK> tokens, weight with the minimum relative frequency in the dataset.
+
+        :param Iterable(tuple(str)) text_ngrams: A sequence of ngram tuples.
+        :param FreqDist text_fdist:
+        :param bool length_normalisation:
+        :param bool rel_freq_weighting:
+        :rtype: float
+
+        """
+        probabilities = [self.score(ngram[-1], ngram[:-1]) for ngram in text_ngrams]
+        # TODO add function to check for UNKs
+        if rel_freq_weighting:
+        # TODO add weighting according to frequency distribution
+        
+        entropy = -1 * sum([prob * log_base2(prob) for prob in probabilities])
+        
+        if length_normalisation:
+            entropy /= len(probabilities)
+            
+        return entropy_extended
+
+    def perplexity_extended(self, text_ngrams, text_fdist, normalised=True, rel_freq_weighted=False):
+        """Calculates the perplexity of the given text based on the extended version of the entropy method.
+
+        This is simply 2 ** cross-entropy for the text, so the arguments are the same.
+
+        """
+        return pow(2.0, self.entropy_extended(text_ngrams, text_fdist, normalised, rel_freq_weighted))
+        
     def generate(self, num_words=1, text_seed=None, random_seed=None):
         """Generate words from the model.
 
