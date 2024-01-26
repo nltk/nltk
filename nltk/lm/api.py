@@ -12,7 +12,6 @@ from abc import ABCMeta, abstractmethod
 from bisect import bisect
 from itertools import accumulate
 
-from nltk import FreqDist
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
@@ -161,15 +160,6 @@ class LanguageModel(metaclass=ABCMeta):
             self.counts[len(context) + 1][context] if context else self.counts.unigrams
         )
 
-    def contains_UNKs(self, ngram):
-        """Helper method to indicate whether an ngram contains an UNK token or not.
-
-        :param tuple(str) ngram: ngram tuples
-        :rtype: bool
-        
-        """
-        return any([self.counts.unigrams[ng] for ng in ngram])
-
     
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
@@ -193,61 +183,6 @@ class LanguageModel(metaclass=ABCMeta):
         """
         return pow(2.0, self.entropy(text_ngrams))
 
-    def entropy_extended(self, text_ngrams, length_normalisation=True, rel_freq_weighting=False):
-        """Calculate cross-entropy of model for given evaluation text.
-
-        This implementation is based on the standard Shannon entropy,
-        extended with the possibility to normalise the entropy by sentence length,
-        and/or weight the output by the relative frequency of the ngram.
-        In case of <UNK> tokens, weight with the minimum relative frequency in the dataset.
-
-        :param Iterable(tuple(str)) text_ngrams: A sequence of ngram tuples.
-        :param bool length_normalisation: A boolean to indicate whether you want to
-            normalise by sequence length.
-        :param bool rel_freq_weighting: A boolean to indicate whether you want to
-            weight probabilities by ngram relative frequency.
-        :rtype: float
-
-        """
-        
-        if rel_freq_weighting:
-            fdist = FreqDist()
-        
-        probabilities = []    
-        for ngram in text_ngrams:
-            probabilities.append(self.score(ngram[-1], ngram[:-1]))
-            if rel_freq_weighting:
-                fdist[' '.join(ngram)] += 1
-        
-        if rel_freq_weighting:
-            total_freq_fdist = sum(fdist.values())
-            rel_fdist = {key: fdist[key]/total_freq_fdist for key in fdist.keys()}
-            min_freq_rel_fdist = min(rel_fdist.values())
-            
-            weighted_probabilities = []
-            for prob, ngram in zip(probabilities, text_ngrams):
-                if contains_UNK(ngram):
-                    prob *= min_freq_rel_fdist
-                else:
-                    prob *= rel_fdist[ngram]
-                weighted_probabilities.append(prob)
-            probabilities = weighted_probabilities
-        
-        entropy = -1 * sum([prob * log_base2(prob) for prob in probabilities])
-        
-        if length_normalisation:
-            entropy /= len(probabilities)
-            
-        return entropy_extended
-
-    def perplexity_extended(self, text_ngrams, length_normalisation=True, rel_freq_weighting=False):
-        """Calculates the perplexity of the given text based on the extended version of the entropy method.
-
-        This is simply 2 ** cross-entropy for the text, so the arguments are the same.
-
-        """
-        return pow(2.0, self.entropy_extended(text_ngrams, length_normalisation, rel_freq_weighting))
-        
     def generate(self, num_words=1, text_seed=None, random_seed=None):
         """Generate words from the model.
 
