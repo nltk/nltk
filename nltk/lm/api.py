@@ -159,8 +159,7 @@ class LanguageModel(metaclass=ABCMeta):
         return (
             self.counts[len(context) + 1][context] if context else self.counts.unigrams
         )
-
-    
+ 
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
 
