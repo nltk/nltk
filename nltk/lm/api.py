@@ -161,6 +161,12 @@ class LanguageModel(metaclass=ABCMeta):
             self.counts[len(context) + 1][context] if context else self.counts.unigrams
         )
 
+    def contains_UNKs(self, ngram):
+        """Helper method to indicate whether an ngram contains an UNK token or not.
+        """
+        return any([self.counts.unigrams[ng] for ng in ngram])
+
+    
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
 
@@ -183,7 +189,7 @@ class LanguageModel(metaclass=ABCMeta):
         """
         return pow(2.0, self.entropy(text_ngrams))
 
-    def entropy_extended(self, text_ngrams, text_fdist, length_normalisation=True, rel_freq_weighting=False):
+    def entropy_extended(self, text_ngrams, length_normalisation=True, rel_freq_weighting=False):
         """Calculate cross-entropy of model for given evaluation text.
 
         This implementation is based on the standard Shannon entropy,
@@ -192,16 +198,34 @@ class LanguageModel(metaclass=ABCMeta):
         In case of <UNK> tokens, weight with the minimum relative frequency in the dataset.
 
         :param Iterable(tuple(str)) text_ngrams: A sequence of ngram tuples.
-        :param FreqDist text_fdist:
         :param bool length_normalisation:
         :param bool rel_freq_weighting:
         :rtype: float
 
         """
-        probabilities = [self.score(ngram[-1], ngram[:-1]) for ngram in text_ngrams]
-        # TODO add function to check for UNKs
+        
         if rel_freq_weighting:
-        # TODO add weighting according to frequency distribution
+            fdist = FreqDist()
+        
+        probabilities = []    
+        for ngram in text_ngrams:
+            probabilities.append(self.score(ngram[-1], ngram[:-1]))
+            if rel_freq_weighting:
+                fdist[' '.join(ngram)] += 1
+        
+        if rel_freq_weighting:
+            total_freq_fdist = sum(fdist.values())
+            rel_fdist = {key: fdist[key]/total_freq_fdist for key in fdist.keys()}
+            min_freq_rel_fdist = min(rel_fdist.values())
+            
+            weighted_probabilities = []
+            for prob, ngram in zip(probabilities, text_ngrams):
+                if contains_UNK(ngram):
+                    prob *= min_freq_rel_fdist
+                else:
+                    prob *= rel_fdist[ngram]
+                weighted_probabilities.append(prob)
+            probabilities = weighted_probabilities
         
         entropy = -1 * sum([prob * log_base2(prob) for prob in probabilities])
         
