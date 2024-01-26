@@ -163,6 +163,10 @@ class LanguageModel(metaclass=ABCMeta):
 
     def contains_UNKs(self, ngram):
         """Helper method to indicate whether an ngram contains an UNK token or not.
+
+        :param tuple(str) ngram: ngram tuples
+        :rtype: bool
+        
         """
         return any([self.counts.unigrams[ng] for ng in ngram])
 
@@ -198,8 +202,10 @@ class LanguageModel(metaclass=ABCMeta):
         In case of <UNK> tokens, weight with the minimum relative frequency in the dataset.
 
         :param Iterable(tuple(str)) text_ngrams: A sequence of ngram tuples.
-        :param bool length_normalisation:
-        :param bool rel_freq_weighting:
+        :param bool length_normalisation: A boolean to indicate whether you want to
+            normalise by sequence length.
+        :param bool rel_freq_weighting: A boolean to indicate whether you want to
+            weight probabilities by ngram relative frequency.
         :rtype: float
 
         """
@@ -234,13 +240,13 @@ class LanguageModel(metaclass=ABCMeta):
             
         return entropy_extended
 
-    def perplexity_extended(self, text_ngrams, text_fdist, normalised=True, rel_freq_weighted=False):
+    def perplexity_extended(self, text_ngrams, length_normalisation=True, rel_freq_weighting=False):
         """Calculates the perplexity of the given text based on the extended version of the entropy method.
 
         This is simply 2 ** cross-entropy for the text, so the arguments are the same.
 
         """
-        return pow(2.0, self.entropy_extended(text_ngrams, text_fdist, normalised, rel_freq_weighted))
+        return pow(2.0, self.entropy_extended(text_ngrams, length_normalisation, rel_freq_weighting))
         
     def generate(self, num_words=1, text_seed=None, random_seed=None):
         """Generate words from the model.
