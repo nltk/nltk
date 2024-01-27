@@ -326,7 +326,7 @@ class Lemma(_WordNetObject):
     def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         if (self._name, relation_symbol) not in self._synset._lemma_pointers:
-            return []
+            return self._synset._related(relation_symbol)
         return [
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index in self._synset._lemma_pointers[
