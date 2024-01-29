@@ -1265,9 +1265,10 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         """
         if not isinstance(train_text, str):
             return train_text
-        return PunktTrainer(
+        self._params = PunktTrainer(
             train_text, lang_vars=self._lang_vars, token_cls=self._Token
         ).get_params()
+        return self._params
 
     # ////////////////////////////////////////////////////////////
     # { Tokenization
