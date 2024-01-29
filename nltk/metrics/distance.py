@@ -123,20 +123,18 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     return lev[len1][len2]
 
 
-def _edit_dist_backtrace(lev):
+def _edit_dist_backtrace(lev, substitution_cost=1):
     i, j = len(lev) - 1, len(lev[0]) - 1
     alignment = [(i, j)]
 
+    if substitution_cost < 2:
+        directions = lambda i, j: [(i - 1, j - 1), (i - 1, j), (i, j - 1)]
+    else:
+        directions = lambda i, j: [(i - 1, j), (i, j - 1)]
     while (i, j) != (0, 0):
-        directions = [
-            (i - 1, j - 1),  # substitution
-            (i - 1, j),  # skip s1
-            (i, j - 1),  # skip s2
-        ]
-
         direction_costs = (
             (lev[i][j] if (i >= 0 and j >= 0) else float("inf"), (i, j))
-            for i, j in directions
+            for i, j in directions(i, j)
         )
         _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
 
@@ -194,7 +192,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
             )
 
     # backtrace to find alignment
-    alignment = _edit_dist_backtrace(lev)
+    alignment = _edit_dist_backtrace(lev, substitution_cost)
     return alignment
 
 
