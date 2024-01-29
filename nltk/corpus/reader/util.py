@@ -517,7 +517,7 @@ class PickleCorpusView(StreamBackedCorpusView):
             whenever this object gets garbage-collected.
         """
         self._delete_on_gc = delete_on_gc
-        StreamBackedCorpusView.__init__(self, fileid)
+        StreamBackedCorpusView.__init__(self, fileid, encoding=None)
 
     def read_block(self, stream):
         result = []
