@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2023 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
+#         Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -26,7 +27,8 @@ def generate(grammar, start=None, depth=None, n=None):
     if not start:
         start = grammar.start()
     if depth is None:
-        depth = sys.maxsize
+        # Safe default, assuming the grammar may be recursive:
+        depth = (sys.getrecursionlimit() // 3) - 3
 
     iter = _generate_all(grammar, [start], depth)
 
@@ -45,7 +47,8 @@ def _generate_all(grammar, items, depth):
         except RecursionError as error:
             # Helpful error message while still showing the recursion stack.
             raise RuntimeError(
-                "The grammar has rule(s) that yield infinite recursion!"
+                "The grammar has rule(s) that yield infinite recursion!\n\
+Eventually use a lower 'depth', or a higher 'sys.setrecursionlimit()'."
             ) from error
     else:
         yield []
