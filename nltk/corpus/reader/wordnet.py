@@ -324,17 +324,15 @@ class Lemma(_WordNetObject):
         return "%s('%s.%s')" % tup
 
     def _related(self, relation_symbol):
-        """Returns the lemma's relations, plus its' synset's relations.
-        Note that with the in_topic_domain() relation (-c), a few lemmas have
+        """Returns the lemma's relation targets for the given relation_symbol.
+        Includes both the lemma ("lexical") relations and the synset ("semantic") relations.
+
+        The in_topic_domain() relation (-c) is hybrid, becuse a few lemmas have
         both lemma and synset targets. For ex:
 
         >>> from nltk.corpus import wordnet as wn
-        >>> insect = wn.lemmas("insect")[0]
-        >>> print(insect)
-        Lemma('insect.n.01.insect')
-
-        >>> print(f"In topic domains: {insect.in_topic_domains()}")
-        In topic domains: [Lemma('chirpy.a.01.chirpy'), Synset('holometabolism.n.01')]
+        >>> print(wn.lemmas("insect")[0].in_topic_domains())
+        [Lemma('chirpy.a.01.chirpy'), Synset('holometabolism.n.01')]
         """
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         ssrels = self._synset._related(relation_symbol)
