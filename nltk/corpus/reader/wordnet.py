@@ -324,15 +324,30 @@ class Lemma(_WordNetObject):
         return "%s('%s.%s')" % tup
 
     def _related(self, relation_symbol):
+        """Returns the lemma's relation targets for the given relation_symbol.
+        Includes both the lemma ("lexical") relations and the synset ("semantic") relations.
+
+        The in_topic_domain() relation (-c) is hybrid, because a few lemmas have
+        both lemma and synset targets. For ex:
+
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(wn.lemmas("insect")[0].in_topic_domains())
+        [Lemma('chirpy.a.01.chirpy'), Synset('holometabolism.n.01')]
+
+        :param relation_symbol: pointer symbol denoting a WordNet relation
+        :type relation_symbol: string
+        :return: list of target lemmas and/or synsets
+        """
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
+        ssrels = self._synset._related(relation_symbol)
         if (self._name, relation_symbol) not in self._synset._lemma_pointers:
-            return []
+            return ssrels
         return [
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index in self._synset._lemma_pointers[
                 self._name, relation_symbol
             ]
-        ]
+        ] + ssrels  # a few domain relations concern both lemmas and synsets
 
     def count(self):
         """Return the frequency count for this Lemma"""
