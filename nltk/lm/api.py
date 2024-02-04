@@ -163,6 +163,9 @@ class LanguageModel(metaclass=ABCMeta):
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
 
+        This implementation is based on the Shannon-McMillan-Breiman theorem,
+        as used and referenced by Dan Jurafsky and Jordan Boyd-Graber.
+
         :param Iterable(tuple(str)) text_ngrams: A sequence of ngram tuples.
         :rtype: float
 
