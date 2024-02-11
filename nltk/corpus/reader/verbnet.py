@@ -57,10 +57,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
         # runs 2-30 times faster.
         self._quick_index()
 
-    _LONGID_RE = re.compile(r"([^\-\.]*)-([\d+.\-]+)$")
+    _LONGID_RE = re.compile(r"[a-zA-Z]*-[\d]*.[\d]*|[a-zA-Z]*-[\d]*-[\d]*")
     """Regular expression that matches (and decomposes) longids"""
 
-    _SHORTID_RE = re.compile(r"[\d+.\-]+$")
+    _SHORTID_RE = re.compile(r"[\d]*.[\d]*|[\d]*-[\d]*")
     """Regular expression that matches shortids"""
 
     _INDEX_RE = re.compile(
@@ -315,8 +315,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def longid(self, shortid):
         """Returns longid of a VerbNet class
 
-        Given a short VerbNet class identifier (eg '37.10'), map it
-        to a long id (eg 'confess-37.10').  If ``shortid`` is already a
+        Given a short VerbNet class identifier (eg '37.10', '37-10'), map it
+        to a long id (eg 'confess-37.10', 'confess-37-10').  If ``shortid`` is already a
         long id, then return it as-is"""
         if self._LONGID_RE.match(shortid):
             return shortid  # it's already a longid.
