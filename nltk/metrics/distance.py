@@ -22,6 +22,8 @@ As metrics, they must satisfy the following three requirements:
 import operator
 import warnings
 
+import stringzilla as sz
+
 
 def _edit_dist_init(len1, len2):
     lev = []
@@ -85,6 +87,12 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :type transpositions: bool
     :rtype: int
     """
+
+    # StringZilla currently doesn't support transpositions and cost-parameterized substitutions.
+    # It's C implementation is 10x faster than a pure Python implementation.
+    if not transpositions and substitution_cost == 1:
+        return sz.edit_distance_unicode(s1, s2)
+
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
