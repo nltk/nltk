@@ -141,7 +141,8 @@ the desired feature.
 
 You can use `pytest` to run your tests, no matter which type of test it is:
 
-```
+```bash
+pip install -r requirements-test.txt
 cd nltk/test
 pytest util.doctest  # doctest
 pytest unit/translate/test_nist.py  # unittest
@@ -193,7 +194,7 @@ Then run `tox -e py312`.
 
 For example, using `pipenv`:
 
-```
+```bash
 git clone https://github.com/nltk/nltk.git
 cd nltk
 pipenv install -r pip-req.txt
