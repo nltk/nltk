@@ -117,6 +117,7 @@ natural language processing.  NLTK requires Python 3.8, 3.9, 3.10, 3.11 or 3.12.
         "joblib",
         "regex>=2021.8.3",
         "tqdm",
+        "stringzilla>=3.1.2",
     ],
     extras_require=extras_require,
     packages=find_packages(),
