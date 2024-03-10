@@ -39,6 +39,30 @@ tree object to one of several standard tree encodings:
             [.dp [.d the ] [.np dog ] ]
             [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
 
+    >>> print(tree.pformat_latex_forest())
+    \begin{forest}
+      [s
+        [dp [d [the] ] [np [dog] ] ]
+        [vp [v [chased] ] [dp [d [the] ] [np [cat] ] ] ] ]
+    \end{forest}
+
+More flexibility in output is available via `pformat` method:
+
+    >>> print(tree.pformat(indent=2, nodesep="=", parens=("[[","]]"), quotes=True))
+    [[s=
+        [[dp= [[d= 'the']] [[np= 'dog']]]]
+        [[vp= [[v= 'chased']] [[dp= [[d= 'the']] [[np= 'cat']]]]]]]]
+
+    >>> print(tree.pformat(indent=3, nodesep="=", parens="{}", quotes="[]"))
+    {s=
+        {dp= {d= [the]} {np= [dog]}}
+        {vp= {v= [chased]} {dp= {d= [the]} {np= [cat]}}}}
+
+The default output format uses parentheses, no quoting, and no separator characters:
+
+    >>> print(tree.pformat(quotes=False))
+    (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
+
 There is also a fancy ASCII art representation:
 
     >>> tree.pretty_print()
