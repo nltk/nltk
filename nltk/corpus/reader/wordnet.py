@@ -131,77 +131,77 @@ class WordNetError(Exception):
 class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
-    def hypernyms(self):
-        return self._related("@")
+    def hypernyms(self, sort=True, force_list=True):
+        return self._related("@", sort=sort, force_list=force_list)
 
-    def _hypernyms(self):
-        return self._related("@")
+    def _hypernyms(self, sort=True, force_list=True):
+        return self._related("@", sort=sort, force_list=force_list)
 
-    def instance_hypernyms(self):
-        return self._related("@i")
+    def instance_hypernyms(self, sort=True, force_list=True):
+        return self._related("@i", sort=sort, force_list=force_list)
 
-    def _instance_hypernyms(self):
-        return self._related("@i")
+    def _instance_hypernyms(self, sort=True, force_list=True):
+        return self._related("@i", sort=sort, force_list=force_list)
 
-    def hyponyms(self):
-        return self._related("~")
+    def hyponyms(self, sort=True, force_list=True):
+        return self._related("~", sort=sort, force_list=force_list)
 
-    def instance_hyponyms(self):
-        return self._related("~i")
+    def instance_hyponyms(self, sort=True, force_list=True):
+        return self._related("~i", sort=sort, force_list=force_list)
 
-    def member_holonyms(self):
-        return self._related("#m")
+    def member_holonyms(self, sort=True, force_list=True):
+        return self._related("#m", sort=sort, force_list=force_list)
 
-    def substance_holonyms(self):
-        return self._related("#s")
+    def substance_holonyms(self, sort=True, force_list=True):
+        return self._related("#s", sort=sort, force_list=force_list)
 
-    def part_holonyms(self):
-        return self._related("#p")
+    def part_holonyms(self, sort=True, force_list=True):
+        return self._related("#p", sort=sort, force_list=force_list)
 
-    def member_meronyms(self):
-        return self._related("%m")
+    def member_meronyms(self, sort=True, force_list=True):
+        return self._related("%m", sort=sort, force_list=force_list)
 
-    def substance_meronyms(self):
-        return self._related("%s")
+    def substance_meronyms(self, sort=True, force_list=True):
+        return self._related("%s", sort=sort, force_list=force_list)
 
-    def part_meronyms(self):
-        return self._related("%p")
+    def part_meronyms(self, sort=True, force_list=True):
+        return self._related("%p", sort=sort, force_list=force_list)
 
-    def topic_domains(self):
-        return self._related(";c")
+    def topic_domains(self, sort=True, force_list=True):
+        return self._related(";c", sort=sort, force_list=force_list)
 
-    def in_topic_domains(self):
-        return self._related("-c")
+    def in_topic_domains(self, sort=True, force_list=True):
+        return self._related("-c", sort=sort, force_list=force_list)
 
-    def region_domains(self):
-        return self._related(";r")
+    def region_domains(self, sort=True, force_list=True):
+        return self._related(";r", sort=sort, force_list=force_list)
 
-    def in_region_domains(self):
-        return self._related("-r")
+    def in_region_domains(self, sort=True, force_list=True):
+        return self._related("-r", sort=sort, force_list=force_list)
 
-    def usage_domains(self):
-        return self._related(";u")
+    def usage_domains(self, sort=True, force_list=True):
+        return self._related(";u", sort=sort, force_list=force_list)
 
-    def in_usage_domains(self):
-        return self._related("-u")
+    def in_usage_domains(self, sort=True, force_list=True):
+        return self._related("-u", sort=sort, force_list=force_list)
 
-    def attributes(self):
-        return self._related("=")
+    def attributes(self, sort=True, force_list=True):
+        return self._related("=", sort=sort, force_list=force_list)
 
-    def entailments(self):
-        return self._related("*")
+    def entailments(self, sort=True, force_list=True):
+        return self._related("*", sort=sort, force_list=force_list)
 
-    def causes(self):
-        return self._related(">")
+    def causes(self, sort=True, force_list=True):
+        return self._related(">", sort=sort, force_list=force_list)
 
-    def also_sees(self):
-        return self._related("^")
+    def also_sees(self, sort=True, force_list=True):
+        return self._related("^", sort=sort, force_list=force_list)
 
-    def verb_groups(self):
-        return self._related("$")
+    def verb_groups(self, sort=True, force_list=True):
+        return self._related("$", sort=sort, force_list=force_list)
 
-    def similar_tos(self):
-        return self._related("&")
+    def similar_tos(self, sort=True, force_list=True):
+        return self._related("&", sort=sort, force_list=force_list)
 
     def __hash__(self):
         return hash(self._name)
@@ -323,29 +323,34 @@ class Lemma(_WordNetObject):
         tup = type(self).__name__, self._synset._name, self._name
         return "%s('%s.%s')" % tup
 
-    def _related(self, relation_symbol):
+    def _related(self, relation_symbol, sort=True, force_list=True):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         if (self._name, relation_symbol) not in self._synset._lemma_pointers:
             return []
-        return [
+        r = (
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index in self._synset._lemma_pointers[
                 self._name, relation_symbol
             ]
-        ]
+        )
+        if sort:
+            r = sorted(r)
+        elif force_list:
+            r = list(r)
+        return r
 
     def count(self):
         """Return the frequency count for this Lemma"""
         return self._wordnet_corpus_reader.lemma_count(self)
 
-    def antonyms(self):
-        return self._related("!")
+    def antonyms(self, sort=True, force_list=True):
+        return self._related("!", sort=sort, force_list=force_list)
 
-    def derivationally_related_forms(self):
-        return self._related("+")
+    def derivationally_related_forms(self, sort=True, force_list=True):
+        return self._related("+", sort=sort, force_list=force_list)
 
-    def pertainyms(self):
-        return self._related("\\")
+    def pertainyms(self, sort=True, force_list=True):
+        return self._related("\\", sort=sort, force_list=force_list)
 
 
 class Synset(_WordNetObject):
@@ -1094,14 +1099,16 @@ class Synset(_WordNetObject):
     def __repr__(self):
         return f"{type(self).__name__}('{self._name}')"
 
-    def _related(self, relation_symbol, sort=True):
+    def _related(self, relation_symbol, sort=True, force_list=True):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         if relation_symbol not in self._pointers:
             return []
         pointer_tuples = self._pointers[relation_symbol]
-        r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
+        r = (get_synset(pos, offset) for pos, offset in pointer_tuples)
         if sort:
-            r.sort()
+            r = sorted(r)
+        elif force_list:
+            r = list(r)
         return r
 
 
