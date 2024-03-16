@@ -238,3 +238,12 @@ class WordnNetDemo(unittest.TestCase):
         self.assertTrue(hasattr(cat_lemmas, "__iter__"))
         self.assertTrue(hasattr(cat_lemmas, "__next__") or hasattr(eng_lemmas, "next"))
         self.assertTrue(cat_lemmas.__iter__() is cat_lemmas)
+
+    def test_disabled_sorting_and_list(self):
+        lemmas = S("water.n.1").substance_meronyms(sort=False, force_list=False)
+        self.assertTrue(not isinstance(lemmas, list))
+        self.assertTrue(hasattr(lemmas, "__iter__"))
+        self.assertEqual(
+            set(lemmas),
+            {S("hydrogen.n.01"), S("oxygen.n.01")},
+        )
