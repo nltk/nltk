@@ -23,7 +23,6 @@ _debug = 0
 
 
 class LazyModule:
-
     """Lazy module class.
 
     Lazy modules are imported into the given namespaces whenever a

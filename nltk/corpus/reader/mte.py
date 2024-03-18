@@ -1,6 +1,7 @@
 """
 A reader for corpora whose documents are in MTE format.
 """
+
 import os
 import re
 from functools import reduce

@@ -1,6 +1,7 @@
 """
 Test Aline algorithm for aligning phonetic sequences
 """
+
 from nltk.metrics import aline
 
 

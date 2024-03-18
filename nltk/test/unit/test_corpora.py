@@ -74,7 +74,8 @@ class TestSinicaTreebank(unittest.TestCase):
     def test_sents(self):
         first_3_sents = sinica_treebank.sents()[:3]
         self.assertEqual(
-            first_3_sents, [["一"], ["友情"], ["嘉珍", "和", "我", "住在", "同一條", "巷子"]]
+            first_3_sents,
+            [["一"], ["友情"], ["嘉珍", "和", "我", "住在", "同一條", "巷子"]],
         )
 
     def test_parsed_sents(self):

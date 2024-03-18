@@ -588,9 +588,11 @@ class SmoothingFunction:
         Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
         """
         return [
-            (p_i.numerator + self.epsilon) / p_i.denominator
-            if p_i.numerator == 0
-            else p_i
+            (
+                (p_i.numerator + self.epsilon) / p_i.denominator
+                if p_i.numerator == 0
+                else p_i
+            )
             for p_i in p_n
         ]
 
@@ -602,9 +604,11 @@ class SmoothingFunction:
         In COLING 2004.
         """
         return [
-            Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
-            if i != 0
-            else p_n[0]
+            (
+                Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
+                if i != 0
+                else p_n[0]
+            )
             for i in range(len(p_n))
         ]
 

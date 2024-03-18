@@ -19,7 +19,6 @@ from nltk.tree import ParentedTree
 
 
 class TestSequenceFunctions(unittest.TestCase):
-
     """
     Class containing unit tests for nltk.tgrep.
     """

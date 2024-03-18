@@ -425,9 +425,11 @@ class PorterStemmer(StemmerI):
                 (
                     "y",
                     "i",
-                    nltk_condition
-                    if self.mode == self.NLTK_EXTENSIONS
-                    else original_condition,
+                    (
+                        nltk_condition
+                        if self.mode == self.NLTK_EXTENSIONS
+                        else original_condition
+                    ),
                 )
             ],
         )
