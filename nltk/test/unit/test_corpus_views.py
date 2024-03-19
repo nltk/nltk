@@ -1,6 +1,7 @@
 """
 Corpus View Regression Tests
 """
+
 import unittest
 
 import nltk.data

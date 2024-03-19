@@ -4,7 +4,6 @@ from nltk.metrics.agreement import AnnotationTask
 
 
 class TestDisagreement(unittest.TestCase):
-
     """
     Class containing unit tests for nltk.metrics.agreement.Disagreement.
     """

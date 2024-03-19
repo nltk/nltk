@@ -338,7 +338,6 @@ class StanfordParser(GenericStanfordParser):
 
 
 class StanfordDependencyParser(GenericStanfordParser):
-
     """
     >>> dep_parser=StanfordDependencyParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"

@@ -32,7 +32,6 @@ from nltk.stem.util import prefix_replace, suffix_replace
 
 
 class SnowballStemmer(StemmerI):
-
     """
     Snowball Stemmer
 
@@ -114,7 +113,6 @@ class SnowballStemmer(StemmerI):
 
 
 class _LanguageSpecificStemmer(StemmerI):
-
     """
     This helper subclass offers the possibility
     to invoke a specific stemmer directly.
@@ -172,7 +170,6 @@ class PorterStemmer(_LanguageSpecificStemmer, porter.PorterStemmer):
 
 
 class _ScandinavianStemmer(_LanguageSpecificStemmer):
-
     """
     This subclass encapsulates a method for defining the string region R1.
     It is used by the Danish, Norwegian, and Swedish stemmer.
@@ -215,7 +212,6 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
 
 
 class _StandardStemmer(_LanguageSpecificStemmer):
-
     """
     This subclass encapsulates two methods for defining the standard versions
     of the string regions R1, R2, and RV.
@@ -910,7 +906,6 @@ class ArabicStemmer(_StandardStemmer):
 
 
 class DanishStemmer(_ScandinavianStemmer):
-
     """
     The Danish Snowball stemmer.
 
@@ -1072,7 +1067,6 @@ class DanishStemmer(_ScandinavianStemmer):
 
 
 class DutchStemmer(_StandardStemmer):
-
     """
     The Dutch Snowball stemmer.
 
@@ -1264,7 +1258,6 @@ class DutchStemmer(_StandardStemmer):
 
 
 class EnglishStemmer(_StandardStemmer):
-
     """
     The English Snowball stemmer.
 
@@ -1781,7 +1774,6 @@ class EnglishStemmer(_StandardStemmer):
 
 
 class FinnishStemmer(_StandardStemmer):
-
     """
     The Finnish Snowball stemmer.
 
@@ -2124,7 +2116,6 @@ class FinnishStemmer(_StandardStemmer):
 
 
 class FrenchStemmer(_StandardStemmer):
-
     """
     The French Snowball stemmer.
 
@@ -2618,7 +2609,6 @@ class FrenchStemmer(_StandardStemmer):
 
 
 class GermanStemmer(_StandardStemmer):
-
     """
     The German Snowball stemmer.
 
@@ -2774,7 +2764,6 @@ class GermanStemmer(_StandardStemmer):
 
 
 class HungarianStemmer(_LanguageSpecificStemmer):
-
     """
     The Hungarian Snowball stemmer.
 
@@ -3187,7 +3176,6 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
 
 class ItalianStemmer(_StandardStemmer):
-
     """
     The Italian Snowball stemmer.
 
@@ -3563,7 +3551,6 @@ class ItalianStemmer(_StandardStemmer):
 
 
 class NorwegianStemmer(_ScandinavianStemmer):
-
     """
     The Norwegian Snowball stemmer.
 
@@ -3685,7 +3672,6 @@ class NorwegianStemmer(_ScandinavianStemmer):
 
 
 class PortugueseStemmer(_StandardStemmer):
-
     """
     The Portuguese Snowball stemmer.
 
@@ -4031,7 +4017,6 @@ class PortugueseStemmer(_StandardStemmer):
 
 
 class RomanianStemmer(_StandardStemmer):
-
     """
     The Romanian Snowball stemmer.
 
@@ -4513,7 +4498,6 @@ class RomanianStemmer(_StandardStemmer):
 
 
 class RussianStemmer(_LanguageSpecificStemmer):
-
     """
     The Russian Snowball stemmer.
 
@@ -5354,7 +5338,6 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
 
 class SpanishStemmer(_StandardStemmer):
-
     """
     The Spanish Snowball stemmer.
 
@@ -5752,7 +5735,6 @@ class SpanishStemmer(_StandardStemmer):
 
 
 class SwedishStemmer(_ScandinavianStemmer):
-
     """
     The Swedish Snowball stemmer.
 

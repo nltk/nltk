@@ -2,6 +2,7 @@
 Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
 """
+
 from typing import List, Tuple
 
 import pytest
@@ -324,7 +325,14 @@ class TestTokenize:
         seg.default_config("zh")
         sent = "这是斯坦福中文分词器测试"
         segmented_sent = seg.segment(sent.split())
-        assert segmented_sent.split() == ["这", "是", "斯坦福", "中文", "分词器", "测试"]
+        assert segmented_sent.split() == [
+            "这",
+            "是",
+            "斯坦福",
+            "中文",
+            "分词器",
+            "测试",
+        ]
 
     def test_phone_tokenizer(self):
         """
@@ -808,7 +816,7 @@ class TestTokenize:
             # with one split and hence one decision.
             # Test debug_decisions on a text with one sentences,
             # which is not split.
-            ("This is just a normal sentence, just like any other.", 1, 0)
+            ("This is just a normal sentence, just like any other.", 1, 0),
             # Hence just 1
         ],
     )

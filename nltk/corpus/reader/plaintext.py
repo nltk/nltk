@@ -170,7 +170,6 @@ class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReade
 
 
 class EuroparlCorpusReader(PlaintextCorpusReader):
-
     """
     Reader for Europarl corpora that consist of plaintext documents.
     Documents are divided into chapters instead of paragraphs as

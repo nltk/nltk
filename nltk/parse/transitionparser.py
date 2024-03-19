@@ -288,7 +288,6 @@ class Transition:
 
 
 class TransitionParser(ParserI):
-
     """
     Class for transition based parser. Implement 2 algorithms which are "arc-standard" and "arc-eager"
     """

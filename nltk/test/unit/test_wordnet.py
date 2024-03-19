@@ -2,6 +2,7 @@
 Unit tests for nltk.corpus.wordnet
 See also nltk/test/wordnet.doctest
 """
+
 import unittest
 
 from nltk.corpus import wordnet as wn

@@ -2,7 +2,6 @@
 Tests for nltk.pos_tag
 """
 
-
 import unittest
 
 from nltk import pos_tag, word_tokenize

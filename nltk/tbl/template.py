@@ -282,9 +282,11 @@ class Template(BrillTemplateI):
             combrange = (
                 (1, len(xs) + 1)
                 if k is None
-                else (k, k + 1)  # n over 1 .. n over n (all non-empty combinations)
-                if isinstance(k, int)
-                else (k[0], k[1] + 1)  # n over k (only
+                else (
+                    (k, k + 1)  # n over 1 .. n over n (all non-empty combinations)
+                    if isinstance(k, int)
+                    else (k[0], k[1] + 1)
+                )  # n over k (only
             )  # n over k1, n over k1+1... n over k2
             return it.chain.from_iterable(
                 it.combinations(xs, r) for r in range(*combrange)
