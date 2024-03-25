@@ -257,7 +257,13 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 
 def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
-    """Yield the edges of a graph in breadth-first order,
+    """
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+    :param maxdepth: to limit the search depth
+    :param verbose: to print warnings when cycles are discarded
+
+    Yield the edges of a graph in breadth-first order,
     discarding eventual cycles.
     The first argument should be the start node;
     children should be a function taking as argument a graph node
@@ -295,13 +301,13 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
 def edges2dot(edges, shapes=None, attr=None):
     """
     :param edges: the set (or list) of edges of a directed graph.
-
-    :return dot_string: a representation of 'edges' as a string in the DOT
-        graph language, which can be converted to an image by the 'dot' program
-        from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
-
     :param shapes: dictionary of strings that trigger a specified shape.
     :param attr: dictionary with global graph attributes
+    :return: a representation of 'edges' as a string in the DOT graph language.
+
+    Returns dot_string: a representation of 'edges' as a string in the DOT
+    graph language, which can be converted to an image by the 'dot' program
+    from the Graphviz package, or nltk.parse.dependencygraph.dot2img(dot_string).
 
     >>> import nltk
     >>> from nltk.util import edges2dot
@@ -337,8 +343,12 @@ def edges2dot(edges, shapes=None, attr=None):
 
 def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=None):
     """
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+    :param shapes: dictionary of strings that trigger a specified shape.
+    :param attr: dictionary with global graph attributes
 
-    Build a Minimum Spanning Tree (MST) of an unweighted graph,
+        Build a Minimum Spanning Tree (MST) of an unweighted graph,
     by traversing the nodes of a tree in breadth-first order,
     discarding eventual cycles.
 
@@ -377,8 +387,16 @@ def unweighted_minimum_spanning_digraph(tree, children=iter, shapes=None, attr=N
 ##########################################################################
 
 
-def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
-    """Traverse the nodes of a tree in breadth-first order,
+def acyclic_breadth_first(tree, children=iter, maxdepth=-1, verbose=False):
+    """
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+    :param maxdepth: to limit the search depth
+    :param verbose: to print warnings when cycles are discarded
+    :return: the tree in breadth-first order
+
+        Adapted from breadth_first() above, to discard cycles.
+    Traverse the nodes of a tree in breadth-first order,
     discarding eventual cycles.
 
     The first argument should be the tree root;
@@ -389,6 +407,8 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
     queue = deque([(tree, 0)])
     while queue:
         node, depth = queue.popleft()
+        if node in traversed:
+            continue
         yield node
         traversed.add(node)
         if depth != maxdepth:
@@ -396,7 +416,7 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
                 for child in children(node):
                     if child not in traversed:
                         queue.append((child, depth + 1))
-                    else:
+                    elif verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
                                 child, depth + 1
@@ -407,12 +427,22 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1):
                 pass
 
 
-def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=None):
-    """Traverse the nodes of a tree in depth-first order,
+def acyclic_depth_first(
+    tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False
+):
+    """
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+    :param depth: the maximum depth of the search
+    :param cut_mark: the mark to add when cycles are truncated
+    :param traversed: the set of traversed nodes
+    :param verbose: to print warnings when cycles are discarded
+    :return: the tree in depth-first order
+
+        Traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within any branch,
     adding cut_mark (when specified) if cycles were truncated.
-
-    The first argument should be the tree root;
+       The first argument should be the tree root;
     children should be a function taking as argument a tree node
     and returning an iterator of the node's children.
 
@@ -454,12 +484,13 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
                         )
                     ]
                 else:
-                    warnings.warn(
-                        "Discarded redundant search for {} at depth {}".format(
-                            child, depth - 1
-                        ),
-                        stacklevel=3,
-                    )
+                    if verbose:
+                        warnings.warn(
+                            "Discarded redundant search for {} at depth {}".format(
+                                child, depth - 1
+                            ),
+                            stacklevel=3,
+                        )
                     if cut_mark:
                         out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
@@ -470,9 +501,19 @@ def acyclic_depth_first(tree, children=iter, depth=-1, cut_mark=None, traversed=
 
 
 def acyclic_branches_depth_first(
-    tree, children=iter, depth=-1, cut_mark=None, traversed=None
+    tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False
 ):
-    """Traverse the nodes of a tree in depth-first order,
+    """
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+    :param depth: the maximum depth of the search
+    :param cut_mark: the mark to add when cycles are truncated
+    :param traversed: the set of traversed nodes
+    :param verbose: to print warnings when cycles are discarded
+    :return: the tree in depth-first order
+
+        Adapted from acyclic_depth_first() above, to
+    traverse the nodes of a tree in depth-first order,
     discarding eventual cycles within the same branch,
     but keep duplicate paths in different branches.
     Add cut_mark (when defined) if cycles were truncated.
@@ -527,12 +568,13 @@ def acyclic_branches_depth_first(
                         )
                     ]
                 else:
-                    warnings.warn(
-                        "Discarded redundant search for {} at depth {}".format(
-                            child, depth - 1
-                        ),
-                        stacklevel=3,
-                    )
+                    if verbose:
+                        warnings.warn(
+                            "Discarded redundant search for {} at depth {}".format(
+                                child, depth - 1
+                            ),
+                            stacklevel=3,
+                        )
                     if cut_mark:
                         out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
@@ -543,7 +585,11 @@ def acyclic_branches_depth_first(
 
 
 def acyclic_dic2tree(node, dic):
-    """Convert acyclic dictionary 'dic', where the keys are nodes, and the
+    """
+    :param node: the root node
+    :param dic: the dictionary of children
+
+    Convert acyclic dictionary 'dic', where the keys are nodes, and the
     values are lists of children, to output tree suitable for pprint(),
     starting at root 'node', with subtrees as nested lists."""
     return [node] + [acyclic_dic2tree(child, dic) for child in dic[node]]
@@ -551,7 +597,10 @@ def acyclic_dic2tree(node, dic):
 
 def unweighted_minimum_spanning_dict(tree, children=iter):
     """
-    Output a dictionary representing a Minimum Spanning Tree (MST)
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+
+            Output a dictionary representing a Minimum Spanning Tree (MST)
     of an unweighted graph, by traversing the nodes of a tree in
     breadth-first order, discarding eventual cycles.
 
@@ -593,7 +642,10 @@ def unweighted_minimum_spanning_dict(tree, children=iter):
 
 def unweighted_minimum_spanning_tree(tree, children=iter):
     """
-    Output a Minimum Spanning Tree (MST) of an unweighted graph,
+    :param tree: the tree root
+    :param children: a function taking as argument a tree node
+
+       Output a Minimum Spanning Tree (MST) of an unweighted graph,
     by traversing the nodes of a tree in breadth-first order,
     discarding eventual cycles.
 
