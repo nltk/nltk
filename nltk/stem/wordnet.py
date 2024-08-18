@@ -7,64 +7,71 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus import wordnet as wn
-
 
 class WordNetLemmatizer:
     """
     WordNet Lemmatizer
 
-    Provides 3 lemmatizer modes:
+    Provides 3 lemmatizer modes: _morphy(), morphy() and lemmatize().
 
-    1. _morphy() is an alias to WordNet's _morphy lemmatizer.
-    It returns a list of all lemmas found in WordNet.
-
-    >>> wnl = WordNetLemmatizer()
-    >>> print(wnl._morphy('us', 'n'))
-    ['us', 'u']
-
-    2. morphy() is a restrictive wrapper around _morphy().
-    It returns the first lemma found in WordNet,
-    or None if no lemma is found.
-
-    >>> print(wnl.morphy('us', 'n'))
-    us
-
-    >>> print(wnl.morphy('catss'))
-    None
-
-    3. lemmatize() is a permissive wrapper around _morphy().
+    lemmatize() is a permissive wrapper around _morphy().
     It returns the shortest lemma found in WordNet,
     or the input string unchanged if nothing is found.
 
-    >>> print(wnl.lemmatize('us', 'n'))
+    >>> from nltk.stem import WordNetLemmatizer as wnl
+    >>> print(wnl().lemmatize('us', 'n'))
     u
 
-    >>> print(wnl.lemmatize('Anythinggoeszxcv'))
+    >>> print(wnl().lemmatize('Anythinggoeszxcv'))
     Anythinggoeszxcv
 
     """
 
-    morphy = wn.morphy
+    def _morphy(self, form, pos, check_exceptions=True):
+        """
+        _morphy() is WordNet's _morphy lemmatizer.
+        It returns a list of all lemmas found in WordNet.
 
-    _morphy = wn._morphy
+        >>> from nltk.stem import WordNetLemmatizer as wnl
+        >>> print(wnl()._morphy('us', 'n'))
+        ['us', 'u']
+        """
+        from nltk.corpus import wordnet as wn
+
+        return wn._morphy(form, pos, check_exceptions)
+
+    def morphy(self, form, pos=None, check_exceptions=True):
+        """
+        morphy() is a restrictive wrapper around _morphy().
+        It returns the first lemma found in WordNet,
+        or None if no lemma is found.
+
+        >>> from nltk.stem import WordNetLemmatizer as wnl
+        >>> print(wnl().morphy('us', 'n'))
+        us
+
+        >>> print(wnl().morphy('catss'))
+        None
+        """
+        from nltk.corpus import wordnet as wn
+
+        return wn.morphy(form, pos, check_exceptions)
 
     def lemmatize(self, word: str, pos: str = "n") -> str:
         """Lemmatize `word` by picking the shortest of the possible lemmas,
         using the wordnet corpus reader's built-in _morphy function.
         Returns the input word unchanged if it cannot be found in WordNet.
 
-        >>> from nltk.stem import WordNetLemmatizer
-        >>> wnl = WordNetLemmatizer()
-        >>> print(wnl.lemmatize('dogs'))
+        >>> from nltk.stem import WordNetLemmatizer as wnl
+        >>> print(wnl().lemmatize('dogs'))
         dog
-        >>> print(wnl.lemmatize('churches'))
+        >>> print(wnl().lemmatize('churches'))
         church
-        >>> print(wnl.lemmatize('aardwolves'))
+        >>> print(wnl().lemmatize('aardwolves'))
         aardwolf
-        >>> print(wnl.lemmatize('abaci'))
+        >>> print(wnl().lemmatize('abaci'))
         abacus
-        >>> print(wnl.lemmatize('hardrock'))
+        >>> print(wnl().lemmatize('hardrock'))
         hardrock
 
         :param word: The input word to lemmatize.
