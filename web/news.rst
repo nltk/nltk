@@ -4,6 +4,9 @@ Release Notes
 2024
 ----
 
+NLTK 3.9.1 release: August 2024:
+- Fixed bug that prevented wordnet from loading
+
 NLTK 3.9 release: August 2024:
 
 - Avoid need for pickled models, resolves security vulnerability CVE-2024-39705

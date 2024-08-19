@@ -1,3 +1,6 @@
+Version 3.9.1 2024-08-19
+* Fixed bug that prevented wordnet from loading
+
 Version 3.9 2024-08-18
 * Avoid need for pickled models, resolves security vulnerability CVE-2024-39705
 * No longer sort WordNet synsets and relations (sort in calling function when required)

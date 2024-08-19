@@ -5,7 +5,7 @@ Building an NLTK distribution
    - py312-pytest py312-requests py312-sphinx
    - py312-numpy py312-matplotlib py312-tkinter py312-black
    - sqlite3-tcl
-   - pip install sphinxcontrib-apidoc twython build twine pytest-mock
+   - pip install sphinxcontrib-apidoc twython build twine pytest-mock pre-commit
 
 1. Testing
    - Check no errors are reported in our continuous integration service:
