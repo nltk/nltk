@@ -2,7 +2,8 @@ Version 3.9.1 2024-08-19
 * Fixed bug that prevented wordnet from loading
 
 Version 3.9 2024-08-18
-* Avoid need for pickled models, resolves security vulnerability CVE-2024-39705
+* Fix security vulnerability CVE-2024-39705 (breaking change)
+* Replace pickled models (punkt, chunker, taggers) by new pickle-free "_tab" packages
 * No longer sort WordNet synsets and relations (sort in calling function when required)
 * Add Python 3.12 support
 * Many other minor fixes
