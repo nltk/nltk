@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12.3' # 3.12.4 has an issue with pyupgrade, try to upgrade later
+          python-version: '3.12'
       - run: |
           pip install pre-commit
           pre-commit run --all-files
