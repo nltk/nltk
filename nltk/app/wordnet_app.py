@@ -414,7 +414,7 @@ def get_relations_data(word, synset):
                 ),
             ),
         )
-    elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
+    elif synset.pos() == wn.ADJ or synset.pos() == wn.ADJ_SAT:
         return (
             (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
             (SIMILAR, "Similar to", synset.similar_tos()),
@@ -435,7 +435,7 @@ def get_relations_data(word, synset):
         )
         # Derived from adjective - not supported by corpus
     else:
-        raise TypeError("Unhandles synset POS type: " + str(synset.pos()))
+        raise TypeError("Unhandled synset POS type: " + str(synset.pos()))
 
 
 html_header = """
