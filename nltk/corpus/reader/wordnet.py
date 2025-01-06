@@ -116,6 +116,7 @@ VERB_FRAME_STRINGS = (
 )
 
 SENSENUM_RE = re.compile(r"\.[\d]+\.")
+EXAMPLE_RE = re.compile(r'"([^"]*)"(?:-\s*([^;]*))?')
 
 
 ######################################################################
@@ -1598,10 +1599,13 @@ class WordNetCorpusReader(CorpusReader):
         try:
             # parse out the definitions and examples from the gloss
             columns_str, gloss = data_file_line.strip().split("|")
-            definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()
-            examples = re.findall(r'"([^"]*)"', gloss)
-            for example in examples:
-                synset._examples.append(example)
+            definition = re.sub(EXAMPLE_RE, "", gloss).strip()
+            examples = re.findall(EXAMPLE_RE, gloss)
+            for example, origin in examples:
+                item = example.strip()
+                if origin:
+                    item += " -- " + origin.strip()
+                synset._examples.append(item)
 
             synset._definition = definition.strip("; ")
 
