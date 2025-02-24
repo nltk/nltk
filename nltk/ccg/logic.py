@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2024 NLTK Project
 # Author: Tanin Na Nakorn (@tanin)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,26 +8,26 @@
 Helper functions for CCG semantics computation
 """
 
+from copy import copy
+
 from nltk.sem.logic import *
 
 
-def compute_type_raised_semantics(semantics):
-    core = semantics
+def compute_type_raised_semantics(lex_semantics):
+    core = semantics = copy(lex_semantics)
     parent = None
     while isinstance(core, LambdaExpression):
         parent = core
         core = core.term
-
     var = Variable("F")
     while var in core.free():
         var = unique_variable(pattern=var)
     core = ApplicationExpression(FunctionVariableExpression(var), core)
 
-    if parent is not None:
-        parent.term = core
-    else:
+    if parent is None:
         semantics = core
-
+    else:
+        parent.term = core
     return LambdaExpression(var, semantics)
 
 
