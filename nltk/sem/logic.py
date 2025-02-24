@@ -1237,6 +1237,7 @@ class ApplicationExpression(Expression):
     really a predicate expression (ie, underlying function is an
     ``AbstractVariableExpression``).  This means that the example from above
     will be returned as "(\x y.see(x,y)(john))(mary)".
+
     """
 
     def __init__(self, function, argument):
@@ -1248,6 +1249,17 @@ class ApplicationExpression(Expression):
         assert isinstance(argument, Expression), "%s is not an Expression" % argument
         self.function = function
         self.argument = argument
+        self.alpha_convert()  # Add alpha conversion (@ekaf)
+
+    def alpha_convert(self):
+        if isinstance(self.argument, LambdaExpression):
+            core = self.argument.term
+            while isinstance(core, LambdaExpression):
+                core = core.term
+            if self.function.variable in core.free():
+                self.argument = self.argument.alpha_convert(
+                    unique_variable(pattern=self.function.variable)
+                )
 
     def simplify(self):
         function = self.function.simplify()
