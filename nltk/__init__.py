@@ -182,7 +182,7 @@ from nltk.downloader import download, download_shell
 # Check if tkinter exists without importing it to avoid crashes after
 # forks on macOS. Only nltk.app, nltk.draw, and demo modules should
 # have top-level tkinter imports. See #2949 for more details.
-if importlib.util.find_spec('tkinter'):
+if importlib.util.find_spec("tkinter"):
     try:
         from nltk.downloader import download_gui
     except RuntimeError as e:

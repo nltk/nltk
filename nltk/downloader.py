@@ -170,9 +170,9 @@ import time
 import warnings
 import zipfile
 from hashlib import md5
-from xml.etree import ElementTree
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+from xml.etree import ElementTree
 
 import nltk
 
@@ -1093,7 +1093,10 @@ class Downloader:
     def _interactive_download(self):
         # Only import tkinter if the user has indicated that they
         # want to draw a UI. See issue #2949 for more info.
-        if os.environ.get('NLTK_DOWNLOADER_FORCE_INTERACTIVE_SHELL', 'false').lower() == 'true':
+        if (
+            os.environ.get("NLTK_DOWNLOADER_FORCE_INTERACTIVE_SHELL", "false").lower()
+            == "true"
+        ):
             DownloaderShell(self).run()
             return
 
@@ -1109,7 +1112,6 @@ class Downloader:
             DownloaderGUI(self).mainloop()
         except tkinter.TclError:
             DownloaderShell(self).run()
-
 
 
 class DownloaderShell:
@@ -1372,6 +1374,7 @@ class DownloaderGUI:
         # want to draw a UI. See issue #2949 for more info.
         import tkinter
         from tkinter.messagebox import showerror
+
         self._ds = dataserver
         self._use_threads = use_threads
 
@@ -1433,6 +1436,7 @@ class DownloaderGUI:
         # Only import tkinter if the user has indicated that they
         # want to draw a UI. See issue #2949 for more info.
         import tkinter
+
         from nltk.draw.table import Table
 
         # Create the top-level frame structures
@@ -1625,6 +1629,7 @@ class DownloaderGUI:
 
     def _refresh(self):
         from tkinter.messagebox import showerror
+
         self._ds.clear_status_cache()
         try:
             self._fill_table()
@@ -1672,6 +1677,7 @@ class DownloaderGUI:
 
     def _set_url(self, url):
         from tkinter.messagebox import showerror
+
         if url == self._ds.url:
             return
         try:
@@ -1683,6 +1689,7 @@ class DownloaderGUI:
 
     def _set_download_dir(self, download_dir):
         from tkinter.messagebox import showerror
+
         if self._ds.download_dir == download_dir:
             return
         # check if the dir exists, and if not, ask if we should create it?
@@ -1709,6 +1716,7 @@ class DownloaderGUI:
 
     def _prev_tab(self, *e):
         from tkinter.messagebox import showerror
+
         for i, tab in enumerate(self._tab_names):
             if tab.lower() == self._tab and i > 0:
                 self._tab = self._tab_names[i - 1].lower()
@@ -1721,6 +1729,7 @@ class DownloaderGUI:
 
     def _next_tab(self, *e):
         from tkinter.messagebox import showerror
+
         for i, tab in enumerate(self._tab_names):
             if tab.lower() == self._tab and i < (len(self._tabs) - 1):
                 self._tab = self._tab_names[i + 1].lower()
@@ -1733,6 +1742,7 @@ class DownloaderGUI:
 
     def _select_tab(self, event):
         from tkinter.messagebox import showerror
+
         self._tab = event.widget["text"].lower()
         try:
             self._fill_table()
@@ -1900,6 +1910,7 @@ class DownloaderGUI:
 
     def _show_log(self):
         from nltk.draw.util import ShowText
+
         text = "\n".join(self._log_messages)
         ShowText(self.top, "NLTK Downloader Log", text)
 
@@ -1983,6 +1994,7 @@ class DownloaderGUI:
 
     def help(self, *e):
         from nltk.draw.util import ShowText
+
         # The default font's not very legible; try using 'fixed' instead.
         try:
             ShowText(
@@ -1997,6 +2009,7 @@ class DownloaderGUI:
 
     def about(self, *e):
         from nltk.draw.util import ShowText
+
         ABOUT = "NLTK Downloader\n" + "Written by Edward Loper"
         TITLE = "About: NLTK Downloader"
         try:
