@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2024 NLTK Project
+# Copyright (C) 2001-2025 NLTK Project
 # Author: Tanin Na Nakorn (@tanin)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,13 +8,29 @@
 Helper functions for CCG semantics computation
 """
 
-from copy import copy
+from copy import deepcopy
 
 from nltk.sem.logic import *
 
 
 def compute_type_raised_semantics(lex_semantics):
-    core = semantics = copy(lex_semantics)
+    r"""
+    Type raising introduces free variables, so we apply it on a deep copy
+    of the input semantics, to avoid that the free variables percolate back
+    into the lexicon:
+
+    >>> from nltk.ccg.logic import Expression, compute_type_raised_semantics
+    >>> expr = Expression.fromstring(r"\x.cat(x)")
+    >>> print(compute_type_raised_semantics(expr))
+    \F x.F(cat(x))
+
+    The input expression remains unaffected:
+    >>> print(expr)
+    \x.cat(x)
+
+    """
+
+    core = semantics = deepcopy(lex_semantics)
     parent = None
     while isinstance(core, LambdaExpression):
         parent = core

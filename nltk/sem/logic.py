@@ -1238,6 +1238,14 @@ class ApplicationExpression(Expression):
     ``AbstractVariableExpression``).  This means that the example from above
     will be returned as "(\x y.see(x,y)(john))(mary)".
 
+    New initial alpha conversion (@ekaf 2025):
+
+    >>> from nltk.sem.logic import Expression, ApplicationExpression
+    >>> e1 = Expression.fromstring(r"\x.book(x)")
+    >>> e2 = Expression.fromstring(r"\y.\x.read(x,y)")
+    >>> print(ApplicationExpression(e1, e2).argument)
+    \z1 x.read(x,z1)
+
     """
 
     def __init__(self, function, argument):
@@ -1249,7 +1257,7 @@ class ApplicationExpression(Expression):
         assert isinstance(argument, Expression), "%s is not an Expression" % argument
         self.function = function
         self.argument = argument
-        self.alpha_convert()  # Add alpha conversion (@ekaf)
+        self.alpha_convert()  # Alpha-convert the argument
 
     def alpha_convert(self):
         if isinstance(self.argument, LambdaExpression):
