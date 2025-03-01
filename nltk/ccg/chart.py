@@ -310,6 +310,10 @@ class CCGChart(Chart):
     def __init__(self, tokens):
         Chart.__init__(self, tokens)
 
+    def insert(self, edge, children):
+        if edge not in self.edges():  # Adds a redundancy check (@ekaf 2025)
+            return Chart.insert(self, edge, children)
+
     # Constructs the trees for a given parse. Unfortnunately, the parse trees need to be
     # constructed slightly differently to those in the default Chart class, so it has to
     # be reimplemented
