@@ -1248,7 +1248,7 @@ class ApplicationExpression(Expression):
 
     """
 
-    def __init__(self, function, argument):
+    def __init__(self, function, argument, alpha_convert=True):
         """
         :param function: ``Expression``, for the function expression
         :param argument: ``Expression``, for the argument
@@ -1257,7 +1257,8 @@ class ApplicationExpression(Expression):
         assert isinstance(argument, Expression), "%s is not an Expression" % argument
         self.function = function
         self.argument = argument
-        self.alpha_convert()  # Alpha-convert the argument
+        if alpha_convert:
+            self.alpha_convert()  # Alpha-convert the argument
 
     def alpha_convert(self):
         if isinstance(self.argument, LambdaExpression):
