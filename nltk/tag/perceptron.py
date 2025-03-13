@@ -12,6 +12,7 @@ import json
 import logging
 import random
 from collections import defaultdict
+import os
 
 from nltk import jsontags
 from nltk.data import find, load
@@ -253,29 +254,27 @@ class PerceptronTagger(TaggerI):
         self.model.average_weights()
         # Save to json files.
         if save_loc is not None:
-            self.save_to_json(loc)
+            self.save_to_json(save_loc)
 
     def save_to_json(self, loc, lang="xxx"):
         # TODO:
-        assert os.isdir(
+        assert os.path.isdir(
             TRAINED_TAGGER_PATH
         ), f"Path set for saving needs to be a directory"
 
-        with open(loc + TAGGER_JSONS[lang]["weights"], "w") as fout:
+        with open(TRAINED_TAGGER_PATH + loc + TAGGER_JSONS[lang]["weights"], "w") as fout:
             json.dump(self.model.weights, fout)
-        with open(loc + TAGGER_JSONS[lang]["tagdict"], "w") as fout:
+        with open(TRAINED_TAGGER_PATH + loc + TAGGER_JSONS[lang]["tagdict"], "w") as fout:
             json.dump(self.tagdict, fout)
-        with open(loc + TAGGER_JSONS[lang]["classes"], "w") as fout:
-            json.dump(self.classes, fout)
+        with open(TRAINED_TAGGER_PATH + loc + TAGGER_JSONS[lang]["classes"], "w") as fout:
+            json.dump(self.classes, fout, default=list)
 
-    def load_from_json(self, lang="eng"):
-        # Automatically find path to the tagger if location is not specified.
-        loc = find(f"taggers/averaged_perceptron_tagger_{lang}/")
-        with open(loc + TAGGER_JSONS[lang]["weights"]) as fin:
+    def load_from_json(self, loc, lang="xxx"):
+        with open(TRAINED_TAGGER_PATH + loc + TAGGER_JSONS[lang]["weights"]) as fin:
             self.model.weights = json.load(fin)
-        with open(loc + TAGGER_JSONS[lang]["tagdict"]) as fin:
+        with open(TRAINED_TAGGER_PATH + loc + TAGGER_JSONS[lang]["tagdict"]) as fin:
             self.tagdict = json.load(fin)
-        with open(loc + TAGGER_JSONS[lang]["classes"]) as fin:
+        with open(TRAINED_TAGGER_PATH + loc + TAGGER_JSONS[lang]["classes"]) as fin:
             self.classes = set(json.load(fin))
 
         self.model.classes = self.classes
