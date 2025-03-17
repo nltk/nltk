@@ -1284,7 +1284,8 @@ class PCFG(CFG):
     def eliminate_start(cls, grammar):
         """
         Eliminate start rule in case it appears on RHS
-        TODO examples
+        Example: S -> S0 S1 [1.0] and S0 -> S1 S [0.5]
+        Then another rule S0_Sigma -> S [1.0] is added
         """
         start = grammar.start()
         result = []
@@ -1305,7 +1306,13 @@ class PCFG(CFG):
         """
         Convert all non-binary rules into binary by introducing
         new tokens.
-        TODO: examples
+        Example::
+            
+                Original:
+                    A => B C D [0.5]
+                After Conversion:
+                    A => B A@$@B [0.5]
+                    A@$@B => C D [1.0]
         """
         result = []
 
@@ -1336,6 +1343,13 @@ class PCFG(CFG):
         """
         Remove nonlexical unitary rules and convert them to
         lexical
+        Example::
+                
+                    Original:
+                        A => B [0.5]
+                        B => C [0.5]
+                    After Conversion:
+                        A => C [0.25]        
         """
         result = []
         unitary = deque([])
@@ -1349,9 +1363,6 @@ class PCFG(CFG):
             rule = unitary.popleft()
             for item in grammar.productions(lhs=rule.rhs()[0]):
                 new_rule = ProbabilisticProduction(rule.lhs(), item.rhs(), prob=rule.prob() * item.prob())
-                # # remove rules without former generation rules
-                # if item in result:
-                #     result.remove(item)
                 if len(new_rule) != 1 or new_rule.is_lexical():
                     result.append(new_rule)
                 else:
@@ -1381,6 +1392,7 @@ class PCFG(CFG):
         # remove unreachable rules
         result = [rule for rule in grammar.productions() if rule.lhs() in reachable]
 
+        # remove repeated rules
         n_grammar = PCFG(grammar.start(), list(set(result)))
         return n_grammar
 
