@@ -67,3 +67,22 @@ Grammars can contain both empty strings and empty productions:
     ... """)
     >>> list(generate(grammar))
     [['a', 'b'], ['a']]
+
+Grammars with mixed rules can be converted into Chomsky Normal Form:
+
+    >>> from nltk import CFG
+    >>> grammar = CFG.fromstring("""
+    ... S -> NP VP
+    ... PP -> P NP
+    ... NP -> NP PP P
+    ... NP -> 'the' Nom | 'a' Nom
+    ... VP -> V NP | VP PP
+    ... Det -> 'a' | 'the'
+    ... Nom -> 'dog' | 'cat'
+    ... V -> 'chased' | 'sat'
+    ... P -> 'on' | 'in'
+    ... """)
+    >>> grammar
+    <Grammar with 15 productions>
+    >>> grammar.chomsky_normal_form()
+    <Grammar with 18 productions>

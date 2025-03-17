@@ -816,6 +816,56 @@ Loading alternative Wordnet versions
     [Synset('baffle.v.03'), Synset('confine.v.02'), Synset('control.v.02'), Synset('hold.v.36'), Synset('rule.v.07'), Synset('swallow.v.06'), Synset('wink.v.04')]
 
 
+-------------------------------------------
+Reproduce old Wordnet results (issue #3377)
+-------------------------------------------
+
+Normally, only small edits are necessary for NLTK to load any
+Wordnet in the original Princeton WordNet wndb format. This could
+for ex. be a Princeton WordNet from the 1.x or 2.x series, which
+were never included in NLTK, or any Open English Wordnet version.
+This process has been tested and works with all PWN versions since
+WN 1.5SC (from 1995), which was the first version to use sense keys.
+
+However, three of these older versions have problems that require
+more effort. Two versions (1.5SC and 2.1) miss a copy of the
+'lexnames' file, which has been the same for all modern PWN releases,
+and needs to be copied manually from any other version.
+PWN v. 2.0 is the most difficult to deal with, since some pointer_counts
+in the index.POS files are off-by-one.
+
+Let's illustrate the process with Edition 2023 of the Open English
+Wordnet, since nltk_data does not include it.
+
+1. Get the data package. The 2023 Edition is at
+https://en-word.net/static/english-wordnet-2023.zip
+
+2. Rename the package to oewn2023.zip and copy it to the corpora
+subdirectory of your nltk_data directory.
+
+Renaming the package is necessary because english-wordnet-2023.zip
+creates an oewn2023 subdirectory, while NLTK expects the data package
+to have the same name as the subdirectory.  Alternatively, you can
+eliminate the need for renaming the package, by just unzipping it
+so that you have a nltk_data/corpora/oewn2023 directory.
+
+3. Add an entry in nltk/corpus/\_\_init\_\_.py. That file includes
+a commented template showing how to do it easily: you just copy one
+of the existing Wordnet entries, and edit the name in two places:
+
+oewn2023: WordNetCorpusReader = LazyCorpusLoader(
+    "oewn2023",
+    WordNetCorpusReader,
+    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+)
+
+4. Enjoy:
+
+from nltk.corpus import oewn2023 as ewn
+print(ewn.get_version())
+print(ewn.lemmas('book')[0])
+
+
 -------------
 Teardown test
 -------------

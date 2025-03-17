@@ -452,7 +452,7 @@ class Text:
             >>> from nltk.book import text4
             >>> text4.collocations() # doctest: +NORMALIZE_WHITESPACE
             United States; fellow citizens; years ago; four years; Federal
-            Government; General Government; American people; Vice President; God
+            Government; General Government; Vice President; American people; God
             bless; Chief Justice; one another; fellow Americans; Old World;
             Almighty God; Fellow citizens; Chief Magistrate; every citizen; Indian
             tribes; public debt; foreign nations

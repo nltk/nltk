@@ -1,3 +1,17 @@
+Version 3.9.2 2025-03-10
+
+* Minor fixes including:
+* properly initialize Portuguese corpus reader
+* support for mixed rules conversion into Chomsky Normal Form
+* only import tkinter if a GUI is needed
+* issue #2112 with Corenlp
+* new environment variable NLTK_DOWNLOADER_FORCE_INTERACTIVE_SHELL
+* Lesk defaults to most frequent sense in case of ties
+
+Thanks to the following contributions to 3.9.2:
+Jose Cols, Peter de Blanc, GeneralPoxter, Eric Kafe, William LaCroix, Jason Liu,
+Samer Masterson, Mike014, purificant, Andrew Ernest Ritz, samertm, Ikram Ul Haq
+
 Version 3.9.1 2024-08-19
 * Fixed bug that prevented wordnet from loading
 

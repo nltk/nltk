@@ -307,6 +307,7 @@
 - Samer Masterson <https://github.com/samertm>
 - William LaCroix <https://github.com/WilliamPLaCroix>
 - Peter de Blanc <https://github.com/pdeblanc>
+- Jose Cols <https://github.com/josecols>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

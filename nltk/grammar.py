@@ -750,20 +750,13 @@ class CFG:
                 "Grammar has Empty rules. " "Cannot deal with them at the moment"
             )
 
-        # check for mixed rules
-        for rule in self.productions():
-            if rule.is_lexical() and len(rule.rhs()) > 1:
-                raise ValueError(
-                    f"Cannot handled mixed rule {rule.lhs()} => {rule.rhs()}"
-                )
-
         step1 = CFG.eliminate_start(self)
         step2 = CFG.binarize(step1, new_token_padding)
+        step3 = CFG.remove_mixed_rules(step2, new_token_padding)
         if flexible:
-            return step2
-        step3 = CFG.remove_unitary_rules(step2)
-        step4 = CFG(step3.start(), list(set(step3.productions())))
-        return step4
+            return step3
+        step4 = CFG.remove_unitary_rules(step3)
+        return CFG(step4.start(), list(set(step4.productions())))
 
     @classmethod
     def remove_unitary_rules(cls, grammar):
@@ -844,6 +837,48 @@ class CFG:
             n_grammar = CFG(start, result)
             return n_grammar
         return grammar
+
+    @classmethod
+    def remove_mixed_rules(cls, grammar, padding="@$@"):
+        """
+        Convert all mixed rules containing terminals and non-terminals
+        into dummy non-terminals.
+        Example::
+
+            Original:
+                A => term B
+            After Conversion:
+                A => TERM@$@TERM B
+                TERM@$@TERM => term
+        """
+        result = []
+        dummy_nonterms = {}
+        for rule in grammar.productions():
+            if not rule.is_lexical() or len(rule.rhs()) <= 1:
+                result.append(rule)
+                continue
+
+            new_rhs = []
+            for item in rule.rhs():
+                if is_nonterminal(item):
+                    new_rhs.append(item)
+                else:
+                    if item not in dummy_nonterms:
+                        sanitized_term = "".join(
+                            _STANDARD_NONTERM_RE.findall(item.upper())
+                        )
+                        dummy_nonterm_symbol = (
+                            f"{sanitized_term}{padding}{sanitized_term}"
+                        )
+                        dummy_nonterms[item] = Nonterminal(dummy_nonterm_symbol)
+
+                    new_rhs.append(dummy_nonterms[item])
+                    result.append(Production(dummy_nonterms[item], rhs=[item]))
+
+            result.append(Production(rule.lhs(), new_rhs))
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
 
     def __repr__(self):
         return "<Grammar with %d productions>" % len(self._productions)

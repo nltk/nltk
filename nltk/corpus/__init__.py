@@ -395,19 +395,34 @@ wordnet: WordNetCorpusReader = LazyCorpusLoader(
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
+## Use the following template to add a custom Wordnet package.
+## Just uncomment, and replace the identifier (my_wordnet) in two places:
+##
+# my_wordnet: WordNetCorpusReader = LazyCorpusLoader(
+#    "my_wordnet",
+#    WordNetCorpusReader,
+#    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+# )
 wordnet31: WordNetCorpusReader = LazyCorpusLoader(
     "wordnet31",
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 wordnet2021: WordNetCorpusReader = LazyCorpusLoader(
+    # Obsolete, use english_wordnet instead.
     "wordnet2021",
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
-# Latest Open English Wordnet:
 wordnet2022: WordNetCorpusReader = LazyCorpusLoader(
+    # Obsolete, use english_wordnet instead.
     "wordnet2022",
+    WordNetCorpusReader,
+    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+)
+english_wordnet: WordNetCorpusReader = LazyCorpusLoader(
+    # Latest Open English Wordnet
+    "english_wordnet",
     WordNetCorpusReader,
     LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )

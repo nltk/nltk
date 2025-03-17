@@ -163,13 +163,21 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
 
 
-# FIXME: Is there a better way? How to not hardcode this?
-#       Possibly, add a language kwargs to CategorizedPlaintextCorpusReader to
-#       override the `sent_tokenizer`.
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
+    """
+    This class is identical with CategorizedPlaintextCorpusReader,
+    except that it initializes a Portuguese PunktTokenizer:
+
+    >>> from nltk.corpus import machado
+    >>> print(machado._sent_tokenizer._lang)
+    portuguese
+
+    """
+
     def __init__(self, *args, **kwargs):
-        CategorizedCorpusReader.__init__(self, kwargs)
-        kwargs["sent_tokenizer"] = PunktTokenizer("portuguese")
+        CategorizedPlaintextCorpusReader.__init__(self, *args, **kwargs)
+        # Fixed (@ekaf 2025), new way to invoke Punkt:
+        self._sent_tokenizer = PunktTokenizer("portuguese")
 
 
 class EuroparlCorpusReader(PlaintextCorpusReader):
