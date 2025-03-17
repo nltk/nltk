@@ -887,8 +887,8 @@ class CFG:
         Remove redundant rules from the grammar
         """
         # build reachable symbols
-                # build reacheable symbols
-        reachable = set([grammar.start()])
+        # build reacheable symbols
+        reachable = {grammar.start()}
         while True:
             n_reachable = len(reachable)
             for rule in grammar.productions():
@@ -1368,7 +1368,7 @@ class PCFG(CFG):
         Convert all non-binary rules into binary by introducing
         new tokens.
         Example::
-            
+
                 Original:
                     A => B C D [0.5]
                 After Conversion:
@@ -1389,9 +1389,7 @@ class PCFG(CFG):
                     )
                     left_side = new_sym
                     result.append(new_production)
-                last_prd = ProbabilisticProduction(
-                    left_side, rule.rhs()[-2:], prob=1.0
-                )
+                last_prd = ProbabilisticProduction(left_side, rule.rhs()[-2:], prob=1.0)
                 result.append(last_prd)
             else:
                 result.append(rule)
@@ -1405,7 +1403,7 @@ class PCFG(CFG):
         Convert all mixed rules containing terminals and non-terminals
         into dummy non-terminals.
         Example::
-            
+
                 Original:
                     A => term B [0.5]
                 After Conversion:
@@ -1435,10 +1433,14 @@ class PCFG(CFG):
 
                     new_rhs.append(dummy_nonterms[item])
                     result.append(
-                        ProbabilisticProduction(dummy_nonterms[item], rhs=[item], prob=1.0)
+                        ProbabilisticProduction(
+                            dummy_nonterms[item], rhs=[item], prob=1.0
+                        )
                     )
 
-            result.append(ProbabilisticProduction(rule.lhs(), new_rhs, prob=rule.prob()))
+            result.append(
+                ProbabilisticProduction(rule.lhs(), new_rhs, prob=rule.prob())
+            )
 
         n_grammar = PCFG(grammar.start(), result)
         return n_grammar
@@ -1449,12 +1451,12 @@ class PCFG(CFG):
         Remove nonlexical unitary rules and convert them to
         lexical
         Example::
-                
+
                     Original:
                         A => B [0.5]
                         B => C [0.5]
                     After Conversion:
-                        A => C [0.25]        
+                        A => C [0.25]
         """
         result = []
         unitary = deque([])
@@ -1467,7 +1469,9 @@ class PCFG(CFG):
         while unitary:
             rule = unitary.popleft()
             for item in grammar.productions(lhs=rule.rhs()[0]):
-                new_rule = ProbabilisticProduction(rule.lhs(), item.rhs(), prob=rule.prob() * item.prob())
+                new_rule = ProbabilisticProduction(
+                    rule.lhs(), item.rhs(), prob=rule.prob() * item.prob()
+                )
                 if len(new_rule) != 1 or new_rule.is_lexical():
                     result.append(new_rule)
                 else:
@@ -1483,7 +1487,7 @@ class PCFG(CFG):
         Remove repeated and unreachable rules from the grammar.
         """
         # build reacheable symbols
-        reachable = set([grammar.start()])
+        reachable = {grammar.start()}
         while True:
             n_reachable = len(reachable)
             for rule in grammar.productions():
@@ -1499,6 +1503,7 @@ class PCFG(CFG):
 
         # remove repeated rules
         return PCFG(grammar.start(), list(set(result)))
+
 
 #################################################################
 # Inducing Grammars
