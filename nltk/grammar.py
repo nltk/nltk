@@ -1250,6 +1250,140 @@ class PCFG(CFG):
         )
         return cls(start, productions)
 
+    def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
+        """
+        Returns a new Grammar that is in chomsky normal with probabilities
+
+        :param: new_token_padding
+            Customise new rule formation during binarisation
+        """
+        if self.is_chomsky_normal_form():
+            return self
+        if self.productions(empty=True):
+            raise ValueError(
+                "Grammar has Empty rules. " "Cannot deal with them at the moment"
+            )
+
+        # check for mixed rules
+        for rule in self.productions():
+            if rule.is_lexical() and len(rule.rhs()) > 1:
+                raise ValueError(
+                    f"Cannot handled mixed rule {rule.lhs()} => {rule.rhs()}"
+                )
+
+        step1 = PCFG.eliminate_start(self)
+        step2 = PCFG.binarize(step1, new_token_padding)
+        if flexible:
+            return step2
+        step3 = PCFG.remove_unitary_rules(step2)
+        step4 = PCFG.remove_redundant_rules(step3)
+
+        return step4
+
+    @classmethod
+    def eliminate_start(cls, grammar):
+        """
+        Eliminate start rule in case it appears on RHS
+        TODO examples
+        """
+        start = grammar.start()
+        result = []
+        need_to_add = None
+        for rule in grammar.productions():
+            if start in rule.rhs():
+                need_to_add = True
+            result.append(rule)
+        if need_to_add:
+            start = Nonterminal("S0_SIGMA")
+            result.append(ProbabilisticProduction(start, [grammar.start()]), prob=1.0)
+            n_grammar = PCFG(start, result)
+            return n_grammar
+        return grammar
+
+    @classmethod
+    def binarize(cls, grammar, padding="@$@"):
+        """
+        Convert all non-binary rules into binary by introducing
+        new tokens.
+        TODO: examples
+        """
+        result = []
+
+        for rule in grammar.productions():
+            if len(rule.rhs()) > 2:
+                # this rule needs to be broken down
+                left_side = rule.lhs()
+                for k in range(0, len(rule.rhs()) - 2):
+                    tsym = rule.rhs()[k]
+                    new_sym = Nonterminal(left_side.symbol() + padding + tsym.symbol())
+                    new_production = ProbabilisticProduction(
+                        left_side, (tsym, new_sym), prob=rule.prob()
+                    )
+                    left_side = new_sym
+                    result.append(new_production)
+                last_prd = ProbabilisticProduction(
+                    left_side, rule.rhs()[-2:], prob=1.0
+                )
+                result.append(last_prd)
+            else:
+                result.append(rule)
+
+        n_grammar = PCFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def remove_unitary_rules(cls, grammar):
+        """
+        Remove nonlexical unitary rules and convert them to
+        lexical
+        """
+        result = []
+        unitary = deque([])
+        for rule in grammar.productions():
+            if len(rule) == 1 and rule.is_nonlexical():
+                unitary.append(rule)
+            else:
+                result.append(rule)
+
+        while unitary:
+            rule = unitary.popleft()
+            for item in grammar.productions(lhs=rule.rhs()[0]):
+                new_rule = ProbabilisticProduction(rule.lhs(), item.rhs(), prob=rule.prob() * item.prob())
+                # # remove rules without former generation rules
+                # if item in result:
+                #     result.remove(item)
+                if len(new_rule) != 1 or new_rule.is_lexical():
+                    result.append(new_rule)
+                else:
+                    unitary.append(new_rule)
+
+        n_grammar = PCFG(grammar.start(), result)
+
+        return n_grammar
+
+    @classmethod
+    def remove_redundant_rules(cls, grammar: list):
+        """
+        Remove repeated and unreachable rules from the grammar.
+        """
+        # build reacheable symbols
+        reachable = set([grammar.start()])
+        while True:
+            n_reachable = len(reachable)
+            for rule in grammar.productions():
+                if rule.lhs() in reachable:
+                    for sym in rule.rhs():
+                        reachable.add(sym)
+            n_reachable_new = len(reachable)
+            if n_reachable == n_reachable_new:
+                break
+
+        # remove unreachable rules
+        result = [rule for rule in grammar.productions() if rule.lhs() in reachable]
+
+        n_grammar = PCFG(grammar.start(), list(set(result)))
+        return n_grammar
+
 #################################################################
 # Inducing Grammars
 #################################################################
