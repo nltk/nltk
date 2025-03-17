@@ -85,4 +85,4 @@ Grammars with mixed rules can be converted into Chomsky Normal Form:
     >>> grammar
     <Grammar with 15 productions>
     >>> grammar.chomsky_normal_form()
-    <Grammar with 18 productions>
+    <Grammar with 16 productions>
