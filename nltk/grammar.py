@@ -756,7 +756,8 @@ class CFG:
         if flexible:
             return step3
         step4 = CFG.remove_unitary_rules(step3)
-        return CFG(step4.start(), list(set(step4.productions())))
+        step5 = CFG.remove_redundant_rules(step4)
+        return step5
 
     @classmethod
     def remove_unitary_rules(cls, grammar):
@@ -879,6 +880,30 @@ class CFG:
 
         n_grammar = CFG(grammar.start(), result)
         return n_grammar
+
+    @classmethod
+    def remove_redundant_rules(cls, grammar):
+        """
+        Remove redundant rules from the grammar
+        """
+        # build reachable symbols
+                # build reacheable symbols
+        reachable = set([grammar.start()])
+        while True:
+            n_reachable = len(reachable)
+            for rule in grammar.productions():
+                if rule.lhs() in reachable:
+                    for sym in rule.rhs():
+                        reachable.add(sym)
+            n_reachable_new = len(reachable)
+            if n_reachable == n_reachable_new:
+                break
+
+        # remove unreachable rules
+        result = [rule for rule in grammar.productions() if rule.lhs() in reachable]
+
+        # remove repeated rules
+        return CFG(grammar.start(), list(set(result)))
 
     def __repr__(self):
         return "<Grammar with %d productions>" % len(self._productions)
@@ -1453,7 +1478,7 @@ class PCFG(CFG):
         return n_grammar
 
     @classmethod
-    def remove_redundant_rules(cls, grammar: list):
+    def remove_redundant_rules(cls, grammar):
         """
         Remove repeated and unreachable rules from the grammar.
         """
@@ -1473,8 +1498,7 @@ class PCFG(CFG):
         result = [rule for rule in grammar.productions() if rule.lhs() in reachable]
 
         # remove repeated rules
-        n_grammar = PCFG(grammar.start(), list(set(result)))
-        return n_grammar
+        return PCFG(grammar.start(), list(set(result)))
 
 #################################################################
 # Inducing Grammars
