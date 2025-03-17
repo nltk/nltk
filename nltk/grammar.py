@@ -1698,7 +1698,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     return (start, productions)
 
 
-_STANDARD_NONTERM_RE = re.compile(r"( [\w/][\w/^<>-@$]* ) \s*", re.VERBOSE)
+_STANDARD_NONTERM_RE = re.compile(r"( [\w/][\w/@$^<>-]* ) \s*", re.VERBOSE)
 
 
 def standard_nonterm_parser(string, pos):
