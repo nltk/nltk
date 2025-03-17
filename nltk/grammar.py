@@ -1308,12 +1308,13 @@ class PCFG(CFG):
 
         step1 = PCFG.eliminate_start(self)
         step2 = PCFG.binarize(step1, new_token_padding)
+        step3 = PCFG.remove_mixed_rules(step2, new_token_padding)
         if flexible:
-            return step2
-        step3 = PCFG.remove_unitary_rules(step2)
-        step4 = PCFG.remove_redundant_rules(step3)
+            return step3
+        step4 = PCFG.remove_unitary_rules(step3)
+        step5 = PCFG.remove_redundant_rules(step4)
 
-        return step4
+        return step5
 
     @classmethod
     def eliminate_start(cls, grammar):
@@ -1369,6 +1370,50 @@ class PCFG(CFG):
                 result.append(last_prd)
             else:
                 result.append(rule)
+
+        n_grammar = PCFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def remove_mixed_rules(cls, grammar, padding="@$@"):
+        """
+        Convert all mixed rules containing terminals and non-terminals
+        into dummy non-terminals.
+        Example::
+            
+                Original:
+                    A => term B [0.5]
+                After Conversion:
+                    A => TERM@$@TERM B [0.5]
+                    TERM@$@TERM => term [1.0]
+        """
+        result = []
+        dummy_nonterms = {}
+        for rule in grammar.productions():
+            if not rule.is_lexical() or len(rule.rhs()) <= 1:
+                result.append(rule)
+                continue
+
+            new_rhs = []
+            for item in rule.rhs():
+                if is_nonterminal(item):
+                    new_rhs.append(item)
+                else:
+                    if item not in dummy_nonterms:
+                        sanitized_term = "".join(
+                            _STANDARD_NONTERM_RE.findall(item.upper())
+                        )
+                        dummy_nonterm_symbol = (
+                            f"{sanitized_term}{padding}{sanitized_term}"
+                        )
+                        dummy_nonterms[item] = Nonterminal(dummy_nonterm_symbol)
+
+                    new_rhs.append(dummy_nonterms[item])
+                    result.append(
+                        ProbabilisticProduction(dummy_nonterms[item], rhs=[item], prob=1.0)
+                    )
+
+            result.append(ProbabilisticProduction(rule.lhs(), new_rhs, prob=rule.prob()))
 
         n_grammar = PCFG(grammar.start(), result)
         return n_grammar
