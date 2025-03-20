@@ -795,8 +795,8 @@ class CFG:
             Original:
                 A => B C D
             After Conversion:
-                A => B A@$@B
-                A@$@B => C D
+                A => B C@$@D
+                C@$@D => C D
         """
         result = []
 
@@ -1357,6 +1357,7 @@ class PCFG(CFG):
             result.append(rule)
         if need_to_add:
             start = Nonterminal("S0_SIGMA")
+            # add a start symbol that points to the prev start symbol with probability 1.0
             result.append(ProbabilisticProduction(start, [grammar.start()]), prob=1.0)
             n_grammar = PCFG(start, result)
             return n_grammar
@@ -1372,8 +1373,8 @@ class PCFG(CFG):
                 Original:
                     A => B C D [0.5]
                 After Conversion:
-                    A => B A@$@B [0.5]
-                    A@$@B => C D [1.0]
+                    A => B C@$@D [0.5]
+                    C@$@D => C D [1.0]
         """
         result = []
 
@@ -1384,11 +1385,13 @@ class PCFG(CFG):
                 for k in range(0, len(rule.rhs()) - 2):
                     tsym = rule.rhs()[k]
                     new_sym = Nonterminal(left_side.symbol() + padding + tsym.symbol())
+                    # previous rule with previous probability
                     new_production = ProbabilisticProduction(
                         left_side, (tsym, new_sym), prob=rule.prob()
                     )
                     left_side = new_sym
                     result.append(new_production)
+                # new symbol points to the generated symbols with probability 1
                 last_prd = ProbabilisticProduction(left_side, rule.rhs()[-2:], prob=1.0)
                 result.append(last_prd)
             else:
@@ -1407,8 +1410,8 @@ class PCFG(CFG):
                 Original:
                     A => term B [0.5]
                 After Conversion:
-                    A => TERM@$@TERM B [0.5]
-                    TERM@$@TERM => term [1.0]
+                    A => TERM B [0.5]
+                    TERM => term [1.0]
         """
         result = []
         dummy_nonterms = {}
@@ -1432,12 +1435,13 @@ class PCFG(CFG):
                         dummy_nonterms[item] = Nonterminal(dummy_nonterm_symbol)
 
                     new_rhs.append(dummy_nonterms[item])
+                    # new symbol points to the terminal with probability 1
                     result.append(
                         ProbabilisticProduction(
                             dummy_nonterms[item], rhs=[item], prob=1.0
                         )
                     )
-
+            # prev rule with prev probability
             result.append(
                 ProbabilisticProduction(rule.lhs(), new_rhs, prob=rule.prob())
             )
@@ -1466,14 +1470,20 @@ class PCFG(CFG):
             else:
                 result.append(rule)
 
+        # TODO: normalize the previous probabilities, if the rules partially removed
+
+        # remove the rules in the unitary queue
         while unitary:
             rule = unitary.popleft()
             for item in grammar.productions(lhs=rule.rhs()[0]):
+                # new rule taking the previous probabilities
                 new_rule = ProbabilisticProduction(
                     rule.lhs(), item.rhs(), prob=rule.prob() * item.prob()
                 )
+                # if the new rule is not lexical, add it to the result, remove the unitary rule, and normalize the probabilities
                 if len(new_rule) != 1 or new_rule.is_lexical():
                     result.append(new_rule)
+
                 else:
                     unitary.append(new_rule)
 
@@ -1486,6 +1496,8 @@ class PCFG(CFG):
         """
         Remove repeated and unreachable rules from the grammar.
         """
+        # TODO: normalize the probability
+
         # build reacheable symbols
         reachable = {grammar.start()}
         while True:
