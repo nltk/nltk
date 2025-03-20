@@ -1484,8 +1484,6 @@ class PCFG(CFG):
                 else:
                     unitary.append(new_rule)
 
-                # TODO: normalize the probabilities
-
         n_grammar = PCFG(grammar.start(), result)
 
         return n_grammar
