@@ -87,33 +87,49 @@ Grammars with mixed rules can be converted into Chomsky Normal Form:
     >>> grammar.chomsky_normal_form()
     <Grammar with 16 productions>
 
-Probabilistic CFG with unitary rules can be converted into Chomsky Normal Form:
+Probabilistic CFG with unitary rules can be converted into Chomsky Normal Form.
 
     >>> from nltk import PCFG
     >>> grammar = PCFG.fromstring("""
-    ... S -> VP [1.0]
-    ... VP -> V [1.0]
+    ... S -> VP [0.7] | NP VP [0.3]
+    ... VP -> V [0.5] | V NP [0.5]
+    ... NP -> 'I' [1.0]
     ... V -> 'saw' [0.5] | 'ate' [0.5]
     ... """)
     >>> grammar
-    <Grammar with 4 productions>
+    <Grammar with 7 productions>
     >>> grammar.chomsky_normal_form()
-    <Grammar with 2 productions>
+    <Grammar with 10 productions>
+    >>> symbols = set()
+    >>> for prod in grammar.productions():
+    ...     symbols.add(prod.lhs())
+    >>> for symbol in symbols:
+    ...     prob_sum = 0
+    ...     for prod in grammar.productions(lhs=symbol):
+    ...         prob_sum += prod.prob()
+    ...     assert abs(prob_sum - 1) < 1e-6
 
 Probabilistic CFG with multiple RHS can be converted into Chomsky Normal Form:
 
     >>> from nltk import PCFG
     >>> grammar = PCFG.fromstring("""
-    ... S -> N V P [1.0]
-    ... NP -> 'n' [1.0]
-    ... VP -> V N P [1.0]
-    ... V -> 'v' [1.0]
+    ... S -> NP VP P [0.3] | N V [0.7]
+    ... V -> V N P [0.3] | N V [0.3] | 'v' [0.4]
+    ... N -> 'n' [1.0]
     ... P -> 'p' [1.0]
     ... """)
     >>> grammar
-    <Grammar with 5 productions>
+    <Grammar with 7 productions>
     >>> grammar.chomsky_normal_form()
-    <Grammar with 4 productions>
+    <Grammar with 9 productions>
+    >>> symbols = set()
+    >>> for prod in grammar.productions():
+    ...     symbols.add(prod.lhs())
+    >>> for symbol in symbols:
+    ...     prob_sum = 0
+    ...     for prod in grammar.productions(lhs=symbol):
+    ...         prob_sum += prod.prob()
+    ...     assert abs(prob_sum - 1) < 1e-6
 
 Grammar with the default padding symbol '@$@' during CNF conversion can be recognized:
 
