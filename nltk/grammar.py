@@ -1527,10 +1527,7 @@ class PCFG(CFG):
             [rule for rule in result_merged.productions() if rule.lhs() in reachable],
         )
 
-        # noramlize the probabilities
-        result_norm = PCFG._normalize_probabilities(result_clean)
-
-        return result_norm
+        return result_clean
 
     @classmethod
     def remove_redundant_rules(cls, grammar):

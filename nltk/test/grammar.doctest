@@ -93,12 +93,13 @@ Probabilistic CFG with unitary rules can be converted into Chomsky Normal Form.
     >>> grammar = PCFG.fromstring("""
     ... A -> B [0.3] | B C [0.7]
     ... B -> C [0.4] | B C [0.6]
-    ... C -> 'c' [1.0]
+    ... C -> 'c' [0.5] | 'd' [0.5]
+    ... D -> 'd' [1.0]
     ... """)
     >>> grammar
-    <Grammar with 5 productions>
+    <Grammar with 7 productions>
     >>> grammar.chomsky_normal_form()
-    <Grammar with 5 productions>
+    <Grammar with 8 productions>
     >>> symbols = set()
     >>> for prod in grammar.productions():
     ...     symbols.add(prod.lhs())
@@ -112,7 +113,10 @@ Probabilistic CFG with unitary rules can be converted into Chomsky Normal Form.
     ...         assert production.prob() == 0.76
     >>> for production in grammar.productions(lhs='A'):
     ...     if set(production.rhs()) == set(['c']):
-    ...         assert production.prob() == 0.24
+    ...         assert production.prob() == 0.12
+    >>> for production in grammar.productions(lhs='A'):
+    ...     if set(production.rhs()) == set(['d']):
+    ...         assert production.prob() == 0.12
 
 Probabilistic CFG with multiple RHS can be converted into Chomsky Normal Form:
 
