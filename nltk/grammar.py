@@ -1410,8 +1410,8 @@ class PCFG(CFG):
                 Original:
                     A => term B [0.5]
                 After Conversion:
-                    A => TERM B [0.5]
-                    TERM => term [1.0]
+                    A => TERM@$@TERM B [0.5]
+                    TERM@$@TERM => term [1.0]
         """
         result = []
         dummy_nonterms = {}
@@ -1457,10 +1457,11 @@ class PCFG(CFG):
         Example::
 
                     Original:
-                        A => B [0.5]
-                        B => C [0.5]
+                        A => B [0.5] | B C [0.5]
+                        B => C [0.5] | B C [0.5]
                     After Conversion:
-                        A => C [0.25]
+                        A => C [0.25] | B C [0.75]
+                        B => B C [1.0]
         """
         result = []
         unitary = deque([])
@@ -1484,15 +1485,30 @@ class PCFG(CFG):
                 else:
                     unitary.append(new_rule)
 
-        n_grammar = PCFG(grammar.start(), result)
+        result = PCFG(grammar.start(), result)
 
-        return n_grammar
+        # merge the same rules
+        result_merged = []
+        seen_productions = set()
+        for production in result.productions():
+            # remove existing productions
+            production_key = (production.lhs(), frozenset(production.rhs()))
+            if production_key in seen_productions:
+                continue
+            seen_productions.add(production_key)
 
-    @classmethod
-    def remove_redundant_rules(cls, grammar):
-        """
-        Remove repeated and unreachable rules from the grammar and normalize the probabilities.
-        """
+            # merge probabilities
+            new_prob = 0
+            for other in result.productions(lhs=production.lhs()):
+                if production.rhs() == other.rhs():
+                    new_prob += other.prob()
+            result_merged.append(
+                ProbabilisticProduction(
+                    production.lhs(), production.rhs(), prob=new_prob
+                )
+            )
+        result_merged = PCFG(grammar.start(), result_merged)
+
         # build reacheable symbols
         reachable = {grammar.start()}
         while True:
@@ -1506,18 +1522,40 @@ class PCFG(CFG):
                 break
 
         # remove unreachable rules
-        result = [rule for rule in grammar.productions() if rule.lhs() in reachable]
-
-        # remove repeated rules
-        result_clean = PCFG(grammar.start(), list(set(result)))
+        result_clean = PCFG(
+            grammar.start(),
+            [rule for rule in result_merged.productions() if rule.lhs() in reachable],
+        )
 
         # noramlize the probabilities
+        result_norm = PCFG._normalize_probabilities(result_clean)
+
+        return result_norm
+
+    @classmethod
+    def remove_redundant_rules(cls, grammar):
+        """
+        Remove repeated and unreachable rules from the grammar and normalize the probabilities.
+        """
+        # remove repeated rules
+        result_clean = PCFG(grammar.start(), list(set(grammar.productions())))
+
+        # normalize
+        result_norm = PCFG._normalize_probabilities(result_clean)
+
+        return result_norm
+
+    @classmethod
+    def _normalize_probabilities(cls, grammar):
+        """
+        Normalize the probabilities of the grammar
+        """
         result_norm = []
         lhs = set()
-        for rule in result_clean.productions():
+        for rule in grammar.productions():
             lhs.add(rule.lhs())
             # get the sum of the probabilities for the current lhs
-            sum_prob = sum([r.prob() for r in result_clean.productions(lhs=rule.lhs())])
+            sum_prob = sum([r.prob() for r in grammar.productions(lhs=rule.lhs())])
             # normalize
             new_prob = rule.prob() / sum_prob
             result_norm.append(
