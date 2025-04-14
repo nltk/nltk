@@ -488,6 +488,14 @@ perluniprops: UnicharsCorpusReader = LazyCorpusLoader(
     encoding="utf8",
 )
 
+# Ham, spam, phishing and uncategorised emails
+emails: CategorizedPlaintextCorpusReader = LazyCorpusLoader(
+    "emails",
+    CategorizedPlaintextCorpusReader,
+    r"(?!\.).*\.txt",
+    cat_pattern=r"(ham|phishing|spam|unclassified)/.*",
+    encoding="ascii",
+)
 # mwa_ppdb = LazyCorpusLoader(
 #     'mwa_ppdb', MWAPPDBCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
 
