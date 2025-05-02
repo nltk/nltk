@@ -22,6 +22,7 @@ from functools import reduce
 from math import log
 
 from nltk.collocations import BigramCollocationFinder
+from nltk.corpus import words as nltk_words
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
 from nltk.metrics import BigramAssocMeasures, f_measure
@@ -782,3 +783,104 @@ __all__ = [
     "Text",
     "TextCollection",
 ]
+
+
+class LanguageModel:
+    """
+    Language model for splitting text into words based on English word frequencies.
+    """
+
+    def __init__(self):
+        self._word_cost = {}
+        self._max_word_length = 0
+        self._initialize_word_cost()
+
+    def _initialize_word_cost(self):
+        word_list = set(nltk_words.words())
+        self._word_cost = {
+            word: log((index + 1) * log(len(word_list)))
+            for index, word in enumerate(word_list)
+        }
+        self._max_word_length = max(len(word) for word in word_list)
+
+    def split(self, text):
+        """
+        Splits the input text into words considering English word frequencies.
+
+        Args:
+        - text (str): Input text to be split.
+
+        Returns:
+        - List[str]: List of words and punctuations after splitting the text.
+        """
+        punctuations = _SPLIT_RE.findall(text)
+        texts = _SPLIT_RE.split(text)
+        assert len(punctuations) + 1 == len(texts)
+        new_texts = [self._split(sub_text) for sub_text in texts]
+        for i, punctuation in enumerate(punctuations):
+            new_texts.insert(2 * i + 1, punctuation)
+        return [item for sublist in new_texts for item in sublist]
+
+    def _split(self, sub_text):
+        """
+        Splits a substring into words using the language model.
+
+        Args:
+        - sub_text (str): Substring of text to be split.
+
+        Returns:
+        - List[str]: List of words after splitting the substring.
+        """
+
+        def best_match(i):
+            candidates = (
+                (
+                    cost + self._word_cost.get(sub_text[i - k - 1 : i].lower(), 9e999),
+                    k + 1,
+                )
+                for k, cost in enumerate(
+                    reversed(costs[max(0, i - self._max_word_length) : i])
+                )
+            )
+            return min(candidates)
+
+        costs = [0]
+        for i in range(1, len(sub_text) + 1):
+            calculated_cost, _ = best_match(i)
+            costs.append(calculated_cost)
+
+        words = []
+        i = len(sub_text)
+        while i > 0:
+            calculated_cost, k = best_match(i)
+            assert calculated_cost == costs[i]
+            current_slice = sub_text[i - k : i]
+            if current_slice != "'" and not (
+                len(words) > 0
+                and (
+                    words[-1] == "'s"
+                    or (sub_text[i - 1].isdigit() and words[-1][0].isdigit())
+                )
+            ):
+                words.append(current_slice)
+            else:
+                words[-1] = current_slice + words[-1]
+            i -= k
+        return list(reversed(words))
+
+
+_SPLIT_RE = re.compile(r"\s+")
+
+# Pytest unit tests
+def test_split_with_punctuation():
+    lm = LanguageModel()
+    input_text = "Helloworld!"
+    expected_output = ["Hello", "world"]
+    assert lm.split(input_text) == expected_output
+
+
+def test_split_with_contractions():
+    lm = LanguageModel()
+    input_text = "It'sabeautifulday."
+    expected_output = ["It", "s", "a", "beautiful", "day"]
+    assert lm.split(input_text) == expected_output
