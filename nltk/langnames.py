@@ -40,6 +40,7 @@ from warnings import warn
 
 from nltk.corpus import bcp47
 
+bcp47.load_wiki_q()  # Wikidata conversion table needs to be loaded explicitly
 codepattern = re.compile("[a-z][a-z][a-z]?")
 
 
@@ -163,7 +164,6 @@ def inverse_dict(dic):
         warn("This dictionary has no bijective inverse mapping.")
 
 
-bcp47.load_wiki_q()  # Wikidata conversion table needs to be loaded explicitly
 wiki_bcp47 = inverse_dict(bcp47.wiki_q)
 
 iso639short = {
