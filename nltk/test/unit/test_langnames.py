@@ -4,7 +4,7 @@ Tests for nltk.langnames module
 
 import unittest
 
-from nltk.langnames import tag2q, lang2q
+from nltk.langnames import lang2q, tag2q
 
 
 class TestLangNames(unittest.TestCase):

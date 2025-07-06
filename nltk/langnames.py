@@ -108,9 +108,9 @@ def tag2q(tag):
 
     >>> tag2q('nds-u-sd-demv')
     'Q4289225'
-    
+
     Returns None if the tag is not found:
-    
+
     >>> tag2q('invalid-tag') is None
     True
     """
