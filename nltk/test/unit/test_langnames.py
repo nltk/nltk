@@ -4,7 +4,7 @@ Tests for nltk.langnames module
 
 import unittest
 
-from nltk.langnames import lang2q, tag2q
+from nltk.langnames import lang2q, q2tag, tag2q
 
 
 class TestLangNames(unittest.TestCase):
@@ -39,4 +39,24 @@ class TestLangNames(unittest.TestCase):
         """Test lang2q returns None for invalid language name."""
         with self.assertWarns(UserWarning):
             result = lang2q("Invalid Language Name")
+        assert result is None
+
+    def test_q2tag_valid_qcode(self):
+        """Test q2tag with a valid Q-code."""
+        result = q2tag("Q4289225")
+        assert result == "nds-u-sd-demv"
+
+    def test_q2tag_invalid_qcode_returns_none(self):
+        """Test q2tag returns None for invalid Q-code instead of raising KeyError."""
+        result = q2tag("invalid-qcode")
+        assert result is None
+
+    def test_q2tag_none_qcode_returns_none(self):
+        """Test q2tag handles None input gracefully."""
+        result = q2tag(None)
+        assert result is None
+
+    def test_q2tag_empty_qcode_returns_none(self):
+        """Test q2tag handles empty string input gracefully."""
+        result = q2tag("")
         assert result is None
