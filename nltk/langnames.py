@@ -108,8 +108,13 @@ def tag2q(tag):
 
     >>> tag2q('nds-u-sd-demv')
     'Q4289225'
+    
+    Returns None if the tag is not found:
+    
+    >>> tag2q('invalid-tag') is None
+    True
     """
-    return bcp47.wiki_q[tag]
+    return bcp47.wiki_q.get(tag, None)
 
 
 def q2tag(qcode):
