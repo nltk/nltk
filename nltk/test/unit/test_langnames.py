@@ -9,34 +9,34 @@ from nltk.langnames import tag2q, lang2q
 
 class TestLangNames(unittest.TestCase):
     """Test language name utilities."""
-    
+
     def test_tag2q_valid_tag(self):
         """Test tag2q with a valid BCP-47 tag."""
-        result = tag2q('nds-u-sd-demv')
-        assert result == 'Q4289225'
-        
+        result = tag2q("nds-u-sd-demv")
+        assert result == "Q4289225"
+
     def test_tag2q_invalid_tag_returns_none(self):
         """Test tag2q returns None for invalid BCP-47 tag instead of raising KeyError."""
-        result = tag2q('invalid-tag')
+        result = tag2q("invalid-tag")
         assert result is None
-        
+
     def test_tag2q_none_tag_returns_none(self):
         """Test tag2q handles None input gracefully."""
         result = tag2q(None)
         assert result is None
-        
+
     def test_tag2q_empty_tag_returns_none(self):
         """Test tag2q handles empty string input gracefully."""
-        result = tag2q('')
+        result = tag2q("")
         assert result is None
-        
+
     def test_lang2q_valid_name(self):
         """Test lang2q with a valid language name."""
-        result = lang2q('Low German')
-        assert result == 'Q25433'
-        
+        result = lang2q("Low German")
+        assert result == "Q25433"
+
     def test_lang2q_invalid_name_returns_none(self):
         """Test lang2q returns None for invalid language name."""
         with self.assertWarns(UserWarning):
-            result = lang2q('Invalid Language Name')
+            result = lang2q("Invalid Language Name")
         assert result is None
