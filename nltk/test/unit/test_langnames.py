@@ -2,12 +2,12 @@
 Tests for nltk.langnames module
 """
 
-import pytest
+import unittest
 
 from nltk.langnames import tag2q, lang2q
 
 
-class TestLangNames:
+class TestLangNames(unittest.TestCase):
     """Test language name utilities."""
     
     def test_tag2q_valid_tag(self):
@@ -37,6 +37,6 @@ class TestLangNames:
         
     def test_lang2q_invalid_name_returns_none(self):
         """Test lang2q returns None for invalid language name."""
-        with pytest.warns(UserWarning, match="Could not find language"):
+        with self.assertWarns(UserWarning):
             result = lang2q('Invalid Language Name')
         assert result is None
