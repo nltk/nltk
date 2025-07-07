@@ -47,12 +47,40 @@ def langname(tag, typ="full"):
     """
     Convert a composite BCP-47 tag to a language name
 
+    Parameters
+    ----------
+    tag : str
+        A BCP-47 language tag (e.g., 'en', 'ca-Latn-ES-valencia')
+    typ : str, optional
+        Return type - 'full' for complete tag info, 'short' for language only
+        Default is 'full'
+
+    Returns
+    -------
+    str or None
+        Language name if the tag is valid, None if invalid.
+        For invalid codes, a warning is emitted and None is returned.
+
+    Examples
+    --------
     >>> from nltk.langnames import langname
     >>> langname('ca-Latn-ES-valencia')
     'Catalan: Latin: Spain: Valencian'
 
     >>> langname('ca-Latn-ES-valencia', typ="short")
     'Catalan'
+
+    >>> langname('fri')  # retired code
+    'Western Frisian'
+
+    >>> langname('invalidcode')  # doctest: +SKIP
+    None
+
+    Note
+    ----
+    For invalid or unrecognized language codes, this function returns None
+    instead of raising a KeyError, making it more robust for error handling.
+    A warning is emitted when an invalid code is encountered.
     """
     tags = tag.split("-")
     code = tags[0].lower()
@@ -75,8 +103,24 @@ def langname(tag, typ="full"):
 def langcode(name, typ=2):
     """
     Convert language name to iso639-3 language code. Returns the short 2-letter
-    code by default, if one is available, and the 3-letter code otherwise:
+    code by default, if one is available, and the 3-letter code otherwise.
 
+    Parameters
+    ----------
+    name : str
+        Full language name (e.g., 'Modern Greek (1453-)', 'Western Frisian')
+    typ : int, optional
+        Code length preference - 2 for 2-letter codes, 3 for 3-letter codes
+        Default is 2
+
+    Returns
+    -------
+    str or None
+        Language code if the name is valid, None if invalid.
+        For invalid names, a warning is emitted and None is returned.
+
+    Examples
+    --------
     >>> from nltk.langnames import langcode
     >>> langcode('Modern Greek (1453-)')
     'el'
@@ -85,6 +129,18 @@ def langcode(name, typ=2):
 
     >>> langcode('Modern Greek (1453-)', typ=3)
     'ell'
+
+    >>> langcode('Western Frisian')  # retired language
+    'fy'
+
+    >>> langcode('InvalidLanguageName')  # doctest: +SKIP
+    None
+
+    Note
+    ----
+    For invalid or unrecognized language names, this function returns None
+    instead of raising a KeyError, making it more robust for error handling.
+    A warning is emitted when an invalid name is encountered.
     """
     if name in bcp47.langcode:
         code = bcp47.langcode[name]
