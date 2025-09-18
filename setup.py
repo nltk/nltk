@@ -57,12 +57,12 @@ _project_homepage = "https://www.nltk.org/"
 
 setup(
     name="Karbi_nltk",
-    description="Natural Language Toolkit",
+    description="Karbi Natural Language Toolkit",
     version=nltk_version,
     url=_project_homepage,
     project_urls={
         "Documentation": _project_homepage,
-        "Source Code": "https://github.com/nltk/nltk",
+        "Source Code": "https://github.com/melur-cu/karbi_nltk",
         "Issue Tracker": "https://github.com/nltk/nltk/issues",
     },
     long_description="""\
