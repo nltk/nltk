@@ -56,7 +56,7 @@ nltk=nltk.cli:cli
 _project_homepage = "https://sites.google.com/cottonuniversity.ac.in/karbi-nltk?usp=sharing"
 
 setup(
-    name="Karbi_nltk",
+    name="karbi_nltk",
     description="Karbi Natural Language Toolkit",
     version=nltk_version,
     url=_project_homepage,
