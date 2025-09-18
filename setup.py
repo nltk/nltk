@@ -53,7 +53,7 @@ console_scripts = """
 nltk=nltk.cli:cli
 """
 
-_project_homepage = "https://www.nltk.org/"
+_project_homepage = "https://sites.google.com/cottonuniversity.ac.in/karbi-nltk?usp=sharing"
 
 setup(
     name="Karbi_nltk",
@@ -66,8 +66,8 @@ setup(
         "Issue Tracker": "https://github.com/nltk/nltk/issues",
     },
     long_description="""\
-The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.9, 3.10, 3.11, 3.12, or 3.13.""",
+The Karbi Natural Language Toolkit (KANLTK) is a Python package for
+natural language processing in Karbi Lanuage.  KANLTK requires Python 3.9, 3.10, 3.11, 3.12, or 3.13.""",
     license="Apache License, Version 2.0",
     keywords=[
         "NLP",
@@ -82,11 +82,12 @@ natural language processing.  NLTK requires Python 3.9, 3.10, 3.11, 3.12, or 3.1
         "language",
         "natural language",
         "text analytics",
+        "karbi"
     ],
-    maintainer="NLTK Team",
-    maintainer_email="nltk.team@gmail.com",
-    author="NLTK Team",
-    author_email="nltk.team@gmail.com",
+    maintainer="KANLTK Team",
+    maintainer_email="melur.phangcho@cottonuniversity.ac.in",
+    author="Melur Phangcho",
+    author_email="melur.phangcho@cottonuniversity.ac.in",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
