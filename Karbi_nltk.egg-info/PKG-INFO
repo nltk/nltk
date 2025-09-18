@@ -1,5 +1,5 @@
 Metadata-Version: 2.1
-Name: Karbi_nltk
+Name: karbi_nltk
 Version: 3.9.2
 Summary: Karbi Natural Language Toolkit
 Home-page: https://sites.google.com/cottonuniversity.ac.in/karbi-nltk?usp=sharing
@@ -55,14 +55,14 @@ Requires-Dist: twython; extra == "twitter"
 Provides-Extra: corenlp
 Requires-Dist: requests; extra == "corenlp"
 Provides-Extra: all
+Requires-Dist: twython; extra == "all"
+Requires-Dist: scikit-learn; extra == "all"
+Requires-Dist: matplotlib; extra == "all"
+Requires-Dist: python-crfsuite; extra == "all"
+Requires-Dist: numpy; extra == "all"
 Requires-Dist: pyparsing; extra == "all"
 Requires-Dist: requests; extra == "all"
 Requires-Dist: scipy; extra == "all"
-Requires-Dist: python-crfsuite; extra == "all"
-Requires-Dist: numpy; extra == "all"
-Requires-Dist: scikit-learn; extra == "all"
-Requires-Dist: twython; extra == "all"
-Requires-Dist: matplotlib; extra == "all"
 
 The Karbi Natural Language Toolkit (KANLTK) is a Python package for
 natural language processing in Karbi Lanuage.  KANLTK requires Python 3.9, 3.10, 3.11, 3.12, or 3.13.

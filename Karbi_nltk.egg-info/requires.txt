@@ -4,14 +4,14 @@ regex>=2021.8.3
 tqdm
 
 [all]
+twython
+scikit-learn
+matplotlib
+python-crfsuite
+numpy
 pyparsing
 requests
 scipy
-python-crfsuite
-numpy
-scikit-learn
-twython
-matplotlib
 
 [corenlp]
 requests

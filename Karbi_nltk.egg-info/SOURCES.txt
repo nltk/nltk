@@ -13,13 +13,6 @@ requirements-test.txt
 setup.cfg
 setup.py
 tox.ini
-Karbi_nltk.egg-info/PKG-INFO
-Karbi_nltk.egg-info/SOURCES.txt
-Karbi_nltk.egg-info/dependency_links.txt
-Karbi_nltk.egg-info/entry_points.txt
-Karbi_nltk.egg-info/not-zip-safe
-Karbi_nltk.egg-info/requires.txt
-Karbi_nltk.egg-info/top_level.txt
 nltk/VERSION
 nltk/__init__.py
 nltk/book.py
