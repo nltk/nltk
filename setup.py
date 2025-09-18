@@ -56,7 +56,7 @@ nltk=nltk.cli:cli
 _project_homepage = "https://www.nltk.org/"
 
 setup(
-    name="nltk",
+    name="Karbi_nltk",
     description="Natural Language Toolkit",
     version=nltk_version,
     url=_project_homepage,
