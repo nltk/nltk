@@ -111,7 +111,7 @@ natural language processing in Karbi Lanuage.  KANLTK requires Python 3.9, 3.10,
         "Topic :: Text Processing :: Indexing",
         "Topic :: Text Processing :: Linguistic",
     ],
-    package_data={"kanltk": ["test/*.doctest", "VERSION"]},
+    package_data={"nltk": ["test/*.doctest", "VERSION"]},
     python_requires=">=3.9",
     install_requires=[
         "click",
