@@ -322,6 +322,27 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"\s([?!])"), r"\g<1>"),  # Strip left pad for [?!]
         # (re.compile(r'\s([?!])\s'), r'\g<1>'),
         (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r"\1\2\3"),
+        (re.compile(r'( [\.])'), r"."),
+        # When tokenizing, [;@#$%&] are padded with whitespace regardless of
+        # whether there are spaces before or after them.
+        # But during detokenization, we need to distinguish between left/right
+        # pad, so we split this up.
+        (re.compile(r"([#$])\s"), r"\g<1>"),  # Left pad.
+        (re.compile(r"\s([;%])"), r"\g<1>"),  # Right pad.
+        # (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
+        (re.compile(r"\s\.\.\.\s"), r"..."),
+        # (re.compile(r"\s([:,])\s$"), r"\1"),  # .strip() takes care of it.
+        (
+            re.compile(r"\s([:,])"),
+            r"\1",
+        ),  # Just remove left padding. Punctuation in numbers won't be padded.
+    ]
+
+    PUNCTUATION_ISO = [
+        (re.compile(r"([^'])\s'\s"), r"\1' "),
+        (re.compile(r"\s([?!])"), r"\g<1>"),  # Strip left pad for [?!]
+        # (re.compile(r'\s([?!])\s'), r'\g<1>'),
+        # (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r"\1\2\3"),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
@@ -344,7 +365,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"``"), r'"'),
     ]
 
-    def tokenize(self, tokens: List[str], convert_parentheses: bool = False) -> str:
+    def tokenize(self, tokens: List[str], convert_parentheses: bool = False, isolate_periods : bool = True) -> str:
         """
         Treebank detokenizer, created by undoing the regexes from
         the TreebankWordTokenizer.tokenize.
@@ -387,9 +408,13 @@ class TreebankWordDetokenizer(TokenizerI):
         for regexp, substitution in self.PARENS_BRACKETS:
             text = regexp.sub(substitution, text)
 
-        # Reverse the regexes applied for punctuations.
-        for regexp, substitution in self.PUNCTUATION:
-            text = regexp.sub(substitution, text)
+        if isolate_periods:
+            # Reverse the regexes applied for punctuations.
+            for regexp, substitution in self.PUNCTUATION_ISO:
+                text = regexp.sub(substitution, text)
+        else:
+            for regexp, substitution in self.PUNCTUATION:
+                text = regexp.sub(substitution, text)
 
         # Reverse the regexes applied for starting quotes.
         for regexp, substitution in self.STARTING_QUOTES:
@@ -397,6 +422,6 @@ class TreebankWordDetokenizer(TokenizerI):
 
         return text.strip()
 
-    def detokenize(self, tokens: List[str], convert_parentheses: bool = False) -> str:
+    def detokenize(self, tokens: List[str], convert_parentheses: bool = False, isolate_periods : bool = False) -> str:
         """Duck-typing the abstract *tokenize()*."""
-        return self.tokenize(tokens, convert_parentheses)
+        return self.tokenize(tokens, convert_parentheses, isolate_periods)
