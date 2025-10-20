@@ -17,7 +17,10 @@ words = [word for word, tag in tagged_words]
 tagged_words2 = pos_tag(word_tokenize(text2))
 words2 = [word for word, tag in tagged_words2]
 # print('x'+words[5]+'x')
-# print(words)
+print(words)
 print(TreebankWordDetokenizer().detokenize(words))
-# print(words2)
+print(TreebankWordDetokenizer().detokenize(words, 0, 1))
+print('\n')
+print(words2)
 print(TreebankWordDetokenizer().detokenize(words2))
+print(TreebankWordDetokenizer().detokenize(words2, 0, 1))
