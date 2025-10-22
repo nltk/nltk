@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from nltk.corpus.reader import CorpusReader
@@ -24,6 +26,9 @@ def teardown_loaded_corpora():
     """
 
     yield  # first, wait for the test to end
+
+    if sys.version_info >= (3, 13):
+        return
 
     import nltk.corpus
 
