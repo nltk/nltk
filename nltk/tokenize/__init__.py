@@ -64,6 +64,11 @@ import re
 
 from nltk.data import load
 from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
+from nltk.tokenize.compound import (
+    WordNetCompoundSplitter,
+    build_wordnet_vocab,
+    split_compound,
+)
 from nltk.tokenize.destructive import NLTKWordTokenizer
 from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
 from nltk.tokenize.mwe import MWETokenizer
