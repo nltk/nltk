@@ -19,6 +19,31 @@ from nltk.tokenize import (
 )
 from nltk.tokenize.simple import CharTokenizer
 
+from nltk.tokenize.treebank import TreebankWordDetokenizer
+
+def test_issue_3260_quote_order():
+    detok = TreebankWordDetokenizer()
+    s = ['``', 'Shippers', 'are', 'saying', '`', 'the', 'party', "'s",
+         'over', ',', "'", "''", 'said', 'Mr.', 'LaLonde', '.']
+    out = detok.detokenize(s)
+    expected = '"Shippers are saying ` the party\'s over,\'" said Mr. LaLonde.'
+    assert out == expected
+
+def test_issue_3260_quote_order_minimal():
+    detok = TreebankWordDetokenizer()
+    s = ['word', ',', "'", "''"]
+    assert detok.detokenize(s) == 'word,\'"'
+
+def test_no_space_before_closing_double_quote():
+    detok = TreebankWordDetokenizer()
+    s = ['hello', ',', "''", 'world', '.']
+    assert detok.detokenize(s) == 'hello," world.'
+
+def test_keep_contractions_unchanged():
+    detok = TreebankWordDetokenizer()
+    s = ['I', "'m", 'sure', '.']
+    assert detok.detokenize(s) == "I'm sure."
+
 
 def load_stanford_segmenter():
     try:

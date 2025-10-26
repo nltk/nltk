@@ -87,10 +87,25 @@ class TreebankWordTokenizer(TokenizerI):
 
     # ending quotes
     ENDING_QUOTES = [
-        (re.compile(r"''"), " '' "),
-        (re.compile(r'"'), " '' "),
-        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
-        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
+    (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
+    (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
+
+    # 1) Base #3260: keep '' attached to the previous non-quote, non-space
+    (re.compile(r"([^'\s])\s(\'\')"), r"\1\2"),
+
+    # 2) No space before closing quotes (handles " and '')
+    (re.compile(r"([,.;:!?'])\s+(\"|\'\')"), r"\1\2"),
+    # 3) No space before a single apostrophe after punctuation
+    (re.compile(r"([,.;:!?])\s+(')"), r"\1\2"),
+
+    # Existing rule in NLTK (leave it)
+    (re.compile(r"(\'\')\s([.,:)\]>};%])"), r"\1\2"),
+
+    # Convert '' -> "  (must happen before the swap below)
+    (re.compile(r"''"), '"'),
+
+    # 4) Swap ,"' -> ,'" without adding backslashes
+    (re.compile(r'([,.;:!?])"(\')'), r'\1\2"'),
     ]
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
