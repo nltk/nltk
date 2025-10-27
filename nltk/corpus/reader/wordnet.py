@@ -1106,6 +1106,52 @@ class Synset(_WordNetObject):
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
         return r
 
+def init_hypernym_paths(self):
+        """
+        Initialize and cache hypernym paths and related statistics.
+        """
+        self._hyperpaths = []
+        hypernyms = self.hypernyms() + self.instance_hypernyms()
+
+        #base case: no hypernyms
+        if not hypernyms:
+            self._hyperpaths = [[self]]
+        else:
+            #build paths for each hypernym
+            for hypernym in hypernyms:
+                for path in hypernym.hypernym_paths():
+                    new_path = path + [self]
+                    self._hyperpaths.append(new_path)
+
+        #compute path statistics
+        self._min_depth = min(len(path) for path in self._hyperpaths) - 1
+        self._max_depth = max(len(path) for path in self._hyperpaths) - 1
+        self._root_hypernyms = list({path[0] for path in self._hyperpaths})
+
+    def hypernym_paths(self):
+        #lazy initialization check
+        if not hasattr(self, '_hyperpaths'):
+            self.init_hypernym_paths()
+        return self._hyperpaths
+
+    def min_depth(self):
+        #lazy initialization check
+        if not hasattr(self, '_min_depth'):
+            self.init_hypernym_paths()
+        return self._min_depth
+
+    def max_depth(self):
+        #lazy initialization check
+        if not hasattr(self, '_max_depth'):
+            self.init_hypernym_paths()
+        return self._max_depth
+
+    def root_hypernyms(self):
+        #lazy initialization check
+        if not hasattr(self, '_root_hypernyms'):
+            self.init_hypernym_paths()
+        return self._root_hypernyms
+
 
 ######################################################################
 # WordNet Corpus Reader
