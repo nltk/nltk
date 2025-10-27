@@ -14,6 +14,33 @@ L = wn.lemma
 
 
 class WordnNetDemo(unittest.TestCase):
+    
+    def test_depth_consistency(self):
+        #test that depth calculations match actual path lengths
+        ss = wn.synset('sweet.n.01')
+        paths = ss.hypernym_paths()
+        #verify max_depth matches longest path minus self
+        self.assertEqual(ss.max_depth(), max(len(p) for p in paths) - 1)
+        #verify min_depth matches shortest path minus self
+        self.assertEqual(ss.min_depth(), min(len(p) for p in paths) - 1)
+
+    def test_root_hypernyms(self):
+        #test that root hypernyms match the first elements of all paths
+        ss = wn.synset('sweet.n.01')
+        #extract root nodes from the start of each hypernym path
+        roots_from_paths = list({p[0] for p in ss.hypernym_paths()})
+        #verify root_hypernyms method returns the same set of roots
+        self.assertEqual(set(ss.root_hypernyms()), set(roots_from_paths))
+
+    def test_root_case(self):
+        #test edge case for root node (entity.n.01)
+        root_ss = wn.synset('entity.n.01')
+        #root node should have depth 0
+        self.assertEqual(root_ss.min_depth(), 0)
+        self.assertEqual(root_ss.max_depth(), 0)
+        #root node should be its own only root hypernym
+        self.assertEqual(root_ss.root_hypernyms(), [root_ss])
+
     def test_retrieve_synset(self):
         move_synset = S("go.v.21")
         self.assertEqual(move_synset.name(), "move.v.15")
