@@ -1512,9 +1512,23 @@ def diff(p, q, f):
     Returns difference between phonetic segments P and Q for feature F.
 
     (Kondrak 2002: 52, 54)
+    Modified to safely handle missing features.
     """
-    p_features, q_features = feature_matrix[p], feature_matrix[q]
-    return abs(similarity_matrix[p_features[f]] - similarity_matrix[q_features[f]])
+    # Gracefully handle unknown characters
+    if p not in feature_matrix or q not in feature_matrix:
+        return 1.0  # maximal difference for unknowns
+
+    p_features = feature_matrix[p]
+    q_features = feature_matrix[q]
+
+    # If a feature key is missing, return max difference
+    if f not in p_features or f not in q_features:
+        return 1.0
+
+    try:
+        return abs(similarity_matrix[p_features[f]] - similarity_matrix[q_features[f]])
+    except KeyError:
+        return 1.0
 
 
 def R(p, q):
