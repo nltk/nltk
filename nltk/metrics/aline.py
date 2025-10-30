@@ -1454,26 +1454,40 @@ def sigma_exp(p, q):
 
     (Kondrak 2002: 54)
     """
-    q1 = q[0]
-    q2 = q[1]
+    if len(q) != 2:
+        raise ValueError("sigma_exp expects q of length 2 for expansion")
+    q1, q2 = q[0], q[1]
     return C_exp - delta(p, q1) - delta(p, q2) - V(p) - max(V(q1), V(q2))
 
 
-def delta(p, q):
+def delta(p, q, unknown_penalty=45.0):
     """
     Return weighted sum of difference between P and Q.
 
     (Kondrak 2002: 54)
+    This version adds robustness for multi-character phonetic segments
+    and gracefully handles unknown symbols.
+    
+    :param p: First phonetic segment (str)
+    :param q: Second phonetic segment (str)
+    :param unknown_penalty: Penalty for unknown segments (default: abs(C_sub - C_skip))
+    :return: Weighted difference score
+    :raises ValueError: For empty inputs
     """
-    features = R(p, q)
-    total = 0
-    if np is not None:
-        return np.dot(
-            [diff(p, q, f) for f in features], [salience[f] for f in features]
-        )
-    for f in features:
-        total += diff(p, q, f) * salience[f]
-    return total
+    if not p or not q:
+        raise ValueError("delta requires non-empty phonetic segments")
+
+    # Handle multi-character segments iteratively (average pairwise differences)
+    p_segments = list(p) if len(p) > 1 else [p]
+    q_segments = list(q) if len(q) > 1 else [q]
+    
+    total = 0.0
+    count = 0
+    for x in p_segments:
+        for y in q_segments:
+            total += _single_delta(x, y, unknown_penalty)
+            count += 1
+    return total / count if count > 0 else 0.0
 
 
 def diff(p, q, f):
