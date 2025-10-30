@@ -1490,6 +1490,23 @@ def delta(p, q, unknown_penalty=45.0):
     return total / count if count > 0 else 0.0
 
 
+def _single_delta(p, q, unknown_penalty):
+    """Helper for single-char delta computation."""
+    # If either segment not found, return penalty
+    if p not in feature_matrix or q not in feature_matrix:
+        return unknown_penalty
+
+    features = R(p, q)
+    if np is not None:
+        return np.dot(
+            [diff(p, q, f) for f in features], [salience[f] for f in features]
+        )
+    total = 0.0
+    for f in features:
+        total += diff(p, q, f) * salience[f]
+    return total
+
+
 def diff(p, q, f):
     """
     Returns difference between phonetic segments P and Q for feature F.
