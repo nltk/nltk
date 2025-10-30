@@ -100,9 +100,29 @@ class StanfordTagger(TaggerI):
         cmd = list(self._cmd)
         cmd.extend(["-encoding", encoding])
 
-        # Write the actual sentences to the temporary input file
+        ### FIX: Escape tokens with spaces or special characters ###
+        def _escape_token(token):
+            # Validate token
+            if not token or "\n" in token:
+                raise ValueError(f"Invalid token: {token!r}. Tokens cannot be empty or contain newlines.")
+            # Escape tokens with spaces, tabs, or quotes
+            if any(c in token for c in [" ", "\t", '"']):
+                # Replace any internal quotes with escaped quotes
+                token = token.replace('"', '\\"')
+                return f'"{token}"'
+            return token
+
+        escaped_sentences = []
+        for sent in sentences:
+            if not sent:  # Skip empty sentences
+                continue
+            escaped_sentences.append(" ".join(_escape_token(tok) for tok in sent))
+
+        _input = "\n".join(escaped_sentences)
+        ### END FIX ###
+
+        # Write the sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, "wb")
-        _input = "\n".join(" ".join(x) for x in sentences)
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
