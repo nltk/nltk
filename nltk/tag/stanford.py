@@ -238,19 +238,45 @@ class StanfordNERTagger(StanfordTagger):
 
     def parse_output(self, text, sentences):
         if self._FORMAT == "slashTags":
-            # Joint together to a big list
+            ### FIX: Handle quoted tokens in output ###
             tagged_sentences = []
             for tagged_sentence in text.strip().split("\n"):
-                for tagged_word in tagged_sentence.strip().split():
-                    word_tags = tagged_word.strip().split(self._SEPARATOR)
-                    tagged_sentences.append(("".join(word_tags[:-1]), word_tags[-1]))
+                sentence = []
+                # Use a simple state machine to handle quoted tokens
+                current_token = []
+                in_quotes = False
+                for char in tagged_sentence + " ":  # Add space to process last token
+                    if char == '"':
+                        in_quotes = not in_quotes
+                    elif char == " " and not in_quotes:
+                        if current_token:
+                            tagged_word = "".join(current_token).strip()
+                            if tagged_word:
+                                # Split on last separator to separate word and tag
+                                word_tags = tagged_word.rsplit(self._SEPARATOR, 1)
+                                if len(word_tags) == 2:
+                                    word, tag = word_tags
+                                    # Remove surrounding quotes if present
+                                    word = word.strip('"').replace('\\"', '"')
+                                    sentence.append((word, tag))
+                                else:
+                                    # Handle malformed output
+                                    sentence.append((tagged_word, "O"))
+                            current_token = []
+                    else:
+                        current_token.append(char)
+                tagged_sentences.append(sentence)
 
-            # Separate it according to the input
+            # Align with input sentences
             result = []
             start = 0
             for sent in sentences:
-                result.append(tagged_sentences[start : start + len(sent)])
-                start += len(sent)
+                if not sent:  # Handle empty sentences
+                    result.append([])
+                    continue
+                sent_len = len(sent)
+                result.append(tagged_sentences[start : start + sent_len])
+                start += sent_len
             return result
 
         raise NotImplementedError
