@@ -1,4 +1,4 @@
-# Natural Language Toolkit: ALINE
+    `# Natural Language Toolkit: ALINE
 #
 # Copyright (C) 2001-2025 NLTK Project
 # Author: Greg Kondrak <gkondrak@ualberta.ca>
@@ -1332,6 +1332,14 @@ def align(str1, str2, epsilon=0):
         raise ImportError("You need numpy in order to use the align function")
 
     assert 0.0 <= epsilon <= 1.0, "Epsilon must be between 0.0 and 1.0."
+
+    # Validate input segments
+    for char in str1 + str2:
+        if char != "-" and char not in feature_matrix:
+            raise ValueError(
+                f"Invalid phonetic segment '{char}' in input. Must be in feature_matrix."
+            )
+    
     m = len(str1)
     n = len(str2)
     # This includes Kondrak's initialization of row 0 and column 0 to all 0s.
