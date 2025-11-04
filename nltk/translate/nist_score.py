@@ -67,6 +67,13 @@ def sentence_nist(references, hypothesis, n=5):
     :param n: highest n-gram order
     :type n: int
     """
+    if n < 1:
+        raise ValueError(f"n must be at least 1, got n={n}")
+
+    if n > len(hypothesis):
+        max_hyp_len = len(hypothesis)
+        raise ValueError(f"n={n} exceeds maximum possible n-gram length ({max_hyp_len}). "
+                        f"Set n <= {max_hyp_len} to compute valid NIST score.")
     return corpus_nist([references], [hypothesis], n)
 
 
