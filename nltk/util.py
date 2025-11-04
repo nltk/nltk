@@ -1223,6 +1223,10 @@ def elementtree_indent(elem, level=0):
     used for pretty printing. Run indent on elem and then output
     in the normal way.
 
+    .. warning::
+        Using very large values for `level` (e.g., > 1000) may cause significant performance degradation due to deep recursion and excessive string operations.
+        This function is intended for human-readable output; use moderate levels only.
+
     :param elem: element to be indented. will be modified.
     :type elem: ElementTree._ElementInterface
     :param level: level of indentation for this element
