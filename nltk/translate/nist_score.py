@@ -72,8 +72,10 @@ def sentence_nist(references, hypothesis, n=5):
 
     if n > len(hypothesis):
         max_hyp_len = len(hypothesis)
-        raise ValueError(f"n={n} exceeds maximum possible n-gram length ({max_hyp_len}). "
-                        f"Set n <= {max_hyp_len} to compute valid NIST score.")
+        raise ValueError(
+            f"n={n} exceeds maximum possible n-gram length ({max_hyp_len}). "
+            f"Set n <= {max_hyp_len} to compute valid NIST score."
+        )
     return corpus_nist([references], [hypothesis], n)
 
 
