@@ -5,7 +5,7 @@
 #               Mark Byers, ekhumoro, P. Ortiz
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-""" RIBES score implementation """
+"""RIBES score implementation"""
 
 import math
 from itertools import islice
