@@ -174,7 +174,7 @@ The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.git
        - Otherwise, download all the data packages through `nltk.download('all')`.
 
   - The `test` job
-    - tests against supported Python versions (`3.9`, `3.10`, `3.11`, `3.12`).
+    - tests against supported Python versions (`3.10`, `3.11`, `3.12`).
     - tests on `ubuntu-latest` and `macos-latest`.
     - relies on the `cache_nltk_data` job to ensure that `nltk_data` is available.
     - performs these steps:
