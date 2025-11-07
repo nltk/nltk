@@ -11,6 +11,7 @@
 
 import gc
 import re
+import types
 
 import nltk
 
@@ -139,15 +140,4 @@ def _make_bound_method(func, self):
     """
     Magic for creating bound methods (used for _unload).
     """
-
-    class Foo:
-        def meth(self):
-            pass
-
-    f = Foo()
-    bound_method = type(f.meth)
-
-    try:
-        return bound_method(func, self, self.__class__)
-    except TypeError:  # python3
-        return bound_method(func, self)
+    return types.MethodType(func, self)

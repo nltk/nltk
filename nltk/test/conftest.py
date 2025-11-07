@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from nltk.corpus.reader import CorpusReader
@@ -30,4 +32,7 @@ def teardown_loaded_corpora():
     for name in dir(nltk.corpus):
         obj = getattr(nltk.corpus, name, None)
         if isinstance(obj, CorpusReader) and hasattr(obj, "_unload"):
+            # skip unload on Python 3.13+ to avoid segfaults
+            if sys.version_info >= (3, 13):
+                continue
             obj._unload()
