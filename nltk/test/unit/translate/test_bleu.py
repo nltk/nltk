@@ -134,6 +134,7 @@ class TestBLEU(unittest.TestCase):
             weights = (1.0 / n,) * n  # Uniform weights.
             assert sentence_bleu(references, hypothesis, weights) == 1.0
 
+    @pytest.mark.parallel_threads(1)
     def test_partial_matches_hypothesis_longer_than_reference(self):
         references = ["John loves Mary".split()]
         hypothesis = "John loves Mary who loves Mike".split()
@@ -149,6 +150,7 @@ class TestBLEU(unittest.TestCase):
 
 # @unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
+    @pytest.mark.parallel_threads(1)
     def test_case_where_n_is_bigger_than_hypothesis_length(self):
         # Test BLEU to nth order of n-grams, where n > len(hypothesis).
         references = ["John loves Mary ?".split()]
@@ -204,6 +206,7 @@ class TestBLEUFringeCases(unittest.TestCase):
         hypothesis = []
         assert sentence_bleu(references, hypothesis) == 0
 
+    @pytest.mark.parallel_threads(1)
     def test_reference_or_hypothesis_shorter_than_fourgrams(self):
         # Test case where the length of reference or hypothesis
         # is shorter than 4.
@@ -273,6 +276,7 @@ class TestBLEUvsMteval13a(unittest.TestCase):
 
 
 class TestBLEUWithBadSentence(unittest.TestCase):
+    @pytest.mark.parallel_threads(1)
     def test_corpus_bleu_with_bad_sentence(self):
         hyp = "Teo S yb , oe uNb , R , T t , , t Tue Ar saln S , , 5istsi l , 5oe R ulO sae oR R"
         ref = str(

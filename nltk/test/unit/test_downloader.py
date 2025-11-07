@@ -2,6 +2,8 @@ import os
 import shutil
 import unittest.mock
 
+import pytest
+
 from nltk import download
 from nltk.downloader import build_index
 
@@ -24,6 +26,7 @@ def test_downloader_using_non_existing_parent_download_dir(tmp_path):
     assert download_status is True
 
 
+@pytest.mark.iterations(1)
 def test_downloader_redownload(tmp_path):
     """Test that a second download correctly triggers the 'already up-to-date' message"""
 

@@ -3,6 +3,8 @@ import sys
 import unittest
 from io import StringIO
 
+import pytest
+
 from nltk.corpus import gutenberg
 from nltk.text import Text
 
@@ -74,6 +76,7 @@ class TestConcordance(unittest.TestCase):
         concordance_out = self.text.concordance_list(self.query, lines=3)
         self.assertEqual(self.list_out[:3], [c.line for c in concordance_out])
 
+    @pytest.mark.parallel_threads(1)
     def test_concordance_print(self):
         print_out = """Displaying 11 of 11 matches:
         ong the former , one was of a most monstrous size . ... This came towards us ,

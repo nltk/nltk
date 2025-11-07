@@ -5,6 +5,8 @@ See also nltk/test/wordnet.doctest
 
 import unittest
 
+import pytest
+
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic as wnic
 
@@ -14,6 +16,7 @@ L = wn.lemma
 
 
 class WordnNetDemo(unittest.TestCase):
+    @pytest.mark.parallel_threads(1)
     def test_retrieve_synset(self):
         move_synset = S("go.v.21")
         self.assertEqual(move_synset.name(), "move.v.15")
@@ -23,6 +26,7 @@ class WordnNetDemo(unittest.TestCase):
         )
         self.assertEqual(move_synset.examples(), ["Can I go now?"])
 
+    @pytest.mark.parallel_threads(1)
     def test_retrieve_synsets(self):
         self.assertEqual(sorted(wn.synsets("zap", pos="n")), [S("zap.n.01")])
         self.assertEqual(
@@ -30,6 +34,7 @@ class WordnNetDemo(unittest.TestCase):
             [S("microwave.v.01"), S("nuke.v.01"), S("zap.v.01"), S("zap.v.02")],
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_hyperhyponyms(self):
         # Not every synset as hypernyms()
         self.assertEqual(S("travel.v.01").hypernyms(), [])
@@ -65,6 +70,7 @@ class WordnNetDemo(unittest.TestCase):
             sorted(S("fall.v.12").root_hypernyms()), [S("act.v.01"), S("fall.v.17")]
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_derivationally_related_forms(self):
         # Test `derivationally_related_forms()`
         self.assertEqual(
@@ -81,6 +87,7 @@ class WordnNetDemo(unittest.TestCase):
         )
         self.assertEqual(L("zap.v.03.zap").derivationally_related_forms(), [])
 
+    @pytest.mark.parallel_threads(1)
     def test_meronyms_holonyms(self):
         # Test meronyms, holonyms.
         self.assertEqual(
@@ -111,6 +118,7 @@ class WordnNetDemo(unittest.TestCase):
             ],
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_antonyms(self):
         # Test antonyms.
         self.assertEqual(
@@ -120,6 +128,7 @@ class WordnNetDemo(unittest.TestCase):
             L("increase.v.1.increase").antonyms(), [L("decrease.v.01.decrease")]
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_misc_relations(self):
         # Test misc relations.
         self.assertEqual(S("snore.v.1").entailments(), [S("sleep.v.01")])
@@ -143,6 +152,7 @@ class WordnNetDemo(unittest.TestCase):
             L("English.a.1.English").pertainyms(), [L("england.n.01.England")]
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_lch(self):
         # Test LCH.
         self.assertEqual(
@@ -154,12 +164,14 @@ class WordnNetDemo(unittest.TestCase):
             [S("woman.n.01")],
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_domains(self):
         # Test domains.
         self.assertEqual(S("code.n.03").topic_domains(), [S("computer_science.n.01")])
         self.assertEqual(S("pukka.a.01").region_domains(), [S("india.n.01")])
         self.assertEqual(S("freaky.a.01").usage_domains(), [S("slang.n.02")])
 
+    @pytest.mark.parallel_threads(1)
     def test_in_topic_domains(self):
         # Test in domains.
         self.assertEqual(
@@ -172,6 +184,7 @@ class WordnNetDemo(unittest.TestCase):
             sorted(S("slang.n.02").in_usage_domains())[1], S("airhead.n.01")
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_wordnet_similarities(self):
         # Path based similarities.
         self.assertAlmostEqual(S("cat.n.01").path_similarity(S("cat.n.01")), 1.0)
@@ -220,6 +233,7 @@ class WordnNetDemo(unittest.TestCase):
             S("dog.n.01").lin_similarity(S("cat.n.01"), semcor_ic), 0.8863, places=3
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_omw_lemma_no_trailing_underscore(self):
         expected = sorted(
             [
@@ -231,6 +245,7 @@ class WordnNetDemo(unittest.TestCase):
         )
         self.assertEqual(sorted(S("about-face.n.02").lemma_names(lang="slv")), expected)
 
+    @pytest.mark.parallel_threads(1)
     def test_iterable_type_for_all_lemma_names(self):
         # Duck-test for iterables.
         # See https://stackoverflow.com/a/36230057/610569
@@ -269,6 +284,7 @@ class WordnNetDemo(unittest.TestCase):
         self.assertIsNone(wn.tag2pos("POS"))
         self.assertIsNone(wn.tag2pos("."))
 
+    @pytest.mark.parallel_threads(1)
     def test_en_brown_tags(self):
         # Common Brown tags (mapped in both PTB and Brown)
         self.assertEqual(wn.tag2pos("NN", tagset="en-brown"), "n")  # noun

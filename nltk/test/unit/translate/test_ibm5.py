@@ -5,6 +5,8 @@ Tests for IBM Model 5 training methods
 import unittest
 from collections import defaultdict
 
+import pytest
+
 from nltk.translate import AlignedSent, IBMModel, IBMModel4, IBMModel5
 from nltk.translate.ibm_model import AlignmentInfo
 
@@ -124,6 +126,7 @@ class TestIBMModel5(unittest.TestCase):
         )
         self.assertEqual(round(probability, 4), round(expected_probability, 4))
 
+    @pytest.mark.parallel_threads(1)
     def test_prune(self):
         # arrange
         alignment_infos = [

@@ -6,6 +6,8 @@ import io
 import unittest
 import unittest.mock
 
+import pytest
+
 from nltk import pos_tag, word_tokenize
 from nltk.help import brown_tagset, claws5_tagset, upenn_tagset
 
@@ -66,12 +68,15 @@ class TestPosTag(unittest.TestCase):
         tagset(query_regex)
         self.assertEqual(mock_stdout.getvalue(), expected_output)
 
+    @pytest.mark.parallel_threads(1)
     def test_tagsets_upenn(self):
         self.check_stdout(upenn_tagset, r".*\$", UPENN_TAGSET_DOLLAR_TEST)
 
+    @pytest.mark.parallel_threads(1)
     def test_tagsets_brown(self):
         self.check_stdout(brown_tagset, r"NNS", BROWN_TAGSET_NNS_TEST)
 
+    @pytest.mark.parallel_threads(1)
     def test_tagsets_claw5(self):
         self.check_stdout(claws5_tagset, r"VHD", CLAW5_TAGSET_VHD_TEST)
 

@@ -72,6 +72,7 @@ class TestFloresta(unittest.TestCase):
 
 
 class TestSinicaTreebank(unittest.TestCase):
+    @pytest.mark.parallel_threads(1)
     def test_sents(self):
         first_3_sents = sinica_treebank.sents()[:3]
         self.assertEqual(
@@ -79,6 +80,7 @@ class TestSinicaTreebank(unittest.TestCase):
             [["一"], ["友情"], ["嘉珍", "和", "我", "住在", "同一條", "巷子"]],
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_parsed_sents(self):
         parsed_sents = sinica_treebank.parsed_sents()[25]
         self.assertEqual(
@@ -97,12 +99,14 @@ class TestSinicaTreebank(unittest.TestCase):
 class TestCoNLL2007(unittest.TestCase):
     # Reading the CoNLL 2007 Dependency Treebanks
 
+    @pytest.mark.parallel_threads(1)
     def test_sents(self):
         sents = conll2007.sents("esp.train")[0]
         self.assertEqual(
             sents[:6], ["El", "aumento", "del", "índice", "de", "desempleo"]
         )
 
+    @pytest.mark.parallel_threads(1)
     def test_parsed_sents(self):
         parsed_sents = conll2007.parsed_sents("esp.train")[0]
 

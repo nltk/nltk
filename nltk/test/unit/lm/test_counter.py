@@ -30,6 +30,8 @@ class TestNgramCounter:
         assert self.bigram_counter.N() == 16
         assert self.trigram_counter.N() == 21
 
+    @pytest.mark.iterations(1)
+    @pytest.mark.parallel_threads(1)
     def test_counter_len_changes_with_lookup(self):
         assert len(self.bigram_counter) == 2
         self.bigram_counter[50]

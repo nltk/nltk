@@ -9,6 +9,8 @@ def everygram_input():
     return iter(["a", "b", "c"])
 
 
+@pytest.mark.iterations(1)
+@pytest.mark.parallel_threads(1)
 def test_everygrams_without_padding(everygram_input):
     expected_output = [
         ("a",),
@@ -22,6 +24,8 @@ def test_everygrams_without_padding(everygram_input):
     assert output == expected_output
 
 
+@pytest.mark.iterations(1)
+@pytest.mark.parallel_threads(1)
 def test_everygrams_max_len(everygram_input):
     expected_output = [
         ("a",),
@@ -34,6 +38,8 @@ def test_everygrams_max_len(everygram_input):
     assert output == expected_output
 
 
+@pytest.mark.iterations(1)
+@pytest.mark.parallel_threads(1)
 def test_everygrams_min_len(everygram_input):
     expected_output = [
         ("a", "b"),
@@ -44,6 +50,8 @@ def test_everygrams_min_len(everygram_input):
     assert output == expected_output
 
 
+@pytest.mark.iterations(1)
+@pytest.mark.parallel_threads(1)
 def test_everygrams_pad_right(everygram_input):
     expected_output = [
         ("a",),
@@ -63,6 +71,8 @@ def test_everygrams_pad_right(everygram_input):
     assert output == expected_output
 
 
+@pytest.mark.iterations(1)
+@pytest.mark.parallel_threads(1)
 def test_everygrams_pad_left(everygram_input):
     expected_output = [
         (None,),
