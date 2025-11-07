@@ -4,7 +4,7 @@ Tests for BLEU translation evaluation metric
 
 import unittest
 
-import numpy as np
+import pytest
 
 from nltk.data import find
 from nltk.translate.bleu_score import (
@@ -219,6 +219,8 @@ class TestBLEUFringeCases(unittest.TestCase):
             pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
     def test_numpy_weights(self):
+        # numpy is required for the test execution
+        np = pytest.importorskip("numpy")
         # Test case where there's 0 matches
         references = ["The candidate has no alignment to any of the references".split()]
         hypothesis = "John loves Mary".split()
