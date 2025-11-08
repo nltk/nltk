@@ -112,6 +112,9 @@ class LazyCorpusLoader:
             """
             lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
 
+            # Now swap the class
+            self.__class__ = lazy_reader.__class__
+
             # IMPORTANT: mutate the existing dict in place to preserve the mapping object's identity
             d = self.__dict__
             try:
@@ -120,9 +123,6 @@ class LazyCorpusLoader:
             except Exception:
                 # If any reader has a guarded dict, fall back to assignment (will help diagnostics)
                 self.__dict__ = lazy_reader.__dict__
-
-            # Now swap the class
-            self.__class__ = lazy_reader.__class__
 
             # No forced gc.collect(); rely on natural GC
 
