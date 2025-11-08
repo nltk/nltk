@@ -106,7 +106,8 @@ class LazyCorpusLoader:
             lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
             self.__dict__ = lazy_reader.__dict__
             self.__class__ = lazy_reader.__class__
-            gc.collect()
+
+        #            gc.collect()
 
         self._unload = _make_bound_method(_unload, self)
 
