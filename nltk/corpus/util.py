@@ -102,13 +102,29 @@ class LazyCorpusLoader:
         # _unload support: assign __dict__ and __class__ back, then do GC.
         # after reassigning __dict__ there shouldn't be any references to
         # corpus data so the memory should be deallocated after gc.collect()
+
         def _unload(self):
+            """
+            Experimental: Avoid swapping out the dict mapping object.
+            - Rebuild a fresh lazy loader.
+            - Mutate this instance's dict in place (clear + update) to match the lazy state.
+            - Then perform the class swap.
+            """
             lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
-            self.__dict__ = lazy_reader.__dict__
 
-        #    self.__class__ = lazy_reader.__class__
+            # IMPORTANT: mutate the existing dict in place to preserve the mapping object's identity
+            d = self.__dict__
+            try:
+                d.clear()
+                d.update(lazy_reader.__dict__)
+            except Exception:
+                # If any reader has a guarded dict, fall back to assignment (will help diagnostics)
+                self.__dict__ = lazy_reader.__dict__
 
-        #            gc.collect()
+            # Now swap the class
+            self.__class__ = lazy_reader.__class__
+
+            # No forced gc.collect(); rely on natural GC
 
         self._unload = _make_bound_method(_unload, self)
 
