@@ -4,10 +4,22 @@
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-######################################################################
-# { Lazy Corpus Loader
-######################################################################
+#
+# ----------------------------------------------------------------------
+# Lazy Corpus Loader
+# ----------------------------------------------------------------------
+#
+# Unload design notes:
+# Older implementations tried to "void" a loaded corpus instance with
+#     self.__class__ = None
+# which is unsafe: CPython expects __class__ to remain a valid type
+# object. Assigning None can corrupt interpreter state and cause segfaults.
+#
+# The current approach restores the object to a *fresh* LazyCorpusLoader
+# proxy, allowing a future reload while dropping references to the loaded
+# corpus for GC. If a permanently inert unload is desired, a different
+# flag‑based pattern could be introduced separately.
+# ----------------------------------------------------------------------
 
 import gc
 import re
@@ -20,33 +32,19 @@ TRY_ZIPFILE_FIRST = False
 
 class LazyCorpusLoader:
     """
-    To see the API documentation for this lazily loaded corpus, first
-    run corpus.ensure_loaded(), and then run help(this_corpus).
+    Lazily stands in for an actual corpus reader until first access.
 
-    LazyCorpusLoader is a proxy object which is used to stand in for a
-    corpus object before the corpus is loaded.  This allows NLTK to
-    create an object for each corpus, but defer the costs associated
-    with loading those corpora until the first time that they're
-    actually accessed.
+    On first attribute access, the loader locates the corpus root,
+    instantiates the designated reader class, and mutates its own
+    __dict__ and __class__ to become that reader.
 
-    The first time this object is accessed in any way, it will load
-    the corresponding corpus, and transform itself into that corpus
-    (by modifying its own ``__class__`` and ``__dict__`` attributes).
+    If the corpus is not found, a LookupError with installation
+    guidance is raised.
 
-    If the corpus can not be found, then accessing this object will
-    raise an exception, displaying installation instructions for the
-    NLTK data package.  Once they've properly installed the data
-    package (or modified ``nltk.data.path`` to point to its location),
-    they can then use the corpus object without restarting python.
-
-    :param name: The name of the corpus
-    :type name: str
-    :param reader_cls: The specific CorpusReader class, e.g. PlaintextCorpusReader, WordListCorpusReader
-    :type reader: nltk.corpus.reader.api.CorpusReader
-    :param nltk_data_subdir: The subdirectory where the corpus is stored.
-    :type nltk_data_subdir: str
-    :param `*args`: Any other non-keywords arguments that `reader_cls` might need.
-    :param `**kwargs`: Any other keywords arguments that `reader_cls` might need.
+    :param name: Corpus name (path fragment under nltk_data/<subdir>).
+    :param reader_cls: CorpusReader subclass to instantiate.
+    :param nltk_data_subdir: Optional override for data subdirectory (default 'corpora').
+    :param *args, **kwargs: Forwarded to reader_cls.
     """
 
     def __init__(self, name, reader_cls, *args, **kwargs):
@@ -55,19 +53,15 @@ class LazyCorpusLoader:
         assert issubclass(reader_cls, CorpusReader)
         self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
-        # If nltk_data_subdir is set explicitly
         if "nltk_data_subdir" in kwargs:
-            # Use the specified subdirectory path
-            self.subdir = kwargs["nltk_data_subdir"]
-            # Pops the `nltk_data_subdir` argument, we don't need it anymore.
-            kwargs.pop("nltk_data_subdir", None)
-        else:  # Otherwise use 'nltk_data/corpora'
+            self.subdir = kwargs.pop("nltk_data_subdir")
+        else:
             self.subdir = "corpora"
         self.__args = args
         self.__kwargs = kwargs
 
     def __load(self):
-        # Find the corpus root directory.
+        # Resolve root directory, trying normal then zip (or reversed if configured).
         zip_name = re.sub(r"(([^/]+)(/.*)?)", r"\2.zip/\1/", self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
@@ -86,38 +80,44 @@ class LazyCorpusLoader:
                 except LookupError:
                     raise e
 
-        # Load the corpus.
         corpus = self.__reader_cls(root, *self.__args, **self.__kwargs)
 
-        # This is where the magic happens!  Transform ourselves into
-        # the corpus by modifying our own __dict__ and __class__ to
-        # match that of the corpus.
-
+        # Preserve construction args for future reload after unload.
         args, kwargs = self.__args, self.__kwargs
         name, reader_cls = self.__name, self.__reader_cls
 
+        # Adopt corpus identity.
         self.__dict__ = corpus.__dict__
         self.__class__ = corpus.__class__
 
-        # _unload support: assign __dict__ and __class__ back, then do GC.
-        # after reassigning __dict__ there shouldn't be any references to
-        # corpus data so the memory should be deallocated after gc.collect()
         def _unload(self):
-            self.__dict__ = dict()  # lazy_reader.__dict__
-            self.__class__ = None  # lazy_reader.__class__
+            # Rebuild a pristine lazy proxy; drop old corpus references.
+            lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
+            self.__dict__.clear()
+            self.__dict__.update(lazy_reader.__dict__)
+            self.__class__ = lazy_reader.__class__
+            self._unloaded = True  # Diagnostic/optional.
             gc.collect()
 
+        # Directly bind method without helper.
+        self._unload = types.MethodType(_unload, self)
+
     def __getattr__(self, attr):
-        # Fix for inspect.isclass under Python 2.6
-        # (see https://bugs.python.org/issue1225107).
-        # Without this fix tests may take extra 1.5GB RAM
-        # because all corpora gets loaded during test collection.
-        if attr == "__bases__":
-            raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
+        """
+        Trigger loading on first missing attribute access.
+
+        From Python 3.9+ we no longer need legacy inspect workarounds.
+        To avoid surprising loads during introspection, do not load on
+        dunder attribute lookups (e.g., '__bases__', '__wrapped__').
+        """
+        if attr.startswith("__") and attr.endswith("__"):
+            # Avoid loading on introspection-related dunder names.
+            raise AttributeError(
+                f"{type(self).__name__} object has no attribute {attr!r}"
+            )
 
         self.__load()
-        # This looks circular, but its not, since __load() changes our
-        # __class__ to something new:
+        # After loading, our class is now the real corpus reader; delegate.
         return getattr(self, attr)
 
     def __repr__(self):
@@ -127,7 +127,5 @@ class LazyCorpusLoader:
         )
 
     def _unload(self):
-        # If an exception occurs during corpus loading then
-        # '_unload' method may be unattached, so __getattr__ can be called;
-        # we shouldn't trigger corpus loading again in this case.
+        # Placeholder only active if load failed and rebound did not occur.
         pass
