@@ -108,8 +108,6 @@ class LazyCorpusLoader:
             # Restore to pristine lazy proxy state
             self.__dict__.update(lazy_reader.__dict__)
             self.__class__ = LazyCorpusLoader
-            # Optional diagnostic flag
-            self._unloaded = True
             # Encourage cleanup of large structures that may now be unreachable
             gc.collect()
 
