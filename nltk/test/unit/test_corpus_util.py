@@ -28,7 +28,8 @@ def dummy_reader_cls():
 
     class DummyCorpusReader(CorpusReader):
         def __init__(self, root, *args, **kwargs):
-            # Do not call super().__init__ to avoid FS ops; just set internals
+            # Call base class __init__ with safe parameters to avoid FS ops
+            super().__init__(root, fileids=[])
             self._root = root  # CorpusReader.root property reads from _root
             self.payload = ["ok"]  # something to show attributes exist
 
