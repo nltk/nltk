@@ -8,12 +8,12 @@ repos:
       - id: requirements-txt-fixer
       - id: check-yaml
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.0
+    rev: v3.21.1
     hooks:
     - id: pyupgrade
       args: ["--py38-plus"]
   - repo: https://github.com/ambv/black
-    rev: 25.9.0
+    rev: 25.11.0
     hooks:
     - id: black
   - repo: local
