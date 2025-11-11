@@ -102,11 +102,10 @@ class LazyCorpusLoader:
         # dict and class, there should be no remaining references to the
         # loaded corpus objects, making them eligible for collection.
         def _unload(self):
-            lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
             # Clear current attributes to drop references held by the corpus
-            self.__dict__.clear()
+            #            self.__dict__.clear()
             # Restore to pristine lazy proxy state
-            self.__dict__.update(lazy_reader.__dict__)
+            self.__dict__ = LazyCorpusLoader(name, reader_cls, *args, **kwargs).__dict__
             self.__class__ = LazyCorpusLoader
             # Encourage cleanup of large structures that may now be unreachable
             gc.collect()
