@@ -108,8 +108,6 @@ class LazyCorpusLoader:
             self.__class__ = LazyCorpusLoader
             self.__dict__.clear()
             self.__dict__.update(fresh.__dict__)
-            # Encourage cleanup of large structures that may now be unreachable
-            gc.collect()
 
         # Bind the method directly without a helper.
         self._unload = types.MethodType(_unload, self)
