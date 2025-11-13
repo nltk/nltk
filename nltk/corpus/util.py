@@ -4,10 +4,10 @@
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#
-# ----------------------------------------------------------------------
-# Lazy Corpus Loader
-# ----------------------------------------------------------------------
+
+######################################################################
+# { Lazy Corpus Loader
+######################################################################
 
 import gc
 import re
@@ -58,7 +58,9 @@ class LazyCorpusLoader:
         # If nltk_data_subdir is set explicitly
         if "nltk_data_subdir" in kwargs:
             # Use the specified subdirectory path
-            self.subdir = kwargs.pop("nltk_data_subdir")
+            self.subdir = kwargs["nltk_data_subdir"]
+            # Pops the `nltk_data_subdir` argument, we don't need it anymore.
+            kwargs.pop("nltk_data_subdir", None)
         else:  # Otherwise use 'nltk_data/corpora'
             self.subdir = "corpora"
         self.__args = args
@@ -99,9 +101,9 @@ class LazyCorpusLoader:
         self.__class__ = corpus.__class__
 
         # _unload support: assign __dict__ and __class__ back to a fresh
-        # LazyCorpusLoader proxy, then encourage GC. After updating our
-        # dict and class, there should be no remaining references to the
-        # loaded corpus objects, making them eligible for collection.
+        # LazyCorpusLoader proxy. After updating our dict and class, there
+        # should be no remaining references to the loaded corpus objects,
+        # making them eligible for collection.
         def _unload(self):
             # Restore to pristine lazy proxy state without swapping the dict object
             fresh = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
@@ -109,15 +111,14 @@ class LazyCorpusLoader:
             self.__dict__.clear()
             self.__dict__.update(fresh.__dict__)
 
-        # Bind the method directly without a helper.
-        self._unload = types.MethodType(_unload, self)
+        # Bind via helper for flexibility and testability.
+        self._unload = _make_bound_method(_unload, self)
 
     def __getattr__(self, attr):
         """
         Trigger loading on first missing attribute access.
 
-        Since we only support Python 3.9+, we avoid legacy workarounds and
-        purposefully do not trigger a load for introspection-oriented dunder
+        Avoid triggering a load for introspection-oriented dunder
         attributes (e.g., '__bases__', '__wrapped__').
         """
         if attr.startswith("__") and attr.endswith("__"):
@@ -126,7 +127,7 @@ class LazyCorpusLoader:
             )
 
         self.__load()
-        # This looks circular, but it's not, since __load() changes our
+        # This looks circular, but its not, since __load() changes our
         # __class__ to something new:
         return getattr(self, attr)
 
@@ -141,3 +142,10 @@ class LazyCorpusLoader:
         # '_unload' method may be unattached, so __getattr__ can be called;
         # we shouldn't trigger corpus loading again in this case.
         pass
+
+
+def _make_bound_method(func, self):
+    """
+    Magic for creating bound methods (used for _unload).
+    """
+    return types.MethodType(func, self)
