@@ -13,10 +13,11 @@ import pytest
 
 from nltk.corpus.util import LazyCorpusLoader, _make_bound_method
 
+# ----------------------------------------------------------------------
+# Tests for _make_bound_method
+# ----------------------------------------------------------------------
 
-# ----------------------------------------------------------------------
-# Original tests for _make_bound_method
-# ----------------------------------------------------------------------
+
 class TestMakeBoundMethod:
     """Tests for _make_bound_method function"""
 
@@ -33,7 +34,10 @@ class TestMakeBoundMethod:
         obj = TestClass(5)
         bound_method = _make_bound_method(test_func, obj)
 
+        # verify it's callable
         assert callable(bound_method)
+
+        # verify it returns the correct value
         assert bound_method() == 10
 
     def test_bound_method_has_correct_self(self):
@@ -50,6 +54,7 @@ class TestMakeBoundMethod:
         obj = Counter()
         bound_increment = _make_bound_method(increment, obj)
 
+        # call multiple times and verify state changes
         assert bound_increment() == 1
         assert bound_increment() == 2
         assert obj.count == 2
@@ -74,10 +79,11 @@ class TestMakeBoundMethod:
 # ----------------------------------------------------------------------
 # New tests for LazyCorpusLoader behavior
 # ----------------------------------------------------------------------
+
+
 @pytest.fixture
 def monkeypatch_find(monkeypatch, tmp_path):
-    """Always return a temporary directory for nltk.data.find to avoid real FS access."""
-
+    # Always return a temporary directory for data.find
     def fake_find(path_spec):
         return str(tmp_path)
 
@@ -87,15 +93,15 @@ def monkeypatch_find(monkeypatch, tmp_path):
 
 @pytest.fixture
 def dummy_reader_cls():
-    """Minimal CorpusReader subclass that avoids real filesystem operations."""
+    # Minimal CorpusReader subclass that doesn't touch the filesystem.
     from nltk.corpus.reader.api import CorpusReader
 
     class DummyCorpusReader(CorpusReader):
         def __init__(self, root, *args, **kwargs):
-            # Avoid filesystem interaction: no fileids.
+            # Call base class __init__ with safe parameters to avoid FS ops
             super().__init__(root, fileids=[])
-            self._root = root
-            self.payload = ["ok"]
+            self._root = root  # CorpusReader.root property reads from _root
+            self.payload = ["ok"]  # something to show attributes exist
 
         def marker(self):
             return f"ok:{self._root}"
@@ -105,16 +111,17 @@ def dummy_reader_cls():
 
 def test_repr_not_loaded(dummy_reader_cls):
     loader = LazyCorpusLoader("dummy_corpus", dummy_reader_cls)
+    # Should indicate not loaded yet
     assert "not loaded yet" in repr(loader)
 
 
 def test_load_unload_reload_cycle(monkeypatch_find, dummy_reader_cls):
     loader = LazyCorpusLoader("dummy_corpus", dummy_reader_cls)
 
-    # Initially lazy
+    # Initially still a lazy loader
     assert loader.__class__ is LazyCorpusLoader
 
-    # Trigger load
+    # Trigger load via a simple method
     assert loader.marker().startswith("ok:")
     assert loader.__class__ is dummy_reader_cls
 
@@ -122,12 +129,13 @@ def test_load_unload_reload_cycle(monkeypatch_find, dummy_reader_cls):
     loader._unload()
     assert loader.__class__ is LazyCorpusLoader
 
-    # Load again
+    # Access again to reload
     assert loader.marker().startswith("ok:")
     assert loader.__class__ is dummy_reader_cls
 
 
 def test_dunder_access_does_not_trigger_load(dummy_reader_cls):
+    # Ensure introspection-style dunder lookups don't load the corpus
     loader = LazyCorpusLoader("dummy_corpus", dummy_reader_cls)
     with pytest.raises(AttributeError):
         _ = loader.__wrapped__
