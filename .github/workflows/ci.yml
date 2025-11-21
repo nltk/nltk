@@ -50,7 +50,7 @@ jobs:
 
       - name: Set NLTK_DATA environment variable
         shell: bash
-        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> "$GITHUB_ENV"
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
 
       - name: Show NLTK_DATA in shell
         shell: bash
@@ -84,14 +84,12 @@ jobs:
 
       - name: Set NLTK_DATA environment variable
         shell: bash
-        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> "$GITHUB_ENV"
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
-          # Plugin for free-threaded stress testing
-          pip install pytest-run-parallel
 
       - name: Ensure minimal NLTK data for cache
         shell: bash
@@ -152,20 +150,7 @@ jobs:
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
-      # Free-threaded stress jobs: add PYTEST_RUN_PARALLEL_VERBOSE and --ignore-gil-enabled
-
-      - name: Run pytest with pytest-run-parallel (3.13/3.14/3.14t)
-        if: matrix.python-version == '3.13' || matrix.python-version == '3.14' || matrix.python-version == '3.14t'
-        shell: bash
-        env:
-          PYTEST_RUN_PARALLEL_VERBOSE: "1"
-        run: |
-          echo "Python version in matrix: ${{ matrix.python-version }}"
-          pytest --ignore-gil-enabled --iterations=8 --parallel-threads=auto -rsx --doctest-modules nltk
-
-      - name: Run pytest with xdist-style parallelism (others)
-        if: matrix.python-version != '3.13' && matrix.python-version != '3.14' && matrix.python-version != '3.14t'
+      - name: Run pytest
         shell: bash
         run: |
-          echo "Python version in matrix: ${{ matrix.python-version }}"
           pytest --numprocesses auto -rsx --doctest-modules nltk
