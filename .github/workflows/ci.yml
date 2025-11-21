@@ -152,14 +152,16 @@ jobs:
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
-      # SAFEST: split into two steps, use GitHub's `if:` expressions instead of shell conditionals
+      # Free-threaded stress jobs: add PYTEST_RUN_PARALLEL_VERBOSE and --ignore-gil-enabled
 
       - name: Run pytest with pytest-run-parallel (3.13/3.14/3.14t)
         if: matrix.python-version == '3.13' || matrix.python-version == '3.14' || matrix.python-version == '3.14t'
         shell: bash
+        env:
+          PYTEST_RUN_PARALLEL_VERBOSE: "1"
         run: |
           echo "Python version in matrix: ${{ matrix.python-version }}"
-          pytest --iterations=8 --parallel-threads=auto -rsx --doctest-modules nltk
+          pytest --ignore-gil-enabled --iterations=8 --parallel-threads=auto -rsx --doctest-modules nltk
 
       - name: Run pytest with xdist-style parallelism (others)
         if: matrix.python-version != '3.13' && matrix.python-version != '3.14' && matrix.python-version != '3.14t'
