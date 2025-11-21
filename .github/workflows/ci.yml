@@ -50,7 +50,7 @@ jobs:
 
       - name: Set NLTK_DATA environment variable
         shell: bash
-        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> "$GITHUB_ENV"
 
       - name: Show NLTK_DATA in shell
         shell: bash
@@ -84,13 +84,13 @@ jobs:
 
       - name: Set NLTK_DATA environment variable
         shell: bash
-        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> "$GITHUB_ENV"
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
-          # Install plugin for free-threaded stress testing
+          # Plugin for free-threaded stress testing
           pip install pytest-run-parallel
 
       - name: Ensure minimal NLTK data for cache
@@ -152,13 +152,18 @@ jobs:
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
-      - name: Run pytest (pytest-run-parallel on 3.13/3.14/3.14t)
+      # SAFEST: split into two steps, use GitHub's `if:` expressions instead of shell conditionals
+
+      - name: Run pytest with pytest-run-parallel (3.13/3.14/3.14t)
+        if: matrix.python-version == '3.13' || matrix.python-version == '3.14' || matrix.python-version == '3.14t'
         shell: bash
         run: |
           echo "Python version in matrix: ${{ matrix.python-version }}"
-          if [[ "${{ matrix.python-version }}" == "3.13" || "${{ matrix.python-version }}" == "3.14" || "${{ matrix.python-version }}" == "3.14t" ]]; then
-            echo "Running pytest with pytest-run-parallel for free-threaded testing"
-            pytest --iterations=8 --parallel-threads=auto -rsx --doctest-modules nltk
-          else
-            echo "Running pytest with pytest-xdist style parallelism"
-            pytest --numprocesses auto -rsx --doctest-modules nltk
+          pytest --iterations=8 --parallel-threads=auto -rsx --doctest-modules nltk
+
+      - name: Run pytest with xdist-style parallelism (others)
+        if: matrix.python-version != '3.13' && matrix.python-version != '3.14' && matrix.python-version != '3.14t'
+        shell: bash
+        run: |
+          echo "Python version in matrix: ${{ matrix.python-version }}"
+          pytest --numprocesses auto -rsx --doctest-modules nltk
