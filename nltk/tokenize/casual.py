@@ -184,9 +184,9 @@ REGEXPS = (
     r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]""",
     # Zero-Width-Joiner and Skin tone modifier emojis
     """.(?:
-        [\U0001F3FB-\U0001F3FF]?(?:\u200d.[\U0001F3FB-\U0001F3FF]?)+
+        [\U0001f3fb-\U0001f3ff]?(?:\u200d.[\U0001f3fb-\U0001f3ff]?)+
         |
-        [\U0001F3FB-\U0001F3FF]
+        [\U0001f3fb-\U0001f3ff]
     )""",
     # flags
     FLAGS,

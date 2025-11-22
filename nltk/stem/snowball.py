@@ -930,7 +930,7 @@ class DanishStemmer(_ScandinavianStemmer):
     """
 
     # The language's vowels and other important characters are defined.
-    __vowels = "aeiouy\xE6\xE5\xF8"
+    __vowels = "aeiouy\xe6\xe5\xf8"
     __consonants = "bcdfghjklmnpqrstvwxz"
     __double_consonants = (
         "bb",
@@ -954,7 +954,7 @@ class DanishStemmer(_ScandinavianStemmer):
         "xx",
         "zz",
     )
-    __s_ending = "abcdfghjklmnoprtvyz\xE5"
+    __s_ending = "abcdfghjklmnoprtvyz\xe5"
 
     # The different suffixes, divided into the algorithm's steps
     # and organized by length, are listed in tuples.
@@ -993,7 +993,7 @@ class DanishStemmer(_ScandinavianStemmer):
         "s",
     )
     __step2_suffixes = ("gd", "dt", "gt", "kt")
-    __step3_suffixes = ("elig", "l\xF8st", "lig", "els", "ig")
+    __step3_suffixes = ("elig", "l\xf8st", "lig", "els", "ig")
 
     def stem(self, word):
         """
@@ -1045,7 +1045,7 @@ class DanishStemmer(_ScandinavianStemmer):
 
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix == "l\xF8st":
+                if suffix == "l\xf8st":
                     word = word[:-1]
                     r1 = r1[:-1]
                 else:
@@ -1082,7 +1082,7 @@ class DutchStemmer(_StandardStemmer):
 
     """
 
-    __vowels = "aeiouy\xE8"
+    __vowels = "aeiouy\xe8"
     __step1_suffixes = ("heden", "ene", "en", "se", "s")
     __step3b_suffixes = ("baar", "lijk", "bar", "end", "ing", "ig")
 
@@ -1105,16 +1105,16 @@ class DutchStemmer(_StandardStemmer):
 
         # Vowel accents are removed.
         word = (
-            word.replace("\xE4", "a")
-            .replace("\xE1", "a")
-            .replace("\xEB", "e")
-            .replace("\xE9", "e")
-            .replace("\xED", "i")
-            .replace("\xEF", "i")
-            .replace("\xF6", "o")
-            .replace("\xF3", "o")
-            .replace("\xFC", "u")
-            .replace("\xFA", "u")
+            word.replace("\xe4", "a")
+            .replace("\xe1", "a")
+            .replace("\xeb", "e")
+            .replace("\xe9", "e")
+            .replace("\xed", "i")
+            .replace("\xef", "i")
+            .replace("\xf6", "o")
+            .replace("\xf3", "o")
+            .replace("\xfc", "u")
+            .replace("\xfa", "u")
         )
 
         # An initial 'y', a 'y' after a vowel,
@@ -1418,7 +1418,7 @@ class EnglishStemmer(_StandardStemmer):
         word = (
             word.replace("\u2019", "\x27")
             .replace("\u2018", "\x27")
-            .replace("\u201B", "\x27")
+            .replace("\u201b", "\x27")
         )
 
         if word.startswith("\x27"):
@@ -1800,9 +1800,9 @@ class FinnishStemmer(_StandardStemmer):
            http://snowball.tartarus.org/algorithms/finnish/stemmer.html
     """
 
-    __vowels = "aeiouy\xE4\xF6"
-    __restricted_vowels = "aeiou\xE4\xF6"
-    __long_vowels = ("aa", "ee", "ii", "oo", "uu", "\xE4\xE4", "\xF6\xF6")
+    __vowels = "aeiouy\xe4\xf6"
+    __restricted_vowels = "aeiou\xe4\xf6"
+    __long_vowels = ("aa", "ee", "ii", "oo", "uu", "\xe4\xe4", "\xf6\xf6")
     __consonants = "bcdfghjklmnpqrstvwxz"
     __double_consonants = (
         "bb",
@@ -1828,17 +1828,17 @@ class FinnishStemmer(_StandardStemmer):
     )
     __step1_suffixes = (
         "kaan",
-        "k\xE4\xE4n",
+        "k\xe4\xe4n",
         "sti",
         "kin",
         "han",
-        "h\xE4n",
+        "h\xe4n",
         "ko",
-        "k\xF6",
+        "k\xf6",
         "pa",
-        "p\xE4",
+        "p\xe4",
     )
-    __step2_suffixes = ("nsa", "ns\xE4", "mme", "nne", "si", "ni", "an", "\xE4n", "en")
+    __step2_suffixes = ("nsa", "ns\xe4", "mme", "nne", "si", "ni", "an", "\xe4n", "en")
     __step3_suffixes = (
         "siin",
         "tten",
@@ -1847,45 +1847,45 @@ class FinnishStemmer(_StandardStemmer):
         "hen",
         "hin",
         "hon",
-        "h\xE4n",
-        "h\xF6n",
+        "h\xe4n",
+        "h\xf6n",
         "den",
         "tta",
-        "tt\xE4",
+        "tt\xe4",
         "ssa",
-        "ss\xE4",
+        "ss\xe4",
         "sta",
-        "st\xE4",
+        "st\xe4",
         "lla",
-        "ll\xE4",
+        "ll\xe4",
         "lta",
-        "lt\xE4",
+        "lt\xe4",
         "lle",
         "ksi",
         "ine",
         "ta",
-        "t\xE4",
+        "t\xe4",
         "na",
-        "n\xE4",
+        "n\xe4",
         "a",
-        "\xE4",
+        "\xe4",
         "n",
     )
     __step4_suffixes = (
         "impi",
         "impa",
-        "imp\xE4",
+        "imp\xe4",
         "immi",
         "imma",
-        "imm\xE4",
+        "imm\xe4",
         "mpi",
         "mpa",
-        "mp\xE4",
+        "mp\xe4",
         "mmi",
         "mma",
-        "mm\xE4",
+        "mm\xe4",
         "eja",
-        "ej\xE4",
+        "ej\xe4",
     )
 
     def stem(self, word):
@@ -1916,7 +1916,7 @@ class FinnishStemmer(_StandardStemmer):
                         r1 = r1[:-3]
                         r2 = r2[:-3]
                 else:
-                    if word[-len(suffix) - 1] in "ntaeiouy\xE4\xF6":
+                    if word[-len(suffix) - 1] in "ntaeiouy\xe4\xf6":
                         word = word[: -len(suffix)]
                         r1 = r1[: -len(suffix)]
                         r2 = r2[: -len(suffix)]
@@ -1955,12 +1955,12 @@ class FinnishStemmer(_StandardStemmer):
                         r1 = r1[:-2]
                         r2 = r2[:-2]
 
-                elif suffix == "\xE4n":
-                    if word[-4:-2] in ("t\xE4", "n\xE4") or word[-5:-2] in (
-                        "ss\xE4",
-                        "st\xE4",
-                        "ll\xE4",
-                        "lt\xE4",
+                elif suffix == "\xe4n":
+                    if word[-4:-2] in ("t\xe4", "n\xe4") or word[-5:-2] in (
+                        "ss\xe4",
+                        "st\xe4",
+                        "ll\xe4",
+                        "lt\xe4",
                     ):
                         word = word[:-2]
                         r1 = r1[:-2]
@@ -1980,14 +1980,14 @@ class FinnishStemmer(_StandardStemmer):
         # STEP 3: Cases
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix in ("han", "hen", "hin", "hon", "h\xE4n", "h\xF6n"):
+                if suffix in ("han", "hen", "hin", "hon", "h\xe4n", "h\xf6n"):
                     if (
                         (suffix == "han" and word[-4] == "a")
                         or (suffix == "hen" and word[-4] == "e")
                         or (suffix == "hin" and word[-4] == "i")
                         or (suffix == "hon" and word[-4] == "o")
-                        or (suffix == "h\xE4n" and word[-4] == "\xE4")
-                        or (suffix == "h\xF6n" and word[-4] == "\xF6")
+                        or (suffix == "h\xe4n" and word[-4] == "\xe4")
+                        or (suffix == "h\xf6n" and word[-4] == "\xf6")
                     ):
                         word = word[:-3]
                         r1 = r1[:-3]
@@ -2015,14 +2015,14 @@ class FinnishStemmer(_StandardStemmer):
                     else:
                         continue
 
-                elif suffix in ("a", "\xE4"):
+                elif suffix in ("a", "\xe4"):
                     if word[-2] in self.__vowels and word[-3] in self.__consonants:
                         word = word[:-1]
                         r1 = r1[:-1]
                         r2 = r2[:-1]
                         step3_success = True
 
-                elif suffix in ("tta", "tt\xE4"):
+                elif suffix in ("tta", "tt\xe4"):
                     if word[-4] == "e":
                         word = word[:-3]
                         r1 = r1[:-3]
@@ -2049,7 +2049,7 @@ class FinnishStemmer(_StandardStemmer):
         # STEP 4: Other endings
         for suffix in self.__step4_suffixes:
             if r2.endswith(suffix):
-                if suffix in ("mpi", "mpa", "mp\xE4", "mmi", "mma", "mm\xE4"):
+                if suffix in ("mpi", "mpa", "mp\xe4", "mmi", "mma", "mm\xe4"):
                     if word[-5:-3] != "po":
                         word = word[:-3]
                         r1 = r1[:-3]
@@ -2086,7 +2086,7 @@ class FinnishStemmer(_StandardStemmer):
             word = word[:-1]
             r1 = r1[:-1]
 
-        if len(r1) >= 2 and r1[-2] in self.__consonants and r1[-1] in "a\xE4ei":
+        if len(r1) >= 2 and r1[-2] in self.__consonants and r1[-1] in "a\xe4ei":
             word = word[:-1]
             r1 = r1[:-1]
 
@@ -2134,7 +2134,7 @@ class FrenchStemmer(_StandardStemmer):
            http://snowball.tartarus.org/algorithms/french/stemmer.html
     """
 
-    __vowels = "aeiouy\xE2\xE0\xEB\xE9\xEA\xE8\xEF\xEE\xF4\xFB\xF9"
+    __vowels = "aeiouy\xe2\xe0\xeb\xe9\xea\xe8\xef\xee\xf4\xfb\xf9"
     __step1_suffixes = (
         "issements",
         "issement",
@@ -2168,13 +2168,13 @@ class FrenchStemmer(_StandardStemmer):
         "able",
         "iste",
         "ence",
-        "it\xE9s",
+        "it\xe9s",
         "ives",
         "eaux",
         "euse",
         "ment",
         "eux",
-        "it\xE9",
+        "it\xe9",
         "ive",
         "ifs",
         "aux",
@@ -2202,15 +2202,15 @@ class FrenchStemmer(_StandardStemmer):
         "iront",
         "isses",
         "issez",
-        "\xEEmes",
-        "\xEEtes",
+        "\xeemes",
+        "\xeetes",
         "irai",
         "iras",
         "irez",
         "isse",
         "ies",
         "ira",
-        "\xEEt",
+        "\xeet",
         "ie",
         "ir",
         "is",
@@ -2223,7 +2223,7 @@ class FrenchStemmer(_StandardStemmer):
         "erions",
         "assent",
         "assiez",
-        "\xE8rent",
+        "\xe8rent",
         "erais",
         "erait",
         "eriez",
@@ -2236,28 +2236,28 @@ class FrenchStemmer(_StandardStemmer):
         "erai",
         "eras",
         "erez",
-        "\xE2mes",
-        "\xE2tes",
+        "\xe2mes",
+        "\xe2tes",
         "ante",
         "ants",
         "asse",
-        "\xE9es",
+        "\xe9es",
         "era",
         "iez",
         "ais",
         "ait",
         "ant",
-        "\xE9e",
-        "\xE9s",
+        "\xe9e",
+        "\xe9s",
         "er",
         "ez",
-        "\xE2t",
+        "\xe2t",
         "ai",
         "as",
-        "\xE9",
+        "\xe9",
         "a",
     )
-    __step4_suffixes = ("i\xE8re", "I\xE8re", "ion", "ier", "Ier", "e", "\xEB")
+    __step4_suffixes = ("i\xe8re", "I\xe8re", "ion", "ier", "Ier", "e", "\xeb")
 
     def stem(self, word):
         """
@@ -2339,8 +2339,8 @@ class FrenchStemmer(_StandardStemmer):
                         if "abl" in r2 or "iqU" in r2:
                             word = word[:-3]
 
-                    elif word[-3:] in ("i\xE8r", "I\xE8r"):
-                        if "i\xE8r" in rv or "I\xE8r" in rv:
+                    elif word[-3:] in ("i\xe8r", "I\xe8r"):
+                        if "i\xe8r" in rv or "I\xe8r" in rv:
                             word = "".join((word[:-3], "i"))
 
                 elif suffix == "amment" and suffix in rv:
@@ -2420,7 +2420,7 @@ class FrenchStemmer(_StandardStemmer):
                     word = suffix_replace(word, suffix, "ent")
                     step1_success = True
 
-                elif suffix in ("it\xE9", "it\xE9s") and suffix in r2:
+                elif suffix in ("it\xe9", "it\xe9s") and suffix in r2:
                     word = word[: -len(suffix)]
                     step1_success = True
 
@@ -2478,7 +2478,7 @@ class FrenchStemmer(_StandardStemmer):
                         elif suffix in (
                             "eraIent",
                             "erions",
-                            "\xE8rent",
+                            "\xe8rent",
                             "erais",
                             "erait",
                             "eriez",
@@ -2487,14 +2487,14 @@ class FrenchStemmer(_StandardStemmer):
                             "erai",
                             "eras",
                             "erez",
-                            "\xE9es",
+                            "\xe9es",
                             "era",
                             "iez",
-                            "\xE9e",
-                            "\xE9s",
+                            "\xe9e",
+                            "\xe9s",
                             "er",
                             "ez",
-                            "\xE9",
+                            "\xe9",
                         ):
                             word = word[: -len(suffix)]
                             step2b_success = True
@@ -2506,15 +2506,15 @@ class FrenchStemmer(_StandardStemmer):
                             "aIent",
                             "antes",
                             "asses",
-                            "\xE2mes",
-                            "\xE2tes",
+                            "\xe2mes",
+                            "\xe2tes",
                             "ante",
                             "ants",
                             "asse",
                             "ais",
                             "ait",
                             "ant",
-                            "\xE2t",
+                            "\xe2t",
                             "ai",
                             "as",
                             "a",
@@ -2530,12 +2530,12 @@ class FrenchStemmer(_StandardStemmer):
         if step1_success or step2a_success or step2b_success:
             if word[-1] == "Y":
                 word = "".join((word[:-1], "i"))
-            elif word[-1] == "\xE7":
+            elif word[-1] == "\xe7":
                 word = "".join((word[:-1], "c"))
 
         # STEP 4: Residual suffixes
         else:
-            if len(word) >= 2 and word[-1] == "s" and word[-2] not in "aiou\xE8s":
+            if len(word) >= 2 and word[-1] == "s" and word[-2] not in "aiou\xe8s":
                 word = word[:-1]
 
             for suffix in self.__step4_suffixes:
@@ -2544,13 +2544,13 @@ class FrenchStemmer(_StandardStemmer):
                         if suffix == "ion" and suffix in r2 and rv[-4] in "st":
                             word = word[:-3]
 
-                        elif suffix in ("ier", "i\xE8re", "Ier", "I\xE8re"):
+                        elif suffix in ("ier", "i\xe8re", "Ier", "I\xe8re"):
                             word = suffix_replace(word, suffix, "i")
 
                         elif suffix == "e":
                             word = word[:-1]
 
-                        elif suffix == "\xEB" and word[-3:-1] == "gu":
+                        elif suffix == "\xeb" and word[-3:-1] == "gu":
                             word = word[:-1]
                         break
 
@@ -2563,7 +2563,7 @@ class FrenchStemmer(_StandardStemmer):
             if word[-i] not in self.__vowels:
                 i += 1
             else:
-                if i != 1 and word[-i] in ("\xE9", "\xE8"):
+                if i != 1 and word[-i] in ("\xe9", "\xe8"):
                     word = "".join((word[:-i], "e", word[-i + 1 :]))
                 break
 
@@ -2630,7 +2630,7 @@ class GermanStemmer(_StandardStemmer):
 
     """
 
-    __vowels = "aeiouy\xE4\xF6\xFC"
+    __vowels = "aeiouy\xe4\xf6\xfc"
     __s_ending = "bdfghklmnrt"
     __st_ending = "bdfghklmnt"
 
@@ -2653,7 +2653,7 @@ class GermanStemmer(_StandardStemmer):
         if word in self.stopwords:
             return word
 
-        word = word.replace("\xDF", "ss")
+        word = word.replace("\xdf", "ss")
 
         # Every occurrence of 'u' and 'y'
         # between vowels is put into upper case.
@@ -2753,9 +2753,9 @@ class GermanStemmer(_StandardStemmer):
         # Umlaut accents are removed and
         # 'u' and 'y' are put back into lower case.
         word = (
-            word.replace("\xE4", "a")
-            .replace("\xF6", "o")
-            .replace("\xFC", "u")
+            word.replace("\xe4", "a")
+            .replace("\xf6", "o")
+            .replace("\xfc", "u")
             .replace("U", "u")
             .replace("Y", "y")
         )
@@ -2797,7 +2797,7 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
     """
 
-    __vowels = "aeiou\xF6\xFC\xE1\xE9\xED\xF3\xF5\xFA\xFB"
+    __vowels = "aeiou\xf6\xfc\xe1\xe9\xed\xf3\xf5\xfa\xfb"
     __digraphs = ("cs", "dz", "dzs", "gy", "ly", "ny", "ty", "zs")
     __double_consonants = (
         "bb",
@@ -2827,30 +2827,30 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
     __step1_suffixes = ("al", "el")
     __step2_suffixes = (
-        "k\xE9ppen",
-        "onk\xE9nt",
-        "enk\xE9nt",
-        "ank\xE9nt",
-        "k\xE9pp",
-        "k\xE9nt",
+        "k\xe9ppen",
+        "onk\xe9nt",
+        "enk\xe9nt",
+        "ank\xe9nt",
+        "k\xe9pp",
+        "k\xe9nt",
         "ban",
         "ben",
         "nak",
         "nek",
         "val",
         "vel",
-        "t\xF3l",
-        "t\xF5l",
-        "r\xF3l",
-        "r\xF5l",
-        "b\xF3l",
-        "b\xF5l",
+        "t\xf3l",
+        "t\xf5l",
+        "r\xf3l",
+        "r\xf5l",
+        "b\xf3l",
+        "b\xf5l",
         "hoz",
         "hez",
-        "h\xF6z",
-        "n\xE1l",
-        "n\xE9l",
-        "\xE9rt",
+        "h\xf6z",
+        "n\xe1l",
+        "n\xe9l",
+        "\xe9rt",
         "kor",
         "ba",
         "be",
@@ -2860,74 +2860,74 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         "at",
         "et",
         "ot",
-        "\xF6t",
+        "\xf6t",
         "ul",
-        "\xFCl",
-        "v\xE1",
-        "v\xE9",
+        "\xfcl",
+        "v\xe1",
+        "v\xe9",
         "en",
         "on",
         "an",
-        "\xF6n",
+        "\xf6n",
         "n",
         "t",
     )
-    __step3_suffixes = ("\xE1nk\xE9nt", "\xE1n", "\xE9n")
+    __step3_suffixes = ("\xe1nk\xe9nt", "\xe1n", "\xe9n")
     __step4_suffixes = (
         "astul",
-        "est\xFCl",
-        "\xE1stul",
-        "\xE9st\xFCl",
+        "est\xfcl",
+        "\xe1stul",
+        "\xe9st\xfcl",
         "stul",
-        "st\xFCl",
+        "st\xfcl",
     )
-    __step5_suffixes = ("\xE1", "\xE9")
+    __step5_suffixes = ("\xe1", "\xe9")
     __step6_suffixes = (
-        "ok\xE9",
-        "\xF6k\xE9",
-        "ak\xE9",
-        "ek\xE9",
-        "\xE1k\xE9",
-        "\xE1\xE9i",
-        "\xE9k\xE9",
-        "\xE9\xE9i",
-        "k\xE9",
-        "\xE9i",
-        "\xE9\xE9",
-        "\xE9",
+        "ok\xe9",
+        "\xf6k\xe9",
+        "ak\xe9",
+        "ek\xe9",
+        "\xe1k\xe9",
+        "\xe1\xe9i",
+        "\xe9k\xe9",
+        "\xe9\xe9i",
+        "k\xe9",
+        "\xe9i",
+        "\xe9\xe9",
+        "\xe9",
     )
     __step7_suffixes = (
-        "\xE1juk",
-        "\xE9j\xFCk",
-        "\xFCnk",
+        "\xe1juk",
+        "\xe9j\xfck",
+        "\xfcnk",
         "unk",
         "juk",
-        "j\xFCk",
-        "\xE1nk",
-        "\xE9nk",
+        "j\xfck",
+        "\xe1nk",
+        "\xe9nk",
         "nk",
         "uk",
-        "\xFCk",
+        "\xfck",
         "em",
         "om",
         "am",
         "od",
         "ed",
         "ad",
-        "\xF6d",
+        "\xf6d",
         "ja",
         "je",
-        "\xE1m",
-        "\xE1d",
-        "\xE9m",
-        "\xE9d",
+        "\xe1m",
+        "\xe1d",
+        "\xe9m",
+        "\xe9d",
         "m",
         "d",
         "a",
         "e",
         "o",
-        "\xE1",
-        "\xE9",
+        "\xe1",
+        "\xe9",
     )
     __step8_suffixes = (
         "jaitok",
@@ -2936,8 +2936,8 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         "jeink",
         "aitok",
         "eitek",
-        "\xE1itok",
-        "\xE9itek",
+        "\xe1itok",
+        "\xe9itek",
         "jaim",
         "jeim",
         "jaid",
@@ -2947,8 +2947,8 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         "itek",
         "jeik",
         "jaik",
-        "\xE1ink",
-        "\xE9ink",
+        "\xe1ink",
+        "\xe9ink",
         "aim",
         "eim",
         "aid",
@@ -2958,22 +2958,22 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         "ink",
         "aik",
         "eik",
-        "\xE1im",
-        "\xE1id",
-        "\xE1ik",
-        "\xE9im",
-        "\xE9id",
-        "\xE9ik",
+        "\xe1im",
+        "\xe1id",
+        "\xe1ik",
+        "\xe9im",
+        "\xe9id",
+        "\xe9ik",
         "im",
         "id",
         "ai",
         "ei",
         "ik",
-        "\xE1i",
-        "\xE9i",
+        "\xe1i",
+        "\xe9i",
         "i",
     )
-    __step9_suffixes = ("\xE1k", "\xE9k", "\xF6k", "ok", "ek", "ak", "k")
+    __step9_suffixes = ("\xe1k", "\xe9k", "\xf6k", "ok", "ek", "ak", "k")
 
     def stem(self, word):
         """
@@ -3009,19 +3009,19 @@ class HungarianStemmer(_LanguageSpecificStemmer):
                     word = word[: -len(suffix)]
                     r1 = r1[: -len(suffix)]
 
-                    if r1.endswith("\xE1"):
+                    if r1.endswith("\xe1"):
                         word = "".join((word[:-1], "a"))
-                        r1 = suffix_replace(r1, "\xE1", "a")
+                        r1 = suffix_replace(r1, "\xe1", "a")
 
-                    elif r1.endswith("\xE9"):
+                    elif r1.endswith("\xe9"):
                         word = "".join((word[:-1], "e"))
-                        r1 = suffix_replace(r1, "\xE9", "e")
+                        r1 = suffix_replace(r1, "\xe9", "e")
                 break
 
         # STEP 3: Remove special cases
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
-                if suffix == "\xE9n":
+                if suffix == "\xe9n":
                     word = suffix_replace(word, suffix, "e")
                     r1 = suffix_replace(r1, suffix, "e")
                 else:
@@ -3032,11 +3032,11 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         # STEP 4: Remove other cases
         for suffix in self.__step4_suffixes:
             if r1.endswith(suffix):
-                if suffix == "\xE1stul":
+                if suffix == "\xe1stul":
                     word = suffix_replace(word, suffix, "a")
                     r1 = suffix_replace(r1, suffix, "a")
 
-                elif suffix == "\xE9st\xFCl":
+                elif suffix == "\xe9st\xfcl":
                     word = suffix_replace(word, suffix, "e")
                     r1 = suffix_replace(r1, suffix, "e")
                 else:
@@ -3058,11 +3058,11 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         # STEP 6: Remove owned
         for suffix in self.__step6_suffixes:
             if r1.endswith(suffix):
-                if suffix in ("\xE1k\xE9", "\xE1\xE9i"):
+                if suffix in ("\xe1k\xe9", "\xe1\xe9i"):
                     word = suffix_replace(word, suffix, "a")
                     r1 = suffix_replace(r1, suffix, "a")
 
-                elif suffix in ("\xE9k\xE9", "\xE9\xE9i", "\xE9\xE9"):
+                elif suffix in ("\xe9k\xe9", "\xe9\xe9i", "\xe9\xe9"):
                     word = suffix_replace(word, suffix, "e")
                     r1 = suffix_replace(r1, suffix, "e")
                 else:
@@ -3074,11 +3074,11 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step7_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix in ("\xE1nk", "\xE1juk", "\xE1m", "\xE1d", "\xE1"):
+                    if suffix in ("\xe1nk", "\xe1juk", "\xe1m", "\xe1d", "\xe1"):
                         word = suffix_replace(word, suffix, "a")
                         r1 = suffix_replace(r1, suffix, "a")
 
-                    elif suffix in ("\xE9nk", "\xE9j\xFCk", "\xE9m", "\xE9d", "\xE9"):
+                    elif suffix in ("\xe9nk", "\xe9j\xfck", "\xe9m", "\xe9d", "\xe9"):
                         word = suffix_replace(word, suffix, "e")
                         r1 = suffix_replace(r1, suffix, "e")
                     else:
@@ -3091,23 +3091,23 @@ class HungarianStemmer(_LanguageSpecificStemmer):
             if word.endswith(suffix):
                 if r1.endswith(suffix):
                     if suffix in (
-                        "\xE1im",
-                        "\xE1id",
-                        "\xE1i",
-                        "\xE1ink",
-                        "\xE1itok",
-                        "\xE1ik",
+                        "\xe1im",
+                        "\xe1id",
+                        "\xe1i",
+                        "\xe1ink",
+                        "\xe1itok",
+                        "\xe1ik",
                     ):
                         word = suffix_replace(word, suffix, "a")
                         r1 = suffix_replace(r1, suffix, "a")
 
                     elif suffix in (
-                        "\xE9im",
-                        "\xE9id",
-                        "\xE9i",
-                        "\xE9ink",
-                        "\xE9itek",
-                        "\xE9ik",
+                        "\xe9im",
+                        "\xe9id",
+                        "\xe9i",
+                        "\xe9ink",
+                        "\xe9itek",
+                        "\xe9ik",
                     ):
                         word = suffix_replace(word, suffix, "e")
                         r1 = suffix_replace(r1, suffix, "e")
@@ -3120,9 +3120,9 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step9_suffixes:
             if word.endswith(suffix):
                 if r1.endswith(suffix):
-                    if suffix == "\xE1k":
+                    if suffix == "\xe1k":
                         word = suffix_replace(word, suffix, "a")
-                    elif suffix == "\xE9k":
+                    elif suffix == "\xe9k":
                         word = suffix_replace(word, suffix, "e")
                     else:
                         word = word[: -len(suffix)]
@@ -3193,7 +3193,7 @@ class ItalianStemmer(_StandardStemmer):
 
     """
 
-    __vowels = "aeiou\xE0\xE8\xEC\xF2\xF9"
+    __vowels = "aeiou\xe0\xe8\xec\xf2\xf9"
     __step0_suffixes = (
         "gliela",
         "gliele",
@@ -3265,9 +3265,9 @@ class ItalianStemmer(_StandardStemmer):
         "ista",
         "iste",
         "isti",
-        "ist\xE0",
-        "ist\xE8",
-        "ist\xEC",
+        "ist\xe0",
+        "ist\xe8",
+        "ist\xec",
         "ante",
         "anti",
         "enza",
@@ -3280,7 +3280,7 @@ class ItalianStemmer(_StandardStemmer):
         "osi",
         "osa",
         "ose",
-        "it\xE0",
+        "it\xe0",
         "ivo",
         "ivi",
         "iva",
@@ -3350,16 +3350,16 @@ class ItalianStemmer(_StandardStemmer):
         "ava",
         "avi",
         "avo",
-        "er\xE0",
+        "er\xe0",
         "ere",
-        "er\xF2",
+        "er\xf2",
         "ete",
         "eva",
         "evi",
         "evo",
-        "ir\xE0",
+        "ir\xe0",
         "ire",
-        "ir\xF2",
+        "ir\xf2",
         "ita",
         "ite",
         "iti",
@@ -3395,11 +3395,11 @@ class ItalianStemmer(_StandardStemmer):
 
         # All acute accents are replaced by grave accents.
         word = (
-            word.replace("\xE1", "\xE0")
-            .replace("\xE9", "\xE8")
-            .replace("\xED", "\xEC")
-            .replace("\xF3", "\xF2")
-            .replace("\xFA", "\xF9")
+            word.replace("\xe1", "\xe0")
+            .replace("\xe9", "\xe8")
+            .replace("\xed", "\xec")
+            .replace("\xf3", "\xf2")
+            .replace("\xfa", "\xf9")
         )
 
         # Every occurrence of 'u' after 'q'
@@ -3493,7 +3493,7 @@ class ItalianStemmer(_StandardStemmer):
                         word = suffix_replace(word, suffix, "te")
                         rv = suffix_replace(rv, suffix, "te")
 
-                    elif suffix == "it\xE0":
+                    elif suffix == "it\xe0":
                         word = word[:-3]
                         r2 = r2[:-3]
                         rv = rv[:-3]
@@ -3533,7 +3533,7 @@ class ItalianStemmer(_StandardStemmer):
                     break
 
         # STEP 3a
-        if rv.endswith(("a", "e", "i", "o", "\xE0", "\xE8", "\xEC", "\xF2")):
+        if rv.endswith(("a", "e", "i", "o", "\xe0", "\xe8", "\xec", "\xf2")):
             word = word[:-1]
             rv = rv[:-1]
 
@@ -3570,7 +3570,7 @@ class NorwegianStemmer(_ScandinavianStemmer):
 
     """
 
-    __vowels = "aeiouy\xE6\xE5\xF8"
+    __vowels = "aeiouy\xe6\xe5\xf8"
     __s_ending = "bcdfghjlmnoprtvyz"
     __step1_suffixes = (
         "hetenes",
@@ -3689,7 +3689,7 @@ class PortugueseStemmer(_StandardStemmer):
 
     """
 
-    __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
+    __vowels = "aeiou\xe1\xe9\xed\xf3\xfa\xe2\xea\xf4"
     __step1_suffixes = (
         "amentos",
         "imentos",
@@ -3698,30 +3698,30 @@ class PortugueseStemmer(_StandardStemmer):
         "imento",
         "adoras",
         "adores",
-        "a\xE7o~es",
+        "a\xe7o~es",
         "logias",
-        "\xEAncias",
+        "\xeancias",
         "amente",
         "idades",
-        "an\xE7as",
+        "an\xe7as",
         "ismos",
         "istas",
         "adora",
-        "a\xE7a~o",
+        "a\xe7a~o",
         "antes",
-        "\xE2ncia",
+        "\xe2ncia",
         "logia",
         "uça~o",
-        "\xEAncia",
+        "\xeancia",
         "mente",
         "idade",
-        "an\xE7a",
+        "an\xe7a",
         "ezas",
         "icos",
         "icas",
         "ismo",
-        "\xE1vel",
-        "\xEDvel",
+        "\xe1vel",
+        "\xedvel",
         "ista",
         "osos",
         "osas",
@@ -3740,22 +3740,22 @@ class PortugueseStemmer(_StandardStemmer):
         "ira",
     )
     __step2_suffixes = (
-        "ar\xEDamos",
-        "er\xEDamos",
-        "ir\xEDamos",
-        "\xE1ssemos",
-        "\xEAssemos",
-        "\xEDssemos",
-        "ar\xEDeis",
-        "er\xEDeis",
-        "ir\xEDeis",
-        "\xE1sseis",
-        "\xE9sseis",
-        "\xEDsseis",
-        "\xE1ramos",
-        "\xE9ramos",
-        "\xEDramos",
-        "\xE1vamos",
+        "ar\xedamos",
+        "er\xedamos",
+        "ir\xedamos",
+        "\xe1ssemos",
+        "\xeassemos",
+        "\xedssemos",
+        "ar\xedeis",
+        "er\xedeis",
+        "ir\xedeis",
+        "\xe1sseis",
+        "\xe9sseis",
+        "\xedsseis",
+        "\xe1ramos",
+        "\xe9ramos",
+        "\xedramos",
+        "\xe1vamos",
         "aremos",
         "eremos",
         "iremos",
@@ -3780,14 +3780,14 @@ class PortugueseStemmer(_StandardStemmer):
         "astes",
         "estes",
         "istes",
-        "\xE1reis",
+        "\xe1reis",
         "areis",
-        "\xE9reis",
+        "\xe9reis",
         "ereis",
-        "\xEDreis",
+        "\xedreis",
         "ireis",
-        "\xE1veis",
-        "\xEDamos",
+        "\xe1veis",
+        "\xedamos",
         "armos",
         "ermos",
         "irmos",
@@ -3815,30 +3815,30 @@ class PortugueseStemmer(_StandardStemmer):
         "indo",
         "adas",
         "idas",
-        "ar\xE1s",
+        "ar\xe1s",
         "aras",
-        "er\xE1s",
+        "er\xe1s",
         "eras",
-        "ir\xE1s",
+        "ir\xe1s",
         "avas",
         "ares",
         "eres",
         "ires",
-        "\xEDeis",
+        "\xedeis",
         "ados",
         "idos",
-        "\xE1mos",
+        "\xe1mos",
         "amos",
         "emos",
         "imos",
         "iras",
         "ada",
         "ida",
-        "ar\xE1",
+        "ar\xe1",
         "ara",
-        "er\xE1",
+        "er\xe1",
         "era",
-        "ir\xE1",
+        "ir\xe1",
         "ava",
         "iam",
         "ado",
@@ -3861,7 +3861,7 @@ class PortugueseStemmer(_StandardStemmer):
         "iu",
         "ou",
     )
-    __step4_suffixes = ("os", "a", "i", "o", "\xE1", "\xED", "\xF3")
+    __step4_suffixes = ("os", "a", "i", "o", "\xe1", "\xed", "\xf3")
 
     def stem(self, word):
         """
@@ -3882,10 +3882,10 @@ class PortugueseStemmer(_StandardStemmer):
         step2_success = False
 
         word = (
-            word.replace("\xE3", "a~")
-            .replace("\xF5", "o~")
-            .replace("q\xFC", "qu")
-            .replace("g\xFC", "gu")
+            word.replace("\xe3", "a~")
+            .replace("\xf5", "o~")
+            .replace("q\xfc", "qu")
+            .replace("g\xfc", "gu")
         )
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
@@ -3935,7 +3935,7 @@ class PortugueseStemmer(_StandardStemmer):
                         word = suffix_replace(word, suffix, "u")
                         rv = suffix_replace(rv, suffix, "u")
 
-                    elif suffix in ("\xEAncia", "\xEAncias"):
+                    elif suffix in ("\xeancia", "\xeancias"):
                         word = suffix_replace(word, suffix, "ente")
                         rv = suffix_replace(rv, suffix, "ente")
 
@@ -3999,7 +3999,7 @@ class PortugueseStemmer(_StandardStemmer):
                     break
 
         # STEP 5
-        if rv.endswith(("e", "\xE9", "\xEA")):
+        if rv.endswith(("e", "\xe9", "\xea")):
             word = word[:-1]
             rv = rv[:-1]
 
@@ -4008,10 +4008,10 @@ class PortugueseStemmer(_StandardStemmer):
             ):
                 word = word[:-1]
 
-        elif word.endswith("\xE7"):
-            word = suffix_replace(word, "\xE7", "c")
+        elif word.endswith("\xe7"):
+            word = suffix_replace(word, "\xe7", "c")
 
-        word = word.replace("a~", "\xE3").replace("o~", "\xF5")
+        word = word.replace("a~", "\xe3").replace("o~", "\xf5")
 
         return word
 
@@ -4036,7 +4036,7 @@ class RomanianStemmer(_StandardStemmer):
 
     """
 
-    __vowels = "aeiou\u0103\xE2\xEE"
+    __vowels = "aeiou\u0103\xe2\xee"
     __step0_suffixes = (
         "iilor",
         "ului",
@@ -4134,7 +4134,7 @@ class RomanianStemmer(_StandardStemmer):
         "iste",
         "isti",
         "ist\u0103",
-        "i\u015Fti",
+        "i\u015fti",
         "ata",
         "at\u0103",
         "ati",
@@ -4152,7 +4152,7 @@ class RomanianStemmer(_StandardStemmer):
         "ici",
         "ic\u0103",
         "osi",
-        "o\u015Fi",
+        "o\u015fi",
         "ant",
         "iva",
         "ive",
@@ -4171,57 +4171,57 @@ class RomanianStemmer(_StandardStemmer):
         "seser\u0103\u0163i",
         "aser\u0103\u0163i",
         "iser\u0103\u0163i",
-        "\xE2ser\u0103\u0163i",
+        "\xe2ser\u0103\u0163i",
         "user\u0103\u0163i",
         "seser\u0103m",
         "aser\u0103m",
         "iser\u0103m",
-        "\xE2ser\u0103m",
+        "\xe2ser\u0103m",
         "user\u0103m",
         "ser\u0103\u0163i",
-        "sese\u015Fi",
+        "sese\u015fi",
         "seser\u0103",
         "easc\u0103",
         "ar\u0103\u0163i",
         "ur\u0103\u0163i",
         "ir\u0103\u0163i",
-        "\xE2r\u0103\u0163i",
-        "ase\u015Fi",
+        "\xe2r\u0103\u0163i",
+        "ase\u015fi",
         "aser\u0103",
-        "ise\u015Fi",
+        "ise\u015fi",
         "iser\u0103",
-        "\xe2se\u015Fi",
-        "\xE2ser\u0103",
-        "use\u015Fi",
+        "\xe2se\u015fi",
+        "\xe2ser\u0103",
+        "use\u015fi",
         "user\u0103",
         "ser\u0103m",
         "sesem",
         "indu",
-        "\xE2ndu",
+        "\xe2ndu",
         "eaz\u0103",
-        "e\u015Fti",
-        "e\u015Fte",
-        "\u0103\u015Fti",
-        "\u0103\u015Fte",
+        "e\u015fti",
+        "e\u015fte",
+        "\u0103\u015fti",
+        "\u0103\u015fte",
         "ea\u0163i",
         "ia\u0163i",
         "ar\u0103m",
         "ur\u0103m",
         "ir\u0103m",
-        "\xE2r\u0103m",
+        "\xe2r\u0103m",
         "asem",
         "isem",
-        "\xE2sem",
+        "\xe2sem",
         "usem",
-        "se\u015Fi",
+        "se\u015fi",
         "ser\u0103",
         "sese",
         "are",
         "ere",
         "ire",
-        "\xE2re",
+        "\xe2re",
         "ind",
-        "\xE2nd",
+        "\xe2nd",
         "eze",
         "ezi",
         "esc",
@@ -4232,17 +4232,17 @@ class RomanianStemmer(_StandardStemmer):
         "iam",
         "iai",
         "iau",
-        "a\u015Fi",
+        "a\u015fi",
         "ar\u0103",
-        "u\u015Fi",
+        "u\u015fi",
         "ur\u0103",
-        "i\u015Fi",
+        "i\u015fi",
         "ir\u0103",
-        "\xE2\u015Fi",
+        "\xe2\u015fi",
         "\xe2r\u0103",
         "ase",
         "ise",
-        "\xE2se",
+        "\xe2se",
         "use",
         "a\u0163i",
         "e\u0163i",
@@ -4256,11 +4256,11 @@ class RomanianStemmer(_StandardStemmer):
         "ea",
         "ia",
         "ui",
-        "\xE2i",
+        "\xe2i",
         "\u0103m",
         "em",
         "im",
-        "\xE2m",
+        "\xe2m",
         "se",
     )
 
@@ -4440,7 +4440,7 @@ class RomanianStemmer(_StandardStemmer):
                         "iste",
                         "isti",
                         "ist\u0103",
-                        "i\u015Fti",
+                        "i\u015fti",
                     ):
                         word = suffix_replace(word, suffix, "ist")
 
@@ -4457,22 +4457,22 @@ class RomanianStemmer(_StandardStemmer):
                             "seser\u0103\u0163i",
                             "seser\u0103m",
                             "ser\u0103\u0163i",
-                            "sese\u015Fi",
+                            "sese\u015fi",
                             "seser\u0103",
                             "ser\u0103m",
                             "sesem",
-                            "se\u015Fi",
+                            "se\u015fi",
                             "ser\u0103",
                             "sese",
                             "a\u0163i",
                             "e\u0163i",
                             "i\u0163i",
-                            "\xE2\u0163i",
+                            "\xe2\u0163i",
                             "sei",
                             "\u0103m",
                             "em",
                             "im",
-                            "\xE2m",
+                            "\xe2m",
                             "se",
                         ):
                             word = word[: -len(suffix)]
@@ -4480,7 +4480,7 @@ class RomanianStemmer(_StandardStemmer):
                         else:
                             if (
                                 not rv.startswith(suffix)
-                                and rv[rv.index(suffix) - 1] not in "aeio\u0103\xE2\xEE"
+                                and rv[rv.index(suffix) - 1] not in "aeio\u0103\xe2\xee"
                             ):
                                 word = word[: -len(suffix)]
                         break
@@ -5234,18 +5234,18 @@ class RussianStemmer(_LanguageSpecificStemmer):
             .replace("\u0438", "i")
             .replace("\u0419", "i`")
             .replace("\u0439", "i`")
-            .replace("\u041A", "k")
-            .replace("\u043A", "k")
-            .replace("\u041B", "l")
-            .replace("\u043B", "l")
-            .replace("\u041C", "m")
-            .replace("\u043C", "m")
-            .replace("\u041D", "n")
-            .replace("\u043D", "n")
-            .replace("\u041E", "o")
-            .replace("\u043E", "o")
-            .replace("\u041F", "p")
-            .replace("\u043F", "p")
+            .replace("\u041a", "k")
+            .replace("\u043a", "k")
+            .replace("\u041b", "l")
+            .replace("\u043b", "l")
+            .replace("\u041c", "m")
+            .replace("\u043c", "m")
+            .replace("\u041d", "n")
+            .replace("\u043d", "n")
+            .replace("\u041e", "o")
+            .replace("\u043e", "o")
+            .replace("\u041f", "p")
+            .replace("\u043f", "p")
             .replace("\u0420", "r")
             .replace("\u0440", "r")
             .replace("\u0421", "s")
@@ -5266,18 +5266,18 @@ class RussianStemmer(_LanguageSpecificStemmer):
             .replace("\u0448", "sh")
             .replace("\u0429", "shch")
             .replace("\u0449", "shch")
-            .replace("\u042A", "''")
-            .replace("\u044A", "''")
-            .replace("\u042B", "y")
-            .replace("\u044B", "y")
-            .replace("\u042C", "'")
-            .replace("\u044C", "'")
-            .replace("\u042D", "e`")
-            .replace("\u044D", "e`")
-            .replace("\u042E", "i^u")
-            .replace("\u044E", "i^u")
-            .replace("\u042F", "i^a")
-            .replace("\u044F", "i^a")
+            .replace("\u042a", "''")
+            .replace("\u044a", "''")
+            .replace("\u042b", "y")
+            .replace("\u044b", "y")
+            .replace("\u042c", "'")
+            .replace("\u044c", "'")
+            .replace("\u042d", "e`")
+            .replace("\u044d", "e`")
+            .replace("\u042e", "i^u")
+            .replace("\u044e", "i^u")
+            .replace("\u042f", "i^a")
+            .replace("\u044f", "i^a")
         )
 
         return word
@@ -5299,16 +5299,16 @@ class RussianStemmer(_LanguageSpecificStemmer):
 
         """
         word = (
-            word.replace("i^u", "\u044E")
-            .replace("i^a", "\u044F")
+            word.replace("i^u", "\u044e")
+            .replace("i^a", "\u044f")
             .replace("shch", "\u0449")
             .replace("kh", "\u0445")
             .replace("t^s", "\u0446")
             .replace("ch", "\u0447")
-            .replace("e`", "\u044D")
+            .replace("e`", "\u044d")
             .replace("i`", "\u0439")
             .replace("sh", "\u0448")
-            .replace("k", "\u043A")
+            .replace("k", "\u043a")
             .replace("e", "\u0435")
             .replace("zh", "\u0436")
             .replace("a", "\u0430")
@@ -5319,19 +5319,19 @@ class RussianStemmer(_LanguageSpecificStemmer):
             .replace("e", "\u0435")
             .replace("z", "\u0437")
             .replace("i", "\u0438")
-            .replace("l", "\u043B")
-            .replace("m", "\u043C")
-            .replace("n", "\u043D")
-            .replace("o", "\u043E")
-            .replace("p", "\u043F")
+            .replace("l", "\u043b")
+            .replace("m", "\u043c")
+            .replace("n", "\u043d")
+            .replace("o", "\u043e")
+            .replace("p", "\u043f")
             .replace("r", "\u0440")
             .replace("s", "\u0441")
             .replace("t", "\u0442")
             .replace("u", "\u0443")
             .replace("f", "\u0444")
-            .replace("''", "\u044A")
-            .replace("y", "\u044B")
-            .replace("'", "\u044C")
+            .replace("''", "\u044a")
+            .replace("y", "\u044b")
+            .replace("'", "\u044c")
         )
 
         return word
@@ -5359,7 +5359,7 @@ class SpanishStemmer(_StandardStemmer):
 
     """
 
-    __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xFC"
+    __vowels = "aeiou\xe1\xe9\xed\xf3\xfa\xfc"
     __step0_suffixes = (
         "selas",
         "selos",
@@ -5386,7 +5386,7 @@ class SpanishStemmer(_StandardStemmer):
         "adoras",
         "adores",
         "ancias",
-        "log\xEDas",
+        "log\xedas",
         "encias",
         "amente",
         "idades",
@@ -5396,10 +5396,10 @@ class SpanishStemmer(_StandardStemmer):
         "ibles",
         "istas",
         "adora",
-        "aci\xF3n",
+        "aci\xf3n",
         "antes",
         "ancia",
-        "log\xEDa",
+        "log\xeda",
         "uci\xf3n",
         "encia",
         "mente",
@@ -5436,36 +5436,36 @@ class SpanishStemmer(_StandardStemmer):
         "ya",
         "ye",
         "yo",
-        "y\xF3",
+        "y\xf3",
     )
     __step2b_suffixes = (
-        "ar\xEDamos",
-        "er\xEDamos",
-        "ir\xEDamos",
-        "i\xE9ramos",
-        "i\xE9semos",
-        "ar\xEDais",
+        "ar\xedamos",
+        "er\xedamos",
+        "ir\xedamos",
+        "i\xe9ramos",
+        "i\xe9semos",
+        "ar\xedais",
         "aremos",
-        "er\xEDais",
+        "er\xedais",
         "eremos",
-        "ir\xEDais",
+        "ir\xedais",
         "iremos",
         "ierais",
         "ieseis",
         "asteis",
         "isteis",
-        "\xE1bamos",
-        "\xE1ramos",
-        "\xE1semos",
-        "ar\xEDan",
-        "ar\xEDas",
-        "ar\xE9is",
-        "er\xEDan",
-        "er\xEDas",
-        "er\xE9is",
-        "ir\xEDan",
-        "ir\xEDas",
-        "ir\xE9is",
+        "\xe1bamos",
+        "\xe1ramos",
+        "\xe1semos",
+        "ar\xedan",
+        "ar\xedas",
+        "ar\xe9is",
+        "er\xedan",
+        "er\xedas",
+        "er\xe9is",
+        "ir\xedan",
+        "ir\xedas",
+        "ir\xe9is",
         "ieran",
         "iesen",
         "ieron",
@@ -5475,16 +5475,16 @@ class SpanishStemmer(_StandardStemmer):
         "abais",
         "arais",
         "aseis",
-        "\xE9amos",
-        "ar\xE1n",
-        "ar\xE1s",
-        "ar\xEDa",
-        "er\xE1n",
-        "er\xE1s",
-        "er\xEDa",
-        "ir\xE1n",
-        "ir\xE1s",
-        "ir\xEDa",
+        "\xe9amos",
+        "ar\xe1n",
+        "ar\xe1s",
+        "ar\xeda",
+        "er\xe1n",
+        "er\xe1s",
+        "er\xeda",
+        "ir\xe1n",
+        "ir\xe1s",
+        "ir\xeda",
         "iera",
         "iese",
         "aste",
@@ -5499,44 +5499,44 @@ class SpanishStemmer(_StandardStemmer):
         "idas",
         "aras",
         "ases",
-        "\xEDais",
+        "\xedais",
         "ados",
         "idos",
         "amos",
         "imos",
         "emos",
-        "ar\xE1",
-        "ar\xE9",
-        "er\xE1",
-        "er\xE9",
-        "ir\xE1",
-        "ir\xE9",
+        "ar\xe1",
+        "ar\xe9",
+        "er\xe1",
+        "er\xe9",
+        "ir\xe1",
+        "ir\xe9",
         "aba",
         "ada",
         "ida",
         "ara",
         "ase",
-        "\xEDan",
+        "\xedan",
         "ado",
         "ido",
-        "\xEDas",
-        "\xE1is",
-        "\xE9is",
-        "\xEDa",
+        "\xedas",
+        "\xe1is",
+        "\xe9is",
+        "\xeda",
         "ad",
         "ed",
         "id",
         "an",
-        "i\xF3",
+        "i\xf3",
         "ar",
         "er",
         "ir",
         "as",
-        "\xEDs",
+        "\xeds",
         "en",
         "es",
     )
-    __step3_suffixes = ("os", "a", "e", "o", "\xE1", "\xE9", "\xED", "\xF3")
+    __step3_suffixes = ("os", "a", "e", "o", "\xe1", "\xe9", "\xed", "\xf3")
 
     def stem(self, word):
         """
@@ -5567,15 +5567,15 @@ class SpanishStemmer(_StandardStemmer):
                 rv[: -len(suffix)].endswith(
                     (
                         "ando",
-                        "\xE1ndo",
+                        "\xe1ndo",
                         "ar",
-                        "\xE1r",
+                        "\xe1r",
                         "er",
-                        "\xE9r",
+                        "\xe9r",
                         "iendo",
-                        "i\xE9ndo",
+                        "i\xe9ndo",
                         "ir",
-                        "\xEDr",
+                        "\xedr",
                     )
                 )
             ) or (
@@ -5617,7 +5617,7 @@ class SpanishStemmer(_StandardStemmer):
                 if suffix in (
                     "adora",
                     "ador",
-                    "aci\xF3n",
+                    "aci\xf3n",
                     "adoras",
                     "adores",
                     "acion",
@@ -5635,11 +5635,11 @@ class SpanishStemmer(_StandardStemmer):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                elif suffix in ("log\xEDa", "log\xEDas"):
+                elif suffix in ("log\xeda", "log\xedas"):
                     word = suffix_replace(word, suffix, "log")
                     rv = suffix_replace(rv, suffix, "log")
 
-                elif suffix in ("uci\xF3n", "uciones"):
+                elif suffix in ("uci\xf3n", "uciones"):
                     word = suffix_replace(word, suffix, "u")
                     rv = suffix_replace(rv, suffix, "u")
 
@@ -5691,7 +5691,7 @@ class SpanishStemmer(_StandardStemmer):
                 if rv.endswith(suffix):
                     word = word[: -len(suffix)]
                     rv = rv[: -len(suffix)]
-                    if suffix in ("en", "es", "\xE9is", "emos"):
+                    if suffix in ("en", "es", "\xe9is", "emos"):
                         if word.endswith("gu"):
                             word = word[:-1]
 
@@ -5703,7 +5703,7 @@ class SpanishStemmer(_StandardStemmer):
         for suffix in self.__step3_suffixes:
             if rv.endswith(suffix):
                 word = word[: -len(suffix)]
-                if suffix in ("e", "\xE9"):
+                if suffix in ("e", "\xe9"):
                     rv = rv[: -len(suffix)]
 
                     if word[-2:] == "gu" and rv.endswith("u"):
@@ -5726,11 +5726,11 @@ class SpanishStemmer(_StandardStemmer):
         :rtype: str or unicode
         """
         return (
-            word.replace("\xE1", "a")
-            .replace("\xE9", "e")
-            .replace("\xED", "i")
-            .replace("\xF3", "o")
-            .replace("\xFA", "u")
+            word.replace("\xe1", "a")
+            .replace("\xe9", "e")
+            .replace("\xed", "i")
+            .replace("\xf3", "o")
+            .replace("\xfa", "u")
         )
 
 
@@ -5754,7 +5754,7 @@ class SwedishStemmer(_ScandinavianStemmer):
 
     """
 
-    __vowels = "aeiouy\xE4\xE5\xF6"
+    __vowels = "aeiouy\xe4\xe5\xf6"
     __s_ending = "bcdfghjklmnoprtvy"
     __step1_suffixes = (
         "heterna",
@@ -5796,7 +5796,7 @@ class SwedishStemmer(_ScandinavianStemmer):
         "s",
     )
     __step2_suffixes = ("dd", "gd", "nn", "dt", "gt", "kt", "tt")
-    __step3_suffixes = ("fullt", "l\xF6st", "els", "lig", "ig")
+    __step3_suffixes = ("fullt", "l\xf6st", "els", "lig", "ig")
 
     def stem(self, word):
         """
@@ -5839,7 +5839,7 @@ class SwedishStemmer(_ScandinavianStemmer):
             if r1.endswith(suffix):
                 if suffix in ("els", "lig", "ig"):
                     word = word[: -len(suffix)]
-                elif suffix in ("fullt", "l\xF6st"):
+                elif suffix in ("fullt", "l\xf6st"):
                     word = word[:-1]
                 break
 

@@ -881,7 +881,7 @@ class Downloader:
             return self.STALE
 
         # Check if the file's checksum matches
-        if md5_hexdigest(filepath) != info.checksum:
+        if sha256_hexdigest(filepath) != info.sha256_checksum:
             return self.STALE
 
         # If it's a zipfile, and it's been at least partially
