@@ -1,0 +1,8 @@
+python - << "EOF"
+import nltk
+from pathlib import Path
+
+nltk.download("punkt")
+p = nltk.data.find("tokenizers/punkt/english.pickle")
+print(p)
+EOF

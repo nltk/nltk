@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nltk-punkt"
+version = "0.1.0"
+description = "Punkt tokenizer model files packaged for pip installation"
+authors = [
+  { name="Group1 ENGG4450" }
+]
+requires-python = ">=3.8"
+readme = "README.md"
+
+[tool.setuptools.package-data]
+"nltk_punkt" = [
+    "data/tokenizers/punkt/*"
+]
+
+[project.entry-points."nltk_data"]
+punkt = "nltk_punkt.data"

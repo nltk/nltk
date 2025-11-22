@@ -1,0 +1,7 @@
+pyproject.toml
+data/__init__.py
+nltk_punkt.egg-info/PKG-INFO
+nltk_punkt.egg-info/SOURCES.txt
+nltk_punkt.egg-info/dependency_links.txt
+nltk_punkt.egg-info/entry_points.txt
+nltk_punkt.egg-info/top_level.txt
