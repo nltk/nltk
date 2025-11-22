@@ -1,3 +1,28 @@
+Metadata-Version: 2.4
+Name: nltk-extratokenizers
+Version: 0.1.1
+Summary: Core NLTK model/data files (punkt, tagger, stopwords, wordnet, etc.) packaged for pip installation
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/Julien-ser/nltk_Group1_ENGG4450
+Project-URL: Repository, https://github.com/Julien-ser/nltk_Group1_ENGG4450
+Project-URL: Issues, https://github.com/Julien-ser/nltk_Group1_ENGG4450/issues
+Keywords: nltk,nlp,tokenizer,punkt,natural-language-processing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Text Processing :: Linguistic
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
 # nltk-extratokenizers
 
 **Core NLTK model/data files packaged for pip installation**

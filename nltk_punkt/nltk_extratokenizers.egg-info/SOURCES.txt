@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+data/__init__.py
+nltk_extratokenizers.egg-info/PKG-INFO
+nltk_extratokenizers.egg-info/SOURCES.txt
+nltk_extratokenizers.egg-info/dependency_links.txt
+nltk_extratokenizers.egg-info/entry_points.txt
+nltk_extratokenizers.egg-info/top_level.txt
