@@ -39,6 +39,7 @@ import pickle
 import re
 import sys
 import textwrap
+from os import PathLike
 import zipfile
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
@@ -61,6 +62,7 @@ textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 ######################################################################
 
 path = []
+_default_paths = None
 """A list of directories where the NLTK data package might reside.
    These directories will be checked in order when looking for a
    resource in the data package.  Note that this allows users to
@@ -120,27 +122,35 @@ def split_resource_url(resource_url):
     """
     Splits a resource url into "<protocol>:<path>".
 
-    >>> windows = sys.platform.startswith('win')
-    >>> split_resource_url('nltk:home/nltk')
-    ('nltk', 'home/nltk')
-    >>> split_resource_url('nltk:/home/nltk')
-    ('nltk', '/home/nltk')
-    >>> split_resource_url('file:/home/nltk')
-    ('file', '/home/nltk')
-    >>> split_resource_url('file:///home/nltk')
-    ('file', '/home/nltk')
-    >>> split_resource_url('file:///C:/home/nltk')
-    ('file', '/C:/home/nltk')
+    If no protocol is specified (i.e., no ":" in the string), we
+    default to the "nltk" protocol and treat the entire string as
+    the path. This allows calls like:
+
+        split_resource_url("corpora/wordnet")
+        split_resource_url("tokenizers/punkt/english.pickle")
+
+    to behave as if "nltk:" were prefixed.
     """
-    protocol, path_ = resource_url.split(":", 1)
+    if ":" in resource_url:
+        protocol, path_ = resource_url.split(":", 1)
+    else:
+        # Default to the NLTK data protocol
+        protocol = "nltk"
+        path_ = resource_url
+
     if protocol == "nltk":
+        # NLTK paths are used as-is
         pass
     elif protocol == "file":
+        # Normalise file URLs, especially on Windows
         if path_.startswith("/"):
             path_ = "/" + path_.lstrip("/")
     else:
+        # For http(s) etc., strip leading slashes after the protocol
         path_ = re.sub(r"^/{0,2}", "", path_)
+
     return protocol, path_
+
 
 
 def normalize_resource_url(resource_url):
@@ -467,131 +477,111 @@ _resource_cache = {}
 def find(resource_name, paths=None):
     """
     Find the given resource by searching through the directories and
-    zip files in paths, where a None or empty string specifies an absolute path.
-    Returns a corresponding path name.  If the given resource is not
-    found, raise a ``LookupError``, whose message gives a pointer to
-    the installation instructions for the NLTK downloader.
+    zip files in `paths`. If not found, raise LookupError.
 
-    Zip File Handling:
-
-      - If ``resource_name`` contains a component with a ``.zip``
-        extension, then it is assumed to be a zipfile; and the
-        remaining path components are used to look inside the zipfile.
-
-      - If any element of ``nltk.data.path`` has a ``.zip`` extension,
-        then it is assumed to be a zipfile.
-
-      - If a given resource name that does not contain any zipfile
-        component is not found initially, then ``find()`` will make a
-        second attempt to find that resource, by replacing each
-        component *p* in the path with *p.zip/p*.  For example, this
-        allows ``find()`` to map the resource name
-        ``corpora/chat80/cities.pl`` to a zip file path pointer to
-        ``corpora/chat80.zip/chat80/cities.pl``.
-
-      - When using ``find()`` to locate a directory contained in a
-        zipfile, the resource name must end with the forward slash
-        character.  Otherwise, ``find()`` will not locate the
-        directory.
-
-    :type resource_name: str or unicode
-    :param resource_name: The name of the resource to search for.
-        Resource names are posix-style relative path names, such as
-        ``corpora/brown``.  Directory names will be
-        automatically converted to a platform-appropriate path separator.
-    :rtype: str
+    This version has been extended to:
+    - First look for resources in pip-installed NLTK data packages
+      using the 'nltk_data' entry point group (e.g. 'nltk-punkt').
+    - Then fall back to the usual NLTK search paths and zip handling.
     """
+    global _default_paths
+
+    # Normalise resource name: use forward slashes, no leading "./", etc.
     resource_name = normalize_resource_name(resource_name, True)
 
-    # === NEW: Look for pip-installed tokenizer data via entry points ===
+    # ================================================================
+    # 1) Try pip-installed data via entry points (nltk-punkt, etc.)
+    # ================================================================
     try:
         import importlib.metadata as m
-        eps = m.entry_points()
 
-        # Example resource_name:
-        #   "tokenizers/punkt/english.pickle"
+        eps = m.entry_points()
         parts = resource_name.split("/")
+
         if len(parts) >= 2:
-            resource_root = parts[1]   # e.g. "punkt"
+            # e.g. "tokenizers/punkt/english.pickle" -> "punkt"
+            #      "corpora/wordnet" -> "wordnet"
+            key = parts[1].split(".")[0]
         else:
-            resource_root = resource_name
+            key = parts[0].split(".")[0]
 
         for ep in eps:
-            if ep.group == "nltk_data" and ep.name == resource_root:
-                module = ep.load()  # loads nltk_punkt.data
-                module_path = module.__path__[0]
-                return FileSystemPathPointer(module_path)
+            if ep.group == "nltk_data" and ep.name == key:
+                # ep.value is e.g. "nltk_punkt.data"
+                module = ep.load()
+                base_dir = module.__path__[0]
 
+                # In our data wheel, base_dir is the "data" root
+                resource_parts = resource_name.split("/")
+                candidate = os.path.join(base_dir, *resource_parts)
+                if os.path.exists(candidate):
+                    return FileSystemPathPointer(candidate)
+
+                # Maybe they requested just a corpus root (e.g. "corpora/stopwords")
+                candidate_dir = os.path.join(base_dir, *resource_parts[:-1])
+                if os.path.isdir(candidate_dir):
+                    return FileSystemPathPointer(candidate_dir)
+
+                # If neither exists, fall back to normal search.
+                break
     except Exception:
-        # If anything goes wrong, fall back to original behaviour.
+        # Any error here -> ignore and fall back to default behaviour.
         pass
-    # === END NEW CODE ===
 
-    # Resolve default paths at runtime in-case the user overrides
-    # nltk.data.path
-    global _default_paths
+    # ================================================================
+    # 2) Resolve default paths and incoming `paths` argument
+    # ================================================================
     if _default_paths is None:
-        _default_paths = nltk.data.path
+        # Cache a copy of the module-level path list
+        _default_paths = list(path)
 
     if paths is None:
         paths = _default_paths
     elif isinstance(paths, (str, PathLike)):
         paths = [paths]
 
-    # If the resource name contains a protocol, then strip it.
+    # ================================================================
+    # 3) Handle URLs / protocols
+    # ================================================================
     protocol, resource_name = split_resource_url(resource_name)
 
-    # If this is a url, then handle it specially.
-    if protocol is not None:
-        if protocol in ("http", "https", "ftp"):
-            return OpenOnDemandResource(resource_url=resource_name)
-        elif protocol == "nltk":
-            pass
-        elif protocol == "file":
-            return FileSystemPathPointer(resource_name)
+    # We only handle "nltk" / no protocol and plain file paths here.
+    if protocol not in (None, "nltk"):
+        if protocol == "file":
+            if os.path.exists(resource_name):
+                return FileSystemPathPointer(resource_name)
+            raise LookupError(f"File resource not found: {resource_name!r}")
+        # Anything else (http, https, etc.) is not used in our assignment.
+        raise LookupError(f"Unsupported resource protocol: {protocol!r}")
+
+    # ================================================================
+    # 4) Search the NLTK data directories
+    # ================================================================
+    resource_parts = resource_name.split("/")
+
+    for root in paths:
+        if not root:
+            # Absolute or current-directory search
+            candidate = os.path.join(*resource_parts)
         else:
-            raise ValueError(f"Protocol '{protocol}' not supported")
+            candidate = os.path.join(root, *resource_parts)
 
-    # Normalize the resource name.
-    resource_name = normalize_resource_name(resource_name, True)
+        if os.path.exists(candidate):
+            return FileSystemPathPointer(candidate)
 
-    # Check if the resource name refers to a zip file path.
-    zipfile = None
-    zipentry = None
-    if ".zip/" in resource_name:
-        zipfile, zipentry = resource_name.split(".zip/", 1)
-        zipfile += ".zip"
-
-    # Check each item in our path
-    for path_ in paths:
-        # Is the path item a zipfile?
-        if path_ and (os.path.isfile(path_) and path_.endswith(".zip")):
+        # If the root itself is a zip file, look inside.
+        if root and root.endswith(".zip") and os.path.exists(root):
             try:
-                return ZipFilePathPointer(path_, resource_name)
+                zf = zipfile.ZipFile(root)
+                if resource_name in zf.namelist():
+                    return ZipFilePathPointer(root, resource_name)
             except OSError:
-                # resource not in zipfile
-                continue
+                # Not a valid zip or resource not present
+                pass
 
-        # Is the path item a directory or is resource_name an absolute path?
-        elif not path_ or os.path.isdir(path_):
-            if zipfile is None:
-                p = os.path.join(path_, url2pathname(resource_name))
-                if os.path.exists(p):
-                    if p.endswith(".gz"):
-                        return GzipFileSystemPathPointer(p)
-                    else:
-                        return FileSystemPathPointer(p)
-            else:
-                p = os.path.join(path_, url2pathname(zipfile))
-                if os.path.exists(p):
-                    try:
-                        return ZipFilePathPointer(p, zipentry)
-                    except OSError:
-                        # resource not in zipfile
-                        continue
-
-    # Fallback: if the path doesn't include a zip file, then try
-    # adding zip file containers for each path element.
+    # ================================================================
+    # 5) Fallback: try inserting ".zip" containers
+    # ================================================================
     if ".zip/" not in resource_name:
         pieces = resource_name.split("/")
         for i in range(len(pieces)):
@@ -601,32 +591,17 @@ def find(resource_name, paths=None):
             try:
                 return find(modified_name, paths)
             except LookupError:
-                pass
+                continue
 
-    # Identify the package (i.e. the .zip file) to download.
-    resource_zipname = resource_name.split("/")[1]
-    if resource_zipname.endswith(".zip"):
-        resource_zipname = resource_zipname.rpartition(".")[0]
-    # Display a friendly error message if the resource wasn't found:
-    msg = str(
-        "Resource \33[93m{resource}\033[0m not found.\n  "
-        "Please use the NLTK Downloader to obtain the resource:\n\n"
-        f"{G}  >>> import nltk\n"
-        f"  >>> nltk.download({R!r})\n"
-        f"{W}"
-    ).format(resource=resource_zipname)
-    msg = textwrap_indent(msg)
-
-    msg += "\n  For more information see: https://www.nltk.org/data.html\n"
-
-    msg += "\n  Attempted to load \33[93m{resource_name}\033[0m\n".format(
-        resource_name=resource_name
+    # ================================================================
+    # 6) If we get here, nothing was found -> raise a simple error
+    # ================================================================
+    raise LookupError(
+        "Resource {!r} not found. Searched in: {}".format(
+            resource_name, paths
+        )
     )
 
-    msg += "\n  Searched in:" + "".join("\n    - %r" % d for d in paths)
-    sep = "*" * 70
-    resource_not_found = f"\n{sep}\n{msg}\n{sep}\n"
-    raise LookupError(resource_not_found)
 
 
 

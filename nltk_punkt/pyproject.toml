@@ -5,17 +5,38 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nltk-punkt"
 version = "0.1.0"
-description = "Punkt tokenizer model files packaged for pip installation"
+description = "Core NLTK model/data files (punkt, tagger, stopwords, wordnet, etc.) packaged for pip installation"
 authors = [
-  { name="Group1 ENGG4450" }
+  { name = "Group1 ENGG4450" }
 ]
 requires-python = ">=3.8"
 readme = "README.md"
 
 [tool.setuptools.package-data]
 "nltk_punkt" = [
-    "data/tokenizers/punkt/*"
+  "data/tokenizers/punkt/*",
+  "data/taggers/averaged_perceptron_tagger/*",
+  "data/corpora/stopwords/*",
+  "data/corpora/wordnet/*",
+  "data/corpora/omw-1.4/*",
+  "data/snowball_data/*",
+  "data/corpora/names/*",
+  "data/corpora/brown/*",
+  "data/corpora/movie_reviews/*"
 ]
 
 [project.entry-points."nltk_data"]
+# Tokenizers
 punkt = "nltk_punkt.data"
+
+# Taggers
+averaged_perceptron_tagger = "nltk_punkt.data"
+
+# Corpora / lexical resources
+stopwords = "nltk_punkt.data"
+wordnet = "nltk_punkt.data"
+"omw-1.4" = "nltk_punkt.data"
+snowball_data = "nltk_punkt.data"
+names = "nltk_punkt.data"
+brown = "nltk_punkt.data"
+movie_reviews = "nltk_punkt.data"
