@@ -265,12 +265,16 @@ class Boxer:
         if input_str is None:
             cmd = [binary] + args
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
         else:
-            cmd = 'echo "{}" | {} {}'.format(input_str, binary, " ".join(args))
+            cmd = [binary] + args
             p = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             )
-        stdout, stderr = p.communicate()
+            stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
 
         if verbose:
             print("Return code:", p.returncode)

@@ -306,7 +306,7 @@ class CFGEditor:
 
         self._analyze()
 
-    #         # Add the producitons to the text widget, and colorize them.
+    #         # Add the productions to the text widget, and colorize them.
     #         prod_by_lhs = {}
     #         for prod in self._cfg.productions():
     #             if len(prod.rhs()) > 0:

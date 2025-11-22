@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: nltk-punkt
+Version: 0.1.0
+Summary: Punkt tokenizer model files packaged for pip installation
+Author: Group1 ENGG4450
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown

@@ -24,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Install pre-commit
         run: |
@@ -43,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Install regex
         run: pip install regex
@@ -67,8 +67,11 @@ jobs:
     needs: [pre-commit, minimal_download_test]
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.14t']
         os: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:
+          - os: windows-latest
+            python-version: '3.14t'  # scikit-learn issue on Py3.14t on Windows
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -121,7 +124,7 @@ jobs:
       - name: Ensure third-party directory exists
         run: mkdir -p "${{ env.THIRD_PARTY_DIR }}"
 
-      - name: Cache third party tools
+      - name: Cache third-party tools
         uses: actions/cache@v4
         id: third-party-cache
         with:
@@ -132,7 +135,7 @@ jobs:
         shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
 
-      - name: Download third party data on cache miss
+      - name: Download third-party data on cache miss
         if: steps.third-party-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |

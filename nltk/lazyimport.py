@@ -2,17 +2,17 @@
 # distributed under the terms of the eGenix.com Public License Agreement
 # https://www.egenix.com/products/eGenix.com-Public-License-1.1.0.pdf
 
-""" Helper to enable simple lazy module import.
+"""Helper to enable simple lazy module import.
 
-    'Lazy' means the actual import is deferred until an attribute is
-    requested from the module's namespace. This has the advantage of
-    allowing all imports to be done at the top of a script (in a
-    prominent and visible place) without having a great impact
-    on startup time.
+'Lazy' means the actual import is deferred until an attribute is
+requested from the module's namespace. This has the advantage of
+allowing all imports to be done at the top of a script (in a
+prominent and visible place) without having a great impact
+on startup time.
 
-    Copyright (c) 1999-2005, Marc-Andre Lemburg; mailto:mal@lemburg.com
-    See the documentation for further information on copyrights,
-    or contact the author. All Rights Reserved.
+Copyright (c) 1999-2005, Marc-Andre Lemburg; mailto:mal@lemburg.com
+See the documentation for further information on copyrights,
+or contact the author. All Rights Reserved.
 """
 
 ### Constants

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12]
+        python-version: ['3.10', '3.11', '3.12']
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -43,7 +43,7 @@ jobs:
       - name: Build distributions
         run: python -m build
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.whl

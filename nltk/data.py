@@ -503,14 +503,64 @@ def find(resource_name, paths=None):
     """
     resource_name = normalize_resource_name(resource_name, True)
 
+    # === NEW: Look for pip-installed tokenizer data via entry points ===
+    try:
+        import importlib.metadata as m
+        eps = m.entry_points()
+
+        # Example resource_name:
+        #   "tokenizers/punkt/english.pickle"
+        parts = resource_name.split("/")
+        if len(parts) >= 2:
+            resource_root = parts[1]   # e.g. "punkt"
+        else:
+            resource_root = resource_name
+
+        for ep in eps:
+            if ep.group == "nltk_data" and ep.name == resource_root:
+                module = ep.load()  # loads nltk_punkt.data
+                module_path = module.__path__[0]
+                return FileSystemPathPointer(module_path)
+
+    except Exception:
+        # If anything goes wrong, fall back to original behaviour.
+        pass
+    # === END NEW CODE ===
+
     # Resolve default paths at runtime in-case the user overrides
     # nltk.data.path
-    if paths is None:
-        paths = path
+    global _default_paths
+    if _default_paths is None:
+        _default_paths = nltk.data.path
 
-    # Check if the resource name includes a zipfile name
-    m = re.match(r"(.*\.zip)/?(.*)$|", resource_name)
-    zipfile, zipentry = m.groups()
+    if paths is None:
+        paths = _default_paths
+    elif isinstance(paths, (str, PathLike)):
+        paths = [paths]
+
+    # If the resource name contains a protocol, then strip it.
+    protocol, resource_name = split_resource_url(resource_name)
+
+    # If this is a url, then handle it specially.
+    if protocol is not None:
+        if protocol in ("http", "https", "ftp"):
+            return OpenOnDemandResource(resource_url=resource_name)
+        elif protocol == "nltk":
+            pass
+        elif protocol == "file":
+            return FileSystemPathPointer(resource_name)
+        else:
+            raise ValueError(f"Protocol '{protocol}' not supported")
+
+    # Normalize the resource name.
+    resource_name = normalize_resource_name(resource_name, True)
+
+    # Check if the resource name refers to a zip file path.
+    zipfile = None
+    zipentry = None
+    if ".zip/" in resource_name:
+        zipfile, zipentry = resource_name.split(".zip/", 1)
+        zipfile += ".zip"
 
     # Check each item in our path
     for path_ in paths:
@@ -541,12 +591,13 @@ def find(resource_name, paths=None):
                         continue
 
     # Fallback: if the path doesn't include a zip file, then try
-    # again, assuming that one of the path components is inside a
-    # zipfile of the same name.
-    if zipfile is None:
+    # adding zip file containers for each path element.
+    if ".zip/" not in resource_name:
         pieces = resource_name.split("/")
         for i in range(len(pieces)):
-            modified_name = "/".join(pieces[:i] + [pieces[i] + ".zip"] + pieces[i:])
+            modified_name = "/".join(
+                pieces[:i] + [pieces[i] + ".zip"] + pieces[i:]
+            )
             try:
                 return find(modified_name, paths)
             except LookupError:
@@ -558,12 +609,11 @@ def find(resource_name, paths=None):
         resource_zipname = resource_zipname.rpartition(".")[0]
     # Display a friendly error message if the resource wasn't found:
     msg = str(
-        "Resource \33[93m{resource}\033[0m not found.\n"
+        "Resource \33[93m{resource}\033[0m not found.\n  "
         "Please use the NLTK Downloader to obtain the resource:\n\n"
-        "\33[31m"  # To display red text in terminal.
-        ">>> import nltk\n"
-        ">>> nltk.download('{resource}')\n"
-        "\033[0m"
+        f"{G}  >>> import nltk\n"
+        f"  >>> nltk.download({R!r})\n"
+        f"{W}"
     ).format(resource=resource_zipname)
     msg = textwrap_indent(msg)
 
@@ -577,6 +627,8 @@ def find(resource_name, paths=None):
     sep = "*" * 70
     resource_not_found = f"\n{sep}\n{msg}\n{sep}\n"
     raise LookupError(resource_not_found)
+
+
 
 
 def retrieve(resource_url, filename=None, verbose=True):
