@@ -1,3 +1,4 @@
+README.md
 pyproject.toml
 data/__init__.py
 nltk_punkt.egg-info/PKG-INFO

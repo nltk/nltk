@@ -1,2 +1,10 @@
 [nltk_data]
+averaged_perceptron_tagger = nltk_punkt.data
+brown = nltk_punkt.data
+movie_reviews = nltk_punkt.data
+names = nltk_punkt.data
+omw-1.4 = nltk_punkt.data
 punkt = nltk_punkt.data
+snowball_data = nltk_punkt.data
+stopwords = nltk_punkt.data
+wordnet = nltk_punkt.data
