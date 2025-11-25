@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nltk-extratokenizers"
-version = "0.1.1"
+version = "0.1.2"
 description = "Core NLTK model/data files (punkt, tagger, stopwords, wordnet, etc.) packaged for pip installation"
 authors = [
 ]

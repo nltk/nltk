@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: nltk-extratokenizers
-Version: 0.1.1
+Version: 0.1.2
 Summary: Core NLTK model/data files (punkt, tagger, stopwords, wordnet, etc.) packaged for pip installation
 License-Expression: Apache-2.0
 Project-URL: Homepage, https://github.com/Julien-ser/nltk_Group1_ENGG4450
@@ -23,95 +23,110 @@ Classifier: Topic :: Text Processing :: Linguistic
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 
-# nltk-extratokenizers
+
+# nltk-extratokenizers User Guide
 
 **Core NLTK model/data files packaged for pip installation**
 
 `nltk-extratokenizers` provides essential NLTK data files (tokenizers, taggers, corpora) as a pip-installable package, eliminating the need for `nltk.download()`. This package implements [NLTK Issue #3413](https://github.com/nltk/nltk/issues/3413) by using Python entry points to make NLTK data available directly from pip.
 
-## Installation
+---
 
-```bash
-pip install nltk-extratokenizers
-```
+## Quick Start
 
-**Important:** This package requires a patched version of NLTK that supports entry-point-based data loading. You'll need to use the modified NLTK from this repository:
+### 1. Clone and Install Patched NLTK
 
-```bash
+Open PowerShell and run:
+
+```powershell
 git clone https://github.com/Julien-ser/nltk_Group1_ENGG4450.git
 cd nltk_Group1_ENGG4450
-pip install -e .
+python -m pip install --upgrade pip setuptools
+python -m pip install -e .
 ```
 
-Then install the data package:
+### 2. Install the Data Package
 
-```bash
-pip install nltk-extratokenizers
+```powershell
+python -m pip install nltk-extratokenizers
 ```
 
-## What's Included
+---
 
-This package provides the following NLTK data resources:
+## Running Tests
 
-### Tokenizers
-- **punkt** - Sentence tokenizer models
+To validate your installation and run all tests:
 
-### Taggers
-- **averaged_perceptron_tagger** - Part-of-speech tagger
+1. **Install test dependencies:**
+   ```powershell
+   python -m pip install -r requirements-test.txt
+   python -m pip install pytest pytest-mock
+   ```
 
-### Corpora & Lexical Resources
-- **stopwords** - Stopword lists for multiple languages
-- **wordnet** - WordNet lexical database
-- **omw-1.4** - Open Multilingual Wordnet
-- **snowball_data** - Snowball stemmer data
-- **names** - Name corpus
-- **brown** - Brown corpus
-- **movie_reviews** - Movie reviews corpus
+2. **Run the test suite:**
+   ```powershell
+   pytest nltk/test
+   ```
 
-## Usage
+---
+
+## Troubleshooting & Validation
+
+### Common Issues & Solutions
+
+#### 1. Missing `regex` Module
+If you see `ModuleNotFoundError: No module named 'regex'`:
+```powershell
+python -m pip install regex
+```
+Or rely on the fallback to Python's `re` module (less feature-complete).
+
+#### 2. Missing `pytest-mock` Plugin
+If you see `fixture 'mocker' not found` when running tests:
+```powershell
+python -m pip install pytest-mock
+```
+
+#### 3. SyntaxError in Test File
+If you see a `SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes`, check for stray shell commands in your Python files and remove them.
+
+#### 4. RecursionError in Zip Pointer Test
+If you see `RecursionError: maximum recursion depth exceeded` in `test_find_zip_root_returns_zip_pointer`, ensure all zipfile mocks are complete and stub classes are present.
+
+---
+
+## Usage Examples
 
 Once installed, you can use NLTK tokenizers and other resources **without calling `nltk.download()`**:
 
-### Example: Using Punkt Sentence Tokenizer
-
+### Sentence Tokenizer
 ```python
 from nltk.tokenize import PunktSentenceTokenizer
-
-# No nltk.download() needed!
 tok = PunktSentenceTokenizer()
 sentences = tok.tokenize("Hello world. This is a test. Another sentence here.")
 print(sentences)
 # Output: ['Hello world.', 'This is a test.', 'Another sentence here.']
 ```
 
-### Example: Using Word Tokenizer
-
+### Word Tokenizer
 ```python
 from nltk.tokenize import word_tokenize
-
-# Works without nltk.download()
 tokens = word_tokenize("Natural language processing is fun!")
 print(tokens)
 # Output: ['Natural', 'language', 'processing', 'is', 'fun', '!']
 ```
 
-### Example: Using Stopwords
-
+### Stopwords
 ```python
 from nltk.corpus import stopwords
-
-# No download required
 english_stops = set(stopwords.words('english'))
 print('the' in english_stops)  # True
 ```
 
-### Example: Using POS Tagger
-
+### POS Tagger
 ```python
 from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
-
-# Works without nltk.download()
 text = "The quick brown fox jumps over the lazy dog"
 tokens = word_tokenize(text)
 tags = pos_tag(tokens)
@@ -119,51 +134,42 @@ print(tags)
 # Output: [('The', 'DT'), ('quick', 'JJ'), ('brown', 'JJ'), ...]
 ```
 
-## Verification
+---
 
-To verify that the package is working correctly and data is being loaded from the pip package:
+## Verification Steps
 
 ### 1. Check Package Installation
-
-```bash
-pip show nltk-extratokenizers
+```powershell
+python -m pip show nltk-extratokenizers
 ```
 
 ### 2. Verify Entry Points
-
 ```python
 import importlib.metadata as m
-
 print("nltk_data entry points:")
 for ep in m.entry_points(group="nltk_data"):
     print(f"  {ep.name} -> {ep.value}")
 ```
-
 Expected output should include:
 ```
 punkt -> nltk_punkt.data
 averaged_perceptron_tagger -> nltk_punkt.data
 stopwords -> nltk_punkt.data
 wordnet -> nltk_punkt.data
-...
+...etc
 ```
 
 ### 3. Verify Data Loading from Pip Package
-
 ```python
 import nltk
-
-# Check that punkt tokenizer is loaded from pip package
 path = nltk.data.find("tokenizers/punkt/english.pickle")
 print(f"Punkt tokenizer location: {path}")
 # Should show a path containing 'nltk_punkt' or 'site-packages'
 ```
 
 ### 4. Test Tokenizer Functionality
-
 ```python
 from nltk.tokenize import PunktSentenceTokenizer
-
 try:
     tok = PunktSentenceTokenizer()
     result = tok.tokenize("Test sentence. Another one!")
@@ -174,64 +180,61 @@ except LookupError as e:
     print("  Make sure nltk-extratokenizers is installed and NLTK is patched.")
 ```
 
+---
+
+## What's Included
+
+This package provides the following NLTK data resources:
+
+- **punkt** (Sentence tokenizer models)
+- **averaged_perceptron_tagger** (POS tagger)
+- **stopwords** (Stopword lists)
+- **wordnet** (WordNet lexical database)
+- **omw-1.4** (Open Multilingual Wordnet)
+- **snowball_data** (Snowball stemmer data)
+- **names** (Name corpus)
+- **brown** (Brown corpus)
+- **movie_reviews** (Movie reviews corpus)
+
+---
+
 ## Requirements
 
 - Python 3.8 or higher
-- NLTK (patched version from [this repository](https://github.com/Julien-ser/nltk_Group1_ENGG4450))
+- Patched NLTK from [this repository](https://github.com/Julien-ser/nltk_Group1_ENGG4450)
 - setuptools >= 61.0
+
+---
 
 ## How It Works
 
 This package uses Python's entry point system to register NLTK data resources. The patched NLTK's `nltk.data.find()` function:
 
-1. First checks for pip-installed packages via `nltk_data` entry points
+1. Checks for pip-installed packages via `nltk_data` entry points
 2. Falls back to the standard NLTK data search paths if not found
 
 This allows NLTK data to be distributed and installed via pip, making it easier to manage dependencies and deploy applications.
 
-## Troubleshooting
-
-### "LookupError: Resource not found"
-
-If you get a `LookupError` when using NLTK resources:
-
-1. **Verify the package is installed:**
-   ```bash
-   pip show nltk-extratokenizers
-   ```
-
-2. **Check that you're using the patched NLTK:**
-   ```python
-   import nltk
-   print(nltk.__file__)
-   # Should point to your local NLTK clone, not site-packages
-   ```
-
-3. **Verify entry points are registered:**
-   ```python
-   import importlib.metadata as m
-   eps = list(m.entry_points(group="nltk_data"))
-   print(f"Found {len(eps)} entry points")
-   ```
-
-### "Module not found: nltk_punkt"
-
-If you see import errors, make sure:
-- The package is installed: `pip install nltk-extratokenizers`
-- You're using the correct Python environment
+---
 
 ## Contributing
 
 Contributions are welcome! Please visit the [GitHub repository](https://github.com/Julien-ser/nltk_Group1_ENGG4450) to report issues or submit pull requests.
 
+---
+
 ## License
 
 This package is distributed under the Apache License 2.0, same as NLTK.
+
+---
 
 ## Related Projects
 
 - [NLTK](https://www.nltk.org/) - Natural Language Toolkit
 - [NLTK GitHub](https://github.com/nltk/nltk) - Official NLTK repository
+
+---
 
 ## Citation
 
@@ -244,6 +247,38 @@ Natural Language Processing with Python. O'Reilly Media Inc.
 
 ---
 
+
 **Package Name:** `nltk-extratokenizers`  
 **Version:** 0.1.0  
 **Repository:** https://github.com/Julien-ser/nltk_Group1_ENGG4450
+
+---
+
+## Publishing to PyPI
+
+To publish this package to PyPI, follow these steps in PowerShell:
+
+### 1. Build the Package
+```powershell
+python -m pip install --upgrade build
+python -m build
+# This creates a 'dist/' folder with your package files
+```
+
+### 2. Upload to PyPI
+```powershell
+python -m pip install --upgrade twine
+python -m twine upload dist/*
+# Enter your PyPI username and password when prompted
+```
+
+### 3. (Optional) Test Upload to TestPyPI
+```powershell
+python -m twine upload --repository testpypi dist/*
+# Visit https://test.pypi.org/project/nltk-extratokenizers/ to verify
+```
+
+**Note:**
+- Make sure your `pyproject.toml` and/or `setup.py` are correctly filled out with package metadata.
+- You must have a PyPI account. Register at https://pypi.org/account/register/
+- For more details, see the [official PyPI packaging guide](https://packaging.python.org/tutorials/packaging-projects/).
