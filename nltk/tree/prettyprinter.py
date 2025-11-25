@@ -30,6 +30,8 @@ from operator import itemgetter
 from nltk.tree.tree import Tree
 from nltk.util import OrderedDict
 
+
+
 ANSICOLOR = {
     "black": 30,
     "red": 31,
@@ -362,7 +364,7 @@ class TreePrettyPrinter:
             leftcorner = "\u250c"
             rightcorner = "\u2510"
             vertline = " \u2502 "
-            tee = horzline + "\u252c" + horzline
+            tee = horzline + "\u252C" + horzline
             bottom = horzline + "\u2534" + horzline
             cross = horzline + "\u253c" + horzline
             ellipsis = "\u2026"
