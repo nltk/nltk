@@ -127,3 +127,41 @@ class ReopenableZipFile(zipfile.ZipFile):
 )
 def test_split_resource_url_variants(input_url, expected):
     assert split_resource_url(input_url) == expected
+
+@pytest.mark.parametrize(
+    "input_url, expected",
+    [
+        # validated expected tuples that match the current split_resource_url behavior
+        ("file:///C:/dir/file", ("file", "/C:/dir/file")),
+        ("file://localhost/dir/file", ("file", "/localhost/dir/file")),
+        ("C:/dir/file", ("C", "dir/file")),
+        ("./relative/path", ("nltk", "./relative/path")),
+        ("", ("nltk", "")),
+    ],
+)
+def test_split_resource_url_edge_cases(input_url, expected):
+    assert split_resource_url(input_url) == expected
+
+@pytest.mark.parametrize(
+    "input_url, expected",
+    [
+        # UNC / backslash windows forms
+        (r"\\server\share\file.txt", ("nltk", r"\\server\share\file.txt")),
+        (r"C:\dir\file", ("C", r"\dir\file")),
+
+        # file URI variants
+        ("file://localhost/C:/dir/file", ("file", "/localhost/C:/dir/file")),
+        ("file:///C:/dir/file", ("file", "/C:/dir/file")),
+
+        # Uppercase scheme and http with host/path
+        ("HTTP://example.com/path", ("HTTP", "example.com/path")),
+
+        # Resource names that contain extra colons
+        ("custom:some:extra/path", ("custom", "some:extra/path")),
+
+        # Leading slash absolute unix path
+        ("/absolute/path", ("nltk", "/absolute/path")),
+    ],
+)
+def test_split_resource_url_additional_edges(input_url, expected):
+    assert split_resource_url(input_url) == expected
