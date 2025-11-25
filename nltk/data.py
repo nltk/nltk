@@ -499,9 +499,12 @@ def find(resource_name, paths=None):
         parts = resource_name.split("/")
 
         if len(parts) >= 2:
-            # e.g. "tokenizers/punkt/english.pickle" -> "punkt"
+            # e.g. "tokenizers/punkt_tab/english.pickle" -> "punkt"
             #      "corpora/wordnet" -> "wordnet"
             key = parts[1].split(".")[0]
+            # Handle special case: "punkt_tab" should map to "punkt" entry point
+            if key == "punkt_tab":
+                key = "punkt"
         else:
             key = parts[0].split(".")[0]
 
