@@ -46,7 +46,10 @@ domains and tasks. The basic logic is this:
 import html
 from typing import List
 
-import regex  # https://github.com/nltk/nltk/issues/2409
+try:
+    import regex  # https://github.com/nltk/nltk/issues/2409
+except ModuleNotFoundError:
+    import re as regex  # fallback when 'regex' package isn't installed
 
 from nltk.tokenize.api import TokenizerI
 
