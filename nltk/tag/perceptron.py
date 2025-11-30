@@ -274,10 +274,11 @@ class PerceptronTagger(TaggerI):
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.
         if not loc:
-            loc = find(f"taggers/averaged_perceptron_tagger_{lang}")
+            loc = find(f"taggers/averaged_perceptron_tagger_{lang}/")
 
         def load_param(json_file):
-            with open(path_join(loc, json_file)) as fin:
+            # Use .join() to reach the files regardless of zip/real FS.
+            with loc.join(json_file).open(encoding="utf-8") as fin:
                 return json.load(fin)
 
         self.decode_json_params(
