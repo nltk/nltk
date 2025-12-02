@@ -465,10 +465,25 @@ _resource_cache = {}
 
 
 def open_datafile(path, file_name):
+    """
+    Open a file using a PathPointer, supporting both filesystem and zip file paths.
+
+    :param path: A PathPointer (FileSystemPathPointer or ZipFilePathPointer)
+        representing the directory containing the file.
+    :type path: PathPointer
+    :param file_name: The name of the file to open within the directory.
+    :type file_name: str
+    :return: A file-like object opened with UTF-8 encoding.
+    :rtype: file
+
+    Example usage:
+        >>> from nltk.data import find, open_datafile
+        >>> path = find('corpora/abc')
+        >>> with open_datafile(path, 'rural.txt') as f:
+        ...     text = f.read()
+    """
     # Use .join() to reach the file regardless of zip/real FS.
     return path.join(file_name).open(encoding="utf-8")
-
-
 def find(resource_name, paths=None):
     """
     Find the given resource by searching through the directories and
