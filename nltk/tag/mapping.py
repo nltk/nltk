@@ -32,9 +32,9 @@ X - other: foreign words, typos, abbreviations
 from collections import defaultdict
 from os.path import join
 
-from nltk.data import load
+from nltk.data import find, open_datafile
 
-_UNIVERSAL_DATA = "taggers/universal_tagset"
+_UNIVERSAL_DATA = "taggers/universal_tagset/"
 _UNIVERSAL_TAGS = (
     "VERB",
     "NOUN",
@@ -56,7 +56,9 @@ _MAPPINGS = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: "UNK")))
 
 
 def _load_universal_map(fileid):
-    contents = load(join(_UNIVERSAL_DATA, fileid + ".map"), format="text")
+
+    with open_datafile(find(_UNIVERSAL_DATA), fileid + ".map") as f:
+        contents = f.read()
 
     # When mapping to the Universal Tagset,
     # map unknown inputs to 'X' not 'UNK'
