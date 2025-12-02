@@ -16,7 +16,7 @@ from os.path import join as path_join
 from tempfile import gettempdir
 
 from nltk import jsontags
-from nltk.data import find, load, open_datafile
+from nltk.data import find, open_datafile
 from nltk.tag.api import TaggerI
 
 try:
