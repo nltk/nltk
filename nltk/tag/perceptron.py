@@ -136,7 +136,7 @@ class PerceptronTagger(TaggerI):
 
     Load the saved model:
 
-    >>> from nltk.data import find, open_datafile
+    >>> from nltk.data import find
     >>> tagger2 = PerceptronTagger(loc=find(tagger.save_dir))
     >>> print(sorted(list(tagger2.classes)))
     ['JJ', 'NN', 'NNS', 'PRP', 'VBZ']
