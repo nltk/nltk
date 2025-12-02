@@ -1564,20 +1564,21 @@ class TadmMaxentClassifier(MaxentClassifier):
 def load_maxent_params(tab_dir):
     import numpy
 
+    from nltk.data import open_datafile
     from nltk.tabdata import MaxentDecoder
 
     mdec = MaxentDecoder()
     # Use .join() to reach the files regardless of zip/real FS.
-    with tab_dir.join("weights.txt").open(encoding="utf-8") as f:
+    with open_datafile(tab_dir, "weights.txt") as f:
         wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
 
-    with tab_dir.join("mapping.tab").open(encoding="utf-8") as f:
+    with open_datafile(tab_dir, "mapping.tab") as f:
         mpg = mdec.tupkey2dict(f)
 
-    with tab_dir.join("labels.txt").open(encoding="utf-8") as f:
+    with open_datafile(tab_dir, "labels.txt") as f:
         lab = mdec.txt2list(f)
 
-    with tab_dir.join("alwayson.tab").open(encoding="utf-8") as f:
+    with open_datafile(tab_dir, "alwayson.tab") as f:
         aon = mdec.tab2ivdict(f)
 
     return wgt, mpg, lab, aon

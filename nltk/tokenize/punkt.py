@@ -1755,6 +1755,7 @@ class PunktTokenizer(PunktSentenceTokenizer):
 
 
 def load_punkt_params(lang_dir):
+    from nltk.data import open_datafile
     from nltk.tabdata import PunktDecoder
 
     # Make a new Parameters object:
@@ -1762,13 +1763,13 @@ def load_punkt_params(lang_dir):
 
     pdec = PunktDecoder()
     # Use .join() to reach the files regardless of zip/real FS.
-    with lang_dir.join("collocations.tab").open(encoding="utf-8") as f:
+    with open_datafile(lang_dir, "collocations.tab") as f:
         params.collocations = set(pdec.tab2tups(f))
-    with lang_dir.join("sent_starters.txt").open(encoding="utf-8") as f:
+    with open_datafile(lang_dir, "sent_starters.txt") as f:
         params.sent_starters = pdec.txt2set(f)
-    with lang_dir.join("abbrev_types.txt").open(encoding="utf-8") as f:
+    with open_datafile(lang_dir, "abbrev_types.txt") as f:
         params.abbrev_types = pdec.txt2set(f)
-    with lang_dir.join("ortho_context.tab").open(encoding="utf-8") as f:
+    with open_datafile(lang_dir, "ortho_context.tab") as f:
         params.ortho_context = pdec.tab2intdict(f)
     return params
 

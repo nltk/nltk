@@ -464,6 +464,11 @@ _resource_cache = {}
    need to be loaded more than once."""
 
 
+def open_datafile(path, file_name):
+    # Use .join() to reach the file regardless of zip/real FS.
+    return path.join(file_name).open(encoding="utf-8")
+
+
 def find(resource_name, paths=None):
     """
     Find the given resource by searching through the directories and
