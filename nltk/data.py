@@ -464,16 +464,16 @@ _resource_cache = {}
    need to be loaded more than once."""
 
 
-def open_datafile(path, file_name):
+def open_datafile(path, file_name="", encoding="utf-8"):
     """
     Open a file using a PathPointer, supporting both filesystem and zip file paths.
 
-    :param path: A PathPointer (FileSystemPathPointer or ZipFilePathPointer)
-        representing the directory containing the file.
+    :param path: A PathPointer (FileSystemPathPointer or ZipFilePathPointer) representing
+        the file (when file_name is empty), or the directory containing the file.
     :type path: PathPointer
     :param file_name: The name of the file to open within the directory.
     :type file_name: str
-    :return: A file-like object opened with UTF-8 encoding.
+    :return: A file-like object opened with specified encoding.
     :rtype: file
 
     Example usage:
@@ -482,8 +482,10 @@ def open_datafile(path, file_name):
         >>> with open_datafile(path, 'rural.txt') as f:
         ...     text = f.read()
     """
-    # Use .join() to reach the file regardless of zip/real FS.
-    return path.join(file_name).open(encoding="utf-8")
+    if file_name:
+        # Use .join() to reach the file regardless of zip/real FS.
+        path = path.join(file_name)
+    return path.open(encoding=encoding)
 
 
 def find(resource_name, paths=None):
