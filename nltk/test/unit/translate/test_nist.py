@@ -5,7 +5,7 @@ Tests for NIST translation evaluation metric
 import io
 import unittest
 
-from nltk.data import find
+from nltk.data import find, open_datafile
 from nltk.translate.nist_score import corpus_nist
 
 
@@ -17,13 +17,13 @@ class TestNIST(unittest.TestCase):
 
         # Reads the NIST scores from the `mteval-13a.output` file.
         # The order of the list corresponds to the order of the ngrams.
-        with open(mteval_output_file) as mteval_fin:
+        with open_datafile(mteval_output_file) as mteval_fin:
             # The numbers are located in the last 4th line of the file.
             # The first and 2nd item in the list are the score and system names.
             mteval_nist_scores = map(float, mteval_fin.readlines()[-4].split()[1:-1])
 
-        with open(ref_file, encoding="utf8") as ref_fin:
-            with open(hyp_file, encoding="utf8") as hyp_fin:
+        with open_datafile(ref_file, encoding="utf8") as ref_fin:
+            with open_datafile(hyp_file, encoding="utf8") as hyp_fin:
                 # Whitespace tokenize the file.
                 # Note: split() automatically strip().
                 hypotheses = list(map(lambda x: x.split(), hyp_fin))
