@@ -222,13 +222,31 @@ class CorpusReader:
     def open(self, file):
         """
         Return an open stream that can be used to read the given file.
-        If the file's encoding is not None, then the stream will
-        automatically decode the file's contents into unicode.
-
-        :param file: The file identifier of the file to read.
+        Security patched: prevents path traversal & absolute path access.
         """
+        # -------- SECURITY PATCH START --------
+        import os
+
+        file = str(file).replace("\\", "/")  # normalize slashes
+
+        # Block absolute path usage (/etc/passwd, C:/..., //server/share)
+        if os.path.isabs(file):
+            raise ValueError("Absolute paths are not allowed")
+
+        # Prevent '../' directory traversal
+        if ".." in file.split("/"):
+            raise ValueError("Path traversal attempt blocked")
+
+        # Ensure final resolved path stays inside corpus root
+        joined = self._root.join(file)
+        if not os.path.normpath(joined._path).startswith(
+            os.path.normpath(self._root._path)
+        ):
+            raise ValueError("Access outside corpus root blocked")
+        # -------- SECURITY PATCH END --------
+
         encoding = self.encoding(file)
-        stream = self._root.join(file).open(encoding)
+        stream = joined.open(encoding)
         return stream
 
     def encoding(self, file):
