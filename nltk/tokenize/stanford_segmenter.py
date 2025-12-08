@@ -278,6 +278,34 @@ class StanfordSegmenter(TokenizerI):
 
         default_options = " ".join(_java_options)
 
+        # ------------------- Security Validation ------------------- #
+        import hashlib
+        import os
+
+        jar_path = self._stanford_jar
+        trusted_paths = ["stanford-segmenter", "stanford-corenlp", "nltk"]
+
+        def sha256sum(file):
+            h = hashlib.sha256()
+            with open(file, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    h.update(chunk)
+            return h.hexdigest()
+
+        if not any(p in jar_path for p in trusted_paths):
+            user_checksum = os.environ.get("NLTK_SEGMENTER_ALLOW_SHA256")
+            jar_checksum = sha256sum(jar_path)
+
+            if user_checksum != jar_checksum:
+                raise RuntimeError(
+                    "\n[SECURITY BLOCKED] Unverified Stanford Segmenter JAR detected:\n"
+                    f"  → {jar_path}\n\n"
+                    "This prevents arbitrary code execution via malicious JAR injection.\n"
+                    "To allow execution, verify and approve its SHA256 checksum:\n\n"
+                    f'  export NLTK_SEGMENTER_ALLOW_SHA256="{jar_checksum}"\n'
+                )
+        # ------------------------------------------------------------ #
+
         # Configure java.
         config_java(options=self.java_options, verbose=verbose)
 
