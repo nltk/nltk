@@ -27,10 +27,6 @@ def teardown_loaded_corpora():
 
     yield  # first, wait for the test to end
 
-    # skip unload on Python 3.13+ to avoid segfaults
-    if sys.version_info >= (3, 13):
-        return
-
     import nltk.corpus
 
     for name in dir(nltk.corpus):
