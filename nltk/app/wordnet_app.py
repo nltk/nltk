@@ -199,7 +199,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # so we need to force it to have a clear correct behaviour.
     #
     # Normally the server should run for as long as the user wants. they
-    # should idealy be able to control this from the UI by closing the
+    # should ideally be able to control this from the UI by closing the
     # window or tab.  Second best would be clicking a button to say
     # 'Shutdown' that first shutsdown the server and closes the window or
     # tab, or exits the text-mode browser.  Both of these are unfreasable.
