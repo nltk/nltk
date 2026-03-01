@@ -1,0 +1,121 @@
+.. Copyright (C) 2001-2015 NLTK Project
+.. For license information, see LICENSE.TXT
+
+===========
+NGram Model
+===========
+
+    >>> import nltk
+    >>> from nltk.model import NgramModel
+
+
+################
+A Simple Example
+################
+
+The purpose of this example is to demonstrate the correctness of the current
+NgramModel implementation. For that reason we train on a small corpus so that
+calculating probabilities by hand is tractable. We will compare the probabilities
+we compute by hand to the ones the model yields and ideally they should match.
+
+
+Setup
+-----
+
+Below is very small corpus, borrowed from one of the comments in this thread:
+https://github.com/nltk/nltk/issues/367
+
+    >>> word_seq = ['foo', 'foo', 'foo', 'foo', 'bar', 'baz']
+
+This corpus has a property that will be important to us later. It namely has a
+different number of word tokens as opposed to word types. The latter (also
+referred to as the vocabulary) is the set of unique words in the text.
+Let's save it to a variable.
+
+    >>> word_types = set(word_seq)
+
+Next we need choose a probability estimator (aka smoothing algorithm).
+Once again, for the sake of simplicity let's use LaplaceProbDist.
+
+    >>> from nltk.probability import LaplaceProbDist as estimator
+
+We are ready to initialize our ngram language model. For this example, let's
+make it a trigram model.
+
+    >>> lm = NgramModel(3, word_seq, estimator=estimator, bins=len(word_types))
+
+Please note the last argument to the NgramModel constructor. In NLTK parlance
+this is called the ``bins`` parameter and it is passed on to the LaplaceProbDist
+estimator. Failing to provide this argument currently almost always leads to
+incorrect probability scores.
+
+Testing Probability Scores
+--------------------------
+
+Now that we have the language model set up, let's see what probability it produces
+for a trigram seen during training.
+
+    >>> lm.prob('foo', ('foo', 'foo'))
+    0.5
+
+To make sure we're on the right track, let's compute this probability by hand.
+Since the trigam was seen, P(foo | foo, foo) simply translates into:
+    (count(foo, foo, foo) + 1) / (count(foo, foo) + bins * 1)
+If we plug in numbers we have:
+    (2 + 1) / (3 + 3) = 3/6 = 0.5
+So far our model is on track!
+
+But what if we plug in a trigram that wasn't in the training corpus?
+
+    >>> lm.prob('baz', ('foo', 'foo'))
+    0.16666...
+
+Let's verify this result by hand. The current implementation of NgramModel uses
+Katz backoff, which means that P(baz | foo, foo) becomes:
+alpha(foo, foo) * P(baz | foo)
+where alpha(foo, foo)
+= (1 - sum(P(w | foo, foo) for w in W)) / (1 - sum(P(w | foo) for w in W))
+where W is all the words that followed bigram "foo foo", namely the list [foo, bar].
+
+Thus the sum in the numerator will be:
+P(foo | foo, foo) + P(bar | foo, foo)
+We already know the first member of this sum and if we plug in analogous numbers
+for P(bar | foo, foo), we arrive at:
+3/6 + 2/6 = 5/6
+We subtract this from 1 to arrive at the numerator of 1/6.
+
+Next we do the same for the denominator, with the difference that this time we're
+conditioning on the context "foo" instead of "foo foo".
+P(foo | foo) + P(bar | foo) = 4/7 + 2/7 = 6/7
+1 - 6/7 = 1/7
+
+If we combine the numerator with the denominator we get 7/6.
+This is alpha(foo, foo). Now all we need is P(baz | foo).
+
+However since our training text contains no instances of the bigram "foo baz",
+we will have to perform the same operations as we just did for "foo foo baz". I.E.
+P(baz | foo) = alpha(foo) * P(baz)
+
+The alpha this time is equal to:
+(1 - (P(foo | foo) + P(bar | foo))) / (1 - (P(foo) + P(bar)))
+
+We already have the numerator from the previous calculation, it's 1/7.
+The denominator comes from the unigram probabilities for "foo" and "bar", making it:
+1 - (5/9 + 2/9) = 2/9
+
+Thus we have alpha(foo) = 9/14
+
+Combine this with the unigram P(baz) and we get:
+P(baz | foo) = 1/7
+
+Then we combine this with alpha(foo, foo) to arrive at:
+P(baz | foo, foo) = 7/6 * 1/7 = 1/6 = 0.16666...
+
+Our model is correct again!
+
+
+Pickling and unpickling
+-----------------------
+
+We currently don't have a doctest for this because NgramModel comparison doesn't
+work. One will be added as soon as that's fixed.
