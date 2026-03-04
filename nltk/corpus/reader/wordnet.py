@@ -211,10 +211,16 @@ class _WordNetObject:
         return hash(self._name)
 
     def __eq__(self, other):
-        return self._name == other._name
+        try:
+            return self._name == other._name
+        except AttributeError:
+            return False
 
     def __ne__(self, other):
-        return self._name != other._name
+        try:
+            return self._name != other._name
+        except AttributeError:
+            return True
 
     def __lt__(self, other):
         return self._name < other._name
