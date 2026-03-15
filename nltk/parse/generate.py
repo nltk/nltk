@@ -11,7 +11,8 @@
 import itertools
 import sys
 
-from nltk.grammar import Nonterminal
+from nltk.featstruct import unify
+from nltk.grammar import FeatStructNonterminal, Nonterminal
 
 
 def generate(grammar, start=None, depth=None, n=None):
@@ -30,7 +31,7 @@ def generate(grammar, start=None, depth=None, n=None):
         # Safe default, assuming the grammar may be recursive:
         depth = (sys.getrecursionlimit() // 3) - 3
 
-    iter = _generate_all(grammar, [start], depth)
+    iter = (sent for sent, _ in _generate_all(grammar, [start], depth))
 
     if n:
         iter = itertools.islice(iter, n)
@@ -38,12 +39,14 @@ def generate(grammar, start=None, depth=None, n=None):
     return iter
 
 
-def _generate_all(grammar, items, depth):
+def _generate_all(grammar, items, depth, bindings = None):
     if items:
+        if bindings is None:
+            bindings = {}
         try:
-            for frag1 in _generate_one(grammar, items[0], depth):
-                for frag2 in _generate_all(grammar, items[1:], depth):
-                    yield frag1 + frag2
+            for frag1, bindings1 in _generate_one(grammar, items[0], depth, bindings):
+                for frag2, bindings2 in _generate_all(grammar, items[1:], depth, bindings1):
+                    yield frag1 + frag2, bindings2
         except RecursionError as error:
             # Helpful error message while still showing the recursion stack.
             raise RuntimeError(
@@ -51,17 +54,25 @@ def _generate_all(grammar, items, depth):
 Eventually use a lower 'depth', or a higher 'sys.setrecursionlimit()'."
             ) from error
     else:
-        yield []
+        yield [], bindings or {}
 
+def _generate_one(grammar, item, depth, bindings=None):
+    if bindings is None:
+        bindings = {}
 
-def _generate_one(grammar, item, depth):
     if depth > 0:
         if isinstance(item, Nonterminal):
             for prod in grammar.productions(lhs=item):
-                yield from _generate_all(grammar, prod.rhs(), depth - 1)
+                if isinstance(item, FeatStructNonterminal):
+                    local_bindings = bindings.copy()
+                    if unify(item, prod.lhs(), local_bindings) is None:
+                        continue
+                else:
+                    local_bindings = bindings
+                for frag, final_bindings in _generate_all(grammar, prod.rhs(), depth - 1, local_bindings):
+                    yield frag, final_bindings
         else:
-            yield [item]
-
+            yield [item], bindings
 
 demo_grammar = """
   S -> NP VP
@@ -71,6 +82,19 @@ demo_grammar = """
   Det -> 'the' | 'a'
   N -> 'man' | 'park' | 'dog'
   P -> 'in' | 'with'
+"""
+
+demo_FCFG_grammar = """
+% start NP
+NP[NUM=?n, GEN=?g] -> DT[NUM=?n, GEN=?g] N[NUM=?n, GEN=?g]
+DT[NUM=sg, GEN=masc] -> 'este'
+DT[NUM=sg, GEN=fem] -> 'esta'
+DT[NUM=pl, GEN=masc] -> 'estos'
+DT[NUM=pl, GEN=fem] -> 'estas'
+N[NUM=sg, GEN=masc] -> 'perro'
+N[NUM=pl, GEN=masc] -> 'perros'
+N[NUM=sg, GEN=fem] -> 'perra'
+N[NUM=pl, GEN=fem] -> 'perras'
 """
 
 
@@ -83,6 +107,16 @@ def demo(N=23):
     for n, sent in enumerate(generate(grammar, n=N), 1):
         print("%3d. %s" % (n, " ".join(sent)))
 
+def demo_FCFG(N=23):
+    from nltk.grammar import FeatureGrammar
+
+    print("Generating the first %d sentences for demo grammar:" % (N,))
+    print(demo_FCFG_grammar)
+    grammar = FeatureGrammar.fromstring(demo_FCFG_grammar)
+    for n, sent in enumerate(generate(grammar, n=N), 1):
+        print("%3d. %s" % (n, " ".join(sent)))
+
 
 if __name__ == "__main__":
     demo()
+    #demo_FCFG()
