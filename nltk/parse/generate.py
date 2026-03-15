@@ -39,13 +39,15 @@ def generate(grammar, start=None, depth=None, n=None):
     return iter
 
 
-def _generate_all(grammar, items, depth, bindings = None):
+def _generate_all(grammar, items, depth, bindings=None):
     if items:
         if bindings is None:
             bindings = {}
         try:
             for frag1, bindings1 in _generate_one(grammar, items[0], depth, bindings):
-                for frag2, bindings2 in _generate_all(grammar, items[1:], depth, bindings1):
+                for frag2, bindings2 in _generate_all(
+                    grammar, items[1:], depth, bindings1
+                ):
                     yield frag1 + frag2, bindings2
         except RecursionError as error:
             # Helpful error message while still showing the recursion stack.
@@ -55,6 +57,7 @@ Eventually use a lower 'depth', or a higher 'sys.setrecursionlimit()'."
             ) from error
     else:
         yield [], bindings or {}
+
 
 def _generate_one(grammar, item, depth, bindings=None):
     if bindings is None:
@@ -69,10 +72,10 @@ def _generate_one(grammar, item, depth, bindings=None):
                         continue
                 else:
                     local_bindings = bindings
-                for frag, final_bindings in _generate_all(grammar, prod.rhs(), depth - 1, local_bindings):
-                    yield frag, final_bindings
+                yield from _generate_all(grammar, prod.rhs(), depth - 1, local_bindings)
         else:
             yield [item], bindings
+
 
 demo_grammar = """
   S -> NP VP

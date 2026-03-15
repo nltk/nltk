@@ -87,7 +87,7 @@ In this example, number and gender agreement is enforced:
     >>> grammar = FeatureGrammar.fromstring(fcfg_text)
 
 Without feature unification support, the generator would produce 16 combinations
-(including ungrammatical ones like "este perras"). With the fix, only the 4 
+(including ungrammatical ones like "este perras"). With the fix, only the 4
 grammatically correct sentences are generated:
 
     >>> for sentence in generate(grammar):
