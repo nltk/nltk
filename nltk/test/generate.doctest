@@ -64,3 +64,40 @@ The number of sentences of different max depths:
     114
     >>> len(list(generate(grammar)))
     114
+
+
+Generating from feature-based grammars (FCFG)
+=============================================
+
+Feature-based grammars allow for agreement constraints using unification.
+In this example, number and gender agreement is enforced:
+
+    >>> from nltk.grammar import FeatureGrammar
+    >>> fcfg_text = """
+    ... NP[NUM=?n, GEN=?g] -> DT[NUM=?n, GEN=?g] N[NUM=?n, GEN=?g]
+    ... DT[NUM=sg, GEN=masc] -> 'este'
+    ... DT[NUM=sg, GEN=fem] -> 'esta'
+    ... DT[NUM=pl, GEN=masc] -> 'estos'
+    ... DT[NUM=pl, GEN=fem] -> 'estas'
+    ... N[NUM=sg, GEN=masc] -> 'perro'
+    ... N[NUM=pl, GEN=masc] -> 'perros'
+    ... N[NUM=sg, GEN=fem] -> 'perra'
+    ... N[NUM=pl, GEN=fem] -> 'perras'
+    ... """
+    >>> grammar = FeatureGrammar.fromstring(fcfg_text)
+
+Without feature unification support, the generator would produce 16 combinations
+(including ungrammatical ones like "este perras"). With the fix, only the 4 
+grammatically correct sentences are generated:
+
+    >>> for sentence in generate(grammar):
+    ...     print(' '.join(sentence))
+    este perro
+    esta perra
+    estos perros
+    estas perras
+
+The generator correctly identifies that there are only 4 valid sequences:
+
+    >>> len(list(generate(grammar)))
+    4

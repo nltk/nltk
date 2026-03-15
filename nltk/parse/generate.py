@@ -84,19 +84,6 @@ demo_grammar = """
   P -> 'in' | 'with'
 """
 
-demo_FCFG_grammar = """
-% start NP
-NP[NUM=?n, GEN=?g] -> DT[NUM=?n, GEN=?g] N[NUM=?n, GEN=?g]
-DT[NUM=sg, GEN=masc] -> 'este'
-DT[NUM=sg, GEN=fem] -> 'esta'
-DT[NUM=pl, GEN=masc] -> 'estos'
-DT[NUM=pl, GEN=fem] -> 'estas'
-N[NUM=sg, GEN=masc] -> 'perro'
-N[NUM=pl, GEN=masc] -> 'perros'
-N[NUM=sg, GEN=fem] -> 'perra'
-N[NUM=pl, GEN=fem] -> 'perras'
-"""
-
 
 def demo(N=23):
     from nltk.grammar import CFG
@@ -107,16 +94,6 @@ def demo(N=23):
     for n, sent in enumerate(generate(grammar, n=N), 1):
         print("%3d. %s" % (n, " ".join(sent)))
 
-def demo_FCFG(N=23):
-    from nltk.grammar import FeatureGrammar
-
-    print("Generating the first %d sentences for demo grammar:" % (N,))
-    print(demo_FCFG_grammar)
-    grammar = FeatureGrammar.fromstring(demo_FCFG_grammar)
-    for n, sent in enumerate(generate(grammar, n=N), 1):
-        print("%3d. %s" % (n, " ".join(sent)))
-
 
 if __name__ == "__main__":
     demo()
-    #demo_FCFG()
