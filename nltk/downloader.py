@@ -172,6 +172,24 @@ import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+
+def _validate_url(url, context="URL"):
+    """Validate that a URL uses an allowed scheme to prevent SSRF attacks."""
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    allowed_schemes = {"https", "http"}
+    if parsed.scheme.lower() not in allowed_schemes:
+        raise ValueError(
+            f"Invalid {context}: '{url}'. Only http/https URLs are allowed."
+        )
+    private_hosts = ["169.254.", "metadata.", "localhost", "127."]
+    hostname = parsed.hostname or ""
+    for blocked in private_hosts:
+        if hostname.startswith(blocked):
+            raise ValueError(
+                f"Invalid {context}: '{url}'. Access to internal/metadata services is not allowed."
+            )
+
 from xml.etree import ElementTree
 
 import nltk
@@ -691,6 +709,7 @@ class Downloader:
         yield StartDownloadMessage(info)
         yield ProgressMessage(5)
         try:
+            _validate_url(info.url, "package URL")
             infile = urlopen(info.url)
             with open(filepath, "wb") as outfile:
                 num_blocks = max(1, info.size / (1024 * 16))
@@ -953,6 +972,7 @@ class Downloader:
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
+            _validate_url(self._url, "server_index_url")
             ElementTree.parse(urlopen(self._url)).getroot()
         )
         self._index_timestamp = time.time()
