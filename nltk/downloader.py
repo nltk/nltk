@@ -971,8 +971,8 @@ class Downloader:
         self._url = url or self._url
 
         # Download the index file.
+        _validate_url(self._url, "server_index_url")
         self._index = nltk.internals.ElementWrapper(
-            _validate_url(self._url, "server_index_url")
             ElementTree.parse(urlopen(self._url)).getroot()
         )
         self._index_timestamp = time.time()
