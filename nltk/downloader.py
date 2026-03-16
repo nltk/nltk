@@ -173,9 +173,11 @@ from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+
 def _validate_url(url, context="URL"):
     """Validate that a URL uses an allowed scheme to prevent SSRF attacks."""
     from urllib.parse import urlparse
+
     parsed = urlparse(url)
     allowed_schemes = {"https", "http"}
     if parsed.scheme.lower() not in allowed_schemes:
@@ -189,6 +191,7 @@ def _validate_url(url, context="URL"):
             raise ValueError(
                 f"Invalid {context}: '{url}'. Access to internal/metadata services is not allowed."
             )
+
 
 from xml.etree import ElementTree
 
