@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Distance Metrics
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2025 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Tom Lippincott <tom@cs.columbia.edu>
@@ -123,22 +123,27 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     return lev[len1][len2]
 
 
-def _edit_dist_backtrace(lev, substitution_cost=1):
+def _edit_dist_backtrace(lev, s1, s2, substitution_cost=1):
     i, j = len(lev) - 1, len(lev[0]) - 1
     alignment = [(i, j)]
 
-    if substitution_cost < 2:
-        directions = lambda i, j: [(i - 1, j - 1), (i - 1, j), (i, j - 1)]
-    else:
-        directions = lambda i, j: [(i - 1, j), (i, j - 1)]
     while (i, j) != (0, 0):
-        direction_costs = (
-            (lev[i][j] if (i >= 0 and j >= 0) else float("inf"), (i, j))
-            for i, j in directions(i, j)
-        )
-        _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
+        candidates = []
 
+        # diagonal: match (cost 0) or substitution
+        if i > 0 and j > 0:
+            sub_cost = 0 if s1[i - 1] == s2[j - 1] else substitution_cost
+            candidates.append((lev[i - 1][j - 1] + sub_cost, (i - 1, j - 1)))
+        # up: skip s1 character (deletion, cost 1)
+        if i > 0:
+            candidates.append((lev[i - 1][j] + 1, (i - 1, j)))
+        # left: skip s2 character (insertion, cost 1)
+        if j > 0:
+            candidates.append((lev[i][j - 1] + 1, (i, j - 1)))
+
+        _, (i, j) = min(candidates, key=operator.itemgetter(0))
         alignment.append((i, j))
+
     return list(reversed(alignment))
 
 
@@ -192,7 +197,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
             )
 
     # backtrace to find alignment
-    alignment = _edit_dist_backtrace(lev, substitution_cost)
+    alignment = _edit_dist_backtrace(lev, s1, s2, substitution_cost)
     return alignment
 
 
@@ -260,7 +265,7 @@ def interval_distance(label1, label2):
     try:
         return pow(label1 - label2, 2)
     #        return pow(list(label1)[0]-list(label2)[0],2)
-    except:
+    except Exception:
         print("non-numeric labels not supported with interval distance")
 
 
