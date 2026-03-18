@@ -222,9 +222,9 @@ class CorpusReader:
     def open(self, file):
         """
         Return an open stream that can be used to read the given file.
-        Security patched: prevents path traversal & absolute path access.
+        Securely prevents path traversal, absolute path access, and symlink escapes.
         """
-        # -------- SECURITY PATCH START --------
+
         file = str(file)
 
         if os.path.isabs(file):
@@ -232,11 +232,19 @@ class CorpusReader:
 
         if ".." in file.replace("\\", "/").split("/"):
             raise ValueError("Path traversal attempt blocked")
-        # -------- SECURITY PATCH END --------
 
         encoding = self.encoding(file)
-        stream = self._root.join(file).open(encoding)
-        return stream
+        candidate = self._root.join(file)
+
+        # Enforce containment for filesystem-backed corpora
+        if isinstance(self._root, FileSystemPathPointer):
+            root_real = os.path.realpath(self._root.path)
+            candidate_real = os.path.realpath(candidate.path)
+
+            if os.path.commonpath([root_real, candidate_real]) != root_real:
+                raise ValueError("Resolved path escapes corpus root")
+
+        return candidate.open(encoding)
 
     def encoding(self, file):
         """
