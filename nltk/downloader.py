@@ -171,7 +171,15 @@ import warnings
 import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
+from urllib.request import urlopen, build_opener, HTTPRedirectHandler
+
+
+class _NoRedirectHandler(HTTPRedirectHandler):
+    """Disable automatic HTTP redirects to prevent SSRF via redirect chains."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError(
+            f"Redirect to '{newurl}' blocked to prevent SSRF attacks."
+        )
 
 
 def _check_ip_blocked(ip, url, context):
