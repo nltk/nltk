@@ -174,6 +174,23 @@ from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
 
+def _check_ip_blocked(ip, url, context):
+    """Raise ValueError if IP is in a blocked range."""
+    import ipaddress
+    ip_obj = ipaddress.ip_address(ip)
+    if (
+        ip_obj.is_loopback
+        or ip_obj.is_link_local
+        or ip_obj.is_private
+        or ip_obj.is_reserved
+        or ip_obj.is_unspecified
+    ):
+        raise ValueError(
+            f"Invalid {context}: '{url}'. "
+            "Access to private/internal IP addresses is not allowed."
+        )
+
+
 def _validate_url(url, context="URL"):
     """Validate that a URL uses an allowed scheme to prevent SSRF attacks."""
     import ipaddress
@@ -181,60 +198,57 @@ def _validate_url(url, context="URL"):
     from urllib.parse import urlparse
 
     parsed = urlparse(url)
+
+    # Block non-http/https schemes
     allowed_schemes = {"https", "http"}
     if parsed.scheme.lower() not in allowed_schemes:
         raise ValueError(
-            f"Invalid {context}: \'{url}\'. Only http/https URLs are allowed."
+            f"Invalid {context}: '{url}'. Only http/https URLs are allowed."
         )
+
     hostname = parsed.hostname or ""
 
-    # Strip IPv6 brackets if present
+    # Strip IPv6 brackets
     if hostname.startswith("[") and hostname.endswith("]"):
         hostname = hostname[1:-1]
+
+    # Handle bare IPv6 in netloc (e.g. http://::1/path)
+    # urlparse gives hostname=None for bare IPv6 like ::1
+    if not hostname and parsed.netloc:
+        # Remove port if present after last colon in bracketed form
+        netloc = parsed.netloc.split("@")[-1]  # strip userinfo
+        netloc = netloc.strip("[]")            # strip brackets
+        # If it still looks like IPv6 (contains colon), use it directly
+        if ":" in netloc:
+            hostname = netloc
+        else:
+            hostname = netloc
 
     # Block known dangerous hostnames
     blocked_hosts = {"localhost", "metadata.google.internal"}
     if hostname.lower() in blocked_hosts:
         raise ValueError(
-            f"Invalid {context}: \'{url}\'. "
+            f"Invalid {context}: '{url}'. "
             "Access to internal/metadata services is not allowed."
         )
 
-    # Try to resolve as IP address — handles standard, IPv6, octal, decimal
-    # by using socket.getaddrinfo which normalizes all forms
+    # Try direct ipaddress parse first (standard dotted notation, IPv6)
     try:
-        # First try direct ipaddress parsing (handles standard forms)
-        ip = ipaddress.ip_address(hostname)
-        _check_ip_blocked(ip, url, context)
-    except ValueError:
-        # Try socket-based resolution to catch octal/decimal/IPv6 forms
-        try:
-            results = socket.getaddrinfo(hostname, None)
-            for result in results:
-                ip_str = result[4][0]
-                try:
-                    ip = ipaddress.ip_address(ip_str)
-                    _check_ip_blocked(ip, url, context)
-                except ValueError:
-                    pass
-        except socket.gaierror:
-            # Cannot resolve — treat as safe hostname
-            pass
+        _check_ip_blocked(hostname, url, context)
+        return  # It was an IP and it passed — allow it
+    except ValueError as e:
+        if "not allowed" in str(e) or "private" in str(e):
+            raise  # Blocked IP — propagate
+        # Not a standard IP string — try socket resolution below
 
-
-def _check_ip_blocked(ip, url, context):
-    """Raise ValueError if IP is in a blocked range."""
-    if (
-        ip.is_loopback
-        or ip.is_link_local
-        or ip.is_private
-        or ip.is_reserved
-        or ip.is_unspecified
-    ):
-        raise ValueError(
-            f"Invalid {context}: \'{url}\'. "
-            "Access to private/internal IP addresses is not allowed."
-        )
+    # Use socket to normalize non-standard forms (octal, decimal, IPv6)
+    try:
+        results = socket.getaddrinfo(hostname, None)
+        for result in results:
+            resolved_ip = result[4][0]
+            _check_ip_blocked(resolved_ip, url, context)
+    except OSError:
+        pass  # Cannot resolve — treat as safe hostname
 
 
 from xml.etree import ElementTree
