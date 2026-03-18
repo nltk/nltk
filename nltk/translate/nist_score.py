@@ -153,6 +153,9 @@ def corpus_nist(list_of_references, hypotheses, n=5):
                 )
             # Best reference.
             precision, numerator, denominator, ref_len = max(nist_score_per_ref)
+            # No hypothesis n-grams of this order; nothing to accumulate.
+            if denominator == 0:
+                continue
             nist_precision_numerator_per_ngram[i] += numerator
             nist_precision_denominator_per_ngram[i] += denominator
             l_ref += ref_len
