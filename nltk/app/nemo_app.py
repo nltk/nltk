@@ -92,7 +92,7 @@ class FindZone(Zone):
             self.txt.tag_add(
                 "emph" + color, "1.0+%sc" % m.start("emph"), "1.0+%sc" % m.end("emph")
             )
-        except:
+        except Exception:
             pass
 
     def substitute(self, *args):
@@ -112,7 +112,7 @@ class FindZone(Zone):
                 ),
                 re.MULTILINE,
             )
-        except:
+        except Exception:
             self.rexSel = self.rex
         self.rexSel.sub(self.addTags, self.txt.get("1.0", "end"))
 

@@ -1460,7 +1460,7 @@ class RegexpChunkApp:
             from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
-        except:
+        except Exception:
             ShowText(self.top, TITLE, ABOUT)
 
     def set_devset_size(self, size=None):

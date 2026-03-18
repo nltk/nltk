@@ -1,5 +1,5 @@
 click
-gensim>=4.0.0
+gensim>=4.0.0 ; python_version < '3.14'
 markdown-it-py
 matplotlib
 mdit-plain

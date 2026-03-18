@@ -213,6 +213,6 @@ class BCP47CorpusReader(CorpusReader):
                 return val
         try:
             return self.lang2str(self.parse_tag(tag))
-        except:
+        except Exception:
             warn(f"Tag {tag!r} was not recognized")
             return None

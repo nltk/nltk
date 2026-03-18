@@ -29,7 +29,7 @@ class CoreNLPServerError(EnvironmentError):
 
 def try_port(port=0):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("", port))
+    sock.bind(("localhost", port))
 
     p = sock.getsockname()[1]
     sock.close()

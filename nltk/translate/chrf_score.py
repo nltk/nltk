@@ -6,7 +6,7 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-""" ChrF score implementation """
+"""ChrF score implementation"""
 import re
 from collections import Counter, defaultdict
 

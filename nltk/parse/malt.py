@@ -192,7 +192,7 @@ class MaltParser(ParserI):
                 _current_path = os.getcwd()  # Remembers the current path.
                 try:  # Change to modelfile path
                     os.chdir(os.path.split(self.model)[0])
-                except:
+                except OSError:
                     pass
                 ret = self._execute(cmd, verbose)  # Run command.
                 os.chdir(_current_path)  # Change back to current path.

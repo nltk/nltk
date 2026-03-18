@@ -13,7 +13,7 @@ import json
 import re
 from textwrap import wrap
 
-from nltk.data import find
+from nltk.data import find, open_datafile
 
 
 def brown_tagset(tagpattern=None):
@@ -45,8 +45,7 @@ def _print_entries(tags, tagdict):
 
 def _format_tagset(tagset, tagpattern=None):
     # Load tagset from json file.
-    tag_json_file = find(f"help/tagsets_json/PY3_json/{tagset}.json")
-    with open(tag_json_file) as fin:
+    with open_datafile(find("help/tagsets_json/PY3_json/"), f"{tagset}.json") as fin:
         tagdict = json.load(fin)
 
     if not tagpattern:

@@ -530,7 +530,7 @@ class CanvasWidget(metaclass=ABCMeta):
         """
         try:
             del self.__callbacks[button]
-        except:
+        except Exception:
             pass
 
     def unbind_drag(self):
@@ -539,7 +539,7 @@ class CanvasWidget(metaclass=ABCMeta):
         """
         try:
             del self.__callbacks["drag"]
-        except:
+        except Exception:
             pass
 
     ##//////////////////////////////////////////////////////
@@ -640,7 +640,7 @@ class CanvasWidget(metaclass=ABCMeta):
                 cb = self.__callbacks["drag"]
                 try:
                     cb(self)
-                except:
+                except Exception:
                     print("Error in drag callback for %r" % self)
         elif self.__parent is not None:
             self.__parent.__drag()
@@ -655,7 +655,7 @@ class CanvasWidget(metaclass=ABCMeta):
             cb = self.__callbacks[button]
             # try:
             cb(self)
-            # except:
+            # except Exception:
             #    print('Error in click callback for %r' % self)
             #    raise
         elif self.__parent is not None:
@@ -2144,7 +2144,7 @@ class EntryDialog:
     def _cancel(self, *e):
         try:
             self._reset()
-        except:
+        except Exception:
             pass
         self._destroy()
 
@@ -2353,7 +2353,7 @@ class ColorizedList:
             else:
                 try:
                     del self._callbacks[e][func]
-                except:
+                except KeyError:
                     pass
 
     # ////////////////////////////////////////////////////////////

@@ -262,7 +262,7 @@ def interval_distance(label1, label2):
     try:
         return pow(label1 - label2, 2)
     #        return pow(list(label1)[0]-list(label2)[0],2)
-    except:
+    except Exception:
         print("non-numeric labels not supported with interval distance")
 
 

@@ -14,6 +14,11 @@ Unit tests for nltk.tgrep.
 
 import unittest
 
+import pytest
+
+# nltk.tgrep requires pyparsing package to work
+pytest.importorskip("pyparsing")
+
 from nltk import tgrep
 from nltk.tree import ParentedTree
 

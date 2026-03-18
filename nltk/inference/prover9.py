@@ -228,14 +228,14 @@ def convert_to_prover9(input):
         for s in input:
             try:
                 result.append(_convert_to_prover9(s.simplify()))
-            except:
+            except Exception:
                 print("input %s cannot be converted to Prover9 input syntax" % input)
                 raise
         return result
     else:
         try:
             return _convert_to_prover9(input.simplify())
-        except:
+        except Exception:
             print("input %s cannot be converted to Prover9 input syntax" % input)
             raise
 

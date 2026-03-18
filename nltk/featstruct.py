@@ -2700,7 +2700,7 @@ def interactive_demo(trace=False):
                     num = int(input) - 1
                     selected[i] = all_fstructs[num][1]
                     print()
-                except:
+                except Exception:
                     print("Bad sentence number")
                     continue
 

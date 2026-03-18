@@ -166,7 +166,7 @@ def is_cjk(character):
     [(4352, 4607), (11904, 42191), (43072, 43135), (44032, 55215), (63744, 64255), (65072, 65103), (65381, 65500), (131072, 196607)]
     >>> is_cjk(u'\u33fe')
     True
-    >>> is_cjk(u'\uFE5F')
+    >>> is_cjk(u'\ufe5f')
     False
 
     :param character: The character that needs to be checked.

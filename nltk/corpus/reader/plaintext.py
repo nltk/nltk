@@ -87,7 +87,7 @@ class PlaintextCorpusReader(CorpusReader):
         if self._sent_tokenizer is None:
             try:
                 self._sent_tokenizer = PunktTokenizer()
-            except:
+            except Exception:
                 raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
@@ -107,7 +107,7 @@ class PlaintextCorpusReader(CorpusReader):
         if self._sent_tokenizer is None:
             try:
                 self._sent_tokenizer = PunktTokenizer()
-            except:
+            except Exception:
                 raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(

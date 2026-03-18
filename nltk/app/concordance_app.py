@@ -400,7 +400,7 @@ class ConcordanceSearchView:
             from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE, parent=self.main_frame).show()
-        except:
+        except Exception:
             ShowText(self.top, TITLE, ABOUT)
 
     def _bind_event_handlers(self):

@@ -11,6 +11,7 @@
 
 import gc
 import re
+import types
 
 import nltk
 
@@ -95,27 +96,35 @@ class LazyCorpusLoader:
         args, kwargs = self.__args, self.__kwargs
         name, reader_cls = self.__name, self.__reader_cls
 
-        self.__dict__ = corpus.__dict__
+        # Minimal change: avoid swapping out the dict object; update it instead.
+        self.__dict__.update(corpus.__dict__)
         self.__class__ = corpus.__class__
 
-        # _unload support: assign __dict__ and __class__ back, then do GC.
-        # after reassigning __dict__ there shouldn't be any references to
-        # corpus data so the memory should be deallocated after gc.collect()
+        # _unload support: assign __dict__ and __class__ back to a fresh
+        # LazyCorpusLoader proxy. After updating our dict and class, there
+        # should be no remaining references to the loaded corpus objects,
+        # making them eligible for collection.
         def _unload(self):
-            lazy_reader = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
-            self.__dict__ = lazy_reader.__dict__
-            self.__class__ = lazy_reader.__class__
-            gc.collect()
+            # Restore to pristine lazy proxy state without swapping the dict object
+            fresh = LazyCorpusLoader(name, reader_cls, *args, **kwargs)
+            self.__class__ = LazyCorpusLoader
+            self.__dict__.clear()
+            self.__dict__.update(fresh.__dict__)
 
+        # Bind via helper for flexibility and testability.
         self._unload = _make_bound_method(_unload, self)
 
     def __getattr__(self, attr):
-        # Fix for inspect.isclass under Python 2.6
-        # (see https://bugs.python.org/issue1225107).
-        # Without this fix tests may take extra 1.5GB RAM
-        # because all corpora gets loaded during test collection.
-        if attr == "__bases__":
-            raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
+        """
+        Trigger loading on first missing attribute access.
+
+        Avoid triggering a load for introspection-oriented dunder
+        attributes (e.g., '__bases__', '__wrapped__').
+        """
+        if attr.startswith("__") and attr.endswith("__"):
+            raise AttributeError(
+                f"{type(self).__name__} object has no attribute {attr!r}"
+            )
 
         self.__load()
         # This looks circular, but its not, since __load() changes our
@@ -139,15 +148,4 @@ def _make_bound_method(func, self):
     """
     Magic for creating bound methods (used for _unload).
     """
-
-    class Foo:
-        def meth(self):
-            pass
-
-    f = Foo()
-    bound_method = type(f.meth)
-
-    try:
-        return bound_method(func, self, self.__class__)
-    except TypeError:  # python3
-        return bound_method(func, self)
+    return types.MethodType(func, self)

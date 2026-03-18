@@ -402,7 +402,7 @@ class DrtGlueDemo:
             from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
-        except:
+        except Exception:
             ShowText(self._top, TITLE, ABOUT)
 
     def postscript(self, *e):

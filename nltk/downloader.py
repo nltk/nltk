@@ -66,6 +66,7 @@ or::
 
     python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
+
 # ----------------------------------------------------------------------
 
 """
@@ -161,7 +162,6 @@ default: unzip or not?
 import functools
 import itertools
 import os
-import shutil
 import subprocess
 import sys
 import textwrap
@@ -216,9 +216,21 @@ class Package:
         self.name = name or id
         """A string name for this package."""
 
+        # Validate subdir to prevent path traversal from malicious XML index
+        if os.path.isabs(subdir) or ".." in subdir.replace("\\", "/").split("/"):
+            raise ValueError(
+                f"Invalid package subdir {subdir!r}: must be a relative path "
+                f"without parent directory references"
+            )
         self.subdir = subdir
         """The subdirectory where this package should be installed.
            E.g., ``'corpora'`` or ``'taggers'``."""
+
+        # Validate id to prevent path traversal
+        if os.sep in id or "/" in id or "\\" in id or ".." in id:
+            raise ValueError(
+                f"Invalid package id {id!r}: must not contain path separators"
+            )
 
         self.url = url
         """A URL that can be used to download this package's file."""
@@ -677,6 +689,18 @@ class Downloader:
 
         # Check for (and remove) any old/stale version.
         filepath = os.path.join(download_dir, info.filename)
+
+        # Defense-in-depth: verify filepath stays within download_dir
+        real_download = os.path.realpath(os.path.abspath(download_dir))
+        real_filepath = os.path.realpath(os.path.abspath(filepath))
+        if not real_filepath.startswith(real_download + os.sep):
+            yield ErrorMessage(
+                info,
+                f"Path traversal blocked: package '{info.id}' attempted to "
+                f"write outside download directory (subdir='{info.subdir}')",
+            )
+            return
+
         if os.path.exists(filepath):
             if status == self.STALE:
                 yield StaleMessage(info)
@@ -880,9 +904,28 @@ class Downloader:
         if filestat.st_size != int(info.size):
             return self.STALE
 
-        # Check if the file's checksum matches
-        if sha256_hexdigest(filepath) != info.sha256_checksum:
-            return self.STALE
+        # Check if the file's checksum matches.
+        # Prefer sha256, but fall back to legacy md5 if sha256 is unavailable.
+        sha256_checksum = getattr(info, "sha256_checksum", None)
+        if sha256_checksum:
+            if sha256_hexdigest(filepath) != sha256_checksum:
+                return self.STALE
+        else:
+            if not getattr(self, "_warned_missing_sha256_checksum", False):
+                warnings.warn(
+                    "NLTK downloader package metadata is missing SHA256 checksums; "
+                    "falling back to legacy MD5 verification. Consider updating your "
+                    "NLTK data index (or re-running the downloader) to get SHA256 checksums.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                self._warned_missing_sha256_checksum = True
+
+            md5_checksum = getattr(info, "checksum", None)
+            if not md5_checksum:
+                return self.STALE
+            if md5_hexdigest(filepath) != md5_checksum:
+                return self.STALE
 
         # If it's a zipfile, and it's been at least partially
         # unzipped, then check if it's been fully unzipped.
@@ -1025,7 +1068,7 @@ class Downloader:
         original_url = self._url
         try:
             self._update_index(url)
-        except:
+        except Exception:
             self._url = original_url
             raise
 
@@ -1641,7 +1684,7 @@ class DownloaderGUI:
 
     def _info_edit(self, info_key):
         self._info_save()  # just in case.
-        (entry, callback) = self._info[info_key]
+        entry, callback = self._info[info_key]
         entry["state"] = "normal"
         entry["relief"] = "sunken"
         entry.focus()
@@ -2004,7 +2047,7 @@ class DownloaderGUI:
                 width=75,
                 font="fixed",
             )
-        except:
+        except Exception:
             ShowText(self.top, "Help: NLTK Downloader", self.HELP.strip(), width=75)
 
     def about(self, *e):
@@ -2285,24 +2328,118 @@ def unzip(filename, root, verbose=True):
             raise Exception(message)
 
 
+def _validate_member(member, root_abs):
+    """
+    Check a single ZIP member name for path-traversal and escape vectors.
+
+    Returns ``None`` if the member is safe, or a human-readable error
+    string if the member must be rejected.  Comparison prefixes are
+    derived from *root_abs* internally via ``os.path.normcase`` so that
+    callers cannot supply inconsistent values.
+
+    Parameters
+    ----------
+    member : str
+        The archive entry name (forward-slash separated, as stored in the ZIP).
+    root_abs : str
+        Absolute path of the extraction root (used to build candidate paths
+        and derive comparison prefixes via ``os.path.normcase``).
+    """
+    if "\x00" in member:
+        return f"Null byte in entry name blocked: {member!r}"
+
+    abs_prefix = os.path.normcase(root_abs).rstrip(os.sep) + os.sep
+    target_abs = os.path.normcase(os.path.abspath(os.path.join(root_abs, member)))
+    if not target_abs.startswith(abs_prefix):
+        return f"Zip Slip blocked: {member}"
+
+    real_prefix = os.path.normcase(os.path.realpath(root_abs)).rstrip(os.sep) + os.sep
+    target_real = os.path.normcase(os.path.realpath(os.path.join(root_abs, member)))
+    if not target_real.startswith(real_prefix):
+        return f"Symlink escape blocked: {member}"
+
+    return None
+
+
 def _unzip_iter(filename, root, verbose=True):
+    """
+    Secure ZIP extraction using validate-then-extract.
+
+    All members are validated before any extraction occurs.  If any member
+    fails validation the entire archive is rejected and nothing is written
+    to disk.
+
+    Checks performed on every member name:
+    - Null-byte rejection (platform path-truncation vector)
+    - Zip-Slip (.., absolute paths, drive letters)
+    - Symlink-escape (writes through pre-existing symlinks)
+
+    All path comparisons use ``os.path.normcase`` so that the checks
+    are case-insensitive on Windows (no-op on POSIX).
+
+    Members are validated again immediately before each extraction as a
+    best-effort check against filesystem changes between Phase 1 and the
+    actual write, but this cannot eliminate TOCTOU races inherent in
+    non-atomic extraction.
+
+    Extraction aborts on the first error (including I/O errors) rather
+    than skipping individual members.  Partial extraction of a potentially
+    malicious archive is worse than no extraction.
+    """
+
     if verbose:
         sys.stdout.write("Unzipping %s" % os.path.split(filename)[1])
         sys.stdout.flush()
 
     try:
         zf = zipfile.ZipFile(filename)
-    except zipfile.BadZipFile:
-        yield ErrorMessage(filename, "Error with downloaded zip file")
-        return
     except Exception as e:
         yield ErrorMessage(filename, e)
+        # Flush the "Unzipping ..." line here because the try/finally that
+        # normally handles this is never entered (zf was never assigned).
+        if verbose:
+            print()
         return
 
-    zf.extractall(root)
+    try:
+        root_abs = os.path.abspath(root)
+        members = zf.namelist()
 
-    if verbose:
-        print()
+        # Phase 1 -- validate every member before touching the filesystem.
+        has_violations = False
+        for member in members:
+            error = _validate_member(member, root_abs)
+            if error is not None:
+                yield ErrorMessage(filename, error)
+                has_violations = True
+                continue
+
+        if has_violations:
+            return
+
+        # Phase 2 -- all members passed; extract.
+        try:
+            os.makedirs(root_abs, exist_ok=True)
+        except Exception as e:
+            yield ErrorMessage(filename, f"Extraction error: {e}")
+            return
+
+        for member in members:
+            error = _validate_member(member, root_abs)
+            if error is not None:
+                yield ErrorMessage(filename, f"{error} (during extraction)")
+                return
+            try:
+                zf.extract(member, root_abs)
+            except Exception as e:
+                yield ErrorMessage(filename, f"Extraction error for {member}: {e}")
+                return
+    except Exception as e:
+        yield ErrorMessage(filename, f"Validation error: {e}")
+    finally:
+        zf.close()
+        if verbose:
+            print()
 
 
 ######################################################################
@@ -2429,7 +2566,7 @@ def _svn_revision(filename):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    (stdout, stderr) = p.communicate()
+    stdout, stderr = p.communicate()
     if p.returncode != 0 or stderr or not stdout:
         raise ValueError(
             "Error determining svn_revision for %s: %s"
@@ -2584,7 +2721,7 @@ if __name__ == "__main__":
         help="download server index url",
     )
 
-    (options, args) = parser.parse_args()
+    options, args = parser.parse_args()
 
     downloader = Downloader(server_index_url=options.server_index_url)
 

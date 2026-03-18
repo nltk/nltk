@@ -216,14 +216,62 @@ def re_show(regexp, string, left="{", right="}"):
 
 
 # recipe from David Mertz
-def filestring(f):
+def filestring(f, allowed_dir=None):
+    """
+    Read a file path or file-like object into a string.
+
+    Security (opt-in):
+    - If `allowed_dir` is provided, enforce sandbox restrictions:
+        * Resolve realpath()
+        * Prevent ../ traversal
+        * Prevent symlink escape
+    - If `allowed_dir` is None, old behavior is preserved (for backward compatibility).
+
+    Notes:
+    - File-like objects (`.read()`) are always allowed.
+    - TOCTOU race conditions cannot be fully eliminated if an attacker can modify
+      the filesystem concurrently, though realpath() and commonpath() reduce common bypasses.
+    """
+
+    # file-like object: preserve legacy behavior
     if hasattr(f, "read"):
         return f.read()
-    elif isinstance(f, str):
-        with open(f) as infile:
+
+    # path input
+    if isinstance(f, str):
+        # sandbox mode enabled only when allowed_dir provided
+        if allowed_dir is not None:
+            base = os.path.realpath(os.path.abspath(allowed_dir))
+
+            # ensure allowed_dir exists and is a directory
+            if not os.path.isdir(base):
+                raise ValueError(
+                    f"allowed_dir must be an existing directory: {allowed_dir!r}"
+                )
+
+            full = os.path.realpath(os.path.abspath(f))
+
+            # robust "is inside" check using commonpath; handle cross-drive case
+            try:
+                inside = os.path.commonpath([base, full]) == base
+            except ValueError:
+                # different drives (Windows) -> not inside
+                inside = False
+
+            if not inside:
+                raise PermissionError(
+                    f"Access blocked: '{full}' is outside allowed_dir '{base}'"
+                )
+
+            # safe read with UTF-8-first fallback
+            with open(full, encoding="utf-8", errors="ignore") as infile:
+                return infile.read()
+
+        # no sandbox: legacy behavior (backward compatible)
+        with open(f, encoding="utf-8", errors="ignore") as infile:
             return infile.read()
-    else:
-        raise ValueError("Must be called with a filename or file-like object")
+
+    raise ValueError("filestring() expects a filename or a file-like object")
 
 
 ##########################################################################

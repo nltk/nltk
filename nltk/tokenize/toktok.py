@@ -46,7 +46,7 @@ class ToktokTokenizer(TokenizerI):
     """
 
     # Replace non-breaking spaces with normal spaces.
-    NON_BREAKING = re.compile("\u00A0"), " "
+    NON_BREAKING = re.compile("\u00a0"), " "
 
     # Pad some funky punctuation.
     FUNKY_PUNCT_1 = re.compile(r'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "

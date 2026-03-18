@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+2026
+----
+
+NLTK 3.9.3 release: February 2026
+
+- Security fix for CVE-2025-14009 (Zip-Slip/RCE)
+- Additional security hardening against path traversal/arbitrary file reads
+- Improved validation of external resources
+
 2025
 ----
 

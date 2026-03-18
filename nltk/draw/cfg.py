@@ -306,7 +306,7 @@ class CFGEditor:
 
         self._analyze()
 
-    #         # Add the producitons to the text widget, and colorize them.
+    #         # Add the productions to the text widget, and colorize them.
     #         prod_by_lhs = {}
     #         for prod in self._cfg.productions():
     #             if len(prod.rhs()) > 0:
@@ -535,7 +535,7 @@ class CFGEditor:
     def _cancel(self, *e):
         try:
             self._reset()
-        except:
+        except Exception:
             pass
         self._destroy()
 
@@ -549,7 +549,7 @@ class CFGEditor:
                 width=75,
                 font="fixed",
             )
-        except:
+        except Exception:
             ShowText(
                 self._parent,
                 "Help: Chart Parser Demo",

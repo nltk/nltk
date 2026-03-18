@@ -397,7 +397,7 @@ def demo():
     try:
         snum = int(sys.stdin.readline().strip()) - 1
         sent, grammar = demos[snum]
-    except:
+    except Exception:
         print("Bad sentence number")
         return
 

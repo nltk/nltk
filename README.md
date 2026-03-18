@@ -1,10 +1,10 @@
 # Natural Language Toolkit (NLTK)
 [![PyPI](https://img.shields.io/pypi/v/nltk.svg)](https://pypi.python.org/pypi/nltk)
-![CI](https://github.com/nltk/nltk/actions/workflows/ci.yaml/badge.svg?branch=develop)
+![CI](https://github.com/nltk/nltk/actions/workflows/ci.yml/badge.svg?branch=develop)
 
 NLTK -- the Natural Language Toolkit -- is a suite of open source Python
 modules, data sets, and tutorials supporting research and development in Natural
-Language Processing. NLTK requires Python version 3.10, 3.11, 3.12 or 3.13.
+Language Processing. NLTK requires Python version from 3.10 up to the latest 3.14.
 
 For documentation, please visit [nltk.org](https://www.nltk.org/).
 

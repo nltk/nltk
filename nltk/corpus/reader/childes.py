@@ -393,7 +393,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                 f".//{{{NS}}}mor/{{{NS}}}mw/{{{NS}}}mk"
                             )
                             word += "-" + xmlinfl.text
-                        except:
+                        except Exception:
                             pass
                         # if there is a suffix
                         try:
@@ -432,7 +432,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                 )
                             else:
                                 suffixTag = xmlsuffixpos[0].text
-                        except:
+                        except Exception:
                             pass
                         if suffixTag:
                             tag += "~" + suffixTag
@@ -494,7 +494,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                         + "|"
                                         + xmlpost_rel.get("relation"),
                                     )
-                        except:
+                        except Exception:
                             pass
                     sents.append(word)
                 if sent or relation:

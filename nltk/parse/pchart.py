@@ -498,7 +498,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         choice = int(sys.stdin.readline().strip()) - 1
     try:
         sent, grammar = demos[choice]
-    except:
+    except Exception:
         print("Bad sentence number")
         return
 

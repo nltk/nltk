@@ -708,7 +708,7 @@ class RecursiveDescentApp:
             from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
-        except:
+        except Exception:
             ShowText(self._top, TITLE, ABOUT)
 
     def help(self, *e):
@@ -722,7 +722,7 @@ class RecursiveDescentApp:
                 width=75,
                 font="fixed",
             )
-        except:
+        except Exception:
             ShowText(
                 self._top,
                 "Help: Recursive Descent Parser Application",

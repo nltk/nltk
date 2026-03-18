@@ -69,7 +69,7 @@ def _check_weka_version(jar):
         zf = zipfile.ZipFile(jar)
     except (SystemExit, KeyboardInterrupt):
         raise
-    except:
+    except Exception:
         return None
     try:
         try:

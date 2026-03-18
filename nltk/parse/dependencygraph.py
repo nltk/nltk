@@ -575,7 +575,7 @@ def dot2img(dot_string, t="svg"):
                     input=bytes(dot_string, encoding="utf8"),
                 )
             return proc.stdout
-        except:
+        except Exception:
             raise Exception(
                 "Cannot create image representation by running dot from string: {}"
                 "".format(dot_string)

@@ -1491,7 +1491,7 @@ class WordNetCorpusReader(CorpusReader):
         fh = self._data_file(ADJ)
         fh.seek(0)
         for line in fh:
-            match = re.search(r"Word[nN]et (\d+|\d+\.\d+) Copyright", line)
+            match = re.search(r"Word[nN]et (\d+\+?|\d+\.\d+) Copyright", line)
             if match is not None:
                 version = match.group(1)
                 fh.seek(0)
@@ -1949,7 +1949,7 @@ class WordNetCorpusReader(CorpusReader):
                     line = data_file.readline()
 
             # close the extra file handle we opened
-            except:
+            except Exception:
                 data_file.close()
                 raise
             else:
@@ -1978,7 +1978,7 @@ class WordNetCorpusReader(CorpusReader):
         try:
             with reader.open(file) as fp:
                 return fp.read()
-        except:
+        except Exception:
             if lang in self._lang_data:
                 return f"Cannot determine {file} for {lang}"
             else:
