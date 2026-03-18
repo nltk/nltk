@@ -176,21 +176,65 @@ from urllib.request import urlopen
 
 def _validate_url(url, context="URL"):
     """Validate that a URL uses an allowed scheme to prevent SSRF attacks."""
+    import ipaddress
+    import socket
     from urllib.parse import urlparse
 
     parsed = urlparse(url)
     allowed_schemes = {"https", "http"}
     if parsed.scheme.lower() not in allowed_schemes:
         raise ValueError(
-            f"Invalid {context}: '{url}'. Only http/https URLs are allowed."
+            f"Invalid {context}: \'{url}\'. Only http/https URLs are allowed."
         )
-    private_hosts = ["169.254.", "metadata.", "localhost", "127."]
     hostname = parsed.hostname or ""
-    for blocked in private_hosts:
-        if hostname.startswith(blocked):
-            raise ValueError(
-                f"Invalid {context}: '{url}'. Access to internal/metadata services is not allowed."
-            )
+
+    # Strip IPv6 brackets if present
+    if hostname.startswith("[") and hostname.endswith("]"):
+        hostname = hostname[1:-1]
+
+    # Block known dangerous hostnames
+    blocked_hosts = {"localhost", "metadata.google.internal"}
+    if hostname.lower() in blocked_hosts:
+        raise ValueError(
+            f"Invalid {context}: \'{url}\'. "
+            "Access to internal/metadata services is not allowed."
+        )
+
+    # Try to resolve as IP address — handles standard, IPv6, octal, decimal
+    # by using socket.getaddrinfo which normalizes all forms
+    try:
+        # First try direct ipaddress parsing (handles standard forms)
+        ip = ipaddress.ip_address(hostname)
+        _check_ip_blocked(ip, url, context)
+    except ValueError:
+        # Try socket-based resolution to catch octal/decimal/IPv6 forms
+        try:
+            results = socket.getaddrinfo(hostname, None)
+            for result in results:
+                ip_str = result[4][0]
+                try:
+                    ip = ipaddress.ip_address(ip_str)
+                    _check_ip_blocked(ip, url, context)
+                except ValueError:
+                    pass
+        except socket.gaierror:
+            # Cannot resolve — treat as safe hostname
+            pass
+
+
+def _check_ip_blocked(ip, url, context):
+    """Raise ValueError if IP is in a blocked range."""
+    if (
+        ip.is_loopback
+        or ip.is_link_local
+        or ip.is_private
+        or ip.is_reserved
+        or ip.is_unspecified
+    ):
+        raise ValueError(
+            f"Invalid {context}: \'{url}\'. "
+            "Access to private/internal IP addresses is not allowed."
+        )
 
 
 from xml.etree import ElementTree
