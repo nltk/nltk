@@ -4,6 +4,7 @@ Tests for NIST translation evaluation metric
 
 import io
 import unittest
+import warnings
 
 from nltk.data import find, open_datafile
 from nltk.translate.nist_score import corpus_nist
@@ -34,3 +35,31 @@ class TestNIST(unittest.TestCase):
                     nltk_nist = corpus_nist(references, hypotheses, i)
                     # Check that the NIST scores difference is less than 0.5
                     assert abs(mteval_nist - nltk_nist) < 0.05
+
+    def test_too_big_n(self):
+        # hypothesis with length 18
+        hypothesis = "It is a guide to action which ensures that the military always obeys the commands of the party".split()
+
+        references = [
+            "It is the guide to action that ensures that the military will forever heed Party commands".split(),
+            "It is the guding principle which guarantees the military forces always being under the command of the Party".split(),
+            "It is the practical guide for the army always to heed the directions of the party".split(),
+        ]
+        # normal case, should be greater than 0.0
+        nist_score = corpus_nist([references], [hypothesis])
+        assert nist_score > 0.0
+        # too big n(20), should warn with warnings.warn
+        # Note: the result of corpus_nist is not tested here because it is not stable when n is too large.
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            nist_score = corpus_nist([references], [hypothesis], n=20)
+            assert len(w) >= 1
+            has_correct_warning = False
+            for warning in w:
+                if (
+                    "Default smoothing function will be applied to avoid zero division"
+                    in str(warning.message)
+                ):
+                    has_correct_warning = True
+                    break
+            assert has_correct_warning
