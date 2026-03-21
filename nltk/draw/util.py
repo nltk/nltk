@@ -1080,7 +1080,7 @@ class OvalWidget(AbstractContainerWidget):
         if attr == "margin":
             self._margin = value
         elif attr == "double":
-            if value == True and self._oval2 is None:
+            if value and self._oval2 is None:
                 # Copy attributes & position from self._oval.
                 x1, y1, x2, y2 = c.bbox(self._oval)
                 w = self["width"] * 2
@@ -1093,7 +1093,7 @@ class OvalWidget(AbstractContainerWidget):
                     width=c.itemcget(self._oval, "width"),
                 )
                 c.tag_lower(self._oval2)
-            if value == False and self._oval2 is not None:
+            if not value and self._oval2 is not None:
                 c.delete(self._oval2)
                 self._oval2 = None
         elif attr in ("outline", "fill", "width"):

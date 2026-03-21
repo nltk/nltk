@@ -154,7 +154,7 @@ class TaggerI(metaclass=ABCMeta):
 
         return self._confusion_cached(tuple(tuple(sent) for sent in gold))
 
-    def recall(self, gold) -> Dict[str, float]:
+    def recall(self, gold) -> dict[str, float]:
         """
         Compute the recall for each tag from ``gold`` or from running ``tag``
         on the tokenized sentences from ``gold``. Then, return the dictionary

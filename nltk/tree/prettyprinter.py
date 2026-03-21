@@ -355,7 +355,7 @@ class TreePrettyPrinter:
         :param maxwidth: maximum number of characters before a label starts to
             wrap; pass None to disable.
         """
-        if abbreviate == True:
+        if abbreviate:
             abbreviate = 5
         if unicodelines:
             horzline = "\u2500"

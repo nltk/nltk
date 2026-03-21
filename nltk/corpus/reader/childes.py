@@ -440,7 +440,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     # relational
                     # the gold standard is stored in
                     # <mor></mor><mor type="trn"><gra type="grt">
-                    if relation == True:
+                    if relation:
                         for xmlstem_rel in xmlword.findall(
                             f".//{{{NS}}}mor/{{{NS}}}gra"
                         ):

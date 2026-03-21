@@ -8,23 +8,21 @@ repos:
       - id: requirements-txt-fixer
       - id: check-yaml
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.1
+    rev: v3.21.2
     hooks:
     - id: pyupgrade
-      args: ["--py38-plus"]
-  - repo: https://github.com/ambv/black
-    rev: 25.9.0
+      args: ["--py310-plus"]
+  - repo: https://github.com/psf/black
+    rev: 25.11.0
     hooks:
     - id: black
-  - repo: local
+  - repo: https://github.com/pycqa/isort
+    rev: 6.1.0
     hooks:
-      - id: isort
-        name: isort
-        entry: isort
-        require_serial: true
-        language: python
-        language_version: python3
-        types_or: [cython, pyi, python]
-        args: ['--filter-files']
-        minimum_pre_commit_version: '2.9.2'
-        additional_dependencies: ['isort==6.0.1']
+    - id: isort
+      args: ['--filter-files']
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.6
+    hooks:
+    - id: ruff
+      args: [--fix]

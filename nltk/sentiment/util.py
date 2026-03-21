@@ -366,7 +366,7 @@ def json2csv_preprocess(
         # write the list of fields as header
         writer.writerow(fields)
 
-        if remove_duplicates == True:
+        if remove_duplicates:
             tweets_cache = []
         i = 0
         for line in fp:
@@ -375,26 +375,26 @@ def json2csv_preprocess(
             try:
                 text = row[fields.index("text")]
                 # Remove retweets
-                if skip_retweets == True:
+                if skip_retweets:
                     if re.search(r"\bRT\b", text):
                         continue
                 # Remove tweets containing ":P" and ":-P" emoticons
-                if skip_tongue_tweets == True:
+                if skip_tongue_tweets:
                     if re.search(r"\:\-?P\b", text):
                         continue
                 # Remove tweets containing both happy and sad emoticons
-                if skip_ambiguous_tweets == True:
+                if skip_ambiguous_tweets:
                     all_emoticons = EMOTICON_RE.findall(text)
                     if all_emoticons:
                         if (set(all_emoticons) & HAPPY) and (set(all_emoticons) & SAD):
                             continue
                 # Strip off emoticons from all tweets
-                if strip_off_emoticons == True:
+                if strip_off_emoticons:
                     row[fields.index("text")] = re.sub(
                         r"(?!\n)\s+", " ", EMOTICON_RE.sub("", text)
                     )
                 # Remove duplicate tweets
-                if remove_duplicates == True:
+                if remove_duplicates:
                     if row[fields.index("text")] in tweets_cache:
                         continue
                     else:
@@ -432,7 +432,7 @@ def parse_tweets_set(
 
     with codecs.open(filename, "rt") as csvfile:
         reader = csv.reader(csvfile)
-        if skip_header == True:
+        if skip_header:
             next(reader, None)  # skip the header
         i = 0
         for tweet_id, text in reader:
@@ -675,7 +675,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         )
     results = sentim_analyzer.evaluate(test_set)
 
-    if save_analyzer == True:
+    if save_analyzer:
         sentim_analyzer.save_file(sentim_analyzer, "sa_subjectivity.pickle")
 
     if output:
@@ -754,7 +754,7 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     elif pos_words == neg_words:
         print("Neutral")
 
-    if plot == True:
+    if plot:
         _show_plot(
             x, y, x_labels=tokenized_sent, y_labels=["Negative", "Neutral", "Positive"]
         )

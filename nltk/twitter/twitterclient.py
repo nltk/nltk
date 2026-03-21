@@ -236,7 +236,7 @@ class Query(Twython):
             for result in results["statuses"]:
                 yield result
                 self.handler.counter += 1
-                if self.handler.do_continue() == False:
+                if not self.handler.do_continue():
                     return
 
         # Pagination loop: keep fetching Tweets until the desired count is
@@ -276,7 +276,7 @@ class Query(Twython):
             for result in results["statuses"]:
                 yield result
                 self.handler.counter += 1
-                if self.handler.do_continue() == False:
+                if not self.handler.do_continue():
                     return
 
     def user_info_from_id(self, userids):
@@ -542,7 +542,7 @@ class TweetWriter(TweetHandlerI):
             self.output.close()
 
     def do_continue(self):
-        if self.repeat == False:
+        if not self.repeat:
             return TweetHandlerI.do_continue(self)
 
         if self.do_stop:

@@ -110,7 +110,7 @@ class UndirectedFunctionApplication(UndirectedBinaryCombinator):
         if not function.is_function():
             return False
 
-        return not function.arg().can_unify(argument) is None
+        return function.arg().can_unify(argument) is not None
 
     def combine(self, function, argument):
         if not function.is_function():
@@ -158,7 +158,7 @@ class UndirectedComposition(UndirectedBinaryCombinator):
         if not (function.is_function() and argument.is_function()):
             return False
         if function.dir().can_compose() and argument.dir().can_compose():
-            return not function.arg().can_unify(argument.res()) is None
+            return function.arg().can_unify(argument.res()) is not None
         return False
 
     def combine(self, function, argument):

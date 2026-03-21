@@ -383,7 +383,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         return [sentences[0] for sentences in self.raw_tag_sents(sentences, properties)]
 
-    def tag(self, sentence: str, properties=None) -> List[Tuple[str, str]]:
+    def tag(self, sentence: str, properties=None) -> list[tuple[str, str]]:
         """
         Tag a list of tokens.
 

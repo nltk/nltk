@@ -39,7 +39,6 @@ from nltk.metrics import (
     QuadgramAssocMeasures,
     TrigramAssocMeasures,
 )
-from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 from nltk.probability import FreqDist
 from nltk.util import ngrams
 

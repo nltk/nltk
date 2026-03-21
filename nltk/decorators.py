@@ -130,7 +130,7 @@ def new_wrapper(wrapper, model):
     else:  # assume model is a function
         infodict = getinfo(model)
     assert (
-        not "_wrapper_" in infodict["argnames"]
+        "_wrapper_" not in infodict["argnames"]
     ), '"_wrapper_" is a reserved argument name!'
     src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
     funcopy = eval(src, dict(_wrapper_=wrapper))

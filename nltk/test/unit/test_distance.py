@@ -2,7 +2,11 @@ from typing import Tuple
 
 import pytest
 
-from nltk.metrics.distance import edit_distance
+from nltk.metrics.distance import (
+    edit_distance,
+    jaro_similarity,
+    jaro_winkler_similarity,
+)
 
 
 class TestEditDistance:
@@ -103,7 +107,7 @@ class TestEditDistance:
         ],
     )
     def test_with_transpositions(
-        self, left: str, right: str, substitution_cost: int, expecteds: Tuple[int, int]
+        self, left: str, right: str, substitution_cost: int, expecteds: tuple[int, int]
     ):
         """
         Test `edit_distance` between two strings, given some `substitution_cost`,
@@ -127,3 +131,98 @@ class TestEditDistance:
                     transpositions=transpositions,
                 )
                 assert predicted == expected
+
+
+class TestJaroSimilarity:
+    """Tests for jaro_similarity against the algorithm pseudocode."""
+
+    # ---------------------------------------------------------
+    # Edge cases: empty and single-character strings
+    # ---------------------------------------------------------
+
+    def test_both_empty(self):
+        """Identical empty strings have similarity 1.0."""
+        assert jaro_similarity("", "") == 1.0
+
+    def test_empty_vs_nonempty(self):
+        """Empty vs non-empty string has similarity 0.0."""
+        assert jaro_similarity("", "abc") == 0.0
+        assert jaro_similarity("abc", "") == 0.0
+
+    def test_single_char_identical(self):
+        """Single-char identical strings have similarity 1.0.
+
+        Regression: match_bound = max(1,1)//2 - 1 = -1 caused 0
+        matches, returning 0.0 instead of 1.0.
+        """
+        assert jaro_similarity("a", "a") == 1.0
+
+    def test_single_char_different(self):
+        assert jaro_similarity("a", "b") == 0.0
+
+    # ---------------------------------------------------------
+    # Known values from Wikipedia / census papers
+    # ---------------------------------------------------------
+
+    @pytest.mark.parametrize(
+        "s1,s2,expected",
+        [
+            ("MARTHA", "MARHTA", 0.944),
+            ("DWAYNE", "DUANE", 0.822),
+            ("DIXON", "DICKSON", 0.790),
+            ("CRATE", "TRACE", 0.733),
+            ("billy", "billy", 1.000),
+            ("billy", "bill", 0.933),
+            ("billy", "susan", 0.000),
+        ],
+    )
+    def test_known_values(self, s1, s2, expected):
+        assert round(jaro_similarity(s1, s2), 3) == expected
+
+    # ---------------------------------------------------------
+    # Symmetry: jaro(s1, s2) == jaro(s2, s1)
+    # ---------------------------------------------------------
+
+    @pytest.mark.parametrize(
+        "s1,s2",
+        [
+            ("MARTHA", "MARHTA"),
+            ("abc", ""),
+            ("a", "b"),
+            ("DIXON", "DICKSON"),
+        ],
+    )
+    def test_symmetry(self, s1, s2):
+        assert jaro_similarity(s1, s2) == jaro_similarity(s2, s1)
+
+    # ---------------------------------------------------------
+    # Return type consistency
+    # ---------------------------------------------------------
+
+    def test_return_type_is_float(self):
+        """All return paths should produce a float."""
+        assert isinstance(jaro_similarity("a", "a"), float)
+        assert isinstance(jaro_similarity("a", "b"), float)
+        assert isinstance(jaro_similarity("", ""), float)
+        assert isinstance(jaro_similarity("MARTHA", "MARHTA"), float)
+
+
+class TestJaroWinklerSimilarity:
+    """Tests for jaro_winkler_similarity edge cases."""
+
+    def test_both_empty(self):
+        assert jaro_winkler_similarity("", "") == 1.0
+
+    def test_single_char_identical(self):
+        assert jaro_winkler_similarity("a", "a") == 1.0
+
+    def test_single_char_different(self):
+        assert jaro_winkler_similarity("a", "b") == 0.0
+
+    def test_known_value(self):
+        assert round(jaro_winkler_similarity("MARTHA", "MARHTA"), 3) == 0.961
+
+    def test_winkler_ge_jaro(self):
+        """Winkler similarity >= Jaro similarity for common prefixes."""
+        s1, s2 = "MARTHA", "MARHTA"
+        assert jaro_winkler_similarity(s1, s2) >= jaro_similarity(s1, s2)

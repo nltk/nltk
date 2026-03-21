@@ -201,7 +201,7 @@ class MTETagConverter:
         """
         indicator = tag[0] if not tag[0] == "#" else tag[1]
 
-        if not indicator in MTETagConverter.mapping_msd_universal:
+        if indicator not in MTETagConverter.mapping_msd_universal:
             indicator = "-"
 
         return MTETagConverter.mapping_msd_universal[indicator]

@@ -311,6 +311,13 @@ def jaro_similarity(s1, s2):
         - `m` is the no. of matching characters
         - `t` is the half no. of possible transpositions.
     """
+    # By definition, the similarity of a string with itself is 1.0.
+    # This also handles edge cases where both strings are empty or
+    # single-character identical strings, where the matching window
+    # formula (floor(max(|s1|,|s2|) / 2) - 1) yields -1.
+    if s1 == s2:
+        return 1.0
+
     # First, store the length of the strings
     # because they will be re-used several times.
     len_s1, len_s2 = len(s1), len(s2)
@@ -340,7 +347,7 @@ def jaro_similarity(s1, s2):
             transpositions += 1
 
     if matches == 0:
-        return 0
+        return 0.0
     else:
         return (
             1
@@ -439,6 +446,21 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 
     >>> round(jaro_winkler_similarity('TANYA', 'TONYA', p=0.1, max_l=100), 3)
     0.88
+
+    Test edge cases for very short or empty strings.
+
+    >>> jaro_similarity("", "") == 1.0
+    True
+    >>> jaro_similarity("", "nonempty") == 0.0
+    True
+    >>> jaro_similarity("a", "a") == 1.0
+    True
+    >>> jaro_similarity("a", "b") == 0.0
+    True
+    >>> jaro_winkler_similarity("", "") == 1.0
+    True
+    >>> jaro_winkler_similarity("a", "a") == 1.0
+    True
     """
     # To ensure that the output of the Jaro-Winkler's similarity
     # falls between [0,1], the product of l * p needs to be

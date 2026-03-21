@@ -611,7 +611,7 @@ def _synset_relations(word, synset, synset_relations):
     :rtype: str
     """
 
-    if not synset.name() in synset_relations:
+    if synset.name() not in synset_relations:
         return ""
     ref = Reference(word, synset_relations)
 

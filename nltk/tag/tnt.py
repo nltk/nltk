@@ -143,7 +143,7 @@ class TnT(TaggerI):
         # Ensure that local C flag is initialized before use
         C = False
 
-        if self._unk is not None and self._T == False:
+        if self._unk is not None and not self._T:
             self._unk.train(data)
 
         for sent in data:

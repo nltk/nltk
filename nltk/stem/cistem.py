@@ -113,7 +113,7 @@ class Cistem(StemmerI):
 
         return self._segment_inner(word, upper)[0]
 
-    def segment(self, word: str) -> Tuple[str, str]:
+    def segment(self, word: str) -> tuple[str, str]:
         """
         This method works very similarly to stem (:func:'cistem.stem'). The difference is that in
         addition to returning the stem, it also returns the rest that was removed at

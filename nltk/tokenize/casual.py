@@ -357,7 +357,7 @@ class TweetTokenizer(TokenizerI):
         self.strip_handles = strip_handles
         self.match_phone_numbers = match_phone_numbers
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, text: str) -> list[str]:
         """Tokenize the input text.
 
         :param text: str

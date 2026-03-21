@@ -275,7 +275,7 @@ class LancasterStemmer(StemmerI):
                                     proceed = False
                                 break
                 # If no rules apply, the word doesn't need any more stemming
-                if rule_was_applied == False:
+                if not rule_was_applied:
                     proceed = False
         return word
 

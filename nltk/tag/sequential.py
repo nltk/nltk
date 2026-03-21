@@ -533,9 +533,7 @@ class RegexpTagger(SequentialBackoffTagger):
 
     json_tag = "nltk.tag.sequential.RegexpTagger"
 
-    def __init__(
-        self, regexps: List[Tuple[str, str]], backoff: Optional[TaggerI] = None
-    ):
+    def __init__(self, regexps: list[tuple[str, str]], backoff: TaggerI | None = None):
         super().__init__(backoff)
         self._regexps = []
         for regexp, tag in regexps:

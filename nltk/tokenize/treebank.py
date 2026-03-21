@@ -19,7 +19,8 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 
 import re
 import warnings
-from typing import Iterator, List, Tuple
+from collections.abc import Iterator
+from typing import List, Tuple
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.destructive import MacIntyreContractions
@@ -100,7 +101,7 @@ class TreebankWordTokenizer(TokenizerI):
 
     def tokenize(
         self, text: str, convert_parentheses: bool = False, return_str: bool = False
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Return a tokenized copy of `text`.
 
         >>> from nltk.tokenize import TreebankWordTokenizer
@@ -169,7 +170,7 @@ class TreebankWordTokenizer(TokenizerI):
 
         return text.split()
 
-    def span_tokenize(self, text: str) -> Iterator[Tuple[int, int]]:
+    def span_tokenize(self, text: str) -> Iterator[tuple[int, int]]:
         r"""
         Returns the spans of the tokens in ``text``.
         Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.
@@ -344,7 +345,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"``"), r'"'),
     ]
 
-    def tokenize(self, tokens: List[str], convert_parentheses: bool = False) -> str:
+    def tokenize(self, tokens: list[str], convert_parentheses: bool = False) -> str:
         """
         Treebank detokenizer, created by undoing the regexes from
         the TreebankWordTokenizer.tokenize.
@@ -397,6 +398,6 @@ class TreebankWordDetokenizer(TokenizerI):
 
         return text.strip()
 
-    def detokenize(self, tokens: List[str], convert_parentheses: bool = False) -> str:
+    def detokenize(self, tokens: list[str], convert_parentheses: bool = False) -> str:
         """Duck-typing the abstract *tokenize()*."""
         return self.tokenize(tokens, convert_parentheses)

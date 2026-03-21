@@ -109,7 +109,9 @@ import math
 import re
 import string
 from collections import defaultdict
-from typing import Any, Dict, Iterator, List, Match, Optional, Tuple, Union
+from collections.abc import Iterator
+from re import Match
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
@@ -1273,13 +1275,13 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     # { Tokenization
     # ////////////////////////////////////////////////////////////
 
-    def tokenize(self, text: str, realign_boundaries: bool = True) -> List[str]:
+    def tokenize(self, text: str, realign_boundaries: bool = True) -> list[str]:
         """
         Given a text, returns a list of the sentences in that text.
         """
         return list(self.sentences_from_text(text, realign_boundaries))
 
-    def debug_decisions(self, text: str) -> Iterator[Dict[str, Any]]:
+    def debug_decisions(self, text: str) -> Iterator[dict[str, Any]]:
         """
         Classifies candidate periods as sentence breaks, yielding a dict for
         each that may be used to understand why the decision was made.
@@ -1317,7 +1319,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
     def span_tokenize(
         self, text: str, realign_boundaries: bool = True
-    ) -> Iterator[Tuple[int, int]]:
+    ) -> Iterator[tuple[int, int]]:
         """
         Given a text, generates (start, end) spans of sentences
         in the text.
@@ -1330,7 +1332,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
     def sentences_from_text(
         self, text: str, realign_boundaries: bool = True
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Given a text, generates the sentences in that text by only
         testing candidate sentence breaks. If realign_boundaries is
@@ -1350,7 +1352,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                 return i
         return 0
 
-    def _match_potential_end_contexts(self, text: str) -> Iterator[Tuple[Match, str]]:
+    def _match_potential_end_contexts(self, text: str) -> Iterator[tuple[Match, str]]:
         """
         Given a text, find the matches of potential sentence breaks,
         alongside the contexts surrounding these sentence breaks.
@@ -1622,8 +1624,8 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             yield token1
 
     def _second_pass_annotation(
-        self, aug_tok1: PunktToken, aug_tok2: Optional[PunktToken]
-    ) -> Optional[str]:
+        self, aug_tok1: PunktToken, aug_tok2: PunktToken | None
+    ) -> str | None:
         """
         Performs token-based classification over a pair of contiguous tokens
         updating the first.
@@ -1658,7 +1660,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # orthogrpahic evidence about whether the next word
             # starts a sentence or not.
             is_sent_starter = self._ortho_heuristic(aug_tok2)
-            if is_sent_starter == True:
+            if is_sent_starter == True:  # noqa: E712
                 aug_tok1.sentbreak = True
                 return REASON_ABBR_WITH_ORTHOGRAPHIC_HEURISTIC
 
@@ -1679,7 +1681,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # starts a sentence or not.
             is_sent_starter = self._ortho_heuristic(aug_tok2)
 
-            if is_sent_starter == False:
+            if is_sent_starter == False:  # noqa: E712
                 aug_tok1.sentbreak = False
                 aug_tok1.abbr = True
                 if tok_is_initial:
@@ -1701,7 +1703,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
         return
 
-    def _ortho_heuristic(self, aug_tok: PunktToken) -> Union[bool, str]:
+    def _ortho_heuristic(self, aug_tok: PunktToken) -> bool | str:
         """
         Decide whether the given token is the first token in a sentence.
         """

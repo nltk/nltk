@@ -577,7 +577,7 @@ class Model:
                     print(indent + "(trying assignment %s)" % new_g)
 
                 # parsed == False under g[u/var]?
-                if value == False:
+                if not value:
                     if trace:
                         print(indent + f"value of '{parsed}' under {new_g} is False")
 

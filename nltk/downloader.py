@@ -2734,7 +2734,7 @@ if __name__ == "__main__":
                 force=options.force,
                 halt_on_error=options.halt_on_error,
             )
-            if rv == False and options.halt_on_error:
+            if not rv and options.halt_on_error:
                 break
     else:
         downloader.download(
