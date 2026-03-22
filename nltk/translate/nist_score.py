@@ -13,7 +13,7 @@ import math
 import warnings
 from collections import Counter
 
-from nltk.translate.bleu_score import Fraction, SmoothingFunction
+from nltk.translate.bleu_score import SmoothingFunction
 from nltk.util import ngrams
 
 
@@ -179,16 +179,11 @@ def corpus_nist(list_of_references, hypotheses, n=5):
         warnings.warn(_msg)
         # construct list[Fraction] like what corpus_bleu does for smoothing function
         p_n = [
-            # Fraction does not accept denominator = 0, so we use `float` and `int(0)` to achieve the same effect.
-            Fraction(
-                (
-                    nist_precision_numerator_per_ngram[i]
-                    / nist_precision_denominator_per_ngram[i]
-                    if nist_precision_denominator_per_ngram[i] != 0
-                    else int(0)
-                ),
-                None,
-                _normalize=False,
+            fractions.Fraction(
+                nist_precision_numerator_per_ngram[i]
+                / nist_precision_denominator_per_ngram[i]
+                if nist_precision_denominator_per_ngram[i] != 0
+                else 0.0
             )
             for i in nist_precision_numerator_per_ngram
         ]
