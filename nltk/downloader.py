@@ -171,6 +171,10 @@ import warnings
 import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
+try:
+    from defusedxml.ElementTree import parse as safe_parse
+except ImportError:
+    from xml.etree.ElementTree import parse as safe_parse
 from xml.etree import ElementTree
 
 import nltk
@@ -977,7 +981,7 @@ class Downloader:
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            ElementTree.parse(urlopen(self._url)).getroot()
+            safe_parse(urlopen(self._url)).getroot()
         )
         self._index_timestamp = time.time()
 
