@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Distance Metrics
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Tom Lippincott <tom@cs.columbia.edu>
@@ -123,24 +123,35 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     return lev[len1][len2]
 
 
-def _edit_dist_backtrace(lev):
+def _edit_dist_backtrace(lev, s1, s2, substitution_cost=1):
     i, j = len(lev) - 1, len(lev[0]) - 1
     alignment = [(i, j)]
 
     while (i, j) != (0, 0):
         directions = [
-            (i - 1, j - 1),  # substitution
+            (i - 1, j - 1),  # substitution / match
             (i - 1, j),  # skip s1
             (i, j - 1),  # skip s2
         ]
 
-        direction_costs = (
-            (lev[i][j] if (i >= 0 and j >= 0) else float("inf"), (i, j))
-            for i, j in directions
-        )
+        direction_costs = []
+        for pi, pj in directions:
+            if pi < 0 or pj < 0:
+                cost = float("inf")
+            elif pi == i - 1 and pj == j - 1:  # diagonal
+                # Use actual transition cost: 0 for match, substitution_cost
+                # for mismatch. This ensures the backtrace prefers delete+insert
+                # (cost 2) over substitution when substitution_cost > 2.
+                sub_cost = 0 if s1[pi] == s2[pj] else substitution_cost
+                cost = lev[pi][pj] + sub_cost
+            else:  # skip s1 or skip s2
+                cost = lev[pi][pj] + 1
+            direction_costs.append((cost, (pi, pj)))
+
         _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
 
         alignment.append((i, j))
+
     return list(reversed(alignment))
 
 
@@ -194,7 +205,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
             )
 
     # backtrace to find alignment
-    alignment = _edit_dist_backtrace(lev)
+    alignment = _edit_dist_backtrace(lev, s1, s2, substitution_cost)
     return alignment
 
 

@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: NLTK Team <nltk.team@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

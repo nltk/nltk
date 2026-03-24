@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TextTiling
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: George Boutsioukis
 #
 # URL: <https://www.nltk.org/>
@@ -16,7 +16,8 @@ except ImportError:
 
 from nltk.tokenize.api import TokenizerI
 
-BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = 0, 1
+BLOCK_COMPARISON = "block_comparison"
+VOCABULARY_INTRODUCTION = "vocabulary_introduction"
 LC, HC = 0, 1
 DEFAULT_SMOOTHING = [0]
 
@@ -118,7 +119,7 @@ class TextTilingTokenizer(TokenizerI):
         if self.similarity_method == BLOCK_COMPARISON:
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
-            raise NotImplementedError("Vocabulary introduction not implemented")
+            gap_scores = self._vocabulary_introduction(tokseqs)
         else:
             raise ValueError(
                 f"Similarity method {self.similarity_method} not recognized"
@@ -156,6 +157,83 @@ class TextTilingTokenizer(TokenizerI):
         if self.demo_mode:
             return gap_scores, smooth_scores, depth_scores, segment_boundaries
         return segmented_text
+
+    def _vocabulary_introduction(self, tokseqs):
+        """Compute gap scores using the Vocabulary Introduction method.
+
+        From Marti A. Hearst (1997) "TextTiling: Segmenting Text into
+        Multi-Paragraph Subtopic Passages", Computational Linguistics,
+        23(1), pp. 33-64. https://aclanthology.org/J97-1003.pdf
+
+        Section 3.2:
+
+        The idea behind this approach is that the introduction of a new
+        topic in a text is signaled by the distribution of new vocabulary
+        items. For each pseudosentence gap, we count the number of new
+        word types appearing on each side of the gap that have not been
+        seen in earlier pseudosentences on that side.
+
+        Schematically (adapted from Fig 3, Hearst 1997)::
+
+            pseudosentences:  [ s1 ] [ s2 ] [ s3 ] [ s4 ] [ s5 ] ...
+                                          ^
+                                       gap at i=2
+                                          |
+              left side of gap:  s1, s2   |   right side: s3, s4, s5, ...
+              (scan left->right)          |   (scan right->left)
+                                          |
+              new_L(i) = words in s_i     |   new_R(i) = words in s_{i+1}
+                not seen in s1..s_{i-1}   |   not seen in s_{i+2}..s_N
+
+        The score for each gap is::
+
+            score(i) = ( new_L(i) + new_R(i) ) / (2 * w)
+
+        where ``w`` is the pseudosentence size, so ``2 * w`` normalizes
+        by the maximum possible number of new word types across both
+        sides of the gap.
+
+        :param tokseqs: list of TokenSequence objects
+        :return: list of gap scores (length = len(tokseqs) - 1)
+        """
+        n = len(tokseqs)
+        if n < 2:
+            return []
+
+        # Extract the word type sets for each pseudosentence
+        tokseq_sets = [{token for token, _ in seq.wrdindex_list} for seq in tokseqs]
+
+        # Normalization factor (Section 3.2)
+        norm = self.w * 2
+
+        # Scan left-to-right: for each position i, count how many words
+        # in tokseq_sets[i] are new (not seen in any s_0..s_{i-1}).
+        new_left = []
+        seen_left = set()
+        for i in range(n):
+            new_count = len(tokseq_sets[i] - seen_left)
+            new_left.append(new_count)
+            seen_left |= tokseq_sets[i]
+
+        # Scan right-to-left: for each position i, count how many words
+        # in tokseq_sets[i] are new (not seen in any s_{i+1}..s_{N-1}).
+        new_right = [0] * n
+        seen_right = set()
+        for i in range(n - 1, -1, -1):
+            new_count = len(tokseq_sets[i] - seen_right)
+            new_right[i] = new_count
+            seen_right |= tokseq_sets[i]
+
+        # Score each gap between pseudosentence i and i+1.
+        # The left contribution comes from the pseudosentence just
+        # before the gap (new_left[i]), and the right contribution
+        # from the pseudosentence just after (new_right[i+1]).
+        gap_scores = []
+        for i in range(n - 1):
+            score = (new_left[i] + new_right[i + 1]) / norm
+            gap_scores.append(score)
+
+        return gap_scores
 
     def _block_comparison(self, tokseqs, token_table):
         """Implements the block comparison method"""
@@ -429,10 +507,12 @@ def smooth(x, window_len=11, window="flat"):
     """
 
     if x.ndim != 1:
-        raise ValueError("smooth only accepts 1 dimension arrays.")
+        raise ValueError(f"smooth only accepts 1 dimension arrays, was {x.ndim}.")
 
     if x.size < window_len:
-        raise ValueError("Input vector needs to be bigger than window size.")
+        raise ValueError(
+            f"Input vector ({len(x)}) needs to be bigger than window size ({window_len})."
+        )
 
     if window_len < 3:
         return x
@@ -455,15 +535,17 @@ def smooth(x, window_len=11, window="flat"):
     return y[window_len - 1 : -window_len + 1]
 
 
-def demo(text=None):
+def demo(text=None, similarity_method=BLOCK_COMPARISON):
     from matplotlib import pylab
 
     from nltk.corpus import brown
 
-    tt = TextTilingTokenizer(demo_mode=True)
+    pylab.figure()
+    tt = TextTilingTokenizer(demo_mode=True, similarity_method=similarity_method)
     if text is None:
         text = brown.raw()[:10000]
     s, ss, d, b = tt.tokenize(text)
+    pylab.title(f"TextTiling: {similarity_method}")
     pylab.xlabel("Sentence Gap index")
     pylab.ylabel("Gap Scores")
     pylab.plot(range(len(s)), s, label="Gap Scores")

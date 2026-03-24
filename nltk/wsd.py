@@ -3,7 +3,7 @@
 # Authors: Liling Tan <alvations@gmail.com>,
 #          Dmitrijs Milajevs <dimazest@gmail.com>
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 

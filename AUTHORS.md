@@ -311,6 +311,7 @@
 - Jose Cols <https://github.com/josecols>
 - Christopher Smith <https://github.com/smithct2>
 - Ryan Mannion <https://github.com/ryanamannion>
+- Peter Pollak <https://github.com/Syzygy2048/>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

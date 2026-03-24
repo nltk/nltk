@@ -1,3 +1,20 @@
+Version 3.9.4 2026-03-24
+* Support Python 3.14
+* Fix bug in Levenshtein distance when substitution_cost > 2
+* Fix bug in Treebank detokeniser re quote ordering
+* Fix bug in Jaro similarity for empty strings
+* Several security enhancements
+* Fix GHSA-rf74-v2fm-23pw: unbounded recursion in JSONTaggedDecoder
+* Implement TextTiling vocabulary introduction method (Hearst 1997)
+* Fix ALINE feature matrix errors and add comprehensive tests
+* Support multiple VerbNet versions, fix longid/shortid regex for VerbNet ids
+* Let downloader fallback to md5 when sha256 is unavailable
+* Several other minor bugfixes and code cleanups
+
+Thanks to the following contributors to 3.9.4:
+Min-Yen Kan, Eric Kafe, Emily Voss, bowiechen, Hrudhai01,
+jancallewaert, Mr-Neutr0n, pollak.peter89, ylwango613, 
+
 Version 3.9.3 2026-02-21
 
 * Fix CVE-2025-14009: secure ZIP extraction in nltk.downloader (#3468)

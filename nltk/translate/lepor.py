@@ -1,6 +1,6 @@
 # Natural Language Toolkit: LEPOR Score
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ikram Ul Haq (ulhaqi12)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
