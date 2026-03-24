@@ -114,6 +114,7 @@ natural language processing.  NLTK requires Python 3.10, 3.11, 3.12, 3.13, or 3.
     python_requires=">=3.10",
     install_requires=[
         "click",
+        "defusedxml",
         "joblib",
         "regex>=2021.8.3",
         "tqdm",
