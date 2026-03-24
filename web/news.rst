@@ -3,6 +3,10 @@ Release Notes
 
 2026
 ----
+NLTK 3.9.4 release: March 2026
+
+- (...)
+
 
 NLTK 3.9.3 release: February 2026
 
