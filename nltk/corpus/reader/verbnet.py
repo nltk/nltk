@@ -338,9 +338,20 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def longid(self, shortid):
         """Returns longid of a VerbNet class
 
-        Given a short VerbNet class identifier (eg '37.10'), map it
-        to a long id (eg 'confess-37.10').  If ``shortid`` is already a
-        long id, then return it as-is"""
+        Given a short VerbNet class identifier, map it to a long id.
+        If ``shortid`` is already a long id, return it as-is.
+
+        VerbNet 2.x/3.2 use dotted short IDs (e.g. ``'37.10'`` →
+        ``'confess-37.10'``).  VerbNet 3.3 introduces *dash-style* short
+        IDs where the numeric part contains a dash (e.g. ``'114-1'`` →
+        ``'act-114-1'``).  Both styles are supported.
+
+        :param shortid: A short VerbNet class identifier such as ``'37.10'``
+            (dotted) or ``'114-1'`` (dash-style, VerbNet 3.3+), or an
+            already-long identifier such as ``'confess-37.10'`` or
+            ``'act-114-1'``.
+        :raises ValueError: if ``shortid`` is not a valid VerbNet identifier.
+        """
         if self._LONGID_RE.match(shortid):
             return shortid  # it's already a longid.
         elif not self._SHORTID_RE.match(shortid):
@@ -353,9 +364,19 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def shortid(self, longid):
         """Returns shortid of a VerbNet class
 
-        Given a long VerbNet class identifier (eg 'confess-37.10'),
-        map it to a short id (eg '37.10').  If ``longid`` is already a
-        short id, then return it as-is."""
+        Given a long VerbNet class identifier, map it to a short id.
+        If ``longid`` is already a short id, return it as-is.
+
+        VerbNet 2.x/3.2 use dotted short IDs (e.g. ``'confess-37.10'`` →
+        ``'37.10'``).  VerbNet 3.3 introduces *dash-style* short IDs where
+        the numeric part contains a dash (e.g. ``'act-114-1'`` → ``'114-1'``).
+        Both styles are supported.
+
+        :param longid: A long VerbNet class identifier such as
+            ``'confess-37.10'`` or ``'act-114-1'`` (VerbNet 3.3+), or an
+            already-short identifier such as ``'37.10'`` or ``'114-1'``.
+        :raises ValueError: if ``longid`` is not a valid VerbNet identifier.
+        """
         if self._SHORTID_RE.match(longid):
             return longid  # it's already a shortid.
         m = self._LONGID_RE.match(longid)
