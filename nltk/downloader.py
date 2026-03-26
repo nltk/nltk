@@ -171,7 +171,6 @@ import warnings
 import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
-from defusedxml.ElementTree import parse as safe_parse
 from xml.etree import ElementTree
 
 import nltk
@@ -977,6 +976,17 @@ class Downloader:
         self._url = url or self._url
 
         # Download the index file.
+        # Use defusedxml to prevent XML entity expansion (Billion Laughs) attacks.
+        try:
+            from defusedxml.ElementTree import parse as safe_parse
+        except ImportError:
+            warnings.warn(
+                "defusedxml is not installed. XML parsing will use the standard "
+                "library, which is vulnerable to entity expansion attacks. "
+                "Install defusedxml: pip install defusedxml",
+                stacklevel=2,
+            )
+            safe_parse = ElementTree.parse
         self._index = nltk.internals.ElementWrapper(
             safe_parse(urlopen(self._url)).getroot()
         )
