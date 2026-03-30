@@ -171,20 +171,20 @@ import warnings
 import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
-from urllib.request import urlopen, build_opener, HTTPRedirectHandler
+from urllib.request import HTTPRedirectHandler, build_opener, urlopen
 
 
 class _NoRedirectHandler(HTTPRedirectHandler):
     """Disable automatic HTTP redirects to prevent SSRF via redirect chains."""
+
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        raise ValueError(
-            f"Redirect to '{newurl}' blocked to prevent SSRF attacks."
-        )
+        raise ValueError(f"Redirect to '{newurl}' blocked to prevent SSRF attacks.")
 
 
 def _check_ip_blocked(ip, url, context):
     """Raise ValueError if IP is in a blocked range."""
     import ipaddress
+
     ip_obj = ipaddress.ip_address(ip)
     if (
         ip_obj.is_loopback
@@ -225,7 +225,7 @@ def _validate_url(url, context="URL"):
     if not hostname and parsed.netloc:
         # Remove port if present after last colon in bracketed form
         netloc = parsed.netloc.split("@")[-1]  # strip userinfo
-        netloc = netloc.strip("[]")            # strip brackets
+        netloc = netloc.strip("[]")  # strip brackets
         # If it still looks like IPv6 (contains colon), use it directly
         if ":" in netloc:
             hostname = netloc

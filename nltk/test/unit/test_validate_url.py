@@ -1,5 +1,7 @@
 """Unit tests for _validate_url SSRF protection in nltk.downloader."""
+
 import pytest
+
 from nltk.downloader import _validate_url
 
 
@@ -12,9 +14,7 @@ def test_valid_http():
 
 
 def test_github_raw_valid():
-    _validate_url(
-        "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml"
-    )
+    _validate_url("https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml")
 
 
 def test_ftp_blocked():
