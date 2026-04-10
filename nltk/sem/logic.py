@@ -1123,6 +1123,55 @@ class Expression(SubstituteBindingsI):
             result = result.replace(e.variable, newVar, True)
         return result
 
+    def alpha_normalize(self):
+        """Rename bound variables to a canonical form for comparison.
+
+        Walks the expression tree depth-first.  Each time a variable
+        binder (lambda, quantifier, etc.) is encountered, the bound
+        variable is renamed to a deterministic name using
+        ``VariableBinderExpression.alpha_convert``.  Individual
+        variables are renamed ``z1, z2, …``, function variables
+        ``F1, F2, …``, and event variables ``e01, e02, …``.
+
+        The result is that two alpha-equivalent expressions will have
+        identical string representations after normalization, which
+        makes equality checking by string comparison reliable.
+
+        :return: ``Expression`` with canonically renamed bound variables
+        """
+        counters = {"z": 0, "F": 0, "e0": 0}
+
+        def _normalize(expr):
+            if isinstance(expr, VariableBinderExpression):
+                # First normalize the body
+                normalized_term = _normalize(expr.term)
+                rebuilt = expr.__class__(expr.variable, normalized_term)
+                # Determine the prefix for the variable type
+                varname = expr.variable.name
+                if is_eventvar(varname):
+                    prefix = "e0"
+                elif is_funcvar(varname):
+                    prefix = "F"
+                else:
+                    prefix = "z"
+                counters[prefix] += 1
+                canonical = Variable(f"{prefix}{counters[prefix]}")
+                return rebuilt.alpha_convert(canonical)
+            elif isinstance(expr, ApplicationExpression):
+                return ApplicationExpression(
+                    _normalize(expr.function), _normalize(expr.argument)
+                )
+            elif isinstance(expr, NegatedExpression):
+                return NegatedExpression(_normalize(expr.term))
+            elif isinstance(expr, BinaryExpression):
+                return expr.__class__(
+                    _normalize(expr.first), _normalize(expr.second)
+                )
+            else:
+                return expr
+
+        return _normalize(self)
+
     def visit(self, function, combinator):
         """
         Recursively visit subexpressions.  Apply 'function' to each
