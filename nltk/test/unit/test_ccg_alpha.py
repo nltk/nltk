@@ -74,14 +74,24 @@ class TestCCGTypeRaisedSemantics(unittest.TestCase):
         self.assertEqual(sems[0], r"pet(the(\z1.woman(z1)),the(\z2.cat(z2)))")
 
     def test_relative_clause_of(self):
-        """Prepositional modifier: ``the cat of the woman sleeps``."""
+        """Prepositional modifier: ``the cat of the woman sleeps``.
+
+        The unwrapping form of type-raising produces 2 unique readings:
+        the correct one and a spurious binary-predicate reading.
+        """
         sems = _unique_semantics(self.parser, "the cat of the woman sleeps")
+        self.assertEqual(len(sems), 2)
         correct = r"sleep(the(\z2.(cat(z2) & belongs(z2,the(\z1.woman(z1))))))"
         self.assertIn(correct, sems)
 
     def test_relative_clause_that(self):
-        """Subject extraction: ``the cat that the woman pets sleeps``."""
+        """Subject extraction: ``the cat that the woman pets sleeps``.
+
+        The unwrapping form of type-raising produces 2 unique readings:
+        the correct one and a spurious binary-predicate reading.
+        """
         sems = _unique_semantics(self.parser, "the cat that the woman pets sleeps")
+        self.assertEqual(len(sems), 2)
         correct = r"sleep(the(\z2.(cat(z2) & pet(the(\z1.woman(z1)),z2))))"
         self.assertIn(correct, sems)
 
