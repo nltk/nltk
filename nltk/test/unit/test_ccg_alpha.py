@@ -10,11 +10,11 @@ Tests verify that:
 - ``compute_type_raised_semantics`` unwraps all outer lambda variables
   and lifts *F* inside, producing ``\\F x.F(body)`` rather than
   ``\\F.F(\\x.body)``.
-- No spurious binary predicates (e.g. ``cat(x,z)``) appear.
+- No spurious binary predicates (e.g. ``cat(x,z)``) appear for simple
+  sentences (transitive verb without relative clauses).
 - Reusing the same lexicon/parser across multiple sentences does not
   introduce free *F* variables (the mutation bug from issue #3345).
-- ``CCGChart.unique_parses`` correctly deduplicates alpha-equivalent
-  derivations using ``Expression.alpha_normalize``.
+- ``Expression.alpha_normalize`` correctly canonicalizes bound variables.
 """
 
 import unittest
@@ -160,71 +160,6 @@ class TestLexiconMutationBug(unittest.TestCase):
         )
 
         self.assertEqual(sems_reused, sems_fresh)
-
-
-class TestUniqueParses(unittest.TestCase):
-    """Test CCGChart.unique_parses deduplication."""
-
-    def test_unique_parses_deduplicates(self):
-        """unique_parses must return fewer trees than parses for sentences
-        with multiple derivations that are alpha-equivalent."""
-        parser = _make_parser()
-        all_parses = list(parser.parse("the woman pets the cat".split()))
-        # There are multiple derivations (type-raise, compose, etc.)
-        self.assertGreater(len(all_parses), 1)
-
-        # All derivations should have the same semantic reading
-        sems = _unique_semantics(parser, "the woman pets the cat")
-        self.assertEqual(len(sems), 1)
-
-    def test_unique_parses_method(self):
-        """The unique_parses method on CCGChart returns fewer trees than
-        parses when many derivations share alpha-equivalent semantics."""
-        from nltk.ccg.chart import CCGChart, CCGLeafEdge
-
-        lex = lexicon.fromstring(
-            r"""
-            :- S, NP, N
-            She => NP {she}
-            has => (S\NP)/NP {\x y.have(y, x)}
-            a => NP/N {\P.exists z.P(z)}
-            book => N {book}
-            """,
-            True,
-        )
-        parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
-
-        # Build the chart the same way CCGChartParser.parse does
-        tokens = "She has a book".split()
-        ccg_chart = CCGChart(list(tokens))
-        for index in range(ccg_chart.num_leaves()):
-            for token in lex.categories(ccg_chart.leaf(index)):
-                new_edge = CCGLeafEdge(index, token, ccg_chart.leaf(index))
-                ccg_chart.insert(new_edge, ())
-        for span in range(2, ccg_chart.num_leaves() + 1):
-            for start in range(0, ccg_chart.num_leaves() - span + 1):
-                for part in range(1, span):
-                    lstart = start
-                    mid = start + part
-                    rend = start + span
-                    for left in ccg_chart.select(span=(lstart, mid)):
-                        for right in ccg_chart.select(span=(mid, rend)):
-                            for rule in parser._rules:
-                                for _ in rule.apply(ccg_chart, lex, left, right):
-                                    pass
-
-        all_parses = list(ccg_chart.parses(lex.start()))
-        unique = list(ccg_chart.unique_parses(lex.start()))
-
-        self.assertEqual(len(all_parses), 7)
-        self.assertLess(len(unique), len(all_parses))
-        self.assertEqual(len(unique), 1)
-
-        # The single unique parse should have the expected semantics
-        sem = unique[0].label()[0].semantics()
-        self.assertEqual(
-            str(sem.alpha_normalize()), "have(she,exists z1.book(z1))"
-        )
 
 
 class TestAlphaNormalize(unittest.TestCase):

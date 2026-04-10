@@ -344,34 +344,6 @@ class CCGChart(Chart):
         memo[edge] = trees
         return trees
 
-    def parses(self, root, tree_class=Tree):
-        """Return an iterator over all parse trees spanning the chart.
-
-        This returns every derivation tree, including those whose root
-        semantics are alpha-equivalent to another tree's.  Use
-        :meth:`unique_parses` to deduplicate by semantics.
-        """
-        for edge in self.select(start=0, end=self._num_leaves, lhs=root):
-            yield from self.trees(edge, tree_class=tree_class, complete=True)
-
-    def unique_parses(self, root, tree_class=Tree):
-        """Return an iterator over parse trees, filtering out trees whose
-        root semantics are alpha-equivalent to an already-yielded tree.
-
-        Alpha-equivalence is tested by normalizing bound variables to a
-        canonical form via ``Expression.alpha_normalize`` (which itself
-        uses ``VariableBinderExpression.alpha_convert``).
-        """
-        seen_semantics = set()
-        for tree in self.parses(root, tree_class=tree_class):
-            semantics = tree.label()[0].semantics()
-            if semantics is not None:
-                canonical = str(semantics.alpha_normalize())
-                if canonical in seen_semantics:
-                    continue
-                seen_semantics.add(canonical)
-            yield tree
-
 
 def compute_semantics(children, edge):
     if children[0].label()[0].semantics() is None:
