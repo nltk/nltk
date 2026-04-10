@@ -96,15 +96,12 @@ class TestNoSpuriousBinaryPredicates(unittest.TestCase):
 
     def test_no_binary_cat(self):
         """``cat`` defined as ``\\x.cat(x)`` must not produce ``cat(x,z)``."""
+        import re
+
         parser = _make_parser()
         for tree in parser.parse("the woman pets the cat".split()):
             sem_str = str(tree.label()[0].semantics())
-            # cat should always appear as cat(…) with a single argument
-            self.assertNotIn("cat(", sem_str.replace(r"cat(x)", "").replace(
-                "cat(z", "CAT_OK"
-            ).replace("cat(", ""))  # crude guard; main check below
-            # More precise: every cat(...) should have exactly one argument
-            import re
+            # Every cat(...) should have exactly one argument
             for m in re.finditer(r"cat\(([^)]*)\)", sem_str):
                 args = m.group(1).split(",")
                 self.assertEqual(
@@ -176,7 +173,10 @@ class TestUniqueParses(unittest.TestCase):
         self.assertEqual(len(sems), 1)
 
     def test_unique_parses_method(self):
-        """The unique_parses method on CCGChart must work correctly."""
+        """The unique_parses method on CCGChart returns fewer trees than
+        parses when many derivations share alpha-equivalent semantics."""
+        from nltk.ccg.chart import CCGChart, CCGLeafEdge
+
         lex = lexicon.fromstring(
             r"""
             :- S, NP, N
@@ -189,19 +189,37 @@ class TestUniqueParses(unittest.TestCase):
         )
         parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
 
-        # Run the parse manually to access the chart
+        # Build the chart the same way CCGChartParser.parse does
         tokens = "She has a book".split()
-        all_parses = list(parser.parse(tokens))
-        self.assertEqual(len(all_parses), 7)
+        ccg_chart = CCGChart(list(tokens))
+        for index in range(ccg_chart.num_leaves()):
+            for token in lex.categories(ccg_chart.leaf(index)):
+                new_edge = CCGLeafEdge(index, token, ccg_chart.leaf(index))
+                ccg_chart.insert(new_edge, ())
+        for span in range(2, ccg_chart.num_leaves() + 1):
+            for start in range(0, ccg_chart.num_leaves() - span + 1):
+                for part in range(1, span):
+                    lstart = start
+                    mid = start + part
+                    rend = start + span
+                    for left in ccg_chart.select(span=(lstart, mid)):
+                        for right in ccg_chart.select(span=(mid, rend)):
+                            for rule in parser._rules:
+                                for _ in rule.apply(ccg_chart, lex, left, right):
+                                    pass
 
-        # All 7 derivations produce the same semantics
-        unique_sems = set()
-        for p in all_parses:
-            s = p.label()[0].semantics()
-            if s is not None:
-                unique_sems.add(str(s.alpha_normalize()))
-        self.assertEqual(len(unique_sems), 1)
-        self.assertIn("have(she,exists z1.book(z1))", unique_sems)
+        all_parses = list(ccg_chart.parses(lex.start()))
+        unique = list(ccg_chart.unique_parses(lex.start()))
+
+        self.assertEqual(len(all_parses), 7)
+        self.assertLess(len(unique), len(all_parses))
+        self.assertEqual(len(unique), 1)
+
+        # The single unique parse should have the expected semantics
+        sem = unique[0].label()[0].semantics()
+        self.assertEqual(
+            str(sem.alpha_normalize()), "have(she,exists z1.book(z1))"
+        )
 
 
 class TestAlphaNormalize(unittest.TestCase):
