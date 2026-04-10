@@ -77,7 +77,11 @@ class TestCCGTypeRaisedSemantics(unittest.TestCase):
         """Prepositional modifier: ``the cat of the woman sleeps``.
 
         The unwrapping form of type-raising produces 2 unique readings:
-        the correct one and a spurious binary-predicate reading.
+        the correct one and a spurious reading where ``cat`` appears as a
+        binary predicate (``cat(z3,z2)``).  This occurs when the N-category
+        constituent ``cat: \\x.cat(x)`` is type-raised during composition
+        with the prepositional modifier ``of``, exposing an extra lambda
+        variable that does not simplify away.
         """
         sems = _unique_semantics(self.parser, "the cat of the woman sleeps")
         self.assertEqual(len(sems), 2)
@@ -88,7 +92,11 @@ class TestCCGTypeRaisedSemantics(unittest.TestCase):
         """Subject extraction: ``the cat that the woman pets sleeps``.
 
         The unwrapping form of type-raising produces 2 unique readings:
-        the correct one and a spurious binary-predicate reading.
+        the correct one and a spurious reading where ``cat`` appears as a
+        binary predicate (``cat(z3,z2)``).  The cause is the same as for
+        ``test_relative_clause_of``: an N-category constituent gets
+        type-raised during composition with the relative-clause marker
+        ``that``, leaving a dangling lambda variable.
         """
         sems = _unique_semantics(self.parser, "the cat that the woman pets sleeps")
         self.assertEqual(len(sems), 2)
