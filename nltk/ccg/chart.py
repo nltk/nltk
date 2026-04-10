@@ -327,15 +327,27 @@ class CCGChart(Chart):
 
         memo[edge] = []
         trees = []
+        seen_semantics = set()
 
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
             for children in itertools.product(*child_choices):
+                semantics = compute_semantics(children, edge)
+
+                # Deduplicate trees whose semantics are alpha-equivalent.
+                # Because compute_semantics() already alpha-normalizes,
+                # simple string comparison is sufficient.
+                sem_key = str(semantics) if semantics is not None else None
+                if sem_key is not None:
+                    if sem_key in seen_semantics:
+                        continue
+                    seen_semantics.add(sem_key)
+
                 lhs = (
                     Token(
                         self._tokens[edge.start() : edge.end()],
                         edge.lhs(),
-                        compute_semantics(children, edge),
+                        semantics,
                     ),
                     str(edge.rule()),
                 )
@@ -377,15 +389,17 @@ def compute_semantics(children, edge):
         argument = children[1].label()[0].semantics()
 
         if isinstance(combinator, UndirectedFunctionApplication):
-            return compute_function_semantics(function, argument)
+            result = compute_function_semantics(function, argument)
         elif isinstance(combinator, UndirectedComposition):
-            return compute_composition_semantics(function, argument)
+            result = compute_composition_semantics(function, argument)
         elif isinstance(combinator, UndirectedSubstitution):
-            return compute_substitution_semantics(function, argument)
+            result = compute_substitution_semantics(function, argument)
         else:
             raise AssertionError("Unsupported combinator '" + combinator + "'")
     else:
-        return compute_type_raised_semantics(children[0].label()[0].semantics())
+        result = compute_type_raised_semantics(children[0].label()[0].semantics())
+
+    return result.alpha_normalize()
 
 
 # --------
