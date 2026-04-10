@@ -327,27 +327,15 @@ class CCGChart(Chart):
 
         memo[edge] = []
         trees = []
-        seen_semantics = set()
 
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
             for children in itertools.product(*child_choices):
-                semantics = compute_semantics(children, edge)
-
-                # Deduplicate trees whose semantics are alpha-equivalent.
-                # Because compute_semantics() already alpha-normalizes,
-                # simple string comparison is sufficient.
-                sem_key = str(semantics) if semantics is not None else None
-                if sem_key is not None:
-                    if sem_key in seen_semantics:
-                        continue
-                    seen_semantics.add(sem_key)
-
                 lhs = (
                     Token(
                         self._tokens[edge.start() : edge.end()],
                         edge.lhs(),
-                        semantics,
+                        compute_semantics(children, edge),
                     ),
                     str(edge.rule()),
                 )
@@ -357,6 +345,16 @@ class CCGChart(Chart):
         return trees
 
     def parses(self, root, tree_class=Tree):
+        """Return an iterator over all parse trees spanning the chart.
+
+        This returns every derivation tree, including those whose root
+        semantics are alpha-equivalent to another tree's.  Use
+        :meth:`unique_parses` to deduplicate by semantics.
+        """
+        for edge in self.select(start=0, end=self._num_leaves, lhs=root):
+            yield from self.trees(edge, tree_class=tree_class, complete=True)
+
+    def unique_parses(self, root, tree_class=Tree):
         """Return an iterator over parse trees, filtering out trees whose
         root semantics are alpha-equivalent to an already-yielded tree.
 
@@ -365,15 +363,14 @@ class CCGChart(Chart):
         uses ``VariableBinderExpression.alpha_convert``).
         """
         seen_semantics = set()
-        for edge in self.select(start=0, end=self._num_leaves, lhs=root):
-            for tree in self.trees(edge, tree_class=tree_class, complete=True):
-                semantics = tree.label()[0].semantics()
-                if semantics is not None:
-                    canonical = str(semantics.alpha_normalize())
-                    if canonical in seen_semantics:
-                        continue
-                    seen_semantics.add(canonical)
-                yield tree
+        for tree in self.parses(root, tree_class=tree_class):
+            semantics = tree.label()[0].semantics()
+            if semantics is not None:
+                canonical = str(semantics.alpha_normalize())
+                if canonical in seen_semantics:
+                    continue
+                seen_semantics.add(canonical)
+            yield tree
 
 
 def compute_semantics(children, edge):
@@ -389,17 +386,15 @@ def compute_semantics(children, edge):
         argument = children[1].label()[0].semantics()
 
         if isinstance(combinator, UndirectedFunctionApplication):
-            result = compute_function_semantics(function, argument)
+            return compute_function_semantics(function, argument)
         elif isinstance(combinator, UndirectedComposition):
-            result = compute_composition_semantics(function, argument)
+            return compute_composition_semantics(function, argument)
         elif isinstance(combinator, UndirectedSubstitution):
-            result = compute_substitution_semantics(function, argument)
+            return compute_substitution_semantics(function, argument)
         else:
             raise AssertionError("Unsupported combinator '" + combinator + "'")
     else:
-        result = compute_type_raised_semantics(children[0].label()[0].semantics())
-
-    return result.alpha_normalize()
+        return compute_type_raised_semantics(children[0].label()[0].semantics())
 
 
 # --------
