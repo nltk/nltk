@@ -15,9 +15,15 @@ def compute_type_raised_semantics(semantics):
     var = Variable("F")
     while var in semantics.free():
         var = unique_variable(pattern=var)
-    return LambdaExpression(
-        var, ApplicationExpression(FunctionVariableExpression(var), semantics)
-    )
+    variables = []
+    body = semantics
+    while isinstance(body, LambdaExpression):
+        variables.append(body.variable)
+        body = body.term
+    result = ApplicationExpression(FunctionVariableExpression(var), body)
+    for v in reversed(variables):
+        result = LambdaExpression(v, result)
+    return LambdaExpression(var, result)
 
 
 def compute_function_semantics(function, argument):

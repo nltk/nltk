@@ -543,10 +543,10 @@ Compute semantics from substitution
 Compute type-raise semantics
 
     >>> print(str(compute_type_raised_semantics(read_expr(r'\x.P(x)'))))
-    \F.F(\x.P(x))
+    \F x.F(P(x))
 
     >>> print(str(compute_type_raised_semantics(read_expr(r'\x.F(x)'))))
-    \F1.F1(\x.F(x))
+    \F1 x.F1(F(x))
 
     >>> print(str(compute_type_raised_semantics(read_expr(r'\x y z.P(x,y,z)'))))
-    \F.F(\x y z.P(x,y,z))
+    \F x y z.F(P(x,y,z))
