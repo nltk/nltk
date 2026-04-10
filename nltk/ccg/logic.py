@@ -8,30 +8,16 @@
 Helper functions for CCG semantics computation
 """
 
-import copy
-
 from nltk.sem.logic import *
 
 
 def compute_type_raised_semantics(semantics):
-    semantics_copy = copy.deepcopy(semantics)
-    core = semantics_copy
-    parent = None
-    while isinstance(core, LambdaExpression):
-        parent = core
-        core = core.term
-
     var = Variable("F")
-    while var in core.free():
+    while var in semantics.free():
         var = unique_variable(pattern=var)
-    core = ApplicationExpression(FunctionVariableExpression(var), core)
-
-    if parent is not None:
-        parent.term = core
-    else:
-        semantics_copy = core
-
-    return LambdaExpression(var, semantics_copy)
+    return LambdaExpression(
+        var, ApplicationExpression(FunctionVariableExpression(var), semantics)
+    )
 
 
 def compute_function_semantics(function, argument):
