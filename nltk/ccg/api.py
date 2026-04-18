@@ -341,7 +341,7 @@ class FunctionalCategory(AbstractCCGCategory):
             if sa is not None and sd is not None:
                 sb = self._arg.substitute(sa).can_unify(other.arg().substitute(sa))
                 if sb is not None:
-                    return sa + sb
+                    return sa + sd + sb
         return None
 
     # Constituent accessors
