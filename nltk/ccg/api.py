@@ -154,6 +154,12 @@ class Direction:
     """
 
     def __init__(self, dir, restrictions):
+        # The lexicon's APP_RE yields a 2-slot capture tuple (e.g. ("_", ""))
+        # for the modifier. Collapse it to a string so `is_variable()` — which
+        # tests `_restrs == "_"` — behaves the same for parsed and
+        # hand-constructed Directions.
+        if isinstance(restrictions, tuple):
+            restrictions = "".join(restrictions)
         self._dir = dir
         self._restrs = restrictions
         self._comparison_key = (dir, tuple(restrictions))
