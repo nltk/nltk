@@ -290,3 +290,49 @@ class WordnNetDemo(unittest.TestCase):
         # Tags that should yield None (not mapped in WordNet)
         self.assertIsNone(wn.tag2pos("PPL", tagset="en-brown"))
         self.assertIsNone(wn.tag2pos("(", tagset="en-brown"))
+
+
+class TestWordNetCrossTypeComparison(unittest.TestCase):
+    """Tests for cross-type comparison (issue #1944)."""
+
+    def test_synset_eq_with_string(self):
+        """Comparing a Synset with a string should not raise AttributeError."""
+        synset = wn.synset('dog.n.01')
+        # Should return NotImplemented (Python falls back to identity/other operand)
+        result = synset == 'INVALID'
+        self.assertIsInstance(result, bool)
+
+    def test_synset_ne_with_string(self):
+        """Synset != string should work after removing buggy __ne__."""
+        synset = wn.synset('dog.n.01')
+        result = synset != 'INVALID'
+        self.assertIsInstance(result, bool)
+
+    def test_synset_lt_with_string(self):
+        """Synset < string should raise TypeError (not AttributeError)."""
+        synset = wn.synset('dog.n.01')
+        # After returning NotImplemented, Python tries reflected op on str,
+        # which also doesn't support it → TypeError (correct behavior)
+        with self.assertRaises(TypeError):
+            _ = synset < 'INVALID'
+
+    def test_lemma_eq_with_string(self):
+        """Comparing a Lemma with a string should not raise AttributeError."""
+        lemma = wn.synset('dog.n.01').lemmas()[0]
+        result = lemma == 'not_a_lemma'
+        self.assertIsInstance(result, bool)
+
+    def test_synset_eq_with_int(self):
+        """Comparing Synset with non-_WordNetObject type should not crash."""
+        synset = wn.synset('dog.n.01')
+        result = synset == 42
+        self.assertIsInstance(result, bool)
+
+    def test_synset_ordering_mixed(self):
+        """Mixed-type ordering operations should raise TypeError, not crash."""
+        synset = wn.synset('dog.n.01')
+        # Ordering between Synset and non-WordNetObject → TypeError (correct)
+        with self.assertRaises(TypeError):
+            _ = synset <= 'x'
+        with self.assertRaises(TypeError):
+            _ = synset > 0
