@@ -1,4 +1,4 @@
-"""Push Dolch sight word list to nltk-data-hub/words.
+"""Push Dolch sight word list to nltk-data-hub/dolch.
 
 Configs pushed:
   dolch              — all 315 sight words combined (word, pos columns)
@@ -14,6 +14,9 @@ Source: Dolch, E. W. (1936). A basic sight vocabulary. The Elementary School
         Journal, 36(6), 456–460.
 License: Public domain (1936 publication)
 
+Also removes old dolch configs from nltk-data-hub/words (now hosted here).
+Also uploads updated nltk-data-hub/words README removing dolch/swadesh sections.
+
 Usage:
     python push_dolch.py <hf_token>
 """
@@ -25,8 +28,9 @@ import sys
 import pandas as pd
 from huggingface_hub import HfApi
 
-REPO_ID = "nltk-data-hub/words"
-SPLIT = "words"
+REPO_ID = "nltk-data-hub/dolch"
+WORDS_REPO_ID = "nltk-data-hub/words"
+SPLIT = "dolch"
 
 CORPUS_DIR = os.path.expanduser("~/nltk_data/corpora/dolch")
 POS_CONFIGS = [
@@ -38,9 +42,124 @@ POS_CONFIGS = [
     "pronouns",
     "conjunctions",
 ]
+ALL_DOLCH_CONFIGS = ["dolch"] + [f"dolch-{pos}" for pos in POS_CONFIGS]
 
-# Full README for nltk-data-hub/words with all configs
-README = """\
+README_DOLCH = """\
+---
+configs:
+- config_name: dolch
+  data_files:
+  - split: dolch
+    path: data/dolch/dolch.parquet
+- config_name: dolch-adjectives
+  data_files:
+  - split: dolch
+    path: data/dolch-adjectives/dolch.parquet
+- config_name: dolch-nouns
+  data_files:
+  - split: dolch
+    path: data/dolch-nouns/dolch.parquet
+- config_name: dolch-verbs
+  data_files:
+  - split: dolch
+    path: data/dolch-verbs/dolch.parquet
+- config_name: dolch-adverbs
+  data_files:
+  - split: dolch
+    path: data/dolch-adverbs/dolch.parquet
+- config_name: dolch-prepositions
+  data_files:
+  - split: dolch
+    path: data/dolch-prepositions/dolch.parquet
+- config_name: dolch-pronouns
+  data_files:
+  - split: dolch
+    path: data/dolch-pronouns/dolch.parquet
+- config_name: dolch-conjunctions
+  data_files:
+  - split: dolch
+    path: data/dolch-conjunctions/dolch.parquet
+license: other
+task_categories:
+- token-classification
+pretty_name: NLTK Dolch Sight Word List
+---
+
+# NLTK Dolch Sight Word List
+
+The 315 Dolch sight words (Dolch 1936), grouped by part of speech, distributed
+via [NLTK](https://www.nltk.org/).
+
+## Configs
+
+| Config | Words | Schema |
+|---|---|---|
+| `dolch` | 315 | `word, pos` |
+| `dolch-adjectives` | 46 | `word` |
+| `dolch-nouns` | 95 | `word` |
+| `dolch-verbs` | 92 | `word` |
+| `dolch-adverbs` | 34 | `word` |
+| `dolch-prepositions` | 16 | `word` |
+| `dolch-pronouns` | 26 | `word` |
+| `dolch-conjunctions` | 6 | `word` |
+
+## Schema
+
+**`dolch`** — combined list with part-of-speech
+
+| Column | Type | Description |
+|---|---|---|
+| `word` | string | The sight word |
+| `pos` | string | Part of speech (adjectives, nouns, verbs, …) |
+
+**`dolch-*`** — word only
+
+| Column | Type | Description |
+|---|---|---|
+| `word` | string | The sight word |
+
+## Usage
+
+```python
+from datasets import load_dataset
+
+ds = load_dataset("nltk-data-hub/dolch", "dolch")         # all 315, with pos
+ds = load_dataset("nltk-data-hub/dolch", "dolch-verbs")   # verbs only
+```
+
+## Via NLTK
+
+```python
+import nltk
+nltk.download("words", hf=True)
+
+nltk.corpus.words.words("dolch")             # 315 Dolch sight words
+nltk.corpus.words.words("dolch-verbs")       # 92 verbs
+nltk.corpus.words.words("dolch-nouns")       # 95 nouns
+```
+
+## License
+
+Public domain — Dolch (1936), published work now in the public domain.
+
+## Citation
+
+```bibtex
+@article{dolch,
+  author  = {Dolch, Edward William},
+  title   = {A Basic Sight Vocabulary},
+  journal = {The Elementary School Journal},
+  volume  = {36},
+  number  = {6},
+  pages   = {456--460},
+  year    = {1936},
+  doi     = {10.1086/457353}
+}
+```
+"""
+
+# Cleaned-up words README — dolch and swadesh configs removed; See Also added
+README_WORDS = """\
 ---
 configs:
 - config_name: en
@@ -75,38 +194,6 @@ configs:
   data_files:
   - split: words
     path: data/opinion-negative/words.parquet
-- config_name: dolch
-  data_files:
-  - split: words
-    path: data/dolch/words.parquet
-- config_name: dolch-adjectives
-  data_files:
-  - split: words
-    path: data/dolch-adjectives/words.parquet
-- config_name: dolch-nouns
-  data_files:
-  - split: words
-    path: data/dolch-nouns/words.parquet
-- config_name: dolch-verbs
-  data_files:
-  - split: words
-    path: data/dolch-verbs/words.parquet
-- config_name: dolch-adverbs
-  data_files:
-  - split: words
-    path: data/dolch-adverbs/words.parquet
-- config_name: dolch-prepositions
-  data_files:
-  - split: words
-    path: data/dolch-prepositions/words.parquet
-- config_name: dolch-pronouns
-  data_files:
-  - split: words
-    path: data/dolch-pronouns/words.parquet
-- config_name: dolch-conjunctions
-  data_files:
-  - split: words
-    path: data/dolch-conjunctions/words.parquet
 license: cc-by-4.0
 task_categories:
 - text-classification
@@ -118,8 +205,7 @@ pretty_name: NLTK Word Lists
 
 English word lists from [NLTK](https://www.nltk.org/),
 the [New General Service List Project](https://www.newgeneralservicelist.com/),
-[Bing Liu's Opinion Lexicon](http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html),
-and the [Dolch sight word list](https://en.wikipedia.org/wiki/Dolch_word_list).
+and [Bing Liu's Opinion Lexicon](http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html).
 
 ## Configs
 
@@ -133,29 +219,23 @@ and the [Dolch sight word list](https://en.wikipedia.org/wiki/Dolch_word_list).
 | `bsl` | 1,744 | `word, rank, band, sfi, freq_per_million` | CC-BY-SA 4.0 | Business Service List 1.2 |
 | `opinion-positive` | 2,006 | `word` | CC-BY 4.0 | Hu & Liu Opinion Lexicon |
 | `opinion-negative` | 4,783 | `word` | CC-BY 4.0 | Hu & Liu Opinion Lexicon |
-| `dolch` | 315 | `word, pos` | Public domain | Dolch (1936) sight words |
-| `dolch-adjectives` | 46 | `word` | Public domain | Dolch (1936) |
-| `dolch-nouns` | 95 | `word` | Public domain | Dolch (1936) |
-| `dolch-verbs` | 92 | `word` | Public domain | Dolch (1936) |
-| `dolch-adverbs` | 34 | `word` | Public domain | Dolch (1936) |
-| `dolch-prepositions` | 16 | `word` | Public domain | Dolch (1936) |
-| `dolch-pronouns` | 26 | `word` | Public domain | Dolch (1936) |
-| `dolch-conjunctions` | 6 | `word` | Public domain | Dolch (1936) |
+
+## See Also
+
+These related word list datasets are also accessible via `nltk.corpus.words.words()`:
+
+| Dataset | Contents | NLTK access |
+|---|---|---|
+| [nltk-data-hub/dolch](https://huggingface.co/datasets/nltk-data-hub/dolch) | 315 Dolch sight words, 8 POS configs | `words.words("dolch")`, `words.words("dolch-verbs")`, … |
+| [nltk-data-hub/swadesh](https://huggingface.co/datasets/nltk-data-hub/swadesh) | 207 Swadesh concepts × 24 languages | `words.words("swadesh-en")`, `words.words("swadesh-de")`, … |
 
 ## Schemas
 
-**`en`, `en-basic`, `opinion-positive`, `opinion-negative`, `dolch-*`** — word only
+**`en`, `en-basic`, `opinion-positive`, `opinion-negative`** — word only
 
 | Column | Type | Description |
 |---|---|---|
 | `word` | string | The word |
-
-**`dolch`** — combined list with part-of-speech
-
-| Column | Type | Description |
-|---|---|---|
-| `word` | string | The sight word |
-| `pos` | string | Part of speech (adjectives, nouns, verbs, …) |
 
 **`ngsl` and `toeic`** — frequency metadata, no band
 
@@ -181,27 +261,10 @@ and the [Dolch sight word list](https://en.wikipedia.org/wiki/Dolch_word_list).
 ```python
 from datasets import load_dataset
 
-# General English frequency list
 ds = load_dataset("nltk-data-hub/words", "ngsl")
-
-# Academic / Business English supplements
 ds = load_dataset("nltk-data-hub/words", "nawl")
-ds = load_dataset("nltk-data-hub/words", "bsl")
-
-# TOEIC exam vocabulary
-ds = load_dataset("nltk-data-hub/words", "toeic")
-
-# Sentiment / opinion word lists
 ds = load_dataset("nltk-data-hub/words", "opinion-positive")
 ds = load_dataset("nltk-data-hub/words", "opinion-negative")
-
-# Dolch sight words
-ds = load_dataset("nltk-data-hub/words", "dolch")          # all 315, with pos column
-ds = load_dataset("nltk-data-hub/words", "dolch-verbs")    # verbs only
-
-# Ogden Basic English 850 / full word list
-ds = load_dataset("nltk-data-hub/words", "en-basic")
-ds = load_dataset("nltk-data-hub/words", "en")
 ```
 
 ## Via NLTK
@@ -216,20 +279,23 @@ nltk.corpus.words.words("bsl")               # 1,744 business words
 nltk.corpus.words.words("toeic")             # 1,250 TOEIC words
 nltk.corpus.words.words("opinion-positive")  # 2,006 positive opinion words
 nltk.corpus.words.words("opinion-negative")  # 4,783 negative opinion words
-nltk.corpus.words.words("dolch")             # 315 Dolch sight words (word column only)
-nltk.corpus.words.words("dolch-verbs")       # 92 Dolch verbs
 nltk.corpus.words.words("en")                # 235,886 words
 nltk.corpus.words.words("en-basic")          # Ogden 850
+# Routed to nltk-data-hub/dolch:
+nltk.corpus.words.words("dolch")             # 315 Dolch sight words
+nltk.corpus.words.words("dolch-verbs")       # 92 Dolch verbs
+# Routed to nltk-data-hub/swadesh:
+nltk.corpus.words.words("swadesh-en")        # 207 English Swadesh words
+nltk.corpus.words.words("swadesh-de")        # 207 German Swadesh words
 ```
 
 ## Licenses
 
 - `en`, `en-basic`: distributed as part of the NLTK corpus data package.
 - `ngsl`, `toeic`, `nawl`, `bsl`: © Browne, Culligan & Phillips, licensed under
-  [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/).
+  [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 - `opinion-positive`, `opinion-negative`: © Bing Liu, licensed under
-  [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
-- `dolch`, `dolch-*`: public domain (Dolch 1936, published work now in public domain).
+  [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## Citations
 
@@ -250,8 +316,7 @@ nltk.corpus.words.words("en-basic")          # Ogden 850
   number    = {2},
   pages     = {1--10},
   year      = {2014},
-  doi       = {10.7820/vli.v03.2.browne},
-  url       = {https://www.newgeneralservicelist.com/}
+  doi       = {10.7820/vli.v03.2.browne}
 }
 
 @misc{nawl,
@@ -278,22 +343,9 @@ nltk.corpus.words.words("en-basic")          # Ogden 850
 @inproceedings{opinion_lexicon,
   author    = {Hu, Minqing and Liu, Bing},
   title     = {Mining and Summarizing Customer Reviews},
-  booktitle = {Proceedings of the ACM SIGKDD International Conference on
-               Knowledge Discovery and Data Mining (KDD-2004)},
+  booktitle = {Proceedings of KDD-2004},
   year      = {2004},
-  address   = {Seattle, Washington, USA},
   url       = {http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html}
-}
-
-@article{dolch,
-  author  = {Dolch, Edward William},
-  title   = {A Basic Sight Vocabulary},
-  journal = {The Elementary School Journal},
-  volume  = {36},
-  number  = {6},
-  pages   = {456--460},
-  year    = {1936},
-  doi     = {10.1086/457353}
 }
 ```
 """
@@ -312,8 +364,6 @@ def _write(df, outdir, cfg):
 
 def build_configs(outdir):
     counts = {}
-
-    # Combined dolch config (word + pos)
     rows = []
     for pos in POS_CONFIGS:
         words = _read_words(os.path.join(CORPUS_DIR, pos))
@@ -323,7 +373,6 @@ def build_configs(outdir):
     counts["dolch"] = len(df_all)
     print(f"  dolch: {len(df_all):,} words (combined)")
 
-    # Per-POS configs (word only)
     for pos in POS_CONFIGS:
         words = _read_words(os.path.join(CORPUS_DIR, pos))
         df = pd.DataFrame({"word": words})
@@ -333,6 +382,37 @@ def build_configs(outdir):
         print(f"  {cfg}: {len(words):,} words")
 
     return counts
+
+
+def cleanup_words_repo(api):
+    """Delete old dolch configs from nltk-data-hub/words."""
+    print(f"\nCleaning up old dolch configs from {WORDS_REPO_ID}...")
+    for cfg in ALL_DOLCH_CONFIGS:
+        path = f"data/{cfg}/words.parquet"
+        try:
+            api.delete_file(
+                path_in_repo=path,
+                repo_id=WORDS_REPO_ID,
+                repo_type="dataset",
+            )
+            print(f"  deleted {path}")
+        except Exception as e:
+            print(f"  skip {path} ({e})")
+
+
+def update_words_readme(api, outdir):
+    """Upload cleaned-up words README (no dolch/swadesh YAML configs)."""
+    print(f"\nUpdating README on {WORDS_REPO_ID}...")
+    readme_path = os.path.join(outdir, "words_README.md")
+    with open(readme_path, "w") as f:
+        f.write(README_WORDS)
+    api.upload_file(
+        path_or_fileobj=readme_path,
+        path_in_repo="README.md",
+        repo_id=WORDS_REPO_ID,
+        repo_type="dataset",
+    )
+    print("  done")
 
 
 def main():
@@ -354,11 +434,13 @@ def main():
 
     readme_path = os.path.join(outdir, "README.md")
     with open(readme_path, "w") as f:
-        f.write(README)
+        f.write(README_DOLCH)
 
-    print(f"\nUploading to {REPO_ID}...")
-    all_configs = ["dolch"] + [f"dolch-{pos}" for pos in POS_CONFIGS]
-    for cfg in all_configs:
+    print(f"\nCreating repo {REPO_ID}...")
+    api.create_repo(repo_id=REPO_ID, repo_type="dataset", exist_ok=True)
+
+    print(f"Uploading to {REPO_ID}...")
+    for cfg in ALL_DOLCH_CONFIGS:
         local_path = os.path.join(outdir, "data", cfg, f"{SPLIT}.parquet")
         api.upload_file(
             path_or_fileobj=local_path,
@@ -375,6 +457,9 @@ def main():
         repo_id=REPO_ID,
         repo_type="dataset",
     )
+
+    cleanup_words_repo(api)
+    update_words_readme(api, outdir)
 
     print(f"\nDone: https://huggingface.co/datasets/{REPO_ID}")
 

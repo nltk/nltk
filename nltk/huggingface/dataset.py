@@ -67,6 +67,19 @@ Optional keys (required by certain content types):
 ``text_column``    column that holds the main text / word value.
 ``fileid_column``  column that identifies which NLTK fileid a row belongs to.
 ``label_column``   column for classification labels (future use).
+
+``fileid_routing`` (list, optional)
+    Prefix-based routing rules for ``multi_config`` corpora whose fileids
+    live in separate HF repos.  Each entry is a dict with keys:
+
+    ``prefix`` (str)  — fileid prefix to match (e.g. ``"swadesh-"``).
+    ``repo``   (str)  — HF repo to load from instead of the default.
+    ``split``  (str)  — HF split name in that repo.
+
+    Rules are checked in order; first match wins.  If no rule matches,
+    the default ``repo`` / ``split`` are used.  This lets a single NLTK
+    corpus entry (e.g. ``words``) transparently fan out to multiple HF
+    repos while keeping one user-facing API call.
 """
 
 import io
@@ -100,6 +113,18 @@ REGISTRY = {
         "content_type": "word_list",
         "text_column": "word",
         "cache_probe": "data/ngsl/words.parquet",
+        "fileid_routing": [
+            {
+                "prefix": "swadesh-",
+                "repo": "nltk-data-hub/swadesh",
+                "split": "swadesh",
+            },
+            {
+                "prefix": "dolch",
+                "repo": "nltk-data-hub/dolch",
+                "split": "dolch",
+            },
+        ],
     },
 }
 
@@ -178,6 +203,9 @@ def _load_hf_dataset(info, fileid=None):
             )
         if info.get("fileid_strip_ext") and "." in fileid:
             fileid = fileid.rsplit(".", 1)[0]
+        for route in info.get("fileid_routing", []):
+            if fileid.startswith(route["prefix"]):
+                return load_dataset(route["repo"], fileid, split=route["split"])
         return load_dataset(info["repo"], fileid, split=info["split"])
 
     if structure == "flat":
