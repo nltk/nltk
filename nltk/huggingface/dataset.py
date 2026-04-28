@@ -84,6 +84,23 @@ REGISTRY = {
         "text_column": "word",
         "cache_probe": "data/english/stopwords.parquet",
     },
+    "names": {
+        "repo": "nltk-data-hub/names",
+        "split": "names",
+        "structure": "multi_config",
+        "content_type": "word_list",
+        "text_column": "name",
+        "fileid_strip_ext": True,
+        "cache_probe": "data/female/names.parquet",
+    },
+    "words": {
+        "repo": "nltk-data-hub/words",
+        "split": "words",
+        "structure": "multi_config",
+        "content_type": "word_list",
+        "text_column": "word",
+        "cache_probe": "data/en/words.parquet",
+    },
 }
 
 
@@ -159,6 +176,8 @@ def _load_hf_dataset(info, fileid=None):
                 "fileid is required for multi_config corpora. "
                 "Pass the config name (e.g. a language or category)."
             )
+        if info.get("fileid_strip_ext") and "." in fileid:
+            fileid = fileid.rsplit(".", 1)[0]
         return load_dataset(info["repo"], fileid, split=info["split"])
 
     if structure == "flat":
