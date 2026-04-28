@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2026 NLTK Project
 # Author: Long Duong <longdt219@gmail.com>
+#         John Winstead <https://github.com/jhnwnstd> (fixes)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
