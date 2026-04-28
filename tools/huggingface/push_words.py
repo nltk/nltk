@@ -1,13 +1,16 @@
-"""Push NLTK words corpus + NGSL + TOEIC Service List to nltk-data-hub/words.
+"""Push NLTK words corpus + NGSL family to nltk-data-hub/words.
 
 Configs pushed:
-  en          — full NLTK English word list (~235K words)
-  en-basic    — Ogden Basic English 850 (1930)
-  ngsl        — New General Service List 1.2 (Browne et al. 2013), 2809 words, CC-BY-SA 4.0
-  toeic       — TOEIC Service List 1.2 (Browne & Culligan 2016), 1250 words, CC-BY-SA 4.0
+  en        — full NLTK English word list (~235K words)
+  en-basic  — Ogden Basic English 850 (1930)
+  ngsl      — New General Service List 1.2 (Browne et al. 2013), 2,809 words, CC-BY-SA 4.0
+  toeic     — TOEIC Service List 1.2 (Browne & Culligan 2016), 1,250 words, CC-BY-SA 4.0
+  nawl      — New Academic Word List 1.2 (Browne et al. 2013), 963 words, CC-BY-SA 4.0
+  bsl       — Business Service List 1.2 (Browne & Culligan 2016), 1,744 words, CC-BY-SA 4.0
 
-NGSL and TOEIC parquets include frequency metadata columns:
-  word, rank, sfi, freq_per_million
+NGSL-family parquets (ngsl, toeic, nawl, bsl) include frequency metadata:
+  word, rank, band, sfi, freq_per_million
+  (band = pedagogical grouping level; absent from ngsl/toeic which pre-date the column)
 
 Usage:
     python push_words.py <hf_token>
@@ -25,7 +28,7 @@ from huggingface_hub import HfApi
 REPO_ID = "nltk-data-hub/words"
 SPLIT = "words"
 
-# Direct download URLs (Squarespace-hosted, CC-BY-SA 4.0)
+# Direct Squarespace URLs — CC-BY-SA 4.0
 NGSL_URL = (
     "https://static1.squarespace.com/static/64336926d7c6bb38965fdf3b"
     "/t/644e0be4ad7bae3d45b9e62a/1682836452194/NGSL_1.2_stats.csv"
@@ -34,6 +37,16 @@ TSL_URL = (
     "https://static1.squarespace.com/static/64336926d7c6bb38965fdf3b"
     "/t/643c876e097db81d6db2722c/1681688430425/TSL_1.2_stats.csv"
 )
+NAWL_URL = (
+    "https://static1.squarespace.com/static/64336926d7c6bb38965fdf3b"
+    "/t/644e0cc3e22fd95fbef5d060/1682836675261/NAWL_1.2_stats.csv"
+)
+BSL_URL = (
+    "https://static1.squarespace.com/static/64336926d7c6bb38965fdf3b"
+    "/t/644518e36de39033442a5aa9/1682249955219/BSL_1.20_stats.csv"
+)
+
+ALL_CONFIGS = ["en", "en-basic", "ngsl", "toeic", "nawl", "bsl"]
 
 README = """\
 ---
@@ -54,6 +67,14 @@ configs:
   data_files:
   - split: words
     path: data/toeic/words.parquet
+- config_name: nawl
+  data_files:
+  - split: words
+    path: data/nawl/words.parquet
+- config_name: bsl
+  data_files:
+  - split: words
+    path: data/bsl/words.parquet
 license: cc-by-sa-4.0
 task_categories:
 - text-classification
@@ -74,16 +95,18 @@ English word lists from [NLTK](https://www.nltk.org/) and the
 | `en-basic` | 850 | `word` | Public domain | Ogden Basic English (1930) |
 | `ngsl` | 2,809 | `word, rank, sfi, freq_per_million` | CC-BY-SA 4.0 | New General Service List 1.2 |
 | `toeic` | 1,250 | `word, rank, sfi, freq_per_million` | CC-BY-SA 4.0 | TOEIC Service List 1.2 |
+| `nawl` | 963 | `word, rank, band, sfi, freq_per_million` | CC-BY-SA 4.0 | New Academic Word List 1.2 |
+| `bsl` | 1,744 | `word, rank, band, sfi, freq_per_million` | CC-BY-SA 4.0 | Business Service List 1.2 |
 
 ## Schemas
 
-**`en` and `en-basic`**
+**`en` and `en-basic`** — simple word column only
 
 | Column | Type | Description |
 |---|---|---|
 | `word` | string | The word |
 
-**`ngsl` and `toeic`**
+**`ngsl` and `toeic`** — frequency metadata, no band
 
 | Column | Type | Description |
 |---|---|---|
@@ -92,46 +115,57 @@ English word lists from [NLTK](https://www.nltk.org/) and the
 | `sfi` | float | Standard Frequency Index |
 | `freq_per_million` | float | Adjusted frequency per million words |
 
+**`nawl` and `bsl`** — frequency metadata + pedagogical band
+
+| Column | Type | Description |
+|---|---|---|
+| `word` | string | Headword / lemma |
+| `rank` | int | Frequency rank within this list |
+| `band` | int | Pedagogical band grouping (lower = more frequent) |
+| `sfi` | float | Standard Frequency Index |
+| `freq_per_million` | float | Adjusted frequency per million words |
+
 ## Usage
 
 ```python
 from datasets import load_dataset
 
-# Full English word list
-ds = load_dataset("nltk-data-hub/words", "en")
-
-# Ogden Basic English 850
-ds = load_dataset("nltk-data-hub/words", "en-basic")
-
-# New General Service List (2,809 most frequent words in general English)
+# General English frequency list
 ds = load_dataset("nltk-data-hub/words", "ngsl")
-ngsl_words = ds["words"]["word"]
 
-# TOEIC Service List (1,250 words for TOEIC / business English)
+# Academic English supplement
+ds = load_dataset("nltk-data-hub/words", "nawl")
+nawl_words = ds["words"]["word"]          # sorted by frequency rank
+
+# Business English supplement
+ds = load_dataset("nltk-data-hub/words", "bsl")
+
+# TOEIC exam vocabulary
 ds = load_dataset("nltk-data-hub/words", "toeic")
-toeic_words = ds["words"]["word"]
 
-# Sort NGSL by frequency rank
-import pandas as pd
-df = ds["words"].to_pandas().sort_values("rank")
+# Ogden Basic English 850 / full word list
+ds = load_dataset("nltk-data-hub/words", "en-basic")
+ds = load_dataset("nltk-data-hub/words", "en")
 ```
 
-## Via NLTK (after nltk.download)
+## Via NLTK
 
 ```python
 import nltk
 nltk.download("words", hf=True)
 
-nltk.corpus.words.words("ngsl")    # list of 2,809 words
-nltk.corpus.words.words("toeic")   # list of 1,250 words
-nltk.corpus.words.words("en")      # list of 235,886 words
-nltk.corpus.words.words("en-basic")  # Ogden 850
+nltk.corpus.words.words("ngsl")     # 2,809 words, frequency order
+nltk.corpus.words.words("nawl")     # 963 academic words
+nltk.corpus.words.words("bsl")      # 1,744 business words
+nltk.corpus.words.words("toeic")    # 1,250 TOEIC words
+nltk.corpus.words.words("en")       # 235,886 words
+nltk.corpus.words.words("en-basic") # Ogden 850
 ```
 
 ## Licenses
 
 - `en`, `en-basic`: distributed as part of the NLTK corpus data package.
-- `ngsl`, `toeic`: © Browne, Culligan & Phillips, licensed under
+- `ngsl`, `toeic`, `nawl`, `bsl`: © Browne, Culligan & Phillips, licensed under
   [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## Citations
@@ -145,11 +179,23 @@ nltk.corpus.words.words("en-basic")  # Ogden 850
   url       = {https://www.nltk.org/}
 }
 
-@misc{ngsl,
-  author    = {Browne, Charles and Culligan, Brent and Phillips, Joseph},
-  title     = {New General Service List 1.2},
-  year      = {2013},
+@article{ngsl,
+  author    = {Browne, Charles},
+  title     = {A New General Service List: The Better Mousetrap We've Been Looking For?},
+  journal   = {Vocabulary Learning and Instruction},
+  volume    = {3},
+  number    = {2},
+  pages     = {1--10},
+  year      = {2014},
+  doi       = {10.7820/vli.v03.2.browne},
   url       = {https://www.newgeneralservicelist.com/}
+}
+
+@misc{nawl,
+  author    = {Browne, Charles and Culligan, Brent and Phillips, Joseph},
+  title     = {New Academic Word List 1.2},
+  year      = {2013},
+  url       = {https://www.newgeneralservicelist.com/nawl-new-academic-word-list}
 }
 
 @misc{tsl,
@@ -157,6 +203,13 @@ nltk.corpus.words.words("en-basic")  # Ogden 850
   title     = {TOEIC Service List 1.2},
   year      = {2016},
   url       = {https://www.newgeneralservicelist.com/toeic-service-list}
+}
+
+@misc{bsl,
+  author    = {Browne, Charles and Culligan, Brent},
+  title     = {Business Service List 1.2},
+  year      = {2016},
+  url       = {https://www.newgeneralservicelist.com/business-service-list}
 }
 ```
 """
@@ -182,35 +235,37 @@ def build_en_configs(outdir):
     return counts
 
 
-def build_ngsl_config(outdir):
-    print("  Downloading NGSL 1.2 stats CSV...")
-    resp = requests.get(NGSL_URL, timeout=30)
+def _fetch_csv(url):
+    resp = requests.get(url, timeout=30)
     resp.raise_for_status()
-    df = pd.read_csv(io.StringIO(resp.text))
-    # Normalise column names: Lemma, SFI Rank, SFI, Adjusted Frequency per Million (U)
+    for enc in ("utf-8-sig", "latin-1"):
+        try:
+            return pd.read_csv(io.BytesIO(resp.content), encoding=enc)
+        except UnicodeDecodeError:
+            continue
+    raise ValueError(f"Could not decode CSV from {url}")
+
+
+def build_ngsl_config(outdir):
+    print("  Downloading NGSL 1.2...")
+    df = _fetch_csv(NGSL_URL)
     df = df.rename(
         columns={
             "Lemma": "word",
             "SFI Rank": "rank",
             "SFI": "sfi",
-            df.columns[-1]: "freq_per_million",  # long name varies slightly
+            df.columns[-1]: "freq_per_million",
         }
     )[["word", "rank", "sfi", "freq_per_million"]]
     df["rank"] = pd.to_numeric(df["rank"], errors="coerce").astype("Int64")
     df = df.sort_values("rank").reset_index(drop=True)
-    cfg_dir = os.path.join(outdir, "ngsl")
-    os.makedirs(cfg_dir, exist_ok=True)
-    df.to_parquet(os.path.join(cfg_dir, f"{SPLIT}.parquet"), index=False)
-    print(f"  ngsl: {len(df):,} words")
+    _write(df, outdir, "ngsl")
     return len(df)
 
 
 def build_toeic_config(outdir):
-    print("  Downloading TSL 1.2 stats CSV...")
-    resp = requests.get(TSL_URL, timeout=30)
-    resp.raise_for_status()
-    df = pd.read_csv(io.StringIO(resp.text))
-    # Normalise column names: Word, TSL Rank, SFI, U
+    print("  Downloading TSL 1.2...")
+    df = _fetch_csv(TSL_URL)
     df = df.rename(
         columns={
             "Word": "word",
@@ -221,11 +276,47 @@ def build_toeic_config(outdir):
     )[["word", "rank", "sfi", "freq_per_million"]]
     df["rank"] = pd.to_numeric(df["rank"], errors="coerce").astype("Int64")
     df = df.sort_values("rank").reset_index(drop=True)
-    cfg_dir = os.path.join(outdir, "toeic")
+    _write(df, outdir, "toeic")
+    return len(df)
+
+
+def build_nawl_config(outdir):
+    print("  Downloading NAWL 1.2...")
+    df = _fetch_csv(NAWL_URL)
+    df = df.rename(
+        columns={
+            "Word": "word",
+            "Rank": "rank",
+            "Band": "band",
+            "SFI": "sfi",
+            "U": "freq_per_million",
+        }
+    )[["word", "rank", "band", "sfi", "freq_per_million"]]
+    df["rank"] = pd.to_numeric(df["rank"], errors="coerce").astype("Int64")
+    df["band"] = pd.to_numeric(df["band"], errors="coerce").astype("Int64")
+    df = df.sort_values("rank").reset_index(drop=True)
+    _write(df, outdir, "nawl")
+    return len(df)
+
+
+def build_bsl_config(outdir):
+    print("  Downloading BSL 1.2...")
+    df = _fetch_csv(BSL_URL)
+    # BSL has trailing empty columns — keep only the first 5
+    df = df.iloc[:, :5]
+    df.columns = ["word", "rank", "band", "sfi", "freq_per_million"]
+    df["rank"] = pd.to_numeric(df["rank"], errors="coerce").astype("Int64")
+    df["band"] = pd.to_numeric(df["band"], errors="coerce").astype("Int64")
+    df = df.sort_values("rank").reset_index(drop=True)
+    _write(df, outdir, "bsl")
+    return len(df)
+
+
+def _write(df, outdir, cfg):
+    cfg_dir = os.path.join(outdir, cfg)
     os.makedirs(cfg_dir, exist_ok=True)
     df.to_parquet(os.path.join(cfg_dir, f"{SPLIT}.parquet"), index=False)
-    print(f"  toeic: {len(df):,} words")
-    return len(df)
+    print(f"  {cfg}: {len(df):,} words")
 
 
 # ---------------------------------------------------------------------------
@@ -250,7 +341,9 @@ def main():
     counts = build_en_configs(os.path.join(outdir, "data"))
     counts["ngsl"] = build_ngsl_config(os.path.join(outdir, "data"))
     counts["toeic"] = build_toeic_config(os.path.join(outdir, "data"))
-    print(f"  4 configs, {sum(counts.values()):,} total entries")
+    counts["nawl"] = build_nawl_config(os.path.join(outdir, "data"))
+    counts["bsl"] = build_bsl_config(os.path.join(outdir, "data"))
+    print(f"  {len(counts)} configs, {sum(counts.values()):,} total entries")
 
     readme_path = os.path.join(outdir, "README.md")
     with open(readme_path, "w") as f:
@@ -260,7 +353,7 @@ def main():
     api.create_repo(repo_id=REPO_ID, repo_type="dataset", exist_ok=True)
 
     print("Uploading parquet files...")
-    for cfg in ["en", "en-basic", "ngsl", "toeic"]:
+    for cfg in ALL_CONFIGS:
         local_path = os.path.join(outdir, "data", cfg, f"{SPLIT}.parquet")
         api.upload_file(
             path_or_fileobj=local_path,
