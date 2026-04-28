@@ -99,7 +99,7 @@ REGISTRY = {
         "structure": "multi_config",
         "content_type": "word_list",
         "text_column": "word",
-        "cache_probe": "data/en/words.parquet",
+        "cache_probe": "data/ngsl/words.parquet",
     },
 }
 
