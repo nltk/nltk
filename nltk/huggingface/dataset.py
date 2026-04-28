@@ -49,12 +49,35 @@ Each entry in ``REGISTRY`` must declare:
         Each row is one entry; ``text_column`` holds the string.
         Serialised as one entry per line.
 
+    ``"record_list"``
+        Each row has a ``text_column`` (word) and a ``label_column``
+        (category/tag).  Serialised as one JSON object per line::
+
+            {"word": "London", "category": "city"}
+
+        Callers parse with ``[json.loads(w) for w in corpus.words(fileid)]``.
+
     ``"raw_text"``
         Rows have a ``text_column`` with full document text.  When a
         fileid is given, rows are filtered by ``fileid_column``.
         Serialised as the raw text string.
 
     (Add new types here as more corpora are onboarded.)
+
+``config_overrides`` (dict, optional)
+    Per-fileid overrides for any REGISTRY key.  Merged on top of the
+    corpus-level info dict before serialisation.  Useful when one config
+    in a ``multi_config`` corpus has a different schema than the rest.
+    Example (gazetteers 'all' config uses ``record_list`` instead of
+    ``word_list``)::
+
+        "config_overrides": {
+            "all": {
+                "content_type": "record_list",
+                "text_column": "word",
+                "label_column": "category",
+            },
+        }
 
 ``cache_probe`` (str)
     A single parquet path inside the repo used to detect whether the
@@ -126,6 +149,23 @@ REGISTRY = {
             },
         ],
     },
+    "gazetteers": {
+        "repo": "nltk-data-hub/gazetteers",
+        "split": "gazetteers",
+        "structure": "multi_config",
+        "content_type": "word_list",
+        "text_column": "name",
+        "cache_probe": "data/countries/gazetteers.parquet",
+        # The 'all' config has a different schema: word + category columns,
+        # serialised as one JSON object per line so words() returns dicts.
+        "config_overrides": {
+            "all": {
+                "content_type": "record_list",
+                "text_column": "word",
+                "label_column": "category",
+            },
+        },
+    },
 }
 
 
@@ -167,13 +207,27 @@ def _serialise(ds, info, fileid=None):
     :param fileid: the NLTK fileid being requested (used by some types).
     :returns: str — file content as NLTK expects it.
     """
-    content_type = info.get("content_type", "raw_text")
+    # Per-config overrides (e.g. 'all' config in gazetteers uses record_list)
+    overrides = info.get("config_overrides", {}).get(fileid, {})
+    effective = {**info, **overrides}
+    content_type = effective.get("content_type", "raw_text")
 
     if content_type == "word_list":
-        return "\n".join(ds[info["text_column"]])
+        return "\n".join(ds[effective["text_column"]])
+
+    if content_type == "record_list":
+        # Each row serialised as a JSON object; words() returns JSON strings.
+        # Callers: [json.loads(w) for w in corpus.words("all")]
+        import json as _json
+        word_col = effective.get("text_column", "word")
+        cat_col = effective.get("label_column", "category")
+        return "\n".join(
+            _json.dumps({"word": w, "category": c}, ensure_ascii=False)
+            for w, c in zip(ds[word_col], ds[cat_col])
+        )
 
     if content_type == "raw_text":
-        col = info["text_column"]
+        col = effective["text_column"]
         texts = ds[col]
         return "\n".join(texts) if len(texts) > 1 else (texts[0] if texts else "")
 
