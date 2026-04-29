@@ -23,8 +23,15 @@ Access:
   import json, nltk
   entries = [json.loads(w) for w in nltk.corpus.gazetteers.words("all")]
 
+Prerequisite:
+    Run download_geo.py first to fetch the geographic source files:
+        python download_geo.py [--geo-dir ~/nltk_data/geo]
+
 Usage:
-    python push_gazetteers_all.py <hf_token>
+    python push_gazetteers_all.py <hf_token> [--geo-dir <path>]
+
+    --geo-dir   Directory containing the geo/ subdirectories produced by
+                download_geo.py. Default: ~/nltk_data/geo
 """
 
 import csv
@@ -41,7 +48,8 @@ SPLIT = "gazetteers"
 CONFIG = "all"
 
 NLTK_CORPUS = os.path.expanduser("~/nltk_data/corpora/gazetteers")
-GEO_DIR = os.path.expanduser("~/jean-claude/wordlists/geo")
+_DEFAULT_GEO_DIR = os.path.expanduser("~/nltk_data/geo")
+GEO_DIR = _DEFAULT_GEO_DIR  # overridden in main() via --geo-dir
 
 # ---------------------------------------------------------------------------
 # ISO 3166-2 → unified category
@@ -223,11 +231,25 @@ def _all_config_yaml():
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python push_gazetteers_all.py <hf_token>")
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("hf_token")
+    parser.add_argument(
+        "--geo-dir",
+        default=_DEFAULT_GEO_DIR,
+        help="Directory with geo/ subdirs from download_geo.py (default: ~/nltk_data/geo)",
+    )
+    args = parser.parse_args()
+
+    global GEO_DIR
+    GEO_DIR = os.path.expanduser(args.geo_dir)
+    if not os.path.isdir(GEO_DIR):
+        print(f"Error: --geo-dir {GEO_DIR!r} does not exist.")
+        print("Run download_geo.py first to fetch the geographic source files.")
         sys.exit(1)
 
-    token = sys.argv[1]
+    token = args.hf_token
     api = HfApi(token=token)
 
     print("Building unified 'all' gazetteer...")

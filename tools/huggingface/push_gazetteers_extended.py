@@ -21,8 +21,15 @@ Natural Earth shapefile is skipped (requires geopandas/pyshp).
 
 All configs keep `name` as the primary gazetteer string column.
 
+Prerequisite:
+    Run download_geo.py first to fetch the geographic source files:
+        python download_geo.py [--geo-dir ~/nltk_data/geo]
+
 Usage:
-    python push_gazetteers_extended.py <hf_token>
+    python push_gazetteers_extended.py <hf_token> [--geo-dir <path>]
+
+    --geo-dir   Directory containing the geo/ subdirectories produced by
+                download_geo.py. Default: ~/nltk_data/geo
 """
 
 import csv
@@ -36,7 +43,8 @@ from huggingface_hub import HfApi
 
 REPO_ID = "nltk-data-hub/gazetteers"
 SPLIT = "gazetteers"
-GEO_DIR = os.path.expanduser("~/jean-claude/wordlists/geo")
+_DEFAULT_GEO_DIR = os.path.expanduser("~/nltk_data/geo")
+GEO_DIR = _DEFAULT_GEO_DIR  # overridden in main() via --geo-dir
 
 # ---------------------------------------------------------------------------
 # Original 8 configs (names only, for README reference)
@@ -360,11 +368,25 @@ nltk.corpus.gazetteers.words("uscities.txt")
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python push_gazetteers_extended.py <hf_token>")
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("hf_token")
+    parser.add_argument(
+        "--geo-dir",
+        default=_DEFAULT_GEO_DIR,
+        help="Directory with geo/ subdirs from download_geo.py (default: ~/nltk_data/geo)",
+    )
+    args = parser.parse_args()
+
+    global GEO_DIR
+    GEO_DIR = os.path.expanduser(args.geo_dir)
+    if not os.path.isdir(GEO_DIR):
+        print(f"Error: --geo-dir {GEO_DIR!r} does not exist.")
+        print("Run download_geo.py first to fetch the geographic source files.")
         sys.exit(1)
 
-    token = sys.argv[1]
+    token = args.hf_token
     api = HfApi(token=token)
 
     outdir = "/tmp/nltk_gazetteers_ext/data"
