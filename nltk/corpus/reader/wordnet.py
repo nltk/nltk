@@ -211,12 +211,13 @@ class _WordNetObject:
         return hash(self._name)
 
     def __eq__(self, other):
+        if not isinstance(other, _WordNetObject):
+            return NotImplemented
         return self._name == other._name
 
-    def __ne__(self, other):
-        return self._name != other._name
-
     def __lt__(self, other):
+        if not isinstance(other, _WordNetObject):
+            return NotImplemented
         return self._name < other._name
 
 
