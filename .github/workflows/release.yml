@@ -46,7 +46,7 @@ jobs:
       - name: Build distributions
         run: python -m build
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             dist/*.whl

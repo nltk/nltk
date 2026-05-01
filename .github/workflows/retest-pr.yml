@@ -17,7 +17,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Check authorization and trigger phrase
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const assoc = context.payload.comment.author_association;
@@ -34,7 +34,7 @@ jobs:
 
       - name: Get PR head SHA
         id: pr
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const pr = (await github.rest.pulls.get({
@@ -45,7 +45,7 @@ jobs:
             core.setOutput('sha', pr.head.sha);
 
       - name: Re-run CI
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const runs = await github.rest.actions.listWorkflowRuns({
