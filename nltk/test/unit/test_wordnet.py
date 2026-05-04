@@ -17,7 +17,12 @@ class WordnNetDemo(unittest.TestCase):
 
     def test_value_equality_for_distinct_instances(self):
         # Guards against deleting __eq__ and falling back to identity equality.
-        self.assertEqual(S("dog.n.01"), S("dog.n.01"))
+        synset = S("dog.n.01")
+        distinct_synset = type(synset)(wn)
+        distinct_synset._name = synset._name
+
+        self.assertIsNot(synset, distinct_synset)
+        self.assertEqual(synset, distinct_synset)
 
     def test_equality_with_incompatible_type_is_false(self):
         # User-visible behavior: no AttributeError, just a normal failed equality.
