@@ -32,14 +32,21 @@ class CRFTagger(TaggerI):
     >>> from nltk.tag import CRFTagger
     >>> ct = CRFTagger()  # doctest: +SKIP
 
-    >>> train_data = [[('University','Noun'), ('is','Verb'), ('a','Det'), ('good','Adj'), ('place','Noun')],
-    ... [('dog','Noun'),('eat','Verb'),('meat','Noun')]]
+    >>> train_data = [
+    ...     [('University','Noun'), ('is','Verb'), ('a','Det'),
+    ...      ('good','Adj'), ('place','Noun')],
+    ...     [('dog','Noun'), ('eat','Verb'), ('meat','Noun')],
+    ... ]
 
-    >>> ct.train(train_data,'model.crf.tagger')  # doctest: +SKIP
+    >>> ct.train(train_data, 'model.crf.tagger')  # doctest: +SKIP
     >>> ct.tag_sents([['dog','is','good'], ['Cat','eat','meat']])  # doctest: +SKIP
-    [[('dog', 'Noun'), ('is', 'Verb'), ('good', 'Adj')], [('Cat', 'Noun'), ('eat', 'Verb'), ('meat', 'Noun')]]
+    [[('dog', 'Noun'), ('is', 'Verb'), ('good', 'Adj')],
+     [('Cat', 'Noun'), ('eat', 'Verb'), ('meat', 'Noun')]]
 
-    >>> gold_sentences = [[('dog','Noun'),('is','Verb'),('good','Adj')] , [('Cat','Noun'),('eat','Verb'), ('meat','Noun')]]
+    >>> gold_sentences = [
+    ...     [('dog','Noun'), ('is','Verb'), ('good','Adj')],
+    ...     [('Cat','Noun'), ('eat','Verb'), ('meat','Noun')],
+    ... ]
     >>> ct.accuracy(gold_sentences)  # doctest: +SKIP
     1.0
 
@@ -54,32 +61,36 @@ class CRFTagger(TaggerI):
         """
         Initialize the CRFSuite tagger
 
-        :param feature_func: The function that extracts features for each token of a sentence. This function should take
-            2 parameters: tokens and index which extract features at index position from tokens list. See the build in
-            _get_features function for more detail.
-        :param verbose: output the debugging messages during training.
+        :param feature_func: Function that extracts features for each token
+            of a sentence. Takes two parameters (``tokens``, ``idx``) and
+            returns the feature list for ``tokens[idx]``. See the built-in
+            ``_get_features`` for an example.
+        :param verbose: Emit debugging messages during training.
         :type verbose: boolean
-        :param training_opt: python-crfsuite training options
+        :param training_opt: python-crfsuite training options.
         :type training_opt: dictionary
 
         Set of possible training options (using LBFGS training algorithm).
-            :'feature.minfreq': The minimum frequency of features.
-            :'feature.possible_states': Force to generate possible state features.
-            :'feature.possible_transitions': Force to generate possible transition features.
+            :'feature.minfreq': Minimum frequency of features.
+            :'feature.possible_states': Force generating possible state features.
+            :'feature.possible_transitions': Force generating possible transition
+                features.
             :'c1': Coefficient for L1 regularization.
             :'c2': Coefficient for L2 regularization.
-            :'max_iterations': The maximum number of iterations for L-BFGS optimization.
-            :'num_memories': The number of limited memories for approximating the inverse hessian matrix.
+            :'max_iterations': Maximum number of iterations for L-BFGS.
+            :'num_memories': Number of limited memories for approximating the
+                inverse Hessian matrix.
             :'epsilon': Epsilon for testing the convergence of the objective.
-            :'period': The duration of iterations to test the stopping criterion.
-            :'delta': The threshold for the stopping criterion; an L-BFGS iteration stops when the
-                improvement of the log likelihood over the last ${period} iterations is no greater than this threshold.
-            :'linesearch': The line search algorithm used in L-BFGS updates:
+            :'period': Duration of iterations for the stopping criterion.
+            :'delta': Threshold for the stopping criterion; L-BFGS stops when
+                the log-likelihood improvement over the last ${period}
+                iterations is no greater than this threshold.
+            :'linesearch': Line search algorithm used in L-BFGS updates:
 
                 - 'MoreThuente': More and Thuente's method,
                 - 'Backtracking': Backtracking method with regular Wolfe condition,
                 - 'StrongBacktracking': Backtracking method with strong Wolfe condition
-            :'max_linesearch':  The maximum number of trials for the line search algorithm.
+            :'max_linesearch':  Maximum number of trials for the line search.
         """
 
         if pycrfsuite is None:
@@ -161,7 +172,8 @@ class CRFTagger(TaggerI):
 
     def tag_sents(self, sentences):
         """
-        Tag a list of sentences. NB before using this function, user should specify the mode_file either by
+        Tag a list of sentences. Before using this function, the model file
+        must be specified by either:
 
         - Train a new model using ``train`` function
         - Use the pre-trained model which is set via ``set_model_file`` function
@@ -191,8 +203,8 @@ class CRFTagger(TaggerI):
             )
 
         if self._model_file == "":
-            raise Exception(
-                " No model file is found !! Please use train or set_model_file function"
+            raise RuntimeError(
+                "No model file set; call train() or set_model_file() first."
             )
 
         # Hoist hot-loop attribute lookups out of the per-sentence loop.
@@ -211,9 +223,11 @@ class CRFTagger(TaggerI):
             labels = tag(features)
 
             if len(labels) != len(tokens):
-                raise Exception(" Predicted Length Not Matched, Expect Errors !")
+                raise RuntimeError(
+                    f"CRF returned {len(labels)} labels for {len(tokens)} tokens."
+                )
 
-            tagged_sent = list(zip(tokens, labels))
+            tagged_sent = list(zip(tokens, labels, strict=True))
             result.append(tagged_sent)
 
         return result
@@ -236,7 +250,7 @@ class CRFTagger(TaggerI):
         append = trainer.append
 
         for sent in train_data:
-            tokens, labels = zip(*sent)
+            tokens, labels = zip(*sent, strict=True)
             features = [feature_func(tokens, i) for i in range(len(tokens))]
             append(features, labels)
 
@@ -245,7 +259,8 @@ class CRFTagger(TaggerI):
 
     def tag(self, tokens):
         """
-        Tag a sentence using Python CRFSuite Tagger. NB before using this function, user should specify the mode_file either by
+        Tag a sentence using the python-crfsuite tagger. Before using this
+        function, the model file must be specified by either:
 
         - Train a new model using ``train`` function
         - Use the pre-trained model which is set via ``set_model_file`` function

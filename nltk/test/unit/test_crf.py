@@ -78,7 +78,7 @@ def test_crf_training_options_are_copied():
 
 
 def test_crf_custom_feature_function_bypasses_default_cache():
-    """Custom feature functions may be context-sensitive and must not be token-cached."""
+    """Custom feature functions may be context-sensitive; must not be cached."""
 
     def feature_func(tokens, idx):
         prev = "<BOS>" if idx == 0 else tokens[idx - 1]
