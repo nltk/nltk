@@ -128,7 +128,7 @@ class CRFTagger(TaggerI):
         if cached is not None:
             return list(cached)
 
-        feature_list: list = []
+        feature_list = []
 
         if not token:
             self._feature_cache[token] = ()

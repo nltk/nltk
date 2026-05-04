@@ -86,5 +86,6 @@ def test_crf_custom_feature_function_bypasses_default_cache():
 
     ct = CRFTagger(feature_func=feature_func)
 
+    assert ct._feature_func is feature_func
     assert ct._feature_func(["a", "b"], 1) == ["TOKEN=b", "PREV=a"]
     assert ct._feature_cache == {}
