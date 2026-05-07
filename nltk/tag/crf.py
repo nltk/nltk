@@ -247,7 +247,7 @@ class CRFTagger(TaggerI):
         Train the CRF tagger using CRFSuite
 
         :param train_data: list of annotated sentences.
-        :type train_data: list(list(tuple(str, str)))
+        :type train_data: list(list(tuple(str,str)))
         :param model_file: path the trained model will be saved to.
         :type model_file: str
         """

@@ -11,7 +11,6 @@ from nltk.tag.crf import CRFTagger
 
 @pytest.mark.parametrize("bad", ["the cat sat", b"the cat sat"])
 def test_crf_tag_rejects_string_or_bytes_input(bad):
-    """Reject untokenized string-like input before it is iterated as tokens."""
     ct = CRFTagger()
     with pytest.raises(TypeError, match="list of tokens"):
         ct.tag(bad)
@@ -27,7 +26,6 @@ def test_crf_tag_rejects_string_or_bytes_input(bad):
     ],
 )
 def test_crf_tag_sents_rejects_non_batch_shapes(bad):
-    """Reject strings and single-sentence inputs passed to the batch API."""
     ct = CRFTagger()
     with pytest.raises(TypeError, match="tokenized sentences"):
         ct.tag_sents(bad)
@@ -55,7 +53,6 @@ def test_crf_tag_sents_rejects_non_batch_shapes(bad):
     ],
 )
 def test_crf_default_features_are_cached_as_tuples(token, expected):
-    """Default features are token-local, cached as tuples, and returned as lists."""
     ct = CRFTagger()
 
     first = ct._get_features([token], 0)
@@ -68,7 +65,6 @@ def test_crf_default_features_are_cached_as_tuples(token, expected):
 
 
 def test_crf_training_options_are_copied():
-    """Caller mutations to ``training_opt`` must not affect stored options."""
     opts = {"c1": 0.5, "c2": 1.0}
     ct = CRFTagger(training_opt=opts)
 
@@ -78,8 +74,6 @@ def test_crf_training_options_are_copied():
 
 
 def test_crf_custom_feature_function_bypasses_default_cache():
-    """Custom feature functions may be context-sensitive; must not be cached."""
-
     def feature_func(tokens, idx):
         prev = "<BOS>" if idx == 0 else tokens[idx - 1]
         return [f"TOKEN={tokens[idx]}", f"PREV={prev}"]
@@ -92,7 +86,6 @@ def test_crf_custom_feature_function_bypasses_default_cache():
 
 
 def test_crf_clear_feature_cache_drops_cached_entries():
-    """``clear_feature_cache()`` removes cached default-feature entries."""
     ct = CRFTagger()
 
     ct._get_features(["University"], 0)
