@@ -8,27 +8,41 @@ pytest.importorskip("pycrfsuite")
 
 from nltk.tag.crf import CRFTagger
 
+_TRAIN = [
+    [("the", "DT"), ("cat", "NN"), ("sat", "VBD")],
+    [("a", "DT"), ("dog", "NN"), ("ran", "VBD")],
+    [("the", "DT"), ("dog", "NN"), ("sat", "VBD")],
+    [("a", "DT"), ("cat", "NN"), ("ran", "VBD")],
+]
 
-@pytest.mark.parametrize("bad", ["the cat sat", b"the cat sat"])
-def test_crf_tag_rejects_string_or_bytes_input(bad):
-    ct = CRFTagger()
-    with pytest.raises(TypeError, match="list of tokens"):
-        ct.tag(bad)
+_SAMPLE_SENT = ["the", "cat", "sat"]
+_TAGS = {"DT", "NN", "VBD"}
 
 
 @pytest.mark.parametrize(
-    "bad",
+    ("method", "bad", "match"),
     [
-        "the cat sat",
-        b"the cat sat",
-        ["the", "cat", "sat"],
-        ("the", "cat", "sat"),
+        ("tag", "the cat sat", "list of tokens"),
+        ("tag", b"the cat sat", "list of tokens"),
+        ("tag_sents", "the cat sat", "tokenized sentences"),
+        ("tag_sents", b"the cat sat", "tokenized sentences"),
+        ("tag_sents", ["the", "cat", "sat"], "tokenized sentences"),
+        ("tag_sents", ("the", "cat", "sat"), "tokenized sentences"),
     ],
 )
-def test_crf_tag_sents_rejects_non_batch_shapes(bad):
+def test_rejects_bad_input_shapes(method, bad, match):
     ct = CRFTagger()
-    with pytest.raises(TypeError, match="tokenized sentences"):
-        ct.tag_sents(bad)
+    with pytest.raises(TypeError, match=match):
+        getattr(ct, method)(bad)
+
+
+def test_training_options_are_copied():
+    opts = {"c1": 0.5, "c2": 1.0}
+    ct = CRFTagger(training_opt=opts)
+
+    opts["c1"] = 99.0
+
+    assert ct._training_options == {"c1": 0.5, "c2": 1.0}
 
 
 @pytest.mark.parametrize(
@@ -38,21 +52,12 @@ def test_crf_tag_sents_rejects_non_batch_shapes(bad):
             "University",
             ["CAPITALIZATION", "SUF_y", "SUF_ty", "SUF_ity", "WORD_University"],
         ),
-        (
-            "A1",
-            ["CAPITALIZATION", "HAS_NUM", "SUF_1", "WORD_A1"],
-        ),
-        (
-            "...",
-            ["PUNCTUATION", "SUF_.", "SUF_..", "WORD_..."],
-        ),
-        (
-            "",
-            [],
-        ),
+        ("A1", ["CAPITALIZATION", "HAS_NUM", "SUF_1", "WORD_A1"]),
+        ("...", ["PUNCTUATION", "SUF_.", "SUF_..", "WORD_..."]),
+        ("", []),
     ],
 )
-def test_crf_default_features_are_cached_as_tuples(token, expected):
+def test_default_features_are_cached_as_tuples(token, expected):
     ct = CRFTagger()
 
     first = ct._get_features([token], 0)
@@ -64,16 +69,7 @@ def test_crf_default_features_are_cached_as_tuples(token, expected):
     assert ct._feature_cache[token] == tuple(expected)
 
 
-def test_crf_training_options_are_copied():
-    opts = {"c1": 0.5, "c2": 1.0}
-    ct = CRFTagger(training_opt=opts)
-
-    opts["c1"] = 99.0
-
-    assert ct._training_options == {"c1": 0.5, "c2": 1.0}
-
-
-def test_crf_custom_feature_function_bypasses_default_cache():
+def test_custom_feature_function_bypasses_default_cache():
     def feature_func(tokens, idx):
         prev = "<BOS>" if idx == 0 else tokens[idx - 1]
         return [f"TOKEN={tokens[idx]}", f"PREV={prev}"]
@@ -85,16 +81,45 @@ def test_crf_custom_feature_function_bypasses_default_cache():
     assert ct._feature_cache == {}
 
 
-def test_crf_clear_feature_cache_drops_cached_entries():
+def test_clear_feature_cache_drops_cached_entries():
     ct = CRFTagger()
 
     ct._get_features(["University"], 0)
     ct._get_features(["dog"], 0)
-    assert ct._feature_cache  # populated by the calls above
+    assert ct._feature_cache
 
     ct.clear_feature_cache()
     assert ct._feature_cache == {}
 
-    # Cache is rebuilt on the next call.
     ct._get_features(["University"], 0)
     assert "University" in ct._feature_cache
+
+
+def test_tag_sents_kwargs_compatibility():
+    ct = CRFTagger()
+
+    with pytest.warns(DeprecationWarning, match="sents=.*deprecated"):
+        with pytest.raises(RuntimeError, match="No model file set"):
+            ct.tag_sents(sents=[["a", "b"]])
+
+    with pytest.raises(TypeError, match="both 'sentences' and 'sents'"):
+        ct.tag_sents([["a"]], sents=[["b"]])
+
+    with pytest.raises(TypeError, match="unexpected keyword"):
+        ct.tag_sents([["a"]], extra=True)
+
+
+def test_train_tag_round_trip(tmp_path):
+    model_file = tmp_path / "model.crf.tagger"
+
+    trained = CRFTagger()
+    trained.train(_TRAIN, str(model_file))
+    assert model_file.exists()
+
+    tagged = trained.tag(_SAMPLE_SENT)
+    assert [word for word, _ in tagged] == _SAMPLE_SENT
+    assert all(tag in _TAGS for _, tag in tagged)
+
+    reloaded = CRFTagger()
+    reloaded.set_model_file(str(model_file))
+    assert reloaded.tag(_SAMPLE_SENT) == tagged

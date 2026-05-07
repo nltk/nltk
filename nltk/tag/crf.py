@@ -12,6 +12,7 @@ A module for POS tagging using CRFSuite
 
 import re
 import unicodedata
+import warnings
 
 from nltk.tag.api import TaggerI
 
@@ -55,6 +56,11 @@ class CRFTagger(TaggerI):
     >>> ct.set_model_file('model.crf.tagger')  # doctest: +SKIP
     >>> ct.accuracy(gold_sentences)  # doctest: +SKIP
     1.0
+
+    Default features are cached by token surface form. Call
+    ``clear_feature_cache()`` to drop the cache (e.g. between long-running
+    open-vocabulary tagging passes). A custom ``feature_func`` bypasses
+    the cache.
     """
 
     def __init__(self, feature_func=None, verbose=False, training_opt=None):
@@ -180,7 +186,7 @@ class CRFTagger(TaggerI):
         """
         self._feature_cache.clear()
 
-    def tag_sents(self, sentences):
+    def tag_sents(self, sentences=None, **kwargs):
         """
         Tag a list of sentences. Before using this function, the model file
         must be specified by either:
@@ -193,6 +199,26 @@ class CRFTagger(TaggerI):
         :return: list of tagged sentences.
         :rtype: list(list(tuple(str,str)))
         """
+        if "sents" in kwargs:
+            if sentences is not None:
+                raise TypeError(
+                    "tag_sents() got both 'sentences' and 'sents'; "
+                    "use 'sentences' only ('sents' is deprecated)."
+                )
+            warnings.warn(
+                "tag_sents(sents=...) is deprecated; use tag_sents(sentences=...).",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            sentences = kwargs.pop("sents")
+        if kwargs:
+            unexpected = ", ".join(sorted(kwargs))
+            raise TypeError(
+                f"tag_sents() got unexpected keyword arguments: {unexpected}"
+            )
+        if sentences is None:
+            raise TypeError("tag_sents() missing 1 required argument: 'sentences'")
+
         if isinstance(sentences, (str, bytes)):
             raise TypeError(
                 "tag_sents() expects a list of tokenized sentences, "
