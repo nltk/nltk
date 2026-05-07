@@ -170,6 +170,16 @@ class CRFTagger(TaggerI):
         self._feature_cache[token] = tuple(feature_list)
         return feature_list
 
+    def clear_feature_cache(self):
+        """Drop the default-feature cache.
+
+        The cache is vocabulary-bounded, but long-running processes that
+        ingest open-vocabulary streams (URLs, tweets, generated text) may
+        want to reset it explicitly. A custom ``feature_func`` bypasses
+        the cache, so this is a no-op for non-default extractors.
+        """
+        self._feature_cache.clear()
+
     def tag_sents(self, sentences):
         """
         Tag a list of sentences. Before using this function, the model file
@@ -178,7 +188,7 @@ class CRFTagger(TaggerI):
         - Train a new model using ``train`` function
         - Use the pre-trained model which is set via ``set_model_file`` function
 
-        :params sentences: list of sentences needed to tag.
+        :param sentences: list of sentences needed to tag.
         :type sentences: list(list(str))
         :return: list of tagged sentences.
         :rtype: list(list(tuple(str,str)))
@@ -235,10 +245,11 @@ class CRFTagger(TaggerI):
     def train(self, train_data, model_file):
         """
         Train the CRF tagger using CRFSuite
-        :params train_data : is the list of annotated sentences.
-        :type train_data : list (list(tuple(str,str)))
-        :params model_file : the model will be saved to this file.
 
+        :param train_data: list of annotated sentences.
+        :type train_data: list(list(tuple(str, str)))
+        :param model_file: path the trained model will be saved to.
+        :type model_file: str
         """
         if pycrfsuite is None:
             raise ImportError("CRFTagger requires python-crfsuite to be installed.")
@@ -265,7 +276,7 @@ class CRFTagger(TaggerI):
         - Train a new model using ``train`` function
         - Use the pre-trained model which is set via ``set_model_file`` function
 
-        :params tokens: list of tokens needed to tag.
+        :param tokens: list of tokens needed to tag.
         :type tokens: list(str)
         :return: list of tagged tokens.
         :rtype: list(tuple(str,str))

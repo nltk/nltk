@@ -89,3 +89,19 @@ def test_crf_custom_feature_function_bypasses_default_cache():
     assert ct._feature_func is feature_func
     assert ct._feature_func(["a", "b"], 1) == ["TOKEN=b", "PREV=a"]
     assert ct._feature_cache == {}
+
+
+def test_crf_clear_feature_cache_drops_cached_entries():
+    """``clear_feature_cache()`` removes cached default-feature entries."""
+    ct = CRFTagger()
+
+    ct._get_features(["University"], 0)
+    ct._get_features(["dog"], 0)
+    assert ct._feature_cache  # populated by the calls above
+
+    ct.clear_feature_cache()
+    assert ct._feature_cache == {}
+
+    # Cache is rebuilt on the next call.
+    ct._get_features(["University"], 0)
+    assert "University" in ct._feature_cache
