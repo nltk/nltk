@@ -221,7 +221,13 @@ def validate_network_url(url_input, context="NetworkIO"):
 
         for result in _resolve_hostname(parsed.hostname or ""):
             ip = ipaddress.ip_address(result[4][0])
-            if ip.is_loopback or ip.is_link_local or ip.is_multicast or ip.is_private:
+            if (
+                ip.is_loopback
+                or ip.is_link_local
+                or ip.is_multicast
+                or ip.is_private
+                or not ip.is_global
+            ):
                 msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {ip}"
                 if ENFORCE:
                     raise PermissionError(msg)

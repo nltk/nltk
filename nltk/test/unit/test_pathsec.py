@@ -55,6 +55,12 @@ def test_ssrf_cloud_metadata_link_local():
         dl.index()
 
 
+def test_ssrf_shared_address_space():
+    dl = Downloader(server_index_url="http://100.64.0.1/internal")
+    with pytest.raises((ValueError, PermissionError)):
+        dl.index()
+
+
 def test_ssrf_ip_obfuscation():
     """Will FAIL on vulnerable branches (on Unix) because string-matching misses the decimal IP."""
     dl = Downloader(server_index_url="http://2852039166/latest/meta-data/")
