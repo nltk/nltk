@@ -45,6 +45,7 @@ from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
 from io import BytesIO, TextIOWrapper
+from urllib.parse import unquote
 from urllib.request import url2pathname
 
 from nltk.pathsec import ZipFile
@@ -64,8 +65,16 @@ def _reject_unsafe_no_protocol(resource_url):
     Note: some no-protocol inputs are interpreted by split_resource_url() as
     file-style paths (e.g., bare Windows drive paths like "C:/foo"). These must
     still be rejected here when they contain unsafe patterns.
+
+    The check is applied to both the raw input and its URL-decoded form so
+    that encoded path separators or traversal segments (e.g., ``%2f``,
+    ``%2e%2e``) cannot bypass the filter and later be decoded by
+    ``url2pathname()`` into a dangerous filesystem path.
     """
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_url):
+        raise ValueError(f"Unsafe resource path: {resource_url!r}")
+    decoded = unquote(resource_url)
+    if decoded != resource_url and _UNSAFE_NO_PROTOCOL_RE.search(decoded):
         raise ValueError(f"Unsafe resource path: {resource_url!r}")
 
 
@@ -235,6 +244,18 @@ def normalize_resource_url(resource_url):
 
     # Case 1: nltk:<path>
     if protocol == "nltk":
+        # Decode percent-encoded sequences (e.g. ``%2f``, ``%2e%2e``) so that
+        # encoded path separators and traversal segments cannot bypass the
+        # safety checks. url2pathname() will decode them later when the
+        # resource is resolved to a filesystem path, so any check applied
+        # only to the encoded form is meaningless.
+        decoded_name = unquote(name)
+        if decoded_name != name and (
+            _UNSAFE_NO_PROTOCOL_RE.search(decoded_name)
+            or os.path.isabs(decoded_name)
+            or re.match(r"^[A-Za-z]:[/\\]", decoded_name)
+        ):
+            raise ValueError(f"Unsafe resource path: {resource_url!r}")
         # If "nltk:" is used with an absolute path, treat it as "file://"
         # Reject Windows drive-letter paths even when explicitly using the nltk: protocol.
         # This prevents smuggling filesystem paths through nltk: URLs.
@@ -614,7 +635,15 @@ def find(resource_name, paths=None):
     resource_name = normalize_resource_name(resource_name, True)
     # Defense-in-depth: reject traversal/absolute paths even if caller bypassed normalize_resource_url()
     # Use search() so traversal components anywhere in the resource_name trigger rejection.
+    # Also check the URL-decoded form, since url2pathname() below decodes
+    # percent-encoded sequences and would otherwise turn encoded payloads
+    # like "%2fetc%2fpasswd" into a real absolute path on disk.
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_name):
+        raise ValueError(f"Unsafe resource path: {resource_name!r}")
+    decoded_resource_name = unquote(resource_name)
+    if decoded_resource_name != resource_name and _UNSAFE_NO_PROTOCOL_RE.search(
+        decoded_resource_name
+    ):
         raise ValueError(f"Unsafe resource path: {resource_name!r}")
 
     # Resolve default paths at runtime in-case the user overrides

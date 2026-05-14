@@ -72,6 +72,51 @@ def test_normalize_rejects_no_protocol_dotdot_only():
         data.normalize_resource_url("..")
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        # encoded absolute path
+        "nltk:%2fetc%2fpasswd",
+        "nltk:%2Fetc%2Fpasswd",
+        # encoded ".." traversal
+        "nltk:corpora/%2e%2e/%2e%2e/etc/passwd",
+        "nltk:corpora/%2E%2E/%2E%2E/etc/passwd",
+        # encoded separators sandwiching literal ".."
+        "nltk:corpora/..%2f..%2fetc%2fpasswd",
+        # encoded /proc target
+        "nltk:%2fproc%2fself%2fenviron",
+        # encoded Windows drive letter
+        "nltk:%43%3a%5cetc",
+        # encoded backslash traversal
+        "nltk:%5c..%5cetc%5cpasswd",
+    ],
+)
+def test_normalize_rejects_url_encoded_traversal(url):
+    """URL-encoded path separators and traversal must not bypass the safety check.
+
+    Regression: prior to the fix, ``nltk.data.load("nltk:%2fetc%2fpasswd")``
+    decoded the path inside ``url2pathname()`` *after* the safety check ran,
+    allowing arbitrary file read. See huntr report
+    https://huntr.com/bounties/fae662d6-74c2-44fa-95f3-f53d4e8a8355.
+    """
+    with pytest.raises(ValueError):
+        data.normalize_resource_url(url)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "%2fetc%2fpasswd",
+        "corpora/%2e%2e/%2e%2e/etc/passwd",
+        "corpora/..%2f..%2fetc%2fpasswd",
+    ],
+)
+def test_find_rejects_url_encoded_traversal(name):
+    """Defense-in-depth: find() must reject URL-encoded traversal directly."""
+    with pytest.raises(ValueError):
+        data.find(name)
+
+
 def test_find_zip_split_is_non_greedy(tmp_path):
     # Create a.zip containing an entry whose name includes another ".zip".
     zpath = tmp_path / "a.zip"
