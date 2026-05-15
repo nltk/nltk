@@ -250,11 +250,7 @@ def normalize_resource_url(resource_url):
         # resource is resolved to a filesystem path, so any check applied
         # only to the encoded form is meaningless.
         decoded_name = unquote(name)
-        if decoded_name != name and (
-            _UNSAFE_NO_PROTOCOL_RE.search(decoded_name)
-            or os.path.isabs(decoded_name)
-            or re.match(r"^[A-Za-z]:[/\\]", decoded_name)
-        ):
+        if decoded_name != name and _UNSAFE_NO_PROTOCOL_RE.search(decoded_name):
             raise ValueError(f"Unsafe resource path: {resource_url!r}")
         # If "nltk:" is used with an absolute path, treat it as "file://"
         # Reject Windows drive-letter paths even when explicitly using the nltk: protocol.
