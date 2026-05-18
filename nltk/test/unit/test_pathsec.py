@@ -61,6 +61,26 @@ def test_ssrf_shared_address_space():
         dl.index()
 
 
+def test_ssrf_ipv4_mapped_ipv6():
+    """IPv4-mapped IPv6 addresses like ::ffff:127.0.0.1 must be blocked."""
+    import ipaddress
+
+    mapped_loopback = ipaddress.ip_address("::ffff:127.0.0.1")
+    mapped_private = ipaddress.ip_address("::ffff:10.0.0.1")
+    mapped_link_local = ipaddress.ip_address("::ffff:169.254.1.1")
+
+    # These are reported as is_global=True by Python, but map to restricted IPv4
+    for ip in (mapped_loopback, mapped_private, mapped_link_local):
+        assert ip.ipv4_mapped is not None, f"{ip} should have ipv4_mapped"
+        assert not ip.ipv4_mapped.is_global, f"{ip} maps to non-global {ip.ipv4_mapped}"
+
+    # Integration test: mock DNS resolution to return an IPv4-mapped IPv6 address
+    fake_result = [(socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("::ffff:127.0.0.1", 0, 0, 0))]
+    with patch.object(pathsec, "_resolve_hostname", return_value=fake_result):
+        with pytest.raises((ValueError, PermissionError)):
+            pathsec.validate_network_url("http://evil.example.com/steal", context="Test")
+
+
 def test_ssrf_ip_obfuscation():
     """Will FAIL on vulnerable branches (on Unix) because string-matching misses the decimal IP."""
     dl = Downloader(server_index_url="http://2852039166/latest/meta-data/")
