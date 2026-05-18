@@ -47,6 +47,8 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     :rtype: float
     """
     best_ribes = -1.0
+    if not hypothesis:
+        return 0.0
     # Calculates RIBES for each reference and returns the best score.
     for reference in references:
         # Collects the *worder* from the ranked correlation alignments.
@@ -116,6 +118,8 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
         corpus_best_ribes += sentence_ribes(references, hypothesis, alpha, beta)
+    if not hypotheses:
+        return 0.0
     return corpus_best_ribes / len(hypotheses)
 
 
