@@ -75,10 +75,14 @@ def test_ssrf_ipv4_mapped_ipv6():
         assert not ip.ipv4_mapped.is_global, f"{ip} maps to non-global {ip.ipv4_mapped}"
 
     # Integration test: mock DNS resolution to return an IPv4-mapped IPv6 address
-    fake_result = [(socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("::ffff:127.0.0.1", 0, 0, 0))]
+    fake_result = [
+        (socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("::ffff:127.0.0.1", 0, 0, 0))
+    ]
     with patch.object(pathsec, "_resolve_hostname", return_value=fake_result):
         with pytest.raises((ValueError, PermissionError)):
-            pathsec.validate_network_url("http://evil.example.com/steal", context="Test")
+            pathsec.validate_network_url(
+                "http://evil.example.com/steal", context="Test"
+            )
 
 
 def test_ssrf_ip_obfuscation():
