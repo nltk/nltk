@@ -290,3 +290,33 @@ class WordnNetDemo(unittest.TestCase):
         # Tags that should yield None (not mapped in WordNet)
         self.assertIsNone(wn.tag2pos("PPL", tagset="en-brown"))
         self.assertIsNone(wn.tag2pos("(", tagset="en-brown"))
+
+    def test_wordnet_object_comparisons(self):
+        dog_synset = S("dog.n.01")
+        dog_lemma = L("dog.n.01.dog")
+
+        # Test equality with other types
+        self.assertFalse(dog_synset == "dog.n.01")
+        self.assertFalse(dog_synset == None)
+        self.assertFalse(dog_lemma == "dog.n.01.dog")
+        self.assertFalse(dog_lemma == None)
+
+        # Test inequality with other types
+        self.assertTrue(dog_synset != "dog.n.01")
+        self.assertTrue(dog_synset != None)
+        self.assertTrue(dog_lemma != "dog.n.01.dog")
+        self.assertTrue(dog_lemma != None)
+
+        # Test inequality with other objects (e.g. synset != lemma)
+        self.assertTrue(dog_synset != dog_lemma)
+        self.assertFalse(dog_synset == dog_lemma)
+
+        # Test ordered comparison raises TypeError
+        with self.assertRaises(TypeError):
+            _ = dog_synset < "dog.n.01"
+        with self.assertRaises(TypeError):
+            _ = dog_synset > "dog.n.01"
+        with self.assertRaises(TypeError):
+            _ = dog_lemma < "dog.n.01.dog"
+        with self.assertRaises(TypeError):
+            _ = dog_lemma > "dog.n.01.dog"
