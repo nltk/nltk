@@ -96,10 +96,25 @@ class NKJPCorpusReader(XMLCorpusReader):
     def add_root(self, fileid):
         """
         Add root if necessary to specified fileid.
+
+        Security (CWE-22): the NKJP views build file paths from the
+        caller-supplied ``fileids`` and read them with the builtin
+        ``open()``, bypassing the ``CorpusReader.open()`` / ``nltk.pathsec``
+        sandbox.  Reject any fileid whose resulting path escapes the corpus
+        root, otherwise a ``..`` sequence or an absolute path in ``fileids``
+        allows reading arbitrary files outside the corpus.
         """
         if self.root in fileid:
-            return fileid
-        return self.root + fileid
+            result = fileid
+        else:
+            result = self.root + fileid
+        root = os.path.normpath(str(self.root))
+        resolved = os.path.normpath(str(result))
+        if resolved != root and not resolved.startswith(root + os.sep):
+            raise ValueError(
+                f"NKJP fileid escapes the corpus root (path traversal blocked): {fileid!r}"
+            )
+        return result
 
     @_parse_args
     def header(self, fileids=None, **kwargs):
