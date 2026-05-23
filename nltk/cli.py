@@ -29,7 +29,7 @@ def cli():
 )
 @click.option(
     "--preserve-line",
-    "-l",
+    "-p",
     default=True,
     is_flag=True,
     help="An option to keep the preserve the sentence and not sentence tokenize it.",
