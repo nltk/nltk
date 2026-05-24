@@ -1362,6 +1362,12 @@ warnings(True) to display corpus consistency warnings when loading data
         except KeyError as e:  # probably means that fn_docid was not in the index
             raise FramenetError(f"Unknown document id: {fn_docid}") from e
 
+        # Security (CWE-22): defend against a malicious corpus index whose
+        # filename field contains path-traversal sequences (the file is read with
+        # the builtin open() via XMLCorpusView, bypassing nltk.pathsec).
+        if os.sep in xmlfname or "/" in xmlfname or "\\" in xmlfname or ".." in xmlfname:
+            raise FramenetError(f"Invalid document filename: {xmlfname!r}")
+
         # construct the path name for the xml file containing the document info
         locpath = os.path.join(f"{self._root}", self._fulltext_dir, xmlfname)
 
@@ -1451,6 +1457,14 @@ warnings(True) to display corpus consistency warnings when loading data
             return self._frame_idx[self._cached_frames[fn_fname]]
         elif not self._frame_idx:
             self._buildframeindex()
+
+        # Security (CWE-22): the frame name is interpolated into the XML file
+        # path, which is then read with the builtin open() (via XMLCorpusView),
+        # bypassing the CorpusReader.open() / nltk.pathsec sandbox.  Reject names
+        # containing path separators or parent-directory references so a crafted
+        # name cannot escape the corpus root and read arbitrary files.
+        if os.sep in fn_fname or "/" in fn_fname or "\\" in fn_fname or ".." in fn_fname:
+            raise FramenetError(f"Invalid frame name: {fn_fname!r}")
 
         # construct the path name for the xml file containing the Frame info
         locpath = os.path.join(f"{self._root}", self._frame_dir, fn_fname + ".xml")
