@@ -188,3 +188,64 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
     finally:
         # Teardown: Safely restore the original global opener, leaving no trace of this test
         urllib.request.install_opener(original_opener)
+
+
+def test_ssrf_dns_rebinding_blocked_at_connect(monkeypatch):
+    """A hostname that resolves to a public IP at validation time but to a
+    loopback IP at connect time (DNS rebinding) must still be blocked: the
+    connection is pinned to the validated resolution.  Regression test for the
+    validate-vs-connect DNS re-resolution TOCTOU in pathsec.urlopen.
+    """
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    SECRET = b"LOOPBACK-ONLY-SECRET"
+
+    class _Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(SECRET)
+
+        def log_message(self, *args):
+            pass
+
+    srv = HTTPServer(("127.0.0.1", 0), _Handler)
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        host = "rebind.invalid.test"
+        real_getaddrinfo = socket.getaddrinfo
+        state = {"n": 0}
+
+        def fake_getaddrinfo(h, p, *a, **k):
+            if h == host:
+                state["n"] += 1
+                # 1st resolution (validation) -> public; later (connect) -> loopback
+                ip = "93.184.216.34" if state["n"] == 1 else "127.0.0.1"
+                return [
+                    (
+                        socket.AF_INET,
+                        socket.SOCK_STREAM,
+                        socket.IPPROTO_TCP,
+                        "",
+                        (ip, p if isinstance(p, int) else 0),
+                    )
+                ]
+            return real_getaddrinfo(h, p, *a, **k)
+
+        monkeypatch.setattr(socket, "getaddrinfo", fake_getaddrinfo)
+
+        leaked = None
+        blocked = False
+        try:
+            resp = pathsec.urlopen(f"http://{host}:{port}/x")
+            leaked = resp.read()
+        except (PermissionError, URLError, ValueError):
+            blocked = True
+
+        assert blocked, "DNS-rebinding fetch was not blocked under ENFORCE=True"
+        assert leaked != SECRET, "loopback secret was exfiltrated despite SSRF filter"
+        assert state["n"] >= 2, "host was not re-resolved/validated at connect time"
+    finally:
+        srv.shutdown()
