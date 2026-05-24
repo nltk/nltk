@@ -1133,6 +1133,18 @@ class WordNetCorpusReader(CorpusReader):
     _pos_names = dict(tup[::-1] for tup in _pos_numbers.items())
     # }
 
+    # Precomputed max depths for common WordNet versions to avoid expensive computation.
+    # Maps version -> POS -> max_depth (when simulate_root=False).
+    _PRECOMPUTED_MAX_DEPTHS = {
+        "3.0": {
+            NOUN: 19,
+            VERB: 12,
+            ADJ: 0,
+            ADJ_SAT: 0,
+            ADV: 0,
+        }
+    }
+
     #: A list of file identifiers for all the fileids used by this
     #: corpus reader.
     _FILES = (
@@ -1478,6 +1490,19 @@ class WordNetCorpusReader(CorpusReader):
         Compute the max depth for the given part of speech.  This is
         used by the lch similarity metric.
         """
+        # Precomputed max depths for standard WordNet versions to avoid
+        # extremely expensive dynamic computation.
+        version = self.get_version()
+        if (
+            version in self._PRECOMPUTED_MAX_DEPTHS
+            and pos in self._PRECOMPUTED_MAX_DEPTHS[version]
+        ):
+            depth = self._PRECOMPUTED_MAX_DEPTHS[version][pos]
+            if simulate_root:
+                depth += 1
+            self._max_depth[pos] = depth
+            return depth
+
         depth = 0
         for ii in self.all_synsets(pos):
             try:
@@ -1487,6 +1512,7 @@ class WordNetCorpusReader(CorpusReader):
         if simulate_root:
             depth += 1
         self._max_depth[pos] = depth
+        return depth
 
     def get_version(self):
         fh = self._data_file(ADJ)

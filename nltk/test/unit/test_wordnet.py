@@ -309,3 +309,40 @@ class WordnNetDemo(unittest.TestCase):
         # Tags that should yield None (not mapped in WordNet)
         self.assertIsNone(wn.tag2pos("PPL", tagset="en-brown"))
         self.assertIsNone(wn.tag2pos("(", tagset="en-brown"))
+
+    def test_precomputed_max_depths(self):
+        # Save the original state of the cache and methods to avoid cross-test side effects
+        original_max_depth = wn._max_depth.copy()
+        original_all_synsets = wn.all_synsets
+        original_get_version = wn.get_version
+
+        try:
+            # Mock all_synsets to raise an error if called
+            def mock_all_synsets(pos):
+                raise RuntimeError("all_synsets was called!")
+
+            wn.all_synsets = mock_all_synsets
+
+            # 1. Test fast-path: should succeed without calling all_synsets
+            wn._max_depth.clear()
+            version = original_get_version()
+            expected_n = wn._PRECOMPUTED_MAX_DEPTHS[version]["n"]
+            expected_v = wn._PRECOMPUTED_MAX_DEPTHS[version]["v"]
+
+            self.assertEqual(wn._compute_max_depth("n", False), expected_n)
+            self.assertEqual(wn._max_depth["n"], expected_n)
+
+            self.assertEqual(wn._compute_max_depth("v", True), expected_v + 1)
+            self.assertEqual(wn._max_depth["v"], expected_v + 1)
+
+            # 2. Test fallback-path: should call all_synsets (and raise RuntimeError) for unknown version
+            wn._max_depth.clear()
+            wn.get_version = lambda: "9.9"
+            with self.assertRaisesRegex(RuntimeError, "all_synsets was called!"):
+                wn._compute_max_depth("n", False)
+        finally:
+            # Restore the original state of the cache and methods
+            wn.all_synsets = original_all_synsets
+            wn.get_version = original_get_version
+            wn._max_depth.clear()
+            wn._max_depth.update(original_max_depth)
