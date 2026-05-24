@@ -1824,6 +1824,18 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         fn_luid = lu.ID
 
+        # Security (CWE-22): the LU id comes from corpus data (a <lexUnit ID="...">
+        # attribute) and is interpolated into the XML file path read with the
+        # builtin open() via XMLCorpusView, bypassing nltk.pathsec.  A non-numeric
+        # id can carry path-traversal sequences; reject separators / parent refs.
+        if (
+            os.sep in str(fn_luid)
+            or "/" in str(fn_luid)
+            or "\\" in str(fn_luid)
+            or ".." in str(fn_luid)
+        ):
+            raise FramenetError(f"Invalid LU id: {fn_luid!r}")
+
         fname = f"lu{fn_luid}.xml"
         locpath = os.path.join(f"{self._root}", self._lu_dir, fname)
         # print(locpath, file=sys.stderr)

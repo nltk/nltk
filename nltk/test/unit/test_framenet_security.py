@@ -60,3 +60,31 @@ def test_framenet_allows_normal_frame_name(tmp_path):
     with pytest.raises(FramenetError) as exc:
         fn.frame("NoSuchFrame")
     assert "Invalid frame name" not in str(exc.value)
+
+
+def test_framenet_lu_file_rejects_traversal_id(tmp_path):
+    """A non-numeric LU id from corpus data must not escape the corpus root."""
+    from nltk.corpus.reader.framenet import AttrDict
+
+    root = _make_corpus(tmp_path)
+    (root / "luIndex.xml").write_text('<?xml version="1.0"?><luIndex></luIndex>')
+
+    secret_dir = tmp_path / "outside"
+    secret_dir.mkdir()
+    (secret_dir / "SECRET.xml").write_text("<lexUnit>x</lexUnit>")
+
+    fn = FramenetCorpusReader(str(root), [])
+    lu = AttrDict({"ID": "/../../../../../.." + str(secret_dir) + "/SECRET"})
+
+    opened = []
+    real_open = builtins.open
+    builtins.open = lambda f, *a, **k: (opened.append(str(f)), real_open(f, *a, **k))[1]
+    try:
+        with pytest.raises(FramenetError):
+            fn._lu_file(lu)
+    finally:
+        builtins.open = real_open
+
+    assert not any(
+        "outside" in p for p in opened
+    ), "LU-id traversal reached the filesystem"
