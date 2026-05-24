@@ -172,7 +172,7 @@ class NKJPCorpusReader(XMLCorpusReader):
                     self.add_root(fileid),
                     mode=NKJPCorpusReader.WORDS_MODE,
                     tags=tags,
-                    **kwargs
+                    **kwargs,
                 ).handle_query()
                 for fileid in fileids
             ]
