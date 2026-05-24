@@ -1365,7 +1365,12 @@ warnings(True) to display corpus consistency warnings when loading data
         # Security (CWE-22): defend against a malicious corpus index whose
         # filename field contains path-traversal sequences (the file is read with
         # the builtin open() via XMLCorpusView, bypassing nltk.pathsec).
-        if os.sep in xmlfname or "/" in xmlfname or "\\" in xmlfname or ".." in xmlfname:
+        if (
+            os.sep in xmlfname
+            or "/" in xmlfname
+            or "\\" in xmlfname
+            or ".." in xmlfname
+        ):
             raise FramenetError(f"Invalid document filename: {xmlfname!r}")
 
         # construct the path name for the xml file containing the document info
@@ -1463,7 +1468,12 @@ warnings(True) to display corpus consistency warnings when loading data
         # bypassing the CorpusReader.open() / nltk.pathsec sandbox.  Reject names
         # containing path separators or parent-directory references so a crafted
         # name cannot escape the corpus root and read arbitrary files.
-        if os.sep in fn_fname or "/" in fn_fname or "\\" in fn_fname or ".." in fn_fname:
+        if (
+            os.sep in fn_fname
+            or "/" in fn_fname
+            or "\\" in fn_fname
+            or ".." in fn_fname
+        ):
             raise FramenetError(f"Invalid frame name: {fn_fname!r}")
 
         # construct the path name for the xml file containing the Frame info

@@ -18,7 +18,9 @@ def _make_corpus(tmp_path):
     root = tmp_path / "framenet"
     for d in ("frame", "fulltext", "lu"):
         (root / d).mkdir(parents=True)
-    (root / "frameIndex.xml").write_text('<?xml version="1.0"?><frameIndex></frameIndex>')
+    (root / "frameIndex.xml").write_text(
+        '<?xml version="1.0"?><frameIndex></frameIndex>'
+    )
     (root / "frRelation.xml").write_text(
         '<?xml version="1.0"?><frameRelations></frameRelations>'
     )
@@ -31,7 +33,9 @@ def test_framenet_rejects_traversal_frame_name(tmp_path):
 
     secret_dir = tmp_path / "outside"
     secret_dir.mkdir()
-    (secret_dir / "pwn.xml").write_text("<frame ID='1' name='x'><definition>S</definition></frame>")
+    (secret_dir / "pwn.xml").write_text(
+        "<frame ID='1' name='x'><definition>S</definition></frame>"
+    )
 
     fn = FramenetCorpusReader(str(root), [])
 
