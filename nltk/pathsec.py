@@ -227,7 +227,7 @@ def validate_network_url(url_input, context="NetworkIO"):
                 or ip.is_multicast
                 or ip.is_private
                 or not ip.is_global
-                or (ip.ipv4_mapped is not None and not ip.ipv4_mapped.is_global)
+                or (isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped is not None and not ip.ipv4_mapped.is_global)
             ):
                 msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {ip}"
                 if ENFORCE:
