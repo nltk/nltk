@@ -478,13 +478,15 @@ class ZipFilePathPointer(PathPointer):
             try:
                 zipfile.getinfo(entry)
             except Exception as e:
-                # Sometimes directories aren't explicitly listed in
-                # the zip file.  So if `entry` is a directory name,
-                # then check if the zipfile contains any files that
-                # are under the given directory.
-                if entry.endswith("/") and [
-                    n for n in zipfile.namelist() if n.startswith(entry)
-                ]:
+                # Directories aren't always listed as explicit zip entries,
+                # and find()'s zip-rewrite fallback constructs a bare
+                # directory entry without a trailing slash (e.g. "wordnet"
+                # rather than "wordnet/" when resolving "corpora/wordnet"
+                # inside "corpora/wordnet.zip"). Accept the entry if any
+                # file in the zipfile lives under it, regardless of whether
+                # the caller supplied a trailing slash.
+                prefix = entry if entry.endswith("/") else entry + "/"
+                if any(n.startswith(prefix) for n in zipfile.namelist()):
                     pass  # zipfile contains a file in that directory.
                 else:
                     # Otherwise, complain.
@@ -598,11 +600,6 @@ def find(resource_name, paths=None):
         allows ``find()`` to map the resource name
         ``corpora/chat80/cities.pl`` to a zip file path pointer to
         ``corpora/chat80.zip/chat80/cities.pl``.
-
-      - When using ``find()`` to locate a directory contained in a
-        zipfile, the resource name must end with the forward slash
-        character.  Otherwise, ``find()`` will not locate the
-        directory.
 
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.

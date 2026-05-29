@@ -50,6 +50,7 @@
 - Alexis Dimitriadis
 - Nikhil Dinesh
 - Liang Dong
+- Steve Dougherty
 - David Doukhan
 - Rebecca Dridan
 - Pablo Duboue
