@@ -160,7 +160,7 @@ default: unzip or not?
 
 """
 import functools
-import itertool
+import itertools
 import os
 import subprocess
 import sys
@@ -259,12 +259,12 @@ def _validate_url(url, context="URL"):
         pass  # Cannot resolve — treat as safe hostname
 
 
-from xml.etree import ElementTree
+from xml.etree import ElementTree  # isort:skip
 
-from defusedxml.ElementTree import parse as safe_parse
+from defusedxml.ElementTree import parse as safe_parse  # isort:skip
 
-import nltk
-from nltk.pathsec import ZipFile, urlopen
+import nltk  # isort:skip
+from nltk.pathsec import ZipFile, urlopen  # isort:skip
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
