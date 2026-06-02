@@ -4,6 +4,9 @@ The NKJP views build file paths from the caller-supplied ``fileids`` and read
 them with the builtin ``open()``, bypassing the ``CorpusReader.open()`` /
 ``nltk.pathsec`` sandbox.  A ``..`` sequence (or an absolute path) in
 ``fileids`` must not be allowed to escape the corpus root.
+
+The paths below are built with ``os.sep`` / ``os.path.join`` / ``os.pardir``
+so the tests behave identically on POSIX and Windows.
 """
 
 import os
@@ -26,10 +29,15 @@ def _make_corpus(tmp_path):
     return root
 
 
+def _reader(root):
+    # The trailing separator is added with os.sep, so the root keeps the shape
+    # the reader is normally given without hard-coding a POSIX "/".
+    return NKJPCorpusReader(root=str(root) + os.sep, fileids="sample")
+
+
 def test_nkjp_header_default_fileids_still_works(tmp_path):
     """The legitimate (in-root) flow must keep working after the fix."""
-    root = _make_corpus(tmp_path)
-    reader = NKJPCorpusReader(root=str(root) + "/", fileids="sample")
+    reader = _reader(_make_corpus(tmp_path))
     out = reader.header()
     assert out and out[0]["title"] == "IN-ROOT"
 
@@ -42,8 +50,9 @@ def test_nkjp_header_rejects_traversal_fileid(tmp_path):
     secret_dir.mkdir()
     (secret_dir / "header.xml").write_text(_HEADER.format(title="SECRET"))
 
-    reader = NKJPCorpusReader(root=str(root) + "/", fileids="sample")
-    evil = str(root) + "/../../../../../.." + str(secret_dir) + "/"
+    reader = _reader(root)
+    # Climb out of the corpus root into the sibling "outside" directory.
+    evil = os.path.join(str(root), os.pardir, "outside") + os.sep
     with pytest.raises(ValueError):
         reader.header(fileids=[evil])
 
@@ -51,7 +60,7 @@ def test_nkjp_header_rejects_traversal_fileid(tmp_path):
 def test_nkjp_words_rejects_traversal_fileid(tmp_path):
     """All NKJP read modes funnel through add_root(); words() must reject too."""
     root = _make_corpus(tmp_path)
-    reader = NKJPCorpusReader(root=str(root) + "/", fileids="sample")
-    evil = str(root) + "/../../../../../../etc/"
+    reader = _reader(root)
+    evil = os.path.join(str(root), os.pardir, "outside") + os.sep
     with pytest.raises(ValueError):
         reader.words(fileids=[evil])

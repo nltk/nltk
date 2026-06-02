@@ -95,7 +95,8 @@ class NKJPCorpusReader(XMLCorpusReader):
 
     def add_root(self, fileid):
         """
-        Add root if necessary to specified fileid.
+        Add root if necessary to specified fileid, and verify the resulting
+        path stays inside the corpus root.
 
         Security (CWE-22): the NKJP views build file paths from the
         caller-supplied ``fileids`` and read them with the builtin
@@ -104,13 +105,27 @@ class NKJPCorpusReader(XMLCorpusReader):
         root, otherwise a ``..`` sequence or an absolute path in ``fileids``
         allows reading arbitrary files outside the corpus.
         """
-        if self.root in fileid:
+        # ``str(self.root)`` is the absolute corpus path (``self._root._path``).
+        # We rebuild the path from it rather than from ``self.root`` used as a
+        # raw string, because the latter keeps the *original* (un-normalised)
+        # constructor argument: on Windows its separators differ from the ones
+        # ``os.path.join`` produces, which broke the old substring/concatenation
+        # logic (it duplicated the root, yielding an invalid path).
+        root = os.path.abspath(str(self.root))
+        fileid = str(fileid)
+        if os.path.isabs(fileid):
             result = fileid
         else:
-            result = self.root + fileid
-        root = os.path.normpath(str(self.root))
-        resolved = os.path.normpath(str(result))
-        if resolved != root and not resolved.startswith(root + os.sep):
+            result = os.path.join(root, fileid)
+        resolved = os.path.abspath(result)
+        try:
+            contained = resolved == root or os.path.commonpath([root, resolved]) == root
+        except ValueError:
+            # Raised when the paths live on different drives (Windows) or mix
+            # absolute and relative parts -- in every such case the fileid is
+            # outside the corpus root.
+            contained = False
+        if not contained:
             raise ValueError(
                 f"NKJP fileid escapes the corpus root (path traversal blocked): {fileid!r}"
             )
