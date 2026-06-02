@@ -235,6 +235,9 @@ def test_ssrf_dns_rebinding_blocked_at_connect(monkeypatch):
             return real_getaddrinfo(h, p, *a, **k)
 
         monkeypatch.setattr(socket, "getaddrinfo", fake_getaddrinfo)
+        # No proxy: force direct connection so the pinning handlers are used
+        # regardless of the environment the test runs in.
+        monkeypatch.setattr(urllib.request, "getproxies", lambda: {})
 
         leaked = None
         blocked = False
@@ -249,3 +252,90 @@ def test_ssrf_dns_rebinding_blocked_at_connect(monkeypatch):
         assert state["n"] >= 2, "host was not re-resolved/validated at connect time"
     finally:
         srv.shutdown()
+
+
+def _addrinfo(ip, port=80):
+    return (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", (ip, port))
+
+
+def test_pinned_connection_fails_closed_when_unresolved(monkeypatch):
+    """If no validated address is available, _pinned_connection must NOT fall
+    back to connecting by the raw hostname (which would re-resolve unvalidated
+    and reopen the rebinding hole). It must fail closed."""
+    monkeypatch.setattr(pathsec, "_resolve_and_validate_host", lambda h, p: [])
+
+    attempted = []
+    monkeypatch.setattr(
+        socket, "create_connection", lambda addr, *a, **k: attempted.append(addr)
+    )
+
+    with pytest.raises(OSError):
+        pathsec._pinned_connection("rebind.invalid.test", 80, None, None)
+    assert not attempted, "must not connect by raw hostname when unresolved/unvalidated"
+
+
+def test_pinned_connection_tries_all_validated_addresses(monkeypatch):
+    """Pinning must still try every validated address in order, so a dual-stack
+    host whose first (validated) address is unreachable still succeeds via a
+    later validated address."""
+    a1, a2 = _addrinfo("203.0.113.1"), _addrinfo("203.0.113.2")
+    monkeypatch.setattr(pathsec, "_resolve_and_validate_host", lambda h, p: [a1, a2])
+
+    sentinel = object()
+    tried = []
+
+    def fake_create_connection(addr, *a, **k):
+        tried.append(addr[0])
+        if addr[0] == "203.0.113.1":
+            raise OSError("simulated unreachable first address")
+        return sentinel
+
+    monkeypatch.setattr(socket, "create_connection", fake_create_connection)
+
+    sock = pathsec._pinned_connection("dual.example.com", 80, None, None)
+    assert sock is sentinel
+    assert tried == ["203.0.113.1", "203.0.113.2"], "fallback across addresses lost"
+
+
+def _capture_urlopen_handlers(monkeypatch, url="http://safe.example.com/x"):
+    """Run pathsec.urlopen with build_opener stubbed out and return the handlers
+    it was built with. No global opener, no DNS and no network I/O happen."""
+    captured = []
+
+    def spy_build_opener(*handlers):
+        captured.extend(handlers)
+        return MagicMock()
+
+    monkeypatch.setattr(urllib.request, "_opener", None)
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(urllib.request, "build_opener", spy_build_opener)
+    pathsec.urlopen(url)
+    return captured
+
+
+def test_no_proxy_installs_pinning_and_disables_env_proxy(monkeypatch):
+    """With no proxy in effect, the pinning handlers are installed and an
+    explicit empty ProxyHandler is added so build_opener cannot silently
+    re-enable environment proxies."""
+    monkeypatch.setattr(urllib.request, "getproxies", lambda: {})
+    handlers = _capture_urlopen_handlers(monkeypatch)
+
+    assert any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
+    assert any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    proxy_handlers = [h for h in handlers if isinstance(h, urllib.request.ProxyHandler)]
+    assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
+
+
+def test_env_proxy_skips_pinning_handlers(monkeypatch):
+    """When environment proxies are set, the proxy is the egress: the pinning
+    handlers must NOT be installed (they cannot do the CONNECT tunnel) and we
+    must not force an empty ProxyHandler that would disable the env proxy."""
+    monkeypatch.setattr(
+        urllib.request, "getproxies", lambda: {"http": "http://proxy.local:3128"}
+    )
+    handlers = _capture_urlopen_handlers(monkeypatch)
+
+    assert not any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
+    assert not any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    # We did not append our own ProxyHandler({}); build_opener adds the env one.
+    assert not any(isinstance(h, urllib.request.ProxyHandler) for h in handlers)

@@ -300,34 +300,53 @@ def _resolve_and_validate_host(host, port):
     return addrinfo
 
 
-def _pinned_address(host, port):
-    """Return the validated ``(ip, port)`` to connect to, pinning the resolution."""
+def _pinned_connection(host, port, timeout, source_address):
+    """Open a socket to ``host``/``port`` over an SSRF-validated, pinned address.
+
+    Every address ``host`` resolves to is validated together, then the socket is
+    opened to those **numeric** addresses, so no second (unvalidated) name lookup
+    happens at connect time -- this closes the DNS-rebinding TOCTOU.  All
+    validated addresses are tried in order, preserving urllib/socket's normal
+    dual-stack / multi-A fallback.  If nothing resolves to a validated address we
+    fail closed: we never fall back to connecting by the raw hostname, which
+    would re-resolve unvalidated and reopen the rebinding hole.
+    """
     addrinfo = _resolve_and_validate_host(host, port)
-    if addrinfo:
-        return addrinfo[0][4][0], port
-    return host, port
+    if not addrinfo:
+        raise OSError(
+            f"pathsec.urlopen: no validated address for host {host!r}; "
+            "refusing to connect by unvalidated hostname"
+        )
+    last_err = None
+    for res in addrinfo:
+        ip = res[4][0]
+        try:
+            return socket.create_connection((ip, port), timeout, source_address)
+        except OSError as e:
+            last_err = e
+    raise last_err
 
 
 class _SafeHTTPConnection(http.client.HTTPConnection):
     """HTTPConnection that resolves, SSRF-validates and pins the address at connect()."""
 
     def connect(self):
-        ip, port = _pinned_address(self.host, self.port)
-        self.sock = socket.create_connection(
-            (ip, port), self.timeout, self.source_address
+        self.sock = _pinned_connection(
+            self.host, self.port, self.timeout, self.source_address
         )
 
 
 class _SafeHTTPSConnection(http.client.HTTPSConnection):
     """HTTPS variant of :class:`_SafeHTTPConnection`.
 
-    Connects to the pinned IP but keeps SNI / certificate verification against
-    the original hostname.
+    Connects to a validated, pinned IP but keeps SNI / certificate verification
+    against the original hostname.
     """
 
     def connect(self):
-        ip, port = _pinned_address(self.host, self.port)
-        sock = socket.create_connection((ip, port), self.timeout, self.source_address)
+        sock = _pinned_connection(
+            self.host, self.port, self.timeout, self.source_address
+        )
         self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
 
 
@@ -361,9 +380,11 @@ def urlopen(url, *args, **kwargs):
     # Safely inherit proxy settings without reusing handler instances
     # (Reusing instances overwrites their .parent, breaking the global opener)
     proxied = False
+    has_proxy_handler = False
     if urllib.request._opener is not None:
         for handler in urllib.request._opener.handlers:
             if isinstance(handler, urllib.request.ProxyHandler):
+                has_proxy_handler = True
                 # Copy the dictionary to prevent shared mutable state
                 isolated_proxies = dict(handler.proxies) if handler.proxies else {}
                 if isolated_proxies:
@@ -374,11 +395,22 @@ def urlopen(url, *args, **kwargs):
             elif isinstance(handler, urllib.request.ProxyDigestAuthHandler):
                 handlers.append(urllib.request.ProxyDigestAuthHandler(handler.passwd))
 
-    # With no proxy, NLTK makes the connection itself: pin the validated IP so a
-    # rebinding hostname cannot be re-resolved to an internal address at connect
-    # time. With a proxy, the proxy is the egress and resolves names, so
-    # connection-pinning does not apply (and must not block the configured proxy).
+    # If the caller configured no ProxyHandler at all, environment proxies still
+    # apply: build_opener() would install a default ProxyHandler from
+    # getproxies(). Treat that as proxied too, because the proxy -- not NLTK --
+    # is then the egress that resolves names and performs the CONNECT tunnel; the
+    # connect-time pinning handlers cannot tunnel and would break proxied HTTPS.
+    if not proxied and not has_proxy_handler and urllib.request.getproxies():
+        proxied = True
+
     if not proxied:
+        # No proxy in effect: NLTK makes the connection itself, so pin the
+        # validated IP (a rebinding hostname cannot be re-resolved to an internal
+        # address at connect time). Add an explicit empty ProxyHandler so
+        # build_opener() does not silently re-enable environment proxies, which
+        # the pinning handlers cannot tunnel through.
+        if not has_proxy_handler:
+            handlers.append(urllib.request.ProxyHandler({}))
         handlers.append(_SafeHTTPHandler())
         handlers.append(_SafeHTTPSHandler())
 
