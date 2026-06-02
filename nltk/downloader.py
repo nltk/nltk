@@ -171,7 +171,6 @@ import warnings
 import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
-
 from urllib.request import HTTPRedirectHandler, build_opener
 
 
