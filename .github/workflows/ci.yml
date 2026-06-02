@@ -49,8 +49,8 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Install regex
-        run: pip install regex
+      - name: Install core dependencies
+        run: pip install regex defusedxml
 
       - name: Set NLTK_DATA environment variable
         shell: bash

@@ -40,16 +40,38 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          run=$(gh api repos/${{ github.repository }}/actions/commits/$GITHUB_SHA/runs --jq '.workflow_runs[] | select(.name == "CI") | head -n 1')
-          conclusion=$(jq -r '.conclusion // empty' <<< "$run")
+          attempts=60
+          delay=20
 
-          if [ "$conclusion" != "success" ]; then
+          for _ in $(seq 1 "$attempts"); do
+            run=$(gh api "repos/${{ github.repository }}/actions/commits/$GITHUB_SHA/runs" --jq '[.workflow_runs[] | select(.name == "CI")] | first')
+
+            if [ -z "$run" ] || [ "$run" = "null" ]; then
+              sleep "$delay"
+              continue
+            fi
+
+            status=$(jq -r '.status // empty' <<< "$run")
+            conclusion=$(jq -r '.conclusion // empty' <<< "$run")
+
+            if [ "$status" != "completed" ]; then
+              sleep "$delay"
+              continue
+            fi
+
+            if [ "$conclusion" = "success" ]; then
+              exit 0
+            fi
+
             run_id=$(jq -r '.id // empty' <<<"$run")
             run_number=$(jq -r '.run_number // empty' <<<"$run")
             run_url="https://github.com/${{ github.repository }}/actions/runs/${run_id}"
             echo "CI failed with conclusion: ${conclusion:-unknown} (run #${run_number:-unknown}). See workflow run: ${run_url}"
             exit 1
-          fi
+          done
+
+          echo "Timed out waiting for CI to complete for $GITHUB_SHA"
+          exit 1
 
   build-and-github-release:
     needs: gate-on-ci
@@ -73,7 +95,7 @@ jobs:
         run: python -m build
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/*
           draft: true

@@ -243,10 +243,31 @@ class _ValidatingRedirectHandler(urllib.request.HTTPRedirectHandler):
 
 
 def urlopen(url, *args, **kwargs):
-    """Secure wrapper for urllib.request.urlopen with redirect validation."""
+    """
+    Secure wrapper for urllib.request.urlopen with redirect validation.
+    Inherits NLTK proxy settings, but intentionally ignores other custom
+    global handlers to strictly enforce the security sandbox.
+    """
     url_str = url.full_url if hasattr(url, "full_url") else str(url)
     validate_network_url(url_str, context="pathsec.urlopen")
-    opener = urllib.request.build_opener(_ValidatingRedirectHandler())
+
+    # Start with our security-enforcing redirect handler
+    handlers = [_ValidatingRedirectHandler()]
+
+    # Safely inherit proxy settings without reusing handler instances
+    # (Reusing instances overwrites their .parent, breaking the global opener)
+    if urllib.request._opener is not None:
+        for handler in urllib.request._opener.handlers:
+            if isinstance(handler, urllib.request.ProxyHandler):
+                # Copy the dictionary to prevent shared mutable state
+                isolated_proxies = dict(handler.proxies) if handler.proxies else {}
+                handlers.append(urllib.request.ProxyHandler(isolated_proxies))
+            elif isinstance(handler, urllib.request.ProxyBasicAuthHandler):
+                handlers.append(urllib.request.ProxyBasicAuthHandler(handler.passwd))
+            elif isinstance(handler, urllib.request.ProxyDigestAuthHandler):
+                handlers.append(urllib.request.ProxyDigestAuthHandler(handler.passwd))
+
+    opener = urllib.request.build_opener(*handlers)
     return opener.open(url, *args, **kwargs)
 
 

@@ -173,6 +173,8 @@ from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
 from xml.etree import ElementTree
 
+from defusedxml.ElementTree import parse as safe_parse
+
 import nltk
 from nltk.pathsec import ZipFile, urlopen
 
@@ -689,6 +691,7 @@ class Downloader:
 
         # Check for (and remove) any old/stale version.
         filepath = os.path.join(download_dir, info.filename)
+        tmp_filepath = filepath + ".tmp"
 
         # Defense-in-depth: verify filepath stays within download_dir
         real_download = os.path.realpath(os.path.abspath(download_dir))
@@ -701,43 +704,120 @@ class Downloader:
             )
             return
 
+        MAX_ZOMBIE_TIME = 60
+        POLL_INTERVAL = 2
+
+        # 1. Cooperative Wait Loop
+        while True:
+            self._status_cache.pop(info.id, None)
+            status = self.status(info, download_dir)
+
+            if not force and status == self.INSTALLED:
+                yield UpToDateMessage(info)
+                yield ProgressMessage(100)
+                yield FinishPackageMessage(info)
+                return
+
+            try:
+                if os.path.exists(tmp_filepath):
+                    before_stat = os.stat(tmp_filepath)
+                    last_size = before_stat.st_size
+
+                    time.sleep(POLL_INTERVAL)
+
+                    if os.path.exists(tmp_filepath):
+                        after_stat = os.stat(tmp_filepath)
+                        new_size = after_stat.st_size
+                        new_mtime = after_stat.st_mtime
+
+                        if new_size > last_size:
+                            continue
+
+                        if (time.time() - new_mtime) < MAX_ZOMBIE_TIME:
+                            continue
+
+                        # ZOMBIE RECOVERY FIX: Remove the dead file so it can be claimed
+                        try:
+                            os.remove(tmp_filepath)
+                        except OSError:
+                            pass
+            except (FileNotFoundError, OSError):
+                pass
+
+            # 2. Atomic Claim
+            try:
+                # Ensure the download_dir exists
+                os.makedirs(download_dir, exist_ok=True)
+                os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
+
+                fd = os.open(tmp_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                os.close(fd)
+                break
+            except FileExistsError:
+                continue
+
+        # 3. Post-Lock Verification (Double-Check)
+        self._status_cache.pop(info.id, None)
+        status = self.status(info, download_dir)
+        if not force and status == self.INSTALLED:
+            if os.path.exists(tmp_filepath):
+                try:
+                    os.remove(tmp_filepath)
+                except FileNotFoundError:
+                    pass
+            yield UpToDateMessage(info)
+            yield ProgressMessage(100)
+            yield FinishPackageMessage(info)
+            return
+
         if os.path.exists(filepath):
             if status == self.STALE:
                 yield StaleMessage(info)
-            os.remove(filepath)
+            try:
+                os.remove(filepath)
+            except FileNotFoundError:
+                pass
 
-        # Ensure the download_dir exists
-        os.makedirs(download_dir, exist_ok=True)
-        os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
-
-        # Download the file.  This will raise an IOError if the url
-        # is not found.
+        # 5. Download Leader
         yield StartDownloadMessage(info)
         yield ProgressMessage(5)
+
         try:
             infile = urlopen(info.url)
-            with open(filepath, "wb") as outfile:
+            with open(tmp_filepath, "wb") as outfile:
                 num_blocks = max(1, info.size / (1024 * 16))
                 for block in itertools.count():
-                    s = infile.read(1024 * 16)  # 16k blocks.
-                    outfile.write(s)
+                    s = infile.read(1024 * 16)
                     if not s:
                         break
-                    if block % 2 == 0:  # how often?
+                    outfile.write(s)
+                    if block % 10 == 0:
+                        os.utime(tmp_filepath, None)
                         yield ProgressMessage(min(80, 5 + 75 * (block / num_blocks)))
             infile.close()
+
+            os.replace(tmp_filepath, filepath)
+            self._status_cache.pop(info.id, None)
+
         except OSError as e:
+            if os.path.exists(tmp_filepath):
+                try:
+                    os.remove(tmp_filepath)
+                except FileNotFoundError:
+                    pass
             yield ErrorMessage(
                 info,
                 "Error downloading %r from <%s>:" "\n  %s" % (info.id, info.url, e),
             )
             return
+
         yield FinishDownloadMessage(info)
         yield ProgressMessage(80)
 
-        # If it's a zipfile, uncompress it.
+        # Check if it needs to be unzipped.
         if info.filename.endswith(".zip"):
             zipdir = os.path.join(download_dir, info.subdir)
+
             # Unzip if we're unzipping by default; *or* if it's already
             # been unzipped (presumably a previous version).
             if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
@@ -760,7 +840,14 @@ class Downloader:
         halt_on_error=True,
         raise_on_error=False,
         print_error_to=sys.stderr,
+        hf=False,
     ):
+        # Delegate to HuggingFace downloader when hf=True.
+        if hf and info_or_id is not None:
+            from nltk.huggingface.dataset import download as hf_download
+
+            return hf_download(info_or_id, quiet=quiet)
+
         print_to = functools.partial(print, file=print_error_to)
         # If no info or id is given, then use the interactive shell.
         if info_or_id is None:
@@ -977,7 +1064,7 @@ class Downloader:
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            ElementTree.parse(urlopen(self._url)).getroot()
+            safe_parse(urlopen(self._url)).getroot()
         )
         self._index_timestamp = time.time()
 

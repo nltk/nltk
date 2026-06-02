@@ -700,6 +700,17 @@ def find(resource_name, paths=None):
     if resource_zipname.endswith(".zip"):
         resource_zipname = resource_zipname.rpartition(".")[0]
 
+    # HuggingFace fallback: if the corpus is in the HF registry and has
+    # already been downloaded to the HF datasets cache, serve it from there.
+    # Uses local_files_only=True so no network request is made here.
+    try:
+        from nltk.huggingface.dataset import REGISTRY, HFDatasetPathPointer, _is_cached
+
+        if resource_zipname in REGISTRY and _is_cached(resource_zipname):
+            return HFDatasetPathPointer(resource_zipname)
+    except ImportError:
+        pass
+
     # Display a friendly error message if the resource wasn't found.
     # If the package appears present but the specific entry is missing, keep
     # the download hint as a secondary suggestion.

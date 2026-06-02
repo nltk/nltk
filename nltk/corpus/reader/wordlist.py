@@ -5,6 +5,8 @@
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
+import os
+
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tokenize import line_tokenize
@@ -15,7 +17,21 @@ class WordListCorpusReader(CorpusReader):
     List of words, one per line.  Blank lines are ignored.
     """
 
-    def words(self, fileids=None, ignore_lines_startswith="\n"):
+    def words(self, fileids=None, ignore_lines_startswith="\n", hf=False):
+        if hf:
+            from nltk.huggingface.dataset import load_data
+
+            corpus_id = (
+                self._root.corpus_id
+                if hasattr(self._root, "corpus_id")
+                else os.path.basename(self._root.path.rstrip("/"))
+            )
+            content = load_data(corpus_id, fileid=fileids)
+            return [
+                line
+                for line in content.splitlines()
+                if line and not line.startswith(ignore_lines_startswith)
+            ]
         return [
             line
             for line in line_tokenize(self.raw(fileids))

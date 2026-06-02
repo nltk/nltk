@@ -155,6 +155,8 @@ class Direction:
 
     def __init__(self, dir, restrictions):
         self._dir = dir
+        if isinstance(restrictions, (tuple, list)):
+            restrictions = "".join(r for r in restrictions if r)
         self._restrs = restrictions
         self._comparison_key = (dir, tuple(restrictions))
 
@@ -328,7 +330,7 @@ class FunctionalCategory(AbstractCCGCategory):
         sub_res = self._res.substitute(subs)
         sub_dir = self._dir.substitute(subs)
         sub_arg = self._arg.substitute(subs)
-        return FunctionalCategory(sub_res, sub_arg, self._dir)
+        return FunctionalCategory(sub_res, sub_arg, sub_dir)
 
     # A function can unify with another function, so long as its
     # constituents can unify, or with an unrestricted variable.
@@ -338,10 +340,18 @@ class FunctionalCategory(AbstractCCGCategory):
         if other.is_function():
             sa = self._res.can_unify(other.res())
             sd = self._dir.can_unify(other.dir())
+
             if sa is not None and sd is not None:
-                sb = self._arg.substitute(sa).can_unify(other.arg().substitute(sa))
+                # Combine result and direction substitutions
+                base_subs = sa + sd
+
+                # Apply all known substitutions to the arguments before unifying them
+                sb = self._arg.substitute(base_subs).can_unify(
+                    other.arg().substitute(base_subs)
+                )
+
                 if sb is not None:
-                    return sa + sb
+                    return base_subs + sb
         return None
 
     # Constituent accessors

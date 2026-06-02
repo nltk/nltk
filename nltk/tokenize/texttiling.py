@@ -327,8 +327,8 @@ class TextTilingTokenizer(TokenizerI):
             for word, index in ts.wrdindex_list:
                 try:
                     while index > current_par_break:
-                        current_par_break = next(pb_iter)
                         current_par += 1
+                        current_par_break = next(pb_iter)
                 except StopIteration:
                     # hit bottom
                     pass

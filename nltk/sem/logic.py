@@ -630,9 +630,6 @@ class Variable:
     def __eq__(self, other):
         return isinstance(other, Variable) and self.name == other.name
 
-    def __ne__(self, other):
-        return not self == other
-
     def __lt__(self, other):
         if not isinstance(other, Variable):
             raise TypeError
@@ -717,9 +714,6 @@ class ComplexType(Type):
             and self.second == other.second
         )
 
-    def __ne__(self, other):
-        return not self == other
-
     __hash__ = Type.__hash__
 
     def matches(self, other):
@@ -759,9 +753,6 @@ class ComplexType(Type):
 class BasicType(Type):
     def __eq__(self, other):
         return isinstance(other, BasicType) and ("%s" % self) == ("%s" % other)
-
-    def __ne__(self, other):
-        return not self == other
 
     __hash__ = Type.__hash__
 
@@ -813,9 +804,6 @@ class AnyType(BasicType, ComplexType):
 
     def __eq__(self, other):
         return isinstance(other, AnyType) or other.__eq__(self)
-
-    def __ne__(self, other):
-        return not self == other
 
     __hash__ = Type.__hash__
 
@@ -997,8 +985,8 @@ class Expression(SubstituteBindingsI):
     def __eq__(self, other):
         return NotImplemented
 
-    def __ne__(self, other):
-        return not self == other
+    def __hash__(self):
+        return hash(repr(self))
 
     def equiv(self, other, prover=None):
         """
@@ -1018,9 +1006,6 @@ class Expression(SubstituteBindingsI):
         bicond = IffExpression(self.simplify(), other.simplify())
         return prover.prove(bicond)
 
-    def __hash__(self):
-        return hash(repr(self))
-
     def substitute_bindings(self, bindings):
         expr = self
         for var in expr.variables():
@@ -1036,7 +1021,7 @@ class Expression(SubstituteBindingsI):
                 # Substitute bindings in the target value.
                 val = val.substitute_bindings(bindings)
                 # Replace var w/ the target value.
-                expr = expr.replace(var, val)
+                expr = expr.replace(var, val, alpha_convert=True)
         return expr.simplify()
 
     def typecheck(self, signature=None):
@@ -1253,7 +1238,11 @@ class ApplicationExpression(Expression):
         function = self.function.simplify()
         argument = self.argument.simplify()
         if isinstance(function, LambdaExpression):
-            return function.term.replace(function.variable, argument).simplify()
+            # Rely strictly on NLTK's native capture-avoidance during substitution
+            # without burning global variable counters proactively.
+            return function.term.replace(
+                function.variable, argument, alpha_convert=True
+            ).simplify()
         else:
             return self.__class__(function, argument)
 
@@ -1342,9 +1331,6 @@ class ApplicationExpression(Expression):
             and self.function == other.function
             and self.argument == other.argument
         )
-
-    def __ne__(self, other):
-        return not self == other
 
     __hash__ = Expression.__hash__
 
@@ -1473,9 +1459,6 @@ class AbstractVariableExpression(Expression):
             isinstance(other, AbstractVariableExpression)
             and self.variable == other.variable
         )
-
-    def __ne__(self, other):
-        return not self == other
 
     def __lt__(self, other):
         if not isinstance(other, AbstractVariableExpression):
@@ -1682,9 +1665,6 @@ class VariableBinderExpression(Expression):
         else:
             return False
 
-    def __ne__(self, other):
-        return not self == other
-
     __hash__ = Expression.__hash__
 
 
@@ -1799,9 +1779,6 @@ class NegatedExpression(Expression):
     def __eq__(self, other):
         return isinstance(other, NegatedExpression) and self.term == other.term
 
-    def __ne__(self, other):
-        return not self == other
-
     __hash__ = Expression.__hash__
 
     def __str__(self):
@@ -1841,9 +1818,6 @@ class BinaryExpression(Expression):
             and self.first == other.first
             and self.second == other.second
         )
-
-    def __ne__(self, other):
-        return not self == other
 
     __hash__ = Expression.__hash__
 

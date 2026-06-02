@@ -153,6 +153,33 @@ class TestTextTilingVocabIntroduction:
         ), f"Average later score {avg_later} too high for repeated text"
 
 
+class TestCreateTokenTable:
+    """Tests for _create_token_table internals."""
+
+    def test_par_count_across_last_paragraph_break(self):
+        """Words spanning the last paragraph break should have par_count=2.
+
+        Regression test: when a word position exceeds the final paragraph
+        break, next(pb_iter) raises StopIteration before current_par is
+        incremented, so par_count is never updated for that transition.
+        """
+        from nltk.tokenize.texttiling import TokenSequence
+
+        tt = TextTilingTokenizer(w=20, k=10, stopwords=[])
+        # Two token sequences: "dog" appears in both, with positions
+        # that straddle a paragraph break at position 150.
+        seqs = [
+            TokenSequence(index=0, wrdindex_list=[("cat", 0), ("dog", 4)]),
+            TokenSequence(index=1, wrdindex_list=[("dog", 200), ("fish", 204)]),
+        ]
+        par_breaks = [0, 150]
+        table = tt._create_token_table(seqs, par_breaks)
+        assert table["dog"].par_count == 2, (
+            f"Expected par_count=2 for 'dog' spanning last paragraph break, "
+            f"got {table['dog'].par_count}"
+        )
+
+
 class TestTextTilingCommon:
     """Tests common to both methods."""
 
