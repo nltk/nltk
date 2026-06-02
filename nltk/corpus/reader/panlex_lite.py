@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PanLex Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: David Kamholz <kamholz@panlex.org>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -90,7 +90,7 @@ class PanLexLiteCorpusReader(CorpusReader):
             mn = i[0]
             uid = self._lv_uid[i[5]]
 
-            if not mn in mn_info:
+            if mn not in mn_info:
                 mn_info[mn] = {
                     "uq": i[1],
                     "ap": i[2],
@@ -98,7 +98,7 @@ class PanLexLiteCorpusReader(CorpusReader):
                     "ex": {expr_uid: [expr_tt]},
                 }
 
-            if not uid in mn_info[mn]["ex"]:
+            if uid not in mn_info[mn]["ex"]:
                 mn_info[mn]["ex"][uid] = []
 
             mn_info[mn]["ex"][uid].append(i[4])

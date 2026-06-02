@@ -2,6 +2,9 @@ name: ci-workflow
 
 on: [push, pull_request, workflow_dispatch]
 
+permissions:
+  contents: read
+
 env:
   THIRD_PARTY_DIR: ${{ github.workspace }}/third
   CORENLP: ${{ github.workspace }}/third/stanford-corenlp
@@ -46,8 +49,8 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Install regex
-        run: pip install regex
+      - name: Install core dependencies
+        run: pip install regex defusedxml
 
       - name: Set NLTK_DATA environment variable
         shell: bash

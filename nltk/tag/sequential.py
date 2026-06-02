@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)
@@ -533,9 +533,7 @@ class RegexpTagger(SequentialBackoffTagger):
 
     json_tag = "nltk.tag.sequential.RegexpTagger"
 
-    def __init__(
-        self, regexps: List[Tuple[str, str]], backoff: Optional[TaggerI] = None
-    ):
+    def __init__(self, regexps: list[tuple[str, str]], backoff: TaggerI | None = None):
         super().__init__(backoff)
         self._regexps = []
         for regexp, tag in regexps:

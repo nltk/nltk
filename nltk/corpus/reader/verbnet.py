@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Verbnet Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -33,8 +33,26 @@ class VerbnetCorpusReader(XMLCorpusReader):
     https://verbs.colorado.edu/~mpalmer/projects/verbnet.html
     """
 
+    #: Supported VerbNet versions.
+    SUPPORTED_VERSIONS = ("2.1", "3.2", "3.3")
+
     # No unicode encoding param, since the data files are all XML.
-    def __init__(self, root, fileids, wrap_etree=False):
+    def __init__(self, root, fileids, wrap_etree=False, version="2.1"):
+        """
+        :param root: The root directory for the corpus.
+        :param fileids: A list or regexp specifying the fileids in the corpus.
+        :param wrap_etree: If true, wrap the ElementTree in an ElementWrapper.
+        :param version: The VerbNet version string (default ``"2.1"``).
+            NLTK ships VerbNet 2.1 via ``nltk.download('verbnet')``.
+            Use ``"3.2"`` or ``"3.3"`` when pointing *root* at a local
+            copy of VerbNet 3.2 or 3.3.
+        """
+        if version not in self.SUPPORTED_VERSIONS:
+            raise ValueError(
+                f"VerbNet version {version!r} is not supported. "
+                f"Supported versions: {self.SUPPORTED_VERSIONS}"
+            )
+        self._version = version
         XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
 
         self._lemma_to_class = defaultdict(list)
@@ -57,10 +75,15 @@ class VerbnetCorpusReader(XMLCorpusReader):
         # runs 2-30 times faster.
         self._quick_index()
 
-    _LONGID_RE = re.compile(r"([^\-\.]*)-([\d+.\-]+)$")
+    @property
+    def version(self):
+        """The VerbNet version string for this corpus instance."""
+        return self._version
+
+    _LONGID_RE = re.compile(r"([A-Za-z_]+)-([\d.-]+)$")
     """Regular expression that matches (and decomposes) longids"""
 
-    _SHORTID_RE = re.compile(r"[\d+.\-]+$")
+    _SHORTID_RE = re.compile(r"[\d.\-]+$")
     """Regular expression that matches shortids"""
 
     _INDEX_RE = re.compile(

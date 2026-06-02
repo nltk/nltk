@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Inference
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #

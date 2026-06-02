@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
 # URL: <https://www.nltk.org/>
@@ -251,7 +251,7 @@ def _pretty_fulltext_sentences(sents):
     outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n[URL] {0.URL}\n\n".format(
         sents
     )
-    outstr += f"[sentence]\n"
+    outstr += "[sentence]\n"
     for i, sent in enumerate(sents.sentence):
         outstr += f"[{i}] {sent.text}\n"
     outstr += "\n"

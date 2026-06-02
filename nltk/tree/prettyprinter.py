@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ASCII visualization of NLTK trees
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Andreas van Cranenburgh <A.W.vanCranenburgh@uva.nl>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 # URL: <https://www.nltk.org/>
@@ -355,7 +355,7 @@ class TreePrettyPrinter:
         :param maxwidth: maximum number of characters before a label starts to
             wrap; pass None to disable.
         """
-        if abbreviate == True:
+        if abbreviate:
             abbreviate = 5
         if unicodelines:
             horzline = "\u2500"

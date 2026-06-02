@@ -659,7 +659,7 @@ class PorterStemmer(StemmerI):
         """
         stem = word.lower() if to_lowercase else word
 
-        if self.mode == self.NLTK_EXTENSIONS and word in self.pool:
+        if self.mode == self.NLTK_EXTENSIONS and stem in self.pool:
             return self.pool[stem]
 
         if self.mode != self.ORIGINAL_ALGORITHM and len(word) <= 2:

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: LEPOR Score
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ikram Ul Haq (ulhaqi12)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,12 +10,13 @@
 import math
 import re
 import sys
-from typing import Callable, List
+from collections.abc import Callable
+from typing import List
 
 import nltk
 
 
-def length_penalty(reference: List[str], hypothesis: List[str]) -> float:
+def length_penalty(reference: list[str], hypothesis: list[str]) -> float:
     """
     This function calculates the length penalty(LP) for the LEPOR metric, which is defined to embrace the penaltyvfor
     both longer and shorter hypothesis compared with the reference translations.
@@ -41,7 +42,7 @@ def length_penalty(reference: List[str], hypothesis: List[str]) -> float:
         return math.exp(1 - (hyp_len / ref_len))
 
 
-def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
+def alignment(ref_tokens: list[str], hyp_tokens: list[str]):
     """
     This function computes the context-dependent n-gram word alignment tasks that
     takes into account the surrounding context (neighbouring words) of the potential
@@ -142,7 +143,7 @@ def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
 
 
 def ngram_positional_penalty(
-    ref_tokens: List[str], hyp_tokens: List[str]
+    ref_tokens: list[str], hyp_tokens: list[str]
 ) -> (float, float):
     """
     This function calculates the n-gram position difference penalty (NPosPenal) described in the LEPOR paper.
@@ -212,12 +213,12 @@ def harmonic(
 
 
 def sentence_lepor(
-    references: List[str],
+    references: list[str],
     hypothesis: str,
     alpha: float = 1.0,
     beta: float = 1.0,
-    tokenizer: Callable[[str], List[str]] = None,
-) -> List[float]:
+    tokenizer: Callable[[str], list[str]] = None,
+) -> list[float]:
     """
     Calculate LEPOR score a sentence from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2
@@ -279,12 +280,12 @@ def sentence_lepor(
 
 
 def corpus_lepor(
-    references: List[List[str]],
-    hypothesis: List[str],
+    references: list[list[str]],
+    hypothesis: list[str],
     alpha: float = 1.0,
     beta: float = 1.0,
-    tokenizer: Callable[[str], List[str]] = None,
-) -> List[List[float]]:
+    tokenizer: Callable[[str], list[str]] = None,
+) -> list[list[float]]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2

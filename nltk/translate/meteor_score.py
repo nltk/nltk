@@ -1,14 +1,15 @@
 # Natural Language Toolkit: Machine Translation
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Uday Krishna <udaykrishna5@gmail.com>
 # Contributor: Tom Aarsen
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
+from collections.abc import Callable, Iterable
 from itertools import chain, product
-from typing import Callable, Iterable, List, Tuple
+from typing import List, Tuple
 
 from nltk.corpus import WordNetCorpusReader, wordnet
 from nltk.stem.api import StemmerI
@@ -19,7 +20,7 @@ def _generate_enums(
     hypothesis: Iterable[str],
     reference: Iterable[str],
     preprocess: Callable[[str], str] = str.lower,
-) -> Tuple[List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Takes in pre-tokenized inputs for hypothesis and reference and returns
     enumerated word lists for each of them
@@ -46,7 +47,7 @@ def _generate_enums(
 
 def exact_match(
     hypothesis: Iterable[str], reference: Iterable[str]
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     matches exact words in hypothesis and reference
     and returns a word mapping based on the enumerated
@@ -62,9 +63,9 @@ def exact_match(
 
 
 def _match_enums(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     matches exact words in hypothesis and reference and returns
     a word mapping between enum_hypothesis_list and enum_reference_list
@@ -89,10 +90,10 @@ def _match_enums(
 
 
 def _enum_stem_match(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
     stemmer: StemmerI = PorterStemmer(),
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between enum_hypothesis_list and
@@ -120,7 +121,7 @@ def stem_match(
     hypothesis: Iterable[str],
     reference: Iterable[str],
     stemmer: StemmerI = PorterStemmer(),
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
@@ -136,10 +137,10 @@ def stem_match(
 
 
 def _enum_wordnetsyn_match(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Matches each word in reference to a word in hypothesis
     if any synonym of a hypothesis word is the exact match
@@ -176,7 +177,7 @@ def wordnetsyn_match(
     hypothesis: Iterable[str],
     reference: Iterable[str],
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
@@ -193,11 +194,11 @@ def wordnetsyn_match(
 
 
 def _enum_align_words(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -238,7 +239,7 @@ def align_words(
     reference: Iterable[str],
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -257,7 +258,7 @@ def align_words(
     )
 
 
-def _count_chunks(matches: List[Tuple[int, int]]) -> int:
+def _count_chunks(matches: list[tuple[int, int]]) -> int:
     """
     Counts the fewest possible number of chunks such that matched unigrams
     of each chunk are adjacent to each other. This is used to calculate the

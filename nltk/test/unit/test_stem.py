@@ -155,3 +155,17 @@ class PorterTest(unittest.TestCase):
         assert porter.stem("I", to_lowercase=False) == "I"
         assert porter.stem("Github") == "github"
         assert porter.stem("Github", to_lowercase=False) == "Github"
+
+    def test_lowercase_irregular_forms_pool(self):
+        """Test for bug: https://github.com/nltk/nltk/issues/3567
+
+        Ensures that all stems are lowercased when `to_lowercase=True` and NLTK_EXTENSIONS is enabled
+        """
+        porter = PorterStemmer()
+
+        assert porter.stem("News") == "news"
+        assert porter.stem("News", to_lowercase=False) == "New"
+        assert porter.stem("Howe") == "howe"
+        assert porter.stem("Howe", to_lowercase=False) == "How"
+        assert porter.stem("Sky") == "sky"
+        assert porter.stem("Sky", to_lowercase=False) == "Ski"

@@ -201,7 +201,7 @@ class MTETagConverter:
         """
         indicator = tag[0] if not tag[0] == "#" else tag[1]
 
-        if not indicator in MTETagConverter.mapping_msd_universal:
+        if indicator not in MTETagConverter.mapping_msd_universal:
             indicator = "-"
 
         return MTETagConverter.mapping_msd_universal[indicator]
@@ -250,7 +250,7 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).words()
+                MTEFileReader(os.path.join(str(self._root), f)).words()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -264,7 +264,7 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).sents()
+                MTEFileReader(os.path.join(str(self._root), f)).sents()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -278,7 +278,7 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).paras()
+                MTEFileReader(os.path.join(str(self._root), f)).paras()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -292,7 +292,7 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).lemma_words()
+                MTEFileReader(os.path.join(str(self._root), f)).lemma_words()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -311,7 +311,7 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(self._root, f)).tagged_words(
+                    MTEFileReader(os.path.join(str(self._root), f)).tagged_words(
                         tagset, tags
                     )
                     for f in self.__fileids(fileids)
@@ -330,7 +330,7 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).lemma_sents()
+                MTEFileReader(os.path.join(str(self._root), f)).lemma_sents()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -349,7 +349,7 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(self._root, f)).tagged_sents(
+                    MTEFileReader(os.path.join(str(self._root), f)).tagged_sents(
                         tagset, tags
                     )
                     for f in self.__fileids(fileids)
@@ -368,7 +368,7 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).lemma_paras()
+                MTEFileReader(os.path.join(str(self._root), f)).lemma_paras()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -388,7 +388,7 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(self._root, f)).tagged_paras(
+                    MTEFileReader(os.path.join(str(self._root), f)).tagged_paras(
                         tagset, tags
                     )
                     for f in self.__fileids(fileids)

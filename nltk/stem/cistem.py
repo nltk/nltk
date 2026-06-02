@@ -1,5 +1,5 @@
 # Natural Language Toolkit: CISTEM Stemmer for German
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Leonie Weissweiler <l.weissweiler@outlook.de>
 #         Tom Aarsen <> (modifications)
 # Algorithm: Leonie Weissweiler <l.weissweiler@outlook.de>
@@ -113,7 +113,7 @@ class Cistem(StemmerI):
 
         return self._segment_inner(word, upper)[0]
 
-    def segment(self, word: str) -> Tuple[str, str]:
+    def segment(self, word: str) -> tuple[str, str]:
         """
         This method works very similarly to stem (:func:'cistem.stem'). The difference is that in
         addition to returning the stem, it also returns the rest that was removed at

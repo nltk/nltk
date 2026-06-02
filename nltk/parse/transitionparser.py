@@ -2,7 +2,7 @@
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -301,7 +301,7 @@ class TransitionParser(ParserI):
         :param algorithm: the algorithm option of this parser. Currently support `arc-standard` and `arc-eager` algorithm
         :type algorithm: str
         """
-        if not (algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
+        if algorithm not in [self.ARC_STANDARD, self.ARC_EAGER]:
             raise ValueError(
                 " Currently we only support %s and %s "
                 % (self.ARC_STANDARD, self.ARC_EAGER)

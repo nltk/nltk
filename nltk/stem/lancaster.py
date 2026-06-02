@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -275,7 +275,7 @@ class LancasterStemmer(StemmerI):
                                     proceed = False
                                 break
                 # If no rules apply, the word doesn't need any more stemming
-                if rule_was_applied == False:
+                if not rule_was_applied:
                     proceed = False
         return word
 

@@ -69,7 +69,7 @@ class AveragedPerceptron:
         # Do a secondary alphabetic sort, for stability
         best_label = max(self.classes, key=lambda label: (scores[label], label))
         # compute the confidence
-        conf = max(self._softmax(scores)) if return_conf == True else None
+        conf = max(self._softmax(scores)) if return_conf else None
 
         return best_label, conf
 
@@ -199,13 +199,11 @@ class PerceptronTagger(TaggerI):
 
         context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
-            tag, conf = (
-                (self.tagdict.get(word), 1.0) if use_tagdict == True else (None, None)
-            )
+            tag, conf = (self.tagdict.get(word), 1.0) if use_tagdict else (None, None)
             if not tag:
                 features = self._get_features(i, word, context, prev, prev2)
                 tag, conf = self.model.predict(features, return_conf)
-            output.append((word, tag, conf) if return_conf == True else (word, tag))
+            output.append((word, tag, conf) if return_conf else (word, tag))
 
             prev2 = prev
             prev = tag

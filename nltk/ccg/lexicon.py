@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -26,8 +26,10 @@ PRIM_RE = re.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 # string
 NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
 
-# Separates the next application operator from the remainder
-APP_RE = re.compile(r"""([\\/])([.,]?)([.,]?)(.*)""")
+# Separates the next application operator from the remainder.
+# The modifier slot also accepts `_`, marking a variable direction
+# (e.g. `(S\_NP)/(S\_NP)` for a polymorphic adverb).
+APP_RE = re.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family
 LEX_RE = re.compile(r"""([\S_]+)\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)

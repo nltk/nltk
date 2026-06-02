@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
@@ -577,7 +577,7 @@ class Model:
                     print(indent + "(trying assignment %s)" % new_g)
 
                 # parsed == False under g[u/var]?
-                if value == False:
+                if not value:
                     if trace:
                         print(indent + f"value of '{parsed}' under {new_g} is False")
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ALINE
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Greg Kondrak <gkondrak@ualberta.ca>
 #         Geoff Bacon <bacon@berkeley.edu> (Python port)
 # URL: <https://www.nltk.org/>
@@ -102,7 +102,6 @@ consonants = [
     "ʃ",
     "ʈ",
     "ʋ",
-    "ʐ ",
     "ʒ",
     "ʔ",
     "ʕ",
@@ -113,6 +112,46 @@ consonants = [
     "χ",
     "ʐ",
     "w",
+]
+
+vowels = [
+    "A",
+    "E",
+    "I",
+    "O",
+    "U",
+    "a",
+    "e",
+    "e̞",
+    "i",
+    "o",
+    "o̞",
+    "u",
+    "y",
+    "ä",
+    "æ",
+    "ø",
+    "ø̞",
+    "œ",
+    "ɐ",
+    "ɑ",
+    "ɒ",
+    "ɔ",
+    "ɘ",
+    "ə",
+    "ɛ",
+    "ɜ",
+    "ɞ",
+    "ɤ",
+    "ɤ̞",
+    "ɨ",
+    "ɯ",
+    "ɵ",
+    "ɶ",
+    "ʉ",
+    "ʊ",
+    "ʌ",
+    "ʏ",
 ]
 
 # Relevant features for comparing consonants and vowels
@@ -1206,7 +1245,7 @@ feature_matrix = {
         "lateral": "minus",
         "high": "high",
         "back": "back",
-        "round": "plus",
+        "round": "minus",
         "long": "minus",
         "aspirated": "minus",
     },
@@ -1246,7 +1285,7 @@ feature_matrix = {
         "nasal": "minus",
         "retroflex": "minus",
         "lateral": "minus",
-        "high": "high",
+        "high": "mid",
         "back": "central",
         "round": "minus",
         "long": "minus",
@@ -1274,7 +1313,7 @@ feature_matrix = {
         "nasal": "minus",
         "retroflex": "minus",
         "lateral": "minus",
-        "high": "high",
+        "high": "mid",
         "back": "central",
         "round": "plus",
         "long": "minus",
@@ -1332,6 +1371,11 @@ def align(str1, str2, epsilon=0):
         raise ImportError("You need numpy in order to use the align function")
 
     assert 0.0 <= epsilon <= 1.0, "Epsilon must be between 0.0 and 1.0."
+
+    # Validate that all input segments exist in the feature matrix
+    _validate_segments(str1, "str1")
+    _validate_segments(str2, "str2")
+
     m = len(str1)
     n = len(str2)
     # This includes Kondrak's initialization of row 0 and column 0 to all 0s.
@@ -1422,6 +1466,15 @@ def _retrieve(i, j, s, S, T, str1, str2, out):
     return out
 
 
+def _validate_segments(seq, name):
+    """Validate that all segments in seq exist in the feature matrix."""
+    for i, char in enumerate(seq):
+        if char not in feature_matrix:
+            raise ValueError(
+                f"Segment '{char}' at position {i} in {name} not found in feature_matrix"
+            )
+
+
 def sigma_skip(p):
     """
     Returns score of an indel of P.
@@ -1446,6 +1499,8 @@ def sigma_exp(p, q):
 
     (Kondrak 2002: 54)
     """
+    if len(q) != 2:
+        raise ValueError(f"sigma_exp expects q of length 2, got {len(q)}")
     q1 = q[0]
     q2 = q[1]
     return C_exp - delta(p, q1) - delta(p, q2) - V(p) - max(V(q1), V(q2))

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Codes
 #
-# Copyright (C) 2022-2023 NLTK Project
+# Copyright (C) 2022-2025 NLTK Project
 # Author: Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -43,9 +43,12 @@ from nltk.corpus import bcp47
 codepattern = re.compile("[a-z][a-z][a-z]?")
 
 
-def langname(tag, typ="full"):
+def langname(tag, typ="full", strict=False):
     """
-    Convert a composite BCP-47 tag to a language name
+    Convert a composite BCP-47 tag to a language name.
+
+    Returns None if the tag is not found, unless strict=True,
+    in which case a LookupError is raised.
 
     >>> from nltk.langnames import langname
     >>> langname('ca-Latn-ES-valencia')
@@ -53,7 +56,19 @@ def langname(tag, typ="full"):
 
     >>> langname('ca-Latn-ES-valencia', typ="short")
     'Catalan'
+
+    >>> print(langname('zzz'))
+    None
+
+    >>> langname('zzz', strict=True)
+    Traceback (most recent call last):
+        ...
+    LookupError: Could not find language name for tag 'zzz'
     """
+    if tag is None:
+        if strict:
+            raise LookupError("Could not find language name for tag None")
+        return None
     tags = tag.split("-")
     code = tags[0].lower()
     if codepattern.fullmatch(code):
@@ -64,18 +79,24 @@ def langname(tag, typ="full"):
             warn(f"Shortening {code!r} to {code2!r}", stacklevel=2)
             tag = "-".join([code2] + tags[1:])
         name = bcp47.name(tag)  # parse according to BCP-47
-        if typ == "full":
-            return name  # include all subtags
-        elif name:
-            return name.split(":")[0]  # only the language subtag
-    else:
-        warn(f"Could not find code in {code!r}", stacklevel=2)
+        if name is not None:
+            if typ == "full":
+                return name  # include all subtags
+            else:
+                return name.split(":")[0]  # only the language subtag
+    failed = f"Could not find language name for tag {tag!r}"
+    if strict:
+        raise LookupError(failed)
+    warn(failed, stacklevel=2)
 
 
-def langcode(name, typ=2):
+def langcode(name, typ=2, strict=False):
     """
     Convert language name to iso639-3 language code. Returns the short 2-letter
-    code by default, if one is available, and the 3-letter code otherwise:
+    code by default, if one is available, and the 3-letter code otherwise.
+
+    Returns None if the name is not found, unless strict=True,
+    in which case a LookupError is raised.
 
     >>> from nltk.langnames import langcode
     >>> langcode('Modern Greek (1453-)')
@@ -85,6 +106,14 @@ def langcode(name, typ=2):
 
     >>> langcode('Modern Greek (1453-)', typ=3)
     'ell'
+
+    >>> print(langcode('NotALanguage'))
+    None
+
+    >>> langcode('NotALanguage', strict=True)
+    Traceback (most recent call last):
+        ...
+    LookupError: Could not find language code for name 'NotALanguage'
     """
     if name in bcp47.langcode:
         code = bcp47.langcode[name]
@@ -93,6 +122,8 @@ def langcode(name, typ=2):
         return code
     elif name in iso639code_retired:
         return iso639code_retired[name]
+    elif strict:
+        raise LookupError(f"Could not find language code for name {name!r}")
     else:
         warn(f"Could not find language in {name!r}", stacklevel=2)
 
@@ -102,64 +133,131 @@ def langcode(name, typ=2):
 # .......................................................................
 
 
-def tag2q(tag):
+def tag2q(tag, strict=False):
     """
-    Convert BCP-47 tag to Wikidata Q-code
+    Convert BCP-47 tag to Wikidata Q-code.
+
+    Returns the Wikidata Q-code for the given BCP-47 tag, or None if the tag
+    is not found. If strict=True, raises a LookupError instead of returning None.
 
     >>> tag2q('nds-u-sd-demv')
     'Q4289225'
+    >>> print(tag2q('unknown-tag'))
+    None
+
+    >>> tag2q('unknown-tag', strict=True)
+    Traceback (most recent call last):
+        ...
+    LookupError: Could not find Wikidata Q-code for BCP-47 tag 'unknown-tag'
     """
-    return bcp47.wiki_q[tag]
-
-
-def q2tag(qcode):
-    """
-    Convert Wikidata Q-code to BCP-47 tag
-
-    >>> q2tag('Q4289225')
-    'nds-u-sd-demv'
-    """
-    return wiki_bcp47[qcode]
-
-
-def q2name(qcode, typ="full"):
-    """
-    Convert Wikidata Q-code to BCP-47 (full or short) language name
-
-    >>> q2name('Q4289225')
-    'Low German: Mecklenburg-Vorpommern'
-
-    >>> q2name('Q4289225', "short")
-    'Low German'
-    """
-    return langname(q2tag(qcode), typ)
-
-
-def lang2q(name):
-    """
-    Convert simple language name to Wikidata Q-code
-
-    >>> lang2q('Low German')
-    'Q25433'
-    """
-    return tag2q(langcode(name))
-
-
-# ======================================================================
-# Data dictionaries
-# ......................................................................
+    if not hasattr(bcp47, "wiki_q") or bcp47.wiki_q is None:
+        bcp47.load_wiki_q()  # Wikidata conversion table needs to be loaded explicitly
+    result = bcp47.wiki_q.get(tag)
+    if result is None and strict:
+        raise LookupError(f"Could not find Wikidata Q-code for BCP-47 tag {tag!r}")
+    return result
 
 
 def inverse_dict(dic):
-    """Return inverse mapping, but only if it is bijective"""
+    """
+    Return the inverse mapping of a dictionary if it is bijective.
+
+    If the input dictionary is bijective (i.e., all values are unique), returns a new dictionary
+    mapping values to keys. Otherwise, returns None and emits a warning.
+    """
     if len(dic.keys()) == len(set(dic.values())):
         return {val: key for (key, val) in dic.items()}
     else:
         warn("This dictionary has no bijective inverse mapping.")
 
 
-bcp47.load_wiki_q()  # Wikidata conversion table needs to be loaded explicitly
-wiki_bcp47 = inverse_dict(bcp47.wiki_q)
+def q2tag(qcode, strict=False):
+    """
+    Convert Wikidata Q-code to BCP-47 tag.
+
+    Returns the BCP-47 tag for the given Wikidata Q-code, or None if the Q-code
+    is not found. If strict=True, raises a LookupError instead of returning None.
+
+    >>> q2tag('Q4289225')
+    'nds-u-sd-demv'
+    >>> print(q2tag('Q0000000'))
+    None
+
+    >>> q2tag('Q0000000', strict=True)
+    Traceback (most recent call last):
+        ...
+    LookupError: Could not find BCP-47 tag for Wikidata Q-code 'Q0000000'
+    """
+    if not hasattr(bcp47, "wiki_q") or bcp47.wiki_q is None:
+        bcp47.load_wiki_q()  # Wikidata conversion table needs to be loaded explicitly
+    if not hasattr(bcp47, "wiki_bcp47") or bcp47.wiki_bcp47 is None:
+        inverse = inverse_dict(bcp47.wiki_q)
+        if inverse is None:
+            raise ValueError(
+                "The Wikidata mapping (wiki_q) is not bijective. Cannot safely build inverse mapping."
+            )
+        bcp47.wiki_bcp47 = inverse
+    result = bcp47.wiki_bcp47.get(qcode)
+    if result is None and strict:
+        raise LookupError(f"Could not find BCP-47 tag for Wikidata Q-code {qcode!r}")
+    return result
+
+
+def q2name(qcode, typ="full", strict=False):
+    """
+    Convert Wikidata Q-code to BCP-47 (full or short) language name.
+
+    Returns None if the Q-code is not found, unless strict=True,
+    in which case a LookupError is raised.
+
+    >>> q2name('Q4289225')
+    'Low German: Mecklenburg-Vorpommern'
+
+    >>> q2name('Q4289225', "short")
+    'Low German'
+
+    >>> print(q2name('Q0000000'))
+    None
+
+    >>> q2name('Q0000000', strict=True)
+    Traceback (most recent call last):
+        ...
+    LookupError: Could not find BCP-47 tag for Wikidata Q-code 'Q0000000'
+    """
+    tag = q2tag(qcode, strict=strict)
+    if tag is None:
+        return None
+    return langname(tag, typ, strict=strict)
+
+
+def lang2q(name, strict=False):
+    """
+    Convert simple language name to Wikidata Q-code.
+
+    Returns None if the name is not found, unless strict=True,
+    in which case a LookupError is raised.
+
+    >>> lang2q('Low German')
+    'Q25433'
+
+    >>> print(lang2q('NonexistentLanguage'))
+    None
+
+    >>> lang2q('NonexistentLanguage', strict=True)
+    Traceback (most recent call last):
+        ...
+    LookupError: Could not find language code for name 'NonexistentLanguage'
+    """
+    code = langcode(name, strict=strict)
+    if code is None:
+        return None
+    return tag2q(code, strict=strict)
+
+
+# ======================================================================
+# Data dictionaries
+# ......................................................................
+
 
 iso639short = {
     "aar": "aa",

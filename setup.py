@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: NLTK Team <nltk.team@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -113,6 +113,7 @@ natural language processing.  NLTK requires Python 3.10, 3.11, 3.12, 3.13, or 3.
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
     python_requires=">=3.10",
     install_requires=[
+        "defusedxml",
         "click",
         "joblib",
         "regex>=2021.8.3",

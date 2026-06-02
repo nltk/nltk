@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NLTK's very own tokenizer.
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Liling Tan
 #         Tom Aarsen <> (modifications)
 # URL: <https://www.nltk.org>
@@ -9,7 +9,8 @@
 
 import re
 import warnings
-from typing import Iterator, List, Tuple
+from collections.abc import Iterator
+from typing import List, Tuple
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import align_tokens
@@ -124,7 +125,7 @@ class NLTKWordTokenizer(TokenizerI):
 
     def tokenize(
         self, text: str, convert_parentheses: bool = False, return_str: bool = False
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Return a tokenized copy of `text`.
 
         >>> from nltk.tokenize import NLTKWordTokenizer
@@ -194,7 +195,7 @@ class NLTKWordTokenizer(TokenizerI):
 
         return text.split()
 
-    def span_tokenize(self, text: str) -> Iterator[Tuple[int, int]]:
+    def span_tokenize(self, text: str) -> Iterator[tuple[int, int]]:
         r"""
         Returns the spans of the tokens in ``text``.
         Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.

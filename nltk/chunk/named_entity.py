@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (tab-format models)
 # URL: <https://www.nltk.org/>
@@ -307,7 +307,7 @@ def cmp_chunks(correct, guessed):
         if ct == gt == "O":
             if not ellipsis:
                 print(f"  {ct:15} {gt:15} {w}")
-                print("  {:15} {:15} {2}".format("...", "...", "..."))
+                print("  {:15} {:15} {}".format("...", "...", "..."))
                 ellipsis = True
         else:
             ellipsis = False
@@ -323,7 +323,6 @@ class Maxent_NE_Chunker(NEChunkParser):
     """
 
     def __init__(self, fmt="multiclass"):
-        from nltk.data import find
 
         self._fmt = fmt
         self._tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (acyclic closures)
 # URL: <https://www.nltk.org/>
@@ -15,6 +15,7 @@ import unicodedata
 import warnings
 from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee
+from pathlib import Path
 from pprint import pprint
 from urllib.request import (
     HTTPPasswordMgrWithDefaultRealm,
@@ -28,6 +29,7 @@ from urllib.request import (
 
 from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
+from nltk.pathsec import open as _secure_open
 
 ######################################################################
 # Short usage message
@@ -220,58 +222,49 @@ def filestring(f, allowed_dir=None):
     """
     Read a file path or file-like object into a string.
 
-    Security (opt-in):
-    - If `allowed_dir` is provided, enforce sandbox restrictions:
-        * Resolve realpath()
-        * Prevent ../ traversal
-        * Prevent symlink escape
-    - If `allowed_dir` is None, old behavior is preserved (for backward compatibility).
+    Security:
+    - Paths are resolved via ``Path.resolve()`` to prevent
+      symlink and ``../`` traversal attacks.
+    - If ``allowed_dir`` is provided, the resolved path must
+      fall within that directory tree.
+    - All file opens go through ``pathsec.open``, which
+      validates paths against NLTK's allowed data roots.
+    - File-like objects with a ``.read()`` method are passed
+      through without path checks.
 
-    Notes:
-    - File-like objects (`.read()`) are always allowed.
-    - TOCTOU race conditions cannot be fully eliminated if an attacker can modify
-      the filesystem concurrently, though realpath() and commonpath() reduce common bypasses.
+    :param f: a file path or file-like object with a ``.read()`` method
+    :param allowed_dir: if provided, restricts file access to paths
+        within this directory; raises ``PermissionError`` if the
+        resolved path falls outside it
+    :raises PermissionError: if ``allowed_dir`` is set and ``f``
+        resolves outside it, or if pathsec blocks the path
+    :rtype: str
     """
-
-    # file-like object: preserve legacy behavior
     if hasattr(f, "read"):
         return f.read()
+    elif isinstance(f, str):
+        # FIX: Resolve the path once to prevent symlink/rename races
+        target_path = Path(f).resolve()
 
-    # path input
-    if isinstance(f, str):
-        # sandbox mode enabled only when allowed_dir provided
         if allowed_dir is not None:
-            base = os.path.realpath(os.path.abspath(allowed_dir))
-
-            # ensure allowed_dir exists and is a directory
-            if not os.path.isdir(base):
-                raise ValueError(
-                    f"allowed_dir must be an existing directory: {allowed_dir!r}"
-                )
-
-            full = os.path.realpath(os.path.abspath(f))
-
-            # robust "is inside" check using commonpath; handle cross-drive case
-            try:
-                inside = os.path.commonpath([base, full]) == base
-            except ValueError:
-                # different drives (Windows) -> not inside
-                inside = False
-
-            if not inside:
+            safe_root = Path(allowed_dir).resolve()
+            # FIX: Use is_relative_to for robust boundary check
+            if not target_path.is_relative_to(safe_root):
                 raise PermissionError(
-                    f"Access blocked: '{full}' is outside allowed_dir '{base}'"
+                    f"Security Violation: Path {target_path} is outside allowed_dir {safe_root}"
                 )
 
-            # safe read with UTF-8-first fallback
-            with open(full, encoding="utf-8", errors="ignore") as infile:
-                return infile.read()
-
-        # no sandbox: legacy behavior (backward compatible)
-        with open(f, encoding="utf-8", errors="ignore") as infile:
+        # FIX: Use _secure_open with the resolved target_path
+        with _secure_open(target_path, encoding="utf-8", errors="ignore") as infile:
             return infile.read()
 
-    raise ValueError("filestring() expects a filename or a file-like object")
+    # Fallback for other types
+    try:
+        with _secure_open(f, encoding="utf-8", errors="ignore") as infile:
+            return infile.read()
+    except UnicodeDecodeError:
+        with _secure_open(f, encoding="latin-1") as infile:
+            return infile.read()
 
 
 ##########################################################################

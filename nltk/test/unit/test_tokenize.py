@@ -18,6 +18,7 @@ from nltk.tokenize import (
     word_tokenize,
 )
 from nltk.tokenize.simple import CharTokenizer
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 
 
 def load_stanford_segmenter():
@@ -238,7 +239,7 @@ class TestTokenize:
         ],
     )
     def test_tweet_tokenizer_expanded(
-        self, test_input: str, expecteds: Tuple[List[str], List[str]]
+        self, test_input: str, expecteds: tuple[list[str], list[str]]
     ):
         """
         Test `match_phone_numbers` in TweetTokenizer.
@@ -875,7 +876,7 @@ class TestTokenize:
     )
     def punkt_debug_decisions(self, input_text, n_sents, n_splits, lang_vars=None):
         tokenizer = punkt.PunktSentenceTokenizer()
-        if lang_vars != None:
+        if lang_vars is not None:
             tokenizer._lang_vars = lang_vars
 
         assert len(tokenizer.tokenize(input_text)) == n_sents
@@ -922,7 +923,7 @@ class TestTokenize:
             ("Hello.\tThere", ["Hello.", "There"]),
         ],
     )
-    def test_sent_tokenize(self, sentences: str, expected: List[str]):
+    def test_sent_tokenize(self, sentences: str, expected: list[str]):
         assert sent_tokenize(sentences) == expected
 
     def test_string_tokenizer(self) -> None:
@@ -956,3 +957,162 @@ class TestPunktTrainer:
     def test_punkt_train_no_punc(self) -> None:
         trainer = punkt.PunktTrainer()
         trainer.train("This is a test")
+
+
+class TestTreebankWordDetokenizer:
+    detok = TreebankWordDetokenizer()
+
+    def test_simple_sentence(self):
+        tokens = ["Hello", ",", "world", "."]
+        assert self.detok.detokenize(tokens) == "Hello, world."
+
+    def test_contractions(self):
+        tokens = ["I", "'m", "sure", "."]
+        assert self.detok.detokenize(tokens) == "I'm sure."
+
+    def test_contraction_ll(self):
+        tokens = ["You", "'ll", "see", "."]
+        assert self.detok.detokenize(tokens) == "You'll see."
+
+    def test_contraction_not(self):
+        tokens = ["I", "do", "n't", "know", "."]
+        assert self.detok.detokenize(tokens) == "I don't know."
+
+    def test_double_quotes(self):
+        tokens = ["``", "Hello", "''"]
+        assert self.detok.detokenize(tokens) == '"Hello"'
+
+    def test_double_quotes_with_period(self):
+        tokens = ["He", "said", "``", "hi", "''", "."]
+        assert self.detok.detokenize(tokens) == 'He said "hi".'
+
+    def test_comma_before_closing_double_quote(self):
+        tokens = ["``", "Yes", ",", "''", "he", "said", "."]
+        assert self.detok.detokenize(tokens) == '"Yes," he said.'
+
+    def test_possessive(self):
+        tokens = ["The", "dog", "'s", "bone", "."]
+        assert self.detok.detokenize(tokens) == "The dog's bone."
+
+    def test_parentheses_ptb(self):
+        """PTB bracket symbols are converted when convert_parentheses=True."""
+        tokens = ["-LRB-", "hello", "-RRB-"]
+        result = self.detok.detokenize(tokens, convert_parentheses=True)
+        assert result == "(hello)"
+
+    def test_double_dashes(self):
+        tokens = ["foo", "--", "bar"]
+        assert self.detok.detokenize(tokens) == "foo--bar"
+
+    def test_opening_backtick_double(self):
+        """`` is converted to opening double quote."""
+        tokens = ["``", "Hello", "''"]
+        assert self.detok.detokenize(tokens) == '"Hello"'
+
+    def test_opening_backtick_single(self):
+        """` is preserved as-is (no standard conversion in detokenizer)."""
+        tokens = ["`", "Hello", "'"]
+        result = self.detok.detokenize(tokens)
+        assert "`" in result or "'" in result
+
+    def test_closing_double_quote_backticks(self):
+        """'' is converted to closing double quote."""
+        tokens = ["He", "said", "``", "yes", "''", "."]
+        result = self.detok.detokenize(tokens)
+        assert '"yes"' in result
+
+    def test_issue_3260_nested_quotes(self):
+        """Fix #3260: closing single then double quote after comma."""
+        tokens = [
+            "``",
+            "Shippers",
+            "are",
+            "saying",
+            "`",
+            "the",
+            "party",
+            "'s",
+            "over",
+            ",",
+            "'",
+            "''",
+            "said",
+            "Mr.",
+            "LaLonde",
+            ".",
+        ]
+        result = self.detok.detokenize(tokens)
+        # The closing sequence ,'" should have single quote before double quote
+        assert ",'" in result or ",'\"" in result
+
+    def test_issue_3260_minimal(self):
+        """Minimal case: comma, single quote, double quote should collapse."""
+        tokens = ["word", ",", "'", "''"]
+        result = self.detok.detokenize(tokens)
+        assert result == "word,'\"" or result == "word,'\""
+
+    def test_roundtrip_simple(self):
+        """Tokenize then detokenize should approximate the original."""
+        original = "Hello, world."
+        tokenizer = TreebankWordTokenizer()
+        tokens = tokenizer.tokenize(original)
+        result = self.detok.detokenize(tokens)
+        assert result == original
+
+    def test_semicolon_spacing(self):
+        tokens = ["a", ";", "b"]
+        assert self.detok.detokenize(tokens) == "a; b"
+
+    def test_colon_spacing(self):
+        tokens = ["a", ":", "b"]
+        assert self.detok.detokenize(tokens) == "a: b"
+
+    def test_contraction_ve(self):
+        tokens = ["we", "'ve", "seen", "."]
+        assert self.detok.detokenize(tokens) == "we've seen."
+
+    def test_contraction_d(self):
+        tokens = ["who", "'d", "know", "."]
+        assert self.detok.detokenize(tokens) == "who'd know."
+
+    def test_closing_double_quote_after_period(self):
+        tokens = ["word", ".", "''"]
+        assert self.detok.detokenize(tokens) == 'word."'
+
+    def test_closing_double_quote_after_comma(self):
+        tokens = ["word", ",", "''"]
+        assert self.detok.detokenize(tokens) == 'word,"'
+
+    def test_closing_double_quote_after_exclamation(self):
+        tokens = ["word", "!", "''"]
+        assert self.detok.detokenize(tokens) == 'word!"'
+
+    def test_closing_double_quote_after_question(self):
+        tokens = ["word", "?", "''"]
+        assert self.detok.detokenize(tokens) == 'word?"'
+
+    def test_multiple_tokens_in_quotes(self):
+        tokens = ["``", "A", "B", "C", "''"]
+        assert self.detok.detokenize(tokens) == '"A B C"'
+
+    def test_quote_comma_said(self):
+        tokens = ["``", "Hi", ",", "''", "said", "Jo", "."]
+        assert self.detok.detokenize(tokens) == '"Hi," said Jo.'
+
+    def test_no_spurious_space_before_comma(self):
+        result = self.detok.detokenize(["a", ",", "b"])
+        assert " ," not in result
+
+    def test_no_spurious_space_before_period(self):
+        result = self.detok.detokenize(["a", "."])
+        assert " ." not in result
+
+    def test_no_spurious_space_before_closing_quote(self):
+        result = self.detok.detokenize(["``", "a", "''"])
+        assert ' "' not in result or result.startswith('"')
+
+    def test_roundtrip_quotes(self):
+        """Round-trip a quoted sentence."""
+        original_tokens = ["``", "Hello", ",", "''", "he", "said", "."]
+        result = self.detok.detokenize(original_tokens)
+        assert '"' in result

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
 #         Tom Aarsen <> (modifications)
@@ -19,7 +19,8 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 
 import re
 import warnings
-from typing import Iterator, List, Tuple
+from collections.abc import Iterator
+from typing import List, Tuple
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.destructive import MacIntyreContractions
@@ -100,7 +101,7 @@ class TreebankWordTokenizer(TokenizerI):
 
     def tokenize(
         self, text: str, convert_parentheses: bool = False, return_str: bool = False
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Return a tokenized copy of `text`.
 
         >>> from nltk.tokenize import TreebankWordTokenizer
@@ -169,7 +170,7 @@ class TreebankWordTokenizer(TokenizerI):
 
         return text.split()
 
-    def span_tokenize(self, text: str) -> Iterator[Tuple[int, int]]:
+    def span_tokenize(self, text: str) -> Iterator[tuple[int, int]]:
         r"""
         Returns the spans of the tokens in ``text``.
         Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.
@@ -288,12 +289,18 @@ class TreebankWordDetokenizer(TokenizerI):
     ENDING_QUOTES = [
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
-        (re.compile(r"(\S)\s(\'\')"), r"\1\2"),
+        # Fix #3260: exclude single quote from attaching '' to avoid
+        # swallowing the closing single quote in nested quote sequences.
+        (re.compile(r"([^'\s])\s(\'\')"), r"\1\2"),
+        # Remove space before closing quotes after punctuation or single quote
+        (re.compile(r"([,.;:!?'])\s+(\"|\'\')"), r"\1\2"),
         (
             re.compile(r"(\'\')\s([.,:)\]>};%])"),
             r"\1\2",
         ),  # Quotes followed by no-left-padded punctuations.
         (re.compile(r"''"), '"'),
+        # Fix #3260: swap ,"' to ,'" (inside-out closing order)
+        (re.compile(r'([,.;:!?])"(\')'), r"\1\2" '"'),
     ]
 
     # Handles double dashes
@@ -344,7 +351,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"``"), r'"'),
     ]
 
-    def tokenize(self, tokens: List[str], convert_parentheses: bool = False) -> str:
+    def tokenize(self, tokens: list[str], convert_parentheses: bool = False) -> str:
         """
         Treebank detokenizer, created by undoing the regexes from
         the TreebankWordTokenizer.tokenize.
@@ -397,6 +404,6 @@ class TreebankWordDetokenizer(TokenizerI):
 
         return text.strip()
 
-    def detokenize(self, tokens: List[str], convert_parentheses: bool = False) -> str:
+    def detokenize(self, tokens: list[str], convert_parentheses: bool = False) -> str:
         """Duck-typing the abstract *tokenize()*."""
         return self.tokenize(tokens, convert_parentheses)

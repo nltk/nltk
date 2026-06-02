@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
@@ -211,12 +211,13 @@ class _WordNetObject:
         return hash(self._name)
 
     def __eq__(self, other):
+        if not isinstance(other, _WordNetObject):
+            return NotImplemented
         return self._name == other._name
 
-    def __ne__(self, other):
-        return self._name != other._name
-
     def __lt__(self, other):
+        if not isinstance(other, _WordNetObject):
+            return NotImplemented
         return self._name < other._name
 
 

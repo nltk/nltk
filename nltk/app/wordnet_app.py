@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet Browser Application
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
 # URL: <https://www.nltk.org/>
@@ -238,8 +238,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         server_ready = threading.Event()
         browser_thread = startBrowser(url, server_ready)
 
-    # Start the server.
-    server = HTTPServer(("", port), MyServerHandler)
+    # Start the server. Bind to localhost only to prevent remote access
+    # and unauthenticated shutdown via /SHUTDOWN%20THE%20SERVER.
+    server = HTTPServer(("127.0.0.1", port), MyServerHandler)
     if logfile:
         logfile.write("NLTK Wordnet browser server running serving: %s\n" % url)
     if runBrowser:
@@ -610,7 +611,7 @@ def _synset_relations(word, synset, synset_relations):
     :rtype: str
     """
 
-    if not synset.name() in synset_relations:
+    if synset.name() not in synset_relations:
         return ""
     ref = Reference(word, synset_relations)
 
@@ -793,7 +794,9 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' were not found in the dictionary." % word
+        body = "The word or words '%s' were not found in the dictionary." % html.escape(
+            word
+        )
     return body, word
 
 
@@ -831,7 +834,7 @@ def get_static_web_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2025 NLTK Project
+            Copyright (C) 2001-2026 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
             URL: <https://www.nltk.org/>
             For license information, see LICENSE.TXT -->
@@ -901,7 +904,7 @@ def get_static_index_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2025 NLTK Project
+            Copyright (C) 2001-2026 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
             URL: <https://www.nltk.org/>
             For license information, see LICENSE.TXT -->
@@ -934,7 +937,7 @@ def get_static_upper_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2001-2025 NLTK Project
+        Copyright (C) 2001-2026 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
         URL: <https://www.nltk.org/>
         For license information, see LICENSE.TXT -->

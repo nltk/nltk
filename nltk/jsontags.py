@@ -1,6 +1,6 @@
 # Natural Language Toolkit: JSON Encoder/Decoder Helpers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <https://www.nltk.org/>
@@ -40,16 +40,27 @@ class JSONTaggedEncoder(json.JSONEncoder):
 
 
 class JSONTaggedDecoder(json.JSONDecoder):
+    #: Maximum nesting depth for decoded JSON objects.
+    #: Prevents denial of service from deeply nested payloads.
+    MAX_DECODE_DEPTH = 200
+
     def decode(self, s):
-        return self.decode_obj(super().decode(s))
+        try:
+            return self.decode_obj(super().decode(s))
+        except RecursionError:
+            raise ValueError("JSON nesting too deep to decode safely")
 
     @classmethod
-    def decode_obj(cls, obj):
+    def decode_obj(cls, obj, _depth=0):
+        if _depth > cls.MAX_DECODE_DEPTH:
+            raise ValueError(
+                f"JSON nesting depth exceeds maximum allowed ({cls.MAX_DECODE_DEPTH})"
+            )
         # Decode nested objects first.
         if isinstance(obj, dict):
-            obj = {key: cls.decode_obj(val) for (key, val) in obj.items()}
+            obj = {key: cls.decode_obj(val, _depth + 1) for (key, val) in obj.items()}
         elif isinstance(obj, list):
-            obj = list(cls.decode_obj(val) for val in obj)
+            obj = list(cls.decode_obj(val, _depth + 1) for val in obj)
         # Check if we have a tagged object.
         if not isinstance(obj, dict) or len(obj) != 1:
             return obj

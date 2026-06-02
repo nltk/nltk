@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizer Interface
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -11,7 +11,8 @@ Tokenizer Interface
 """
 
 from abc import ABC, abstractmethod
-from typing import Iterator, List, Tuple
+from collections.abc import Iterator
+from typing import List, Tuple
 
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize
@@ -24,7 +25,7 @@ class TokenizerI(ABC):
     """
 
     @abstractmethod
-    def tokenize(self, s: str) -> List[str]:
+    def tokenize(self, s: str) -> list[str]:
         """
         Return a tokenized copy of *s*.
 
@@ -33,7 +34,7 @@ class TokenizerI(ABC):
         if overridden(self.tokenize_sents):
             return self.tokenize_sents([s])[0]
 
-    def span_tokenize(self, s: str) -> Iterator[Tuple[int, int]]:
+    def span_tokenize(self, s: str) -> Iterator[tuple[int, int]]:
         """
         Identify the tokens using integer offsets ``(start_i, end_i)``,
         where ``s[start_i:end_i]`` is the corresponding token.
@@ -42,7 +43,7 @@ class TokenizerI(ABC):
         """
         raise NotImplementedError()
 
-    def tokenize_sents(self, strings: List[str]) -> List[List[str]]:
+    def tokenize_sents(self, strings: list[str]) -> list[list[str]]:
         """
         Apply ``self.tokenize()`` to each element of ``strings``.  I.e.:
 
@@ -53,8 +54,8 @@ class TokenizerI(ABC):
         return [self.tokenize(s) for s in strings]
 
     def span_tokenize_sents(
-        self, strings: List[str]
-    ) -> Iterator[List[Tuple[int, int]]]:
+        self, strings: list[str]
+    ) -> Iterator[list[tuple[int, int]]]:
         """
         Apply ``self.span_tokenize()`` to each element of ``strings``.  I.e.:
 

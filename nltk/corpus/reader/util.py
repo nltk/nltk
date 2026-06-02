@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -739,6 +739,11 @@ def find_corpus_fileids(root, regexp):
             if ".svn" in subdirs:
                 subdirs.remove(".svn")
         return sorted(items)
+
+    # HuggingFace PathPointer: delegate to its fileids() method (duck typing,
+    # avoids a circular import of nltk.huggingface.dataset here).
+    elif hasattr(root, "fileids"):
+        return [fid for fid in root.fileids() if re.match(regexp, fid)]
 
     else:
         raise AssertionError("Don't know how to handle %r" % root)

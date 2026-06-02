@@ -213,7 +213,7 @@ def un_chomsky_normal_form(
                     node.set_label(node.label()[:parentIndex])
 
                 # expand collapsed unary productions
-                if expandUnary == True:
+                if expandUnary:
                     unaryIndex = node.label().find(unaryChar)
                     if unaryIndex != -1:
                         newNode = Tree(
@@ -248,7 +248,7 @@ def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
     :type  joinChar: str
     """
 
-    if collapseRoot == False and isinstance(tree, Tree) and len(tree) == 1:
+    if not collapseRoot and isinstance(tree, Tree) and len(tree) == 1:
         nodeList = [tree[0]]
     else:
         nodeList = [tree]
@@ -260,7 +260,7 @@ def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
             if (
                 len(node) == 1
                 and isinstance(node[0], Tree)
-                and (collapsePOS == True or isinstance(node[0, 0], Tree))
+                and (collapsePOS or isinstance(node[0, 0], Tree))
             ):
                 node.set_label(node.label() + joinChar + node[0].label())
                 node[0:] = [child for child in node[0]]

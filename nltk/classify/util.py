@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <https://www.nltk.org/>
@@ -272,7 +272,7 @@ def partial_names_demo(trainer, features=names_demo_features):
         print()
         print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
         for (name, is_male), pdist in zip(test, pdists)[:5]:
-            if is_male == True:
+            if is_male:
                 fmt = "  %-15s *%6.4f   %6.4f"
             else:
                 fmt = "  %-15s  %6.4f  *%6.4f"

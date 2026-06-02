@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Phrase Extraction Algorithm
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Liling Tan, Fredrik Hedman, Petra Barancikova
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
