@@ -260,7 +260,6 @@ def _validate_url(url, context="URL"):
         pass  # Cannot resolve — treat as safe hostname
 
 
-
 from xml.etree import ElementTree
 
 from defusedxml.ElementTree import parse as safe_parse
