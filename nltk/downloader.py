@@ -160,7 +160,7 @@ default: unzip or not?
 
 """
 import functools
-import itertools
+import itertool
 import os
 import subprocess
 import sys
@@ -172,7 +172,7 @@ import zipfile
 from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
 
-from urllib.request import HTTPRedirectHandler, build_opener, urlopen
+from urllib.request import HTTPRedirectHandler, build_opener
 
 
 class _NoRedirectHandler(HTTPRedirectHandler):
