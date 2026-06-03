@@ -523,6 +523,9 @@ class TransitionParser(ParserI):
             input_file.close()
             # Using the temporary file to train the libsvm classifier
             x_train, y_train = load_svmlight_file(input_file.name)
+            x_train = x_train.astype("float64")
+            x_train.indices = x_train.indices.astype("int32", copy=False)
+            x_train.indptr = x_train.indptr.astype("int32", copy=False)
             # The parameter is set according to the paper:
             # Algorithms for Deterministic Incremental Dependency Parsing by Joakim Nivre
             # Todo : because of probability = True => very slow due to
