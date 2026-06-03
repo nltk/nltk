@@ -313,7 +313,16 @@ def _pinned_connection(host, port, timeout, source_address):
     """
     addrinfo = _resolve_and_validate_host(host, port)
     if not addrinfo:
-        raise OSError(
+        # Fail closed: never fall back to connecting by the raw hostname (that
+        # would re-resolve unvalidated and reopen the rebinding hole). The host
+        # produced no usable address, which is a name-resolution failure, so we
+        # surface it as socket.gaierror rather than a bare OSError. gaierror is
+        # an OSError subclass, so urllib still wraps it as URLError and the
+        # fail-closed contract is unchanged; but callers that legitimately
+        # expect a DNS failure -- e.g. obfuscated/decimal-IP hosts that some
+        # platforms (Windows) refuse to resolve -- then see the expected
+        # gaierror reason instead of an opaque OSError.
+        raise socket.gaierror(
             f"pathsec.urlopen: no validated address for host {host!r}; "
             "refusing to connect by unvalidated hostname"
         )
