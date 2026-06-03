@@ -2,8 +2,10 @@
 
 The NKJP views build file paths from the caller-supplied ``fileids`` and read
 them with the builtin ``open()``, bypassing the ``CorpusReader.open()`` /
-``nltk.pathsec`` sandbox.  A ``..`` sequence (or an absolute path) in
-``fileids`` must not be allowed to escape the corpus root.
+``nltk.pathsec`` sandbox.  A ``..`` sequence, an absolute path, or an in-root
+symlink in ``fileids`` must not be allowed to escape the corpus root.  The
+containment check is symlink-aware (``nltk.pathsec.validate_path`` resolves the
+path before comparing), so ``os.path.abspath`` is not enough to fool it.
 
 The paths below are built with ``os.sep`` / ``os.path.join`` / ``os.pardir``
 so the tests behave identically on POSIX and Windows.
@@ -64,3 +66,30 @@ def test_nkjp_words_rejects_traversal_fileid(tmp_path):
     evil = os.path.join(str(root), os.pardir, "outside") + os.sep
     with pytest.raises(ValueError):
         reader.words(fileids=[evil])
+
+
+def test_nkjp_header_rejects_inroot_symlink_escape(tmp_path):
+    """A symlink *inside* the corpus root that points outside must be rejected.
+
+    This is the case ``os.path.abspath`` cannot catch: the candidate path is
+    lexically in-root, so only resolving the symlink (as ``validate_path``
+    does) reveals that it escapes. Skipped where symlinks are unavailable.
+    """
+    root = _make_corpus(tmp_path)
+
+    secret_dir = tmp_path / "outside"
+    secret_dir.mkdir()
+    (secret_dir / "header.xml").write_text(_HEADER.format(title="SECRET"))
+
+    link = root / "evil"
+    try:
+        os.symlink(secret_dir, link, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks not supported on this platform")
+
+    reader = _reader(root)
+    # `link` is lexically inside the corpus root, so abspath()-based
+    # containment would wrongly allow it; the resolved path is in `outside`.
+    evil = str(link) + os.sep
+    with pytest.raises(ValueError):
+        reader.header(fileids=[evil])

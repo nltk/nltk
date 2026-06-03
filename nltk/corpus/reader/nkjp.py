@@ -101,34 +101,31 @@ class NKJPCorpusReader(XMLCorpusReader):
         Security (CWE-22): the NKJP views build file paths from the
         caller-supplied ``fileids`` and read them with the builtin
         ``open()``, bypassing the ``CorpusReader.open()`` / ``nltk.pathsec``
-        sandbox.  Reject any fileid whose resulting path escapes the corpus
-        root, otherwise a ``..`` sequence or an absolute path in ``fileids``
-        allows reading arbitrary files outside the corpus.
+        sandbox.  Route the resulting path through
+        ``nltk.pathsec.validate_path()`` with the corpus root as
+        ``required_root`` -- the same symlink-resolving containment guard used
+        by ``CorpusReader.open()`` (PR #3528) -- so that a ``..`` sequence, an
+        absolute path, or a symlink in ``fileids`` cannot escape the corpus
+        root.
         """
-        # ``str(self.root)`` is the absolute corpus path (``self._root._path``).
-        # We rebuild the path from it rather than from ``self.root`` used as a
-        # raw string, because the latter keeps the *original* (un-normalised)
-        # constructor argument: on Windows its separators differ from the ones
-        # ``os.path.join`` produces, which broke the old substring/concatenation
-        # logic (it duplicated the root, yielding an invalid path).
+        from nltk.pathsec import validate_path
+
+        # ``str(self.root)`` is the original (un-normalised) constructor
+        # argument; abspath() gives the platform-native absolute root that
+        # ``os.path.join`` expects (the old substring/concatenation logic
+        # duplicated the root on Windows, where the separators differ).
         root = os.path.abspath(str(self.root))
         fileid = str(fileid)
         if os.path.isabs(fileid):
             result = fileid
         else:
             result = os.path.join(root, fileid)
-        resolved = os.path.abspath(result)
-        try:
-            contained = resolved == root or os.path.commonpath([root, resolved]) == root
-        except ValueError:
-            # Raised when the paths live on different drives (Windows) or mix
-            # absolute and relative parts -- in every such case the fileid is
-            # outside the corpus root.
-            contained = False
-        if not contained:
-            raise ValueError(
-                f"NKJP fileid escapes the corpus root (path traversal blocked): {fileid!r}"
-            )
+        # Symlink-aware containment: validate_path() resolves both the
+        # candidate path and the root (``Path(...).resolve()``) before
+        # comparing, and raises ValueError if the resolved path leaves the
+        # corpus root -- unlike os.path.abspath(), which does not follow
+        # symlinks, so an in-root symlink could otherwise point outside.
+        validate_path(result, context="NKJPCorpusReader", required_root=self.root)
         return result
 
     @_parse_args
