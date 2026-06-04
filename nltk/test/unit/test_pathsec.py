@@ -339,3 +339,65 @@ def test_env_proxy_skips_pinning_handlers(monkeypatch):
     assert not any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
     # We did not append our own ProxyHandler({}); build_opener adds the env one.
     assert not any(isinstance(h, urllib.request.ProxyHandler) for h in handlers)
+
+
+# --- SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6 ---------
+
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "127.0.0.1",  # loopback
+        "169.254.169.254",  # link-local (cloud metadata)
+        "10.0.0.5",  # private
+        "192.168.1.1",  # private
+        "224.0.0.1",  # multicast (is_global is True on some CPython versions)
+        "0.0.0.0",  # unspecified (routes to localhost on Linux)
+        "100.64.1.1",  # carrier-grade NAT -- missed by the old explicit list
+        "240.0.0.1",  # reserved
+        "::1",  # IPv6 loopback
+        "::",  # IPv6 unspecified
+        "::ffff:127.0.0.1",  # IPv4-mapped loopback
+        "::ffff:169.254.169.254",  # IPv4-mapped cloud metadata
+        "::ffff:10.0.0.5",  # IPv4-mapped private
+    ],
+)
+def test_ip_policy_forbids_non_global_and_mapped(addr):
+    """Every non-global address -- including CGNAT/unspecified the old explicit
+    list missed, and IPv4-mapped IPv6 forms -- must be rejected."""
+    import ipaddress
+
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)), addr
+
+
+@pytest.mark.parametrize("addr", ["8.8.8.8", "93.184.216.34", "2606:2800:220:1::1"])
+def test_ip_policy_allows_global(addr):
+    """Genuinely global addresses must still be allowed."""
+    import ipaddress
+
+    assert not pathsec._ip_is_forbidden(ipaddress.ip_address(addr)), addr
+
+
+def test_resolve_and_validate_blocks_ipv4_mapped_loopback(monkeypatch):
+    """Connect-side: a host resolving to an IPv4-mapped loopback IPv6 address
+    must be blocked under ENFORCE (it would otherwise smuggle 127.0.0.1)."""
+    mapped = (
+        socket.AF_INET6,
+        socket.SOCK_STREAM,
+        socket.IPPROTO_TCP,
+        "",
+        ("::ffff:127.0.0.1", 80, 0, 0),
+    )
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **k: [mapped])
+    with pytest.raises(PermissionError):
+        pathsec._resolve_and_validate_host("mapped.invalid.test", 80)
+
+
+def test_validate_network_url_blocks_cgnat(monkeypatch):
+    """Validation-side: carrier-grade NAT (100.64.0.0/10) is non-global and must
+    now be rejected, where the old explicit list let it through."""
+    monkeypatch.setattr(
+        pathsec, "_resolve_hostname", lambda h: [_addrinfo("100.64.1.1")]
+    )
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.validate_network_url("http://cgnat.invalid.test/x", context="test")

@@ -207,6 +207,29 @@ def _resolve_hostname(hostname):
         return []
 
 
+def _ip_is_forbidden(ip):
+    """Return True if the SSRF filter must refuse to connect to ``ip``.
+
+    Policy (defense in depth): only *globally routable* addresses are allowed;
+    anything that is not global -- loopback, link-local, private, carrier-grade
+    NAT (100.64.0.0/10), reserved, unspecified (``0.0.0.0`` / ``::``),
+    documentation ranges, etc. -- is forbidden. This generalises the previous
+    explicit ``loopback / link-local / multicast / private`` list and is a strict
+    superset of it. Multicast is still rejected explicitly because some CPython
+    versions classify multicast addresses as ``is_global``.
+
+    IPv4-mapped IPv6 addresses (e.g. ``::ffff:127.0.0.1``) are evaluated as their
+    embedded IPv4 address: the stdlib's ``is_*`` classification of mapped
+    addresses is version dependent and has not always reflected the embedded
+    address, so the mapped form could otherwise smuggle a forbidden IPv4 past the
+    check.
+    """
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if mapped is not None:
+        ip = mapped
+    return ip.is_multicast or not ip.is_global
+
+
 def validate_network_url(url_input, context="NetworkIO"):
     """Hardened URL validation with SSRF protection."""
     if not url_input or not str(url_input).strip():
@@ -251,7 +274,7 @@ def validate_network_url(url_input, context="NetworkIO"):
 
         for result in _resolve_hostname(parsed.hostname or ""):
             ip = ipaddress.ip_address(result[4][0])
-            if ip.is_loopback or ip.is_link_local or ip.is_multicast or ip.is_private:
+            if _ip_is_forbidden(ip):
                 msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {ip}"
                 if ENFORCE:
                     raise PermissionError(msg)
@@ -292,7 +315,7 @@ def _resolve_and_validate_host(host, port):
             ip = ipaddress.ip_address(res[4][0])
         except ValueError:
             continue
-        if ip.is_loopback or ip.is_link_local or ip.is_multicast or ip.is_private:
+        if _ip_is_forbidden(ip):
             msg = f"Security Violation [pathsec.urlopen]: SSRF attempt to restricted IP {ip}"
             if ENFORCE:
                 raise PermissionError(msg)
