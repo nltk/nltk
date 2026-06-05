@@ -683,9 +683,19 @@ class Downloader:
         lock_filepath = filepath + ".lock"
 
         # Defense-in-depth: verify filepath stays within download_dir
-        real_download = os.path.realpath(os.path.abspath(download_dir))
-        real_filepath = os.path.realpath(os.path.abspath(filepath))
-        if not real_filepath.startswith(real_download + os.sep):
+        real_download = os.path.normcase(
+            os.path.realpath(os.path.abspath(download_dir))
+        )
+        real_filepath = os.path.normcase(os.path.realpath(os.path.abspath(filepath)))
+        try:
+            if os.path.commonpath([real_download, real_filepath]) != real_download:
+                yield ErrorMessage(
+                    info,
+                    f"Path traversal blocked: package '{info.id}' attempted to "
+                    f"write outside download directory (subdir='{info.subdir}')",
+                )
+                return
+        except ValueError:
             yield ErrorMessage(
                 info,
                 f"Path traversal blocked: package '{info.id}' attempted to "
