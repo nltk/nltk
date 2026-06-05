@@ -264,7 +264,8 @@ from xml.etree import ElementTree  # isort:skip
 from defusedxml.ElementTree import parse as safe_parse  # isort:skip
 
 import nltk  # isort:skip
-from nltk.pathsec import ZipFile, urlopen  # isort:skip
+from nltk.data import ZipFile  # isort:skip
+from urllib.request import urlopen  # isort:skip
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
