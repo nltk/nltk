@@ -209,6 +209,15 @@ def validate_network_url(url_input, context="NetworkIO"):
 
         if parsed.scheme == "file":
             file_path = unquote(parsed.path)
+            netloc = parsed.netloc
+
+            # Only local file:// URIs are allowed.
+            # Reject remote/UNC-style authorities so validation matches actual access.
+            if netloc not in ("", "localhost"):
+                raise OSError(
+                    f"Security Violation [{context}.file_scheme]: "
+                    f"Non-local file URI authority not allowed: {netloc!r}"
+                )
 
             # Windows file:// URIs arrive like /C:/path/to/file
             # Convert them to a native absolute path before validation.

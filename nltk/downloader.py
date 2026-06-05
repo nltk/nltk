@@ -730,6 +730,9 @@ class Downloader:
             except OSError:
                 pass
 
+        def _lock_exists():
+            return os.path.exists(lock_filepath)
+
         def _status_now():
             self._status_cache.pop(info.id, None)
             return self.status(info, download_dir)
@@ -741,7 +744,8 @@ class Downloader:
         os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
 
         # Fast path before taking the lock.
-        if not force and _installed_now():
+        # Do not return "up to date" while another process still holds the install lock.
+        if not force and _installed_now() and not _lock_exists():
             yield UpToDateMessage(info)
             yield ProgressMessage(100)
             yield FinishPackageMessage(info)
@@ -749,7 +753,7 @@ class Downloader:
 
         # Acquire a package-wide install lock that covers download + unzip.
         while True:
-            if not force and _installed_now():
+            if not force and _installed_now() and not _lock_exists():
                 yield UpToDateMessage(info)
                 yield ProgressMessage(100)
                 yield FinishPackageMessage(info)
@@ -1534,7 +1538,7 @@ class DownloaderGUI:
         self._download_abort_queue = []
         self._downloading = False
 
-        # For tkinter after zcallbacks:
+        # For tkinter after callbacks:
         self._afterid = {}
 
         # A message log.
