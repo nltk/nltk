@@ -682,13 +682,20 @@ class Downloader:
         tmp_filepath = filepath + ".tmp"
         lock_filepath = filepath + ".lock"
 
-        # Defense-in-depth: verify filepath stays within download_dir
-        real_download = os.path.normcase(
-            os.path.realpath(os.path.abspath(download_dir))
+        # Defense-in-depth: verify filepath stays within download_dir.
+        #
+        # This check is intentionally lexical rather than realpath-based.  The
+        # target file may not exist yet, and on Windows some Python versions can
+        # produce inconsistent short-name vs long-name representations when
+        # resolving non-existent paths (for example RUNNER~1 vs runneradmin).
+        # A normalized absolute commonpath check is sufficient here to block
+        # path traversal through package metadata such as "../".
+        safe_download = os.path.normcase(
+            os.path.abspath(os.path.normpath(download_dir))
         )
-        real_filepath = os.path.normcase(os.path.realpath(os.path.abspath(filepath)))
+        safe_filepath = os.path.normcase(os.path.abspath(os.path.normpath(filepath)))
         try:
-            if os.path.commonpath([real_download, real_filepath]) != real_download:
+            if os.path.commonpath([safe_download, safe_filepath]) != safe_download:
                 yield ErrorMessage(
                     info,
                     f"Path traversal blocked: package '{info.id}' attempted to "
