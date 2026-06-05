@@ -678,20 +678,9 @@ class Downloader:
         yield StartPackageMessage(info)
         yield ProgressMessage(0)
 
-        # Do we already have the current version?
-        status = self.status(info, download_dir)
-        if not force and status == self.INSTALLED:
-            yield UpToDateMessage(info)
-            yield ProgressMessage(100)
-            yield FinishPackageMessage(info)
-            return
-
-        # Remove the package from our status cache
-        self._status_cache.pop(info.id, None)
-
-        # Check for (and remove) any old/stale version.
         filepath = os.path.join(download_dir, info.filename)
         tmp_filepath = filepath + ".tmp"
+        lock_filepath = filepath + ".lock"
 
         # Defense-in-depth: verify filepath stays within download_dir
         real_download = os.path.realpath(os.path.abspath(download_dir))
@@ -704,131 +693,162 @@ class Downloader:
             )
             return
 
+        unzipdir = filepath[:-4] if filepath.endswith(".zip") else None
         MAX_ZOMBIE_TIME = 60
-        POLL_INTERVAL = 2
+        POLL_INTERVAL = 1
 
-        # 1. Cooperative Wait Loop
-        while True:
+        def _safe_remove(path):
+            try:
+                os.remove(path)
+            except FileNotFoundError:
+                pass
+            except OSError:
+                pass
+
+        def _safe_rmtree(path):
+            if not os.path.isdir(path):
+                return
+            for root, dirs, files in os.walk(path, topdown=False):
+                for name in files:
+                    try:
+                        os.remove(os.path.join(root, name))
+                    except OSError:
+                        pass
+                for name in dirs:
+                    try:
+                        os.rmdir(os.path.join(root, name))
+                    except OSError:
+                        pass
+            try:
+                os.rmdir(path)
+            except OSError:
+                pass
+
+        def _touch_lock():
+            try:
+                os.utime(lock_filepath, None)
+            except OSError:
+                pass
+
+        def _status_now():
             self._status_cache.pop(info.id, None)
-            status = self.status(info, download_dir)
+            return self.status(info, download_dir)
 
-            if not force and status == self.INSTALLED:
+        def _installed_now():
+            return _status_now() == self.INSTALLED
+
+        os.makedirs(download_dir, exist_ok=True)
+        os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
+
+        # Fast path before taking the lock.
+        if not force and _installed_now():
+            yield UpToDateMessage(info)
+            yield ProgressMessage(100)
+            yield FinishPackageMessage(info)
+            return
+
+        # Acquire a package-wide install lock that covers download + unzip.
+        while True:
+            if not force and _installed_now():
                 yield UpToDateMessage(info)
                 yield ProgressMessage(100)
                 yield FinishPackageMessage(info)
                 return
 
             try:
-                if os.path.exists(tmp_filepath):
-                    before_stat = os.stat(tmp_filepath)
-                    last_size = before_stat.st_size
-
-                    time.sleep(POLL_INTERVAL)
-
-                    if os.path.exists(tmp_filepath):
-                        after_stat = os.stat(tmp_filepath)
-                        new_size = after_stat.st_size
-                        new_mtime = after_stat.st_mtime
-
-                        if new_size > last_size:
-                            continue
-
-                        if (time.time() - new_mtime) < MAX_ZOMBIE_TIME:
-                            continue
-
-                        # ZOMBIE RECOVERY FIX: Remove the dead file so it can be claimed
-                        try:
-                            os.remove(tmp_filepath)
-                        except OSError:
-                            pass
-            except (FileNotFoundError, OSError):
-                pass
-
-            # 2. Atomic Claim
-            try:
-                # Ensure the download_dir exists
-                os.makedirs(download_dir, exist_ok=True)
-                os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
-
-                fd = os.open(tmp_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                fd = os.open(lock_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.close(fd)
                 break
             except FileExistsError:
-                continue
-
-        # 3. Post-Lock Verification (Double-Check)
-        self._status_cache.pop(info.id, None)
-        status = self.status(info, download_dir)
-        if not force and status == self.INSTALLED:
-            if os.path.exists(tmp_filepath):
                 try:
-                    os.remove(tmp_filepath)
+                    age = time.time() - os.stat(lock_filepath).st_mtime
+                    if age >= MAX_ZOMBIE_TIME:
+                        _safe_remove(lock_filepath)
+                        continue
                 except FileNotFoundError:
-                    pass
-            yield UpToDateMessage(info)
-            yield ProgressMessage(100)
-            yield FinishPackageMessage(info)
-            return
-
-        if os.path.exists(filepath):
-            if status == self.STALE:
-                yield StaleMessage(info)
-            try:
-                os.remove(filepath)
-            except FileNotFoundError:
-                pass
-
-        # 5. Download Leader
-        yield StartDownloadMessage(info)
-        yield ProgressMessage(5)
+                    continue
+                time.sleep(POLL_INTERVAL)
 
         try:
-            infile = urlopen(info.url)
-            with open(tmp_filepath, "wb") as outfile:
-                num_blocks = max(1, info.size / (1024 * 16))
-                for block in itertools.count():
-                    s = infile.read(1024 * 16)
-                    if not s:
-                        break
-                    outfile.write(s)
-                    if block % 10 == 0:
-                        os.utime(tmp_filepath, None)
-                        yield ProgressMessage(min(80, 5 + 75 * (block / num_blocks)))
-            infile.close()
+            # Recheck after lock acquisition in case another process completed first.
+            if not force and _installed_now():
+                yield UpToDateMessage(info)
+                yield ProgressMessage(100)
+                yield FinishPackageMessage(info)
+                return
 
-            os.replace(tmp_filepath, filepath)
-            self._status_cache.pop(info.id, None)
+            status = _status_now()
 
-        except OSError as e:
-            if os.path.exists(tmp_filepath):
+            # Only the lock holder may clean stale state.
+            if status == self.STALE:
+                yield StaleMessage(info)
+                _safe_remove(tmp_filepath)
+                _safe_remove(filepath)
+                if unzipdir:
+                    _safe_rmtree(unzipdir)
+                self._status_cache.pop(info.id, None)
+
+            # Download if needed.
+            if force or not os.path.exists(filepath):
+                yield StartDownloadMessage(info)
+                yield ProgressMessage(5)
+
                 try:
-                    os.remove(tmp_filepath)
-                except FileNotFoundError:
-                    pass
-            yield ErrorMessage(
-                info,
-                "Error downloading %r from <%s>:" "\n  %s" % (info.id, info.url, e),
-            )
-            return
+                    infile = urlopen(info.url)
+                    with open(tmp_filepath, "wb") as outfile:
+                        num_blocks = max(1, info.size / (1024 * 16))
+                        for block in itertools.count():
+                            s = infile.read(1024 * 16)
+                            if not s:
+                                break
+                            outfile.write(s)
+                            if block % 2 == 0:
+                                _touch_lock()
+                                yield ProgressMessage(
+                                    min(80, 5 + 75 * (block / num_blocks))
+                                )
+                    infile.close()
+                    os.replace(tmp_filepath, filepath)
+                    self._status_cache.pop(info.id, None)
+                except OSError as e:
+                    _safe_remove(tmp_filepath)
+                    yield ErrorMessage(
+                        info,
+                        "Error downloading %r from <%s>:"
+                        "\n  %s" % (info.id, info.url, e),
+                    )
+                    return
 
-        yield FinishDownloadMessage(info)
-        yield ProgressMessage(80)
+                yield FinishDownloadMessage(info)
+                yield ProgressMessage(80)
 
-        # Check if it needs to be unzipped.
-        if info.filename.endswith(".zip"):
-            zipdir = os.path.join(download_dir, info.subdir)
+            # Unzip while still holding the same install lock.
+            if info.filename.endswith(".zip"):
+                zipdir = os.path.join(download_dir, info.subdir)
+                if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
+                    yield StartUnzipMessage(info)
+                    for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                        _touch_lock()
+                        msg.package = info
+                        yield msg
+                        if isinstance(msg, ErrorMessage):
+                            return
+                    yield FinishUnzipMessage(info)
 
-            # Unzip if we're unzipping by default; *or* if it's already
-            # been unzipped (presumably a previous version).
-            if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
-                yield StartUnzipMessage(info)
-                for msg in _unzip_iter(filepath, zipdir, verbose=False):
-                    # Somewhat of a hack, but we need a proper package reference
-                    msg.package = info
-                    yield msg
-                yield FinishUnzipMessage(info)
+            # Final verification: followers should only ever observe INSTALLED.
+            if not _installed_now():
+                yield ErrorMessage(
+                    info,
+                    f"Package {info.id!r} did not reach installed state "
+                    f"(final status: {_status_now()})",
+                )
+                return
 
-        yield FinishPackageMessage(info)
+            yield FinishPackageMessage(info)
+
+        finally:
+            _safe_remove(tmp_filepath)
+            _safe_remove(lock_filepath)
 
     def download(
         self,
@@ -1514,7 +1534,7 @@ class DownloaderGUI:
         self._download_abort_queue = []
         self._downloading = False
 
-        # For tkinter after callbacks:
+        # For tkinter after zcallbacks:
         self._afterid = {}
 
         # A message log.

@@ -21,7 +21,8 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 # Security Enforcement Toggle
-ENFORCE = False
+# ENFORCE = False
+ENFORCE = True
 
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
