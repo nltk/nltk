@@ -206,8 +206,21 @@ def validate_network_url(url_input, context="NetworkIO"):
         return
     try:
         parsed = urlparse(str(url_input))
+
         if parsed.scheme == "file":
-            validate_path(unquote(parsed.path), context=f"{context}.file_scheme")
+            file_path = unquote(parsed.path)
+
+            # Windows file:// URIs arrive like /C:/path/to/file
+            # Convert them to a native absolute path before validation.
+            if (
+                os.name == "nt"
+                and len(file_path) >= 3
+                and file_path[0] == "/"
+                and file_path[2] == ":"
+            ):
+                file_path = file_path[1:]
+
+            validate_path(file_path, context=f"{context}.file_scheme")
             return
 
         if parsed.scheme not in ("http", "https"):
