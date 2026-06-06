@@ -78,5 +78,15 @@ def test_backward_probability():
     assert_array_almost_equal(wikipedia_results, bp, 4)
 
 
+def test_hmm_tagger_instance_and_forward_dtype():
+    import numpy as np
+
+    model, states, symbols, seq = _wikipedia_example_hmm()
+    assert isinstance(model, hmm.HiddenMarkovModelTagger)
+    fp = model._forward_probability(seq)
+    assert isinstance(fp, np.ndarray)
+    assert fp.dtype == np.float64
+
+
 def setup_module(module):
     pytest.importorskip("numpy")
