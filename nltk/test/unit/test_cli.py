@@ -11,7 +11,6 @@ flag for ``--preserve-line`` to ``-p``.
 
 import warnings
 
-import pytest
 from click.testing import CliRunner
 
 from nltk.cli import cli
