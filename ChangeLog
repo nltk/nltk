@@ -1,4 +1,34 @@
+Version 3.10.0 2026-06-XX
+
+* Enforce the stricter `nltk.pathsec` security policy by default (`ENFORCE = True`)
+* Document the new default security policy, migration guidance, and resource-loading protections
+* Harden resource loading against additional path traversal, SSRF, DNS-rebinding, downloader, and corpus-reader edge cases
+* Block URL-encoded traversal in `nltk:` resource URLs
+* Prevent DNS-rebinding SSRF in `pathsec.urlopen`
+* Close remaining pathsec gaps in corpus readers and downloader target-path handling
+* Re-validate downloader path containment across platforms and improve downloader concurrency/file locking behavior
+* Block XML entity expansion in the downloader
+* Warn on unpickling user-provided pickles
+* Add HuggingFace datasets integration (`nltk.huggingface`)
+* Align TnT with Brants (2000) specifications
+* Fix PorterStemmer irregular-form lowercasing in NLTK mode
+* Fix TransitionParser sparse index dtype for scikit-learn 1.9
+* Fix TextCat tie handling
+* Fix WordNet object comparisons for incompatible types
+* Cache WordNet max depth lazily for `lch_similarity()`
+* Fix CCG variable direction, substitution, type-raising, and related parser bugs
+* Fix Jaro similarity for single-character and empty-string cases
+* Improve CI and retest workflow support for branch and fork PRs
+* Update contributing and release-maintenance workflows
+
+Thanks to the following contributors to 3.10.0:
+13rac1, alvations, bowiechen, devesh-2002, ekaf, elias-ba,
+haosenwang1018, HyperPS, ihitamandal, jancallewaert, jhnwnstd,
+JuanIMartinezB, Lemm1, LinZiyuu, Mr-Neutr0n, PastelStorm,
+scruge1, Syzygy2048, ylwango613, yzhaoinuw
+
 Version 3.9.4 2026-03-24
+
 * Support Python 3.14
 * Fix bug in Levenshtein distance when substitution_cost > 2
 * Fix bug in Treebank detokeniser re quote ordering
