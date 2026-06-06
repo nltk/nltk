@@ -67,9 +67,15 @@ from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
 TITLE = re.compile(r"^\[t\](.*)$")  # [t] Title
-FEATURES = re.compile(
-    r"((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]"
-)  # find 'feature' in feature[+3]
+# find 'feature' in feature[+3].
+# The feature label is "a word, then up to 50 single-whitespace-separated
+# words". The label length is *bounded* so that re.findall() cannot rescan a
+# long, bracket-less line quadratically: with the previous unbounded label
+# (``(?:(?:\w+\s)+)?\w+``) a crafted corpus line such as ``"word " * 100000``
+# makes each search position consume the rest of the line, hanging the reader
+# (ReDoS, CWE-1333). Real feature labels are short noun phrases, so the bound
+# does not affect normal corpora.
+FEATURES = re.compile(r"(\w+(?:\s\w+){0,50})\[((?:\+|\-)\d)\]")
 NOTES = re.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
 SENT = re.compile(r"##(.*)$")  # find tokenized sentence
 

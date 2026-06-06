@@ -9,6 +9,7 @@
 
 """Centralized I/O security sentinel for NLTK."""
 import builtins
+import http.client
 import ipaddress
 import os
 import socket
@@ -21,7 +22,8 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 # Security Enforcement Toggle
-ENFORCE = False
+# ENFORCE = False
+ENFORCE = True
 
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
@@ -192,11 +194,40 @@ def validate_zip_archive(
 
 @lru_cache(maxsize=256)
 def _resolve_hostname(hostname):
-    """Cached hostname resolution to mitigate DNS rebinding."""
+    """Cached hostname resolution for the early SSRF pre-check.
+
+    Note: the cache alone does NOT prevent DNS rebinding, because the connection
+    layer re-resolves the hostname independently. The actual rebinding
+    protection is the connect-time IP pinning in ``_SafeHTTPConnection`` /
+    ``_SafeHTTPSConnection``.
+    """
     try:
         return socket.getaddrinfo(hostname, None, proto=socket.IPPROTO_TCP)
     except (OSError, ValueError):
         return []
+
+
+def _ip_is_forbidden(ip):
+    """Return True if the SSRF filter must refuse to connect to ``ip``.
+
+    Policy (defense in depth): only *globally routable* addresses are allowed;
+    anything that is not global -- loopback, link-local, private, carrier-grade
+    NAT (100.64.0.0/10), reserved, unspecified (``0.0.0.0`` / ``::``),
+    documentation ranges, etc. -- is forbidden. This generalises the previous
+    explicit ``loopback / link-local / multicast / private`` list and is a strict
+    superset of it. Multicast is still rejected explicitly because some CPython
+    versions classify multicast addresses as ``is_global``.
+
+    IPv4-mapped IPv6 addresses (e.g. ``::ffff:127.0.0.1``) are evaluated as their
+    embedded IPv4 address: the stdlib's ``is_*`` classification of mapped
+    addresses is version dependent and has not always reflected the embedded
+    address, so the mapped form could otherwise smuggle a forbidden IPv4 past the
+    check.
+    """
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if mapped is not None:
+        ip = mapped
+    return ip.is_multicast or not ip.is_global
 
 
 def validate_network_url(url_input, context="NetworkIO"):
@@ -205,8 +236,30 @@ def validate_network_url(url_input, context="NetworkIO"):
         return
     try:
         parsed = urlparse(str(url_input))
+
         if parsed.scheme == "file":
-            validate_path(unquote(parsed.path), context=f"{context}.file_scheme")
+            file_path = unquote(parsed.path)
+            netloc = parsed.netloc
+
+            # Only local file:// URIs are allowed.
+            # Reject remote/UNC-style authorities so validation matches actual access.
+            if netloc not in ("", "localhost"):
+                raise OSError(
+                    f"Security Violation [{context}.file_scheme]: "
+                    f"Non-local file URI authority not allowed: {netloc!r}"
+                )
+
+            # Windows file:// URIs arrive like /C:/path/to/file
+            # Convert them to a native absolute path before validation.
+            if (
+                os.name == "nt"
+                and len(file_path) >= 3
+                and file_path[0] == "/"
+                and file_path[2] == ":"
+            ):
+                file_path = file_path[1:]
+
+            validate_path(file_path, context=f"{context}.file_scheme")
             return
 
         if parsed.scheme not in ("http", "https"):
@@ -221,7 +274,7 @@ def validate_network_url(url_input, context="NetworkIO"):
 
         for result in _resolve_hostname(parsed.hostname or ""):
             ip = ipaddress.ip_address(result[4][0])
-            if ip.is_loopback or ip.is_link_local or ip.is_multicast or ip.is_private:
+            if _ip_is_forbidden(ip):
                 msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {ip}"
                 if ENFORCE:
                     raise PermissionError(msg)
@@ -242,6 +295,108 @@ class _ValidatingRedirectHandler(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
+def _resolve_and_validate_host(host, port):
+    """
+    Resolve ``host`` once and SSRF-validate *every* address it resolves to.
+
+    Returns the resolved ``getaddrinfo`` records so the caller can connect to a
+    **pinned** numeric address. Because validation and the subsequent connection
+    observe the same resolution (the connection is made to the numeric IP, which
+    triggers no further name lookup), this closes the DNS-rebinding TOCTOU where
+    a hostname resolves to a public IP during validation and to an internal /
+    loopback IP during the actual connect.
+    """
+    try:
+        addrinfo = socket.getaddrinfo(host, port, proto=socket.IPPROTO_TCP)
+    except (OSError, ValueError):
+        return []
+    for res in addrinfo:
+        try:
+            ip = ipaddress.ip_address(res[4][0])
+        except ValueError:
+            continue
+        if _ip_is_forbidden(ip):
+            msg = f"Security Violation [pathsec.urlopen]: SSRF attempt to restricted IP {ip}"
+            if ENFORCE:
+                raise PermissionError(msg)
+            warnings.warn(msg, RuntimeWarning, stacklevel=2)
+    return addrinfo
+
+
+def _pinned_connection(host, port, timeout, source_address):
+    """Open a socket to ``host``/``port`` over an SSRF-validated, pinned address.
+
+    Every address ``host`` resolves to is validated together, then the socket is
+    opened to those **numeric** addresses, so no second (unvalidated) name lookup
+    happens at connect time -- this closes the DNS-rebinding TOCTOU.  All
+    validated addresses are tried in order, preserving urllib/socket's normal
+    dual-stack / multi-A fallback.  If nothing resolves to a validated address we
+    fail closed: we never fall back to connecting by the raw hostname, which
+    would re-resolve unvalidated and reopen the rebinding hole.
+    """
+    addrinfo = _resolve_and_validate_host(host, port)
+    if not addrinfo:
+        # Fail closed: never fall back to connecting by the raw hostname (that
+        # would re-resolve unvalidated and reopen the rebinding hole). The host
+        # produced no usable address, which is a name-resolution failure, so we
+        # surface it as socket.gaierror rather than a bare OSError. gaierror is
+        # an OSError subclass, so urllib still wraps it as URLError and the
+        # fail-closed contract is unchanged; but callers that legitimately
+        # expect a DNS failure -- e.g. obfuscated/decimal-IP hosts that some
+        # platforms (Windows) refuse to resolve -- then see the expected
+        # gaierror reason instead of an opaque OSError.
+        raise socket.gaierror(
+            f"pathsec.urlopen: no validated address for host {host!r}; "
+            "refusing to connect by unvalidated hostname"
+        )
+    last_err = None
+    for res in addrinfo:
+        ip = res[4][0]
+        try:
+            return socket.create_connection((ip, port), timeout, source_address)
+        except OSError as e:
+            last_err = e
+    raise last_err
+
+
+class _SafeHTTPConnection(http.client.HTTPConnection):
+    """HTTPConnection that resolves, SSRF-validates and pins the address at connect()."""
+
+    def connect(self):
+        self.sock = _pinned_connection(
+            self.host, self.port, self.timeout, self.source_address
+        )
+
+
+class _SafeHTTPSConnection(http.client.HTTPSConnection):
+    """HTTPS variant of :class:`_SafeHTTPConnection`.
+
+    Connects to a validated, pinned IP but keeps SNI / certificate verification
+    against the original hostname.
+    """
+
+    def connect(self):
+        sock = _pinned_connection(
+            self.host, self.port, self.timeout, self.source_address
+        )
+        self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
+
+
+class _SafeHTTPHandler(urllib.request.HTTPHandler):
+    def http_open(self, req):
+        return self.do_open(_SafeHTTPConnection, req)
+
+
+class _SafeHTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req):
+        kwargs = {}
+        if getattr(self, "_context", None) is not None:
+            kwargs["context"] = self._context
+        if getattr(self, "_check_hostname", None) is not None:
+            kwargs["check_hostname"] = self._check_hostname
+        return self.do_open(_SafeHTTPSConnection, req, **kwargs)
+
+
 def urlopen(url, *args, **kwargs):
     """
     Secure wrapper for urllib.request.urlopen with redirect validation.
@@ -256,16 +411,40 @@ def urlopen(url, *args, **kwargs):
 
     # Safely inherit proxy settings without reusing handler instances
     # (Reusing instances overwrites their .parent, breaking the global opener)
+    proxied = False
+    has_proxy_handler = False
     if urllib.request._opener is not None:
         for handler in urllib.request._opener.handlers:
             if isinstance(handler, urllib.request.ProxyHandler):
+                has_proxy_handler = True
                 # Copy the dictionary to prevent shared mutable state
                 isolated_proxies = dict(handler.proxies) if handler.proxies else {}
+                if isolated_proxies:
+                    proxied = True
                 handlers.append(urllib.request.ProxyHandler(isolated_proxies))
             elif isinstance(handler, urllib.request.ProxyBasicAuthHandler):
                 handlers.append(urllib.request.ProxyBasicAuthHandler(handler.passwd))
             elif isinstance(handler, urllib.request.ProxyDigestAuthHandler):
                 handlers.append(urllib.request.ProxyDigestAuthHandler(handler.passwd))
+
+    # If the caller configured no ProxyHandler at all, environment proxies still
+    # apply: build_opener() would install a default ProxyHandler from
+    # getproxies(). Treat that as proxied too, because the proxy -- not NLTK --
+    # is then the egress that resolves names and performs the CONNECT tunnel; the
+    # connect-time pinning handlers cannot tunnel and would break proxied HTTPS.
+    if not proxied and not has_proxy_handler and urllib.request.getproxies():
+        proxied = True
+
+    if not proxied:
+        # No proxy in effect: NLTK makes the connection itself, so pin the
+        # validated IP (a rebinding hostname cannot be re-resolved to an internal
+        # address at connect time). Add an explicit empty ProxyHandler so
+        # build_opener() does not silently re-enable environment proxies, which
+        # the pinning handlers cannot tunnel through.
+        if not has_proxy_handler:
+            handlers.append(urllib.request.ProxyHandler({}))
+        handlers.append(_SafeHTTPHandler())
+        handlers.append(_SafeHTTPSHandler())
 
     opener = urllib.request.build_opener(*handlers)
     return opener.open(url, *args, **kwargs)

@@ -3,6 +3,8 @@ import os
 import pytest
 
 from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+from nltk.corpus.reader.util import find_corpus_fileids
+from nltk.data import FileSystemPathPointer
 
 
 @pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires os.symlink")
@@ -28,3 +30,26 @@ def test_corpusreader_open_blocks_symlink_escape(tmp_path):
     # Act + Assert: opening via the symlinked path must be blocked by corpus-root sandboxing
     with pytest.raises((ValueError, PermissionError, OSError)):
         reader.open("outside_link/secret.txt").read()
+
+
+@pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires os.symlink")
+def test_find_corpus_fileids_skips_symlink_escape(tmp_path):
+    corpus_root = tmp_path / "corpus"
+    corpus_root.mkdir()
+
+    inside_file = corpus_root / "inside.txt"
+    inside_file.write_text("inside", encoding="utf-8")
+
+    outside_dir = tmp_path / "outside"
+    outside_dir.mkdir()
+
+    secret = outside_dir / "secret.txt"
+    secret.write_text("secret", encoding="utf-8")
+
+    escaping_link = corpus_root / "outside_link"
+    os.symlink(str(outside_dir), str(escaping_link))
+
+    fileids = find_corpus_fileids(FileSystemPathPointer(str(corpus_root)), r".*")
+
+    assert "inside.txt" in fileids
+    assert "outside_link/secret.txt" not in fileids

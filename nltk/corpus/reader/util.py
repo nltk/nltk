@@ -21,6 +21,7 @@ from nltk.data import (
     ZipFilePathPointer,
 )
 from nltk.internals import slice_bounds
+from nltk.pathsec import open as _secure_open
 from nltk.tokenize import wordpunct_tokenize
 from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
 
@@ -209,10 +210,10 @@ class StreamBackedCorpusView(AbstractLazySequence):
             self._stream = self._fileid.open(self._encoding)
         elif self._encoding:
             self._stream = SeekableUnicodeStreamReader(
-                open(self._fileid, "rb"), self._encoding
+                _secure_open(self._fileid, "rb"), self._encoding
             )
         else:
-            self._stream = open(self._fileid, "rb")
+            self._stream = _secure_open(self._fileid, "rb")
 
     def close(self):
         """
@@ -724,20 +725,46 @@ def find_corpus_fileids(root, regexp):
         items = [name for name in fileids if re.match(regexp, name)]
         return sorted(items)
 
-    # Find fileids in a directory: use os.walk to search all (proper
-    # or symlinked) subdirectories, and match paths against the regexp.
+    # Find fileids in a directory: use os.walk to search subdirectories,
+    # but do not descend into symlinked directories that resolve outside
+    # the corpus root.
     elif isinstance(root, FileSystemPathPointer):
         items = []
+        resolved_root = os.path.realpath(root.path)
+
         for dirname, subdirs, fileids in os.walk(root.path):
+            dirname_real = os.path.realpath(dirname)
+            try:
+                if os.path.commonpath([resolved_root, dirname_real]) != resolved_root:
+                    subdirs[:] = []
+                    continue
+            except ValueError:
+                subdirs[:] = []
+                continue
+
+            pruned_subdirs = []
+            for subdir in subdirs:
+                full_subdir = os.path.join(dirname, subdir)
+                subdir_real = os.path.realpath(full_subdir)
+                try:
+                    inside_root = (
+                        os.path.commonpath([resolved_root, subdir_real])
+                        == resolved_root
+                    )
+                except ValueError:
+                    inside_root = False
+
+                if inside_root and subdir != ".svn":
+                    pruned_subdirs.append(subdir)
+
+            subdirs[:] = pruned_subdirs
+
             prefix = "".join("%s/" % p for p in _path_from(root.path, dirname))
             items += [
                 prefix + fileid
                 for fileid in fileids
                 if re.match(regexp, prefix + fileid)
             ]
-            # Don't visit svn directories:
-            if ".svn" in subdirs:
-                subdirs.remove(".svn")
         return sorted(items)
 
     # HuggingFace PathPointer: delegate to its fileids() method (duck typing,

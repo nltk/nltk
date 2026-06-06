@@ -12,6 +12,7 @@ Corpus reader for the FrameNet 1.7 lexicon and corpus.
 """
 
 import itertools
+import ntpath
 import os
 import re
 import sys
@@ -756,6 +757,28 @@ class FramenetError(Exception):
     """An exception class for framenet-related errors."""
 
 
+def _reject_unsafe_path_component(value, kind):
+    """Reject a corpus-/caller-supplied name that could escape the corpus root.
+
+    ``doc()``, ``frame_by_name()`` and ``_lu_file()`` interpolate a name into an
+    XML file path (CWE-22).  Besides POSIX/Windows separators and ``..``, this
+    also rejects a Windows drive- or UNC-qualified name such as ``C:evil`` or
+    ``\\\\host\\share``: it contains no separator, yet ``os.path.join`` discards
+    the corpus root when the name carries a drive on Windows.
+    ``ntpath.splitdrive`` is used rather than ``os.path.splitdrive`` so the
+    check applies on every platform (and stays testable off Windows).
+    """
+    value = str(value)
+    if (
+        os.sep in value
+        or "/" in value
+        or "\\" in value
+        or ".." in value
+        or ntpath.splitdrive(value)[0]
+    ):
+        raise FramenetError(f"Invalid {kind}: {value!r}")
+
+
 class AttrDict(dict):
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
@@ -1362,8 +1385,15 @@ warnings(True) to display corpus consistency warnings when loading data
         except KeyError as e:  # probably means that fn_docid was not in the index
             raise FramenetError(f"Unknown document id: {fn_docid}") from e
 
+        # Security (CWE-22): defend against a malicious corpus index whose
+        # filename field contains path-traversal sequences.  Reject the unsafe
+        # name and resolve the path through self.abspath() so the file is read
+        # via the PathPointer / nltk.pathsec sandbox instead of the builtin
+        # open() that a bare string path would use in XMLCorpusView.
+        _reject_unsafe_path_component(xmlfname, "document filename")
+
         # construct the path name for the xml file containing the document info
-        locpath = os.path.join(f"{self._root}", self._fulltext_dir, xmlfname)
+        locpath = self.abspath(os.path.join(self._fulltext_dir, xmlfname))
 
         # Grab the top-level xml element containing the fulltext annotation
         with XMLCorpusView(locpath, "fullTextAnnotation") as view:
@@ -1452,11 +1482,16 @@ warnings(True) to display corpus consistency warnings when loading data
         elif not self._frame_idx:
             self._buildframeindex()
 
+        # Security (CWE-22): the frame name is interpolated into the XML file
+        # path.  Reject crafted names, then resolve through self.abspath() so the
+        # file is read via the PathPointer / nltk.pathsec sandbox rather than the
+        # builtin open() that a bare string path would use in XMLCorpusView.
+        _reject_unsafe_path_component(fn_fname, "frame name")
+
         # construct the path name for the xml file containing the Frame info
-        locpath = os.path.join(f"{self._root}", self._frame_dir, fn_fname + ".xml")
-        # print(locpath, file=sys.stderr)
         # Grab the xml for the frame
         try:
+            locpath = self.abspath(os.path.join(self._frame_dir, fn_fname + ".xml"))
             with XMLCorpusView(locpath, "frame") as view:
                 elt = view[0]
         except OSError as e:
@@ -1800,13 +1835,19 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         fn_luid = lu.ID
 
+        # Security (CWE-22): the LU id comes from corpus data (a <lexUnit ID="...">
+        # attribute) and is interpolated into the XML file path.  A non-numeric
+        # id can carry path-traversal sequences; reject it, then resolve through
+        # self.abspath() so the file is read via the PathPointer / nltk.pathsec
+        # sandbox rather than the builtin open() used for a bare string path.
+        _reject_unsafe_path_component(fn_luid, "LU id")
+
         fname = f"lu{fn_luid}.xml"
-        locpath = os.path.join(f"{self._root}", self._lu_dir, fname)
-        # print(locpath, file=sys.stderr)
         if not self._lu_idx:
             self._buildluindex()
 
         try:
+            locpath = self.abspath(os.path.join(self._lu_dir, fname))
             with XMLCorpusView(locpath, "lexUnit") as view:
                 elt = view[0]
         except OSError as e:

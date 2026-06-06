@@ -913,11 +913,12 @@ class Synset(_WordNetObject):
             )
 
         need_root = self._needs_root()
+        key = (self._pos, need_root)
 
-        if self._pos not in self._wordnet_corpus_reader._max_depth:
+        if key not in self._wordnet_corpus_reader._max_depth:
             self._wordnet_corpus_reader._compute_max_depth(self._pos, need_root)
 
-        depth = self._wordnet_corpus_reader._max_depth[self._pos]
+        depth = self._wordnet_corpus_reader._max_depth[key]
 
         distance = self.shortest_path_distance(
             other, simulate_root=simulate_root and need_root
@@ -1169,9 +1170,9 @@ class WordNetCorpusReader(CorpusReader):
         # Map from pos -> offset -> synset
         self._synset_offset_cache = defaultdict(dict)
 
-        # A lookup for the maximum depth of each part of speech.  Useful for
-        # the lch similarity metric.
-        self._max_depth = defaultdict(dict)
+        # A cache for the maximum depth used by the lch similarity metric.
+        # Keyed by (pos, need_root), where need_root indicates whether a simulated root is required..
+        self._max_depth = {}
 
         # Corpus reader containing omw data.
         self._omw_reader = omw_reader
@@ -1475,18 +1476,25 @@ class WordNetCorpusReader(CorpusReader):
 
     def _compute_max_depth(self, pos, simulate_root):
         """
-        Compute the max depth for the given part of speech.  This is
+        Compute the max depth for the given part of speech. This is
         used by the lch similarity metric.
         """
+        key = (pos, simulate_root)
+        if key in self._max_depth:
+            return self._max_depth[key]
+
         depth = 0
-        for ii in self.all_synsets(pos):
+        for ss in self.all_synsets(pos):
             try:
-                depth = max(depth, ii.max_depth())
+                depth = max(depth, ss.max_depth())
             except RuntimeError:
-                print(ii)
+                print(ss)
+
         if simulate_root:
             depth += 1
-        self._max_depth[pos] = depth
+
+        self._max_depth[key] = depth
+        return depth
 
     def get_version(self):
         fh = self._data_file(ADJ)

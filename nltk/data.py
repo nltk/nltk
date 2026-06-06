@@ -45,6 +45,7 @@ from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
 from io import BytesIO, TextIOWrapper
+from urllib.parse import unquote
 from urllib.request import url2pathname
 
 from nltk.pathsec import ZipFile
@@ -57,6 +58,39 @@ from nltk.pathsec import urlopen as _secure_urlopen
 _UNSAFE_NO_PROTOCOL_RE = re.compile(r"(?:\.\./|\.\.$|^/|\\|[A-Za-z]:[/\\])")
 
 
+def _assert_no_encoded_bypass(name, error_label=None):
+    """
+    Reject *name* if its URL-decoded form contains an unsafe pattern that
+    the raw form does not.
+
+    This is the single source of truth for the "did this resource string
+    smuggle traversal or absolute-path characters past the raw-form
+    check via percent-encoding?" question. Downstream code applies
+    :data:`_UNSAFE_NO_PROTOCOL_RE` to the raw resource string, but
+    :func:`url2pathname` decodes percent-escapes when turning the string
+    into a filesystem path, so a payload like ``%2fetc%2fpasswd`` would
+    otherwise pass the raw-form check and then resolve to ``/etc/passwd``
+    on disk. Centralising the encoded check here keeps the encoded /
+    literal policy in lock-step across every call site, which matters
+    because the rule is security-sensitive and we do not want it to
+    drift.
+
+    Only a single :func:`unquote` pass is performed, mirroring what
+    :func:`url2pathname` itself does — decoding repeatedly would change
+    the meaning of legitimate percent-encoded names such as ``%2520``
+    (a literal ``%20``).
+
+    :param name: The resource string to validate.
+    :param error_label: Optional alternative string to embed in the
+        ``ValueError`` message (defaults to ``name``). Useful when the
+        caller wants the error to reference the original outer URL.
+    """
+    decoded = unquote(name)
+    if decoded != name and _UNSAFE_NO_PROTOCOL_RE.search(decoded):
+        label = name if error_label is None else error_label
+        raise ValueError(f"Unsafe resource path: {label!r}")
+
+
 def _reject_unsafe_no_protocol(resource_url):
     """
     Reject unsafe resource strings that *omit an explicit protocol*.
@@ -64,9 +98,16 @@ def _reject_unsafe_no_protocol(resource_url):
     Note: some no-protocol inputs are interpreted by split_resource_url() as
     file-style paths (e.g., bare Windows drive paths like "C:/foo"). These must
     still be rejected here when they contain unsafe patterns.
+
+    Both the raw and URL-decoded form are validated so that encoded path
+    separators / traversal segments (``%2f``, ``%2e%2e``, ...) cannot
+    bypass the filter and later be decoded by :func:`url2pathname` into
+    a dangerous filesystem path. The encoded-form check is delegated to
+    :func:`_assert_no_encoded_bypass` to keep the policy in one place.
     """
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_url):
         raise ValueError(f"Unsafe resource path: {resource_url!r}")
+    _assert_no_encoded_bypass(resource_url)
 
 
 try:
@@ -235,11 +276,17 @@ def normalize_resource_url(resource_url):
 
     # Case 1: nltk:<path>
     if protocol == "nltk":
-        # If "nltk:" is used with an absolute path, treat it as "file://"
-        # Reject Windows drive-letter paths even when explicitly using the nltk: protocol.
-        # This prevents smuggling filesystem paths through nltk: URLs.
+        # Reject encoded-form bypasses (e.g. ``nltk:%2fetc%2fpasswd``)
+        # before the literal-form routing below interprets the path. The
+        # encoded check is centralised in _assert_no_encoded_bypass so the
+        # encoded / literal policy cannot drift across call sites.
+        _assert_no_encoded_bypass(name, error_label=resource_url)
+        # Reject Windows drive-letter paths even when explicitly using the
+        # nltk: protocol. This prevents smuggling filesystem paths through
+        # nltk: URLs.
         if re.match(r"^[A-Za-z]:[/\\]", name):
             raise ValueError(f"Unsafe resource path: {resource_url!r}")
+        # If "nltk:" is used with an absolute path, treat it as "file://"
         if os.path.isabs(name):
             protocol = "file://"
             name = normalize_resource_name(name, False, None)
@@ -612,10 +659,14 @@ def find(resource_name, paths=None):
     :rtype: str
     """
     resource_name = normalize_resource_name(resource_name, True)
-    # Defense-in-depth: reject traversal/absolute paths even if caller bypassed normalize_resource_url()
-    # Use search() so traversal components anywhere in the resource_name trigger rejection.
+    # Defense-in-depth: reject traversal/absolute paths even if a caller
+    # bypassed normalize_resource_url(). Use search() so traversal
+    # components anywhere in the resource_name trigger rejection. The
+    # URL-decoded form is checked via _assert_no_encoded_bypass to keep
+    # the encoded / literal policy aligned with the other call sites.
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_name):
         raise ValueError(f"Unsafe resource path: {resource_name!r}")
+    _assert_no_encoded_bypass(resource_name)
 
     # Resolve default paths at runtime in-case the user overrides
     # nltk.data.path

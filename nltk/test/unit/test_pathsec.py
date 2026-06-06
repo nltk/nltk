@@ -188,3 +188,233 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
     finally:
         # Teardown: Safely restore the original global opener, leaving no trace of this test
         urllib.request.install_opener(original_opener)
+
+
+def test_ssrf_dns_rebinding_blocked_at_connect(monkeypatch):
+    """A hostname that resolves to a public IP at validation time but to a
+    loopback IP at connect time (DNS rebinding) must still be blocked: the
+    connection is pinned to the validated resolution.  Regression test for the
+    validate-vs-connect DNS re-resolution TOCTOU in pathsec.urlopen.
+    """
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    SECRET = b"LOOPBACK-ONLY-SECRET"
+
+    class _Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(SECRET)
+
+        def log_message(self, *args):
+            pass
+
+    srv = HTTPServer(("127.0.0.1", 0), _Handler)
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        host = "rebind.invalid.test"
+        real_getaddrinfo = socket.getaddrinfo
+        state = {"n": 0}
+
+        def fake_getaddrinfo(h, p, *a, **k):
+            if h == host:
+                state["n"] += 1
+                # 1st resolution (validation) -> public; later (connect) -> loopback
+                ip = "93.184.216.34" if state["n"] == 1 else "127.0.0.1"
+                return [
+                    (
+                        socket.AF_INET,
+                        socket.SOCK_STREAM,
+                        socket.IPPROTO_TCP,
+                        "",
+                        (ip, p if isinstance(p, int) else 0),
+                    )
+                ]
+            return real_getaddrinfo(h, p, *a, **k)
+
+        monkeypatch.setattr(socket, "getaddrinfo", fake_getaddrinfo)
+        # No proxy: force direct connection so the pinning handlers are used
+        # regardless of the environment the test runs in.
+        monkeypatch.setattr(urllib.request, "getproxies", lambda: {})
+
+        leaked = None
+        blocked = False
+        try:
+            resp = pathsec.urlopen(f"http://{host}:{port}/x")
+            leaked = resp.read()
+        except (PermissionError, URLError, ValueError):
+            blocked = True
+
+        assert blocked, "DNS-rebinding fetch was not blocked under ENFORCE=True"
+        assert leaked != SECRET, "loopback secret was exfiltrated despite SSRF filter"
+        assert state["n"] >= 2, "host was not re-resolved/validated at connect time"
+    finally:
+        srv.shutdown()
+
+
+def _addrinfo(ip, port=80):
+    return (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", (ip, port))
+
+
+def test_pinned_connection_fails_closed_when_unresolved(monkeypatch):
+    """If no validated address is available, _pinned_connection must NOT fall
+    back to connecting by the raw hostname (which would re-resolve unvalidated
+    and reopen the rebinding hole). It must fail closed."""
+    monkeypatch.setattr(pathsec, "_resolve_and_validate_host", lambda h, p: [])
+
+    attempted = []
+    monkeypatch.setattr(
+        socket, "create_connection", lambda addr, *a, **k: attempted.append(addr)
+    )
+
+    with pytest.raises(OSError):
+        pathsec._pinned_connection("rebind.invalid.test", 80, None, None)
+    assert not attempted, "must not connect by raw hostname when unresolved/unvalidated"
+
+
+def test_pinned_connection_tries_all_validated_addresses(monkeypatch):
+    """Pinning must still try every validated address in order, so a dual-stack
+    host whose first (validated) address is unreachable still succeeds via a
+    later validated address."""
+    a1, a2 = _addrinfo("203.0.113.1"), _addrinfo("203.0.113.2")
+    monkeypatch.setattr(pathsec, "_resolve_and_validate_host", lambda h, p: [a1, a2])
+
+    sentinel = object()
+    tried = []
+
+    def fake_create_connection(addr, *a, **k):
+        tried.append(addr[0])
+        if addr[0] == "203.0.113.1":
+            raise OSError("simulated unreachable first address")
+        return sentinel
+
+    monkeypatch.setattr(socket, "create_connection", fake_create_connection)
+
+    sock = pathsec._pinned_connection("dual.example.com", 80, None, None)
+    assert sock is sentinel
+    assert tried == ["203.0.113.1", "203.0.113.2"], "fallback across addresses lost"
+
+
+def _capture_urlopen_handlers(monkeypatch, url="http://safe.example.com/x"):
+    """Run pathsec.urlopen with build_opener stubbed out and return the handlers
+    it was built with. No global opener, no DNS and no network I/O happen."""
+    captured = []
+
+    def spy_build_opener(*handlers):
+        captured.extend(handlers)
+        return MagicMock()
+
+    monkeypatch.setattr(urllib.request, "_opener", None)
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(urllib.request, "build_opener", spy_build_opener)
+    pathsec.urlopen(url)
+    return captured
+
+
+def test_no_proxy_installs_pinning_and_disables_env_proxy(monkeypatch):
+    """With no proxy in effect, the pinning handlers are installed and an
+    explicit empty ProxyHandler is added so build_opener cannot silently
+    re-enable environment proxies."""
+    monkeypatch.setattr(urllib.request, "getproxies", lambda: {})
+    handlers = _capture_urlopen_handlers(monkeypatch)
+
+    assert any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
+    assert any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    proxy_handlers = [h for h in handlers if isinstance(h, urllib.request.ProxyHandler)]
+    assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
+
+
+def test_env_proxy_skips_pinning_handlers(monkeypatch):
+    """When environment proxies are set, the proxy is the egress: the pinning
+    handlers must NOT be installed (they cannot do the CONNECT tunnel) and we
+    must not force an empty ProxyHandler that would disable the env proxy."""
+    monkeypatch.setattr(
+        urllib.request, "getproxies", lambda: {"http": "http://proxy.local:3128"}
+    )
+    handlers = _capture_urlopen_handlers(monkeypatch)
+
+    assert not any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
+    assert not any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    # We did not append our own ProxyHandler({}); build_opener adds the env one.
+    assert not any(isinstance(h, urllib.request.ProxyHandler) for h in handlers)
+
+
+# --- SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6 ---------
+
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "127.0.0.1",  # loopback
+        "169.254.169.254",  # link-local (cloud metadata)
+        "10.0.0.5",  # private
+        "192.168.1.1",  # private
+        "224.0.0.1",  # multicast (is_global is True on some CPython versions)
+        "0.0.0.0",  # unspecified (routes to localhost on Linux)
+        "100.64.1.1",  # carrier-grade NAT -- missed by the old explicit list
+        "240.0.0.1",  # reserved
+        "::1",  # IPv6 loopback
+        "::",  # IPv6 unspecified
+        "::ffff:127.0.0.1",  # IPv4-mapped loopback
+        "::ffff:169.254.169.254",  # IPv4-mapped cloud metadata
+        "::ffff:10.0.0.5",  # IPv4-mapped private
+    ],
+)
+def test_ip_policy_forbids_non_global_and_mapped(addr):
+    """Every non-global address -- including CGNAT/unspecified the old explicit
+    list missed, and IPv4-mapped IPv6 forms -- must be rejected."""
+    import ipaddress
+
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)), addr
+
+
+@pytest.mark.parametrize("addr", ["8.8.8.8", "93.184.216.34", "2606:2800:220:1::1"])
+def test_ip_policy_allows_global(addr):
+    """Genuinely global addresses must still be allowed."""
+    import ipaddress
+
+    assert not pathsec._ip_is_forbidden(ipaddress.ip_address(addr)), addr
+
+
+def test_resolve_and_validate_blocks_ipv4_mapped_loopback(monkeypatch):
+    """Connect-side: a host resolving to an IPv4-mapped loopback IPv6 address
+    must be blocked under ENFORCE (it would otherwise smuggle 127.0.0.1)."""
+    mapped = (
+        socket.AF_INET6,
+        socket.SOCK_STREAM,
+        socket.IPPROTO_TCP,
+        "",
+        ("::ffff:127.0.0.1", 80, 0, 0),
+    )
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **k: [mapped])
+    with pytest.raises(PermissionError):
+        pathsec._resolve_and_validate_host("mapped.invalid.test", 80)
+
+
+def test_validate_network_url_blocks_cgnat(monkeypatch):
+    """Validation-side: carrier-grade NAT (100.64.0.0/10) is non-global and must
+    now be rejected, where the old explicit list let it through."""
+    monkeypatch.setattr(
+        pathsec, "_resolve_hostname", lambda h: [_addrinfo("100.64.1.1")]
+    )
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.validate_network_url("http://cgnat.invalid.test/x", context="test")
+
+
+def test_streambackedcorpusview_string_fileid_uses_pathsec(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    from nltk.corpus.reader.util import StreamBackedCorpusView
+
+    blocked_file = tmp_path / "secret.txt"
+    blocked_file.write_text("secret", encoding="utf-8")
+
+    monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: set())
+    monkeypatch.setattr(os, "getcwd", lambda: str(Path(tmp_path).parent / "elsewhere"))
+
+    view = StreamBackedCorpusView(str(blocked_file), block_reader=lambda stream: [])
+
+    with pytest.raises((ValueError, PermissionError)):
+        view._open()

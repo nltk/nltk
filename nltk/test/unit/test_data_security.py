@@ -72,6 +72,120 @@ def test_normalize_rejects_no_protocol_dotdot_only():
         data.normalize_resource_url("..")
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        # encoded absolute path
+        "nltk:%2fetc%2fpasswd",
+        "nltk:%2Fetc%2Fpasswd",
+        # encoded ".." traversal
+        "nltk:corpora/%2e%2e/%2e%2e/etc/passwd",
+        "nltk:corpora/%2E%2E/%2E%2E/etc/passwd",
+        # encoded separators sandwiching literal ".."
+        "nltk:corpora/..%2f..%2fetc%2fpasswd",
+        # encoded /proc target
+        "nltk:%2fproc%2fself%2fenviron",
+        # encoded Windows drive letter
+        "nltk:%43%3a%5cetc",
+        # encoded backslash traversal
+        "nltk:%5c..%5cetc%5cpasswd",
+    ],
+)
+def test_normalize_rejects_url_encoded_traversal(url):
+    """URL-encoded path separators and traversal must not bypass the safety check.
+
+    Regression: prior to the fix, ``nltk.data.load("nltk:%2fetc%2fpasswd")``
+    decoded the path inside ``url2pathname()`` *after* the safety check ran,
+    allowing arbitrary file read. See huntr report
+    https://huntr.com/bounties/fae662d6-74c2-44fa-95f3-f53d4e8a8355.
+    """
+    with pytest.raises(ValueError):
+        data.normalize_resource_url(url)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "%2fetc%2fpasswd",
+        "corpora/%2e%2e/%2e%2e/etc/passwd",
+        "corpora/..%2f..%2fetc%2fpasswd",
+    ],
+)
+def test_find_rejects_url_encoded_traversal(name):
+    """Defense-in-depth: find() must reject URL-encoded traversal directly."""
+    with pytest.raises(ValueError):
+        data.find(name)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        # Encoded space — extremely common in real resource names.
+        "nltk:corpora/foo%20bar",
+        # UTF-8-encoded non-ASCII name (here "中文").
+        "nltk:corpora/%E4%B8%AD%E6%96%87",
+        # Encoded ASCII dot in an extension — decodes to ``file.zip``, no traversal.
+        "nltk:corpora/file%2Ezip",
+        # Mixed safe encoding inside a realistic zipfile-style name.
+        "nltk:tokenizers/punkt%2Ezip/punkt/PY3/english.pickle",
+    ],
+)
+def test_normalize_allows_safe_percent_encoded_names(url):
+    """Percent-encoded characters that decode to *safe* path components
+    must not be falsely rejected.
+
+    Guards against the centralised encoded-bypass check accidentally
+    being tightened into a blanket "any percent-encoding is unsafe" rule.
+    """
+    out = data.normalize_resource_url(url)
+    assert out.startswith("nltk:"), (
+        f"Safe encoded name {url!r} should still normalise to an nltk: URL, "
+        f"got {out!r}"
+    )
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        # Double-encoded "/" — single unquote yields literal "%2f", which is
+        # neither a path separator nor a traversal segment.
+        "nltk:%252fetc%252fpasswd",
+        # Double-encoded ".." — single unquote yields literal "%2e%2e".
+        "nltk:corpora/%252e%252e/etc/passwd",
+    ],
+)
+def test_double_encoded_payloads_are_not_exploitable(url):
+    """Double-encoded payloads must not reach the host filesystem.
+
+    ``url2pathname()`` only performs one decoding pass, so a double-encoded
+    payload resolves to a literal ``%2f...`` resource name *inside* the
+    nltk_data search path rather than to ``/etc/passwd`` on the host. We
+    intentionally do not chase the asymmetric depth of decoding here — we
+    just assert the call fails closed (LookupError for a non-existent
+    nltk resource, or ValueError if a future tightening rejects it) and
+    never silently returns host-file contents.
+    """
+    with pytest.raises((LookupError, ValueError)):
+        data.load(url, format="raw")
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "nltk:%2fetc%2fpasswd",
+        "nltk:corpora/..%2f..%2fetc%2fpasswd",
+        "nltk:corpora/%2e%2e/%2e%2e/etc/passwd",
+    ],
+)
+def test_load_rejects_encoded_traversal_end_to_end(url):
+    """End-to-end: the public ``data.load`` entry point must reject the
+    same encoded-traversal payloads, not just the internal
+    ``normalize_resource_url`` / ``find`` helpers.
+    """
+    with pytest.raises(ValueError):
+        data.load(url, format="raw")
+
+
 def test_find_zip_split_is_non_greedy(tmp_path):
     # Create a.zip containing an entry whose name includes another ".zip".
     zpath = tmp_path / "a.zip"
