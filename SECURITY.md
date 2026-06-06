@@ -14,7 +14,7 @@ As of NLTK 3.10.0, strict enforcement is enabled by default
 `pathsec` policy unless a caller explicitly opts out.
 
 Under enforcement, unauthorized file access, SSRF attempts, and zip-slip
-style path escapes raise `PermissionError` instead of emitting warnings.
+style path escapes raise exceptions (typically `PermissionError`) instead of emitting warnings.
 
 ### Resource-loading security model
 

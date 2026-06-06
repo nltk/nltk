@@ -11,7 +11,7 @@ NLTK 3.10.0 release: June 2026
 - Local resources must resolve inside allowed NLTK data directories such as ``nltk.data.path`` or ``NLTK_DATA``
 - ``http:`` and ``https:`` resource loading now goes through centralized validation with SSRF protections
 - Redirects are re-validated at each hop during network access
-- Disallowed local paths and blocked network destinations now raise ``PermissionError``
+- Disallowed local paths and blocked network destinations raise ``PermissionError`` (and some corpus-reader validations raise ``ValueError``)
 
 Migration note:
 
@@ -40,7 +40,7 @@ Network loading is now subject to centralized validation.
 - Redirects are re-validated at each hop
 - Violations raise ``PermissionError``
 
-In practice, normal public URLs continue to work, but URLs such as ``https://127.0.0.1/...``, ``https://10.x.x.x/...`` and ``https://169.254.169.254/...`` are rejected.
+In practice, normal public URLs continue to work, but URLs such as ``https://127.0.0.1/...``, ``https://10.0.0.1/...`` and ``https://169.254.169.254/...`` are rejected.
 
 Documentation has also been updated to remove recommendations for arbitrary ``file:`` loading and to clarify that both local and network resource access now go through ``pathsec`` validation.
 

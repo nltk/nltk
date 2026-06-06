@@ -1,4 +1,4 @@
-Version 3.10.0 2026-06-XX
+Version 3.10.0 (unreleased)
 
 * Enforce the stricter `nltk.pathsec` security policy by default (`ENFORCE = True`)
 * Document the new default security policy, migration guidance, and resource-loading protections
