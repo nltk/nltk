@@ -281,40 +281,45 @@ class StanfordSegmenter(TokenizerI):
         default_options = " ".join(_java_options)
 
         # ------------------- Security Validation ------------------- #
-        trusted_paths = ["stanford-segmenter", "stanford-corenlp", "nltk"]
-
         def sha256sum(file_path):
+            stat = os.stat(file_path)
             cached = self._jar_sha256_cache.get(file_path)
+            cache_key = (stat.st_mtime_ns, stat.st_size)
             if cached is not None:
-                return cached
+                cached_key, cached_digest = cached
+                if cached_key == cache_key:
+                    return cached_digest
 
             h = hashlib.sha256()
             with open(file_path, "rb") as f:
                 for chunk in iter(lambda: f.read(4096), b""):
                     h.update(chunk)
             digest = h.hexdigest()
-            self._jar_sha256_cache[file_path] = digest
+            self._jar_sha256_cache[file_path] = (cache_key, digest)
             return digest
 
-        user_checksum = os.environ.get("NLTK_SEGMENTER_ALLOW_SHA256")
-        for jar_path in (p for p in self._stanford_jar.split(os.pathsep) if p):
-            if any(p in jar_path for p in trusted_paths):
-                continue
+        user_checksums = {
+            value.strip()
+            for value in os.environ.get("NLTK_SEGMENTER_ALLOW_SHA256", "").split(",")
+            if value.strip()
+        }
 
+        for jar_path in (p for p in self._stanford_jar.split(os.pathsep) if p):
             jar_checksum = sha256sum(jar_path)
 
-            if user_checksum != jar_checksum:
+            if jar_checksum not in user_checksums:
                 raise LookupError(
                     "\n[SECURITY BLOCKED] Unverified Stanford Segmenter JAR detected:\n"
                     f"  -> {jar_path}\n"
                     f"  SHA256: {jar_checksum}\n\n"
                     "This prevents arbitrary code execution via malicious JAR injection.\n"
-                    "To allow execution, verify and approve its SHA256 checksum,\n"
-                    "then set the NLTK_SEGMENTER_ALLOW_SHA256 environment variable.\n\n"
+                    "To allow execution, verify and approve this checksum,\n"
+                    "then add it to the NLTK_SEGMENTER_ALLOW_SHA256 environment variable.\n\n"
                     "Examples:\n"
                     f'  Unix/macOS (bash/zsh): export NLTK_SEGMENTER_ALLOW_SHA256="{jar_checksum}"\n'
                     f'  Windows PowerShell:    $env:NLTK_SEGMENTER_ALLOW_SHA256="{jar_checksum}"\n'
-                    f"  Windows cmd.exe:       set NLTK_SEGMENTER_ALLOW_SHA256={jar_checksum}\n"
+                    f"  Windows cmd.exe:       set NLTK_SEGMENTER_ALLOW_SHA256={jar_checksum}\n\n"
+                    "Multiple approved checksums may be supplied as a comma-separated list."
                 )
         # ------------------------------------------------------------ #
 
