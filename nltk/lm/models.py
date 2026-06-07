@@ -76,7 +76,9 @@ class StupidBackoff(LanguageModel):
     def unmasked_score(self, word, context=None):
         if context:
             max_ctx = self.order - 1
-            if len(context) > max_ctx:
+            if max_ctx <= 0:
+                context = ()
+            elif len(context) > max_ctx:
                 context = context[-max_ctx:]
 
         if not context:
@@ -108,7 +110,9 @@ class InterpolatedLanguageModel(LanguageModel):
     def unmasked_score(self, word, context=None):
         if context:
             max_ctx = self.order - 1
-            if len(context) > max_ctx:
+            if max_ctx <= 0:
+                context = ()
+            elif len(context) > max_ctx:
                 context = context[-max_ctx:]
 
         if not context:
