@@ -12,6 +12,7 @@ producing identical output for any tree in Chomsky Normal Form.
 
 import multiprocessing
 import os
+from copy import deepcopy
 
 from nltk.tree import Tree
 from nltk.tree.transforms import chomsky_normal_form, un_chomsky_normal_form
@@ -39,6 +40,19 @@ def test_un_chomsky_collapses_artificial_node():
     tree = Tree.fromstring("(S (A a) (S|<B-C> (B b) (C c)))")
     un_chomsky_normal_form(tree)
     assert tree == Tree.fromstring("(S (A a) (B b) (C c))")
+
+
+def test_chomsky_normal_form_handles_terminal_siblings():
+    tree = Tree.fromstring("(S (S 1) + (S 2))")
+    original = deepcopy(tree)
+
+    chomsky_normal_form(tree)
+
+    assert tree == Tree.fromstring("(S (S 1) (S|<+-S> + (S 2)))")
+
+    un_chomsky_normal_form(tree)
+
+    assert tree == original
 
 
 def _un_chomsky_worker(n):
