@@ -1229,7 +1229,7 @@ class Downloader:
                 return nltkdir
 
         # On Windows, use %APPDATA%
-        if sys.platform == "win32" and "APPDATA" in os.environ:
+        if os.name == "nt" and "APPDATA" in os.environ:
             homedir = os.environ["APPDATA"]
 
         # Otherwise, install in the user's home directory.

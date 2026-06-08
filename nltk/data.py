@@ -120,6 +120,10 @@ from nltk.internals import deprecated
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
+
+def _is_windows():
+    return os.name == "nt"
+
 ######################################################################
 # Search Path
 ######################################################################
@@ -137,7 +141,7 @@ path += [d for d in _paths_from_env if d]
 if "APPENGINE_RUNTIME" not in os.environ and os.path.expanduser("~/") != "~/":
     path.append(os.path.expanduser("~/nltk_data"))
 
-if sys.platform.startswith("win"):
+if _is_windows():
     # Common locations on Windows:
     path += [
         os.path.join(sys.prefix, "nltk_data"),
@@ -336,7 +340,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     is_dir = bool(re.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
         os.path.sep
     )
-    if sys.platform.startswith("win"):
+    if _is_windows():
         resource_name = resource_name.lstrip("/")
     else:
         resource_name = re.sub(r"^/+", "/", resource_name)
@@ -347,7 +351,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
             relative_path = os.curdir
         resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
     resource_name = resource_name.replace("\\", "/").replace(os.path.sep, "/")
-    if sys.platform.startswith("win") and os.path.isabs(resource_name):
+    if _is_windows() and os.path.isabs(resource_name):
         resource_name = "/" + resource_name
     if is_dir and not resource_name.endswith("/"):
         resource_name += "/"
