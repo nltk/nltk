@@ -70,6 +70,7 @@ Expected results from the Artstein and Poesio survey paper:
 """
 
 import logging
+import math
 from itertools import groupby
 from operator import itemgetter
 
@@ -207,6 +208,12 @@ class AnnotationTask:
         ret = total / n
         return ret
 
+    def _chance_corrected_agreement(self, observed, expected):
+        """Handle degenerate perfect-agreement cases consistently."""
+        if math.isclose(expected, 1.0):
+            return 1.0 if math.isclose(observed, 1.0) else 0.0
+        return (observed - expected) / (1.0 - expected)
+
     def avg_Ao(self):
         """Average observed agreement across all coders and items."""
         ret = self._pairwise_average(self.Ao)
@@ -237,8 +244,7 @@ class AnnotationTask:
     def S(self):
         """Bennett, Albert and Goldstein 1954"""
         Ae = 1.0 / len(self.K)
-        ret = (self.avg_Ao() - Ae) / (1.0 - Ae)
-        return ret
+        return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
     def pi(self):
         """Scott 1955; here, multi-pi.
@@ -250,7 +256,7 @@ class AnnotationTask:
         for k, f in label_freqs.items():
             total += f**2
         Ae = total / ((len(self.I) * len(self.C)) ** 2)
-        return (self.avg_Ao() - Ae) / (1 - Ae)
+        return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
     def Ae_kappa(self, cA, cB):
         Ae = 0.0
@@ -263,7 +269,7 @@ class AnnotationTask:
     def kappa_pairwise(self, cA, cB):
         """ """
         Ae = self.Ae_kappa(cA, cB)
-        ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
+        ret = self._chance_corrected_agreement(self.Ao(cA, cB), Ae)
         log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
         return ret
 
@@ -280,7 +286,7 @@ class AnnotationTask:
 
         """
         Ae = self._pairwise_average(self.Ae_kappa)
-        return (self.avg_Ao() - Ae) / (1.0 - Ae)
+        return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
     def Disagreement(self, label_freqs):
         total_labels = sum(label_freqs.values())

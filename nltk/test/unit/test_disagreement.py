@@ -57,6 +57,20 @@ class TestDisagreement(unittest.TestCase):
         annotation_task = AnnotationTask(data)
         self.assertAlmostEqual(annotation_task.alpha(), 1.0)
 
+    def test_perfect_agreement_coefficients(self):
+        data = [
+            ("coder1", "1", "YES"),
+            ("coder2", "1", "YES"),
+            ("coder1", "2", "YES"),
+            ("coder2", "2", "YES"),
+        ]
+        annotation_task = AnnotationTask(data)
+
+        self.assertAlmostEqual(annotation_task.S(), 1.0)
+        self.assertAlmostEqual(annotation_task.pi(), 1.0)
+        self.assertAlmostEqual(annotation_task.kappa(), 1.0)
+        self.assertAlmostEqual(annotation_task.multi_kappa(), 1.0)
+
     def test_advanced(self):
         """
         More advanced test, based on
