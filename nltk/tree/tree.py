@@ -645,10 +645,11 @@ class Tree(list):
         # Construct a regexp that will tokenize the string.
         open_b, close_b = brackets
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
+        escaped_token_pattern = rf"(?:\\.|[^\s{open_pattern}{close_pattern}])+"
         if node_pattern is None:
-            node_pattern = rf"[^\s{open_pattern}{close_pattern}]+"
+            node_pattern = escaped_token_pattern
         if leaf_pattern is None:
-            leaf_pattern = rf"[^\s{open_pattern}{close_pattern}]+"
+            leaf_pattern = escaped_token_pattern
         token_re = re.compile(
             r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)
