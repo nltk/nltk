@@ -1,4 +1,4 @@
-from nltk.translate.ribes_score import corpus_ribes, word_rank_alignment
+from nltk.translate.ribes_score import corpus_ribes, sentence_ribes, word_rank_alignment
 
 
 def test_ribes_empty_worder():  # worder as in word order
@@ -12,6 +12,17 @@ def test_ribes_empty_worder():  # worder as in word order
     list_of_refs = [[ref]]
     hypotheses = [hyp]
     assert corpus_ribes(list_of_refs, hypotheses) == 0.0
+
+
+def test_ribes_empty_hypothesis():
+    refs = [["a"], ["b"]]
+
+    assert sentence_ribes(refs, []) == 0.0
+    assert corpus_ribes([refs], [[]]) == 0.0
+
+
+def test_ribes_empty_corpus():
+    assert corpus_ribes([], []) == 0.0
 
 
 def test_ribes_one_worder():
