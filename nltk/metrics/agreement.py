@@ -447,7 +447,7 @@ if __name__ == "__main__":
         action="store_true",
         help="calculate agreement for every subset of the annotators",
     )
-    (options, remainder) = parser.parse_args()
+    options, remainder = parser.parse_args()
 
     if not options.file:
         parser.print_help()
@@ -485,4 +485,3 @@ if __name__ == "__main__":
         print(getattr(task, options.agreement)())
 
     logging.shutdown()
-
