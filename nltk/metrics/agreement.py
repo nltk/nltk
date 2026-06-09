@@ -209,9 +209,21 @@ class AnnotationTask:
         return ret
 
     def _chance_corrected_agreement(self, observed, expected):
-        """Handle degenerate perfect-agreement cases consistently."""
+        """Handle degenerate perfect-agreement cases consistently.
+
+        When expected agreement is 1.0 and observed agreement is also 1.0,
+        returns 1.0 (perfect agreement). Raises ValueError if expected is 1.0
+        but observed is not, since that indicates a violated distance contract
+        (distance(l, l) must be 0) or otherwise undefined coefficient semantics.
+        """
         if math.isclose(expected, 1.0):
-            return 1.0 if math.isclose(observed, 1.0) else 0.0
+            if math.isclose(observed, 1.0):
+                return 1.0
+            raise ValueError(
+                f"Expected agreement is 1.0 but observed agreement is {observed:.4f}. "
+                "This indicates a distance function that violates distance(l, l) = 0, "
+                "or otherwise undefined coefficient semantics."
+            )
         return (observed - expected) / (1.0 - expected)
 
     def avg_Ao(self):
@@ -243,6 +255,8 @@ class AnnotationTask:
     # Agreement Coefficients
     def S(self):
         """Bennett, Albert and Goldstein 1954"""
+        if len(self.K) == 0:
+            raise ValueError("Cannot calculate S, no data present!")
         Ae = 1.0 / len(self.K)
         return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
@@ -471,3 +485,4 @@ if __name__ == "__main__":
         print(getattr(task, options.agreement)())
 
     logging.shutdown()
+
