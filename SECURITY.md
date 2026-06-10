@@ -1,87 +1,25 @@
 # Security Policy
 
-## Reporting a Vulnerability
+The NLTK project is committed to ensuring the security and integrity of its codebase. 
 
-Please report security issues to `nltk.team@gmail.com`
+## Reporting Security Issues
 
-## Security Hardening
+To report a security issue, please follow these steps:
 
-NLTK includes a centralized I/O security module (`nltk.pathsec`) that
-validates file paths, network URLs, and zip archives. During the initial
-transition phase, it operates by default in **warn-only mode**, to avoid
-breaking existing workflows. In a later release, it will be switched to
-enforce the stricter security policy by default.
+1. Check if the issue has already been reported by searching through existing issues.
+2. If the issue has not been reported, create a new issue with a clear description of the problem, including any relevant code snippets or examples.
+3. If you have already reported the issue through Huntr, please provide the Huntr report link in the issue description.
 
-### Enabling strict enforcement
+## Validating Security Reports
 
-If you are running NLTK in a security-sensitive environment (web
-applications, multi-tenant pipelines, CI/CD systems, or any context
-where untrusted input may reach NLTK), you should enable strict
-enforcement:
+Maintainers with Huntr access will validate security reports before the deadline set by Huntr. If validation through Huntr is not possible, maintainers may publish a GitHub Security Advisory (GHSA) per issue and request a CVE through GitHub directly.
 
-```python
-import nltk.pathsec
-nltk.pathsec.ENFORCE = True
-```
+## Recent Security Fixes
 
-With `ENFORCE = True`, unauthorized file access, SSRF attempts, and
-zip-slip attacks will raise `PermissionError` instead of emitting
-warnings.
+The following security issues have been fixed:
 
-
-### Current Working Directory (CWD) Access
-
-To maintain a "zero-friction" experience for students and researchers,
-NLTK permits access to resources located in the process's current
-working directory by default.
-
-* **Standard Mode (`ENFORCE=False`):** Accessing data in the CWD is
-permitted but triggers a `RuntimeWarning` to alert users that this
-behavior may be insecure in shared or server-side environments.
-
-* **Strict Mode (`ENFORCE=True`):** Implicit CWD access is **disabled**.
-To authorize the local directory in strict mode, users must explicitly
-append it to the search path:
-  ```python
-  import nltk
-  nltk.data.path.append('.')
-  ```
-
-
-### What is protected
-
-- **Path traversal**: file access is validated against allowed NLTK
-  data directories (`nltk.data.path`, `NLTK_DATA` environment
-  variable, and standard system locations).
-- **SSRF prevention**: `urlopen` resolves hostnames via DNS and blocks
-  requests to loopback, private, link-local, and multicast IP ranges,
-  including obfuscated forms (e.g. decimal IP notation).
-- **Zip-slip protection**: zip extraction validates that member paths
-  stay within the target directory.
-- **Pickle safety**: `nltk.data.load()` uses `RestrictedUnpickler`
-  which blocks all class/function globals. Other pickle loading uses
-  `pickle_load()` which emits a security warning.
-
-### Configuring allowed data paths
-
-NLTK determines allowed data directories from:
-
-1. `nltk.data.path` (configurable at runtime)
-2. `NLTK_DATA` environment variable
-3. Standard locations (`~/nltk_data`, `/usr/share/nltk_data`, etc.)
-4. System temp directory
-
-If you use a custom data location, add it to `nltk.data.path`:
-
-```python
-import nltk
-nltk.data.path.append('/my/custom/data')
-```
-
-### Note on symlinks
-
-NLTK's corpus readers perform lexical path containment checks when
-joining file paths. These checks do not resolve symlinks. If your
-threat model includes attackers who can place symlinks inside your
-NLTK data directories, enable `ENFORCE = True` for full path
-resolution and validation.
+* URL-encoded path traversal in `nltk:` resource URLs ([Huntr report](https://huntr.com/bounties/fae662d6-74c2-44fa-95f3-f53d4e8a8355), [PR #3575](https://github.com/nltk/nltk/pull/3575))
+* Path traversal in `NKJPCorpusReader` ([Huntr report](https://huntr.com/bounties/ed573d73-3090-487b-853e-da4f155462f2), [PR #3579](https://github.com/nltk/nltk/pull/3579))
+* Path traversal in `FramenetCorpusReader.frame()` ([Huntr report](https://huntr.com/bounties/df07d5fe-2667-4599-bcad-276ae5fc143d), [PR #3581](https://github.com/nltk/nltk/pull/3581))
+* DNS-rebinding SSRF in `pathsec.urlopen` ([Huntr report](https://huntr.com/bounties/1957af8f-4a1e-4c3b-b3f9-9d767f61caaa), [PR #3582](https://github.com/nltk/nltk/pull/3582))
+* ReDoS in `ReviewsCorpusReader` FEATURES regex (CWE-1333) ([Huntr report](https://huntr.com/bounties/65cd835b-af3f-4b7b-bbe1-20f6708b4799), [PR #3583](https://github.com/nltk/nltk/pull/3583))
