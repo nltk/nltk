@@ -271,33 +271,24 @@ class StanfordSegmenter(TokenizerI):
 
         return stdout
 
-    def _execute(self, cmd, verbose=False):
-        encoding = self._encoding
-        cmd.extend(["-inputEncoding", encoding])
-        _options_cmd = self._options_cmd
-        if _options_cmd:
-            cmd.extend(["-options", self._options_cmd])
+    def _sha256sum(self, file_path):
+        stat = os.stat(file_path)
+        cached = self._jar_sha256_cache.get(file_path)
+        cache_key = (stat.st_mtime_ns, stat.st_size)
+        if cached is not None:
+            cached_key, cached_digest = cached
+            if cached_key == cache_key:
+                return cached_digest
 
-        default_options = " ".join(_java_options)
+        h = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                h.update(chunk)
+        digest = h.hexdigest()
+        self._jar_sha256_cache[file_path] = (cache_key, digest)
+        return digest
 
-        # ------------------- Security Validation ------------------- #
-        def sha256sum(file_path):
-            stat = os.stat(file_path)
-            cached = self._jar_sha256_cache.get(file_path)
-            cache_key = (stat.st_mtime_ns, stat.st_size)
-            if cached is not None:
-                cached_key, cached_digest = cached
-                if cached_key == cache_key:
-                    return cached_digest
-
-            h = hashlib.sha256()
-            with open(file_path, "rb") as f:
-                for chunk in iter(lambda: f.read(4096), b""):
-                    h.update(chunk)
-            digest = h.hexdigest()
-            self._jar_sha256_cache[file_path] = (cache_key, digest)
-            return digest
-
+    def _validate_classpath(self):
         user_checksums = {
             value.strip()
             for value in os.environ.get("NLTK_SEGMENTER_ALLOW_SHA256", "").split(",")
@@ -305,7 +296,7 @@ class StanfordSegmenter(TokenizerI):
         }
 
         for jar_path in (p for p in self._stanford_jar.split(os.pathsep) if p):
-            jar_checksum = sha256sum(jar_path)
+            jar_checksum = self._sha256sum(jar_path)
 
             if jar_checksum not in user_checksums:
                 raise LookupError(
@@ -321,7 +312,17 @@ class StanfordSegmenter(TokenizerI):
                     f"  Windows cmd.exe:       set NLTK_SEGMENTER_ALLOW_SHA256={jar_checksum}\n\n"
                     "Multiple approved checksums may be supplied as a comma-separated list."
                 )
-        # ------------------------------------------------------------ #
+
+    def _execute(self, cmd, verbose=False):
+        encoding = self._encoding
+        cmd.extend(["-inputEncoding", encoding])
+        _options_cmd = self._options_cmd
+        if _options_cmd:
+            cmd.extend(["-options", self._options_cmd])
+
+        default_options = " ".join(_java_options)
+
+        self._validate_classpath()
 
         # Configure java.
         config_java(options=self.java_options, verbose=verbose)

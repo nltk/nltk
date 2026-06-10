@@ -3,6 +3,8 @@ Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
 """
 
+import hashlib
+import os
 from typing import List, Tuple
 
 import pytest
@@ -943,6 +945,80 @@ class TestTokenize:
             (9, 10),
             (10, 11),
         ]
+
+
+class TestStanfordSegmenterClasspathValidation:
+    def _make_segmenter(self, classpath):
+        seg = StanfordSegmenter.__new__(StanfordSegmenter)
+        seg._stanford_jar = classpath
+        seg._jar_sha256_cache = {}
+        return seg
+
+    def _write_jar(self, tmp_path, name, data):
+        path = tmp_path / name
+        path.write_bytes(data)
+        return path
+
+    def _sha256(self, path):
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    def test_validate_classpath_allows_all_approved(self, monkeypatch, tmp_path):
+        jar1 = self._write_jar(tmp_path, "segmenter.jar", b"jar-one")
+        jar2 = self._write_jar(tmp_path, "slf4j.jar", b"jar-two")
+        seg = self._make_segmenter(os.pathsep.join([str(jar1), str(jar2)]))
+
+        monkeypatch.setenv(
+            "NLTK_SEGMENTER_ALLOW_SHA256",
+            ",".join([self._sha256(jar1), self._sha256(jar2)]),
+        )
+
+        seg._validate_classpath()
+
+    def test_validate_classpath_blocks_unapproved_entry(self, monkeypatch, tmp_path):
+        jar1 = self._write_jar(tmp_path, "segmenter.jar", b"jar-one")
+        jar2 = self._write_jar(tmp_path, "slf4j.jar", b"jar-two")
+        seg = self._make_segmenter(os.pathsep.join([str(jar1), str(jar2)]))
+
+        monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", self._sha256(jar1))
+
+        with pytest.raises(LookupError, match=r"\[SECURITY BLOCKED\]"):
+            seg._validate_classpath()
+
+    def test_validate_classpath_does_not_trust_path_substrings(
+        self, monkeypatch, tmp_path
+    ):
+        jar = self._write_jar(
+            tmp_path, "stanford-segmenter-malicious.jar", b"not-approved"
+        )
+        seg = self._make_segmenter(str(jar))
+        monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", "")
+
+        with pytest.raises(LookupError) as excinfo:
+            seg._validate_classpath()
+
+        assert "stanford-segmenter-malicious.jar" in str(excinfo.value)
+
+    def test_sha256sum_invalidates_cache_when_file_changes(self, tmp_path):
+        jar = self._write_jar(tmp_path, "segmenter.jar", b"original")
+        seg = self._make_segmenter(str(jar))
+
+        first_digest = seg._sha256sum(str(jar))
+        jar.write_bytes(b"modified and definitely different")
+        second_digest = seg._sha256sum(str(jar))
+
+        assert first_digest != second_digest
+
+    def test_validate_classpath_error_includes_guidance(self, monkeypatch, tmp_path):
+        jar = self._write_jar(tmp_path, "segmenter.jar", b"jar-one")
+        seg = self._make_segmenter(str(jar))
+        monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", "")
+
+        with pytest.raises(LookupError) as excinfo:
+            seg._validate_classpath()
+
+        message = str(excinfo.value)
+        assert "NLTK_SEGMENTER_ALLOW_SHA256" in message
+        assert "SHA256:" in message
 
 
 class TestPunktTrainer:
