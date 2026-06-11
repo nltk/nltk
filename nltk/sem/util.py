@@ -14,7 +14,6 @@ a first-order model.
 """
 
 import codecs
-import importlib
 
 from nltk.sem import evaluate
 
@@ -273,11 +272,9 @@ def demo():
         gramfile = options.grammar
 
     if options.model:
-        try:
-            model = importlib.import_module(options.model)
-        except ImportError:
-            # Handle invalid module names gracefully
-            pass
+        opts.error(
+            "--model is currently unsupported in demo(); the CLI always uses the built-in demo model"
+        )
 
     if sents is None:
         sents = read_sents(sentsfile)
