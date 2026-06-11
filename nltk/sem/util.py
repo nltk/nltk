@@ -270,8 +270,11 @@ def demo():
         sentsfile = options.sentences
     if options.grammar:
         gramfile = options.grammar
+
     if options.model:
-        exec("import %s as model" % options.model)
+        opts.error(
+            "--model is currently unsupported in demo(); the CLI always uses the built-in demo model"
+        )
 
     if sents is None:
         sents = read_sents(sentsfile)
