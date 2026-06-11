@@ -14,6 +14,7 @@ a first-order model.
 """
 
 import codecs
+import importlib
 
 from nltk.sem import evaluate
 
@@ -270,8 +271,13 @@ def demo():
         sentsfile = options.sentences
     if options.grammar:
         gramfile = options.grammar
+
     if options.model:
-        exec("import %s as model" % options.model)
+        try:
+            model = importlib.import_module(options.model)
+        except ImportError:
+            # Handle invalid module names gracefully
+            pass
 
     if sents is None:
         sents = read_sents(sentsfile)
