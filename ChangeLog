@@ -1,13 +1,11 @@
-Version 3.10.0 (unreleased)
+Version 3.10.0 2026-06-11
 
-* Enforce the stricter `nltk.pathsec` security policy by default (`ENFORCE = True`)
-* Document the new default security policy, migration guidance, and resource-loading protections
-* Harden resource loading against additional path traversal, SSRF, DNS-rebinding, downloader, and corpus-reader edge cases
-* Block URL-encoded traversal in `nltk:` resource URLs
-* Prevent DNS-rebinding SSRF in `pathsec.urlopen`
-* Close remaining pathsec gaps in corpus readers and downloader target-path handling
-* Re-validate downloader path containment across platforms and improve downloader concurrency/file locking behavior
-* Block XML entity expansion in the downloader
+* Enforce the stricter `nltk.pathsec` security policy by default
+* Document the new security model and migration guidance
+* Harden resource loading against path traversal and SSRF/DNS-rebinding
+* Harden downloader path handling and block XML entity expansion
+* Close remaining corpus-reader security edge cases
+* Replace unsafe `exec()` usage in the utility CLI
 * Warn on unpickling user-provided pickles
 * Add HuggingFace datasets integration (`nltk.huggingface`)
 * Align TnT with Brants (2000) specifications
@@ -16,10 +14,9 @@ Version 3.10.0 (unreleased)
 * Fix TextCat tie handling
 * Fix WordNet object comparisons for incompatible types
 * Cache WordNet max depth lazily for `lch_similarity()`
-* Fix CCG variable direction, substitution, type-raising, and related parser bugs
+* Fix CCG variable direction, substitution, and type-raising bugs
 * Fix Jaro similarity for single-character and empty-string cases
-* Improve CI and retest workflow support for branch and fork PRs
-* Update contributing and release-maintenance workflows
+* Improve CI and release-maintenance workflows
 
 Thanks to the following contributors to 3.10.0:
 13rac1, alvations, bowiechen, devesh-2002, ekaf, elias-ba,
