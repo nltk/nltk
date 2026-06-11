@@ -9,6 +9,9 @@ jobs:
   gate-on-ci:
     name: Gate release on CI success for this tag commit
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,11 +43,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+
+          workflow_file="ci.yml"
           attempts=60
           delay=20
 
           for _ in $(seq 1 "$attempts"); do
-            run=$(gh api "repos/${{ github.repository }}/actions/commits/$GITHUB_SHA/runs" --jq '[.workflow_runs[] | select(.name == "CI")] | first')
+            run=$(gh api \
+              "repos/${{ github.repository }}/actions/workflows/${workflow_file}/runs?per_page=100" \
+              --jq '[.workflow_runs[] | select(.head_sha == "'"$GITHUB_SHA"'")] | sort_by(.run_number) | last')
 
             if [ -z "$run" ] || [ "$run" = "null" ]; then
               sleep "$delay"
@@ -63,8 +71,8 @@ jobs:
               exit 0
             fi
 
-            run_id=$(jq -r '.id // empty' <<<"$run")
-            run_number=$(jq -r '.run_number // empty' <<<"$run")
+            run_id=$(jq -r '.id // empty' <<< "$run")
+            run_number=$(jq -r '.run_number // empty' <<< "$run")
             run_url="https://github.com/${{ github.repository }}/actions/runs/${run_id}"
             echo "CI failed with conclusion: ${conclusion:-unknown} (run #${run_number:-unknown}). See workflow run: ${run_url}"
             exit 1
@@ -77,6 +85,8 @@ jobs:
     needs: gate-on-ci
     name: Build and create GitHub draft release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
