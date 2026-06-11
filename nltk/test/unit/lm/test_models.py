@@ -609,3 +609,19 @@ def test_generate_None_text_seed(mle_trigram_model):
     assert mle_trigram_model.generate(
         text_seed=None, random_seed=3
     ) == mle_trigram_model.generate(random_seed=3)
+
+
+def test_stupid_backoff_unigram_long_context_matches_empty_context(vocabulary):
+    model = StupidBackoff(order=1, vocabulary=vocabulary)
+    model.fit([[("a",)], [("b",)], [("a",)]])
+
+    long_context = tuple("x" for _ in range(10000))
+    assert model.score("a", long_context) == model.score("a", ())
+
+
+def test_witten_bell_unigram_long_context_matches_empty_context(vocabulary):
+    model = WittenBellInterpolated(order=1, vocabulary=vocabulary)
+    model.fit([[("a",)], [("b",)], [("a",)]])
+
+    long_context = tuple("x" for _ in range(10000))
+    assert model.score("a", long_context) == model.score("a", ())

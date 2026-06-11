@@ -8,6 +8,47 @@ NLTK 3.9.4 release: March 2026
 - (...)
 
 
+NLTK 3.10.0 release: June 2026
+
+- Enforce the stricter ``nltk.pathsec`` policy by default (``ENFORCE = True``)
+- ``file:`` URLs are no longer a general-purpose way to load arbitrary local files
+- Local resources must resolve inside allowed NLTK data directories such as ``nltk.data.path`` or ``NLTK_DATA``
+- ``http:`` and ``https:`` resource loading now goes through centralized validation with SSRF protections
+- Redirects are re-validated at each hop during network access
+- Disallowed local paths and blocked network destinations raise ``PermissionError`` (and some corpus-reader validations raise ``ValueError``)
+
+Migration note:
+
+NLTK 3.10.0 enforces the stricter ``pathsec`` policy by default.
+
+Local files (``file:``)
+^^^^^^^^^^^^^^^^^^^^^^^
+
+``file:`` URLs are no longer a general-purpose way to load arbitrary local files.
+
+Under enforcement:
+
+- Files must resolve inside allowed NLTK data directories, including locations from ``nltk.data.path`` and ``NLTK_DATA``
+- Access to arbitrary locations, including the current working directory unless explicitly added, is blocked by default
+- Disallowed paths raise ``PermissionError``
+
+If you load custom local resources, move them into a directory on ``NLTK_DATA`` or explicitly add a trusted directory via ``nltk.data.path.append(...)``, then load them by NLTK resource path.
+
+Network URLs (``http:`` / ``https:``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Network loading is now subject to centralized validation.
+
+- Only ``http`` and ``https`` URLs are allowed
+- Requests are blocked if the resolved host is loopback, private, link-local, or multicast
+- Redirects are re-validated at each hop
+- Violations raise ``PermissionError``
+
+In practice, normal public URLs continue to work, but URLs such as ``https://127.0.0.1/...``, ``https://10.0.0.1/...`` and ``https://169.254.169.254/...`` are rejected.
+
+Documentation has also been updated to remove recommendations for arbitrary ``file:`` loading and to clarify that both local and network resource access now go through ``pathsec`` validation.
+
+
 NLTK 3.9.3 release: February 2026
 
 - Security fix for CVE-2025-14009 (Zip-Slip/RCE)
