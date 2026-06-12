@@ -176,6 +176,7 @@ from xml.etree import ElementTree
 from defusedxml.ElementTree import parse as safe_parse
 
 import nltk
+from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
@@ -2616,6 +2617,7 @@ def _unzip_iter(filename, root, verbose=True):
                 yield ErrorMessage(filename, f"{error} (during extraction)")
                 return
             try:
+                _check_decompression_bomb(zf.getinfo(member))
                 zf.extract(member, root_abs)
             except Exception as e:
                 yield ErrorMessage(filename, f"Extraction error for {member}: {e}")
