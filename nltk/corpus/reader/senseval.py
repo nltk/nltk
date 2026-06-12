@@ -23,7 +23,8 @@ is tagged with a sense identifier, and supplied with context.
 """
 
 import re
-from xml.etree import ElementTree
+
+from defusedxml.ElementTree import fromstring as safe_fromstring
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -111,7 +112,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             if line.lstrip().startswith("</instance"):
                 xml_block = "\n".join(instance_lines)
                 xml_block = _fixXML(xml_block)
-                inst = ElementTree.fromstring(xml_block)
+                inst = safe_fromstring(xml_block)
                 return [self._parse_instance(inst, lexelt)]
 
     def _parse_instance(self, instance, lexelt):
