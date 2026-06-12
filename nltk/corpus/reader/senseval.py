@@ -25,6 +25,8 @@ is tagged with a sense identifier, and supplied with context.
 import re
 from xml.etree import ElementTree
 
+import regex
+
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tokenize import *
@@ -189,8 +191,15 @@ def _fixXML(text):
     # and remove the & for those patterns that aren't regular XML
     text = re.sub(r"&(?!amp|gt|lt|apos|quot)", r"", text)
     # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
-    text = re.sub(
-        r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>', r' <wf pos="\2">\1</wf>', text
+    #
+    # Possessive quantifiers (regex module) prevent catastrophic backtracking
+    # (ReDoS, CWE-1333): with the plain re patterns, the lazy/greedy whitespace
+    # and token runs rescan a long token / whitespace run that lacks the trailing
+    # <p="..."/> tag quadratically. The token class [^<>\s] cannot cross the
+    # surrounding separators and \s cannot cross the literal '"', so making each
+    # run possessive is match-for-match identical while making the scan linear.
+    text = regex.sub(
+        r'[ \t]*+([^<>\s]++)[ \t]*+<p="([^"]*+"?)"/>', r' <wf pos="\2">\1</wf>', text
     )
-    text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
+    text = regex.sub(r"\s*+\"\s*+<p='\"'/>", " <wf pos='\"'>\"</wf>", text)
     return text
