@@ -12,6 +12,7 @@ resolved through ``MALT_PARSER``.
 """
 
 import os
+import pathlib
 
 import pytest
 
@@ -66,3 +67,16 @@ def test_absolute_path_still_accepted(tmp_path, monkeypatch):
     jars = find_maltparser(str(abs_dir))
     chosen = os.path.realpath(os.path.dirname(jars[0]))
     assert chosen == os.path.realpath(str(abs_dir))
+
+
+def test_pathlike_argument_is_handled(tmp_path, monkeypatch):
+    """A pathlib.Path argument is accepted; a relative one fails cleanly."""
+    abs_dir = _make_malt_dir(tmp_path / "absmalt")
+    monkeypatch.delenv("MALT_PARSER", raising=False)
+    # An absolute Path is accepted (normalised via os.fspath).
+    assert find_maltparser(pathlib.Path(abs_dir))
+    # A relative Path with no MALT_PARSER raises a clean LookupError -- not an
+    # AssertionError from find_dir()'s str check, and not a CWD pickup.
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(LookupError):
+        find_maltparser(pathlib.Path("not-a-configured-malt-dir"))
