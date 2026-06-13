@@ -292,8 +292,11 @@ class LogicParser:
         self._parse_depth += 1
         try:
             if self._parse_depth > self.MAX_PARSE_DEPTH:
+                # Use 1-based index (consistent with ExpectedMoreTokensException);
+                # parse() formats the caret via mapping[index - 1], so index 0
+                # (limit hit before any token is consumed) must be avoided.
                 raise LogicalExpressionException(
-                    self._currentIndex,
+                    self._currentIndex + 1,
                     "Expression nesting exceeds the maximum depth (%d)."
                     % self.MAX_PARSE_DEPTH,
                 )

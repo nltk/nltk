@@ -13,17 +13,12 @@ from nltk.sem.logic import Expression, LogicalExpressionException, LogicParser
 
 
 def test_deeply_nested_expression_raises_clean_error():
-    """A pathologically deep expression must not raise RecursionError."""
-    payload = "-" * 5000 + "p"  # 5000 nested negations
+    """A pathologically deep expression raises a clean parse error, not an
+    uncaught RecursionError (uncontrolled recursion, CWE-674)."""
+    # If an uncaught RecursionError were raised instead, pytest.raises would not
+    # catch it and the test would fail with the unexpected exception.
     with pytest.raises(LogicalExpressionException):
-        Expression.fromstring(payload)
-    # And specifically NOT an uncaught RecursionError:
-    try:
-        Expression.fromstring(payload)
-    except RecursionError:  # pragma: no cover
-        pytest.fail("LogicParser raised an uncaught RecursionError (ReDoS-class DoS)")
-    except LogicalExpressionException:
-        pass
+        Expression.fromstring("-" * 5000 + "p")  # 5000 nested negations
 
 
 def test_normal_expressions_still_parse():
@@ -39,7 +34,7 @@ def test_normal_expressions_still_parse():
 
 
 def test_depth_cap_is_configurable_and_enforced():
-    """Below the cap parses; at/above the cap raises a clean parse error."""
+    """Nesting up to the cap parses; nesting beyond it raises a clean error."""
     saved = LogicParser.MAX_PARSE_DEPTH
     LogicParser.MAX_PARSE_DEPTH = 20
     try:
