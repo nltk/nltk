@@ -2600,6 +2600,14 @@ def _unzip_iter(filename, root, verbose=True):
                 yield ErrorMessage(filename, error)
                 has_violations = True
                 continue
+            # Decompression-bomb check belongs in Phase 1: a bomb member must be
+            # rejected before any (earlier, benign) member is written to disk, so
+            # the validate-then-extract / nothing-is-written contract holds.
+            try:
+                _check_decompression_bomb(zf.getinfo(member))
+            except ValueError as e:
+                yield ErrorMessage(filename, str(e))
+                has_violations = True
 
         if has_violations:
             return
@@ -2617,7 +2625,6 @@ def _unzip_iter(filename, root, verbose=True):
                 yield ErrorMessage(filename, f"{error} (during extraction)")
                 return
             try:
-                _check_decompression_bomb(zf.getinfo(member))
                 zf.extract(member, root_abs)
             except Exception as e:
                 yield ErrorMessage(filename, f"Extraction error for {member}: {e}")

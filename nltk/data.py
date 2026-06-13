@@ -550,15 +550,16 @@ def _check_decompression_bomb(info):
     if (
         file_size >= MAX_UNZIP_ACTIVATION
         and compress_size > 0
-        and file_size / compress_size > MAX_UNZIP_RATIO
+        # integer comparison (no float rounding at the threshold)
+        and file_size > MAX_UNZIP_RATIO * compress_size
     ):
         raise ValueError(
-            "Refusing to decompress suspected zip bomb %r: it expands %dx "
+            "Refusing to decompress suspected zip bomb %r: it expands %.1fx "
             "(%d -> %d bytes), above nltk.data.MAX_UNZIP_RATIO=%d. "
             "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
             % (
                 name,
-                file_size // compress_size,
+                file_size / compress_size,
                 compress_size,
                 file_size,
                 MAX_UNZIP_RATIO,

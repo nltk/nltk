@@ -73,3 +73,20 @@ def test_downloader_extract_blocks_bomb(tmp_path):
     assert any(isinstance(m, ErrorMessage) for m in messages), messages
     # nothing was written to disk
     assert not (dest / "pkg" / "big.txt").exists()
+
+
+def test_downloader_writes_nothing_when_a_later_member_is_a_bomb(tmp_path):
+    """A bomb after benign members must be caught before *anything* is written
+    (validate-then-extract contract)."""
+    data.MAX_UNZIP_ACTIVATION = 1024 * 1024  # 1 MiB
+    data.MAX_UNZIP_RATIO = 100
+    zp = tmp_path / "pkg.zip"
+    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("pkg/safe.txt", b"hello")  # benign member, comes first
+        zf.writestr("pkg/big.txt", b"\0" * (2 * 1024 * 1024))  # bomb, comes later
+    dest = tmp_path / "out"
+    messages = list(_unzip_iter(str(zp), str(dest), verbose=False))
+    assert any(isinstance(m, ErrorMessage) for m in messages), messages
+    # neither the benign member nor the bomb was written
+    assert not (dest / "pkg" / "safe.txt").exists()
+    assert not (dest / "pkg" / "big.txt").exists()
