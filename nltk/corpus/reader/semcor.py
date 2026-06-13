@@ -126,7 +126,8 @@ class SemcorCorpusReader(XMLCorpusReader):
         assert unit in ("token", "word", "chunk")
         result = []
 
-        xmldoc = safe_parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for xmlsent in xmldoc.findall(".//s"):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
