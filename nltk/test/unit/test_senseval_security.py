@@ -15,12 +15,11 @@ the assertions instead of being swallowed.
 """
 
 import multiprocessing
-import os
 import queue
 
 from nltk.corpus.reader.senseval import SensevalCorpusReader, _fixXML
 
-# A long token with no <p="..."/> tag: ~256 KB. Linear with the possessive
+# A long token with no <p="..."/> tag: ~128 KB. Linear with the possessive
 # patterns (sub-millisecond); ~quadratic and tens of seconds with the old ones.
 _CRAFTED_TOKEN = "x" * 128_000
 _TIMEOUT = 15
@@ -28,7 +27,7 @@ _TIMEOUT = 15
 
 def _fixxml_worker(result_q):
     try:
-        # Return only the length (a small object); putting the full ~256 KB
+        # Return only the length (a small object); putting the full ~128 KB
         # result on the Queue could exceed the OS pipe buffer and deadlock
         # against the parent's join().
         result_q.put(("ok", len(_fixXML(_CRAFTED_TOKEN))))
@@ -84,7 +83,7 @@ def test_senseval_reader_does_not_hang_on_crafted_corpus(tmp_path):
         + "\n</context>\n</instance>\n</lexelt>\n"
     )
     finished, status, payload = _run_in_process(
-        _reader_worker, (str(tmp_path), "t.pos")
+        _reader_worker, (str(tmp_path), ["t.pos"])
     )
     assert finished, "SensevalCorpusReader hung on a crafted instance (ReDoS)"
     assert status == "ok", f"reader raised in worker: {payload}"
