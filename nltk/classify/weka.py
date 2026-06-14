@@ -47,7 +47,7 @@ def config_weka(classpath=None):
         _weka_classpath = classpath
 
     if _weka_classpath is None:
-        searchpath = _weka_search
+        searchpath = list(_weka_search)  # copy; don't mutate the module global
         if "WEKAHOME" in os.environ:
             searchpath.insert(0, os.environ["WEKAHOME"])
 

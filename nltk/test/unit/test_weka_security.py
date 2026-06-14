@@ -13,6 +13,10 @@ import pytest
 
 import nltk.classify.weka as weka
 
+# Capture the real default search path at import time, before the autouse
+# fixture neutralises it, so the regression assertion below can check it.
+_DEFAULT_WEKA_SEARCH = list(weka._weka_search)
+
 
 @pytest.fixture(autouse=True)
 def _isolate(monkeypatch):
@@ -20,7 +24,16 @@ def _isolate(monkeypatch):
     # without a JVM, and reset the cached classpath around each test.
     monkeypatch.setattr(weka, "config_java", lambda *a, **k: None)
     monkeypatch.setattr(weka, "_weka_classpath", None)
+    # Neutralise the system search path so the outcome can't depend on a
+    # host-installed weka.jar (e.g. /usr/share/weka) on the test runner.
+    monkeypatch.setattr(weka, "_weka_search", [])
     monkeypatch.delenv("WEKAHOME", raising=False)
+
+
+def test_cwd_not_in_default_search_path():
+    """The CWD must not be part of the default weka.jar search path."""
+    assert "." not in _DEFAULT_WEKA_SEARCH
+    assert "" not in _DEFAULT_WEKA_SEARCH
 
 
 def test_cwd_weka_jar_is_not_picked_up(tmp_path, monkeypatch):
