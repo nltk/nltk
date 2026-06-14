@@ -81,3 +81,13 @@ def test_absolute_path_still_accepted(tmp_path, monkeypatch):
 
     senna = Senna(abs_dir, ["pos"])
     assert os.path.realpath(senna._path) == os.path.realpath(abs_dir)
+
+
+def test_absolute_path_without_executable_raises(tmp_path, monkeypatch):
+    """An absolute senna_path with no senna binary fails fast (not deferred)."""
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    monkeypatch.delenv("SENNA", raising=False)
+
+    with pytest.raises(LookupError):
+        Senna(str(empty), ["pos"])

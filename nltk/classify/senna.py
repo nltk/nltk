@@ -59,29 +59,26 @@ class Senna(TaggerI):
         # executed -- running code loaded from an untrusted location (CWE-829;
         # an untrusted search path, CWE-426/CWE-427). A relative path falls
         # through to the trusted SENNA environment variable instead.
+        self._path = None
         if path.isabs(senna_path):
             self._path = path.normpath(senna_path) + sep
-        else:
-            self._path = None
 
-        # Verifies the existence of the executable on the self._path first
+        # If the explicit (absolute) senna_path does not contain the executable,
+        # fall back to the SENNA environment variable, which must also be
+        # absolute for the same reason.
         if self._path is None or not path.isfile(self.executable(self._path)):
-            # Check for the system environment; the SENNA directory must also be
-            # absolute for the same reason.
             senna_env = environ.get("SENNA")
             if senna_env and path.isabs(senna_env):
                 self._path = path.normpath(senna_env) + sep
-                if not path.isfile(self.executable(self._path)):
-                    raise LookupError(
-                        "Senna executable expected at %s but not found"
-                        % self.executable(self._path)
-                    )
-            elif self._path is None:
-                raise LookupError(
-                    "Senna executable not found. Pass an absolute senna_path to "
-                    "Senna(...) or set the SENNA environment variable to the "
-                    "absolute directory that contains the senna binary."
-                )
+
+        # The executable must exist at this point; fail fast so construction is
+        # consistent (the path is verified here, not deferred to tag_sents()).
+        if self._path is None or not path.isfile(self.executable(self._path)):
+            raise LookupError(
+                "Senna executable not found. Pass an absolute senna_path to "
+                "Senna(...) or set the SENNA environment variable to the "
+                "absolute directory that contains the senna binary."
+            )
 
         self.operations = operations
 
