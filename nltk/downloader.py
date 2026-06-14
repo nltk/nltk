@@ -682,27 +682,64 @@ class Downloader:
         tmp_filepath = filepath + ".tmp"
         lock_filepath = filepath + ".lock"
 
-        # Defense-in-depth: verify filepath stays within download_dir.
+        # Defense-in-depth: verify the write target stays within download_dir.
         #
-        # This check is intentionally lexical rather than realpath-based.  The
-        # target file may not exist yet, and on Windows some Python versions can
-        # produce inconsistent short-name vs long-name representations when
-        # resolving non-existent paths (for example RUNNER~1 vs runneradmin).
-        # A normalized absolute commonpath check is sufficient here to block
-        # path traversal through package metadata such as "../".
+        # Two layers are required:
+        #
+        #   (1) Lexical containment blocks "../" traversal coming from package
+        #       metadata.  It is intentionally lexical (normpath/abspath, not
+        #       realpath) because the target leaf may not exist yet and on
+        #       Windows realpath of a non-existent path can be unstable
+        #       (short-name vs long-name, e.g. RUNNER~1 vs runneradmin).
+        #
+        #   (2) Symlink containment (CWE-59, "link following").  A purely lexical
+        #       check is bypassed by a symlink that already exists *inside*
+        #       download_dir and points outside it: the target is lexically
+        #       contained, but open()/os.replace() follow the link and write
+        #       outside.  We therefore also resolve the deepest *existing*
+        #       ancestor of the real write targets (the ".tmp" file open()s, and
+        #       the final filepath os.replace()s onto) and require it to stay
+        #       within download_dir.  Only existing components are resolved, so
+        #       the not-yet-existing-leaf concern that motivates (1) does not
+        #       apply here.
+        def _within(child, root):
+            try:
+                return os.path.commonpath([root, child]) == root
+            except ValueError:
+                return False
+
+        def _symlink_contained(path):
+            # Walk up to the deepest *lexically* existing ancestor.  os.path.lexists
+            # (not os.path.exists) is required so a planted symlink -- including a
+            # dangling one -- stops the walk and gets resolved, rather than being
+            # treated as a non-existent leaf and skipped.
+            ancestor = os.path.abspath(path)
+            while not os.path.lexists(ancestor):
+                parent = os.path.dirname(ancestor)
+                if parent == ancestor:
+                    break
+                ancestor = parent
+            real_ancestor = os.path.normcase(os.path.realpath(ancestor))
+            real_download = os.path.normcase(os.path.realpath(download_dir))
+            # If the deepest existing ancestor is at or above download_dir (e.g.
+            # download_dir itself does not exist yet, so the walk climbed past
+            # it), then no symlink *inside* download_dir could have redirected
+            # the path -- lexical containment already governs that case.
+            # Otherwise the resolved ancestor lives below download_dir and must
+            # stay within it.
+            if _within(real_download, real_ancestor):
+                return True
+            return _within(real_ancestor, real_download)
+
         safe_download = os.path.normcase(
             os.path.abspath(os.path.normpath(download_dir))
         )
         safe_filepath = os.path.normcase(os.path.abspath(os.path.normpath(filepath)))
-        try:
-            if os.path.commonpath([safe_download, safe_filepath]) != safe_download:
-                yield ErrorMessage(
-                    info,
-                    f"Path traversal blocked: package '{info.id}' attempted to "
-                    f"write outside download directory (subdir='{info.subdir}')",
-                )
-                return
-        except ValueError:
+        if not (
+            _within(safe_filepath, safe_download)
+            and _symlink_contained(filepath)
+            and _symlink_contained(tmp_filepath)
+        ):
             yield ErrorMessage(
                 info,
                 f"Path traversal blocked: package '{info.id}' attempted to "
