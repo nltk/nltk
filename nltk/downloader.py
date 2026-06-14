@@ -719,16 +719,25 @@ class Downloader:
                 if parent == ancestor:
                     break
                 ancestor = parent
+            # Decide from the *lexical* ancestor whether the walk stopped at or
+            # above download_dir (e.g. download_dir itself does not exist yet, so
+            # the walk climbed past it).  In that case no symlink *inside*
+            # download_dir could have redirected the path -- lexical containment
+            # already governs that case.  This must use the lexical ancestor, not
+            # the resolved one: a symlink that exists *inside* download_dir and
+            # points to a parent of download_dir would otherwise resolve to an
+            # ancestor of download_dir and wrongly take this early-return, even
+            # though following it escapes the download directory.
+            lex_ancestor = os.path.normcase(ancestor)
+            lex_download = os.path.normcase(
+                os.path.abspath(os.path.normpath(download_dir))
+            )
+            if _within(lex_download, lex_ancestor):
+                return True
+            # The deepest existing ancestor lives lexically below download_dir;
+            # resolve symlinks on it and require it to stay within download_dir.
             real_ancestor = os.path.normcase(os.path.realpath(ancestor))
             real_download = os.path.normcase(os.path.realpath(download_dir))
-            # If the deepest existing ancestor is at or above download_dir (e.g.
-            # download_dir itself does not exist yet, so the walk climbed past
-            # it), then no symlink *inside* download_dir could have redirected
-            # the path -- lexical containment already governs that case.
-            # Otherwise the resolved ancestor lives below download_dir and must
-            # stay within it.
-            if _within(real_download, real_ancestor):
-                return True
             return _within(real_ancestor, real_download)
 
         safe_download = os.path.normcase(

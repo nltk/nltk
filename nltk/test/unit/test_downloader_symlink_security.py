@@ -18,10 +18,30 @@ itself a symlink) keep working.
 import hashlib
 import io
 import os
+import tempfile
 
 import pytest
 
 from nltk.downloader import Downloader, ErrorMessage, Package
+
+
+def _can_symlink():
+    # os.symlink exists on Windows but raises OSError/NotImplementedError without
+    # Developer Mode/admin (or where symlinks are disabled); skip rather than fail.
+    with tempfile.TemporaryDirectory() as d:
+        src = os.path.join(d, "src")
+        dst = os.path.join(d, "dst")
+        open(src, "w").close()
+        try:
+            os.symlink(src, dst)
+            return True
+        except (OSError, NotImplementedError, AttributeError):
+            return False
+
+
+pytestmark = pytest.mark.skipif(
+    not _can_symlink(), reason="symlinks not supported on this platform/environment"
+)
 
 PAYLOAD = b"package-body-bytes\n"
 
@@ -75,6 +95,25 @@ def test_symlink_inside_download_dir_cannot_redirect_write(tmp_path, fake_urlope
     assert any(isinstance(m, ErrorMessage) for m in msgs)
     # Nothing written through the symlink, outside the download dir.
     assert not (outside / "OWNED.txt").exists()
+
+
+def test_symlink_to_parent_of_download_dir_is_blocked(tmp_path, fake_urlopen):
+    """A symlink inside download_dir pointing to an *ancestor* must be blocked.
+
+    Regression for an early-return that used the resolved (not lexical) ancestor:
+    a link resolving to a parent of download_dir would otherwise be treated as
+    "at/above download_dir" and wrongly allowed.
+    """
+    download_dir = tmp_path / "nltk_data"
+    (download_dir / "corpora").mkdir(parents=True)
+    # download_dir/corpora/up -> tmp_path  (an ancestor of download_dir)
+    os.symlink(tmp_path, download_dir / "corpora" / "up")
+
+    pkg = _package("corpora/up/OWNED.txt")
+    msgs = _run(pkg, download_dir)
+
+    assert any(isinstance(m, ErrorMessage) for m in msgs)
+    assert not (tmp_path / "OWNED.txt").exists()
 
 
 def test_symlink_via_subdir_component_is_blocked(tmp_path, fake_urlopen):
