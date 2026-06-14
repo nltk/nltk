@@ -176,7 +176,9 @@ from xml.etree import ElementTree
 from defusedxml.ElementTree import parse as safe_parse
 
 import nltk
-from nltk.pathsec import ZipFile, open as pathsec_open, urlopen, validate_path
+from nltk.pathsec import ZipFile
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import urlopen, validate_path
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
