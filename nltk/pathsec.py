@@ -450,9 +450,9 @@ def urlopen(url, *args, **kwargs):
     return opener.open(url, *args, **kwargs)
 
 
-def open(file, mode="r", **kwargs):
+def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs):
     """Secure wrapper for builtins.open."""
-    validate_path(file, context="pathsec.open")
+    validate_path(file, context=context, required_root=required_root)
     return builtins.open(file, mode=mode, **kwargs)
 
 
