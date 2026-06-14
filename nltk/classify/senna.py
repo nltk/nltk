@@ -49,22 +49,39 @@ class Senna(TaggerI):
 
     def __init__(self, senna_path, operations, encoding="utf-8"):
         self._encoding = encoding
-        self._path = path.normpath(senna_path) + sep
+
+        # Only accept an explicit *absolute* senna_path as the location of the
+        # senna executable. A relative path (e.g. ".") must NOT be resolved
+        # against the current working directory: executable() returns a path
+        # that contains a separator (e.g. "./senna-osx"), and subprocess.Popen()
+        # runs such a path directly from the CWD without consulting $PATH, so an
+        # attacker who can write a "senna-<platform>" file there would have it
+        # executed -- running code loaded from an untrusted location (CWE-829;
+        # an untrusted search path, CWE-426/CWE-427). A relative path falls
+        # through to the trusted SENNA environment variable instead.
+        if path.isabs(senna_path):
+            self._path = path.normpath(senna_path) + sep
+        else:
+            self._path = None
 
         # Verifies the existence of the executable on the self._path first
-        # senna_binary_file_1 = self.executable(self._path)
-        exe_file_1 = self.executable(self._path)
-        if not path.isfile(exe_file_1):
-            # Check for the system environment
-            if "SENNA" in environ:
-                # self._path = path.join(environ['SENNA'],'')
-                self._path = path.normpath(environ["SENNA"]) + sep
-                exe_file_2 = self.executable(self._path)
-                if not path.isfile(exe_file_2):
+        if self._path is None or not path.isfile(self.executable(self._path)):
+            # Check for the system environment; the SENNA directory must also be
+            # absolute for the same reason.
+            senna_env = environ.get("SENNA")
+            if senna_env and path.isabs(senna_env):
+                self._path = path.normpath(senna_env) + sep
+                if not path.isfile(self.executable(self._path)):
                     raise LookupError(
-                        "Senna executable expected at %s or %s but not found"
-                        % (exe_file_1, exe_file_2)
+                        "Senna executable expected at %s but not found"
+                        % self.executable(self._path)
                     )
+            elif self._path is None:
+                raise LookupError(
+                    "Senna executable not found. Pass an absolute senna_path to "
+                    "Senna(...) or set the SENNA environment variable to the "
+                    "absolute directory that contains the senna binary."
+                )
 
         self.operations = operations
 
