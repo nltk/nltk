@@ -62,5 +62,8 @@ def test_absolute_path_still_accepted(tmp_path, monkeypatch):
     assert os.path.realpath(ReppTokenizer(str(abs_dir)).repp_dir) == os.path.realpath(
         str(abs_dir)
     )
-    # a pathlib.Path is accepted too (normalised via os.fspath)
-    assert ReppTokenizer(pathlib.Path(abs_dir)).repp_dir
+    # a pathlib.Path is accepted too (normalised via os.fspath) and resolves to
+    # the same directory.
+    assert os.path.realpath(
+        ReppTokenizer(pathlib.Path(abs_dir)).repp_dir
+    ) == os.path.realpath(str(abs_dir))
