@@ -36,7 +36,7 @@ import tempfile
 from functools import reduce
 from optparse import OptionParser
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary_iter
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -237,13 +237,32 @@ class Boxer:
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):
-        return find_binary(
+        # find_binary() also matches a binary relative to the current working
+        # directory: a relative bin_dir yields e.g. "./candc", and even the
+        # default bin_dir=None matches a "<name>/<name>" directory in the CWD
+        # (find_file_iter joins the name with itself). Such a result contains a
+        # path separator, so _call()'s subprocess.Popen() would execute it
+        # directly from the CWD without consulting $PATH -- an attacker who can
+        # plant a "candc"/"boxer" file there would get code execution (an
+        # untrusted search path, CWE-426/CWE-427). Skip any CWD-relative
+        # candidate and use the first absolute one (an absolute bin_dir, the
+        # CANDC environment variable, or a $PATH lookup), none of which resolve
+        # against the CWD.
+        for binary in find_binary_iter(
             name,
             path_to_bin=bin_dir,
             env_vars=["CANDC"],
             url="http://svn.ask.it.usyd.edu.au/trac/candc/",
             binary_names=[name, name + ".exe"],
             verbose=verbose,
+        ):
+            if os.path.isabs(binary):
+                return binary
+        raise LookupError(
+            "No absolute %r binary found. Pass an absolute bin_dir to Boxer(...) "
+            "or set the CANDC environment variable to an absolute directory that "
+            "contains the candc/boxer binaries (a binary found relative to the "
+            "current working directory is refused)." % name
         )
 
     def _call(self, input_str, binary, args=[], verbose=False):
