@@ -3,7 +3,7 @@ import shutil
 import unittest.mock
 
 from nltk import download
-from nltk.downloader import build_index
+from nltk.downloader import Downloader, build_index
 
 
 def test_downloader_using_existing_parent_download_dir(tmp_path):
@@ -81,3 +81,82 @@ def test_build_index(tmp_path):
     sha256_checksum = package_element.get("sha256_checksum")
     assert isinstance(sha256_checksum, str)
     assert len(sha256_checksum) > 5
+
+
+def test_download_package_uses_scoped_pathsec_open(tmp_path):
+    """
+    Regression test for PR #3622.
+
+    Verify that _download_package() routes the package write through
+    pathsec.open with the downloader's download_dir as required_root, and that
+    the final destination is still validated before os.replace().
+    """
+    download_dir = str(tmp_path.joinpath("download"))
+    os.makedirs(download_dir, exist_ok=True)
+
+    downloader = Downloader(download_dir=download_dir)
+
+    class DummyInfo:
+        id = "dummy"
+        url = "https://example.com/dummy.txt"
+        size = 1
+        filename = os.path.join("corpora", "dummy.txt")
+        subdir = "corpora"
+        unzip = False
+
+    info = DummyInfo()
+    tmp_file = os.path.join(download_dir, info.filename) + ".tmp"
+    final_file = os.path.join(download_dir, info.filename)
+
+    with unittest.mock.patch(
+        "nltk.downloader.urlopen"
+    ) as urlopen_mock, unittest.mock.patch(
+        "nltk.downloader.pathsec_open"
+    ) as pathsec_open_mock, unittest.mock.patch(
+        "nltk.downloader.validate_path"
+    ) as validate_path_mock, unittest.mock.patch(
+        "nltk.downloader.os.replace"
+    ) as replace_mock, unittest.mock.patch(
+        "nltk.downloader.os.makedirs"
+    ), unittest.mock.patch(
+        "nltk.downloader.os.open", return_value=3
+    ), unittest.mock.patch(
+        "nltk.downloader.os.close"
+    ), unittest.mock.patch(
+        "nltk.downloader.os.path.exists", return_value=False
+    ), unittest.mock.patch(
+        "nltk.downloader.time.time", return_value=0
+    ), unittest.mock.patch(
+        "nltk.downloader.itertools.count", return_value=iter([0])
+    ), unittest.mock.patch.object(
+        Downloader, "status", return_value=Downloader.NOT_INSTALLED
+    ):
+
+        infile = unittest.mock.Mock()
+        infile.read.side_effect = [b"x", b""]
+        infile.close.return_value = None
+        urlopen_mock.return_value = infile
+
+        outfile = unittest.mock.Mock()
+        pathsec_open_mock.return_value.__enter__.return_value = outfile
+        pathsec_open_mock.return_value.__exit__.return_value = False
+
+        list(downloader._download_package(info, download_dir, force=True))
+
+        pathsec_open_mock.assert_called_once_with(
+            tmp_file,
+            "wb",
+            context="Downloader._download_package",
+            required_root=download_dir,
+        )
+
+        validate_path_mock.assert_any_call(
+            final_file,
+            context="Downloader._download_package",
+            required_root=download_dir,
+        )
+
+        replace_mock.assert_called_once_with(tmp_file, final_file)
+
+        # Sanity check: the PR-specific path scoping does not change builtins.open.
+        assert open is __builtins__["open"]
