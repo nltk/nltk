@@ -2745,7 +2745,9 @@ def _check_package(pkg_xml, zipfilename, zf):
     # Zip file must expand to a subdir whose name matches uid.
     if sum((name != uid and not name.startswith(uid + "/")) for name in zf.namelist()):
         raise ValueError(
-            "Zipfile %s.zip does not expand to a single subdirectory %s/" % (uid, uid)
+            "Zipfile {}.zip does not expand to a single subdirectory {}/".format(
+                uid, uid
+            )
         )
 
 
