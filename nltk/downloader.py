@@ -846,13 +846,23 @@ class Downloader:
                         return
 
                     sha256_checksum = getattr(info, "sha256_checksum", None)
+
                     if sha256_checksum:
                         if sha256_hexdigest(tmp_filepath) != sha256_checksum:
                             _safe_remove(tmp_filepath)
                             yield ErrorMessage(
                                 info,
-                                f"Integrity check failed for {info.id!r}: "
-                                f"sha256 mismatch",
+                                f"Integrity check failed for {info.id!r}: sha256 mismatch",
+                            )
+                            return
+                    else:
+                        md5_checksum = getattr(info, "checksum", None)
+
+                        if md5_checksum and md5_hexdigest(tmp_filepath) != md5_checksum:
+                            _safe_remove(tmp_filepath)
+                            yield ErrorMessage(
+                                info,
+                                f"Integrity check failed for {info.id!r}: md5 mismatch",
                             )
                             return
                     # ---------------------------------------------------

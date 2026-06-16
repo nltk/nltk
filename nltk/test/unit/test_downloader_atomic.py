@@ -194,3 +194,35 @@ class TestDownloaderAtomic(unittest.TestCase):
             self.assertEqual(
                 dl.status(self.pkg, self.test_dir), dl.INSTALLED, msg=f"debug={debug}"
             )
+
+    def test_md5_mismatch_rejected_before_install(self):
+        """Legacy MD5 metadata should be enforced before install/extraction."""
+
+        bad_pkg = Package(
+            id="abc",
+            url=Path(self.source_zip_path).resolve().as_uri(),
+            subdir="corpora",
+            size=self.pkg.size,
+            unzipped_size=self.pkg.unzipped_size,
+            checksum="deadbeefdeadbeefdeadbeefdeadbeef",
+            unzip=True,
+        )
+
+        dl = Downloader(download_dir=self.test_dir)
+
+        ok = dl.download(
+            bad_pkg,
+            quiet=True,
+            force=True,
+            raise_on_error=False,
+        )
+
+        extracted_file = os.path.join(
+            self.test_dir,
+            "corpora",
+            "abc",
+            "dummy.txt",
+        )
+
+        self.assertFalse(ok)
+        self.assertFalse(os.path.exists(extracted_file))
