@@ -829,6 +829,34 @@ class Downloader:
                                     min(80, 5 + 75 * (block / num_blocks))
                                 )
                     infile.close()
+
+                    # --- CVE-2026-12261 fix (integrity before commit) ---
+                    # Validate size and sha256 on the temp file BEFORE
+                    # replacing the destination.  This closes the window
+                    # where a tampered archive could be extracted while the
+                    # integrity check was still deferred to status logic.
+                    tmp_size = os.path.getsize(tmp_filepath)
+                    if tmp_size != int(info.size):
+                        _safe_remove(tmp_filepath)
+                        yield ErrorMessage(
+                            info,
+                            f"Integrity check failed for {info.id!r}: "
+                            f"size mismatch (got {tmp_size}, expected {info.size})",
+                        )
+                        return
+
+                    sha256_checksum = getattr(info, "sha256_checksum", None)
+                    if sha256_checksum:
+                        if sha256_hexdigest(tmp_filepath) != sha256_checksum:
+                            _safe_remove(tmp_filepath)
+                            yield ErrorMessage(
+                                info,
+                                f"Integrity check failed for {info.id!r}: "
+                                f"sha256 mismatch",
+                            )
+                            return
+                    # ---------------------------------------------------
+
                     os.replace(tmp_filepath, filepath)
                     self._status_cache.pop(info.id, None)
                 except OSError as e:
@@ -848,7 +876,14 @@ class Downloader:
                 zipdir = os.path.join(download_dir, info.subdir)
                 if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
                     yield StartUnzipMessage(info)
-                    for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                    # --- CVE-2026-12261 fix (member ownership enforcement) ---
+                    # Pass info.id so _unzip_iter can reject any archive member
+                    # whose top-level path component is not the owning package.
+                    # zipdir itself stays as download_dir/subdir/ to preserve
+                    # the layout expected by _pkg_status and NLTK data loaders.
+                    for msg in _unzip_iter(
+                        filepath, zipdir, verbose=False, expected_root=info.id
+                    ):
                         _touch_lock()
                         msg.package = info
                         yield msg
@@ -2469,6 +2504,11 @@ def _validate_member(member, root_abs):
     ----------
     member : str
         The archive entry name (forward-slash separated, as stored in the ZIP).
+    .. note::
+        This function enforces Zip-Slip and symlink-escape containment only.
+        Cross-package ownership (CVE-2026-12261) is enforced separately by
+        the ``expected_root`` parameter of ``_unzip_iter``.
+
     root_abs : str
         Absolute path of the extraction root (used to build candidate paths
         and derive comparison prefixes via ``os.path.normcase``).
@@ -2489,7 +2529,7 @@ def _validate_member(member, root_abs):
     return None
 
 
-def _unzip_iter(filename, root, verbose=True):
+def _unzip_iter(filename, root, verbose=True, expected_root=None):
     """
     Secure ZIP extraction using validate-then-extract.
 
@@ -2536,6 +2576,24 @@ def _unzip_iter(filename, root, verbose=True):
         # Phase 1 -- validate every member before touching the filesystem.
         has_violations = False
         for member in members:
+            # --- CVE-2026-12261 fix (cross-package ownership check) ---
+            # Reject any member whose top-level path component differs from
+            # the owning package id.  This blocks cross-package overwrite
+            # without path traversal: a member like
+            #   averaged_perceptron_tagger_eng/file.json
+            # inside a package with id='evil-corpus' is rejected because
+            # 'averaged_perceptron_tagger_eng' != 'evil-corpus'.
+            if expected_root is not None:
+                top = member.replace("\\", "/").lstrip("/").split("/")[0]
+                if top != expected_root:
+                    yield ErrorMessage(
+                        filename,
+                        f"Cross-package overwrite blocked: member {member!r} "
+                        f"is outside the owning package directory {expected_root!r}",
+                    )
+                    has_violations = True
+                    continue
+            # -----------------------------------------------------------
             error = _validate_member(member, root_abs)
             if error is not None:
                 yield ErrorMessage(filename, error)
@@ -2553,6 +2611,15 @@ def _unzip_iter(filename, root, verbose=True):
             return
 
         for member in members:
+            if expected_root is not None:
+                top = member.replace("\\", "/").lstrip("/").split("/")[0]
+                if top != expected_root:
+                    yield ErrorMessage(
+                        filename,
+                        f"Cross-package overwrite blocked: member {member!r} "
+                        f"is outside the owning package directory {expected_root!r}",
+                    )
+                    return
             error = _validate_member(member, root_abs)
             if error is not None:
                 yield ErrorMessage(filename, f"{error} (during extraction)")
@@ -2678,8 +2745,7 @@ def _check_package(pkg_xml, zipfilename, zf):
     # Zip file must expand to a subdir whose name matches uid.
     if sum((name != uid and not name.startswith(uid + "/")) for name in zf.namelist()):
         raise ValueError(
-            "Zipfile %s.zip does not expand to a single "
-            "subdirectory %s/" % (uid, uid)
+            "Zipfile %s.zip does not expand to a single subdirectory %s/" % (uid, uid)
         )
 
 
