@@ -13,6 +13,7 @@ import nltk
 import nltk.downloader  # We will inspect this module directly
 from nltk import pathsec
 from nltk.downloader import Downloader
+from nltk.sem.util import read_sents
 
 
 @pytest.fixture(autouse=True)
@@ -418,3 +419,11 @@ def test_streambackedcorpusview_string_fileid_uses_pathsec(tmp_path, monkeypatch
 
     with pytest.raises((ValueError, PermissionError)):
         view._open()
+
+
+def test_read_sents_enforces_pathsec():
+    # Enable strict sandbox
+    pathsec.ENFORCE = True
+    # Attempt to access a file outside the data root
+    with pytest.raises(PermissionError):
+        read_sents("/etc/passwd")
