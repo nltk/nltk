@@ -13,8 +13,6 @@ syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
 
-import codecs
-
 from nltk.pathsec import open as _secure_open
 from nltk.sem import evaluate
 
@@ -147,7 +145,11 @@ def read_sents(filename, encoding="utf8"):
     # Reroute to secure sentinel for path validation
     with _secure_open(filename, "r", encoding=encoding) as fp:
         sents = [l.rstrip() for l in fp]
-    # ... existing list comprehensions ...
+
+    # Filter out blank lines and comments
+    sents = [l for l in sents if len(l) > 0]
+    sents = [l for l in sents if not l[0] == "#"]
+
     return sents
 
 
