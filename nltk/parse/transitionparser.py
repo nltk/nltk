@@ -21,7 +21,13 @@ except ImportError:
     pass
 
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
-from nltk.picklesec import pickle_load
+from nltk.picklesec import allowlisted_pickle_load
+
+# Modules whose globals a saved TransitionParser model legitimately needs. The
+# model is a trained scikit-learn classifier backed by numpy/scipy arrays, so
+# allowing only these scientific-stack modules lets a genuine model load while
+# blocking arbitrary-code gadgets (os, posix, subprocess, builtins, ...).
+_MODEL_ALLOWED_MODULES = ("numpy", "scipy", "sklearn")
 
 
 class Configuration:
@@ -555,9 +561,14 @@ class TransitionParser(ParserI):
         :return: list (DependencyGraph) with the 'head' and 'rel' information
         """
         result = []
-        # First load the model
+        # First load the model. The model is a trained scikit-learn classifier,
+        # so it is loaded through an allowlisting unpickler (CWE-502): only
+        # numpy/scipy/sklearn globals may be reconstructed, and anything else --
+        # e.g. os.system -- raises UnpicklingError instead of executing. See
+        # nltk/picklesec.py and huntr report
+        # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
         with open(modelFile, "rb") as f:
-            model = pickle_load(f)
+            model = allowlisted_pickle_load(f, allowed_modules=_MODEL_ALLOWED_MODULES)
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
