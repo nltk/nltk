@@ -275,6 +275,7 @@ class Package:
 
         # Include any other attributes provided by the XML file.
         self.__dict__.update(kw)
+        self.filename = os.path.join(subdir, id + ext)  # Neutralize kw attack
 
     @staticmethod
     def fromxml(xml):

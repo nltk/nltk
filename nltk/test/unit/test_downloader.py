@@ -1,9 +1,31 @@
 import os
 import shutil
+import unittest
 import unittest.mock
+import xml.etree.ElementTree as ET
 
 from nltk import download
-from nltk.downloader import build_index
+from nltk.downloader import Package, build_index
+
+
+class TestPackageFromXmlInjection(unittest.TestCase):
+    """Security tests for XML attribute injection via Package.fromxml."""
+
+    def test_fromxml_neutralises_injected_filename(self):
+        """Malicious filename attribute in XML must be ignored."""
+        mock_xml = """
+        <package id="test_pkg" name="Test Package" subdir="corpora"
+                 url="http://example.com/test_pkg.zip" size="100"
+                 unzipped_size="100" checksum="0" unzip="0"
+                 filename="../../../vulnerable_overwrite.txt" />
+        """
+        xml_element = ET.fromstring(mock_xml)
+        pkg = Package.fromxml(xml_element)
+
+        expected = os.path.join("corpora", "test_pkg.zip")
+        self.assertEqual(pkg.filename, expected)
+        self.assertNotIn("..", pkg.filename)
+        self.assertFalse(os.path.isabs(pkg.filename))
 
 
 def test_downloader_using_existing_parent_download_dir(tmp_path):
