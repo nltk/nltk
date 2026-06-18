@@ -1,4 +1,31 @@
+Version 3.10.0 2026-06-11
+
+* Enforce the stricter `nltk.pathsec` security policy by default
+* Document the new security model and migration guidance
+* Harden resource loading against path traversal and SSRF/DNS-rebinding
+* Harden downloader path handling and block XML entity expansion
+* Close remaining corpus-reader security edge cases
+* Replace unsafe `exec()` usage in the utility CLI
+* Warn on unpickling user-provided pickles
+* Add HuggingFace datasets integration (`nltk.huggingface`)
+* Align TnT with Brants (2000) specifications
+* Fix PorterStemmer irregular-form lowercasing in NLTK mode
+* Fix TransitionParser sparse index dtype for scikit-learn 1.9
+* Fix TextCat tie handling
+* Fix WordNet object comparisons for incompatible types
+* Cache WordNet max depth lazily for `lch_similarity()`
+* Fix CCG variable direction, substitution, and type-raising bugs
+* Fix Jaro similarity for single-character and empty-string cases
+* Improve CI and release-maintenance workflows
+
+Thanks to the following contributors to 3.10.0:
+13rac1, alvations, bowiechen, devesh-2002, ekaf, elias-ba,
+haosenwang1018, HyperPS, ihitamandal, jancallewaert, jhnwnstd,
+JuanIMartinezB, Lemm1, LinZiyuu, Mr-Neutr0n, PastelStorm,
+scruge1, Syzygy2048, ylwango613, yzhaoinuw
+
 Version 3.9.4 2026-03-24
+
 * Support Python 3.14
 * Fix bug in Levenshtein distance when substitution_cost > 2
 * Fix bug in Treebank detokeniser re quote ordering

@@ -3,53 +3,110 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'
-
-permissions:
-  contents: write
+      - 'v*'
 
 jobs:
-  test:
+  gate-on-ci:
+    name: Gate release on CI success for this tag commit
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.14t']
+    permissions:
+      actions: read
+      contents: read
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run tests
-        run: pytest
+          fetch-depth: 0
 
-  build-and-release:
+      - name: Check that release tag points to a develop commit
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/develop
+
+      - name: Verify version string in documentation
+        run: |
+          # Strip leading 'v'
+          RAW_VERSION=${GITHUB_REF_NAME#v}
+          # Strip pre-release suffixes (e.g., -rc1, -beta)
+          VERSION=${RAW_VERSION%%-*}
+          echo "Checking files for base version: $VERSION"
+
+          for file in nltk/VERSION ChangeLog web/news.rst web/conf.py; do
+            if grep -Fq "$VERSION" "$file"; then
+              echo "✅ Found $VERSION in $file"
+            else
+              echo "❌ ERROR: Version $VERSION not found in $file!"
+              exit 1
+            fi
+          done
+
+      - name: Wait for ci.yml to complete and verify success
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          workflow_file="ci.yml"
+          attempts=60
+          delay=20
+
+          for _ in $(seq 1 "$attempts"); do
+            run=$(gh api \
+              "repos/${{ github.repository }}/actions/workflows/${workflow_file}/runs?per_page=100" \
+              --jq '[.workflow_runs[] | select(.head_sha == "'"$GITHUB_SHA"'")] | sort_by(.run_number) | last')
+
+            if [ -z "$run" ] || [ "$run" = "null" ]; then
+              sleep "$delay"
+              continue
+            fi
+
+            status=$(jq -r '.status // empty' <<< "$run")
+            conclusion=$(jq -r '.conclusion // empty' <<< "$run")
+
+            if [ "$status" != "completed" ]; then
+              sleep "$delay"
+              continue
+            fi
+
+            if [ "$conclusion" = "success" ]; then
+              exit 0
+            fi
+
+            run_id=$(jq -r '.id // empty' <<< "$run")
+            run_number=$(jq -r '.run_number // empty' <<< "$run")
+            run_url="https://github.com/${{ github.repository }}/actions/runs/${run_id}"
+            echo "CI failed with conclusion: ${conclusion:-unknown} (run #${run_number:-unknown}). See workflow run: ${run_url}"
+            exit 1
+          done
+
+          echo "Timed out waiting for CI to complete for $GITHUB_SHA"
+          exit 1
+
+  build-and-github-release:
+    needs: gate-on-ci
+    name: Build and create GitHub draft release
     runs-on: ubuntu-latest
-    needs: test
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v6
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.14
-      - name: Install dependencies
+          python-version: '3.12'
+
+      - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
           pip install build
-      - name: Build distributions
+
+      - name: Build package
         run: python -m build
-      - name: Upload Release Assets
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          files: |
-            dist/*.whl
-            dist/*.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: dist/*
+          draft: true
+          generate_release_notes: true
