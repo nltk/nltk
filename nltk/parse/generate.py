@@ -11,7 +11,8 @@
 import itertools
 import sys
 
-from nltk.grammar import Nonterminal
+from nltk.featstruct import unify
+from nltk.grammar import FeatStructNonterminal, Nonterminal
 
 
 def generate(grammar, start=None, depth=None, n=None):
@@ -30,7 +31,7 @@ def generate(grammar, start=None, depth=None, n=None):
         # Safe default, assuming the grammar may be recursive:
         depth = (sys.getrecursionlimit() // 3) - 3
 
-    iter = _generate_all(grammar, [start], depth)
+    iter = (sent for sent, _ in _generate_all(grammar, [start], depth))
 
     if n:
         iter = itertools.islice(iter, n)
@@ -38,12 +39,16 @@ def generate(grammar, start=None, depth=None, n=None):
     return iter
 
 
-def _generate_all(grammar, items, depth):
+def _generate_all(grammar, items, depth, bindings=None):
     if items:
+        if bindings is None:
+            bindings = {}
         try:
-            for frag1 in _generate_one(grammar, items[0], depth):
-                for frag2 in _generate_all(grammar, items[1:], depth):
-                    yield frag1 + frag2
+            for frag1, bindings1 in _generate_one(grammar, items[0], depth, bindings):
+                for frag2, bindings2 in _generate_all(
+                    grammar, items[1:], depth, bindings1
+                ):
+                    yield frag1 + frag2, bindings2
         except RecursionError as error:
             # Helpful error message while still showing the recursion stack.
             raise RuntimeError(
@@ -51,16 +56,25 @@ def _generate_all(grammar, items, depth):
 Eventually use a lower 'depth', or a higher 'sys.setrecursionlimit()'."
             ) from error
     else:
-        yield []
+        yield [], bindings or {}
 
 
-def _generate_one(grammar, item, depth):
+def _generate_one(grammar, item, depth, bindings=None):
+    if bindings is None:
+        bindings = {}
+
     if depth > 0:
         if isinstance(item, Nonterminal):
             for prod in grammar.productions(lhs=item):
-                yield from _generate_all(grammar, prod.rhs(), depth - 1)
+                if isinstance(item, FeatStructNonterminal):
+                    local_bindings = bindings.copy()
+                    if unify(item, prod.lhs(), local_bindings) is None:
+                        continue
+                else:
+                    local_bindings = bindings
+                yield from _generate_all(grammar, prod.rhs(), depth - 1, local_bindings)
         else:
-            yield [item]
+            yield [item], bindings
 
 
 demo_grammar = """
