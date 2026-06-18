@@ -264,10 +264,6 @@ class Package:
         """Author of this package."""
 
         ext = os.path.splitext(url.split("/")[-1])[1]
-        self.filename = os.path.join(subdir, id + ext)
-        """The filename that should be used for this package's file.  It
-           is formed by joining ``self.subdir`` with ``self.id``, and
-           using the same extension as ``url``."""
 
         self.unzip = bool(int(unzip))  # '0' or '1'
         """A flag indicating whether this corpus should be unzipped by
@@ -276,6 +272,9 @@ class Package:
         # Include any other attributes provided by the XML file.
         self.__dict__.update(kw)
         self.filename = os.path.join(subdir, id + ext)  # Neutralize kw attack
+        """The filename that should be used for this package's file.  It
+           is formed by joining ``self.subdir`` with ``self.id``, and
+           using the same extension as ``url``."""
 
     @staticmethod
     def fromxml(xml):
