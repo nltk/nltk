@@ -13,9 +13,9 @@ The workflow is **event-driven**. It is automatically initiated upon pushing a g
 
 Successful execution of this workflow requires specific repository configurations:
 
-* **Write Permissions:** The workflow interacts with the GitHub API to draft releases and create tags; therefore, the triggering actor must have **write** access to the repository.
+* **Write Permissions:** Pushing a release tag requires **write** access to the repository, and the workflow needs `contents: write` (via `GITHUB_TOKEN`) to create the draft GitHub release.
 * **Fork Execution:** If executing within a fork, ensure the repository settings under **Actions > General > Workflow permissions** are set to "Read and write permissions" to allow the workflow to create release objects.
-* **Secrets:** Ensure all necessary environment secrets (e.g., `PYPI_API_TOKEN` for package publishing) are correctly configured in the repository's secret store.
+* **Secrets:** No additional repository secrets are required; the workflow uses the automatically provisioned `GITHUB_TOKEN` to query CI and create the draft release.
 
 ### Release Strategy: GitHub vs. PyPI
 
@@ -31,9 +31,10 @@ The workflow maintains a clear separation between testing and production release
 ### Execution & Verification
 
 1. **Initiate Release:** Trigger the workflow by pushing the appropriate tag to the remote:
-```bash
-git tag v3.10.x-rc
-git push origin v3.10.x-rc
+   ```bash
+   git tag v3.10.0-rc1
+   git push origin v3.10.0-rc1
+   ```
 
 2. **CI Validation:** As implemented in **[#3506](https://github.com/nltk/nltk/pull/3506)**, the workflow performs an automated check to verify that Continuous Integration (CI) has successfully passed on the specific commit to which the release tag points.
 3. **Monitor Logs:** Follow the execution progress in the repository’s **Actions** tab.
