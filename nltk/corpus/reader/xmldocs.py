@@ -203,13 +203,23 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     #: A regular expression that matches XML fragments that do not
     #: contain any un-closed tags.
+    #
+    # The comment alternative matches the comment body as "any run of
+    # characters that does not start the ``-->`` terminator" rather than the
+    # lazy ``.*?`` (which, with re.DOTALL, can match across ``-->`` and so span
+    # several comments). The lazy form makes the repeated group ambiguous: when
+    # the final ``\Z`` fails (e.g. the fragment ends with an unterminated
+    # comment) the engine tries exponentially many ways to partition the input
+    # into comments, a catastrophic-backtracking ReDoS (CWE-1333). Pinning each
+    # comment to its first ``-->`` removes that ambiguity (and matches exactly
+    # the same well-formed fragments) so validation runs in linear time.
     _VALID_XML_RE = re.compile(
         r"""
         [^<]*
         (
-          ((<!--.*?-->)                         |  # comment
+          ((<!--(?:(?!-->).)*-->)              |  # comment
            (<![CDATA[.*?]])                     |  # raw character data
-           (<!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>) |  # doctype decl
+           (<!DOCTYPE\s+[^\[>]*(\[[^\]]*])?\s*>) |  # doctype decl
            (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
         \Z""",
