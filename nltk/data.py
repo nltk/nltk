@@ -499,7 +499,9 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
         # resolved) before reading; decompress the validated stream rather than
         # re-opening the path directly (CWE-22 / CWE-73).
         stream = GzipFile(self._path, fileobj=_secure_open(self._path, "rb"))
-        if encoding:
+        # ``encoding is not None`` (not truthiness) to match
+        # FileSystemPathPointer.open() / ZipFilePathPointer.open().
+        if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
 
