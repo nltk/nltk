@@ -660,9 +660,34 @@ def find_binary_iter(
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    yield from find_file_iter(
+    safe_match = False
+    for path in find_file_iter(
         path_to_bin or name, env_vars, searchpath, binary_names, url, verbose
-    )
+    ):
+        # ``find_file_iter`` probes the current working directory (e.g.
+        # ``os.path.join(name, name)`` and the bare name) before the configured
+        # ``env_vars`` and ``searchpath``. Returning such a CWD-relative match
+        # for a bare binary name lets an attacker who can write into the working
+        # directory plant an executable that overrides the configured tool and
+        # the library's trusted install locations -- and, because the returned
+        # path contains a separator, it is then run relative to the CWD rather
+        # than looked up on PATH: arbitrary code execution (CWE-426 / CWE-427).
+        # When the caller did not supply an explicit ``path_to_bin``, only accept
+        # a binary resolved to a trusted absolute location (env var / searchpath
+        # / ``which``); all legitimate matches there are absolute.
+        if path_to_bin is None and not os.path.isabs(path):
+            continue
+        safe_match = True
+        yield path
+    if not safe_match:
+        # ``find_file_iter`` itself raises ``LookupError`` when nothing matches,
+        # so reaching here means it found only untrusted CWD-relative
+        # executables, which were rejected above.
+        raise LookupError(
+            f"NLTK found {name!r} only in the current working directory, which "
+            "is not a trusted location for executables. Install it on PATH or in "
+            "a configured location, or pass an explicit path_to_bin."
+        )
 
 
 def find_binary(
