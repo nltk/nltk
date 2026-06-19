@@ -494,7 +494,11 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        stream = GzipFile(self._path, "rb")
+        # Route through the sentinel like FileSystemPathPointer.open() so the
+        # path is validated against the allowed NLTK data roots (with symlinks
+        # resolved) before reading; decompress the validated stream rather than
+        # re-opening the path directly (CWE-22 / CWE-73).
+        stream = GzipFile(self._path, fileobj=_secure_open(self._path, "rb"))
         if encoding:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
