@@ -193,12 +193,22 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     # ``list.count`` over that full n-gram list is exactly the number of
     # contiguous occurrences of the n-gram in the sequence, which we compute
     # here in O(len(sequence)) with Knuth-Morris-Pratt and cache, so each
-    # distinct n-gram is counted once and no n-grams are materialised.
+    # distinct n-gram is counted once and the eager, quadratic-sized n-gram
+    # lists are no longer built (only the individual context-window tuples the
+    # loop already created are used).
     ngram_count_cache = {}
 
     def count_ngram(sequence, seq_id, ngram):
+        # Memoise by (seq_id, ngram); this needs the n-gram (hence its tokens)
+        # to be hashable. ``list.count`` only relied on equality, so fall back
+        # to an uncached count for unhashable tokens to keep the same input
+        # types working (KMP below also only uses ==).
         key = (seq_id, ngram)
-        cached = ngram_count_cache.get(key)
+        try:
+            cached = ngram_count_cache.get(key)
+        except TypeError:
+            key = None
+            cached = None
         if cached is not None:
             return cached
         m = len(ngram)
@@ -224,7 +234,8 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
                     if k == m:
                         count += 1
                         k = prefix[k - 1]
-        ngram_count_cache[key] = count
+        if key is not None:
+            ngram_count_cache[key] = count
         return count
 
     for i, h_word in enumerate(hypothesis):
