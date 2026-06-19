@@ -723,6 +723,14 @@ class Downloader:
                 pass
 
         def _safe_rmtree(path):
+            # Never follow a symlinked directory while cleaning up: os.walk
+            # descends into a symlinked top regardless of ``followlinks``, so a
+            # pre-existing symlink at ``path`` (e.g. a planted unzip dir) would
+            # cause recursive deletion of the link's target *outside* the
+            # download directory (CWE-59 / CWE-22). Remove the link itself.
+            if os.path.islink(path):
+                _safe_remove(path)
+                return
             if not os.path.isdir(path):
                 return
             for root, dirs, files in os.walk(path, topdown=False):
@@ -732,8 +740,14 @@ class Downloader:
                     except OSError:
                         pass
                 for name in dirs:
+                    full = os.path.join(root, name)
+                    # os.walk (followlinks=False) lists but does not descend
+                    # symlinked subdirs; remove the link, never its target.
+                    if os.path.islink(full):
+                        _safe_remove(full)
+                        continue
                     try:
-                        os.rmdir(os.path.join(root, name))
+                        os.rmdir(full)
                     except OSError:
                         pass
             try:
