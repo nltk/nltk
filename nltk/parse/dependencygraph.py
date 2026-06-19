@@ -468,10 +468,10 @@ class DependencyGraph:
         # O(V + E).  The previous implementation repeatedly recomputed a
         # transitive closure with a triple-nested loop over a ``distances``
         # set that grows quadratically in the number of nodes, so its running
-        # time was super-polynomial in the (attacker-controlled) number of
-        # tokens -- roughly cubic on a graph parsed from CoNLL data and
-        # quintic on a list-``deps`` graph -- which let a single oversized
-        # graph exhaust CPU (CWE-407).
+        # time grew as a high-degree polynomial in the (attacker-controlled)
+        # number of tokens -- roughly cubic on a graph parsed from CoNLL data
+        # and quintic on a list-``deps`` graph -- versus O(V + E) here, which
+        # let a single oversized graph exhaust CPU (CWE-407).
         #
         # ``deps`` may be a list of addresses or a relation->addresses
         # mapping; iterating it yields the same edge targets the old code
