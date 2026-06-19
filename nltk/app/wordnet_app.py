@@ -90,11 +90,11 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.send_head()
 
     def _shutdown_authorized(self):
-        """True only for a same-session shutdown carrying the secret token.
+        """True only for a shutdown request carrying the per-process token.
 
-        The token is generated per process and embedded only in the browser's
-        own Shutdown link, so a cross-site page cannot supply it; this blocks
-        CSRF-driven shutdown (CWE-352).
+        The token is generated once per server process and embedded only in the
+        browser's own Shutdown link, so a cross-site page cannot supply it; this
+        blocks CSRF-driven shutdown (CWE-352).
         """
         token = parse_qs(self.path.partition("?")[2]).get("token", [""])[0]
         return bool(_shutdown_token) and hmac.compare_digest(token, _shutdown_token)
@@ -115,7 +115,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-type", "text/plain")
                 self.end_headers()
                 self.wfile.write(
-                    b"Forbidden: shutdown requires the session token "
+                    b"Forbidden: shutdown requires the per-process token "
                     b"from the browser's Shutdown link."
                 )
                 return
