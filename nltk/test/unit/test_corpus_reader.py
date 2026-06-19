@@ -53,3 +53,38 @@ def test_find_corpus_fileids_skips_symlink_escape(tmp_path):
 
     assert "inside.txt" in fileids
     assert "outside_link/secret.txt" not in fileids
+
+
+@pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires os.symlink")
+def test_xml_corpus_reader_blocks_symlink_escape(tmp_path, monkeypatch):
+    """XML readers (BNC/CHILDES/Semcor) parse through the validated path-pointer
+    open(), so an in-corpus symlink to an out-of-root XML file must be blocked
+    rather than parsed and returned (CWE-22 / CWE-59).
+    """
+    from nltk import pathsec
+    from nltk.corpus.reader.bnc import BNCCorpusReader
+
+    corpus_root = tmp_path / "corpus"
+    corpus_root.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+
+    # Valid BNC XML so that, if the symlink were followed, the reader would
+    # return the secret token rather than fail to parse.
+    secret = outside / "secret.xml"
+    secret.write_text(
+        '<bncDoc><stext><s n="1">'
+        '<w c5="NN0" hw="x" pos="SUBST">SECRET-OUTSIDE-CORPUS-ROOT </w>'
+        "</s></stext></bncDoc>",
+        encoding="utf-8",
+    )
+    os.symlink(str(secret), str(corpus_root / "link.xml"))
+
+    # Confine the pathsec sandbox to the corpus root so the symlink target is
+    # genuinely out of root.
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {corpus_root.resolve()})
+
+    reader = BNCCorpusReader(root=str(corpus_root), fileids=r"link\.xml", lazy=False)
+    with pytest.raises((PermissionError, ValueError, OSError)):
+        reader.words("link.xml")
