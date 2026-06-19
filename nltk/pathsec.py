@@ -207,6 +207,40 @@ def _resolve_hostname(hostname):
         return []
 
 
+# IPv6->IPv4 transition prefixes that have no dedicated stdlib accessor.
+_NAT64_WELL_KNOWN = ipaddress.ip_network("64:ff9b::/96")
+_IPV4_COMPATIBLE = ipaddress.ip_network("::/96")
+
+
+def _embedded_ipv4(ip):
+    """The embedded IPv4 for IPv6 forms that *are* an IPv4 address, else None.
+
+    Covers IPv4-mapped (``::ffff:0:0/96``), IPv4-compatible (``::/96``) and the
+    NAT64 well-known prefix (``64:ff9b::/96``). For these the IPv6 wrapper has no
+    independent routable meaning, so the embedded IPv4 is what gets reached.
+    """
+    if not isinstance(ip, ipaddress.IPv6Address):
+        return None
+    mapped = ip.ipv4_mapped
+    if mapped is not None:
+        return mapped
+    if ip in _NAT64_WELL_KNOWN or ip in _IPV4_COMPATIBLE:
+        return ipaddress.IPv4Address(ip.packed[-4:])
+    return None
+
+
+def _tunneled_ipv4s(ip):
+    """IPv4 addresses tunneled by routable IPv6 wrappers (6to4 / Teredo)."""
+    if not isinstance(ip, ipaddress.IPv6Address):
+        return
+    sixtofour = ip.sixtofour
+    if sixtofour is not None:
+        yield sixtofour
+    teredo = ip.teredo
+    if teredo is not None:
+        yield from teredo  # (Teredo server, Teredo client)
+
+
 def _ip_is_forbidden(ip):
     """Return True if the SSRF filter must refuse to connect to ``ip``.
 
@@ -218,15 +252,20 @@ def _ip_is_forbidden(ip):
     superset of it. Multicast is still rejected explicitly because some CPython
     versions classify multicast addresses as ``is_global``.
 
-    IPv4-mapped IPv6 addresses (e.g. ``::ffff:127.0.0.1``) are evaluated as their
-    embedded IPv4 address: the stdlib's ``is_*`` classification of mapped
-    addresses is version dependent and has not always reflected the embedded
-    address, so the mapped form could otherwise smuggle a forbidden IPv4 past the
-    check.
+    IPv6 addresses that embed an IPv4 address are evaluated by that embedded IPv4,
+    not by the wrapper: the stdlib classifies the wrappers (IPv4-mapped,
+    IPv4-compatible, NAT64 ``64:ff9b::/96``, 6to4 ``2002::/16``, Teredo
+    ``2001::/32``) as globally routable, so a forbidden internal IPv4 (loopback,
+    the link-local cloud-metadata address, ...) could otherwise be smuggled past
+    the check and then routed to that IPv4 by a NAT64/6to4/Teredo gateway
+    (CWE-918). This extends the previous IPv4-mapped-only unwrap.
     """
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if mapped is not None:
-        ip = mapped
+    embedded = _embedded_ipv4(ip)
+    if embedded is not None:
+        ip = embedded
+    for tunneled in _tunneled_ipv4s(ip):
+        if tunneled.is_multicast or not tunneled.is_global:
+            return True
     return ip.is_multicast or not ip.is_global
 
 
