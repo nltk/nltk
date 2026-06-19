@@ -156,6 +156,29 @@ def validate_path(path_input, context="NLTK", required_root=None):
             raise
 
 
+def _zip_member_is_unsafe(name_str):
+    """True if a ZIP member is written somewhere other than where it is validated.
+
+    ``zipfile.ZipFile.extract`` sanitises a member name by *dropping* the drive
+    and every empty / ``.`` / ``..`` component while keeping the rest, whereas
+    ``Path.resolve`` collapses a ``..`` against its *preceding* component.  For a
+    member such as ``a/../b/x`` the two disagree: it is validated as ``<root>/b/x``
+    but written to ``<root>/a/b/x``, which can escape through a pre-existing
+    symlink at ``<root>/a/b`` that the collapsed validation path never visits.
+
+    The mismatch only ever arises from absolute / drive-qualified / ``..`` members
+    -- exactly the shapes a legitimate archive never uses -- so rather than keep
+    two different normalizations in sync we reject them outright.  This both
+    closes the validate/extract gap and is the proactive block the hardened
+    extractor promises (CWE-22 / CWE-59).
+    """
+    # Normalize every separator zipfile treats as such on this platform to "/".
+    normalized = name_str.replace("\\", "/") if os.path.altsep else name_str
+    if os.path.splitdrive(name_str)[0] or normalized.startswith("/"):
+        return True
+    return os.path.pardir in normalized.split("/")
+
+
 def validate_zip_archive(
     zip_obj_or_path, target_root, specific_member=None, context="ZipAudit"
 ):
@@ -172,8 +195,14 @@ def validate_zip_archive(
                 if "\0" in name_str:
                     raise ValueError(f"Null byte in ZIP member: {name_str}")
 
+                # ``resolve()`` follows symlinks, catching escapes through a
+                # pre-existing symlinked subpath. The extra component check
+                # rejects absolute / ``..`` members, whose write target diverges
+                # from this resolved path (CWE-22 / CWE-59).
                 member_path = (target / name_str).resolve()
-                if not (member_path == target or member_path.is_relative_to(target)):
+                if _zip_member_is_unsafe(name_str) or not (
+                    member_path == target or member_path.is_relative_to(target)
+                ):
                     msg = f"Security Violation [{context}]: Traversal member '{name_str}' detected."
                     if ENFORCE:
                         raise PermissionError(msg)
