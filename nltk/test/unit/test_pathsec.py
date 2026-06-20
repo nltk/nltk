@@ -1,5 +1,6 @@
 import builtins
 import io
+import ipaddress
 import os
 import socket
 import urllib.request
@@ -73,6 +74,57 @@ def test_ssrf_ip_obfuscation():
             pass
         else:
             pytest.fail(f"Unexpected network failure: {e}")
+
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        # direct internal IPv4
+        "169.254.169.254",
+        "127.0.0.1",
+        # IPv4-mapped IPv6
+        "::ffff:169.254.169.254",
+        "::ffff:127.0.0.1",
+        # NAT64 well-known prefix 64:ff9b::/96 embedding an internal IPv4
+        "64:ff9b::a9fe:a9fe",  # -> 169.254.169.254
+        "64:ff9b::7f00:1",  # -> 127.0.0.1
+        # IPv4-compatible ::/96
+        "::a9fe:a9fe",  # -> 169.254.169.254
+        "::7f00:1",  # -> 127.0.0.1
+        # 6to4 2002::/16 and Teredo 2001:0::/32 embedding an internal IPv4
+        "2002:a9fe:a9fe::",  # 6to4 of 169.254.169.254
+        "2001:0:0:0:0:0:a9fe:a9fe",  # Teredo with internal client
+        # plain non-global IPv6
+        "::1",
+        "fe80::1",
+        "fc00::1",
+        "::",
+    ],
+)
+def test_ip_filter_forbids_transition_embedded_internal(addr):
+    """Internal IPv4 embedded in any IPv6->IPv4 transition form must be refused.
+
+    Regression for the NAT64 / IPv4-compatible / 6to4 / Teredo SSRF bypass
+    (CWE-918): the stdlib marks these wrappers globally routable, so the embedded
+    IPv4 must be inspected.
+    """
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)) is True
+
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "8.8.8.8",
+        "1.1.1.1",
+        "::ffff:8.8.8.8",  # IPv4-mapped public
+        "64:ff9b::808:808",  # NAT64 of the public 8.8.8.8
+        "2606:4700:4700::1111",  # public IPv6 (Cloudflare)
+        "2001:4860:4860::8888",  # public IPv6 (Google)
+    ],
+)
+def test_ip_filter_allows_global(addr):
+    """Genuinely globally-routable addresses (incl. NAT64-of-public) must pass."""
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)) is False
 
 
 # --- PATH TRAVERSAL TESTS ---

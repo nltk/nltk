@@ -255,7 +255,7 @@ def _ip_is_forbidden(ip):
     IPv6 addresses that embed an IPv4 address are evaluated by that embedded IPv4,
     not by the wrapper: the stdlib classifies the wrappers (IPv4-mapped,
     IPv4-compatible, NAT64 ``64:ff9b::/96``, 6to4 ``2002::/16``, Teredo
-    ``2001::/32``) as globally routable, so a forbidden internal IPv4 (loopback,
+    ``2001:0::/32``) as globally routable, so a forbidden internal IPv4 (loopback,
     the link-local cloud-metadata address, ...) could otherwise be smuggled past
     the check and then routed to that IPv4 by a NAT64/6to4/Teredo gateway
     (CWE-918). This extends the previous IPv4-mapped-only unwrap.
