@@ -674,8 +674,11 @@ def find_binary_iter(
         # than looked up on PATH: arbitrary code execution (CWE-426 / CWE-427).
         # When the caller did not supply an explicit ``path_to_bin``, only accept
         # a binary resolved to a trusted absolute location (env var / searchpath
-        # / ``which``); all legitimate matches there are absolute.
-        if path_to_bin is None and not os.path.isabs(path):
+        # / ``which``); all legitimate matches there are absolute. ``not
+        # path_to_bin`` (rather than ``is None``) so an empty-string path_to_bin
+        # -- which ``path_to_bin or name`` already falls back to ``name`` for --
+        # cannot bypass the gate.
+        if not path_to_bin and not os.path.isabs(path):
             continue
         safe_match = True
         yield path
