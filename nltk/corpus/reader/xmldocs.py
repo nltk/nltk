@@ -204,21 +204,24 @@ class XMLCorpusView(StreamBackedCorpusView):
     #: A regular expression that matches XML fragments that do not
     #: contain any un-closed tags.
     #
-    # The comment alternative matches the comment body as "any run of
-    # characters that does not start the ``-->`` terminator" rather than the
-    # lazy ``.*?`` (which, with re.DOTALL, can match across ``-->`` and so span
-    # several comments). The lazy form makes the repeated group ambiguous: when
-    # the final ``\Z`` fails (e.g. the fragment ends with an unterminated
-    # comment) the engine tries exponentially many ways to partition the input
-    # into comments, a catastrophic-backtracking ReDoS (CWE-1333). Pinning each
-    # comment to its first ``-->`` removes that ambiguity (and matches exactly
-    # the same well-formed fragments) so validation runs in linear time.
+    # Each delimited alternative is pinned to its own terminator so it cannot
+    # span across it: the comment body is "any run that does not start ``-->``"
+    # and the CDATA body "any run that does not start ``]]>``", rather than a
+    # lazy ``.*?`` which, with re.DOTALL, matches across the terminator and so
+    # spans several comments/sections. The lazy form makes the repeated group
+    # ambiguous: when the final ``\Z`` fails (e.g. the fragment ends with an
+    # unterminated comment) the engine tries exponentially many ways to
+    # partition the input -- a catastrophic-backtracking ReDoS (CWE-1333).
+    # Likewise the doctype's pre-subset run excludes ``>``. Pinning each piece
+    # to its first terminator keeps validation linear while matching the same
+    # well-formed fragments. (The CDATA brackets are also escaped so they match
+    # a literal ``<![CDATA[`` rather than being read as a character class.)
     _VALID_XML_RE = re.compile(
         r"""
         [^<]*
         (
           ((<!--(?:(?!-->).)*-->)              |  # comment
-           (<![CDATA[.*?]])                     |  # raw character data
+           (<!\[CDATA\[(?:(?!\]\]>).)*\]\]>)     |  # raw character data
            (<!DOCTYPE\s+[^\[>]*(\[[^\]]*])?\s*>) |  # doctype decl
            (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
@@ -238,7 +241,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         r"""
         # Include these so we can skip them:
         (?P<COMMENT>        <!--.*?-->                          )|
-        (?P<CDATA>          <![CDATA[.*?]]>                     )|
+        (?P<CDATA>          <!\[CDATA\[.*?\]\]>                 )|
         (?P<PI>             <\?.*?\?>                           )|
         (?P<DOCTYPE>        <!DOCTYPE\s+[^\[^>]*(\[[^\]]*])?\s*>)|
         # These are the ones we actually care about:
