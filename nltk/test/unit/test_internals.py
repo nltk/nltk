@@ -80,3 +80,16 @@ def test_find_binary_honors_explicit_relative_path_to_bin(tmp_path, monkeypatch)
         _NAME, path_to_bin=os.path.join("tools", _NAME), binary_names=[_NAME]
     )
     assert os.path.basename(result) == _NAME
+
+
+def test_find_binary_honors_explicit_relative_path_via_name(tmp_path, monkeypatch):
+    """A relative path with a directory component passed via ``name`` (the
+    documented "name or path" usage) is an explicit choice and is honored; only
+    a *bare* name triggers the CWD-relative refusal."""
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    _make_exec(cwd / "tools" / _NAME)
+    monkeypatch.chdir(cwd)
+
+    result = find_binary(os.path.join("tools", _NAME), binary_names=[_NAME])
+    assert os.path.basename(result) == _NAME
