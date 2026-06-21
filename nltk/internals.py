@@ -26,6 +26,28 @@ from xml.etree import ElementTree
 _java_bin = None
 _java_options = []
 
+# Flags that load native or remote-debug agents — blocked to prevent
+# JVM argument injection (CVE-2026-12841, CWE-88).
+_BLOCKED_JVM_FLAG_PREFIXES = (
+    "-agentlib",
+    "-agentpath",
+    "-javaagent",
+    "-Xrunjdwp",
+    "-Xdebug",
+    "-Xnoagent",
+)
+
+
+def _validate_java_options(options):
+    """Raise ValueError if options contains flags that enable remote debugging or agent injection."""
+    for flag in options:
+        if flag.lower().startswith(_BLOCKED_JVM_FLAG_PREFIXES):
+            raise ValueError(
+                f"java_options contains a disallowed JVM flag: {flag!r}. "
+                "Flags that load native agents or enable remote debugging are "
+                "not permitted (see CVE-2026-12841)."
+            )
+
 
 # [xx] add classpath option to config_java?
 def config_java(bin=None, options=None, verbose=False):
@@ -57,7 +79,9 @@ def config_java(bin=None, options=None, verbose=False):
     if options is not None:
         if isinstance(options, str):
             options = options.split()
-        _java_options = list(options)
+        options = list(options)
+        _validate_java_options(options)
+        _java_options = options
 
 
 def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
