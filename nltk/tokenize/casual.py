@@ -95,8 +95,11 @@ URLS = r"""			# Capture 1: entire matched URL
     )
     |					#   or
                                        # looks like domain name followed by a slash:
-    [a-z0-9.\-]+[.]
-    (?:[a-z]{2,13})
+    # Same atomic-run + length-capped + lookbehind shape as the naked-domain
+    # branch below, to avoid the unbounded backtracking that "[a-z0-9.\-]+"
+    # exhibited while hunting for ".<tld>/" (ReDoS on inputs like "a."*n).
+    (?>[a-z0-9]{1,63}(?:[.\-][a-z0-9]{1,63}){1,40})
+    (?<=[.][a-z]{2,13})
     /
   )
   (?:					# One or more:
@@ -116,10 +119,15 @@ URLS = r"""			# Capture 1: entire matched URL
   |					# OR, the following to match naked domains:
   (?:
   	(?<!@)			        # not preceded by a @, avoid matching foo@_gmail.com_
-    [a-z0-9]+
-    (?:[.\-][a-z0-9]+)*
-    [.]
-    (?:[a-z]{2,13})
+    # Grab the whole label run atomically so the engine never backtracks over
+    # how to split the dots when looking for the TLD (that ambiguity caused
+    # super-linear ReDoS on inputs like "a."*n). RFC-1035 length caps (label
+    # <=63 octets, plus a generous cap on the number of labels) bound the work
+    # per start position, keeping the scan linear. A variable-length lookbehind
+    # then asserts the run ends in ".<2-13 letter TLD>", reproducing the
+    # original language (labels joined by '.'/'-', ending in a dotted TLD).
+    (?>[a-z0-9]{1,63}(?:[.\-][a-z0-9]{1,63}){1,40})
+    (?<=[.][a-z]{2,13})
     \b
     /?
     (?!@)			        # not succeeded by a @,
@@ -181,7 +189,12 @@ REGEXPS = (
     # Twitter hashtags:
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
-    r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]""",
+    # Length caps (RFC 5321: local-part <=64, labels <=63, domain <=255) bound
+    # the otherwise-unbounded runs. Without them, "[\w.+-]+" backtracks over a
+    # long dotted run hunting for the "@" (ReDoS on inputs like "a."*n); the
+    # required "@" only short-circuits this when the email branch is matched in
+    # isolation, not inside the WORD_RE alternation.
+    r"""[\w.+-]{1,64}@[\w-]{1,63}\.(?:[\w-]\.?){1,255}[\w-]""",
     # Zero-Width-Joiner and Skin tone modifier emojis
     """.(?:
         [\U0001f3fb-\U0001f3ff]?(?:\u200d.[\U0001f3fb-\U0001f3ff]?)+

@@ -62,6 +62,52 @@ class TestTokenize:
         ]
         assert tokens == expected
 
+    def test_tweet_tokenizer_redos(self):
+        """
+        Regression test for the catastrophic-backtracking (ReDoS) in the
+        casual.py URL/email regexes. The naked-domain and "domain/" URL
+        branches and the email branch used unbounded label runs that
+        backtracked super-linearly while searching for the TLD / "@" on
+        inputs such as ``"a."*n``. The patched regexes are linear, so even a
+        large adversarial input must tokenize quickly.
+        """
+        import time
+
+        tokenizer = TweetTokenizer()
+        payload = "a." * 50_000
+        start = time.perf_counter()
+        tokenizer.tokenize(payload)
+        elapsed = time.perf_counter() - start
+        # Pre-fix this took tens of seconds (super-quadratic). Allow a wide
+        # margin for slow CI while still catching a regression to O(n^2)+.
+        assert elapsed < 10, f"tokenize() too slow ({elapsed:.1f}s) -- ReDoS regression"
+
+    def test_tweet_tokenizer_url_email_unchanged(self):
+        """Real URLs/emails/domains must tokenize exactly as before the fix."""
+        tokenizer = TweetTokenizer()
+        cases = {
+            "go example.com and https://x.io/p?q=1 now": [
+                "go",
+                "example.com",
+                "and",
+                "https://x.io/p?q=1",
+                "now",
+            ],
+            "mail john.doe+tag@mail-server.example.co.uk please": [
+                "mail",
+                "john.doe",
+                "+tag@mail-server.example.co.uk",
+                "please",
+            ],
+            "visit www.example.co.uk/page here": [
+                "visit",
+                "www.example.co.uk/page",
+                "here",
+            ],
+        }
+        for text, expected in cases.items():
+            assert tokenizer.tokenize(text) == expected
+
     @pytest.mark.parametrize(
         "test_input, expecteds",
         [
