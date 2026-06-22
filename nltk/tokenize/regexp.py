@@ -105,6 +105,7 @@ class RegexpTokenizer(TokenizerI):
         gaps=False,
         discard_empty=True,
         flags=re.UNICODE | re.MULTILINE | re.DOTALL,
+        regexp_timeout=None,
     ):
         # If they gave us a regexp object, extract the pattern.
         pattern = getattr(pattern, "pattern", pattern)
@@ -114,23 +115,43 @@ class RegexpTokenizer(TokenizerI):
         self._discard_empty = discard_empty
         self._flags = flags
         self._regexp = None
+        self._regexp_timeout = regexp_timeout
 
     def _check_regexp(self):
         if self._regexp is None:
             self._regexp = re.compile(self._pattern, self._flags)
 
+    def _run_with_timeout(self, func, *args):
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(func, *args)
+            try:
+                return future.result(timeout=self._regexp_timeout)
+            except concurrent.futures.TimeoutError:
+                raise TimeoutError(
+                    "RegexpTokenizer timed out after {}s. "
+                    "The pattern may be catastrophically backtracking: {!r}".format(
+                        self._regexp_timeout, self._pattern
+                    )
+                )
+
     def tokenize(self, text):
         self._check_regexp()
         # If our regexp matches gaps, use re.split:
         if self._gaps:
-            if self._discard_empty:
-                return [tok for tok in self._regexp.split(text) if tok]
+            if self._regexp_timeout is not None:
+                result = self._run_with_timeout(self._regexp.split, text)
             else:
-                return self._regexp.split(text)
+                result = self._regexp.split(text)
+            if self._discard_empty:
+                return [tok for tok in result if tok]
+            return result
 
         # If our regexp matches tokens, use re.findall:
-        else:
-            return self._regexp.findall(text)
+        if self._regexp_timeout is not None:
+            return self._run_with_timeout(self._regexp.findall, text)
+        return self._regexp.findall(text)
 
     def span_tokenize(self, text):
         self._check_regexp()
