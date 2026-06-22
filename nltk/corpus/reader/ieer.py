@@ -22,7 +22,7 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
 import nltk
-from nltk.corpus.reader.api import *
+from nltk.corpus.reader.api import CorpusReader, StreamBackedCorpusView, concat
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
@@ -40,6 +40,12 @@ documents = sorted(titles)
 
 
 class IEERDocument:
+    """
+    A class to represent a single document from the IEER corpus.
+    Attributes include the document text, document number, document type,
+    date/time, and headline.
+    """
+
     def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
         self.text = text
         self.docno = docno
@@ -61,7 +67,9 @@ class IEERDocument:
 
 
 class IEERCorpusReader(CorpusReader):
-    """ """
+    """
+    Corpus reader for the Information Extraction and Entity Recognition (IEER) Corpus.
+    """
 
     def docs(self, fileids=None):
         return concat(
@@ -80,12 +88,7 @@ class IEERCorpusReader(CorpusReader):
         )
 
     def _read_parsed_block(self, stream):
-        # TODO: figure out while empty documents are being returned
-        return [
-            self._parse(doc)
-            for doc in self._read_block(stream)
-            if self._parse(doc).docno is not None
-        ]
+        return [self._parse(doc) for doc in self._read_block(stream)]
 
     def _parse(self, doc):
         val = nltk.chunk.ieerstr2tree(doc, root_label="DOCUMENT")
@@ -100,7 +103,7 @@ class IEERCorpusReader(CorpusReader):
         while True:
             line = stream.readline()
             if not line:
-                break
+                return []
             if line.strip() == "<DOC>":
                 break
         out.append(line)
