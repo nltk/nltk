@@ -9,13 +9,13 @@ The defaulted ``max_len`` is now capped by ``MAX_EVERYGRAMS_DEFAULT_LEN``; a
 longer sequence with the default raises ``ValueError`` asking for an explicit
 ``max_len``. An explicitly supplied ``max_len`` is never capped.
 
-The "must not allocate" test runs in a spawned process (with an address-space
-limit where supported, and a hard timeout) so a regression cannot OOM/hang the
-suite.
+The "must not allocate" test runs in a spawned process with a hard timeout, and
+the worker reports its outcome through its exit code (no queue/thread, so it is
+robust on free-threaded builds), so a regression cannot OOM/hang the suite.
 """
 
 import multiprocessing
-import queue
+import os
 
 import pytest
 
@@ -75,50 +75,39 @@ def test_explicit_max_len_is_never_capped():
     assert len(out) == 5000 + 4999 + 4998
 
 
-_TIMEOUT = 30
-_MEM_LIMIT_BYTES = 1_500_000_000  # 1.5 GB child address-space cap (where supported)
+_TIMEOUT = 60
+# Worker outcomes, reported via exit code (avoids a result queue / feeder thread,
+# which is fragile on free-threaded builds).
+_EXIT_REFUSED = 0  # ValueError raised before any allocation (the expected result)
+_EXIT_MATERIALIZED = 2  # the unbounded result was built (regression)
+_EXIT_OTHER = 3  # any other failure
 
 
-def _everygrams_worker(result_q):
+def _everygrams_worker():
+    toks = [str(i) for i in range(2000)]  # default max_len -> ~10 GB if unbounded
     try:
-        try:
-            import resource
-
-            resource.setrlimit(resource.RLIMIT_AS, (_MEM_LIMIT_BYTES, _MEM_LIMIT_BYTES))
-        except Exception:
-            pass  # best-effort; the timeout still bounds a regression
-        toks = [str(i) for i in range(2000)]  # default max_len -> ~10 GB if unbounded
-        try:
-            list(everygrams(toks))
-            result_q.put(("ok", "materialized"))
-        except ValueError:
-            result_q.put(("ok", "refused"))
-        except MemoryError:
-            result_q.put(("ok", "oom"))
-    except BaseException as exc:  # surface to the parent process
-        result_q.put(("error", repr(exc)))
+        list(everygrams(toks))
+        os._exit(_EXIT_MATERIALIZED)
+    except ValueError:
+        os._exit(_EXIT_REFUSED)
+    except BaseException:
+        os._exit(_EXIT_OTHER)
 
 
-def _run_in_process(target):
+def test_oversized_default_does_not_allocate():
+    """everygrams(long_seq) with the default max_len must be refused, not run."""
     ctx = multiprocessing.get_context("spawn")
-    result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q,))
+    proc = ctx.Process(target=_everygrams_worker)
     proc.start()
     proc.join(_TIMEOUT)
     if proc.is_alive():
         proc.terminate()
         proc.join()
-        return False, None, None
-    try:
-        status, payload = result_q.get_nowait()
-    except queue.Empty:
-        return True, "error", "worker produced no result"
-    return True, status, payload
-
-
-def test_oversized_default_does_not_allocate():
-    """everygrams(long_seq) with the default max_len must be refused, not run."""
-    finished, status, value = _run_in_process(_everygrams_worker)
-    assert finished, "everygrams() materialized an unbounded O(n**3) result (DoS)"
-    assert status == "ok", f"worker raised: {value}"
-    assert value == "refused"
+        raise AssertionError(
+            "everygrams() did not return quickly -> unbounded O(n**3) allocation (DoS)"
+        )
+    assert proc.exitcode == _EXIT_REFUSED, (
+        "everygrams() with the default max_len over a long sequence was not "
+        f"refused before allocating (worker exit code {proc.exitcode}); "
+        "expected a fast ValueError"
+    )
