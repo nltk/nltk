@@ -60,25 +60,38 @@ class ConfusionMatrix:
         # Construct a value->index dictionary
         indices = {val: i for (i, val) in enumerate(values)}
 
-        # Make a confusion matrix table.
-        confusion = [[0 for _ in values] for _ in values]
+        # Make a sparse confusion matrix: a dict mapping each observed
+        # (reference index, test index) pair to its count. A dense V x V table
+        # would allocate V**2 cells even when only a few pairs occur, so an
+        # all-distinct input (V == number of items) costs O(V**2) memory and
+        # OOM-kills the worker (CWE-770; CVE-2026-12839). The sparse map costs
+        # only as much as the observed pairs.
+        confusion = {}
         max_conf = 0  # Maximum confusion
         for w, g in zip(reference, test):
-            confusion[indices[w]][indices[g]] += 1
-            max_conf = max(max_conf, confusion[indices[w]][indices[g]])
+            pair = (indices[w], indices[g])
+            count = confusion.get(pair, 0) + 1
+            confusion[pair] = count
+            if count > max_conf:
+                max_conf = count
 
         #: A list of all values in ``reference`` or ``test``.
         self._values = values
         #: A dictionary mapping values in ``self._values`` to their indices.
         self._indices = indices
-        #: The confusion matrix itself (as a list of lists of counts).
+        #: The confusion matrix itself, as a sparse dict mapping each observed
+        #: ``(reference index, test index)`` pair to its count.
         self._confusion = confusion
         #: The greatest count in ``self._confusion`` (used for printing).
         self._max_conf = max_conf
         #: The total number of values in the confusion matrix.
         self._total = len(reference)
         #: The number of correct (on-diagonal) values in the matrix.
-        self._correct = sum(confusion[i][i] for i in range(len(values)))
+        self._correct = sum(c for (i, j), c in confusion.items() if i == j)
+
+    def _row_total(self, i):
+        """Total count in row ``i`` (alignments from reference value ``i``)."""
+        return sum(c for (ri, _), c in self._confusion.items() if ri == i)
 
     def __getitem__(self, li_lj_tuple):
         """
@@ -89,7 +102,7 @@ class ConfusionMatrix:
         (li, lj) = li_lj_tuple
         i = self._indices[li]
         j = self._indices[lj]
-        return self._confusion[i][j]
+        return self._confusion.get((i, j), 0)
 
     def __repr__(self):
         return f"<ConfusionMatrix: {self._correct}/{self._total} correct>"
@@ -122,9 +135,7 @@ class ConfusionMatrix:
 
         values = self._values
         if sort_by_count:
-            values = sorted(
-                values, key=lambda v: -sum(self._confusion[self._indices[v]])
-            )
+            values = sorted(values, key=lambda v: -self._row_total(self._indices[v]))
 
         if truncate:
             values = values[:truncate]
@@ -167,12 +178,13 @@ class ConfusionMatrix:
             s += value_format % val
             for lj in values:
                 j = self._indices[lj]
-                if confusion[i][j] == 0:
+                count = confusion.get((i, j), 0)
+                if count == 0:
                     s += zerostr
                 elif show_percents:
-                    s += entry_format % (100.0 * confusion[i][j] / self._total)
+                    s += entry_format % (100.0 * count / self._total)
                 else:
-                    s += entry_format % confusion[i][j]
+                    s += entry_format % count
                 if i == j:
                     prevspace = s.rfind(" ")
                     s = s[:prevspace] + "<" + s[prevspace + 1 :] + ">"
@@ -311,7 +323,7 @@ class ConfusionMatrix:
 
         # Apply keyword parameters
         if sort_by_count:
-            tags = sorted(tags, key=lambda v: -sum(self._confusion[self._indices[v]]))
+            tags = sorted(tags, key=lambda v: -self._row_total(self._indices[v]))
         if truncate:
             tags = tags[:truncate]
 
