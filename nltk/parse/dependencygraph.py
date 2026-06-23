@@ -21,6 +21,7 @@ from itertools import chain
 from pprint import pformat
 
 from nltk.internals import find_binary
+from nltk.pathsec import open as _secure_open
 from nltk.tree import Tree
 
 #################################################################
@@ -222,7 +223,10 @@ class DependencyGraph:
         :return: a list of DependencyGraphs
 
         """
-        with open(filename) as infile:
+        # Route through the pathsec sentinel so the read honours the file-access
+        # sandbox (allowed data roots, symlink resolution) instead of the builtin
+        # open, which bypasses it and can read arbitrary local files (CWE-22).
+        with _secure_open(filename) as infile:
             return [
                 DependencyGraph(
                     tree_str,
