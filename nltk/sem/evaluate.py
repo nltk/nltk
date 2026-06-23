@@ -377,6 +377,46 @@ class Assignment(dict):
         return self
 
 
+def _max_binder_depth(parsed):
+    """
+    Greatest number of nested domain-quantifying binders along any path of
+    ``parsed`` (``all``/``exists``/``iota`` quantifiers and ``\\`` lambdas).
+
+    ``Model.satisfy`` iterates the whole domain once per such binder, so a
+    formula with depth *k* costs O(|domain| ** k); *k* is what bounds the
+    blow-up, and it comes entirely from the (untrusted) formula. Used by
+    ``Model._check_satisfy_cost`` to refuse a formula before the recursion
+    explodes (CWE-770; CVE-2026-12840).
+    """
+    if isinstance(
+        parsed,
+        (AllExpression, ExistsExpression, IotaExpression, LambdaExpression),
+    ):
+        return 1 + _max_binder_depth(parsed.term)
+    if isinstance(parsed, ApplicationExpression):
+        return max(
+            _max_binder_depth(parsed.function),
+            _max_binder_depth(parsed.argument),
+        )
+    if isinstance(parsed, NegatedExpression):
+        return _max_binder_depth(parsed.term)
+    if isinstance(
+        parsed,
+        (
+            AndExpression,
+            OrExpression,
+            ImpExpression,
+            IffExpression,
+            EqualityExpression,
+        ),
+    ):
+        return max(
+            _max_binder_depth(parsed.first),
+            _max_binder_depth(parsed.second),
+        )
+    return 0
+
+
 class Model:
     """
     A first order model is a domain *D* of discourse and a valuation *V*.
@@ -394,6 +434,14 @@ class Model:
     :param prop: If this is set, then we are building a propositional\
     model and don't require the domain of *V* to be subset of *D*.
     """
+
+    #: Upper bound on the number of domain-iteration steps a single
+    #: ``satisfy`` call may require. ``satisfy`` iterates the domain once per
+    #: nested quantifier/lambda, so a formula with *k* nested binders costs
+    #: O(|domain| ** k); *k* is attacker-controlled. Evaluating a formula whose
+    #: worst-case cost exceeds this bound is refused up front instead of being
+    #: allowed to exhaust memory/CPU (CWE-770; CVE-2026-12840).
+    MAX_SATISFY_OPERATIONS = 1_000_000
 
     def __init__(self, domain, valuation):
         assert isinstance(domain, set)
@@ -447,58 +495,90 @@ class Model:
         :param parsed: An expression of ``logic``.
         :type g: Assignment
         :param g: an assignment to individual variables.
+        :raise Error: if interpreting ``parsed`` could require more than\
+        ``MAX_SATISFY_OPERATIONS`` domain-iteration steps (CWE-770).
         """
+        self._check_satisfy_cost(parsed)
+        return self._satisfy(parsed, g, trace)
 
+    def _check_satisfy_cost(self, parsed):
+        """
+        Refuse ``parsed`` if its worst-case interpretation cost,
+        O(|domain| ** max-binder-depth), would exceed
+        ``MAX_SATISFY_OPERATIONS``. This bounds the work *before* the
+        recursion runs, so a deeply-nested formula cannot exhaust
+        memory/CPU (CWE-770; CVE-2026-12840). The check itself is cheap
+        (linear in the size of ``parsed``) and uses no large integers.
+        """
+        size = len(self.domain)
+        if size < 2:
+            # 0 or 1 domain element: |domain| ** k can never exceed the bound.
+            return
+        ops = 1
+        for _ in range(_max_binder_depth(parsed)):
+            ops *= size
+            if ops > self.MAX_SATISFY_OPERATIONS:
+                raise Error(
+                    "Refusing to evaluate formula: interpreting it over a "
+                    "domain of %d element(s) could require more than %d "
+                    "domain-iteration steps (CWE-770). Reduce the formula's "
+                    "quantifier nesting or the domain size."
+                    % (size, self.MAX_SATISFY_OPERATIONS)
+                )
+
+    def _satisfy(self, parsed, g, trace=None):
         if isinstance(parsed, ApplicationExpression):
             function, arguments = parsed.uncurry()
             if isinstance(function, AbstractVariableExpression):
                 # It's a predicate expression ("P(x,y)"), so used uncurried arguments
-                funval = self.satisfy(function, g)
-                argvals = tuple(self.satisfy(arg, g) for arg in arguments)
+                funval = self._satisfy(function, g)
+                argvals = tuple(self._satisfy(arg, g) for arg in arguments)
                 return argvals in funval
             else:
                 # It must be a lambda expression, so use curried form
-                funval = self.satisfy(parsed.function, g)
-                argval = self.satisfy(parsed.argument, g)
+                funval = self._satisfy(parsed.function, g)
+                argval = self._satisfy(parsed.argument, g)
                 return funval[argval]
         elif isinstance(parsed, NegatedExpression):
-            return not self.satisfy(parsed.term, g)
+            return not self._satisfy(parsed.term, g)
         elif isinstance(parsed, AndExpression):
-            return self.satisfy(parsed.first, g) and self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) and self._satisfy(parsed.second, g)
         elif isinstance(parsed, OrExpression):
-            return self.satisfy(parsed.first, g) or self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) or self._satisfy(parsed.second, g)
         elif isinstance(parsed, ImpExpression):
-            return (not self.satisfy(parsed.first, g)) or self.satisfy(parsed.second, g)
+            return (not self._satisfy(parsed.first, g)) or self._satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, IffExpression):
-            return self.satisfy(parsed.first, g) == self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) == self._satisfy(parsed.second, g)
         elif isinstance(parsed, EqualityExpression):
-            return self.satisfy(parsed.first, g) == self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) == self._satisfy(parsed.second, g)
         elif isinstance(parsed, AllExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
-                if not self.satisfy(parsed.term, new_g):
+                if not self._satisfy(parsed.term, new_g):
                     return False
             return True
         elif isinstance(parsed, ExistsExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
-                if self.satisfy(parsed.term, new_g):
+                if self._satisfy(parsed.term, new_g):
                     return True
             return False
         elif isinstance(parsed, IotaExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
-                if self.satisfy(parsed.term, new_g):
+                if self._satisfy(parsed.term, new_g):
                     return True
             return False
         elif isinstance(parsed, LambdaExpression):
             cf = {}
             var = parsed.variable.name
             for u in self.domain:
-                val = self.satisfy(parsed.term, g.add(var, u))
+                val = self._satisfy(parsed.term, g.add(var, u))
                 # NB the dict would be a lot smaller if we do this:
                 # if val: cf[u] = val
                 # But then need to deal with cases where f(a) should yield
