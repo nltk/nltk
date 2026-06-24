@@ -24,9 +24,9 @@ dexpr = DrtExpression.fromstring
 
 def _flat_drs(n):
     """A flat DRS string with ``n`` referents and ``n`` PRO conditions."""
-    refs = ",".join("x%d" % i for i in range(n))
-    conds = ",".join("PRO(x%d)" % i for i in range(n))
-    return "([%s],[%s])" % (refs, conds)
+    refs = ",".join(f"x{i}" for i in range(n))
+    conds = ",".join(f"PRO(x{i})" for i in range(n))
+    return f"([{refs}],[{conds}])"
 
 
 def test_max_anaphora_operations_is_a_finite_positive_int():
