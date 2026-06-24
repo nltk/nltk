@@ -79,15 +79,21 @@ _TIMEOUT = 60
 # Worker outcomes, reported via exit code (avoids a result queue / feeder thread,
 # which is fragile on free-threaded builds).
 _EXIT_REFUSED = 0  # ValueError raised before any allocation (the expected result)
-_EXIT_MATERIALIZED = 2  # the unbounded result was built (regression)
+_EXIT_ENUMERATED = 2  # the unbounded enumeration ran to completion (regression)
 _EXIT_OTHER = 3  # any other failure
 
 
 def _everygrams_worker():
-    toks = [str(i) for i in range(2000)]  # default max_len -> ~10 GB if unbounded
+    # With the default max_len this would enumerate O(n**2) tuples totalling
+    # O(n**3) elements if the guard were removed. Consume the iterator WITHOUT
+    # materializing it into a list: each tuple is transient, so peak memory
+    # stays low and a regression is caught by the parent's timeout rather than
+    # risking an OS OOM kill that could destabilize the whole CI job.
+    toks = [str(i) for i in range(2000)]
     try:
-        list(everygrams(toks))
-        os._exit(_EXIT_MATERIALIZED)
+        for _ in everygrams(toks):
+            pass
+        os._exit(_EXIT_ENUMERATED)
     except ValueError:
         os._exit(_EXIT_REFUSED)
     except BaseException:
