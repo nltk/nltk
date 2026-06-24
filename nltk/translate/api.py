@@ -212,7 +212,16 @@ class Alignment(frozenset):
         """
         Look up the alignments that map from a given (left) index.
         Returns an empty list for an index that has no alignments.
+
+        Only integer indices are supported. Slicing and other non-integer
+        keys are rejected with ``TypeError`` rather than silently returning
+        ``[]`` -- the sparse index has no contiguous range to slice, so a
+        mistaken lookup should fail loudly instead of masking the bug.
         """
+        if not isinstance(key, int):
+            raise TypeError(
+                "Alignment indices must be integers, not %s" % type(key).__name__
+            )
         if self._index is None:
             self._build_index()
         return self._index.get(key, [])

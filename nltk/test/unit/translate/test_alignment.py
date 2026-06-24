@@ -13,6 +13,8 @@ to the dense allocation cannot OOM or hang the rest of the suite.
 import multiprocessing
 import queue
 
+import pytest
+
 from nltk.translate.api import Alignment
 
 
@@ -35,7 +37,20 @@ def test_getitem_and_range_preserved():
     assert sorted(a.invert()[2]) == [(2, 1), (2, 2)]
 
 
-_HUGE = 100_000_000
+def test_getitem_rejects_non_integer_keys():
+    # The sparse index has no contiguous range to slice; non-integer keys must
+    # raise rather than silently return [] (which would mask caller bugs).
+    a = Alignment([(0, 0), (0, 1), (1, 2)])
+    for bad in (slice(0, 2), "0", 1.0, (0, 1)):
+        with pytest.raises(TypeError):
+            a[bad]
+
+
+# A left index large enough to make a dense ``[[] for _ in range(_HUGE + 1)]``
+# regression unmistakable (the index would hold _HUGE + 1 keys instead of 2),
+# yet small enough that even if such a dense list were built it stays ~128 MB --
+# detected by the key-count assertion below without risking an OOM of the host.
+_HUGE = 2_000_000
 _TIMEOUT = 15
 
 
