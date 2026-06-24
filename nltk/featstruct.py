@@ -1285,7 +1285,15 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
 
 
 def _rename_variable(var, used_vars):
-    name, n = re.sub(r"\d+$", "", var.name), 2
+    # Strip a trailing run of digits from the variable name. The ``(?<!\d)``
+    # makes the greedy ``\d+`` fail fast: without it, a name with a long run of
+    # digits that is not at the end (e.g. ``x000...0z``) is re-scanned from every
+    # position (match ``\d+``, miss ``$``, backtrack), which is quadratic in the
+    # run length and lets a single feature-structure string pin a CPU core
+    # (CWE-1333; CVE-2026-12919). The lookbehind only lets ``\d+`` start at the
+    # beginning of a run, so interior positions fail in O(1); the result is
+    # unchanged.
+    name, n = re.sub(r"(?<!\d)\d+$", "", var.name), 2
     if not name:
         name = "?"
     while Variable(f"{name}{n}") in used_vars:
