@@ -383,10 +383,10 @@ def _max_binder_depth(parsed):
     ``parsed`` (``all``/``exists``/``iota`` quantifiers and ``\\`` lambdas).
 
     ``Model.satisfy`` iterates the whole domain once per such binder, so a
-    formula with depth *k* costs O(|domain| ** k); *k* is what bounds the
-    blow-up, and it comes entirely from the (untrusted) formula. Used by
-    ``Model._check_satisfy_cost`` to refuse a formula before the recursion
-    explodes (CWE-770; CVE-2026-12840).
+    nesting path of depth *k* explores O(|domain| ** k) domain-value
+    combinations; *k* is what bounds the blow-up, and it comes entirely from
+    the (untrusted) formula. Used by ``Model._check_satisfy_cost`` to refuse a
+    formula before the recursion explodes (CWE-770; CVE-2026-12840).
     """
     if isinstance(
         parsed,
@@ -435,12 +435,15 @@ class Model:
     model and don't require the domain of *V* to be subset of *D*.
     """
 
-    #: Upper bound on the number of domain-iteration steps a single
-    #: ``satisfy`` call may require. ``satisfy`` iterates the domain once per
-    #: nested quantifier/lambda, so a formula with *k* nested binders costs
-    #: O(|domain| ** k); *k* is attacker-controlled. Evaluating a formula whose
-    #: worst-case cost exceeds this bound is refused up front instead of being
-    #: allowed to exhaust memory/CPU (CWE-770; CVE-2026-12840).
+    #: Upper bound on the number of domain-value combinations a single nested
+    #: quantifier/lambda path may explore. ``satisfy`` iterates the whole domain
+    #: once per nested binder, so a path of *k* nested binders explores
+    #: |domain| ** k combinations; *k* is attacker-controlled, and this product
+    #: is the term that blows up (a formula's total work is at most this times a
+    #: factor linear in the formula's size -- independent sibling quantifiers
+    #: only add, they do not multiply). A formula whose deepest path would
+    #: exceed this bound is refused up front instead of being allowed to exhaust
+    #: memory/CPU (CWE-770; CVE-2026-12840).
     MAX_SATISFY_OPERATIONS = 1_000_000
 
     def __init__(self, domain, valuation):
@@ -495,20 +498,25 @@ class Model:
         :param parsed: An expression of ``logic``.
         :type g: Assignment
         :param g: an assignment to individual variables.
-        :raise Error: if interpreting ``parsed`` could require more than\
-        ``MAX_SATISFY_OPERATIONS`` domain-iteration steps (CWE-770).
+        :raise Error: if ``parsed`` has a nested quantifier/lambda path whose\
+        domain-value combinations (|domain| ** nesting depth) would exceed\
+        ``MAX_SATISFY_OPERATIONS`` (CWE-770).
         """
         self._check_satisfy_cost(parsed)
         return self._satisfy(parsed, g, trace)
 
     def _check_satisfy_cost(self, parsed):
         """
-        Refuse ``parsed`` if its worst-case interpretation cost,
-        O(|domain| ** max-binder-depth), would exceed
-        ``MAX_SATISFY_OPERATIONS``. This bounds the work *before* the
-        recursion runs, so a deeply-nested formula cannot exhaust
-        memory/CPU (CWE-770; CVE-2026-12840). The check itself is cheap
-        (linear in the size of ``parsed``) and uses no large integers.
+        Refuse ``parsed`` if its most deeply nested quantifier/lambda path
+        would explore more than ``MAX_SATISFY_OPERATIONS`` domain-value
+        combinations, i.e. |domain| ** (max binder nesting depth). That product
+        is the combinatorial factor that drives the blow-up; bounding it
+        *before* the recursion runs stops a deeply-nested formula from
+        exhausting memory/CPU (CWE-770; CVE-2026-12840). Independent sibling
+        quantifiers are not multiplied (they only add a factor linear in the
+        formula's size), so they are intentionally not counted here. The check
+        itself is cheap (linear in the size of ``parsed``) and, by bailing on
+        the first overflow, uses no large integers.
         """
         size = len(self.domain)
         if size < 2:
@@ -519,11 +527,11 @@ class Model:
             ops *= size
             if ops > self.MAX_SATISFY_OPERATIONS:
                 raise Error(
-                    "Refusing to evaluate formula: interpreting it over a "
-                    "domain of %d element(s) could require more than %d "
-                    "domain-iteration steps (CWE-770). Reduce the formula's "
-                    "quantifier nesting or the domain size."
-                    % (size, self.MAX_SATISFY_OPERATIONS)
+                    "Refusing to evaluate formula: over a domain of %d "
+                    "element(s) its nested quantifiers would explore more than "
+                    "%d domain-value combinations (|domain| ** nesting depth) "
+                    "(CWE-770). Reduce the formula's quantifier nesting or the "
+                    "domain size." % (size, self.MAX_SATISFY_OPERATIONS)
                 )
 
     def _satisfy(self, parsed, g, trace=None):
