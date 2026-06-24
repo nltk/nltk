@@ -178,7 +178,14 @@ class Valuation(dict):
 ##########################################
 # REs used by the _read_valuation function
 ##########################################
-_VAL_SPLIT_RE = re.compile(r"\s*=+>\s*")
+# The ``(?<!=)`` makes the greedy ``=+`` run fail fast: without it, splitting a
+# line that holds a long run of ``=`` not terminated by ``>`` re-scans the run
+# from every position (match ``=+``, miss ``>``, backtrack), which is quadratic
+# in the run length and lets a single valuation string pin a CPU core
+# (CWE-1333; CVE-2026-12890). The lookbehind only lets ``=+`` start at the
+# beginning of a run, so interior positions fail in O(1); the split result is
+# unchanged.
+_VAL_SPLIT_RE = re.compile(r"\s*(?<!=)=+>\s*")
 _ELEMENT_SPLIT_RE = re.compile(r"\s*,\s*")
 _TUPLES_RE = re.compile(
     r"""\s*
