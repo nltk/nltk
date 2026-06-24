@@ -240,3 +240,57 @@ def test_gzip_pointer_open_enforces_sandbox(tmp_path, monkeypatch):
         fh.write(b"hello-gz")
     with data.GzipFileSystemPathPointer(str(good)).open() as fp:
         assert fp.read() == b"hello-gz"
+
+
+# ---------------------------------------------------------------------------
+# retrieve() write sink must honour the pathsec sandbox (CWE-22; CVE-2026-12871)
+# ---------------------------------------------------------------------------
+
+_RETRIEVE_PAYLOAD = b"ARBITRARY-FILE-WRITE-PAYLOAD"
+
+
+def test_retrieve_write_enforces_pathsec_sandbox(tmp_path, monkeypatch):
+    """Under ``ENFORCE``, an out-of-root write target is rejected; in-root works.
+
+    ``retrieve`` used the builtin ``open(..., "wb")`` for the destination, which
+    bypassed pathsec and allowed arbitrary local file writes outside the sandbox.
+    """
+    allowed = tmp_path / "data"
+    allowed.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {allowed.resolve()})
+
+    # An in-root source whose bytes become the copied content.
+    src = allowed / "src.txt"
+    src.write_bytes(_RETRIEVE_PAYLOAD)
+    url = "file://" + str(src)
+
+    # Out-of-root target: the global sandbox (no required_root) raises
+    # PermissionError, and nothing must be written.
+    target = outside / "evil.txt"
+    with pytest.raises(PermissionError):
+        data.retrieve(url, filename=str(target), verbose=False)
+    assert not target.exists()
+
+    # In-root target still works and copies the bytes.
+    ok = allowed / "copy.txt"
+    data.retrieve(url, filename=str(ok), verbose=False)
+    assert ok.read_bytes() == _RETRIEVE_PAYLOAD
+
+
+def test_retrieve_write_unchanged_when_sandbox_disabled(tmp_path, monkeypatch):
+    """With the sandbox off, an out-of-root target still writes (only warns)."""
+    monkeypatch.setattr(pathsec, "ENFORCE", False)
+    # Force *no* allowed roots so the target is unambiguously out-of-root
+    # (tmp_path is usually inside tempfile.gettempdir(), which is allowed by
+    # default -- that would not exercise the disabled-sandbox path).
+    monkeypatch.setattr(pathsec, "_get_allowed_roots", set)
+    src = tmp_path / "src.txt"
+    src.write_bytes(_RETRIEVE_PAYLOAD)
+    target = tmp_path / "out.txt"
+    # Not enforcing: pathsec warns about the out-of-root path but still writes.
+    with pytest.warns(RuntimeWarning):
+        data.retrieve("file://" + str(src), filename=str(target), verbose=False)
+    assert target.read_bytes() == _RETRIEVE_PAYLOAD

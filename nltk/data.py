@@ -833,8 +833,13 @@ def retrieve(resource_url, filename=None, verbose=True):
     # Open the input & output streams.
     infile = _open(resource_url)
 
-    # Copy infile -> outfile, using 64k blocks.
-    with open(filename, "wb") as outfile:
+    # Copy infile -> outfile, using 64k blocks. Route the write through the
+    # pathsec sentinel so the destination honours the file-access sandbox
+    # (allowed data roots, symlink resolution) instead of the builtin open,
+    # which bypasses it and can write arbitrary local files -- an arbitrary
+    # file write that can escalate to code execution via a planted file
+    # (CWE-22).
+    with _secure_open(filename, "wb") as outfile:
         while True:
             s = infile.read(1024 * 64)  # 64k blocks.
             outfile.write(s)
