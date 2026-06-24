@@ -5,6 +5,17 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+#: Largest sentence length for which :func:`phrase_extraction` expands the
+#: default ``max_phrase_length`` to the full sentence length. The default
+#: enumerates every phrase pair up to that length, which is O(n**2) pairs each
+#: holding an O(n)-word string -- O(n**3) total work/memory -- so leaving
+#: ``max_phrase_length`` at its default over a few-hundred-word sentence pair
+#: pins the CPU and exhausts memory (CWE-770). When the defaulted length would
+#: exceed this, ``phrase_extraction`` raises ``ValueError`` asking for an
+#: explicit ``max_phrase_length``. This only affects the default; an explicitly
+#: supplied ``max_phrase_length`` is never capped.
+MAX_PHRASE_EXTRACTION_DEFAULT_LEN = 256
+
 
 def extract(
     f_start,
@@ -149,6 +160,11 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     :type max_phrase_length: int
     :param max_phrase_length: maximal phrase length, if 0 or not specified
         it is set to a length of the longer sentence (srctext or trgtext).
+    :raise ValueError: if ``max_phrase_length`` is left at its default and the
+        longer sentence exceeds ``MAX_PHRASE_EXTRACTION_DEFAULT_LEN``, since
+        enumerating every phrase pair up to the full length is O(n**3) in work
+        and memory and can exhaust the process (CWE-770). Pass an explicit
+        ``max_phrase_length`` to bound the phrase length.
     """
 
     srctext = srctext.split()  # e
@@ -157,7 +173,25 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     trglen = len(trgtext)  # len(f)
     # Keeps an index of which source/target words that are aligned.
     f_aligned = [j for _, j in alignment]
-    max_phrase_length = max_phrase_length or max(srclen, trglen)
+    if not max_phrase_length:
+        # The default expands to the full sentence length, which makes
+        # phrase_extraction enumerate O(n**2) phrase pairs each holding an
+        # O(n)-word string -- O(n**3) total -- so a few-hundred-word sentence
+        # pair pins the CPU and exhausts memory (CWE-770). Refuse the unbounded
+        # default for long sentences instead of running it; an explicit
+        # max_phrase_length (an informed choice) is never capped.
+        max_phrase_length = max(srclen, trglen)
+        if max_phrase_length > MAX_PHRASE_EXTRACTION_DEFAULT_LEN:
+            raise ValueError(
+                "phrase_extraction() called with the default max_phrase_length "
+                "on a sentence pair of length %d: enumerating every phrase pair "
+                "up to that length is O(n**2) pairs each holding an O(n)-word "
+                "string (O(n**3) total) and can exhaust memory/CPU (CWE-770). "
+                "Pass an explicit max_phrase_length (e.g. 7, the usual "
+                "phrase-based MT limit), or raise "
+                "nltk.translate.phrase_based.MAX_PHRASE_EXTRACTION_DEFAULT_LEN."
+                % max_phrase_length
+            )
 
     # set of phrase pairs BP
     bp = set()
