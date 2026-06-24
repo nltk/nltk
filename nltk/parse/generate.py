@@ -58,9 +58,9 @@ def generate(grammar, start=None, depth=None, n=None):
     :param depth: The maximal depth of the generated tree.
     :param n: The maximum number of sentences to return.
     :return: An iterator of lists of terminal tokens.
-    :raise ValueError: if generation exceeds ``MAX_GENERATE_OPERATIONS``\
-    derivation-expansion steps, which a recursive grammar reaches with the\
-    default ``depth`` and no ``n`` limit (CWE-400).
+    :raise ValueError: if generation exceeds ``MAX_GENERATE_OPERATIONS``
+        derivation-expansion steps, which a recursive grammar reaches with
+        the default ``depth`` and no ``n`` limit (CWE-400).
     """
     if not start:
         start = grammar.start()
@@ -71,7 +71,9 @@ def generate(grammar, start=None, depth=None, n=None):
     budget = _GenerationBudget(MAX_GENERATE_OPERATIONS)
     iter = _generate_all(grammar, [start], depth, budget)
 
-    if n:
+    # ``n is not None`` (not ``if n``) so that n=0 is honoured as "return no
+    # sentences" rather than being treated as "no limit".
+    if n is not None:
         iter = itertools.islice(iter, n)
 
     return iter

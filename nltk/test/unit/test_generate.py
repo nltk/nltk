@@ -42,6 +42,16 @@ def test_behaviour_preserved_for_finite_grammars():
     assert list(generate(g2)) == [["a", "b"], ["a", ""]]
 
 
+def test_n_zero_returns_no_sentences():
+    # n is the maximum number of sentences; n=0 must return none, not be
+    # treated as "no limit". Holds even for a recursive grammar (nothing is
+    # enumerated, so no budget error).
+    grammar = CFG.fromstring(demo_grammar)
+    assert list(generate(grammar, n=0)) == []
+    recursive = CFG.fromstring("S -> S S | 'a'")
+    assert list(generate(recursive, n=0)) == []
+
+
 def test_bounded_recursive_depth_still_terminates():
     # An explicit, small depth on a recursive grammar terminates as before.
     g = CFG.fromstring("S -> S S | 'a'")
