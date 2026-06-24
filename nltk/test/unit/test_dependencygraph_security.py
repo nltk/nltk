@@ -29,7 +29,10 @@ class TestDependencyGraphLoadSandbox:
 
         out_file = outside / "secret.conll"
         out_file.write_text(_RECORD, encoding="utf-8")
-        with pytest.raises((PermissionError, ValueError)):
+        # The global sandbox (no required_root) raises PermissionError for an
+        # out-of-root path; assert exactly that so the test can't pass on some
+        # unrelated error.
+        with pytest.raises(PermissionError):
             DependencyGraph.load(str(out_file))
 
         in_file = allowed / "ok.conll"
@@ -39,10 +42,16 @@ class TestDependencyGraphLoadSandbox:
         assert words == ["leaked-word"]
 
     def test_load_unchanged_when_sandbox_disabled(self, tmp_path, monkeypatch):
-        """With the sandbox off, behaviour is unchanged (reads any path)."""
+        """With the sandbox off, an out-of-root path still loads (only warns)."""
         monkeypatch.setattr(pathsec, "ENFORCE", False)
-        any_file = tmp_path / "anywhere.conll"
-        any_file.write_text(_RECORD, encoding="utf-8")
-        graphs = DependencyGraph.load(str(any_file))
+        # Force *no* allowed roots so the file is unambiguously out-of-root
+        # (tmp_path is usually inside tempfile.gettempdir(), which is allowed by
+        # default -- that would not exercise the disabled-sandbox path).
+        monkeypatch.setattr(pathsec, "_get_allowed_roots", set)
+        out_file = tmp_path / "anywhere.conll"
+        out_file.write_text(_RECORD, encoding="utf-8")
+        # Not enforcing: pathsec warns about the out-of-root path but still reads.
+        with pytest.warns(RuntimeWarning):
+            graphs = DependencyGraph.load(str(out_file))
         words = [n["word"] for n in graphs[0].nodes.values() if n.get("word")]
         assert words == ["leaked-word"]
