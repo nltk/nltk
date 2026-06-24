@@ -66,12 +66,20 @@ class ConfusionMatrix:
         # all-distinct input (V == number of items) costs O(V**2) memory and
         # OOM-kills the worker (CWE-770; CVE-2026-12839). The sparse map costs
         # only as much as the observed pairs.
+        # Row totals (count per reference index) are accumulated here in the
+        # same single pass. ``sort_by_count`` orders labels by their row total,
+        # so caching them keeps that lookup O(1); recomputing a total by
+        # scanning the sparse map on each call would make the sort O(V * nnz),
+        # i.e. quadratic again for a large all-distinct input.
         confusion = {}
+        row_totals = {}
         max_conf = 0  # Maximum confusion
         for w, g in zip(reference, test):
-            pair = (indices[w], indices[g])
+            i = indices[w]
+            pair = (i, indices[g])
             count = confusion.get(pair, 0) + 1
             confusion[pair] = count
+            row_totals[i] = row_totals.get(i, 0) + 1
             if count > max_conf:
                 max_conf = count
 
@@ -82,6 +90,9 @@ class ConfusionMatrix:
         #: The confusion matrix itself, as a sparse dict mapping each observed
         #: ``(reference index, test index)`` pair to its count.
         self._confusion = confusion
+        #: Cached per-reference-row totals, keyed by reference index, so
+        #: ``sort_by_count`` lookups are O(1) (see ``_row_total``).
+        self._row_totals = row_totals
         #: The greatest count in ``self._confusion`` (used for printing).
         self._max_conf = max_conf
         #: The total number of values in the confusion matrix.
@@ -90,8 +101,14 @@ class ConfusionMatrix:
         self._correct = sum(c for (i, j), c in confusion.items() if i == j)
 
     def _row_total(self, i):
-        """Total count in row ``i`` (alignments from reference value ``i``)."""
-        return sum(c for (ri, _), c in self._confusion.items() if ri == i)
+        """Total count in row ``i`` (alignments from reference value ``i``).
+
+        Read from the cache built once in ``__init__`` (a single O(nnz) pass),
+        so ``sort_by_count`` can order all labels in O(V log V) rather than
+        rescanning the sparse map per label (O(V * nnz), quadratic for a large
+        all-distinct input).
+        """
+        return self._row_totals.get(i, 0)
 
     def __getitem__(self, li_lj_tuple):
         """
