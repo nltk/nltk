@@ -1,3 +1,5 @@
+import multiprocessing
+import os
 from typing import Tuple
 
 import pytest
@@ -419,3 +421,35 @@ class TestCustomDistanceSandbox:
         in_tsv.write_text("a\tb\t0.5\n", encoding="utf-8")
         dist = custom_distance(str(in_tsv))
         assert dist(frozenset(["a"]), frozenset(["b"])) == 0.5
+
+
+# ---------------------------------------------------------------------------
+# jaro_similarity must not be cubic on near-matching strings (CWE-770; CVE-2026-12926)
+# ---------------------------------------------------------------------------
+
+_JARO_TIMEOUT = 20
+# Two near-identical strings: almost every character matches inside the window.
+# The pre-fix ``j not in flagged_2`` list membership made this O(n**3) (~tens of
+# seconds at this size); with a set it is the algorithm's natural O(n**2)
+# (sub-second). It is CPU-only (a few KB of input), so there is no OOM risk.
+_JARO_N = 8000
+
+
+def _jaro_worker():
+    jaro_similarity("a" * _JARO_N, "a" * (_JARO_N - 1) + "b")
+    os._exit(0)
+
+
+def test_jaro_similarity_not_cubic_on_near_matches():
+    """A near-matching pair must compute quickly, not in cubic time (ReDoS-style)."""
+    ctx = multiprocessing.get_context("spawn")
+    proc = ctx.Process(target=_jaro_worker)
+    proc.start()
+    proc.join(_JARO_TIMEOUT)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        raise AssertionError(
+            "jaro_similarity did not finish in time -> cubic-time DoS (CWE-770)"
+        )
+    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"

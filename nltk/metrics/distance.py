@@ -345,7 +345,13 @@ def jaro_similarity(s1, s2):
     matches = 0  # no.of matched characters in s1 and s2
     transpositions = 0  # no. of transpositions between s1 and s2
     flagged_1 = []  # positions in s1 which are matches to some character in s2
-    flagged_2 = []  # positions in s2 which are matches to some character in s1
+    # Positions in s2 which are matches to some character in s1. This is a set
+    # (not a list) so the ``j not in flagged_2`` membership test below is O(1):
+    # with a list it was O(len(flagged_2)) inside the O(n**2) double loop, which
+    # grows to O(n**3) on near-matching strings and lets two short inputs pin a
+    # CPU core (CWE-770; CVE-2026-12926). It is sorted into a list afterwards for
+    # the transposition pass, giving the same result.
+    flagged_2 = set()
 
     # Iterate through sequences, check for matches and compute transpositions.
     for i in range(len_s1):  # Iterate through each character.
@@ -355,9 +361,9 @@ def jaro_similarity(s1, s2):
             if s1[i] == s2[j] and j not in flagged_2:
                 matches += 1
                 flagged_1.append(i)
-                flagged_2.append(j)
+                flagged_2.add(j)
                 break
-    flagged_2.sort()
+    flagged_2 = sorted(flagged_2)
     for i, j in zip(flagged_1, flagged_2):
         if s1[i] != s2[j]:
             transpositions += 1
