@@ -96,8 +96,18 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
             "Window width k should be smaller or equal than segmentation lengths"
         )
     wd = 0
+    # Maintain the boundary counts for the sliding window incrementally rather
+    # than recomputing seg[i:i+k].count(boundary) from scratch at every position
+    # (which is O(k) per step and makes the metric O(n*k) -- quadratic when the
+    # window k is proportional to the segmentation length).
+    count1 = seg1[:k].count(boundary)
+    count2 = seg2[:k].count(boundary)
     for i in range(len(seg1) - k + 1):
-        ndiff = abs(seg1[i : i + k].count(boundary) - seg2[i : i + k].count(boundary))
+        if i > 0:
+            # The window moved one position right: drop seg[i-1], add seg[i+k-1].
+            count1 += (seg1[i + k - 1] == boundary) - (seg1[i - 1] == boundary)
+            count2 += (seg2[i + k - 1] == boundary) - (seg2[i - 1] == boundary)
+        ndiff = abs(count1 - count2)
         if weighted:
             wd += ndiff
         else:
@@ -227,9 +237,19 @@ def pk(ref, hyp, k=None, boundary="1"):
         k = int(round(len(ref) / (ref.count(boundary) * 2.0)))
 
     err = 0
+    # Maintain the boundary counts for the sliding window incrementally rather
+    # than recomputing ref/hyp[i:i+k].count(boundary) from scratch at every
+    # position (which is O(k) per step and makes the metric O(n*k) -- quadratic,
+    # since k is ~ half the average segment length).
+    ref_count = ref[:k].count(boundary)
+    hyp_count = hyp[:k].count(boundary)
     for i in range(len(ref) - k + 1):
-        r = ref[i : i + k].count(boundary) > 0
-        h = hyp[i : i + k].count(boundary) > 0
+        if i > 0:
+            # The window moved one position right: drop seg[i-1], add seg[i+k-1].
+            ref_count += (ref[i + k - 1] == boundary) - (ref[i - 1] == boundary)
+            hyp_count += (hyp[i + k - 1] == boundary) - (hyp[i - 1] == boundary)
+        r = ref_count > 0
+        h = hyp_count > 0
         if r != h:
             err += 1
     return err / (len(ref) - k + 1.0)

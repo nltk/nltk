@@ -1,6 +1,9 @@
+import multiprocessing
+import os
+
 import pytest
 
-from nltk.metrics.segmentation import windowdiff
+from nltk.metrics.segmentation import pk, windowdiff
 
 
 def test_basic_functionality():
@@ -114,3 +117,70 @@ def test_symmetry():
         assert windowdiff(seg1, seg2, k, weighted=True) == windowdiff(
             seg2, seg1, k, weighted=True
         )
+
+
+def test_pk_reference_values():
+    """Reference values from the pk docstring (Beeferman's Pk)."""
+    assert f"{pk('0100' * 100, '1' * 400, 2):.2f}" == "0.50"
+    assert f"{pk('0100' * 100, '0' * 400, 2):.2f}" == "0.50"
+    assert pk("0100" * 100, "0100" * 100, 2) == 0.0
+
+
+def test_pk_basic_and_default_window():
+    """pk on identical/disjoint inputs, and with the derived default window."""
+    assert pk("0001000", "0001000", 3) == 0.0
+    assert pk("000", "111", 2) == 1.0
+    # k defaults to ~half the average reference segment length.
+    assert pk("0100" * 100, "0100" * 100) == 0.0
+
+
+def _windowdiff_worker(n):
+    """Run windowdiff on a large half-window input; exit 0 ok, 3 on error."""
+    try:
+        seg = [0] * n
+        windowdiff(seg, seg, n // 2, boundary=1)
+        os._exit(0)
+    except BaseException:
+        os._exit(3)
+
+
+def _pk_worker(n):
+    """Run pk on a large half-window input; exit 0 ok, 3 on error."""
+    try:
+        seg = [0] * n
+        pk(seg, seg, n // 2, boundary=1)
+        os._exit(0)
+    except BaseException:
+        os._exit(3)
+
+
+def _finishes_within(target, n, deadline=30):
+    """Run target(n) in a spawned process; return (finished, exitcode)."""
+    ctx = multiprocessing.get_context("spawn")
+    proc = ctx.Process(target=target, args=(n,))
+    proc.start()
+    proc.join(deadline)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        return False, None
+    return True, proc.exitcode
+
+
+def test_windowdiff_is_linear_not_quadratic():
+    """A large half-window input must finish quickly (linear), not tie up a core.
+
+    Run in a spawned process with a hard deadline: the incremental aligner
+    returns in milliseconds, while the previous O(n*k) version needs over a
+    minute at this size, so a regression is terminated instead of burning CPU.
+    """
+    finished, exitcode = _finishes_within(_windowdiff_worker, 200_000)
+    assert finished, "windowdiff did not finish in time: quadratic blow-up regressed"
+    assert exitcode == 0, f"windowdiff worker failed (exit {exitcode})"
+
+
+def test_pk_is_linear_not_quadratic():
+    """Same linearity guard for the pk metric (identical per-position loop)."""
+    finished, exitcode = _finishes_within(_pk_worker, 200_000)
+    assert finished, "pk did not finish in time: quadratic blow-up regressed"
+    assert exitcode == 0, f"pk worker failed (exit {exitcode})"
