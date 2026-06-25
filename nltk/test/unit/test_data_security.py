@@ -265,7 +265,7 @@ def test_retrieve_write_enforces_pathsec_sandbox(tmp_path, monkeypatch):
     # An in-root source whose bytes become the copied content.
     src = allowed / "src.txt"
     src.write_bytes(_RETRIEVE_PAYLOAD)
-    url = "file://" + str(src)
+    url = src.resolve().as_uri()  # RFC 8089 file URL (portable across platforms)
 
     # Out-of-root target: the global sandbox (no required_root) raises
     # PermissionError, and nothing must be written.
@@ -292,5 +292,5 @@ def test_retrieve_write_unchanged_when_sandbox_disabled(tmp_path, monkeypatch):
     target = tmp_path / "out.txt"
     # Not enforcing: pathsec warns about the out-of-root path but still writes.
     with pytest.warns(RuntimeWarning):
-        data.retrieve("file://" + str(src), filename=str(target), verbose=False)
+        data.retrieve(src.resolve().as_uri(), filename=str(target), verbose=False)
     assert target.read_bytes() == _RETRIEVE_PAYLOAD
