@@ -183,47 +183,51 @@ def chomsky_normal_form(
 def un_chomsky_normal_form(
     tree, expandUnary=True, childChar="|", parentChar="^", unaryChar="+"
 ):
-    # Traverse the tree-depth first keeping a pointer to the parent for modification purposes.
-    nodeList = [(tree, [])]
-    while nodeList != []:
-        node, parent = nodeList.pop()
+    # Traverse the tree depth-first, collapsing artificial Chomsky-Normal-Form
+    # nodes (whose label contains ``childChar``) into their parent.
+    nodeList = [tree]
+    while nodeList:
+        node = nodeList.pop()
         if isinstance(node, Tree):
-            # if the node contains the 'childChar' character it means that
-            # it is an artificial node and can be removed, although we still need
-            # to move its children to its parent
-            childIndex = node.label().find(childChar)
-            if childIndex != -1:
-                nodeIndex = parent.index(node)
-                parent.remove(parent[nodeIndex])
-                # Generated node was on the left if the nodeIndex is 0 which
-                # means the grammar was left factored.  We must insert the children
-                # at the beginning of the parent's children
-                if nodeIndex == 0:
-                    parent.insert(0, node[0])
-                    parent.insert(1, node[1])
-                else:
-                    parent.extend([node[0], node[1]])
+            # Splice every artificial child up into ``node`` in a single
+            # left-to-right pass. Doing this incrementally with
+            # parent.index()/parent.remove() compared children by value via the
+            # recursive ``Tree.__eq__``, rescanning a child list that grows wide
+            # as nodes are spliced out -- quadratic over the artificial nodes,
+            # and worse with deep subtrees (CWE-407). Rebuilding the child list
+            # once, expanding artificial nodes in order, is linear.
+            if any(
+                isinstance(child, Tree) and child.label().find(childChar) != -1
+                for child in node
+            ):
+                newChildren = []
+                # Stack of pending children, kept in original left-to-right order
+                # by reversing before pushing.
+                stack = list(reversed(node))
+                while stack:
+                    child = stack.pop()
+                    if isinstance(child, Tree) and child.label().find(childChar) != -1:
+                        # Artificial node: replace it in place with its children.
+                        stack.extend(reversed(child))
+                    else:
+                        newChildren.append(child)
+                node[:] = newChildren
 
-                # parent is now the current node so the children of parent will be added to the agenda
-                node = parent
-            else:
-                parentIndex = node.label().find(parentChar)
-                if parentIndex != -1:
-                    # strip the node name of the parent annotation
-                    node.set_label(node.label()[:parentIndex])
+            parentIndex = node.label().find(parentChar)
+            if parentIndex != -1:
+                # strip the node name of the parent annotation
+                node.set_label(node.label()[:parentIndex])
 
-                # expand collapsed unary productions
-                if expandUnary:
-                    unaryIndex = node.label().find(unaryChar)
-                    if unaryIndex != -1:
-                        newNode = Tree(
-                            node.label()[unaryIndex + 1 :], [i for i in node]
-                        )
-                        node.set_label(node.label()[:unaryIndex])
-                        node[0:] = [newNode]
+            # expand collapsed unary productions
+            if expandUnary:
+                unaryIndex = node.label().find(unaryChar)
+                if unaryIndex != -1:
+                    newNode = Tree(node.label()[unaryIndex + 1 :], [i for i in node])
+                    node.set_label(node.label()[:unaryIndex])
+                    node[0:] = [newNode]
 
             for child in node:
-                nodeList.append((child, node))
+                nodeList.append(child)
 
 
 def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
