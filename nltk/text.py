@@ -21,6 +21,8 @@ from collections import Counter, defaultdict, namedtuple
 from functools import reduce
 from math import log
 
+import regex
+
 from nltk.collocations import BigramCollocationFinder
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
@@ -254,6 +256,15 @@ class ConcordanceIndex:
                 print(concordance_line.line)
 
 
+#: Default wall-clock limit, in seconds, for :meth:`TokenSearcher.findall` (and
+#: :meth:`Text.findall`). The search applies an attacker-influenceable token
+#: regex across the whole corpus; a quantified token group (e.g. ``<a>+<b>``) can
+#: backtrack quadratically on a crafted query or corpus (CWE-1333), so the search
+#: is abandoned with a ``TimeoutError`` once this many seconds elapse. Benign
+#: searches finish in well under a second; set it to ``None`` to disable.
+TOKENSEARCH_TIMEOUT = 60.0
+
+
 class TokenSearcher:
     """
     A class that makes it easier to use regular expressions to search
@@ -268,7 +279,7 @@ class TokenSearcher:
     def __init__(self, tokens):
         self._raw = "".join("<" + w + ">" for w in tokens)
 
-    def findall(self, regexp):
+    def findall(self, regexp, timeout=TOKENSEARCH_TIMEOUT):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
@@ -290,6 +301,9 @@ class TokenSearcher:
 
         :param regexp: A regular expression
         :type regexp: str
+        :param timeout: wall-clock limit, in seconds, for the search; ``None``
+            disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
+        :type timeout: float or None
         """
         # preprocess the regular expression
         regexp = re.sub(r"\s", "", regexp)
@@ -297,8 +311,20 @@ class TokenSearcher:
         regexp = re.sub(r">", ")>)", regexp)
         regexp = re.sub(r"(?<!\\)\.", "[^>]", regexp)
 
-        # perform the search
-        hits = re.findall(regexp, self._raw)
+        # Perform the search with the third-party ``regex`` engine: unlike the
+        # stdlib ``re`` it does not re-scan a long run of a quantified token from
+        # every position (which is quadratic in the corpus length), and it honours
+        # a wall-clock ``timeout`` so a crafted query/corpus cannot pin a CPU core
+        # indefinitely (CWE-1333). The output is identical to ``re.findall`` for
+        # these patterns.
+        try:
+            hits = regex.findall(regexp, self._raw, timeout=timeout)
+        except TimeoutError:
+            raise TimeoutError(
+                f"TokenSearcher.findall exceeded its {timeout}s time limit; the "
+                "query may be too expensive for this corpus (pass timeout=None "
+                "to disable the limit)."
+            ) from None
 
         # Sanity check
         for h in hits:
@@ -628,7 +654,7 @@ class Text:
             self._vocab = FreqDist(self)
         return self._vocab
 
-    def findall(self, regexp):
+    def findall(self, regexp, timeout=TOKENSEARCH_TIMEOUT):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
@@ -649,12 +675,15 @@ class Text:
 
         :param regexp: A regular expression
         :type regexp: str
+        :param timeout: wall-clock limit, in seconds, for the search; ``None``
+            disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
+        :type timeout: float or None
         """
 
         if "_token_searcher" not in self.__dict__:
             self._token_searcher = TokenSearcher(self)
 
-        hits = self._token_searcher.findall(regexp)
+        hits = self._token_searcher.findall(regexp, timeout=timeout)
         hits = [" ".join(h) for h in hits]
         print(tokenwrap(hits, "; "))
 
