@@ -32,14 +32,17 @@ _BLOCKED_JVM_FLAG_PREFIXES = (
     "-agentlib",
     "-agentpath",
     "-javaagent",
-    "-Xrunjdwp",
-    "-Xdebug",
-    "-Xnoagent",
+    "-xrunjdwp",
+    "-xdebug",
+    "-xnoagent",
 )
 
 
 def _validate_java_options(options):
-    """Raise ValueError if options contains flags that enable remote debugging or agent injection."""
+    """
+    Raise ValueError if options contains flags that enable remote
+    debugging or agent injection (CVE-2026-12841, CWE-88).
+    """
     for flag in options:
         if flag.lower().startswith(_BLOCKED_JVM_FLAG_PREFIXES):
             raise ValueError(
@@ -81,7 +84,7 @@ def config_java(bin=None, options=None, verbose=False):
             options = options.split()
         options = list(options)
         _validate_java_options(options)
-        _java_options = options
+        _java_options[:] = options
 
 
 def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
