@@ -61,9 +61,13 @@ def test_docstring_example_preserved():
 
 
 def test_default_allowed_up_to_the_cap():
-    # A sentence pair exactly at the cap still uses the full default (no raise).
-    src, trg, align = _diag(MAX_PHRASE_EXTRACTION_DEFAULT_LEN)
-    assert len(phrase_extraction(src, trg, align)) > 0
+    # A sentence pair exactly at the cap uses the full default without raising.
+    # Use an empty alignment so the default-length guard is exercised at the
+    # boundary without building the (near-cubic) phrase set -- the guard depends
+    # only on the sentence length, not the alignment, so this still covers the
+    # boundary while keeping the test cheap and CI-stable.
+    src, trg, _ = _diag(MAX_PHRASE_EXTRACTION_DEFAULT_LEN)
+    assert phrase_extraction(src, trg, []) == set()
 
 
 def test_oversized_default_raises():
