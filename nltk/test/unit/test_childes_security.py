@@ -15,9 +15,6 @@ import pytest
 
 from nltk.corpus.reader.childes import NS, CHILDESCorpusReader
 
-# A reader needs no corpus files for the pure string->int helper.
-_READER = CHILDESCorpusReader("/tmp", r"nonexistent\.xml")
-
 # CHILDES ages and their value in months (years * 12 + months, +1 when the
 # optional day field is > 15). These must be unchanged by the fix.
 _VALID_AGES = {
@@ -32,17 +29,25 @@ _VALID_AGES = {
 _MALFORMED_AGES = ["", "garbage", "P2Y", "2Y3M", "P10M", "P2YxM"]
 
 
+@pytest.fixture(scope="module")
+def reader(tmp_path_factory):
+    """A reader needs no corpus files for the pure string->int helper, but the
+    root must exist (a hard-coded ``/tmp`` is absent on Windows)."""
+    root = tmp_path_factory.mktemp("childes")
+    return CHILDESCorpusReader(str(root), r"nonexistent\.xml")
+
+
 @pytest.mark.parametrize("age_string,months", _VALID_AGES.items())
-def test_convert_age_valid_strings_preserved(age_string, months):
+def test_convert_age_valid_strings_preserved(reader, age_string, months):
     """Well-formed ages convert exactly as before."""
-    assert _READER.convert_age(age_string) == months
+    assert reader.convert_age(age_string) == months
 
 
 @pytest.mark.parametrize("payload", _MALFORMED_AGES)
-def test_convert_age_rejects_malformed_with_valueerror(payload):
+def test_convert_age_rejects_malformed_with_valueerror(reader, payload):
     """A malformed age raises a clear ValueError, not a cryptic AttributeError."""
     with pytest.raises(ValueError):
-        _READER.convert_age(payload)
+        reader.convert_age(payload)
 
 
 def _age_in_months(tmp_path, age_attr):
