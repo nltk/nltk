@@ -26,30 +26,63 @@ from xml.etree import ElementTree
 _java_bin = None
 _java_options = []
 
-# Flags that load native or remote-debug agents — blocked to prevent
-# JVM argument injection (CVE-2026-12841, CWE-88).
-_BLOCKED_JVM_FLAG_PREFIXES = (
-    "-agentlib",
-    "-agentpath",
-    "-javaagent",
-    "-xrunjdwp",
-    "-xdebug",
-    "-xnoagent",
+# Allowlist of safe JVM tuning flags for NLTK's Java wrapper.
+# Anything not matching is rejected to prevent argument injection
+# (CVE-2026-12841, CWE-88).  An allowlist is used rather than a
+# denylist so that -jar, @argfile, and future dangerous flags are
+# blocked without needing to be enumerated explicitly.
+_SAFE_JVM_PREFIXES = (
+    "-xmx",      # max heap size:   -Xmx512m
+    "-xms",      # initial heap:    -Xms128m
+    "-xss",      # thread stack:    -Xss4m
+    "-xbatch",   # disable bg JIT
+    "-xint",     # interpret-only mode
+    "-xcomp",    # compile-only mode
+    "-xmixed",   # mixed mode (JVM default)
+    "-verbose",  # diagnostic output: -verbose:gc
+    "-xx:",      # advanced tuning:  -XX:+UseG1GC
 )
+
+_SAFE_JVM_EXACT = frozenset({"-server", "-client"})
 
 
 def _validate_java_options(options):
     """
-    Raise ValueError if options contains flags that enable remote
-    debugging or agent injection (CVE-2026-12841, CWE-88).
+    Raise ValueError if *options* contains JVM flags that can change
+    the executed program, load agents, or expand argument files.
+
+    Uses an allowlist of safe JVM memory/tuning flags that NLTK's Java
+    wrapper is known to need.  This is intentionally stricter than a
+    denylist so that -jar, @argfile, and future dangerous flags are
+    rejected without needing to be enumerated (CVE-2026-12841, CWE-88).
     """
     for flag in options:
-        if flag.lower().startswith(_BLOCKED_JVM_FLAG_PREFIXES):
+        n = flag.lower()
+
+        # @argfile references are expanded by the Java launcher before
+        # any other argument processing and can smuggle blocked flags.
+        if n.startswith("@"):
             raise ValueError(
-                f"java_options contains a disallowed JVM flag: {flag!r}. "
-                "Flags that load native agents or enable remote debugging are "
-                "not permitted (see CVE-2026-12841)."
+                f"java_options contains a disallowed Java argument file "
+                f"reference: {flag!r} (CVE-2026-12841, CWE-88)."
             )
+
+        # Allow -Dkey=value system properties. The prefix is always
+        # uppercase -D in valid usage; check the original flag.
+        if flag.startswith("-D") and "=" in flag:
+            continue
+
+        if n in _SAFE_JVM_EXACT:
+            continue
+
+        if n.startswith(_SAFE_JVM_PREFIXES):
+            continue
+
+        raise ValueError(
+            f"java_options contains a disallowed JVM/launcher flag: {flag!r}. "
+            "Only JVM memory-tuning and safe runtime flags are permitted "
+            "(CVE-2026-12841, CWE-88)."
+        )
 
 
 # [xx] add classpath option to config_java?
