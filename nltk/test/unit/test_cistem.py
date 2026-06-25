@@ -1,9 +1,10 @@
 """Regression tests for the quadratic-time DoS in the Cistem stemmer
 (CWE-770; CVE-2026-12868).
 
-``Cistem._segment_inner`` stripped 1-2 trailing characters per iteration with
-``regex.subn("", word)``, which rebuilt the whole remaining string each time --
-O(n) work over O(n) iterations, i.e. O(n**2) in the word length. A single
+``Cistem._segment_inner`` stripped 1-2 trailing characters per iteration with a
+compiled ``re`` pattern's ``Pattern.subn("", word)``, which rebuilt the whole
+remaining string each time -- O(n) work over O(n) iterations, i.e. O(n**2) in the
+word length. A single
 crafted word of a few tens of KB pinned a CPU core. The loop now strips from a
 list in O(1) per step (O(n) overall) while producing byte-identical output.
 

@@ -177,10 +177,10 @@ class Cistem(StemmerI):
         # Apply the substitution patterns. Each pattern (e[mr]$, nd$, t$, [esn]$)
         # only ever strips one or two characters anchored at the end of the
         # string. The original loop rebuilt the whole remaining string on every
-        # removal via ``regex.subn`` -- O(n) work per step over O(n) steps, i.e.
-        # O(n**2) in the word length, so a single long word pins a CPU core
-        # (CWE-770; CVE-2026-12868). Strip characters off the end of a list in
-        # O(1) per step instead, joining once at the end.
+        # removal via the compiled ``re`` patterns' ``Pattern.subn`` -- O(n) work
+        # per step over O(n) steps, i.e. O(n**2) in the word length, so a single
+        # long word pins a CPU core (CWE-770; CVE-2026-12868). Strip characters
+        # off the end of a list in O(1) per step instead, joining once at the end.
         #
         # Python's ``$`` matches at the end of the string *or* just before a
         # single trailing newline, so such a newline is transparent to the
