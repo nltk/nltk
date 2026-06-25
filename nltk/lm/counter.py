@@ -14,6 +14,16 @@ from collections.abc import Sequence
 
 from nltk.probability import ConditionalFreqDist, FreqDist
 
+#: Upper bound on the number of *distinct* ngrams a single ``NgramCounter`` may
+#: store. The counter keeps every distinct ngram of every order in a nested
+#: dictionary tree, so training a language model on an untrusted corpus of
+#: distinct tokens grows memory without limit (~order * tokens) and OOM-kills the
+#: worker (CWE-770; CVE-2026-12928). Once this many distinct ngrams have been
+#: stored, ``update`` raises ``ValueError`` instead of growing unbounded. The
+#: default is generous enough for NLTK's documented training corpora (e.g. Brown
+#: at the usual orders); raise it if you train on a genuinely larger corpus.
+MAX_NGRAMS = 10_000_000
+
 
 class NgramCounter:
     """Class for counting ngrams.
@@ -98,6 +108,8 @@ class NgramCounter:
         """
         self._counts = defaultdict(ConditionalFreqDist)
         self._counts[1] = self.unigrams = FreqDist()
+        #: Number of distinct ngrams stored, tracked for the ``MAX_NGRAMS`` guard.
+        self._distinct = 0
 
         if ngram_text:
             self.update(ngram_text)
@@ -122,11 +134,33 @@ class NgramCounter:
 
                 ngram_order = len(ngram)
                 if ngram_order == 1:
+                    if ngram[0] not in self.unigrams:
+                        self._note_new_ngram()
                     self.unigrams[ngram[0]] += 1
                     continue
 
                 context, word = ngram[:-1], ngram[-1]
-                self[ngram_order][context][word] += 1
+                counts = self[ngram_order][context]
+                if word not in counts:
+                    self._note_new_ngram()
+                counts[word] += 1
+
+    def _note_new_ngram(self):
+        """Account for one newly-stored distinct ngram and enforce the bound.
+
+        The counter retains every distinct ngram, so without a bound an untrusted
+        corpus of distinct tokens grows memory without limit and OOM-kills the
+        worker (CWE-770; CVE-2026-12928). Refuse once ``MAX_NGRAMS`` distinct
+        ngrams have been stored.
+        """
+        self._distinct += 1
+        if self._distinct > MAX_NGRAMS:
+            raise ValueError(
+                "Refusing to count further: NgramCounter exceeded the limit of "
+                "%d distinct ngrams (CWE-770). Training on this corpus would grow "
+                "memory without bound. Use a smaller corpus or order, or raise "
+                "nltk.lm.counter.MAX_NGRAMS." % MAX_NGRAMS
+            )
 
     def N(self):
         """Returns grand total number of ngrams stored.

@@ -10,7 +10,9 @@ import unittest
 import pytest
 
 from nltk import FreqDist
-from nltk.lm import NgramCounter
+from nltk.lm import MLE, NgramCounter
+from nltk.lm import counter as lm_counter
+from nltk.lm.preprocessing import padded_everygram_pipeline
 from nltk.util import everygrams
 
 
@@ -114,3 +116,55 @@ class TestNgramCounterTraining:
         self.case.assertCountEqual(unigrams, counter[1].keys())
         self.case.assertCountEqual(bigram_contexts, counter[2].keys())
         self.case.assertCountEqual(trigram_contexts, counter[3].keys())
+
+
+class TestNgramCounterMemoryBound:
+    """Tests for the distinct-ngram size guard (CWE-770; CVE-2026-12928).
+
+    ``NgramCounter`` retains every distinct ngram, so without a bound an
+    untrusted corpus of distinct tokens grows memory without limit and OOM-kills
+    the worker. The number of distinct ngrams is now capped by ``MAX_NGRAMS``.
+    """
+
+    @staticmethod
+    def _distinct_corpus(n):
+        # n all-distinct tokens: the worst case, no ngram sharing.
+        return [["t%d" % i for i in range(n)]]
+
+    def test_max_ngrams_is_a_finite_positive_int(self):
+        assert isinstance(lm_counter.MAX_NGRAMS, int)
+        assert lm_counter.MAX_NGRAMS > 0
+
+    def test_counts_preserved(self):
+        # The counting behaviour is unchanged.
+        text = [list("abcd"), list("egdbe")]
+        counts = NgramCounter(everygrams(sent, max_len=3) for sent in text)
+        assert counts.N() == 21
+        assert counts[["a"]]["b"] == 1
+
+    def test_oversized_distinct_corpus_is_refused(self, monkeypatch):
+        # With a small cap, a corpus with more distinct ngrams than the cap is
+        # refused. In process and safe: the guard trips at the (small) cap, and
+        # even without it this corpus is tiny, so the missing exception is still
+        # detected rather than exhausting memory.
+        monkeypatch.setattr(lm_counter, "MAX_NGRAMS", 1000)
+        corpus = self._distinct_corpus(5000)
+        with pytest.raises(ValueError):
+            NgramCounter(everygrams(sent, max_len=3) for sent in corpus)
+
+    def test_fit_pipeline_is_bounded(self, monkeypatch):
+        # The documented training pipeline (padded_everygram_pipeline + fit) is
+        # protected, not just NgramCounter used directly.
+        monkeypatch.setattr(lm_counter, "MAX_NGRAMS", 1000)
+        text = [["t%d_%d" % (s, i) for i in range(100)] for s in range(50)]
+        train, vocab = padded_everygram_pipeline(5, text)
+        with pytest.raises(ValueError):
+            MLE(5).fit(train, vocab)
+
+    def test_repetitive_corpus_not_falsely_capped(self, monkeypatch):
+        # The cap counts *distinct* ngrams, so a large but repetitive corpus
+        # (only a handful of distinct ngrams) must not trip it.
+        monkeypatch.setattr(lm_counter, "MAX_NGRAMS", 1000)
+        corpus = [["the", "cat"] * 100_000]  # 200k tokens, a few distinct ngrams
+        counts = NgramCounter(everygrams(sent, max_len=2) for sent in corpus)
+        assert counts.N() > 0  # built without raising
