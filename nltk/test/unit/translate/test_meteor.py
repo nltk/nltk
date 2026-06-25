@@ -1,6 +1,8 @@
+import multiprocessing
+import os
 import unittest
 
-from nltk.translate.meteor_score import meteor_score
+from nltk.translate.meteor_score import meteor_score, single_meteor_score
 
 
 class TestMETEOR(unittest.TestCase):
@@ -18,3 +20,86 @@ class TestMETEOR(unittest.TestCase):
     def test_candidate_type_check(self):
         str_candidate = " ".join(self.candidate)
         self.assertRaises(TypeError, meteor_score, self.reference, str_candidate)
+
+
+# ---------------------------------------------------------------------------
+# Matching must be linear, not quadratic, on low-overlap text (CWE-770; CVE-2026-12929)
+# ---------------------------------------------------------------------------
+
+
+def test_single_meteor_score_values_preserved():
+    # The documented scores are unchanged by the linear-time matcher.
+    reference = [
+        "It",
+        "is",
+        "a",
+        "guide",
+        "to",
+        "action",
+        "that",
+        "ensures",
+        "that",
+        "the",
+        "military",
+        "will",
+        "forever",
+        "heed",
+        "Party",
+        "commands",
+    ]
+    hypothesis = [
+        "It",
+        "is",
+        "a",
+        "guide",
+        "to",
+        "action",
+        "which",
+        "ensures",
+        "that",
+        "the",
+        "military",
+        "always",
+        "obeys",
+        "the",
+        "commands",
+        "of",
+        "the",
+        "party",
+    ]
+    assert round(single_meteor_score(reference, hypothesis), 4) == 0.6944
+    # No overlap -> 0.0.
+    assert single_meteor_score(["this", "is", "a", "cat"], ["x", "y", "z"]) == 0.0
+
+
+_TIMEOUT = 30
+# Two disjoint token sequences: every hypothesis token misses every reference
+# token, so the pre-fix nested scan ran in full O(len_hyp * len_ref) across all
+# three matching stages (~tens of seconds at this size); the fix is linear
+# (sub-second). CPU-only (a few hundred KB of tokens), so there is no OOM risk.
+_N = 32000
+
+
+def _meteor_worker():
+    ref = ["r%d" % i for i in range(_N)]
+    hyp = ["h%d" % i for i in range(_N)]
+    try:
+        single_meteor_score(ref, hyp)
+        os._exit(0)
+    except BaseException:
+        os._exit(3)
+
+
+def test_meteor_on_disjoint_text_is_linear_time():
+    """A low-overlap pair must score in (near-)linear time, not quadratic."""
+    ctx = multiprocessing.get_context("spawn")
+    proc = ctx.Process(target=_meteor_worker)
+    proc.start()
+    proc.join(_TIMEOUT)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        raise AssertionError(
+            "METEOR scoring did not finish in time -> quadratic-time DoS (CWE-770)"
+        )
+    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"

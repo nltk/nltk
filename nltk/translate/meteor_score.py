@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 
+from collections import defaultdict
 from collections.abc import Callable, Iterable
 from itertools import chain, product
 from typing import List, Tuple
@@ -77,15 +78,32 @@ def _match_enums(
              enumerated unmatched reference tuples
     """
     word_match = []
+    # Map each reference word to its positions (ascending). Popping the highest
+    # available position mirrors the original reverse j-scan, which matched each
+    # hypothesis word to the latest still-unused reference word of the same
+    # surface form. This index makes matching O(len_hyp + len_ref) instead of the
+    # original O(len_hyp * len_ref) nested scan, which ran in full for low-overlap
+    # text and let a single scoring call pin a CPU core (CWE-770; CVE-2026-12929).
+    ref_positions = defaultdict(list)
+    for j, (_, ref_word) in enumerate(enum_reference_list):
+        ref_positions[ref_word].append(j)
+
+    matched_hyp_idx = set()
+    matched_ref_idx = set()
     for i in range(len(enum_hypothesis_list))[::-1]:
-        for j in range(len(enum_reference_list))[::-1]:
-            if enum_hypothesis_list[i][1] == enum_reference_list[j][1]:
-                word_match.append(
-                    (enum_hypothesis_list[i][0], enum_reference_list[j][0])
-                )
-                enum_hypothesis_list.pop(i)
-                enum_reference_list.pop(j)
-                break
+        positions = ref_positions.get(enum_hypothesis_list[i][1])
+        if positions:
+            j = positions.pop()
+            matched_hyp_idx.add(i)
+            matched_ref_idx.add(j)
+            word_match.append((enum_hypothesis_list[i][0], enum_reference_list[j][0]))
+
+    enum_hypothesis_list = [
+        pair for i, pair in enumerate(enum_hypothesis_list) if i not in matched_hyp_idx
+    ]
+    enum_reference_list = [
+        pair for j, pair in enumerate(enum_reference_list) if j not in matched_ref_idx
+    ]
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
@@ -151,6 +169,18 @@ def _enum_wordnetsyn_match(
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     """
     word_match = []
+    # Index the reference words by surface form (ascending positions), so each
+    # hypothesis word is matched by looking up only its own synonyms rather than
+    # scanning the whole leftover reference list. The original nested scan ran in
+    # full O(len_hyp * len_ref) for low-overlap text (CWE-770; CVE-2026-12929);
+    # this is O(len_hyp * synonyms + len_ref). Taking the highest available
+    # position among the synonyms mirrors the original reverse j-scan.
+    ref_positions = defaultdict(list)
+    for j, (_, ref_word) in enumerate(enum_reference_list):
+        ref_positions[ref_word].append(j)
+
+    matched_hyp_idx = set()
+    matched_ref_idx = set()
     for i in range(len(enum_hypothesis_list))[::-1]:
         hypothesis_syns = set(
             chain.from_iterable(
@@ -162,14 +192,29 @@ def _enum_wordnetsyn_match(
                 for synset in wordnet.synsets(enum_hypothesis_list[i][1])
             )
         ).union({enum_hypothesis_list[i][1]})
-        for j in range(len(enum_reference_list))[::-1]:
-            if enum_reference_list[j][1] in hypothesis_syns:
-                word_match.append(
-                    (enum_hypothesis_list[i][0], enum_reference_list[j][0])
-                )
-                enum_hypothesis_list.pop(i)
-                enum_reference_list.pop(j)
-                break
+
+        # Highest still-available reference position whose word is a synonym.
+        best_j = -1
+        best_word = None
+        for syn in hypothesis_syns:
+            positions = ref_positions.get(syn)
+            if positions and positions[-1] > best_j:
+                best_j = positions[-1]
+                best_word = syn
+        if best_word is not None:
+            ref_positions[best_word].pop()
+            matched_hyp_idx.add(i)
+            matched_ref_idx.add(best_j)
+            word_match.append(
+                (enum_hypothesis_list[i][0], enum_reference_list[best_j][0])
+            )
+
+    enum_hypothesis_list = [
+        pair for i, pair in enumerate(enum_hypothesis_list) if i not in matched_hyp_idx
+    ]
+    enum_reference_list = [
+        pair for j, pair in enumerate(enum_reference_list) if j not in matched_ref_idx
+    ]
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
