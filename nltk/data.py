@@ -124,6 +124,7 @@ textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 def _is_windows():
     return os.name == "nt"
 
+
 ######################################################################
 # Search Path
 ######################################################################
@@ -188,7 +189,7 @@ def split_resource_url(resource_url):
     """
     Splits a resource url into "<protocol>:<path>".
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
     >>> split_resource_url('nltk:/home/nltk')
@@ -226,7 +227,7 @@ def normalize_resource_url(resource_url):
     r"""
     Normalizes a resource url
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == \
     ... ('\\' if windows else '') + os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
     True
@@ -319,7 +320,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
         be converted to a platform-appropriate path separator.
         Directory trailing slashes are preserved
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> normalize_resource_name('.', True)
     './'
     >>> normalize_resource_name('./', True)
