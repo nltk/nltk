@@ -11,6 +11,7 @@ Module for a resolution-based First Order theorem prover.
 """
 
 import operator
+import time
 from collections import defaultdict
 from functools import reduce
 
@@ -38,6 +39,14 @@ class ProverParseError(Exception):
 class ResolutionProver(Prover):
     ANSWER_KEY = "ANSWER"
     _assume_false = True
+    #: Wall-clock limit, in seconds, on a single proof search. First-order
+    #: resolution is only semi-decidable, so a satisfiable goal makes the
+    #: saturation loop derive and append resolvents indefinitely and pin a CPU
+    #: core (CWE-400). Mirroring :class:`nltk.inference.Prover9`'s ``timeout``,
+    #: the search is abandoned and the goal reported unproved once this many
+    #: seconds elapse; set it to ``0`` to disable the limit (the original,
+    #: unbounded behaviour).
+    TIMEOUT = 60
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
@@ -76,6 +85,13 @@ class ResolutionProver(Prover):
         # map indices to lists of indices, to store attempted unifications
         tried = defaultdict(list)
 
+        # Bound the saturation search by wall-clock time so an unprovable or
+        # non-terminating goal can't keep deriving resolvents forever and pin a
+        # CPU core (CWE-400). ``deadline`` is ``None`` when the limit is disabled
+        # (TIMEOUT == 0). The cost of an individual unification grows as clauses
+        # accumulate literals, so the deadline is checked on every attempt.
+        deadline = time.monotonic() + self.TIMEOUT if self.TIMEOUT else None
+
         i = 0
         while i < len(clauses):
             if not clauses[i].is_tautology():
@@ -90,6 +106,10 @@ class ResolutionProver(Prover):
                     # don't: 1) unify a clause with itself,
                     #       2) use tautologies
                     if i != j and j and not clauses[j].is_tautology():
+                        if deadline is not None and time.monotonic() > deadline:
+                            # Time budget exhausted: report unproved, matching
+                            # the existing recursion-exhaustion behaviour above.
+                            return (False, clauses)
                         tried[i].append(j)
                         newclauses = clauses[i].unify(clauses[j])
                         if newclauses:
