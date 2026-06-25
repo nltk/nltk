@@ -273,7 +273,18 @@ class ConllCorpusReader(CorpusReader):
             if chunk_tag == "O":
                 state, chunk_type = "O", ""
             else:
-                (state, chunk_type) = chunk_tag.split("-")
+                # A tag that is neither "O" nor "<state>-<type>" would otherwise
+                # raise a cryptic "not enough/too many values to unpack" error
+                # that aborts iteration over the whole corpus; fail with a clear,
+                # catchable message instead. ``split("-", 1)`` also keeps chunk
+                # types that legitimately contain a hyphen (e.g. "B-NP-SBJ").
+                parts = chunk_tag.split("-", 1)
+                if len(parts) != 2:
+                    raise ValueError(
+                        f"Malformed chunk tag {chunk_tag!r}: expected 'O' or "
+                        "'<state>-<type>' (e.g. 'B-NP')"
+                    )
+                (state, chunk_type) = parts
             # If it's a chunk we don't care about, treat it as O.
             if chunk_types is not None and chunk_type not in chunk_types:
                 state = "O"
@@ -310,7 +321,15 @@ class ConllCorpusReader(CorpusReader):
                 pos_tag = "-LRB-"
             if pos_tag == ")":
                 pos_tag = "-RRB-"
-            (left, right) = parse_tag.split("*")
+            # A parse tag missing its '*' word placeholder would otherwise raise
+            # a cryptic unpacking error that aborts the whole-corpus iteration.
+            parts = parse_tag.split("*")
+            if len(parts) != 2:
+                raise ValueError(
+                    f"Malformed parse tag {parse_tag!r}: expected exactly one "
+                    "'*' word placeholder (e.g. '(NP*' or '*)')"
+                )
+            (left, right) = parts
             right = right.count(")") * ")"  # only keep ')'.
             treestr += f"{left} ({pos_tag} {word}) {right}"
         try:
@@ -351,7 +370,15 @@ class ConllCorpusReader(CorpusReader):
             spanlist = []
             stack = []
             for wordnum, srl_tag in enumerate(col):
-                (left, right) = srl_tag.split("*")
+                # A SRL tag missing its '*' word placeholder would otherwise
+                # raise a cryptic unpacking error that aborts the whole corpus.
+                parts = srl_tag.split("*")
+                if len(parts) != 2:
+                    raise ValueError(
+                        f"Malformed SRL tag {srl_tag!r}: expected exactly one "
+                        "'*' word placeholder (e.g. '(A0*' or '*)')"
+                    )
+                (left, right) = parts
                 for tag in left.split("("):
                     if tag:
                         stack.append((tag, wordnum))

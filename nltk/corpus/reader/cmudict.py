@@ -84,5 +84,10 @@ def read_cmudict_block(stream):
         if line == "":
             return entries  # end of file.
         pieces = line.split()
+        # A blank / whitespace-only line carries no entry; skipping it avoids an
+        # IndexError on ``pieces[0]`` that would otherwise abort iteration over
+        # the whole corpus.
+        if not pieces:
+            continue
         entries.append((pieces[0].lower(), pieces[2:]))
     return entries
