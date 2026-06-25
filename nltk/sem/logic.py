@@ -1218,6 +1218,38 @@ class Expression(SubstituteBindingsI):
         return VariableExpression(variable)
 
 
+#: Upper bound on the number of subexpressions a single beta-reduction may
+#: produce in :meth:`ApplicationExpression.simplify`. Beta reduction copies the
+#: argument once per occurrence of the bound variable, so a tiny expression built
+#: from nested duplicating lambdas (e.g. ``(\Y.(Y & Y))`` applied repeatedly)
+#: reduces to an exponentially large normal form and exhausts CPU and memory
+#: (CWE-400). ``simplify`` refuses with a ``ValueError`` once a reduction's result
+#: exceeds this size; raise it if you need to simplify a genuinely large
+#: expression.
+MAX_SIMPLIFY_SIZE = 1_000_000
+
+
+def _exceeds_size(expression, limit):
+    """Return ``True`` if ``expression`` has more than ``limit`` subexpressions.
+
+    Counts iteratively (so deep expressions can't overflow the stack) and stops
+    as soon as the limit is passed, so the check costs ``O(limit)`` even for an
+    exponentially large expression.
+    """
+    count = 0
+    stack = [expression]
+    while stack:
+        node = stack.pop()
+        count += 1
+        if count > limit:
+            return True
+        # Leaves (AbstractVariableExpression) have no subexpressions and do not
+        # implement ``visit``; every other expression pushes its children.
+        if not isinstance(node, AbstractVariableExpression):
+            node.visit(stack.append, lambda parts: None)
+    return False
+
+
 class ApplicationExpression(Expression):
     r"""
     This class is used to represent two related types of logical expressions.
@@ -1263,9 +1295,22 @@ class ApplicationExpression(Expression):
         if isinstance(function, LambdaExpression):
             # Rely strictly on NLTK's native capture-avoidance during substitution
             # without burning global variable counters proactively.
-            return function.term.replace(
+            result = function.term.replace(
                 function.variable, argument, alpha_convert=True
-            ).simplify()
+            )
+            # Beta reduction copies the argument once per occurrence of the bound
+            # variable, so nested duplicating lambdas (e.g. ``\Y.(Y & Y)``) blow
+            # up exponentially in time and memory (CWE-400). Refuse once a single
+            # reduction's result exceeds the size budget; nested reductions are
+            # each checked, so the first that overflows stops the whole search.
+            if _exceeds_size(result, MAX_SIMPLIFY_SIZE):
+                raise ValueError(
+                    f"Refusing to beta-reduce: result exceeds MAX_SIMPLIFY_SIZE "
+                    f"({MAX_SIMPLIFY_SIZE}) subexpressions; the expression may "
+                    f"cause exponential blow-up (CWE-400). Raise "
+                    f"nltk.sem.logic.MAX_SIMPLIFY_SIZE to allow it."
+                )
+            return result.simplify()
         else:
             return self.__class__(function, argument)
 
