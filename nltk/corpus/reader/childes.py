@@ -275,13 +275,23 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     if month:
                         age = self.convert_age(age)
                     return age
-            # some files don't have age data
-            except (TypeError, AttributeError) as e:
+            # some files have missing (TypeError) or malformed (ValueError) age
+            # data; AttributeError is kept for backward compatibility
+            except (TypeError, AttributeError, ValueError) as e:
                 return None
 
     def convert_age(self, age_year):
         "Caclculate age in months from a string in CHILDES format"
         m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        if m is None:
+            # A string that does not fit the CHILDES age shape would otherwise
+            # make ``m.group(1)`` raise a cryptic ``AttributeError`` out of this
+            # public helper (CWE-476); fail with a clear, catchable error.
+            raise ValueError(
+                f"Cannot convert age {age_year!r}: expected a CHILDES age string "
+                "of the form 'P<years>Y<months>M' (optionally with days), "
+                "e.g. 'P2Y10M' or 'P2Y1M15D'"
+            )
         age_month = int(m.group(1)) * 12 + int(m.group(2))
         try:
             if int(m.group(3)) > 15:
