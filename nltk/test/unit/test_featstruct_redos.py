@@ -54,11 +54,15 @@ _EVIL = "[a=?x" + "0" * 200_000 + "z]"
 
 
 def _rename_worker():
+    # Renaming this (valid) feature structure must actually complete quickly.
+    # Exit non-zero on any failure so the parent assertion fails -- otherwise a
+    # swallowed exception (e.g. parsing breaking before the rename runs) would
+    # let the test pass without exercising the vulnerable rename path.
     try:
         FeatStruct(_EVIL).rename_variables()
-    except Exception:
-        pass  # we only care that it returns quickly, not about the result
-    os._exit(0)
+        os._exit(0)
+    except BaseException:
+        os._exit(3)
 
 
 def test_long_digit_run_renames_in_linear_time():
