@@ -164,6 +164,14 @@ class ProjectiveDependencyParser:
     in the parse tree form a continuous substring of the input sequence.
     """
 
+    #: Maximum number of input tokens :meth:`parse` will accept. The Eisner-style
+    #: span-concatenation algorithm eagerly builds a dense ``(n+1)x(n+1)`` chart
+    #: (O(n^2) memory) and runs an unconditional triple loop over it (O(n^3)
+    #: time) regardless of the grammar, so an over-long token list pins a CPU core
+    #: and exhausts memory (CWE-407). ``parse`` raises ``ValueError`` beyond this
+    #: many tokens; raise it if you genuinely need to parse a longer sequence.
+    MAX_TOKENS = 500
+
     def __init__(self, dependency_grammar):
         """
         Create a new ProjectiveDependencyParser, from a word-to-word
@@ -185,6 +193,13 @@ class ProjectiveDependencyParser:
         :rtype: iter(Tree)
         """
         self._tokens = list(tokens)
+        if len(self._tokens) > self.MAX_TOKENS:
+            raise ValueError(
+                f"Cannot parse {len(self._tokens)} tokens: exceeds MAX_TOKENS "
+                f"({self.MAX_TOKENS}). Projective dependency parsing builds an "
+                f"O(n^2) chart and runs an O(n^3) loop regardless of the grammar "
+                f"(CWE-407); raise MAX_TOKENS to allow a longer sequence."
+            )
         chart = []
         for i in range(0, len(self._tokens) + 1):
             chart.append([])
@@ -311,6 +326,13 @@ class ProbabilisticProjectiveDependencyParser:
 
     """
 
+    #: Maximum number of input tokens :meth:`parse` will accept. Decoding builds
+    #: a dense ``(n+1)x(n+1)`` chart (O(n^2) memory) and runs an O(n^3) span loop
+    #: regardless of the grammar, so an over-long token list pins a CPU core and
+    #: exhausts memory (CWE-407). ``parse`` raises ``ValueError`` beyond this many
+    #: tokens; raise it if you genuinely need to parse a longer sequence.
+    MAX_TOKENS = 500
+
     def __init__(self):
         """
         Create a new probabilistic dependency parser.  No additional
@@ -326,6 +348,13 @@ class ProbabilisticProjectiveDependencyParser:
         probabilistic dependency grammar.
         """
         self._tokens = list(tokens)
+        if len(self._tokens) > self.MAX_TOKENS:
+            raise ValueError(
+                f"Cannot parse {len(self._tokens)} tokens: exceeds MAX_TOKENS "
+                f"({self.MAX_TOKENS}). Projective dependency decoding builds an "
+                f"O(n^2) chart and runs an O(n^3) loop regardless of the grammar "
+                f"(CWE-407); raise MAX_TOKENS to allow a longer sequence."
+            )
         chart = []
         for i in range(0, len(self._tokens) + 1):
             chart.append([])
