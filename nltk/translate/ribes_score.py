@@ -46,7 +46,7 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     :return: The best ribes score from one of the references.
     :rtype: float
     """
-    if not hypothesis:
+    if not references or not hypothesis:
         return 0.0
 
     best_ribes = -1.0
@@ -117,6 +117,10 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     """
     if not hypotheses:
         return 0.0
+    if len(list_of_references) != len(hypotheses):
+        raise ValueError(
+            "The number of reference sets must match the number of hypotheses."
+        )
 
     corpus_best_ribes = 0.0
     # Iterate through each hypothesis and their corresponding references.

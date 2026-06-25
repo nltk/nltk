@@ -1,3 +1,5 @@
+import pytest
+
 from nltk.translate.ribes_score import corpus_ribes, sentence_ribes, word_rank_alignment
 
 
@@ -21,8 +23,17 @@ def test_ribes_empty_hypothesis():
     assert corpus_ribes([refs], [[]]) == 0.0
 
 
+def test_ribes_empty_references():
+    assert sentence_ribes([], ["a"]) == 0.0
+
+
 def test_ribes_empty_corpus():
     assert corpus_ribes([], []) == 0.0
+
+
+def test_ribes_rejects_mismatched_corpus_lengths():
+    with pytest.raises(ValueError, match="number of reference sets"):
+        corpus_ribes([[["a"]]], [["a"], ["b"]])
 
 
 def test_ribes_one_worder():
