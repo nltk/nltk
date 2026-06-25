@@ -24,9 +24,8 @@ is tagged with a sense identifier, and supplied with context.
 
 import re
 
-from defusedxml.ElementTree import fromstring as safe_fromstring
-
 import regex
+from defusedxml.ElementTree import fromstring as safe_fromstring
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *

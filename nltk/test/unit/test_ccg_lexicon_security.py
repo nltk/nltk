@@ -71,3 +71,13 @@ def test_fromstring_does_not_hang():
     finished, status, value = _run_in_process(_fromstring_worker)
     assert finished, "fromstring() hung on a crafted lexicon line (ReDoS)"
     assert status == "ok", f"worker raised unexpectedly: {value}"
+
+
+def test_lex_re_parses_spaced_and_compact_entries():
+    """The ReDoS fix keeps both the whitespace-separated and the compact
+    ``ident<sep>rhs`` forms working, and the identifier no longer absorbs part of
+    the arrow (e.g. ``a-->b`` splits as ``a``/``-->``/``b``, not ``a-``/``->``)."""
+    assert LEX_RE.match("the => Det").groups() == ("the", "=>", "Det")
+    assert LEX_RE.match("Det :: NP/N").groups() == ("Det", "::", "NP/N")
+    assert LEX_RE.match("a-->b").groups() == ("a", "-->", "b")
+    assert LEX_RE.match("Det::NP/N").groups() == ("Det", "::", "NP/N")

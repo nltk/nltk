@@ -32,16 +32,15 @@ NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
 APP_RE = re.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family.
-# Requiring whitespace (``\s+``) between the identifier and the separator fixes
-# the identifier/separator boundary *before* the ``-``/``=`` run: ``[\S_]+`` and the
-# arrow alternative ``[-=]+>`` both match ``-``/``=``, so without that anchor a line
-# with a long ``-``/``=`` run and no closing ``>`` makes the engine slide the boundary
-# across the whole run and re-scan for the absent arrow from every position --
-# quadratic in the line length (CWE-1333). This requires the standard, whitespace-
-# separated ``ident <sep> rhs`` form; the compact ``ident<sep>rhs`` syntax the old
-# pattern accepted via that backtracking is no longer matched (no in-tree lexicon
-# uses it).
-LEX_RE = re.compile(r"""([\S_]+)\s+(::|[-=]+>)\s*(.+)""", re.UNICODE)
+# The identifier and the arrow alternative ``[-=]+>`` both match ``-``/``=``, so the
+# original ``([\S_]+)`` let the engine slide the identifier/arrow boundary across a
+# long ``-``/``=`` run while re-scanning for the absent ``>`` from every position --
+# quadratic in the line length (CWE-1333). Anchoring the identifier's last character
+# to be neither ``-`` nor ``=`` (``[^\s=-]``) fixes the boundary before any such run,
+# so the arrow is tried once: the parse is linear, the usual whitespace-separated
+# ``ident <sep> rhs`` form is unchanged, and the compact ``ident<sep>rhs`` form is
+# still accepted (and now splits sensibly, e.g. ``a-->b`` -> ``a``/``-->``/``b``).
+LEX_RE = re.compile(r"""([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
 
 # Parses the right hand side that contains category and maybe semantic predicate
 RHS_RE = re.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
