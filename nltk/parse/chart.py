@@ -790,7 +790,13 @@ class Chart:
 
         # If the edge is incomplete, then extend it with "partial trees":
         if edge.is_incomplete():
-            unexpanded = [tree_class(elt, []) for elt in edge.rhs()[edge.dot() :]]
+            unexpanded = []
+            for elt in edge.rhs()[edge.dot() :]:
+                # Count these childless nodes too, so MAX_PARSE_TREES is an
+                # accurate bound on constructed tree nodes when trees() is used
+                # on incomplete edges (complete=False).
+                budget.spend()
+                unexpanded.append(tree_class(elt, []))
             for tree in trees:
                 tree.extend(unexpanded)
 
