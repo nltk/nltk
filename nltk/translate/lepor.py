@@ -10,6 +10,7 @@
 import math
 import re
 import sys
+from collections import defaultdict
 from collections.abc import Callable
 from typing import List
 
@@ -64,23 +65,31 @@ def alignment(ref_tokens: list[str], hyp_tokens: list[str]):
     hyp_len = len(hyp_tokens)
     ref_len = len(ref_tokens)
 
+    # Pre-index every reference position by token, in ascending order. Each
+    # hypothesis token can then be matched in O(1) instead of rescanning the
+    # whole reference with ``count``/``index`` once per token, which made the
+    # aligner O(len(ref) * len(hyp)) -- quadratic on large low-overlap inputs.
+    ref_positions = defaultdict(list)
+    for ref_index, ref_token in enumerate(ref_tokens):
+        ref_positions[ref_token].append(ref_index)
+
     for hyp_index, hyp_token in enumerate(hyp_tokens):
+        # Every reference position of this token, in ascending order (same as
+        # the previous ``[i for i, t in enumerate(ref_tokens) if t == token]``).
+        ref_indexes = ref_positions.get(hyp_token, [])
         # If no match.
-        if ref_tokens.count(hyp_token) == 0:
+        if len(ref_indexes) == 0:
             alignments.append(-1)
         # If only one match.
-        elif ref_tokens.count(hyp_token) == 1:
-            alignments.append(ref_tokens.index(hyp_token))
+        elif len(ref_indexes) == 1:
+            alignments.append(ref_indexes[0])
         # Otherwise, compute the multiple possibilities.
         else:
-            # Keeps an index of where the hypothesis token matches the reference.
-            ref_indexes = [
-                i for i, ref_token in enumerate(ref_tokens) if ref_token == hyp_token
-            ]
-
             # Iterate through the matched tokens, and check if
-            # the one token to the left/right also matches.
-            is_matched = []
+            # the one token to the left/right also matches. Pre-size the flag
+            # list so assigning by index can't raise IndexError when a token
+            # occurs more than once in the reference.
+            is_matched = [False] * len(ref_indexes)
             for ind, ref_index in enumerate(ref_indexes):
                 # The one to the left token also matches.
                 if (
@@ -123,13 +132,6 @@ def alignment(ref_tokens: list[str], hyp_tokens: list[str]):
             else:
                 min_distance = 0
                 min_index = 0
-                for ref_index in ref_indexes:
-                    distance = abs(hyp_index - ref_index)
-                    if distance > min_distance:
-                        min_distance = distance
-                        min_index = ref_index
-                alignments.append(min_index)
-
                 for ref_index in ref_indexes:
                     distance = abs(hyp_index - ref_index)
                     if distance > min_distance:
