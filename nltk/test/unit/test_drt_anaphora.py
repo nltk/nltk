@@ -10,8 +10,11 @@ by ``MAX_ANAPHORA_OPERATIONS``; once exceeded, resolution raises
 ``AnaphoraResolutionException``.
 """
 
+import math
+
 import pytest
 
+from nltk.sem import drt
 from nltk.sem.drt import (
     MAX_ANAPHORA_OPERATIONS,
     AnaphoraResolutionException,
@@ -55,12 +58,15 @@ def test_small_discourse_resolves():
     assert resolved is not None
 
 
-def test_oversized_discourse_is_refused():
-    # N such that N**2 exceeds the cap: resolution is refused before it can run
-    # the full O(N**2) work. The budget trips at MAX_ANAPHORA_OPERATIONS, so this
-    # stays bounded (~the cap's worth of candidates) and never exhausts memory --
-    # even if the guard were removed, this N completes well within CI limits, so
-    # the missing exception is detected rather than hanging/OOM-ing the suite.
-    n = int(MAX_ANAPHORA_OPERATIONS**0.5) + 100
+def test_oversized_discourse_is_refused(monkeypatch):
+    # Drive the guard with a small cap so the test stays fast and low-memory
+    # (rather than running the real 1,000,000-step budget in process). A DRS with
+    # n referents and n pronouns performs n**2 candidate examinations, so n just
+    # above the integer square root of the cap exceeds it. The budget then trips
+    # at ~the (small) cap's worth of candidates; even without the guard this n
+    # completes immediately, so a regression is detected rather than hanging.
+    cap = 1000
+    monkeypatch.setattr(drt, "MAX_ANAPHORA_OPERATIONS", cap)
+    n = math.isqrt(cap) + 1
     with pytest.raises(AnaphoraResolutionException):
         dexpr(_flat_drs(n)).resolve_anaphora()

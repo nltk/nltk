@@ -1020,6 +1020,13 @@ class _AnaphoraBudget:
     __slots__ = ("remaining", "limit")
 
     def __init__(self, limit):
+        # ``limit`` comes from the module-global ``MAX_ANAPHORA_OPERATIONS``,
+        # which callers may override; validate it so a bad value fails clearly
+        # here rather than as an obscure error mid-resolution.
+        if not isinstance(limit, int) or limit < 1:
+            raise ValueError(
+                f"MAX_ANAPHORA_OPERATIONS must be a positive int, got {limit!r}"
+            )
         self.remaining = limit
         self.limit = limit
 
