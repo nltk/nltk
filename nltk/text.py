@@ -259,10 +259,16 @@ class ConcordanceIndex:
 #: Default wall-clock limit, in seconds, for :meth:`TokenSearcher.findall` (and
 #: :meth:`Text.findall`). The search applies an attacker-influenceable token
 #: regex across the whole corpus; a quantified token group (e.g. ``<a>+<b>``) can
-#: backtrack quadratically on a crafted query or corpus (CWE-1333), so the search
-#: is abandoned with a ``TimeoutError`` once this many seconds elapse. Benign
-#: searches finish in well under a second; set it to ``None`` to disable.
+#: trigger super-linear, potentially catastrophic backtracking on a crafted query
+#: or corpus (CWE-1333), so the search is abandoned with a ``TimeoutError`` once
+#: this many seconds elapse. Benign searches finish in well under a second; set it
+#: to ``None`` to disable.
 TOKENSEARCH_TIMEOUT = 60.0
+
+#: Sentinel for the ``timeout`` defaults below: resolving ``TOKENSEARCH_TIMEOUT``
+#: inside the methods (rather than binding it as a literal default at definition
+#: time) means a later ``nltk.text.TOKENSEARCH_TIMEOUT = ...`` still takes effect.
+_TIMEOUT_UNSET = object()
 
 
 class TokenSearcher:
@@ -279,7 +285,7 @@ class TokenSearcher:
     def __init__(self, tokens):
         self._raw = "".join("<" + w + ">" for w in tokens)
 
-    def findall(self, regexp, timeout=TOKENSEARCH_TIMEOUT):
+    def findall(self, regexp, timeout=_TIMEOUT_UNSET):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
@@ -305,6 +311,9 @@ class TokenSearcher:
             disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
         :type timeout: float or None
         """
+        if timeout is _TIMEOUT_UNSET:
+            timeout = TOKENSEARCH_TIMEOUT
+
         # preprocess the regular expression
         regexp = re.sub(r"\s", "", regexp)
         regexp = re.sub(r"<", "(?:<(?:", regexp)
@@ -654,7 +663,7 @@ class Text:
             self._vocab = FreqDist(self)
         return self._vocab
 
-    def findall(self, regexp, timeout=TOKENSEARCH_TIMEOUT):
+    def findall(self, regexp, timeout=_TIMEOUT_UNSET):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
@@ -679,6 +688,8 @@ class Text:
             disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
         :type timeout: float or None
         """
+        if timeout is _TIMEOUT_UNSET:
+            timeout = TOKENSEARCH_TIMEOUT
 
         if "_token_searcher" not in self.__dict__:
             self._token_searcher = TokenSearcher(self)

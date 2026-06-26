@@ -13,10 +13,11 @@ cannot pin a CPU core. The output is unchanged for ordinary queries.
 
 import multiprocessing
 import os
+import traceback
 
 import pytest
 
-from nltk.text import TOKENSEARCH_TIMEOUT, TokenSearcher
+from nltk.text import TOKENSEARCH_TIMEOUT, Text, TokenSearcher
 
 
 def test_findall_preserves_ordinary_results():
@@ -36,6 +37,42 @@ def test_default_timeout_is_configurable():
     assert TokenSearcher(["a", "b"]).findall("<a>*<b>", timeout=None) == [["a", "b"]]
 
 
+def test_default_timeout_resolved_at_call_time(monkeypatch):
+    """A runtime change to ``nltk.text.TOKENSEARCH_TIMEOUT`` affects later calls.
+
+    The ``timeout`` default is a sentinel resolved inside ``findall``, so a
+    module-level override takes effect even though the methods were defined
+    earlier (a literal default would have bound the value at definition time).
+    """
+    import nltk.text as text_mod
+
+    captured = {}
+
+    def fake_findall(pattern, string, timeout=None):
+        captured["timeout"] = timeout
+        return []
+
+    monkeypatch.setattr(text_mod.regex, "findall", fake_findall)
+
+    # TokenSearcher.findall resolves the module constant at call time.
+    monkeypatch.setattr(text_mod, "TOKENSEARCH_TIMEOUT", 12.5)
+    text_mod.TokenSearcher(["a", "b"]).findall("<a>")
+    assert captured["timeout"] == 12.5
+
+    monkeypatch.setattr(text_mod, "TOKENSEARCH_TIMEOUT", None)
+    text_mod.TokenSearcher(["a", "b"]).findall("<a>")
+    assert captured["timeout"] is None
+
+    # Text.findall resolves it the same way.
+    monkeypatch.setattr(text_mod, "TOKENSEARCH_TIMEOUT", 7.0)
+    text_mod.Text(["a", "b"]).findall("<a>")
+    assert captured["timeout"] == 7.0
+
+    # An explicit timeout= still overrides the module default.
+    text_mod.TokenSearcher(["a", "b"]).findall("<a>", timeout=3)
+    assert captured["timeout"] == 3
+
+
 def test_findall_timeout_bounds_catastrophic_query():
     """A quantified query that backtracks is abandoned at the timeout."""
     ts = TokenSearcher(["a"] * 20000)  # long run of 'a', no 'b'
@@ -49,6 +86,7 @@ def _star_query_worker(n):
         TokenSearcher(["a"] * n).findall("<a>*<b>")
         os._exit(0)
     except BaseException:
+        traceback.print_exc()
         os._exit(3)
 
 
