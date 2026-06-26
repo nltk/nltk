@@ -1,5 +1,5 @@
 import multiprocessing
-import os
+import queue
 from typing import Tuple
 
 import pytest
@@ -435,15 +435,24 @@ _JARO_TIMEOUT = 20
 _JARO_N = 8000
 
 
-def _jaro_worker():
-    jaro_similarity("a" * _JARO_N, "a" * (_JARO_N - 1) + "b")
-    os._exit(0)
+def _jaro_worker(result_q):
+    try:
+        jaro_similarity("a" * _JARO_N, "a" * (_JARO_N - 1) + "b")
+        result_q.put(("ok", None))
+    except BaseException as exc:  # surface to the parent process
+        result_q.put(("error", repr(exc)))
 
 
 def test_jaro_similarity_not_cubic_on_near_matches():
-    """A near-matching pair must compute quickly, not in cubic time (ReDoS-style)."""
+    """A near-matching pair must compute quickly, not in cubic time (ReDoS-style).
+
+    Runs in a spawned process with a hard timeout and reports status back via a
+    queue, so a regression to the cubic version is terminated (no lingering CPU)
+    and any worker exception is surfaced to the assertion.
+    """
     ctx = multiprocessing.get_context("spawn")
-    proc = ctx.Process(target=_jaro_worker)
+    result_q = ctx.Queue()
+    proc = ctx.Process(target=_jaro_worker, args=(result_q,))
     proc.start()
     proc.join(_JARO_TIMEOUT)
     if proc.is_alive():
@@ -452,4 +461,8 @@ def test_jaro_similarity_not_cubic_on_near_matches():
         raise AssertionError(
             "jaro_similarity did not finish in time -> cubic-time DoS (CWE-770)"
         )
-    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+    try:
+        status, detail = result_q.get_nowait()
+    except queue.Empty:
+        raise AssertionError("jaro_similarity worker produced no result")
+    assert status == "ok", f"worker raised: {detail}"
