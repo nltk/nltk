@@ -220,5 +220,17 @@ def test_pk_boundary_free_reference_does_not_divide_by_zero():
 
 
 def test_pk_default_window_unchanged_for_segmented_reference():
-    """The default-window derivation is unchanged when the reference has boundaries."""
-    assert pk("0100" * 100, "0100" * 100) == 0.0
+    """The derived default window matches the historical formula when the
+    reference has boundaries.
+
+    Uses a case where the score is not trivially 0 (ref != hyp), so the
+    assertion would fail if the default-``k`` derivation ever changed.
+    """
+    ref = "0100" * 100
+    hyp = "1" * 400
+    # Historical default: round(len(ref) / (ref.count(boundary) * 2)).
+    k = int(round(len(ref) / (ref.count("1") * 2.0)))
+    assert k == 2
+    default_score = pk(ref, hyp)
+    assert default_score != 0.0  # non-trivial case: a changed window would differ
+    assert default_score == pk(ref, hyp, k)
