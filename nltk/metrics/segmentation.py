@@ -239,7 +239,11 @@ def pk(ref, hyp, k=None, boundary="1"):
     if len(ref) != len(hyp):
         raise ValueError("Segmentations have unequal length")
     if k is None:
-        k = int(round(len(ref) / (ref.count(boundary) * 2.0)))
+        # Half the average reference segment length. A boundary-free reference
+        # has a count of 0, which would make this an uncaught ZeroDivisionError
+        # (CWE-369); treat it as a single segment (count >= 1) so the metric is
+        # still computed instead of crashing.
+        k = int(round(len(ref) / (max(ref.count(boundary), 1) * 2.0)))
     if k < 0:
         raise ValueError("Window width k should not be negative")
 
