@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+import traceback
 
 import pytest
 
@@ -60,6 +61,22 @@ def test_error_handling():
         match="Window width k should be smaller or equal than segmentation lengths",
     ):
         windowdiff("111", "111", 4)
+
+
+def test_negative_window_width_rejected():
+    """A negative window width fails fast instead of raising IndexError mid-loop."""
+    with pytest.raises(ValueError, match="Window width k should not be negative"):
+        windowdiff("0000", "0000", -1)
+    with pytest.raises(ValueError, match="Window width k should not be negative"):
+        pk("0000", "0000", -1)
+
+
+def test_pk_rejects_unequal_length():
+    """pk rejects unequal-length inputs (like windowdiff) instead of IndexError."""
+    with pytest.raises(ValueError, match="Segmentations have unequal length"):
+        pk("000", "0000", 2)
+    with pytest.raises(ValueError, match="Segmentations have unequal length"):
+        pk("0000", "000", 2)
 
 
 def test_large_scale_cases():
@@ -141,6 +158,7 @@ def _windowdiff_worker(n):
         windowdiff(seg, seg, n // 2, boundary=1)
         os._exit(0)
     except BaseException:
+        traceback.print_exc()
         os._exit(3)
 
 
@@ -151,6 +169,7 @@ def _pk_worker(n):
         pk(seg, seg, n // 2, boundary=1)
         os._exit(0)
     except BaseException:
+        traceback.print_exc()
         os._exit(3)
 
 
