@@ -279,19 +279,33 @@ class NombankInstance:
         if parse_fileid_xform is not None:
             fileid = parse_fileid_xform(fileid)
 
-        # Convert sentence & word numbers to ints.
-        sentnum = int(sentnum)
-        wordnum = int(wordnum)
+        # Convert sentence & word numbers to ints. A non-numeric field would
+        # otherwise raise a cryptic ValueError that aborts iteration over the
+        # whole corpus; fail with the same clear message as the checks above.
+        try:
+            sentnum = int(sentnum)
+            wordnum = int(wordnum)
+        except ValueError:
+            raise ValueError("Badly formatted nombank line: %r" % s) from None
 
-        # Parse the predicate location.
-
-        predloc, predid = rel[0].split("-", 1)
+        # Parse the predicate location. (The rel field always contains "-rel",
+        # so the split is defensive, but check it so a future change to the
+        # rel selection can't crash with a cryptic unpacking error.)
+        pred_pieces = rel[0].split("-", 1)
+        if len(pred_pieces) != 2:
+            raise ValueError("Badly formatted nombank line: %r" % s)
+        predloc, predid = pred_pieces
         predicate = NombankTreePointer.parse(predloc)
 
         # Parse the arguments.
         arguments = []
         for arg in args:
-            argloc, argid = arg.split("-", 1)
+            arg_pieces = arg.split("-", 1)
+            # An argument missing its "-" separator would otherwise raise a
+            # cryptic unpacking ValueError that aborts the whole-corpus iteration.
+            if len(arg_pieces) != 2:
+                raise ValueError("Badly formatted nombank line: %r" % s)
+            argloc, argid = arg_pieces
             arguments.append((NombankTreePointer.parse(argloc), argid))
 
         # Put it all together.
