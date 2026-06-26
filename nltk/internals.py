@@ -32,15 +32,15 @@ _java_options = []
 # denylist so that -jar, @argfile, and future dangerous flags are
 # blocked without needing to be enumerated explicitly.
 _SAFE_JVM_PREFIXES = (
-    "-xmx",      # max heap size:   -Xmx512m
-    "-xms",      # initial heap:    -Xms128m
-    "-xss",      # thread stack:    -Xss4m
-    "-xbatch",   # disable bg JIT
-    "-xint",     # interpret-only mode
-    "-xcomp",    # compile-only mode
-    "-xmixed",   # mixed mode (JVM default)
+    "-xmx",  # max heap size:   -Xmx512m
+    "-xms",  # initial heap:    -Xms128m
+    "-xss",  # thread stack:    -Xss4m
+    "-xbatch",  # disable bg JIT
+    "-xint",  # interpret-only mode
+    "-xcomp",  # compile-only mode
+    "-xmixed",  # mixed mode (JVM default)
     "-verbose",  # diagnostic output: -verbose:gc
-    "-xx:",      # advanced tuning:  -XX:+UseG1GC
+    "-xx:",  # advanced tuning:  -XX:+UseG1GC
 )
 
 _SAFE_JVM_EXACT = frozenset({"-server", "-client"})
@@ -200,7 +200,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     p = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
     if not blocking:
         return p
-    (stdout, stderr) = p.communicate()
+    stdout, stderr = p.communicate()
 
     # Check the return code.
     if p.returncode != 0:
