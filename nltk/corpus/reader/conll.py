@@ -273,18 +273,20 @@ class ConllCorpusReader(CorpusReader):
             if chunk_tag == "O":
                 state, chunk_type = "O", ""
             else:
-                # A tag that is neither "O" nor "<state>-<type>" would otherwise
-                # raise a cryptic "not enough/too many values to unpack" error
-                # that aborts iteration over the whole corpus; fail with a clear,
-                # catchable message instead. ``split("-", 1)`` also keeps chunk
-                # types that legitimately contain a hyphen (e.g. "B-NP-SBJ").
+                # A tag that is neither "O" nor a well-formed "<B|I>-<type>"
+                # would otherwise raise a cryptic "not enough values to unpack"
+                # error, or be silently mishandled, and abort iteration over the
+                # whole corpus; validate the IOB shape and fail with a clear,
+                # catchable message instead. ``split("-", 1)`` keeps chunk types
+                # that legitimately contain a hyphen (e.g. "B-NP-SBJ").
                 parts = chunk_tag.split("-", 1)
-                if len(parts) != 2:
+                state = parts[0]
+                chunk_type = parts[1] if len(parts) == 2 else ""
+                if state not in ("B", "I") or not chunk_type:
                     raise ValueError(
                         f"Malformed chunk tag {chunk_tag!r}: expected 'O' or "
-                        "'<state>-<type>' (e.g. 'B-NP')"
+                        "'<B|I>-<type>' (e.g. 'B-NP')"
                     )
-                (state, chunk_type) = parts
             # If it's a chunk we don't care about, treat it as O.
             if chunk_types is not None and chunk_type not in chunk_types:
                 state = "O"
