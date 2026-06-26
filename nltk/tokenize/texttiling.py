@@ -9,6 +9,8 @@
 import math
 import re
 
+import regex
+
 try:
     import numpy
 except ImportError:
@@ -283,7 +285,12 @@ class TextTilingTokenizer(TokenizerI):
         """Identifies indented text or line breaks as the beginning of
         paragraphs"""
         MIN_PARAGRAPH = 100
-        pattern = re.compile("[ \t\r\f\v]*\n[ \t\r\f\v]*\n[ \t\r\f\v]*")
+        # Possessive quantifiers (regex module) prevent catastrophic backtracking
+        # (ReDoS, CWE-1333): with the plain greedy `re` pattern, finditer rescans
+        # a long horizontal-whitespace run with no blank line quadratically. The
+        # whitespace class does not overlap "\n", so making each run possessive is
+        # match-for-match identical while making the scan linear.
+        pattern = regex.compile(r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+")
         matches = pattern.finditer(text)
 
         last_break = 0

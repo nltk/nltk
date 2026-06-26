@@ -13,6 +13,7 @@ import nltk
 import nltk.downloader  # We will inspect this module directly
 from nltk import pathsec
 from nltk.downloader import Downloader
+from nltk.sem.util import read_sents
 
 
 @pytest.fixture(autouse=True)
@@ -130,6 +131,48 @@ def test_zip_slip_absolute_path(tmp_path):
     with pytest.raises((ValueError, PermissionError)):
         with TargetZipFile(malicious_zip, "r") as zf:
             zf.extractall(tmp_path)
+
+
+def test_zip_slip_interior_dotdot(tmp_path):
+    """Test an interior ``..`` member (validate/extract normalization mismatch).
+
+    ``Path.resolve`` collapses the ``..`` so the member ``a/../b/evil.txt``
+    validates as ``<root>/b/evil.txt`` (inside the root), but ``zipfile`` drops
+    the ``..`` and writes ``<root>/a/b/evil.txt``. The hardened extractor must
+    reject the interior-``..`` member outright rather than let the validated and
+    written paths diverge (CWE-22).
+    """
+    malicious_zip = create_malicious_zip("a/../b/evil.txt")
+    with pytest.raises((ValueError, PermissionError)):
+        with pathsec.ZipFile(malicious_zip, "r") as zf:
+            zf.extractall(tmp_path)
+
+
+def test_zip_slip_interior_dotdot_symlink_escape(tmp_path):
+    """An interior-``..`` member must not escape through an in-root symlink.
+
+    With a pre-existing symlink at the path the dropped-``..`` member resolves
+    to (``<root>/a/b`` -> outside), the old validator passed the member (it only
+    inspected the ``..``-collapsed ``<root>/b/...``) while ``zipfile`` followed
+    the symlink and wrote outside the root. The member must be rejected and
+    nothing written outside the extraction root (CWE-22 / CWE-59).
+    """
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    root = tmp_path / "extract"
+    (root / "a").mkdir(parents=True)
+    try:
+        os.symlink(outside, root / "a" / "b")  # <root>/a/b -> outside
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks not supported in this environment")
+
+    malicious_zip = create_malicious_zip("a/../b/evil.txt")
+    with pytest.raises((ValueError, PermissionError)):
+        with pathsec.ZipFile(malicious_zip, "r") as zf:
+            zf.extractall(root)
+    assert not (
+        outside / "evil.txt"
+    ).exists(), "member escaped the extraction root via an in-root symlink"
 
 
 # --- PROXY & HANDLER TESTS ---
@@ -418,3 +461,19 @@ def test_streambackedcorpusview_string_fileid_uses_pathsec(tmp_path, monkeypatch
 
     with pytest.raises((ValueError, PermissionError)):
         view._open()
+
+
+def test_read_sents_enforces_pathsec():
+    # 1. Enable strict sandbox
+    pathsec.ENFORCE = True
+
+    # 2. Construct an absolute path that is structurally impossible to be a valid NLTK data root
+    # Using a root-level path like '/nonexistent_nltk_root/file.txt' ensures it
+    # cannot be in the allowed_roots list, avoiding the need for mocks.
+    forbidden_path = os.path.join(os.sep, "nonexistent_nltk_root_XYZ_123", "secret.txt")
+
+    # 3. Verify that attempting to read this file triggers a PermissionError
+    # We catch the exception to verify it's the right type.
+    # If the function succeeds (no exception), the test fails.
+    with pytest.raises(PermissionError, match="Security Violation"):
+        read_sents(forbidden_path)

@@ -7,7 +7,8 @@
 
 import re
 from functools import total_ordering
-from xml.etree import ElementTree
+
+from defusedxml.ElementTree import parse as safe_parse
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -104,7 +105,7 @@ class PropbankCorpusReader(CorpusReader):
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
         with self.abspath(framefile).open() as fp:
-            etree = ElementTree.parse(fp).getroot()
+            etree = safe_parse(fp).getroot()
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
@@ -127,7 +128,7 @@ class PropbankCorpusReader(CorpusReader):
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
             with self.abspath(framefile).open() as fp:
-                etree = ElementTree.parse(fp).getroot()
+                etree = safe_parse(fp).getroot()
             rsets.append(etree.findall("predicate/roleset"))
         return LazyConcatenation(rsets)
 

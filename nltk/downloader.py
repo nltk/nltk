@@ -176,7 +176,9 @@ from xml.etree import ElementTree
 from defusedxml.ElementTree import parse as safe_parse
 
 import nltk
-from nltk.pathsec import ZipFile, urlopen
+from nltk.pathsec import ZipFile
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import urlopen, validate_path
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
@@ -682,27 +684,73 @@ class Downloader:
         tmp_filepath = filepath + ".tmp"
         lock_filepath = filepath + ".lock"
 
-        # Defense-in-depth: verify filepath stays within download_dir.
+        # Defense-in-depth: verify the write target stays within download_dir.
         #
-        # This check is intentionally lexical rather than realpath-based.  The
-        # target file may not exist yet, and on Windows some Python versions can
-        # produce inconsistent short-name vs long-name representations when
-        # resolving non-existent paths (for example RUNNER~1 vs runneradmin).
-        # A normalized absolute commonpath check is sufficient here to block
-        # path traversal through package metadata such as "../".
+        # Two layers are required:
+        #
+        #   (1) Lexical containment blocks "../" traversal coming from package
+        #       metadata.  It is intentionally lexical (normpath/abspath, not
+        #       realpath) because the target leaf may not exist yet and on
+        #       Windows realpath of a non-existent path can be unstable
+        #       (short-name vs long-name, e.g. RUNNER~1 vs runneradmin).
+        #
+        #   (2) Symlink containment (CWE-59, "link following").  A purely lexical
+        #       check is bypassed by a symlink that already exists *inside*
+        #       download_dir and points outside it: the target is lexically
+        #       contained, but open()/os.replace() follow the link and write
+        #       outside.  We therefore also resolve the deepest *existing*
+        #       ancestor of the real write targets (the ".tmp" file open()s, and
+        #       the final filepath os.replace()s onto) and require it to stay
+        #       within download_dir.  Only existing components are resolved, so
+        #       the not-yet-existing-leaf concern that motivates (1) does not
+        #       apply here.
+        def _within(child, root):
+            try:
+                return os.path.commonpath([root, child]) == root
+            except ValueError:
+                return False
+
+        def _symlink_contained(path):
+            # Walk up to the deepest *lexically* existing ancestor.  os.path.lexists
+            # (not os.path.exists) is required so a planted symlink -- including a
+            # dangling one -- stops the walk and gets resolved, rather than being
+            # treated as a non-existent leaf and skipped.
+            ancestor = os.path.abspath(path)
+            while not os.path.lexists(ancestor):
+                parent = os.path.dirname(ancestor)
+                if parent == ancestor:
+                    break
+                ancestor = parent
+            # Decide from the *lexical* ancestor whether the walk stopped at or
+            # above download_dir (e.g. download_dir itself does not exist yet, so
+            # the walk climbed past it).  In that case no symlink *inside*
+            # download_dir could have redirected the path -- lexical containment
+            # already governs that case.  This must use the lexical ancestor, not
+            # the resolved one: a symlink that exists *inside* download_dir and
+            # points to a parent of download_dir would otherwise resolve to an
+            # ancestor of download_dir and wrongly take this early-return, even
+            # though following it escapes the download directory.
+            lex_ancestor = os.path.normcase(ancestor)
+            lex_download = os.path.normcase(
+                os.path.abspath(os.path.normpath(download_dir))
+            )
+            if _within(lex_download, lex_ancestor):
+                return True
+            # The deepest existing ancestor lives lexically below download_dir;
+            # resolve symlinks on it and require it to stay within download_dir.
+            real_ancestor = os.path.normcase(os.path.realpath(ancestor))
+            real_download = os.path.normcase(os.path.realpath(download_dir))
+            return _within(real_ancestor, real_download)
+
         safe_download = os.path.normcase(
             os.path.abspath(os.path.normpath(download_dir))
         )
         safe_filepath = os.path.normcase(os.path.abspath(os.path.normpath(filepath)))
-        try:
-            if os.path.commonpath([safe_download, safe_filepath]) != safe_download:
-                yield ErrorMessage(
-                    info,
-                    f"Path traversal blocked: package '{info.id}' attempted to "
-                    f"write outside download directory (subdir='{info.subdir}')",
-                )
-                return
-        except ValueError:
+        if not (
+            _within(safe_filepath, safe_download)
+            and _symlink_contained(filepath)
+            and _symlink_contained(tmp_filepath)
+        ):
             yield ErrorMessage(
                 info,
                 f"Path traversal blocked: package '{info.id}' attempted to "
@@ -816,7 +864,12 @@ class Downloader:
 
                 try:
                     infile = urlopen(info.url)
-                    with open(tmp_filepath, "wb") as outfile:
+                    with pathsec_open(
+                        tmp_filepath,
+                        "wb",
+                        context="Downloader._download_package",
+                        required_root=download_dir,
+                    ) as outfile:
                         num_blocks = max(1, info.size / (1024 * 16))
                         for block in itertools.count():
                             s = infile.read(1024 * 16)
@@ -829,7 +882,6 @@ class Downloader:
                                     min(80, 5 + 75 * (block / num_blocks))
                                 )
                     infile.close()
-
                     # --- CVE-2026-12261 fix (integrity before commit) ---
                     # Validate size and sha256 on the temp file BEFORE
                     # replacing the destination.  This closes the window
@@ -867,6 +919,11 @@ class Downloader:
                             return
                     # ---------------------------------------------------
 
+                    validate_path(
+                        filepath,
+                        context="Downloader._download_package",
+                        required_root=download_dir,
+                    )
                     os.replace(tmp_filepath, filepath)
                     self._status_cache.pop(info.id, None)
                 except OSError as e:

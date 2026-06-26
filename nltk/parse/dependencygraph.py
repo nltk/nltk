@@ -464,29 +464,47 @@ class DependencyGraph:
         [1, 2, 4, 3]
 
         """
-        distances = {}
+        # Detect a directed cycle with an iterative depth-first search in
+        # O(V + E).  The previous implementation repeatedly recomputed a
+        # transitive closure with a triple-nested loop over a ``distances``
+        # set that grows quadratically in the number of nodes, so its running
+        # time grew as a high-degree polynomial in the (attacker-controlled)
+        # number of tokens -- roughly cubic on a graph parsed from CoNLL data
+        # and quintic on a list-``deps`` graph -- versus O(V + E) here, which
+        # let a single oversized graph exhaust CPU (CWE-407).
+        #
+        # ``deps`` may be a list of addresses or a relation->addresses
+        # mapping; iterating it yields the same edge targets the old code
+        # used.  The membership guard skips targets that are not nodes and
+        # avoids materialising spurious ``defaultdict`` entries in
+        # ``self.nodes``.
+        WHITE, GRAY, BLACK = 0, 1, 2
+        color = defaultdict(int)  # int() == WHITE
 
-        for node in self.nodes.values():
-            for dep in node["deps"]:
-                key = tuple([node["address"], dep])
-                distances[key] = 1
+        for start in list(self.nodes):
+            if color[start] != WHITE:
+                continue
+            color[start] = GRAY
+            path = [start]
+            stack = [iter(self.nodes[start]["deps"])]
+            while stack:
+                for dep in stack[-1]:
+                    if dep not in self.nodes:
+                        continue
+                    if color[dep] == GRAY:
+                        # Back edge: the gray nodes from ``dep`` onward form
+                        # the cycle, in traversal order.
+                        return path[path.index(dep) :]
+                    if color[dep] == WHITE:
+                        color[dep] = GRAY
+                        path.append(dep)
+                        stack.append(iter(self.nodes[dep]["deps"]))
+                        break
+                else:
+                    color[path.pop()] = BLACK
+                    stack.pop()
 
-        for _ in self.nodes:
-            new_entries = {}
-
-            for pair1 in distances:
-                for pair2 in distances:
-                    if pair1[1] == pair2[0]:
-                        key = tuple([pair1[0], pair2[1]])
-                        new_entries[key] = distances[pair1] + distances[pair2]
-
-            for pair in new_entries:
-                distances[pair] = new_entries[pair]
-                if pair[0] == pair[1]:
-                    path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0])
-                    return path
-
-        return False  # return []?
+        return False
 
     def get_cycle_path(self, curr_node, goal_node_index):
         for dep in curr_node["deps"]:

@@ -138,10 +138,17 @@ class PorterStemmer(StemmerI):
         if word[i] in self.vowels:
             return False
         if word[i] == "y":
-            if i == 0:
-                return True
-            else:
-                return not self._is_consonant(word, i - 1)
+            # A 'y' counts as a consonant when the letter before it is not
+            # one, and as a vowel otherwise.  Resolve a run of 'y's
+            # iteratively instead of recursively so that a token such as
+            # "yyyy..." cannot drive the recursion depth past the
+            # interpreter limit and raise an uncaught RecursionError
+            # (CWE-674).
+            negate = False
+            while i > 0 and word[i] == "y":
+                negate = not negate
+                i -= 1
+            return (word[i] not in self.vowels) != negate
         return True
 
     def _measure(self, stem):

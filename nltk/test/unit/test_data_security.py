@@ -1,8 +1,11 @@
+import gzip
+import os
 import zipfile
 
 import pytest
 
 import nltk.data as data
+from nltk import pathsec
 
 
 def test_normalize_rejects_no_protocol_traversal():
@@ -198,3 +201,42 @@ def test_find_zip_split_is_non_greedy(tmp_path):
         if isinstance(got, bytes):
             got = got.decode("utf-8")
         assert got == "ok"
+
+
+def test_gzip_pointer_open_enforces_sandbox(tmp_path, monkeypatch):
+    """GzipFileSystemPathPointer.open() must honour the pathsec sandbox.
+
+    Regression test for the sandbox bypass where the gzip pointer opened its
+    path with GzipFile directly instead of routing through pathsec.open()
+    (CWE-22 / CWE-73): it must refuse a path outside the allowed roots and an
+    in-root symlink that escapes outside, while still reading in-root files.
+    """
+    allowed = tmp_path / "data"
+    allowed.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {allowed.resolve()})
+
+    # gzip file OUTSIDE the allowed root -> blocked
+    secret = outside / "secret.gz"
+    with gzip.open(secret, "wb") as fh:
+        fh.write(b"secret")
+    with pytest.raises((PermissionError, ValueError)):
+        data.GzipFileSystemPathPointer(str(secret)).open().read()
+
+    # in-root symlink escaping outside the allowed root -> blocked
+    link = allowed / "link.gz"
+    try:
+        os.symlink(secret, link)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks not supported in this environment")
+    with pytest.raises((PermissionError, ValueError)):
+        data.GzipFileSystemPathPointer(str(link)).open().read()
+
+    # legitimate gzip INSIDE the allowed root -> reads (decompressed)
+    good = allowed / "good.gz"
+    with gzip.open(good, "wb") as fh:
+        fh.write(b"hello-gz")
+    with data.GzipFileSystemPathPointer(str(good)).open() as fp:
+        assert fp.read() == b"hello-gz"

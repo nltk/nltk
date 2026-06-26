@@ -99,6 +99,13 @@ def binding_ops():
 class LogicParser:
     """A lambda calculus expression parser."""
 
+    #: Maximum expression-nesting depth the recursive-descent parser will
+    #: descend to. Deeply nested input would otherwise recurse until Python
+    #: raises an uncaught ``RecursionError`` and crashes the caller
+    #: (uncontrolled recursion, CWE-674); past this depth a normal
+    #: ``LogicalExpressionException`` is raised instead. Configurable.
+    MAX_PARSE_DEPTH = 200
+
     def __init__(self, type_check=False):
         """
         :param type_check: should type checking be performed
@@ -109,6 +116,7 @@ class LogicParser:
 
         self._currentIndex = 0
         self._buffer = []
+        self._parse_depth = 0
         self.type_check = type_check
 
         """A list of tuples of quote characters.  The 4-tuple is comprised
@@ -148,6 +156,7 @@ class LogicParser:
         data = data.rstrip()
 
         self._currentIndex = 0
+        self._parse_depth = 0
         self._buffer, mapping = self.process(data)
 
         try:
@@ -280,21 +289,35 @@ class LogicParser:
 
     def process_next_expression(self, context):
         """Parse the next complete expression from the stream and return it."""
+        self._parse_depth += 1
         try:
-            tok = self.token()
-        except ExpectedMoreTokensException as e:
-            raise ExpectedMoreTokensException(
-                self._currentIndex + 1, message="Expression expected."
-            ) from e
+            if self._parse_depth > self.MAX_PARSE_DEPTH:
+                # Use 1-based index (consistent with ExpectedMoreTokensException);
+                # parse() formats the caret via mapping[index - 1], so index 0
+                # (limit hit before any token is consumed) must be avoided.
+                raise LogicalExpressionException(
+                    self._currentIndex + 1,
+                    "Expression nesting exceeds the maximum depth (%d)."
+                    % self.MAX_PARSE_DEPTH,
+                )
 
-        accum = self.handle(tok, context)
+            try:
+                tok = self.token()
+            except ExpectedMoreTokensException as e:
+                raise ExpectedMoreTokensException(
+                    self._currentIndex + 1, message="Expression expected."
+                ) from e
 
-        if not accum:
-            raise UnexpectedTokenException(
-                self._currentIndex, tok, message="Expression expected."
-            )
+            accum = self.handle(tok, context)
 
-        return self.attempt_adjuncts(accum, context)
+            if not accum:
+                raise UnexpectedTokenException(
+                    self._currentIndex, tok, message="Expression expected."
+                )
+
+            return self.attempt_adjuncts(accum, context)
+        finally:
+            self._parse_depth -= 1
 
     def handle(self, tok, context):
         """This method is intended to be overridden for logics that

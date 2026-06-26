@@ -319,9 +319,9 @@ class TestDownloaderAtomic(unittest.TestCase):
                 raise_on_error=False,
             )
 
-            self.assertTrue(
+            self.assertFalse(
                 ok,
-                "Traversal-style member should not cause installation failure",
+                "Traversal-style member should be rejected",
             )
 
             with open(victim_file, "rb") as f:
@@ -339,7 +339,7 @@ class TestDownloaderAtomic(unittest.TestCase):
                 "dummy.txt",
             )
 
-            self.assertTrue(os.path.exists(extracted_file))
+            self.assertFalse(os.path.exists(extracted_file))
 
         finally:
             shutil.rmtree(srv_dir, ignore_errors=True)
