@@ -891,8 +891,17 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
+#
+# The first alternative must NOT be quantified with "+" here: nesting it
+# inside the outer "( ... )*" gives the classic ``(A+)*`` shape, which causes
+# catastrophic (exponential) backtracking when the overall match fails on a
+# trailing "{", "}", "<" or ">" (ReDoS, CWE-1333). Dropping the inner "+" is
+# behaviour-preserving -- ``(A+|<B+>)*`` and ``(A|<B+>)*`` accept exactly the
+# same language, because a run of ``A``s is just several single-``A`` iterations
+# of the outer star -- while making the scan linear. See huntr report
+# https://huntr.com/bounties/aff8ef29-2f20-46a4-ae13-7ce6010e26a5.
 CHUNK_TAG_PATTERN = re.compile(
-    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
+    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})", r"[^\{\}<>]+")
 )
 
 

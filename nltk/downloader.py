@@ -176,7 +176,10 @@ from xml.etree import ElementTree
 from defusedxml.ElementTree import parse as safe_parse
 
 import nltk
-from nltk.pathsec import ZipFile, urlopen
+from nltk.data import _check_decompression_bomb
+from nltk.pathsec import ZipFile
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import urlopen, validate_path
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
@@ -682,27 +685,73 @@ class Downloader:
         tmp_filepath = filepath + ".tmp"
         lock_filepath = filepath + ".lock"
 
-        # Defense-in-depth: verify filepath stays within download_dir.
+        # Defense-in-depth: verify the write target stays within download_dir.
         #
-        # This check is intentionally lexical rather than realpath-based.  The
-        # target file may not exist yet, and on Windows some Python versions can
-        # produce inconsistent short-name vs long-name representations when
-        # resolving non-existent paths (for example RUNNER~1 vs runneradmin).
-        # A normalized absolute commonpath check is sufficient here to block
-        # path traversal through package metadata such as "../".
+        # Two layers are required:
+        #
+        #   (1) Lexical containment blocks "../" traversal coming from package
+        #       metadata.  It is intentionally lexical (normpath/abspath, not
+        #       realpath) because the target leaf may not exist yet and on
+        #       Windows realpath of a non-existent path can be unstable
+        #       (short-name vs long-name, e.g. RUNNER~1 vs runneradmin).
+        #
+        #   (2) Symlink containment (CWE-59, "link following").  A purely lexical
+        #       check is bypassed by a symlink that already exists *inside*
+        #       download_dir and points outside it: the target is lexically
+        #       contained, but open()/os.replace() follow the link and write
+        #       outside.  We therefore also resolve the deepest *existing*
+        #       ancestor of the real write targets (the ".tmp" file open()s, and
+        #       the final filepath os.replace()s onto) and require it to stay
+        #       within download_dir.  Only existing components are resolved, so
+        #       the not-yet-existing-leaf concern that motivates (1) does not
+        #       apply here.
+        def _within(child, root):
+            try:
+                return os.path.commonpath([root, child]) == root
+            except ValueError:
+                return False
+
+        def _symlink_contained(path):
+            # Walk up to the deepest *lexically* existing ancestor.  os.path.lexists
+            # (not os.path.exists) is required so a planted symlink -- including a
+            # dangling one -- stops the walk and gets resolved, rather than being
+            # treated as a non-existent leaf and skipped.
+            ancestor = os.path.abspath(path)
+            while not os.path.lexists(ancestor):
+                parent = os.path.dirname(ancestor)
+                if parent == ancestor:
+                    break
+                ancestor = parent
+            # Decide from the *lexical* ancestor whether the walk stopped at or
+            # above download_dir (e.g. download_dir itself does not exist yet, so
+            # the walk climbed past it).  In that case no symlink *inside*
+            # download_dir could have redirected the path -- lexical containment
+            # already governs that case.  This must use the lexical ancestor, not
+            # the resolved one: a symlink that exists *inside* download_dir and
+            # points to a parent of download_dir would otherwise resolve to an
+            # ancestor of download_dir and wrongly take this early-return, even
+            # though following it escapes the download directory.
+            lex_ancestor = os.path.normcase(ancestor)
+            lex_download = os.path.normcase(
+                os.path.abspath(os.path.normpath(download_dir))
+            )
+            if _within(lex_download, lex_ancestor):
+                return True
+            # The deepest existing ancestor lives lexically below download_dir;
+            # resolve symlinks on it and require it to stay within download_dir.
+            real_ancestor = os.path.normcase(os.path.realpath(ancestor))
+            real_download = os.path.normcase(os.path.realpath(download_dir))
+            return _within(real_ancestor, real_download)
+
         safe_download = os.path.normcase(
             os.path.abspath(os.path.normpath(download_dir))
         )
         safe_filepath = os.path.normcase(os.path.abspath(os.path.normpath(filepath)))
-        try:
-            if os.path.commonpath([safe_download, safe_filepath]) != safe_download:
-                yield ErrorMessage(
-                    info,
-                    f"Path traversal blocked: package '{info.id}' attempted to "
-                    f"write outside download directory (subdir='{info.subdir}')",
-                )
-                return
-        except ValueError:
+        if not (
+            _within(safe_filepath, safe_download)
+            and _symlink_contained(filepath)
+            and _symlink_contained(tmp_filepath)
+        ):
             yield ErrorMessage(
                 info,
                 f"Path traversal blocked: package '{info.id}' attempted to "
@@ -723,6 +772,14 @@ class Downloader:
                 pass
 
         def _safe_rmtree(path):
+            # Never follow a symlinked directory while cleaning up: os.walk
+            # descends into a symlinked top regardless of ``followlinks``, so a
+            # pre-existing symlink at ``path`` (e.g. a planted unzip dir) would
+            # cause recursive deletion of the link's target *outside* the
+            # download directory (CWE-59 / CWE-22). Remove the link itself.
+            if os.path.islink(path):
+                _safe_remove(path)
+                return
             if not os.path.isdir(path):
                 return
             for root, dirs, files in os.walk(path, topdown=False):
@@ -732,8 +789,14 @@ class Downloader:
                     except OSError:
                         pass
                 for name in dirs:
+                    full = os.path.join(root, name)
+                    # os.walk (followlinks=False) lists but does not descend
+                    # symlinked subdirs; remove the link, never its target.
+                    if os.path.islink(full):
+                        _safe_remove(full)
+                        continue
                     try:
-                        os.rmdir(os.path.join(root, name))
+                        os.rmdir(full)
                     except OSError:
                         pass
             try:
@@ -816,7 +879,12 @@ class Downloader:
 
                 try:
                     infile = urlopen(info.url)
-                    with open(tmp_filepath, "wb") as outfile:
+                    with pathsec_open(
+                        tmp_filepath,
+                        "wb",
+                        context="Downloader._download_package",
+                        required_root=download_dir,
+                    ) as outfile:
                         num_blocks = max(1, info.size / (1024 * 16))
                         for block in itertools.count():
                             s = infile.read(1024 * 16)
@@ -829,6 +897,48 @@ class Downloader:
                                     min(80, 5 + 75 * (block / num_blocks))
                                 )
                     infile.close()
+                    # --- CVE-2026-12261 fix (integrity before commit) ---
+                    # Validate size and sha256 on the temp file BEFORE
+                    # replacing the destination.  This closes the window
+                    # where a tampered archive could be extracted while the
+                    # integrity check was still deferred to status logic.
+                    tmp_size = os.path.getsize(tmp_filepath)
+                    if tmp_size != int(info.size):
+                        _safe_remove(tmp_filepath)
+                        yield ErrorMessage(
+                            info,
+                            f"Integrity check failed for {info.id!r}: "
+                            f"size mismatch (got {tmp_size}, expected {info.size})",
+                        )
+                        return
+
+                    sha256_checksum = getattr(info, "sha256_checksum", None)
+
+                    if sha256_checksum:
+                        if sha256_hexdigest(tmp_filepath) != sha256_checksum:
+                            _safe_remove(tmp_filepath)
+                            yield ErrorMessage(
+                                info,
+                                f"Integrity check failed for {info.id!r}: sha256 mismatch",
+                            )
+                            return
+                    else:
+                        md5_checksum = getattr(info, "checksum", None)
+
+                        if md5_checksum and md5_hexdigest(tmp_filepath) != md5_checksum:
+                            _safe_remove(tmp_filepath)
+                            yield ErrorMessage(
+                                info,
+                                f"Integrity check failed for {info.id!r}: md5 mismatch",
+                            )
+                            return
+                    # ---------------------------------------------------
+
+                    validate_path(
+                        filepath,
+                        context="Downloader._download_package",
+                        required_root=download_dir,
+                    )
                     os.replace(tmp_filepath, filepath)
                     self._status_cache.pop(info.id, None)
                 except OSError as e:
@@ -848,7 +958,14 @@ class Downloader:
                 zipdir = os.path.join(download_dir, info.subdir)
                 if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
                     yield StartUnzipMessage(info)
-                    for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                    # --- CVE-2026-12261 fix (member ownership enforcement) ---
+                    # Pass info.id so _unzip_iter can reject any archive member
+                    # whose top-level path component is not the owning package.
+                    # zipdir itself stays as download_dir/subdir/ to preserve
+                    # the layout expected by _pkg_status and NLTK data loaders.
+                    for msg in _unzip_iter(
+                        filepath, zipdir, verbose=False, expected_root=info.id
+                    ):
                         _touch_lock()
                         msg.package = info
                         yield msg
@@ -2469,6 +2586,11 @@ def _validate_member(member, root_abs):
     ----------
     member : str
         The archive entry name (forward-slash separated, as stored in the ZIP).
+    .. note::
+        This function enforces Zip-Slip and symlink-escape containment only.
+        Cross-package ownership (CVE-2026-12261) is enforced separately by
+        the ``expected_root`` parameter of ``_unzip_iter``.
+
     root_abs : str
         Absolute path of the extraction root (used to build candidate paths
         and derive comparison prefixes via ``os.path.normcase``).
@@ -2489,7 +2611,7 @@ def _validate_member(member, root_abs):
     return None
 
 
-def _unzip_iter(filename, root, verbose=True):
+def _unzip_iter(filename, root, verbose=True, expected_root=None):
     """
     Secure ZIP extraction using validate-then-extract.
 
@@ -2536,11 +2658,37 @@ def _unzip_iter(filename, root, verbose=True):
         # Phase 1 -- validate every member before touching the filesystem.
         has_violations = False
         for member in members:
+            # --- CVE-2026-12261 fix (cross-package ownership check) ---
+            # Reject any member whose top-level path component differs from
+            # the owning package id.  This blocks cross-package overwrite
+            # without path traversal: a member like
+            #   averaged_perceptron_tagger_eng/file.json
+            # inside a package with id='evil-corpus' is rejected because
+            # 'averaged_perceptron_tagger_eng' != 'evil-corpus'.
+            if expected_root is not None:
+                top = member.replace("\\", "/").lstrip("/").split("/")[0]
+                if top != expected_root:
+                    yield ErrorMessage(
+                        filename,
+                        f"Cross-package overwrite blocked: member {member!r} "
+                        f"is outside the owning package directory {expected_root!r}",
+                    )
+                    has_violations = True
+                    continue
+            # -----------------------------------------------------------
             error = _validate_member(member, root_abs)
             if error is not None:
                 yield ErrorMessage(filename, error)
                 has_violations = True
                 continue
+            # Decompression-bomb check belongs in Phase 1: a bomb member must be
+            # rejected before any (earlier, benign) member is written to disk, so
+            # the validate-then-extract / nothing-is-written contract holds.
+            try:
+                _check_decompression_bomb(zf.getinfo(member))
+            except ValueError as e:
+                yield ErrorMessage(filename, str(e))
+                has_violations = True
 
         if has_violations:
             return
@@ -2553,6 +2701,15 @@ def _unzip_iter(filename, root, verbose=True):
             return
 
         for member in members:
+            if expected_root is not None:
+                top = member.replace("\\", "/").lstrip("/").split("/")[0]
+                if top != expected_root:
+                    yield ErrorMessage(
+                        filename,
+                        f"Cross-package overwrite blocked: member {member!r} "
+                        f"is outside the owning package directory {expected_root!r}",
+                    )
+                    return
             error = _validate_member(member, root_abs)
             if error is not None:
                 yield ErrorMessage(filename, f"{error} (during extraction)")
@@ -2678,8 +2835,9 @@ def _check_package(pkg_xml, zipfilename, zf):
     # Zip file must expand to a subdir whose name matches uid.
     if sum((name != uid and not name.startswith(uid + "/")) for name in zf.namelist()):
         raise ValueError(
-            "Zipfile %s.zip does not expand to a single "
-            "subdirectory %s/" % (uid, uid)
+            "Zipfile {}.zip does not expand to a single subdirectory {}/".format(
+                uid, uid
+            )
         )
 
 

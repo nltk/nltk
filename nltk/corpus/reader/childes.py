@@ -15,8 +15,10 @@ __docformat__ = "epytext en"
 import re
 from collections import defaultdict
 
+from defusedxml.ElementTree import parse as safe_parse
+
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 from nltk.util import LazyConcatenation, LazyMap, flatten
 
 # to resolve the namespace issue
@@ -216,7 +218,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_corpus(self, fileid):
         results = dict()
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for key, value in xmldoc.items():
             results[key] = value
         return results
@@ -236,7 +239,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         def dictOfDicts():
             return defaultdict(dictOfDicts)
 
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         # getting participants' data
         pat = dictOfDicts()
         for participant in xmldoc.findall(
@@ -262,7 +266,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return LazyMap(get_age, self.abspaths(fileids))
 
     def _get_age(self, fileid, speaker, month):
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for pat in xmldoc.findall(f".//{{{NS}}}Participants/{{{NS}}}participant"):
             try:
                 if pat.get("id") == speaker:
@@ -354,7 +359,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             isinstance(speaker, str) and speaker != "ALL"
         ):  # ensure we have a list of speakers
             speaker = [speaker]
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         # processing each xml doc
         results = []
         for xmlsent in xmldoc.findall(".//{%s}u" % NS):

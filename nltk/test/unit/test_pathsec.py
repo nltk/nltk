@@ -1,5 +1,6 @@
 import builtins
 import io
+import ipaddress
 import os
 import socket
 import urllib.request
@@ -13,6 +14,7 @@ import nltk
 import nltk.downloader  # We will inspect this module directly
 from nltk import pathsec
 from nltk.downloader import Downloader
+from nltk.sem.util import read_sents
 
 
 @pytest.fixture(autouse=True)
@@ -75,6 +77,57 @@ def test_ssrf_ip_obfuscation():
             pytest.fail(f"Unexpected network failure: {e}")
 
 
+@pytest.mark.parametrize(
+    "addr",
+    [
+        # direct internal IPv4
+        "169.254.169.254",
+        "127.0.0.1",
+        # IPv4-mapped IPv6
+        "::ffff:169.254.169.254",
+        "::ffff:127.0.0.1",
+        # NAT64 well-known prefix 64:ff9b::/96 embedding an internal IPv4
+        "64:ff9b::a9fe:a9fe",  # -> 169.254.169.254
+        "64:ff9b::7f00:1",  # -> 127.0.0.1
+        # IPv4-compatible ::/96
+        "::a9fe:a9fe",  # -> 169.254.169.254
+        "::7f00:1",  # -> 127.0.0.1
+        # 6to4 2002::/16 and Teredo 2001:0::/32 embedding an internal IPv4
+        "2002:a9fe:a9fe::",  # 6to4 of 169.254.169.254
+        "2001:0:0:0:0:0:a9fe:a9fe",  # Teredo with internal client
+        # plain non-global IPv6
+        "::1",
+        "fe80::1",
+        "fc00::1",
+        "::",
+    ],
+)
+def test_ip_filter_forbids_transition_embedded_internal(addr):
+    """Internal IPv4 embedded in any IPv6->IPv4 transition form must be refused.
+
+    Regression for the NAT64 / IPv4-compatible / 6to4 / Teredo SSRF bypass
+    (CWE-918): the stdlib marks these wrappers globally routable, so the embedded
+    IPv4 must be inspected.
+    """
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)) is True
+
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "8.8.8.8",
+        "1.1.1.1",
+        "::ffff:8.8.8.8",  # IPv4-mapped public
+        "64:ff9b::808:808",  # NAT64 of the public 8.8.8.8
+        "2606:4700:4700::1111",  # public IPv6 (Cloudflare)
+        "2001:4860:4860::8888",  # public IPv6 (Google)
+    ],
+)
+def test_ip_filter_allows_global(addr):
+    """Genuinely globally-routable addresses (incl. NAT64-of-public) must pass."""
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)) is False
+
+
 # --- PATH TRAVERSAL TESTS ---
 
 
@@ -130,6 +183,48 @@ def test_zip_slip_absolute_path(tmp_path):
     with pytest.raises((ValueError, PermissionError)):
         with TargetZipFile(malicious_zip, "r") as zf:
             zf.extractall(tmp_path)
+
+
+def test_zip_slip_interior_dotdot(tmp_path):
+    """Test an interior ``..`` member (validate/extract normalization mismatch).
+
+    ``Path.resolve`` collapses the ``..`` so the member ``a/../b/evil.txt``
+    validates as ``<root>/b/evil.txt`` (inside the root), but ``zipfile`` drops
+    the ``..`` and writes ``<root>/a/b/evil.txt``. The hardened extractor must
+    reject the interior-``..`` member outright rather than let the validated and
+    written paths diverge (CWE-22).
+    """
+    malicious_zip = create_malicious_zip("a/../b/evil.txt")
+    with pytest.raises((ValueError, PermissionError)):
+        with pathsec.ZipFile(malicious_zip, "r") as zf:
+            zf.extractall(tmp_path)
+
+
+def test_zip_slip_interior_dotdot_symlink_escape(tmp_path):
+    """An interior-``..`` member must not escape through an in-root symlink.
+
+    With a pre-existing symlink at the path the dropped-``..`` member resolves
+    to (``<root>/a/b`` -> outside), the old validator passed the member (it only
+    inspected the ``..``-collapsed ``<root>/b/...``) while ``zipfile`` followed
+    the symlink and wrote outside the root. The member must be rejected and
+    nothing written outside the extraction root (CWE-22 / CWE-59).
+    """
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    root = tmp_path / "extract"
+    (root / "a").mkdir(parents=True)
+    try:
+        os.symlink(outside, root / "a" / "b")  # <root>/a/b -> outside
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks not supported in this environment")
+
+    malicious_zip = create_malicious_zip("a/../b/evil.txt")
+    with pytest.raises((ValueError, PermissionError)):
+        with pathsec.ZipFile(malicious_zip, "r") as zf:
+            zf.extractall(root)
+    assert not (
+        outside / "evil.txt"
+    ).exists(), "member escaped the extraction root via an in-root symlink"
 
 
 # --- PROXY & HANDLER TESTS ---
@@ -418,3 +513,19 @@ def test_streambackedcorpusview_string_fileid_uses_pathsec(tmp_path, monkeypatch
 
     with pytest.raises((ValueError, PermissionError)):
         view._open()
+
+
+def test_read_sents_enforces_pathsec():
+    # 1. Enable strict sandbox
+    pathsec.ENFORCE = True
+
+    # 2. Construct an absolute path that is structurally impossible to be a valid NLTK data root
+    # Using a root-level path like '/nonexistent_nltk_root/file.txt' ensures it
+    # cannot be in the allowed_roots list, avoiding the need for mocks.
+    forbidden_path = os.path.join(os.sep, "nonexistent_nltk_root_XYZ_123", "secret.txt")
+
+    # 3. Verify that attempting to read this file triggers a PermissionError
+    # We catch the exception to verify it's the right type.
+    # If the function succeeds (no exception), the test fails.
+    with pytest.raises(PermissionError, match="Security Violation"):
+        read_sents(forbidden_path)

@@ -1036,6 +1036,17 @@ def trigrams(sequence, **kwargs):
     yield from ngrams(sequence, 3, **kwargs)
 
 
+#: Largest sequence length for which :func:`everygrams` will expand the default
+#: ``max_len`` sentinel to the full sequence length. Enumerating every n-gram of
+#: every length from ``min_len`` to ``len(sequence)`` over each window yields
+#: O(n**2) tuples totalling O(n**3) elements, so leaving ``max_len`` at its
+#: default over a few-thousand-token sequence allocates gigabytes and OOM-kills
+#: the process (CWE-770). When the defaulted ``max_len`` would exceed this,
+#: ``everygrams`` raises ``ValueError`` asking for an explicit ``max_len``. This
+#: only affects the default; an explicitly supplied ``max_len`` is never capped.
+MAX_EVERYGRAMS_DEFAULT_LEN = 256
+
+
 def everygrams(
     sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs
 ):
@@ -1067,6 +1078,10 @@ def everygrams(
     :param pad_right: whether the ngrams should be right-padded
     :type pad_right: bool
     :rtype: iter(tuple)
+    :raise ValueError: if ``max_len`` is left at its default and the sequence is
+        longer than ``MAX_EVERYGRAMS_DEFAULT_LEN``, since enumerating every
+        n-gram of every length would allocate O(n**3) elements and exhaust
+        memory (CWE-770). Pass an explicit ``max_len`` to bound the n-gram order.
     """
 
     # Get max_len for padding.
@@ -1076,6 +1091,19 @@ def everygrams(
         except TypeError:
             sequence = list(sequence)
             max_len = len(sequence)
+        # The default max_len expands to the full sequence length, which makes
+        # everygrams enumerate O(n**2) tuples totalling O(n**3) elements -- a
+        # few-thousand-token sequence then allocates gigabytes (CWE-770). Refuse
+        # the unbounded default for long sequences instead of OOM-ing; an
+        # explicit max_len (an informed choice) is never capped.
+        if max_len > MAX_EVERYGRAMS_DEFAULT_LEN:
+            raise ValueError(
+                "everygrams() called with the default max_len on a sequence of "
+                "%d items: enumerating every n-gram of every length up to %d "
+                "yields O(n**2) tuples (O(n**3) elements) and can exhaust memory "
+                "(CWE-770). Pass an explicit max_len (e.g. max_len=min_len), or "
+                "raise nltk.util.MAX_EVERYGRAMS_DEFAULT_LEN." % (max_len, max_len)
+            )
 
     # Pad if indicated using max_len.
     sequence = pad_sequence(sequence, max_len, pad_left, pad_right, **kwargs)

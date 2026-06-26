@@ -7,8 +7,10 @@
 
 """Corpus reader for the XML version of the British National Corpus."""
 
+from defusedxml.ElementTree import parse as safe_parse
+
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader, XMLCorpusView
+from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 
 
 class BNCCorpusReader(XMLCorpusReader):
@@ -113,7 +115,8 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         result = []
 
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for xmlsent in xmldoc.findall(".//s"):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):

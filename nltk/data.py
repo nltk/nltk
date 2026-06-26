@@ -494,10 +494,77 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        stream = GzipFile(self._path, "rb")
-        if encoding:
+        # Route through the sentinel like FileSystemPathPointer.open() so the
+        # path is validated against the allowed NLTK data roots (with symlinks
+        # resolved) before reading; decompress the validated stream rather than
+        # re-opening the path directly (CWE-22 / CWE-73).
+        stream = GzipFile(self._path, fileobj=_secure_open(self._path, "rb"))
+        # ``encoding is not None`` (not truthiness) to match
+        # FileSystemPathPointer.open() / ZipFilePathPointer.open().
+        if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
+
+
+#: Maximum allowed ratio of a zip member's uncompressed size to its stored
+#: (compressed) size before it is treated as a decompression bomb (CWE-409).
+#: DEFLATE's maximum ratio is ~1032x, reached only by runs of identical bytes,
+#: i.e. payloads crafted purely to maximize expansion; legitimate text/markup
+#: corpora compress a few-fold to a few-hundred-fold at most, well under this.
+#: A member that expands beyond this ratio is rejected. Configurable.
+MAX_UNZIP_RATIO = 1000
+
+#: Optional hard cap (in bytes) on a single zip member's uncompressed size.
+#: ``None`` disables it (the default, so legitimately large corpora are not
+#: affected); set it for a strict absolute limit in hardened deployments.
+MAX_UNZIP_SIZE = None
+
+#: The ratio check is only applied once a member's declared uncompressed size
+#: exceeds this activation threshold, so small files (which cannot exhaust
+#: resources regardless of ratio) are never rejected.
+MAX_UNZIP_ACTIVATION = 32 * 1024 * 1024  # 32 MiB
+
+
+def _check_decompression_bomb(info):
+    """
+    Reject a zip member that looks like a decompression bomb (CWE-409).
+
+    ``info`` is a ``zipfile.ZipInfo``. A member is refused when its declared
+    uncompressed size exceeds the optional hard cap ``MAX_UNZIP_SIZE``, or when
+    that size is both large (>= ``MAX_UNZIP_ACTIVATION``) and expands by more
+    than ``MAX_UNZIP_RATIO`` over its stored compressed size. This guards the
+    read-into-memory paths (``ZipFilePathPointer.open``,
+    ``OpenOnDemandZipFile.read``) and the on-disk extraction path
+    (``nltk.downloader``) against tiny archives that exhaust RAM or disk.
+    """
+    compress_size = getattr(info, "compress_size", 0) or 0
+    file_size = getattr(info, "file_size", 0) or 0
+    name = getattr(info, "filename", "<member>")
+
+    if MAX_UNZIP_SIZE is not None and file_size > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to decompress zip member %r: uncompressed size %d bytes "
+            "exceeds nltk.data.MAX_UNZIP_SIZE=%d." % (name, file_size, MAX_UNZIP_SIZE)
+        )
+
+    if (
+        file_size >= MAX_UNZIP_ACTIVATION
+        and compress_size > 0
+        # integer comparison (no float rounding at the threshold)
+        and file_size > MAX_UNZIP_RATIO * compress_size
+    ):
+        raise ValueError(
+            "Refusing to decompress suspected zip bomb %r: it expands %.1fx "
+            "(%d -> %d bytes), above nltk.data.MAX_UNZIP_RATIO=%d. "
+            "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+            % (
+                name,
+                file_size / compress_size,
+                compress_size,
+                file_size,
+                MAX_UNZIP_RATIO,
+            )
+        )
 
 
 class ZipFilePathPointer(PathPointer):
@@ -558,6 +625,7 @@ class ZipFilePathPointer(PathPointer):
         return self._entry
 
     def open(self, encoding=None):
+        _check_decompression_bomb(self._zipfile.getinfo(self._entry))
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
@@ -827,8 +895,13 @@ def retrieve(resource_url, filename=None, verbose=True):
     # Open the input & output streams.
     infile = _open(resource_url)
 
-    # Copy infile -> outfile, using 64k blocks.
-    with open(filename, "wb") as outfile:
+    # Copy infile -> outfile, using 64k blocks. Route the write through the
+    # pathsec sentinel so the destination honours the file-access sandbox
+    # (allowed data roots, symlink resolution) instead of the builtin open,
+    # which bypasses it and can write arbitrary local files -- an arbitrary
+    # file write that can escalate to code execution via a planted file
+    # (CWE-22).
+    with _secure_open(filename, "wb") as outfile:
         while True:
             s = infile.read(1024 * 64)  # 64k blocks.
             outfile.write(s)
@@ -1260,6 +1333,7 @@ class OpenOnDemandZipFile(ZipFile):
 
     def read(self, name):
         assert self.fp is None
+        _check_decompression_bomb(self.getinfo(name))
         # This will be validated by pathsec.open
         self.fp = _secure_open(self.filename, "rb")
         value = zipfile.ZipFile.read(self, name)

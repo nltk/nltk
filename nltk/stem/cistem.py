@@ -44,11 +44,11 @@ class Cistem(StemmerI):
 
     strip_ge = re.compile(r"^ge(.{4,})")
     repl_xx = re.compile(r"(.)\1")
-    strip_emr = re.compile(r"e[mr]$")
-    strip_nd = re.compile(r"nd$")
-    strip_t = re.compile(r"t$")
-    strip_esn = re.compile(r"[esn]$")
     repl_xx_back = re.compile(r"(.)\*")
+    # The end-anchored suffix patterns (e[mr]$, nd$, t$, [esn]$) are applied by
+    # direct end-of-string character checks in ``_segment_inner`` (see there),
+    # not via ``re``, so that stemming is linear rather than quadratic in the
+    # word length (CWE-770; CVE-2026-12868).
 
     def __init__(self, case_insensitive: bool = False):
         self._case_insensitive = case_insensitive
@@ -174,31 +174,56 @@ class Cistem(StemmerI):
         word = Cistem.replace_to(word)
         rest = ""
 
-        # Apply the substitution patterns
-        while len(word) > 3:
-            if len(word) > 5:
-                word, n = Cistem.strip_emr.subn("", word)
-                if n != 0:
+        # Apply the substitution patterns. Each pattern (e[mr]$, nd$, t$, [esn]$)
+        # only ever strips one or two characters anchored at the end of the
+        # string. The original loop rebuilt the whole remaining string on every
+        # removal via the compiled ``re`` patterns' ``Pattern.subn`` -- O(n) work
+        # per step over O(n) steps, i.e. O(n**2) in the word length, so a single
+        # long word pins a CPU core (CWE-770; CVE-2026-12868). Strip characters
+        # off the end of a list in O(1) per step instead, joining once at the end.
+        #
+        # Python's ``$`` matches at the end of the string *or* just before a
+        # single trailing newline, so such a newline is transparent to the
+        # anchored patterns and is preserved (``_strip`` pops it aside and
+        # restores it); ``j`` is the index of the last character the patterns
+        # act on.
+        chars = list(word)
+
+        def _strip(count):
+            if chars[-1] == "\n":
+                newline = chars.pop()
+                del chars[-count:]
+                chars.append(newline)
+            else:
+                del chars[-count:]
+
+        while len(chars) > 3:
+            j = -2 if chars[-1] == "\n" else -1
+            if len(chars) > 5:
+                if chars[j] in "mr" and chars[j - 1] == "e":  # e[mr]$
+                    _strip(2)
                     rest_length += 2
                     continue
 
-                word, n = Cistem.strip_nd.subn("", word)
-                if n != 0:
+                if chars[j] == "d" and chars[j - 1] == "n":  # nd$
+                    _strip(2)
                     rest_length += 2
                     continue
 
             if not upper or self._case_insensitive:
-                word, n = Cistem.strip_t.subn("", word)
-                if n != 0:
+                if chars[j] == "t":  # t$
+                    _strip(1)
                     rest_length += 1
                     continue
 
-            word, n = Cistem.strip_esn.subn("", word)
-            if n != 0:
+            if chars[j] in "esn":  # [esn]$
+                _strip(1)
                 rest_length += 1
                 continue
             else:
                 break
+
+        word = "".join(chars)
 
         # Post-processing after applying the substitution patterns
         word = Cistem.replace_back(word)

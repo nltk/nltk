@@ -660,9 +660,37 @@ def find_binary_iter(
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    yield from find_file_iter(
+    # Searching by a *bare* tool name (no explicit ``path_to_bin`` and no
+    # directory component in ``name``) is the insecure case: ``find_file_iter``
+    # probes the current working directory for ``<name>/<name>`` and the bare
+    # name before the configured ``env_vars`` / ``searchpath``, so a planted
+    # ``./<name>/...`` could be returned and -- because it contains a separator
+    # -- run relative to the CWD rather than looked up on PATH: arbitrary code
+    # execution (CWE-426 / CWE-427). Only in that case do we refuse CWD-relative
+    # matches and accept solely a trusted absolute location (env var / searchpath
+    # / ``which``). An explicit path supplied via ``path_to_bin`` or via ``name``
+    # itself (e.g. ``tools/prover9``) is the caller's own choice and is honored
+    # as before. ``not path_to_bin`` (rather than ``is None``) so an empty-string
+    # path_to_bin -- which ``path_to_bin or name`` already falls back to ``name``
+    # for -- cannot bypass the check.
+    searching_bare_name = not path_to_bin and os.path.dirname(name) == ""
+    safe_match = False
+    for path in find_file_iter(
         path_to_bin or name, env_vars, searchpath, binary_names, url, verbose
-    )
+    ):
+        if searching_bare_name and not os.path.isabs(path):
+            continue
+        safe_match = True
+        yield path
+    if searching_bare_name and not safe_match:
+        # ``find_file_iter`` itself raises ``LookupError`` when nothing matches,
+        # so reaching here means it found only untrusted CWD-relative
+        # executables, which were rejected above.
+        raise LookupError(
+            f"NLTK found {name!r} only in the current working directory, which "
+            "is not a trusted location for executables. Install it on PATH or in "
+            "a configured location, or pass an explicit path_to_bin."
+        )
 
 
 def find_binary(

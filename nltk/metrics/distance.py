@@ -22,6 +22,8 @@ As metrics, they must satisfy the following three requirements:
 import operator
 import warnings
 
+from nltk.pathsec import open as _secure_open
+
 
 def _edit_dist_init(len1, len2):
     lev = []
@@ -294,7 +296,10 @@ def fractional_presence(label):
 
 def custom_distance(file):
     data = {}
-    with open(file) as infile:
+    # Route through the pathsec sentinel so the read honours the file-access
+    # sandbox (allowed data roots, symlink resolution) instead of the builtin
+    # open, which bypasses it and can read arbitrary local files (CWE-22).
+    with _secure_open(file) as infile:
         for l in infile:
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])

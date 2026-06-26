@@ -368,9 +368,19 @@ class SentimentIntensityAnalyzer:
         )
         sentiments = []
         words_and_emoticons = sentitext.words_and_emoticons
+        # Precompute the first index of each token once, in O(n). The loop below
+        # previously called ``words_and_emoticons.index(item)`` on every
+        # iteration -- an O(n) scan per token, i.e. O(n^2) overall on text with
+        # many distinct tokens, a remote CPU DoS (CWE-407). ``list.index``
+        # returns the first matching position, so this mapping yields the exact
+        # same indices in linear time.
+        first_index = {}
+        for idx, token in enumerate(words_and_emoticons):
+            if token not in first_index:
+                first_index[token] = idx
         for item in words_and_emoticons:
             valence = 0
-            i = words_and_emoticons.index(item)
+            i = first_index[item]
             if (
                 i < len(words_and_emoticons) - 1
                 and item.lower() == "kind"

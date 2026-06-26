@@ -47,7 +47,13 @@ from nltk.ccg.combinator import (
 from nltk.ccg.lexicon import Token, fromstring
 from nltk.ccg.logic import *
 from nltk.parse import ParserI
-from nltk.parse.chart import AbstractChartRule, Chart, EdgeI
+from nltk.parse.chart import (
+    MAX_PARSE_TREES,
+    AbstractChartRule,
+    Chart,
+    EdgeI,
+    _ParseTreeBudget,
+)
 from nltk.sem.logic import *
 from nltk.tree import Tree
 
@@ -313,13 +319,20 @@ class CCGChart(Chart):
     # Constructs the trees for a given parse. Unfortnunately, the parse trees need to be
     # constructed slightly differently to those in the default Chart class, so it has to
     # be reimplemented
-    def _trees(self, edge, complete, memo, tree_class):
+    def _trees(self, edge, complete, memo, tree_class, budget=None):
         assert complete, "CCGChart cannot build incomplete trees"
+
+        # Share the same node-construction budget as the base Chart so a
+        # highly-ambiguous CCG grammar cannot make tree extraction exponential
+        # either (CWE-770; CVE-2026-12886).
+        if budget is None:
+            budget = _ParseTreeBudget(MAX_PARSE_TREES)
 
         if edge in memo:
             return memo[edge]
 
         if isinstance(edge, CCGLeafEdge):
+            budget.spend()
             word = tree_class(edge.token(), [self._tokens[edge.start()]])
             leaf = tree_class((edge.token(), "Leaf"), [word])
             memo[edge] = [leaf]
@@ -329,8 +342,11 @@ class CCGChart(Chart):
         trees = []
 
         for cpl in self.child_pointer_lists(edge):
-            child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
+            child_choices = [
+                self._trees(cp, complete, memo, tree_class, budget) for cp in cpl
+            ]
             for children in itertools.product(*child_choices):
+                budget.spend()
                 lhs = (
                     Token(
                         self._tokens[edge.start() : edge.end()],

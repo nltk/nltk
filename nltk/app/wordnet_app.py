@@ -48,10 +48,12 @@ Options::
 import base64
 import copy
 import getopt
+import hmac
 import html
 import io
 import os
 import pickle
+import secrets
 import sys
 import threading
 import time
@@ -61,13 +63,19 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # Allow this program to run inside the NLTK source tree.
 from sys import argv
-from urllib.parse import unquote_plus
+from urllib.parse import parse_qs, unquote_plus
 
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
 from nltk.picklesec import RestrictedUnpickler
 
 firstClient = True
+
+# Per-process secret token. It is embedded only in the browser's own "Shutdown"
+# link and required by the shutdown route, so a cross-site page (which cannot
+# read the link under the Same-Origin Policy) cannot forge a shutdown request
+# (CWE-352). The loopback bind already blocks remote access (CWE-306).
+_shutdown_token = secrets.token_urlsafe(32)
 
 # True if we're not also running a web browser.  The value f server_mode
 # gets set by demo().
@@ -81,16 +89,36 @@ class MyServerHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.send_head()
 
+    def _shutdown_authorized(self):
+        """True only for a shutdown request carrying the per-process token.
+
+        The token is generated once per server process and embedded only in the
+        browser's own Shutdown link, so a cross-site page cannot supply it; this
+        blocks CSRF-driven shutdown (CWE-352).
+        """
+        token = parse_qs(self.path.partition("?")[2]).get("token", [""])[0]
+        return bool(_shutdown_token) and hmac.compare_digest(token, _shutdown_token)
+
     def do_GET(self):
         global firstClient
         sp = self.path[1:]
-        if unquote_plus(sp) == "SHUTDOWN THE SERVER":
+        if unquote_plus(sp.partition("?")[0]) == "SHUTDOWN THE SERVER":
             if server_mode:
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
-            else:
+            elif self._shutdown_authorized():
                 print("Server shutting down!")
                 os._exit(0)
+            else:
+                # Refuse a token-less / cross-site shutdown request (CWE-352).
+                self.send_response(403)
+                self.send_header("Content-type", "text/plain")
+                self.end_headers()
+                self.wfile.write(
+                    b"Forbidden: shutdown requires the per-process token "
+                    b"from the browser's Shutdown link."
+                )
+                return
 
         elif sp == "":  # First request.
             type = "text/html"
@@ -958,7 +986,11 @@ def get_static_upper_page(with_shutdown):
 </html>
 """
     if with_shutdown:
-        shutdown_link = '<a href="SHUTDOWN THE SERVER">Shutdown</a>'
+        # Carry the per-process token so the shutdown route can tell this
+        # in-app click apart from a forged cross-site request (CWE-352).
+        shutdown_link = (
+            '<a href="SHUTDOWN THE SERVER?token=%s">Shutdown</a>' % _shutdown_token
+        )
     else:
         shutdown_link = ""
 

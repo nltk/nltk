@@ -244,3 +244,17 @@ def test_no_zero_div():
     score = corpus_ribes(list_of_refs, hypotheses)
 
     assert round(score, 4) == 0.1688
+
+
+def test_word_rank_alignment_unhashable_tokens():
+    # Tokens need not be hashable: word_rank_alignment must still work when
+    # tokens are e.g. lists (the previous list.count implementation relied only
+    # on equality). Regression for the memoisation introduced with the KMP
+    # rewrite, which must fall back to an uncached count for unhashable tokens
+    # rather than raise TypeError.
+    ref = [["b"], ["a"], ["b"], ["a"]]
+    hyp = [["a"], ["b"], ["a"], ["b"]]
+    # Should not raise; result matches the equivalent hashable (string) tokens.
+    assert word_rank_alignment(ref, hyp) == word_rank_alignment(
+        ["b", "a", "b", "a"], ["a", "b", "a", "b"]
+    )

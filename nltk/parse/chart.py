@@ -426,6 +426,43 @@ class LeafEdge(EdgeI):
 ##  Chart
 ########################################################################
 
+#: Upper bound on the number of parse-tree nodes a single tree extraction
+#: (:meth:`Chart.trees`) may build. A highly-ambiguous grammar (e.g. the
+#: 15-byte ``S -> S S | 'a'``) makes the number of parses exponential in the
+#: sentence length (the Catalan numbers), and the trees are materialised eagerly
+#: -- so a tiny grammar plus a short sentence pins the CPU and exhausts memory,
+#: and even obtaining the first parse does not return (CWE-770; CVE-2026-12886).
+#: Once this many tree nodes have been built, extraction raises ``ValueError``
+#: instead of running unbounded. Raise it if you legitimately need to enumerate
+#: a more ambiguous parse forest.
+MAX_PARSE_TREES = 1_000_000
+
+
+class _ParseTreeBudget:
+    """Counts constructed parse-tree nodes and aborts runaway tree extraction.
+
+    One budget is shared across a whole :meth:`Chart.trees` call (including the
+    recursive subtree builds and the memoised reuse), so it bounds the total
+    work of reading an exponential parse forest off the chart.
+    """
+
+    __slots__ = ("remaining", "limit")
+
+    def __init__(self, limit):
+        self.remaining = limit
+        self.limit = limit
+
+    def spend(self):
+        self.remaining -= 1
+        if self.remaining < 0:
+            raise ValueError(
+                "Refusing to extract parse trees: a highly-ambiguous grammar can "
+                "yield an exponential number of parses, and tree extraction "
+                "exceeded the limit of %d parse-tree nodes (CWE-770). Parse with "
+                "a less ambiguous grammar or a shorter sentence, or raise "
+                "nltk.parse.chart.MAX_PARSE_TREES." % self.limit
+            )
+
 
 class Chart:
     """
@@ -690,17 +727,28 @@ class Chart:
             Tree may be used to encode that subtree in
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
+        :raise ValueError: if more than ``MAX_PARSE_TREES`` parse-tree nodes
+            would be built, which a highly-ambiguous grammar reaches at an
+            exponential rate (CWE-770).
         """
-        return iter(self._trees(edge, complete, memo={}, tree_class=tree_class))
+        budget = _ParseTreeBudget(MAX_PARSE_TREES)
+        return iter(
+            self._trees(edge, complete, memo={}, tree_class=tree_class, budget=budget)
+        )
 
-    def _trees(self, edge, complete, memo, tree_class):
+    def _trees(self, edge, complete, memo, tree_class, budget=None):
         """
         A helper function for ``trees``.
 
         :param memo: A dictionary used to record the trees that we've
             generated for each edge, so that when we see an edge more
             than once, we can reuse the same trees.
+        :param budget: A shared :class:`_ParseTreeBudget` that bounds the total
+            number of parse-tree nodes built, so an exponential parse forest
+            cannot exhaust time/memory (CWE-770).
         """
+        if budget is None:
+            budget = _ParseTreeBudget(MAX_PARSE_TREES)
         # If we've seen this edge before, then reuse our old answer.
         if edge in memo:
             return memo[edge]
@@ -729,15 +777,26 @@ class Chart:
             # Get the set of child choices for each child pointer.
             # child_choices[i] is the set of choices for the tree's
             # ith child.
-            child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
+            child_choices = [
+                self._trees(cp, complete, memo, tree_class, budget) for cp in cpl
+            ]
 
             # For each combination of children, add a tree.
             for children in itertools.product(*child_choices):
+                # Count every node built; a highly-ambiguous grammar would
+                # otherwise materialise an exponential number of them (CWE-770).
+                budget.spend()
                 trees.append(tree_class(lhs, children))
 
         # If the edge is incomplete, then extend it with "partial trees":
         if edge.is_incomplete():
-            unexpanded = [tree_class(elt, []) for elt in edge.rhs()[edge.dot() :]]
+            unexpanded = []
+            for elt in edge.rhs()[edge.dot() :]:
+                # Count these childless nodes too, so MAX_PARSE_TREES is an
+                # accurate bound on constructed tree nodes when trees() is used
+                # on incomplete edges (complete=False).
+                budget.spend()
+                unexpanded.append(tree_class(elt, []))
             for tree in trees:
                 tree.extend(unexpanded)
 

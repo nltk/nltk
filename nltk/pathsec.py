@@ -156,6 +156,29 @@ def validate_path(path_input, context="NLTK", required_root=None):
             raise
 
 
+def _zip_member_is_unsafe(name_str):
+    """True if a ZIP member is written somewhere other than where it is validated.
+
+    ``zipfile.ZipFile.extract`` sanitises a member name by *dropping* the drive
+    and every empty / ``.`` / ``..`` component while keeping the rest, whereas
+    ``Path.resolve`` collapses a ``..`` against its *preceding* component.  For a
+    member such as ``a/../b/x`` the two disagree: it is validated as ``<root>/b/x``
+    but written to ``<root>/a/b/x``, which can escape through a pre-existing
+    symlink at ``<root>/a/b`` that the collapsed validation path never visits.
+
+    The mismatch only ever arises from absolute / drive-qualified / ``..`` members
+    -- exactly the shapes a legitimate archive never uses -- so rather than keep
+    two different normalizations in sync we reject them outright.  This both
+    closes the validate/extract gap and is the proactive block the hardened
+    extractor promises (CWE-22 / CWE-59).
+    """
+    # Normalize every separator zipfile treats as such on this platform to "/".
+    normalized = name_str.replace("\\", "/") if os.path.altsep else name_str
+    if os.path.splitdrive(name_str)[0] or normalized.startswith("/"):
+        return True
+    return os.path.pardir in normalized.split("/")
+
+
 def validate_zip_archive(
     zip_obj_or_path, target_root, specific_member=None, context="ZipAudit"
 ):
@@ -172,8 +195,14 @@ def validate_zip_archive(
                 if "\0" in name_str:
                     raise ValueError(f"Null byte in ZIP member: {name_str}")
 
+                # ``resolve()`` follows symlinks, catching escapes through a
+                # pre-existing symlinked subpath. The extra component check
+                # rejects absolute / ``..`` members, whose write target diverges
+                # from this resolved path (CWE-22 / CWE-59).
                 member_path = (target / name_str).resolve()
-                if not (member_path == target or member_path.is_relative_to(target)):
+                if _zip_member_is_unsafe(name_str) or not (
+                    member_path == target or member_path.is_relative_to(target)
+                ):
                     msg = f"Security Violation [{context}]: Traversal member '{name_str}' detected."
                     if ENFORCE:
                         raise PermissionError(msg)
@@ -207,6 +236,40 @@ def _resolve_hostname(hostname):
         return []
 
 
+# IPv6->IPv4 transition prefixes that have no dedicated stdlib accessor.
+_NAT64_WELL_KNOWN = ipaddress.ip_network("64:ff9b::/96")
+_IPV4_COMPATIBLE = ipaddress.ip_network("::/96")
+
+
+def _embedded_ipv4(ip):
+    """The embedded IPv4 for IPv6 forms that *are* an IPv4 address, else None.
+
+    Covers IPv4-mapped (``::ffff:0:0/96``), IPv4-compatible (``::/96``) and the
+    NAT64 well-known prefix (``64:ff9b::/96``). For these the IPv6 wrapper has no
+    independent routable meaning, so the embedded IPv4 is what gets reached.
+    """
+    if not isinstance(ip, ipaddress.IPv6Address):
+        return None
+    mapped = ip.ipv4_mapped
+    if mapped is not None:
+        return mapped
+    if ip in _NAT64_WELL_KNOWN or ip in _IPV4_COMPATIBLE:
+        return ipaddress.IPv4Address(ip.packed[-4:])
+    return None
+
+
+def _tunneled_ipv4s(ip):
+    """IPv4 addresses tunneled by routable IPv6 wrappers (6to4 / Teredo)."""
+    if not isinstance(ip, ipaddress.IPv6Address):
+        return
+    sixtofour = ip.sixtofour
+    if sixtofour is not None:
+        yield sixtofour
+    teredo = ip.teredo
+    if teredo is not None:
+        yield from teredo  # (Teredo server, Teredo client)
+
+
 def _ip_is_forbidden(ip):
     """Return True if the SSRF filter must refuse to connect to ``ip``.
 
@@ -218,15 +281,20 @@ def _ip_is_forbidden(ip):
     superset of it. Multicast is still rejected explicitly because some CPython
     versions classify multicast addresses as ``is_global``.
 
-    IPv4-mapped IPv6 addresses (e.g. ``::ffff:127.0.0.1``) are evaluated as their
-    embedded IPv4 address: the stdlib's ``is_*`` classification of mapped
-    addresses is version dependent and has not always reflected the embedded
-    address, so the mapped form could otherwise smuggle a forbidden IPv4 past the
-    check.
+    IPv6 addresses that embed an IPv4 address are evaluated by that embedded IPv4,
+    not by the wrapper: the stdlib classifies the wrappers (IPv4-mapped,
+    IPv4-compatible, NAT64 ``64:ff9b::/96``, 6to4 ``2002::/16``, Teredo
+    ``2001:0::/32``) as globally routable, so a forbidden internal IPv4 (loopback,
+    the link-local cloud-metadata address, ...) could otherwise be smuggled past
+    the check and then routed to that IPv4 by a NAT64/6to4/Teredo gateway
+    (CWE-918). This extends the previous IPv4-mapped-only unwrap.
     """
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if mapped is not None:
-        ip = mapped
+    embedded = _embedded_ipv4(ip)
+    if embedded is not None:
+        ip = embedded
+    for tunneled in _tunneled_ipv4s(ip):
+        if tunneled.is_multicast or not tunneled.is_global:
+            return True
     return ip.is_multicast or not ip.is_global
 
 
@@ -450,9 +518,9 @@ def urlopen(url, *args, **kwargs):
     return opener.open(url, *args, **kwargs)
 
 
-def open(file, mode="r", **kwargs):
+def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs):
     """Secure wrapper for builtins.open."""
-    validate_path(file, context="pathsec.open")
+    validate_path(file, context=context, required_root=required_root)
     return builtins.open(file, mode=mode, **kwargs)
 
 

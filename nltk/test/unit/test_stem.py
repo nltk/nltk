@@ -169,3 +169,15 @@ class PorterTest(unittest.TestCase):
         assert porter.stem("Howe", to_lowercase=False) == "How"
         assert porter.stem("Sky") == "sky"
         assert porter.stem("Sky", to_lowercase=False) == "Ski"
+
+    def test_long_run_of_y_no_recursionerror(self):
+        """Regression test for the unbounded-recursion DoS (CWE-674).
+
+        ``_is_consonant`` used to recurse once per preceding ``'y'``, so a token
+        made of a long run of ``'y'`` overflowed the interpreter's recursion
+        limit and raised an uncaught ``RecursionError``. The iterative
+        implementation must handle a run far longer than that limit.
+        """
+        token = "y" * 100000
+        result = PorterStemmer().stem(token)
+        assert isinstance(result, str)

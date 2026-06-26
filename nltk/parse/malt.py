@@ -62,7 +62,15 @@ def find_maltparser(parser_dirname):
     """
     A module to find MaltParser .jar file and its dependencies.
     """
-    if os.path.exists(parser_dirname):  # If a full path is given.
+    # Accept str or os.PathLike uniformly (find_dir() requires a str).
+    parser_dirname = os.fspath(parser_dirname)
+    # Only accept an explicit *absolute* directory as-is. A relative name must
+    # not be resolved against the current working directory: an attacker able to
+    # write to the CWD could otherwise plant a ``maltparser-*/`` directory there
+    # and have its jars placed on the Java classpath (and its ``org.maltparser``
+    # main class executed), overriding a trusted ``MALT_PARSER`` -- an untrusted
+    # search path (CWE-426). A relative name is resolved through ``MALT_PARSER``.
+    if os.path.isabs(parser_dirname) and os.path.isdir(parser_dirname):
         _malt_dir = parser_dirname
     else:  # Try to find path to maltparser directory in environment variables.
         _malt_dir = find_dir(parser_dirname, env_vars=("MALT_PARSER",))

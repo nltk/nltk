@@ -2,7 +2,9 @@ from typing import Tuple
 
 import pytest
 
+from nltk import pathsec
 from nltk.metrics.distance import (
+    custom_distance,
     edit_distance,
     edit_distance_align,
     jaro_similarity,
@@ -391,3 +393,29 @@ class TestEditDistanceAlign:
                 (1, 0),
                 (0, 1),
             ], f"Invalid step from {(i1,j1)} to {(i2,j2)}"
+
+
+class TestCustomDistanceSandbox:
+    def test_enforces_pathsec_sandbox(self, tmp_path, monkeypatch):
+        """``custom_distance`` must read through the pathsec sandbox (CWE-22).
+
+        Regression test ensuring it does not fall back to the builtin ``open``:
+        under ``ENFORCE`` a path outside the allowed roots is rejected, while an
+        in-root file still loads into a working distance callable.
+        """
+        allowed = tmp_path / "data"
+        allowed.mkdir()
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {allowed.resolve()})
+
+        out_tsv = outside / "d.tsv"
+        out_tsv.write_text("a\tb\t0.5\n", encoding="utf-8")
+        with pytest.raises((PermissionError, ValueError)):
+            custom_distance(str(out_tsv))
+
+        in_tsv = allowed / "d.tsv"
+        in_tsv.write_text("a\tb\t0.5\n", encoding="utf-8")
+        dist = custom_distance(str(in_tsv))
+        assert dist(frozenset(["a"]), frozenset(["b"])) == 0.5

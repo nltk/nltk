@@ -210,11 +210,21 @@ class Alignment(frozenset):
 
     def __getitem__(self, key):
         """
-        Look up the alignments that map from a given index or slice.
+        Look up the alignments that map from a given (left) index.
+        Returns an empty list for an index that has no alignments.
+
+        Only integer indices are supported. Slicing and other non-integer
+        keys are rejected with ``TypeError`` rather than silently returning
+        ``[]`` -- the sparse index has no contiguous range to slice, so a
+        mistaken lookup should fail loudly instead of masking the bug.
         """
-        if not self._index:
+        if not isinstance(key, int):
+            raise TypeError(
+                "Alignment indices must be integers, not %s" % type(key).__name__
+            )
+        if self._index is None:
             self._build_index()
-        return self._index.__getitem__(key)
+        return self._index.get(key, [])
 
     def invert(self):
         """
@@ -228,12 +238,12 @@ class Alignment(frozenset):
         If no positions are specified, compute the range of the entire mapping.
         """
         image = set()
-        if not self._index:
+        if self._index is None:
             self._build_index()
         if not positions:
-            positions = list(range(len(self._index)))
+            positions = self._index.keys()
         for p in positions:
-            image.update(f for _, f in self._index[p])
+            image.update(f for _, f in self._index.get(p, []))
         return sorted(image)
 
     def __repr__(self):
@@ -250,12 +260,20 @@ class Alignment(frozenset):
 
     def _build_index(self):
         """
-        Build a list self._index such that self._index[i] is a list
-        of the alignments originating from word i.
+        Build a sparse index mapping each left index ``i`` to the list of
+        alignments originating from word ``i``.
+
+        The index is keyed only by the left indices that actually occur, so its
+        size is bounded by the number of pairs rather than by the largest left
+        index (which is attacker-controlled in giza-format input). A dense
+        ``[[] for _ in range(self._len + 1)]`` list would instead let a single
+        tiny pair with a huge left index (e.g. ``"0-0 100000000-1"``) allocate
+        ~100M empty lists -- gigabytes of memory -- an unbounded-allocation DoS
+        (CWE-770; CVE-2026-12837).
         """
-        self._index = [[] for _ in range(self._len + 1)]
+        self._index = {}
         for p in self:
-            self._index[p[0]].append(p)
+            self._index.setdefault(p[0], []).append(p)
 
 
 def _giza2pair(pair_string):

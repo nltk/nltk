@@ -22,8 +22,14 @@ from nltk.internals import config_java, java
 from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
+# NB: the current working directory (".") is deliberately NOT searched. Picking
+# up a ``weka.jar`` from the CWD would load and run Java classes from an
+# unverified jar -- ``java -cp ./weka.jar weka.classifiers.bayes.NaiveBayes ...``
+# -- with no integrity check, so an attacker who can write ``./weka.jar`` gets
+# code execution (CWE-494; reachable via an untrusted search path, CWE-426). Set
+# the WEKAHOME environment variable or pass ``config_weka(classpath=...)`` to
+# point at a trusted weka.jar.
 _weka_search = [
-    ".",
     "/usr/share/weka",
     "/usr/local/share/weka",
     "/usr/lib/weka",
@@ -41,7 +47,7 @@ def config_weka(classpath=None):
         _weka_classpath = classpath
 
     if _weka_classpath is None:
-        searchpath = _weka_search
+        searchpath = list(_weka_search)  # copy; don't mutate the module global
         if "WEKAHOME" in os.environ:
             searchpath.insert(0, os.environ["WEKAHOME"])
 

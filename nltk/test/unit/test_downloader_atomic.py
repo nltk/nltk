@@ -194,3 +194,152 @@ class TestDownloaderAtomic(unittest.TestCase):
             self.assertEqual(
                 dl.status(self.pkg, self.test_dir), dl.INSTALLED, msg=f"debug={debug}"
             )
+
+    def test_md5_mismatch_rejected_before_install(self):
+        """Legacy MD5 metadata should be enforced before install/extraction."""
+
+        bad_pkg = Package(
+            id="abc",
+            url=Path(self.source_zip_path).resolve().as_uri(),
+            subdir="corpora",
+            size=self.pkg.size,
+            unzipped_size=self.pkg.unzipped_size,
+            checksum="deadbeefdeadbeefdeadbeefdeadbeef",
+            unzip=True,
+        )
+
+        dl = Downloader(download_dir=self.test_dir)
+
+        ok = dl.download(
+            bad_pkg,
+            quiet=True,
+            force=True,
+            raise_on_error=False,
+        )
+
+        extracted_file = os.path.join(
+            self.test_dir,
+            "corpora",
+            "abc",
+            "dummy.txt",
+        )
+
+        self.assertFalse(ok)
+        self.assertFalse(os.path.exists(extracted_file))
+
+    def _make_zip_with_members(self, members):
+        """Build a ZIP in srv_dir with given {member_path: content} dict."""
+        srv_dir = tempfile.mkdtemp()
+        buf = __import__("io").BytesIO()
+        with zipfile.ZipFile(buf, "w", zipfile.ZIP_STORED) as zf:
+            for path, content in members.items():
+                zf.writestr(path, content)
+        zb = buf.getvalue()
+        zip_path = os.path.join(srv_dir, "evil.zip")
+        open(zip_path, "wb").write(zb)
+        return srv_dir, zip_path, zb
+
+    def _make_pkg(self, zip_path, zb, pkg_id, subdir, members):
+        import hashlib
+        from pathlib import Path
+
+        unzipped = sum(len(v.encode()) for v in members.values())
+        return Package(
+            id=pkg_id,
+            url=Path(zip_path).resolve().as_uri(),
+            subdir=subdir,
+            size=len(zb),
+            unzipped_size=unzipped,
+            checksum=hashlib.md5(zb).hexdigest(),
+            sha256_checksum=hashlib.sha256(zb).hexdigest(),
+            unzip=True,
+        )
+
+    def test_cross_package_overwrite_blocked(self):
+        """Direct cross-package overwrite (CVE-2026-12261 core case).
+
+        evil-corpus declares subdir=corpora but its ZIP contains
+        abc/dummy.txt — another package's file.  The install must
+        be rejected and the victim file must remain unchanged.
+        """
+        # Write a sentinel victim file
+        victim_dir = os.path.join(self.test_dir, "corpora", "abc")
+        os.makedirs(victim_dir, exist_ok=True)
+        victim_file = os.path.join(victim_dir, "dummy.txt")
+        open(victim_file, "wb").write(b"original")
+
+        members = {"abc/dummy.txt": "poisoned"}
+        srv_dir, zip_path, zb = self._make_zip_with_members(members)
+        try:
+            evil_pkg = self._make_pkg(zip_path, zb, "evil-corpus", "corpora", members)
+            dl = Downloader(download_dir=self.test_dir)
+            ok = dl.download(evil_pkg, quiet=True, force=True, raise_on_error=False)
+
+            with open(victim_file, "rb") as f:
+                content = f.read()
+
+            self.assertFalse(ok, "Download should have been rejected")
+            self.assertEqual(
+                content, b"original", "Victim file must not be overwritten"
+            )
+        finally:
+            __import__("shutil").rmtree(srv_dir, ignore_errors=True)
+
+    def test_traversal_member_cannot_escape_package_ownership(self):
+        """Traversal-like members must not overwrite sibling packages."""
+
+        victim_dir = os.path.join(self.test_dir, "corpora", "abc")
+        os.makedirs(victim_dir, exist_ok=True)
+
+        victim_file = os.path.join(victim_dir, "dummy.txt")
+        with open(victim_file, "wb") as f:
+            f.write(b"original")
+
+        members = {
+            "evil-corpus/../abc/dummy.txt": "poisoned",
+        }
+
+        srv_dir, zip_path, zb = self._make_zip_with_members(members)
+
+        try:
+            evil_pkg = self._make_pkg(
+                zip_path,
+                zb,
+                "evil-corpus",
+                "corpora",
+                members,
+            )
+
+            dl = Downloader(download_dir=self.test_dir)
+
+            ok = dl.download(
+                evil_pkg,
+                quiet=True,
+                force=True,
+                raise_on_error=False,
+            )
+
+            self.assertFalse(
+                ok,
+                "Traversal-style member should be rejected",
+            )
+
+            with open(victim_file, "rb") as f:
+                self.assertEqual(
+                    f.read(),
+                    b"original",
+                    "Traversal member must not overwrite victim package",
+                )
+
+            extracted_file = os.path.join(
+                self.test_dir,
+                "corpora",
+                "evil-corpus",
+                "abc",
+                "dummy.txt",
+            )
+
+            self.assertFalse(os.path.exists(extracted_file))
+
+        finally:
+            shutil.rmtree(srv_dir, ignore_errors=True)

@@ -184,15 +184,60 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     """
     worder = []
     hyp_len = len(hypothesis)
-    # Stores a list of possible ngrams from the reference sentence.
-    # This is used for matching context window later in the algorithm.
-    ref_ngrams = []
-    hyp_ngrams = []
-    for n in range(1, len(reference) + 1):
-        for ng in ngrams(reference, n):
-            ref_ngrams.append(ng)
-        for ng in ngrams(hypothesis, n):
-            hyp_ngrams.append(ng)
+    # Count how many times an n-gram occurs as a (possibly overlapping)
+    # contiguous subsequence, on demand and memoised. The previous version
+    # eagerly materialised every n-gram for n = 1..len(reference) -- O(L^2)
+    # tuples whose sizes sum to O(L^3) memory -- and then called ``list.count``
+    # (an O(L^2) scan) for every context window, giving up to O(L^4) time: a
+    # remote CPU/memory DoS on attacker-supplied token lists (CWE-407).
+    # ``list.count`` over that full n-gram list is exactly the number of
+    # contiguous occurrences of the n-gram in the sequence, which we compute
+    # here in O(len(sequence)) with Knuth-Morris-Pratt and cache, so each
+    # distinct n-gram is counted once and the eager, quadratic-sized n-gram
+    # lists are no longer built (only the individual context-window tuples the
+    # loop already created are used).
+    ngram_count_cache = {}
+
+    def count_ngram(sequence, seq_id, ngram):
+        # Memoise by (seq_id, ngram); this needs the n-gram (hence its tokens)
+        # to be hashable. ``list.count`` only relied on equality, so fall back
+        # to an uncached count for unhashable tokens to keep the same input
+        # types working (KMP below also only uses ==).
+        key = (seq_id, ngram)
+        try:
+            cached = ngram_count_cache.get(key)
+        except TypeError:
+            key = None
+            cached = None
+        if cached is not None:
+            return cached
+        m = len(ngram)
+        count = 0
+        if 0 < m <= len(sequence):
+            # KMP prefix function of the pattern (the n-gram).
+            prefix = [0] * m
+            k = 0
+            for j in range(1, m):
+                while k and ngram[j] != ngram[k]:
+                    k = prefix[k - 1]
+                if ngram[j] == ngram[k]:
+                    k += 1
+                prefix[j] = k
+            # Scan the sequence, counting overlapping matches (as ``ngrams``
+            # enumerates every window, ``list.count`` counts overlaps too).
+            k = 0
+            for token in sequence:
+                while k and token != ngram[k]:
+                    k = prefix[k - 1]
+                if token == ngram[k]:
+                    k += 1
+                    if k == m:
+                        count += 1
+                        k = prefix[k - 1]
+        if key is not None:
+            ngram_count_cache[key] = count
+        return count
+
     for i, h_word in enumerate(hypothesis):
         # If word is not in the reference, continue.
         if h_word not in reference:
@@ -202,13 +247,23 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
         elif hypothesis.count(h_word) == reference.count(h_word) == 1:
             worder.append(reference.index(h_word))
         else:
-            max_window_size = max(i, hyp_len - i + 1)
+            # A context window longer than the reference can never occur in it
+            # (its reference count is 0), so it can never satisfy the
+            # match-once test below -- cap the search there. This is
+            # behaviour-preserving (it only drops windows that could never
+            # match) and bounds the otherwise super-linear scan when the
+            # hypothesis is much longer than the reference (CWE-407).
+            max_window_size = min(max(i, hyp_len - i + 1), len(reference))
             for window in range(1, max_window_size):
                 if i + window < hyp_len:  # If searching the right context is possible.
                     # Retrieve the right context window.
                     right_context_ngram = tuple(islice(hypothesis, i, i + window + 1))
-                    num_times_in_ref = ref_ngrams.count(right_context_ngram)
-                    num_times_in_hyp = hyp_ngrams.count(right_context_ngram)
+                    num_times_in_ref = count_ngram(
+                        reference, "ref", right_context_ngram
+                    )
+                    num_times_in_hyp = count_ngram(
+                        hypothesis, "hyp", right_context_ngram
+                    )
                     # If ngram appears only once in both ref and hyp.
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
@@ -218,8 +273,10 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
                 if window <= i:  # If searching the left context is possible.
                     # Retrieve the left context window.
                     left_context_ngram = tuple(islice(hypothesis, i - window, i + 1))
-                    num_times_in_ref = ref_ngrams.count(left_context_ngram)
-                    num_times_in_hyp = hyp_ngrams.count(left_context_ngram)
+                    num_times_in_ref = count_ngram(reference, "ref", left_context_ngram)
+                    num_times_in_hyp = count_ngram(
+                        hypothesis, "hyp", left_context_ngram
+                    )
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
                         pos = position_of_ngram(left_context_ngram, reference)

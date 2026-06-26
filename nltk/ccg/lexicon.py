@@ -31,8 +31,16 @@ NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
 # (e.g. `(S\_NP)/(S\_NP)` for a polymorphic adverb).
 APP_RE = re.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
 
-# Parses the definition of the right-hand side (rhs) of either a word or a family
-LEX_RE = re.compile(r"""([\S_]+)\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
+# Parses the definition of the right-hand side (rhs) of either a word or a family.
+# The identifier and the arrow alternative ``[-=]+>`` both match ``-``/``=``, so the
+# original ``([\S_]+)`` let the engine slide the identifier/arrow boundary across a
+# long ``-``/``=`` run while re-scanning for the absent ``>`` from every position --
+# quadratic in the line length (CWE-1333). Anchoring the identifier's last character
+# to be neither ``-`` nor ``=`` (``[^\s=-]``) fixes the boundary before any such run,
+# so the arrow is tried once: the parse is linear, the usual whitespace-separated
+# ``ident <sep> rhs`` form is unchanged, and the compact ``ident<sep>rhs`` form is
+# still accepted (and now splits sensibly, e.g. ``a-->b`` -> ``a``/``-->``/``b``).
+LEX_RE = re.compile(r"""([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
 
 # Parses the right hand side that contains category and maybe semantic predicate
 RHS_RE = re.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)

@@ -11,6 +11,8 @@ Corpus reader for the SemCor Corpus.
 
 __docformat__ = "epytext en"
 
+from defusedxml.ElementTree import parse as safe_parse
+
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 from nltk.tree import Tree
@@ -124,7 +126,8 @@ class SemcorCorpusReader(XMLCorpusReader):
         assert unit in ("token", "word", "chunk")
         result = []
 
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for xmlsent in xmldoc.findall(".//s"):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
