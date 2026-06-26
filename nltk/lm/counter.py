@@ -140,10 +140,19 @@ class NgramCounter:
                     continue
 
                 context, word = ngram[:-1], ngram[-1]
-                counts = self[ngram_order][context]
-                if word not in counts:
+                # Probe with .get() so testing whether this (context, word) pair
+                # is new does not eagerly create empty nested entries through the
+                # defaultdicts; otherwise an ngram refused by the MAX_NGRAMS guard
+                # would still leave new contexts/orders behind, defeating the
+                # memory bound. The real entries are created only once the guard
+                # below has passed.
+                order_counts = self._counts.get(ngram_order)
+                context_counts = (
+                    order_counts.get(context) if order_counts is not None else None
+                )
+                if context_counts is None or word not in context_counts:
                     self._note_new_ngram()
-                counts[word] += 1
+                self[ngram_order][context][word] += 1
 
     def _note_new_ngram(self):
         """Account for one newly-stored distinct ngram and enforce the bound.
@@ -151,16 +160,17 @@ class NgramCounter:
         The counter retains every distinct ngram, so without a bound an untrusted
         corpus of distinct tokens grows memory without limit and OOM-kills the
         worker (CWE-770; CVE-2026-12928). Refuse once ``MAX_NGRAMS`` distinct
-        ngrams have been stored.
+        ngrams have been stored. The bound is checked *before* incrementing so a
+        refused ngram (which is never stored) does not inflate the counter.
         """
-        self._distinct += 1
-        if self._distinct > MAX_NGRAMS:
+        if self._distinct >= MAX_NGRAMS:
             raise ValueError(
                 "Refusing to count further: NgramCounter exceeded the limit of "
                 "%d distinct ngrams (CWE-770). Training on this corpus would grow "
                 "memory without bound. Use a smaller corpus or order, or raise "
                 "nltk.lm.counter.MAX_NGRAMS." % MAX_NGRAMS
             )
+        self._distinct += 1
 
     def N(self):
         """Returns grand total number of ngrams stored.
