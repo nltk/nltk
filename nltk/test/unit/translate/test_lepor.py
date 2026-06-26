@@ -17,6 +17,7 @@ each hypothesis token contributes at most one alignment.)
 import multiprocessing
 import os
 import random
+import traceback
 
 from nltk.translate.lepor import alignment
 
@@ -47,13 +48,18 @@ def test_alignment_at_most_one_alignment_per_hyp_token():
 
 
 def _alignment_worker(n):
-    """Run the aligner on a large disjoint input; exit 0 on success, 3 on error."""
+    """Run the aligner on a large disjoint input; exit 0 on success, 3 on error.
+
+    On error the traceback is printed before exiting so a failure here is
+    diagnosable in CI -- the parent process only sees the numeric exit code.
+    """
     try:
         ref = [f"r{i}" for i in range(n)]
         hyp = [f"h{i}" for i in range(n)]
         alignment(ref, hyp)
         os._exit(0)
     except BaseException:
+        traceback.print_exc()
         os._exit(3)
 
 
