@@ -44,6 +44,19 @@ def test_projective_parse_preserves_results():
     assert "(fell (price the of the) stock)" in [str(t) for t in trees]
 
 
+def test_projective_parse_accepts_generator_input():
+    """A non-subscriptable iterable (generator) parses like a list.
+
+    parse() materializes the input with list(...) but later indexes tokens[i]
+    when building output; the local name is rebound to the materialized list so
+    an iterator/generator input does not raise TypeError.
+    """
+    parser = ProjectiveDependencyParser(_GRAMMAR)
+    trees = list(parser.parse(iter(_SENTENCE)))
+    assert len(trees) == 3
+    assert "(fell (price the of the) stock)" in [str(t) for t in trees]
+
+
 def test_projective_parse_rejects_over_cap():
     """Over the default cap, parse refuses instead of building the chart."""
     parser = ProjectiveDependencyParser(DependencyGrammar.fromstring("'x' -> 'y'"))

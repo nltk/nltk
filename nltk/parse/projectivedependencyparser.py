@@ -192,7 +192,7 @@ class ProjectiveDependencyParser:
         :return: An iterator over parse trees.
         :rtype: iter(Tree)
         """
-        self._tokens = list(tokens)
+        self._tokens = tokens = list(tokens)
         if len(self._tokens) > self.MAX_TOKENS:
             raise ValueError(
                 f"Cannot parse {len(self._tokens)} tokens: exceeds MAX_TOKENS "
@@ -347,7 +347,7 @@ class ProbabilisticProjectiveDependencyParser:
         It returns the most probable parse derived from the parser's
         probabilistic dependency grammar.
         """
-        self._tokens = list(tokens)
+        self._tokens = tokens = list(tokens)
         if len(self._tokens) > self.MAX_TOKENS:
             raise ValueError(
                 f"Cannot parse {len(self._tokens)} tokens: exceeds MAX_TOKENS "
