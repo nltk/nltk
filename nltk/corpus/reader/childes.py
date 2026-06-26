@@ -281,7 +281,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 return None
 
     def convert_age(self, age_year):
-        "Caclculate age in months from a string in CHILDES format"
+        "Calculate age in months from a string in CHILDES format"
         m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
         if m is None:
             # A string that does not fit the CHILDES age shape would otherwise
@@ -289,8 +289,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             # public helper (CWE-476); fail with a clear, catchable error.
             raise ValueError(
                 f"Cannot convert age {age_year!r}: expected a CHILDES age string "
-                "of the form 'P<years>Y<months>M' (optionally with days), "
-                "e.g. 'P2Y10M' or 'P2Y1M15D'"
+                "of the form 'P<years>Y<months>' with an optional 'M' and "
+                "'<days>D', e.g. 'P2Y10M', 'P2Y10', or 'P2Y1M15D'"
             )
         age_month = int(m.group(1)) * 12 + int(m.group(2))
         try:
