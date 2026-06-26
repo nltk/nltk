@@ -107,9 +107,13 @@ class ResolutionProver(Prover):
                     #       2) use tautologies
                     if i != j and j and not clauses[j].is_tautology():
                         if deadline is not None and time.monotonic() > deadline:
-                            # Time budget exhausted: report unproved, matching
-                            # the existing recursion-exhaustion behaviour above.
-                            return (False, clauses)
+                            # Time budget exhausted: report unproved with an empty
+                            # clause set, matching the recursion-exhaustion path in
+                            # _prove. Returning the (possibly huge) accumulated
+                            # clauses would make ResolutionProverCommand.prove()
+                            # decorate/stringify all of them, spending time and
+                            # memory beyond TIMEOUT and undermining the bound.
+                            return (False, [])
                         tried[i].append(j)
                         newclauses = clauses[i].unify(clauses[j])
                         if newclauses:
@@ -176,6 +180,11 @@ class ResolutionProverCommand(BaseProverCommand):
         Decorate the proof output.
         """
         out = ""
+        # No clauses means no proof to show (e.g. when the search is abandoned on
+        # timeout or recursion exhaustion). Return early; ``max(...)`` below would
+        # otherwise raise on an empty sequence.
+        if not clauses:
+            return out
         max_clause_len = max(len(str(clause)) for clause in clauses)
         max_seq_len = len(str(len(clauses)))
         for i in range(len(clauses)):
