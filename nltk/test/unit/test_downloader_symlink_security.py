@@ -47,11 +47,14 @@ PAYLOAD = b"package-body-bytes\n"
 
 
 def _package(filename, **overrides):
+    # Extract extension from the intended filename to build a matching URL,
+    # ensuring Package.__init__ reconstructs the base filename correctly.
+    ext = os.path.splitext(filename)[1]
     attrib = dict(
         id="p",
         name="p",
         subdir="corpora",
-        url="http://example.invalid/p",
+        url=f"http://example.invalid/p{ext}",
         size=str(len(PAYLOAD)),
         unzipped_size="0",
         checksum="0",
@@ -89,7 +92,9 @@ def test_symlink_inside_download_dir_cannot_redirect_write(tmp_path, fake_urlope
     # Attacker pre-plants download_dir/corpora/evil -> outside.
     os.symlink(outside, download_dir / "corpora" / "evil")
 
-    pkg = _package("corpora/evil/OWNED.txt")
+    pkg = _package("corpora/p.txt")
+    # Manually re-inject the malicious path after initialization to test downloader containment
+    pkg.filename = "corpora/evil/OWNED.txt"
     msgs = _run(pkg, download_dir)
 
     assert any(isinstance(m, ErrorMessage) for m in msgs)
@@ -109,7 +114,9 @@ def test_symlink_to_parent_of_download_dir_is_blocked(tmp_path, fake_urlopen):
     # download_dir/corpora/up -> tmp_path  (an ancestor of download_dir)
     os.symlink(tmp_path, download_dir / "corpora" / "up")
 
-    pkg = _package("corpora/up/OWNED.txt")
+    pkg = _package("corpora/p.txt")
+    # Manually re-inject the malicious path after initialization
+    pkg.filename = "corpora/up/OWNED.txt"
     msgs = _run(pkg, download_dir)
 
     assert any(isinstance(m, ErrorMessage) for m in msgs)
@@ -125,7 +132,9 @@ def test_symlink_via_subdir_component_is_blocked(tmp_path, fake_urlopen):
     os.symlink(outside, download_dir / "corpora" / "link")
 
     # subdir validation only rejects `..`/absolute, not a symlink component.
-    pkg = _package(filename="corpora/link/x", subdir="corpora/link")
+    pkg = _package(filename="corpora/p.txt", subdir="corpora/link")
+    # Manually re-inject the malicious path after initialization
+    pkg.filename = "corpora/link/x"
     msgs = _run(pkg, download_dir)
 
     assert any(isinstance(m, ErrorMessage) for m in msgs)
@@ -142,6 +151,8 @@ def test_symlink_at_tmp_leaf_is_blocked(tmp_path, fake_urlopen):
     # download writes filepath + ".tmp" first -> plant a symlink there.
     os.symlink(secret, download_dir / "corpora" / "p.zip.tmp")
 
+    # This does not require manual injection since Package.__init__ correctly
+    # derives "corpora/p.zip" which the downloader uses to append ".tmp".
     pkg = _package("corpora/p.zip")
     msgs = _run(pkg, download_dir)
 
