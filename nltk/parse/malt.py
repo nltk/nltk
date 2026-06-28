@@ -175,15 +175,25 @@ class MaltParser(ParserI):
         if not self._trained:
             raise Exception("Parser has not been trained. Call train() first.")
 
-        with tempfile.NamedTemporaryFile(
-            prefix="malt_input.conll.", dir=self.working_dir, mode="w", delete=False
-        ) as input_file:
+        input_file_name = None
+        output_file_name = None
+        try:
             with tempfile.NamedTemporaryFile(
+                prefix="malt_input.conll.", dir=self.working_dir, mode="w", delete=False
+            ) as input_file, tempfile.NamedTemporaryFile(
                 prefix="malt_output.conll.",
                 dir=self.working_dir,
                 mode="w",
                 delete=False,
             ) as output_file:
+                input_file_name = input_file.name
+                output_file_name = output_file.name
+
+                model_dir = os.path.split(self.model)[0]
+                model_cwd = os.path.abspath(model_dir) if model_dir else None
+                if model_cwd and not os.path.isdir(model_cwd):
+                    model_cwd = None
+
                 # Convert list of sentences to CONLL format.
                 for line in taggedsents_to_conll(sentences):
                     input_file.write(str(line))
@@ -191,19 +201,12 @@ class MaltParser(ParserI):
 
                 # Generate command to run maltparser.
                 cmd = self.generate_malt_command(
-                    input_file.name, output_file.name, mode="parse"
+                    input_file_name, output_file_name, mode="parse"
                 )
 
-                # This is a maltparser quirk, it needs to be run
-                # where the model file is. otherwise it goes into an awkward
-                # missing .jars or strange -w working_dir problem.
-                _current_path = os.getcwd()  # Remembers the current path.
-                try:  # Change to modelfile path
-                    os.chdir(os.path.split(self.model)[0])
-                except OSError:
-                    pass
-                ret = self._execute(cmd, verbose)  # Run command.
-                os.chdir(_current_path)  # Change back to current path.
+                # MaltParser needs to run from the model directory; use
+                # subprocess cwd so other threads do not see a process-wide chdir.
+                ret = self._execute(cmd, verbose, cwd=model_cwd)  # Run command.
 
                 if ret != 0:
                     raise Exception(
@@ -212,20 +215,25 @@ class MaltParser(ParserI):
                     )
 
                 # Must return iter(iter(Tree))
-                with open(output_file.name) as infile:
+                with open(output_file_name) as infile:
                     for tree_str in infile.read().split("\n\n"):
                         yield (
                             iter(
                                 [
                                     DependencyGraph(
-                                        tree_str, top_relation_label=top_relation_label
+                                        tree_str,
+                                        top_relation_label=top_relation_label,
                                     )
                                 ]
                             )
                         )
-
-        os.remove(input_file.name)
-        os.remove(output_file.name)
+        finally:
+            for filename in (input_file_name, output_file_name):
+                if filename:
+                    try:
+                        os.remove(filename)
+                    except OSError:
+                        pass
 
     def parse_sents(self, sentences, verbose=False, top_relation_label="null"):
         """
@@ -276,9 +284,9 @@ class MaltParser(ParserI):
         return cmd
 
     @staticmethod
-    def _execute(cmd, verbose=False):
+    def _execute(cmd, verbose=False, cwd=None):
         output = None if verbose else subprocess.PIPE
-        p = subprocess.Popen(cmd, stdout=output, stderr=output)
+        p = subprocess.Popen(cmd, stdout=output, stderr=output, cwd=cwd)
         return p.wait()
 
     def train(self, depgraphs, verbose=False):
