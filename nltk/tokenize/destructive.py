@@ -55,7 +55,7 @@ class NLTKWordTokenizer(TokenizerI):
         (re.compile(r"^\""), r"``"),
         (re.compile(r"(``)"), r" \1 "),
         (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
-        (re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d|n)(\w)\b", re.U), r"\1 \2"),
+        (re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d|n)(?=\w)", re.U), r"\1 "),
     ]
 
     # Ending quotes.

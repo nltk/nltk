@@ -800,6 +800,19 @@ class TestTokenize:
         expected = ["'", "v", "'", "'re", "'"]
         assert word_tokenize(sentence) == expected
 
+    def test_word_tokenize_opening_single_quote_padding(self):
+        sentence = "'Hard' to tell"
+        expected = ["'", "Hard", "'", "to", "tell"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "He said 'hello' to me"
+        expected = ["He", "said", "'", "hello", "'", "to", "me"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "It's more'n enough."
+        expected = ["It", "'s", "more", "'n", "enough", "."]
+        assert word_tokenize(sentence) == expected
+
     def test_punkt_pair_iter(self):
         test_cases = [
             ("12", [("1", "2"), ("2", None)]),
