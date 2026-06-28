@@ -18,8 +18,6 @@ import warnings
 from subprocess import PIPE
 
 from nltk.internals import (
-    _java_options,
-    config_java,
     find_dir,
     find_file,
     find_jar,
@@ -232,44 +230,47 @@ class StanfordSegmenter(TokenizerI):
     def segment_sents(self, sentences):
         """ """
         encoding = self._encoding
-        # Create a temporary input file
-        _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
+        input_file_path = None
+        try:
+            # Create a temporary input file
+            _input_fh, input_file_path = tempfile.mkstemp(text=True)
+            self._input_file_path = input_file_path
 
-        # Write the actural sentences to the temporary input file
-        _input_fh = os.fdopen(_input_fh, "wb")
-        _input = "\n".join(" ".join(x) for x in sentences)
-        if isinstance(_input, str) and encoding:
-            _input = _input.encode(encoding)
-        _input_fh.write(_input)
-        _input_fh.close()
+            # Write the actual sentences to the temporary input file
+            with os.fdopen(_input_fh, "wb") as input_fh:
+                _input = "\n".join(" ".join(x) for x in sentences)
+                if isinstance(_input, str) and encoding:
+                    _input = _input.encode(encoding)
+                input_fh.write(_input)
 
-        cmd = [
-            self._java_class,
-            "-loadClassifier",
-            self._model,
-            "-keepAllWhitespaces",
-            self._keep_whitespaces,
-            "-textFile",
-            self._input_file_path,
-        ]
-        if self._sihan_corpora_dict is not None:
-            cmd.extend(
-                [
-                    "-serDictionary",
-                    self._dict,
-                    "-sighanCorporaDict",
-                    self._sihan_corpora_dict,
-                    "-sighanPostProcessing",
-                    self._sihan_post_processing,
-                ]
-            )
+            cmd = [
+                self._java_class,
+                "-loadClassifier",
+                self._model,
+                "-keepAllWhitespaces",
+                self._keep_whitespaces,
+                "-textFile",
+                self._input_file_path,
+            ]
+            if self._sihan_corpora_dict is not None:
+                cmd.extend(
+                    [
+                        "-serDictionary",
+                        self._dict,
+                        "-sighanCorporaDict",
+                        self._sihan_corpora_dict,
+                        "-sighanPostProcessing",
+                        self._sihan_post_processing,
+                    ]
+                )
 
-        stdout = self._execute(cmd)
-
-        # Delete the temporary file
-        os.unlink(self._input_file_path)
-
-        return stdout
+            return self._execute(cmd)
+        finally:
+            if input_file_path:
+                try:
+                    os.unlink(input_file_path)
+                except OSError:
+                    pass
 
     def _sha256sum(self, file_path):
         stat = os.stat(file_path)
@@ -320,19 +321,15 @@ class StanfordSegmenter(TokenizerI):
         if _options_cmd:
             cmd.extend(["-options", self._options_cmd])
 
-        default_options = " ".join(_java_options)
-
         self._validate_classpath()
 
-        # Configure java.
-        config_java(options=self.java_options, verbose=verbose)
-
         stdout, _stderr = java(
-            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
+            cmd,
+            classpath=self._stanford_jar,
+            stdout=PIPE,
+            stderr=PIPE,
+            options=self.java_options,
         )
         stdout = stdout.decode(encoding)
-
-        # Return java configurations to their default values.
-        config_java(options=default_options, verbose=False)
 
         return stdout

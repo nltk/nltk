@@ -13,7 +13,7 @@ import socket
 import time
 from typing import List, Tuple
 
-from nltk.internals import _java_options, config_java, find_jar_iter, java
+from nltk.internals import find_jar_iter, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tag.api import TaggerI
@@ -120,21 +120,14 @@ class CoreNLPServer:
         if self.corenlp_options:
             cmd.extend(self.corenlp_options)
 
-        # Configure java.
-        default_options = " ".join(_java_options)
-        config_java(options=self.java_options, verbose=self.verbose)
-
-        try:
-            self.popen = java(
-                cmd,
-                classpath=self._classpath,
-                blocking=False,
-                stdout=stdout,
-                stderr=stderr,
-            )
-        finally:
-            # Return java configurations to their default values.
-            config_java(options=default_options, verbose=self.verbose)
+        self.popen = java(
+            cmd,
+            classpath=self._classpath,
+            blocking=False,
+            stdout=stdout,
+            stderr=stderr,
+            options=self.java_options,
+        )
 
         # Check that the server is istill running.
         returncode = self.popen.poll()
