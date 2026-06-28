@@ -88,26 +88,27 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
         # iterate until no new points added
         while prev_len < len(alignment):
             no_new_points = True
-            # for english word e = 0 ... en
-            for e in range(srclen):
-                # for foreign word f = 0 ... fn
-                for f in range(trglen):
-                    # if ( e aligned with f)
-                    if (e, f) in alignment:
-                        # for each neighboring point (e-new, f-new)
-                        for neighbor in neighbors:
-                            neighbor = tuple(i + j for i, j in zip((e, f), neighbor))
-                            e_new, f_new = neighbor
-                            # if ( ( e-new not aligned and f-new not aligned)
-                            # and (e-new, f-new in union(e2f, f2e) )
-                            if (
-                                e_new not in aligned and f_new not in aligned
-                            ) and neighbor in union:
-                                alignment.add(neighbor)
-                                aligned["e"].add(e_new)
-                                aligned["f"].add(f_new)
-                                prev_len += 1
-                                no_new_points = False
+            # Walk only the points that are actually aligned (within the
+            # src x trg grid) instead of rescanning the whole srclen x trglen
+            # grid every round: the grid scan made the cost O(srclen*trglen),
+            # decoupled from the (much smaller) alignment size (CWE-407).
+            for e, f in list(alignment):
+                if not (0 <= e < srclen and 0 <= f < trglen):
+                    continue
+                # for each neighboring point (e-new, f-new)
+                for neighbor in neighbors:
+                    neighbor = tuple(i + j for i, j in zip((e, f), neighbor))
+                    e_new, f_new = neighbor
+                    # if ( ( e-new not aligned and f-new not aligned)
+                    # and (e-new, f-new in union(e2f, f2e) )
+                    if (
+                        e_new not in aligned and f_new not in aligned
+                    ) and neighbor in union:
+                        alignment.add(neighbor)
+                        aligned["e"].add(e_new)
+                        aligned["f"].add(f_new)
+                        prev_len += 1
+                        no_new_points = False
             # iterate until no new points added
             if no_new_points:
                 break
@@ -117,20 +118,22 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
         Adds remaining points that are not in the intersection, not in the
         neighboring alignments but in the original *e2f* and *f2e* alignments
         """
-        # for english word e = 0 ... en
-        for e_new in range(srclen):
-            # for foreign word f = 0 ... fn
-            for f_new in range(trglen):
-                # if ( ( e-new not aligned and f-new not aligned)
-                # and (e-new, f-new in union(e2f, f2e) )
-                if (
-                    e_new not in aligned
-                    and f_new not in aligned
-                    and (e_new, f_new) in union
-                ):
-                    alignment.add((e_new, f_new))
-                    aligned["e"].add(e_new)
-                    aligned["f"].add(f_new)
+        # Iterate the union points directly (filtered to the src x trg grid)
+        # instead of scanning the whole srclen x trglen grid and testing each
+        # cell for membership -- the grid scan made this O(srclen*trglen),
+        # decoupled from the alignment size (CWE-407).
+        for e_new, f_new in union:
+            # if ( ( e-new not aligned and f-new not aligned)
+            # and (e-new, f-new in union(e2f, f2e) )
+            if (
+                e_new not in aligned
+                and f_new not in aligned
+                and 0 <= e_new < srclen
+                and 0 <= f_new < trglen
+            ):
+                alignment.add((e_new, f_new))
+                aligned["e"].add(e_new)
+                aligned["f"].add(f_new)
 
     grow_diag()
     final_and(e2f)

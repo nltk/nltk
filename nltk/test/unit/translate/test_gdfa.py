@@ -2,6 +2,9 @@
 Tests GDFA alignments
 """
 
+import multiprocessing
+import os
+import traceback
 import unittest
 
 from nltk.translate.gdfa import grow_diag_final_and
@@ -152,3 +155,40 @@ class TestGDFA(unittest.TestCase):
             forwards, backwards, source_lens, target_lens, expected
         ):
             self.assertListEqual(expect, grow_diag_final_and(src_len, trg_len, fw, bw))
+
+
+def _gdfa_worker(length):
+    """Symmetrize a trivial alignment with huge lengths; exit 0 ok, 3 on error.
+
+    On error the traceback is printed before exiting so a failure here is
+    diagnosable in CI -- the parent process only sees the numeric exit code.
+    """
+    try:
+        grow_diag_final_and(length, length, "0-0", "0-0")
+        os._exit(0)
+    except BaseException:
+        traceback.print_exc()
+        os._exit(3)
+
+
+def test_gdfa_cost_independent_of_lengths():
+    """Large srclen/trglen with a trivial alignment must not blow up.
+
+    grow_diag()/final_and() previously scanned the whole srclen x trglen grid, so
+    a 17-byte call ``grow_diag_final_and(L, L, "0-0", "0-0")`` forced an O(L*L)
+    iteration (CWE-407). Run in a spawned process with a hard deadline: the scans
+    now walk the alignment/union points and return instantly, while the old grid
+    scan needs minutes at this size, so a regression is terminated and fails the
+    test instead of pinning a core for the rest of the suite.
+    """
+    ctx = multiprocessing.get_context("spawn")
+    proc = ctx.Process(target=_gdfa_worker, args=(50_000,))
+    proc.start()
+    proc.join(30)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        raise AssertionError(
+            "grow_diag_final_and did not finish in time: O(srclen*trglen) regressed"
+        )
+    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
