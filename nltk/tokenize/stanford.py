@@ -12,7 +12,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
-from nltk.internals import _java_options, config_java, find_jar, java
+from nltk.internals import find_jar, java
 from nltk.parse.corenlp import CoreNLPParser
 from nltk.tokenize.api import TokenizerI
 
@@ -86,30 +86,38 @@ class StanfordTokenizer(TokenizerI):
         if _options_cmd:
             cmd.extend(["-options", self._options_cmd])
 
-        default_options = " ".join(_java_options)
-
-        # Configure java.
-        config_java(options=self.java_options, verbose=verbose)
-
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
-            # Write the actual sentences to the temporary input file
-            if isinstance(input_, str) and encoding:
-                input_ = input_.encode(encoding)
-            input_file.write(input_)
-            input_file.flush()
+        input_file_name = None
+        java_succeeded = False
+        try:
+            with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
+                input_file_name = input_file.name
+                # Write the actual sentences to the temporary input file
+                if isinstance(input_, str) and encoding:
+                    input_ = input_.encode(encoding)
+                input_file.write(input_)
+                input_file.flush()
 
-            cmd.append(input_file.name)
+                cmd.append(input_file_name)
 
-            # Run the tagger and get the output.
-            stdout, stderr = java(
-                cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
-            )
-            stdout = stdout.decode(encoding)
-
-        os.unlink(input_file.name)
-
-        # Return java configurations to their default values.
-        config_java(options=default_options, verbose=False)
+                # Run the tagger and get the output.
+                stdout, stderr = java(
+                    cmd,
+                    classpath=self._stanford_jar,
+                    stdout=PIPE,
+                    stderr=PIPE,
+                    options=self.java_options,
+                )
+                stdout = stdout.decode(encoding)
+                java_succeeded = True
+        finally:
+            if input_file_name:
+                try:
+                    os.unlink(input_file_name)
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    if java_succeeded:
+                        raise
 
         return stdout

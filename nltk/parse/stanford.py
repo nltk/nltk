@@ -11,13 +11,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
-from nltk.internals import (
-    _java_options,
-    config_java,
-    find_jar_iter,
-    find_jars_within_path,
-    java,
-)
+from nltk.internals import find_jar_iter, find_jars_within_path, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
@@ -229,43 +223,52 @@ class GenericStanfordParser(ParserI):
         if self.corenlp_options:
             cmd.extend(self.corenlp_options.split())
 
-        default_options = " ".join(_java_options)
-
-        # Configure java.
-        config_java(options=self.java_options, verbose=verbose)
-
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
-            # Write the actual sentences to the temporary input file
-            if isinstance(input_, str) and encoding:
-                input_ = input_.encode(encoding)
-            input_file.write(input_)
-            input_file.flush()
+        input_file_name = None
+        java_succeeded = False
+        try:
+            with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
+                input_file_name = input_file.name
+                # Write the actual sentences to the temporary input file
+                if isinstance(input_, str) and encoding:
+                    input_ = input_.encode(encoding)
+                input_file.write(input_)
+                input_file.flush()
 
-            # Run the tagger and get the output.
-            if self._USE_STDIN:
-                input_file.seek(0)
-                stdout, stderr = java(
-                    cmd,
-                    classpath=self._classpath,
-                    stdin=input_file,
-                    stdout=PIPE,
-                    stderr=PIPE,
-                )
-            else:
-                cmd.append(input_file.name)
-                stdout, stderr = java(
-                    cmd, classpath=self._classpath, stdout=PIPE, stderr=PIPE
-                )
+                # Run the tagger and get the output.
+                if self._USE_STDIN:
+                    input_file.seek(0)
+                    stdout, stderr = java(
+                        cmd,
+                        classpath=self._classpath,
+                        stdin=input_file,
+                        stdout=PIPE,
+                        stderr=PIPE,
+                        options=self.java_options,
+                    )
+                else:
+                    cmd.append(input_file_name)
+                    stdout, stderr = java(
+                        cmd,
+                        classpath=self._classpath,
+                        stdout=PIPE,
+                        stderr=PIPE,
+                        options=self.java_options,
+                    )
 
-            stdout = stdout.replace(b"\xc2\xa0", b" ")
-            stdout = stdout.replace(b"\x00\xa0", b" ")
-            stdout = stdout.decode(encoding)
-
-        os.unlink(input_file.name)
-
-        # Return java configurations to their default values.
-        config_java(options=default_options, verbose=False)
+                stdout = stdout.replace(b"\xc2\xa0", b" ")
+                stdout = stdout.replace(b"\x00\xa0", b" ")
+                stdout = stdout.decode(encoding)
+                java_succeeded = True
+        finally:
+            if input_file_name:
+                try:
+                    os.unlink(input_file_name)
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    if java_succeeded:
+                        raise
 
         return stdout
 
