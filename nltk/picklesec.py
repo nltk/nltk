@@ -139,3 +139,20 @@ def allowlisted_pickle_load(
     return AllowlistUnpickler(
         file, allowed_globals=allowed_globals, allowed_modules=allowed_modules
     ).load()
+
+
+_PUNKT_ALLOWED_MODULES = ("nltk.tokenize.punkt", "nltk.tokenize")
+
+
+def punkt_pickle_load(file: BinaryIO) -> Any:
+    """
+    Safely load a legacy Punkt pickle file.
+
+    Old NLTK Punkt models were distributed as pickle files containing
+    ``PunktParameters``, ``PunktLanguageVars``, and related classes.
+    This helper loads them through :class:`AllowlistUnpickler` restricted to
+    the ``nltk.tokenize.punkt`` and ``nltk.tokenize`` modules, so arbitrary
+    code gadgets (``os.system``, ``subprocess``, etc.) are blocked while
+    legitimate Punkt objects reconstruct normally.
+    """
+    return allowlisted_pickle_load(file, allowed_modules=_PUNKT_ALLOWED_MODULES)
