@@ -57,7 +57,8 @@ markets    NNS      6       PC
         result = parser.parse([gold_sent], str(model_path))
 
     pickle_warns = [
-        w for w in caught
+        w
+        for w in caught
         if issubclass(w.category, RuntimeWarning) and WARN_RE in str(w.message)
     ]
     assert not pickle_warns, "parse() must not emit a pickle security warning"
