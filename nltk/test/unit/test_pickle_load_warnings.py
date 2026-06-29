@@ -22,7 +22,8 @@ def test_pickle_load_emits_warning(tmp_path: Path):
     assert isinstance(obj, Chart)
 
 
-def test_transitionparser_warns_on_model_unpickle(tmp_path: Path):
+def test_transitionparser_loads_model_without_warning(tmp_path: Path):
+    """TransitionParser.parse() uses AllowlistUnpickler — no RuntimeWarning expected."""
     pytest.importorskip("numpy")
     pytest.importorskip("scipy")
     pytest.importorskip("sklearn")
@@ -49,7 +50,10 @@ markets    NNS      6       PC
     parser = TransitionParser(TransitionParser.ARC_STANDARD)
     parser.train([gold_sent], str(model_path), verbose=False)
 
-    with pytest.warns(RuntimeWarning, match=WARN_RE):
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
         result = parser.parse([gold_sent], str(model_path))
 
     assert len(result) == 1
