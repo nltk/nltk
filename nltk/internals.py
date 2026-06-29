@@ -33,8 +33,11 @@ _java_options = []
 # blocked without needing to be enumerated explicitly.
 _SAFE_JVM_PREFIXES = (
     "-xmx",  # max heap size:   -Xmx512m
+    "-mx",  # max heap (legacy alias of -Xmx, used by Stanford/CoreNLP): -mx2g
     "-xms",  # initial heap:    -Xms128m
+    "-ms",  # initial heap (legacy alias of -Xms): -ms128m
     "-xss",  # thread stack:    -Xss4m
+    "-ss",  # thread stack (legacy alias of -Xss): -ss4m
     "-xbatch",  # disable bg JIT
     "-xint",  # interpret-only mode
     "-xcomp",  # compile-only mode

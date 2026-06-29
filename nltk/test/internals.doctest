@@ -171,6 +171,13 @@ Safe JVM tuning flags are permitted (no exception raised):
 >>> _validate_java_options(["-Xmx512m"])
 >>> _validate_java_options(["-Xms128m"])
 >>> _validate_java_options(["-Xss4m"])
+
+The legacy short aliases (-mx / -ms / -ss) that Stanford and CoreNLP
+wrappers pass are equivalent and also permitted:
+
+>>> _validate_java_options(["-mx2g"])
+>>> _validate_java_options(["-ms128m"])
+>>> _validate_java_options(["-ss4m"])
 >>> _validate_java_options(["-XX:+UseG1GC"])
 >>> _validate_java_options(["-verbose:gc"])
 >>> _validate_java_options(["-server"])
