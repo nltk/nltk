@@ -110,6 +110,27 @@ def _reject_unsafe_no_protocol(resource_url):
     _assert_no_encoded_bypass(resource_url)
 
 
+def _within_directory(candidate, root):
+    """Return True iff ``candidate`` realpath-resolves to a path inside ``root``."""
+    try:
+        root_real = os.path.realpath(root)
+        candidate_real = os.path.realpath(candidate)
+    except (OSError, ValueError):
+        return False
+    if not root_real:
+        return False
+    try:
+        return os.path.commonpath([root_real, candidate_real]) == root_real
+    except ValueError:
+        return False
+
+
+def _ensure_within_root(candidate, root, resource_name):
+    """Reject ``candidate`` unless it stays within the search ``root``."""
+    if root and not _within_directory(candidate, root):
+        raise ValueError(f"Unsafe resource path: {resource_name!r}")
+
+
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
 except ImportError:
@@ -285,6 +306,8 @@ def normalize_resource_url(resource_url):
         # nltk: protocol. This prevents smuggling filesystem paths through
         # nltk: URLs.
         if re.match(r"^[A-Za-z]:[/\\]", name):
+            raise ValueError(f"Unsafe resource path: {resource_url!r}")
+        if "\\" in name or os.path.pardir in name.replace("\\", "/").split("/"):
             raise ValueError(f"Unsafe resource path: {resource_url!r}")
         # If "nltk:" is used with an absolute path, treat it as "file://"
         if os.path.isabs(name):
@@ -770,6 +793,7 @@ def find(resource_name, paths=None):
         elif not path_ or os.path.isdir(path_):
             if zipfile is None:
                 p = os.path.join(path_, url2pathname(resource_name))
+                _ensure_within_root(p, path_, resource_name)
                 if os.path.exists(p):
                     if p.endswith(".gz"):
                         return GzipFileSystemPathPointer(p)
@@ -787,12 +811,15 @@ def find(resource_name, paths=None):
                         pkg = "/".join(parts[:2])  # e.g. "corpora/stopwords"
                         pkg_dir = os.path.join(path_, url2pathname(pkg))
                         pkg_zip = os.path.join(path_, url2pathname(pkg + ".zip"))
-                        if os.path.isdir(pkg_dir):
+                        if _within_directory(pkg_dir, path_) and os.path.isdir(pkg_dir):
                             _note_near_miss(pkg_dir)
-                        elif os.path.isfile(pkg_zip):
+                        elif _within_directory(pkg_zip, path_) and os.path.isfile(
+                            pkg_zip
+                        ):
                             _note_near_miss(pkg_zip)
             else:
                 p = os.path.join(path_, url2pathname(zipfile))
+                _ensure_within_root(p, path_, resource_name)
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
