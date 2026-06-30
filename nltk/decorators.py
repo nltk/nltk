@@ -106,7 +106,22 @@ def getinfo(func):
 
 
 def update_wrapper(wrapper, model, infodict=None):
-    "akin to functools.update_wrapper"
+    """Update a wrapper function to look like the wrapped function (akin to ``functools.update_wrapper``).
+
+    Copies ``__name__``, ``__doc__``, ``__module__``, ``__dict__``, and
+    ``__defaults__`` from *model* (or from a pre-computed *infodict*) onto
+    *wrapper*, and also stores the original function as ``wrapper.undecorated``.
+
+    Args:
+        wrapper (Callable): The wrapper function whose metadata will be updated.
+        model (Callable or dict): The original function to copy metadata from,
+            or an info-dict as returned by :func:`getinfo`.
+        infodict (dict, optional): A pre-computed info-dict.  If ``None``,
+            :func:`getinfo` is called on *model*.
+
+    Returns:
+        Callable: *wrapper* with its metadata updated in-place.
+    """
     infodict = infodict or getinfo(model)
     wrapper.__name__ = infodict["name"]
     wrapper.__doc__ = infodict["doc"]
@@ -208,7 +223,22 @@ def decorator(caller):
 
 
 def getattr_(obj, name, default_thunk):
-    "Similar to .setdefault in dictionaries."
+    """Get an attribute of *obj*, setting it to a default value if it does not exist.
+
+    Behaves like :meth:`dict.setdefault`: if *obj* already has an attribute
+    called *name* the existing value is returned unchanged; otherwise
+    *default_thunk* is called, its return value is stored on *obj* as *name*,
+    and then returned.
+
+    Args:
+        obj: The object on which to look up (or set) the attribute.
+        name (str): The attribute name.
+        default_thunk (Callable[[], Any]): A zero-argument callable whose
+            return value is used as the default when the attribute is absent.
+
+    Returns:
+        Any: The existing attribute value, or the newly-set default.
+    """
     try:
         return getattr(obj, name)
     except AttributeError:
@@ -219,6 +249,20 @@ def getattr_(obj, name, default_thunk):
 
 @decorator
 def memoize(func, *args):
+    """Cache the return value of *func* for each unique combination of positional arguments.
+
+    Uses a per-function dictionary (``func.memoize_dic``) to store previously
+    computed results.  Repeated calls with identical *args* return the cached
+    value without re-executing *func*.
+
+    Args:
+        func (Callable): The function whose results should be cached.
+        *args: Positional arguments forwarded to *func*.
+
+    Returns:
+        Any: The return value of ``func(*args)``, retrieved from the cache on
+        subsequent calls with the same arguments.
+    """
     dic = getattr_(func, "memoize_dic", dict)
     # memoize_dic is created at the first call
     if args in dic:
