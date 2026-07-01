@@ -4,6 +4,7 @@ Tests GDFA alignments
 
 import multiprocessing
 import os
+import sys
 import traceback
 import unittest
 
@@ -160,14 +161,16 @@ class TestGDFA(unittest.TestCase):
 def _gdfa_worker(length):
     """Symmetrize a trivial alignment with huge lengths; exit 0 ok, 3 on error.
 
-    On error the traceback is printed before exiting so a failure here is
-    diagnosable in CI -- the parent process only sees the numeric exit code.
+    On error the traceback is printed (and stderr flushed, since ``os._exit``
+    skips normal shutdown) before exiting so a failure here is diagnosable in CI
+    -- the parent process only sees the numeric exit code.
     """
     try:
         grow_diag_final_and(length, length, "0-0", "0-0")
         os._exit(0)
     except BaseException:
         traceback.print_exc()
+        sys.stderr.flush()
         os._exit(3)
 
 
