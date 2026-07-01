@@ -1224,9 +1224,11 @@ class Expression(SubstituteBindingsI):
 #: from nested duplicating lambdas (e.g. ``(\Y.(Y & Y))`` applied repeatedly)
 #: reduces to an exponentially large normal form and exhausts CPU and memory
 #: (CWE-400). ``simplify`` refuses with a ``ValueError`` once a reduction's result
-#: exceeds this size; raise it if you need to simplify a genuinely large
-#: expression.
-MAX_SIMPLIFY_SIZE = 1_000_000
+#: exceeds this size. Realistic logical expressions have only hundreds to low
+#: thousands of subexpressions, so this default leaves roughly an order of
+#: magnitude of headroom while still bounding the blow-up; raise it for the rare
+#: genuinely large expression.
+MAX_SIMPLIFY_SIZE = 10_000
 
 
 def _exceeds_size(expression, limit):
