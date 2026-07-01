@@ -13,6 +13,7 @@ https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012.
 
 import os
 import pickle
+import sys
 from io import BytesIO
 
 import pytest
@@ -114,7 +115,9 @@ def test_transitionparser_rejects_malicious_model(tmp_path):
     model_path = tmp_path / "evil.model"
     marker = tmp_path / "pwned"
     # Payload writes a marker file if (and only if) the reduce callable runs.
-    payload_cmd = f"touch {marker}"
+    payload_cmd = (
+        f'"{sys.executable}" -c "import pathlib; pathlib.Path({str(marker)!r}).touch()"'
+    )
 
     class _MarkerExploit:
         def __reduce__(self):

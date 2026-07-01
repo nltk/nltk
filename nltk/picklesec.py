@@ -105,6 +105,8 @@ class AllowlistUnpickler(pickle.Unpickler):
         **kwargs: Any,
     ):
         super().__init__(file, **kwargs)
+        if isinstance(allowed_modules, str):
+            allowed_modules = (allowed_modules,)
         self._allowed_globals = set(allowed_globals)
         self._allowed_modules = tuple(allowed_modules)
 
