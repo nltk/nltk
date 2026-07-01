@@ -32,6 +32,14 @@ ALPINO_NODE = re.compile(
     r"^[ \t]*<node (?P<body>[^>\n]*?)(?P<selfclose>/?)>", re.MULTILINE
 )
 ALPINO_ATTR = re.compile(r'(\w+)="([^"]*)"')
+# The old substitutions captured ``begin="(\d+)"``, ``pos="(\w+)"``,
+# ``cat="(\w+)"`` and ``word="([^"]+)"``, i.e. they only converted a node when
+# these fields had the expected shape (else the tag was left untouched). Keep
+# those constraints so behaviour is byte-for-byte identical on malformed input --
+# in particular, ``ordered`` output must not emit a non-numeric ``begin`` that
+# would then fail to match ``SORTTAGWRD`` and skew the tagging/ordering.
+ALPINO_DIGITS = re.compile(r"\d+")
+ALPINO_WORD = re.compile(r"\w+")
 
 
 def _alpino_node_to_sexpr(match, ordered):
@@ -39,22 +47,23 @@ def _alpino_node_to_sexpr(match, ordered):
 
     A self-closing ``<node .../>`` is a leaf word node and becomes ``(pos word)``
     -- or ``(begin pos word)`` when ``ordered`` is set; an opening ``<node ...>``
-    is a category node and becomes ``(cat``. Nodes that lack the required
-    attributes are returned unchanged so later substitutions can handle them.
+    is a category node and becomes ``(cat``. Nodes whose fields do not have the
+    shape the old regexes required are returned unchanged so later substitutions
+    can handle them.
     """
     attrs = dict(ALPINO_ATTR.findall(match.group("body")))
     if match.group("selfclose"):
         pos, word = attrs.get("pos"), attrs.get("word")
-        if not pos or not word:
+        if not word or not pos or not ALPINO_WORD.fullmatch(pos):
             return match.group(0)
         if ordered:
             begin = attrs.get("begin")
-            if not begin:
+            if not begin or not ALPINO_DIGITS.fullmatch(begin):
                 return match.group(0)
             return f"({begin} {pos} {word})"
         return f"({pos} {word})"
     cat = attrs.get("cat")
-    if not cat:
+    if not cat or not ALPINO_WORD.fullmatch(cat):
         return match.group(0)
     return f"({cat}"
 

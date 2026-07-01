@@ -16,6 +16,7 @@ ordinary corpora are read identically.
 
 import multiprocessing
 import os
+import sys
 import traceback
 
 from nltk.corpus.reader.bracket_parse import AlpinoCorpusReader
@@ -73,17 +74,42 @@ def test_alpino_node_without_pos_or_word_is_skipped(tmp_path):
     assert list(r.tagged_words()) == [("kat", "noun")]
 
 
+def test_alpino_malformed_fields_left_unconverted(tmp_path):
+    """Nodes whose fields break the old regex shape are left unconverted.
+
+    The old substitutions required ``begin="(\\d+)"`` and ``pos="(\\w+)"``; a
+    node with a non-numeric ``begin`` or a ``pos`` containing non-word chars was
+    never converted (so it does not appear in the output). The attribute-based
+    normalizer keeps those constraints for byte-for-byte compatibility.
+    """
+    text = (
+        '<alpino_ds version="1.3">\n'
+        '  <node begin="0" cat="top" end="3" id="0" rel="top">\n'
+        '    <node begin="1a" end="2" pos="noun" rel="su" word="hond"/>\n'
+        '    <node begin="0" end="1" pos="de-t" rel="det" word="de"/>\n'
+        '    <node begin="2" end="3" pos="verb" rel="hd" word="blaft"/>\n'
+        "  </node>\n"
+        "</alpino_ds>\n"
+    )
+    r = _reader(tmp_path, text)
+    # only the well-formed node survives (non-numeric begin / non-\w pos dropped)
+    assert list(r.words()) == ["blaft"]
+    assert list(r.tagged_words()) == [("blaft", "verb")]
+
+
 def _words_worker(root):
     """Read words() from a crafted alpino corpus; exit 0 on success, 3 on error.
 
-    On error the traceback is printed before exiting so a failure here is
-    diagnosable in CI -- the parent process only sees the numeric exit code.
+    On error the traceback is printed (and stderr flushed, since ``os._exit``
+    skips normal shutdown) before exiting so a failure here is diagnosable in CI
+    -- the parent process only sees the numeric exit code.
     """
     try:
         list(AlpinoCorpusReader(root).words())
         os._exit(0)
     except BaseException:
         traceback.print_exc()
+        sys.stderr.flush()
         os._exit(3)
 
 
