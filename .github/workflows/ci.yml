@@ -116,7 +116,7 @@ jobs:
         id: nltk-data-cache
         with:
           path: ${{ github.workspace }}/nltk_data
-          key: nltk_data_${{ runner.os }}_v1
+          key: nltk_data_${{ runner.os }}_v2
 
       - name: Download nltk data on cache miss
         if: steps.nltk-data-cache.outputs.cache-hit != 'true'
