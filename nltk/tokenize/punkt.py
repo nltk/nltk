@@ -113,8 +113,26 @@ from collections.abc import Iterator
 from re import Match
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from nltk.picklesec import allowlisted_pickle_load
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
+
+_PUNKT_ALLOWED_MODULES = ("nltk.tokenize.punkt", "nltk.tokenize")
+
+
+def punkt_pickle_load(file):
+    """
+    Safely load a legacy Punkt pickle file.
+
+    Old NLTK Punkt models were distributed as pickle files containing
+    ``PunktParameters``, ``PunktLanguageVars``, and related classes.
+    This helper loads them through :class:`~nltk.picklesec.AllowlistUnpickler`
+    restricted to the ``nltk.tokenize.punkt`` and ``nltk.tokenize`` modules,
+    so arbitrary code gadgets (``os.system``, ``subprocess``, etc.) are blocked
+    while legitimate Punkt objects reconstruct normally.
+    """
+    return allowlisted_pickle_load(file, allowed_modules=_PUNKT_ALLOWED_MODULES)
+
 
 ######################################################################
 # { Orthographic Context Constants
