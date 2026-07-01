@@ -8,11 +8,13 @@ O(n) scan per block, i.e. O(n^2) when the document is made of many top-level
 blockquotes/lists. The public ``blockquotes()``/``lists()`` entry points reach
 these readers, so extracting blockquotes/lists from untrusted Markdown could be
 driven into seconds-to-minutes of CPU with a small crafted document. Each block's
-open/close index is now found in a single pass; ordinary corpora read identically.
+open/close index is now found with linear scans of the token list; ordinary
+corpora read identically.
 """
 
 import multiprocessing
 import os
+import sys
 import traceback
 
 import pytest
@@ -80,8 +82,9 @@ def test_lists_reading_preserved(tmp_path):
 def _blockquotes_worker(root):
     """Read blockquotes() from a crafted corpus; exit 0 on success, 3 on error.
 
-    On error the traceback is printed before exiting so a failure here is
-    diagnosable in CI -- the parent process only sees the numeric exit code.
+    On error the traceback is printed (and stderr flushed, since ``os._exit``
+    skips normal shutdown) before exiting so a failure here is diagnosable in CI
+    -- the parent process only sees the numeric exit code.
     """
     try:
         reader = CategorizedMarkdownCorpusReader(
@@ -91,6 +94,7 @@ def _blockquotes_worker(root):
         os._exit(0)
     except BaseException:
         traceback.print_exc()
+        sys.stderr.flush()
         os._exit(3)
 
 
