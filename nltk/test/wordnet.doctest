@@ -879,7 +879,7 @@ of the existing Wordnet entries, and edit the name in two places:
 oewn2023: WordNetCorpusReader = LazyCorpusLoader(
     "oewn2023",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 
 4. Enjoy:
