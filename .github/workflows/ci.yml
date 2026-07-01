@@ -22,7 +22,7 @@ jobs:
     name: pre-commit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -42,7 +42,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -79,7 +79,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -112,7 +112,7 @@ jobs:
         run: ls -lR "${{ github.workspace }}/nltk_data" || echo "nltk_data not found"
 
       - name: Cache nltk data
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: nltk-data-cache
         with:
           path: ${{ github.workspace }}/nltk_data
@@ -129,7 +129,7 @@ jobs:
         run: mkdir -p "${{ env.THIRD_PARTY_DIR }}"
 
       - name: Cache third-party tools
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: third-party-cache
         with:
           path: ${{ env.THIRD_PARTY_DIR }}
