@@ -520,17 +520,57 @@ def urlopen(url, *args, **kwargs):
 
 def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs):
     """Secure wrapper for builtins.open."""
-    validate_path(file, context=context, required_root=required_root)
-    return builtins.open(file, mode=mode, **kwargs)
+    # 1. Allow file descriptors (integers) to pass through, matching original logic
+    if isinstance(file, int):
+        validate_path(file, context=context, required_root=required_root)
+        return builtins.open(file, mode=mode, **kwargs)
+
+    # 2. Force extraction of the real path from PathLike objects
+    try:
+        raw_path = os.fspath(file)
+    except TypeError:
+        raise TypeError("Path must be a string, bytes, or os.PathLike")
+
+    # 3. Strict primitive enforcement against type manipulation
+    if type(raw_path) not in (str, bytes):
+        raise TypeError(
+            f"Strict security policy: Path must resolve to exact str or bytes, not '{type(raw_path).__name__}'"
+        )
+
+    if type(raw_path) is bytes:
+        raw_path = os.fsdecode(raw_path)
+
+    # 4. Execution Substitution: validate and open the pure primitive, discarding the original object
+    validate_path(raw_path, context=context, required_root=required_root)
+    return builtins.open(raw_path, mode=mode, **kwargs)
 
 
 class ZipFile(zipfile.ZipFile):
     """Secure wrapper for zipfile.ZipFile."""
 
     def __init__(self, file, *args, **kwargs):
-        if isinstance(file, (str, Path)):
-            validate_path(file, context="pathsec.ZipFile")
-        super().__init__(file, *args, **kwargs)
+        # zipfile.ZipFile also accepts file-like objects (e.g., io.BytesIO).
+        # We only strictly normalize and validate path-like objects.
+        if isinstance(file, (str, bytes, os.PathLike)):
+            try:
+                raw_path = os.fspath(file)
+            except TypeError:
+                raise TypeError("Path must be a string, bytes, or os.PathLike")
+
+            if type(raw_path) not in (str, bytes):
+                raise TypeError(
+                    f"Strict security policy: Path must resolve to exact str or bytes, not '{type(raw_path).__name__}'"
+                )
+
+            if type(raw_path) is bytes:
+                raw_path = os.fsdecode(raw_path)
+
+            validate_path(raw_path, context="pathsec.ZipFile")
+            file_to_open = raw_path
+        else:
+            file_to_open = file
+
+        super().__init__(file_to_open, *args, **kwargs)
 
     def extract(self, member, path=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd(), specific_member=member)

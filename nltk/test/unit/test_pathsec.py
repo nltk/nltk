@@ -5,6 +5,7 @@ import os
 import socket
 import urllib.request
 import zipfile
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 from urllib.error import HTTPError, URLError
 
@@ -529,3 +530,136 @@ def test_read_sents_enforces_pathsec():
     # If the function succeeds (no exception), the test fails.
     with pytest.raises(PermissionError, match="Security Violation"):
         read_sents(forbidden_path)
+
+
+# ----------------------------------------------------------------------
+# Malicious Subclasses for Type Confusion & Object Manipulation Tests
+# ----------------------------------------------------------------------
+
+
+class ZeroLengthStr(str):
+    """
+    Simulates a boolean discrepancy attack.
+    Overrides __len__ so that `if not path:` evaluates to True,
+    attempting to bypass permissive guards while tricking the C-API.
+    """
+
+    def __len__(self):
+        return 0
+
+
+class DualFacedPath(os.PathLike):
+    """
+    Simulates an interface discrepancy (desync) attack.
+    Presents a safe path to `str()` casting, but delivers a malicious
+    path when `os.fspath()` is invoked by low-level file operations.
+    """
+
+    def __init__(self, real_path, shown_path):
+        self.real_path = str(real_path)
+        self.shown = str(shown_path)
+
+    def __fspath__(self):
+        return self.real_path
+
+    def __str__(self):
+        return self.shown
+
+
+# ----------------------------------------------------------------------
+# Fixtures
+# ----------------------------------------------------------------------
+
+
+@pytest.fixture
+def sandbox_env(tmp_path):
+    """Sets up a mock allowed root and an outside unallowed directory."""
+    safe_dir = tmp_path / "nltk_safe_root"
+    safe_dir.mkdir()
+
+    unsafe_dir = tmp_path / "outside_root"
+    unsafe_dir.mkdir()
+
+    secret_file = unsafe_dir / "secret.txt"
+    secret_file.write_text("UNAUTHORIZED_DATA", encoding="utf-8")
+
+    allowed_file = safe_dir / "allowed.txt"
+    allowed_file.write_text("AUTHORIZED_DATA", encoding="utf-8")
+
+    archive_path = unsafe_dir / "unauthorized.zip"
+    archive_path.touch()
+
+    return safe_dir, unsafe_dir, secret_file, allowed_file, archive_path
+
+
+# ----------------------------------------------------------------------
+# Restrictive Guard Tests
+# ----------------------------------------------------------------------
+
+
+def test_restrictive_guard_blocks_boolean_discrepancy_open(sandbox_env):
+    """Ensures restrictive type enforcement blocks length-override bypasses in open()."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+
+    malicious_path = ZeroLengthStr(str(secret_file))
+
+    # The strict policy must reject the subclass completely
+    with pytest.raises(
+        TypeError,
+        match="Strict security policy: Path must resolve to exact str or bytes",
+    ):
+        pathsec.open(malicious_path, "r", required_root=safe_dir)
+
+
+def test_restrictive_guard_blocks_interface_desync_open(sandbox_env):
+    """Ensures the real path is extracted and evaluated, catching the root escape."""
+    safe_dir, _, secret_file, allowed_file, _ = sandbox_env
+
+    malicious_path = DualFacedPath(real_path=secret_file, shown_path=allowed_file)
+
+    # The guard extracts real_path via os.fspath(), bypassing the __str__ illusion.
+    # validate_path then correctly identifies it as a root escape and throws ValueError.
+    with pytest.raises(ValueError, match="Security Violation .* escapes root"):
+        pathsec.open(malicious_path, "r", required_root=safe_dir)
+
+
+def test_restrictive_guard_blocks_boolean_discrepancy_zipfile(sandbox_env):
+    """Ensures restrictive type enforcement blocks length-override bypasses in ZipFile()."""
+    _, _, _, _, archive_path = sandbox_env
+
+    malicious_path = ZeroLengthStr(str(archive_path))
+
+    # ZipFile path normalization must also catch and reject the subclass
+    with pytest.raises(
+        TypeError,
+        match="Strict security policy: Path must resolve to exact str or bytes",
+    ):
+        pathsec.ZipFile(malicious_path, "r")
+
+
+def test_restrictive_guard_blocks_interface_desync_zipfile(sandbox_env):
+    """Ensures the real path is extracted and evaluated by ZipFile."""
+    safe_dir, _, _, allowed_file, archive_path = sandbox_env
+
+    # To strictly prove the desync fails validation regardless of the /tmp/ environment,
+    # we point the underlying real_path to an explicitly forbidden global location.
+    forbidden_path = "/this_is_a_forbidden_path_12345/unauth.zip"
+    malicious_path = DualFacedPath(real_path=forbidden_path, shown_path=allowed_file)
+
+    # The pathsec guard extracts the forbidden path and validate_path correctly
+    # blocks it, raising a PermissionError before it ever reaches zipfile.ZipFile.
+    with pytest.raises(PermissionError, match="Security Violation"):
+        pathsec.ZipFile(malicious_path, "r")
+
+
+def test_restrictive_guard_allows_pure_primitives(sandbox_env):
+    """Ensures pure primitive strings and pathlib.Path objects still function normally."""
+    safe_dir, _, _, allowed_file, _ = sandbox_env
+
+    # pathlib.Path should be allowed (it resolves to a pure primitive internally)
+    with pathsec.open(allowed_file, "r", required_root=safe_dir) as f:
+        assert f.read() == "AUTHORIZED_DATA"
+
+    # Pure string should be allowed
+    with pathsec.open(str(allowed_file), "r", required_root=safe_dir) as f:
+        assert f.read() == "AUTHORIZED_DATA"
