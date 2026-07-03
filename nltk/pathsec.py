@@ -529,7 +529,7 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
     try:
         raw_path = os.fspath(file)
     except TypeError:
-        raise TypeError("Path must be a string, bytes, or os.PathLike")
+        raise TypeError("Path must be a string, bytes, or os.PathLike") from None
 
     # 3. Strict primitive enforcement against type manipulation
     if type(raw_path) not in (str, bytes):
@@ -555,7 +555,9 @@ class ZipFile(zipfile.ZipFile):
             try:
                 raw_path = os.fspath(file)
             except TypeError:
-                raise TypeError("Path must be a string, bytes, or os.PathLike")
+                raise TypeError(
+                    "Path must be a string, bytes, or os.PathLike"
+                ) from None
 
             if type(raw_path) not in (str, bytes):
                 raise TypeError(

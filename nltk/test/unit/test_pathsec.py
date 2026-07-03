@@ -5,7 +5,6 @@ import os
 import socket
 import urllib.request
 import zipfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 from urllib.error import HTTPError, URLError
 
@@ -653,13 +652,17 @@ def test_restrictive_guard_blocks_interface_desync_zipfile(sandbox_env):
 
 
 def test_restrictive_guard_allows_pure_primitives(sandbox_env):
-    """Ensures pure primitive strings and pathlib.Path objects still function normally."""
+    """Ensures pure primitive strings, pathlib.Path objects, and bytes still function normally."""
     safe_dir, _, _, allowed_file, _ = sandbox_env
 
-    # pathlib.Path should be allowed (it resolves to a pure primitive internally)
+    # pathlib.Path should be allowed
     with pathsec.open(allowed_file, "r", required_root=safe_dir) as f:
         assert f.read() == "AUTHORIZED_DATA"
 
     # Pure string should be allowed
     with pathsec.open(str(allowed_file), "r", required_root=safe_dir) as f:
+        assert f.read() == "AUTHORIZED_DATA"
+
+    # Bytes path should be allowed (decoded safely)
+    with pathsec.open(os.fsencode(str(allowed_file)), "r", required_root=safe_dir) as f:
         assert f.read() == "AUTHORIZED_DATA"
