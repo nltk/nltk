@@ -647,7 +647,9 @@ class Tree(list):
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
         # A token char is either a backslash-escaped bracket (kept verbatim) or
         # any character that is not whitespace or an unescaped bracket.
-        token_char = rf"(?:\\[{open_pattern}{close_pattern}]|[^\s{open_pattern}{close_pattern}])"
+        token_char = (
+            rf"(?:\\[{open_pattern}{close_pattern}]|[^\s{open_pattern}{close_pattern}])"
+        )
         if node_pattern is None:
             node_pattern = rf"{token_char}+"
         if leaf_pattern is None:
