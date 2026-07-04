@@ -146,7 +146,7 @@ def chomsky_normal_form(
             # chomsky normal form factorization
             if len(node) > 2:
                 childNodes = [
-                    child.label() if isinstance(child, Tree) else child
+                    str(child.label()) if isinstance(child, Tree) else str(child)
                     for child in node
                 ]
                 nodeCopy = node.copy()

@@ -53,6 +53,15 @@ def test_chomsky_normal_form_with_terminal_siblings():
         assert tree == expected
 
 
+def test_chomsky_normal_form_with_nonstring_terminal():
+    """A non-string terminal (e.g. an int) among siblings must not crash."""
+    for factor in ("right", "left"):
+        tree = Tree("S", [Tree("A", ["a"]), 7, Tree("B", ["b"]), Tree("C", ["c"])])
+        chomsky_normal_form(tree, factor=factor)
+        for subtree in tree.subtrees():
+            assert len(subtree) <= 2
+
+
 def _un_chomsky_worker(n):
     """Un-binarise a large right-branching CNF tree; exit 0 ok, 3 on error."""
     try:
