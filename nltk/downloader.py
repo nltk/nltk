@@ -1177,7 +1177,7 @@ class Downloader:
         if filepath.endswith(".zip"):
             unzipdir = filepath[:-4]
             if not os.path.exists(unzipdir):
-                return self.INSTALLED  # but not unzipped -- ok!
+                return self.NOT_INSTALLED if info.unzip else self.INSTALLED
             if not os.path.isdir(unzipdir):
                 return self.STALE
 

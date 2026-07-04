@@ -343,3 +343,48 @@ class TestDownloaderAtomic(unittest.TestCase):
 
         finally:
             shutil.rmtree(srv_dir, ignore_errors=True)
+
+    def test_missing_unzipdir_is_not_installed_for_packages_that_require_unzip(self):
+        dl = Downloader(download_dir=self.test_dir)
+        zip_path = os.path.join(self.test_dir, self.pkg.filename)
+
+        os.makedirs(os.path.dirname(zip_path), exist_ok=True)
+        shutil.copyfile(self.source_zip_path, zip_path)
+
+        self.assertEqual(dl.status(self.pkg, self.test_dir), dl.NOT_INSTALLED)
+
+    def test_missing_unzipdir_is_installed_for_packages_kept_zipped(self):
+        dl = Downloader(download_dir=self.test_dir)
+
+        pkg = Package(
+            id=self.pkg.id,
+            url=self.pkg.url,
+            subdir=self.pkg.subdir,
+            size=self.pkg.size,
+            unzipped_size=self.pkg.unzipped_size,
+            checksum=self.pkg.checksum,
+            sha256_checksum=self.pkg.sha256_checksum,
+            unzip=False,
+        )
+        zip_path = os.path.join(self.test_dir, pkg.filename)
+
+        os.makedirs(os.path.dirname(zip_path), exist_ok=True)
+        shutil.copyfile(self.source_zip_path, zip_path)
+
+        self.assertEqual(dl.status(pkg, self.test_dir), dl.INSTALLED)
+
+    def test_stale_zip_exists_unzips_without_redownload(self):
+        dl = Downloader(download_dir=self.test_dir)
+        zip_path = os.path.join(self.test_dir, self.pkg.filename)
+        extracted_file = os.path.join(self.test_dir, "corpora", "abc", "dummy.txt")
+
+        os.makedirs(os.path.dirname(zip_path), exist_ok=True)
+        shutil.copyfile(self.source_zip_path, zip_path)
+
+        with patch("nltk.downloader.urlopen") as urlopen_mock:
+            ok = dl.download(self.pkg, quiet=True)
+
+        self.assertTrue(ok)
+        urlopen_mock.assert_not_called()
+        self.assertTrue(os.path.exists(extracted_file))
+        self.assertEqual(dl.status(self.pkg, self.test_dir), dl.INSTALLED)
