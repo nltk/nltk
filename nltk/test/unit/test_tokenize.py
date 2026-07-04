@@ -44,8 +44,9 @@ def _redos_worker(payload):
 
     TweetTokenizer().tokenize(payload)
 
+
 class TestTokenize:
-    
+
     def test_tweet_tokenizer(self):
         """
         Test TweetTokenizer using words with special and accented characters.
