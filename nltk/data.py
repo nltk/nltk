@@ -125,6 +125,18 @@ def _is_windows():
     return os.name == "nt"
 
 
+def _windows_data_paths():
+    return [
+        os.path.join(sys.prefix, "nltk_data"),
+        os.path.join(sys.prefix, "share", "nltk_data"),
+        os.path.join(sys.prefix, "lib", "nltk_data"),
+        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
+        r"C:\nltk_data",
+        r"D:\nltk_data",
+        r"E:\nltk_data",
+    ]
+
+
 ######################################################################
 # Search Path
 ######################################################################
@@ -144,15 +156,7 @@ if "APPENGINE_RUNTIME" not in os.environ and os.path.expanduser("~/") != "~/":
 
 if _is_windows():
     # Common locations on Windows:
-    path += [
-        os.path.join(sys.prefix, "nltk_data"),
-        os.path.join(sys.prefix, "share", "nltk_data"),
-        os.path.join(sys.prefix, "lib", "nltk_data"),
-        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
-        r"C:\nltk_data",
-        r"D:\nltk_data",
-        r"E:\nltk_data",
-    ]
+    path += _windows_data_paths()
 else:
     # Common locations on UNIX & OS X:
     path += [
