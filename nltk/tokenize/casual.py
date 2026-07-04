@@ -189,11 +189,11 @@ REGEXPS = (
     # Twitter hashtags:
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
-    # Length caps (RFC 5321: local-part <=64, labels <=63, domain <=255) bound
-    # the otherwise-unbounded runs. Without them, "[\w.+-]+" backtracks over a
-    # long dotted run hunting for the "@" (ReDoS on inputs like "a."*n); the
-    # required "@" only short-circuits this when the email branch is matched in
-    # isolation, not inside the WORD_RE alternation.
+    # These length caps only bound worst-case work so the runs cannot
+    # backtrack super-linearly (ReDoS on inputs like "a."*n). They are coarse
+    # limits, not RFC address validation: NLTK is a tokenizer, not an email
+    # validator, so exact per-label/domain lengths are neither enforced nor
+    # needed here.
     r"""[\w.+-]{1,64}@[\w-]{1,63}\.(?:[\w-]\.?){1,255}[\w-]""",
     # Zero-Width-Joiner and Skin tone modifier emojis
     """.(?:
