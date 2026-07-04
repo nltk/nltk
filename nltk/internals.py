@@ -123,7 +123,16 @@ def config_java(bin=None, options=None, verbose=False):
         _java_options[:] = options
 
 
-def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
+def java(
+    cmd,
+    classpath=None,
+    stdin=None,
+    stdout=None,
+    stderr=None,
+    blocking=True,
+    *,
+    options=None,
+):
     """
     Execute the given java command, by opening a subprocess that calls
     Java.  If java has not yet been configured, it will be configured
@@ -160,6 +169,8 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     :param blocking: If ``false``, then return immediately after
         spawning the subprocess.  In this case, the return value is
         the ``Popen`` object, and not a ``(stdout, stderr)`` tuple.
+    :param options: Java options to use for this subprocess call. If not
+        specified, use the global options configured by ``config_java()``.
 
     :return: If ``blocking=True``, then return a tuple ``(stdout,
         stderr)``, containing the stdout and stderr outputs generated
@@ -197,7 +208,13 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     # Construct the full command string.
     cmd = list(cmd)
     cmd = ["-cp", classpath] + cmd
-    cmd = [_java_bin] + _java_options + cmd
+    if options is None:
+        java_options = _java_options
+    else:
+        if isinstance(options, str):
+            options = options.split()
+        java_options = list(options)
+    cmd = [_java_bin] + java_options + cmd
 
     # Call java via a subprocess
     p = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr)

@@ -22,7 +22,7 @@ import warnings
 from abc import abstractmethod
 from subprocess import PIPE
 
-from nltk.internals import _java_options, config_java, find_file, find_jar, java
+from nltk.internals import find_file, find_jar, java
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -91,34 +91,43 @@ class StanfordTagger(TaggerI):
 
     def tag_sents(self, sentences):
         encoding = self._encoding
-        default_options = " ".join(_java_options)
-        config_java(options=self.java_options, verbose=False)
 
-        # Create a temporary input file
-        _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
+        input_file_path = None
+        java_succeeded = False
+        try:
+            # Create a temporary input file
+            _input_fh, input_file_path = tempfile.mkstemp(text=True)
+            self._input_file_path = input_file_path
 
-        cmd = list(self._cmd)
-        cmd.extend(["-encoding", encoding])
+            cmd = list(self._cmd)
+            cmd.extend(["-encoding", encoding])
 
-        # Write the actual sentences to the temporary input file
-        _input_fh = os.fdopen(_input_fh, "wb")
-        _input = "\n".join(" ".join(x) for x in sentences)
-        if isinstance(_input, str) and encoding:
-            _input = _input.encode(encoding)
-        _input_fh.write(_input)
-        _input_fh.close()
+            # Write the actual sentences to the temporary input file
+            with os.fdopen(_input_fh, "wb") as input_fh:
+                _input = "\n".join(" ".join(x) for x in sentences)
+                if isinstance(_input, str) and encoding:
+                    _input = _input.encode(encoding)
+                input_fh.write(_input)
 
-        # Run the tagger and get the output
-        stanpos_output, _stderr = java(
-            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
-        )
-        stanpos_output = stanpos_output.decode(encoding)
-
-        # Delete the temporary file
-        os.unlink(self._input_file_path)
-
-        # Return java configurations to their default values
-        config_java(options=default_options, verbose=False)
+            # Run the tagger and get the output
+            stanpos_output, _stderr = java(
+                cmd,
+                classpath=self._stanford_jar,
+                stdout=PIPE,
+                stderr=PIPE,
+                options=self.java_options,
+            )
+            stanpos_output = stanpos_output.decode(encoding)
+            java_succeeded = True
+        finally:
+            if input_file_path:
+                try:
+                    os.unlink(input_file_path)
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    if java_succeeded:
+                        raise
 
         return self.parse_output(stanpos_output, sentences)
 
