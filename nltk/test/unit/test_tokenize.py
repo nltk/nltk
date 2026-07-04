@@ -39,7 +39,13 @@ check_stanford_segmenter = pytest.mark.skipif(
 )
 
 
+def _redos_worker(payload):
+    from nltk.tokenize.casual import TweetTokenizer
+
+    TweetTokenizer().tokenize(payload)
+
 class TestTokenize:
+    
     def test_tweet_tokenizer(self):
         """
         Test TweetTokenizer using words with special and accented characters.
@@ -64,23 +70,21 @@ class TestTokenize:
 
     def test_tweet_tokenizer_redos(self):
         """
-        Regression test for the catastrophic-backtracking (ReDoS) in the
-        casual.py URL/email regexes. The naked-domain and "domain/" URL
-        branches and the email branch used unbounded label runs that
-        backtracked super-linearly while searching for the TLD / "@" on
-        inputs such as ``"a."*n``. The patched regexes are linear, so even a
-        large adversarial input must tokenize quickly.
+        Regression test for catastrophic backtracking (ReDoS) in the casual.py
+        URL/email regexes. Runs tokenize() in a child process with a hard
+        timeout so a reintroduced super-linear regex fails deterministically
+        instead of hanging the test suite.
         """
-        import time
+        import multiprocessing
 
-        tokenizer = TweetTokenizer()
-        payload = "a." * 50_000
-        start = time.perf_counter()
-        tokenizer.tokenize(payload)
-        elapsed = time.perf_counter() - start
-        # Pre-fix this took tens of seconds (super-quadratic). Allow a wide
-        # margin for slow CI while still catching a regression to O(n^2)+.
-        assert elapsed < 10, f"tokenize() too slow ({elapsed:.1f}s) -- ReDoS regression"
+        proc = multiprocessing.Process(target=_redos_worker, args=("a." * 50_000,))
+        proc.start()
+        proc.join(timeout=10)
+        alive = proc.is_alive()
+        if alive:
+            proc.terminate()
+            proc.join()
+        assert not alive, "tokenize() did not finish in 10s -- ReDoS regression"
 
     def test_tweet_tokenizer_url_email_unchanged(self):
         """Real URLs/emails/domains must tokenize exactly as before the fix."""
