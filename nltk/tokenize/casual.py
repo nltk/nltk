@@ -189,12 +189,25 @@ REGEXPS = (
     # Twitter hashtags:
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
-    # These length caps only bound worst-case work so the runs cannot
-    # backtrack super-linearly (ReDoS on inputs like "a."*n). They are coarse
-    # limits, not RFC address validation: NLTK is a tokenizer, not an email
-    # validator, so exact per-label/domain lengths are neither enforced nor
-    # needed here.
-    r"""[\w.+-]{1,64}@[\w-]{1,63}\.(?:[\w-]\.?){1,255}[\w-]""",
+    # Same atomic-run + length-capped shape as the URL domain branches above:
+    # the domain is written as explicit dot-separated labels, so the engine
+    # never has to guess where one label ends and the next begins (the old
+    # tail "(?:[\w-]\.?)+" left that ambiguous, which is what allowed
+    # super-linear backtracking on inputs like "a."*n). Each label is
+    # structurally capped at 63 chars (RFC-1035 label bound) and the label
+    # count at 41, so per-start-position work is a small constant. The caps
+    # bound work, they are not address validation: NLTK is a tokenizer, not
+    # an email validator.
+    # The final lookbehind preserves one corner of the original language:
+    # the old tail required at least two characters after the first dot, so
+    # exactly "local@label.X" with a one-char X (e.g. "a@b.c") was not an
+    # email token. It still is not; nothing else changes.
+    r"""
+    [\w.+-]{1,64}                             # local part (cap bounds work)
+    @
+    (?>[\w-]{1,63}(?:\.[\w-]{1,63}){1,40})    # domain: dot-separated labels
+    (?<!@[\w-]{1,63}\.[\w-])                  # exclude one-char-after-dot "a@b.c"
+    """,
     # Zero-Width-Joiner and Skin tone modifier emojis
     """.(?:
         [\U0001f3fb-\U0001f3ff]?(?:\u200d.[\U0001f3fb-\U0001f3ff]?)+
