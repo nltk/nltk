@@ -69,7 +69,21 @@ class TestTokenize:
         ]
         assert tokens == expected
 
-    def test_tweet_tokenizer_redos(self):
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            # dotted run: URL naked-domain / domain-slash branches
+            pytest.param("a." * 50_000, id="dotted-run"),
+            # dotted run after "@": email domain tail
+            pytest.param("user@" + "a." * 50_000, id="email-domain-tail"),
+            # over-long single label after "@"
+            pytest.param("@" + "a" * 50_000 + ".", id="long-label"),
+            # labels at the 63-char structural cap
+            pytest.param(("a" * 63 + ".") * 800, id="max-len-labels"),
+        ],
+    )
+    
+    def test_tweet_tokenizer_redos(self, payload):
         """
         Regression test for catastrophic backtracking (ReDoS) in the casual.py
         URL/email regexes. Runs tokenize() in a child process with a hard
