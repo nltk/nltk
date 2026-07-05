@@ -120,6 +120,23 @@ from nltk.internals import deprecated
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
+
+def _is_windows():
+    return os.name == "nt"
+
+
+def _windows_data_paths():
+    return [
+        os.path.join(sys.prefix, "nltk_data"),
+        os.path.join(sys.prefix, "share", "nltk_data"),
+        os.path.join(sys.prefix, "lib", "nltk_data"),
+        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
+        r"C:\nltk_data",
+        r"D:\nltk_data",
+        r"E:\nltk_data",
+    ]
+
+
 ######################################################################
 # Search Path
 ######################################################################
@@ -137,17 +154,9 @@ path += [d for d in _paths_from_env if d]
 if "APPENGINE_RUNTIME" not in os.environ and os.path.expanduser("~/") != "~/":
     path.append(os.path.expanduser("~/nltk_data"))
 
-if sys.platform.startswith("win"):
+if _is_windows():
     # Common locations on Windows:
-    path += [
-        os.path.join(sys.prefix, "nltk_data"),
-        os.path.join(sys.prefix, "share", "nltk_data"),
-        os.path.join(sys.prefix, "lib", "nltk_data"),
-        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
-        r"C:\nltk_data",
-        r"D:\nltk_data",
-        r"E:\nltk_data",
-    ]
+    path += _windows_data_paths()
 else:
     # Common locations on UNIX & OS X:
     path += [
@@ -184,7 +193,7 @@ def split_resource_url(resource_url):
     """
     Splits a resource url into "<protocol>:<path>".
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
     >>> split_resource_url('nltk:/home/nltk')
@@ -222,7 +231,7 @@ def normalize_resource_url(resource_url):
     r"""
     Normalizes a resource url
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == \
     ... ('\\' if windows else '') + os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
     True
@@ -315,7 +324,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
         be converted to a platform-appropriate path separator.
         Directory trailing slashes are preserved
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> normalize_resource_name('.', True)
     './'
     >>> normalize_resource_name('./', True)
@@ -336,7 +345,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     is_dir = bool(re.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
         os.path.sep
     )
-    if sys.platform.startswith("win"):
+    if _is_windows():
         resource_name = resource_name.lstrip("/")
     else:
         resource_name = re.sub(r"^/+", "/", resource_name)
@@ -347,7 +356,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
             relative_path = os.curdir
         resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
     resource_name = resource_name.replace("\\", "/").replace(os.path.sep, "/")
-    if sys.platform.startswith("win") and os.path.isabs(resource_name):
+    if _is_windows() and os.path.isabs(resource_name):
         resource_name = "/" + resource_name
     if is_dir and not resource_name.endswith("/"):
         resource_name += "/"
