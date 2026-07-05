@@ -41,6 +41,27 @@ def test_un_chomsky_collapses_artificial_node():
     assert tree == Tree.fromstring("(S (A a) (B b) (C c))")
 
 
+def test_chomsky_normal_form_with_terminal_siblings():
+    """A terminal sitting beside subtrees must not crash chomsky_normal_form."""
+    for factor in ("right", "left"):
+        tree = Tree.fromstring("(S (S 1) + (S 2))")
+        expected = Tree.fromstring("(S (S 1) + (S 2))")
+        chomsky_normal_form(tree, factor=factor)
+        for subtree in tree.subtrees():
+            assert len(subtree) <= 2
+        un_chomsky_normal_form(tree)
+        assert tree == expected
+
+
+def test_chomsky_normal_form_with_nonstring_terminal():
+    """A non-string terminal (e.g. an int) among siblings must not crash."""
+    for factor in ("right", "left"):
+        tree = Tree("S", [Tree("A", ["a"]), 7, Tree("B", ["b"]), Tree("C", ["c"])])
+        chomsky_normal_form(tree, factor=factor)
+        for subtree in tree.subtrees():
+            assert len(subtree) <= 2
+
+
 def _un_chomsky_worker(n):
     """Un-binarise a large right-branching CNF tree; exit 0 ok, 3 on error."""
     try:
