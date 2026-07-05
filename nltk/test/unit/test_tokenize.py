@@ -82,7 +82,6 @@ class TestTokenize:
             pytest.param(("a" * 63 + ".") * 800, id="max-len-labels"),
         ],
     )
-    
     def test_tweet_tokenizer_redos(self, payload):
         """
         Regression test for catastrophic backtracking (ReDoS) in the casual.py
@@ -92,7 +91,7 @@ class TestTokenize:
         """
         import multiprocessing
 
-        proc = multiprocessing.Process(target=_redos_worker, args=("a." * 50_000,))
+        proc = multiprocessing.Process(target=_redos_worker, args=(payload,))
         proc.start()
         proc.join(timeout=10)
         alive = proc.is_alive()
@@ -123,6 +122,11 @@ class TestTokenize:
                 "www.example.co.uk/page",
                 "here",
             ],
+            # Original email tail required >= 2 chars after the first dot:
+            # "a@b.c" was never an email token, "a@b.c.d" always was. The
+            # restructured pattern keeps both behaviors.
+            "ping a@b.c now": ["ping", "a", "@b", ".", "c", "now"],
+            "ping a@b.c.d now": ["ping", "a@b.c.d", "now"],
         }
         for text, expected in cases.items():
             assert tokenizer.tokenize(text) == expected
