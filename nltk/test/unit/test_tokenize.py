@@ -813,6 +813,14 @@ class TestTokenize:
         expected = ["It", "'s", "more", "'n", "enough", "."]
         assert word_tokenize(sentence) == expected
 
+        sentence = "It's o'clock already"
+        expected = ["It", "'s", "o'clock", "already"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "O'Connor went home"
+        expected = ["O'Connor", "went", "home"]
+        assert word_tokenize(sentence) == expected
+
     def test_punkt_pair_iter(self):
         test_cases = [
             ("12", [("1", "2"), ("2", None)]),
