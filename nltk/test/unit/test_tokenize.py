@@ -356,6 +356,20 @@ class TestTokenize:
         result = tokenizer.tokenize(test2)
         assert result == expected
 
+    def test_tweet_tokenizer_redos(self):
+        """
+        The URL/email regexes used to backtrack catastrophically on long
+        dotted strings, so a tiny input could hang the tokenizer for many
+        seconds. Make sure a pathological input tokenizes quickly now.
+        """
+        import time
+
+        tokenizer = TweetTokenizer()
+        for payload in ("a." * 8000, "a.a-" * 8000, "http://a(" * 8000):
+            start = time.time()
+            tokenizer.tokenize(payload)
+            assert time.time() - start < 5, "tokenize is too slow, possible ReDoS"
+
     def test_emoji_tokenizer(self):
         """
         Test a string that contains Emoji ZWJ Sequences and skin tone modifier
