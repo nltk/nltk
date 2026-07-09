@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Interface to Weka Classsifiers
+# Natural Language Toolkit: Interface to Weka Classifiers
 #
 # Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>

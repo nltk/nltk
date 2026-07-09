@@ -38,7 +38,7 @@ Some sentences about sports:
     >>> sports_sentences = [ 'The team dominated the game',
     ...                      'They lost the ball',
     ...                      'The game was intense',
-    ...                      'The goalkeeper catched the ball',
+    ...                      'The goalkeeper caught the ball',
     ...                      'The other team controlled the ball' ]
 
 Mixed topics, including sports:
