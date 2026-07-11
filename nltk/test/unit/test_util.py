@@ -1,6 +1,6 @@
 import pytest
 
-from nltk.util import everygrams
+from nltk.util import everygrams, transitive_closure
 
 
 @pytest.fixture
@@ -80,3 +80,31 @@ def test_everygrams_pad_left(everygram_input):
     ]
     output = list(everygrams(everygram_input, max_len=3, pad_left=True))
     assert output == expected_output
+
+
+def test_transitive_closure_chain():
+    graph = {"a": {"b"}, "b": {"c"}, "c": set()}
+    expected = {"a": {"b", "c"}, "b": {"c"}, "c": set()}
+    assert transitive_closure(graph) == expected
+
+
+def test_transitive_closure_reflexive():
+    graph = {"a": {"b"}, "b": {"c"}, "c": set()}
+    expected = {"a": {"a", "b", "c"}, "b": {"b", "c"}, "c": {"c"}}
+    assert transitive_closure(graph, reflexive=True) == expected
+
+
+def test_transitive_closure_cycle():
+    graph = {"a": {"b"}, "b": {"a"}}
+    expected = {"a": {"a", "b"}, "b": {"a", "b"}}
+    assert transitive_closure(graph) == expected
+
+
+def test_transitive_closure_empty():
+    assert transitive_closure({}) == {}
+
+
+def test_transitive_closure_does_not_mutate_input():
+    graph = {"a": {"b"}, "b": set()}
+    transitive_closure(graph)
+    assert graph == {"a": {"b"}, "b": set()}
