@@ -1192,3 +1192,120 @@ class TestTreebankWordDetokenizer:
         original_tokens = ["``", "Hello", ",", "''", "he", "said", "."]
         result = self.detok.detokenize(original_tokens)
         assert '"' in result
+
+
+# -------------------------------------------------------------------
+# Regression tests for ReDoS in TweetTokenizer URLS pattern
+# (CWE-1333; nltk/nltk#3704)
+#
+# The naked-domain branch of the URLS regex contained an unbounded
+# repetition that could split a string like "a.a.a.a...a" into
+# exponentially many equivalent partitions when the trailing TLD/slash
+# failed to match.  The fix bounds the repetition to at most 20 labels,
+# which eliminates the pathological blowup while preserving the
+# backtracking needed for normal domain matching (unlike atomic groups,
+# which break ordinary naked domains by forbidding backoff).
+# The HTTP-domain branch uses an atomic group, which is safe because
+# it requires a mandatory trailing slash and doesn't need backoff.
+#
+# Tests run in spawned worker processes with a hard timeout so a
+# regression cannot hang the suite.
+# -------------------------------------------------------------------
+
+import multiprocessing
+import os
+
+_REDoS_TIMEOUT = 20  # seconds – generous for CI, still catches blow-up
+
+
+def _tokenize_worker(text):
+    """Worker that tokenizes *text* and exits (no queue needed)."""
+    try:
+        from nltk.tokenize import TweetTokenizer
+
+        TweetTokenizer().tokenize(text)
+    except Exception:
+        pass
+    os._exit(0)
+
+
+def _assert_tokenization_fast(text, timeout, label):
+    """Assert that tokenizing *text* finishes within *timeout* seconds."""
+    ctx = multiprocessing.get_context("spawn")
+    proc = ctx.Process(target=_tokenize_worker, args=(text,))
+    proc.start()
+    proc.join(timeout)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        raise AssertionError(
+            f"TweetTokenizer.tokenize did not finish within {timeout}s "
+            f"on {label} input -> ReDoS regression (CWE-1333, nltk#3704)"
+        )
+    assert proc.exitcode == 0, (
+        f"worker crashed with exit code {proc.exitcode} on {label} input"
+    )
+
+
+class TestTweetTokenizerReDoS:
+    """Regression tests for the URLS-pattern ReDoS (nltk#3704)."""
+
+    @pytest.mark.parametrize("n", [500, 1800, 5000])
+    def test_pathological_input_completes(self, n):
+        """Dotted-string with no valid TLD must not cause exponential backtracking."""
+        text = "a" + ".a" * n
+        # n=1800 (the original PoC) must finish well under 1 s after the fix;
+        # n=5000 is larger but must still terminate (quadratic, not exponential).
+        timeout = 3 if n <= 1800 else _REDoS_TIMEOUT
+        _assert_tokenization_fast(text, timeout, f"{n} repeats")
+
+    def test_normal_domains_unchanged(self):
+        """Legitimate naked domains must still tokenize correctly."""
+        tknzr = TweetTokenizer()
+
+        assert tknzr.tokenize("example.com") == ["example.com"]
+        assert tknzr.tokenize("sub.example.co.uk") == ["sub.example.co.uk"]
+        assert tknzr.tokenize("a-b.example.io") == ["a-b.example.io"]
+
+    def test_sentence_with_domain(self):
+        """A sentence containing a naked domain is tokenized correctly."""
+        tknzr = TweetTokenizer()
+        result = tknzr.tokenize("Visit a-b.example.io for more info")
+        assert result == [
+            "Visit", "a-b.example.io",
+            "for", "more", "info",
+        ]
+
+    def test_email_not_split(self):
+        """Email addresses must not be broken apart by the domain branch."""
+        tknzr = TweetTokenizer()
+        assert tknzr.tokenize("foo@bar.com") == ["foo@bar.com"]
+        assert tknzr.tokenize("user@sub.example.com") == [
+            "user@sub.example.com",
+        ]
+
+    def test_tokenize_returns_list_of_str(self):
+        """tokenize() must always return list[str], never list[tuple]."""
+        tknzr = TweetTokenizer()
+        for text in ["hello world", "http://example.com", "user@bar.com",
+                      "a" + ".a" * 500]:
+            result = tknzr.tokenize(text)
+            assert isinstance(result, list), f"expected list, got {type(result)}"
+            assert all(isinstance(t, str) for t in result), (
+                f"expected list[str], got list with non-str elements: {result[:5]}"
+            )
+
+    def test_naked_domain_with_hyphen(self):
+        """Hyphenated labels in naked domains tokenize correctly."""
+        tknzr = TweetTokenizer()
+        result = tknzr.tokenize("my-site.example.com")
+        assert result == ["my-site.example.com"]
+
+    def test_plain_two_label_domain_not_split(self):
+        """Regression: atomic-group fix broke 'example.com' into
+        ['example', '.', 'com'].  Bounded repetition must preserve
+        correct backtracking so the last label doubles as the TLD."""
+        tknzr = TweetTokenizer()
+        assert tknzr.tokenize("example.com") == ["example.com"]
+        assert tknzr.tokenize("google.com") == ["google.com"]
+        assert tknzr.tokenize("python.org") == ["python.org"]

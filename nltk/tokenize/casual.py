@@ -95,7 +95,7 @@ URLS = r"""			# Capture 1: entire matched URL
     )
     |					#   or
                                        # looks like domain name followed by a slash:
-    [a-z0-9.\-]+[.]
+    (?>[a-z0-9.\-]+)[.]
     (?:[a-z]{2,13})
     /
   )
@@ -116,8 +116,7 @@ URLS = r"""			# Capture 1: entire matched URL
   |					# OR, the following to match naked domains:
   (?:
   	(?<!@)			        # not preceded by a @, avoid matching foo@_gmail.com_
-    [a-z0-9]+
-    (?:[.\-][a-z0-9]+)*
+    [a-z0-9]+(?:[.\-][a-z0-9]+){0,20}
     [.]
     (?:[a-z]{2,13})
     \b
