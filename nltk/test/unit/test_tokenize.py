@@ -1242,9 +1242,9 @@ def _assert_tokenization_fast(text, timeout, label):
             f"TweetTokenizer.tokenize did not finish within {timeout}s "
             f"on {label} input -> ReDoS regression (CWE-1333, nltk#3704)"
         )
-    assert proc.exitcode == 0, (
-        f"worker crashed with exit code {proc.exitcode} on {label} input"
-    )
+    assert (
+        proc.exitcode == 0
+    ), f"worker crashed with exit code {proc.exitcode} on {label} input"
 
 
 class TestTweetTokenizerReDoS:
@@ -1272,8 +1272,11 @@ class TestTweetTokenizerReDoS:
         tknzr = TweetTokenizer()
         result = tknzr.tokenize("Visit a-b.example.io for more info")
         assert result == [
-            "Visit", "a-b.example.io",
-            "for", "more", "info",
+            "Visit",
+            "a-b.example.io",
+            "for",
+            "more",
+            "info",
         ]
 
     def test_email_not_split(self):
@@ -1287,13 +1290,17 @@ class TestTweetTokenizerReDoS:
     def test_tokenize_returns_list_of_str(self):
         """tokenize() must always return list[str], never list[tuple]."""
         tknzr = TweetTokenizer()
-        for text in ["hello world", "http://example.com", "user@bar.com",
-                      "a" + ".a" * 500]:
+        for text in [
+            "hello world",
+            "http://example.com",
+            "user@bar.com",
+            "a" + ".a" * 500,
+        ]:
             result = tknzr.tokenize(text)
             assert isinstance(result, list), f"expected list, got {type(result)}"
-            assert all(isinstance(t, str) for t in result), (
-                f"expected list[str], got list with non-str elements: {result[:5]}"
-            )
+            assert all(
+                isinstance(t, str) for t in result
+            ), f"expected list[str], got list with non-str elements: {result[:5]}"
 
     def test_naked_domain_with_hyphen(self):
         """Hyphenated labels in naked domains tokenize correctly."""
