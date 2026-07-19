@@ -5383,6 +5383,7 @@ class SpanishStemmer(_StandardStemmer):
         "acion",
         "aciones",
         "uciones",
+        "ucion",
         "adoras",
         "adores",
         "ancias",
@@ -5639,7 +5640,7 @@ class SpanishStemmer(_StandardStemmer):
                     word = suffix_replace(word, suffix, "log")
                     rv = suffix_replace(rv, suffix, "log")
 
-                elif suffix in ("uci\xf3n", "uciones"):
+                elif suffix in ("uci\xf3n", "uciones", "ucion"):
                     word = suffix_replace(word, suffix, "u")
                     rv = suffix_replace(rv, suffix, "u")
 
