@@ -628,6 +628,7 @@ def find_file_iter(
                 yield os.environ[env_var]
 
             for env_dir in os.environ[env_var].split(os.pathsep):
+                env_dir = os.path.expanduser(env_dir)
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
                     if verbose:

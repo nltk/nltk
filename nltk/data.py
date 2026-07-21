@@ -150,7 +150,7 @@ path = []
 
 # User-specified locations:
 _paths_from_env = os.environ.get("NLTK_DATA", "").split(os.pathsep)
-path += [d for d in _paths_from_env if d]
+path += [os.path.expanduser(d) for d in _paths_from_env if d]
 if "APPENGINE_RUNTIME" not in os.environ and os.path.expanduser("~/") != "~/":
     path.append(os.path.expanduser("~/nltk_data"))
 
