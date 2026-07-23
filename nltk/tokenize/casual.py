@@ -117,7 +117,7 @@ URLS = r"""			# Capture 1: entire matched URL
   (?:
   	(?<!@)			        # not preceded by a @, avoid matching foo@_gmail.com_
     [a-z0-9]+
-    (?:[.\-][a-z0-9]+){0,15}   # bounded to avoid catastrophic backtracking (ReDoS)
+    (?:[.\-][a-z0-9]+){0,126}  # bounded to avoid catastrophic backtracking (ReDoS); DNS allows at most 127 labels
     [.]
     (?:[a-z]{2,13})
     \b
@@ -181,7 +181,7 @@ REGEXPS = (
     # Twitter hashtags:
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
-    r"""[\w.+-]{1,64}@[\w-]{1,64}\.(?:[\w-]\.?){1,32}[\w-]""",
+    r"""[\w.+-]{1,64}@[\w-]{1,63}\.(?:[\w-]\.?){1,251}[\w-]""",
     # Zero-Width-Joiner and Skin tone modifier emojis
     """.(?:
         [\U0001f3fb-\U0001f3ff]?(?:\u200d.[\U0001f3fb-\U0001f3ff]?)+
