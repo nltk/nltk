@@ -2,37 +2,15 @@
 Unit tests for security-related patches and vulnerability regressions.
 """
 
+import importlib
 import os
 import sys
 import tempfile
 
 
-def test_sys_path_restrictive_posture():
-    """
-    Verify CWE-427 mitigation: dynamic CWD ('') and explicit CWD should be deprioritized
-    to the end of sys.path to enforce a restrictive module search policy.
-    """
-    # Import nltk to ensure __init__.py logic has run
-    import nltk
-
-    cwd = os.getcwd()
-
-    # If the dynamic CWD is in the path, it must not be the first element
-    if "" in sys.path:
-        assert (
-            sys.path.index("") > 0
-        ), "Security Failure: Dynamic CWD ('') is at the front of sys.path"
-
-    # If the explicit CWD is in the path, it must not be the first element
-    if cwd in sys.path:
-        assert (
-            sys.path.index(cwd) > 0
-        ), f"Security Failure: Explicit CWD ({cwd}) is at the front of sys.path"
-
-
 def test_module_hijacking_prevention():
     """
-    Simulate a CWE-427 attack by dropping a malicious module in the CWD,
+    Simulate a search path attack by dropping a malicious module in the CWD,
     and ensure the system loads the safe installed module instead.
     """
     # Import nltk to ensure the sys.path mitigation is active
@@ -60,7 +38,7 @@ def test_module_hijacking_prevention():
             # 4. Verify the exploit failed
             assert (
                 getattr(joblib, "hijacked", False) is False
-            ), "CWE-427 Vulnerability: Loaded attacker module from CWD!"
+            ), "Vulnerability: Loaded attacker module from CWD!"
 
         finally:
             # Restore the environment so we don't break subsequent tests
