@@ -1,51 +1,48 @@
-"""
-Unit tests for security-related patches and vulnerability regressions.
-"""
-
-import importlib
 import os
+import subprocess
 import sys
 import tempfile
 
 
 def test_module_hijacking_prevention():
-    """
-    Simulate a search path attack by dropping a malicious module in the CWD,
-    and ensure the system loads the safe installed module instead.
-    """
-    # Import nltk to ensure the sys.path mitigation is active
-    import nltk
+    """Ensure inline imports do not resolve from the current working directory."""
+    with tempfile.TemporaryDirectory() as d:
+        # 1. Attacker payload that prints a flag when imported
+        with open(os.path.join(d, "joblib.py"), "w") as f:
+            f.write("print('HIJACK_SUCCESS')\n")
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        # 1. Setup the attacker payload
-        malicious_module = os.path.join(temp_dir, "joblib.py")
-        with open(malicious_module, "w") as f:
-            f.write("hijacked = True\n")
+        # 2. Victim script explicitly importing the function to avoid NLTK namespace collisions
+        with open(os.path.join(d, "victim.py"), "w") as f:
+            f.write(
+                "from nltk.util import parallelize_preprocess\n"
+                "list(parallelize_preprocess(str.upper, ['a'], processes=1))\n"
+            )
 
-        # 2. Simulate an application changing to the attacker's directory
-        original_cwd = os.getcwd()
-        os.chdir(temp_dir)
+        # 3. Ensure subprocess uses the local, patched NLTK repository
+        env = os.environ.copy()
+        repo_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "..")
+        )
+        env["PYTHONPATH"] = repo_root + (
+            os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
+        )
 
-        try:
-            # Clear joblib from the cache if it was already loaded by other tests,
-            # forcing Python to search sys.path again.
-            if "joblib" in sys.modules:
-                del sys.modules["joblib"]
+        # 4. Execute in the isolated directory
+        res = subprocess.run(
+            [sys.executable, "victim.py"],
+            cwd=d,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
 
-            # Invalidate Python's directory cache so it registers the newly created file
-            importlib.invalidate_caches()
+        # 5. Print raw output on failure so pytest captures it fully without truncation
+        if "HIJACK_SUCCESS" in res.stdout or res.returncode != 0:
+            print("--- SUBPROCESS STDOUT ---\n", res.stdout)
+            print("--- SUBPROCESS STDERR ---\n", res.stderr)
 
-            # 3. Trigger the import (simulating parallelize_preprocess behavior)
-            import joblib
-
-            # 4. Verify the exploit failed
-            assert (
-                getattr(joblib, "hijacked", False) is False
-            ), "Vulnerability: Loaded attacker module from CWD!"
-
-        finally:
-            # Restore the environment so we don't break subsequent tests
-            os.chdir(original_cwd)
-            if "joblib" in sys.modules:
-                del sys.modules["joblib"]
-            importlib.invalidate_caches()
+        # 6. Verify the exploit failed and the script executed normally
+        assert (
+            "HIJACK_SUCCESS" not in res.stdout
+        ), "Security Failure: Loaded module from CWD."
+        assert res.returncode == 0, "Victim script failed unexpectedly."
