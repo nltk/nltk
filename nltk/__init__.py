@@ -37,8 +37,14 @@ def _postpone(path):
 
 
 # Deprioritize dynamic and explicit current working directories
-for p in ["", os.getcwd()]:
+for p in ["", "."]:
     _postpone(p)
+
+try:
+    _postpone(os.getcwd())
+except OSError:
+    # Occurs if the current working directory was deleted after the Python process started
+    pass
 
 # //////////////////////////////////////////////////////
 # Metadata

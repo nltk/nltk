@@ -32,6 +32,9 @@ def test_module_hijacking_prevention():
             if "joblib" in sys.modules:
                 del sys.modules["joblib"]
 
+            # Invalidate Python's directory cache so it registers the newly created file
+            importlib.invalidate_caches()
+
             # 3. Trigger the import (simulating parallelize_preprocess behavior)
             import joblib
 
@@ -45,3 +48,4 @@ def test_module_hijacking_prevention():
             os.chdir(original_cwd)
             if "joblib" in sys.modules:
                 del sys.modules["joblib"]
+            importlib.invalidate_caches()
