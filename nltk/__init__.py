@@ -20,6 +20,31 @@ isort:skip_file
 
 import os
 import importlib
+import sys
+
+
+def _postpone(path):
+    """
+    Moves a path to the end of sys.path to enforce a restrictive module
+    search policy, preventing untrusted search path vulnerabilities (CWE-426).
+    """
+    if path in sys.path:
+        # Purge all instances of the path first
+        while path in sys.path:
+            sys.path.remove(path)
+        # Add a single instance back at the end
+        sys.path.append(path)
+
+
+# Deprioritize dynamic and explicit current working directories
+for p in ["", "."]:
+    _postpone(p)
+
+try:
+    _postpone(os.getcwd())
+except OSError:
+    # Occurs if the current working directory was deleted after the Python process started
+    pass
 
 # //////////////////////////////////////////////////////
 # Metadata

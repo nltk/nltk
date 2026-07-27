@@ -1,0 +1,48 @@
+import os
+import subprocess
+import sys
+import tempfile
+
+
+def test_module_hijacking_prevention():
+    """Ensure inline imports do not resolve from the current working directory."""
+    with tempfile.TemporaryDirectory() as d:
+        # 1. Attacker payload that prints a flag when imported
+        with open(os.path.join(d, "joblib.py"), "w") as f:
+            f.write("print('HIJACK_SUCCESS')\n")
+
+        # 2. Victim script explicitly importing the function to avoid NLTK namespace collisions
+        with open(os.path.join(d, "victim.py"), "w") as f:
+            f.write(
+                "from nltk.util import parallelize_preprocess\n"
+                "list(parallelize_preprocess(str.upper, ['a'], processes=1))\n"
+            )
+
+        # 3. Ensure subprocess uses the local, patched NLTK repository
+        env = os.environ.copy()
+        repo_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "..")
+        )
+        env["PYTHONPATH"] = repo_root + (
+            os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
+        )
+
+        # 4. Execute in the isolated directory
+        res = subprocess.run(
+            [sys.executable, "victim.py"],
+            cwd=d,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+
+        # 5. Print raw output on failure so pytest captures it fully without truncation
+        if "HIJACK_SUCCESS" in res.stdout or res.returncode != 0:
+            print("--- SUBPROCESS STDOUT ---\n", res.stdout)
+            print("--- SUBPROCESS STDERR ---\n", res.stderr)
+
+        # 6. Verify the exploit failed and the script executed normally
+        assert (
+            "HIJACK_SUCCESS" not in res.stdout
+        ), "Security Failure: Loaded module from CWD."
+        assert res.returncode == 0, "Victim script failed unexpectedly."
