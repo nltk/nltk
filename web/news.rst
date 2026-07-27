@@ -4,6 +4,11 @@ Release Notes
 2026
 ----
 
+NLTK 3.10.1 release: July 2026
+
+- Fix ReDoS in TweetTokenizer url and email regexes
+- Fix module hijacking in inline imports
+
 NLTK 3.10.0 release: June 2026
 
 - Enforce the stricter ``nltk.pathsec`` policy by default (``ENFORCE = True``)
