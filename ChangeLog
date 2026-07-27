@@ -1,3 +1,11 @@
+Version 3.10.1 2026-07-27
+
+* Fix ReDoS in TweetTokenizer url and email regexes (#3701)
+* Fix module hijacking in inline imports (#3710)
+
+Thanks to the following contributors to 3.10.1:
+CodingSelim, ekaf
+
 Version 3.10.0 2026-06-11
 
 * Enforce the stricter `nltk.pathsec` security policy by default
