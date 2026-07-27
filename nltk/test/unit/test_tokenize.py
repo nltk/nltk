@@ -4,6 +4,7 @@ See also nltk/test/tokenize.doctest
 """
 
 import hashlib
+import multiprocessing
 import os
 from typing import List, Tuple
 
@@ -37,6 +38,13 @@ check_stanford_segmenter = pytest.mark.skipif(
     not load_stanford_segmenter(),
     reason="NLTK was unable to find stanford-segmenter.jar.",
 )
+
+
+def _tweet_tokenizer_redos_worker():
+    tokenizer = TweetTokenizer()
+    for payload in ("a." * 8000, "a.a-" * 8000, "http://a(" * 8000):
+        tokenizer.tokenize(payload)
+    os._exit(0)
 
 
 class TestTokenize:
@@ -355,6 +363,25 @@ class TestTokenize:
         expected = ["(", "393", ")", "928 -3010"]
         result = tokenizer.tokenize(test2)
         assert result == expected
+
+    def test_tweet_tokenizer_redos(self):
+        """
+        The URL/email regexes used to backtrack catastrophically on long
+        dotted strings, so a tiny input could hang the tokenizer for many
+        seconds. Run pathological inputs in a spawned process with a hard
+        timeout so a regression fails fast instead of hanging the suite.
+        """
+        ctx = multiprocessing.get_context("spawn")
+        proc = ctx.Process(target=_tweet_tokenizer_redos_worker)
+        proc.start()
+        proc.join(60)
+        if proc.is_alive():
+            proc.terminate()
+            proc.join()
+            raise AssertionError(
+                "TweetTokenizer did not finish in time, possible ReDoS"
+            )
+        assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
 
     def test_emoji_tokenizer(self):
         """
