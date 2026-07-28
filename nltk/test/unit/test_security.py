@@ -46,3 +46,36 @@ def test_module_hijacking_prevention():
             "HIJACK_SUCCESS" not in res.stdout
         ), "Security Failure: Loaded module from CWD."
         assert res.returncode == 0, "Victim script failed unexpectedly."
+
+
+def test_wordnet_app_reference_decode_rejects_wrong_types():
+    """
+    nltk.app.wordnet_app.Reference.decode() unpickles attacker-controlled,
+    base64-encoded data straight from the wordnet browser's lookup_ URLs via
+    RestrictedUnpickler. RestrictedUnpickler blocks class/function
+    reconstruction, but it does not guarantee the *type* of what it returns:
+    pickle's built-in list/dict/int/etc. opcodes never go through the
+    blocked path. Without a type check, a single crafted lookup_<pickle> URL
+    (e.g. decoding to an int instead of a str) crashed the server with an
+    uncaught AttributeError in page_from_reference()'s word.split(",").
+    """
+    import base64
+    import pickle
+
+    from nltk.app.wordnet_app import Reference
+
+    # A legitimate reference still round-trips correctly.
+    good = base64.urlsafe_b64encode(pickle.dumps(("dog", {}), -1)).decode()
+    ref = Reference.decode(good)
+    assert ref.word == "dog"
+    assert ref.synset_relations == {}
+
+    # Malformed references (wrong type for word or synset_relations) must be
+    # rejected here, rather than accepted and left to crash downstream code.
+    for bad_payload in [(42, {}), ([[[1]]], {}), (None, {}), ("dog", [])]:
+        bad = base64.urlsafe_b64encode(pickle.dumps(bad_payload, -1)).decode()
+        try:
+            Reference.decode(bad)
+            raise AssertionError(f"Reference.decode should reject {bad_payload!r}")
+        except ValueError:
+            pass
