@@ -50,7 +50,7 @@ def _get_allowed_roots():
             try:
                 # Handle both string paths and PathPointer objects
                 raw_p = p.path if hasattr(p, "path") else p
-                roots.add(Path(str(raw_p)).resolve())
+                roots.add(Path(str(raw_p)).expanduser().resolve())
             except (OSError, ValueError, RuntimeError):
                 continue
 
