@@ -325,7 +325,7 @@ texinfo_documents = [
 # If it's "mixed", then the documentation for each parameter isn't listed
 # e.g. nltk.tokenize.casual.TweetTokenizer(preserve_case=True, reduce_len=False, strip_handles=False, match_phone_numbers=True)
 # and that's it.
-# With "seperated":
+# With "separated":
 # nltk.tokenize.casual.TweetTokenizer
 # ...
 # __init__(preserve_case=True, reduce_len=False, strip_handles=False, match_phone_numbers=True)
