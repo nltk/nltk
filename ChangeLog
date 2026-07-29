@@ -1,10 +1,10 @@
 Version 3.10.1 2026-07-29
 
-* Expand `~` in env-var paths.
-* Validate types after WordNet app pickle deserialization.
-* Fix uncontrolled search path in HunposTagger.
-* Use exact thirds in `masi_distance`.
-* Avoid retaining bllip import exceptions.
+* Expand `~` in env-var paths
+* Validate types after WordNet app pickle deserialization
+* Fix uncontrolled search path in HunposTagger
+* Use exact thirds in `masi_distance`
+* Avoid retaining bllip import exceptions
 * Fix `word_tokenize`: pad opening single quote before multi-letter words.
 * Implement `Tree.pformat_latex_forest`.
 * Prevent module hijacking in inline imports.
