@@ -53,11 +53,15 @@ def test_wordnet_app_reference_decode_rejects_wrong_types():
     nltk.app.wordnet_app.Reference.decode() unpickles attacker-controlled,
     base64-encoded data straight from the wordnet browser's lookup_ URLs via
     RestrictedUnpickler. RestrictedUnpickler blocks class/function
-    reconstruction, but it does not guarantee the *type* of what it returns:
-    pickle's built-in list/dict/int/etc. opcodes never go through the
-    blocked path. Without a type check, a single crafted lookup_<pickle> URL
-    (e.g. decoding to an int instead of a str) crashed the server with an
-    uncaught AttributeError in page_from_reference()'s word.split(",").
+    reconstruction, but it does not guarantee the *type* or *shape* of what
+    it returns: pickle's built-in list/dict/int/etc. opcodes never go
+    through the blocked path. Without validation, a single crafted
+    lookup_<pickle> URL crashed the server, either directly (e.g. decoding
+    to an int instead of a str crashed word.split(",") in
+    page_from_reference()) or downstream (e.g. a synset_relations dict with
+    non-set values crashed toggle_synset_relation()'s .add()/.remove()).
+    Every such failure must surface as ValueError, since that's the only
+    exception type the lookup_ route in do_GET catches.
     """
     import base64
     import pickle
@@ -70,12 +74,35 @@ def test_wordnet_app_reference_decode_rejects_wrong_types():
     assert ref.word == "dog"
     assert ref.synset_relations == {}
 
-    # Malformed references (wrong type for word or synset_relations) must be
-    # rejected here, rather than accepted and left to crash downstream code.
-    for bad_payload in [(42, {}), ([[[1]]], {}), (None, {}), ("dog", [])]:
+    # Malformed references must be rejected here, rather than accepted and
+    # left to crash downstream code. Covers: wrong type for word; wrong type
+    # for synset_relations itself; a synset_relations dict whose keys or
+    # values are the wrong type; and payloads that don't even unpack to a
+    # (word, synset_relations) pair (a bare int isn't iterable at all; a
+    # 1-tuple/3-tuple is the wrong arity).
+    bad_payloads = [
+        (42, {}),
+        ([[[1]]], {}),
+        (None, {}),
+        ("dog", []),
+        ("dog", {"dog.n.01": ["not", "a", "set"]}),
+        ("dog", {42: {"hypernym"}}),
+        42,
+        ("dog",),
+        ("dog", {}, "extra"),
+    ]
+    for bad_payload in bad_payloads:
         bad = base64.urlsafe_b64encode(pickle.dumps(bad_payload, -1)).decode()
         try:
             Reference.decode(bad)
             raise AssertionError(f"Reference.decode should reject {bad_payload!r}")
+        except ValueError:
+            pass
+
+    # Also covers input that isn't valid base64/pickle data at all.
+    for bad_string in ["not valid base64!!!", "", "====", "aGVsbG8="]:
+        try:
+            Reference.decode(bad_string)
+            raise AssertionError(f"Reference.decode should reject {bad_string!r}")
         except ValueError:
             pass
