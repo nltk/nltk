@@ -316,6 +316,7 @@
 - John Winstead <https://github.com/jhnwnstd/>
 - Bradley Erickson <https://github.com/13rac1>
 - Volodymyr Matsko <https://github.com/Lemm1>
+- Nicola <https://github.com/trinik15>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
