@@ -20,7 +20,7 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
-.. _megam: https://www.umiacs.umd.edu/~hal/megam/index.html
+.. _megam: http://hal3.name/megam/
 """
 import subprocess
 
@@ -54,7 +54,7 @@ def config_megam(bin=None):
         bin,
         env_vars=["MEGAM"],
         binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
-        url="https://www.umiacs.umd.edu/~hal/megam/index.html",
+        url="http://hal3.name/megam/",
     )
 
 
