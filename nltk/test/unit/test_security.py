@@ -77,15 +77,18 @@ def test_wordnet_app_reference_decode_rejects_wrong_types():
     # Malformed references must be rejected here, rather than accepted and
     # left to crash downstream code. Covers: wrong type for word; wrong type
     # for synset_relations itself; a synset_relations dict whose keys or
-    # values are the wrong type; and payloads that don't even unpack to a
-    # (word, synset_relations) pair (a bare int isn't iterable at all; a
-    # 1-tuple/3-tuple is the wrong arity).
+    # values are the wrong type (including frozenset, which looks like a
+    # valid set but lacks the .add()/.remove() that toggle_synset_relation()
+    # needs, so it must be rejected too, not just non-set types); and
+    # payloads that don't even unpack to a (word, synset_relations) pair (a
+    # bare int isn't iterable at all; a 1-tuple/3-tuple is the wrong arity).
     bad_payloads = [
         (42, {}),
         ([[[1]]], {}),
         (None, {}),
         ("dog", []),
         ("dog", {"dog.n.01": ["not", "a", "set"]}),
+        ("dog", {"dog.n.01": frozenset()}),
         ("dog", {42: {"hypernym"}}),
         42,
         ("dog",),

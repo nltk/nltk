@@ -743,8 +743,10 @@ class Reference:
             raise ValueError("Malformed wordnet_app reference") from e
         if not isinstance(word, str) or not isinstance(synset_relations, dict):
             raise ValueError("Malformed wordnet_app reference")
+        # Must be plain, mutable sets: toggle_synset_relation() calls .add()
+        # and .remove() on these values, which frozenset doesn't support.
         if not all(
-            isinstance(key, str) and isinstance(value, (set, frozenset))
+            isinstance(key, str) and isinstance(value, set)
             for key, value in synset_relations.items()
         ):
             raise ValueError("Malformed wordnet_app reference")
