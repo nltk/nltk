@@ -71,7 +71,6 @@ class HunposTagger(TaggerI):
         """
         self._closed = True
         hunpos_paths = [
-            ".",
             "/usr/bin",
             "/usr/local/bin",
             "/opt/local/bin",
