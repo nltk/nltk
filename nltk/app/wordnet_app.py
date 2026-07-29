@@ -173,7 +173,12 @@ class MyServerHandler(BaseHTTPRequestHandler):
             # TODO add a variation of this that takes a non ecoded word or MWE.
             type = "text/html"
             sp = sp[len("lookup_") :]
-            page, word = page_from_href(sp)
+            try:
+                page, word = page_from_href(sp)
+            except ValueError:
+                type = "text/plain"
+                page = "Could not parse lookup reference."
+                word = "* Error *"
         elif sp == "start_page":
             # if this is the first request we should display help
             # information, and possibly set a default word.
@@ -720,9 +725,31 @@ class Reference:
     def decode(string):
         """
         Decode a reference encoded with Reference.encode
+
+        :raises ValueError: if the input isn't valid base64/pickle data, or
+            if the decoded data isn't shaped like a genuine Reference
+            (word: str, synset_relations: dict[str, set]).
+            RestrictedUnpickler only blocks class/function reconstruction;
+            it does not guarantee the *type* or *shape* of what it returns,
+            so that must still be checked before use. Any failure while
+            decoding, unpickling, or unpacking the payload is normalized to
+            ValueError so callers only need to guard against one exception
+            type.
         """
-        string = base64.urlsafe_b64decode(string.encode())
-        word, synset_relations = RestrictedUnpickler(io.BytesIO(string)).load()
+        try:
+            raw = base64.urlsafe_b64decode(string.encode())
+            word, synset_relations = RestrictedUnpickler(io.BytesIO(raw)).load()
+        except Exception as e:
+            raise ValueError("Malformed wordnet_app reference") from e
+        if not isinstance(word, str) or not isinstance(synset_relations, dict):
+            raise ValueError("Malformed wordnet_app reference")
+        # Must be plain, mutable sets: toggle_synset_relation() calls .add()
+        # and .remove() on these values, which frozenset doesn't support.
+        if not all(
+            isinstance(key, str) and isinstance(value, set)
+            for key, value in synset_relations.items()
+        ):
+            raise ValueError("Malformed wordnet_app reference")
         return Reference(word, synset_relations)
 
     def toggle_synset_relation(self, synset, relation):
