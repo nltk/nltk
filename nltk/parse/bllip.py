@@ -91,9 +91,12 @@ try:
         pass
 
 except ImportError as ie:
+    _bllip_import_error_message = str(ie)
 
-    def _ensure_bllip_import_or_error(ie=ie):
-        raise ImportError("Couldn't import bllipparser module: %s" % ie)
+    def _ensure_bllip_import_or_error():
+        raise ImportError(
+            "Couldn't import bllipparser module: %s" % _bllip_import_error_message
+        )
 
 
 def _ensure_ascii(words):
