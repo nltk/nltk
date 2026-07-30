@@ -19,32 +19,43 @@ isort:skip_file
 """
 
 import os
-import importlib
+
+# import importlib
 import sys
 
+import importlib.abc
+import importlib.machinery
+from pathlib import Path
 
-def _postpone(path):
+
+class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
     """
-    Moves a path to the end of sys.path to enforce a restrictive module
-    search policy, preventing untrusted search path vulnerabilities (CWE-426).
+    A custom import finder that prevents module hijacking by blocking imports
+    of vulnerable dependencies from the current working directory.
     """
-    if path in sys.path:
-        # Purge all instances of the path first
-        while path in sys.path:
-            sys.path.remove(path)
-        # Add a single instance back at the end
-        sys.path.append(path)
+
+    def find_spec(self, fullname, path, target=None):
+        # Only check specific dependencies we care about
+        if not fullname.startswith(("numpy", "numpypy", "joblib", "tqdm")):
+            return None
+
+        # Use PathFinder directly to avoid recursion
+        spec = importlib.machinery.PathFinder.find_spec(fullname, path, target)
+        if spec is None:
+            return None
+
+        # Security check: verify the module is NOT from the CWD
+        if spec.origin and Path(spec.origin).resolve().parent == Path.cwd().resolve():
+            raise ImportError(
+                f"Blocked import of {fullname} from current working directory for security reasons"
+            )
+
+        return spec
 
 
-# Deprioritize dynamic and explicit current working directories
-for p in ["", "."]:
-    _postpone(p)
+# Install the finder at the front of sys.meta_path
+sys.meta_path.insert(0, NLTKSafeImportFinder())
 
-try:
-    _postpone(os.getcwd())
-except OSError:
-    # Occurs if the current working directory was deleted after the Python process started
-    pass
 
 # //////////////////////////////////////////////////////
 # Metadata
