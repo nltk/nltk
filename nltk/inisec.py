@@ -185,33 +185,35 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
 
         # Use PathFinder directly to avoid recursion
         spec = importlib.machinery.PathFinder.find_spec(fullname, path, target)
-        if spec is None or not spec.origin:
+        if spec is None:
             return None
 
         if self._cwd is None:
             # CWD was deleted; we can't determine safety, allow import
             return spec
 
+        # Check if the module resolves to the CWD (file, package, or namespace package)
         try:
-            module_path = Path(spec.origin).resolve()
-
-            # Case 1: File module directly in CWD (e.g., ./joblib.py)
-            if module_path.parent == self._cwd:
-                raise ImportError(
-                    f"Blocked import of {fullname} from current working directory "
-                    "for security reasons. Use '-P' or set PYTHONSAFEPATH to prevent "
-                    "Python from searching the current working directory."
-                )
-
-            # Case 2: Package directory directly in CWD (e.g., ./joblib/__init__.py)
-            if spec.submodule_search_locations:
-                pkg_dir = Path(spec.submodule_search_locations[0]).resolve()
-                if pkg_dir.parent == self._cwd:
+            # For regular modules/packages with an origin file
+            if spec.origin:
+                module_path = Path(spec.origin).resolve()
+                if module_path.parent == self._cwd:
                     raise ImportError(
                         f"Blocked import of {fullname} from current working directory "
                         "for security reasons. Use '-P' or set PYTHONSAFEPATH to prevent "
                         "Python from searching the current working directory."
                     )
+
+            # For namespace packages (origin is None, but we have search locations)
+            if spec.submodule_search_locations:
+                for loc in spec.submodule_search_locations:
+                    pkg_dir = Path(loc).resolve()
+                    if pkg_dir.parent == self._cwd:
+                        raise ImportError(
+                            f"Blocked import of {fullname} from current working directory "
+                            "for security reasons. Use '-P' or set PYTHONSAFEPATH to prevent "
+                            "Python from searching the current working directory."
+                        )
 
         except FileNotFoundError:
             # Something went wrong reading the path; allow import
