@@ -18,8 +18,8 @@ https://www.nltk.org/book/
 isort:skip_file
 """
 
-from nltk import inisec
-
+# Import security hook – must come first to protect against CWD hijacking
+import nltk.inisec
 import os
 import importlib
 import sys

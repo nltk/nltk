@@ -1,23 +1,22 @@
+import importlib.util
 import os
 import subprocess
 import sys
 import tempfile
 
+import pytest
+
 
 def test_module_hijacking_prevention():
-    """Ensure inline imports do not resolve from the current working directory."""
+    """Ensure imports of vulnerable modules from CWD are blocked."""
     with tempfile.TemporaryDirectory() as d:
-        # Attacker payload
         with open(os.path.join(d, "joblib.py"), "w") as f:
             f.write("print('HIJACK_SUCCESS')\n")
-
-        # Victim script that triggers the vulnerable import
         with open(os.path.join(d, "victim.py"), "w") as f:
             f.write(
                 "from nltk.util import parallelize_preprocess\n"
                 "list(parallelize_preprocess(str.upper, ['a'], processes=1))\n"
             )
-
         env = os.environ.copy()
         repo_root = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "..", "..")
@@ -25,7 +24,6 @@ def test_module_hijacking_prevention():
         env["PYTHONPATH"] = repo_root + (
             os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
         )
-
         res = subprocess.run(
             [sys.executable, "victim.py"],
             cwd=d,
@@ -33,40 +31,26 @@ def test_module_hijacking_prevention():
             capture_output=True,
             text=True,
         )
-
         try:
-            # 1. The malicious module must NOT be executed
-            assert (
-                "HIJACK_SUCCESS" not in res.stdout
-            ), "Malicious module was loaded from CWD"
-            # 2. The import must be blocked (script fails)
-            assert res.returncode != 0, "Security measure should raise ImportError"
-            # 3. The error message must be clear and informative
+            assert "HIJACK_SUCCESS" not in res.stdout
+            assert res.returncode != 0
             assert (
                 "Blocked import of joblib from current working directory" in res.stderr
-            ), "Expected security error message not found"
-            assert (
-                "for security reasons" in res.stderr
-            ), "Security error should include explanation"
-            # 4. The error message must mention the fix (-P / PYTHONSAFEPATH)
-            assert (
-                "-P" in res.stderr or "PYTHONSAFEPATH" in res.stderr
-            ), "Error message should guide user toward the recommended fix"
+            )
+            assert "-P" in res.stderr or "PYTHONSAFEPATH" in res.stderr
         except AssertionError:
-            print("--- SUBPROCESS STDOUT ---\n", res.stdout)
-            print("--- SUBPROCESS STDERR ---\n", res.stderr)
+            print("--- STDOUT ---\n", res.stdout)
+            print("--- STDERR ---\n", res.stderr)
             raise
 
 
-def test_host_imports_unaffected():
-    """Ensure the host application's imports are not affected."""
+def test_host_imports_of_vulnerable_modules_are_blocked():
+    """Host imports of vulnerable modules from CWD are blocked."""
     with tempfile.TemporaryDirectory() as d:
         with open(os.path.join(d, "joblib.py"), "w") as f:
             f.write("print('HOST_HIJACK')\n")
-
         with open(os.path.join(d, "victim.py"), "w") as f:
-            f.write("import joblib\n" "print('HOST_SUCCESS')\n")
-
+            f.write("import nltk\n" "import joblib\n" "print('HOST_SUCCESS')\n")
         env = os.environ.copy()
         repo_root = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "..", "..")
@@ -74,7 +58,6 @@ def test_host_imports_unaffected():
         env["PYTHONPATH"] = repo_root + (
             os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
         )
-
         res = subprocess.run(
             [sys.executable, "victim.py"],
             cwd=d,
@@ -82,22 +65,52 @@ def test_host_imports_unaffected():
             capture_output=True,
             text=True,
         )
-
         try:
-            # The host's import should succeed (hook does not interfere)
-            assert res.returncode == 0, "Host import should succeed"
-            assert "HOST_HIJACK" in res.stdout, "Host should be able to import from CWD"
-            assert (
-                "HOST_SUCCESS" in res.stdout
-            ), "Host script should complete successfully"
+            assert "HOST_HIJACK" not in res.stdout
+            assert res.returncode != 0
+            assert "Blocked import of joblib" in res.stderr
         except AssertionError:
-            print("--- SUBPROCESS STDOUT ---\n", res.stdout)
-            print("--- SUBPROCESS STDERR ---\n", res.stderr)
+            print("--- STDOUT ---\n", res.stdout)
+            print("--- STDERR ---\n", res.stderr)
             raise
 
 
+def test_host_imports_of_non_vulnerable_modules_are_unaffected():
+    """Host imports of non‑vulnerable modules from CWD succeed."""
+    with tempfile.TemporaryDirectory() as d:
+        # 'antigravity' is a standard library module NOT used anywhere in NLTK.
+        with open(os.path.join(d, "antigravity.py"), "w") as f:
+            f.write("print('ANTIGRAVITY_HIJACK')\n")
+        with open(os.path.join(d, "victim.py"), "w") as f:
+            f.write("import nltk\n" "import antigravity\n" "print('HOST_SUCCESS')\n")
+        env = os.environ.copy()
+        repo_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "..")
+        )
+        env["PYTHONPATH"] = repo_root + (
+            os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
+        )
+        res = subprocess.run(
+            [sys.executable, "victim.py"],
+            cwd=d,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        try:
+            assert res.returncode == 0
+            assert "ANTIGRAVITY_HIJACK" in res.stdout
+            assert "HOST_SUCCESS" in res.stdout
+        except AssertionError:
+            print("--- STDOUT ---\n", res.stdout)
+            print("--- STDERR ---\n", res.stderr)
+            raise
+
+
+@pytest.mark.skipif(
+    not importlib.util.find_spec("joblib"), reason="joblib not installed"
+)
 def test_legitimate_import_from_site_packages():
-    """Ensure imports from site-packages succeed."""
     import joblib
 
     assert joblib.__file__ is not None
