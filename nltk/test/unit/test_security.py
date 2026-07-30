@@ -78,7 +78,6 @@ def test_host_imports_of_vulnerable_modules_are_blocked():
 def test_host_imports_of_non_vulnerable_modules_are_unaffected():
     """Host imports of non‑vulnerable modules from CWD succeed."""
     with tempfile.TemporaryDirectory() as d:
-        # 'antigravity' is a standard library module NOT used anywhere in NLTK.
         with open(os.path.join(d, "antigravity.py"), "w") as f:
             f.write("print('ANTIGRAVITY_HIJACK')\n")
         with open(os.path.join(d, "victim.py"), "w") as f:
@@ -101,6 +100,43 @@ def test_host_imports_of_non_vulnerable_modules_are_unaffected():
             assert res.returncode == 0
             assert "ANTIGRAVITY_HIJACK" in res.stdout
             assert "HOST_SUCCESS" in res.stdout
+        except AssertionError:
+            print("--- STDOUT ---\n", res.stdout)
+            print("--- STDERR ---\n", res.stderr)
+            raise
+
+
+def test_disable_flag():
+    """Ensure setting NLTK_DISABLE_IMPORT_SECURITY=1 disables the hook."""
+    with tempfile.TemporaryDirectory() as d:
+        with open(os.path.join(d, "joblib.py"), "w") as f:
+            f.write("print('DISABLED_HIJACK')\n")
+        with open(os.path.join(d, "victim.py"), "w") as f:
+            f.write(
+                "import os\n"
+                "os.environ['NLTK_DISABLE_IMPORT_SECURITY'] = '1'\n"
+                "import nltk\n"
+                "import joblib\n"
+                "print('SUCCESS')\n"
+            )
+        env = os.environ.copy()
+        repo_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "..")
+        )
+        env["PYTHONPATH"] = repo_root + (
+            os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
+        )
+        res = subprocess.run(
+            [sys.executable, "victim.py"],
+            cwd=d,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        try:
+            assert (
+                "DISABLED_HIJACK" in res.stdout
+            ), "Malicious module should be loaded when hook is disabled"
         except AssertionError:
             print("--- STDOUT ---\n", res.stdout)
             print("--- STDERR ---\n", res.stderr)

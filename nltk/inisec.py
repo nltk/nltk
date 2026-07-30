@@ -40,16 +40,17 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
 
     # Exhaustive list of all top-level modules NLTK or its dependencies import,
     # generated from a comprehensive grep of the codebase.
+    # Only importable module names are included (distribution names like
+    # scikit_learn, beautifulsoup4, python_dateutil are omitted).
     _vulnerable_modules = frozenset(
         (
-            # ---- Third-party packages (direct and optional dependencies) ----
+            # ---- Third-party packages (importable names) ----
             "numpy",
             "numpypy",
             "joblib",
             "tqdm",
             "scipy",
             "sklearn",
-            "scikit_learn",
             "matplotlib",
             "pandas",
             "requests",
@@ -59,14 +60,11 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
             "pytest",
             "defusedxml",
             "gensim",
-            "python_crfsuite",
             "pycrfsuite",
-            "beautifulsoup4",
+            "bs4",
             "lxml",
             "dateutil",
-            "python_dateutil",
             # ---- Standard library modules (all found in the grep) ----
-            # Core builtins and system
             "abc",
             "argparse",
             "array",
@@ -149,11 +147,8 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
     )
 
     def __init__(self):
-        # Cache the resolved CWD once at startup to avoid repeated disk access
-        try:
-            self._cwd = Path.cwd().resolve()
-        except FileNotFoundError:
-            self._cwd = None
+        # No caching of CWD; we resolve it dynamically in find_spec to respect chdir().
+        pass
 
     def _is_import_from_nltk(self):
         """
@@ -188,7 +183,10 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
         if spec is None:
             return None
 
-        if self._cwd is None:
+        # Resolve CWD dynamically (do not cache, because the process can chdir())
+        try:
+            cwd = Path.cwd().resolve()
+        except FileNotFoundError:
             # CWD was deleted; we can't determine safety, allow import
             return spec
 
@@ -197,7 +195,7 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
             # For regular modules/packages with an origin file
             if spec.origin:
                 module_path = Path(spec.origin).resolve()
-                if module_path.parent == self._cwd:
+                if module_path.parent == cwd:
                     raise ImportError(
                         f"Blocked import of {fullname} from current working directory "
                         "for security reasons. Use '-P' or set PYTHONSAFEPATH to prevent "
@@ -205,10 +203,11 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
                     )
 
             # For namespace packages (origin is None, but we have search locations)
+            # Check ALL search locations, not only the first
             if spec.submodule_search_locations:
                 for loc in spec.submodule_search_locations:
                     pkg_dir = Path(loc).resolve()
-                    if pkg_dir.parent == self._cwd:
+                    if pkg_dir.parent == cwd:
                         raise ImportError(
                             f"Blocked import of {fullname} from current working directory "
                             "for security reasons. Use '-P' or set PYTHONSAFEPATH to prevent "
@@ -222,7 +221,8 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
         return spec
 
 
-# Install the finder only once, unless disabled via environment variable
-if not os.environ.get("NLTK_DISABLE_IMPORT_SECURITY"):
+# Install the finder only once, unless explicitly disabled by setting the environment
+# variable to "1" (strict check, not just any value).
+if os.environ.get("NLTK_DISABLE_IMPORT_SECURITY") != "1":
     if not any(isinstance(f, NLTKSafeImportFinder) for f in sys.meta_path):
         sys.meta_path.insert(0, NLTKSafeImportFinder())
