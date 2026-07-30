@@ -328,7 +328,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r"([^'])\s'\s"), r"\1' "),
         (re.compile(r"\s([?!])"), r"\g<1>"),  # Strip left pad for [?!]
         # (re.compile(r'\s([?!])\s'), r'\g<1>'),
-        (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r"\1\2\3"),
+        (re.compile(r'([^\.])\s(\.)(?!\.)([\]\)}>"\']*)'), r"\1\2\3"),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
