@@ -223,12 +223,16 @@ def test_worker_process_cwd_import_is_blocked():
         assert "IMPORTED" not in res.stdout
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 11),
+    reason="PYTHONSAFEPATH was added in Python 3.11; on earlier versions it is "
+    "silently ignored, so this launch-time remedy does not apply.",
+)
 def test_worker_process_is_protected_with_pythonsafepath():
     """
     Confirms the recommended remedy works: with PYTHONSAFEPATH=1 in the launch
     environment, worker interpreters omit the CWD and the hijack is prevented.
-    Skipped if the joblib backend does not honour it (e.g. pure-fork with a
-    pre-fixed path), which is itself the point of the residual documentation.
+    Requires Python 3.11+, where PYTHONSAFEPATH exists.
     """
     if not importlib.util.find_spec("joblib"):
         pytest.skip("joblib not installed")
@@ -265,7 +269,6 @@ def test_worker_process_is_protected_with_pythonsafepath():
             capture_output=True,
             text=True,
         )
-        # The launch-time remedy must prevent the hijack.
         assert "WORKER_HIJACK" not in res.stdout
 
 

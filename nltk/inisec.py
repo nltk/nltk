@@ -43,8 +43,12 @@ avoids because it can break a host application's legitimate local imports.
 
 To obtain complete protection across fork-based workers, start Python with the
 ``-P`` flag or set ``PYTHONSAFEPATH=1`` in the environment **before** launching the
-process. This is the standard, interpreter-level remedy and is recommended for any
-security-sensitive deployment.
+process.
+
+Note: ``-P`` and ``PYTHONSAFEPATH`` require **Python 3.11+**. On Python 3.10 they
+are silently ignored, so this launch-time remedy is unavailable and fork-based
+worker imports cannot be isolated this way. (Python 3.10 is expected to be dropped
+in an upcoming release.)
 
 The hook can be disabled entirely by setting ``NLTK_DISABLE_IMPORT_SECURITY=1``.
 """
