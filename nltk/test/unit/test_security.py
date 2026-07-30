@@ -7,18 +7,15 @@ import tempfile
 def test_module_hijacking_prevention():
     """Ensure inline imports do not resolve from the current working directory."""
     with tempfile.TemporaryDirectory() as d:
-        # 1. Attacker payload that would print a flag if imported
         with open(os.path.join(d, "joblib.py"), "w") as f:
             f.write("print('HIJACK_SUCCESS')\n")
 
-        # 2. Victim script that triggers the vulnerable import
         with open(os.path.join(d, "victim.py"), "w") as f:
             f.write(
                 "from nltk.util import parallelize_preprocess\n"
                 "list(parallelize_preprocess(str.upper, ['a'], processes=1))\n"
             )
 
-        # 3. Ensure subprocess uses the local, patched NLTK repository
         env = os.environ.copy()
         repo_root = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "..", "..")
@@ -27,7 +24,6 @@ def test_module_hijacking_prevention():
             os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
         )
 
-        # 4. Execute in the isolated directory
         res = subprocess.run(
             [sys.executable, "victim.py"],
             cwd=d,
@@ -36,22 +32,22 @@ def test_module_hijacking_prevention():
             text=True,
         )
 
-        # 5. Print raw output only on unexpected outcome for debugging
-        if res.returncode == 0:  # Unexpected success means the attack wasn't blocked
+        # Print debug output on any test failure
+        try:
+            assert (
+                "HIJACK_SUCCESS" not in res.stdout
+            ), "Malicious module was loaded from CWD"
+            assert res.returncode != 0, "Security measure should raise ImportError"
+            assert (
+                "Blocked import of joblib from current working directory" in res.stderr
+            ), "Expected security error message not found"
+            assert (
+                "for security reasons" in res.stderr
+            ), "Security error should include explanation"
+        except AssertionError:
             print("--- SUBPROCESS STDOUT ---\n", res.stdout)
             print("--- SUBPROCESS STDERR ---\n", res.stderr)
-
-        # 6. Verify the exploit was blocked
-        assert (
-            "HIJACK_SUCCESS" not in res.stdout
-        ), "Security Failure: Malicious module was loaded from CWD."
-        assert res.returncode != 0, "Security measure should raise ImportError"
-        assert (
-            "Blocked import of joblib from current working directory" in res.stderr
-        ), "Expected security error message not found"
-        assert (
-            "for security reasons" in res.stderr
-        ), "Security error should include explanation"
+            raise
 
 
 def test_wordnet_app_reference_decode_rejects_wrong_types():

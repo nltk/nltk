@@ -27,32 +27,26 @@ from pathlib import Path
 
 
 class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
-    """
-    Prevents module hijacking by blocking imports of NLTK's optional
-    dependencies from the current working directory.
-    """
-
     _vulnerable_modules = ("numpy", "numpypy", "joblib", "tqdm")
 
     def find_spec(self, fullname, path, target=None):
-        # Only check specific dependencies (exact top-level match)
+        # Only check exact top-level package names
         if fullname.split(".")[0] not in self._vulnerable_modules:
             return None
 
-        # Use PathFinder directly to avoid recursion
         spec = importlib.machinery.PathFinder.find_spec(fullname, path, target)
         if spec is None or not spec.origin:
             return None
 
-        # Check if the module is inside the current working directory
+        # Block only if module is a direct child of the CWD
         try:
             cwd = Path.cwd().resolve()
             module_path = Path(spec.origin).resolve()
-            if cwd in module_path.parents or module_path.parent == cwd:
+            if module_path.parent == cwd:
                 raise ImportError(
                     f"Blocked import of {fullname} from current working directory "
-                    "for security reasons. Use '-P' or set PYTHONSAFEPATH to disable "
-                    "this behavior globally."
+                    "for security reasons. Use '-P' or set PYTHONSAFEPATH to prevent "
+                    "Python from searching the current working directory."
                 )
         except FileNotFoundError:
             # CWD was deleted; cannot determine safety, allow import
