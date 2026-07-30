@@ -36,8 +36,8 @@ def test_module_hijacking_prevention():
             text=True,
         )
 
-        # 5. Print raw output on failure for debugging
-        if res.returncode != 0:
+        # 5. Print raw output only on unexpected outcome for debugging
+        if res.returncode == 0:  # Unexpected success means the attack wasn't blocked
             print("--- SUBPROCESS STDOUT ---\n", res.stdout)
             print("--- SUBPROCESS STDERR ---\n", res.stderr)
 
@@ -45,9 +45,6 @@ def test_module_hijacking_prevention():
         assert (
             "HIJACK_SUCCESS" not in res.stdout
         ), "Security Failure: Malicious module was loaded from CWD."
-
-        # 7. The script should fail with ImportError (this is expected and correct)
-        #    The test verifies the failure mode is clean and informative
         assert res.returncode != 0, "Security measure should raise ImportError"
         assert (
             "Blocked import of joblib from current working directory" in res.stderr

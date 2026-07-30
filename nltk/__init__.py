@@ -19,8 +19,6 @@ isort:skip_file
 """
 
 import os
-
-# import importlib
 import sys
 
 import importlib.abc
@@ -30,32 +28,42 @@ from pathlib import Path
 
 class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
     """
-    A custom import finder that prevents module hijacking by blocking imports
-    of vulnerable dependencies from the current working directory.
+    Prevents module hijacking by blocking imports of NLTK's optional
+    dependencies from the current working directory.
     """
 
+    _vulnerable_modules = ("numpy", "numpypy", "joblib", "tqdm")
+
     def find_spec(self, fullname, path, target=None):
-        # Only check specific dependencies we care about
-        if not fullname.startswith(("numpy", "numpypy", "joblib", "tqdm")):
+        # Only check specific dependencies (exact top-level match)
+        if fullname.split(".")[0] not in self._vulnerable_modules:
             return None
 
         # Use PathFinder directly to avoid recursion
         spec = importlib.machinery.PathFinder.find_spec(fullname, path, target)
-        if spec is None:
+        if spec is None or not spec.origin:
             return None
 
-        # Security check: verify the module is NOT from the CWD
-        if spec.origin and Path(spec.origin).resolve().parent == Path.cwd().resolve():
-            raise ImportError(
-                f"Blocked import of {fullname} from current working directory for security reasons"
-            )
+        # Check if the module is inside the current working directory
+        try:
+            cwd = Path.cwd().resolve()
+            module_path = Path(spec.origin).resolve()
+            if cwd in module_path.parents or module_path.parent == cwd:
+                raise ImportError(
+                    f"Blocked import of {fullname} from current working directory "
+                    "for security reasons. Use '-P' or set PYTHONSAFEPATH to disable "
+                    "this behavior globally."
+                )
+        except FileNotFoundError:
+            # CWD was deleted; cannot determine safety, allow import
+            pass
 
         return spec
 
 
-# Install the finder at the front of sys.meta_path
-sys.meta_path.insert(0, NLTKSafeImportFinder())
-
+# Install the finder only once
+if not any(isinstance(f, NLTKSafeImportFinder) for f in sys.meta_path):
+    sys.meta_path.insert(0, NLTKSafeImportFinder())
 
 # //////////////////////////////////////////////////////
 # Metadata
