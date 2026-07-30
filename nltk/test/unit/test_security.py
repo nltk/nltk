@@ -3,13 +3,11 @@ import subprocess
 import sys
 import tempfile
 
-import pytest
-
 
 def test_module_hijacking_prevention():
     """Ensure inline imports do not resolve from the current working directory."""
     with tempfile.TemporaryDirectory() as d:
-        # Attacker payload that would print a flag if imported
+        # Attacker payload
         with open(os.path.join(d, "joblib.py"), "w") as f:
             f.write("print('HIJACK_SUCCESS')\n")
 
@@ -36,12 +34,24 @@ def test_module_hijacking_prevention():
             text=True,
         )
 
-        # Verify the malicious module was blocked and the real module was used
         try:
+            # 1. The malicious module must NOT be executed
             assert (
                 "HIJACK_SUCCESS" not in res.stdout
             ), "Malicious module was loaded from CWD"
-            assert res.returncode == 0, "Script should succeed using legitimate joblib"
+            # 2. The import must be blocked (script fails)
+            assert res.returncode != 0, "Security measure should raise ImportError"
+            # 3. The error message must be clear and informative
+            assert (
+                "Blocked import of joblib from current working directory" in res.stderr
+            ), "Expected security error message not found"
+            assert (
+                "for security reasons" in res.stderr
+            ), "Security error should include explanation"
+            # 4. The error message must mention the fix (-P / PYTHONSAFEPATH)
+            assert (
+                "-P" in res.stderr or "PYTHONSAFEPATH" in res.stderr
+            ), "Error message should guide user toward the recommended fix"
         except AssertionError:
             print("--- SUBPROCESS STDOUT ---\n", res.stdout)
             print("--- SUBPROCESS STDERR ---\n", res.stderr)
@@ -51,11 +61,9 @@ def test_module_hijacking_prevention():
 def test_host_imports_unaffected():
     """Ensure the host application's imports are not affected."""
     with tempfile.TemporaryDirectory() as d:
-        # Create a malicious joblib.py in CWD
         with open(os.path.join(d, "joblib.py"), "w") as f:
             f.write("print('HOST_HIJACK')\n")
 
-        # Script that imports joblib directly (not via NLTK)
         with open(os.path.join(d, "victim.py"), "w") as f:
             f.write("import joblib\n" "print('HOST_SUCCESS')\n")
 
@@ -76,7 +84,7 @@ def test_host_imports_unaffected():
         )
 
         try:
-            # The host's import should succeed (the hook only protects NLTK)
+            # The host's import should succeed (hook does not interfere)
             assert res.returncode == 0, "Host import should succeed"
             assert "HOST_HIJACK" in res.stdout, "Host should be able to import from CWD"
             assert (
@@ -90,7 +98,6 @@ def test_host_imports_unaffected():
 
 def test_legitimate_import_from_site_packages():
     """Ensure imports from site-packages succeed."""
-    # This test simply verifies that importing joblib works when it's not in CWD
     import joblib
 
     assert joblib.__file__ is not None
