@@ -1240,3 +1240,44 @@ class TestTreebankWordDetokenizer:
         original_tokens = ["``", "Hello", ",", "''", "he", "said", "."]
         result = self.detok.detokenize(original_tokens)
         assert '"' in result
+
+    def test_issue_3210_mid_string_period(self):
+        """Standalone period tokens mid-string must not keep a leading space (#3210)."""
+        tokens = [
+            "Lorem",
+            "ipsum",
+            "dolor",
+            "sit",
+            "amet",
+            ".",
+            "consectetur",
+            "adipiscing",
+            "elit",
+            ".",
+        ]
+        assert (
+            self.detok.detokenize(tokens)
+            == "Lorem ipsum dolor sit amet. consectetur adipiscing elit."
+        )
+
+    def test_issue_3210_multiple_sentence_periods(self):
+        """Every sentence-final period is joined, not only the last one (#3210)."""
+        tokens = [
+            "I",
+            "called",
+            "Dr.",
+            "Jones",
+            ".",
+            "I",
+            "called",
+            "Dr.",
+            "Jones",
+            ".",
+        ]
+        assert (
+            self.detok.detokenize(tokens) == "I called Dr. Jones. I called Dr. Jones."
+        )
+
+    def test_issue_3210_ellipsis_preserved(self):
+        """The mid-string period fix must not disturb ellipsis tokens (#3210)."""
+        assert self.detok.detokenize(["wait", "...", "what"]) == "wait...what"
