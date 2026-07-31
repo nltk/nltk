@@ -998,6 +998,47 @@ class TestTokenize:
     def test_sent_tokenize(self, sentences: str, expected: list[str]):
         assert sent_tokenize(sentences) == expected
 
+    def test_sent_tokenize_curly_quotes_and_guillemets_issue_2333(self):
+        # Regression test for https://github.com/nltk/nltk/issues/2333.
+        #
+        # A sentence-final Unicode curly closing quote or guillemet that
+        # directly abuts the period, with no intervening whitespace, used to
+        # hide the sentence boundary from Punkt entirely: the period matched
+        # neither the "non-word char" branch nor the "whitespace" branch of
+        # the period-context regex, so period_context_re() never even
+        # yielded a match at that position. NLTKWordTokenizer's
+        # STARTING_QUOTES / ENDING_QUOTES (see
+        # test_word_tokenize_opening_single_quote_padding above) already
+        # special-cased this character set; PunktLanguageVars did not.
+        assert sent_tokenize("“First sentence.” Next one.") == [
+            "“First sentence.”",
+            "Next one.",
+        ]
+        assert sent_tokenize("He said “this is great.” Then left.") == [
+            "He said “this is great.”",
+            "Then left.",
+        ]
+        assert sent_tokenize("She asked, “Are you coming?” He nodded.") == [
+            "She asked, “Are you coming?”",
+            "He nodded.",
+        ]
+        assert sent_tokenize("Il a dit «bonjour.» Puis il est parti.") == [
+            "Il a dit «bonjour.»",
+            "Puis il est parti.",
+        ]
+
+        # Regression guards: straight quotes and plain text (no quotes at
+        # all) must tokenize exactly as before, unaffected by the new
+        # boundary-realignment / non-word-char classes.
+        assert sent_tokenize('He said "hi." Then left.') == [
+            'He said "hi."',
+            "Then left.",
+        ]
+        assert sent_tokenize("This is one sentence. This is another.") == [
+            "This is one sentence.",
+            "This is another.",
+        ]
+
     def test_string_tokenizer(self) -> None:
         sentence = "Hello there"
         tokenizer = CharTokenizer()
