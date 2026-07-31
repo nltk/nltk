@@ -187,6 +187,24 @@ class IPIPANCorpusReader(CorpusReader):
         return list(ret_fileids)
 
     def _get_tag(self, f, tag):
+        # Security (CWE-22 / CWE-59): ``f`` reaches this point as a plain str,
+        # not a PathPointer -- ``_list_header_files`` / ``_list_morph_files_by``
+        # call ``.replace("morph.xml", "header.xml")`` on the result of
+        # ``self.abspath()``/``self.abspaths()``, and since
+        # ``FileSystemPathPointer`` subclasses ``str``, ``.replace()`` returns
+        # a plain string, silently discarding the PathPointer wrapper. That
+        # meant this ``open()`` call never went through nltk.pathsec at all,
+        # not even the global check that a PathPointer.open() would apply, so
+        # a symlink planted inside the corpus root (with a name containing no
+        # separators or "..", so it passes FileSystemPathPointer.join()
+        # cleanly) could point anywhere on the filesystem and still be
+        # opened. Validate the resolved path against the corpus root before
+        # opening, the same symlink-resolving containment guard
+        # CorpusReader.open() and NKJPCorpusReader use.
+        from nltk.pathsec import validate_path
+
+        validate_path(f, context="IPIPANCorpusReader", required_root=self.root)
+
         tags = []
         with open(f) as infile:
             header = infile.read()
