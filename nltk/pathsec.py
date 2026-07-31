@@ -56,7 +56,13 @@ def _get_allowed_roots():
 
     import tempfile
 
-    for loc in ["~/nltk_data", "/usr/share/nltk_data", tempfile.gettempdir()]:
+    candidate_locs = ["~/nltk_data", "/usr/share/nltk_data"]
+    try:
+        candidate_locs.append(tempfile.gettempdir())
+    except (OSError, ValueError, RuntimeError):
+        pass
+
+    for loc in candidate_locs:
         try:
             p = Path(loc).expanduser().resolve()
             if p.exists():
