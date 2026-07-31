@@ -212,7 +212,7 @@ REGEXPS_PHONE = (REGEXPS[0], PHONE_REGEX, *REGEXPS[1:])
 # the core tokenizing regexes. They are compiled lazily.
 
 # WORD_RE performs poorly on these patterns:
-HANG_RE = regex.compile(r"([^a-zA-Z0-9])\1{3,}")
+HANG_RE = regex.compile(r"([^\p{L}\p{N}])\1{3,}")
 
 # The emoticon string gets its own regex so that we can preserve case for
 # them as needed:

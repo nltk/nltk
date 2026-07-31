@@ -383,6 +383,28 @@ class TestTokenize:
             )
         assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
 
+    def test_tweet_tokenizer_reduce_len_preserves_non_latin(self):
+        """
+        With ``reduce_len=False`` (the default), the tokenizer must not shorten
+        runs of repeated non-Latin letters. Regression test for
+        https://github.com/nltk/nltk/issues/3157, where a run of Cyrillic
+        characters was collapsed even though Latin ones were left untouched.
+        """
+        keep = TweetTokenizer(reduce_len=False)
+        # A Latin run is preserved (control) ...
+        assert keep.tokenize("Loooool") == ["Loooool"]
+        # ... and a Cyrillic run must be preserved identically.
+        assert keep.tokenize("Лооооол") == ["Лооооол"]
+
+        # reduce_len=True must still collapse long runs in any script.
+        shorten = TweetTokenizer(reduce_len=True)
+        assert shorten.tokenize("Loooool") == ["Loool"]
+        assert shorten.tokenize("Лооооол") == ["Лооол"]
+
+        # Long runs of a single punctuation character are still shortened even
+        # when reduce_len=False, so the tokenizer stays safe against ReDoS.
+        assert keep.tokenize("!!!!!!!!") == ["!", "!", "!"]
+
     def test_emoji_tokenizer(self):
         """
         Test a string that contains Emoji ZWJ Sequences and skin tone modifier
