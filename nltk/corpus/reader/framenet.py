@@ -779,6 +779,26 @@ def _reject_unsafe_path_component(value, kind):
         raise FramenetError(f"Invalid {kind}: {value!r}")
 
 
+def _validate_in_root(locpath, root, context):
+    """Reject a resolved path that escapes the corpus root through a symlink.
+
+    ``_reject_unsafe_path_component`` only rejects unsafe characters in the
+    caller-/corpus-supplied name itself; it never resolves symlinks. A
+    symlink planted inside the corpus subdirectory (``frame/``, ``lu/`` or
+    ``fulltext/``) can still point outside the corpus root even when the name
+    referencing it contains no separator or ``..`` at all.
+
+    This calls ``nltk.pathsec.validate_path`` with the corpus root as
+    ``required_root``, the same symlink-resolving containment guard used by
+    ``CorpusReader.open()`` and ``NKJPCorpusReader.add_root()``: both
+    ``locpath`` and ``root`` are resolved with ``Path.resolve()`` before the
+    containment check, so a symlink cannot escape undetected.
+    """
+    from nltk.pathsec import validate_path
+
+    validate_path(locpath, context=context, required_root=root)
+
+
 class AttrDict(dict):
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
@@ -1385,15 +1405,21 @@ warnings(True) to display corpus consistency warnings when loading data
         except KeyError as e:  # probably means that fn_docid was not in the index
             raise FramenetError(f"Unknown document id: {fn_docid}") from e
 
-        # Security (CWE-22): defend against a malicious corpus index whose
-        # filename field contains path-traversal sequences.  Reject the unsafe
-        # name and resolve the path through self.abspath() so the file is read
-        # via the PathPointer / nltk.pathsec sandbox instead of the builtin
-        # open() that a bare string path would use in XMLCorpusView.
+        # Security (CWE-22 / CWE-59): defend against a malicious corpus index
+        # whose filename field contains path-traversal sequences or a symlink
+        # planted inside the fulltext directory.  Reject the unsafe name, then
+        # resolve through self.abspath() and validate_path() with the corpus
+        # root as required_root -- the same symlink-resolving containment
+        # guard CorpusReader.open() and NKJPCorpusReader use -- so the file is
+        # read via the PathPointer / nltk.pathsec sandbox instead of the
+        # builtin open() that a bare string path would use in XMLCorpusView,
+        # and a symlink cannot escape the corpus root even though its own name
+        # contains no separators or "..".
         _reject_unsafe_path_component(xmlfname, "document filename")
 
         # construct the path name for the xml file containing the document info
         locpath = self.abspath(os.path.join(self._fulltext_dir, xmlfname))
+        _validate_in_root(locpath, self.root, "FramenetCorpusReader")
 
         # Grab the top-level xml element containing the fulltext annotation
         with XMLCorpusView(locpath, "fullTextAnnotation") as view:
@@ -1482,16 +1508,22 @@ warnings(True) to display corpus consistency warnings when loading data
         elif not self._frame_idx:
             self._buildframeindex()
 
-        # Security (CWE-22): the frame name is interpolated into the XML file
-        # path.  Reject crafted names, then resolve through self.abspath() so the
-        # file is read via the PathPointer / nltk.pathsec sandbox rather than the
-        # builtin open() that a bare string path would use in XMLCorpusView.
+        # Security (CWE-22 / CWE-59): the frame name is interpolated into the
+        # XML file path.  Reject crafted names, then resolve through
+        # self.abspath() and validate_path() with the corpus root as
+        # required_root -- the same symlink-resolving containment guard
+        # CorpusReader.open() and NKJPCorpusReader use -- so the file is read
+        # via the PathPointer / nltk.pathsec sandbox rather than the builtin
+        # open() that a bare string path would use in XMLCorpusView, and a
+        # symlink planted inside the frame directory cannot escape the corpus
+        # root even though its own name contains no separators or "..".
         _reject_unsafe_path_component(fn_fname, "frame name")
 
         # construct the path name for the xml file containing the Frame info
         # Grab the xml for the frame
         try:
             locpath = self.abspath(os.path.join(self._frame_dir, fn_fname + ".xml"))
+            _validate_in_root(locpath, self.root, "FramenetCorpusReader")
             with XMLCorpusView(locpath, "frame") as view:
                 elt = view[0]
         except OSError as e:
@@ -1835,11 +1867,16 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         fn_luid = lu.ID
 
-        # Security (CWE-22): the LU id comes from corpus data (a <lexUnit ID="...">
-        # attribute) and is interpolated into the XML file path.  A non-numeric
-        # id can carry path-traversal sequences; reject it, then resolve through
-        # self.abspath() so the file is read via the PathPointer / nltk.pathsec
-        # sandbox rather than the builtin open() used for a bare string path.
+        # Security (CWE-22 / CWE-59): the LU id comes from corpus data (a
+        # <lexUnit ID="..."> attribute) and is interpolated into the XML file
+        # path.  A non-numeric id can carry path-traversal sequences; reject
+        # it, then resolve through self.abspath() and validate_path() with the
+        # corpus root as required_root -- the same symlink-resolving
+        # containment guard CorpusReader.open() and NKJPCorpusReader use --
+        # so the file is read via the PathPointer / nltk.pathsec sandbox
+        # rather than the builtin open() used for a bare string path, and a
+        # symlink planted inside the LU directory cannot escape the corpus
+        # root even though its own name contains no separators or "..".
         _reject_unsafe_path_component(fn_luid, "LU id")
 
         fname = f"lu{fn_luid}.xml"
@@ -1848,6 +1885,7 @@ warnings(True) to display corpus consistency warnings when loading data
 
         try:
             locpath = self.abspath(os.path.join(self._lu_dir, fname))
+            _validate_in_root(locpath, self.root, "FramenetCorpusReader")
             with XMLCorpusView(locpath, "lexUnit") as view:
                 elt = view[0]
         except OSError as e:
