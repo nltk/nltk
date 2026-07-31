@@ -32,7 +32,7 @@ class StanfordSegmenter(TokenizerI):
     """Interface to the Stanford Segmenter
 
     If stanford-segmenter version is older than 2016-10-31, then path_to_slf4j
-    should be provieded, for example::
+    should be provided, for example::
 
         seg = StanfordSegmenter(path_to_slf4j='/YOUR_PATH/slf4j-api.jar')
 

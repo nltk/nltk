@@ -43,7 +43,7 @@ from nltk.probability import DictionaryProbDist, ELEProbDist, FreqDist, sum_logs
 class NaiveBayesClassifier(ClassifierI):
     """
     A Naive Bayes classifier.  Naive Bayes classifiers are
-    paramaterized by two probability distributions:
+    parameterized by two probability distributions:
 
       - P(label) gives the probability that an input will receive each
         label, given no information about the input's features.

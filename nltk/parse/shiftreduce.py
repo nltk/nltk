@@ -210,7 +210,7 @@ class ShiftReduceParser(ParserI):
         """
         # 1: just show shifts.
         # 2: show shifts & reduces
-        # 3: display which tokens & productions are shifed/reduced
+        # 3: display which tokens & productions are shifted/reduced
         self._trace = trace
 
     def _trace_stack(self, stack, remaining_text, marker=" "):
