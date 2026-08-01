@@ -94,6 +94,24 @@ def test_ipipan_domains_rejects_symlink_escape(tmp_path):
         reader.domains(fileids=["evil_link2.xml"])
 
 
+def test_ipipan_categories_rejects_symlink_escape(tmp_path):
+    """categories() also shares _get_tag() with channels(); confirm it is
+    covered too. It post-processes _parse_header()'s result through
+    _map_category(), but the ValueError must fire before that ever runs."""
+    root = _make_corpus(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    secret = outside / "stolen.xml"
+    secret.write_text("<keyTerm>pwned</keyTerm>")
+
+    link = root / "evil_link4.xml"
+    _symlink_or_skip(secret, link)
+
+    reader = IPIPANCorpusReader(str(root), r".*\.xml")
+    with pytest.raises(ValueError, match="escapes root"):
+        reader.categories(fileids=["evil_link4.xml"])
+
+
 def test_ipipan_fileids_by_channel_rejects_symlink_escape(tmp_path):
     """_list_morph_files_by() (used by fileids(channels=...)) shares the same
     _get_tag() call and must be covered too."""
