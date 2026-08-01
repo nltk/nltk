@@ -271,7 +271,7 @@ def _make_fake_venv(root: Path) -> Path:
     return site_packages
 
 
-def test_nested_site_packages_is_trusted_fast(monkeypatch):
+def test_nested_site_packages_is_trusted_fast(tmp_path, monkeypatch):
     """
     Fast (no venv/network) proof of the #3730 fix: a module resolved from a
     site-packages directory nested inside the CWD is trusted, even when NLTK
@@ -279,63 +279,60 @@ def test_nested_site_packages_is_trusted_fast(monkeypatch):
     """
     from nltk import inisec
 
-    with tempfile.TemporaryDirectory() as d:
-        d = Path(d).resolve()
-        site_packages = _make_fake_venv(d)
-        (site_packages / "installed_dep.py").write_text("VALUE = 'ok'\n")
+    d = tmp_path.resolve()
+    site_packages = _make_fake_venv(d)
+    (site_packages / "installed_dep.py").write_text("VALUE = 'ok'\n")
 
-        monkeypatch.setattr(
-            inisec, "_trusted_library_roots", lambda: frozenset({site_packages})
-        )
-        monkeypatch.chdir(d)
-        monkeypatch.syspath_prepend(str(site_packages))
-        monkeypatch.syspath_prepend("")
+    monkeypatch.setattr(
+        inisec, "_trusted_library_roots", lambda: frozenset({site_packages})
+    )
+    monkeypatch.chdir(d)
+    monkeypatch.syspath_prepend(str(site_packages))
+    monkeypatch.syspath_prepend("")
 
-        finder = inisec.NLTKSafeImportFinder()
-        monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
+    finder = inisec.NLTKSafeImportFinder()
+    monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
 
-        assert finder.find_spec("installed_dep", None) is None
+    assert finder.find_spec("installed_dep", None) is None
 
 
-def test_loose_cwd_module_still_blocked(monkeypatch):
+def test_loose_cwd_module_still_blocked(tmp_path, monkeypatch):
     """A module loose in the CWD is still blocked when NLTK initiates it."""
     from nltk import inisec
 
-    with tempfile.TemporaryDirectory() as d:
-        d = Path(d).resolve()
-        (d / "joblib.py").write_text("print('LOOSE')\n")
+    d = tmp_path.resolve()
+    (d / "joblib.py").write_text("print('LOOSE')\n")
 
-        monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
-        monkeypatch.chdir(d)
-        monkeypatch.syspath_prepend(str(d))
-        monkeypatch.syspath_prepend("")
+    monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
+    monkeypatch.chdir(d)
+    monkeypatch.syspath_prepend(str(d))
+    monkeypatch.syspath_prepend("")
 
-        finder = inisec.NLTKSafeImportFinder()
-        monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
+    finder = inisec.NLTKSafeImportFinder()
+    monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
 
-        with pytest.raises(ImportError):
-            finder.find_spec("joblib", None)
+    with pytest.raises(ImportError):
+        finder.find_spec("joblib", None)
 
 
-def test_no_block_when_cwd_not_on_sys_path(monkeypatch):
+def test_no_block_when_cwd_not_on_sys_path(tmp_path, monkeypatch):
     """No blocking when the CWD is not on sys.path, even for a loose module."""
     from nltk import inisec
 
-    with tempfile.TemporaryDirectory() as d:
-        d = Path(d).resolve()
-        (d / "joblib.py").write_text("print('LOOSE')\n")
+    d = tmp_path.resolve()
+    (d / "joblib.py").write_text("print('LOOSE')\n")
 
-        monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
-        monkeypatch.chdir(d)
-        monkeypatch.setattr(sys, "path", [p for p in sys.path if p not in ("", ".")])
+    monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
+    monkeypatch.chdir(d)
+    monkeypatch.setattr(sys, "path", [p for p in sys.path if p not in ("", ".")])
 
-        finder = inisec.NLTKSafeImportFinder()
-        monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
+    finder = inisec.NLTKSafeImportFinder()
+    monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
 
-        assert finder.find_spec("joblib", None) is None
+    assert finder.find_spec("joblib", None) is None
 
 
-def test_namespace_package_in_cwd_is_blocked(monkeypatch):
+def test_namespace_package_in_cwd_is_blocked(tmp_path, monkeypatch):
     """
     A PEP-420 namespace package directory in the CWD resolves with origin=None but
     submodule_search_locations in the CWD, so it is a valid hijack vector and is
@@ -343,20 +340,19 @@ def test_namespace_package_in_cwd_is_blocked(monkeypatch):
     """
     from nltk import inisec
 
-    with tempfile.TemporaryDirectory() as d:
-        d = Path(d).resolve()
-        (d / "ns_pkg").mkdir()  # no __init__.py -> namespace package
+    d = tmp_path.resolve()
+    (d / "ns_pkg").mkdir()  # no __init__.py -> namespace package
 
-        monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
-        monkeypatch.chdir(d)
-        monkeypatch.syspath_prepend(str(d))
-        monkeypatch.syspath_prepend("")
+    monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
+    monkeypatch.chdir(d)
+    monkeypatch.syspath_prepend(str(d))
+    monkeypatch.syspath_prepend("")
 
-        finder = inisec.NLTKSafeImportFinder()
-        monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
+    finder = inisec.NLTKSafeImportFinder()
+    monkeypatch.setattr(finder, "_is_import_from_nltk", lambda cwd: True)
 
-        with pytest.raises(ImportError):
-            finder.find_spec("ns_pkg", None)
+    with pytest.raises(ImportError):
+        finder.find_spec("ns_pkg", None)
 
 
 def test_trusted_library_roots_contains_prefix():
