@@ -106,5 +106,12 @@ def test_transitive_closure_empty():
 
 def test_transitive_closure_does_not_mutate_input():
     graph = {"a": {"b"}, "b": set()}
+    original_sets = {k: v for k, v in graph.items()}
+    snapshot = {k: set(v) for k, v in graph.items()}
+
     transitive_closure(graph)
-    assert graph == {"a": {"b"}, "b": set()}
+
+    assert graph == snapshot
+    assert set(graph) == set(snapshot)
+    # the same set objects, not new-but-equal ones
+    assert all(graph[k] is original_sets[k] for k in snapshot)
