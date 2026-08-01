@@ -365,6 +365,68 @@ def test_trusted_library_roots_contains_prefix():
     inisec._trusted_library_roots.cache_clear()
 
 
+# ---------------------------------------------------------------------------
+# Coverage for _is_genuine_nltk_file (caller-trust classification, no
+# sys._getframe monkeypatching required)
+# ---------------------------------------------------------------------------
+
+
+def test_installed_nltk_under_cwd_is_genuine(tmp_path, monkeypatch):
+    """
+    In an in-project venv the real NLTK lives under the CWD but inside a trusted
+    root; such a frame must still count as genuine (mirror of #3730).
+    """
+    from nltk import inisec
+
+    d = tmp_path.resolve()
+    site_packages = _make_fake_venv(d)  # trusted root nested under the CWD
+    monkeypatch.setattr(
+        inisec, "_trusted_library_roots", lambda: frozenset({site_packages})
+    )
+    nltk_file = site_packages / "nltk" / "text.py"
+    nltk_file.parent.mkdir(parents=True)
+    nltk_file.write_text("")
+
+    assert inisec._is_genuine_nltk_file(str(nltk_file), d) is True
+
+
+def test_loose_nltk_in_cwd_is_not_genuine(tmp_path, monkeypatch):
+    """A malicious nltk-named module loose in the CWD must not count as genuine."""
+    from nltk import inisec
+
+    d = tmp_path.resolve()
+    monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
+    loose = d / "nltk" / "__init__.py"
+    loose.parent.mkdir(parents=True)
+    loose.write_text("")
+
+    assert inisec._is_genuine_nltk_file(str(loose), d) is False
+
+
+def test_nltk_outside_cwd_is_genuine(tmp_path, monkeypatch):
+    """An NLTK file that isn't under the CWD at all is genuine."""
+    from nltk import inisec
+
+    d = tmp_path.resolve()
+    monkeypatch.setattr(inisec, "_trusted_library_roots", lambda: frozenset())
+    outside = tmp_path.parent / "elsewhere_nltk.py"
+    outside.write_text("")
+
+    assert inisec._is_genuine_nltk_file(str(outside), d) is True
+
+
+def test_missing_filename_is_genuine():
+    """Frames without a __file__ (e.g. builtins) default to genuine."""
+    from nltk import inisec
+
+    assert inisec._is_genuine_nltk_file(None, Path.cwd()) is True
+
+
+# ---------------------------------------------------------------------------
+# Opt-in end-to-end reproducer (issue #3730)
+# ---------------------------------------------------------------------------
+
+
 @pytest.mark.skipif(
     os.environ.get("NLTK_RUN_VENV_E2E") != "1",
     reason="Slow/network end-to-end venv test; set NLTK_RUN_VENV_E2E=1 to run.",

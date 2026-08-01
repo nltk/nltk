@@ -162,6 +162,31 @@ def _cwd_on_sys_path(cwd):
     return False
 
 
+def _is_genuine_nltk_file(filename, cwd):
+    """
+    Decide whether a frame's source *filename* belongs to the real NLTK.
+
+    A file counts as genuine unless it lives loose in the CWD -- i.e. under the
+    CWD but not under any trusted library root. This lets the real installed
+    NLTK (which in an in-project venv legitimately lives under the CWD, inside
+    ``site-packages``) authorize a block, while a malicious ``nltk``-named module
+    dropped loose in the CWD cannot masquerade as the real NLTK.
+    """
+    if not filename:
+        return True
+    try:
+        resolved = Path(filename).resolve()
+    except (OSError, ValueError):
+        return True
+    if _is_under_any(resolved, _trusted_library_roots()):
+        return True
+    try:
+        resolved.relative_to(cwd)
+    except ValueError:
+        return True  # Not under the CWD at all -> genuine.
+    return False  # Loose in the CWD, not installed -> not the real NLTK.
+
+
 class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
     """
     Custom finder that dynamically blocks NLTK and its dependencies from
@@ -171,12 +196,9 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
     def _is_import_from_nltk(self, cwd):
         """
         Walk the *entire* call stack to determine if NLTK is an ancestor.
-        This correctly catches indirect imports (e.g., NLTK -> sklearn -> joblib)
-        that occur synchronously in the current process.
-
-        Frames whose source file lives inside the CWD are ignored, so a malicious
-        ``nltk``-named module dropped in the CWD cannot masquerade as the real
-        NLTK to authorize a sibling hijack.
+        Catches indirect imports (e.g. NLTK -> sklearn -> joblib) that occur
+        synchronously in the current process. Frames that merely look like NLTK
+        but live loose in the CWD are ignored (see ``_is_genuine_nltk_file``).
         """
         try:
             frame = sys._getframe(2)
@@ -187,15 +209,7 @@ class NLTKSafeImportFinder(importlib.abc.MetaPathFinder):
                     and module_name.startswith("nltk")
                     and module_name != "nltk.inisec"
                 ):
-                    filename = frame.f_globals.get("__file__")
-                    trustworthy = True
-                    if filename:
-                        try:
-                            Path(filename).resolve().relative_to(cwd)
-                            trustworthy = False
-                        except (ValueError, OSError):
-                            trustworthy = True
-                    if trustworthy:
+                    if _is_genuine_nltk_file(frame.f_globals.get("__file__"), cwd):
                         return True
                 frame = frame.f_back
         except Exception:
