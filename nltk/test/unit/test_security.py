@@ -12,32 +12,34 @@ import pytest
 )
 def test_safe_path_blocks_cwd_import():
     """
-    NLTK's CI runs with PYTHONSAFEPATH=1 (see .github/workflows/ci.yml and the
-    "Module import hijacking" section of SECURITY.md) so the interpreter does
-    not auto-prepend the current working directory to sys.path. A module placed
-    in the CWD must therefore NOT be importable, mitigating CWD module
-    hijacking (CWE-426).
+    A module placed in the current working directory must NOT be importable
+    when the interpreter is started with -P / PYTHONSAFEPATH, mitigating CWD
+    module hijacking (CWE-426). See SECURITY.md; NLTK's CI runs pytest under
+    this policy.
 
-    Runs a child interpreter (inheriting the ambient PYTHONSAFEPATH) whose CWD
-    contains a decoy module and asserts the decoy cannot be imported.
+    Launches a child interpreter with -P whose CWD contains a decoy module and
+    asserts the decoy cannot be imported, checking the specific
+    ModuleNotFoundError rather than merely a non-zero exit.
     """
     with tempfile.TemporaryDirectory() as d:
         with open(os.path.join(d, "cwd_decoy.py"), "w") as f:
-            f.write("print('DECOY_IMPORTED')\n")
+            f.write("raise AssertionError('decoy should not be imported')\n")
 
         res = subprocess.run(
-            [sys.executable, "-c", "import cwd_decoy"],
+            [sys.executable, "-P", "-c", "import cwd_decoy"],
             cwd=d,
-            env=os.environ.copy(),  # inherits PYTHONSAFEPATH from CI
             capture_output=True,
             text=True,
         )
 
     assert res.returncode != 0, (
-        "CWD module was importable: PYTHONSAFEPATH / -P is not in effect.\n"
+        f"decoy in CWD was importable under -P.\n"
         f"stdout: {res.stdout!r}\nstderr: {res.stderr!r}"
     )
-    assert "DECOY_IMPORTED" not in res.stdout
+    assert (
+        "ModuleNotFoundError" in res.stderr
+    ), f"expected ModuleNotFoundError, got:\nstderr: {res.stderr!r}"
+    assert "cwd_decoy" in res.stderr
 
 
 def test_wordnet_app_reference_decode_rejects_wrong_types():

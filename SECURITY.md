@@ -157,18 +157,21 @@ environment variable.
 
 #### Enabling it in CI
 
-Setting `PYTHONSAFEPATH=1` in continuous integration keeps the test suite
-running under the same policy recommended above. Set it once in the job
-environment so every Python step, and any subprocesses they spawn,
-inherit it. This is not a substitute for CI isolation: in CI the working
-directory is the checked-out repository itself, so if that code is
-untrusted (for example, a fork pull request) the real protection comes
-from the CI platform running it with restricted permissions and no
-secrets, not from `-P`.
+Setting `PYTHONSAFEPATH=1` in continuous integration keeps your test run
+under the same policy recommended above. Set it in the environment of the
+step(s) that execute your test suite, rather than globally, so that other
+steps which legitimately import a package from the checked-out source tree
+(for example, `python -c "import yourpkg; ..."` before an install) are not
+broken by the stricter search path. This is not a substitute for CI
+isolation: in CI the working directory is the checked-out repository
+itself, so if that code is untrusted (for example, a fork pull request)
+the real protection comes from the CI platform running it with restricted
+permissions and no secrets — GitHub Actions does this for fork
+`pull_request` runs — rather than from `-P`.
 
-NLTK's own CI runs the test suite with `PYTHONSAFEPATH=1`, and that suite
-includes `test_safe_path_blocks_cwd_import`, which fails if the policy is
-not in effect.
+NLTK's own CI sets `PYTHONSAFEPATH=1` on the pytest step, and the test
+suite includes `test_safe_path_blocks_cwd_import`, which verifies that a
+module in the current working directory is not importable under `-P`.
 
 #### Limitations
 
