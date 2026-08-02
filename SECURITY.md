@@ -166,9 +166,9 @@ untrusted (for example, a fork pull request) the real protection comes
 from the CI platform running it with restricted permissions and no
 secrets, not from `-P`.
 
-NLTK's own CI runs with `PYTHONSAFEPATH=1` and the test suite includes
-`test_safe_path_blocks_cwd_import`, which fails if the policy is not in
-effect.
+NLTK's own CI runs the test suite with `PYTHONSAFEPATH=1`, and that suite
+includes `test_safe_path_blocks_cwd_import`, which fails if the policy is
+not in effect.
 
 #### Limitations
 
