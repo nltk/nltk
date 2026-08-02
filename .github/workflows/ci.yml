@@ -6,6 +6,11 @@ permissions:
   contents: read
 
 env:
+  # Harden the interpreter search path (CWE-426): omit the auto-prepended
+  # script/CWD entry from sys.path at startup. Dogfoods the mitigation
+  # recommended to users in SECURITY.md. Requires Python 3.11+ (silently
+  # ignored on 3.10, which is fine).
+  PYTHONSAFEPATH: "1"
   THIRD_PARTY_DIR: ${{ github.workspace }}/third
   CORENLP: ${{ github.workspace }}/third/stanford-corenlp
   CORENLP_MODELS: ${{ github.workspace }}/third/stanford-corenlp
