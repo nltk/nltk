@@ -234,7 +234,15 @@ class PunktLanguageVars:
     """sentence internal punctuation, which indicates an abbreviation if
     preceded by a period-final token."""
 
-    re_boundary_realignment = re.compile(r'["\')\]}]+?(?:\s+|(?=--)|$)', re.MULTILINE)
+    # Treat the Unicode curly quotes (u'\u2018' u'\u2019' u'\u201c' u'\u201d')
+    # and guillemets (u'\xab' u'\xbb') as closing punctuation like the ASCII
+    # quotes, so a sentence-final curly/guillemet quote is realigned onto the
+    # sentence it follows. NLTKWordTokenizer (nltk/tokenize/destructive.py)
+    # already handles this same set (STARTING_QUOTES / ENDING_QUOTES, gh-1682).
+    re_boundary_realignment = re.compile(
+        r'["\')\]}\u2018\u2019\u201c\u201d\xab\xbb]+?(?:\s+|(?=--)|$)',
+        re.MULTILINE,
+    )
     """Used to realign punctuation that should be included in a sentence
     although it follows the period (or ?, !)."""
 
@@ -243,8 +251,11 @@ class PunktLanguageVars:
 
     @property
     def _re_non_word_chars(self):
-        return r"(?:[)\";}\]\*:@\'\({\[%s])" % re.escape(
-            "".join(set(self.sent_end_chars) - {"."})
+        # Including the curly quotes/guillemets here makes a period that
+        # directly abuts one still register as a sentence boundary.
+        return (
+            r"(?:[)\";}\]\*:@\'\({\[\u2018\u2019\u201c\u201d\xab\xbb%s])"
+            % re.escape("".join(set(self.sent_end_chars) - {"."}))
         )
 
     """Characters that cannot appear within words"""
