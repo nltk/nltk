@@ -83,7 +83,7 @@ jobs:
 
   build-and-github-release:
     needs: gate-on-ci
-    name: Build and create GitHub draft release
+    name: Build and create GitHub release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -108,5 +108,4 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
-          draft: true
           generate_release_notes: true
