@@ -144,6 +144,39 @@ def test_path_traversal_absolute():
         pathsec.open(outside, "r")
 
 
+# --- ALLOWED-ROOTS / TEMP-DIR FALLBACK TESTS ---
+
+
+def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
+    """Regression test for issue #3716.
+
+    ``_get_allowed_roots()`` used to build its fallback-location list as a
+    literal ``[..., tempfile.gettempdir()]``, which evaluates
+    ``tempfile.gettempdir()`` while constructing the list -- *before* the
+    loop's ``try/except`` runs. On a system with no usable temp directory
+    (read-only root filesystem, nothing mounted at ``/tmp``), ``gettempdir()``
+    raises ``FileNotFoundError`` (an ``OSError`` subclass) that propagates out
+    of the whole function, discarding the roots already collected from
+    ``nltk.data.path``/``NLTK_DATA`` and breaking resource lookups (e.g.
+    ``sent_tokenize()``) even when the resource is already cached.
+    """
+    import nltk.data
+
+    known_root = tmp_path / "nltk_data_known_root"
+    known_root.mkdir()
+
+    monkeypatch.setattr(nltk.data, "path", nltk.data.path + [str(known_root)])
+
+    # Force a clean cache: _get_allowed_roots() memoizes on (data.path, NLTK_DATA).
+    pathsec._ALLOWED_ROOTS_CACHE = None
+    pathsec._LAST_DATA_PATHS = None
+
+    with patch("tempfile.gettempdir", side_effect=FileNotFoundError("no temp dir")):
+        roots = pathsec._get_allowed_roots()
+
+    assert known_root.resolve() in roots
+
+
 # --- ZIP-SLIP TESTS ---
 
 
