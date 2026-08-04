@@ -83,7 +83,7 @@ jobs:
 
   build-and-github-release:
     needs: gate-on-ci
-    name: Build and create GitHub draft release
+    name: Build and create GitHub release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -92,7 +92,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -108,5 +108,4 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
-          draft: true
           generate_release_notes: true
