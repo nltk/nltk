@@ -156,5 +156,7 @@ jobs:
 
       - name: Run pytest
         shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
         run: |
           pytest --numprocesses auto -rsx --doctest-modules nltk
