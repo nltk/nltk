@@ -4,6 +4,10 @@ Release Notes
 2026
 ----
 
+NLTK 3.10.2 release: August 2026
+
+- Remove inisec.py and document PYTHONSAFEPATH instead
+
 NLTK 3.10.1 release: July 2026
 
 - Fix ReDoS in TweetTokenizer url and email regexes

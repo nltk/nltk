@@ -1,3 +1,10 @@
+Version 3.10.2 2026-08-??
+
+* Remove inisec.py and document PYTHONSAFEPATH instead
+
+Thanks to the following contributors to 3.10.1:
+Eric Kafe
+
 Version 3.10.1 2026-07-29
 
 * Expand `~` in env-var paths
