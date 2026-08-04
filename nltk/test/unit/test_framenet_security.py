@@ -1,4 +1,4 @@
-"""Regression tests for path traversal in FramenetCorpusReader (CWE-22).
+"""Regression tests for path traversal in FramenetCorpusReader (CWE-22 / CWE-59).
 
 ``doc()``, ``frame_by_name()`` and ``_lu_file()`` interpolate a caller- or
 corpus-supplied name into an XML file path that is then read via
@@ -9,6 +9,13 @@ legitimate name must still resolve and read correctly through ``self.abspath()``
 
 Paths are built with ``os.path.join`` / ``os.pardir`` so the tests behave the
 same on POSIX and Windows.
+
+A separate class of tests below covers a symlink planted inside the corpus
+subdirectory itself (``frame/``, ``lu/`` or ``fulltext/``). Its own name
+contains no separator or ``..``, so it passes ``_reject_unsafe_path_component``
+cleanly; only resolving the path with ``Path.resolve()`` and checking it
+against the corpus root (what ``_validate_in_root`` / ``validate_path`` do)
+catches this.
 """
 
 import builtins
@@ -158,3 +165,78 @@ def test_reject_unsafe_path_component_blocks(bad):
 @pytest.mark.parametrize("ok", ["TestFrame", "Apply_heat", "lu123", "a.b-c"])
 def test_reject_unsafe_path_component_allows_normal(ok):
     _reject_unsafe_path_component(ok, "frame name")  # must not raise
+
+
+# --- symlink escape: name has no separator or ".." but still leaves the root --
+
+
+def _symlink_or_skip(target, link):
+    try:
+        os.symlink(target, link)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks not supported in this environment")
+
+
+def test_framenet_frame_rejects_symlink_escape(tmp_path, monkeypatch):
+    """A symlink inside frame/ passes the name guard but must still be blocked."""
+    root = _make_corpus(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    secret = outside / "pwn.xml"
+    secret.write_text(_FRAME_XML.format(name="pwned"))
+
+    link = root / "frame" / "evil_link.xml"
+    _symlink_or_skip(secret, link)
+
+    fn = FramenetCorpusReader(str(root), [])
+    opened = _record_opens(monkeypatch)
+    with pytest.raises(ValueError, match="escapes root"):
+        fn.frame("evil_link")
+    assert not any(
+        "outside" in p for p in opened
+    ), "symlink escape reached the filesystem"
+
+
+def test_framenet_lu_file_rejects_symlink_escape(tmp_path, monkeypatch):
+    """A symlink inside lu/ passes the id guard but must still be blocked."""
+    root = _make_corpus(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    secret = outside / "pwn.xml"
+    secret.write_text(
+        '<?xml version="1.0"?><lexUnit ID="1" name="pwned.n" status="Created"/>'
+    )
+
+    link = root / "lu" / "luevilLU.xml"
+    _symlink_or_skip(secret, link)
+
+    fn = FramenetCorpusReader(str(root), [])
+    fn._lu_idx = {"__dummy__": AttrDict({"name": "__dummy__"})}  # skip _buildluindex()
+    lu = AttrDict({"ID": "evilLU"})
+    opened = _record_opens(monkeypatch)
+    with pytest.raises(ValueError, match="escapes root"):
+        fn._lu_file(lu)
+    assert not any(
+        "outside" in p for p in opened
+    ), "symlink escape reached the filesystem"
+
+
+def test_framenet_doc_rejects_symlink_escape(tmp_path, monkeypatch):
+    """A symlink inside fulltext/ passes the filename guard but must still be blocked."""
+    root = _make_corpus(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    secret = outside / "pwn.xml"
+    secret.write_text('<?xml version="1.0"?><fullTextAnnotation></fullTextAnnotation>')
+
+    link = root / "fulltext" / "evilDoc.xml"
+    _symlink_or_skip(secret, link)
+
+    fn = FramenetCorpusReader(str(root), [])
+    fn._fulltext_idx = {7: AttrDict({"filename": "evilDoc.xml"})}
+    opened = _record_opens(monkeypatch)
+    with pytest.raises(ValueError, match="escapes root"):
+        fn.doc(7)
+    assert not any(
+        "outside" in p for p in opened
+    ), "symlink escape reached the filesystem"
