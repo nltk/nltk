@@ -4,6 +4,14 @@ Release Notes
 2026
 ----
 
+NLTK 3.10.2 release: August 2026
+
+- Remove inisec.py and document PYTHONSAFEPATH instead
+- Skip draft step in release workflow
+- Fix symlink escape in FramenetCorpusReader (CWE-59)
+- Guard tempfile.gettempdir() when building pathsec allowed roots
+- add tests for transitive_closure
+
 NLTK 3.10.1 release: July 2026
 
 - Fix ReDoS in TweetTokenizer url and email regexes
