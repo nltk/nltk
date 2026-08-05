@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Check that release tag points to a develop commit
         run: |
@@ -90,6 +91,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -104,8 +108,29 @@ jobs:
       - name: Build package
         run: python -m build
 
+      - name: Extract release notes from ChangeLog
+        run: |
+          set -euo pipefail
+
+          RAW_VERSION=${GITHUB_REF_NAME#v}
+          VERSION=${RAW_VERSION%%-*}
+
+          awk -v version="$VERSION" '
+            $1 == "Version" && $2 == version { capture=1; found=1; print; next }
+            capture && $1 == "Version" { exit }
+            capture { print }
+            END {
+              if (!found) {
+                print "ERROR: Version " version " not found in ChangeLog" > "/dev/stderr"
+                exit 2
+              }
+            }
+          ' ChangeLog > release-notes.md
+
+          test -s release-notes.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
-          generate_release_notes: true
+          body_path: release-notes.md
