@@ -1,8 +1,8 @@
-Version 3.10.2 2026-08-??
+Version 3.10.2 2026-08-05
 
 * Remove inisec.py and document PYTHONSAFEPATH instead
 * Skip draft step in release workflow
-* fix(security): close symlink escape in FramenetCorpusReader (CWE-59)
+* Fix symlink escape in FramenetCorpusReader (CWE-59)
 * Guard tempfile.gettempdir() when building pathsec allowed roots
 * add tests for transitive_closure
 
