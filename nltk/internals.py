@@ -130,7 +130,6 @@ class UntrustedJarError(Exception):
 
 
 def _verify_jar_sandbox(classpath_entries):
-    # Environment escape hatch – must be "1"
     if (
         os.environ.get("NLTK_ALLOW_UNSAFE_JARS") == "1"
         or os.environ.get("NLTK_ALLOW_UNSAFE_CLASSPATH") == "1"
@@ -143,13 +142,11 @@ def _verify_jar_sandbox(classpath_entries):
         )
         return
 
-    # Normalise input
     if isinstance(classpath_entries, str):
         entries = [classpath_entries]
     else:
         entries = list(classpath_entries)
 
-    # Build trusted roots
     trusted_roots = []
     from nltk.data import path as data_path
 
@@ -159,7 +156,6 @@ def _verify_jar_sandbox(classpath_entries):
         except Exception:
             continue
 
-    # Repository root if inside a Git checkout
     try:
         import nltk
 
@@ -171,7 +167,6 @@ def _verify_jar_sandbox(classpath_entries):
     except Exception:
         pass
 
-    # Weka system paths
     for wp in (
         "/usr/share/weka",
         "/usr/local/weka",
@@ -191,7 +186,6 @@ def _verify_jar_sandbox(classpath_entries):
     for entry in entries:
         if not entry:
             continue
-        # Reject relative paths before resolving symlinks
         if not os.path.isabs(entry):
             raise UntrustedJarError(f"Relative paths are strictly forbidden: {entry}")
 
@@ -224,13 +218,27 @@ def java(
         raise TypeError("cmd must be a sequence of strings, not a string")
     cmd_list = list(cmd)
 
-    # Options – use global if none given
+    # Normalise I/O: convert 'pipe'/'devnull' to proper constants
+    def _normalise(stream):
+        if stream is None:
+            return None
+        if stream == "pipe" or stream is True:
+            return subprocess.PIPE
+        if stream == "devnull":
+            return subprocess.DEVNULL
+        return stream
+
+    stdin = _normalise(stdin)
+    stdout = _normalise(stdout)
+    stderr = _normalise(stderr)
+
+    # Options
     if options is None:
         opt_list = list(_java_options) if _java_options else []
     else:
         opt_list = options.split() if isinstance(options, str) else list(options)
 
-    # Materialise classpath entries, but keep original string for command
+    # Classpath
     classpath_arg = None
     if classpath is not None:
         if isinstance(classpath, str):
@@ -243,16 +251,14 @@ def java(
         if not raw_entries:
             raise ValueError("Classpath is empty after splitting")
 
-        # Validate – this will resolve paths internally if needed
         _verify_jar_sandbox(raw_entries)
 
-        # Build the classpath argument for the command: keep original string if available
         if original_classpath_string is not None:
             classpath_arg = original_classpath_string
         else:
             classpath_arg = os.pathsep.join(raw_entries)
 
-    # Build final command
+    # Build command
     final_cmd = []
     final_cmd.extend(_java_bin if _java_bin else ["java"])
     final_cmd.extend(opt_list)
@@ -261,14 +267,12 @@ def java(
     final_cmd.extend(cmd_list)
 
     # Execute
-    import subprocess
-
     try:
         p = subprocess.Popen(
             final_cmd,
             stdin=stdin,
-            stdout=subprocess.PIPE if stdout is True else stdout,
-            stderr=subprocess.PIPE if stderr is True else stderr,
+            stdout=stdout,
+            stderr=stderr,
             universal_newlines=True,
         )
         if blocking:
