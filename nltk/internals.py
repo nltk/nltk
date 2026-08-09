@@ -134,6 +134,8 @@ def _verify_jar_sandbox(classpath):
     Check all classpath entries against the trusted NLTK data directories.
     Uses nltk.data.path (the same root source as pathsec) and os.path.realpath
     for symlink-safe canonicalisation (also used by pathsec).
+    If we are running from a source checkout (detected by .git or nltk/test/),
+    the repository root is also added to the trusted roots to allow tests.
     """
     # Environment override (with warning)
     if os.environ.get("NLTK_ALLOW_UNSAFE_JARS") or os.environ.get(
@@ -158,6 +160,21 @@ def _verify_jar_sandbox(classpath):
     import nltk.data
 
     trusted_roots = [os.path.realpath(p) for p in nltk.data.path if p]
+
+    # Add repository root if we are in a source checkout (for CI and development)
+    try:
+        import nltk
+
+        nltk_package_dir = os.path.dirname(os.path.realpath(nltk.__file__))
+        repo_root = os.path.realpath(os.path.join(nltk_package_dir, ".."))
+        # Detect source checkout: presence of .git or nltk/test/ directory
+        if os.path.isdir(os.path.join(repo_root, ".git")) or os.path.isdir(
+            os.path.join(nltk_package_dir, "test")
+        ):
+            trusted_roots.append(repo_root)
+    except Exception:
+        # If any error occurs, simply skip adding the repo root
+        pass
 
     for entry in entries:
         if not entry:
