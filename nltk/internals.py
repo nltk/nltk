@@ -159,7 +159,6 @@ def _verify_jar_sandbox(classpath):
             safe_roots.append(os.path.abspath(p))
 
     # 2. NLTK repository root (automatically allows local dev and CI test third/ directories)
-    # internals.py is at nltk/internals.py -> parent is nltk/ package -> parent of that is repo root
     nltk_repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     safe_roots.append(nltk_repo_root)
 
@@ -184,9 +183,13 @@ def _verify_jar_sandbox(classpath):
         is_safe = False
 
         for safe_dir in safe_roots:
-            if os.path.commonpath([safe_dir, clean_path]) == safe_dir:
-                is_safe = True
-                break
+            try:
+                if os.path.commonpath([safe_dir, clean_path]) == safe_dir:
+                    is_safe = True
+                    break
+            except ValueError:
+                # Ignore cross-drive comparisons on Windows (e.g., C: vs D:)
+                continue
 
         if not is_safe:
             raise UntrustedJarError(
