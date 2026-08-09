@@ -278,16 +278,25 @@ def java(
         effective_options = _java_options
     else:
         # Convert string options to a list (e.g., "-Xmx2g -Dfoo=bar" -> ["-Xmx2g", "-Dfoo=bar"])
-        # This is safe for the test case and typical usage. For complex quoted
-        # arguments, shlex.split() could be used, but is not needed here.
         if isinstance(options, str):
             options_list = options.split()
         else:
             options_list = list(options)
-
-        # Validate per‑call options (keeps _validate_java_options unchanged)
         _validate_java_options(options_list)
         effective_options = options_list
+
+    # Normalize _java_bin to a list of strings
+    java_bin = _java_bin
+    if isinstance(java_bin, str):
+        java_bin = [java_bin]
+    elif not isinstance(java_bin, list):
+        java_bin = list(java_bin)  # fallback for tuples etc.
+
+    # Normalize effective_options to a list of strings
+    if isinstance(effective_options, str):
+        effective_options = effective_options.split()
+    elif not isinstance(effective_options, list):
+        effective_options = list(effective_options)
 
     # Prepare the command list
     cmd_parts = list(cmd)
@@ -296,8 +305,8 @@ def java(
         _verify_jar_sandbox(classpath)
         cmd_parts = ["-cp", classpath] + cmd_parts
 
-    # Build the full command: _java_bin + effective_options + cmd_parts
-    full_cmd = list(_java_bin) + list(effective_options) + cmd_parts
+    # Build the full command: java_bin + effective_options + cmd_parts
+    full_cmd = java_bin + effective_options + cmd_parts
 
     # Map string constants to subprocess constants
     stdin_map = {
@@ -339,7 +348,6 @@ def java(
 
     # Check return code
     if p.returncode != 0:
-        # Provide a helpful error message
         err_msg = (
             f"Java command returned non-zero exit code {p.returncode}.\n"
             f"Command: {' '.join(full_cmd)}\n"
