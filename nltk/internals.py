@@ -141,6 +141,11 @@ def _verify_jar_sandbox(classpath):
 
     bypass_flag = os.environ.get("NLTK_ALLOW_UNSAFE_JARS", "").lower()
     if bypass_flag in ("1", "true", "yes"):
+        warnings.warn(
+            "CWE-94 Warning: NLTK_ALLOW_UNSAFE_JARS is enabled. "
+            "Arbitrary JAR execution is permitted.",
+            UserWarning,
+        )
         return
 
     # Compile allowed safe root directories (using realpath to resolve any symlinks)
@@ -173,6 +178,8 @@ def _verify_jar_sandbox(classpath):
         paths = classpath
 
     for path in paths:
+        # (Fix: No longer filtering by .endswith(".jar") to catch malicious directories/zips)
+
         if not os.path.isabs(path):
             raise UntrustedJarError(
                 f"CWE-94 Mitigation: Relative paths are strictly forbidden for Java classpaths.\n"
@@ -191,10 +198,11 @@ def _verify_jar_sandbox(classpath):
                     is_safe = True
                     break
             except ValueError:
-                # Ignore cross-drive comparisons on Windows
+                # Ignore cross-drive comparisons on Windows (e.g., C: vs D:)
                 continue
 
         if not is_safe:
+            # Fallback avoids IndexError if data_path is empty
             fallback_dir = next(iter(data_path), "<an nltk_data directory>")
             raise UntrustedJarError(
                 f"CWE-94 Mitigation: Blocked execution of Java classpath outside nltk_data.\n"
