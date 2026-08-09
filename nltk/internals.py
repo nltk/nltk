@@ -234,8 +234,9 @@ def java(
         and the remaining strings will be arguments for that java class.
     :type cmd: list(str)
     :param classpath: A ``':'`` separated list of directories, JAR archives,
-        and ZIP archives to search for class files.
-    :type classpath: str
+        and ZIP archives to search for class files.  If a sequence (e.g., tuple)
+        is given, it is joined with ``os.pathsep``.
+    :type classpath: str or iterable of str
     :param stdin: Specify the executed program's standard input file handles,
         respectively.  Valid values are ``subprocess.PIPE``, an existing file
         descriptor (a positive integer), an existing file object, 'pipe',
@@ -277,7 +278,7 @@ def java(
     if options is None:
         effective_options = _java_options
     else:
-        # Convert string options to a list (e.g., "-Xmx2g -Dfoo=bar" -> ["-Xmx2g", "-Dfoo=bar"])
+        # Convert string options to a list
         if isinstance(options, str):
             options_list = options.split()
         else:
@@ -290,7 +291,7 @@ def java(
     if isinstance(java_bin, str):
         java_bin = [java_bin]
     elif not isinstance(java_bin, list):
-        java_bin = list(java_bin)  # fallback for tuples etc.
+        java_bin = list(java_bin)
 
     # Normalize effective_options to a list of strings
     if isinstance(effective_options, str):
@@ -300,10 +301,19 @@ def java(
 
     # Prepare the command list
     cmd_parts = list(cmd)
+
     if classpath:
-        # Validate classpath entries for security
+        # Security check: validate each entry (works for string or iterable)
         _verify_jar_sandbox(classpath)
-        cmd_parts = ["-cp", classpath] + cmd_parts
+
+        # CRITICAL FIX: Convert classpath to a string for -cp
+        if isinstance(classpath, str):
+            classpath_str = classpath
+        else:
+            # Join iterable paths with os.pathsep (':' on Linux, ';' on Windows)
+            classpath_str = os.pathsep.join(p for p in classpath if p)
+
+        cmd_parts = ["-cp", classpath_str] + cmd_parts
 
     # Build the full command: java_bin + effective_options + cmd_parts
     full_cmd = java_bin + effective_options + cmd_parts
