@@ -129,7 +129,8 @@ class UntrustedJarError(Exception):
 
 def _verify_jar_sandbox(classpath):
     """
-    Validates that JAR files reside within nltk_data, unless explicitly bypassed
+    Validates that JAR files reside within official nltk_data directories
+    or the NLTK source/repository tree, unless explicitly bypassed
     via the NLTK_ALLOW_UNSAFE_JARS environment variable.
     """
     if not classpath:
@@ -148,6 +149,19 @@ def _verify_jar_sandbox(classpath):
             UserWarning,
         )
         return
+
+    # Compile allowed safe root directories
+    safe_roots = []
+
+    # 1. Official NLTK data paths
+    for p in data_path:
+        if p:
+            safe_roots.append(os.path.abspath(p))
+
+    # 2. NLTK repository root (automatically allows local dev and CI test third/ directories)
+    # internals.py is at nltk/internals.py -> parent is nltk/ package -> parent of that is repo root
+    nltk_repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    safe_roots.append(nltk_repo_root)
 
     # Handle both string (os.pathsep separated) and iterable (tuple/list) formats
     if isinstance(classpath, str):
@@ -169,9 +183,7 @@ def _verify_jar_sandbox(classpath):
         clean_path = os.path.normpath(path)
         is_safe = False
 
-        for safe_dir_raw in data_path:
-            safe_dir = os.path.abspath(safe_dir_raw)
-
+        for safe_dir in safe_roots:
             if os.path.commonpath([safe_dir, clean_path]) == safe_dir:
                 is_safe = True
                 break
