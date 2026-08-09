@@ -218,7 +218,6 @@ def java(
         raise TypeError("cmd must be a sequence of strings, not a string")
     cmd_list = list(cmd)
 
-    # Normalise I/O: convert 'pipe'/'devnull' to proper constants
     def _normalise(stream):
         if stream is None:
             return None
@@ -232,13 +231,11 @@ def java(
     stdout = _normalise(stdout)
     stderr = _normalise(stderr)
 
-    # Options
     if options is None:
         opt_list = list(_java_options) if _java_options else []
     else:
         opt_list = options.split() if isinstance(options, str) else list(options)
 
-    # Classpath
     classpath_arg = None
     if classpath is not None:
         if isinstance(classpath, str):
@@ -247,26 +244,25 @@ def java(
         else:
             raw_entries = list(classpath)
             original_classpath_string = None
-
         if not raw_entries:
             raise ValueError("Classpath is empty after splitting")
-
         _verify_jar_sandbox(raw_entries)
-
         if original_classpath_string is not None:
             classpath_arg = original_classpath_string
         else:
             classpath_arg = os.pathsep.join(raw_entries)
 
-    # Build command
     final_cmd = []
-    final_cmd.extend(_java_bin if _java_bin else ["java"])
+    if isinstance(_java_bin, str):
+        final_cmd.append(_java_bin)
+    else:
+        final_cmd.extend(_java_bin if _java_bin else ["java"])
+
     final_cmd.extend(opt_list)
     if classpath_arg is not None:
         final_cmd.extend(["-cp", classpath_arg])
     final_cmd.extend(cmd_list)
 
-    # Execute
     try:
         p = subprocess.Popen(
             final_cmd,
