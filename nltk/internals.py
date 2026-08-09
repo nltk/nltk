@@ -141,25 +141,30 @@ def _verify_jar_sandbox(classpath):
 
     bypass_flag = os.environ.get("NLTK_ALLOW_UNSAFE_JARS", "").lower()
     if bypass_flag in ("1", "true", "yes"):
-        import warnings
-
-        warnings.warn(
-            "CWE-94 Warning: NLTK_ALLOW_UNSAFE_JARS is enabled. "
-            "Arbitrary JAR execution is permitted.",
-            UserWarning,
-        )
         return
 
-    # Compile allowed safe root directories
+    # Compile allowed safe root directories (using realpath to resolve any symlinks)
     safe_roots = []
-
     for p in data_path:
         if p:
-            safe_roots.append(os.path.abspath(p))
+            safe_roots.append(os.path.realpath(p))
 
-    # NLTK repository root (automatically allows local dev and CI test third/ directories)
-    nltk_repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    safe_roots.append(nltk_repo_root)
+    # System paths required for NLTK's built-in integrations (e.g., Weka)
+    system_paths = [
+        "/usr/share/weka",
+        "/usr/local/share/weka",
+        "/usr/share/java",
+    ]
+    for p in system_paths:
+        if os.path.exists(p):
+            safe_roots.append(os.path.realpath(p))
+
+    # NLTK repository root (allows local dev and CI test third/ directories)
+    # Gated to ensure it does not accidentally trust all of site-packages in a prod wheel.
+    nltk_package_dir = os.path.realpath(os.path.dirname(__file__))
+    parent_dir = os.path.realpath(os.path.join(nltk_package_dir, ".."))
+    if "site-packages" not in parent_dir and "dist-packages" not in parent_dir:
+        safe_roots.append(parent_dir)
 
     # Handle both string (os.pathsep separated) and iterable (tuple/list) formats
     if isinstance(classpath, str):
@@ -175,23 +180,25 @@ def _verify_jar_sandbox(classpath):
                 f"Please provide an absolute path inside an NLTK data directory."
             )
 
-        clean_path = os.path.normpath(path)
+        # realpath resolves symlinks, preventing a symlink inside nltk_data
+        # from pointing to an arbitrary external payload.
+        canonical_path = os.path.realpath(path)
         is_safe = False
 
         for safe_dir in safe_roots:
             try:
-                if os.path.commonpath([safe_dir, clean_path]) == safe_dir:
+                if os.path.commonpath([safe_dir, canonical_path]) == safe_dir:
                     is_safe = True
                     break
             except ValueError:
-                # Ignore cross-drive comparisons on Windows (e.g., C: vs D:)
+                # Ignore cross-drive comparisons on Windows
                 continue
 
         if not is_safe:
             fallback_dir = next(iter(data_path), "<an nltk_data directory>")
             raise UntrustedJarError(
                 f"CWE-94 Mitigation: Blocked execution of Java classpath outside nltk_data.\n"
-                f"Path: {clean_path}\n"
+                f"Path: {canonical_path}\n"
                 f"Solution: Move your payload to {fallback_dir} or set "
                 f"NLTK_ALLOW_UNSAFE_JARS=1 to override."
             )
@@ -256,6 +263,8 @@ def java(
     """
 
     if classpath:
+        if not isinstance(classpath, str):
+            classpath = tuple(classpath)
         _verify_jar_sandbox(classpath)
 
     subprocess_output_dict = {
