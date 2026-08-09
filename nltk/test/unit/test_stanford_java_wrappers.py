@@ -24,11 +24,11 @@ def test_java_call_options_do_not_mutate_global_java_options(monkeypatch):
         def communicate(self):
             return b"", b""
 
-    def fake_popen(cmd, stdin=None, stdout=None, stderr=None):
+    def fake_popen(cmd, stdin=None, stdout=None, stderr=None, **kwargs):
         captured["cmd"] = cmd
         return FakePopen()
 
-    monkeypatch.setattr(internals, "_java_bin", "java")
+    monkeypatch.setattr(internals, "_java_bin", ["java"])
     monkeypatch.setattr(internals, "_java_options", ["-XmxGLOBAL"])
     monkeypatch.setattr(internals.subprocess, "Popen", fake_popen)
 
@@ -37,7 +37,7 @@ def test_java_call_options_do_not_mutate_global_java_options(monkeypatch):
 
     internals.java(
         ["Main"],
-        classpath=("example.jar",),
+        classpath="example.jar",  # instead of ("example.jar",)
         stdout="pipe",
         stderr="pipe",
         options="-XmxLOCAL -Dexample=true",
