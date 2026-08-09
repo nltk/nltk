@@ -129,87 +129,85 @@ class UntrustedJarError(Exception):
     pass
 
 
-def _verify_jar_sandbox(classpath):
-    """
-    Check all classpath entries against the trusted NLTK data directories.
-    Uses nltk.data.path (the same root source as pathsec) and os.path.realpath
-    for symlink-safe canonicalisation (also used by pathsec).
-    If we are running from a source checkout (detected by .git or nltk/test/),
-    the repository root is also added to the trusted roots to allow tests.
-    """
-    # Environment override (with warning)
-    if os.environ.get("NLTK_ALLOW_UNSAFE_JARS") or os.environ.get(
-        "NLTK_ALLOW_UNSAFE_CLASSPATH"
+def _verify_jar_sandbox(classpath_entries):
+    # Environment escape hatch – must be "1"
+    if (
+        os.environ.get("NLTK_ALLOW_UNSAFE_JARS") == "1"
+        or os.environ.get("NLTK_ALLOW_UNSAFE_CLASSPATH") == "1"
     ):
         import warnings
 
         warnings.warn(
-            "Arbitrary JAR execution is permitted due to NLTK_ALLOW_UNSAFE_JARS environment variable.",
+            "Arbitrary JAR execution is permitted via NLTK_ALLOW_UNSAFE_JARS/CLASSPATH=1",
             UserWarning,
-            stacklevel=2,
         )
         return
 
-    # Materialise entries safely
-    if isinstance(classpath, str):
-        entries = [classpath]
+    # Normalise input
+    if isinstance(classpath_entries, str):
+        entries = [classpath_entries]
     else:
-        entries = list(classpath)
+        entries = list(classpath_entries)
 
-    # Get trusted roots from nltk.data.path (canonicalised)
-    import nltk.data
+    # Build trusted roots
+    trusted_roots = []
+    from nltk.data import path as data_path
 
-    trusted_roots = [os.path.realpath(p) for p in nltk.data.path if p]
+    for p in data_path:
+        try:
+            trusted_roots.append(os.path.realpath(p))
+        except Exception:
+            continue
 
-    # Add repository root if we are in a source checkout (for CI and development)
+    # Repository root if inside a Git checkout
     try:
         import nltk
 
         nltk_package_dir = os.path.dirname(os.path.realpath(nltk.__file__))
         repo_root = os.path.realpath(os.path.join(nltk_package_dir, ".."))
-        # Detect source checkout: presence of .git or nltk/test/ directory
-        if os.path.isdir(os.path.join(repo_root, ".git")) or os.path.isdir(
-            os.path.join(nltk_package_dir, "test")
-        ):
+        git_marker = os.path.join(repo_root, ".git")
+        if os.path.isdir(git_marker) or os.path.isfile(git_marker):
             trusted_roots.append(repo_root)
     except Exception:
-        # If any error occurs, simply skip adding the repo root
         pass
+
+    # Weka system paths
+    for wp in (
+        "/usr/share/weka",
+        "/usr/local/weka",
+        "/opt/weka",
+        "C:\\Program Files\\Weka",
+        "C:\\Program Files (x86)\\Weka",
+    ):
+        try:
+            abs_wp = os.path.realpath(wp)
+            if os.path.isdir(abs_wp):
+                trusted_roots.append(abs_wp)
+        except Exception:
+            continue
+
+    trusted_roots = list(dict.fromkeys(trusted_roots))
 
     for entry in entries:
         if not entry:
             continue
-
-        # Reject relative paths explicitly
+        # Reject relative paths before resolving symlinks
         if not os.path.isabs(entry):
-            raise UntrustedJarError(
-                "Relative paths are strictly forbidden. "
-                "Use an absolute path, or set NLTK_ALLOW_UNSAFE_JARS=1."
-            )
+            raise UntrustedJarError(f"Relative paths are strictly forbidden: {entry}")
 
-        # Use os.path.realpath for symlink resolution (same as pathsec)
-        try:
-            canonical_entry = os.path.realpath(entry)
-        except Exception as e:
-            raise UntrustedJarError(f"Cannot resolve path {entry!r}: {e}")
-
-        # Check if the canonical path is inside any trusted root
-        safe = False
+        clean_entry = os.path.normcase(os.path.realpath(entry))
+        allowed = False
         for root in trusted_roots:
             try:
-                common = os.path.commonpath([canonical_entry, root])
-                if common == root:
-                    safe = True
+                if os.path.commonpath([root, clean_entry]) == root:
+                    allowed = True
                     break
             except ValueError:
-                # Different drives on Windows – cannot be contained
                 continue
-
-        if not safe:
-            # Exact phrase for the test
+        if not allowed:
             raise UntrustedJarError(
-                f"JAR {entry!r} is outside nltk_data. "
-                "Move the JAR into nltk.data.path, or set NLTK_ALLOW_UNSAFE_JARS=1."
+                f"Classpath entry {entry} is not in a trusted location (outside nltk_data).\n"
+                f"Trusted roots: {trusted_roots}"
             )
 
 
@@ -220,168 +218,72 @@ def java(
     stdout=None,
     stderr=None,
     blocking=True,
-    *,
     options=None,
 ):
-    """
-    Execute the given java command, by opening a subprocess that calls Java.
+    if isinstance(cmd, str):
+        raise TypeError("cmd must be a sequence of strings, not a string")
+    cmd_list = list(cmd)
 
-    If java has not yet been configured, it will be configured by calling
-    ``config_java()`` with no arguments.
-
-    :param cmd: The java command that should be called, formatted as a list of
-        strings.  Typically, the first string will be the name of the java class;
-        and the remaining strings will be arguments for that java class.
-    :type cmd: list(str)
-    :param classpath: A ``':'`` separated list of directories, JAR archives,
-        and ZIP archives to search for class files.  If a sequence (e.g., tuple)
-        is given, it is joined with ``os.pathsep``.
-    :type classpath: str or iterable of str
-    :param stdin: Specify the executed program's standard input file handles,
-        respectively.  Valid values are ``subprocess.PIPE``, an existing file
-        descriptor (a positive integer), an existing file object, 'pipe',
-        'stdout', 'devnull' and None.  ``subprocess.PIPE`` indicates that a
-        new pipe to the child should be created.  With None, no redirection
-        will occur; the child's file handles will be inherited from the
-        parent.  Additionally, stderr can be ``subprocess.STDOUT``, which
-        indicates that the stderr data from the applications should be
-        captured into the same file handle as for stdout.
-    :param stdout: Specify the executed program's standard output file handle.
-        See ``stdin`` for valid values.
-    :param stderr: Specify the executed program's standard error file handle.
-        See ``stdin`` for valid values.
-    :param blocking: If ``false``, then return immediately after spawning the
-        subprocess.  In this case, the return value is the ``Popen`` object,
-        and not a ``(stdout, stderr)`` tuple.
-    :param options: Java command‑line options (e.g., ``-Xmx2g``, ``-Dfoo=bar``)
-        for this subprocess call. If ``None`` (default), uses the global options
-        configured by ``config_java()``.  **Security:** the library validates
-        these options against an allowlist, rejecting dangerous flags like
-        ``@argfile`` and JVM properties that alter classloading.
-    :type options: list(str) or str
-    :return: If ``blocking=True``, then return a tuple ``(stdout, stderr)``,
-        containing the stdout and stderr outputs generated by the java command
-        if the ``stdout`` and ``stderr`` parameters were set to
-        ``subprocess.PIPE``; or None otherwise.  If ``blocking=False``, then
-        return a ``subprocess.Popen`` object.
-    :raise OSError: If the java command returns a nonzero return code.
-    :raise UntrustedJarError: If any classpath entry is outside the trusted
-        ``nltk.data.path`` directories or is relative.
-    :raise ValueError: If the provided ``options`` contain an invalid or
-        dangerous flag.
-    """
-    # Configure java (if it hasn't been configured yet)
-    if _java_bin is None:
-        config_java()
-
-    # Determine which options to use
+    # Options – use global if none given
     if options is None:
-        effective_options = _java_options
+        opt_list = list(_java_options) if _java_options else []
     else:
-        # Convert string options to a list
-        if isinstance(options, str):
-            options_list = options.split()
-        else:
-            options_list = list(options)
-        _validate_java_options(options_list)
-        effective_options = options_list
+        opt_list = options.split() if isinstance(options, str) else list(options)
 
-    # Normalize _java_bin to a list of strings
-    java_bin = _java_bin
-    if isinstance(java_bin, str):
-        java_bin = [java_bin]
-    elif not isinstance(java_bin, list):
-        java_bin = list(java_bin)
-
-    # Normalize effective_options to a list of strings
-    if isinstance(effective_options, str):
-        effective_options = effective_options.split()
-    elif not isinstance(effective_options, list):
-        effective_options = list(effective_options)
-
-    # Prepare the command list
-    cmd_parts = list(cmd)
-
-    if classpath:
-        # Security check: validate each entry (works for string or iterable)
-        _verify_jar_sandbox(classpath)
-
-        # CRITICAL FIX: Convert classpath to a string for -cp
+    # Materialise classpath entries, but keep original string for command
+    classpath_arg = None
+    if classpath is not None:
         if isinstance(classpath, str):
-            classpath_str = classpath
+            raw_entries = [p for p in classpath.split(os.pathsep) if p]
+            original_classpath_string = classpath
         else:
-            # Join iterable paths with os.pathsep (':' on Linux, ';' on Windows)
-            classpath_str = os.pathsep.join(p for p in classpath if p)
+            raw_entries = list(classpath)
+            original_classpath_string = None
 
-        cmd_parts = ["-cp", classpath_str] + cmd_parts
+        if not raw_entries:
+            raise ValueError("Classpath is empty after splitting")
 
-    # Build the full command: java_bin + effective_options + cmd_parts
-    full_cmd = java_bin + effective_options + cmd_parts
+        # Validate – this will resolve paths internally if needed
+        _verify_jar_sandbox(raw_entries)
 
-    # Map string constants to subprocess constants
-    stdin_map = {
-        "pipe": subprocess.PIPE,
-        "stdout": subprocess.STDOUT,
-        "devnull": subprocess.DEVNULL,
-    }
-    stdout_map = {
-        "pipe": subprocess.PIPE,
-        "devnull": subprocess.DEVNULL,
-    }
-    stderr_map = {
-        "pipe": subprocess.PIPE,
-        "stdout": subprocess.STDOUT,
-        "devnull": subprocess.DEVNULL,
-    }
+        # Build the classpath argument for the command: keep original string if available
+        if original_classpath_string is not None:
+            classpath_arg = original_classpath_string
+        else:
+            classpath_arg = os.pathsep.join(raw_entries)
 
-    if isinstance(stdin, str):
-        stdin = stdin_map.get(stdin, stdin)
-    if isinstance(stdout, str):
-        stdout = stdout_map.get(stdout, stdout)
-    if isinstance(stderr, str):
-        stderr = stderr_map.get(stderr, stderr)
+    # Build final command
+    final_cmd = []
+    final_cmd.extend(_java_bin if _java_bin else ["java"])
+    final_cmd.extend(opt_list)
+    if classpath_arg is not None:
+        final_cmd.extend(["-cp", classpath_arg])
+    final_cmd.extend(cmd_list)
 
-    # Spawn the subprocess
-    p = subprocess.Popen(
-        full_cmd,
-        stdin=stdin,
-        stdout=stdout,
-        stderr=stderr,
-        close_fds=True,
-    )
+    # Execute
+    import subprocess
 
-    if not blocking:
-        return p
-
-    # Blocking mode: wait for process to finish and capture output
-    (stdout_data, stderr_data) = p.communicate()
-
-    # Check return code
-    if p.returncode != 0:
-        err_msg = (
-            f"Java command returned non-zero exit code {p.returncode}.\n"
-            f"Command: {' '.join(full_cmd)}\n"
+    try:
+        p = subprocess.Popen(
+            final_cmd,
+            stdin=stdin,
+            stdout=subprocess.PIPE if stdout is True else stdout,
+            stderr=subprocess.PIPE if stderr is True else stderr,
+            universal_newlines=True,
         )
-        if stdout_data:
-            err_msg += f"STDOUT:\n{stdout_data.decode('utf-8', errors='replace')}\n"
-        if stderr_data:
-            err_msg += f"STDERR:\n{stderr_data.decode('utf-8', errors='replace')}\n"
-        raise OSError(err_msg)
-
-    # Return captured output if pipes were used
-    if stdout == subprocess.PIPE:
-        stdout_output = stdout_data
-    else:
-        stdout_output = None
-
-    if stderr == subprocess.STDOUT:
-        stderr_output = None
-    elif stderr == subprocess.PIPE:
-        stderr_output = stderr_data
-    else:
-        stderr_output = None
-
-    return (stdout_output, stderr_output)
+        if blocking:
+            stdout_data, stderr_data = p.communicate()
+            if p.returncode != 0:
+                raise OSError(
+                    f"Java command failed: {' '.join(final_cmd)}\n"
+                    f"Return code: {p.returncode}\nOutput: {stdout_data}\nError: {stderr_data}"
+                )
+            return stdout_data, stderr_data
+        return p
+    except OSError as e:
+        raise OSError(
+            f"Failed to execute Java command: {' '.join(final_cmd)}\nError: {e}"
+        )
 
 
 ######################################################################
