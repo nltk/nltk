@@ -123,6 +123,68 @@ def config_java(bin=None, options=None, verbose=False):
         _java_options[:] = options
 
 
+class UntrustedJarError(Exception):
+    pass
+
+
+def _verify_jar_sandbox(classpath):
+    """
+    Validates that JAR files reside within nltk_data, unless explicitly bypassed
+    via the NLTK_ALLOW_UNSAFE_JARS environment variable.
+    """
+    if not classpath:
+        return
+
+    # Deferred import to prevent circular dependencies during module initialization
+    from nltk.data import path as data_path
+
+    bypass_flag = os.environ.get("NLTK_ALLOW_UNSAFE_JARS", "").lower()
+    if bypass_flag in ("1", "true", "yes"):
+        import warnings
+
+        warnings.warn(
+            "CWE-94 Warning: NLTK_ALLOW_UNSAFE_JARS is enabled. "
+            "Arbitrary JAR execution is permitted.",
+            UserWarning,
+        )
+        return
+
+    # Handle both string (os.pathsep separated) and iterable (tuple/list) formats
+    if isinstance(classpath, str):
+        paths = classpath.split(os.pathsep)
+    else:
+        paths = classpath
+
+    for path in paths:
+        if not path.lower().endswith(".jar"):
+            continue
+
+        if not os.path.isabs(path):
+            raise UntrustedJarError(
+                f"CWE-94 Mitigation: Relative paths are strictly forbidden for JARs.\n"
+                f"Path provided: {path}\n"
+                f"Please provide an absolute path inside an NLTK data directory."
+            )
+
+        clean_path = os.path.normpath(path)
+        is_safe = False
+
+        for safe_dir_raw in data_path:
+            safe_dir = os.path.abspath(safe_dir_raw)
+
+            if os.path.commonpath([safe_dir, clean_path]) == safe_dir:
+                is_safe = True
+                break
+
+        if not is_safe:
+            raise UntrustedJarError(
+                f"CWE-94 Mitigation: Blocked execution of JAR outside nltk_data.\n"
+                f"Path: {clean_path}\n"
+                f"Solution: Move your JAR to {data_path[0]} or set "
+                f"NLTK_ALLOW_UNSAFE_JARS=1 to override."
+            )
+
+
 def java(
     cmd,
     classpath=None,
@@ -180,6 +242,9 @@ def java(
 
     :raise OSError: If the java command returns a nonzero return code.
     """
+
+    if classpath:
+        _verify_jar_sandbox(classpath)
 
     subprocess_output_dict = {
         "pipe": subprocess.PIPE,
