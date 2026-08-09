@@ -153,12 +153,11 @@ def _verify_jar_sandbox(classpath):
     # Compile allowed safe root directories
     safe_roots = []
 
-    # 1. Official NLTK data paths
     for p in data_path:
         if p:
             safe_roots.append(os.path.abspath(p))
 
-    # 2. NLTK repository root (automatically allows local dev and CI test third/ directories)
+    # NLTK repository root (automatically allows local dev and CI test third/ directories)
     nltk_repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     safe_roots.append(nltk_repo_root)
 
@@ -169,12 +168,9 @@ def _verify_jar_sandbox(classpath):
         paths = classpath
 
     for path in paths:
-        if not path.lower().endswith(".jar"):
-            continue
-
         if not os.path.isabs(path):
             raise UntrustedJarError(
-                f"CWE-94 Mitigation: Relative paths are strictly forbidden for JARs.\n"
+                f"CWE-94 Mitigation: Relative paths are strictly forbidden for Java classpaths.\n"
                 f"Path provided: {path}\n"
                 f"Please provide an absolute path inside an NLTK data directory."
             )
@@ -192,10 +188,11 @@ def _verify_jar_sandbox(classpath):
                 continue
 
         if not is_safe:
+            fallback_dir = next(iter(data_path), "<an nltk_data directory>")
             raise UntrustedJarError(
-                f"CWE-94 Mitigation: Blocked execution of JAR outside nltk_data.\n"
+                f"CWE-94 Mitigation: Blocked execution of Java classpath outside nltk_data.\n"
                 f"Path: {clean_path}\n"
-                f"Solution: Move your JAR to {data_path[0]} or set "
+                f"Solution: Move your payload to {fallback_dir} or set "
                 f"NLTK_ALLOW_UNSAFE_JARS=1 to override."
             )
 
