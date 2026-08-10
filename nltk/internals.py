@@ -1026,14 +1026,19 @@ class ElementWrapper:
         Initialize a new Element wrapper for ``etree``.
 
         If ``etree`` is a string, then it will be converted to an
-        Element object using ``ElementTree.fromstring()`` first:
+        Element object using ``nltk.xmlsec.fromstring()`` first, which
+        refuses documents that declare XML entities:
 
             >>> ElementWrapper("<test></test>")
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
         if isinstance(etree, str):
-            etree = ElementTree.fromstring(etree)
+            # nltk.xmlsec refuses entity declarations, so a hostile string
+            # cannot expand to exhaust memory (CWE-776).
+            from nltk.xmlsec import fromstring as safe_fromstring
+
+            etree = safe_fromstring(etree)
         self.__dict__["_etree"] = etree
 
     def unwrap(self):

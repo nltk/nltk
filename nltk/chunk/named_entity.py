@@ -12,9 +12,9 @@ Named entity chunker
 
 import os
 import re
-from xml.etree import ElementTree as ET
 
 from nltk.tag import ClassifierBasedTagger, pos_tag
+from nltk.xmlsec import parse as safe_parse
 
 try:
     from nltk.classify import MaxentClassifier
@@ -233,7 +233,7 @@ def load_ace_file(textfile, fmt):
     # Read the xml file, and get a list of entities
     entities = []
     with open(annfile) as infile:
-        xml = ET.parse(infile).getroot()
+        xml = safe_parse(infile).getroot()
     for entity in xml.findall("document/entity"):
         typ = entity.find("entity_type").text
         for mention in entity.findall("entity_mention"):

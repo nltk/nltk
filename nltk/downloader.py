@@ -173,7 +173,7 @@ from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
 from xml.etree import ElementTree
 
-from defusedxml.ElementTree import parse as safe_parse
+from nltk.xmlsec import parse as safe_parse
 
 import nltk
 from nltk.data import _check_decompression_bomb
@@ -282,7 +282,7 @@ class Package:
     @staticmethod
     def fromxml(xml):
         if isinstance(xml, str):
-            xml = ElementTree.parse(xml)
+            xml = safe_parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = str(xml.attrib[key])
         return Package(**xml.attrib)
@@ -322,7 +322,7 @@ class Collection:
     @staticmethod
     def fromxml(xml):
         if isinstance(xml, str):
-            xml = ElementTree.parse(xml)
+            xml = safe_parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = str(xml.attrib[key])
         children = [child.get("ref") for child in xml.findall("item")]
@@ -2870,7 +2870,7 @@ def _find_collections(root):
         for filename in files:
             if filename.endswith(".xml"):
                 xmlfile = os.path.join(dirname, filename)
-                yield ElementTree.parse(xmlfile).getroot()
+                yield safe_parse(xmlfile).getroot()
 
 
 def _find_packages(root):
@@ -2898,7 +2898,7 @@ def _find_packages(root):
                 except Exception as e:
                     raise ValueError(f"Error reading file {zipfilename!r}!\n{e}") from e
                 try:
-                    pkg_xml = ElementTree.parse(xmlfilename).getroot()
+                    pkg_xml = safe_parse(xmlfilename).getroot()
                 except Exception as e:
                     raise ValueError(f"Error reading file {xmlfilename!r}!\n{e}") from e
 
