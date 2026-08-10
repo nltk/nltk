@@ -11,6 +11,8 @@
 import subprocess
 from collections import namedtuple
 
+from nltk.internals import find_binary
+
 
 class AlignedSent:
     """
@@ -129,8 +131,15 @@ class AlignedSent:
         dot_string = self._to_dot().encode("utf8")
         output_format = "svg"
         try:
+            # Resolve to a trusted absolute path; find_binary refuses a
+            # CWD-relative match, so a planted ./dot cannot be run in place of
+            # the real Graphviz binary (CWE-426 / CWE-427).
+            dot_binary = find_binary("dot")
+        except LookupError as e:
+            raise Exception("Cannot find the dot binary from Graphviz package") from e
+        try:
             process = subprocess.Popen(
-                ["dot", "-T%s" % output_format],
+                [dot_binary, "-T%s" % output_format],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
