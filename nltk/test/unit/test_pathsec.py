@@ -280,6 +280,12 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
     global_opener = urllib.request.build_opener(proxy_handler)
     urllib.request.install_opener(global_opener)
 
+    # Proxied fetches fail closed by default now (GHSA-6ww7, CWE-918). This test
+    # exercises the proxy *inheritance/copy* behavior, so opt into trusting the
+    # proxy for its duration.
+    original_allow = pathsec.ALLOW_PROXIED_FETCH
+    pathsec.ALLOW_PROXIED_FETCH = True
+
     try:
         captured_handlers = []
 
@@ -315,6 +321,7 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
 
     finally:
         # Teardown: Safely restore the original global opener, leaving no trace of this test
+        pathsec.ALLOW_PROXIED_FETCH = original_allow
         urllib.request.install_opener(original_opener)
 
 
@@ -454,19 +461,81 @@ def test_no_proxy_installs_pinning_and_disables_env_proxy(monkeypatch):
     assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
 
 
-def test_env_proxy_skips_pinning_handlers(monkeypatch):
-    """When environment proxies are set, the proxy is the egress: the pinning
-    handlers must NOT be installed (they cannot do the CONNECT tunnel) and we
-    must not force an empty ProxyHandler that would disable the env proxy."""
+def test_env_proxy_fails_closed_under_enforce(monkeypatch):
+    """A configured proxy is the egress, so NLTK cannot pin the validated IP and
+    its SSRF filter no longer governs the destination (GHSA-6ww7, CWE-918).
+    Under ENFORCE the proxied fetch must fail closed, not silently proceed."""
     monkeypatch.setattr(
         urllib.request, "getproxies", lambda: {"http": "http://proxy.local:3128"}
     )
+    monkeypatch.setattr(urllib.request, "_opener", None)
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
+
+    with pytest.raises(PermissionError, match="proxied fetch"):
+        pathsec.urlopen("http://safe.example.com/x")
+
+
+def test_env_proxy_opt_in_skips_pinning_handlers(monkeypatch):
+    """When the operator opts into trusting the proxy, the proxy is the egress:
+    the pinning handlers must NOT be installed (they cannot do the CONNECT
+    tunnel) and we must not force an empty ProxyHandler that disables the env
+    proxy. Gated behind the explicit opt-in that fail-closed now requires."""
+    monkeypatch.setattr(
+        urllib.request, "getproxies", lambda: {"http": "http://proxy.local:3128"}
+    )
+    monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", True)
     handlers = _capture_urlopen_handlers(monkeypatch)
 
     assert not any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
     assert not any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
     # We did not append our own ProxyHandler({}); build_opener adds the env one.
     assert not any(isinstance(h, urllib.request.ProxyHandler) for h in handlers)
+
+
+def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
+    """End-to-end regression for GHSA-6ww7: a proxy whose egress is a
+    loopback/internal service must not be reachable through pathsec.urlopen even
+    when the requested URL validates as a public destination. Fail closed by
+    default; only the explicit opt-in lets the (trusted-proxy) fetch through."""
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    SECRET = b"INTERNAL-ONLY-SECRET"
+
+    class _Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(SECRET)
+
+        def log_message(self, *a):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), _Handler)  # loopback == "internal"
+    port = server.server_address[1]
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        # A configured proxy whose egress is the internal loopback service.
+        monkeypatch.setattr(
+            urllib.request, "getproxies", lambda: {"http": f"http://127.0.0.1:{port}"}
+        )
+        monkeypatch.setattr(urllib.request, "_opener", None)
+        public_url = "http://93.184.216.34/"  # validates as a public destination
+
+        # Default: fail closed -- the internal secret is NOT fetched.
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
+        with pytest.raises(PermissionError, match="proxied fetch"):
+            pathsec.urlopen(public_url, timeout=5)
+
+        # Opt-in: the trusted-proxy fetch is allowed to proceed.
+        monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", True)
+        body = pathsec.urlopen(public_url, timeout=5).read()
+        assert body == SECRET
+    finally:
+        server.shutdown()
 
 
 # --- SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6 ---------
