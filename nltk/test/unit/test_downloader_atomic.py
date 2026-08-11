@@ -124,6 +124,19 @@ class TestDownloaderAtomic(unittest.TestCase):
         if resolved_source_dir not in nltk.data.path:
             nltk.data.path.append(resolved_source_dir)
 
+        # Some tests run the download in a `multiprocessing` child, which does
+        # not inherit the nltk.data.path edit above but DOES inherit os.environ,
+        # and pathsec._get_allowed_roots reads NLTK_DATA -- so expose the temp
+        # roots there too, and refresh the cached allowed-roots set.
+        self._old_nltk_data_env = os.environ.get("NLTK_DATA")
+        env_parts = [p for p in (self._old_nltk_data_env or "").split(os.pathsep) if p]
+        for d in (resolved_test_dir, resolved_source_dir):
+            if d not in env_parts:
+                env_parts.append(d)
+        os.environ["NLTK_DATA"] = os.pathsep.join(env_parts)
+        nltk.pathsec._ALLOWED_ROOTS_CACHE = None
+        nltk.pathsec._LAST_DATA_PATHS = None
+
         self.source_zip_path = _build_source_zip(self.source_dir)
         meta = _zip_metadata(self.source_zip_path)
 
@@ -140,6 +153,12 @@ class TestDownloaderAtomic(unittest.TestCase):
 
     def tearDown(self):
         nltk.data.path[:] = self._old_nltk_data_path
+        if self._old_nltk_data_env is None:
+            os.environ.pop("NLTK_DATA", None)
+        else:
+            os.environ["NLTK_DATA"] = self._old_nltk_data_env
+        nltk.pathsec._ALLOWED_ROOTS_CACHE = None
+        nltk.pathsec._LAST_DATA_PATHS = None
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         if os.path.exists(self.source_dir):
