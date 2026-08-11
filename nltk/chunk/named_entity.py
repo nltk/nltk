@@ -13,6 +13,7 @@ Named entity chunker
 import os
 import re
 
+from nltk.pathsec import open as pathsec_open
 from nltk.tag import ClassifierBasedTagger, pos_tag
 from nltk.xmlsec import parse as safe_parse
 
@@ -230,9 +231,11 @@ def load_ace_file(textfile, fmt):
     print(f"  - {os.path.split(textfile)[1]}")
     annfile = textfile + ".tmx.rdc.xml"
 
-    # Read the xml file, and get a list of entities
+    # Read the xml file, and get a list of entities. These ACE paths are walked
+    # from a corpus root, so keep them inside the allowed data roots -- a
+    # symlinked .sgm/.xml must not resolve outside (CWE-59, GHSA-7qj2).
     entities = []
-    with open(annfile) as infile:
+    with pathsec_open(annfile, context="load_ace_file") as infile:
         xml = safe_parse(infile).getroot()
     for entity in xml.findall("document/entity"):
         typ = entity.find("entity_type").text
@@ -244,7 +247,7 @@ def load_ace_file(textfile, fmt):
             entities.append((s, e, typ))
 
     # Read the text file, and mark the entities.
-    with open(textfile) as infile:
+    with pathsec_open(textfile, context="load_ace_file") as infile:
         text = infile.read()
 
     # Strip XML tags, since they don't count towards the indices

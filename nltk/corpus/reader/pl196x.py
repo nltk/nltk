@@ -7,6 +7,7 @@
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
+from nltk.pathsec import open as pathsec_open
 
 PARA = re.compile(r"<p(?: [^>]*){0,1}>(.*?)</p>")
 SENT = re.compile(r"<s(?: [^>]*){0,1}>(.*?)</s>")
@@ -107,7 +108,12 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         self._f2t = defaultdict(list)
         self._t2f = defaultdict(list)
         if self._textids is not None:
-            with open(self._textids) as fp:
+            # Open through pathsec (containment + O_NOFOLLOW / hardlink guards)
+            # so the root-derived textids file cannot escape the corpus root
+            # (CWE-59, GHSA-p4rw class).
+            with pathsec_open(
+                self._textids, context="Pl196xCorpusReader", required_root=self._root
+            ) as fp:
                 for line in fp:
                     line = line.strip()
                     file_id, text_ids = line.split(" ", 1)

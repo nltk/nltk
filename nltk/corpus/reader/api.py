@@ -15,6 +15,7 @@ import re
 from collections import defaultdict
 from itertools import chain
 
+from nltk import pathsec
 from nltk.corpus.reader.util import *
 from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
 
@@ -70,6 +71,18 @@ class CorpusReader:
               for normalizing or converting the POS tags returned by the
               ``tagged_...()`` methods.
         """
+        # Defense in depth (CWE-73 / CWE-59; GHSA-3gq4-3j92-5w49, GHSA-p4rw):
+        # validate the raw string root against the NLTK data sandbox before it
+        # becomes a PathPointer, so a reader cannot be pointed outside the
+        # sandbox by caller-supplied input and a reader that later reaches a raw
+        # ``open()`` / ``sqlite3.connect()`` still cannot escape.  Under
+        # ``pathsec.ENFORCE`` an out-of-sandbox root is refused; a corpus in a
+        # custom location is authorized by registering it on ``nltk.data.path``.
+        # The ``str`` test also covers ``FileSystemPathPointer`` (a ``str``
+        # subclass), so a pointer root is validated too.
+        if pathsec.ENFORCE and isinstance(root, str):
+            pathsec.validate_path(root, context="CorpusReader.__init__")
+
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):
             m = re.match(r"(.*\.zip)/?(.*)$|", root)

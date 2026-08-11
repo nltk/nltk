@@ -712,6 +712,17 @@ def _parse_sexpr_block(block):
 def find_corpus_fileids(root, regexp):
     if not isinstance(root, PathPointer):
         raise TypeError("find_corpus_fileids: expected a PathPointer")
+
+    # Defense in depth (CWE-73, GHSA-3gq4-3j92-5w49): validate the root against
+    # the NLTK data sandbox before scanning it.  A few readers call
+    # find_corpus_fileids() before their super().__init__() runs the root check,
+    # so without this an out-of-sandbox FileSystemPathPointer root would still be
+    # enumerated (an os.walk directory listing) before construction is refused.
+    from nltk import pathsec
+
+    if pathsec.ENFORCE:
+        pathsec.validate_path(root, context="find_corpus_fileids")
+
     regexp += "$"
 
     # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
