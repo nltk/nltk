@@ -30,9 +30,25 @@ _java_options = []
 
 # Allowlist of safe JVM tuning flags for NLTK's Java wrapper.
 # Anything not matching is rejected to prevent argument injection
-# (CVE-2026-12841, CWE-88).  An allowlist is used rather than a
-# denylist so that -jar, @argfile, and future dangerous flags are
-# blocked without needing to be enumerated explicitly.
+# (CVE-2026-12841, CWE-88).  A minimal allowlist is used rather than a denylist so
+# that -jar, @argfile, -XX:OnError=<cmd>, and *future* dangerous flags are blocked
+# without needing to be enumerated (OWASP / SEI CERT IDS07-J both prefer this).
+#
+# What NLTK's wrappers (Stanford tagger/parser/tokenizer/segmenter, CoreNLP,
+# MaltParser) and the Stanford CoreNLP documentation actually pass is: heap/stack
+# sizing (-Xmx/-mx/-Xms/-Xss), -verbose, -server/-client, and (on JDK 9-11)
+# ``--add-modules java.se.ee``. So exactly those are allowed.
+#
+# Deliberately NOT allowlisted, because they are unnecessary for NLTK/CoreNLP and
+# proven dangerous:
+#   * ``-XX:`` -- ``-XX:OnError=`` / ``-XX:OnOutOfMemoryError=`` are executed by
+#     the JVM as shell commands (verified: an OOM ran the injected command), and
+#     others write files or unlock restricted options.
+#   * ``-D`` system properties -- e.g. ``-Djava.ext.dirs`` (RCE on JDK<=8),
+#     ``-Djava.rmi.server.codebase`` / JNDI trust props. CoreNLP sets encoding via
+#     its own ``-encoding`` *program* argument, not ``-Dfile.encoding``.
+# An application that genuinely needs one of these passes it through the explicit
+# ``trusted_raw_options`` escape hatch (see ``java()``), taking responsibility.
 _SAFE_JVM_PREFIXES = (
     "-xmx",  # max heap size:   -Xmx512m
     "-mx",  # max heap (legacy alias of -Xmx, used by Stanford/CoreNLP): -mx2g
@@ -45,23 +61,64 @@ _SAFE_JVM_PREFIXES = (
     "-xcomp",  # compile-only mode
     "-xmixed",  # mixed mode (JVM default)
     "-verbose",  # diagnostic output: -verbose:gc
-    "-xx:",  # advanced tuning:  -XX:+UseG1GC
 )
 
 _SAFE_JVM_EXACT = frozenset({"-server", "-client"})
 
+# ``--add-modules <module-list>`` is required by CoreNLP on JDK 9-11 (a CoreNLP
+# dependency uses the JAXB module dropped from the default set). The value is a
+# comma-separated list of module names -- it names JDK modules, and because
+# ``--module-path`` / ``-p`` is NOT allowlisted it cannot point at attacker code.
+# Restrict the value to a plain module-list shape so nothing else rides through.
+_MODULE_LIST_RE = re.compile(r"\A[A-Za-z0-9_.,-]+\Z")
+
+# Every flag the allowlist accepts (heap/stack sizing, -verbose, -server/-client,
+# --add-modules) is a single simple token; none contains whitespace or a shell
+# metacharacter. Rejecting those characters is therefore a free, name-agnostic
+# defense-in-depth layer (it has no false positives now that -D, whose values may
+# legitimately contain them, is not accepted): e.g. a malformed ``-Xmx512m ; rm``
+# token cannot ride through on the ``-xmx`` prefix.
+_UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
+
 
 def _validate_java_options(options):
     """
-    Raise ValueError if *options* contains JVM flags that can change
-    the executed program, load agents, or expand argument files.
+    Raise ValueError if *options* contains JVM flags that can change the
+    executed program, run a command, load agents, or expand argument files.
 
-    Uses an allowlist of safe JVM memory/tuning flags that NLTK's Java
-    wrapper is known to need.  This is intentionally stricter than a
-    denylist so that -jar, @argfile, and future dangerous flags are
-    rejected without needing to be enumerated (CVE-2026-12841, CWE-88).
+    Uses a minimal allowlist of exactly the flags NLTK's Java wrappers and the
+    Stanford CoreNLP documentation use (heap/stack sizing, -verbose,
+    -server/-client, and ``--add-modules``). This is intentionally stricter than
+    a denylist so that -jar, @argfile, ``-XX:OnError=<cmd>``, dangerous ``-D``
+    system properties, and future dangerous flags are all rejected without
+    needing to be enumerated (CVE-2026-12841, CWE-88). Applications needing an
+    unlisted flag use ``java(..., trusted_raw_options=[...])``.
     """
-    for flag in options:
+    opts = list(options)
+    i = 0
+    while i < len(opts):
+        flag = opts[i]
+
+        # A JVM flag is a non-empty string; anything else cannot be reasoned
+        # about safely, so reject it rather than call .lower() on it.
+        if not isinstance(flag, str) or not flag:
+            raise ValueError(
+                f"java_options contains an invalid (non-string or empty) entry: "
+                f"{flag!r} (CVE-2026-12841, CWE-88)."
+            )
+
+        # Shape guard: no legitimate allowed flag contains whitespace, a control
+        # character, or a shell metacharacter; reject any that does.
+        if any(
+            c.isspace() or ord(c) < 0x20 or ord(c) == 0x7F or c in _UNSAFE_OPTION_CHARS
+            for c in flag
+        ):
+            raise ValueError(
+                f"java_options contains whitespace, a control character, or a "
+                f"shell metacharacter, which a valid JVM flag never does: "
+                f"{flag!r} (CVE-2026-12841, CWE-88)."
+            )
+
         n = flag.lower()
 
         # @argfile references are expanded by the Java launcher before
@@ -72,21 +129,38 @@ def _validate_java_options(options):
                 f"reference: {flag!r} (CVE-2026-12841, CWE-88)."
             )
 
-        # Allow -Dkey=value system properties. The prefix is always
-        # uppercase -D in valid usage; check the original flag.
-        if flag.startswith("-D") and "=" in flag:
+        # --add-modules <modules>  (two tokens) or  --add-modules=<modules>.
+        if n == "--add-modules":
+            mods = opts[i + 1] if i + 1 < len(opts) else None
+            if not isinstance(mods, str) or not _MODULE_LIST_RE.match(mods):
+                raise ValueError(
+                    f"--add-modules must be followed by a plain module list, got "
+                    f"{mods!r} (CVE-2026-12841, CWE-88)."
+                )
+            i += 2
+            continue
+        if n.startswith("--add-modules="):
+            if not _MODULE_LIST_RE.match(flag.split("=", 1)[1]):
+                raise ValueError(
+                    f"--add-modules has a non-module-list value: {flag!r} "
+                    "(CVE-2026-12841, CWE-88)."
+                )
+            i += 1
             continue
 
         if n in _SAFE_JVM_EXACT:
+            i += 1
             continue
 
         if n.startswith(_SAFE_JVM_PREFIXES):
+            i += 1
             continue
 
         raise ValueError(
             f"java_options contains a disallowed JVM/launcher flag: {flag!r}. "
-            "Only JVM memory-tuning and safe runtime flags are permitted "
-            "(CVE-2026-12841, CWE-88)."
+            "Only JVM memory/stack tuning, -verbose, -server/-client and "
+            "--add-modules are permitted; pass anything else through "
+            "java(trusted_raw_options=...) (CVE-2026-12841, CWE-88)."
         )
 
 
@@ -213,6 +287,7 @@ def java(
     stderr=None,
     blocking=True,
     options=None,
+    trusted_raw_options=None,
 ):
     if isinstance(cmd, str):
         raise TypeError("cmd must be a sequence of strings, not a string")
@@ -235,6 +310,19 @@ def java(
         opt_list = list(_java_options) if _java_options else []
     else:
         opt_list = options.split() if isinstance(options, str) else list(options)
+        # Per-call options reach subprocess.Popen directly, so they must be
+        # validated too -- config_java() alone is not enough (CVE-2026-12841,
+        # CWE-88). Without this a caller-supplied -javaagent / -agentlib /
+        # @argfile / -XX:OnError flag would be injected into the JVM command line.
+        _validate_java_options(opt_list)
+    # Escape hatch: options the caller vouches for are appended WITHOUT
+    # validation. Use only for flags NLTK's allowlist rejects but you need and
+    # trust (e.g. a specific ``-XX:`` GC tuning flag) -- never route untrusted
+    # input here (CVE-2026-12841, CWE-88).
+    if trusted_raw_options:
+        if isinstance(trusted_raw_options, str):
+            trusted_raw_options = trusted_raw_options.split()
+        opt_list = opt_list + list(trusted_raw_options)
 
     classpath_arg = None
     if classpath is not None:
@@ -1082,14 +1170,19 @@ class ElementWrapper:
         Initialize a new Element wrapper for ``etree``.
 
         If ``etree`` is a string, then it will be converted to an
-        Element object using ``ElementTree.fromstring()`` first:
+        Element object using ``nltk.xmlsec.fromstring()`` first, which
+        refuses documents that declare XML entities:
 
             >>> ElementWrapper("<test></test>")
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
         if isinstance(etree, str):
-            etree = ElementTree.fromstring(etree)
+            # nltk.xmlsec refuses entity declarations, so a hostile string
+            # cannot expand to exhaust memory (CWE-776).
+            from nltk.xmlsec import fromstring as safe_fromstring
+
+            etree = safe_fromstring(etree)
         self.__dict__["_etree"] = etree
 
     def unwrap(self):

@@ -30,10 +30,10 @@ def test_java_call_options_do_not_mutate_global_java_options(tmp_path):
                 classpath="example.jar",
                 stdout="pipe",
                 stderr="pipe",
-                options="-XmxLOCAL -Dexample=true",
+                options="-XmxLOCAL -verbose:gc",
             )
 
-        expected = ["java", "-XmxLOCAL", "-Dexample=true", "-cp", "example.jar", "Main"]
+        expected = ["java", "-XmxLOCAL", "-verbose:gc", "-cp", "example.jar", "Main"]
         assert captured_cmd[0] == expected
         assert nltk.internals._java_options == ["-XmxGLOBAL"]
 

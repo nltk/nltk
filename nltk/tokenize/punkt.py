@@ -117,7 +117,26 @@ from nltk.picklesec import allowlisted_pickle_load
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
-_PUNKT_ALLOWED_MODULES = ("nltk.tokenize.punkt", "nltk.tokenize")
+# Exact ``(module, qualname)`` allowlist -- no namespace prefix. A prefix allow
+# such as the previous ``("nltk.tokenize.punkt", "nltk.tokenize")`` exposes every
+# attribute of every module in the namespace (dunders like ``__builtins__``,
+# re-exports, and ``ReppTokenizer._execute``), so Punkt loading is pinned to the
+# exact classes a Punkt model reconstructs -- the Punkt classes plus a
+# ``collections.defaultdict`` parameter table with an ``int`` default factory.
+# Anything else fails closed (GHSA-x99w / GHSA-4489).
+_PUNKT_ALLOWED_GLOBALS = (
+    ("nltk.tokenize.punkt", "PunktSentenceTokenizer"),
+    ("nltk.tokenize.punkt", "PunktParameters"),
+    ("nltk.tokenize.punkt", "PunktLanguageVars"),
+    ("nltk.tokenize.punkt", "PunktToken"),
+    ("nltk.tokenize.punkt", "PunktTrainer"),
+    ("nltk.tokenize.punkt", "PunktBaseClass"),
+    ("nltk.tokenize.punkt", "PunktTokenizer"),
+    # A PunktTrainer pickle stores frequency tables as FreqDist (a dict subclass).
+    ("nltk.probability", "FreqDist"),
+    ("collections", "defaultdict"),
+    ("builtins", "int"),
+)
 
 
 def punkt_pickle_load(file):
@@ -127,11 +146,12 @@ def punkt_pickle_load(file):
     Old NLTK Punkt models were distributed as pickle files containing
     ``PunktParameters``, ``PunktLanguageVars``, and related classes.
     This helper loads them through :class:`~nltk.picklesec.AllowlistUnpickler`
-    restricted to the ``nltk.tokenize.punkt`` and ``nltk.tokenize`` modules,
-    so arbitrary code gadgets (``os.system``, ``subprocess``, etc.) are blocked
+    restricted to the exact Punkt classes (plus the ``collections``/``builtins``
+    primitives a Punkt model needs), so arbitrary code gadgets (``os.system``,
+    ``subprocess``, ``ReppTokenizer._execute``, ``numpy.load``, ...) are blocked
     while legitimate Punkt objects reconstruct normally.
     """
-    return allowlisted_pickle_load(file, allowed_modules=_PUNKT_ALLOWED_MODULES)
+    return allowlisted_pickle_load(file, allowed_globals=_PUNKT_ALLOWED_GLOBALS)
 
 
 ######################################################################
