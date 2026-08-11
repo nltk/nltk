@@ -14,7 +14,13 @@ import sys
 import tempfile
 
 from nltk.data import ZipFilePathPointer
-from nltk.internals import find_dir, find_file, find_jars_within_path
+from nltk.internals import (
+    _validate_java_options,
+    _verify_jar_sandbox,
+    find_dir,
+    find_file,
+    find_jars_within_path,
+)
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
@@ -260,6 +266,14 @@ class MaltParser(ParserI):
         :param outputfilename: path to the output file
         :type outputfilename: str
         """
+
+        # MaltParser builds and runs its own ``java`` command instead of routing
+        # through nltk.internals.java(), so apply the same protections here:
+        # sandbox the classpath JARs to the trusted NLTK data dirs
+        # (CWE-94, CVE-2026-12252) and validate the JVM options
+        # (CWE-88, CVE-2026-12841) before the command reaches subprocess.Popen.
+        _verify_jar_sandbox(self.malt_jars)
+        _validate_java_options(self.additional_java_args)
 
         cmd = ["java"]
         cmd += self.additional_java_args  # Adds additional java arguments
