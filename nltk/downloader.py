@@ -173,13 +173,12 @@ from hashlib import md5, sha256
 from urllib.error import HTTPError, URLError
 from xml.etree import ElementTree
 
-from nltk.xmlsec import parse as safe_parse
-
 import nltk
 from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
+from nltk.xmlsec import parse as safe_parse
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
