@@ -25,6 +25,14 @@ from urllib.parse import unquote, urlparse
 # ENFORCE = False
 ENFORCE = True
 
+# When a proxy is configured, the proxy -- not NLTK -- resolves the hostname and
+# performs the egress, so NLTK cannot pin the validated destination IP and its
+# SSRF filter no longer governs where the request actually lands (CWE-918,
+# GHSA-6ww7). Proxied fetches are therefore refused under ``ENFORCE`` unless the
+# operator explicitly opts in here (or via ``NLTK_ALLOW_PROXIED_URLOPEN``),
+# asserting that the proxy itself is trusted to be SSRF-safe.
+ALLOW_PROXIED_FETCH = False
+
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
 
@@ -471,6 +479,41 @@ class _SafeHTTPSHandler(urllib.request.HTTPSHandler):
         return self.do_open(_SafeHTTPSConnection, req, **kwargs)
 
 
+def _proxied_fetch_allowed():
+    """True only if the operator has explicitly opted into trusting the proxy."""
+    if ALLOW_PROXIED_FETCH:
+        return True
+    return os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN", "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
+
+
+def _reject_unpinnable_proxied_fetch(url_str):
+    """Fail closed on a proxied fetch NLTK cannot SSRF-validate (CWE-918).
+
+    A configured proxy performs the egress, so NLTK can neither pin the
+    validated IP nor observe the address the proxy ultimately reaches. Rather
+    than reintroduce the DNS-rebinding / internal-routing SSRF that the pinned
+    direct path closes, refuse the request unless the operator has asserted the
+    proxy is trusted (``ALLOW_PROXIED_FETCH`` / ``NLTK_ALLOW_PROXIED_URLOPEN``).
+    """
+    if _proxied_fetch_allowed():
+        return
+    msg = (
+        f"Security Violation [pathsec.urlopen]: refusing a proxied fetch of "
+        f"{url_str!r}. A configured proxy performs the egress, so NLTK cannot "
+        "pin the validated IP and SSRF protection cannot be enforced (CWE-918). "
+        "If and only if the proxy is trusted to be SSRF-safe, opt in via "
+        "NLTK_ALLOW_PROXIED_URLOPEN=1 or nltk.pathsec.ALLOW_PROXIED_FETCH=True."
+    )
+    if ENFORCE:
+        raise PermissionError(msg)
+    warnings.warn(msg, RuntimeWarning, stacklevel=3)
+
+
 def urlopen(url, *args, **kwargs):
     """
     Secure wrapper for urllib.request.urlopen with redirect validation.
@@ -519,6 +562,14 @@ def urlopen(url, *args, **kwargs):
             handlers.append(urllib.request.ProxyHandler({}))
         handlers.append(_SafeHTTPHandler())
         handlers.append(_SafeHTTPSHandler())
+    else:
+        # Proxied: the proxy resolves the name and performs the egress, so the
+        # earlier validate_network_url() only reflects NLTK's *local* view of the
+        # host, not what the proxy actually reaches. A rebinding name or a proxy
+        # with an internal network view re-opens SSRF (CWE-918, GHSA-6ww7). We
+        # cannot pin through a proxy, so fail closed unless the operator has
+        # asserted the proxy is trusted.
+        _reject_unpinnable_proxied_fetch(url_str)
 
     opener = urllib.request.build_opener(*handlers)
     return opener.open(url, *args, **kwargs)
