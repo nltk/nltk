@@ -43,7 +43,16 @@ class PanLexLiteCorpusReader(CorpusReader):
     """
 
     def __init__(self, root):
-        self._c = sqlite3.connect(os.path.join(root, "db.sqlite")).cursor()
+        from nltk.pathsec import validate_path
+
+        db_path = os.path.join(root, "db.sqlite")
+        # PanLex Lite is an SQLite database under the corpus root.  A raw
+        # sqlite3.connect() on a caller-supplied root reads outside the NLTK
+        # data sandbox (CWE-73, GHSA-3gq4-3j92-5w49); routing the path through
+        # pathsec first refuses an out-of-sandbox database, and required_root
+        # also blocks a db.sqlite symlink that escapes the root (CWE-59).
+        validate_path(db_path, context="PanLexLiteCorpusReader", required_root=root)
+        self._c = sqlite3.connect(db_path).cursor()
 
         self._uid_lv = {}
         self._lv_uid = {}
