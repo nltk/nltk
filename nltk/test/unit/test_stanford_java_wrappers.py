@@ -34,13 +34,13 @@ def test_java_call_options_do_not_mutate_global_java_options(monkeypatch):
         classpath=("example.jar",),
         stdout="pipe",
         stderr="pipe",
-        options="-XmxLOCAL -Dexample=true",
+        options="-XmxLOCAL -verbose:gc",
     )
 
     assert captured["cmd"] == [
         "java",
         "-XmxLOCAL",
-        "-Dexample=true",
+        "-verbose:gc",
         "-cp",
         "example.jar",
         "Main",
