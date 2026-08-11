@@ -673,10 +673,17 @@ class DualFacedPath(os.PathLike):
 
 
 @pytest.fixture
-def sandbox_env(tmp_path):
+def sandbox_env(tmp_path, monkeypatch):
     """Sets up a mock allowed root and an outside unallowed directory."""
     safe_dir = tmp_path / "nltk_safe_root"
     safe_dir.mkdir()
+
+    # Register the mock allowed root on nltk.data.path so it is a genuine
+    # pathsec-allowed root. (This previously relied on the whole system temp
+    # directory being blanket-allowed, which it no longer is.)
+    import nltk.data as _nltk_data
+
+    monkeypatch.setattr(_nltk_data, "path", [str(safe_dir), *_nltk_data.path])
 
     unsafe_dir = tmp_path / "outside_root"
     unsafe_dir.mkdir()
@@ -768,3 +775,128 @@ def test_restrictive_guard_allows_pure_primitives(sandbox_env):
     # Bytes path should be allowed (decoded safely)
     with pathsec.open(os.fsencode(str(allowed_file)), "r", required_root=safe_dir) as f:
         assert f.read() == "AUTHORIZED_DATA"
+
+
+# ----------------------------------------------------------------------
+# System temp dir: trust only a PRIVATE per-user temp, never a shared
+# world-writable one (GHSA-p4rw follow-up, CWE-377/CWE-378)
+# ----------------------------------------------------------------------
+
+posix_only = pytest.mark.skipif(
+    os.name != "posix", reason="POSIX ownership/permission semantics"
+)
+
+
+@posix_only
+def test_is_private_dir_distinguishes_world_and_group_writable(tmp_path):
+    """is_private_dir accepts a user-owned, non-shared dir and rejects world- or
+    group-writable ones (and missing paths)."""
+    priv = tmp_path / "priv"
+    priv.mkdir()
+    os.chmod(priv, 0o700)
+    world = tmp_path / "world"
+    world.mkdir()
+    os.chmod(world, 0o777)
+    group = tmp_path / "group"
+    group.mkdir()
+    os.chmod(group, 0o770)
+
+    assert pathsec.is_private_dir(str(priv)) is True
+    assert pathsec.is_private_dir(str(world)) is False
+    assert pathsec.is_private_dir(str(group)) is False
+    assert pathsec.is_private_dir(str(tmp_path / "missing")) is False
+
+
+@posix_only
+def test_world_writable_temp_dir_is_not_trusted_and_is_refused(tmp_path, monkeypatch):
+    """A shared world-writable temp dir (like Linux /tmp) must not be an allowed
+    root, and a file there is refused under ENFORCE."""
+    from pathlib import Path
+
+    import nltk.data as _nltk_data
+
+    shared = tmp_path / "shared_tmp"
+    shared.mkdir()
+    os.chmod(shared, 0o777)
+
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    # Isolate the allowed roots: no data paths, so the only candidate is the
+    # (world-writable) temp dir under test -- which must be rejected.
+    monkeypatch.setattr(_nltk_data, "path", [])
+    monkeypatch.setenv("NLTK_DATA", "")
+    monkeypatch.setattr("tempfile.gettempdir", lambda: str(shared))
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None)
+
+    allowed = pathsec._get_allowed_roots()
+    assert Path(shared).resolve() not in allowed
+
+    secret = shared / "secret.txt"
+    secret.write_text("SECRET", encoding="utf-8")
+    with pytest.raises((PermissionError, ValueError)):
+        with pathsec.open(str(secret), "r"):
+            pass
+
+
+def test_private_temp_dir_trust_matches_its_privacy(monkeypatch):
+    """The real system temp dir is trusted iff it is private (macOS $TMPDIR /
+    Windows %TEMP% are private and trusted; a world-writable Linux /tmp is not)."""
+    import tempfile
+    from pathlib import Path
+
+    import nltk.data as _nltk_data
+
+    # Isolate from data paths / the conftest base registration so we observe the
+    # temp dir's own trust decision.
+    monkeypatch.setattr(_nltk_data, "path", [])
+    monkeypatch.setenv("NLTK_DATA", "")
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None)
+
+    tmp = Path(tempfile.gettempdir()).resolve()
+    roots = pathsec._get_allowed_roots()
+    if pathsec.is_private_dir(str(tmp)):
+        assert tmp in roots
+    else:
+        assert tmp not in roots
+
+
+@posix_only
+def test_authorize_data_dir_refuses_world_writable(tmp_path, monkeypatch):
+    """A world-writable download_dir is refused (not registered) with a warning:
+    another local user could plant files there (the download_dir threat)."""
+    import nltk.data as _nltk_data
+    from nltk.downloader import _authorize_data_dir
+
+    monkeypatch.setattr(_nltk_data, "path", list(_nltk_data.path))
+    shared = tmp_path / "ww_download"
+    shared.mkdir()
+    os.chmod(shared, 0o777)
+    real = os.path.realpath(str(shared))
+
+    with pytest.warns(UserWarning, match="non-private"):
+        _authorize_data_dir(str(shared))
+    assert real not in {
+        os.path.realpath(str(p)) for p in _nltk_data.path if isinstance(p, str)
+    }
+
+
+def test_authorize_data_dir_registers_private_dir(tmp_path, monkeypatch):
+    """A private download_dir is authorized as its own allowed root."""
+    import nltk.data as _nltk_data
+    from nltk.downloader import _authorize_data_dir
+
+    monkeypatch.setattr(_nltk_data, "path", list(_nltk_data.path))
+    custom = tmp_path / "mydata"
+    custom.mkdir()
+    os.chmod(custom, 0o700)
+    real = os.path.realpath(str(custom))
+
+    def registered():
+        return real in {
+            os.path.realpath(str(p)) for p in _nltk_data.path if isinstance(p, str)
+        }
+
+    assert not registered()
+    _authorize_data_dir(str(custom))
+    assert registered()

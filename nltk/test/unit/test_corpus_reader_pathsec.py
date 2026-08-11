@@ -263,6 +263,48 @@ def test_find_corpus_fileids_refuses_out_of_sandbox_walk(controlled_sandbox):
         find_corpus_fileids(root, r".*")
 
 
+def test_ghsa_3gq4_advisory_poc_is_closed(monkeypatch, tmp_path):
+    """Direct port of the GHSA-3gq4-3j92-5w49 proof-of-concept. On a vulnerable
+    build the advisory reported: pathsec.open blocks a control path, yet
+    LinThesaurusCorpusReader and PanLexLiteCorpusReader still read outside the
+    sandbox. All three must now be blocked."""
+    import sqlite3
+
+    from nltk.corpus.reader.lin import LinThesaurusCorpusReader
+    from nltk.corpus.reader.panlex_lite import PanLexLiteCorpusReader
+
+    # Fully sealed sandbox (no allowed roots, cwd elsewhere) -- exactly the PoC.
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: set())
+    monkeypatch.setattr(pathsec.os, "getcwd", lambda: "/nonexistent-cwd")
+
+    outside = os.path.realpath(tempfile.mkdtemp(prefix="ghsa3gq4_outside_"))
+
+    # (1) control: a direct sandboxed read of an out-of-root file is blocked.
+    blocked = os.path.join(outside, "blocked.txt")
+    with open(blocked, "w") as fh:
+        fh.write("blocked")
+    with pytest.raises((PermissionError, ValueError)):
+        with pathsec.open(blocked, "rb"):
+            pass
+
+    # (2) LinThesaurusCorpusReader must not reach builtin open() outside the root.
+    with open(os.path.join(outside, "sim.lsp"), "w") as fh:
+        fh.write('("x" (desc 1.0)\n\t"y"\t0.9\n))\n')
+    with pytest.raises((PermissionError, ValueError)):
+        LinThesaurusCorpusReader(outside)
+
+    # (3) PanLexLiteCorpusReader must not sqlite3.connect() an outside database.
+    db = sqlite3.connect(os.path.join(outside, "db.sqlite"))
+    db.execute("create table lv(uid text, lv text, lc text, tt text)")
+    db.execute("create table dnx(ex int, mn int, uq int, ap int, ui text)")
+    db.execute("create table ex(ex int, tt text, lv text, uq int)")
+    db.commit()
+    db.close()
+    with pytest.raises((PermissionError, ValueError)):
+        PanLexLiteCorpusReader(outside)
+
+
 # ---------------------------------------------------------------------------
 # Exhaustive sweep: NO corpus reader may reach a raw file/DB/network/enumeration
 # sink on an out-of-sandbox root (CWE-73, GHSA-3gq4-3j92-5w49). This drives every

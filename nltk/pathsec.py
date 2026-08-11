@@ -13,7 +13,9 @@ import http.client
 import ipaddress
 import os
 import socket
+import stat
 import sys
+import tempfile
 import urllib.request
 import warnings
 import zipfile
@@ -35,6 +37,43 @@ ALLOW_PROXIED_FETCH = False
 
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
+
+
+def is_private_dir(path):
+    """Return True if *path* is a directory safe to trust as a data root: another
+    *unprivileged local user* cannot plant files in it.
+
+    This is the test that distinguishes a shared, world-writable temp directory
+    (Linux ``/tmp``, mode ``1777``) -- which a local attacker could use to plant
+    trusted-looking data (CWE-377/CWE-378) -- from a *private* per-user temp
+    directory (macOS ``$TMPDIR`` ``/var/folders/...`` mode ``0700``, Windows
+    ``%TEMP%`` under the ACL-protected user profile), which is safe.
+
+    Cross-platform:
+      * POSIX: the directory must be owned by the current user (or root) and be
+        neither group- nor world-writable (unless the writable group/other bit
+        is paired with the sticky bit *and* the dir is user-owned -- but we keep
+        it strict and simply reject any group/other-writable dir).
+      * Windows: ``st_uid``/mode are not meaningful; the per-user temp/profile is
+        ACL-protected, so a plain "exists and is a directory" check is used.
+    """
+    try:
+        st = os.stat(path)
+    except OSError:
+        return False
+    if not stat.S_ISDIR(st.st_mode):
+        return False
+    if os.name != "posix":
+        # Windows / other: rely on the per-user profile ACLs (no POSIX mode).
+        return True
+    # Must be owned by us (or by root, e.g. a system-wide /usr/share dir).
+    if st.st_uid not in (os.getuid(), 0):
+        return False
+    # Reject group- or world-writable directories: those let another account
+    # write into (or, without the sticky bit, replace) the directory.
+    if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
+        return False
+    return True
 
 
 def _get_allowed_roots():
@@ -62,13 +101,7 @@ def _get_allowed_roots():
             except (OSError, ValueError, RuntimeError):
                 continue
 
-    import tempfile
-
     candidate_locs = ["~/nltk_data", "/usr/share/nltk_data"]
-    try:
-        candidate_locs.append(tempfile.gettempdir())
-    except (OSError, ValueError, RuntimeError):
-        pass
 
     for loc in candidate_locs:
         try:
@@ -77,6 +110,20 @@ def _get_allowed_roots():
                 roots.add(p)
         except (OSError, ValueError, RuntimeError):
             continue
+
+    # The system temp directory is trusted ONLY when it is private to the current
+    # user.  A *shared, world-writable* temp dir (Linux ``/tmp``, mode ``1777``)
+    # must not be an allowed root: a local attacker could plant trusted-looking
+    # data there (CWE-377/CWE-378, GHSA-p4rw follow-up).  A *private* per-user
+    # temp dir (macOS ``/var/folders/...`` mode ``0700``, Windows ``%TEMP%`` under
+    # the user profile, or a private Linux ``$TMPDIR``) is safe and is where
+    # NLTK / its test-suite legitimately stage temporary corpora, so it is kept.
+    try:
+        tmp = Path(tempfile.gettempdir()).resolve()
+        if is_private_dir(tmp):
+            roots.add(tmp)
+    except (OSError, ValueError, RuntimeError):
+        pass
 
     _ALLOWED_ROOTS_CACHE = roots
     _LAST_DATA_PATHS = current_state
