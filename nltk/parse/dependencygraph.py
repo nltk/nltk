@@ -582,28 +582,32 @@ def dot2img(dot_string, t="svg"):
     """
 
     try:
-        find_binary("dot")
-        try:
-            if t in ["dot", "dot_json", "json", "svg"]:
-                proc = subprocess.run(
-                    ["dot", "-T%s" % t],
-                    capture_output=True,
-                    input=dot_string,
-                    text=True,
-                )
-            else:
-                proc = subprocess.run(
-                    ["dot", "-T%s" % t],
-                    input=bytes(dot_string, encoding="utf8"),
-                )
-            return proc.stdout
-        except Exception:
-            raise Exception(
-                "Cannot create image representation by running dot from string: {}"
-                "".format(dot_string)
-            )
-    except OSError as e:
+        # Run the absolute path find_binary returns, not the bare name: it
+        # refuses a CWD-relative match, so a planted ./dot cannot be executed
+        # in place of the real Graphviz binary (CWE-426 / CWE-427). The bare
+        # ["dot", ...] used before discarded this validation entirely.
+        dot_binary = find_binary("dot")
+    except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
+    try:
+        if t in ["dot", "dot_json", "json", "svg"]:
+            proc = subprocess.run(
+                [dot_binary, "-T%s" % t],
+                capture_output=True,
+                input=dot_string,
+                text=True,
+            )
+        else:
+            proc = subprocess.run(
+                [dot_binary, "-T%s" % t],
+                input=bytes(dot_string, encoding="utf8"),
+            )
+        return proc.stdout
+    except Exception:
+        raise Exception(
+            "Cannot create image representation by running dot from string: {}"
+            "".format(dot_string)
+        )
 
 
 class DependencyGraphError(Exception):
