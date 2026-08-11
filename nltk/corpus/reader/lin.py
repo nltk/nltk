@@ -10,6 +10,7 @@ from collections import defaultdict
 from functools import reduce
 
 from nltk.corpus.reader import CorpusReader
+from nltk.pathsec import open as pathsec_open
 
 
 class LinThesaurusCorpusReader(CorpusReader):
@@ -40,7 +41,12 @@ class LinThesaurusCorpusReader(CorpusReader):
         for path, encoding, fileid in self.abspaths(
             include_encoding=True, include_fileid=True
         ):
-            with open(path) as lin_file:
+            # Open through the pathsec sentinel (containment + O_NOFOLLOW /
+            # hardlink guards) so a symlinked/hardlinked simN.lsp inside the
+            # corpus root cannot leak an outside-root file (CWE-59, GHSA-p4rw).
+            with pathsec_open(
+                path, context="LinThesaurusCorpusReader", required_root=self.root
+            ) as lin_file:
                 first = True
                 for line in lin_file:
                     line = line.strip()
