@@ -8,6 +8,7 @@ from functools import reduce
 
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
+from nltk.pathsec import validate_path
 
 
 def xpath(root, path, ns):
@@ -48,7 +49,11 @@ class MTEFileReader:
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, required_root=None):
+        # The reader joins this path from the corpus root, so a symlinked corpus
+        # file could resolve outside it; keep it inside that root before parsing
+        # (CWE-59, GHSA-mvf5).
+        validate_path(file_path, context="MTECorpusReader", required_root=required_root)
         self.__file_path = file_path
 
     @classmethod
@@ -250,7 +255,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(str(self._root), f)).words()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).words()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -264,7 +271,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(str(self._root), f)).sents()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).sents()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -278,7 +287,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(str(self._root), f)).paras()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).paras()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -292,7 +303,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(str(self._root), f)).lemma_words()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).lemma_words()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -311,9 +324,9 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(str(self._root), f)).tagged_words(
-                        tagset, tags
-                    )
+                    MTEFileReader(
+                        os.path.join(str(self._root), f), required_root=self._root
+                    ).tagged_words(tagset, tags)
                     for f in self.__fileids(fileids)
                 ]
             )
@@ -330,7 +343,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(str(self._root), f)).lemma_sents()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).lemma_sents()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -349,9 +364,9 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(str(self._root), f)).tagged_sents(
-                        tagset, tags
-                    )
+                    MTEFileReader(
+                        os.path.join(str(self._root), f), required_root=self._root
+                    ).tagged_sents(tagset, tags)
                     for f in self.__fileids(fileids)
                 ]
             )
@@ -368,7 +383,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(str(self._root), f)).lemma_paras()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).lemma_paras()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -388,9 +405,9 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(str(self._root), f)).tagged_paras(
-                        tagset, tags
-                    )
+                    MTEFileReader(
+                        os.path.join(str(self._root), f), required_root=self._root
+                    ).tagged_paras(tagset, tags)
                     for f in self.__fileids(fileids)
                 ]
             )

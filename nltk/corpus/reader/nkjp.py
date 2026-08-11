@@ -275,12 +275,20 @@ class XML_Tool:
     """
 
     def __init__(self, root, filename):
+        self._root = root
         self.read_file = os.path.join(root, filename)
         self.write_file = tempfile.NamedTemporaryFile(delete=False)
 
     def build_preprocessed_file(self):
         try:
-            fr = open(self.read_file)
+            # Open through pathsec (containment + O_NOFOLLOW / hardlink guards)
+            # so the root-derived source file cannot escape the corpus root
+            # (CWE-59, GHSA-p4rw class).
+            from nltk.pathsec import open as pathsec_open
+
+            fr = pathsec_open(
+                self.read_file, context="NKJPCorpusReader", required_root=self._root
+            )
             fw = self.write_file
             line = " "
             while len(line):

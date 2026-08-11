@@ -16,6 +16,7 @@ from io import StringIO
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk.data import PathPointer, find
+from nltk.pathsec import open as pathsec_open
 
 
 class StandardFormat:
@@ -38,7 +39,13 @@ class StandardFormat:
         if isinstance(sfm_file, PathPointer):
             self._file = sfm_file.open(self._encoding)
         else:
-            self._file = codecs.open(sfm_file, "r", self._encoding)
+            # A bare string filename bypasses the PathPointer containment above;
+            # open through pathsec (containment + O_NOFOLLOW / hardlink guards) so
+            # a symlink/hardlink cannot resolve outside the data roots (CWE-59,
+            # GHSA-cr8c).
+            self._file = pathsec_open(
+                sfm_file, "r", context="toolbox.StandardFormat", encoding=self._encoding
+            )
 
     def open_string(self, s):
         """

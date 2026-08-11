@@ -201,12 +201,12 @@ class IPIPANCorpusReader(CorpusReader):
         # opened. Validate the resolved path against the corpus root before
         # opening, the same symlink-resolving containment guard
         # CorpusReader.open() and NKJPCorpusReader use.
-        from nltk.pathsec import validate_path
-
-        validate_path(f, context="IPIPANCorpusReader", required_root=self.root)
+        from nltk.pathsec import open as pathsec_open
 
         tags = []
-        with open(f) as infile:
+        with pathsec_open(
+            f, context="IPIPANCorpusReader", required_root=self.root
+        ) as infile:
             header = infile.read()
         tag_end = 0
         while True:

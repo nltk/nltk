@@ -13,7 +13,9 @@ import http.client
 import ipaddress
 import os
 import socket
+import stat
 import sys
+import tempfile
 import urllib.request
 import warnings
 import zipfile
@@ -35,6 +37,43 @@ ALLOW_PROXIED_FETCH = False
 
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
+
+
+def is_private_dir(path):
+    """Return True if *path* is a directory safe to trust as a data root: another
+    *unprivileged local user* cannot plant files in it.
+
+    This is the test that distinguishes a shared, world-writable temp directory
+    (Linux ``/tmp``, mode ``1777``) -- which a local attacker could use to plant
+    trusted-looking data (CWE-377/CWE-378) -- from a *private* per-user temp
+    directory (macOS ``$TMPDIR`` ``/var/folders/...`` mode ``0700``, Windows
+    ``%TEMP%`` under the ACL-protected user profile), which is safe.
+
+    Cross-platform:
+      * POSIX: the directory must be owned by the current user (or root) and be
+        neither group- nor world-writable (unless the writable group/other bit
+        is paired with the sticky bit *and* the dir is user-owned -- but we keep
+        it strict and simply reject any group/other-writable dir).
+      * Windows: ``st_uid``/mode are not meaningful; the per-user temp/profile is
+        ACL-protected, so a plain "exists and is a directory" check is used.
+    """
+    try:
+        st = os.stat(path)
+    except OSError:
+        return False
+    if not stat.S_ISDIR(st.st_mode):
+        return False
+    if os.name != "posix":
+        # Windows / other: rely on the per-user profile ACLs (no POSIX mode).
+        return True
+    # Must be owned by us (or by root, e.g. a system-wide /usr/share dir).
+    if st.st_uid not in (os.getuid(), 0):
+        return False
+    # Reject group- or world-writable directories: those let another account
+    # write into (or, without the sticky bit, replace) the directory.
+    if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
+        return False
+    return True
 
 
 def _get_allowed_roots():
@@ -62,13 +101,7 @@ def _get_allowed_roots():
             except (OSError, ValueError, RuntimeError):
                 continue
 
-    import tempfile
-
     candidate_locs = ["~/nltk_data", "/usr/share/nltk_data"]
-    try:
-        candidate_locs.append(tempfile.gettempdir())
-    except (OSError, ValueError, RuntimeError):
-        pass
 
     for loc in candidate_locs:
         try:
@@ -77,6 +110,20 @@ def _get_allowed_roots():
                 roots.add(p)
         except (OSError, ValueError, RuntimeError):
             continue
+
+    # The system temp directory is trusted ONLY when it is private to the current
+    # user.  A *shared, world-writable* temp dir (Linux ``/tmp``, mode ``1777``)
+    # must not be an allowed root: a local attacker could plant trusted-looking
+    # data there (CWE-377/CWE-378, GHSA-p4rw follow-up).  A *private* per-user
+    # temp dir (macOS ``/var/folders/...`` mode ``0700``, Windows ``%TEMP%`` under
+    # the user profile, or a private Linux ``$TMPDIR``) is safe and is where
+    # NLTK / its test-suite legitimately stage temporary corpora, so it is kept.
+    try:
+        tmp = Path(tempfile.gettempdir()).resolve()
+        if is_private_dir(tmp):
+            roots.add(tmp)
+    except (OSError, ValueError, RuntimeError):
+        pass
 
     _ALLOWED_ROOTS_CACHE = roots
     _LAST_DATA_PATHS = current_state
@@ -575,12 +622,100 @@ def urlopen(url, *args, **kwargs):
     return opener.open(url, *args, **kwargs)
 
 
+def _is_readonly_mode(mode):
+    """True for a plain read mode with no create/write/append/update intent."""
+    return set(mode) <= set("rbt") and "r" in mode
+
+
+def _fd_realpath(fd):
+    """The kernel's real path for an open descriptor, or ``None`` if unavailable.
+
+    This reflects the inode actually opened, so validating it is race-free: no
+    path re-resolution (which an attacker could win) is involved.
+    """
+    if sys.platform == "darwin":
+        try:
+            import fcntl
+
+            f_getpath = 50  # <sys/fcntl.h> F_GETPATH
+            buf = fcntl.fcntl(fd, f_getpath, b"\x00" * 1024)
+            return os.fsdecode(buf.split(b"\x00", 1)[0])
+        except (OSError, ValueError):
+            return None
+    try:  # Linux and other /proc systems
+        return os.readlink(f"/proc/self/fd/{fd}")
+    except OSError:
+        return None
+
+
+def _hardened_read_open(raw_path, mode, context, required_root, **kwargs):
+    """Open ``raw_path`` for reading, closing the symlink-swap TOCTOU and the
+    hardlink escape that a path-only ``validate_path`` cannot.
+
+    1. Open ``raw_path`` with ``O_NOFOLLOW`` so its final component is never
+       followed as a symlink. Unlike opening a re-resolved path, this is atomic:
+       the kernel either opens the real inode at that path or fails, so a symlink
+       swapped in after the caller's ``validate_path`` cannot redirect the open
+       (TOCTOU). Corpora contain no symlinked files, so rejecting a final-
+       component symlink outright is safe and fail-closed.
+    2. ``fstat`` the descriptor and refuse ``st_nlink > 1``: a hardlink is another
+       name for the same inode with no symlink to resolve, so an in-root hardlink
+       to an outside inode would otherwise leak its contents (CWE-59, GHSA-f794
+       class). Multiply-linked corpus files are not expected.
+    3. Re-validate the *opened descriptor's* real path (from the kernel, not by
+       re-resolving the string) so a swapped intermediate directory symlink that
+       redirected the open to an outside inode is still caught.
+
+    POSIX only; callers fall back to :func:`builtins.open` elsewhere.
+    """
+    import errno
+
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0)
+    try:
+        fd = os.open(raw_path, flags)
+    except OSError as e:
+        if e.errno in (errno.ELOOP, errno.EMLINK):
+            raise PermissionError(
+                f"Security Violation [pathsec.open]: refusing to follow a symlink "
+                f"at open time for {raw_path!r} (TOCTOU guard, CWE-59)"
+            ) from e
+        raise
+    try:
+        st = os.fstat(fd)
+        if st.st_nlink > 1:
+            raise PermissionError(
+                f"Security Violation [pathsec.open]: refusing multiply-linked file "
+                f"{raw_path!r} (st_nlink={st.st_nlink}); a hardlink can point at an "
+                "outside-root inode (CWE-59)"
+            )
+        # Validate what was actually opened (race-free: the fd is pinned). Falls
+        # back to the resolved string only if the kernel path is unavailable.
+        actual = _fd_realpath(fd)
+        validate_path(
+            actual if actual is not None else os.path.realpath(raw_path),
+            context=context,
+            required_root=required_root,
+        )
+    except BaseException:
+        os.close(fd)
+        raise
+    return os.fdopen(fd, mode, **kwargs)
+
+
 def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs):
     """Secure wrapper for builtins.open."""
     # 1. Allow file descriptors (integers) to pass through, matching original logic
     if isinstance(file, int):
         validate_path(file, context=context, required_root=required_root)
         return builtins.open(file, mode=mode, **kwargs)
+
+    # 2a. NLTK PathPointer objects (e.g. FileSystemPathPointer, which is a str
+    # subclass) expose a string ``.path``; normalise to that exact string so the
+    # strict primitive check below accepts it, matching validate_path's handling.
+    if type(file) not in (str, bytes) and isinstance(
+        getattr(file, "path", None), (str, bytes)
+    ):
+        file = file.path
 
     # 2. Force extraction of the real path from PathLike objects
     try:
@@ -599,6 +734,17 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
 
     # 4. Execution Substitution: validate and open the pure primitive, discarding the original object
     validate_path(raw_path, context=context, required_root=required_root)
+    # 5. For read modes under enforcement on POSIX, additionally close the
+    # validate-then-open symlink TOCTOU and the hardlink escape that a path-based
+    # check cannot see. Write/append/update flows and non-POSIX keep the plain
+    # open (their containment is unchanged from before).
+    if ENFORCE and os.name == "posix" and _is_readonly_mode(mode):
+        # The hardened path owns this open entirely: it raises PermissionError /
+        # ValueError on a security violation and the usual OSError (e.g.
+        # FileNotFoundError) on a genuine open failure. We must NOT fall back to
+        # builtins.open on OSError -- retrying the raw path would follow a symlink
+        # the hardened open deliberately refused, reopening the TOCTOU leak.
+        return _hardened_read_open(raw_path, mode, context, required_root, **kwargs)
     return builtins.open(raw_path, mode=mode, **kwargs)
 
 

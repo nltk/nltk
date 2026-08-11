@@ -25,6 +25,7 @@ from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import ElementWrapper
+from nltk.pathsec import open as pathsec_open
 from nltk.tokenize import WordPunctTokenizer
 
 
@@ -165,7 +166,18 @@ class XMLCorpusView(StreamBackedCorpusView):
             finally:
                 infile.close()
         else:
-            with open(fileid, "rb") as infile:
+            # A bare string fileid bypasses the PathPointer containment that the
+            # branch above enforces; open through pathsec (containment plus
+            # O_NOFOLLOW / hardlink guards) so a symlink/hardlink cannot resolve
+            # outside (CWE-59, GHSA-934p / GHSA-p4rw). A view does not always
+            # carry its root, so fall back to the global data-root sandbox when
+            # it is absent.
+            with pathsec_open(
+                fileid,
+                "rb",
+                context="XMLCorpusReader",
+                required_root=getattr(self, "_root", None),
+            ) as infile:
                 s = infile.readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return "utf-16-be"
