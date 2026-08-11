@@ -132,3 +132,155 @@ def test_transitionparser_rejects_malicious_model(tmp_path):
         parser.parse([gold_sent], str(model_path))
 
     assert not marker.exists(), "malicious model payload executed (RCE not blocked)"
+
+
+# --- GHSA-x99w / GHSA-4489: AllowlistUnpickler bypass regressions -------------
+#
+# The prior AllowlistUnpickler checked only the *module* against a prefix
+# allowlist and never the *name*, so:
+#   - a dotted name reached `<allowed_module>.os.system` (GHSA-4489), and
+#   - a whole-namespace allow (`numpy`, `nltk.tokenize`) exposed in-namespace
+#     gadgets like `numpy.f2py.crackfortran.myeval` / `ReppTokenizer._execute`
+#     (GHSA-x99w).
+# find_class now rejects dotted names and denies dangerous modules even under a
+# broad allowed_modules entry.
+
+from nltk.picklesec import AllowlistUnpickler  # noqa: E402
+
+
+def _global_pickle(module, name, arg):
+    """A protocol-4 pickle: REDUCE(<module>.<name>, (arg,))."""
+    su = lambda s: pickle.SHORT_BINUNICODE + bytes([len(s.encode())]) + s.encode()
+    return (
+        pickle.PROTO
+        + bytes([4])
+        + su(module)
+        + su(name)
+        + pickle.STACK_GLOBAL
+        + su(arg)
+        + pickle.TUPLE1
+        + pickle.REDUCE
+        + pickle.STOP
+    )
+
+
+def test_dotted_name_attribute_traversal_blocked(tmp_path):
+    """GHSA-4489: `sklearn.os.system` (module allowed, sink rides the dotted
+    name) must be refused before it can execute."""
+    marker = tmp_path / "pwned_4489"
+    payload = _global_pickle("sklearn", "os.system", f"touch {marker}")
+    with pytest.raises(pickle.UnpicklingError, match="dotted"):
+        AllowlistUnpickler(
+            BytesIO(payload), allowed_modules=("numpy", "scipy", "sklearn")
+        ).load()
+    assert not marker.exists()
+
+
+def test_in_namespace_gadget_numpy_f2py_blocked():
+    """GHSA-x99w: numpy.f2py.crackfortran.myeval must not be reachable through a
+    broad `numpy` allow."""
+    up = AllowlistUnpickler(BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn"))
+    with pytest.raises(pickle.UnpicklingError):
+        up.find_class("numpy.f2py.crackfortran", "myeval")
+
+
+def test_in_namespace_gadget_repp_blocked():
+    """GHSA-x99w: ReppTokenizer._execute (subprocess sink) must not be reachable
+    through a Punkt/`nltk.tokenize` allow."""
+    up = AllowlistUnpickler(BytesIO(b""), allowed_modules=("nltk.tokenize.punkt",))
+    with pytest.raises(pickle.UnpicklingError):
+        up.find_class("nltk.tokenize.repp", "ReppTokenizer._execute")
+
+
+def test_denied_module_backstop_even_if_allowlisted():
+    """Defense in depth: os.system / builtins.eval cannot be reconstructed even
+    if a future caller mistakenly allowlists their module or the exact global."""
+    up = AllowlistUnpickler(BytesIO(b""), allowed_modules=("os",))
+    with pytest.raises(pickle.UnpicklingError):
+        up.find_class("os", "system")
+    up2 = AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "eval"),))
+    with pytest.raises(pickle.UnpicklingError):
+        up2.find_class("builtins", "eval")
+
+
+def test_safe_primitives_and_punkt_still_load():
+    """The tightened allowlist must not break legitimate loads."""
+    up = AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "int"),))
+    assert up.find_class("builtins", "int") is int
+
+    from nltk.tokenize.punkt import PunktSentenceTokenizer, punkt_pickle_load
+
+    tok = PunktSentenceTokenizer()
+    tok.train("Hello world. Dr. Smith arrived. It works!")
+    restored = punkt_pickle_load(BytesIO(pickle.dumps(tok, protocol=4)))
+    assert restored.tokenize("A test. Another one.") == tok.tokenize(
+        "A test. Another one."
+    )
+
+
+def test_prefix_allow_does_not_leak_dunders_reexports_or_numpy_load():
+    """A prefix `allowed_modules` entry must not expose module internals,
+    re-exports, bare module objects, or dangerous same-namespace callables."""
+    up = lambda: AllowlistUnpickler(
+        BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn")
+    )
+    # dunder names (module internals)
+    for dunder in ("__builtins__", "__loader__", "__class__", "__dict__"):
+        with pytest.raises(pickle.UnpicklingError):
+            up().find_class("numpy", dunder)
+    # numpy.load / friends: __module__ == "numpy" but perform file/pickle I/O
+    for sink in ("load", "fromfile", "save", "memmap", "genfromtxt"):
+        with pytest.raises(pickle.UnpicklingError):
+            up().find_class("numpy", sink)
+
+
+def test_reexport_and_module_object_blocked_under_punkt_allowlist():
+    """Punkt's exact-pair allowlist must not resolve a re-export (`FreqDist`
+    reached via the punkt module) or a bare module object."""
+    from nltk.tokenize.punkt import _PUNKT_ALLOWED_GLOBALS
+
+    up = AllowlistUnpickler(BytesIO(b""), allowed_globals=_PUNKT_ALLOWED_GLOBALS)
+    # FreqDist is allowed only at its true home, not via the punkt namespace.
+    with pytest.raises(pickle.UnpicklingError):
+        up.find_class("nltk.tokenize.punkt", "FreqDist")
+    # os re-exported into a module would resolve to the os module: blocked.
+    with pytest.raises(pickle.UnpicklingError):
+        up.find_class("nltk.tokenize.punkt", "os")
+
+
+def test_numpy_array_unpickling_globals_still_allowed():
+    """The tightening must not break genuine numpy array reconstruction."""
+    up = lambda: AllowlistUnpickler(BytesIO(b""), allowed_modules=("numpy",))
+    assert up().find_class("numpy", "ndarray").__name__ == "ndarray"
+    assert up().find_class("numpy", "dtype").__name__ == "dtype"
+    assert (
+        up().find_class("numpy._core.multiarray", "_reconstruct").__name__
+        == "_reconstruct"
+    )
+
+
+def test_all_punkt_object_types_round_trip():
+    """Every Punkt object kind a model pickle may contain still loads."""
+    import io
+
+    from nltk.tokenize.punkt import (
+        PunktLanguageVars,
+        PunktParameters,
+        PunktSentenceTokenizer,
+        PunktTrainer,
+        punkt_pickle_load,
+    )
+
+    text = "Mr. Smith went to Washington. He met Dr. Jones at 3 p.m. It was great!"
+    tok = PunktSentenceTokenizer()
+    tok.train(text)
+    trainer = PunktTrainer()
+    trainer.train(text)
+    params = PunktParameters()
+    params.abbrev_types.add("dr")
+    for obj in (tok, trainer, params, PunktLanguageVars()):
+        restored = punkt_pickle_load(io.BytesIO(pickle.dumps(obj, protocol=4)))
+        assert type(restored) is type(obj)
+    # and it still tokenizes identically after a round-trip
+    restored_tok = punkt_pickle_load(io.BytesIO(pickle.dumps(tok, protocol=4)))
+    assert restored_tok.tokenize(text) == tok.tokenize(text)

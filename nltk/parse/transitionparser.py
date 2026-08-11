@@ -27,7 +27,20 @@ from nltk.picklesec import allowlisted_pickle_load
 # model is a trained scikit-learn classifier backed by numpy/scipy arrays, so
 # allowing only these scientific-stack modules lets a genuine model load while
 # blocking arbitrary-code gadgets (os, posix, subprocess, builtins, ...).
+#
+# These are broad namespaces (numpy array unpickling needs submodules such as
+# ``numpy._core.multiarray``), so AllowlistUnpickler's dotted-name guard and its
+# denied-module backstop do the heavy lifting: a crafted pickle can no longer
+# reach ``numpy.f2py.crackfortran.myeval`` (an eval sink under the allowed
+# ``numpy`` namespace) or a dotted ``sklearn.os.system`` (GHSA-x99w / GHSA-4489).
 _MODEL_ALLOWED_MODULES = ("numpy", "scipy", "sklearn")
+# Exact primitives a fitted model's containers may reference.
+_MODEL_ALLOWED_GLOBALS = (
+    ("collections", "defaultdict"),
+    ("collections", "OrderedDict"),
+    ("builtins", "int"),
+    ("builtins", "float"),
+)
 
 
 class Configuration:
@@ -568,7 +581,11 @@ class TransitionParser(ParserI):
         # nltk/picklesec.py and huntr report
         # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
         with open(modelFile, "rb") as f:
-            model = allowlisted_pickle_load(f, allowed_modules=_MODEL_ALLOWED_MODULES)
+            model = allowlisted_pickle_load(
+                f,
+                allowed_modules=_MODEL_ALLOWED_MODULES,
+                allowed_globals=_MODEL_ALLOWED_GLOBALS,
+            )
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
