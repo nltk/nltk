@@ -22,16 +22,23 @@ import os
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def _authorize_pytest_basetemp(tmp_path_factory, monkeypatch):
+@pytest.fixture(scope="session", autouse=True)
+def _authorize_pytest_basetemp(tmp_path_factory):
+    """Register pytest's private session temp base on nltk.data.path for the whole
+    session. Session scope is required so this runs *before* module- and
+    session-scoped fixtures (e.g. corpus-reader fixtures built with
+    ``tmp_path_factory``) -- a function-scoped fixture would register too late for
+    those. The append is left in place for the session (not monkeypatched, which
+    is function-scoped); it authorizes only the pytest base, never all of /tmp,
+    and changes no production behavior.
+    """
     import nltk.data as _nltk_data
     from nltk import pathsec
 
     base = os.path.realpath(str(tmp_path_factory.getbasetemp()))
-    already = any(
-        base == os.path.realpath(str(p)) for p in _nltk_data.path if isinstance(p, str)
-    )
-    if not already:
-        monkeypatch.setattr(_nltk_data, "path", [*_nltk_data.path, base])
-        monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
-        monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None)
+    known = [os.path.realpath(str(p)) for p in _nltk_data.path if isinstance(p, str)]
+    if base not in known:
+        _nltk_data.path.append(base)
+        pathsec._ALLOWED_ROOTS_CACHE = None
+        pathsec._LAST_DATA_PATHS = None
+    yield
