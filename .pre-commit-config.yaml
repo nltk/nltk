@@ -12,10 +12,6 @@ repos:
     hooks:
     - id: pyupgrade
       args: ["--py310-plus"]
-  - repo: https://github.com/psf/black
-    rev: 25.11.0
-    hooks:
-    - id: black
   - repo: https://github.com/pycqa/isort
     rev: 6.1.0
     hooks:
@@ -26,3 +22,4 @@ repos:
     hooks:
     - id: ruff
       args: [--fix]
+    - id: ruff-format
