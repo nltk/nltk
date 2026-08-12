@@ -293,11 +293,26 @@ class PerceptronTagger(TaggerI):
         # The default TRAINED_TAGGER_PATH is the system temp dir, which is shared
         # and world-writable on Linux; a private dir cannot be tampered with by
         # another local user, and lets it be authorized for reading back below.
+        #
+        # The default location is a *guessable* name in a shared temp dir, so a
+        # local attacker can pre-create it. Refuse a symlink there outright
+        # (``makedirs(exist_ok=True)`` would silently accept and then follow it,
+        # redirecting the model write outside the intended dir -- CWE-59/377).
+        if os.path.islink(loc):
+            raise PermissionError(
+                f"Refusing to save trained model into a symlink: {loc!r} (CWE-59)"
+            )
         os.makedirs(loc, mode=0o700, exist_ok=True)
         _authorize_private_dir(loc)
 
+        # Open each model file with O_NOFOLLOW (0600) so a symlink swapped in at
+        # the individual file name is refused atomically rather than followed,
+        # and the written model is never left group-/world-readable.
+        def _no_follow_opener(path, flags):
+            return os.open(path, flags | getattr(os, "O_NOFOLLOW", 0), 0o600)
+
         for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
-            with open(path_join(loc, json_file), "w") as fout:
+            with open(path_join(loc, json_file), "w", opener=_no_follow_opener) as fout:
                 json.dump(param, fout)
 
     def load_from_json(self, lang="eng", loc=None):

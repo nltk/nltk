@@ -198,6 +198,20 @@ jobs:
           # drop it; also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_quadratic_dos.py nltk/test/unit/test_distance.py
 
+      - name: Run path-traversal / file-I/O security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the path-traversal / file-I/O sandbox
+          # cluster (GHSA-8mgp-746c-j5xp umbrella: CVE-2026-54293 / GHSA-p4gq and
+          # CVE-2026-12243 / GHSA-q5h6 encoded-traversal in nltk.data; GHSA-f794
+          # pathsec symlink/hardlink TOCTOU -- read and the newly-closed write
+          # side; the perceptron shared-temp squat. CWE-22/59/377). Own fast,
+          # early step so a change to the main pytest invocation can't silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_path_traversal_security.py
+
       - name: Run pytest
         shell: bash
         env:
