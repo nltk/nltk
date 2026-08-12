@@ -332,14 +332,26 @@ class PerceptronTagger(TaggerI):
     def save_to_json(self, lang="xxx", loc=None):
         if not loc:
             loc = self.save_dir
-        # The default TRAINED_TAGGER_PATH is the system temp dir -- shared and
-        # world-writable on Linux -- and the save dir is a *guessable* name in
-        # it, so a local attacker can pre-plant or race a symlink at ``loc``. A
-        # plain ``islink`` pre-check is non-atomic (TOCTOU) and misses it once
-        # created; ``_open_private_model_dir`` instead creates/re-opens the leaf
-        # atomically with O_NOFOLLOW|O_DIRECTORY and verifies it is a real,
-        # user-owned, non-world-writable directory, returning a pinned fd
-        # (CWE-59/377/378).
+        # On POSIX the default TRAINED_TAGGER_PATH is a shared, world-writable
+        # temp dir (/tmp) and the save dir is a *guessable* name in it, so a
+        # local attacker can pre-plant or race a symlink at ``loc``. A plain
+        # ``islink`` pre-check is non-atomic (TOCTOU) and misses it once created;
+        # ``_open_private_model_dir`` instead creates/re-opens the leaf atomically
+        # with O_NOFOLLOW|O_DIRECTORY, verifies it is a real, user-owned,
+        # non-world-writable directory, and returns a pinned fd we write relative
+        # to (CWE-59/377/378).
+        #
+        # On Windows ``%TEMP%`` is per-user and ACL-protected (no such squat), and
+        # ``os.open`` cannot open a directory as a descriptor there, so use a
+        # plain create + write.
+        if os.name != "posix":
+            os.makedirs(loc, exist_ok=True)
+            _authorize_private_dir(loc)
+            for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
+                with open(path_join(loc, json_file), "w") as fout:
+                    json.dump(param, fout)
+            return
+
         dir_fd = _open_private_model_dir(loc)
         try:
             _authorize_private_dir(loc)
