@@ -17,6 +17,7 @@ syntax trees and morphological trees.
 
 import re
 
+from nltk import redos
 from nltk.grammar import Nonterminal, Production
 from nltk.internals import deprecated
 
@@ -650,11 +651,19 @@ class Tree(list):
         token_char = (
             rf"(?:\\[{open_pattern}{close_pattern}]|[^\s{open_pattern}{close_pattern}])"
         )
+        # The default node/leaf patterns are constant and linear. A *caller*
+        # pattern, however, is untrusted and run over the unbounded string ``s``
+        # via ``finditer``, where a shape such as ``(a|a)*z`` backtracks
+        # catastrophically (CWE-1333). Compile the caller-pattern case through
+        # ``redos`` for a wall-clock bound; keep the (hot) default path on
+        # stdlib ``re`` so corpus loading pays no overhead. See ``nltk/redos.py``.
+        caller_pattern = node_pattern is not None or leaf_pattern is not None
         if node_pattern is None:
             node_pattern = rf"{token_char}+"
         if leaf_pattern is None:
             leaf_pattern = rf"{token_char}+"
-        token_re = re.compile(
+        _compile = redos.compile if caller_pattern else re.compile
+        token_re = _compile(
             r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)
         )

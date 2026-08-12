@@ -342,3 +342,70 @@ class TestTokenSearcherReDoS:
         searcher = TokenSearcher(["a" * 64])
         with pytest.raises(TimeoutError):
             searcher.findall(f"<{inner}b>", timeout=FAST_TIMEOUT)
+
+
+# --------------------------------------------------------------------------
+# Sink: Chat(pairs) -- caller/author regex matched against unbounded user input
+# --------------------------------------------------------------------------
+
+
+class TestChatReDoS:
+    def test_benign(self):
+        from nltk.chat.util import Chat, reflections
+
+        bot = Chat([(r"hello (.*)", ["hi %1"])], reflections)
+        assert bot.respond("hello world") == "hi world"
+
+    def test_pattern_compiled_through_redos(self):
+        # Structural guard: every pair pattern goes through redos (engine +
+        # timeout). Fails FAST and cleanly if the wiring is ever reverted to
+        # stdlib ``re`` -- rather than hanging the suite.
+        from nltk.chat.util import Chat, reflections
+
+        bot = Chat([(r"(a|a)*z", ["x"])], reflections)
+        assert isinstance(bot._pairs[0][0], redos.TimedPattern)
+
+    def test_exploit_is_bounded(self, fast_timeout):
+        # ``(a|a)*z`` against a long input is a hard hang on stdlib ``re``.
+        # Through redos it is bounded: the ``regex`` engine linearises this
+        # anchored ``match`` outright (so it usually returns fast), and the
+        # wall-clock timeout backstops anything it cannot. Either way: no hang.
+        from nltk.chat.util import Chat, reflections
+
+        bot = Chat([(r"(a|a)*z", ["x"])], reflections)
+        start = time.perf_counter()
+        try:
+            bot.respond("a" * 64)
+        except TimeoutError:
+            pass
+        assert time.perf_counter() - start < 2.0
+
+
+# --------------------------------------------------------------------------
+# Sink: Tree.fromstring(node_pattern=, leaf_pattern=) -- caller regex over text
+# --------------------------------------------------------------------------
+
+
+class TestTreeFromstringReDoS:
+    def test_benign_default(self):
+        from nltk.tree import Tree
+
+        tree = Tree.fromstring("(S (NP the dog) (VP ran))")
+        assert tree.label() == "S" and len(tree) == 2
+
+    def test_benign_custom_pattern(self):
+        from nltk.tree import Tree
+
+        tree = Tree.fromstring("(S (NP dog))", node_pattern=r"\w+", leaf_pattern=r"\w+")
+        assert tree.label() == "S"
+
+    @pytest.mark.parametrize("kw", ["leaf_pattern", "node_pattern"])
+    def test_caller_pattern_exploit(self, kw, fast_timeout):
+        # A caller-supplied node/leaf pattern is run over the (unbounded) tree
+        # string via finditer, where the engine cannot defuse a forced-failure
+        # identical-branch pattern -- the timeout must fire.
+        from nltk.tree import Tree
+
+        s = ("(" if kw == "node_pattern" else "") + "a" * 64
+        with pytest.raises(TimeoutError):
+            Tree.fromstring(s, **{kw: r"(a|a)*z"})
