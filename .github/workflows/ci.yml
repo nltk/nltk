@@ -168,6 +168,21 @@ jobs:
           # these checks. The suite is also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_redos.py
 
+      - name: Run parser/grammar DoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the unbounded-work parser/grammar DoS
+          # cluster (GHSA-ff5c-cp5c-9wjf umbrella: RecursiveDescentParser
+          # CVE-2026-12876, ShiftReduceParser, NonprojectiveDependencyParser,
+          # ViterbiParser, CFG chomsky_normal_form unit-cycle, generate()). A
+          # living audit -- it also asserts the already-bounded parsers
+          # (ChartParser, ProjectiveDependencyParser) stay bounded. Own fast,
+          # early step so a change to the main pytest invocation cannot silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_recursivedescent_dos.py nltk/test/unit/test_parser_dos.py
+
       - name: Run pytest
         shell: bash
         env:

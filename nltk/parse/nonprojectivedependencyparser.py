@@ -9,8 +9,19 @@
 
 import logging
 import math
+import time
 
 from nltk.parse.dependencygraph import DependencyGraph
+
+#: Default wall-clock limit, in seconds, for a single
+#: :meth:`NonprojectiveDependencyParser.parse` call. The parser enumerates every
+#: grammatical head-assignment through the lattice; with a dense grammar (many
+#: words able to head many others) that set is exponential in the number of
+#: tokens, so a short input can exhaust CPU and memory (CWE-407). When the limit
+#: is exceeded, ``parse`` raises ``TimeoutError``. A wall-clock bound (rather than
+#: a token cap) is used because the blow-up depends on grammar *density*, not just
+#: length; ``max_time=None`` disables it.
+DEFAULT_MAX_TIME = 5.0
 
 logger = logging.getLogger(__name__)
 
@@ -568,14 +579,21 @@ class NonprojectiveDependencyParser:
     projective parser will not.
     """
 
-    def __init__(self, dependency_grammar):
+    def __init__(self, dependency_grammar, max_time=DEFAULT_MAX_TIME):
         """
         Creates a new ``NonprojectiveDependencyParser``.
 
         :param dependency_grammar: a grammar of word-to-word relations.
         :type dependency_grammar: DependencyGrammar
+        :param max_time: Wall-clock limit, in seconds, for a single ``parse()``
+            call.  A dense grammar makes the head-assignment enumeration
+            exponential (CWE-407); when the limit is exceeded, ``parse()``
+            raises ``TimeoutError``.  Defaults to ``DEFAULT_MAX_TIME``; ``None``
+            disables the bound.
+        :type max_time: float or None
         """
         self._grammar = dependency_grammar
+        self._max_time = max_time
 
     def parse(self, tokens):
         """
@@ -636,9 +654,19 @@ class NonprojectiveDependencyParser:
             for _ in roots:
                 stack = []
                 analysis = [[] for i in range(len(possible_heads))]
+            deadline = (
+                None if self._max_time is None else time.perf_counter() + self._max_time
+            )
             i = 0
             forward = True
             while i >= 0:
+                if deadline is not None and time.perf_counter() > deadline:
+                    raise TimeoutError(
+                        f"NonprojectiveDependencyParser exceeded its "
+                        f"{self._max_time}s time limit; the grammar may be too "
+                        "dense for this many tokens. Pass max_time=None to "
+                        "disable the limit."
+                    )
                 if forward:
                     if len(possible_heads[i]) == 1:
                         analysis[i] = possible_heads[i][0]
