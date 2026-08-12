@@ -648,31 +648,66 @@ def _fd_realpath(fd):
         return None
 
 
-def _hardened_read_open(raw_path, mode, context, required_root, **kwargs):
-    """Open ``raw_path`` for reading, closing the symlink-swap TOCTOU and the
-    hardlink escape that a path-only ``validate_path`` cannot.
+def _os_open_flags(mode):
+    """Translate a :func:`builtins.open` *mode* string into ``os.open()`` flags.
+
+    Mirrors the read/write/create/append/truncate intent of *mode* so the
+    hardened opener can add ``O_NOFOLLOW`` on top of exactly what the caller
+    asked for. POSIX only.
+    """
+    chars = set(mode)
+    if "x" in chars:
+        creat = os.O_CREAT | os.O_EXCL
+    elif "w" in chars:
+        creat = os.O_CREAT | os.O_TRUNC
+    elif "a" in chars:
+        creat = os.O_CREAT | os.O_APPEND
+    else:  # "r" -- open existing, no create
+        creat = 0
+    if "+" in chars:
+        access = os.O_RDWR
+    elif chars & {"w", "a", "x"}:
+        access = os.O_WRONLY
+    else:
+        access = os.O_RDONLY
+    return access | creat
+
+
+def _hardened_open(raw_path, mode, context, required_root, **kwargs):
+    """Open ``raw_path`` for read *or* write, closing the symlink-swap TOCTOU and
+    the hardlink escape that a path-only ``validate_path`` cannot.
 
     1. Open ``raw_path`` with ``O_NOFOLLOW`` so its final component is never
        followed as a symlink. Unlike opening a re-resolved path, this is atomic:
        the kernel either opens the real inode at that path or fails, so a symlink
        swapped in after the caller's ``validate_path`` cannot redirect the open
-       (TOCTOU). Corpora contain no symlinked files, so rejecting a final-
-       component symlink outright is safe and fail-closed.
+       (TOCTOU). On the write side this stops an attacker who plants/swaps
+       ``<root>/pkg`` -> ``/etc/...`` between the check and a ``retrieve()`` /
+       model write from redirecting the write outside the root -- the symmetric
+       counterpart of the read-side content leak (CWE-59, GHSA-f794 class).
+       Corpora/data files are never symlinks, so refusing a final-component
+       symlink outright is fail-closed.
     2. ``fstat`` the descriptor and refuse ``st_nlink > 1``: a hardlink is another
        name for the same inode with no symlink to resolve, so an in-root hardlink
-       to an outside inode would otherwise leak its contents (CWE-59, GHSA-f794
-       class). Multiply-linked corpus files are not expected.
+       to an outside inode would otherwise be read or written through.
     3. Re-validate the *opened descriptor's* real path (from the kernel, not by
        re-resolving the string) so a swapped intermediate directory symlink that
        redirected the open to an outside inode is still caught.
 
-    POSIX only; callers fall back to :func:`builtins.open` elsewhere.
+    A newly created file is given ``0600`` permissions so a write into a shared
+    temp dir is not left group-/world-readable (CWE-377/378). POSIX only;
+    callers fall back to :func:`builtins.open` elsewhere.
     """
     import errno
 
-    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0)
+    flags = (
+        _os_open_flags(mode)
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
     try:
-        fd = os.open(raw_path, flags)
+        # 0o600 is only consulted when O_CREAT is in flags (write/append/x modes).
+        fd = os.open(raw_path, flags, 0o600)
     except OSError as e:
         if e.errno in (errno.ELOOP, errno.EMLINK):
             raise PermissionError(
@@ -699,7 +734,19 @@ def _hardened_read_open(raw_path, mode, context, required_root, **kwargs):
     except BaseException:
         os.close(fd)
         raise
-    return os.fdopen(fd, mode, **kwargs)
+    try:
+        return os.fdopen(fd, mode, **kwargs)
+    except BaseException:
+        # os.open() accepts some mode strings that os.fdopen() rejects (e.g. an
+        # empty or malformed mode); without this the descriptor would leak and
+        # repeated calls could exhaust the fd table (DoS).
+        os.close(fd)
+        raise
+
+
+# Back-compat alias: the opener now handles write modes too, but external
+# callers/tests may still import the original read-only name.
+_hardened_read_open = _hardened_open
 
 
 def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs):
@@ -734,17 +781,19 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
 
     # 4. Execution Substitution: validate and open the pure primitive, discarding the original object
     validate_path(raw_path, context=context, required_root=required_root)
-    # 5. For read modes under enforcement on POSIX, additionally close the
-    # validate-then-open symlink TOCTOU and the hardlink escape that a path-based
-    # check cannot see. Write/append/update flows and non-POSIX keep the plain
-    # open (their containment is unchanged from before).
-    if ENFORCE and os.name == "posix" and _is_readonly_mode(mode):
+    # 5. Under enforcement on POSIX, additionally close the validate-then-open
+    # symlink TOCTOU and the hardlink escape that a path-based check cannot see.
+    # This now covers read *and* write/append/update modes: the write side is the
+    # symmetric counterpart of the read-side leak -- a symlink swapped in at the
+    # destination after validate_path would otherwise let a retrieve()/model write
+    # land outside the root (CWE-59). Non-POSIX keeps the plain open.
+    if ENFORCE and os.name == "posix":
         # The hardened path owns this open entirely: it raises PermissionError /
         # ValueError on a security violation and the usual OSError (e.g.
         # FileNotFoundError) on a genuine open failure. We must NOT fall back to
         # builtins.open on OSError -- retrying the raw path would follow a symlink
         # the hardened open deliberately refused, reopening the TOCTOU leak.
-        return _hardened_read_open(raw_path, mode, context, required_root, **kwargs)
+        return _hardened_open(raw_path, mode, context, required_root, **kwargs)
     return builtins.open(raw_path, mode=mode, **kwargs)
 
 

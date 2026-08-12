@@ -621,6 +621,14 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 
     if comment_char:
         COMMENT = re.compile("(?m)^%s.*$" % re.escape(comment_char))
+    # When a single s-expression spans more than one block, we grow ``block``
+    # and re-parse it. Growing by a *fixed* amount re-parses (and, with a
+    # comment_char, re-substitutes) the whole growing buffer on every step,
+    # which is O(n^2) on one oversized s-expression (CWE-407). Doubling the read
+    # size instead makes the number of re-parses O(log n) and the total work a
+    # geometric sum O(n), with no change to the parsed result (the stream is
+    # seeked back to the parsed offset regardless of any over-read).
+    read_size = block_size
     while True:
         try:
             # If we're stripping comments, then make sure our block ends
@@ -645,7 +653,8 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             return tokens
         except ValueError as e:
             if e.args[0] == "Block too small":
-                next_block = stream.read(block_size)
+                read_size *= 2  # exponential growth -> O(log n) re-parses, O(n) total
+                next_block = stream.read(read_size)
                 if next_block:
                     block += next_block
                     continue

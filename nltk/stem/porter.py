@@ -151,6 +151,28 @@ class PorterStemmer(StemmerI):
             return (word[i] not in self.vowels) != negate
         return True
 
+    def _consonant_flags(self, word):
+        """Classify every character of ``word`` as consonant/vowel in a single
+        left-to-right O(n) pass.
+
+        Returns a list of bools (``True`` == consonant) equivalent to calling
+        ``_is_consonant(word, i)`` for each ``i``, but without that method's
+        per-call backward walk over a run of 'y's. Callers that classify every
+        position (``_measure``, ``_contains_vowel``) would otherwise be O(n^2)
+        -- a quadratic-time DoS on a token like ``"yyyy..."`` (CWE-407). A 'y'
+        is a consonant iff the preceding letter is not one (or it starts the
+        word), which is exactly the previous flag we just computed.
+        """
+        flags = []
+        for i, ch in enumerate(word):
+            if ch in self.vowels:
+                flags.append(False)
+            elif ch == "y":
+                flags.append(True if i == 0 else not flags[i - 1])
+            else:
+                flags.append(True)
+        return flags
+
     def _measure(self, stem):
         r"""Returns the 'measure' of stem, per definition in the paper
 
@@ -185,17 +207,14 @@ class PorterStemmer(StemmerI):
                 m=1    TROUBLE,  OATS,  TREES,  IVY.
                 m=2    TROUBLES,  PRIVATE,  OATEN,  ORRERY.
         """
-        cv_sequence = ""
-
         # Construct a string of 'c's and 'v's representing whether each
-        # character in `stem` is a consonant or a vowel.
+        # character in `stem` is a consonant or a vowel, in a single O(n) pass
+        # (see _consonant_flags; a per-position _is_consonant loop is O(n^2)).
         # e.g. 'falafel' becomes 'cvcvcvc',
         #      'architecture' becomes 'vcccvcvccvcv'
-        for i in range(len(stem)):
-            if self._is_consonant(stem, i):
-                cv_sequence += "c"
-            else:
-                cv_sequence += "v"
+        cv_sequence = "".join(
+            "c" if is_cons else "v" for is_cons in self._consonant_flags(stem)
+        )
 
         # Count the number of 'vc' occurrences, which is equivalent to
         # the number of 'VC' occurrences in Porter's reduced form in the
@@ -207,10 +226,8 @@ class PorterStemmer(StemmerI):
 
     def _contains_vowel(self, stem):
         """Returns True if stem contains a vowel, else False"""
-        for i in range(len(stem)):
-            if not self._is_consonant(stem, i):
-                return True
-        return False
+        # Single O(n) pass (a per-position _is_consonant loop is O(n^2)).
+        return not all(self._consonant_flags(stem))
 
     def _ends_double_consonant(self, word):
         """Implements condition *d from the paper

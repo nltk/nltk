@@ -83,10 +83,22 @@ class TextTilingTokenizer(TokenizerI):
         self.__dict__.update(locals())
         del self.__dict__["self"]
 
+    #: Maximum input length (characters) accepted by :meth:`tokenize`. The
+    #: block-comparison / vocabulary-introduction step is quadratic in the number
+    #: of pseudosentences, so a very large document is a CPU DoS (CWE-407). This
+    #: cap is generous (a ~150k-word document); raise it to segment larger texts.
+    MAX_TEXT_LEN = 1_000_000
+
     def tokenize(self, text):
         """Return a tokenized copy of *text*, where each "token" represents
         a separate topic."""
 
+        if len(text) > self.MAX_TEXT_LEN:
+            raise ValueError(
+                f"TextTilingTokenizer: input length exceeds MAX_TEXT_LEN "
+                f"({self.MAX_TEXT_LEN}); block comparison is quadratic in the "
+                "document size (CWE-407). Raise MAX_TEXT_LEN or segment the text."
+            )
         lowercase_text = text.lower()
         paragraph_breaks = self._mark_paragraph_breaks(text)
         text_length = len(lowercase_text)

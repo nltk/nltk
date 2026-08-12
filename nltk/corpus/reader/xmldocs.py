@@ -280,16 +280,32 @@ class XMLCorpusView(StreamBackedCorpusView):
         another block.
         """
         fragment = ""
+        # Track whether the fragment currently ends inside an unterminated
+        # '<...' tag, updated over just the newly-read block. While it does, the
+        # fragment can never be well-formed, so the ``_VALID_XML_RE`` match below
+        # (which backtracks over ``[^>]*`` across the whole buffer looking for a
+        # '>') is skipped -- re-running it on every 1 KiB block otherwise makes a
+        # single oversized tag O(n^2) (CWE-407). Skipping it is behaviour-
+        # preserving: an in-tag fragment always fails that match anyway.
+        in_tag = False
+        last_lt = -1  # absolute index in ``fragment`` of the most recent '<'
 
         if isinstance(stream, SeekableUnicodeStreamReader):
             startpos = stream.tell()
         while True:
             # Read a block and add it to the fragment.
+            block_start = len(fragment)
             xml_block = stream.read(self._BLOCK_SIZE)
             fragment += xml_block
+            for offset, ch in enumerate(xml_block):
+                if ch == "<":
+                    in_tag = True
+                    last_lt = block_start + offset
+                elif ch == ">":
+                    in_tag = False
 
             # Do we have a well-formed xml fragment?
-            if self._VALID_XML_RE.match(fragment):
+            if not in_tag and self._VALID_XML_RE.match(fragment):
                 return fragment
 
             # Do we have a fragment that will never be well-formed?
@@ -304,9 +320,11 @@ class XMLCorpusView(StreamBackedCorpusView):
                 raise ValueError("Unexpected end of file: tag not closed")
 
             # If not, then we must be in the middle of a <..tag..>.
-            # If appropriate, backtrack to the most recent '<'
-            # character.
-            last_open_bracket = fragment.rfind("<")
+            # If appropriate, backtrack to the most recent '<' character. Use
+            # the incrementally-tracked index rather than ``fragment.rfind('<')``
+            # so this stays O(1) per block instead of re-scanning the whole
+            # growing buffer (CWE-407).
+            last_open_bracket = last_lt
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
                     if isinstance(stream, SeekableUnicodeStreamReader):

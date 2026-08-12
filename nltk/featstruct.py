@@ -2226,6 +2226,17 @@ class FeatStructReader:
         )
     )
 
+    #: Maximum feature-structure nesting depth accepted by the reader. The reader
+    #: is mutually recursive (``read_partial`` is re-entered once per nested
+    #: ``[...]`` / ``{...}`` / ``(...)``), with no depth guard, so a crafted deeply
+    #: nested string would raise an unhandled ``RecursionError`` (CWE-674, the
+    #: GHSA-cw6x advisory) -- reachable via ``FeatStruct(s)``,
+    #: ``FeatStructReader().fromstring(s)`` and ``FeatureGrammar.fromstring(s)``.
+    #: Real feature structures are shallow; a deeper input raises a clear
+    #: ``ValueError``. Kept well below the ~140 nesting levels at which CPython's
+    #: default recursion limit trips for this reader.
+    MAX_DEPTH = 100
+
     def read_partial(self, s, position=0, reentrances=None, fstruct=None):
         """
         Helper function that reads in a feature structure.
@@ -2440,12 +2451,28 @@ class FeatStructReader:
             return self.read_value(s, position, reentrances)
 
     def read_value(self, s, position, reentrances):
-        for handler, regexp in self.VALUE_HANDLERS:
-            match = regexp.match(s, position)
-            if match:
-                handler_func = getattr(self, handler)
-                return handler_func(s, position, reentrances, match)
-        raise ValueError("value", position)
+        # Bound recursion depth. Every nested value -- feature dict ``[...]``,
+        # feature list, set ``{...}`` or tuple ``(...)`` -- is read here exactly
+        # once per level, so this is the single choke point that guards all of
+        # the reader's mutually-recursive paths against an adversarially deep
+        # string (CWE-674; the GHSA-cw6x advisory). The single-arg ValueError
+        # propagates unchanged through ``read_partial``'s 2-arg handler.
+        self._depth = getattr(self, "_depth", 0) + 1
+        try:
+            if self._depth > self.MAX_DEPTH:
+                raise ValueError(
+                    f"Feature structure nesting depth exceeds MAX_DEPTH "
+                    f"({self.MAX_DEPTH}); the input may be adversarially deep. "
+                    "Raise FeatStructReader.MAX_DEPTH to allow it."
+                )
+            for handler, regexp in self.VALUE_HANDLERS:
+                match = regexp.match(s, position)
+                if match:
+                    handler_func = getattr(self, handler)
+                    return handler_func(s, position, reentrances, match)
+            raise ValueError("value", position)
+        finally:
+            self._depth -= 1
 
     def _error(self, s, expected, position):
         lines = s.split("\n")

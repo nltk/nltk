@@ -6,10 +6,20 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import time
 from functools import reduce
 
 from nltk.parse.api import ParserI
 from nltk.tree import ProbabilisticTree, Tree
+
+#: Default wall-clock limit, in seconds, for a single :meth:`ViterbiParser.parse`
+#: call. The Viterbi dynamic program keeps only the best tree, but ``_match_rhs``
+#: first enumerates *every* child-list matching a production's right-hand side; a
+#: long-RHS production over an all-spanning ambiguous nonterminal makes that set
+#: combinatorial (C(n, k)), so a crafted grammar can exhaust CPU/memory on a
+#: modest input (CWE-407). When the limit is exceeded, ``parse`` raises
+#: ``TimeoutError``; ``max_time=None`` disables the bound.
+DEFAULT_MAX_TIME = 5.0
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -72,7 +82,7 @@ class ViterbiParser(ParserI):
         when parsing a text.
     """
 
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
         """
         Create a new ``ViterbiParser`` parser, that uses ``grammar`` to
         parse texts.
@@ -84,9 +94,17 @@ class ViterbiParser(ParserI):
             parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single ``parse()``
+            call.  A crafted long-RHS/ambiguous grammar makes ``_match_rhs``
+            enumerate combinatorially many child lists (CWE-407); when the limit
+            is exceeded, ``parse()`` raises ``TimeoutError``.  Defaults to
+            ``DEFAULT_MAX_TIME``; ``None`` disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
+        self._max_time = max_time
+        self._parse_deadline = None
 
     def grammar(self):
         return self._grammar
@@ -109,6 +127,12 @@ class ViterbiParser(ParserI):
 
         tokens = list(tokens)
         self._grammar.check_coverage(tokens)
+
+        # Arm the wall-clock bound; ``_match_rhs`` checks it on every recursive
+        # entry so a combinatorial child-list enumeration cannot run unbounded.
+        self._parse_deadline = (
+            None if self._max_time is None else time.perf_counter() + self._max_time
+        )
 
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
@@ -272,6 +296,19 @@ class ViterbiParser(ParserI):
             documentation for more information.
         """
         (start, end) = span
+
+        # Bound the combinatorial child-list enumeration (CWE-407). This method
+        # recurses once per RHS symbol per split with no memoisation, so the
+        # deadline (armed in ``parse``) is checked on every entry.
+        if (
+            self._parse_deadline is not None
+            and time.perf_counter() > self._parse_deadline
+        ):
+            raise TimeoutError(
+                f"ViterbiParser exceeded its {self._max_time}s time limit; the "
+                "grammar may have a long right-hand side over an ambiguous "
+                "nonterminal. Pass max_time=None to disable the limit."
+            )
 
         # Base case
         if start >= end and rhs == ():

@@ -157,6 +157,16 @@ def position_of_ngram(ngram, sentence):
             return i
 
 
+#: Maximum reference/hypothesis length accepted by :func:`word_rank_alignment`.
+#: The alignment search is super-linear in sentence length; the earlier
+#: memoisation fix bounds its *memory*, but when an attacker controls BOTH
+#: sequences with low-cardinality tokens the per-position window loop still runs
+#: to ``len(reference)`` (it never hits the one-to-one early break), so time
+#: stays O(n^2)-O(n^3) (CWE-407). Real MT sentences are far shorter than this
+#: cap; raise it for genuinely long sequences.
+MAX_ALIGNMENT_LEN = 2000
+
+
 def word_rank_alignment(reference, hypothesis, character_based=False):
     """
     This is the word rank alignment algorithm described in the paper to produce
@@ -192,6 +202,13 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     """
+    if max(len(reference), len(hypothesis)) > MAX_ALIGNMENT_LEN:
+        raise ValueError(
+            f"word_rank_alignment: sequence length exceeds MAX_ALIGNMENT_LEN "
+            f"({MAX_ALIGNMENT_LEN}); the alignment search is super-linear in "
+            "sentence length (CWE-407). Raise "
+            "nltk.translate.ribes_score.MAX_ALIGNMENT_LEN for longer sequences."
+        )
     worder = []
     hyp_len = len(hypothesis)
     # Count how many times an n-gram occurs as a (possibly overlapping)

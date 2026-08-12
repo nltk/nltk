@@ -46,6 +46,14 @@ except ImportError:
 
 inf = float("inf")
 
+#: Maximum input length accepted by :func:`align`. ``align`` fills an
+#: ``(m+1)x(n+1)`` numpy matrix with a very expensive per-cell cost (five
+#: ``sigma_*`` calls, each scanning ~30 phonetic features), so it is O(n*m) time
+#: and memory over two untrusted strings -- a CPU/memory DoS (CWE-407). Phonetic
+#: strings are short; ``align("a"*400, "a"*400)`` already runs for over a minute.
+#: Raise this if you genuinely need to align long, trusted strings.
+MAX_ALIGN_INPUT_LEN = 512
+
 # Default values for maximum similarity scores (Kondrak 2002: 54)
 C_skip = -10  # Indels
 C_sub = 35  # Substitutions
@@ -1375,6 +1383,16 @@ def align(str1, str2, epsilon=0):
     # Validate that all input segments exist in the feature matrix
     _validate_segments(str1, "str1")
     _validate_segments(str2, "str2")
+
+    longest = max(len(str1), len(str2))
+    if longest > MAX_ALIGN_INPUT_LEN:
+        raise ValueError(
+            f"align: input length {longest} exceeds MAX_ALIGN_INPUT_LEN "
+            f"({MAX_ALIGN_INPUT_LEN}). align fills an O(n*m) matrix with a heavy "
+            "per-cell cost over two untrusted strings (CWE-407); a long input is "
+            "a CPU/memory DoS. Raise nltk.metrics.aline.MAX_ALIGN_INPUT_LEN if "
+            "you need to align longer trusted strings."
+        )
 
     m = len(str1)
     n = len(str2)
