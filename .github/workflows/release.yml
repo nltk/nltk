@@ -133,4 +133,11 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
+          # The curated ChangeLog section for this version is used as the release
+          # body; GitHub pre-pends it to the auto-generated "What's Changed" /
+          # "New Contributors" notes produced by generate_release_notes. This
+          # keeps the hand-written summary and the "Thanks to ..." reporter
+          # credits (which are NOT PR authors, so auto-notes would omit them)
+          # while still appending the automatic per-PR changelog.
           body_path: release-notes.md
+          generate_release_notes: true
