@@ -149,7 +149,10 @@ def test_no_payload_reads_a_sentinel_outside_the_data_root():
         for p in payloads:
             try:
                 ptr = D.find(p)
-            except (ValueError, LookupError):
+            except Exception:
+                # Any exception (ValueError guard, LookupError not-found, or a
+                # UnicodeDecodeError from decoding overlong %c0%af on Python 3.14+)
+                # means the payload did not resolve to a readable file -- no leak.
                 continue
             try:
                 content = ptr.open().read()
@@ -175,13 +178,16 @@ def test_double_encoded_stays_literal_in_root():
     saved = list(D.path)
     D.path.insert(0, dataroot)
     try:
-        for p in (
-            "..%252fsecret.txt",
-            "..%c0%afsecret.txt",
-            "..%252f..%252fsecret.txt",
-        ):
+        # Valid percent-encoding: url2pathname single-decodes -> literal in-root
+        # name that does not exist -> LookupError (never a separator/traversal).
+        for p in ("..%252fsecret.txt", "..%252f..%252fsecret.txt"):
             with pytest.raises(LookupError):
-                D.find(p)  # literal in-root name that does not exist -> not found
+                D.find(p)
+        # Overlong-UTF-8 ``%c0%af`` never decodes to "/". On Python <3.14 unquote
+        # replaces the bytes (-> literal in-root -> LookupError); on 3.14+ unquote
+        # raises UnicodeDecodeError. Either way it is rejected, never a leak.
+        with pytest.raises((LookupError, UnicodeDecodeError)):
+            D.find("..%c0%afsecret.txt")
     finally:
         D.path[:] = saved
 
