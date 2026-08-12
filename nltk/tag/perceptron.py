@@ -48,6 +48,49 @@ def _authorize_private_dir(directory):
         pathsec._LAST_DATA_PATHS = None
 
 
+def _open_private_model_dir(loc):
+    """Create/reuse *loc* as a private directory and return a pinned O_NOFOLLOW
+    directory descriptor, closing the shared-temp symlink squat / TOCTOU race.
+
+    The leaf is created with ``os.mkdir`` (atomic: it either creates the real
+    directory or fails with ``FileExistsError``) and then re-opened with
+    ``O_NOFOLLOW|O_DIRECTORY`` -- so a symlink pre-planted or raced in at the
+    guessable default name is refused (``ELOOP``/``ENOTDIR``) instead of being
+    followed. The descriptor is rejected unless it is a real directory owned by
+    the current user and not group-/world-writable (CWE-59/377/378).
+    """
+    import errno
+
+    parent = os.path.dirname(loc) or "."
+    os.makedirs(parent, exist_ok=True)
+    try:
+        os.mkdir(loc, 0o700)
+    except FileExistsError:
+        pass
+    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(loc, flags)
+    except OSError as e:
+        if e.errno in (errno.ELOOP, errno.ENOTDIR):
+            raise PermissionError(
+                f"Refusing trained-model dir {loc!r}: not a real directory "
+                "(symlink / TOCTOU squat) (CWE-59)"
+            ) from e
+        raise
+    try:
+        st = os.fstat(fd)
+        # POSIX only: on Windows st_uid is not meaningful and NTFS ACLs govern.
+        if os.name == "posix" and (st.st_uid != os.getuid() or (st.st_mode & 0o022)):
+            raise PermissionError(
+                f"Refusing non-private trained-model dir {loc!r}: not owned by "
+                "you or group-/world-writable (CWE-377/378)"
+            )
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
 try:
     import numpy as np
 except ImportError:
@@ -289,31 +332,35 @@ class PerceptronTagger(TaggerI):
     def save_to_json(self, lang="xxx", loc=None):
         if not loc:
             loc = self.save_dir
-        # Create the trained-model dir private to the current user (mode 0700).
-        # The default TRAINED_TAGGER_PATH is the system temp dir, which is shared
-        # and world-writable on Linux; a private dir cannot be tampered with by
-        # another local user, and lets it be authorized for reading back below.
-        #
-        # The default location is a *guessable* name in a shared temp dir, so a
-        # local attacker can pre-create it. Refuse a symlink there outright
-        # (``makedirs(exist_ok=True)`` would silently accept and then follow it,
-        # redirecting the model write outside the intended dir -- CWE-59/377).
-        if os.path.islink(loc):
-            raise PermissionError(
-                f"Refusing to save trained model into a symlink: {loc!r} (CWE-59)"
-            )
-        os.makedirs(loc, mode=0o700, exist_ok=True)
-        _authorize_private_dir(loc)
+        # The default TRAINED_TAGGER_PATH is the system temp dir -- shared and
+        # world-writable on Linux -- and the save dir is a *guessable* name in
+        # it, so a local attacker can pre-plant or race a symlink at ``loc``. A
+        # plain ``islink`` pre-check is non-atomic (TOCTOU) and misses it once
+        # created; ``_open_private_model_dir`` instead creates/re-opens the leaf
+        # atomically with O_NOFOLLOW|O_DIRECTORY and verifies it is a real,
+        # user-owned, non-world-writable directory, returning a pinned fd
+        # (CWE-59/377/378).
+        dir_fd = _open_private_model_dir(loc)
+        try:
+            _authorize_private_dir(loc)
 
-        # Open each model file with O_NOFOLLOW (0600) so a symlink swapped in at
-        # the individual file name is refused atomically rather than followed,
-        # and the written model is never left group-/world-readable.
-        def _no_follow_opener(path, flags):
-            return os.open(path, flags | getattr(os, "O_NOFOLLOW", 0), 0o600)
+            # Write each model file relative to the pinned directory fd (where
+            # supported) with O_NOFOLLOW (0600), so neither the dir nor the file
+            # can be redirected outside the verified directory after the check.
+            use_dir_fd = os.open in os.supports_dir_fd
 
-        for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
-            with open(path_join(loc, json_file), "w", opener=_no_follow_opener) as fout:
-                json.dump(param, fout)
+            def _no_follow_opener(path, flags):
+                extra = {"dir_fd": dir_fd} if use_dir_fd else {}
+                return os.open(
+                    path, flags | getattr(os, "O_NOFOLLOW", 0), 0o600, **extra
+                )
+
+            for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
+                target = json_file if use_dir_fd else path_join(loc, json_file)
+                with open(target, "w", opener=_no_follow_opener) as fout:
+                    json.dump(param, fout)
+        finally:
+            os.close(dir_fd)
 
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.

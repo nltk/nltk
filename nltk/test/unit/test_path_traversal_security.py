@@ -256,6 +256,21 @@ class TestPathsecSymlinkHardening:
         with pytest.raises(PermissionError):
             P.open(hard, "r", required_root=root).read()
 
+    def test_malformed_mode_does_not_leak_fd(self):
+        # os.open() accepts some mode strings os.fdopen() rejects (e.g. ""). The
+        # fdopen must be inside the fd-closing guard or repeated calls exhaust
+        # the fd table (DoS).
+        P, base, root, outside = self._roots()
+        f = os.path.join(root, "x")
+        with open(f, "w") as fh:
+            fh.write("hi")
+        before = len(os.listdir("/dev/fd"))
+        for _ in range(64):
+            with pytest.raises((ValueError, OSError)):
+                P.open(f, "", required_root=root)
+        after = len(os.listdir("/dev/fd"))
+        assert after <= before + 2, f"fd leak: {before} -> {after}"
+
 
 # ==========================================================================
 # 3. Predictable shared-temp squat on the trained-model save (CWE-59/377)
@@ -296,3 +311,51 @@ class TestPerceptronSaveSquat:
         with pytest.raises(PermissionError):
             self._tagger().save_to_json(lang="eng", loc=squat)
         assert not os.listdir(victim), "write leaked through the symlink"
+
+    def test_world_writable_save_location_is_refused(self):
+        # A pre-existing real dir at the guessable name that is world-writable
+        # (an attacker could drop files in it / read the model back) is refused.
+        base = tempfile.mkdtemp()
+        loc = os.path.join(base, "shared")
+        os.makedirs(loc)
+        os.chmod(loc, 0o777)
+        with pytest.raises(PermissionError):
+            self._tagger().save_to_json(lang="eng", loc=loc)
+
+
+# ==========================================================================
+# 4. Entity-expansion (billion-laughs) in the bcp47 XML corpus reader (CWE-776)
+# ==========================================================================
+
+
+class TestBcp47EntitySafeParse:
+    def test_entity_expansion_is_rejected(self):
+        # bcp47 was the only XML corpus reader using raw ElementTree.parse; a
+        # malicious `bcp47` package could ship a billion-laughs subdivisions XML.
+        # It now goes through nltk.xmlsec, which refuses entity declarations.
+        import io
+
+        from nltk.xmlsec import parse as safe_parse
+
+        lol = (
+            '<?xml version="1.0"?><!DOCTYPE lolz ['
+            '<!ENTITY a "AAAA"><!ENTITY b "&a;&a;&a;&a;&a;">]>'
+            "<localeDisplayNames><subdivisions><subdivision>&b;"
+            "</subdivision></subdivisions></localeDisplayNames>"
+        )
+        with pytest.raises(Exception):
+            safe_parse(io.BytesIO(lol.encode()))
+
+    def test_benign_subdivisions_xml_still_parses(self):
+        import io
+
+        from nltk.xmlsec import parse as safe_parse
+
+        benign = (
+            "<localeDisplayNames><subdivisions>"
+            '<subdivision type="usca">California</subdivision>'
+            "</subdivisions></localeDisplayNames>"
+        )
+        tree = safe_parse(io.BytesIO(benign.encode()))
+        subs = list(tree.iterfind("subdivisions/subdivision"))
+        assert len(subs) == 1 and subs[0].text == "California"

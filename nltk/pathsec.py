@@ -734,7 +734,14 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     except BaseException:
         os.close(fd)
         raise
-    return os.fdopen(fd, mode, **kwargs)
+    try:
+        return os.fdopen(fd, mode, **kwargs)
+    except BaseException:
+        # os.open() accepts some mode strings that os.fdopen() rejects (e.g. an
+        # empty or malformed mode); without this the descriptor would leak and
+        # repeated calls could exhaust the fd table (DoS).
+        os.close(fd)
+        raise
 
 
 # Back-compat alias: the opener now handles write modes too, but external
