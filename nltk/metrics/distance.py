@@ -24,6 +24,32 @@ import warnings
 
 from nltk.pathsec import open as _secure_open
 
+#: Maximum input length accepted by the super-linear two-string distance
+#: functions in this module: the O(n*m) time-and-memory :func:`edit_distance` /
+#: :func:`edit_distance_align` (they build a full ``(n+1)x(m+1)`` DP matrix) and
+#: the O(n**2) :func:`jaro_similarity`. Both operate on two untrusted strings, so
+#: an unbounded length is a CPU/memory DoS (CWE-407, CWE-400): e.g.
+#: ``edit_distance("a"*40000, "b"*40000)`` allocates tens of GB and runs for
+#: hours. CVE-2026-12926 hardened ``jaro_similarity``'s inner loop from O(n**3)
+#: to O(n**2) but left the length unbounded, so the quadratic DoS survived; this
+#: cap closes it and the matching ``edit_distance`` hole. A real distance query
+#: is short; raise this if you genuinely need to compare very long, trusted
+#: strings.
+MAX_DISTANCE_INPUT_LEN = 2000
+
+
+def _check_distance_input_len(s1, s2, func_name):
+    """Reject oversized inputs to the O(n*m)/O(n**2) distance functions."""
+    longest = max(len(s1), len(s2))
+    if longest > MAX_DISTANCE_INPUT_LEN:
+        raise ValueError(
+            f"{func_name}: input length {longest} exceeds MAX_DISTANCE_INPUT_LEN "
+            f"({MAX_DISTANCE_INPUT_LEN}). This function is super-linear in the "
+            "input length over two untrusted strings (CWE-407/CWE-400); a long "
+            "input is a CPU/memory DoS. Raise nltk.metrics.distance."
+            "MAX_DISTANCE_INPUT_LEN if you need to compare longer trusted strings."
+        )
+
 
 def _edit_dist_init(len1, len2):
     lev = []
@@ -87,6 +113,7 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :type transpositions: bool
     :rtype: int
     """
+    _check_distance_input_len(s1, s2, "edit_distance")
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
@@ -186,6 +213,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
     :type substitution_cost: int
     :rtype: List[Tuple(int, int)]
     """
+    _check_distance_input_len(s1, s2, "edit_distance_align")
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
@@ -333,6 +361,12 @@ def jaro_similarity(s1, s2):
     # formula (floor(max(|s1|,|s2|) / 2) - 1) yields -1.
     if s1 == s2:
         return 1.0
+
+    # CVE-2026-12926 cut the inner membership test from O(n) to O(1) (below),
+    # but the surrounding double loop is still O(n**2) and had no length bound,
+    # so two long near-matching strings remained a CPU DoS. Cap the length to
+    # close that residual (CWE-407).
+    _check_distance_input_len(s1, s2, "jaro_similarity")
 
     # First, store the length of the strings
     # because they will be re-used several times.

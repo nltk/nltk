@@ -74,6 +74,14 @@ except ImportError:
 
 LOG2 = math.log(2)
 
+#: Maximum number of blocks (sentences) accepted per side by :func:`align_blocks`.
+#: The alignment runs an ``O(n*m)`` double loop and, crucially, stores a
+#: ``backlinks[(i, j)]`` entry for *every* cell without ever pruning that dict, so
+#: two documents each split into many tiny "sentences" cost O(n*m) time and
+#: memory (CWE-407/CWE-400). Real paragraphs have few sentences; raise this if
+#: you genuinely need to align very large, trusted blocks.
+MAX_ALIGN_BLOCKS = 4000
+
 
 class LanguageIndependent:
     # These are the language-independent probabilities and parameters
@@ -166,6 +174,16 @@ def align_blocks(source_sents_lens, target_sents_lens, params=LanguageIndependen
     @param params: the sentence alignment parameters.
     @return: The sentence alignments, a list of index pairs.
     """
+
+    longest = max(len(source_sents_lens), len(target_sents_lens))
+    if longest > MAX_ALIGN_BLOCKS:
+        raise ValueError(
+            f"align_blocks: {longest} blocks exceeds MAX_ALIGN_BLOCKS "
+            f"({MAX_ALIGN_BLOCKS}). This alignment is O(n*m) in time and stores an "
+            "unpruned backlinks entry per cell, so two texts split into many tiny "
+            "sentences are a CPU/memory DoS (CWE-407/CWE-400). Raise "
+            "nltk.translate.gale_church.MAX_ALIGN_BLOCKS for larger trusted texts."
+        )
 
     alignment_types = list(params.PRIORS.keys())
 
