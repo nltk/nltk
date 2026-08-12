@@ -10,6 +10,7 @@ import re
 
 import regex
 
+from nltk import redos
 from nltk.chunk.api import ChunkParserI
 from nltk.tree import Tree
 
@@ -62,9 +63,10 @@ class ChunkString:
     IN_CHUNK_PATTERN = r"(?=[^\{]*\})"
     IN_STRIP_PATTERN = r"(?=[^\}]*(\{|$))"
 
-    # These are used by _verify
-    _CHUNK = r"(\{%s+?\})+?" % CHUNK_TAG
-    _STRIP = r"(%s+?)+?" % CHUNK_TAG
+    # Used by _verify.  (The former ``_CHUNK``/``_STRIP`` class attributes were
+    # removed: they were never referenced anywhere, and both had the classic
+    # nested-quantifier ReDoS shape ``(<...>+?)+?`` -- dead code that could only
+    # ever be a footgun if resurrected.)
     _VALID = re.compile(r"^(\{?%s\}?)*?$" % CHUNK_TAG)
     _BRACKETS = re.compile(r"[^\{\}]+")
     _BALANCED_BRACKETS = re.compile(r"(\{\})*$")
@@ -206,8 +208,14 @@ class ChunkString:
         :raise ValueError: If this transformation generated an
             invalid chunkstring.
         """
-        # Do the actual substitution
-        s = re.sub(regexp, repl, self._str)
+        # Do the actual substitution. ``regexp`` is a rule's (caller-derived)
+        # pattern; route it through ``redos`` so the substitution is bounded by
+        # a wall-clock timeout instead of hanging on a pathological tag pattern
+        # (CWE-1333). Rules already hold a ``TimedPattern`` (passed straight
+        # through by ``redos.compile``); a raw string/pattern is wrapped here.
+        if not isinstance(regexp, redos.TimedPattern):
+            regexp = redos.compile(regexp)
+        s = regexp.sub(repl, self._str)
 
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
@@ -298,11 +306,17 @@ class RegexpChunkRule:
         :param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        if isinstance(regexp, str):
-            regexp = re.compile(regexp)
+        # Normalise to a ``redos.TimedPattern`` so every application of this
+        # rule is bounded by a wall-clock timeout, whether the caller/subclass
+        # passed a string or a precompiled pattern. The tag pattern that a
+        # subclass turns into this regexp is caller-supplied (a chunk grammar),
+        # and ``CHUNK_TAG_PATTERN`` permits shapes such as ``<a|a>*`` whose
+        # derived regex backtracks catastrophically -- neither ``re`` nor the
+        # ``regex`` optimiser defuses that, so the timeout is the real defence
+        # (CWE-1333). See ``nltk/redos.py``.
         self._repl = repl
         self._descr = descr
-        self._regexp = regexp
+        self._regexp = redos.compile(regexp)
 
     def apply(self, chunkstr):
         # Keep docstring generic so we can inherit it.

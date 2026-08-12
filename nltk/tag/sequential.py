@@ -22,7 +22,7 @@ import re
 from abc import abstractmethod
 from typing import List, Optional, Tuple
 
-from nltk import jsontags
+from nltk import jsontags, redos
 from nltk.classify import NaiveBayesClassifier
 from nltk.probability import ConditionalFreqDist
 from nltk.tag.api import FeaturesetTaggerI, TaggerI
@@ -538,7 +538,11 @@ class RegexpTagger(SequentialBackoffTagger):
         self._regexps = []
         for regexp, tag in regexps:
             try:
-                self._regexps.append((re.compile(regexp), tag))
+                # ``regexp`` is caller-supplied and matched against every token,
+                # so compile it through ``redos``: a crafted pattern would
+                # otherwise backtrack catastrophically on an adversarial token
+                # and hang the tagger (CWE-1333). See ``nltk/redos.py``.
+                self._regexps.append((redos.compile(regexp), tag))
             except Exception as e:
                 raise Exception(
                     f"Invalid RegexpTagger regexp: {e}\n- regexp: {regexp!r}\n- tag: {tag!r}"
@@ -554,7 +558,9 @@ class RegexpTagger(SequentialBackoffTagger):
 
     def choose_tag(self, tokens, index, history):
         for regexp, tag in self._regexps:
-            if re.match(regexp, tokens[index]):
+            # ``regexp`` is a ``redos.TimedPattern``; its ``match`` applies the
+            # wall-clock timeout (a bare ``re.match(pattern, ...)`` would not).
+            if regexp.match(tokens[index]):
                 return tag
         return None
 

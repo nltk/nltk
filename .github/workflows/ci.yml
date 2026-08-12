@@ -154,6 +154,20 @@ jobs:
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
+      - name: Run ReDoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the ReDoS / catastrophic-backtracking
+          # backstop on caller-supplied patterns (GHSA-w3v8-gmh9-3wv7 umbrella:
+          # RegexpTokenizer, RegexpTagger, tgrep, chunk rules; plus the shared
+          # tight timeout with GHSA-rrv8-h7p8-rx55's Text.findall). Run as its
+          # own fast, early step -- with no third-party data needed -- so a
+          # change to the main pytest invocation below can never silently drop
+          # these checks. The suite is also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_redos.py
+
       - name: Run pytest
         shell: bash
         env:
