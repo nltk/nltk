@@ -48,6 +48,7 @@ from typing import List
 
 import regex  # https://github.com/nltk/nltk/issues/2409
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 
 ######################################################################
@@ -375,11 +376,22 @@ class TweetTokenizer(TokenizerI):
             text = reduce_lengthening(text)
         # Shorten problematic sequences of characters
         safe_text = HANG_RE.sub(r"\1\1\1", text)
-        # Recognise phone numbers during tokenization
-        if self.match_phone_numbers:
-            words = self.PHONE_WORD_RE.findall(safe_text)
-        else:
-            words = self.WORD_RE.findall(safe_text)
+        # Recognise phone numbers during tokenization. Bound the match with a
+        # wall-clock timeout: the phone sub-pattern backtracks super-linearly on
+        # a long run of digits (a ~40 KB digit "tweet" was O(n^2), CWE-407/1333),
+        # and the URL guard above does not cover this numeric path.
+        try:
+            if self.match_phone_numbers:
+                words = self.PHONE_WORD_RE.findall(
+                    safe_text, timeout=redos.DEFAULT_TIMEOUT
+                )
+            else:
+                words = self.WORD_RE.findall(safe_text, timeout=redos.DEFAULT_TIMEOUT)
+        except TimeoutError:
+            raise TimeoutError(
+                f"TweetTokenizer exceeded its {redos.DEFAULT_TIMEOUT}s time limit; "
+                "the input may be adversarial (e.g. a long run of digits)."
+            ) from None
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(

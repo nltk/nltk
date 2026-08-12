@@ -6,6 +6,7 @@ import pytest
 
 from nltk import pathsec
 from nltk.metrics.distance import (
+    MAX_DISTANCE_INPUT_LEN,
     custom_distance,
     edit_distance,
     edit_distance_align,
@@ -429,10 +430,13 @@ class TestCustomDistanceSandbox:
 
 _JARO_TIMEOUT = 20
 # Two near-identical strings: almost every character matches inside the window.
-# The pre-fix ``j not in flagged_2`` list membership made this O(n**3) (~tens of
-# seconds at this size); with a set it is the algorithm's natural O(n**2)
-# (sub-second). It is CPU-only (a few KB of input), so there is no OOM risk.
-_JARO_N = 8000
+# The pre-fix ``j not in flagged_2`` list membership made this O(n**3) (tens of
+# seconds even at the cap length: MAX_DISTANCE_INPUT_LEN**3 is billions of ops);
+# with a set it is the algorithm's natural O(n**2) (sub-second). We test at
+# exactly MAX_DISTANCE_INPUT_LEN -- the largest input the length guard admits --
+# so a cubic regression is still caught inside the timeout while a longer input
+# is instead rejected outright (see ``test_jaro_similarity_length_capped``).
+_JARO_N = MAX_DISTANCE_INPUT_LEN
 
 
 def _jaro_worker(result_q):
@@ -466,3 +470,33 @@ def test_jaro_similarity_not_cubic_on_near_matches():
     except queue.Empty:
         raise AssertionError("jaro_similarity worker produced no result")
     assert status == "ok", f"worker raised: {detail}"
+
+
+# ---------------------------------------------------------------------------
+# Length caps on the super-linear two-string distances (CWE-407/CWE-400).
+# The set fix above only made jaro's inner loop O(n**2); the outer double loop
+# (and edit_distance's full DP matrix) are still super-linear, so an unbounded
+# length is a CPU/memory DoS. MAX_DISTANCE_INPUT_LEN closes it for all three.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        lambda n: jaro_similarity("a" * n, "b" * n),
+        lambda n: edit_distance("a" * n, "b" * n),
+        lambda n: edit_distance_align("a" * n, "b" * n),
+    ],
+    ids=["jaro_similarity", "edit_distance", "edit_distance_align"],
+)
+def test_distance_functions_reject_oversized_input(func):
+    # At/under the cap the call works; one over the cap is rejected.
+    func(MAX_DISTANCE_INPUT_LEN)  # no exception
+    with pytest.raises(ValueError):
+        func(MAX_DISTANCE_INPUT_LEN + 1)
+
+
+def test_edit_distance_short_inputs_unchanged():
+    # The cap must not perturb ordinary short inputs.
+    assert edit_distance("kitten", "sitting") == 3
+    assert edit_distance("rain", "shine") == 3

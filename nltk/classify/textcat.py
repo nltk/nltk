@@ -119,14 +119,21 @@ class TextCat:
 
         distances = {}
         profile = self.profile(text)
-        # For all the languages
+        # Precompute each trigram's rank (position) once. The original called
+        # ``list(profile.keys()).index(trigram)`` (and the same on each language
+        # profile) for every trigram, which is O(m^2 * languages) and lets a
+        # few-KB unicode-diverse string burn tens of seconds (CWE-407). Dict
+        # insertion order equals list order, so the ranks -- and the resulting
+        # out-of-place distance -- are identical to ``calc_dist``.
+        text_ranks = {trigram: i for i, trigram in enumerate(profile)}
         for lang in self._corpus._all_lang_freq.keys():
-            # Calculate distance metric for every trigram in
-            # input text to be identified
+            lang_ranks = {t: i for i, t in enumerate(self._corpus.lang_freq(lang))}
             lang_dist = 0
             for trigram in profile:
-                lang_dist += self.calc_dist(lang, trigram, profile)
-
+                if trigram in lang_ranks:
+                    lang_dist += abs(lang_ranks[trigram] - text_ranks[trigram])
+                else:
+                    lang_dist += maxsize
             distances[lang] = lang_dist
 
         return distances

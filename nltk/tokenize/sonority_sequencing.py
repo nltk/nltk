@@ -132,9 +132,11 @@ class SyllableTokenizer(TokenizerI):
                 if len(valid_syllables) == 0:
                     front += syllable
                 else:
-                    valid_syllables = valid_syllables[:-1] + [
-                        valid_syllables[-1] + syllable
-                    ]
+                    # Merge the vowelless syllable into the previous one in
+                    # place. The original ``valid_syllables[:-1] + [...]`` rebuilt
+                    # the whole list every time, so a token that produced many
+                    # vowelless syllables cost O(n^2) (CWE-407); this is O(1).
+                    valid_syllables[-1] = valid_syllables[-1] + syllable
             else:
                 if len(valid_syllables) == 0:
                     valid_syllables.append(front + syllable)
@@ -142,6 +144,12 @@ class SyllableTokenizer(TokenizerI):
                     valid_syllables.append(syllable)
 
         return valid_syllables
+
+    #: Maximum token length accepted by :meth:`tokenize`. A real word/token is
+    #: short; syllabification is super-linear in token length, so a
+    #: pathologically long single "token" would be a CPU DoS (CWE-407). Raise it
+    #: if you genuinely need to syllabify very long tokens.
+    MAX_TOKEN_LEN = 4096
 
     def tokenize(self, token):
         """
@@ -153,12 +161,26 @@ class SyllableTokenizer(TokenizerI):
         :return syllable_list: Single word or token broken up into syllables.
         :rtype: list(str)
         """
-        # assign values from hierarchy
-        syllables_values = self.assign_values(token)
-
-        # if only one vowel return word
+        # if only one vowel return word. This path is O(n) (a few ``str.count``
+        # scans), so it is safe for arbitrarily long low-vowel tokens (e.g. a
+        # long digit run) and is checked before the length guard below.
         if sum(token.count(x) for x in self.vowels) <= 1:
             return [token]
+
+        # The syllabification loop below is linear after the ``validate_syllables``
+        # fix, but ``assign_values``/``ngrams`` still materialise per-character
+        # structures, so a pathologically long single "token" is a memory/CPU
+        # DoS (CWE-407). A real word/token is short; reject the oversized ones.
+        if len(token) > self.MAX_TOKEN_LEN:
+            raise ValueError(
+                f"SyllableTokenizer: token length exceeds MAX_TOKEN_LEN "
+                f"({self.MAX_TOKEN_LEN}); syllabification materialises per-"
+                "character structures over the token (CWE-407). Raise "
+                "MAX_TOKEN_LEN for longer tokens."
+            )
+
+        # assign values from hierarchy
+        syllables_values = self.assign_values(token)
 
         syllable_list = []
         syllable = syllables_values[0][0]  # start syllable with first phoneme

@@ -375,19 +375,29 @@ class CHILDESCorpusReader(XMLCorpusReader):
         results = []
         for xmlsent in xmldoc.findall(".//{%s}u" % NS):
             sents = []
+            # These `find` calls scan the whole utterance subtree and return the
+            # same element no matter which word we are on. Computing them once
+            # per utterance (instead of per word) keeps an utterance with W words
+            # O(W) rather than O(W^2) -- otherwise a crafted CHILDES file makes
+            # words(replace=True)/MLU() quadratic (CWE-407).
+            if replace:
+                _repl_cond = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement")
+                _repl_word = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement/{{{NS}}}w")
+                _wk = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk")
+            else:
+                _repl_cond = _repl_word = _wk = None
             # select speakers
             if speaker == "ALL" or xmlsent.get("who") in speaker:
                 for xmlword in xmlsent.findall(".//{%s}w" % NS):
                     infl = None
                     suffixStem = None
                     suffixTag = None
-                    # getting replaced words
-                    if replace and xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement"):
-                        xmlword = xmlsent.find(
-                            f".//{{{NS}}}w/{{{NS}}}replacement/{{{NS}}}w"
-                        )
-                    elif replace and xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk"):
-                        xmlword = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk")
+                    # getting replaced words (behaviour-preserving: same elements
+                    # as the original per-word finds, incl. the truthiness test).
+                    if _repl_cond is not None and len(_repl_cond):
+                        xmlword = _repl_word
+                    elif _wk is not None and len(_wk):
+                        xmlword = _wk
                     # get text
                     if xmlword.text:
                         word = xmlword.text
