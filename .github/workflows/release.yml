@@ -108,8 +108,36 @@ jobs:
       - name: Build package
         run: python -m build
 
+      - name: Extract release notes from ChangeLog
+        run: |
+          set -euo pipefail
+
+          RAW_VERSION=${GITHUB_REF_NAME#v}
+          VERSION=${RAW_VERSION%%-*}
+
+          awk -v version="$VERSION" '
+            $1 == "Version" && $2 == version { capture=1; found=1; print; next }
+            capture && $1 == "Version" { exit }
+            capture { print }
+            END {
+              if (!found) {
+                print "ERROR: Version " version " not found in ChangeLog" > "/dev/stderr"
+                exit 2
+              }
+            }
+          ' ChangeLog > release-notes.md
+
+          test -s release-notes.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
+          # The curated ChangeLog section for this version is used as the release
+          # body; GitHub pre-pends it to the auto-generated "What's Changed" /
+          # "New Contributors" notes produced by generate_release_notes. This
+          # keeps the hand-written summary and the "Thanks to ..." reporter
+          # credits (which are NOT PR authors, so auto-notes would omit them)
+          # while still appending the automatic per-PR changelog.
+          body_path: release-notes.md
           generate_release_notes: true
