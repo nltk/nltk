@@ -11,7 +11,7 @@ Version 3.10.3 2026-08-12
 * fix(security): validate per-call java() options and replace the -XX:/-D allowlist with a minimal one (CWE-88)
 * Additional security hardening (CWE-407, CWE-426, CWE-427, CWE-502, CWE-59, CWE-776, CWE-918)
 
-Thanks to the following contributors to 3.10.3: ibfavas, leduckhuong, LinZiyuu, dougtrainer28-cmyk, Liling Tan, medimedi, Eric Kafe.
+Thanks to the following contributors to 3.10.3: Mohammad Favas S, leduckhuong, Ziyu Lin, dougtrainer28-cmyk, Liling Tan, medimedi, Eric Kafe.
 
 Version 3.10.2 2026-08-05
 
