@@ -110,7 +110,6 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 """
 
 import functools
-import re
 
 try:
     import pyparsing

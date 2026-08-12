@@ -5,20 +5,24 @@ Every NLTK sink that compiles a *caller-supplied* regular expression or tag
 pattern must bound the match with a wall-clock timeout, so a crafted pattern
 cannot pin a CPU core forever (catastrophic backtracking / ReDoS, CWE-1333).
 
-The exploit patterns below are the ones actually reproduced against the
-unpatched code:
+This file bakes the full adversarial *attack sweep* into CI. Each hardened sink
+is hammered with a battery of catastrophic-backtracking patterns; every one must
+raise :class:`TimeoutError` (the timeout fired) rather than hang. The sweep was
+first run out-of-process against the unpatched code, where every pattern below
+ran to a hard wall-clock kill -- so these are proven exploits, not hypotheticals.
 
-* ``(a+)+$``  -- nested quantifier over the *same* sub-expression. The ``regex``
-  engine's optimiser collapses this to linear time, so it must finish fast and
-  *not* raise. Kept here so a future engine/opt regression is caught.
-* ``(a|a)*$`` -- alternation of *identical* branches. Neither ``re`` nor the
-  ``regex`` optimiser defuses this, so only the wall-clock timeout saves us. It
-  must raise :class:`TimeoutError`. This is the case the timeout exists for.
+Two pattern families, empirically separated:
 
-Each sink is checked twice: a benign pattern still returns the right answer, and
-the ``(a|a)*$`` exploit raises ``TimeoutError`` instead of hanging. The timeout
-is monkeypatched short so the suite stays fast; the payload length is chosen so
-the backtracking cannot possibly finish inside any small window.
+* ``BACKSTOP_FAMILY`` -- alternation of identical/overlapping branches
+  (``(a|a)*`` and friends). Neither ``re`` nor the ``regex`` optimiser defuses
+  these, so ONLY the wall-clock timeout stops them. They must raise.
+* ``DEFUSED_FAMILY`` -- nested quantifiers over the *same* sub-expression
+  (``(a+)+$`` etc.). The ``regex`` optimiser linearises these outright, so they
+  must finish fast and must NOT raise. Kept so a future engine/opt regression
+  (which would turn them back into hangs the timeout must then catch) is visible.
+
+The timeout is monkeypatched short so the suite stays fast; payloads are long
+enough that 2**N backtracking cannot finish inside any small window.
 """
 
 import time
@@ -27,16 +31,35 @@ import pytest
 
 from nltk import redos
 
-# A short bound keeps the exploit tests fast. The payloads below need ~2**N
-# steps, so no benign-length window lets them finish -- the timeout always wins.
 FAST_TIMEOUT = 0.5
+EVIL = "a" * 64 + "!"  # long enough that no small window lets 2**N finish
 
-#: Payload for the identical-branch exploit: long enough that 2**N steps cannot
-#: complete inside FAST_TIMEOUT on any machine.
-EVIL = "a" * 64 + "!"
+#: Raw-regex exploits the engine does NOT defuse -> the timeout MUST fire.
+BACKSTOP_FAMILY = [
+    r"(a|a)*$",  # identical single-char branches
+    r"(a|a|a)*$",  # three identical branches
+    r"(aa|aa)*$",  # identical multi-char branches
+    r"([ab]|[ab])*$",  # identical character-class branches
+]
 
-DEFUSED = r"(a+)+$"  # engine linearises this -> must be fast, must NOT time out
-BACKSTOP = r"(a|a)*$"  # engine cannot linearise -> only the timeout saves us
+#: Exploits the ``regex`` optimiser linearises -> must finish fast, must NOT raise.
+DEFUSED_FAMILY = [
+    r"(a+)+$",
+    r"(a*)*$",
+    r"((a*)*)*$",
+    r"([a-z]+)*$",
+]
+
+#: Chunk *tag patterns* that pass CHUNK_TAG_PATTERN yet derive a backtracking
+#: regex the engine cannot defuse -> the timeout MUST fire.
+CHUNK_BACKSTOP_FAMILY = [
+    "<a|a>*<b>",
+    "<a|a|a>*<b>",
+    "<a|a>+<b>",
+]
+
+DEFUSED = DEFUSED_FAMILY[0]
+BACKSTOP = BACKSTOP_FAMILY[0]
 
 
 @pytest.fixture
@@ -80,16 +103,20 @@ class TestRedosModule:
         tp = redos.compile(r"\d+")
         assert redos.compile(tp) is tp  # idempotent when no new timeout
 
-    def test_engine_defuses_nested_quantifier(self, fast_timeout):
-        # (a+)+$ must be linearised by the engine and finish well under the
-        # (short) timeout -- i.e. NOT raise.
+    @pytest.mark.parametrize("pattern", DEFUSED_FAMILY)
+    def test_engine_defuses_nested_quantifier(self, pattern, fast_timeout):
+        # These must be linearised by the engine and finish well under the
+        # (short) timeout -- i.e. NOT raise (the exact match content is
+        # irrelevant; some, e.g. ``(a*)*$``, legitimately match the empty
+        # string at end-of-input).
         start = time.perf_counter()
-        assert redos.compile(DEFUSED).findall(EVIL) == []
+        redos.compile(pattern).findall(EVIL)
         assert time.perf_counter() - start < FAST_TIMEOUT
 
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
     @pytest.mark.parametrize("op", ["findall", "search", "split", "finditer", "sub"])
-    def test_backstop_fires_on_identical_branches(self, op, fast_timeout):
-        rx = redos.compile(BACKSTOP)
+    def test_backstop_fires_on_identical_branches(self, op, pattern, fast_timeout):
+        rx = redos.compile(pattern)
         with pytest.raises(TimeoutError):
             if op == "finditer":
                 list(rx.finditer(EVIL))
@@ -117,30 +144,34 @@ class TestRegexpTokenizerReDoS:
         assert list(RegexpTokenizer(r"\w+").span_tokenize("ab cd")) == [(0, 2), (3, 5)]
         assert regexp_tokenize("a b", r"\w+") == ["a", "b"]
 
-    def test_tokenize_findall_exploit(self, fast_timeout):
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
+    def test_tokenize_findall_exploit(self, pattern, fast_timeout):
         from nltk.tokenize import RegexpTokenizer
 
         with pytest.raises(TimeoutError):
-            RegexpTokenizer(BACKSTOP).tokenize(EVIL)
+            RegexpTokenizer(pattern).tokenize(EVIL)
 
-    def test_span_tokenize_tokens_exploit(self, fast_timeout):
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
+    def test_span_tokenize_tokens_exploit(self, pattern, fast_timeout):
         from nltk.tokenize import RegexpTokenizer
 
         with pytest.raises(TimeoutError):
-            list(RegexpTokenizer(BACKSTOP).span_tokenize(EVIL))
+            list(RegexpTokenizer(pattern).span_tokenize(EVIL))
 
-    def test_span_tokenize_gaps_exploit(self, fast_timeout):
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
+    def test_span_tokenize_gaps_exploit(self, pattern, fast_timeout):
         # Exercises regexp_span_tokenize() in nltk/tokenize/util.py.
         from nltk.tokenize import RegexpTokenizer
 
         with pytest.raises(TimeoutError):
-            list(RegexpTokenizer(BACKSTOP, gaps=True).span_tokenize(EVIL))
+            list(RegexpTokenizer(pattern, gaps=True).span_tokenize(EVIL))
 
-    def test_regexp_tokenize_function_exploit(self, fast_timeout):
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
+    def test_regexp_tokenize_function_exploit(self, pattern, fast_timeout):
         from nltk.tokenize import regexp_tokenize
 
         with pytest.raises(TimeoutError):
-            regexp_tokenize(EVIL, BACKSTOP)
+            regexp_tokenize(EVIL, pattern)
 
     def test_regexp_span_tokenize_string_pattern_exploit(self, fast_timeout):
         # A bare string separator pattern is compiled through redos too.
@@ -172,16 +203,17 @@ class TestRegexpTaggerReDoS:
         rebuilt = RegexpTagger.decode_json_obj((regexps, None))
         assert rebuilt.tag(["walking"]) == [("walking", "VBG")]
 
-    def test_exploit(self, fast_timeout):
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
+    def test_exploit(self, pattern, fast_timeout):
         from nltk.tag import RegexpTagger
 
-        tagger = RegexpTagger([(BACKSTOP, "X"), (r".*", "NN")])
+        tagger = RegexpTagger([(pattern, "X"), (r".*", "NN")])
         with pytest.raises(TimeoutError):
             tagger.tag([EVIL])
 
 
 # --------------------------------------------------------------------------
-# Sink: chunk rules (ChunkRule / RegexpChunkParser)
+# Sink: chunk rules (every rule type funnels through RegexpChunkRule)
 # --------------------------------------------------------------------------
 
 
@@ -189,21 +221,53 @@ class TestChunkReDoS:
     def test_benign(self):
         from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
 
-        parser = RegexpChunkParser(
-            [ChunkRule("<DT><NN>", "np")], chunk_label="NP"
-        )
+        parser = RegexpChunkParser([ChunkRule("<DT><NN>", "np")], chunk_label="NP")
         tree = parser.parse([("the", "DT"), ("dog", "NN")])
         assert "NP" in str(tree)
 
-    def test_hostile_tag_pattern_passes_validator_but_is_bounded(self, fast_timeout):
-        # The payload deliberately passes CHUNK_TAG_PATTERN (the earlier huntr
-        # fix): '|' and '*' are allowed, so the validator is NOT the defence --
+    @pytest.mark.parametrize("tag_pattern", CHUNK_BACKSTOP_FAMILY)
+    def test_hostile_tag_pattern_passes_validator_but_is_bounded(
+        self, tag_pattern, fast_timeout
+    ):
+        # These deliberately pass CHUNK_TAG_PATTERN (the earlier huntr fix):
+        # '|' and '*'/'+' are allowed, so the validator is NOT the defence --
         # the timeout is.
         from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
 
-        parser = RegexpChunkParser([ChunkRule("<a|a>*<b>", "x")], chunk_label="NP")
+        parser = RegexpChunkParser([ChunkRule(tag_pattern, "x")], chunk_label="NP")
         with pytest.raises(TimeoutError):
             parser.parse([("a", "a")] * 64)
+
+    @pytest.mark.parametrize(
+        "make_rule",
+        [
+            pytest.param(lambda C: C.ChunkRule("<a|a>*<b>", "d"), id="ChunkRule"),
+            pytest.param(lambda C: C.StripRule("<a|a>*<b>", "d"), id="StripRule"),
+            pytest.param(lambda C: C.UnChunkRule("<a|a>*<b>", "d"), id="UnChunkRule"),
+            pytest.param(
+                lambda C: C.MergeRule("<a|a>*<b>", "<c>", "d"), id="MergeRule"
+            ),
+            pytest.param(
+                lambda C: C.SplitRule("<a|a>*<b>", "<c>", "d"), id="SplitRule"
+            ),
+            pytest.param(
+                lambda C: C.ChunkRuleWithContext("", "<a|a>*<b>", "", "d"),
+                id="ChunkRuleWithContext",
+            ),
+        ],
+    )
+    def test_every_rule_type_is_bounded(self, make_rule, fast_timeout):
+        # Every RegexpChunkRule subclass must route its (caller-derived) regex
+        # through the redos choke point and be bounded on application.
+        import nltk.chunk.regexp as C
+
+        rule = make_rule(C)
+        assert isinstance(rule._regexp, redos.TimedPattern)  # choke point wrapped it
+        cs = C.ChunkString.__new__(C.ChunkString)
+        cs._str = "{" + "<a>" * 64 + "}"
+        cs._debug = 0
+        with pytest.raises(TimeoutError):
+            rule.apply(cs)
 
     def test_raw_regexpchunkrule_exploit(self, fast_timeout):
         # RegexpChunkRule takes a *raw* regex (no tag-pattern restriction).
@@ -239,13 +303,14 @@ class TestTgrepReDoS:
         matcher = tgrep.tgrep_compile("/NN/")
         assert list(tgrep.tgrep_positions(matcher, [tree]))  # finds the NN node
 
-    def test_exploit(self, fast_timeout):
+    @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
+    def test_exploit(self, pattern, fast_timeout):
         pytest.importorskip("pyparsing")
         from nltk import tgrep
         from nltk.tree import ParentedTree
 
-        tree = ParentedTree.fromstring("(S (X %s))" % EVIL)
-        matcher = tgrep.tgrep_compile("/(a|a)*$/")
+        tree = ParentedTree.fromstring(f"(S (X {EVIL}))")
+        matcher = tgrep.tgrep_compile(f"/{pattern}/")
         with pytest.raises(TimeoutError):
             list(tgrep.tgrep_positions(matcher, [tree]))
 
@@ -267,13 +332,13 @@ class TestTokenSearcherReDoS:
         searcher = TokenSearcher(["the", "dog", "sat"])
         assert searcher.findall("<the><dog>") == [["the", "dog"]]
 
-    def test_exploit(self):
-        # The token delimiters make each ``<tok>`` fixed-width, so the classic
-        # cross-token catastrophe is defused; the real blow-up lives *inside* a
-        # single long, attacker-controlled corpus token matched against a
-        # quantified-alternation query.
+    @pytest.mark.parametrize("inner", ["(a|a)*", "(a|a|a)*", "([ab]|[ab])*"])
+    def test_exploit(self, inner):
+        # Token delimiters make each ``<tok>`` fixed-width, so the cross-token
+        # catastrophe is defused; the real blow-up is *inside* a single long,
+        # attacker-controlled corpus token matched against a quantified query.
         from nltk.text import TokenSearcher
 
         searcher = TokenSearcher(["a" * 64])
         with pytest.raises(TimeoutError):
-            searcher.findall("<(a|a)*b>", timeout=FAST_TIMEOUT)
+            searcher.findall(f"<{inner}b>", timeout=FAST_TIMEOUT)

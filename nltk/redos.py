@@ -164,8 +164,7 @@ class TimedPattern:
         # pulled, so the guard must wrap the *iteration*, not just the call.
         t = self._resolve(timeout)
         try:
-            for m in self._rx.finditer(string, *args, timeout=t, **kwargs):
-                yield m
+            yield from self._rx.finditer(string, *args, timeout=t, **kwargs)
         except TimeoutError:
             raise self._fail(t) from None
 

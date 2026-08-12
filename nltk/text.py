@@ -24,12 +24,12 @@ from math import log
 import regex
 
 from nltk.collocations import BigramCollocationFinder
-from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
 from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
+from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
 from nltk.tokenize import sent_tokenize
 from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
