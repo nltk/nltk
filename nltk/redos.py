@@ -178,6 +178,23 @@ class TimedPattern:
             raise AttributeError(name)
         return getattr(self._rx, name)
 
+    def __eq__(self, other):
+        # Two wrappers are equal when they guard the same source pattern under
+        # the same flags and timeout. Without this, instances fall back to
+        # identity, so an object that has been round-tripped (e.g. a
+        # ``RegexpTagger`` serialised to and from JSON, which re-compiles its
+        # patterns) never compares equal to the original.
+        if not isinstance(other, TimedPattern):
+            return NotImplemented
+        return (
+            self._rx.pattern == other._rx.pattern
+            and self._rx.flags == other._rx.flags
+            and self._timeout == other._timeout
+        )
+
+    def __hash__(self):
+        return hash((self._rx.pattern, self._rx.flags, self._timeout))
+
     def __repr__(self):
         return f"TimedPattern({self._rx.pattern!r}, timeout={self._timeout!r})"
 
