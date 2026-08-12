@@ -181,7 +181,7 @@ jobs:
           # (ChartParser, ProjectiveDependencyParser) stay bounded. Own fast,
           # early step so a change to the main pytest invocation cannot silently
           # drop it; also collected by "Run pytest".
-          pytest -rsx nltk/test/unit/test_recursivedescent_dos.py nltk/test/unit/test_parser_dos.py
+          pytest -rsx nltk/test/unit/test_recursivedescent_dos.py nltk/test/unit/test_parser_dos.py nltk/test/unit/test_recursion_dos.py
 
       - name: Run pytest
         shell: bash

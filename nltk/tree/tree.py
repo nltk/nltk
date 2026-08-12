@@ -21,6 +21,15 @@ from nltk import redos
 from nltk.grammar import Nonterminal, Production
 from nltk.internals import deprecated
 
+#: Maximum bracket-nesting depth accepted by :meth:`Tree.fromstring`. The parse
+#: itself is iterative, but the resulting tree is walked by recursive methods
+#: (``__str__``, ``productions``, ``subtrees``, ``chomsky_normal_form`` ...), so
+#: an arbitrarily deep tree would make every traversal raise ``RecursionError``
+#: (CWE-674). Real trees are nowhere near this deep; a crafted ``"(X "*10000``
+#: string is rejected with a clear ``ValueError``. Raise it if you genuinely need
+#: deeper trees (and raise ``sys.setrecursionlimit`` to match).
+MAX_TREE_DEPTH = 500
+
 ######################################################################
 ## Trees
 ######################################################################
@@ -679,6 +688,16 @@ class Tree(list):
                 if read_node is not None:
                     label = read_node(label)
                 stack.append((label, []))
+                # Bound nesting depth: the tree built here is later walked by
+                # recursive methods, so an arbitrarily deep tree would make every
+                # traversal raise RecursionError (CWE-674). ``len(stack)`` is the
+                # current depth.
+                if len(stack) > MAX_TREE_DEPTH:
+                    raise ValueError(
+                        f"Tree nesting depth exceeds MAX_TREE_DEPTH "
+                        f"({MAX_TREE_DEPTH}); the input may be adversarially "
+                        "deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+                    )
             # End of a tree/subtree
             elif token == close_b:
                 if len(stack) == 1:
