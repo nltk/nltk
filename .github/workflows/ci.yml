@@ -183,6 +183,18 @@ jobs:
           # drop it; also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_recursivedescent_dos.py nltk/test/unit/test_parser_dos.py nltk/test/unit/test_recursion_dos.py
 
+      - name: Run quadratic-complexity DoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the quadratic-complexity DoS cluster
+          # (GHSA-ww6m-cw3f-q94g umbrella: PorterStemmer; GHSA-vp2x XMLCorpusView,
+          # GHSA-8mpw TEICorpusView -- all directions -- and read_sexpr_block;
+          # CWE-407). Own fast, early step so a change to the main pytest
+          # invocation can't silently drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_quadratic_dos.py
+
       - name: Run pytest
         shell: bash
         env:
