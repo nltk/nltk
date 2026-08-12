@@ -11,6 +11,8 @@
 import random
 import re
 
+from nltk import redos
+
 reflections = {
     "i am": "you are",
     "i was": "you were",
@@ -48,7 +50,12 @@ class Chat:
         :rtype: None
         """
 
-        self._pairs = [(re.compile(x, re.IGNORECASE), y) for (x, y) in pairs]
+        # Each ``x`` is a caller-supplied pattern matched (``pattern.match``
+        # below) against arbitrary, unbounded end-user input, so compile it
+        # through ``redos``: a pattern such as ``(a|a)*z`` would otherwise
+        # backtrack catastrophically on a long message and hang the bot
+        # (CWE-1333). See ``nltk/redos.py``.
+        self._pairs = [(redos.compile(x, re.IGNORECASE), y) for (x, y) in pairs]
         self._reflections = reflections
         self._regex = self._compile_reflections()
 

@@ -110,7 +110,6 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 """
 
 import functools
-import re
 
 try:
     import pyparsing
@@ -119,6 +118,7 @@ except ImportError:
     print("installed.")
 
 import nltk.tree
+from nltk import redos
 
 
 class TgrepException(Exception):
@@ -350,11 +350,16 @@ def _tgrep_node_action(_s, _l, tokens):
         elif tokens[0].startswith("/"):
             assert tokens[0].endswith("/")
             node_lit = tokens[0][1:-1]
+            # The ``/regex/`` node literal comes straight from the (untrusted)
+            # tgrep query and is searched against every node label. Compile it
+            # through ``redos`` so a crafted literal (e.g. ``/(a|a)*$/``) is
+            # bounded by a wall-clock timeout instead of hanging the search
+            # (CWE-1333). See ``nltk/redos.py``.
             return (
                 lambda r: lambda n, m=None, l=None: r.search(
                     _tgrep_node_literal_value(n)
                 )
-            )(re.compile(node_lit))
+            )(redos.compile(node_lit))
         elif tokens[0].startswith("i@"):
             node_func = _tgrep_node_action(_s, _l, [tokens[0][2:].lower()])
             return (

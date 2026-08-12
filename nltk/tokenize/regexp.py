@@ -68,6 +68,7 @@ argument.  This differs from the conventions used by Python's
 
 import re
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
 
@@ -117,7 +118,12 @@ class RegexpTokenizer(TokenizerI):
 
     def _check_regexp(self):
         if self._regexp is None:
-            self._regexp = re.compile(self._pattern, self._flags)
+            # ``pattern`` is caller-supplied, so compile it through ``redos``:
+            # a crafted pattern (e.g. ``(a+)+$``) would otherwise backtrack
+            # catastrophically and hang the process (CWE-1333). ``redos``
+            # compiles with the ``regex`` engine and bounds every match with a
+            # wall-clock timeout. See ``nltk/redos.py``.
+            self._regexp = redos.compile(self._pattern, self._flags)
 
     def tokenize(self, text):
         self._check_regexp()
@@ -140,7 +146,10 @@ class RegexpTokenizer(TokenizerI):
                 if not (self._discard_empty and left == right):
                     yield left, right
         else:
-            for m in re.finditer(self._regexp, text):
+            # ``self._regexp`` is a ``redos.TimedPattern``; call its own
+            # ``finditer`` so the wall-clock timeout is applied (a bare
+            # ``re.finditer(pattern, ...)`` would neither accept it nor bound it).
+            for m in self._regexp.finditer(text):
                 yield m.span()
 
     def __repr__(self):

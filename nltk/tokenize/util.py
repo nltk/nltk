@@ -5,8 +5,9 @@
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
-from re import finditer
 from xml.sax.saxutils import escape, unescape
+
+from nltk import redos
 
 
 def string_span_tokenize(s, sep):
@@ -61,8 +62,14 @@ def regexp_span_tokenize(s, regexp):
     :type regexp: str
     :rtype: iter(tuple(int, int))
     """
+    # ``regexp`` is caller-supplied. A bare string is compiled through ``redos``
+    # so a pathological separator pattern cannot hang the process (CWE-1333); an
+    # already-compiled pattern (e.g. a ``redos.TimedPattern`` from
+    # ``RegexpTokenizer``) keeps its own timeout via its ``.finditer``.
+    if isinstance(regexp, str):
+        regexp = redos.compile(regexp)
     left = 0
-    for m in finditer(regexp, s):
+    for m in regexp.finditer(s):
         right, next = m.span()
         if right != left:
             yield left, right

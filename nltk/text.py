@@ -29,6 +29,7 @@ from nltk.lm.preprocessing import padded_everygram_pipeline
 from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
+from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
 from nltk.tokenize import sent_tokenize
 from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
@@ -262,8 +263,11 @@ class ConcordanceIndex:
 #: trigger super-linear, potentially catastrophic backtracking on a crafted query
 #: or corpus (CWE-1333), so the search is abandoned with a ``TimeoutError`` once
 #: this many seconds elapse. Benign searches finish in well under a second; set it
-#: to ``None`` to disable.
-TOKENSEARCH_TIMEOUT = 60.0
+#: to ``None`` to disable. Shares :data:`nltk.redos.DEFAULT_TIMEOUT` so every
+#: caller-supplied-pattern sink in NLTK uses one, deliberately tight, bound
+#: (the earlier 60s value was itself a DoS amplifier: the busy-wait window is
+#: the damage).
+TOKENSEARCH_TIMEOUT = _REDOS_DEFAULT_TIMEOUT
 
 #: Sentinel for the ``timeout`` defaults below: resolving ``TOKENSEARCH_TIMEOUT``
 #: inside the methods (rather than binding it as a literal default at definition
