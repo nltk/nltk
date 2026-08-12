@@ -108,14 +108,22 @@ the extraction.
     >>> concepts = chat80.clause2concepts('cities.pl', 'city', schema)
     >>> concepts
     [Concept('city'), Concept('country_of'), Concept('population_of')]
+    >>> from pprint import pprint
     >>> for c in concepts:
-    ...     print("%s:\n\t%s" % (c.prefLabel, c.extension[:4]))
+    ...     print(f"{c.prefLabel}:")
+    ...     pprint(c.extension[:4], indent=4, width=80)
     city:
-        ['athens', 'bangkok', 'barcelona', 'berlin']
+    ['athens', 'bangkok', 'barcelona', 'berlin']
     country_of:
-        [('athens', 'greece'), ('bangkok', 'thailand'), ('barcelona', 'spain'), ('berlin', 'east_germany')]
+    [   ('athens', 'greece'),
+        ('bangkok', 'thailand'),
+        ('barcelona', 'spain'),
+        ('berlin', 'east_germany')]
     population_of:
-        [('athens', '1368'), ('bangkok', '1178'), ('barcelona', '1280'), ('berlin', '3481')]
+    [   ('athens', '1368'),
+        ('bangkok', '1178'),
+        ('barcelona', '1280'),
+        ('berlin', '3481')]
 
 In addition, the ``extension`` can be further
 processed: in the case of the ``'border'`` relation, we check that the
