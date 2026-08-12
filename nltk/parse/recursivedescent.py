@@ -6,9 +6,20 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import time
+
 from nltk.grammar import Nonterminal
 from nltk.parse.api import ParserI
 from nltk.tree import ImmutableTree, Tree
+
+#: Default wall-clock limit, in seconds, for a single :meth:`RecursiveDescentParser.parse`
+#: call. Top-down recursive-descent search runs unbounded on a left-recursive or
+#: highly ambiguous grammar -- a tiny crafted grammar makes a short input consume
+#: CPU forever (CWE-407 / CWE-674). A legitimate parse of a well-formed grammar
+#: finishes in a small fraction of a second, so this is generous head-room for
+#: real use while capping a crafted grammar's CPU burn. Set ``max_time=None`` on
+#: the parser to disable the bound.
+DEFAULT_MAX_TIME = 5.0
 
 
 ##//////////////////////////////////////////////////////
@@ -50,7 +61,7 @@ class RecursiveDescentParser(ParserI):
     :see: ``nltk.grammar``
     """
 
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
         """
         Create a new ``RecursiveDescentParser``, that uses ``grammar``
         to parse texts.
@@ -62,9 +73,19 @@ class RecursiveDescentParser(ParserI):
             parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single
+            ``parse()`` call.  Top-down search on a left-recursive or
+            highly ambiguous grammar is unbounded, so a crafted grammar
+            can otherwise pin a CPU core indefinitely (CWE-407/CWE-674);
+            when the limit is exceeded, ``parse()`` raises
+            ``TimeoutError``.  Defaults to ``DEFAULT_MAX_TIME``; ``None``
+            disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
+        self._max_time = max_time
+        self._parse_deadline = None
 
     def grammar(self):
         return self._grammar
@@ -82,6 +103,9 @@ class RecursiveDescentParser(ParserI):
         frontier = [()]
         if self._trace:
             self._trace_start(initial_tree, frontier, tokens)
+        # Arm the wall-clock bound on the first step (measures parsing, not the
+        # lazy generator's setup); see ``_parse`` and ``DEFAULT_MAX_TIME``.
+        self._parse_deadline = None
         return self._parse(tokens, initial_tree, frontier)
 
     def _parse(self, remaining_text, tree, frontier):
@@ -108,6 +132,22 @@ class RecursiveDescentParser(ParserI):
             leaves that have not yet been matched.  This list sorted
             in left-to-right order of location within the tree.
         """
+
+        # Bound total wall-clock time. Every recursive step re-enters ``_parse``,
+        # so checking here covers the whole search. The deadline is armed on the
+        # first step (so it times the parse, not the lazy generator's setup). A
+        # left-recursive or highly ambiguous grammar would otherwise loop
+        # unboundedly (CWE-407/CWE-674); ``max_time=None`` disables the bound.
+        if self._max_time is not None:
+            now = time.perf_counter()
+            if self._parse_deadline is None:
+                self._parse_deadline = now + self._max_time
+            elif now > self._parse_deadline:
+                raise TimeoutError(
+                    f"RecursiveDescentParser exceeded its {self._max_time}s time "
+                    "limit; the grammar may be ambiguous or left-recursive. Pass "
+                    "max_time=None to disable the limit."
+                )
 
         # If the tree covers the text, and there's nothing left to
         # expand, then we've found a complete parse; return it.

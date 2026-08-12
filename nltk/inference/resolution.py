@@ -115,7 +115,12 @@ class ResolutionProver(Prover):
                             # memory beyond TIMEOUT and undermining the bound.
                             return (False, [])
                         tried[i].append(j)
-                        newclauses = clauses[i].unify(clauses[j])
+                        try:
+                            newclauses = clauses[i].unify(clauses[j], deadline=deadline)
+                        except _UnifyTimeout:
+                            # A single unification blew past the deadline; stop
+                            # like the between-call check above (unproved, empty).
+                            return (False, [])
                         if newclauses:
                             for newclause in newclauses:
                                 newclause._parents = (i + 1, j + 1)
@@ -206,7 +211,9 @@ class Clause(list):
         self._is_tautology = None
         self._parents = None
 
-    def unify(self, other, bindings=None, used=None, skipped=None, debug=False):
+    def unify(
+        self, other, bindings=None, used=None, skipped=None, debug=False, deadline=None
+    ):
         """
         Attempt to unify this Clause with the other, returning a list of
         resulting, unified, Clauses.
@@ -235,7 +242,7 @@ class Clause(list):
             debug = DebugObject(debug)
 
         newclauses = _iterate_first(
-            self, other, bindings, used, skipped, _complete_unify_path, debug
+            self, other, bindings, used, skipped, _complete_unify_path, debug, deadline
         )
 
         # remove subsumed clauses.  make a list of all indices of subsumed
@@ -366,10 +373,25 @@ class Clause(list):
         return "%s" % self
 
 
-def _iterate_first(first, second, bindings, used, skipped, finalize_method, debug):
+class _UnifyTimeout(Exception):
+    """Raised inside a single ``Clause.unify`` when its ``deadline`` passes.
+
+    Unifying two clauses that share many same-predicate literals explores an
+    exponential number of literal pairings inside one ``unify`` call, which the
+    saturation loop's between-call ``TIMEOUT`` cannot interrupt. Checking the
+    deadline inside the recursion (and aborting via this exception) makes the
+    time bound effective (CWE-407/CWE-400).
+    """
+
+
+def _iterate_first(
+    first, second, bindings, used, skipped, finalize_method, debug, deadline=None
+):
     """
     This method facilitates movement through the terms of 'self'
     """
+    if deadline is not None and time.monotonic() > deadline:
+        raise _UnifyTimeout
     debug.line(f"unify({first},{second}) {bindings}")
 
     if not len(first) or not len(second):  # if no more recursions can be performed
@@ -377,13 +399,20 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
     else:
         # explore this 'self' atom
         result = _iterate_second(
-            first, second, bindings, used, skipped, finalize_method, debug + 1
+            first, second, bindings, used, skipped, finalize_method, debug + 1, deadline
         )
 
         # skip this possible 'self' atom
         newskipped = (skipped[0] + [first[0]], skipped[1])
         result += _iterate_first(
-            first[1:], second, bindings, used, newskipped, finalize_method, debug + 1
+            first[1:],
+            second,
+            bindings,
+            used,
+            newskipped,
+            finalize_method,
+            debug + 1,
+            deadline,
         )
 
         try:
@@ -402,6 +431,7 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
                 ([], []),
                 finalize_method,
                 debug + 1,
+                deadline,
             )
         except BindingException:
             # the atoms could not be unified,
@@ -410,10 +440,14 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
         return result
 
 
-def _iterate_second(first, second, bindings, used, skipped, finalize_method, debug):
+def _iterate_second(
+    first, second, bindings, used, skipped, finalize_method, debug, deadline=None
+):
     """
     This method facilitates movement through the terms of 'other'
     """
+    if deadline is not None and time.monotonic() > deadline:
+        raise _UnifyTimeout
     debug.line(f"unify({first},{second}) {bindings}")
 
     if not len(first) or not len(second):  # if no more recursions can be performed
@@ -422,7 +456,14 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
         # skip this possible pairing and move to the next
         newskipped = (skipped[0], skipped[1] + [second[0]])
         result = _iterate_second(
-            first, second[1:], bindings, used, newskipped, finalize_method, debug + 1
+            first,
+            second[1:],
+            bindings,
+            used,
+            newskipped,
+            finalize_method,
+            debug + 1,
+            deadline,
         )
 
         try:
@@ -441,6 +482,7 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
                 ([], []),
                 finalize_method,
                 debug + 1,
+                deadline,
             )
         except BindingException:
             # the atoms could not be unified,

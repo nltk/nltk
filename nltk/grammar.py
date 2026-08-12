@@ -772,8 +772,20 @@ class CFG:
             else:
                 result.append(rule)
 
+        # Track which unit productions (lhs -> rhs[0]) have already been
+        # expanded. A unit-production cycle (e.g. ``A -> B``, ``B -> A``)
+        # regenerates the same unit rules forever, so without this guard the
+        # queue never drains and the loop hangs while ``result``/``unitary``
+        # grow without bound (CWE-835/CWE-400). Expanding each distinct unit
+        # rule at most once computes the same unit closure -- duplicates a cycle
+        # would add carry no new productions.
+        seen = set()
         while unitary:
             rule = unitary.popleft()
+            key = (rule.lhs(), rule.rhs()[0])
+            if key in seen:
+                continue
+            seen.add(key)
             for item in grammar.productions(lhs=rule.rhs()[0]):
                 new_rule = Production(rule.lhs(), item.rhs())
                 if len(new_rule) != 1 or new_rule.is_lexical():

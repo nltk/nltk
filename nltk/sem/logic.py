@@ -499,10 +499,24 @@ class LogicParser:
         """Attempt to make a boolean expression.  If the next token is a boolean
         operator, then a BooleanExpression will be returned.  Otherwise, the
         parameter will be returned."""
+        # Each boolean operator deepens the AST by one, but this loop builds the
+        # whole left-nested chain without recursing through
+        # ``process_next_expression`` -- so a flat chain like ``a & a & ...``
+        # bypasses the ``_parse_depth`` guard and builds an AST deep enough that
+        # later traversal (str/simplify/variables) raises RecursionError
+        # (CWE-674). Bound the running total (current nesting + chain length).
+        chain = 0
         while self.inRange(0):
             tok = self.token(0)
             factory = self.get_BooleanExpression_factory(tok)
             if factory and self.has_priority(tok, context):
+                chain += 1
+                if self._parse_depth + chain > self.MAX_PARSE_DEPTH:
+                    raise LogicalExpressionException(
+                        self._currentIndex + 1,
+                        f"Expression nesting exceeds the maximum depth "
+                        f"({self.MAX_PARSE_DEPTH}).",
+                    )
                 self.token()  # swallow the operator
                 expression = self.make_BooleanExpression(
                     factory, expression, self.process_next_expression(tok)
