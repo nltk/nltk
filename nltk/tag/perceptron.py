@@ -21,6 +21,33 @@ from nltk import jsontags
 from nltk.data import FileSystemPathPointer, find, open_datafile
 from nltk.tag.api import TaggerI
 
+
+def _authorize_private_dir(directory):
+    """Register a private, user-owned trained-model directory on nltk.data.path
+    so the pathsec sandbox permits reading a saved model back from it.
+
+    The default trained-tagger location is the system temp dir, which is shared
+    and world-writable on Linux. A directory that is private to the current user
+    (not group-/world-writable) cannot be tampered with by another local user, so
+    it is safe to trust; a world-writable one is deliberately NOT authorized and
+    stays refused (CWE-377/CWE-378).
+    """
+    import nltk.data
+    from nltk import pathsec
+
+    try:
+        real = os.path.realpath(str(directory))
+    except (OSError, ValueError):
+        return
+    if not pathsec.is_private_dir(real):
+        return
+    known = [os.path.realpath(str(p)) for p in nltk.data.path if isinstance(p, str)]
+    if real not in known:
+        nltk.data.path.append(real)
+        pathsec._ALLOWED_ROOTS_CACHE = None
+        pathsec._LAST_DATA_PATHS = None
+
+
 try:
     import numpy as np
 except ImportError:
@@ -260,13 +287,14 @@ class PerceptronTagger(TaggerI):
             self.save_to_json(lang=self.lang, loc=save_loc)
 
     def save_to_json(self, lang="xxx", loc=None):
-        from os import mkdir
-        from os.path import isdir
-
         if not loc:
             loc = self.save_dir
-        if not isdir(loc):
-            mkdir(loc)
+        # Create the trained-model dir private to the current user (mode 0700).
+        # The default TRAINED_TAGGER_PATH is the system temp dir, which is shared
+        # and world-writable on Linux; a private dir cannot be tampered with by
+        # another local user, and lets it be authorized for reading back below.
+        os.makedirs(loc, mode=0o700, exist_ok=True)
+        _authorize_private_dir(loc)
 
         for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
             with open(path_join(loc, json_file), "w") as fout:
@@ -289,6 +317,13 @@ class PerceptronTagger(TaggerI):
             # Explicit filesystem path
             loc = FileSystemPathPointer(str(loc))
         # else: assume loc is already a PathPointer (zip or filesystem)
+
+        # A trained model saved under the (private) system-temp trained-tagger
+        # dir lives outside nltk_data; authorize that specific private directory
+        # so it can be read back under the pathsec sandbox.
+        loc_path = getattr(loc, "path", None)
+        if loc_path and os.path.isdir(loc_path):
+            _authorize_private_dir(loc_path)
 
         def load_param(json_file):
             with open_datafile(loc, json_file) as fin:

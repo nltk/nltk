@@ -66,6 +66,10 @@ def test_mte_file_reader_rejects_out_of_root(corpus_root):
         MTEFileReader(corpus_root["link"], required_root=corpus_root["root"])
 
 
+@pytest.mark.skipif(
+    os.name != "posix",
+    reason="the st_nlink hardlink guard in pathsec.open is POSIX-only",
+)
 def test_pathsec_open_blocks_hardlink_escape(corpus_root):
     """A hardlink inside the root pointing at an outside-root inode has no
     symlink to resolve, so validate_path alone allows it; the hardened

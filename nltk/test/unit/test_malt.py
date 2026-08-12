@@ -7,7 +7,17 @@ import nltk.parse.malt as malt
 from nltk.parse.malt import MaltParser
 
 
-def _minimal_malt_parser(tmp_path):
+def _minimal_malt_parser(tmp_path, monkeypatch):
+    # Place the (dummy) maltparser jar inside a trusted nltk_data root so the
+    # JAR-execution sandbox permits it. These tests then exercise the REAL,
+    # sandboxed command path (a legitimate in-nltk_data jar), not an escape hatch.
+    data_root = tmp_path / "nltk_data"
+    jar_dir = data_root / "maltparser"
+    jar_dir.mkdir(parents=True)
+    malt_jar = jar_dir / "maltparser-1.9.2.jar"
+    malt_jar.write_bytes(b"")
+    monkeypatch.setattr("nltk.data.path", [str(data_root)])
+
     model_dir = tmp_path / "model"
     model_dir.mkdir()
     model_file = model_dir / "model.mco"
@@ -20,7 +30,7 @@ def _minimal_malt_parser(tmp_path):
     parser._trained = True
     parser.model = str(model_file)
     parser.working_dir = str(working_dir)
-    parser.malt_jars = ["dummy-malt.jar"]
+    parser.malt_jars = [str(malt_jar)]
     parser.additional_java_args = []
     return parser, model_dir
 
@@ -36,7 +46,7 @@ def _write_minimal_parse(cmd):
 def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
     monkeypatch, tmp_path
 ):
-    parser, model_dir = _minimal_malt_parser(tmp_path)
+    parser, model_dir = _minimal_malt_parser(tmp_path, monkeypatch)
     service_dir = tmp_path / "service"
     service_dir.mkdir()
     monkeypatch.chdir(service_dir)
@@ -71,7 +81,7 @@ def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
 def test_malt_parse_cleans_temp_files_and_preserves_cwd_on_execute_exception(
     monkeypatch, tmp_path
 ):
-    parser, model_dir = _minimal_malt_parser(tmp_path)
+    parser, model_dir = _minimal_malt_parser(tmp_path, monkeypatch)
     service_dir = tmp_path / "service"
     service_dir.mkdir()
     monkeypatch.chdir(service_dir)

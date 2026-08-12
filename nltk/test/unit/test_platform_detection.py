@@ -41,14 +41,24 @@ def test_windows_data_paths_include_appdata(monkeypatch):
     assert expected in nltk.data._windows_data_paths()
 
 
-def test_maltparser_command_uses_os_pathsep(monkeypatch):
+def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     monkeypatch.setattr(os, "pathsep", ";")
+
+    # Trusted in-nltk_data jars, so the JAR sandbox permits them and we test the
+    # os.pathsep joining on the real (secured) command path.
+    data_root = tmp_path / "nltk_data"
+    data_root.mkdir()
+    jar_a = data_root / "a.jar"
+    jar_a.touch()
+    jar_b = data_root / "b.jar"
+    jar_b.touch()
+    monkeypatch.setattr("nltk.data.path", [str(data_root)])
 
     parser = MaltParser.__new__(MaltParser)
     parser.additional_java_args = []
-    parser.malt_jars = ["a.jar", "b.jar"]
+    parser.malt_jars = [str(jar_a), str(jar_b)]
     parser.model = "model.mco"
 
     cmd = parser.generate_malt_command("input.conll", mode="learn")
 
-    assert cmd[2] == "a.jar;b.jar"
+    assert cmd[2] == f"{jar_a};{jar_b}"
