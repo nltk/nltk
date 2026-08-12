@@ -7,9 +7,9 @@
 
 import re
 from warnings import warn
-from xml.etree import ElementTree as et
 
 from nltk.corpus.reader import CorpusReader
+from nltk.xmlsec import parse as safe_parse
 
 
 class BCP47CorpusReader(CorpusReader):
@@ -37,7 +37,7 @@ class BCP47CorpusReader(CorpusReader):
             self.db = self.data_dict(fp.read().split("%%\n"))
         with self.open("cldr/common-subdivisions-en.xml") as fp:
             self.subdiv = self.subdiv_dict(
-                et.parse(fp).iterfind("localeDisplayNames/subdivisions/subdivision")
+                safe_parse(fp).iterfind("localeDisplayNames/subdivisions/subdivision")
             )
         self.morphology()
 
