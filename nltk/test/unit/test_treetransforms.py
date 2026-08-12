@@ -65,6 +65,15 @@ def test_chomsky_normal_form_with_nonstring_terminal():
 def _un_chomsky_worker(n):
     """Un-binarise a large right-branching CNF tree; exit 0 ok, 3 on error."""
     try:
+        # This benchmark deliberately builds a tree far deeper than the default
+        # MAX_TREE_DEPTH guard, which rejects adversarially deep input. Opt into
+        # a deeper cap via its documented escape hatch; the change is confined to
+        # this spawned worker process and does not affect other tests. The
+        # un-binarise pass itself is iterative, so no recursion-limit bump is
+        # needed.
+        import nltk.tree.tree as _tree_mod
+
+        _tree_mod.MAX_TREE_DEPTH = n + 10
         payload = "(S (A a) " + "(S| (A a) " * n + "(A a)" + ")" * (n + 1)
         Tree.fromstring(payload).un_chomsky_normal_form()
         os._exit(0)
