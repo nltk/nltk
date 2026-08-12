@@ -1,3 +1,15 @@
+Version 3.10.3 2026-08-12
+
+* docs: wrap Chat-80 HOWTO output
+* Sandbox Stanford JAR execution to nltk_data directories
+* fix(security): sandbox MaltParser's Java execution (CVE-2026-12252, CVE-2026-12841)
+* fix(security): trust the system temp dir only when it is private (CWE-377/CWE-378)
+* fix(security): validate corpus-reader roots against the data sandbox (CWE-73)
+* fix(security): validate per-call java() options and use a minimal allowlist (CWE-88)
+* Additional security hardening (CWE-426, CWE-427, CWE-502, CWE-59, CWE-776, CWE-918)
+
+Thanks to the following contributors to 3.10.3: Liling Tan, medimedi, Eric Kafe.
+
 Version 3.10.2 2026-08-05
 
 * Remove inisec.py and document PYTHONSAFEPATH instead
