@@ -231,15 +231,30 @@ class TestSyllableTokenizerDoS:  # SyllableTokenizer -- has MULTIPLE directions
     def test_direction1_vowelless_syllables_are_linear(self, monkeypatch):
         # Pre-patch: `validate_syllables` rebuilt the whole list
         # (`valid_syllables[:-1] + [...]`) for every vowelless syllable, so a
-        # token like 'aebcd'*n cost O(n^2) (8000 rep = 0.77s, quadratic curve).
-        # In-place merge makes it linear. Guard is lifted so the loop actually
-        # runs on the large input. A 4x-input ratio test tolerates the constant.
+        # token like 'aebcd'*n cost O(n^2). In-place merge makes it linear.
+        #
+        # This is a wall-clock ratio test, so it must be robust to CI timing
+        # noise: (1) a base size large enough that a single tokenize is well
+        # above timer resolution (a 4000-rep base measured ~0.01s -- noise
+        # dominated -- and made the ratio explode on a free-threaded runner); and
+        # (2) the MEDIAN of a few runs, robust to both a fast and a slow outlier.
+        # Linear -> t4 ~ 4*t1; the pre-fix O(n^2) -> t4 ~ 16*t1, so an 8x
+        # threshold separates them with wide margin.
+        import statistics
+
         from nltk.tokenize import SyllableTokenizer
 
         monkeypatch.setattr(SyllableTokenizer, "MAX_TOKEN_LEN", 10**9)
-        t1 = _elapsed(lambda: SyllableTokenizer().tokenize("aebcd" * 4000))
-        t4 = _elapsed(lambda: SyllableTokenizer().tokenize("aebcd" * 16000))
-        assert t4 < 10 * t1 + 0.5
+
+        def _median(n):
+            return statistics.median(
+                _elapsed(lambda: SyllableTokenizer().tokenize("aebcd" * n))
+                for _ in range(3)
+            )
+
+        t1 = _median(8000)
+        t4 = _median(32000)  # 4x the input
+        assert t4 < 8 * t1 + 0.5
 
     def test_direction2_giant_multivowel_token_is_bounded(self):
         # A multi-vowel token passes the early return and reaches the O(n)

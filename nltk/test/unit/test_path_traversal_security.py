@@ -40,7 +40,6 @@ _MUST_REJECT = [
     "%2e%2e/%2e%2e/etc/passwd",
     "%2e%2e%2f%2e%2e%2fetc%2fpasswd",
     "%2fetc%2fpasswd",
-    "/etc/passwd",
     "corpora/../../../etc/passwd",
     "corpora/%2e%2e%2f%2e%2e%2fetc%2fpasswd",
     "nltk:../secret.txt",
@@ -71,10 +70,30 @@ _MUST_ALLOW = [
 ]
 
 
+# POSIX-only: a bare leading-slash path is absolute only on POSIX. On Windows it
+# has no drive letter, so it normalizes to a relative resource name and is a
+# not-found LookupError (not a traversal). Windows absolute forms (drive-letter /
+# UNC, in _MUST_REJECT) are rejected on every platform.
+_MUST_REJECT_POSIX_ABS = ["/etc/passwd"]
+
+
 @pytest.mark.parametrize("payload", _MUST_REJECT)
 def test_find_rejects_traversal(payload):
     with pytest.raises(ValueError):
         D.find(payload)
+
+
+@pytest.mark.skipif(
+    os.name != "posix", reason="a bare leading-slash is absolute only on POSIX"
+)
+@pytest.mark.parametrize("payload", _MUST_REJECT_POSIX_ABS)
+def test_posix_absolute_path_is_rejected(payload):
+    with pytest.raises(ValueError):
+        D.find(payload)
+    with pytest.raises(ValueError):
+        D.load(payload, format="raw")
+    with pytest.raises(ValueError):
+        D.normalize_resource_url(payload)
 
 
 @pytest.mark.parametrize("payload", _MUST_REJECT)
@@ -130,7 +149,10 @@ def test_no_payload_reads_a_sentinel_outside_the_data_root():
         for p in payloads:
             try:
                 ptr = D.find(p)
-            except (ValueError, LookupError):
+            except Exception:
+                # Any exception (ValueError guard, LookupError not-found, or a
+                # UnicodeDecodeError from decoding overlong %c0%af on Python 3.14+)
+                # means the payload did not resolve to a readable file -- no leak.
                 continue
             try:
                 content = ptr.open().read()
@@ -156,27 +178,55 @@ def test_double_encoded_stays_literal_in_root():
     saved = list(D.path)
     D.path.insert(0, dataroot)
     try:
-        for p in (
-            "..%252fsecret.txt",
-            "..%c0%afsecret.txt",
-            "..%252f..%252fsecret.txt",
-        ):
+        # Valid percent-encoding: url2pathname single-decodes -> literal in-root
+        # name that does not exist -> LookupError (never a separator/traversal).
+        for p in ("..%252fsecret.txt", "..%252f..%252fsecret.txt"):
             with pytest.raises(LookupError):
-                D.find(p)  # literal in-root name that does not exist -> not found
+                D.find(p)
+        # Overlong-UTF-8 ``%c0%af`` never decodes to "/". On Python <3.14 unquote
+        # replaces the bytes (-> literal in-root -> LookupError); on 3.14+ unquote
+        # raises UnicodeDecodeError. Either way it is rejected, never a leak.
+        with pytest.raises((LookupError, UnicodeDecodeError)):
+            D.find("..%c0%afsecret.txt")
     finally:
         D.path[:] = saved
 
 
-def test_file_scheme_absolute_is_by_design_not_traversal():
-    """The ``file:`` scheme is an explicit, documented absolute-path reference --
-    it is *meant* to read the named file. The traversal boundary applies to
-    no-protocol / nltk: resource names (relative to the data root), which cannot
-    reach an absolute path. This test pins that contract so file:// handling is
-    not "fixed" into rejecting legitimate absolute loads."""
+def test_file_scheme_is_not_rejected_as_a_traversal():
+    """The security-relevant, platform-independent half: the ``file:`` scheme is
+    an explicit reference, NOT a data-root-relative name -- so the traversal
+    guard must not reject a plain file: URL as "unsafe" (it is by-design, unlike
+    a no-protocol ``..`` name). (file: URL *path* resolution -- drive letters,
+    leading slashes -- differs on Windows and is exercised by nltk.data's own
+    tests; the actual read is checked POSIX-only below.)"""
+    for url in ("file:///data/corpus/x.txt", "file://localhost/data/x.txt"):
+        # Must not raise ValueError ("unsafe resource path"); a LookupError later
+        # (resource absent) would be fine, but normalization itself must accept.
+        D.normalize_resource_url(url)
+
+
+@pytest.mark.skipif(
+    os.name != "posix", reason="file: URL path resolution is POSIX-specific here"
+)
+def test_file_scheme_reads_an_in_root_file(monkeypatch):
+    """A legitimate file: load of a file inside an allowed root works -- pinning
+    that file:// handling is by-design and not "fixed" into rejecting it."""
+    import pathlib
+
+    import nltk.data
+    import nltk.pathsec as P
+
     base = tempfile.mkdtemp()
-    target = os.path.join(base, "explicit.txt")
-    open(target, "w").write("EXPLICIT-CONTENT")
-    obj = D.load("file://" + target, format="raw")
+    allowed = os.path.join(base, "allowed")
+    os.makedirs(allowed)
+    monkeypatch.setattr(P, "ENFORCE", True)
+    monkeypatch.setattr(nltk.data, "path", list(nltk.data.path) + [allowed])
+    monkeypatch.setattr(P, "_ALLOWED_ROOTS_CACHE", None)
+
+    target = os.path.join(allowed, "explicit.txt")
+    with open(target, "w") as fh:
+        fh.write("EXPLICIT-CONTENT")
+    obj = D.load(pathlib.Path(target).as_uri(), format="raw")
     data = obj.decode() if isinstance(obj, bytes) else obj
     assert "EXPLICIT-CONTENT" in data
 
@@ -188,7 +238,8 @@ def test_file_scheme_absolute_is_by_design_not_traversal():
 
 @pytest.mark.skipif(os.name != "posix", reason="O_NOFOLLOW hardening is POSIX-only")
 class TestPathsecSymlinkHardening:
-    def _roots(self):
+    def _roots(self, monkeypatch):
+        import nltk.data
         import nltk.pathsec as P
 
         base = tempfile.mkdtemp()
@@ -196,11 +247,18 @@ class TestPathsecSymlinkHardening:
         os.makedirs(root)
         outside = os.path.join(base, "outside")
         os.makedirs(outside)
-        P.ENFORCE = True
+        monkeypatch.setattr(P, "ENFORCE", True)
+        # Register ``root`` (not ``base``) as an allowed data root so pathsec
+        # permits access on every platform: Linux ``/tmp`` is world-writable and
+        # is deliberately NOT auto-trusted, unlike a private macOS ``$TMPDIR``.
+        # ``outside`` stays a sibling of ``root`` -- outside every allowed root --
+        # so an escape to it is still a genuine violation.
+        monkeypatch.setattr(nltk.data, "path", list(nltk.data.path) + [root])
+        monkeypatch.setattr(P, "_ALLOWED_ROOTS_CACHE", None)
         return P, base, root, outside
 
-    def test_benign_write_read_roundtrip_and_private_perms(self):
-        P, base, root, outside = self._roots()
+    def test_benign_write_read_roundtrip_and_private_perms(self, monkeypatch):
+        P, base, root, outside = self._roots(monkeypatch)
         p = os.path.join(root, "model.json")
         with P.open(p, "w", required_root=root) as fh:
             fh.write("HELLO")
@@ -208,8 +266,8 @@ class TestPathsecSymlinkHardening:
         # created file must not be group/world readable (CWE-377/378)
         assert (os.stat(p).st_mode & 0o077) == 0
 
-    def test_static_symlink_to_outside_is_refused_read_and_write(self):
-        P, base, root, outside = self._roots()
+    def test_static_symlink_to_outside_is_refused_read_and_write(self, monkeypatch):
+        P, base, root, outside = self._roots(monkeypatch)
         victim = os.path.join(outside, "victim")
         open(victim, "w").write("ORIG")
         link = os.path.join(root, "pkg")
@@ -223,7 +281,7 @@ class TestPathsecSymlinkHardening:
     def test_write_toctou_symlink_swap_is_blocked(self, monkeypatch):
         # Simulate the race the O_NOFOLLOW hardening closes: validate_path passed
         # on stale state, then a symlink appears at the destination before open.
-        P, base, root, outside = self._roots()
+        P, base, root, outside = self._roots(monkeypatch)
         victim = os.path.join(outside, "victim")
         open(victim, "w").write("ORIG")
         link = os.path.join(root, "evil")
@@ -234,7 +292,7 @@ class TestPathsecSymlinkHardening:
         assert open(victim).read() == "ORIG", "write followed the symlink (TOCTOU leak)"
 
     def test_read_toctou_symlink_swap_is_blocked(self, monkeypatch):
-        P, base, root, outside = self._roots()
+        P, base, root, outside = self._roots(monkeypatch)
         secret = os.path.join(outside, "secret")
         open(secret, "w").write("TOP-SECRET")
         link = os.path.join(root, "data")
@@ -244,7 +302,7 @@ class TestPathsecSymlinkHardening:
             P.open(link, "r", required_root=root).read()
 
     def test_hardlink_to_outside_inode_is_refused(self, monkeypatch):
-        P, base, root, outside = self._roots()
+        P, base, root, outside = self._roots(monkeypatch)
         secret = os.path.join(outside, "secret")
         open(secret, "w").write("TOP-SECRET")
         hard = os.path.join(root, "hard")
@@ -256,11 +314,11 @@ class TestPathsecSymlinkHardening:
         with pytest.raises(PermissionError):
             P.open(hard, "r", required_root=root).read()
 
-    def test_malformed_mode_does_not_leak_fd(self):
+    def test_malformed_mode_does_not_leak_fd(self, monkeypatch):
         # os.open() accepts some mode strings os.fdopen() rejects (e.g. ""). The
         # fdopen must be inside the fd-closing guard or repeated calls exhaust
         # the fd table (DoS).
-        P, base, root, outside = self._roots()
+        P, base, root, outside = self._roots(monkeypatch)
         f = os.path.join(root, "x")
         with open(f, "w") as fh:
             fh.write("hi")
