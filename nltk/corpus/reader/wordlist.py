@@ -6,8 +6,10 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 import os
+from io import StringIO
 
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.stopwords_extended import StopwordsEnglishExtended
 from nltk.corpus.reader.util import *
 from nltk.tokenize import line_tokenize
 
@@ -37,6 +39,94 @@ class WordListCorpusReader(CorpusReader):
             for line in line_tokenize(self.raw(fileids))
             if not line.startswith(ignore_lines_startswith)
         ]
+
+
+class StopwordsCorpusReader(WordListCorpusReader):
+    """A word list reader that also serves code-defined stop word lists.
+
+    ``stopwords.words("english")`` reads the ``stopwords`` corpus from
+    ``nltk_data`` unchanged. ``english-extended`` is a *virtual* fileid: it is
+    not a file in ``nltk_data``, but is assembled from the ``english`` file plus
+    the additions registered for it, and the U+2019 variants of both. No
+    corpus file is added or modified, so the extension ships with the library
+    and needs no data download.
+
+        >>> from nltk.corpus import stopwords
+        >>> base = stopwords.words("english")
+        >>> extended = stopwords.words("english-extended")
+        >>> set(base).issubset(extended)
+        True
+        >>> "cannot" in base, "cannot" in extended
+        (False, True)
+
+    The word lists themselves, and the criterion used to choose them, live in
+    :mod:`nltk.corpus.reader.stopwords_extended`.
+    """
+
+    #: The code-defined lists this reader serves, as virtual fileids. Listing a
+    #: new :class:`~nltk.corpus.reader.stopwords_extended.StopwordsExtension`
+    #: here is all it takes to serve another ``<lang>-extended``.
+    EXTENSIONS = (StopwordsEnglishExtended,)
+
+    def _extension(self, fileid):
+        """The extension serving *fileid*, or ``None``."""
+        if isinstance(fileid, str):
+            for extension in self.EXTENSIONS:
+                if extension.fileid == fileid:
+                    return extension
+        return None
+
+    def fileids(self):
+        """The corpus fileids, plus any virtual fileid whose base is present."""
+        available = super().fileids()
+        virtual = [e.fileid for e in self.EXTENSIONS if e.base in available]
+        return sorted(available + virtual)
+
+    def words(self, fileids=None, ignore_lines_startswith="\n", hf=False):
+        """As :meth:`WordListCorpusReader.words`, honouring virtual fileids."""
+        extension = self._extension(fileids)
+        if extension is None:
+            return super().words(
+                fileids, ignore_lines_startswith=ignore_lines_startswith, hf=hf
+            )
+        return extension.build(
+            super().words(
+                extension.base,
+                ignore_lines_startswith=ignore_lines_startswith,
+                hf=hf,
+            )
+        )
+
+    def raw(self, fileids=None):
+        """As :meth:`CorpusReader.raw`, honouring virtual fileids.
+
+        A virtual fileid has no file behind it, so its raw form is generated
+        from the word list. Without this, ``raw()`` would fail for a fileid that
+        :meth:`fileids` advertises.
+        """
+        if self._extension(fileids) is not None:
+            return "\n".join(self.words(fileids)) + "\n"
+        return super().raw(fileids)
+
+    def open(self, file):
+        """As :meth:`CorpusReader.open`, honouring virtual fileids."""
+        if self._extension(file) is not None:
+            return StringIO(self.raw(file))
+        return super().open(file)
+
+    def abspath(self, fileid):
+        """As :meth:`CorpusReader.abspath`; virtual fileids have no path.
+
+        Raising here is deliberate: a code-defined list has no file on disk, and
+        a clear error beats the ``OSError`` about a missing corpus file that a
+        path lookup would otherwise produce.
+        """
+        if self._extension(fileid) is not None:
+            raise ValueError(
+                f"{fileid!r} is defined in code, not by a file in the corpus, "
+                "so it has no path; use words() or raw() instead"
+            )
+        return super().abspath(fileid)
 
 
 class SwadeshCorpusReader(WordListCorpusReader):

@@ -312,8 +312,8 @@ sinica_treebank: SinicaTreebankCorpusReader = LazyCorpusLoader(
 state_union: PlaintextCorpusReader = LazyCorpusLoader(
     "state_union", PlaintextCorpusReader, r"(?!\.).*\.txt", encoding="ISO-8859-2"
 )
-stopwords: WordListCorpusReader = LazyCorpusLoader(
-    "stopwords", WordListCorpusReader, r"(?!README|\.).*", encoding="utf8"
+stopwords: StopwordsCorpusReader = LazyCorpusLoader(
+    "stopwords", StopwordsCorpusReader, r"(?!README|\.).*", encoding="utf8"
 )
 subjectivity: CategorizedSentencesCorpusReader = LazyCorpusLoader(
     "subjectivity",

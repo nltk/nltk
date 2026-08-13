@@ -61,6 +61,10 @@ from nltk.corpus.reader.tagged import *
 from nltk.corpus.reader.cmudict import *
 from nltk.corpus.reader.conll import *
 from nltk.corpus.reader.chunked import *
+from nltk.corpus.reader.stopwords_extended import (
+    StopwordsEnglishExtended,
+    StopwordsExtension,
+)
 from nltk.corpus.reader.wordlist import *
 from nltk.corpus.reader.xmldocs import *
 from nltk.corpus.reader.ppattach import *
@@ -120,6 +124,9 @@ __all__ = [
     "CMUDictCorpusReader",
     "ConllChunkCorpusReader",
     "WordListCorpusReader",
+    "StopwordsCorpusReader",
+    "StopwordsExtension",
+    "StopwordsEnglishExtended",
     "PPAttachmentCorpusReader",
     "SensevalCorpusReader",
     "IEERCorpusReader",
