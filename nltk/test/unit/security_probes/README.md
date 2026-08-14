@@ -3,11 +3,11 @@
 Every published security advisory for `nltk/nltk`, re-verified against the
 working tree rather than taken on trust.
 
-    python3 audit/advisories.py              # probe every published advisory
-    python3 audit/advisories.py --refresh    # re-fetch advisory metadata
-    python3 audit/advisories.py --gaps       # only advisories with no probe
+    python -m nltk.test.unit.security_probes             # probe every advisory
+    NLTK_ADVISORY_CI=1 pytest .../test_advisory_coverage_ci.py  # CI gap check
+    python -m nltk.test.unit.security_probes             # print the report
 
-CI gate: `nltk/test/unit/test_advisory_coverage.py`.
+Offline gate: `nltk/test/unit/test_advisory_probes.py` (runs the probes + negative controls). CI-only gap gate: `test_advisory_coverage_ci.py` (pulls the live list from GitHub).
 
 ## Why probes rather than reading advisories
 

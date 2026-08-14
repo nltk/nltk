@@ -212,9 +212,61 @@ jobs:
           # drop it; also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_path_traversal_security.py
 
+      - name: Run advisory-verification probes
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Living verification that every published GitHub Security Advisory
+          # stays fixed: one probe per advisory in
+          # nltk/test/unit/security_probes/, each running the attack the
+          # advisory describes. Offline and network-free -- the GitHub coverage
+          # check lives in its own job (advisory-coverage) so no token or
+          # fetch is needed here. Includes negative controls that break each
+          # guard in-process and assert the probe flips to VULNERABLE, so a
+          # probe cannot pass by never exercising the attack. Own early step,
+          # also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_advisory_probes.py
+
       - name: Run pytest
         shell: bash
         env:
           PYTHONSAFEPATH: "1"
         run: |
           pytest --numprocesses auto -rsx --doctest-modules nltk
+
+  advisory-coverage:
+    name: Advisory coverage (GitHub)
+    # Isolated from the test matrix on purpose. This is the ONLY job that pulls
+    # the live advisory list from GitHub, so it is the only place NLTK_ADVISORY_CI
+    # and the security-advisories read permission are granted -- the offline
+    # probes above never touch the network. It runs once (not per matrix leg),
+    # fails only when a newly published advisory has no probe, and skips rather
+    # than fails if the fetch itself cannot be made.
+    runs-on: ubuntu-latest
+    # Published advisories on a public repo are world-readable; contents:read is
+    # all gh needs. The test skips (not fails) if the fetch is unauthorized, so
+    # even a locked-down fork token cannot turn this into a false red.
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        # The coverage test only reads probe *keys* and never calls a probe, so
+        # it needs the package importable, not the full optional stack.
+        run: pip install -e . pytest
+
+      - name: Check every published advisory has a probe
+        env:
+          NLTK_ADVISORY_CI: "1"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # gh reads GH_TOKEN; the test skips (does not fail) if the fetch is
+          # unavailable, and fails only on a genuine coverage gap.
+          pytest -rsx nltk/test/unit/test_advisory_coverage_ci.py

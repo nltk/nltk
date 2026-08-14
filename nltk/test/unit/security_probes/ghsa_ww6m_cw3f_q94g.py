@@ -1,0 +1,19 @@
+"""GHSA-ww6m-cw3f-q94g [medium] -- Quadratic-time DoS in PorterStemmer via long runs of 'y'
+
+Probe: run the attack, report what the tree does now. See _base for statuses.
+"""
+from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
+
+
+@probe("GHSA-ww6m-cw3f-q94g")
+def _porter_stemmer_quadratic():
+    """Quadratic-time DoS in PorterStemmer via long runs of 'y'."""
+    from nltk.stem.porter import PorterStemmer
+
+    stemmer = PorterStemmer()
+    small = timed(stemmer.stem, "y" * 4000)
+    large = timed(stemmer.stem, "y" * 8000)
+    ratio = large / max(small, 1e-4)
+    if large > DOS_BUDGET or ratio > 3.0:
+        return VULNERABLE, "doubling cost %.1fx (%.2fs -> %.2fs)" % (ratio, small, large)
+    return FIXED, "linear: %.1fx per doubling (%.3fs at n=8000)" % (ratio, large)
