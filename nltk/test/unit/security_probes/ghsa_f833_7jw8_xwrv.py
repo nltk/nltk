@@ -1,7 +1,4 @@
-"""GHSA-f833-7jw8-xwrv [high] -- Symlink-based sandbox bypass in FramenetCorpusReader (bypasses the fix for CVE-2026-5429
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-f833-7jw8-xwrv [high] -- Symlink-based sandbox bypass in FramenetCorpusReader (bypasses the fix for CVE-2026-5429"""
 from ._base import escape_probe, probe
 
 

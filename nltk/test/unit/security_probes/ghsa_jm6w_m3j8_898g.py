@@ -1,7 +1,4 @@
-"""GHSA-jm6w-m3j8-898g [high] -- Unauthenticated remote shutdown in nltk.app.wordnet_app
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-jm6w-m3j8-898g [high] -- Unauthenticated remote shutdown in nltk.app.wordnet_app"""
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 

@@ -1,7 +1,4 @@
-"""GHSA-568f-pv23-39p4 [medium] -- Stable FrameNet and NKJP readers parse outside-root XML in 3.9.4
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-568f-pv23-39p4 [medium] -- Stable FrameNet and NKJP readers parse outside-root XML in 3.9.4"""
 from ._base import escape_probe, probe
 
 

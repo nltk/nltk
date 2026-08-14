@@ -1,7 +1,4 @@
-"""GHSA-4489-j4f3-2g8q [high] -- nltk ≤ 3.10.2: unpickler dotted-name RCE bypass
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-4489-j4f3-2g8q [high] -- nltk ≤ 3.10.2: unpickler dotted-name RCE bypass"""
 import io
 from ._base import FIXED, VULNERABLE, probe
 

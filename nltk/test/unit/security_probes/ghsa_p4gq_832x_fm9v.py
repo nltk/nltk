@@ -1,7 +1,4 @@
-"""GHSA-p4gq-832x-fm9v [high] -- URL-Encoded Path Traversal in nltk.data.load() Allows Arbitrary Local File Read
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-p4gq-832x-fm9v [high] -- URL-Encoded Path Traversal in nltk.data.load() Allows Arbitrary Local File Read"""
 from ._base import FIXED, VULNERABLE, probe
 
 

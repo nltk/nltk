@@ -1,7 +1,4 @@
-"""GHSA-6ww7-3frv-cqxh [high] -- pathsec SSRF protection can be bypassed when a proxy is configured
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-6ww7-3frv-cqxh [high] -- pathsec SSRF protection can be bypassed when a proxy is configured"""
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 

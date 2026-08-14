@@ -1,7 +1,4 @@
-"""GHSA-97qj-x29f-37w7 [low] -- Entity-expansion DoS (billion laughs) via remaining raw ElementTree parses (CWE-776)
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-97qj-x29f-37w7 [low] -- Entity-expansion DoS (billion laughs) via remaining raw ElementTree parses (CWE-776)"""
 from ._base import FIXED, VULNERABLE, probe
 
 

@@ -1,7 +1,4 @@
-"""GHSA-72r2-7mfr-5xr9 [medium] -- FileSystemPathPointer.open() sandbox check is dead code — arbitrary file read via file:/
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-72r2-7mfr-5xr9 [medium] -- FileSystemPathPointer.open() sandbox check is dead code — arbitrary file read via file:/"""
 from ._base import FIXED, VULNERABLE, probe
 
 

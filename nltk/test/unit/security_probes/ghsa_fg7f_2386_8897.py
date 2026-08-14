@@ -1,7 +1,4 @@
-"""GHSA-fg7f-2386-8897 [high] -- ReDoS in NLTK ReviewsCorpusReader FEATURES regex
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-fg7f-2386-8897 [high] -- ReDoS in NLTK ReviewsCorpusReader FEATURES regex"""
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

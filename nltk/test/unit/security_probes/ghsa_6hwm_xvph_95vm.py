@@ -1,7 +1,4 @@
-"""GHSA-6hwm-xvph-95vm [low] -- Uncontrolled search path when invoking the Graphviz 'dot' binary (CWE-426/CWE-427)
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-6hwm-xvph-95vm [low] -- Uncontrolled search path when invoking the Graphviz 'dot' binary (CWE-426/CWE-427)"""
 from ._base import BENIGN, STATIC, probe, read_source
 
 

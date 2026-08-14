@@ -1,7 +1,4 @@
-"""GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in `XMLCorpusView._read_xml_fragment()`
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in `XMLCorpusView._read_xml_fragment()`"""
 import os, tempfile
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 

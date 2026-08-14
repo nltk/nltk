@@ -1,7 +1,4 @@
-"""GHSA-f8m6-h2c7-8h9x [high] -- Inefficient Regular Expression Complexity in nltk (word_tokenize, sent_tokenize)
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-f8m6-h2c7-8h9x [high] -- Inefficient Regular Expression Complexity in nltk (word_tokenize, sent_tokenize)"""
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

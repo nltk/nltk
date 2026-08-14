@@ -1,7 +1,4 @@
-"""GHSA-ff5c-cp5c-9wjf [medium] -- Uncontrolled resource consumption in RecursiveDescentParser via ambiguous or left-recurs
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-ff5c-cp5c-9wjf [medium] -- Uncontrolled resource consumption in RecursiveDescentParser via ambiguous or left-recurs"""
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

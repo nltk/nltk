@@ -1,7 +1,4 @@
-"""GHSA-x5ph-mj9p-rfr8 [high] -- Security Report: StreamBackedCorpusView Bypasses pathsec.ENFORCE - Arbitrary Local File 
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-x5ph-mj9p-rfr8 [high] -- Security Report: StreamBackedCorpusView Bypasses pathsec.ENFORCE - Arbitrary Local File"""
 from ._base import escape_probe, probe
 
 

@@ -1,7 +1,4 @@
-"""GHSA-rf74-v2fm-23pw [low] -- Unbounded recursion in JSONTaggedDecoder.decode_obj() may cause DoS
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-rf74-v2fm-23pw [low] -- Unbounded recursion in JSONTaggedDecoder.decode_obj() may cause DoS"""
 from ._base import FIXED, VULNERABLE, probe
 
 

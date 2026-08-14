@@ -1,7 +1,4 @@
-"""GHSA-qvv7-cg9c-w4x3 [high] -- DNS-rebinding SSRF filter bypass in nltk.pathsec.urlopen (nltk.download / nltk.data.load
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-qvv7-cg9c-w4x3 [high] -- DNS-rebinding SSRF filter bypass in nltk.pathsec.urlopen (nltk.download / nltk.data.load"""
 from ._base import FIXED, VULNERABLE, probe
 
 

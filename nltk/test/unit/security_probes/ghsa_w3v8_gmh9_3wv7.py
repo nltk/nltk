@@ -1,7 +1,4 @@
-"""GHSA-w3v8-gmh9-3wv7 [medium] -- ReDoS in nltk.tgrep via unvalidated user-supplied regular expressions
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-w3v8-gmh9-3wv7 [medium] -- ReDoS in nltk.tgrep via unvalidated user-supplied regular expressions"""
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

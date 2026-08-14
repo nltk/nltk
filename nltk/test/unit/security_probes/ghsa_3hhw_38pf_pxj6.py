@@ -1,7 +1,4 @@
-"""GHSA-3hhw-38pf-pxj6 [medium] -- Symlink-based arbitrary file read in IPIPANCorpusReader, bypasses nltk.pathsec entirely
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-3hhw-38pf-pxj6 [medium] -- Symlink-based arbitrary file read in IPIPANCorpusReader, bypasses nltk.pathsec entirely"""
 from ._base import escape_probe, probe
 
 

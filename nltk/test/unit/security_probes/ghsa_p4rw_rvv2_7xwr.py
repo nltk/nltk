@@ -1,7 +1,4 @@
-"""GHSA-p4rw-rvv2-7xwr [medium] -- Corpus readers follow symlinks outside trusted roots despite pathsec enforcement
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-p4rw-rvv2-7xwr [medium] -- Corpus readers follow symlinks outside trusted roots despite pathsec enforcement"""
 from ._base import escape_probe, probe
 
 

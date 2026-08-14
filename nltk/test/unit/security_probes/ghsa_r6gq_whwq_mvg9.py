@@ -1,7 +1,4 @@
-"""GHSA-r6gq-whwq-mvg9 [medium] -- Symlink escape in CorpusReader allows arbitrary local file read outside the corpus root
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-r6gq-whwq-mvg9 [medium] -- Symlink escape in CorpusReader allows arbitrary local file read outside the corpus root"""
 from ._base import escape_probe, probe
 
 

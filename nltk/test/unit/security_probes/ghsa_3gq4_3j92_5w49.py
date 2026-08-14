@@ -1,7 +1,4 @@
-"""GHSA-3gq4-3j92-5w49 [high] -- Corpus Reader Sandbox Bypass
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-3gq4-3j92-5w49 [high] -- Corpus Reader Sandbox Bypass"""
 from ._base import escape_probe, probe
 
 

@@ -1,7 +1,4 @@
-"""GHSA-m42h-3232-vpv3 [high] -- Arbitrary File Read via Path Traversal in nltk.data.load() through Percent-Encoded Seque
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-m42h-3232-vpv3 [high] -- Arbitrary File Read via Path Traversal in nltk.data.load() through Percent-Encoded Seque"""
 from ._base import FIXED, VULNERABLE, probe
 
 

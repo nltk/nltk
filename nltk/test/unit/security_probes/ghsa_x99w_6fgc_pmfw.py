@@ -1,7 +1,4 @@
-"""GHSA-x99w-6fgc-pmfw [critical] -- Allowlisted pickle loaders still permit code execution in current source
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-x99w-6fgc-pmfw [critical] -- Allowlisted pickle loaders still permit code execution in current source"""
 import io, os
 from ._base import FIXED, VULNERABLE, probe
 

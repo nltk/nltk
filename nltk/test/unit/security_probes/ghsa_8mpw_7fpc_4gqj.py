@@ -1,7 +1,4 @@
-"""GHSA-8mpw-7fpc-4gqj [low] -- Pl196xCorpusReader has quadratic ReDoS on malformed TEI blocks
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-8mpw-7fpc-4gqj [low] -- Pl196xCorpusReader has quadratic ReDoS on malformed TEI blocks"""
 import os, tempfile
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 

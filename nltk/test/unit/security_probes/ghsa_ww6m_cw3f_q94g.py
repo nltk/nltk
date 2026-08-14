@@ -1,7 +1,4 @@
-"""GHSA-ww6m-cw3f-q94g [medium] -- Quadratic-time DoS in PorterStemmer via long runs of 'y'
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-ww6m-cw3f-q94g [medium] -- Quadratic-time DoS in PorterStemmer via long runs of 'y'"""
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

@@ -1,7 +1,4 @@
-"""GHSA-xh95-f55m-82fw [high] -- Path traversal in NLTK FramenetCorpusReader.frame() allows arbitrary XML file read, bypa
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-xh95-f55m-82fw [high] -- Path traversal in NLTK FramenetCorpusReader.frame() allows arbitrary XML file read, bypa"""
 from ._base import escape_probe, probe
 
 

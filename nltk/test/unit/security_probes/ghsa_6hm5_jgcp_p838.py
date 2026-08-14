@@ -1,7 +1,4 @@
-"""GHSA-6hm5-jgcp-p838 [high] -- Path Traversal in NKJPCorpusReader leads to Arbitrary File Read and bypasses the nltk.pa
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-6hm5-jgcp-p838 [high] -- Path Traversal in NKJPCorpusReader leads to Arbitrary File Read and bypasses the nltk.pa"""
 from ._base import escape_probe, probe
 
 

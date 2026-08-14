@@ -217,15 +217,10 @@ jobs:
         env:
           PYTHONSAFEPATH: "1"
         run: |
-          # Living verification that every published GitHub Security Advisory
-          # stays fixed: one probe per advisory in
-          # nltk/test/unit/security_probes/, each running the attack the
-          # advisory describes. Offline and network-free -- the GitHub coverage
-          # check lives in its own job (advisory-coverage) so no token or
-          # fetch is needed here. Includes negative controls that break each
-          # guard in-process and assert the probe flips to VULNERABLE, so a
-          # probe cannot pass by never exercising the attack. Own early step,
-          # also collected by "Run pytest".
+          # One probe per published advisory (nltk/test/unit/security_probes/),
+          # each running the attack it describes, plus negative controls that
+          # prove the probes flip to VULNERABLE when a guard is removed. Offline;
+          # the GitHub coverage check is the separate advisory-coverage job.
           pytest -rsx nltk/test/unit/test_advisory_probes.py
 
       - name: Run pytest

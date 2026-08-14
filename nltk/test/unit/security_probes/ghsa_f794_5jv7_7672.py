@@ -1,7 +1,4 @@
-"""GHSA-f794-5jv7-7672 [high] -- Downloader.download follows hardlinks and overwrites outside-root files
-
-Probe: run the attack, report what the tree does now. See _base for statuses.
-"""
+"""GHSA-f794-5jv7-7672 [high] -- Downloader.download follows hardlinks and overwrites outside-root files"""
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 
