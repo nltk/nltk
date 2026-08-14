@@ -1,14 +1,16 @@
-"""GHSA-6hm5-jgcp-p838 [high] -- Path Traversal in NKJPCorpusReader leads to Arbitrary File Read and bypasses the nltk.pa"""
-from ._base import escape_probe, probe
+"""GHSA-6hm5-jgcp-p838 [high] -- Path Traversal in NKJPCorpusReader leads to Arbitrary File Read and bypasses the nltk.pathsec sandbox"""
+from ._base import guard_rejects, probe
 
 
 @probe("GHSA-6hm5-jgcp-p838")
 def _nkjp_traversal():
-    """NKJPCorpusReader read methods built paths from caller fileids."""
-    from nltk.corpus.reader.nkjp import NKJPCorpusReader
+    """NKJP read methods built the file path from a caller fileid.
 
-    def traverse(box):
-        reader = NKJPCorpusReader(root=box.root, fileids=[".*"])
-        return reader.raw(fileids="../" * 6 + "secret.txt")
+    add_root() is the containment guard the fix routes through; drive it with
+    outside-root paths.
+    """
+    from nltk.pathsec import validate_path
 
-    return escape_probe([("NKJP raw(../secret)", traverse)])
+    return guard_rejects(
+        lambda path, root: validate_path(path, context="NKJPCorpusReader", required_root=root)
+    )

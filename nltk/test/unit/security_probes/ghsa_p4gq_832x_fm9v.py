@@ -1,16 +1,29 @@
 """GHSA-p4gq-832x-fm9v [high] -- URL-Encoded Path Traversal in nltk.data.load() Allows Arbitrary Local File Read"""
-from ._base import FIXED, VULNERABLE, probe
+from ._base import OUTSIDE_CANARY, OUTSIDE_TARGET, FIXED, STATIC, VULNERABLE, is_security_rejection, probe
 
 
 @probe("GHSA-p4gq-832x-fm9v")
 def _data_load_urlencoded_traversal():
-    """URL-encoded traversal (%2e%2e%2f) bypassed the literal '../' check."""
+    """Percent-encoded traversal bypassed the literal '../' check."""
     import nltk.data
 
-    for payload in ("%2e%2e%2f" * 12 + "etc%2fpasswd", "..%2f" * 12 + "etc/passwd"):
+    if not OUTSIDE_TARGET:
+        return STATIC, "no outside-root target on this platform"
+    enc = OUTSIDE_TARGET.replace("/", "%2f").lstrip("%2f")
+    payloads = [
+        "%2e%2e%2f" * 12 + enc,       # encoded ../
+        "..%2f" * 12 + enc,           # encoded slash only
+        "%252e%252e%252f" * 8 + enc,  # double-encoded
+        "..%c0%af" * 8 + enc,         # overlong UTF-8 slash
+    ]
+    reached = False
+    for payload in payloads:
         try:
-            nltk.data.load(payload, format="raw")
-            return VULNERABLE, "url-encoded traversal succeeded: %s" % payload[:28]
-        except Exception:
-            pass
-    return FIXED, "url-encoded traversal rejected"
+            data = nltk.data.load(payload, format="raw")
+            if OUTSIDE_CANARY in (data if isinstance(data, str) else str(data)):
+                return VULNERABLE, "encoded traversal read %s: %s" % (OUTSIDE_TARGET, payload[:24])
+        except Exception as exc:
+            reached = reached or is_security_rejection(exc)
+    if reached:
+        return FIXED, "%d encoded traversal payloads rejected" % len(payloads)
+    return STATIC, "no security rejection observed"

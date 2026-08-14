@@ -60,22 +60,49 @@ def read_source(dotted_module):
     return open(module.__file__, encoding="utf-8").read()
 
 
-SECRET = "OUTSIDE-ROOT-SECRET"
+def _outside_root_target():
+    """A real file outside every pathsec-allowed root, plus a canary in it.
+
+    Must be genuinely outside the allowed roots: on macOS the private system
+    temp dir *is* an allowed root, so a temp file is not an escape target. A
+    system file is. The canary must survive tokenisation/parsing, so it is a
+    substring that appears verbatim in the file, not a word a reader would
+    split.
+    """
+    for path, canary in (("/etc/passwd", "root:"), ("/etc/hosts", "localhost")):
+        try:
+            if canary in open(path, encoding="utf-8", errors="ignore").read():
+                return path, canary
+        except OSError:
+            continue
+    return None, None
+
+
+OUTSIDE_TARGET, OUTSIDE_CANARY = _outside_root_target()
+
+#: Substrings that mark a rejection as a *security* decision rather than an
+#: incidental failure (a missing file, a parse error). A probe may only report
+#: FIXED when the attack was refused by one of these -- proving it reached the
+#: guard -- or when the guard is disabled and it leaks.
+_SECURITY_MARKERS = ("security", "violation", "pathsec", "unauthorized", "outside", "traversal", "must be relative", "unsafe")
+
+
+def is_security_rejection(exc):
+    return any(marker in str(exc).lower() for marker in _SECURITY_MARKERS)
 
 
 class Sandbox:
-    """A corpus root with a symlink and an outside-root secret to try to read."""
+    """A corpus root holding a symlink to a real outside-root file."""
 
     def __init__(self):
         self.dir = tempfile.mkdtemp()
         self.root = os.path.join(self.dir, "corpus")
         os.makedirs(self.root, exist_ok=True)
-        self.secret = os.path.join(self.dir, "secret.txt")
-        with open(self.secret, "w", encoding="utf-8") as handle:
-            handle.write(SECRET)
+        self.target = OUTSIDE_TARGET
+        self.canary = OUTSIDE_CANARY
         self.link = os.path.join(self.root, "link.xml")
         try:
-            os.symlink(self.secret, self.link)
+            os.symlink(OUTSIDE_TARGET or "/nonexistent", self.link)
         except OSError:
             self.link = None
 
@@ -83,27 +110,79 @@ class Sandbox:
         shutil.rmtree(self.dir, ignore_errors=True)
 
     def leaked(self, value):
-        return SECRET in (value if isinstance(value, str) else str(value))
+        text = value if isinstance(value, str) else str(value)
+        return bool(self.canary) and self.canary in text
+
+
+def guard_rejects(guard):
+    """Probe a containment guard directly with real outside-root paths.
+
+    For readers whose public read needs a fully populated corpus, drive the
+    guard function the advisory added instead: it must security-reject a
+    symlink, an absolute path and a traversal that resolve outside the root.
+    ``guard`` is ``fn(path, root)``; VULNERABLE if any passes, FIXED if all are
+    security-rejected.
+    """
+    if not OUTSIDE_TARGET:
+        return STATIC, "no readable outside-root target on this platform"
+    box = Sandbox()
+    try:
+        cases = {
+            "symlink": box.link,
+            "absolute": OUTSIDE_TARGET,
+            "traversal": os.path.join(box.root, "../" * 8 + OUTSIDE_TARGET.lstrip("/")),
+        }
+        notes = []
+        for label, path in cases.items():
+            if path is None:
+                continue
+            try:
+                guard(path, box.root)
+                return VULNERABLE, "%s path passed the guard" % label
+            except Exception as exc:
+                if not is_security_rejection(exc):
+                    return STATIC, "%s rejected non-securely (%s)" % (label, type(exc).__name__)
+                notes.append(label)
+        return FIXED, "guard security-rejects: " + ", ".join(notes)
+    finally:
+        box.cleanup()
 
 
 def escape_probe(attempts):
-    """VULNERABLE if any ``(label, fn)`` returns the outside-root secret.
+    """Drive outside-root read attempts against a sandbox.
 
-    A callable that raises is a defended path; one that returns the secret is
-    an escape.
+    ``attempts`` is a list of ``(label, fn(sandbox))``. Each fn tries to make a
+    reader return the contents of a real outside-root file.
+
+    * any fn returns the canary -> VULNERABLE (a genuine escape).
+    * a fn refused by a security check -> that attempt reached the guard.
+    * a fn that fails incidentally (missing file, parse error) never reached
+      the sink; it is reported as such, not counted as a defence.
+
+    FIXED requires at least one attempt to have been security-refused, so a
+    probe cannot pass merely because every attack fizzled before the guard.
     """
+    if not OUTSIDE_TARGET:
+        return STATIC, "no readable outside-root target on this platform"
     box = Sandbox()
     try:
-        tried = []
+        reached, notes = False, []
         for label, run in attempts:
             try:
                 result = run(box)
             except Exception as exc:
-                tried.append("%s=%s" % (label, type(exc).__name__))
+                if is_security_rejection(exc):
+                    reached = True
+                    notes.append("%s=blocked(%s)" % (label, type(exc).__name__))
+                else:
+                    notes.append("%s=unreached(%s)" % (label, type(exc).__name__))
                 continue
             if box.leaked(result):
-                return VULNERABLE, "%s read the outside-root file" % label
-            tried.append("%s=no-leak" % label)
-        return FIXED, "; ".join(tried)
+                return VULNERABLE, "%s read %s" % (label, box.target)
+            notes.append("%s=no-leak" % label)
+        detail = "; ".join(notes)
+        if reached:
+            return FIXED, detail
+        return STATIC, "attack never reached a security check: " + detail
     finally:
         box.cleanup()

@@ -4,12 +4,10 @@ from ._base import escape_probe, probe
 
 @probe("GHSA-r6gq-whwq-mvg9")
 def _corpusreader_open_symlink():
-    """CorpusReader.open() boundary check was lexical, so symlinks escaped."""
+    """CorpusReader.open() containment check was lexical; a symlink escaped it."""
     from nltk.corpus.reader.api import CorpusReader
 
-    def via_open(box):
-        reader = CorpusReader(box.root, ["link.xml"])
-        with reader.open("link.xml") as handle:
-            return handle.read()
+    def via_symlink(box):
+        return CorpusReader(box.root, ["link.xml"]).open("link.xml").read()
 
-    return escape_probe([("CorpusReader.open('link.xml')", via_open)])
+    return escape_probe([("CorpusReader.open(symlink)", via_symlink)])

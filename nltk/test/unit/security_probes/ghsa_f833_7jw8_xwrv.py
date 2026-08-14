@@ -1,14 +1,10 @@
-"""GHSA-f833-7jw8-xwrv [high] -- Symlink-based sandbox bypass in FramenetCorpusReader (bypasses the fix for CVE-2026-5429"""
-from ._base import escape_probe, probe
+"""GHSA-f833-7jw8-xwrv [high] -- Symlink-based sandbox bypass in FramenetCorpusReader (bypasses the fix for CVE-2026-54292)"""
+from ._base import guard_rejects, probe
 
 
 @probe("GHSA-f833-7jw8-xwrv")
 def _framenet_symlink_bypass():
-    """Symlink bypass of the GHSA-xh95 fix (lexical check only)."""
-    from nltk.corpus.reader.framenet import FramenetCorpusReader
+    """A symlink inside frame/ pointed outside the root; the guard now resolves it."""
+    from nltk.corpus.reader.framenet import _validate_in_root
 
-    def via_symlink(box):
-        reader = FramenetCorpusReader(box.root, [])
-        return reader.frame("link")
-
-    return escape_probe([("frame('link') via symlink", via_symlink)])
+    return guard_rejects(lambda path, root: _validate_in_root(path, root, "framenet"))

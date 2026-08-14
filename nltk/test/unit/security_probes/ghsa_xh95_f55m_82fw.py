@@ -1,14 +1,14 @@
-"""GHSA-xh95-f55m-82fw [high] -- Path traversal in NLTK FramenetCorpusReader.frame() allows arbitrary XML file read, bypa"""
-from ._base import escape_probe, probe
+"""GHSA-xh95-f55m-82fw [high] -- Path traversal in NLTK FramenetCorpusReader.frame() allows arbitrary XML file read"""
+from ._base import guard_rejects, probe
 
 
 @probe("GHSA-xh95-f55m-82fw")
 def _framenet_frame_traversal():
-    """FramenetCorpusReader.frame(name) interpolated name into a path."""
-    from nltk.corpus.reader.framenet import FramenetCorpusReader
+    """frame() interpolated a caller name into a path opened with builtin open().
 
-    def traverse(box):
-        reader = FramenetCorpusReader(box.root, [])
-        return reader.frame("../" * 6 + "secret")
+    frame() needs a populated index to reach the file open, so drive the guard
+    the fix added -- _validate_in_root -- directly with outside-root paths.
+    """
+    from nltk.corpus.reader.framenet import _validate_in_root
 
-    return escape_probe([("frame('../secret')", traverse)])
+    return guard_rejects(lambda path, root: _validate_in_root(path, root, "framenet"))

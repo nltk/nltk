@@ -85,18 +85,28 @@ def test_redos_probe_has_teeth():
 
 
 def test_escape_probe_has_teeth():
-    # Guards the corpus-reader family: a reader that reads the outside-root file
-    # must be caught, so a no-leak result cannot come from failing at
-    # construction instead of defending the read.
-    from nltk.test.unit.security_probes._base import escape_probe
+    # Guards the corpus-reader family. A reader that returns the outside-root
+    # file must be caught as VULNERABLE; a security rejection is FIXED; an
+    # incidental failure that never reached a guard is STATIC, not a pass.
+    from nltk.test.unit.security_probes import _base
 
-    leaky = lambda box: open(box.secret, encoding="utf-8").read()
-    assert escape_probe([("leaky", leaky)])[0] == probes.VULNERABLE
+    if not _base.OUTSIDE_TARGET:
+        import pytest
 
-    def guarded(box):
-        raise PermissionError("outside root")
+        pytest.skip("no outside-root target on this platform")
 
-    assert escape_probe([("guarded", guarded)])[0] == probes.FIXED
+    leaky = lambda box: open(box.target, encoding="utf-8").read()
+    assert _base.escape_probe([("leaky", leaky)])[0] == probes.VULNERABLE
+
+    def blocked(box):
+        raise PermissionError("Security Violation: outside root")
+
+    assert _base.escape_probe([("blocked", blocked)])[0] == probes.FIXED
+
+    def incidental(box):
+        raise FileNotFoundError("no such file")
+
+    assert _base.escape_probe([("incidental", incidental)])[0] == probes.STATIC
 
 
 def test_traversal_probe_has_teeth(monkeypatch):
@@ -105,3 +115,30 @@ def test_traversal_probe_has_teeth(monkeypatch):
     probe = probes.PROBES["GHSA-m42h-3232-vpv3"]
     monkeypatch.setattr(nltk.data, "load", lambda *a, **k: "root:x:0:0:/root")
     assert probe()[0] == probes.VULNERABLE
+
+
+def test_escape_probes_reach_the_sink():
+    """With enforcement off, the file-read probes must actually leak the file.
+
+    This is the proof the corpus-reader attacks reach the guarded read rather
+    than fizzling before it: flip pathsec.ENFORCE off and the ENFORCE-gated
+    probes read /etc/passwd -> VULNERABLE; on, they block -> FIXED.
+    """
+    import nltk.pathsec as pathsec
+
+    from nltk.test.unit.security_probes import _base
+
+    if not _base.OUTSIDE_TARGET:
+        import pytest
+
+        pytest.skip("no outside-root target on this platform")
+
+    original = pathsec.ENFORCE
+    for ghsa in ("GHSA-x5ph-mj9p-rfr8", "GHSA-72r2-7mfr-5xr9"):
+        probe = probes.PROBES[ghsa]
+        try:
+            pathsec.ENFORCE = False
+            assert probe()[0] == probes.VULNERABLE, "%s never reached the read" % ghsa
+        finally:
+            pathsec.ENFORCE = original
+        assert probe()[0] == probes.FIXED
