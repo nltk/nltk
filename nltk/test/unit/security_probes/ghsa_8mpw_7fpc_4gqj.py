@@ -1,29 +1,22 @@
 """GHSA-8mpw-7fpc-4gqj [low] -- Pl196xCorpusReader has quadratic ReDoS on malformed TEI blocks"""
 
-import os
-import tempfile
+import io
 
-from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
+from ._base import FIXED, VULNERABLE, probe, within_budget
 
 
 @probe("GHSA-8mpw-7fpc-4gqj")
-def _pl196x_quadratic():
-    """Pl196xCorpusReader rescanned malformed TEI blocks quadratically."""
-    from nltk.corpus.reader.xmldocs import XMLCorpusView
+def _tei_read_block_quadratic():
+    """read_block did block.count() over the whole growing block per line: 80k lines=43s."""
+    from nltk.corpus.reader.pl196x import TEICorpusView
 
-    def run(size):
-        handle, path = tempfile.mkstemp(suffix=".xml")
-        os.write(handle, b"<TEI>" + b"<div " * size + b"</TEI>")
-        os.close(handle)
-        try:
-            list(XMLCorpusView(path, ".*"))
-        except Exception:
-            pass
-        finally:
-            os.unlink(path)
-
-    small, large = timed(run, 3000), timed(run, 6000)
-    ratio = large / max(small, 1e-4)
-    if large > DOS_BUDGET or ratio > 3.0:
-        return VULNERABLE, "doubling cost %.1fx" % ratio
-    return FIXED, "linear: %.1fx per doubling" % ratio
+    view = TEICorpusView.__new__(TEICorpusView)
+    view._pagesize = 4096
+    view._textids = None
+    view._tagged = False
+    view._group_by_sent = False
+    payload = "x\n" * 80000  # no </text>: pre-patch swallowed it all at O(n^2)
+    ok, seconds = within_budget(lambda: view.read_block(io.StringIO(payload)))
+    if ok:
+        return FIXED, "80k-line unterminated TEI in %.3fs" % seconds
+    return VULNERABLE, "unterminated TEI took %.1fs" % seconds

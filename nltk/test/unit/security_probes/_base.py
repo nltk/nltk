@@ -54,6 +54,19 @@ def timed(func, *args):
     return time.perf_counter() - start
 
 
+def within_budget(func, budget=DOS_BUDGET, repeats=3):
+    """Fastest of ``repeats`` runs of ``func``; ``(ok, seconds)``, ok if under budget.
+
+    Absolute wall-clock, not a doubling ratio: a pre-patch quadratic ran for
+    tens of seconds on these payloads while the fixed code is milliseconds, so a
+    generous budget separates them cleanly. Min-of-k because one sample on a
+    loaded CI runner is noise -- a tight ratio there produced a false
+    VULNERABLE. Contention only adds time, so the minimum is closest to truth.
+    """
+    best = min(timed(func) for _ in range(repeats))
+    return best < budget, best
+
+
 def read_source(dotted_module):
     """Source of an importable NLTK module, via its own ``__file__``."""
     module = importlib.import_module(dotted_module)

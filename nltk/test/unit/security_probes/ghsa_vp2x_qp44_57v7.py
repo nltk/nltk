@@ -1,29 +1,18 @@
-"""GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in `XMLCorpusView._read_xml_fragment()`"""
+"""GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in XMLCorpusView._read_xml_fragment"""
 
-import os
-import tempfile
+import io
 
-from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
+from ._base import FIXED, VULNERABLE, probe, within_budget
 
 
 @probe("GHSA-vp2x-qp44-57v7")
 def _xmlcorpusview_quadratic():
-    """Quadratic CPU exhaustion in XMLCorpusView._read_xml_fragment."""
+    """_VALID_XML_RE re-scanned the whole growing buffer per 1 KiB block: O(n^2)."""
     from nltk.corpus.reader.xmldocs import XMLCorpusView
 
-    def run(size):
-        handle, path = tempfile.mkstemp(suffix=".xml")
-        os.write(handle, b"<root>" + b"<" * size + b"</root>")
-        os.close(handle)
-        try:
-            list(XMLCorpusView(path, ".*"))
-        except Exception:
-            pass
-        finally:
-            os.unlink(path)
-
-    small, large = timed(run, 4000), timed(run, 8000)
-    ratio = large / max(small, 1e-4)
-    if large > DOS_BUDGET or ratio > 3.0:
-        return VULNERABLE, "doubling cost %.1fx" % ratio
-    return FIXED, "linear: %.1fx per doubling" % ratio
+    view = XMLCorpusView.__new__(XMLCorpusView)
+    payload = "<a " + "x" * 2_000_000 + ">"
+    ok, seconds = within_budget(lambda: view._read_xml_fragment(io.StringIO(payload)))
+    if ok:
+        return FIXED, "2M-char unterminated tag in %.3fs" % seconds
+    return VULNERABLE, "unterminated tag took %.1fs" % seconds
