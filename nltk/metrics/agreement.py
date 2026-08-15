@@ -94,7 +94,7 @@ class AnnotationTask:
     is the MASI metric, which requires Python sets.
     """
 
-    def __init__(self, data=None, distance=binary_distance):
+    def __init__(self, data=None, distance=binary_distance, missing_values=None):
         """Initialize an annotation task.
 
         The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples,
@@ -104,12 +104,26 @@ class AnnotationTask:
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
         The distance from a label to itself should be zero:
         ``distance(l,l) = 0``
+
+        Missing data (a coder not annotating an item) is represented by simply
+        omitting that ``(coder, item, label)`` triple: Krippendorff's ``alpha``
+        drops items annotated by fewer than two coders. As a convenience,
+        ``missing_values`` may be a collection of label values that stand for
+        "not annotated" (e.g. ``[None]`` or ``["", None]``); triples whose label
+        is one of them are dropped on load, so a placeholder is not counted as a
+        real category. Membership is tested with ``==``/hashing, so the values
+        must be hashable, like any label. Note the other coefficients
+        (``kappa``, ``pi``, ``S``, ``weighted_kappa``) assume every coder rated
+        every item; ``missing_values`` is meaningful only for ``alpha``.
         """
         self.distance = distance
         self.I = set()
         self.K = set()
         self.C = set()
         self.data = []
+        self.missing_values = (
+            frozenset(missing_values) if missing_values else frozenset()
+        )
         if data is not None:
             self.load_array(data)
 
@@ -129,6 +143,11 @@ class AnnotationTask:
             (coder,item,label)
         """
         for coder, item, labels in array:
+            # A missing-value placeholder means this coder did not annotate this
+            # item; drop the triple rather than treat the placeholder as a real
+            # label (issues #2865, #2732).
+            if labels in self.missing_values:
+                continue
             self.C.add(coder)
             self.K.add(labels)
             self.I.add(item)
