@@ -19,6 +19,8 @@ from tempfile import gettempdir
 
 from nltk import jsontags
 from nltk.data import FileSystemPathPointer, find, open_datafile
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.tag.api import TaggerI
 
 
@@ -175,16 +177,12 @@ class AveragedPerceptron:
 
     def save(self, path):
         """Save the model weights as json"""
-        from nltk import pathsec
-
-        with pathsec.open(path, "w", context="AveragedPerceptron.save") as fout:
+        with pathsec_open(path, "w", context="AveragedPerceptron.save") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
         """Load the json model weights."""
-        from nltk import pathsec
-
-        with pathsec.open(path, context="AveragedPerceptron.load") as fin:
+        with pathsec_open(path, context="AveragedPerceptron.load") as fin:
             self.weights = json.load(fin)
 
     def encode_json_obj(self):
@@ -336,6 +334,14 @@ class PerceptronTagger(TaggerI):
     def save_to_json(self, lang="xxx", loc=None):
         if not loc:
             loc = self.save_dir
+        # Only this tagger's own save_dir -- a private, per-user temp dir --
+        # may auto-widen the sandbox (authorized below). Any other caller-
+        # supplied loc must already be inside an allowed root; otherwise
+        # save_to_json writes model files to an arbitrary path and even adds
+        # that path to nltk.data.path (GHSA-8mgp-746c-j5xp). Validate before any
+        # directory is created so an outside target is refused up front.
+        if os.path.realpath(str(loc)) != os.path.realpath(str(self.save_dir)):
+            validate_path(loc, context="PerceptronTagger.save_to_json")
         # On POSIX the default TRAINED_TAGGER_PATH is a shared, world-writable
         # temp dir (/tmp) and the save dir is a *guessable* name in it, so a
         # local attacker can pre-plant or race a symlink at ``loc``. A plain
