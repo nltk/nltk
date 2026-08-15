@@ -331,6 +331,7 @@ class Maxent_NE_Chunker(NEChunkParser):
     def __init__(self, fmt="multiclass"):
 
         self._fmt = fmt
+        self._save_dir = None
         self._tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
         self.load_params()
 
@@ -343,6 +344,20 @@ class Maxent_NE_Chunker(NEChunkParser):
         )
         self._tagger = NEChunkParserTagger(classifier=mc)
 
+    @property
+    def save_dir(self) -> str:
+        """This chunker's private directory for saved model artifacts.
+
+        Created lazily on first use with an unpredictable name and mode 0700, so
+        -- unlike the old guessable ``/tmp/...`` -- another local user cannot
+        pre-create or symlink it to redirect or read the write (CWE-377/378).
+        The same directory is reused across calls, so a chunker's saved
+        artifacts share one known, private location.
+        """
+        if self._save_dir is None:
+            self._save_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{self._fmt}_")
+        return self._save_dir
+
     def save_params(self, tab_dir: str | None = None) -> str:
         """Write the trained maxent parameters as tab files.
 
@@ -351,13 +366,13 @@ class Maxent_NE_Chunker(NEChunkParser):
         a multi-user host another user can pre-create or symlink that exact path
         to redirect or read the write (CWE-377/378), and pathsec refuses a
         shared-temp destination anyway (so it would not even work). Default
-        instead to a freshly created *private* (mode 0700), unpredictably-named
-        directory, which no other user can pre-plant. A caller may still pass an
-        explicit ``tab_dir``; it is validated against the NLTK data sandbox
-        before the parameter files are written, so an outside path is refused
-        (GHSA-8mgp-746c-j5xp).
+        instead to this chunker's :attr:`save_dir` -- a private (mode 0700),
+        unpredictably-named directory that no other user can pre-plant. A caller
+        may still pass an explicit ``tab_dir``; it is validated against the NLTK
+        data sandbox before the parameter files are written, so an outside path
+        is refused (GHSA-8mgp-746c-j5xp).
 
-        :param tab_dir: destination directory; defaults to a fresh private one.
+        :param tab_dir: destination directory; defaults to :attr:`save_dir`.
         :type tab_dir: str or None
         :return: the directory the parameter files were written to.
         :rtype: str
@@ -368,10 +383,8 @@ class Maxent_NE_Chunker(NEChunkParser):
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
-
-        fmt = self._fmt
         if tab_dir is None:
-            tab_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
+            tab_dir = self.save_dir
         validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
 
         save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
@@ -419,7 +432,8 @@ def build_model(fmt="binary"):
             cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = f"/tmp/ne_chunker_{fmt}.pickle"
+    outdir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
+    outfilename = f"{outdir}/ne_chunker_{fmt}.pickle"
     print(f"Saving chunker to {outfilename}...")
 
     with pathsec_open(outfilename, "wb", context="build_model") as outfile:

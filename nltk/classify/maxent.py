@@ -66,7 +66,9 @@ from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.data import gzip_open_unicode
 from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
+from nltk.tabdata import MaxentEncoder
 from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
@@ -1581,16 +1583,27 @@ def load_maxent_params(tab_dir):
     return wgt, mpg, lab, aon
 
 
-def save_maxent_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
+def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
+    """Write maxent classifier parameters as tab files; return the directory.
 
-    from os import mkdir
-    from os.path import isdir
+    The old default was the shared, world-writable system temp (``/tmp``) -- a
+    guessable destination another local user could pre-create or symlink
+    (CWE-377/378), and one pathsec refuses anyway. Default instead to a fresh
+    private (mode 0700), unpredictably-named directory. A caller-supplied
+    ``tab_dir`` is validated against the NLTK data sandbox before the directory
+    is created or any file is written (GHSA-8mgp-746c-j5xp).
 
-    from nltk.tabdata import MaxentEncoder
-
+    :param tab_dir: destination directory; defaults to a fresh private one.
+    :type tab_dir: str or None
+    :return: the directory the parameter files were written to.
+    :rtype: str
+    """
     menc = MaxentEncoder()
-    if not isdir(tab_dir):
-        mkdir(tab_dir)
+    if tab_dir is None:
+        tab_dir = tempfile.mkdtemp(prefix="nltk_maxent_params_")
+    validate_path(tab_dir, context="save_maxent_params")
+    if not os.path.isdir(tab_dir):
+        os.mkdir(tab_dir)
 
     print(f"Saving Maxent parameters in {tab_dir}")
 
@@ -1604,6 +1617,7 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
         f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params"
     ) as f:
         f.write(f"{menc.ivdict2tab(aon)}")
+    return tab_dir
 
 
 def maxent_pos_tagger():

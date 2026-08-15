@@ -56,8 +56,8 @@ def _outside_dir():
 
 
 def test_save_maxent_params_refuses_outside_tab_dir(restricted_sandbox):
-    """maxent.save_maxent_params: caller-controlled ``tab_dir`` (default ``/tmp``)
-    must not let the 4 ``{tab_dir}/*.txt`` writes land outside the sandbox."""
+    """maxent.save_maxent_params: a caller-controlled ``tab_dir`` must not let
+    the 4 ``{tab_dir}/*.txt`` writes land outside the sandbox."""
     numpy = pytest.importorskip("numpy")
     from nltk.classify.maxent import save_maxent_params
 
@@ -78,6 +78,23 @@ def test_save_maxent_params_refuses_outside_tab_dir(restricted_sandbox):
             assert not (outside / name).exists()
     finally:
         shutil.rmtree(outside, ignore_errors=True)
+
+
+def test_save_maxent_params_default_is_private_dir_not_shared_tmp(restricted_sandbox):
+    """The default destination must be a fresh *private* (0700),
+    unpredictably-named directory (returned by the call) -- never the historical
+    guessable shared ``/tmp`` (CWE-377/378)."""
+    numpy = pytest.importorskip("numpy")
+    from nltk.classify.maxent import save_maxent_params
+
+    out = save_maxent_params(numpy.array([0.1, 0.2]), {}, [], {})
+    try:
+        assert not out.startswith("/tmp/"), "must not default into shared /tmp"
+        assert pathsec.is_private_dir(out), "default dir must be private (0700)"
+        # The write actually landed inside the returned private dir.
+        assert (Path(out) / "weights.txt").exists()
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
 
 
 def test_arff_formatter_write_refuses_outside_path(restricted_sandbox):

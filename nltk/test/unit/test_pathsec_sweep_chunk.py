@@ -120,6 +120,7 @@ def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
 
     chunker = object.__new__(ne.Maxent_NE_Chunker)
     chunker._fmt = "multiclass"
+    chunker._save_dir = None
     chunker._tagger = types.SimpleNamespace(
         _classifier=types.SimpleNamespace(
             _encoding=types.SimpleNamespace(_mapping={}, _labels=[], _alwayson={}),
@@ -134,6 +135,9 @@ def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
         assert os.path.isdir(out)
         # Private (0700, user-owned) -> pathsec accepts it as a data root.
         assert pathsec.is_private_dir(out)
+        # The private dir is created once (save_dir) and reused across calls.
+        assert chunker.save_dir == out
+        assert chunker.save_params() == out, "repeated save must reuse save_dir"
     finally:
         shutil.rmtree(out, ignore_errors=True)
 
