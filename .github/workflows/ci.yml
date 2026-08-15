@@ -233,15 +233,14 @@ jobs:
   advisory-coverage:
     name: Advisory coverage (GitHub)
     # The only job that pulls the live advisory list, so the only one that hits
-    # the network -- the offline probes never do. It fetches published
-    # advisories UNAUTHENTICATED (they are public), so no token is present and
-    # nothing can be exfiltrated. Belt and braces, it does not run on fork PRs
-    # (which run untrusted code) and takes an empty `permissions`, so even the
-    # default GITHUB_TOKEN is absent. It fails only on a real coverage gap and
+    # the network -- the offline probes never do. It runs on every PR (fork
+    # ones included), because that is exactly where a missing probe should be
+    # caught. Safe to do so: it fetches published advisories UNAUTHENTICATED
+    # (they are public), takes an empty `permissions` so even the default
+    # GITHUB_TOKEN is neutered, and reads only advisory ids -- there is no
+    # secret to exfiltrate and no privilege beyond the test matrix, which
+    # already runs the PR's code. It fails only on a real coverage gap and
     # skips if the fetch cannot be made.
-    if: >-
-      github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions: {}
     steps:
