@@ -477,6 +477,87 @@ def test_env_proxy_fails_closed_under_enforce(monkeypatch):
         pathsec.urlopen("http://safe.example.com/x")
 
 
+# --- issue #3748: NO_PROXY must not be mistaken for a configured proxy --------
+#
+# getproxies() reports a "no" key for NO_PROXY, an exclusion list. The old check
+# treated any non-empty getproxies() as a proxy and blocked every download. The
+# fix keys on real http/https schemes and defers the host decision to
+# proxy_bypass -- so NO_PROXY-only is direct+pinned (benign), while a genuine
+# proxy egress stays blocked (GHSA-6ww7). These pin both halves.
+
+
+def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
+    """NO_PROXY alone (getproxies()=={'no': ...}) is a bypass list, not a proxy.
+
+    The fetch must go direct and pinned, exactly as if nothing were set --
+    otherwise every download fails in any environment that sets NO_PROXY.
+    """
+    monkeypatch.setattr(
+        urllib.request, "getproxies", lambda: {"no": "localhost,127.0.0.1"}
+    )
+    handlers = _capture_urlopen_handlers(monkeypatch)
+
+    assert any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
+    assert any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    proxy_handlers = [h for h in handlers if isinstance(h, urllib.request.ProxyHandler)]
+    assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
+
+
+def test_env_proxy_helper_maps_each_case():
+    """_env_proxy_carries mirrors urllib: proxied iff a real http/https proxy
+    would carry the host and it is not bypassed by NO_PROXY. Fails closed."""
+    url = "http://raw.githubusercontent.com/x"
+
+    def check(proxies, bypass, expected):
+        with patch.object(urllib.request, "getproxies", lambda: proxies), patch.object(
+            urllib.request, "proxy_bypass", lambda host: bypass
+        ):
+            assert pathsec._env_proxy_carries(url) is expected
+
+    check({}, False, False)  # nothing set
+    check({"no": "localhost"}, False, False)  # NO_PROXY only (the bug)
+    check({"http": "http://p:8080"}, False, True)  # real proxy -> block
+    check({"http": "http://p:8080"}, True, False)  # proxy but host bypassed -> direct
+    check({"all": "http://p:8080"}, False, False)  # urllib ignores 'all' for http/https
+
+
+def test_proxy_with_no_proxy_target_still_pins(monkeypatch):
+    """A proxy is configured but the target is in NO_PROXY: urllib fetches it
+    directly, so NLTK must pin (not block) -- and the SSRF filter still governs
+    the direct connection."""
+    monkeypatch.setattr(
+        urllib.request,
+        "getproxies",
+        lambda: {"http": "http://proxy.local:3128", "no": "raw.githubusercontent.com"},
+    )
+    monkeypatch.setattr(urllib.request, "proxy_bypass", lambda host: True)
+    handlers = _capture_urlopen_handlers(
+        monkeypatch, url="http://raw.githubusercontent.com/x"
+    )
+
+    assert any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    proxy_handlers = [h for h in handlers if isinstance(h, urllib.request.ProxyHandler)]
+    assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
+
+
+def test_proxy_with_unbypassed_target_still_fails_closed(monkeypatch):
+    """The attack the fix must NOT reopen: a real proxy carries the target (not
+    bypassed), so NLTK cannot pin the IP -- the fetch must still be refused even
+    though NO_PROXY is present for *other* hosts (GHSA-6ww7)."""
+    monkeypatch.setattr(
+        urllib.request,
+        "getproxies",
+        lambda: {"http": "http://proxy.local:3128", "no": "example.com"},
+    )
+    monkeypatch.setattr(urllib.request, "proxy_bypass", lambda host: False)
+    monkeypatch.setattr(urllib.request, "_opener", None)
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
+
+    with pytest.raises(PermissionError, match="proxied fetch"):
+        pathsec.urlopen("http://raw.githubusercontent.com/x")
+
+
 def test_env_proxy_opt_in_skips_pinning_handlers(monkeypatch):
     """When the operator opts into trusting the proxy, the proxy is the egress:
     the pinning handlers must NOT be installed (they cannot do the CONNECT

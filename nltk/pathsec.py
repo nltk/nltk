@@ -561,6 +561,24 @@ def _reject_unpinnable_proxied_fetch(url_str):
     warnings.warn(msg, RuntimeWarning, stacklevel=3)
 
 
+def _env_proxy_carries(url_str):
+    """True if an http/https environment proxy would actually carry ``url_str``.
+
+    ``getproxies()`` reports a ``"no"`` key for ``NO_PROXY`` -- a host *exclusion*
+    list, not a proxy -- so keying on the real ``http``/``https`` schemes and
+    deferring the host decision to ``urllib.request.proxy_bypass`` mirrors what
+    urllib actually does. That fixes the false positive where ``NO_PROXY`` alone
+    made every fetch look proxied (issue #3748), while keeping the SSRF block
+    (GHSA-6ww7) for a genuinely proxied egress: if a proxy would carry the
+    request, NLTK cannot pin the validated IP, so it must still refuse.
+    """
+    proxies = urllib.request.getproxies()
+    if "http" not in proxies and "https" not in proxies:
+        return False
+    host = urlparse(url_str).hostname
+    return bool(host) and not urllib.request.proxy_bypass(host)
+
+
 def urlopen(url, *args, **kwargs):
     """
     Secure wrapper for urllib.request.urlopen with redirect validation.
@@ -593,10 +611,12 @@ def urlopen(url, *args, **kwargs):
 
     # If the caller configured no ProxyHandler at all, environment proxies still
     # apply: build_opener() would install a default ProxyHandler from
-    # getproxies(). Treat that as proxied too, because the proxy -- not NLTK --
-    # is then the egress that resolves names and performs the CONNECT tunnel; the
-    # connect-time pinning handlers cannot tunnel and would break proxied HTTPS.
-    if not proxied and not has_proxy_handler and urllib.request.getproxies():
+    # getproxies(). Treat that as proxied too -- but only when a proxy would
+    # actually carry *this* URL, so NO_PROXY alone does not falsely block every
+    # fetch (issue #3748). When it is genuinely proxied, the proxy is the egress
+    # that resolves names and performs the CONNECT tunnel; the connect-time
+    # pinning handlers cannot tunnel and would break proxied HTTPS.
+    if not proxied and not has_proxy_handler and _env_proxy_carries(url_str):
         proxied = True
 
     if not proxied:
