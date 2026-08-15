@@ -175,12 +175,16 @@ class AveragedPerceptron:
 
     def save(self, path):
         """Save the model weights as json"""
-        with open(path, "w") as fout:
+        from nltk import pathsec
+
+        with pathsec.open(path, "w", context="AveragedPerceptron.save") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
         """Load the json model weights."""
-        with open(path) as fin:
+        from nltk import pathsec
+
+        with pathsec.open(path, context="AveragedPerceptron.load") as fin:
             self.weights = json.load(fin)
 
     def encode_json_obj(self):
