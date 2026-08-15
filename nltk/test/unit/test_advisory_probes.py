@@ -7,6 +7,7 @@ pass by never reaching the sink.
 
 import gc
 import importlib
+import json
 import os
 import pathlib
 import pkgutil
@@ -15,6 +16,7 @@ import warnings
 from collections import Counter
 
 from nltk.test.unit import security_probes as probes
+from nltk.test.unit import test_advisory_coverage_ci as covci
 from nltk.test.unit.security_probes import _base
 
 
@@ -283,3 +285,106 @@ class TestReadSource:
             for _ in range(200):
                 _base.read_source("nltk.downloader")
             gc.collect()
+
+
+class _FakeResp:
+    """Minimal stand-in for a urllib response: a body plus a Link header."""
+
+    def __init__(self, payload, link=None):
+        self._body = json.dumps(payload).encode()
+        self.headers = {"Link": link} if link else {}
+
+    def read(self, size=-1):
+        return self._body if size < 0 else self._body[:size]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+
+def _serve(pages, monkeypatch):
+    """Route urlopen to ``pages`` (url -> _FakeResp), offline."""
+
+    def fake_urlopen(request, timeout=None):
+        url = request.full_url
+        if url not in pages:
+            raise AssertionError(f"unexpected url requested: {url}")
+        return pages[url]
+
+    monkeypatch.setattr(covci.urllib.request, "urlopen", fake_urlopen)
+
+
+class TestAdvisoryPagination:
+    """The coverage fetch must not silently stop at GitHub's 100-per-page cap.
+
+    A single un-paginated request drops advisories past 100, so a real coverage
+    gap in that tail would pass unnoticed. These offline tests drive the Link
+    header logic with a fake urlopen -- no network.
+    """
+
+    def test_next_url_parses_on_origin_rel_next(self):
+        nxt = covci._API_ORIGIN + "?per_page=100&page=2"
+        last = covci._API_ORIGIN + "?per_page=100&page=9"
+        header = f'<{nxt}>; rel="next", <{last}>; rel="last"'
+        assert covci._next_url(header) == nxt
+
+    def test_next_url_absent_or_off_origin_is_none(self):
+        last = covci._API_ORIGIN + "?per_page=100&page=9"
+        assert covci._next_url(f'<{last}>; rel="last"') is None  # no rel=next
+        assert covci._next_url('<https://evil.example/x?page=2>; rel="next"') is None
+        assert covci._next_url(None) is None
+        assert covci._next_url("") is None
+
+    def test_single_page_unchanged(self, monkeypatch):
+        _serve({covci._API: _FakeResp([{"ghsa_id": "A"}])}, monkeypatch)
+        assert [a["ghsa_id"] for a in covci._fetch_advisories()] == ["A"]
+
+    def test_follows_pagination_and_concatenates(self, monkeypatch):
+        page2 = covci._API_ORIGIN + "?per_page=100&page=2"
+        _serve(
+            {
+                covci._API: _FakeResp(
+                    [{"ghsa_id": "A"}], link=f'<{page2}>; rel="next"'
+                ),
+                page2: _FakeResp([{"ghsa_id": "B"}]),
+            },
+            monkeypatch,
+        )
+        assert [a["ghsa_id"] for a in covci._fetch_advisories()] == ["A", "B"]
+
+    def test_off_origin_next_is_not_followed(self, monkeypatch):
+        # An off-origin next link stops pagination -- the evil URL is never
+        # fetched (_serve raises on any unexpected url), so we get page 1 only.
+        evil = "https://evil.example.com/repos/nltk/nltk?page=2"
+        _serve(
+            {covci._API: _FakeResp([{"ghsa_id": "A"}], link=f'<{evil}>; rel="next"')},
+            monkeypatch,
+        )
+        assert [a["ghsa_id"] for a in covci._fetch_advisories()] == ["A"]
+
+    def test_page_cap_returns_none_not_partial(self, monkeypatch):
+        # Every page advertises another on-origin next -> the cap is hit. The
+        # list is not provably complete, so skip (None), never under-report.
+        forever = covci._API_ORIGIN + "?per_page=100&page=2"
+
+        def fake_urlopen(request, timeout=None):
+            return _FakeResp([{"ghsa_id": "X"}], link=f'<{forever}>; rel="next"')
+
+        monkeypatch.setattr(covci.urllib.request, "urlopen", fake_urlopen)
+        assert covci._fetch_advisories() is None
+
+    def test_fetch_error_returns_none(self, monkeypatch):
+        def boom(request, timeout=None):
+            raise OSError("network down")
+
+        monkeypatch.setattr(covci.urllib.request, "urlopen", boom)
+        assert covci._fetch_advisories() is None
+
+    def test_oversized_body_returns_none(self, monkeypatch):
+        # A body past the byte cap is refused (json never buffers it whole),
+        # so the fetch is not trusted -> None -> skip.
+        monkeypatch.setattr(covci, "_MAX_BYTES", 8)
+        _serve({covci._API: _FakeResp([{"ghsa_id": "AAAAAAAAAA"}])}, monkeypatch)
+        assert covci._fetch_advisories() is None
