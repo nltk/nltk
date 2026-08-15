@@ -24,13 +24,16 @@ download / running JVM) · `BENIGN` audited, never exploitable, pinned.
 
 `STATIC` is distinct from `FIXED` on purpose: a grep is not an exploit attempt.
 
-## Result on develop
+## Result
 
-38 probes: 31 FIXED, 7 STATIC, 0 VULNERABLE. The three top-severity claims all
-describe states that no longer exist — the pickle allowlist rejects dangerous
-globals under an allowlisted parent (GHSA-x99w), `TransitionParser` uses
-`allowlisted_pickle_load` (GHSA-rhp5), and `pathsec.ENFORCE` is `True` so
-`/etc/passwd` raises `PermissionError` (GHSA-p3m8).
+As of 2026-08-15: 38 probes — 31 FIXED, 7 STATIC, 0 VULNERABLE. Run
+`python -m nltk.test.unit.security_probes` for the current counts. The invariant
+the suite enforces on every commit is **0 VULNERABLE**; each advisory is FIXED
+(attack executed, tree defended) or STATIC (guard confirmed in source). For
+example, the top-severity pickle-RCE and SSRF advisories are closed — the
+allowlist rejects dangerous globals under an allowlisted parent (GHSA-x99w),
+`TransitionParser` uses `allowlisted_pickle_load` (GHSA-rhp5), and
+`pathsec.ENFORCE` is `True` so `/etc/passwd` raises `PermissionError` (GHSA-p3m8).
 
 ## Design
 
