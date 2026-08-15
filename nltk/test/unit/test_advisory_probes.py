@@ -114,9 +114,15 @@ def test_escape_probe_has_teeth():
 def test_traversal_probe_has_teeth(monkeypatch):
     import nltk.data
 
-    probe = probes.PROBES["GHSA-m42h-3232-vpv3"]
+    # Inject a target so the control runs where /etc/passwd is absent (Windows);
+    # the module imports OUTSIDE_TARGET/CANARY by value, so patch them there.
+    module = importlib.import_module(
+        "nltk.test.unit.security_probes.ghsa_m42h_3232_vpv3"
+    )
+    monkeypatch.setattr(module, "OUTSIDE_TARGET", "/etc/passwd", raising=False)
+    monkeypatch.setattr(module, "OUTSIDE_CANARY", "root:", raising=False)
     monkeypatch.setattr(nltk.data, "load", lambda *a, **k: "root:x:0:0:/root")
-    assert probe()[0] == probes.VULNERABLE
+    assert probes.PROBES["GHSA-m42h-3232-vpv3"]()[0] == probes.VULNERABLE
 
 
 def test_escape_probes_reach_the_sink():
