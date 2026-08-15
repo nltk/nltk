@@ -94,26 +94,42 @@ gap, now closed · `TODO` under audit.
 | xmlsec.py | `parse(source)` filename | GUARDED (validate_path; covers defusedxml + fallback) | test_pathsec_sweep_infra |
 | pathsec.py | `validate_path` URL-scheme bypass (F2) | GAP-FIXED (anchored-regex reject) | test_pathsec (TestUrlSchemePathBypass) |
 
-### dataset / model loading (data.py + corpus readers)
-| Area | Verdict | Test |
+### dataset / model loading (data.py + corpus readers) — ATTACKED, no leak
+| Load path | Attacks refused | Verdict |
 |---|---|---|
-| data.py `load`/`retrieve`/`find`/`_open`, `FileSystemPathPointer.open` | TODO (agent: dataset-loading — attack absolute/traversal/symlink, with & without ENFORCE) | test_pathsec_sweep_dataset_loading |
-| corpus/reader/*.py `open`/`abspath`/XML/CoNLL/pickle loaders | TODO (agent: dataset-loading) | test_pathsec_sweep_dataset_loading |
-| CorpusReader.__init__ root | GUARDED (validate_path on root — verified: outside root → PermissionError under ENFORCE) | test_pathsec_sweep_dataset_loading |
+| `data.find` | absolute-outside, `../` traversal, `%2f`-encoded traversal | CONTAINED (`_UNSAFE_NO_PROTOCOL_RE` + `_assert_no_encoded_bypass`) |
+| `data.load('file://…')` | absolute-outside read | CONTAINED (`_open`→`_secure_open`→`validate_path`) |
+| `data.retrieve` | symlink-at-destination **write** escape | CONTAINED (O_NOFOLLOW; target never written) |
+| `FileSystemPathPointer.open` / `Gzip…` | absolute-outside, in-root symlink→outside | CONTAINED (validate_path resolves symlink) |
+| `StreamBackedCorpusView._open` | bare outside fileid | CONTAINED (`_secure_open`) |
+| `CorpusReader.open` / `.__init__` | traversal, absolute, in-root symlink, out-of-sandbox root | CONTAINED (lexical + scoped `required_root` + root validate) |
+| WordList/Plaintext/XML/PanLex(sqlite3) readers | symlink escape, bare-string, db symlink | CONTAINED (inherited open / pathsec_open / validate_path) |
+| bespoke loaders (crubadan, framenet, toolbox, propbank, nombank, nkjp, bcp47, childes, bnc, semcor, lin, ipipan, pl196x) | read-through | CONTAINED (PathPointer sandbox or validate_path(required_root)) |
 
-### deserialization (pickle / json / np) — RCE surface
-| Area | Verdict | Test |
+19-test attack matrix (absolute/traversal/symlink + negative controls) in
+test_pathsec_sweep_dataset_loading.py. No source change needed — already contained.
+
+### deserialization (pickle / json / np) — RCE surface — AUDITED, no gap
+| Site | Routing | Verdict |
 |---|---|---|
-| every `pickle.load` / `np.load(allow_pickle)` / `json.load` tree-wide | TODO (agent: deserialization — gadget battery vs GHSA-x99w/4489/rhp5) | test_pathsec_sweep_deserialization |
-| picklesec allowlist shared denylist (scipy.io, sklearn.datasets, numpy call-gadgets) | GAP-FIXED | test_pickle_allowlist_security |
+| transitionparser.parse | `allowlisted_pickle_load` (exact globals) + pathsec_open | SAFE |
+| data.py `restricted_pickle_load` (dataset .pickle) | `RestrictedUnpickler` (blocks ALL globals) | SAFE |
+| wordnet_app `Reference.decode` (untrusted base64 over HTTP) | `RestrictedUnpickler` + shape check | SAFE |
+| punkt `punkt_pickle_load` | `allowlisted_pickle_load` (punkt globals) | SAFE |
+| all json.load/json.loads (help, data, perceptron, twitter, corpus) | pathsec-guarded file open / string parse (not RCE) | SAFE |
+| `np.load`/`numpy.load`/`allow_pickle=True` | **none exist in the tree** | SAFE (n/a) |
+| chartparser GUI pickle · tbl/demo cache | warn-only `pickle_load` — interactive / dev-demo, not untrusted dataset | documented residual |
+| picklesec shared denylist (scipy.io, sklearn.datasets, numpy call-gadgets, LowLevelCallable) | GAP-FIXED | test_pickle_allowlist_security |
 
-### documented exemptions (re-verified — not gaps)
+Gadget battery (os.system, subprocess, eval/exec/import, scipy.io.mmwrite, sklearn.datasets.fetch_openml, numpy.load/apply_along_axis, dotted-name sklearn.os.system, live `__reduce__`→os.system) **refused at every site**; legit SVC/Punkt/wordnet/dict loads still succeed. 96 tests in test_pathsec_sweep_deserialization.py.
+
+### documented exemptions (re-verified adversarially — NOT gaps)
 | File | Reason | Test |
 |---|---|---|
-| app/*.py | Tk `askopenfilename`/`asksaveasfilename` dialogs (human in loop); literal-guarded `wordnet_app` read; operator-CLI logfile | TODO (agent: exempt-recheck) |
-| twitter/*.py | by-design `$TWITTER` / `~/twitter-files` credential + developer-supplied output paths | TODO (agent: exempt-recheck) |
-| draw/util.py | `print_to_file` — Tk save dialog / user save destination | TODO (agent: exempt-recheck) |
-| downloader.py md5/sha256 reads | download-flow paths already gated (795–805 containment + validated write) | TODO (agent: exempt-recheck) |
+| app/*.py | EXEMPT ✓ every open traced to a Tk `askopenfilename`/`asksaveasfilename` dialog (human in loop); `wordnet_app:138` guarded by exact-literal `if usp == "…Database Info.html"`; `:257` operator-CLI logfile | — |
+| twitter/*.py | EXEMPT ✓ by-design `$TWITTER`/`credentials*.txt` reads; output paths are operator ctor params (`subdir`/`fprefix`), no untrusted string reaches them | — |
+| draw/util.py | EXEMPT ✓ `print_to_file` filename only from `asksaveasfilename`; no programmatic caller | — |
+| downloader.py md5/sha256 reads | EXEMPT ✓ `info.filename` neutralized+validated in constructor (subdir/id/ext all reject `..`/sep); no metadata-steered read; write path is O_NOFOLLOW + `os.replace` | — |
 | __init__.py VERSION | fixed `__file__`-relative resource, import-time | — |
 
 ## Test matrix (this PR)
