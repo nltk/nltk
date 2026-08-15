@@ -6,13 +6,39 @@ pass by never reaching the sink.
 """
 
 import importlib
+import os
+import pathlib
+import pkgutil
 import re
+from collections import Counter
 
 from nltk.test.unit import security_probes as probes
 
 
-def test_probes_are_registered():
-    assert len(probes.PROBES) >= 37
+def test_each_ghsa_module_registers_exactly_one_probe():
+    """Every ghsa_*.py module registers exactly one probe, and vice versa.
+
+    No hard-coded count: discover the modules the way __init__ does and require
+    a 1:1 mapping. Catches a module that failed to register (partial import), a
+    forgotten @probe, a typo'd id, or a double registration -- and self-updates
+    as advisories are added.
+    """
+    ghsa_modules = {
+        f"{probes.__name__}.{module.name}"
+        for module in pkgutil.iter_modules(probes.__path__)
+        if module.name.startswith("ghsa_")
+    }
+    assert ghsa_modules, "no ghsa_* probe modules discovered -- package broken?"
+
+    registered = Counter(fn.__module__ for fn in probes.PROBES.values())
+    missing = ghsa_modules - set(registered)
+    extra = set(registered) - ghsa_modules
+    duplicated = {mod: n for mod, n in registered.items() if n > 1}
+
+    assert not missing, f"ghsa_* modules with no registered probe: {sorted(missing)}"
+    assert not extra, f"probes registered outside a ghsa_* module: {sorted(extra)}"
+    assert not duplicated, f"modules registering more than one probe: {duplicated}"
+    assert len(probes.PROBES) == len(ghsa_modules)
 
 
 def test_no_advisory_is_vulnerable():
@@ -167,3 +193,67 @@ def test_escape_probes_reach_the_sink():
         finally:
             pathsec.ENFORCE = original
         assert probe()[0] == probes.FIXED
+
+
+class TestProbeDiscoveryIsolation:
+    """The probe package discovers and imports only from its own directory.
+
+    __init__ populates PROBES by iterating ``pkgutil.iter_modules(__path__)`` and
+    importing each ``ghsa_*`` module by fully-qualified name. These attacks prove
+    that discovery cannot be redirected to attacker-controlled code planted on
+    ``sys.path`` or in the CWD -- the trust boundary is write access to the
+    installed package directory itself, which is already full compromise.
+    """
+
+    @staticmethod
+    def _plant(dirpath, name, marker):
+        """Write a ghsa_*.py that drops ``marker`` when imported (proves exec)."""
+        os.makedirs(dirpath, exist_ok=True)
+        (pathlib.Path(dirpath) / f"{name}.py").write_text(
+            f"import pathlib; pathlib.Path({str(marker)!r}).write_text('x')\n"
+        )
+
+    def test_attacker_module_on_syspath_is_not_imported(self, tmp_path, monkeypatch):
+        marker = tmp_path / "pwned"
+        attacker = tmp_path / "attacker_dir"
+        self._plant(str(attacker), "ghsa_attacker_aaaa_bbbb", marker)
+        monkeypatch.syspath_prepend(str(attacker))
+
+        importlib.reload(probes)
+
+        assert not marker.exists(), "a ghsa_* module on sys.path was executed"
+        assert "GHSA-attacker-aaaa-bbbb" not in probes.PROBES
+
+    def test_cwd_planted_module_is_not_imported(self, tmp_path, monkeypatch):
+        marker = tmp_path / "pwned"
+        self._plant(str(tmp_path), "ghsa_cwd_cccc_dddd", marker)
+        self._plant(str(tmp_path), "advisories", marker)  # the old bare-name vector
+        monkeypatch.chdir(tmp_path)
+
+        importlib.reload(probes)
+
+        assert not marker.exists(), "a ghsa_*/advisories module in the CWD was executed"
+
+    def test_discovery_scans_only_the_package_directory(self):
+        discovered = {m.name for m in pkgutil.iter_modules(probes.__path__)}
+        on_disk = {p.stem for p in pathlib.Path(probes.__path__[0]).glob("*.py")}
+        assert (
+            discovered <= on_disk
+        ), "discovery listed a module outside the package dir"
+
+    def test_all_imports_are_qualified_under_the_package(self, monkeypatch):
+        issued = []
+        real_import = importlib.import_module
+
+        def spy(name, *args, **kwargs):
+            issued.append(name)
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(importlib, "import_module", spy)
+        importlib.reload(probes)
+
+        prefix = probes.__name__ + "."
+        unqualified = [n for n in issued if not n.startswith(prefix)]
+        assert (
+            not unqualified
+        ), f"imports not under the package namespace: {unqualified}"
