@@ -42,7 +42,7 @@ gap, now closed · `TODO` under audit.
 | classify/maxent.py | megam/tadm trainfile/weightfile | EXEMPT (internal mkstemp) | — |
 | classify/weka.py | `ARFF_Formatter.write` | GUARDED (pathsec_open) | test_pathsec_sweep_classify |
 | classify/weka.py | `__main__` demo /tmp/name.model | GAP-FIXED (mkdtemp) | — |
-| classify/{megam,tadm,senna,decisiontree,rte_classify,textcat}.py | model/data I/O | TODO (agent: classify-extra) | test_pathsec_sweep_classify_extra |
+| classify/{megam,tadm,senna,decisiontree,rte_classify,textcat}.py | model/data I/O | EXEMPT / NO GAP (streams, subprocess pipes, internal mkstemp, fixed corpus resources) | — |
 
 ### parse
 | File | Sink | Verdict | Test |
@@ -50,6 +50,8 @@ gap, now closed · `TODO` under audit.
 | parse/transitionparser.py | `train` pickle write | GUARDED (pathsec_open) | test_pathsec_sweep_parse |
 | parse/transitionparser.py | `parse` pickle read | GUARDED (pathsec_open + **exact-allowlist** unpickler) | test_pickle_allowlist_security |
 | parse/malt.py | reads | EXEMPT (internal NamedTemporaryFile / subprocess / PathPointer) | test_pathsec_sweep_parse |
+| parse/featurechart.py | `run_profile` `/tmp/profile.out` (profiling helper) | GAP-FIXED (mkdtemp) | — |
+| parse/dependencygraph.py | demo `savefig("tree.png")` (fixed CWD name) | GAP-FIXED (mkdtemp) | — |
 
 ### tag
 | File | Sink | Verdict | Test |
@@ -57,7 +59,10 @@ gap, now closed · `TODO` under audit.
 | tag/perceptron.py | `AveragedPerceptron.save`/`load` | GUARDED (pathsec_open) | test_pathsec |
 | tag/perceptron.py | `PerceptronTagger.save_to_json` | GUARDED (validate loc; O_NOFOLLOW dir-fd) | test_pathsec |
 | tag/perceptron.py | `load_from_json` | GUARDED (open_datafile) | — |
-| tag/{crf,stanford,senna,hunpos,brill,sequential,tnt}.py | model I/O | TODO (agent: tag) | test_pathsec_sweep_tag |
+| tag/crf.py | `set_model_file` / `train` (pycrfsuite native open/write) | GAP-FIXED (validate_path before native hand-off) | test_pathsec_sweep_tag |
+| tag/stanford.py | `tag_sents` model path → JVM `-model` | GAP-FIXED (validate_path before java()) | test_pathsec_sweep_tag |
+| tag/hunpos.py | `__init__` model path → subprocess argv | GAP-FIXED (validate_path before Popen) | test_pathsec_sweep_tag |
+| tag/{senna,brill,sequential,tnt,hmm,mapping}.py | — | NO GAP (in-memory / fixed resource / subprocess) | — |
 
 ### tokenize
 | File | Sink | Verdict | Test |

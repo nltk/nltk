@@ -15,6 +15,7 @@ import os
 from subprocess import PIPE, Popen
 
 from nltk.internals import find_binary, find_file
+from nltk.pathsec import validate_path
 from nltk.tag.api import TaggerI
 
 _hunpos_url = "https://code.google.com/p/hunpos/"
@@ -93,6 +94,13 @@ class HunposTagger(TaggerI):
             path_to_model, env_vars=("HUNPOS_TAGGER",), verbose=verbose
         )
         self._encoding = encoding
+        # ``self._hunpos_model`` comes from ``find_file`` over a caller-supplied
+        # model name, so it can resolve to any path on disk. It is passed as an
+        # argv element to the hunpos-tag subprocess, which ``pathsec.open``
+        # cannot wrap. Validate it against the NLTK data sandbox before the
+        # process is spawned, so an outside model path is refused
+        # (GHSA-8mgp-746c-j5xp).
+        validate_path(self._hunpos_model, context="HunposTagger.__init__")
         self._hunpos = Popen(
             [self._hunpos_bin, self._hunpos_model],
             shell=False,

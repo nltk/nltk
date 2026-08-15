@@ -23,6 +23,7 @@ from abc import abstractmethod
 from subprocess import PIPE
 
 from nltk.internals import find_file, find_jar, java
+from nltk.pathsec import validate_path
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -108,6 +109,15 @@ class StanfordTagger(TaggerI):
                 if isinstance(_input, str) and encoding:
                     _input = _input.encode(encoding)
                 input_fh.write(_input)
+
+            # ``self._stanford_model`` comes from ``find_file`` over a
+            # caller-supplied model name (and ``STANFORD_MODELS``), so it can
+            # resolve to any path on disk. It is embedded in ``_cmd`` and handed
+            # to the JVM subprocess (``-model`` / ``-loadClassifier``), which
+            # ``pathsec.open`` cannot wrap. Validate it against the NLTK data
+            # sandbox before the tagger process is spawned, so an outside model
+            # path is refused (GHSA-8mgp-746c-j5xp).
+            validate_path(self._stanford_model, context="StanfordTagger.tag_sents")
 
             # Run the tagger and get the output
             stanpos_output, _stderr = java(

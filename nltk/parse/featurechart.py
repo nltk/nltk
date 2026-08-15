@@ -651,11 +651,15 @@ def demo(
 
 def run_profile():
     import profile
-
-    profile.run("for i in range(1): demo()", "/tmp/profile.out")
     import pstats
+    import tempfile
+    from os.path import join
 
-    p = pstats.Stats("/tmp/profile.out")
+    # A fresh private (0700) temp file, not a hardcoded, guessable /tmp path
+    # another local user could pre-create or symlink (CWE-377/378).
+    stats_file = join(tempfile.mkdtemp(prefix="nltk_profile_"), "profile.out")
+    profile.run("for i in range(1): demo()", stats_file)
+    p = pstats.Stats(stats_file)
     p.strip_dirs().sort_stats("time", "cum").print_stats(60)
     p.strip_dirs().sort_stats("cum", "time").print_stats(60)
 

@@ -662,7 +662,13 @@ Nov.    NNP     9       VMOD
         networkx.draw_networkx_labels(g, pos, dg.nx_labels)
         pylab.xticks([])
         pylab.yticks([])
-        pylab.savefig("tree.png")
+        import tempfile
+        from os.path import join
+
+        # Write to a private temp file, not a fixed "tree.png" in the CWD.
+        outfile = join(tempfile.mkdtemp(prefix="nltk_depgraph_"), "tree.png")
+        pylab.savefig(outfile)
+        print(f"saved dependency tree to {outfile}")
         pylab.show()
 
 
