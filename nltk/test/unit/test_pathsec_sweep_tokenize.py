@@ -2,9 +2,9 @@
 Attack tests for the bare-``open()`` path-traversal hardening
 (GHSA-8mgp-746c-j5xp) in the tokenize package:
 
-* ``nltk/tokenize/punkt.py`` -- ``save_punkt_params`` (4 param-file writes +
-  the ``dir`` it creates) and ``PunktSentenceTokenizer.dump`` (a hardcoded
-  ``/tmp/punkt.new`` debug write).
+* ``nltk/tokenize/punkt.py`` -- ``save_punkt_params`` (4 param-file writes; its
+  ``dir`` defaults to a fresh private temp) and ``PunktSentenceTokenizer.dump``
+  (a debug write that now targets a fresh private temp, not a guessable /tmp).
 * ``nltk/tokenize/stanford_segmenter.py`` -- ``StanfordSegmenter._sha256sum``
   (reads a caller-controlled classpath JAR).
 
@@ -79,20 +79,34 @@ def test_save_punkt_params_refuses_outside_dir(sandbox):
     assert list(sandbox.iterdir()) == []
 
 
-def test_punkt_dump_refuses_hardcoded_tmp(sandbox):
-    """The ``dump`` debug scaffold writes a hardcoded, guessable ``/tmp`` path,
-    which is outside the restricted sandbox and must be refused."""
+def test_save_punkt_params_default_is_private_dir_not_tmp(sandbox):
+    """The default destination is a fresh private (0700), unpredictably-named
+    directory (returned by the call) -- never the old guessable ``/tmp``."""
+    from nltk.tokenize.punkt import PunktParameters, save_punkt_params
+
+    out = save_punkt_params(PunktParameters())
+    try:
+        assert not out.startswith("/tmp/"), "must not default into shared /tmp"
+        assert pathsec.is_private_dir(out)
+        assert (pathlib.Path(out) / "collocations.tab").exists()
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+
+
+def test_punkt_dump_writes_private_temp_not_hardcoded_tmp(sandbox):
+    """The ``dump`` debug scaffold must write to a fresh private (0700) temp file
+    and return its path -- never the old guessable ``/tmp/punkt.new``."""
     from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktToken
 
     tok = PunktSentenceTokenizer()
-    tmp_target = pathlib.Path("/tmp/punkt.new")
-    preexisting = tmp_target.exists()
-    with pytest.raises(PermissionError):
-        tok.dump(iter([PunktToken("Hello"), PunktToken("world.")]))
-    # The path string is rejected before any file is opened/created; if it was
-    # not there before, we must not have created it.
-    if not preexisting:
-        assert not tmp_target.exists()
+    out = tok.dump(iter([PunktToken("Hello"), PunktToken("world.")]))
+    try:
+        assert not out.startswith("/tmp/"), "must not write into shared /tmp"
+        assert os.path.basename(out) == "punkt.new"
+        assert pathsec.is_private_dir(os.path.dirname(out))
+        assert os.path.exists(out)
+    finally:
+        shutil.rmtree(os.path.dirname(out), ignore_errors=True)
 
 
 def test_stanford_sha256_refuses_outside_jar(sandbox):

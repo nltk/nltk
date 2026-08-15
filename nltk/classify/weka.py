@@ -379,6 +379,8 @@ if __name__ == "__main__":
     from nltk.classify.util import binary_names_demo_features, names_demo
 
     def make_classifier(featuresets):
-        return WekaClassifier.train("/tmp/name.model", featuresets, "C4.5")
+        # A fresh private (0700) temp dir, not a guessable shared /tmp path.
+        model = os.path.join(tempfile.mkdtemp(prefix="nltk_weka_"), "name.model")
+        return WekaClassifier.train(model, featuresets, "C4.5")
 
     classifier = names_demo(make_classifier, binary_names_demo_features)
