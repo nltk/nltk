@@ -65,6 +65,7 @@ from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_fil
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.data import gzip_open_unicode
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import DictionaryProbDist
 from nltk.util import OrderedDict
 
@@ -1593,13 +1594,15 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
 
     print(f"Saving Maxent parameters in {tab_dir}")
 
-    with open(f"{tab_dir}/weights.txt", "w") as f:
+    with pathsec_open(f"{tab_dir}/weights.txt", "w", context="save_maxent_params") as f:
         f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
-    with open(f"{tab_dir}/mapping.tab", "w") as f:
+    with pathsec_open(f"{tab_dir}/mapping.tab", "w", context="save_maxent_params") as f:
         f.write(f"{menc.tupdict2tab(mpg)}")
-    with open(f"{tab_dir}/labels.txt", "w") as f:
+    with pathsec_open(f"{tab_dir}/labels.txt", "w", context="save_maxent_params") as f:
         f.write(f"{menc.list2txt(lab)}")
-    with open(f"{tab_dir}/alwayson.tab", "w") as f:
+    with pathsec_open(
+        f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params"
+    ) as f:
         f.write(f"{menc.ivdict2tab(aon)}")
 
 

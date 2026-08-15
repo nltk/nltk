@@ -113,6 +113,8 @@ from collections.abc import Iterator
 from re import Match
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.picklesec import allowlisted_pickle_load
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
@@ -1639,7 +1641,13 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     # [XX] TESTING
     def dump(self, tokens: Iterator[PunktToken]) -> None:
         print("writing to /tmp/punkt.new...")
-        with open("/tmp/punkt.new", "w") as outfile:
+        # This debug scaffold writes to a hardcoded, guessable /tmp path. Route
+        # it through the pathsec sandbox so it cannot be pointed at (or, via a
+        # pre-planted symlink at the guessable name, redirected to) a file
+        # outside an allowed data root (GHSA-8mgp-746c-j5xp, CWE-22/CWE-59).
+        with pathsec_open(
+            "/tmp/punkt.new", "w", context="PunktSentenceTokenizer.dump"
+        ) as outfile:
             for aug_tok in tokens:
                 if aug_tok.parastart:
                     outfile.write("\n\n")
@@ -1831,16 +1839,28 @@ def save_punkt_params(params, dir="/tmp/punkt_tab"):
 
     from nltk.tabdata import TabEncoder
 
+    # ``dir`` is caller-controlled (default is the shared, guessable
+    # ``/tmp/punkt_tab``; ``PunktTokenizer.save_params`` passes ``/tmp/<lang>``).
+    # Validate it before creating the directory so an outside target is refused
+    # up front and ``mkdir`` cannot materialise a directory outside an allowed
+    # data root; each param file is then written through the pathsec sandbox,
+    # which additionally closes the symlink-swap TOCTOU on write
+    # (GHSA-8mgp-746c-j5xp, CWE-22/CWE-59).
+    validate_path(dir, context="save_punkt_params")
     if not isdir(dir):
         mkdir(dir)
     tenc = TabEncoder()
-    with open(f"{dir}/collocations.tab", "w") as f:
+    with pathsec_open(f"{dir}/collocations.tab", "w", context="save_punkt_params") as f:
         f.write(f"{tenc.tups2tab(params.collocations)}")
-    with open(f"{dir}/sent_starters.txt", "w") as f:
+    with pathsec_open(
+        f"{dir}/sent_starters.txt", "w", context="save_punkt_params"
+    ) as f:
         f.write(f"{tenc.set2txt(params.sent_starters)}")
-    with open(f"{dir}/abbrev_types.txt", "w") as f:
+    with pathsec_open(f"{dir}/abbrev_types.txt", "w", context="save_punkt_params") as f:
         f.write(f"{tenc.set2txt(params.abbrev_types)}")
-    with open(f"{dir}/ortho_context.tab", "w") as f:
+    with pathsec_open(
+        f"{dir}/ortho_context.tab", "w", context="save_punkt_params"
+    ) as f:
         f.write(f"{tenc.ivdict2tab(params.ortho_context)}")
 
 

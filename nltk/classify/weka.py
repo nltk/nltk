@@ -19,6 +19,7 @@ from sys import stdin
 
 from nltk.classify.api import ClassifierI
 from nltk.internals import config_java, java
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
@@ -280,7 +281,7 @@ class ARFF_Formatter:
     def write(self, outfile, tokens):
         """Writes ARFF data to a file for the given data."""
         if not hasattr(outfile, "write"):
-            outfile = open(outfile, "w")
+            outfile = pathsec_open(outfile, "w", context="ARFF_Formatter.write")
         outfile.write(self.format(tokens))
         outfile.close()
 

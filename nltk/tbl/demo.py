@@ -13,6 +13,8 @@ import random
 import time
 
 from nltk.corpus import treebank
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.picklesec import pickle_load
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
@@ -234,7 +236,7 @@ def postag(
         # available. Print a list with describe_template_sets()
         # for instance:
         templates = brill24()
-    (training_data, baseline_data, gold_data, testing_data) = _demo_prepare_data(
+    training_data, baseline_data, gold_data, testing_data = _demo_prepare_data(
         tagged_data, train, num_sents, randomize, separate_baseline_data
     )
 
@@ -246,14 +248,18 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            with open(cache_baseline_tagger, "wb") as print_rules:
+            with pathsec_open(
+                cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
+            ) as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {}".format(
                     cache_baseline_tagger
                 )
             )
-        with open(cache_baseline_tagger, "rb") as print_rules:
+        with pathsec_open(
+            cache_baseline_tagger, "rb", context="tbl.demo.cache_baseline_tagger"
+        ) as print_rules:
             baseline_tagger = pickle_load(print_rules)
             print(f"Reloaded pickled tagger from {cache_baseline_tagger}")
     else:
@@ -289,7 +295,7 @@ def postag(
         print(
             "Incrementally tagging the test data, collecting individual rule statistics"
         )
-        (taggedtest, teststats) = brill_tagger.batch_tag_incremental(
+        taggedtest, teststats = brill_tagger.batch_tag_incremental(
             testing_data, gold_data
         )
         print("    Rule statistics collected")
@@ -314,7 +320,7 @@ def postag(
 
     # writing error analysis to file
     if error_output is not None:
-        with open(error_output, "w") as f:
+        with pathsec_open(error_output, "w", context="tbl.demo.error_output") as f:
             f.write("Errors for Brill Tagger %r\n\n" % serialize_output)
             f.write("\n".join(error_list(gold_data, taggedtest)).encode("utf-8") + "\n")
         print(f"Wrote tagger errors including context to {error_output}")
@@ -322,10 +328,14 @@ def postag(
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with open(serialize_output, "wb") as print_rules:
+        with pathsec_open(
+            serialize_output, "wb", context="tbl.demo.serialize_output"
+        ) as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print(f"Wrote pickled tagger to {serialize_output}")
-        with open(serialize_output, "rb") as print_rules:
+        with pathsec_open(
+            serialize_output, "rb", context="tbl.demo.serialize_output"
+        ) as print_rules:
             brill_tagger_reloaded = pickle_load(print_rules)
         print(f"Reloaded pickled tagger from {serialize_output}")
         taggedtest_reloaded = brill_tagger_reloaded.tag_sents(testing_data)
@@ -356,13 +366,13 @@ def _demo_prepare_data(
         baseline_data = training_data
     else:
         bl_cutoff = len(training_data) // 3
-        (baseline_data, training_data) = (
+        baseline_data, training_data = (
             training_data[:bl_cutoff],
             training_data[bl_cutoff:],
         )
-    (trainseqs, traintokens) = corpus_size(training_data)
-    (testseqs, testtokens) = corpus_size(testing_data)
-    (bltrainseqs, bltraintokens) = corpus_size(baseline_data)
+    trainseqs, traintokens = corpus_size(training_data)
+    testseqs, testtokens = corpus_size(testing_data)
+    bltrainseqs, bltraintokens = corpus_size(baseline_data)
     print(f"Read testing data ({testseqs:d} sents/{testtokens:d} wds)")
     print(f"Read training data ({trainseqs:d} sents/{traintokens:d} wds)")
     print(
@@ -376,6 +386,10 @@ def _demo_prepare_data(
 
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
+    # matplotlib's savefig() opens and writes learning_curve_output directly, so
+    # a caller-controlled path is validated here before any file is created
+    # (GHSA-8mgp-746c-j5xp).
+    validate_path(learning_curve_output, context="tbl.demo.learning_curve_output")
     testcurve = [teststats["initialerrors"]]
     for rulescore in teststats["rulescores"]:
         testcurve.append(testcurve[-1] - rulescore)

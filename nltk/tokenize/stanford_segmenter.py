@@ -23,6 +23,7 @@ from nltk.internals import (
     find_jar,
     java,
 )
+from nltk.pathsec import open as pathsec_open
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -288,7 +289,12 @@ class StanfordSegmenter(TokenizerI):
                 return cached_digest
 
         h = hashlib.sha256()
-        with open(file_path, "rb") as f:
+        # ``file_path`` is a caller-controlled classpath entry (from the
+        # ``path_to_jar`` / ``path_to_slf4j`` constructor args or the
+        # STANFORD_SEGMENTER / SLF4J env vars). Route the read through the
+        # pathsec sandbox so a traversal path cannot be hashed/opened outside an
+        # allowed data root (GHSA-8mgp-746c-j5xp, CWE-22/CWE-59).
+        with pathsec_open(file_path, "rb", context="StanfordSegmenter._sha256sum") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 h.update(chunk)
         digest = h.hexdigest()

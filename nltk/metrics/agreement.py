@@ -76,6 +76,7 @@ from operator import itemgetter
 
 from nltk.internals import deprecated
 from nltk.metrics.distance import binary_distance
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import ConditionalFreqDist, FreqDist
 
 log = logging.getLogger(__name__)
@@ -476,7 +477,7 @@ if __name__ == "__main__":
 
     # read in data from the specified file
     data = []
-    with open(options.file) as infile:
+    with pathsec_open(options.file, context="agreement.__main__") as infile:
         for l in infile:
             toks = l.split(options.columnsep)
             coder, object_, labels = (

@@ -1,0 +1,115 @@
+# Natural Language Toolkit: pathsec sweep tests (chunk / sentiment sinks)
+#
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
+# For license information, see LICENSE.TXT
+#
+"""Attack tests for the bare-``open()`` sinks hardened under GHSA-8mgp-746c-j5xp
+in :mod:`nltk.chunk.named_entity` and :mod:`nltk.sentiment.sentiment_analyzer`.
+
+Each patched file-write API is driven with a path *outside* the NLTK data
+sandbox and must raise ``PermissionError`` and write nothing outside. The
+outside target is a fresh directory under the real home directory -- never a
+temp dir, because the system temp dir can itself be an allowed root (and on
+Linux ``tempfile.mkdtemp()`` lives under the shared ``/tmp``).
+"""
+
+import inspect
+import os
+import shutil
+import tempfile
+from pathlib import Path
+
+import pytest
+
+import nltk.data
+import nltk.pathsec as pathsec
+
+
+@pytest.fixture
+def sandbox():
+    """Force ENFORCE on, point the sandbox at a throwaway data root, and yield a
+    fresh *outside* directory under ``~`` that is guaranteed unauthorized."""
+    old_paths = list(nltk.data.path)
+    old_enforce = pathsec.ENFORCE
+    old_cache = pathsec._ALLOWED_ROOTS_CACHE
+    old_last = pathsec._LAST_DATA_PATHS
+
+    data_root = tempfile.mkdtemp(prefix="nltk_sweep_data_")
+    outside = Path.home() / f".nltk_sweep_chunk_{os.getpid()}"
+
+    pathsec.ENFORCE = True
+    nltk.data.path[:] = [data_root]
+    pathsec._ALLOWED_ROOTS_CACHE = None
+    pathsec._LAST_DATA_PATHS = None
+
+    if outside.exists():
+        shutil.rmtree(outside, ignore_errors=True)
+    outside.mkdir(parents=True, exist_ok=True)
+    try:
+        yield outside
+    finally:
+        pathsec.ENFORCE = old_enforce
+        nltk.data.path[:] = old_paths
+        pathsec._ALLOWED_ROOTS_CACHE = old_cache
+        pathsec._LAST_DATA_PATHS = old_last
+        shutil.rmtree(outside, ignore_errors=True)
+        shutil.rmtree(data_root, ignore_errors=True)
+
+
+def test_negative_control_pathsec_open_refuses_outside(sandbox):
+    """Baseline: pathsec.open() itself refuses a write outside the sandbox."""
+    target = sandbox / "pwned.txt"
+    with pytest.raises(PermissionError):
+        pathsec.open(str(target), "w")
+    assert not target.exists()
+
+
+def test_sentiment_save_file_refuses_outside_path(sandbox):
+    """SentimentAnalyzer.save_file() must not pickle to an outside path."""
+    sa = pytest.importorskip("nltk.sentiment.sentiment_analyzer")
+    target = sandbox / "clf.pickle"
+    analyzer = sa.SentimentAnalyzer()
+    with pytest.raises(PermissionError):
+        analyzer.save_file({"weights": [1, 2, 3]}, str(target))
+    assert not target.exists()
+
+
+def test_ne_chunker_save_params_refuses_outside_path(sandbox):
+    """Maxent_NE_Chunker.save_params() must refuse an outside tab_dir before it
+    imports the writer, reads model params, or creates the directory."""
+    ne = pytest.importorskip("nltk.chunk.named_entity")
+    target_dir = sandbox / "english_ace_multiclass"
+
+    # Build the object without __init__ (which needs on-disk model data): the
+    # validate_path guard is the first statement in save_params and only needs
+    # ``_fmt`` set, so it fires before ``self._tagger`` is ever touched.
+    chunker = object.__new__(ne.Maxent_NE_Chunker)
+    chunker._fmt = "multiclass"
+    with pytest.raises(PermissionError):
+        chunker.save_params(tab_dir=str(target_dir))
+    assert not target_dir.exists() or not any(target_dir.iterdir())
+
+
+def test_ne_chunker_save_params_refuses_hardcoded_tmp(sandbox):
+    """The historical hardcoded /tmp default is a shared, world-writable
+    location and must now be refused too."""
+    ne = pytest.importorskip("nltk.chunk.named_entity")
+    chunker = object.__new__(ne.Maxent_NE_Chunker)
+    chunker._fmt = "multiclass"
+    with pytest.raises(PermissionError):
+        chunker.save_params()  # defaults to /tmp/english_ace_multiclass/
+
+
+def test_sources_route_through_pathsec():
+    """Grep-style guard: the patched sinks must reference the pathsec sentinel,
+    so a future refactor that reverts to a bare open() is caught here."""
+    ne = pytest.importorskip("nltk.chunk.named_entity")
+    sa = pytest.importorskip("nltk.sentiment.sentiment_analyzer")
+
+    save_file_src = inspect.getsource(sa.SentimentAnalyzer.save_file)
+    assert "pathsec_open(" in save_file_src
+    assert "with open(" not in save_file_src
+
+    save_params_src = inspect.getsource(ne.Maxent_NE_Chunker.save_params)
+    assert "validate_path(" in save_params_src

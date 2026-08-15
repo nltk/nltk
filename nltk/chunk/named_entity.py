@@ -14,6 +14,7 @@ import os
 import re
 
 from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.tag import ClassifierBasedTagger, pos_tag
 from nltk.xmlsec import parse as safe_parse
 
@@ -340,7 +341,19 @@ class Maxent_NE_Chunker(NEChunkParser):
         )
         self._tagger = NEChunkParserTagger(classifier=mc)
 
-    def save_params(self):
+    def save_params(self, tab_dir=None):
+        # The default destination is a *guessable* name in the shared,
+        # world-writable system temp dir (``/tmp``), and a caller may pass any
+        # ``tab_dir``. Validate the destination against the NLTK data sandbox
+        # *before* importing the writer, reading the model params, or creating
+        # the directory, so a path outside the allowed roots is refused up front
+        # instead of letting model files (and an unvalidated ``mkdir``) land at
+        # an attacker-chosen location (GHSA-8mgp-746c-j5xp / CWE-377/378).
+        fmt = self._fmt
+        if tab_dir is None:
+            tab_dir = f"/tmp/english_ace_{fmt}/"
+        validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
+
         from nltk.classify.maxent import save_maxent_params
 
         classif = self._tagger._classifier
@@ -349,8 +362,7 @@ class Maxent_NE_Chunker(NEChunkParser):
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
-        fmt = self._fmt
-        save_maxent_params(wgt, mpg, lab, aon, tab_dir=f"/tmp/english_ace_{fmt}/")
+        save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
 
 
 def build_model(fmt="multiclass"):
@@ -397,7 +409,7 @@ def build_model(fmt="binary"):
     outfilename = f"/tmp/ne_chunker_{fmt}.pickle"
     print(f"Saving chunker to {outfilename}...")
 
-    with open(outfilename, "wb") as outfile:
+    with pathsec_open(outfilename, "wb", context="build_model") as outfile:
         pickle.dump(cp, outfile, -1)
 
     return cp
