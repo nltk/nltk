@@ -5,8 +5,11 @@ parsing reporter-written advisory text at test time is its own exposure).
 
 No credentials by design. Published advisories on a public repo are readable
 unauthenticated, so this uses no GITHUB_TOKEN and touches no secret -- there is
-nothing here for a malicious PR to exfiltrate. The response is parsed as JSON
-and only GHSA ids are compared; the reporter-controlled text is never executed.
+nothing here for a malicious PR to exfiltrate. The body is read with a byte cap
+and only GHSA ids and states are compared; the reporter-controlled text is
+never executed. Because it is credential-free the CI job runs on every push and
+PR (fork PRs included) under an empty ``permissions`` that neuters even the
+default token -- a missing probe should be caught wherever the code changes.
 
 Runs only under ``NLTK_ADVISORY_CI`` (a normal pytest run never hits the
 network) and skips, rather than fails, if the fetch cannot be made -- so a rate
