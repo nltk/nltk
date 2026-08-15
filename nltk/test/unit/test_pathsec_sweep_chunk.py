@@ -18,6 +18,7 @@ import inspect
 import os
 import shutil
 import tempfile
+import types
 from pathlib import Path
 
 import pytest
@@ -91,14 +92,43 @@ def test_ne_chunker_save_params_refuses_outside_path(sandbox):
     assert not target_dir.exists() or not any(target_dir.iterdir())
 
 
-def test_ne_chunker_save_params_refuses_hardcoded_tmp(sandbox):
-    """The historical hardcoded /tmp default is a shared, world-writable
-    location and must now be refused too."""
+def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
+    sandbox, monkeypatch
+):
+    """The default destination must be a fresh *private* (0700),
+    unpredictably-named directory -- never the historical guessable
+    ``/tmp/english_ace_<fmt>/`` in the shared, world-writable system temp, which
+    another local user could pre-create or symlink (CWE-377/378)."""
+    import nltk.classify.maxent as maxent
+    import nltk.pathsec as pathsec
+
     ne = pytest.importorskip("nltk.chunk.named_entity")
+
+    captured = {}
+
+    def fake_save(wgt, mpg, lab, aon, tab_dir="/tmp"):
+        captured["tab_dir"] = tab_dir
+
+    monkeypatch.setattr(maxent, "save_maxent_params", fake_save)
+
     chunker = object.__new__(ne.Maxent_NE_Chunker)
     chunker._fmt = "multiclass"
-    with pytest.raises(PermissionError):
-        chunker.save_params()  # defaults to /tmp/english_ace_multiclass/
+    chunker._tagger = types.SimpleNamespace(
+        _classifier=types.SimpleNamespace(
+            _encoding=types.SimpleNamespace(_mapping={}, _labels=[], _alwayson={}),
+            _weights=[],
+        )
+    )
+    out = chunker.save_params()
+    try:
+        assert out == captured["tab_dir"], "save_params must return its dir"
+        assert "english_ace" not in out, "must not use the guessable historic name"
+        assert not out.startswith("/tmp/"), "must not default into shared /tmp"
+        assert os.path.isdir(out)
+        # Private (0700, user-owned) -> pathsec accepts it as a data root.
+        assert pathsec.is_private_dir(out)
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
 
 
 def test_sources_route_through_pathsec():

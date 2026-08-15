@@ -12,6 +12,7 @@ Named entity chunker
 
 import os
 import re
+import tempfile
 
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
@@ -342,16 +343,22 @@ class Maxent_NE_Chunker(NEChunkParser):
         self._tagger = NEChunkParserTagger(classifier=mc)
 
     def save_params(self, tab_dir=None):
-        # The default destination is a *guessable* name in the shared,
-        # world-writable system temp dir (``/tmp``), and a caller may pass any
-        # ``tab_dir``. Validate the destination against the NLTK data sandbox
-        # *before* importing the writer, reading the model params, or creating
-        # the directory, so a path outside the allowed roots is refused up front
-        # instead of letting model files (and an unvalidated ``mkdir``) land at
-        # an attacker-chosen location (GHSA-8mgp-746c-j5xp / CWE-377/378).
+        """Write the trained maxent parameters as tab files; return the dir.
+
+        The old default was a *guessable* name in the shared, world-writable
+        system temp (``/tmp/english_ace_<fmt>/``). That is a threat by itself: on
+        a multi-user host another user can pre-create or symlink that exact path
+        to redirect or read the write (CWE-377/378), and pathsec refuses a
+        shared-temp destination anyway (so it would not even work). Default
+        instead to a freshly created *private* (mode 0700), unpredictably-named
+        directory, which no other user can pre-plant. A caller may still pass an
+        explicit ``tab_dir``; it is validated against the NLTK data sandbox
+        *before* the writer is imported, the params are read, or any directory is
+        created, so an outside path is refused up front (GHSA-8mgp-746c-j5xp).
+        """
         fmt = self._fmt
         if tab_dir is None:
-            tab_dir = f"/tmp/english_ace_{fmt}/"
+            tab_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
         validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
 
         from nltk.classify.maxent import save_maxent_params
@@ -363,6 +370,7 @@ class Maxent_NE_Chunker(NEChunkParser):
         lab = ecg._labels
         aon = ecg._alwayson
         save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
+        return tab_dir
 
 
 def build_model(fmt="multiclass"):
