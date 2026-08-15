@@ -226,6 +226,18 @@ python -m doctest nltk/test/tokenize.doctest
 These are faster than running the full test suite and useful for quick
 iteration during development.
 
+The suite loads corpora from `nltk_data`. To run it without network access
+(e.g. when packaging for a distribution), download the data once and point
+`NLTK_DATA` at it:
+
+```bash
+python -m nltk.downloader -d ./nltk_data all
+NLTK_DATA="$(pwd)/nltk_data" pytest nltk/test
+```
+
+A few tests need non-free corpora that `all` does not include; deselect those
+files if they cannot be obtained.
+
 
 ## Continuous Integration
 
