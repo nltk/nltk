@@ -15,6 +15,16 @@ from nltk.corpus import (  # mwa_ppdb
 from nltk.tree import Tree
 
 
+def _corpus_available(corpus):
+    """True if a corpus is installed. ``fileids()`` raises ``LookupError`` when
+    it is not, so a bare ``not corpus.fileids()`` in a ``skipif`` aborts
+    collection offline instead of skipping (issue #2969)."""
+    try:
+        return bool(corpus.fileids())
+    except LookupError:
+        return False
+
+
 class TestUdhr(unittest.TestCase):
     def test_words(self):
         for name in udhr.fileids():
@@ -194,7 +204,7 @@ class TestCoNLL2007(unittest.TestCase):
 
 
 @pytest.mark.skipif(
-    not ptb.fileids(),
+    not _corpus_available(ptb),
     reason="A full installation of the Penn Treebank is not available",
 )
 class TestPTB(unittest.TestCase):
