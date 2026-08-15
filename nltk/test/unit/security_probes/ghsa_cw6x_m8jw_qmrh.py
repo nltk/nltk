@@ -1,4 +1,4 @@
-"""GHSA-cw6x-m8jw-qmrh [medium] -- Uncontrolled recursion in nltk.featstruct.FeatStructReader causes unhandled RecursionErr"""
+"""GHSA-cw6x-m8jw-qmrh [medium] -- Uncontrolled recursion in nltk.featstruct.FeatStructReader causes unhandled RecursionError (DoS) via deeply nested feature-structure input"""
 
 from ._base import FIXED, VULNERABLE, probe
 

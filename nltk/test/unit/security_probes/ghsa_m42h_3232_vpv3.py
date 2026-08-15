@@ -1,4 +1,4 @@
-"""GHSA-m42h-3232-vpv3 [high] -- Arbitrary File Read via Path Traversal in nltk.data.load()"""
+"""GHSA-m42h-3232-vpv3 [high] -- Arbitrary File Read via Path Traversal in nltk.data.load() through Percent-Encoded Sequences"""
 
 from ._base import (
     FIXED,

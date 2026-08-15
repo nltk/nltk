@@ -1,4 +1,4 @@
-"""GHSA-qvv7-cg9c-w4x3 [high] -- DNS-rebinding SSRF filter bypass in nltk.pathsec.urlopen (nltk.download / nltk.data.load"""
+"""GHSA-qvv7-cg9c-w4x3 [high] -- DNS-rebinding SSRF filter bypass in nltk.pathsec.urlopen (nltk.download / nltk.data.load) defeats ENFORCE mode"""
 
 from ._base import FIXED, VULNERABLE, probe
 

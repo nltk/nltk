@@ -1,4 +1,4 @@
-"""GHSA-gfwx-w7gr-fvh7 [medium] -- Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') in"""
+"""GHSA-gfwx-w7gr-fvh7 [medium] -- Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') in nltk"""
 
 from ._base import STATIC, VULNERABLE, probe, read_source
 

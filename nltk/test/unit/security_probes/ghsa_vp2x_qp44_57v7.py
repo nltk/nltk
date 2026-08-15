@@ -1,4 +1,4 @@
-"""GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in XMLCorpusView._read_xml_fragment"""
+"""GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in `XMLCorpusView._read_xml_fragment()`"""
 
 import io
 

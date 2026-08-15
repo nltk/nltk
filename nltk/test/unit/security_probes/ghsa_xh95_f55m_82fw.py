@@ -1,4 +1,4 @@
-"""GHSA-xh95-f55m-82fw [high] -- Path traversal in NLTK FramenetCorpusReader.frame() allows arbitrary XML file read"""
+"""GHSA-xh95-f55m-82fw [high] -- Path traversal in NLTK FramenetCorpusReader.frame() allows arbitrary XML file read, bypassing the nltk.pathsec sandbox (ENFORCE=True)"""
 
 from ._base import guard_rejects, probe
 

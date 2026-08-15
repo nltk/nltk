@@ -1,4 +1,4 @@
-"""GHSA-m4rf-3fr8-xwx3 [high] -- JVM argument injection bypass via per-call options in the NLTK Stanford wrappers (incomp"""
+"""GHSA-m4rf-3fr8-xwx3 [high] -- JVM argument injection bypass via per-call options in the NLTK Stanford wrappers (incomplete fix of CVE-2026-12841)"""
 
 from ._base import FIXED, VULNERABLE, probe
 
