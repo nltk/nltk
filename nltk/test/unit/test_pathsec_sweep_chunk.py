@@ -99,7 +99,6 @@ def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
     unpredictably-named directory -- never the historical guessable
     ``/tmp/english_ace_<fmt>/`` in the shared, world-writable system temp, which
     another local user could pre-create or symlink (CWE-377/378)."""
-    import nltk.classify.maxent as maxent
     import nltk.pathsec as pathsec
 
     ne = pytest.importorskip("nltk.chunk.named_entity")
@@ -109,7 +108,9 @@ def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
     def fake_save(wgt, mpg, lab, aon, tab_dir="/tmp"):
         captured["tab_dir"] = tab_dir
 
-    monkeypatch.setattr(maxent, "save_maxent_params", fake_save)
+    # save_params uses the name imported into named_entity's namespace, so patch
+    # it there (not on nltk.classify.maxent).
+    monkeypatch.setattr(ne, "save_maxent_params", fake_save)
 
     chunker = object.__new__(ne.Maxent_NE_Chunker)
     chunker._fmt = "multiclass"

@@ -21,6 +21,7 @@ from nltk.xmlsec import parse as safe_parse
 
 try:
     from nltk.classify import MaxentClassifier
+    from nltk.classify.maxent import save_maxent_params
 except ImportError:
     pass
 
@@ -342,8 +343,8 @@ class Maxent_NE_Chunker(NEChunkParser):
         )
         self._tagger = NEChunkParserTagger(classifier=mc)
 
-    def save_params(self, tab_dir=None):
-        """Write the trained maxent parameters as tab files; return the dir.
+    def save_params(self, tab_dir: str | None = None) -> str:
+        """Write the trained maxent parameters as tab files.
 
         The old default was a *guessable* name in the shared, world-writable
         system temp (``/tmp/english_ace_<fmt>/``). That is a threat by itself: on
@@ -353,15 +354,18 @@ class Maxent_NE_Chunker(NEChunkParser):
         instead to a freshly created *private* (mode 0700), unpredictably-named
         directory, which no other user can pre-plant. A caller may still pass an
         explicit ``tab_dir``; it is validated against the NLTK data sandbox
-        *before* the writer is imported, the params are read, or any directory is
-        created, so an outside path is refused up front (GHSA-8mgp-746c-j5xp).
+        *before* the params are read or any directory is created, so an outside
+        path is refused up front (GHSA-8mgp-746c-j5xp).
+
+        :param tab_dir: destination directory; defaults to a fresh private one.
+        :type tab_dir: str or None
+        :return: the directory the parameter files were written to.
+        :rtype: str
         """
         fmt = self._fmt
         if tab_dir is None:
             tab_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
         validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
-
-        from nltk.classify.maxent import save_maxent_params
 
         classif = self._tagger._classifier
         ecg = classif._encoding
