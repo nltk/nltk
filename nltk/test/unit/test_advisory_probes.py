@@ -5,14 +5,20 @@ guard in-process and assert the probe flips to VULNERABLE, so a probe cannot
 pass by never reaching the sink.
 """
 
+import gc
 import importlib
 import os
 import pathlib
 import pkgutil
 import re
+import types
+import warnings
 from collections import Counter
 
+import pytest
+
 from nltk.test.unit import security_probes as probes
+from nltk.test.unit.security_probes import _base
 
 
 def test_each_ghsa_module_registers_exactly_one_probe():
@@ -257,3 +263,74 @@ class TestProbeDiscoveryIsolation:
         assert (
             not unqualified
         ), f"imports not under the package namespace: {unqualified}"
+
+
+class TestReadSourceHardening:
+    """Attack ``_base.read_source`` -- the STATIC probes' source reader.
+
+    It used a bare ``open(module.__file__).read()``: the descriptor leaked until
+    GC, and it would read whatever path a module's ``__file__`` pointed at. The
+    hardened version reads via ``Path.read_text`` (deterministic close) and is
+    confined to the nltk package tree, so it cannot be turned into an
+    arbitrary-file reader by handing it a module whose ``__file__`` is elsewhere.
+    """
+
+    def test_reads_real_nltk_source(self):
+        src = _base.read_source("nltk.downloader")
+        assert "class Downloader" in src
+
+    def test_no_descriptor_leak_under_repeated_reads(self):
+        # A bare open().read() leaves the file object for the GC to close, which
+        # emits a ResourceWarning. Promote it to an error and force collection:
+        # Path.read_text closes eagerly, so the loop stays silent.
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", ResourceWarning)
+            for _ in range(200):
+                _base.read_source("nltk.downloader")
+            gc.collect()
+
+    def test_refuses_module_whose_file_is_outside_nltk(self, monkeypatch):
+        # The core attack: a module object whose __file__ points at a system
+        # file. A bare open() would happily read it; containment must refuse.
+        evil = types.ModuleType("evil")
+        evil.__file__ = "/etc/passwd"
+        monkeypatch.setattr(_base.importlib, "import_module", lambda name: evil)
+        with pytest.raises(ValueError, match="outside nltk"):
+            _base.read_source("anything")
+
+    def test_refuses_traversal_that_escapes_nltk(self, monkeypatch):
+        # __file__ that syntactically sits under the package but climbs out with
+        # ``..`` -- resolve() normalises it, so containment still catches it.
+        escape = os.path.join(str(_base._NLTK_ROOT), "..", "..", "etc", "passwd")
+        evil = types.ModuleType("evil")
+        evil.__file__ = escape
+        monkeypatch.setattr(_base.importlib, "import_module", lambda name: evil)
+        with pytest.raises(ValueError, match="outside nltk"):
+            _base.read_source("anything")
+
+    def test_refuses_module_without_a_file(self, monkeypatch):
+        # A namespace/builtin module has __file__ = None -- a clean refusal, not
+        # a TypeError from open(None).
+        nofile = types.ModuleType("nofile")
+        nofile.__file__ = None
+        monkeypatch.setattr(_base.importlib, "import_module", lambda name: nofile)
+        with pytest.raises(ValueError, match="outside nltk"):
+            _base.read_source("anything")
+
+    def test_root_is_derived_from_file_not_imported(self):
+        # Guards the fix for the bare ``import nltk`` vector: the root must come
+        # from this file's own location, so it is *the* nltk this code lives in,
+        # never a shadowed/older tree that happened to import first.
+        assert _base._NLTK_ROOT == pathlib.Path(_base.__file__).resolve().parents[3]
+        assert _base._NLTK_ROOT.name == "nltk"
+        assert (_base._NLTK_ROOT / "__init__.py").is_file()
+
+    def test_root_resolution_rejects_a_bogus_layout(self, monkeypatch, tmp_path):
+        # If the file is vendored/relocated so parents[3] is not really nltk,
+        # resolution must fail loudly, not silently confine to a wrong dir.
+        stray = tmp_path / "a" / "b" / "c" / "d" / "_base.py"
+        stray.parent.mkdir(parents=True)
+        stray.write_text("")
+        monkeypatch.setattr(_base, "__file__", str(stray))
+        with pytest.raises(RuntimeError, match="cannot locate the nltk package root"):
+            _base._resolve_nltk_root()

@@ -11,13 +11,14 @@ runs the attack the advisory describes and returns ``(status, evidence)``:
 
 This package lives inside ``nltk/test/unit`` so the coverage test imports it as
 a normal sibling -- it never computes an outside path or touches ``sys.path``,
-which in an installed tree would reach ``site-packages``. ``read_source`` uses a
-module's own ``__file__`` for the same reason.
+which in an installed tree would reach ``site-packages``. ``read_source`` reads a
+module's own ``__file__`` for the same reason, confined to the nltk package tree.
 """
 
 import importlib
 import io  # noqa: F401  (re-exported for probe bodies)
 import os
+import pathlib
 import shutil
 import socket  # noqa: F401
 import tempfile
@@ -67,10 +68,48 @@ def within_budget(func, budget=DOS_BUDGET, repeats=3):
     return best < budget, best
 
 
+def _resolve_nltk_root():
+    """The nltk package root this file lives in -- derived and *verified*.
+
+    Not from ``import nltk`` (that could bind a shadowed/older tree on the path),
+    and not from a trusted layout depth. Tie the on-disk path to this module's
+    *import identity*: ``__name__`` is ``nltk.test.unit.security_probes._base``,
+    so the file's path components read bottom-to-top must equal that name
+    reversed -- ``_base, security_probes, unit, test, nltk``. The equality also
+    fixes the package root (last component) and rejects a too-shallow relocation
+    (the chain comes up short), so nothing else needs asserting.
+
+    This is a containment boundary for ``read_source``, not an attacker barrier:
+    anyone who can relocate this file or write into the package dir already has
+    code execution. The point is to fail loudly on a broken/vendored layout
+    rather than silently confine ``read_source`` to the wrong directory.
+    """
+    here = pathlib.Path(__file__).resolve()
+    expected = __name__.split(".")  # nltk, test, unit, security_probes, _base
+    on_disk = [here.stem, *(p.name for p in here.parents[: len(expected) - 1])]
+    if on_disk != expected[::-1]:
+        raise RuntimeError(f"cannot locate the nltk package root from {here}")
+    return here.parents[len(expected) - 2]
+
+
+#: read_source is confined to this.
+_NLTK_ROOT = _resolve_nltk_root()
+
+
 def read_source(dotted_module):
-    """Source of an importable NLTK module, via its own ``__file__``."""
+    """Return the source of an importable NLTK module.
+
+    Confined to the nltk package tree: a STATIC probe only ever needs NLTK's own
+    source, so a module whose file resolves outside the package (or has none) is
+    refused rather than read -- read_source cannot be turned into an
+    arbitrary-file reader. ``Path.read_text`` closes the descriptor immediately
+    rather than leaving it to the garbage collector.
+    """
     module = importlib.import_module(dotted_module)
-    return open(module.__file__, encoding="utf-8").read()
+    path = pathlib.Path(module.__file__ or "").resolve()
+    if not path.is_relative_to(_NLTK_ROOT):
+        raise ValueError(f"read_source refuses a path outside nltk: {path}")
+    return path.read_text(encoding="utf-8")
 
 
 def _outside_root_target():
@@ -84,10 +123,11 @@ def _outside_root_target():
     """
     for path, canary in (("/etc/passwd", "root:"), ("/etc/hosts", "localhost")):
         try:
-            if canary in open(path, encoding="utf-8", errors="ignore").read():
-                return path, canary
+            text = pathlib.Path(path).read_text(encoding="utf-8", errors="ignore")
         except OSError:
             continue
+        if canary in text:
+            return path, canary
     return None, None
 
 
