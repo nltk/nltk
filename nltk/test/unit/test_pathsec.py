@@ -503,22 +503,95 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
     assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
 
 
-def test_env_proxy_helper_maps_each_case():
+@pytest.mark.parametrize(
+    "proxies, bypass, expected",
+    [
+        # --- benign: no real http/https proxy would carry the request ---------
+        ({}, False, False),  # nothing set
+        ({"no": "localhost"}, False, False),  # NO_PROXY only (the reported bug)
+        ({"no": "*"}, False, False),  # NO_PROXY wildcard
+        ({"all": "http://p:8080"}, False, False),  # urllib ignores 'all' for http/https
+        ({"ftp": "http://p:8080"}, False, False),  # only an ftp proxy
+        ({"http": "http://p:8080"}, True, False),  # http proxy but host bypassed
+        ({"https": "http://p:8080"}, True, False),  # https proxy but host bypassed
+        ({"http": "http://p:8080", "no": "raw.githubusercontent.com"}, True, False),
+        # --- must block: a real http/https proxy carries the host -------------
+        ({"http": "http://p:8080"}, False, True),
+        ({"https": "http://p:8080"}, False, True),
+        ({"http": "http://p:8080", "https": "http://p:8080"}, False, True),
+        ({"http": "http://p:8080", "no": "otherhost.example"}, False, True),
+    ],
+)
+def test_env_proxy_carries_truth_table(proxies, bypass, expected):
     """_env_proxy_carries mirrors urllib: proxied iff a real http/https proxy
     would carry the host and it is not bypassed by NO_PROXY. Fails closed."""
-    url = "http://raw.githubusercontent.com/x"
+    with patch.object(urllib.request, "getproxies", lambda: proxies), patch.object(
+        urllib.request, "proxy_bypass", lambda host: bypass
+    ):
+        assert (
+            pathsec._env_proxy_carries("http://raw.githubusercontent.com/x") is expected
+        )
 
-    def check(proxies, bypass, expected):
-        with patch.object(urllib.request, "getproxies", lambda: proxies), patch.object(
-            urllib.request, "proxy_bypass", lambda host: bypass
-        ):
-            assert pathsec._env_proxy_carries(url) is expected
 
-    check({}, False, False)  # nothing set
-    check({"no": "localhost"}, False, False)  # NO_PROXY only (the bug)
-    check({"http": "http://p:8080"}, False, True)  # real proxy -> block
-    check({"http": "http://p:8080"}, True, False)  # proxy but host bypassed -> direct
-    check({"all": "http://p:8080"}, False, False)  # urllib ignores 'all' for http/https
+def test_issue_3748_no_proxy_env_downloads_are_not_blocked(monkeypatch):
+    """The reporter's exact scenario, end to end through real getproxies().
+
+    Only NO_PROXY is set (no HTTP_PROXY/HTTPS_PROXY), so getproxies() returns
+    {'no': ...} from the environment and nothing is proxied -- the download must
+    install the pinning handlers and proceed, not raise 'proxied fetch'.
+    """
+    for var in (
+        "HTTP_PROXY",
+        "http_proxy",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "ALL_PROXY",
+        "all_proxy",
+    ):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setenv("NO_PROXY", "localhost,127.0.0.1")
+
+    assert urllib.request.getproxies().get("no")  # sanity: the env is as reported
+    handlers = _capture_urlopen_handlers(monkeypatch)
+    assert any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
+    proxy_handlers = [h for h in handlers if isinstance(h, urllib.request.ProxyHandler)]
+    assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == {}
+
+
+@pytest.mark.parametrize(
+    "target",
+    [
+        "http://169.254.169.254/latest/meta-data/",  # cloud metadata
+        "http://127.0.0.1/admin",  # loopback
+        "http://[::1]/admin",  # loopback IPv6
+        "http://10.0.0.1/internal",  # RFC1918
+        "http://metadata.google.internal/computeMetadata/v1/",  # metadata by name
+        "http://example.com/x",  # even an innocuous host: proxy = unpinnable
+    ],
+)
+def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
+    target, monkeypatch
+):
+    """Exploit must not leak: when a real proxy carries the request, NLTK cannot
+    pin the IP, so every target is refused (GHSA-6ww7) -- including when NO_PROXY
+    is set for *other* hosts, so the fix cannot be turned into a bypass."""
+    monkeypatch.setattr(
+        urllib.request,
+        "getproxies",
+        lambda: {
+            "http": "http://proxy.local:3128",
+            "https": "http://proxy.local:3128",
+            "no": "trusted.internal",
+        },
+    )
+    monkeypatch.setattr(urllib.request, "proxy_bypass", lambda host: False)
+    monkeypatch.setattr(urllib.request, "_opener", None)
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
+
+    with pytest.raises(PermissionError, match="proxied fetch"):
+        pathsec.urlopen(target)
 
 
 def test_proxy_with_no_proxy_target_still_pins(monkeypatch):
