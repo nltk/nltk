@@ -114,6 +114,13 @@ _DENIED_MODULE_PREFIXES = (
     "numpy.ctypeslib",
     "numpy.distutils",
     "numpy.testing",
+    # scipy.io / sklearn.datasets are file-read, file-write and network (openml)
+    # sinks under the otherwise-legitimate scipy/sklearn namespaces: e.g.
+    # scipy.io.mmwrite (arbitrary file write), scipy.io.loadmat / arff.loadarff
+    # (file read), sklearn.datasets.fetch_openml (SSRF), load_files /
+    # load_svmlight_file (file read). No model pickle needs them.
+    "scipy.io",
+    "sklearn.datasets",
     "nltk.tokenize.repp",
     "nltk.internals",
 )
@@ -138,6 +145,15 @@ _DENIED_GLOBALS = frozenset(
         ("numpy", "memmap"),
         ("numpy", "DataSource"),
         ("numpy", "vectorize"),
+        # numpy callables that invoke a supplied function -- a REDUCE gadget can
+        # ride them to call another reconstructed callable.
+        ("numpy", "apply_along_axis"),
+        ("numpy", "apply_over_axes"),
+        ("numpy", "frompyfunc"),
+        ("numpy", "piecewise"),
+        # scipy low-level C callback wrapper.
+        ("scipy", "LowLevelCallable"),
+        ("scipy._lib._ccallback", "LowLevelCallable"),
         ("pandas", "read_pickle"),
     }
 )

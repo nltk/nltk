@@ -24,19 +24,32 @@ from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import allowlisted_pickle_load
 
-# Modules whose globals a saved TransitionParser model legitimately needs. The
-# model is a trained scikit-learn classifier backed by numpy/scipy arrays, so
-# allowing only these scientific-stack modules lets a genuine model load while
-# blocking arbitrary-code gadgets (os, posix, subprocess, builtins, ...).
-#
-# These are broad namespaces (numpy array unpickling needs submodules such as
-# ``numpy._core.multiarray``), so AllowlistUnpickler's dotted-name guard and its
-# denied-module backstop do the heavy lifting: a crafted pickle can no longer
-# reach ``numpy.f2py.crackfortran.myeval`` (an eval sink under the allowed
-# ``numpy`` namespace) or a dotted ``sklearn.os.system`` (GHSA-x99w / GHSA-4489).
-_MODEL_ALLOWED_MODULES = ("numpy", "scipy", "sklearn")
-# Exact primitives a fitted model's containers may reference.
+# The saved model is a fitted scikit-learn ``SVC`` backed by numpy arrays and,
+# for the sparse svmlight features, a scipy CSR matrix. Allowing the *whole*
+# numpy/scipy/sklearn namespaces (the previous approach) still exposed real
+# gadgets that survive the module backstop -- ``scipy.io.mmwrite`` (arbitrary
+# file write), ``scipy.io.loadmat`` / ``sklearn.datasets.load_svmlight_file``
+# (file read), ``sklearn.datasets.fetch_openml`` (network/SSRF) and
+# ``numpy.apply_along_axis`` / ``numpy.frompyfunc`` (invoke a callable). So no
+# broad module is allowed; instead only the exact globals a real fitted SVC
+# pickle references are permitted (recorded by round-tripping a model and
+# logging every ``find_class``). Anything else fails closed (CWE-502,
+# GHSA-x99w / GHSA-4489). Both the numpy 1.x (``numpy.core``) and 2.x
+# (``numpy._core``) reconstruction paths and the old/new ``scipy.sparse`` module
+# names are listed so a model saved under either version still loads.
+_MODEL_ALLOWED_MODULES = ()
 _MODEL_ALLOWED_GLOBALS = (
+    ("sklearn.svm._classes", "SVC"),
+    ("numpy", "ndarray"),
+    ("numpy", "dtype"),
+    ("numpy.core.multiarray", "_reconstruct"),
+    ("numpy._core.multiarray", "_reconstruct"),
+    ("numpy.core.multiarray", "scalar"),
+    ("numpy._core.multiarray", "scalar"),
+    ("scipy.sparse._csr", "csr_matrix"),
+    ("scipy.sparse.csr", "csr_matrix"),
+    ("scipy.sparse._csc", "csc_matrix"),
+    ("scipy.sparse.csc", "csc_matrix"),
     ("collections", "defaultdict"),
     ("collections", "OrderedDict"),
     ("builtins", "int"),
@@ -581,9 +594,10 @@ class TransitionParser(ParserI):
         """
         result = []
         # First load the model. The model is a trained scikit-learn classifier,
-        # so it is loaded through an allowlisting unpickler (CWE-502): only
-        # numpy/scipy/sklearn globals may be reconstructed, and anything else --
-        # e.g. os.system -- raises UnpicklingError instead of executing. See
+        # so it is loaded through an allowlisting unpickler (CWE-502): only the
+        # exact globals a fitted SVC pickle needs may be reconstructed, and
+        # anything else -- e.g. os.system, or scipy.io.mmwrite -- raises
+        # UnpicklingError instead of executing/writing. See
         # nltk/picklesec.py and huntr report
         # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
         #

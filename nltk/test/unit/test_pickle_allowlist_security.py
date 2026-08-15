@@ -284,3 +284,108 @@ def test_all_punkt_object_types_round_trip():
     # and it still tokenizes identically after a round-trip
     restored_tok = punkt_pickle_load(io.BytesIO(pickle.dumps(tok, protocol=4)))
     assert restored_tok.tokenize(text) == tok.tokenize(text)
+
+
+# --- GHSA-8mgp follow-up: the model allowlist is exact, not broad namespaces ---
+#
+# The saved TransitionParser model is a fitted sklearn SVC. Allowing the whole
+# numpy/scipy/sklearn namespaces still left real gadgets reachable through the
+# module backstop: scipy.io.mmwrite (arbitrary file WRITE), scipy.io.loadmat /
+# sklearn.datasets.load_svmlight_file (file read), sklearn.datasets.fetch_openml
+# (network / SSRF) and numpy.apply_along_axis / frompyfunc (invoke a callable).
+# The allowlist is now the exact set of globals a real SVC pickle references,
+# and the shared denylist blocks those sinks even for a broad caller.
+
+# Dangerous callables that must never be reconstructable from an untrusted model.
+_MODEL_GADGETS = [
+    ("scipy.io", "mmwrite"),  # arbitrary file write
+    ("scipy.io", "loadmat"),  # file read
+    ("scipy.io", "mmread"),
+    ("scipy.io.arff", "loadarff"),
+    ("sklearn.datasets", "fetch_openml"),  # network / SSRF
+    ("sklearn.datasets", "load_files"),  # file read
+    ("sklearn.datasets", "load_svmlight_file"),  # file read
+    ("numpy", "apply_along_axis"),  # invokes a supplied callable
+    ("numpy", "frompyfunc"),
+    ("numpy", "load"),  # nested unpickle sink
+    ("scipy", "LowLevelCallable"),
+    ("os", "system"),  # the classic
+]
+
+
+def test_model_allowlist_uses_no_broad_namespace():
+    """Teeth: the model allowlist must stay exact. If a broad module ever comes
+    back, the I/O/network gadgets below become reachable again."""
+    from nltk.parse.transitionparser import _MODEL_ALLOWED_MODULES
+
+    assert (
+        tuple(_MODEL_ALLOWED_MODULES) == ()
+    ), "TransitionParser must not allowlist whole numpy/scipy/sklearn namespaces"
+
+
+@pytest.mark.parametrize("module,name", _MODEL_GADGETS)
+def test_model_allowlist_blocks_io_network_and_call_gadgets(module, name):
+    """Under the real TransitionParser allowlist, every gadget is refused."""
+    from nltk.parse.transitionparser import (
+        _MODEL_ALLOWED_GLOBALS,
+        _MODEL_ALLOWED_MODULES,
+    )
+
+    u = AllowlistUnpickler(
+        BytesIO(b""),
+        allowed_modules=_MODEL_ALLOWED_MODULES,
+        allowed_globals=_MODEL_ALLOWED_GLOBALS,
+    )
+    with pytest.raises(pickle.UnpicklingError):
+        u.find_class(module, name)
+
+
+@pytest.mark.parametrize(
+    "module,name",
+    [
+        ("scipy.io", "mmwrite"),
+        ("scipy.io", "loadmat"),
+        ("scipy.io.arff", "loadarff"),
+        ("sklearn.datasets", "fetch_openml"),
+        ("sklearn.datasets", "load_svmlight_file"),
+        ("numpy", "apply_along_axis"),
+        ("numpy", "frompyfunc"),
+        ("scipy", "LowLevelCallable"),
+    ],
+)
+def test_shared_denylist_blocks_gadgets_even_under_broad_allow(module, name):
+    """Defense in depth: even a caller that broadly allows numpy/scipy/sklearn
+    cannot reach these -- they are on the shared denylist. The denials fire
+    before the module is imported, so the block is a security decision, not a
+    missing-dependency accident."""
+    u = AllowlistUnpickler(BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn"))
+    with pytest.raises(pickle.UnpicklingError):
+        u.find_class(module, name)
+
+
+def test_model_allowlist_still_loads_a_real_svc():
+    """The exact allowlist must round-trip a genuine fitted SVC (dense + sparse)
+    -- narrowing the allowlist must not break legitimate model loading."""
+    np = pytest.importorskip("numpy")
+    sparse = pytest.importorskip("scipy.sparse")
+    svm = pytest.importorskip("sklearn.svm")
+
+    from nltk.parse.transitionparser import (
+        _MODEL_ALLOWED_GLOBALS,
+        _MODEL_ALLOWED_MODULES,
+    )
+
+    X = np.array(
+        [[0.0, 1.0], [1.0, 0.0], [1.0, 1.0], [0.0, 0.0], [0.5, 0.5], [0.2, 0.8]]
+    )
+    y = [0, 1, 0, 1, 0, 1]
+    for data in (X, sparse.csr_matrix(X)):
+        model = svm.SVC(
+            kernel="poly", degree=2, coef0=0, gamma=0.2, C=0.5, probability=True
+        ).fit(data, y)
+        restored = allowlisted_pickle_load(
+            BytesIO(pickle.dumps(model)),
+            allowed_modules=_MODEL_ALLOWED_MODULES,
+            allowed_globals=_MODEL_ALLOWED_GLOBALS,
+        )
+        assert np.array_equal(model.predict(X[:3]), restored.predict(X[:3]))
