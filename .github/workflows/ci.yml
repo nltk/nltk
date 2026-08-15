@@ -240,11 +240,12 @@ jobs:
     # GITHUB_TOKEN is neutered, and reads only advisory ids -- there is no
     # secret to exfiltrate and no privilege beyond the test matrix, which
     # already runs the PR's code. It fails only on a real coverage gap and
-    # skips if the fetch cannot be made.
+    # skips if the fetch cannot be made. `permissions: {}` is intentional and
+    # sufficient: checking out a public repo needs no token scope.
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v7
