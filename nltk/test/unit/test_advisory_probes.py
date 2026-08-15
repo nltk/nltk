@@ -125,6 +125,24 @@ def test_traversal_probe_has_teeth(monkeypatch):
     assert probes.PROBES["GHSA-m42h-3232-vpv3"]()[0] == probes.VULNERABLE
 
 
+def test_proxy_ssrf_probe_has_teeth():
+    """Neuter the proxied-fetch refusal; the probe must report VULNERABLE.
+
+    Guards against a false FIXED where the fetch merely fails downstream (the
+    fake proxy is unreachable) instead of being refused by the guard.
+    """
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-6ww7-3frv-cqxh"]
+    original = pathsec._reject_unpinnable_proxied_fetch
+    try:
+        pathsec._reject_unpinnable_proxied_fetch = lambda url: None
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._reject_unpinnable_proxied_fetch = original
+    assert probe()[0] == probes.FIXED
+
+
 def test_escape_probes_reach_the_sink():
     """With enforcement off, the file-read probes must actually leak the file.
 
