@@ -1,4 +1,5 @@
 """GHSA-5wp5-5229-5g6q [high] -- Missing Post-Download Integrity Verification Allows Malicious Package Injection"""
+
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 

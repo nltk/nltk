@@ -1,4 +1,5 @@
 """GHSA-rf74-v2fm-23pw [low] -- Unbounded recursion in JSONTaggedDecoder.decode_obj() may cause DoS"""
+
 from ._base import FIXED, VULNERABLE, probe
 
 

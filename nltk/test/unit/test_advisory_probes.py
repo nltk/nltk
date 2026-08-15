@@ -21,10 +21,10 @@ def test_no_advisory_is_vulnerable():
         try:
             status, evidence = probes.PROBES[ghsa]()
         except Exception as exc:  # a crashing probe is not a pass
-            problems.append("%s ERROR %s: %s" % (ghsa, type(exc).__name__, exc))
+            problems.append(f"{ghsa} ERROR {type(exc).__name__}: {exc}")
         else:
             if status == probes.VULNERABLE:
-                problems.append("%s VULNERABLE: %s" % (ghsa, evidence))
+                problems.append(f"{ghsa} VULNERABLE: {evidence}")
     assert not problems, "\n  ".join([""] + problems)
 
 
@@ -71,7 +71,9 @@ def test_redos_probe_has_teeth():
 
     import nltk.text as text_module
 
-    module = importlib.import_module("nltk.test.unit.security_probes.ghsa_rrv8_h7p8_rx55")
+    module = importlib.import_module(
+        "nltk.test.unit.security_probes.ghsa_rrv8_h7p8_rx55"
+    )
     probe = probes.PROBES["GHSA-rrv8-h7p8-rx55"]
     original_findall, original_budget = text_module.Text.findall, module.DOS_BUDGET
     try:
@@ -125,7 +127,6 @@ def test_escape_probes_reach_the_sink():
     probes read /etc/passwd -> VULNERABLE; on, they block -> FIXED.
     """
     import nltk.pathsec as pathsec
-
     from nltk.test.unit.security_probes import _base
 
     if not _base.OUTSIDE_TARGET:

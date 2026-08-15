@@ -1,4 +1,5 @@
 """GHSA-rrv8-h7p8-rx55 [high] -- ReDoS in nltk.text.Text.findall() via unvalidated user-supplied regular expressions"""
+
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

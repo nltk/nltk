@@ -1,4 +1,5 @@
 """GHSA-f833-7jw8-xwrv [high] -- Symlink-based sandbox bypass in FramenetCorpusReader (bypasses the fix for CVE-2026-54292)"""
+
 from ._base import guard_rejects, probe
 
 

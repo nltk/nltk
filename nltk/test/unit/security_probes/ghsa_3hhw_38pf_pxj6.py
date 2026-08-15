@@ -1,4 +1,5 @@
 """GHSA-3hhw-38pf-pxj6 [medium] -- Symlink-based arbitrary file read in IPIPANCorpusReader, bypasses nltk.pathsec entirely"""
+
 from ._base import escape_probe, probe
 
 
@@ -11,6 +12,8 @@ def _ipipan_symlink():
         return IPIPANCorpusReader(box.root, ["link.xml"]).channels(fileids=["link.xml"])
 
     def categories(box):
-        return IPIPANCorpusReader(box.root, ["link.xml"]).categories(fileids=["link.xml"])
+        return IPIPANCorpusReader(box.root, ["link.xml"]).categories(
+            fileids=["link.xml"]
+        )
 
     return escape_probe([("channels()", channels), ("categories()", categories)])

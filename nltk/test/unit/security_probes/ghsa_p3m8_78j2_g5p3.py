@@ -1,4 +1,5 @@
 """GHSA-p3m8-78j2-g5p3 [high] -- [CWE-1188] Default ENFORCE=False Disables All pathsec Security Controls"""
+
 from ._base import FIXED, VULNERABLE, probe
 
 

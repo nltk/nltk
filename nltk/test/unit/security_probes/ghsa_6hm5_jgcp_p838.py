@@ -1,4 +1,5 @@
 """GHSA-6hm5-jgcp-p838 [high] -- Path Traversal in NKJPCorpusReader leads to Arbitrary File Read and bypasses the nltk.pathsec sandbox"""
+
 from ._base import guard_rejects, probe
 
 
@@ -12,5 +13,7 @@ def _nkjp_traversal():
     from nltk.pathsec import validate_path
 
     return guard_rejects(
-        lambda path, root: validate_path(path, context="NKJPCorpusReader", required_root=root)
+        lambda path, root: validate_path(
+            path, context="NKJPCorpusReader", required_root=root
+        )
     )

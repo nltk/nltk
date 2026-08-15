@@ -1,5 +1,8 @@
 """GHSA-8mpw-7fpc-4gqj [low] -- Pl196xCorpusReader has quadratic ReDoS on malformed TEI blocks"""
-import os, tempfile
+
+import os
+import tempfile
+
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

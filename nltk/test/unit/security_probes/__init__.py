@@ -21,7 +21,7 @@ from ._base import BENIGN, FIXED, PROBES, STATIC, VULNERABLE, probe  # noqa: F40
 # package's own, so nothing outside the test tree is imported.
 for _module in pkgutil.iter_modules(__path__):
     if _module.name.startswith("ghsa_"):
-        importlib.import_module("%s.%s" % (__name__, _module.name))
+        importlib.import_module(f"{__name__}.{_module.name}")
 
 __all__ = ["PROBES", "FIXED", "VULNERABLE", "STATIC", "BENIGN", "run"]
 
@@ -33,7 +33,9 @@ def run():
         try:
             status, evidence = PROBES[ghsa]()
         except Exception as exc:
-            status, evidence = "ERROR", "%s: %s" % (type(exc).__name__, str(exc)[:70])
+            status, evidence = "ERROR", "{}: {}".format(
+                type(exc).__name__, str(exc)[:70]
+            )
         counts[status] = counts.get(status, 0) + 1
         print("%-22s %-10s %s" % (ghsa, status, evidence[:70]))
     print("\nprobes: %d" % len(PROBES))

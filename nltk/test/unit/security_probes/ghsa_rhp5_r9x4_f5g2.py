@@ -1,4 +1,5 @@
 """GHSA-rhp5-r9x4-f5g2 [critical] -- [CWE-502] Unsafe Pickle Deserialization in TransitionParser Allows Remote Code Execution"""
+
 from ._base import FIXED, VULNERABLE, probe, read_source
 
 

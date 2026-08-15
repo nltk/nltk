@@ -1,4 +1,5 @@
 """GHSA-ff5c-cp5c-9wjf [medium] -- Uncontrolled resource consumption in RecursiveDescentParser via ambiguous or left-recurs"""
+
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

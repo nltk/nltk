@@ -1,4 +1,5 @@
 """GHSA-6hwm-xvph-95vm [low] -- Uncontrolled search path when invoking the Graphviz 'dot' binary (CWE-426/CWE-427)"""
+
 from ._base import BENIGN, STATIC, probe, read_source
 
 

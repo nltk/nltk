@@ -1,4 +1,5 @@
 """GHSA-jm6w-m3j8-898g [high] -- Unauthenticated remote shutdown in nltk.app.wordnet_app"""
+
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 

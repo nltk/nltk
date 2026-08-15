@@ -1,4 +1,5 @@
 """GHSA-469j-vmhf-r6v7 [high] -- Downloader Path Traversal Vulnerability (AFO) - Arbitrary File Overwrite"""
+
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 

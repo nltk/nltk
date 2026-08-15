@@ -1,4 +1,5 @@
 """GHSA-3gq4-3j92-5w49 [high] -- Corpus Reader Sandbox Bypass"""
+
 from ._base import escape_probe, probe
 
 

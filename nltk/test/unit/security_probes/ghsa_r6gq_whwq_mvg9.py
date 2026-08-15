@@ -1,4 +1,5 @@
 """GHSA-r6gq-whwq-mvg9 [medium] -- Symlink escape in CorpusReader allows arbitrary local file read outside the corpus root"""
+
 from ._base import escape_probe, probe
 
 

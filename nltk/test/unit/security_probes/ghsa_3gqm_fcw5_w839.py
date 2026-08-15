@@ -1,4 +1,5 @@
 """GHSA-3gqm-fcw5-w839 [high] -- [CWE-918] SSRF Fail-Open in validate_network_url() via DNS Resolution Failure"""
+
 import socket
 
 from ._base import FIXED, VULNERABLE, probe
@@ -19,7 +20,15 @@ def _ssrf_fail_open():
             calls.append(1)
             if len(calls) == 1:
                 raise socket.gaierror("simulated resolution failure")
-            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("169.254.169.254", port or 80))]
+            return [
+                (
+                    socket.AF_INET,
+                    socket.SOCK_STREAM,
+                    6,
+                    "",
+                    ("169.254.169.254", port or 80),
+                )
+            ]
         return real(host, port, *args, **kwargs)
 
     socket.getaddrinfo = rebinding

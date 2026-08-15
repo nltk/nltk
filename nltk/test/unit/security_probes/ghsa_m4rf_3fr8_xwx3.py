@@ -1,4 +1,5 @@
 """GHSA-m4rf-3fr8-xwx3 [high] -- JVM argument injection bypass via per-call options in the NLTK Stanford wrappers (incomp"""
+
 from ._base import FIXED, VULNERABLE, probe
 
 
@@ -26,4 +27,6 @@ def _jvm_argument_injection():
             len(blocked),
             len(hostile),
         )
-    return FIXED, "all %d hostile per-call JVM options refused by the filter" % len(hostile)
+    return FIXED, "all %d hostile per-call JVM options refused by the filter" % len(
+        hostile
+    )

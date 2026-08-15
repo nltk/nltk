@@ -1,5 +1,8 @@
 """GHSA-8mgp-746c-j5xp [high] -- Model-artifact APIs bypass pathsec and touch files outside allowed roots"""
-import os, tempfile
+
+import os
+import tempfile
+
 from ._base import FIXED, VULNERABLE, probe
 
 
@@ -9,8 +12,10 @@ def _model_artifact_apis():
     import nltk.data
 
     try:
-        nltk.data.load(os.path.join(tempfile.gettempdir(), "..", "..", "etc", "passwd"),
-                       format="raw")
+        nltk.data.load(
+            os.path.join(tempfile.gettempdir(), "..", "..", "etc", "passwd"),
+            format="raw",
+        )
         return VULNERABLE, "nltk.data.load reached outside an allowed root"
     except Exception as exc:
         return FIXED, "outside-root model path rejected (%s)" % type(exc).__name__

@@ -1,5 +1,8 @@
 """GHSA-vp2x-qp44-57v7 [low] -- Quadratic CPU Exhaustion in `XMLCorpusView._read_xml_fragment()`"""
-import os, tempfile
+
+import os
+import tempfile
+
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

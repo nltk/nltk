@@ -1,4 +1,5 @@
 """GHSA-fg7f-2386-8897 [high] -- ReDoS in NLTK ReviewsCorpusReader FEATURES regex"""
+
 from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 
 

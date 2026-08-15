@@ -84,7 +84,16 @@ OUTSIDE_TARGET, OUTSIDE_CANARY = _outside_root_target()
 #: incidental failure (a missing file, a parse error). A probe may only report
 #: FIXED when the attack was refused by one of these -- proving it reached the
 #: guard -- or when the guard is disabled and it leaks.
-_SECURITY_MARKERS = ("security", "violation", "pathsec", "unauthorized", "outside", "traversal", "must be relative", "unsafe")
+_SECURITY_MARKERS = (
+    "security",
+    "violation",
+    "pathsec",
+    "unauthorized",
+    "outside",
+    "traversal",
+    "must be relative",
+    "unsafe",
+)
 
 
 def is_security_rejection(exc):
@@ -141,7 +150,9 @@ def guard_rejects(guard):
                 return VULNERABLE, "%s path passed the guard" % label
             except Exception as exc:
                 if not is_security_rejection(exc):
-                    return STATIC, "%s rejected non-securely (%s)" % (label, type(exc).__name__)
+                    return STATIC, "{} rejected non-securely ({})".format(
+                        label, type(exc).__name__
+                    )
                 notes.append(label)
         return FIXED, "guard security-rejects: " + ", ".join(notes)
     finally:
@@ -173,12 +184,12 @@ def escape_probe(attempts):
             except Exception as exc:
                 if is_security_rejection(exc):
                     reached = True
-                    notes.append("%s=blocked(%s)" % (label, type(exc).__name__))
+                    notes.append(f"{label}=blocked({type(exc).__name__})")
                 else:
-                    notes.append("%s=unreached(%s)" % (label, type(exc).__name__))
+                    notes.append(f"{label}=unreached({type(exc).__name__})")
                 continue
             if box.leaked(result):
-                return VULNERABLE, "%s read %s" % (label, box.target)
+                return VULNERABLE, f"{label} read {box.target}"
             notes.append("%s=no-leak" % label)
         detail = "; ".join(notes)
         if reached:

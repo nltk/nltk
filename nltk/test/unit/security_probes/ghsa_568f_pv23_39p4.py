@@ -1,4 +1,5 @@
 """GHSA-568f-pv23-39p4 [medium] -- Stable FrameNet and NKJP readers parse outside-root XML in 3.9.4"""
+
 from ._base import guard_rejects, probe
 
 

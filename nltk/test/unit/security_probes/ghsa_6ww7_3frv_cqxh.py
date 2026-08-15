@@ -1,4 +1,5 @@
 """GHSA-6ww7-3frv-cqxh [high] -- pathsec SSRF protection can be bypassed when a proxy is configured"""
+
 from ._base import STATIC, VULNERABLE, probe, read_source
 
 

@@ -232,18 +232,18 @@ jobs:
 
   advisory-coverage:
     name: Advisory coverage (GitHub)
-    # Isolated from the test matrix on purpose. This is the ONLY job that pulls
-    # the live advisory list from GitHub, so it is the only place NLTK_ADVISORY_CI
-    # and the security-advisories read permission are granted -- the offline
-    # probes above never touch the network. It runs once (not per matrix leg),
-    # fails only when a newly published advisory has no probe, and skips rather
-    # than fails if the fetch itself cannot be made.
+    # The only job that pulls the live advisory list, so the only one that hits
+    # the network -- the offline probes never do. It fetches published
+    # advisories UNAUTHENTICATED (they are public), so no token is present and
+    # nothing can be exfiltrated. Belt and braces, it does not run on fork PRs
+    # (which run untrusted code) and takes an empty `permissions`, so even the
+    # default GITHUB_TOKEN is absent. It fails only on a real coverage gap and
+    # skips if the fetch cannot be made.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    # Published advisories on a public repo are world-readable; contents:read is
-    # all gh needs. The test skips (not fails) if the fetch is unauthorized, so
-    # even a locked-down fork token cannot turn this into a false red.
-    permissions:
-      contents: read
+    permissions: {}
     steps:
       - uses: actions/checkout@v5
 
@@ -255,13 +255,12 @@ jobs:
       - name: Install dependencies
         # The coverage test only reads probe *keys* and never calls a probe, so
         # it needs the package importable, not the full optional stack.
-        run: pip install -e . pytest
+        run: pip install -e . pytest pytest-mock
 
       - name: Check every published advisory has a probe
         env:
           NLTK_ADVISORY_CI: "1"
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # gh reads GH_TOKEN; the test skips (does not fail) if the fetch is
-          # unavailable, and fails only on a genuine coverage gap.
+          # No token: the public advisories API is read unauthenticated. The
+          # test skips if the fetch is unavailable, fails only on a coverage gap.
           pytest -rsx nltk/test/unit/test_advisory_coverage_ci.py
