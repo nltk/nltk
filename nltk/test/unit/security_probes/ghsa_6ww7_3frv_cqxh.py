@@ -18,6 +18,7 @@ def _proxy_ssrf_bypass():
 
     saved = (
         urllib.request.getproxies,
+        urllib.request.proxy_bypass,
         urllib.request._opener,
         pathsec.ENFORCE,
         pathsec.ALLOW_PROXIED_FETCH,
@@ -25,6 +26,13 @@ def _proxy_ssrf_bypass():
     )
     try:
         urllib.request.getproxies = lambda: {"http": "http://attacker-proxy:8080"}
+        # Pin proxy_bypass: pathsec asks it whether the configured proxy actually
+        # carries this host. The real macOS impl (proxy_bypass_macosx_sysconf)
+        # reads system config and bypasses link-local hosts on some runners, which
+        # would make the simulated proxy inert and the probe misreport VULNERABLE.
+        # False = "the proxy carries every host", the scenario under test, on all
+        # platforms.
+        urllib.request.proxy_bypass = lambda host: False
         urllib.request._opener = None
         pathsec.ENFORCE = True
         pathsec.ALLOW_PROXIED_FETCH = False
@@ -48,6 +56,7 @@ def _proxy_ssrf_bypass():
     finally:
         (
             urllib.request.getproxies,
+            urllib.request.proxy_bypass,
             urllib.request._opener,
             pathsec.ENFORCE,
             pathsec.ALLOW_PROXIED_FETCH,
