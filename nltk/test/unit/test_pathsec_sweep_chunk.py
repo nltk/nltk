@@ -77,16 +77,22 @@ def test_sentiment_save_file_refuses_outside_path(sandbox):
 
 
 def test_ne_chunker_save_params_refuses_outside_path(sandbox):
-    """Maxent_NE_Chunker.save_params() must refuse an outside tab_dir before it
-    imports the writer, reads model params, or creates the directory."""
+    """Maxent_NE_Chunker.save_params() must refuse an outside tab_dir before the
+    parameter files are written."""
     ne = pytest.importorskip("nltk.chunk.named_entity")
     target_dir = sandbox / "english_ace_multiclass"
 
-    # Build the object without __init__ (which needs on-disk model data): the
-    # validate_path guard is the first statement in save_params and only needs
-    # ``_fmt`` set, so it fires before ``self._tagger`` is ever touched.
+    # Build the object without __init__ (which needs on-disk model data) and give
+    # it a stub tagger so the in-memory param reads succeed; validate_path then
+    # refuses the outside tab_dir before save_maxent_params writes anything.
     chunker = object.__new__(ne.Maxent_NE_Chunker)
     chunker._fmt = "multiclass"
+    chunker._tagger = types.SimpleNamespace(
+        _classifier=types.SimpleNamespace(
+            _encoding=types.SimpleNamespace(_mapping={}, _labels=[], _alwayson={}),
+            _weights=[],
+        )
+    )
     with pytest.raises(PermissionError):
         chunker.save_params(tab_dir=str(target_dir))
     assert not target_dir.exists() or not any(target_dir.iterdir())

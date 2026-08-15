@@ -354,25 +354,26 @@ class Maxent_NE_Chunker(NEChunkParser):
         instead to a freshly created *private* (mode 0700), unpredictably-named
         directory, which no other user can pre-plant. A caller may still pass an
         explicit ``tab_dir``; it is validated against the NLTK data sandbox
-        *before* the params are read or any directory is created, so an outside
-        path is refused up front (GHSA-8mgp-746c-j5xp).
+        before the parameter files are written, so an outside path is refused
+        (GHSA-8mgp-746c-j5xp).
 
         :param tab_dir: destination directory; defaults to a fresh private one.
         :type tab_dir: str or None
         :return: the directory the parameter files were written to.
         :rtype: str
         """
-        fmt = self._fmt
-        if tab_dir is None:
-            tab_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
-        validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
-
         classif = self._tagger._classifier
         ecg = classif._encoding
         wgt = classif._weights
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
+
+        fmt = self._fmt
+        if tab_dir is None:
+            tab_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
+        validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
+
         save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
         return tab_dir
 
