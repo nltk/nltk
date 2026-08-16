@@ -1820,7 +1820,7 @@ class PunktTokenizer(PunktSentenceTokenizer):
         """This tokenizer's private directory for saved parameters.
 
         Created lazily on first use with an unpredictable name and mode 0700, so
-        -- unlike the old guessable ``/tmp/<lang>`` -- another local user cannot
+        (unlike the old guessable ``/tmp/<lang>``) another local user cannot
         pre-create or symlink it to redirect or read the write (CWE-377/378).
         Reused across calls, so the saved parameters share one known, private
         location.
@@ -1857,7 +1857,7 @@ def load_punkt_params(lang_dir):
 def save_punkt_params(params, dir: str | None = None) -> str:
     """Write Punkt parameters as tab files; return the directory.
 
-    The old default was the shared, guessable ``/tmp/punkt_tab`` -- a
+    The old default was the shared, guessable ``/tmp/punkt_tab``, a
     destination another local user could pre-create or symlink (CWE-377/378),
     and one pathsec refuses anyway. Default instead to a fresh private (mode
     0700), unpredictably-named directory. A caller-supplied ``dir`` is validated
