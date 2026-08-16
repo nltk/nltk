@@ -86,8 +86,11 @@ def test_save_punkt_params_default_is_private_dir_not_tmp(sandbox):
 
     out = save_punkt_params(PunktParameters())
     try:
-        assert not out.startswith("/tmp/"), "must not default into shared /tmp"
+        # is_private_dir (0700, user-owned) is the real "not shared /tmp" check;
+        # a fresh mkdtemp lives under /tmp on Linux, so assert privacy plus the
+        # unpredictable mkdtemp name, not that the path avoids /tmp.
         assert pathsec.is_private_dir(out)
+        assert os.path.basename(out).startswith("nltk_punkt_params_")
         assert (pathlib.Path(out) / "collocations.tab").exists()
     finally:
         shutil.rmtree(out, ignore_errors=True)
@@ -101,8 +104,11 @@ def test_punkt_dump_writes_private_temp_not_hardcoded_tmp(sandbox):
     tok = PunktSentenceTokenizer()
     out = tok.dump(iter([PunktToken("Hello"), PunktToken("world.")]))
     try:
-        assert not out.startswith("/tmp/"), "must not write into shared /tmp"
+        # is_private_dir on the parent is the real "not shared /tmp" check; a
+        # fresh mkdtemp lives under /tmp on Linux, so assert privacy plus the
+        # unpredictable mkdtemp name, not that the path avoids /tmp.
         assert os.path.basename(out) == "punkt.new"
+        assert os.path.basename(os.path.dirname(out)).startswith("nltk_punkt_dump_")
         assert pathsec.is_private_dir(os.path.dirname(out))
         assert os.path.exists(out)
     finally:

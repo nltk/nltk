@@ -109,12 +109,12 @@ import math
 import os
 import re
 import string
-import tempfile
 from collections import defaultdict
 from collections.abc import Iterator
 from re import Match
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from nltk.pathsec import make_staging_dir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import allowlisted_pickle_load
@@ -1646,7 +1646,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         # Debug scaffold: write through pathsec to a fresh private (0700) temp
         # file, not a guessable /tmp path, and return it (CWE-377/378).
         outfilename = os.path.join(
-            tempfile.mkdtemp(prefix="nltk_punkt_dump_"), "punkt.new"
+            make_staging_dir(prefix="nltk_punkt_dump_"), "punkt.new"
         )
         print(f"writing to {outfilename}...")
         with pathsec_open(
@@ -1826,7 +1826,7 @@ class PunktTokenizer(PunktSentenceTokenizer):
         location.
         """
         if self._save_dir is None:
-            self._save_dir = tempfile.mkdtemp(prefix=f"nltk_punkt_{self._lang}_")
+            self._save_dir = make_staging_dir(prefix=f"nltk_punkt_{self._lang}_")
         return self._save_dir
 
     def save_params(self) -> str:
@@ -1872,7 +1872,7 @@ def save_punkt_params(params, dir: str | None = None) -> str:
     """
     tenc = TabEncoder()
     if dir is None:
-        dir = tempfile.mkdtemp(prefix="nltk_punkt_params_")
+        dir = make_staging_dir(prefix="nltk_punkt_params_")
     validate_path(dir, context="save_punkt_params")
     if not os.path.isdir(dir):
         os.mkdir(dir)
