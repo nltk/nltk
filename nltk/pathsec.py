@@ -24,12 +24,8 @@ from functools import lru_cache
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
-# A path check is a *filesystem* check. A URL is not a filesystem path, and to
-# the kernel "http://.." is the directory "http:" then ".." -- a traversal. The
-# old ``if "://" in raw: return`` waved every such string straight through
-# validation (GHSA-8mgp-746c-j5xp). Match is anchored (a real scheme is a
-# prefix, never a substring), tolerates leading whitespace, and is
-# case-insensitive so ``HTTP://`` cannot slip past.
+# A URL is not a filesystem path: to the kernel "http://.." is the dir "http:"
+# then a ".." traversal. Anchored, whitespace-tolerant, case-insensitive match.
 _URL_SCHEME_RE = re.compile(r"^\s*(?:https?|ftp)://", re.IGNORECASE)
 _FILE_SCHEME_RE = re.compile(r"^\s*file:", re.IGNORECASE)
 
