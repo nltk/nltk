@@ -1643,10 +1643,8 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
     # [XX] TESTING
     def dump(self, tokens: Iterator[PunktToken]) -> str:
-        # Debug scaffold. Write to a fresh private (0700), unpredictably-named
-        # temp file -- not a hardcoded, guessable /tmp path another user could
-        # pre-create or symlink (CWE-377/378) -- through the pathsec sandbox, and
-        # return the path (GHSA-8mgp-746c-j5xp, CWE-22/CWE-59).
+        # Debug scaffold: write through pathsec to a fresh private (0700) temp
+        # file, not a guessable /tmp path, and return it (CWE-377/378).
         outfilename = os.path.join(
             tempfile.mkdtemp(prefix="nltk_punkt_dump_"), "punkt.new"
         )
