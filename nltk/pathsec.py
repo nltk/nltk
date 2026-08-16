@@ -12,6 +12,7 @@ import builtins
 import http.client
 import ipaddress
 import os
+import re
 import socket
 import stat
 import sys
@@ -22,6 +23,15 @@ import zipfile
 from functools import lru_cache
 from pathlib import Path
 from urllib.parse import unquote, urlparse
+
+# A path check is a *filesystem* check. A URL is not a filesystem path, and to
+# the kernel "http://.." is the directory "http:" then ".." -- a traversal. The
+# old ``if "://" in raw: return`` waved every such string straight through
+# validation (GHSA-8mgp-746c-j5xp). Match is anchored (a real scheme is a
+# prefix, never a substring), tolerates leading whitespace, and is
+# case-insensitive so ``HTTP://`` cannot slip past.
+_URL_SCHEME_RE = re.compile(r"^\s*(?:https?|ftp)://", re.IGNORECASE)
+_FILE_SCHEME_RE = re.compile(r"^\s*file:", re.IGNORECASE)
 
 # Security Enforcement Toggle
 # ENFORCE = False
@@ -144,12 +154,35 @@ def validate_path(path_input, context="NLTK", required_root=None):
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
 
-        if "://" in raw:
+        # A URL is not a filesystem path. Reject http(s)/ftp outright: no in-tree
+        # caller validates a network URL here (they use pathsec.urlopen), and
+        # "http://../../etc/passwd" is a kernel-level traversal, not a host.
+        # Delegating to validate_network_url() was tried and still fails open --
+        # urlparse gives host ".." which resolves to [] and passes -- so reject
+        # at this layer (GHSA-8mgp-746c-j5xp).
+        if _URL_SCHEME_RE.match(raw):
+            msg = (
+                f"Security Violation [{context}]: a URL was passed to a "
+                f"filesystem path check: {raw!r}. Use nltk.pathsec.urlopen() "
+                "for network I/O."
+            )
+            if ENFORCE:
+                raise PermissionError(msg)
+            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+        if _FILE_SCHEME_RE.match(raw):
             parsed = urlparse(raw)
-            if parsed.scheme in ("http", "https", "ftp"):
+            # urllib opens Request.selector, which keeps ?/#/; -- urlparse().path
+            # drops them, so validating .path would check a different file than
+            # gets opened. Refuse the ambiguous forms outright.
+            if parsed.query or parsed.fragment or ";" in parsed.path:
+                raise PermissionError(
+                    f"Security Violation [{context}]: ambiguous file URL "
+                    f"(query/fragment/params) not allowed: {raw!r}"
+                )
+            raw = unquote(parsed.path)
+            if not raw:
                 return
-            if parsed.scheme == "file":
-                raw = unquote(parsed.path)
 
         # Resolve path to catch symlink escapes
         try:
