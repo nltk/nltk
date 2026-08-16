@@ -29,7 +29,7 @@ def sandbox():
     """Enforce pathsec with a single throwaway data root and yield an *outside*
     target directory the sandbox must refuse.
 
-    The outside directory is a fresh dir under the real home directory -- NOT a
+    The outside directory is a fresh dir under the real home directory; NOT a
     temp dir, because on macOS the private per-user system temp dir *is* an
     allowed root (``pathsec._get_allowed_roots``), which would make a temp-dir
     "attack" spuriously succeed.
@@ -76,9 +76,7 @@ def test_negative_control_open_outside_raises(sandbox):
     assert not target.exists()
 
 
-# --------------------------------------------------------------------------- #
 # nltk.sem.chat80
-# --------------------------------------------------------------------------- #
 def test_chat80_val_dump_refuses_outside(sandbox):
     from nltk.sem import chat80
 
@@ -118,9 +116,7 @@ def test_chat80_label_indivs_refuses_outside_cwd(sandbox):
     assert not (sandbox / "chat_pnames.cfg").exists()
 
 
-# --------------------------------------------------------------------------- #
 # nltk.tbl.demo
-# --------------------------------------------------------------------------- #
 def test_tbl_demo_cache_baseline_refuses_outside(sandbox):
     from nltk.tbl import demo
 
@@ -175,9 +171,7 @@ def test_tbl_demo_plot_refuses_outside(sandbox):
     assert not target.exists()
 
 
-# --------------------------------------------------------------------------- #
 # nltk.metrics.agreement (__main__ -f caller-file read)
-# --------------------------------------------------------------------------- #
 def test_agreement_main_file_read_refuses_outside(sandbox):
     target = sandbox / "evil_annotations.txt"
     target.write_text("a 1 x\n")  # content is irrelevant; read must be refused

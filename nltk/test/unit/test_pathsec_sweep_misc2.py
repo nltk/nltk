@@ -9,8 +9,8 @@
 
 The chat80 / tbl.demo sinks in this file set are already exercised by
 ``test_pathsec_sweep_misc.py``; this module covers the remaining hardened public
-API -- ``read_sents``, which opens a caller-supplied path through the pathsec
-sentinel -- so that a read outside the NLTK data sandbox is refused while a
+API; ``read_sents``, which opens a caller-supplied path through the pathsec
+sentinel; so that a read outside the NLTK data sandbox is refused while a
 legitimate read inside it still works (GHSA-8mgp-746c-j5xp).
 """
 
@@ -31,7 +31,7 @@ def sandbox():
     """Enforce pathsec with a single throwaway data root and yield both that
     (trusted) root and an *outside* target directory the sandbox must refuse.
 
-    The outside directory is a fresh dir under the real home directory -- NOT a
+    The outside directory is a fresh dir under the real home directory; NOT a
     temp dir, because on macOS the private per-user system temp dir *is* an
     allowed root (``pathsec._get_allowed_roots``), which would make a temp-dir
     "attack" spuriously succeed.
@@ -70,9 +70,7 @@ def test_negative_control_open_outside_raises(sandbox):
         pathsec.open(str(target), "r")
 
 
-# --------------------------------------------------------------------------- #
 # nltk.sem.util.read_sents
-# --------------------------------------------------------------------------- #
 def test_read_sents_reads_inside_sandbox(sandbox):
     """Positive control: a legitimate read of a file inside the data sandbox
     still works and applies the normal blank-line / comment filtering."""

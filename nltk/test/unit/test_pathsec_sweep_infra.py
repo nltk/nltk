@@ -4,7 +4,7 @@ Path-traversal sweep tests for NLTK infra modules (``harden-bare-open-sweep``).
 Covers the sink patched in the sweep that routes a caller-named path through
 ``nltk.pathsec`` validation:
 
-* ``nltk.xmlsec.parse(filename)`` -- a filename ``source`` is caller-controlled
+* ``nltk.xmlsec.parse(filename)``; a filename ``source`` is caller-controlled
   data I/O and is now validated against the NLTK data sandbox before either
   XML back end opens it.
 
@@ -55,7 +55,7 @@ def test_infra_sinks_refuse_outside_path():
             pathsec.open(str(outside), "rb")
 
         # ATTACK: nltk.xmlsec.parse() given a caller-named filename that lands
-        # outside the sandbox must be refused before it reads the file -- and
+        # outside the sandbox must be refused before it reads the file; and
         # regardless of whether defusedxml is installed.
         with pytest.raises((PermissionError, ValueError)):
             xmlsec.parse(str(outside))

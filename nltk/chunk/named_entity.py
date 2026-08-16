@@ -172,7 +172,7 @@ class NEChunkParser(ChunkParserI):
         for child in sent:
             if isinstance(child, Tree):
                 if len(child) == 0:
-                    print("Warning -- empty chunk in sentence")
+                    print("Warning; empty chunk in sentence")
                     continue
                 toks.append((child[0], f"B-{child.label()}"))
                 for tok in child[1:]:
@@ -235,7 +235,7 @@ def load_ace_file(textfile, fmt):
     annfile = textfile + ".tmx.rdc.xml"
 
     # Read the xml file, and get a list of entities. These ACE paths are walked
-    # from a corpus root, so keep them inside the allowed data roots -- a
+    # from a corpus root, so keep them inside the allowed data roots; a
     # symlinked .sgm/.xml must not resolve outside (CWE-59, GHSA-7qj2).
     entities = []
     with pathsec_open(annfile, context="load_ace_file") as infile:
@@ -349,7 +349,7 @@ class Maxent_NE_Chunker(NEChunkParser):
         """This chunker's private directory for saved model artifacts.
 
         Created lazily on first use with an unpredictable name and mode 0700, so
-        -- unlike the old guessable ``/tmp/...`` -- another local user cannot
+        (unlike the old guessable ``/tmp/...``) another local user cannot
         pre-create or symlink it to redirect or read the write (CWE-377/378).
         The same directory is reused across calls, so a chunker's saved
         artifacts share one known, private location.
@@ -366,7 +366,7 @@ class Maxent_NE_Chunker(NEChunkParser):
         a multi-user host another user can pre-create or symlink that exact path
         to redirect or read the write (CWE-377/378), and pathsec refuses a
         shared-temp destination anyway (so it would not even work). Default
-        instead to this chunker's :attr:`save_dir` -- a private (mode 0700),
+        instead to this chunker's :attr:`save_dir`; a private (mode 0700),
         unpredictably-named directory that no other user can pre-plant. A caller
         may still pass an explicit ``tab_dir``; it is validated against the NLTK
         data sandbox before the parameter files are written, so an outside path

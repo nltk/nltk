@@ -2,16 +2,16 @@
 
 ``TransitionParser.train`` and ``TransitionParser.parse`` both take a
 *caller-supplied* model path (``modelfile`` / ``modelFile``). Before the sweep
-they reached the filesystem through a bare ``open()`` -- ``train`` wrote the
+they reached the filesystem through a bare ``open()``; ``train`` wrote the
 fitted model with ``pickle.dump(model, open(modelfile, "wb"))`` and ``parse``
-read it back with ``open(modelFile, "rb")`` -- so a path outside NLTK's data
+read it back with ``open(modelFile, "rb")``; so a path outside NLTK's data
 sandbox was written to (arbitrary-path pickle write) or read from without any
 containment (GHSA-8mgp-746c-j5xp). Both sinks now route through
 ``nltk.pathsec.open``, which refuses a path outside the allowed data roots
 before any bytes move.
 
 Each test enforces the pathsec sandbox with a single fresh allowed root and
-attacks with a path under ``$HOME`` -- never a temp dir, because a *private*
+attacks with a path under ``$HOME``; never a temp dir, because a *private*
 system temp dir is itself an allowed root on macOS, which would mask the block.
 """
 
@@ -43,9 +43,9 @@ markets    NNS      6       PC
 """
 
 
-# --- Lightweight fakes so ``train`` reaches its model-save open without the
+# Lightweight fakes so ``train`` reaches its model-save open without the
 # heavy numpy/scipy/sklearn fit pipeline. Defined at module level so a fake
-# model is picklable (needed by the in-sandbox positive control). --------------
+# model is picklable (needed by the in-sandbox positive control).
 class _Arr:
     def astype(self, *args, **kwargs):
         return self
@@ -71,7 +71,7 @@ class _FakeSVM:
 @pytest.fixture
 def sandbox():
     """Enforce the pathsec sandbox with a single fresh allowed root and hand out
-    an *outside* target dir under ``$HOME`` (never a temp dir -- a private system
+    an *outside* target dir under ``$HOME`` (never a temp dir; a private system
     temp dir is itself an allowed root). Everything is restored on teardown."""
     orig_enforce = pathsec.ENFORCE
     orig_paths = list(nltk.data.path)
@@ -174,7 +174,7 @@ def test_parse_permits_inside_model(sandbox):
     """Positive control: an in-sandbox model path gets past the pathsec open.
 
     A plain (non-model) pickle then fails downstream, but crucially NOT with a
-    PermissionError -- proving the sink blocks only outside paths.
+    PermissionError; proving the sink blocks only outside paths.
     """
     allowed_root, _ = sandbox
     inside_model = allowed_root / "model.pickle"

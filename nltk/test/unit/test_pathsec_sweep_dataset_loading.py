@@ -9,24 +9,24 @@ sandbox root, every load path below is driven against a genuine file that lives
 
 Covered load paths (GHSA-8mgp-746c-j5xp and the corpus-reader traversal GHSAs):
 
-* ``nltk.data.find``               -- absolute path, ``..`` traversal, %2f-encoded traversal
-* ``nltk.data.load('file://...')`` -- absolute outside path (read)
-* ``nltk.data.retrieve``           -- symlink-at-destination write escape (CWE-59)
-* ``FileSystemPathPointer.open``   -- absolute outside path + in-root symlink escape
-* ``GzipFileSystemPathPointer.open`` -- absolute outside path
+* ``nltk.data.find``              ; absolute path, ``..`` traversal, %2f-encoded traversal
+* ``nltk.data.load('file://...')``; absolute outside path (read)
+* ``nltk.data.retrieve``          ; symlink-at-destination write escape (CWE-59)
+* ``FileSystemPathPointer.open``  ; absolute outside path + in-root symlink escape
+* ``GzipFileSystemPathPointer.open``; absolute outside path
 * ``StreamBackedCorpusView`` (bare string fileid, ``_open`` sink)
-* ``CorpusReader.open``            -- traversal, absolute, in-root symlink escape
-* ``CorpusReader.__init__``        -- out-of-sandbox root
-* ``WordListCorpusReader`` / ``PlaintextCorpusReader`` -- in-root symlink escape
-* ``XMLCorpusReader.xml`` / ``XMLCorpusView`` -- in-root symlink + bare outside string
-* ``PanLexLiteCorpusReader``       -- in-root ``db.sqlite`` symlink escape (sqlite3 sink)
+* ``CorpusReader.open``           ; traversal, absolute, in-root symlink escape
+* ``CorpusReader.__init__``       ; out-of-sandbox root
+* ``WordListCorpusReader`` / ``PlaintextCorpusReader``; in-root symlink escape
+* ``XMLCorpusReader.xml`` / ``XMLCorpusView``; in-root symlink + bare outside string
+* ``PanLexLiteCorpusReader``      ; in-root ``db.sqlite`` symlink escape (sqlite3 sink)
 
 Each attack is paired with a NEGATIVE CONTROL asserting ``pathsec.open`` refuses
 the same outside target, so a green "attack refused" can never be an artefact of
 the target happening to sit inside an allowed root.
 
 The sandbox root is a private temp dir (which pathsec trusts); the outside
-target is placed under the user's HOME -- never under a temp dir (macOS private
+target is placed under the user's HOME; never under a temp dir (macOS private
 temp is itself an allowed root) and never assuming ``/etc/passwd`` exists.
 """
 
@@ -92,7 +92,7 @@ def sandbox():
     The sandbox lives under HOME, *not* a temp dir: pathsec trusts a private
     system temp dir as a data root, so an "outside" target placed in temp would
     silently be *inside* an allowed root and the negative control would pass
-    vacuously. Under HOME, only ``~/nltk_data`` is trusted -- the sibling
+    vacuously. Under HOME, only ``~/nltk_data`` is trusted; the sibling
     ``outside`` dir here is genuinely outside every allowed root.
     """
     prev_enforce = pathsec.ENFORCE
@@ -124,9 +124,7 @@ def sandbox():
         shutil.rmtree(base, ignore_errors=True)
 
 
-# ---------------------------------------------------------------------------
 # nltk.data.find
-# ---------------------------------------------------------------------------
 def test_find_refuses_absolute_outside(sandbox):
     with pytest.raises(REFUSE):
         nltk.data.find(str(sandbox.secret))
@@ -144,9 +142,7 @@ def test_find_refuses_percent_encoded_traversal(sandbox):
         nltk.data.find("..%2f..%2foutside%2fsecret.txt")
 
 
-# ---------------------------------------------------------------------------
 # nltk.data.load (file:// protocol -> _open fallback -> _secure_open)
-# ---------------------------------------------------------------------------
 def test_load_file_url_refuses_outside(sandbox):
     with pytest.raises(REFUSE):
         nltk.data.load("file://" + str(sandbox.secret), format="text")
@@ -160,9 +156,7 @@ def test_load_file_triple_slash_refuses_outside(sandbox):
         )
 
 
-# ---------------------------------------------------------------------------
 # FileSystemPathPointer.open  /  GzipFileSystemPathPointer.open
-# ---------------------------------------------------------------------------
 def test_filesystempathpointer_refuses_absolute_outside(sandbox):
     pointer = FileSystemPathPointer(str(sandbox.secret))
     with pytest.raises(REFUSE):
@@ -187,9 +181,7 @@ def test_gzip_pointer_refuses_absolute_outside(sandbox):
         pointer.open()
 
 
-# ---------------------------------------------------------------------------
-# nltk.data.retrieve -- write side (symlink at destination escapes the root)
-# ---------------------------------------------------------------------------
+# nltk.data.retrieve; write side (symlink at destination escapes the root)
 def test_retrieve_refuses_symlink_destination_escape(sandbox):
     if not _can_symlink(str(sandbox.root)):
         pytest.skip("symlinks not creatable on this filesystem")
@@ -202,9 +194,7 @@ def test_retrieve_refuses_symlink_destination_escape(sandbox):
     assert not target.exists(), "retrieve() wrote through a symlink out of the root!"
 
 
-# ---------------------------------------------------------------------------
 # CorpusReader.open  (lexical guard + scoped required_root guard)
-# ---------------------------------------------------------------------------
 def test_corpusreader_open_refuses_traversal(sandbox):
     from nltk.corpus.reader.api import CorpusReader
 
@@ -239,9 +229,7 @@ def test_corpusreader_init_refuses_outside_root(sandbox):
         WordListCorpusReader(str(sandbox.outside_dir), r".*\.txt")
 
 
-# ---------------------------------------------------------------------------
 # Concrete readers driven against the sandbox root (symlink escape)
-# ---------------------------------------------------------------------------
 def test_wordlist_reader_refuses_symlink_escape(sandbox):
     from nltk.corpus.reader.wordlist import WordListCorpusReader
 
@@ -264,9 +252,7 @@ def test_plaintext_reader_refuses_symlink_escape(sandbox):
         reader.raw("pt_leak.txt")
 
 
-# ---------------------------------------------------------------------------
-# StreamBackedCorpusView -- bare string fileid straight to the _open() sink
-# ---------------------------------------------------------------------------
+# StreamBackedCorpusView; bare string fileid straight to the _open() sink
 def test_streambacked_view_refuses_bare_outside_string(sandbox):
     from nltk.corpus.reader.util import StreamBackedCorpusView, read_line_block
 
@@ -275,9 +261,7 @@ def test_streambacked_view_refuses_bare_outside_string(sandbox):
         list(view)
 
 
-# ---------------------------------------------------------------------------
 # XML loaders (guard on defusedxml, which the XML readers import)
-# ---------------------------------------------------------------------------
 def test_xmlcorpusreader_refuses_symlink_escape(sandbox):
     pytest.importorskip("defusedxml")
     from nltk.corpus.reader.xmldocs import XMLCorpusReader
@@ -299,14 +283,12 @@ def test_xmlcorpusview_refuses_bare_outside_string(sandbox):
     xml_secret = sandbox.outside_dir / "view_secret.xml"
     xml_secret.write_text('<?xml version="1.0"?><r><leak>x</leak></r>')
     # Constructing the view triggers _detect_encoding(), whose bare-string branch
-    # opens through pathsec -- so the escape is refused before any bytes are read.
+    # opens through pathsec; so the escape is refused before any bytes are read.
     with pytest.raises(REFUSE):
         list(XMLCorpusView(str(xml_secret), ".*/leak"))
 
 
-# ---------------------------------------------------------------------------
-# PanLexLiteCorpusReader -- the sqlite3.connect() model/dataset sink
-# ---------------------------------------------------------------------------
+# PanLexLiteCorpusReader; the sqlite3.connect() model/dataset sink
 def test_panlex_reader_refuses_symlink_db_escape(sandbox):
     from nltk.corpus.reader.panlex_lite import PanLexLiteCorpusReader
 

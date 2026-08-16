@@ -27,7 +27,7 @@ The audited pickle load sites and their routing:
         -> allowlisted_pickle_load(_PUNKT_ALLOWED_GLOBALS)          [legacy pickle]
 
 Warn-only residuals (interactive GUI / developer demo, user-selected path, not an
-untrusted dataset -- documented, deliberately NOT allowlisted):
+untrusted dataset; documented, deliberately NOT allowlisted):
 
     nltk/app/chartparser_app.py:816,2273,2311  pickle_load(<GUI file dialog>)
     nltk/tbl/demo.py:263,339                    pickle_load(<dev demo cache>)
@@ -50,9 +50,7 @@ import pytest
 
 from nltk.picklesec import RestrictedUnpickler, allowlisted_pickle_load
 
-# ---------------------------------------------------------------------------
 # Gadget payload builders
-# ---------------------------------------------------------------------------
 
 
 def _su(s: str) -> bytes:
@@ -163,9 +161,7 @@ _LOAD_CONFIGS = [
 ]
 
 
-# ---------------------------------------------------------------------------
 # (a) Every allowlisted / restricted load site refuses every gadget
-# ---------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("site", [c[0] for c in _LOAD_CONFIGS])
@@ -216,9 +212,7 @@ def test_every_load_site_refuses_scipy_io_mmwrite(site):
         loader(_reduce_global_pickle("scipy.io", "mmwrite", "/tmp/should-not-write"))
 
 
-# ---------------------------------------------------------------------------
 # Legitimate loads must still succeed (allowlists are not "block everything")
-# ---------------------------------------------------------------------------
 
 
 def test_transitionparser_allowlist_loads_real_svc():
@@ -258,9 +252,7 @@ def test_restricted_load_allows_globals_free_payload_but_no_globals():
         _load_restricted(_bare_global_pickle("collections", "OrderedDict"))
 
 
-# ---------------------------------------------------------------------------
 # wordnet_app.Reference.decode: untrusted base64 -> RestrictedUnpickler + shape
-# ---------------------------------------------------------------------------
 
 
 def _reference_cls():
@@ -303,9 +295,7 @@ def test_restricted_unpickler_directly_blocks_every_gadget():
             u.find_class(module, name)
 
 
-# ---------------------------------------------------------------------------
 # (c) Source-tree invariants: no np.load pickle path, no raw pickle.load bypass
-# ---------------------------------------------------------------------------
 
 _NLTK_ROOT = Path(__file__).resolve().parents[2]  # .../nltk
 
@@ -342,7 +332,7 @@ def test_no_numpy_load_or_allow_pickle_anywhere():
 
 def test_no_raw_pickle_load_bypasses_the_unpicklers():
     """No ``pickle.load`` / ``pickle.loads`` / ``pickle.Unpickler`` outside
-    picklesec.py -- every load must go through a guarded wrapper."""
+    picklesec.py; every load must go through a guarded wrapper."""
     pat = re.compile(r"\bpickle\.(?:load|loads|Unpickler)\s*\(")
     offenders = []
     for path in _iter_source_files():

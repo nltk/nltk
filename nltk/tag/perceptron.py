@@ -56,7 +56,7 @@ def _open_private_model_dir(loc):
 
     The leaf is created with ``os.mkdir`` (atomic: it either creates the real
     directory or fails with ``FileExistsError``) and then re-opened with
-    ``O_NOFOLLOW|O_DIRECTORY`` -- so a symlink pre-planted or raced in at the
+    ``O_NOFOLLOW|O_DIRECTORY``; so a symlink pre-planted or raced in at the
     guessable default name is refused (``ELOOP``/``ENOTDIR``) instead of being
     followed. The descriptor is rejected unless it is a real directory owned by
     the current user and not group-/world-writable (CWE-59/377/378).
@@ -334,7 +334,7 @@ class PerceptronTagger(TaggerI):
     def save_to_json(self, lang="xxx", loc=None):
         if not loc:
             loc = self.save_dir
-        # Only this tagger's own save_dir -- a private, per-user temp dir --
+        # Only this tagger's own save_dir; a private, per-user temp dir
         # may auto-widen the sandbox (authorized below). Any other caller-
         # supplied loc must already be inside an allowed root; otherwise
         # save_to_json writes model files to an arbitrary path and even adds

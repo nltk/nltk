@@ -18,7 +18,7 @@ process that ``pathsec.open`` cannot wrap:
 
 Each patched API now calls ``pathsec.validate_path`` immediately before the
 hand-off, so a model path *outside* the NLTK data sandbox is refused. The
-outside target is a fresh directory under the real home directory -- never a
+outside target is a fresh directory under the real home directory; never a
 temp dir, because the system temp dir can itself be an allowed root (and on
 Linux ``tempfile.mkdtemp()`` lives under the shared ``/tmp``).
 """

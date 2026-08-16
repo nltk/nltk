@@ -401,7 +401,7 @@ class MaxentFeatureEncodingI:
 
     def labels(self):
         """
-        :return: A list of the \"known labels\" -- i.e., all labels
+        :return: A list of the \"known labels\"; i.e., all labels
             ``l`` such that ``self.encode(fs,l)`` can be a nonzero
             joint-feature vector for some value of ``fs``.
         :rtype: list
@@ -455,7 +455,7 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         :type labels: list
         :param labels: A list of the \"known labels\" for this
-            encoding -- i.e., all labels ``l`` such that
+            encoding; i.e., all labels ``l`` such that
             ``self.encode(fs,l)`` can be a nonzero joint-feature vector
             for some value of ``fs``.
         """
@@ -582,7 +582,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 for label2 in self._labels:
                     if (fname, fval, label2) in self._mapping:
                         break  # we've seen this fname/fval combo
-                # We haven't -- fire the unseen-value feature
+                # We haven't; fire the unseen-value feature
                 else:
                     if fname in self._unseen:
                         encoding.append((self._unseen[fname], 1))
@@ -922,7 +922,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
                     for label2 in self._labels:
                         if (fname, fval, label2) in self._mapping:
                             break  # we've seen this fname/fval combo
-                    # We haven't -- fire the unseen-value feature
+                    # We haven't; fire the unseen-value feature
                     else:
                         if fname in self._unseen:
                             encoding.append((self._unseen[fname], 1))
@@ -1586,7 +1586,7 @@ def load_maxent_params(tab_dir):
 def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     """Write maxent classifier parameters as tab files; return the directory.
 
-    The old default was the shared, world-writable system temp (``/tmp``) -- a
+    The old default was the shared, world-writable system temp (``/tmp``); a
     guessable destination another local user could pre-create or symlink
     (CWE-377/378), and one pathsec refuses anyway. Default instead to a fresh
     private (mode 0700), unpredictably-named directory. A caller-supplied

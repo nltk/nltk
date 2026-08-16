@@ -3,7 +3,7 @@
 ``TransitionParser.parse(depgraphs, modelFile)`` is a public API whose
 ``modelFile`` is caller-supplied. It used to be loaded with the warn-only
 ``pickle_load`` (``restricted=False``), which prints a warning and then performs
-a full, unrestricted unpickle -- so a crafted model file achieved arbitrary code
+a full, unrestricted unpickle; so a crafted model file achieved arbitrary code
 execution the instant it was loaded. The load now goes through
 ``allowlisted_pickle_load``: only numpy/scipy/sklearn globals may be
 reconstructed, and anything else (e.g. ``os.system``) raises ``UnpicklingError``
@@ -134,7 +134,7 @@ def test_transitionparser_rejects_malicious_model(tmp_path):
     assert not marker.exists(), "malicious model payload executed (RCE not blocked)"
 
 
-# --- GHSA-x99w / GHSA-4489: AllowlistUnpickler bypass regressions -------------
+# GHSA-x99w / GHSA-4489: AllowlistUnpickler bypass regressions
 #
 # The prior AllowlistUnpickler checked only the *module* against a prefix
 # allowlist and never the *name*, so:
@@ -286,7 +286,7 @@ def test_all_punkt_object_types_round_trip():
     assert restored_tok.tokenize(text) == tok.tokenize(text)
 
 
-# --- GHSA-8mgp follow-up: the model allowlist is exact, not broad namespaces ---
+# GHSA-8mgp follow-up: the model allowlist is exact, not broad namespaces
 #
 # The saved TransitionParser model is a fitted sklearn SVC. Allowing the whole
 # numpy/scipy/sklearn namespaces still left real gadgets reachable through the
@@ -355,7 +355,7 @@ def test_model_allowlist_blocks_io_network_and_call_gadgets(module, name):
 )
 def test_shared_denylist_blocks_gadgets_even_under_broad_allow(module, name):
     """Defense in depth: even a caller that broadly allows numpy/scipy/sklearn
-    cannot reach these -- they are on the shared denylist. The denials fire
+    cannot reach these; they are on the shared denylist. The denials fire
     before the module is imported, so the block is a security decision, not a
     missing-dependency accident."""
     u = AllowlistUnpickler(BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn"))
@@ -365,7 +365,7 @@ def test_shared_denylist_blocks_gadgets_even_under_broad_allow(module, name):
 
 def test_model_allowlist_still_loads_a_real_svc():
     """The exact allowlist must round-trip a genuine fitted SVC (dense + sparse)
-    -- narrowing the allowlist must not break legitimate model loading."""
+    ; narrowing the allowlist must not break legitimate model loading."""
     np = pytest.importorskip("numpy")
     sparse = pytest.importorskip("scipy.sparse")
     svm = pytest.importorskip("sklearn.svm")

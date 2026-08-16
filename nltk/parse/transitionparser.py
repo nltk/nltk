@@ -27,7 +27,7 @@ from nltk.picklesec import allowlisted_pickle_load
 # The saved model is a fitted scikit-learn ``SVC`` backed by numpy arrays and,
 # for the sparse svmlight features, a scipy CSR matrix. Allowing the *whole*
 # numpy/scipy/sklearn namespaces (the previous approach) still exposed real
-# gadgets that survive the module backstop -- ``scipy.io.mmwrite`` (arbitrary
+# gadgets that survive the module backstop; ``scipy.io.mmwrite`` (arbitrary
 # file write), ``scipy.io.loadmat`` / ``sklearn.datasets.load_svmlight_file``
 # (file read), ``sklearn.datasets.fetch_openml`` (network/SSRF) and
 # ``numpy.apply_along_axis`` / ``numpy.frompyfunc`` (invoke a callable). So no
@@ -596,7 +596,7 @@ class TransitionParser(ParserI):
         # First load the model. The model is a trained scikit-learn classifier,
         # so it is loaded through an allowlisting unpickler (CWE-502): only the
         # exact globals a fitted SVC pickle needs may be reconstructed, and
-        # anything else -- e.g. os.system, or scipy.io.mmwrite -- raises
+        # anything else (e.g. os.system, or scipy.io.mmwrite) raises
         # UnpicklingError instead of executing/writing. See
         # nltk/picklesec.py and huntr report
         # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012

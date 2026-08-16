@@ -8,7 +8,7 @@ with the sandbox restricted to a single throwaway data root, a caller-supplied
 path that points OUTSIDE every allowed root is refused with ``PermissionError``
 and nothing is written there.
 
-The "outside" target is a fresh directory under the real ``$HOME`` -- **never** a
+The "outside" target is a fresh directory under the real ``$HOME``; **never** a
 temp dir, because the private system temp directory is itself an allowed pathsec
 root on macOS, which would make a temp target a false "outside".
 """
@@ -48,7 +48,7 @@ def restricted_sandbox():
 
 
 def _outside_dir():
-    """A fresh directory path under the real ``$HOME`` -- guaranteed outside
+    """A fresh directory path under the real ``$HOME``; guaranteed outside
     every allowed pathsec root.  Deliberately NOT a temp dir: the private system
     temp is itself an allowed root, so a temp target would be a false "outside".
     """
@@ -82,7 +82,7 @@ def test_save_maxent_params_refuses_outside_tab_dir(restricted_sandbox):
 
 def test_save_maxent_params_default_is_private_dir_not_shared_tmp(restricted_sandbox):
     """The default destination must be a fresh *private* (0700),
-    unpredictably-named directory (returned by the call) -- never the historical
+    unpredictably-named directory (returned by the call); never the historical
     guessable shared ``/tmp`` (CWE-377/378)."""
     numpy = pytest.importorskip("numpy")
     from nltk.classify.maxent import save_maxent_params

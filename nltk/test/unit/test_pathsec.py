@@ -26,9 +26,7 @@ def enable_enforcement():
     pathsec.ENFORCE = original_enforce
 
 
-# --- SSRF NETWORK TESTS ---
-
-
+# SSRF NETWORK TESTS
 def test_valid_http_url():
     """Ensure valid URLs pass the SSRF filter without raising security exceptions."""
     try:
@@ -128,9 +126,7 @@ def test_ip_filter_allows_global(addr):
     assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)) is False
 
 
-# --- PATH TRAVERSAL TESTS ---
-
-
+# PATH TRAVERSAL TESTS
 def test_path_traversal_absolute():
     """
     Test if absolute paths bypass standard relative traversal checks.
@@ -144,15 +140,13 @@ def test_path_traversal_absolute():
         pathsec.open(outside, "r")
 
 
-# --- ALLOWED-ROOTS / TEMP-DIR FALLBACK TESTS ---
-
-
+# ALLOWED-ROOTS / TEMP-DIR FALLBACK TESTS
 def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
     """Regression test for issue #3716.
 
     ``_get_allowed_roots()`` used to build its fallback-location list as a
     literal ``[..., tempfile.gettempdir()]``, which evaluates
-    ``tempfile.gettempdir()`` while constructing the list -- *before* the
+    ``tempfile.gettempdir()`` while constructing the list; *before* the
     loop's ``try/except`` runs. On a system with no usable temp directory
     (read-only root filesystem, nothing mounted at ``/tmp``), ``gettempdir()``
     raises ``FileNotFoundError`` (an ``OSError`` subclass) that propagates out
@@ -177,9 +171,7 @@ def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
     assert known_root.resolve() in roots
 
 
-# --- ZIP-SLIP TESTS ---
-
-
+# ZIP-SLIP TESTS
 def create_malicious_zip(filename):
     """Helper to create malicious zip files in memory."""
     mem_zip = io.BytesIO()
@@ -260,9 +252,7 @@ def test_zip_slip_interior_dotdot_symlink_escape(tmp_path):
     ).exists(), "member escaped the extraction root via an in-root symlink"
 
 
-# --- PROXY & HANDLER TESTS ---
-
-
+# PROXY & HANDLER TESTS
 def test_urlopen_honors_set_proxy_and_redirect_validation():
     """
     Regression test for Issue #3551.
@@ -477,19 +467,19 @@ def test_env_proxy_fails_closed_under_enforce(monkeypatch):
         pathsec.urlopen("http://safe.example.com/x")
 
 
-# --- issue #3748: NO_PROXY must not be mistaken for a configured proxy --------
+# issue #3748: NO_PROXY must not be mistaken for a configured proxy
 #
 # getproxies() reports a "no" key for NO_PROXY, an exclusion list. The old check
 # treated any non-empty getproxies() as a proxy and blocked every download. The
 # fix keys on real http/https schemes and defers the host decision to
-# proxy_bypass -- so NO_PROXY-only is direct+pinned (benign), while a genuine
+# proxy_bypass; so NO_PROXY-only is direct+pinned (benign), while a genuine
 # proxy egress stays blocked (GHSA-6ww7). These pin both halves.
 
 
 def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
     """NO_PROXY alone (getproxies()=={'no': ...}) is a bypass list, not a proxy.
 
-    The fetch must go direct and pinned, exactly as if nothing were set --
+    The fetch must go direct and pinned, exactly as if nothing were set;
     otherwise every download fails in any environment that sets NO_PROXY.
     """
     monkeypatch.setattr(
@@ -506,7 +496,7 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
 @pytest.mark.parametrize(
     "proxies, bypass, expected",
     [
-        # --- benign: no real http/https proxy would carry the request ---------
+        # benign: no real http/https proxy would carry the request
         ({}, False, False),  # nothing set
         ({"no": "localhost"}, False, False),  # NO_PROXY only (the reported bug)
         ({"no": "*"}, False, False),  # NO_PROXY wildcard
@@ -515,7 +505,7 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
         ({"http": "http://p:8080"}, True, False),  # http proxy but host bypassed
         ({"https": "http://p:8080"}, True, False),  # https proxy but host bypassed
         ({"http": "http://p:8080", "no": "raw.githubusercontent.com"}, True, False),
-        # --- must block: a real http/https proxy carries the host -------------
+        # must block: a real http/https proxy carries the host
         ({"http": "http://p:8080"}, False, True),
         ({"https": "http://p:8080"}, False, True),
         ({"http": "http://p:8080", "https": "http://p:8080"}, False, True),
@@ -537,7 +527,7 @@ def test_issue_3748_no_proxy_env_downloads_are_not_blocked(monkeypatch):
     """The reporter's exact scenario, end to end through real getproxies().
 
     Only NO_PROXY is set (no HTTP_PROXY/HTTPS_PROXY), so getproxies() returns
-    {'no': ...} from the environment and nothing is proxied -- the download must
+    {'no': ...} from the environment and nothing is proxied; the download must
     install the pinning handlers and proceed, not raise 'proxied fetch'.
     """
     for var in (
@@ -573,7 +563,7 @@ def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
     target, monkeypatch
 ):
     """Exploit must not leak: when a real proxy carries the request, NLTK cannot
-    pin the IP, so every target is refused (GHSA-6ww7) -- including when NO_PROXY
+    pin the IP, so every target is refused (GHSA-6ww7); including when NO_PROXY
     is set for *other* hosts, so the fix cannot be turned into a bypass."""
     monkeypatch.setattr(
         urllib.request,
@@ -596,7 +586,7 @@ def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
 
 def test_proxy_with_no_proxy_target_still_pins(monkeypatch):
     """A proxy is configured but the target is in NO_PROXY: urllib fetches it
-    directly, so NLTK must pin (not block) -- and the SSRF filter still governs
+    directly, so NLTK must pin (not block); and the SSRF filter still governs
     the direct connection."""
     monkeypatch.setattr(
         urllib.request,
@@ -615,7 +605,7 @@ def test_proxy_with_no_proxy_target_still_pins(monkeypatch):
 
 def test_proxy_with_unbypassed_target_still_fails_closed(monkeypatch):
     """The attack the fix must NOT reopen: a real proxy carries the target (not
-    bypassed), so NLTK cannot pin the IP -- the fetch must still be refused even
+    bypassed), so NLTK cannot pin the IP; the fetch must still be refused even
     though NO_PROXY is present for *other* hosts (GHSA-6ww7)."""
     monkeypatch.setattr(
         urllib.request,
@@ -678,7 +668,7 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
         monkeypatch.setattr(urllib.request, "_opener", None)
         public_url = "http://93.184.216.34/"  # validates as a public destination
 
-        # Default: fail closed -- the internal secret is NOT fetched.
+        # Default: fail closed; the internal secret is NOT fetched.
         monkeypatch.setattr(pathsec, "ENFORCE", True)
         monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
         with pytest.raises(PermissionError, match="proxied fetch"):
@@ -692,9 +682,7 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
         server.shutdown()
 
 
-# --- SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6 ---------
-
-
+# SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6
 @pytest.mark.parametrize(
     "addr",
     [
@@ -704,7 +692,7 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
         "192.168.1.1",  # private
         "224.0.0.1",  # multicast (is_global is True on some CPython versions)
         "0.0.0.0",  # unspecified (routes to localhost on Linux)
-        "100.64.1.1",  # carrier-grade NAT -- missed by the old explicit list
+        "100.64.1.1",  # carrier-grade NAT; missed by the old explicit list
         "240.0.0.1",  # reserved
         "::1",  # IPv6 loopback
         "::",  # IPv6 unspecified
@@ -714,8 +702,8 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
     ],
 )
 def test_ip_policy_forbids_non_global_and_mapped(addr):
-    """Every non-global address -- including CGNAT/unspecified the old explicit
-    list missed, and IPv4-mapped IPv6 forms -- must be rejected."""
+    """Every non-global address; including CGNAT/unspecified the old explicit
+    list missed, and IPv4-mapped IPv6 forms; must be rejected."""
     import ipaddress
 
     assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)), addr
@@ -787,9 +775,7 @@ def test_read_sents_enforces_pathsec():
         read_sents(forbidden_path)
 
 
-# ----------------------------------------------------------------------
 # Malicious Subclasses for Type Confusion & Object Manipulation Tests
-# ----------------------------------------------------------------------
 
 
 class ZeroLengthStr(str):
@@ -821,9 +807,7 @@ class DualFacedPath(os.PathLike):
         return self.shown
 
 
-# ----------------------------------------------------------------------
 # Fixtures
-# ----------------------------------------------------------------------
 
 
 @pytest.fixture
@@ -854,9 +838,7 @@ def sandbox_env(tmp_path, monkeypatch):
     return safe_dir, unsafe_dir, secret_file, allowed_file, archive_path
 
 
-# ----------------------------------------------------------------------
 # Restrictive Guard Tests
-# ----------------------------------------------------------------------
 
 
 def test_restrictive_guard_blocks_boolean_discrepancy_open(sandbox_env):
@@ -931,10 +913,8 @@ def test_restrictive_guard_allows_pure_primitives(sandbox_env):
         assert f.read() == "AUTHORIZED_DATA"
 
 
-# ----------------------------------------------------------------------
 # System temp dir: trust only a PRIVATE per-user temp, never a shared
 # world-writable one (GHSA-p4rw follow-up, CWE-377/CWE-378)
-# ----------------------------------------------------------------------
 
 posix_only = pytest.mark.skipif(
     os.name != "posix", reason="POSIX ownership/permission semantics"
@@ -975,7 +955,7 @@ def test_world_writable_temp_dir_is_not_trusted_and_is_refused(tmp_path, monkeyp
 
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     # Isolate the allowed roots: no data paths, so the only candidate is the
-    # (world-writable) temp dir under test -- which must be rejected.
+    # (world-writable) temp dir under test; which must be rejected.
     monkeypatch.setattr(_nltk_data, "path", [])
     monkeypatch.setenv("NLTK_DATA", "")
     monkeypatch.setattr("tempfile.gettempdir", lambda: str(shared))
@@ -1059,7 +1039,7 @@ def test_authorize_data_dir_registers_private_dir(tmp_path, monkeypatch):
 class TestUrlSchemePathBypass:
     """GHSA-8mgp-746c-j5xp: validate_path() must not authorize URL-shaped paths.
 
-    The old check did ``if "://" in raw: return`` -- unconditional authorization
+    The old check did ``if "://" in raw: return``; unconditional authorization
     for anything with an http/https/ftp scheme. To the kernel ``http://../x`` is
     the directory ``http:`` then ``..``, so this waved a traversal straight
     through every allowed root and defeated every downstream path check.
@@ -1122,7 +1102,7 @@ class TestModelArtifactSaveContainment:
 
         sandbox = tmp_path / "nltk_data"
         sandbox.mkdir()
-        # A genuinely-outside target: a fresh $HOME dir. NOT tmp_path -- the
+        # A genuinely-outside target: a fresh $HOME dir. NOT tmp_path; the
         # private system temp is an allowed pathsec root on macOS, so a temp
         # target would not actually be outside the sandbox.
         outside_dir = pathlib.Path.home() / (".ghsa8mgp_pathsec_test_%s" % os.getpid())

@@ -9,7 +9,7 @@ in :mod:`nltk.chunk.named_entity` and :mod:`nltk.sentiment.sentiment_analyzer`.
 
 Each patched file-write API is driven with a path *outside* the NLTK data
 sandbox and must raise ``PermissionError`` and write nothing outside. The
-outside target is a fresh directory under the real home directory -- never a
+outside target is a fresh directory under the real home directory; never a
 temp dir, because the system temp dir can itself be an allowed root (and on
 Linux ``tempfile.mkdtemp()`` lives under the shared ``/tmp``).
 """
@@ -102,7 +102,7 @@ def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
     sandbox, monkeypatch
 ):
     """The default destination must be a fresh *private* (0700),
-    unpredictably-named directory -- never the historical guessable
+    unpredictably-named directory; never the historical guessable
     ``/tmp/english_ace_<fmt>/`` in the shared, world-writable system temp, which
     another local user could pre-create or symlink (CWE-377/378)."""
     import nltk.pathsec as pathsec
