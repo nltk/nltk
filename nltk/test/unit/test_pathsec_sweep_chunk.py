@@ -131,7 +131,7 @@ def test_ne_chunker_save_params_default_is_private_dir_not_shared_tmp(
     try:
         assert out == captured["tab_dir"], "save_params must return its dir"
         assert "english_ace" not in out, "must not use the guessable historic name"
-        assert not out.startswith("/tmp/"), "must not default into shared /tmp"
+        assert os.path.basename(out).startswith("nltk_ne_chunker_")
         assert os.path.isdir(out)
         # Private (0700, user-owned) -> pathsec accepts it as a data root.
         assert pathsec.is_private_dir(out)

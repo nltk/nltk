@@ -51,6 +51,7 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
+
 try:
     import numpy
 except ImportError:
@@ -65,6 +66,7 @@ from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_fil
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.data import gzip_open_unicode
+from nltk.pathsec import make_staging_dir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
@@ -605,7 +607,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 self._inv_mapping[i] = info
 
         if f_id < len(self._mapping):
-            (fname, fval, label) = self._inv_mapping[f_id]
+            fname, fval, label = self._inv_mapping[f_id]
             return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
             for label, f_id2 in self._alwayson.items():
@@ -945,7 +947,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 self._inv_mapping[i] = info
 
         if f_id < len(self._mapping):
-            (fname, fval, label) = self._inv_mapping[f_id]
+            fname, fval, label = self._inv_mapping[f_id]
             return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
             for label, f_id2 in self._alwayson.items():
@@ -1600,7 +1602,7 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     """
     menc = MaxentEncoder()
     if tab_dir is None:
-        tab_dir = tempfile.mkdtemp(prefix="nltk_maxent_params_")
+        tab_dir = make_staging_dir(prefix="nltk_maxent_params_")
     validate_path(tab_dir, context="save_maxent_params")
     if not os.path.isdir(tab_dir):
         os.mkdir(tab_dir)

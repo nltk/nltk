@@ -1159,3 +1159,74 @@ class TestModelArtifactSaveContainment:
             assert os.path.realpath(str(outside_dir)) not in authorized
         finally:
             shutil.rmtree(outside_dir, ignore_errors=True)
+
+
+class TestPrivateStagingRegistry:
+    """LAYER 3 of validate_path: NLTK's own mkdtemp output directories.
+
+    On Linux the shared ``/tmp`` root is never an allowed root, so a save
+    function's default private (0700) mkdtemp dir would be refused.
+    ``make_staging_dir`` registers such a directory so its contents pass the
+    sandbox, without trusting every private temp dir (which would reopen the
+    sealed-sandbox leak the corpus-reader tests guard, GHSA-3gq4).
+    """
+
+    @pytest.fixture
+    def sealed(self, monkeypatch):
+        """Seal the sandbox to nothing and clear the staging registry, so only an
+        explicitly registered dir can pass; mimics Linux ``/tmp`` with no data
+        root. Registry and created dirs are restored/cleaned afterward.
+        """
+        import shutil
+
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: set())
+        monkeypatch.setattr(pathsec.os, "getcwd", lambda: "/nonexistent-cwd")
+        saved = set(pathsec._NLTK_PRIVATE_STAGING_DIRS)
+        pathsec._NLTK_PRIVATE_STAGING_DIRS.clear()
+        created = []
+        yield created
+        pathsec._NLTK_PRIVATE_STAGING_DIRS.clear()
+        pathsec._NLTK_PRIVATE_STAGING_DIRS.update(saved)
+        for d in created:
+            shutil.rmtree(d, ignore_errors=True)
+
+    def test_registered_staging_dir_is_private_and_allowed(self, sealed):
+        """make_staging_dir returns a private (0700) dir whose contents pass the
+        sandbox even when every allowed root is sealed off."""
+        d = pathsec.make_staging_dir(prefix="nltk_test_stage_")
+        sealed.append(d)
+        assert pathsec.is_private_dir(d)
+        pathsec.validate_path(os.path.join(d, "out.tab"), context="test")
+
+    def test_unregistered_private_temp_is_refused(self, sealed):
+        """A private (0700) temp dir NLTK did not create must stay refused, so a
+        sealed sandbox cannot be bypassed via any private temp dir (GHSA-3gq4)."""
+        import tempfile
+
+        unreg = tempfile.mkdtemp(prefix="nltk_test_unreg_")
+        sealed.append(unreg)
+        assert pathsec.is_private_dir(unreg)
+        with pytest.raises(PermissionError):
+            pathsec.validate_path(os.path.join(unreg, "x"), context="test")
+
+    def test_registered_dir_refused_once_world_writable(self, sealed):
+        """Trust is re-verified at call time: a registered dir that becomes
+        world-writable (deletion then attacker recreation) is refused."""
+        d = pathsec.make_staging_dir(prefix="nltk_test_stage_")
+        sealed.append(d)
+        os.chmod(d, 0o777)
+        with pytest.raises(PermissionError):
+            pathsec.validate_path(os.path.join(d, "x"), context="test")
+        os.chmod(d, 0o700)
+
+    def test_shared_temp_root_file_still_refused(self, sealed):
+        """A file directly in the temp ROOT is in no registered staging dir, so it
+        is refused; only NLTK's own mkdtemp subdirs are trusted, not the root."""
+        import tempfile
+
+        root = tempfile.gettempdir()
+        with pytest.raises(PermissionError):
+            pathsec.validate_path(
+                os.path.join(root, "nltk_test_evil.txt"), context="test"
+            )

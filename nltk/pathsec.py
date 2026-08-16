@@ -82,6 +82,55 @@ def is_private_dir(path):
     return True
 
 
+# Directories NLTK itself created (via mkdtemp, mode 0700) to stage its OWN
+# output. A shared temp root (Linux /tmp, mode 1777) is never an allowed root,
+# but a private dir NLTK made under it is not attacker-writable, so its contents
+# are trusted once registered (CWE-377/378). This stays separate from
+# nltk.data.path so it never widens the corpus sandbox: only dirs NLTK created
+# are trusted, not every private temp dir, and a caller that seals the sandbox
+# (or monkeypatches the allowed roots) registers nothing and is unaffected.
+_NLTK_PRIVATE_STAGING_DIRS = set()
+
+
+def register_staging_dir(path):
+    """Trust *path*, a private (0700) directory NLTK just created for its output.
+
+    Returns *path* unchanged so a caller can wrap a ``mkdtemp`` call in place.
+    Only a currently private (0700, user-owned) directory is registered, and the
+    trust is re-verified at validation time, so a later deletion or takeover of
+    the name cannot be exploited.
+    """
+    try:
+        resolved = Path(path).resolve()
+    except (OSError, ValueError, RuntimeError):
+        return path
+    if is_private_dir(resolved):
+        _NLTK_PRIVATE_STAGING_DIRS.add(resolved)
+    return path
+
+
+def make_staging_dir(prefix="nltk_"):
+    """Create a private (0700) staging directory and register it as trusted.
+
+    A drop-in for ``tempfile.mkdtemp`` for NLTK's own output: on Linux, where the
+    shared ``/tmp`` root is untrusted, the returned directory is still writable
+    through the pathsec sandbox because it is registered here.
+    """
+    return register_staging_dir(tempfile.mkdtemp(prefix=prefix))
+
+
+def _is_registered_staging(target):
+    """True if *target* is within a registered staging dir that is STILL private.
+
+    Re-checking ``is_private_dir`` at call time means a stale registry entry whose
+    directory was deleted (and possibly recreated by another user) is not trusted.
+    """
+    for d in _NLTK_PRIVATE_STAGING_DIRS:
+        if (target == d or target.is_relative_to(d)) and is_private_dir(d):
+            return True
+    return False
+
+
 def _get_allowed_roots():
     """Dynamically determines allowed directories based on NLTK data paths."""
     global _ALLOWED_ROOTS_CACHE, _LAST_DATA_PATHS
@@ -205,6 +254,12 @@ def validate_path(path_input, context="NLTK", required_root=None):
         # LAYER 2: Global NLTK_DATA Sandbox
         allowed_roots = _get_allowed_roots()
         if any(target == root or target.is_relative_to(root) for root in allowed_roots):
+            return
+
+        # LAYER 3: NLTK's own private temp staging. A shared temp root stays
+        # untrusted, but a private (0700) dir NLTK created and registered for its
+        # own output is not attacker-writable, so staging into it is safe.
+        if _is_registered_staging(target):
             return
 
         # CWD Fallback (Explicit Opt-In for ENFORCE mode)
@@ -887,4 +942,6 @@ __all__ = [
     "urlopen",
     "ZipFile",
     "ENFORCE",
+    "make_staging_dir",
+    "register_staging_dir",
 ]

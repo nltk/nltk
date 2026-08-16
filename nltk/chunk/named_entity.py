@@ -12,8 +12,8 @@ Named entity chunker
 
 import os
 import re
-import tempfile
 
+from nltk.pathsec import make_staging_dir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.tag import ClassifierBasedTagger, pos_tag
@@ -355,7 +355,7 @@ class Maxent_NE_Chunker(NEChunkParser):
         artifacts share one known, private location.
         """
         if self._save_dir is None:
-            self._save_dir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{self._fmt}_")
+            self._save_dir = make_staging_dir(prefix=f"nltk_ne_chunker_{self._fmt}_")
         return self._save_dir
 
     def save_params(self, tab_dir: str | None = None) -> str:
@@ -432,7 +432,7 @@ def build_model(fmt="binary"):
             cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outdir = tempfile.mkdtemp(prefix=f"nltk_ne_chunker_{fmt}_")
+    outdir = make_staging_dir(prefix=f"nltk_ne_chunker_{fmt}_")
     outfilename = f"{outdir}/ne_chunker_{fmt}.pickle"
     print(f"Saving chunker to {outfilename}...")
 

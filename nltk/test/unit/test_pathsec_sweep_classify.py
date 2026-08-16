@@ -89,8 +89,11 @@ def test_save_maxent_params_default_is_private_dir_not_shared_tmp(restricted_san
 
     out = save_maxent_params(numpy.array([0.1, 0.2]), {}, [], {})
     try:
-        assert not out.startswith("/tmp/"), "must not default into shared /tmp"
+        # is_private_dir (0700, user-owned) is the real "not shared /tmp" check;
+        # a fresh mkdtemp lives under /tmp on Linux, so assert privacy plus the
+        # unpredictable mkdtemp name, not that the path avoids /tmp.
         assert pathsec.is_private_dir(out), "default dir must be private (0700)"
+        assert os.path.basename(out).startswith("nltk_maxent_params_")
         # The write actually landed inside the returned private dir.
         assert (Path(out) / "weights.txt").exists()
     finally:
