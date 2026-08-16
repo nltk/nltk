@@ -52,6 +52,7 @@ from urllib.request import url2pathname
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
+from nltk.pathsec import validate_path as _validate_path
 
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
 # backslashes, Windows drive letters. Use a raw-string pattern and do not anchor only
@@ -189,19 +190,27 @@ def make_staging_dir(prefix="nltk_"):
     :type prefix: str
     :return: the absolute path of the created directory.
     :rtype: str
-    :raises PermissionError: if no ``nltk.data.path`` entry is writable, in which
-        case the caller should pass an explicit destination directory.
+    :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
+        root, in which case the caller should pass an explicit destination.
     """
     for root in path:
         base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
         try:
+            # Confirm base is inside the pathsec sandbox before creating anything,
+            # so a surprising ~ / $HOME / NLTK_DATA expansion cannot make
+            # os.makedirs build a directory chain, or mkdtemp stage output,
+            # outside the allowed roots. validate_path resolves symlinks the same
+            # way the allowed roots are computed, so this never trusts more than
+            # the sandbox does.
+            _validate_path(base, context="nltk.data.make_staging_dir")
             os.makedirs(base, exist_ok=True)
             return tempfile.mkdtemp(prefix=prefix, dir=base)
-        except OSError:
+        except (OSError, ValueError, PermissionError):
             continue
     raise PermissionError(
-        f"No writable NLTK data root to stage output in (tried {len(path)} "
-        "nltk.data.path entries); pass an explicit destination directory."
+        f"No writable in-sandbox NLTK data root to stage output in (tried "
+        f"{len(path)} nltk.data.path entries); pass an explicit destination "
+        "directory."
     )
 
 
