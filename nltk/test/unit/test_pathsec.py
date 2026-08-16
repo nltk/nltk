@@ -1197,3 +1197,23 @@ class TestStagingUnderDataRoot:
         monkeypatch.setattr(_data, "path", [str(blocker / "sub")])
         with pytest.raises(PermissionError):
             _data.make_staging_dir(prefix="nltk_probe_")
+
+    def test_refuses_writable_path_entry_outside_the_sandbox(
+        self, tmp_path, monkeypatch
+    ):
+        """Defensive guard: a writable nltk.data.path entry that is not an allowed
+        root (data path and sandbox disagree) is refused, so make_staging_dir
+        never creates or stages output outside what pathsec accepts."""
+        from pathlib import Path
+
+        import nltk.data as _data
+
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        sandbox = tmp_path / "sandbox"
+        sandbox.mkdir()
+        monkeypatch.setattr(_data, "path", [str(outside)])
+        monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {Path(sandbox)})
+        with pytest.raises(PermissionError):
+            _data.make_staging_dir(prefix="nltk_probe_")
+        assert list(outside.iterdir()) == [], "nothing may be staged out of sandbox"
