@@ -13,7 +13,6 @@ Named entity chunker
 import os
 import re
 
-from nltk.pathsec import make_staging_dir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.tag import ClassifierBasedTagger, pos_tag
@@ -27,7 +26,7 @@ except ImportError:
 
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
-from nltk.data import find
+from nltk.data import find, make_staging_dir
 from nltk.tokenize import word_tokenize
 from nltk.tree import Tree
 

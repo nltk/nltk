@@ -38,6 +38,7 @@ import os
 import pickle
 import re
 import sys
+import tempfile
 import textwrap
 import urllib.request
 import zipfile
@@ -173,6 +174,35 @@ else:
 ######################################################################
 # Util Functions
 ######################################################################
+
+
+def make_staging_dir(prefix="nltk_"):
+    """Create a fresh private directory for NLTK's own output, inside a data root.
+
+    NLTK's save helpers default here so their output lands within the security
+    sandbox (every ``nltk.data.path`` entry is an allowed root) on all platforms,
+    including Linux where the shared ``/tmp`` is deliberately not a root. The
+    directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
+    under the first ``nltk.data.path`` entry that can be written to.
+
+    :param prefix: filename prefix for the created directory.
+    :type prefix: str
+    :return: the absolute path of the created directory.
+    :rtype: str
+    :raises PermissionError: if no ``nltk.data.path`` entry is writable, in which
+        case the caller should pass an explicit destination directory.
+    """
+    for root in path:
+        base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
+        try:
+            os.makedirs(base, exist_ok=True)
+            return tempfile.mkdtemp(prefix=prefix, dir=base)
+        except OSError:
+            continue
+    raise PermissionError(
+        f"No writable NLTK data root to stage output in (tried {len(path)} "
+        "nltk.data.path entries); pass an explicit destination directory."
+    )
 
 
 def gzip_open_unicode(

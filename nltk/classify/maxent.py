@@ -65,8 +65,7 @@ from nltk.classify.api import ClassifierI
 from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.data import gzip_open_unicode
-from nltk.pathsec import make_staging_dir
+from nltk.data import gzip_open_unicode, make_staging_dir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist

@@ -12,10 +12,10 @@ found**. Do not delete a row — mark it.
   against the allowed data roots, closes the symlink-swap TOCTOU on write).
 - **`validate_path(path, context=…)`** immediately before a path handed to a
   C-extension / JVM / sqlite3 / shelve / matplotlib that `pathsec.open` can't wrap.
-- **No guessable `/tmp` defaults** → `pathsec.make_staging_dir(prefix="nltk_…")`
-  (private 0700, unpredictable, and registered so its writes pass the sandbox even
-  on Linux, where the shared `/tmp` root is untrusted and would otherwise refuse
-  our own staging dir). A class with a save method exposes a lazy, reused
+- **No guessable `/tmp` defaults** → `nltk.data.make_staging_dir(prefix="nltk_…")`
+  (private 0700, unpredictable, created UNDER a data root so the write is inside
+  the sandbox on every OS; refuses if no data root is writable, rather than
+  trusting a temp dir). A class with a save method exposes a lazy, reused
   **`save_dir`** property; a module save function returns its dir, annotated `-> str`.
 - **`allowlisted_pickle_load`** (exact-globals allowlist) for every untrusted
   pickle; **no** `np.load(allow_pickle=True)` on a caller path.
@@ -95,7 +95,7 @@ gap, now closed · `TODO` under audit.
 |---|---|---|---|
 | xmlsec.py | `parse(source)` filename | GUARDED (validate_path; covers defusedxml + fallback) | test_pathsec_sweep_infra |
 | pathsec.py | `validate_path` URL-scheme bypass (F2) | GAP-FIXED (anchored-regex reject) | test_pathsec (TestUrlSchemePathBypass) |
-| pathsec.py | save default refused on Linux (shared `/tmp` not an allowed root) | GAP-FIXED (`make_staging_dir` registers NLTK's own private 0700 dir; unregistered temp dirs stay refused) | test_pathsec (TestPrivateStagingRegistry) |
+| data.py | save default refused on Linux (shared `/tmp` not an allowed root) | GAP-FIXED (`make_staging_dir` stages under a data root, in-sandbox; no temp-dir trust added to pathsec) | test_pathsec (TestStagingUnderDataRoot) |
 
 ### dataset / model loading (data.py + corpus readers) — ATTACKED, no leak
 | Load path | Attacks refused | Verdict |
