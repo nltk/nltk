@@ -54,6 +54,8 @@ import io
 from xml.etree import ElementTree
 from xml.parsers import expat
 
+from nltk.pathsec import validate_path
+
 __all__ = ["HAVE_DEFUSEDXML", "EntitiesForbidden", "fromstring", "parse"]
 
 try:
@@ -125,6 +127,11 @@ def parse(source):
     object is read in full so it can be screened before parsing;
     ``ElementTree.parse`` reads it to the end regardless, so nothing is lost.
     """
+    # A filename source is caller-controlled: validate it before either back end
+    # (defusedxml or fallback) opens it (CWE-22). A file object carries no path.
+    if not hasattr(source, "read"):
+        validate_path(source, context="nltk.xmlsec.parse")
+
     if HAVE_DEFUSEDXML:
         return _defused_parse(source)
 

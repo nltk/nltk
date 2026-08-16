@@ -12,6 +12,7 @@ import builtins
 import http.client
 import ipaddress
 import os
+import re
 import socket
 import stat
 import sys
@@ -22,6 +23,11 @@ import zipfile
 from functools import lru_cache
 from pathlib import Path
 from urllib.parse import unquote, urlparse
+
+# A URL is not a filesystem path: to the kernel "http://.." is the dir "http:"
+# then a ".." traversal. Anchored, whitespace-tolerant, case-insensitive match.
+_URL_SCHEME_RE = re.compile(r"^\s*(?:https?|ftp)://", re.IGNORECASE)
+_FILE_SCHEME_RE = re.compile(r"^\s*file:", re.IGNORECASE)
 
 # Security Enforcement Toggle
 # ENFORCE = False
@@ -144,12 +150,30 @@ def validate_path(path_input, context="NLTK", required_root=None):
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
 
-        if "://" in raw:
+        # Reject a URL outright: no caller validates a network URL here, and
+        # "http://../.." is a kernel traversal, not a host (GHSA-8mgp-746c-j5xp).
+        if _URL_SCHEME_RE.match(raw):
+            msg = (
+                f"Security Violation [{context}]: a URL was passed to a "
+                f"filesystem path check: {raw!r}. Use nltk.pathsec.urlopen() "
+                "for network I/O."
+            )
+            if ENFORCE:
+                raise PermissionError(msg)
+            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+        if _FILE_SCHEME_RE.match(raw):
             parsed = urlparse(raw)
-            if parsed.scheme in ("http", "https", "ftp"):
+            # urllib opens Request.selector (keeps ?/#/;) but urlparse().path
+            # drops them -- that would validate a different file than opens.
+            if parsed.query or parsed.fragment or ";" in parsed.path:
+                raise PermissionError(
+                    f"Security Violation [{context}]: ambiguous file URL "
+                    f"(query/fragment/params) not allowed: {raw!r}"
+                )
+            raw = unquote(parsed.path)
+            if not raw:
                 return
-            if parsed.scheme == "file":
-                raw = unquote(parsed.path)
 
         # Resolve path to catch symlink escapes
         try:
