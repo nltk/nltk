@@ -150,12 +150,8 @@ def validate_path(path_input, context="NLTK", required_root=None):
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
 
-        # A URL is not a filesystem path. Reject http(s)/ftp outright: no in-tree
-        # caller validates a network URL here (they use pathsec.urlopen), and
-        # "http://../../etc/passwd" is a kernel-level traversal, not a host.
-        # Delegating to validate_network_url() was tried and still fails open --
-        # urlparse gives host ".." which resolves to [] and passes -- so reject
-        # at this layer (GHSA-8mgp-746c-j5xp).
+        # Reject a URL outright: no caller validates a network URL here, and
+        # "http://../.." is a kernel traversal, not a host (GHSA-8mgp-746c-j5xp).
         if _URL_SCHEME_RE.match(raw):
             msg = (
                 f"Security Violation [{context}]: a URL was passed to a "
@@ -168,9 +164,8 @@ def validate_path(path_input, context="NLTK", required_root=None):
             return
         if _FILE_SCHEME_RE.match(raw):
             parsed = urlparse(raw)
-            # urllib opens Request.selector, which keeps ?/#/; -- urlparse().path
-            # drops them, so validating .path would check a different file than
-            # gets opened. Refuse the ambiguous forms outright.
+            # urllib opens Request.selector (keeps ?/#/;) but urlparse().path
+            # drops them -- that would validate a different file than opens.
             if parsed.query or parsed.fragment or ";" in parsed.path:
                 raise PermissionError(
                     f"Security Violation [{context}]: ambiguous file URL "
