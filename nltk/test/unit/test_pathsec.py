@@ -26,7 +26,7 @@ def enable_enforcement():
     pathsec.ENFORCE = original_enforce
 
 
-# SSRF NETWORK TESTS
+# --- SSRF NETWORK TESTS ---
 def test_valid_http_url():
     """Ensure valid URLs pass the SSRF filter without raising security exceptions."""
     try:
@@ -126,7 +126,7 @@ def test_ip_filter_allows_global(addr):
     assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)) is False
 
 
-# PATH TRAVERSAL TESTS
+# --- PATH TRAVERSAL TESTS ---
 def test_path_traversal_absolute():
     """
     Test if absolute paths bypass standard relative traversal checks.
@@ -140,7 +140,7 @@ def test_path_traversal_absolute():
         pathsec.open(outside, "r")
 
 
-# ALLOWED-ROOTS / TEMP-DIR FALLBACK TESTS
+# --- ALLOWED-ROOTS / TEMP-DIR FALLBACK TESTS ---
 def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
     """Regression test for issue #3716.
 
@@ -171,7 +171,7 @@ def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
     assert known_root.resolve() in roots
 
 
-# ZIP-SLIP TESTS
+# --- ZIP-SLIP TESTS ---
 def create_malicious_zip(filename):
     """Helper to create malicious zip files in memory."""
     mem_zip = io.BytesIO()
@@ -252,7 +252,7 @@ def test_zip_slip_interior_dotdot_symlink_escape(tmp_path):
     ).exists(), "member escaped the extraction root via an in-root symlink"
 
 
-# PROXY & HANDLER TESTS
+# --- PROXY & HANDLER TESTS ---
 def test_urlopen_honors_set_proxy_and_redirect_validation():
     """
     Regression test for Issue #3551.
@@ -467,7 +467,7 @@ def test_env_proxy_fails_closed_under_enforce(monkeypatch):
         pathsec.urlopen("http://safe.example.com/x")
 
 
-# issue #3748: NO_PROXY must not be mistaken for a configured proxy
+# --- issue #3748: NO_PROXY must not be mistaken for a configured proxy --------
 #
 # getproxies() reports a "no" key for NO_PROXY, an exclusion list. The old check
 # treated any non-empty getproxies() as a proxy and blocked every download. The
@@ -496,7 +496,7 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
 @pytest.mark.parametrize(
     "proxies, bypass, expected",
     [
-        # benign: no real http/https proxy would carry the request
+        # --- benign: no real http/https proxy would carry the request ---------
         ({}, False, False),  # nothing set
         ({"no": "localhost"}, False, False),  # NO_PROXY only (the reported bug)
         ({"no": "*"}, False, False),  # NO_PROXY wildcard
@@ -505,7 +505,7 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
         ({"http": "http://p:8080"}, True, False),  # http proxy but host bypassed
         ({"https": "http://p:8080"}, True, False),  # https proxy but host bypassed
         ({"http": "http://p:8080", "no": "raw.githubusercontent.com"}, True, False),
-        # must block: a real http/https proxy carries the host
+        # --- must block: a real http/https proxy carries the host -------------
         ({"http": "http://p:8080"}, False, True),
         ({"https": "http://p:8080"}, False, True),
         ({"http": "http://p:8080", "https": "http://p:8080"}, False, True),
@@ -682,7 +682,7 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
         server.shutdown()
 
 
-# SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6
+# --- SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6 ---------
 @pytest.mark.parametrize(
     "addr",
     [

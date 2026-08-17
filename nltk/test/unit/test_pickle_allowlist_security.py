@@ -134,7 +134,7 @@ def test_transitionparser_rejects_malicious_model(tmp_path):
     assert not marker.exists(), "malicious model payload executed (RCE not blocked)"
 
 
-# GHSA-x99w / GHSA-4489: AllowlistUnpickler bypass regressions
+# --- GHSA-x99w / GHSA-4489: AllowlistUnpickler bypass regressions -------------
 #
 # The prior AllowlistUnpickler checked only the *module* against a prefix
 # allowlist and never the *name*, so:
@@ -286,7 +286,7 @@ def test_all_punkt_object_types_round_trip():
     assert restored_tok.tokenize(text) == tok.tokenize(text)
 
 
-# GHSA-8mgp follow-up: the model allowlist is exact, not broad namespaces
+# --- GHSA-8mgp follow-up: the model allowlist is exact, not broad namespaces ---
 #
 # The saved TransitionParser model is a fitted sklearn SVC. Allowing the whole
 # numpy/scipy/sklearn namespaces still left real gadgets reachable through the
