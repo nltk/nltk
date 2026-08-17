@@ -131,6 +131,14 @@ DANGEROUS_CMD = [
     [],  # no main class
     [None],  # non-string first token
     ["", "SomeMainClass"],  # empty first token
+    # whitespace-prefixed launcher tokens (a shell/launcher may trim them, and a
+    # main class never has surrounding whitespace) must not slip past the guard
+    [" -jar", "/tmp/evil.jar"],
+    ["\t-jar", "/tmp/evil.jar"],
+    ["\n-jar", "/tmp/evil.jar"],
+    [" @/tmp/argfile"],
+    ["SomeMainClass", " @/tmp/argfile"],
+    ["   ", "SomeMainClass"],  # whitespace-only first token
 ]
 
 

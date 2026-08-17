@@ -352,13 +352,20 @@ def java(
     if not cmd_list:
         raise ValueError("cmd must contain a Java main class")
     first = cmd_list[0]
-    if not isinstance(first, str) or not first or first.startswith(("-", "@")):
+    # Compare the stripped token: a real main-class name never has surrounding
+    # whitespace, and some launchers/shells trim it, so " -jar" / "\t@file" must
+    # be treated as the launcher token it becomes, not slipped through.
+    if (
+        not isinstance(first, str)
+        or not first.strip()
+        or first.strip().startswith(("-", "@"))
+    ):
         raise ValueError(
             f"cmd must begin with a Java main class, not a launcher switch or "
             f"@argfile: {first!r} (CWE-88)"
         )
     for tok in cmd_list:
-        if isinstance(tok, str) and tok.startswith("@"):
+        if isinstance(tok, str) and tok.strip().startswith("@"):
             raise ValueError(
                 f"cmd may not contain an @argfile token: {tok!r}; the Java "
                 "launcher would expand it, injecting arguments (CWE-88)"
