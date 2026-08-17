@@ -531,21 +531,10 @@ _CORPUS_TEXT_A = "The dog runs. A cat sleeps.\n"
 _CORPUS_TEXT_B = "Birds fly high.\n"
 
 
-@pytest.fixture
-def enforce_off(monkeypatch):
-    """Isolate a functional read test from ambient / leaked pathsec.ENFORCE state.
-
-    With ENFORCE off, CorpusReader.__init__ skips the global-root check, so a
-    temp-dir corpus that is not an allowlisted data root still constructs (on a
-    full test run an earlier test may leave ENFORCE on, and on Linux the temp
-    dir lives under world-writable /tmp, which is not an allowed root). The
-    _guard_fileid required_root containment check still runs on every fileid, so
-    the guard itself is exercised; the ENFORCE-on path is covered separately by
-    test_guard_fileid_reads_still_work_under_enforce.
-    """
-    monkeypatch.setattr(pathsec, "ENFORCE", False)
-    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
-    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+# The ``enforce_off`` fixture is provided by nltk/test/unit/conftest.py; it forces
+# pathsec.ENFORCE off so a temp-dir corpus (not an allowlisted data root, and on
+# Linux under world-writable /tmp) still constructs, while _guard_fileid's
+# required_root containment check still runs on every fileid.
 
 
 def _fs_plaintext_corpus():
