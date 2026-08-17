@@ -194,3 +194,32 @@ def test_save_punkt_params_creates_caller_dir_private(sandbox):
     finally:
         os.umask(old_umask)
         shutil.rmtree(target, ignore_errors=True)
+
+
+def test_save_punkt_params_round_trip(sandbox):
+    """Functional check: params written by save_punkt_params reload identically
+    via load_punkt_params (given a PathPointer, the API load_lang uses), so the
+    save/load pair still works end-to-end under enforcement after the hardening."""
+    from nltk.data import FileSystemPathPointer
+    from nltk.tokenize.punkt import (
+        PunktParameters,
+        load_punkt_params,
+        save_punkt_params,
+    )
+
+    params = PunktParameters()
+    params.abbrev_types = {"dr", "mr", "vs"}
+    params.collocations = {("new", "york"), ("los", "angeles")}
+    params.sent_starters = {"however", "the"}
+    params.ortho_context["foo"] = 5
+    params.ortho_context["bar"] = 12
+
+    out = save_punkt_params(params)
+    try:
+        reloaded = load_punkt_params(FileSystemPathPointer(out))
+        assert reloaded.abbrev_types == params.abbrev_types
+        assert reloaded.collocations == params.collocations
+        assert reloaded.sent_starters == params.sent_starters
+        assert dict(reloaded.ortho_context) == dict(params.ortho_context)
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
