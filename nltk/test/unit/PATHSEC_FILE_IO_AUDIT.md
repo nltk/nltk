@@ -123,6 +123,7 @@ test_pathsec_sweep_dataset_loading.py. No source change needed — already conta
 | `np.load`/`numpy.load`/`allow_pickle=True` | **none exist in the tree** | SAFE (n/a) |
 | chartparser GUI pickle · tbl/demo cache | warn-only `pickle_load` — interactive / dev-demo, not untrusted dataset | documented residual |
 | picklesec shared denylist (scipy.io, sklearn.datasets, numpy call-gadgets, LowLevelCallable) | GAP-FIXED | test_pickle_allowlist_security |
+| picklesec numpy submodule-local file-I/O sinks (`numpy.lib.npyio`/`_npyio_impl` recfromtxt/recfromcsv/NpzFile; `numpy.lib.format` open_memmap/read_array/write_array) reachable under a broad `numpy` allow (arbitrary read + create/write) | GAP-FIXED (`numpy.lib` denied prefix) | test_pickle_allowlist_security (TestNumpySubmoduleFileIOSinks) |
 
 Gadget battery (os.system, subprocess, eval/exec/import, scipy.io.mmwrite, sklearn.datasets.fetch_openml, numpy.load/apply_along_axis, dotted-name sklearn.os.system, live `__reduce__`→os.system) **refused at every site**; legit SVC/Punkt/wordnet/dict loads still succeed. 96 tests in test_pathsec_sweep_deserialization.py.
 

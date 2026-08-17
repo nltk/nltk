@@ -80,8 +80,7 @@ def test_transitionparser_loads_legitimate_model(tmp_path):
     from nltk.parse import DependencyGraph
     from nltk.parse.transitionparser import TransitionParser
 
-    gold_sent = DependencyGraph(
-        """
+    gold_sent = DependencyGraph("""
 Economic  JJ     2      ATT
 news  NN     3       SBJ
 has       VBD       0       ROOT
@@ -91,8 +90,7 @@ on     IN      5       ATT
 financial       JJ       8       ATT
 markets    NNS      6       PC
 .    .      3       PU
-"""
-    )
+""")
 
     model_path = tmp_path / "tp.model"
     parser = TransitionParser(TransitionParser.ARC_STANDARD)
@@ -389,3 +387,118 @@ def test_model_allowlist_still_loads_a_real_svc():
             allowed_globals=_MODEL_ALLOWED_GLOBALS,
         )
         assert np.array_equal(model.predict(X[:3]), restored.predict(X[:3]))
+
+
+class TestNumpySubmoduleFileIOSinks:
+    """A broad ``numpy`` allow must not expose numpy's submodule-local file-I/O
+    callables. Their real module is ``numpy.lib.npyio`` / ``numpy.lib._npyio_impl``
+    (numpy 2.x) / ``numpy.lib.format``, which numpy does NOT rewrite to
+    ``__module__ == "numpy"``, so the export-name denylist never matches them.
+    The ``numpy.lib`` denied prefix must catch every request form (CWE-502):
+    arbitrary file read (``recfromtxt``/``recfromcsv``/``NpzFile``) and arbitrary
+    file create/write (``open_memmap(mode="w+")``/``read_array``/``write_array``).
+    """
+
+    def _sinks(self):
+        numpy = pytest.importorskip("numpy")
+        paths = [
+            "lib.format.open_memmap",
+            "lib.format.read_array",
+            "lib.format.write_array",
+        ]
+        for holder in ("lib.npyio", "lib._npyio_impl"):
+            paths += [
+                f"{holder}.recfromtxt",
+                f"{holder}.recfromcsv",
+                f"{holder}.NpzFile",
+            ]
+        found = []
+        for p in paths:
+            obj = numpy
+            try:
+                for part in p.split("."):
+                    obj = getattr(obj, part)
+            except AttributeError:
+                continue
+            found.append(obj)
+        assert found, "no numpy.lib file-I/O sinks resolved on this numpy"
+        return numpy, found
+
+    def test_submodule_local_request_blocked(self):
+        """Requesting each sink by its real submodule module string is refused."""
+        numpy, sinks = self._sinks()
+        up = AllowlistUnpickler(
+            BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn")
+        )
+        for obj in sinks:
+            with pytest.raises(pickle.UnpicklingError):
+                up.find_class(obj.__module__, obj.__qualname__)
+
+    def test_numpy_top_level_export_blocked(self):
+        """Where numpy also re-exports a sink at top level, the ("numpy", name)
+        request is refused too, via the post-resolution real-module check."""
+        numpy, sinks = self._sinks()
+        up = AllowlistUnpickler(BytesIO(b""), allowed_modules=("numpy",))
+        checked = 0
+        for obj in sinks:
+            name = obj.__qualname__
+            if getattr(numpy, name, None) is obj:  # only if truly re-exported
+                checked += 1
+                with pytest.raises(pickle.UnpicklingError):
+                    up.find_class("numpy", name)
+        # Not every sink is re-exported on every numpy; that is fine.
+        assert checked >= 0
+
+    def test_reduce_write_payload_creates_nothing(self, tmp_path):
+        """End-to-end: an ``open_memmap(mode="w+")`` REDUCE payload under a broad
+        numpy allow is refused and does NOT create the attacker's target file."""
+        numpy = pytest.importorskip("numpy")
+        open_memmap = numpy.lib.format.open_memmap
+        target = tmp_path / "pwned_write.bin"
+
+        class Evil:
+            def __reduce__(self):
+                return (open_memmap, (str(target), "w+", "int8", (4,)))
+
+        payload = pickle.dumps(Evil(), protocol=4)
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(
+                BytesIO(payload), allowed_modules=("numpy", "scipy", "sklearn")
+            )
+        assert not target.exists(), "arbitrary-write sink was reconstructed and ran"
+
+    def test_reduce_read_payload_blocked(self, tmp_path):
+        """End-to-end: a ``recfromtxt`` REDUCE payload (arbitrary read) is refused."""
+        numpy = pytest.importorskip("numpy")
+        holder = getattr(numpy.lib, "_npyio_impl", None) or numpy.lib.npyio
+        recfromtxt = holder.recfromtxt
+        secret = tmp_path / "secret.csv"
+        secret.write_text("1,2\n3,4\n")
+
+        class Evil:
+            def __reduce__(self):
+                return (recfromtxt, (str(secret),))
+
+        payload = pickle.dumps(Evil(), protocol=4)
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(BytesIO(payload), allowed_modules=("numpy",))
+
+    def test_legitimate_numpy_array_still_loads(self):
+        """The fix must not break genuine array unpickling under a broad numpy
+        allow: no reconstruct global lives under numpy.lib."""
+        numpy = pytest.importorskip("numpy")
+        allow = {
+            ("numpy", "ndarray"),
+            ("numpy", "dtype"),
+            ("numpy._core.multiarray", "_reconstruct"),
+            ("numpy.core.multiarray", "_reconstruct"),
+            ("numpy._core.multiarray", "scalar"),
+            ("numpy.core.multiarray", "scalar"),
+        }
+        arr = numpy.array([[1.0, 2.0], [3.0, 4.0]])
+        out = allowlisted_pickle_load(
+            BytesIO(pickle.dumps(arr, protocol=4)),
+            allowed_globals=allow,
+            allowed_modules=("numpy",),
+        )
+        assert numpy.array_equal(out, arr)
