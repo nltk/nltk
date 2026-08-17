@@ -129,6 +129,8 @@ import shelve
 import sys
 
 import nltk.data
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -421,6 +423,10 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     """
     import sqlite3
 
+    # dbname is a caller-supplied path handed straight to sqlite3.connect(),
+    # which creates/opens it. Validate it before any file is created so an
+    # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
+    validate_path(dbname, context="chat80.cities2table")
     records = _str2records(filename, rel_name)
     connection = sqlite3.connect(dbname)
     cur = connection.cursor()
@@ -610,6 +616,10 @@ def val_dump(rels, db):
                The suffix '.db' will be automatically appended.
     :type db: str
     """
+    # db is a caller-supplied path handed to shelve.open(), which creates the
+    # backing files. Validate before any work so an out-of-sandbox target is
+    # refused up front (GHSA-8mgp-746c-j5xp).
+    validate_path(db, context="chat80.val_dump")
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
     db_out = shelve.open(db, "n")
@@ -627,6 +637,10 @@ def val_load(db):
                The suffix '.db' should be omitted from the name.
     :type db: str
     """
+    # db is a caller-supplied path handed to shelve.open(), which opens the
+    # backing files. Validate before touching the filesystem so an
+    # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
+    validate_path(db, context="chat80.val_load")
     dbname = db + ".db"
 
     if not os.access(dbname, os.R_OK):
@@ -674,7 +688,9 @@ def label_indivs(valuation, lexicon=False):
     pairs = [(e, e) for e in domain]
     if lexicon:
         lex = make_lex(domain)
-        with open("chat_pnames.cfg", "w") as outfile:
+        with pathsec_open(
+            "chat_pnames.cfg", "w", context="chat80.label_indivs"
+        ) as outfile:
             outfile.writelines(lex)
     # read the pairs into the valuation
     valuation.update(pairs)
@@ -793,7 +809,7 @@ Valuation object for use in the NLTK semantics package.
         help="print out the vocabulary of concept labels and their arity, then exit",
     )
 
-    (options, args) = opts.parse_args()
+    options, args = opts.parse_args()
     if options.outdb and options.indb:
         opts.error("Options --store and --load are mutually exclusive")
 

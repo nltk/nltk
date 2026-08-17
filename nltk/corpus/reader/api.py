@@ -18,6 +18,7 @@ from itertools import chain
 from nltk import pathsec
 from nltk.corpus.reader.util import *
 from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
+from nltk.pathsec import validate_path
 
 
 class CorpusReader:
@@ -81,7 +82,7 @@ class CorpusReader:
         # The ``str`` test also covers ``FileSystemPathPointer`` (a ``str``
         # subclass), so a pointer root is validated too.
         if pathsec.ENFORCE and isinstance(root, str):
-            pathsec.validate_path(root, context="CorpusReader.__init__")
+            validate_path(root, context="CorpusReader.__init__")
 
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):
@@ -171,6 +172,21 @@ class CorpusReader:
         """
         return self._fileids
 
+    def _guard_fileid(self, fileid):
+        """Resolve a corpus-relative fileid to a path pointer with the scoped-root
+        guard, so view methods get the same containment as :meth:`open`.
+
+        View methods (``words``/``sents``/``parsed_sents``/...) open the pointers
+        returned by :meth:`abspaths` directly, bypassing :meth:`open`.
+        ``self._root.join`` already rejects a ``..`` traversal; the scoped
+        ``validate_path`` additionally resolves symlinks so an intermediate
+        directory symlink inside the corpus root that escapes it is refused too
+        (CWE-22/CWE-59).
+        """
+        path = self._root.join(fileid)
+        validate_path(path, context="CorpusReader", required_root=self._root)
+        return path
+
     def abspath(self, fileid):
         """
         Return the absolute path for the given file.
@@ -180,7 +196,7 @@ class CorpusReader:
             should be returned.
         :rtype: PathPointer
         """
-        return self._root.join(fileid)
+        return self._guard_fileid(fileid)
 
     def abspaths(self, fileids=None, include_encoding=False, include_fileid=False):
         """
@@ -205,7 +221,7 @@ class CorpusReader:
         elif isinstance(fileids, str):
             fileids = [fileids]
 
-        paths = [self._root.join(f) for f in fileids]
+        paths = [self._guard_fileid(f) for f in fileids]
 
         if include_encoding and include_fileid:
             return list(zip(paths, [self.encoding(f) for f in fileids], fileids))
@@ -244,8 +260,6 @@ class CorpusReader:
         path = self._root.join(file)
 
         # Layer 2: Scoped resolved guard (Fixes symlink escape test)
-        from nltk.pathsec import validate_path
-
         validate_path(path, context="CorpusReader", required_root=self._root)
 
         # --- FIX: Handle dict-based encodings (e.g., UDHR corpus) ---
