@@ -35,6 +35,10 @@ _MODEL_ALLOWED_GLOBALS = (
     ("numpy._core.multiarray", "_reconstruct"),
     ("numpy.core.multiarray", "scalar"),
     ("numpy._core.multiarray", "scalar"),
+    # numpy >= 2.5 pickles a contiguous array via _frombuffer (an in-memory
+    # buffer reshape, no file/code access), not _reconstruct.
+    ("numpy._core.numeric", "_frombuffer"),
+    ("numpy.core.numeric", "_frombuffer"),
     ("scipy.sparse._csr", "csr_matrix"),
     ("scipy.sparse.csr", "csr_matrix"),
     ("scipy.sparse._csc", "csc_matrix"),

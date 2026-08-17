@@ -503,6 +503,8 @@ class TestNumpySubmoduleFileIOSinks:
             ("numpy.core.multiarray", "_reconstruct"),
             ("numpy._core.multiarray", "scalar"),
             ("numpy.core.multiarray", "scalar"),
+            ("numpy._core.numeric", "_frombuffer"),  # numpy >= 2.5 array reduce
+            ("numpy.core.numeric", "_frombuffer"),
         }
         arr = numpy.array([[1.0, 2.0], [3.0, 4.0]])
         out = allowlisted_pickle_load(
@@ -605,6 +607,8 @@ class TestScientificStackReexportSinks:
             ("numpy.core.multiarray", "_reconstruct"),
             ("numpy._core.multiarray", "scalar"),
             ("numpy.core.multiarray", "scalar"),
+            ("numpy._core.numeric", "_frombuffer"),  # numpy >= 2.5 array reduce
+            ("numpy.core.numeric", "_frombuffer"),
         }
         arr = numpy.array([[1.0, 2.0], [3.0, 4.0]])
         out = allowlisted_pickle_load(
