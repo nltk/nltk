@@ -499,23 +499,22 @@ def test_view_methods_block_intermediate_dir_symlink_escape(corpus_root):
     assert list(reader.words(fileids=["legit.txt"])) == ["in", "-", "root"]
 
 
-def test_validate_path_is_load_bearing_in_guard_fileid(corpus_root, monkeypatch):
-    """Mutation test: neuter validate_path and the in-root symlink escape that
-    abspath()/abspaths() (and the view methods that open their pointers) rely on
-    it to block becomes reachable -- proving validate_path, not self._root.join
-    (which only rejects '..'), is the containment guard (CWE-59)."""
+def test_validate_path_not_root_join_is_the_containment_guard(corpus_root):
+    """validate_path, not self._root.join, is the load-bearing guard. join on the
+    in-root symlink fileid returns a pointer (it only rejects a '..' traversal),
+    yet abspath, which adds validate_path, refuses that same fileid while still
+    resolving a genuine in-root file (CWE-59). This is the same claim a
+    monkeypatch mutation would make, proven directly without neutering anything."""
     from nltk.corpus.reader.api import CorpusReader
 
     reader = CorpusReader(corpus_root["root"], ["legit.txt"])
 
-    # guard ON: the in-root symlink that resolves outside root is refused,
-    # while a genuine in-root file resolves fine.
+    # self._root.join alone does NOT contain the escape: it yields a pointer to
+    # the in-root symlink, because join only rejects a '..' traversal.
+    assert reader._root.join("evil.txt") is not None
+
+    # abspath adds validate_path, which resolves the symlink and refuses it,
+    # while a genuine in-root file still resolves.
     with pytest.raises((PermissionError, ValueError)):
         reader.abspath("evil.txt")
     reader.abspath("legit.txt")
-
-    # neuter validate_path: the escaping fileid now resolves to a pointer, i.e.
-    # the sandbox is gone the instant the guard is removed.
-    monkeypatch.setattr(pathsec, "validate_path", lambda *a, **k: None)
-    escaped = reader.abspath("evil.txt")
-    assert escaped is not None

@@ -18,6 +18,7 @@ from itertools import chain
 from nltk import pathsec
 from nltk.corpus.reader.util import *
 from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
+from nltk.pathsec import validate_path
 
 
 class CorpusReader:
@@ -81,7 +82,7 @@ class CorpusReader:
         # The ``str`` test also covers ``FileSystemPathPointer`` (a ``str``
         # subclass), so a pointer root is validated too.
         if pathsec.ENFORCE and isinstance(root, str):
-            pathsec.validate_path(root, context="CorpusReader.__init__")
+            validate_path(root, context="CorpusReader.__init__")
 
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):
@@ -183,8 +184,6 @@ class CorpusReader:
         (CWE-22/CWE-59).
         """
         path = self._root.join(fileid)
-        from nltk.pathsec import validate_path
-
         validate_path(path, context="CorpusReader", required_root=self._root)
         return path
 
@@ -261,8 +260,6 @@ class CorpusReader:
         path = self._root.join(file)
 
         # Layer 2: Scoped resolved guard (Fixes symlink escape test)
-        from nltk.pathsec import validate_path
-
         validate_path(path, context="CorpusReader", required_root=self._root)
 
         # --- FIX: Handle dict-based encodings (e.g., UDHR corpus) ---
