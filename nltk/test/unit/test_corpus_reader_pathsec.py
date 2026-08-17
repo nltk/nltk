@@ -461,3 +461,39 @@ def test_no_corpus_reader_leaks_out_of_sandbox(monkeypatch, tmp_path):
     # sanity: the sweep must actually have discovered and driven the readers,
     # otherwise a silent import/enumeration failure would make it pass vacuously.
     assert len(classes) > 40, f"only {len(classes)} readers discovered"
+
+
+def test_view_methods_block_intermediate_dir_symlink_escape(corpus_root):
+    """View methods (words/sents/abspaths) open the pointers from ``abspaths()``
+    directly, bypassing ``open()``. An intermediate-directory symlink inside the
+    corpus root that resolves to an out-of-root file (still inside the global data
+    sandbox) must be refused on that channel too, exactly as ``open()`` refuses it
+    (CWE-59)."""
+    from nltk.corpus.reader.api import CorpusReader
+    from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+
+    root = corpus_root["root"]
+    secret = os.path.realpath(corpus_root["link"])  # an out-of-root file
+    outside_dir = os.path.dirname(secret)
+    # an intermediate-DIRECTORY symlink inside the corpus root -> the outside dir
+    os.symlink(outside_dir, os.path.join(root, "subdir"))
+
+    reader = PlaintextCorpusReader(root, ["legit.txt"])
+    escaping = "subdir/" + os.path.basename(secret)
+
+    # control: open() already refuses the scoped escape
+    with pytest.raises((PermissionError, ValueError)):
+        CorpusReader.open(reader, escaping)
+    # the view-method channel must refuse it identically
+    for label, call in [
+        ("abspath", lambda: reader.abspath(escaping)),
+        ("abspaths", lambda: reader.abspaths([escaping])),
+        ("words", lambda: list(reader.words(fileids=[escaping]))),
+        ("raw", lambda: reader.raw([escaping])),
+    ]:
+        with pytest.raises((PermissionError, ValueError)):
+            call()
+
+    # a genuine in-root file still works through the same channel
+    assert reader.abspaths(["legit.txt"])
+    assert list(reader.words(fileids=["legit.txt"])) == ["in", "-", "root"]

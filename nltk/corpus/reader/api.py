@@ -171,6 +171,24 @@ class CorpusReader:
         """
         return self._fileids
 
+    def _guard_fileid(self, fileid):
+        """Resolve a corpus-relative fileid to a path pointer, applying the same
+        lexical and scoped-root guard as :meth:`open`.
+
+        View methods (``words``/``sents``/``parsed_sents``/...) open the pointers
+        returned by :meth:`abspaths` directly, bypassing :meth:`open`. Without this
+        guard a ``..`` component or an intermediate-directory symlink inside the
+        corpus root would let those methods read files outside the root yet inside
+        the global data sandbox (CWE-22/CWE-59), which :meth:`open` already refuses.
+        """
+        if os.path.isabs(fileid) or ".." in str(fileid).replace("\\", "/"):
+            raise ValueError(f"CorpusReader paths must be relative: {fileid}")
+        path = self._root.join(fileid)
+        from nltk.pathsec import validate_path
+
+        validate_path(path, context="CorpusReader", required_root=self._root)
+        return path
+
     def abspath(self, fileid):
         """
         Return the absolute path for the given file.
@@ -180,7 +198,7 @@ class CorpusReader:
             should be returned.
         :rtype: PathPointer
         """
-        return self._root.join(fileid)
+        return self._guard_fileid(fileid)
 
     def abspaths(self, fileids=None, include_encoding=False, include_fileid=False):
         """
@@ -205,7 +223,7 @@ class CorpusReader:
         elif isinstance(fileids, str):
             fileids = [fileids]
 
-        paths = [self._root.join(f) for f in fileids]
+        paths = [self._guard_fileid(f) for f in fileids]
 
         if include_encoding and include_fileid:
             return list(zip(paths, [self.encoding(f) for f in fileids], fileids))
