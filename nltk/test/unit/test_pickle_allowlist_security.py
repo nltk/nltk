@@ -3,7 +3,7 @@
 ``TransitionParser.parse(depgraphs, modelFile)`` is a public API whose
 ``modelFile`` is caller-supplied. It used to be loaded with the warn-only
 ``pickle_load`` (``restricted=False``), which prints a warning and then performs
-a full, unrestricted unpickle -- so a crafted model file achieved arbitrary code
+a full, unrestricted unpickle; so a crafted model file achieved arbitrary code
 execution the instant it was loaded. The load now goes through
 ``allowlisted_pickle_load``: only numpy/scipy/sklearn globals may be
 reconstructed, and anything else (e.g. ``os.system``) raises ``UnpicklingError``
@@ -470,16 +470,23 @@ class TestNumpySubmoduleFileIOSinks:
         assert not target.exists(), "arbitrary-write sink was reconstructed and ran"
 
     def test_reduce_read_payload_blocked(self, tmp_path):
-        """End-to-end: a ``recfromtxt`` REDUCE payload (arbitrary read) is refused."""
+        """End-to-end: an arbitrary-read REDUCE payload (whichever text-read sink
+        this numpy still exports: recfromtxt / genfromtxt / loadtxt) is refused."""
         numpy = pytest.importorskip("numpy")
         holder = getattr(numpy.lib, "_npyio_impl", None) or numpy.lib.npyio
-        recfromtxt = holder.recfromtxt
+        read_sink = None
+        for cand in ("recfromtxt", "genfromtxt", "loadtxt"):
+            read_sink = getattr(holder, cand, None) or getattr(numpy, cand, None)
+            if read_sink is not None:
+                break
+        if read_sink is None:
+            pytest.skip("no text-read sink on this numpy")
         secret = tmp_path / "secret.csv"
         secret.write_text("1,2\n3,4\n")
 
         class Evil:
             def __reduce__(self):
-                return (recfromtxt, (str(secret),))
+                return (read_sink, (str(secret),))
 
         payload = pickle.dumps(Evil(), protocol=4)
         with pytest.raises(pickle.UnpicklingError):
@@ -496,6 +503,112 @@ class TestNumpySubmoduleFileIOSinks:
             ("numpy.core.multiarray", "_reconstruct"),
             ("numpy._core.multiarray", "scalar"),
             ("numpy.core.multiarray", "scalar"),
+            ("numpy._core.numeric", "_frombuffer"),  # numpy >= 2.5 array reduce
+            ("numpy.core.numeric", "_frombuffer"),
+        }
+        arr = numpy.array([[1.0, 2.0], [3.0, 4.0]])
+        out = allowlisted_pickle_load(
+            BytesIO(pickle.dumps(arr, protocol=4)),
+            allowed_globals=allow,
+            allowed_modules=("numpy",),
+        )
+        assert numpy.array_equal(out, arr)
+
+
+class TestScientificStackReexportSinks:
+    """The same dangerous numpy callable (fromfile = arbitrary file read,
+    npy_load_module = arbitrary module load / RCE, ...) is re-exported under many
+    submodule paths, each with a different __module__. AllowlistUnpickler must
+    refuse it by resolved qualname no matter which submodule path a broad allow
+    reaches it through, not just the enumerated (module, name) pairs (CWE-502).
+    """
+
+    def test_record_array_and_module_load_sinks_blocked(self):
+        pytest.importorskip("numpy")
+        import importlib
+        import warnings
+
+        warnings.filterwarnings("ignore")
+        up = AllowlistUnpickler(
+            BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn")
+        )
+        cases = [
+            ("numpy.rec", "fromfile"),
+            ("numpy.core.records", "fromfile"),
+            ("numpy._core.records", "fromfile"),
+            ("numpy.ma.core", "fromfile"),
+            ("numpy.compat", "npy_load_module"),  # loads/executes a module -> RCE
+        ]
+        checked = 0
+        for mod, name in cases:
+            try:
+                m = importlib.import_module(mod)
+            except BaseException:
+                continue
+            if not hasattr(m, name):
+                continue
+            checked += 1
+            with pytest.raises(pickle.UnpicklingError):
+                up.find_class(mod, name)
+        assert checked, "no record/ma/compat sinks resolved on this numpy"
+
+    def test_no_numpy_io_sink_reconstructable_across_submodule_aliases(self):
+        """Sweep the numpy submodules that hold file/module I/O sinks: none whose
+        resolved qualname is a denied sink may be reconstructed under broad allow."""
+        pytest.importorskip("numpy")
+        import importlib
+        import warnings
+
+        warnings.filterwarnings("ignore")
+        from nltk.picklesec import _DENIED_SCISTACK_QUALNAMES
+
+        up = AllowlistUnpickler(
+            BytesIO(b""), allowed_modules=("numpy", "scipy", "sklearn")
+        )
+        mods = [
+            "numpy",
+            "numpy.lib",
+            "numpy.lib.npyio",
+            "numpy.lib._npyio_impl",
+            "numpy.lib.format",
+            "numpy.rec",
+            "numpy.core.records",
+            "numpy._core.records",
+            "numpy.ma",
+            "numpy.ma.core",
+            "numpy.compat",
+            "numpy.matlib",
+            "numpy.ctypeslib",
+        ]
+        leaks = []
+        for mn in mods:
+            try:
+                mod = importlib.import_module(mn)
+            except BaseException:
+                continue
+            for nm in dir(mod):
+                obj = getattr(mod, nm, None)
+                if not callable(obj):
+                    continue
+                if getattr(obj, "__qualname__", nm) in _DENIED_SCISTACK_QUALNAMES:
+                    try:
+                        up.find_class(mn, nm)
+                        leaks.append(f"{mn}.{nm}")
+                    except BaseException:
+                        pass
+        assert not leaks, f"reconstructable numpy I/O sinks: {leaks[:10]}"
+
+    def test_legit_numpy_array_still_loads(self):
+        numpy = pytest.importorskip("numpy")
+        allow = {
+            ("numpy", "ndarray"),
+            ("numpy", "dtype"),
+            ("numpy._core.multiarray", "_reconstruct"),
+            ("numpy.core.multiarray", "_reconstruct"),
+            ("numpy._core.multiarray", "scalar"),
+            ("numpy.core.multiarray", "scalar"),
+            ("numpy._core.numeric", "_frombuffer"),  # numpy >= 2.5 array reduce
+            ("numpy.core.numeric", "_frombuffer"),
         }
         arr = numpy.array([[1.0, 2.0], [3.0, 4.0]])
         out = allowlisted_pickle_load(

@@ -117,6 +117,15 @@ _DENIED_MODULE_PREFIXES = (
     # numpy.lib file-I/O sinks (npyio/_npyio_impl recfromtxt etc., format.open_memmap)
     # keep __module__ under numpy.lib, dodging the export-name denylist (CWE-502).
     "numpy.lib",
+    # numpy record-array module: rec.fromfile (arbitrary file read) and friends
+    # resolve to __module__ "numpy.rec", again outside the export-name denylist;
+    # deny the subtree under every requested spelling (CWE-502).
+    "numpy.rec",
+    "numpy.core.records",
+    "numpy._core.records",
+    # numpy.compat.npy_load_module loads/executes a module from a file path
+    # (arbitrary code execution); deny numpy.compat wholesale (CWE-502).
+    "numpy.compat",
     # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
     # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.
     "scipy.io",
@@ -155,6 +164,46 @@ _DENIED_GLOBALS = frozenset(
         ("scipy", "LowLevelCallable"),
         ("scipy._lib._ccallback", "LowLevelCallable"),
         ("pandas", "read_pickle"),
+    }
+)
+
+# Dangerous callables (arbitrary file read/write, module load, nested unpickle,
+# matlab/svmlight/openml I/O) that the scientific stack re-exports under many
+# submodule paths (numpy.fromfile / numpy.rec.fromfile / numpy.ma.core.fromfile,
+# ...). Denied by resolved *qualname* in :meth:`_resolve` so an alias under any
+# numpy/scipy/sklearn/pandas submodule is caught, not just the enumerated
+# (module, name) pairs above (CWE-502). No model-reconstruct global shares these
+# names, so legitimate loads are unaffected.
+_DENIED_SCISTACK_QUALNAMES = frozenset(
+    {
+        "fromfile",
+        "recfromtxt",
+        "recfromcsv",
+        "genfromtxt",
+        "loadtxt",
+        "fromregex",
+        "load",
+        "save",
+        "savez",
+        "savez_compressed",
+        "savetxt",
+        "memmap",
+        "open_memmap",
+        "read_array",
+        "write_array",
+        "NpzFile",
+        "DataSource",
+        "npy_load_module",
+        "load_library",
+        "loadmat",
+        "savemat",
+        "mmread",
+        "mmwrite",
+        "load_svmlight_file",
+        "load_svmlight_files",
+        "dump_svmlight_file",
+        "fetch_openml",
+        "read_pickle",
     }
 )
 
@@ -250,6 +299,21 @@ class AllowlistUnpickler(pickle.Unpickler):
                 f"global '{module}.{name}' ({true_module}.{true_qualname}) is a "
                 "denied callable and cannot be reconstructed from an untrusted "
                 "pickle"
+            )
+        # Robust catch-all: the same dangerous callable (numpy.fromfile,
+        # recfromtxt, npy_load_module, scipy.io.mmwrite, ...) is re-exported under
+        # many submodule paths, each with a different __module__, so an
+        # export-name / prefix denylist keeps missing aliases. Deny by resolved
+        # qualname within the scientific stack (CWE-502).
+        if (
+            true_qualname in _DENIED_SCISTACK_QUALNAMES
+            and (true_module or "").split(".")[0]
+            in ("numpy", "scipy", "sklearn", "pandas")
+            and (true_module, true_qualname) not in _SAFE_DENIED_GLOBALS
+        ):
+            raise pickle.UnpicklingError(
+                f"global '{module}.{name}' ({true_module}.{true_qualname}) is a "
+                "scientific-stack file/module I/O sink and cannot be reconstructed"
             )
         return obj
 
