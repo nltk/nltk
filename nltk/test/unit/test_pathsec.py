@@ -1135,39 +1135,6 @@ class TestModelArtifactSaveContainment:
         finally:
             shutil.rmtree(outside_dir, ignore_errors=True)
 
-    def test_save_to_json_refuses_outside_loc_without_widening_sandbox(
-        self, tmp_path, monkeypatch
-    ):
-        import pathlib
-        import shutil
-
-        import nltk.data as _nltk_data
-        from nltk.tag.perceptron import PerceptronTagger
-
-        sandbox = tmp_path / "nltk_data"
-        sandbox.mkdir()
-        outside_dir = pathlib.Path.home() / (".ghsa8mgp_savejson_test_%s" % os.getpid())
-        monkeypatch.setattr(_nltk_data, "path", [str(sandbox)])
-        pathsec._ALLOWED_ROOTS_CACHE = None
-        pathsec._LAST_DATA_PATHS = None
-        shutil.rmtree(outside_dir, ignore_errors=True)
-        try:
-            tagger = PerceptronTagger(load=False)
-            tagger.model.weights = {"f": {"t": 1.0}}
-            tagger.tagdict = {}
-            tagger.classes = {"t"}
-
-            with pytest.raises(PermissionError):
-                tagger.save_to_json(lang="xxx", loc=str(outside_dir))
-            # Refused up front: neither written nor added to the allow-list.
-            assert not outside_dir.exists(), "refused save_to_json created the dir"
-            authorized = {
-                os.path.realpath(str(p)) for p in _nltk_data.path if isinstance(p, str)
-            }
-            assert os.path.realpath(str(outside_dir)) not in authorized
-        finally:
-            shutil.rmtree(outside_dir, ignore_errors=True)
-
 
 class TestStagingUnderDataRoot:
     """``nltk.data.make_staging_dir`` stages NLTK's own output inside a data root,

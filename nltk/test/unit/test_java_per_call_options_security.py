@@ -139,7 +139,7 @@ def test_java_cmd_channel_rejects_launcher_tokens(stub_java_bin, cmd):
     """A launcher switch / @argfile supplied through the cmd channel must be
     refused before Popen, mirroring the options-channel guard."""
     with pytest.raises(ValueError):
-        internals.java(cmd, classpath=".")
+        internals.java(cmd)
 
 
 def test_java_cmd_channel_allows_legitimate_main_class(stub_java_bin):
