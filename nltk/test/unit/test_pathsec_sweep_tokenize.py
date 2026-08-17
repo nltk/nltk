@@ -16,47 +16,13 @@ outside the sandbox.
 import os
 import pathlib
 import shutil
-import tempfile
 
 import pytest
 
 import nltk.data
 import nltk.pathsec as pathsec
 
-
-@pytest.fixture
-def sandbox():
-    """Restrict pathsec to a single private data root and hand back a fresh
-    directory that is guaranteed OUTSIDE every allowed root.
-
-    The outside directory is created under ``~`` (never a temp dir), because a
-    *private* system temp dir is itself an allowed root on macOS
-    (``/var/folders/...`` is mode 0700), so an attack target staged there would
-    be (correctly) permitted and the test would not exercise the guard.
-    """
-    saved_enforce = pathsec.ENFORCE
-    saved_path = list(nltk.data.path)
-    saved_cache = pathsec._ALLOWED_ROOTS_CACHE
-    saved_last = pathsec._LAST_DATA_PATHS
-
-    pathsec.ENFORCE = True
-    data_root = tempfile.mkdtemp()
-    nltk.data.path[:] = [data_root]
-    pathsec._ALLOWED_ROOTS_CACHE = None
-    pathsec._LAST_DATA_PATHS = None
-
-    outside = pathlib.Path.home() / f".nltk_sweep_tok_{os.getpid()}"
-    outside.mkdir(parents=True, exist_ok=True)
-    try:
-        yield outside
-    finally:
-        shutil.rmtree(outside, ignore_errors=True)
-        # data_root also holds any staging dirs make_staging_dir created under it.
-        shutil.rmtree(data_root, ignore_errors=True)
-        pathsec.ENFORCE = saved_enforce
-        nltk.data.path[:] = saved_path
-        pathsec._ALLOWED_ROOTS_CACHE = saved_cache
-        pathsec._LAST_DATA_PATHS = saved_last
+# The ``sandbox`` fixture is provided by nltk/test/unit/conftest.py.
 
 
 def test_negative_control(sandbox):
