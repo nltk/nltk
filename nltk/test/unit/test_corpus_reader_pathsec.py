@@ -461,3 +461,170 @@ def test_no_corpus_reader_leaks_out_of_sandbox(monkeypatch, tmp_path):
     # sanity: the sweep must actually have discovered and driven the readers,
     # otherwise a silent import/enumeration failure would make it pass vacuously.
     assert len(classes) > 40, f"only {len(classes)} readers discovered"
+
+
+def test_view_methods_block_intermediate_dir_symlink_escape(corpus_root):
+    """View methods (words/sents/abspaths) open the pointers from ``abspaths()``
+    directly, bypassing ``open()``. An intermediate-directory symlink inside the
+    corpus root that resolves to an out-of-root file (still inside the global data
+    sandbox) must be refused on that channel too, exactly as ``open()`` refuses it
+    (CWE-59)."""
+    from nltk.corpus.reader.api import CorpusReader
+    from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+
+    root = corpus_root["root"]
+    secret = os.path.realpath(corpus_root["link"])  # an out-of-root file
+    outside_dir = os.path.dirname(secret)
+    # an intermediate-DIRECTORY symlink inside the corpus root -> the outside dir
+    os.symlink(outside_dir, os.path.join(root, "subdir"))
+
+    reader = PlaintextCorpusReader(root, ["legit.txt"])
+    escaping = "subdir/" + os.path.basename(secret)
+
+    # control: open() already refuses the scoped escape
+    with pytest.raises((PermissionError, ValueError)):
+        CorpusReader.open(reader, escaping)
+    # the view-method channel must refuse it identically
+    for label, call in [
+        ("abspath", lambda: reader.abspath(escaping)),
+        ("abspaths", lambda: reader.abspaths([escaping])),
+        ("words", lambda: list(reader.words(fileids=[escaping]))),
+        ("raw", lambda: reader.raw([escaping])),
+    ]:
+        with pytest.raises((PermissionError, ValueError)):
+            call()
+
+    # a genuine in-root file still works through the same channel
+    assert reader.abspaths(["legit.txt"])
+    assert list(reader.words(fileids=["legit.txt"])) == ["in", "-", "root"]
+
+
+def test_validate_path_not_root_join_is_the_containment_guard(corpus_root):
+    """validate_path, not self._root.join, is the load-bearing guard. join on the
+    in-root symlink fileid returns a pointer (it only rejects a '..' traversal),
+    yet abspath, which adds validate_path, refuses that same fileid while still
+    resolving a genuine in-root file (CWE-59). This is the same claim a
+    monkeypatch mutation would make, proven directly without neutering anything."""
+    from nltk.corpus.reader.api import CorpusReader
+
+    reader = CorpusReader(corpus_root["root"], ["legit.txt"])
+
+    # self._root.join alone does NOT contain the escape: it yields a pointer to
+    # the in-root symlink, because join only rejects a '..' traversal.
+    assert reader._root.join("evil.txt") is not None
+
+    # abspath adds validate_path, which resolves the symlink and refuses it,
+    # while a genuine in-root file still resolves.
+    with pytest.raises((PermissionError, ValueError)):
+        reader.abspath("evil.txt")
+    reader.abspath("legit.txt")
+
+
+# ---------------------------------------------------------------------------
+# Functional smoke tests. _guard_fileid runs for EVERY reader (abspath /
+# abspaths back words / sents / raw / tagged_words / ...), for filesystem and
+# zip-backed roots, so these confirm it does not break legitimate corpus reads;
+# it only refuses out-of-root escapes (covered by the tests above).
+# ---------------------------------------------------------------------------
+
+_CORPUS_TEXT_A = "The dog runs. A cat sleeps.\n"
+_CORPUS_TEXT_B = "Birds fly high.\n"
+
+
+# The ``enforce_off`` fixture is provided by nltk/test/unit/conftest.py; it forces
+# pathsec.ENFORCE off so a temp-dir corpus (not an allowlisted data root, and on
+# Linux under world-writable /tmp) still constructs, while _guard_fileid's
+# required_root containment check still runs on every fileid.
+
+
+def _fs_plaintext_corpus():
+    root = tempfile.mkdtemp(prefix="fscorp_")
+    with open(os.path.join(root, "a.txt"), "w") as fh:
+        fh.write(_CORPUS_TEXT_A)
+    with open(os.path.join(root, "b.txt"), "w") as fh:
+        fh.write(_CORPUS_TEXT_B)
+    return root
+
+
+def test_guard_fileid_plaintext_fs_reads(enforce_off):
+    """A filesystem PlaintextCorpusReader still returns words/sents/raw/abspaths
+    through the guarded abspath path."""
+    import shutil
+
+    from nltk.corpus.reader import PlaintextCorpusReader
+
+    root = _fs_plaintext_corpus()
+    try:
+        r = PlaintextCorpusReader(root, r".*\.txt")
+        assert r.fileids() == ["a.txt", "b.txt"]
+        assert list(r.words())[:4] == ["The", "dog", "runs", "."]
+        assert r.sents()[0] == ["The", "dog", "runs", "."]
+        assert r.raw("a.txt").startswith("The dog")
+        assert len(r.abspaths()) == 2
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_guard_fileid_zip_backed_reads(enforce_off):
+    """A ZIP-backed reader (root is a ZipFilePathPointer) still reads through the
+    guard: it must not reject or choke on zip member paths, which have no
+    filesystem realpath. Most distributed NLTK corpora load this way."""
+    import shutil
+    import zipfile
+
+    from nltk.corpus.reader import PlaintextCorpusReader
+    from nltk.data import ZipFilePathPointer
+
+    zd = tempfile.mkdtemp(prefix="zipcorp_")
+    try:
+        zpath = os.path.join(zd, "mini.zip")
+        with zipfile.ZipFile(zpath, "w") as zf:
+            zf.writestr("mini/a.txt", _CORPUS_TEXT_A)
+            zf.writestr("mini/b.txt", _CORPUS_TEXT_B)
+        r = PlaintextCorpusReader(ZipFilePathPointer(zpath, "mini/"), r".*\.txt")
+        assert r.fileids() == ["a.txt", "b.txt"]
+        assert list(r.words())[:4] == ["The", "dog", "runs", "."]
+        assert r.sents()[0] == ["The", "dog", "runs", "."]
+        assert r.raw("a.txt").startswith("The dog")
+        assert len(r.abspaths()) == 2
+    finally:
+        shutil.rmtree(zd, ignore_errors=True)
+
+
+def test_guard_fileid_reads_still_work_under_enforce(monkeypatch):
+    """With pathsec.ENFORCE on and the corpus root allowlisted, in-root reads
+    still succeed; the guard allows in-root files and only refuses escapes."""
+    import shutil
+
+    from nltk.corpus.reader import PlaintextCorpusReader
+
+    root = _fs_plaintext_corpus()
+    try:
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        monkeypatch.setattr(nltk_data, "path", [root, *nltk_data.path])
+        monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+        monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+        r = PlaintextCorpusReader(root, r".*\.txt")
+        assert list(r.words())[:4] == ["The", "dog", "runs", "."]
+        assert r.raw("a.txt").startswith("The dog")
+        assert len(r.abspaths()) == 2
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_guard_fileid_tagged_corpus_reads(enforce_off):
+    """A different reader type (TaggedCorpusReader) also reads through the guard,
+    confirming the base-class guard does not break reader-specific parsing."""
+    import shutil
+
+    from nltk.corpus.reader import TaggedCorpusReader
+
+    root = tempfile.mkdtemp(prefix="tagcorp_")
+    try:
+        with open(os.path.join(root, "t.pos"), "w") as fh:
+            fh.write("The/AT dog/NN runs/VBZ ./.\n")
+        r = TaggedCorpusReader(root, r".*\.pos")
+        assert list(r.words())[:2] == ["The", "dog"]
+        assert r.tagged_words()[:2] == [("The", "AT"), ("dog", "NN")]
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
