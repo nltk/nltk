@@ -617,3 +617,282 @@ class TestScientificStackReexportSinks:
             allowed_modules=("numpy",),
         )
         assert numpy.array_equal(out, arr)
+
+
+class TestBroadAllowGadgetContainment:
+    """Threat model: a downstream over-allows the whole scientific stack
+    (``allowed_modules=("numpy","scipy","sklearn","pandas")``). Even then, no
+    file/module I/O sink or classic RCE gadget may be reconstructed through it.
+    Where a sink takes a path we build a real REDUCE payload and assert no file
+    is created; the rest assert ``find_class`` refuses the global.
+    """
+
+    BROAD = {"allowed_modules": ("numpy", "scipy", "sklearn", "pandas")}
+
+    def _blocked(self, module, name):
+        up = AllowlistUnpickler(BytesIO(b""), **self.BROAD)
+        try:
+            up.find_class(module, name)
+            return False
+        except pickle.UnpicklingError:
+            return True
+        except Exception:
+            return True  # never resolved -> not reachable
+
+    @pytest.mark.parametrize(
+        "module,name",
+        [
+            ("os", "system"),
+            ("posix", "system"),
+            ("nt", "system"),
+            ("subprocess", "Popen"),
+            ("subprocess", "run"),
+            ("subprocess", "call"),
+            ("builtins", "eval"),
+            ("builtins", "exec"),
+            ("builtins", "__import__"),
+            ("builtins", "compile"),
+            ("builtins", "getattr"),
+            ("builtins", "open"),
+            ("io", "open"),
+            ("codecs", "open"),
+            ("os", "popen"),
+            ("pty", "spawn"),
+            ("webbrowser", "open"),
+            ("shutil", "rmtree"),
+            ("importlib", "import_module"),
+            ("functools", "partial"),
+            ("operator", "methodcaller"),
+            ("operator", "attrgetter"),
+            ("copyreg", "_reconstructor"),
+            ("copyreg", "__newobj__"),
+            ("pickle", "loads"),
+            ("_pickle", "loads"),
+        ],
+    )
+    def test_classic_rce_gadget_refused(self, module, name):
+        """A broad *scientific-stack* allow does not reach os/subprocess/builtins
+        (or any other) code-exec gadget: their module is not on the allowlist."""
+        assert self._blocked(module, name), f"{module}.{name} is reconstructable"
+
+    @pytest.mark.parametrize(
+        "module,name",
+        [
+            ("numpy", "f2py.crackfortran.myeval"),  # dotted -> getattr-chain
+            ("numpy", "os.system"),
+            ("sklearn", "os.system"),
+            ("numpy", "__loader__"),  # dunder
+            ("numpy", "__builtins__"),
+            ("numpy", "__class__"),
+            ("numpy", "__dict__"),
+        ],
+    )
+    def test_attribute_traversal_refused(self, module, name):
+        assert self._blocked(module, name), f"{module}.{name} is reconstructable"
+
+    @pytest.mark.parametrize(
+        "module,name", [("numpy", "linalg"), ("numpy", "core"), ("scipy", "sparse")]
+    )
+    def test_bare_module_object_refused(self, module, name):
+        """A bare submodule object is not a reconstructable class/function."""
+        assert self._blocked(module, name), f"{module}.{name} resolved to a module"
+
+    def test_scipy_sklearn_pandas_sinks_refused(self):
+        import importlib
+
+        checked = 0
+        for mod, name in [
+            ("scipy.io", "loadmat"),
+            ("scipy.io", "savemat"),
+            ("scipy.io", "mmread"),
+            ("scipy.io", "mmwrite"),
+            ("sklearn.datasets", "load_svmlight_file"),
+            ("sklearn.datasets", "dump_svmlight_file"),
+            ("sklearn.datasets", "fetch_openml"),
+            ("pandas", "read_pickle"),
+        ]:
+            try:
+                m = importlib.import_module(mod)
+            except BaseException:
+                continue
+            if not hasattr(m, name):
+                continue
+            checked += 1
+            assert self._blocked(mod, name), f"{mod}.{name} is reconstructable"
+        if not checked:
+            pytest.skip("no scipy/sklearn/pandas sinks available")
+
+    def test_real_write_sink_payloads_create_no_file(self, tmp_path):
+        """REDUCE payloads that call a numpy write sink are refused *before* the
+        callable runs, so the attacker's target file is never created."""
+        numpy = pytest.importorskip("numpy")
+        import importlib
+
+        made = []
+        for mod, name, mkargs in [
+            ("numpy", "save", lambda t: (str(t), numpy.arange(4))),
+            ("numpy", "savetxt", lambda t: (str(t), numpy.arange(4))),
+            ("numpy.lib.format", "open_memmap", lambda t: (str(t), "w+", "int8", (8,))),
+        ]:
+            try:
+                fn = getattr(importlib.import_module(mod), name)
+            except BaseException:
+                continue
+            target = tmp_path / f"pwn_{name}"
+
+            class Evil:
+                def __reduce__(self):
+                    return (fn, mkargs(target))
+
+            with pytest.raises(pickle.UnpicklingError):
+                allowlisted_pickle_load(
+                    BytesIO(pickle.dumps(Evil(), protocol=4)), **self.BROAD
+                )
+            assert not target.exists(), f"{mod}.{name} wrote {target}"
+            made.append(name)
+        assert made, "no numpy write sinks available to exercise"
+
+    def test_bounded_cross_stack_sink_sweep_finds_no_leak(self):
+        """Across the sink-bearing modules of every allowed stack, no callable
+        whose resolved qualname is a denied sink is reconstructable."""
+        pytest.importorskip("numpy")
+        import importlib
+
+        from nltk.picklesec import _DENIED_SCISTACK_QUALNAMES
+
+        mods = [
+            "numpy",
+            "numpy.lib",
+            "numpy.lib.npyio",
+            "numpy.lib._npyio_impl",
+            "numpy.lib.format",
+            "numpy.rec",
+            "numpy.core.records",
+            "numpy._core.records",
+            "numpy.ma",
+            "numpy.ma.core",
+            "numpy.compat",
+            "numpy.ctypeslib",
+            "scipy.io",
+            "scipy.io.matlab",
+            "sklearn.datasets",
+            "pandas",
+            "pandas.io.pickle",
+        ]
+        leaks = []
+        for mn in mods:
+            try:
+                mod = importlib.import_module(mn)
+            except BaseException:
+                continue
+            for nm in dir(mod):
+                obj = getattr(mod, nm, None)
+                if not callable(obj):
+                    continue
+                if getattr(obj, "__qualname__", nm) in _DENIED_SCISTACK_QUALNAMES:
+                    if not self._blocked(mn, nm):
+                        leaks.append(f"{mn}.{nm}")
+        assert not leaks, f"reconstructable sinks: {leaks[:10]}"
+
+
+class TestGuardsAreLoadBearing:
+    """Mutation tests. Each neuters exactly one guard and confirms the synthetic
+    exploit that guard is the SOLE defense against becomes reconstructable. This
+    proves the guard is load-bearing (not dead code masked by another layer) and
+    that the surrounding attack corpus would actually catch its removal.
+    ``monkeypatch`` restores the guard (and sys.modules) after every test.
+    """
+
+    @staticmethod
+    def _inject(monkeypatch, module_name, attr, qualname):
+        """Install a synthetic callable at module_name.attr and return it."""
+        import sys
+        import types
+
+        pytest.importorskip("numpy")
+        import numpy
+
+        fake = types.ModuleType(module_name)
+
+        def sink(*a, **k):  # a stand-in for a re-exported dangerous callable
+            return "PWNED"
+
+        sink.__module__ = module_name
+        sink.__qualname__ = qualname
+        setattr(fake, attr, sink)
+        monkeypatch.setitem(sys.modules, module_name, fake)
+        # also expose it as an attribute of the parent package so the base
+        # unpickler's getattr-after-import path resolves it
+        parent, _, child = module_name.rpartition(".")
+        if parent == "numpy":
+            monkeypatch.setattr(numpy, child, fake, raising=False)
+        return sink
+
+    def test_qualname_catchall_is_load_bearing(self, monkeypatch):
+        """A denied sink qualname re-exported under a numpy submodule that is
+        neither a denied prefix nor an exact denied global is blocked ONLY by the
+        resolved-qualname catch-all."""
+        import nltk.picklesec as ps
+
+        sink = self._inject(monkeypatch, "numpy._mut_qualname", "fromfile", "fromfile")
+        broad = {"allowed_modules": ("numpy",)}
+
+        up = ps.AllowlistUnpickler(BytesIO(b""), **broad)
+        with pytest.raises(pickle.UnpicklingError):
+            up.find_class("numpy._mut_qualname", "fromfile")
+
+        monkeypatch.setattr(ps, "_DENIED_SCISTACK_QUALNAMES", frozenset())
+        up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
+        assert (
+            up2.find_class("numpy._mut_qualname", "fromfile") is sink
+        ), "removing the catch-all did not expose the sink -> guard is not load-bearing"
+
+    def test_denied_module_prefix_is_load_bearing(self, monkeypatch):
+        """A callable whose real module sits under a denied prefix (numpy.lib) but
+        whose qualname is not a known sink is blocked ONLY by the prefix denylist."""
+        import nltk.picklesec as ps
+
+        sink = self._inject(monkeypatch, "numpy.lib._mut_prefix", "gadget", "gadget")
+        # numpy.lib._mut_prefix's parent is numpy.lib, not numpy; expose it there
+        import numpy.lib
+
+        monkeypatch.setattr(
+            numpy.lib,
+            "_mut_prefix",
+            __import__("sys").modules["numpy.lib._mut_prefix"],
+            raising=False,
+        )
+        broad = {"allowed_modules": ("numpy",)}
+
+        up = ps.AllowlistUnpickler(BytesIO(b""), **broad)
+        with pytest.raises(pickle.UnpicklingError):
+            up.find_class("numpy.lib._mut_prefix", "gadget")
+
+        monkeypatch.setattr(ps, "_DENIED_MODULE_PREFIXES", ())
+        up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
+        assert (
+            up2.find_class("numpy.lib._mut_prefix", "gadget") is sink
+        ), "removing the denied prefixes did not expose the sink -> guard is not load-bearing"
+
+    def test_exact_denied_globals_is_load_bearing(self, monkeypatch):
+        """A callable pinned only by the exact ``_DENIED_GLOBALS`` set (module not
+        prefix-denied, qualname not a sink) is blocked ONLY by that set."""
+        import nltk.picklesec as ps
+
+        sink = self._inject(monkeypatch, "numpy._mut_exact", "gadget", "gadget")
+        broad = {"allowed_modules": ("numpy",)}
+        pinned = ("numpy._mut_exact", "gadget")
+        monkeypatch.setattr(ps, "_DENIED_GLOBALS", ps._DENIED_GLOBALS | {pinned})
+
+        up = ps.AllowlistUnpickler(BytesIO(b""), **broad)
+        with pytest.raises(pickle.UnpicklingError):
+            up.find_class(*pinned)
+
+        # restore to the original set (drops our pin) -> now reconstructable
+        monkeypatch.setattr(
+            ps,
+            "_DENIED_GLOBALS",
+            frozenset(g for g in ps._DENIED_GLOBALS if g != pinned),
+        )
+        up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
+        assert up2.find_class(*pinned) is sink

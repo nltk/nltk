@@ -142,3 +142,25 @@ def test_nested_gzip_legit_member_passes(tmp_path):
     payload = b"legitimate corpus line\n" * 64
     z = _make_zip(tmp_path / "ok.zip", "data.gz", gzip.compress(payload))
     assert ZipFilePathPointer(str(z), "data.gz").open().read() == payload
+
+
+def test_nested_gzip_ratio_cap_is_load_bearing(tmp_path):
+    """Mutation test: with the activation/ratio cap tuned to catch it the nested
+    gzip bomb is refused; raise the activation threshold above the output and the
+    SAME payload decompresses -- proving the cap (not another check) is the guard
+    that stops the second decompression layer (CWE-409)."""
+    import gzip
+
+    gz = gzip.compress(b"\0" * (256 * 1024))
+    z = _make_zip(tmp_path / "mut.zip", "bomb.gz", gz)
+
+    data.MAX_UNZIP_ACTIVATION = 64 * 1024
+    data.MAX_UNZIP_RATIO = 10
+    data.MAX_UNZIP_SIZE = None
+    with pytest.raises(ValueError, match="nested gzip bomb"):
+        ZipFilePathPointer(str(z), "bomb.gz").open().read()
+
+    # neuter the cap: activation above the 256 KiB output -> no longer refused
+    data.MAX_UNZIP_ACTIVATION = 1 << 30
+    out = ZipFilePathPointer(str(z), "bomb.gz").open().read()
+    assert len(out) == 256 * 1024

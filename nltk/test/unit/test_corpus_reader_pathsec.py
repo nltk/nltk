@@ -497,3 +497,25 @@ def test_view_methods_block_intermediate_dir_symlink_escape(corpus_root):
     # a genuine in-root file still works through the same channel
     assert reader.abspaths(["legit.txt"])
     assert list(reader.words(fileids=["legit.txt"])) == ["in", "-", "root"]
+
+
+def test_validate_path_is_load_bearing_in_guard_fileid(corpus_root, monkeypatch):
+    """Mutation test: neuter validate_path and the in-root symlink escape that
+    abspath()/abspaths() (and the view methods that open their pointers) rely on
+    it to block becomes reachable -- proving validate_path, not self._root.join
+    (which only rejects '..'), is the containment guard (CWE-59)."""
+    from nltk.corpus.reader.api import CorpusReader
+
+    reader = CorpusReader(corpus_root["root"], ["legit.txt"])
+
+    # guard ON: the in-root symlink that resolves outside root is refused,
+    # while a genuine in-root file resolves fine.
+    with pytest.raises((PermissionError, ValueError)):
+        reader.abspath("evil.txt")
+    reader.abspath("legit.txt")
+
+    # neuter validate_path: the escaping fileid now resolves to a pointer, i.e.
+    # the sandbox is gone the instant the guard is removed.
+    monkeypatch.setattr(pathsec, "validate_path", lambda *a, **k: None)
+    escaped = reader.abspath("evil.txt")
+    assert escaped is not None
