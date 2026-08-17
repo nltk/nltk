@@ -27,35 +27,8 @@ import nltk.data
 import nltk.pathsec as pathsec
 
 
-@pytest.fixture
-def sandbox():
-    """Force ENFORCE on, point the sandbox at a throwaway data root, and yield a
-    fresh *outside* directory under ``~`` that is guaranteed unauthorized."""
-    old_paths = list(nltk.data.path)
-    old_enforce = pathsec.ENFORCE
-    old_cache = pathsec._ALLOWED_ROOTS_CACHE
-    old_last = pathsec._LAST_DATA_PATHS
-
-    data_root = tempfile.mkdtemp(prefix="nltk_sweep_data_")
-    outside = Path.home() / f".nltk_sweep_chunk_{os.getpid()}"
-
-    pathsec.ENFORCE = True
-    nltk.data.path[:] = [data_root]
-    pathsec._ALLOWED_ROOTS_CACHE = None
-    pathsec._LAST_DATA_PATHS = None
-
-    if outside.exists():
-        shutil.rmtree(outside, ignore_errors=True)
-    outside.mkdir(parents=True, exist_ok=True)
-    try:
-        yield outside
-    finally:
-        pathsec.ENFORCE = old_enforce
-        nltk.data.path[:] = old_paths
-        pathsec._ALLOWED_ROOTS_CACHE = old_cache
-        pathsec._LAST_DATA_PATHS = old_last
-        shutil.rmtree(outside, ignore_errors=True)
-        shutil.rmtree(data_root, ignore_errors=True)
+# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
+# are provided by nltk/test/unit/conftest.py.
 
 
 def test_negative_control_pathsec_open_refuses_outside(sandbox):
