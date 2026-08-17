@@ -40,7 +40,8 @@ def sandbox():
     saved_last = pathsec._LAST_DATA_PATHS
 
     pathsec.ENFORCE = True
-    nltk.data.path[:] = [tempfile.mkdtemp()]
+    data_root = tempfile.mkdtemp()
+    nltk.data.path[:] = [data_root]
     pathsec._ALLOWED_ROOTS_CACHE = None
     pathsec._LAST_DATA_PATHS = None
 
@@ -50,6 +51,8 @@ def sandbox():
         yield outside
     finally:
         shutil.rmtree(outside, ignore_errors=True)
+        # data_root also holds any staging dirs make_staging_dir created under it.
+        shutil.rmtree(data_root, ignore_errors=True)
         pathsec.ENFORCE = saved_enforce
         nltk.data.path[:] = saved_path
         pathsec._ALLOWED_ROOTS_CACHE = saved_cache
@@ -121,9 +124,9 @@ def test_stanford_sha256_refuses_outside_jar(sandbox):
     pytest.importorskip("nltk.tokenize.stanford_segmenter")
     from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
-    # A real file must exist so os.stat() succeeds and control reaches the
-    # patched pathsec_open; an absent file would raise FileNotFoundError first
-    # and mask the security check.
+    # A real file exercises the full chain (validate, then stat, then
+    # pathsec_open); a non-existent outside path is covered by the
+    # validate-before-stat test below.
     outside_jar = sandbox / "evil.jar"
     outside_jar.write_bytes(b"PK\x03\x04 not really a jar")
 
@@ -133,3 +136,61 @@ def test_stanford_sha256_refuses_outside_jar(sandbox):
     seg._jar_sha256_cache = {}
     with pytest.raises(PermissionError):
         seg._sha256sum(str(outside_jar))
+
+
+def test_stanford_sha256_validates_before_stat(sandbox):
+    """_sha256sum must validate the classpath entry BEFORE os.stat, so an
+    out-of-sandbox path is refused with no filesystem access (no metadata leak,
+    no symlink follow). A NON-EXISTENT outside path proves the order: before the
+    fix os.stat raised FileNotFoundError; the guard now raises PermissionError."""
+    pytest.importorskip("nltk.tokenize.stanford_segmenter")
+    from nltk.tokenize.stanford_segmenter import StanfordSegmenter
+
+    missing_outside = sandbox / "never_created.jar"  # deliberately absent
+    seg = StanfordSegmenter.__new__(StanfordSegmenter)
+    seg._jar_sha256_cache = {}
+    with pytest.raises(PermissionError):
+        seg._sha256sum(str(missing_outside))
+    assert not missing_outside.exists()
+
+
+def test_load_lang_resets_save_dir(sandbox, monkeypatch):
+    """Reusing a PunktTokenizer across languages must not keep writing into the
+    first language's staging dir; load_lang() invalidates the memoized save_dir
+    so each language gets its own directory."""
+    import nltk.tokenize.punkt as punkt_mod
+    from nltk.tokenize.punkt import PunktParameters, PunktTokenizer
+
+    # Avoid needing installed punkt_tab data: stub what load_lang loads.
+    monkeypatch.setattr("nltk.data.find", lambda p: "unused")
+    monkeypatch.setattr(punkt_mod, "load_punkt_params", lambda d: PunktParameters())
+
+    tok = PunktTokenizer("english")
+    first = tok.save_dir
+    assert os.path.basename(first).startswith("nltk_punkt_english_")
+    tok.load_lang("german")  # switching language must refresh the dir
+    second = tok.save_dir
+    assert second != first, "load_lang must invalidate the memoized save_dir"
+    assert os.path.basename(second).startswith("nltk_punkt_german_")
+    for d in (first, second):
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def test_save_punkt_params_creates_caller_dir_private(sandbox):
+    """A caller-supplied, in-sandbox destination that does not exist yet is
+    created mode exactly 0700 regardless of umask (is_private_dir alone would
+    also accept 0755, so assert the exact mode)."""
+    from nltk.tokenize.punkt import PunktParameters, save_punkt_params
+
+    # An in-sandbox but not-yet-created directory (under the data root).
+    target = pathlib.Path(nltk.data.path[0]) / "caller_supplied_out"
+    assert not target.exists()
+    old_umask = os.umask(0o022)  # would leave g+rx,o+rx on a default os.mkdir
+    try:
+        out = save_punkt_params(PunktParameters(), dir=str(target))
+        mode = os.stat(out).st_mode & 0o777
+        assert mode == 0o700, f"caller dir must be created 0700, got {oct(mode)}"
+        assert (pathlib.Path(out) / "collocations.tab").exists()
+    finally:
+        os.umask(old_umask)
+        shutil.rmtree(target, ignore_errors=True)
