@@ -15,27 +15,8 @@ import nltk
 import nltk.pathsec as pathsec
 
 
-@pytest.fixture
-def sandbox():
-    saved_paths = nltk.data.path[:]
-    saved_enforce = pathsec.ENFORCE
-    pathsec.ENFORCE = True
-    nltk.data.path[:] = [tempfile.mkdtemp()]
-    pathsec._ALLOWED_ROOTS_CACHE = None
-    pathsec._LAST_DATA_PATHS = None
-    # A genuinely-outside target: a fresh $HOME dir, never a temp dir (the
-    # private system temp is an allowed pathsec root on macOS).
-    outside_dir = pathlib.Path.home() / (".nltk_sweep_sentutil_%d" % os.getpid())
-    shutil.rmtree(outside_dir, ignore_errors=True)
-    outside_dir.mkdir(exist_ok=True)
-    try:
-        yield outside_dir
-    finally:
-        nltk.data.path[:] = saved_paths
-        pathsec.ENFORCE = saved_enforce
-        pathsec._ALLOWED_ROOTS_CACHE = None
-        pathsec._LAST_DATA_PATHS = None
-        shutil.rmtree(outside_dir, ignore_errors=True)
+# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
+# are provided by nltk/test/unit/conftest.py.
 
 
 def test_negative_control(sandbox):

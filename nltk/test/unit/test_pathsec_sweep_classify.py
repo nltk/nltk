@@ -24,27 +24,8 @@ import nltk.data
 import nltk.pathsec as pathsec
 
 
-@pytest.fixture
-def restricted_sandbox():
-    """Restrict pathsec's allowed roots to one throwaway data dir with
-    ``ENFORCE`` on, restoring every mutated global afterwards."""
-    saved_enforce = pathsec.ENFORCE
-    saved_path = list(nltk.data.path)
-    saved_cache = pathsec._ALLOWED_ROOTS_CACHE
-    saved_last = pathsec._LAST_DATA_PATHS
-    data_root = tempfile.mkdtemp()
-    try:
-        pathsec.ENFORCE = True
-        nltk.data.path[:] = [data_root]
-        pathsec._ALLOWED_ROOTS_CACHE = None
-        pathsec._LAST_DATA_PATHS = None
-        yield data_root
-    finally:
-        pathsec.ENFORCE = saved_enforce
-        nltk.data.path[:] = saved_path
-        pathsec._ALLOWED_ROOTS_CACHE = saved_cache
-        pathsec._LAST_DATA_PATHS = saved_last
-        shutil.rmtree(data_root, ignore_errors=True)
+# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
+# are provided by nltk/test/unit/conftest.py.
 
 
 def _outside_dir():
