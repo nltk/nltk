@@ -51,7 +51,10 @@ _HEADERS = {
 #: Closed/withdrawn advisories deliberately kept as regression probes. The
 #: public API lists only published advisories, so these must be named here or
 #: the reverse check would flag them as unknown.
-_CLOSED_WITH_PROBE = {"GHSA-4489-j4f3-2g8q"}
+_CLOSED_WITH_PROBE = {
+    "GHSA-4489-j4f3-2g8q",
+    "GHSA-c59x-vh6j-3w8v",  # added for the numpy submodule bypass fix
+}
 
 
 def _next_url(link_header):
