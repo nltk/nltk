@@ -46,6 +46,10 @@ markets    NNS      6       PC
 # Lightweight fakes so ``train`` reaches its model-save open without the
 # heavy numpy/scipy/sklearn fit pipeline. Defined at module level so a fake
 # model is picklable (needed by the in-sandbox positive control).
+# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
+# are provided by nltk/test/unit/conftest.py.
+
+
 class _Arr:
     def astype(self, *args, **kwargs):
         return self
@@ -68,39 +72,9 @@ class _FakeSVM:
         return _FakeModel()
 
 
-@pytest.fixture
-def sandbox():
-    """Enforce the pathsec sandbox with a single fresh allowed root and hand out
-    an *outside* target dir under ``$HOME`` (never a temp dir; a private system
-    temp dir is itself an allowed root). Everything is restored on teardown."""
-    orig_enforce = pathsec.ENFORCE
-    orig_paths = list(nltk.data.path)
-    orig_cache = pathsec._ALLOWED_ROOTS_CACHE
-    orig_last = pathsec._LAST_DATA_PATHS
-
-    allowed_root = tempfile.mkdtemp(prefix="nltk_sweep_parse_allowed_")
-    home_target = Path.home() / f".nltk_sweep_parse_{os.getpid()}"
-    shutil.rmtree(home_target, ignore_errors=True)
-    home_target.mkdir(parents=True)
-
-    pathsec.ENFORCE = True
-    nltk.data.path[:] = [allowed_root]
-    pathsec._ALLOWED_ROOTS_CACHE = None
-    pathsec._LAST_DATA_PATHS = None
-    try:
-        yield Path(allowed_root), home_target
-    finally:
-        pathsec.ENFORCE = orig_enforce
-        nltk.data.path[:] = orig_paths
-        pathsec._ALLOWED_ROOTS_CACHE = orig_cache
-        pathsec._LAST_DATA_PATHS = orig_last
-        shutil.rmtree(allowed_root, ignore_errors=True)
-        shutil.rmtree(home_target, ignore_errors=True)
-
-
-def test_negative_control_outside_refused_inside_allowed(sandbox):
+def test_negative_control_outside_refused_inside_allowed(pathsec_sandbox):
     """Baseline: pathsec refuses an outside path but permits an in-sandbox one."""
-    allowed_root, home_target = sandbox
+    allowed_root, home_target = pathsec_sandbox
     outside = home_target / "canary.txt"
     with pytest.raises(PermissionError):
         pathsec.open(str(outside), "w")
@@ -112,9 +86,9 @@ def test_negative_control_outside_refused_inside_allowed(sandbox):
     assert inside.exists()
 
 
-def test_train_refuses_outside_model(sandbox, monkeypatch):
+def test_train_refuses_outside_model(pathsec_sandbox, monkeypatch):
     """TransitionParser.train must refuse to write a model outside the sandbox."""
-    _, home_target = sandbox
+    _, home_target = pathsec_sandbox
     outside_model = home_target / "tp.model"
 
     monkeypatch.setattr(
@@ -132,9 +106,9 @@ def test_train_refuses_outside_model(sandbox, monkeypatch):
     assert not outside_model.exists(), "train wrote a model outside the sandbox"
 
 
-def test_train_permits_inside_model(sandbox, monkeypatch):
+def test_train_permits_inside_model(pathsec_sandbox, monkeypatch):
     """Positive control: an in-sandbox model path still trains/saves fine."""
-    allowed_root, _ = sandbox
+    allowed_root, _ = pathsec_sandbox
     inside_model = allowed_root / "tp.model"
 
     monkeypatch.setattr(
@@ -151,13 +125,13 @@ def test_train_permits_inside_model(sandbox, monkeypatch):
     assert inside_model.exists(), "train failed to save inside the sandbox"
 
 
-def test_parse_refuses_outside_model(sandbox):
+def test_parse_refuses_outside_model(pathsec_sandbox):
     """TransitionParser.parse must refuse to read a model from outside the sandbox.
 
     The model file genuinely exists outside the sandbox, so the refusal is the
     pathsec block (PermissionError), not a FileNotFoundError.
     """
-    _, home_target = sandbox
+    _, home_target = pathsec_sandbox
     outside_model = home_target / "evil.model"
     import builtins
 
@@ -170,13 +144,13 @@ def test_parse_refuses_outside_model(sandbox):
         parser.parse([gold], str(outside_model))
 
 
-def test_parse_permits_inside_model(sandbox):
+def test_parse_permits_inside_model(pathsec_sandbox):
     """Positive control: an in-sandbox model path gets past the pathsec open.
 
     A plain (non-model) pickle then fails downstream, but crucially NOT with a
     PermissionError; proving the sink blocks only outside paths.
     """
-    allowed_root, _ = sandbox
+    allowed_root, _ = pathsec_sandbox
     inside_model = allowed_root / "model.pickle"
     import builtins
 
