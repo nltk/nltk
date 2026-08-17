@@ -1888,16 +1888,23 @@ def save_punkt_params(params, dir: str | None = None) -> str:
         # 0700 so a caller-supplied output dir is private regardless of umask,
         # matching the private default staging dir.
         os.mkdir(dir, 0o700)
-    with pathsec_open(f"{dir}/collocations.tab", "w", context="save_punkt_params") as f:
+    # newline="" writes LF, not the platform default, so the tab files match the
+    # installed punkt_tab format and reload cleanly on Windows (a default text
+    # write there emits CRLF, leaving a stray \r on every reloaded token).
+    with pathsec_open(
+        f"{dir}/collocations.tab", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.tups2tab(params.collocations)}")
     with pathsec_open(
-        f"{dir}/sent_starters.txt", "w", context="save_punkt_params"
+        f"{dir}/sent_starters.txt", "w", context="save_punkt_params", newline=""
     ) as f:
         f.write(f"{tenc.set2txt(params.sent_starters)}")
-    with pathsec_open(f"{dir}/abbrev_types.txt", "w", context="save_punkt_params") as f:
+    with pathsec_open(
+        f"{dir}/abbrev_types.txt", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.set2txt(params.abbrev_types)}")
     with pathsec_open(
-        f"{dir}/ortho_context.tab", "w", context="save_punkt_params"
+        f"{dir}/ortho_context.tab", "w", context="save_punkt_params", newline=""
     ) as f:
         f.write(f"{tenc.ivdict2tab(params.ortho_context)}")
     return dir

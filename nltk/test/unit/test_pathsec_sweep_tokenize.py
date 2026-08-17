@@ -176,6 +176,9 @@ def test_load_lang_resets_save_dir(sandbox, monkeypatch):
         shutil.rmtree(d, ignore_errors=True)
 
 
+@pytest.mark.skipif(
+    os.name != "posix", reason="POSIX mode bits; Windows dirs use ACLs, not 0700"
+)
 def test_save_punkt_params_creates_caller_dir_private(sandbox):
     """A caller-supplied, in-sandbox destination that does not exist yet is
     created mode exactly 0700 regardless of umask (is_private_dir alone would
