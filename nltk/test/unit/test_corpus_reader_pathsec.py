@@ -518,3 +518,107 @@ def test_validate_path_not_root_join_is_the_containment_guard(corpus_root):
     with pytest.raises((PermissionError, ValueError)):
         reader.abspath("evil.txt")
     reader.abspath("legit.txt")
+
+
+# ---------------------------------------------------------------------------
+# Functional smoke tests. _guard_fileid runs for EVERY reader (abspath /
+# abspaths back words / sents / raw / tagged_words / ...), for filesystem and
+# zip-backed roots, so these confirm it does not break legitimate corpus reads;
+# it only refuses out-of-root escapes (covered by the tests above).
+# ---------------------------------------------------------------------------
+
+_CORPUS_TEXT_A = "The dog runs. A cat sleeps.\n"
+_CORPUS_TEXT_B = "Birds fly high.\n"
+
+
+def _fs_plaintext_corpus():
+    root = tempfile.mkdtemp(prefix="fscorp_")
+    with open(os.path.join(root, "a.txt"), "w") as fh:
+        fh.write(_CORPUS_TEXT_A)
+    with open(os.path.join(root, "b.txt"), "w") as fh:
+        fh.write(_CORPUS_TEXT_B)
+    return root
+
+
+def test_guard_fileid_plaintext_fs_reads():
+    """A filesystem PlaintextCorpusReader still returns words/sents/raw/abspaths
+    through the guarded abspath path."""
+    import shutil
+
+    from nltk.corpus.reader import PlaintextCorpusReader
+
+    root = _fs_plaintext_corpus()
+    try:
+        r = PlaintextCorpusReader(root, r".*\.txt")
+        assert r.fileids() == ["a.txt", "b.txt"]
+        assert list(r.words())[:4] == ["The", "dog", "runs", "."]
+        assert r.sents()[0] == ["The", "dog", "runs", "."]
+        assert r.raw("a.txt").startswith("The dog")
+        assert len(r.abspaths()) == 2
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_guard_fileid_zip_backed_reads():
+    """A ZIP-backed reader (root is a ZipFilePathPointer) still reads through the
+    guard: it must not reject or choke on zip member paths, which have no
+    filesystem realpath. Most distributed NLTK corpora load this way."""
+    import shutil
+    import zipfile
+
+    from nltk.corpus.reader import PlaintextCorpusReader
+    from nltk.data import ZipFilePathPointer
+
+    zd = tempfile.mkdtemp(prefix="zipcorp_")
+    try:
+        zpath = os.path.join(zd, "mini.zip")
+        with zipfile.ZipFile(zpath, "w") as zf:
+            zf.writestr("mini/a.txt", _CORPUS_TEXT_A)
+            zf.writestr("mini/b.txt", _CORPUS_TEXT_B)
+        r = PlaintextCorpusReader(ZipFilePathPointer(zpath, "mini/"), r".*\.txt")
+        assert r.fileids() == ["a.txt", "b.txt"]
+        assert list(r.words())[:4] == ["The", "dog", "runs", "."]
+        assert r.sents()[0] == ["The", "dog", "runs", "."]
+        assert r.raw("a.txt").startswith("The dog")
+        assert len(r.abspaths()) == 2
+    finally:
+        shutil.rmtree(zd, ignore_errors=True)
+
+
+def test_guard_fileid_reads_still_work_under_enforce(monkeypatch):
+    """With pathsec.ENFORCE on and the corpus root allowlisted, in-root reads
+    still succeed; the guard allows in-root files and only refuses escapes."""
+    import shutil
+
+    from nltk.corpus.reader import PlaintextCorpusReader
+
+    root = _fs_plaintext_corpus()
+    try:
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        monkeypatch.setattr(nltk_data, "path", [root, *nltk_data.path])
+        monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+        monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+        r = PlaintextCorpusReader(root, r".*\.txt")
+        assert list(r.words())[:4] == ["The", "dog", "runs", "."]
+        assert r.raw("a.txt").startswith("The dog")
+        assert len(r.abspaths()) == 2
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_guard_fileid_tagged_corpus_reads():
+    """A different reader type (TaggedCorpusReader) also reads through the guard,
+    confirming the base-class guard does not break reader-specific parsing."""
+    import shutil
+
+    from nltk.corpus.reader import TaggedCorpusReader
+
+    root = tempfile.mkdtemp(prefix="tagcorp_")
+    try:
+        with open(os.path.join(root, "t.pos"), "w") as fh:
+            fh.write("The/AT dog/NN runs/VBZ ./.\n")
+        r = TaggedCorpusReader(root, r".*\.pos")
+        assert list(r.words())[:2] == ["The", "dog"]
+        assert r.tagged_words()[:2] == [("The", "AT"), ("dog", "NN")]
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
