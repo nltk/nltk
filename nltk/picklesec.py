@@ -114,12 +114,25 @@ _DENIED_MODULE_PREFIXES = (
     "numpy.ctypeslib",
     "numpy.distutils",
     "numpy.testing",
-    # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
-    # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.
-    "scipy.io",
-    "sklearn.datasets",
+    # == Proactive additions for common packages ==
+    "numpy.lib.npyio",  # GHSA-c59x-vh6j-3w8v
+    "numpy.lib.format",  # GHSA-c59x-vh6j-3w8v
+    "numpy.lib._npyio_impl",  # GHSA-c59x-vh6j-3w8v
     "nltk.tokenize.repp",
     "nltk.internals",
+    # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
+    "scipy.io",
+    "scipy._lib",
+    # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.
+    "sklearn.datasets",
+    "sklearn.externals",
+    "sklearn.utils",
+    "pandas.io",
+    "pandas.core",
+    "torch.serialization",
+    "torch.jit",
+    "tensorflow.python.saved_model",
+    "tensorflow.python.training.checkpoint_management",
 )
 
 # Individual dangerous globals that live in an *allowed* namespace and so are
@@ -151,6 +164,8 @@ _DENIED_GLOBALS = frozenset(
         # scipy low-level C callback wrapper.
         ("scipy", "LowLevelCallable"),
         ("scipy._lib._ccallback", "LowLevelCallable"),
+        ("scipy.sparse", "load_npz"),
+        ("scipy.sparse", "save_npz"),
         ("pandas", "read_pickle"),
     }
 )
