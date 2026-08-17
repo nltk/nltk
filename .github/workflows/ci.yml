@@ -212,9 +212,55 @@ jobs:
           # drop it; also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_path_traversal_security.py
 
+      - name: Run advisory-verification probes
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # One probe per published advisory (nltk/test/unit/security_probes/),
+          # each running the attack it describes, plus negative controls that
+          # prove the probes flip to VULNERABLE when a guard is removed. Offline;
+          # the GitHub coverage check is the separate advisory-coverage job.
+          pytest -rsx nltk/test/unit/test_advisory_probes.py
+
       - name: Run pytest
         shell: bash
         env:
           PYTHONSAFEPATH: "1"
         run: |
           pytest --numprocesses auto -rsx --doctest-modules nltk
+
+  advisory-coverage:
+    name: Advisory coverage (GitHub)
+    # The only job that pulls the live advisory list, so the only one that hits
+    # the network -- the offline probes never do. It runs on every PR (fork
+    # ones included), because that is exactly where a missing probe should be
+    # caught. Safe to do so: it fetches published advisories UNAUTHENTICATED
+    # (they are public), takes an empty `permissions` so even the default
+    # GITHUB_TOKEN is neutered, and reads only advisory ids -- there is no
+    # secret to exfiltrate and no privilege beyond the test matrix, which
+    # already runs the PR's code. It fails only on a real coverage gap and
+    # skips if the fetch cannot be made. `permissions: {}` is intentional and
+    # sufficient: checking out a public repo needs no token scope.
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        # The coverage test only reads probe *keys* and never calls a probe, so
+        # it needs the package importable, not the full optional stack.
+        run: pip install -e . pytest pytest-mock
+
+      - name: Check every published advisory has a probe
+        env:
+          NLTK_ADVISORY_CI: "1"
+        run: |
+          # No token: the public advisories API is read unauthenticated. The
+          # test skips if the fetch is unavailable, fails only on a coverage gap.
+          pytest -rsx nltk/test/unit/test_advisory_coverage_ci.py
