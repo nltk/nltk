@@ -18,6 +18,7 @@ import zipfile
 from sys import stdin
 
 from nltk.classify.api import ClassifierI
+from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
 from nltk.pathsec import open as pathsec_open
 from nltk.probability import DictionaryProbDist
@@ -281,7 +282,12 @@ class ARFF_Formatter:
     def write(self, outfile, tokens):
         """Writes ARFF data to a file for the given data."""
         if not hasattr(outfile, "write"):
-            outfile = pathsec_open(outfile, "w", context="ARFF_Formatter.write")
+            # newline="" writes LF, not the platform default, so the ARFF file is
+            # byte-identical across platforms (a default text write on Windows
+            # would emit CRLF).
+            outfile = pathsec_open(
+                outfile, "w", context="ARFF_Formatter.write", newline=""
+            )
         outfile.write(self.format(tokens))
         outfile.close()
 
@@ -379,8 +385,9 @@ if __name__ == "__main__":
     from nltk.classify.util import binary_names_demo_features, names_demo
 
     def make_classifier(featuresets):
-        # A fresh private (0700) temp dir, not a guessable shared /tmp path.
-        model = os.path.join(tempfile.mkdtemp(prefix="nltk_weka_"), "name.model")
+        # A fresh private (0700) staging dir under an allowed data root (the same
+        # helper the maxent/NE saves use), not a guessable shared /tmp path.
+        model = os.path.join(make_staging_dir(prefix="nltk_weka_"), "name.model")
         return WekaClassifier.train(model, featuresets, "C4.5")
 
     classifier = names_demo(make_classifier, binary_names_demo_features)
