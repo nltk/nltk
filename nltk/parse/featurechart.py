@@ -10,6 +10,7 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
+import os
 from time import perf_counter
 
 from nltk.data import make_staging_dir
@@ -651,7 +652,6 @@ def demo(
 
 
 def run_profile():
-    import os
     import profile
     import pstats
 
