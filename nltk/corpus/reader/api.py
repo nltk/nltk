@@ -172,17 +172,16 @@ class CorpusReader:
         return self._fileids
 
     def _guard_fileid(self, fileid):
-        """Resolve a corpus-relative fileid to a path pointer, applying the same
-        lexical and scoped-root guard as :meth:`open`.
+        """Resolve a corpus-relative fileid to a path pointer with the scoped-root
+        guard, so view methods get the same containment as :meth:`open`.
 
         View methods (``words``/``sents``/``parsed_sents``/...) open the pointers
-        returned by :meth:`abspaths` directly, bypassing :meth:`open`. Without this
-        guard a ``..`` component or an intermediate-directory symlink inside the
-        corpus root would let those methods read files outside the root yet inside
-        the global data sandbox (CWE-22/CWE-59), which :meth:`open` already refuses.
+        returned by :meth:`abspaths` directly, bypassing :meth:`open`.
+        ``self._root.join`` already rejects a ``..`` traversal; the scoped
+        ``validate_path`` additionally resolves symlinks so an intermediate
+        directory symlink inside the corpus root that escapes it is refused too
+        (CWE-22/CWE-59).
         """
-        if os.path.isabs(fileid) or ".." in str(fileid).replace("\\", "/"):
-            raise ValueError(f"CorpusReader paths must be relative: {fileid}")
         path = self._root.join(fileid)
         from nltk.pathsec import validate_path
 
