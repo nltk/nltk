@@ -531,6 +531,23 @@ _CORPUS_TEXT_A = "The dog runs. A cat sleeps.\n"
 _CORPUS_TEXT_B = "Birds fly high.\n"
 
 
+@pytest.fixture
+def enforce_off(monkeypatch):
+    """Isolate a functional read test from ambient / leaked pathsec.ENFORCE state.
+
+    With ENFORCE off, CorpusReader.__init__ skips the global-root check, so a
+    temp-dir corpus that is not an allowlisted data root still constructs (on a
+    full test run an earlier test may leave ENFORCE on, and on Linux the temp
+    dir lives under world-writable /tmp, which is not an allowed root). The
+    _guard_fileid required_root containment check still runs on every fileid, so
+    the guard itself is exercised; the ENFORCE-on path is covered separately by
+    test_guard_fileid_reads_still_work_under_enforce.
+    """
+    monkeypatch.setattr(pathsec, "ENFORCE", False)
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+
+
 def _fs_plaintext_corpus():
     root = tempfile.mkdtemp(prefix="fscorp_")
     with open(os.path.join(root, "a.txt"), "w") as fh:
@@ -540,7 +557,7 @@ def _fs_plaintext_corpus():
     return root
 
 
-def test_guard_fileid_plaintext_fs_reads():
+def test_guard_fileid_plaintext_fs_reads(enforce_off):
     """A filesystem PlaintextCorpusReader still returns words/sents/raw/abspaths
     through the guarded abspath path."""
     import shutil
@@ -559,7 +576,7 @@ def test_guard_fileid_plaintext_fs_reads():
         shutil.rmtree(root, ignore_errors=True)
 
 
-def test_guard_fileid_zip_backed_reads():
+def test_guard_fileid_zip_backed_reads(enforce_off):
     """A ZIP-backed reader (root is a ZipFilePathPointer) still reads through the
     guard: it must not reject or choke on zip member paths, which have no
     filesystem realpath. Most distributed NLTK corpora load this way."""
@@ -606,7 +623,7 @@ def test_guard_fileid_reads_still_work_under_enforce(monkeypatch):
         shutil.rmtree(root, ignore_errors=True)
 
 
-def test_guard_fileid_tagged_corpus_reads():
+def test_guard_fileid_tagged_corpus_reads(enforce_off):
     """A different reader type (TaggedCorpusReader) also reads through the guard,
     confirming the base-class guard does not break reader-specific parsing."""
     import shutil
