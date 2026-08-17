@@ -114,6 +114,9 @@ _DENIED_MODULE_PREFIXES = (
     "numpy.ctypeslib",
     "numpy.distutils",
     "numpy.testing",
+    # numpy.lib file-I/O sinks (npyio/_npyio_impl recfromtxt etc., format.open_memmap)
+    # keep __module__ under numpy.lib, dodging the export-name denylist (CWE-502).
+    "numpy.lib",
     # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
     # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.
     "scipy.io",
