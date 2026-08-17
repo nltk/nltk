@@ -24,19 +24,8 @@ from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import allowlisted_pickle_load
 
-# The saved model is a fitted scikit-learn ``SVC`` backed by numpy arrays and,
-# for the sparse svmlight features, a scipy CSR matrix. Allowing the *whole*
-# numpy/scipy/sklearn namespaces (the previous approach) still exposed real
-# gadgets that survive the module backstop; ``scipy.io.mmwrite`` (arbitrary
-# file write), ``scipy.io.loadmat`` / ``sklearn.datasets.load_svmlight_file``
-# (file read), ``sklearn.datasets.fetch_openml`` (network/SSRF) and
-# ``numpy.apply_along_axis`` / ``numpy.frompyfunc`` (invoke a callable). So no
-# broad module is allowed; instead only the exact globals a real fitted SVC
-# pickle references are permitted (recorded by round-tripping a model and
-# logging every ``find_class``). Anything else fails closed (CWE-502,
-# GHSA-x99w / GHSA-4489). Both the numpy 1.x (``numpy.core``) and 2.x
-# (``numpy._core``) reconstruction paths and the old/new ``scipy.sparse`` module
-# names are listed so a model saved under either version still loads.
+# A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
+# namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
 _MODEL_ALLOWED_MODULES = ()
 _MODEL_ALLOWED_GLOBALS = (
     ("sklearn.svm._classes", "SVC"),
