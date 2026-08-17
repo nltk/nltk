@@ -615,6 +615,55 @@ def _check_decompression_bomb(info):
         )
 
 
+def _bounded_gzip_decompress(gz_bytes, name="<member>"):
+    """Decompress a gzip byte string, applying the decompression-bomb policy to
+    the actual output (CWE-409).
+
+    ``ZipFilePathPointer.open`` wraps a ``.gz`` zip member in a ``GzipFile``, a
+    second decompression layer that :func:`_check_decompression_bomb` (which only
+    inspects the zip member's declared sizes) does not bound. This streams the
+    gzip output and refuses it once it is both large (>= ``MAX_UNZIP_ACTIVATION``)
+    and expands beyond ``MAX_UNZIP_RATIO`` over the compressed member, or exceeds
+    the optional ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes.
+    """
+    compress_size = len(gz_bytes)
+    ratio_limit = MAX_UNZIP_RATIO * compress_size
+
+    def _reject_reason(total):
+        if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
+            return (
+                "Refusing to decompress zip member %r: its nested gzip output "
+                "exceeds nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, MAX_UNZIP_SIZE)
+            )
+        if total >= MAX_UNZIP_ACTIVATION and total > ratio_limit:
+            return (
+                "Refusing to decompress suspected nested gzip bomb %r: its gzip "
+                "layer expands beyond nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte "
+                "compressed member. Raise nltk.data.MAX_UNZIP_RATIO if this data is "
+                "trusted." % (name, MAX_UNZIP_RATIO, compress_size)
+            )
+        return None
+
+    # Cheap pre-check via the gzip ISIZE trailer (declared uncompressed size mod
+    # 2**32). It is attacker-forgeable (and wraps above 4 GiB), so the streaming
+    # cap below is the actual guarantee; this just rejects honest bombs for free.
+    if compress_size >= 4:
+        reason = _reject_reason(int.from_bytes(gz_bytes[-4:], "little"))
+        if reason:
+            raise ValueError(reason)
+
+    out = []
+    total = 0
+    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
+        for chunk in iter(lambda: gz.read(1 << 20), b""):
+            total += len(chunk)
+            reason = _reject_reason(total)
+            if reason:
+                raise ValueError(reason)
+            out.append(chunk)
+    return b"".join(out)
+
+
 class ZipFilePathPointer(PathPointer):
     """
     A path pointer that identifies a file contained within a zipfile,
@@ -677,7 +726,10 @@ class ZipFilePathPointer(PathPointer):
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
-            stream = GzipFile(self._entry, fileobj=stream)
+            # GzipFile is a SECOND decompression layer the zip-member guard above
+            # does not see; bound its output with the same policy so a nested
+            # gzip bomb cannot exhaust memory (CWE-409).
+            stream = BytesIO(_bounded_gzip_decompress(data, self._entry))
         elif encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream

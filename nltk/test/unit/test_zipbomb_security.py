@@ -90,3 +90,55 @@ def test_downloader_writes_nothing_when_a_later_member_is_a_bomb(tmp_path):
     # neither the benign member nor the bomb was written
     assert not (dest / "pkg" / "safe.txt").exists()
     assert not (dest / "pkg" / "big.txt").exists()
+
+
+# --- nested gzip inside a zip member (the .gz second decompression layer) ------
+
+
+def test_nested_gzip_bomb_blocked(tmp_path):
+    """A .gz zip member whose (tiny) gz bytes pass the member guard but whose gzip
+    layer expands past the ratio is refused (nested-gzip bomb, CWE-409)."""
+    import gzip
+
+    data.MAX_UNZIP_ACTIVATION = 64 * 1024
+    data.MAX_UNZIP_RATIO = 10
+    gz = gzip.compress(b"\0" * (256 * 1024))
+    z = _make_zip(tmp_path / "nested.zip", "bomb.gz", gz)
+    # the zip member itself passes the guard (its declared sizes are tiny)
+    data._check_decompression_bomb(zipfile.ZipFile(str(z)).getinfo("bomb.gz"))
+    with pytest.raises(ValueError, match="nested gzip bomb"):
+        ZipFilePathPointer(str(z), "bomb.gz").open().read()
+
+
+def test_nested_gzip_forged_isize_caught_by_streaming_cap(tmp_path):
+    """Even with a forged gzip ISIZE trailer (claims 0 bytes), the streaming cap
+    still refuses the bomb; the ISIZE pre-check is only an optimization."""
+    import gzip
+
+    data.MAX_UNZIP_ACTIVATION = 1024 * 1024
+    data.MAX_UNZIP_RATIO = 10
+    gz = bytearray(gzip.compress(b"\0" * (4 * 1024 * 1024)))
+    gz[-4:] = (0).to_bytes(4, "little")  # lie about the uncompressed size
+    z = _make_zip(tmp_path / "forged.zip", "bomb.gz", bytes(gz))
+    with pytest.raises(ValueError, match="nested gzip bomb"):
+        ZipFilePathPointer(str(z), "bomb.gz").open().read()
+
+
+def test_nested_gzip_absolute_cap(tmp_path):
+    """MAX_UNZIP_SIZE also caps the nested gzip layer's output."""
+    import gzip
+
+    data.MAX_UNZIP_SIZE = 64 * 1024
+    gz = gzip.compress(b"\0" * (256 * 1024))
+    z = _make_zip(tmp_path / "cap.zip", "big.gz", gz)
+    with pytest.raises(ValueError, match="MAX_UNZIP_SIZE"):
+        ZipFilePathPointer(str(z), "big.gz").open().read()
+
+
+def test_nested_gzip_legit_member_passes(tmp_path):
+    """A legitimate .gz member (low ratio) still decompresses to its content."""
+    import gzip
+
+    payload = b"legitimate corpus line\n" * 64
+    z = _make_zip(tmp_path / "ok.zip", "data.gz", gzip.compress(payload))
+    assert ZipFilePathPointer(str(z), "data.gz").open().read() == payload
