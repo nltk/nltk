@@ -19,6 +19,7 @@ import os
 import pathlib
 import shutil
 import tempfile
+from collections import namedtuple
 
 import pytest
 
@@ -95,3 +96,27 @@ def enforce_off(monkeypatch):
     monkeypatch.setattr(pathsec, "ENFORCE", False)
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
     monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+
+
+# A namedtuple so a test can either unpack ``root, outside = pathsec_sandbox`` or
+# read ``pathsec_sandbox.root`` / ``.outside``.
+PathsecSandbox = namedtuple("PathsecSandbox", ["root", "outside"])
+
+
+@pytest.fixture
+def pathsec_sandbox(monkeypatch):
+    """Enforce pathsec against a single throwaway data root and yield BOTH the
+    trusted ``root`` (a ``pathlib.Path``; writes inside it succeed) and an
+    out-of-sandbox ``outside`` dir (a ``pathlib.Path`` that must be refused), for
+    a test that needs both at once. Use ``sandbox`` / ``restricted_sandbox`` when
+    only one is needed. The result unpacks as ``root, outside`` too.
+    """
+    saved_cwd = os.getcwd()
+    data_root = _enforce_single_root(monkeypatch)
+    outside = _make_outside_dir()
+    try:
+        yield PathsecSandbox(root=pathlib.Path(data_root), outside=outside)
+    finally:
+        os.chdir(saved_cwd)
+        shutil.rmtree(outside, ignore_errors=True)
+        shutil.rmtree(data_root, ignore_errors=True)
