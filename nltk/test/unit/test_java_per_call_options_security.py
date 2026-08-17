@@ -114,3 +114,46 @@ def test_trusted_raw_options_bypass_validation_but_default_path_does_not(
             ["Main"], classpath=".", trusted_raw_options=["-XX:ParallelGCThreads=1"]
         )
     assert not isinstance(exc.value, ValueError)
+
+
+# --- cmd (main-class) channel: same launcher-token injection as options -------
+# The first cmd token is the Java main class; a launcher switch or @argfile there
+# runs an arbitrary JAR / injects JVM args (CWE-88). @argfile is rejected in any
+# position because the launcher expands it wherever it appears.
+
+DANGEROUS_CMD = [
+    ["-jar", "/tmp/evil.jar"],
+    ["@/tmp/argfile"],
+    ["-XX:OnError=touch /tmp/pwned", "SomeMainClass"],
+    ["SomeMainClass", "@/tmp/argfile"],  # @argfile smuggled into a later position
+    ["-Xmx512m", "SomeMainClass"],
+    ["-Dfile.encoding=UTF-8", "SomeMainClass"],
+    [],  # no main class
+    [None],  # non-string first token
+    ["", "SomeMainClass"],  # empty first token
+]
+
+
+@pytest.mark.parametrize("cmd", DANGEROUS_CMD)
+def test_java_cmd_channel_rejects_launcher_tokens(stub_java_bin, cmd):
+    """A launcher switch / @argfile supplied through the cmd channel must be
+    refused before Popen, mirroring the options-channel guard."""
+    with pytest.raises(ValueError):
+        internals.java(cmd, classpath=".")
+
+
+def test_java_cmd_channel_allows_legitimate_main_class(stub_java_bin):
+    """A real main class followed by "-" program args (Stanford wrappers pass
+    -loadClassifier / -textFile) is not a violation: it clears the cmd guard and
+    only fails later at the (stub) java binary, never with ValueError."""
+    with pytest.raises(Exception) as exc:
+        internals.java(
+            [
+                "edu.stanford.nlp.ie.crf.CRFClassifier",
+                "-loadClassifier",
+                "model.ser.gz",
+                "-textFile",
+                "/input.txt",
+            ]
+        )
+    assert not isinstance(exc.value, ValueError)

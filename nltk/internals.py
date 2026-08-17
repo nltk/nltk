@@ -293,6 +293,29 @@ def java(
         raise TypeError("cmd must be a sequence of strings, not a string")
     cmd_list = list(cmd)
 
+    # The Java launcher treats the first non-option token as the main class. A
+    # caller-supplied cmd must therefore begin with a real main-class name, not a
+    # launcher switch (-jar / -XX:OnError=...) or an @argfile: either would run an
+    # arbitrary JAR or inject JVM arguments the options allowlist rejects
+    # (CVE-2026-12841, CWE-88). Program arguments after the main class may start
+    # with "-" (e.g. Stanford's -loadClassifier), but an @argfile is expanded by
+    # the launcher wherever it appears and is never a legitimate NLTK argument, so
+    # reject it in any position. Vouched-for flags go through trusted_raw_options.
+    if not cmd_list:
+        raise ValueError("cmd must contain a Java main class")
+    first = cmd_list[0]
+    if not isinstance(first, str) or not first or first.startswith(("-", "@")):
+        raise ValueError(
+            f"cmd must begin with a Java main class, not a launcher switch or "
+            f"@argfile: {first!r} (CWE-88)"
+        )
+    for tok in cmd_list:
+        if isinstance(tok, str) and tok.startswith("@"):
+            raise ValueError(
+                f"cmd may not contain an @argfile token: {tok!r}; the Java "
+                "launcher would expand it, injecting arguments (CWE-88)"
+            )
+
     def _normalise(stream):
         if stream is None:
             return None
