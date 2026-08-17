@@ -70,7 +70,9 @@ def test_negative_control_open_outside_raises(sandbox):
         pathsec.open(str(target), "r")
 
 
+# --------------------------------------------------------------------------- #
 # nltk.sem.util.read_sents
+# --------------------------------------------------------------------------- #
 def test_read_sents_reads_inside_sandbox(sandbox):
     """Positive control: a legitimate read of a file inside the data sandbox
     still works and applies the normal blank-line / comment filtering."""

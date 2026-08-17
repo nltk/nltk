@@ -50,7 +50,9 @@ import pytest
 
 from nltk.picklesec import RestrictedUnpickler, allowlisted_pickle_load
 
+# ---------------------------------------------------------------------------
 # Gadget payload builders
+# ---------------------------------------------------------------------------
 
 
 def _su(s: str) -> bytes:
@@ -161,7 +163,9 @@ _LOAD_CONFIGS = [
 ]
 
 
+# ---------------------------------------------------------------------------
 # (a) Every allowlisted / restricted load site refuses every gadget
+# ---------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("site", [c[0] for c in _LOAD_CONFIGS])
@@ -212,7 +216,9 @@ def test_every_load_site_refuses_scipy_io_mmwrite(site):
         loader(_reduce_global_pickle("scipy.io", "mmwrite", "/tmp/should-not-write"))
 
 
+# ---------------------------------------------------------------------------
 # Legitimate loads must still succeed (allowlists are not "block everything")
+# ---------------------------------------------------------------------------
 
 
 def test_transitionparser_allowlist_loads_real_svc():
@@ -252,7 +258,9 @@ def test_restricted_load_allows_globals_free_payload_but_no_globals():
         _load_restricted(_bare_global_pickle("collections", "OrderedDict"))
 
 
+# ---------------------------------------------------------------------------
 # wordnet_app.Reference.decode: untrusted base64 -> RestrictedUnpickler + shape
+# ---------------------------------------------------------------------------
 
 
 def _reference_cls():
@@ -295,7 +303,9 @@ def test_restricted_unpickler_directly_blocks_every_gadget():
             u.find_class(module, name)
 
 
+# ---------------------------------------------------------------------------
 # (c) Source-tree invariants: no np.load pickle path, no raw pickle.load bypass
+# ---------------------------------------------------------------------------
 
 _NLTK_ROOT = Path(__file__).resolve().parents[2]  # .../nltk
 

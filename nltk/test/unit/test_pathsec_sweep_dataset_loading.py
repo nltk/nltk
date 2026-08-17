@@ -124,7 +124,9 @@ def sandbox():
         shutil.rmtree(base, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------------
 # nltk.data.find
+# ---------------------------------------------------------------------------
 def test_find_refuses_absolute_outside(sandbox):
     with pytest.raises(REFUSE):
         nltk.data.find(str(sandbox.secret))
@@ -142,7 +144,9 @@ def test_find_refuses_percent_encoded_traversal(sandbox):
         nltk.data.find("..%2f..%2foutside%2fsecret.txt")
 
 
+# ---------------------------------------------------------------------------
 # nltk.data.load (file:// protocol -> _open fallback -> _secure_open)
+# ---------------------------------------------------------------------------
 def test_load_file_url_refuses_outside(sandbox):
     with pytest.raises(REFUSE):
         nltk.data.load("file://" + str(sandbox.secret), format="text")
@@ -156,7 +160,9 @@ def test_load_file_triple_slash_refuses_outside(sandbox):
         )
 
 
+# ---------------------------------------------------------------------------
 # FileSystemPathPointer.open  /  GzipFileSystemPathPointer.open
+# ---------------------------------------------------------------------------
 def test_filesystempathpointer_refuses_absolute_outside(sandbox):
     pointer = FileSystemPathPointer(str(sandbox.secret))
     with pytest.raises(REFUSE):
@@ -181,7 +187,9 @@ def test_gzip_pointer_refuses_absolute_outside(sandbox):
         pointer.open()
 
 
+# ---------------------------------------------------------------------------
 # nltk.data.retrieve; write side (symlink at destination escapes the root)
+# ---------------------------------------------------------------------------
 def test_retrieve_refuses_symlink_destination_escape(sandbox):
     if not _can_symlink(str(sandbox.root)):
         pytest.skip("symlinks not creatable on this filesystem")
@@ -194,7 +202,9 @@ def test_retrieve_refuses_symlink_destination_escape(sandbox):
     assert not target.exists(), "retrieve() wrote through a symlink out of the root!"
 
 
+# ---------------------------------------------------------------------------
 # CorpusReader.open  (lexical guard + scoped required_root guard)
+# ---------------------------------------------------------------------------
 def test_corpusreader_open_refuses_traversal(sandbox):
     from nltk.corpus.reader.api import CorpusReader
 
@@ -229,7 +239,9 @@ def test_corpusreader_init_refuses_outside_root(sandbox):
         WordListCorpusReader(str(sandbox.outside_dir), r".*\.txt")
 
 
+# ---------------------------------------------------------------------------
 # Concrete readers driven against the sandbox root (symlink escape)
+# ---------------------------------------------------------------------------
 def test_wordlist_reader_refuses_symlink_escape(sandbox):
     from nltk.corpus.reader.wordlist import WordListCorpusReader
 
@@ -252,7 +264,9 @@ def test_plaintext_reader_refuses_symlink_escape(sandbox):
         reader.raw("pt_leak.txt")
 
 
+# ---------------------------------------------------------------------------
 # StreamBackedCorpusView; bare string fileid straight to the _open() sink
+# ---------------------------------------------------------------------------
 def test_streambacked_view_refuses_bare_outside_string(sandbox):
     from nltk.corpus.reader.util import StreamBackedCorpusView, read_line_block
 
@@ -261,7 +275,9 @@ def test_streambacked_view_refuses_bare_outside_string(sandbox):
         list(view)
 
 
+# ---------------------------------------------------------------------------
 # XML loaders (guard on defusedxml, which the XML readers import)
+# ---------------------------------------------------------------------------
 def test_xmlcorpusreader_refuses_symlink_escape(sandbox):
     pytest.importorskip("defusedxml")
     from nltk.corpus.reader.xmldocs import XMLCorpusReader
@@ -288,7 +304,9 @@ def test_xmlcorpusview_refuses_bare_outside_string(sandbox):
         list(XMLCorpusView(str(xml_secret), ".*/leak"))
 
 
+# ---------------------------------------------------------------------------
 # PanLexLiteCorpusReader; the sqlite3.connect() model/dataset sink
+# ---------------------------------------------------------------------------
 def test_panlex_reader_refuses_symlink_db_escape(sandbox):
     from nltk.corpus.reader.panlex_lite import PanLexLiteCorpusReader
 

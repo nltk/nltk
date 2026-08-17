@@ -775,7 +775,9 @@ def test_read_sents_enforces_pathsec():
         read_sents(forbidden_path)
 
 
+# ----------------------------------------------------------------------
 # Malicious Subclasses for Type Confusion & Object Manipulation Tests
+# ----------------------------------------------------------------------
 
 
 class ZeroLengthStr(str):
@@ -807,7 +809,9 @@ class DualFacedPath(os.PathLike):
         return self.shown
 
 
+# ----------------------------------------------------------------------
 # Fixtures
+# ----------------------------------------------------------------------
 
 
 @pytest.fixture
@@ -838,7 +842,9 @@ def sandbox_env(tmp_path, monkeypatch):
     return safe_dir, unsafe_dir, secret_file, allowed_file, archive_path
 
 
+# ----------------------------------------------------------------------
 # Restrictive Guard Tests
+# ----------------------------------------------------------------------
 
 
 def test_restrictive_guard_blocks_boolean_discrepancy_open(sandbox_env):
@@ -913,8 +919,10 @@ def test_restrictive_guard_allows_pure_primitives(sandbox_env):
         assert f.read() == "AUTHORIZED_DATA"
 
 
+# ----------------------------------------------------------------------
 # System temp dir: trust only a PRIVATE per-user temp, never a shared
 # world-writable one (GHSA-p4rw follow-up, CWE-377/CWE-378)
+# ----------------------------------------------------------------------
 
 posix_only = pytest.mark.skipif(
     os.name != "posix", reason="POSIX ownership/permission semantics"
