@@ -20,6 +20,7 @@ from collections import defaultdict
 from itertools import chain
 from pprint import pformat
 
+from nltk.data import make_staging_dir
 from nltk.internals import find_binary
 from nltk.pathsec import open as _secure_open
 from nltk.tree import Tree
@@ -662,12 +663,10 @@ Nov.    NNP     9       VMOD
         networkx.draw_networkx_labels(g, pos, dg.nx_labels)
         pylab.xticks([])
         pylab.yticks([])
-        from os.path import join
-
-        from nltk.data import make_staging_dir
+        import os
 
         # A private staging dir under a data root, not "tree.png" in the CWD.
-        outfile = join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
+        outfile = os.path.join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
         pylab.savefig(outfile)
         print(f"saved dependency tree to {outfile}")
         pylab.show()

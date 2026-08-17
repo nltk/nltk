@@ -12,6 +12,7 @@ feature structures as nodes.
 """
 from time import perf_counter
 
+from nltk.data import make_staging_dir
 from nltk.featstruct import TYPE, FeatStruct, find_variables, unify
 from nltk.grammar import (
     CFG,
@@ -650,14 +651,12 @@ def demo(
 
 
 def run_profile():
+    import os
     import profile
     import pstats
-    from os.path import join
-
-    from nltk.data import make_staging_dir
 
     # A private staging dir under a data root, not a guessable /tmp path.
-    stats_file = join(make_staging_dir(prefix="nltk_profile_"), "profile.out")
+    stats_file = os.path.join(make_staging_dir(prefix="nltk_profile_"), "profile.out")
     profile.run("for i in range(1): demo()", stats_file)
     p = pstats.Stats(stats_file)
     p.strip_dirs().sort_stats("time", "cum").print_stats(60)
