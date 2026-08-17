@@ -651,11 +651,17 @@ def demo(
 
 def run_profile():
     import profile
-
-    profile.run("for i in range(1): demo()", "/tmp/profile.out")
     import pstats
+    from os.path import join
 
-    p = pstats.Stats("/tmp/profile.out")
+    from nltk.data import make_staging_dir
+
+    # A fresh private (0700) staging dir under an allowed data root (the same
+    # helper NLTK's save code uses), not a hardcoded, guessable /tmp path another
+    # local user could pre-create or symlink (CWE-377/378).
+    stats_file = join(make_staging_dir(prefix="nltk_profile_"), "profile.out")
+    profile.run("for i in range(1): demo()", stats_file)
+    p = pstats.Stats(stats_file)
     p.strip_dirs().sort_stats("time", "cum").print_stats(60)
     p.strip_dirs().sort_stats("cum", "time").print_stats(60)
 

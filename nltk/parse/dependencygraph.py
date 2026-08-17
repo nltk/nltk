@@ -662,7 +662,15 @@ Nov.    NNP     9       VMOD
         networkx.draw_networkx_labels(g, pos, dg.nx_labels)
         pylab.xticks([])
         pylab.yticks([])
-        pylab.savefig("tree.png")
+        from os.path import join
+
+        from nltk.data import make_staging_dir
+
+        # Write to a fresh private (0700) staging dir under an allowed data root,
+        # not a fixed "tree.png" in the CWD.
+        outfile = join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
+        pylab.savefig(outfile)
+        print(f"saved dependency tree to {outfile}")
         pylab.show()
 
 
