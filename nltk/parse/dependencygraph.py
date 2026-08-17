@@ -14,6 +14,7 @@ The input is assumed to be in Malt-TAB format
 (https://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
+import os
 import subprocess
 import warnings
 from collections import defaultdict
@@ -663,8 +664,6 @@ Nov.    NNP     9       VMOD
         networkx.draw_networkx_labels(g, pos, dg.nx_labels)
         pylab.xticks([])
         pylab.yticks([])
-        import os
-
         # A private staging dir under a data root, not "tree.png" in the CWD.
         outfile = os.path.join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
         pylab.savefig(outfile)
