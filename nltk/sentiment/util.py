@@ -10,7 +10,6 @@
 Utility methods for Sentiment Analysis.
 """
 
-import codecs
 import csv
 import json
 import random
@@ -22,6 +21,7 @@ from copy import deepcopy
 import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
+from nltk.pathsec import open as pathsec_open
 from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
@@ -257,7 +257,7 @@ def output_markdown(filename, **kwargs):
     """
     Write the output of an analysis to a file.
     """
-    with codecs.open(filename, "at") as outfile:
+    with pathsec_open(filename, "at", context="output_markdown") as outfile:
         text = "\n*** \n\n"
         text += "{} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
@@ -361,7 +361,9 @@ def json2csv_preprocess(
         limit is reached the conversion will stop. It can be useful to create
         subsets of the original tweets json data.
     """
-    with codecs.open(json_file, encoding=encoding) as fp:
+    with pathsec_open(
+        json_file, encoding=encoding, context="json2csv_preprocess"
+    ) as fp:
         (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
         # write the list of fields as header
         writer.writerow(fields)
@@ -430,7 +432,7 @@ def parse_tweets_set(
     if not sent_tokenizer:
         sent_tokenizer = PunktTokenizer()
 
-    with codecs.open(filename, "rt") as csvfile:
+    with pathsec_open(filename, "rt", context="parse_tweets_set") as csvfile:
         reader = csv.reader(csvfile)
         if skip_header:
             next(reader, None)  # skip the header
