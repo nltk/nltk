@@ -12,49 +12,12 @@ data sandbox and must leave nothing behind.
 """
 
 import os
-import pathlib
-import shutil
-import tempfile
 
 import pytest
 
-import nltk.data
 import nltk.pathsec as pathsec
 
-
-@pytest.fixture
-def sandbox():
-    """Enforce pathsec with a single throwaway data root and yield an *outside*
-    target directory the sandbox must refuse.
-
-    The outside directory is a fresh dir under the real home directory; NOT a
-    temp dir, because on macOS the private per-user system temp dir *is* an
-    allowed root (``pathsec._get_allowed_roots``), which would make a temp-dir
-    "attack" spuriously succeed.
-    """
-    saved_enforce = pathsec.ENFORCE
-    saved_paths = list(nltk.data.path)
-    saved_cwd = os.getcwd()
-
-    data_root = tempfile.mkdtemp(prefix="nltk_sweep_sandbox_")
-    outside = pathlib.Path.home() / f".nltk_sweep_chat80_{os.getpid()}"
-    outside.mkdir(parents=True, exist_ok=True)
-
-    pathsec.ENFORCE = True
-    nltk.data.path[:] = [data_root]
-    pathsec._ALLOWED_ROOTS_CACHE = None
-    pathsec._LAST_DATA_PATHS = None
-
-    try:
-        yield outside
-    finally:
-        pathsec.ENFORCE = saved_enforce
-        nltk.data.path[:] = saved_paths
-        pathsec._ALLOWED_ROOTS_CACHE = None
-        pathsec._LAST_DATA_PATHS = None
-        os.chdir(saved_cwd)
-        shutil.rmtree(outside, ignore_errors=True)
-        shutil.rmtree(data_root, ignore_errors=True)
+# The ``sandbox`` fixture is provided by nltk/test/unit/conftest.py.
 
 
 def test_negative_control_open_outside_raises(sandbox):
