@@ -114,13 +114,8 @@ _DENIED_MODULE_PREFIXES = (
     "numpy.ctypeslib",
     "numpy.distutils",
     "numpy.testing",
-    # numpy.lib holds submodule-local file-I/O callables that numpy does NOT
-    # rewrite to __module__ == "numpy" (npyio.recfromtxt / recfromcsv / NpzFile,
-    # _npyio_impl on numpy 2.x, and format.open_memmap / read_array / write_array),
-    # so the export-name denylist below never matches them. Deny the whole
-    # numpy.lib subtree so a broad "numpy" allow cannot reach them for arbitrary
-    # file read or file create/write (CWE-502). No array/model reconstruct global
-    # lives under numpy.lib (they are in numpy / numpy._core), so this is safe.
+    # numpy.lib file-I/O sinks (npyio/_npyio_impl recfromtxt etc., format.open_memmap)
+    # keep __module__ under numpy.lib, dodging the export-name denylist (CWE-502).
     "numpy.lib",
     # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
     # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.

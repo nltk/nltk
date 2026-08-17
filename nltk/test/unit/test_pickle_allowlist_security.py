@@ -80,7 +80,8 @@ def test_transitionparser_loads_legitimate_model(tmp_path):
     from nltk.parse import DependencyGraph
     from nltk.parse.transitionparser import TransitionParser
 
-    gold_sent = DependencyGraph("""
+    gold_sent = DependencyGraph(
+        """
 Economic  JJ     2      ATT
 news  NN     3       SBJ
 has       VBD       0       ROOT
@@ -90,7 +91,8 @@ on     IN      5       ATT
 financial       JJ       8       ATT
 markets    NNS      6       PC
 .    .      3       PU
-""")
+"""
+    )
 
     model_path = tmp_path / "tp.model"
     parser = TransitionParser(TransitionParser.ARC_STANDARD)
