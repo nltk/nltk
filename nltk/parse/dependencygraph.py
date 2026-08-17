@@ -666,8 +666,7 @@ Nov.    NNP     9       VMOD
 
         from nltk.data import make_staging_dir
 
-        # Write to a fresh private (0700) staging dir under an allowed data root,
-        # not a fixed "tree.png" in the CWD.
+        # A private staging dir under a data root, not "tree.png" in the CWD.
         outfile = join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
         pylab.savefig(outfile)
         print(f"saved dependency tree to {outfile}")
