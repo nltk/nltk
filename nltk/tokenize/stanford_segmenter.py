@@ -24,6 +24,7 @@ from nltk.internals import (
     java,
 )
 from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -280,6 +281,10 @@ class StanfordSegmenter(TokenizerI):
                         raise
 
     def _sha256sum(self, file_path):
+        # file_path is a caller-controlled classpath entry; validate it before
+        # any filesystem access so an out-of-sandbox path fails without an
+        # os.stat metadata leak or symlink follow (CWE-22/CWE-59).
+        validate_path(file_path, context="StanfordSegmenter._sha256sum")
         stat = os.stat(file_path)
         cached = self._jar_sha256_cache.get(file_path)
         cache_key = (stat.st_mtime_ns, stat.st_size)
@@ -289,8 +294,8 @@ class StanfordSegmenter(TokenizerI):
                 return cached_digest
 
         h = hashlib.sha256()
-        # file_path is a caller-controlled classpath entry; route the read
-        # through pathsec so a traversal path can't be opened outside a root.
+        # Re-checked at open time by pathsec, whose O_NOFOLLOW closes the
+        # symlink-swap TOCTOU that a path-only validate_path cannot.
         with pathsec_open(file_path, "rb", context="StanfordSegmenter._sha256sum") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 h.update(chunk)

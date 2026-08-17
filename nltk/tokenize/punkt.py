@@ -1815,6 +1815,10 @@ class PunktTokenizer(PunktSentenceTokenizer):
         lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
         self._params = load_punkt_params(lang_dir)
         self._lang = lang
+        # A new language needs a new save dir; drop any memoized one so save_dir
+        # is recreated with the correct language prefix rather than reusing the
+        # previous language's directory.
+        self._save_dir = None
 
     @property
     def save_dir(self) -> str:
@@ -1881,7 +1885,9 @@ def save_punkt_params(params, dir: str | None = None) -> str:
         dir = make_staging_dir(prefix="nltk_punkt_params_")
     validate_path(dir, context="save_punkt_params")
     if not os.path.isdir(dir):
-        os.mkdir(dir)
+        # 0700 so a caller-supplied output dir is private regardless of umask,
+        # matching the private default staging dir.
+        os.mkdir(dir, 0o700)
     with pathsec_open(f"{dir}/collocations.tab", "w", context="save_punkt_params") as f:
         f.write(f"{tenc.tups2tab(params.collocations)}")
     with pathsec_open(
