@@ -106,6 +106,7 @@ The algorithm for this tokenizer is described in::
 # FIXME: Problem with ending string with e.g. '!!!' -> '!! !'
 
 import math
+import os
 import re
 import string
 from collections import defaultdict
@@ -113,8 +114,11 @@ from collections.abc import Iterator
 from re import Match
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.picklesec import allowlisted_pickle_load
 from nltk.probability import FreqDist
+from nltk.tabdata import TabEncoder
 from nltk.tokenize.api import TokenizerI
 
 # Exact ``(module, qualname)`` allowlist -- no namespace prefix. A prefix allow
@@ -1637,9 +1641,18 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             yield sentence
 
     # [XX] TESTING
-    def dump(self, tokens: Iterator[PunktToken]) -> None:
-        print("writing to /tmp/punkt.new...")
-        with open("/tmp/punkt.new", "w") as outfile:
+    def dump(self, tokens: Iterator[PunktToken]) -> str:
+        from nltk.data import make_staging_dir
+
+        # Debug scaffold: write through pathsec to a fresh private (0700) dir under
+        # a data root, not a guessable /tmp path, and return it (CWE-377/378).
+        outfilename = os.path.join(
+            make_staging_dir(prefix="nltk_punkt_dump_"), "punkt.new"
+        )
+        print(f"writing to {outfilename}...")
+        with pathsec_open(
+            outfilename, "w", context="PunktSentenceTokenizer.dump"
+        ) as outfile:
             for aug_tok in tokens:
                 if aug_tok.parastart:
                     outfile.write("\n\n")
@@ -1649,6 +1662,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                     outfile.write(" ")
 
                 outfile.write(str(aug_tok))
+        return outfilename
 
     # ////////////////////////////////////////////////////////////
     # { Customization Variables
@@ -1792,6 +1806,7 @@ class PunktTokenizer(PunktSentenceTokenizer):
 
     def __init__(self, lang="english"):
         PunktSentenceTokenizer.__init__(self)
+        self._save_dir = None
         self.load_lang(lang)
 
     def load_lang(self, lang="english"):
@@ -1800,9 +1815,30 @@ class PunktTokenizer(PunktSentenceTokenizer):
         lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
         self._params = load_punkt_params(lang_dir)
         self._lang = lang
+        # A new language needs a new save dir; drop any memoized one so save_dir
+        # is recreated with the correct language prefix rather than reusing the
+        # previous language's directory.
+        self._save_dir = None
 
-    def save_params(self):
-        save_punkt_params(self._params, dir=f"/tmp/{self._lang}")
+    @property
+    def save_dir(self) -> str:
+        """This tokenizer's private directory for saved parameters.
+
+        Created lazily on first use under a data root, with an unpredictable name
+        and mode 0700, so (unlike the old guessable ``/tmp/<lang>``) another local
+        user cannot pre-create or symlink it to redirect or read the write
+        (CWE-377/378). Reused across calls, so the saved parameters share one
+        known, private, in-sandbox location.
+        """
+        from nltk.data import make_staging_dir
+
+        if self._save_dir is None:
+            self._save_dir = make_staging_dir(prefix=f"nltk_punkt_{self._lang}_")
+        return self._save_dir
+
+    def save_params(self) -> str:
+        """Write this tokenizer's parameters to :attr:`save_dir`; return it."""
+        return save_punkt_params(self._params, dir=self.save_dir)
 
 
 def load_punkt_params(lang_dir):
@@ -1825,23 +1861,53 @@ def load_punkt_params(lang_dir):
     return params
 
 
-def save_punkt_params(params, dir="/tmp/punkt_tab"):
-    from os import mkdir
-    from os.path import isdir
+def save_punkt_params(params, dir: str | None = None) -> str:
+    """Write Punkt parameters as tab files; return the directory.
 
-    from nltk.tabdata import TabEncoder
+    The old default was the shared, guessable ``/tmp/punkt_tab``, a
+    destination another local user could pre-create or symlink (CWE-377/378),
+    and one pathsec refuses anyway. Default instead to a fresh private (mode
+    0700), unpredictably-named directory under a data root, so the write lands
+    inside the sandbox on every platform. A caller-supplied ``dir`` is validated
+    against the NLTK data sandbox before the directory is created or any file is
+    written; each file is then written through the pathsec sandbox, which also
+    closes the symlink-swap TOCTOU on write (GHSA-8mgp-746c-j5xp, CWE-22/CWE-59).
 
-    if not isdir(dir):
-        mkdir(dir)
+    :param dir: destination directory; defaults to a fresh private one.
+    :type dir: str or None
+    :return: the directory the parameter files were written to.
+    :rtype: str
+    """
     tenc = TabEncoder()
-    with open(f"{dir}/collocations.tab", "w") as f:
+    if dir is None:
+        from nltk.data import make_staging_dir
+
+        dir = make_staging_dir(prefix="nltk_punkt_params_")
+    validate_path(dir, context="save_punkt_params")
+    if not os.path.isdir(dir):
+        # 0700 so a caller-supplied output dir is private regardless of umask,
+        # matching the private default staging dir.
+        os.mkdir(dir, 0o700)
+    # newline="" writes LF, not the platform default, so the tab files match the
+    # installed punkt_tab format and reload cleanly on Windows (a default text
+    # write there emits CRLF, leaving a stray \r on every reloaded token).
+    with pathsec_open(
+        f"{dir}/collocations.tab", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.tups2tab(params.collocations)}")
-    with open(f"{dir}/sent_starters.txt", "w") as f:
+    with pathsec_open(
+        f"{dir}/sent_starters.txt", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.set2txt(params.sent_starters)}")
-    with open(f"{dir}/abbrev_types.txt", "w") as f:
+    with pathsec_open(
+        f"{dir}/abbrev_types.txt", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.set2txt(params.abbrev_types)}")
-    with open(f"{dir}/ortho_context.tab", "w") as f:
+    with pathsec_open(
+        f"{dir}/ortho_context.tab", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.ivdict2tab(params.ortho_context)}")
+    return dir
 
 
 # def punkt_tokenizer(lang="english"):

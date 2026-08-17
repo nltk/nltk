@@ -38,6 +38,7 @@ import os
 import pickle
 import re
 import sys
+import tempfile
 import textwrap
 import urllib.request
 import zipfile
@@ -51,6 +52,7 @@ from urllib.request import url2pathname
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
+from nltk.pathsec import validate_path as _validate_path
 
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
 # backslashes, Windows drive letters. Use a raw-string pattern and do not anchor only
@@ -173,6 +175,43 @@ else:
 ######################################################################
 # Util Functions
 ######################################################################
+
+
+def make_staging_dir(prefix="nltk_"):
+    """Create a fresh private directory for NLTK's own output, inside a data root.
+
+    NLTK's save helpers default here so their output lands within the security
+    sandbox (every ``nltk.data.path`` entry is an allowed root) on all platforms,
+    including Linux where the shared ``/tmp`` is deliberately not a root. The
+    directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
+    under the first ``nltk.data.path`` entry that can be written to.
+
+    :param prefix: filename prefix for the created directory.
+    :type prefix: str
+    :return: the absolute path of the created directory.
+    :rtype: str
+    :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
+        root, in which case the caller should pass an explicit destination.
+    """
+    for root in path:
+        base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
+        try:
+            # Confirm base is inside the pathsec sandbox before creating anything,
+            # so a surprising ~ / $HOME / NLTK_DATA expansion cannot make
+            # os.makedirs build a directory chain, or mkdtemp stage output,
+            # outside the allowed roots. validate_path resolves symlinks the same
+            # way the allowed roots are computed, so this never trusts more than
+            # the sandbox does.
+            _validate_path(base, context="nltk.data.make_staging_dir")
+            os.makedirs(base, exist_ok=True)
+            return tempfile.mkdtemp(prefix=prefix, dir=base)
+        except (OSError, ValueError, PermissionError):
+            continue
+    raise PermissionError(
+        f"No writable in-sandbox NLTK data root to stage output in (tried "
+        f"{len(path)} nltk.data.path entries); pass an explicit destination "
+        "directory."
+    )
 
 
 def gzip_open_unicode(
