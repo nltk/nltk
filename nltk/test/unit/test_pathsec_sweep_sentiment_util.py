@@ -14,7 +14,6 @@ import pytest
 import nltk
 import nltk.pathsec as pathsec
 
-
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
 # are provided by nltk/test/unit/conftest.py.
 

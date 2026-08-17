@@ -23,7 +23,6 @@ import pytest
 import nltk.data
 import nltk.pathsec as pathsec
 
-
 # A tiny synthetic tagged corpus so tbl.demo.postag() never needs the treebank
 # corpus (postag skips corpus loading when tagged_data is supplied).
 TINY_TAGGED = [
