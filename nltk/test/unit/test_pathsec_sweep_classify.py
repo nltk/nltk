@@ -121,3 +121,28 @@ def test_arff_formatter_write_refuses_outside_path(restricted_sandbox):
         assert not target_file.exists()
     finally:
         shutil.rmtree(outside, ignore_errors=True)
+
+
+def test_save_maxent_params_round_trip(restricted_sandbox):
+    """Functional check: params written by save_maxent_params reload identically
+    via load_maxent_params (given a PathPointer, as the loaders use), and the tab
+    files are LF-only so a reload cannot pick up a stray CR on Windows."""
+    numpy = pytest.importorskip("numpy")
+    from nltk.classify.maxent import load_maxent_params, save_maxent_params
+    from nltk.data import FileSystemPathPointer
+
+    wgt = numpy.array([0.5, -1.25, 3.0])
+    mpg = {("word", "cat", "L1"): 5, ("shape", "upcase", "L2"): 7}
+    lab = ["L1", "L2"]
+    aon = {}
+    out = save_maxent_params(wgt, mpg, lab, aon)
+    try:
+        for name in ("weights.txt", "mapping.tab", "labels.txt", "alwayson.tab"):
+            assert b"\r" not in Path(out, name).read_bytes(), f"{name} has CR"
+        w2, m2, l2, a2 = load_maxent_params(FileSystemPathPointer(out))
+        assert numpy.allclose(w2, wgt)
+        assert l2 == lab
+        assert m2 == mpg
+        assert a2 == aon
+    finally:
+        shutil.rmtree(out, ignore_errors=True)

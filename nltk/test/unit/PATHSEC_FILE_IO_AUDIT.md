@@ -39,7 +39,7 @@ gap, now closed · `TODO` under audit.
 ### classify
 | File | Sink | Verdict | Test |
 |---|---|---|---|
-| classify/maxent.py | `save_maxent_params` | GAP-FIXED (mkdtemp default, validate, returns dir) | test_pathsec_sweep_classify |
+| classify/maxent.py | `save_maxent_params` | GAP-FIXED (mkdtemp default, validate, returns dir; caller dir 0700; `newline=""` LF so tab files reload without a stray CR on Windows) | test_pathsec_sweep_classify (incl. round-trip) |
 | classify/maxent.py | `load_maxent_params` | GUARDED (open_datafile) | — |
 | classify/maxent.py | megam/tadm trainfile/weightfile | EXEMPT (internal mkstemp) | — |
 | classify/weka.py | `ARFF_Formatter.write` | GUARDED (pathsec_open) | test_pathsec_sweep_classify |
@@ -69,7 +69,7 @@ gap, now closed · `TODO` under audit.
 ### tokenize
 | File | Sink | Verdict | Test |
 |---|---|---|---|
-| tokenize/punkt.py | `save_punkt_params` | GAP-FIXED (mkdtemp default, validate, returns dir) | test_pathsec_sweep_tokenize |
+| tokenize/punkt.py | `save_punkt_params` | GAP-FIXED (mkdtemp default, validate, returns dir; caller dir 0700; `newline=""` LF so tab files reload without a stray CR on Windows) | test_pathsec_sweep_tokenize (incl. round-trip) |
 | tokenize/punkt.py | `PunktTokenizer.save_params` (+ private `save_dir`) | GAP-FIXED (no /tmp/<lang>) | test_pathsec_sweep_tokenize |
 | tokenize/punkt.py | `PunktSentenceTokenizer.dump` | GAP-FIXED (private mkdtemp, not /tmp/punkt.new) | test_pathsec_sweep_tokenize |
 | tokenize/punkt.py | `load_punkt_params` | GUARDED (open_datafile) | — |

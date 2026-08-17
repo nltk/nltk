@@ -1604,18 +1604,29 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
         tab_dir = make_staging_dir(prefix="nltk_maxent_params_")
     validate_path(tab_dir, context="save_maxent_params")
     if not os.path.isdir(tab_dir):
-        os.mkdir(tab_dir)
+        # 0700 so a caller-supplied output dir is private regardless of umask,
+        # matching the private default staging dir.
+        os.mkdir(tab_dir, 0o700)
 
     print(f"Saving Maxent parameters in {tab_dir}")
 
-    with pathsec_open(f"{tab_dir}/weights.txt", "w", context="save_maxent_params") as f:
+    # newline="" writes LF, not the platform default, so the tab files reload
+    # cleanly on Windows (a default text write there emits CRLF, leaving a stray
+    # \r on every reloaded token).
+    with pathsec_open(
+        f"{tab_dir}/weights.txt", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
-    with pathsec_open(f"{tab_dir}/mapping.tab", "w", context="save_maxent_params") as f:
+    with pathsec_open(
+        f"{tab_dir}/mapping.tab", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.tupdict2tab(mpg)}")
-    with pathsec_open(f"{tab_dir}/labels.txt", "w", context="save_maxent_params") as f:
+    with pathsec_open(
+        f"{tab_dir}/labels.txt", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.list2txt(lab)}")
     with pathsec_open(
-        f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params"
+        f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params", newline=""
     ) as f:
         f.write(f"{menc.ivdict2tab(aon)}")
     return tab_dir
