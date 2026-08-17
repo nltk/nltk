@@ -114,7 +114,7 @@ def test_hunpos_init_refuses_outside_model(sandbox):
         HunposTagger(str(model), path_to_bin=str(dummy_bin))
 
 
-def test_sources_route_through_pathsec():
+def test_tagger_sources_route_through_pathsec():
     """Grep-style guard: the patched sinks must reference the pathsec sentinel,
     so a future refactor that drops the check is caught here."""
     from nltk.tag import crf, hunpos, stanford

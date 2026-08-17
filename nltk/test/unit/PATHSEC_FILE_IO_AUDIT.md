@@ -84,11 +84,12 @@ gap, now closed · `TODO` under audit.
 ### sem / tbl / metrics / stem / translate / misc / help
 | File | Sink | Verdict | Test |
 |---|---|---|---|
-| sem/chat80.py | `sqlite3.connect`/`shelve.open`/`label_indivs` | GUARDED (validate_path / pathsec_open) | test_pathsec_sweep_misc |
-| tbl/demo.py | pickle write/read, error_output, savefig | GUARDED (pathsec_open / validate_path) | test_pathsec_sweep_misc |
-| metrics/agreement.py | `__main__` `-f` read | GUARDED (pathsec_open) | test_pathsec_sweep_misc |
-| help.py | `json.load` tagset help | TODO (agent: misc) | test_pathsec_sweep_misc2 |
-| stem/, translate/, misc/ | model/data I/O | TODO (agent: misc) | test_pathsec_sweep_misc2 |
+| sem/chat80.py | `sqlite3.connect`/`shelve.open`/`label_indivs` | GUARDED (validate_path / pathsec_open) | test_chat80_pathsec |
+| sem/util.py | `read_sents` caller-path read | GUARDED (pathsec_open) | test_pathsec_sweep_sem_util |
+| tbl/demo.py | pickle write/read, error_output, savefig | GUARDED (pathsec_open / validate_path) | test_pathsec_sweep_tbl |
+| metrics/agreement.py | `__main__` `-f` read | GUARDED (pathsec_open) | test_agreement_pathsec |
+| help.py | `json.load` tagset help | TODO | (none) |
+| stem/, translate/, misc/ | model/data I/O | TODO | (none) |
 
 ### security modules
 | File | Sink | Verdict | Test |
