@@ -4,18 +4,12 @@ output_markdown / json2csv_preprocess / parse_tweets_set used codecs.open on a
 caller-supplied path, bypassing pathsec. They now go through pathsec_open.
 """
 
-import os
-import pathlib
-import shutil
-import tempfile
-
 import pytest
 
-import nltk
 import nltk.pathsec as pathsec
 
-# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
-# are provided by nltk/test/unit/conftest.py.
+# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off /
+# pathsec_sandbox) are provided by nltk/test/unit/conftest.py.
 
 
 def test_negative_control(sandbox):
@@ -49,3 +43,16 @@ def test_parse_tweets_set_refuses_outside_path(sandbox):
             word_tokenizer=object(),
             sent_tokenizer=object(),
         )
+
+
+def test_json2csv_preprocess_refuses_outside_outfile(pathsec_sandbox):
+    """json2csv_preprocess reads a legitimate in-sandbox input but must refuse an
+    out-of-sandbox ``outfile`` (its CSV/GZIP output is a caller-supplied path)."""
+    from nltk.sentiment.util import json2csv_preprocess
+
+    src = pathsec_sandbox.root / "in.json"  # in-sandbox input, allowed to read
+    src.write_text('{"id": 1, "text": "hi"}\n', encoding="utf-8")
+    outfile = pathsec_sandbox.outside / "evil.csv"  # out-of-sandbox output
+    with pytest.raises(PermissionError):
+        json2csv_preprocess(str(src), str(outfile), fields=["id", "text"])
+    assert not outfile.exists(), "refused write must not have created the file"

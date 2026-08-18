@@ -17,13 +17,10 @@ Linux ``tempfile.mkdtemp()`` lives under the shared ``/tmp``).
 import inspect
 import os
 import shutil
-import tempfile
 import types
-from pathlib import Path
 
 import pytest
 
-import nltk.data
 import nltk.pathsec as pathsec
 
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
