@@ -1,8 +1,8 @@
 # nltk/test/unit/test_downloader_cycle.py
 import os
+import subprocess
+import sys
 import tempfile
-import threading
-import time
 import unittest
 from pathlib import Path
 
@@ -11,42 +11,37 @@ from nltk.downloader import Downloader
 
 
 class TestDownloaderCycle(unittest.TestCase):
-    def setUp(self):
-        # Disable pathsec to avoid file:// permission issues
-        self.orig_enforce = nltk.pathsec.ENFORCE
-        nltk.pathsec.ENFORCE = False
+    """Test that Downloader._update_index handles cyclic collection references safely."""
 
-    def tearDown(self):
-        nltk.pathsec.ENFORCE = self.orig_enforce
-
-    def _run_with_timeout(self, func, timeout=2):
+    def _run_with_timeout(self, func, timeout=5):
         """
-        Run func in a thread; return (completed, result, exception).
-        If completed is False, the thread timed out.
-        If exception is not None, the thread raised that exception.
+        Run a function in a subprocess and kill it if it exceeds timeout.
+        Returns (completed, result, exception) or (False, None, None) on timeout.
         """
-        result = []
-        exc = []
+        # Simple approach: we can't easily pass a lambda to a subprocess,
+        # so we wrap the function call in a subprocess with a timeout.
+        # For this specific test, we know func is always dl.packages().
+        # We'll just run the test logic in a subprocess.
+        pass
 
-        def target():
-            try:
-                result.append(func())
-            except Exception as e:
-                exc.append(e)
+    def test_acyclic_index(self):
+        """Control: a normal index should complete normally."""
+        xml = """<?xml version="1.0"?>
+<index>
+  <packages>
+    <package id="p1" name="Sample" subdir="corpora/p1"
+             url="http://example.invalid/p1.zip" unzip="0" size="0" unzipped_size="0"/>
+  </packages>
+  <collections>
+    <collection id="a" name="Acyclic">
+      <item ref="p1"/>
+    </collection>
+  </collections>
+</index>"""
+        self._run_index_test(xml, expected_packages=["p1"], timeout=5)
 
-        t = threading.Thread(target=target)
-        t.daemon = True
-        t.start()
-        t.join(timeout)
-
-        if t.is_alive():
-            return False, None, None
-        if exc:
-            return True, None, exc[0]
-        return True, result[0] if result else None, None
-
-    def test_cyclic_index_does_not_hang(self):
-        # Create a temporary index with a self-referential collection
+    def test_self_referential_index(self):
+        """A self-referential collection should complete without hanging."""
         xml = """<?xml version="1.0"?>
 <index>
   <packages>
@@ -60,26 +55,79 @@ class TestDownloaderCycle(unittest.TestCase):
     </collection>
   </collections>
 </index>"""
+        self._run_index_test(xml, expected_packages=["p1"], timeout=5)
 
+    def test_mutual_referential_index(self):
+        """Two collections referencing each other should complete without hanging."""
+        xml = """<?xml version="1.0"?>
+<index>
+  <packages>
+    <package id="p1" name="Sample" subdir="corpora/p1"
+             url="http://example.invalid/p1.zip" unzip="0" size="0" unzipped_size="0"/>
+  </packages>
+  <collections>
+    <collection id="a" name="A">
+      <item ref="b"/>
+      <item ref="p1"/>
+    </collection>
+    <collection id="b" name="B">
+      <item ref="a"/>
+    </collection>
+  </collections>
+</index>"""
+        self._run_index_test(xml, expected_packages=["p1"], timeout=5)
+
+    def _run_index_test(self, xml, expected_packages, timeout=5):
+        """
+        Write xml to a temp file, run Downloader.packages() in a subprocess,
+        and assert it returns within timeout and collects the expected packages.
+        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
             f.write(xml)
             path = f.name
 
         try:
-            # Use pathlib to get a proper file:// URI (works on Windows with drive letters)
             uri = Path(path).as_uri()
-            dl = Downloader(server_index_url=uri)
+            # Build a script that runs the test and prints results
+            script = f"""
+import sys
+sys.path.insert(0, {repr(os.path.dirname(__file__))})
+import nltk
+from nltk.downloader import Downloader
 
-            completed, packages, exc = self._run_with_timeout(
-                lambda: dl.packages(), timeout=5
+# Disable pathsec for file:// tests
+nltk.pathsec.ENFORCE = False
+
+dl = Downloader(server_index_url={repr(uri)})
+packages = dl.packages()
+# Print package IDs as a comma-separated list
+print(','.join(p.id for p in packages))
+"""
+            # Run the script in a subprocess with a timeout
+            result = subprocess.run(
+                [sys.executable, "-c", script],
+                capture_output=True,
+                text=True,
+                timeout=timeout,
             )
-
-            self.assertTrue(completed, "Cyclic index caused a hang (timeout)")
-            self.assertIsNone(exc, f"Unexpected exception: {exc}")
-            self.assertIsNotNone(packages, "dl.packages() returned None")
+            # Check that it completed successfully
             self.assertEqual(
-                [p.id for p in packages], ["p1"], "Expected package p1 to be collected"
+                result.returncode,
+                0,
+                f"Subprocess failed with exit code {result.returncode}\n"
+                f"stdout: {result.stdout}\nstderr: {result.stderr}",
             )
+            # Check that the output matches expected packages
+            output_packages = (
+                result.stdout.strip().split(",") if result.stdout.strip() else []
+            )
+            self.assertEqual(
+                output_packages,
+                expected_packages,
+                f"Expected packages {expected_packages}, got {output_packages}",
+            )
+        except subprocess.TimeoutExpired:
+            self.fail(f"Index test timed out after {timeout} seconds (infinite loop?)")
         finally:
             os.unlink(path)
 
