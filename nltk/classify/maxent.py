@@ -51,6 +51,7 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
+
 try:
     import numpy
 except ImportError:
@@ -64,8 +65,11 @@ from nltk.classify.api import ClassifierI
 from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.data import gzip_open_unicode
+from nltk.data import gzip_open_unicode, make_staging_dir
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
+from nltk.tabdata import MaxentEncoder
 from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
@@ -398,7 +402,7 @@ class MaxentFeatureEncodingI:
 
     def labels(self):
         """
-        :return: A list of the \"known labels\" -- i.e., all labels
+        :return: A list of the \"known labels\"; i.e., all labels
             ``l`` such that ``self.encode(fs,l)`` can be a nonzero
             joint-feature vector for some value of ``fs``.
         :rtype: list
@@ -452,7 +456,7 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         :type labels: list
         :param labels: A list of the \"known labels\" for this
-            encoding -- i.e., all labels ``l`` such that
+            encoding; i.e., all labels ``l`` such that
             ``self.encode(fs,l)`` can be a nonzero joint-feature vector
             for some value of ``fs``.
         """
@@ -579,7 +583,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 for label2 in self._labels:
                     if (fname, fval, label2) in self._mapping:
                         break  # we've seen this fname/fval combo
-                # We haven't -- fire the unseen-value feature
+                # We haven't; fire the unseen-value feature
                 else:
                     if fname in self._unseen:
                         encoding.append((self._unseen[fname], 1))
@@ -602,7 +606,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 self._inv_mapping[i] = info
 
         if f_id < len(self._mapping):
-            (fname, fval, label) = self._inv_mapping[f_id]
+            fname, fval, label = self._inv_mapping[f_id]
             return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
             for label, f_id2 in self._alwayson.items():
@@ -919,7 +923,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
                     for label2 in self._labels:
                         if (fname, fval, label2) in self._mapping:
                             break  # we've seen this fname/fval combo
-                    # We haven't -- fire the unseen-value feature
+                    # We haven't; fire the unseen-value feature
                     else:
                         if fname in self._unseen:
                             encoding.append((self._unseen[fname], 1))
@@ -942,7 +946,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 self._inv_mapping[i] = info
 
         if f_id < len(self._mapping):
-            (fname, fval, label) = self._inv_mapping[f_id]
+            fname, fval, label = self._inv_mapping[f_id]
             return f"{fname}=={fval!r} and label is {label!r}"
         elif self._alwayson and f_id in self._alwayson.values():
             for label, f_id2 in self._alwayson.items():
@@ -1580,27 +1584,52 @@ def load_maxent_params(tab_dir):
     return wgt, mpg, lab, aon
 
 
-def save_maxent_params(wgt, mpg, lab, aon, tab_dir="/tmp"):
+def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
+    """Write maxent classifier parameters as tab files; return the directory.
 
-    from os import mkdir
-    from os.path import isdir
+    The old default was the shared, world-writable system temp (``/tmp``); a
+    guessable destination another local user could pre-create or symlink
+    (CWE-377/378), and one pathsec refuses anyway. Default instead to a fresh
+    private (mode 0700), unpredictably-named directory. A caller-supplied
+    ``tab_dir`` is validated against the NLTK data sandbox before the directory
+    is created or any file is written (GHSA-8mgp-746c-j5xp).
 
-    from nltk.tabdata import MaxentEncoder
-
+    :param tab_dir: destination directory; defaults to a fresh private one.
+    :type tab_dir: str or None
+    :return: the directory the parameter files were written to.
+    :rtype: str
+    """
     menc = MaxentEncoder()
-    if not isdir(tab_dir):
-        mkdir(tab_dir)
+    if tab_dir is None:
+        tab_dir = make_staging_dir(prefix="nltk_maxent_params_")
+    validate_path(tab_dir, context="save_maxent_params")
+    if not os.path.isdir(tab_dir):
+        # 0700 so a caller-supplied output dir is private regardless of umask,
+        # matching the private default staging dir.
+        os.mkdir(tab_dir, 0o700)
 
     print(f"Saving Maxent parameters in {tab_dir}")
 
-    with open(f"{tab_dir}/weights.txt", "w") as f:
+    # newline="" writes LF, not the platform default, so the tab files reload
+    # cleanly on Windows (a default text write there emits CRLF, leaving a stray
+    # \r on every reloaded token).
+    with pathsec_open(
+        f"{tab_dir}/weights.txt", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
-    with open(f"{tab_dir}/mapping.tab", "w") as f:
+    with pathsec_open(
+        f"{tab_dir}/mapping.tab", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.tupdict2tab(mpg)}")
-    with open(f"{tab_dir}/labels.txt", "w") as f:
+    with pathsec_open(
+        f"{tab_dir}/labels.txt", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.list2txt(lab)}")
-    with open(f"{tab_dir}/alwayson.tab", "w") as f:
+    with pathsec_open(
+        f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params", newline=""
+    ) as f:
         f.write(f"{menc.ivdict2tab(aon)}")
+    return tab_dir
 
 
 def maxent_pos_tagger():

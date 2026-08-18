@@ -22,6 +22,7 @@ from nltk.metrics import BigramAssocMeasures
 from nltk.metrics import f_measure as eval_f_measure
 from nltk.metrics import precision as eval_precision
 from nltk.metrics import recall as eval_recall
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import FreqDist
 
 
@@ -187,7 +188,12 @@ class SentimentAnalyzer:
         Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
         """
         print("Saving", filename, file=sys.stderr)
-        with open(filename, "wb") as storage_file:
+        # ``filename`` is caller-controlled; route the write through the pathsec
+        # sandbox so a classifier cannot be pickled to an arbitrary path outside
+        # the allowed NLTK data roots (GHSA-8mgp-746c-j5xp).
+        with pathsec_open(
+            filename, "wb", context="SentimentAnalyzer.save_file"
+        ) as storage_file:
             import pickle
 
             # The protocol=2 parameter is for python2 compatibility

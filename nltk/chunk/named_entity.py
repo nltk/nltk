@@ -14,17 +14,19 @@ import os
 import re
 
 from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.tag import ClassifierBasedTagger, pos_tag
 from nltk.xmlsec import parse as safe_parse
 
 try:
     from nltk.classify import MaxentClassifier
+    from nltk.classify.maxent import save_maxent_params
 except ImportError:
     pass
 
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
-from nltk.data import find
+from nltk.data import find, make_staging_dir
 from nltk.tokenize import word_tokenize
 from nltk.tree import Tree
 
@@ -169,7 +171,7 @@ class NEChunkParser(ChunkParserI):
         for child in sent:
             if isinstance(child, Tree):
                 if len(child) == 0:
-                    print("Warning -- empty chunk in sentence")
+                    print("Warning; empty chunk in sentence")
                     continue
                 toks.append((child[0], f"B-{child.label()}"))
                 for tok in child[1:]:
@@ -232,7 +234,7 @@ def load_ace_file(textfile, fmt):
     annfile = textfile + ".tmx.rdc.xml"
 
     # Read the xml file, and get a list of entities. These ACE paths are walked
-    # from a corpus root, so keep them inside the allowed data roots -- a
+    # from a corpus root, so keep them inside the allowed data roots; a
     # symlinked .sgm/.xml must not resolve outside (CWE-59, GHSA-7qj2).
     entities = []
     with pathsec_open(annfile, context="load_ace_file") as infile:
@@ -328,6 +330,7 @@ class Maxent_NE_Chunker(NEChunkParser):
     def __init__(self, fmt="multiclass"):
 
         self._fmt = fmt
+        self._save_dir = None
         self._tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
         self.load_params()
 
@@ -340,17 +343,51 @@ class Maxent_NE_Chunker(NEChunkParser):
         )
         self._tagger = NEChunkParserTagger(classifier=mc)
 
-    def save_params(self):
-        from nltk.classify.maxent import save_maxent_params
+    @property
+    def save_dir(self) -> str:
+        """This chunker's private directory for saved model artifacts.
 
+        Created lazily on first use with an unpredictable name and mode 0700, so
+        (unlike the old guessable ``/tmp/...``) another local user cannot
+        pre-create or symlink it to redirect or read the write (CWE-377/378).
+        The same directory is reused across calls, so a chunker's saved
+        artifacts share one known, private location.
+        """
+        if self._save_dir is None:
+            self._save_dir = make_staging_dir(prefix=f"nltk_ne_chunker_{self._fmt}_")
+        return self._save_dir
+
+    def save_params(self, tab_dir: str | None = None) -> str:
+        """Write the trained maxent parameters as tab files.
+
+        The old default was a *guessable* name in the shared, world-writable
+        system temp (``/tmp/english_ace_<fmt>/``). That is a threat by itself: on
+        a multi-user host another user can pre-create or symlink that exact path
+        to redirect or read the write (CWE-377/378), and pathsec refuses a
+        shared-temp destination anyway (so it would not even work). Default
+        instead to this chunker's :attr:`save_dir`; a private (mode 0700),
+        unpredictably-named directory that no other user can pre-plant. A caller
+        may still pass an explicit ``tab_dir``; it is validated against the NLTK
+        data sandbox before the parameter files are written, so an outside path
+        is refused (GHSA-8mgp-746c-j5xp).
+
+        :param tab_dir: destination directory; defaults to :attr:`save_dir`.
+        :type tab_dir: str or None
+        :return: the directory the parameter files were written to.
+        :rtype: str
+        """
         classif = self._tagger._classifier
         ecg = classif._encoding
         wgt = classif._weights
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
-        fmt = self._fmt
-        save_maxent_params(wgt, mpg, lab, aon, tab_dir=f"/tmp/english_ace_{fmt}/")
+        if tab_dir is None:
+            tab_dir = self.save_dir
+        validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
+
+        save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
+        return tab_dir
 
 
 def build_model(fmt="multiclass"):
@@ -394,10 +431,11 @@ def build_model(fmt="binary"):
             cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = f"/tmp/ne_chunker_{fmt}.pickle"
+    outdir = make_staging_dir(prefix=f"nltk_ne_chunker_{fmt}_")
+    outfilename = f"{outdir}/ne_chunker_{fmt}.pickle"
     print(f"Saving chunker to {outfilename}...")
 
-    with open(outfilename, "wb") as outfile:
+    with pathsec_open(outfilename, "wb", context="build_model") as outfile:
         pickle.dump(cp, outfile, -1)
 
     return cp
