@@ -361,10 +361,23 @@ def json2csv_preprocess(
         limit is reached the conversion will stop. It can be useful to create
         subsets of the original tweets json data.
     """
-    with pathsec_open(
-        json_file, encoding=encoding, context="json2csv_preprocess"
-    ) as fp:
-        (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
+    with pathsec_open(json_file, "rt", encoding=encoding, context="json2csv_preprocess") as fp:
+        from nltk.twitter.common import extract_fields
+        import gzip
+
+        if gzip_compress:
+            outf = pathsec_open(outfile, "wb", context="json2csv_preprocess")
+            outf = gzip.open(outf, "wt", newline="", encoding=encoding, errors=errors)
+        else:
+            outf = pathsec_open(
+                outfile,
+                "w",
+                newline="",
+                encoding=encoding,
+                errors=errors,
+                context="json2csv_preprocess",
+            )
+        writer = csv.writer(outf)
         # write the list of fields as header
         writer.writerow(fields)
 
