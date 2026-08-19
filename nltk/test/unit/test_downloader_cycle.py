@@ -1,4 +1,3 @@
-# nltk/test/unit/test_downloader_cycle.py
 import os
 import subprocess
 import sys
@@ -10,41 +9,27 @@ import nltk
 
 
 class TestDownloaderCycle(unittest.TestCase):
-    """Test that Downloader._update_index handles cyclic collection references safely."""
-
     def _run_index_test(self, xml, expected_packages, timeout=5):
-        """
-        Write xml to a temp file, run Downloader.packages() in a subprocess,
-        and assert it returns within timeout and collects the expected packages.
-        """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
             f.write(xml)
             path = f.name
-
         try:
             uri = Path(path).as_uri()
-
-            # Build a script that runs the test and prints results
-            script = f"""
-import sys
-import nltk
-from nltk.downloader import Downloader
-
-# Disable pathsec for file:// tests
-nltk.pathsec.ENFORCE = False
-
-dl = Downloader(server_index_url={repr(uri)})
-packages = dl.packages()
-# Print package IDs as a comma-separated list
-print(','.join(p.id for p in packages))
-"""
-            # Set PYTHONPATH so the subprocess can find nltk
+            # Build script without leading indentation
+            script_lines = [
+                "import sys",
+                "import nltk",
+                "from nltk.downloader import Downloader",
+                "nltk.pathsec.ENFORCE = False",
+                f"dl = Downloader(server_index_url={repr(uri)})",
+                "packages = dl.packages()",
+                "print(','.join(p.id for p in packages))",
+            ]
+            script = "\n".join(script_lines)
             env = os.environ.copy()
-            # Add the current working directory (root of nltk source) to PYTHONPATH
-            cwd = os.getcwd()
-            env["PYTHONPATH"] = cwd + os.pathsep + env.get("PYTHONPATH", "")
-
-            # Run the script in a subprocess with a timeout
+            # Derive import root from nltk.__file__
+            nltk_root = os.path.dirname(os.path.dirname(os.path.dirname(nltk.__file__)))
+            env["PYTHONPATH"] = nltk_root + os.pathsep + env.get("PYTHONPATH", "")
             result = subprocess.run(
                 [sys.executable, "-c", script],
                 capture_output=True,
@@ -52,30 +37,17 @@ print(','.join(p.id for p in packages))
                 timeout=timeout,
                 env=env,
             )
-
             self.assertEqual(
-                result.returncode,
-                0,
-                f"Subprocess failed with exit code {result.returncode}\n"
-                f"stdout: {result.stdout}\nstderr: {result.stderr}",
+                result.returncode, 0, f"Subprocess failed: {result.stderr}"
             )
-
-            output_packages = (
-                result.stdout.strip().split(",") if result.stdout.strip() else []
-            )
-            self.assertEqual(
-                output_packages,
-                expected_packages,
-                f"Expected packages {expected_packages}, got {output_packages}",
-            )
-
+            output = result.stdout.strip().split(",") if result.stdout.strip() else []
+            self.assertEqual(output, expected_packages)
         except subprocess.TimeoutExpired:
-            self.fail(f"Index test timed out after {timeout} seconds (infinite loop?)")
+            self.fail(f"Test timed out after {timeout}s")
         finally:
             os.unlink(path)
 
     def test_acyclic_index(self):
-        """Control: a normal index should complete normally."""
         xml = """<?xml version="1.0"?>
 <index>
   <packages>
@@ -88,10 +60,9 @@ print(','.join(p.id for p in packages))
     </collection>
   </collections>
 </index>"""
-        self._run_index_test(xml, expected_packages=["p1"], timeout=5)
+        self._run_index_test(xml, ["p1"])
 
     def test_self_referential_index(self):
-        """A self-referential collection should complete without hanging."""
         xml = """<?xml version="1.0"?>
 <index>
   <packages>
@@ -105,10 +76,9 @@ print(','.join(p.id for p in packages))
     </collection>
   </collections>
 </index>"""
-        self._run_index_test(xml, expected_packages=["p1"], timeout=5)
+        self._run_index_test(xml, ["p1"])
 
     def test_mutual_referential_index(self):
-        """Two collections referencing each other should complete without hanging."""
         xml = """<?xml version="1.0"?>
 <index>
   <packages>
@@ -125,8 +95,4 @@ print(','.join(p.id for p in packages))
     </collection>
   </collections>
 </index>"""
-        self._run_index_test(xml, expected_packages=["p1"], timeout=5)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        self._run_index_test(xml, ["p1"])
