@@ -353,8 +353,8 @@ class ARFF_Formatter:
         if hasattr(outfile, "write"):
             outfile.write(self.format(tokens))
         else:
-            # Otherwise, use pathsec_open to enforce sandbox.
-            with pathsec_open(outfile, "w") as f:
+            # Otherwise, use pathsec_open with newline="" to enforce LF line endings.
+            with pathsec_open(outfile, "w", newline="") as f:
                 f.write(self.format(tokens))
 
     def _fmt_arff_val(self, fval):
