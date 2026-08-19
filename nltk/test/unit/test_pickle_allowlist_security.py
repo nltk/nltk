@@ -710,10 +710,40 @@ class TestBroadAllowGadgetContainment:
             ("scipy.io", "savemat"),
             ("scipy.io", "mmread"),
             ("scipy.io", "mmwrite"),
+            ("scipy.io", "readsav"),
+            # scipy.datasets: network download + on-disk cache write.
+            ("scipy.datasets", "download_all"),
+            ("scipy.datasets", "face"),
+            ("scipy.datasets", "ascent"),
+            ("scipy.datasets", "electrocardiogram"),
             ("sklearn.datasets", "load_svmlight_file"),
             ("sklearn.datasets", "dump_svmlight_file"),
             ("sklearn.datasets", "fetch_openml"),
+            # Every pandas.io reader is an arbitrary file/URL/DB read sink; a
+            # top-level ``pandas.read_*`` request must be denied under a broad
+            # ``pandas`` allow via the resolved pandas.io __module__.
             ("pandas", "read_pickle"),
+            ("pandas", "read_csv"),
+            ("pandas", "read_table"),
+            ("pandas", "read_fwf"),
+            ("pandas", "read_json"),
+            ("pandas", "read_html"),
+            ("pandas", "read_xml"),
+            ("pandas", "read_excel"),
+            ("pandas", "read_hdf"),
+            ("pandas", "read_parquet"),
+            ("pandas", "read_orc"),
+            ("pandas", "read_feather"),
+            ("pandas", "read_stata"),
+            ("pandas", "read_sas"),
+            ("pandas", "read_spss"),
+            ("pandas", "read_sql"),
+            ("pandas", "read_sql_query"),
+            ("pandas", "read_sql_table"),
+            ("pandas", "read_gbq"),
+            ("pandas", "read_clipboard"),
+            ("pandas", "HDFStore"),
+            ("pandas", "ExcelFile"),
         ]:
             try:
                 m = importlib.import_module(mod)
@@ -725,6 +755,95 @@ class TestBroadAllowGadgetContainment:
             assert self._blocked(mod, name), f"{mod}.{name} is reconstructable"
         if not checked:
             pytest.skip("no scipy/sklearn/pandas sinks available")
+
+    def test_pandas_reader_reduce_reads_no_file(self, tmp_path):
+        """A REDUCE payload calling pandas.read_csv on a real file is refused at
+        global resolution, before the reader runs, so the file is never read."""
+        pd = pytest.importorskip("pandas")
+        secret = tmp_path / "secret.csv"
+        secret.write_text("col\n1\n", encoding="utf-8")
+
+        class Evil:
+            def __reduce__(self):
+                return (pd.read_csv, (str(secret),))
+
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(
+                BytesIO(pickle.dumps(Evil(), protocol=4)), **self.BROAD
+            )
+
+    @pytest.mark.parametrize(
+        "module,name",
+        [
+            # nested-unpickle (RCE) helpers under pandas.compat.
+            ("pandas.compat.pickle_compat", "loads"),
+            ("pandas.compat.pickle_compat", "load_reduce"),
+            ("pandas.compat.pickle_compat", "Unpickler"),
+            # file read/write under the model-allowed scipy.sparse namespace.
+            ("scipy.sparse", "load_npz"),
+            ("scipy.sparse", "save_npz"),
+            # file-open-by-path in numpy record arrays.
+            ("numpy.ma.mrecords", "openfile"),
+            ("numpy.ma.mrecords", "fromtextfile"),
+            # path / file-like readers deep in the allowed stacks.
+            ("pandas._libs.parsers", "TextReader"),
+            ("numpy._core._multiarray_umath", "_load_from_filelike"),
+        ],
+    )
+    def test_deep_submodule_file_and_code_sinks_refused(self, module, name):
+        """A broad scientific-stack allow reaches deep submodules; file-read/open
+        and nested-unpickle sinks living in otherwise-allowed namespaces must still
+        be refused. Import-guarded: skipped where absent."""
+        import importlib
+
+        try:
+            m = importlib.import_module(module)
+        except BaseException:
+            pytest.skip(f"{module} unavailable")
+        if not hasattr(m, name):
+            pytest.skip(f"{module}.{name} unavailable")
+        assert self._blocked(module, name), f"{module}.{name} is reconstructable"
+
+    def test_frozen_importlib_reexport_refused(self, monkeypatch):
+        """``spec_from_file_location`` loads/executes code from a file path (RCE).
+        It is re-exported into some allowed sci submodules, where it resolves to
+        ``__module__ == _frozen_importlib_external`` (not ``importlib``). Injecting
+        that re-export under an allowed namespace confirms the frozen-importlib
+        denylist refuses it at resolution, independent of stdlib layout."""
+        import importlib
+        import sys
+        import types
+
+        spec = getattr(
+            importlib.import_module("importlib.util"), "spec_from_file_location"
+        )
+        if not getattr(spec, "__module__", "").startswith("_frozen_importlib"):
+            pytest.skip("spec_from_file_location is not from frozen importlib here")
+        numpy = pytest.importorskip("numpy")
+        fake = types.ModuleType("numpy._evil_reexport")
+        fake.spec_from_file_location = spec
+        monkeypatch.setitem(sys.modules, "numpy._evil_reexport", fake)
+        monkeypatch.setattr(numpy, "_evil_reexport", fake, raising=False)
+        assert self._blocked(
+            "numpy._evil_reexport", "spec_from_file_location"
+        ), "frozen-importlib code-load sink is reconstructable via a re-export"
+
+    def test_scipy_sparse_load_npz_reduce_reads_no_file(self, tmp_path):
+        """A REDUCE payload calling scipy.sparse.load_npz on a real .npz is refused
+        at global resolution, before the read runs (the sink lives under the
+        model-allowed scipy.sparse namespace)."""
+        sparse = pytest.importorskip("scipy.sparse")
+        target = tmp_path / "m.npz"
+        sparse.save_npz(str(target), sparse.csr_matrix([[1, 0], [0, 1]]))
+
+        class Evil:
+            def __reduce__(self):
+                return (sparse.load_npz, (str(target),))
+
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(
+                BytesIO(pickle.dumps(Evil(), protocol=4)), **self.BROAD
+            )
 
     def test_real_write_sink_payloads_create_no_file(self, tmp_path):
         """REDUCE payloads that call a numpy write sink are refused *before* the
@@ -777,11 +896,17 @@ class TestBroadAllowGadgetContainment:
             "numpy.ma.core",
             "numpy.compat",
             "numpy.ctypeslib",
+            "numpy.ma.mrecords",
+            "numpy._core._multiarray_umath",
             "scipy.io",
             "scipy.io.matlab",
+            "scipy.sparse",
+            "scipy.sparse._matrix_io",
             "sklearn.datasets",
             "pandas",
             "pandas.io.pickle",
+            "pandas._libs.parsers",
+            "pandas.compat.pickle_compat",
         ]
         leaks = []
         for mn in mods:

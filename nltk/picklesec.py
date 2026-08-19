@@ -152,6 +152,11 @@ _DENIED_MODULE_PREFIXES = (
     "ctypes",
     "importlib",
     "runpy",
+    # importlib's frozen bootstrap modules re-export spec_from_file_location and
+    # source loaders that import/execute code from a file path (RCE); their
+    # __module__ is "_frozen_importlib[_external]", not "importlib".
+    "_frozen_importlib",
+    "_frozen_importlib_external",
     "builtins",  # builtins.int etc. must be requested via allowed_globals
     "webbrowser",
     "pdb",
@@ -175,13 +180,27 @@ _DENIED_MODULE_PREFIXES = (
     "numpy.rec",
     "numpy.core.records",
     "numpy._core.records",
+    # numpy.ma.mrecords.openfile / fromtextfile open a file by path.
+    "numpy.ma.mrecords",
     # numpy.compat.npy_load_module loads/executes a module from a file path
     # (arbitrary code execution); deny numpy.compat wholesale (CWE-502).
     "numpy.compat",
-    # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
-    # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.
+    # File-read/write and network sinks under scipy/sklearn/pandas: scipy.io
+    # (mmwrite/loadmat), scipy.datasets (network download + cache write),
+    # sklearn.datasets (fetch_openml/load_*), and every pandas.io reader
+    # (read_csv/read_hdf/read_sql/read_html/HDFStore/ExcelFile, ...). Their real
+    # __module__ lives under these prefixes, so the post-resolution check denies
+    # them even when the request names a top-level re-export (pandas.read_csv).
+    # No model pickle needs any of them.
     "scipy.io",
+    "scipy.datasets",
+    # scipy.sparse.load_npz/save_npz read/write a file; the rest of scipy.sparse
+    # (csr_matrix, ...) stays allowed for genuine model matrices.
+    "scipy.sparse._matrix_io",
     "sklearn.datasets",
+    "pandas.io",
+    # pandas.compat.pickle_compat is a nested-unpickle sink (loads/Unpickler).
+    "pandas.compat",
     "nltk.tokenize.repp",
     "nltk.internals",
 )
@@ -256,6 +275,14 @@ _DENIED_SCISTACK_QUALNAMES = frozenset(
         "dump_svmlight_file",
         "fetch_openml",
         "read_pickle",
+        # file read/write and file-open sinks found in otherwise-allowed sci
+        # submodules (scipy.sparse, numpy.ma.mrecords, numpy._core, pandas._libs).
+        "load_npz",
+        "save_npz",
+        "openfile",
+        "fromtextfile",
+        "_load_from_filelike",
+        "TextReader",
     }
 )
 
