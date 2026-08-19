@@ -293,7 +293,6 @@ class ARFF_Formatter:
         labels = {label for (tok, label) in tokens}
         # Sanitize labels before storing
         safe_labels = {cls._sanitize_arff_label(lbl) for lbl in labels}
-        # Original code computes features as list of (fname, ftype)
         features = set().union(*[set(tok.keys()) for tok, _ in tokens])
         features = [(f, "NUMERIC") for f in sorted(features)]
         return cls(safe_labels, features, **kwargs)
@@ -317,6 +316,7 @@ class ARFF_Formatter:
         # Wrap each label in single quotes and join with commas.
         safe_labels = ["'%s'" % lbl for lbl in self._labels]
         s += "@ATTRIBUTE %-30r {%s}\n" % ("-label-", ",".join(safe_labels))
+
         return s
 
     def data_section(self, tokens, labeled=None):
@@ -349,10 +349,13 @@ class ARFF_Formatter:
 
     def write(self, outfile, tokens):
         """Writes ARFF data to a file for the given data."""
-        if not hasattr(outfile, "write"):
-            outfile = open(outfile, "w")
-        outfile.write(self.format(tokens))
-        outfile.close()
+        # If outfile is already a file-like object, write directly.
+        if hasattr(outfile, "write"):
+            outfile.write(self.format(tokens))
+        else:
+            # Otherwise, use pathsec_open to enforce sandbox.
+            with pathsec_open(outfile, "w") as f:
+                f.write(self.format(tokens))
 
     def _fmt_arff_val(self, fval):
         """Formats a feature value for ARFF."""
