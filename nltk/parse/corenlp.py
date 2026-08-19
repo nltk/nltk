@@ -136,17 +136,22 @@ class CoreNLPServer:
             # Return java configurations to their default values.
             config_java(options=default_options, verbose=self.verbose)
 
-        # Check that the server is istill running.
-        returncode = self.popen.poll()
-        if returncode is not None:
-            _, stderrdata = self.popen.communicate()
-            raise CoreNLPServerError(
-                returncode,
-                "Could not start the server. "
-                "The error was: {}".format(stderrdata.decode("ascii")),
-            )
-
+        # Check that the server is still running. This is repeated on every
+        # iteration of the polling loop below (rather than just once,
+        # immediately after launching the process) because CoreNLP can take a
+        # long time to preload its annotators before it binds the port, so a
+        # premature exit (e.g. because the port is already taken) may only
+        # happen well after the process is launched.
         for i in range(30):
+            returncode = self.popen.poll()
+            if returncode is not None:
+                _, stderrdata = self.popen.communicate()
+                raise CoreNLPServerError(
+                    returncode,
+                    "Could not start the server. "
+                    "The error was: {}".format(stderrdata.decode("ascii")),
+                )
+
             try:
                 response = requests.get(requests.compat.urljoin(self.url, "live"))
             except requests.exceptions.ConnectionError:

@@ -318,6 +318,7 @@
 - Volodymyr Matsko <https://github.com/Lemm1>
 - Nicola <https://github.com/trinik15>
 - medisean <https://github.com/medisean>
+- Arnaud Thery <https://github.com/St4r4x>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
