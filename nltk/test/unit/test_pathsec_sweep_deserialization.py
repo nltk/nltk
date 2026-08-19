@@ -216,6 +216,36 @@ def test_every_load_site_refuses_scipy_io_mmwrite(site):
         loader(_reduce_global_pickle("scipy.io", "mmwrite", "/tmp/should-not-write"))
 
 
+@pytest.mark.parametrize("site", [c[0] for c in _LOAD_CONFIGS])
+def test_every_load_site_refuses_extension_opcode(site, tmp_path):
+    """The EXT1/EXT2/EXT4 extension-registry opcodes resolve a global through
+    copyreg (not find_class); on a warm copyreg._extension_cache the C unpickler
+    returns the cached object without find_class, bypassing the allowlist. Every
+    real load site must refuse EXT up front, even with the cache poisoned."""
+    import copyreg
+
+    loader = dict(_LOAD_CONFIGS)[site]
+    code = 199
+    marker = tmp_path / f"pwned_ext_{site.replace('.', '_')}"
+    payload = (
+        pickle.PROTO
+        + bytes([2])
+        + pickle.EXT1
+        + bytes([code])
+        + _su(f"touch {marker}")
+        + pickle.TUPLE1
+        + pickle.REDUCE
+        + pickle.STOP
+    )
+    copyreg._extension_cache[code] = os.system
+    try:
+        with pytest.raises(pickle.UnpicklingError):
+            loader(payload)
+        assert not marker.exists(), f"{site}: EXT warm-cache gadget executed"
+    finally:
+        copyreg._extension_cache.pop(code, None)
+
+
 # ---------------------------------------------------------------------------
 # Legitimate loads must still succeed (allowlists are not "block everything")
 # ---------------------------------------------------------------------------

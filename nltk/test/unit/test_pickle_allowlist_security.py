@@ -900,3 +900,128 @@ class TestGuardsAreLoadBearing:
         )
         up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
         assert up2.find_class(*pinned) is sink
+
+
+def _ext_reduce_payload(code, cmd):
+    """A protocol-2 pickle: ``EXT1(code)`` resolves a global through copyreg's
+    extension registry (NOT find_class), then ``REDUCE`` would call it with cmd.
+    Hand-assembled so it depends on nothing being registered at build time."""
+
+    def _su(s):
+        b = s.encode()
+        return pickle.SHORT_BINUNICODE + bytes([len(b)]) + b
+
+    return (
+        pickle.PROTO
+        + bytes([2])
+        + pickle.EXT1
+        + bytes([code])
+        + _su(cmd)
+        + pickle.TUPLE1
+        + pickle.REDUCE
+        + pickle.STOP
+    )
+
+
+class TestExtensionOpcodeBypassBlocked:
+    """The EXT1/EXT2/EXT4 extension-registry opcodes resolve a global through
+    copyreg's process-wide registry, not through find_class. On a warm
+    ``copyreg._extension_cache`` the (C) unpickler returns the cached object
+    without ever calling find_class, so a find_class-only allowlist is bypassed
+    (verified: neutering the scan below re-opens the hole). Both unpicklers scan
+    for and refuse any EXT opcode up front; nltk pickles never use them.
+    """
+
+    _EXT_CODE = 173  # an arbitrary, unregistered extension code
+
+    def _loaders(self):
+        from nltk.parse.transitionparser import (
+            _MODEL_ALLOWED_GLOBALS,
+            _MODEL_ALLOWED_MODULES,
+        )
+
+        def allowlist(data):
+            return allowlisted_pickle_load(
+                BytesIO(data),
+                allowed_globals=_MODEL_ALLOWED_GLOBALS,
+                allowed_modules=_MODEL_ALLOWED_MODULES,
+            )
+
+        def restricted(data):
+            from nltk.picklesec import RestrictedUnpickler
+
+            return RestrictedUnpickler(BytesIO(data)).load()
+
+        return {"allowlist": allowlist, "restricted": restricted}
+
+    @pytest.mark.parametrize("loader", ["allowlist", "restricted"])
+    def test_cold_ext_opcode_refused(self, loader):
+        """With nothing registered, an EXT payload is refused before resolution."""
+        load = self._loaders()[loader]
+        with pytest.raises(pickle.UnpicklingError):
+            load(_ext_reduce_payload(self._EXT_CODE, "echo cold"))
+
+    @pytest.mark.parametrize("loader", ["allowlist", "restricted"])
+    def test_warm_cache_ext_opcode_refused_and_no_exec(self, loader, tmp_path):
+        """The real bypass: poison copyreg._extension_cache with os.system so the
+        opcode would resolve WITHOUT find_class, then confirm it is still refused
+        and the gadget does not run."""
+        import copyreg
+
+        load = self._loaders()[loader]
+        marker = tmp_path / f"pwned_ext_{loader}"
+        copyreg._extension_cache[self._EXT_CODE] = os.system
+        try:
+            with pytest.raises(pickle.UnpicklingError):
+                load(_ext_reduce_payload(self._EXT_CODE, f"touch {marker}"))
+            assert (
+                not marker.exists()
+            ), "EXT warm-cache gadget executed; the find_class bypass is not closed"
+        finally:
+            copyreg._extension_cache.pop(self._EXT_CODE, None)
+
+    @pytest.mark.parametrize(
+        "opcode,arg",
+        [
+            (pickle.EXT1, bytes([173])),
+            (pickle.EXT2, (173).to_bytes(2, "little")),
+            (pickle.EXT4, (173).to_bytes(4, "little")),
+        ],
+    )
+    def test_all_ext_widths_refused(self, opcode, arg):
+        """EXT1, EXT2 and EXT4 all bypass find_class, so each is refused."""
+        from nltk.picklesec import RestrictedUnpickler
+
+        payload = pickle.PROTO + bytes([2]) + opcode + arg + pickle.STOP
+        with pytest.raises(pickle.UnpicklingError):
+            RestrictedUnpickler(BytesIO(payload)).load()
+
+    def test_persistent_id_refused(self):
+        """PERSID would call persistent_load (another find_class bypass); neither
+        unpickler defines one, so the default refuses it."""
+        persid = pickle.PROTO + bytes([2]) + b"P" + b"1\n" + pickle.STOP
+        for load in self._loaders().values():
+            with pytest.raises(pickle.UnpicklingError):
+                load(persid)
+
+    def test_ext_scan_is_load_bearing(self, monkeypatch, tmp_path):
+        """Neuter the EXT scan and confirm the warm-cache gadget then executes,
+        proving the scan is the sole defense (find_class never fires for EXT)."""
+        import copyreg
+
+        import nltk.picklesec
+
+        monkeypatch.setattr(
+            nltk.picklesec, "_reject_extension_opcodes", lambda pickle_source: None
+        )
+        marker = tmp_path / "pwned_ext_mut"
+        copyreg._extension_cache[self._EXT_CODE] = os.system
+        try:
+            nltk.picklesec.RestrictedUnpickler(
+                BytesIO(_ext_reduce_payload(self._EXT_CODE, f"touch {marker}"))
+            ).load()
+            assert (
+                marker.exists()
+            ), "neutering the EXT scan did not expose the gadget; scan is not load-bearing"
+        finally:
+            copyreg._extension_cache.pop(self._EXT_CODE, None)

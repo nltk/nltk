@@ -21,7 +21,9 @@ Helpers for safer and/or more explicit pickle usage in NLTK.
 
 from __future__ import annotations
 
+import io
 import pickle
+import pickletools
 import types
 import warnings
 from collections.abc import Iterable
@@ -34,10 +36,60 @@ PICKLE_WARNING = (
 )
 
 
+def _reject_extension_opcodes(pickle_source: Any) -> None:
+    """Refuse a pickle that uses the EXT1/EXT2/EXT4 extension-registry opcodes.
+
+    ``find_class`` gates GLOBAL/STACK_GLOBAL resolution, but the extension
+    opcodes resolve through ``copyreg``'s process-wide registry, and on a warm
+    ``copyreg._extension_cache`` the (C) unpickler returns the cached object
+    without calling ``find_class`` at all, bypassing every allowlist. NLTK
+    pickles never use extension opcodes, so any EXT opcode is refused up front.
+
+    ``pickle_source`` is bytes or a binary file. ``pickletools.genops`` walks the
+    opcode stream, importing and executing nothing (so scanning a hostile payload
+    is itself safe) and, when handed a file, without reading the whole pickle
+    into memory.
+    """
+    try:
+        for opcode, _arg, _pos in pickletools.genops(pickle_source):
+            if opcode.name.startswith("EXT"):
+                raise pickle.UnpicklingError(
+                    f"pickle uses the extension-registry opcode {opcode.name}, "
+                    "which bypasses find_class and is forbidden"
+                )
+    except pickle.UnpicklingError:
+        raise
+    except Exception:
+        # Malformed before any EXT opcode; let the real unpickler raise precisely.
+        return
+
+
+def _guarded_stream(file: BinaryIO) -> BinaryIO:
+    """Refuse forbidden extension opcodes in ``file`` and return a binary stream
+    positioned at the pickle start for the unpickler to consume.
+
+    A seekable file is scanned in place and rewound, so the unpickler still
+    streams it with bounded memory (no ``file.read()`` of the whole, untrusted
+    pickle). A non-seekable stream cannot be rewound, so it is read once.
+    """
+    seekable = getattr(file, "seekable", None)
+    if callable(seekable) and seekable():
+        start = file.tell()
+        _reject_extension_opcodes(file)
+        file.seek(start)
+        return file
+    data = file.read()
+    _reject_extension_opcodes(data)
+    return io.BytesIO(data)
+
+
 class RestrictedUnpickler(pickle.Unpickler):
     """
     Unpickler that prevents any class or function from being used during loading.
     """
+
+    def __init__(self, file: BinaryIO, **kwargs: Any):
+        super().__init__(_guarded_stream(file), **kwargs)
 
     def find_class(self, module: str, name: str) -> Any:
         # Forbid every function/class global.
@@ -251,7 +303,9 @@ class AllowlistUnpickler(pickle.Unpickler):
         allowed_modules: Iterable[str] = (),
         **kwargs: Any,
     ):
-        super().__init__(file, **kwargs)
+        data = file.read()
+        _reject_extension_opcodes(data)
+        super().__init__(io.BytesIO(data), **kwargs)
         if isinstance(allowed_modules, str):
             allowed_modules = (allowed_modules,)
         self._allowed_globals = set(allowed_globals)
