@@ -3,8 +3,9 @@
 import os
 import tempfile
 import threading
-import time
+from pathlib import Path
 
+import nltk
 from nltk.downloader import Downloader
 
 from ._base import FIXED, VULNERABLE, probe
@@ -33,12 +34,12 @@ def _cyclic_collection_index():
 
     try:
         # Disable pathsec for file:// access in the probe
-        import nltk
-
         original_enforce = nltk.pathsec.ENFORCE
         nltk.pathsec.ENFORCE = False
 
-        dl = Downloader(server_index_url="file://" + path)
+        # Use pathlib to get a proper file:// URI (works on Windows)
+        uri = Path(path).as_uri()
+        dl = Downloader(server_index_url=uri)
 
         # Run packages() with a timeout to detect hangs
         result = []
@@ -65,7 +66,6 @@ def _cyclic_collection_index():
         elif exception:
             return VULNERABLE, f"Downloader.packages() raised: {exception[0]}"
         else:
-            # Verify we got the expected package
             packages = result[0] if result else []
             if any(p.id == "p1" for p in packages):
                 return FIXED, "Cyclic index handled correctly, packages returned"
