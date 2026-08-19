@@ -448,8 +448,12 @@ class TestNumpySubmoduleFileIOSinks:
                 checked += 1
                 with pytest.raises(pickle.UnpicklingError):
                     up.find_class("numpy", name)
-        # Not every sink is re-exported on every numpy; that is fine.
-        assert checked >= 0
+        # When no sink is re-exported at top level, skip rather than pass vacuously.
+        if checked == 0:
+            pytest.skip(
+                "no numpy.lib file-I/O sink is re-exported at numpy top level "
+                "on this build"
+            )
 
     def test_reduce_write_payload_creates_nothing(self, tmp_path):
         """End-to-end: an ``open_memmap(mode="w+")`` REDUCE payload under a broad
