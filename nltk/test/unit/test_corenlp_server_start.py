@@ -54,6 +54,30 @@ class TestCoreNLPServerStartRace(unittest.TestCase):
         self.assertEqual(mock_get.call_count, 3)
         self.assertEqual(mock_sleep.call_count, 3)
 
+    def test_late_exit_with_uncaptured_stderr_gives_a_readable_message(self):
+        """start()'s default stdout/stderr is "devnull", so
+        Popen.communicate() returns (None, None) for a process that exits
+        early -- the error message must not crash trying to .decode() a
+        None stderr in that (default) configuration."""
+        server = _make_server()
+
+        fake_popen = MagicMock()
+        fake_popen.poll.side_effect = [None, 1]
+        fake_popen.communicate.return_value = (None, None)
+
+        with patch("nltk.parse.corenlp.java", return_value=fake_popen), patch(
+            "nltk.parse.corenlp.config_java"
+        ), patch(
+            "requests.get", side_effect=requests.exceptions.ConnectionError
+        ), patch(
+            "nltk.parse.corenlp.time.sleep"
+        ):
+            with self.assertRaises(corenlp.CoreNLPServerError) as ctx:
+                server.start()
+
+        # Must not be an AttributeError from calling .decode() on None.
+        self.assertIn("Could not start the server", str(ctx.exception))
+
     def test_successful_start_still_breaks_out_of_the_loop(self):
         """Sanity check that the happy path (process stays alive, server
         responds) is unaffected by moving the poll() check into the loop."""

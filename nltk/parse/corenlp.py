@@ -146,10 +146,18 @@ class CoreNLPServer:
             returncode = self.popen.poll()
             if returncode is not None:
                 _, stderrdata = self.popen.communicate()
+                # stderr is None unless start() was called with stderr="pipe":
+                # by default it's redirected to devnull, so there's nothing to
+                # decode.
+                error_detail = (
+                    stderrdata.decode("ascii")
+                    if stderrdata is not None
+                    else "(stderr not captured; pass stderr='pipe' to start() to see it)"
+                )
                 raise CoreNLPServerError(
                     returncode,
                     "Could not start the server. "
-                    "The error was: {}".format(stderrdata.decode("ascii")),
+                    "The error was: {}".format(error_detail),
                 )
 
             try:
