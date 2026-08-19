@@ -260,16 +260,18 @@ class ARFF_Formatter:
     def _sanitize_arff_label(label):
         """
         Sanitize a class label to prevent ARFF injection.
-        - Replace control characters (newline, tab, CR) with spaces.
-        - Remove any character that is not alphanumeric, underscore, hyphen, or space.
+        - Convert to string.
+        - Replace control characters (\n, \r, \t) with spaces.
+        - Remove any character that is not alphanumeric, underscore, hyphen, space, or single quote.
         - Escape single quotes by doubling them.
         """
-        # Replace control characters with space
+        # Convert to string and replace control chars
+        label = str(label)
         for ch in ("\n", "\r", "\t"):
             label = label.replace(ch, " ")
-        # Remove unsafe characters
-        sanitized = re.sub(r"[^a-zA-Z0-9_\- ]", "", label)
-        # Escape single quotes
+        # Allow alnum, underscore, hyphen, space, and single quote
+        sanitized = re.sub(r"[^a-zA-Z0-9_\- ']", "", label)
+        # Escape single quotes by doubling
         sanitized = sanitized.replace("'", "''")
         return sanitized
 
@@ -290,12 +292,29 @@ class ARFF_Formatter:
         """
         Construct an ARFF_Formatter from a training set.
         """
-        labels = {label for (tok, label) in tokens}
-        # Sanitize labels before storing
-        safe_labels = {cls._sanitize_arff_label(lbl) for lbl in labels}
-        features = set().union(*[set(tok.keys()) for tok, _ in tokens])
-        features = [(f, "NUMERIC") for f in sorted(features)]
-        return cls(safe_labels, features, **kwargs)
+        # Find the set of all attested labels, sanitizing them.
+        labels = {cls._sanitize_arff_label(label) for (tok, label) in tokens}
+
+        # Determine the types of all features (original logic).
+        features = {}
+        for tok, label in tokens:
+            for fname, fval in tok.items():
+                if issubclass(type(fval), bool):
+                    ftype = "{True, False}"
+                elif issubclass(type(fval), (int, float, bool)):
+                    ftype = "NUMERIC"
+                elif issubclass(type(fval), str):
+                    ftype = "STRING"
+                elif fval is None:
+                    continue  # can't tell the type.
+                else:
+                    raise ValueError("Unsupported value type %r" % ftype)
+                if features.get(fname, ftype) != ftype:
+                    raise ValueError("Inconsistent type for %s" % fname)
+                features[fname] = ftype
+        features = sorted(features.items())
+
+        return cls(labels, features, **kwargs)
 
     def header_section(self):
         """Returns an ARFF header as a string."""
@@ -353,8 +372,10 @@ class ARFF_Formatter:
         if hasattr(outfile, "write"):
             outfile.write(self.format(tokens))
         else:
-            # Otherwise, use pathsec_open with newline="" to enforce LF line endings.
-            with pathsec_open(outfile, "w", newline="") as f:
+            # Otherwise, use pathsec_open with context and newline="" for LF.
+            with pathsec_open(
+                outfile, "w", context="ARFF_Formatter.write", newline=""
+            ) as f:
                 f.write(self.format(tokens))
 
     def _fmt_arff_val(self, fval):

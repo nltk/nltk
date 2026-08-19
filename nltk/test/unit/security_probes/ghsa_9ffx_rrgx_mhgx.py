@@ -15,7 +15,7 @@ def _arff_label_injection():
     formatter = ARFF_Formatter.from_train(featuresets)
     arff = formatter.format(featuresets)
 
-    if "@ATTRIBUTE injected NUMERIC" in arff and "@DATA\n0,owned" in arff:
+    if "@ATTRIBUTE injected NUMERIC" in arff or "@DATA\n0,owned" in arff:
         return VULNERABLE, "ARFF injection succeeded"
     else:
         return FIXED, "ARFF labels sanitized"
