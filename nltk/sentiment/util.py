@@ -362,9 +362,25 @@ def json2csv_preprocess(
         subsets of the original tweets json data.
     """
     with pathsec_open(
-        json_file, encoding=encoding, context="json2csv_preprocess"
+        json_file, "rt", encoding=encoding, context="json2csv_preprocess"
     ) as fp:
-        (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
+        import gzip
+
+        from nltk.twitter.common import extract_fields
+
+        if gzip_compress:
+            outf = pathsec_open(outfile, "wb", context="json2csv_preprocess")
+            outf = gzip.open(outf, "wt", newline="", encoding=encoding, errors=errors)
+        else:
+            outf = pathsec_open(
+                outfile,
+                "w",
+                newline="",
+                encoding=encoding,
+                errors=errors,
+                context="json2csv_preprocess",
+            )
+        writer = csv.writer(outf)
         # write the list of fields as header
         writer.writerow(fields)
 
@@ -874,7 +890,6 @@ if __name__ == "__main__":
 
     from nltk.classify import MaxentClassifier, NaiveBayesClassifier
     from nltk.classify.scikitlearn import SklearnClassifier
-    from nltk.twitter.common import _outf_writer, extract_fields
 
     naive_bayes = NaiveBayesClassifier.train
     svm = SklearnClassifier(LinearSVC()).train
