@@ -145,11 +145,17 @@ _DENIED_MODULE_PREFIXES = (
     "sys",
     "socket",
     "shutil",
+    "tempfile",  # NamedTemporaryFile / mkstemp / mkdtemp create files/dirs
+    # NB: pathlib is deliberately NOT denied. A Path is an inert value (its
+    # construction does no I/O), and its read/open methods are only reachable as
+    # dotted names (pathlib.Path.read_text), already refused by Guard 1. Denying
+    # it would buy no safety while breaking any legitimate pickle carrying a Path.
     "signal",
     "pty",
     "popen2",
     "commands",
     "ctypes",
+    "_ctypes",  # the C accelerator (_ctypes.CFuncPtr, ...) invokes native code
     "importlib",
     "runpy",
     # importlib's frozen bootstrap modules re-export spec_from_file_location and
@@ -235,6 +241,16 @@ _DENIED_GLOBALS = frozenset(
         ("scipy", "LowLevelCallable"),
         ("scipy._lib._ccallback", "LowLevelCallable"),
         ("pandas", "read_pickle"),
+        # File-open primitives that may be re-exported into an allowed namespace
+        # under their C-module name (io / _io / codecs). Matched on the resolved
+        # (__module__, __qualname__), so StringIO / BytesIO stay permitted.
+        ("io", "open"),
+        ("_io", "open"),
+        ("io", "open_code"),
+        ("_io", "open_code"),
+        ("io", "FileIO"),
+        ("_io", "FileIO"),
+        ("codecs", "open"),
     }
 )
 
@@ -283,6 +299,32 @@ _DENIED_SCISTACK_QUALNAMES = frozenset(
         "fromtextfile",
         "_load_from_filelike",
         "TextReader",
+        # pandas readers: on pandas >= 3.0 their __module__ collapses to "pandas"
+        # (not pandas.io.*), so the pandas.io prefix misses them; deny by resolved
+        # qualname too. Each is an arbitrary file / URL / DB read sink.
+        "read_csv",
+        "read_table",
+        "read_fwf",
+        "read_json",
+        "read_html",
+        "read_xml",
+        "read_excel",
+        "read_hdf",
+        "read_parquet",
+        "read_orc",
+        "read_feather",
+        "read_stata",
+        "read_sas",
+        "read_spss",
+        "read_sql",
+        "read_sql_query",
+        "read_sql_table",
+        "read_gbq",
+        "read_clipboard",
+        "HDFStore",
+        "ExcelFile",
+        # scipy.datasets network + cache fetchers, robust to a submodule move.
+        "download_all",
     }
 )
 

@@ -828,6 +828,43 @@ class TestBroadAllowGadgetContainment:
             "numpy._evil_reexport", "spec_from_file_location"
         ), "frozen-importlib code-load sink is reconstructable via a re-export"
 
+    @pytest.mark.parametrize(
+        "real_module,real_name",
+        [
+            ("_ctypes", "CFuncPtr"),  # native-call primitive (not "ctypes")
+            ("tempfile", "mkdtemp"),
+            ("tempfile", "NamedTemporaryFile"),
+            ("io", "open"),
+            ("_io", "open"),
+            ("io", "FileIO"),
+            ("codecs", "open"),
+        ],
+    )
+    def test_stdlib_io_sink_reexport_refused(self, monkeypatch, real_module, real_name):
+        """A stdlib file-open / native-call / temp-file callable re-exported into an
+        allowed sci namespace keeps its stdlib ``__module__``, so the resolved-
+        module / resolved-global denylist must refuse it there, independent of which
+        real submodule happens to re-export it (that is how _ctypes.CFuncPtr and
+        tempfile.mkdtemp leaked)."""
+        import importlib
+        import sys
+        import types
+
+        try:
+            obj = getattr(importlib.import_module(real_module), real_name)
+        except BaseException:
+            pytest.skip(f"{real_module}.{real_name} unavailable")
+        numpy = pytest.importorskip("numpy")
+        child = f"_evil_reexport_{real_module.strip('_')}_{real_name.lower()}"
+        modname = f"numpy.{child}"
+        fake = types.ModuleType(modname)
+        setattr(fake, real_name, obj)
+        monkeypatch.setitem(sys.modules, modname, fake)
+        monkeypatch.setattr(numpy, child, fake, raising=False)
+        assert self._blocked(
+            modname, real_name
+        ), f"{real_module}.{real_name} reconstructable via an allowed-namespace re-export"
+
     def test_scipy_sparse_load_npz_reduce_reads_no_file(self, tmp_path):
         """A REDUCE payload calling scipy.sparse.load_npz on a real .npz is refused
         at global resolution, before the read runs (the sink lives under the
@@ -1150,3 +1187,51 @@ class TestExtensionOpcodeBypassBlocked:
             ), "neutering the EXT scan did not expose the gadget; scan is not load-bearing"
         finally:
             copyreg._extension_cache.pop(self._EXT_CODE, None)
+
+
+def test_all_pickle_loaders_still_function(tmp_path):
+    """Every NLTK pickle-loading entry point must still load a legitimate object
+    after the allowlist/denylist hardening. A deny that is too broad would break a
+    real model / tokenizer / data / wordnet load, so this is the guardrail against
+    over-containment."""
+    np = pytest.importorskip("numpy")
+    svm = pytest.importorskip("sklearn.svm")
+    sparse = pytest.importorskip("scipy.sparse")
+
+    from nltk.parse.transitionparser import (
+        _MODEL_ALLOWED_GLOBALS,
+        _MODEL_ALLOWED_MODULES,
+    )
+
+    # 1. transitionparser: a real SVC model round-trips, dense and sparse.
+    X = np.array([[0.0, 1.0], [1.0, 0.0], [1.0, 1.0], [0.0, 0.0]])
+    for data in (X, sparse.csr_matrix(X)):
+        model = svm.SVC().fit(data, [0, 1, 0, 1])
+        restored = allowlisted_pickle_load(
+            BytesIO(pickle.dumps(model)),
+            allowed_globals=_MODEL_ALLOWED_GLOBALS,
+            allowed_modules=_MODEL_ALLOWED_MODULES,
+        )
+        assert (model.predict(X) == restored.predict(X)).all()
+
+    # 2. punkt: a trained tokenizer round-trips through punkt_pickle_load.
+    from nltk.tokenize.punkt import PunktSentenceTokenizer, punkt_pickle_load
+
+    tok = PunktSentenceTokenizer()
+    tok.train("Mr. Smith went to Washington. He met Dr. Jones at 3 p.m.")
+    restored_tok = punkt_pickle_load(BytesIO(pickle.dumps(tok, protocol=4)))
+    assert restored_tok.tokenize("A. B.") == tok.tokenize("A. B.")
+
+    # 3. nltk.data: a globals-free structure loads through the restricted path.
+    from nltk.data import restricted_pickle_load
+
+    assert restricted_pickle_load(pickle.dumps({"a": [1, 2, 3]})) == {"a": [1, 2, 3]}
+
+    # 4. wordnet_app: the base64 Reference round-trip (RestrictedUnpickler + shape).
+    try:
+        from nltk.app.wordnet_app import Reference
+    except Exception:
+        Reference = None
+    if Reference is not None:
+        ref = Reference("dog", {"k": {"hypernym"}})
+        assert Reference.decode(ref.encode()).word == "dog"
