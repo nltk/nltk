@@ -6,6 +6,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+import nltk
+
 from ._base import FIXED, VULNERABLE, probe
 
 
@@ -31,21 +33,30 @@ def _cyclic_collection_index():
 
     try:
         uri = Path(path).as_uri()
-        script = f"""
-import sys
-import nltk
-from nltk.downloader import Downloader
-nltk.pathsec.ENFORCE = False
-dl = Downloader(server_index_url={repr(uri)})
-packages = dl.packages()
-print(','.join(p.id for p in packages))
-"""
+        script_lines = [
+            "import sys",
+            "import nltk",
+            "from nltk.downloader import Downloader",
+            "nltk.pathsec.ENFORCE = False",
+            f"dl = Downloader(server_index_url={repr(uri)})",
+            "packages = dl.packages()",
+            "print(','.join(p.id for p in packages))",
+        ]
+        script = "\n".join(script_lines)
+
+        env = os.environ.copy()
+        # Derive import root from nltk.__file__
+        nltk_root = os.path.dirname(os.path.dirname(os.path.dirname(nltk.__file__)))
+        env["PYTHONPATH"] = nltk_root + os.pathsep + env.get("PYTHONPATH", "")
+
         result = subprocess.run(
             [sys.executable, "-c", script],
             capture_output=True,
             text=True,
             timeout=10,
+            env=env,
         )
+
         if result.returncode != 0:
             return VULNERABLE, f"Subprocess failed: {result.stderr.strip()}"
         output = result.stdout.strip()
