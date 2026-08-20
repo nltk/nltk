@@ -114,3 +114,100 @@ def test_trusted_raw_options_bypass_validation_but_default_path_does_not(
             ["Main"], classpath=".", trusted_raw_options=["-XX:ParallelGCThreads=1"]
         )
     assert not isinstance(exc.value, ValueError)
+
+
+# --- cmd (main-class) channel: same launcher-token injection as options -------
+# The first cmd token is the Java main class; a launcher switch or @argfile there
+# runs an arbitrary JAR / injects JVM args (CWE-88). @argfile is rejected in any
+# position because the launcher expands it wherever it appears.
+
+DANGEROUS_CMD = [
+    ["-jar", "/tmp/evil.jar"],
+    ["@/tmp/argfile"],
+    ["-XX:OnError=touch /tmp/pwned", "SomeMainClass"],
+    ["SomeMainClass", "@/tmp/argfile"],  # @argfile smuggled into a later position
+    ["-Xmx512m", "SomeMainClass"],
+    ["-Dfile.encoding=UTF-8", "SomeMainClass"],
+    [],  # no main class
+    [None],  # non-string first token
+    ["", "SomeMainClass"],  # empty first token
+    # whitespace-prefixed launcher tokens (a shell/launcher may trim them, and a
+    # main class never has surrounding whitespace) must not slip past the guard
+    [" -jar", "/tmp/evil.jar"],
+    ["\t-jar", "/tmp/evil.jar"],
+    ["\n-jar", "/tmp/evil.jar"],
+    [" @/tmp/argfile"],
+    ["SomeMainClass", " @/tmp/argfile"],
+    ["   ", "SomeMainClass"],  # whitespace-only first token
+]
+
+
+@pytest.mark.parametrize("cmd", DANGEROUS_CMD)
+def test_java_cmd_channel_rejects_launcher_tokens(stub_java_bin, cmd):
+    """A launcher switch / @argfile supplied through the cmd channel must be
+    refused before Popen, mirroring the options-channel guard."""
+    with pytest.raises(ValueError):
+        internals.java(cmd)
+
+
+def test_java_cmd_channel_allows_legitimate_main_class(stub_java_bin):
+    """A real main class followed by "-" program args (Stanford wrappers pass
+    -loadClassifier / -textFile) is not a violation: it clears the cmd guard and
+    only fails later at the (stub) java binary, never with ValueError."""
+    with pytest.raises(Exception) as exc:
+        internals.java(
+            [
+                "edu.stanford.nlp.ie.crf.CRFClassifier",
+                "-loadClassifier",
+                "model.ser.gz",
+                "-textFile",
+                "/input.txt",
+            ]
+        )
+    assert not isinstance(exc.value, ValueError)
+
+
+class _PopenIntercept(Exception):
+    """Raised by the fake Popen so the launcher command can be inspected without
+    ever executing a real process."""
+
+
+def test_option_validator_is_load_bearing(stub_java_bin, monkeypatch):
+    """Mutation test: with the per-call option validator in place a dangerous flag
+    is rejected before Popen is ever constructed; neuter the validator and the
+    SAME flag flows straight into the launcher command line -- proving the
+    validator (not some later check) is what contains the injection (CWE-88)."""
+    captured = {}
+
+    def _fake_popen(cmd, *args, **kwargs):
+        captured["cmd"] = list(cmd)
+        raise _PopenIntercept
+
+    monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
+    danger = "-XX:OnError=touch /tmp/pwned"
+
+    # validator ON: refused before any process is spawned
+    with pytest.raises(ValueError):
+        internals.java(["SomeMainClass"], options=[danger])
+    assert "cmd" not in captured
+
+    # validator neutered: the dangerous flag reaches the launcher command
+    monkeypatch.setattr(internals, "_validate_java_options", lambda opts: None)
+    with pytest.raises(_PopenIntercept):
+        internals.java(["SomeMainClass"], options=[danger])
+    assert danger in captured["cmd"], captured
+
+
+UNICODE_WS_CMD = [
+    ["\xa0-jar", "/tmp/evil.jar"],  # NBSP-prefixed launcher switch
+    [" @/tmp/argfile"],  # en-quad-prefixed @argfile
+    ["　-version"],  # ideographic-space-prefixed switch
+]
+
+
+@pytest.mark.parametrize("cmd", UNICODE_WS_CMD)
+def test_java_cmd_channel_rejects_unicode_whitespace_prefix(stub_java_bin, cmd):
+    """str.strip() removes Unicode whitespace too, so a NBSP/en-quad-prefixed
+    launcher token cannot slip past the main-class guard."""
+    with pytest.raises(ValueError):
+        internals.java(cmd)
