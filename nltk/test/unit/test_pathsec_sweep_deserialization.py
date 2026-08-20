@@ -322,6 +322,30 @@ def test_wordnet_reference_decode_refuses_malicious_pickle_no_exec(tmp_path):
     assert not marker.exists(), "wordnet_app Reference.decode executed a pickle gadget"
 
 
+@pytest.mark.parametrize(
+    "payload",
+    [
+        (12345, {}),  # word is an int, not a str
+        ("dog", ["not", "a", "dict"]),  # synset_relations is a list, not a dict
+        ("dog", {123: {"x"}}),  # a non-str relation key
+        ("dog", {"k": frozenset({"x"})}),  # a frozenset value (not a mutable set)
+        ("dog", {"k": ["x"]}),  # a list value, not a set
+        [1, 2, 3],  # not even a 2-tuple to unpack
+    ],
+)
+def test_wordnet_reference_decode_rejects_non_reference_shape(payload):
+    """GHSA-7pvm: RestrictedUnpickler blocks class/function reconstruction but not
+    the *type/shape* of plain data, so a non-string / wrong-shaped value smuggled
+    through the pickle-based wordnet URL must be rejected with a plain ValueError
+    (never an unhandled crash) before it reaches Reference internals."""
+    import base64
+
+    Reference = _reference_cls()
+    encoded = base64.urlsafe_b64encode(pickle.dumps(payload)).decode()
+    with pytest.raises(ValueError, match="Malformed wordnet_app reference"):
+        Reference.decode(encoded)
+
+
 def test_restricted_unpickler_directly_blocks_every_gadget():
     """The shared RestrictedUnpickler (wordnet_app + data.py) blocks find_class."""
     for module, name in _GADGETS + [

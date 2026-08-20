@@ -1420,6 +1420,57 @@ def test_nltk_functions_through_hardened_pickle_loaders():
         pytest.skip("no nltk data packages installed to exercise the loaders")
 
 
+def test_all_nltk_data_pickle_assets_load(tmp_path, monkeypatch):
+    """Real-asset regression (not a mock), and it never silently skips: it stages a
+    genuine on-disk ``*.pickle`` in a temp data root so the real ``nltk.data.load``
+    -> ``restricted_pickle_load`` path is ALWAYS exercised, and additionally loads
+    every ``*.pickle`` present in the installed nltk_data (class-bearing artifacts
+    like punkt / perceptron / maxent via the pickle-free redirect; globals-free
+    tagsets via ``restricted_pickle_load``). A too-broad deny would break one."""
+    import contextlib
+    import glob
+    import io
+
+    import nltk
+
+    # Stage a real globals-free asset so the restricted data.load path is exercised
+    # unconditionally, even on a bare runner with no downloaded corpora.
+    staged_root = tmp_path / "nltk_data"
+    staged_dir = staged_root / "help" / "tagsets"
+    staged_dir.mkdir(parents=True)
+    staged_value = {"NN": ["noun", "the dog"], "VB": ["verb", "to run"]}
+    (staged_dir / "unit_test_tagset.pickle").write_bytes(
+        pickle.dumps(staged_value, protocol=4)
+    )
+    monkeypatch.setattr(nltk.data, "path", [str(staged_root)] + list(nltk.data.path))
+    with contextlib.redirect_stdout(io.StringIO()):
+        loaded = nltk.data.load("help/tagsets/unit_test_tagset.pickle")
+    assert loaded == staged_value, "staged real .pickle failed to load via data.load"
+
+    # Then load every *.pickle actually installed on this machine.
+    roots = [p for p in nltk.data.path if os.path.isdir(p)]
+    files = []
+    for root in roots:
+        files += glob.glob(os.path.join(root, "**", "*.pickle"), recursive=True)
+    resources = {}  # collapse the PY3/ duplicates to one entry per resource path
+    for f in files:
+        root = next((r for r in roots if f.startswith(r)), None)
+        if root is None:
+            continue
+        rel = os.path.relpath(f, root).replace(os.sep, "/").replace("PY3/", "")
+        resources.setdefault(rel, f)
+    broken = []
+    for rel in sorted(resources):
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                nltk.data.load(rel)
+        except Exception as e:
+            broken.append(f"{rel}: {type(e).__name__}: {e}")
+    assert not broken, "nltk_data pickle assets failed to load:\n  " + "\n  ".join(
+        broken
+    )
+
+
 # Module (sub)trees where EVERY callable is a code-exec / file / native /
 # nested-unpickle / process / network / call-traversal primitive, so any
 # re-export of one into an allowed namespace is a leak. Matched by exact module
