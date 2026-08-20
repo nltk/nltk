@@ -1420,21 +1420,16 @@ def test_nltk_functions_through_hardened_pickle_loaders():
         pytest.skip("no nltk data packages installed to exercise the loaders")
 
 
-def test_all_nltk_data_pickle_assets_load(tmp_path, monkeypatch):
-    """Real-asset regression (not a mock), and it never silently skips: it stages a
-    genuine on-disk ``*.pickle`` in a temp data root so the real ``nltk.data.load``
-    -> ``restricted_pickle_load`` path is ALWAYS exercised, and additionally loads
-    every ``*.pickle`` present in the installed nltk_data (class-bearing artifacts
-    like punkt / perceptron / maxent via the pickle-free redirect; globals-free
-    tagsets via ``restricted_pickle_load``). A too-broad deny would break one."""
+def test_data_load_restricted_pickle_roundtrips_real_asset(tmp_path, monkeypatch):
+    """Always-on real-asset check (never skips): stage a genuine globals-free
+    ``*.pickle`` in a temp data root and load it through the real ``nltk.data.load``
+    -> ``restricted_pickle_load`` path, so the restricted pickle loader is exercised
+    even on a bare runner with no downloaded corpora."""
     import contextlib
-    import glob
     import io
 
     import nltk
 
-    # Stage a real globals-free asset so the restricted data.load path is exercised
-    # unconditionally, even on a bare runner with no downloaded corpora.
     staged_root = tmp_path / "nltk_data"
     staged_dir = staged_root / "help" / "tagsets"
     staged_dir.mkdir(parents=True)
@@ -1447,7 +1442,20 @@ def test_all_nltk_data_pickle_assets_load(tmp_path, monkeypatch):
         loaded = nltk.data.load("help/tagsets/unit_test_tagset.pickle")
     assert loaded == staged_value, "staged real .pickle failed to load via data.load"
 
-    # Then load every *.pickle actually installed on this machine.
+
+def test_all_nltk_data_pickle_assets_load():
+    """Real-asset regression: EVERY ``*.pickle`` present in the installed nltk_data
+    must still load through ``nltk.data.load`` after the picklesec hardening (class-
+    bearing artifacts like punkt / perceptron / maxent via the pickle-free redirect;
+    globals-free tagsets via ``restricted_pickle_load``). Skips only when no pickle
+    assets are installed; the always-on restricted path is covered by
+    test_data_load_restricted_pickle_roundtrips_real_asset."""
+    import contextlib
+    import glob
+    import io
+
+    import nltk
+
     roots = [p for p in nltk.data.path if os.path.isdir(p)]
     files = []
     for root in roots:
@@ -1459,6 +1467,8 @@ def test_all_nltk_data_pickle_assets_load(tmp_path, monkeypatch):
             continue
         rel = os.path.relpath(f, root).replace(os.sep, "/").replace("PY3/", "")
         resources.setdefault(rel, f)
+    if not resources:
+        pytest.skip("no nltk_data *.pickle assets installed")
     broken = []
     for rel in sorted(resources):
         try:
