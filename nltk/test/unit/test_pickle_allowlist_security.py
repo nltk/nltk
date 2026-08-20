@@ -865,6 +865,43 @@ class TestBroadAllowGadgetContainment:
             modname, real_name
         ), f"{real_module}.{real_name} reconstructable via an allowed-namespace re-export"
 
+    @pytest.mark.parametrize(
+        "real_module,real_name",
+        [
+            ("operator", "attrgetter"),
+            ("operator", "itemgetter"),
+            ("operator", "methodcaller"),
+            ("functools", "partial"),
+            ("functools", "reduce"),
+            ("functools", "lru_cache"),
+        ],
+    )
+    def test_call_invoker_gadget_reexport_refused(
+        self, monkeypatch, real_module, real_name
+    ):
+        """operator.attrgetter/itemgetter/methodcaller and functools.partial/reduce/
+        (lru_)cache are higher-order call and attribute-traversal gadgets: they turn
+        an otherwise-safe allowlisted callable into arbitrary execution (see
+        test_attrgetter_eval_rce_blocked_no_side_effect). They are re-exported all
+        over pandas/scipy/sklearn (their __module__ stays operator / functools, or
+        the C _operator / _functools), so the denylist must refuse them at
+        resolution even via a re-export."""
+        import importlib
+        import sys
+        import types
+
+        obj = getattr(importlib.import_module(real_module), real_name)
+        numpy = pytest.importorskip("numpy")
+        child = f"_evil_gadget_{real_module}_{real_name}"
+        modname = f"numpy.{child}"
+        fake = types.ModuleType(modname)
+        setattr(fake, real_name, obj)
+        monkeypatch.setitem(sys.modules, modname, fake)
+        monkeypatch.setattr(numpy, child, fake, raising=False)
+        assert self._blocked(
+            modname, real_name
+        ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
+
     def test_scipy_sparse_load_npz_reduce_reads_no_file(self, tmp_path):
         """A REDUCE payload calling scipy.sparse.load_npz on a real .npz is refused
         at global resolution, before the read runs (the sink lives under the
@@ -1235,3 +1272,109 @@ def test_all_pickle_loaders_still_function(tmp_path):
     if Reference is not None:
         ref = Reference("dog", {"k": {"hypernym"}})
         assert Reference.decode(ref.encode()).word == "dog"
+
+
+def test_attrgetter_eval_rce_blocked_no_side_effect(tmp_path, monkeypatch):
+    """A genuine, armed pickle RCE, not just a logic check. An opcode-level REDUCE
+    chain computes ``_frombuffer.__globals__['__builtins__']['eval']`` (using the
+    ``operator.attrgetter``/``itemgetter`` gadgets) and calls it on code that
+    creates a marker file. ``_frombuffer`` is a Python function IN the model
+    allowlist, so this is reachable purely from allowlisted globals plus the gadgets.
+
+    The gadgets are referenced through a re-export under an ALLOWED namespace
+    (mirroring the real attack, where they are re-exported all over the sci stack),
+    so the payload exercises the resolved-module deny, not merely "operator is not
+    on the allowlist". It FIRES on a raw unpickler (proving it is really armed), and
+    the hardened loader must REFUSE it and leave the marker unwritten.
+    """
+    numpy = pytest.importorskip("numpy")
+    import operator
+    import sys
+    import types
+
+    from numpy._core import numeric
+
+    if not hasattr(numeric, "_frombuffer"):
+        pytest.skip("numpy._frombuffer (a Python-level allowlisted global) not present")
+
+    # Re-export the gadgets under an allowed namespace, as pandas/scipy/sklearn do.
+    fake = types.ModuleType("numpy._evil_gadgets")
+    fake.attrgetter = operator.attrgetter
+    fake.itemgetter = operator.itemgetter
+    monkeypatch.setitem(sys.modules, "numpy._evil_gadgets", fake)
+    monkeypatch.setattr(numpy, "_evil_gadgets", fake, raising=False)
+
+    def su(s):
+        b = s.encode()
+        return pickle.SHORT_BINUNICODE + bytes([len(b)]) + b
+
+    def gref(mod, name):
+        return su(mod) + su(name) + pickle.STACK_GLOBAL
+
+    def call(func_ops, arg_ops):
+        return func_ops + arg_ops + pickle.TUPLE1 + pickle.REDUCE
+
+    def itemgetter(key):
+        return call(gref("numpy._evil_gadgets", "itemgetter"), su(key))
+
+    def attrgetter(key):
+        return call(gref("numpy._evil_gadgets", "attrgetter"), su(key))
+
+    marker = tmp_path / "PWNED"
+    # open(...).close() runs through eval; cross-platform, no shell needed.
+    src = f"open({str(marker)!r}, 'w').close()"
+    frombuffer = gref("numpy._core.numeric", "_frombuffer")
+    get_globals = call(attrgetter("__globals__"), frombuffer)
+    get_builtins = call(itemgetter("__builtins__"), get_globals)
+    get_eval = call(itemgetter("eval"), get_builtins)
+    payload = pickle.PROTO + bytes([4]) + call(get_eval, su(src)) + pickle.STOP
+
+    # Sanity: the payload is genuinely armed (a raw unpickler executes it).
+    if marker.exists():
+        marker.unlink()
+    pickle.loads(payload)
+    assert marker.exists(), "payload is not actually armed; the test would be vacuous"
+    marker.unlink()
+
+    # The hardened loader must refuse it and execute nothing.
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(
+            BytesIO(payload), allowed_modules=("numpy", "scipy", "sklearn", "pandas")
+        )
+    assert not marker.exists(), "RCE executed through the allowlist unpickler"
+
+
+def test_nltk_functions_through_hardened_pickle_loaders():
+    """Load the REAL nltk models that route through the hardened pickle/data code and
+    assert on their actual outputs (not just that a load call returns). Skips
+    per-resource when the data package is not installed."""
+    import nltk
+
+    def have(res):
+        try:
+            nltk.data.find(res)
+            return True
+        except LookupError:
+            return False
+
+    ran = 0
+    if have("tokenizers/punkt/english.pickle"):
+        tok = nltk.data.load("tokenizers/punkt/english.pickle")
+        assert tok.tokenize("Dr. Smith left. He ran.") == ["Dr. Smith left.", "He ran."]
+        ran += 1
+    if have("tokenizers/punkt_tab/english/"):
+        assert nltk.word_tokenize("It's fine.") == ["It", "'s", "fine", "."]
+        ran += 1
+    if have("taggers/averaged_perceptron_tagger_eng/"):
+        assert dict(nltk.pos_tag(["The", "dog", "barks"]))["The"] == "DT"
+        ran += 1
+    if have("chunkers/maxent_ne_chunker_tab/english_ace_multiclass/"):
+        tree = nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize("John lives in New York")))
+        labels = {st.label() for st in tree.subtrees() if st.label() != "S"}
+        assert labels & {"PERSON", "GPE", "ORGANIZATION"}, f"no NE labels: {labels}"
+        ran += 1
+    if have("corpora/wordnet.zip") or have("corpora/wordnet/"):
+        assert nltk.corpus.wordnet.synsets("dog")[0].name() == "dog.n.01"
+        ran += 1
+    if ran == 0:
+        pytest.skip("no nltk data packages installed to exercise the loaders")

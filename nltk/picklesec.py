@@ -164,6 +164,17 @@ _DENIED_MODULE_PREFIXES = (
     "_frozen_importlib",
     "_frozen_importlib_external",
     "builtins",  # builtins.int etc. must be requested via allowed_globals
+    # Higher-order call / attribute-traversal gadgets. operator.attrgetter,
+    # operator.itemgetter, operator.methodcaller and functools.partial / reduce /
+    # (lru_)cache are the primitives that weaponize an otherwise-safe allowlisted
+    # callable: e.g. attrgetter("__globals__")(numpy._frombuffer)["__builtins__"]
+    # ["eval"] reaches arbitrary eval. They are re-exported all over the sci stack
+    # (their __module__ stays operator / functools / the C _operator / _functools),
+    # and no model pickle references any of them. Deny the modules outright.
+    "operator",
+    "_operator",
+    "functools",
+    "_functools",
     "webbrowser",
     "pdb",
     "bdb",
