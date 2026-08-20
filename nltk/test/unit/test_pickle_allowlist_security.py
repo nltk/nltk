@@ -902,6 +902,46 @@ class TestBroadAllowGadgetContainment:
             modname, real_name
         ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
 
+    @pytest.mark.parametrize(
+        "real_module,real_name",
+        [
+            ("_pickle", "loads"),  # nested unpickle with the default Unpickler
+            ("_pickle", "Unpickler"),
+            ("marshal", "loads"),  # deserializes a code object
+            ("copyreg", "_reconstructor"),  # object-injection gadgets
+            ("copyreg", "__newobj__"),
+            ("types", "FunctionType"),  # code object + FunctionType == execution
+            ("types", "CodeType"),
+            ("types", "MethodType"),
+            ("_posixsubprocess", "fork_exec"),  # spawns a process
+        ],
+    )
+    def test_code_exec_gadget_reexport_refused(
+        self, monkeypatch, real_module, real_name
+    ):
+        """Code-execution / nested-unpickle / object-injection primitives
+        (_pickle.loads, marshal.loads, copyreg._reconstructor, types.FunctionType,
+        _posixsubprocess.fork_exec) must be refused even when re-exported into an
+        allowed namespace. None appear in a legitimate model pickle."""
+        import importlib
+        import sys
+        import types
+
+        try:
+            obj = getattr(importlib.import_module(real_module), real_name)
+        except BaseException:
+            pytest.skip(f"{real_module}.{real_name} unavailable")
+        numpy = pytest.importorskip("numpy")
+        child = f"_evil_code_{real_module}_{real_name}"
+        modname = f"numpy.{child}"
+        fake = types.ModuleType(modname)
+        setattr(fake, real_name, obj)
+        monkeypatch.setitem(sys.modules, modname, fake)
+        monkeypatch.setattr(numpy, child, fake, raising=False)
+        assert self._blocked(
+            modname, real_name
+        ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
+
     def test_scipy_sparse_load_npz_reduce_reads_no_file(self, tmp_path):
         """A REDUCE payload calling scipy.sparse.load_npz on a real .npz is refused
         at global resolution, before the read runs (the sink lives under the
@@ -1378,3 +1418,176 @@ def test_nltk_functions_through_hardened_pickle_loaders():
         ran += 1
     if ran == 0:
         pytest.skip("no nltk data packages installed to exercise the loaders")
+
+
+# Module (sub)trees where EVERY callable is a code-exec / file / native /
+# nested-unpickle / process / network / call-traversal primitive, so any
+# re-export of one into an allowed namespace is a leak. Matched by exact module
+# or ``prefix + "."`` (NOT by top-level root), so e.g. ``urllib.request`` is
+# dangerous while the benign ``urllib.parse`` string helpers are not. Kept in
+# lockstep with nltk.picklesec's denylist.
+_DANGEROUS_MODULE_PREFIXES = frozenset(
+    {
+        "os",
+        "nt",
+        "posix",
+        "_posixsubprocess",
+        "subprocess",
+        "sys",
+        "socket",
+        "_socket",
+        "ssl",
+        "_ssl",
+        "ctypes",
+        "_ctypes",
+        "cffi",
+        "importlib",
+        "_frozen_importlib",
+        "_frozen_importlib_external",
+        "runpy",
+        "marshal",
+        "pickle",
+        "_pickle",
+        "code",
+        "codeop",
+        "pdb",
+        "bdb",
+        "operator",
+        "_operator",
+        "functools",
+        "_functools",
+        "copyreg",
+        "pty",
+        "multiprocessing",
+        "webbrowser",
+        "tempfile",
+        "gzip",
+        "bz2",
+        "lzma",
+        "zipfile",
+        "tarfile",
+        "sqlite3",
+        "dbm",
+        "shelve",
+        "urllib.request",
+        "http.client",
+        "ftplib",
+        "smtplib",
+        "mmap",
+        "fileinput",
+        "linecache",
+        "shutil",
+        "signal",
+    }
+)
+# Dangerous names inside otherwise-mixed modules (builtins/io/codecs/types).
+_DANGEROUS_PAIRS = frozenset(
+    {
+        ("builtins", "eval"),
+        ("builtins", "exec"),
+        ("builtins", "open"),
+        ("builtins", "compile"),
+        ("builtins", "__import__"),
+        ("builtins", "getattr"),
+        ("builtins", "setattr"),
+        ("builtins", "delattr"),
+        ("io", "open"),
+        ("io", "FileIO"),
+        ("io", "open_code"),
+        ("_io", "open"),
+        ("_io", "FileIO"),
+        ("_io", "open_code"),
+        ("codecs", "open"),
+        ("types", "FunctionType"),
+        ("types", "CodeType"),
+        ("types", "MethodType"),
+        ("types", "LambdaType"),
+        ("types", "CellType"),
+    }
+)
+
+
+def _module_is_dangerous(true_module):
+    return any(
+        true_module == d or true_module.startswith(d + ".")
+        for d in _DANGEROUS_MODULE_PREFIXES
+    )
+
+
+def test_no_dangerous_reexport_reachable_under_broad_allow():
+    """Exhaustive regression guard behind every specific gadget test. Walks the
+    ENTIRE numpy/scipy/sklearn/pandas submodule tree and, for each callable that
+    resolves under a broad allow but whose real ``__module__`` is a dangerous
+    primitive (code-exec, file/native I/O, nested unpickle, process/network, or a
+    call/attribute-traversal gadget), asserts it is refused. Any future re-export
+    of such a callable into the sci stack (the exact mechanism behind the
+    operator.attrgetter, _ctypes.CFuncPtr and scipy.sparse.load_npz leaks) fails
+    here without needing a new hand-written case.
+    """
+    import importlib
+    import pkgutil
+    import warnings
+
+    pytest.importorskip("numpy")
+    warnings.simplefilter("ignore")
+    allowed = tuple(r for r in ("numpy", "scipy", "sklearn", "pandas") if _installed(r))
+
+    def blocked(module, name):
+        up = AllowlistUnpickler(BytesIO(b""), allowed_modules=allowed)
+        try:
+            up.find_class(module, name)
+            return False
+        except Exception:
+            return True
+
+    modules = set(allowed)
+    for root in allowed:
+        pkg = importlib.import_module(root)
+        if not hasattr(pkg, "__path__"):
+            continue
+        for info in pkgutil.walk_packages(pkg.__path__, root + "."):
+            name = info.name
+            if any(s in name for s in (".tests", ".test", ".testing", "test_")):
+                continue
+            if ".f2py" in name:  # importing numpy.f2py.* prints its CLI banner
+                continue
+            modules.add(name)
+
+    leaks = []
+    for mod_name in sorted(modules):
+        if ".f2py" in mod_name:
+            continue
+        try:
+            mod = importlib.import_module(mod_name)
+        except BaseException:
+            continue
+        for attr in dir(mod):
+            if attr.startswith("__"):
+                continue
+            obj = getattr(mod, attr, None)
+            if not callable(obj):
+                continue
+            true_module = getattr(obj, "__module__", None)
+            if not true_module:
+                continue
+            root = true_module.split(".")[0]
+            leaf = getattr(obj, "__qualname__", attr).split(".")[-1]
+            dangerous = (
+                _module_is_dangerous(true_module) or (root, leaf) in _DANGEROUS_PAIRS
+            )
+            if dangerous and not blocked(mod_name, attr):
+                leaks.append(f"{true_module}.{leaf} (reachable as {mod_name}.{attr})")
+
+    assert not leaks, (
+        "dangerous callable reachable via re-export under broad allow:\n  "
+        + "\n  ".join(sorted(set(leaks))[:25])
+    )
+
+
+def _installed(module):
+    import importlib.util
+
+    try:
+        return importlib.util.find_spec(module) is not None
+    except BaseException:
+        return False

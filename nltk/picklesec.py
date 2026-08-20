@@ -144,6 +144,26 @@ _DENIED_MODULE_PREFIXES = (
     "subprocess",
     "sys",
     "socket",
+    # Network / file / archive / db I/O modules. Every callable opens a file,
+    # a socket or a database, so no model pickle references any of them. urllib
+    # is denied at the "urllib.request" subtree only, leaving the benign string
+    # helpers in urllib.parse (quote / urlencode, re-exported across the sci
+    # stack) permitted.
+    "urllib.request",
+    "http.client",
+    "ftplib",
+    "smtplib",
+    "sqlite3",
+    "dbm",
+    "shelve",
+    "gzip",
+    "bz2",
+    "lzma",
+    "zipfile",
+    "tarfile",
+    "mmap",
+    "fileinput",
+    "linecache",
     "shutil",
     "tempfile",  # NamedTemporaryFile / mkstemp / mkdtemp create files/dirs
     # NB: pathlib is deliberately NOT denied. A Path is an inert value (its
@@ -184,6 +204,17 @@ _DENIED_MODULE_PREFIXES = (
     "asyncio",
     "threading",
     "pickle",
+    # C-accelerator / low-level siblings of denied modules and other code-exec /
+    # nested-unpickle / process / network primitives. None appear in a legitimate
+    # model pickle (protocol >= 2 uses the NEWOBJ opcode, not a copyreg global).
+    "_pickle",  # nested unpickle with the default (unrestricted) Unpickler
+    "marshal",  # marshal.loads deserializes a code object
+    "copyreg",  # _reconstructor / __newobj__ object-injection gadgets
+    "_posixsubprocess",  # fork_exec spawns a process
+    "_socket",
+    "ssl",
+    "_ssl",
+    "cffi",  # native FFI (cffi.FFI.dlopen / cdef)
     "numpy.f2py",
     "numpy.ctypeslib",
     "numpy.distutils",
@@ -262,6 +293,15 @@ _DENIED_GLOBALS = frozenset(
         ("io", "FileIO"),
         ("_io", "FileIO"),
         ("codecs", "open"),
+        # types code/callable-construction primitives (a code object plus
+        # FunctionType is arbitrary execution). Denied by resolved qualname so
+        # benign types like SimpleNamespace / MappingProxyType stay permitted.
+        ("types", "FunctionType"),
+        ("types", "CodeType"),
+        ("types", "MethodType"),
+        ("types", "LambdaType"),
+        ("types", "CellType"),
+        ("types", "ModuleType"),
     }
 )
 
