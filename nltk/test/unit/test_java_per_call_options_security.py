@@ -92,6 +92,27 @@ DANGEROUS = [
     ["-Xmx$(id)"],
     ["-verbose:gc\n-XX:OnError=x"],
     ["-Xmx512m\x00-XX:OnError=id"],
+    # tab / CR / NBSP / DEL smuggling on an allowed prefix: the shape guard must
+    # reject these the same way it rejects the newline and NUL variants above.
+    ["-Xmx512m\t-XX:OnError=x"],
+    ["-Xmx512m\r-XX:OnError=x"],
+    ["-Xmx512m\xa0-XX:OnError=x"],
+    ["-Xmx512m\x7f-XX:OnError=x"],
+    # -D classpath / security-config injection: set the classpath or swap the
+    # policy / JAAS config via a system property, bypassing the -cp sandbox.
+    ["-Djava.class.path=/tmp/evil"],
+    ["-Djava.security.policy=/tmp/evil"],
+    ["-Djava.security.auth.login.config=/tmp/evil"],
+    ["-Djdk.attach.allowAttachSelf=true"],  # enable self-attach agent injection
+    # disable bytecode verification -> load malformed / malicious classes
+    ["-Xverify:none"],
+    ["-noverify"],
+    # unlock experimental options / read compile commands from an attacker file
+    ["-XX:+UnlockExperimentalVMOptions"],
+    ["-XX:CompileCommandFile=/tmp/evil"],
+    ["-Xshare:dump"],  # dump a CDS archive to an attacker-chosen path
+    ["--enable-native-access=ALL-UNNAMED"],  # grant native (Panama) access
+    ["-xx:onerror=reboot"],  # fully-lowercase -XX: must still be rejected
 ]
 
 
