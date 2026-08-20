@@ -17,6 +17,8 @@ Two defects are covered:
    unlisted flag passes it via ``java(trusted_raw_options=...)``.
 """
 
+import os
+
 import pytest
 
 from nltk import internals
@@ -51,9 +53,23 @@ DANGEROUS = [
     ["-Djava.ext.dirs=/tmp/evil"],
     ["-Djava.rmi.server.codebase=http://evil/"],
     ["-Djava.system.class.loader=Evil"],
-    # module path could point at attacker code (only --add-modules is allowed)
+    # module path / module-system flags could point at or open attacker code
+    # (only --add-modules with a plain module list is allowed)
     ["--module-path=/tmp/evil"],
     ["-p", "/tmp/evil"],
+    ["--add-opens", "java.base/java.lang=ALL-UNNAMED"],
+    ["--add-exports", "java.base/sun.misc=ALL-UNNAMED"],
+    ["--patch-module", "java.base=/tmp/evil"],
+    # boot classpath override -> load attacker classes ahead of the JDK
+    ["-Xbootclasspath/a:/tmp/evil.jar"],
+    ["-Xbootclasspath:/tmp/evil"],
+    # -Xlog / -Xloggc write an attacker-chosen file
+    ["-Xlog:gc:file=/tmp/pwned"],
+    ["-Xloggc:/tmp/pwned"],
+    # case variants must not bypass the (case-insensitive) allowlist match
+    ["-JavaAgent:/tmp/evil.jar"],
+    ["-AGENTLIB:jdwp=transport=dt_socket"],
+    ["-XrunJDWP:x"],
     # --add-modules with a non-module-list value (shell metachars / path)
     ["--add-modules", "java.se.ee; rm -rf /"],
     ["--add-modules", "/etc/passwd"],
@@ -211,3 +227,160 @@ def test_java_cmd_channel_rejects_unicode_whitespace_prefix(stub_java_bin, cmd):
     launcher token cannot slip past the main-class guard."""
     with pytest.raises(ValueError):
         internals.java(cmd)
+
+
+# --- classpath channel: only absolute jars inside a trusted data root ----------
+
+
+@pytest.fixture
+def trusted_jar(tmp_path, monkeypatch):
+    """A real .jar inside a temporary trusted data root (on nltk.data.path), so
+    _verify_jar_sandbox accepts it and the per-entry checks can be exercised."""
+    import nltk.data
+
+    root = tmp_path / "nltk_data"
+    root.mkdir()
+    jar = root / "good.jar"
+    jar.write_bytes(b"PK\x03\x04")
+    # Trusted roots = exactly this dir, so the sandbox checks are deterministic.
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    return str(jar)
+
+
+class TestJavaClasspathSandbox:
+    """A caller-supplied classpath reaches ``-cp``. An empty element (``a.jar::`` /
+    ``:a.jar`` / ``a.jar::b.jar`` / ``""`` in a list) is the JVM's spelling of the
+    current working directory, so it would inject classes from CWD past the jar
+    sandbox; it must be refused (CWE-88), as must relative, out-of-root, symlinked
+    and @argfile entries."""
+
+    def test_empty_classpath_entry_is_refused(self, stub_java_bin, trusted_jar):
+        sep = os.pathsep
+        for bad in (
+            trusted_jar + sep + sep,  # trailing ::
+            sep + trusted_jar,  # leading :
+            trusted_jar + sep + sep + trusted_jar,  # empty middle
+            [trusted_jar, ""],  # empty list entry
+            [trusted_jar, None],  # non-string list entry
+        ):
+            with pytest.raises((ValueError, internals.UntrustedJarError)):
+                internals.java(["Main"], classpath=bad)
+
+    def test_entry_embedding_path_separator_refused(self, stub_java_bin, trusted_jar):
+        """A single list entry that embeds os.pathsep would pass the per-entry root
+        check as one path but re-split in the JVM into extra unverified elements
+        (out-of-root jar or empty CWD element); it must be refused."""
+        sep = os.pathsep
+        for bad in (
+            [trusted_jar + sep],  # trailing separator -> empty CWD element
+            [trusted_jar + sep + os.path.realpath(os.sep + "etc")],  # out-of-root
+            [trusted_jar + sep + sep],  # smuggled empty CWD element
+        ):
+            with pytest.raises(internals.UntrustedJarError):
+                internals.java(["Main"], classpath=bad)
+
+    def test_relative_classpath_refused(self, stub_java_bin):
+        with pytest.raises(internals.UntrustedJarError):
+            internals.java(["Main"], classpath="relative.jar")
+
+    def test_outside_root_classpath_refused(self, stub_java_bin, trusted_jar):
+        with pytest.raises(internals.UntrustedJarError):
+            internals.java(["Main"], classpath=os.path.realpath(os.sep + "etc"))
+
+    def test_symlink_escape_refused(self, stub_java_bin, trusted_jar, tmp_path):
+        outside = tmp_path / "outside.jar"
+        outside.write_bytes(b"PK\x03\x04")
+        link = os.path.join(os.path.dirname(trusted_jar), "link.jar")
+        try:
+            os.symlink(str(outside), link)
+        except (OSError, NotImplementedError):
+            pytest.skip("symlinks not supported here")
+        with pytest.raises(internals.UntrustedJarError):
+            internals.java(["Main"], classpath=link)
+
+    def test_argfile_classpath_refused(self, stub_java_bin):
+        with pytest.raises(internals.UntrustedJarError):
+            internals.java(["Main"], classpath="@/tmp/argfile")
+
+    def test_legit_trusted_jar_reaches_cp_without_empty(
+        self, stub_java_bin, trusted_jar, monkeypatch
+    ):
+        captured = {}
+
+        def _fake_popen(cmd, *a, **k):
+            captured["cmd"] = list(cmd)
+            raise _PopenIntercept
+
+        monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"], classpath=trusted_jar)
+        cp_value = captured["cmd"][captured["cmd"].index("-cp") + 1]
+        assert cp_value == trusted_jar
+        assert "" not in cp_value.split(os.pathsep), cp_value
+
+    def test_empty_entry_guard_is_load_bearing(
+        self, stub_java_bin, trusted_jar, monkeypatch
+    ):
+        """Mutation: neuter the sandbox and the empty CWD element flows into -cp."""
+        captured = {}
+
+        def _fake_popen(cmd, *a, **k):
+            captured["cmd"] = list(cmd)
+            raise _PopenIntercept
+
+        monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
+        monkeypatch.setattr(internals, "_verify_jar_sandbox", lambda entries: None)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"], classpath=trusted_jar + os.pathsep + os.pathsep)
+        cp_value = captured["cmd"][captured["cmd"].index("-cp") + 1]
+        assert "" in cp_value.split(os.pathsep), cp_value
+
+
+# --- environment channel: JVM-injecting variables must be stripped -------------
+
+
+class TestJavaEnvironmentSanitization:
+    """The JVM reads JAVA_TOOL_OPTIONS / _JAVA_OPTIONS / JDK_JAVA_OPTIONS as extra
+    flags and CLASSPATH as extra code, none of which the allowlist/sandbox sees.
+    java() must strip them from the child environment (CWE-88 defense in depth)."""
+
+    INJECTING = ("JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS", "CLASSPATH")
+
+    @staticmethod
+    def _capture_env(monkeypatch):
+        captured = {}
+
+        def _fake_popen(cmd, *a, **k):
+            captured["env"] = k.get("env")
+            raise _PopenIntercept
+
+        monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
+        return captured
+
+    def test_injecting_env_vars_stripped(self, stub_java_bin, monkeypatch):
+        for var in self.INJECTING:
+            monkeypatch.setenv(var, "-XX:OnError=touch /tmp/pwned")
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        env = captured["env"]
+        assert env is not None, "java() must pass an explicit, sanitized env"
+        for var in self.INJECTING:
+            assert var not in env, f"{var} leaked into the child JVM environment"
+
+    def test_benign_env_preserved(self, stub_java_bin, monkeypatch):
+        monkeypatch.setenv("NLTK_TEST_MARKER", "keepme")
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        assert captured["env"].get("NLTK_TEST_MARKER") == "keepme"
+        assert "PATH" in captured["env"]
+
+    def test_env_strip_is_load_bearing(self, stub_java_bin, monkeypatch):
+        """Mutation: empty the strip set and the injecting var reaches the child."""
+        monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-XX:OnError=x")
+        monkeypatch.setattr(internals, "_JVM_INJECTING_ENV_VARS", frozenset())
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        assert "JAVA_TOOL_OPTIONS" in captured["env"]

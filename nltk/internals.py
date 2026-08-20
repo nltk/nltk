@@ -80,6 +80,12 @@ _MODULE_LIST_RE = re.compile(r"\A[A-Za-z0-9_.,-]+\Z")
 # token cannot ride through on the ``-xmx`` prefix.
 _UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
 
+# JVM env vars that inject extra flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS /
+# JDK_JAVA_OPTIONS) or classpath (CLASSPATH); stripped from the child env (CWE-88).
+_JVM_INJECTING_ENV_VARS = frozenset(
+    {"JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS", "CLASSPATH"}
+)
+
 
 def _validate_java_options(options):
     """
@@ -258,8 +264,20 @@ def _verify_jar_sandbox(classpath_entries):
     trusted_roots = list(dict.fromkeys(trusted_roots))
 
     for entry in entries:
-        if not entry:
-            continue
+        if not isinstance(entry, str) or not entry:
+            # An empty entry is the JVM's current-directory element (CWD class
+            # injection); refuse it rather than skip it.
+            raise UntrustedJarError(
+                f"Empty or non-string classpath entry is forbidden (the JVM would "
+                f"treat it as the current directory): {entry!r}"
+            )
+        if os.pathsep in entry:
+            # An entry embedding os.pathsep passes the per-entry check as one path
+            # but the JVM re-splits it into unverified elements (sandbox bypass).
+            raise UntrustedJarError(
+                f"Classpath entry may not contain the path separator {os.pathsep!r} "
+                f"(it would expand into multiple unverified elements): {entry!r}"
+            )
         if not os.path.isabs(entry):
             raise UntrustedJarError(f"Relative paths are strictly forbidden: {entry}")
 
@@ -327,18 +345,16 @@ def java(
     classpath_arg = None
     if classpath is not None:
         if isinstance(classpath, str):
-            raw_entries = [p for p in classpath.split(os.pathsep) if p]
-            original_classpath_string = classpath
+            # Keep empty parts ("a.jar::" is the JVM's CWD element) so
+            # _verify_jar_sandbox can refuse them instead of silently dropping them.
+            raw_entries = classpath.split(os.pathsep)
         else:
             raw_entries = list(classpath)
-            original_classpath_string = None
         if not raw_entries:
             raise ValueError("Classpath is empty after splitting")
         _verify_jar_sandbox(raw_entries)
-        if original_classpath_string is not None:
-            classpath_arg = original_classpath_string
-        else:
-            classpath_arg = os.pathsep.join(raw_entries)
+        # Rebuild from the verified entries only; never pass the raw string to -cp.
+        classpath_arg = os.pathsep.join(raw_entries)
 
     # The Java launcher treats the first non-option token as the main class. A
     # caller-supplied cmd must therefore begin with a real main-class name, not a
@@ -382,6 +398,9 @@ def java(
         final_cmd.extend(["-cp", classpath_arg])
     final_cmd.extend(cmd_list)
 
+    child_env = {
+        k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
+    }
     try:
         p = subprocess.Popen(
             final_cmd,
@@ -389,6 +408,7 @@ def java(
             stdout=stdout,
             stderr=stderr,
             universal_newlines=True,
+            env=child_env,
         )
         if blocking:
             stdout_data, stderr_data = p.communicate()
