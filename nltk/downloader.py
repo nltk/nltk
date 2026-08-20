@@ -178,6 +178,7 @@ from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
+from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
@@ -1251,9 +1252,10 @@ class Downloader:
     # /////////////////////////////////////////////////////////////////
 
     def _update_index(self, url=None):
-        """A helper function that ensures that self._index is
-        up-to-date.  If the index is older than self.INDEX_TIMEOUT,
-        then download it again."""
+        """
+        A helper function that ensures that self._index is up-to-date.
+        If the index is older than self.INDEX_TIMEOUT, then download it again.
+        """
         # Check if the index is already up-to-date.  If so, do nothing.
         if not (
             self._index is None
@@ -1297,16 +1299,19 @@ class Downloader:
                     del collection.children[i]
 
         # Fill in collection.packages for each collection.
+        # Use acyclic_breadth_first to safely traverse the collection graph,
+        # avoiding infinite loops from self-referential or mutually-referential cycles.
         for collection in self._collections.values():
             packages = {}
-            queue = [collection]
-            for child in queue:
-                if isinstance(child, Collection):
-                    queue.extend(child.children)
-                elif isinstance(child, Package):
+            for child in acyclic_breadth_first(
+                collection,
+                children=lambda node: (
+                    node.children if isinstance(node, Collection) else ()
+                ),
+                verbose=False,
+            ):
+                if isinstance(child, Package):
                     packages[child.id] = child
-                else:
-                    pass
             collection.packages = packages.values()
 
         # Flush the status cache

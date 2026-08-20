@@ -340,6 +340,37 @@ def java(
         else:
             classpath_arg = os.pathsep.join(raw_entries)
 
+    # The Java launcher treats the first non-option token as the main class. A
+    # caller-supplied cmd must therefore begin with a real main-class name, not a
+    # launcher switch (-jar / -version / -XX:OnError=...) or an @argfile: either
+    # would run an arbitrary JAR or inject JVM arguments the options allowlist
+    # rejects (CVE-2026-12841, CWE-88). Program arguments after the main class may
+    # start with "-" (e.g. Stanford's -loadClassifier), but an @argfile is
+    # expanded by the launcher wherever it appears and is never a legitimate NLTK
+    # argument, so reject it in any position. Checked after the options/classpath
+    # channels so a hostile option is still reported by their own validators.
+    if not cmd_list:
+        raise ValueError("cmd must contain a Java main class")
+    first = cmd_list[0]
+    # Compare the stripped token: a real main-class name never has surrounding
+    # whitespace, and some launchers/shells trim it, so " -jar" / "\t@file" must
+    # be treated as the launcher token it becomes, not slipped through.
+    if (
+        not isinstance(first, str)
+        or not first.strip()
+        or first.strip().startswith(("-", "@"))
+    ):
+        raise ValueError(
+            f"cmd must begin with a Java main class, not a launcher switch or "
+            f"@argfile: {first!r} (CWE-88)"
+        )
+    for tok in cmd_list:
+        if isinstance(tok, str) and tok.strip().startswith("@"):
+            raise ValueError(
+                f"cmd may not contain an @argfile token: {tok!r}; the Java "
+                "launcher would expand it, injecting arguments (CWE-88)"
+            )
+
     final_cmd = []
     if isinstance(_java_bin, str):
         final_cmd.append(_java_bin)
