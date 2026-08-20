@@ -78,6 +78,43 @@ class TestCoreNLPServerStartRace(unittest.TestCase):
         # Must not be an AttributeError from calling .decode() on None.
         self.assertIn("Could not start the server", str(ctx.exception))
 
+    def test_late_exit_during_ready_phase_is_also_detected_quickly(self):
+        """The process can just as easily die between the "live" and "ready"
+        checks (e.g. it crashes while loading annotators) as before the
+        "live" check succeeds. This must be caught quickly during the
+        "ready" loop too, not just during the "live" loop."""
+        server = _make_server()
+
+        fake_popen = MagicMock()
+        # Alive for the single "live" check, then dies partway through
+        # the "ready" loop.
+        fake_popen.poll.side_effect = [None, None, None, 1]
+        fake_popen.communicate.return_value = (None, b"annotator failed to load")
+
+        live_ok_response = MagicMock(ok=True)
+
+        with patch("nltk.parse.corenlp.java", return_value=fake_popen), patch(
+            "nltk.parse.corenlp.config_java"
+        ), patch(
+            "requests.get",
+            side_effect=[
+                live_ok_response,  # "live" check succeeds immediately
+                requests.exceptions.ConnectionError,
+                requests.exceptions.ConnectionError,
+            ],
+        ) as mock_get, patch(
+            "nltk.parse.corenlp.time.sleep"
+        ) as mock_sleep:
+            with self.assertRaises(corenlp.CoreNLPServerError) as ctx:
+                server.start()
+
+        self.assertIn("annotator failed to load", str(ctx.exception))
+        # 1 poll() during the "live" loop's single successful iteration,
+        # then 3 more during "ready" before the fake death is seen.
+        self.assertEqual(fake_popen.poll.call_count, 4)
+        self.assertEqual(mock_get.call_count, 3)
+        self.assertEqual(mock_sleep.call_count, 2)
+
     def test_successful_start_still_breaks_out_of_the_loop(self):
         """Sanity check that the happy path (process stays alive, server
         responds) is unaffected by moving the poll() check into the loop."""

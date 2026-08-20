@@ -137,28 +137,14 @@ class CoreNLPServer:
             config_java(options=default_options, verbose=self.verbose)
 
         # Check that the server is still running. This is repeated on every
-        # iteration of the polling loop below (rather than just once,
+        # iteration of both polling loops below (rather than just once,
         # immediately after launching the process) because CoreNLP can take a
         # long time to preload its annotators before it binds the port, so a
         # premature exit (e.g. because the port is already taken) may only
-        # happen well after the process is launched.
+        # happen well after the process is launched, at any point during
+        # startup (see issue #3429: "not just once").
         for i in range(30):
-            returncode = self.popen.poll()
-            if returncode is not None:
-                _, stderrdata = self.popen.communicate()
-                # stderr is None unless start() was called with stderr="pipe":
-                # by default it's redirected to devnull, so there's nothing to
-                # decode.
-                error_detail = (
-                    stderrdata.decode("ascii")
-                    if stderrdata is not None
-                    else "(stderr not captured; pass stderr='pipe' to start() to see it)"
-                )
-                raise CoreNLPServerError(
-                    returncode,
-                    "Could not start the server. "
-                    "The error was: {}".format(error_detail),
-                )
+            self._raise_if_exited()
 
             try:
                 response = requests.get(requests.compat.urljoin(self.url, "live"))
@@ -171,6 +157,8 @@ class CoreNLPServer:
             raise CoreNLPServerError("Could not connect to the server.")
 
         for i in range(60):
+            self._raise_if_exited()
+
             try:
                 response = requests.get(requests.compat.urljoin(self.url, "ready"))
             except requests.exceptions.ConnectionError:
@@ -180,6 +168,25 @@ class CoreNLPServer:
                     break
         else:
             raise CoreNLPServerError("The server is not ready.")
+
+    def _raise_if_exited(self):
+        """Raise CoreNLPServerError with the real exit cause if self.popen
+        has already exited, otherwise return without doing anything."""
+        returncode = self.popen.poll()
+        if returncode is None:
+            return
+        _, stderrdata = self.popen.communicate()
+        # stderr is None unless start() was called with stderr="pipe": by
+        # default it's redirected to devnull, so there's nothing to decode.
+        error_detail = (
+            stderrdata.decode("ascii")
+            if stderrdata is not None
+            else "(stderr not captured; pass stderr='pipe' to start() to see it)"
+        )
+        raise CoreNLPServerError(
+            returncode,
+            "Could not start the server. The error was: {}".format(error_detail),
+        )
 
     def stop(self):
         self.popen.terminate()
