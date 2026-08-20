@@ -80,10 +80,17 @@ _MODULE_LIST_RE = re.compile(r"\A[A-Za-z0-9_.,-]+\Z")
 # token cannot ride through on the ``-xmx`` prefix.
 _UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
 
-# JVM env vars that inject extra flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS /
-# JDK_JAVA_OPTIONS) or classpath (CLASSPATH); stripped from the child env (CWE-88).
+# JVM env vars that inject flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS / JDK_JAVA_OPTIONS
+# / IBM_JAVA_OPTIONS / OPENJ9_JAVA_OPTIONS) or classpath (CLASSPATH); stripped (CWE-88).
 _JVM_INJECTING_ENV_VARS = frozenset(
-    {"JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS", "CLASSPATH"}
+    {
+        "JAVA_TOOL_OPTIONS",
+        "_JAVA_OPTIONS",
+        "JDK_JAVA_OPTIONS",
+        "IBM_JAVA_OPTIONS",
+        "OPENJ9_JAVA_OPTIONS",
+        "CLASSPATH",
+    }
 )
 
 

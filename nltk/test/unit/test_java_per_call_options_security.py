@@ -47,6 +47,9 @@ DANGEROUS = [
     ["-XX:onerror=reboot"],
     ["-XX:+UnlockDiagnosticVMOptions"],
     ["-XX:ErrorFile=/tmp/e"],
+    ["-XX:Flags=/tmp/e"],  # read VM options from an attacker file
+    ["-XX:VMOptionsFile=/tmp/e"],
+    ["-XX:SharedArchiveFile=/tmp/e"],
     ["-XX:ParallelGCThreads=1"],  # even a benign -XX: is rejected (use escape hatch)
     # -D system properties: not needed by NLTK/CoreNLP and can load code.
     ["-Dfile.encoding=UTF-8"],
@@ -59,9 +62,19 @@ DANGEROUS = [
     ["-p", "/tmp/evil"],
     ["--add-opens", "java.base/java.lang=ALL-UNNAMED"],
     ["--add-exports", "java.base/sun.misc=ALL-UNNAMED"],
+    ["--add-reads", "java.base=ALL-UNNAMED"],
     ["--patch-module", "java.base=/tmp/evil"],
+    ["--upgrade-module-path=/tmp/evil"],
+    # -cp / -classpath in options would add an unverified classpath
+    ["-cp", "/tmp/evil"],
+    ["-classpath", "/tmp/evil"],
+    ["--class-path=/tmp/evil"],
+    # -D loaders / security-manager toggles
+    ["-Djava.library.path=/tmp/evil"],
+    ["-Djava.security.manager=Evil"],
     # boot classpath override -> load attacker classes ahead of the JDK
     ["-Xbootclasspath/a:/tmp/evil.jar"],
+    ["-Xbootclasspath/p:/tmp/evil.jar"],
     ["-Xbootclasspath:/tmp/evil"],
     # -Xlog / -Xloggc write an attacker-chosen file
     ["-Xlog:gc:file=/tmp/pwned"],
@@ -344,7 +357,14 @@ class TestJavaEnvironmentSanitization:
     flags and CLASSPATH as extra code, none of which the allowlist/sandbox sees.
     java() must strip them from the child environment (CWE-88 defense in depth)."""
 
-    INJECTING = ("JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS", "CLASSPATH")
+    INJECTING = (
+        "JAVA_TOOL_OPTIONS",
+        "_JAVA_OPTIONS",
+        "JDK_JAVA_OPTIONS",
+        "IBM_JAVA_OPTIONS",
+        "OPENJ9_JAVA_OPTIONS",
+        "CLASSPATH",
+    )
 
     @staticmethod
     def _capture_env(monkeypatch):
