@@ -216,6 +216,36 @@ def test_every_load_site_refuses_scipy_io_mmwrite(site):
         loader(_reduce_global_pickle("scipy.io", "mmwrite", "/tmp/should-not-write"))
 
 
+@pytest.mark.parametrize("site", [c[0] for c in _LOAD_CONFIGS])
+def test_every_load_site_refuses_extension_opcode(site, tmp_path):
+    """The EXT1/EXT2/EXT4 extension-registry opcodes resolve a global through
+    copyreg (not find_class); on a warm copyreg._extension_cache the C unpickler
+    returns the cached object without find_class, bypassing the allowlist. Every
+    real load site must refuse EXT up front, even with the cache poisoned."""
+    import copyreg
+
+    loader = dict(_LOAD_CONFIGS)[site]
+    code = 199
+    marker = tmp_path / f"pwned_ext_{site.replace('.', '_')}"
+    payload = (
+        pickle.PROTO
+        + bytes([2])
+        + pickle.EXT1
+        + bytes([code])
+        + _su(f"touch {marker}")
+        + pickle.TUPLE1
+        + pickle.REDUCE
+        + pickle.STOP
+    )
+    copyreg._extension_cache[code] = os.system
+    try:
+        with pytest.raises(pickle.UnpicklingError):
+            loader(payload)
+        assert not marker.exists(), f"{site}: EXT warm-cache gadget executed"
+    finally:
+        copyreg._extension_cache.pop(code, None)
+
+
 # ---------------------------------------------------------------------------
 # Legitimate loads must still succeed (allowlists are not "block everything")
 # ---------------------------------------------------------------------------
@@ -290,6 +320,30 @@ def test_wordnet_reference_decode_refuses_malicious_pickle_no_exec(tmp_path):
     with pytest.raises(ValueError):
         Reference.decode(encoded)
     assert not marker.exists(), "wordnet_app Reference.decode executed a pickle gadget"
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        (12345, {}),  # word is an int, not a str
+        ("dog", ["not", "a", "dict"]),  # synset_relations is a list, not a dict
+        ("dog", {123: {"x"}}),  # a non-str relation key
+        ("dog", {"k": frozenset({"x"})}),  # a frozenset value (not a mutable set)
+        ("dog", {"k": ["x"]}),  # a list value, not a set
+        [1, 2, 3],  # not even a 2-tuple to unpack
+    ],
+)
+def test_wordnet_reference_decode_rejects_non_reference_shape(payload):
+    """GHSA-7pvm: RestrictedUnpickler blocks class/function reconstruction but not
+    the *type/shape* of plain data, so a non-string / wrong-shaped value smuggled
+    through the pickle-based wordnet URL must be rejected with a plain ValueError
+    (never an unhandled crash) before it reaches Reference internals."""
+    import base64
+
+    Reference = _reference_cls()
+    encoded = base64.urlsafe_b64encode(pickle.dumps(payload)).decode()
+    with pytest.raises(ValueError, match="Malformed wordnet_app reference"):
+        Reference.decode(encoded)
 
 
 def test_restricted_unpickler_directly_blocks_every_gadget():

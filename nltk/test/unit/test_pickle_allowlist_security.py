@@ -448,8 +448,12 @@ class TestNumpySubmoduleFileIOSinks:
                 checked += 1
                 with pytest.raises(pickle.UnpicklingError):
                     up.find_class("numpy", name)
-        # Not every sink is re-exported on every numpy; that is fine.
-        assert checked >= 0
+        # When no sink is re-exported at top level, skip rather than pass vacuously.
+        if checked == 0:
+            pytest.skip(
+                "no numpy.lib file-I/O sink is re-exported at numpy top level "
+                "on this build"
+            )
 
     def test_reduce_write_payload_creates_nothing(self, tmp_path):
         """End-to-end: an ``open_memmap(mode="w+")`` REDUCE payload under a broad
@@ -706,10 +710,40 @@ class TestBroadAllowGadgetContainment:
             ("scipy.io", "savemat"),
             ("scipy.io", "mmread"),
             ("scipy.io", "mmwrite"),
+            ("scipy.io", "readsav"),
+            # scipy.datasets: network download + on-disk cache write.
+            ("scipy.datasets", "download_all"),
+            ("scipy.datasets", "face"),
+            ("scipy.datasets", "ascent"),
+            ("scipy.datasets", "electrocardiogram"),
             ("sklearn.datasets", "load_svmlight_file"),
             ("sklearn.datasets", "dump_svmlight_file"),
             ("sklearn.datasets", "fetch_openml"),
+            # Every pandas.io reader is an arbitrary file/URL/DB read sink; a
+            # top-level ``pandas.read_*`` request must be denied under a broad
+            # ``pandas`` allow via the resolved pandas.io __module__.
             ("pandas", "read_pickle"),
+            ("pandas", "read_csv"),
+            ("pandas", "read_table"),
+            ("pandas", "read_fwf"),
+            ("pandas", "read_json"),
+            ("pandas", "read_html"),
+            ("pandas", "read_xml"),
+            ("pandas", "read_excel"),
+            ("pandas", "read_hdf"),
+            ("pandas", "read_parquet"),
+            ("pandas", "read_orc"),
+            ("pandas", "read_feather"),
+            ("pandas", "read_stata"),
+            ("pandas", "read_sas"),
+            ("pandas", "read_spss"),
+            ("pandas", "read_sql"),
+            ("pandas", "read_sql_query"),
+            ("pandas", "read_sql_table"),
+            ("pandas", "read_gbq"),
+            ("pandas", "read_clipboard"),
+            ("pandas", "HDFStore"),
+            ("pandas", "ExcelFile"),
         ]:
             try:
                 m = importlib.import_module(mod)
@@ -721,6 +755,209 @@ class TestBroadAllowGadgetContainment:
             assert self._blocked(mod, name), f"{mod}.{name} is reconstructable"
         if not checked:
             pytest.skip("no scipy/sklearn/pandas sinks available")
+
+    def test_pandas_reader_reduce_reads_no_file(self, tmp_path):
+        """A REDUCE payload calling pandas.read_csv on a real file is refused at
+        global resolution, before the reader runs, so the file is never read."""
+        pd = pytest.importorskip("pandas")
+        secret = tmp_path / "secret.csv"
+        secret.write_text("col\n1\n", encoding="utf-8")
+
+        class Evil:
+            def __reduce__(self):
+                return (pd.read_csv, (str(secret),))
+
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(
+                BytesIO(pickle.dumps(Evil(), protocol=4)), **self.BROAD
+            )
+
+    @pytest.mark.parametrize(
+        "module,name",
+        [
+            # nested-unpickle (RCE) helpers under pandas.compat.
+            ("pandas.compat.pickle_compat", "loads"),
+            ("pandas.compat.pickle_compat", "load_reduce"),
+            ("pandas.compat.pickle_compat", "Unpickler"),
+            # file read/write under the model-allowed scipy.sparse namespace.
+            ("scipy.sparse", "load_npz"),
+            ("scipy.sparse", "save_npz"),
+            # file-open-by-path in numpy record arrays.
+            ("numpy.ma.mrecords", "openfile"),
+            ("numpy.ma.mrecords", "fromtextfile"),
+            # path / file-like readers deep in the allowed stacks.
+            ("pandas._libs.parsers", "TextReader"),
+            ("numpy._core._multiarray_umath", "_load_from_filelike"),
+        ],
+    )
+    def test_deep_submodule_file_and_code_sinks_refused(self, module, name):
+        """A broad scientific-stack allow reaches deep submodules; file-read/open
+        and nested-unpickle sinks living in otherwise-allowed namespaces must still
+        be refused. Import-guarded: skipped where absent."""
+        import importlib
+
+        try:
+            m = importlib.import_module(module)
+        except BaseException:
+            pytest.skip(f"{module} unavailable")
+        if not hasattr(m, name):
+            pytest.skip(f"{module}.{name} unavailable")
+        assert self._blocked(module, name), f"{module}.{name} is reconstructable"
+
+    def test_frozen_importlib_reexport_refused(self, monkeypatch):
+        """``spec_from_file_location`` loads/executes code from a file path (RCE).
+        It is re-exported into some allowed sci submodules, where it resolves to
+        ``__module__ == _frozen_importlib_external`` (not ``importlib``). Injecting
+        that re-export under an allowed namespace confirms the frozen-importlib
+        denylist refuses it at resolution, independent of stdlib layout."""
+        import importlib
+        import sys
+        import types
+
+        spec = getattr(
+            importlib.import_module("importlib.util"), "spec_from_file_location"
+        )
+        if not getattr(spec, "__module__", "").startswith("_frozen_importlib"):
+            pytest.skip("spec_from_file_location is not from frozen importlib here")
+        numpy = pytest.importorskip("numpy")
+        fake = types.ModuleType("numpy._evil_reexport")
+        fake.spec_from_file_location = spec
+        monkeypatch.setitem(sys.modules, "numpy._evil_reexport", fake)
+        monkeypatch.setattr(numpy, "_evil_reexport", fake, raising=False)
+        assert self._blocked(
+            "numpy._evil_reexport", "spec_from_file_location"
+        ), "frozen-importlib code-load sink is reconstructable via a re-export"
+
+    @pytest.mark.parametrize(
+        "real_module,real_name",
+        [
+            ("_ctypes", "CFuncPtr"),  # native-call primitive (not "ctypes")
+            ("tempfile", "mkdtemp"),
+            ("tempfile", "NamedTemporaryFile"),
+            ("io", "open"),
+            ("_io", "open"),
+            ("io", "FileIO"),
+            ("codecs", "open"),
+        ],
+    )
+    def test_stdlib_io_sink_reexport_refused(self, monkeypatch, real_module, real_name):
+        """A stdlib file-open / native-call / temp-file callable re-exported into an
+        allowed sci namespace keeps its stdlib ``__module__``, so the resolved-
+        module / resolved-global denylist must refuse it there, independent of which
+        real submodule happens to re-export it (that is how _ctypes.CFuncPtr and
+        tempfile.mkdtemp leaked)."""
+        import importlib
+        import sys
+        import types
+
+        try:
+            obj = getattr(importlib.import_module(real_module), real_name)
+        except BaseException:
+            pytest.skip(f"{real_module}.{real_name} unavailable")
+        numpy = pytest.importorskip("numpy")
+        child = f"_evil_reexport_{real_module.strip('_')}_{real_name.lower()}"
+        modname = f"numpy.{child}"
+        fake = types.ModuleType(modname)
+        setattr(fake, real_name, obj)
+        monkeypatch.setitem(sys.modules, modname, fake)
+        monkeypatch.setattr(numpy, child, fake, raising=False)
+        assert self._blocked(
+            modname, real_name
+        ), f"{real_module}.{real_name} reconstructable via an allowed-namespace re-export"
+
+    @pytest.mark.parametrize(
+        "real_module,real_name",
+        [
+            ("operator", "attrgetter"),
+            ("operator", "itemgetter"),
+            ("operator", "methodcaller"),
+            ("functools", "partial"),
+            ("functools", "reduce"),
+            ("functools", "lru_cache"),
+        ],
+    )
+    def test_call_invoker_gadget_reexport_refused(
+        self, monkeypatch, real_module, real_name
+    ):
+        """operator.attrgetter/itemgetter/methodcaller and functools.partial/reduce/
+        (lru_)cache are higher-order call and attribute-traversal gadgets: they turn
+        an otherwise-safe allowlisted callable into arbitrary execution (see
+        test_attrgetter_eval_rce_blocked_no_side_effect). They are re-exported all
+        over pandas/scipy/sklearn (their __module__ stays operator / functools, or
+        the C _operator / _functools), so the denylist must refuse them at
+        resolution even via a re-export."""
+        import importlib
+        import sys
+        import types
+
+        obj = getattr(importlib.import_module(real_module), real_name)
+        numpy = pytest.importorskip("numpy")
+        child = f"_evil_gadget_{real_module}_{real_name}"
+        modname = f"numpy.{child}"
+        fake = types.ModuleType(modname)
+        setattr(fake, real_name, obj)
+        monkeypatch.setitem(sys.modules, modname, fake)
+        monkeypatch.setattr(numpy, child, fake, raising=False)
+        assert self._blocked(
+            modname, real_name
+        ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
+
+    @pytest.mark.parametrize(
+        "real_module,real_name",
+        [
+            ("_pickle", "loads"),  # nested unpickle with the default Unpickler
+            ("_pickle", "Unpickler"),
+            ("marshal", "loads"),  # deserializes a code object
+            ("copyreg", "_reconstructor"),  # object-injection gadgets
+            ("copyreg", "__newobj__"),
+            ("types", "FunctionType"),  # code object + FunctionType == execution
+            ("types", "CodeType"),
+            ("types", "MethodType"),
+            ("_posixsubprocess", "fork_exec"),  # spawns a process
+        ],
+    )
+    def test_code_exec_gadget_reexport_refused(
+        self, monkeypatch, real_module, real_name
+    ):
+        """Code-execution / nested-unpickle / object-injection primitives
+        (_pickle.loads, marshal.loads, copyreg._reconstructor, types.FunctionType,
+        _posixsubprocess.fork_exec) must be refused even when re-exported into an
+        allowed namespace. None appear in a legitimate model pickle."""
+        import importlib
+        import sys
+        import types
+
+        try:
+            obj = getattr(importlib.import_module(real_module), real_name)
+        except BaseException:
+            pytest.skip(f"{real_module}.{real_name} unavailable")
+        numpy = pytest.importorskip("numpy")
+        child = f"_evil_code_{real_module}_{real_name}"
+        modname = f"numpy.{child}"
+        fake = types.ModuleType(modname)
+        setattr(fake, real_name, obj)
+        monkeypatch.setitem(sys.modules, modname, fake)
+        monkeypatch.setattr(numpy, child, fake, raising=False)
+        assert self._blocked(
+            modname, real_name
+        ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
+
+    def test_scipy_sparse_load_npz_reduce_reads_no_file(self, tmp_path):
+        """A REDUCE payload calling scipy.sparse.load_npz on a real .npz is refused
+        at global resolution, before the read runs (the sink lives under the
+        model-allowed scipy.sparse namespace)."""
+        sparse = pytest.importorskip("scipy.sparse")
+        target = tmp_path / "m.npz"
+        sparse.save_npz(str(target), sparse.csr_matrix([[1, 0], [0, 1]]))
+
+        class Evil:
+            def __reduce__(self):
+                return (sparse.load_npz, (str(target),))
+
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(
+                BytesIO(pickle.dumps(Evil(), protocol=4)), **self.BROAD
+            )
 
     def test_real_write_sink_payloads_create_no_file(self, tmp_path):
         """REDUCE payloads that call a numpy write sink are refused *before* the
@@ -773,11 +1010,17 @@ class TestBroadAllowGadgetContainment:
             "numpy.ma.core",
             "numpy.compat",
             "numpy.ctypeslib",
+            "numpy.ma.mrecords",
+            "numpy._core._multiarray_umath",
             "scipy.io",
             "scipy.io.matlab",
+            "scipy.sparse",
+            "scipy.sparse._matrix_io",
             "sklearn.datasets",
             "pandas",
             "pandas.io.pickle",
+            "pandas._libs.parsers",
+            "pandas.compat.pickle_compat",
         ]
         leaks = []
         for mn in mods:
@@ -896,3 +1139,516 @@ class TestGuardsAreLoadBearing:
         )
         up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
         assert up2.find_class(*pinned) is sink
+
+
+def _ext_reduce_payload(code, cmd):
+    """A protocol-2 pickle: ``EXT1(code)`` resolves a global through copyreg's
+    extension registry (NOT find_class), then ``REDUCE`` would call it with cmd.
+    Hand-assembled so it depends on nothing being registered at build time."""
+
+    def _su(s):
+        b = s.encode()
+        return pickle.SHORT_BINUNICODE + bytes([len(b)]) + b
+
+    return (
+        pickle.PROTO
+        + bytes([2])
+        + pickle.EXT1
+        + bytes([code])
+        + _su(cmd)
+        + pickle.TUPLE1
+        + pickle.REDUCE
+        + pickle.STOP
+    )
+
+
+class TestExtensionOpcodeBypassBlocked:
+    """The EXT1/EXT2/EXT4 extension-registry opcodes resolve a global through
+    copyreg's process-wide registry, not through find_class. On a warm
+    ``copyreg._extension_cache`` the (C) unpickler returns the cached object
+    without ever calling find_class, so a find_class-only allowlist is bypassed
+    (verified: neutering the scan below re-opens the hole). Both unpicklers scan
+    for and refuse any EXT opcode up front; nltk pickles never use them.
+    """
+
+    _EXT_CODE = 173  # an arbitrary, unregistered extension code
+
+    def _loaders(self):
+        from nltk.parse.transitionparser import (
+            _MODEL_ALLOWED_GLOBALS,
+            _MODEL_ALLOWED_MODULES,
+        )
+
+        def allowlist(data):
+            return allowlisted_pickle_load(
+                BytesIO(data),
+                allowed_globals=_MODEL_ALLOWED_GLOBALS,
+                allowed_modules=_MODEL_ALLOWED_MODULES,
+            )
+
+        def restricted(data):
+            from nltk.picklesec import RestrictedUnpickler
+
+            return RestrictedUnpickler(BytesIO(data)).load()
+
+        return {"allowlist": allowlist, "restricted": restricted}
+
+    @pytest.mark.parametrize("loader", ["allowlist", "restricted"])
+    def test_cold_ext_opcode_refused(self, loader):
+        """With nothing registered, an EXT payload is refused before resolution."""
+        load = self._loaders()[loader]
+        with pytest.raises(pickle.UnpicklingError):
+            load(_ext_reduce_payload(self._EXT_CODE, "echo cold"))
+
+    @pytest.mark.parametrize("loader", ["allowlist", "restricted"])
+    def test_warm_cache_ext_opcode_refused_and_no_exec(self, loader, tmp_path):
+        """The real bypass: poison copyreg._extension_cache with os.system so the
+        opcode would resolve WITHOUT find_class, then confirm it is still refused
+        and the gadget does not run."""
+        import copyreg
+
+        load = self._loaders()[loader]
+        marker = tmp_path / f"pwned_ext_{loader}"
+        copyreg._extension_cache[self._EXT_CODE] = os.system
+        try:
+            with pytest.raises(pickle.UnpicklingError):
+                load(_ext_reduce_payload(self._EXT_CODE, f"touch {marker}"))
+            assert (
+                not marker.exists()
+            ), "EXT warm-cache gadget executed; the find_class bypass is not closed"
+        finally:
+            copyreg._extension_cache.pop(self._EXT_CODE, None)
+
+    @pytest.mark.parametrize(
+        "opcode,arg",
+        [
+            (pickle.EXT1, bytes([173])),
+            (pickle.EXT2, (173).to_bytes(2, "little")),
+            (pickle.EXT4, (173).to_bytes(4, "little")),
+        ],
+    )
+    def test_all_ext_widths_refused(self, opcode, arg):
+        """EXT1, EXT2 and EXT4 all bypass find_class, so each is refused."""
+        from nltk.picklesec import RestrictedUnpickler
+
+        payload = pickle.PROTO + bytes([2]) + opcode + arg + pickle.STOP
+        with pytest.raises(pickle.UnpicklingError):
+            RestrictedUnpickler(BytesIO(payload)).load()
+
+    def test_persistent_id_refused(self):
+        """PERSID would call persistent_load (another find_class bypass); neither
+        unpickler defines one, so the default refuses it."""
+        persid = pickle.PROTO + bytes([2]) + b"P" + b"1\n" + pickle.STOP
+        for load in self._loaders().values():
+            with pytest.raises(pickle.UnpicklingError):
+                load(persid)
+
+    def test_ext_scan_is_load_bearing(self, monkeypatch, tmp_path):
+        """Neuter the EXT scan and confirm the warm-cache gadget then executes,
+        proving the scan is the sole defense (find_class never fires for EXT)."""
+        import copyreg
+
+        import nltk.picklesec
+
+        monkeypatch.setattr(
+            nltk.picklesec, "_reject_extension_opcodes", lambda pickle_source: None
+        )
+        marker = tmp_path / "pwned_ext_mut"
+        copyreg._extension_cache[self._EXT_CODE] = os.system
+        try:
+            nltk.picklesec.RestrictedUnpickler(
+                BytesIO(_ext_reduce_payload(self._EXT_CODE, f"touch {marker}"))
+            ).load()
+            assert (
+                marker.exists()
+            ), "neutering the EXT scan did not expose the gadget; scan is not load-bearing"
+        finally:
+            copyreg._extension_cache.pop(self._EXT_CODE, None)
+
+
+def test_all_pickle_loaders_still_function(tmp_path):
+    """Every NLTK pickle-loading entry point must still load a legitimate object
+    after the allowlist/denylist hardening. A deny that is too broad would break a
+    real model / tokenizer / data / wordnet load, so this is the guardrail against
+    over-containment."""
+    np = pytest.importorskip("numpy")
+    svm = pytest.importorskip("sklearn.svm")
+    sparse = pytest.importorskip("scipy.sparse")
+
+    from nltk.parse.transitionparser import (
+        _MODEL_ALLOWED_GLOBALS,
+        _MODEL_ALLOWED_MODULES,
+    )
+
+    # 1. transitionparser: a real SVC model round-trips, dense and sparse.
+    X = np.array([[0.0, 1.0], [1.0, 0.0], [1.0, 1.0], [0.0, 0.0]])
+    for data in (X, sparse.csr_matrix(X)):
+        model = svm.SVC().fit(data, [0, 1, 0, 1])
+        restored = allowlisted_pickle_load(
+            BytesIO(pickle.dumps(model)),
+            allowed_globals=_MODEL_ALLOWED_GLOBALS,
+            allowed_modules=_MODEL_ALLOWED_MODULES,
+        )
+        assert (model.predict(X) == restored.predict(X)).all()
+
+    # 2. punkt: a trained tokenizer round-trips through punkt_pickle_load.
+    from nltk.tokenize.punkt import PunktSentenceTokenizer, punkt_pickle_load
+
+    tok = PunktSentenceTokenizer()
+    tok.train("Mr. Smith went to Washington. He met Dr. Jones at 3 p.m.")
+    restored_tok = punkt_pickle_load(BytesIO(pickle.dumps(tok, protocol=4)))
+    assert restored_tok.tokenize("A. B.") == tok.tokenize("A. B.")
+
+    # 3. nltk.data: a globals-free structure loads through the restricted path.
+    from nltk.data import restricted_pickle_load
+
+    assert restricted_pickle_load(pickle.dumps({"a": [1, 2, 3]})) == {"a": [1, 2, 3]}
+
+    # 4. wordnet_app: the base64 Reference round-trip (RestrictedUnpickler + shape).
+    try:
+        from nltk.app.wordnet_app import Reference
+    except Exception:
+        Reference = None
+    if Reference is not None:
+        ref = Reference("dog", {"k": {"hypernym"}})
+        assert Reference.decode(ref.encode()).word == "dog"
+
+
+def test_attrgetter_eval_rce_blocked_no_side_effect(tmp_path, monkeypatch):
+    """A genuine, armed pickle RCE, not just a logic check. An opcode-level REDUCE
+    chain computes ``_frombuffer.__globals__['__builtins__']['eval']`` (using the
+    ``operator.attrgetter``/``itemgetter`` gadgets) and calls it on code that
+    creates a marker file. ``_frombuffer`` is a Python function IN the model
+    allowlist, so this is reachable purely from allowlisted globals plus the gadgets.
+
+    The gadgets are referenced through a re-export under an ALLOWED namespace
+    (mirroring the real attack, where they are re-exported all over the sci stack),
+    so the payload exercises the resolved-module deny, not merely "operator is not
+    on the allowlist". It FIRES on a raw unpickler (proving it is really armed), and
+    the hardened loader must REFUSE it and leave the marker unwritten.
+    """
+    numpy = pytest.importorskip("numpy")
+    import operator
+    import sys
+    import types
+
+    from numpy._core import numeric
+
+    if not hasattr(numeric, "_frombuffer"):
+        pytest.skip("numpy._frombuffer (a Python-level allowlisted global) not present")
+
+    # Re-export the gadgets under an allowed namespace, as pandas/scipy/sklearn do.
+    fake = types.ModuleType("numpy._evil_gadgets")
+    fake.attrgetter = operator.attrgetter
+    fake.itemgetter = operator.itemgetter
+    monkeypatch.setitem(sys.modules, "numpy._evil_gadgets", fake)
+    monkeypatch.setattr(numpy, "_evil_gadgets", fake, raising=False)
+
+    def su(s):
+        b = s.encode()
+        return pickle.SHORT_BINUNICODE + bytes([len(b)]) + b
+
+    def gref(mod, name):
+        return su(mod) + su(name) + pickle.STACK_GLOBAL
+
+    def call(func_ops, arg_ops):
+        return func_ops + arg_ops + pickle.TUPLE1 + pickle.REDUCE
+
+    def itemgetter(key):
+        return call(gref("numpy._evil_gadgets", "itemgetter"), su(key))
+
+    def attrgetter(key):
+        return call(gref("numpy._evil_gadgets", "attrgetter"), su(key))
+
+    marker = tmp_path / "PWNED"
+    # open(...).close() runs through eval; cross-platform, no shell needed.
+    src = f"open({str(marker)!r}, 'w').close()"
+    frombuffer = gref("numpy._core.numeric", "_frombuffer")
+    get_globals = call(attrgetter("__globals__"), frombuffer)
+    get_builtins = call(itemgetter("__builtins__"), get_globals)
+    get_eval = call(itemgetter("eval"), get_builtins)
+    payload = pickle.PROTO + bytes([4]) + call(get_eval, su(src)) + pickle.STOP
+
+    # Sanity: the payload is genuinely armed (a raw unpickler executes it).
+    if marker.exists():
+        marker.unlink()
+    pickle.loads(payload)
+    assert marker.exists(), "payload is not actually armed; the test would be vacuous"
+    marker.unlink()
+
+    # The hardened loader must refuse it and execute nothing.
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(
+            BytesIO(payload), allowed_modules=("numpy", "scipy", "sklearn", "pandas")
+        )
+    assert not marker.exists(), "RCE executed through the allowlist unpickler"
+
+
+def test_nltk_functions_through_hardened_pickle_loaders():
+    """Load the REAL nltk models that route through the hardened pickle/data code and
+    assert on their actual outputs (not just that a load call returns). Skips
+    per-resource when the data package is not installed."""
+    import nltk
+
+    def have(res):
+        try:
+            nltk.data.find(res)
+            return True
+        except LookupError:
+            return False
+
+    ran = 0
+    if have("tokenizers/punkt/english.pickle"):
+        tok = nltk.data.load("tokenizers/punkt/english.pickle")
+        assert tok.tokenize("Dr. Smith left. He ran.") == ["Dr. Smith left.", "He ran."]
+        ran += 1
+    if have("tokenizers/punkt_tab/english/"):
+        assert nltk.word_tokenize("It's fine.") == ["It", "'s", "fine", "."]
+        ran += 1
+    if have("taggers/averaged_perceptron_tagger_eng/"):
+        assert dict(nltk.pos_tag(["The", "dog", "barks"]))["The"] == "DT"
+        ran += 1
+    if have("chunkers/maxent_ne_chunker_tab/english_ace_multiclass/"):
+        tree = nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize("John lives in New York")))
+        labels = {st.label() for st in tree.subtrees() if st.label() != "S"}
+        assert labels & {"PERSON", "GPE", "ORGANIZATION"}, f"no NE labels: {labels}"
+        ran += 1
+    if have("corpora/wordnet.zip") or have("corpora/wordnet/"):
+        assert nltk.corpus.wordnet.synsets("dog")[0].name() == "dog.n.01"
+        ran += 1
+    if ran == 0:
+        pytest.skip("no nltk data packages installed to exercise the loaders")
+
+
+def test_data_load_restricted_pickle_roundtrips_real_asset(tmp_path, monkeypatch):
+    """Always-on real-asset check (never skips): stage a genuine globals-free
+    ``*.pickle`` in a temp data root and load it through the real ``nltk.data.load``
+    -> ``restricted_pickle_load`` path, so the restricted pickle loader is exercised
+    even on a bare runner with no downloaded corpora."""
+    import contextlib
+    import io
+
+    import nltk
+
+    staged_root = tmp_path / "nltk_data"
+    staged_dir = staged_root / "help" / "tagsets"
+    staged_dir.mkdir(parents=True)
+    staged_value = {"NN": ["noun", "the dog"], "VB": ["verb", "to run"]}
+    (staged_dir / "unit_test_tagset.pickle").write_bytes(
+        pickle.dumps(staged_value, protocol=4)
+    )
+    monkeypatch.setattr(nltk.data, "path", [str(staged_root)] + list(nltk.data.path))
+    with contextlib.redirect_stdout(io.StringIO()):
+        loaded = nltk.data.load("help/tagsets/unit_test_tagset.pickle")
+    assert loaded == staged_value, "staged real .pickle failed to load via data.load"
+
+
+def test_all_nltk_data_pickle_assets_load():
+    """Real-asset regression: EVERY ``*.pickle`` present in the installed nltk_data
+    must still load through ``nltk.data.load`` after the picklesec hardening (class-
+    bearing artifacts like punkt / perceptron / maxent via the pickle-free redirect;
+    globals-free tagsets via ``restricted_pickle_load``). Skips only when no pickle
+    assets are installed; the always-on restricted path is covered by
+    test_data_load_restricted_pickle_roundtrips_real_asset."""
+    import contextlib
+    import glob
+    import io
+
+    import nltk
+
+    roots = [p for p in nltk.data.path if os.path.isdir(p)]
+    files = []
+    for root in roots:
+        files += glob.glob(os.path.join(root, "**", "*.pickle"), recursive=True)
+    resources = {}  # collapse the PY3/ duplicates to one entry per resource path
+    for f in files:
+        root = next((r for r in roots if f.startswith(r)), None)
+        if root is None:
+            continue
+        rel = os.path.relpath(f, root).replace(os.sep, "/").replace("PY3/", "")
+        resources.setdefault(rel, f)
+    if not resources:
+        pytest.skip("no nltk_data *.pickle assets installed")
+    broken = []
+    for rel in sorted(resources):
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                nltk.data.load(rel)
+        except Exception as e:
+            broken.append(f"{rel}: {type(e).__name__}: {e}")
+    assert not broken, "nltk_data pickle assets failed to load:\n  " + "\n  ".join(
+        broken
+    )
+
+
+# Module (sub)trees where EVERY callable is a code-exec / file / native /
+# nested-unpickle / process / network / call-traversal primitive, so any
+# re-export of one into an allowed namespace is a leak. Matched by exact module
+# or ``prefix + "."`` (NOT by top-level root), so e.g. ``urllib.request`` is
+# dangerous while the benign ``urllib.parse`` string helpers are not. Kept in
+# lockstep with nltk.picklesec's denylist.
+_DANGEROUS_MODULE_PREFIXES = frozenset(
+    {
+        "os",
+        "nt",
+        "posix",
+        "_posixsubprocess",
+        "subprocess",
+        "sys",
+        "socket",
+        "_socket",
+        "ssl",
+        "_ssl",
+        "ctypes",
+        "_ctypes",
+        "cffi",
+        "importlib",
+        "_frozen_importlib",
+        "_frozen_importlib_external",
+        "runpy",
+        "marshal",
+        "pickle",
+        "_pickle",
+        "code",
+        "codeop",
+        "pdb",
+        "bdb",
+        "operator",
+        "_operator",
+        "functools",
+        "_functools",
+        "copyreg",
+        "pty",
+        "multiprocessing",
+        "webbrowser",
+        "tempfile",
+        "gzip",
+        "bz2",
+        "lzma",
+        "zipfile",
+        "tarfile",
+        "sqlite3",
+        "dbm",
+        "shelve",
+        "urllib.request",
+        "http.client",
+        "ftplib",
+        "smtplib",
+        "mmap",
+        "fileinput",
+        "linecache",
+        "shutil",
+        "signal",
+    }
+)
+# Dangerous names inside otherwise-mixed modules (builtins/io/codecs/types).
+_DANGEROUS_PAIRS = frozenset(
+    {
+        ("builtins", "eval"),
+        ("builtins", "exec"),
+        ("builtins", "open"),
+        ("builtins", "compile"),
+        ("builtins", "__import__"),
+        ("builtins", "getattr"),
+        ("builtins", "setattr"),
+        ("builtins", "delattr"),
+        ("io", "open"),
+        ("io", "FileIO"),
+        ("io", "open_code"),
+        ("_io", "open"),
+        ("_io", "FileIO"),
+        ("_io", "open_code"),
+        ("codecs", "open"),
+        ("types", "FunctionType"),
+        ("types", "CodeType"),
+        ("types", "MethodType"),
+        ("types", "LambdaType"),
+        ("types", "CellType"),
+    }
+)
+
+
+def _module_is_dangerous(true_module):
+    return any(
+        true_module == d or true_module.startswith(d + ".")
+        for d in _DANGEROUS_MODULE_PREFIXES
+    )
+
+
+def test_no_dangerous_reexport_reachable_under_broad_allow():
+    """Exhaustive regression guard behind every specific gadget test. Walks the
+    ENTIRE numpy/scipy/sklearn/pandas submodule tree and, for each callable that
+    resolves under a broad allow but whose real ``__module__`` is a dangerous
+    primitive (code-exec, file/native I/O, nested unpickle, process/network, or a
+    call/attribute-traversal gadget), asserts it is refused. Any future re-export
+    of such a callable into the sci stack (the exact mechanism behind the
+    operator.attrgetter, _ctypes.CFuncPtr and scipy.sparse.load_npz leaks) fails
+    here without needing a new hand-written case.
+    """
+    import importlib
+    import pkgutil
+    import warnings
+
+    pytest.importorskip("numpy")
+    warnings.simplefilter("ignore")
+    allowed = tuple(r for r in ("numpy", "scipy", "sklearn", "pandas") if _installed(r))
+
+    def blocked(module, name):
+        up = AllowlistUnpickler(BytesIO(b""), allowed_modules=allowed)
+        try:
+            up.find_class(module, name)
+            return False
+        except Exception:
+            return True
+
+    modules = set(allowed)
+    for root in allowed:
+        pkg = importlib.import_module(root)
+        if not hasattr(pkg, "__path__"):
+            continue
+        for info in pkgutil.walk_packages(pkg.__path__, root + "."):
+            name = info.name
+            if any(s in name for s in (".tests", ".test", ".testing", "test_")):
+                continue
+            if ".f2py" in name:  # importing numpy.f2py.* prints its CLI banner
+                continue
+            modules.add(name)
+
+    leaks = []
+    for mod_name in sorted(modules):
+        if ".f2py" in mod_name:
+            continue
+        try:
+            mod = importlib.import_module(mod_name)
+        except BaseException:
+            continue
+        for attr in dir(mod):
+            if attr.startswith("__"):
+                continue
+            obj = getattr(mod, attr, None)
+            if not callable(obj):
+                continue
+            true_module = getattr(obj, "__module__", None)
+            if not true_module:
+                continue
+            root = true_module.split(".")[0]
+            leaf = getattr(obj, "__qualname__", attr).split(".")[-1]
+            dangerous = (
+                _module_is_dangerous(true_module) or (root, leaf) in _DANGEROUS_PAIRS
+            )
+            if dangerous and not blocked(mod_name, attr):
+                leaks.append(f"{true_module}.{leaf} (reachable as {mod_name}.{attr})")
+
+    assert not leaks, (
+        "dangerous callable reachable via re-export under broad allow:\n  "
+        + "\n  ".join(sorted(set(leaks))[:25])
+    )
+
+
+def _installed(module):
+    import importlib.util
+
+    try:
+        return importlib.util.find_spec(module) is not None
+    except BaseException:
+        return False

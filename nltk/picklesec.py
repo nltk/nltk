@@ -21,7 +21,9 @@ Helpers for safer and/or more explicit pickle usage in NLTK.
 
 from __future__ import annotations
 
+import io
 import pickle
+import pickletools
 import types
 import warnings
 from collections.abc import Iterable
@@ -34,10 +36,60 @@ PICKLE_WARNING = (
 )
 
 
+def _reject_extension_opcodes(pickle_source: Any) -> None:
+    """Refuse a pickle that uses the EXT1/EXT2/EXT4 extension-registry opcodes.
+
+    ``find_class`` gates GLOBAL/STACK_GLOBAL resolution, but the extension
+    opcodes resolve through ``copyreg``'s process-wide registry, and on a warm
+    ``copyreg._extension_cache`` the (C) unpickler returns the cached object
+    without calling ``find_class`` at all, bypassing every allowlist. NLTK
+    pickles never use extension opcodes, so any EXT opcode is refused up front.
+
+    ``pickle_source`` is bytes or a binary file. ``pickletools.genops`` walks the
+    opcode stream, importing and executing nothing (so scanning a hostile payload
+    is itself safe) and, when handed a file, without reading the whole pickle
+    into memory.
+    """
+    try:
+        for opcode, _arg, _pos in pickletools.genops(pickle_source):
+            if opcode.name.startswith("EXT"):
+                raise pickle.UnpicklingError(
+                    f"pickle uses the extension-registry opcode {opcode.name}, "
+                    "which bypasses find_class and is forbidden"
+                )
+    except pickle.UnpicklingError:
+        raise
+    except Exception:
+        # Malformed before any EXT opcode; let the real unpickler raise precisely.
+        return
+
+
+def _guarded_stream(file: BinaryIO) -> BinaryIO:
+    """Refuse forbidden extension opcodes in ``file`` and return a binary stream
+    positioned at the pickle start for the unpickler to consume.
+
+    A seekable file is scanned in place and rewound, so the unpickler still
+    streams it with bounded memory (no ``file.read()`` of the whole, untrusted
+    pickle). A non-seekable stream cannot be rewound, so it is read once.
+    """
+    seekable = getattr(file, "seekable", None)
+    if callable(seekable) and seekable():
+        start = file.tell()
+        _reject_extension_opcodes(file)
+        file.seek(start)
+        return file
+    data = file.read()
+    _reject_extension_opcodes(data)
+    return io.BytesIO(data)
+
+
 class RestrictedUnpickler(pickle.Unpickler):
     """
     Unpickler that prevents any class or function from being used during loading.
     """
+
+    def __init__(self, file: BinaryIO, **kwargs: Any):
+        super().__init__(_guarded_stream(file), **kwargs)
 
     def find_class(self, module: str, name: str) -> Any:
         # Forbid every function/class global.
@@ -92,15 +144,57 @@ _DENIED_MODULE_PREFIXES = (
     "subprocess",
     "sys",
     "socket",
+    # Network / file / archive / db I/O modules. Every callable opens a file,
+    # a socket or a database, so no model pickle references any of them. urllib
+    # is denied at the "urllib.request" subtree only, leaving the benign string
+    # helpers in urllib.parse (quote / urlencode, re-exported across the sci
+    # stack) permitted.
+    "urllib.request",
+    "http.client",
+    "ftplib",
+    "smtplib",
+    "sqlite3",
+    "dbm",
+    "shelve",
+    "gzip",
+    "bz2",
+    "lzma",
+    "zipfile",
+    "tarfile",
+    "mmap",
+    "fileinput",
+    "linecache",
     "shutil",
+    "tempfile",  # NamedTemporaryFile / mkstemp / mkdtemp create files/dirs
+    # NB: pathlib is deliberately NOT denied. A Path is an inert value (its
+    # construction does no I/O), and its read/open methods are only reachable as
+    # dotted names (pathlib.Path.read_text), already refused by Guard 1. Denying
+    # it would buy no safety while breaking any legitimate pickle carrying a Path.
     "signal",
     "pty",
     "popen2",
     "commands",
     "ctypes",
+    "_ctypes",  # the C accelerator (_ctypes.CFuncPtr, ...) invokes native code
     "importlib",
     "runpy",
+    # importlib's frozen bootstrap modules re-export spec_from_file_location and
+    # source loaders that import/execute code from a file path (RCE); their
+    # __module__ is "_frozen_importlib[_external]", not "importlib".
+    "_frozen_importlib",
+    "_frozen_importlib_external",
     "builtins",  # builtins.int etc. must be requested via allowed_globals
+    # Higher-order call / attribute-traversal gadgets. operator.attrgetter,
+    # operator.itemgetter, operator.methodcaller and functools.partial / reduce /
+    # (lru_)cache are the primitives that weaponize an otherwise-safe allowlisted
+    # callable: e.g. attrgetter("__globals__")(numpy._frombuffer)["__builtins__"]
+    # ["eval"] reaches arbitrary eval. They are re-exported all over the sci stack
+    # (their __module__ stays operator / functools / the C _operator / _functools),
+    # and no model pickle references any of them. Deny the modules outright.
+    "operator",
+    "_operator",
+    "functools",
+    "_functools",
     "webbrowser",
     "pdb",
     "bdb",
@@ -110,6 +204,17 @@ _DENIED_MODULE_PREFIXES = (
     "asyncio",
     "threading",
     "pickle",
+    # C-accelerator / low-level siblings of denied modules and other code-exec /
+    # nested-unpickle / process / network primitives. None appear in a legitimate
+    # model pickle (protocol >= 2 uses the NEWOBJ opcode, not a copyreg global).
+    "_pickle",  # nested unpickle with the default (unrestricted) Unpickler
+    "marshal",  # marshal.loads deserializes a code object
+    "copyreg",  # _reconstructor / __newobj__ object-injection gadgets
+    "_posixsubprocess",  # fork_exec spawns a process
+    "_socket",
+    "ssl",
+    "_ssl",
+    "cffi",  # native FFI (cffi.FFI.dlopen / cdef)
     "numpy.f2py",
     "numpy.ctypeslib",
     "numpy.distutils",
@@ -123,13 +228,27 @@ _DENIED_MODULE_PREFIXES = (
     "numpy.rec",
     "numpy.core.records",
     "numpy._core.records",
+    # numpy.ma.mrecords.openfile / fromtextfile open a file by path.
+    "numpy.ma.mrecords",
     # numpy.compat.npy_load_module loads/executes a module from a file path
     # (arbitrary code execution); deny numpy.compat wholesale (CWE-502).
     "numpy.compat",
-    # File-read/write and network sinks under scipy/sklearn (scipy.io.mmwrite,
-    # loadmat; sklearn.datasets.fetch_openml/load_*). No model pickle needs them.
+    # File-read/write and network sinks under scipy/sklearn/pandas: scipy.io
+    # (mmwrite/loadmat), scipy.datasets (network download + cache write),
+    # sklearn.datasets (fetch_openml/load_*), and every pandas.io reader
+    # (read_csv/read_hdf/read_sql/read_html/HDFStore/ExcelFile, ...). Their real
+    # __module__ lives under these prefixes, so the post-resolution check denies
+    # them even when the request names a top-level re-export (pandas.read_csv).
+    # No model pickle needs any of them.
     "scipy.io",
+    "scipy.datasets",
+    # scipy.sparse.load_npz/save_npz read/write a file; the rest of scipy.sparse
+    # (csr_matrix, ...) stays allowed for genuine model matrices.
+    "scipy.sparse._matrix_io",
     "sklearn.datasets",
+    "pandas.io",
+    # pandas.compat.pickle_compat is a nested-unpickle sink (loads/Unpickler).
+    "pandas.compat",
     "nltk.tokenize.repp",
     "nltk.internals",
 )
@@ -164,6 +283,25 @@ _DENIED_GLOBALS = frozenset(
         ("scipy", "LowLevelCallable"),
         ("scipy._lib._ccallback", "LowLevelCallable"),
         ("pandas", "read_pickle"),
+        # File-open primitives that may be re-exported into an allowed namespace
+        # under their C-module name (io / _io / codecs). Matched on the resolved
+        # (__module__, __qualname__), so StringIO / BytesIO stay permitted.
+        ("io", "open"),
+        ("_io", "open"),
+        ("io", "open_code"),
+        ("_io", "open_code"),
+        ("io", "FileIO"),
+        ("_io", "FileIO"),
+        ("codecs", "open"),
+        # types code/callable-construction primitives (a code object plus
+        # FunctionType is arbitrary execution). Denied by resolved qualname so
+        # benign types like SimpleNamespace / MappingProxyType stay permitted.
+        ("types", "FunctionType"),
+        ("types", "CodeType"),
+        ("types", "MethodType"),
+        ("types", "LambdaType"),
+        ("types", "CellType"),
+        ("types", "ModuleType"),
     }
 )
 
@@ -204,6 +342,40 @@ _DENIED_SCISTACK_QUALNAMES = frozenset(
         "dump_svmlight_file",
         "fetch_openml",
         "read_pickle",
+        # file read/write and file-open sinks found in otherwise-allowed sci
+        # submodules (scipy.sparse, numpy.ma.mrecords, numpy._core, pandas._libs).
+        "load_npz",
+        "save_npz",
+        "openfile",
+        "fromtextfile",
+        "_load_from_filelike",
+        "TextReader",
+        # pandas readers: on pandas >= 3.0 their __module__ collapses to "pandas"
+        # (not pandas.io.*), so the pandas.io prefix misses them; deny by resolved
+        # qualname too. Each is an arbitrary file / URL / DB read sink.
+        "read_csv",
+        "read_table",
+        "read_fwf",
+        "read_json",
+        "read_html",
+        "read_xml",
+        "read_excel",
+        "read_hdf",
+        "read_parquet",
+        "read_orc",
+        "read_feather",
+        "read_stata",
+        "read_sas",
+        "read_spss",
+        "read_sql",
+        "read_sql_query",
+        "read_sql_table",
+        "read_gbq",
+        "read_clipboard",
+        "HDFStore",
+        "ExcelFile",
+        # scipy.datasets network + cache fetchers, robust to a submodule move.
+        "download_all",
     }
 )
 
@@ -251,7 +423,9 @@ class AllowlistUnpickler(pickle.Unpickler):
         allowed_modules: Iterable[str] = (),
         **kwargs: Any,
     ):
-        super().__init__(file, **kwargs)
+        data = file.read()
+        _reject_extension_opcodes(data)
+        super().__init__(io.BytesIO(data), **kwargs)
         if isinstance(allowed_modules, str):
             allowed_modules = (allowed_modules,)
         self._allowed_globals = set(allowed_globals)
