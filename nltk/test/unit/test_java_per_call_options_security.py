@@ -527,3 +527,47 @@ def test_config_java_validates_global_options(monkeypatch):
     # a safe global set is accepted and stored
     internals.config_java(bin="/usr/bin/java", options=["-Xmx512m"])
     assert internals._java_options == ["-Xmx512m"]
+
+
+# --- discovery layer: an attacker who poisons a jar-discovery env var must still
+# be caught by the classpath sandbox when the wrapper passes the jar to java().
+
+
+def test_poisoned_jar_discovery_env_is_rejected_by_sandbox(
+    stub_java_bin, tmp_path, monkeypatch
+):
+    """find_jar honors env vars (STANFORD_POSTAGGER etc.); a jar it returns from an
+    attacker-set env still hits _verify_jar_sandbox and is refused if out of root."""
+    import nltk.data
+
+    trusted = tmp_path / "nltk_data"
+    trusted.mkdir()
+    monkeypatch.setattr(nltk.data, "path", [str(trusted)])  # only this dir is trusted
+    attacker = tmp_path / "attacker"
+    attacker.mkdir()
+    evil = attacker / "stanford-postagger.jar"  # outside every trusted root
+    evil.write_bytes(b"PK\x03\x04")
+    monkeypatch.setenv("STANFORD_POSTAGGER", str(evil))
+    found = internals.find_jar(
+        "stanford-postagger.jar", None, env_vars=("STANFORD_POSTAGGER",), searchpath=()
+    )
+    assert found == str(evil)  # discovery layer trusts the (attacker-set) env var
+    with pytest.raises(internals.UntrustedJarError):
+        internals.java(["edu.stanford.nlp.tagger.maxent.MaxentTagger"], classpath=found)
+
+
+def test_sandbox_trust_boundary_is_nltk_data_path(stub_java_bin, tmp_path, monkeypatch):
+    """The sandbox trusts exactly nltk.data.path (+ repo/Weka): a jar inside a data
+    root is accepted, one outside every root is refused."""
+    import nltk.data
+
+    root = tmp_path / "nltk_data"
+    root.mkdir()
+    inside = root / "good.jar"
+    inside.write_bytes(b"PK\x03\x04")
+    outside = tmp_path / "bad.jar"
+    outside.write_bytes(b"PK\x03\x04")
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    internals._verify_jar_sandbox([str(inside)])  # trusted: no raise
+    with pytest.raises(internals.UntrustedJarError):
+        internals._verify_jar_sandbox([str(outside)])

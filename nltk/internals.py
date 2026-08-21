@@ -970,12 +970,13 @@ def find_binary_iter(
     # -- run relative to the CWD rather than looked up on PATH: arbitrary code
     # execution (CWE-426 / CWE-427). Only in that case do we refuse CWD-relative
     # matches and accept solely a trusted absolute location (env var / searchpath
-    # / ``which``). An explicit path supplied via ``path_to_bin`` or via ``name``
-    # itself (e.g. ``tools/prover9``) is the caller's own choice and is honored
-    # as before. ``not path_to_bin`` (rather than ``is None``) so an empty-string
-    # path_to_bin -- which ``path_to_bin or name`` already falls back to ``name``
-    # for -- cannot bypass the check.
-    searching_bare_name = not path_to_bin and os.path.dirname(name) == ""
+    # / ``which``). A path with a directory component (e.g. ``tools/prover9`` or
+    # ``/usr/bin/java``), via ``name`` or ``path_to_bin``, is the caller's explicit
+    # choice and is honored. A *bare* tool name is NOT an explicit path even when
+    # passed as ``path_to_bin`` (a bare ``bin="java"`` would otherwise let a planted
+    # ``./java/java`` hijack it), so it triggers the refusal too; an empty
+    # ``path_to_bin`` falls back to ``name`` through ``path_to_bin or name``.
+    searching_bare_name = os.path.dirname(path_to_bin or name) == ""
     safe_match = False
     for path in find_file_iter(
         path_to_bin or name, env_vars, searchpath, binary_names, url, verbose

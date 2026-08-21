@@ -93,3 +93,21 @@ def test_find_binary_honors_explicit_relative_path_via_name(tmp_path, monkeypatc
 
     result = find_binary(os.path.join("tools", _NAME), binary_names=[_NAME])
     assert os.path.basename(result) == _NAME
+
+
+def test_find_binary_bare_path_to_bin_refuses_cwd_relative(tmp_path, monkeypatch):
+    """A *bare* ``path_to_bin`` (no directory component, e.g. ``bin="java"``) is not
+    an explicit path: a planted ``./<name>/<name>`` must not hijack it; only an
+    absolute match is accepted (CWE-426 / CWE-427)."""
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    _make_exec(cwd / _NAME / _NAME)  # attacker-planted ./<name>/<name>
+    realdir = tmp_path / "realbin"
+    _make_exec(realdir / _NAME)  # trusted, absolute location
+    monkeypatch.chdir(cwd)
+
+    result = find_binary(
+        _NAME, path_to_bin=_NAME, searchpath=[str(realdir)], binary_names=[_NAME]
+    )
+    assert os.path.isabs(result)
+    assert os.path.realpath(result) == os.path.realpath(str(realdir / _NAME))
