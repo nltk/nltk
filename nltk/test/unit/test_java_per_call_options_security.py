@@ -276,7 +276,8 @@ def trusted_jar(tmp_path, monkeypatch):
     root.mkdir()
     jar = root / "good.jar"
     jar.write_bytes(b"PK\x03\x04")
-    # Trusted roots = exactly this dir, so the sandbox checks are deterministic.
+    # Put this dir on nltk.data.path so it is one of the trusted roots (the sandbox
+    # also adds the repo root / Weka dirs); enough to make these checks deterministic.
     monkeypatch.setattr(nltk.data, "path", [str(root)])
     return str(jar)
 
@@ -316,6 +317,35 @@ class TestJavaClasspathSandbox:
     def test_relative_classpath_refused(self, stub_java_bin):
         with pytest.raises(internals.UntrustedJarError):
             internals.java(["Main"], classpath="relative.jar")
+
+    def test_dot_cwd_classpath_refused(self, stub_java_bin):
+        """ "." / ".." are the current/parent dir; relative, so refused."""
+        for bad in (".", "..", os.path.join(".", "x.jar")):
+            with pytest.raises(internals.UntrustedJarError):
+                internals.java(["Main"], classpath=bad)
+
+    def test_non_string_classpath_entry_refused(self, stub_java_bin, trusted_jar):
+        """A non-string list entry (Path / int / bytes) is an unsupported type, not
+        a CWD element: refused with a type message, never reaching Popen."""
+        from pathlib import Path
+
+        for bad in (Path(trusted_jar), 1234, b"/tmp/evil.jar"):
+            with pytest.raises(internals.UntrustedJarError) as exc:
+                internals.java(["Main"], classpath=[trusted_jar, bad])
+            assert "must be a string" in str(exc.value)
+
+    def test_bytes_classpath_refused(self, stub_java_bin):
+        """A bytes classpath is list()-ed into ints by java(); each is non-string
+        and refused (fail closed), never silently coerced."""
+        with pytest.raises(internals.UntrustedJarError):
+            internals.java(["Main"], classpath=b"/tmp/evil.jar")
+
+    def test_nul_byte_classpath_entry_refused(self, stub_java_bin, trusted_jar):
+        """A NUL byte truncates the path in native calls; refused with a clear
+        UntrustedJarError, not a bare ValueError from realpath."""
+        with pytest.raises(internals.UntrustedJarError) as exc:
+            internals.java(["Main"], classpath=trusted_jar + "\x00/etc/passwd")
+        assert "NUL" in str(exc.value)
 
     def test_outside_root_classpath_refused(self, stub_java_bin, trusted_jar):
         with pytest.raises(internals.UntrustedJarError):

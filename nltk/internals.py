@@ -239,7 +239,7 @@ def _verify_jar_sandbox(classpath_entries):
 
     for p in data_path:
         try:
-            trusted_roots.append(os.path.realpath(p))
+            trusted_roots.append(os.path.normcase(os.path.realpath(p)))
         except Exception:
             continue
 
@@ -250,7 +250,7 @@ def _verify_jar_sandbox(classpath_entries):
         repo_root = os.path.realpath(os.path.join(nltk_package_dir, ".."))
         git_marker = os.path.join(repo_root, ".git")
         if os.path.isdir(git_marker) or os.path.isfile(git_marker):
-            trusted_roots.append(repo_root)
+            trusted_roots.append(os.path.normcase(repo_root))
     except Exception:
         pass
 
@@ -264,19 +264,31 @@ def _verify_jar_sandbox(classpath_entries):
         try:
             abs_wp = os.path.realpath(wp)
             if os.path.isdir(abs_wp):
-                trusted_roots.append(abs_wp)
+                trusted_roots.append(os.path.normcase(abs_wp))
         except Exception:
             continue
 
     trusted_roots = list(dict.fromkeys(trusted_roots))
 
     for entry in entries:
-        if not isinstance(entry, str) or not entry:
+        if not isinstance(entry, str):
+            # A non-string is not a CWD element, just an unsupported type; report
+            # the expected type rather than the misleading current-directory text.
+            raise UntrustedJarError(
+                f"Classpath entry must be a string, got {type(entry).__name__}: {entry!r}"
+            )
+        if not entry:
             # An empty entry is the JVM's current-directory element (CWD class
             # injection); refuse it rather than skip it.
             raise UntrustedJarError(
-                f"Empty or non-string classpath entry is forbidden (the JVM would "
-                f"treat it as the current directory): {entry!r}"
+                f"Empty classpath entry is forbidden (the JVM would treat it as "
+                f"the current directory): {entry!r}"
+            )
+        if "\x00" in entry:
+            # A NUL truncates the path in native calls; reject with a clear error
+            # instead of letting os.path.realpath raise a bare ValueError.
+            raise UntrustedJarError(
+                f"Classpath entry may not contain a NUL byte: {entry!r}"
             )
         if os.pathsep in entry:
             # An entry embedding os.pathsep passes the per-entry check as one path
