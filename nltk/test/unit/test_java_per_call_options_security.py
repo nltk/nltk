@@ -113,6 +113,17 @@ DANGEROUS = [
     ["-Xshare:dump"],  # dump a CDS archive to an attacker-chosen path
     ["--enable-native-access=ALL-UNNAMED"],  # grant native (Panama) access
     ["-xx:onerror=reboot"],  # fully-lowercase -XX: must still be rejected
+    # suffix riding an allowed prefix: the anchored sizing/verbose shapes reject any
+    # trailing bytes (empirically inert on the JVM, but refused for defense in depth)
+    ["-Xmx512m@/tmp/argfile"],
+    ["-verbose:gc:file=/tmp/pwned"],
+    ["-verbose:foobar"],  # unknown -verbose category
+    ["-Xmxevil"],  # sizing flag without a numeric size
+    ["-Xmx"],  # sizing flag with no value at all
+    ["-mx512m/tmp"],  # trailing path on a sizing flag
+    ["-Xss128m-XX:OnError=x"],  # two flags concatenated, no metachar to catch it
+    ["-Xbatchevil"],  # suffix on a no-argument mode flag
+    ["-server_evil"],  # suffix on an exact-match flag
 ]
 
 
@@ -136,6 +147,17 @@ SAFE = [
     ["-server"],
     ["-client"],
     ["-verbose:gc"],
+    # anchored-shape positives: raw-byte heap, capital unit, other categories and
+    # no-argument mode flags all must keep passing after the tightening
+    ["-Xmx2147483648"],
+    ["-Xmx8G"],
+    ["-Xss512k"],
+    ["-verbose"],
+    ["-verbose:class"],
+    ["-Xint"],
+    ["-Xcomp"],
+    ["-Xbatch"],
+    ["-Xmixed"],
     # --add-modules java.se.ee is required by CoreNLP on JDK 9-11 (both forms)
     ["--add-modules", "java.se.ee"],
     ["--add-modules=java.se.ee,java.xml.bind"],
@@ -455,3 +477,53 @@ class TestJavaEnvironmentSanitization:
         with pytest.raises(_PopenIntercept):
             internals.java(["Main"])
         assert "JAVA_TOOL_OPTIONS" in captured["env"]
+
+    def test_helper_strips_and_preserves(self, monkeypatch):
+        """The shared _java_child_env() helper (used by java() and the MaltParser
+        wrapper) drops every injecting var and keeps the rest."""
+        monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-Xmx1m")
+        monkeypatch.setenv("CLASSPATH", "/tmp/evil")
+        monkeypatch.setenv("NLTK_KEEP", "1")
+        env = internals._java_child_env()
+        assert "JAVA_TOOL_OPTIONS" not in env and "CLASSPATH" not in env
+        assert env.get("NLTK_KEEP") == "1"
+
+
+# --- MaltParser runs its OWN java subprocess, not internals.java(): it must apply
+# the same env sanitization or JAVA_TOOL_OPTIONS et al. inject past the allowlist.
+
+
+def test_maltparser_execute_strips_injecting_env(monkeypatch):
+    from nltk.parse import malt
+
+    captured = {}
+
+    def _fake_popen(cmd, *a, **k):
+        captured["env"] = k.get("env")
+
+        class _P:
+            def wait(self):
+                return 0
+
+        return _P()
+
+    monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-XX:OnError=touch /tmp/pwned")
+    monkeypatch.setenv("_JAVA_OPTIONS", "-javaagent:/tmp/evil.jar")
+    monkeypatch.setenv("NLTK_KEEP", "1")
+    monkeypatch.setattr(malt.subprocess, "Popen", _fake_popen)
+    malt.MaltParser._execute(["java", "-version"])
+    env = captured["env"]
+    assert env is not None, "MaltParser._execute must pass an explicit sanitized env"
+    assert "JAVA_TOOL_OPTIONS" not in env and "_JAVA_OPTIONS" not in env
+    assert env.get("NLTK_KEEP") == "1"  # benign vars are preserved
+
+
+def test_config_java_validates_global_options(monkeypatch):
+    """config_java() stores global options used when java(options=None); a
+    dangerous global flag must be rejected there too, not just per-call."""
+    monkeypatch.setattr(internals, "_java_options", [])
+    with pytest.raises(ValueError):
+        internals.config_java(bin="/usr/bin/java", options=["-XX:OnError=id"])
+    # a safe global set is accepted and stored
+    internals.config_java(bin="/usr/bin/java", options=["-Xmx512m"])
+    assert internals._java_options == ["-Xmx512m"]

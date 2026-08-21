@@ -49,21 +49,17 @@ _java_options = []
 #     its own ``-encoding`` *program* argument, not ``-Dfile.encoding``.
 # An application that genuinely needs one of these passes it through the explicit
 # ``trusted_raw_options`` escape hatch (see ``java()``), taking responsibility.
-_SAFE_JVM_PREFIXES = (
-    "-xmx",  # max heap size:   -Xmx512m
-    "-mx",  # max heap (legacy alias of -Xmx, used by Stanford/CoreNLP): -mx2g
-    "-xms",  # initial heap:    -Xms128m
-    "-ms",  # initial heap (legacy alias of -Xms): -ms128m
-    "-xss",  # thread stack:    -Xss4m
-    "-ss",  # thread stack (legacy alias of -Xss): -ss4m
-    "-xbatch",  # disable bg JIT
-    "-xint",  # interpret-only mode
-    "-xcomp",  # compile-only mode
-    "-xmixed",  # mixed mode (JVM default)
-    "-verbose",  # diagnostic output: -verbose:gc
-)
+# Heap/stack sizing (-Xmx512m / -mx2g / -Xms128m / -Xss4m; no-X aliases are what
+# Stanford/CoreNLP pass). Anchored to number+unit so no suffix rides a bare prefix.
+_SAFE_SIZING_RE = re.compile(r"\A-(xmx|mx|xms|ms|xss|ss)\d+[kmgt]?\Z", re.IGNORECASE)
 
-_SAFE_JVM_EXACT = frozenset({"-server", "-client"})
+# -verbose diagnostic output: bare or one standard category (-verbose:gc etc.).
+_SAFE_VERBOSE_RE = re.compile(r"\A-verbose(:(class|gc|jni|module))?\Z", re.IGNORECASE)
+
+# Exact no-argument flags (mode / VM selectors); no suffix may ride these.
+_SAFE_JVM_EXACT = frozenset(
+    {"-server", "-client", "-xbatch", "-xint", "-xcomp", "-xmixed"}
+)
 
 # ``--add-modules <module-list>`` is required by CoreNLP on JDK 9-11 (a CoreNLP
 # dependency uses the JAXB module dropped from the default set). The value is a
@@ -77,7 +73,7 @@ _MODULE_LIST_RE = re.compile(r"\A[A-Za-z0-9_.,-]+\Z")
 # metacharacter. Rejecting those characters is therefore a free, name-agnostic
 # defense-in-depth layer (it has no false positives now that -D, whose values may
 # legitimately contain them, is not accepted): e.g. a malformed ``-Xmx512m ; rm``
-# token cannot ride through on the ``-xmx`` prefix.
+# token cannot ride through as a sizing flag.
 _UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
 
 # JVM env vars that inject flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS / JDK_JAVA_OPTIONS
@@ -92,6 +88,16 @@ _JVM_INJECTING_ENV_VARS = frozenset(
         "CLASSPATH",
     }
 )
+
+
+def _java_child_env():
+    """Return os.environ minus the JVM-injecting variables, so any child java
+    process (java() here, or a wrapper that builds its own command) cannot pick up
+    flags/classpath from JAVA_TOOL_OPTIONS et al. (CWE-88). Single source of truth
+    for every JVM launch in NLTK."""
+    return {
+        k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
+    }
 
 
 def _validate_java_options(options):
@@ -165,7 +171,7 @@ def _validate_java_options(options):
             i += 1
             continue
 
-        if n.startswith(_SAFE_JVM_PREFIXES):
+        if _SAFE_SIZING_RE.match(flag) or _SAFE_VERBOSE_RE.match(flag):
             i += 1
             continue
 
@@ -417,9 +423,7 @@ def java(
         final_cmd.extend(["-cp", classpath_arg])
     final_cmd.extend(cmd_list)
 
-    child_env = {
-        k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
-    }
+    child_env = _java_child_env()
     try:
         p = subprocess.Popen(
             final_cmd,

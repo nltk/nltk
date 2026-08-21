@@ -15,6 +15,7 @@ import tempfile
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import (
+    _java_child_env,
     _validate_java_options,
     _verify_jar_sandbox,
     find_dir,
@@ -298,7 +299,11 @@ class MaltParser(ParserI):
     @staticmethod
     def _execute(cmd, verbose=False, cwd=None):
         output = None if verbose else subprocess.PIPE
-        p = subprocess.Popen(cmd, stdout=output, stderr=output, cwd=cwd)
+        # MaltParser runs its own JVM (not internals.java()), so strip the same
+        # JVM-injecting env vars or JAVA_TOOL_OPTIONS et al. inject past the allowlist.
+        p = subprocess.Popen(
+            cmd, stdout=output, stderr=output, cwd=cwd, env=_java_child_env()
+        )
         return p.wait()
 
     def train(self, depgraphs, verbose=False):
