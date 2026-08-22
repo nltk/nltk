@@ -571,3 +571,47 @@ def test_sandbox_trust_boundary_is_nltk_data_path(stub_java_bin, tmp_path, monke
     internals._verify_jar_sandbox([str(inside)])  # trusted: no raise
     with pytest.raises(internals.UntrustedJarError):
         internals._verify_jar_sandbox([str(outside)])
+
+
+# --- non-blocking path (CoreNLP launches its server via java(blocking=False)): the
+# option/classpath/env guards must all fire BEFORE Popen, not only for blocking runs.
+
+
+class TestJavaNonBlocking:
+    def test_nonblocking_rejects_bad_option_before_popen(
+        self, stub_java_bin, monkeypatch
+    ):
+        called = {"popen": False}
+        monkeypatch.setattr(
+            internals.subprocess,
+            "Popen",
+            lambda *a, **k: called.__setitem__("popen", True),
+        )
+        with pytest.raises(ValueError):
+            internals.java(["Main"], options=["-XX:OnError=id"], blocking=False)
+        assert called["popen"] is False
+
+    def test_nonblocking_rejects_untrusted_classpath_before_popen(
+        self, stub_java_bin, monkeypatch
+    ):
+        called = {"popen": False}
+        monkeypatch.setattr(
+            internals.subprocess,
+            "Popen",
+            lambda *a, **k: called.__setitem__("popen", True),
+        )
+        with pytest.raises(internals.UntrustedJarError):
+            internals.java(["Main"], classpath="/etc/passwd", blocking=False)
+        assert called["popen"] is False
+
+    def test_nonblocking_strips_env(self, stub_java_bin, monkeypatch):
+        captured = {}
+
+        def _fake_popen(cmd, *a, **k):
+            captured["env"] = k.get("env")
+            return object()  # java() returns this Popen unchanged when non-blocking
+
+        monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-XX:OnError=x")
+        monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
+        internals.java(["Main"], blocking=False)
+        assert "JAVA_TOOL_OPTIONS" not in captured["env"]

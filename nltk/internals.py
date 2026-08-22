@@ -1122,12 +1122,14 @@ def find_jar_iter(
         if is_regex:
             for filename in os.listdir(directory):
                 path_to_jar = os.path.join(directory, filename)
-                if os.path.isfile(path_to_jar):
-                    if re.match(name_pattern, filename):
-                        if verbose:
-                            print(f"[Found {filename}: {path_to_jar}]")
-                yielded = True
-                yield path_to_jar
+                # Only yield an actual file whose name matches the pattern; the
+                # yield was previously outside both guards, returning every dir
+                # entry (subdirs / unrelated files) as if it were the jar.
+                if os.path.isfile(path_to_jar) and re.match(name_pattern, filename):
+                    if verbose:
+                        print(f"[Found {filename}: {path_to_jar}]")
+                    yielded = True
+                    yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
