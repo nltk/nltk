@@ -615,3 +615,34 @@ class TestJavaNonBlocking:
         monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
         internals.java(["Main"], blocking=False)
         assert "JAVA_TOOL_OPTIONS" not in captured["env"]
+
+
+# --- the java wrappers write the user's input to temp files and pass those paths
+# to the JVM; they must use a secure temp API, never a predictable-name one (CWE-377).
+
+_JAVA_WRAPPER_MODULES = [
+    "nltk.tokenize.stanford",
+    "nltk.parse.stanford",
+    "nltk.tag.stanford",
+    "nltk.tokenize.stanford_segmenter",
+    "nltk.classify.weka",
+    "nltk.parse.malt",
+]
+
+_SECURE_TEMP = ("NamedTemporaryFile", "mkstemp", "mkdtemp")
+_INSECURE_TEMP = ("tempfile.mktemp", "os.tmpnam", "os.tempnam")
+
+
+@pytest.mark.parametrize("modname", _JAVA_WRAPPER_MODULES)
+def test_java_wrapper_uses_secure_tempfiles(modname):
+    """Each java wrapper must create temp files with a secure API and never a
+    predictable-name one, so a symlink/CWD race can't hijack the file (CWE-377)."""
+    import importlib
+    import inspect
+
+    src = inspect.getsource(importlib.import_module(modname))
+    for bad in _INSECURE_TEMP:
+        assert bad not in src, f"{modname} uses insecure temp API {bad!r}"
+    assert any(
+        good in src for good in _SECURE_TEMP
+    ), f"{modname} does not use a recognised secure temp API {_SECURE_TEMP}"
