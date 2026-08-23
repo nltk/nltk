@@ -5,7 +5,7 @@ so an all-distinct input forced O(V**2) memory and OOM-killed the worker. The
 matrix is now a sparse dict keyed by the observed (reference index, test index)
 pairs. These tests confirm the storage is sparse and the public API is preserved.
 
-The allocation test runs in a spawned process with a hard timeout so a regression
+The allocation test runs in a separate process with a hard timeout so a regression
 to the dense allocation cannot OOM or hang the rest of the suite.
 """
 

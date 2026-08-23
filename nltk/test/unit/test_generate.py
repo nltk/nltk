@@ -8,7 +8,7 @@ never terminates (it hangs producing even the first sentence) or exhausts
 memory. The number of derivation-expansion steps is now bounded by
 ``MAX_GENERATE_OPERATIONS``; once exceeded, generation raises ``ValueError``.
 
-The "must not hang" test runs in a spawned process with a hard timeout so a
+The "must not hang" test runs in a separate process with a hard timeout so a
 regression (running the unbounded enumeration) cannot hang/OOM the suite.
 """
 

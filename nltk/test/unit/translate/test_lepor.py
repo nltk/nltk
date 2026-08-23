@@ -67,7 +67,7 @@ def _alignment_worker(n):
 def test_alignment_is_linear_not_quadratic():
     """A large low-overlap input must finish quickly (linear), not tie up a core.
 
-    Run in a spawned process with a hard deadline: the linear aligner returns in
+    Run in a separate process with a hard deadline: the linear aligner returns in
     milliseconds, while the previous quadratic version needs well over a minute
     at this size, so a regression is terminated and fails the test instead of
     burning CPU for the rest of the suite.

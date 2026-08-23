@@ -117,7 +117,7 @@ def _words_worker(root):
 def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     """A single long, malformed ``<node ...`` line must not blow up quadratically.
 
-    Run in a spawned process with a hard deadline: the linear normalizer returns
+    Run in a separate process with a hard deadline: the linear normalizer returns
     in milliseconds, while the previous chained-lazy regex is O(n^2) and needs
     well over a minute at this size, so a regression is terminated and fails the
     test instead of pinning a core for the rest of the suite.

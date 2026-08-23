@@ -369,7 +369,7 @@ class TestTokenize:
         """
         The URL/email regexes used to backtrack catastrophically on long
         dotted strings, so a tiny input could hang the tokenizer for many
-        seconds. Run pathological inputs in a spawned process with a hard
+        seconds. Run pathological inputs in a separate process with a hard
         timeout so a regression fails fast instead of hanging the suite.
         """
         ctx = _mp_ctx()

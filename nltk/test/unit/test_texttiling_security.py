@@ -57,7 +57,7 @@ def _tokenize_worker(result_q):
 
 
 def _run_in_process(target):
-    """Run ``target(result_q)`` in a spawned process with a timeout.
+    """Run ``target(result_q)`` in a separate process with a timeout.
 
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.

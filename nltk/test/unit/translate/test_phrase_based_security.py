@@ -9,7 +9,7 @@ by ``MAX_PHRASE_EXTRACTION_DEFAULT_LEN``; a longer sentence with the default
 raises ``ValueError`` asking for an explicit ``max_phrase_length``. An
 explicitly supplied ``max_phrase_length`` is never capped.
 
-The "must not run" test runs in a spawned process with a hard timeout, and the
+The "must not run" test runs in a separate process with a hard timeout, and the
 worker reports its outcome through its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot hang the suite.
 """

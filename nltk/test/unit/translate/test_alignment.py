@@ -6,7 +6,7 @@ index was ``[[] for _ in range(self._len + 1)]``. The index is now sparse (a dic
 keyed by the left indices that occur). These tests confirm the index is sparse and
 that the public indexing / range behaviour is preserved.
 
-The allocation test runs in a spawned process with a hard timeout so a regression
+The allocation test runs in a separate process with a hard timeout so a regression
 to the dense allocation cannot OOM or hang the rest of the suite.
 """
 

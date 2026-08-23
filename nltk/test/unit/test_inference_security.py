@@ -85,7 +85,7 @@ def _tableau_attack_worker(result_q):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a deadline.
+    """Run ``target(result_q, *args)`` in a separate process with a deadline.
 
     Returns ``(finished, status, payload)``. If the worker overruns
     ``_DEADLINE`` it is terminated (no lingering CPU) and ``finished`` is

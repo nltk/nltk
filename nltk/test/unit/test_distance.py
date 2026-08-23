@@ -451,7 +451,7 @@ def _jaro_worker(result_q):
 def test_jaro_similarity_not_cubic_on_near_matches():
     """A near-matching pair must compute quickly, not in cubic time (ReDoS-style).
 
-    Runs in a spawned process with a hard timeout and reports status back via a
+    Runs in a separate process with a hard timeout and reports status back via a
     queue, so a regression to the cubic version is terminated (no lingering CPU)
     and any worker exception is surfaced to the assertion.
     """

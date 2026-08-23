@@ -43,7 +43,7 @@ def _reader_worker(result_q, root, fileid):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a timeout.
+    """Run ``target(result_q, *args)`` in a separate process with a timeout.
 
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.

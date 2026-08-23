@@ -8,7 +8,7 @@ the run length -- so a single untrusted valuation string could pin a CPU core.
 A ``(?<!=)`` lookbehind now lets the run be matched only at its start, making the
 split linear while leaving the parse result unchanged.
 
-The "must stay linear" test runs in a spawned process with a hard timeout, and
+The "must stay linear" test runs in a separate process with a hard timeout, and
 the worker reports via its exit code (no queue/thread, so it is robust on
 free-threaded builds), so a regression to the quadratic pattern cannot hang the
 suite.

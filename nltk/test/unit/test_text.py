@@ -94,7 +94,7 @@ def _star_query_worker(n):
 def test_findall_star_query_is_linear():
     """``<a>*<b>`` over a long token run must finish quickly, not scan O(n^2).
 
-    Run in a spawned process with a hard deadline: the ``regex`` scan returns in
+    Run in a separate process with a hard deadline: the ``regex`` scan returns in
     milliseconds, while the previous stdlib-``re`` version is quadratic and needs
     minutes at this size, so a regression is terminated instead of hanging the
     suite.

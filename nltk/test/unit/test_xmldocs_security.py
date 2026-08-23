@@ -52,7 +52,7 @@ def _view_worker(result_q, path):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a timeout."""
+    """Run ``target(result_q, *args)`` in a separate process with a timeout."""
     ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))

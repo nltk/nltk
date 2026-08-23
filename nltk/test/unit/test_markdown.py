@@ -102,7 +102,7 @@ def _blockquotes_worker(root):
 def test_blockquotes_is_linear_not_quadratic(tmp_path):
     """A document of many top-level blockquotes must not blow up quadratically.
 
-    Run in a spawned process with a hard deadline: the single-pass reader returns
+    Run in a separate process with a hard deadline: the single-pass reader returns
     quickly, while the previous tokens.index()-per-block version is O(n^2) and
     needs well over a minute at this size, so a regression is terminated and fails
     the test instead of pinning a core for the rest of the suite.

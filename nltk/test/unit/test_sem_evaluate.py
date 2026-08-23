@@ -7,7 +7,7 @@ cost is now bounded by ``Model.MAX_SATISFY_OPERATIONS`` before the recursion can
 blow up. These tests confirm the bound refuses deeply-nested formulas while
 legitimate shallow ones still evaluate.
 
-The "must not hang" test runs in a spawned process with a hard timeout so a
+The "must not hang" test runs in a separate process with a hard timeout so a
 regression (running the unbounded O(|domain| ** k) loop) cannot hang the suite.
 """
 

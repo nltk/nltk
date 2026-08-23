@@ -68,7 +68,7 @@ def _blowup_worker():
 def test_simplify_bounds_exponential_blowup():
     """A nested-doubler expression must be refused quickly, not blow up.
 
-    Run in a spawned process with a hard deadline: with the cap the reduction
+    Run in a separate process with a hard deadline: with the cap the reduction
     raises almost immediately, while the unbounded version needs exponential CPU
     and memory at this size, so a regression is terminated instead of OOM-killing
     or hanging the suite.

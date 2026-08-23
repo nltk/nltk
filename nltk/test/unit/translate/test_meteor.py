@@ -94,7 +94,7 @@ def _meteor_worker(result_q):
 def test_meteor_on_disjoint_text_is_linear_time():
     """A low-overlap pair must score in (near-)linear time, not quadratic.
 
-    Runs in a spawned process with a hard timeout and reports status back via a
+    Runs in a separate process with a hard timeout and reports status back via a
     queue, so a regression to the quadratic version is terminated (no lingering
     CPU) and any worker exception is surfaced to the assertion.
     """

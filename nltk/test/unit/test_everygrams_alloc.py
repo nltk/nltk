@@ -9,7 +9,7 @@ The defaulted ``max_len`` is now capped by ``MAX_EVERYGRAMS_DEFAULT_LEN``; a
 longer sequence with the default raises ``ValueError`` asking for an explicit
 ``max_len``. An explicitly supplied ``max_len`` is never capped.
 
-The "must not allocate" test runs in a spawned process with a hard timeout, and
+The "must not allocate" test runs in a separate process with a hard timeout, and
 the worker reports its outcome through its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot OOM/hang the suite.
 """

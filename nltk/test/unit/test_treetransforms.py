@@ -85,7 +85,7 @@ def _un_chomsky_worker(n):
 def test_un_chomsky_is_linear_not_quadratic():
     """A large CNF tree must un-binarise quickly (linear), not tie up a core.
 
-    Run in a spawned process with a hard deadline: the single-sweep pass returns
+    Run in a separate process with a hard deadline: the single-sweep pass returns
     in milliseconds, while the previous O(n^2) version needs over a minute at
     this size, so a regression is terminated instead of burning CPU for the rest
     of the suite.

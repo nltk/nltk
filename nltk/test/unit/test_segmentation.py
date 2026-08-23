@@ -175,7 +175,7 @@ def _pk_worker(n):
 
 
 def _finishes_within(target, n, deadline=30):
-    """Run target(n) in a spawned process; return (finished, exitcode)."""
+    """Run target(n) in a separate process; return (finished, exitcode)."""
     ctx = _mp_ctx()
     proc = ctx.Process(target=target, args=(n,))
     proc.start()
@@ -190,7 +190,7 @@ def _finishes_within(target, n, deadline=30):
 def test_windowdiff_is_linear_not_quadratic():
     """A large half-window input must finish quickly (linear), not tie up a core.
 
-    Run in a spawned process with a hard deadline: the incremental aligner
+    Run in a separate process with a hard deadline: the incremental aligner
     returns in milliseconds, while the previous O(n*k) version needs over a
     minute at this size, so a regression is terminated instead of burning CPU.
     """

@@ -8,7 +8,7 @@ memory, and even obtaining the first parse never returns. The number of parse-tr
 nodes built is now bounded by ``MAX_PARSE_TREES``; once exceeded, tree extraction
 raises ``ValueError``.
 
-The "must not run unbounded" test runs in a spawned process with a hard timeout,
+The "must not run unbounded" test runs in a separate process with a hard timeout,
 and the worker reports its outcome via its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot hang the suite.
 """

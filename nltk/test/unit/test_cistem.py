@@ -8,7 +8,7 @@ word length. A single
 crafted word of a few tens of KB pinned a CPU core. The loop now strips from a
 list in O(1) per step (O(n) overall) while producing byte-identical output.
 
-The "must stay linear" test runs in a spawned process with a hard timeout, and
+The "must stay linear" test runs in a separate process with a hard timeout, and
 the worker reports its outcome through its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression to the O(n**2) loop cannot hang
 the suite.

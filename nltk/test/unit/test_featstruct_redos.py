@@ -9,7 +9,7 @@ untrusted feature structure renamed (or unified, which renames by default) could
 pin a CPU core. A ``(?<!\\d)`` lookbehind now lets the run match only at its
 start, making the substitution linear while leaving the result unchanged.
 
-The "must stay linear" test runs in a spawned process with a hard timeout, and
+The "must stay linear" test runs in a separate process with a hard timeout, and
 the worker reports via its exit code (no queue/thread, so it is robust on
 free-threaded builds), so a regression to the quadratic pattern cannot hang the
 suite.
