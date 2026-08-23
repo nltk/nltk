@@ -1,5 +1,3 @@
-from .. import _mp_ctx
-
 """Regression tests for the cubic-blowup DoS in
 ``nltk.translate.phrase_based.phrase_extraction`` (CWE-770; CVE-2026-12870).
 
@@ -25,6 +23,8 @@ from nltk.translate.phrase_based import (
     MAX_PHRASE_EXTRACTION_DEFAULT_LEN,
     phrase_extraction,
 )
+
+from .. import _mp_ctx
 
 # The worked example from the phrase_extraction docstring.
 _SRC = "michael assumes that he will stay in the house"

@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for unbounded proof search in NLTK's in-process first-order
 theorem provers ``ResolutionProver`` and ``TableauProver`` (CWE-400 / CWE-674).
 
@@ -37,6 +35,8 @@ from nltk.inference import (
 from nltk.inference.resolution import ResolutionProver
 from nltk.inference.tableau import TableauProver
 from nltk.sem import Expression
+
+from . import _mp_ctx
 
 read = Expression.fromstring
 

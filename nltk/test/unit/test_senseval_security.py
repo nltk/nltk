@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for ReDoS in SensevalCorpusReader (CWE-1333).
 
 ``_fixXML`` normalises Senseval pseudo-XML before parsing. Two of its
@@ -20,6 +18,8 @@ import multiprocessing
 import queue
 
 from nltk.corpus.reader.senseval import SensevalCorpusReader, _fixXML
+
+from . import _mp_ctx
 
 # A long token with no <p="..."/> tag: ~128 KB. Linear with the possessive
 # patterns (sub-millisecond); ~quadratic and tens of seconds with the old ones.

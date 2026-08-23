@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the combinatorial-blowup DoS in nltk.sem model
 evaluation (CWE-770; CVE-2026-12840).
 
@@ -19,6 +17,8 @@ import queue
 from nltk.sem import Assignment, Model, Valuation
 from nltk.sem.evaluate import Error, _max_binder_depth
 from nltk.sem.logic import Expression
+
+from . import _mp_ctx
 
 
 def _model():

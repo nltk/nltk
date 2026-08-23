@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the unbounded-default-``max_len`` DoS in
 ``nltk.util.everygrams`` (CWE-770; CVE-2026-12861).
 
@@ -22,6 +20,8 @@ import os
 import pytest
 
 from nltk.util import MAX_EVERYGRAMS_DEFAULT_LEN, everygrams
+
+from . import _mp_ctx
 
 
 def test_max_everygrams_default_len_is_a_finite_positive_int():

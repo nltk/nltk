@@ -1,5 +1,3 @@
-from .. import _mp_ctx
-
 """
 Tests GDFA alignments
 """
@@ -11,6 +9,8 @@ import traceback
 import unittest
 
 from nltk.translate.gdfa import grow_diag_final_and
+
+from .. import _mp_ctx
 
 
 class TestGDFA(unittest.TestCase):

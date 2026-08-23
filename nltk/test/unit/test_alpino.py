@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic-backtracking ReDoS in NLTK's Alpino corpus
 reader (``nltk.corpus.reader.bracket_parse.AlpinoCorpusReader._normalize``) --
 CWE-1333.
@@ -22,6 +20,8 @@ import sys
 import traceback
 
 from nltk.corpus.reader.bracket_parse import AlpinoCorpusReader
+
+from . import _mp_ctx
 
 _SAMPLE = (
     '<alpino_ds version="1.3">\n'

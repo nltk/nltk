@@ -1,5 +1,3 @@
-from .. import _mp_ctx
-
 """Regression tests for two DoS defects in NLTK LEPOR word alignment
 (``nltk.translate.lepor.alignment``, used by ``sentence_lepor``/``corpus_lepor``).
 
@@ -22,6 +20,8 @@ import random
 import traceback
 
 from nltk.translate.lepor import alignment
+
+from .. import _mp_ctx
 
 
 def test_alignment_handles_repeated_tokens():

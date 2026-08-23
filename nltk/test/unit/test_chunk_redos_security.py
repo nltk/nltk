@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for ReDoS in chunk tag-pattern parsing (CWE-1333).
 
 ``tag_pattern2re_pattern`` validates a caller-supplied tag pattern against the
@@ -24,6 +22,8 @@ import multiprocessing
 import queue
 
 from nltk.chunk.regexp import CHUNK_TAG_PATTERN, tag_pattern2re_pattern
+
+from . import _mp_ctx
 
 # A short, unmatchable payload: a run of plain tag characters followed by a
 # trailing "{" that ``CHUNK_TAG_PATTERN`` can neither consume nor close. With

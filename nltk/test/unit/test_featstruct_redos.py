@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic ReDoS in feature-structure variable
 renaming (CWE-1333; CVE-2026-12919).
 
@@ -22,6 +20,8 @@ import os
 
 from nltk.featstruct import FeatStruct, _rename_variable
 from nltk.sem.logic import Variable
+
+from . import _mp_ctx
 
 
 def test_rename_variable_strips_trailing_digits():

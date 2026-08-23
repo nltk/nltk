@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for catastrophic backtracking in XMLCorpusView (CWE-1333).
 
 ``_VALID_XML_RE`` validates each fragment read by ``XMLCorpusView``. Its comment,
@@ -18,6 +16,8 @@ import queue
 
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.data import FileSystemPathPointer
+
+from . import _mp_ctx
 
 # A handful of closed pieces followed by an unterminated tail so ``\Z`` fails.
 # With the old spanning regex even ~30 of these took minutes (exponential);

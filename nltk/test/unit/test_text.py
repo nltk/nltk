@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic ReDoS in NLTK's token-regex search
 (``nltk.text.TokenSearcher.findall`` / ``Text.findall``) -- CWE-1333.
 
@@ -20,6 +18,8 @@ import traceback
 import pytest
 
 from nltk.text import TOKENSEARCH_TIMEOUT, Text, TokenSearcher
+
+from . import _mp_ctx
 
 
 def test_findall_preserves_ordinary_results():

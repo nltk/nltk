@@ -1,5 +1,3 @@
-from .. import _mp_ctx
-
 """Regression tests for nltk.translate.Alignment.
 
 Covers the unbounded-allocation DoS (CWE-770; CVE-2026-12837): a tiny pair with a
@@ -18,6 +16,8 @@ import queue
 import pytest
 
 from nltk.translate.api import Alignment
+
+from .. import _mp_ctx
 
 
 def test_index_is_sparse_not_dense():

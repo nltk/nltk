@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """
 Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
@@ -24,6 +22,8 @@ from nltk.tokenize import (
 )
 from nltk.tokenize.simple import CharTokenizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+
+from . import _mp_ctx
 
 
 def load_stanford_segmenter():

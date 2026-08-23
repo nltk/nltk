@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic-time DoS in
 ``nltk.tree.Tree.un_chomsky_normal_form`` (CWE-407).
 
@@ -17,6 +15,8 @@ import os
 
 from nltk.tree import Tree
 from nltk.tree.transforms import chomsky_normal_form, un_chomsky_normal_form
+
+from . import _mp_ctx
 
 _TREES = [
     "(S (NP (D the) (N cat)) (VP (V sat)))",

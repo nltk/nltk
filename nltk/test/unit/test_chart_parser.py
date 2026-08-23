@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the exponential chart-parsing DoS (CWE-770; CVE-2026-12886).
 
 A highly-ambiguous grammar such as the 15-byte ``S -> S S | 'a'`` makes the
@@ -24,6 +22,8 @@ from nltk import CFG
 from nltk.parse import BottomUpChartParser, ChartParser
 from nltk.parse import chart as chart_mod
 from nltk.parse.chart import MAX_PARSE_TREES
+
+from . import _mp_ctx
 
 _AMBIG = CFG.fromstring("S -> S S | 'a'")  # 15 bytes, Catalan-many parses
 

@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for nltk.metrics.ConfusionMatrix (CWE-770; CVE-2026-12839).
 
 A dense V x V matrix (V = number of distinct labels) was allocated and retained,
@@ -15,6 +13,8 @@ import multiprocessing
 import queue
 
 from nltk.metrics import ConfusionMatrix
+
+from . import _mp_ctx
 
 _REF = "DET NN VB DET JJ NN NN IN DET NN".split()
 _TEST = "DET VB VB DET NN NN NN IN DET NN".split()

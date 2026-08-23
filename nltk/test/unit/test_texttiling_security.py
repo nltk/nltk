@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for ReDoS in TextTilingTokenizer (CWE-1333).
 
 ``_mark_paragraph_breaks`` scans the input for blank-line paragraph breaks with
@@ -19,6 +17,8 @@ import multiprocessing
 import queue
 
 from nltk.tokenize.texttiling import TextTilingTokenizer
+
+from . import _mp_ctx
 
 # A long horizontal-whitespace run with no blank line: ~256 KB. Linear with the
 # possessive pattern (sub-millisecond); ~quadratic and tens of seconds with the

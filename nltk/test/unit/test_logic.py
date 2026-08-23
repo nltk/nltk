@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression test for the exponential beta-reduction DoS in
 ``nltk.sem.logic.ApplicationExpression.simplify`` (CWE-400).
 
@@ -16,6 +14,8 @@ import os
 
 from nltk.sem import Expression
 from nltk.sem.logic import MAX_SIMPLIFY_SIZE, _exceeds_size
+
+from . import _mp_ctx
 
 _DOUBLER = r"(\Y.(Y & Y))"
 

@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for ReDoS in ReviewsCorpusReader (CWE-1333).
 
 The ``FEATURES`` regex extracts ``feature[+N]`` annotations from each review
@@ -17,6 +15,8 @@ import multiprocessing
 import queue
 
 from nltk.corpus.reader.reviews import FEATURES, ReviewsCorpusReader
+
+from . import _mp_ctx
 
 # A long, bracket-less word run: ~250 KB. Linear with the bounded regex
 # (milliseconds); ~quadratic and ~50 s with the old unbounded one.

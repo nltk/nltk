@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic-time DoS in NLTK's Markdown corpus reader
 (``nltk.corpus.reader.markdown.CategorizedMarkdownCorpusReader.blockquote_reader``
 and the identical ``list_reader``) -- CWE-407.
@@ -22,6 +20,8 @@ import traceback
 import pytest
 
 from nltk.corpus.reader.markdown import CategorizedMarkdownCorpusReader, List
+
+from . import _mp_ctx
 
 
 def setup_module():

@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic-time DoS in the Cistem stemmer
 (CWE-770; CVE-2026-12868).
 
@@ -20,6 +18,8 @@ import multiprocessing
 import os
 
 from nltk.stem.cistem import Cistem
+
+from . import _mp_ctx
 
 # (word, expected stem, expected (stem, rest)) for the default (case-sensitive)
 # stemmer -- these are the examples documented in Cistem.stem / Cistem.segment.

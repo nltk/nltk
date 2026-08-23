@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression test for ReDoS in CCG lexicon parsing (CWE-1333).
 
 ``LEX_RE`` parses each lexicon line. Its identifier group ``[\\S_]+`` and the
@@ -17,6 +15,8 @@ import multiprocessing
 import queue
 
 from nltk.ccg.lexicon import LEX_RE, fromstring
+
+from . import _mp_ctx
 
 # One lexicon line: an identifier then a long run of '=' with no closing '>', so
 # the arrow can never complete. ~tens of seconds with the old quadratic regex;

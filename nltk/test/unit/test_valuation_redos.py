@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the quadratic ReDoS in valuation parsing
 (CWE-1333; CVE-2026-12890).
 
@@ -21,6 +19,8 @@ import os
 
 from nltk.sem import Valuation
 from nltk.sem.evaluate import read_valuation
+
+from . import _mp_ctx
 
 
 def test_valuation_parsing_preserved():

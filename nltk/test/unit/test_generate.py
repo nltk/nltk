@@ -1,5 +1,3 @@
-from . import _mp_ctx
-
 """Regression tests for the unbounded-enumeration DoS in
 ``nltk.parse.generate.generate`` (CWE-400).
 
@@ -22,6 +20,8 @@ import pytest
 from nltk import CFG
 from nltk.parse import generate as generate_mod
 from nltk.parse.generate import MAX_GENERATE_OPERATIONS, demo_grammar, generate
+
+from . import _mp_ctx
 
 
 def test_max_generate_operations_is_a_finite_positive_int():
