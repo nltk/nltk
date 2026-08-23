@@ -14,6 +14,8 @@ from nltk.metrics.distance import (
     jaro_winkler_similarity,
 )
 
+from . import _mp_ctx
+
 
 class TestEditDistance:
     @pytest.mark.parametrize(
@@ -454,7 +456,7 @@ def test_jaro_similarity_not_cubic_on_near_matches():
     queue, so a regression to the cubic version is terminated (no lingering CPU)
     and any worker exception is surfaced to the assertion.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=_jaro_worker, args=(result_q,))
     proc.start()

@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the exponential chart-parsing DoS (CWE-770; CVE-2026-12886).
 
 A highly-ambiguous grammar such as the 15-byte ``S -> S S | 'a'`` makes the
@@ -83,7 +85,7 @@ def _parse_worker():
 
 def test_exponential_grammar_is_refused_not_run():
     """The default cap must refuse an exponential parse forest, not build it."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_parse_worker)
     proc.start()
     proc.join(_TIMEOUT)

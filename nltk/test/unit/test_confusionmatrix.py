@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for nltk.metrics.ConfusionMatrix (CWE-770; CVE-2026-12839).
 
 A dense V x V matrix (V = number of distinct labels) was allocated and retained,
@@ -61,7 +63,7 @@ def _alloc_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

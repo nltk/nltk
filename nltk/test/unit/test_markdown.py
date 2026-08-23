@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic-time DoS in NLTK's Markdown corpus reader
 (``nltk.corpus.reader.markdown.CategorizedMarkdownCorpusReader.blockquote_reader``
 and the identical ``list_reader``) -- CWE-407.
@@ -109,7 +111,7 @@ def test_blockquotes_is_linear_not_quadratic(tmp_path):
     (tmp_path / "doc.md").write_text(
         "\n\n".join("> a" for _ in range(50_000)) + "\n", encoding="utf-8"
     )
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_blockquotes_worker, args=(str(tmp_path),))
     proc.start()
     proc.join(30)

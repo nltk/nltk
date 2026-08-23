@@ -1,3 +1,5 @@
+from .. import _mp_ctx
+
 """Regression tests for two DoS defects in NLTK LEPOR word alignment
 (``nltk.translate.lepor.alignment``, used by ``sentence_lepor``/``corpus_lepor``).
 
@@ -73,7 +75,7 @@ def test_alignment_is_linear_not_quadratic():
     """
     n = 120_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_alignment_worker, args=(n,))
     proc.start()
     proc.join(deadline)

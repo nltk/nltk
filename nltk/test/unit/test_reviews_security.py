@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for ReDoS in ReviewsCorpusReader (CWE-1333).
 
 The ``FEATURES`` regex extracts ``feature[+N]`` annotations from each review
@@ -47,7 +49,7 @@ def _run_in_process(target, args=()):
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

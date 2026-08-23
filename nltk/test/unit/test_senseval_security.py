@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for ReDoS in SensevalCorpusReader (CWE-1333).
 
 ``_fixXML`` normalises Senseval pseudo-XML before parsing. Two of its
@@ -44,7 +46,7 @@ def _reader_worker(result_q, root, fileid):
 
 
 def _run_in_process(target, args=()):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

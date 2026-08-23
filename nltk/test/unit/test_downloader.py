@@ -31,33 +31,34 @@ class TestPackageFromXmlInjection(unittest.TestCase):
 
 def test_downloader_using_existing_parent_download_dir(tmp_path):
     """Test that download works properly when the parent folder of the download_dir exists"""
-
     download_dir = str(tmp_path.joinpath("another_dir"))
-    download_status = download("mwa_ppdb", download_dir)
+    with unittest.mock.patch.dict(os.environ, {"NLTK_ALLOW_PROXIED_URLOPEN": "1"}):
+        download_status = download("mwa_ppdb", download_dir)
     assert download_status is True
 
 
 def test_downloader_using_non_existing_parent_download_dir(tmp_path):
     """Test that download works properly when the parent folder of the download_dir does not exist"""
-
     download_dir = str(
         tmp_path.joinpath("non-existing-parent-folder", "another-non-existing-folder")
     )
-    download_status = download("mwa_ppdb", download_dir)
+    with unittest.mock.patch.dict(os.environ, {"NLTK_ALLOW_PROXIED_URLOPEN": "1"}):
+        download_status = download("mwa_ppdb", download_dir)
     assert download_status is True
 
 
 def test_downloader_redownload(tmp_path):
     """Test that a second download correctly triggers the 'already up-to-date' message"""
-
     first_download = 0
     second_download = 1
 
     download_dir = str(tmp_path.joinpath("test_repeat_download"))
     for i in range(first_download, second_download + 1):
-        # capsys doesn't capture functools.partial stdout, which nltk.download.show uses, so just mock print
         with unittest.mock.patch("builtins.print") as print_mock:
-            download_status = download("stopwords", download_dir)
+            with unittest.mock.patch.dict(
+                os.environ, {"NLTK_ALLOW_PROXIED_URLOPEN": "1"}
+            ):
+                download_status = download("stopwords", download_dir)
             assert download_status is True
             if i == first_download:
                 expected_second_call = unittest.mock.call(

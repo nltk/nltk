@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression test for the exponential beta-reduction DoS in
 ``nltk.sem.logic.ApplicationExpression.simplify`` (CWE-400).
 
@@ -72,7 +74,7 @@ def test_simplify_bounds_exponential_blowup():
     and memory at this size, so a regression is terminated instead of OOM-killing
     or hanging the suite.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_blowup_worker)
     proc.start()
     proc.join(30)

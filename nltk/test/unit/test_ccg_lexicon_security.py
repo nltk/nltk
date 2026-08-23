@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression test for ReDoS in CCG lexicon parsing (CWE-1333).
 
 ``LEX_RE`` parses each lexicon line. Its identifier group ``[\\S_]+`` and the
@@ -43,7 +45,7 @@ def _fromstring_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

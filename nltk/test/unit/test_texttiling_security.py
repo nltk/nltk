@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for ReDoS in TextTilingTokenizer (CWE-1333).
 
 ``_mark_paragraph_breaks`` scans the input for blank-line paragraph breaks with
@@ -61,7 +63,7 @@ def _run_in_process(target):
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

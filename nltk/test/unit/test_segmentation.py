@@ -6,6 +6,8 @@ import pytest
 
 from nltk.metrics.segmentation import pk, windowdiff
 
+from . import _mp_ctx
+
 
 def test_basic_functionality():
     # Identical Segmentations
@@ -175,7 +177,7 @@ def _pk_worker(n):
 
 def _finishes_within(target, n, deadline=30):
     """Run target(n) in a spawned process; return (finished, exitcode)."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=target, args=(n,))
     proc.start()
     proc.join(deadline)

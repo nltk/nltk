@@ -1,3 +1,5 @@
+from .. import _mp_ctx
+
 """Regression tests for the cubic-blowup DoS in
 ``nltk.translate.phrase_based.phrase_extraction`` (CWE-770; CVE-2026-12870).
 
@@ -110,7 +112,7 @@ def _phrase_worker():
 
 def test_oversized_default_is_refused_not_run():
     """phrase_extraction(long_pair) with the default must be refused, not run."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_phrase_worker)
     proc.start()
     proc.join(_TIMEOUT)

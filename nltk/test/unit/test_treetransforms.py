@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic-time DoS in
 ``nltk.tree.Tree.un_chomsky_normal_form`` (CWE-407).
 
@@ -91,7 +93,7 @@ def test_un_chomsky_is_linear_not_quadratic():
     """
     n = 20_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_un_chomsky_worker, args=(n,))
     proc.start()
     proc.join(deadline)

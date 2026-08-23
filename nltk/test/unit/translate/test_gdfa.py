@@ -1,3 +1,5 @@
+from .. import _mp_ctx
+
 """
 Tests GDFA alignments
 """
@@ -184,7 +186,7 @@ def test_gdfa_cost_independent_of_lengths():
     scan needs minutes at this size, so a regression is terminated and fails the
     test instead of pinning a core for the rest of the suite.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_gdfa_worker, args=(50_000,))
     proc.start()
     proc.join(30)

@@ -1,3 +1,5 @@
+from .. import _mp_ctx
+
 """Regression tests for nltk.translate.Alignment.
 
 Covers the unbounded-allocation DoS (CWE-770; CVE-2026-12837): a tiny pair with a
@@ -65,7 +67,7 @@ def _alloc_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

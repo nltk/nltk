@@ -14,6 +14,8 @@ import nltk.data
 import nltk.pathsec
 from nltk.downloader import Downloader, Package
 
+from . import _mp_ctx
+
 BIG_PAYLOAD = b"x" * (1024 * 1024)
 
 
@@ -167,7 +169,7 @@ class TestDownloaderAtomic(unittest.TestCase):
     def test_concurrent_downloads_cooperate(self):
         """Verify multiple parallel processes cooperate under ENFORCE=True."""
         num_concurrent = 3
-        mp_ctx = multiprocessing.get_context("spawn")
+        mp_ctx = _mp_ctx()
 
         with mp_ctx.Manager() as manager:
             fetch_count = manager.Value("i", 0)

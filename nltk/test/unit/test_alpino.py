@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic-backtracking ReDoS in NLTK's Alpino corpus
 reader (``nltk.corpus.reader.bracket_parse.AlpinoCorpusReader._normalize``) --
 CWE-1333.
@@ -129,7 +131,7 @@ def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     )
     (tmp_path / "alpino.xml").write_text(body, encoding="ISO-8859-1")
 
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_words_worker, args=(str(tmp_path),))
     proc.start()
     proc.join(30)

@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """
 Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
@@ -371,7 +373,7 @@ class TestTokenize:
         seconds. Run pathological inputs in a spawned process with a hard
         timeout so a regression fails fast instead of hanging the suite.
         """
-        ctx = multiprocessing.get_context("spawn")
+        ctx = _mp_ctx()
         proc = ctx.Process(target=_tweet_tokenizer_redos_worker)
         proc.start()
         proc.join(60)

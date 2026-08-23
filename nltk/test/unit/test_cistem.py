@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic-time DoS in the Cistem stemmer
 (CWE-770; CVE-2026-12868).
 
@@ -70,7 +72,7 @@ def _stem_worker():
 
 def test_long_word_stems_in_linear_time():
     """A long word must stem quickly, not run the old O(n**2) loop."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_stem_worker)
     proc.start()
     proc.join(_TIMEOUT)

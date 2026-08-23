@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic ReDoS in feature-structure variable
 renaming (CWE-1333; CVE-2026-12919).
 
@@ -67,7 +69,7 @@ def _rename_worker():
 
 def test_long_digit_run_renames_in_linear_time():
     """A long digit-run variable name must rename in linear time (not ReDoS)."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_rename_worker)
     proc.start()
     proc.join(_TIMEOUT)

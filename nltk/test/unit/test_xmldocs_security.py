@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for catastrophic backtracking in XMLCorpusView (CWE-1333).
 
 ``_VALID_XML_RE`` validates each fragment read by ``XMLCorpusView``. Its comment,
@@ -52,7 +54,7 @@ def _view_worker(result_q, path):
 
 def _run_in_process(target, args=()):
     """Run ``target(result_q, *args)`` in a spawned process with a timeout."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

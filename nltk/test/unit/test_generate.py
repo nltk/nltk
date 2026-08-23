@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the unbounded-enumeration DoS in
 ``nltk.parse.generate.generate`` (CWE-400).
 
@@ -89,7 +91,7 @@ def _generate_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

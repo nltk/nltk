@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for unbounded proof search in NLTK's in-process first-order
 theorem provers ``ResolutionProver`` and ``TableauProver`` (CWE-400 / CWE-674).
 
@@ -90,7 +92,7 @@ def _run_in_process(target, args=()):
     ``_DEADLINE`` it is terminated (no lingering CPU) and ``finished`` is
     ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the unbounded-default-``max_len`` DoS in
 ``nltk.util.everygrams`` (CWE-770; CVE-2026-12861).
 
@@ -102,7 +104,7 @@ def _everygrams_worker():
 
 def test_oversized_default_does_not_allocate():
     """everygrams(long_seq) with the default max_len must be refused, not run."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_everygrams_worker)
     proc.start()
     proc.join(_TIMEOUT)

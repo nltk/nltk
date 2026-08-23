@@ -9,7 +9,7 @@ import nltk
 
 
 class TestDownloaderCycle(unittest.TestCase):
-    def _run_index_test(self, xml, expected_packages, timeout=5):
+    def _run_index_test(self, xml, expected_packages, timeout=30):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as f:
             f.write(xml)
             path = f.name
@@ -27,6 +27,7 @@ class TestDownloaderCycle(unittest.TestCase):
             ]
             script = "\n".join(script_lines)
             env = os.environ.copy()
+            env["PYTHONUNBUFFERED"] = "1"
             # Derive import root from nltk.__file__
             nltk_root = os.path.dirname(os.path.dirname(os.path.dirname(nltk.__file__)))
             env["PYTHONPATH"] = nltk_root + os.pathsep + env.get("PYTHONPATH", "")

@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic ReDoS in NLTK's token-regex search
 (``nltk.text.TokenSearcher.findall`` / ``Text.findall``) -- CWE-1333.
 
@@ -100,7 +102,7 @@ def test_findall_star_query_is_linear():
     """
     n = 200_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_star_query_worker, args=(n,))
     proc.start()
     proc.join(deadline)

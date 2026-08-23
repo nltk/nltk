@@ -1,3 +1,5 @@
+from . import _mp_ctx
+
 """Regression tests for the quadratic ReDoS in valuation parsing
 (CWE-1333; CVE-2026-12890).
 
@@ -54,7 +56,7 @@ def _parse_worker():
 
 def test_long_separator_run_parses_in_linear_time():
     """A long '=' run must split in linear time, not quadratic (ReDoS)."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_parse_worker)
     proc.start()
     proc.join(_TIMEOUT)
