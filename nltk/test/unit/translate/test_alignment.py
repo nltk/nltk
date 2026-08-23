@@ -10,7 +10,6 @@ The allocation test runs in a spawned process with a hard timeout so a regressio
 to the dense allocation cannot OOM or hang the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 import pytest

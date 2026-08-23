@@ -12,7 +12,6 @@ The "must not hang" test runs in a spawned process with a hard timeout so a
 regression (running the unbounded enumeration) cannot hang/OOM the suite.
 """
 
-import multiprocessing
 import queue
 
 import pytest

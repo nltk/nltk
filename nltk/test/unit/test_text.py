@@ -11,7 +11,6 @@ faster here) and honours a wall-clock ``timeout`` so a crafted query/corpus
 cannot pin a CPU core. The output is unchanged for ordinary queries.
 """
 
-import multiprocessing
 import os
 import traceback
 

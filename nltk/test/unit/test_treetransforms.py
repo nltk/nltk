@@ -10,7 +10,6 @@ rebuilds each parent's child list in a single left-to-right sweep (O(n)),
 producing identical output for any tree in Chomsky Normal Form.
 """
 
-import multiprocessing
 import os
 
 from nltk.tree import Tree

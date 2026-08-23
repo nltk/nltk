@@ -14,7 +14,6 @@ for the rest of the suite, and any exception in the worker is propagated back to
 the assertions instead of being swallowed.
 """
 
-import multiprocessing
 import queue
 
 from nltk.corpus.reader.senseval import SensevalCorpusReader, _fixXML

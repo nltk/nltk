@@ -11,7 +11,6 @@ timeout and ``terminate()`` on overrun, so a regression to the quadratic regex
 cannot keep burning CPU for the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 from nltk.ccg.lexicon import LEX_RE, fromstring

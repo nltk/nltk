@@ -4,7 +4,6 @@ See also nltk/test/tokenize.doctest
 """
 
 import hashlib
-import multiprocessing
 import os
 from typing import List, Tuple
 

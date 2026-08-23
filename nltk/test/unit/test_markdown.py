@@ -12,7 +12,6 @@ open/close index is now found with linear scans of the token list; ordinary
 corpora read identically.
 """
 
-import multiprocessing
 import os
 import sys
 import traceback

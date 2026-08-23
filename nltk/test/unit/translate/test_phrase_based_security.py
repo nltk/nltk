@@ -14,7 +14,6 @@ worker reports its outcome through its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot hang the suite.
 """
 
-import multiprocessing
 import os
 
 import pytest

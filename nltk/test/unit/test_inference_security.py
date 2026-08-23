@@ -25,7 +25,6 @@ exception in the worker (e.g. a re-raised ``RecursionError``) is propagated back
 to the assertions instead of crashing the runner.
 """
 
-import multiprocessing
 import queue
 
 from nltk.inference import (

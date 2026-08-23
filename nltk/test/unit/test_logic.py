@@ -9,7 +9,6 @@ reduces to an exponentially large normal form and exhausts CPU and memory.
 exceeds ``MAX_SIMPLIFY_SIZE`` subexpressions; ordinary reductions are unchanged.
 """
 
-import multiprocessing
 import os
 
 from nltk.sem import Expression

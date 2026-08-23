@@ -14,7 +14,6 @@ points reach this helper, so a crafted Alpino file could pin a CPU core. Each
 ordinary corpora are read identically.
 """
 
-import multiprocessing
 import os
 import sys
 import traceback

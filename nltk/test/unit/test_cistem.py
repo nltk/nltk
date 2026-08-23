@@ -14,7 +14,6 @@ robust on free-threaded builds), so a regression to the O(n**2) loop cannot hang
 the suite.
 """
 
-import multiprocessing
 import os
 
 from nltk.stem.cistem import Cistem

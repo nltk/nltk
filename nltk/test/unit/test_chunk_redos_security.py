@@ -18,7 +18,6 @@ regex cannot keep burning CPU for the rest of the suite, and any exception in
 the worker is propagated back to the assertions instead of being swallowed.
 """
 
-import multiprocessing
 import queue
 
 from nltk.chunk.regexp import CHUNK_TAG_PATTERN, tag_pattern2re_pattern

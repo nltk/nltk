@@ -14,7 +14,6 @@ match" branch that appended the chosen index twice; that duplicate is removed so
 each hypothesis token contributes at most one alignment.)
 """
 
-import multiprocessing
 import os
 import random
 import traceback

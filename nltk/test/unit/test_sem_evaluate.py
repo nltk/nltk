@@ -11,7 +11,6 @@ The "must not hang" test runs in a spawned process with a hard timeout so a
 regression (running the unbounded O(|domain| ** k) loop) cannot hang the suite.
 """
 
-import multiprocessing
 import queue
 
 from nltk.sem import Assignment, Model, Valuation

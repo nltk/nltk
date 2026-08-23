@@ -15,7 +15,6 @@ free-threaded builds), so a regression to the quadratic pattern cannot hang the
 suite.
 """
 
-import multiprocessing
 import os
 
 from nltk.featstruct import FeatStruct, _rename_variable

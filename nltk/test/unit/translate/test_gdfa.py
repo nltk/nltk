@@ -2,7 +2,6 @@
 Tests GDFA alignments
 """
 
-import multiprocessing
 import os
 import sys
 import traceback
