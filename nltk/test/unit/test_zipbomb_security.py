@@ -16,6 +16,8 @@ member-size guard never sees, so each is streamed under the same policy.
 
 import gzip
 import os
+import subprocess
+import sys
 import zipfile  # for the ZIP_DEFLATED constant only; opens go through pathsec
 
 import pytest
@@ -345,13 +347,18 @@ def test_gzip_low_ratio_above_activation_passes(tmp_path):
 
 def test_pathsec_data_import_order_has_no_cycle():
     """pathsec.ZipFile's decompression guards are imported lazily to break the
-    nltk.data <-> nltk.pathsec cycle; importing either module first must work."""
-    import subprocess
-    import sys
+    nltk.data <-> nltk.pathsec cycle; importing either module first must work.
 
+    The child interpreter is given this process's import path so it can locate
+    nltk exactly where the running tests found it (editable checkout, installed
+    site-packages, or a PYTHONPATH override) rather than relying on its own cwd.
+    """
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(p for p in sys.path if p)
     for first in ("nltk.pathsec", "nltk.data"):
         r = subprocess.run(
             [sys.executable, "-c", f"import {first}; import nltk.pathsec, nltk.data"],
             capture_output=True,
+            env=env,
         )
         assert r.returncode == 0, r.stderr.decode()
