@@ -14,14 +14,17 @@ inside a zip (``ZipFilePathPointer.open``) and a standalone ``.gz`` on disk
 member-size guard never sees, so each is streamed under the same policy.
 """
 
+import gzip
 import os
-import zipfile
+import zipfile  # for the ZIP_DEFLATED constant only; opens go through pathsec
 
 import pytest
 
 import nltk.data as data
 from nltk.data import ZipFilePathPointer
 from nltk.downloader import ErrorMessage, _unzip_iter
+from nltk.pathsec import ZipFile as SecureZipFile
+from nltk.pathsec import open as pathsec_open
 
 
 @pytest.fixture(autouse=True)
@@ -32,9 +35,24 @@ def _restore_limits():
     data.MAX_UNZIP_RATIO, data.MAX_UNZIP_SIZE, data.MAX_UNZIP_ACTIVATION = saved
 
 
+# These sandbox helpers use the pathsec-secured wrappers, never a bare open: the
+# tmp_path fixtures live under an authorized data root (see conftest), so the whole
+# harness dogfoods the hardened API. A bare open is used only where a test must
+# create something *outside* the sandbox (none here).
+def _secure_zip(path, members):
+    with SecureZipFile(str(path), "w", zipfile.ZIP_DEFLATED) as zf:
+        for name, payload in members.items():
+            zf.writestr(name, payload)
+    return path
+
+
 def _make_zip(path, member, payload):
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(member, payload)
+    return _secure_zip(path, {member: payload})
+
+
+def _write_gz(path, payload):
+    with pathsec_open(str(path), "wb", context="test_zipbomb") as f:
+        f.write(gzip.compress(payload))
     return path
 
 
@@ -85,10 +103,10 @@ def test_downloader_writes_nothing_when_a_later_member_is_a_bomb(tmp_path):
     (validate-then-extract contract)."""
     data.MAX_UNZIP_ACTIVATION = 1024 * 1024  # 1 MiB
     data.MAX_UNZIP_RATIO = 100
-    zp = tmp_path / "pkg.zip"
-    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("pkg/safe.txt", b"hello")  # benign member, comes first
-        zf.writestr("pkg/big.txt", b"\0" * (2 * 1024 * 1024))  # bomb, comes later
+    zp = _secure_zip(
+        tmp_path / "pkg.zip",
+        {"pkg/safe.txt": b"hello", "pkg/big.txt": b"\0" * (2 * 1024 * 1024)},
+    )
     dest = tmp_path / "out"
     messages = list(_unzip_iter(str(zp), str(dest), verbose=False))
     assert any(isinstance(m, ErrorMessage) for m in messages), messages
@@ -103,14 +121,12 @@ def test_downloader_writes_nothing_when_a_later_member_is_a_bomb(tmp_path):
 def test_nested_gzip_bomb_blocked(tmp_path):
     """A .gz zip member whose (tiny) gz bytes pass the member guard but whose gzip
     layer expands past the ratio is refused (nested-gzip bomb, CWE-409)."""
-    import gzip
-
     data.MAX_UNZIP_ACTIVATION = 64 * 1024
     data.MAX_UNZIP_RATIO = 10
     gz = gzip.compress(b"\0" * (256 * 1024))
     z = _make_zip(tmp_path / "nested.zip", "bomb.gz", gz)
     # the zip member itself passes the guard (its declared sizes are tiny)
-    data._check_decompression_bomb(zipfile.ZipFile(str(z)).getinfo("bomb.gz"))
+    data._check_decompression_bomb(SecureZipFile(str(z)).getinfo("bomb.gz"))
     with pytest.raises(ValueError, match="gzip bomb"):
         ZipFilePathPointer(str(z), "bomb.gz").open().read()
 
@@ -118,8 +134,6 @@ def test_nested_gzip_bomb_blocked(tmp_path):
 def test_nested_gzip_forged_isize_caught_by_streaming_cap(tmp_path):
     """Even with a forged gzip ISIZE trailer (claims 0 bytes), the streaming cap
     still refuses the bomb; the ISIZE pre-check is only an optimization."""
-    import gzip
-
     data.MAX_UNZIP_ACTIVATION = 1024 * 1024
     data.MAX_UNZIP_RATIO = 10
     gz = bytearray(gzip.compress(b"\0" * (4 * 1024 * 1024)))
@@ -131,8 +145,6 @@ def test_nested_gzip_forged_isize_caught_by_streaming_cap(tmp_path):
 
 def test_nested_gzip_absolute_cap(tmp_path):
     """MAX_UNZIP_SIZE also caps the nested gzip layer's output."""
-    import gzip
-
     data.MAX_UNZIP_SIZE = 64 * 1024
     gz = gzip.compress(b"\0" * (256 * 1024))
     z = _make_zip(tmp_path / "cap.zip", "big.gz", gz)
@@ -142,8 +154,6 @@ def test_nested_gzip_absolute_cap(tmp_path):
 
 def test_nested_gzip_legit_member_passes(tmp_path):
     """A legitimate .gz member (low ratio) still decompresses to its content."""
-    import gzip
-
     payload = b"legitimate corpus line\n" * 64
     z = _make_zip(tmp_path / "ok.zip", "data.gz", gzip.compress(payload))
     assert ZipFilePathPointer(str(z), "data.gz").open().read() == payload
@@ -154,8 +164,6 @@ def test_nested_gzip_ratio_cap_is_load_bearing(tmp_path):
     gzip bomb is refused; raise the activation threshold above the output and the
     SAME payload decompresses, proving the cap (not another check) is the guard
     that stops the second decompression layer (CWE-409)."""
-    import gzip
-
     gz = gzip.compress(b"\0" * (256 * 1024))
     z = _make_zip(tmp_path / "mut.zip", "bomb.gz", gz)
 
@@ -175,39 +183,63 @@ def test_nested_gzip_ratio_cap_is_load_bearing(tmp_path):
 def test_standalone_gzip_bomb_blocked(tmp_path):
     """A standalone .gz on disk read via GzipFileSystemPathPointer is bounded by
     the same policy, so it cannot exhaust memory (CWE-409)."""
-    import gzip
-
     from nltk.data import GzipFileSystemPathPointer
 
-    p = tmp_path / "bomb.gz"
-    with gzip.open(p, "wb") as f:
-        f.write(b"\0" * (64 * 1024 * 1024))  # tiny gz, huge ratio
+    p = _write_gz(tmp_path / "bomb.gz", b"\0" * (64 * 1024 * 1024))
     with pytest.raises(ValueError, match="gzip bomb"):
         GzipFileSystemPathPointer(str(p)).open().read()
 
 
 def test_standalone_gzip_legit_passes(tmp_path):
     """A legit low-ratio standalone .gz still decompresses fully and correctly."""
-    import gzip
-
     from nltk.data import GzipFileSystemPathPointer
 
     payload = b"corpus sentence.\n" * 100000
-    p = tmp_path / "ok.gz"
-    with gzip.open(p, "wb") as f:
-        f.write(payload)
+    p = _write_gz(tmp_path / "ok.gz", payload)
     assert GzipFileSystemPathPointer(str(p)).open().read() == payload
 
 
 def test_standalone_gzip_absolute_cap(tmp_path):
     """MAX_UNZIP_SIZE also caps the standalone .gz layer's output."""
-    import gzip
-
     from nltk.data import GzipFileSystemPathPointer
 
     data.MAX_UNZIP_SIZE = 1024
-    p = tmp_path / "big.gz"
-    with gzip.open(p, "wb") as f:
-        f.write(b"x" * 4096)
+    p = _write_gz(tmp_path / "big.gz", b"x" * 4096)
     with pytest.raises(ValueError, match="MAX_UNZIP_SIZE"):
         GzipFileSystemPathPointer(str(p)).open().read()
+
+
+# --- pathsec.ZipFile.read/open: the "secure" wrapper must bound decompression ---
+def test_pathsec_zipfile_read_bomb_blocked(tmp_path):
+    """pathsec.ZipFile.read() decompresses a whole member; it must be capped so the
+    secure wrapper cannot be used as a bomb (CWE-409)."""
+    z = _make_zip(tmp_path / "b.zip", "m", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        SecureZipFile(str(z)).read("m")
+
+
+def test_pathsec_zipfile_open_bomb_blocked(tmp_path):
+    """pathsec.ZipFile.open() (streaming member) is bounded by the declared size."""
+    z = _make_zip(tmp_path / "b.zip", "m", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        SecureZipFile(str(z)).open("m")
+
+
+def test_pathsec_zipfile_legit_read_passes(tmp_path):
+    """A legit member still reads correctly through pathsec.ZipFile."""
+    payload = b"hello world\n" * 500
+    z = _make_zip(tmp_path / "ok.zip", "m", payload)
+    assert SecureZipFile(str(z)).read("m") == payload
+    assert SecureZipFile(str(z)).open("m").read() == payload
+
+
+def test_weka_version_check_refuses_bomb_jar(tmp_path):
+    """_check_weka_version opens the jar and reads weka/core/version.txt; a
+    malicious jar declaring a gigabyte version.txt must not be read into RAM."""
+    from nltk.classify.weka import _check_weka_version
+
+    jar = _make_zip(
+        tmp_path / "weka.jar", "weka/core/version.txt", b"\0" * (64 * 1024 * 1024)
+    )
+    with pytest.raises(ValueError, match="zip bomb"):
+        _check_weka_version(str(jar))

@@ -878,6 +878,28 @@ class ZipFile(zipfile.ZipFile):
         validate_zip_archive(self, path or os.getcwd())
         super().extractall(path, members, pwd)
 
+    def read(self, name, pwd=None):
+        # zipfile.read() decompresses the whole member into memory with no cap; a
+        # tiny member declaring gigabytes exhausts RAM (decompression bomb,
+        # CWE-409). Bound it with nltk's policy before reading.
+        self._reject_decompression_bomb(name)
+        return super().read(name, pwd)
+
+    def open(self, name, mode="r", pwd=None, *, force_zip64=False):
+        # A streaming member open still decompresses on read; bound it up front by
+        # the member's declared size (only for read mode; writes have no member).
+        if mode == "r":
+            self._reject_decompression_bomb(name)
+        return super().open(name, mode, pwd, force_zip64=force_zip64)
+
+    def _reject_decompression_bomb(self, name):
+        # Imported lazily: nltk.data imports this module, so a top-level import
+        # would be circular. The policy/limits live in nltk.data (public API).
+        from nltk.data import _check_decompression_bomb
+
+        info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
+        _check_decompression_bomb(info)
+
 
 __all__ = [
     "validate_path",
