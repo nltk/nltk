@@ -8,17 +8,18 @@ the run length -- so a single untrusted valuation string could pin a CPU core.
 A ``(?<!=)`` lookbehind now lets the run be matched only at its start, making the
 split linear while leaving the parse result unchanged.
 
-The "must stay linear" test runs in a spawned process with a hard timeout, and
+The "must stay linear" test runs in a separate process with a hard timeout, and
 the worker reports via its exit code (no queue/thread, so it is robust on
 free-threaded builds), so a regression to the quadratic pattern cannot hang the
 suite.
 """
 
-import multiprocessing
 import os
 
 from nltk.sem import Valuation
 from nltk.sem.evaluate import read_valuation
+
+from . import _mp_ctx
 
 
 def test_valuation_parsing_preserved():
@@ -54,7 +55,7 @@ def _parse_worker():
 
 def test_long_separator_run_parses_in_linear_time():
     """A long '=' run must split in linear time, not quadratic (ReDoS)."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_parse_worker)
     proc.start()
     proc.join(_TIMEOUT)

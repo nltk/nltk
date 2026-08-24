@@ -11,10 +11,11 @@ regex cannot keep burning CPU for the rest of the suite, and any exception in
 the worker is propagated back to the assertions instead of being swallowed.
 """
 
-import multiprocessing
 import queue
 
 from nltk.corpus.reader.reviews import FEATURES, ReviewsCorpusReader
+
+from . import _mp_ctx
 
 # A long, bracket-less word run: ~250 KB. Linear with the bounded regex
 # (milliseconds); ~quadratic and ~50 s with the old unbounded one.
@@ -42,12 +43,12 @@ def _reader_worker(result_q, root, fileid):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a timeout.
+    """Run ``target(result_q, *args)`` in a separate process with a timeout.
 
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

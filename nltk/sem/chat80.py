@@ -251,28 +251,29 @@ class Concept:
     (https://www.w3.org/TR/swbp-skos-core-guide/).
     """
 
-    def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):
+    def __init__(self, prefLabel, arity, altLabels=None, closures=None, extension=None):
         """
         :param prefLabel: the preferred label for the concept
         :type prefLabel: str
         :param arity: the arity of the concept
         :type arity: int
-        :param altLabels: other (related) labels
-        :type altLabels: list
+        :param altLabels: other (related) labels, defaults to an empty list
+        :type altLabels: list or None
         :param closures: closure properties of the extension
-            (list items can be ``symmetric``, ``reflexive``, ``transitive``)
-        :type closures: list
-        :param extension: the extensional value of the concept
-        :type extension: set
+            (list items can be ``symmetric``, ``reflexive``, ``transitive``),
+            defaults to an empty list
+        :type closures: list or None
+        :param extension: the extensional value of the concept, defaults to an empty set
+        :type extension: set or None
         """
         self.prefLabel = prefLabel
         self.arity = arity
-        self.altLabels = altLabels
-        self.closures = closures
+        self.altLabels = [] if altLabels is None else altLabels
+        self.closures = [] if closures is None else closures
         # keep _extension internally as a set
-        self._extension = extension
+        self._extension = set() if extension is None else extension
         # public access is via a list (for slicing)
-        self.extension = sorted(list(extension))
+        self.extension = sorted(list(self._extension))
 
     def __str__(self):
         # _extension = ''

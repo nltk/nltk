@@ -52,3 +52,15 @@ def test_explicit_classpath_still_used(tmp_path):
     jar.write_bytes(b"")
     weka.config_weka(classpath=str(jar))
     assert weka._weka_classpath == str(jar)
+
+
+def test_arff_formatter_escapes_directive_injection():
+    """A newline in a feature name or value must not inject a new ARFF directive:
+    the formatter writes names/values via repr()/%r, which escapes newlines, so a
+    crafted feature cannot smuggle an @ATTRIBUTE/@DATA line into the file."""
+    evil = "x\n@ATTRIBUTE injected NUMERIC"
+    tokens = [({evil: "v\n@DATA\n9,pwn"}, "A"), ({evil: "w"}, "B")]
+    arff = weka.ARFF_Formatter.from_train(tokens).format(tokens)
+    assert "\n@ATTRIBUTE injected NUMERIC\n" not in arff  # no injected header line
+    assert "\n@DATA\n9,pwn" not in arff  # no injected data line
+    assert "\\n@ATTRIBUTE" in arff  # the newline was escaped by repr instead

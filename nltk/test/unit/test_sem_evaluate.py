@@ -7,16 +7,17 @@ cost is now bounded by ``Model.MAX_SATISFY_OPERATIONS`` before the recursion can
 blow up. These tests confirm the bound refuses deeply-nested formulas while
 legitimate shallow ones still evaluate.
 
-The "must not hang" test runs in a spawned process with a hard timeout so a
+The "must not hang" test runs in a separate process with a hard timeout so a
 regression (running the unbounded O(|domain| ** k) loop) cannot hang the suite.
 """
 
-import multiprocessing
 import queue
 
 from nltk.sem import Assignment, Model, Valuation
 from nltk.sem.evaluate import Error, _max_binder_depth
 from nltk.sem.logic import Expression
+
+from . import _mp_ctx
 
 
 def _model():
@@ -70,7 +71,7 @@ def _eval_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

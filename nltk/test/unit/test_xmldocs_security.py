@@ -11,11 +11,12 @@ timeout and ``terminate()`` on overrun, so a regression to an exponential regex
 cannot keep burning CPU for the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.data import FileSystemPathPointer
+
+from . import _mp_ctx
 
 # A handful of closed pieces followed by an unterminated tail so ``\Z`` fails.
 # With the old spanning regex even ~30 of these took minutes (exponential);
@@ -51,8 +52,8 @@ def _view_worker(result_q, path):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a timeout."""
-    ctx = multiprocessing.get_context("spawn")
+    """Run ``target(result_q, *args)`` in a separate process with a timeout."""
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

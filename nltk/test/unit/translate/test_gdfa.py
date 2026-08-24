@@ -2,13 +2,14 @@
 Tests GDFA alignments
 """
 
-import multiprocessing
 import os
 import sys
 import traceback
 import unittest
 
 from nltk.translate.gdfa import grow_diag_final_and
+
+from .. import _mp_ctx
 
 
 class TestGDFA(unittest.TestCase):
@@ -179,12 +180,12 @@ def test_gdfa_cost_independent_of_lengths():
 
     grow_diag()/final_and() previously scanned the whole srclen x trglen grid, so
     a 17-byte call ``grow_diag_final_and(L, L, "0-0", "0-0")`` forced an O(L*L)
-    iteration (CWE-407). Run in a spawned process with a hard deadline: the scans
+    iteration (CWE-407). Run in a separate process with a hard deadline: the scans
     now walk the alignment/union points and return instantly, while the old grid
     scan needs minutes at this size, so a regression is terminated and fails the
     test instead of pinning a core for the rest of the suite.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_gdfa_worker, args=(50_000,))
     proc.start()
     proc.join(30)

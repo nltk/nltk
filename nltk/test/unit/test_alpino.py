@@ -14,12 +14,13 @@ points reach this helper, so a crafted Alpino file could pin a CPU core. Each
 ordinary corpora are read identically.
 """
 
-import multiprocessing
 import os
 import sys
 import traceback
 
 from nltk.corpus.reader.bracket_parse import AlpinoCorpusReader
+
+from . import _mp_ctx
 
 _SAMPLE = (
     '<alpino_ds version="1.3">\n'
@@ -116,7 +117,7 @@ def _words_worker(root):
 def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     """A single long, malformed ``<node ...`` line must not blow up quadratically.
 
-    Run in a spawned process with a hard deadline: the linear normalizer returns
+    Run in a separate process with a hard deadline: the linear normalizer returns
     in milliseconds, while the previous chained-lazy regex is O(n^2) and needs
     well over a minute at this size, so a regression is terminated and fails the
     test instead of pinning a core for the rest of the suite.
@@ -129,7 +130,7 @@ def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     )
     (tmp_path / "alpino.xml").write_text(body, encoding="ISO-8859-1")
 
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_words_worker, args=(str(tmp_path),))
     proc.start()
     proc.join(30)

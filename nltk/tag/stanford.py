@@ -117,7 +117,10 @@ class StanfordTagger(TaggerI):
                 stderr=PIPE,
                 options=self.java_options,
             )
-            stanpos_output = stanpos_output.decode(encoding)
+            # java() returns text (universal_newlines=True), so only decode when
+            # an older/bytes-returning path is in play.
+            if isinstance(stanpos_output, bytes):
+                stanpos_output = stanpos_output.decode(encoding)
             java_succeeded = True
         finally:
             if input_file_path:

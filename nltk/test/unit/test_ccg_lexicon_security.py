@@ -11,10 +11,11 @@ timeout and ``terminate()`` on overrun, so a regression to the quadratic regex
 cannot keep burning CPU for the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 from nltk.ccg.lexicon import LEX_RE, fromstring
+
+from . import _mp_ctx
 
 # One lexicon line: an identifier then a long run of '=' with no closing '>', so
 # the arrow can never complete. ~tens of seconds with the old quadratic regex;
@@ -43,7 +44,7 @@ def _fromstring_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

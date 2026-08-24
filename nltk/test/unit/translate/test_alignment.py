@@ -6,16 +6,17 @@ index was ``[[] for _ in range(self._len + 1)]``. The index is now sparse (a dic
 keyed by the left indices that occur). These tests confirm the index is sparse and
 that the public indexing / range behaviour is preserved.
 
-The allocation test runs in a spawned process with a hard timeout so a regression
+The allocation test runs in a separate process with a hard timeout so a regression
 to the dense allocation cannot OOM or hang the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 import pytest
 
 from nltk.translate.api import Alignment
+
+from .. import _mp_ctx
 
 
 def test_index_is_sparse_not_dense():
@@ -65,7 +66,7 @@ def _alloc_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()
