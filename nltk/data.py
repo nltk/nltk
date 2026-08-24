@@ -41,7 +41,6 @@ import sys
 import tempfile
 import textwrap
 import urllib.request
-import zipfile
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
