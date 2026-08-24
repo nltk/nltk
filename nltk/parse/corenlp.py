@@ -140,10 +140,13 @@ class CoreNLPServer:
         returncode = self.popen.poll()
         if returncode is not None:
             _, stderrdata = self.popen.communicate()
+            # java() runs Popen with universal_newlines=True, so communicate()
+            # already returns text; only decode a bytes-returning path.
+            if isinstance(stderrdata, bytes):
+                stderrdata = stderrdata.decode("ascii")
             raise CoreNLPServerError(
                 returncode,
-                "Could not start the server. "
-                "The error was: {}".format(stderrdata.decode("ascii")),
+                f"Could not start the server. The error was: {stderrdata}",
             )
 
         for i in range(30):

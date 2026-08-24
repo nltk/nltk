@@ -117,7 +117,7 @@ class WekaClassifier(ClassifierI):
                 "-T",
                 test_filename,
             ] + options
-            (stdout, stderr) = java(
+            stdout, stderr = java(
                 cmd,
                 classpath=_weka_classpath,
                 stdout=subprocess.PIPE,
@@ -135,8 +135,11 @@ class WekaClassifier(ClassifierI):
                 else:
                     raise ValueError("Weka failed to generate output:\n%s" % stderr)
 
-            # Parse weka's output.
-            return self.parse_weka_output(stdout.decode(stdin.encoding).split("\n"))
+            # Parse weka's output. java() returns text (universal_newlines=True);
+            # only decode when an older bytes-returning path is in play.
+            if isinstance(stdout, bytes):
+                stdout = stdout.decode(stdin.encoding)
+            return self.parse_weka_output(stdout.split("\n"))
 
         finally:
             for f in os.listdir(temp_dir):

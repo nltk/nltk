@@ -344,6 +344,7 @@ class StanfordSegmenter(TokenizerI):
             stderr=PIPE,
             options=self.java_options,
         )
-        stdout = stdout.decode(encoding)
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode(encoding)
 
         return stdout

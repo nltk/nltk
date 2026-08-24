@@ -256,9 +256,14 @@ class GenericStanfordParser(ParserI):
                         options=self.java_options,
                     )
 
-                stdout = stdout.replace(b"\xc2\xa0", b" ")
-                stdout = stdout.replace(b"\x00\xa0", b" ")
-                stdout = stdout.decode(encoding)
+                # java() returns text (universal_newlines=True); only the older
+                # bytes path needs the byte-level NBSP fixups and decode.
+                if isinstance(stdout, bytes):
+                    stdout = stdout.replace(b"\xc2\xa0", b" ")
+                    stdout = stdout.replace(b"\x00\xa0", b" ")
+                    stdout = stdout.decode(encoding)
+                else:
+                    stdout = stdout.replace("\xa0", " ")
                 java_succeeded = True
         finally:
             if input_file_name:
