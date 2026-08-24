@@ -60,6 +60,36 @@ def test_weka_classifier_handles_str_output(monkeypatch, tmp_path):
     assert out == ["no"]
 
 
+def test_corenlp_server_start_error_handles_str_stderr(monkeypatch):
+    """CoreNLPServer.start() reads the server's stderr via popen.communicate();
+    java()'s Popen is text-mode, so that is a str and must not be .decode()d."""
+    from nltk.parse import corenlp
+
+    monkeypatch.setattr(
+        corenlp,
+        "find_jar_iter",
+        lambda *a, **k: iter(["/x/stanford-corenlp-4.0.0.jar"]),
+    )
+    monkeypatch.setattr(corenlp, "try_port", lambda *a, **k: 9000)
+    monkeypatch.setattr(corenlp, "config_java", lambda *a, **k: None)
+
+    class _DeadPopen:
+        def poll(self):
+            return 1  # server exited immediately
+
+        def communicate(self):
+            return ("", "boom: CoreNLP failed to start")  # str, like text-mode Popen
+
+    monkeypatch.setattr(corenlp, "java", lambda *a, **k: _DeadPopen())
+    server = corenlp.CoreNLPServer(
+        path_to_jar="/x/stanford-corenlp-4.0.0.jar",
+        path_to_models_jar="/x/stanford-corenlp-4.0.0-models.jar",
+    )
+    with pytest.raises(corenlp.CoreNLPServerError) as exc:
+        server.start()
+    assert "boom" in str(exc.value)  # str stderr surfaced, no AttributeError
+
+
 @pytest.mark.parametrize(
     "modname",
     [
@@ -68,6 +98,7 @@ def test_weka_classifier_handles_str_output(monkeypatch, tmp_path):
         "nltk.parse.stanford",
         "nltk.tokenize.stanford_segmenter",
         "nltk.classify.weka",
+        "nltk.parse.corenlp",
     ],
 )
 def test_wrapper_guards_decode_with_isinstance(modname):
