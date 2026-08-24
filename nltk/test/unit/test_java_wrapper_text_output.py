@@ -36,6 +36,25 @@ def test_stanford_tokenizer_handles_str_output(monkeypatch, tmp_path):
     assert tok.tokenize("Hello, world!") == ["Hello", ",", "world", "!"]
 
 
+def test_stanford_parser_handles_str_output(monkeypatch, tmp_path):
+    from nltk.parse import stanford as sp
+
+    jar = tmp_path / "stanford-parser.jar"
+    jar.write_bytes(b"PK\x03\x04")
+    models = tmp_path / "stanford-parser-4.2.0-models.jar"
+    models.write_bytes(b"PK\x03\x04")
+    monkeypatch.setattr(sp, "find_jar_iter", lambda *a, **k: iter([str(jar)]))
+    monkeypatch.setattr(sp, "find_jars_within_path", lambda d: [str(jar), str(models)])
+    parser = sp.StanfordParser(path_to_jar=str(jar), path_to_models_jar=str(models))
+
+    # java() returns str; the parser must not b"...".replace()/decode() it.
+    tree_out = "(ROOT (S (NP (DT the) (NN fox)) (VP (VBZ runs))))\n\n"
+    monkeypatch.setattr(sp, "java", lambda *a, **k: (tree_out, ""))
+    tree = list(parser.raw_parse("the fox runs"))[0]
+    assert tree.label() == "ROOT"
+    assert "VP" in [t.label() for t in tree.subtrees()]
+
+
 def test_weka_classifier_handles_str_output(monkeypatch, tmp_path):
     from nltk.classify import weka as wk
 
