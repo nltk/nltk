@@ -546,7 +546,12 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
         # path is validated against the allowed NLTK data roots (with symlinks
         # resolved) before reading; decompress the validated stream rather than
         # re-opening the path directly (CWE-22 / CWE-73).
-        stream = GzipFile(self._path, fileobj=_secure_open(self._path, "rb"))
+        with _secure_open(self._path, "rb") as f:
+            data = f.read()
+        # A standalone .gz is a single gzip layer with no declared-size guard of
+        # its own; bound its output with the decompression-bomb policy the zip
+        # .gz-member path uses, so it cannot exhaust memory (CWE-409).
+        stream = BytesIO(_bounded_gzip_decompress(data, self._path))
         # ``encoding is not None`` (not truthiness) to match
         # FileSystemPathPointer.open() / ZipFilePathPointer.open().
         if encoding is not None:

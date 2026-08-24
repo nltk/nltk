@@ -164,3 +164,45 @@ def test_nested_gzip_ratio_cap_is_load_bearing(tmp_path):
     data.MAX_UNZIP_ACTIVATION = 1 << 30
     out = ZipFilePathPointer(str(z), "bomb.gz").open().read()
     assert len(out) == 256 * 1024
+
+
+# --- standalone .gz file (GzipFileSystemPathPointer, not inside a zip) ----------
+def test_standalone_gzip_bomb_blocked(tmp_path):
+    """A standalone .gz on disk read via GzipFileSystemPathPointer is bounded by
+    the same policy, so it cannot exhaust memory (CWE-409)."""
+    import gzip
+
+    from nltk.data import GzipFileSystemPathPointer
+
+    p = tmp_path / "bomb.gz"
+    with gzip.open(p, "wb") as f:
+        f.write(b"\0" * (64 * 1024 * 1024))  # tiny gz, huge ratio
+    with pytest.raises(ValueError, match="gzip bomb"):
+        GzipFileSystemPathPointer(str(p)).open().read()
+
+
+def test_standalone_gzip_legit_passes(tmp_path):
+    """A legit low-ratio standalone .gz still decompresses fully and correctly."""
+    import gzip
+
+    from nltk.data import GzipFileSystemPathPointer
+
+    payload = b"corpus sentence.\n" * 100000
+    p = tmp_path / "ok.gz"
+    with gzip.open(p, "wb") as f:
+        f.write(payload)
+    assert GzipFileSystemPathPointer(str(p)).open().read() == payload
+
+
+def test_standalone_gzip_absolute_cap(tmp_path):
+    """MAX_UNZIP_SIZE also caps the standalone .gz layer's output."""
+    import gzip
+
+    from nltk.data import GzipFileSystemPathPointer
+
+    data.MAX_UNZIP_SIZE = 1024
+    p = tmp_path / "big.gz"
+    with gzip.open(p, "wb") as f:
+        f.write(b"x" * 4096)
+    with pytest.raises(ValueError, match="MAX_UNZIP_SIZE"):
+        GzipFileSystemPathPointer(str(p)).open().read()
