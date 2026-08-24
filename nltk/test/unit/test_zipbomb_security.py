@@ -243,3 +243,56 @@ def test_weka_version_check_refuses_bomb_jar(tmp_path):
     )
     with pytest.raises(ValueError, match="zip bomb"):
         _check_weka_version(str(jar))
+
+
+# --- the remaining entry points: OpenOnDemandZipFile, extract/extractall,
+#     nltk.data.find end-to-end, and the deprecated BufferedGzipFile -------------
+def test_open_on_demand_zipfile_read_bomb_blocked(tmp_path):
+    from nltk.data import OpenOnDemandZipFile
+
+    z = _make_zip(tmp_path / "b.zip", "m", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        OpenOnDemandZipFile(str(z)).read("m")
+
+
+def test_pathsec_zipfile_extract_bomb_blocked(tmp_path):
+    """extract() decompresses to disk via self.open(); the bounded open() stops it."""
+    z = _make_zip(tmp_path / "b.zip", "m", b"\0" * (64 * 1024 * 1024))
+    dest = tmp_path / "out"
+    dest.mkdir()
+    with pytest.raises(ValueError, match="zip bomb"):
+        SecureZipFile(str(z)).extract("m", str(dest))
+    assert not (dest / "m").exists() or (dest / "m").stat().st_size < 2 * 1024 * 1024
+
+
+def test_pathsec_zipfile_extractall_bomb_blocked(tmp_path):
+    z = _make_zip(tmp_path / "b.zip", "m", b"\0" * (64 * 1024 * 1024))
+    dest = tmp_path / "out"
+    dest.mkdir()
+    with pytest.raises(ValueError, match="zip bomb"):
+        SecureZipFile(str(z)).extractall(str(dest))
+
+
+def test_nltk_data_find_gz_bomb_blocked_end_to_end(tmp_path, monkeypatch):
+    """nltk.data.find(name).open().read() on a standalone .gz bomb is refused."""
+    _write_gz(tmp_path / "payload.gz", b"\0" * (64 * 1024 * 1024))
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    with pytest.raises(ValueError, match="gzip bomb"):
+        data.find("payload.gz").open().read()
+
+
+def test_buffered_gzip_file_bomb_blocked(tmp_path):
+    """The deprecated BufferedGzipFile.read() is bounded too (CWE-409)."""
+    from nltk.data import BufferedGzipFile
+
+    p = _write_gz(tmp_path / "b.gz", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="gzip bomb"):
+        BufferedGzipFile(str(p)).read()
+
+
+def test_buffered_gzip_file_legit_passes(tmp_path):
+    from nltk.data import BufferedGzipFile
+
+    payload = b"corpus sentence.\n" * 1000
+    p = _write_gz(tmp_path / "ok.gz", payload)
+    assert BufferedGzipFile(str(p)).read() == payload

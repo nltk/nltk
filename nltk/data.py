@@ -527,6 +527,23 @@ class BufferedGzipFile(GzipFile):
         """Return a buffered gzip file object."""
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
 
+    def read(self, size=-1):
+        # GzipFile.read() is otherwise unbounded; refuse a decompression bomb
+        # (CWE-409). The ratio is measured against the compressed file size when
+        # known; a fileobj-backed stream with no size is bounded by MAX_UNZIP_SIZE.
+        chunk = super().read(size)
+        if chunk:
+            self._nltk_read_total = getattr(self, "_nltk_read_total", 0) + len(chunk)
+            compress_size = (
+                os.path.getsize(self.name)
+                if isinstance(self.name, str) and os.path.exists(self.name)
+                else None
+            )
+            _reject_decompression_total(
+                self._nltk_read_total, compress_size, self.name or "<gzip>", "gzip"
+            )
+        return chunk
+
     def write(self, data):
         # This is identical to GzipFile.write but does not return
         # the bytes written to retain compatibility.
@@ -619,6 +636,29 @@ def _check_decompression_bomb(info):
         )
 
 
+def _reject_decompression_total(total, compress_size, name, kind):
+    """Raise ValueError if *total* decompressed bytes breach the bomb policy: the
+    optional ``MAX_UNZIP_SIZE`` hard cap, or (when *compress_size* is known and
+    non-zero) an expansion beyond ``MAX_UNZIP_RATIO`` above the ``MAX_UNZIP_ACTIVATION``
+    floor. *kind* (``"zip"`` / ``"gzip"``) only tunes the wording (CWE-409)."""
+    if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to decompress %r: its %s output exceeds "
+            "nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, kind, MAX_UNZIP_SIZE)
+        )
+    if (
+        compress_size
+        and total >= MAX_UNZIP_ACTIVATION
+        and (total > MAX_UNZIP_RATIO * compress_size)
+    ):
+        raise ValueError(
+            "Refusing to decompress suspected %s bomb %r: it expands beyond "
+            "nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte compressed input. "
+            "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+            % (kind, name, MAX_UNZIP_RATIO, compress_size)
+        )
+
+
 def _bounded_stream_read(stream, compress_size, name="<member>", kind="zip"):
     """Read a decompressing file-like *stream* under the decompression-bomb policy,
     capping the **actual** bytes it produces against *compress_size* (CWE-409).
@@ -630,23 +670,11 @@ def _bounded_stream_read(stream, compress_size, name="<member>", kind="zip"):
     ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes. *kind* only tunes
     the error wording (``"zip"`` / ``"gzip"``).
     """
-    ratio_limit = MAX_UNZIP_RATIO * compress_size
     out = []
     total = 0
     for chunk in iter(lambda: stream.read(1 << 20), b""):
         total += len(chunk)
-        if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
-            raise ValueError(
-                "Refusing to decompress %r: its %s output exceeds "
-                "nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, kind, MAX_UNZIP_SIZE)
-            )
-        if total >= MAX_UNZIP_ACTIVATION and total > ratio_limit:
-            raise ValueError(
-                "Refusing to decompress suspected %s bomb %r: it expands beyond "
-                "nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte compressed input. "
-                "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
-                % (kind, name, MAX_UNZIP_RATIO, compress_size)
-            )
+        _reject_decompression_total(total, compress_size, name, kind)
         out.append(chunk)
     return b"".join(out)
 
