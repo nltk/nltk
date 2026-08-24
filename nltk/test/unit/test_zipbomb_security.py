@@ -296,3 +296,62 @@ def test_buffered_gzip_file_legit_passes(tmp_path):
     payload = b"corpus sentence.\n" * 1000
     p = _write_gz(tmp_path / "ok.gz", payload)
     assert BufferedGzipFile(str(p)).read() == payload
+
+
+# --- gzip_open_unicode (the last raw-GzipFile read path) + misc coverage --------
+def test_gzip_open_unicode_read_bomb_blocked(tmp_path):
+    from nltk.data import gzip_open_unicode
+
+    p = _write_gz(tmp_path / "b.gz", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="gzip bomb"):
+        gzip_open_unicode(str(p), "rb").read()
+
+
+def test_gzip_open_unicode_write_read_roundtrip(tmp_path):
+    """The write path (used by maxent) still works and reads back correctly."""
+    from nltk.data import gzip_open_unicode
+
+    text = "corpus line\n" * 200
+    p = tmp_path / "w.gz"
+    with gzip_open_unicode(str(p), "w") as f:
+        f.write(text)
+    assert gzip_open_unicode(str(p), "rb").read() == text
+
+
+def test_buffered_gzip_file_chunked_bomb_blocked(tmp_path):
+    """Reading the bomb in fixed chunks is caught on cumulative bytes, not just a
+    single whole-file read()."""
+    from nltk.data import BufferedGzipFile
+
+    p = _write_gz(tmp_path / "b.gz", b"\0" * (64 * 1024 * 1024))
+    f = BufferedGzipFile(str(p))
+    with pytest.raises(ValueError, match="gzip bomb"):
+        while True:
+            if not f.read(1 << 20):
+                break
+
+
+def test_gzip_low_ratio_above_activation_passes(tmp_path):
+    """A large .gz crossing the activation floor but low-ratio (like a real language
+    model) still decompresses fully -- no false positive."""
+    from nltk.data import GzipFileSystemPathPointer
+
+    data.MAX_UNZIP_ACTIVATION = 1024 * 1024  # 1 MiB
+    data.MAX_UNZIP_RATIO = 1000
+    payload = os.urandom(2 * 1024 * 1024)  # incompressible: ratio ~1x, above activation
+    p = _write_gz(tmp_path / "big.gz", payload)
+    assert GzipFileSystemPathPointer(str(p)).open().read() == payload
+
+
+def test_pathsec_data_import_order_has_no_cycle():
+    """pathsec.ZipFile's decompression guards are imported lazily to break the
+    nltk.data <-> nltk.pathsec cycle; importing either module first must work."""
+    import subprocess
+    import sys
+
+    for first in ("nltk.pathsec", "nltk.data"):
+        r = subprocess.run(
+            [sys.executable, "-c", f"import {first}; import nltk.pathsec, nltk.data"],
+            capture_output=True,
+        )
+        assert r.returncode == 0, r.stderr.decode()

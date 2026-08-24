@@ -213,6 +213,30 @@ def make_staging_dir(prefix="nltk_"):
     )
 
 
+class _BoundedGzipFile(GzipFile):
+    """A ``GzipFile`` whose ``read()`` refuses a decompression bomb (CWE-409): it
+    tracks cumulative decompressed bytes and enforces nltk's ratio/size policy,
+    measured against the compressed file size when known (else the ``MAX_UNZIP_SIZE``
+    hard cap). Used wherever nltk opens a ``.gz`` for reading, so a raw unbounded
+    ``GzipFile.read`` is never the read path (``gzip_open_unicode``, the deprecated
+    ``BufferedGzipFile``). Writing is unaffected.
+    """
+
+    def read(self, size=-1):
+        chunk = super().read(size)
+        if chunk:
+            self._nltk_read_total = getattr(self, "_nltk_read_total", 0) + len(chunk)
+            compress_size = (
+                os.path.getsize(self.name)
+                if isinstance(self.name, str) and os.path.exists(self.name)
+                else None
+            )
+            _reject_decompression_total(
+                self._nltk_read_total, compress_size, self.name or "<gzip>", "gzip"
+            )
+        return chunk
+
+
 def gzip_open_unicode(
     filename,
     mode="rb",
@@ -223,7 +247,7 @@ def gzip_open_unicode(
     newline=None,
 ):
     if fileobj is None:
-        fileobj = GzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = _BoundedGzipFile(filename, mode, compresslevel, fileobj)
     return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
@@ -514,11 +538,11 @@ class FileSystemPathPointer(PathPointer, str):
 
 
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
-class BufferedGzipFile(GzipFile):
+class BufferedGzipFile(_BoundedGzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.
 
     Use ``GzipFile`` directly as it also buffers in all supported
-    Python versions.
+    Python versions. (``read()`` is bomb-bounded via ``_BoundedGzipFile``.)
     """
 
     def __init__(
@@ -526,23 +550,6 @@ class BufferedGzipFile(GzipFile):
     ):
         """Return a buffered gzip file object."""
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
-
-    def read(self, size=-1):
-        # GzipFile.read() is otherwise unbounded; refuse a decompression bomb
-        # (CWE-409). The ratio is measured against the compressed file size when
-        # known; a fileobj-backed stream with no size is bounded by MAX_UNZIP_SIZE.
-        chunk = super().read(size)
-        if chunk:
-            self._nltk_read_total = getattr(self, "_nltk_read_total", 0) + len(chunk)
-            compress_size = (
-                os.path.getsize(self.name)
-                if isinstance(self.name, str) and os.path.exists(self.name)
-                else None
-            )
-            _reject_decompression_total(
-                self._nltk_read_total, compress_size, self.name or "<gzip>", "gzip"
-            )
-        return chunk
 
     def write(self, data):
         # This is identical to GzipFile.write but does not return
