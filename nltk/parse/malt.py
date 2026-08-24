@@ -9,17 +9,15 @@
 
 import inspect
 import os
-import subprocess
 import sys
 import tempfile
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import (
-    _validate_java_options,
-    _verify_jar_sandbox,
     find_dir,
     find_file,
     find_jars_within_path,
+    java,
 )
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
@@ -195,24 +193,19 @@ class MaltParser(ParserI):
                 input_file_name = input_file.name
                 output_file_name = output_file.name
 
-                model_dir = os.path.split(self.model)[0]
-                model_cwd = os.path.abspath(model_dir) if model_dir else None
-                if model_cwd and not os.path.isdir(model_cwd):
-                    model_cwd = None
-
                 # Convert list of sentences to CONLL format.
                 for line in taggedsents_to_conll(sentences):
                     input_file.write(str(line))
                 input_file.close()
 
-                # Generate command to run maltparser.
+                # Generate command to run maltparser. The model's directory is
+                # passed to MaltParser via its ``-w`` argument (inside
+                # generate_malt_command), so no JVM working-directory is needed.
                 cmd = self.generate_malt_command(
                     input_file_name, output_file_name, mode="parse"
                 )
 
-                # MaltParser needs to run from the model directory; use
-                # subprocess cwd so other threads do not see a process-wide chdir.
-                ret = self._execute(cmd, verbose, cwd=model_cwd)  # Run command.
+                ret = self._execute(cmd, verbose)  # Run command.
 
                 if ret != 0:
                     raise Exception(
@@ -267,27 +260,19 @@ class MaltParser(ParserI):
         :type outputfilename: str
         """
 
-        # MaltParser builds and runs its own ``java`` command instead of routing
-        # through nltk.internals.java(), so apply the same protections here:
-        # sandbox the classpath JARs to the trusted NLTK data dirs
-        # (CWE-94, CVE-2026-12252) and validate the JVM options
-        # (CWE-88, CVE-2026-12841) before the command reaches subprocess.Popen.
-        _verify_jar_sandbox(self.malt_jars)
-        _validate_java_options(self.additional_java_args)
+        # Build only MaltParser's own arguments (main class + program args). The
+        # JVM binary, classpath sandbox, JVM-option allowlist and env sanitisation
+        # are all applied by nltk.internals.java() in _execute; this wrapper no
+        # longer rolls its own subprocess, so those protections cannot drift.
+        cmd = ["org.maltparser.Malt"]
 
-        cmd = ["java"]
-        cmd += self.additional_java_args  # Adds additional java arguments
-        cmd += [
-            "-cp",
-            os.pathsep.join(self.malt_jars),
-        ]  # Adds classpaths for jars
-        cmd += ["org.maltparser.Malt"]  # Adds the main function.
-
-        # Adds the model file.
-        if os.path.exists(self.model):  # when parsing
-            cmd += ["-c", os.path.split(self.model)[-1]]
-        else:  # when learning
-            cmd += ["-c", self.model]
+        # MaltParser reads/writes the .mco model in its working directory. Pass that
+        # directory as the ``-w`` program argument rather than chdir-ing the JVM
+        # process: no cwd is handed to java(), so there is no working-directory
+        # class-injection surface (an empty/CWD -cp element, CWE-88).
+        model_dir, model_name = os.path.split(self.model)
+        workingdir = os.path.abspath(model_dir) if model_dir else os.getcwd()
+        cmd += ["-w", workingdir, "-c", model_name]
 
         cmd += ["-i", inputfilename]
         if mode == "parse":
@@ -295,11 +280,21 @@ class MaltParser(ParserI):
         cmd += ["-m", mode]  # mode use to generate parses.
         return cmd
 
-    @staticmethod
-    def _execute(cmd, verbose=False, cwd=None):
-        output = None if verbose else subprocess.PIPE
-        p = subprocess.Popen(cmd, stdout=output, stderr=output, cwd=cwd)
-        return p.wait()
+    def _execute(self, cmd, verbose=False):
+        # Route MaltParser's JVM through the single hardened entry point so the
+        # classpath sandbox, JVM-option allowlist and env sanitisation all apply.
+        stdout = None if verbose else "pipe"
+        try:
+            java(
+                cmd,
+                classpath=self.malt_jars,
+                options=self.additional_java_args,
+                stdout=stdout,
+                stderr=stdout,
+            )
+            return 0
+        except OSError:
+            return 1  # non-zero exit; the caller raises its descriptive error
 
     def train(self, depgraphs, verbose=False):
         """

@@ -49,21 +49,17 @@ _java_options = []
 #     its own ``-encoding`` *program* argument, not ``-Dfile.encoding``.
 # An application that genuinely needs one of these passes it through the explicit
 # ``trusted_raw_options`` escape hatch (see ``java()``), taking responsibility.
-_SAFE_JVM_PREFIXES = (
-    "-xmx",  # max heap size:   -Xmx512m
-    "-mx",  # max heap (legacy alias of -Xmx, used by Stanford/CoreNLP): -mx2g
-    "-xms",  # initial heap:    -Xms128m
-    "-ms",  # initial heap (legacy alias of -Xms): -ms128m
-    "-xss",  # thread stack:    -Xss4m
-    "-ss",  # thread stack (legacy alias of -Xss): -ss4m
-    "-xbatch",  # disable bg JIT
-    "-xint",  # interpret-only mode
-    "-xcomp",  # compile-only mode
-    "-xmixed",  # mixed mode (JVM default)
-    "-verbose",  # diagnostic output: -verbose:gc
-)
+# Heap/stack sizing (-Xmx512m / -mx2g / -Xms128m / -Xss4m; no-X aliases are what
+# Stanford/CoreNLP pass). Anchored to number+unit so no suffix rides a bare prefix.
+_SAFE_SIZING_RE = re.compile(r"\A-(xmx|mx|xms|ms|xss|ss)\d+[kmgt]?\Z", re.IGNORECASE)
 
-_SAFE_JVM_EXACT = frozenset({"-server", "-client"})
+# -verbose diagnostic output: bare or one standard category (-verbose:gc etc.).
+_SAFE_VERBOSE_RE = re.compile(r"\A-verbose(:(class|gc|jni|module))?\Z", re.IGNORECASE)
+
+# Exact no-argument flags (mode / VM selectors); no suffix may ride these.
+_SAFE_JVM_EXACT = frozenset(
+    {"-server", "-client", "-xbatch", "-xint", "-xcomp", "-xmixed"}
+)
 
 # ``--add-modules <module-list>`` is required by CoreNLP on JDK 9-11 (a CoreNLP
 # dependency uses the JAXB module dropped from the default set). The value is a
@@ -77,8 +73,31 @@ _MODULE_LIST_RE = re.compile(r"\A[A-Za-z0-9_.,-]+\Z")
 # metacharacter. Rejecting those characters is therefore a free, name-agnostic
 # defense-in-depth layer (it has no false positives now that -D, whose values may
 # legitimately contain them, is not accepted): e.g. a malformed ``-Xmx512m ; rm``
-# token cannot ride through on the ``-xmx`` prefix.
+# token cannot ride through as a sizing flag.
 _UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
+
+# JVM env vars that inject flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS / JDK_JAVA_OPTIONS
+# / IBM_JAVA_OPTIONS / OPENJ9_JAVA_OPTIONS) or classpath (CLASSPATH); stripped (CWE-88).
+_JVM_INJECTING_ENV_VARS = frozenset(
+    {
+        "JAVA_TOOL_OPTIONS",
+        "_JAVA_OPTIONS",
+        "JDK_JAVA_OPTIONS",
+        "IBM_JAVA_OPTIONS",
+        "OPENJ9_JAVA_OPTIONS",
+        "CLASSPATH",
+    }
+)
+
+
+def _java_child_env():
+    """Return os.environ minus the JVM-injecting variables, so the child JVM that
+    java() launches cannot pick up flags/classpath from JAVA_TOOL_OPTIONS et al.
+    (CWE-88). Every NLTK JVM launch is routed through java(), so this is the single
+    place the child environment is sanitised."""
+    return {
+        k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
+    }
 
 
 def _validate_java_options(options):
@@ -152,7 +171,7 @@ def _validate_java_options(options):
             i += 1
             continue
 
-        if n.startswith(_SAFE_JVM_PREFIXES):
+        if _SAFE_SIZING_RE.match(flag) or _SAFE_VERBOSE_RE.match(flag):
             i += 1
             continue
 
@@ -226,7 +245,7 @@ def _verify_jar_sandbox(classpath_entries):
 
     for p in data_path:
         try:
-            trusted_roots.append(os.path.realpath(p))
+            trusted_roots.append(os.path.normcase(os.path.realpath(p)))
         except Exception:
             continue
 
@@ -237,7 +256,7 @@ def _verify_jar_sandbox(classpath_entries):
         repo_root = os.path.realpath(os.path.join(nltk_package_dir, ".."))
         git_marker = os.path.join(repo_root, ".git")
         if os.path.isdir(git_marker) or os.path.isfile(git_marker):
-            trusted_roots.append(repo_root)
+            trusted_roots.append(os.path.normcase(repo_root))
     except Exception:
         pass
 
@@ -251,15 +270,39 @@ def _verify_jar_sandbox(classpath_entries):
         try:
             abs_wp = os.path.realpath(wp)
             if os.path.isdir(abs_wp):
-                trusted_roots.append(abs_wp)
+                trusted_roots.append(os.path.normcase(abs_wp))
         except Exception:
             continue
 
     trusted_roots = list(dict.fromkeys(trusted_roots))
 
     for entry in entries:
+        if not isinstance(entry, str):
+            # A non-string is not a CWD element, just an unsupported type; report
+            # the expected type rather than the misleading current-directory text.
+            raise UntrustedJarError(
+                f"Classpath entry must be a string, got {type(entry).__name__}: {entry!r}"
+            )
         if not entry:
-            continue
+            # An empty entry is the JVM's current-directory element (CWD class
+            # injection); refuse it rather than skip it.
+            raise UntrustedJarError(
+                f"Empty classpath entry is forbidden (the JVM would treat it as "
+                f"the current directory): {entry!r}"
+            )
+        if "\x00" in entry:
+            # A NUL truncates the path in native calls; reject with a clear error
+            # instead of letting os.path.realpath raise a bare ValueError.
+            raise UntrustedJarError(
+                f"Classpath entry may not contain a NUL byte: {entry!r}"
+            )
+        if os.pathsep in entry:
+            # An entry embedding os.pathsep passes the per-entry check as one path
+            # but the JVM re-splits it into unverified elements (sandbox bypass).
+            raise UntrustedJarError(
+                f"Classpath entry may not contain the path separator {os.pathsep!r} "
+                f"(it would expand into multiple unverified elements): {entry!r}"
+            )
         if not os.path.isabs(entry):
             raise UntrustedJarError(f"Relative paths are strictly forbidden: {entry}")
 
@@ -327,18 +370,16 @@ def java(
     classpath_arg = None
     if classpath is not None:
         if isinstance(classpath, str):
-            raw_entries = [p for p in classpath.split(os.pathsep) if p]
-            original_classpath_string = classpath
+            # Keep empty parts ("a.jar::" is the JVM's CWD element) so
+            # _verify_jar_sandbox can refuse them instead of silently dropping them.
+            raw_entries = classpath.split(os.pathsep)
         else:
             raw_entries = list(classpath)
-            original_classpath_string = None
         if not raw_entries:
             raise ValueError("Classpath is empty after splitting")
         _verify_jar_sandbox(raw_entries)
-        if original_classpath_string is not None:
-            classpath_arg = original_classpath_string
-        else:
-            classpath_arg = os.pathsep.join(raw_entries)
+        # Rebuild from the verified entries only; never pass the raw string to -cp.
+        classpath_arg = os.pathsep.join(raw_entries)
 
     # The Java launcher treats the first non-option token as the main class. A
     # caller-supplied cmd must therefore begin with a real main-class name, not a
@@ -382,6 +423,7 @@ def java(
         final_cmd.extend(["-cp", classpath_arg])
     final_cmd.extend(cmd_list)
 
+    child_env = _java_child_env()
     try:
         p = subprocess.Popen(
             final_cmd,
@@ -389,6 +431,7 @@ def java(
             stdout=stdout,
             stderr=stderr,
             universal_newlines=True,
+            env=child_env,
         )
         if blocking:
             stdout_data, stderr_data = p.communicate()
@@ -927,12 +970,13 @@ def find_binary_iter(
     # -- run relative to the CWD rather than looked up on PATH: arbitrary code
     # execution (CWE-426 / CWE-427). Only in that case do we refuse CWD-relative
     # matches and accept solely a trusted absolute location (env var / searchpath
-    # / ``which``). An explicit path supplied via ``path_to_bin`` or via ``name``
-    # itself (e.g. ``tools/prover9``) is the caller's own choice and is honored
-    # as before. ``not path_to_bin`` (rather than ``is None``) so an empty-string
-    # path_to_bin -- which ``path_to_bin or name`` already falls back to ``name``
-    # for -- cannot bypass the check.
-    searching_bare_name = not path_to_bin and os.path.dirname(name) == ""
+    # / ``which``). A path with a directory component (e.g. ``tools/prover9`` or
+    # ``/usr/bin/java``), via ``name`` or ``path_to_bin``, is the caller's explicit
+    # choice and is honored. A *bare* tool name is NOT an explicit path even when
+    # passed as ``path_to_bin`` (a bare ``bin="java"`` would otherwise let a planted
+    # ``./java/java`` hijack it), so it triggers the refusal too; an empty
+    # ``path_to_bin`` falls back to ``name`` through ``path_to_bin or name``.
+    searching_bare_name = os.path.dirname(path_to_bin or name) == ""
     safe_match = False
     for path in find_file_iter(
         path_to_bin or name, env_vars, searchpath, binary_names, url, verbose
@@ -1078,12 +1122,14 @@ def find_jar_iter(
         if is_regex:
             for filename in os.listdir(directory):
                 path_to_jar = os.path.join(directory, filename)
-                if os.path.isfile(path_to_jar):
-                    if re.match(name_pattern, filename):
-                        if verbose:
-                            print(f"[Found {filename}: {path_to_jar}]")
-                yielded = True
-                yield path_to_jar
+                # Only yield an actual file whose name matches the pattern; the
+                # yield was previously outside both guards, returning every dir
+                # entry (subdirs / unrelated files) as if it were the jar.
+                if os.path.isfile(path_to_jar) and re.match(name_pattern, filename):
+                    if verbose:
+                        print(f"[Found {filename}: {path_to_jar}]")
+                    yielded = True
+                    yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
