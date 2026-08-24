@@ -91,10 +91,10 @@ _JVM_INJECTING_ENV_VARS = frozenset(
 
 
 def _java_child_env():
-    """Return os.environ minus the JVM-injecting variables, so any child java
-    process (java() here, or a wrapper that builds its own command) cannot pick up
-    flags/classpath from JAVA_TOOL_OPTIONS et al. (CWE-88). Single source of truth
-    for every JVM launch in NLTK."""
+    """Return os.environ minus the JVM-injecting variables, so the child JVM that
+    java() launches cannot pick up flags/classpath from JAVA_TOOL_OPTIONS et al.
+    (CWE-88). Every NLTK JVM launch is routed through java(), so this is the single
+    place the child environment is sanitised."""
     return {
         k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
     }

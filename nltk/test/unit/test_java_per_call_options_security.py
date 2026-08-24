@@ -534,6 +534,58 @@ def test_maltparser_execute_routes_through_java_with_sanitized_env(
     assert "-cp" in captured["cmd"] and "org.maltparser.Malt" in captured["cmd"]
 
 
+def _bare_malt_parser(jars, java_args):
+    from nltk.parse import malt
+
+    parser = malt.MaltParser.__new__(malt.MaltParser)
+    parser.malt_jars = list(jars)
+    parser.additional_java_args = list(java_args)
+    return parser
+
+
+def _should_not_run(*a, **k):
+    raise AssertionError("subprocess.Popen must not run: the call should be rejected")
+
+
+def test_maltparser_dangerous_java_option_rejected_by_java(tmp_path, monkeypatch):
+    """Now that MaltParser routes through java(), a dangerous additional_java_args
+    flag is refused by java()'s option allowlist; malt no longer has to (and does
+    not) validate options itself."""
+    import nltk.data
+
+    root = tmp_path / "nltk_data"
+    root.mkdir()
+    jar = root / "maltparser-1.9.2.jar"
+    jar.write_bytes(b"PK\x03\x04")
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
+    monkeypatch.setattr(internals.subprocess, "Popen", _should_not_run)
+
+    parser = _bare_malt_parser([str(jar)], ["-XX:OnError=touch /tmp/pwned"])
+    with pytest.raises(ValueError):
+        parser._execute(["org.maltparser.Malt", "-m", "parse"])
+
+
+def test_maltparser_untrusted_classpath_rejected_by_java(tmp_path, monkeypatch):
+    """A malt jar outside every trusted root is refused by java()'s classpath
+    sandbox, inherited now that malt routes through java()."""
+    import nltk.data
+
+    root = tmp_path / "nltk_data"
+    root.mkdir()  # trusted root, but the jar lives OUTSIDE it
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
+    monkeypatch.setattr(internals.subprocess, "Popen", _should_not_run)
+
+    evil_dir = tmp_path / "evil"
+    evil_dir.mkdir()
+    evil_jar = evil_dir / "maltparser-1.9.2.jar"
+    evil_jar.write_bytes(b"PK\x03\x04")
+    parser = _bare_malt_parser([str(evil_jar)], [])
+    with pytest.raises(internals.UntrustedJarError):
+        parser._execute(["org.maltparser.Malt", "-m", "parse"])
+
+
 def test_config_java_validates_global_options(monkeypatch):
     """config_java() stores global options used when java(options=None); a
     dangerous global flag must be rejected there too, not just per-call."""
