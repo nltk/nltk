@@ -642,9 +642,9 @@ def _bounded_gzip_decompress(gz_bytes, name="<member>"):
             )
         if total >= MAX_UNZIP_ACTIVATION and total > ratio_limit:
             return (
-                "Refusing to decompress suspected nested gzip bomb %r: its gzip "
-                "layer expands beyond nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte "
-                "compressed member. Raise nltk.data.MAX_UNZIP_RATIO if this data is "
+                "Refusing to decompress suspected gzip bomb %r: its gzip layer "
+                "expands beyond nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte "
+                "compressed input. Raise nltk.data.MAX_UNZIP_RATIO if this data is "
                 "trusted." % (name, MAX_UNZIP_RATIO, compress_size)
             )
         return None

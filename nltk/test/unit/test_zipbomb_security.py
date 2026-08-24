@@ -7,6 +7,11 @@ exhausts RAM or disk. ``nltk.data._check_decompression_bomb`` now rejects a
 member that expands beyond ``MAX_UNZIP_RATIO`` (above an activation size) or past
 the optional absolute cap ``MAX_UNZIP_SIZE``. Ordinary corpora compress only a
 few-fold, so the guard does not affect legitimate data.
+
+The gzip layers are bounded too (``_bounded_gzip_decompress``): a ``.gz`` member
+inside a zip (``ZipFilePathPointer.open``) and a standalone ``.gz`` on disk
+(``GzipFileSystemPathPointer.open``) are second decompression layers the zip
+member-size guard never sees, so each is streamed under the same policy.
 """
 
 import os
@@ -106,7 +111,7 @@ def test_nested_gzip_bomb_blocked(tmp_path):
     z = _make_zip(tmp_path / "nested.zip", "bomb.gz", gz)
     # the zip member itself passes the guard (its declared sizes are tiny)
     data._check_decompression_bomb(zipfile.ZipFile(str(z)).getinfo("bomb.gz"))
-    with pytest.raises(ValueError, match="nested gzip bomb"):
+    with pytest.raises(ValueError, match="gzip bomb"):
         ZipFilePathPointer(str(z), "bomb.gz").open().read()
 
 
@@ -120,7 +125,7 @@ def test_nested_gzip_forged_isize_caught_by_streaming_cap(tmp_path):
     gz = bytearray(gzip.compress(b"\0" * (4 * 1024 * 1024)))
     gz[-4:] = (0).to_bytes(4, "little")  # lie about the uncompressed size
     z = _make_zip(tmp_path / "forged.zip", "bomb.gz", bytes(gz))
-    with pytest.raises(ValueError, match="nested gzip bomb"):
+    with pytest.raises(ValueError, match="gzip bomb"):
         ZipFilePathPointer(str(z), "bomb.gz").open().read()
 
 
@@ -157,7 +162,7 @@ def test_nested_gzip_ratio_cap_is_load_bearing(tmp_path):
     data.MAX_UNZIP_ACTIVATION = 64 * 1024
     data.MAX_UNZIP_RATIO = 10
     data.MAX_UNZIP_SIZE = None
-    with pytest.raises(ValueError, match="nested gzip bomb"):
+    with pytest.raises(ValueError, match="gzip bomb"):
         ZipFilePathPointer(str(z), "bomb.gz").open().read()
 
     # neuter the cap: activation above the 256 KiB output -> no longer refused
