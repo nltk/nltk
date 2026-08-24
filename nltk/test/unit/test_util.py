@@ -1,6 +1,6 @@
 import pytest
 
-from nltk.util import everygrams, transitive_closure
+from nltk.util import everygrams, ngrams, transitive_closure
 
 
 @pytest.fixture
@@ -80,6 +80,26 @@ def test_everygrams_pad_left(everygram_input):
     ]
     output = list(everygrams(everygram_input, max_len=3, pad_left=True))
     assert output == expected_output
+
+
+@pytest.mark.parametrize("n", [0, -1])
+def test_ngrams_rejects_non_positive_order(n):
+    """A non-positive order has no meaningful n-gram, so it is refused."""
+    with pytest.raises(ValueError, match="n must be positive"):
+        list(ngrams(["a", "b", "c"], n))
+
+
+@pytest.mark.parametrize("n", [1, 2, 3])
+def test_ngrams_accepts_positive_order(n):
+    output = list(ngrams(["a", "b", "c"], n))
+    assert all(len(gram) == n for gram in output)
+
+
+@pytest.mark.parametrize("min_len", [0, -1])
+def test_everygrams_rejects_non_positive_min_len(everygram_input, min_len):
+    """min_len below one would emit empty tuples alongside the real n-grams."""
+    with pytest.raises(ValueError, match="min_len must be positive"):
+        list(everygrams(everygram_input, min_len=min_len, max_len=2))
 
 
 def test_transitive_closure_chain():

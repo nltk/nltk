@@ -983,8 +983,12 @@ def ngrams(sequence, n, **kwargs):
     :type left_pad_symbol: any
     :param right_pad_symbol: the symbol to use for right padding (default is None)
     :type right_pad_symbol: any
+    :raise ValueError: if ``n`` is not positive
     :rtype: sequence or iter
     """
+    if n < 1:
+        raise ValueError(f"n must be positive, got {n}")
+
     sequence = pad_sequence(sequence, n, **kwargs)
 
     # sliding_window('ABCDEFG', 4) --> ABCD BCDE CDEF DEFG
@@ -1078,11 +1082,15 @@ def everygrams(
     :param pad_right: whether the ngrams should be right-padded
     :type pad_right: bool
     :rtype: iter(tuple)
+    :raise ValueError: if ``min_len`` is not positive
     :raise ValueError: if ``max_len`` is left at its default and the sequence is
         longer than ``MAX_EVERYGRAMS_DEFAULT_LEN``, since enumerating every
         n-gram of every length would allocate O(n**3) elements and exhaust
         memory (CWE-770). Pass an explicit ``max_len`` to bound the n-gram order.
     """
+
+    if min_len < 1:
+        raise ValueError(f"min_len must be positive, got {min_len}")
 
     # Get max_len for padding.
     if max_len == -1:
