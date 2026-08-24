@@ -43,7 +43,7 @@ def _write_minimal_parse(cmd):
     )
 
 
-def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
+def test_malt_parse_passes_model_dir_via_w_without_changing_process_cwd(
     monkeypatch, tmp_path
 ):
     parser, model_dir = _minimal_malt_parser(tmp_path, monkeypatch)
@@ -58,8 +58,8 @@ def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
 
     captured = {}
 
-    def fake_execute(cmd, verbose=False, cwd=None):
-        captured["cwd"] = cwd
+    def fake_execute(cmd, verbose=False):
+        captured["cmd"] = cmd
         captured["process_cwd"] = os.getcwd()
         captured["input_file"] = Path(cmd[cmd.index("-i") + 1])
         captured["output_file"] = Path(cmd[cmd.index("-o") + 1])
@@ -71,7 +71,9 @@ def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
     graphs = list(parser.parse_tagged_sents([[("hello", "NN")]]))
 
     assert len(graphs) == 1
-    assert captured["cwd"] == str(model_dir)
+    # The model directory is handed to MaltParser via its -w argument, NOT by
+    # changing the JVM's working directory; the process cwd stays untouched.
+    assert captured["cmd"][captured["cmd"].index("-w") + 1] == str(model_dir)
     assert captured["process_cwd"] == str(service_dir)
     assert os.getcwd() == str(service_dir)
     assert not captured["input_file"].exists()
@@ -88,8 +90,8 @@ def test_malt_parse_cleans_temp_files_and_preserves_cwd_on_execute_exception(
 
     captured = {}
 
-    def fake_execute(cmd, verbose=False, cwd=None):
-        captured["cwd"] = cwd
+    def fake_execute(cmd, verbose=False):
+        captured["cmd"] = cmd
         captured["process_cwd"] = os.getcwd()
         captured["input_file"] = Path(cmd[cmd.index("-i") + 1])
         captured["output_file"] = Path(cmd[cmd.index("-o") + 1])
@@ -102,7 +104,7 @@ def test_malt_parse_cleans_temp_files_and_preserves_cwd_on_execute_exception(
     with pytest.raises(RuntimeError, match="forced parser failure"):
         list(parser.parse_tagged_sents([[("hello", "NN")]]))
 
-    assert captured["cwd"] == str(model_dir)
+    assert captured["cmd"][captured["cmd"].index("-w") + 1] == str(model_dir)
     assert captured["process_cwd"] == str(service_dir)
     assert os.getcwd() == str(service_dir)
     assert not captured["input_file"].exists()

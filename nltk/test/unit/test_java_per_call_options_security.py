@@ -489,33 +489,49 @@ class TestJavaEnvironmentSanitization:
         assert env.get("NLTK_KEEP") == "1"
 
 
-# --- MaltParser runs its OWN java subprocess, not internals.java(): it must apply
-# the same env sanitization or JAVA_TOOL_OPTIONS et al. inject past the allowlist.
+# --- MaltParser now routes its JVM through internals.java() (no own subprocess, no
+# cwd), so it inherits the classpath sandbox, option allowlist and env sanitization.
 
 
-def test_maltparser_execute_strips_injecting_env(monkeypatch):
+def test_maltparser_execute_routes_through_java_with_sanitized_env(
+    monkeypatch, tmp_path
+):
+    import nltk.data
     from nltk.parse import malt
+
+    root = tmp_path / "nltk_data"
+    root.mkdir()
+    jar = (
+        root / "maltparser-1.9.2.jar"
+    )  # trusted (on nltk.data.path) so sandbox admits it
+    jar.write_bytes(b"PK\x03\x04")
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
 
     captured = {}
 
     def _fake_popen(cmd, *a, **k):
         captured["env"] = k.get("env")
-
-        class _P:
-            def wait(self):
-                return 0
-
-        return _P()
+        captured["cmd"] = list(cmd)
+        raise _PopenIntercept
 
     monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-XX:OnError=touch /tmp/pwned")
     monkeypatch.setenv("_JAVA_OPTIONS", "-javaagent:/tmp/evil.jar")
     monkeypatch.setenv("NLTK_KEEP", "1")
-    monkeypatch.setattr(malt.subprocess, "Popen", _fake_popen)
-    malt.MaltParser._execute(["java", "-version"])
+    monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
+
+    parser = malt.MaltParser.__new__(malt.MaltParser)
+    parser.malt_jars = [str(jar)]
+    parser.additional_java_args = []
+    with pytest.raises(_PopenIntercept):
+        parser._execute(["org.maltparser.Malt", "-m", "parse"])
+
     env = captured["env"]
-    assert env is not None, "MaltParser._execute must pass an explicit sanitized env"
+    assert env is not None, "MaltParser must reach java()'s sanitized-env Popen"
     assert "JAVA_TOOL_OPTIONS" not in env and "_JAVA_OPTIONS" not in env
-    assert env.get("NLTK_KEEP") == "1"  # benign vars are preserved
+    assert env.get("NLTK_KEEP") == "1"  # benign vars preserved
+    # confirm it truly went through java(): -cp built from malt_jars + the main class
+    assert "-cp" in captured["cmd"] and "org.maltparser.Malt" in captured["cmd"]
 
 
 def test_config_java_validates_global_options(monkeypatch):
