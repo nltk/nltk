@@ -620,53 +620,48 @@ def _check_decompression_bomb(info):
         )
 
 
-def _bounded_gzip_decompress(gz_bytes, name="<member>"):
-    """Decompress a gzip byte string, applying the decompression-bomb policy to
-    the actual output (CWE-409).
+def _bounded_stream_read(stream, compress_size, name="<member>", kind="zip"):
+    """Read a decompressing file-like *stream* under the decompression-bomb policy,
+    capping the **actual** bytes it produces against *compress_size* (CWE-409).
 
-    ``ZipFilePathPointer.open`` wraps a ``.gz`` zip member in a ``GzipFile``, a
-    second decompression layer that :func:`_check_decompression_bomb` (which only
-    inspects the zip member's declared sizes) does not bound. This streams the
-    gzip output and refuses it once it is both large (>= ``MAX_UNZIP_ACTIVATION``)
-    and expands beyond ``MAX_UNZIP_RATIO`` over the compressed member, or exceeds
-    the optional ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes.
+    This never trusts a declared/metadata size and never materialises the member
+    through a raw one-shot read: it pulls fixed 1 MiB chunks and refuses once the
+    output is both large (>= ``MAX_UNZIP_ACTIVATION``) and expands beyond
+    ``MAX_UNZIP_RATIO`` over the compressed input, or exceeds the optional
+    ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes. *kind* only tunes
+    the error wording (``"zip"`` / ``"gzip"``).
     """
-    compress_size = len(gz_bytes)
     ratio_limit = MAX_UNZIP_RATIO * compress_size
-
-    def _reject_reason(total):
-        if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
-            return (
-                "Refusing to decompress zip member %r: its nested gzip output "
-                "exceeds nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, MAX_UNZIP_SIZE)
-            )
-        if total >= MAX_UNZIP_ACTIVATION and total > ratio_limit:
-            return (
-                "Refusing to decompress suspected gzip bomb %r: its gzip layer "
-                "expands beyond nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte "
-                "compressed input. Raise nltk.data.MAX_UNZIP_RATIO if this data is "
-                "trusted." % (name, MAX_UNZIP_RATIO, compress_size)
-            )
-        return None
-
-    # Cheap pre-check via the gzip ISIZE trailer (declared uncompressed size mod
-    # 2**32). It is attacker-forgeable (and wraps above 4 GiB), so the streaming
-    # cap below is the actual guarantee; this just rejects honest bombs for free.
-    if compress_size >= 4:
-        reason = _reject_reason(int.from_bytes(gz_bytes[-4:], "little"))
-        if reason:
-            raise ValueError(reason)
-
     out = []
     total = 0
-    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
-        for chunk in iter(lambda: gz.read(1 << 20), b""):
-            total += len(chunk)
-            reason = _reject_reason(total)
-            if reason:
-                raise ValueError(reason)
-            out.append(chunk)
+    for chunk in iter(lambda: stream.read(1 << 20), b""):
+        total += len(chunk)
+        if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
+            raise ValueError(
+                "Refusing to decompress %r: its %s output exceeds "
+                "nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, kind, MAX_UNZIP_SIZE)
+            )
+        if total >= MAX_UNZIP_ACTIVATION and total > ratio_limit:
+            raise ValueError(
+                "Refusing to decompress suspected %s bomb %r: it expands beyond "
+                "nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte compressed input. "
+                "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+                % (kind, name, MAX_UNZIP_RATIO, compress_size)
+            )
+        out.append(chunk)
     return b"".join(out)
+
+
+def _bounded_gzip_decompress(gz_bytes, name="<member>"):
+    """Decompress gzip bytes under the decompression-bomb policy (CWE-409).
+
+    ``ZipFilePathPointer.open`` / ``GzipFileSystemPathPointer.open`` wrap a ``.gz``
+    in a ``GzipFile``, a decompression layer :func:`_check_decompression_bomb` (which
+    only inspects declared zip sizes) does not bound. The gzip ISIZE trailer is
+    attacker-forgeable, so the actual-byte streaming cap is the guarantee.
+    """
+    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
+        return _bounded_stream_read(gz, len(gz_bytes), name, kind="gzip")
 
 
 class ZipFilePathPointer(PathPointer):
@@ -1441,10 +1436,13 @@ class OpenOnDemandZipFile(ZipFile):
         _check_decompression_bomb(self.getinfo(name))
         # This will be validated by pathsec.open
         self.fp = _secure_open(self.filename, "rb")
-        value = zipfile.ZipFile.read(self, name)
-        self.fp.close()
-        self.fp = None
-        return value
+        try:
+            # Delegate to the secured base read(), which also streams the member's
+            # ACTUAL bytes under the cap (CWE-409), not a raw one-shot read.
+            return super().read(name)
+        finally:
+            self.fp.close()
+            self.fp = None
 
     def write(self, *args, **kwargs):
         """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""

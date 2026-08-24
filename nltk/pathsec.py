@@ -10,6 +10,7 @@
 """Centralized I/O security sentinel for NLTK."""
 import builtins
 import http.client
+import io
 import ipaddress
 import os
 import re
@@ -841,6 +842,16 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
     return builtins.open(raw_path, mode=mode, **kwargs)
 
 
+def _decompression_guards():
+    # The decompression-bomb policy lives in nltk.data (its MAX_UNZIP_* limits are
+    # public API). nltk.data imports THIS module, so importing it at the top would
+    # be circular; this single deferred import runs at call time when both modules
+    # are fully loaded. Returns (_check_decompression_bomb, _bounded_stream_read).
+    from nltk.data import _bounded_stream_read, _check_decompression_bomb
+
+    return _check_decompression_bomb, _bounded_stream_read
+
+
 class ZipFile(zipfile.ZipFile):
     """Secure wrapper for zipfile.ZipFile."""
 
@@ -879,26 +890,28 @@ class ZipFile(zipfile.ZipFile):
         super().extractall(path, members, pwd)
 
     def read(self, name, pwd=None):
-        # zipfile.read() decompresses the whole member into memory with no cap; a
-        # tiny member declaring gigabytes exhausts RAM (decompression bomb,
-        # CWE-409). Bound it with nltk's policy before reading.
-        self._reject_decompression_bomb(name)
-        return super().read(name, pwd)
+        # Never use the raw one-shot super().read(): it decompresses the whole
+        # member into memory bounded only by the member's (attacker-controlled)
+        # declared size. Stream it and cap the ACTUAL bytes produced (CWE-409).
+        _check_decompression_bomb, _bounded_stream_read = _decompression_guards()
+        info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
+        _check_decompression_bomb(info)  # cheap declared-size early reject
+        with super().open(info, mode="r", pwd=pwd) as raw:
+            return _bounded_stream_read(raw, info.compress_size, info.filename)
 
     def open(self, name, mode="r", pwd=None, *, force_zip64=False):
-        # A streaming member open still decompresses on read; bound it up front by
-        # the member's declared size (only for read mode; writes have no member).
-        if mode == "r":
-            self._reject_decompression_bomb(name)
-        return super().open(name, mode, pwd, force_zip64=force_zip64)
-
-    def _reject_decompression_bomb(self, name):
-        # Imported lazily: nltk.data imports this module, so a top-level import
-        # would be circular. The policy/limits live in nltk.data (public API).
-        from nltk.data import _check_decompression_bomb
-
+        # Write mode has no member to decompress; only reads are bounded.
+        if mode != "r":
+            return super().open(name, mode, pwd, force_zip64=force_zip64)
+        # Never hand back the raw streaming reader (unbounded on .read()); return a
+        # seekable in-memory stream of the actual-byte-capped decompressed bytes.
+        _check_decompression_bomb, _bounded_stream_read = _decompression_guards()
         info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
         _check_decompression_bomb(info)
+        with super().open(info, mode="r", pwd=pwd, force_zip64=force_zip64) as raw:
+            return io.BytesIO(
+                _bounded_stream_read(raw, info.compress_size, info.filename)
+            )
 
 
 __all__ = [
