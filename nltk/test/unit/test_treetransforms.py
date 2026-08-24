@@ -10,11 +10,12 @@ rebuilds each parent's child list in a single left-to-right sweep (O(n)),
 producing identical output for any tree in Chomsky Normal Form.
 """
 
-import multiprocessing
 import os
 
 from nltk.tree import Tree
 from nltk.tree.transforms import chomsky_normal_form, un_chomsky_normal_form
+
+from . import _mp_ctx
 
 _TREES = [
     "(S (NP (D the) (N cat)) (VP (V sat)))",
@@ -84,14 +85,14 @@ def _un_chomsky_worker(n):
 def test_un_chomsky_is_linear_not_quadratic():
     """A large CNF tree must un-binarise quickly (linear), not tie up a core.
 
-    Run in a spawned process with a hard deadline: the single-sweep pass returns
+    Run in a separate process with a hard deadline: the single-sweep pass returns
     in milliseconds, while the previous O(n^2) version needs over a minute at
     this size, so a regression is terminated instead of burning CPU for the rest
     of the suite.
     """
     n = 20_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_un_chomsky_worker, args=(n,))
     proc.start()
     proc.join(deadline)

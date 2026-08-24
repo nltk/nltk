@@ -25,7 +25,6 @@ exception in the worker (e.g. a re-raised ``RecursionError``) is propagated back
 to the assertions instead of crashing the runner.
 """
 
-import multiprocessing
 import queue
 
 from nltk.inference import (
@@ -35,6 +34,8 @@ from nltk.inference import (
 from nltk.inference.resolution import ResolutionProver
 from nltk.inference.tableau import TableauProver
 from nltk.sem import Expression
+
+from . import _mp_ctx
 
 read = Expression.fromstring
 
@@ -84,13 +85,13 @@ def _tableau_attack_worker(result_q):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a deadline.
+    """Run ``target(result_q, *args)`` in a separate process with a deadline.
 
     Returns ``(finished, status, payload)``. If the worker overruns
     ``_DEADLINE`` it is terminated (no lingering CPU) and ``finished`` is
     ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

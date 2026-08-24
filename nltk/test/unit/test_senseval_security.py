@@ -14,10 +14,11 @@ for the rest of the suite, and any exception in the worker is propagated back to
 the assertions instead of being swallowed.
 """
 
-import multiprocessing
 import queue
 
 from nltk.corpus.reader.senseval import SensevalCorpusReader, _fixXML
+
+from . import _mp_ctx
 
 # A long token with no <p="..."/> tag: ~128 KB. Linear with the possessive
 # patterns (sub-millisecond); ~quadratic and tens of seconds with the old ones.
@@ -44,7 +45,7 @@ def _reader_worker(result_q, root, fileid):
 
 
 def _run_in_process(target, args=()):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q, *args))
     proc.start()

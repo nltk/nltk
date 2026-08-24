@@ -8,11 +8,10 @@ never terminates (it hangs producing even the first sentence) or exhausts
 memory. The number of derivation-expansion steps is now bounded by
 ``MAX_GENERATE_OPERATIONS``; once exceeded, generation raises ``ValueError``.
 
-The "must not hang" test runs in a spawned process with a hard timeout so a
+The "must not hang" test runs in a separate process with a hard timeout so a
 regression (running the unbounded enumeration) cannot hang/OOM the suite.
 """
 
-import multiprocessing
 import queue
 
 import pytest
@@ -20,6 +19,8 @@ import pytest
 from nltk import CFG
 from nltk.parse import generate as generate_mod
 from nltk.parse.generate import MAX_GENERATE_OPERATIONS, demo_grammar, generate
+
+from . import _mp_ctx
 
 
 def test_max_generate_operations_is_a_finite_positive_int():
@@ -89,7 +90,7 @@ def _generate_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

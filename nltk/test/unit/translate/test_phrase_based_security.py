@@ -9,12 +9,11 @@ by ``MAX_PHRASE_EXTRACTION_DEFAULT_LEN``; a longer sentence with the default
 raises ``ValueError`` asking for an explicit ``max_phrase_length``. An
 explicitly supplied ``max_phrase_length`` is never capped.
 
-The "must not run" test runs in a spawned process with a hard timeout, and the
+The "must not run" test runs in a separate process with a hard timeout, and the
 worker reports its outcome through its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot hang the suite.
 """
 
-import multiprocessing
 import os
 
 import pytest
@@ -23,6 +22,8 @@ from nltk.translate.phrase_based import (
     MAX_PHRASE_EXTRACTION_DEFAULT_LEN,
     phrase_extraction,
 )
+
+from .. import _mp_ctx
 
 # The worked example from the phrase_extraction docstring.
 _SRC = "michael assumes that he will stay in the house"
@@ -110,7 +111,7 @@ def _phrase_worker():
 
 def test_oversized_default_is_refused_not_run():
     """phrase_extraction(long_pair) with the default must be refused, not run."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_phrase_worker)
     proc.start()
     proc.join(_TIMEOUT)

@@ -4,7 +4,6 @@ See also nltk/test/tokenize.doctest
 """
 
 import hashlib
-import multiprocessing
 import os
 from typing import List, Tuple
 
@@ -22,6 +21,8 @@ from nltk.tokenize import (
 )
 from nltk.tokenize.simple import CharTokenizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+
+from . import _mp_ctx
 
 
 def load_stanford_segmenter():
@@ -368,10 +369,10 @@ class TestTokenize:
         """
         The URL/email regexes used to backtrack catastrophically on long
         dotted strings, so a tiny input could hang the tokenizer for many
-        seconds. Run pathological inputs in a spawned process with a hard
+        seconds. Run pathological inputs in a separate process with a hard
         timeout so a regression fails fast instead of hanging the suite.
         """
-        ctx = multiprocessing.get_context("spawn")
+        ctx = _mp_ctx()
         proc = ctx.Process(target=_tweet_tokenizer_redos_worker)
         proc.start()
         proc.join(60)

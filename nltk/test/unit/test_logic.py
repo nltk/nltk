@@ -9,11 +9,12 @@ reduces to an exponentially large normal form and exhausts CPU and memory.
 exceeds ``MAX_SIMPLIFY_SIZE`` subexpressions; ordinary reductions are unchanged.
 """
 
-import multiprocessing
 import os
 
 from nltk.sem import Expression
 from nltk.sem.logic import MAX_SIMPLIFY_SIZE, _exceeds_size
+
+from . import _mp_ctx
 
 _DOUBLER = r"(\Y.(Y & Y))"
 
@@ -67,12 +68,12 @@ def _blowup_worker():
 def test_simplify_bounds_exponential_blowup():
     """A nested-doubler expression must be refused quickly, not blow up.
 
-    Run in a spawned process with a hard deadline: with the cap the reduction
+    Run in a separate process with a hard deadline: with the cap the reduction
     raises almost immediately, while the unbounded version needs exponential CPU
     and memory at this size, so a regression is terminated instead of OOM-killing
     or hanging the suite.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_blowup_worker)
     proc.start()
     proc.join(30)
