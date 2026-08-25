@@ -843,11 +843,8 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
 
 
 def _decompression_guards():
-    # The decompression-bomb policy lives in nltk.data (its MAX_UNZIP_* limits are
-    # public API). nltk.data imports THIS module, so importing it at the top would
-    # be circular; this single deferred import runs at call time when both modules
-    # are fully loaded. Returns
-    # (_check_decompression_bomb, _bounded_stream_read, _reject_decompression_total).
+    # Deferred to break the nltk.data <-> nltk.pathsec import cycle (data owns the
+    # public MAX_UNZIP_* policy); runs once both modules are fully loaded.
     from nltk.data import (
         _bounded_stream_read,
         _check_decompression_bomb,
@@ -933,9 +930,8 @@ class ZipFile(zipfile.ZipFile):
         super().extractall(path, members, pwd)
 
     def read(self, name, pwd=None):
-        # Never use the raw one-shot super().read(): it decompresses the whole
-        # member into memory bounded only by the member's (attacker-controlled)
-        # declared size. Stream it and cap the ACTUAL bytes produced (CWE-409).
+        # Not the raw one-shot super().read() (bounded only by the attacker-declared
+        # size): stream it and cap the ACTUAL bytes produced (CWE-409).
         _check_decompression_bomb, _bounded_stream_read, _ = _decompression_guards()
         info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
         _check_decompression_bomb(info)  # cheap declared-size early reject
@@ -946,10 +942,8 @@ class ZipFile(zipfile.ZipFile):
         # Write mode has no member to decompress; only reads are bounded.
         if mode != "r":
             return super().open(name, mode, pwd, force_zip64=force_zip64)
-        # Preserve zipfile.open()'s streaming/partial-read contract (a caller may read
-        # only a prefix) instead of buffering the whole member: hand back a bounded
-        # streaming reader that caps the ACTUAL bytes produced on every read and cuts
-        # off an over-expanding member mid-stream (CWE-409).
+        # Preserve zipfile.open()'s streaming/partial-read contract: hand back a bounded
+        # reader that caps the ACTUAL bytes and cuts off an over-expanding member (CWE-409).
         _check_decompression_bomb, _, _reject = _decompression_guards()
         info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
         _check_decompression_bomb(info)

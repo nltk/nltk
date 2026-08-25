@@ -38,10 +38,8 @@ def _restore_limits():
     data.MAX_UNZIP_RATIO, data.MAX_UNZIP_SIZE, data.MAX_UNZIP_ACTIVATION = saved
 
 
-# These sandbox helpers use the pathsec-secured wrappers, never a bare open: the
-# tmp_path fixtures live under an authorized data root (see conftest), so the whole
-# harness dogfoods the hardened API. A bare open is used only where a test must
-# create something *outside* the sandbox (none here).
+# Sandbox helpers dogfood the pathsec-secured wrappers (never a bare open); tmp_path
+# lives under an authorized data root (see conftest).
 def _secure_zip(path, members):
     with SecureZipFile(str(path), "w", zipfile.ZIP_DEFLATED) as zf:
         for name, payload in members.items():
@@ -240,9 +238,8 @@ def test_pathsec_bounded_zip_ext_file_caps_actual_bytes(tmp_path, how):
     data.MAX_UNZIP_RATIO = 10
     z = _make_zip(tmp_path / "m.zip", "m", b"\0" * (4 * 1024 * 1024))
     with SecureZipFile(str(z)) as zf:
-        # zipfile.ZipFile.open bypasses our bounded override to hand back the raw
-        # streaming ZipExtFile; wrap it with an UNDERSTATED compress_size so only the
-        # actual-byte cap (not the ratio-vs-declared pre-check) can stop it.
+        # Raw ZipExtFile (bypassing our override) wrapped with an UNDERSTATED
+        # compress_size, so only the actual-byte cap (not the pre-check) can stop it.
         raw = zipfile.ZipFile.open(zf, "m")
         stream = io.BufferedReader(
             _BoundedZipExtFile(raw, 1024, "m", _reject_decompression_total)

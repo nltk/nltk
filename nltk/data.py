@@ -250,10 +250,8 @@ class _BoundedGzipFile(GzipFile):
         return self._nltk_cached_compress_size
 
     def _nltk_guard_offset(self, reached):
-        # Enforce the policy at the given uncompressed offset, tracking its high-water
-        # mark so backward seeks / re-reads never re-count already-seen bytes. The
-        # offset is passed in (never self.tell(), which IOBase implements as
-        # seek(0, SEEK_CUR) and would recurse through the seek() override below).
+        # Guard at the high-water uncompressed offset (passed in, never self.tell(),
+        # which IOBase routes through seek() below and would recurse).
         if reached > getattr(self, "_nltk_read_total", 0):
             self._nltk_read_total = reached
             _reject_decompression_total(
@@ -263,17 +261,14 @@ class _BoundedGzipFile(GzipFile):
     def read(self, size=-1):
         chunk = super().read(size)
         if chunk:
-            # super().seek(0, SEEK_CUR) reports the post-read offset cheaply (no
-            # decompression) via the parent, bypassing this class's seek() override.
+            # super().seek(0, CUR) is the parent's cheap post-read offset (no
+            # decompression), bypassing this class's seek() override.
             self._nltk_guard_offset(super().seek(0, os.SEEK_CUR))
         return chunk
 
     def seek(self, offset, whence=os.SEEK_SET):
-        # A forward / SEEK_END seek makes GzipFile decompress-and-discard past the
-        # current point INSIDE its own buffer, never through read() above, so a bomb
-        # would slip the counter. GzipFile's seek discards in bounded chunks (it does
-        # not materialise the skipped bytes), so this is not itself a RAM bomb; we
-        # re-check the offset it lands on and refuse before the caller can read there.
+        # A forward / SEEK_END seek decompresses-and-discards inside GzipFile's buffer,
+        # never through read(); re-check the landed offset so a bomb cannot slip past.
         pos = super().seek(offset, whence)
         self._nltk_guard_offset(pos)
         return pos
@@ -616,13 +611,8 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        # Route through the sentinel like FileSystemPathPointer.open() so the path is
-        # validated against the allowed NLTK data roots (with symlinks resolved)
-        # before reading, then decompress the validated handle as a STREAM rather than
-        # re-opening the path directly (CWE-22 / CWE-73). A standalone .gz is a single
-        # gzip layer with no declared-size guard of its own; _BoundedGzipFile caps its
-        # ACTUAL output under the decompression-bomb policy (CWE-409) as it is read,
-        # so a large-but-legitimate gzip pickle is never buffered whole in memory.
+        # Validate the path via the sentinel (CWE-22 / CWE-73), then stream the handle
+        # through _BoundedGzipFile so a bomb is capped without buffering it whole (CWE-409).
         handle = _secure_open(self._path, "rb")
         try:
             stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
@@ -814,9 +804,8 @@ class ZipFilePathPointer(PathPointer):
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
-            # GzipFile is a SECOND decompression layer the zip-member guard above
-            # does not see; bound its output with the same policy so a nested
-            # gzip bomb cannot exhaust memory (CWE-409).
+            # The .gz is a SECOND decompression layer the zip-member guard never
+            # sees; bound its output under the same policy (nested bomb, CWE-409).
             stream = BytesIO(_bounded_gzip_decompress(data, self._entry))
         elif encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)

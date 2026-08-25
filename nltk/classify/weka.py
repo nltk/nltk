@@ -74,9 +74,8 @@ def config_weka(classpath=None):
 
 def _check_weka_version(jar):
     try:
-        # Secured wrapper: path containment (traversal/symlink) + the
-        # decompression-bomb cap on read() (a malicious weka.jar could declare a
-        # gigabyte version.txt, CWE-409). Never open an archive bare.
+        # Secured wrapper (never bare): path containment + the read() bomb cap, so a
+        # jar declaring a gigabyte version.txt cannot exhaust RAM (CWE-409).
         zf = SecureZipFile(jar)
     except (SystemExit, KeyboardInterrupt):
         raise
