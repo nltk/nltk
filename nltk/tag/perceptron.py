@@ -19,6 +19,7 @@ from tempfile import gettempdir
 
 from nltk import jsontags
 from nltk.data import FileSystemPathPointer, find, open_datafile
+from nltk.pathsec import open as pathsec_open
 from nltk.tag.api import TaggerI
 
 
@@ -54,7 +55,7 @@ def _open_private_model_dir(loc):
 
     The leaf is created with ``os.mkdir`` (atomic: it either creates the real
     directory or fails with ``FileExistsError``) and then re-opened with
-    ``O_NOFOLLOW|O_DIRECTORY`` -- so a symlink pre-planted or raced in at the
+    ``O_NOFOLLOW|O_DIRECTORY``; so a symlink pre-planted or raced in at the
     guessable default name is refused (``ELOOP``/``ENOTDIR``) instead of being
     followed. The descriptor is rejected unless it is a real directory owned by
     the current user and not group-/world-writable (CWE-59/377/378).
@@ -175,12 +176,12 @@ class AveragedPerceptron:
 
     def save(self, path):
         """Save the model weights as json"""
-        with open(path, "w") as fout:
+        with pathsec_open(path, "w", context="AveragedPerceptron.save") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
         """Load the json model weights."""
-        with open(path) as fin:
+        with pathsec_open(path, context="AveragedPerceptron.load") as fin:
             self.weights = json.load(fin)
 
     def encode_json_obj(self):
@@ -332,6 +333,8 @@ class PerceptronTagger(TaggerI):
     def save_to_json(self, lang="xxx", loc=None):
         if not loc:
             loc = self.save_dir
+        # No allowed-root check on loc: _open_private_model_dir below verifies it
+        # atomically, and a root check would refuse a private per-user temp dir on Linux.
         # On POSIX the default TRAINED_TAGGER_PATH is a shared, world-writable
         # temp dir (/tmp) and the save dir is a *guessable* name in it, so a
         # local attacker can pre-plant or race a symlink at ``loc``. A plain
