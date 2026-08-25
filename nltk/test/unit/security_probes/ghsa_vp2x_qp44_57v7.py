@@ -11,7 +11,9 @@ def _xmlcorpusview_quadratic():
     from nltk.corpus.reader.xmldocs import XMLCorpusView
 
     view = XMLCorpusView.__new__(XMLCorpusView)
-    payload = "<a " + "x" * 2_000_000 + ">"
+    # 4M chars: at 2M the pre-fix quadratic scan was ~15.6s, right at the budget, so
+    # the min-of-3 sampling could dip under and false-pass; 4M is comfortably >30s.
+    payload = "<a " + "x" * 4_000_000 + ">"
     ok, seconds = within_budget(lambda: view._read_xml_fragment(io.StringIO(payload)))
     if ok:
         return FIXED, "2M-char unterminated tag in %.3fs" % seconds

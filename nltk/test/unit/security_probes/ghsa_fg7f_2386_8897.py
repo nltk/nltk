@@ -8,7 +8,9 @@ def _reviews_features_redos():
     """Unbounded greedy label run in the ReviewsCorpusReader FEATURES regex."""
     from nltk.corpus.reader.reviews import FEATURES
 
-    payload = "a " * 4000 + "["
+    # ~9000 words: the pre-fix quadratic regex needs this many to blow the budget
+    # (4000 words was only ~3s, so the probe passed against the vulnerable code).
+    payload = "a " * 9000 + "["
     try:
         seconds = timed(FEATURES.findall, payload)
     except Exception as exc:

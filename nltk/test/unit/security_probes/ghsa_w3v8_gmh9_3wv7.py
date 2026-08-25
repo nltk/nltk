@@ -7,11 +7,16 @@ from ._base import DOS_BUDGET, FIXED, VULNERABLE, probe, timed
 def _tgrep_redos():
     """tgrep passed user regexes to re with no timeout or validation."""
     from nltk import tgrep
+    from nltk.tree import Tree
 
+    # Compiling is fast either way; the catastrophic backtracking only fires when
+    # the predicate MATCHES a hostile node label, so drive the match.
     try:
-        seconds = timed(tgrep.tgrep_compile, "/([ab]|[ab])*$/")
+        predicate = tgrep.tgrep_compile("/([ab]|[ab])*$/")
+        hostile = Tree("ab" * 25 + "!", ["x"])
+        seconds = timed(lambda: predicate(hostile))
     except Exception as exc:
         return FIXED, "hostile pattern rejected (%s)" % type(exc).__name__
     if seconds > DOS_BUDGET:
-        return VULNERABLE, "tgrep compile took %.1fs" % seconds
-    return FIXED, "hostile pattern handled in %.3fs" % seconds
+        return VULNERABLE, "tgrep match took %.1fs" % seconds
+    return FIXED, "hostile pattern matched in %.3fs" % seconds
