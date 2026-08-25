@@ -14,12 +14,12 @@ import re
 import subprocess
 import tempfile
 import time
-import zipfile
 from sys import stdin
 
 from nltk.classify.api import ClassifierI
 from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
+from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.probability import DictionaryProbDist
 
@@ -74,7 +74,9 @@ def config_weka(classpath=None):
 
 def _check_weka_version(jar):
     try:
-        zf = zipfile.ZipFile(jar)
+        # Secured wrapper (never bare): path containment + the read() bomb cap, so a
+        # jar declaring a gigabyte version.txt cannot exhaust RAM (CWE-409).
+        zf = SecureZipFile(jar)
     except (SystemExit, KeyboardInterrupt):
         raise
     except Exception:
