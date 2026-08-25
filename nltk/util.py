@@ -1047,6 +1047,8 @@ def trigrams(sequence, **kwargs):
 #: only affects the default; an explicitly supplied ``max_len`` is never capped.
 MAX_EVERYGRAMS_DEFAULT_LEN = 256
 
+MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW = 1_000_000
+
 
 def everygrams(
     sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs
@@ -1146,14 +1148,32 @@ def skipgrams(sequence, n, k, **kwargs):
     :type  k: int
     :rtype: iter(tuple)
     """
+    if n < 1:
+        raise ValueError("n must be greater than or equal to 1")
+    if k < 0:
+        raise ValueError("k must be greater than or equal to 0")
 
-    MAX_COMBINATIONS_PER_WINDOW = 1_000_000
+    # Fast-path / safety check for n == 1 (no skip-tail combinations needed)
+    if n == 1:
+        if "pad_left" in kwargs or "pad_right" in kwargs:
+            sequence = pad_sequence(sequence, n, **kwargs)
+        for ngram in ngrams(sequence, 1 + k, pad_right=True, right_pad_symbol=object()):
+            if ngram[0] is not object():
+                yield (ngram[0],)
+        return
 
-    if n > 0 and (n + k - 1) >= (n - 1):
-        if math.comb(n + k - 1, n - 1) > MAX_COMBINATIONS_PER_WINDOW:
+    # Pre-check bounds before math.comb to prevent big-integer performance spikes on huge inputs
+    if (
+        n > MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW
+        or k > MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW
+    ):
+        raise ValueError(f"Skipgram parameters n={n} and k={k} are excessively large.")
+
+    if (n + k - 1) >= (n - 1):
+        if math.comb(n + k - 1, n - 1) > MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW:
             raise ValueError(
                 f"Skipgram parameters n={n} and k={k} exceed the maximum allowed "
-                f"combinations per window ({MAX_COMBINATIONS_PER_WINDOW})."
+                f"combinations per window ({MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW})."
             )
 
     # Pads the sequence as desired by **kwargs.
