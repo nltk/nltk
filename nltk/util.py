@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 import inspect
 import locale
+import math
 import os
 import pydoc
 import re
@@ -1145,6 +1146,15 @@ def skipgrams(sequence, n, k, **kwargs):
     :type  k: int
     :rtype: iter(tuple)
     """
+
+    MAX_COMBINATIONS_PER_WINDOW = 1_000_000
+
+    if n > 0 and (n + k - 1) >= (n - 1):
+        if math.comb(n + k - 1, n - 1) > MAX_COMBINATIONS_PER_WINDOW:
+            raise ValueError(
+                f"Skipgram parameters n={n} and k={k} exceed the maximum allowed "
+                f"combinations per window ({MAX_COMBINATIONS_PER_WINDOW})."
+            )
 
     # Pads the sequence as desired by **kwargs.
     if "pad_left" in kwargs or "pad_right" in kwargs:
