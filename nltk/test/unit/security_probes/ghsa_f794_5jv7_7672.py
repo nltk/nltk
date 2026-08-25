@@ -23,7 +23,12 @@ def _downloader_hardlink():
     if os.name != "posix" or not ps.ENFORCE:
         return STATIC, "hardened write path inactive (non-POSIX or ENFORCE off)"
 
+    import nltk.data
+
     box = tempfile.mkdtemp()
+    # Authorize box as a data root so the sandbox layer passes and _hardened_open
+    # itself is the guard exercised (on a world-writable /tmp it blocks too early).
+    nltk.data.path.insert(0, box)
     try:
         root = os.path.join(box, "corpus")
         os.makedirs(root)
@@ -61,4 +66,6 @@ def _downloader_hardlink():
                 )
         return FIXED, "; ".join(notes)
     finally:
+        if box in nltk.data.path:
+            nltk.data.path.remove(box)
         shutil.rmtree(box, ignore_errors=True)
