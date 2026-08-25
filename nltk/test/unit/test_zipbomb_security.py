@@ -24,7 +24,11 @@ import zipfile  # for the ZIP_DEFLATED constant only; opens go through pathsec
 import pytest
 
 import nltk.data as data
-from nltk.data import GzipFileSystemPathPointer, ZipFilePathPointer
+from nltk.data import (
+    GzipFileSystemPathPointer,
+    OpenOnDemandZipFile,
+    ZipFilePathPointer,
+)
 from nltk.downloader import ErrorMessage, _unzip_iter
 from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
@@ -33,9 +37,19 @@ from nltk.pathsec import open as pathsec_open
 @pytest.fixture(autouse=True)
 def _restore_limits():
     """Snapshot and restore the configurable limits around each test."""
-    saved = (data.MAX_UNZIP_RATIO, data.MAX_UNZIP_SIZE, data.MAX_UNZIP_ACTIVATION)
+    saved = (
+        data.MAX_UNZIP_RATIO,
+        data.MAX_UNZIP_SIZE,
+        data.MAX_UNZIP_ACTIVATION,
+        data.MAX_UNZIP_MEMBERS,
+    )
     yield
-    data.MAX_UNZIP_RATIO, data.MAX_UNZIP_SIZE, data.MAX_UNZIP_ACTIVATION = saved
+    (
+        data.MAX_UNZIP_RATIO,
+        data.MAX_UNZIP_SIZE,
+        data.MAX_UNZIP_ACTIVATION,
+        data.MAX_UNZIP_MEMBERS,
+    ) = saved
 
 
 # Sandbox helpers dogfood the pathsec-secured wrappers (never a bare open); tmp_path
@@ -498,3 +512,134 @@ def test_pathsec_data_import_order_has_no_cycle():
             env=env,
         )
         assert r.returncode == 0, r.stderr.decode()
+
+
+# --- central-directory bombs: metadata alone, no decompression (CWE-409) -------
+def _many_member_zip(path, count):
+    with SecureZipFile(str(path), "w", zipfile.ZIP_STORED) as zf:
+        for i in range(count):
+            zf.writestr(f"pkg/{i}", b"")
+    return path
+
+
+def test_member_count_bomb_blocked_at_construction(tmp_path):
+    """An archive whose payload is its entry table is refused as soon as the count
+    is known, so no consumer pays to list, validate or extract its members."""
+    data.MAX_UNZIP_MEMBERS = 100
+    z = _many_member_zip(tmp_path / "many.zip", 500)
+    with pytest.raises(ValueError, match="MAX_UNZIP_MEMBERS"):
+        SecureZipFile(str(z))
+
+
+@pytest.mark.parametrize(
+    "opener",
+    [
+        lambda p: SecureZipFile(str(p)),
+        lambda p: OpenOnDemandZipFile(str(p)),
+        lambda p: ZipFilePathPointer(str(p), "pkg/1"),
+    ],
+)
+def test_member_count_bomb_blocked_at_every_zip_entry_point(tmp_path, opener):
+    data.MAX_UNZIP_MEMBERS = 100
+    z = _many_member_zip(tmp_path / "many.zip", 500)
+    with pytest.raises(ValueError, match="MAX_UNZIP_MEMBERS"):
+        opener(z)
+
+
+def test_member_count_bomb_blocked_in_downloader_extract(tmp_path):
+    data.MAX_UNZIP_MEMBERS = 100
+    z = _many_member_zip(tmp_path / "many.zip", 500)
+    messages = list(_unzip_iter(str(z), str(tmp_path / "out"), verbose=False))
+    assert any(isinstance(m, ErrorMessage) for m in messages), messages
+
+
+def test_real_corpus_member_count_passes(tmp_path):
+    """The default cap must not refuse a legitimate corpus: the largest NLTK
+    ships declares ~15k members, well under MAX_UNZIP_MEMBERS."""
+    z = _many_member_zip(tmp_path / "corpus.zip", 200)
+    with SecureZipFile(str(z)) as zf:
+        assert len(zf.namelist()) == 200
+
+
+# --- dispatch layer: a plain path that becomes an archive read ----------------
+def test_dispatch_zip_member_path_bomb_blocked(tmp_path, monkeypatch):
+    """'<corpus>.zip/<member>' resolves to a zip read; the bomb must not leak."""
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    (tmp_path / "corpora").mkdir()
+    _make_zip(tmp_path / "corpora" / "c.zip", "c/big.txt", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        data.load("corpora/c.zip/c/big.txt", format="raw")
+
+
+def test_dispatch_auto_inserted_zip_bomb_blocked(tmp_path, monkeypatch):
+    """nltk.data.find auto-inserts '.zip', so a plain corpus path also reaches the
+    archive reader; it must be bounded there too."""
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    (tmp_path / "corpora").mkdir()
+    _make_zip(tmp_path / "corpora" / "c.zip", "c/big.txt", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        data.load("corpora/c/big.txt", format="raw")
+
+
+def test_dispatch_gz_suffix_bomb_blocked(tmp_path, monkeypatch):
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    _write_gz(tmp_path / "b.gz", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="gzip bomb"):
+        data.load("b.gz", format="raw")
+
+
+def test_dispatch_strips_gz_before_format_autodetect(tmp_path, monkeypatch):
+    """load() strips '.gz' and autodetects on the remaining suffix, so 'x.pickle.gz'
+    decompresses then unpickles; the decompression must still be bounded."""
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    _write_gz(tmp_path / "p.pickle.gz", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="gzip bomb"):
+        data.load("p.pickle.gz")
+
+
+def test_dispatch_lazy_corpus_loader_bomb_blocked(tmp_path, monkeypatch):
+    """LazyCorpusLoader maps a corpus name to '<name>.zip/<name>/', and its readers
+    return LAZY views: the guard must fire when the view is evaluated, not only on
+    the eager raw() path (an unforced view reads nothing and proves nothing)."""
+    from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+    from nltk.corpus.util import LazyCorpusLoader
+
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    (tmp_path / "corpora").mkdir()
+    with SecureZipFile(
+        str(tmp_path / "corpora" / "mycorp.zip"), "w", zipfile.ZIP_DEFLATED
+    ) as zf:
+        zf.writestr("mycorp/", b"")  # explicit directory entry
+        zf.writestr("mycorp/big.txt", b"\0" * (64 * 1024 * 1024))
+
+    corpus = LazyCorpusLoader("mycorp", PlaintextCorpusReader, r".*\.txt")
+    assert corpus.fileids() == ["big.txt"]  # metadata alone decompresses nothing
+    with pytest.raises(ValueError, match="zip bomb"):
+        corpus.raw("big.txt")
+    view = corpus.words("big.txt")  # lazy: nothing read yet
+    with pytest.raises(ValueError, match="zip bomb"):
+        len(view)
+
+
+def test_dispatch_corpus_reader_over_zip_root_bomb_blocked(tmp_path):
+    """A CorpusReader rooted at a ZipFilePathPointer lists members freely but must
+    not decompress one past the cap."""
+    from nltk.corpus.reader.api import CorpusReader
+
+    z = _make_zip(tmp_path / "c.zip", "c/big.txt", b"\0" * (64 * 1024 * 1024))
+    reader = CorpusReader(ZipFilePathPointer(str(z), "c/"), r".*\.txt")
+    assert reader.fileids() == ["big.txt"]
+    with pytest.raises(ValueError, match="zip bomb"):
+        reader.open("big.txt").read()
+
+
+def test_dispatch_vader_lexicon_in_zip_bomb_blocked(tmp_path, monkeypatch):
+    """VADER's default lexicon lives inside vader_lexicon.zip, so the analyzer is a
+    zip-read dispatch path too."""
+    from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+    monkeypatch.setattr(data, "path", [str(tmp_path)])
+    (tmp_path / "corpora").mkdir()
+    _make_zip(tmp_path / "corpora" / "v.zip", "v/lex.txt", b"\0" * (64 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        SentimentIntensityAnalyzer(lexicon_file="corpora/v.zip/v/lex.txt")
