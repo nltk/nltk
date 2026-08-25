@@ -13,10 +13,11 @@ cannot keep burning CPU for the rest of the suite, and any exception in the
 worker is propagated back to the assertions instead of being swallowed.
 """
 
-import multiprocessing
 import queue
 
 from nltk.tokenize.texttiling import TextTilingTokenizer
+
+from . import _mp_ctx
 
 # A long horizontal-whitespace run with no blank line: ~256 KB. Linear with the
 # possessive pattern (sub-millisecond); ~quadratic and tens of seconds with the
@@ -56,12 +57,12 @@ def _tokenize_worker(result_q):
 
 
 def _run_in_process(target):
-    """Run ``target(result_q)`` in a spawned process with a timeout.
+    """Run ``target(result_q)`` in a separate process with a timeout.
 
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

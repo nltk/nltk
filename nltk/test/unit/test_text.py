@@ -11,13 +11,14 @@ faster here) and honours a wall-clock ``timeout`` so a crafted query/corpus
 cannot pin a CPU core. The output is unchanged for ordinary queries.
 """
 
-import multiprocessing
 import os
 import traceback
 
 import pytest
 
 from nltk.text import TOKENSEARCH_TIMEOUT, Text, TokenSearcher
+
+from . import _mp_ctx
 
 
 def test_findall_preserves_ordinary_results():
@@ -93,14 +94,14 @@ def _star_query_worker(n):
 def test_findall_star_query_is_linear():
     """``<a>*<b>`` over a long token run must finish quickly, not scan O(n^2).
 
-    Run in a spawned process with a hard deadline: the ``regex`` scan returns in
+    Run in a separate process with a hard deadline: the ``regex`` scan returns in
     milliseconds, while the previous stdlib-``re`` version is quadratic and needs
     minutes at this size, so a regression is terminated instead of hanging the
     suite.
     """
     n = 200_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_star_query_worker, args=(n,))
     proc.start()
     proc.join(deadline)

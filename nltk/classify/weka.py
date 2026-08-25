@@ -14,12 +14,12 @@ import re
 import subprocess
 import tempfile
 import time
-import zipfile
 from sys import stdin
 
 from nltk.classify.api import ClassifierI
 from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
+from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.probability import DictionaryProbDist
 
@@ -74,7 +74,9 @@ def config_weka(classpath=None):
 
 def _check_weka_version(jar):
     try:
-        zf = zipfile.ZipFile(jar)
+        # Secured wrapper (never bare): path containment + the read() bomb cap, so a
+        # jar declaring a gigabyte version.txt cannot exhaust RAM (CWE-409).
+        zf = SecureZipFile(jar)
     except (SystemExit, KeyboardInterrupt):
         raise
     except Exception:
@@ -117,7 +119,7 @@ class WekaClassifier(ClassifierI):
                 "-T",
                 test_filename,
             ] + options
-            (stdout, stderr) = java(
+            stdout, stderr = java(
                 cmd,
                 classpath=_weka_classpath,
                 stdout=subprocess.PIPE,
@@ -135,8 +137,11 @@ class WekaClassifier(ClassifierI):
                 else:
                     raise ValueError("Weka failed to generate output:\n%s" % stderr)
 
-            # Parse weka's output.
-            return self.parse_weka_output(stdout.decode(stdin.encoding).split("\n"))
+            # Parse weka's output. java() returns text (universal_newlines=True);
+            # only decode when an older bytes-returning path is in play.
+            if isinstance(stdout, bytes):
+                stdout = stdout.decode(stdin.encoding)
+            return self.parse_weka_output(stdout.split("\n"))
 
         finally:
             for f in os.listdir(temp_dir):
@@ -253,22 +258,20 @@ class WekaClassifier(ClassifierI):
 
 class ARFF_Formatter:
     """
-    Converts featuresets and labeled featuresets to ARFF-formatted
-    strings, appropriate for input into Weka.
-
-    Features and classes can be specified manually in the constructor, or may
-    be determined from data using ``from_train``.
+    Converts featuresets and labeled featuresets to ARFF-formatted strings,
+    appropriate for input into Weka.  Features and classes can be specified
+    manually in the constructor, or may be determined from data using
+    ``from_train``.
     """
 
     def __init__(self, labels, features):
         """
         :param labels: A list of all class labels that can be generated.
-        :param features: A list of feature specifications, where
-            each feature specification is a tuple (fname, ftype);
-            and ftype is an ARFF type string such as NUMERIC or
-            STRING.
+        :param features: A list of feature specifications, where each feature
+                         specification is a tuple (fname, ftype); and ftype is
+                         an ARFF type string such as NUMERIC or STRING.
         """
-        self._labels = labels
+        self._labels = [self._sanitize_arff_label(lbl) for lbl in labels]
         self._features = features
 
     def format(self, tokens):
@@ -295,11 +298,11 @@ class ARFF_Formatter:
     def from_train(tokens):
         """
         Constructs an ARFF_Formatter instance with class labels and feature
-        types determined from the given data. Handles boolean, numeric and
+        types determined from the given data.  Handles boolean, numeric and
         string (note: not nominal) types.
         """
-        # Find the set of all attested labels.
-        labels = {label for (tok, label) in tokens}
+        # Find the set of all attested labels, sanitizing them.
+        labels = {ARFF_Formatter._sanitize_arff_label(label) for (tok, label) in tokens}
 
         # Determine the types of all features.
         features = {}
@@ -315,7 +318,6 @@ class ARFF_Formatter:
                     continue  # can't tell the type.
                 else:
                     raise ValueError("Unsupported value type %r" % ftype)
-
                 if features.get(fname, ftype) != ftype:
                     raise ValueError("Inconsistent type for %s" % fname)
                 features[fname] = ftype
@@ -331,7 +333,6 @@ class ARFF_Formatter:
             + "% Generated automatically by NLTK\n"
             + "%% %s\n\n" % time.ctime()
         )
-
         # Relation name
         s += "@RELATION rel\n\n"
 
@@ -339,25 +340,27 @@ class ARFF_Formatter:
         for fname, ftype in self._features:
             s += "@ATTRIBUTE %-30r %s\n" % (fname, ftype)
 
-        # Label attribute specification
-        s += "@ATTRIBUTE %-30r {%s}\n" % ("-label-", ",".join(self._labels))
+        # Label attribute specification – labels are already sanitized.
+        # Wrap each label in single quotes and join with commas.
+        safe_labels = ["'%s'" % lbl for lbl in self._labels]
+        s += "@ATTRIBUTE %-30r {%s}\n" % ("-label-", ",".join(safe_labels))
 
         return s
 
     def data_section(self, tokens, labeled=None):
         """
         Returns the ARFF data section for the given data.
-
         :param tokens: a list of featuresets (dicts) or labelled featuresets
-            which are tuples (featureset, label).
-        :param labeled: Indicates whether the given tokens are labeled
-            or not.  If None, then the tokens will be assumed to be
-            labeled if the first token's value is a tuple or list.
+                       which are tuples (featureset, label).
+        :param labeled: Indicates whether the given tokens are labeled or not.
+                        If None, then the tokens will be assumed to be labeled
+                        if the first token's value is a tuple or list.
         """
-        # Check if the tokens are labeled or unlabeled.  If unlabeled,
+        # Check if the tokens are labeled or unlabeled. If unlabeled,
         # then use 'None'
         if labeled is None:
             labeled = tokens and isinstance(tokens[0], (tuple, list))
+
         if not labeled:
             tokens = [(tok, None) for tok in tokens]
 
@@ -366,8 +369,12 @@ class ARFF_Formatter:
         for tok, label in tokens:
             for fname, ftype in self._features:
                 s += "%s," % self._fmt_arff_val(tok.get(fname))
-            s += "%s\n" % self._fmt_arff_val(label)
-
+            # Sanitize the label if it is not None; otherwise output "?"
+            if label is None:
+                s += "%s\n" % self._fmt_arff_val(None)
+            else:
+                safe_label = self._sanitize_arff_label(label)
+                s += "%s\n" % self._fmt_arff_val(safe_label)
         return s
 
     def _fmt_arff_val(self, fval):
@@ -379,6 +386,22 @@ class ARFF_Formatter:
             return "%r" % fval
         else:
             return "%r" % fval
+
+    @staticmethod
+    def _sanitize_arff_label(label):
+        """
+        Sanitize a class label to prevent ARFF injection.
+        - Convert to string.
+        - Replace control characters (\\n, \\r, \\t) with spaces.
+        - Remove any character that is not alphanumeric, underscore, hyphen, space, or single quote.
+        - Escape single quotes by doubling them.
+        """
+        label = str(label)
+        for ch in ("\n", "\r", "\t"):
+            label = label.replace(ch, " ")
+        sanitized = re.sub(r"[^a-zA-Z0-9_\- ']", "", label)
+        sanitized = sanitized.replace("'", "''")
+        return sanitized
 
 
 if __name__ == "__main__":

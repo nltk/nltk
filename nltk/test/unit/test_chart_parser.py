@@ -8,12 +8,11 @@ memory, and even obtaining the first parse never returns. The number of parse-tr
 nodes built is now bounded by ``MAX_PARSE_TREES``; once exceeded, tree extraction
 raises ``ValueError``.
 
-The "must not run unbounded" test runs in a spawned process with a hard timeout,
+The "must not run unbounded" test runs in a separate process with a hard timeout,
 and the worker reports its outcome via its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot hang the suite.
 """
 
-import multiprocessing
 import os
 
 import pytest
@@ -22,6 +21,8 @@ from nltk import CFG
 from nltk.parse import BottomUpChartParser, ChartParser
 from nltk.parse import chart as chart_mod
 from nltk.parse.chart import MAX_PARSE_TREES
+
+from . import _mp_ctx
 
 _AMBIG = CFG.fromstring("S -> S S | 'a'")  # 15 bytes, Catalan-many parses
 
@@ -83,7 +84,7 @@ def _parse_worker():
 
 def test_exponential_grammar_is_refused_not_run():
     """The default cap must refuse an exponential parse forest, not build it."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_parse_worker)
     proc.start()
     proc.join(_TIMEOUT)

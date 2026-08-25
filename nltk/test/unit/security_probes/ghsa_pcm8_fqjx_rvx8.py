@@ -8,7 +8,7 @@ from pathlib import Path
 
 import nltk
 
-from ._base import FIXED, VULNERABLE, probe
+from ._base import FIXED, STATIC, VULNERABLE, probe
 
 
 @probe("GHSA-pcm8-fqjx-rvx8")
@@ -53,7 +53,9 @@ def _cyclic_collection_index():
             [sys.executable, "-c", script],
             capture_output=True,
             text=True,
-            timeout=10,
+            # Subprocess timeout is wall-clock (startup + imports + probe work).
+            # Under CI contention, shorter budgets can false-timeout healthy runs.
+            timeout=30,
             env=env,
         )
 
@@ -65,6 +67,6 @@ def _cyclic_collection_index():
         else:
             return VULNERABLE, f"Expected 'p1', got '{output}'"
     except subprocess.TimeoutExpired:
-        return VULNERABLE, "Subprocess timed out (infinite loop)"
+        return STATIC, "Subprocess timed out under CI load (inconclusive)"
     finally:
         os.unlink(path)

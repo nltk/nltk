@@ -5,14 +5,15 @@ so an all-distinct input forced O(V**2) memory and OOM-killed the worker. The
 matrix is now a sparse dict keyed by the observed (reference index, test index)
 pairs. These tests confirm the storage is sparse and the public API is preserved.
 
-The allocation test runs in a spawned process with a hard timeout so a regression
+The allocation test runs in a separate process with a hard timeout so a regression
 to the dense allocation cannot OOM or hang the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 from nltk.metrics import ConfusionMatrix
+
+from . import _mp_ctx
 
 _REF = "DET NN VB DET JJ NN NN IN DET NN".split()
 _TEST = "DET VB VB DET NN NN NN IN DET NN".split()
@@ -61,7 +62,7 @@ def _alloc_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
     proc = ctx.Process(target=target, args=(result_q,))
     proc.start()

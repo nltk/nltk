@@ -9,17 +9,18 @@ untrusted feature structure renamed (or unified, which renames by default) could
 pin a CPU core. A ``(?<!\\d)`` lookbehind now lets the run match only at its
 start, making the substitution linear while leaving the result unchanged.
 
-The "must stay linear" test runs in a spawned process with a hard timeout, and
+The "must stay linear" test runs in a separate process with a hard timeout, and
 the worker reports via its exit code (no queue/thread, so it is robust on
 free-threaded builds), so a regression to the quadratic pattern cannot hang the
 suite.
 """
 
-import multiprocessing
 import os
 
 from nltk.featstruct import FeatStruct, _rename_variable
 from nltk.sem.logic import Variable
+
+from . import _mp_ctx
 
 
 def test_rename_variable_strips_trailing_digits():
@@ -67,7 +68,7 @@ def _rename_worker():
 
 def test_long_digit_run_renames_in_linear_time():
     """A long digit-run variable name must rename in linear time (not ReDoS)."""
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_rename_worker)
     proc.start()
     proc.join(_TIMEOUT)

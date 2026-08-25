@@ -14,12 +14,13 @@ match" branch that appended the chosen index twice; that duplicate is removed so
 each hypothesis token contributes at most one alignment.)
 """
 
-import multiprocessing
 import os
 import random
 import traceback
 
 from nltk.translate.lepor import alignment
+
+from .. import _mp_ctx
 
 
 def test_alignment_handles_repeated_tokens():
@@ -66,14 +67,14 @@ def _alignment_worker(n):
 def test_alignment_is_linear_not_quadratic():
     """A large low-overlap input must finish quickly (linear), not tie up a core.
 
-    Run in a spawned process with a hard deadline: the linear aligner returns in
+    Run in a separate process with a hard deadline: the linear aligner returns in
     milliseconds, while the previous quadratic version needs well over a minute
     at this size, so a regression is terminated and fails the test instead of
     burning CPU for the rest of the suite.
     """
     n = 120_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     proc = ctx.Process(target=_alignment_worker, args=(n,))
     proc.start()
     proc.join(deadline)

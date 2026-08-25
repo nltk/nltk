@@ -10,6 +10,7 @@
 """Centralized I/O security sentinel for NLTK."""
 import builtins
 import http.client
+import io
 import ipaddress
 import os
 import re
@@ -841,6 +842,56 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
     return builtins.open(raw_path, mode=mode, **kwargs)
 
 
+def _decompression_guards():
+    # Deferred to break the nltk.data <-> nltk.pathsec import cycle (data owns the
+    # public MAX_UNZIP_* policy); runs once both modules are fully loaded.
+    from nltk.data import (
+        _bounded_stream_read,
+        _check_decompression_bomb,
+        _reject_decompression_total,
+    )
+
+    return _check_decompression_bomb, _bounded_stream_read, _reject_decompression_total
+
+
+class _BoundedZipExtFile(io.RawIOBase):
+    """Wraps zipfile's streaming member reader and refuses a decompression bomb
+    (CWE-409) as the member is consumed: it accumulates the ACTUAL decompressed
+    bytes and applies nltk's ratio/size policy on every read, so streaming and
+    partial reads keep working (unlike buffering the whole member into memory)
+    while an over-expanding member is cut off mid-stream before it can exhaust RAM.
+
+    All reads funnel through :meth:`readinto`; wrap this in an ``io.BufferedReader``
+    to get ``read``/``readline``/``peek``/iteration, every one of them bounded.
+    """
+
+    def __init__(self, raw, compress_size, name, reject):
+        self._raw = raw
+        self._compress_size = compress_size
+        self._name = name
+        self._reject = reject
+        self._total = 0
+
+    def readable(self):
+        return True
+
+    def readinto(self, b):
+        n = self._raw.readinto(b)
+        if n:
+            self._total += n
+            self._reject(self._total, self._compress_size, self._name, "zip")
+        return n
+
+    def close(self):
+        try:
+            raw = getattr(self, "_raw", None)
+            if raw is not None:
+                self._raw = None
+                raw.close()
+        finally:
+            super().close()
+
+
 class ZipFile(zipfile.ZipFile):
     """Secure wrapper for zipfile.ZipFile."""
 
@@ -877,6 +928,33 @@ class ZipFile(zipfile.ZipFile):
     def extractall(self, path=None, members=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd())
         super().extractall(path, members, pwd)
+
+    def read(self, name, pwd=None):
+        # Not the raw one-shot super().read() (bounded only by the attacker-declared
+        # size): stream it and cap the ACTUAL bytes produced (CWE-409).
+        _check_decompression_bomb, _bounded_stream_read, _ = _decompression_guards()
+        info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
+        _check_decompression_bomb(info)  # cheap declared-size early reject
+        with super().open(info, mode="r", pwd=pwd) as raw:
+            return _bounded_stream_read(raw, info.compress_size, info.filename)
+
+    def open(self, name, mode="r", pwd=None, *, force_zip64=False):
+        # Write mode has no member to decompress; only reads are bounded.
+        if mode != "r":
+            return super().open(name, mode, pwd, force_zip64=force_zip64)
+        # Preserve zipfile.open()'s streaming/partial-read contract: hand back a bounded
+        # reader that caps the ACTUAL bytes and cuts off an over-expanding member (CWE-409).
+        _check_decompression_bomb, _, _reject = _decompression_guards()
+        info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
+        _check_decompression_bomb(info)
+        raw = super().open(info, mode="r", pwd=pwd, force_zip64=force_zip64)
+        try:
+            return io.BufferedReader(
+                _BoundedZipExtFile(raw, info.compress_size, info.filename, _reject)
+            )
+        except BaseException:
+            raw.close()
+            raise
 
 
 __all__ = [

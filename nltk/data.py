@@ -41,7 +41,6 @@ import sys
 import tempfile
 import textwrap
 import urllib.request
-import zipfile
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
@@ -214,6 +213,76 @@ def make_staging_dir(prefix="nltk_"):
     )
 
 
+class _BoundedGzipFile(GzipFile):
+    """A ``GzipFile`` whose ``read()`` refuses a decompression bomb (CWE-409): it
+    tracks how far it has decompressed and enforces nltk's ratio/size policy,
+    measured against the compressed file size when known (else the ``MAX_UNZIP_SIZE``
+    hard cap). Used wherever nltk opens a ``.gz`` for reading, so a raw unbounded
+    ``GzipFile.read`` is never the read path (``gzip_open_unicode``,
+    ``GzipFileSystemPathPointer.open``, the deprecated ``BufferedGzipFile``).
+    Writing is unaffected.
+
+    The guard measures the maximum uncompressed offset reached (``tell()``), not the
+    sum of ``read()`` return sizes, so backward seeks and re-reads (e.g. by
+    ``SeekableUnicodeStreamReader`` or ``pickle``) never inflate the count into a
+    false positive, while a seek-to-end still forces the full member to decompress
+    and is caught. The compressed size is stat-ed once and cached, since re-stat-ing
+    on every ``read()`` is hot for chunked/line iteration.
+    """
+
+    @classmethod
+    def _nltk_wrap_secure_fileobj(cls, filename, fileobj):
+        """Build a reader over an already-opened (path-validated) *fileobj* and make
+        the returned object own it, so closing the reader closes the handle: a plain
+        ``GzipFile`` never closes a fileobj it did not open itself."""
+        gz = cls(filename, "rb", 9, fileobj)
+        gz._nltk_owned_fileobj = fileobj
+        return gz
+
+    def _nltk_compress_size(self):
+        if not hasattr(self, "_nltk_cached_compress_size"):
+            name = self.name
+            self._nltk_cached_compress_size = (
+                os.path.getsize(name)
+                if isinstance(name, str) and os.path.exists(name)
+                else None
+            )
+        return self._nltk_cached_compress_size
+
+    def _nltk_guard_offset(self, reached):
+        # Guard at the high-water uncompressed offset (passed in, never self.tell(),
+        # which IOBase routes through seek() below and would recurse).
+        if reached > getattr(self, "_nltk_read_total", 0):
+            self._nltk_read_total = reached
+            _reject_decompression_total(
+                reached, self._nltk_compress_size(), self.name or "<gzip>", "gzip"
+            )
+
+    def read(self, size=-1):
+        chunk = super().read(size)
+        if chunk:
+            # super().seek(0, CUR) is the parent's cheap post-read offset (no
+            # decompression), bypassing this class's seek() override.
+            self._nltk_guard_offset(super().seek(0, os.SEEK_CUR))
+        return chunk
+
+    def seek(self, offset, whence=os.SEEK_SET):
+        # A forward / SEEK_END seek decompresses-and-discards inside GzipFile's buffer,
+        # never through read(); re-check the landed offset so a bomb cannot slip past.
+        pos = super().seek(offset, whence)
+        self._nltk_guard_offset(pos)
+        return pos
+
+    def close(self):
+        try:
+            super().close()
+        finally:
+            owned = getattr(self, "_nltk_owned_fileobj", None)
+            if owned is not None:
+                self._nltk_owned_fileobj = None
+                owned.close()
+
+
 def gzip_open_unicode(
     filename,
     mode="rb",
@@ -224,7 +293,7 @@ def gzip_open_unicode(
     newline=None,
 ):
     if fileobj is None:
-        fileobj = GzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = _BoundedGzipFile(filename, mode, compresslevel, fileobj)
     return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
@@ -515,11 +584,11 @@ class FileSystemPathPointer(PathPointer, str):
 
 
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
-class BufferedGzipFile(GzipFile):
+class BufferedGzipFile(_BoundedGzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.
 
     Use ``GzipFile`` directly as it also buffers in all supported
-    Python versions.
+    Python versions. (``read()`` is bomb-bounded via ``_BoundedGzipFile``.)
     """
 
     def __init__(
@@ -542,11 +611,14 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        # Route through the sentinel like FileSystemPathPointer.open() so the
-        # path is validated against the allowed NLTK data roots (with symlinks
-        # resolved) before reading; decompress the validated stream rather than
-        # re-opening the path directly (CWE-22 / CWE-73).
-        stream = GzipFile(self._path, fileobj=_secure_open(self._path, "rb"))
+        # Validate the path via the sentinel (CWE-22 / CWE-73), then stream the handle
+        # through _BoundedGzipFile so a bomb is capped without buffering it whole (CWE-409).
+        handle = _secure_open(self._path, "rb")
+        try:
+            stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
+        except BaseException:
+            handle.close()
+            raise
         # ``encoding is not None`` (not truthiness) to match
         # FileSystemPathPointer.open() / ZipFilePathPointer.open().
         if encoding is not None:
@@ -615,53 +687,59 @@ def _check_decompression_bomb(info):
         )
 
 
-def _bounded_gzip_decompress(gz_bytes, name="<member>"):
-    """Decompress a gzip byte string, applying the decompression-bomb policy to
-    the actual output (CWE-409).
+def _reject_decompression_total(total, compress_size, name, kind):
+    """Raise ValueError if *total* decompressed bytes breach the bomb policy: the
+    optional ``MAX_UNZIP_SIZE`` hard cap, or (when *compress_size* is known and
+    non-zero) an expansion beyond ``MAX_UNZIP_RATIO`` above the ``MAX_UNZIP_ACTIVATION``
+    floor. *kind* (``"zip"`` / ``"gzip"``) only tunes the wording (CWE-409)."""
+    if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to decompress %r: its %s output exceeds "
+            "nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, kind, MAX_UNZIP_SIZE)
+        )
+    if (
+        compress_size
+        and total >= MAX_UNZIP_ACTIVATION
+        and (total > MAX_UNZIP_RATIO * compress_size)
+    ):
+        raise ValueError(
+            "Refusing to decompress suspected %s bomb %r: it expands beyond "
+            "nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte compressed input. "
+            "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+            % (kind, name, MAX_UNZIP_RATIO, compress_size)
+        )
 
-    ``ZipFilePathPointer.open`` wraps a ``.gz`` zip member in a ``GzipFile``, a
-    second decompression layer that :func:`_check_decompression_bomb` (which only
-    inspects the zip member's declared sizes) does not bound. This streams the
-    gzip output and refuses it once it is both large (>= ``MAX_UNZIP_ACTIVATION``)
-    and expands beyond ``MAX_UNZIP_RATIO`` over the compressed member, or exceeds
-    the optional ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes.
+
+def _bounded_stream_read(stream, compress_size, name="<member>", kind="zip"):
+    """Read a decompressing file-like *stream* under the decompression-bomb policy,
+    capping the **actual** bytes it produces against *compress_size* (CWE-409).
+
+    This never trusts a declared/metadata size and never materialises the member
+    through a raw one-shot read: it pulls fixed 1 MiB chunks and refuses once the
+    output is both large (>= ``MAX_UNZIP_ACTIVATION``) and expands beyond
+    ``MAX_UNZIP_RATIO`` over the compressed input, or exceeds the optional
+    ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes. *kind* only tunes
+    the error wording (``"zip"`` / ``"gzip"``).
     """
-    compress_size = len(gz_bytes)
-    ratio_limit = MAX_UNZIP_RATIO * compress_size
-
-    def _reject_reason(total):
-        if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
-            return (
-                "Refusing to decompress zip member %r: its nested gzip output "
-                "exceeds nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, MAX_UNZIP_SIZE)
-            )
-        if total >= MAX_UNZIP_ACTIVATION and total > ratio_limit:
-            return (
-                "Refusing to decompress suspected nested gzip bomb %r: its gzip "
-                "layer expands beyond nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte "
-                "compressed member. Raise nltk.data.MAX_UNZIP_RATIO if this data is "
-                "trusted." % (name, MAX_UNZIP_RATIO, compress_size)
-            )
-        return None
-
-    # Cheap pre-check via the gzip ISIZE trailer (declared uncompressed size mod
-    # 2**32). It is attacker-forgeable (and wraps above 4 GiB), so the streaming
-    # cap below is the actual guarantee; this just rejects honest bombs for free.
-    if compress_size >= 4:
-        reason = _reject_reason(int.from_bytes(gz_bytes[-4:], "little"))
-        if reason:
-            raise ValueError(reason)
-
     out = []
     total = 0
-    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
-        for chunk in iter(lambda: gz.read(1 << 20), b""):
-            total += len(chunk)
-            reason = _reject_reason(total)
-            if reason:
-                raise ValueError(reason)
-            out.append(chunk)
+    for chunk in iter(lambda: stream.read(1 << 20), b""):
+        total += len(chunk)
+        _reject_decompression_total(total, compress_size, name, kind)
+        out.append(chunk)
     return b"".join(out)
+
+
+def _bounded_gzip_decompress(gz_bytes, name="<member>"):
+    """Decompress gzip bytes under the decompression-bomb policy (CWE-409).
+
+    ``ZipFilePathPointer.open`` / ``GzipFileSystemPathPointer.open`` wrap a ``.gz``
+    in a ``GzipFile``, a decompression layer :func:`_check_decompression_bomb` (which
+    only inspects declared zip sizes) does not bound. The gzip ISIZE trailer is
+    attacker-forgeable, so the actual-byte streaming cap is the guarantee.
+    """
+    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
+        return _bounded_stream_read(gz, len(gz_bytes), name, kind="gzip")
 
 
 class ZipFilePathPointer(PathPointer):
@@ -726,9 +804,8 @@ class ZipFilePathPointer(PathPointer):
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
-            # GzipFile is a SECOND decompression layer the zip-member guard above
-            # does not see; bound its output with the same policy so a nested
-            # gzip bomb cannot exhaust memory (CWE-409).
+            # The .gz is a SECOND decompression layer the zip-member guard never
+            # sees; bound its output under the same policy (nested bomb, CWE-409).
             stream = BytesIO(_bounded_gzip_decompress(data, self._entry))
         elif encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
@@ -1436,10 +1513,13 @@ class OpenOnDemandZipFile(ZipFile):
         _check_decompression_bomb(self.getinfo(name))
         # This will be validated by pathsec.open
         self.fp = _secure_open(self.filename, "rb")
-        value = zipfile.ZipFile.read(self, name)
-        self.fp.close()
-        self.fp = None
-        return value
+        try:
+            # Delegate to the secured base read(), which also streams the member's
+            # ACTUAL bytes under the cap (CWE-409), not a raw one-shot read.
+            return super().read(name)
+        finally:
+            self.fp.close()
+            self.fp = None
 
     def write(self, *args, **kwargs):
         """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""
