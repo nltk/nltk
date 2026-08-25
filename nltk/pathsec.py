@@ -749,6 +749,10 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
         | getattr(os, "O_NOFOLLOW", 0)
         | getattr(os, "O_CLOEXEC", 0)
     )
+    # Defer O_TRUNC until after the hardlink/realpath checks: truncating at open
+    # time would zero a hardlinked outside-root target before st_nlink refuses it.
+    truncate_after = bool(flags & os.O_TRUNC)
+    flags &= ~os.O_TRUNC
     try:
         # 0o600 is only consulted when O_CREAT is in flags (write/append/x modes).
         fd = os.open(raw_path, flags, 0o600)
@@ -775,6 +779,9 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
             context=context,
             required_root=required_root,
         )
+        # Safe now: the fd is confirmed single-linked and inside the root.
+        if truncate_after:
+            os.ftruncate(fd, 0)
     except BaseException:
         os.close(fd)
         raise

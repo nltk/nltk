@@ -200,6 +200,56 @@ def test_escape_probes_reach_the_sink():
         assert probe()[0] == probes.FIXED
 
 
+def test_xss_probe_has_teeth():
+    """Neuter html.escape in the wordnet app; the reflected <script> must be
+    caught as VULNERABLE, proving the probe reaches the response sink."""
+    from nltk.data import find
+
+    try:
+        find("corpora/wordnet.zip")
+    except LookupError:
+        import pytest
+
+        pytest.skip("wordnet corpus unavailable")
+
+    import nltk.app.wordnet_app as wa
+
+    probe = probes.PROBES["GHSA-gfwx-w7gr-fvh7"]
+    real = wa.html.escape
+    try:
+        wa.html.escape = lambda s, quote=True: s  # identity: no escaping
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        wa.html.escape = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_hardlink_write_probe_has_teeth():
+    """Replace the hardened opener with a bare open; the symlink/hardlink write
+    escape must be caught as VULNERABLE."""
+    import builtins
+
+    import nltk.pathsec as pathsec
+
+    if os.name != "posix":
+        import pytest
+
+        pytest.skip("hardened write path is POSIX-only")
+
+    probe = probes.PROBES["GHSA-f794-5jv7-7672"]
+    real = pathsec._hardened_open
+    try:
+        pathsec._hardened_open = (
+            lambda raw, mode, context, required_root, **kw: builtins.open(
+                raw, mode, **kw
+            )
+        )
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._hardened_open = real
+    assert probe()[0] == probes.FIXED
+
+
 class TestProbeDiscoveryIsolation:
     """The probe package discovers and imports only from its own directory.
 
