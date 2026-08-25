@@ -215,26 +215,77 @@ def make_staging_dir(prefix="nltk_"):
 
 class _BoundedGzipFile(GzipFile):
     """A ``GzipFile`` whose ``read()`` refuses a decompression bomb (CWE-409): it
-    tracks cumulative decompressed bytes and enforces nltk's ratio/size policy,
+    tracks how far it has decompressed and enforces nltk's ratio/size policy,
     measured against the compressed file size when known (else the ``MAX_UNZIP_SIZE``
     hard cap). Used wherever nltk opens a ``.gz`` for reading, so a raw unbounded
-    ``GzipFile.read`` is never the read path (``gzip_open_unicode``, the deprecated
-    ``BufferedGzipFile``). Writing is unaffected.
+    ``GzipFile.read`` is never the read path (``gzip_open_unicode``,
+    ``GzipFileSystemPathPointer.open``, the deprecated ``BufferedGzipFile``).
+    Writing is unaffected.
+
+    The guard measures the maximum uncompressed offset reached (``tell()``), not the
+    sum of ``read()`` return sizes, so backward seeks and re-reads (e.g. by
+    ``SeekableUnicodeStreamReader`` or ``pickle``) never inflate the count into a
+    false positive, while a seek-to-end still forces the full member to decompress
+    and is caught. The compressed size is stat-ed once and cached, since re-stat-ing
+    on every ``read()`` is hot for chunked/line iteration.
     """
+
+    @classmethod
+    def _nltk_wrap_secure_fileobj(cls, filename, fileobj):
+        """Build a reader over an already-opened (path-validated) *fileobj* and make
+        the returned object own it, so closing the reader closes the handle: a plain
+        ``GzipFile`` never closes a fileobj it did not open itself."""
+        gz = cls(filename, "rb", 9, fileobj)
+        gz._nltk_owned_fileobj = fileobj
+        return gz
+
+    def _nltk_compress_size(self):
+        if not hasattr(self, "_nltk_cached_compress_size"):
+            name = self.name
+            self._nltk_cached_compress_size = (
+                os.path.getsize(name)
+                if isinstance(name, str) and os.path.exists(name)
+                else None
+            )
+        return self._nltk_cached_compress_size
+
+    def _nltk_guard_offset(self, reached):
+        # Enforce the policy at the given uncompressed offset, tracking its high-water
+        # mark so backward seeks / re-reads never re-count already-seen bytes. The
+        # offset is passed in (never self.tell(), which IOBase implements as
+        # seek(0, SEEK_CUR) and would recurse through the seek() override below).
+        if reached > getattr(self, "_nltk_read_total", 0):
+            self._nltk_read_total = reached
+            _reject_decompression_total(
+                reached, self._nltk_compress_size(), self.name or "<gzip>", "gzip"
+            )
 
     def read(self, size=-1):
         chunk = super().read(size)
         if chunk:
-            self._nltk_read_total = getattr(self, "_nltk_read_total", 0) + len(chunk)
-            compress_size = (
-                os.path.getsize(self.name)
-                if isinstance(self.name, str) and os.path.exists(self.name)
-                else None
-            )
-            _reject_decompression_total(
-                self._nltk_read_total, compress_size, self.name or "<gzip>", "gzip"
-            )
+            # super().seek(0, SEEK_CUR) reports the post-read offset cheaply (no
+            # decompression) via the parent, bypassing this class's seek() override.
+            self._nltk_guard_offset(super().seek(0, os.SEEK_CUR))
         return chunk
+
+    def seek(self, offset, whence=os.SEEK_SET):
+        # A forward / SEEK_END seek makes GzipFile decompress-and-discard past the
+        # current point INSIDE its own buffer, never through read() above, so a bomb
+        # would slip the counter. GzipFile's seek discards in bounded chunks (it does
+        # not materialise the skipped bytes), so this is not itself a RAM bomb; we
+        # re-check the offset it lands on and refuse before the caller can read there.
+        pos = super().seek(offset, whence)
+        self._nltk_guard_offset(pos)
+        return pos
+
+    def close(self):
+        try:
+            super().close()
+        finally:
+            owned = getattr(self, "_nltk_owned_fileobj", None)
+            if owned is not None:
+                self._nltk_owned_fileobj = None
+                owned.close()
 
 
 def gzip_open_unicode(
@@ -565,16 +616,19 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        # Route through the sentinel like FileSystemPathPointer.open() so the
-        # path is validated against the allowed NLTK data roots (with symlinks
-        # resolved) before reading; decompress the validated stream rather than
-        # re-opening the path directly (CWE-22 / CWE-73).
-        with _secure_open(self._path, "rb") as f:
-            data = f.read()
-        # A standalone .gz is a single gzip layer with no declared-size guard of
-        # its own; bound its output with the decompression-bomb policy the zip
-        # .gz-member path uses, so it cannot exhaust memory (CWE-409).
-        stream = BytesIO(_bounded_gzip_decompress(data, self._path))
+        # Route through the sentinel like FileSystemPathPointer.open() so the path is
+        # validated against the allowed NLTK data roots (with symlinks resolved)
+        # before reading, then decompress the validated handle as a STREAM rather than
+        # re-opening the path directly (CWE-22 / CWE-73). A standalone .gz is a single
+        # gzip layer with no declared-size guard of its own; _BoundedGzipFile caps its
+        # ACTUAL output under the decompression-bomb policy (CWE-409) as it is read,
+        # so a large-but-legitimate gzip pickle is never buffered whole in memory.
+        handle = _secure_open(self._path, "rb")
+        try:
+            stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
+        except BaseException:
+            handle.close()
+            raise
         # ``encoding is not None`` (not truthiness) to match
         # FileSystemPathPointer.open() / ZipFilePathPointer.open().
         if encoding is not None:

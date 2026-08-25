@@ -846,10 +846,53 @@ def _decompression_guards():
     # The decompression-bomb policy lives in nltk.data (its MAX_UNZIP_* limits are
     # public API). nltk.data imports THIS module, so importing it at the top would
     # be circular; this single deferred import runs at call time when both modules
-    # are fully loaded. Returns (_check_decompression_bomb, _bounded_stream_read).
-    from nltk.data import _bounded_stream_read, _check_decompression_bomb
+    # are fully loaded. Returns
+    # (_check_decompression_bomb, _bounded_stream_read, _reject_decompression_total).
+    from nltk.data import (
+        _bounded_stream_read,
+        _check_decompression_bomb,
+        _reject_decompression_total,
+    )
 
-    return _check_decompression_bomb, _bounded_stream_read
+    return _check_decompression_bomb, _bounded_stream_read, _reject_decompression_total
+
+
+class _BoundedZipExtFile(io.RawIOBase):
+    """Wraps zipfile's streaming member reader and refuses a decompression bomb
+    (CWE-409) as the member is consumed: it accumulates the ACTUAL decompressed
+    bytes and applies nltk's ratio/size policy on every read, so streaming and
+    partial reads keep working (unlike buffering the whole member into memory)
+    while an over-expanding member is cut off mid-stream before it can exhaust RAM.
+
+    All reads funnel through :meth:`readinto`; wrap this in an ``io.BufferedReader``
+    to get ``read``/``readline``/``peek``/iteration, every one of them bounded.
+    """
+
+    def __init__(self, raw, compress_size, name, reject):
+        self._raw = raw
+        self._compress_size = compress_size
+        self._name = name
+        self._reject = reject
+        self._total = 0
+
+    def readable(self):
+        return True
+
+    def readinto(self, b):
+        n = self._raw.readinto(b)
+        if n:
+            self._total += n
+            self._reject(self._total, self._compress_size, self._name, "zip")
+        return n
+
+    def close(self):
+        try:
+            raw = getattr(self, "_raw", None)
+            if raw is not None:
+                self._raw = None
+                raw.close()
+        finally:
+            super().close()
 
 
 class ZipFile(zipfile.ZipFile):
@@ -893,7 +936,7 @@ class ZipFile(zipfile.ZipFile):
         # Never use the raw one-shot super().read(): it decompresses the whole
         # member into memory bounded only by the member's (attacker-controlled)
         # declared size. Stream it and cap the ACTUAL bytes produced (CWE-409).
-        _check_decompression_bomb, _bounded_stream_read = _decompression_guards()
+        _check_decompression_bomb, _bounded_stream_read, _ = _decompression_guards()
         info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
         _check_decompression_bomb(info)  # cheap declared-size early reject
         with super().open(info, mode="r", pwd=pwd) as raw:
@@ -903,15 +946,21 @@ class ZipFile(zipfile.ZipFile):
         # Write mode has no member to decompress; only reads are bounded.
         if mode != "r":
             return super().open(name, mode, pwd, force_zip64=force_zip64)
-        # Never hand back the raw streaming reader (unbounded on .read()); return a
-        # seekable in-memory stream of the actual-byte-capped decompressed bytes.
-        _check_decompression_bomb, _bounded_stream_read = _decompression_guards()
+        # Preserve zipfile.open()'s streaming/partial-read contract (a caller may read
+        # only a prefix) instead of buffering the whole member: hand back a bounded
+        # streaming reader that caps the ACTUAL bytes produced on every read and cuts
+        # off an over-expanding member mid-stream (CWE-409).
+        _check_decompression_bomb, _, _reject = _decompression_guards()
         info = name if isinstance(name, zipfile.ZipInfo) else self.getinfo(name)
         _check_decompression_bomb(info)
-        with super().open(info, mode="r", pwd=pwd, force_zip64=force_zip64) as raw:
-            return io.BytesIO(
-                _bounded_stream_read(raw, info.compress_size, info.filename)
+        raw = super().open(info, mode="r", pwd=pwd, force_zip64=force_zip64)
+        try:
+            return io.BufferedReader(
+                _BoundedZipExtFile(raw, info.compress_size, info.filename, _reject)
             )
+        except BaseException:
+            raw.close()
+            raise
 
 
 __all__ = [
