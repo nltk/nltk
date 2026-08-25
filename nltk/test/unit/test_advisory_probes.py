@@ -250,6 +250,36 @@ def test_hardlink_write_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
+def test_shutdown_token_probe_has_teeth():
+    """Bypass the per-process shutdown-token check; a token-less shutdown request
+    must be caught as VULNERABLE (it would reach os._exit)."""
+    import nltk.app.wordnet_app as wa
+
+    probe = probes.PROBES["GHSA-jm6w-m3j8-898g"]
+    real = wa.MyServerHandler._shutdown_authorized
+    try:
+        wa.MyServerHandler._shutdown_authorized = lambda self: True
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        wa.MyServerHandler._shutdown_authorized = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_graphviz_search_probe_has_teeth():
+    """Make find_binary hand back the bare CWD name; the probe must flag the
+    planted ./dot as VULNERABLE."""
+    import nltk.internals as internals
+
+    probe = probes.PROBES["GHSA-6hwm-xvph-95vm"]
+    real = internals.find_binary
+    try:
+        internals.find_binary = lambda name, *a, **k: name  # returns the CWD hit
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        internals.find_binary = real
+    assert probe()[0] == probes.FIXED
+
+
 class TestProbeDiscoveryIsolation:
     """The probe package discovers and imports only from its own directory.
 
