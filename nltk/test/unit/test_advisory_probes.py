@@ -468,3 +468,68 @@ class TestAdvisoryPagination:
         monkeypatch.setattr(covci, "_MAX_BYTES", 8)
         _serve({covci._API: _FakeResp([{"ghsa_id": "AAAAAAAAAA"}])}, monkeypatch)
         assert covci._fetch_advisories() is None
+
+
+def test_dns_rebinding_probe_has_teeth():
+    """Neuter the SSRF IP filter; the rebound link-local connect must be caught as
+    VULNERABLE. The _resolve_hostname lru_cache is cleared so the restored run does
+    not false-fail on stale sequencing."""
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-3gqm-fcw5-w839"]
+    real = pathsec._ip_is_forbidden
+    try:
+        pathsec._resolve_hostname.cache_clear()
+        pathsec._ip_is_forbidden = lambda ip: False  # nothing is forbidden
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._ip_is_forbidden = real
+        pathsec._resolve_hostname.cache_clear()
+    assert probe()[0] == probes.FIXED
+
+
+def test_ssrf_ip_filter_probe_has_teeth():
+    """Allow every IP; all the loopback/metadata/mapped targets must pass the filter
+    and the probe must flip to VULNERABLE."""
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-qvv7-cg9c-w4x3"]
+    real = pathsec._ip_is_forbidden
+    try:
+        pathsec._ip_is_forbidden = lambda ip: False
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._ip_is_forbidden = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_dotted_name_probe_has_teeth():
+    """Restore stock find_class (which walks dotted names at proto>=4); the dotted
+    global must then be reconstructed and the probe flip to VULNERABLE."""
+    import pickle
+
+    from nltk.picklesec import AllowlistUnpickler
+
+    probe = probes.PROBES["GHSA-4489-j4f3-2g8q"]
+    real = AllowlistUnpickler.find_class
+    try:
+        AllowlistUnpickler.find_class = pickle.Unpickler.find_class
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        AllowlistUnpickler.find_class = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_pickle_denylist_fires_under_broad_allow():
+    """Defense in depth: os.system is refused by the module denylist even when a
+    caller mistakenly names 'os' in allowed_modules (not merely by an empty allow)."""
+    import io
+    import pickle
+
+    import pytest
+
+    from nltk.picklesec import allowlisted_pickle_load
+
+    payload = b"cos\nsystem\n(t R."  # GLOBAL os.system, empty-tuple REDUCE
+    with pytest.raises(pickle.UnpicklingError, match="denied module"):
+        allowlisted_pickle_load(io.BytesIO(payload), allowed_modules=("os",))
