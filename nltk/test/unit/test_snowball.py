@@ -12,16 +12,10 @@ class TestSnowballStemmer(unittest.TestCase):
         crashing (CVE-2026-14597). Tests all supported Snowball languages.
         """
         for language in SnowballStemmer.languages:
-            stemmer = SnowballStemmer(language)
-
-            try:
-                result = stemmer.stem("")
+            with self.subTest(language=language):
+                stemmer = SnowballStemmer(language)
                 self.assertEqual(
-                    result,
+                    stemmer.stem(""),
                     "",
                     f"Stemmer for '{language}' failed to return empty string.",
-                )
-            except Exception as e:
-                self.fail(
-                    f"Stemmer for '{language}' raised {type(e).__name__} on empty string: {e}"
                 )
