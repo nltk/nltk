@@ -533,3 +533,43 @@ def test_pickle_denylist_fires_under_broad_allow():
     payload = b"cos\nsystem\n(t R."  # GLOBAL os.system, empty-tuple REDUCE
     with pytest.raises(pickle.UnpicklingError, match="denied module"):
         allowlisted_pickle_load(io.BytesIO(payload), allowed_modules=("os",))
+
+
+def test_cyclic_index_probe_reports_a_hang_as_vulnerable():
+    """The advisory's regression manifests as an infinite loop, i.e. a subprocess
+    that never returns. Simulate that: a hanging cyclic run with a healthy acyclic
+    control must be VULNERABLE, and only a control that also hangs is STATIC."""
+    module = importlib.import_module(
+        "nltk.test.unit.security_probes.ghsa_pcm8_fqjx_rvx8"
+    )
+    probe = probes.PROBES["GHSA-pcm8-fqjx-rvx8"]
+    real = module._resolve
+    try:
+        module._resolve = lambda shape, timeout=30: (
+            ("ok", "p1") if shape == "acyclic" else ("hang", "timed out")
+        )
+        assert probe()[0] == probes.VULNERABLE
+        # an overloaded host (control hangs too) must NOT be called a regression
+        module._resolve = lambda shape, timeout=30: ("hang", "timed out")
+        assert probe()[0] == probes.STATIC
+    finally:
+        module._resolve = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_jvm_option_filter_probe_has_teeth(monkeypatch):
+    """Neuter only the options filter; java()'s classpath and cmd guards stay live,
+    so a flip to VULNERABLE proves the probe scores this filter and not a neighbour."""
+    from nltk import internals
+
+    probe = probes.PROBES["GHSA-m4rf-3fr8-xwx3"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(internals, "_validate_java_options", lambda opts: None)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    # proof of injection is the command line that was about to run, not a count
+    assert "-Xbootclasspath" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
