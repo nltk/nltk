@@ -80,6 +80,27 @@ def test_pathsec_enforce_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
+def test_model_artifact_probe_has_teeth():
+    """Remove both containment layers and the probe must read /etc/passwd.
+
+    The payload has to genuinely reach the sink: a traversal that lands on a
+    non-existent path errors out and would score FIXED no matter what the guards
+    do, which is how this probe used to pass with every guard disabled.
+    """
+    import nltk.data
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
+    reject, enforce = nltk.data._reject_unsafe_no_protocol, pathsec.ENFORCE
+    try:
+        nltk.data._reject_unsafe_no_protocol = lambda url: None
+        pathsec.ENFORCE = False
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        nltk.data._reject_unsafe_no_protocol, pathsec.ENFORCE = reject, enforce
+    assert probe()[0] == probes.FIXED
+
+
 def test_pickle_allowlist_probe_has_teeth():
     from nltk.picklesec import AllowlistUnpickler
 
