@@ -295,20 +295,31 @@ def validate_model_resource(model_path, context="NLTK model"):
     if ":" in text and not re.match(r"^[A-Za-z]:[\\/]", text):
         _refuse("contains ':', which names an NTFS alternate data stream")
 
-    # Only a real filesystem path is sandboxed; a bare resource name is not a path.
-    if os.path.isabs(text) or os.path.exists(text):
+    # Only a real filesystem path is sandboxed; a bare resource name is not a
+    # path. A bare name is deliberately NOT probed against the CWD: doing so made
+    # the default `malt_temp.mco` resolve to whatever happened to sit in the
+    # user's directory, which is exactly what older NLTK versions left there.
+    has_directory = bool(os.path.dirname(text.replace("\\", "/")))
+    if os.path.isabs(text) or (has_directory and os.path.exists(text)):
         validate_path(text, context=context)
         _reject_aliased_or_special(text, context)
 
 
-def _reject_aliased_or_special(text, context):
+def _reject_aliased_or_special(text, context, check_links=False):
     """Physical checks on a path that already passed :func:`validate_path`.
 
-    ``realpath()`` cannot see a hardlink, so an in-root alias of an outside file
-    passes every name-based check; the tool would then read, or overwrite, the
-    original. Mirrors the ``st_nlink`` guard in :func:`_hardened_open`. A FIFO,
-    socket or device planted in a data root would instead block the reader
-    forever. Directories stay legal, since corpora are passed as directories.
+    A FIFO, socket or device planted in a data root would block the reader
+    forever, so only regular files and directories are accepted. Directories stay
+    legal, since corpora are passed as directories.
+
+    ``check_links`` additionally refuses a hardlinked file. ``realpath()`` cannot
+    see a hardlink, so an in-root alias of an outside file passes every
+    name-based check and the tool would overwrite the original. This is only
+    applied to paths the tool *writes*: for a read it is not an escalation (the
+    link can only be created by someone who can already write to the data root),
+    and rejecting ``st_nlink > 1`` outright would refuse ordinary
+    hardlink-deduplicated data such as ``cp -l`` or ``rsync --link-dest`` trees,
+    including the original file.
 
     A path that does not exist yet (an output file) has nothing to check.
     """
@@ -316,10 +327,11 @@ def _reject_aliased_or_special(text, context):
         info = os.stat(text)
     except OSError:
         return
-    if stat.S_ISREG(info.st_mode) and info.st_nlink > 1:
+    if check_links and stat.S_ISREG(info.st_mode) and info.st_nlink > 1:
         raise PermissionError(
             f"Security Violation [{context}]: {text!r} has {info.st_nlink} hard "
-            "links, so it may alias a file outside the trusted NLTK data roots."
+            "links, so writing it may overwrite a file outside the trusted NLTK "
+            "data roots."
         )
     if not (stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode)):
         raise PermissionError(
@@ -328,7 +340,7 @@ def _reject_aliased_or_special(text, context):
         )
 
 
-def validate_tool_path(path_input, context="NLTK tool file"):
+def validate_tool_path(path_input, context="NLTK tool file", for_write=False):
     """Bound a filesystem path handed to an external tool to read or write.
 
     Unlike :func:`validate_model_resource` this never accepts a bare resource
@@ -339,9 +351,11 @@ def validate_tool_path(path_input, context="NLTK tool file"):
 
     :param path_input: the path as supplied by the caller
     :param context: label used in the security-violation message
+    :param for_write: True when the tool will write the path, which additionally
+        refuses a hardlinked file that could alias a target outside the roots
     :raises ValueError: if the value is empty or contains a NUL byte
-    :raises PermissionError: if it is outside the data roots, hardlinked, or a
-        non-regular file such as a FIFO
+    :raises PermissionError: if it is outside the data roots or is a non-regular
+        file such as a FIFO
     """
     text = os.fspath(path_input)
     if not text or not text.strip():
@@ -354,7 +368,7 @@ def validate_tool_path(path_input, context="NLTK tool file"):
             f"Security Violation [{context}]: path {text!r} contains a NUL byte."
         )
     validate_path(text, context=context)
-    _reject_aliased_or_special(text, context)
+    _reject_aliased_or_special(text, context, check_links=for_write)
 
 
 def _zip_member_is_unsafe(name_str):

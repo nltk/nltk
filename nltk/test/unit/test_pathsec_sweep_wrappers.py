@@ -96,7 +96,7 @@ def test_segmenter_model_paths_refuse_escape(pathsec_sandbox, monkeypatch, slot)
     evil = outside / "evil.ser.gz"
     evil.write_text("payload")
     inside = str(root / "in.txt")
-    with pathsec.open(inside, "w") as handle:
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
         handle.write("中文")
 
     tool = _segmenter(monkeypatch, str(root), **{slot: str(evil)})
@@ -127,7 +127,7 @@ def test_segmenter_in_sandbox_paths_reach_jvm(pathsec_sandbox, monkeypatch):
     with pathsec.open(model, "w") as handle:
         handle.write("m")
     inside = str(root / "in.txt")
-    with pathsec.open(inside, "w") as handle:
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
         handle.write("中文")
 
     tool = _segmenter(monkeypatch, str(root), model=model)
@@ -198,6 +198,7 @@ def test_malt_untrained_working_dir_is_staged_inside_root(pathsec_sandbox):
     assert cmd[cmd.index("-c") + 1] == "malt_temp.mco"
 
 
+@pytest.mark.skipif(os.name != "posix", reason="POSIX mode bits")
 def test_malt_working_dir_is_private():
     """The staging dir must not be group/world readable: it holds the CoNLL
     intermediates and the trained model."""
@@ -649,13 +650,14 @@ def _hostile_vectors(root, outside):
     secret = outside / "secret.mco"
     secret.write_text("SECRET")
 
+    system_file = "/etc/passwd" if os.name == "posix" else "C:\\Windows\\win.ini"
     vectors = [
         ("outside-abs", str(secret)),
-        ("etc-abs", "/etc/passwd"),
+        ("system-file-abs", system_file),
         ("traversal-from-root", os.path.join(str(root), "..", "..", "etc", "passwd")),
-        ("nul-byte", "/etc/pass\x00wd"),
+        ("nul-byte", system_file[:5] + "\x00" + system_file[5:]),
         ("leading-dash", "-Xmx99g"),
-        ("newline-injection", "/etc/passwd\n-serDictionary /etc/shadow"),
+        ("newline-injection", system_file + "\n-serDictionary " + system_file),
         ("backslash-traversal", "..\\..\\..\\etc\\passwd"),
         ("file-url", "file:///etc/passwd"),
         ("http-url", "http://evil.example/model.gz"),
@@ -676,14 +678,8 @@ def _hostile_vectors(root, outside):
     os.symlink(str(outside), symlinked_dir)
     vectors.append(("via-symlinked-dir", str(symlinked_dir / "secret.mco")))
 
-    hardlink = root / "hard.mco"
-    try:
-        os.link(str(secret), hardlink)
-    except OSError:  # pragma: no cover - cross-device or unsupported
-        pass
-    else:
-        vectors.append(("hardlink-to-outside", str(hardlink)))
-
+    # Hardlinks are deliberately NOT in this matrix: they are refused only for
+    # paths the tool writes. See the dedicated tests below.
     return vectors
 
 
@@ -735,10 +731,7 @@ def test_malt_working_dir_setter_refuses_every_hostile_vector(pathsec_sandbox):
     assert leaked == [], f"working_dir accepted these: {leaked}"
 
 
-def test_hardlinked_model_is_refused(pathsec_sandbox):
-    """realpath() cannot see a hardlink, so an in-root alias of an outside file
-    would otherwise pass every path check."""
-    root, outside = pathsec_sandbox
+def _hardlink_into(root, outside):
     secret = outside / "secret.mco"
     secret.write_text("SECRET")
     alias = root / "alias.mco"
@@ -746,8 +739,28 @@ def test_hardlinked_model_is_refused(pathsec_sandbox):
         os.link(str(secret), alias)
     except OSError:  # pragma: no cover - cross-device or unsupported
         pytest.skip("hard links unavailable between these directories")
+    return str(alias)
+
+
+def test_hardlinked_write_target_is_refused(pathsec_sandbox):
+    """realpath() cannot see a hardlink, so an in-root alias of an outside file
+    passes every path check and the tool would overwrite the original."""
+    root, outside = pathsec_sandbox
+    alias = _hardlink_into(root, outside)
     with pytest.raises(PermissionError):
-        validate_model_resource(str(alias), context="sweep")
+        validate_tool_path(alias, context="sweep", for_write=True)
+
+
+def test_hardlinked_read_target_is_allowed(pathsec_sandbox):
+    """Reading through a hardlink is not an escalation: creating the link already
+    requires write access to the data root. Rejecting st_nlink > 1 outright would
+    refuse ordinary deduplicated trees (cp -l, rsync --link-dest) and would also
+    refuse the ORIGINAL file, since both names share the link count.
+    """
+    root, outside = pathsec_sandbox
+    alias = _hardlink_into(root, outside)
+    validate_tool_path(alias, context="sweep")
+    validate_model_resource(alias, context="sweep")
 
 
 def test_single_linked_model_is_allowed(pathsec_sandbox):
@@ -756,6 +769,7 @@ def test_single_linked_model_is_allowed(pathsec_sandbox):
     model = root / "plain.mco"
     model.write_text("m")
     validate_model_resource(str(model), context="sweep")
+    validate_tool_path(str(model), context="sweep", for_write=True)
 
 
 def test_directory_model_is_not_hardlink_rejected(pathsec_sandbox):
@@ -788,21 +802,32 @@ def test_benign_resource_names_still_pass(value):
 
 def _exotic_vectors(root):
     vectors = [
-        ("dev-stdin", "/dev/stdin"),
-        ("dev-null", "/dev/null"),
-        ("proc-environ", "/proc/self/environ"),
-        ("case-folded-etc", "/ETC/PASSWD"),
         ("tilde-expansion", "~/.ssh/id_rsa"),
         ("ads-stream", "model.mco:evil"),
         ("unc-backslash", "\\\\server\\share\\evil.mco"),
         ("unc-slash", "//server/share/evil.mco"),
         ("nul-in-middle", "model\x00.mco"),
         ("jar-url", "jar:file:///etc/passwd!/x"),
-        ("overlong-name", "/" + ("A" * 300) + "/evil.mco"),
         ("double-slash", "//etc//passwd"),
-        ("root-only", "/"),
         ("dotdot-alone", ".."),
     ]
+    if os.name == "posix":
+        # Character devices and procfs exist only here; on Windows these are
+        # ordinary non-existent relative names and prove nothing.
+        vectors += [
+            ("dev-stdin", "/dev/stdin"),
+            ("dev-null", "/dev/null"),
+            ("proc-environ", "/proc/self/environ"),
+            ("case-folded-etc", "/ETC/PASSWD"),
+            ("overlong-name", "/" + ("A" * 300) + "/evil.mco"),
+            ("root-only", "/"),
+        ]
+    else:
+        vectors += [
+            ("windows-device", "NUL"),
+            ("windows-system-file", "C:\\Windows\\System32\\config\\SAM"),
+            ("drive-relative", "C:evil.mco"),
+        ]
 
     fifo = root / "fifo.mco"
     try:
@@ -1096,17 +1121,14 @@ def test_validate_tool_path_allows_in_sandbox_paths(pathsec_sandbox):
     validate_tool_path(str(root / "out.conll"), context="sweep")
 
 
-def test_validate_tool_path_refuses_hardlink(pathsec_sandbox):
+def test_malt_output_file_refuses_hardlink(pathsec_sandbox):
+    """-o is written by the JVM, so a hardlinked target would clobber the file
+    it aliases outside the roots."""
     root, outside = pathsec_sandbox
-    secret = outside / "secret.conll"
-    secret.write_text("SECRET")
-    alias = root / "alias.conll"
-    try:
-        os.link(str(secret), alias)
-    except OSError:  # pragma: no cover - cross-device or unsupported
-        pytest.skip("hard links unavailable between these directories")
+    alias = _hardlink_into(root, outside)
+    parser, infile = _malt_in_sandbox(root)
     with pytest.raises(PermissionError):
-        validate_tool_path(str(alias), context="sweep")
+        parser.generate_malt_command(infile, alias, mode="parse")
 
 
 def test_validate_tool_path_refuses_fifo(pathsec_sandbox):
@@ -1123,3 +1145,64 @@ def test_validate_tool_path_refuses_fifo(pathsec_sandbox):
 
 def test_validate_tool_path_is_exported():
     assert "validate_tool_path" in pathsec.__all__
+
+
+def test_regression_bare_model_name_is_not_probed_against_cwd(pathsec_sandbox):
+    """Regression: validate_model_resource decided "is this a real path?" with
+    os.path.exists(), which resolves relative to the CWD. A stray malt_temp.mco
+    in the user's directory therefore made the DEFAULT MaltParser() flow die with
+    a security violation. Older NLTK wrote exactly that file into the CWD, so an
+    upgrade would have tripped it.
+    """
+    root, _outside = pathsec_sandbox
+    os.chdir(str(root.parent))
+    decoy = root.parent / "malt_temp.mco"
+    decoy.write_text("decoy")
+    try:
+        validate_model_resource("malt_temp.mco", context="sweep")
+        parser, infile = _malt_in_sandbox(root)
+        parser.model = "malt_temp.mco"
+        cmd = parser.generate_malt_command(infile, None, mode="learn")
+        assert cmd[cmd.index("-c") + 1] == "malt_temp.mco"
+    finally:
+        decoy.unlink()
+
+
+def test_regression_staging_dirs_are_cleaned_up(tmp_path):
+    """Regression: every parser that touched working_dir left a directory under
+    the data root forever. The shared tempdir it replaced was OS-reaped, but a
+    data root is not, so the dir is now removed at interpreter exit.
+
+    Run in a real subprocess: atexit only fires when the process ends.
+    """
+    import subprocess
+    import sys
+
+    root = tmp_path / "nltk_data"
+    root.mkdir()
+    script = (
+        "import nltk.data, nltk.pathsec as ps;"
+        f"nltk.data.path[:] = [{str(root)!r}];"
+        "ps._ALLOWED_ROOTS_CACHE = None; ps._LAST_DATA_PATHS = None;"
+        "from nltk.parse.malt import MaltParser;"
+        "p = MaltParser.__new__(MaltParser); p._working_dir = None;"
+        "print(p.working_dir)"
+    )
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    result = subprocess.run(
+        [sys.executable, "-c", script], capture_output=True, text=True, env=env
+    )
+    assert result.returncode == 0, result.stderr
+    staged = result.stdout.strip()
+    assert staged.startswith(str(root))
+    assert not os.path.exists(staged), f"staging dir leaked after exit: {staged}"
+
+
+def test_working_dir_none_resets_to_lazy_allocation(pathsec_sandbox):
+    """Regression: assigning None used to raise; it now restores the unset state
+    so the property allocates again."""
+    root, _outside = pathsec_sandbox
+    parser = _malt("malt_temp.mco", trained=False)
+    first = parser.working_dir
+    parser.working_dir = None
+    assert parser.working_dir != first or os.path.isdir(parser.working_dir)

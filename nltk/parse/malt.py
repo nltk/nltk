@@ -7,8 +7,10 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import atexit
 import inspect
 import os
+import shutil
 import sys
 import tempfile
 
@@ -178,14 +180,24 @@ class MaltParser(ParserI):
         gives a predictable, squattable path for both the CoNLL files and the model.
         """
         if self._working_dir is None:
-            self._working_dir = make_staging_dir(prefix="nltk_malt_")
+            staged = make_staging_dir(prefix="nltk_malt_")
+            # The old shared tempdir was reaped by the OS; a dir under a data
+            # root is not, so remove it ourselves rather than leaking one per
+            # parser (the .mco it holds is a temporary model by definition).
+            atexit.register(shutil.rmtree, staged, ignore_errors=True)
+            self._working_dir = staged
         return self._working_dir
 
     @working_dir.setter
     def working_dir(self, value):
+        # None restores the unset state, so the property allocates again on next
+        # access rather than raising.
+        if value is None:
+            self._working_dir = None
+            return
         # A caller may still choose the directory, but only inside the sandbox.
         # An empty value would reach MaltParser as `-w ""`, i.e. the CWD.
-        text = os.fspath(value) if value is not None else ""
+        text = os.fspath(value)
         if not text.strip():
             raise ValueError(
                 "MaltParser.working_dir may not be empty; it would resolve to the "
@@ -324,7 +336,9 @@ class MaltParser(ParserI):
         validate_tool_path(inputfilename, context="MaltParser input file")
         cmd += ["-i", inputfilename]
         if mode == "parse":
-            validate_tool_path(outputfilename, context="MaltParser output file")
+            validate_tool_path(
+                outputfilename, context="MaltParser output file", for_write=True
+            )
             cmd += ["-o", outputfilename]
         cmd += ["-m", mode]  # mode use to generate parses.
         return cmd
