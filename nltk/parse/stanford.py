@@ -14,6 +14,7 @@ from subprocess import PIPE
 from nltk.internals import find_jar_iter, find_jars_within_path, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.pathsec import validate_model_resource
 from nltk.tree import Tree
 
 _stanford_url = "https://nlp.stanford.edu/software/lex-parser.shtml"
@@ -218,6 +219,9 @@ class GenericStanfordParser(ParserI):
         )
 
     def _execute(self, cmd, input_, verbose=False):
+        # Bound `-model` here, at the single hand-off to the JVM, so all three
+        # callers are covered and a late reassignment cannot slip past.
+        validate_model_resource(self.model_path, context="StanfordParser model")
         encoding = self._encoding
         cmd.extend(["-encoding", encoding])
         if self.corenlp_options:

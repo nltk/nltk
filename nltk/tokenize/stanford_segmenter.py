@@ -201,6 +201,9 @@ class StanfordSegmenter(TokenizerI):
 
     def segment_file(self, input_file_path):
         """ """
+        # Caller-supplied and handed to the JVM as -textFile, which pathsec.open
+        # cannot wrap; validate before the spawn (GHSA-8mgp-746c-j5xp).
+        validate_path(input_file_path, context="StanfordSegmenter.segment_file")
         cmd = [
             self._java_class,
             "-loadClassifier",
@@ -328,6 +331,21 @@ class StanfordSegmenter(TokenizerI):
                     "Multiple approved checksums may be supplied as a comma-separated list."
                 )
 
+    def _validate_model_paths(self):
+        """Refuse model/dictionary paths that escape the NLTK data sandbox.
+
+        These are embedded in the JVM argv (-loadClassifier / -serDictionary /
+        -sighanCorporaDict), which pathsec.open cannot wrap, so they are checked
+        here before the process is spawned (GHSA-8mgp-746c-j5xp).
+        """
+        for label, value in (
+            ("model", self._model),
+            ("dictionary", self._dict),
+            ("sihan corpora dict", self._sihan_corpora_dict),
+        ):
+            if value:
+                validate_path(value, context=f"StanfordSegmenter {label}")
+
     def _execute(self, cmd, verbose=False):
         encoding = self._encoding
         cmd.extend(["-inputEncoding", encoding])
@@ -335,6 +353,7 @@ class StanfordSegmenter(TokenizerI):
         if _options_cmd:
             cmd.extend(["-options", self._options_cmd])
 
+        self._validate_model_paths()
         self._validate_classpath()
 
         stdout, _stderr = java(

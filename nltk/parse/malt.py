@@ -12,7 +12,7 @@ import os
 import sys
 import tempfile
 
-from nltk.data import ZipFilePathPointer
+from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import (
     find_dir,
     find_file,
@@ -22,6 +22,7 @@ from nltk.internals import (
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
+from nltk.pathsec import validate_model_resource, validate_path
 
 
 def malt_regex_tagger():
@@ -160,10 +161,38 @@ class MaltParser(ParserI):
         # Initialize model.
         self.model = find_malt_model(model_filename)
         self._trained = self.model != "malt_temp.mco"
-        # Set the working_dir parameters i.e. `-w` from MaltParser's option.
-        self.working_dir = tempfile.gettempdir()
+        # `-w` is allocated lazily inside a data root; see the working_dir property.
+        self._working_dir = None
         # Initialize POS tagger.
         self.tagger = tagger if tagger is not None else malt_regex_tagger()
+
+    @property
+    def working_dir(self):
+        """MaltParser's ``-w`` directory, holding the temporary CoNLL files and,
+        for an untrained parser, the ``malt_temp.mco`` model that ``train()``
+        writes.
+
+        Allocated lazily by ``nltk.data.make_staging_dir`` INSIDE an allowed data
+        root, with an unpredictable name and mode 0700. The previous default was
+        the shared ``tempfile.gettempdir()``, which is world-writable on Linux and
+        gives a predictable, squattable path for both the CoNLL files and the model.
+        """
+        if self._working_dir is None:
+            self._working_dir = make_staging_dir(prefix="nltk_malt_")
+        return self._working_dir
+
+    @working_dir.setter
+    def working_dir(self, value):
+        # A caller may still choose the directory, but only inside the sandbox.
+        # An empty value would reach MaltParser as `-w ""`, i.e. the CWD.
+        text = os.fspath(value) if value is not None else ""
+        if not text.strip():
+            raise ValueError(
+                "MaltParser.working_dir may not be empty; it would resolve to the "
+                "current working directory."
+            )
+        validate_path(text, context="MaltParser.working_dir")
+        self._working_dir = text
 
     def parse_tagged_sents(self, sentences, verbose=False, top_relation_label="null"):
         """
@@ -270,8 +299,18 @@ class MaltParser(ParserI):
         # directory as the ``-w`` program argument rather than chdir-ing the JVM
         # process: no cwd is handed to java(), so there is no working-directory
         # class-injection surface (an empty/CWD -cp element, CWE-88).
+        # Rejects an empty / option-like / URL / traversing model name, and bounds
+        # it to the sandbox when it is a real path.
+        validate_model_resource(self.model, context="MaltParser model")
         model_dir, model_name = os.path.split(self.model)
-        workingdir = os.path.abspath(model_dir) if model_dir else os.getcwd()
+        if model_dir:
+            # A model carrying a directory is a real path: bound the directory too,
+            # since in learn mode MaltParser WRITES the .mco into it.
+            validate_path(self.model, context="MaltParser model")
+            workingdir = os.path.abspath(model_dir)
+        else:
+            # A bare model name lives in the private dir that train() wrote it to.
+            workingdir = self.working_dir
         cmd += ["-w", workingdir, "-c", model_name]
 
         cmd += ["-i", inputfilename]

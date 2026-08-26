@@ -58,7 +58,12 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     parser = MaltParser.__new__(MaltParser)
     parser.additional_java_args = []
     parser.malt_jars = [str(jar_a), str(jar_b)]
-    parser.model = "model.mco"
+    # Inside the allowed data root: generate_malt_command bounds the model path.
+    model = data_root / "model.mco"
+    model.touch()
+    parser.model = str(model)
+    parser._trained = True
+    parser._working_dir = None
 
     captured = {}
 

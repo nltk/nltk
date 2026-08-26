@@ -242,6 +242,84 @@ def validate_path(path_input, context="NLTK", required_root=None):
             raise
 
 
+def validate_model_resource(model_path, context="NLTK model"):
+    """Bound a caller-supplied model argument that may be a *resource name*.
+
+    Several JVM wrappers (Stanford parser/tagger/segmenter) accept the same
+    ``-model`` argument as either a filesystem path or a jar-internal classpath
+    resource, e.g. the default
+    ``edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz``. Bounding every value
+    with :func:`validate_path` would break the jar-internal defaults, and skipping
+    validation entirely lets an attacker hand the JVM any file on disk.
+
+    So: a plain resource name is left alone, any real filesystem path is bounded to
+    the NLTK data roots, and a value that is neither (empty, an option-looking
+    token, a URL, or a ``..`` traversal) is refused outright so that a
+    resource-looking name cannot traverse out of the jar namespace.
+
+    ``..`` is checked after folding ``\\`` to ``/``: a backslash is an ordinary
+    filename character on POSIX but a separator on Windows, so ``..\\..\\etc`` has
+    to be rejected on both.
+
+    :param model_path: the model argument as supplied by the caller
+    :param context: label used in the security-violation message
+    :raises ValueError: if the value is empty, option-like, a URL, or traverses
+    :raises PermissionError: if it is a filesystem path outside the data roots
+    """
+    text = os.fspath(model_path)
+
+    def _refuse(why):
+        raise ValueError(f"Security Violation [{context}]: model {text!r} {why}.")
+
+    if not text or not text.strip():
+        _refuse("is empty")
+    # A NUL truncates the path in the JVM's native layer, so "good.ser.gz\0evil"
+    # can name a different file there than it does here.
+    if "\x00" in text:
+        _refuse("contains a NUL byte")
+    # A leading '-' would be parsed as another option by the tool we hand it to.
+    if text.startswith("-"):
+        _refuse("looks like a command-line option (argument injection)")
+    # Stanford's loaders will fetch a URL; only local resources are permitted.
+    if "://" in text or text.lower().startswith(("file:", "jar:")):
+        _refuse("is a URL; only local model resources are permitted")
+    # Nothing downstream expands '~', but a sink that did would reach $HOME.
+    if text.startswith("~"):
+        _refuse("starts with '~'; pass an already-expanded path")
+    # A Windows UNC path reaches a remote share.
+    if text.startswith("\\\\") or text.startswith("//"):
+        _refuse("is a UNC path; only local model resources are permitted")
+    if ".." in text.replace("\\", "/").split("/"):
+        _refuse("contains a '..' component; it may not traverse out of the namespace")
+    # ':' names an NTFS alternate data stream, except in a drive prefix (C:\...).
+    if ":" in text and not re.match(r"^[A-Za-z]:[\\/]", text):
+        _refuse("contains ':', which names an NTFS alternate data stream")
+
+    # Only a real filesystem path is sandboxed; a bare resource name is not a path.
+    if os.path.isabs(text) or os.path.exists(text):
+        validate_path(text, context=context)
+        # realpath() cannot see a hardlink, so an in-root alias of an outside file
+        # passes the check above; the tool would then read (or overwrite) the
+        # original. Mirrors the st_nlink guard in _hardened_open.
+        try:
+            info = os.stat(text)
+        except OSError:
+            return
+        if stat.S_ISREG(info.st_mode) and info.st_nlink > 1:
+            raise PermissionError(
+                f"Security Violation [{context}]: model {text!r} has "
+                f"{info.st_nlink} hard links, so it may alias a file outside the "
+                "trusted NLTK data roots."
+            )
+        # A FIFO, socket or device planted in a data root would hang the reader
+        # forever. Directories stay legal: corpora are passed as directories.
+        if not (stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode)):
+            raise PermissionError(
+                f"Security Violation [{context}]: model {text!r} is not a regular "
+                "file or directory; reading it could block indefinitely."
+            )
+
+
 def _zip_member_is_unsafe(name_str):
     """True if a ZIP member is written somewhere other than where it is validated.
 
@@ -978,6 +1056,7 @@ class ZipFile(zipfile.ZipFile):
 
 __all__ = [
     "validate_path",
+    "validate_model_resource",
     "validate_network_url",
     "validate_zip_archive",
     "open",

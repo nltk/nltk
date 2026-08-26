@@ -1,0 +1,913 @@
+# Natural Language Toolkit: pathsec sweep over the external-tool wrappers
+#
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
+# For license information, see LICENSE.TXT
+
+"""Escape matrix for the model/data paths handed to external tools.
+
+The JVM wrappers take caller-supplied model and corpus paths and pass them
+straight into the child process's argv. Those are *data* paths, so they must be
+bounded to the NLTK data roots; a path outside the sandbox means the wrapper will
+read (and, for MaltParser's ``-w`` in learn mode, WRITE) anywhere on disk.
+
+Two classes of path are deliberately treated differently:
+
+* **model / corpus paths** (this file) are bounded with ``pathsec.validate_path``
+  or ``pathsec.validate_model_resource``.
+* **install / binary directories** (``candc``/``boxer``'s ``bin_dir``, REPP's
+  tokenizer dir) are NOT: ``validate_path`` permits only NLTK *data* roots, so
+  bounding them would break every real installation. They get an absolute-path
+  (CWE-426) check instead, and the tests at the end of this file pin that
+  distinction so a later refactor cannot quietly collapse the two.
+
+Every test drives the real code path with only the ``java`` hand-off replaced, so
+a probe cannot pass merely because the argv was assembled by the test itself.
+"""
+
+import hashlib
+import os
+
+import pytest
+
+from nltk import pathsec
+from nltk.data import make_staging_dir
+from nltk.pathsec import validate_model_resource
+
+
+class _ReachedJVM(Exception):
+    """Raised by the trapped ``java`` so a test can tell "the argv was built and
+    handed off" apart from "a guard refused first"."""
+
+
+def _trap_java(monkeypatch, module, sink):
+    """Replace ``module.java`` with a trap that records argv and stops before
+    launching a JVM."""
+
+    def fake_java(cmd, *args, **kwargs):
+        sink["cmd"] = list(cmd)
+        raise _ReachedJVM
+
+    monkeypatch.setattr(module, "java", fake_java)
+    return sink
+
+
+# ---------------------------------------------------------------------------
+# StanfordSegmenter: -loadClassifier / -serDictionary / -sighanCorporaDict /
+# -textFile all reach the JVM argv.
+# ---------------------------------------------------------------------------
+
+
+def _segmenter(monkeypatch, root, model=None, dictionary=None, sihan=None):
+    """A StanfordSegmenter whose jar passes the sha256 allowlist, so the test
+    reaches the model-path handling rather than stopping at the jar check."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    jar = os.path.join(root, "seg.jar")
+    with pathsec.open(jar, "wb") as handle:
+        handle.write(b"PK\x05\x06" + b"\0" * 18)
+    with pathsec.open(jar, "rb") as handle:
+        digest = hashlib.sha256(handle.read()).hexdigest()
+    monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", digest)
+
+    tool = object.__new__(seg.StanfordSegmenter)
+    tool._stanford_jar = jar
+    tool._encoding = "utf8"
+    tool.java_options = "-mx1g"
+    tool._jar_sha256_cache = {}
+    tool._java_class = "edu.stanford.nlp.ie.crf.CRFClassifier"
+    tool._model = model
+    tool._dict = dictionary
+    tool._sihan_corpora_dict = sihan
+    tool._sihan_post_processing = "true"
+    tool._keep_whitespaces = "false"
+    tool._options_cmd = ""
+    return tool
+
+
+@pytest.mark.parametrize("slot", ["model", "dictionary", "sihan"])
+def test_segmenter_model_paths_refuse_escape(pathsec_sandbox, monkeypatch, slot):
+    """A model, dictionary or Sihan corpus dir outside the roots is refused
+    before the JVM sees it."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, outside = pathsec_sandbox
+    _trap_java(monkeypatch, seg, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("payload")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w") as handle:
+        handle.write("中文")
+
+    tool = _segmenter(monkeypatch, str(root), **{slot: str(evil)})
+    with pytest.raises((PermissionError, ValueError)):
+        tool.segment_file(inside)
+
+
+def test_segmenter_input_file_refuses_escape(pathsec_sandbox, monkeypatch):
+    """``segment_file`` is an arbitrary-file-read primitive without a guard on
+    its own argument."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, outside = pathsec_sandbox
+    _trap_java(monkeypatch, seg, {})
+    tool = _segmenter(monkeypatch, str(root))
+    with pytest.raises((PermissionError, ValueError)):
+        tool.segment_file("/etc/passwd")
+
+
+def test_segmenter_in_sandbox_paths_reach_jvm(pathsec_sandbox, monkeypatch):
+    """Over-block control: legitimate in-sandbox paths must still be handed to
+    the JVM, otherwise the guard has broken the feature."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, seg, {})
+    model = str(root / "model.ser.gz")
+    with pathsec.open(model, "w") as handle:
+        handle.write("m")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w") as handle:
+        handle.write("中文")
+
+    tool = _segmenter(monkeypatch, str(root), model=model)
+    with pytest.raises(_ReachedJVM):
+        tool.segment_file(inside)
+    assert model in sink["cmd"]
+
+
+# ---------------------------------------------------------------------------
+# MaltParser: -c model and the -w working directory (WRITTEN to in learn mode).
+# ---------------------------------------------------------------------------
+
+
+def _malt(model, trained=True):
+    import nltk.parse.malt as malt
+
+    parser = object.__new__(malt.MaltParser)
+    parser.model = model
+    parser._trained = trained
+    parser._working_dir = None
+    parser.additional_java_args = []
+    return parser
+
+
+def test_malt_trained_model_refuses_escape(pathsec_sandbox):
+    """A .mco outside the roots would make ``-w`` an arbitrary write target."""
+    root, outside = pathsec_sandbox
+    evil = outside / "evil.mco"
+    evil.write_text("model")
+    with pytest.raises((PermissionError, ValueError)):
+        _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
+
+
+def test_malt_trained_model_in_sandbox_is_allowed(pathsec_sandbox):
+    """Over-block control for the trained path."""
+    root, _outside = pathsec_sandbox
+    model = root / "engmalt.mco"
+    model.write_text("model")
+    cmd = _malt(str(model)).generate_malt_command("in.conll", "out.conll", mode="parse")
+    assert cmd[cmd.index("-w") + 1] == str(root)
+    assert cmd[cmd.index("-c") + 1] == "engmalt.mco"
+
+
+def test_malt_untrained_working_dir_is_staged_inside_root(pathsec_sandbox):
+    """An untrained parser used to write malt_temp.mco into the CWD; it must now
+    land in a private staging dir inside a data root."""
+    root, _outside = pathsec_sandbox
+    cmd = _malt("malt_temp.mco", trained=False).generate_malt_command(
+        "in.conll", "out.conll", mode="learn"
+    )
+    workingdir = cmd[cmd.index("-w") + 1]
+    assert os.path.realpath(workingdir).startswith(os.path.realpath(str(root)))
+    assert os.path.realpath(workingdir) != os.path.realpath(os.getcwd())
+    assert cmd[cmd.index("-c") + 1] == "malt_temp.mco"
+
+
+def test_malt_working_dir_is_private():
+    """The staging dir must not be group/world readable: it holds the CoNLL
+    intermediates and the trained model."""
+    staged = make_staging_dir(prefix="nltk_malt_test_")
+    assert os.stat(staged).st_mode & 0o077 == 0
+
+
+def test_malt_working_dir_setter_refuses_escape(pathsec_sandbox):
+    """A caller may still choose the directory, but only inside the sandbox."""
+    _root, outside = pathsec_sandbox
+    parser = _malt("malt_temp.mco", trained=False)
+    with pytest.raises((PermissionError, ValueError)):
+        parser.working_dir = str(outside)
+
+
+def test_malt_working_dir_setter_accepts_in_sandbox(pathsec_sandbox):
+    """Over-block control for the setter."""
+    root, _outside = pathsec_sandbox
+    parser = _malt("malt_temp.mco", trained=False)
+    parser.working_dir = str(root)
+    assert parser.working_dir == str(root)
+
+
+def test_malt_working_dir_is_not_shared_tempdir(pathsec_sandbox):
+    """Regression: the default was ``tempfile.gettempdir()``, which is
+    world-writable on Linux and gives a predictable, squattable path."""
+    import tempfile as _tempfile
+
+    root, _outside = pathsec_sandbox
+    parser = _malt("malt_temp.mco", trained=False)
+    assert os.path.realpath(parser.working_dir) != os.path.realpath(
+        _tempfile.gettempdir()
+    )
+
+
+# ---------------------------------------------------------------------------
+# StanfordParser: -model may be a filesystem path OR a jar-internal resource.
+# ---------------------------------------------------------------------------
+
+_DEFAULT_RESOURCE = "edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
+
+
+def _stanford_parser(model_path):
+    import nltk.parse.stanford as st
+
+    parser = object.__new__(st.StanfordParser)
+    parser.model_path = model_path
+    parser._classpath = ()
+    parser.java_options = "-mx1g"
+    parser._encoding = "utf8"
+    parser.corenlp_options = ""
+    parser._USE_STDIN = False
+    return parser
+
+
+@pytest.mark.parametrize(
+    "model_path",
+    ["/etc/passwd", "edu/stanford/../../../../etc/passwd"],
+    ids=["etc-abs", "traversal"],
+)
+def test_stanford_parser_model_refuses_escape(pathsec_sandbox, monkeypatch, model_path):
+    import nltk.parse.stanford as st
+
+    _trap_java(monkeypatch, st, {})
+    with pytest.raises((PermissionError, ValueError)):
+        _stanford_parser(model_path).parse_sents([["hello", "world"]])
+
+
+def test_stanford_parser_outside_model_refuses_escape(pathsec_sandbox, monkeypatch):
+    import nltk.parse.stanford as st
+
+    _root, outside = pathsec_sandbox
+    _trap_java(monkeypatch, st, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("model")
+    with pytest.raises((PermissionError, ValueError)):
+        _stanford_parser(str(evil)).parse_sents([["hello", "world"]])
+
+
+def test_stanford_parser_default_resource_still_works(pathsec_sandbox, monkeypatch):
+    """Over-block control: the shipped default is a jar-internal resource, not a
+    file on disk, and must not be treated as a path."""
+    import nltk.parse.stanford as st
+
+    sink = _trap_java(monkeypatch, st, {})
+    with pytest.raises(_ReachedJVM):
+        _stanford_parser(_DEFAULT_RESOURCE).parse_sents([["hello", "world"]])
+    assert sink["cmd"][sink["cmd"].index("-model") + 1] == _DEFAULT_RESOURCE
+
+
+def test_stanford_parser_in_sandbox_model_still_works(pathsec_sandbox, monkeypatch):
+    """Over-block control: a real model inside a data root must still load."""
+    import nltk.parse.stanford as st
+
+    root, _outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, st, {})
+    model = root / "englishPCFG.ser.gz"
+    model.write_text("model")
+    with pytest.raises(_ReachedJVM):
+        _stanford_parser(str(model)).parse_sents([["hello", "world"]])
+    assert sink["cmd"][sink["cmd"].index("-model") + 1] == str(model)
+
+
+# ---------------------------------------------------------------------------
+# validate_model_resource itself.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "edu/stanford/../nlp/x.ser.gz",
+        "../x.ser.gz",
+        "a/b/../../../etc/passwd",
+        "edu\\stanford\\..\\x.ser.gz",
+    ],
+)
+def test_validate_model_resource_rejects_traversal(value):
+    """``..`` is refused whether or not the value looks like a real path, so a
+    resource name cannot escape the jar namespace."""
+    with pytest.raises(ValueError):
+        validate_model_resource(value, context="test")
+
+
+@pytest.mark.parametrize(
+    "value",
+    [_DEFAULT_RESOURCE, "edu/stanford/nlp/models/pos-tagger/english-left3words.tagger"],
+)
+def test_validate_model_resource_allows_resource_names(value):
+    """A bare classpath resource is not a filesystem path and is left alone."""
+    validate_model_resource(value, context="test")
+
+
+def test_validate_model_resource_bounds_real_paths(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    inside = root / "m.ser.gz"
+    inside.write_text("m")
+    validate_model_resource(str(inside), context="test")
+    with pytest.raises((PermissionError, ValueError)):
+        validate_model_resource(str(outside / "m.ser.gz"), context="test")
+
+
+def test_validate_model_resource_accepts_pathlike(pathsec_sandbox):
+    """os.PathLike must not blow up on ``.replace``."""
+    root, _outside = pathsec_sandbox
+    inside = root / "m.ser.gz"
+    inside.write_text("m")
+    validate_model_resource(inside, context="test")
+
+
+def test_validate_model_resource_is_exported():
+    assert "validate_model_resource" in pathsec.__all__
+
+
+# ---------------------------------------------------------------------------
+# Teeth: neuter each guard and assert the attack becomes reachable again. A
+# probe that passes with the guard removed is not testing the guard.
+# ---------------------------------------------------------------------------
+
+
+def test_teeth_stanford_parser_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
+    import nltk.parse.stanford as st
+
+    _trap_java(monkeypatch, st, {})
+    monkeypatch.setattr(st, "validate_model_resource", lambda *a, **k: None)
+    with pytest.raises(_ReachedJVM):
+        _stanford_parser("/etc/passwd").parse_sents([["hello", "world"]])
+
+
+def test_teeth_segmenter_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _outside = pathsec_sandbox
+    _trap_java(monkeypatch, seg, {})
+    monkeypatch.setattr(seg, "validate_path", lambda *a, **k: None)
+    tool = _segmenter(monkeypatch, str(root))
+    with pytest.raises(_ReachedJVM):
+        tool.segment_file("/etc/passwd")
+
+
+def test_teeth_malt_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
+    """Both guards have to go before the escape reappears, which is the point:
+    validate_model_resource still catches the model when validate_path is gone."""
+    import nltk.parse.malt as malt
+
+    _root, outside = pathsec_sandbox
+    monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
+    monkeypatch.setattr(malt, "validate_model_resource", lambda *a, **k: None)
+    evil = outside / "evil.mco"
+    evil.write_text("model")
+    cmd = _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
+    assert cmd[cmd.index("-w") + 1] == str(outside)
+
+
+def test_teeth_malt_model_resource_guard_alone_blocks(pathsec_sandbox, monkeypatch):
+    """Removing only validate_path must NOT reopen the escape: the second guard
+    is independently load-bearing."""
+    import nltk.parse.malt as malt
+
+    _root, outside = pathsec_sandbox
+    monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
+    evil = outside / "evil.mco"
+    evil.write_text("model")
+    with pytest.raises((PermissionError, ValueError)):
+        _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
+
+
+# ---------------------------------------------------------------------------
+# Install-directory wrappers: pinned as a DIFFERENT class. These must keep the
+# CWE-426 absolute-path check and must NOT gain validate_path, which permits
+# only NLTK data roots and would break every real installation.
+# ---------------------------------------------------------------------------
+
+
+def test_boxer_bin_dir_rejects_relative_and_cwd(pathsec_sandbox):
+    """A relative or CWD bin_dir is a binary-planting vector (CWE-426)."""
+    import nltk.sem.boxer as boxer
+
+    _root, outside = pathsec_sandbox
+    bindir = outside / "candcbin"
+    bindir.mkdir()
+    for name in ("candc", "boxer"):
+        target = bindir / name
+        target.write_text("#!/bin/sh\n")
+        target.chmod(0o755)
+    os.chdir(str(outside))
+
+    tool = object.__new__(boxer.Boxer)
+    for bad in ("candcbin", "."):
+        with pytest.raises(LookupError):
+            tool.set_bin_dir(bad)
+
+
+def test_boxer_models_path_is_derived_not_caller_supplied(pathsec_sandbox):
+    """``--models`` has no independent input: it is derived from the absolute
+    candc binary, so bounding bin_dir bounds the models dir too."""
+    import nltk.sem.boxer as boxer
+
+    _root, outside = pathsec_sandbox
+    bindir = outside / "candcbin"
+    bindir.mkdir()
+    for name in ("candc", "boxer"):
+        target = bindir / name
+        target.write_text("#!/bin/sh\n")
+        target.chmod(0o755)
+
+    tool = object.__new__(boxer.Boxer)
+    tool.set_bin_dir(str(bindir))
+    assert tool._candc_models_path == os.path.normpath(str(outside / "models"))
+
+
+def test_repp_dir_must_resolve_absolute(pathsec_sandbox):
+    """REPP executes ``<dir>/src/repp``; a CWD-relative dir would let an
+    attacker plant that binary."""
+    import nltk.tokenize.repp as repp
+
+    _root, outside = pathsec_sandbox
+    tree = outside / "evil_repp"
+    (tree / "src").mkdir(parents=True)
+    (tree / "erg").mkdir()
+    (tree / "src" / "repp").write_text("#!/bin/sh\n")
+    (tree / "erg" / "repp.set").write_text("")
+    os.environ.pop("REPP_TOKENIZER", None)
+    os.chdir(str(outside))
+
+    tokenizer = object.__new__(repp.ReppTokenizer)
+    with pytest.raises(LookupError):
+        tokenizer.find_repptokenizer("evil_repp")
+
+
+# ---------------------------------------------------------------------------
+# Functional: the patched modules must still import and behave. These exercise
+# the real objects rather than asserting on mocks.
+# ---------------------------------------------------------------------------
+
+
+def test_wrapper_modules_still_import():
+    """Every module touched by this PR imports cleanly, with no import cycle
+    introduced by the new pathsec dependency."""
+    import importlib
+
+    for name in (
+        "nltk.parse.malt",
+        "nltk.parse.stanford",
+        "nltk.sem.boxer",
+        "nltk.tokenize.repp",
+        "nltk.tokenize.stanford_segmenter",
+    ):
+        assert importlib.import_module(name) is not None
+
+
+def test_malt_command_shape_is_unchanged(pathsec_sandbox):
+    """The guard must not reorder or drop MaltParser's arguments."""
+    root, _outside = pathsec_sandbox
+    model = root / "engmalt.mco"
+    model.write_text("model")
+    cmd = _malt(str(model)).generate_malt_command("in.conll", "out.conll", mode="parse")
+    assert cmd[0] == "org.maltparser.Malt"
+    for flag in ("-w", "-c", "-i", "-o", "-m"):
+        assert flag in cmd
+    assert cmd[cmd.index("-i") + 1] == "in.conll"
+    assert cmd[cmd.index("-o") + 1] == "out.conll"
+    assert cmd[cmd.index("-m") + 1] == "parse"
+
+
+def test_malt_working_dir_is_stable_across_calls(pathsec_sandbox):
+    """The lazy property must allocate once, not a fresh dir per access, or the
+    CoNLL intermediates and the model would land in different directories."""
+    parser = _malt("malt_temp.mco", trained=False)
+    assert parser.working_dir == parser.working_dir
+
+
+# ---------------------------------------------------------------------------
+# Real end-to-end runs. These launch an actual JVM against a real MaltParser /
+# Stanford parser install, so they prove the guards neither break the feature
+# nor "pass" merely because no JVM was reachable. They skip when the external
+# tool is genuinely absent (CI has no JVM or model jars); every other test in
+# this file runs unconditionally.
+# ---------------------------------------------------------------------------
+
+
+def _has_java():
+    """True only if a JVM actually *runs*.
+
+    Merely finding a ``java`` on PATH is not enough: macOS ships a
+    ``/usr/bin/java`` stub that resolves fine and then fails at exec time with
+    "Unable to locate a Java Runtime", which would turn these into hard failures
+    on a machine with no JDK instead of skips.
+    """
+    import subprocess
+
+    from nltk.internals import find_binary
+
+    try:
+        binary = find_binary(
+            "java", env_vars=("JAVAHOME", "JAVA_HOME"), verbose=False, binary_names=None
+        )
+    except LookupError:
+        return False
+    try:
+        return (
+            subprocess.run(
+                [binary, "-version"], capture_output=True, timeout=60
+            ).returncode
+            == 0
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def _find_tool_dir(*names):
+    """Absolute path of an external tool directory inside a data root, or None."""
+    import nltk.data
+
+    for root in nltk.data.path:
+        for name in names:
+            candidate = os.path.join(root, name)
+            if os.path.isdir(candidate):
+                return candidate
+    return None
+
+
+requires_java = pytest.mark.skipif(not _has_java(), reason="no JVM on this machine")
+
+
+@requires_java
+def test_real_malt_train_writes_model_inside_sandbox(tmp_path):
+    """End-to-end: a real MaltParser JVM must write malt_temp.mco into the private
+    staging dir, and must NOT pollute the current working directory as it did when
+    ``-w`` defaulted to ``os.getcwd()``."""
+    import nltk.data
+    from nltk.parse.dependencygraph import DependencyGraph
+    from nltk.parse.malt import MaltParser
+
+    malt_dir = _find_tool_dir("maltparser-1.9.2", "maltparser-1.9.1")
+    if malt_dir is None:
+        pytest.skip("maltparser is not installed under nltk.data.path")
+
+    parser = MaltParser(parser_dirname=malt_dir)
+    assert os.stat(parser.working_dir).st_mode & 0o077 == 0
+    assert any(
+        os.path.realpath(parser.working_dir).startswith(os.path.realpath(root))
+        for root in nltk.data.path
+    )
+
+    rows = "1\tJohn\t_\tNNP\t_\t_\t2\tSUBJ\t_\t_\n2\tsees\t_\tVB\t_\t_\t0\tROOT\t_\t_\n"
+    parser.train([DependencyGraph(rows), DependencyGraph(rows)], verbose=False)
+
+    model = os.path.join(parser.working_dir, "malt_temp.mco")
+    assert os.path.exists(model) and os.path.getsize(model) > 0
+    assert not os.path.exists(os.path.join(os.getcwd(), "malt_temp.mco"))
+
+
+@requires_java
+def test_real_stanford_parser_default_resource_parses(monkeypatch):
+    """End-to-end: the shipped jar-internal default model must still parse. If the
+    guard treated it as a filesystem path this raises instead."""
+    from nltk.parse.stanford import StanfordParser
+
+    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
+    if parser_dir is None:
+        pytest.skip("stanford-parser is not installed under nltk.data.path")
+    monkeypatch.setenv("STANFORD_PARSER", parser_dir)
+    monkeypatch.setenv("STANFORD_MODELS", parser_dir)
+
+    trees = list(StanfordParser().raw_parse("John sees a dog."))
+    assert trees and trees[0].label() == "ROOT"
+
+
+@requires_java
+@pytest.mark.parametrize(
+    "model_path",
+    ["/etc/passwd", "edu/stanford/../../../../etc/passwd"],
+    ids=["etc-abs", "traversal"],
+)
+def test_real_stanford_parser_refuses_escape_with_jvm_present(monkeypatch, model_path):
+    """End-to-end negative: with a working JVM and real jars, a hostile -model is
+    refused before launch, so the block is the guard and not a missing JVM."""
+    from nltk.parse.stanford import StanfordParser
+
+    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
+    if parser_dir is None:
+        pytest.skip("stanford-parser is not installed under nltk.data.path")
+    monkeypatch.setenv("STANFORD_PARSER", parser_dir)
+    monkeypatch.setenv("STANFORD_MODELS", parser_dir)
+
+    parser = StanfordParser()
+    parser.model_path = model_path
+    with pytest.raises((PermissionError, ValueError)):
+        list(parser.raw_parse("John sees a dog."))
+
+
+# ---------------------------------------------------------------------------
+# Expanded vector matrix. Every entry below was run against the live sinks; the
+# ones that leaked drove the hardening in validate_model_resource. Benign and
+# merely-suspicious candidates are kept so a regression shows up as a new leak.
+# ---------------------------------------------------------------------------
+
+
+def _hostile_vectors(root, outside):
+    """(id, value) pairs that must never reach an external tool."""
+    secret = outside / "secret.mco"
+    secret.write_text("SECRET")
+
+    vectors = [
+        ("outside-abs", str(secret)),
+        ("etc-abs", "/etc/passwd"),
+        ("traversal-from-root", os.path.join(str(root), "..", "..", "etc", "passwd")),
+        ("nul-byte", "/etc/pass\x00wd"),
+        ("leading-dash", "-Xmx99g"),
+        ("newline-injection", "/etc/passwd\n-serDictionary /etc/shadow"),
+        ("backslash-traversal", "..\\..\\..\\etc\\passwd"),
+        ("file-url", "file:///etc/passwd"),
+        ("http-url", "http://evil.example/model.gz"),
+        ("empty", ""),
+        ("whitespace-only", "   "),
+        ("dir-not-file", str(outside)),
+    ]
+
+    symlink = root / "sym.mco"
+    os.symlink(str(secret), symlink)
+    vectors.append(("symlink-to-outside", str(symlink)))
+
+    symlink_etc = root / "symetc"
+    os.symlink("/etc/passwd", symlink_etc)
+    vectors.append(("symlink-to-etc", str(symlink_etc)))
+
+    symlinked_dir = root / "symdir"
+    os.symlink(str(outside), symlinked_dir)
+    vectors.append(("via-symlinked-dir", str(symlinked_dir / "secret.mco")))
+
+    hardlink = root / "hard.mco"
+    try:
+        os.link(str(secret), hardlink)
+    except OSError:  # pragma: no cover - cross-device or unsupported
+        pass
+    else:
+        vectors.append(("hardlink-to-outside", str(hardlink)))
+
+    return vectors
+
+
+def _vector_ids(vectors):
+    return [name for name, _ in vectors]
+
+
+def test_validate_model_resource_refuses_every_hostile_vector(pathsec_sandbox):
+    """The whole matrix at once, so a new leak names itself in the failure."""
+    root, outside = pathsec_sandbox
+    leaked = []
+    for name, value in _hostile_vectors(root, outside):
+        try:
+            validate_model_resource(value, context="sweep")
+        except (PermissionError, ValueError, OSError):
+            continue
+        leaked.append(name)
+    assert leaked == [], f"validate_model_resource let these through: {leaked}"
+
+
+def test_malt_model_refuses_every_hostile_vector(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    leaked = []
+    for name, value in _hostile_vectors(root, outside):
+        try:
+            _malt(value).generate_malt_command("in.conll", "out.conll", mode="learn")
+        except (PermissionError, ValueError, OSError):
+            continue
+        leaked.append(name)
+    assert leaked == [], f"MaltParser passed these to the JVM: {leaked}"
+
+
+def test_malt_working_dir_setter_refuses_every_hostile_vector(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    leaked = []
+    for name, value in _hostile_vectors(root, outside):
+        parser = _malt("malt_temp.mco", trained=False)
+        try:
+            parser.working_dir = value
+        except (PermissionError, ValueError, OSError):
+            continue
+        # An in-root staging dir is the only acceptable outcome.
+        if not os.path.realpath(parser.working_dir).startswith(
+            os.path.realpath(str(root))
+        ):
+            leaked.append(name)
+    assert leaked == [], f"working_dir accepted these: {leaked}"
+
+
+def test_hardlinked_model_is_refused(pathsec_sandbox):
+    """realpath() cannot see a hardlink, so an in-root alias of an outside file
+    would otherwise pass every path check."""
+    root, outside = pathsec_sandbox
+    secret = outside / "secret.mco"
+    secret.write_text("SECRET")
+    alias = root / "alias.mco"
+    try:
+        os.link(str(secret), alias)
+    except OSError:  # pragma: no cover - cross-device or unsupported
+        pytest.skip("hard links unavailable between these directories")
+    with pytest.raises(PermissionError):
+        validate_model_resource(str(alias), context="sweep")
+
+
+def test_single_linked_model_is_allowed(pathsec_sandbox):
+    """Over-block control for the hardlink guard: an ordinary file has one link."""
+    root, _outside = pathsec_sandbox
+    model = root / "plain.mco"
+    model.write_text("m")
+    validate_model_resource(str(model), context="sweep")
+
+
+def test_directory_model_is_not_hardlink_rejected(pathsec_sandbox):
+    """Directories always have st_nlink >= 2, so the guard must apply to regular
+    files only or every corpus directory would be refused."""
+    root, _outside = pathsec_sandbox
+    corpus = root / "sihan"
+    corpus.mkdir()
+    validate_model_resource(str(corpus), context="sweep")
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "malt_temp.mco",
+        _DEFAULT_RESOURCE,
+        "edu/stanford/nlp/models/pos-tagger/english-left3words.tagger",
+    ],
+)
+def test_benign_resource_names_still_pass(value):
+    """The values NLTK itself uses must survive every check added above."""
+    validate_model_resource(value, context="sweep")
+
+
+# ---------------------------------------------------------------------------
+# Exotic vectors: NUL truncation, '~', NTFS streams, UNC shares and blocking
+# device nodes. Each of these leaked when first run and drove a guard.
+# ---------------------------------------------------------------------------
+
+
+def _exotic_vectors(root):
+    vectors = [
+        ("dev-stdin", "/dev/stdin"),
+        ("dev-null", "/dev/null"),
+        ("proc-environ", "/proc/self/environ"),
+        ("case-folded-etc", "/ETC/PASSWD"),
+        ("tilde-expansion", "~/.ssh/id_rsa"),
+        ("ads-stream", "model.mco:evil"),
+        ("unc-backslash", "\\\\server\\share\\evil.mco"),
+        ("unc-slash", "//server/share/evil.mco"),
+        ("nul-in-middle", "model\x00.mco"),
+        ("jar-url", "jar:file:///etc/passwd!/x"),
+        ("overlong-name", "/" + ("A" * 300) + "/evil.mco"),
+        ("double-slash", "//etc//passwd"),
+        ("root-only", "/"),
+        ("dotdot-alone", ".."),
+    ]
+
+    fifo = root / "fifo.mco"
+    try:
+        os.mkfifo(fifo)
+    except (AttributeError, OSError):  # pragma: no cover - not on Windows
+        pass
+    else:
+        vectors.append(("fifo-in-root", str(fifo)))
+    return vectors
+
+
+def test_validate_model_resource_refuses_exotic_vectors(pathsec_sandbox):
+    root, _outside = pathsec_sandbox
+    leaked = []
+    for name, value in _exotic_vectors(root):
+        try:
+            validate_model_resource(value, context="sweep")
+        except (PermissionError, ValueError, OSError):
+            continue
+        leaked.append(name)
+    assert leaked == [], f"validate_model_resource let these through: {leaked}"
+
+
+def test_unix_socket_model_is_refused(pathsec_sandbox):
+    """A socket planted in a data root is not a model; reading it would block."""
+    import socket
+
+    root, _outside = pathsec_sandbox
+    path = str(root / "s.sock")
+    sock = socket.socket(socket.AF_UNIX)
+    try:
+        sock.bind(path)
+        with pytest.raises(PermissionError):
+            validate_model_resource(path, context="sweep")
+    finally:
+        sock.close()
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "$EVIL_HOME/passwd",
+        "..\uff0f..\uff0fetc\uff0fpasswd",
+        "%2e%2e/%2e%2e/etc/passwd",
+    ],
+    ids=["env-var", "fullwidth-solidus", "percent-encoded"],
+)
+def test_benign_lookalikes_stay_literal(pathsec_sandbox, value):
+    """These are permitted because nothing downstream expands or decodes them:
+    they stay literal filenames. The test pins that assumption, so if a sink ever
+    starts expanding them this fails instead of silently reading /etc.
+    """
+    validate_model_resource(value, context="sweep")
+    assert not os.path.exists(value)
+    assert not os.path.realpath(os.path.expandvars(value)).startswith("/etc/")
+
+
+def test_java_inner_class_resource_is_allowed():
+    """Over-block control: '$' is legal in a JVM resource name, so the option and
+    stream checks must not reject it."""
+    validate_model_resource("edu/stanford/Foo$Bar.ser.gz", context="sweep")
+
+
+def test_windows_drive_path_is_not_stream_rejected():
+    """Over-block control: 'C:\\...' is a drive prefix, not an NTFS stream."""
+    import re as _re
+
+    from nltk.pathsec import validate_model_resource as _vmr
+
+    try:
+        _vmr("C:\\models\\english.ser.gz", context="sweep")
+    except ValueError as exc:
+        assert "alternate data stream" not in str(exc), exc
+    assert _re.match(r"^[A-Za-z]:[\\/]", "C:\\models\\english.ser.gz")
+
+
+# ---------------------------------------------------------------------------
+# Regressions found while building this PR. Each one shipped a bug that the
+# mocked tests missed, so they are pinned here permanently.
+# ---------------------------------------------------------------------------
+
+
+def test_regression_generate_malt_command_needs_no_trained_attribute(pathsec_sandbox):
+    """Regression: generate_malt_command briefly branched on a private ``_trained``
+    attribute, which broke every caller that built a parser without it."""
+    import nltk.parse.malt as malt
+
+    parser = object.__new__(malt.MaltParser)
+    parser.model = "malt_temp.mco"
+    parser._working_dir = None
+    parser.additional_java_args = []
+    cmd = parser.generate_malt_command("in.conll", "out.conll", mode="learn")
+    assert cmd[cmd.index("-c") + 1] == "malt_temp.mco"
+
+
+def test_regression_trained_bare_model_resolves_to_working_dir(pathsec_sandbox):
+    """Regression: after train(), ``self.model`` is still the bare name
+    ``malt_temp.mco`` while ``_trained`` is True. Resolving that against the CWD
+    made every post-training parse fail with a security violation."""
+    root, _outside = pathsec_sandbox
+    parser = _malt("malt_temp.mco", trained=True)
+    cmd = parser.generate_malt_command("in.conll", "out.conll", mode="parse")
+    workingdir = cmd[cmd.index("-w") + 1]
+    assert os.path.realpath(workingdir).startswith(os.path.realpath(str(root)))
+    assert os.path.realpath(workingdir) != os.path.realpath(os.getcwd())
+
+
+def test_regression_working_dir_setter_rejects_empty(pathsec_sandbox):
+    """Regression: an empty working_dir passed validate_path and reached
+    MaltParser as ``-w ""``, i.e. the current working directory."""
+    parser = _malt("malt_temp.mco", trained=False)
+    for value in ("", "   "):
+        with pytest.raises(ValueError):
+            parser.working_dir = value
+
+
+def test_regression_has_java_probe_actually_executes():
+    """Regression: the JVM probe used to accept any ``java`` on PATH. macOS ships
+    a /usr/bin/java stub that resolves fine and then fails at exec, which turned
+    the end-to-end tests into hard failures instead of skips."""
+    import subprocess
+
+    result = _has_java()
+    assert isinstance(result, bool)
+    if result:
+        from nltk.internals import find_binary
+
+        binary = find_binary(
+            "java", env_vars=("JAVAHOME", "JAVA_HOME"), verbose=False, binary_names=None
+        )
+        assert subprocess.run([binary, "-version"], capture_output=True).returncode == 0
