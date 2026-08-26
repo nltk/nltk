@@ -29,9 +29,11 @@ import inspect
 import io
 import os
 import pkgutil
+import random
 import re
 import shutil
 import socket
+import string
 import tempfile
 import time
 from pathlib import Path
@@ -1921,3 +1923,80 @@ def test_ordinary_paths_that_merely_look_url_ish_still_work(restricted_sandbox):
         leaf.write_text("{}", encoding="utf-8")
         pathsec.validate_tool_path(str(leaf), context="probe")
         pathsec.validate_tool_dir(str(root / "outdir"), context="probe")
+
+
+# --- seeded fuzz: the hand-written matrix is not the whole shape space --------
+_FUZZ_ALPHABET = list(string.printable) + [
+    "\x00",
+    "\n",
+    "\\",
+    "/",
+    "..",
+    "~",
+    "%2e",
+    ":",
+    "\t",
+    "-",
+    "file:",
+]
+
+_FUZZ_PREFIXES = [
+    "",
+    "./",
+    "../",
+    "-",
+    "file://",
+    "file:///",
+    "http://",
+    "https://",
+    "ftp://",
+    "\\\\",
+    "//",
+    "~/",
+    "/dev/",
+    "/proc/",
+    "/etc/",
+]
+
+
+@pytest.mark.parametrize("seed", [7, 20260826])
+def test_fuzzed_paths_never_resolve_outside_the_root(restricted_sandbox, seed):
+    """Randomised sweep over the guards.
+
+    The hand-written vectors above encode shapes someone thought of; this covers
+    the ones nobody did. It is how the empty-path ``file:`` URL escape was found:
+    the guard returned success for a string that resolved outside the root. Two
+    fixed seeds keep it deterministic and fast while still sampling widely.
+    """
+    root_real = os.path.realpath(restricted_sandbox)
+    rng = random.Random(seed)
+    expected = (PermissionError, ValueError, OSError, TypeError)
+
+    def resolves_inside(candidate):
+        try:
+            real = os.path.realpath(candidate)
+        except (OSError, ValueError):
+            return False
+        return real == root_real or real.startswith(root_real + os.sep)
+
+    guards = (
+        lambda v: pathsec.validate_tool_path(v, context="fuzz"),
+        lambda v: pathsec.validate_tool_path(v, context="fuzz", must_exist=False),
+        lambda v: pathsec.validate_tool_dir(v, context="fuzz"),
+    )
+
+    leaked = []
+    for _ in range(1500):
+        body = "".join(rng.choice(_FUZZ_ALPHABET) for _ in range(rng.randint(1, 14)))
+        candidate = rng.choice(_FUZZ_PREFIXES + [restricted_sandbox + os.sep]) + body
+        for guard in guards:
+            try:
+                guard(candidate)
+            except expected:
+                continue
+            except Exception as exc:  # noqa: BLE001 - an unexpected type is a finding
+                leaked.append((candidate, f"{type(exc).__name__}: {exc}"))
+                continue
+            if not resolves_inside(candidate):
+                leaked.append((candidate, "permitted but resolves outside the root"))
+    assert not leaked, f"fuzz found {len(leaked)} escapes, e.g. {leaked[:3]}"
