@@ -8,6 +8,7 @@
 #
 # This module is provided under the terms of the MIT License.
 
+import errno
 import json
 import logging
 import os
@@ -68,8 +69,6 @@ def _open_private_model_dir(loc):
     followed. The descriptor is rejected unless it is a real directory owned by
     the current user and not group-/world-writable (CWE-59/377/378).
     """
-    import errno
-
     parent = os.path.dirname(loc) or "."
     os.makedirs(parent, exist_ok=True)
     try:
@@ -269,7 +268,7 @@ class PerceptronTagger(TaggerI):
         Allocated lazily by ``nltk.data.make_staging_dir`` INSIDE an allowed data
         root, with an unpredictable name and mode 0700. Because it already lives
         in the pathsec sandbox, saving and loading a trained model needs no
-        widening of ``nltk.data.path`` -- and unlike the old guessable
+        widening of ``nltk.data.path``, and unlike the old guessable
         ``<tempdir>/averaged_perceptron_tagger_<lang>``, another local user
         cannot pre-create or symlink it to redirect the write (CWE-377/378).
         """

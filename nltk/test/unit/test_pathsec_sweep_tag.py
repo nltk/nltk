@@ -24,9 +24,11 @@ Linux ``tempfile.mkdtemp()`` lives under the shared ``/tmp``).
 """
 
 import builtins
+import importlib
 import inspect
 import io
 import os
+import pkgutil
 import re
 import shutil
 import socket
@@ -1544,3 +1546,138 @@ def test_stanford_encoding_never_reaches_the_jvm_as_an_option(
     tagger.java_options = "-mx1000m"
     with pytest.raises(LookupError):
         _no_jvm(lambda: tagger.tag_sents([["a"]]))
+
+
+# --- model *content* shapes, and the descriptor pass-through ------------------
+def test_deeply_nested_model_json_raises_rather_than_crashing(restricted_sandbox):
+    """A model file inside the sandbox is still parsed, so its shape matters:
+    deep nesting must surface as RecursionError, not a crash or a hang."""
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    deep = os.path.join(restricted_sandbox, "deep.json")
+    with pathsec.open(deep, "w", context="probe") as handle:
+        handle.write("[" * 200000 + "]" * 200000)
+    started = time.monotonic()
+    with pytest.raises((RecursionError, ValueError)):
+        AveragedPerceptron().load(deep)
+    assert time.monotonic() - started < 10.0
+
+
+def test_large_flat_model_is_not_size_capped(restricted_sandbox):
+    """Over-block control and a deliberate non-finding: real tagger models are
+    tens of MB of weights, so there is no size cap on an in-sandbox model file.
+    Containment, not size, is what bounds this sink."""
+    import json
+
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    big = os.path.join(restricted_sandbox, "big.json")
+    weights = {f"f{i}": {"NN": 1.0} for i in range(50000)}
+    with pathsec.open(big, "w", context="probe") as handle:
+        json.dump(weights, handle)
+    model = AveragedPerceptron()
+    model.load(big)
+    assert len(model.weights) == 50000
+
+
+def test_integer_descriptor_is_a_documented_pass_through(pathsec_sandbox):
+    """Negative result, recorded so it is not refiled as a bug.
+
+    ``pathsec.open`` passes an ``int`` straight to ``builtins.open``: to hand
+    NLTK a descriptor the caller must already have opened the file, so this
+    grants no access they did not have. It is pinned because a future change
+    that starts *deriving* a path from caller data and passing a descriptor
+    would need a different guard.
+    """
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    root, outside = pathsec_sandbox
+    secret = outside / "secret.json"
+    secret.write_text('{"s": {"NN": 1.0}}', encoding="utf-8")
+    fd = os.open(str(secret), os.O_RDONLY)
+    try:
+        model = AveragedPerceptron()
+        model.load(fd)
+        assert model.weights == {"s": {"NN": 1.0}}
+    except OSError:
+        os.close(fd)
+        raise
+
+
+# --- structural audit: no public entry point reaches a sink unguarded --------
+_GUARD_NAMES = (
+    "validate_tool_path",
+    "validate_tool_dir",
+    "validate_path",
+    "pathsec_open",
+    "_validate_lang",
+    "make_staging_dir",
+    "open_datafile",
+    "find(",
+)
+
+# Methods that take a path-ish argument but delegate it to a guarded sibling
+# rather than guarding it themselves. Listed explicitly so a future method that
+# stops delegating (and starts opening the path itself) fails this audit.
+_DELEGATING = {
+    ("PerceptronTagger", "__init__"): "load_from_json",
+    ("PerceptronTagger", "train"): "save_to_json",
+}
+
+_PATHY_TOKENS = ("path", "loc", "file", "dir", "model", "jar", "save")
+
+
+def _touched_classes():
+    from nltk.chunk.named_entity import Maxent_NE_Chunker
+    from nltk.tag.crf import CRFTagger
+    from nltk.tag.hunpos import HunposTagger
+    from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
+    from nltk.tag.stanford import (
+        StanfordNERTagger,
+        StanfordPOSTagger,
+        StanfordTagger,
+    )
+
+    return [
+        AveragedPerceptron,
+        PerceptronTagger,
+        CRFTagger,
+        HunposTagger,
+        StanfordTagger,
+        StanfordPOSTagger,
+        StanfordNERTagger,
+        Maxent_NE_Chunker,
+    ]
+
+
+def test_every_public_path_taking_method_is_guarded_or_delegates():
+    """The #1 real bypass is a guard on one method while a sibling walks past it,
+    so enumerate every public method on every touched class and require each one
+    that accepts a path-ish argument to either hold a guard itself or delegate to
+    a named sibling that does."""
+    audited = 0
+    for cls in _touched_classes():
+        for name, member in sorted(vars(cls).items()):
+            if name.startswith("__") and name != "__init__":
+                continue
+            func = member.fget if isinstance(member, property) else member
+            func = getattr(func, "__func__", func)
+            if not callable(func):
+                continue
+            try:
+                source = inspect.getsource(func)
+                signature = str(inspect.signature(func)).lower()
+            except (OSError, TypeError, ValueError):
+                continue
+            if not any(token in signature for token in _PATHY_TOKENS):
+                continue
+            audited += 1
+            if any(guard in source for guard in _GUARD_NAMES):
+                continue
+            delegate = _DELEGATING.get((cls.__name__, name))
+            assert delegate, f"{cls.__name__}.{name} takes a path with no guard"
+            assert delegate in source, (
+                f"{cls.__name__}.{name} no longer delegates to {delegate}; "
+                "it needs its own guard now"
+            )
+    assert audited >= 10, f"only {audited} path-taking methods audited"
