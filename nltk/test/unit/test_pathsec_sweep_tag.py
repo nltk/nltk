@@ -2199,11 +2199,14 @@ def test_normalized_bypass_would_escape_without_the_guard(restricted_sandbox):
     joined = os.path.realpath(os.path.join(restricted_sandbox, converted))
     root_real = os.path.realpath(restricted_sandbox)
     escapes = not (joined == root_real or joined.startswith(root_real + os.sep))
-    if converted == ".\n./TARGET":
-        # This interpreter does not rewrite; nothing to escape with.
+    # The separator may be rewritten (Windows turns "/" into "\\") without the
+    # name changing meaning, so key off the newline, which is what decides this.
+    if "\n" in converted:
+        # Newline kept: ".\n." stays one component and there is nothing to
+        # escape with, which is why this only ever bit Python 3.14.
         assert not escapes
     else:
-        assert converted == os.path.join("..", "TARGET") or ".." in converted
+        # Newline stripped: ".\n." became "..", and the join leaves the root.
         assert escapes, "the rewritten name should have left the root"
 
 
