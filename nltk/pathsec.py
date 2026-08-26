@@ -250,6 +250,54 @@ def validate_path(path_input, context="NLTK", required_root=None):
             raise
 
 
+def _reject_bad_name_syntax(text, context):
+    """Syntactic checks shared by every caller-supplied model or tool path.
+
+    None of these can be a legitimate model, corpus or output file, so they are
+    refused before the value is treated as a path at all. ``..`` is checked after
+    folding ``\\`` to ``/``: a backslash is an ordinary filename character on
+    POSIX but a separator on Windows, so ``..\\..\\etc`` has to be rejected on both.
+    """
+
+    def _refuse(why):
+        raise ValueError(f"Security Violation [{context}]: {text!r} {why}.")
+
+    if not text or not text.strip():
+        _refuse("is empty")
+    # A NUL truncates the path in a tool's native layer, so "good.ser.gz\0evil"
+    # can name a different file there than it does here.
+    if "\x00" in text:
+        _refuse("contains a NUL byte")
+    # A leading '-' would be parsed as another option by the tool we hand it to.
+    if text.startswith("-"):
+        _refuse("looks like a command-line option (argument injection)")
+    # Stanford's loaders will fetch a URL; only local resources are permitted.
+    if "://" in text or text.lower().startswith(("file:", "jar:")):
+        _refuse("is a URL; only local resources are permitted")
+    # Nothing downstream expands '~', but a sink that did would reach $HOME.
+    if text.startswith("~"):
+        _refuse("starts with '~'; pass an already-expanded path")
+    # A Windows UNC path reaches a remote share.
+    if text.startswith("\\\\") or text.startswith("//"):
+        _refuse("is a UNC path; only local resources are permitted")
+    if ".." in text.replace("\\", "/").split("/"):
+        _refuse("contains a '..' component; it may not traverse out of the namespace")
+    # ':' names an NTFS alternate data stream, except in a drive prefix (C:\...).
+    # This also catches the drive-RELATIVE form "C:name", which means "name in
+    # the current directory of drive C" and so escapes the validated location.
+    if ":" in text and not re.match(r"^[A-Za-z]:[\\/]", text):
+        _refuse("contains ':', which names an NTFS alternate data stream")
+    # On Windows a leading separator with no drive is relative to the CURRENT
+    # drive, so it names a different file than the same string does on POSIX.
+    if os.name != "posix" and re.match(r"^[\\/]", text):
+        _refuse("is relative to the current drive; give a full path with a drive")
+    # On Windows these resolve to devices (a serial port, the null device) no
+    # matter which directory they appear in. Refused everywhere for determinism.
+    stem = os.path.basename(text.replace("\\", "/")).split(".")[0].upper()
+    if stem in _WINDOWS_DEVICE_NAMES:
+        _refuse(f"names the reserved Windows device {stem!r}")
+
+
 def validate_model_resource(model_path, context="NLTK model"):
     """Bound a caller-supplied model argument that may be a *resource name*.
 
@@ -275,38 +323,7 @@ def validate_model_resource(model_path, context="NLTK model"):
     :raises PermissionError: if it is a filesystem path outside the data roots
     """
     text = os.fspath(model_path)
-
-    def _refuse(why):
-        raise ValueError(f"Security Violation [{context}]: model {text!r} {why}.")
-
-    if not text or not text.strip():
-        _refuse("is empty")
-    # A NUL truncates the path in the JVM's native layer, so "good.ser.gz\0evil"
-    # can name a different file there than it does here.
-    if "\x00" in text:
-        _refuse("contains a NUL byte")
-    # A leading '-' would be parsed as another option by the tool we hand it to.
-    if text.startswith("-"):
-        _refuse("looks like a command-line option (argument injection)")
-    # Stanford's loaders will fetch a URL; only local resources are permitted.
-    if "://" in text or text.lower().startswith(("file:", "jar:")):
-        _refuse("is a URL; only local model resources are permitted")
-    # Nothing downstream expands '~', but a sink that did would reach $HOME.
-    if text.startswith("~"):
-        _refuse("starts with '~'; pass an already-expanded path")
-    # A Windows UNC path reaches a remote share.
-    if text.startswith("\\\\") or text.startswith("//"):
-        _refuse("is a UNC path; only local model resources are permitted")
-    if ".." in text.replace("\\", "/").split("/"):
-        _refuse("contains a '..' component; it may not traverse out of the namespace")
-    # ':' names an NTFS alternate data stream, except in a drive prefix (C:\...).
-    if ":" in text and not re.match(r"^[A-Za-z]:[\\/]", text):
-        _refuse("contains ':', which names an NTFS alternate data stream")
-    # On Windows these resolve to devices (a serial port, the null device) no
-    # matter which directory they appear in. Refused everywhere for determinism.
-    stem = os.path.basename(text.replace("\\", "/")).split(".")[0].upper()
-    if stem in _WINDOWS_DEVICE_NAMES:
-        _refuse(f"names the reserved Windows device {stem!r}")
+    _reject_bad_name_syntax(text, context)
 
     # Only a real filesystem path is sandboxed; a bare resource name is not a
     # path. A bare name is deliberately NOT probed against the CWD: doing so made
@@ -371,15 +388,7 @@ def validate_tool_path(path_input, context="NLTK tool file", for_write=False):
         file such as a FIFO
     """
     text = os.fspath(path_input)
-    if not text or not text.strip():
-        raise ValueError(
-            f"Security Violation [{context}]: path is empty; it would resolve to "
-            "the current working directory."
-        )
-    if "\x00" in text:
-        raise ValueError(
-            f"Security Violation [{context}]: path {text!r} contains a NUL byte."
-        )
+    _reject_bad_name_syntax(text, context)
     validate_path(text, context=context)
     _reject_aliased_or_special(text, context, check_links=for_write)
 

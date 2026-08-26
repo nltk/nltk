@@ -618,8 +618,11 @@ def test_real_stanford_parser_default_resource_parses(monkeypatch):
 @requires_java
 @pytest.mark.parametrize(
     "model_path",
-    ["/etc/passwd", "edu/stanford/../../../../etc/passwd"],
-    ids=["etc-abs", "traversal"],
+    [
+        "/etc/passwd" if os.name == "posix" else "C:\\Windows\\win.ini",
+        "edu/stanford/../../../../etc/passwd",
+    ],
+    ids=["system-file-abs", "traversal"],
 )
 def test_real_stanford_parser_refuses_escape_with_jvm_present(monkeypatch, model_path):
     """End-to-end negative: with a working JVM and real jars, a hostile -model is
@@ -1229,3 +1232,34 @@ def test_reserved_windows_device_names_are_refused(value):
 def test_names_merely_starting_like_a_device_are_allowed(value):
     """Over-block control: the check is on the whole stem, not a prefix."""
     validate_model_resource(value, context="sweep")
+
+
+@pytest.mark.parametrize("value", ["C:evil.mco", "C:models\\evil.mco", "D:x.ser.gz"])
+def test_drive_relative_paths_are_refused(value):
+    """Windows CI found this: "C:name" is drive-RELATIVE, meaning "name in the
+    current directory of drive C", so it escapes the location that was validated.
+    It is not the same as the absolute "C:\\name"."""
+    for guard in (validate_model_resource, validate_tool_path):
+        with pytest.raises(ValueError):
+            guard(value, context="sweep")
+
+
+def test_both_guards_share_one_syntax_gate(pathsec_sandbox):
+    """Windows CI found that validate_tool_path skipped the name checks that
+    validate_model_resource applied, so a value refused by one was accepted by
+    the other. They must stay in agreement on syntax."""
+    root, outside = pathsec_sandbox
+    disagreements = []
+    for name, value in _hostile_vectors(root, outside) + _exotic_vectors(root):
+        verdicts = []
+        for guard in (validate_model_resource, validate_tool_path):
+            try:
+                guard(value, context="sweep")
+                verdicts.append("allowed")
+            except (PermissionError, ValueError, OSError):
+                verdicts.append("refused")
+        # validate_tool_path is strictly stricter: it may refuse where the model
+        # guard allows a bare resource name, but never the reverse.
+        if verdicts[0] == "refused" and verdicts[1] == "allowed":
+            disagreements.append(name)
+    assert disagreements == [], f"tool_path weaker than model_resource: {disagreements}"
