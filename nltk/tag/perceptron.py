@@ -274,6 +274,9 @@ class PerceptronTagger(TaggerI):
         cannot pre-create or symlink it to redirect the write (CWE-377/378).
         """
         if self._save_dir is None:
+            # lang lands in a mkdtemp prefix, which is concatenated onto the
+            # data root, so a path-shaped lang would stage output outside it.
+            _validate_lang(self.lang)
             self._save_dir = make_staging_dir(
                 prefix=f"nltk_{self.TAGGER_NAME}_{self.lang}_"
             )

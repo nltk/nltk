@@ -1211,7 +1211,9 @@ def test_percent_encoded_lang_is_written_verbatim(pathsec_sandbox, lang):
 
 
 # --- the environment as an attack channel ------------------------------------
-def test_hunpos_env_var_model_outside_the_sandbox_is_refused(pathsec_sandbox, monkeypatch):
+def test_hunpos_env_var_model_outside_the_sandbox_is_refused(
+    pathsec_sandbox, monkeypatch
+):
     """``find_file`` consults ``$HUNPOS_TAGGER``, so the environment can aim the
     model path outside the sandbox without the caller passing anything."""
     import nltk.tag.hunpos as hunpos_module
@@ -1250,11 +1252,11 @@ def test_stanford_models_env_var_outside_the_sandbox_is_refused(
 def test_no_tag_or_chunk_module_widens_the_sandbox():
     """The sandbox-widening primitive must not come back anywhere in the tagger
     or chunker packages, not just in the one module it used to live in."""
-    import nltk.chunk
-    import nltk.tag
-
     import importlib
     import pkgutil
+
+    import nltk.chunk
+    import nltk.tag
 
     banned = ("data.path.append", "_ALLOWED_ROOTS_CACHE", "_LAST_DATA_PATHS")
     scanned = 0
@@ -1296,3 +1298,54 @@ def test_validate_tool_path_accepts_equivalent_spellings(restricted_sandbox, sha
         "bytes": str(legit).encode(),
     }[shape]
     pathsec.validate_tool_path(value, context="probe")
+
+
+# --- the staging-dir allocator: a prefix is concatenated, never resolved ------
+_PREFIX_ESCAPES = ["../../evil_", "sub/../../evil_", "a\x00b", "a\\b", "/abs_", "a/b_"]
+
+
+@pytest.mark.parametrize("prefix", _PREFIX_ESCAPES)
+def test_make_staging_dir_refuses_a_path_shaped_prefix(restricted_sandbox, prefix):
+    """``tempfile.mkdtemp`` concatenates *prefix* onto *dir*, so a ``..`` inside
+    it places the staging directory outside the validated data root. Callers
+    build the prefix from a tagger language / chunker fmt, both caller supplied
+    (CWE-22)."""
+    with pytest.raises(ValueError):
+        nltk.data.make_staging_dir(prefix=prefix)
+
+
+def test_make_staging_dir_still_stages_inside_the_root(restricted_sandbox):
+    """Over-block control: an ordinary prefix still allocates inside the root,
+    private and unpredictably named."""
+    staged = nltk.data.make_staging_dir(prefix="nltk_probe_")
+    real = os.path.realpath(staged)
+    assert real.startswith(os.path.realpath(restricted_sandbox) + os.sep)
+    assert os.path.basename(real).startswith("nltk_probe_")
+    if _POSIX:
+        assert (os.stat(real).st_mode & 0o077) == 0
+
+
+def test_tagger_save_dir_refuses_a_path_shaped_lang(pathsec_sandbox):
+    """The tagger reaches the allocator through ``save_dir``; with a real first
+    component present the traversal used to create a directory under $HOME."""
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    seed = root / "nltk_averaged_perceptron_tagger_x"
+    seed.mkdir()
+    rel = os.path.relpath(os.path.realpath(str(outside)), os.path.realpath(str(seed)))
+    with pytest.raises(ValueError):
+        PerceptronTagger(load=False, lang="x/" + rel + "/evil").save_dir
+    assert not list(outside.iterdir()), "save_dir staged output outside the sandbox"
+
+
+def test_punkt_and_chunker_share_the_staging_guard(restricted_sandbox):
+    """The same allocator backs punkt and the NE chunker, so the fix is one
+    chokepoint rather than a per-caller check that the next caller forgets."""
+    from nltk.tokenize.punkt import PunktTokenizer
+
+    tokenizer = object.__new__(PunktTokenizer)
+    tokenizer._lang = "../../evil"
+    tokenizer._save_dir = None
+    with pytest.raises(ValueError):
+        tokenizer.save_dir

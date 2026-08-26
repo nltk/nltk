@@ -185,13 +185,30 @@ def make_staging_dir(prefix="nltk_"):
     directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
     under the first ``nltk.data.path`` entry that can be written to.
 
-    :param prefix: filename prefix for the created directory.
+    :param prefix: filename prefix for the created directory. It is a *name*
+        fragment, not a path: callers build it from values such as a tagger's
+        language code, and ``tempfile.mkdtemp`` simply concatenates it onto
+        *dir*, so a ``..`` inside it would place the directory outside the data
+        root (CWE-22). Path separators and NUL are therefore refused.
     :type prefix: str
     :return: the absolute path of the created directory.
     :rtype: str
+    :raises ValueError: if *prefix* is not a plain filename fragment.
     :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
         root, in which case the caller should pass an explicit destination.
     """
+    prefix = str(prefix)
+    if (
+        "\x00" in prefix
+        or "/" in prefix
+        or "\\" in prefix
+        or os.sep in prefix
+        or (os.altsep and os.altsep in prefix)
+    ):
+        raise ValueError(
+            f"Invalid staging-dir prefix {prefix!r}: a prefix is a filename "
+            "fragment, not a path (no separators or NUL)"
+        )
     for root in path:
         base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
         try:
@@ -203,7 +220,15 @@ def make_staging_dir(prefix="nltk_"):
             # the sandbox does.
             _validate_path(base, context="nltk.data.make_staging_dir")
             os.makedirs(base, exist_ok=True)
-            return tempfile.mkdtemp(prefix=prefix, dir=base)
+            staged = tempfile.mkdtemp(prefix=prefix, dir=base)
+            try:
+                # Defence in depth: confirm what was actually created is inside
+                # the root just validated, not merely that the base was.
+                _validate_path(staged, context="nltk.data.make_staging_dir")
+            except BaseException:
+                os.rmdir(staged)
+                raise
+            return staged
         except (OSError, ValueError, PermissionError):
             continue
     raise PermissionError(
