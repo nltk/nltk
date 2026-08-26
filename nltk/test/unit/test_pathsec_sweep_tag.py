@@ -1779,3 +1779,18 @@ def test_odd_but_harmless_tagger_names_compose_to_safe_filenames(
         f"{tagger_name}_eng.weights.json",
     ]
     assert not list(outside.iterdir())
+
+
+@pytest.mark.parametrize("lang", ["../../etc", "a/b", "\n", "x\x00", "..", "   "])
+def test_load_from_json_rejects_a_path_shaped_lang(pathsec_sandbox, lang):
+    """The load side interpolates lang too: into a ``find()`` resource name and
+    into the model filenames. Rejecting it up front makes the failure name the
+    cause instead of surfacing as a resource-not-found much later."""
+    from nltk.data import FileSystemPathPointer
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, _ = pathsec_sandbox
+    with pytest.raises(ValueError):
+        PerceptronTagger(load=False).load_from_json(
+            lang, FileSystemPathPointer(str(root))
+        )

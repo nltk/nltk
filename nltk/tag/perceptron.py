@@ -423,6 +423,9 @@ class PerceptronTagger(TaggerI):
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.
         # loc can refer to zip or real FS
+        # Symmetric with save_to_json: lang reaches find() as a resource name and
+        # param_files() as a filename, so reject a path-shaped one up front.
+        _validate_name_component(lang, "language code")
         if isinstance(loc, bytes):
             loc = os.fsdecode(loc)
         if loc is None:
