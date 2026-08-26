@@ -32,7 +32,7 @@ import pytest
 
 from nltk import pathsec
 from nltk.data import make_staging_dir
-from nltk.pathsec import validate_model_resource
+from nltk.pathsec import validate_model_resource, validate_tool_path
 
 
 class _ReachedJVM(Exception):
@@ -152,13 +152,25 @@ def _malt(model, trained=True):
     return parser
 
 
+def _sandbox_io(parser):
+    """Valid in-sandbox -i/-o paths for a test that targets some *other* guard.
+    Without these the input-file guard fires first and the test would pass for
+    the wrong reason."""
+    infile = os.path.join(parser.working_dir, "in.conll")
+    with pathsec.open(infile, "w") as handle:
+        handle.write("")
+    return infile, os.path.join(parser.working_dir, "out.conll")
+
+
 def test_malt_trained_model_refuses_escape(pathsec_sandbox):
     """A .mco outside the roots would make ``-w`` an arbitrary write target."""
     root, outside = pathsec_sandbox
     evil = outside / "evil.mco"
     evil.write_text("model")
+    parser = _malt(str(evil))
+    infile, _outfile = _sandbox_io(parser)
     with pytest.raises((PermissionError, ValueError)):
-        _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
+        parser.generate_malt_command(infile, None, mode="learn")
 
 
 def test_malt_trained_model_in_sandbox_is_allowed(pathsec_sandbox):
@@ -166,7 +178,9 @@ def test_malt_trained_model_in_sandbox_is_allowed(pathsec_sandbox):
     root, _outside = pathsec_sandbox
     model = root / "engmalt.mco"
     model.write_text("model")
-    cmd = _malt(str(model)).generate_malt_command("in.conll", "out.conll", mode="parse")
+    parser = _malt(str(model))
+    infile, outfile = _sandbox_io(parser)
+    cmd = parser.generate_malt_command(infile, outfile, mode="parse")
     assert cmd[cmd.index("-w") + 1] == str(root)
     assert cmd[cmd.index("-c") + 1] == "engmalt.mco"
 
@@ -175,9 +189,9 @@ def test_malt_untrained_working_dir_is_staged_inside_root(pathsec_sandbox):
     """An untrained parser used to write malt_temp.mco into the CWD; it must now
     land in a private staging dir inside a data root."""
     root, _outside = pathsec_sandbox
-    cmd = _malt("malt_temp.mco", trained=False).generate_malt_command(
-        "in.conll", "out.conll", mode="learn"
-    )
+    parser = _malt("malt_temp.mco", trained=False)
+    infile, _outfile = _sandbox_io(parser)
+    cmd = parser.generate_malt_command(infile, None, mode="learn")
     workingdir = cmd[cmd.index("-w") + 1]
     assert os.path.realpath(workingdir).startswith(os.path.realpath(str(root)))
     assert os.path.realpath(workingdir) != os.path.realpath(os.getcwd())
@@ -372,6 +386,7 @@ def test_teeth_malt_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
     _root, outside = pathsec_sandbox
     monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
     monkeypatch.setattr(malt, "validate_model_resource", lambda *a, **k: None)
+    monkeypatch.setattr(malt, "validate_tool_path", lambda *a, **k: None)
     evil = outside / "evil.mco"
     evil.write_text("model")
     cmd = _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
@@ -387,8 +402,10 @@ def test_teeth_malt_model_resource_guard_alone_blocks(pathsec_sandbox, monkeypat
     monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
     evil = outside / "evil.mco"
     evil.write_text("model")
+    parser = _malt(str(evil))
+    infile, _outfile = _sandbox_io(parser)
     with pytest.raises((PermissionError, ValueError)):
-        _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
+        parser.generate_malt_command(infile, None, mode="learn")
 
 
 # ---------------------------------------------------------------------------
@@ -480,12 +497,16 @@ def test_malt_command_shape_is_unchanged(pathsec_sandbox):
     root, _outside = pathsec_sandbox
     model = root / "engmalt.mco"
     model.write_text("model")
-    cmd = _malt(str(model)).generate_malt_command("in.conll", "out.conll", mode="parse")
+    parser = _malt(str(model))
+    infile, outfile = str(root / "in.conll"), str(root / "out.conll")
+    with pathsec.open(infile, "w") as handle:
+        handle.write("")
+    cmd = parser.generate_malt_command(infile, outfile, mode="parse")
     assert cmd[0] == "org.maltparser.Malt"
     for flag in ("-w", "-c", "-i", "-o", "-m"):
         assert flag in cmd
-    assert cmd[cmd.index("-i") + 1] == "in.conll"
-    assert cmd[cmd.index("-o") + 1] == "out.conll"
+    assert cmd[cmd.index("-i") + 1] == infile
+    assert cmd[cmd.index("-o") + 1] == outfile
     assert cmd[cmd.index("-m") + 1] == "parse"
 
 
@@ -688,7 +709,9 @@ def test_malt_model_refuses_every_hostile_vector(pathsec_sandbox):
     leaked = []
     for name, value in _hostile_vectors(root, outside):
         try:
-            _malt(value).generate_malt_command("in.conll", "out.conll", mode="learn")
+            parser = _malt(value)
+            infile, _outfile = _sandbox_io(parser)
+            parser.generate_malt_command(infile, None, mode="learn")
         except (PermissionError, ValueError, OSError):
             continue
         leaked.append(name)
@@ -871,7 +894,10 @@ def test_regression_generate_malt_command_needs_no_trained_attribute(pathsec_san
     parser.model = "malt_temp.mco"
     parser._working_dir = None
     parser.additional_java_args = []
-    cmd = parser.generate_malt_command("in.conll", "out.conll", mode="learn")
+    infile = os.path.join(parser.working_dir, "in.conll")
+    with pathsec.open(infile, "w") as handle:
+        handle.write("")
+    cmd = parser.generate_malt_command(infile, None, mode="learn")
     assert cmd[cmd.index("-c") + 1] == "malt_temp.mco"
 
 
@@ -881,7 +907,11 @@ def test_regression_trained_bare_model_resolves_to_working_dir(pathsec_sandbox):
     made every post-training parse fail with a security violation."""
     root, _outside = pathsec_sandbox
     parser = _malt("malt_temp.mco", trained=True)
-    cmd = parser.generate_malt_command("in.conll", "out.conll", mode="parse")
+    infile = os.path.join(parser.working_dir, "in.conll")
+    outfile = os.path.join(parser.working_dir, "out.conll")
+    with pathsec.open(infile, "w") as handle:
+        handle.write("")
+    cmd = parser.generate_malt_command(infile, outfile, mode="parse")
     workingdir = cmd[cmd.index("-w") + 1]
     assert os.path.realpath(workingdir).startswith(os.path.realpath(str(root)))
     assert os.path.realpath(workingdir) != os.path.realpath(os.getcwd())
@@ -911,3 +941,185 @@ def test_regression_has_java_probe_actually_executes():
             "java", env_vars=("JAVAHOME", "JAVA_HOME"), verbose=False, binary_names=None
         )
         assert subprocess.run([binary, "-version"], capture_output=True).returncode == 0
+
+
+# ---------------------------------------------------------------------------
+# MaltParser -i / -o. Both are public: generate_malt_command() takes them
+# directly and train_from_file() is the public route to -i. -i is READ by the
+# JVM and -o is WRITTEN by it, so an unbounded value is an arbitrary file read
+# and an arbitrary file write.
+# ---------------------------------------------------------------------------
+
+
+def _malt_in_sandbox(root):
+    parser = _malt("malt_temp.mco", trained=False)
+    parser.malt_jars = []
+    infile = os.path.join(parser.working_dir, "in.conll")
+    with pathsec.open(infile, "w") as handle:
+        handle.write("")
+    return parser, infile
+
+
+def test_malt_input_file_refuses_every_hostile_vector(pathsec_sandbox):
+    """-i is an arbitrary-file-read primitive without a guard."""
+    root, outside = pathsec_sandbox
+    parser, _infile = _malt_in_sandbox(root)
+    leaked = []
+    for name, value in _hostile_vectors(root, outside):
+        try:
+            parser.generate_malt_command(value, None, mode="learn")
+        except (PermissionError, ValueError, OSError):
+            continue
+        leaked.append(name)
+    assert leaked == [], f"MaltParser -i accepted: {leaked}"
+
+
+def test_malt_output_file_refuses_every_hostile_vector(pathsec_sandbox):
+    """-o is an arbitrary-file-WRITE primitive without a guard."""
+    root, outside = pathsec_sandbox
+    parser, infile = _malt_in_sandbox(root)
+    leaked = []
+    for name, value in _hostile_vectors(root, outside):
+        try:
+            parser.generate_malt_command(infile, value, mode="parse")
+        except (PermissionError, ValueError, OSError):
+            continue
+        leaked.append(name)
+    assert leaked == [], f"MaltParser -o accepted: {leaked}"
+
+
+def test_malt_train_from_file_refuses_outside_corpus(pathsec_sandbox):
+    """train_from_file is the public route to -i."""
+    root, outside = pathsec_sandbox
+    parser, _infile = _malt_in_sandbox(root)
+    corpus = outside / "steal.conll"
+    corpus.write_text("1\ta\t_\tNN\t_\t_\t0\tROOT\t_\t_\n")
+    for target in ("/etc/passwd", str(corpus)):
+        with pytest.raises((PermissionError, ValueError)):
+            parser.train_from_file(target)
+
+
+def test_malt_in_sandbox_input_and_output_are_allowed(pathsec_sandbox):
+    """Over-block control: the internal callers pass temp files inside
+    working_dir, which must keep working."""
+    root, _outside = pathsec_sandbox
+    parser, infile = _malt_in_sandbox(root)
+    outfile = os.path.join(parser.working_dir, "out.conll")
+    cmd = parser.generate_malt_command(infile, outfile, mode="parse")
+    assert cmd[cmd.index("-i") + 1] == infile
+    assert cmd[cmd.index("-o") + 1] == outfile
+
+
+def test_teeth_malt_io_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
+    """Neuter the guard and -o reaches the JVM again."""
+    import nltk.parse.malt as malt
+
+    root, outside = pathsec_sandbox
+    parser, infile = _malt_in_sandbox(root)
+    monkeypatch.setattr(malt, "validate_tool_path", lambda *a, **k: None)
+    target = str(outside / "pwned.conll")
+    cmd = parser.generate_malt_command(infile, target, mode="parse")
+    assert cmd[cmd.index("-o") + 1] == target
+
+
+def test_malt_revalidates_on_every_call(pathsec_sandbox):
+    """No cached verdict: a model swapped after a successful call is re-checked,
+    so an attacker cannot 'warm up' the parser with a benign value first."""
+    root, outside = pathsec_sandbox
+    parser, infile = _malt_in_sandbox(root)
+    parser.generate_malt_command(infile, None, mode="learn")
+    evil = outside / "evil.mco"
+    evil.write_text("x")
+    parser.model = str(evil)
+    with pytest.raises((PermissionError, ValueError)):
+        parser.generate_malt_command(infile, None, mode="learn")
+
+
+def test_edited_wrappers_never_widen_the_sandbox(pathsec_sandbox):
+    """Regression guard for the worst bug class in this audit: a loader that
+    appends its target to nltk.data.path and clears the pathsec root cache
+    disarms validate_path process-wide. None of the modules touched here may do
+    that, whatever else they change.
+    """
+    import nltk.data
+
+    before = list(nltk.data.path)
+    root, outside = pathsec_sandbox
+    parser, infile = _malt_in_sandbox(root)
+    for target in ("/etc/passwd", str(outside / "evil.mco")):
+        for call in (
+            lambda t=target: parser.generate_malt_command(t, None, mode="learn"),
+            lambda t=target: setattr(parser, "working_dir", t),
+            lambda t=target: validate_model_resource(t, context="widen"),
+        ):
+            try:
+                call()
+            except (PermissionError, ValueError, OSError):
+                pass
+    assert list(nltk.data.path) == before
+    with pytest.raises(PermissionError):
+        pathsec.validate_path("/etc/passwd", context="widen-check")
+
+
+# ---------------------------------------------------------------------------
+# validate_tool_path. Contract differs from validate_model_resource: this one
+# never accepts a bare resource name, because the tool opens the value directly.
+# ---------------------------------------------------------------------------
+
+
+def test_validate_tool_path_refuses_every_hostile_vector(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    leaked = []
+    for name, value in _hostile_vectors(root, outside) + _exotic_vectors(root):
+        try:
+            validate_tool_path(value, context="sweep")
+        except (PermissionError, ValueError, OSError):
+            continue
+        leaked.append(name)
+    assert leaked == [], f"validate_tool_path let these through: {leaked}"
+
+
+def test_validate_tool_path_rejects_bare_resource_names(pathsec_sandbox):
+    """Unlike a model argument, an -i/-o value is never a classpath resource: a
+    bare name would resolve against the current working directory."""
+    for value in ("in.conll", "malt_temp.mco", _DEFAULT_RESOURCE):
+        with pytest.raises((PermissionError, ValueError)):
+            validate_tool_path(value, context="sweep")
+
+
+def test_validate_tool_path_allows_in_sandbox_paths(pathsec_sandbox):
+    """Over-block control, including a not-yet-created output file."""
+    root, _outside = pathsec_sandbox
+    existing = root / "in.conll"
+    existing.write_text("")
+    validate_tool_path(str(existing), context="sweep")
+    validate_tool_path(str(root / "out.conll"), context="sweep")
+
+
+def test_validate_tool_path_refuses_hardlink(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    secret = outside / "secret.conll"
+    secret.write_text("SECRET")
+    alias = root / "alias.conll"
+    try:
+        os.link(str(secret), alias)
+    except OSError:  # pragma: no cover - cross-device or unsupported
+        pytest.skip("hard links unavailable between these directories")
+    with pytest.raises(PermissionError):
+        validate_tool_path(str(alias), context="sweep")
+
+
+def test_validate_tool_path_refuses_fifo(pathsec_sandbox):
+    """An output path that is a FIFO would block the JVM forever."""
+    root, _outside = pathsec_sandbox
+    fifo = root / "out.fifo"
+    try:
+        os.mkfifo(fifo)
+    except (AttributeError, OSError):  # pragma: no cover - not on Windows
+        pytest.skip("mkfifo unavailable")
+    with pytest.raises(PermissionError):
+        validate_tool_path(str(fifo), context="sweep")
+
+
+def test_validate_tool_path_is_exported():
+    assert "validate_tool_path" in pathsec.__all__

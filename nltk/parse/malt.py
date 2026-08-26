@@ -22,7 +22,7 @@ from nltk.internals import (
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
-from nltk.pathsec import validate_model_resource, validate_path
+from nltk.pathsec import validate_model_resource, validate_path, validate_tool_path
 
 
 def malt_regex_tagger():
@@ -287,6 +287,12 @@ class MaltParser(ParserI):
         :type inputfilename: str
         :param outputfilename: path to the output file
         :type outputfilename: str
+
+        Both filenames are bounded to the NLTK data roots. ``-i`` is read by the
+        JVM and ``-o`` is *written* by it, so an unbounded value here is an
+        arbitrary file read and an arbitrary file write respectively. The
+        internal callers pass temporary files inside :attr:`working_dir`, which
+        is itself allocated inside a data root.
         """
 
         # Build only MaltParser's own arguments (main class + program args). The
@@ -313,8 +319,12 @@ class MaltParser(ParserI):
             workingdir = self.working_dir
         cmd += ["-w", workingdir, "-c", model_name]
 
+        # -i is read by the JVM and -o is written by it; train_from_file() and
+        # generate_malt_command() are both public, so neither may leave the roots.
+        validate_tool_path(inputfilename, context="MaltParser input file")
         cmd += ["-i", inputfilename]
         if mode == "parse":
+            validate_tool_path(outputfilename, context="MaltParser output file")
             cmd += ["-o", outputfilename]
         cmd += ["-m", mode]  # mode use to generate parses.
         return cmd

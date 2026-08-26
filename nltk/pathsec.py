@@ -298,26 +298,63 @@ def validate_model_resource(model_path, context="NLTK model"):
     # Only a real filesystem path is sandboxed; a bare resource name is not a path.
     if os.path.isabs(text) or os.path.exists(text):
         validate_path(text, context=context)
-        # realpath() cannot see a hardlink, so an in-root alias of an outside file
-        # passes the check above; the tool would then read (or overwrite) the
-        # original. Mirrors the st_nlink guard in _hardened_open.
-        try:
-            info = os.stat(text)
-        except OSError:
-            return
-        if stat.S_ISREG(info.st_mode) and info.st_nlink > 1:
-            raise PermissionError(
-                f"Security Violation [{context}]: model {text!r} has "
-                f"{info.st_nlink} hard links, so it may alias a file outside the "
-                "trusted NLTK data roots."
-            )
-        # A FIFO, socket or device planted in a data root would hang the reader
-        # forever. Directories stay legal: corpora are passed as directories.
-        if not (stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode)):
-            raise PermissionError(
-                f"Security Violation [{context}]: model {text!r} is not a regular "
-                "file or directory; reading it could block indefinitely."
-            )
+        _reject_aliased_or_special(text, context)
+
+
+def _reject_aliased_or_special(text, context):
+    """Physical checks on a path that already passed :func:`validate_path`.
+
+    ``realpath()`` cannot see a hardlink, so an in-root alias of an outside file
+    passes every name-based check; the tool would then read, or overwrite, the
+    original. Mirrors the ``st_nlink`` guard in :func:`_hardened_open`. A FIFO,
+    socket or device planted in a data root would instead block the reader
+    forever. Directories stay legal, since corpora are passed as directories.
+
+    A path that does not exist yet (an output file) has nothing to check.
+    """
+    try:
+        info = os.stat(text)
+    except OSError:
+        return
+    if stat.S_ISREG(info.st_mode) and info.st_nlink > 1:
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} has {info.st_nlink} hard "
+            "links, so it may alias a file outside the trusted NLTK data roots."
+        )
+    if not (stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode)):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not a regular file or "
+            "directory; reading it could block indefinitely."
+        )
+
+
+def validate_tool_path(path_input, context="NLTK tool file"):
+    """Bound a filesystem path handed to an external tool to read or write.
+
+    Unlike :func:`validate_model_resource` this never accepts a bare resource
+    name: the value must be a real path inside the NLTK data roots. Use it for
+    arguments the tool opens directly, such as MaltParser's ``-i`` input and
+    ``-o`` output, where an unbounded value is an arbitrary file read and an
+    arbitrary file write respectively.
+
+    :param path_input: the path as supplied by the caller
+    :param context: label used in the security-violation message
+    :raises ValueError: if the value is empty or contains a NUL byte
+    :raises PermissionError: if it is outside the data roots, hardlinked, or a
+        non-regular file such as a FIFO
+    """
+    text = os.fspath(path_input)
+    if not text or not text.strip():
+        raise ValueError(
+            f"Security Violation [{context}]: path is empty; it would resolve to "
+            "the current working directory."
+        )
+    if "\x00" in text:
+        raise ValueError(
+            f"Security Violation [{context}]: path {text!r} contains a NUL byte."
+        )
+    validate_path(text, context=context)
+    _reject_aliased_or_special(text, context)
 
 
 def _zip_member_is_unsafe(name_str):
@@ -1057,6 +1094,7 @@ class ZipFile(zipfile.ZipFile):
 __all__ = [
     "validate_path",
     "validate_model_resource",
+    "validate_tool_path",
     "validate_network_url",
     "validate_zip_archive",
     "open",
