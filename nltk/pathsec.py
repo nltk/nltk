@@ -368,7 +368,22 @@ def validate_tool_path(path_input, context="NLTK tool", *, must_exist=True):
     _reject_url_shaped(raw, context)
 
     validate_path(raw, context=context)
-    if not ENFORCE or os.name != "posix":
+    if not ENFORCE:
+        return
+    if os.name != "posix":
+        # No O_NOFOLLOW/fstat here, so the symlink-swap race stays open on
+        # Windows, but a stat still refuses a directory or device.
+        try:
+            st = os.stat(raw)
+        except FileNotFoundError:
+            if must_exist:
+                raise
+            return
+        if not stat.S_ISREG(st.st_mode):
+            raise PermissionError(
+                f"Security Violation [{context}]: model path {raw!r} is not a "
+                "regular file"
+            )
         return
 
     flags = (

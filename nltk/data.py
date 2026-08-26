@@ -92,6 +92,35 @@ def _assert_no_encoded_bypass(name, error_label=None):
         raise ValueError(f"Unsafe resource path: {label!r}")
 
 
+# Python 3.14's url2pathname follows the WHATWG URL rules, so it silently strips
+# ASCII tab / LF / CR and truncates at "#" or "?". Earlier versions keep them.
+_URL_REWRITTEN_CHARS_RE = re.compile(r"[\t\n\r#?]")
+
+
+def _assert_no_normalized_bypass(name, error_label=None):
+    """
+    Reject *name* if :func:`url2pathname` would silently rewrite it.
+
+    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that
+    was validated must be the name that is used" rule but a different rewriting
+    step. Python 3.14 made ``url2pathname`` follow the WHATWG URL rules: it
+    strips ASCII tab, LF and CR and truncates at ``#`` or ``?``. Stripping can
+    *create* a traversal that the raw-form check never saw, because ``".\\n./x"``
+    contains no ``../`` yet becomes ``"../x"`` once converted, which then joins
+    onto the data root and escapes it (CWE-22).
+
+    None of these characters belongs in an NLTK resource name, so refusing them
+    outright keeps the validated and the used name identical on every Python
+    version, rather than tracking what the standard library normalises next.
+
+    :param name: The resource string to validate.
+    :param error_label: Optional alternative string for the error message.
+    """
+    if _URL_REWRITTEN_CHARS_RE.search(name):
+        label = name if error_label is None else error_label
+        raise ValueError(f"Unsafe resource path: {label!r}")
+
+
 def _reject_unsafe_no_protocol(resource_url):
     """
     Reject unsafe resource strings that *omit an explicit protocol*.
@@ -960,6 +989,7 @@ def find(resource_name, paths=None):
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_name):
         raise ValueError(f"Unsafe resource path: {resource_name!r}")
     _assert_no_encoded_bypass(resource_name)
+    _assert_no_normalized_bypass(resource_name)
 
     # Resolve default paths at runtime in-case the user overrides
     # nltk.data.path

@@ -732,6 +732,31 @@ def test_absolute_path_with_dash_basename_is_not_an_option(pathsec_sandbox):
         _cleanup(registry)
 
 
+def _assert_teeth(action, evidence, *, what):
+    """Run *action* with a guard already neutered and report what happened.
+
+    On POSIX ``save_to_json`` writes through a pinned directory descriptor, so
+    removing the containment guard really lets the write land and *evidence*
+    must show it. On Windows there is no directory descriptor: that branch
+    writes through ``pathsec.open``, which independently refuses an outside
+    path, so the correct assertion there is that the write is STILL blocked.
+    Either way the probe is not inert; it just proves a different thing.
+    """
+    try:
+        action()
+        landed = True
+    except (PermissionError, ValueError, OSError):
+        landed = False
+    if _POSIX:
+        assert (
+            landed and evidence()
+        ), f"{what}: guard removed but nothing escaped; the probe is inert"
+    else:
+        assert (
+            not landed and not evidence()
+        ), f"{what}: pathsec.open should still refuse this on this platform"
+
+
 # --- the guards must be load-bearing, not incidental --------------------------
 # (test id, module, guard attribute, driver). The id is spelled out because a
 # function repr carries its address, which differs per xdist worker.
@@ -775,6 +800,11 @@ def test_each_guard_is_load_bearing(
     module = importlib.import_module(modname)
     monkeypatch.setattr(module, attr, lambda *a, **k: None)
     outcome = _refusal_for(driver, target)
+    if not _POSIX and attr == "validate_tool_dir":
+        # The Windows save branch writes through pathsec.open, which refuses an
+        # outside path on its own, so the write stays blocked there.
+        assert outcome == "refused"
+        return
     assert (
         outcome != "refused"
     ), f"{modname}.{attr} removed but the exploit is still blocked; the test proves nothing"
@@ -840,10 +870,12 @@ def test_perceptron_save_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
     assert not victim.exists()
 
     monkeypatch.setattr(perceptron, "validate_tool_dir", lambda *a, **k: None)
-    _drive_save_to_json(str(victim))
-    written = sorted(p.name for p in victim.iterdir())
-    assert written, "guard removed but nothing was written; the probe is inert"
-    assert any(name.endswith(".weights.json") for name in written)
+    _assert_teeth(
+        lambda: _drive_save_to_json(str(victim)),
+        lambda: victim.exists()
+        and any(p.name.endswith(".weights.json") for p in victim.iterdir()),
+        what="save_to_json containment",
+    )
 
 
 # --- pathsec.validate_tool_path unit-level behaviour --------------------------
@@ -867,6 +899,10 @@ def test_validate_tool_path_write_destination_may_not_exist(restricted_sandbox):
     pathsec.validate_tool_path(inside, context="probe", must_exist=False)
     with pytest.raises(FileNotFoundError):
         pathsec.validate_tool_path(inside, context="probe")
+    # and an existing regular file is accepted either way
+    with pathsec.open(inside, "w", context="probe") as handle:
+        handle.write("{}")
+    pathsec.validate_tool_path(inside, context="probe")
 
 
 @pytest.mark.skipif(not _POSIX, reason="POSIX file types")
@@ -1025,7 +1061,7 @@ def test_find_terminates_on_a_newline_resource_name(restricted_sandbox, resource
     2.7 GB before raising (CWE-407). Guarded by absolute time, not a ratio.
     """
     started = time.monotonic()
-    with pytest.raises(LookupError):
+    with pytest.raises((LookupError, ValueError)):
         nltk.data.find(resource_name, paths=[restricted_sandbox])
     elapsed = time.monotonic() - started
     assert elapsed < 5.0, f"find({resource_name!r}) took {elapsed:.1f}s (DoS)"
@@ -1154,10 +1190,11 @@ def test_lang_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
     monkeypatch.setattr(
         perceptron, "_validate_name_component", lambda value, kind="": str(value)
     )
-    tagger.save_to_json(lang=lang, loc=str(loc))
-    escaped = sorted(p.name for p in outside.iterdir())
-    assert escaped, "guard removed but nothing escaped; the probe is inert"
-    assert any(name.startswith("TRAVERSED") for name in escaped)
+    _assert_teeth(
+        lambda: tagger.save_to_json(lang=lang, loc=str(loc)),
+        lambda: any(p.name.startswith("TRAVERSED") for p in outside.iterdir()),
+        what="lang traversal",
+    )
 
 
 @pytest.mark.parametrize("lang", ["eng", "xxx", "sv", "rus", "en-GB", "zh_TW", "a.b"])
@@ -1458,7 +1495,7 @@ def test_find_scales_linearly_in_the_number_of_path_pieces(restricted_sandbox, p
     fix a newline made that condition unreachable and the retries compounded."""
     name = "/".join(f"p{i}\n" for i in range(pieces))
     started = time.monotonic()
-    with pytest.raises(LookupError):
+    with pytest.raises((LookupError, ValueError)):
         nltk.data.find(name, paths=[restricted_sandbox])
     assert time.monotonic() - started < 5.0
 
@@ -1752,10 +1789,11 @@ def test_tagger_name_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
     monkeypatch.setattr(
         perceptron, "_validate_name_component", lambda value, kind="": str(value)
     )
-    tagger.save_to_json(lang="eng", loc=str(loc))
-    escaped = sorted(p.name for p in outside.iterdir())
-    assert escaped, "guard removed but nothing escaped; the probe is inert"
-    assert any(name.startswith("EVIL_") for name in escaped)
+    _assert_teeth(
+        lambda: tagger.save_to_json(lang="eng", loc=str(loc)),
+        lambda: any(p.name.startswith("EVIL_") for p in outside.iterdir()),
+        what="TAGGER_NAME traversal",
+    )
 
 
 def test_param_files_validates_the_composed_filename(pathsec_sandbox):
@@ -1909,9 +1947,13 @@ def test_empty_path_file_url_guard_is_load_bearing(pathsec_sandbox, monkeypatch)
     assert not list(workdir.iterdir())
 
     monkeypatch.setattr(perceptron, "validate_tool_dir", lambda *a, **k: None)
-    tagger.save_to_json(lang="eng", loc="file://pwned")
-    escaped = sorted(p.name for p in workdir.iterdir())
-    assert escaped == ["file:"], f"guard removed but nothing escaped: {escaped}"
+    # "file:" is not a legal directory name on Windows, so the escape is not
+    # even representable there; _assert_teeth checks the right thing per platform.
+    _assert_teeth(
+        lambda: tagger.save_to_json(lang="eng", loc="file://pwned"),
+        lambda: [p.name for p in workdir.iterdir()] == ["file:"],
+        what="empty-path file URL",
+    )
 
 
 def test_ordinary_paths_that_merely_look_url_ish_still_work(restricted_sandbox):
@@ -2092,3 +2134,69 @@ def test_zip_internal_traversal_stays_inside_the_archive(restricted_sandbox):
     tagger.load_from_json("eng", ZipFilePathPointer(str(archive), "m/"))
     assert tagger.tagdict == {"in": "NN"}
     assert isinstance(zipfile.ZipFile(str(archive)).namelist(), list)
+
+
+# --- the stdlib normalising a name AFTER it was validated (CWE-22) -----------
+_NORMALIZED_BYPASS_NAMES = [
+    ".\n./TARGET",
+    ".\t./TARGET",
+    ".\r./TARGET",
+    "..\n/TARGET",
+    "corpora/.\n./.\n./TARGET",
+    "a#b",
+    "a?b",
+    "\n",
+    "a\nb",
+]
+
+
+@pytest.mark.parametrize("resource_name", _NORMALIZED_BYPASS_NAMES)
+def test_find_refuses_names_the_stdlib_would_rewrite(restricted_sandbox, resource_name):
+    """``find`` validates the raw name and then joins ``url2pathname(name)``.
+
+    Python 3.14 made ``url2pathname`` follow the WHATWG URL rules: it strips
+    ASCII tab / LF / CR and truncates at ``#`` or ``?``. Stripping *creates* a
+    traversal the raw-form check never saw, so ``find(".\\n./TARGET")`` contained
+    no ``../`` when it was validated and became ``../TARGET`` when it was used,
+    escaping the data root on 3.14 (CWE-22). Refusing the characters keeps the
+    validated and the used name identical on every version.
+    """
+    with pytest.raises(ValueError):
+        nltk.data.find(resource_name, paths=[restricted_sandbox])
+
+
+def test_normalized_bypass_would_escape_without_the_guard(restricted_sandbox):
+    """Negative control, and the proof this is version-specific.
+
+    Runs the conversion the way ``find`` does and asserts that on an
+    interpreter which rewrites the name the result really would leave the root,
+    so the guard above is not defending against nothing.
+    """
+    from urllib.request import url2pathname
+
+    converted = url2pathname(".\n./TARGET")
+    joined = os.path.realpath(os.path.join(restricted_sandbox, converted))
+    root_real = os.path.realpath(restricted_sandbox)
+    escapes = not (joined == root_real or joined.startswith(root_real + os.sep))
+    if converted == ".\n./TARGET":
+        # This interpreter does not rewrite; nothing to escape with.
+        assert not escapes
+    else:
+        assert converted == os.path.join("..", "TARGET") or ".." in converted
+        assert escapes, "the rewritten name should have left the root"
+
+
+def test_ordinary_resource_names_are_unaffected(restricted_sandbox):
+    """Over-block control for the rejection: real resource names are plain."""
+    root = Path(restricted_sandbox)
+    (root / "corpora").mkdir()
+    (root / "corpora" / "demo").mkdir()
+    (root / "corpora" / "demo" / "f.txt").write_text("hi", encoding="utf-8")
+    assert str(nltk.data.find("corpora/demo/f.txt", paths=[restricted_sandbox]))
+    for name in ("corpora/demo", "corpora/demo/", "taggers/x_eng.json", "a b/c-d.e"):
+        try:
+            nltk.data.find(name, paths=[restricted_sandbox])
+        except Exception as exc:  # noqa: BLE001 - only the reason matters here
+            assert "Unsafe resource path" not in str(
+                exc
+            ), f"{name!r} was wrongly rejected as unsafe"
