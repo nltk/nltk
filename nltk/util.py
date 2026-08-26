@@ -31,6 +31,11 @@ from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 from nltk.pathsec import open as _secure_open
 
+# Maximum recursion depth for graph traversal functions.
+# 500 is well above the longest legitimate WordNet chain (~20 edges)
+# and matches the existing MAX_TREE_DEPTH constant in tree.py.
+MAX_RECURSION_DEPTH = 500
+
 ######################################################################
 # Short usage message
 ######################################################################
@@ -468,29 +473,30 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1, verbose=False):
                 pass
 
 
+# ==========================================================================
+
+
 def acyclic_depth_first(
     tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False
 ):
     """
     :param tree: the tree root
     :param children: a function taking as argument a tree node
-    :param depth: the maximum depth of the search
+    :param depth: the maximum depth of the search. Use -1 (default) for unbounded,
+                  but note that it is capped to MAX_RECURSION_DEPTH to prevent stack overflow.
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
     :return: the tree in depth-first order
-
-    Traverse the nodes of a tree in depth-first order,
-    discarding eventual cycles within any branch,
-    adding cut_mark (when specified) if cycles were truncated.
-    The first argument should be the tree root;
-    children should be a function taking as argument a tree node
-    and returning an iterator of the node's children.
-
+    Traverse the nodes of a tree in depth-first order, discarding
+    eventual cycles within any branch, adding cut_mark (when specified)
+    if cycles were truncated.
+    The first argument should be the tree root; children should be a
+    function taking as argument a tree node and returning an iterator
+    of the node's children.
     Catches all cycles:
-
     >>> import nltk
-    >>> from nltk.util import acyclic_depth_first as acyclic_tree
+    >>> from nltk.util import acyclic_depth_first as acyclic_tree  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
     >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:sorted(s.hypernyms()),cut_mark='...'))
@@ -508,8 +514,13 @@ def acyclic_depth_first(
                [Synset('object.n.01'),
                 [Synset('physical_entity.n.01'),
                  [Synset('entity.n.01')]]]]]]]]]]]]],
-     [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),-3,...)"]]
+     [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),...,...)"]]
     """
+    # Ensure depth is valid (GHSA-8846-p9w9-5frf)
+    if depth < -1:
+        raise ValueError("depth must be >= -1 (use -1 for unbounded, now capped)")
+    if depth == -1:
+        depth = MAX_RECURSION_DEPTH
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
@@ -517,11 +528,14 @@ def acyclic_depth_first(
         try:
             for child in children(tree):
                 if child not in traversed:
-                    # Recurse with a common "traversed" set for all children:
                     traversed.add(child)
                     out_tree += [
                         acyclic_depth_first(
-                            child, children, depth - 1, cut_mark, traversed
+                            child,
+                            children,
+                            depth - 1,
+                            cut_mark,
+                            traversed,
                         )
                     ]
                 else:
@@ -547,27 +561,23 @@ def acyclic_branches_depth_first(
     """
     :param tree: the tree root
     :param children: a function taking as argument a tree node
-    :param depth: the maximum depth of the search
+    :param depth: the maximum depth of the search. Use -1 (default) for unbounded,
+                  but note that it is capped to MAX_RECURSION_DEPTH to prevent stack overflow.
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
     :return: the tree in depth-first order
-
-        Adapted from acyclic_depth_first() above, to
-    traverse the nodes of a tree in depth-first order,
-    discarding eventual cycles within the same branch,
-    but keep duplicate paths in different branches.
+    Adapted from acyclic_depth_first() above, to traverse the nodes
+    of a tree in depth-first order, discarding eventual cycles within
+    the same branch, but keep duplicate paths in different branches.
     Add cut_mark (when defined) if cycles were truncated.
-
-    The first argument should be the tree root;
-    children should be a function taking as argument a tree node
-    and returning an iterator of the node's children.
-
-    Catches only only cycles within the same branch,
-    but keeping cycles from different branches:
-
+    The first argument should be the tree root; children should be a
+    function taking as argument a tree node and returning an iterator
+    of the node's children.
+    Catches only only cycles within the same branch, but keeping cycles
+    from different branches:
     >>> import nltk
-    >>> from nltk.util import acyclic_branches_depth_first as tree
+    >>> from nltk.util import acyclic_branches_depth_first as tree  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
     >>> pprint(tree(wn.synset('certified.a.01'), lambda s:sorted(s.also_sees()), cut_mark='...', depth=4))
@@ -591,6 +601,13 @@ def acyclic_branches_depth_first(
       [Synset('official.a.01'), "Cycle(Synset('authorized.a.01'),1,...)"]],
      [Synset('documented.a.01')]]
     """
+    # Ensure depth is valid
+    if depth < -1:
+        raise ValueError("depth must be >= -1 (use -1 for unbounded, now capped)")
+    # Cap unbounded depth to prevent recursion overflow (GHSA-8846-p9w9-5frf)
+    if depth == -1:
+        depth = MAX_RECURSION_DEPTH
+    # User-provided depths are accepted as given.
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
@@ -598,7 +615,6 @@ def acyclic_branches_depth_first(
         try:
             for child in children(tree):
                 if child not in traversed:
-                    # Recurse with a different "traversed" set for each child:
                     out_tree += [
                         acyclic_branches_depth_first(
                             child,
@@ -624,16 +640,55 @@ def acyclic_branches_depth_first(
         out_tree += [cut_mark]
     return out_tree
 
-
-def acyclic_dic2tree(node, dic):
+def acyclic_dic2tree(node, dic, depth=-1, traversed=None, verbose=False):
     """
     :param node: the root node
     :param dic: the dictionary of children
+    :param depth: the maximum depth of the search. Use -1 (default) for unbounded,
+                  but note that it is capped to MAX_RECURSION_DEPTH to prevent stack overflow.
+    :param traversed: the set of traversed nodes
+    :param verbose: to print warnings when cycles are discarded
+    :return: the tree in depth-first order
+    Convert acyclic dictionary 'dic', where the keys are nodes, and the values
+    are lists of children, to output tree suitable for pprint(), starting at
+    root 'node', with subtrees as nested lists. Discards eventual cycles.
+    """
+    # Ensure depth is valid (GHSA-8846-p9w9-5frf)
+    if depth < -1:
+        raise ValueError("depth must be >= -1 (use -1 for unbounded, now capped)")
+    if depth == -1:
+        depth = MAX_RECURSION_DEPTH
+    # User-provided depths are accepted as given.
+    if traversed is None:
+        traversed = {node}
+    out_tree = [node]
+    if depth != 0:
+        try:
+            for child in dic[node]:
+                if child not in traversed:
+                    out_tree += [
+                        acyclic_dic2tree(
+                            child,
+                            dic,
+                            depth - 1,
+                            traversed.union({child}),
+                            verbose,
+                        )
+                    ]
+                else:
+                    if verbose:
+                        warnings.warn(
+                            "Discarded redundant search for {} at depth {}".format(
+                                child, depth - 1
+                            ),
+                            stacklevel=3,
+                        )
+        except TypeError:
+            pass
+    return out_tree
 
-    Convert acyclic dictionary 'dic', where the keys are nodes, and the
-    values are lists of children, to output tree suitable for pprint(),
-    starting at root 'node', with subtrees as nested lists."""
-    return [node] + [acyclic_dic2tree(child, dic) for child in dic[node]]
+
+# ==========================================================================
 
 
 def unweighted_minimum_spanning_dict(tree, children=iter):
