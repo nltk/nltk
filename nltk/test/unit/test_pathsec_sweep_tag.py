@@ -36,6 +36,7 @@ import socket
 import string
 import tempfile
 import time
+import unicodedata
 from pathlib import Path
 
 import pytest
@@ -2284,3 +2285,102 @@ def test_pinned_model_dir_descriptor_is_revalidated(pathsec_sandbox, monkeypatch
         assert os.fstat(fd).st_mode & 0o777 == 0o700
     finally:
         os.close(fd)
+
+
+# --- unicode / encoding confusion at the guard boundary ----------------------
+def _unicode_vectors(root, outside):
+    """Non-ASCII ways for the validated name and the opened name to diverge.
+
+    Every earlier vector is ASCII-shaped. Filesystems and str/bytes conversion
+    add their own: NFC vs NFD, surrogate escapes, bidi overrides, zero-width
+    joiners and fullwidth homoglyphs of ``/`` and ``.``. None of these should be
+    folded into a separator or a traversal by anything downstream.
+    """
+    secret = str(outside / "SECRET")
+    return {
+        "fullwidth-slash": "..／..／etc/passwd",
+        "fullwidth-dot": "．．/etc/passwd",
+        "rtl-override": "‮" + secret,
+        "zero-width": secret[:5] + "​" + secret[5:],
+        "nfd-outside": unicodedata.normalize("NFD", secret),
+        "nfc-outside": unicodedata.normalize("NFC", secret),
+        "surrogate": secret + "\udcff",
+        "combining-dots": "̇./etc/passwd",
+        "ideographic-space": str(outside) + "　/SECRET",
+        "nul-surrogate": "\udc00",
+    }
+
+
+@pytest.mark.parametrize(
+    "vector",
+    [
+        "fullwidth-slash",
+        "fullwidth-dot",
+        "rtl-override",
+        "zero-width",
+        "nfd-outside",
+        "nfc-outside",
+        "surrogate",
+        "combining-dots",
+        "ideographic-space",
+        "nul-surrogate",
+    ],
+)
+def test_unicode_shaped_paths_are_refused(pathsec_sandbox, vector):
+    """A fullwidth solidus is not a separator and a bidi override is not a path
+    operator, so none of these may be folded into one downstream."""
+    root, outside = pathsec_sandbox
+    (outside / "SECRET").write_text("SECRET", encoding="utf-8")
+    value = _unicode_vectors(root, outside)[vector]
+    for guard in (
+        lambda v: pathsec.validate_path(v, context="probe"),
+        lambda v: pathsec.validate_tool_dir(v, context="probe"),
+        lambda v: pathsec.validate_tool_path(v, context="probe", must_exist=False),
+    ):
+        with pytest.raises((PermissionError, ValueError)):
+            guard(value)
+
+
+def test_unicode_names_inside_the_root_still_work(pathsec_sandbox):
+    """Over-block control: the same characters inside the root are just an
+    unusual filename, and a model saved under one round-trips."""
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    for name in ("modél.json", "‮model.json", "模型.json"):
+        target = root / name
+        with pathsec.open(str(target), "w", context="probe") as handle:
+            handle.write("{}")
+        pathsec.validate_tool_path(str(target), context="probe")
+
+    loc = root / "modèle"
+    tagger = PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+    tagger.save_to_json(lang="fra", loc=str(loc))
+    reloaded = PerceptronTagger(load=False)
+    reloaded.load_from_json("fra", str(loc))
+    assert reloaded.classes == {"NN"}
+    assert not list(outside.iterdir())
+
+
+def test_unicode_vectors_never_reach_the_write_sink(pathsec_sandbox):
+    """Drive the real write path with every unicode vector and assert nothing
+    appeared outside the root."""
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    (outside / "SECRET").write_text("SECRET", encoding="utf-8")
+    before = {p.name for p in outside.iterdir()}
+
+    tagger = PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+    for value in _unicode_vectors(root, outside).values():
+        try:
+            tagger.save_to_json(lang="eng", loc=value)
+        except (PermissionError, ValueError, OSError, TypeError):
+            continue
+    assert {p.name for p in outside.iterdir()} == before
