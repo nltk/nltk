@@ -300,6 +300,13 @@ def _reject_bad_name_syntax(text, context):
     # can name a different file there than it does here.
     if "\x00" in text:
         _refuse("contains a NUL byte")
+    # Python 3.14's url2pathname follows the WHATWG rules and STRIPS tab, LF and
+    # CR, so ".\n./x" passes a '..' check here and becomes "../x" downstream.
+    if any(character in text for character in "\t\n\r\x0b\x0c"):
+        _refuse(
+            "contains a control character; these are stripped by URL-to-path "
+            "conversion on Python 3.14 and can turn into a '..' traversal"
+        )
     # A leading '-' would be parsed as another option by the tool we hand it to.
     if text.startswith("-"):
         _refuse("looks like a command-line option (argument injection)")

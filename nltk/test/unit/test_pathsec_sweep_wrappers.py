@@ -1673,3 +1673,33 @@ def test_teeth_corenlp_options_guard_is_load_bearing(pathsec_sandbox, monkeypatc
         _stanford_with_options(model, f"-model {evil}").parse_sents([["hi", "there"]])
     models = [sink["cmd"][i + 1] for i, x in enumerate(sink["cmd"]) if x == "-model"]
     assert str(evil) in models
+
+
+@pytest.mark.parametrize(
+    "name",
+    [".\n./TARGET", ".\t./TARGET", ".\r./TARGET", ".\x0b./TARGET", "model\x0c.mco"],
+    ids=["lf", "tab", "cr", "vtab", "formfeed"],
+)
+def test_control_characters_are_refused(name):
+    """Python 3.14's url2pathname follows the WHATWG rules and STRIPS tab, LF and
+    CR, so a name containing them passes a '..' check here and then BECOMES a
+    traversal downstream. Verified against a real 3.14.4 interpreter:
+
+        url2pathname('.\\n./TARGET') -> '../TARGET'
+
+    A legitimate model or corpus filename never contains a control character, so
+    they are refused outright rather than normalised.
+    """
+    for guard in (validate_model_resource, validate_tool_path):
+        with pytest.raises((PermissionError, ValueError)):
+            guard(name, context="sweep")
+
+
+def test_control_character_guard_does_not_block_ordinary_names(pathsec_sandbox):
+    """Over-block control: spaces are legal in a filename, control characters
+    are not."""
+    root, _outside = pathsec_sandbox
+    spaced = root / "my model.ser.gz"
+    spaced.write_text("m")
+    validate_model_resource(str(spaced), context="sweep")
+    validate_model_resource(_DEFAULT_RESOURCE, context="sweep")
