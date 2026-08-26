@@ -12,7 +12,7 @@ import stat
 
 import pytest
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary, find_jar, find_jar_iter
 
 _NAME = "nltktestbin"  # unlikely to exist on PATH
 
@@ -93,3 +93,42 @@ def test_find_binary_honors_explicit_relative_path_via_name(tmp_path, monkeypatc
 
     result = find_binary(os.path.join("tools", _NAME), binary_names=[_NAME])
     assert os.path.basename(result) == _NAME
+
+
+def test_find_binary_bare_path_to_bin_refuses_cwd_relative(tmp_path, monkeypatch):
+    """A *bare* ``path_to_bin`` (no directory component, e.g. ``bin="java"``) is not
+    an explicit path: a planted ``./<name>/<name>`` must not hijack it; only an
+    absolute match is accepted (CWE-426 / CWE-427)."""
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    _make_exec(cwd / _NAME / _NAME)  # attacker-planted ./<name>/<name>
+    realdir = tmp_path / "realbin"
+    _make_exec(realdir / _NAME)  # trusted, absolute location
+    monkeypatch.chdir(cwd)
+
+    result = find_binary(
+        _NAME, path_to_bin=_NAME, searchpath=[str(realdir)], binary_names=[_NAME]
+    )
+    assert os.path.isabs(result)
+    assert os.path.realpath(result) == os.path.realpath(str(realdir / _NAME))
+
+
+def test_find_jar_regex_searchpath_only_yields_matching_files(tmp_path):
+    """find_jar_iter(is_regex=True) over a searchpath must yield only actual files
+    whose name matches the pattern, never a subdirectory or an unrelated file that
+    merely happens to sort first in os.listdir()."""
+    d = tmp_path / "jars"
+    d.mkdir()
+    (d / "stanford-postagger-4.2.0.jar").write_text("x")
+    (d / "unrelated.txt").write_text("x")
+    (d / "a_subdir").mkdir()
+    pat = r"stanford-postagger-\d+\.\d+\.\d+\.jar"
+
+    yielded = list(
+        find_jar_iter(pat, None, env_vars=(), searchpath=[str(d)], is_regex=True)
+    )
+    assert [os.path.basename(p) for p in yielded] == ["stanford-postagger-4.2.0.jar"]
+    # find_jar (first match) must return the jar, not the subdirectory
+    result = find_jar(pat, None, env_vars=(), searchpath=[str(d)], is_regex=True)
+    assert os.path.basename(result) == "stanford-postagger-4.2.0.jar"
+    assert os.path.isfile(result)

@@ -12,7 +12,7 @@ def test_java_call_options_do_not_mutate_global_java_options(tmp_path):
     with mock.patch.dict(os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}), mock.patch(
         "nltk.data.path", [str(tmp_path)]
     ), mock.patch.object(nltk.internals, "_java_bin", ["java"]), mock.patch.object(
-        nltk.internals, "_java_options", ["-XmxGLOBAL"]
+        nltk.internals, "_java_options", ["-Xmx111m"]
     ):
 
         captured_cmd = []
@@ -30,12 +30,12 @@ def test_java_call_options_do_not_mutate_global_java_options(tmp_path):
                 classpath="example.jar",
                 stdout="pipe",
                 stderr="pipe",
-                options="-XmxLOCAL -verbose:gc",
+                options="-Xmx222m -verbose:gc",
             )
 
-        expected = ["java", "-XmxLOCAL", "-verbose:gc", "-cp", "example.jar", "Main"]
+        expected = ["java", "-Xmx222m", "-verbose:gc", "-cp", "example.jar", "Main"]
         assert captured_cmd[0] == expected
-        assert nltk.internals._java_options == ["-XmxGLOBAL"]
+        assert nltk.internals._java_options == ["-Xmx111m"]
 
 
 def test_cwe94_jar_sandbox_allows_safe_paths_string(tmp_path):

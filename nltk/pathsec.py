@@ -276,6 +276,12 @@ def validate_zip_archive(
             members = (
                 [specific_member] if specific_member is not None else zf.namelist()
             )
+            # Covers the raw-zipfile branch below, which bypasses ZipFile.__init__'s
+            # entry-count guard on purpose (constructing one here would recurse).
+            if specific_member is None:
+                _member_count_guard()(
+                    len(members), getattr(zf, "filename", None) or "<archive>"
+                )
             for name in members:
                 name_str = name.filename if hasattr(name, "filename") else str(name)
                 if "\0" in name_str:
@@ -854,6 +860,13 @@ def _decompression_guards():
     return _check_decompression_bomb, _bounded_stream_read, _reject_decompression_total
 
 
+def _member_count_guard():
+    """Deferred import of the central-directory-bomb check (see above)."""
+    from nltk.data import _check_zip_member_count
+
+    return _check_zip_member_count
+
+
 class _BoundedZipExtFile(io.RawIOBase):
     """Wraps zipfile's streaming member reader and refuses a decompression bomb
     (CWE-409) as the member is consumed: it accumulates the ACTUAL decompressed
@@ -920,6 +933,12 @@ class ZipFile(zipfile.ZipFile):
             file_to_open = file
 
         super().__init__(file_to_open, *args, **kwargs)
+        # Refuse a central-directory bomb here, the earliest point the entry count
+        # is known, so no consumer pays to list, validate or extract its members.
+        if getattr(self, "mode", "r") == "r":
+            _member_count_guard()(
+                len(self.filelist), getattr(self, "filename", None) or "<archive>"
+            )
 
     def extract(self, member, path=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd(), specific_member=member)

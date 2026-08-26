@@ -53,12 +53,31 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     jar_b = data_root / "b.jar"
     jar_b.touch()
     monkeypatch.setattr("nltk.data.path", [str(data_root)])
+    monkeypatch.setattr("nltk.internals._java_bin", "java")
 
     parser = MaltParser.__new__(MaltParser)
     parser.additional_java_args = []
     parser.malt_jars = [str(jar_a), str(jar_b)]
     parser.model = "model.mco"
 
-    cmd = parser.generate_malt_command("input.conll", mode="learn")
+    captured = {}
 
-    assert cmd[2] == f"{jar_a};{jar_b}"
+    def _fake_popen(cmd, *a, **k):
+        captured["cmd"] = list(cmd)
+
+        class _P:
+            returncode = 0
+
+            def communicate(self):
+                return ("", "")
+
+        return _P()
+
+    monkeypatch.setattr("nltk.internals.subprocess.Popen", _fake_popen)
+
+    # MaltParser hands its jars to internals.java(), which joins the classpath with
+    # os.pathsep; the launcher command's -cp value must use it.
+    argv = parser.generate_malt_command("input.conll", mode="learn")
+    parser._execute(argv)
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("-cp") + 1] == f"{jar_a};{jar_b}"

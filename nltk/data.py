@@ -644,6 +644,29 @@ MAX_UNZIP_SIZE = None
 #: resources regardless of ratio) are never rejected.
 MAX_UNZIP_ACTIVATION = 32 * 1024 * 1024  # 32 MiB
 
+#: Maximum number of entries an archive may declare (CWE-409). Metadata alone
+#: costs memory and CPU: reading the central directory of an archive with
+#: millions of entries exhausts both without decompressing a single byte, so the
+#: per-member ratio/size limits above never see it. The largest corpus NLTK
+#: ships declares ~15k members, so this leaves ample headroom. Configurable;
+#: ``None`` disables the check.
+MAX_UNZIP_MEMBERS = 100_000
+
+
+def _check_zip_member_count(count, name="<archive>"):
+    """Reject an archive declaring more entries than ``MAX_UNZIP_MEMBERS``.
+
+    A central-directory bomb needs no decompression: the entry table itself is
+    the payload, and every consumer that lists or iterates members pays for it.
+    """
+    if MAX_UNZIP_MEMBERS is not None and count > MAX_UNZIP_MEMBERS:
+        raise ValueError(
+            "Refusing to read zip %r: it declares %d entries, above "
+            "nltk.data.MAX_UNZIP_MEMBERS=%d (central-directory bomb). Raise "
+            "nltk.data.MAX_UNZIP_MEMBERS if this archive is trusted."
+            % (name, count, MAX_UNZIP_MEMBERS)
+        )
+
 
 def _check_decompression_bomb(info):
     """
