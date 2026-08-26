@@ -1794,3 +1794,29 @@ def test_load_from_json_rejects_a_path_shaped_lang(pathsec_sandbox, lang):
         PerceptronTagger(load=False).load_from_json(
             lang, FileSystemPathPointer(str(root))
         )
+
+
+@pytest.mark.skipif(not _POSIX, reason="/dev/fd accounting is POSIX")
+def test_validate_tool_path_does_not_leak_descriptors(restricted_sandbox):
+    """The guard opens the candidate to inspect it, so every refusal path must
+    close that descriptor; otherwise a caller that retries a refused model in a
+    loop exhausts the fd table (DoS)."""
+    root = Path(restricted_sandbox)
+    legit = root / "legit.model"
+    legit.write_text("{}", encoding="utf-8")
+    outside = _outside_dir()
+    try:
+        link = root / "l.model"
+        os.symlink(str(outside / "x"), str(link))
+        fifo = root / "f.model"
+        os.mkfifo(str(fifo))
+        before = len(os.listdir("/dev/fd"))
+        for _ in range(200):
+            pathsec.validate_tool_path(str(legit), context="probe")
+            for bad in (str(link), str(fifo), str(outside / "nope")):
+                with pytest.raises((PermissionError, OSError)):
+                    pathsec.validate_tool_path(bad, context="probe")
+        after = len(os.listdir("/dev/fd"))
+        assert after <= before + 2, f"fd leak: {before} -> {after}"
+    finally:
+        shutil.rmtree(outside, ignore_errors=True)
