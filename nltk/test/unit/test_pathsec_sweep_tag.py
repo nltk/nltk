@@ -2000,3 +2000,54 @@ def test_fuzzed_paths_never_resolve_outside_the_root(restricted_sandbox, seed):
             if not resolves_inside(candidate):
                 leaked.append((candidate, "permitted but resolves outside the root"))
     assert not leaked, f"fuzz found {len(leaked)} escapes, e.g. {leaked[:3]}"
+
+
+def test_fuzzed_sink_arguments_never_write_outside_the_root(pathsec_sandbox):
+    """The same idea one level up: fuzz the *sink* arguments together.
+
+    ``lang``, ``TAGGER_NAME`` and ``loc`` are composed into one filesystem
+    operation, so a combination can be dangerous when no single part is. This
+    drives the real write path and then asserts that nothing appeared outside
+    the root or in the working directory.
+    """
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    workdir = outside / "cwd"
+    workdir.mkdir()
+    os.chdir(workdir)
+
+    rng = random.Random(99)
+    locations = [
+        str(root / "d"),
+        str(outside / "d"),
+        "d",
+        "/etc/d",
+        "file://x",
+        "~/d",
+        "-d",
+        "",
+        "   ",
+    ]
+    tagger = PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+
+    surprises = []
+    for _ in range(200):
+        lang = "".join(rng.choice(_FUZZ_ALPHABET) for _ in range(rng.randint(1, 8)))
+        tagger.TAGGER_NAME = "".join(
+            rng.choice(_FUZZ_ALPHABET) for _ in range(rng.randint(1, 8))
+        )
+        try:
+            tagger.save_to_json(lang=lang, loc=rng.choice(locations))
+        except (PermissionError, ValueError, OSError, TypeError):
+            continue
+        except Exception as exc:  # noqa: BLE001 - an unexpected type is a finding
+            surprises.append((lang, tagger.TAGGER_NAME, f"{type(exc).__name__}: {exc}"))
+
+    assert not surprises, f"unexpected failures: {surprises[:3]}"
+    stray = [p.name for p in outside.iterdir() if p.name != "cwd"]
+    assert not stray, f"fuzzed save_to_json wrote outside the root: {stray}"
+    assert not list(workdir.iterdir()), "fuzzed save_to_json wrote into the CWD"
