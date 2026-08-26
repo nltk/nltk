@@ -210,6 +210,49 @@ class TestAveragedPerceptronEscapes:
     def test_directory_where_a_file_is_expected_is_refused(self, sandbox):
         _refused(AveragedPerceptron().load, str(sandbox))
 
+    @POSIX_ONLY
+    def test_dangling_in_root_symlink_destination_creates_nothing(
+        self, pathsec_sandbox
+    ):
+        """A symlink to a path that does not exist yet is the sharper write case.
+
+        ``os.path.exists`` says False, so an "already there?" pre-check waves it
+        through, and the open would then create the victim at the far end.
+        """
+        victim = pathsec_sandbox.outside / "victim.json"
+        link = pathsec_sandbox.root / "dangling.json"
+        os.symlink(str(victim), str(link))
+        _refused(AveragedPerceptron(_weights()).save, str(link))
+        assert not victim.exists(), "the write created the outside-root victim"
+
+    @POSIX_ONLY
+    def test_retrieve_to_a_dangling_in_root_symlink_creates_nothing(
+        self, pathsec_sandbox
+    ):
+        source = pathsec_sandbox.root / "src.txt"
+        with pathsec.open(str(source), "w", context="test") as handle:
+            handle.write("inside-payload")
+        victim = pathsec_sandbox.outside / "victim.txt"
+        link = pathsec_sandbox.root / "dangling.txt"
+        os.symlink(str(victim), str(link))
+        with pytest.raises((PermissionError, ValueError, OSError)):
+            nltk.data.retrieve("file://" + str(source), str(link), verbose=False)
+        assert not victim.exists()
+
+    def test_empty_resource_name_resolves_to_the_root_not_outside_it(
+        self, restricted_sandbox
+    ):
+        """``load("")`` normalises to the data root itself.
+
+        Harmless (a directory is not a readable model) but pinned: the point is
+        that it lands *on* the root rather than anywhere above it.
+        """
+        with pytest.raises((OSError, ValueError, LookupError)) as excinfo:
+            nltk.data.load("", format="raw", cache=False)
+        assert os.path.dirname(str(restricted_sandbox)) not in str(excinfo.value) or (
+            str(restricted_sandbox) in str(excinfo.value)
+        )
+
 
 class TestAveragedPerceptronBenignForms:
     """Forms that are harmless today, pinned so a future decode/expand regresses.
