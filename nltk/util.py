@@ -640,6 +640,7 @@ def acyclic_branches_depth_first(
         out_tree += [cut_mark]
     return out_tree
 
+
 def acyclic_dic2tree(node, dic, depth=-1, traversed=None, verbose=False):
     """
     :param node: the root node
