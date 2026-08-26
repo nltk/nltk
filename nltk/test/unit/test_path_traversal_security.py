@@ -20,6 +20,7 @@ double-decode bug would regress, so they are asserted to resolve in-root.
 """
 
 import os
+import shutil
 import tempfile
 
 import pytest
@@ -346,18 +347,25 @@ class TestPerceptronSaveSquat:
         t.classes = {"NN", "DT"}
         return t
 
-    def _base(self):
-        """A scratch dir INSIDE an allowed data root.
+    @pytest.fixture
+    def base(self):
+        """A scratch dir INSIDE an allowed data root, removed afterwards.
 
         ``tempfile.mkdtemp()`` is not usable here: on Linux it lands under the
         shared ``/tmp``, which is deliberately not an allowed root, so
         ``save_to_json`` would refuse it for containment before ever reaching the
-        squat guards these tests are about.
+        squat guards these tests are about. It is cleaned up rather than left in
+        the user's data root, where a suite run would otherwise pile up a
+        directory per test.
         """
-        return D.make_staging_dir(prefix="nltk_perceptron_squat_")
+        staging = D.make_staging_dir(prefix="nltk_perceptron_squat_")
+        try:
+            yield staging
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
 
-    def test_benign_save_is_private_and_roundtrips(self):
-        loc = os.path.join(self._base(), "model_dir")
+    def test_benign_save_is_private_and_roundtrips(self, base):
+        loc = os.path.join(base, "model_dir")
         t = self._tagger()
         t.save_to_json(lang="eng", loc=loc)
         files = os.listdir(loc)
@@ -370,10 +378,9 @@ class TestPerceptronSaveSquat:
         assert reloaded.model.weights == t.model.weights
         assert reloaded.tagdict == t.tagdict
 
-    def test_symlinked_save_location_is_refused(self):
+    def test_symlinked_save_location_is_refused(self, base):
         # A guessable in-root save dir a local attacker pre-plants a symlink at
         # must not capture/redirect the model write.
-        base = self._base()
         victim = os.path.join(base, "attacker_dir")
         os.makedirs(victim)
         squat = os.path.join(base, "squat")
@@ -382,10 +389,10 @@ class TestPerceptronSaveSquat:
             self._tagger().save_to_json(lang="eng", loc=squat)
         assert not os.listdir(victim), "write leaked through the symlink"
 
-    def test_world_writable_save_location_is_refused(self):
+    def test_world_writable_save_location_is_refused(self, base):
         # A pre-existing real dir at the guessable name that is world-writable
         # (an attacker could drop files in it / read the model back) is refused.
-        loc = os.path.join(self._base(), "shared")
+        loc = os.path.join(base, "shared")
         os.makedirs(loc)
         os.chmod(loc, 0o777)
         with pytest.raises(PermissionError):
