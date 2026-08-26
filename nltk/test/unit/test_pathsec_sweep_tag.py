@@ -25,6 +25,7 @@ Linux ``tempfile.mkdtemp()`` lives under the shared ``/tmp``).
 
 import builtins
 import inspect
+import io
 import os
 import re
 import shutil
@@ -1349,3 +1350,197 @@ def test_punkt_and_chunker_share_the_staging_guard(restricted_sandbox):
     tokenizer._save_dir = None
     with pytest.raises(ValueError):
         tokenizer.save_dir
+
+
+# --- PathPointer objects: the branch that assumes the caller already resolved --
+def test_zip_pointer_to_an_outside_archive_is_refused(pathsec_sandbox):
+    """``load_from_json`` accepts a ready-made PathPointer, so a caller could
+    hand it a ZipFilePathPointer aimed at an archive outside the sandbox."""
+    import zipfile
+
+    from nltk.data import ZipFilePathPointer
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    archive = outside / "evil.zip"
+    # builtins.zipfile on purpose: this stages the attack OUTSIDE the sandbox,
+    # which pathsec.ZipFile would (correctly) refuse to create.
+    with zipfile.ZipFile(str(archive), "w") as handle:
+        for attr, payload in (
+            ("weights", '{"z": {"NN": 1.0}}'),
+            ("tagdict", '{"z": "NN"}'),
+            ("classes", '["NN"]'),
+        ):
+            handle.writestr(f"m/averaged_perceptron_tagger_eng.{attr}.json", payload)
+
+    tagger = PerceptronTagger(load=False)
+    with pytest.raises((PermissionError, ValueError, OSError)):
+        tagger.load_from_json("eng", ZipFilePathPointer(str(archive), "m/"))
+    assert tagger.tagdict == {}
+
+
+def test_filesystem_pointer_to_an_outside_dir_is_refused(pathsec_sandbox):
+    """A FileSystemPathPointer is a str subclass, so it takes the absolute-path
+    branch and must meet the same guard as a plain string."""
+    import json
+
+    from nltk.data import FileSystemPathPointer
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    planted = outside / "plantdir"
+    planted.mkdir()
+    for attr, payload in (
+        ("weights", {"f": {"NN": 1.0}}),
+        ("tagdict", {"f": "NN"}),
+        ("classes", ["NN"]),
+    ):
+        (planted / f"averaged_perceptron_tagger_eng.{attr}.json").write_text(
+            json.dumps(payload), encoding="utf-8"
+        )
+
+    tagger = PerceptronTagger(load=False)
+    with pytest.raises(PermissionError):
+        tagger.load_from_json("eng", FileSystemPathPointer(str(planted)))
+    assert tagger.tagdict == {}
+
+
+def test_duck_typed_pointer_is_a_documented_non_finding(pathsec_sandbox):
+    """Negative result, kept so it is not rediscovered as a bug.
+
+    An object that merely *looks* like a PathPointer supplies its own ``open``,
+    so it can return any stream it likes. That is not a sandbox escape: a caller
+    able to construct it already has the file access it would grant. NLTK's own
+    pointer types are the ones that must be bounded, and they are (above).
+    """
+    from nltk.tag.perceptron import PerceptronTagger
+
+    class _FakePointer:
+        path = "/etc"
+
+        def join(self, name):
+            return self
+
+        def open(self, encoding=None):
+            return io.StringIO("not-json")
+
+    with pytest.raises(Exception):
+        PerceptronTagger(load=False).load_from_json("eng", _FakePointer())
+
+
+@pytest.mark.parametrize("pieces", [5, 20, 80, 160])
+def test_find_scales_linearly_in_the_number_of_path_pieces(restricted_sandbox, pieces):
+    """The ".zip/" retry recurses once per piece; each retry must terminate
+    immediately because the retried name now contains ".zip". Before the DOTALL
+    fix a newline made that condition unreachable and the retries compounded."""
+    name = "/".join(f"p{i}\n" for i in range(pieces))
+    started = time.monotonic()
+    with pytest.raises(LookupError):
+        nltk.data.find(name, paths=[restricted_sandbox])
+    assert time.monotonic() - started < 5.0
+
+
+# --- platform-shaped vectors --------------------------------------------------
+@pytest.mark.parametrize(
+    "device", ["NUL", "CON", "COM1", "LPT1", "nul.model", "Con.txt"]
+)
+def test_windows_device_names_are_refused_as_model_paths(restricted_sandbox, device):
+    """On Windows these are character devices wherever they appear, so
+    ``<root>\\NUL`` is the null device rather than a file inside the root: a model
+    write silently vanishes and a read returns nothing. Refused on Windows; on
+    POSIX they are ordinary filenames and this asserts they stay usable."""
+    target = os.path.join(restricted_sandbox, device)
+    if os.name == "posix":
+        with pathsec.open(target, "w", context="probe") as handle:
+            handle.write("{}")
+        pathsec.validate_tool_path(target, context="probe")
+    else:
+        with pytest.raises(PermissionError):
+            pathsec.validate_tool_path(target, context="probe")
+
+
+@pytest.mark.skipif(not _POSIX, reason="POSIX symlinks")
+def test_in_root_symlink_is_refused_by_design(restricted_sandbox):
+    """Deliberate, not an oversight: a final-component symlink is refused even
+    when its target is inside the root, matching what ``pathsec.open`` already
+    does for descriptors it owns. Data files are never symlinks, so refusing
+    them outright removes the swap race rather than trying to win it."""
+    root = Path(restricted_sandbox)
+    real = root / "real.model"
+    real.write_text("{}", encoding="utf-8")
+    link = root / "link.model"
+    os.symlink(str(real), str(link))
+
+    pathsec.validate_tool_path(str(real), context="probe")
+    pathsec.validate_path(str(link), context="probe")
+    with pytest.raises(PermissionError):
+        pathsec.validate_tool_path(str(link), context="probe")
+
+
+def test_tool_path_string_checks_apply_even_with_enforce_off(
+    restricted_sandbox, monkeypatch
+):
+    """``ENFORCE = False`` relaxes *sandbox policy*, which is a deployment
+    choice. It does not make ``-mx4g`` or a NUL byte a valid model filename, so
+    those checks stay on."""
+    monkeypatch.setattr(pathsec, "ENFORCE", False)
+    for bad in ("-mx4g", "a\x00b", "   "):
+        with pytest.raises(PermissionError):
+            pathsec.validate_tool_path(bad, context="probe")
+
+
+# --- the other caller-supplied StanfordTagger arguments ----------------------
+@pytest.mark.parametrize(
+    "option",
+    [
+        "-Xshare:off",
+        "-cp /etc",
+        "@/etc/passwd",
+        "-agentlib:jdwp=transport=dt_socket",
+        "-Djava.security.policy=/etc/evil",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "-XX:OnOutOfMemoryError=touch /tmp/pwn",
+    ],
+)
+def test_stanford_java_options_stay_on_the_allowlist(pathsec_sandbox, option):
+    """``java_options`` is a constructor argument that reaches the JVM launcher.
+    The model-path guard does not cover it; the ``java()`` option allowlist does,
+    and this pins that the tagger really goes through that chokepoint."""
+    from nltk.tag.stanford import StanfordPOSTagger
+
+    root, _ = pathsec_sandbox
+    model = root / "m.tagger"
+    model.write_text("stub", encoding="utf-8")
+    jar = root / "stanford-postagger.jar"
+    jar.write_text("PK\x03\x04", encoding="utf-8")
+
+    tagger = object.__new__(StanfordPOSTagger)
+    tagger._stanford_model = str(model)
+    tagger._stanford_jar = str(jar)
+    tagger._encoding = "utf8"
+    tagger.java_options = option
+    with pytest.raises((ValueError, PermissionError)):
+        tagger.tag_sents([["a"]])
+
+
+@pytest.mark.parametrize("encoding", ["-model", "utf8 -x", "-encoding"])
+def test_stanford_encoding_never_reaches_the_jvm_as_an_option(
+    pathsec_sandbox, encoding
+):
+    """Documented benign result: ``encoding`` also becomes an argv value, but the
+    input is encoded with it first, so a non-codec string raises LookupError long
+    before ``java()``. Pinned so a refactor that stops encoding first (and starts
+    passing the raw string through) shows up here."""
+    from nltk.tag.stanford import StanfordPOSTagger
+
+    root, _ = pathsec_sandbox
+    model = root / "m.tagger"
+    model.write_text("stub", encoding="utf-8")
+
+    tagger = object.__new__(StanfordPOSTagger)
+    tagger._stanford_model = str(model)
+    tagger._stanford_jar = str(root / "stanford-postagger.jar")
+    tagger._encoding = encoding
+    tagger.java_options = "-mx1000m"
+    with pytest.raises(LookupError):
+        _no_jvm(lambda: tagger.tag_sents([["a"]]))

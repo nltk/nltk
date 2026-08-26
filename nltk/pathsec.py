@@ -260,6 +260,23 @@ _REFUSING_ERRNOS = frozenset(
 )
 
 
+# On Windows these names are devices wherever they appear, so "<root>\NUL" is
+# the null device rather than a file inside the root, whatever the path says.
+_WINDOWS_RESERVED_NAMES = frozenset(
+    ["CON", "PRN", "AUX", "NUL"]
+    + [f"COM{n}" for n in range(1, 10)]
+    + [f"LPT{n}" for n in range(1, 10)]
+)
+
+
+def _is_windows_device_name(raw):
+    """True if the final component of *raw* names a Windows character device."""
+    if os.name == "posix":
+        return False
+    leaf = raw.replace("/", "\\").rsplit("\\", 1)[-1]
+    return leaf.split(".", 1)[0].strip().upper() in _WINDOWS_RESERVED_NAMES
+
+
 def _as_path_string(path_input):
     """Normalise a path-ish argument to the exact string a sink would use.
 
@@ -321,6 +338,11 @@ def validate_tool_path(path_input, context="NLTK tool", *, must_exist=True):
         raise PermissionError(
             f"Security Violation [{context}]: path {raw!r} starts with '-' and "
             "would be parsed as a command-line option by the tool (CWE-88)"
+        )
+    if _is_windows_device_name(raw):
+        raise PermissionError(
+            f"Security Violation [{context}]: path {raw!r} names a Windows "
+            "character device, not a file inside the data root"
         )
 
     validate_path(raw, context=context)
