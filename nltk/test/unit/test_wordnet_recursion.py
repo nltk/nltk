@@ -78,11 +78,12 @@ def test_branches_same_behavior():
     depth = traversal_depth(result)
     assert depth <= MAX_RECURSION_DEPTH
 
+
 def test_dic2tree_short_chain():
     d = {}
     for i in range(5):
-        d[str(i)] = [str(i+1)] if i < 4 else []
-    result = acyclic_dic2tree('0', d)
+        d[str(i)] = [str(i + 1)] if i < 4 else []
+    result = acyclic_dic2tree("0", d)
     depth = 0
     current = result
     while isinstance(current, list) and len(current) > 1:
@@ -90,11 +91,12 @@ def test_dic2tree_short_chain():
         current = current[1]
     assert depth == 4
 
+
 def test_dic2tree_long_chain_capped():
     d = {}
     for i in range(1500):
-        d[str(i)] = [str(i+1)] if i < 1499 else []
-    result = acyclic_dic2tree('0', d)
+        d[str(i)] = [str(i + 1)] if i < 1499 else []
+    result = acyclic_dic2tree("0", d)
     depth = 0
     current = result
     while isinstance(current, list) and len(current) > 1:
@@ -102,11 +104,12 @@ def test_dic2tree_long_chain_capped():
         current = current[1]
     assert depth <= MAX_RECURSION_DEPTH
 
+
 def test_dic2tree_explicit_depth():
     d = {}
     for i in range(10):
-        d[str(i)] = [str(i+1)] if i < 9 else []
-    result = acyclic_dic2tree('0', d, depth=20)
+        d[str(i)] = [str(i + 1)] if i < 9 else []
+    result = acyclic_dic2tree("0", d, depth=20)
     depth = 0
     current = result
     while isinstance(current, list) and len(current) > 1:
@@ -114,14 +117,16 @@ def test_dic2tree_explicit_depth():
         current = current[1]
     assert depth == 9
 
+
 def test_dic2tree_negative_depth():
-    d = {'a': ['b']}
+    d = {"a": ["b"]}
     with pytest.raises(ValueError, match="depth must be >= -1"):
-        acyclic_dic2tree('a', d, depth=-2)
+        acyclic_dic2tree("a", d, depth=-2)
+
 
 def test_dic2tree_cycle():
     # Simple cycle: a -> b -> a
-    d = {'a': ['b'], 'b': ['a']}
-    result = acyclic_dic2tree('a', d, verbose=False)
+    d = {"a": ["b"], "b": ["a"]}
+    result = acyclic_dic2tree("a", d, verbose=False)
     # Should return ['a', ['b']] because the cycle is truncated
-    assert result == ['a', ['b']]
+    assert result == ["a", ["b"]]

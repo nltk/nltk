@@ -57,6 +57,7 @@ _CLOSED_WITH_PROBE = {
     "GHSA-pcm8-fqjx-rvx8",
 }
 
+
 def _next_url(link_header):
     """The *on-origin* rel="next" URL from a GitHub ``Link`` header, else None.
 
