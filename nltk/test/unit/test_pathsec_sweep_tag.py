@@ -148,6 +148,7 @@ def test_tagger_sources_route_through_pathsec():
 
     save_src = inspect.getsource(perceptron.PerceptronTagger.save_to_json)
     assert "validate_tool_dir(loc" in save_src
+    assert "_validate_name_component(lang" in save_src
 
     ne_src = inspect.getsource(named_entity.Maxent_NE_Chunker.save_params)
     assert "validate_tool_dir(tab_dir" in ne_src
@@ -1111,7 +1112,7 @@ def test_save_to_json_refuses_a_path_shaped_lang(pathsec_sandbox, lang):
 
 
 def test_lang_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
-    """Negative control: without _validate_lang the traversal really lands
+    """Negative control: without the filename guard the traversal really lands
     outside the pinned directory, so the guard is what stops it."""
     import nltk.tag.perceptron as perceptron
 
@@ -1132,7 +1133,9 @@ def test_lang_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
         tagger.save_to_json(lang=lang, loc=str(loc))
     assert not list(outside.iterdir())
 
-    monkeypatch.setattr(perceptron, "_validate_lang", lambda value: str(value))
+    monkeypatch.setattr(
+        perceptron, "_validate_name_component", lambda value, kind="": str(value)
+    )
     tagger.save_to_json(lang=lang, loc=str(loc))
     escaped = sorted(p.name for p in outside.iterdir())
     assert escaped, "guard removed but nothing escaped; the probe is inert"
@@ -1681,3 +1684,98 @@ def test_every_public_path_taking_method_is_guarded_or_delegates():
                 "it needs its own guard now"
             )
     assert audited >= 10, f"only {audited} path-taking methods audited"
+
+
+@pytest.mark.parametrize(
+    "tagger_name", ["seed/../../evil", "../../evil", "a\\b", "x\x00"]
+)
+def test_tagger_name_is_guarded_like_lang(pathsec_sandbox, tagger_name):
+    """``TAGGER_NAME`` is the other half of the model filename and traverses the
+    same way. Guarding only ``lang`` left this half open, which is why the check
+    now runs on the composed filename rather than on one ingredient."""
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    loc = root / "mdir"
+    loc.mkdir(mode=0o700)
+    (loc / "seed").mkdir(mode=0o700)
+
+    tagger = PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+    tagger.TAGGER_NAME = tagger_name
+    with pytest.raises(ValueError):
+        tagger.save_to_json(lang="eng", loc=str(loc))
+    assert not list(outside.iterdir())
+
+
+def test_tagger_name_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
+    """Negative control for the TAGGER_NAME half of the filename."""
+    import nltk.tag.perceptron as perceptron
+
+    root, outside = pathsec_sandbox
+    loc = root / "mdir"
+    loc.mkdir(mode=0o700)
+    seed = loc / "seed"
+    seed.mkdir(mode=0o700)
+    rel = os.path.relpath(os.path.realpath(str(outside)), os.path.realpath(str(seed)))
+
+    tagger = perceptron.PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+    tagger.TAGGER_NAME = "seed/" + rel + "/EVIL"
+
+    with pytest.raises(ValueError):
+        tagger.save_to_json(lang="eng", loc=str(loc))
+    assert not list(outside.iterdir())
+
+    monkeypatch.setattr(
+        perceptron, "_validate_name_component", lambda value, kind="": str(value)
+    )
+    tagger.save_to_json(lang="eng", loc=str(loc))
+    escaped = sorted(p.name for p in outside.iterdir())
+    assert escaped, "guard removed but nothing escaped; the probe is inert"
+    assert any(name.startswith("EVIL_") for name in escaped)
+
+
+def test_param_files_validates_the_composed_filename(pathsec_sandbox):
+    """The chokepoint checks the whole name, so any future interpolation into it
+    is covered without adding another per-ingredient check."""
+    from nltk.tag.perceptron import PerceptronTagger
+
+    tagger = PerceptronTagger(load=False)
+    tagger.TAGGER_NAME = "../evil"
+    with pytest.raises(ValueError):
+        tagger.param_files("eng")
+    tagger.TAGGER_NAME = "averaged_perceptron_tagger"
+    assert tagger.param_files("eng")[0].endswith("_eng.weights.json")
+
+
+@pytest.mark.parametrize("tagger_name", ["..", "   ", ".", "-x"])
+def test_odd_but_harmless_tagger_names_compose_to_safe_filenames(
+    pathsec_sandbox, tagger_name
+):
+    """Benign pin: the check is on the *composed* filename, and ``..`` composes
+    to ``.._eng.weights.json``, which is an ordinary file inside the pinned
+    directory rather than a traversal. Permitting these is correct; pinned so a
+    change that starts treating the composed name as a path is caught."""
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    loc = root / "mdir"
+
+    tagger = PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+    tagger.TAGGER_NAME = tagger_name
+    tagger.save_to_json(lang="eng", loc=str(loc))
+    written = sorted(p.name for p in loc.iterdir())
+    assert written == [
+        f"{tagger_name}_eng.classes.json",
+        f"{tagger_name}_eng.tagdict.json",
+        f"{tagger_name}_eng.weights.json",
+    ]
+    assert not list(outside.iterdir())

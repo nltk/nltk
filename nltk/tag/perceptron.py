@@ -30,17 +30,18 @@ from nltk.pathsec import validate_tool_dir, validate_tool_path
 from nltk.tag.api import TaggerI
 
 
-def _validate_lang(lang):
-    """Refuse a language code that is really a path.
+def _validate_name_component(value, kind="language code"):
+    """Refuse a value that is really a path where a filename fragment is meant.
 
-    ``lang`` is interpolated straight into the model filenames, and those are
-    opened *relative to a pinned directory descriptor*. ``O_NOFOLLOW`` and the
-    fd only anchor the base: a ``..`` component inside the name walks out of the
-    verified directory and writes anywhere the process can reach, so
-    ``save_to_json(lang="sub/../../../../etc")`` escaped the sandbox entirely
-    (CWE-22). A language code is a single filename component, never a path.
+    The model filenames are built by interpolation and then opened *relative to
+    a pinned directory descriptor*. ``O_NOFOLLOW`` and the fd only anchor the
+    base: a ``..`` inside the name walks out of the verified directory and
+    writes anywhere the process can reach, so both halves of the name (the
+    ``lang`` and the ``TAGGER_NAME`` prefix) escaped the sandbox (CWE-22).
+    Applied to the composed filename as well as to each part, so a future
+    interpolation is covered without a new check.
     """
-    text = str(lang)
+    text = str(value)
     if (
         not text
         or not text.strip()
@@ -52,7 +53,7 @@ def _validate_lang(lang):
         or (os.altsep and os.altsep in text)
     ):
         raise ValueError(
-            f"Invalid tagger language code {lang!r}: must be a single filename "
+            f"Invalid tagger {kind} {value!r}: must be a single filename "
             "component (no path separators, '..' or NUL)"
         )
     return text
@@ -273,20 +274,24 @@ class PerceptronTagger(TaggerI):
         cannot pre-create or symlink it to redirect the write (CWE-377/378).
         """
         if self._save_dir is None:
-            # lang lands in a mkdtemp prefix, which is concatenated onto the
-            # data root, so a path-shaped lang would stage output outside it.
-            _validate_lang(self.lang)
+            # Both parts land in a mkdtemp prefix, which is concatenated onto
+            # the data root, so a path-shaped part stages output outside it.
+            _validate_name_component(self.lang, "language code")
+            _validate_name_component(self.TAGGER_NAME, "tagger name")
             self._save_dir = make_staging_dir(
                 prefix=f"nltk_{self.TAGGER_NAME}_{self.lang}_"
             )
         return self._save_dir
 
     def param_files(self, lang="eng"):
-        # Single chokepoint where lang becomes a filename, so validate here.
-        _validate_lang(lang)
-        return (
-            f"{self.TAGGER_NAME}_{lang}.{attr}.json"
-            for attr in ["weights", "tagdict", "classes"]
+        # The one place lang and TAGGER_NAME become filenames, so validate the
+        # composed name here rather than each ingredient at each caller.
+        _validate_name_component(lang, "language code")
+        return tuple(
+            _validate_name_component(
+                f"{self.TAGGER_NAME}_{lang}.{attr}.json", "model filename"
+            )
+            for attr in ("weights", "tagdict", "classes")
         )
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
@@ -362,7 +367,7 @@ class PerceptronTagger(TaggerI):
 
     def save_to_json(self, lang="xxx", loc=None):
         # Fail before any directory is created, not once the fd is pinned.
-        _validate_lang(lang)
+        _validate_name_component(lang, "language code")
         if not loc:
             loc = self.save_dir
         # A caller-supplied destination is an unbounded write primitive otherwise:
