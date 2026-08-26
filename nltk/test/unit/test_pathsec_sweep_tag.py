@@ -1980,6 +1980,9 @@ _FUZZ_ALPHABET = list(string.printable) + [
     "\t",
     "-",
     "file:",
+    "\r",
+    "#",
+    "?",
 ]
 
 _FUZZ_PREFIXES = [
@@ -2200,3 +2203,32 @@ def test_ordinary_resource_names_are_unaffected(restricted_sandbox):
             assert "Unsafe resource path" not in str(
                 exc
             ), f"{name!r} was wrongly rejected as unsafe"
+
+
+@pytest.mark.parametrize("seed", [3141])
+def test_fuzzed_resource_names_never_resolve_outside_the_root(restricted_sandbox, seed):
+    """Fuzz ``find`` itself, not just the path guards.
+
+    ``find`` is where a resource name becomes a filesystem path, and it is the
+    step the standard library rewrites underneath us: this is the shape that
+    escaped on Python 3.14. A candidate is a finding if ``find`` returns a
+    pointer whose realpath is outside the data root.
+    """
+    root_real = os.path.realpath(restricted_sandbox)
+    rng = random.Random(seed)
+    expected = (LookupError, ValueError, OSError, TypeError)
+
+    escapes = []
+    for _ in range(1200):
+        name = "".join(rng.choice(_FUZZ_ALPHABET) for _ in range(rng.randint(1, 14)))
+        try:
+            found = nltk.data.find(name, paths=[restricted_sandbox])
+        except expected:
+            continue
+        except Exception as exc:  # noqa: BLE001 - an unexpected type is a finding
+            escapes.append((name, f"{type(exc).__name__}: {exc}"))
+            continue
+        real = os.path.realpath(str(found))
+        if not (real == root_real or real.startswith(root_real + os.sep)):
+            escapes.append((name, real))
+    assert not escapes, f"find() escaped the root: {escapes[:3]}"
