@@ -2272,19 +2272,20 @@ def test_pinned_model_dir_descriptor_is_revalidated(pathsec_sandbox, monkeypatch
     victim = outside / "swapped"
     victim.mkdir(mode=0o700)
 
-    # Simulate the swap: containment passes on the string, but the descriptor
-    # the kernel hands back belongs to a directory outside the root.
-    monkeypatch.setattr(perceptron, "_fd_realpath", lambda fd: str(victim))
-    with pytest.raises(PermissionError):
-        perceptron._open_private_model_dir(str(root / "modeldir"))
-
-    # control: without the swap the same call succeeds and returns a descriptor
-    monkeypatch.undo()
+    # Control first, while nothing is patched: an in-root directory opens fine.
+    # (Not monkeypatch.undo() afterwards, which would also undo the sandbox
+    # fixture's own patches and take the data root away with them.)
     fd = perceptron._open_private_model_dir(str(root / "modeldir2"))
     try:
         assert os.fstat(fd).st_mode & 0o777 == 0o700
     finally:
         os.close(fd)
+
+    # Now simulate the swap: containment passes on the string, but the
+    # descriptor the kernel hands back belongs to a directory outside the root.
+    monkeypatch.setattr(perceptron, "_fd_realpath", lambda fd: str(victim))
+    with pytest.raises(PermissionError):
+        perceptron._open_private_model_dir(str(root / "modeldir"))
 
 
 # --- unicode / encoding confusion at the guard boundary ----------------------
