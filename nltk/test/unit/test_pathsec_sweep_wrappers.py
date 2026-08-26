@@ -1560,3 +1560,116 @@ def test_benign_str_subclass_still_works(pathsec_sandbox):
     assert validate_model_resource(_BenignSubclass(str(model)), context="sweep") == str(
         model
     )
+
+
+# ---------------------------------------------------------------------------
+# corenlp_options is SPLIT into separate argv elements, so it can append a
+# second -model. Verified directly against the JVM that Stanford's
+# LexicalizedParser honours the LAST occurrence, so an injected option replaced
+# the model the guard had just checked and the parser deserialized that file.
+# ---------------------------------------------------------------------------
+
+
+def _stanford_with_options(model_path, options):
+    parser = _stanford_parser(model_path)
+    parser.corenlp_options = options
+    return parser
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        "-model /etc/passwd",
+        "-model ../../../etc/passwd",
+        "-loadClassifier /etc/passwd",
+        "-outputFormat xml",
+        "-encoding utf8",
+        "-sentences newline",
+    ],
+    ids=[
+        "second-model-abs",
+        "second-model-traversal",
+        "loadClassifier-abs",
+        "dup-outputFormat",
+        "dup-encoding",
+        "dup-sentences",
+    ],
+)
+def test_corenlp_options_cannot_override_guarded_flags(
+    pathsec_sandbox, monkeypatch, options
+):
+    import nltk.parse.stanford as st
+
+    root, _outside = pathsec_sandbox
+    _trap_java(monkeypatch, st, {})
+    model = str(root / "ok.ser.gz")
+    with pathsec.open(model, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    with pytest.raises((PermissionError, ValueError)):
+        _stanford_with_options(model, options).parse_sents([["hi", "there"]])
+
+
+def test_corenlp_options_cannot_point_outside_the_roots(pathsec_sandbox, monkeypatch):
+    import nltk.parse.stanford as st
+
+    root, outside = pathsec_sandbox
+    _trap_java(monkeypatch, st, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("x")
+    model = str(root / "ok.ser.gz")
+    with pathsec.open(model, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    with pytest.raises((PermissionError, ValueError)):
+        _stanford_with_options(model, f"-serializedDict {evil}").parse_sents(
+            [["hi", "there"]]
+        )
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        "",
+        "-maxLength 40",
+        "-serializedDict edu/stanford/nlp/x.ser.gz",
+        "-retainTMPSubcategories",
+    ],
+    ids=["empty", "new-flag", "resource-value", "bare-flag"],
+)
+def test_corenlp_options_passthrough_still_works(pathsec_sandbox, monkeypatch, options):
+    """Over-block control: this is a general passthrough for the tool's own
+    settings, so anything that is neither a duplicate nor an out-of-root path
+    must still reach the JVM."""
+    import nltk.parse.stanford as st
+
+    root, _outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, st, {})
+    model = str(root / "ok.ser.gz")
+    with pathsec.open(model, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    with pytest.raises(_ReachedJVM):
+        _stanford_with_options(model, options).parse_sents([["hi", "there"]])
+    assert sink["cmd"][sink["cmd"].index("-model") + 1] == model
+    for token in options.split():
+        assert token in sink["cmd"]
+
+
+def test_teeth_corenlp_options_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
+    """Restore the raw split and the injected -model reaches the JVM again."""
+    import nltk.parse.stanford as st
+
+    root, outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, st, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("x")
+    model = str(root / "ok.ser.gz")
+    with pathsec.open(model, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    monkeypatch.setattr(
+        st.StanfordParser,
+        "_validated_extra_options",
+        lambda self, cmd: self.corenlp_options.split(),
+    )
+    with pytest.raises(_ReachedJVM):
+        _stanford_with_options(model, f"-model {evil}").parse_sents([["hi", "there"]])
+    models = [sink["cmd"][i + 1] for i, x in enumerate(sink["cmd"]) if x == "-model"]
+    assert str(evil) in models
