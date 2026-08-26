@@ -731,15 +731,31 @@ def test_absolute_path_with_dash_basename_is_not_an_option(pathsec_sandbox):
 
 
 # --- the guards must be load-bearing, not incidental --------------------------
+# (test id, module, guard attribute, driver). The id is spelled out because a
+# function repr carries its address, which differs per xdist worker.
 _TEETH = [
-    ("nltk.tag.crf", "validate_tool_path", _drive_crf_set),
-    ("nltk.tag.stanford", "validate_tool_path", _drive_stanford_tag_sents),
-    ("nltk.tag.hunpos", "validate_tool_path", _drive_hunpos_init),
-    ("nltk.tag.perceptron", "validate_tool_dir", _drive_save_to_json),
+    ("crf.set_model_file", "nltk.tag.crf", "validate_tool_path", _drive_crf_set),
+    (
+        "stanford.tag_sents",
+        "nltk.tag.stanford",
+        "validate_tool_path",
+        _drive_stanford_tag_sents,
+    ),
+    ("hunpos.__init__", "nltk.tag.hunpos", "validate_tool_path", _drive_hunpos_init),
+    (
+        "perceptron.save_to_json",
+        "nltk.tag.perceptron",
+        "validate_tool_dir",
+        _drive_save_to_json,
+    ),
 ]
 
 
-@pytest.mark.parametrize("modname,attr,driver", _TEETH, ids=lambda v: str(v)[:40])
+@pytest.mark.parametrize(
+    "modname,attr,driver",
+    [entry[1:] for entry in _TEETH],
+    ids=[entry[0] for entry in _TEETH],
+)
 def test_each_guard_is_load_bearing(
     pathsec_sandbox, monkeypatch, modname, attr, driver
 ):
