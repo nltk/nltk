@@ -2385,3 +2385,20 @@ def test_unicode_vectors_never_reach_the_write_sink(pathsec_sandbox):
         except (PermissionError, ValueError, OSError, TypeError):
             continue
     assert {p.name for p in outside.iterdir()} == before
+
+
+@pytest.mark.parametrize("blank", ["", "   ", "\t", "\n", " \t "])
+def test_load_from_json_rejects_a_blank_location(pathsec_sandbox, blank):
+    """A blank ``loc`` must fail the same way on every platform.
+
+    On POSIX ``find("   ")`` simply does not resolve, but Windows strips
+    trailing spaces from a path component, so the same call silently resolved
+    to the data root itself and read whatever model happened to be there. The
+    result was contained either way; the point is that the two platforms
+    disagreed about whether it was an error at all.
+    """
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root, _ = pathsec_sandbox
+    with pytest.raises((ValueError, PermissionError, LookupError)):
+        PerceptronTagger(load=False).load_from_json("eng", blank)

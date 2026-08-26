@@ -437,6 +437,12 @@ class PerceptronTagger(TaggerI):
         _validate_name_component(lang, "language code")
         if isinstance(loc, bytes):
             loc = os.fsdecode(loc)
+        if isinstance(loc, (str, Path)) and not str(loc).strip():
+            # Windows strips trailing spaces from a path component, so a blank
+            # loc silently resolves to the data root itself instead of failing.
+            raise ValueError(
+                f"Invalid tagger model location {loc!r}: blank path names no model"
+            )
         if loc is None:
             loc = find(f"taggers/averaged_perceptron_tagger_{lang}/")
         elif isinstance(loc, str):
