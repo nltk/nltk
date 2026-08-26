@@ -553,6 +553,63 @@ class TestPerceptronTaggerDirectoryOpen:
         _refused(AveragedPerceptron(_weights()).save, link)
 
 
+class TestDestinationSpellings:
+    """The same outside directory, written several legal ways.
+
+    Trailing separators/dots/spaces and the non-``str`` path types are the
+    spellings a prefix comparison is most likely to disagree with the kernel
+    about, so each is asserted to end at the same refusal.
+    """
+
+    @pytest.mark.parametrize("suffix", ["/", ".", " ", "//", "/."])
+    def test_trailing_characters_do_not_change_the_verdict(self, suffix, sandbox):
+        _refused(_tagger().save_to_json, LANG, str(sandbox / "dest") + suffix)
+        assert not list(sandbox.iterdir())
+
+    @pytest.mark.parametrize("wrap", ["path", "bytes"])
+    def test_non_string_destinations_are_validated_too(self, wrap, sandbox):
+        raw = str(sandbox / "dest")
+        loc = pathlib.Path(raw) if wrap == "path" else raw.encode()
+        _refused(_tagger().save_to_json, LANG, loc)
+        assert not list(sandbox.iterdir())
+
+    @POSIX_ONLY
+    def test_a_symlink_chain_is_followed_to_its_real_end(self, pathsec_sandbox):
+        """Two in-root hops to an outside file, not one.
+
+        A check that resolves only one level would call the second hop in-root
+        and let the read through.
+        """
+        target = pathsec_sandbox.outside / "chain.json"
+        target.write_text(json.dumps(_weights()), encoding="utf-8")
+        second = pathsec_sandbox.root / "second.json"
+        first = pathsec_sandbox.root / "first.json"
+        os.symlink(str(target), str(second))
+        os.symlink(str(second), str(first))
+        model = AveragedPerceptron()
+        _refused(model.load, str(first))
+        assert model.weights == {}
+
+    @POSIX_ONLY
+    def test_maxent_tab_dir_symlinked_out_of_the_root_is_refused(self, pathsec_sandbox):
+        numpy = pytest.importorskip("numpy")
+        from nltk.classify.maxent import save_maxent_params
+
+        victim = pathsec_sandbox.outside / "mx"
+        victim.mkdir()
+        link = pathsec_sandbox.root / "symdir"
+        os.symlink(str(victim), str(link))
+        _refused(
+            save_maxent_params,
+            numpy.array([1.0]),
+            {("a", "b"): 0},
+            ["L"],
+            {"alwayson": 0},
+            str(link),
+        )
+        assert not list(victim.iterdir())
+
+
 class TestPerceptronTaggerLangComponent:
     """``lang`` is interpolated into the filename both directions open."""
 
@@ -576,6 +633,29 @@ class TestPerceptronTaggerLangComponent:
         with pytest.raises(ValueError):
             _tagger().save_to_json(lang=lang, loc=loc)
         assert not os.listdir(loc)
+
+    def test_an_overlong_lang_cannot_be_written(self, restricted_sandbox):
+        """Rejected by the filesystem, not by a guard, so it is a pin: nothing is
+        created and the failure never lands outside the directory."""
+        loc = os.path.join(restricted_sandbox, "long")
+        os.makedirs(loc, exist_ok=True)
+        with pytest.raises(OSError):
+            _tagger().save_to_json(lang="a" * 5000, loc=loc)
+        assert not os.listdir(loc)
+
+    def test_a_leading_dash_lang_stays_a_filename(self, restricted_sandbox):
+        """Audited-benign: no model-artifact path is ever a subprocess argument,
+        so a leading dash is just a filename. Pinned so that if one of these
+        paths ever becomes argv, this stops being silently true."""
+        loc = os.path.join(restricted_sandbox, "dash")
+        os.makedirs(loc, exist_ok=True)
+        _tagger().save_to_json(lang="-rf", loc=loc)
+        written = sorted(os.listdir(loc))
+        assert written == sorted(_tagger().param_files("-rf"))
+        for name in written:
+            assert os.path.dirname(os.path.realpath(os.path.join(loc, name))) == (
+                os.path.realpath(loc)
+            )
 
     @pytest.mark.parametrize("lang", ["eng", "rus", "probeartifact", "xx"])
     def test_ordinary_language_codes_still_work(self, lang, restricted_sandbox):
