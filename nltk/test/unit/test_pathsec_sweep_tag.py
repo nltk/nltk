@@ -272,3 +272,84 @@ def test_setting_model_file_attribute_directly_reaches_no_loader():
     setter = inspect.getsource(crf_module.CRFTagger.set_model_file)
     assert "validate_path" in setter
     assert setter.index("validate_path") < setter.index("_tagger.open")
+
+
+# --- sandbox-widening: the escape that would defeat every guard above --------
+@pytest.mark.parametrize("victim", ["/etc", "/usr/bin", "~"])
+def test_model_dir_authorization_does_not_widen_the_sandbox(victim, monkeypatch):
+    """A caller-supplied model directory must never be added to nltk.data.path.
+
+    NLTK used to widen the sandbox so a model saved under the private system-temp
+    dir could be read back. ``pathsec.is_private_dir`` accepts
+    any directory owned by the current user *or root* that is not group/world
+    writable, which includes /etc, /usr/bin and $HOME. Authorizing one of those
+    disarms ``validate_path`` AND ``internals._verify_jar_sandbox`` for the whole
+    process, defeating every model-path guard in this module at once.
+    """
+    import nltk.data
+    from nltk.internals import UntrustedJarError, _verify_jar_sandbox
+    from nltk.tag.perceptron import PerceptronTagger
+
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(nltk.data, "path", list(nltk.data.path))
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+
+    target = os.path.expanduser(victim)
+    try:
+        PerceptronTagger(load=True, lang="eng", loc=target)
+    except Exception:
+        pass  # the load itself fails; only its side effect matters here
+
+    real = os.path.realpath(target)
+    authorized = [
+        os.path.realpath(str(p)) for p in nltk.data.path if isinstance(p, str)
+    ]
+    assert real not in authorized, f"{victim} was added to nltk.data.path"
+
+    # and the guards it would have disarmed are still armed
+    with pytest.raises(PermissionError):
+        pathsec.validate_path(os.path.join(real, "anything"), context="probe")
+    with pytest.raises(UntrustedJarError):
+        _verify_jar_sandbox([os.path.join(real, "evil.jar")])
+
+
+def test_trained_model_dir_is_allocated_inside_a_data_root():
+    """NLTK's own trained-model dir must be allocated by pathsec inside a data
+    root, so saving and loading need no sandbox widening at all.
+
+    This is what replaced the old guessable ``<tempdir>/<tagger>_<lang>`` plus an
+    authorize step: an unpredictable 0700 directory under an allowed root.
+    """
+    import nltk.data
+    from nltk.tag.perceptron import PerceptronTagger
+
+    tagger = PerceptronTagger(load=False)
+    save_dir = tagger.save_dir
+    try:
+        roots = [
+            os.path.realpath(os.path.expanduser(str(p)))
+            for p in nltk.data.path
+            if isinstance(p, str)
+        ]
+        real = os.path.realpath(save_dir)
+        assert any(
+            real == r or real.startswith(r + os.sep) for r in roots
+        ), f"{save_dir} is not inside an allowed data root"
+        # already inside the sandbox: pathsec permits it without any widening
+        pathsec.validate_path(save_dir, context="probe")
+        if os.name == "posix":
+            assert (os.stat(real).st_mode & 0o077) == 0, "staging dir is not private"
+    finally:
+        shutil.rmtree(save_dir, ignore_errors=True)
+
+
+def test_sandbox_widening_primitive_is_gone():
+    """The helper that appended a caller directory to nltk.data.path must not come
+    back: it let one public call disarm validate_path and the jar sandbox."""
+    import nltk.tag.perceptron as perceptron
+
+    assert not hasattr(perceptron, "_authorize_private_dir")
+    source = inspect.getsource(perceptron)
+    assert "nltk.data.path.append" not in source
+    assert "_ALLOWED_ROOTS_CACHE" not in source
