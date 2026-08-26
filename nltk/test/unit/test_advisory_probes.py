@@ -155,21 +155,31 @@ def test_perceptron_bare_open_probe_has_teeth():
 
 
 def test_perceptron_save_to_json_validation_has_teeth():
-    """Drop the destination check and the tagger write must escape again."""
+    """Restore the tagger's pre-fix destination handling and it must escape again.
+
+    Both of its guards go: the sandbox check on ``loc``, and (on the Windows
+    branch, where there is no pinned dir_fd to write through) the sandboxed
+    per-file open. Neutering only one leaves the other holding, which is the
+    point of having both -- and is why this control has to remove the pair.
+    """
+    import builtins
+
     import nltk.pathsec as pathsec
     import nltk.tag.perceptron as perceptron
 
     probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
-    original = perceptron.validate_path
+    validate, opener = perceptron.validate_path, perceptron.pathsec_open
     try:
-        # Only the tagger's own check is neutered; pathsec still guards
-        # AveragedPerceptron, so a flip proves save_to_json is what leaked.
         perceptron.validate_path = lambda *args, **kwargs: None
+        perceptron.pathsec_open = lambda path, mode="r", **kwargs: builtins.open(
+            path, mode
+        )
         assert probe()[0] == probes.VULNERABLE
     finally:
-        perceptron.validate_path = original
+        perceptron.validate_path, perceptron.pathsec_open = validate, opener
     assert probe()[0] == probes.FIXED
     assert perceptron.validate_path is pathsec.validate_path
+    assert perceptron.pathsec_open is pathsec.open
 
 
 def test_perceptron_load_does_not_widen_the_sandbox():

@@ -24,6 +24,7 @@ a private per-user system temp dir IS an allowed root on macOS/Windows, so a
 target staged there would be correctly permitted and prove nothing.
 """
 
+import builtins
 import json
 import os
 import pathlib
@@ -478,7 +479,9 @@ class TestPerceptronTaggerRoundTrip:
             resolved == root or resolved.is_relative_to(root)
             for root in pathsec._get_allowed_roots()
         ), f"{tagger.save_dir} is not inside an allowed root"
-        assert stat.S_IMODE(os.stat(tagger.save_dir).st_mode) == 0o700
+        if os.name == "posix":
+            # Windows has no POSIX mode bits; the per-user profile ACLs govern.
+            assert stat.S_IMODE(os.stat(tagger.save_dir).st_mode) == 0o700
 
     def test_save_dir_is_memoized(self, staged):
         tagger = staged(plain=True)
@@ -641,6 +644,109 @@ class TestTblDemoModelPaths:
             shutil.rmtree(staging, ignore_errors=True)
 
 
+class TestCRFTaggerModelPaths:
+    """``CRFTagger`` hands a caller path to a native (pycrfsuite) loader/writer.
+
+    Not in the advisory's list, but the same threat: the C extension does its
+    own open, so nothing downstream would have contained it.
+    """
+
+    TRAIN = [[("the", "DT"), ("dog", "NN")], [("a", "DT"), ("cat", "NN")]]
+
+    def test_train_outside_root_is_refused_before_writing(self, sandbox):
+        pytest.importorskip("pycrfsuite")
+        from nltk.tag.crf import CRFTagger
+
+        target = str(sandbox / "model.crf")
+        _refused(CRFTagger().train, self.TRAIN, target)
+        assert not os.path.exists(target), "refused train still wrote the model"
+
+    def test_set_model_file_outside_root_is_refused(self, sandbox):
+        pytest.importorskip("pycrfsuite")
+        from nltk.tag.crf import CRFTagger
+
+        target = sandbox / "model.crf"
+        target.write_bytes(b"not-a-real-model")
+        _refused(CRFTagger().set_model_file, str(target))
+
+    def test_in_root_train_and_tag_round_trip(self, restricted_sandbox):
+        pytest.importorskip("pycrfsuite")
+        from nltk.tag.crf import CRFTagger
+
+        target = os.path.join(restricted_sandbox, "model.crf")
+        tagger = CRFTagger()
+        tagger.train(self.TRAIN, target)
+        assert os.path.getsize(target) > 0
+        reloaded = CRFTagger()
+        reloaded.set_model_file(target)
+        assert reloaded.tag(["the", "dog"]) == [("the", "DT"), ("dog", "NN")]
+
+
+class TestResourceNameSteering:
+    """Caller-supplied *resource names* that steer a model load.
+
+    None of these escape a data root, so they are pinned as audited-benign: the
+    assertion is the containment property, so a future change that lets one
+    resolve outside turns into a failure here.
+    """
+
+    def test_punkt_lang_traversal_stays_inside_a_data_root(self):
+        """``PunktTokenizer(lang)`` climbs at most within the trusted root.
+
+        ``normalize_resource_name`` collapses ``punkt_tab/..`` to ``tokenizers/``
+        before ``find`` sees it, so the lookup moves inside the root but cannot
+        leave it; a leading ``..`` survives normalisation and ``find`` rejects it.
+        """
+        from nltk.tokenize import PunktTokenizer
+
+        with pytest.raises((LookupError, OSError, ValueError)) as excinfo:
+            PunktTokenizer("../..")
+        message = str(excinfo.value)
+        assert "/etc/" not in message and "passwd" not in message
+
+    @pytest.mark.parametrize(
+        "resource",
+        [
+            "tokenizers/punkt/../x.pickle",
+            "tokenizers/punkt/../../../etc/passwd.pickle",
+            "chunkers/maxent_ne_chunker/../../../etc/x.pickle",
+        ],
+    )
+    def test_pickle_shim_resource_names_cannot_traverse(self, resource):
+        """load() routes a *.pickle name to a pickle-free loader; the name that
+        picks the model must not carry traversal."""
+        with pytest.raises((ValueError, LookupError, OSError)):
+            nltk.data.load(resource)
+
+    def test_pos_tag_rejects_an_unknown_language(self):
+        with pytest.raises(NotImplementedError):
+            nltk.pos_tag(["a"], lang="../../etc")
+
+    def test_ne_chunker_format_cannot_traverse(self):
+        from nltk.chunk import ne_chunker
+
+        with pytest.raises((ValueError, LookupError, OSError)):
+            ne_chunker("../../../etc")
+
+    def test_retrieve_without_a_filename_does_not_write_to_an_outside_cwd(
+        self, outside_only
+    ):
+        """``retrieve`` derives the destination from the URL and writes it to the
+        working directory; that destination is still sandbox-checked."""
+        try:
+            source = str(nltk.data.find("corpora/city_database/city.db"))
+        except LookupError:
+            pytest.skip("city_database corpus not installed")
+        saved = os.getcwd()
+        os.chdir(outside_only)
+        try:
+            with pytest.raises((PermissionError, ValueError, OSError)):
+                nltk.data.retrieve("file://" + source, verbose=False)
+            assert not list(outside_only.iterdir())
+        finally:
+            os.chdir(saved)
+
+
 # ==========================================================================
 # Negative controls: neuter a guard, the exploit must come back
 # ==========================================================================
@@ -670,7 +776,14 @@ class TestNegativeControls:
     def test_dropping_save_to_json_validation_reopens_the_write(
         self, sandbox, monkeypatch
     ):
+        """Both destination guards go: the sandbox check on ``loc`` and, on the
+        branch that has no pinned dir_fd, the sandboxed per-file open."""
         monkeypatch.setattr(perceptron, "validate_path", lambda *a, **k: None)
+        monkeypatch.setattr(
+            perceptron,
+            "pathsec_open",
+            lambda path, mode="r", **kwargs: builtins.open(path, mode),
+        )
         loc = str(sandbox / "unguarded")
         _tagger().save_to_json(lang=LANG, loc=loc)
         assert sorted(os.listdir(loc)), "no files written with the guard removed"
@@ -712,3 +825,16 @@ class TestNegativeControls:
             assert list(outside_only.iterdir()), "waiver did not reopen the write"
         finally:
             os.chdir(saved)
+
+    def test_dropping_the_crf_check_reopens_the_native_write(
+        self, sandbox, monkeypatch
+    ):
+        pytest.importorskip("pycrfsuite")
+        import nltk.tag.crf as crf
+
+        monkeypatch.setattr(crf, "validate_path", lambda *a, **k: None)
+        target = str(sandbox / "unguarded.crf")
+        crf.CRFTagger().train(
+            [[("the", "DT"), ("dog", "NN")], [("a", "DT"), ("cat", "NN")]], target
+        )
+        assert os.path.getsize(target) > 0, "no model written with the guard removed"

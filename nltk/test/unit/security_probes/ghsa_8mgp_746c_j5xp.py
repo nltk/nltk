@@ -157,6 +157,24 @@ def _attempts(outside):
         TransitionParser("arc-standard").train([], target, verbose=False)
         return CANARY + " wrote " + target
 
+    def crf_train():
+        """A native (pycrfsuite) writer given a caller path."""
+        from nltk.tag.crf import CRFTagger
+
+        target = os.path.join(outside, "model.crf")
+        CRFTagger().train(
+            [[("the", "DT"), ("dog", "NN")], [("a", "DT"), ("cat", "NN")]], target
+        )
+        return CANARY + " wrote " + target if os.path.exists(target) else None
+
+    def crf_load():
+        from nltk.tag.crf import CRFTagger
+
+        target = os.path.join(outside, "planted.crf")
+        pathlib.Path(target).write_bytes(b"not-a-real-model")
+        CRFTagger().set_model_file(target)
+        return CANARY + " opened " + target
+
     def data_load_urls():
         """The generic loader underneath the model APIs, in several path forms."""
         import nltk.data
@@ -190,6 +208,8 @@ def _attempts(outside):
         ("TransitionParser.parse", transition_parse),
         ("TransitionParser.train", transition_train),
         ("save_maxent_params", maxent_save),
+        ("CRFTagger.train", crf_train),
+        ("CRFTagger.set_model_file", crf_load),
         ("nltk.data.load", data_load_urls),
     ]
 
