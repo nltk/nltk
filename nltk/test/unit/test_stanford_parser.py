@@ -7,7 +7,6 @@ from nltk.parse.stanford import StanfordParser
 
 class TestStanfordParserSecurity(unittest.TestCase):
     def setUp(self):
-        # Create temporary dummy files so os.path.isfile() passes during initialization
         self.tmp_dir = tempfile.TemporaryDirectory()
         tmp_path = Path(self.tmp_dir.name)
 
@@ -23,25 +22,26 @@ class TestStanfordParserSecurity(unittest.TestCase):
     def test_parse_sents_rejects_newlines_in_tokens(self):
         """
         Verify that StanfordParser.parse_sents() raises a ValueError
-        when a token contains embedded newlines, preventing batch-boundary injection.
+        when a token contains embedded newlines or carriage returns.
         """
         parser = StanfordParser(
             path_to_jar=str(self.fake_parser_jar),
             path_to_models_jar=str(self.fake_models_jar),
         )
-
-        # Mock execution to avoid requiring an external Java / Stanford installation
         parser._execute = lambda cmd, input_data, verbose: "(ROOT (S (NN dummy)))\n\n"
 
-        # Malicious input: token containing an embedded newline
-        malicious_batch = [["ATTACKER", "safe\nINJECTED"]]
+        for malicious_char in ["\n", "\r"]:
+            # Testing both \n and \r
+            malicious_batch = [["ATTACKER", f"safe{malicious_char}INJECTED"]]
+            # Also verify it works with generators
+            malicious_gen = (sent for sent in malicious_batch)
 
-        with self.assertRaises(ValueError):
-            list(parser.parse_sents(malicious_batch))
+            with self.assertRaises(ValueError):
+                list(parser.parse_sents(malicious_gen))
 
     def test_raw_parse_sents_rejects_newlines(self):
         """
-        Verify that raw_parse_sents also rejects newline-bearing sentences.
+        Verify that raw_parse_sents also rejects newline/CR-bearing sentences.
         """
         parser = StanfordParser(
             path_to_jar=str(self.fake_parser_jar),
@@ -49,7 +49,28 @@ class TestStanfordParserSecurity(unittest.TestCase):
         )
         parser._execute = lambda cmd, input_data, verbose: "(ROOT (S (NN dummy)))\n\n"
 
-        malicious_sentences = ["ATTACKER safe\nINJECTED"]
+        for malicious_char in ["\n", "\r"]:
+            malicious_sentences = [f"ATTACKER safe{malicious_char}INJECTED"]
+            malicious_gen = (sent for sent in malicious_sentences)
 
-        with self.assertRaises(ValueError):
-            list(parser.raw_parse_sents(malicious_sentences))
+            with self.assertRaises(ValueError):
+                list(parser.raw_parse_sents(malicious_gen))
+
+    def test_tagged_parse_sents_rejects_newlines(self):
+        """
+        Verify that tagged_parse_sents rejects newline/CR-bearing words or tags.
+        """
+        parser = StanfordParser(
+            path_to_jar=str(self.fake_parser_jar),
+            path_to_models_jar=str(self.fake_models_jar),
+        )
+        parser._execute = lambda cmd, input_data, verbose: "(ROOT (S (NN dummy)))\n\n"
+
+        for malicious_char in ["\n", "\r"]:
+            malicious_batch = [
+                [("ATTACKER", "NN"), (f"safe{malicious_char}INJECTED", "NN")]
+            ]
+            malicious_gen = (sent for sent in malicious_batch)
+
+            with self.assertRaises(ValueError):
+                list(parser.tagged_parse_sents(malicious_gen))

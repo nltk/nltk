@@ -113,6 +113,9 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
+        # Prevent generator exhaustion
+        sentences = list(sentences)
+
         # Security check: Validate individual tokens before joining
         for sentence in sentences:
             for token in sentence:
@@ -158,6 +161,8 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(str)
         :rtype: iter(iter(Tree))
         """
+        # Prevent generator exhaustion
+        sentences = list(sentences)
         # Security check: Validate raw sentence strings
         for sentence in sentences:
             if "\n" in sentence or "\r" in sentence:
@@ -197,6 +202,17 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(tuple(str, str)))
         :rtype: iter(iter(Tree))
         """
+        # 1. Prevent generator exhaustion
+        sentences = list(sentences)
+
+        # 2. Security check: Validate both words and tags for newline characters
+        for sentence in sentences:
+            for word, tag in sentence:
+                if "\n" in word or "\r" in word or "\n" in tag or "\r" in tag:
+                    raise ValueError(
+                        "Tokens and tags cannot contain newline characters."
+                    )
+
         tag_separator = "/"
         cmd = [
             self._MAIN_CLASS,
