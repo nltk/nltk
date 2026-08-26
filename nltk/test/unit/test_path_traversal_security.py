@@ -346,9 +346,18 @@ class TestPerceptronSaveSquat:
         t.classes = {"NN", "DT"}
         return t
 
+    def _base(self):
+        """A scratch dir INSIDE an allowed data root.
+
+        ``tempfile.mkdtemp()`` is not usable here: on Linux it lands under the
+        shared ``/tmp``, which is deliberately not an allowed root, so
+        ``save_to_json`` would refuse it for containment before ever reaching the
+        squat guards these tests are about.
+        """
+        return D.make_staging_dir(prefix="nltk_perceptron_squat_")
+
     def test_benign_save_is_private_and_roundtrips(self):
-        base = tempfile.mkdtemp()
-        loc = os.path.join(base, "model_dir")
+        loc = os.path.join(self._base(), "model_dir")
         t = self._tagger()
         t.save_to_json(lang="eng", loc=loc)
         files = os.listdir(loc)
@@ -356,12 +365,15 @@ class TestPerceptronSaveSquat:
         for f in files:
             # written model must not be group-/world-readable (CWE-377/378)
             assert (os.stat(os.path.join(loc, f)).st_mode & 0o077) == 0
+        reloaded = self._tagger()
+        reloaded.load_from_json(lang="eng", loc=loc)
+        assert reloaded.model.weights == t.model.weights
+        assert reloaded.tagdict == t.tagdict
 
     def test_symlinked_save_location_is_refused(self):
-        # The default save dir is a guessable name in a shared temp dir; a local
-        # attacker who pre-plants a symlink there must not capture/redirect the
-        # model write.
-        base = tempfile.mkdtemp()
+        # A guessable in-root save dir a local attacker pre-plants a symlink at
+        # must not capture/redirect the model write.
+        base = self._base()
         victim = os.path.join(base, "attacker_dir")
         os.makedirs(victim)
         squat = os.path.join(base, "squat")
@@ -373,8 +385,7 @@ class TestPerceptronSaveSquat:
     def test_world_writable_save_location_is_refused(self):
         # A pre-existing real dir at the guessable name that is world-writable
         # (an attacker could drop files in it / read the model back) is refused.
-        base = tempfile.mkdtemp()
-        loc = os.path.join(base, "shared")
+        loc = os.path.join(self._base(), "shared")
         os.makedirs(loc)
         os.chmod(loc, 0o777)
         with pytest.raises(PermissionError):

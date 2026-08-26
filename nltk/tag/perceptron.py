@@ -15,37 +15,38 @@ import random
 from collections import defaultdict
 from os.path import join as path_join
 from pathlib import Path
-from tempfile import gettempdir
 
 from nltk import jsontags
 from nltk.data import FileSystemPathPointer, find, open_datafile
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.tag.api import TaggerI
 
 
-def _authorize_private_dir(directory):
-    """Register a private, user-owned trained-model directory on nltk.data.path
-    so the pathsec sandbox permits reading a saved model back from it.
+def _reject_path_structure(value, label):
+    """Refuse a value that would contribute path structure to a filename.
 
-    The default trained-tagger location is the system temp dir, which is shared
-    and world-writable on Linux. A directory that is private to the current user
-    (not group-/world-writable) cannot be tampered with by another local user, so
-    it is safe to trust; a world-writable one is deliberately NOT authorized and
-    stays refused (CWE-377/CWE-378).
+    A model-artifact filename is built by interpolation, so any separator,
+    ``..``, NUL or drive letter in the interpolated value turns one filename
+    into a path and lets the caller steer the open somewhere else (CWE-22).
+    Both separators are rejected regardless of platform, since a Windows-style
+    payload must not become live on a future port.
     """
-    import nltk.data
-    from nltk import pathsec
-
-    try:
-        real = os.path.realpath(str(directory))
-    except (OSError, ValueError):
-        return
-    if not pathsec.is_private_dir(real):
-        return
-    known = [os.path.realpath(str(p)) for p in nltk.data.path if isinstance(p, str)]
-    if real not in known:
-        nltk.data.path.append(real)
-        pathsec._ALLOWED_ROOTS_CACHE = None
-        pathsec._LAST_DATA_PATHS = None
+    text = str(value)
+    if (
+        not text
+        or text in (os.curdir, os.pardir)
+        or "/" in text
+        or "\\" in text
+        or "\x00" in text
+        or os.sep in text
+        or (os.altsep and os.altsep in text)
+    ):
+        raise ValueError(
+            f"Unsafe {label} {value!r}: must be a single path component with no "
+            "separator, traversal or NUL"
+        )
+    return text
 
 
 def _open_private_model_dir(loc):
@@ -174,13 +175,25 @@ class AveragedPerceptron:
             self.weights[feat] = new_feat_weights
 
     def save(self, path):
-        """Save the model weights as json"""
-        with open(path, "w") as fout:
+        """Save the model weights as json.
+
+        ``path`` is caller-supplied, so the write goes through the pathsec
+        sandbox: a destination outside the allowed NLTK data roots (or a symlink
+        planted at one) is refused before any bytes are written, instead of the
+        builtin ``open`` that made this an arbitrary-file write
+        (GHSA-8mgp-746c-j5xp).
+        """
+        with pathsec_open(path, "w", context="AveragedPerceptron.save") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
-        """Load the json model weights."""
-        with open(path) as fin:
+        """Load the json model weights.
+
+        The read is sandboxed for the same reason as :meth:`save`: a model path
+        outside the allowed roots is refused rather than read back to the caller
+        (GHSA-8mgp-746c-j5xp).
+        """
+        with pathsec_open(path, "r", context="AveragedPerceptron.load") as fin:
             self.weights = json.load(fin)
 
     def encode_json_obj(self):
@@ -243,16 +256,41 @@ class PerceptronTagger(TaggerI):
         self.tagdict = {}
         self.classes = set()
         self.lang = lang
-        # Save trained models in tmp directory by default:
-        self.TRAINED_TAGGER_PATH = gettempdir()
         self.TAGGER_NAME = "averaged_perceptron_tagger"
-        self.save_dir = path_join(
-            self.TRAINED_TAGGER_PATH, f"{self.TAGGER_NAME}_{self.lang}"
-        )
+        self._save_dir = None
         if load:
             self.load_from_json(lang, loc)
 
+    @property
+    def save_dir(self) -> str:
+        """This tagger's private directory for saved model artifacts.
+
+        Created lazily on first use under a data root, with an unpredictable name
+        and mode 0700, so (unlike the old guessable
+        ``<tempdir>/averaged_perceptron_tagger_<lang>``) another local user cannot
+        pre-create or symlink it to redirect or read the write (CWE-377/378), and
+        the saved model lands inside the pathsec sandbox so it can be read back
+        without widening the allowed roots (GHSA-8mgp-746c-j5xp).
+        """
+        from nltk.data import make_staging_dir
+
+        if self._save_dir is None:
+            self._save_dir = make_staging_dir(
+                prefix=f"nltk_{self.TAGGER_NAME}_{self.lang}_"
+            )
+        return self._save_dir
+
     def param_files(self, lang="eng"):
+        """The three json parameter filenames for *lang*.
+
+        ``lang`` is interpolated straight into a filename that both
+        :meth:`save_to_json` and :meth:`load_from_json` then open, so it is
+        pinned to a single path component here: a value carrying a separator, a
+        ``..`` or a NUL would otherwise contribute path structure and steer the
+        write/read out of the directory the caller authorized (CWE-22). One
+        choke point covers both directions.
+        """
+        _reject_path_structure(lang, "lang")
         return (
             f"{self.TAGGER_NAME}_{lang}.{attr}.json"
             for attr in ["weights", "tagdict", "classes"]
@@ -330,32 +368,40 @@ class PerceptronTagger(TaggerI):
             self.save_to_json(lang=self.lang, loc=save_loc)
 
     def save_to_json(self, lang="xxx", loc=None):
+        """Write the model's json parameter files into the directory ``loc``.
+
+        ``loc`` is caller-supplied, so it is validated against the NLTK data
+        sandbox before the directory is created or any file is written: an
+        outside-root destination is refused instead of being written through
+        (GHSA-8mgp-746c-j5xp). It defaults to :attr:`save_dir`, which is already
+        inside a data root.
+        """
         if not loc:
             loc = self.save_dir
-        # On POSIX the default TRAINED_TAGGER_PATH is a shared, world-writable
-        # temp dir (/tmp) and the save dir is a *guessable* name in it, so a
-        # local attacker can pre-plant or race a symlink at ``loc``. A plain
-        # ``islink`` pre-check is non-atomic (TOCTOU) and misses it once created;
+        validate_path(loc, context="PerceptronTagger.save_to_json")
+        # A ``loc`` inside an allowed root can still be a *guessable* name that a
+        # local attacker pre-plants or races a symlink at. A plain ``islink``
+        # pre-check is non-atomic (TOCTOU) and misses it once created;
         # ``_open_private_model_dir`` instead creates/re-opens the leaf atomically
         # with O_NOFOLLOW|O_DIRECTORY, verifies it is a real, user-owned,
         # non-world-writable directory, and returns a pinned fd we write relative
         # to (CWE-59/377/378).
         #
-        # On Windows ``%TEMP%`` is per-user and ACL-protected (no such squat), and
+        # On Windows the per-user profile is ACL-protected (no such squat), and
         # ``os.open`` cannot open a directory as a descriptor there, so use a
-        # plain create + write.
+        # plain create + sandboxed write.
         if os.name != "posix":
             os.makedirs(loc, exist_ok=True)
-            _authorize_private_dir(loc)
             for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
-                with open(path_join(loc, json_file), "w") as fout:
+                target = path_join(loc, json_file)
+                with pathsec_open(
+                    target, "w", context="PerceptronTagger.save_to_json"
+                ) as fout:
                     json.dump(param, fout)
             return
 
         dir_fd = _open_private_model_dir(loc)
         try:
-            _authorize_private_dir(loc)
-
             # Write each model file relative to the pinned directory fd (where
             # supported) with O_NOFOLLOW (0600), so neither the dir nor the file
             # can be redirected outside the verified directory after the check.
@@ -367,9 +413,15 @@ class PerceptronTagger(TaggerI):
                     path, flags | getattr(os, "O_NOFOLLOW", 0), 0o600, **extra
                 )
 
+            # builtins.open with an explicit ``opener`` (not pathsec.open, which
+            # owns its own os.open and takes no opener): ``loc`` is already
+            # sandbox-validated above and the pinned dir_fd + O_NOFOLLOW is the
+            # stronger, race-free containment for the leaf write.
             for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
                 target = json_file if use_dir_fd else path_join(loc, json_file)
-                with open(target, "w", opener=_no_follow_opener) as fout:
+                with open(  # sandboxed-open ok: dir_fd + O_NOFOLLOW opener
+                    target, "w", opener=_no_follow_opener
+                ) as fout:
                     json.dump(param, fout)
         finally:
             os.close(dir_fd)
@@ -392,13 +444,12 @@ class PerceptronTagger(TaggerI):
             loc = FileSystemPathPointer(str(loc))
         # else: assume loc is already a PathPointer (zip or filesystem)
 
-        # A trained model saved under the (private) system-temp trained-tagger
-        # dir lives outside nltk_data; authorize that specific private directory
-        # so it can be read back under the pathsec sandbox.
-        loc_path = getattr(loc, "path", None)
-        if loc_path and os.path.isdir(loc_path):
-            _authorize_private_dir(loc_path)
-
+        # No sandbox widening here: a trained model is saved under save_dir,
+        # which is already inside a data root, so the read below goes through
+        # open_datafile -> pathsec.open unaided. Appending a caller-supplied
+        # directory to nltk.data.path would make it an allowed root
+        # process-wide and disarm the containment check for every later read
+        # (GHSA-8mgp-746c-j5xp).
         def load_param(json_file):
             with open_datafile(loc, json_file) as fin:
                 return json.load(fin)

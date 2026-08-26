@@ -13,6 +13,7 @@ import random
 import time
 
 from nltk.corpus import treebank
+from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import pickle_load
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
@@ -246,14 +247,20 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            with open(cache_baseline_tagger, "wb") as print_rules:
+            # ``cache_baseline_tagger`` is caller-supplied, so the model
+            # write/read goes through the pathsec sandbox (GHSA-8mgp-746c-j5xp).
+            with pathsec_open(
+                cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
+            ) as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {}".format(
                     cache_baseline_tagger
                 )
             )
-        with open(cache_baseline_tagger, "rb") as print_rules:
+        with pathsec_open(
+            cache_baseline_tagger, "rb", context="tbl.demo.cache_baseline_tagger"
+        ) as print_rules:
             baseline_tagger = pickle_load(print_rules)
             print(f"Reloaded pickled tagger from {cache_baseline_tagger}")
     else:
@@ -314,18 +321,24 @@ def postag(
 
     # writing error analysis to file
     if error_output is not None:
-        with open(error_output, "w") as f:
+        with pathsec_open(
+            error_output, "w", context="tbl.demo.error_output", encoding="utf-8"
+        ) as f:
             f.write("Errors for Brill Tagger %r\n\n" % serialize_output)
-            f.write("\n".join(error_list(gold_data, taggedtest)).encode("utf-8") + "\n")
+            f.write("\n".join(error_list(gold_data, taggedtest)) + "\n")
         print(f"Wrote tagger errors including context to {error_output}")
 
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with open(serialize_output, "wb") as print_rules:
+        with pathsec_open(
+            serialize_output, "wb", context="tbl.demo.serialize_output"
+        ) as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print(f"Wrote pickled tagger to {serialize_output}")
-        with open(serialize_output, "rb") as print_rules:
+        with pathsec_open(
+            serialize_output, "rb", context="tbl.demo.serialize_output"
+        ) as print_rules:
             brill_tagger_reloaded = pickle_load(print_rules)
         print(f"Reloaded pickled tagger from {serialize_output}")
         taggedtest_reloaded = brill_tagger_reloaded.tag_sents(testing_data)

@@ -145,8 +145,14 @@ def validate_path(path_input, context="NLTK", required_root=None):
     :param context: Diagnostic context for warnings/errors.
     :param required_root: If provided, enforces that the path is strictly
                           within this specific directory (scoped sandbox).
+
+    A whitespace-only path is NOT waved through: ``"   "`` is a legal relative
+    filename, so skipping it let a caller-supplied path reach ``os.open`` with no
+    containment check and create/truncate that file in the working directory,
+    outside every allowed root (GHSA-8mgp-746c-j5xp). Only an empty/absent path
+    (nothing to open) and a file descriptor short-circuit here.
     """
-    if isinstance(path_input, int) or not path_input or not str(path_input).strip():
+    if isinstance(path_input, int) or not path_input:
         return
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)

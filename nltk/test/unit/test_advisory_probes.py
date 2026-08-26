@@ -12,6 +12,8 @@ import os
 import pathlib
 import pkgutil
 import re
+import shutil
+import tempfile
 import warnings
 from collections import Counter
 
@@ -81,7 +83,7 @@ def test_pathsec_enforce_probe_has_teeth():
 
 
 def test_model_artifact_probe_has_teeth():
-    """Remove both containment layers and the probe must read /etc/passwd.
+    """Turn containment off and the probe must escape the sandbox.
 
     The payload has to genuinely reach the sink: a traversal that lands on a
     non-existent path errors out and would score FIXED no matter what the guards
@@ -99,6 +101,101 @@ def test_model_artifact_probe_has_teeth():
     finally:
         nltk.data._reject_unsafe_no_protocol, pathsec.ENFORCE = reject, enforce
     assert probe()[0] == probes.FIXED
+
+
+def test_model_artifact_probe_covers_every_api_the_advisory_names():
+    """The probe must drive the APIs the advisory lists, not only the loader.
+
+    The advisory names six model-artifact entry points. A probe that exercises
+    ``nltk.data.load`` alone reports FIXED while any one of them regresses, which
+    is the failure this list pins shut.
+    """
+    from nltk.test.unit.security_probes import ghsa_8mgp_746c_j5xp as mod
+
+    labels = {label for label, _ in mod._attempts(str(pathlib.Path.home()))}
+    for named in (
+        "TransitionParser.train",
+        "TransitionParser.parse",
+        "AveragedPerceptron.save",
+        "AveragedPerceptron.load",
+        "PerceptronTagger.save_to_json",
+        "save_maxent_params",
+    ):
+        assert named in labels, f"advisory API {named} is not probed"
+
+
+def test_perceptron_bare_open_probe_has_teeth():
+    """Restore the advisory's own bug and the probe must flip to VULNERABLE.
+
+    ``AveragedPerceptron.save``/``load`` used ``builtins.open`` on a caller path.
+    Putting that back is the exact regression this probe exists to catch, so it
+    must not stay FIXED through it.
+    """
+    import json as _json
+
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
+    saved, loaded = AveragedPerceptron.save, AveragedPerceptron.load
+
+    def bare_save(self, path):
+        with open(path, "w") as fout:
+            return _json.dump(self.weights, fout)
+
+    def bare_load(self, path):
+        with open(path) as fin:
+            self.weights = _json.load(fin)
+
+    try:
+        AveragedPerceptron.save, AveragedPerceptron.load = bare_save, bare_load
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        AveragedPerceptron.save, AveragedPerceptron.load = saved, loaded
+    assert probe()[0] == probes.FIXED
+
+
+def test_perceptron_save_to_json_validation_has_teeth():
+    """Drop the destination check and the tagger write must escape again."""
+    import nltk.pathsec as pathsec
+    import nltk.tag.perceptron as perceptron
+
+    probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
+    original = perceptron.validate_path
+    try:
+        # Only the tagger's own check is neutered; pathsec still guards
+        # AveragedPerceptron, so a flip proves save_to_json is what leaked.
+        perceptron.validate_path = lambda *args, **kwargs: None
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        perceptron.validate_path = original
+    assert probe()[0] == probes.FIXED
+    assert perceptron.validate_path is pathsec.validate_path
+
+
+def test_perceptron_load_does_not_widen_the_sandbox():
+    """A caller-supplied model dir must never become an allowed root.
+
+    ``load_from_json`` used to append a private caller directory to
+    ``nltk.data.path``, which turns the containment check off for that path (and
+    every later read under it) process-wide.
+    """
+    import nltk.data
+    from nltk.tag.perceptron import PerceptronTagger
+
+    before = list(nltk.data.path)
+    outside = pathlib.Path(
+        tempfile.mkdtemp(prefix=".nltk_widen_", dir=str(pathlib.Path.home()))
+    )
+    try:
+        (outside / "averaged_perceptron_tagger_xx.weights.json").write_text("{}")
+        try:
+            PerceptronTagger(load=False).load_from_json(lang="xx", loc=str(outside))
+        except Exception:
+            pass
+        assert list(nltk.data.path) == before, "caller dir was added to nltk.data.path"
+    finally:
+        nltk.data.path[:] = before
+        shutil.rmtree(outside, ignore_errors=True)
 
 
 def test_pickle_allowlist_probe_has_teeth():
