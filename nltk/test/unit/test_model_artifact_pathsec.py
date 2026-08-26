@@ -190,17 +190,27 @@ class TestAveragedPerceptronEscapes:
         _refused(model.load, str(target))
         assert model.weights == {}
 
-    def test_case_folded_root_prefix_is_refused(self, pathsec_sandbox):
-        """An upper-cased path is a different string, so containment fails closed.
+    def test_case_folded_path_never_resolves_outside_the_root(self, pathsec_sandbox):
+        """Case folding must not be a way to sidestep the prefix comparison.
 
-        On a case-insensitive filesystem it names the same file; the check must
-        still refuse rather than accidentally accept a non-matching prefix.
+        The two platforms differ legitimately and the invariant has to hold on
+        both: POSIX resolve() keeps the upper-cased string, which no longer
+        matches the root prefix, so the read is refused; Windows resolve()
+        returns the real on-disk casing, so it names the *same in-root file* and
+        the read is allowed. Either outcome is fine; reading something else is
+        not.
         """
         inside = pathsec_sandbox.root / "cf.json"
         AveragedPerceptron(_weights()).save(str(inside))
         model = AveragedPerceptron()
-        _refused(model.load, str(inside).upper())
-        assert model.weights == {}
+        try:
+            model.load(str(inside).upper())
+        except (PermissionError, ValueError, OSError):
+            assert model.weights == {}
+        else:
+            assert (
+                model.weights == _weights()
+            ), "case-folded path resolved to a different file than the in-root one"
 
     def test_bytes_and_pathlike_forms_are_validated_too(self, sandbox):
         _refused(AveragedPerceptron(_weights()).save, str(sandbox / "b.json").encode())
@@ -971,8 +981,13 @@ class TestNegativeControls:
         with pytest.raises(ValueError):
             perceptron._reject_path_structure("a/b", "lang")
 
+    @POSIX_ONLY
     def test_whitespace_waiver_reopens_the_cwd_write(self, outside_only, monkeypatch):
-        """Restoring the whitespace early-return must let the write land again."""
+        """Restoring the whitespace early-return must let the write land again.
+
+        POSIX-only: Windows rejects a filename that is only whitespace, so the
+        waiver cannot reopen anything there and the control would prove nothing.
+        """
         real = pathsec.validate_path
 
         def waives_whitespace(path_input, *args, **kwargs):
