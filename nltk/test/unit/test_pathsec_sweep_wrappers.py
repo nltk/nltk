@@ -851,6 +851,7 @@ def test_validate_model_resource_refuses_exotic_vectors(pathsec_sandbox):
     assert leaked == [], f"validate_model_resource let these through: {leaked}"
 
 
+@pytest.mark.skipif(not hasattr(__import__("socket"), "AF_UNIX"), reason="no AF_UNIX")
 def test_unix_socket_model_is_refused(pathsec_sandbox):
     """A socket planted in a data root is not a model; reading it would block."""
     import socket
@@ -901,6 +902,10 @@ def test_windows_drive_path_is_not_stream_rejected():
         _vmr("C:\\models\\english.ser.gz", context="sweep")
     except ValueError as exc:
         assert "alternate data stream" not in str(exc), exc
+    except PermissionError:
+        # On Windows this IS an absolute path, so it is (correctly) refused for
+        # being outside the data roots. That is not the stream rejection.
+        pass
     assert _re.match(r"^[A-Za-z]:[\\/]", "C:\\models\\english.ser.gz")
 
 
@@ -1206,3 +1211,21 @@ def test_working_dir_none_resets_to_lazy_allocation(pathsec_sandbox):
     first = parser.working_dir
     parser.working_dir = None
     assert parser.working_dir != first or os.path.isdir(parser.working_dir)
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["NUL", "CON", "COM1", "LPT1", "nul.ser.gz", "models/COM9.mco", "AUX"],
+)
+def test_reserved_windows_device_names_are_refused(value):
+    """On Windows these resolve to a device (a serial port, the null device) no
+    matter which directory they appear in, so a bare resource name must not be
+    allowed to name one."""
+    with pytest.raises(ValueError):
+        validate_model_resource(value, context="sweep")
+
+
+@pytest.mark.parametrize("value", ["CONTEXT.mco", "console.ser.gz", "nulls.mco"])
+def test_names_merely_starting_like_a_device_are_allowed(value):
+    """Over-block control: the check is on the whole stem, not a prefix."""
+    validate_model_resource(value, context="sweep")

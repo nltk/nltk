@@ -45,6 +45,14 @@ ALLOW_PROXIED_FETCH = False
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
 
+# Reserved DOS device names. On Windows these resolve to a device rather than a
+# file in the current directory, whatever the surrounding path is.
+_WINDOWS_DEVICE_NAMES = frozenset(
+    ["CON", "PRN", "AUX", "NUL"]
+    + [f"COM{i}" for i in range(1, 10)]
+    + [f"LPT{i}" for i in range(1, 10)]
+)
+
 
 def is_private_dir(path):
     """Return True if *path* is a directory safe to trust as a data root: another
@@ -294,6 +302,11 @@ def validate_model_resource(model_path, context="NLTK model"):
     # ':' names an NTFS alternate data stream, except in a drive prefix (C:\...).
     if ":" in text and not re.match(r"^[A-Za-z]:[\\/]", text):
         _refuse("contains ':', which names an NTFS alternate data stream")
+    # On Windows these resolve to devices (a serial port, the null device) no
+    # matter which directory they appear in. Refused everywhere for determinism.
+    stem = os.path.basename(text.replace("\\", "/")).split(".")[0].upper()
+    if stem in _WINDOWS_DEVICE_NAMES:
+        _refuse(f"names the reserved Windows device {stem!r}")
 
     # Only a real filesystem path is sandboxed; a bare resource name is not a
     # path. A bare name is deliberately NOT probed against the CWD: doing so made
