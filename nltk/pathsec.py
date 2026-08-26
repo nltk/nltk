@@ -177,7 +177,13 @@ def validate_path(path_input, context="NLTK", required_root=None):
                 )
             raw = unquote(parsed.path)
             if not raw:
-                return
+                # "file://evil" parses as netloc="evil" with an EMPTY path, so
+                # there is nothing to validate while the caller still holds the
+                # original string and opens it as the relative path "file:/evil".
+                raise PermissionError(
+                    f"Security Violation [{context}]: file URL {path_input!r} has "
+                    "no path component; it is not a usable filesystem path"
+                )
 
         # Resolve path to catch symlink escapes
         try:
@@ -277,6 +283,21 @@ def _is_windows_device_name(raw):
     return leaf.split(".", 1)[0].strip().upper() in _WINDOWS_RESERVED_NAMES
 
 
+def _reject_url_shaped(raw, context):
+    """Refuse a URL where a model path is expected.
+
+    ``validate_path`` rewrites a ``file:`` URL to its path component before
+    checking it, but the caller still holds (and the tool still opens) the
+    original string. A model path is never a URL, so refusing the whole shape
+    here removes that validate-one-thing/open-another gap outright.
+    """
+    if _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw):
+        raise PermissionError(
+            f"Security Violation [{context}]: {raw!r} is a URL, not a model "
+            "path; the tool would open it verbatim as a relative path"
+        )
+
+
 def _as_path_string(path_input):
     """Normalise a path-ish argument to the exact string a sink would use.
 
@@ -344,6 +365,7 @@ def validate_tool_path(path_input, context="NLTK tool", *, must_exist=True):
             f"Security Violation [{context}]: path {raw!r} names a Windows "
             "character device, not a file inside the data root"
         )
+    _reject_url_shaped(raw, context)
 
     validate_path(raw, context=context)
     if not ENFORCE or os.name != "posix":
@@ -413,6 +435,7 @@ def validate_tool_dir(path_input, context="NLTK tool"):
         raise PermissionError(
             f"Security Violation [{context}]: NUL byte in destination {raw!r}"
         )
+    _reject_url_shaped(raw, context)
     validate_path(raw, context=context)
 
 

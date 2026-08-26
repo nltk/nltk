@@ -1836,3 +1836,88 @@ def test_validate_tool_path_does_not_leak_descriptors(restricted_sandbox):
         assert after <= before + 2, f"fd leak: {before} -> {after}"
     finally:
         shutil.rmtree(outside, ignore_errors=True)
+
+
+# --- URL-shaped model paths: validated as one thing, opened as another --------
+_URL_SHAPES = [
+    "file://pwned",
+    "FILE://Pwned",
+    "file://evil/x",
+    "file:",
+    "file:///etc/passwd",
+    "http://evil.example/m.model",
+    "https://evil.example/m.model",
+    "ftp://evil.example/m.model",
+]
+
+
+@pytest.mark.parametrize("url", _URL_SHAPES)
+def test_url_shaped_model_paths_are_refused(pathsec_sandbox, url):
+    """A ``file:`` URL is rewritten to its path component before the check, but
+    the caller (and the tool) still holds the original string.
+
+    ``urlparse("file://evil")`` puts ``evil`` in *netloc* and leaves the path
+    EMPTY, so validate_path used to find nothing to validate and return, while
+    ``save_to_json(loc="file://evil")`` went on to create ``./file:/evil`` in the
+    working directory and write the model there. Found by fuzzing.
+    """
+    from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
+
+    root, outside = pathsec_sandbox
+    workdir = outside / "cwd"
+    workdir.mkdir()
+    os.chdir(workdir)
+
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.validate_path(url, context="probe")
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.validate_tool_dir(url, context="probe")
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.validate_tool_path(url, context="probe")
+
+    tagger = PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+    with pytest.raises((PermissionError, ValueError)):
+        tagger.save_to_json(lang="eng", loc=url)
+    with pytest.raises((PermissionError, ValueError)):
+        AveragedPerceptron().load(url)
+
+    assert not list(workdir.iterdir()), f"{url} wrote into the working directory"
+
+
+def test_empty_path_file_url_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
+    """Negative control: with the URL rejection removed, the write really lands
+    in the working directory as ./file:/pwned."""
+    import nltk.tag.perceptron as perceptron
+
+    root, outside = pathsec_sandbox
+    workdir = outside / "cwd"
+    workdir.mkdir()
+    os.chdir(workdir)
+
+    tagger = perceptron.PerceptronTagger(load=False)
+    tagger.model.weights = {"f": {"NN": 1.0}}
+    tagger.tagdict = {}
+    tagger.classes = {"NN"}
+
+    with pytest.raises((PermissionError, ValueError)):
+        tagger.save_to_json(lang="eng", loc="file://pwned")
+    assert not list(workdir.iterdir())
+
+    monkeypatch.setattr(perceptron, "validate_tool_dir", lambda *a, **k: None)
+    tagger.save_to_json(lang="eng", loc="file://pwned")
+    escaped = sorted(p.name for p in workdir.iterdir())
+    assert escaped == ["file:"], f"guard removed but nothing escaped: {escaped}"
+
+
+def test_ordinary_paths_that_merely_look_url_ish_still_work(restricted_sandbox):
+    """Over-block control: only a real scheme prefix is a URL. A filename that
+    happens to contain "://" or start with "file" is an ordinary path."""
+    root = Path(restricted_sandbox)
+    for name in ("filesystem.model", "file_backup.json", "a-file:name.model"):
+        leaf = root / name
+        leaf.write_text("{}", encoding="utf-8")
+        pathsec.validate_tool_path(str(leaf), context="probe")
+        pathsec.validate_tool_dir(str(root / "outdir"), context="probe")
