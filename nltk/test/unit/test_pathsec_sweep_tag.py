@@ -2051,3 +2051,44 @@ def test_fuzzed_sink_arguments_never_write_outside_the_root(pathsec_sandbox):
     stray = [p.name for p in outside.iterdir() if p.name != "cwd"]
     assert not stray, f"fuzzed save_to_json wrote outside the root: {stray}"
     assert not list(workdir.iterdir()), "fuzzed save_to_json wrote into the CWD"
+
+
+def test_zip_internal_traversal_stays_inside_the_archive(restricted_sandbox):
+    """Documented benign result: the packaged tagger model is a zip, so a member
+    name like ``../escape.json`` is worth checking.
+
+    Reading it yields bytes from that same archive; nothing is extracted and no
+    path outside the zip is touched, so an in-root archive stays in-root however
+    its members are named. The extraction-side zip-slip guard lives in
+    ``pathsec.validate_zip_archive`` and is exercised by the zipbomb suite.
+    """
+    import json
+    import zipfile
+
+    from nltk.data import ZipFilePathPointer
+    from nltk.tag.perceptron import PerceptronTagger
+
+    root = Path(restricted_sandbox)
+    archive = root / "taggers.zip"
+    with pathsec.ZipFile(str(archive), "w") as handle:
+        for attr, payload in (
+            ("weights", {"in": {"NN": 1.0}}),
+            ("tagdict", {"in": "NN"}),
+            ("classes", ["NN"]),
+        ):
+            handle.writestr(
+                f"m/averaged_perceptron_tagger_eng.{attr}.json", json.dumps(payload)
+            )
+        handle.writestr("../escape.json", "ESCAPED")
+
+    pointer = ZipFilePathPointer(str(archive), "../escape.json")
+    with pointer.open() as stream:
+        assert stream.read().strip() in (b"ESCAPED", "ESCAPED")
+    # nothing was created outside the archive
+    assert sorted(p.name for p in root.iterdir()) == ["taggers.zip"]
+
+    # and the legitimate in-root zip model still loads
+    tagger = PerceptronTagger(load=False)
+    tagger.load_from_json("eng", ZipFilePathPointer(str(archive), "m/"))
+    assert tagger.tagdict == {"in": "NN"}
+    assert isinstance(zipfile.ZipFile(str(archive)).namelist(), list)
