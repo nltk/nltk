@@ -24,7 +24,7 @@ from nltk.internals import (
     java,
 )
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_path, validate_tool_path
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -202,8 +202,13 @@ class StanfordSegmenter(TokenizerI):
     def segment_file(self, input_file_path):
         """ """
         # Caller-supplied and handed to the JVM as -textFile, which pathsec.open
-        # cannot wrap; validate before the spawn (GHSA-8mgp-746c-j5xp).
-        validate_path(input_file_path, context="StanfordSegmenter.segment_file")
+        # cannot wrap; validate before the spawn (GHSA-8mgp-746c-j5xp). Build the
+        # argv from the returned string, never the original object: a PathLike can
+        # answer one way here and another way when the child resolves it.
+        input_file_path = validate_tool_path(
+            input_file_path, context="StanfordSegmenter.segment_file"
+        )
+        self._validate_model_paths()
         cmd = [
             self._java_class,
             "-loadClassifier",
@@ -337,14 +342,25 @@ class StanfordSegmenter(TokenizerI):
         These are embedded in the JVM argv (-loadClassifier / -serDictionary /
         -sighanCorporaDict), which pathsec.open cannot wrap, so they are checked
         here before the process is spawned (GHSA-8mgp-746c-j5xp).
+
+        Each attribute is replaced with the string the guard returned. A PathLike
+        may answer differently on every call, and ``validate_path`` reads a
+        ``.path`` attribute in preference to ``__fspath__``, so validating the
+        object and then handing the same object to the JVM checked one file and
+        opened another.
         """
-        for label, value in (
-            ("model", self._model),
-            ("dictionary", self._dict),
-            ("sihan corpora dict", self._sihan_corpora_dict),
+        for attribute, label in (
+            ("_model", "model"),
+            ("_dict", "dictionary"),
+            ("_sihan_corpora_dict", "sihan corpora dict"),
         ):
+            value = getattr(self, attribute)
             if value:
-                validate_path(value, context=f"StanfordSegmenter {label}")
+                setattr(
+                    self,
+                    attribute,
+                    validate_tool_path(value, context=f"StanfordSegmenter {label}"),
+                )
 
     def _execute(self, cmd, verbose=False):
         encoding = self._encoding

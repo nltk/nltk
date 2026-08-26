@@ -379,7 +379,8 @@ def test_teeth_segmenter_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
 
     root, _outside = pathsec_sandbox
     _trap_java(monkeypatch, seg, {})
-    monkeypatch.setattr(seg, "validate_path", lambda *a, **k: None)
+    monkeypatch.setattr(seg, "validate_path", _passthrough)
+    monkeypatch.setattr(seg, "validate_tool_path", _passthrough)
     tool = _segmenter(monkeypatch, str(root))
     with pytest.raises(_ReachedJVM):
         tool.segment_file("/etc/passwd")
@@ -1379,3 +1380,82 @@ def test_trailing_dot_or_space_is_refused(name):
     that is opened."""
     with pytest.raises(ValueError):
         validate_model_resource(name, context="sweep")
+
+
+class _DotPathObject:
+    """validate_path reads a ``.path`` attribute in preference to __fspath__
+    (it supports NLTK's PathPointer objects). An object whose ``.path`` is
+    benign and whose __fspath__ is hostile therefore passes the check and is
+    resolved to the hostile value by whoever consumes it."""
+
+    def __init__(self, benign, hostile):
+        self.path = benign
+        self._hostile = hostile
+
+    def __fspath__(self):
+        return self._hostile
+
+    def __str__(self):
+        return self.path
+
+
+@pytest.mark.parametrize("slot", ["model", "input"])
+def test_segmenter_refuses_dot_path_objects(pathsec_sandbox, monkeypatch, slot):
+    """Both the model and the input file leaked this way: the guard read .path
+    and the JVM would have resolved __fspath__."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, outside = pathsec_sandbox
+    _trap_java(monkeypatch, seg, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("x")
+    good = str(root / "ok.ser.gz")
+    with pathsec.open(good, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+
+    if slot == "model":
+        tool = _segmenter(monkeypatch, str(root), model=_DotPathObject(good, str(evil)))
+        target = inside
+    else:
+        tool = _segmenter(monkeypatch, str(root), model=good)
+        target = _DotPathObject(inside, "/etc/passwd")
+    with pytest.raises((PermissionError, ValueError)):
+        tool.segment_file(target)
+
+
+def test_segmenter_argv_carries_validated_strings(pathsec_sandbox, monkeypatch):
+    """Over-block control plus the positive invariant: what reaches the JVM is
+    the exact string the guard returned, as a str."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, seg, {})
+    model = str(root / "ok.ser.gz")
+    with pathsec.open(model, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+
+    tool = _segmenter(monkeypatch, str(root), model=model)
+    with pytest.raises(_ReachedJVM):
+        tool.segment_file(inside)
+    for flag in ("-loadClassifier", "-textFile"):
+        value = sink["cmd"][sink["cmd"].index(flag) + 1]
+        assert isinstance(value, str)
+        assert os.path.realpath(value).startswith(os.path.realpath(str(root)))
+
+
+def test_dot_path_object_is_refused_by_both_guards(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    evil = outside / "evil.mco"
+    evil.write_text("x")
+    good = root / "ok.mco"
+    good.write_text("m")
+    sneaky = _DotPathObject(str(good), str(evil))
+    for guard in (validate_model_resource, validate_tool_path):
+        with pytest.raises((PermissionError, ValueError)):
+            guard(sneaky, context="sweep")
