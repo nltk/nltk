@@ -14,6 +14,7 @@ import time
 
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.picklesec import pickle_load
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
@@ -389,6 +390,13 @@ def _demo_prepare_data(
 
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
+    """Write the learning-curve plot to ``learning_curve_output``.
+
+    The destination is caller-supplied and matplotlib writes it itself, so the
+    path is checked against the NLTK data sandbox before any work is done
+    (GHSA-8mgp-746c-j5xp); ``pathsec.open`` cannot wrap a ``savefig``.
+    """
+    validate_path(learning_curve_output, context="tbl.demo.learning_curve_output")
     testcurve = [teststats["initialerrors"]]
     for rulescore in teststats["rulescores"]:
         testcurve.append(testcurve[-1] - rulescore)

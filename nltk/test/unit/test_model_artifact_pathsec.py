@@ -28,10 +28,12 @@ import builtins
 import json
 import os
 import pathlib
+import pickle
 import shutil
 import socket
 import stat
 import tempfile
+import time
 
 import pytest
 
@@ -415,6 +417,64 @@ class TestPerceptronTaggerEscapes:
         assert list(nltk.data.path) == before
 
 
+class TestPerceptronTaggerDirectoryOpen:
+    """The pinned-descriptor layer under ``save_to_json``."""
+
+    @POSIX_ONLY
+    def test_a_swapped_intermediate_directory_is_caught_by_the_fd_recheck(
+        self, pathsec_sandbox, monkeypatch
+    ):
+        """O_NOFOLLOW only covers the leaf.
+
+        With the caller-path check skipped (as a swapped parent between check and
+        open would leave it), the descriptor's own real path must still be
+        refused, so the model write cannot land outside the roots.
+        """
+        victim = pathsec_sandbox.outside / "redirected"
+        victim.mkdir()
+        link = pathsec_sandbox.root / "plink"
+        os.symlink(str(victim), str(link))
+
+        real = perceptron.validate_path
+        calls = []
+
+        def skip_the_caller_check(*args, **kwargs):
+            calls.append(args)
+            if len(calls) == 1:
+                return None
+            return real(*args, **kwargs)
+
+        monkeypatch.setattr(perceptron, "validate_path", skip_the_caller_check)
+        _refused(_tagger().save_to_json, LANG, str(link / "leaf"))
+        assert (
+            not any((victim / "leaf").iterdir()) if (victim / "leaf").exists() else True
+        )
+        assert len(calls) > 1, "the descriptor was never re-validated"
+
+    def test_a_regular_file_as_the_destination_is_refused(self, restricted_sandbox):
+        target = os.path.join(restricted_sandbox, "not_a_dir")
+        with pathsec.open(target, "w", context="test") as handle:
+            handle.write("{}")
+        _refused(_tagger().save_to_json, LANG, target)
+
+    @POSIX_ONLY
+    def test_an_in_root_symlink_destination_is_refused_fail_closed(
+        self, restricted_sandbox
+    ):
+        """Even a symlink pointing at another in-root file is refused.
+
+        Model artifacts are never symlinks, so refusing the final component
+        outright is the fail-closed choice; it is asserted so a future
+        "follow it, it stays in-root anyway" relaxation shows up here.
+        """
+        real = os.path.join(restricted_sandbox, "real.json")
+        with pathsec.open(real, "w", context="test") as handle:
+            handle.write("{}")
+        link = os.path.join(restricted_sandbox, "link.json")
+        os.symlink(real, link)
+        _refused(AveragedPerceptron(_weights()).save, link)
+
+
 class TestPerceptronTaggerLangComponent:
     """``lang`` is interpolated into the filename both directions open."""
 
@@ -631,6 +691,23 @@ class TestTblDemoModelPaths:
             self._postag(**{kwarg: str(target)})
         assert not target.exists(), f"{kwarg} wrote outside the sandbox"
 
+    def test_learning_curve_output_outside_root_is_refused(self, outside_only):
+        """matplotlib writes the plot itself, so the path is checked up front."""
+        target = outside_only / "curve.png"
+        with pytest.raises((PermissionError, ValueError, OSError)):
+            self._postag(incremental_stats=True, learning_curve_output=str(target))
+        assert not target.exists()
+
+    def test_learning_curve_output_in_root_still_works(self):
+        pytest.importorskip("matplotlib")
+        staging = nltk.data.make_staging_dir(prefix="nltk_tbl_curve_")
+        try:
+            target = os.path.join(staging, "curve.png")
+            self._postag(incremental_stats=True, learning_curve_output=target)
+            assert os.path.getsize(target) > 0
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
+
     @pytest.mark.parametrize(
         "kwarg", ["serialize_output", "cache_baseline_tagger", "error_output"]
     )
@@ -750,6 +827,51 @@ class TestResourceNameSteering:
 # ==========================================================================
 # Negative controls: neuter a guard, the exploit must come back
 # ==========================================================================
+
+
+class TestModelReadsAreBounded:
+    """A hostile *in-root* model must fail fast, not hang or exhaust the process."""
+
+    def test_deeply_nested_json_weights_are_rejected_quickly(self, restricted_sandbox):
+        target = os.path.join(restricted_sandbox, "nested.json")
+        with pathsec.open(target, "w", context="test") as handle:
+            handle.write("[" * 200000 + "]" * 200000)
+        started = time.perf_counter()
+        with pytest.raises((RecursionError, ValueError)):
+            AveragedPerceptron().load(target)
+        assert time.perf_counter() - started < 15.0
+
+
+class TestModelReadsRefuseAPickleGadget:
+    """Containment is not the only guard on a model read.
+
+    A model file *inside* a trusted root still goes through an allowlisting
+    unpickler, so a reachable-path model cannot execute a reduce gadget. Pinned
+    here because these are the same read paths the sandbox guards: fixing one
+    must not be mistaken for covering the other.
+    """
+
+    class _Boom:
+        def __reduce__(self):
+            return (os.system, ("exit 0",))
+
+    def _planted(self, root):
+        target = os.path.join(root, "gadget.pickle")
+        with pathsec.open(target, "wb", context="test") as handle:
+            pickle.dump(self._Boom(), handle)
+        return target
+
+    def test_transition_parser_refuses_a_gadget_model(self, restricted_sandbox):
+        from nltk.parse.transitionparser import TransitionParser
+
+        target = self._planted(restricted_sandbox)
+        with pytest.raises(pickle.UnpicklingError):
+            TransitionParser("arc-standard").parse([], target)
+
+    def test_data_load_pickle_refuses_a_gadget_model(self, restricted_sandbox):
+        target = self._planted(restricted_sandbox)
+        with pytest.raises(pickle.UnpicklingError):
+            nltk.data.load(os.path.basename(target), format="pickle", cache=False)
 
 
 class TestNegativeControls:

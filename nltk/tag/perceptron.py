@@ -18,6 +18,7 @@ from pathlib import Path
 
 from nltk import jsontags
 from nltk.data import FileSystemPathPointer, find, open_datafile
+from nltk.pathsec import _fd_realpath
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.tag.api import TaggerI
@@ -86,6 +87,11 @@ def _open_private_model_dir(loc):
                 f"Refusing non-private trained-model dir {loc!r}: not owned by "
                 "you or group-/world-writable (CWE-377/378)"
             )
+        landed = _fd_realpath(fd)
+        validate_path(
+            landed if landed is not None else os.path.realpath(loc),
+            context="PerceptronTagger.save_to_json",
+        )
     except BaseException:
         os.close(fd)
         raise
