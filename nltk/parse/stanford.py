@@ -113,6 +113,11 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
+        # Security check: Validate individual tokens before joining
+        for sentence in sentences:
+            for token in sentence:
+                if "\n" in token or "\r" in token:
+                    raise ValueError("Tokens cannot contain newline characters.")
         cmd = [
             self._MAIN_CLASS,
             "-model",
@@ -153,6 +158,10 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(str)
         :rtype: iter(iter(Tree))
         """
+        # Security check: Validate raw sentence strings
+        for sentence in sentences:
+            if "\n" in sentence or "\r" in sentence:
+                raise ValueError("Sentences cannot contain newline characters.")
         cmd = [
             self._MAIN_CLASS,
             "-model",
