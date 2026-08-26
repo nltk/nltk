@@ -24,7 +24,9 @@ a private per-user system temp dir IS an allowed root on macOS/Windows, so a
 target staged there would be correctly permitted and prove nothing.
 """
 
+import ast
 import builtins
+import contextlib
 import json
 import os
 import pathlib
@@ -37,6 +39,7 @@ import time
 
 import pytest
 
+import nltk
 import nltk.data
 import nltk.pathsec as pathsec
 import nltk.tag.perceptron as perceptron
@@ -219,6 +222,28 @@ class TestAveragedPerceptronEscapes:
 
     def test_directory_where_a_file_is_expected_is_refused(self, sandbox):
         _refused(AveragedPerceptron().load, str(sandbox))
+
+    def test_an_open_descriptor_is_passed_through_by_design(self, sandbox):
+        """An int is a descriptor the caller already holds, not a path.
+
+        pathsec deliberately lets one through: opening it grants no capability
+        the caller did not already have. Pinned because it is the one input that
+        skips containment, so the exemption must stay a deliberate, narrow one
+        (an int) and never widen to something a caller could supply as text.
+        """
+        target = sandbox / "weights.json"
+        target.write_text(json.dumps(_weights()), encoding="utf-8")
+        # os.open, not the builtin: this deliberately stages a descriptor for a
+        # file outside the sandbox, which is the whole point of the case.
+        descriptor = os.open(str(target), os.O_RDONLY)
+        try:
+            model = AveragedPerceptron()
+            model.load(descriptor)
+            assert model.weights == _weights()
+        finally:
+            with contextlib.suppress(OSError):
+                os.close(descriptor)
+        _refused(AveragedPerceptron().load, str(target))
 
     @POSIX_ONLY
     def test_dangling_in_root_symlink_destination_creates_nothing(
@@ -925,6 +950,45 @@ class TestModelReadsRefuseAPickleGadget:
         target = self._planted(restricted_sandbox)
         with pytest.raises(pickle.UnpicklingError):
             nltk.data.load(os.path.basename(target), format="pickle", cache=False)
+
+
+class TestNoOtherCodeWidensTheSandbox:
+    """Repo-wide invariant behind the ``load_from_json`` fix.
+
+    Appending to ``nltk.data.path`` makes a directory an allowed root for the
+    rest of the process, which disarms containment for it and everything under
+    it. Exactly one place may do that: ``nltk.download(download_dir=...)``, where
+    the caller explicitly names the destination for NLTK's own data and the
+    downloader refuses a non-private one. Any new occurrence is the primitive
+    that made the advisory's read succeed, coming back.
+    """
+
+    ALLOWED = {("nltk/downloader.py", "_authorize_data_dir")}
+
+    def test_only_the_downloader_appends_to_nltk_data_path(self):
+        root = pathlib.Path(nltk.__file__).parent
+        offenders = []
+        for source in sorted(root.rglob("*.py")):
+            relative = source.relative_to(root.parent).as_posix()
+            if relative.startswith("nltk/test/"):
+                continue
+            tree = ast.parse(source.read_text(encoding="utf-8"), relative)
+            for parent in ast.walk(tree):
+                if not isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    continue
+                for node in ast.walk(parent):
+                    if (
+                        isinstance(node, ast.Call)
+                        and isinstance(node.func, ast.Attribute)
+                        and node.func.attr in ("append", "insert", "extend")
+                        and isinstance(node.func.value, ast.Attribute)
+                        and node.func.value.attr == "path"
+                        and getattr(node.func.value.value, "attr", None) == "data"
+                    ):
+                        offenders.append((relative, parent.name))
+        assert (
+            set(offenders) <= self.ALLOWED
+        ), "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
 
 
 class TestNegativeControls:
