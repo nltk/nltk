@@ -40,6 +40,12 @@ class _ReachedJVM(Exception):
     handed off" apart from "a guard refused first"."""
 
 
+def _passthrough(value, *args, **kwargs):
+    """A neutered guard: performs no checks but still returns the path, since
+    the callers now use the value the guard hands back."""
+    return os.fspath(value)
+
+
 def _trap_java(monkeypatch, module, sink):
     """Replace ``module.java`` with a trap that records argv and stops before
     launching a JVM."""
@@ -363,7 +369,7 @@ def test_teeth_stanford_parser_guard_is_load_bearing(pathsec_sandbox, monkeypatc
     import nltk.parse.stanford as st
 
     _trap_java(monkeypatch, st, {})
-    monkeypatch.setattr(st, "validate_model_resource", lambda *a, **k: None)
+    monkeypatch.setattr(st, "validate_model_resource", _passthrough)
     with pytest.raises(_ReachedJVM):
         _stanford_parser("/etc/passwd").parse_sents([["hello", "world"]])
 
@@ -386,8 +392,8 @@ def test_teeth_malt_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
 
     _root, outside = pathsec_sandbox
     monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
-    monkeypatch.setattr(malt, "validate_model_resource", lambda *a, **k: None)
-    monkeypatch.setattr(malt, "validate_tool_path", lambda *a, **k: None)
+    monkeypatch.setattr(malt, "validate_model_resource", _passthrough)
+    monkeypatch.setattr(malt, "validate_tool_path", _passthrough)
     evil = outside / "evil.mco"
     evil.write_text("model")
     cmd = _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
@@ -1049,7 +1055,7 @@ def test_teeth_malt_io_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
 
     root, outside = pathsec_sandbox
     parser, infile = _malt_in_sandbox(root)
-    monkeypatch.setattr(malt, "validate_tool_path", lambda *a, **k: None)
+    monkeypatch.setattr(malt, "validate_tool_path", _passthrough)
     target = str(outside / "pwned.conll")
     cmd = parser.generate_malt_command(infile, target, mode="parse")
     assert cmd[cmd.index("-o") + 1] == target
@@ -1263,3 +1269,113 @@ def test_both_guards_share_one_syntax_gate(pathsec_sandbox):
         if verdicts[0] == "refused" and verdicts[1] == "allowed":
             disagreements.append(name)
     assert disagreements == [], f"tool_path weaker than model_resource: {disagreements}"
+
+
+# ---------------------------------------------------------------------------
+# Time-of-check/time-of-use at the API boundary. __fspath__ is allowed to
+# return a different answer on every call, so a guard that resolves the path
+# separately from the code that uses it validates one file while the tool opens
+# another. Both parsers leaked this way until the guards started returning the
+# resolved string for the caller to use.
+# ---------------------------------------------------------------------------
+
+
+class _MutatingPath:
+    """A legal os.PathLike whose __fspath__ answers differently each call."""
+
+    def __init__(self, first, rest):
+        self._calls = 0
+        self._first = first
+        self._rest = rest
+
+    def __fspath__(self):
+        self._calls += 1
+        return self._first if self._calls == 1 else self._rest
+
+    def __str__(self):
+        return self._first
+
+
+def _resolve(value):
+    return os.fspath(value) if hasattr(value, "__fspath__") else value
+
+
+def test_stanford_model_argv_carries_the_validated_string(pathsec_sandbox, monkeypatch):
+    """The argv entry must be the exact string the guard checked, not an object
+    that can resolve to something else when the child process reads it."""
+    import nltk.parse.stanford as st
+
+    root, outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, st, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("x")
+    good = root / "ok.ser.gz"
+    good.write_text("m")
+
+    parser = _stanford_parser(_MutatingPath(str(good), str(evil)))
+    with pytest.raises(_ReachedJVM):
+        parser.parse_sents([["hello", "world"]])
+    handed_over = sink["cmd"][sink["cmd"].index("-model") + 1]
+    assert isinstance(handed_over, str)
+    assert os.path.realpath(_resolve(handed_over)).startswith(
+        os.path.realpath(str(root))
+    )
+
+
+def test_malt_working_dir_uses_the_validated_model_string(pathsec_sandbox):
+    root, outside = pathsec_sandbox
+    evil = outside / "evil.mco"
+    evil.write_text("x")
+    good = root / "ok.mco"
+    good.write_text("m")
+
+    parser = _malt(_MutatingPath(str(good), str(evil)))
+    infile, _outfile = _sandbox_io(parser)
+    cmd = parser.generate_malt_command(infile, None, mode="learn")
+    workingdir = cmd[cmd.index("-w") + 1]
+    assert os.path.realpath(str(workingdir)).startswith(os.path.realpath(str(root)))
+
+
+def test_mutating_path_that_starts_hostile_is_refused(pathsec_sandbox):
+    """The other ordering: hostile on the guard's call. Must still be refused."""
+    root, outside = pathsec_sandbox
+    evil = outside / "evil.mco"
+    evil.write_text("x")
+    good = root / "ok.mco"
+    good.write_text("m")
+    with pytest.raises((PermissionError, ValueError)):
+        validate_model_resource(_MutatingPath(str(evil), str(good)), context="sweep")
+
+
+def test_guards_return_the_resolved_string(pathsec_sandbox):
+    """The contract callers rely on: use the return value, never the original."""
+    root, _outside = pathsec_sandbox
+    model = root / "m.mco"
+    model.write_text("m")
+    assert validate_model_resource(model, context="sweep") == str(model)
+    assert validate_tool_path(model, context="sweep") == str(model)
+    assert validate_model_resource(_DEFAULT_RESOURCE, context="sweep") == (
+        _DEFAULT_RESOURCE
+    )
+
+
+@pytest.mark.parametrize(
+    "value", [b"/etc/passwd", b"model.mco", 0, None, ["/etc/passwd"], 12345]
+)
+def test_non_path_inputs_are_a_clean_security_rejection(value):
+    """A TypeError would escape a caller's except (ValueError, PermissionError)
+    and surface as a crash rather than a refusal. bytes paths are refused too:
+    they pass os.fspath but then break every str check."""
+    for guard in (validate_model_resource, validate_tool_path):
+        with pytest.raises(ValueError):
+            guard(value, context="sweep")
+
+
+@pytest.mark.parametrize(
+    "name", ["evil.mco.", "evil.mco ", "evil.mco...", "evil.mco. "]
+)
+def test_trailing_dot_or_space_is_refused(name):
+    """Windows silently strips these, so the name that is checked is not the name
+    that is opened."""
+    with pytest.raises(ValueError):
+        validate_model_resource(name, context="sweep")

@@ -250,6 +250,31 @@ def validate_path(path_input, context="NLTK", required_root=None):
             raise
 
 
+def _as_path_text(value, context):
+    """Resolve a caller value to a ``str`` path EXACTLY ONCE.
+
+    ``__fspath__`` is allowed to return a different answer on every call, so a
+    guard that calls it separately from the code that uses the path validates one
+    file while the tool opens another. Every caller must validate and then use
+    the single string returned here, never the original object.
+
+    Also turns a non-path (int, None, list) and a ``bytes`` path into a clean
+    security rejection instead of a TypeError that would escape a caller's
+    ``except (ValueError, PermissionError)``.
+    """
+    try:
+        text = os.fspath(value)
+    except TypeError as exc:
+        raise ValueError(
+            f"Security Violation [{context}]: {value!r} is not a filesystem path."
+        ) from exc
+    if isinstance(text, bytes):
+        raise ValueError(
+            f"Security Violation [{context}]: {text!r} is bytes; pass a str path."
+        )
+    return text
+
+
 def _reject_bad_name_syntax(text, context):
     """Syntactic checks shared by every caller-supplied model or tool path.
 
@@ -291,6 +316,10 @@ def _reject_bad_name_syntax(text, context):
     # drive, so it names a different file than the same string does on POSIX.
     if os.name != "posix" and re.match(r"^[\\/]", text):
         _refuse("is relative to the current drive; give a full path with a drive")
+    # Windows silently strips a trailing dot or space, so "evil.mco." is checked
+    # as one name and opened as another. Refused everywhere for determinism.
+    if text != text.rstrip(". "):
+        _refuse("ends with a dot or space, which Windows silently strips")
     # On Windows these resolve to devices (a serial port, the null device) no
     # matter which directory they appear in. Refused everywhere for determinism.
     stem = os.path.basename(text.replace("\\", "/")).split(".")[0].upper()
@@ -322,7 +351,7 @@ def validate_model_resource(model_path, context="NLTK model"):
     :raises ValueError: if the value is empty, option-like, a URL, or traverses
     :raises PermissionError: if it is a filesystem path outside the data roots
     """
-    text = os.fspath(model_path)
+    text = _as_path_text(model_path, context)
     _reject_bad_name_syntax(text, context)
 
     # Only a real filesystem path is sandboxed; a bare resource name is not a
@@ -333,6 +362,7 @@ def validate_model_resource(model_path, context="NLTK model"):
     if os.path.isabs(text) or (has_directory and os.path.exists(text)):
         validate_path(text, context=context)
         _reject_aliased_or_special(text, context)
+    return text
 
 
 def _reject_aliased_or_special(text, context, check_links=False):
@@ -387,10 +417,11 @@ def validate_tool_path(path_input, context="NLTK tool file", for_write=False):
     :raises PermissionError: if it is outside the data roots or is a non-regular
         file such as a FIFO
     """
-    text = os.fspath(path_input)
+    text = _as_path_text(path_input, context)
     _reject_bad_name_syntax(text, context)
     validate_path(text, context=context)
     _reject_aliased_or_special(text, context, check_links=for_write)
+    return text
 
 
 def _zip_member_is_unsafe(name_str):

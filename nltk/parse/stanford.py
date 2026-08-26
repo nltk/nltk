@@ -220,8 +220,13 @@ class GenericStanfordParser(ParserI):
 
     def _execute(self, cmd, input_, verbose=False):
         # Bound `-model` here, at the single hand-off to the JVM, so all three
-        # callers are covered and a late reassignment cannot slip past.
-        validate_model_resource(self.model_path, context="StanfordParser model")
+        # callers are covered and a late reassignment cannot slip past. The argv
+        # entry is replaced with the validated string: __fspath__ may answer
+        # differently on every call, so the object the callers put in `cmd` could
+        # otherwise resolve to a file the guard never saw.
+        model = validate_model_resource(self.model_path, context="StanfordParser model")
+        if "-model" in cmd:
+            cmd[cmd.index("-model") + 1] = model
         encoding = self._encoding
         cmd.extend(["-encoding", encoding])
         if self.corenlp_options:

@@ -318,13 +318,15 @@ class MaltParser(ParserI):
         # process: no cwd is handed to java(), so there is no working-directory
         # class-injection surface (an empty/CWD -cp element, CWE-88).
         # Rejects an empty / option-like / URL / traversing model name, and bounds
-        # it to the sandbox when it is a real path.
-        validate_model_resource(self.model, context="MaltParser model")
-        model_dir, model_name = os.path.split(self.model)
+        # it to the sandbox when it is a real path. Use the value it returns:
+        # __fspath__ may answer differently on every call, so re-reading
+        # self.model here would let the JVM open a file the guard never saw.
+        model = validate_model_resource(self.model, context="MaltParser model")
+        model_dir, model_name = os.path.split(model)
         if model_dir:
             # A model carrying a directory is a real path: bound the directory too,
             # since in learn mode MaltParser WRITES the .mco into it.
-            validate_path(self.model, context="MaltParser model")
+            validate_path(model, context="MaltParser model")
             workingdir = os.path.abspath(model_dir)
         else:
             # A bare model name lives in the private dir that train() wrote it to.
@@ -333,13 +335,14 @@ class MaltParser(ParserI):
 
         # -i is read by the JVM and -o is written by it; train_from_file() and
         # generate_malt_command() are both public, so neither may leave the roots.
-        validate_tool_path(inputfilename, context="MaltParser input file")
-        cmd += ["-i", inputfilename]
+        cmd += ["-i", validate_tool_path(inputfilename, context="MaltParser input")]
         if mode == "parse":
-            validate_tool_path(
-                outputfilename, context="MaltParser output file", for_write=True
-            )
-            cmd += ["-o", outputfilename]
+            cmd += [
+                "-o",
+                validate_tool_path(
+                    outputfilename, context="MaltParser output", for_write=True
+                ),
+            ]
         cmd += ["-m", mode]  # mode use to generate parses.
         return cmd
 
