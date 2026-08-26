@@ -732,6 +732,19 @@ def test_absolute_path_with_dash_basename_is_not_an_option(pathsec_sandbox):
         _cleanup(registry)
 
 
+def _disarm_perceptron_write(monkeypatch, module):
+    """Neuter BOTH containment layers on the model-write path.
+
+    ``save_to_json`` validates the caller's destination, and
+    ``_open_private_model_dir`` independently validates the real path the pinned
+    descriptor landed on. Removing only one leaves the write blocked by the
+    other, which is the point of having two; a teeth test therefore has to
+    remove both before the escape is reachable.
+    """
+    monkeypatch.setattr(module, "validate_tool_dir", lambda *a, **k: None)
+    monkeypatch.setattr(module, "validate_path", lambda *a, **k: None)
+
+
 def _assert_teeth(action, evidence, *, what):
     """Run *action* with a guard already neutered and report what happened.
 
@@ -798,7 +811,10 @@ def test_each_guard_is_load_bearing(
         driver(target)
 
     module = importlib.import_module(modname)
-    monkeypatch.setattr(module, attr, lambda *a, **k: None)
+    if attr == "validate_tool_dir":
+        _disarm_perceptron_write(monkeypatch, module)
+    else:
+        monkeypatch.setattr(module, attr, lambda *a, **k: None)
     outcome = _refusal_for(driver, target)
     if not _POSIX and attr == "validate_tool_dir":
         # The Windows save branch writes through pathsec.open, which refuses an
@@ -869,7 +885,7 @@ def test_perceptron_save_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
         _drive_save_to_json(str(victim))
     assert not victim.exists()
 
-    monkeypatch.setattr(perceptron, "validate_tool_dir", lambda *a, **k: None)
+    _disarm_perceptron_write(monkeypatch, perceptron)
     _assert_teeth(
         lambda: _drive_save_to_json(str(victim)),
         lambda: victim.exists()
@@ -1190,6 +1206,7 @@ def test_lang_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
     monkeypatch.setattr(
         perceptron, "_validate_name_component", lambda value, kind="": str(value)
     )
+    monkeypatch.setattr(perceptron, "validate_path", lambda *a, **k: None)
     _assert_teeth(
         lambda: tagger.save_to_json(lang=lang, loc=str(loc)),
         lambda: any(p.name.startswith("TRAVERSED") for p in outside.iterdir()),
@@ -1789,6 +1806,7 @@ def test_tagger_name_traversal_is_load_bearing(pathsec_sandbox, monkeypatch):
     monkeypatch.setattr(
         perceptron, "_validate_name_component", lambda value, kind="": str(value)
     )
+    monkeypatch.setattr(perceptron, "validate_path", lambda *a, **k: None)
     _assert_teeth(
         lambda: tagger.save_to_json(lang="eng", loc=str(loc)),
         lambda: any(p.name.startswith("EVIL_") for p in outside.iterdir()),
@@ -1946,7 +1964,7 @@ def test_empty_path_file_url_guard_is_load_bearing(pathsec_sandbox, monkeypatch)
         tagger.save_to_json(lang="eng", loc="file://pwned")
     assert not list(workdir.iterdir())
 
-    monkeypatch.setattr(perceptron, "validate_tool_dir", lambda *a, **k: None)
+    _disarm_perceptron_write(monkeypatch, perceptron)
     # "file:" is not a legal directory name on Windows, so the escape is not
     # even representable there; _assert_teeth checks the right thing per platform.
     _assert_teeth(
@@ -2232,3 +2250,34 @@ def test_fuzzed_resource_names_never_resolve_outside_the_root(restricted_sandbox
         if not (real == root_real or real.startswith(root_real + os.sep)):
             escapes.append((name, real))
     assert not escapes, f"find() escaped the root: {escapes[:3]}"
+
+
+@pytest.mark.skipif(not _POSIX, reason="the pinned directory descriptor is POSIX-only")
+def test_pinned_model_dir_descriptor_is_revalidated(pathsec_sandbox, monkeypatch):
+    """The containment check on ``loc`` runs before the directory is opened, so
+    the descriptor's own real path is validated too.
+
+    Otherwise an intermediate component swapped in between the check and the
+    open would leave the write pinned to a directory outside the sandbox. The
+    descriptor is race-free (the kernel already resolved it), so validating what
+    it landed on closes that window rather than trying to win it.
+    """
+    import nltk.tag.perceptron as perceptron
+
+    root, outside = pathsec_sandbox
+    victim = outside / "swapped"
+    victim.mkdir(mode=0o700)
+
+    # Simulate the swap: containment passes on the string, but the descriptor
+    # the kernel hands back belongs to a directory outside the root.
+    monkeypatch.setattr(perceptron, "_fd_realpath", lambda fd: str(victim))
+    with pytest.raises(PermissionError):
+        perceptron._open_private_model_dir(str(root / "modeldir"))
+
+    # control: without the swap the same call succeeds and returns a descriptor
+    monkeypatch.undo()
+    fd = perceptron._open_private_model_dir(str(root / "modeldir2"))
+    try:
+        assert os.fstat(fd).st_mode & 0o777 == 0o700
+    finally:
+        os.close(fd)
