@@ -122,4 +122,4 @@ def test_sources_route_through_pathsec():
     assert "with open(" not in save_file_src
 
     save_params_src = inspect.getsource(ne.Maxent_NE_Chunker.save_params)
-    assert "validate_path(" in save_params_src
+    assert "validate_tool_dir(" in save_params_src

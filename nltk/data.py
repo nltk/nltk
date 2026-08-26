@@ -942,7 +942,10 @@ def find(resource_name, paths=None):
         paths = path
 
     # Check if the resource name includes a zipfile name
-    m = re.match(r"(.*?\.zip)/?(.*)$", resource_name)
+    # DOTALL matters for termination, not just matching: without it a name
+    # containing a newline never looks like a zip, so the ".zip/" fallback below
+    # recurses on an ever-growing name instead of stopping (CWE-407 / CWE-1333).
+    m = re.match(r"(.*?\.zip)/?(.*)$", resource_name, re.DOTALL)
     if m:
         zipfile, zipentry = m.groups()
     else:

@@ -14,7 +14,7 @@ import re
 import unicodedata
 import warnings
 
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
 
 try:
@@ -123,8 +123,8 @@ class CRFTagger(TaggerI):
 
     def set_model_file(self, model_file):
         # ``model_file`` reaches pycrfsuite's native ``.open()`` (which pathsec.open
-        # cannot wrap); validate it against the data sandbox first (GHSA-8mgp-746c-j5xp).
-        validate_path(model_file, context="CRFTagger.set_model_file")
+        # cannot wrap); bound it to the data sandbox first (GHSA-8mgp-746c-j5xp).
+        validate_tool_path(model_file, context="CRFTagger.set_model_file")
         self._model_file = model_file
         self._tagger.open(self._model_file)
 
@@ -286,8 +286,9 @@ class CRFTagger(TaggerI):
             raise ImportError("CRFTagger requires python-crfsuite to be installed.")
 
         # ``model_file`` is the destination for pycrfsuite's native ``.train()`` (which
-        # pathsec.open cannot wrap); validate it up front (GHSA-8mgp-746c-j5xp).
-        validate_path(model_file, context="CRFTagger.train")
+        # pathsec.open cannot wrap); bound it up front (GHSA-8mgp-746c-j5xp). The
+        # destination normally does not exist yet, so existence is not required.
+        validate_tool_path(model_file, context="CRFTagger.train", must_exist=False)
 
         trainer = pycrfsuite.Trainer(verbose=self._verbose)
         trainer.set_params(self._training_options)

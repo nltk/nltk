@@ -9,6 +9,7 @@
 
 """Centralized I/O security sentinel for NLTK."""
 import builtins
+import errno
 import http.client
 import io
 import ipaddress
@@ -146,7 +147,9 @@ def validate_path(path_input, context="NLTK", required_root=None):
     :param required_root: If provided, enforces that the path is strictly
                           within this specific directory (scoped sandbox).
     """
-    if isinstance(path_input, int) or not path_input or not str(path_input).strip():
+    # An *empty* path is a no-op (nothing can open it), but a blank-but-non-empty
+    # one names a real file, so it must be validated like any other path.
+    if isinstance(path_input, int) or not path_input:
         return
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
@@ -240,6 +243,155 @@ def validate_path(path_input, context="NLTK", required_root=None):
     except Exception:
         if ENFORCE:
             raise
+
+
+# O_NOFOLLOW on a symlink, and O_RDONLY on a socket / write-only FIFO, fail with
+# these; they mean "refused by the hardening", not "this file is broken".
+_REFUSING_ERRNOS = frozenset(
+    e
+    for e in (
+        getattr(errno, "ELOOP", None),
+        getattr(errno, "EMLINK", None),
+        getattr(errno, "ENXIO", None),
+        getattr(errno, "EOPNOTSUPP", None),
+        getattr(errno, "ENOTSUP", None),
+    )
+    if e is not None
+)
+
+
+def _as_path_string(path_input):
+    """Normalise a path-ish argument to the exact string a sink would use.
+
+    Mirrors :func:`validate_path`: a ``PathPointer`` exposes ``.path``, bytes are
+    decoded with the filesystem encoding, everything else goes through ``str``.
+    """
+    raw = path_input.path if hasattr(path_input, "path") else path_input
+    if isinstance(raw, bytes):
+        return os.fsdecode(raw)
+    return raw if isinstance(raw, str) else str(raw)
+
+
+def validate_tool_path(path_input, context="NLTK tool", *, must_exist=True):
+    """Validate a path that is handed to a *native loader or a subprocess argv*.
+
+    :func:`validate_path` alone is not enough for these sinks. It only answers
+    "is this string inside an allowed root", and NLTK cannot wrap the actual
+    open: a C extension (``pycrfsuite.Tagger.open``) or an external process
+    (``hunpos-tag``, the Stanford JVM) performs it. This adds the checks
+    :func:`open` already performs on descriptors it owns, plus the two that only
+    matter when a path becomes a command-line argument:
+
+    * blank-but-non-empty and NUL-bearing paths are refused outright;
+    * a path whose string form starts with ``-`` is refused: as an argv element
+      the callee parses it as an *option*, not a filename (CWE-88);
+    * the path is resolved and bounded by :func:`validate_path`;
+    * when it exists, it is opened with ``O_NOFOLLOW|O_NONBLOCK`` and must be a
+      *regular* file with ``st_nlink == 1``, and the descriptor's kernel path is
+      re-validated. That refuses a final-component symlink, an in-root hardlink
+      to an outside inode (which no path resolution can see), and a planted
+      FIFO / socket / device / directory, whose open would block forever or
+      stream unbounded data (CWE-59, CWE-400).
+
+    A path-taking sink can never be fully race-free (the callee re-resolves the
+    name), but every attack that does not require winning that race is refused.
+
+    :param path_input: the path about to be handed to the tool.
+    :param context: diagnostic context for the raised error.
+    :param must_exist: when False, a non-existent path is accepted after the
+        containment check (a write destination the tool will create).
+    :raises PermissionError: if the path is not usable safely.
+    """
+    if isinstance(path_input, int):
+        return
+    raw = _as_path_string(path_input)
+    if not raw:
+        raise PermissionError(
+            f"Security Violation [{context}]: empty model path is not a usable file"
+        )
+    if not raw.strip():
+        raise PermissionError(
+            f"Security Violation [{context}]: blank path {raw!r} is not a model file"
+        )
+    if "\x00" in raw:
+        raise PermissionError(
+            f"Security Violation [{context}]: NUL byte in path {raw!r}"
+        )
+    if raw.startswith("-"):
+        raise PermissionError(
+            f"Security Violation [{context}]: path {raw!r} starts with '-' and "
+            "would be parsed as a command-line option by the tool (CWE-88)"
+        )
+
+    validate_path(raw, context=context)
+    if not ENFORCE or os.name != "posix":
+        return
+
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        fd = os.open(raw, flags)
+    except FileNotFoundError:
+        if must_exist:
+            raise
+        return
+    except NotADirectoryError:
+        if must_exist:
+            raise
+        return
+    except OSError as e:
+        # Only the errnos the hardening flags produce are a security refusal;
+        # anything else (ENAMETOOLONG, EACCES, ...) is a plain OS error.
+        if e.errno in _REFUSING_ERRNOS:
+            raise PermissionError(
+                f"Security Violation [{context}]: refusing model path {raw!r}: "
+                f"{e.strerror} (symlink or non-regular file, CWE-59)"
+            ) from e
+        raise
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise PermissionError(
+                f"Security Violation [{context}]: model path {raw!r} is not a "
+                "regular file (a FIFO/socket/device/directory can block the "
+                "loader forever or stream unbounded data, CWE-400)"
+            )
+        if st.st_nlink > 1:
+            raise PermissionError(
+                f"Security Violation [{context}]: refusing multiply-linked model "
+                f"{raw!r} (st_nlink={st.st_nlink}); a hardlink names an inode that "
+                "may live outside the sandbox (CWE-59)"
+            )
+        actual = _fd_realpath(fd)
+        validate_path(
+            actual if actual is not None else os.path.realpath(raw), context=context
+        )
+    finally:
+        os.close(fd)
+
+
+def validate_tool_dir(path_input, context="NLTK tool"):
+    """Validate a *directory* a tool or NLTK itself will write model files into.
+
+    The file-shaped checks in :func:`validate_tool_path` do not apply (the leaf
+    is a directory, and it may not exist yet), but the string-shaped ones do: a
+    blank or NUL-bearing destination silently becomes a directory in the current
+    working directory rather than anything the caller meant.
+    """
+    raw = _as_path_string(path_input)
+    if not raw or not raw.strip():
+        raise PermissionError(
+            f"Security Violation [{context}]: blank destination directory {raw!r}"
+        )
+    if "\x00" in raw:
+        raise PermissionError(
+            f"Security Violation [{context}]: NUL byte in destination {raw!r}"
+        )
+    validate_path(raw, context=context)
 
 
 def _zip_member_is_unsafe(name_str):
@@ -749,8 +901,6 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     temp dir is not left group-/world-readable (CWE-377/378). POSIX only;
     callers fall back to :func:`builtins.open` elsewhere.
     """
-    import errno
-
     flags = (
         _os_open_flags(mode)
         | getattr(os, "O_NOFOLLOW", 0)
@@ -978,6 +1128,8 @@ class ZipFile(zipfile.ZipFile):
 
 __all__ = [
     "validate_path",
+    "validate_tool_path",
+    "validate_tool_dir",
     "validate_network_url",
     "validate_zip_archive",
     "open",
