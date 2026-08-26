@@ -1459,3 +1459,104 @@ def test_dot_path_object_is_refused_by_both_guards(pathsec_sandbox):
     for guard in (validate_model_resource, validate_tool_path):
         with pytest.raises((PermissionError, ValueError)):
             guard(sneaky, context="sweep")
+
+
+class _LyingStr(str):
+    """A str subclass whose inspection methods lie.
+
+    os.fspath() returns a str subclass unchanged, so every syntactic check would
+    otherwise run on attacker-controlled methods while the value handed to the
+    tool still carries the real, hostile characters.
+    """
+
+    def __str__(self):
+        return "safe"
+
+    def startswith(self, *args, **kwargs):
+        return False
+
+    def strip(self, *args, **kwargs):
+        return "safe"
+
+    def rstrip(self, *args, **kwargs):
+        return self
+
+    def replace(self, *args, **kwargs):
+        return "safe/name.mco"
+
+    def split(self, *args, **kwargs):
+        return ["safe", "name.mco"]
+
+    def lower(self):
+        return "safe"
+
+    def __contains__(self, item):
+        return False
+
+
+class _LyingFsPath:
+    def __fspath__(self):
+        return _LyingStr("-Xmx99g")
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        "-Xmx99g",
+        "../../../etc/passwd",
+        "file:///etc/passwd",
+        "model\x00.mco",
+        "NUL",
+        "evil.mco.",
+        "name:stream",
+    ],
+)
+def test_lying_str_subclass_is_refused(payload):
+    """Every check must see the real characters, not what the subclass claims."""
+    for guard in (validate_model_resource, validate_tool_path):
+        with pytest.raises((PermissionError, ValueError)):
+            guard(_LyingStr(payload), context="sweep")
+
+
+def test_lying_subclass_returned_by_fspath_is_refused():
+    for guard in (validate_model_resource, validate_tool_path):
+        with pytest.raises((PermissionError, ValueError)):
+            guard(_LyingFsPath(), context="sweep")
+
+
+def test_malt_argv_cannot_be_injected_via_str_subclass(pathsec_sandbox):
+    """The payload previously reached the JVM argv as "-c -Xmx99g"."""
+    root, _outside = pathsec_sandbox
+    parser = _malt(_LyingStr("-Xmx99g"))
+    infile, _outfile = _sandbox_io(parser)
+    with pytest.raises((PermissionError, ValueError)):
+        parser.generate_malt_command(infile, None, mode="learn")
+
+
+def test_guards_always_return_an_exact_str(pathsec_sandbox):
+    """The value callers put into argv must be a plain str, so that nothing can
+    re-resolve or re-inspect it differently later."""
+    root, _outside = pathsec_sandbox
+    model = root / "ok.mco"
+    model.write_text("m")
+
+    class _BenignSubclass(str):
+        pass
+
+    for value in (str(model), _BenignSubclass(str(model)), model, _DEFAULT_RESOURCE):
+        assert type(validate_model_resource(value, context="sweep")) is str
+    assert type(validate_tool_path(model, context="sweep")) is str
+
+
+def test_benign_str_subclass_still_works(pathsec_sandbox):
+    """Over-block control: subclassing str is legal, lying about it is not."""
+    root, _outside = pathsec_sandbox
+    model = root / "ok.mco"
+    model.write_text("m")
+
+    class _BenignSubclass(str):
+        pass
+
+    assert validate_model_resource(_BenignSubclass(str(model)), context="sweep") == str(
+        model
+    )

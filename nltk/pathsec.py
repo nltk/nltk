@@ -272,6 +272,13 @@ def _as_path_text(value, context):
         raise ValueError(
             f"Security Violation [{context}]: {text!r} is bytes; pass a str path."
         )
+    # os.fspath() hands back a str SUBCLASS unchanged, so every check below would
+    # run on attacker-controlled methods: a subclass overriding startswith,
+    # replace, split or __contains__ passes all of them while carrying a hostile
+    # value. str.__str__ is used rather than str(): it ignores a __str__ override
+    # and yields an exact str holding the real characters.
+    if type(text) is not str:
+        text = str.__str__(text)
     return text
 
 
