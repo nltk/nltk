@@ -674,15 +674,30 @@ def open_package_resource(
     roots, and the same physical checks apply, so a symlink or a non-regular
     file planted at the name is refused.
 
+    *package_root* is itself constrained to the installed NLTK package. Without
+    that this helper is a general arbitrary-read primitive: a caller passing
+    ``package_root="/"`` could read any file on the machine through it, which
+    would hand out exactly the sandbox bypass the rest of this module exists to
+    prevent.
+
     :param path: the file to open, expected to live under *package_root*
-    :param package_root: the installed package directory it must stay inside
+    :param package_root: the directory it must stay inside, itself required to
+        be within the installed NLTK package
     :param context: label used in the security-violation message
-    :raises PermissionError: if the path escapes *package_root* or is not a
-        plain file
+    :raises PermissionError: if *package_root* is outside the installed package,
+        if the path escapes it, or if it is not a plain file
     """
     text = _as_path_text(path, context, error=PermissionError)
     _reject_bad_name_syntax(text, context, error=PermissionError)
     root = Path(_as_path_text(package_root, context, error=PermissionError)).resolve()
+    # The root is caller-supplied, so bound IT too: this helper opens resources
+    # that ship inside NLTK, nothing else.
+    installed_package = Path(__file__).resolve().parent
+    if not (root == installed_package or root.is_relative_to(installed_package)):
+        raise PermissionError(
+            f"Security Violation [{context}]: package root {str(root)!r} is "
+            f"outside the installed NLTK package {str(installed_package)!r}."
+        )
     try:
         target = Path(text).resolve()
     except (OSError, ValueError) as exc:
