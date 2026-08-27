@@ -12,6 +12,8 @@ must leave nothing behind. The chat80 and agreement sinks this file used to also
 cover now live in test_chat80_pathsec.py and test_agreement_pathsec.py.
 """
 
+import os
+
 import pytest
 
 import nltk.pathsec as pathsec
@@ -89,3 +91,72 @@ def test_tbl_demo_plot_refuses_outside(sandbox):
     with pytest.raises(PermissionError):
         demo._demo_plot(str(target), stats, stats)
     assert not target.exists()
+
+
+# ---------------------------------------------------------------------------
+# postag()'s caller-supplied output paths. Probed after the branches were
+# merged and found already sound; pinned so a later change cannot open them.
+#
+# These deliberately do NOT use the pathsec_sandbox fixture: it narrows
+# nltk.data.path to one empty temp root, so the treebank corpus cannot load and
+# postag raises LookupError long before reaching any write. The real roots stay
+# in place and the attack target is staged outside them instead.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def corpus_backed_sandbox(monkeypatch, tmp_path_factory):
+    """ENFORCE on, the real data roots intact, plus an out-of-root target."""
+    import pathlib as _pathlib
+    import shutil as _shutil
+    import tempfile as _tempfile
+
+    import nltk.data
+
+    pytest.importorskip("numpy")
+    try:
+        nltk.data.find("corpora/treebank")
+    except LookupError:
+        pytest.skip("treebank corpus unavailable")
+
+    outside = _pathlib.Path(
+        _tempfile.mkdtemp(prefix=".nltk_tbl_outside_", dir=str(_pathlib.Path.home()))
+    )
+    monkeypatch.setattr(pathsec, "ENFORCE", True)
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+    try:
+        yield outside
+    finally:
+        _shutil.rmtree(outside, ignore_errors=True)
+
+
+@pytest.mark.parametrize(
+    "kwarg",
+    [
+        "serialize_output",
+        "error_output",
+        "cache_baseline_tagger",
+        "learning_curve_output",
+    ],
+)
+def test_postag_output_paths_refuse_escape(corpus_backed_sandbox, kwarg):
+    """Every destination postag() writes is caller-supplied, so none may leave
+    the data roots. learning_curve_output reaches savefig, which pathsec.open
+    cannot wrap, so it is validated rather than opened through the sentinel."""
+    import nltk.tbl.demo as demo
+
+    for target in (str(corpus_backed_sandbox / "pwned.out"), "/etc/nltk_pwned.out"):
+        with pytest.raises((PermissionError, ValueError)):
+            demo.postag(num_sents=1, max_rules=1, **{kwarg: target})
+        assert not os.path.exists(target)
+
+
+@pytest.mark.parametrize(
+    "target", ["../../../tmp/evil.pcl", "ok.pcl\x00.evil", "-Xmx99g", ""]
+)
+def test_postag_serialize_output_refuses_malformed_paths(corpus_backed_sandbox, target):
+    import nltk.tbl.demo as demo
+
+    with pytest.raises((PermissionError, ValueError)):
+        demo.postag(num_sents=1, max_rules=1, serialize_output=target)

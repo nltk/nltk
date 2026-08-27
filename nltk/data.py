@@ -39,6 +39,7 @@ import os
 import pickle
 import re
 import shutil
+import stat
 import sys
 import tempfile
 import textwrap
@@ -223,14 +224,44 @@ def staging_tempdir():
     directory per invocation the way a per-call ``make_staging_dir`` would.
     """
     global _STAGING_TEMPDIR
-    if _STAGING_TEMPDIR is None or not os.path.isdir(_STAGING_TEMPDIR):
+    if _STAGING_TEMPDIR is not None and not _staging_dir_is_still_safe(
+        _STAGING_TEMPDIR
+    ):
+        _STAGING_TEMPDIR = None
+    if _STAGING_TEMPDIR is None:
         staged = make_staging_dir(prefix="nltk_scratch_")
         atexit.register(shutil.rmtree, staged, ignore_errors=True)
         _STAGING_TEMPDIR = staged
     return _STAGING_TEMPDIR
 
 
-def make_staging_dir(prefix="nltk_"):
+def _staging_dir_is_still_safe(path):
+    """Re-check a cached scratch directory before handing it out again.
+
+    The cache is a module global, so it is only as trustworthy as the directory
+    it names. ``os.path.isdir`` FOLLOWS symlinks, so an attacker who removes the
+    directory and drops a symlink in its place passes that check and every later
+    scratch file lands wherever the link points. ``lstat`` is used instead, and
+    containment is re-verified, so a swapped or poisoned value is discarded and
+    a fresh directory allocated.
+    """
+    from nltk import pathsec
+
+    try:
+        info = os.lstat(path)
+    except OSError:
+        return False
+    # Not stat(): a symlink must be rejected, not followed.
+    if not stat.S_ISDIR(info.st_mode):
+        return False
+    try:
+        pathsec.validate_path(path, context="nltk.data.staging_tempdir")
+    except (PermissionError, ValueError):
+        return False
+    return True
+
+
+def make_staging_dir(prefix="nltk_", cleanup=False):
     """Create a fresh private directory for NLTK's own output, inside a data root.
 
     NLTK's save helpers default here so their output lands within the security
@@ -245,7 +276,18 @@ def make_staging_dir(prefix="nltk_"):
         *dir*, so a ``..`` inside it would place the directory outside the data
         root (CWE-22). Path separators and NUL are therefore refused.
     :type prefix: str
+    :param cleanup: remove the directory when the interpreter exits. Use it for
+        scratch output nobody will look for again; leave it False for a saved
+        model, where deleting the user's artifact would be surprising. Without
+        it every call leaks a directory under the data root, since the name is
+        unpredictable and no caller can find it again to clean up.
     :return: the absolute path of the created directory.
+
+    See also :func:`staging_tempdir`, which is this function memoised: one
+    shared scratch directory for the whole process, for callers that need a
+    *place* to put a throwaway file rather than a directory of their own.
+    Allocating a fresh directory per throwaway file is what leaked 70 of them on
+    a development machine.
     :rtype: str
     :raises ValueError: if *prefix* is not a plain filename fragment.
     :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
@@ -282,6 +324,8 @@ def make_staging_dir(prefix="nltk_"):
             except BaseException:
                 os.rmdir(staged)
                 raise
+            if cleanup:
+                atexit.register(shutil.rmtree, staged, ignore_errors=True)
             return staged
         except (OSError, ValueError, PermissionError):
             continue

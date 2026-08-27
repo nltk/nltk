@@ -185,12 +185,9 @@ class MaltParser(ParserI):
         gives a predictable, squattable path for both the CoNLL files and the model.
         """
         if self._working_dir is None:
-            staged = make_staging_dir(prefix="nltk_malt_")
-            # The old shared tempdir was reaped by the OS; a dir under a data
-            # root is not, so remove it ourselves rather than leaking one per
-            # parser (the .mco it holds is a temporary model by definition).
-            atexit.register(shutil.rmtree, staged, ignore_errors=True)
-            self._working_dir = staged
+            # cleanup=True: the old shared tempdir was reaped by the OS, a dir
+            # under a data root is not, and the .mco it holds is temporary.
+            self._working_dir = make_staging_dir(prefix="nltk_malt_", cleanup=True)
         return self._working_dir
 
     @working_dir.setter
