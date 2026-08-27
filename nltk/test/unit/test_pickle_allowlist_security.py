@@ -203,6 +203,25 @@ def test_denied_module_backstop_even_if_allowlisted():
         up2.find_class("builtins", "eval")
 
 
+@pytest.mark.parametrize("module", ["posixpath", "ntpath", "genericpath"])
+def test_os_path_backing_modules_are_denied(module, tmp_path):
+    """GHSA-x99w: os.path is denied, but so must be the concrete modules it *is*
+    on each platform -- else a broad allow of posixpath/ntpath/genericpath would
+    reach path/stat/expandvars gadgets (an env-var and filesystem oracle)."""
+    up = AllowlistUnpickler(BytesIO(b""), allowed_modules=(module,))
+    with pytest.raises(pickle.UnpicklingError, match="denied module"):
+        up.find_class(module, "exists")
+    # end-to-end: an expandvars REDUCE must not read the environment
+    marker = "nltk-env-oracle-9ffx"
+    os.environ["NLTK_PICKLE_CANARY"] = marker
+    try:
+        payload = _global_pickle(module, "expandvars", "$NLTK_PICKLE_CANARY")
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(BytesIO(payload), allowed_modules=(module,))
+    finally:
+        os.environ.pop("NLTK_PICKLE_CANARY", None)
+
+
 def test_safe_primitives_and_punkt_still_load():
     """The tightened allowlist must not break legitimate loads."""
     up = AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "int"),))

@@ -1,5 +1,7 @@
 """GHSA-3gq4-3j92-5w49 [high] -- Corpus Reader Sandbox Bypass"""
 
+import os
+
 from ._base import escape_probe, probe
 
 
@@ -13,7 +15,12 @@ def _lin_constructor_bypass():
     from nltk.corpus.reader.lin import LinThesaurusCorpusReader
 
     def load(box):
-        reader = LinThesaurusCorpusReader(box.root, ["link.xml"])
+        # The reader eagerly opens files matching sim[A-Z].lsp; the symlink must
+        # match that pattern or the constructor never reaches the guard.
+        simlink = os.path.join(box.root, "simA.lsp")
+        if not os.path.exists(simlink):
+            os.symlink(box.target or "/nonexistent", simlink)
+        reader = LinThesaurusCorpusReader(box.root)
         return "".join(str(v) for v in getattr(reader, "_thesaurus", {}).values())
 
-    return escape_probe([("LinThesaurus(symlink root)", load)])
+    return escape_probe([("LinThesaurus(simA.lsp symlink)", load)])

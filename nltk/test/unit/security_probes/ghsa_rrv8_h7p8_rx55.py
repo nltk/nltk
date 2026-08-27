@@ -8,9 +8,11 @@ def _text_findall_redos():
     """Text.findall() compiled a user-supplied regex with no backstop."""
     from nltk.text import Text
 
-    text = Text("a b c d e".split())
+    # A long corpus is required: against 5 tokens the raw regex finishes instantly
+    # even unguarded, so the probe could not tell a regression from the fix.
+    text = Text(["a"] * 400)
     try:
-        seconds = timed(text.findall, "(<.*>)+" * 6 + "<zzz>")
+        seconds = timed(text.findall, "<.*>+" * 4 + "<zzz>")
     except Exception as exc:
         return FIXED, "hostile pattern rejected (%s)" % type(exc).__name__
     if seconds > DOS_BUDGET:

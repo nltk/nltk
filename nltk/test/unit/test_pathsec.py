@@ -1054,3 +1054,70 @@ def test_authorize_data_dir_registers_private_dir(tmp_path, monkeypatch):
     assert not registered()
     _authorize_data_dir(str(custom))
     assert registered()
+
+
+# ----------------------------------------------------------------------
+# Hardened write path (_hardened_open): symlink / hardlink / truncate
+# ----------------------------------------------------------------------
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_truncates_legit_file(sandbox_env):
+    """A legit overwrite still truncates: deferring O_TRUNC until after the guard
+    must not leave a stale tail from longer prior content."""
+    safe_dir = sandbox_env[0]
+    target = safe_dir / "model.json"
+    with pathsec.open(str(target), "w", required_root=str(safe_dir)) as f:
+        f.write("first-longer-content")
+    with pathsec.open(str(target), "w", required_root=str(safe_dir)) as f:
+        f.write("short")
+    assert target.read_text(encoding="utf-8") == "short"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_symlink_escape(sandbox_env):
+    """A final-component symlink escaping the root is refused at open (O_NOFOLLOW)."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    link = safe_dir / "evil.tmp"
+    os.symlink(str(secret_file), str(link))
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(link), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_hardlink_and_preserves_target(sandbox_env):
+    """A hardlink to an outside file is refused (st_nlink); deferring O_TRUNC means
+    the refused write does NOT zero the outside target (CWE-59, GHSA-f794)."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    hard = safe_dir / "evil.tmp"
+    os.link(str(secret_file), str(hard))
+    with pytest.raises(PermissionError, match="multiply-linked|Security Violation"):
+        pathsec.open(str(hard), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_absolute_escape_and_preserves(sandbox_env):
+    """A write to an absolute path outside the root is refused, and the deferred
+    O_TRUNC leaves the pre-existing outside file's bytes intact."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(secret_file), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_intermediate_dir_symlink(sandbox_env):
+    """An intermediate directory symlink redirecting the open outside the root is
+    caught by the opened-fd realpath re-validation, not only the final component."""
+    safe_dir, unsafe_dir, _, _, _ = sandbox_env
+    linkdir = safe_dir / "sub"
+    os.symlink(str(unsafe_dir), str(linkdir))  # safe_dir/sub -> outside root
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(linkdir / "planted.tmp"), "wb", required_root=str(safe_dir))
+    # no attacker content lands outside the root
+    assert (
+        not (unsafe_dir / "planted.tmp").exists()
+        or (unsafe_dir / "planted.tmp").read_bytes() == b""
+    )
