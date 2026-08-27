@@ -258,6 +258,12 @@ def _staging_dir_is_still_safe(path):
         pathsec.validate_path(path, context="nltk.data.staging_tempdir")
     except (PermissionError, ValueError):
         return False
+    # A scratch dir that has become group- or world-writable is squattable:
+    # another local user can replace a file between the moment this process
+    # creates it and the moment it reads it back (CWE-377/CWE-378). Discard it
+    # and allocate a fresh 0700 one rather than reusing it.
+    if not pathsec.is_private_dir(path):
+        return False
     return True
 
 

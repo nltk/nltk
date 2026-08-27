@@ -63,33 +63,33 @@ def _run_or_skip(call):
         ),
         (lambda: nltk.pos_tag(["The", "dog"]), lambda r: len(r) == 2),
         (
-            lambda: __import__(
-                "nltk.corpus", fromlist=["wordnet"]
-            ).wordnet.synsets("dog")[0].name(),
+            lambda: __import__("nltk.corpus", fromlist=["wordnet"])
+            .wordnet.synsets("dog")[0]
+            .name(),
             lambda r: r.startswith("dog."),
         ),
         (
-            lambda: __import__(
-                "nltk.corpus", fromlist=["stopwords"]
-            ).stopwords.words("english"),
+            lambda: __import__("nltk.corpus", fromlist=["stopwords"]).stopwords.words(
+                "english"
+            ),
             lambda r: "the" in r,
         ),
         (
-            lambda: __import__(
-                "nltk.corpus", fromlist=["brown"]
-            ).brown.tagged_words()[:1],
+            lambda: __import__("nltk.corpus", fromlist=["brown"]).brown.tagged_words()[
+                :1
+            ],
             lambda r: len(r) == 1,
         ),
         (
-            lambda: __import__(
-                "nltk.corpus", fromlist=["treebank"]
-            ).treebank.parsed_sents()[0].label(),
+            lambda: __import__("nltk.corpus", fromlist=["treebank"])
+            .treebank.parsed_sents()[0]
+            .label(),
             lambda r: r == "S",
         ),
         (
-            lambda: __import__(
-                "nltk.tag", fromlist=["PerceptronTagger"]
-            ).PerceptronTagger().tag(["dog"]),
+            lambda: __import__("nltk.tag", fromlist=["PerceptronTagger"])
+            .PerceptronTagger()
+            .tag(["dog"]),
             lambda r: r[0][0] == "dog",
         ),
     ],

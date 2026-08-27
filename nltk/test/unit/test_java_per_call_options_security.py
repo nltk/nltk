@@ -697,7 +697,17 @@ _JAVA_WRAPPER_MODULES = [
     "nltk.parse.malt",
 ]
 
-_SECURE_TEMP = ("NamedTemporaryFile", "mkstemp", "mkdtemp")
+# make_staging_dir / staging_tempdir are the NLTK helpers that allocate inside a
+# data root (0700, unpredictable name). They are strictly stronger than a bare
+# mkdtemp, which lands in the system temp dir; on Linux that is the shared,
+# world-writable /tmp and is deliberately not a pathsec root.
+_SECURE_TEMP = (
+    "NamedTemporaryFile",
+    "mkstemp",
+    "mkdtemp",
+    "make_staging_dir",
+    "staging_tempdir",
+)
 _INSECURE_TEMP = ("tempfile.mktemp", "os.tmpnam", "os.tempnam")
 
 
@@ -714,3 +724,18 @@ def test_java_wrapper_uses_secure_tempfiles(modname):
     assert any(
         good in src for good in _SECURE_TEMP
     ), f"{modname} does not use a recognised secure temp API {_SECURE_TEMP}"
+    # Stronger than the check above: a temp file created without dir= lands
+    # outside the sandbox, so every factory call in these wrappers must pin it.
+    import ast as _ast
+
+    for node in _ast.walk(_ast.parse(src)):
+        if (
+            isinstance(node, _ast.Call)
+            and isinstance(node.func, _ast.Attribute)
+            and isinstance(node.func.value, _ast.Name)
+            and node.func.value.id == "tempfile"
+            and node.func.attr in ("mkstemp", "NamedTemporaryFile", "TemporaryFile")
+        ):
+            assert any(
+                kw.arg == "dir" for kw in node.keywords
+            ), f"{modname}:{node.lineno} creates a temp file without dir="

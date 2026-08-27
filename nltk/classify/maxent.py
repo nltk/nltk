@@ -65,7 +65,7 @@ from nltk.classify.api import ClassifierI
 from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.data import gzip_open_unicode, make_staging_dir
+from nltk.data import gzip_open_unicode, make_staging_dir, staging_tempdir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
@@ -1440,9 +1440,11 @@ def train_maxent_classifier_with_megam(
 
     # Write a training file for megam.
     try:
-        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-")
-        with open(  # sandboxed-open ok: internal mkstemp name, not caller-supplied
-            trainfile_name, "w"
+        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-", dir=staging_tempdir())
+        # mkstemp now stages inside a data root, so the sentinel accepts it and
+        # no exception is needed.
+        with pathsec_open(
+            trainfile_name, "w", context="maxent.call_megam"
         ) as trainfile:
             write_megam_file(
                 train_toks, encoding, trainfile, explicit=explicit, bernoulli=bernoulli
@@ -1519,9 +1521,11 @@ class TadmMaxentClassifier(MaxentClassifier):
             )
 
         trainfile_fd, trainfile_name = tempfile.mkstemp(
-            prefix="nltk-tadm-events-", suffix=".gz"
+            prefix="nltk-tadm-events-", suffix=".gz", dir=staging_tempdir()
         )
-        weightfile_fd, weightfile_name = tempfile.mkstemp(prefix="nltk-tadm-weights-")
+        weightfile_fd, weightfile_name = tempfile.mkstemp(
+            prefix="nltk-tadm-weights-", dir=staging_tempdir()
+        )
 
         trainfile = gzip_open_unicode(trainfile_name, "w")
         write_tadm_file(train_toks, encoding, trainfile)
@@ -1545,7 +1549,7 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        with open(  # sandboxed-open ok: internal mkstemp name, not caller-supplied
+        with pathsec_open(  # staged inside a data root by mkstemp above
             weightfile_name
         ) as weightfile:
             weights = parse_tadm_weights(weightfile)

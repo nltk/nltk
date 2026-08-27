@@ -32,26 +32,30 @@ import sys
 
 # Sandbox-sensitive modules that must never open a file with the builtin. These
 # are currently clean; the guard keeps them that way.
-GUARDED_PATHS = [
-    "nltk/corpus/reader",
-    "nltk/corpus/util.py",
-    "nltk/data.py",
-    # Model-artifact save/load helpers: the same untrusted-path problem, and the
-    # exact family GHSA-8mgp-746c-j5xp was filed against.
-    "nltk/chunk/named_entity.py",
-    "nltk/classify/maxent.py",
-    "nltk/parse/transitionparser.py",
-    "nltk/tabdata.py",
-    "nltk/tag/perceptron.py",
-    "nltk/tbl/demo.py",
-    "nltk/tokenize/punkt.py",
-]
+# The WHOLE package. This list used to name a dozen modules, which meant a bare
+# open or an unpinned temp file anywhere else went unnoticed; nltk/parse,
+# nltk/sem, nltk/twitter and nltk/app all had violations that nothing flagged.
+# Guarding everything and annotating the few genuine exceptions is the only way
+# the rule holds as the codebase changes.
+GUARDED_PATHS = ["nltk"]
+
+# The test tree is exempt for one specific reason: a security test has to stage
+# its attack target OUTSIDE the sandbox, and the secured helpers refuse exactly
+# that, which is the point of them. Tests that write INSIDE the sandbox were
+# converted to pathsec separately; this exemption is not a licence for the rest.
+_EXEMPT_PREFIXES = (os.path.join("nltk", "test"),)
 
 SUPPRESS_MARKER = "# sandboxed-open ok"
 
 # Opening a path through a compression or archive helper bypasses the sentinel
 # just as a builtin open() does. These are only safe when handed an ALREADY
 # secured file object, so a call whose first argument is a path is a violation.
+# Creating a temp file without dir= puts it in the system temp directory, which
+# on Linux is the shared, world-writable /tmp and is deliberately NOT a pathsec
+# root. Callers must pass dir=nltk.data.staging_tempdir() (or another in-root
+# directory) so scratch output stays inside the sandbox.
+_TEMPFILE_FACTORIES = {"mkstemp", "NamedTemporaryFile", "TemporaryFile"}
+
 _PATH_TAKING = {
     ("gzip", "open"),
     ("bz2", "open"),
@@ -94,6 +98,11 @@ def _secured_names(tree):
     return names
 
 
+def _is_exempt(path):
+    normalised = os.path.normpath(path)
+    return any(normalised.startswith(prefix) for prefix in _EXEMPT_PREFIXES)
+
+
 def _iter_py_files(path):
     if os.path.isfile(path):
         yield path
@@ -108,6 +117,8 @@ def find_violations(paths):
     violations = []
     for base in paths:
         for py in _iter_py_files(base):
+            if _is_exempt(py):
+                continue
             with open(
                 py, encoding="utf-8"
             ) as fh:  # sandboxed-open ok: the guard itself
@@ -135,7 +146,14 @@ def find_violations(paths):
                     and node.args
                     and not _is_secured_handle(node.args[0], secured_names)
                 )
-                if not (bare_builtin or path_taking):
+                unpinned_tempfile = (
+                    isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
+                    and node.func.value.id == "tempfile"
+                    and node.func.attr in _TEMPFILE_FACTORIES
+                    and not any(kw.arg == "dir" for kw in node.keywords)
+                )
+                if not (bare_builtin or path_taking or unpinned_tempfile):
                     continue
                 # Scan every physical line of the call so a suppression
                 # marker still counts if the formatter wrapped the call.

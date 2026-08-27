@@ -119,7 +119,7 @@ class WekaClassifier(ClassifierI):
         # Make sure we can find java & weka.
         config_weka()
 
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = make_staging_dir(prefix="nltk_weka_run_", cleanup=True)
         try:
             # Write the test data file.
             test_filename = os.path.join(temp_dir, "test.arff")
@@ -239,7 +239,7 @@ class WekaClassifier(ClassifierI):
         # Build an ARFF formatter.
         formatter = ARFF_Formatter.from_train(featuresets)
 
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = make_staging_dir(prefix="nltk_weka_run_", cleanup=True)
         try:
             # Write the training data file.
             train_filename = os.path.join(temp_dir, "train.arff")

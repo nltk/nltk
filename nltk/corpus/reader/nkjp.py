@@ -277,7 +277,12 @@ class XML_Tool:
     def __init__(self, root, filename):
         self._root = root
         self.read_file = os.path.join(root, filename)
-        self.write_file = tempfile.NamedTemporaryFile(delete=False)
+        # Imported here: nltk.data imports the corpus package.
+        from nltk.data import staging_tempdir
+
+        self.write_file = tempfile.NamedTemporaryFile(
+            delete=False, dir=staging_tempdir()
+        )
 
     def build_preprocessed_file(self):
         try:

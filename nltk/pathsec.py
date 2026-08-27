@@ -662,6 +662,42 @@ def validate_tool_dir(path_input, context="NLTK tool"):
     return raw
 
 
+def open_package_resource(
+    path, package_root, context="NLTK package data", mode="r", **kwargs
+):
+    """Open a file that ships INSIDE the installed package.
+
+    Package metadata such as ``VERSION`` lives beside the code, never in an
+    NLTK data root, so :func:`validate_path` refuses it and the caller is left
+    with a bare ``open``. This is not an exemption from the rule: containment is
+    still enforced, just against the package directory instead of the data
+    roots, and the same physical checks apply, so a symlink or a non-regular
+    file planted at the name is refused.
+
+    :param path: the file to open, expected to live under *package_root*
+    :param package_root: the installed package directory it must stay inside
+    :param context: label used in the security-violation message
+    :raises PermissionError: if the path escapes *package_root* or is not a
+        plain file
+    """
+    text = _as_path_text(path, context, error=PermissionError)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    root = Path(_as_path_text(package_root, context, error=PermissionError)).resolve()
+    try:
+        target = Path(text).resolve()
+    except (OSError, ValueError) as exc:
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not resolvable."
+        ) from exc
+    if not (target == root or target.is_relative_to(root)):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} escapes the package "
+            f"directory {str(root)!r}."
+        )
+    _reject_aliased_or_special(str(target), context)
+    return builtins.open(target, mode, **kwargs)
+
+
 def _zip_member_is_unsafe(name_str):
     """True if a ZIP member is written somewhere other than where it is validated.
 
@@ -724,7 +760,11 @@ def validate_zip_archive(
         if isinstance(zip_obj_or_path, zipfile.ZipFile):
             _audit(zip_obj_or_path)
         else:
-            with zipfile.ZipFile(zip_obj_or_path, "r") as zf:
+            # ZipFile here is pathsec's own subclass, not the stdlib one: its
+            # __init__ validates the path and applies the member-count guard,
+            # and it does NOT call back into this function, so there is no
+            # recursion. That makes the archive path checked before it is read.
+            with ZipFile(zip_obj_or_path, "r") as zf:
                 _audit(zf)
     except (PermissionError, ValueError):
         raise
@@ -1406,6 +1446,7 @@ __all__ = [
     "validate_model_resource",
     "validate_tool_path",
     "validate_tool_dir",
+    "open_package_resource",
     "validate_network_url",
     "validate_zip_archive",
     "open",

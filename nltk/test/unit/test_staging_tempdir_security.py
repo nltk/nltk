@@ -176,3 +176,42 @@ class TestStagingDirLifetime:
             "print('D=' + p.working_dir)"
         )
         assert not os.path.exists(paths["D"])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX mode bits")
+@pytest.mark.parametrize("mode", [0o777, 0o770, 0o707], ids=["world", "group", "other"])
+def test_a_writable_scratch_dir_is_not_reused(fresh_staging, mode):
+    """A scratch dir that has become group- or world-writable is squattable.
+
+    Another local user can replace a file between this process creating it and
+    reading it back (CWE-377/CWE-378), so the cache must discard it and
+    allocate a fresh 0700 one rather than handing it out again.
+    """
+    root, _outside = fresh_staging
+    staged = nltk.data.staging_tempdir()
+    os.chmod(staged, mode)
+    replacement = nltk.data.staging_tempdir()
+    assert replacement != staged, "reused a writable scratch directory"
+    assert _inside(replacement, root)
+    assert os.stat(replacement).st_mode & 0o077 == 0
+
+
+def test_no_writable_root_refuses_rather_than_falling_back(fresh_staging, monkeypatch):
+    """With no writable root the correct answer is to refuse.
+
+    Silently falling back to the system temp dir would put scratch output on
+    Linux's shared /tmp, which is exactly what pinning dir= was meant to stop.
+    """
+    import tempfile as _tempfile
+
+    read_only = _tempfile.mkdtemp(prefix="nltk_ro_root_")
+    os.chmod(read_only, 0o500)
+    monkeypatch.setattr(nltk.data, "path", [read_only])
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+    try:
+        with pytest.raises((PermissionError, OSError)):
+            nltk.data.staging_tempdir()
+    finally:
+        os.chmod(read_only, 0o700)
+        shutil.rmtree(read_only, ignore_errors=True)
