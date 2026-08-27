@@ -192,7 +192,7 @@ def test_load_rejects_encoded_traversal_end_to_end(url):
 def test_find_zip_split_is_non_greedy(tmp_path):
     # Create a.zip containing an entry whose name includes another ".zip".
     zpath = tmp_path / "a.zip"
-    with zipfile.ZipFile(zpath, "w") as zf:
+    with pathsec.ZipFile(zpath, "w") as zf:
         zf.writestr("b.zip/c.txt", "ok")
 
     ptr = data.find("a.zip/b.zip/c.txt", paths=[str(tmp_path)])
@@ -236,7 +236,7 @@ def test_gzip_pointer_open_enforces_sandbox(tmp_path, monkeypatch):
 
     # legitimate gzip INSIDE the allowed root -> reads (decompressed)
     good = allowed / "good.gz"
-    with gzip.open(good, "wb") as fh:
+    with gzip.open(pathsec.open(good, "wb", context="test-fixture"), "wb") as fh:
         fh.write(b"hello-gz")
     with data.GzipFileSystemPathPointer(str(good)).open() as fp:
         assert fp.read() == b"hello-gz"

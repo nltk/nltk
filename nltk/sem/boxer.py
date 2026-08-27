@@ -204,10 +204,13 @@ class Boxer:
         :param candc_out: str output from C&C parser
         :return: stdout
         """
+        # Imported here, not at module scope: nltk.data imports nltk.sem.
+        from nltk.data import staging_tempdir
+
         f = None
         try:
             fd, temp_filename = tempfile.mkstemp(
-                prefix="boxer-", suffix=".in", text=True
+                prefix="boxer-", suffix=".in", text=True, dir=staging_tempdir()
             )
             f = os.fdopen(fd, "w")
             f.write(candc_out.decode("utf-8"))

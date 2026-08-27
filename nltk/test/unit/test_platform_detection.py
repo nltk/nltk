@@ -58,7 +58,12 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     parser = MaltParser.__new__(MaltParser)
     parser.additional_java_args = []
     parser.malt_jars = [str(jar_a), str(jar_b)]
-    parser.model = "model.mco"
+    # Inside the allowed data root: generate_malt_command bounds the model path.
+    model = data_root / "model.mco"
+    model.touch()
+    parser.model = str(model)
+    parser._trained = True
+    parser._working_dir = None
 
     captured = {}
 
@@ -77,7 +82,9 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
 
     # MaltParser hands its jars to internals.java(), which joins the classpath with
     # os.pathsep; the launcher command's -cp value must use it.
-    argv = parser.generate_malt_command("input.conll", mode="learn")
+    conll = data_root / "input.conll"
+    conll.touch()
+    argv = parser.generate_malt_command(str(conll), mode="learn")
     parser._execute(argv)
     cmd = captured["cmd"]
     assert cmd[cmd.index("-cp") + 1] == f"{jar_a};{jar_b}"

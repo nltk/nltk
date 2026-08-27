@@ -886,6 +886,10 @@ class Downloader:
                 return
 
             try:
+                # The lock lives under the caller-chosen download dir, so bound
+                # it before creating it. O_EXCL already refuses an existing file
+                # or symlink; this stops the path leaving the sandbox at all.
+                validate_path(lock_filepath, context="downloader.lock")
                 fd = os.open(lock_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.close(fd)
                 break
@@ -2574,7 +2578,7 @@ def md5_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
-        with open(file, "rb") as infile:
+        with pathsec_open(file, "rb", context="downloader.checksum") as infile:
             return _md5_hexdigest(infile)
     return _md5_hexdigest(file)
 
@@ -2595,7 +2599,7 @@ def sha256_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
-        with open(file, "rb") as infile:
+        with pathsec_open(file, "rb", context="downloader.checksum") as infile:
             return _sha256_hexdigest(infile)
     return _sha256_hexdigest(file)
 

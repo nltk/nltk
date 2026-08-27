@@ -236,7 +236,7 @@ def postag(
         # available. Print a list with describe_template_sets()
         # for instance:
         templates = brill24()
-    training_data, baseline_data, gold_data, testing_data = _demo_prepare_data(
+    (training_data, baseline_data, gold_data, testing_data) = _demo_prepare_data(
         tagged_data, train, num_sents, randomize, separate_baseline_data
     )
 
@@ -248,6 +248,8 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
+            # ``cache_baseline_tagger`` is caller-supplied, so the model
+            # write/read goes through the pathsec sandbox (GHSA-8mgp-746c-j5xp).
             with pathsec_open(
                 cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
             ) as print_rules:
@@ -295,7 +297,7 @@ def postag(
         print(
             "Incrementally tagging the test data, collecting individual rule statistics"
         )
-        taggedtest, teststats = brill_tagger.batch_tag_incremental(
+        (taggedtest, teststats) = brill_tagger.batch_tag_incremental(
             testing_data, gold_data
         )
         print("    Rule statistics collected")
@@ -320,9 +322,11 @@ def postag(
 
     # writing error analysis to file
     if error_output is not None:
-        with pathsec_open(error_output, "w", context="tbl.demo.error_output") as f:
+        with pathsec_open(
+            error_output, "w", context="tbl.demo.error_output", encoding="utf-8"
+        ) as f:
             f.write("Errors for Brill Tagger %r\n\n" % serialize_output)
-            f.write("\n".join(error_list(gold_data, taggedtest)).encode("utf-8") + "\n")
+            f.write("\n".join(error_list(gold_data, taggedtest)) + "\n")
         print(f"Wrote tagger errors including context to {error_output}")
 
     # serializing the tagger to a pickle file and reloading (just to see it works)
@@ -366,13 +370,13 @@ def _demo_prepare_data(
         baseline_data = training_data
     else:
         bl_cutoff = len(training_data) // 3
-        baseline_data, training_data = (
+        (baseline_data, training_data) = (
             training_data[:bl_cutoff],
             training_data[bl_cutoff:],
         )
-    trainseqs, traintokens = corpus_size(training_data)
-    testseqs, testtokens = corpus_size(testing_data)
-    bltrainseqs, bltraintokens = corpus_size(baseline_data)
+    (trainseqs, traintokens) = corpus_size(training_data)
+    (testseqs, testtokens) = corpus_size(testing_data)
+    (bltrainseqs, bltraintokens) = corpus_size(baseline_data)
     print(f"Read testing data ({testseqs:d} sents/{testtokens:d} wds)")
     print(f"Read training data ({trainseqs:d} sents/{traintokens:d} wds)")
     print(
@@ -386,9 +390,12 @@ def _demo_prepare_data(
 
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
-    # matplotlib's savefig() opens and writes learning_curve_output directly, so
-    # a caller-controlled path is validated here before any file is created
-    # (GHSA-8mgp-746c-j5xp).
+    """Write the learning-curve plot to ``learning_curve_output``.
+
+    The destination is caller-supplied and matplotlib writes it itself, so the
+    path is checked against the NLTK data sandbox before any work is done
+    (GHSA-8mgp-746c-j5xp); ``pathsec.open`` cannot wrap a ``savefig``.
+    """
     validate_path(learning_curve_output, context="tbl.demo.learning_curve_output")
     testcurve = [teststats["initialerrors"]]
     for rulescore in teststats["rulescores"]:

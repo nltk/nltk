@@ -38,6 +38,7 @@ from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
 from nltk.corpus import conll2000, treebank_chunk
 from nltk.draw.util import ShowText
+from nltk.pathsec import open as pathsec_open
 from nltk.tree import Tree
 from nltk.util import in_idle
 
@@ -1391,7 +1392,7 @@ class RegexpChunkApp:
         else:
             precision = recall = fscore = "Not finished evaluation yet"
 
-        with open(filename, "w") as outfile:
+        with pathsec_open(filename, "w", context="chunkparser_app") as outfile:
             outfile.write(
                 self.SAVE_GRAMMAR_TEMPLATE
                 % dict(
@@ -1412,7 +1413,7 @@ class RegexpChunkApp:
                 return
         self.grammarbox.delete("1.0", "end")
         self.update()
-        with open(filename) as infile:
+        with pathsec_open(filename, context="chunkparser_app") as infile:
             grammar = infile.read()
         grammar = re.sub(
             r"^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
@@ -1427,7 +1428,7 @@ class RegexpChunkApp:
             if not filename:
                 return
 
-        with open(filename, "w") as outfile:
+        with pathsec_open(filename, "w", context="chunkparser_app") as outfile:
             outfile.write("# Regexp Chunk Parsing Grammar History\n")
             outfile.write("# Saved %s\n" % time.ctime())
             outfile.write("# Development set: %s\n" % self.devset_name)

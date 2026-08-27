@@ -6,12 +6,14 @@ from ._base import FIXED, VULNERABLE, probe
 @probe("GHSA-97qj-x29f-37w7")
 def _billion_laughs():
     """Entity-expansion DoS via remaining raw ElementTree parses."""
+    # A FLAT entity (unlike a nested billion-laughs) IS expanded by stock
+    # ElementTree, so the probe flips to VULNERABLE if the entity guard is removed.
     payload = (
-        '<?xml version="1.0"?><!DOCTYPE lolz [<!ENTITY lol "lol">'
-        + "".join(
-            '<!ENTITY lol%d "&lol%d;&lol%d;">' % (i, i - 1, i - 1) for i in range(1, 10)
-        )
-        + "]><lolz>&lol9;</lolz>"
+        '<?xml version="1.0"?><!DOCTYPE d [<!ENTITY a "'
+        + "A" * 10000
+        + '">]><d>'
+        + "&a;" * 100
+        + "</d>"
     )
     from nltk import xmlsec
 

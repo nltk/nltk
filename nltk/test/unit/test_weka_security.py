@@ -9,6 +9,10 @@ path, CWE-426). The CWD is no longer searched; ``WEKAHOME`` or an explicit
 ``config_weka(classpath=...)`` must be used.
 """
 
+import os
+import shutil
+import tempfile
+
 import pytest
 
 import nltk.classify.weka as weka
@@ -52,6 +56,33 @@ def test_explicit_classpath_still_used(tmp_path):
     jar.write_bytes(b"")
     weka.config_weka(classpath=str(jar))
     assert weka._weka_classpath == str(jar)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="needs a dir outside the temp sandbox")
+def test_wekahome_outside_sandbox_is_ignored(monkeypatch):
+    """A WEKAHOME outside the pathsec-allowed roots must not be trusted: an
+    attacker-controlled env var cannot add a weka.jar from an untrusted dir
+    (CWE-426). ``/tmp/<x>`` is world-writable, hence never an allowed root."""
+    outside = tempfile.mkdtemp(dir="/tmp")
+    try:
+        with open(os.path.join(outside, "weka.jar"), "wb"):
+            pass  # attacker-planted jar
+        monkeypatch.setenv("WEKAHOME", outside)
+        with pytest.warns(UserWarning, match="outside the trusted"):
+            with pytest.raises(LookupError):
+                weka.config_weka()
+        assert weka._weka_classpath is None
+    finally:
+        shutil.rmtree(outside, ignore_errors=True)
+
+
+def test_wekahome_inside_sandbox_is_used(tmp_path, monkeypatch):
+    """A WEKAHOME within the authorized data roots (the pytest tmp dir is one) is
+    honoured, so legitimate installs still auto-resolve."""
+    (tmp_path / "weka.jar").write_bytes(b"")
+    monkeypatch.setenv("WEKAHOME", str(tmp_path))
+    weka.config_weka()
+    assert weka._weka_classpath == str(tmp_path / "weka.jar")
 
 
 def test_arff_formatter_escapes_directive_injection():

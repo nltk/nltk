@@ -1,6 +1,7 @@
 import os
 import zipfile
 
+from nltk import pathsec
 from nltk.data import ZipFilePathPointer, open_datafile
 
 # NOTE: these tests use pytest's ``tmp_path`` (under the private pytest session
@@ -18,7 +19,7 @@ def _create_test_zip(root_dir, rel_dir, file_name, contents: bytes):
     zip_path = os.path.join(root_dir, "testdata.zip")
     arcname = os.path.join(rel_dir, file_name).replace(os.path.sep, "/")
 
-    with zipfile.ZipFile(zip_path, "w") as zf:
+    with pathsec.ZipFile(zip_path, "w") as zf:
         zf.writestr(arcname, contents)
 
     return zip_path, arcname

@@ -33,6 +33,7 @@ import requests
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonError, TwythonRateLimitError
 
+from nltk.pathsec import open as pathsec_open
 from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
 
@@ -519,9 +520,16 @@ class TweetWriter(TweetHandlerI):
         """
         if self.startingup:
             if self.gzip_compress:
-                self.output = gzip.open(self.fname, "w")
+                # gzip the CHECKED handle, never the raw path: self.fname is
+                # caller-supplied, so gzip.open(path) is an unguarded write.
+                self.output = gzip.open(
+                    pathsec_open(self.fname, "wb", context="TweetWriter.output"),
+                    "w",
+                )
             else:
-                self.output = open(self.fname, "w")
+                self.output = pathsec_open(
+                    self.fname, "w", context="TweetWriter.output"
+                )
             print(f"Writing to {self.fname}")
 
         json_data = json.dumps(data)

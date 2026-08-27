@@ -346,9 +346,10 @@ class TestPerceptronSaveSquat:
         t.classes = {"NN", "DT"}
         return t
 
-    def test_benign_save_is_private_and_roundtrips(self):
-        base = tempfile.mkdtemp()
-        loc = os.path.join(base, "model_dir")
+    # The base must be an *allowed data root*: a caller-supplied destination is
+    # now bounded by the sandbox, and on Linux the shared /tmp is not a root.
+    def test_benign_save_is_private_and_roundtrips(self, restricted_sandbox):
+        loc = os.path.join(restricted_sandbox, "model_dir")
         t = self._tagger()
         t.save_to_json(lang="eng", loc=loc)
         files = os.listdir(loc)
@@ -357,28 +358,35 @@ class TestPerceptronSaveSquat:
             # written model must not be group-/world-readable (CWE-377/378)
             assert (os.stat(os.path.join(loc, f)).st_mode & 0o077) == 0
 
-    def test_symlinked_save_location_is_refused(self):
+    def test_symlinked_save_location_is_refused(self, restricted_sandbox):
         # The default save dir is a guessable name in a shared temp dir; a local
         # attacker who pre-plants a symlink there must not capture/redirect the
         # model write.
-        base = tempfile.mkdtemp()
-        victim = os.path.join(base, "attacker_dir")
+        victim = os.path.join(restricted_sandbox, "attacker_dir")
         os.makedirs(victim)
-        squat = os.path.join(base, "squat")
+        squat = os.path.join(restricted_sandbox, "squat")
         os.symlink(victim, squat)
         with pytest.raises(PermissionError):
             self._tagger().save_to_json(lang="eng", loc=squat)
         assert not os.listdir(victim), "write leaked through the symlink"
 
-    def test_world_writable_save_location_is_refused(self):
+    def test_world_writable_save_location_is_refused(self, restricted_sandbox):
         # A pre-existing real dir at the guessable name that is world-writable
         # (an attacker could drop files in it / read the model back) is refused.
-        base = tempfile.mkdtemp()
-        loc = os.path.join(base, "shared")
+        loc = os.path.join(restricted_sandbox, "shared")
         os.makedirs(loc)
         os.chmod(loc, 0o777)
         with pytest.raises(PermissionError):
             self._tagger().save_to_json(lang="eng", loc=loc)
+
+    def test_out_of_sandbox_save_location_is_refused(self, sandbox):
+        # A caller-supplied destination outside every data root is refused before
+        # anything is created: save_to_json used to os.makedirs() a whole chain
+        # anywhere the process could write (GHSA-8mgp-746c-j5xp).
+        loc = sandbox / "planted" / "model_dir"
+        with pytest.raises(PermissionError):
+            self._tagger().save_to_json(lang="eng", loc=str(loc))
+        assert not loc.exists() and not loc.parent.exists()
 
 
 # ==========================================================================

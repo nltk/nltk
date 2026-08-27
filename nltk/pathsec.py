@@ -9,6 +9,7 @@
 
 """Centralized I/O security sentinel for NLTK."""
 import builtins
+import errno
 import http.client
 import io
 import ipaddress
@@ -44,6 +45,14 @@ ALLOW_PROXIED_FETCH = False
 
 _ALLOWED_ROOTS_CACHE = None
 _LAST_DATA_PATHS = None
+
+# Reserved DOS device names. On Windows these resolve to a device rather than a
+# file in the current directory, whatever the surrounding path is.
+_WINDOWS_DEVICE_NAMES = frozenset(
+    ["CON", "PRN", "AUX", "NUL"]
+    + [f"COM{i}" for i in range(1, 10)]
+    + [f"LPT{i}" for i in range(1, 10)]
+)
 
 
 def is_private_dir(path):
@@ -145,8 +154,16 @@ def validate_path(path_input, context="NLTK", required_root=None):
     :param context: Diagnostic context for warnings/errors.
     :param required_root: If provided, enforces that the path is strictly
                           within this specific directory (scoped sandbox).
+
+    A whitespace-only path is NOT waved through: ``"   "`` is a legal relative
+    filename, so skipping it let a caller-supplied path reach ``os.open`` with no
+    containment check and create/truncate that file in the working directory,
+    outside every allowed root (GHSA-8mgp-746c-j5xp). Only an empty/absent path
+    (nothing to open) and a file descriptor short-circuit here.
     """
-    if isinstance(path_input, int) or not path_input or not str(path_input).strip():
+    # An *empty* path is a no-op (nothing can open it), but a blank-but-non-empty
+    # one names a real file, so it must be validated like any other path.
+    if isinstance(path_input, int) or not path_input:
         return
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
@@ -174,13 +191,34 @@ def validate_path(path_input, context="NLTK", required_root=None):
                 )
             raw = unquote(parsed.path)
             if not raw:
-                return
+                # "file://evil" parses as netloc="evil" with an EMPTY path, so
+                # there is nothing to validate while the caller still holds the
+                # original string and opens it as the relative path "file:/evil".
+                raise PermissionError(
+                    f"Security Violation [{context}]: file URL {path_input!r} has "
+                    "no path component; it is not a usable filesystem path"
+                )
 
         # Resolve path to catch symlink escapes
         try:
             target = Path(raw).resolve()
         except (OSError, ValueError):
-            # Fallback for virtual paths inside ZIPs (e.g. corpora/foo.zip/file.txt)
+            # Fallback for virtual paths inside ZIPs (e.g. corpora/foo.zip/file.txt).
+            # This validates only the prefix up to ".zip", so it must never be
+            # reached by a path that can still traverse: resolve() also fails on a
+            # NUL (ValueError) and on an over-long component (ENAMETOOLONG), and
+            # "<root>/ok.zip/<5000 chars>/../../../etc/passwd" would then be
+            # approved on its harmless prefix while normpath() collapses the long
+            # component and leaves /etc/passwd for the caller to open.
+            if "\x00" in raw or ".." in raw.replace("\\", "/").split("/"):
+                msg = (
+                    f"Security Violation [{context}]: unresolvable path with a "
+                    f"traversal or NUL component: {raw!r}"
+                )
+                if ENFORCE:
+                    raise PermissionError(msg)
+                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                return
             lower_raw = raw.lower()
             if ".zip" in lower_raw:
                 zip_idx = lower_raw.find(".zip") + 4
@@ -240,6 +278,388 @@ def validate_path(path_input, context="NLTK", required_root=None):
     except Exception:
         if ENFORCE:
             raise
+
+
+# O_NOFOLLOW on a symlink, and O_RDONLY on a socket / write-only FIFO, fail with
+# these; they mean "refused by the hardening", not "this file is broken".
+_REFUSING_ERRNOS = frozenset(
+    e
+    for e in (
+        getattr(errno, "ELOOP", None),
+        getattr(errno, "EMLINK", None),
+        getattr(errno, "ENXIO", None),
+        getattr(errno, "EOPNOTSUPP", None),
+        getattr(errno, "ENOTSUP", None),
+    )
+    if e is not None
+)
+
+
+# On Windows these names are devices wherever they appear, so "<root>\NUL" is
+# the null device rather than a file inside the root, whatever the path says.
+_WINDOWS_RESERVED_NAMES = frozenset(
+    ["CON", "PRN", "AUX", "NUL"]
+    + [f"COM{n}" for n in range(1, 10)]
+    + [f"LPT{n}" for n in range(1, 10)]
+)
+
+
+def _is_windows_device_name(raw):
+    """True if the final component of *raw* names a Windows character device."""
+    if os.name == "posix":
+        return False
+    leaf = raw.replace("/", "\\").rsplit("\\", 1)[-1]
+    return leaf.split(".", 1)[0].strip().upper() in _WINDOWS_RESERVED_NAMES
+
+
+def _reject_url_shaped(raw, context):
+    """Refuse a URL where a model path is expected.
+
+    ``validate_path`` rewrites a ``file:`` URL to its path component before
+    checking it, but the caller still holds (and the tool still opens) the
+    original string. A model path is never a URL, so refusing the whole shape
+    here removes that validate-one-thing/open-another gap outright.
+    """
+    if _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw):
+        raise PermissionError(
+            f"Security Violation [{context}]: {raw!r} is a URL, not a model "
+            "path; the tool would open it verbatim as a relative path"
+        )
+
+
+def _as_path_string(path_input):
+    """Normalise a path-ish argument to the exact string a sink would use.
+
+    Mirrors :func:`validate_path`: a ``PathPointer`` exposes ``.path``, bytes are
+    decoded with the filesystem encoding, everything else goes through ``str``.
+    """
+    raw = path_input.path if hasattr(path_input, "path") else path_input
+    if isinstance(raw, bytes):
+        return os.fsdecode(raw)
+    return raw if isinstance(raw, str) else str(raw)
+
+
+def _as_path_text(value, context, error=ValueError):
+    """Resolve a caller value to a ``str`` path EXACTLY ONCE.
+
+    ``__fspath__`` is allowed to return a different answer on every call, so a
+    guard that calls it separately from the code that uses the path validates one
+    file while the tool opens another. Every caller must validate and then use
+    the single string returned here, never the original object.
+
+    Also turns a non-path (int, None, list) and a ``bytes`` path into a clean
+    security rejection instead of a TypeError that would escape a caller's
+    ``except (ValueError, PermissionError)``.
+    """
+    try:
+        text = os.fspath(value)
+    except TypeError as exc:
+        raise error(
+            f"Security Violation [{context}]: {value!r} is not a filesystem path."
+        ) from exc
+    if isinstance(text, bytes):
+        # A bytes path is a legal spelling on POSIX, so decode it rather than
+        # refusing; every check below then runs on the decoded characters.
+        try:
+            text = os.fsdecode(text)
+        except (UnicodeDecodeError, ValueError) as exc:
+            raise error(
+                f"Security Violation [{context}]: {text!r} is not decodable as a "
+                "filesystem path."
+            ) from exc
+    # os.fspath() hands back a str SUBCLASS unchanged, so every check below would
+    # run on attacker-controlled methods: a subclass overriding startswith,
+    # replace, split or __contains__ passes all of them while carrying a hostile
+    # value. str.__str__ is used rather than str(): it ignores a __str__ override
+    # and yields an exact str holding the real characters.
+    if type(text) is not str:
+        text = str.__str__(text)
+    return text
+
+
+def _reject_bad_name_syntax(text, context, error=ValueError):
+    """Syntactic checks shared by every caller-supplied model or tool path.
+
+    None of these can be a legitimate model, corpus or output file, so they are
+    refused before the value is treated as a path at all. ``..`` is checked after
+    folding ``\\`` to ``/``: a backslash is an ordinary filename character on
+    POSIX but a separator on Windows, so ``..\\..\\etc`` has to be rejected on both.
+    """
+
+    def _refuse(why):
+        # The exception type is the caller's convention: validate_model_resource
+        # reports a malformed value as ValueError, while the tool-path guards
+        # report every refusal as PermissionError.
+        raise error(f"Security Violation [{context}]: {text!r} {why}.")
+
+    if not text or not text.strip():
+        _refuse("is empty")
+    # A NUL truncates the path in a tool's native layer, so "good.ser.gz\0evil"
+    # can name a different file there than it does here.
+    if "\x00" in text:
+        _refuse("contains a NUL byte")
+    # Python 3.14's url2pathname follows the WHATWG rules and STRIPS tab, LF and
+    # CR, so ".\n./x" passes a '..' check here and becomes "../x" downstream.
+    if any(character in text for character in "\t\n\r\x0b\x0c"):
+        _refuse(
+            "contains a control character; these are stripped by URL-to-path "
+            "conversion on Python 3.14 and can turn into a '..' traversal"
+        )
+    # A leading '-' would be parsed as another option by the tool we hand it to.
+    if text.startswith("-"):
+        _refuse("looks like a command-line option (argument injection)")
+    # Stanford's loaders will fetch a URL; only local resources are permitted.
+    if "://" in text or text.lower().startswith(("file:", "jar:")):
+        _refuse("is a URL; only local resources are permitted")
+    # Nothing downstream expands '~', but a sink that did would reach $HOME.
+    if text.startswith("~"):
+        _refuse("starts with '~'; pass an already-expanded path")
+    # A Windows UNC path reaches a remote share.
+    if text.startswith("\\\\") or text.startswith("//"):
+        _refuse("is a UNC path; only local resources are permitted")
+    if ".." in text.replace("\\", "/").split("/"):
+        _refuse("contains a '..' component; it may not traverse out of the namespace")
+    # ':' names an NTFS alternate data stream, and "C:name" is drive-RELATIVE
+    # ("name in the current directory of drive C"), so it escapes the validated
+    # location. Both are Windows-only: on POSIX ':' is an ordinary filename
+    # character and refusing it would break legitimate names.
+    if os.name != "posix" and ":" in text and not re.match(r"^[A-Za-z]:[\\/]", text):
+        _refuse("contains ':', which names an NTFS alternate data stream")
+    # On Windows a leading separator with no drive is relative to the CURRENT
+    # drive, so it names a different file than the same string does on POSIX.
+    if os.name != "posix" and re.match(r"^[\\/]", text):
+        _refuse("is relative to the current drive; give a full path with a drive")
+    # Windows silently strips a trailing dot or space, so "evil.mco." is checked
+    # as one name and opened as another. Refused everywhere for determinism.
+    if text != text.rstrip(". "):
+        _refuse("ends with a dot or space, which Windows silently strips")
+    # On Windows these resolve to a device (a serial port, the null device) no
+    # matter which directory they appear in. On POSIX they are ordinary
+    # filenames, so refusing them there would be an over-block.
+    if os.name != "posix":
+        stem = os.path.basename(text.replace("\\", "/")).split(".")[0].upper()
+        if stem in _WINDOWS_DEVICE_NAMES:
+            _refuse(f"names the reserved Windows device {stem!r}")
+
+
+def validate_model_resource(model_path, context="NLTK model"):
+    """Bound a caller-supplied model argument that may be a *resource name*.
+
+    Several JVM wrappers (Stanford parser/tagger/segmenter) accept the same
+    ``-model`` argument as either a filesystem path or a jar-internal classpath
+    resource, e.g. the default
+    ``edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz``. Bounding every value
+    with :func:`validate_path` would break the jar-internal defaults, and skipping
+    validation entirely lets an attacker hand the JVM any file on disk.
+
+    So: a plain resource name is left alone, any real filesystem path is bounded to
+    the NLTK data roots, and a value that is neither (empty, an option-looking
+    token, a URL, or a ``..`` traversal) is refused outright so that a
+    resource-looking name cannot traverse out of the jar namespace.
+
+    ``..`` is checked after folding ``\\`` to ``/``: a backslash is an ordinary
+    filename character on POSIX but a separator on Windows, so ``..\\..\\etc`` has
+    to be rejected on both.
+
+    :param model_path: the model argument as supplied by the caller
+    :param context: label used in the security-violation message
+    :raises ValueError: if the value is empty, option-like, a URL, or traverses
+    :raises PermissionError: if it is a filesystem path outside the data roots
+    """
+    text = _as_path_text(model_path, context)
+    _reject_bad_name_syntax(text, context)
+
+    # Only a real filesystem path is sandboxed; a bare resource name is not a
+    # path. A bare name is deliberately NOT probed against the CWD: doing so made
+    # the default `malt_temp.mco` resolve to whatever happened to sit in the
+    # user's directory, which is exactly what older NLTK versions left there.
+    has_directory = bool(os.path.dirname(text.replace("\\", "/")))
+    if os.path.isabs(text) or (has_directory and os.path.exists(text)):
+        validate_path(text, context=context)
+        _reject_aliased_or_special(text, context)
+    return text
+
+
+def _reject_aliased_or_special(text, context, check_links=False):
+    """Physical checks on a path that already passed :func:`validate_path`.
+
+    A FIFO, socket or device planted in a data root would block the reader
+    forever, so only regular files and directories are accepted. Directories stay
+    legal, since corpora are passed as directories.
+
+    ``check_links`` additionally refuses a hardlinked file. ``realpath()`` cannot
+    see a hardlink, so an in-root alias of an outside file passes every
+    name-based check and the tool would overwrite the original. This is only
+    applied to paths the tool *writes*: for a read it is not an escalation (the
+    link can only be created by someone who can already write to the data root),
+    and rejecting ``st_nlink > 1`` outright would refuse ordinary
+    hardlink-deduplicated data such as ``cp -l`` or ``rsync --link-dest`` trees,
+    including the original file.
+
+    A path that does not exist yet (an output file) has nothing to check.
+    """
+    try:
+        info = os.stat(text)
+    except OSError:
+        return
+    if check_links and stat.S_ISREG(info.st_mode) and info.st_nlink > 1:
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} has {info.st_nlink} hard "
+            "links, so writing it may overwrite a file outside the trusted NLTK "
+            "data roots."
+        )
+    if not (stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode)):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not a regular file or "
+            "directory; reading it could block indefinitely."
+        )
+
+
+def validate_tool_path(
+    path_input, context="NLTK tool", *, for_write=False, must_exist=True
+):
+    """Bound a filesystem path handed to an external tool to read or write.
+
+    Unlike :func:`validate_model_resource` this never accepts a bare resource
+    name: the value must be a real path inside the NLTK data roots. Use it for
+    arguments a tool opens directly, where an unbounded value is an arbitrary
+    file read and, for a write destination, an arbitrary file write.
+
+    :func:`validate_path` alone is not enough for these sinks, because it only
+    answers "does this NAME resolve inside a root". This additionally:
+
+    * runs the shared name checks (empty, NUL, control characters, option-shaped,
+      URL, ``~``, UNC, ``..``, NTFS stream, drive-relative, Windows device);
+    * refuses a hardlinked write target, whose inode may live outside the root;
+    * opens an existing path with ``O_NOFOLLOW|O_NONBLOCK`` and requires a
+      *regular* file with ``st_nlink == 1``, then re-validates the descriptor's
+      own kernel path, so a symlink or an intermediate directory swapped in after
+      the name check is refused (CWE-59);
+    * refuses a FIFO, socket, device or directory, whose open would block forever
+      or stream unbounded data (CWE-400).
+
+    A path-taking sink can never be fully race-free, since the callee re-resolves
+    the name, but every attack that does not require winning that race is
+    refused.
+
+    The resolved string is RETURNED and callers must build their argv from it:
+    ``__fspath__`` may answer differently on every call, so re-reading the
+    original would let the tool open a file the guard never saw.
+
+    :param path_input: the path about to be handed to the tool
+    :param context: diagnostic context for the raised error
+    :param for_write: True when the tool will write the path, which additionally
+        refuses a hardlinked file that could alias a target outside the roots
+    :param must_exist: when False a non-existent path is accepted after the
+        containment check, for a destination the tool will create
+    :raises ValueError: if the value is empty, option-like, a URL or traverses
+    :raises PermissionError: if the path is not usable safely
+    """
+    if isinstance(path_input, int):
+        return path_input
+    text = _as_path_text(path_input, context, error=PermissionError)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    _reject_url_shaped(text, context)
+    validate_path(text, context=context)
+    _reject_aliased_or_special(text, context, check_links=for_write)
+    _reject_unsafe_open(text, context, must_exist)
+    return text
+
+
+def _reject_unsafe_open(raw, context, must_exist):
+    """Open-time hardening for a path already bounded by :func:`validate_path`.
+
+    Closes the window between the name check and the tool's own open: an
+    intermediate directory or the leaf itself may be swapped for a symlink in
+    between, which no name-based check can see.
+    """
+    if not ENFORCE:
+        return
+    if os.name != "posix":
+        # No O_NOFOLLOW/fstat here, so the symlink-swap race stays open on
+        # Windows, but a stat still refuses a directory or device.
+        try:
+            st = os.stat(raw)
+        except FileNotFoundError:
+            if must_exist:
+                raise
+            return
+        if not stat.S_ISREG(st.st_mode):
+            raise PermissionError(
+                f"Security Violation [{context}]: model path {raw!r} is not a "
+                "regular file"
+            )
+        return
+
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        fd = os.open(raw, flags)
+    except FileNotFoundError:
+        if must_exist:
+            raise
+        return
+    except NotADirectoryError:
+        if must_exist:
+            raise
+        return
+    except OSError as e:
+        # Only the errnos the hardening flags produce are a security refusal;
+        # anything else (ENAMETOOLONG, EACCES, ...) is a plain OS error.
+        if e.errno in _REFUSING_ERRNOS:
+            raise PermissionError(
+                f"Security Violation [{context}]: refusing model path {raw!r}: "
+                f"{e.strerror} (symlink or non-regular file, CWE-59)"
+            ) from e
+        raise
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise PermissionError(
+                f"Security Violation [{context}]: model path {raw!r} is not a "
+                "regular file (a FIFO/socket/device/directory can block the "
+                "loader forever or stream unbounded data, CWE-400)"
+            )
+        if st.st_nlink > 1:
+            raise PermissionError(
+                f"Security Violation [{context}]: refusing multiply-linked model "
+                f"{raw!r} (st_nlink={st.st_nlink}); a hardlink names an inode that "
+                "may live outside the sandbox (CWE-59)"
+            )
+        actual = _fd_realpath(fd)
+        validate_path(
+            actual if actual is not None else os.path.realpath(raw), context=context
+        )
+    finally:
+        os.close(fd)
+
+
+def validate_tool_dir(path_input, context="NLTK tool"):
+    """Validate a *directory* a tool or NLTK itself will write model files into.
+
+    The file-shaped checks in :func:`validate_tool_path` do not apply (the leaf
+    is a directory, and it may not exist yet), but the string-shaped ones do: a
+    blank or NUL-bearing destination silently becomes a directory in the current
+    working directory rather than anything the caller meant.
+    """
+    raw = _as_path_string(path_input)
+    if not raw or not raw.strip():
+        raise PermissionError(
+            f"Security Violation [{context}]: blank destination directory {raw!r}"
+        )
+    if "\x00" in raw:
+        raise PermissionError(
+            f"Security Violation [{context}]: NUL byte in destination {raw!r}"
+        )
+    _reject_url_shaped(raw, context)
+    validate_path(raw, context=context)
+    # Returned for the same reason as validate_tool_path: the caller must build
+    # from the checked string, not re-read a value that can resolve differently.
+    return raw
 
 
 def _zip_member_is_unsafe(name_str):
@@ -749,13 +1169,15 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     temp dir is not left group-/world-readable (CWE-377/378). POSIX only;
     callers fall back to :func:`builtins.open` elsewhere.
     """
-    import errno
-
     flags = (
         _os_open_flags(mode)
         | getattr(os, "O_NOFOLLOW", 0)
         | getattr(os, "O_CLOEXEC", 0)
     )
+    # Defer O_TRUNC until after the hardlink/realpath checks: truncating at open
+    # time would zero a hardlinked outside-root target before st_nlink refuses it.
+    truncate_after = bool(flags & os.O_TRUNC)
+    flags &= ~os.O_TRUNC
     try:
         # 0o600 is only consulted when O_CREAT is in flags (write/append/x modes).
         fd = os.open(raw_path, flags, 0o600)
@@ -782,6 +1204,9 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
             context=context,
             required_root=required_root,
         )
+        # Safe now: the fd is confirmed single-linked and inside the root.
+        if truncate_after:
+            os.ftruncate(fd, 0)
     except BaseException:
         os.close(fd)
         raise
@@ -978,6 +1403,9 @@ class ZipFile(zipfile.ZipFile):
 
 __all__ = [
     "validate_path",
+    "validate_model_resource",
+    "validate_tool_path",
+    "validate_tool_dir",
     "validate_network_url",
     "validate_zip_archive",
     "open",

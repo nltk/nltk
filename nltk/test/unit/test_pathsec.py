@@ -27,6 +27,8 @@ def enable_enforcement():
 
 
 # --- SSRF NETWORK TESTS ---
+
+
 def test_valid_http_url():
     """Ensure valid URLs pass the SSRF filter without raising security exceptions."""
     try:
@@ -127,6 +129,8 @@ def test_ip_filter_allows_global(addr):
 
 
 # --- PATH TRAVERSAL TESTS ---
+
+
 def test_path_traversal_absolute():
     """
     Test if absolute paths bypass standard relative traversal checks.
@@ -141,12 +145,14 @@ def test_path_traversal_absolute():
 
 
 # --- ALLOWED-ROOTS / TEMP-DIR FALLBACK TESTS ---
+
+
 def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
     """Regression test for issue #3716.
 
     ``_get_allowed_roots()`` used to build its fallback-location list as a
     literal ``[..., tempfile.gettempdir()]``, which evaluates
-    ``tempfile.gettempdir()`` while constructing the list; *before* the
+    ``tempfile.gettempdir()`` while constructing the list -- *before* the
     loop's ``try/except`` runs. On a system with no usable temp directory
     (read-only root filesystem, nothing mounted at ``/tmp``), ``gettempdir()``
     raises ``FileNotFoundError`` (an ``OSError`` subclass) that propagates out
@@ -172,6 +178,8 @@ def test_get_allowed_roots_survives_missing_tempdir(tmp_path, monkeypatch):
 
 
 # --- ZIP-SLIP TESTS ---
+
+
 def create_malicious_zip(filename):
     """Helper to create malicious zip files in memory."""
     mem_zip = io.BytesIO()
@@ -253,6 +261,8 @@ def test_zip_slip_interior_dotdot_symlink_escape(tmp_path):
 
 
 # --- PROXY & HANDLER TESTS ---
+
+
 def test_urlopen_honors_set_proxy_and_redirect_validation():
     """
     Regression test for Issue #3551.
@@ -472,14 +482,14 @@ def test_env_proxy_fails_closed_under_enforce(monkeypatch):
 # getproxies() reports a "no" key for NO_PROXY, an exclusion list. The old check
 # treated any non-empty getproxies() as a proxy and blocked every download. The
 # fix keys on real http/https schemes and defers the host decision to
-# proxy_bypass; so NO_PROXY-only is direct+pinned (benign), while a genuine
+# proxy_bypass -- so NO_PROXY-only is direct+pinned (benign), while a genuine
 # proxy egress stays blocked (GHSA-6ww7). These pin both halves.
 
 
 def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
     """NO_PROXY alone (getproxies()=={'no': ...}) is a bypass list, not a proxy.
 
-    The fetch must go direct and pinned, exactly as if nothing were set;
+    The fetch must go direct and pinned, exactly as if nothing were set --
     otherwise every download fails in any environment that sets NO_PROXY.
     """
     monkeypatch.setattr(
@@ -527,7 +537,7 @@ def test_issue_3748_no_proxy_env_downloads_are_not_blocked(monkeypatch):
     """The reporter's exact scenario, end to end through real getproxies().
 
     Only NO_PROXY is set (no HTTP_PROXY/HTTPS_PROXY), so getproxies() returns
-    {'no': ...} from the environment and nothing is proxied; the download must
+    {'no': ...} from the environment and nothing is proxied -- the download must
     install the pinning handlers and proceed, not raise 'proxied fetch'.
     """
     for var in (
@@ -563,7 +573,7 @@ def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
     target, monkeypatch
 ):
     """Exploit must not leak: when a real proxy carries the request, NLTK cannot
-    pin the IP, so every target is refused (GHSA-6ww7); including when NO_PROXY
+    pin the IP, so every target is refused (GHSA-6ww7) -- including when NO_PROXY
     is set for *other* hosts, so the fix cannot be turned into a bypass."""
     monkeypatch.setattr(
         urllib.request,
@@ -586,7 +596,7 @@ def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
 
 def test_proxy_with_no_proxy_target_still_pins(monkeypatch):
     """A proxy is configured but the target is in NO_PROXY: urllib fetches it
-    directly, so NLTK must pin (not block); and the SSRF filter still governs
+    directly, so NLTK must pin (not block) -- and the SSRF filter still governs
     the direct connection."""
     monkeypatch.setattr(
         urllib.request,
@@ -605,7 +615,7 @@ def test_proxy_with_no_proxy_target_still_pins(monkeypatch):
 
 def test_proxy_with_unbypassed_target_still_fails_closed(monkeypatch):
     """The attack the fix must NOT reopen: a real proxy carries the target (not
-    bypassed), so NLTK cannot pin the IP; the fetch must still be refused even
+    bypassed), so NLTK cannot pin the IP -- the fetch must still be refused even
     though NO_PROXY is present for *other* hosts (GHSA-6ww7)."""
     monkeypatch.setattr(
         urllib.request,
@@ -668,7 +678,7 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
         monkeypatch.setattr(urllib.request, "_opener", None)
         public_url = "http://93.184.216.34/"  # validates as a public destination
 
-        # Default: fail closed; the internal secret is NOT fetched.
+        # Default: fail closed -- the internal secret is NOT fetched.
         monkeypatch.setattr(pathsec, "ENFORCE", True)
         monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
         with pytest.raises(PermissionError, match="proxied fetch"):
@@ -683,6 +693,8 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
 
 
 # --- SSRF address policy: "non-global is forbidden" + IPv4-mapped IPv6 ---------
+
+
 @pytest.mark.parametrize(
     "addr",
     [
@@ -692,7 +704,7 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
         "192.168.1.1",  # private
         "224.0.0.1",  # multicast (is_global is True on some CPython versions)
         "0.0.0.0",  # unspecified (routes to localhost on Linux)
-        "100.64.1.1",  # carrier-grade NAT; missed by the old explicit list
+        "100.64.1.1",  # carrier-grade NAT -- missed by the old explicit list
         "240.0.0.1",  # reserved
         "::1",  # IPv6 loopback
         "::",  # IPv6 unspecified
@@ -702,8 +714,8 @@ def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
     ],
 )
 def test_ip_policy_forbids_non_global_and_mapped(addr):
-    """Every non-global address; including CGNAT/unspecified the old explicit
-    list missed, and IPv4-mapped IPv6 forms; must be rejected."""
+    """Every non-global address -- including CGNAT/unspecified the old explicit
+    list missed, and IPv4-mapped IPv6 forms -- must be rejected."""
     import ipaddress
 
     assert pathsec._ip_is_forbidden(ipaddress.ip_address(addr)), addr
@@ -963,7 +975,7 @@ def test_world_writable_temp_dir_is_not_trusted_and_is_refused(tmp_path, monkeyp
 
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     # Isolate the allowed roots: no data paths, so the only candidate is the
-    # (world-writable) temp dir under test; which must be rejected.
+    # (world-writable) temp dir under test -- which must be rejected.
     monkeypatch.setattr(_nltk_data, "path", [])
     monkeypatch.setenv("NLTK_DATA", "")
     monkeypatch.setattr("tempfile.gettempdir", lambda: str(shared))
@@ -1042,6 +1054,77 @@ def test_authorize_data_dir_registers_private_dir(tmp_path, monkeypatch):
     assert not registered()
     _authorize_data_dir(str(custom))
     assert registered()
+
+
+# ----------------------------------------------------------------------
+# Hardened write path (_hardened_open): symlink / hardlink / truncate
+# ----------------------------------------------------------------------
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_truncates_legit_file(sandbox_env):
+    """A legit overwrite still truncates: deferring O_TRUNC until after the guard
+    must not leave a stale tail from longer prior content."""
+    safe_dir = sandbox_env[0]
+    target = safe_dir / "model.json"
+    with pathsec.open(str(target), "w", required_root=str(safe_dir)) as f:
+        f.write("first-longer-content")
+    with pathsec.open(str(target), "w", required_root=str(safe_dir)) as f:
+        f.write("short")
+    assert target.read_text(encoding="utf-8") == "short"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_symlink_escape(sandbox_env):
+    """A final-component symlink escaping the root is refused at open (O_NOFOLLOW)."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    link = safe_dir / "evil.tmp"
+    os.symlink(str(secret_file), str(link))
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(link), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_hardlink_and_preserves_target(sandbox_env):
+    """A hardlink to an outside file is refused (st_nlink); deferring O_TRUNC means
+    the refused write does NOT zero the outside target (CWE-59, GHSA-f794)."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    hard = safe_dir / "evil.tmp"
+    os.link(str(secret_file), str(hard))
+    with pytest.raises(PermissionError, match="multiply-linked|Security Violation"):
+        pathsec.open(str(hard), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_absolute_escape_and_preserves(sandbox_env):
+    """A write to an absolute path outside the root is refused, and the deferred
+    O_TRUNC leaves the pre-existing outside file's bytes intact."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(secret_file), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_intermediate_dir_symlink(sandbox_env):
+    """An intermediate directory symlink redirecting the open outside the root is
+    caught by the opened-fd realpath re-validation, not only the final component."""
+    safe_dir, unsafe_dir, _, _, _ = sandbox_env
+    linkdir = safe_dir / "sub"
+    os.symlink(str(unsafe_dir), str(linkdir))  # safe_dir/sub -> outside root
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(linkdir / "planted.tmp"), "wb", required_root=str(safe_dir))
+    # no attacker content lands outside the root
+    assert (
+        not (unsafe_dir / "planted.tmp").exists()
+        or (unsafe_dir / "planted.tmp").read_bytes() == b""
+    )
+
+
+# Carried over from the umbrella branch: these cover cases the tagger branch
+# did not, so the merge keeps both sets rather than the newer file alone.
 
 
 class TestUrlSchemePathBypass:

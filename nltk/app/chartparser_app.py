@@ -77,6 +77,7 @@ from nltk.parse.chart import (
     TopDownPredictRule,
     TreeEdge,
 )
+from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import pickle_load
 from nltk.tree import Tree
 from nltk.util import in_idle
@@ -795,7 +796,7 @@ class ChartComparer:
         if not filename:
             return
         try:
-            with open(filename, "wb") as outfile:
+            with pathsec_open(filename, "wb", context="chartparser_app") as outfile:
                 pickle.dump(self._out_chart, outfile)
         except Exception as e:
             showerror("Error Saving Chart", f"Unable to open file: {filename!r}\n{e}")
@@ -812,7 +813,7 @@ class ChartComparer:
             showerror("Error Loading Chart", f"Unable to open file: {filename!r}\n{e}")
 
     def load_chart(self, filename):
-        with open(filename, "rb") as infile:
+        with pathsec_open(filename, "rb", context="chartparser_app") as infile:
             chart = pickle_load(infile)
         name = os.path.basename(filename)
         if name.endswith(".pickle"):
@@ -2269,7 +2270,7 @@ class ChartParserApp:
         if not filename:
             return
         try:
-            with open(filename, "rb") as infile:
+            with pathsec_open(filename, "rb", context="chartparser_app") as infile:
                 chart = pickle_load(infile)
             self._chart = chart
             self._cv.update(chart)
@@ -2292,7 +2293,7 @@ class ChartParserApp:
         if not filename:
             return
         try:
-            with open(filename, "wb") as outfile:
+            with pathsec_open(filename, "wb", context="chartparser_app") as outfile:
                 pickle.dump(self._chart, outfile)
         except Exception as e:
             raise
@@ -2307,10 +2308,10 @@ class ChartParserApp:
             return
         try:
             if filename.endswith(".pickle"):
-                with open(filename, "rb") as infile:
+                with pathsec_open(filename, "rb", context="chartparser_app") as infile:
                     grammar = pickle_load(infile)
             else:
-                with open(filename) as infile:
+                with pathsec_open(filename, context="chartparser_app") as infile:
                     grammar = CFG.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
@@ -2324,10 +2325,10 @@ class ChartParserApp:
             return
         try:
             if filename.endswith(".pickle"):
-                with open(filename, "wb") as outfile:
+                with pathsec_open(filename, "wb", context="chartparser_app") as outfile:
                     pickle.dump((self._chart, self._tokens), outfile)
             else:
-                with open(filename, "w") as outfile:
+                with pathsec_open(filename, "w", context="chartparser_app") as outfile:
                     prods = self._grammar.productions()
                     start = [p for p in prods if p.lhs() == self._grammar.start()]
                     rest = [p for p in prods if p.lhs() != self._grammar.start()]

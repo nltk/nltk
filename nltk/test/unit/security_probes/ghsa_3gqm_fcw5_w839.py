@@ -12,6 +12,10 @@ def _ssrf_fail_open():
     # connect. urlopen re-resolves and pins the numeric address.
     from nltk import pathsec
 
+    # _resolve_hostname is lru_cached; clear it so the call-sequencing below is not
+    # desynced by a cached validation resolve on a second run (would false-VULN).
+    pathsec._resolve_hostname.cache_clear()
+
     real = socket.getaddrinfo
     calls = []
 

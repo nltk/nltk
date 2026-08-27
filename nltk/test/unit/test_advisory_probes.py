@@ -12,6 +12,8 @@ import os
 import pathlib
 import pkgutil
 import re
+import shutil
+import tempfile
 import warnings
 from collections import Counter
 
@@ -78,6 +80,144 @@ def test_pathsec_enforce_probe_has_teeth():
     finally:
         pathsec.ENFORCE = original
     assert probe()[0] == probes.FIXED
+
+
+def test_model_artifact_probe_has_teeth():
+    """Turn containment off and the probe must escape the sandbox.
+
+    The payload has to genuinely reach the sink: a traversal that lands on a
+    non-existent path errors out and would score FIXED no matter what the guards
+    do, which is how this probe used to pass with every guard disabled.
+    """
+    import nltk.data
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
+    reject, enforce = nltk.data._reject_unsafe_no_protocol, pathsec.ENFORCE
+    try:
+        nltk.data._reject_unsafe_no_protocol = lambda url: None
+        pathsec.ENFORCE = False
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        nltk.data._reject_unsafe_no_protocol, pathsec.ENFORCE = reject, enforce
+    assert probe()[0] == probes.FIXED
+
+
+def test_model_artifact_probe_covers_every_api_the_advisory_names():
+    """The probe must drive the APIs the advisory lists, not only the loader.
+
+    The advisory names six model-artifact entry points. A probe that exercises
+    ``nltk.data.load`` alone reports FIXED while any one of them regresses, which
+    is the failure this list pins shut.
+    """
+    from nltk.test.unit.security_probes import ghsa_8mgp_746c_j5xp as mod
+
+    labels = {label for label, _ in mod._attempts(str(pathlib.Path.home()))}
+    for named in (
+        "TransitionParser.train",
+        "TransitionParser.parse",
+        "AveragedPerceptron.save",
+        "AveragedPerceptron.load",
+        "PerceptronTagger.save_to_json",
+        "save_maxent_params",
+    ):
+        assert named in labels, f"advisory API {named} is not probed"
+
+
+def test_perceptron_bare_open_probe_has_teeth():
+    """Restore the advisory's own bug and the probe must flip to VULNERABLE.
+
+    ``AveragedPerceptron.save``/``load`` used ``builtins.open`` on a caller path.
+    Putting that back is the exact regression this probe exists to catch, so it
+    must not stay FIXED through it.
+    """
+    import json as _json
+
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
+    saved, loaded = AveragedPerceptron.save, AveragedPerceptron.load
+
+    def bare_save(self, path):
+        with open(path, "w") as fout:
+            return _json.dump(self.weights, fout)
+
+    def bare_load(self, path):
+        with open(path) as fin:
+            self.weights = _json.load(fin)
+
+    try:
+        AveragedPerceptron.save, AveragedPerceptron.load = bare_save, bare_load
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        AveragedPerceptron.save, AveragedPerceptron.load = saved, loaded
+    assert probe()[0] == probes.FIXED
+
+
+def test_perceptron_save_to_json_validation_has_teeth():
+    """Restore the tagger's pre-fix destination handling and it must escape again.
+
+    All THREE of its guards go: the sandbox check on ``loc``, the tool-path
+    directory guard the tagger branch added in front of it, and (on the Windows
+    branch, where there is no pinned dir_fd to write through) the sandboxed
+    per-file open. Neutering fewer leaves another holding, which is the point of
+    having them -- and is why this control has to remove the whole set.
+    """
+    import builtins
+    import os
+
+    import nltk.pathsec as pathsec
+    import nltk.tag.perceptron as perceptron
+
+    probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
+    validate = perceptron.validate_path
+    opener = perceptron.pathsec_open
+    tool_dir = perceptron.validate_tool_dir
+    tool_path = perceptron.validate_tool_path
+    try:
+        perceptron.validate_path = lambda *args, **kwargs: None
+        perceptron.validate_tool_dir = lambda value, *a, **k: os.fspath(value)
+        perceptron.validate_tool_path = lambda value, *a, **k: os.fspath(value)
+        perceptron.pathsec_open = lambda path, mode="r", **kwargs: builtins.open(
+            path, mode
+        )
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        perceptron.validate_path = validate
+        perceptron.pathsec_open = opener
+        perceptron.validate_tool_dir = tool_dir
+        perceptron.validate_tool_path = tool_path
+    assert probe()[0] == probes.FIXED
+    assert perceptron.validate_path is pathsec.validate_path
+    assert perceptron.pathsec_open is pathsec.open
+    assert perceptron.validate_tool_dir is pathsec.validate_tool_dir
+    assert perceptron.validate_tool_path is pathsec.validate_tool_path
+
+
+def test_perceptron_load_does_not_widen_the_sandbox():
+    """A caller-supplied model dir must never become an allowed root.
+
+    ``load_from_json`` used to append a private caller directory to
+    ``nltk.data.path``, which turns the containment check off for that path (and
+    every later read under it) process-wide.
+    """
+    import nltk.data
+    from nltk.tag.perceptron import PerceptronTagger
+
+    before = list(nltk.data.path)
+    outside = pathlib.Path(
+        tempfile.mkdtemp(prefix=".nltk_widen_", dir=str(pathlib.Path.home()))
+    )
+    try:
+        (outside / "averaged_perceptron_tagger_xx.weights.json").write_text("{}")
+        try:
+            PerceptronTagger(load=False).load_from_json(lang="xx", loc=str(outside))
+        except Exception:
+            pass
+        assert list(nltk.data.path) == before, "caller dir was added to nltk.data.path"
+    finally:
+        nltk.data.path[:] = before
+        shutil.rmtree(outside, ignore_errors=True)
 
 
 def test_pickle_allowlist_probe_has_teeth():
@@ -198,6 +338,86 @@ def test_escape_probes_reach_the_sink():
         finally:
             pathsec.ENFORCE = original
         assert probe()[0] == probes.FIXED
+
+
+def test_xss_probe_has_teeth():
+    """Neuter html.escape in the wordnet app; the reflected <script> must be
+    caught as VULNERABLE, proving the probe reaches the response sink."""
+    from nltk.data import find
+
+    try:
+        find("corpora/wordnet.zip")
+    except LookupError:
+        import pytest
+
+        pytest.skip("wordnet corpus unavailable")
+
+    import nltk.app.wordnet_app as wa
+
+    probe = probes.PROBES["GHSA-gfwx-w7gr-fvh7"]
+    real = wa.html.escape
+    try:
+        wa.html.escape = lambda s, quote=True: s  # identity: no escaping
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        wa.html.escape = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_hardlink_write_probe_has_teeth():
+    """Replace the hardened opener with a bare open; the symlink/hardlink write
+    escape must be caught as VULNERABLE."""
+    import builtins
+
+    import nltk.pathsec as pathsec
+
+    if os.name != "posix":
+        import pytest
+
+        pytest.skip("hardened write path is POSIX-only")
+
+    probe = probes.PROBES["GHSA-f794-5jv7-7672"]
+    real = pathsec._hardened_open
+    try:
+        pathsec._hardened_open = (
+            lambda raw, mode, context, required_root, **kw: builtins.open(
+                raw, mode, **kw
+            )
+        )
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._hardened_open = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_shutdown_token_probe_has_teeth():
+    """Bypass the per-process shutdown-token check; a token-less shutdown request
+    must be caught as VULNERABLE (it would reach os._exit)."""
+    import nltk.app.wordnet_app as wa
+
+    probe = probes.PROBES["GHSA-jm6w-m3j8-898g"]
+    real = wa.MyServerHandler._shutdown_authorized
+    try:
+        wa.MyServerHandler._shutdown_authorized = lambda self: True
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        wa.MyServerHandler._shutdown_authorized = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_graphviz_search_probe_has_teeth():
+    """Make find_binary hand back the bare CWD name; the probe must flag the
+    planted ./dot as VULNERABLE."""
+    import nltk.internals as internals
+
+    probe = probes.PROBES["GHSA-6hwm-xvph-95vm"]
+    real = internals.find_binary
+    try:
+        internals.find_binary = lambda name, *a, **k: name  # returns the CWD hit
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        internals.find_binary = real
+    assert probe()[0] == probes.FIXED
 
 
 class TestProbeDiscoveryIsolation:
@@ -388,3 +608,108 @@ class TestAdvisoryPagination:
         monkeypatch.setattr(covci, "_MAX_BYTES", 8)
         _serve({covci._API: _FakeResp([{"ghsa_id": "AAAAAAAAAA"}])}, monkeypatch)
         assert covci._fetch_advisories() is None
+
+
+def test_dns_rebinding_probe_has_teeth():
+    """Neuter the SSRF IP filter; the rebound link-local connect must be caught as
+    VULNERABLE. The _resolve_hostname lru_cache is cleared so the restored run does
+    not false-fail on stale sequencing."""
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-3gqm-fcw5-w839"]
+    real = pathsec._ip_is_forbidden
+    try:
+        pathsec._resolve_hostname.cache_clear()
+        pathsec._ip_is_forbidden = lambda ip: False  # nothing is forbidden
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._ip_is_forbidden = real
+        pathsec._resolve_hostname.cache_clear()
+    assert probe()[0] == probes.FIXED
+
+
+def test_ssrf_ip_filter_probe_has_teeth():
+    """Allow every IP; all the loopback/metadata/mapped targets must pass the filter
+    and the probe must flip to VULNERABLE."""
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-qvv7-cg9c-w4x3"]
+    real = pathsec._ip_is_forbidden
+    try:
+        pathsec._ip_is_forbidden = lambda ip: False
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec._ip_is_forbidden = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_dotted_name_probe_has_teeth():
+    """Restore stock find_class (which walks dotted names at proto>=4); the dotted
+    global must then be reconstructed and the probe flip to VULNERABLE."""
+    import pickle
+
+    from nltk.picklesec import AllowlistUnpickler
+
+    probe = probes.PROBES["GHSA-4489-j4f3-2g8q"]
+    real = AllowlistUnpickler.find_class
+    try:
+        AllowlistUnpickler.find_class = pickle.Unpickler.find_class
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        AllowlistUnpickler.find_class = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_pickle_denylist_fires_under_broad_allow():
+    """Defense in depth: os.system is refused by the module denylist even when a
+    caller mistakenly names 'os' in allowed_modules (not merely by an empty allow)."""
+    import io
+    import pickle
+
+    import pytest
+
+    from nltk.picklesec import allowlisted_pickle_load
+
+    payload = b"cos\nsystem\n(t R."  # GLOBAL os.system, empty-tuple REDUCE
+    with pytest.raises(pickle.UnpicklingError, match="denied module"):
+        allowlisted_pickle_load(io.BytesIO(payload), allowed_modules=("os",))
+
+
+def test_cyclic_index_probe_reports_a_hang_as_vulnerable():
+    """The advisory's regression manifests as an infinite loop, i.e. a subprocess
+    that never returns. Simulate that: a hanging cyclic run with a healthy acyclic
+    control must be VULNERABLE, and only a control that also hangs is STATIC."""
+    module = importlib.import_module(
+        "nltk.test.unit.security_probes.ghsa_pcm8_fqjx_rvx8"
+    )
+    probe = probes.PROBES["GHSA-pcm8-fqjx-rvx8"]
+    real = module._resolve
+    try:
+        module._resolve = lambda shape, timeout=30: (
+            ("ok", "p1") if shape == "acyclic" else ("hang", "timed out")
+        )
+        assert probe()[0] == probes.VULNERABLE
+        # an overloaded host (control hangs too) must NOT be called a regression
+        module._resolve = lambda shape, timeout=30: ("hang", "timed out")
+        assert probe()[0] == probes.STATIC
+    finally:
+        module._resolve = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_jvm_option_filter_probe_has_teeth(monkeypatch):
+    """Neuter only the options filter; java()'s classpath and cmd guards stay live,
+    so a flip to VULNERABLE proves the probe scores this filter and not a neighbour."""
+    from nltk import internals
+
+    probe = probes.PROBES["GHSA-m4rf-3fr8-xwx3"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(internals, "_validate_java_options", lambda opts: None)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    # proof of injection is the command line that was about to run, not a count
+    assert "-Xbootclasspath" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
