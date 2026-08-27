@@ -1703,3 +1703,92 @@ def test_control_character_guard_does_not_block_ordinary_names(pathsec_sandbox):
     spaced.write_text("m")
     validate_model_resource(str(spaced), context="sweep")
     validate_model_resource(_DEFAULT_RESOURCE, context="sweep")
+
+
+# ---------------------------------------------------------------------------
+# StanfordSegmenter's options dict is joined into ONE comma-separated -options
+# argv element, so a key containing ',' or '=' injects extra option pairs. Same
+# class as the parser's corenlp_options, in the sibling wrapper.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "key",
+    ["normalize=true,serDictionary", "a,b", "a=b", "a b", "a\nb", "a\tb", "", "   "],
+    ids=[
+        "comma-and-equals",
+        "comma",
+        "equals",
+        "space",
+        "newline",
+        "tab",
+        "empty",
+        "whitespace",
+    ],
+)
+def test_segmenter_option_keys_cannot_inject_pairs(key):
+    from nltk.tokenize.stanford_segmenter import _validated_options
+
+    with pytest.raises(ValueError):
+        _validated_options({key: "1"})
+
+
+def test_segmenter_option_values_are_bounded(pathsec_sandbox):
+    """A value that names a file must stay inside the data roots."""
+    from nltk.tokenize.stanford_segmenter import _validated_options
+
+    root, outside = pathsec_sandbox
+    evil = outside / "evil.gz"
+    evil.write_text("x")
+    for value in ("/etc/passwd", str(evil)):
+        with pytest.raises((PermissionError, ValueError)):
+            _validated_options({"serDictionary": value})
+
+
+def test_segmenter_benign_options_still_work(pathsec_sandbox):
+    """Over-block control: ordinary settings, numbers and in-root paths pass."""
+    from nltk.tokenize.stanford_segmenter import _validated_options
+
+    root, _outside = pathsec_sandbox
+    good = root / "ok.gz"
+    good.write_text("m")
+    assert _validated_options({"normalize": "true", "keepAll": "false"}) == {
+        "normalize": "true",
+        "keepAll": "false",
+    }
+    assert _validated_options({"maxLen": 40}) == {"maxLen": 40}
+    assert _validated_options({"serDictionary": str(good)}) == {
+        "serDictionary": str(good)
+    }
+    assert _validated_options({}) == {}
+
+
+def test_teeth_segmenter_options_guard_is_load_bearing():
+    """Without the guard the injected pair lands in the built option string."""
+    import json as _json
+
+    options = {"normalize=true,serDictionary": "/etc/passwd"}
+    unguarded = ",".join(f"{k}={_json.dumps(v)}" for k, v in options.items())
+    assert "serDictionary" in unguarded.split(",")[1]
+
+
+def test_segmenter_out_of_root_jar_is_refused_despite_approved_checksum(
+    pathsec_sandbox, monkeypatch
+):
+    """The checksum allowlist is not a location check. A jar outside the roots
+    must still be refused, even when its sha256 has been approved."""
+    import hashlib as _hashlib
+
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, outside = pathsec_sandbox
+    evil_jar = outside / "evil.jar"
+    evil_jar.write_bytes(b"PK\x05\x06" + b"\0" * 18)
+    digest = _hashlib.sha256(evil_jar.read_bytes()).hexdigest()
+    monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", digest)
+
+    tool = object.__new__(seg.StanfordSegmenter)
+    tool._stanford_jar = str(evil_jar)
+    tool._jar_sha256_cache = {}
+    with pytest.raises((PermissionError, ValueError)):
+        tool._validate_classpath()

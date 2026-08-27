@@ -30,6 +30,42 @@ from nltk.tokenize.api import TokenizerI
 _stanford_url = "https://nlp.stanford.edu/software"
 
 
+def _validated_options(options):
+    """Bound the caller-supplied ``options`` dict before it becomes ``-options``.
+
+    The pairs are joined into ONE comma-separated argv element, so a key holding
+    a ``,`` or an ``=`` silently injects extra option pairs that the wrapper
+    never intended. This is the same class as the parser's ``corenlp_options``:
+
+        {"normalize=true,serDictionary": "/etc/passwd"}
+        -> normalize=true,serDictionary="/etc/passwd"
+
+    Values are JSON-encoded, so they cannot break out of their own pair, but one
+    that names a file is still bounded to the data roots.
+    """
+    validated = {}
+    for key, value in options.items():
+        name = str(key)
+        if not name.strip():
+            raise ValueError(
+                "Security Violation [StanfordSegmenter options]: empty option name."
+            )
+        if any(character in name for character in ",=\t\n\r\x00 "):
+            raise ValueError(
+                f"Security Violation [StanfordSegmenter options]: option name "
+                f"{name!r} contains a separator, so it would inject extra "
+                "option pairs into the argument list."
+            )
+        if isinstance(value, str) and (
+            os.path.isabs(value) or "/" in value or "\\" in value
+        ):
+            value = validate_tool_path(
+                value, context=f"StanfordSegmenter options[{name}]"
+            )
+        validated[name] = value
+    return validated
+
+
 class StanfordSegmenter(TokenizerI):
     """Interface to the Stanford Segmenter
 
@@ -119,7 +155,8 @@ class StanfordSegmenter(TokenizerI):
         self.java_options = java_options
         options = {} if options is None else options
         self._options_cmd = ",".join(
-            f"{key}={json.dumps(val)}" for key, val in options.items()
+            f"{key}={json.dumps(val)}"
+            for key, val in _validated_options(options).items()
         )
         self._jar_sha256_cache = {}
 
