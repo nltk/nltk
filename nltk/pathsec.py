@@ -49,7 +49,7 @@ _LAST_DATA_PATHS = None
 # Reserved DOS device names. On Windows these resolve to a device rather than a
 # file in the current directory, whatever the surrounding path is.
 _WINDOWS_DEVICE_NAMES = frozenset(
-    ["CON", "PRN", "AUX", "NUL"]
+    ["CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"]
     + [f"COM{i}" for i in range(1, 10)]
     + [f"LPT{i}" for i in range(1, 10)]
 )
@@ -437,9 +437,21 @@ def _reject_bad_name_syntax(text, context, error=ValueError):
     # matter which directory they appear in. On POSIX they are ordinary
     # filenames, so refusing them there would be an over-block.
     if os.name != "posix":
-        stem = os.path.basename(text.replace("\\", "/")).split(".")[0].upper()
-        if stem in _WINDOWS_DEVICE_NAMES:
-            _refuse(f"names the reserved Windows device {stem!r}")
+        components = text.replace("\\", "/").split("/")
+        for component in components:
+            if not component:
+                continue
+            # A device name is reserved in ANY directory, and an 8.3 short name
+            # (PROGRA~1) aliases a different long name, so both must be checked on
+            # every component, not just the final one: "dir/PROGRA~1/x" traverses
+            # through the alias.
+            if (
+                component.split(".")[0].upper() in _WINDOWS_DEVICE_NAMES
+                or component.upper() in _WINDOWS_DEVICE_NAMES
+            ):
+                _refuse(f"contains a reserved Windows device ({component!r})")
+            if re.search(r"~[0-9]", component):
+                _refuse("contains an 8.3 short name, which aliases another file")
 
 
 def validate_model_resource(model_path, context="NLTK model"):

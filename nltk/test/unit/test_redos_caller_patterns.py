@@ -32,7 +32,11 @@ _LIMIT = 20
 
 def _run(code):
     return subprocess.run(
-        [sys.executable, "-c", "import warnings;warnings.filterwarnings('ignore');" + code],
+        [
+            sys.executable,
+            "-c",
+            "import warnings;warnings.filterwarnings('ignore');" + code,
+        ],
         capture_output=True,
         text=True,
         timeout=_LIMIT,
