@@ -51,6 +51,8 @@ default C parser and touches no global state.)
 """
 
 import io
+
+from nltk.pathsec import open as pathsec_open
 from xml.etree import ElementTree
 from xml.parsers import expat
 
@@ -138,7 +140,7 @@ def parse(source):
     if hasattr(source, "read"):
         data = source.read()
     else:
-        with open(source, "rb") as stream:
+        with pathsec_open(source, "rb", context="xmlsec.parse") as stream:
             data = stream.read()
 
     _reject_entities(data)

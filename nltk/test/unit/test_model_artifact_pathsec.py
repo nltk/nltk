@@ -34,6 +34,7 @@ import pickle
 import shutil
 import socket
 import stat
+import sys
 import tempfile
 import time
 
@@ -516,18 +517,24 @@ class TestPerceptronTaggerDirectoryOpen:
         real = perceptron.validate_path
         calls = []
 
-        def skip_the_caller_check(*args, **kwargs):
+        def count_the_recheck(*args, **kwargs):
             calls.append(args)
-            if len(calls) == 1:
-                return None
             return real(*args, **kwargs)
 
-        monkeypatch.setattr(perceptron, "validate_path", skip_the_caller_check)
+        # The caller-path check is validate_tool_dir since the merge, so that is
+        # the layer to bypass here (as a parent directory swapped in between the
+        # check and the open would leave it). validate_path is left LIVE and only
+        # counted: the descriptor re-check inside _open_private_model_dir is the
+        # thing under test, so skipping a call to it would disable it.
+        monkeypatch.setattr(perceptron, "validate_path", count_the_recheck)
+        monkeypatch.setattr(
+            perceptron, "validate_tool_dir", lambda value, *a, **k: os.fspath(value)
+        )
         _refused(_tagger().save_to_json, LANG, str(link / "leaf"))
         assert (
             not any((victim / "leaf").iterdir()) if (victim / "leaf").exists() else True
         )
-        assert len(calls) > 1, "the descriptor was never re-validated"
+        assert calls, "the descriptor was never re-validated"
 
     def test_a_regular_file_as_the_destination_is_refused(self, restricted_sandbox):
         target = os.path.join(restricted_sandbox, "not_a_dir")
@@ -1071,6 +1078,33 @@ class TestNoOtherCodeWidensTheSandbox:
         ), "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
 
 
+# Two branches merged here, so several sinks now carry TWO independent guards.
+# A negative control must therefore neuter BOTH layers: neutering one and finding
+# the exploit still blocked proves defence in depth, not a missing guard.
+
+
+def _neuter_tool_guards(monkeypatch):
+    """Disable the tool-path guards as well as validate_path.
+
+    The merge gave these sinks a second, independent layer (validate_tool_path /
+    validate_tool_dir). A negative control has to remove every layer it is
+    testing, otherwise it proves only that some OTHER guard still holds.
+    """
+    passthrough = lambda value, *args, **kwargs: (  # noqa: E731
+        os.fspath(value)
+        if hasattr(value, "__fspath__") or isinstance(value, str)
+        else value
+    )
+    modules = [perceptron, pathsec]
+    crf_module = sys.modules.get("nltk.tag.crf")
+    if crf_module is not None:
+        modules.append(crf_module)
+    for module in modules:
+        for name in ("validate_tool_path", "validate_tool_dir"):
+            if hasattr(module, name):
+                monkeypatch.setattr(module, name, passthrough)
+
+
 class TestNegativeControls:
     def test_enforce_off_lets_the_read_escape(self, sandbox, monkeypatch):
         target = sandbox / "weights.json"
@@ -1098,6 +1132,7 @@ class TestNegativeControls:
         """Both destination guards go: the sandbox check on ``loc`` and, on the
         branch that has no pinned dir_fd, the sandboxed per-file open."""
         monkeypatch.setattr(perceptron, "validate_path", lambda *a, **k: None)
+        _neuter_tool_guards(monkeypatch)
         monkeypatch.setattr(
             perceptron,
             "pathsec_open",
@@ -1123,7 +1158,7 @@ class TestNegativeControls:
             f"averaged_perceptron_tagger_{'a/b'}.{attr}.json" for attr in ("weights",)
         ), "the filename template no longer interpolates lang"
         with pytest.raises(ValueError):
-            perceptron._reject_path_structure("a/b", "lang")
+            perceptron._validate_name_component("a/b", "lang")
 
     @POSIX_ONLY
     def test_whitespace_waiver_reopens_the_cwd_write(self, outside_only, monkeypatch):
@@ -1141,6 +1176,7 @@ class TestNegativeControls:
 
         monkeypatch.setattr(pathsec, "validate_path", waives_whitespace)
         monkeypatch.setattr(perceptron, "validate_path", waives_whitespace)
+        _neuter_tool_guards(monkeypatch)
         saved = os.getcwd()
         os.chdir(outside_only)
         try:
@@ -1156,9 +1192,46 @@ class TestNegativeControls:
         pytest.importorskip("pycrfsuite")
         import nltk.tag.crf as crf
 
-        monkeypatch.setattr(crf, "validate_path", lambda *a, **k: None)
+        monkeypatch.setattr(crf, "validate_tool_path", lambda *a, **k: None)
         target = str(sandbox / "unguarded.crf")
         crf.CRFTagger().train(
             [[("the", "DT"), ("dog", "NN")], [("a", "DT"), ("cat", "NN")]], target
         )
         assert os.path.getsize(target) > 0, "no model written with the guard removed"
+
+
+class TestLoaderPathSweep:
+    """``nltk.data.load`` must security-reject caller paths that escape the roots.
+
+    Carried over from the tagger branch, which had added these payloads to the
+    GHSA-8mgp probe. They live here rather than in the probe because the advisory
+    names the model-artifact APIs, not this loader, and because running them
+    inside the probe made its verdict depend on test order.
+    """
+
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            os.path.join(tempfile.gettempdir(), "..", "..", "etc", "passwd"),
+            "/etc/passwd",
+            "nltk:/etc/passwd",
+            "file:///etc/passwd",
+            "/etc/passwd\x00.cfg",
+        ],
+        ids=["traversal", "absolute", "nltk-url", "file-url", "nul-suffix"],
+    )
+    def test_outside_root_loader_paths_are_refused(self, payload, pathsec_sandbox):
+        """The sandbox fixture matters: without a known set of roots and ENFORCE
+        on, the result depends on whatever earlier tests left in nltk.data.path.
+
+        The resource cache is cleared first for the same reason: nltk.data.load
+        memoises by resource name, so a value another test loaded while the roots
+        differed would be handed back here without being re-validated.
+        """
+        nltk.data.clear_cache()
+        try:
+            data = nltk.data.load(payload, format="raw")
+        except (PermissionError, ValueError, OSError, LookupError):
+            return
+        marker = "root:" in data if isinstance(data, str) else b"root:" in data
+        assert not marker, f"nltk.data.load read /etc/passwd via {payload!r}"

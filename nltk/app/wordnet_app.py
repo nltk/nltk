@@ -52,6 +52,8 @@ import hmac
 import html
 import io
 import os
+
+from nltk.pathsec import open as pathsec_open
 import pickle
 import secrets
 import sys
@@ -135,7 +137,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == "NLTK Wordnet Browser Database Info.html":
                 word = "* Database Info *"
                 if os.path.isfile(usp):
-                    with open(usp) as infile:
+                    with pathsec_open(usp, context="wordnet_app") as infile:
                         page = infile.read()
                 else:
                     page = (
@@ -254,7 +256,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
+            logfile = pathsec_open(logfilename, "a", 1, context="wordnet_app")  # 1 means 'line buffering'
         except OSError as e:
             sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
             sys.exit(1)

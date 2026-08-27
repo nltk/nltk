@@ -11,6 +11,8 @@ Authentication utilities to accompany `twitterclient`.
 """
 
 import os
+
+from nltk.pathsec import open as pathsec_open
 import pprint
 
 from twython import Twython
@@ -83,7 +85,9 @@ class Authenticate:
         if not os.path.isfile(self.creds_fullpath):
             raise OSError(f"Cannot find file {self.creds_fullpath}")
 
-        with open(self.creds_fullpath) as infile:
+        with pathsec_open(
+            self.creds_fullpath, context="twitter.credentials"
+        ) as infile:
             if verbose:
                 print(f"Reading credentials file {self.creds_fullpath}")
 
@@ -130,7 +134,7 @@ def add_access_token(creds_file=None):
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
     tok = f"access_token={access_token}\n"
-    with open(creds_file, "a") as infile:
+    with pathsec_open(creds_file, "a", context="twitter.credentials") as infile:
         print(tok, file=infile)
 
 

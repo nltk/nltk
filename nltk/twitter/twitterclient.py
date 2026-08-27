@@ -27,6 +27,8 @@ import gzip
 import itertools
 import json
 import os
+
+from nltk.pathsec import open as pathsec_open
 import time
 
 import requests
@@ -521,7 +523,9 @@ class TweetWriter(TweetHandlerI):
             if self.gzip_compress:
                 self.output = gzip.open(self.fname, "w")
             else:
-                self.output = open(self.fname, "w")
+                self.output = pathsec_open(
+            self.fname, "w", context="TweetWriter.output"
+        )
             print(f"Writing to {self.fname}")
 
         json_data = json.dumps(data)

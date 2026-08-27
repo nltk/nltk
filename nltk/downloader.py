@@ -2574,7 +2574,7 @@ def md5_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
-        with open(file, "rb") as infile:
+        with pathsec_open(file, "rb", context="downloader.checksum") as infile:
             return _md5_hexdigest(infile)
     return _md5_hexdigest(file)
 
@@ -2595,7 +2595,7 @@ def sha256_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
-        with open(file, "rb") as infile:
+        with pathsec_open(file, "rb", context="downloader.checksum") as infile:
             return _sha256_hexdigest(infile)
     return _sha256_hexdigest(file)
 

@@ -157,29 +157,41 @@ def test_perceptron_bare_open_probe_has_teeth():
 def test_perceptron_save_to_json_validation_has_teeth():
     """Restore the tagger's pre-fix destination handling and it must escape again.
 
-    Both of its guards go: the sandbox check on ``loc``, and (on the Windows
+    All THREE of its guards go: the sandbox check on ``loc``, the tool-path
+    directory guard the tagger branch added in front of it, and (on the Windows
     branch, where there is no pinned dir_fd to write through) the sandboxed
-    per-file open. Neutering only one leaves the other holding, which is the
-    point of having both -- and is why this control has to remove the pair.
+    per-file open. Neutering fewer leaves another holding, which is the point of
+    having them -- and is why this control has to remove the whole set.
     """
     import builtins
+    import os
 
     import nltk.pathsec as pathsec
     import nltk.tag.perceptron as perceptron
 
     probe = probes.PROBES["GHSA-8mgp-746c-j5xp"]
-    validate, opener = perceptron.validate_path, perceptron.pathsec_open
+    validate = perceptron.validate_path
+    opener = perceptron.pathsec_open
+    tool_dir = perceptron.validate_tool_dir
+    tool_path = perceptron.validate_tool_path
     try:
         perceptron.validate_path = lambda *args, **kwargs: None
+        perceptron.validate_tool_dir = lambda value, *a, **k: os.fspath(value)
+        perceptron.validate_tool_path = lambda value, *a, **k: os.fspath(value)
         perceptron.pathsec_open = lambda path, mode="r", **kwargs: builtins.open(
             path, mode
         )
         assert probe()[0] == probes.VULNERABLE
     finally:
-        perceptron.validate_path, perceptron.pathsec_open = validate, opener
+        perceptron.validate_path = validate
+        perceptron.pathsec_open = opener
+        perceptron.validate_tool_dir = tool_dir
+        perceptron.validate_tool_path = tool_path
     assert probe()[0] == probes.FIXED
     assert perceptron.validate_path is pathsec.validate_path
     assert perceptron.pathsec_open is pathsec.open
+    assert perceptron.validate_tool_dir is pathsec.validate_tool_dir
+    assert perceptron.validate_tool_path is pathsec.validate_tool_path
 
 
 def test_perceptron_load_does_not_widen_the_sandbox():

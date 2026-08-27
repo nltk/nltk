@@ -24,10 +24,46 @@ from nltk.internals import (
     java,
 )
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
+
+
+def _validated_options(options):
+    """Bound the caller-supplied ``options`` dict before it becomes ``-options``.
+
+    The pairs are joined into ONE comma-separated argv element, so a key holding
+    a ``,`` or an ``=`` silently injects extra option pairs that the wrapper
+    never intended. This is the same class as the parser's ``corenlp_options``:
+
+        {"normalize=true,serDictionary": "/etc/passwd"}
+        -> normalize=true,serDictionary="/etc/passwd"
+
+    Values are JSON-encoded, so they cannot break out of their own pair, but one
+    that names a file is still bounded to the data roots.
+    """
+    validated = {}
+    for key, value in options.items():
+        name = str(key)
+        if not name.strip():
+            raise ValueError(
+                "Security Violation [StanfordSegmenter options]: empty option name."
+            )
+        if any(character in name for character in ",=\t\n\r\x00 "):
+            raise ValueError(
+                f"Security Violation [StanfordSegmenter options]: option name "
+                f"{name!r} contains a separator, so it would inject extra "
+                "option pairs into the argument list."
+            )
+        if isinstance(value, str) and (
+            os.path.isabs(value) or "/" in value or "\\" in value
+        ):
+            value = validate_tool_path(
+                value, context=f"StanfordSegmenter options[{name}]"
+            )
+        validated[name] = value
+    return validated
 
 
 class StanfordSegmenter(TokenizerI):
@@ -119,7 +155,8 @@ class StanfordSegmenter(TokenizerI):
         self.java_options = java_options
         options = {} if options is None else options
         self._options_cmd = ",".join(
-            f"{key}={json.dumps(val)}" for key, val in options.items()
+            f"{key}={json.dumps(val)}"
+            for key, val in _validated_options(options).items()
         )
         self._jar_sha256_cache = {}
 
@@ -201,22 +238,30 @@ class StanfordSegmenter(TokenizerI):
 
     def segment_file(self, input_file_path):
         """ """
+        # Caller-supplied and handed to the JVM as -textFile, which pathsec.open
+        # cannot wrap; validate before the spawn (GHSA-8mgp-746c-j5xp). Build the
+        # argv from the returned string, never the original object: a PathLike can
+        # answer one way here and another way when the child resolves it.
+        input_file_path = validate_tool_path(
+            input_file_path, context="StanfordSegmenter.segment_file"
+        )
+        model, dictionary, sihan = self._validate_model_paths()
         cmd = [
             self._java_class,
             "-loadClassifier",
-            self._model,
+            model,
             "-keepAllWhitespaces",
             self._keep_whitespaces,
             "-textFile",
             input_file_path,
         ]
-        if self._sihan_corpora_dict is not None:
+        if sihan is not None:
             cmd.extend(
                 [
                     "-serDictionary",
-                    self._dict,
+                    dictionary,
                     "-sighanCorporaDict",
-                    self._sihan_corpora_dict,
+                    sihan,
                     "-sighanPostProcessing",
                     self._sihan_post_processing,
                 ]
@@ -246,22 +291,27 @@ class StanfordSegmenter(TokenizerI):
                     _input = _input.encode(encoding)
                 input_fh.write(_input)
 
+            # Validate BEFORE building the command, and build it from the
+            # attributes the guard replaced. Capturing self._model into cmd first
+            # would put the original object there, and a PathLike may resolve to
+            # something else when the child process reads it.
+            model, dictionary, sihan = self._validate_model_paths()
             cmd = [
                 self._java_class,
                 "-loadClassifier",
-                self._model,
+                model,
                 "-keepAllWhitespaces",
                 self._keep_whitespaces,
                 "-textFile",
                 self._input_file_path,
             ]
-            if self._sihan_corpora_dict is not None:
+            if sihan is not None:
                 cmd.extend(
                     [
                         "-serDictionary",
-                        self._dict,
+                        dictionary,
                         "-sighanCorporaDict",
-                        self._sihan_corpora_dict,
+                        sihan,
                         "-sighanPostProcessing",
                         self._sihan_post_processing,
                     ]
@@ -328,6 +378,44 @@ class StanfordSegmenter(TokenizerI):
                     "Multiple approved checksums may be supplied as a comma-separated list."
                 )
 
+    def _validate_model_paths(self):
+        """Refuse model/dictionary paths that escape the NLTK data sandbox.
+
+        These are embedded in the JVM argv (-loadClassifier / -serDictionary /
+        -sighanCorporaDict), which pathsec.open cannot wrap, so they are checked
+        here before the process is spawned (GHSA-8mgp-746c-j5xp).
+
+        Each attribute is replaced with the string the guard returned, and the
+        same strings are RETURNED for the caller to build its argv from. A
+        PathLike may answer differently on every call, and ``validate_path``
+        reads a ``.path`` attribute in preference to ``__fspath__``, so
+        validating the object and then handing the same object to the JVM
+        checked one file and opened another.
+
+        Returning them matters beyond that: a caller that re-reads
+        ``self._model`` after this returns is reading shared mutable state again,
+        so a concurrent write could still swap the value between the check and
+        the argv. Building from the return value keeps the checked value and the
+        used value the same object.
+
+        :return: the validated (model, dictionary, sihan corpora dict) strings,
+            each None when it was unset
+        """
+        validated = []
+        for attribute, label, guard in (
+            ("_model", "model", validate_tool_path),
+            ("_dict", "dictionary", validate_tool_path),
+            # The Sihan corpora dict is a DIRECTORY, so it needs the directory
+            # guard: validate_tool_path requires a regular file.
+            ("_sihan_corpora_dict", "sihan corpora dict", validate_tool_dir),
+        ):
+            value = getattr(self, attribute)
+            if value:
+                value = guard(value, context=f"StanfordSegmenter {label}")
+                setattr(self, attribute, value)
+            validated.append(value)
+        return tuple(validated)
+
     def _execute(self, cmd, verbose=False):
         encoding = self._encoding
         cmd.extend(["-inputEncoding", encoding])
@@ -335,6 +423,7 @@ class StanfordSegmenter(TokenizerI):
         if _options_cmd:
             cmd.extend(["-options", self._options_cmd])
 
+        self._validate_model_paths()
         self._validate_classpath()
 
         stdout, _stderr = java(

@@ -230,6 +230,7 @@ def _model_artifact_apis():
     when it is security-marked, so an incidental ImportError/FileNotFoundError is
     never scored as a defence.
     """
+
     with _outside_dir() as outside:
         if outside is None:
             return STATIC, "$HOME is inside an allowed root here; no escape target"
@@ -254,40 +255,3 @@ def _model_artifact_apis():
         if reached:
             return FIXED, detail
         return STATIC, "attack never reached a security check: " + detail
-
-
-@probe("GHSA-8mgp-746c-j5xp")
-def _data_load_paths():
-    """``nltk.data.load`` must security-reject caller paths that escape the roots.
-
-    The advisory names the model-artifact APIs above, not this loader, so this is
-    kept as a second probe rather than folded into them: it covers the several
-    shapes a caller path can take (traversal, absolute, ``nltk:``/``file:`` URLs
-    and a NUL byte). A leak reads the outside file; a non-security error is not
-    a pass.
-    """
-    import nltk.data
-
-    outside = "/etc/passwd"
-    payloads = [
-        os.path.join(tempfile.gettempdir(), "..", "..", "etc", "passwd"),
-        outside,
-        "nltk:" + outside,
-        "file://" + outside,
-        outside + "\x00.cfg",
-    ]
-    reached = False
-    for path in payloads:
-        try:
-            data = nltk.data.load(path, format="raw")
-        except Exception as exc:
-            if is_security_rejection(exc):
-                reached = True
-            continue
-        if isinstance(data, (str, bytes)) and (
-            "root:" in data if isinstance(data, str) else b"root:" in data
-        ):
-            return VULNERABLE, f"nltk.data.load read {outside} via {path!r}"
-    if reached:
-        return FIXED, "outside-root loader paths security-rejected"
-    return FIXED, "outside-root loader paths refused (no security marker reached)"

@@ -436,7 +436,13 @@ class PerceptronTagger(TaggerI):
 
             for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
                 target = json_file if use_dir_fd else path_join(loc, json_file)
-                with open(target, "w", opener=_no_follow_opener) as fout:
+                # No builtin open(): take the hardened descriptor straight from
+                # the opener and wrap it, so the write still goes through the
+                # pinned dir_fd with O_NOFOLLOW and nothing re-resolves the name.
+                fd = _no_follow_opener(
+                    target, os.O_WRONLY | os.O_CREAT | os.O_TRUNC
+                )
+                with os.fdopen(fd, "w") as fout:
                     json.dump(param, fout)
         finally:
             os.close(dir_fd)

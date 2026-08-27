@@ -32,7 +32,8 @@ import sys
 try:
     # If a VERSION file exists, use it!
     version_file = os.path.join(os.path.dirname(__file__), "VERSION")
-    with open(version_file) as infile:
+    # sandboxed-open ok: package metadata beside the code, path from __file__
+    with open(version_file) as infile:  # sandboxed-open ok: not caller-supplied
         __version__ = infile.read().strip()
 except NameError:
     __version__ = "unknown (running code interactively?)"

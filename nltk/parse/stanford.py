@@ -14,6 +14,7 @@ from subprocess import PIPE
 from nltk.internals import find_jar_iter, find_jars_within_path, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.pathsec import validate_model_resource
 from nltk.tree import Tree
 
 _stanford_url = "https://nlp.stanford.edu/software/lex-parser.shtml"
@@ -217,11 +218,56 @@ class GenericStanfordParser(ParserI):
             )
         )
 
+    def _validated_extra_options(self, cmd):
+        """Bound the caller-supplied ``corenlp_options`` before it joins the argv.
+
+        The string is *split* into separate argv elements, so it can append a
+        second ``-model``. Stanford's ``LexicalizedParser`` honours the LAST
+        occurrence, which was verified directly against the JVM, so an injected
+        option silently replaced the model the guard above had just checked and
+        the parser deserialized an arbitrary file instead.
+
+        An option NLTK already set may therefore not be repeated here, and any
+        value that looks like a filesystem path is bounded to the data roots. A
+        value that is not a path (``xml``, ``key=value``) is left alone, since
+        this is a general passthrough for the tool's own settings.
+        """
+        already_set = {
+            argument
+            for argument in cmd
+            if isinstance(argument, str) and argument.startswith("-")
+        }
+        validated = []
+        for token in self.corenlp_options.split():
+            if token.startswith("-"):
+                if token in already_set:
+                    raise ValueError(
+                        f"Security Violation [StanfordParser corenlp_options]: "
+                        f"{token!r} is already set by NLTK and may not be "
+                        "overridden; the tool would honour the injected value."
+                    )
+                validated.append(token)
+                continue
+            if os.path.isabs(token) or "/" in token or "\\" in token:
+                token = validate_model_resource(
+                    token, context="StanfordParser corenlp_options"
+                )
+            validated.append(token)
+        return validated
+
     def _execute(self, cmd, input_, verbose=False):
+        # Bound `-model` here, at the single hand-off to the JVM, so all three
+        # callers are covered and a late reassignment cannot slip past. The argv
+        # entry is replaced with the validated string: __fspath__ may answer
+        # differently on every call, so the object the callers put in `cmd` could
+        # otherwise resolve to a file the guard never saw.
+        model = validate_model_resource(self.model_path, context="StanfordParser model")
+        if "-model" in cmd:
+            cmd[cmd.index("-model") + 1] = model
         encoding = self._encoding
         cmd.extend(["-encoding", encoding])
         if self.corenlp_options:
-            cmd.extend(self.corenlp_options.split())
+            cmd.extend(self._validated_extra_options(cmd))
 
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         input_file_name = None

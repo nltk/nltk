@@ -160,10 +160,10 @@ def test_tagger_sources_route_through_pathsec():
 def test_perceptron_module_has_no_bare_open():
     """The only ``open(`` in perceptron.py is the fd-pinned model write.
 
-    That one deliberately bypasses ``pathsec.open``: it writes a name relative to
-    an already-verified O_NOFOLLOW directory descriptor, which is strictly
-    stronger than re-validating a string. Every other file access must go
-    through the sentinel.
+    There is now NO builtin ``open(`` in the module at all. The fd-pinned model
+    write takes the hardened descriptor straight from its opener and wraps it
+    with ``os.fdopen``, so the write still goes through the verified O_NOFOLLOW
+    directory descriptor while no bare ``open`` remains to review.
     """
     import nltk.tag.perceptron as perceptron
 
@@ -176,9 +176,7 @@ def test_perceptron_module_has_no_bare_open():
         and "os.open" not in line
         and not line.strip().startswith("#")
     ]
-    assert bare == [
-        'with open(target, "w", opener=_no_follow_opener) as fout:'
-    ], f"unexpected bare open(): {bare}"
+    assert bare == [], f"unexpected bare open(): {bare}"
 
 
 # --- the full escape matrix, fired at every guarded model-path sink -----------
@@ -236,13 +234,17 @@ _ESCAPES = [
 # Contained-but-odd paths. These are NOT attacks: they name a real file inside
 # the sandbox. They are pinned so that a future change which starts expanding,
 # splitting or decoding a path shows up here as a new leak.
+#
+# "newline-in-name" used to be listed here. It is now REFUSED on every platform:
+# Python 3.14's url2pathname follows the WHATWG rules and strips tab, LF and CR,
+# so ".\n./x" passes a '..' check and becomes "../x" downstream. Verified against
+# a real 3.14.4 interpreter, and 3.14 is in the CI matrix.
 _BENIGN = [
     "plain-in-root",
     "dot-segments",
     "dash-basename-absolute",
     "space-in-name",
     "unicode-name",
-    "newline-in-name",
     "backslash-in-name",
     "colon-ads-in-name",
     "percent-encoded-name",
@@ -418,7 +420,9 @@ def _vector(name, root, outside, registry):
         "dash-basename-absolute": "-loadClassifier",
         "space-in-name": "my model.json",
         "unicode-name": "modelé_模型.json",
-        "newline-in-name": "a\nb.model",
+        # Refused on every platform now: Python 3.14's url2pathname strips
+        # tab/LF/CR, so such a name becomes a traversal downstream.
+        "newline-in-name-REFUSED": "a\nb.model",
         "backslash-in-name": "a\\b.model",
         "colon-ads-in-name": "legit.model:evil",
         "percent-encoded-name": "%2e%2e%2fpasswd",
@@ -695,7 +699,6 @@ def test_benign_vectors_are_not_expanded_or_decoded(pathsec_sandbox):
             "percent-encoded-name",
             "dollar-var-name",
             "glob-chars-name",
-            "newline-in-name",
             "space-in-name",
             "unicode-name",
             "dash-basename-absolute",
