@@ -1792,3 +1792,95 @@ def test_segmenter_out_of_root_jar_is_refused_despite_approved_checksum(
     tool._jar_sha256_cache = {}
     with pytest.raises((PermissionError, ValueError)):
         tool._validate_classpath()
+
+
+# ---------------------------------------------------------------------------
+# Surfaces probed and found CLEAN. Pinned so a later change cannot open them
+# without a test noticing. Each was verified by execution, not by reading.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "java_class",
+    ["-jar", "-Xmx99g", "-javaagent:/tmp/evil.jar", "@/tmp/argfile"],
+)
+def test_segmenter_java_class_cannot_be_an_option(
+    pathsec_sandbox, monkeypatch, java_class
+):
+    """java_class is caller-supplied and lands in the JVM's MAIN CLASS slot, so
+    an option-shaped value would be read as a JVM option instead. internals.java
+    already refuses it; this pins that it keeps doing so."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _outside = pathsec_sandbox
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+    tool = _segmenter(monkeypatch, str(root))
+    tool._java_class = java_class
+    with pytest.raises((ValueError, PermissionError)):
+        tool.segment_file(inside)
+
+
+@pytest.mark.parametrize(
+    "option",
+    [
+        "-XX:OnOutOfMemoryError=touch /tmp/pwned",
+        "-javaagent:/tmp/evil.jar",
+        "@/tmp/argfile",
+        "-jar /tmp/evil.jar",
+    ],
+)
+def test_wrapper_java_options_hit_the_allowlist(pathsec_sandbox, monkeypatch, option):
+    """The JVM option allowlist lives in internals.java. This confirms it is
+    actually reached through THIS wrapper rather than assumed."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _outside = pathsec_sandbox
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+    tool = _segmenter(monkeypatch, str(root))
+    tool.java_options = option
+    with pytest.raises((ValueError, PermissionError)):
+        tool.segment_file(inside)
+
+
+def test_unresolvable_path_with_traversal_or_nul_is_refused(pathsec_sandbox):
+    """validate_path falls back to validating only the prefix up to ".zip" when
+    resolve() fails, and resolve() also fails on a NUL. Refusing an unresolvable
+    path that still contains a traversal or a NUL keeps that fallback from
+    approving a value on a harmless prefix.
+
+    No usable escape was found through this (a NUL path cannot be opened by
+    Python and truncates in a subprocess), so this is hardening rather than a
+    fixed vulnerability.
+    """
+    import zipfile as _zipfile
+
+    root, _outside = pathsec_sandbox
+    archive = str(root / "corpus.zip")
+    with _zipfile.ZipFile(archive, "w") as handle:
+        handle.writestr("member.txt", "hello")
+    for suspect in (
+        f"{archive}/\x00../../../etc/passwd",
+        f"{archive}/../../../../etc/passwd",
+    ):
+        with pytest.raises((PermissionError, ValueError)):
+            pathsec.validate_path(suspect, context="sweep")
+
+
+def test_zip_member_paths_still_validate(pathsec_sandbox):
+    """Over-block control for the change above: virtual zip member paths are the
+    reason that fallback exists and must keep working."""
+    import zipfile as _zipfile
+
+    from nltk.data import ZipFilePathPointer
+
+    root, _outside = pathsec_sandbox
+    archive = str(root / "corpus.zip")
+    with _zipfile.ZipFile(archive, "w") as handle:
+        handle.writestr("member.txt", "hello")
+    for good in (archive, f"{archive}/member.txt", f"{archive}/sub/dir/member.txt"):
+        pathsec.validate_path(good, context="sweep")
+    assert ZipFilePathPointer(archive, "member.txt").open().read() == b"hello"

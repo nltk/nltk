@@ -188,7 +188,22 @@ def validate_path(path_input, context="NLTK", required_root=None):
         try:
             target = Path(raw).resolve()
         except (OSError, ValueError):
-            # Fallback for virtual paths inside ZIPs (e.g. corpora/foo.zip/file.txt)
+            # Fallback for virtual paths inside ZIPs (e.g. corpora/foo.zip/file.txt).
+            # This validates only the prefix up to ".zip", so it must never be
+            # reached by a path that can still traverse: resolve() also fails on a
+            # NUL (ValueError) and on an over-long component (ENAMETOOLONG), and
+            # "<root>/ok.zip/<5000 chars>/../../../etc/passwd" would then be
+            # approved on its harmless prefix while normpath() collapses the long
+            # component and leaves /etc/passwd for the caller to open.
+            if "\x00" in raw or ".." in raw.replace("\\", "/").split("/"):
+                msg = (
+                    f"Security Violation [{context}]: unresolvable path with a "
+                    f"traversal or NUL component: {raw!r}"
+                )
+                if ENFORCE:
+                    raise PermissionError(msg)
+                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                return
             lower_raw = raw.lower()
             if ".zip" in lower_raw:
                 zip_idx = lower_raw.find(".zip") + 4
