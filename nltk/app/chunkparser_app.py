@@ -37,8 +37,8 @@ from tkinter.font import Font
 from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
 from nltk.corpus import conll2000, treebank_chunk
-from nltk.pathsec import open as pathsec_open
 from nltk.draw.util import ShowText
+from nltk.pathsec import open as pathsec_open
 from nltk.tree import Tree
 from nltk.util import in_idle
 

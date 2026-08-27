@@ -11,6 +11,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
+from nltk.data import staging_tempdir
 from nltk.internals import find_jar_iter, find_jars_within_path, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
@@ -273,7 +274,9 @@ class GenericStanfordParser(ParserI):
         input_file_name = None
         java_succeeded = False
         try:
-            with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
+            with tempfile.NamedTemporaryFile(
+                mode="wb", delete=False, dir=staging_tempdir()
+            ) as input_file:
                 input_file_name = input_file.name
                 # Write the actual sentences to the temporary input file
                 if isinstance(input_, str) and encoding:

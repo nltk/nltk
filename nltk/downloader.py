@@ -886,6 +886,10 @@ class Downloader:
                 return
 
             try:
+                # The lock lives under the caller-chosen download dir, so bound
+                # it before creating it. O_EXCL already refuses an existing file
+                # or symlink; this stops the path leaving the sandbox at all.
+                validate_path(lock_filepath, context="downloader.lock")
                 fd = os.open(lock_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.close(fd)
                 break

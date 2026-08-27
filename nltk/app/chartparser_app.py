@@ -56,7 +56,6 @@ from tkinter.font import Font
 from tkinter.messagebox import showerror, showinfo
 
 from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
-from nltk.pathsec import open as pathsec_open
 from nltk.draw.util import (
     CanvasFrame,
     ColorizedList,
@@ -78,6 +77,7 @@ from nltk.parse.chart import (
     TopDownPredictRule,
     TreeEdge,
 )
+from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import pickle_load
 from nltk.tree import Tree
 from nltk.util import in_idle

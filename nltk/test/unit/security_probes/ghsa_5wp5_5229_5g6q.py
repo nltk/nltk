@@ -6,6 +6,8 @@ import shutil
 import tempfile
 import zipfile
 
+from nltk import pathsec
+
 from ._base import FIXED, STATIC, VULNERABLE, probe
 
 
@@ -25,7 +27,9 @@ def _downloader_integrity():
     nltk.data.path.insert(0, box)
     try:
         pkgzip = os.path.join(box, "evil.zip")
-        with zipfile.ZipFile(pkgzip, "w") as zf:
+        # box is registered as a data root above, so this stages INSIDE the
+        # sandbox and must go through pathsec like any other in-root write.
+        with pathsec.ZipFile(pkgzip, "w") as zf:
             zf.writestr("evil/data.txt", "payload")
         size = os.path.getsize(pkgzip)
         with open(pkgzip, "rb") as fh:

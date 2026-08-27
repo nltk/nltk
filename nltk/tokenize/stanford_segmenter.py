@@ -17,6 +17,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
+from nltk.data import staging_tempdir
 from nltk.internals import (
     find_dir,
     find_file,
@@ -281,7 +282,9 @@ class StanfordSegmenter(TokenizerI):
         java_succeeded = False
         try:
             # Create a temporary input file
-            _input_fh, input_file_path = tempfile.mkstemp(text=True)
+            _input_fh, input_file_path = tempfile.mkstemp(
+                text=True, dir=staging_tempdir()
+            )
             self._input_file_path = input_file_path
 
             # Write the actual sentences to the temporary input file

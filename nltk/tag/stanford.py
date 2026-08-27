@@ -22,6 +22,7 @@ import warnings
 from abc import abstractmethod
 from subprocess import PIPE
 
+from nltk.data import staging_tempdir
 from nltk.internals import find_file, find_jar, java
 from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
@@ -100,7 +101,9 @@ class StanfordTagger(TaggerI):
         java_succeeded = False
         try:
             # Create a temporary input file
-            _input_fh, input_file_path = tempfile.mkstemp(text=True)
+            _input_fh, input_file_path = tempfile.mkstemp(
+                text=True, dir=staging_tempdir()
+            )
             self._input_file_path = input_file_path
 
             cmd = list(self._cmd)

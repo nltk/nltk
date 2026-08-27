@@ -11,11 +11,11 @@ Authentication utilities to accompany `twitterclient`.
 """
 
 import os
-
-from nltk.pathsec import open as pathsec_open
 import pprint
 
 from twython import Twython
+
+from nltk.pathsec import open as pathsec_open
 
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
@@ -85,9 +85,7 @@ class Authenticate:
         if not os.path.isfile(self.creds_fullpath):
             raise OSError(f"Cannot find file {self.creds_fullpath}")
 
-        with pathsec_open(
-            self.creds_fullpath, context="twitter.credentials"
-        ) as infile:
+        with pathsec_open(self.creds_fullpath, context="twitter.credentials") as infile:
             if verbose:
                 print(f"Reading credentials file {self.creds_fullpath}")
 

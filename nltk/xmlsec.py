@@ -51,11 +51,10 @@ default C parser and touches no global state.)
 """
 
 import io
-
-from nltk.pathsec import open as pathsec_open
 from xml.etree import ElementTree
 from xml.parsers import expat
 
+from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 
 __all__ = ["HAVE_DEFUSEDXML", "EntitiesForbidden", "fromstring", "parse"]

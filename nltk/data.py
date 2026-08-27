@@ -32,11 +32,13 @@ adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 
+import atexit
 import codecs
 import functools
 import os
 import pickle
 import re
+import shutil
 import sys
 import tempfile
 import textwrap
@@ -203,6 +205,29 @@ else:
 ######################################################################
 # Util Functions
 ######################################################################
+
+
+_STAGING_TEMPDIR = None
+
+
+def staging_tempdir():
+    """A process-wide scratch directory INSIDE an allowed data root.
+
+    ``tempfile.mkstemp()`` and ``NamedTemporaryFile()`` default to the system
+    temp dir, which on Linux is the shared, world-writable ``/tmp`` and is
+    deliberately NOT a pathsec root. Wrappers that stage an input file for an
+    external tool therefore wrote outside the sandbox. Pass this as ``dir=`` so
+    the scratch file lands inside a root instead.
+
+    Allocated once per process and removed at exit, so callers do not leak a
+    directory per invocation the way a per-call ``make_staging_dir`` would.
+    """
+    global _STAGING_TEMPDIR
+    if _STAGING_TEMPDIR is None or not os.path.isdir(_STAGING_TEMPDIR):
+        staged = make_staging_dir(prefix="nltk_scratch_")
+        atexit.register(shutil.rmtree, staged, ignore_errors=True)
+        _STAGING_TEMPDIR = staged
+    return _STAGING_TEMPDIR
 
 
 def make_staging_dir(prefix="nltk_"):

@@ -52,8 +52,6 @@ import hmac
 import html
 import io
 import os
-
-from nltk.pathsec import open as pathsec_open
 import pickle
 import secrets
 import sys
@@ -69,6 +67,7 @@ from urllib.parse import parse_qs, unquote_plus
 
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
+from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import RestrictedUnpickler
 
 firstClient = True
@@ -256,7 +255,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = pathsec_open(logfilename, "a", 1, context="wordnet_app")  # 1 means 'line buffering'
+            logfile = pathsec_open(
+                logfilename, "a", 1, context="wordnet_app"
+            )  # 1 means 'line buffering'
         except OSError as e:
             sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
             sys.exit(1)

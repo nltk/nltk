@@ -12,11 +12,10 @@ the `twython` library to have been installed.
 """
 import csv
 import gzip
-
-from nltk.pathsec import open as pathsec_open
 import json
 
 from nltk.internals import deprecated
+from nltk.pathsec import open as pathsec_open
 
 HIER_SEPARATOR = "."
 
@@ -142,9 +141,7 @@ def _outf_writer(outfile, encoding, errors, gzip_compress=False):
         # Sandbox the destination, then let gzip wrap the checked handle: the
         # caller chooses this path, so a bare open is an arbitrary file write.
         raw = pathsec_open(outfile, "wb", context="twitter._outf_writer")
-        outf = gzip.open(
-            raw, "wt", newline="", encoding=encoding, errors=errors
-        )
+        outf = gzip.open(raw, "wt", newline="", encoding=encoding, errors=errors)
     else:
         outf = pathsec_open(
             outfile,
