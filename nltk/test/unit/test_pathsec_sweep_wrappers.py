@@ -1884,3 +1884,122 @@ def test_zip_member_paths_still_validate(pathsec_sandbox):
     for good in (archive, f"{archive}/member.txt", f"{archive}/sub/dir/member.txt"):
         pathsec.validate_path(good, context="sweep")
     assert ZipFilePathPointer(archive, "member.txt").open().read() == b"hello"
+
+
+# ---------------------------------------------------------------------------
+# Entry-point matrix. The recurring real bug in this PR was a guard placed on
+# ONE method while a sibling built its argv before validating. segment_file was
+# fixed first and segment_sents/segment still leaked. This drives the attack
+# through EVERY public entry point so a new method cannot reopen it quietly.
+# ---------------------------------------------------------------------------
+
+
+def _segmenter_entry_points():
+    return {
+        "segment_file": lambda tool, path: tool.segment_file(path),
+        "segment_sents": lambda tool, _path: tool.segment_sents([["中", "文"]]),
+        "segment": lambda tool, _path: tool.segment(["中", "文"]),
+    }
+
+
+@pytest.mark.parametrize("entry", sorted(_segmenter_entry_points()))
+@pytest.mark.parametrize("hostile", ["mutating", "dot-path", "plain-outside"])
+def test_every_segmenter_entry_point_refuses_hostile_models(
+    pathsec_sandbox, monkeypatch, entry, hostile
+):
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, seg, {})
+    evil = str(outside / "evil.ser.gz")
+    (outside / "evil.ser.gz").write_text("x")
+    good = str(root / "ok.ser.gz")
+    with pathsec.open(good, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+
+    model = {
+        "mutating": _MutatingPath(good, evil),
+        "dot-path": _DotPathObject(good, evil),
+        "plain-outside": evil,
+    }[hostile]
+    tool = _segmenter(monkeypatch, str(root), model=model)
+
+    try:
+        _segmenter_entry_points()[entry](tool, inside)
+    except (PermissionError, ValueError):
+        return
+    except _ReachedJVM:
+        pass
+    # If it reached the JVM at all, the argv must hold the validated string.
+    handed = sink["cmd"][sink["cmd"].index("-loadClassifier") + 1]
+    resolved = _resolve(handed)
+    assert isinstance(handed, str), f"{entry} put a {type(handed).__name__} in argv"
+    assert os.path.realpath(str(resolved)).startswith(
+        os.path.realpath(str(root))
+    ), f"{entry} handed the JVM a path outside the roots: {resolved}"
+
+
+@pytest.mark.parametrize("entry", sorted(_segmenter_entry_points()))
+def test_every_segmenter_entry_point_still_works(pathsec_sandbox, monkeypatch, entry):
+    """Over-block control for the matrix above."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, seg, {})
+    good = str(root / "ok.ser.gz")
+    with pathsec.open(good, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+
+    tool = _segmenter(monkeypatch, str(root), model=good)
+    with pytest.raises(_ReachedJVM):
+        _segmenter_entry_points()[entry](tool, inside)
+    assert sink["cmd"][sink["cmd"].index("-loadClassifier") + 1] == good
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [
+        "parse_sents",
+        "raw_parse_sents",
+        "tagged_parse_sents",
+        "raw_parse",
+        "tagged_parse",
+    ],
+)
+def test_every_parser_entry_point_refuses_a_mutating_model(
+    pathsec_sandbox, monkeypatch, entry
+):
+    """All five public parser methods funnel through _execute, which replaces the
+    -model argv entry with the validated string. This proves it for each."""
+    import nltk.parse.stanford as st
+
+    root, outside = pathsec_sandbox
+    sink = _trap_java(monkeypatch, st, {})
+    evil = outside / "evil.ser.gz"
+    evil.write_text("x")
+    good = root / "ok.ser.gz"
+    good.write_text("m")
+
+    parser = _stanford_parser(_MutatingPath(str(good), str(evil)))
+    calls = {
+        "parse_sents": lambda p: p.parse_sents([["hi", "there"]]),
+        "raw_parse_sents": lambda p: p.raw_parse_sents(["hi there"]),
+        "tagged_parse_sents": lambda p: p.tagged_parse_sents([[("hi", "UH")]]),
+        "raw_parse": lambda p: p.raw_parse("hi there"),
+        "tagged_parse": lambda p: p.tagged_parse([("hi", "UH")]),
+    }
+    try:
+        calls[entry](parser)
+    except (PermissionError, ValueError):
+        return
+    except _ReachedJVM:
+        pass
+    handed = sink["cmd"][sink["cmd"].index("-model") + 1]
+    assert isinstance(handed, str), f"{entry} put a {type(handed).__name__} in argv"
+    assert os.path.realpath(_resolve(handed)).startswith(os.path.realpath(str(root)))

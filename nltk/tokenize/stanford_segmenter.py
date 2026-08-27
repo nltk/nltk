@@ -291,6 +291,11 @@ class StanfordSegmenter(TokenizerI):
                     _input = _input.encode(encoding)
                 input_fh.write(_input)
 
+            # Validate BEFORE building the command, and build it from the
+            # attributes the guard replaced. Capturing self._model into cmd first
+            # would put the original object there, and a PathLike may resolve to
+            # something else when the child process reads it.
+            self._validate_model_paths()
             cmd = [
                 self._java_class,
                 "-loadClassifier",
