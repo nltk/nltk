@@ -40,7 +40,7 @@ _BILLION = (
     '<!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;&b;&b;">'
     '<!ENTITY d "&c;&c;&c;&c;&c;&c;&c;&c;&c;&c;">'
     '<!ENTITY e "&d;&d;&d;&d;&d;&d;&d;&d;&d;&d;">'
-    ']><l>&e;</l>'
+    "]><l>&e;</l>"
 )
 _PARAM = (
     '<?xml version="1.0"?>'
@@ -70,7 +70,11 @@ def _write(root, document):
 
 @pytest.mark.parametrize(
     "document, label",
-    [(_XXE, "external entity"), (_BILLION, "billion laughs"), (_PARAM, "parameter entity")],
+    [
+        (_XXE, "external entity"),
+        (_BILLION, "billion laughs"),
+        (_PARAM, "parameter entity"),
+    ],
     ids=["xxe", "billion-laughs", "param-entity"],
 )
 def test_entity_attacks_are_refused(sandbox_root, document, label):

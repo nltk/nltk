@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -41,7 +42,10 @@ class RegexpStemmer(StemmerI):
 
     def __init__(self, regexp, min=0):
         if not hasattr(regexp, "pattern"):
-            regexp = re.compile(regexp)
+            # The pattern is caller-supplied and applied to caller text, so a
+            # catastrophically backtracking one hangs the process (CWE-1333).
+            # redos.compile gives it a wall-clock bound. See ``nltk/redos.py``.
+            regexp = redos.compile(regexp)
         self._regexp = regexp
         self._min = min
 
