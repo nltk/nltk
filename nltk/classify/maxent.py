@@ -1441,7 +1441,9 @@ def train_maxent_classifier_with_megam(
     # Write a training file for megam.
     try:
         fd, trainfile_name = tempfile.mkstemp(prefix="nltk-")
-        with open(trainfile_name, "w") as trainfile:
+        with open(  # sandboxed-open ok: internal mkstemp name, not caller-supplied
+            trainfile_name, "w"
+        ) as trainfile:
             write_megam_file(
                 train_toks, encoding, trainfile, explicit=explicit, bernoulli=bernoulli
             )
@@ -1543,7 +1545,9 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        with open(weightfile_name) as weightfile:
+        with open(  # sandboxed-open ok: internal mkstemp name, not caller-supplied
+            weightfile_name
+        ) as weightfile:
             weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)

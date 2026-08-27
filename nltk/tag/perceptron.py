@@ -192,13 +192,25 @@ class AveragedPerceptron:
             self.weights[feat] = new_feat_weights
 
     def save(self, path):
-        """Save the model weights as json"""
+        """Save the model weights as json.
+
+        ``path`` is caller-supplied, so the write goes through the pathsec
+        sandbox: a destination outside the allowed NLTK data roots (or a symlink
+        planted at one) is refused before any bytes are written, instead of the
+        builtin ``open`` that made this an arbitrary-file write
+        (GHSA-8mgp-746c-j5xp).
+        """
         validate_tool_path(path, context="AveragedPerceptron.save", must_exist=False)
         with pathsec_open(path, "w", context="AveragedPerceptron.save") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
-        """Load the json model weights."""
+        """Load the json model weights.
+
+        The read is sandboxed for the same reason as :meth:`save`: a model path
+        outside the allowed roots is refused rather than read back to the caller
+        (GHSA-8mgp-746c-j5xp).
+        """
         # Refuse a planted FIFO/socket/device before pathsec.open blocks on it.
         validate_tool_path(path, context="AveragedPerceptron.load")
         with pathsec_open(path, context="AveragedPerceptron.load") as fin:

@@ -36,6 +36,15 @@ GUARDED_PATHS = [
     "nltk/corpus/reader",
     "nltk/corpus/util.py",
     "nltk/data.py",
+    # Model-artifact save/load helpers: the same untrusted-path problem, and the
+    # exact family GHSA-8mgp-746c-j5xp was filed against.
+    "nltk/chunk/named_entity.py",
+    "nltk/classify/maxent.py",
+    "nltk/parse/transitionparser.py",
+    "nltk/tabdata.py",
+    "nltk/tag/perceptron.py",
+    "nltk/tbl/demo.py",
+    "nltk/tokenize/punkt.py",
 ]
 
 SUPPRESS_MARKER = "# sandboxed-open ok"
