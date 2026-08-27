@@ -245,23 +245,23 @@ class StanfordSegmenter(TokenizerI):
         input_file_path = validate_tool_path(
             input_file_path, context="StanfordSegmenter.segment_file"
         )
-        self._validate_model_paths()
+        model, dictionary, sihan = self._validate_model_paths()
         cmd = [
             self._java_class,
             "-loadClassifier",
-            self._model,
+            model,
             "-keepAllWhitespaces",
             self._keep_whitespaces,
             "-textFile",
             input_file_path,
         ]
-        if self._sihan_corpora_dict is not None:
+        if sihan is not None:
             cmd.extend(
                 [
                     "-serDictionary",
-                    self._dict,
+                    dictionary,
                     "-sighanCorporaDict",
-                    self._sihan_corpora_dict,
+                    sihan,
                     "-sighanPostProcessing",
                     self._sihan_post_processing,
                 ]
@@ -295,23 +295,23 @@ class StanfordSegmenter(TokenizerI):
             # attributes the guard replaced. Capturing self._model into cmd first
             # would put the original object there, and a PathLike may resolve to
             # something else when the child process reads it.
-            self._validate_model_paths()
+            model, dictionary, sihan = self._validate_model_paths()
             cmd = [
                 self._java_class,
                 "-loadClassifier",
-                self._model,
+                model,
                 "-keepAllWhitespaces",
                 self._keep_whitespaces,
                 "-textFile",
                 self._input_file_path,
             ]
-            if self._sihan_corpora_dict is not None:
+            if sihan is not None:
                 cmd.extend(
                     [
                         "-serDictionary",
-                        self._dict,
+                        dictionary,
                         "-sighanCorporaDict",
-                        self._sihan_corpora_dict,
+                        sihan,
                         "-sighanPostProcessing",
                         self._sihan_post_processing,
                     ]
@@ -385,12 +385,23 @@ class StanfordSegmenter(TokenizerI):
         -sighanCorporaDict), which pathsec.open cannot wrap, so they are checked
         here before the process is spawned (GHSA-8mgp-746c-j5xp).
 
-        Each attribute is replaced with the string the guard returned. A PathLike
-        may answer differently on every call, and ``validate_path`` reads a
-        ``.path`` attribute in preference to ``__fspath__``, so validating the
-        object and then handing the same object to the JVM checked one file and
-        opened another.
+        Each attribute is replaced with the string the guard returned, and the
+        same strings are RETURNED for the caller to build its argv from. A
+        PathLike may answer differently on every call, and ``validate_path``
+        reads a ``.path`` attribute in preference to ``__fspath__``, so
+        validating the object and then handing the same object to the JVM
+        checked one file and opened another.
+
+        Returning them matters beyond that: a caller that re-reads
+        ``self._model`` after this returns is reading shared mutable state again,
+        so a concurrent write could still swap the value between the check and
+        the argv. Building from the return value keeps the checked value and the
+        used value the same object.
+
+        :return: the validated (model, dictionary, sihan corpora dict) strings,
+            each None when it was unset
         """
+        validated = []
         for attribute, label in (
             ("_model", "model"),
             ("_dict", "dictionary"),
@@ -398,11 +409,10 @@ class StanfordSegmenter(TokenizerI):
         ):
             value = getattr(self, attribute)
             if value:
-                setattr(
-                    self,
-                    attribute,
-                    validate_tool_path(value, context=f"StanfordSegmenter {label}"),
-                )
+                value = validate_tool_path(value, context=f"StanfordSegmenter {label}")
+                setattr(self, attribute, value)
+            validated.append(value)
+        return tuple(validated)
 
     def _execute(self, cmd, verbose=False):
         encoding = self._encoding

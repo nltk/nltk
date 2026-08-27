@@ -2003,3 +2003,89 @@ def test_every_parser_entry_point_refuses_a_mutating_model(
     handed = sink["cmd"][sink["cmd"].index("-model") + 1]
     assert isinstance(handed, str), f"{entry} put a {type(handed).__name__} in argv"
     assert os.path.realpath(_resolve(handed)).startswith(os.path.realpath(str(root)))
+
+
+def test_validate_model_paths_returns_the_validated_strings(
+    pathsec_sandbox, monkeypatch
+):
+    """The contract the segmenter's argv builders rely on: the guard hands back
+    what it checked, so nothing has to re-read shared mutable state."""
+    root, _outside = pathsec_sandbox
+    model = str(root / "m.ser.gz")
+    dictionary = str(root / "d.ser.gz")
+    sihan = str(root / "sihan")
+    for path in (model, dictionary):
+        with pathsec.open(path, "w", encoding="utf-8") as handle:
+            handle.write("x")
+    os.mkdir(sihan)
+
+    tool = _segmenter(monkeypatch, str(root), model=model)
+    tool._dict = dictionary
+    tool._sihan_corpora_dict = sihan
+    assert tool._validate_model_paths() == (model, dictionary, sihan)
+
+    unset = _segmenter(monkeypatch, str(root))
+    assert unset._validate_model_paths() == (None, None, None)
+
+
+def test_segmenter_argv_survives_a_concurrent_model_swap(pathsec_sandbox, monkeypatch):
+    """A background thread rewriting self._model must never land an out-of-root
+    path in the argv. The builders take the guard's return value rather than
+    re-reading the attribute, so the checked value and the used value are the
+    same object.
+
+    No leak was observed here before the change either, so this documents the
+    property rather than reproducing a past failure.
+    """
+    import threading
+
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, outside = pathsec_sandbox
+    evil = str(outside / "evil.ser.gz")
+    (outside / "evil.ser.gz").write_text("x")
+    good = str(root / "ok.ser.gz")
+    with pathsec.open(good, "w", encoding="utf-8") as handle:
+        handle.write("m")
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("x")
+
+    handed = []
+
+    def fake_java(cmd, *args, **kwargs):
+        handed.append(cmd[cmd.index("-loadClassifier") + 1])
+        raise _ReachedJVM
+
+    monkeypatch.setattr(seg, "java", fake_java)
+    tool = _segmenter(monkeypatch, str(root), model=good)
+
+    stop = threading.Event()
+
+    def flipper():
+        while not stop.is_set():
+            tool._model = evil
+            tool._model = good
+
+    thread = threading.Thread(target=flipper, daemon=True)
+    thread.start()
+    try:
+        for _ in range(200):
+            for call in (
+                lambda: tool.segment_file(inside),
+                lambda: tool.segment_sents([["中", "文"]]),
+            ):
+                try:
+                    call()
+                except (_ReachedJVM, PermissionError, ValueError):
+                    pass
+    finally:
+        stop.set()
+        thread.join(timeout=5)
+
+    escaped = [
+        value
+        for value in handed
+        if not os.path.realpath(str(value)).startswith(os.path.realpath(str(root)))
+    ]
+    assert escaped == [], f"a concurrent write reached the JVM argv: {escaped[:3]}"
