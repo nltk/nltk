@@ -161,7 +161,9 @@ default: unzip or not?
 """
 import functools
 import itertools
+import ntpath
 import os
+import posixpath
 import subprocess
 import sys
 import textwrap
@@ -262,8 +264,18 @@ class Package:
         self.name = name or id
         """A string name for this package."""
 
-        # Validate subdir to prevent path traversal from malicious XML index
-        if os.path.isabs(subdir) or ".." in subdir.replace("\\", "/").split("/"):
+        # Validate subdir to prevent path traversal from malicious XML index.
+        # Check absoluteness under both posix and windows rules, plus a drive
+        # prefix: Python 3.13's ntpath.isabs no longer treats a bare "/tmp" as
+        # absolute, so os.path.isabs alone lets a rooted subdir through on Windows.
+        _norm_subdir = subdir.replace("\\", "/")
+        if (
+            os.path.isabs(subdir)
+            or posixpath.isabs(_norm_subdir)
+            or ntpath.isabs(subdir)
+            or ntpath.splitdrive(subdir)[0]
+            or ".." in _norm_subdir.split("/")
+        ):
             raise ValueError(
                 f"Invalid package subdir {subdir!r}: must be a relative path "
                 f"without parent directory references"
