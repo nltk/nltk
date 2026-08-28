@@ -49,7 +49,10 @@ class MTEFileReader:
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"
 
-    def __init__(self, file_path, *args, **kwargs):
+    def __init__(self, file_path, required_root=None, *args, **kwargs):
+        validate_path(
+            file_path, context="MTEFileReader.__init__", required_root=required_root
+        )
         self.__file_path = file_path
         self._tagset = "msd"
         self._tags = ""
