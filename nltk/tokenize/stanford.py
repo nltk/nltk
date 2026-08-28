@@ -12,6 +12,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
+from nltk.data import staging_tempdir
 from nltk.internals import find_jar, java
 from nltk.parse.corenlp import CoreNLPParser
 from nltk.tokenize.api import TokenizerI
@@ -90,7 +91,9 @@ class StanfordTokenizer(TokenizerI):
         input_file_name = None
         java_succeeded = False
         try:
-            with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
+            with tempfile.NamedTemporaryFile(
+                mode="wb", delete=False, dir=staging_tempdir()
+            ) as input_file:
                 input_file_name = input_file.name
                 # Write the actual sentences to the temporary input file
                 if isinstance(input_, str) and encoding:
