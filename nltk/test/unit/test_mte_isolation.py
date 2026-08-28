@@ -20,11 +20,13 @@ class TestMTETokenStateIsolation(unittest.TestCase):
             root = Path(d)
             (root / "sample.xml").write_text(xml, encoding="utf-8")
 
-            # Temporarily authorize this directory in NLTK's sandbox
-            nltk.data.path.append(str(root))
+            root_str = str(root)
+            added_to_path = root_str not in nltk.data.path
+            if added_to_path:
+                nltk.data.path.append(root_str)
 
             try:
-                reader = MTECorpusReader(str(root), ["sample.xml"])
+                reader = MTECorpusReader(root_str, ["sample.xml"])
                 nouns_baseline = [("NOUN_SECRET", "Ncmsn")]
                 verbs_baseline = [("VERB_PUBLIC", "Vmip3s")]
 
@@ -43,9 +45,8 @@ class TestMTETokenStateIsolation(unittest.TestCase):
                 )
                 self.assertEqual(attacker_result, verbs_baseline)
             finally:
-                # Clean up global state regardless of test outcome
-                if str(root) in nltk.data.path:
-                    nltk.data.path.remove(str(root))
+                if added_to_path and root_str in nltk.data.path:
+                    nltk.data.path.remove(root_str)
 
 
 if __name__ == "__main__":

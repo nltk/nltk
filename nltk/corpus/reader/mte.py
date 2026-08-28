@@ -49,11 +49,12 @@ class MTEFileReader:
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"
 
-    def __init__(self, file_path, required_root=None, *args, **kwargs):
+    def __init__(self, file_path, required_root=None):
         validate_path(
             file_path, context="MTEFileReader.__init__", required_root=required_root
         )
         self.__file_path = file_path
+        self._required_root = required_root
         self._tagset = "msd"
         self._tags = ""
 
@@ -127,26 +128,35 @@ class MTEFileReader:
     def lemma_words(self):
         return MTECorpusView(self.__file_path, self.word_path, self._lemma_word_elt)
 
-    def tagged_words(self, tagset, tags):
-        self._tagset = tagset
-        self._tags = tags
-        return MTECorpusView(self.__file_path, self.word_path, self._tagged_word_elt)
-
     def lemma_sents(self):
         return MTECorpusView(self.__file_path, self.sent_path, self._lemma_sent_elt)
-
-    def tagged_sents(self, tagset, tags):
-        self._tagset = tagset
-        self._tags = tags
-        return MTECorpusView(self.__file_path, self.sent_path, self._tagged_sent_elt)
 
     def lemma_paras(self):
         return MTECorpusView(self.__file_path, self.para_path, self._lemma_para_elt)
 
+    def tagged_words(self, tagset, tags):
+        view_reader = MTEFileReader(self.__file_path, required_root=self._required_root)
+        view_reader._tagset = tagset
+        view_reader._tags = tags
+        return MTECorpusView(
+            self.__file_path, self.word_path, view_reader._tagged_word_elt
+        )
+
+    def tagged_sents(self, tagset, tags):
+        view_reader = MTEFileReader(self.__file_path, required_root=self._required_root)
+        view_reader._tagset = tagset
+        view_reader._tags = tags
+        return MTECorpusView(
+            self.__file_path, self.sent_path, view_reader._tagged_sent_elt
+        )
+
     def tagged_paras(self, tagset, tags):
-        self._tagset = tagset
-        self._tags = tags
-        return MTECorpusView(self.__file_path, self.para_path, self._tagged_para_elt)
+        view_reader = MTEFileReader(self.__file_path, required_root=self._required_root)
+        view_reader._tagset = tagset
+        view_reader._tags = tags
+        return MTECorpusView(
+            self.__file_path, self.para_path, view_reader._tagged_para_elt
+        )
 
 
 class MTETagConverter:
