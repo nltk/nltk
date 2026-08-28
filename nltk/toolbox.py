@@ -223,19 +223,23 @@ class ToolboxData(StandardFormat):
         builder.start("header", {})
         in_records = False
         for mkr, value in self.fields(**kwargs):
-            safe_mkr = _sanitize_marker(mkr)
-            if key is None and not in_records and safe_mkr[0] != "_":
-                key = safe_mkr
-            if safe_mkr == key:
+            # 1. Structural Logic: Use the ORIGINAL `mkr` and `key`
+            if key is None and not in_records and mkr and mkr[0] != "_":
+                key = mkr
+            if mkr == key:
                 if in_records:
                     builder.end("record")
                 else:
                     builder.end("header")
                     in_records = True
                 builder.start("record", {})
+
+            # 2. Emission Logic: Use `safe_mkr` STRICTLY for XML tags
+            safe_mkr = _sanitize_marker(mkr)
             builder.start(safe_mkr, {})
             builder.data(value)
             builder.end(safe_mkr)
+
         if in_records:
             builder.end("record")
         else:
