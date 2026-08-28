@@ -121,5 +121,8 @@ def test_sources_route_through_pathsec():
     assert "pathsec_open(" in save_file_src
     assert "with open(" not in save_file_src
 
+    # save_params bounds its destination with validate_tool_dir (a pathsec sink
+    # that is strictly stronger than validate_path: it adds the shared name-syntax
+    # refusals before the containment check), so require that sentinel here.
     save_params_src = inspect.getsource(ne.Maxent_NE_Chunker.save_params)
-    assert "validate_path(" in save_params_src
+    assert "validate_tool_dir(" in save_params_src
