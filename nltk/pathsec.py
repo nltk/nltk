@@ -312,6 +312,32 @@ def _is_windows_device_name(raw):
     return leaf.split(".", 1)[0].strip().upper() in _WINDOWS_RESERVED_NAMES
 
 
+def _reject_colliding_members(members):
+    """Refuse an archive with two members that collide on a case-insensitive or
+    unicode-normalizing filesystem.
+
+    On macOS (APFS) and Windows, ``pkg/Weights.json`` and ``pkg/weights.json``,
+    or an NFC and an NFD spelling of the same name, map to ONE file: the second
+    member silently overwrites the first. A package could ship a benign-looking
+    ``Weights.json`` for a reviewer to read and a colliding ``weights.json`` that
+    replaces it with a poisoned model. A legitimate archive never contains such a
+    pair, so any collision is refused (CWE-22 / resource poisoning).
+    """
+    import unicodedata
+
+    seen = {}
+    for name in members:
+        text = name.filename if hasattr(name, "filename") else str(name)
+        key = unicodedata.normalize("NFC", text).casefold()
+        if key in seen and seen[key] != text:
+            raise ValueError(
+                "Refusing zip: members %r and %r collide on a case-insensitive "
+                "or normalizing filesystem, so one would silently overwrite the "
+                "other (resource poisoning)." % (seen[key], text)
+            )
+        seen[key] = text
+
+
 def _reject_url_shaped(raw, context):
     """Refuse a URL where a model path is expected.
 
@@ -765,6 +791,7 @@ def validate_zip_archive(
                 _member_count_guard()(
                     len(members), getattr(zf, "filename", None) or "<archive>"
                 )
+                _reject_colliding_members(members)
             for name in members:
                 name_str = name.filename if hasattr(name, "filename") else str(name)
                 if "\0" in name_str:
