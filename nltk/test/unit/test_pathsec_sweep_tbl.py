@@ -7,9 +7,19 @@
 """Path-traversal attack tests for the caller-controlled file sinks hardened in
 ``nltk.tbl.demo`` (GHSA-8mgp-746c-j5xp).
 
-Each patched API must refuse to write to a path outside the NLTK data sandbox and
-must leave nothing behind. The chat80 and agreement sinks this file used to also
-cover now live in test_chat80_pathsec.py and test_agreement_pathsec.py.
+``nltk.tbl.demo.postag`` pickles a trained Brill/baseline tagger, writes an
+error-analysis text file, and plots a learning curve, each to a caller-supplied
+path. The hardening routes the pickle and text sinks through ``pathsec.open``
+and validates the plot path (which matplotlib writes itself) with
+``pathsec.validate_path``. Every one of those destinations must refuse a path
+outside the NLTK data sandbox and leave nothing behind, while an in-root
+destination must still be accepted.
+
+The generic ``pathsec.open`` negative control and the chat80/agreement sinks this
+module once also covered now live in their own suites on ``develop``
+(``test_chat80_pathsec.py``, ``test_agreement_pathsec.py`` and the
+``test_pathsec_sweep_sem_util.py`` negative control), so they are not repeated
+here.
 """
 
 import os
@@ -26,17 +36,8 @@ TINY_TAGGED = [
 ] * 10
 
 
-# The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
-# are provided by nltk/test/unit/conftest.py.
-
-
-def test_negative_control_open_outside_raises(sandbox):
-    """The sandbox is wired correctly: a plain pathsec.open() of the outside
-    target must be refused and write nothing."""
-    target = sandbox / "neg_control.txt"
-    with pytest.raises(PermissionError):
-        pathsec.open(str(target), "w")
-    assert not target.exists()
+# The pathsec sandbox fixtures (sandbox / pathsec_sandbox) are provided by
+# nltk/test/unit/conftest.py.
 
 
 def test_tbl_demo_cache_baseline_refuses_outside(sandbox):
@@ -93,15 +94,46 @@ def test_tbl_demo_plot_refuses_outside(sandbox):
     assert not target.exists()
 
 
-# ---------------------------------------------------------------------------
-# postag()'s caller-supplied output paths. Probed after the branches were
-# merged and found already sound; pinned so a later change cannot open them.
-#
-# These deliberately do NOT use the pathsec_sandbox fixture: it narrows
+# In-root acceptance (the other half of the teeth): a destination inside the
+# sandbox must still be written. These stay corpus-free by supplying
+# tagged_data / synthetic stats, so they run on any platform.
+
+
+def test_tbl_demo_error_output_in_root_accepted(pathsec_sandbox):
+    """The error-analysis text sink goes through pathsec.open; an in-root path
+    is accepted and written (no pickle round trip is involved)."""
+    from nltk.tbl import demo
+
+    target = pathsec_sandbox.root / "errors_ok.txt"
+    demo.postag(
+        tagged_data=list(TINY_TAGGED),
+        num_sents=20,
+        trace=0,
+        max_rules=5,
+        error_output=str(target),
+    )
+    assert target.exists()
+    assert target.stat().st_size > 0
+
+
+def test_tbl_demo_plot_in_root_accepted(pathsec_sandbox):
+    """The learning-curve path is validate_path()-checked, then written by
+    matplotlib; an in-root destination is accepted."""
+    pytest.importorskip("matplotlib")
+    from nltk.tbl import demo
+
+    target = pathsec_sandbox.root / "curve_ok.png"
+    stats = {"initialerrors": 2, "rulescores": [1, 1], "tokencount": 10}
+    demo._demo_plot(str(target), stats, stats)
+    assert target.exists()
+    assert target.stat().st_size > 0
+
+
+# postag()'s caller-supplied output paths, exercised through the real treebank
+# corpus. These deliberately do NOT use the pathsec_sandbox fixture: it narrows
 # nltk.data.path to one empty temp root, so the treebank corpus cannot load and
 # postag raises LookupError long before reaching any write. The real roots stay
 # in place and the attack target is staged outside them instead.
-# ---------------------------------------------------------------------------
 
 
 @pytest.fixture
