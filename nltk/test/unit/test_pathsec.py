@@ -443,6 +443,7 @@ def _capture_urlopen_handlers(monkeypatch, url="http://safe.example.com/x"):
 
     monkeypatch.setattr(urllib.request, "_opener", None)
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "_numeric_ipv4", lambda h: None)
     monkeypatch.setattr(urllib.request, "build_opener", spy_build_opener)
     pathsec.urlopen(url)
     return captured
@@ -470,6 +471,7 @@ def test_env_proxy_fails_closed_under_enforce(monkeypatch):
     )
     monkeypatch.setattr(urllib.request, "_opener", None)
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "_numeric_ipv4", lambda h: None)
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
 
@@ -587,6 +589,7 @@ def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
     monkeypatch.setattr(urllib.request, "proxy_bypass", lambda host: False)
     monkeypatch.setattr(urllib.request, "_opener", None)
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "_numeric_ipv4", lambda h: None)
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
 
@@ -625,6 +628,7 @@ def test_proxy_with_unbypassed_target_still_fails_closed(monkeypatch):
     monkeypatch.setattr(urllib.request, "proxy_bypass", lambda host: False)
     monkeypatch.setattr(urllib.request, "_opener", None)
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    monkeypatch.setattr(pathsec, "_numeric_ipv4", lambda h: None)
     monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
 
     with pytest.raises(PermissionError, match="proxied fetch"):
