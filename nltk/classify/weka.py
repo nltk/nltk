@@ -14,6 +14,7 @@ import re
 import subprocess
 import tempfile
 import time
+import warnings
 from sys import stdin
 
 from nltk.classify.api import ClassifierI
@@ -21,6 +22,7 @@ from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
 from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
@@ -51,7 +53,19 @@ def config_weka(classpath=None):
     if _weka_classpath is None:
         searchpath = list(_weka_search)  # copy; don't mutate the module global
         if "WEKAHOME" in os.environ:
-            searchpath.insert(0, os.environ["WEKAHOME"])
+            weka_home = os.environ["WEKAHOME"]
+            try:
+                # Bound the attacker-influenceable WEKAHOME to the pathsec sandbox so
+                # it cannot add a weka.jar from outside the trusted roots (CWE-426/427).
+                validate_path(
+                    os.path.join(weka_home, "weka.jar"), context="config_weka(WEKAHOME)"
+                )
+                searchpath.insert(0, weka_home)
+            except (PermissionError, ValueError):
+                warnings.warn(
+                    f"Ignoring WEKAHOME {weka_home!r}: outside the trusted NLTK data roots.",
+                    stacklevel=2,
+                )
 
         for path in searchpath:
             if os.path.exists(os.path.join(path, "weka.jar")):
@@ -105,7 +119,7 @@ class WekaClassifier(ClassifierI):
         # Make sure we can find java & weka.
         config_weka()
 
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = make_staging_dir(prefix="nltk_weka_run_", cleanup=True)
         try:
             # Write the test data file.
             test_filename = os.path.join(temp_dir, "test.arff")
@@ -225,7 +239,7 @@ class WekaClassifier(ClassifierI):
         # Build an ARFF formatter.
         formatter = ARFF_Formatter.from_train(featuresets)
 
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = make_staging_dir(prefix="nltk_weka_run_", cleanup=True)
         try:
             # Write the training data file.
             train_filename = os.path.join(temp_dir, "train.arff")
