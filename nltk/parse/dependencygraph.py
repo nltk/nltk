@@ -470,6 +470,7 @@ class DependencyGraph:
         [1, 2, 4, 3]
 
         """
+
         # Detect a directed cycle with an iterative depth-first search in
         # O(V + E).  The previous implementation repeatedly recomputed a
         # transitive closure with a triple-nested loop over a ``distances``
@@ -480,10 +481,16 @@ class DependencyGraph:
         # let a single oversized graph exhaust CPU (CWE-407).
         #
         # ``deps`` may be a list of addresses or a relation->addresses
-        # mapping; iterating it yields the same edge targets the old code
-        # used.  The membership guard skips targets that are not nodes and
-        # avoids materialising spurious ``defaultdict`` entries in
-        # ``self.nodes``.
+        # mapping. Normalize mappings to their address values so the DFS does
+        # not mistake relation labels for graph nodes. The membership guard
+        # skips targets that are not nodes and avoids materialising spurious
+        # ``defaultdict`` entries in ``self.nodes``.
+        def iter_dependencies(node):
+            dependencies = node["deps"]
+            if isinstance(dependencies, dict):
+                return chain.from_iterable(dependencies.values())
+            return dependencies
+
         WHITE, GRAY, BLACK = 0, 1, 2
         color = defaultdict(int)  # int() == WHITE
 
@@ -492,7 +499,7 @@ class DependencyGraph:
                 continue
             color[start] = GRAY
             path = [start]
-            stack = [iter(self.nodes[start]["deps"])]
+            stack = [iter(iter_dependencies(self.nodes[start]))]
             while stack:
                 for dep in stack[-1]:
                     if dep not in self.nodes:
@@ -504,7 +511,7 @@ class DependencyGraph:
                     if color[dep] == WHITE:
                         color[dep] = GRAY
                         path.append(dep)
-                        stack.append(iter(self.nodes[dep]["deps"]))
+                        stack.append(iter(iter_dependencies(self.nodes[dep])))
                         break
                 else:
                     color[path.pop()] = BLACK
