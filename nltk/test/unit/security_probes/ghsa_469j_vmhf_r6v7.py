@@ -1,14 +1,67 @@
 """GHSA-469j-vmhf-r6v7 [high] -- Downloader Path Traversal Vulnerability (AFO) - Arbitrary File Overwrite"""
 
-from ._base import STATIC, VULNERABLE, probe, read_source
+import os
+import shutil
+import tempfile
+import zipfile
+
+from ._base import FIXED, STATIC, VULNERABLE, probe
 
 
 @probe("GHSA-469j-vmhf-r6v7")
 def _downloader_index_traversal():
-    """subdir/id from a remote XML index were not validated (AFO)."""
-    source = read_source("nltk.downloader")
-    guards = ("validate_path", "pathsec", "_safe_join", "commonpath", "resolve()")
-    if not any(g in source for g in guards):
-        return VULNERABLE, "downloader.py contains no path-containment guard"
-    hits = [g for g in guards if g in source]
-    return STATIC, "downloader guards present: %s" % ", ".join(hits[:3])
+    """Extract package archives whose members escape the extraction root.
+
+    Several arbitrary-file-write vectors are fired at ``_unzip_iter``: a ``../``
+    zip-slip, a deeper traversal, an absolute member, and a member routed through
+    a pre-planted symlink. Each must be rejected by the validate-then-extract
+    pass, leaving the outside-root canary untouched. Scored on behaviour (the
+    canary's bytes), since the rejection wording is not a generic marker.
+    """
+    from nltk.downloader import ErrorMessage, _unzip_iter
+
+    box = tempfile.mkdtemp()
+    try:
+        outside = os.path.join(box, "CANARY")
+        notes = []
+        reached = False
+        vectors = (
+            ("zip-slip", lambda dest: os.path.relpath(outside, dest)),  # ../CANARY
+            ("deep-traversal", lambda dest: "../../../../../../../.." + outside),
+            ("absolute", lambda dest: "/" + outside.lstrip("/")),  # /.../CANARY
+            ("symlinked-dir", "SYMLINK"),
+        )
+        for label, make in vectors:
+            with open(outside, "w", encoding="utf-8") as fh:
+                fh.write("ORIGINAL")
+            dest = os.path.join(box, "dest_" + label)
+            os.makedirs(dest, exist_ok=True)
+            evil = os.path.join(box, label + ".zip")
+            if make == "SYMLINK":
+                # a pre-planted symlink inside dest pointing at the outside file;
+                # a member written "through" it would overwrite the canary.
+                link = os.path.join(dest, "CANARY")
+                try:
+                    os.symlink(outside, link)
+                except OSError:
+                    # symlink unsupported (e.g. Windows without privilege); the
+                    # other zip-slip vectors still exercise the guard
+                    continue
+                member = "CANARY"
+            else:
+                member = make(dest)
+            with zipfile.ZipFile(evil, "w") as zf:
+                zf.writestr(member, "PWNED")
+            messages = list(_unzip_iter(evil, dest, verbose=False))
+            if open(outside, encoding="utf-8").read() != "ORIGINAL":
+                return VULNERABLE, f"{label} member overwrote the outside-root canary"
+            if any(isinstance(m, ErrorMessage) for m in messages):
+                reached = True
+                notes.append(f"{label}=blocked")
+            else:
+                notes.append(f"{label}=no-write")
+        if reached:
+            return FIXED, "; ".join(notes)
+        return STATIC, "extraction fizzled without reaching the containment check"
+    finally:
+        shutil.rmtree(box, ignore_errors=True)
