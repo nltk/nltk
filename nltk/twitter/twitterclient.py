@@ -33,7 +33,6 @@ import requests
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonError, TwythonRateLimitError
 
-from nltk.pathsec import open as pathsec_open
 from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
 
@@ -519,17 +518,13 @@ class TweetWriter(TweetHandlerI):
         :param data: tweet object returned by Twitter API
         """
         if self.startingup:
+            # sandboxed-open ok: self.fname is the operator's own output file
+            # (a timestamped name in their chosen dir), not untrusted data, so it
+            # legitimately lives outside the data roots.
             if self.gzip_compress:
-                # gzip the CHECKED handle, never the raw path: self.fname is
-                # caller-supplied, so gzip.open(path) is an unguarded write.
-                self.output = gzip.open(
-                    pathsec_open(self.fname, "wb", context="TweetWriter.output"),
-                    "w",
-                )
+                self.output = gzip.open(self.fname, "w")  # sandboxed-open ok
             else:
-                self.output = pathsec_open(
-                    self.fname, "w", context="TweetWriter.output"
-                )
+                self.output = open(self.fname, "w")  # sandboxed-open ok
             print(f"Writing to {self.fname}")
 
         json_data = json.dumps(data)

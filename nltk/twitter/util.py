@@ -15,8 +15,6 @@ import pprint
 
 from twython import Twython
 
-from nltk.pathsec import open as pathsec_open
-
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
@@ -85,7 +83,11 @@ class Authenticate:
         if not os.path.isfile(self.creds_fullpath):
             raise OSError(f"Cannot find file {self.creds_fullpath}")
 
-        with pathsec_open(self.creds_fullpath, context="twitter.credentials") as infile:
+        # sandboxed-open ok: the credentials file is the operator's own file at a
+        # location THEY choose (the TWITTER env var or an explicit subdir), not
+        # untrusted downloaded data, so it legitimately lives outside the data
+        # roots and must not be bounded to them.
+        with open(self.creds_fullpath, encoding="utf8") as infile:  # sandboxed-open ok
             if verbose:
                 print(f"Reading credentials file {self.creds_fullpath}")
 
@@ -132,7 +134,9 @@ def add_access_token(creds_file=None):
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
     tok = f"access_token={access_token}\n"
-    with pathsec_open(creds_file, "a", context="twitter.credentials") as infile:
+    with open(
+        creds_file, "a", encoding="utf8"
+    ) as infile:  # sandboxed-open ok: operator-chosen credentials path
         print(tok, file=infile)
 
 

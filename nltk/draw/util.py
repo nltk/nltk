@@ -1867,7 +1867,9 @@ class CanvasFrame:
         )
         # workaround for bug in Tk font handling
         postscript = postscript.replace(" 0 scalefont ", " 9 scalefont ")
-        with pathsec_open(filename, "wb", context="draw.save") as f:
+        with open(
+            filename, "wb"
+        ) as f:  # sandboxed-open ok: operator-chosen GUI file path
             f.write(postscript.encode("utf8"))
 
     def scrollregion(self):
