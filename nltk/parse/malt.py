@@ -7,10 +7,8 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import atexit
 import inspect
 import os
-import shutil
 import sys
 import tempfile
 
