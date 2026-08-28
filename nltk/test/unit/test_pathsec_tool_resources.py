@@ -30,6 +30,7 @@ import pytest
 
 from nltk.pathsec import (
     validate_model_resource,
+    validate_path,
     validate_tool_dir,
     validate_tool_path,
 )
@@ -127,3 +128,69 @@ def test_validate_model_resource_refuses_an_absolute_outside_path(sandbox):
 def test_validate_model_resource_refuses_option_traversal_and_url(bad):
     with pytest.raises((PermissionError, ValueError)):
         validate_model_resource(bad, context="test")
+
+
+# Review regression locks: the URL-scheme bypass (GHSA-8mgp) and the hardlink
+# alias (CWE-59 / GHSA-f794) must stay refused; reworded messages must not weaken them.
+
+
+@pytest.mark.parametrize(
+    "evil",
+    [
+        "http://../../../../etc/passwd",
+        "https://../../../../etc/passwd",
+        "ftp://../../etc/passwd",
+        "HTTP://../../etc/passwd",
+        "  http://../../etc/passwd",
+        "file:///etc/passwd",
+        "file://../../etc/passwd",
+    ],
+)
+def test_validate_path_rejects_url_scheme_traversal(restricted_sandbox, evil):
+    """GHSA-8mgp-746c-j5xp: a scheme prefix must never authorize a kernel
+    traversal. validate_path once returned (authorized) for any '://' http/https/
+    ftp string, but 'http://..' is the directory 'http:' then '..', escaping every
+    allowed root. restricted_sandbox pins ENFORCE on so the refusal is exercised.
+    """
+    with pytest.raises((ValueError, PermissionError)):
+        validate_path(evil, context="test")
+
+
+@pytest.mark.parametrize(
+    "guard", [validate_model_resource, validate_tool_path, validate_tool_dir]
+)
+@pytest.mark.parametrize(
+    "evil",
+    [
+        "http://../../etc/passwd",
+        "https://evil/x",
+        "ftp://evil/x",
+        "file:///etc",
+        "HTTP://evil/x",
+    ],
+)
+def test_all_caller_guards_reject_url_shapes(guard, evil):
+    """Every caller-supplied guard refuses a URL shape whatever the error wording:
+    the value is never a filesystem path and the tool would open it verbatim as a
+    relative path. Locks the shared URL rejection after the message rewording."""
+    with pytest.raises((ValueError, PermissionError)):
+        guard(evil, context="test")
+
+
+@pytest.mark.skipif(
+    os.name != "posix", reason="the st_nlink hardlink guard is POSIX-only"
+)
+def test_validate_tool_path_refuses_a_hardlinked_file(restricted_sandbox):
+    """CWE-59 / GHSA-f794 class: a hardlink names an inode that may live outside
+    the roots, so a multiply-linked in-root file is refused for a read (the
+    open-time st_nlink>1 guard) and a write (the aliased-write guard). Removing
+    either check would resurface the hardlink-overwrite bypass."""
+    real = os.path.join(restricted_sandbox, "real.bin")
+    with open(real, "w", encoding="utf-8") as handle:
+        handle.write("weights")
+    alias = os.path.join(restricted_sandbox, "alias.bin")
+    os.link(real, alias)
+    with pytest.raises(PermissionError):
+        validate_tool_path(alias, context="test")
+    with pytest.raises(PermissionError):
+        validate_tool_path(alias, context="test", for_write=True)

@@ -339,30 +339,18 @@ def _reject_colliding_members(members):
 
 
 def _reject_url_shaped(raw, context):
-    """Refuse a URL where a model path is expected.
+    """Refuse a URL where a filesystem path is expected.
 
     ``validate_path`` rewrites a ``file:`` URL to its path component before
     checking it, but the caller still holds (and the tool still opens) the
-    original string. A model path is never a URL, so refusing the whole shape
-    here removes that validate-one-thing/open-another gap outright.
+    original string. A filesystem path is never a URL, so refusing the whole
+    shape here removes that validate-one-thing/open-another gap outright.
     """
     if _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw):
         raise PermissionError(
-            f"Security Violation [{context}]: {raw!r} is a URL, not a model "
+            f"Security Violation [{context}]: {raw!r} is a URL, not a filesystem "
             "path; the tool would open it verbatim as a relative path"
         )
-
-
-def _as_path_string(path_input):
-    """Normalise a path-ish argument to the exact string a sink would use.
-
-    Mirrors :func:`validate_path`: a ``PathPointer`` exposes ``.path``, bytes are
-    decoded with the filesystem encoding, everything else goes through ``str``.
-    """
-    raw = path_input.path if hasattr(path_input, "path") else path_input
-    if isinstance(raw, bytes):
-        return os.fsdecode(raw)
-    return raw if isinstance(raw, str) else str(raw)
 
 
 def _as_path_text(value, context, error=ValueError):
@@ -624,8 +612,7 @@ def _reject_unsafe_open(raw, context, must_exist):
             return
         if not stat.S_ISREG(st.st_mode):
             raise PermissionError(
-                f"Security Violation [{context}]: model path {raw!r} is not a "
-                "regular file"
+                f"Security Violation [{context}]: path {raw!r} is not a " "regular file"
             )
         return
 
@@ -650,7 +637,7 @@ def _reject_unsafe_open(raw, context, must_exist):
         # anything else (ENAMETOOLONG, EACCES, ...) is a plain OS error.
         if e.errno in _REFUSING_ERRNOS:
             raise PermissionError(
-                f"Security Violation [{context}]: refusing model path {raw!r}: "
+                f"Security Violation [{context}]: refusing path {raw!r}: "
                 f"{e.strerror} (symlink or non-regular file, CWE-59)"
             ) from e
         raise
@@ -658,13 +645,13 @@ def _reject_unsafe_open(raw, context, must_exist):
         st = os.fstat(fd)
         if not stat.S_ISREG(st.st_mode):
             raise PermissionError(
-                f"Security Violation [{context}]: model path {raw!r} is not a "
+                f"Security Violation [{context}]: path {raw!r} is not a "
                 "regular file (a FIFO/socket/device/directory can block the "
                 "loader forever or stream unbounded data, CWE-400)"
             )
         if st.st_nlink > 1:
             raise PermissionError(
-                f"Security Violation [{context}]: refusing multiply-linked model "
+                f"Security Violation [{context}]: refusing multiply-linked file "
                 f"{raw!r} (st_nlink={st.st_nlink}); a hardlink names an inode that "
                 "may live outside the sandbox (CWE-59)"
             )
@@ -679,25 +666,21 @@ def _reject_unsafe_open(raw, context, must_exist):
 def validate_tool_dir(path_input, context="NLTK tool"):
     """Validate a *directory* a tool or NLTK itself will write model files into.
 
-    The file-shaped checks in :func:`validate_tool_path` do not apply (the leaf
-    is a directory, and it may not exist yet), but the string-shaped ones do: a
-    blank or NUL-bearing destination silently becomes a directory in the current
-    working directory rather than anything the caller meant.
+    The file-shaped physical checks in :func:`validate_tool_path` do not apply
+    (the leaf is a directory and may not exist yet), but the string-shaped ones
+    do. It shares :func:`_as_path_text` and :func:`_reject_bad_name_syntax` with
+    that guard, so a caller value resolves to a plain ``str`` exactly once (a
+    frozen ``__fspath__``, never a re-read one) and the same name refusals (blank,
+    NUL, option-shaped, URL, ``..``, NTFS stream, drive-relative, Windows device)
+    run before containment.
     """
-    raw = _as_path_string(path_input)
-    if not raw or not raw.strip():
-        raise PermissionError(
-            f"Security Violation [{context}]: blank destination directory {raw!r}"
-        )
-    if "\x00" in raw:
-        raise PermissionError(
-            f"Security Violation [{context}]: NUL byte in destination {raw!r}"
-        )
-    _reject_url_shaped(raw, context)
-    validate_path(raw, context=context)
+    text = _as_path_text(path_input, context, error=PermissionError)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    _reject_url_shaped(text, context)
+    validate_path(text, context=context)
     # Returned for the same reason as validate_tool_path: the caller must build
     # from the checked string, not re-read a value that can resolve differently.
-    return raw
+    return text
 
 
 def open_package_resource(
