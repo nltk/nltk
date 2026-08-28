@@ -19,6 +19,7 @@ through the alias just as a final one does.
 
 import ntpath
 import os
+import posixpath
 
 import pytest
 
@@ -30,6 +31,9 @@ def _verdict(guard, value, windows=True):
     if windows:
         os.name = "nt"
         os.path.altsep, os.path.splitdrive = ntpath.altsep, ntpath.splitdrive
+    else:
+        os.name = "posix"
+        os.path.altsep, os.path.splitdrive = posixpath.altsep, posixpath.splitdrive
     try:
         guard(value, context="test")
         return "allowed"
