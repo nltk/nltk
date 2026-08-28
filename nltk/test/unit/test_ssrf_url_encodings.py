@@ -83,17 +83,12 @@ def test_non_http_schemes_are_refused(url):
     assert _verdict(url) == "blocked", f"{url} was accepted"
 
 
-def test_leading_zero_host_matches_resolver_interpretation():
-    """0177.0.0.1 resolves to public 177.0.0.1 on BSD/macOS (decimal) but to
-    loopback 127.0.0.1 on glibc/Linux (octal). The guard must follow the live
-    resolution: block when it reaches loopback, allow when it stays public."""
-    resolved = sorted({info[4][0] for info in socket.getaddrinfo("0177.0.0.1", 80)})
-    reaches_loopback = any(ip.startswith("127.") for ip in resolved)
-    verdict = _verdict("http://0177.0.0.1/")
-    if reaches_loopback:
-        assert verdict == "blocked", resolved
-    else:
-        assert verdict == "allowed", resolved
+def test_leading_zero_octal_loopback_is_always_refused():
+    """0177.0.0.1 is octal-obfuscated loopback (0177 == 127). glibc reads it as
+    octal, BSD/macOS as decimal, and the Windows resolver folds neither. The
+    guard canonicalizes numeric IPv4 forms itself, so it refuses this on every
+    platform rather than deferring to the resolver's inconsistent reading."""
+    assert _verdict("http://0177.0.0.1/") == "blocked"
 
 
 def test_a_hostname_resolving_to_loopback_is_refused(monkeypatch):

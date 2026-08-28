@@ -887,6 +887,51 @@ def _ip_is_forbidden(ip):
     return ip.is_multicast or not ip.is_global
 
 
+def _numeric_ipv4(host):
+    """Canonical ``inet_aton`` parse of a numeric IPv4 literal, or None.
+
+    Follows the classic ``inet_aton`` rules: 1 to 4 dot parts, each decimal, a
+    ``0x`` hex value, or a leading-zero octal value, with the final part
+    absorbing the remaining low-order bytes. glibc and BSD fold these obfuscated
+    forms (``2130706433``, ``0x7f000001``, ``127.1``, ``0177.0.0.1``) to their
+    real address at resolution time, but the Windows resolver does not, so the
+    SSRF guard must canonicalize them itself to refuse loopback on every
+    platform (CWE-918).
+    """
+    if not host:
+        return None
+    parts = host.split(".")
+    if not 1 <= len(parts) <= 4:
+        return None
+    values = []
+    for part in parts:
+        if not part:
+            return None
+        try:
+            if part[:2].lower() == "0x":
+                value = int(part, 16)
+            elif part[0] == "0" and len(part) > 1:
+                value = int(part, 8)
+            else:
+                value = int(part, 10)
+        except ValueError:
+            return None
+        values.append(value)
+    for leading in values[:-1]:
+        if not 0 <= leading <= 0xFF:
+            return None
+    last = values[-1]
+    if not 0 <= last <= (1 << (8 * (5 - len(values)))) - 1:
+        return None
+    packed = last
+    for index, leading in enumerate(values[:-1]):
+        packed |= leading << (8 * (3 - index))
+    try:
+        return ipaddress.IPv4Address(packed)
+    except ipaddress.AddressValueError:
+        return None
+
+
 def validate_network_url(url_input, context="NetworkIO"):
     """Hardened URL validation with SSRF protection."""
     if not url_input or not str(url_input).strip():
@@ -929,7 +974,22 @@ def validate_network_url(url_input, context="NetworkIO"):
                 warnings.warn(msg, RuntimeWarning, stacklevel=3)
             return
 
-        for result in _resolve_hostname(parsed.hostname or ""):
+        host = parsed.hostname or ""
+
+        # Canonicalize obfuscated numeric IPv4 forms ourselves before trusting
+        # the resolver: the Windows resolver does not fold decimal/hex/octal
+        # inet_aton spellings, so a loopback disguised as 2130706433 would
+        # otherwise reach the network there (CWE-918).
+        numeric = _numeric_ipv4(host)
+        if numeric is not None and _ip_is_forbidden(numeric):
+            msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {numeric}"
+            if ENFORCE:
+                raise PermissionError(msg)
+            else:
+                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+
+        for result in _resolve_hostname(host):
             ip = ipaddress.ip_address(result[4][0])
             if _ip_is_forbidden(ip):
                 msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {ip}"
