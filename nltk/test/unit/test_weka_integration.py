@@ -2,8 +2,8 @@
 
 Skipped unless a Java runtime and a ``weka.jar`` are actually available (set
 ``WEKA_JAR`` or install under ``~/nltk_data/weka/weka.jar``), so it exercises the
-real train/classify round trip -- proving the ``config_weka`` sandbox-bounding
-change does not break legitimate use -- without ever mocking the JVM.
+real train/classify round trip (proving the ``config_weka`` sandbox-bounding
+change does not break legitimate use) without ever mocking the JVM.
 """
 
 import os
