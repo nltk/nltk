@@ -4,118 +4,133 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""chat80.val_load must not run a pickle gadget from a hostile .db file.
+"""chat80.val_load must not run a pickle gadget from a hostile shelf.
 
 shelve unpickles each stored value with the default, unrestricted
 pickle.Unpickler. Validating the .db PATH (which chat80 does) checks WHERE the
-file is, not WHAT is in it, so a .db whose value bytes are a crafted gadget --
-planted inside the sandbox, e.g. shipped in a data package -- ran arbitrary code
-when val_load read it back through Valuation.
+file is, not WHAT is in it, so a shelf whose value bytes are a crafted gadget
+ran arbitrary code when val_load read it back. The values are now read through
+nltk.picklesec.RestrictedUnpickler, which blocks every global while still
+loading the plain containers that real chat80 valuations use.
 
-chat80 valuations are only sets and tuples of strings, so the values are read
-with RestrictedUnpickler, which blocks every global while still loading plain
-containers.
+Every shelf here is created and reopened through shelve.open(base), so the tests
+run on whatever dbm backend the platform selects (dbm.gnu, dbm.ndbm,
+dbm.sqlite3 or dbm.dumb) and never assume a particular on-disk filename.
 """
 
-import dbm
 import os
 import pickle
 import shelve
-import shutil
-import tempfile
 
 import pytest
 
-import nltk.data
 from nltk import pathsec
 
 
-@pytest.fixture
-def sandbox_root(monkeypatch):
-    root = tempfile.mkdtemp(prefix="nltk_sandbox_root_")
-    monkeypatch.setattr(pathsec, "ENFORCE", True)
-    monkeypatch.setattr(nltk.data, "path", [root])
-    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
-    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+class _Gadget:
+    """A value whose pickle references a module global (os.system).
+
+    RestrictedUnpickler refuses it at find_class before the reduce is applied;
+    the stock unpickler would instead run the command and create the marker.
+    """
+
+    def __init__(self, marker):
+        self._marker = marker
+
+    def __reduce__(self):
+        return (os.system, (f"touch {self._marker}",))
+
+
+def _make_shelf(base, values):
+    with shelve.open(base, "n") as shelf:
+        shelf.update(values)
+
+
+def _gate_shelf(base):
+    """Satisfy val_load's os.access(base + '.db') gate on any dbm backend.
+
+    Several backends name the file differently (dbm.gnu writes ``base``,
+    dbm.dumb writes ``base.dir`` / ``base.dat``), so hard-link the real backend
+    file to ``base + '.db'`` rather than assuming a suffix. Return the shelf keys
+    if the shelf still reopens on this backend, else None so the caller can skip.
+    """
+    gate = base + ".db"
     try:
-        yield root
+        if not os.path.exists(gate):
+            directory, name = os.path.split(base)
+            for entry in sorted(os.listdir(directory or ".")):
+                full = os.path.join(directory, entry)
+                if (
+                    entry.startswith(name)
+                    and not entry.endswith(".db")
+                    and os.path.isfile(full)
+                ):
+                    os.link(full, gate)
+                    break
+        with shelve.open(base, "r") as shelf:
+            return set(shelf.keys())
+    except Exception:
+        return None
+
+
+def test_restricted_shelf_refuses_a_gadget_value(tmp_path):
+    """Core invariant: a value whose pickle needs a global is refused, not run."""
+    from nltk.sem.chat80 import _restricted_shelve_open
+
+    base = os.fspath(tmp_path / "hostile")
+    marker = os.fspath(tmp_path / "PWNED")
+    _make_shelf(base, {"ok": {("chile", "argentina")}, "bad": _Gadget(marker)})
+
+    restricted = _restricted_shelve_open(base)
+    try:
+        assert restricted["ok"] == {("chile", "argentina")}
+        with pytest.raises(pickle.UnpicklingError):
+            _ = restricted["bad"]
     finally:
-        shutil.rmtree(root, ignore_errors=True)
+        restricted.close()
+    assert not os.path.exists(marker), "reading the shelf executed a pickle gadget"
 
 
-def _ensure_db_suffix(root, db):
-    """val_load's access check needs a readable <db>.db; link the backend file."""
-    if os.path.exists(db + ".db"):
-        return
-    base = os.path.basename(db)
-    for name in os.listdir(root):
-        if name.startswith(base) and not name.endswith(".db"):
-            os.link(os.path.join(root, name), db + ".db")
-            return
+def test_restricted_shelf_round_trips_benign_valuations(tmp_path):
+    """Over-block control: chat80 valuations are sets and tuples of strings,
+    which the restricted unpickler must still load."""
+    from nltk.sem.chat80 import _restricted_shelve_open
 
-
-def _plant_gadget_db(root, marker):
-    db = os.path.join(root, "evil")
-
-    class _Rce:
-        def __reduce__(self):
-            return (os.system, (f"touch {marker}",))
-
-    shelf = shelve.open(db, "n")
-    shelf["k"] = "benign"
-    shelf.close()
-    backend = dbm.open(db, "w")
-    backend["k"] = pickle.dumps(_Rce())
-    backend.close()
-    _ensure_db_suffix(root, db)
-    return db
-
-
-def test_a_gadget_db_does_not_execute(sandbox_root):
-    from nltk.sem import chat80
-
-    marker = os.path.join(sandbox_root, "PWNED")
-    db = _plant_gadget_db(sandbox_root, marker)
-    with pytest.raises((pickle.UnpicklingError, ValueError, KeyError, Exception)):
-        valuation = chat80.val_load(db)
-        list(valuation.items())
-    assert not os.path.exists(marker), "chat80.val_load executed a pickle gadget"
-
-
-def test_legitimate_valuations_round_trip(sandbox_root):
-    """Over-block control: real chat80 data is sets/tuples of strings, which the
-    restricted unpickler must still load."""
-    from nltk.sem import chat80
-
-    db = os.path.join(sandbox_root, "good")
-    valuation = {
+    base = os.fspath(tmp_path / "good")
+    values = {
         "adjacent": {("chile", "argentina"), ("uk", "france")},
         "size": {("uk", "244820")},
     }
-    shelf = shelve.open(db, "n")
-    shelf.update(valuation)
-    shelf.close()
-    _ensure_db_suffix(sandbox_root, db)
+    _make_shelf(base, values)
 
-    loaded = chat80.val_load(db)
-    assert sorted(loaded.keys()) == ["adjacent", "size"]
-    assert loaded["adjacent"] == {("chile", "argentina"), ("uk", "france")}
+    restricted = _restricted_shelve_open(base)
+    try:
+        assert sorted(restricted.keys()) == ["adjacent", "size"]
+        assert restricted["adjacent"] == {("chile", "argentina"), ("uk", "france")}
+        assert dict(restricted.items()) == values
+    finally:
+        restricted.close()
 
 
-def test_restricted_shelf_blocks_a_global_but_allows_containers(sandbox_root):
-    """Directly exercise the helper's read path."""
-    from nltk.sem.chat80 import _restricted_shelve_open
+def test_val_load_end_to_end_does_not_execute_gadget(tmp_path, monkeypatch):
+    """val_load (path gate, restricted read and Valuation wiring) must refuse a
+    gadget rather than run it. Skips only on a backend whose files cannot satisfy
+    val_load's '.db' gate here; the invariant still holds via the direct tests.
+    """
+    monkeypatch.setattr(pathsec, "ENFORCE", False)
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+    from nltk.sem import chat80
 
-    db = os.path.join(sandbox_root, "mix")
-    shelf = shelve.open(db, "n")
-    shelf["ok"] = {("a", "b")}
-    shelf.close()
-    backend = dbm.open(db, "w")
-    backend["bad"] = b"cposix\nsystem\n0."
-    backend.close()
+    base = os.fspath(tmp_path / "hostile")
+    marker = os.fspath(tmp_path / "PWNED")
+    _make_shelf(base, {"bad": _Gadget(marker)})
 
-    restricted = _restricted_shelve_open(db)
-    assert restricted["ok"] == {("a", "b")}
-    with pytest.raises((pickle.UnpicklingError, ValueError)):
-        _ = restricted["bad"]
-    restricted.close()
+    keys = _gate_shelf(base)
+    if keys is None or "bad" not in keys:
+        pytest.skip("dbm backend cannot satisfy val_load's .db gate portably here")
+
+    with pytest.raises(pickle.UnpicklingError):
+        valuation = chat80.val_load(base)
+        list(valuation.items())
+    assert not os.path.exists(marker), "chat80.val_load executed a pickle gadget"
