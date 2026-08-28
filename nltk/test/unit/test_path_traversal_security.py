@@ -366,9 +366,13 @@ class TestPerceptronSaveSquat:
         self._tagger().save_to_json(lang="eng", loc=loc)
         files = os.listdir(loc)
         assert files, "no model files written"
-        for f in files:
-            # written model must not be group-/world-readable (CWE-377/378)
-            assert (os.stat(os.path.join(loc, f)).st_mode & 0o077) == 0
+        if os.name == "posix":
+            # written model must not be group-/world-readable (CWE-377/378).
+            # POSIX-only: Windows os.stat reports a fixed 0o666 for every regular
+            # file (no POSIX permission bits), so this mask is meaningless there;
+            # the real privacy on Windows is the per-user ACL on %TEMP%.
+            for f in files:
+                assert (os.stat(os.path.join(loc, f)).st_mode & 0o077) == 0
         # A real load round trip reads the weights/tagdict back unchanged.
         back = PerceptronTagger(load=False)
         back.load_from_json(lang="eng", loc=FileSystemPathPointer(loc))

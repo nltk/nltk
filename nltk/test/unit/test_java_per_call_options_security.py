@@ -697,7 +697,19 @@ _JAVA_WRAPPER_MODULES = [
     "nltk.parse.malt",
 ]
 
-_SECURE_TEMP = ("NamedTemporaryFile", "mkstemp", "mkdtemp")
+# make_staging_dir / staging_tempdir are nltk.data's own secure-temp helpers: a
+# tempfile.mkdtemp (mode 0700, unpredictable name) allocated INSIDE an nltk.data
+# root that refuses separators/NUL. They are strictly stronger than a bare
+# stdlib mkdtemp (a data root is not world-writable /tmp and is not OS-reaped),
+# so a wrapper that routes its scratch through them (e.g. weka) is recognised
+# here as secure, not flagged for lacking a raw stdlib temp call.
+_SECURE_TEMP = (
+    "NamedTemporaryFile",
+    "mkstemp",
+    "mkdtemp",
+    "make_staging_dir",
+    "staging_tempdir",
+)
 _INSECURE_TEMP = ("tempfile.mktemp", "os.tmpnam", "os.tempnam")
 
 
