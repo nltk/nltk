@@ -11,11 +11,12 @@ octal, IPv4-mapped IPv6, and NAT64/6to4 tunnels. The cloud-metadata address
 (169.254.169.254) is the highest-value SSRF target.
 
 A subtlety the tests encode rather than gloss over: a spelling like
-``0177.0.0.1`` is NOT loopback. The C resolver reads ``0177`` as decimal 177
-(leading zero, not octal), so it resolves to the public 177.0.0.1 and is
-correctly allowed. ``0x7f.0.0.1`` really is 127.0.0.1 and is refused. The guard
-follows what getaddrinfo will actually do, so these tests assert the resolver's
-interpretation, not a guessed one.
+``0177.0.0.1`` is interpreted differently per platform. The BSD/macOS resolver
+reads ``0177`` as decimal 177, resolving to the public 177.0.0.1; glibc on Linux
+reads it as octal, resolving to loopback 127.0.0.1. ``0x7f.0.0.1`` really is
+127.0.0.1 everywhere and is refused. The guard follows whatever getaddrinfo
+actually returns, so the test below pins its verdict to the live resolution
+rather than to a single platform's guess.
 """
 
 import socket
@@ -82,12 +83,17 @@ def test_non_http_schemes_are_refused(url):
     assert _verdict(url) == "blocked", f"{url} was accepted"
 
 
-def test_leading_zero_host_is_decimal_not_octal():
-    """0177.0.0.1 resolves to the PUBLIC 177.0.0.1, so refusing it would be an
-    over-block. Pinned because it looks like a loopback bypass at a glance."""
+def test_leading_zero_host_matches_resolver_interpretation():
+    """0177.0.0.1 resolves to public 177.0.0.1 on BSD/macOS (decimal) but to
+    loopback 127.0.0.1 on glibc/Linux (octal). The guard must follow the live
+    resolution: block when it reaches loopback, allow when it stays public."""
     resolved = sorted({info[4][0] for info in socket.getaddrinfo("0177.0.0.1", 80)})
-    assert resolved == ["177.0.0.1"], resolved
-    assert _verdict("http://0177.0.0.1/") == "allowed"
+    reaches_loopback = any(ip.startswith("127.") for ip in resolved)
+    verdict = _verdict("http://0177.0.0.1/")
+    if reaches_loopback:
+        assert verdict == "blocked", resolved
+    else:
+        assert verdict == "allowed", resolved
 
 
 def test_a_hostname_resolving_to_loopback_is_refused(monkeypatch):

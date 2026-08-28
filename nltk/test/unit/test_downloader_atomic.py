@@ -250,7 +250,9 @@ class TestDownloaderAtomic(unittest.TestCase):
 
     def _make_zip_with_members(self, members):
         """Build a ZIP in srv_dir with given {member_path: content} dict."""
-        srv_dir = tempfile.mkdtemp()
+        # Nest under source_dir, an already-registered pathsec data root, so the
+        # fixture write is allowed on Linux/Windows where /tmp is not a root.
+        srv_dir = tempfile.mkdtemp(dir=self.source_dir)
         buf = __import__("io").BytesIO()
         with zipfile.ZipFile(buf, "w", zipfile.ZIP_STORED) as zf:
             for path, content in members.items():
