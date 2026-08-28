@@ -126,6 +126,61 @@ current directory.
 import os
 import re
 import shelve
+
+
+def _restricted_shelve_open(db, flag="r"):
+    """Open a shelf whose values are read with a RESTRICTED unpickler.
+
+    ``shelve`` unpickles each stored value with the default, unrestricted
+    ``pickle.Unpickler``, so a ``.db`` file whose value bytes are a crafted
+    pickle gadget runs arbitrary code when read back -- even though the file
+    PATH was validated (validate_path checks where the file is, not what is in
+    it). Chat-80 valuations are only sets and tuples of strings, which need no
+    globals, so :class:`nltk.picklesec.RestrictedUnpickler` (which blocks every
+    global while allowing plain containers) loads legitimate data and refuses
+    the gadget.
+    """
+    import io
+
+    from nltk.picklesec import RestrictedUnpickler
+
+    inner = shelve.open(db, flag)
+
+    class _RestrictedShelf:
+        """Delegates to a real shelf but reads values with RestrictedUnpickler.
+
+        Valuation() iterates the shelf as (key, value) pairs, which resolves
+        __getitem__ on the TYPE, so overriding it on an instance of shelve.Shelf
+        would not take effect. A wrapper whose own __getitem__ does the
+        restricted load is used instead.
+        """
+
+        def __iter__(self):
+            return iter(inner)
+
+        def keys(self):
+            return inner.keys()
+
+        def __len__(self):
+            return len(inner)
+
+        def __contains__(self, key):
+            return key in inner
+
+        def __getitem__(self, key):
+            raw = inner.dict[key.encode(inner.keyencoding)]
+            return RestrictedUnpickler(io.BytesIO(raw)).load()
+
+        def items(self):
+            for key in inner:
+                yield key, self[key]
+
+        def close(self):
+            inner.close()
+
+    return _RestrictedShelf()
+
+
 import sys
 
 import nltk.data
@@ -647,10 +702,10 @@ def val_load(db):
     if not os.access(dbname, os.R_OK):
         sys.exit("Cannot read file: %s" % dbname)
     else:
-        db_in = shelve.open(db)
+        db_in = _restricted_shelve_open(db)
         from nltk.sem import Valuation
 
-        val = Valuation(db_in)
+        val = Valuation(db_in.items())
         #        val.read(db_in.items())
         return val
 

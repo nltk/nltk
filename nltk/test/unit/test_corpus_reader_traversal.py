@@ -131,6 +131,4 @@ def test_the_real_file_still_reads(corpus_and_outside):
 
     corpus, _outside = corpus_and_outside
     # WordListCorpusReader.words() yields whole lines, one per entry.
-    assert WordListCorpusReader(corpus, r".*\.txt").words("real.txt") == [
-        "hello world"
-    ]
+    assert WordListCorpusReader(corpus, r".*\.txt").words("real.txt") == ["hello world"]
