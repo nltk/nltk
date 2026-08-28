@@ -11,6 +11,10 @@ were joined into the install path (``os.path.join(subdir, id + ext)``). A
 ``subdir`` of ``../../../../tmp`` or an ``id`` of ``../../evil`` escaped the
 download dir. Both are validated at Package construction now; this pins that a
 crafted index cannot build an escaping filename.
+
+The ``subdir`` check rejects absoluteness under posix and windows rules and a
+bare drive prefix, because Python 3.13's ``ntpath.isabs`` no longer treats a
+rooted ``/tmp`` as absolute and ``os.path.isabs`` sees no drive on posix.
 """
 
 import os
@@ -28,6 +32,7 @@ _REQUIRED = dict(url="http://example/x.zip", size=1, unzipped_size=1, checksum="
         {"id": "x", "subdir": "../../../../tmp"},
         {"id": "x", "subdir": "/tmp"},
         {"id": "x", "subdir": "..\\..\\tmp"},
+        {"id": "x", "subdir": "C:\\evil"},
         {"id": "../../../../tmp/evil", "subdir": "corpora"},
         {"id": "/tmp/evil", "subdir": "corpora"},
         {"id": "..\\..\\..\\tmp\\evil", "subdir": "corpora"},
@@ -38,6 +43,7 @@ _REQUIRED = dict(url="http://example/x.zip", size=1, unzipped_size=1, checksum="
         "subdir-traversal",
         "subdir-absolute",
         "subdir-backslash",
+        "subdir-drive",
         "id-traversal",
         "id-absolute",
         "id-backslash",

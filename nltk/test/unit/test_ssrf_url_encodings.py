@@ -91,6 +91,40 @@ def test_leading_zero_octal_loopback_is_always_refused():
     assert _verdict("http://0177.0.0.1/") == "blocked"
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://2130706433/",
+        "http://0x7f000001/",
+        "http://0x7f.0.0.1/",
+        "http://127.1/",
+        "http://0177.0.0.1/",
+        "http://0/",
+    ],
+)
+def test_obfuscated_numeric_ip_refused_even_when_resolver_returns_nothing(
+    url, monkeypatch
+):
+    """Regression teeth for the Windows non-folding resolver. glibc and BSD fold
+    obfuscated numeric IPv4 spellings to loopback at resolution time, but the
+    Windows resolver returns nothing for them, so before the canonicalizer these
+    reached the network there. With the resolver stubbed empty (the Windows
+    behavior), the guard must still refuse every spelling on its own."""
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda host: [])
+    assert _verdict(url) == "blocked", f"{url} reached the network"
+
+
+def test_public_numeric_ip_still_allowed(monkeypatch):
+    """Over-block control for the canonicalizer: a public numeric spelling
+    (0x08080808 == 8.8.8.8) must not be refused by the numeric guard."""
+    monkeypatch.setattr(
+        pathsec,
+        "_resolve_hostname",
+        lambda host: [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("8.8.8.8", 80))],
+    )
+    assert _verdict("http://0x08080808/") == "allowed"
+
+
 def test_a_hostname_resolving_to_loopback_is_refused(monkeypatch):
     """DNS names are only as safe as what they resolve to. A name pointing at
     127.0.0.1 must be refused as if the literal IP were given."""

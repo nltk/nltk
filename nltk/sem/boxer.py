@@ -31,6 +31,7 @@ For example::
 import operator
 import os
 import re
+import shutil
 import subprocess
 import tempfile
 from functools import reduce
@@ -204,13 +205,17 @@ class Boxer:
         :param candc_out: str output from C&C parser
         :return: stdout
         """
-        # Imported here, not at module scope: nltk.data imports nltk.sem.
-        from nltk.data import staging_tempdir
+        # Imported here, not at module scope: nltk.data's import graph pulls in
+        # nltk.sem, so a top level import can see a half built nltk.data module.
+        from nltk.data import make_staging_dir
 
         f = None
+        # Stage the scratch input inside an allowed nltk.data root, never the
+        # shared system temp dir (world writable, not a pathsec root; CWE-377).
+        staging_dir = make_staging_dir(prefix="boxer-")
         try:
             fd, temp_filename = tempfile.mkstemp(
-                prefix="boxer-", suffix=".in", text=True, dir=staging_tempdir()
+                prefix="boxer-", suffix=".in", text=True, dir=staging_dir
             )
             f = os.fdopen(fd, "w")
             f.write(candc_out.decode("utf-8"))
@@ -236,7 +241,7 @@ class Boxer:
             temp_filename,
         ]
         stdout = self._call(None, self._boxer_bin, args, verbose)
-        os.remove(temp_filename)
+        shutil.rmtree(staging_dir, ignore_errors=True)
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):

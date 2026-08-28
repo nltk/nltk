@@ -58,6 +58,7 @@ except ImportError:
     pass
 
 import os
+import shutil
 import tempfile
 from collections import defaultdict
 
@@ -65,7 +66,7 @@ from nltk.classify.api import ClassifierI
 from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
 from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
-from nltk.data import gzip_open_unicode, make_staging_dir, staging_tempdir
+from nltk.data import gzip_open_unicode, make_staging_dir
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
@@ -1439,10 +1440,11 @@ def train_maxent_classifier_with_megam(
         raise ValueError("Specify encoding or labels, not both")
 
     # Write a training file for megam.
+    # make_staging_dir stages inside a data root (a private 0700 dir), so the
+    # scratch file lands in the sandbox and pathsec_open accepts its path.
+    stagedir = make_staging_dir(prefix="nltk_megam_")
     try:
-        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-", dir=staging_tempdir())
-        # mkstemp now stages inside a data root, so the sentinel accepts it and
-        # no exception is needed.
+        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-", dir=stagedir)
         with pathsec_open(
             trainfile_name, "w", context="maxent.call_megam"
         ) as trainfile:
@@ -1451,6 +1453,7 @@ def train_maxent_classifier_with_megam(
             )
         os.close(fd)
     except (OSError, ValueError) as e:
+        shutil.rmtree(stagedir, ignore_errors=True)
         raise ValueError("Error while creating megam training file: %s" % e) from e
 
     # Run megam on the training file.
@@ -1486,6 +1489,8 @@ def train_maxent_classifier_with_megam(
         os.remove(trainfile_name)
     except OSError as e:
         print(f"Warning: unable to delete {trainfile_name}: {e}")
+    # Remove the private staging directory so it does not leak per call.
+    shutil.rmtree(stagedir, ignore_errors=True)
 
     # Parse the generated weight vector.
     weights = parse_megam_weights(stdout, encoding.length(), explicit)
@@ -1520,11 +1525,14 @@ class TadmMaxentClassifier(MaxentClassifier):
                 train_toks, count_cutoff, labels=labels
             )
 
+        # make_staging_dir stages inside a data root (a private 0700 dir), so
+        # both scratch files land in the sandbox instead of the shared temp dir.
+        stagedir = make_staging_dir(prefix="nltk_tadm_")
         trainfile_fd, trainfile_name = tempfile.mkstemp(
-            prefix="nltk-tadm-events-", suffix=".gz", dir=staging_tempdir()
+            prefix="nltk-tadm-events-", suffix=".gz", dir=stagedir
         )
         weightfile_fd, weightfile_name = tempfile.mkstemp(
-            prefix="nltk-tadm-weights-", dir=staging_tempdir()
+            prefix="nltk-tadm-weights-", dir=stagedir
         )
 
         trainfile = gzip_open_unicode(trainfile_name, "w")
@@ -1556,6 +1564,8 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         os.remove(trainfile_name)
         os.remove(weightfile_name)
+        # Remove the private staging directory so it does not leak per call.
+        shutil.rmtree(stagedir, ignore_errors=True)
 
         # Convert from base-e to base-2 weights.
         weights *= numpy.log2(numpy.e)

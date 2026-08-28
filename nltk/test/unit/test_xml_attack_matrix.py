@@ -10,15 +10,23 @@ Several corpus readers parse XML that a user supplies, so the classic entity
 attacks all apply: file disclosure through an external entity, exponential
 expansion, and an external DTD that turns the parser into an SSRF client.
 
+Every case runs against both back ends: ``defusedxml`` when it is installed, and
+the standard-library fallback used when it is not.  The two must agree, because
+either may be the one protecting a given install, and only the fallback exercises
+the pathsec-guarded file read that :func:`nltk.xmlsec.parse` uses for a filename
+source.
+
 The external-DTD case is checked against a REAL listening socket rather than by
 reading the parsed text. A document whose DTD was fetched still parses to the
 same text, so text alone cannot tell "ignored" from "fetched and discarded", and
 the second of those is a live outbound request.
 """
 
+import importlib
 import os
 import shutil
 import socket
+import sys
 import tempfile
 import threading
 
@@ -46,6 +54,30 @@ _PARAM = (
     '<?xml version="1.0"?>'
     '<!DOCTYPE r [<!ENTITY % p SYSTEM "file:///etc/passwd">%p;]><r/>'
 )
+
+
+@pytest.fixture(params=["defusedxml", "fallback"])
+def backend(request, monkeypatch):
+    """``nltk.xmlsec`` with each back end forced.
+
+    The fallback path is the one whose filename read goes through
+    ``nltk.pathsec.open``; forcing it here makes the attack matrix cover that
+    guard even where ``defusedxml`` is installed.
+    """
+    if request.param == "defusedxml":
+        pytest.importorskip("defusedxml")
+        module = importlib.reload(xmlsec)
+        assert module.HAVE_DEFUSEDXML
+    else:
+        # Hiding the module makes ``import defusedxml`` raise ImportError, so
+        # reloading selects the standard-library path.
+        monkeypatch.setitem(sys.modules, "defusedxml", None)
+        module = importlib.reload(xmlsec)
+        assert not module.HAVE_DEFUSEDXML
+    yield module
+    # Undo the patch before reloading so the module is left on its real back end.
+    monkeypatch.undo()
+    importlib.reload(xmlsec)
 
 
 @pytest.fixture
@@ -77,16 +109,16 @@ def _write(root, document):
     ],
     ids=["xxe", "billion-laughs", "param-entity"],
 )
-def test_entity_attacks_are_refused(sandbox_root, document, label):
+def test_entity_attacks_are_refused(backend, sandbox_root, document, label):
     path = _write(sandbox_root, document)
     with pytest.raises(Exception) as excinfo:
-        tree = xmlsec.parse(path)
+        tree = backend.parse(path)
         text = "".join(tree.getroot().itertext())
         assert "root:" not in text, f"{label} disclosed /etc/passwd"
     assert "Forbidden" in type(excinfo.value).__name__ or "Entit" in str(excinfo.value)
 
 
-def test_an_external_dtd_is_not_fetched(sandbox_root):
+def test_an_external_dtd_is_not_fetched(backend, sandbox_root):
     """SSRF check against a real socket.
 
     The document parses either way, so the only honest test is whether anything
@@ -115,7 +147,7 @@ def test_an_external_dtd_is_not_fetched(sandbox_root):
         f'"http://127.0.0.1:{port}/evil.dtd"><r>x</r>',
     )
     try:
-        xmlsec.parse(path)
+        backend.parse(path)
     except Exception:
         pass
     thread.join(timeout=5)
@@ -123,7 +155,7 @@ def test_an_external_dtd_is_not_fetched(sandbox_root):
     assert connections == [], "the parser fetched the external DTD (SSRF)"
 
 
-def test_ordinary_xml_still_parses(sandbox_root):
+def test_ordinary_xml_still_parses(backend, sandbox_root):
     """Over-block control: the readers depend on this working."""
     path = _write(sandbox_root, "<r><a>hi</a></r>")
-    assert xmlsec.parse(path).getroot().find("a").text == "hi"
+    assert backend.parse(path).getroot().find("a").text == "hi"

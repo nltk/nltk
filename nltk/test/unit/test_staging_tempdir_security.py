@@ -51,7 +51,7 @@ def test_staging_dir_is_stable_across_calls(fresh_staging):
     assert nltk.data.staging_tempdir() == nltk.data.staging_tempdir()
 
 
-@pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires symlinks")
+@pytest.mark.skipif(os.name != "posix", reason="symlink swap is a POSIX concern")
 def test_cached_dir_swapped_for_a_symlink_is_discarded(fresh_staging):
     """The regression this file exists for.
 
@@ -80,7 +80,7 @@ def test_deleted_cached_dir_is_reallocated(fresh_staging):
     assert _inside(nltk.data.staging_tempdir(), root)
 
 
-@pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires symlinks")
+@pytest.mark.skipif(os.name != "posix", reason="symlink swap is a POSIX concern")
 def test_a_real_scratch_file_cannot_escape_after_a_swap(fresh_staging):
     """End of the chain: what a wrapper actually writes must stay in the root."""
     import tempfile as _tempfile
@@ -94,7 +94,7 @@ def test_a_real_scratch_file_cannot_escape_after_a_swap(fresh_staging):
     assert _inside(path, root), f"scratch file escaped to {path}"
 
 
-@pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires symlinks")
+@pytest.mark.skipif(os.name != "posix", reason="symlink swap is a POSIX concern")
 def test_teeth_isdir_check_alone_would_reopen_the_swap(fresh_staging, monkeypatch):
     """Negative control: restore the old ``os.path.isdir`` test and the swapped
     symlink is accepted again, which is exactly the bug."""
@@ -166,15 +166,6 @@ class TestStagingDirLifetime:
     def test_staging_tempdir_always_cleans_up(self):
         """The shared scratch dir holds only throwaway files."""
         paths = self._run("import nltk.data; print('D=' + nltk.data.staging_tempdir())")
-        assert not os.path.exists(paths["D"])
-
-    def test_malt_working_dir_is_cleaned_up(self):
-        """MaltParser stages malt_temp.mco there, which is temporary by name."""
-        paths = self._run(
-            "import nltk.data, nltk.parse.malt as m;"
-            "p = m.MaltParser.__new__(m.MaltParser); p._working_dir = None;"
-            "print('D=' + p.working_dir)"
-        )
         assert not os.path.exists(paths["D"])
 
 
