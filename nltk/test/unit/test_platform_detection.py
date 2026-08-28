@@ -58,12 +58,14 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     parser = MaltParser.__new__(MaltParser)
     parser.additional_java_args = []
     parser.malt_jars = [str(jar_a), str(jar_b)]
-    # Inside the allowed data root: generate_malt_command bounds the model path.
-    model = data_root / "model.mco"
-    model.touch()
-    parser.model = str(model)
-    parser._trained = True
-    parser._working_dir = None
+    parser.model = "model.mco"
+    # __new__ skips __init__, so give -w a real directory inside the registered
+    # data root (the getter would otherwise touch an unset _working_dir), and put
+    # the input CoNLL there too so validate_tool_path accepts it. A bare temp/repo
+    # path is a data root on the dev's macOS but not on Linux/CI.
+    parser.working_dir = str(data_root)
+    input_conll = data_root / "input.conll"
+    input_conll.write_text("1\tHello\t_\t_\t_\t_\t0\t_\t_\t_\n")
 
     captured = {}
 
@@ -82,9 +84,7 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
 
     # MaltParser hands its jars to internals.java(), which joins the classpath with
     # os.pathsep; the launcher command's -cp value must use it.
-    conll = data_root / "input.conll"
-    conll.touch()
-    argv = parser.generate_malt_command(str(conll), mode="learn")
+    argv = parser.generate_malt_command(str(input_conll), mode="learn")
     parser._execute(argv)
     cmd = captured["cmd"]
     assert cmd[cmd.index("-cp") + 1] == f"{jar_a};{jar_b}"
