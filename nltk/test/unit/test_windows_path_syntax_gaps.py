@@ -6,9 +6,10 @@
 
 """Windows path forms that name a different file than they appear to.
 
-These only matter under Windows semantics, so every case is run with ``os.name``
-and ``os.path`` swapped for Windows' -- a Linux CI run then covers the Windows
-behaviour, which no single-platform test can. Security research on this class
+These only matter under Windows semantics, so ``_verdict`` runs each case with
+``os.name`` set to ``nt`` and the syntax-relevant ``os.path`` hooks (``altsep``,
+``splitdrive``) swapped for Windows', so a Linux or macOS CI run covers the
+Windows behaviour that no single-platform test can. Security research on this class
 (``\\?\\`` extended-length, ``\\.\\`` device namespace, ``CONIN$``/``CONOUT$``
 console devices, 8.3 short names like ``PROGRA~1``) drove the additions here.
 
@@ -19,6 +20,7 @@ through the alias just as a final one does.
 
 import ntpath
 import os
+import posixpath
 
 import pytest
 
@@ -30,6 +32,9 @@ def _verdict(guard, value, windows=True):
     if windows:
         os.name = "nt"
         os.path.altsep, os.path.splitdrive = ntpath.altsep, ntpath.splitdrive
+    else:
+        os.name = "posix"
+        os.path.altsep, os.path.splitdrive = posixpath.altsep, posixpath.splitdrive
     try:
         guard(value, context="test")
         return "allowed"
