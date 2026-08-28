@@ -7,7 +7,7 @@
 """Gadget pickles must be refused by picklesec, not merely by the path check.
 
 The first version of this probe put its payloads outside the data roots. Every
-one was "blocked" -- by ``validate_path``, before the unpickler ever ran. That
+one was "blocked" by ``validate_path``, before the unpickler ever ran. That
 is a false pass: it would have stayed green with the entire allowlist deleted.
 
 So each payload here is written INSIDE the sandbox under a legitimate resource

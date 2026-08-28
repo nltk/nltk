@@ -206,7 +206,7 @@ def test_denied_module_backstop_even_if_allowlisted():
 @pytest.mark.parametrize("module", ["posixpath", "ntpath", "genericpath"])
 def test_os_path_backing_modules_are_denied(module, tmp_path):
     """GHSA-x99w: os.path is denied, but so must be the concrete modules it *is*
-    on each platform -- else a broad allow of posixpath/ntpath/genericpath would
+    on each platform; else a broad allow of posixpath/ntpath/genericpath would
     reach path/stat/expandvars gadgets (an env-var and filesystem oracle)."""
     up = AllowlistUnpickler(BytesIO(b""), allowed_modules=(module,))
     with pytest.raises(pickle.UnpicklingError, match="denied module"):
