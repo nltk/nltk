@@ -668,6 +668,65 @@ def _check_zip_member_count(count, name="<archive>"):
         )
 
 
+def _check_zip_total_size(infolist, name="<archive>"):
+    """Reject an archive whose members SUM to a decompression bomb (CWE-409).
+
+    ``_check_decompression_bomb`` runs per member, so an archive of many members
+    each just under ``MAX_UNZIP_ACTIVATION`` (32 MiB) is never ratio-checked and
+    never individually refused, yet the members together expand from a tiny zip
+    to an arbitrarily large total: 40 members of 5 MiB came from a 400 KiB zip,
+    and at the ``MAX_UNZIP_MEMBERS`` limit the total reaches terabytes. Extraction
+    keeps no running byte total, so nothing caught it.
+
+    This applies the same activation-plus-ratio test at the whole-archive level:
+    a large total that expands by more than ``MAX_UNZIP_RATIO`` over the total
+    compressed size is refused. A legitimately large corpus has a modest overall
+    ratio and passes; only an aggregate that looks like a bomb is refused.
+    """
+    # A single real member is already fully covered by the per-member
+    # _check_decompression_bomb (declared size) and the bounded streaming reader
+    # (actual bytes). The aggregate gap this guards is specifically MANY members
+    # that each pass the per-member floor but sum to a bomb, so it only applies
+    # when there is more than one file member. Directory entries (size 0, name
+    # ending in "/") are not real members and are not counted, so a lone big file
+    # shipped with its parent directory entry stays on the per-member path.
+    files = [
+        info
+        for info in infolist
+        if not (getattr(info, "filename", "") or "").endswith("/")
+    ]
+    if len(files) <= 1:
+        return
+    total_uncompressed = 0
+    total_compressed = 0
+    for info in files:
+        total_uncompressed += getattr(info, "file_size", 0) or 0
+        total_compressed += getattr(info, "compress_size", 0) or 0
+    if MAX_UNZIP_SIZE is not None and total_uncompressed > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to read zip %r: its members total %d uncompressed bytes, "
+            "above nltk.data.MAX_UNZIP_SIZE=%d."
+            % (name, total_uncompressed, MAX_UNZIP_SIZE)
+        )
+    if (
+        total_uncompressed >= MAX_UNZIP_ACTIVATION
+        and total_compressed > 0
+        and total_uncompressed > MAX_UNZIP_RATIO * total_compressed
+    ):
+        raise ValueError(
+            "Refusing to read suspected zip bomb %r: its members expand %.1fx in "
+            "aggregate (%d -> %d bytes), above nltk.data.MAX_UNZIP_RATIO=%d. Raise "
+            "nltk.data.MAX_UNZIP_RATIO if this archive is trusted."
+            % (
+                name,
+                total_uncompressed / total_compressed,
+                total_compressed,
+                total_uncompressed,
+                MAX_UNZIP_RATIO,
+            )
+        )
+
+
 def _check_decompression_bomb(info):
     """
     Reject a zip member that looks like a decompression bomb (CWE-409).

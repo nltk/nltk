@@ -45,7 +45,9 @@ def _enforce_single_root(monkeypatch):
     """Turn ENFORCE on, restrict the allowed roots to one fresh data root, and
     invalidate the cached roots. Returns the data-root path. monkeypatch restores
     every mutated global at teardown."""
-    data_root = tempfile.mkdtemp(prefix="nltk_sandbox_root_")
+    # realpath folds an 8.3 short component (a Windows runner's temp under
+    # RUNNER~1) to long form, so an in-root path clears the short-name guard.
+    data_root = os.path.realpath(tempfile.mkdtemp(prefix="nltk_sandbox_root_"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(nltk.data, "path", [data_root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
