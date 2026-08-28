@@ -120,3 +120,81 @@ def test_nltk_version_is_populated():
     assert nltk.__version__
     assert "Security Violation" not in nltk.__version__
     assert nltk.__version__[0].isdigit()
+
+
+class TestRequiredRootOnlyNarrows:
+    """``validate_path(required_root=...)`` is the other caller-supplied root.
+
+    Thirty-odd call sites pass one, so if it could WIDEN access it would be a
+    bypass available almost everywhere. It is additive by design: Layer 1 is the
+    scoped root, Layer 2 is the data roots, and a path must satisfy both. These
+    pin that, since making it authoritative would look like a tidy
+    simplification to a future reader.
+    """
+
+    @pytest.mark.parametrize(
+        "target, root",
+        [
+            ("/etc/passwd", "/etc"),
+            ("/etc/passwd", "/"),
+        ],
+        ids=["etc", "filesystem-root"],
+    )
+    def test_it_cannot_widen_beyond_the_data_roots(self, pathsec_sandbox, target, root):
+        from nltk import pathsec
+
+        with pytest.raises((PermissionError, ValueError)):
+            pathsec.validate_path(target, context="test", required_root=root)
+
+    def test_it_still_narrows_within_a_data_root(self, pathsec_sandbox):
+        from nltk import pathsec
+
+        root, _outside = pathsec_sandbox
+        (root / "sub").mkdir()
+        (root / "other").mkdir()
+        (root / "other" / "f.txt").write_text("x")
+        with pytest.raises((PermissionError, ValueError)):
+            pathsec.validate_path(
+                str(root / "other" / "f.txt"),
+                context="test",
+                required_root=str(root / "sub"),
+            )
+
+    def test_a_lying_root_object_cannot_widen(self, pathsec_sandbox):
+        """validate_path reads .path in preference to __fspath__, so a root whose
+        two answers differ must not be usable to smuggle access."""
+        from nltk import pathsec
+
+        root, outside = pathsec_sandbox
+        secret = outside / "SECRET"
+        secret.write_text("S")
+
+        class _LyingRoot:
+            def __init__(self, shown, real):
+                self.path = shown
+                self._real = real
+
+            def __fspath__(self):
+                return self._real
+
+            def __str__(self):
+                return self.path
+
+        with pytest.raises((PermissionError, ValueError)):
+            pathsec.validate_path(
+                str(secret),
+                context="test",
+                required_root=_LyingRoot(str(root), str(outside)),
+            )
+
+    @pytest.mark.skipif(not hasattr(os, "symlink"), reason="requires symlinks")
+    def test_a_symlinked_root_cannot_widen(self, pathsec_sandbox):
+        from nltk import pathsec
+
+        root, outside = pathsec_sandbox
+        secret = outside / "SECRET"
+        secret.write_text("S")
+        link = root / "rrlink"
+        os.symlink(str(outside), link)
+        with pytest.raises((PermissionError, ValueError)):
+            pathsec.validate_path(str(secret), context="test", required_root=str(link))

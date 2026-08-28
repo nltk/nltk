@@ -1058,3 +1058,224 @@ def test_authorize_data_dir_registers_private_dir(tmp_path, monkeypatch):
     assert not registered()
     _authorize_data_dir(str(custom))
     assert registered()
+
+
+# ----------------------------------------------------------------------
+# Hardened write path (_hardened_open): symlink / hardlink / truncate
+# ----------------------------------------------------------------------
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_truncates_legit_file(sandbox_env):
+    """A legit overwrite still truncates: deferring O_TRUNC until after the guard
+    must not leave a stale tail from longer prior content."""
+    safe_dir = sandbox_env[0]
+    target = safe_dir / "model.json"
+    with pathsec.open(str(target), "w", required_root=str(safe_dir)) as f:
+        f.write("first-longer-content")
+    with pathsec.open(str(target), "w", required_root=str(safe_dir)) as f:
+        f.write("short")
+    assert target.read_text(encoding="utf-8") == "short"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_symlink_escape(sandbox_env):
+    """A final-component symlink escaping the root is refused at open (O_NOFOLLOW)."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    link = safe_dir / "evil.tmp"
+    os.symlink(str(secret_file), str(link))
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(link), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_hardlink_and_preserves_target(sandbox_env):
+    """A hardlink to an outside file is refused (st_nlink); deferring O_TRUNC means
+    the refused write does NOT zero the outside target (CWE-59, GHSA-f794)."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    hard = safe_dir / "evil.tmp"
+    os.link(str(secret_file), str(hard))
+    with pytest.raises(PermissionError, match="multiply-linked|Security Violation"):
+        pathsec.open(str(hard), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_absolute_escape_and_preserves(sandbox_env):
+    """A write to an absolute path outside the root is refused, and the deferred
+    O_TRUNC leaves the pre-existing outside file's bytes intact."""
+    safe_dir, _, secret_file, _, _ = sandbox_env
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(secret_file), "wb", required_root=str(safe_dir))
+    assert secret_file.read_text(encoding="utf-8") == "UNAUTHORIZED_DATA"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="hardened write path is POSIX-only")
+def test_hardened_write_refuses_intermediate_dir_symlink(sandbox_env):
+    """An intermediate directory symlink redirecting the open outside the root is
+    caught by the opened-fd realpath re-validation, not only the final component."""
+    safe_dir, unsafe_dir, _, _, _ = sandbox_env
+    linkdir = safe_dir / "sub"
+    os.symlink(str(unsafe_dir), str(linkdir))  # safe_dir/sub -> outside root
+    with pytest.raises((PermissionError, ValueError)):
+        pathsec.open(str(linkdir / "planted.tmp"), "wb", required_root=str(safe_dir))
+    # no attacker content lands outside the root
+    assert (
+        not (unsafe_dir / "planted.tmp").exists()
+        or (unsafe_dir / "planted.tmp").read_bytes() == b""
+    )
+
+
+# Carried over from the umbrella branch: these cover cases the tagger branch
+# did not, so the merge keeps both sets rather than the newer file alone.
+
+
+class TestUrlSchemePathBypass:
+    """GHSA-8mgp-746c-j5xp: validate_path() must not authorize URL-shaped paths.
+
+    The old check did ``if "://" in raw: return``; unconditional authorization
+    for anything with an http/https/ftp scheme. To the kernel ``http://../x`` is
+    the directory ``http:`` then ``..``, so this waved a traversal straight
+    through every allowed root and defeated every downstream path check.
+    """
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "http://../../../../etc/passwd",
+            "https://../../x",
+            "ftp://../../y",
+            "HTTP://../../etc/passwd",  # case
+            "  https://../../etc/passwd",  # leading whitespace
+        ],
+    )
+    def test_url_prefix_is_not_an_authorization_bypass(self, path):
+        # The single most important regression: if this ever passes silently,
+        # GHSA-8mgp is back.
+        with pytest.raises(PermissionError):
+            pathsec.validate_path(path)
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "file:///tmp/x?y/../../etc/passwd",  # query
+            "file:///etc/passwd#frag",  # fragment
+            "file:///tmp/x;/../../etc/passwd",  # params
+        ],
+    )
+    def test_ambiguous_file_url_is_rejected(self, path):
+        # urllib opens Request.selector (keeps ?/#/;), urlparse().path drops them,
+        # so a file: URL with those would validate a different target than opens.
+        with pytest.raises(PermissionError):
+            pathsec.validate_path(path)
+
+    def test_plain_in_root_path_still_validates(self, tmp_path, monkeypatch):
+        # No false positive: a normal filesystem path inside an allowed root must
+        # still pass after the URL rejection is added.
+        import nltk.data as _nltk_data
+
+        root = tmp_path / "nltk_data"
+        (root / "corpora").mkdir(parents=True)
+        monkeypatch.setattr(_nltk_data, "path", [str(root)])
+        pathsec._ALLOWED_ROOTS_CACHE = None
+        pathsec._LAST_DATA_PATHS = None
+        pathsec.validate_path(str(root / "corpora" / "x.txt"))  # must not raise
+
+
+class TestModelArtifactSaveContainment:
+    """GHSA-8mgp: low-level model save/load must not open outside allowed roots."""
+
+    def test_averaged_perceptron_save_load_refuse_outside_root(
+        self, tmp_path, monkeypatch
+    ):
+        import pathlib
+        import shutil
+
+        import nltk.data as _nltk_data
+        from nltk.tag.perceptron import AveragedPerceptron
+
+        sandbox = tmp_path / "nltk_data"
+        sandbox.mkdir()
+        # A genuinely-outside target: a fresh $HOME dir. NOT tmp_path; the
+        # private system temp is an allowed pathsec root on macOS, so a temp
+        # target would not actually be outside the sandbox.
+        outside_dir = pathlib.Path.home() / (".ghsa8mgp_pathsec_test_%s" % os.getpid())
+        outside = outside_dir / "model.json"
+        monkeypatch.setattr(_nltk_data, "path", [str(sandbox)])
+        pathsec._ALLOWED_ROOTS_CACHE = None
+        pathsec._LAST_DATA_PATHS = None
+        outside_dir.mkdir(exist_ok=True)
+        try:
+            # Guard the test: the target must be genuinely outside the sandbox.
+            with pytest.raises(PermissionError):
+                with pathsec.open(str(outside), "w"):
+                    pass
+
+            ap = AveragedPerceptron()
+            ap.weights = {"f": {"t": 1.0}}
+            with pytest.raises(PermissionError):
+                ap.save(str(outside))
+            assert not outside.exists(), "refused save must not have written the file"
+            with pytest.raises(PermissionError):
+                ap.load(str(outside))
+        finally:
+            shutil.rmtree(outside_dir, ignore_errors=True)
+
+
+class TestStagingUnderDataRoot:
+    """``nltk.data.make_staging_dir`` stages NLTK's own output inside a data root,
+    so the default save destination is within the pathsec sandbox on every
+    platform (including Linux, where the shared ``/tmp`` is not a root). When no
+    data root is writable it refuses rather than falling back to an untrusted
+    temp dir, forcing the caller to pass an explicit destination.
+    """
+
+    def test_staging_dir_is_inside_a_data_root_and_passes_sandbox(
+        self, tmp_path, monkeypatch
+    ):
+        """The staged dir is created under a data root, is private (0700), and its
+        contents pass validate_path without any temp-dir trust."""
+        import nltk.data as _data
+
+        root = tmp_path / "nltk_data"
+        root.mkdir()
+        monkeypatch.setattr(_data, "path", [str(root)])
+        pathsec._ALLOWED_ROOTS_CACHE = None
+        pathsec._LAST_DATA_PATHS = None
+
+        d = _data.make_staging_dir(prefix="nltk_probe_")
+        assert os.path.realpath(d).startswith(os.path.realpath(str(root)))
+        assert pathsec.is_private_dir(d)
+        pathsec.validate_path(os.path.join(d, "out.tab"), context="test")
+
+    def test_refuses_when_no_writable_data_root(self, tmp_path, monkeypatch):
+        """With no writable data root, staging refuses (PermissionError) instead of
+        writing to an out-of-sandbox temp dir."""
+        import nltk.data as _data
+
+        blocker = tmp_path / "not_a_dir"
+        blocker.write_text("x")
+        monkeypatch.setattr(_data, "path", [str(blocker / "sub")])
+        with pytest.raises(PermissionError):
+            _data.make_staging_dir(prefix="nltk_probe_")
+
+    def test_refuses_writable_path_entry_outside_the_sandbox(
+        self, tmp_path, monkeypatch
+    ):
+        """Defensive guard: a writable nltk.data.path entry that is not an allowed
+        root (data path and sandbox disagree) is refused, so make_staging_dir
+        never creates or stages output outside what pathsec accepts."""
+        from pathlib import Path
+
+        import nltk.data as _data
+
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        sandbox = tmp_path / "sandbox"
+        sandbox.mkdir()
+        monkeypatch.setattr(_data, "path", [str(outside)])
+        monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {Path(sandbox)})
+        with pytest.raises(PermissionError):
+            _data.make_staging_dir(prefix="nltk_probe_")
+        assert list(outside.iterdir()) == [], "nothing may be staged out of sandbox"

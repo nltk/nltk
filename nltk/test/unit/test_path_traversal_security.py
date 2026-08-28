@@ -380,6 +380,15 @@ class TestPerceptronSaveSquat:
         with pytest.raises(PermissionError):
             self._tagger().save_to_json(lang="eng", loc=loc)
 
+    def test_out_of_sandbox_save_location_is_refused(self, sandbox):
+        # A caller-supplied destination outside every data root is refused before
+        # anything is created: save_to_json used to os.makedirs() a whole chain
+        # anywhere the process could write (GHSA-8mgp-746c-j5xp).
+        loc = sandbox / "planted" / "model_dir"
+        with pytest.raises(PermissionError):
+            self._tagger().save_to_json(lang="eng", loc=str(loc))
+        assert not loc.exists() and not loc.parent.exists()
+
 
 # ==========================================================================
 # 4. Entity-expansion (billion-laughs) in the bcp47 XML corpus reader (CWE-776)
