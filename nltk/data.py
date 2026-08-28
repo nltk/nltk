@@ -812,9 +812,23 @@ def _check_zip_total_size(infolist, name="<archive>"):
     compressed size is refused. A legitimately large corpus has a modest overall
     ratio and passes; only an aggregate that looks like a bomb is refused.
     """
+    # A single real member is already fully covered by the per-member
+    # _check_decompression_bomb (declared size) and the bounded streaming reader
+    # (actual bytes). The aggregate gap this guards is specifically MANY members
+    # that each pass the per-member floor but sum to a bomb, so it only applies
+    # when there is more than one file member. Directory entries (size 0, name
+    # ending in "/") are not real members and are not counted, so a lone big file
+    # shipped with its parent directory entry stays on the per-member path.
+    files = [
+        info
+        for info in infolist
+        if not (getattr(info, "filename", "") or "").endswith("/")
+    ]
+    if len(files) <= 1:
+        return
     total_uncompressed = 0
     total_compressed = 0
-    for info in infolist:
+    for info in files:
         total_uncompressed += getattr(info, "file_size", 0) or 0
         total_compressed += getattr(info, "compress_size", 0) or 0
     if MAX_UNZIP_SIZE is not None and total_uncompressed > MAX_UNZIP_SIZE:

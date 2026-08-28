@@ -1441,11 +1441,85 @@ class ZipFile(zipfile.ZipFile):
 
     def extract(self, member, path=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd(), specific_member=member)
+        self._extract_root = os.path.abspath(path or os.getcwd())
         return super().extract(member, path, pwd)
 
     def extractall(self, path=None, members=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd())
+        self._extract_root = os.path.abspath(path or os.getcwd())
         super().extractall(path, members, pwd)
+
+    def _extract_member(self, member, targetpath, pwd):
+        """Write each member by walking its path with O_NOFOLLOW at every step.
+
+        validate_zip_archive resolves each member and refuses one that escapes,
+        but between that resolution and the write there is a TOCTOU window: a
+        local attacker who can write inside the extraction root can swap a
+        DIRECTORY component for a symlink pointing outside, and the stdlib
+        extractor's plain ``open(targetpath, "wb")`` follows it. O_NOFOLLOW on the
+        leaf alone does not help, since it only guards the final component.
+
+        So the target is opened relative to the extraction root by walking each
+        component with ``openat(dir_fd, name, O_NOFOLLOW | O_DIRECTORY)``: a
+        symlink swapped in at any component fails with ELOOP instead of being
+        followed, and the leaf is created with O_EXCL so a raced or pre-planted
+        file/symlink at the target is refused too. On a platform without dir_fd
+        support this falls back to the stdlib extractor.
+        """
+        import shutil as _shutil
+
+        if (
+            getattr(member, "filename", None) is None
+            or member.is_dir()
+            or os.open not in os.supports_dir_fd
+            or not getattr(os, "O_NOFOLLOW", 0)
+        ):
+            return super()._extract_member(member, targetpath, pwd)
+
+        # _extract_root is set by extract()/extractall(); when _extract_member is
+        # called directly, anchor at the target's parent.
+        root = getattr(self, "_extract_root", None) or os.path.dirname(targetpath)
+        rel = os.path.relpath(os.path.normpath(targetpath), os.path.normpath(root))
+        parts = [p for p in rel.split(os.sep) if p not in ("", os.curdir)]
+        if not parts or os.pardir in parts:
+            raise PermissionError(
+                f"Security Violation [pathsec.ZipFile]: refusing member path "
+                f"{rel!r}"
+            )
+        *dirs, leaf = parts
+
+        dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        try:
+            for component in dirs:
+                try:
+                    os.mkdir(component, 0o755, dir_fd=dir_fd)
+                except FileExistsError:
+                    pass
+                nxt = os.open(
+                    component,
+                    os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_DIRECTORY", 0),
+                    dir_fd=dir_fd,
+                )
+                os.close(dir_fd)
+                dir_fd = nxt
+            flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+            try:
+                leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+            except FileExistsError:
+                info = os.lstat(leaf, dir_fd=dir_fd)
+                if not stat.S_ISREG(info.st_mode):
+                    raise PermissionError(
+                        f"Security Violation [pathsec.ZipFile]: refusing to "
+                        f"extract onto non-regular file {leaf!r}"
+                    )
+                leaf_fd = os.open(
+                    leaf, os.O_WRONLY | os.O_TRUNC | os.O_NOFOLLOW, dir_fd=dir_fd
+                )
+        finally:
+            os.close(dir_fd)
+        with os.fdopen(leaf_fd, "wb") as sink, self.open(member, pwd=pwd) as source:
+            _shutil.copyfileobj(source, sink)
+        return targetpath
 
     def read(self, name, pwd=None):
         # Not the raw one-shot super().read() (bounded only by the attacker-declared
