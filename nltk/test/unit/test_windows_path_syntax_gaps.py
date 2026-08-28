@@ -9,7 +9,7 @@
 These only matter under Windows semantics, so every case is run with ``os.name``
 and ``os.path`` swapped for Windows' -- a Linux CI run then covers the Windows
 behaviour, which no single-platform test can. Security research on this class
-(``\\?\`` extended-length, ``\\.\`` device namespace, ``CONIN$``/``CONOUT$``
+(``\\?\\`` extended-length, ``\\.\\`` device namespace, ``CONIN$``/``CONOUT$``
 console devices, 8.3 short names like ``PROGRA~1``) drove the additions here.
 
 The 8.3 and device checks run on EVERY path component, not just the last: a
@@ -74,7 +74,13 @@ def test_hostile_windows_forms_are_refused_by_both_guards(value):
 
 @pytest.mark.parametrize(
     "value",
-    ["model~backup.mco", "file~.txt", "CONTEXT.mco", "console.gz", "edu/stanford/x.ser.gz"],
+    [
+        "model~backup.mco",
+        "file~.txt",
+        "CONTEXT.mco",
+        "console.gz",
+        "edu/stanford/x.ser.gz",
+    ],
 )
 def test_lookalikes_are_still_allowed(value):
     """Over-block control. A '~' without a trailing digit is not an 8.3 name, and
@@ -82,7 +88,9 @@ def test_lookalikes_are_still_allowed(value):
     assert _verdict(validate_model_resource, value) == "allowed", value
 
 
-@pytest.mark.parametrize("value", ["CON", "NUL", "CONIN$", "PROGRA~1", "dir/EVILFI~1/x"])
+@pytest.mark.parametrize(
+    "value", ["CON", "NUL", "CONIN$", "PROGRA~1", "dir/EVILFI~1/x"]
+)
 def test_these_are_ordinary_filenames_on_posix(value):
     """The whole point of the os.name guard: on POSIX these are legal filenames
     and refusing them would break real usage."""

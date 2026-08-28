@@ -53,7 +53,11 @@ def _load(root, payload):
 
 @pytest.mark.parametrize(
     "opcode, label",
-    [(b"\x82\x01.", "EXT1"), (b"\x83\x01\x00.", "EXT2"), (b"\x84\x01\x00\x00\x00.", "EXT4")],
+    [
+        (b"\x82\x01.", "EXT1"),
+        (b"\x83\x01\x00.", "EXT2"),
+        (b"\x84\x01\x00\x00\x00.", "EXT4"),
+    ],
 )
 def test_extension_registry_opcodes_are_refused(sandbox_root, opcode, label):
     """These resolve through copyreg WITHOUT calling find_class, so a name
@@ -114,9 +118,14 @@ def test_stack_global_form_is_also_refused(sandbox_root, module, name):
     # then rewrite the target to the dangerous one via a raw opcode stream.
     payload = (
         b"\x80\x05"
-        + b"\x8c" + bytes([len(module)]) + module.encode()
-        + b"\x8c" + bytes([len(name)]) + name.encode()
-        + b"\x93" + b"0."
+        + b"\x8c"
+        + bytes([len(module)])
+        + module.encode()
+        + b"\x8c"
+        + bytes([len(name)])
+        + name.encode()
+        + b"\x93"
+        + b"0."
     )
     with pytest.raises(pickle.UnpicklingError):
         _load(sandbox_root, payload)
