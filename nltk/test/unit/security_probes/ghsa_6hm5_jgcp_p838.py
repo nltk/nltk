@@ -5,7 +5,14 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from ._base import FIXED, STATIC, VULNERABLE, is_security_rejection, probe
+from ._base import (
+    FIXED,
+    STATIC,
+    VULNERABLE,
+    is_security_rejection,
+    probe,
+    register_data_root,
+)
 
 
 @probe("GHSA-6hm5-jgcp-p838")
@@ -23,6 +30,7 @@ def _nkjp_traversal():
     try:
         root = os.path.join(box, "nkjp")
         os.makedirs(root)
+        undo_root = register_data_root(root)
         reader = NKJPCorpusReader(root=root)
         os.symlink(os.path.dirname(box), os.path.join(root, "linkdir"))
 
@@ -61,4 +69,8 @@ def _nkjp_traversal():
             refused.append("backslash=contained")
         return FIXED, "add_root refused: " + ", ".join(refused)
     finally:
+        try:
+            undo_root()
+        except NameError:
+            pass
         shutil.rmtree(box, ignore_errors=True)

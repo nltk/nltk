@@ -8,9 +8,11 @@ from ._base import (
     FIXED,
     STATIC,
     VULNERABLE,
+    _restore_data_path,
     guard_rejects,
     is_security_rejection,
     probe,
+    register_data_root,
 )
 
 CANARY = "PWNED-CANARY"
@@ -30,6 +32,10 @@ def seeded_reader(root):
     from nltk.corpus.reader.framenet import FramenetCorpusReader
 
     os.makedirs(os.path.join(root, "frame"), exist_ok=True)
+    # Register the corpus root as a data root so the reader constructs on Linux,
+    # where mkdtemp lands in /tmp (not a pathsec root). The "outside" targets are
+    # siblings under box, NOT under root, so they stay out of the sandbox.
+    register_data_root(root)
     reader = FramenetCorpusReader(root, [])
     reader._frame_idx = {"seed": 1}
     return reader
@@ -43,8 +49,10 @@ def _framenet_frame_traversal():
     returned frame carrying the canary is a leak, and only a security-marked
     refusal counts as a defence (an incidental error means the guard was never hit).
     """
+    import nltk.data
     from nltk.corpus.reader.framenet import _validate_in_root
 
+    _saved_path = list(nltk.data.path)
     box = tempfile.mkdtemp()
     try:
         root = os.path.join(box, "fn")
@@ -84,4 +92,5 @@ def _framenet_frame_traversal():
             return VULNERABLE, evidence
         return FIXED, "frame_by_name refused: " + ", ".join(reached)
     finally:
+        _restore_data_path(_saved_path)
         shutil.rmtree(box, ignore_errors=True)

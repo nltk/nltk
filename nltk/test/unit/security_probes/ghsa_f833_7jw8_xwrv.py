@@ -8,9 +8,11 @@ from ._base import (
     FIXED,
     STATIC,
     VULNERABLE,
+    _restore_data_path,
     guard_rejects,
     is_security_rejection,
     probe,
+    register_data_root,
 )
 from .ghsa_xh95_f55m_82fw import CANARY, seeded_reader
 
@@ -28,8 +30,10 @@ def _framenet_symlink_bypass():
     multi-hop symlink chain, and a symlinked corpus *directory* (so every frame in
     it resolves outside). Both must be refused by the resolving containment guard.
     """
+    import nltk.data
     from nltk.corpus.reader.framenet import _validate_in_root
 
+    _saved_path = list(nltk.data.path)
     box = tempfile.mkdtemp()
     try:
         outside_dir = os.path.join(box, "outside")
@@ -77,4 +81,5 @@ def _framenet_symlink_bypass():
             return VULNERABLE, evidence
         return FIXED, "symlink escapes refused: " + ", ".join(reached)
     finally:
+        _restore_data_path(_saved_path)
         shutil.rmtree(box, ignore_errors=True)
