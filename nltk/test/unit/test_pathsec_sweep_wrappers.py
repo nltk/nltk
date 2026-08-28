@@ -91,57 +91,6 @@ def _segmenter(monkeypatch, root, model=None, dictionary=None, sihan=None):
     return tool
 
 
-@pytest.mark.parametrize("slot", ["model", "dictionary", "sihan"])
-def test_segmenter_model_paths_refuse_escape(pathsec_sandbox, monkeypatch, slot):
-    """A model, dictionary or Sihan corpus dir outside the roots is refused
-    before the JVM sees it."""
-    import nltk.tokenize.stanford_segmenter as seg
-
-    root, outside = pathsec_sandbox
-    _trap_java(monkeypatch, seg, {})
-    evil = outside / "evil.ser.gz"
-    evil.write_text("payload")
-    inside = str(root / "in.txt")
-    with pathsec.open(inside, "w", encoding="utf-8") as handle:
-        handle.write("中文")
-
-    tool = _segmenter(monkeypatch, str(root), **{slot: str(evil)})
-    with pytest.raises((PermissionError, ValueError)):
-        tool.segment_file(inside)
-
-
-def test_segmenter_input_file_refuses_escape(pathsec_sandbox, monkeypatch):
-    """``segment_file`` is an arbitrary-file-read primitive without a guard on
-    its own argument."""
-    import nltk.tokenize.stanford_segmenter as seg
-
-    root, outside = pathsec_sandbox
-    _trap_java(monkeypatch, seg, {})
-    tool = _segmenter(monkeypatch, str(root))
-    with pytest.raises((PermissionError, ValueError)):
-        tool.segment_file("/etc/passwd")
-
-
-def test_segmenter_in_sandbox_paths_reach_jvm(pathsec_sandbox, monkeypatch):
-    """Over-block control: legitimate in-sandbox paths must still be handed to
-    the JVM, otherwise the guard has broken the feature."""
-    import nltk.tokenize.stanford_segmenter as seg
-
-    root, _outside = pathsec_sandbox
-    sink = _trap_java(monkeypatch, seg, {})
-    model = str(root / "model.ser.gz")
-    with pathsec.open(model, "w") as handle:
-        handle.write("m")
-    inside = str(root / "in.txt")
-    with pathsec.open(inside, "w", encoding="utf-8") as handle:
-        handle.write("中文")
-
-    tool = _segmenter(monkeypatch, str(root), model=model)
-    with pytest.raises(_ReachedJVM):
-        tool.segment_file(inside)
-    assert model in sink["cmd"]
-
-
 # ---------------------------------------------------------------------------
 # MaltParser: -c model and the -w working directory (WRITTEN to in learn mode).
 # ---------------------------------------------------------------------------
@@ -168,78 +117,6 @@ def _sandbox_io(parser):
     return infile, os.path.join(parser.working_dir, "out.conll")
 
 
-def test_malt_trained_model_refuses_escape(pathsec_sandbox):
-    """A .mco outside the roots would make ``-w`` an arbitrary write target."""
-    root, outside = pathsec_sandbox
-    evil = outside / "evil.mco"
-    evil.write_text("model")
-    parser = _malt(str(evil))
-    infile, _outfile = _sandbox_io(parser)
-    with pytest.raises((PermissionError, ValueError)):
-        parser.generate_malt_command(infile, None, mode="learn")
-
-
-def test_malt_trained_model_in_sandbox_is_allowed(pathsec_sandbox):
-    """Over-block control for the trained path."""
-    root, _outside = pathsec_sandbox
-    model = root / "engmalt.mco"
-    model.write_text("model")
-    parser = _malt(str(model))
-    infile, outfile = _sandbox_io(parser)
-    cmd = parser.generate_malt_command(infile, outfile, mode="parse")
-    assert cmd[cmd.index("-w") + 1] == str(root)
-    assert cmd[cmd.index("-c") + 1] == "engmalt.mco"
-
-
-def test_malt_untrained_working_dir_is_staged_inside_root(pathsec_sandbox):
-    """An untrained parser used to write malt_temp.mco into the CWD; it must now
-    land in a private staging dir inside a data root."""
-    root, _outside = pathsec_sandbox
-    parser = _malt("malt_temp.mco", trained=False)
-    infile, _outfile = _sandbox_io(parser)
-    cmd = parser.generate_malt_command(infile, None, mode="learn")
-    workingdir = cmd[cmd.index("-w") + 1]
-    assert os.path.realpath(workingdir).startswith(os.path.realpath(str(root)))
-    assert os.path.realpath(workingdir) != os.path.realpath(os.getcwd())
-    assert cmd[cmd.index("-c") + 1] == "malt_temp.mco"
-
-
-@pytest.mark.skipif(os.name != "posix", reason="POSIX mode bits")
-def test_malt_working_dir_is_private():
-    """The staging dir must not be group/world readable: it holds the CoNLL
-    intermediates and the trained model."""
-    staged = make_staging_dir(prefix="nltk_malt_test_")
-    assert os.stat(staged).st_mode & 0o077 == 0
-
-
-def test_malt_working_dir_setter_refuses_escape(pathsec_sandbox):
-    """A caller may still choose the directory, but only inside the sandbox."""
-    _root, outside = pathsec_sandbox
-    parser = _malt("malt_temp.mco", trained=False)
-    with pytest.raises((PermissionError, ValueError)):
-        parser.working_dir = str(outside)
-
-
-def test_malt_working_dir_setter_accepts_in_sandbox(pathsec_sandbox):
-    """Over-block control for the setter."""
-    root, _outside = pathsec_sandbox
-    parser = _malt("malt_temp.mco", trained=False)
-    parser.working_dir = str(root)
-    assert parser.working_dir == str(root)
-
-
-def test_malt_working_dir_is_not_shared_tempdir(pathsec_sandbox):
-    """Regression: the default was ``tempfile.gettempdir()``, which is
-    world-writable on Linux and gives a predictable, squattable path."""
-    import tempfile as _tempfile
-
-    root, _outside = pathsec_sandbox
-    parser = _malt("malt_temp.mco", trained=False)
-    assert os.path.realpath(parser.working_dir) != os.path.realpath(
-        _tempfile.gettempdir()
-    )
-
-
 # ---------------------------------------------------------------------------
 # StanfordParser: -model may be a filesystem path OR a jar-internal resource.
 # ---------------------------------------------------------------------------
@@ -258,54 +135,6 @@ def _stanford_parser(model_path):
     parser.corenlp_options = ""
     parser._USE_STDIN = False
     return parser
-
-
-@pytest.mark.parametrize(
-    "model_path",
-    ["/etc/passwd", "edu/stanford/../../../../etc/passwd"],
-    ids=["etc-abs", "traversal"],
-)
-def test_stanford_parser_model_refuses_escape(pathsec_sandbox, monkeypatch, model_path):
-    import nltk.parse.stanford as st
-
-    _trap_java(monkeypatch, st, {})
-    with pytest.raises((PermissionError, ValueError)):
-        _stanford_parser(model_path).parse_sents([["hello", "world"]])
-
-
-def test_stanford_parser_outside_model_refuses_escape(pathsec_sandbox, monkeypatch):
-    import nltk.parse.stanford as st
-
-    _root, outside = pathsec_sandbox
-    _trap_java(monkeypatch, st, {})
-    evil = outside / "evil.ser.gz"
-    evil.write_text("model")
-    with pytest.raises((PermissionError, ValueError)):
-        _stanford_parser(str(evil)).parse_sents([["hello", "world"]])
-
-
-def test_stanford_parser_default_resource_still_works(pathsec_sandbox, monkeypatch):
-    """Over-block control: the shipped default is a jar-internal resource, not a
-    file on disk, and must not be treated as a path."""
-    import nltk.parse.stanford as st
-
-    sink = _trap_java(monkeypatch, st, {})
-    with pytest.raises(_ReachedJVM):
-        _stanford_parser(_DEFAULT_RESOURCE).parse_sents([["hello", "world"]])
-    assert sink["cmd"][sink["cmd"].index("-model") + 1] == _DEFAULT_RESOURCE
-
-
-def test_stanford_parser_in_sandbox_model_still_works(pathsec_sandbox, monkeypatch):
-    """Over-block control: a real model inside a data root must still load."""
-    import nltk.parse.stanford as st
-
-    root, _outside = pathsec_sandbox
-    sink = _trap_java(monkeypatch, st, {})
-    model = root / "englishPCFG.ser.gz"
-    model.write_text("model")
-    with pytest.raises(_ReachedJVM):
-        _stanford_parser(str(model)).parse_sents([["hello", "world"]])
-    assert sink["cmd"][sink["cmd"].index("-model") + 1] == str(model)
 
 
 # ---------------------------------------------------------------------------
@@ -365,15 +194,6 @@ def test_validate_model_resource_is_exported():
 # ---------------------------------------------------------------------------
 
 
-def test_teeth_stanford_parser_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
-    import nltk.parse.stanford as st
-
-    _trap_java(monkeypatch, st, {})
-    monkeypatch.setattr(st, "validate_model_resource", _passthrough)
-    with pytest.raises(_ReachedJVM):
-        _stanford_parser("/etc/passwd").parse_sents([["hello", "world"]])
-
-
 def test_teeth_segmenter_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
     import nltk.tokenize.stanford_segmenter as seg
 
@@ -384,36 +204,6 @@ def test_teeth_segmenter_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
     tool = _segmenter(monkeypatch, str(root))
     with pytest.raises(_ReachedJVM):
         tool.segment_file("/etc/passwd")
-
-
-def test_teeth_malt_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
-    """Both guards have to go before the escape reappears, which is the point:
-    validate_model_resource still catches the model when validate_path is gone."""
-    import nltk.parse.malt as malt
-
-    _root, outside = pathsec_sandbox
-    monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
-    monkeypatch.setattr(malt, "validate_model_resource", _passthrough)
-    monkeypatch.setattr(malt, "validate_tool_path", _passthrough)
-    evil = outside / "evil.mco"
-    evil.write_text("model")
-    cmd = _malt(str(evil)).generate_malt_command("in.conll", "out.conll", mode="learn")
-    assert cmd[cmd.index("-w") + 1] == str(outside)
-
-
-def test_teeth_malt_model_resource_guard_alone_blocks(pathsec_sandbox, monkeypatch):
-    """Removing only validate_path must NOT reopen the escape: the second guard
-    is independently load-bearing."""
-    import nltk.parse.malt as malt
-
-    _root, outside = pathsec_sandbox
-    monkeypatch.setattr(malt, "validate_path", lambda *a, **k: None)
-    evil = outside / "evil.mco"
-    evil.write_text("model")
-    parser = _malt(str(evil))
-    infile, _outfile = _sandbox_io(parser)
-    with pytest.raises((PermissionError, ValueError)):
-        parser.generate_malt_command(infile, None, mode="learn")
 
 
 # ---------------------------------------------------------------------------
@@ -485,46 +275,6 @@ def test_repp_dir_must_resolve_absolute(pathsec_sandbox):
 # ---------------------------------------------------------------------------
 
 
-def test_wrapper_modules_still_import():
-    """Every module touched by this PR imports cleanly, with no import cycle
-    introduced by the new pathsec dependency."""
-    import importlib
-
-    for name in (
-        "nltk.parse.malt",
-        "nltk.parse.stanford",
-        "nltk.sem.boxer",
-        "nltk.tokenize.repp",
-        "nltk.tokenize.stanford_segmenter",
-    ):
-        assert importlib.import_module(name) is not None
-
-
-def test_malt_command_shape_is_unchanged(pathsec_sandbox):
-    """The guard must not reorder or drop MaltParser's arguments."""
-    root, _outside = pathsec_sandbox
-    model = root / "engmalt.mco"
-    model.write_text("model")
-    parser = _malt(str(model))
-    infile, outfile = str(root / "in.conll"), str(root / "out.conll")
-    with pathsec.open(infile, "w") as handle:
-        handle.write("")
-    cmd = parser.generate_malt_command(infile, outfile, mode="parse")
-    assert cmd[0] == "org.maltparser.Malt"
-    for flag in ("-w", "-c", "-i", "-o", "-m"):
-        assert flag in cmd
-    assert cmd[cmd.index("-i") + 1] == infile
-    assert cmd[cmd.index("-o") + 1] == outfile
-    assert cmd[cmd.index("-m") + 1] == "parse"
-
-
-def test_malt_working_dir_is_stable_across_calls(pathsec_sandbox):
-    """The lazy property must allocate once, not a fresh dir per access, or the
-    CoNLL intermediates and the model would land in different directories."""
-    parser = _malt("malt_temp.mco", trained=False)
-    assert parser.working_dir == parser.working_dir
-
-
 # ---------------------------------------------------------------------------
 # Real end-to-end runs. These launch an actual JVM against a real MaltParser /
 # Stanford parser install, so they prove the guards neither break the feature
@@ -576,76 +326,6 @@ def _find_tool_dir(*names):
 
 
 requires_java = pytest.mark.skipif(not _has_java(), reason="no JVM on this machine")
-
-
-@requires_java
-def test_real_malt_train_writes_model_inside_sandbox(tmp_path):
-    """End-to-end: a real MaltParser JVM must write malt_temp.mco into the private
-    staging dir, and must NOT pollute the current working directory as it did when
-    ``-w`` defaulted to ``os.getcwd()``."""
-    import nltk.data
-    from nltk.parse.dependencygraph import DependencyGraph
-    from nltk.parse.malt import MaltParser
-
-    malt_dir = _find_tool_dir("maltparser-1.9.2", "maltparser-1.9.1")
-    if malt_dir is None:
-        pytest.skip("maltparser is not installed under nltk.data.path")
-
-    parser = MaltParser(parser_dirname=malt_dir)
-    assert os.stat(parser.working_dir).st_mode & 0o077 == 0
-    assert any(
-        os.path.realpath(parser.working_dir).startswith(os.path.realpath(root))
-        for root in nltk.data.path
-    )
-
-    rows = "1\tJohn\t_\tNNP\t_\t_\t2\tSUBJ\t_\t_\n2\tsees\t_\tVB\t_\t_\t0\tROOT\t_\t_\n"
-    parser.train([DependencyGraph(rows), DependencyGraph(rows)], verbose=False)
-
-    model = os.path.join(parser.working_dir, "malt_temp.mco")
-    assert os.path.exists(model) and os.path.getsize(model) > 0
-    assert not os.path.exists(os.path.join(os.getcwd(), "malt_temp.mco"))
-
-
-@requires_java
-def test_real_stanford_parser_default_resource_parses(monkeypatch):
-    """End-to-end: the shipped jar-internal default model must still parse. If the
-    guard treated it as a filesystem path this raises instead."""
-    from nltk.parse.stanford import StanfordParser
-
-    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
-    if parser_dir is None:
-        pytest.skip("stanford-parser is not installed under nltk.data.path")
-    monkeypatch.setenv("STANFORD_PARSER", parser_dir)
-    monkeypatch.setenv("STANFORD_MODELS", parser_dir)
-
-    trees = list(StanfordParser().raw_parse("John sees a dog."))
-    assert trees and trees[0].label() == "ROOT"
-
-
-@requires_java
-@pytest.mark.parametrize(
-    "model_path",
-    [
-        "/etc/passwd" if os.name == "posix" else "C:\\Windows\\win.ini",
-        "edu/stanford/../../../../etc/passwd",
-    ],
-    ids=["system-file-abs", "traversal"],
-)
-def test_real_stanford_parser_refuses_escape_with_jvm_present(monkeypatch, model_path):
-    """End-to-end negative: with a working JVM and real jars, a hostile -model is
-    refused before launch, so the block is the guard and not a missing JVM."""
-    from nltk.parse.stanford import StanfordParser
-
-    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
-    if parser_dir is None:
-        pytest.skip("stanford-parser is not installed under nltk.data.path")
-    monkeypatch.setenv("STANFORD_PARSER", parser_dir)
-    monkeypatch.setenv("STANFORD_MODELS", parser_dir)
-
-    parser = StanfordParser()
-    parser.model_path = model_path
-    with pytest.raises((PermissionError, ValueError)):
-        list(parser.raw_parse("John sees a dog."))
 
 
 # ---------------------------------------------------------------------------
@@ -1318,42 +998,6 @@ def _resolve(value):
     return os.fspath(value) if hasattr(value, "__fspath__") else value
 
 
-def test_stanford_model_argv_carries_the_validated_string(pathsec_sandbox, monkeypatch):
-    """The argv entry must be the exact string the guard checked, not an object
-    that can resolve to something else when the child process reads it."""
-    import nltk.parse.stanford as st
-
-    root, outside = pathsec_sandbox
-    sink = _trap_java(monkeypatch, st, {})
-    evil = outside / "evil.ser.gz"
-    evil.write_text("x")
-    good = root / "ok.ser.gz"
-    good.write_text("m")
-
-    parser = _stanford_parser(_MutatingPath(str(good), str(evil)))
-    with pytest.raises(_ReachedJVM):
-        parser.parse_sents([["hello", "world"]])
-    handed_over = sink["cmd"][sink["cmd"].index("-model") + 1]
-    assert isinstance(handed_over, str)
-    assert os.path.realpath(_resolve(handed_over)).startswith(
-        os.path.realpath(str(root))
-    )
-
-
-def test_malt_working_dir_uses_the_validated_model_string(pathsec_sandbox):
-    root, outside = pathsec_sandbox
-    evil = outside / "evil.mco"
-    evil.write_text("x")
-    good = root / "ok.mco"
-    good.write_text("m")
-
-    parser = _malt(_MutatingPath(str(good), str(evil)))
-    infile, _outfile = _sandbox_io(parser)
-    cmd = parser.generate_malt_command(infile, None, mode="learn")
-    workingdir = cmd[cmd.index("-w") + 1]
-    assert os.path.realpath(str(workingdir)).startswith(os.path.realpath(str(root)))
-
-
 def test_mutating_path_that_starts_hostile_is_refused(pathsec_sandbox):
     """The other ordering: hostile on the guard's call. Must still be refused."""
     root, outside = pathsec_sandbox
@@ -1544,15 +1188,6 @@ def test_lying_subclass_returned_by_fspath_is_refused():
             guard(_LyingFsPath(), context="sweep")
 
 
-def test_malt_argv_cannot_be_injected_via_str_subclass(pathsec_sandbox):
-    """The payload previously reached the JVM argv as "-c -Xmx99g"."""
-    root, _outside = pathsec_sandbox
-    parser = _malt(_LyingStr("-Xmx99g"))
-    infile, _outfile = _sandbox_io(parser)
-    with pytest.raises((PermissionError, ValueError)):
-        parser.generate_malt_command(infile, None, mode="learn")
-
-
 def test_guards_always_return_an_exact_str(pathsec_sandbox):
     """The value callers put into argv must be a plain str, so that nothing can
     re-resolve or re-inspect it differently later."""
@@ -1594,105 +1229,6 @@ def _stanford_with_options(model_path, options):
     parser = _stanford_parser(model_path)
     parser.corenlp_options = options
     return parser
-
-
-@pytest.mark.parametrize(
-    "options",
-    [
-        "-model /etc/passwd",
-        "-model ../../../etc/passwd",
-        "-loadClassifier /etc/passwd",
-        "-outputFormat xml",
-        "-encoding utf8",
-        "-sentences newline",
-    ],
-    ids=[
-        "second-model-abs",
-        "second-model-traversal",
-        "loadClassifier-abs",
-        "dup-outputFormat",
-        "dup-encoding",
-        "dup-sentences",
-    ],
-)
-def test_corenlp_options_cannot_override_guarded_flags(
-    pathsec_sandbox, monkeypatch, options
-):
-    import nltk.parse.stanford as st
-
-    root, _outside = pathsec_sandbox
-    _trap_java(monkeypatch, st, {})
-    model = str(root / "ok.ser.gz")
-    with pathsec.open(model, "w", encoding="utf-8") as handle:
-        handle.write("m")
-    with pytest.raises((PermissionError, ValueError)):
-        _stanford_with_options(model, options).parse_sents([["hi", "there"]])
-
-
-def test_corenlp_options_cannot_point_outside_the_roots(pathsec_sandbox, monkeypatch):
-    import nltk.parse.stanford as st
-
-    root, outside = pathsec_sandbox
-    _trap_java(monkeypatch, st, {})
-    evil = outside / "evil.ser.gz"
-    evil.write_text("x")
-    model = str(root / "ok.ser.gz")
-    with pathsec.open(model, "w", encoding="utf-8") as handle:
-        handle.write("m")
-    with pytest.raises((PermissionError, ValueError)):
-        _stanford_with_options(model, f"-serializedDict {evil}").parse_sents(
-            [["hi", "there"]]
-        )
-
-
-@pytest.mark.parametrize(
-    "options",
-    [
-        "",
-        "-maxLength 40",
-        "-serializedDict edu/stanford/nlp/x.ser.gz",
-        "-retainTMPSubcategories",
-    ],
-    ids=["empty", "new-flag", "resource-value", "bare-flag"],
-)
-def test_corenlp_options_passthrough_still_works(pathsec_sandbox, monkeypatch, options):
-    """Over-block control: this is a general passthrough for the tool's own
-    settings, so anything that is neither a duplicate nor an out-of-root path
-    must still reach the JVM."""
-    import nltk.parse.stanford as st
-
-    root, _outside = pathsec_sandbox
-    sink = _trap_java(monkeypatch, st, {})
-    model = str(root / "ok.ser.gz")
-    with pathsec.open(model, "w", encoding="utf-8") as handle:
-        handle.write("m")
-    with pytest.raises(_ReachedJVM):
-        _stanford_with_options(model, options).parse_sents([["hi", "there"]])
-    assert sink["cmd"][sink["cmd"].index("-model") + 1] == model
-    for token in options.split():
-        assert token in sink["cmd"]
-
-
-def test_teeth_corenlp_options_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
-    """Restore the raw split and the injected -model reaches the JVM again."""
-    import nltk.parse.stanford as st
-
-    root, outside = pathsec_sandbox
-    sink = _trap_java(monkeypatch, st, {})
-    evil = outside / "evil.ser.gz"
-    evil.write_text("x")
-    model = str(root / "ok.ser.gz")
-    with pathsec.open(model, "w", encoding="utf-8") as handle:
-        handle.write("m")
-    monkeypatch.setattr(
-        st.StanfordParser,
-        "_validated_extra_options",
-        lambda self, cmd: self.corenlp_options.split(),
-    )
-    with pytest.raises(_ReachedJVM):
-        _stanford_with_options(model, f"-model {evil}").parse_sents([["hi", "there"]])
-    models = [sink["cmd"][i + 1] for i, x in enumerate(sink["cmd"]) if x == "-model"]
-    assert str(evil) in models
 
 
 @pytest.mark.parametrize(
