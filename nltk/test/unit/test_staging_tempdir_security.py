@@ -196,6 +196,10 @@ def test_a_writable_scratch_dir_is_not_reused(fresh_staging, mode):
     assert os.stat(replacement).st_mode & 0o077 == 0
 
 
+@pytest.mark.skipif(
+    os.name != "posix",
+    reason="chmod 0o500 does not block directory writes on Windows",
+)
 def test_no_writable_root_refuses_rather_than_falling_back(fresh_staging, monkeypatch):
     """With no writable root the correct answer is to refuse.
 

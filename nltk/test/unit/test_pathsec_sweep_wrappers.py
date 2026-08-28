@@ -761,6 +761,7 @@ def test_hardlinked_write_target_is_refused(pathsec_sandbox):
         validate_tool_path(alias, context="sweep", for_write=True)
 
 
+@pytest.mark.skipif(os.name != "posix", reason="st_nlink hardlink guard is POSIX-only")
 def test_hardlinked_read_target_is_refused_by_the_tool_guard(pathsec_sandbox):
     """validate_tool_path refuses a multiply-linked file for READS as well.
 
@@ -1865,6 +1866,10 @@ def test_wrapper_java_options_hit_the_allowlist(pathsec_sandbox, monkeypatch, op
         tool.segment_file(inside)
 
 
+@pytest.mark.skipif(
+    os.name != "posix",
+    reason="POSIX-shaped traversal and resolve() fallback; hardening, not a fixed vuln",
+)
 def test_unresolvable_path_with_traversal_or_nul_is_refused(pathsec_sandbox):
     """validate_path falls back to validating only the prefix up to ".zip" when
     resolve() fails, and resolve() also fails on a NUL. Refusing an unresolvable

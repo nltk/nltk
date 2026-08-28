@@ -97,7 +97,7 @@ def test_no_source_module_creates_a_temp_file_outside_the_sandbox():
         if "test" in path.parts:
             continue
         try:
-            tree = ast.parse(path.read_text())
+            tree = ast.parse(path.read_text(encoding="utf-8"))
         except SyntaxError:
             continue
         for node in ast.walk(tree):
