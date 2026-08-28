@@ -10,8 +10,8 @@
 points already use it; two did not, and both hung the interpreter outright on
 ``(a+)+$`` against a 34-character bait string:
 
-* ``RegexpStemmer(pattern)`` -- pattern and word are both caller-supplied
-* ``nltk.util.re_show(pattern, string)`` -- likewise
+* ``RegexpStemmer(pattern)`` (pattern and word are both caller-supplied)
+* ``nltk.util.re_show(pattern, string)`` (likewise)
 
 These run in a SUBPROCESS with a timeout. An in-process test cannot fail
 cleanly on catastrophic backtracking: the regex engine does not release the GIL,
