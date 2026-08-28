@@ -1359,6 +1359,13 @@ def _member_count_guard():
     return _check_zip_member_count
 
 
+def _total_size_guard():
+    """Deferred import of the aggregate-decompression-bomb check (see above)."""
+    from nltk.data import _check_zip_total_size
+
+    return _check_zip_total_size
+
+
 class _BoundedZipExtFile(io.RawIOBase):
     """Wraps zipfile's streaming member reader and refuses a decompression bomb
     (CWE-409) as the member is consumed: it accumulates the ACTUAL decompressed
@@ -1428,9 +1435,9 @@ class ZipFile(zipfile.ZipFile):
         # Refuse a central-directory bomb here, the earliest point the entry count
         # is known, so no consumer pays to list, validate or extract its members.
         if getattr(self, "mode", "r") == "r":
-            _member_count_guard()(
-                len(self.filelist), getattr(self, "filename", None) or "<archive>"
-            )
+            archive_name = getattr(self, "filename", None) or "<archive>"
+            _member_count_guard()(len(self.filelist), archive_name)
+            _total_size_guard()(self.filelist, archive_name)
 
     def extract(self, member, path=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd(), specific_member=member)
