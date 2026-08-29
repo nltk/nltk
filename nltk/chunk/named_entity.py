@@ -14,7 +14,7 @@ import os
 import re
 
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_tool_dir
 from nltk.tag import ClassifierBasedTagger, pos_tag
 from nltk.xmlsec import parse as safe_parse
 
@@ -376,16 +376,18 @@ class Maxent_NE_Chunker(NEChunkParser):
         :return: the directory the parameter files were written to.
         :rtype: str
         """
+        # Validate the destination before touching anything else, so the guard
+        # is the first thing a caller-supplied path meets.
+        if tab_dir is None:
+            tab_dir = self.save_dir
+        validate_tool_dir(tab_dir, context="Maxent_NE_Chunker.save_params")
+
         classif = self._tagger._classifier
         ecg = classif._encoding
         wgt = classif._weights
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
-        if tab_dir is None:
-            tab_dir = self.save_dir
-        validate_path(tab_dir, context="Maxent_NE_Chunker.save_params")
-
         save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
         return tab_dir
 
