@@ -141,6 +141,11 @@ _DENIED_MODULE_PREFIXES = (
     "os",
     "nt",
     "posix",
+    # os.path's concrete backing modules: denying "os" only catches the literal
+    # "os.path", not these, so an allowlist naming them would reach path/stat gadgets.
+    "posixpath",
+    "ntpath",
+    "genericpath",
     "subprocess",
     "sys",
     "socket",

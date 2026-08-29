@@ -924,11 +924,48 @@ def find_file_iter(
         raise LookupError(f"\n\n{div}\n{msg}\n{div}")
 
 
+def _reject_cwd_relative_bare_match(filename, matches, kind):
+    """Filter out an untrusted CWD-relative match for a bare tool name.
+
+    ``find_file_iter`` probes the current working directory for a bare
+    ``filename`` before the configured env vars / searchpath, so a planted
+    ``./<name>`` or ``./<name>/<name>`` is returned first and, because a returned
+    relative path is later run or loaded relative to the CWD, an attacker who can
+    write to the CWD chooses the tool (CWE-426 / CWE-427). ``find_binary``
+    already refuses this; ``find_file`` / ``find_dir`` did not.
+
+    Only a *bare* name (no directory component) is filtered, and only when the
+    match is not absolute: a caller who passed ``tools/maltparser`` or an
+    absolute path made an explicit choice and is honoured. An env var or
+    searchpath hit is absolute, so it survives.
+    """
+    if os.path.dirname(filename) != "":
+        yield from matches
+        return
+    found_untrusted = False
+    for match in matches:
+        if not os.path.isabs(match):
+            found_untrusted = True
+            continue
+        yield match
+    if found_untrusted:
+        raise LookupError(
+            f"NLTK found {kind} {filename!r} only in the current working "
+            "directory, which is not a trusted location. Install it on a "
+            "configured search path, set the relevant environment variable, or "
+            "pass an absolute path."
+        )
+
+
 def find_file(
     filename, env_vars=(), searchpath=(), file_names=None, url=None, verbose=False
 ):
     return next(
-        find_file_iter(filename, env_vars, searchpath, file_names, url, verbose)
+        _reject_cwd_relative_bare_match(
+            filename,
+            find_file_iter(filename, env_vars, searchpath, file_names, url, verbose),
+            "file",
+        )
     )
 
 
@@ -936,8 +973,18 @@ def find_dir(
     filename, env_vars=(), searchpath=(), file_names=None, url=None, verbose=False
 ):
     return next(
-        find_file_iter(
-            filename, env_vars, searchpath, file_names, url, verbose, finding_dir=True
+        _reject_cwd_relative_bare_match(
+            filename,
+            find_file_iter(
+                filename,
+                env_vars,
+                searchpath,
+                file_names,
+                url,
+                verbose,
+                finding_dir=True,
+            ),
+            "directory",
         )
     )
 

@@ -32,7 +32,13 @@ import sys
 try:
     # If a VERSION file exists, use it!
     version_file = os.path.join(os.path.dirname(__file__), "VERSION")
-    with open(version_file) as infile:
+    from nltk.pathsec import open_package_resource
+
+    # Not an exemption: containment is enforced against the installed package
+    # directory, since VERSION ships beside the code and never in a data root.
+    with open_package_resource(
+        version_file, os.path.dirname(__file__), context="nltk.__version__"
+    ) as infile:
         __version__ = infile.read().strip()
 except NameError:
     __version__ = "unknown (running code interactively?)"
