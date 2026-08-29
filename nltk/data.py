@@ -32,16 +32,18 @@ adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 
+import atexit
 import codecs
 import functools
 import os
 import pickle
 import re
+import shutil
+import stat
 import sys
 import tempfile
 import textwrap
 import urllib.request
-import zipfile
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
@@ -89,6 +91,35 @@ def _assert_no_encoded_bypass(name, error_label=None):
     """
     decoded = unquote(name)
     if decoded != name and _UNSAFE_NO_PROTOCOL_RE.search(decoded):
+        label = name if error_label is None else error_label
+        raise ValueError(f"Unsafe resource path: {label!r}")
+
+
+# Python 3.14's url2pathname follows the WHATWG URL rules, so it silently strips
+# ASCII tab / LF / CR and truncates at "#" or "?". Earlier versions keep them.
+_URL_REWRITTEN_CHARS_RE = re.compile(r"[\t\n\r#?]")
+
+
+def _assert_no_normalized_bypass(name, error_label=None):
+    """
+    Reject *name* if :func:`url2pathname` would silently rewrite it.
+
+    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that
+    was validated must be the name that is used" rule but a different rewriting
+    step. Python 3.14 made ``url2pathname`` follow the WHATWG URL rules: it
+    strips ASCII tab, LF and CR and truncates at ``#`` or ``?``. Stripping can
+    *create* a traversal that the raw-form check never saw, because ``".\\n./x"``
+    contains no ``../`` yet becomes ``"../x"`` once converted, which then joins
+    onto the data root and escapes it (CWE-22).
+
+    None of these characters belongs in an NLTK resource name, so refusing them
+    outright keeps the validated and the used name identical on every Python
+    version, rather than tracking what the standard library normalises next.
+
+    :param name: The resource string to validate.
+    :param error_label: Optional alternative string for the error message.
+    """
+    if _URL_REWRITTEN_CHARS_RE.search(name):
         label = name if error_label is None else error_label
         raise ValueError(f"Unsafe resource path: {label!r}")
 
@@ -177,7 +208,66 @@ else:
 ######################################################################
 
 
-def make_staging_dir(prefix="nltk_"):
+_STAGING_TEMPDIR = None
+
+
+def staging_tempdir():
+    """A process-wide scratch directory INSIDE an allowed data root.
+
+    ``tempfile.mkstemp()`` and ``NamedTemporaryFile()`` default to the system
+    temp dir, which on Linux is the shared, world-writable ``/tmp`` and is
+    deliberately NOT a pathsec root. Wrappers that stage an input file for an
+    external tool therefore wrote outside the sandbox. Pass this as ``dir=`` so
+    the scratch file lands inside a root instead.
+
+    Allocated once per process and removed at exit, so callers do not leak a
+    directory per invocation the way a per-call ``make_staging_dir`` would.
+    """
+    global _STAGING_TEMPDIR
+    if _STAGING_TEMPDIR is not None and not _staging_dir_is_still_safe(
+        _STAGING_TEMPDIR
+    ):
+        _STAGING_TEMPDIR = None
+    if _STAGING_TEMPDIR is None:
+        staged = make_staging_dir(prefix="nltk_scratch_")
+        atexit.register(shutil.rmtree, staged, ignore_errors=True)
+        _STAGING_TEMPDIR = staged
+    return _STAGING_TEMPDIR
+
+
+def _staging_dir_is_still_safe(path):
+    """Re-check a cached scratch directory before handing it out again.
+
+    The cache is a module global, so it is only as trustworthy as the directory
+    it names. ``os.path.isdir`` FOLLOWS symlinks, so an attacker who removes the
+    directory and drops a symlink in its place passes that check and every later
+    scratch file lands wherever the link points. ``lstat`` is used instead, and
+    containment is re-verified, so a swapped or poisoned value is discarded and
+    a fresh directory allocated.
+    """
+    from nltk import pathsec
+
+    try:
+        info = os.lstat(path)
+    except OSError:
+        return False
+    # Not stat(): a symlink must be rejected, not followed.
+    if not stat.S_ISDIR(info.st_mode):
+        return False
+    try:
+        pathsec.validate_path(path, context="nltk.data.staging_tempdir")
+    except (PermissionError, ValueError):
+        return False
+    # A scratch dir that has become group- or world-writable is squattable:
+    # another local user can replace a file between the moment this process
+    # creates it and the moment it reads it back (CWE-377/CWE-378). Discard it
+    # and allocate a fresh 0700 one rather than reusing it.
+    if not pathsec.is_private_dir(path):
+        return False
+    return True
+
+
+def make_staging_dir(prefix="nltk_", cleanup=False):
     """Create a fresh private directory for NLTK's own output, inside a data root.
 
     NLTK's save helpers default here so their output lands within the security
@@ -186,13 +276,41 @@ def make_staging_dir(prefix="nltk_"):
     directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
     under the first ``nltk.data.path`` entry that can be written to.
 
-    :param prefix: filename prefix for the created directory.
+    :param prefix: filename prefix for the created directory. It is a *name*
+        fragment, not a path: callers build it from values such as a tagger's
+        language code, and ``tempfile.mkdtemp`` simply concatenates it onto
+        *dir*, so a ``..`` inside it would place the directory outside the data
+        root (CWE-22). Path separators and NUL are therefore refused.
     :type prefix: str
+    :param cleanup: remove the directory when the interpreter exits. Use it for
+        scratch output nobody will look for again; leave it False for a saved
+        model, where deleting the user's artifact would be surprising. Without
+        it every call leaks a directory under the data root, since the name is
+        unpredictable and no caller can find it again to clean up.
     :return: the absolute path of the created directory.
+
+    See also :func:`staging_tempdir`, which is this function memoised: one
+    shared scratch directory for the whole process, for callers that need a
+    *place* to put a throwaway file rather than a directory of their own.
+    Allocating a fresh directory per throwaway file is what leaked 70 of them on
+    a development machine.
     :rtype: str
+    :raises ValueError: if *prefix* is not a plain filename fragment.
     :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
         root, in which case the caller should pass an explicit destination.
     """
+    prefix = str(prefix)
+    if (
+        "\x00" in prefix
+        or "/" in prefix
+        or "\\" in prefix
+        or os.sep in prefix
+        or (os.altsep and os.altsep in prefix)
+    ):
+        raise ValueError(
+            f"Invalid staging-dir prefix {prefix!r}: a prefix is a filename "
+            "fragment, not a path (no separators or NUL)"
+        )
     for root in path:
         base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
         try:
@@ -204,7 +322,17 @@ def make_staging_dir(prefix="nltk_"):
             # the sandbox does.
             _validate_path(base, context="nltk.data.make_staging_dir")
             os.makedirs(base, exist_ok=True)
-            return tempfile.mkdtemp(prefix=prefix, dir=base)
+            staged = tempfile.mkdtemp(prefix=prefix, dir=base)
+            try:
+                # Defence in depth: confirm what was actually created is inside
+                # the root just validated, not merely that the base was.
+                _validate_path(staged, context="nltk.data.make_staging_dir")
+            except BaseException:
+                os.rmdir(staged)
+                raise
+            if cleanup:
+                atexit.register(shutil.rmtree, staged, ignore_errors=True)
+            return staged
         except (OSError, ValueError, PermissionError):
             continue
     raise PermissionError(
@@ -212,6 +340,76 @@ def make_staging_dir(prefix="nltk_"):
         f"{len(path)} nltk.data.path entries); pass an explicit destination "
         "directory."
     )
+
+
+class _BoundedGzipFile(GzipFile):
+    """A ``GzipFile`` whose ``read()`` refuses a decompression bomb (CWE-409): it
+    tracks how far it has decompressed and enforces nltk's ratio/size policy,
+    measured against the compressed file size when known (else the ``MAX_UNZIP_SIZE``
+    hard cap). Used wherever nltk opens a ``.gz`` for reading, so a raw unbounded
+    ``GzipFile.read`` is never the read path (``gzip_open_unicode``,
+    ``GzipFileSystemPathPointer.open``, the deprecated ``BufferedGzipFile``).
+    Writing is unaffected.
+
+    The guard measures the maximum uncompressed offset reached (``tell()``), not the
+    sum of ``read()`` return sizes, so backward seeks and re-reads (e.g. by
+    ``SeekableUnicodeStreamReader`` or ``pickle``) never inflate the count into a
+    false positive, while a seek-to-end still forces the full member to decompress
+    and is caught. The compressed size is stat-ed once and cached, since re-stat-ing
+    on every ``read()`` is hot for chunked/line iteration.
+    """
+
+    @classmethod
+    def _nltk_wrap_secure_fileobj(cls, filename, fileobj):
+        """Build a reader over an already-opened (path-validated) *fileobj* and make
+        the returned object own it, so closing the reader closes the handle: a plain
+        ``GzipFile`` never closes a fileobj it did not open itself."""
+        gz = cls(filename, "rb", 9, fileobj)
+        gz._nltk_owned_fileobj = fileobj
+        return gz
+
+    def _nltk_compress_size(self):
+        if not hasattr(self, "_nltk_cached_compress_size"):
+            name = self.name
+            self._nltk_cached_compress_size = (
+                os.path.getsize(name)
+                if isinstance(name, str) and os.path.exists(name)
+                else None
+            )
+        return self._nltk_cached_compress_size
+
+    def _nltk_guard_offset(self, reached):
+        # Guard at the high-water uncompressed offset (passed in, never self.tell(),
+        # which IOBase routes through seek() below and would recurse).
+        if reached > getattr(self, "_nltk_read_total", 0):
+            self._nltk_read_total = reached
+            _reject_decompression_total(
+                reached, self._nltk_compress_size(), self.name or "<gzip>", "gzip"
+            )
+
+    def read(self, size=-1):
+        chunk = super().read(size)
+        if chunk:
+            # super().seek(0, CUR) is the parent's cheap post-read offset (no
+            # decompression), bypassing this class's seek() override.
+            self._nltk_guard_offset(super().seek(0, os.SEEK_CUR))
+        return chunk
+
+    def seek(self, offset, whence=os.SEEK_SET):
+        # A forward / SEEK_END seek decompresses-and-discards inside GzipFile's buffer,
+        # never through read(); re-check the landed offset so a bomb cannot slip past.
+        pos = super().seek(offset, whence)
+        self._nltk_guard_offset(pos)
+        return pos
+
+    def close(self):
+        try:
+            super().close()
+        finally:
+            owned = getattr(self, "_nltk_owned_fileobj", None)
+            if owned is not None:
+                self._nltk_owned_fileobj = None
+                owned.close()
 
 
 def gzip_open_unicode(
@@ -224,7 +422,7 @@ def gzip_open_unicode(
     newline=None,
 ):
     if fileobj is None:
-        fileobj = GzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = _BoundedGzipFile(filename, mode, compresslevel, fileobj)
     return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
@@ -515,11 +713,11 @@ class FileSystemPathPointer(PathPointer, str):
 
 
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
-class BufferedGzipFile(GzipFile):
+class BufferedGzipFile(_BoundedGzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.
 
     Use ``GzipFile`` directly as it also buffers in all supported
-    Python versions.
+    Python versions. (``read()`` is bomb-bounded via ``_BoundedGzipFile``.)
     """
 
     def __init__(
@@ -542,11 +740,14 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        # Route through the sentinel like FileSystemPathPointer.open() so the
-        # path is validated against the allowed NLTK data roots (with symlinks
-        # resolved) before reading; decompress the validated stream rather than
-        # re-opening the path directly (CWE-22 / CWE-73).
-        stream = GzipFile(self._path, fileobj=_secure_open(self._path, "rb"))
+        # Validate the path via the sentinel (CWE-22 / CWE-73), then stream the handle
+        # through _BoundedGzipFile so a bomb is capped without buffering it whole (CWE-409).
+        handle = _secure_open(self._path, "rb")
+        try:
+            stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
+        except BaseException:
+            handle.close()
+            raise
         # ``encoding is not None`` (not truthiness) to match
         # FileSystemPathPointer.open() / ZipFilePathPointer.open().
         if encoding is not None:
@@ -571,6 +772,88 @@ MAX_UNZIP_SIZE = None
 #: exceeds this activation threshold, so small files (which cannot exhaust
 #: resources regardless of ratio) are never rejected.
 MAX_UNZIP_ACTIVATION = 32 * 1024 * 1024  # 32 MiB
+
+#: Maximum number of entries an archive may declare (CWE-409). Metadata alone
+#: costs memory and CPU: reading the central directory of an archive with
+#: millions of entries exhausts both without decompressing a single byte, so the
+#: per-member ratio/size limits above never see it. The largest corpus NLTK
+#: ships declares ~15k members, so this leaves ample headroom. Configurable;
+#: ``None`` disables the check.
+MAX_UNZIP_MEMBERS = 100_000
+
+
+def _check_zip_member_count(count, name="<archive>"):
+    """Reject an archive declaring more entries than ``MAX_UNZIP_MEMBERS``.
+
+    A central-directory bomb needs no decompression: the entry table itself is
+    the payload, and every consumer that lists or iterates members pays for it.
+    """
+    if MAX_UNZIP_MEMBERS is not None and count > MAX_UNZIP_MEMBERS:
+        raise ValueError(
+            "Refusing to read zip %r: it declares %d entries, above "
+            "nltk.data.MAX_UNZIP_MEMBERS=%d (central-directory bomb). Raise "
+            "nltk.data.MAX_UNZIP_MEMBERS if this archive is trusted."
+            % (name, count, MAX_UNZIP_MEMBERS)
+        )
+
+
+def _check_zip_total_size(infolist, name="<archive>"):
+    """Reject an archive whose members SUM to a decompression bomb (CWE-409).
+
+    ``_check_decompression_bomb`` runs per member, so an archive of many members
+    each just under ``MAX_UNZIP_ACTIVATION`` (32 MiB) is never ratio-checked and
+    never individually refused, yet the members together expand from a tiny zip
+    to an arbitrarily large total: 40 members of 5 MiB came from a 400 KiB zip,
+    and at the ``MAX_UNZIP_MEMBERS`` limit the total reaches terabytes. Extraction
+    keeps no running byte total, so nothing caught it.
+
+    This applies the same activation-plus-ratio test at the whole-archive level:
+    a large total that expands by more than ``MAX_UNZIP_RATIO`` over the total
+    compressed size is refused. A legitimately large corpus has a modest overall
+    ratio and passes; only an aggregate that looks like a bomb is refused.
+    """
+    # A single real member is already fully covered by the per-member
+    # _check_decompression_bomb (declared size) and the bounded streaming reader
+    # (actual bytes). The aggregate gap this guards is specifically MANY members
+    # that each pass the per-member floor but sum to a bomb, so it only applies
+    # when there is more than one file member. Directory entries (size 0, name
+    # ending in "/") are not real members and are not counted, so a lone big file
+    # shipped with its parent directory entry stays on the per-member path.
+    files = [
+        info
+        for info in infolist
+        if not (getattr(info, "filename", "") or "").endswith("/")
+    ]
+    if len(files) <= 1:
+        return
+    total_uncompressed = 0
+    total_compressed = 0
+    for info in files:
+        total_uncompressed += getattr(info, "file_size", 0) or 0
+        total_compressed += getattr(info, "compress_size", 0) or 0
+    if MAX_UNZIP_SIZE is not None and total_uncompressed > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to read zip %r: its members total %d uncompressed bytes, "
+            "above nltk.data.MAX_UNZIP_SIZE=%d."
+            % (name, total_uncompressed, MAX_UNZIP_SIZE)
+        )
+    if (
+        total_uncompressed >= MAX_UNZIP_ACTIVATION
+        and total_compressed > 0
+        and total_uncompressed > MAX_UNZIP_RATIO * total_compressed
+    ):
+        raise ValueError(
+            "Refusing to read suspected zip bomb %r: its members expand %.1fx in "
+            "aggregate (%d -> %d bytes), above nltk.data.MAX_UNZIP_RATIO=%d. Raise "
+            "nltk.data.MAX_UNZIP_RATIO if this archive is trusted."
+            % (
+                name,
+                total_uncompressed / total_compressed,
+                total_compressed,
+                total_uncompressed,
+                MAX_UNZIP_RATIO,
+            )
+        )
 
 
 def _check_decompression_bomb(info):
@@ -613,6 +896,61 @@ def _check_decompression_bomb(info):
                 MAX_UNZIP_RATIO,
             )
         )
+
+
+def _reject_decompression_total(total, compress_size, name, kind):
+    """Raise ValueError if *total* decompressed bytes breach the bomb policy: the
+    optional ``MAX_UNZIP_SIZE`` hard cap, or (when *compress_size* is known and
+    non-zero) an expansion beyond ``MAX_UNZIP_RATIO`` above the ``MAX_UNZIP_ACTIVATION``
+    floor. *kind* (``"zip"`` / ``"gzip"``) only tunes the wording (CWE-409)."""
+    if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to decompress %r: its %s output exceeds "
+            "nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, kind, MAX_UNZIP_SIZE)
+        )
+    if (
+        compress_size
+        and total >= MAX_UNZIP_ACTIVATION
+        and (total > MAX_UNZIP_RATIO * compress_size)
+    ):
+        raise ValueError(
+            "Refusing to decompress suspected %s bomb %r: it expands beyond "
+            "nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte compressed input. "
+            "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+            % (kind, name, MAX_UNZIP_RATIO, compress_size)
+        )
+
+
+def _bounded_stream_read(stream, compress_size, name="<member>", kind="zip"):
+    """Read a decompressing file-like *stream* under the decompression-bomb policy,
+    capping the **actual** bytes it produces against *compress_size* (CWE-409).
+
+    This never trusts a declared/metadata size and never materialises the member
+    through a raw one-shot read: it pulls fixed 1 MiB chunks and refuses once the
+    output is both large (>= ``MAX_UNZIP_ACTIVATION``) and expands beyond
+    ``MAX_UNZIP_RATIO`` over the compressed input, or exceeds the optional
+    ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes. *kind* only tunes
+    the error wording (``"zip"`` / ``"gzip"``).
+    """
+    out = []
+    total = 0
+    for chunk in iter(lambda: stream.read(1 << 20), b""):
+        total += len(chunk)
+        _reject_decompression_total(total, compress_size, name, kind)
+        out.append(chunk)
+    return b"".join(out)
+
+
+def _bounded_gzip_decompress(gz_bytes, name="<member>"):
+    """Decompress gzip bytes under the decompression-bomb policy (CWE-409).
+
+    ``ZipFilePathPointer.open`` / ``GzipFileSystemPathPointer.open`` wrap a ``.gz``
+    in a ``GzipFile``, a decompression layer :func:`_check_decompression_bomb` (which
+    only inspects declared zip sizes) does not bound. The gzip ISIZE trailer is
+    attacker-forgeable, so the actual-byte streaming cap is the guarantee.
+    """
+    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
+        return _bounded_stream_read(gz, len(gz_bytes), name, kind="gzip")
 
 
 class ZipFilePathPointer(PathPointer):
@@ -677,7 +1015,9 @@ class ZipFilePathPointer(PathPointer):
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
-            stream = GzipFile(self._entry, fileobj=stream)
+            # The .gz is a SECOND decompression layer the zip-member guard never
+            # sees; bound its output under the same policy (nested bomb, CWE-409).
+            stream = BytesIO(_bounded_gzip_decompress(data, self._entry))
         elif encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -783,6 +1123,7 @@ def find(resource_name, paths=None):
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_name):
         raise ValueError(f"Unsafe resource path: {resource_name!r}")
     _assert_no_encoded_bypass(resource_name)
+    _assert_no_normalized_bypass(resource_name)
 
     # Resolve default paths at runtime in-case the user overrides
     # nltk.data.path
@@ -790,7 +1131,10 @@ def find(resource_name, paths=None):
         paths = path
 
     # Check if the resource name includes a zipfile name
-    m = re.match(r"(.*?\.zip)/?(.*)$", resource_name)
+    # DOTALL matters for termination, not just matching: without it a name
+    # containing a newline never looks like a zip, so the ".zip/" fallback below
+    # recurses on an ever-growing name instead of stopping (CWE-407 / CWE-1333).
+    m = re.match(r"(.*?\.zip)/?(.*)$", resource_name, re.DOTALL)
     if m:
         zipfile, zipentry = m.groups()
     else:
@@ -1384,10 +1728,13 @@ class OpenOnDemandZipFile(ZipFile):
         _check_decompression_bomb(self.getinfo(name))
         # This will be validated by pathsec.open
         self.fp = _secure_open(self.filename, "rb")
-        value = zipfile.ZipFile.read(self, name)
-        self.fp.close()
-        self.fp = None
-        return value
+        try:
+            # Delegate to the secured base read(), which also streams the member's
+            # ACTUAL bytes under the cap (CWE-409), not a raw one-shot read.
+            return super().read(name)
+        finally:
+            self.fp.close()
+            self.fp = None
 
     def write(self, *args, **kwargs):
         """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""

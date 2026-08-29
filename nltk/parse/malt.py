@@ -12,7 +12,7 @@ import os
 import sys
 import tempfile
 
-from nltk.data import ZipFilePathPointer
+from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import (
     find_dir,
     find_file,
@@ -22,6 +22,12 @@ from nltk.internals import (
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import (
+    validate_model_resource,
+    validate_path,
+    validate_tool_path,
+)
 
 
 def malt_regex_tagger():
@@ -160,10 +166,45 @@ class MaltParser(ParserI):
         # Initialize model.
         self.model = find_malt_model(model_filename)
         self._trained = self.model != "malt_temp.mco"
-        # Set the working_dir parameters i.e. `-w` from MaltParser's option.
-        self.working_dir = tempfile.gettempdir()
+        # `-w` is allocated lazily inside a data root; see the working_dir property.
+        self._working_dir = None
         # Initialize POS tagger.
         self.tagger = tagger if tagger is not None else malt_regex_tagger()
+
+    @property
+    def working_dir(self):
+        """MaltParser's ``-w`` directory, holding the temporary CoNLL files and,
+        for an untrained parser, the ``malt_temp.mco`` model that ``train()``
+        writes.
+
+        Allocated lazily by ``nltk.data.make_staging_dir`` INSIDE an allowed data
+        root, with an unpredictable name and mode 0700. The previous default was
+        the shared ``tempfile.gettempdir()``, which is world-writable on Linux and
+        gives a predictable, squattable path for both the CoNLL files and the model.
+        """
+        if self._working_dir is None:
+            # cleanup=True: the old shared tempdir was reaped by the OS, a dir
+            # under a data root is not, and the .mco it holds is temporary.
+            self._working_dir = make_staging_dir(prefix="nltk_malt_", cleanup=True)
+        return self._working_dir
+
+    @working_dir.setter
+    def working_dir(self, value):
+        # None restores the unset state, so the property allocates again on next
+        # access rather than raising.
+        if value is None:
+            self._working_dir = None
+            return
+        # A caller may still choose the directory, but only inside the sandbox.
+        # An empty value would reach MaltParser as `-w ""`, i.e. the CWD.
+        text = os.fspath(value)
+        if not text.strip():
+            raise ValueError(
+                "MaltParser.working_dir may not be empty; it would resolve to the "
+                "current working directory."
+            )
+        validate_path(text, context="MaltParser.working_dir")
+        self._working_dir = text
 
     def parse_tagged_sents(self, sentences, verbose=False, top_relation_label="null"):
         """
@@ -214,7 +255,9 @@ class MaltParser(ParserI):
                     )
 
                 # Must return iter(iter(Tree))
-                with open(output_file_name) as infile:
+                with pathsec_open(
+                    output_file_name, context="MaltParser.parse_tagged_sents"
+                ) as infile:
                     for tree_str in infile.read().split("\n\n"):
                         yield (
                             iter(
@@ -258,6 +301,12 @@ class MaltParser(ParserI):
         :type inputfilename: str
         :param outputfilename: path to the output file
         :type outputfilename: str
+
+        Both filenames are bounded to the NLTK data roots. ``-i`` is read by the
+        JVM and ``-o`` is *written* by it, so an unbounded value here is an
+        arbitrary file read and an arbitrary file write respectively. The
+        internal callers pass temporary files inside :attr:`working_dir`, which
+        is itself allocated inside a data root.
         """
 
         # Build only MaltParser's own arguments (main class + program args). The
@@ -270,13 +319,35 @@ class MaltParser(ParserI):
         # directory as the ``-w`` program argument rather than chdir-ing the JVM
         # process: no cwd is handed to java(), so there is no working-directory
         # class-injection surface (an empty/CWD -cp element, CWE-88).
-        model_dir, model_name = os.path.split(self.model)
-        workingdir = os.path.abspath(model_dir) if model_dir else os.getcwd()
+        # Rejects an empty / option-like / URL / traversing model name, and bounds
+        # it to the sandbox when it is a real path. Use the value it returns:
+        # __fspath__ may answer differently on every call, so re-reading
+        # self.model here would let the JVM open a file the guard never saw.
+        model = validate_model_resource(self.model, context="MaltParser model")
+        model_dir, model_name = os.path.split(model)
+        if model_dir:
+            # A model carrying a directory is a real path: bound the directory too,
+            # since in learn mode MaltParser WRITES the .mco into it.
+            validate_path(model, context="MaltParser model")
+            workingdir = os.path.abspath(model_dir)
+        else:
+            # A bare model name lives in the private dir that train() wrote it to.
+            workingdir = self.working_dir
         cmd += ["-w", workingdir, "-c", model_name]
 
-        cmd += ["-i", inputfilename]
+        # -i is read by the JVM and -o is written by it; train_from_file() and
+        # generate_malt_command() are both public, so neither may leave the roots.
+        cmd += ["-i", validate_tool_path(inputfilename, context="MaltParser input")]
         if mode == "parse":
-            cmd += ["-o", outputfilename]
+            cmd += [
+                "-o",
+                validate_tool_path(
+                    outputfilename,
+                    context="MaltParser output",
+                    for_write=True,
+                    must_exist=False,
+                ),
+            ]
         cmd += ["-m", mode]  # mode use to generate parses.
         return cmd
 

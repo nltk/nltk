@@ -58,6 +58,7 @@ except ImportError:
     pass
 
 import os
+import shutil
 import tempfile
 from collections import defaultdict
 
@@ -1439,14 +1440,20 @@ def train_maxent_classifier_with_megam(
         raise ValueError("Specify encoding or labels, not both")
 
     # Write a training file for megam.
+    # make_staging_dir stages inside a data root (a private 0700 dir), so the
+    # scratch file lands in the sandbox and pathsec_open accepts its path.
+    stagedir = make_staging_dir(prefix="nltk_megam_")
     try:
-        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-")
-        with open(trainfile_name, "w") as trainfile:
+        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-", dir=stagedir)
+        with pathsec_open(
+            trainfile_name, "w", context="maxent.call_megam"
+        ) as trainfile:
             write_megam_file(
                 train_toks, encoding, trainfile, explicit=explicit, bernoulli=bernoulli
             )
         os.close(fd)
     except (OSError, ValueError) as e:
+        shutil.rmtree(stagedir, ignore_errors=True)
         raise ValueError("Error while creating megam training file: %s" % e) from e
 
     # Run megam on the training file.
@@ -1482,6 +1489,8 @@ def train_maxent_classifier_with_megam(
         os.remove(trainfile_name)
     except OSError as e:
         print(f"Warning: unable to delete {trainfile_name}: {e}")
+    # Remove the private staging directory so it does not leak per call.
+    shutil.rmtree(stagedir, ignore_errors=True)
 
     # Parse the generated weight vector.
     weights = parse_megam_weights(stdout, encoding.length(), explicit)
@@ -1516,10 +1525,15 @@ class TadmMaxentClassifier(MaxentClassifier):
                 train_toks, count_cutoff, labels=labels
             )
 
+        # make_staging_dir stages inside a data root (a private 0700 dir), so
+        # both scratch files land in the sandbox instead of the shared temp dir.
+        stagedir = make_staging_dir(prefix="nltk_tadm_")
         trainfile_fd, trainfile_name = tempfile.mkstemp(
-            prefix="nltk-tadm-events-", suffix=".gz"
+            prefix="nltk-tadm-events-", suffix=".gz", dir=stagedir
         )
-        weightfile_fd, weightfile_name = tempfile.mkstemp(prefix="nltk-tadm-weights-")
+        weightfile_fd, weightfile_name = tempfile.mkstemp(
+            prefix="nltk-tadm-weights-", dir=stagedir
+        )
 
         trainfile = gzip_open_unicode(trainfile_name, "w")
         write_tadm_file(train_toks, encoding, trainfile)
@@ -1543,11 +1557,15 @@ class TadmMaxentClassifier(MaxentClassifier):
 
         call_tadm(options)
 
-        with open(weightfile_name) as weightfile:
+        with pathsec_open(  # staged inside a data root by mkstemp above
+            weightfile_name
+        ) as weightfile:
             weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)
         os.remove(weightfile_name)
+        # Remove the private staging directory so it does not leak per call.
+        shutil.rmtree(stagedir, ignore_errors=True)
 
         # Convert from base-e to base-2 weights.
         weights *= numpy.log2(numpy.e)

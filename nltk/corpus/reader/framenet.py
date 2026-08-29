@@ -776,7 +776,9 @@ def _reject_unsafe_path_component(value, kind):
         or ".." in value
         or ntpath.splitdrive(value)[0]
     ):
-        raise FramenetError(f"Invalid {kind}: {value!r}")
+        # "Security violation" marks this as a containment decision, not an
+        # incidental lookup error, so callers and audits can tell them apart.
+        raise FramenetError(f"Security violation: Invalid {kind}: {value!r}")
 
 
 def _validate_in_root(locpath, root, context):

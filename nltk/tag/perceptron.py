@@ -8,6 +8,7 @@
 #
 # This module is provided under the terms of the MIT License.
 
+import errno
 import json
 import logging
 import os
@@ -18,34 +19,45 @@ from pathlib import Path
 from tempfile import gettempdir
 
 from nltk import jsontags
-from nltk.data import FileSystemPathPointer, find, open_datafile
+from nltk.data import (
+    FileSystemPathPointer,
+    find,
+    make_staging_dir,
+    open_datafile,
+)
+from nltk.pathsec import _fd_realpath
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tag.api import TaggerI
 
 
-def _authorize_private_dir(directory):
-    """Register a private, user-owned trained-model directory on nltk.data.path
-    so the pathsec sandbox permits reading a saved model back from it.
+def _validate_name_component(value, kind="language code"):
+    """Refuse a value that is really a path where a filename fragment is meant.
 
-    The default trained-tagger location is the system temp dir, which is shared
-    and world-writable on Linux. A directory that is private to the current user
-    (not group-/world-writable) cannot be tampered with by another local user, so
-    it is safe to trust; a world-writable one is deliberately NOT authorized and
-    stays refused (CWE-377/CWE-378).
+    The model filenames are built by interpolation and then opened *relative to
+    a pinned directory descriptor*. ``O_NOFOLLOW`` and the fd only anchor the
+    base: a ``..`` inside the name walks out of the verified directory and
+    writes anywhere the process can reach, so both halves of the name (the
+    ``lang`` and the ``TAGGER_NAME`` prefix) escaped the sandbox (CWE-22).
+    Applied to the composed filename as well as to each part, so a future
+    interpolation is covered without a new check.
     """
-    import nltk.data
-    from nltk import pathsec
-
-    try:
-        real = os.path.realpath(str(directory))
-    except (OSError, ValueError):
-        return
-    if not pathsec.is_private_dir(real):
-        return
-    known = [os.path.realpath(str(p)) for p in nltk.data.path if isinstance(p, str)]
-    if real not in known:
-        nltk.data.path.append(real)
-        pathsec._ALLOWED_ROOTS_CACHE = None
-        pathsec._LAST_DATA_PATHS = None
+    text = str(value)
+    if (
+        not text
+        or not text.strip()
+        or text in (".", "..")
+        or "\x00" in text
+        or "/" in text
+        or "\\" in text
+        or os.sep in text
+        or (os.altsep and os.altsep in text)
+    ):
+        raise ValueError(
+            f"Invalid tagger {kind} {value!r}: must be a single filename "
+            "component (no path separators, '..' or NUL)"
+        )
+    return text
 
 
 def _open_private_model_dir(loc):
@@ -54,13 +66,11 @@ def _open_private_model_dir(loc):
 
     The leaf is created with ``os.mkdir`` (atomic: it either creates the real
     directory or fails with ``FileExistsError``) and then re-opened with
-    ``O_NOFOLLOW|O_DIRECTORY`` -- so a symlink pre-planted or raced in at the
+    ``O_NOFOLLOW|O_DIRECTORY``; so a symlink pre-planted or raced in at the
     guessable default name is refused (``ELOOP``/``ENOTDIR``) instead of being
     followed. The descriptor is rejected unless it is a real directory owned by
     the current user and not group-/world-writable (CWE-59/377/378).
     """
-    import errno
-
     parent = os.path.dirname(loc) or "."
     os.makedirs(parent, exist_ok=True)
     try:
@@ -85,6 +95,14 @@ def _open_private_model_dir(loc):
                 f"Refusing non-private trained-model dir {loc!r}: not owned by "
                 "you or group-/world-writable (CWE-377/378)"
             )
+        # Validate where the descriptor actually landed, not the string: the
+        # containment check ran before this open, so an intermediate directory
+        # swapped in between the two would otherwise pin an outside directory.
+        landed = _fd_realpath(fd)
+        validate_path(
+            landed if landed is not None else os.path.realpath(loc),
+            context="PerceptronTagger.save_to_json",
+        )
     except BaseException:
         os.close(fd)
         raise
@@ -174,13 +192,28 @@ class AveragedPerceptron:
             self.weights[feat] = new_feat_weights
 
     def save(self, path):
-        """Save the model weights as json"""
-        with open(path, "w") as fout:
+        """Save the model weights as json.
+
+        ``path`` is caller-supplied, so the write goes through the pathsec
+        sandbox: a destination outside the allowed NLTK data roots (or a symlink
+        planted at one) is refused before any bytes are written, instead of the
+        builtin ``open`` that made this an arbitrary-file write
+        (GHSA-8mgp-746c-j5xp).
+        """
+        validate_tool_path(path, context="AveragedPerceptron.save", must_exist=False)
+        with pathsec_open(path, "w", context="AveragedPerceptron.save") as fout:
             return json.dump(self.weights, fout)
 
     def load(self, path):
-        """Load the json model weights."""
-        with open(path) as fin:
+        """Load the json model weights.
+
+        The read is sandboxed for the same reason as :meth:`save`: a model path
+        outside the allowed roots is refused rather than read back to the caller
+        (GHSA-8mgp-746c-j5xp).
+        """
+        # Refuse a planted FIFO/socket/device before pathsec.open blocks on it.
+        validate_tool_path(path, context="AveragedPerceptron.load")
+        with pathsec_open(path, context="AveragedPerceptron.load") as fin:
             self.weights = json.load(fin)
 
     def encode_json_obj(self):
@@ -243,19 +276,43 @@ class PerceptronTagger(TaggerI):
         self.tagdict = {}
         self.classes = set()
         self.lang = lang
-        # Save trained models in tmp directory by default:
+        # Retained for backward compatibility; save_dir no longer derives from it.
         self.TRAINED_TAGGER_PATH = gettempdir()
         self.TAGGER_NAME = "averaged_perceptron_tagger"
-        self.save_dir = path_join(
-            self.TRAINED_TAGGER_PATH, f"{self.TAGGER_NAME}_{self.lang}"
-        )
+        self._save_dir = None
         if load:
             self.load_from_json(lang, loc)
 
+    @property
+    def save_dir(self):
+        """This tagger's private directory for saved model artifacts.
+
+        Allocated lazily by ``nltk.data.make_staging_dir`` INSIDE an allowed data
+        root, with an unpredictable name and mode 0700. Because it already lives
+        in the pathsec sandbox, saving and loading a trained model needs no
+        widening of ``nltk.data.path``, and unlike the old guessable
+        ``<tempdir>/averaged_perceptron_tagger_<lang>``, another local user
+        cannot pre-create or symlink it to redirect the write (CWE-377/378).
+        """
+        if self._save_dir is None:
+            # Both parts land in a mkdtemp prefix, which is concatenated onto
+            # the data root, so a path-shaped part stages output outside it.
+            _validate_name_component(self.lang, "language code")
+            _validate_name_component(self.TAGGER_NAME, "tagger name")
+            self._save_dir = make_staging_dir(
+                prefix=f"nltk_{self.TAGGER_NAME}_{self.lang}_"
+            )
+        return self._save_dir
+
     def param_files(self, lang="eng"):
-        return (
-            f"{self.TAGGER_NAME}_{lang}.{attr}.json"
-            for attr in ["weights", "tagdict", "classes"]
+        # The one place lang and TAGGER_NAME become filenames, so validate the
+        # composed name here rather than each ingredient at each caller.
+        _validate_name_component(lang, "language code")
+        return tuple(
+            _validate_name_component(
+                f"{self.TAGGER_NAME}_{lang}.{attr}.json", "model filename"
+            )
+            for attr in ("weights", "tagdict", "classes")
         )
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
@@ -330,11 +387,17 @@ class PerceptronTagger(TaggerI):
             self.save_to_json(lang=self.lang, loc=save_loc)
 
     def save_to_json(self, lang="xxx", loc=None):
+        # Fail before any directory is created, not once the fd is pinned.
+        _validate_name_component(lang, "language code")
         if not loc:
             loc = self.save_dir
-        # On POSIX the default TRAINED_TAGGER_PATH is a shared, world-writable
-        # temp dir (/tmp) and the save dir is a *guessable* name in it, so a
-        # local attacker can pre-plant or race a symlink at ``loc``. A plain
+        # A caller-supplied destination is an unbounded write primitive otherwise:
+        # the helper below happily os.makedirs() a whole chain anywhere writable.
+        validate_tool_dir(loc, context="PerceptronTagger.save_to_json")
+        # The default loc (save_dir) is an unpredictable 0700 dir inside a data
+        # root, but a caller may still pass any in-sandbox path here, so the
+        # atomic checks below stay: a local attacker could pre-plant or race a
+        # symlink at a caller-chosen ``loc``. A plain
         # ``islink`` pre-check is non-atomic (TOCTOU) and misses it once created;
         # ``_open_private_model_dir`` instead creates/re-opens the leaf atomically
         # with O_NOFOLLOW|O_DIRECTORY, verifies it is a real, user-owned,
@@ -346,19 +409,23 @@ class PerceptronTagger(TaggerI):
         # plain create + write.
         if os.name != "posix":
             os.makedirs(loc, exist_ok=True)
-            _authorize_private_dir(loc)
             for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
-                with open(path_join(loc, json_file), "w") as fout:
+                with pathsec_open(
+                    path_join(loc, json_file),
+                    "w",
+                    context="PerceptronTagger.save_to_json",
+                ) as fout:
                     json.dump(param, fout)
             return
 
         dir_fd = _open_private_model_dir(loc)
         try:
-            _authorize_private_dir(loc)
 
             # Write each model file relative to the pinned directory fd (where
             # supported) with O_NOFOLLOW (0600), so neither the dir nor the file
             # can be redirected outside the verified directory after the check.
+            # Not pathsec.open: a dir-fd-relative name has no absolute path to
+            # validate, and the pinned fd is strictly stronger than a path check.
             use_dir_fd = os.open in os.supports_dir_fd
 
             def _no_follow_opener(path, flags):
@@ -369,7 +436,11 @@ class PerceptronTagger(TaggerI):
 
             for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
                 target = json_file if use_dir_fd else path_join(loc, json_file)
-                with open(target, "w", opener=_no_follow_opener) as fout:
+                # No builtin open(): take the hardened descriptor straight from
+                # the opener and wrap it, so the write still goes through the
+                # pinned dir_fd with O_NOFOLLOW and nothing re-resolves the name.
+                fd = _no_follow_opener(target, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+                with os.fdopen(fd, "w") as fout:
                     json.dump(param, fout)
         finally:
             os.close(dir_fd)
@@ -377,6 +448,17 @@ class PerceptronTagger(TaggerI):
     def load_from_json(self, lang="eng", loc=None):
         # Automatically find path to the tagger if location is not specified.
         # loc can refer to zip or real FS
+        # Symmetric with save_to_json: lang reaches find() as a resource name and
+        # param_files() as a filename, so reject a path-shaped one up front.
+        _validate_name_component(lang, "language code")
+        if isinstance(loc, bytes):
+            loc = os.fsdecode(loc)
+        if isinstance(loc, (str, Path)) and not str(loc).strip():
+            # Windows strips trailing spaces from a path component, so a blank
+            # loc silently resolves to the data root itself instead of failing.
+            raise ValueError(
+                f"Invalid tagger model location {loc!r}: blank path names no model"
+            )
         if loc is None:
             loc = find(f"taggers/averaged_perceptron_tagger_{lang}/")
         elif isinstance(loc, str):
@@ -384,21 +466,21 @@ class PerceptronTagger(TaggerI):
             # - absolute paths are explicit filesystem locations
             # - relative strings are treated as NLTK resource names and resolved via find()
             if os.path.isabs(loc):
+                # Bound it here, not at the eventual read: FileSystemPathPointer
+                # stats the path, so an unbounded loc is an existence oracle too.
+                validate_tool_dir(loc, context="PerceptronTagger.load_from_json")
                 loc = FileSystemPathPointer(loc)
             else:
                 loc = find(loc)
         elif isinstance(loc, Path):
             # Explicit filesystem path
+            validate_tool_dir(str(loc), context="PerceptronTagger.load_from_json")
             loc = FileSystemPathPointer(str(loc))
         # else: assume loc is already a PathPointer (zip or filesystem)
 
-        # A trained model saved under the (private) system-temp trained-tagger
-        # dir lives outside nltk_data; authorize that specific private directory
-        # so it can be read back under the pathsec sandbox.
-        loc_path = getattr(loc, "path", None)
-        if loc_path and os.path.isdir(loc_path):
-            _authorize_private_dir(loc_path)
-
+        # No sandbox widening here: save_dir is allocated inside a data root, so a
+        # model NLTK saved is already readable. Any other loc must be authorized by
+        # the application, since trusting a caller path would disarm pathsec.
         def load_param(json_file):
             with open_datafile(loc, json_file) as fin:
                 return json.load(fin)

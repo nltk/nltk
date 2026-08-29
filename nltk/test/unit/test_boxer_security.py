@@ -19,9 +19,13 @@ a ``$PATH`` lookup) keeps working.
 """
 
 import os
+import shutil
+import tempfile
 
 import pytest
 
+import nltk.data
+from nltk import pathsec
 from nltk.sem.boxer import Boxer
 
 _BIN_NAMES = ("candc", "boxer")
@@ -89,3 +93,47 @@ def test_absolute_bin_dir_is_accepted(tmp_path, monkeypatch):
     assert os.path.realpath(boxer._candc_bin) == os.path.realpath(
         os.path.join(abs_dir, "candc")
     )
+
+
+def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
+    """The scratch input handed to boxer must be staged inside an allowed
+    nltk.data root, never the shared system temp dir (world writable and not a
+    pathsec root; CWE-377/CWE-378).
+
+    Teeth: an unhardened wrapper calls ``tempfile.mkstemp`` with no ``dir=``, so
+    the file lands in the system temp dir and the containment check below fails.
+    This needs neither the ``boxer`` nor the ``candc`` binary: ``_call`` is faked.
+    """
+    # Stage the data root under $HOME so it is inside the pathsec sandbox on
+    # every OS; the system temp dir is deliberately not an allowed data root.
+    home = os.path.expanduser("~")
+    root = tempfile.mkdtemp(prefix="nltk_boxer_test_", dir=home)
+    monkeypatch.setattr(nltk.data, "path", [root, *nltk.data.path])
+
+    boxer = Boxer.__new__(Boxer)
+    boxer._resolve = True
+    boxer._elimeq = False
+    boxer._boxer_bin = os.path.join(root, "boxer")  # never executed; _call is faked
+
+    captured = {}
+
+    def fake_call(input_str, binary, args=(), verbose=False):
+        temp_path = args[args.index("--input") + 1]
+        captured["path"] = temp_path
+        with open(temp_path, encoding="utf-8") as handle:
+            captured["contents"] = handle.read()
+        return b""
+
+    monkeypatch.setattr(boxer, "_call", fake_call)
+    try:
+        boxer._call_boxer(b"ccg(1, t).")
+
+        staged = os.path.realpath(captured["path"])
+        assert staged.startswith(
+            os.path.realpath(root) + os.sep
+        ), "boxer scratch file was staged outside the nltk.data root"
+        # Exercise the guard itself: the staged path validates as in-sandbox.
+        pathsec.validate_path(captured["path"], required_root=root)
+        assert captured["contents"] == "ccg(1, t)."
+    finally:
+        shutil.rmtree(root, ignore_errors=True)

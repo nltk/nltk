@@ -161,7 +161,9 @@ default: unzip or not?
 """
 import functools
 import itertools
+import ntpath
 import os
+import posixpath
 import subprocess
 import sys
 import textwrap
@@ -262,8 +264,18 @@ class Package:
         self.name = name or id
         """A string name for this package."""
 
-        # Validate subdir to prevent path traversal from malicious XML index
-        if os.path.isabs(subdir) or ".." in subdir.replace("\\", "/").split("/"):
+        # Validate subdir to prevent path traversal from malicious XML index.
+        # Check absoluteness under both posix and windows rules, plus a drive
+        # prefix: Python 3.13's ntpath.isabs no longer treats a bare "/tmp" as
+        # absolute, so os.path.isabs alone lets a rooted subdir through on Windows.
+        _norm_subdir = subdir.replace("\\", "/")
+        if (
+            os.path.isabs(subdir)
+            or posixpath.isabs(_norm_subdir)
+            or ntpath.isabs(subdir)
+            or ntpath.splitdrive(subdir)[0]
+            or ".." in _norm_subdir.split("/")
+        ):
             raise ValueError(
                 f"Invalid package subdir {subdir!r}: must be a relative path "
                 f"without parent directory references"
@@ -886,6 +898,10 @@ class Downloader:
                 return
 
             try:
+                # The lock lives under the caller-chosen download dir, so bound
+                # it before creating it. O_EXCL already refuses an existing file
+                # or symlink; this stops the path leaving the sandbox at all.
+                validate_path(lock_filepath, context="downloader.lock")
                 fd = os.open(lock_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.close(fd)
                 break
@@ -2574,7 +2590,7 @@ def md5_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
-        with open(file, "rb") as infile:
+        with pathsec_open(file, "rb", context="downloader.checksum") as infile:
             return _md5_hexdigest(infile)
     return _md5_hexdigest(file)
 
@@ -2595,7 +2611,7 @@ def sha256_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, str):
-        with open(file, "rb") as infile:
+        with pathsec_open(file, "rb", context="downloader.checksum") as infile:
             return _sha256_hexdigest(infile)
     return _sha256_hexdigest(file)
 
