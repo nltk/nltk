@@ -9,6 +9,8 @@ path, CWE-426). The CWD is no longer searched; ``WEKAHOME`` or an explicit
 ``config_weka(classpath=...)`` must be used.
 """
 
+import os
+
 import pytest
 
 import nltk.classify.weka as weka
@@ -52,6 +54,60 @@ def test_explicit_classpath_still_used(tmp_path):
     jar.write_bytes(b"")
     weka.config_weka(classpath=str(jar))
     assert weka._weka_classpath == str(jar)
+
+
+def test_wekahome_outside_sandbox_is_ignored(pathsec_sandbox, monkeypatch):
+    """A WEKAHOME outside the pathsec-allowed roots must not be trusted: an
+    attacker-controlled env var cannot add a weka.jar from an untrusted dir
+    (CWE-426/CWE-427). The pathsec_sandbox fixture enforces a single data root,
+    so ``outside`` is guaranteed to be outside it on every platform."""
+    outside = pathsec_sandbox.outside
+    (outside / "weka.jar").write_bytes(b"")  # attacker-planted jar
+    monkeypatch.setenv("WEKAHOME", str(outside))
+    with pytest.warns(UserWarning, match="outside the trusted"):
+        with pytest.raises(LookupError):
+            weka.config_weka()
+    assert weka._weka_classpath is None
+
+
+def test_wekahome_inside_sandbox_is_used(pathsec_sandbox, monkeypatch):
+    """A WEKAHOME within the authorized data roots is honoured, so a legitimate
+    install still auto-resolves. The fixture makes ``root`` the one allowed
+    data root on every platform, so this does not depend on a host temp dir
+    happening to be trusted."""
+    root = pathsec_sandbox.root
+    (root / "weka.jar").write_bytes(b"")
+    monkeypatch.setenv("WEKAHOME", str(root))
+    weka.config_weka()
+    assert weka._weka_classpath == os.path.join(str(root), "weka.jar")
+
+
+def test_train_scratch_arff_staged_inside_data_root(restricted_sandbox, monkeypatch):
+    """The scratch ARFF that train() feeds to weka must be staged INSIDE an
+    NLTK data root, not the shared system temp dir (CWE-377). The external java
+    call is mocked, so this needs neither a JVM nor a real weka.jar; the mock
+    captures the ``-t <train.arff>`` path and confirms it exists at call time."""
+    data_root = restricted_sandbox
+    captured = {}
+
+    def fake_java(cmd, **kwargs):
+        train_file = cmd[cmd.index("-t") + 1]
+        captured["train"] = train_file
+        assert os.path.exists(train_file)  # staged before weka is invoked
+        return ("", "")
+
+    monkeypatch.setattr(weka, "config_weka", lambda *a, **k: None)
+    monkeypatch.setattr(weka, "java", fake_java)
+
+    model = os.path.join(data_root, "name.model")
+    featuresets = [({"a": 1, "b": 0}, "pos"), ({"a": 0, "b": 1}, "neg")]
+    weka.WekaClassifier.train(model, featuresets)
+
+    staged = os.path.realpath(captured["train"])
+    root = os.path.realpath(data_root)
+    # Inside-root via commonpath (Windows-drive-safe); un-hardened develop staged
+    # under tempfile.gettempdir() instead, so this assertion fails against it.
+    assert os.path.commonpath([staged, root]) == root
 
 
 def test_arff_formatter_escapes_directive_injection():
