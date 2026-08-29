@@ -66,3 +66,35 @@ def test_chat80_label_indivs_refuses_outside_cwd(sandbox):
     with pytest.raises(PermissionError):
         chat80.label_indivs(Valuation([]), lexicon=True)
     assert not (sandbox / "chat_pnames.cfg").exists()
+
+
+@pytest.mark.parametrize(
+    "target",
+    ["<outside>/evil", "/etc/nltk_pwned", "<outside>/e\x00vil"],
+    ids=["outside", "etc", "nul"],
+)
+def test_shelve_backed_valuation_paths_refuse_escape(pathsec_sandbox, target):
+    """val_dump/val_load hand a caller path straight to shelve.open, which
+    creates its own backing files, so pathsec.open cannot wrap it. The path is
+    validated first instead, before any corpus work happens."""
+    from nltk.sem import chat80
+
+    root, outside = pathsec_sandbox
+    resolved = target.replace("<outside>", str(outside))
+    with pytest.raises((PermissionError, ValueError)):
+        chat80.val_dump({}, resolved)
+    with pytest.raises((PermissionError, ValueError)):
+        chat80.val_load(resolved)
+
+
+def test_shelve_valuation_path_inside_the_root_is_allowed(pathsec_sandbox):
+    """Over-block control: an in-root destination passes validation."""
+    from nltk.sem import chat80
+
+    root, _outside = pathsec_sandbox
+    try:
+        chat80.val_dump({}, str(root / "ok"))
+    except (PermissionError, ValueError) as exc:
+        pytest.fail(f"in-root shelve destination was refused: {exc}")
+    except Exception:
+        pass  # past validation; whatever shelve/corpus does next is not our concern

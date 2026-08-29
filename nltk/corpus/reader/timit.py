@@ -395,7 +395,10 @@ class TimitCorpusReader(CorpusReader):
 
         # Open a new temporary file -- the wave module requires
         # an actual file, and won't work w/ stringio. :(
-        tf = tempfile.TemporaryFile()
+        # Imported here: nltk.data imports the corpus package.
+        from nltk.data import staging_tempdir
+
+        tf = tempfile.TemporaryFile(dir=staging_tempdir())
         out = wave.open(tf, "w")
 
         # Write the parameters & data to the new file.

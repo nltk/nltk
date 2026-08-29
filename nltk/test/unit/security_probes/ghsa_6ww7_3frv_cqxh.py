@@ -23,6 +23,7 @@ def _proxy_ssrf_bypass():
         pathsec.ENFORCE,
         pathsec.ALLOW_PROXIED_FETCH,
         getattr(pathsec, "_resolve_hostname", None),
+        getattr(pathsec, "_numeric_ipv4", None),
     )
     try:
         urllib.request.getproxies = lambda: {"http": "http://attacker-proxy:8080"}
@@ -37,6 +38,10 @@ def _proxy_ssrf_bypass():
         pathsec.ENFORCE = True
         pathsec.ALLOW_PROXIED_FETCH = False
         pathsec._resolve_hostname = lambda host: []
+        # Also disable the numeric IPv4 canonicalizer: it is an independent
+        # direct-IP guard that would otherwise refuse the link-local literal
+        # first, hiding whether the proxy-specific guard fires.
+        pathsec._numeric_ipv4 = lambda host: None
         try:
             pathsec.urlopen("http://169.254.169.254/latest/meta-data/", timeout=2)
         except PermissionError as exc:
@@ -61,4 +66,5 @@ def _proxy_ssrf_bypass():
             pathsec.ENFORCE,
             pathsec.ALLOW_PROXIED_FETCH,
             pathsec._resolve_hostname,
+            pathsec._numeric_ipv4,
         ) = saved

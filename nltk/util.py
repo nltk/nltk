@@ -27,6 +27,7 @@ from urllib.request import (
     install_opener,
 )
 
+from nltk import redos
 from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 from nltk.pathsec import open as _secure_open
@@ -214,7 +215,9 @@ def re_show(regexp, string, left="{", right="}"):
     :type right: str
     :rtype: str
     """
-    print(re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
+    # regexp and string are both caller-supplied, so a catastrophically
+    # backtracking pattern hangs the process (CWE-1333). redos.compile bounds it.
+    print(redos.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
 
 
 ##########################################################################
