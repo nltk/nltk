@@ -71,8 +71,19 @@ class GenericStanfordParser(ParserI):
         # self._classpath = (stanford_jar, model_jar)
 
         # Adding logging jar files to classpath
-        stanford_dir = os.path.split(stanford_jar)[0]
-        self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
+        stanford_dir = os.path.dirname(stanford_jar)
+
+        # Place trusted parser and supporting library jars first,
+        # and append the data-only model_jar last to prevent class shadowing (CVE-2026-14582).
+        classpath_jars = [
+            j
+            for j in find_jars_within_path(stanford_dir)
+            if j not in (stanford_jar, model_jar)
+        ]
+        classpath = [stanford_jar] + classpath_jars
+        if model_jar != stanford_jar:
+            classpath.append(model_jar)
+        self._classpath = tuple(classpath)
 
         self.model_path = model_path
         self._encoding = encoding
