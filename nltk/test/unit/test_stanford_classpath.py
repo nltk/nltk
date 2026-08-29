@@ -18,9 +18,10 @@ class TestStanfordClasspathOrder(unittest.TestCase):
             ["/untrusted/stanford-parser-4.2.0-models.jar"],  # 2nd call: model_jar
         ]
 
-        # Mock additional supporting jars found in the stanford directory
+        # Mock additional supporting jars found in the stanford directory (including the models jar)
         mock_find_jars.return_value = [
             "/opt/stanford/stanford-parser.jar",
+            "/opt/stanford/stanford-parser-4.2.0-models.jar",
             "/opt/stanford/slf4j-api.jar",
         ]
 
