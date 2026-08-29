@@ -2987,6 +2987,10 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         """
         word = word.lower()
 
+        # Security fix for CVE-2026-14597: Guard against empty strings
+        if not word:
+            return word
+
         if word in self.stopwords:
             return word
 
