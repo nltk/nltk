@@ -54,6 +54,7 @@ import io
 from xml.etree import ElementTree
 from xml.parsers import expat
 
+from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 
 __all__ = ["HAVE_DEFUSEDXML", "EntitiesForbidden", "fromstring", "parse"]
@@ -138,7 +139,7 @@ def parse(source):
     if hasattr(source, "read"):
         data = source.read()
     else:
-        with open(source, "rb") as stream:
+        with pathsec_open(source, "rb", context="xmlsec.parse") as stream:
             data = stream.read()
 
     _reject_entities(data)
