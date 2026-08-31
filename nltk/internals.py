@@ -19,8 +19,8 @@ import types
 import warnings
 from xml.etree import ElementTree
 
+from nltk import redos
 from nltk.pathsec import validate_path
-from nltk.redos import check_pattern
 
 ##########################################################################
 # Java Via Command-Line
@@ -1082,8 +1082,8 @@ def find_jar_iter(
     """
 
     assert isinstance(name_pattern, str)
-    if is_regex:
-        check_pattern(name_pattern)  # caller regex: refuse a compile-time DoS
+    # caller regex (when is_regex): bound compile + match time
+    name_rx = redos.compile(name_pattern) if is_regex else None
     assert not isinstance(searchpath, str)
     if isinstance(env_vars, str):
         env_vars = env_vars.split()
@@ -1114,7 +1114,7 @@ def find_jar_iter(
                         filename = os.path.basename(cp)
                         if (
                             is_regex
-                            and re.match(name_pattern, filename)
+                            and name_rx.match(filename)
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
@@ -1132,7 +1132,7 @@ def find_jar_iter(
                         else:
                             # Look for file using regular expression
                             for file_name in os.listdir(cp):
-                                if re.match(name_pattern, file_name):
+                                if name_rx.match(file_name):
                                     if verbose:
                                         print(
                                             "[Found %s: %s]"
@@ -1159,7 +1159,7 @@ def find_jar_iter(
                         filename = os.path.basename(path_to_jar)
                         if (
                             is_regex
-                            and re.match(name_pattern, filename)
+                            and name_rx.match(filename)
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
@@ -1175,7 +1175,7 @@ def find_jar_iter(
                 # Only yield an actual file whose name matches the pattern; the
                 # yield was previously outside both guards, returning every dir
                 # entry (subdirs / unrelated files) as if it were the jar.
-                if os.path.isfile(path_to_jar) and re.match(name_pattern, filename):
+                if os.path.isfile(path_to_jar) and name_rx.match(filename):
                     if verbose:
                         print(f"[Found {filename}: {path_to_jar}]")
                     yielded = True

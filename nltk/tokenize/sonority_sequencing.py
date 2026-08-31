@@ -32,11 +32,10 @@ References:
   In HLT-NAACL. pp. 308-316.
 """
 
-import re
 import warnings
 from string import punctuation
 
-from nltk.redos import check_pattern
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.util import ngrams
 
@@ -125,8 +124,7 @@ class SyllableTokenizer(TokenizerI):
         valid_syllables = []
         front = ""
         vowel_source = "|".join(self.vowels)
-        check_pattern(vowel_source)  # vowels are caller-supplied at construction
-        vowel_pattern = re.compile(vowel_source)
+        vowel_pattern = redos.compile(vowel_source)  # bounds compile + match time
         for i, syllable in enumerate(syllable_list):
             if syllable in punctuation:
                 valid_syllables.append(syllable)

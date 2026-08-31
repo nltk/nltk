@@ -118,15 +118,14 @@ def test_ordinary_character_classes_allowed(pattern):
     assert isinstance(redos.compile(pattern), TimedPattern)
 
 
-def test_teeth_counted_repeat_bomb_hangs_raw_but_guard_refuses():
-    bomb = "'(abcdefghij){9999999}'"
-    raw = f"import regex; regex.compile({bomb}); print('COMPILED')"
-    with pytest.raises(subprocess.TimeoutExpired):
-        _run(raw, wall=8)
+def test_counted_repeat_bomb_refused_in_subprocess():
+    # The counted-repeat bomb's raw compile time is machine-dependent, so assert
+    # only the deterministic security property: the guard refuses it (instantly).
+    # The "raw compile is a real DoS" teeth is the 8 MB literal below (reliably slow).
     guarded = (
         "from nltk import redos\n"
         "try:\n"
-        f"    redos.compile({bomb})\n"
+        "    redos.compile('(abcdefghij){9999999}')\n"
         "    print('COMPILED')\n"
         "except ValueError:\n"
         "    print('REFUSED')\n"

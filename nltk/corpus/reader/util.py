@@ -627,8 +627,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 
     if comment_char:
         _comment_src = "(?m)^%s.*$" % re.escape(comment_char)
-        redos.check_pattern(_comment_src)  # comment_char re.escape'd: bound length
-        COMMENT = re.compile(_comment_src)
+        COMMENT = redos.compile(_comment_src)  # comment_char: bound compile + match
     # When a single s-expression spans more than one block, we grow ``block``
     # and re-parse it. Growing by a *fixed* amount re-parses (and, with a
     # comment_char, re-substitutes) the whole growing buffer on every step,
@@ -741,7 +740,7 @@ def find_corpus_fileids(root, regexp):
         pathsec.validate_path(root, context="find_corpus_fileids")
 
     regexp += "$"
-    redos.check_pattern(regexp)  # caller fileid regexp (matched vs short names)
+    regexp_rx = redos.compile(regexp)  # caller fileid regexp: bound compile + match
 
     # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.
@@ -751,7 +750,7 @@ def find_corpus_fileids(root, regexp):
             for name in root.zipfile.namelist()
             if not name.endswith("/")
         ]
-        items = [name for name in fileids if re.match(regexp, name)]
+        items = [name for name in fileids if regexp_rx.match(name)]
         return sorted(items)
 
     # Find fileids in a directory: use os.walk to search subdirectories,
@@ -792,14 +791,14 @@ def find_corpus_fileids(root, regexp):
             items += [
                 prefix + fileid
                 for fileid in fileids
-                if re.match(regexp, prefix + fileid)
+                if regexp_rx.match(prefix + fileid)
             ]
         return sorted(items)
 
     # HuggingFace PathPointer: delegate to its fileids() method (duck typing,
     # avoids a circular import of nltk.huggingface.dataset here).
     elif hasattr(root, "fileids"):
-        return [fid for fid in root.fileids() if re.match(regexp, fid)]
+        return [fid for fid in root.fileids() if regexp_rx.match(fid)]
 
     else:
         raise AssertionError("Don't know how to handle %r" % root)

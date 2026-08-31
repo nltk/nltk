@@ -6,10 +6,10 @@ import os
 import re
 from functools import reduce
 
+from nltk import redos
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.pathsec import validate_path
-from nltk.redos import check_pattern
 
 
 def xpath(root, path, ns):
@@ -78,10 +78,7 @@ class MTEFileReader:
             return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
         else:
             tag_src = "^" + re.sub("-", ".", self._tags) + ".*$"
-            check_pattern(
-                tag_src
-            )  # caller-supplied tags filter: refuse a compile-time DoS
-            tags = re.compile(tag_src)
+            tags = redos.compile(tag_src)  # caller tags filter: bound compile + match
             if tags.match(elt.attrib["ana"]):
                 if self._tagset == "msd":
                     return (elt.text, elt.attrib["ana"])

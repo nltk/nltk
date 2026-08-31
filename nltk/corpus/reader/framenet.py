@@ -23,8 +23,8 @@ from itertools import zip_longest
 from operator import itemgetter
 from pprint import pprint
 
+from nltk import redos
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-from nltk.redos import check_pattern
 from nltk.util import LazyConcatenation, LazyIteratorList, LazyMap
 
 __docformat__ = "epytext en"
@@ -1655,11 +1655,11 @@ warnings(True) to display corpus consistency warnings when loading data
         :return: A list of frame objects.
         :rtype: list(AttrDict)
         """
-        check_pattern(pat)  # caller regex: refuse a compile-time DoS
+        pat_rx = redos.compile(pat)  # caller regex: bound compile + match
         return PrettyList(
             f
             for f in self.frames()
-            if any(re.search(pat, luName) for luName in f.lexUnit)
+            if any(pat_rx.search(luName) for luName in f.lexUnit)
         )
 
     def lu_basic(self, fn_luid):
@@ -2128,12 +2128,11 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         if not self._frame_idx:
             self._buildframeindex()
-        if name is not None:
-            check_pattern(name)  # caller regex: refuse a compile-time DoS
+        name_rx = redos.compile(name) if name is not None else None
         return {
             fID: finfo.name
             for fID, finfo in self._frame_idx.items()
-            if name is None or re.search(name, finfo.name) is not None
+            if name is None or name_rx.search(finfo.name) is not None
         }
 
     def fes(self, name=None, frame=None):
@@ -2181,13 +2180,12 @@ warnings(True) to display corpus consistency warnings when loading data
         else:
             frames = self.frames()
 
-        if name is not None:
-            check_pattern(name)  # caller regex: refuse a compile-time DoS
+        name_rx = redos.compile(name, re.I) if name is not None else None
         return PrettyList(
             fe
             for f in frames
             for fename, fe in f.FE.items()
-            if name is None or re.search(name, fename, re.I)
+            if name is None or name_rx.search(fename)
         )
 
     def lus(self, name=None, frame=None):
@@ -2336,13 +2334,12 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         if not self._lu_idx:
             self._buildluindex()
-        if name is not None:
-            check_pattern(name)  # caller regex: refuse a compile-time DoS
+        name_rx = redos.compile(name) if name is not None else None
         return {
             luID: luinfo.name
             for luID, luinfo in self._lu_idx.items()
             if luinfo.status not in self._bad_statuses
-            and (name is None or re.search(name, luinfo.name) is not None)
+            and (name is None or name_rx.search(luinfo.name) is not None)
         }
 
     def docs_metadata(self, name=None):
@@ -2388,9 +2385,9 @@ warnings(True) to display corpus consistency warnings when loading data
         if name is None:
             return ftlist
         else:
-            check_pattern(name)  # caller regex: refuse a compile-time DoS
+            name_rx = redos.compile(name)  # bound compile + match
             return PrettyList(
-                x for x in ftlist if re.search(name, x["filename"]) is not None
+                x for x in ftlist if name_rx.search(x["filename"]) is not None
             )
 
     def docs(self, name=None):
@@ -2464,10 +2461,8 @@ warnings(True) to display corpus consistency warnings when loading data
                     )
         if frame is None and fe is not None and not isinstance(fe, str):
             frame = fe.frame
-        if isinstance(fe, str):
-            check_pattern(fe)  # caller regex: refuse a compile-time DoS
-        if isinstance(fe2, str):
-            check_pattern(fe2)
+        fe_rx = redos.compile(fe, re.I) if isinstance(fe, str) else None
+        fe2_rx = redos.compile(fe2, re.I) if isinstance(fe2, str) else None
 
         # narrow down to frames matching criteria
 
@@ -2498,8 +2493,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     frames = PrettyLazyIteratorList(
                         f
                         for f in frames
-                        if fe in f.FE
-                        or any(re.search(fe, ffe, re.I) for ffe in f.FE.keys())
+                        if fe in f.FE or any(fe_rx.search(ffe) for ffe in f.FE.keys())
                     )
                 else:
                     if fe.frame not in frames:
@@ -2514,7 +2508,7 @@ warnings(True) to display corpus consistency warnings when loading data
                             f
                             for f in frames
                             if fe2 in f.FE
-                            or any(re.search(fe2, ffe, re.I) for ffe in f.FE.keys())
+                            or any(fe2_rx.search(ffe) for ffe in f.FE.keys())
                         )
                     # else we already narrowed it to a single frame
         else:  # frame, luNamePattern are None. fe, fe2 are None or strings
@@ -2535,13 +2529,13 @@ warnings(True) to display corpus consistency warnings when loading data
                 fes = fes2 = None  # FEs of interest
                 if fe is not None:
                     fes = (
-                        {ffe for ffe in f.FE.keys() if re.search(fe, ffe, re.I)}
+                        {ffe for ffe in f.FE.keys() if fe_rx.search(ffe)}
                         if isinstance(fe, str)
                         else {fe.name}
                     )
                     if fe2 is not None:
                         fes2 = (
-                            {ffe for ffe in f.FE.keys() if re.search(fe2, ffe, re.I)}
+                            {ffe for ffe in f.FE.keys() if fe2_rx.search(ffe)}
                             if isinstance(fe2, str)
                             else {fe2.name}
                         )
