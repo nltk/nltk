@@ -15,10 +15,75 @@ import time
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
-from nltk.picklesec import pickle_load
+from nltk.picklesec import AllowlistUnpickler
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
 from nltk.tbl import Template, error_list
+
+# Exact ``(module, qualname)`` allowlist for the two model files this demo reads
+# back: a baseline tagger cached by ``cache_baseline_tagger`` and a trained Brill
+# tagger round-tripped by ``serialize_output``. Both are loaded from a
+# caller/data-root path, so they are unpickled through an allowlisting unpickler
+# (CWE-502): only the exact classes a legitimate trained tagger reconstructs may
+# be built, and any other global (``os.system``, ``builtins.eval``,
+# ``subprocess.Popen``, a scientific-stack file sink, ...) raises
+# ``UnpicklingError`` instead of executing. Path containment is already enforced
+# by ``pathsec.open`` (GHSA-8mgp-746c-j5xp); pinning the unpickler closes the
+# remaining warn-only-unpickler gap under the same advisory umbrella.
+#
+# The set was derived by pickling a real trained ``BrillTagger`` (a
+# ``UnigramTagger`` baseline over a ``RegexpTagger`` / ``DefaultTagger`` backoff,
+# with learned transformation rules) and recording every ``(module, name)`` its
+# pickle asks ``find_class`` to resolve. None of these is a code-execution
+# primitive: ``regex._regex.compile`` only rebuilds a compiled regex (the
+# pattern engine, not a code compiler), and the inert ``builtins.object``
+# sentinel is handled in :class:`_TblModelUnpickler` below.
+_TBL_MODEL_ALLOWED_GLOBALS = (
+    # The trained tagger itself and its transformation rules / features.
+    ("nltk.tag.brill", "BrillTagger"),
+    ("nltk.tag.brill", "Word"),
+    ("nltk.tag.brill", "Pos"),
+    ("nltk.tbl.rule", "Rule"),
+    # The baseline tagger and the backoff taggers it wraps.
+    ("nltk.tag.sequential", "UnigramTagger"),
+    ("nltk.tag.sequential", "RegexpTagger"),
+    ("nltk.tag.sequential", "DefaultTagger"),
+    # A RegexpTagger stores each pattern as a ReDoS-bounded TimedPattern wrapping
+    # a compiled ``regex`` object, rebuilt from its source by regex._regex.compile.
+    ("nltk.redos", "TimedPattern"),
+    ("regex._regex", "compile"),
+)
+
+
+class _TblModelUnpickler(AllowlistUnpickler):
+    """AllowlistUnpickler for the tbl demo's baseline / Brill tagger files.
+
+    It permits exactly :data:`_TBL_MODEL_ALLOWED_GLOBALS` plus the single inert
+    ``builtins.object`` primitive. A ``RegexpTagger`` stores each pattern's
+    default timeout as the module-level ``nltk.redos._UNSET = object()``
+    sentinel, so a legitimately pickled baseline reconstructs a bare
+    ``object()``. ``object`` is not a code-execution primitive: NEWOBJ builds an
+    empty, state-less instance and the type carries no ``__reduce__`` /
+    ``__setstate__`` hook, so it cannot be ridden to a gadget. Every other guard
+    of the base unpickler (denied modules, dotted / dunder names, extension
+    opcodes, scientific-stack I/O sinks) still applies to all other globals.
+    """
+
+    def find_class(self, module, name):
+        if (module, name) == ("builtins", "object"):
+            return object
+        return super().find_class(module, name)
+
+
+def _load_tbl_model(file):
+    """Unpickle a tbl demo model file through the allowlisting unpickler.
+
+    ``file`` is an already pathsec-validated binary handle (its path was checked
+    against the NLTK data sandbox by :func:`nltk.pathsec.open`). Only the exact
+    globals a legitimate baseline / Brill tagger needs are reconstructed; any
+    code-execution gadget raises ``pickle.UnpicklingError`` before it can run.
+    """
+    return _TblModelUnpickler(file, allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS).load()
 
 
 def demo():
@@ -262,7 +327,7 @@ def postag(
         with pathsec_open(
             cache_baseline_tagger, "rb", context="tbl.demo.cache_baseline_tagger"
         ) as print_rules:
-            baseline_tagger = pickle_load(print_rules)
+            baseline_tagger = _load_tbl_model(print_rules)
             print(f"Reloaded pickled tagger from {cache_baseline_tagger}")
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
@@ -340,7 +405,7 @@ def postag(
         with pathsec_open(
             serialize_output, "rb", context="tbl.demo.serialize_output"
         ) as print_rules:
-            brill_tagger_reloaded = pickle_load(print_rules)
+            brill_tagger_reloaded = _load_tbl_model(print_rules)
         print(f"Reloaded pickled tagger from {serialize_output}")
         taggedtest_reloaded = brill_tagger_reloaded.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:
