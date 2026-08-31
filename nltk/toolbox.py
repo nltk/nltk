@@ -145,6 +145,20 @@ class StandardFormat:
             pass
 
 
+def _sanitize_marker(mkr):
+    if not mkr:
+        return "empty"
+    # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots
+    safe = re.sub(r"[^\w\-.]", "_", mkr)
+    # XML element names cannot start with a digit, hyphen, or dot
+    if re.match(r"^[\d\-.]", safe):
+        safe = "_" + safe
+    # Mitigate HTML element injection for web viewers / XSS
+    if safe.lower() in {"script", "style", "iframe", "object", "embed", "link", "meta"}:
+        safe = "tb_" + safe
+    return safe
+
+
 class ToolboxData(StandardFormat):
     def parse(self, grammar=None, **kwargs):
         if grammar:
@@ -209,7 +223,8 @@ class ToolboxData(StandardFormat):
         builder.start("header", {})
         in_records = False
         for mkr, value in self.fields(**kwargs):
-            if key is None and not in_records and mkr[0] != "_":
+            # 1. Structural Logic: Use the ORIGINAL `mkr` and `key`
+            if key is None and not in_records and mkr and mkr[0] != "_":
                 key = mkr
             if mkr == key:
                 if in_records:
@@ -218,9 +233,13 @@ class ToolboxData(StandardFormat):
                     builder.end("header")
                     in_records = True
                 builder.start("record", {})
-            builder.start(mkr, {})
+
+            # 2. Emission Logic: Use `safe_mkr` STRICTLY for XML tags
+            safe_mkr = _sanitize_marker(mkr)
+            builder.start(safe_mkr, {})
             builder.data(value)
-            builder.end(mkr)
+            builder.end(safe_mkr)
+
         if in_records:
             builder.end("record")
         else:
@@ -348,23 +367,23 @@ class ToolboxSettings(StandardFormat):
         """
         builder = TreeBuilder()
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
-            # Check whether the first char of the field marker
-            # indicates a block start (+) or end (-)
-            block = mkr[0]
+            block = mkr[0] if mkr else None
             if block in ("+", "-"):
                 mkr = mkr[1:]
             else:
                 block = None
-            # Build tree on the basis of block char
+
+            safe_mkr = _sanitize_marker(mkr)
+
             if block == "+":
-                builder.start(mkr, {})
+                builder.start(safe_mkr, {})
                 builder.data(value)
             elif block == "-":
-                builder.end(mkr)
+                builder.end(safe_mkr)
             else:
-                builder.start(mkr, {})
+                builder.start(safe_mkr, {})
                 builder.data(value)
-                builder.end(mkr)
+                builder.end(safe_mkr)
         return builder.close()
 
 
