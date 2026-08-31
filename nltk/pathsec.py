@@ -884,6 +884,14 @@ def _ip_is_forbidden(ip):
     for tunneled in _tunneled_ipv4s(ip):
         if tunneled.is_multicast or not tunneled.is_global:
             return True
+    if isinstance(ip, ipaddress.IPv6Address) and (
+        ip.sixtofour is not None or ip.teredo is not None
+    ):
+        # 6to4 (2002::/16) and Teredo (2001::/32) are transition tunnels whose
+        # is_global classification varies across CPython patch levels, so refuse
+        # them outright rather than depend on the stdlib. NLTK never fetches over
+        # one, and refusing more is safe.
+        return True
     return ip.is_multicast or not ip.is_global
 
 
