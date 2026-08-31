@@ -22,7 +22,7 @@ except ImportError:
 
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
-from nltk.picklesec import allowlisted_pickle_load
+from nltk.picklesec import AllowlistUnpickler
 
 # A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
 # namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
@@ -48,6 +48,149 @@ _MODEL_ALLOWED_GLOBALS = (
     ("builtins", "int"),
     ("builtins", "float"),
 )
+
+# The numpy scalar spellings that ``_MODEL_ALLOWED_GLOBALS`` permits so a fitted
+# SVC's numpy scalar attributes reconstruct across numpy versions. ``scalar`` is
+# safe for the numeric dtypes a real model carries, but it is ALSO a nested
+# unpickle sink: ``numpy.*.multiarray.scalar(dtype('O'), payload)`` interprets an
+# object dtype by deserializing ``payload`` with numpy's own (unrestricted)
+# unpickler, which runs at REDUCE time, inside the call, before any post load
+# check could see the result (CWE-502). Name allowlisting alone cannot stop it,
+# because ``scalar`` and ``numpy.dtype`` are both legitimately needed. The guard
+# below wraps the reconstructed ``scalar`` so an object bearing dtype is refused
+# before numpy deserializes anything; numeric scalars pass through unchanged. On
+# numpy >= 1.25 the object dtype path is already deprecated to an inert best
+# effort, so this is defense in depth that also covers the older numpy versions
+# nltk still supports.
+_SCALAR_GLOBALS = frozenset(
+    {
+        ("numpy.core.multiarray", "scalar"),
+        ("numpy._core.multiarray", "scalar"),
+    }
+)
+
+# A generous ceiling on the number of nodes the post load validation walk visits.
+# Allowlisting gates WHICH classes a pickle builds, not the STATE they are handed,
+# so a hostile file could stitch a very large graph out of purely allowlisted
+# nodes; the walk that inspects reconstructed numpy dtypes is itself bounded so it
+# cannot be turned into the denial of service it exists to prevent. A real fitted
+# SVC model is a few thousand nodes, so this cap is several orders of magnitude of
+# head room while still finite.
+_MAX_MODEL_NODES = 5_000_000
+
+
+def _guarded_scalar(real_scalar):
+    """Wrap ``numpy.*.multiarray.scalar`` to refuse an object bearing dtype.
+
+    A genuine fitted SVC only ever reconstructs numeric scalars (float / int), so
+    ``dtype.hasobject`` is always ``False`` for a legitimate model and the call is
+    delegated verbatim. An object (or object bearing structured) dtype is the
+    nested unpickle vector, so it is refused here, before ``real_scalar`` runs.
+    """
+
+    def scalar(dtype, *rest):
+        if getattr(dtype, "hasobject", False):
+            raise pickle.UnpicklingError(
+                "transition parser model reconstructs a numpy scalar with an "
+                "object bearing dtype; refusing the numpy nested unpickle sink "
+                "(CWE-502)"
+            )
+        return real_scalar(dtype, *rest)
+
+    return scalar
+
+
+class _TransitionParserModelUnpickler(AllowlistUnpickler):
+    """AllowlistUnpickler for a fitted SVC transition parser model.
+
+    It permits exactly :data:`_MODEL_ALLOWED_GLOBALS` (the base guards for denied
+    modules, dotted / dunder names, extension opcodes and scientific stack I/O
+    sinks still apply), and additionally wraps the ``numpy.*.multiarray.scalar``
+    reconstructor so an object bearing dtype cannot ride it into numpy's own
+    nested unpickler. Numeric scalars, arrays and sparse matrices reconstruct
+    exactly as before.
+    """
+
+    def find_class(self, module, name):
+        obj = super().find_class(module, name)
+        if (module, name) in _SCALAR_GLOBALS:
+            return _guarded_scalar(obj)
+        return obj
+
+
+def _reject_object_dtype_arrays(root):
+    """Walk the reconstructed model (bounded) and refuse any object dtype array.
+
+    The ``scalar`` wrapper closes the reconstruction time nested unpickle. This
+    post load walk is defense in depth for the array surface: a fitted SVC carries
+    only numeric (float / int) numpy arrays and numeric scipy sparse matrices, so
+    an object dtype ``ndarray`` reconstructed from the file is never legitimate and
+    is refused. The walk is node bounded so a hostile but purely allowlisted graph
+    cannot turn the check itself into a denial of service.
+    """
+    try:
+        import numpy as _np
+    except ImportError:  # numpy absent -> no numpy array to inspect
+        return root
+    stack = [root]
+    seen = set()
+    visited = 0
+    while stack:
+        obj = stack.pop()
+        oid = id(obj)
+        if oid in seen:
+            continue
+        seen.add(oid)
+        visited += 1
+        if visited > _MAX_MODEL_NODES:
+            raise pickle.UnpicklingError(
+                "transition parser model object graph exceeds the safety bound; "
+                "refusing"
+            )
+        if isinstance(obj, _np.ndarray):
+            if obj.dtype.hasobject:
+                raise pickle.UnpicklingError(
+                    "transition parser model holds an object dtype numpy array, "
+                    "which no fitted SVC produces; refusing (CWE-502)"
+                )
+            continue  # numeric array leaf: do not descend into its elements
+        if isinstance(obj, _np.generic):
+            if obj.dtype.hasobject:
+                raise pickle.UnpicklingError(
+                    "transition parser model holds an object dtype numpy scalar; "
+                    "refusing (CWE-502)"
+                )
+            continue
+        if isinstance(obj, dict):
+            stack.extend(obj.keys())
+            stack.extend(obj.values())
+            continue
+        if isinstance(obj, (list, tuple, set, frozenset)):
+            stack.extend(obj)
+            continue
+        state = getattr(obj, "__dict__", None)
+        if isinstance(state, dict):
+            stack.extend(state.values())
+    return root
+
+
+def _load_transitionparser_model(file):
+    """Unpickle a transition parser model through the allowlisting unpickler.
+
+    ``file`` is an already pathsec validated binary handle. Only the exact globals
+    a fitted SVC needs are reconstructed; any code execution gadget raises
+    ``pickle.UnpicklingError`` before it can run. The ``scalar`` reconstructor is
+    wrapped to refuse the numpy object dtype nested unpickle sink, and the
+    reconstructed graph is then walked (bounded) to refuse any residual object
+    dtype numpy array. Together these close the reconstruction time and array
+    surface escapes through the allowlisted numpy globals.
+    """
+    model = _TransitionParserModelUnpickler(
+        file,
+        allowed_globals=_MODEL_ALLOWED_GLOBALS,
+        allowed_modules=_MODEL_ALLOWED_MODULES,
+    ).load()
+    return _reject_object_dtype_arrays(model)
 
 
 class Configuration:
@@ -594,16 +737,17 @@ class TransitionParser(ParserI):
         # nltk/picklesec.py and huntr report
         # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
         #
+        # Allowlisting gates WHICH classes are built, not the STATE they carry, so
+        # ``_load_transitionparser_model`` additionally wraps the numpy ``scalar``
+        # reconstructor to refuse an object bearing dtype (numpy's nested unpickle
+        # sink) and walks the reconstructed graph to refuse any object dtype array.
+        #
         # ``modelFile`` is a caller-supplied path, so route the read through the
         # pathsec sandbox too: an out-of-sandbox model path is refused before it
         # is opened (GHSA-8mgp-746c-j5xp), and the resulting handle is still
         # unpickled through the allowlisting unpickler.
         with pathsec_open(modelFile, "rb", context="TransitionParser.parse") as f:
-            model = allowlisted_pickle_load(
-                f,
-                allowed_modules=_MODEL_ALLOWED_MODULES,
-                allowed_globals=_MODEL_ALLOWED_GLOBALS,
-            )
+            model = _load_transitionparser_model(f)
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
