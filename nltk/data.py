@@ -1526,11 +1526,16 @@ def load(
     elif format == "pickle":
         resource_val = restricted_pickle_load(opened_resource.read())
     elif format == "json":
-        import json
+        from nltk.jsontags import json_tags, safe_json_load
 
-        from nltk.jsontags import json_tags
-
-        resource_val = json.load(opened_resource)
+        # Bound size and structural depth before the recursive C JSON decoder
+        # runs: a resource resolved through the data roots is only as trusted as
+        # its contents, and deeply nested JSON can segfault the interpreter when
+        # the recursion limit has been raised. safe_json_load rejects such input
+        # with a bounded ValueError instead.
+        resource_val = safe_json_load(
+            opened_resource, context=f"nltk.data.load({resource_url})"
+        )
         tag = None
         if len(resource_val) != 1:
             tag = next(resource_val.keys())
