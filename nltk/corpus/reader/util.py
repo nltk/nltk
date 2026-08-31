@@ -644,7 +644,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             # would make our offset wrong.)
             if comment_char:
                 block += stream.readline()
-                block = re.sub(COMMENT, _sub_space, block)
+                block = COMMENT.sub(_sub_space, block)
             # Read the block.
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
