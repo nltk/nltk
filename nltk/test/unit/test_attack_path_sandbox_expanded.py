@@ -94,9 +94,12 @@ def _under(path, root):
 # they are refused or not-found. Both outcomes prove the shape never becomes an
 # escape.
 
-# (id, literal spelling of the leaf/prefix that must stay in-root)
+# (id, literal spelling of the leaf/prefix that must stay in-root). These are
+# distinct unicode characters (not ASCII dots), so they are ordinary literal
+# names on every platform. The ASCII "....//" spelling is posix-only (a name of
+# all dots is degenerate on Windows, where trailing dots are stripped), so it is
+# covered by test_dotdotdotdot_stays_literal_in_root_on_posix below instead.
 _LOOKALIKE_COMPONENTS = [
-    ("dotdotdotdot-slashslash", "....//sub"),
     ("one-dot-leader U+2024", "\u2024\u2024/sub"),
     ("two-dot-leader U+2025", "\u2025/sub"),
     ("fullwidth-full-stop U+FF0E", "\uff0e\uff0e/sub"),
@@ -133,6 +136,21 @@ class TestLookalikesStayLiteralInRoot:
         open(target, "w").close()
         returned = validate_model_resource(target)
         assert _under(returned, restricted_sandbox)
+
+    @POSIX_ONLY
+    def test_dotdotdotdot_stays_literal_in_root_on_posix(self, restricted_sandbox):
+        # On posix "...." is an ordinary four-dot directory name, so "....//sub"
+        # is a literal path kept inside the root, not a "../" traversal. On
+        # Windows a name of all dots is degenerate (trailing dots are stripped)
+        # so the guard may refuse it there; the data-layer refusal is pinned by
+        # test_dotdotdotdot_slash_is_refused_at_the_data_layer below.
+        candidate = os.path.join(restricted_sandbox, "....//sub")
+        assert _under(validate_tool_dir(candidate), restricted_sandbox)
+        directory = os.path.join(restricted_sandbox, "....//sub")
+        os.makedirs(directory, exist_ok=True)
+        target = os.path.join(directory, "model.bin")
+        open(target, "w").close()
+        assert _under(validate_model_resource(target), restricted_sandbox)
 
 
 class TestTraversalShapesRefused:
