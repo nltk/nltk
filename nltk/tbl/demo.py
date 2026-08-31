@@ -23,23 +23,8 @@ from nltk.tag.brill import Pos, Word
 from nltk.tbl import Template, error_list
 
 # Exact ``(module, qualname)`` allowlist for the two model files this demo reads
-# back: a baseline tagger cached by ``cache_baseline_tagger`` and a trained Brill
-# tagger round-tripped by ``serialize_output``. Both are loaded from a
-# caller/data-root path, so they are unpickled through an allowlisting unpickler
-# (CWE-502): only the exact classes a legitimate trained tagger reconstructs may
-# be built, and any other global (``os.system``, ``builtins.eval``,
-# ``subprocess.Popen``, a scientific-stack file sink, ...) raises
-# ``UnpicklingError`` instead of executing. Path containment is already enforced
-# by ``pathsec.open`` (GHSA-8mgp-746c-j5xp); pinning the unpickler closes the
-# remaining warn-only-unpickler gap under the same advisory umbrella.
-#
-# The set was derived by pickling a real trained ``BrillTagger`` (a
-# ``UnigramTagger`` baseline over a ``RegexpTagger`` / ``DefaultTagger`` backoff,
-# with learned transformation rules) and recording every ``(module, name)`` its
-# pickle asks ``find_class`` to resolve. None of these is a code-execution
-# primitive: ``regex._regex.compile`` only rebuilds a compiled regex (the
-# pattern engine, not a code compiler), and the inert ``builtins.object``
-# sentinel is handled in :class:`_TblModelUnpickler` below.
+# back (cached baseline + round-tripped Brill tagger). Loaded from a caller path,
+# so unpickled through an allowlist (CWE-502) instead of executing any global.
 _TBL_MODEL_ALLOWED_GLOBALS = (
     # The trained tagger itself and its transformation rules / features.
     ("nltk.tag.brill", "BrillTagger"),
@@ -58,18 +43,9 @@ _TBL_MODEL_ALLOWED_GLOBALS = (
 
 
 class _TblModelUnpickler(AllowlistUnpickler):
-    """AllowlistUnpickler for the tbl demo's baseline / Brill tagger files.
-
-    It permits exactly :data:`_TBL_MODEL_ALLOWED_GLOBALS` plus the single inert
-    ``builtins.object`` primitive. A ``RegexpTagger`` stores each pattern's
-    default timeout as the module-level ``nltk.redos._UNSET = object()``
-    sentinel, so a legitimately pickled baseline reconstructs a bare
-    ``object()``. ``object`` is not a code-execution primitive: NEWOBJ builds an
-    empty, state-less instance and the type carries no ``__reduce__`` /
-    ``__setstate__`` hook, so it cannot be ridden to a gadget. Every other guard
-    of the base unpickler (denied modules, dotted / dunder names, extension
-    opcodes, scientific-stack I/O sinks) still applies to all other globals.
-    """
+    """Allowlisting unpickler for the tbl demo's baseline / Brill tagger files.
+    Permits :data:`_TBL_MODEL_ALLOWED_GLOBALS` plus the inert ``builtins.object``
+    sentinel a pickled ``RegexpTagger`` reconstructs for its default timeout."""
 
     def find_class(self, module, name):
         if (module, name) == ("builtins", "object"):
@@ -77,27 +53,16 @@ class _TblModelUnpickler(AllowlistUnpickler):
         return super().find_class(module, name)
 
 
-# A generous ceiling on the number of nodes the post-load hardening walk will
-# visit. Allowlisting only gates *which* classes a pickle may build; it does not
-# bound the *state* those classes are handed, so a hostile file could stitch a
-# very large object graph out of purely allowlisted nodes. The walk that
-# re-derives every reconstructed regex (below) is itself bounded so it cannot be
-# turned into the denial of service it exists to prevent. A real trained Brill
-# tagger over the treebank is a few tens of thousands of nodes, so this cap is
-# ~2 orders of magnitude of head-room while still finite.
+# Ceiling on nodes the post-load hardening walk visits. Allowlisting gates which
+# classes build, not the state they hold, so a hostile file could stitch a huge
+# graph from allowlisted nodes; the walk that re-derives regexes is itself bounded.
 _MAX_MODEL_NODES = 5_000_000
 
 
 def _regex_source(pattern):
-    """Return the *source string* of a reconstructed ``RegexpTagger`` pattern.
-
-    A pattern reconstructed from an untrusted file may be a :class:`TimedPattern`
-    (its wall-clock cap possibly disabled via an attacker-supplied
-    ``_timeout=None``), a *raw* compiled ``regex`` object (no cap at all), or a
-    plain string. Only the source string is trusted; the compiled object and the
-    timeout are discarded and re-derived by the caller. A pattern that carries no
-    string source is refused rather than silently kept.
-    """
+    """Return the trusted *source string* of a reconstructed pattern.
+    It may be a :class:`TimedPattern` (cap maybe off), a raw ``regex`` (no cap) or
+    a string; the source is kept and re-derived, a sourceless pattern refused."""
     if isinstance(pattern, str):
         return pattern
     # ``TimedPattern`` delegates ``.pattern`` to its wrapped regex; a raw regex
@@ -115,27 +80,9 @@ def _regex_source(pattern):
 
 
 def _harden_reconstructed_model(root):
-    """Neutralise ReDoS carried through the allowlisted regex surface.
-
-    The allowlist lets an untrusted file build a :class:`RegexpTagger`,
-    :class:`TimedPattern` and a raw compiled ``regex`` object because a genuine
-    trained tagger needs them. Name-checking alone is *not* enough: the file also
-    controls their *state / constructor args*, so it can plant a catastrophic
-    pattern that either (a) lives raw in ``RegexpTagger._regexps`` with no cap, or
-    (b) is wrapped in a ``TimedPattern`` whose ``_timeout`` is set to ``None``
-    (cap disabled). Either one hangs the process the moment the reloaded tagger
-    tags a crafted token (CWE-1333) even though every global was allowlisted.
-
-    After load, walk the reconstructed graph (bounded) and, for every
-    ``RegexpTagger``, rebuild ``_regexps`` from each pattern's *source string*
-    through :func:`nltk.redos.compile`, which always yields a fresh
-    ``TimedPattern`` bound by :data:`nltk.redos.DEFAULT_TIMEOUT`. The hostile raw
-    object and the disabled timeout are thrown away; a legitimate pattern is
-    re-derived byte-for-byte to the exact object ``RegexpTagger.__init__`` would
-    have produced, so tagging is unchanged while a pathological pattern can no
-    longer run unbounded. Any stray ``TimedPattern`` reached elsewhere in the
-    graph has its ``_timeout`` reset to the module default for the same reason.
-    """
+    """Neutralise ReDoS carried through the allowlisted regex surface: a file
+    controls allowlisted objects' STATE, so it can plant an uncapped pattern. We
+    walk the graph (bounded) and re-derive each RegexpTagger via redos.compile."""
     stack = [root]
     seen = set()
     visited = 0
@@ -180,18 +127,8 @@ def _harden_reconstructed_model(root):
 
 def _load_tbl_model(file):
     """Unpickle a tbl demo model file through the allowlisting unpickler.
-
-    ``file`` is an already pathsec-validated binary handle (its path was checked
-    against the NLTK data sandbox by :func:`nltk.pathsec.open`). Only the exact
-    globals a legitimate baseline / Brill tagger needs are reconstructed; any
-    code-execution gadget raises ``pickle.UnpicklingError`` before it can run.
-
-    The allowlist gates *which* classes are built, not the *state* they are
-    handed, so the reconstructed model is then passed through
-    :func:`_harden_reconstructed_model`, which re-derives every regex pattern
-    under the ReDoS wall-clock cap. Together they close both the code-execution
-    and the denial-of-service paths through the allowlisted surface.
-    """
+    ``file`` is an already pathsec-validated handle; the result is then passed to
+    :func:`_harden_reconstructed_model` to re-cap every regex (CWE-502 + 1333)."""
     model = _TblModelUnpickler(file, allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS).load()
     return _harden_reconstructed_model(model)
 
@@ -566,11 +503,8 @@ def _demo_prepare_data(
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     """Write the learning-curve plot to ``learning_curve_output``.
-
-    The destination is caller-supplied and matplotlib writes it itself, so the
-    path is checked against the NLTK data sandbox before any work is done
-    (GHSA-8mgp-746c-j5xp); ``pathsec.open`` cannot wrap a ``savefig``.
-    """
+    matplotlib writes the caller-supplied path itself, so it is validated against the
+    NLTK data sandbox first (GHSA-8mgp-746c-j5xp); ``pathsec.open`` can't wrap it."""
     validate_path(learning_curve_output, context="tbl.demo.learning_curve_output")
     testcurve = [teststats["initialerrors"]]
     for rulescore in teststats["rulescores"]:
