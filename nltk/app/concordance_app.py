@@ -26,6 +26,7 @@ from tkinter import (
 )
 from tkinter.font import Font
 
+from nltk import redos
 from nltk.corpus import (
     alpino,
     brown,
@@ -39,7 +40,6 @@ from nltk.corpus import (
     treebank,
 )
 from nltk.draw.util import ShowText
-from nltk.redos import check_pattern
 from nltk.util import in_idle
 
 WORD_OR_TAG = "[^/ ]+"
@@ -663,12 +663,19 @@ class ConcordanceSearchModel:
 
         def run(self):
             q = self.processed_query()
-            check_pattern(q)  # GUI search-box regex: refuse a compile-time DoS
+            try:
+                # GUI regex searched over every sentence: redos.compile bounds the
+                # compile and the per-sentence match (wall-clock) time.
+                rx = redos.compile(q)
+            except (re.error, ValueError):
+                self.model.reset_results()
+                self.model.queue.put(SEARCH_ERROR_EVENT)
+                return
             sent_pos, i, sent_count = [], 0, 0
             for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:
-                    m = re.search(q, sent)
-                except re.error:
+                    m = rx.search(sent)
+                except TimeoutError:
                     self.model.reset_results()
                     self.model.queue.put(SEARCH_ERROR_EVENT)
                     return

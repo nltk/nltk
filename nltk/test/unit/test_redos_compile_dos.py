@@ -59,6 +59,83 @@ def test_deep_nesting_without_close_refused():
 
 
 # ---------------------------------------------------------------------------
+# Counted-repetition expansion: SHORT, SHALLOW sources that the engine expands
+# into millions of copies at compile time (bypass the length/depth guards).
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "pattern",
+    [
+        "(abcdefghij){9999999}",  # huge exact count of a group
+        "(a){2000000000}",
+        "(a){1000000}",
+        "a{1000000}",  # bare-atom exact count
+        "(a){500000,1000000}",  # a range's MINIMUM still expands
+        "(a){1000000,}",  # open range minimum
+        "((ab){1000}){1000}",  # nested counts multiply
+        "(?:(?:(?:a){1000}){1000}){1000}",
+        "(((((x){100}){100}){100}){100}){100}",
+    ],
+)
+def test_counted_repetition_expansion_refused(pattern):
+    with pytest.raises(ValueError):
+        redos.compile(pattern)
+
+
+@pytest.mark.parametrize(
+    "pattern",
+    [
+        "(a){0,1000000}",  # range from 0 does NOT expand -> must be allowed
+        "(abc){0,1000000}",
+        "[a-z]{0,1000000}",
+        "a{500}",  # a moderate fixed count is fine
+        "(x){1000}",
+        r"(\d{1,3}\.){3}\d{1,3}",  # a real IP-ish pattern
+        "(?:ab){2,50}",
+    ],
+)
+def test_bounded_or_moderate_repetition_allowed(pattern):
+    assert isinstance(redos.compile(pattern), TimedPattern)
+
+
+# ---------------------------------------------------------------------------
+# Character-class nesting: the ``regex`` V1 engine nests set operations, so a
+# deeply nested class recurses the parser even with zero group parens.
+# ---------------------------------------------------------------------------
+
+
+def test_nested_character_class_sets_refused():
+    with pytest.raises(ValueError):
+        redos.compile("(?V1)" + "[" * 250 + "a" + "]" * 250)
+
+
+@pytest.mark.parametrize(
+    "pattern",
+    [r"[\[\]{}()]+", "[[:alpha:]]+", r"\p{L}+", "[a-z0-9_]+"],
+)
+def test_ordinary_character_classes_allowed(pattern):
+    assert isinstance(redos.compile(pattern), TimedPattern)
+
+
+def test_teeth_counted_repeat_bomb_hangs_raw_but_guard_refuses():
+    bomb = "'(abcdefghij){9999999}'"
+    raw = f"import regex; regex.compile({bomb}); print('COMPILED')"
+    with pytest.raises(subprocess.TimeoutExpired):
+        _run(raw, wall=8)
+    guarded = (
+        "from nltk import redos\n"
+        "try:\n"
+        f"    redos.compile({bomb})\n"
+        "    print('COMPILED')\n"
+        "except ValueError:\n"
+        "    print('REFUSED')\n"
+    )
+    result = _run(guarded, wall=40)
+    assert result.stdout.strip() == "REFUSED", result.stdout + result.stderr
+
+
+# ---------------------------------------------------------------------------
 # The guard must not over-block: legitimate patterns still compile and match.
 # ---------------------------------------------------------------------------
 
