@@ -20,6 +20,132 @@ json_tags = {}
 
 TAG_PREFIX = "!"
 
+JSON_MAX_DEPTH = 2000
+"""Hard cap on the structural nesting depth handed to the C JSON decoder.
+
+CPython's C accelerator recurses in C, so when a process has raised its
+recursion limit a deeply nested document overflows the C stack and segfaults
+the interpreter (an uncatchable crash) instead of raising a bounded
+``RecursionError``. Over-deep input is therefore rejected before parsing. 2000
+sits far above any real NLTK artifact (model weights nest 2 deep, tagsets 2,
+tweets a handful) and far below the C-stack limit at which the accelerator
+crashes.
+"""
+
+JSON_MAX_BYTES = 200 * 1024 * 1024
+"""Upper bound (in bytes) on a JSON document loaded from an NLTK resource.
+
+200 MiB clears the largest shipped model (the Russian perceptron weights are
+about 30 MB) with headroom while refusing an unbounded-memory payload. It is
+deliberately generous: the depth guard, not this size guard, is what
+neutralises the crash primitive; this one only bounds memory and, together with
+the interpreter's ``int_max_str_digits`` default, the giant-integer conversion
+cost.
+"""
+
+# Keep only the six bytes that can change structural nesting depth or open and
+# close a string literal; ``_scan_json_depth`` deletes everything else at C
+# speed before its Python-level scan (see that function's docstring).
+_STRUCTURAL_BYTES = b'"\\[]{}'
+_IDENTITY_TABLE = bytes(range(256))
+_NON_STRUCTURAL = bytes(i for i in range(256) if i not in _STRUCTURAL_BYTES)
+
+
+def _scan_json_depth(data, limit):
+    """Return the maximum structural nesting depth of *data*, stopping early.
+
+    Brackets inside string literals do not count, and backslash escapes are
+    honoured, so the result matches what the parser would actually nest. The
+    scan returns as soon as the depth exceeds ``limit`` (so a hostile payload
+    is rejected after only a few thousand bytes), and it never recurses, so it
+    cannot itself be the crash it is guarding against.
+
+    Every byte that cannot change nesting depth or open/close a string literal
+    is deleted at C speed by :meth:`bytes.translate` before the Python-level
+    loop runs, so a legit multi-megabyte model is scanned in well under a
+    second while brackets buried in string values are still counted correctly.
+    """
+    if isinstance(data, str):
+        data = data.encode("utf-8", "surrogatepass")
+    residue = bytes(data).translate(_IDENTITY_TABLE, _NON_STRUCTURAL)
+    depth = 0
+    max_depth = 0
+    in_string = False
+    escaped = False
+    for byte in residue:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif byte == 0x5C:  # backslash
+                escaped = True
+            elif byte == 0x22:  # closing quote
+                in_string = False
+            continue
+        if byte == 0x22:  # opening quote
+            in_string = True
+        elif byte == 0x5B or byte == 0x7B:  # '[' or '{'
+            depth += 1
+            if depth > max_depth:
+                max_depth = depth
+                if max_depth > limit:
+                    return max_depth
+        elif byte == 0x5D or byte == 0x7D:  # ']' or '}'
+            depth -= 1
+    return max_depth
+
+
+def safe_json_loads(
+    data,
+    *,
+    max_depth=JSON_MAX_DEPTH,
+    max_bytes=JSON_MAX_BYTES,
+    context="NLTK JSON",
+):
+    """Parse ``data`` (``str`` or ``bytes``) with a size and nesting-depth bound.
+
+    This is a drop-in replacement for :func:`json.loads` for untrusted or
+    only-partly-trusted resources (model files, data resources, tweet lines).
+    It refuses an over-large or over-deep document *before* handing it to the
+    recursive C decoder, so a malicious payload raises a bounded ``ValueError``
+    instead of exhausting memory or overflowing the C stack. Giant integers are
+    still bounded by the interpreter's ``sys.get_int_max_str_digits()`` default
+    during :func:`json.loads`.
+    """
+    size = len(data)
+    if size > max_bytes:
+        raise ValueError(
+            f"{context}: JSON document is {size} bytes, over the "
+            f"{max_bytes}-byte limit"
+        )
+    depth = _scan_json_depth(data, max_depth)
+    if depth > max_depth:
+        raise ValueError(
+            f"{context}: JSON nesting depth exceeds the maximum allowed "
+            f"({max_depth})"
+        )
+    return json.loads(data)
+
+
+def safe_json_load(
+    fp,
+    *,
+    max_depth=JSON_MAX_DEPTH,
+    max_bytes=JSON_MAX_BYTES,
+    context="NLTK JSON",
+):
+    """Read a JSON document from a file-like object under the same bounds.
+
+    Reads at most ``max_bytes`` (plus one probe byte) so a gigantic file cannot
+    be slurped into memory before it is rejected, then defers to
+    :func:`safe_json_loads`. Works with both text and binary streams.
+    """
+    data = fp.read(max_bytes + 1)
+    if len(data) > max_bytes:
+        raise ValueError(f"{context}: JSON resource exceeds the {max_bytes}-byte limit")
+    return safe_json_loads(
+        data, max_depth=max_depth, max_bytes=max_bytes, context=context
+    )
+
 
 def register_tag(cls):
     """
@@ -73,4 +199,13 @@ class JSONTaggedDecoder(json.JSONDecoder):
         return obj_cls.decode_json_obj(obj[obj_tag])
 
 
-__all__ = ["register_tag", "json_tags", "JSONTaggedEncoder", "JSONTaggedDecoder"]
+__all__ = [
+    "register_tag",
+    "json_tags",
+    "JSONTaggedEncoder",
+    "JSONTaggedDecoder",
+    "safe_json_load",
+    "safe_json_loads",
+    "JSON_MAX_DEPTH",
+    "JSON_MAX_BYTES",
+]

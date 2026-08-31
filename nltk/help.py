@@ -9,11 +9,11 @@
 Provide structured access to documentation.
 """
 
-import json
 import re
 from textwrap import wrap
 
 from nltk.data import find, open_datafile
+from nltk.jsontags import safe_json_load
 
 
 def brown_tagset(tagpattern=None):
@@ -46,7 +46,9 @@ def _print_entries(tags, tagdict):
 def _format_tagset(tagset, tagpattern=None):
     # Load tagset from json file.
     with open_datafile(find("help/tagsets_json/PY3_json/"), f"{tagset}.json") as fin:
-        tagdict = json.load(fin)
+        # Bounded parse (size + nesting depth) so a tampered tagset file cannot
+        # crash the interpreter through the recursive C decoder.
+        tagdict = safe_json_load(fin, context="nltk.help._format_tagset")
 
     if not tagpattern:
         _print_entries(sorted(tagdict), tagdict)
