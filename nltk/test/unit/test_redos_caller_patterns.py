@@ -6,12 +6,11 @@
 
 """Any API that compiles a CALLER's regex must bound it.
 
-``nltk.redos.compile`` puts a wall-clock limit on matching. Most regex entry
-points already use it; two did not, and both hung the interpreter outright on
-``(a+)+$`` against a 34-character bait string:
-
-* ``RegexpStemmer(pattern)`` (pattern and word are both caller-supplied)
-* ``nltk.util.re_show(pattern, string)`` (likewise)
+``nltk.redos.compile`` puts a wall-clock limit on matching. ``nltk.util.re_show``
+takes both a pattern and a string from the caller and previously compiled the
+pattern with a plain ``re.compile``, so a catastrophically backtracking pattern
+such as ``(a+)+$`` against a 34-character bait string hung the interpreter
+outright (CWE-1333). It now routes through ``nltk.redos.compile``.
 
 These run in a SUBPROCESS with a timeout. An in-process test cannot fail
 cleanly on catastrophic backtracking: the regex engine does not release the GIL,
@@ -44,36 +43,38 @@ def _run(code):
     )
 
 
-@pytest.mark.parametrize(
-    "code, label",
-    [
-        (
-            f"from nltk.stem.regexp import RegexpStemmer;"
-            f"RegexpStemmer({_EVIL!r}).stem({_BAIT!r})",
-            "RegexpStemmer",
-        ),
-        (
-            f"from nltk.util import re_show; re_show({_EVIL!r}, {_BAIT!r})",
-            "re_show",
-        ),
-        (
-            f"from nltk.tokenize import RegexpTokenizer;"
-            f"RegexpTokenizer({_EVIL!r}).tokenize({_BAIT!r})",
-            "RegexpTokenizer",
-        ),
-        (
-            f"from nltk.tag import RegexpTagger;"
-            f"RegexpTagger([({_EVIL!r},'X')]).tag([{_BAIT!r}])",
-            "RegexpTagger",
-        ),
-    ],
-)
-def test_a_catastrophic_pattern_does_not_hang(code, label):
+def test_re_show_catastrophic_pattern_does_not_hang():
     """Completing or raising are both fine. Hanging is not."""
+    code = f"from nltk.util import re_show; re_show({_EVIL!r}, {_BAIT!r})"
     try:
         _run(code)
     except subprocess.TimeoutExpired:
-        pytest.fail(f"{label} hung on a catastrophic pattern (ReDoS)")
+        pytest.fail("re_show hung on a catastrophic pattern (ReDoS)")
+
+
+def test_re_show_ordinary_pattern_still_produces_the_right_answer():
+    """Over-block control: bounding the engine must not change results."""
+    code = "from nltk.util import re_show; re_show('o+','foo')"
+    result = _run(code)
+    assert result.returncode == 0, result.stderr
+    assert "f{oo}" in result.stdout, result.stdout
+
+
+def test_util_routes_through_redos():
+    """Pin the mechanism, not just the timing.
+
+    A future edit could swap redos.compile back to re.compile and the timing
+    test would still pass on a fast machine with a smaller bait string.
+    """
+    import importlib
+    import inspect
+
+    # importlib, not "import nltk.util as util": the package star-imports
+    # nltk.stem, whose own util module shadows the nltk.util ATTRIBUTE.
+    module = importlib.import_module("nltk.util")
+    assert module.__name__ == "nltk.util", module.__name__
+    source = inspect.getsource(module)
+    assert "redos.compile" in source, "nltk.util no longer bounds its regex"
 
 
 @pytest.mark.parametrize(

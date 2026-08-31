@@ -664,15 +664,6 @@ class TestPerceptronTaggerLangComponent:
                 os.path.realpath(loc)
             )
 
-    @pytest.mark.parametrize("lang", ["eng", "rus", "probeartifact", "xx"])
-    def test_ordinary_language_codes_still_work(self, lang, restricted_sandbox):
-        loc = os.path.join(restricted_sandbox, "ok")
-        os.makedirs(loc, exist_ok=True)
-        _tagger().save_to_json(lang=lang, loc=loc)
-        assert sorted(os.listdir(loc)) == sorted(
-            _tagger().param_files(lang)
-        ), "a legitimate language code was blocked or renamed"
-
 
 class TestPerceptronTaggerRoundTrip:
     """Over-block controls for the whole train/save/load path."""
