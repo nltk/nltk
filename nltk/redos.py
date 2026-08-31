@@ -56,7 +56,17 @@ so it is a drop-in replacement for a compiled pattern at those call sites.
 
 import regex
 
-__all__ = ["DEFAULT_TIMEOUT", "TimedPattern", "compile", "source_of", "reharden"]
+__all__ = [
+    "DEFAULT_TIMEOUT",
+    "MAX_PATTERN_LENGTH",
+    "MAX_NESTING_DEPTH",
+    "MAX_REPEAT_PRODUCT",
+    "TimedPattern",
+    "check_pattern",
+    "compile",
+    "source_of",
+    "reharden",
+]
 
 #: Wall-clock seconds any single caller-supplied-pattern match may run before it
 #: is abandoned with :class:`TimeoutError`. Legitimate tokenizing / tagging /
@@ -72,6 +82,21 @@ DEFAULT_TIMEOUT = 5.0
 #: module default", and so a later ``nltk.redos.DEFAULT_TIMEOUT = ...`` still
 #: takes effect for calls that did not pass an explicit timeout.
 _UNSET = object()
+
+#: Max length of a regex SOURCE :func:`compile` hands to the engine. Compile time
+#: scales with length and no match-time cap can help (compilation runs first), so
+#: an oversized source is refused as a compile-time DoS (CWE-1333 / CWE-400).
+MAX_PATTERN_LENGTH = 100_000
+
+#: Max group-nesting depth. The engine's parser recurses per group (and per
+#: nested character-class set), so a deeply nested source raises RecursionError (a
+#: crash, a native stack overflow on some builds); a legitimate pattern is shallow.
+MAX_NESTING_DEPTH = 100
+
+#: Max expansion of a counted repetition. The engine expands ``(group){n}`` into
+#: n copies at compile time and nested counts multiply, so an unbounded product
+#: blows up compile; a legitimate pattern's counts multiply to a small number.
+MAX_REPEAT_PRODUCT = 100_000
 
 
 class TimedPattern:
@@ -219,8 +244,118 @@ def compile(pattern, flags=0, timeout=_UNSET):
         return TimedPattern(pattern._rx, timeout)
     # Accept a pre-compiled ``re``/``regex`` pattern by re-compiling its source.
     src = getattr(pattern, "pattern", pattern)
+    check_pattern(src)
     compiled = regex.compile(src, flags)
     return TimedPattern(compiled, timeout)
+
+
+def _repeat_min(spec):
+    """The minimum repeat count of a ``{...}`` quantifier body, or ``None`` if it
+    is not a valid quantifier (a literal brace). The engine expands the *minimum*
+    required copies, so that count (not the upper bound) drives compile blow-up."""
+    spec = spec.strip()
+    if "," in spec:
+        lo = spec.split(",", 1)[0].strip()
+        return 0 if lo == "" else (int(lo) if lo.isdigit() else None)
+    return int(spec) if spec.isdigit() else None
+
+
+def check_pattern(src):
+    """Refuse a regex source that is a compile-time DoS before it reaches any
+    engine: over-long, too deeply nested (parser recursion / stack overflow), or
+    with a counted repetition whose expansion is too large. Raises ``ValueError``.
+
+    Call this before compiling a caller-supplied pattern with ``re``/``regex``
+    directly (:func:`compile` already calls it). ``src`` is the pattern string
+    (``str``/``bytes``); a non-string is ignored so the engine can validate it."""
+    if isinstance(src, (bytes, bytearray)):
+        scan = bytes(src).decode("latin-1")
+    elif isinstance(src, str):
+        scan = src
+    else:
+        return  # not a string source: let the engine validate / raise
+    if len(scan) > MAX_PATTERN_LENGTH:
+        raise ValueError(
+            f"regex source is {len(scan)} chars (> {MAX_PATTERN_LENGTH}); refusing "
+            "to compile a pattern that large (CWE-1333 compile-time DoS)"
+        )
+    depth_msg = (
+        f"regex nests groups / classes more than {MAX_NESTING_DEPTH} deep; refusing "
+        "to compile (CWE-1333 parser recursion / stack overflow)"
+    )
+    repeat_msg = (
+        f"regex counted repetition expands beyond {MAX_REPEAT_PRODUCT} copies; "
+        "refusing to compile (CWE-1333 compile-time blow-up)"
+    )
+    depth = 0  # combined group ``(`` + character-class ``[`` nesting
+    class_depth = 0  # > 0 while inside a character class
+    cost = [0]  # per-group accumulated expansion; cost[-1] is the current group
+    last = 0  # expansion of the most recent atom / group, for a trailing ``{m,n}``
+    i = 0
+    n = len(scan)
+    while i < n:
+        ch = scan[i]
+        if ch == "\\":  # an escape: the next char is one literal atom
+            i += 2
+            if not class_depth:
+                cost[-1] += 1
+                last = 1
+            continue
+        if class_depth:
+            if ch == "[":
+                class_depth += 1
+                depth += 1
+                if depth > MAX_NESTING_DEPTH:
+                    raise ValueError(depth_msg)
+            elif ch == "]":
+                class_depth -= 1
+                depth -= 1
+                if class_depth == 0:  # the whole class counts as one atom
+                    cost[-1] += 1
+                    last = 1
+            i += 1
+            continue
+        if ch == "[":
+            class_depth = 1
+            depth += 1
+            if depth > MAX_NESTING_DEPTH:
+                raise ValueError(depth_msg)
+        elif ch == "(":
+            depth += 1
+            if depth > MAX_NESTING_DEPTH:
+                raise ValueError(depth_msg)
+            cost.append(0)
+        elif ch == ")":
+            if depth:
+                depth -= 1
+            if len(cost) > 1:
+                c = cost.pop()
+                cost[-1] += c
+                last = c
+        elif ch == "{":
+            j = scan.find("}", i + 1)
+            m = _repeat_min(scan[i + 1 : j]) if j != -1 else None
+            if m is None:  # a literal brace, not a quantifier
+                cost[-1] += 1
+                last = 1
+            else:
+                mult = max(1, m)
+                cost[-1] += last * (mult - 1)
+                last *= mult
+                if last > MAX_REPEAT_PRODUCT or cost[-1] > MAX_REPEAT_PRODUCT:
+                    raise ValueError(repeat_msg)
+                i = j + 1
+                continue
+        elif ch in "*+?":
+            pass  # an unbounded loop, not expanded at compile time
+        elif ch == "|":
+            last = 0
+        else:  # an ordinary atom
+            cost[-1] += 1
+            last = 1
+        i += 1
+    if cost[0] > MAX_REPEAT_PRODUCT:
+        raise ValueError(repeat_msg)
 
 
 def source_of(pattern):

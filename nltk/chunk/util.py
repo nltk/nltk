@@ -8,6 +8,7 @@
 
 import re
 
+from nltk import redos
 from nltk.metrics import accuracy as _accuracy
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
@@ -121,6 +122,8 @@ class ChunkScore:
         self._max_fp = kwargs.get("max_fp_examples", 100)
         self._max_fn = kwargs.get("max_fn_examples", 100)
         self._chunk_label = kwargs.get("chunk_label", ".*")
+        # caller regex: compiled once through redos (bounds compile + match time)
+        self._chunk_label_rx = redos.compile(self._chunk_label)
         self._tp_num = 0
         self._fp_num = 0
         self._fn_num = 0
@@ -151,8 +154,8 @@ class ChunkScore:
         :type guessed: chunk structure
         :param guessed: The chunked sentence to be scored.
         """
-        self._correct |= _chunksets(correct, self._count, self._chunk_label)
-        self._guessed |= _chunksets(guessed, self._count, self._chunk_label)
+        self._correct |= _chunksets(correct, self._count, self._chunk_label_rx)
+        self._guessed |= _chunksets(guessed, self._count, self._chunk_label_rx)
         self._count += 1
         self._measuresNeedUpdate = True
         # Keep track of per-tag accuracy (if possible)
@@ -304,11 +307,12 @@ class ChunkScore:
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
 def _chunksets(t, count, chunk_label):
+    # chunk_label is a redos-compiled TimedPattern (bounds compile + match time)
     pos = 0
     chunks = []
     for child in t:
         if isinstance(child, Tree):
-            if re.match(chunk_label, child.label()):
+            if chunk_label.match(child.label()):
                 chunks.append(((count, pos), child.freeze()))
             pos += len(child.leaves())
         else:

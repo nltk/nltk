@@ -14,6 +14,7 @@ import tempfile
 from functools import reduce
 from xml.etree import ElementTree
 
+from nltk import redos
 from nltk.data import (
     FileSystemPathPointer,
     PathPointer,
@@ -558,12 +559,17 @@ def read_regexp_block(stream, start_re, end_re=None):
     tokens end with lines that match ``end_re``; otherwise, tokens end
     whenever the next line matching ``start_re`` or EOF is found.
     """
+    # start_re / end_re are caller-supplied and matched per line (a line can be
+    # adversarially long), so compile through redos to bound compile AND match.
+    start_rx = redos.compile(start_re)
+    end_rx = redos.compile(end_re) if end_re is not None else None
+
     # Scan until we find a line matching the start regexp.
     while True:
         line = stream.readline()
         if not line:
             return []  # end of file.
-        if re.match(start_re, line):
+        if start_rx.match(line):
             break
 
     # Scan until we find another line matching the regexp, or EOF.
@@ -575,11 +581,11 @@ def read_regexp_block(stream, start_re, end_re=None):
         if not line:
             return ["".join(lines)]
         # End of token:
-        if end_re is not None and re.match(end_re, line):
+        if end_rx is not None and end_rx.match(line):
             return ["".join(lines)]
         # Start of new token: backup to just before it starts, and
         # return the token we've already collected.
-        if end_re is None and re.match(start_re, line):
+        if end_rx is None and start_rx.match(line):
             stream.seek(oldpos)
             return ["".join(lines)]
         # Anything else is part of the token.
@@ -620,7 +626,8 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
         # on adding BOMs to the beginning of encoded strings.)
 
     if comment_char:
-        COMMENT = re.compile("(?m)^%s.*$" % re.escape(comment_char))
+        _comment_src = "(?m)^%s.*$" % re.escape(comment_char)
+        COMMENT = redos.compile(_comment_src)  # comment_char: bound compile + match
     # When a single s-expression spans more than one block, we grow ``block``
     # and re-parse it. Growing by a *fixed* amount re-parses (and, with a
     # comment_char, re-substitutes) the whole growing buffer on every step,
@@ -733,6 +740,7 @@ def find_corpus_fileids(root, regexp):
         pathsec.validate_path(root, context="find_corpus_fileids")
 
     regexp += "$"
+    regexp_rx = redos.compile(regexp)  # caller fileid regexp: bound compile + match
 
     # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.
@@ -742,7 +750,7 @@ def find_corpus_fileids(root, regexp):
             for name in root.zipfile.namelist()
             if not name.endswith("/")
         ]
-        items = [name for name in fileids if re.match(regexp, name)]
+        items = [name for name in fileids if regexp_rx.match(name)]
         return sorted(items)
 
     # Find fileids in a directory: use os.walk to search subdirectories,
@@ -783,14 +791,14 @@ def find_corpus_fileids(root, regexp):
             items += [
                 prefix + fileid
                 for fileid in fileids
-                if re.match(regexp, prefix + fileid)
+                if regexp_rx.match(prefix + fileid)
             ]
         return sorted(items)
 
     # HuggingFace PathPointer: delegate to its fileids() method (duck typing,
     # avoids a circular import of nltk.huggingface.dataset here).
     elif hasattr(root, "fileids"):
-        return [fid for fid in root.fileids() if re.match(regexp, fid)]
+        return [fid for fid in root.fileids() if regexp_rx.match(fid)]
 
     else:
         raise AssertionError("Don't know how to handle %r" % root)

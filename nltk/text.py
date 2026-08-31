@@ -30,6 +30,7 @@ from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
 from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
+from nltk.redos import check_pattern as _redos_check_pattern
 from nltk.tokenize import sent_tokenize
 from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
@@ -330,6 +331,7 @@ class TokenSearcher:
         # a wall-clock ``timeout`` so a crafted query/corpus cannot pin a CPU core
         # indefinitely (CWE-1333). The output is identical to ``re.findall`` for
         # these patterns.
+        _redos_check_pattern(regexp)  # refuse a compile-time DoS before regex.findall
         try:
             hits = regex.findall(regexp, self._raw, timeout=timeout)
         except TimeoutError:

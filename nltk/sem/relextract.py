@@ -26,6 +26,8 @@ import html
 import re
 from collections import defaultdict
 
+from nltk.redos import reharden
+
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
     "ieer": [
@@ -249,6 +251,11 @@ def extract_rels(subjclass, objclass, doc, corpus="ace", pattern=None, window=10
         raise ValueError("corpus type not recognized")
 
     reldicts = semi_rel2reldict(pairs)
+
+    if pattern is not None:
+        # A caller-supplied pattern is run over corpus text; re-derive it under the
+        # ReDoS wall-clock cap (and the compile-time source guard) before matching.
+        pattern = reharden(pattern)
 
     relfilter = lambda x: (
         x["subjclass"] == subjclass
