@@ -568,18 +568,26 @@ def allowlisted_pickle_load(
     *,
     allowed_globals: Iterable[tuple[str, str]] = (),
     allowed_modules: Iterable[str] = (),
+    sanitize: Any = None,
+    unpickler_cls: Any = AllowlistUnpickler,
 ) -> Any:
     """
     Load a pickle while only permitting an explicit allowlist of globals.
 
-    See :class:`AllowlistUnpickler` for the meaning of ``allowed_globals`` and
-    ``allowed_modules``. Prefer this over the warn-only :func:`pickle_load` when
-    the set of legitimate classes in the file is known (e.g. a trained model),
-    because :func:`pickle_load` still executes arbitrary code.
+    See :class:`AllowlistUnpickler` for ``allowed_globals`` / ``allowed_modules``.
+    ``unpickler_cls`` may be an :class:`AllowlistUnpickler` subclass (e.g. to permit
+    an inert sentinel). ``sanitize`` is an optional :func:`harden_object_graph` visit
+    run over the result to neutralise hostile STATE the name allowlist cannot gate (a
+    compiled regex, an object dtype array, ...), since the allowlist decides only
+    which classes are built, not the state they are handed. Prefer this over the
+    warn-only :func:`pickle_load`, which still executes arbitrary code.
     """
-    return AllowlistUnpickler(
+    obj = unpickler_cls(
         file, allowed_globals=allowed_globals, allowed_modules=allowed_modules
     ).load()
+    if sanitize is not None:
+        return harden_object_graph(obj, sanitize)
+    return obj
 
 
 def harden_object_graph(root: Any, visit: Any, *, max_nodes: int = 5_000_000) -> Any:

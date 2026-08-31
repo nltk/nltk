@@ -22,7 +22,7 @@ except ImportError:
 
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
-from nltk.picklesec import AllowlistUnpickler
+from nltk.picklesec import AllowlistUnpickler, allowlisted_pickle_load
 
 # A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
 # namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
@@ -69,15 +69,6 @@ _SCALAR_GLOBALS = frozenset(
     }
 )
 
-# A generous ceiling on the number of nodes the post load validation walk visits.
-# Allowlisting gates WHICH classes a pickle builds, not the STATE they are handed,
-# so a hostile file could stitch a very large graph out of purely allowlisted
-# nodes; the walk that inspects reconstructed numpy dtypes is itself bounded so it
-# cannot be turned into the denial of service it exists to prevent. A real fitted
-# SVC model is a few thousand nodes, so this cap is several orders of magnitude of
-# head room while still finite.
-_MAX_MODEL_NODES = 5_000_000
-
 
 def _guarded_scalar(real_scalar):
     """Wrap ``numpy.*.multiarray.scalar`` to refuse an object bearing dtype.
@@ -118,79 +109,42 @@ class _TransitionParserModelUnpickler(AllowlistUnpickler):
         return obj
 
 
-def _reject_object_dtype_arrays(root):
-    """Walk the reconstructed model (bounded) and refuse any object dtype array.
-
-    The ``scalar`` wrapper closes the reconstruction time nested unpickle. This
-    post load walk is defense in depth for the array surface: a fitted SVC carries
-    only numeric (float / int) numpy arrays and numeric scipy sparse matrices, so
-    an object dtype ``ndarray`` reconstructed from the file is never legitimate and
-    is refused. The walk is node bounded so a hostile but purely allowlisted graph
-    cannot turn the check itself into a denial of service.
-    """
+def _load_transitionparser_model(file):
+    """Load a transition parser model through the allowlisting unpickler, refusing
+    any object dtype numpy array / scalar via ``sanitize=`` (the ``scalar`` wrapper
+    already blocks the reconstruction-time nested unpickle) (CWE-502)."""
     try:
         import numpy as _np
-    except ImportError:  # numpy absent -> no numpy array to inspect
-        return root
-    stack = [root]
-    seen = set()
-    visited = 0
-    while stack:
-        obj = stack.pop()
-        oid = id(obj)
-        if oid in seen:
-            continue
-        seen.add(oid)
-        visited += 1
-        if visited > _MAX_MODEL_NODES:
-            raise pickle.UnpicklingError(
-                "transition parser model object graph exceeds the safety bound; "
-                "refusing"
-            )
-        if isinstance(obj, _np.ndarray):
-            if obj.dtype.hasobject:
-                raise pickle.UnpicklingError(
-                    "transition parser model holds an object dtype numpy array, "
-                    "which no fitted SVC produces; refusing (CWE-502)"
-                )
-            continue  # numeric array leaf: do not descend into its elements
-        if isinstance(obj, _np.generic):
-            if obj.dtype.hasobject:
-                raise pickle.UnpicklingError(
-                    "transition parser model holds an object dtype numpy scalar; "
-                    "refusing (CWE-502)"
-                )
-            continue
-        if isinstance(obj, dict):
-            stack.extend(obj.keys())
-            stack.extend(obj.values())
-            continue
-        if isinstance(obj, (list, tuple, set, frozenset)):
-            stack.extend(obj)
-            continue
-        state = getattr(obj, "__dict__", None)
-        if isinstance(state, dict):
-            stack.extend(state.values())
-    return root
+    except ImportError:  # numpy absent -> no numpy array in the graph to inspect
+        sanitize = None
+    else:
 
+        def sanitize(obj):
+            # A fitted SVC carries only numeric numpy arrays / scipy sparse; an
+            # object dtype array or scalar is never legitimate, so refuse it.
+            if isinstance(obj, _np.ndarray):
+                if obj.dtype.hasobject:
+                    raise pickle.UnpicklingError(
+                        "transition parser model holds an object dtype numpy array, "
+                        "which no fitted SVC produces; refusing (CWE-502)"
+                    )
+                return True  # numeric array leaf: do not descend into its elements
+            if isinstance(obj, _np.generic):
+                if obj.dtype.hasobject:
+                    raise pickle.UnpicklingError(
+                        "transition parser model holds an object dtype numpy scalar; "
+                        "refusing (CWE-502)"
+                    )
+                return True
+            return False
 
-def _load_transitionparser_model(file):
-    """Unpickle a transition parser model through the allowlisting unpickler.
-
-    ``file`` is an already pathsec validated binary handle. Only the exact globals
-    a fitted SVC needs are reconstructed; any code execution gadget raises
-    ``pickle.UnpicklingError`` before it can run. The ``scalar`` reconstructor is
-    wrapped to refuse the numpy object dtype nested unpickle sink, and the
-    reconstructed graph is then walked (bounded) to refuse any residual object
-    dtype numpy array. Together these close the reconstruction time and array
-    surface escapes through the allowlisted numpy globals.
-    """
-    model = _TransitionParserModelUnpickler(
+    return allowlisted_pickle_load(
         file,
         allowed_globals=_MODEL_ALLOWED_GLOBALS,
         allowed_modules=_MODEL_ALLOWED_MODULES,
-    ).load()
-    return _reject_object_dtype_arrays(model)
+        sanitize=sanitize,
+        unpickler_cls=_TransitionParserModelUnpickler,
+    )
 
 
 class Configuration:
