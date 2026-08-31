@@ -16,7 +16,7 @@ from nltk import redos
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
-from nltk.picklesec import AllowlistUnpickler
+from nltk.picklesec import AllowlistUnpickler, harden_object_graph
 from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
@@ -53,84 +53,27 @@ class _TblModelUnpickler(AllowlistUnpickler):
         return super().find_class(module, name)
 
 
-# Ceiling on nodes the post-load hardening walk visits. Allowlisting gates which
-# classes build, not the state they hold, so a hostile file could stitch a huge
-# graph from allowlisted nodes; the walk that re-derives regexes is itself bounded.
-_MAX_MODEL_NODES = 5_000_000
-
-
-def _regex_source(pattern):
-    """Return the trusted *source string* of a reconstructed pattern.
-    It may be a :class:`TimedPattern` (cap maybe off), a raw ``regex`` (no cap) or
-    a string; the source is kept and re-derived, a sourceless pattern refused."""
-    if isinstance(pattern, str):
-        return pattern
-    # ``TimedPattern`` delegates ``.pattern`` to its wrapped regex; a raw regex
-    # object exposes ``.pattern`` directly. ``getattr`` swallows the delegating
-    # ``AttributeError`` a malformed wrapper (``_rx`` not a pattern) would raise.
-    src = getattr(pattern, "pattern", None)
-    if isinstance(src, bytes):
-        src = src.decode("latin-1")
-    if isinstance(src, str):
-        return src
-    raise pickle.UnpicklingError(
-        "tbl model RegexpTagger holds a pattern with no string source; refusing "
-        "to reconstruct an unbounded regex from an untrusted file"
-    )
-
-
-def _harden_reconstructed_model(root):
-    """Neutralise ReDoS carried through the allowlisted regex surface: a file
-    controls allowlisted objects' STATE, so it can plant an uncapped pattern. We
-    walk the graph (bounded) and re-derive each RegexpTagger via redos.compile."""
-    stack = [root]
-    seen = set()
-    visited = 0
-    while stack:
-        obj = stack.pop()
-        oid = id(obj)
-        if oid in seen:
-            continue
-        seen.add(oid)
-        visited += 1
-        if visited > _MAX_MODEL_NODES:
-            raise pickle.UnpicklingError(
-                "tbl model object graph exceeds the safety bound; refusing"
-            )
-        if isinstance(obj, TimedPattern):
-            # Belt and suspenders: a TimedPattern reached anywhere must never
-            # carry a disabled / oversized cap. Reset to the module default so
-            # even a hand-placed wrapper is bounded. (__slots__, so set directly.)
-            obj._timeout = redos._UNSET
-            continue
-        if isinstance(obj, RegexpTagger):
-            rebuilt = []
-            for entry in obj._regexps:
-                # Each entry is a ``(pattern, tag)`` pair; re-derive the pattern
-                # from its source so a raw / uncapped object cannot survive.
-                pattern, tag = entry
-                rebuilt.append((redos.compile(_regex_source(pattern)), tag))
-            obj._regexps = rebuilt
-            # Fall through to also descend into backoff taggers below.
-        if isinstance(obj, dict):
-            stack.extend(obj.keys())
-            stack.extend(obj.values())
-            continue
-        if isinstance(obj, (list, tuple, set, frozenset)):
-            stack.extend(obj)
-            continue
-        state = getattr(obj, "__dict__", None)
-        if isinstance(state, dict):
-            stack.extend(state.values())
-    return root
+def _tbl_visit(obj):
+    """Re-cap the ReDoS surface the name allowlist cannot: reset every TimedPattern
+    timeout and re-derive each RegexpTagger pattern from its source under a fresh
+    cap, so a raw / uncapped / cap-disabled pattern from an untrusted file dies."""
+    if isinstance(obj, TimedPattern):
+        obj._timeout = redos._UNSET
+        return True
+    if isinstance(obj, RegexpTagger):
+        try:
+            obj._regexps = [(redos.reharden(p), tag) for p, tag in obj._regexps]
+        except ValueError as exc:
+            raise pickle.UnpicklingError(str(exc)) from None
+    return False
 
 
 def _load_tbl_model(file):
-    """Unpickle a tbl demo model file through the allowlisting unpickler.
-    ``file`` is an already pathsec-validated handle; the result is then passed to
-    :func:`_harden_reconstructed_model` to re-cap every regex (CWE-502 + 1333)."""
+    """Unpickle a tbl demo model file through the allowlisting unpickler, then walk
+    it with :func:`nltk.picklesec.harden_object_graph` to re-cap every regex the
+    name allowlist cannot bound (CWE-502 + CWE-1333)."""
     model = _TblModelUnpickler(file, allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS).load()
-    return _harden_reconstructed_model(model)
+    return harden_object_graph(model, _tbl_visit)
 
 
 def demo():
