@@ -39,6 +39,7 @@ from nltk.corpus import (
     treebank,
 )
 from nltk.draw.util import ShowText
+from nltk.redos import check_pattern
 from nltk.util import in_idle
 
 WORD_OR_TAG = "[^/ ]+"
@@ -662,6 +663,7 @@ class ConcordanceSearchModel:
 
         def run(self):
             q = self.processed_query()
+            check_pattern(q)  # GUI search-box regex: refuse a compile-time DoS
             sent_pos, i, sent_count = [], 0, 0
             for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:

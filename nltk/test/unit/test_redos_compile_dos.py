@@ -253,3 +253,65 @@ def test_help_tagset_refuses_bomb_pattern():
             help_.brown_tagset(_BIG)
     except LookupError:
         pytest.skip("brown tagset help data not installed")
+
+
+# ---------------------------------------------------------------------------
+# Library-wide coverage: the rest of the caller-controlled compile sites found
+# by auditing the whole tree now route their source through redos.check_pattern.
+# ---------------------------------------------------------------------------
+
+
+def test_internals_find_jar_iter_refuses_bomb_regex():
+    from nltk.internals import find_jar_iter
+
+    with pytest.raises(ValueError):
+        list(find_jar_iter(_BIG, is_regex=True))
+
+
+def test_internals_find_jar_iter_literal_name_not_guarded():
+    # is_regex=False -> the name is a literal, never compiled, so a long name
+    # must NOT be rejected by the pattern guard (only "jar not found").
+    from nltk.internals import find_jar_iter
+
+    try:
+        list(find_jar_iter("x" * (MAX_PATTERN_LENGTH + 1), is_regex=False))
+    except ValueError:
+        pytest.fail("literal jar name wrongly rejected by the regex guard")
+    except LookupError:
+        pass  # jar-not-found is the expected outcome
+
+
+def test_chunkscore_refuses_bomb_chunk_label():
+    from nltk.chunk.util import ChunkScore
+
+    with pytest.raises(ValueError):
+        ChunkScore(chunk_label=_BIG)
+
+
+def test_read_regexp_block_refuses_bomb_start_re():
+    import io
+
+    from nltk.corpus.reader.util import read_regexp_block
+
+    with pytest.raises(ValueError):
+        read_regexp_block(io.StringIO("data"), _BIG)
+
+
+def test_read_regexp_block_ordinary_still_works():
+    import io
+
+    from nltk.corpus.reader.util import read_regexp_block
+
+    out = read_regexp_block(io.StringIO(">start\nl1\nl2\n"), r"^>")
+    assert out == [">start\nl1\nl2\n"]
+
+
+def test_framenet_frames_refuses_bomb_pattern():
+    corpus = pytest.importorskip("nltk.corpus")
+    try:
+        corpus.framenet.frames(_BIG)
+    except ValueError:
+        return  # guard fired
+    except LookupError:
+        pytest.skip("framenet data not installed")
+    pytest.fail("framenet.frames did not refuse a bomb pattern")

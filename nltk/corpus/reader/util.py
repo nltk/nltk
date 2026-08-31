@@ -22,6 +22,7 @@ from nltk.data import (
 )
 from nltk.internals import slice_bounds
 from nltk.pathsec import open as _secure_open
+from nltk.redos import check_pattern
 from nltk.tokenize import wordpunct_tokenize
 from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
 
@@ -558,6 +559,11 @@ def read_regexp_block(stream, start_re, end_re=None):
     tokens end with lines that match ``end_re``; otherwise, tokens end
     whenever the next line matching ``start_re`` or EOF is found.
     """
+    # start_re / end_re are caller-supplied: refuse a compile-time DoS up front.
+    check_pattern(start_re)
+    if end_re is not None:
+        check_pattern(end_re)
+
     # Scan until we find a line matching the start regexp.
     while True:
         line = stream.readline()
@@ -620,7 +626,9 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
         # on adding BOMs to the beginning of encoded strings.)
 
     if comment_char:
-        COMMENT = re.compile("(?m)^%s.*$" % re.escape(comment_char))
+        _comment_src = "(?m)^%s.*$" % re.escape(comment_char)
+        check_pattern(_comment_src)  # caller-supplied comment_char: bound the length
+        COMMENT = re.compile(_comment_src)
     # When a single s-expression spans more than one block, we grow ``block``
     # and re-parse it. Growing by a *fixed* amount re-parses (and, with a
     # comment_char, re-substitutes) the whole growing buffer on every step,
@@ -733,6 +741,7 @@ def find_corpus_fileids(root, regexp):
         pathsec.validate_path(root, context="find_corpus_fileids")
 
     regexp += "$"
+    check_pattern(regexp)  # caller-supplied fileid regexp: refuse a compile-time DoS
 
     # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.

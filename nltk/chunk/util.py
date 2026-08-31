@@ -9,6 +9,7 @@
 import re
 
 from nltk.metrics import accuracy as _accuracy
+from nltk.redos import check_pattern
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
 from nltk.tree import Tree
@@ -121,6 +122,7 @@ class ChunkScore:
         self._max_fp = kwargs.get("max_fp_examples", 100)
         self._max_fn = kwargs.get("max_fn_examples", 100)
         self._chunk_label = kwargs.get("chunk_label", ".*")
+        check_pattern(self._chunk_label)  # caller regex: refuse a compile-time DoS
         self._tp_num = 0
         self._fp_num = 0
         self._fn_num = 0

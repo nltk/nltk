@@ -26,6 +26,7 @@ from nltk.corpus.reader.util import *
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import ElementWrapper
 from nltk.pathsec import open as pathsec_open
+from nltk.redos import check_pattern
 from nltk.tokenize import WordPunctTokenizer
 
 
@@ -146,6 +147,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         if elt_handler:
             self.handle_elt = elt_handler
 
+        check_pattern(tagspec)  # caller-supplied: refuse a compile-time DoS
         self._tagspec = re.compile(tagspec + r"\Z")
         """The tag specification for this corpus view."""
 
@@ -345,6 +347,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         if tagspec is None:
             tagspec = self._tagspec
+        if isinstance(tagspec, str):
+            check_pattern(tagspec)  # caller-passed raw tagspec
         if elt_handler is None:
             elt_handler = self.handle_elt
 

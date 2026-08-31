@@ -19,6 +19,7 @@ from nltk import pathsec
 from nltk.corpus.reader.util import *
 from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
 from nltk.pathsec import validate_path
+from nltk.redos import check_pattern
 
 
 class CorpusReader:
@@ -113,6 +114,8 @@ class CorpusReader:
         # If encoding was specified as a list of regexps, then convert
         # it to a dictionary.
         if isinstance(encoding, list):
+            for regexp, _enc in encoding:
+                check_pattern(regexp)  # caller-supplied: refuse a compile-time DoS
             encoding_dict = {}
             for fileid in self._fileids:
                 for x in encoding:
@@ -372,6 +375,7 @@ class CategorizedCorpusReader:
         self._c2f = defaultdict(set)
 
         if self._pattern is not None:
+            check_pattern(self._pattern)  # caller-supplied cat_pattern
             for file_id in self._fileids:
                 category = re.match(self._pattern, file_id).group(1)
                 self._add(file_id, category)

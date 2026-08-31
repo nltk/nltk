@@ -24,6 +24,7 @@ from operator import itemgetter
 from pprint import pprint
 
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
+from nltk.redos import check_pattern
 from nltk.util import LazyConcatenation, LazyIteratorList, LazyMap
 
 __docformat__ = "epytext en"
@@ -1654,6 +1655,7 @@ warnings(True) to display corpus consistency warnings when loading data
         :return: A list of frame objects.
         :rtype: list(AttrDict)
         """
+        check_pattern(pat)  # caller regex: refuse a compile-time DoS
         return PrettyList(
             f
             for f in self.frames()
@@ -2126,6 +2128,8 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         if not self._frame_idx:
             self._buildframeindex()
+        if name is not None:
+            check_pattern(name)  # caller regex: refuse a compile-time DoS
         return {
             fID: finfo.name
             for fID, finfo in self._frame_idx.items()
@@ -2177,6 +2181,8 @@ warnings(True) to display corpus consistency warnings when loading data
         else:
             frames = self.frames()
 
+        if name is not None:
+            check_pattern(name)  # caller regex: refuse a compile-time DoS
         return PrettyList(
             fe
             for f in frames
@@ -2330,6 +2336,8 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         if not self._lu_idx:
             self._buildluindex()
+        if name is not None:
+            check_pattern(name)  # caller regex: refuse a compile-time DoS
         return {
             luID: luinfo.name
             for luID, luinfo in self._lu_idx.items()
@@ -2380,6 +2388,7 @@ warnings(True) to display corpus consistency warnings when loading data
         if name is None:
             return ftlist
         else:
+            check_pattern(name)  # caller regex: refuse a compile-time DoS
             return PrettyList(
                 x for x in ftlist if re.search(name, x["filename"]) is not None
             )
@@ -2455,6 +2464,10 @@ warnings(True) to display corpus consistency warnings when loading data
                     )
         if frame is None and fe is not None and not isinstance(fe, str):
             frame = fe.frame
+        if isinstance(fe, str):
+            check_pattern(fe)  # caller regex: refuse a compile-time DoS
+        if isinstance(fe2, str):
+            check_pattern(fe2)
 
         # narrow down to frames matching criteria
 

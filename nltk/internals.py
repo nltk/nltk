@@ -20,6 +20,7 @@ import warnings
 from xml.etree import ElementTree
 
 from nltk.pathsec import validate_path
+from nltk.redos import check_pattern
 
 ##########################################################################
 # Java Via Command-Line
@@ -1081,6 +1082,8 @@ def find_jar_iter(
     """
 
     assert isinstance(name_pattern, str)
+    if is_regex:
+        check_pattern(name_pattern)  # caller regex: refuse a compile-time DoS
     assert not isinstance(searchpath, str)
     if isinstance(env_vars, str):
         env_vars = env_vars.split()

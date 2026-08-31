@@ -13,6 +13,7 @@ import sys
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
+from nltk.redos import check_pattern
 from nltk.tag import map_tag
 from nltk.tree import Tree
 
@@ -113,10 +114,9 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             toks = read_regexp_block(stream, start_re=r"^\(")
             # Strip any comments out of the tokens.
             if self._comment_char:
-                toks = [
-                    re.sub("(?m)^%s.*" % re.escape(self._comment_char), "", tok)
-                    for tok in toks
-                ]
+                comment_src = "(?m)^%s.*" % re.escape(self._comment_char)
+                check_pattern(comment_src)  # caller-supplied comment_char: bound length
+                toks = [re.sub(comment_src, "", tok) for tok in toks]
             return toks
         else:
             assert 0, "bad block type"

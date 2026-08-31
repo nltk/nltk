@@ -9,6 +9,7 @@ from functools import reduce
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.pathsec import validate_path
+from nltk.redos import check_pattern
 
 
 def xpath(root, path, ns):
@@ -76,7 +77,11 @@ class MTEFileReader:
         elif self._tags == "" and self._tagset == "universal":
             return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
         else:
-            tags = re.compile("^" + re.sub("-", ".", self._tags) + ".*$")
+            tag_src = "^" + re.sub("-", ".", self._tags) + ".*$"
+            check_pattern(
+                tag_src
+            )  # caller-supplied tags filter: refuse a compile-time DoS
+            tags = re.compile(tag_src)
             if tags.match(elt.attrib["ana"]):
                 if self._tagset == "msd":
                     return (elt.text, elt.attrib["ana"])
