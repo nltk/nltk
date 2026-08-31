@@ -12,6 +12,7 @@ import re
 from collections import defaultdict
 
 from nltk.ccg.api import CCGVar, Direction, FunctionalCategory, PrimitiveCategory
+from nltk.featstruct import FeatStruct
 from nltk.internals import deprecated
 from nltk.sem.logic import Expression
 
@@ -19,12 +20,8 @@ from nltk.sem.logic import Expression
 # Regular expressions used for parsing components of the lexicon
 # ------------
 
-# Parses a primitive category and subscripts
-PRIM_RE = re.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
-
-# Separates the next primitive category from the remainder of the
-# string
-NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+# Parses a primitive category and any following annotation.
+PRIM_RE = re.compile(r"""([A-Za-z]+)(.*)""")
 
 # Separates the next application operator from the remainder.
 # The modifier slot also accepts `_`, marking a variable direction
@@ -150,7 +147,7 @@ def matchBrackets(string):
 
     while rest != "" and not rest.startswith(")"):
         if rest.startswith("("):
-            (part, rest) = matchBrackets(rest)
+            part, rest = matchBrackets(rest)
             inside = inside + part
         else:
             inside = inside + rest[0]
@@ -160,6 +157,28 @@ def matchBrackets(string):
     raise AssertionError("Unmatched bracket in string '" + string + "'")
 
 
+def matchSquareBrackets(string):
+    """
+    Separate a possibly nested square-bracket annotation from the rest of
+    the input.
+    """
+    rest = string[1:]
+    inside = "["
+    depth = 1
+
+    while rest != "":
+        char = rest[0]
+        inside = inside + char
+        rest = rest[1:]
+        if char == "[":
+            depth = depth + 1
+        elif char == "]":
+            depth = depth - 1
+            if depth == 0:
+                return (inside, rest)
+    raise AssertionError("Unmatched feature bracket in string '" + string + "'")
+
+
 def nextCategory(string):
     """
     Separate the string for the next portion of the category from the rest
@@ -167,7 +186,12 @@ def nextCategory(string):
     """
     if string.startswith("("):
         return matchBrackets(string)
-    return NEXTPRIM_RE.match(string).groups()
+
+    cat, rest = PRIM_RE.match(string).groups()
+    if rest.startswith("["):
+        annotation, rest = matchSquareBrackets(rest)
+        cat = cat + annotation
+    return (cat, rest)
 
 
 def parseApplication(app):
@@ -186,6 +210,18 @@ def parseSubscripts(subscr):
     return []
 
 
+def parsePrimitiveAnnotation(annotation):
+    """
+    Parse primitive category annotations as either legacy subscripts or
+    feature structures.
+    """
+    if not annotation:
+        return ([], None)
+    if "=" in annotation:
+        return ([], FeatStruct(annotation))
+    return (parseSubscripts(annotation), None)
+
+
 def parsePrimitiveCategory(chunks, primitives, families, var):
     """
     Parse a primitive category
@@ -194,14 +230,14 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
     correct `CCGVar`.
     """
     if chunks[0] == "var":
-        if chunks[1] is None:
+        if not chunks[1]:
             if var is None:
                 var = CCGVar()
             return (var, var)
 
     catstr = chunks[0]
     if catstr in families:
-        (cat, cvar) = families[catstr]
+        cat, cvar = families[catstr]
         if var is None:
             var = cvar
         else:
@@ -209,8 +245,8 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
         return (cat, var)
 
     if catstr in primitives:
-        subscrs = parseSubscripts(chunks[1])
-        return (PrimitiveCategory(catstr, subscrs), var)
+        subscrs, features = parsePrimitiveAnnotation(chunks[1])
+        return (PrimitiveCategory(catstr, subscrs, features), var)
     raise AssertionError(
         "String '" + catstr + "' is neither a family nor primitive category."
     )
@@ -221,13 +257,13 @@ def augParseCategory(line, primitives, families, var=None):
     Parse a string representing a category, and returns a tuple with
     (possibly) the CCG variable for the category
     """
-    (cat_string, rest) = nextCategory(line)
+    cat_string, rest = nextCategory(line)
 
     if cat_string.startswith("("):
-        (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+        res, var = augParseCategory(cat_string[1:-1], primitives, families, var)
 
     else:
-        (res, var) = parsePrimitiveCategory(
+        res, var = parsePrimitiveCategory(
             PRIM_RE.match(cat_string).groups(), primitives, families, var
         )
 
@@ -236,11 +272,11 @@ def augParseCategory(line, primitives, families, var=None):
         direction = parseApplication(app[0:3])
         rest = app[3]
 
-        (cat_string, rest) = nextCategory(rest)
+        cat_string, rest = nextCategory(rest)
         if cat_string.startswith("("):
-            (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+            arg, var = augParseCategory(cat_string[1:-1], primitives, families, var)
         else:
-            (arg, var) = parsePrimitiveCategory(
+            arg, var = parsePrimitiveCategory(
                 PRIM_RE.match(cat_string).groups(), primitives, families, var
             )
         res = FunctionalCategory(res, arg, direction)
@@ -271,9 +307,9 @@ def fromstring(lex_str, include_semantics=False):
             ]
         else:
             # Either a family definition, or a word definition
-            (ident, sep, rhs) = LEX_RE.match(line).groups()
-            (catstr, semantics_str) = RHS_RE.match(rhs).groups()
-            (cat, var) = augParseCategory(catstr, primitives, families)
+            ident, sep, rhs = LEX_RE.match(line).groups()
+            catstr, semantics_str = RHS_RE.match(rhs).groups()
+            cat, var = augParseCategory(catstr, primitives, families)
 
             if sep == "::":
                 # Family definition

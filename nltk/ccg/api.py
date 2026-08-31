@@ -8,7 +8,28 @@
 from abc import ABCMeta, abstractmethod
 from functools import total_ordering
 
+from nltk.featstruct import FeatStruct, unify
 from nltk.internals import raise_unorderable_types
+from nltk.sem.logic import Variable
+
+
+def _freeze_features(features):
+    if features is None:
+        features = FeatStruct()
+    elif isinstance(features, FeatStruct):
+        features = features.copy()
+    else:
+        features = FeatStruct(features)
+    features.freeze()
+    return features
+
+
+def _feature_bindings(substitutions):
+    return {
+        variable: value
+        for variable, value in substitutions
+        if isinstance(variable, Variable)
+    }
 
 
 @total_ordering
@@ -254,12 +275,14 @@ class PrimitiveCategory(AbstractCCGCategory):
     Class representing primitive categories.
     Takes a string representation of the category, and a
     list of strings specifying the morphological subcategories.
+    Optional feature structures can also be used for key/value constraints.
     """
 
-    def __init__(self, categ, restrictions=[]):
+    def __init__(self, categ, restrictions=None, features=None):
         self._categ = categ
-        self._restrs = restrictions
-        self._comparison_key = (categ, tuple(restrictions))
+        self._restrs = list(restrictions or [])
+        self._features = _freeze_features(features)
+        self._comparison_key = (categ, tuple(self._restrs), repr(self._features))
 
     def is_primitive(self):
         return True
@@ -273,31 +296,54 @@ class PrimitiveCategory(AbstractCCGCategory):
     def restrs(self):
         return self._restrs
 
+    def features(self):
+        return self._features
+
     def categ(self):
         return self._categ
 
     # Substitution does nothing to a primitive category
     def substitute(self, subs):
-        return self
+        bindings = _feature_bindings(subs)
+        if not bindings or len(self._features) == 0:
+            return self
+        return PrimitiveCategory(
+            self._categ,
+            self._restrs,
+            self._features.substitute_bindings(bindings),
+        )
 
     # A primitive can be unified with a class of the same
     # base category, given that the other category shares all
-    # of its subclasses, or with a variable.
+    # of its subclasses and feature constraints, or with a variable.
     def can_unify(self, other):
-        if not other.is_primitive():
-            return None
         if other.is_var():
             return [(other, self)]
+        if not other.is_primitive():
+            return None
         if other.categ() == self.categ():
             for restr in self._restrs:
                 if restr not in other.restrs():
                     return None
-            return []
+            bindings = {}
+            if (
+                unify(
+                    self._features,
+                    other.features(),
+                    bindings,
+                    rename_vars=False,
+                )
+                is None
+            ):
+                return None
+            return list(bindings.items())
         return None
 
     def __str__(self):
-        if self._restrs == []:
+        if self._restrs == [] and len(self._features) == 0:
             return "%s" % self._categ
+        if len(self._features) > 0:
+            return f"{self._categ}{repr(self._features)}"
         restrictions = "[%s]" % ",".join(repr(r) for r in self._restrs)
         return f"{self._categ}{restrictions}"
 
