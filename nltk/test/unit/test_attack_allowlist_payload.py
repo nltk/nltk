@@ -5,44 +5,8 @@
 # For license information, see LICENSE.TXT
 
 """Attack harness for the ``nltk.tbl.demo`` allowlisting unpickler (GHSA-8mgp).
-
-The companion suite ``test_tbl_demo_allowlist_load.py`` proves the *name* guard:
-a global outside :data:`nltk.tbl.demo._TBL_MODEL_ALLOWED_GLOBALS` cannot be
-reconstructed. That is necessary but not sufficient. ``AllowlistUnpickler`` only
-gates ``find_class`` (which class the pickle may build); it does not constrain
-the ``REDUCE`` args or the ``BUILD`` / ``__setstate__`` *state* those classes are
-handed. So an attacker who uses *only* allowlisted names can still steer a
-reconstructed object into hostile territory.
-
-This harness enumerates that second surface and proves, with real runs, that
-every path is either refused, provably inert, or bounded:
-
-* **ReDoS (the one genuine leak, now fixed).** A ``RegexpTagger`` can be handed a
-  catastrophic pattern either raw in ``_regexps`` (no wall-clock cap) or wrapped
-  in a ``TimedPattern`` whose ``_timeout`` the attacker sets to ``None`` (cap
-  disabled). Both use only allowlisted names, both are accepted by the name
-  guard, and under a plain / warn-only loader both hang the process the moment
-  the reloaded tagger tags a crafted token (CWE-1333). The demo loader now
-  re-derives every reconstructed regex from its source string through
-  :func:`nltk.redos.compile`, so the pattern is bounded by the redos wall-clock
-  cap. Teeth: the *same* payload hangs under ``pickle.load`` (subprocess proof).
-* **BUILD / __setstate__ abuse, args-controlled construction, type confusion.**
-  Hostile state / args on the other allowlisted classes yield at worst a bounded
-  ``AttributeError`` / ``TypeError``, never code execution and never a hang.
-  Any global named inside the state (``os.system`` as a Rule condition, ...) is
-  still gated by ``find_class``.
-* **Memory / recursion bomb.** A deeply nested or self-referential graph of
-  allowlisted nodes is bounded (``RecursionError`` / linear memory), and the
-  post-load hardening walk that re-derives regexes is itself node-bounded so it
-  cannot be turned into the DoS it prevents.
-* **object sentinel.** ``builtins.object`` reconstructs a bare, state-less
-  instance with no ``__reduce__`` / ``__setstate__`` hook to ride.
-
-Cross-platform notes: the hang proof uses a **subprocess wall-clock timeout**
-(``subprocess.run(timeout=...)``), never a Unix signal, so it runs on Windows
-too; pickle fixtures live under the ``pathsec_sandbox`` registered root and are
-opened ``"rb"`` / ``"wb"``.
-"""
+The name guard only gates find_class, not REDUCE args or BUILD/__setstate__ state,
+so this proves every allowlisted-name-only payload is refused, inert, or bounded."""
 
 import io
 import os
@@ -73,19 +37,14 @@ BAIT = "a" * 40 + "!"
 
 
 # ===========================================================================
-# Builders: malicious taggers assembled from ONLY allowlisted names.
-# NEWOBJ + BUILD means __init__ never runs, so the ReDoS guard inside
-# RegexpTagger.__init__ (redos.compile) is bypassed at reconstruction time.
+# Builders: malicious taggers from allowlisted names; NEWOBJ+BUILD skips __init__.
 # ===========================================================================
 
 
 def _regexp_tagger_with(pattern_obj):
     """A RegexpTagger whose single ``_regexps`` entry is ``pattern_obj`` as-is.
-
-    ``pattern_obj`` is inserted verbatim (no ``__init__``), so the caller decides
-    whether it is a raw compiled ``regex``, a ``TimedPattern`` with a disabled
-    cap, or a legitimate capped ``TimedPattern``.
-    """
+    Inserted verbatim (no ``__init__``), so the caller picks a raw regex, a
+    ``TimedPattern`` with a disabled cap, or a legitimate capped one."""
     t = RegexpTagger.__new__(RegexpTagger)
     t.__dict__["_taggers"] = [t]
     t.__dict__["_regexps"] = [(pattern_obj, "X")]
@@ -126,9 +85,8 @@ def _payload_nested_backoff():
 )
 def test_redos_payloads_pass_the_name_allowlist(build):
     """Each ReDoS payload is *accepted* by the name guard: ``demo._load_tbl_model``
-    loads it without raising ``UnpicklingError``. That is exactly the point: every
-    global it names is on the tbl allowlist, so name-checking alone cannot stop
-    it and the defence has to be structural (the post-load re-derivation below)."""
+    loads it without ``UnpicklingError``. Every global it names is allowlisted, so
+    name-checking alone cannot stop it; the defence is structural (re-derivation)."""
     obj = demo._load_tbl_model(io.BytesIO(build()))
     assert obj is not None  # find_class accepted every global in the payload
 
@@ -152,10 +110,9 @@ def test_redos_reconstructed_pattern_is_capped(build):
 
 # Subprocess hang proof (cross-platform, wall-clock, no signals).
 
-# Child: load a pickle either through the hardened demo loader or a plain
-# unbounded ``pickle.load`` (teeth), then tag the bait. The redos cap is lowered
-# so a *bounded* run finishes quickly while an *unbounded* run runs until the
-# parent's ``subprocess.run(timeout=...)`` kills it.
+# Child: load through the hardened demo loader or a plain unbounded ``pickle.load``
+# (teeth), then tag the bait. A lowered redos cap lets a bounded run finish fast
+# while an unbounded run spins until the parent's subprocess timeout kills it.
 _CHILD = textwrap.dedent(
     """
     import io, pickle, sys
@@ -345,12 +302,8 @@ def test_reduce_constructor_args_no_exec():
 
 def _deep_nested_list_pickle(depth):
     """Raw protocol-4 pickle of a ``depth``-deep right-nested list ``[[[...]]]``.
-
-    Assembled from opcodes so that neither the *build* (``pickle.dump`` would
-    recurse and blow the stack at this depth) nor the *load* recurses: pickle's
-    loader applies ``APPEND`` iteratively, and the post-load hardening walk uses
-    an explicit stack, so a very deep graph exercises the *bounded* paths of
-    both without a native recursion limit getting in the way."""
+    Assembled from opcodes so neither build nor load recurses (pickle APPENDs
+    iteratively, the hardening walk uses a stack), exercising only bounded paths."""
     return (
         pickle.PROTO
         + bytes([4])
@@ -361,11 +314,9 @@ def _deep_nested_list_pickle(depth):
 
 
 def test_deeply_nested_graph_is_bounded(pathsec_sandbox):
-    """A very deeply nested list of nodes loads in bounded time and does NOT hang
-    or stack-overflow: the loader's APPEND is iterative and the post-load walk is
-    iterative with a visited-set, so a 200k-deep graph finishes quickly. Run in a
-    subprocess with a wall-clock timeout so a regression to recursion is caught as
-    a timeout rather than crashing the runner."""
+    """A very deeply nested list loads in bounded time without stack-overflow: the
+    loader's APPEND and the post-load walk are both iterative. Run in a subprocess
+    so a regression to recursion surfaces as a timeout, not a crashed runner."""
     path = pathsec_sandbox.root / "nested.pcl"
     with open(path, "wb") as fh:
         fh.write(_deep_nested_list_pickle(200_000))
@@ -403,10 +354,9 @@ def test_deeply_nested_graph_is_bounded(pathsec_sandbox):
 
 
 def test_huge_flat_graph_is_linear(pathsec_sandbox):
-    """A large *flat* list of allowlisted-only nodes costs memory linear in the
-    pickle size (pickle has no billion-laughs amplification: memo references are
-    shared, not copied), so it is bounded. Proven by loading a 500k-element list
-    inside the wall-clock-bounded subprocess."""
+    """A large flat list of allowlisted nodes costs memory linear in pickle size
+    (no billion-laughs amplification: memo refs are shared, not copied). Proven by
+    loading a 500k-element list inside the wall-clock-bounded subprocess."""
     n = 500_000
     payload = (
         pickle.PROTO
@@ -450,10 +400,9 @@ def test_huge_flat_graph_is_linear(pathsec_sandbox):
 
 
 def test_self_referential_graph_terminates(pathsec_sandbox):
-    """A self-referential (cyclic) tagger graph must not send the post-load
-    hardening walk into an infinite loop; the walk's visited-set makes it
-    terminate. A RegexpTagger whose backoff list points back at itself is the
-    minimal cycle."""
+    """A cyclic tagger graph must not send the post-load hardening walk into an
+    infinite loop; its visited-set makes it terminate. A RegexpTagger whose backoff
+    list points back at itself is the minimal cycle."""
     t = RegexpTagger.__new__(RegexpTagger)
     t.__dict__["_regexps"] = [(TimedPattern(regex.compile(r".*"), timeout=None), "NN")]
     t.__dict__["_taggers"] = [t, t]  # cycle: references itself
@@ -581,10 +530,9 @@ def test_object_sentinel_cannot_take_build_state():
 
 
 def test_trained_brill_roundtrip_tags_correctly(pathsec_sandbox):
-    """End-to-end: really train a rule-bearing Brill tagger over a baseline whose
-    backoff is a RegexpTagger, save + reload both through the demo loader inside a
-    registered root, and confirm the reloaded taggers tag identically to the
-    originals (so the hardening did not change legitimate behaviour)."""
+    """End-to-end: train a rule-bearing Brill tagger over a RegexpTagger-backed
+    baseline, save + reload both through the demo loader inside a registered root,
+    and confirm the reloaded taggers tag identically (hardening kept behaviour)."""
     from nltk.tag import BrillTaggerTrainer
     from nltk.tbl import Template
 

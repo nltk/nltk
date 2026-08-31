@@ -5,30 +5,8 @@
 # For license information, see LICENSE.TXT
 
 """Deserialization hardening tests for ``nltk.tbl.demo`` (GHSA-8mgp umbrella).
-
-``nltk.tbl.demo.postag`` reads two model files back from a caller/data-root
-path: a baseline tagger cached by ``cache_baseline_tagger`` and a trained Brill
-tagger round-tripped by ``serialize_output``. Path containment is already
-enforced by ``pathsec.open``; the load itself used to go through the warn-only
-:func:`nltk.picklesec.pickle_load`, which emits a warning and then executes any
-reduce gadget. That is a defense-in-depth gap: a gadget planted inside a data
-root (an attacker who can write one file) would run on the next demo run.
-
-The hardening routes both loads through an allowlisting unpickler pinned to the
-exact classes a legitimate baseline / Brill tagger reconstructs
-(``nltk.tbl.demo._TBL_MODEL_ALLOWED_GLOBALS`` plus the inert ``builtins.object``
-timeout sentinel), so any other global raises ``UnpicklingError`` before it can
-run. These tests prove both halves with real runs:
-
-* teeth: a genuine reduce gadget executes under the old warn-only loader but is
-  refused by the new one, and nothing is written to the sentinel path.
-* functionality: a real trained Brill tagger and its baseline round-trip through
-  the actual ``postag`` code path inside a registered data root and still tag.
-
-Staging note: fixtures live inside the ``pathsec_sandbox`` registered root (a
-per-user directory), pickle handles are opened ``"rb"``/``"wb"``, and no path
-touches the shared system temp dir, so the suite runs on POSIX and Windows.
-"""
+The two model files ``postag`` reads back used the warn-only loader; these prove
+the allowlisting loader refuses gadgets yet still round-trips a real tagger."""
 
 import io
 import os
@@ -39,10 +17,9 @@ import pytest
 from nltk.tag import DefaultTagger, RegexpTagger
 from nltk.tbl import demo
 
-# A tiny synthetic tagged corpus so postag() never needs the treebank corpus
-# (postag skips corpus loading when tagged_data is supplied). Every word is seen
-# in training, so the reloaded taggers tag the demo sentence without leaning on
-# an unseen word path.
+# A tiny synthetic tagged corpus so postag() never needs the treebank; postag
+# skips corpus loading when tagged_data is supplied. Every word is seen in
+# training, so reloaded taggers tag the demo sentence without an unseen path.
 TINY_TAGGED = [
     [("the", "AT"), ("dog", "NN"), ("runs", "VBZ")],
     [("a", "AT"), ("cat", "NN"), ("sleeps", "VBZ")],
@@ -52,8 +29,7 @@ DEMO_SENT = ["the", "dog", "runs"]
 
 
 # ---------------------------------------------------------------------------
-# Hand-assembled pickle builders (do not need the gadget importable at build
-# time; find_class runs at the STACK_GLOBAL step, before any REDUCE could call).
+# Hand-assembled pickle builders. find_class runs at STACK_GLOBAL, before REDUCE.
 # ---------------------------------------------------------------------------
 
 
@@ -91,18 +67,14 @@ def _bare_global_pickle(module: str, name: str) -> bytes:
 
 def _exec_write_sentinel_pickle(path: str) -> bytes:
     """A reduce gadget that, if executed, creates ``path`` on any platform.
-
-    ``builtins.exec`` of ``open(<path>, "w").close()`` writes an empty file
-    without a shell, so the same payload proves execution on POSIX and Windows.
-    Under the allowlisting unpickler ``builtins.exec`` is refused before it runs.
-    """
+    ``exec`` of ``open(path, "w").close()`` writes an empty file with no shell;
+    the allowlisting unpickler refuses ``builtins.exec`` before it runs."""
     return _reduce_global_pickle("builtins", "exec", f"open({path!r}, 'w').close()")
 
 
-# Dangerous globals that must never be reconstructable from an untrusted tbl
-# model file: code exec, subprocess, import, nested unpickle, and file/network
-# sinks from the scientific stack. Every one is on picklesec's denylist or is
-# simply absent from the tbl allowlist.
+# Dangerous globals that must never be reconstructable from an untrusted tbl model:
+# code exec, subprocess, import, nested unpickle, scientific-stack file/network
+# sinks. Every one is on picklesec's denylist or absent from the tbl allowlist.
 _GADGETS = [
     ("os", "system"),
     ("subprocess", "Popen"),
@@ -212,10 +184,9 @@ def test_warn_only_executes_gadget_but_allowlist_refuses(pathsec_sandbox):
 
 
 def test_planted_gadget_in_data_root_refused_via_postag(pathsec_sandbox):
-    """A gadget planted at the ``cache_baseline_tagger`` path inside a registered
-    data root is refused by the real ``postag`` reload branch, and nothing runs.
-    The file pre-exists, so postag skips training and goes straight to the load.
-    """
+    """A gadget planted at the ``cache_baseline_tagger`` path inside a data root is
+    refused by the real ``postag`` reload branch (the file pre-exists, so postag
+    skips training and loads it), and nothing runs."""
     root = pathsec_sandbox.root
     sentinel = root / "PWNED_planted"
     planted = root / "planted_baseline.pcl"
@@ -248,10 +219,9 @@ def _assert_tagged_sane(tagged):
 
 
 def test_legit_brill_roundtrip_default_backoff(pathsec_sandbox):
-    """postag() with a DefaultTagger baseline backoff trains, caches, serializes
-    and reloads a Brill tagger through the new loader; both reloaded taggers tag.
-    Exercises the BrillTagger / UnigramTagger / DefaultTagger / Word / Pos / Rule
-    entries of the allowlist through the real demo code path (both load sites)."""
+    """postag() with a DefaultTagger backoff trains, caches, serializes and reloads
+    a Brill tagger through the new loader; both reloaded taggers tag. Exercises the
+    BrillTagger, UnigramTagger, DefaultTagger, Word, Pos and Rule allowlist entries."""
     root = pathsec_sandbox.root
     cache = root / "baseline_default.pcl"
     serial = root / "tagger_default.pcl"
@@ -281,13 +251,9 @@ def test_legit_brill_roundtrip_default_backoff(pathsec_sandbox):
 
 
 def test_legit_brill_roundtrip_regexp_backoff(pathsec_sandbox):
-    """postag() with a RegexpTagger baseline backoff round-trips through the new
-    loader. This is the demo default backoff family and it is what pulls in the
-    ``nltk.redos.TimedPattern`` wrapper, its ``regex._regex.compile`` reduce and
-    the inert ``builtins.object`` timeout sentinel, so it proves the allowlist
-    accepts all of those. The sentinel-tag backoff (matches every token as a tag
-    that is never a gold tag) makes the UnigramTagger store every word, so the
-    reloaded tagger never has to consult the regex backoff at tag time."""
+    """postag() with a RegexpTagger backoff round-trips through the new loader; this
+    is what pulls in the TimedPattern wrapper, its ``regex._regex.compile`` reduce
+    and the inert ``object`` timeout sentinel, proving the allowlist accepts them."""
     root = pathsec_sandbox.root
     cache = root / "baseline_regexp.pcl"
     serial = root / "tagger_regexp.pcl"
@@ -316,12 +282,9 @@ def test_legit_brill_roundtrip_regexp_backoff(pathsec_sandbox):
 
 
 def test_allowlist_accepts_regexp_object_sentinel(pathsec_sandbox):
-    """A bare RegexpTagger pickle (which embeds the ``builtins.object`` timeout
-    sentinel, ``nltk.redos.TimedPattern`` and ``regex._regex.compile``) loads
-    through the demo loader without being refused, and the compiled patterns are
-    reconstructed. Tagging is not exercised here: a bare RegexpTagger calls its
-    TimedPattern directly, and the reconstructed default-timeout sentinel is a
-    pre-existing nltk.redos round-trip limitation unrelated to this allowlist."""
+    """A bare RegexpTagger pickle (embedding the ``object`` timeout sentinel,
+    ``TimedPattern`` and ``regex._regex.compile``) loads through the demo loader
+    and its patterns reconstruct. Tagging is skipped: a redos round-trip limitation."""
     from nltk.redos import TimedPattern
 
     root = pathsec_sandbox.root
