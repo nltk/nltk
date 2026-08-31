@@ -32,6 +32,18 @@ def _run_guard():
     )
 
 
+def _find_violations_in(directory):
+    # Run the guard's own scanner against an isolated directory so the teeth
+    # check never plants a file in the live package tree, which would race the
+    # tree-walking tests under xdist.
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("_guard_tool_under_test", _GUARD)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.find_violations([str(directory)])
+
+
 @pytest.mark.skipif(not _GUARD.exists(), reason="guard script not in this checkout")
 def test_guard_passes_on_the_current_tree():
     result = _run_guard()
@@ -73,16 +85,17 @@ def test_guard_covers_the_whole_package_not_a_shortlist():
     ],
 )
 def test_guard_has_teeth_for_each_violation_class(body, label, tmp_path):
-    """Plant one violation at a time and require the guard to fail on it."""
-    planted = _REPO / "nltk" / "sem" / "_guard_teeth_probe.py"
+    """Plant one violation at a time in an isolated temp dir and require the
+    guard to flag it. The probe never touches the live package tree, so a
+    parallel tree-walking test cannot read it or race its removal (xdist).
+    """
+    planted = tmp_path / "_guard_teeth_probe.py"
     planted.write_text(body)
-    try:
-        result = _run_guard()
-        assert result.returncode != 0, f"guard did not catch {label}"
-        assert "_guard_teeth_probe" in result.stdout, result.stdout
-    finally:
-        planted.unlink(missing_ok=True)
-    assert _run_guard().returncode == 0, "guard stayed red after cleanup"
+    violations = _find_violations_in(tmp_path)
+    assert violations, f"guard did not catch {label}"
+    assert any("_guard_teeth_probe" in str(v) for v in violations), violations
+    planted.write_text("def go(p):\n    return 1\n")
+    assert _find_violations_in(tmp_path) == [], "guard flagged a clean file"
 
 
 def test_no_source_module_creates_a_temp_file_outside_the_sandbox():
