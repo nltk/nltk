@@ -16,7 +16,7 @@ import pytest
 import regex
 
 from nltk import redos
-from nltk.redos import MAX_NESTING_DEPTH, MAX_PATTERN_LENGTH, TimedPattern, _UNSET
+from nltk.redos import _UNSET, MAX_NESTING_DEPTH, MAX_PATTERN_LENGTH, TimedPattern
 
 # ---------------------------------------------------------------------------
 # Compile-time bombs are refused up front (in-process; the guard rejects before
