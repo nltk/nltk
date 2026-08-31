@@ -36,6 +36,7 @@ import re
 import warnings
 from string import punctuation
 
+from nltk.redos import check_pattern
 from nltk.tokenize.api import TokenizerI
 from nltk.util import ngrams
 
@@ -123,7 +124,9 @@ class SyllableTokenizer(TokenizerI):
         """
         valid_syllables = []
         front = ""
-        vowel_pattern = re.compile("|".join(self.vowels))
+        vowel_source = "|".join(self.vowels)
+        check_pattern(vowel_source)  # vowels are caller-supplied at construction
+        vowel_pattern = re.compile(vowel_source)
         for i, syllable in enumerate(syllable_list):
             if syllable in punctuation:
                 valid_syllables.append(syllable)

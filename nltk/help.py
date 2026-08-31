@@ -14,6 +14,7 @@ import re
 from textwrap import wrap
 
 from nltk.data import find, open_datafile
+from nltk.redos import check_pattern
 
 
 def brown_tagset(tagpattern=None):
@@ -53,6 +54,7 @@ def _format_tagset(tagset, tagpattern=None):
     elif tagpattern in tagdict:
         _print_entries([tagpattern], tagdict)
     else:
+        check_pattern(tagpattern)  # caller-supplied: refuse a compile-time DoS
         tagpattern = re.compile(tagpattern)
         tags = [tag for tag in sorted(tagdict) if tagpattern.match(tag)]
         if tags:

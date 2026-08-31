@@ -56,7 +56,16 @@ so it is a drop-in replacement for a compiled pattern at those call sites.
 
 import regex
 
-__all__ = ["DEFAULT_TIMEOUT", "TimedPattern", "compile", "source_of", "reharden"]
+__all__ = [
+    "DEFAULT_TIMEOUT",
+    "MAX_PATTERN_LENGTH",
+    "MAX_NESTING_DEPTH",
+    "TimedPattern",
+    "check_pattern",
+    "compile",
+    "source_of",
+    "reharden",
+]
 
 #: Wall-clock seconds any single caller-supplied-pattern match may run before it
 #: is abandoned with :class:`TimeoutError`. Legitimate tokenizing / tagging /
@@ -72,6 +81,16 @@ DEFAULT_TIMEOUT = 5.0
 #: module default", and so a later ``nltk.redos.DEFAULT_TIMEOUT = ...`` still
 #: takes effect for calls that did not pass an explicit timeout.
 _UNSET = object()
+
+#: Max length of a regex SOURCE :func:`compile` hands to the engine. Compile time
+#: scales with length and no match-time cap can help (compilation runs first), so
+#: an oversized source is refused as a compile-time DoS (CWE-1333 / CWE-400).
+MAX_PATTERN_LENGTH = 100_000
+
+#: Max group-nesting depth. The engine's parser recurses per group, so a deeply
+#: nested source raises RecursionError (a crash, and a native stack overflow on
+#: some builds); a legitimate pattern nests only a few levels.
+MAX_NESTING_DEPTH = 100
 
 
 class TimedPattern:
@@ -219,8 +238,52 @@ def compile(pattern, flags=0, timeout=_UNSET):
         return TimedPattern(pattern._rx, timeout)
     # Accept a pre-compiled ``re``/``regex`` pattern by re-compiling its source.
     src = getattr(pattern, "pattern", pattern)
+    check_pattern(src)
     compiled = regex.compile(src, flags)
     return TimedPattern(compiled, timeout)
+
+
+def check_pattern(src):
+    """Refuse a regex source that is a compile-time DoS before it reaches any
+    engine: over-long (compile time scales with length) or too deeply nested (the
+    parser recurses per group). Raises :class:`ValueError` (CWE-1333 / CWE-400).
+
+    Call this before compiling a caller-supplied pattern with ``re``/``regex``
+    directly (:func:`compile` already calls it); ``src`` is the pattern string
+    (``str`` or ``bytes``), and a non-string is ignored so the engine can raise."""
+    if isinstance(src, (bytes, bytearray)):
+        scan = bytes(src).decode("latin-1")
+    elif isinstance(src, str):
+        scan = src
+    else:
+        return  # not a string source: let regex.compile validate / raise
+    if len(scan) > MAX_PATTERN_LENGTH:
+        raise ValueError(
+            f"regex source is {len(scan)} chars (> {MAX_PATTERN_LENGTH}); refusing "
+            "to compile a pattern that large (CWE-1333 compile-time DoS)"
+        )
+    depth = 0
+    in_class = False
+    escaped = False
+    for ch in scan:
+        if escaped:
+            escaped = False
+        elif ch == "\\":
+            escaped = True
+        elif in_class:
+            if ch == "]":
+                in_class = False
+        elif ch == "[":
+            in_class = True
+        elif ch == "(":
+            depth += 1
+            if depth > MAX_NESTING_DEPTH:
+                raise ValueError(
+                    f"regex nests groups more than {MAX_NESTING_DEPTH} deep; refusing "
+                    "to compile (CWE-1333 parser recursion / stack overflow)"
+                )
+        elif ch == ")" and depth:
+            depth -= 1
 
 
 def source_of(pattern):
