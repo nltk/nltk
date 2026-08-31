@@ -580,3 +580,38 @@ def allowlisted_pickle_load(
     return AllowlistUnpickler(
         file, allowed_globals=allowed_globals, allowed_modules=allowed_modules
     ).load()
+
+
+def harden_object_graph(root: Any, visit: Any, *, max_nodes: int = 5_000_000) -> Any:
+    """Walk a reconstructed graph so ``visit`` can neutralise hostile STATE an
+    allowlisting unpickler does not gate (BUILD / ``__setstate__`` / REDUCE). The
+    walk is iterative, cycle-safe and capped at ``max_nodes`` (else UnpicklingError).
+    """
+    stack = [root]
+    seen = set()
+    visited = 0
+    while stack:
+        obj = stack.pop()
+        oid = id(obj)
+        if oid in seen:
+            continue
+        seen.add(oid)
+        visited += 1
+        if visited > max_nodes:
+            raise pickle.UnpicklingError(
+                "reconstructed object graph exceeds the safety bound; refusing"
+            )
+        # visit returns truthy to claim the node fully and stop descending it.
+        if visit(obj):
+            continue
+        if isinstance(obj, dict):
+            stack.extend(obj.keys())
+            stack.extend(obj.values())
+            continue
+        if isinstance(obj, (list, tuple, set, frozenset)):
+            stack.extend(obj)
+            continue
+        state = getattr(obj, "__dict__", None)
+        if isinstance(state, dict):
+            stack.extend(state.values())
+    return root
