@@ -12,10 +12,12 @@ import pickle
 import random
 import time
 
+from nltk import redos
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import AllowlistUnpickler
+from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
 from nltk.tbl import Template, error_list
@@ -75,6 +77,107 @@ class _TblModelUnpickler(AllowlistUnpickler):
         return super().find_class(module, name)
 
 
+# A generous ceiling on the number of nodes the post-load hardening walk will
+# visit. Allowlisting only gates *which* classes a pickle may build; it does not
+# bound the *state* those classes are handed, so a hostile file could stitch a
+# very large object graph out of purely allowlisted nodes. The walk that
+# re-derives every reconstructed regex (below) is itself bounded so it cannot be
+# turned into the denial of service it exists to prevent. A real trained Brill
+# tagger over the treebank is a few tens of thousands of nodes, so this cap is
+# ~2 orders of magnitude of head-room while still finite.
+_MAX_MODEL_NODES = 5_000_000
+
+
+def _regex_source(pattern):
+    """Return the *source string* of a reconstructed ``RegexpTagger`` pattern.
+
+    A pattern reconstructed from an untrusted file may be a :class:`TimedPattern`
+    (its wall-clock cap possibly disabled via an attacker-supplied
+    ``_timeout=None``), a *raw* compiled ``regex`` object (no cap at all), or a
+    plain string. Only the source string is trusted; the compiled object and the
+    timeout are discarded and re-derived by the caller. A pattern that carries no
+    string source is refused rather than silently kept.
+    """
+    if isinstance(pattern, str):
+        return pattern
+    # ``TimedPattern`` delegates ``.pattern`` to its wrapped regex; a raw regex
+    # object exposes ``.pattern`` directly. ``getattr`` swallows the delegating
+    # ``AttributeError`` a malformed wrapper (``_rx`` not a pattern) would raise.
+    src = getattr(pattern, "pattern", None)
+    if isinstance(src, bytes):
+        src = src.decode("latin-1")
+    if isinstance(src, str):
+        return src
+    raise pickle.UnpicklingError(
+        "tbl model RegexpTagger holds a pattern with no string source; refusing "
+        "to reconstruct an unbounded regex from an untrusted file"
+    )
+
+
+def _harden_reconstructed_model(root):
+    """Neutralise ReDoS carried through the allowlisted regex surface.
+
+    The allowlist lets an untrusted file build a :class:`RegexpTagger`,
+    :class:`TimedPattern` and a raw compiled ``regex`` object because a genuine
+    trained tagger needs them. Name-checking alone is *not* enough: the file also
+    controls their *state / constructor args*, so it can plant a catastrophic
+    pattern that either (a) lives raw in ``RegexpTagger._regexps`` with no cap, or
+    (b) is wrapped in a ``TimedPattern`` whose ``_timeout`` is set to ``None``
+    (cap disabled). Either one hangs the process the moment the reloaded tagger
+    tags a crafted token (CWE-1333) even though every global was allowlisted.
+
+    After load, walk the reconstructed graph (bounded) and, for every
+    ``RegexpTagger``, rebuild ``_regexps`` from each pattern's *source string*
+    through :func:`nltk.redos.compile`, which always yields a fresh
+    ``TimedPattern`` bound by :data:`nltk.redos.DEFAULT_TIMEOUT`. The hostile raw
+    object and the disabled timeout are thrown away; a legitimate pattern is
+    re-derived byte-for-byte to the exact object ``RegexpTagger.__init__`` would
+    have produced, so tagging is unchanged while a pathological pattern can no
+    longer run unbounded. Any stray ``TimedPattern`` reached elsewhere in the
+    graph has its ``_timeout`` reset to the module default for the same reason.
+    """
+    stack = [root]
+    seen = set()
+    visited = 0
+    while stack:
+        obj = stack.pop()
+        oid = id(obj)
+        if oid in seen:
+            continue
+        seen.add(oid)
+        visited += 1
+        if visited > _MAX_MODEL_NODES:
+            raise pickle.UnpicklingError(
+                "tbl model object graph exceeds the safety bound; refusing"
+            )
+        if isinstance(obj, TimedPattern):
+            # Belt and suspenders: a TimedPattern reached anywhere must never
+            # carry a disabled / oversized cap. Reset to the module default so
+            # even a hand-placed wrapper is bounded. (__slots__, so set directly.)
+            obj._timeout = redos._UNSET
+            continue
+        if isinstance(obj, RegexpTagger):
+            rebuilt = []
+            for entry in obj._regexps:
+                # Each entry is a ``(pattern, tag)`` pair; re-derive the pattern
+                # from its source so a raw / uncapped object cannot survive.
+                pattern, tag = entry
+                rebuilt.append((redos.compile(_regex_source(pattern)), tag))
+            obj._regexps = rebuilt
+            # Fall through to also descend into backoff taggers below.
+        if isinstance(obj, dict):
+            stack.extend(obj.keys())
+            stack.extend(obj.values())
+            continue
+        if isinstance(obj, (list, tuple, set, frozenset)):
+            stack.extend(obj)
+            continue
+        state = getattr(obj, "__dict__", None)
+        if isinstance(state, dict):
+            stack.extend(state.values())
+    return root
+
+
 def _load_tbl_model(file):
     """Unpickle a tbl demo model file through the allowlisting unpickler.
 
@@ -82,8 +185,15 @@ def _load_tbl_model(file):
     against the NLTK data sandbox by :func:`nltk.pathsec.open`). Only the exact
     globals a legitimate baseline / Brill tagger needs are reconstructed; any
     code-execution gadget raises ``pickle.UnpicklingError`` before it can run.
+
+    The allowlist gates *which* classes are built, not the *state* they are
+    handed, so the reconstructed model is then passed through
+    :func:`_harden_reconstructed_model`, which re-derives every regex pattern
+    under the ReDoS wall-clock cap. Together they close both the code-execution
+    and the denial-of-service paths through the allowlisted surface.
     """
-    return _TblModelUnpickler(file, allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS).load()
+    model = _TblModelUnpickler(file, allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS).load()
+    return _harden_reconstructed_model(model)
 
 
 def demo():
