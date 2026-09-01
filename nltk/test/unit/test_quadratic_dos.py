@@ -32,6 +32,14 @@ Three groups:
    ``TransitionParser._is_projective`` (list-membership inside a triple loop =
    O(V^4), now a set = O(V^3)).
 
+5. The metrics cluster: ``agreement.AnnotationTask`` (Disagreement/alpha/
+   weighted_kappa loop over the distinct label set = O(|K|^2), now a
+   distinct-label cap), ``paice.Paice`` (``_calculate`` rescanned every stem
+   for every lemma = O(|lemmas|*|stems|), now a word->stem index = linear), and
+   ``confusionmatrix.ConfusionMatrix.evaluate`` (precision/recall each scanned a
+   full column/row = O(V^2) reporting residual to CVE-2026-12839's O(n)
+   constructor, now O(1) via a cached column total beside the row total).
+
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
 sweep also *cleared* several look-alikes as linear or by-design; those are kept
@@ -496,6 +504,120 @@ class TestTransitionParserProjectivity:  # _is_projective list->set
         dg = self._graph(lines)
         assert self._tp()._is_projective(dg) is True
         assert _elapsed(lambda: self._tp()._is_projective(dg)) < 10.0
+
+
+class TestAnnotationTaskLabelQuadratic:  # nltk.metrics.agreement
+    def _task(self, n_labels, coders=("c1", "c2")):
+        from nltk.metrics.agreement import AnnotationTask
+
+        data = []
+        for i in range(n_labels):
+            for c in coders:
+                data.append((c, f"i{i}", f"L{i}"))  # unique label per item
+        return AnnotationTask(data=data)
+
+    def test_correctness_preserved(self):
+        from nltk.metrics.agreement import AnnotationTask
+
+        t = AnnotationTask(
+            data=[
+                ("c1", "i1", "a"),
+                ("c2", "i1", "a"),
+                ("c1", "i2", "b"),
+                ("c2", "i2", "a"),
+                ("c1", "i3", "b"),
+                ("c2", "i3", "b"),
+            ]
+        )
+        assert round(t.alpha(), 4) == 0.4444
+        assert round(t.avg_Ao(), 4) == 0.6667
+        assert round(t.weighted_kappa(), 4) == 0.4
+
+    def test_many_distinct_labels_is_bounded(self):
+        # Disagreement()/weighted_kappa loop over the distinct label set K, so a
+        # task with one unique label per item is O(|K|**2) (CWE-407); |K| is
+        # attacker-controlled. Capped on the distinct-label count.
+        from nltk.metrics.agreement import MAX_AGREEMENT_LABELS
+
+        with pytest.raises(ValueError):
+            self._task(MAX_AGREEMENT_LABELS + 1).alpha()
+
+    def test_large_data_few_labels_stays_linear(self):
+        # Regression guard for the distinct-count (not raw-length) choice: 40k
+        # items over 2 labels must NOT be rejected (a len(data) cap would kill
+        # it) and must stay fast.
+        from nltk.metrics.agreement import AnnotationTask
+
+        data = []
+        for i in range(40000):
+            lab = "yes" if i % 2 else "no"
+            data += [("c1", f"i{i}", lab), ("c2", f"i{i}", lab)]
+        assert _elapsed(lambda: AnnotationTask(data=data).alpha()) < 5.0
+
+
+class TestPaiceQuadratic:  # nltk.metrics.paice
+    def test_correctness_preserved(self):
+        from nltk.metrics.paice import Paice
+
+        lemmas = {
+            "kneel": ["kneel", "knelt"],
+            "range": ["range", "ranged"],
+            "ring": ["ring", "rang", "rung"],
+        }
+        stems = {
+            "kneel": ["kneel"],
+            "knelt": ["knelt"],
+            "rang": ["rang", "range", "ranged"],
+            "ring": ["ring"],
+            "rung": ["rung"],
+        }
+        p = Paice(lemmas, stems)
+        assert (p.gumt, p.gdmt, p.gwmt, p.gdnt) == (4.0, 5.0, 2.0, 16.0)
+        assert round(p.ui, 3) == 0.8 and round(p.oi, 3) == 0.125
+
+    def test_large_vocab_is_linear(self):
+        # `_calculate` rescanned every stem for every lemma => O(|lemmas|*|stems|)
+        # plus a per-stem `set(lemmawords)` rebuild. A word->stem index makes it
+        # linear (correctness-preserving, so no cap needed on legit large evals).
+        from nltk.metrics.paice import Paice
+
+        def build(n):
+            return (
+                {f"l{i}": [f"w{i}"] for i in range(n)},
+                {f"s{i}": [f"w{i}"] for i in range(n)},
+            )
+
+        def el(n):
+            lem, stm = build(n)
+            return _elapsed(lambda: Paice(lem, stm))
+
+        t1, t4 = el(400), el(1600)  # 4x input
+        assert t4 < 8 * t1 + 0.5  # linear ~4x, pre-fix O(n^2) ~16x
+
+
+class TestConfusionMatrixEvaluateQuadratic:  # residual to CVE-2026-12839
+    def test_correctness_preserved(self):
+        from nltk.metrics import ConfusionMatrix
+
+        ref = "DET NN VB DET JJ NN NN IN DET NN".split()
+        test = "DET VB VB DET NN NN NN IN DET NN".split()
+        cm = ConfusionMatrix(ref, test)
+        assert cm.precision("NN") == 0.75 and cm.recall("NN") == 0.75
+        assert cm.evaluate().splitlines()[0].startswith("Tag | Prec.")
+
+    def test_evaluate_all_distinct_is_linear(self):
+        # The constructor is O(n) (CVE-2026-12839), but evaluate() scanned all V
+        # columns per row -> O(V**2) on an all-distinct matrix. Caching column
+        # totals like the existing row-total cache makes it linear.
+        from nltk.metrics import ConfusionMatrix
+
+        def el(n):
+            r = [f"r{i}" for i in range(n)]
+            cm = ConfusionMatrix(r, r)
+            return _elapsed(cm.evaluate)
+
+        t1, t4 = el(300), el(1200)  # 4x input
+        assert t4 < 8 * t1 + 0.5  # linear ~4x, pre-fix O(V^2) ~16x
 
 
 # ==========================================================================
