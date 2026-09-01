@@ -134,6 +134,14 @@ MAX_REPEAT_PRODUCT = 100_000
 #: 4300-digit limit) out of an attacker-supplied body.
 _MAX_QUANTIFIER_SPAN = 64
 
+#: How far :func:`check_pattern` scans for the end of a group introducer -- a
+#: ``(?P<name>``, ``(?#comment)`` or inline ``(?flags:``. Real names/flag runs
+#: are short; bounding the scan keeps the guard linear (a run of unclosed
+#: ``(?P<`` would otherwise be O(n**2)). An introducer longer than this falls
+#: back to counting its bytes as atoms -- a harmless small over-count, never an
+#: under-count that could hide a bomb.
+_MAX_INTRODUCER_SPAN = 64
+
 #: Longest pattern the module-level helpers cache. The cache mirrors ``re``'s
 #: pattern cache for NLTK's own (small, constant) patterns; bounding the cached
 #: length keeps an attacker who funnels many distinct large patterns through the
@@ -372,6 +380,48 @@ def _repeat_min(spec):
     return int(spec) if spec.isdigit() else None
 
 
+def _skip_group_introducer(scan, open_idx, n):
+    """``scan[open_idx] == '('`` with ``scan[open_idx+1] == '?'``: return the index
+    where the group's BODY (its repeatable atoms) begins, so the non-atom
+    introducer syntax -- ``?:``, ``?P<name>``, ``?=``/``?!``, ``?<=``/``?<!``,
+    ``?>``, ``?#comment``, inline ``?flags`` -- is not miscounted as atoms (which
+    would inflate the repetition product and reject a legitimate pattern). For a
+    bodyless form (comment / backref / flag-only) return the index of its own
+    ``)`` so the caller's loop pops the zero-cost group frame. An unrecognised or
+    unterminated form falls back to just past ``(?`` -- at worst a small
+    over-count, never an under-count that could hide a bomb.
+    """
+    j = open_idx + 2  # first char after "(?"
+    if j >= n:
+        return j
+    c = scan[j]
+    if c in ":=!>":  # (?:  (?=  (?!  (?>
+        return j + 1
+    if c == "<":
+        if j + 1 < n and scan[j + 1] in "=!":  # (?<=  (?<!
+            return j + 2
+        end = scan.find(">", j, j + _MAX_INTRODUCER_SPAN)  # (?<name>
+        return end + 1 if end != -1 else j
+    if c == "P" and j + 1 < n:
+        if scan[j + 1] == "<":  # (?P<name>
+            end = scan.find(">", j, j + _MAX_INTRODUCER_SPAN)
+            return end + 1 if end != -1 else j
+        if scan[j + 1] == "=":  # (?P=name) -- backref, no body
+            end = scan.find(")", j, j + _MAX_INTRODUCER_SPAN)
+            return end if end != -1 else j
+    if c == "#":  # (?#comment) -- no body
+        end = scan.find(")", j, j + _MAX_INTRODUCER_SPAN)
+        return end if end != -1 else j
+    # Inline flags ``(?aiLmsux...)`` / scoped ``(?flags:...)``, or engine
+    # extensions like recursion ``(?R)`` / ``(?1)``: skip the run up to ':'
+    # (scoped body follows) or ')' (bodyless).
+    end = j
+    limit = min(n, j + _MAX_INTRODUCER_SPAN)
+    while end < limit and scan[end] not in ":)":
+        end += 1
+    return end + 1 if end < n and scan[end] == ":" else end
+
+
 def check_pattern(src):
     """Refuse a regex source that is a compile-time DoS before it reaches any
     engine: over-long, too deeply nested (parser recursion / stack overflow), or
@@ -437,6 +487,12 @@ def check_pattern(src):
             if depth > MAX_NESTING_DEPTH:
                 raise ValueError(depth_msg)
             cost.append(0)
+            if i + 1 < n and scan[i + 1] == "?":
+                # Skip a group introducer ((?:, (?P<name>, (?=, (?<!, (?#..., ...)
+                # so its syntax is not counted as repeatable atoms. Only the
+                # group's BODY drives the repetition product.
+                i = _skip_group_introducer(scan, i, n)
+                continue
         elif ch == ")":
             if depth:
                 depth -= 1
