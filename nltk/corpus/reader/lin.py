@@ -5,7 +5,6 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.txt
 
-import re
 from collections import defaultdict
 from functools import reduce
 

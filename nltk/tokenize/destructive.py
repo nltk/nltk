@@ -88,7 +88,10 @@ class NLTKWordTokenizer(TokenizerI):
         # the text ends in a non-space, non-class char (~32 KB pins a core). The
         # ``regex`` engine does not collapse this, so redos.compile's wall-clock
         # bound is required; behaviour is otherwise identical (CWE-1333).
-        (redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U), r"\1 \2 \3 "),
+        (
+            redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U),
+            r"\1 \2 \3 ",
+        ),
         (re.compile(r"([:,])([^\d])"), r" \1 \2"),
         (re.compile(r"([:,])$"), r" \1 "),
         (

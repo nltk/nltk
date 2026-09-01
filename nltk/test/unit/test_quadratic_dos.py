@@ -733,7 +733,10 @@ class TestNLTKWordTokenizerFinalPeriodDoS:  # destructive.py PUNCTUATION[0]
         # Treebank's twin rule has no space in the class -> disjoint quantifiers.
         from nltk.tokenize import TreebankWordTokenizer
 
-        assert _elapsed(lambda: TreebankWordTokenizer().tokenize("a." + " " * 80000 + "!")) < 2.0
+        assert (
+            _elapsed(lambda: TreebankWordTokenizer().tokenize("a." + " " * 80000 + "!"))
+            < 2.0
+        )
 
 
 class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
@@ -753,7 +756,9 @@ class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
         from nltk.corpus.reader.reviews import ReviewsCorpusReader
 
         rr = ReviewsCorpusReader.__new__(ReviewsCorpusReader)
-        assert _elapsed(lambda: rr._read_features(io.StringIO("a" * 200000 + "\n"))) < 5.0
+        assert (
+            _elapsed(lambda: rr._read_features(io.StringIO("a" * 200000 + "\n"))) < 5.0
+        )
 
 
 class TestLinThesaurusKeyQuadratic:  # lin.py _key_re -- engine still backtracks

@@ -191,8 +191,7 @@ class TestFeatureChartRecognitionDoS:
     # wall-clock deadline in the recognition loop caps it; top-down/Earley
     # feature parsers key on TYPE and stay O(n) edges (benign).
     ACC = (
-        "% start S\nS[f=?x] -> N[f=?x]\n"
-        "N[f=[g=?x]] -> N[f=?x] 'a'\nN[f=z] -> 'a'\n"
+        "% start S\nS[f=?x] -> N[f=?x]\n" "N[f=[g=?x]] -> N[f=?x] 'a'\nN[f=z] -> 'a'\n"
     )
 
     def _grammar(self, src):
@@ -216,7 +215,9 @@ class TestFeatureChartRecognitionDoS:
     def test_incremental_bottom_up_feature_is_bounded(self):
         from nltk.parse.earleychart import FeatureIncrementalBottomUpChartParser
 
-        p = FeatureIncrementalBottomUpChartParser(self._grammar(self.ACC), max_time=FAST)
+        p = FeatureIncrementalBottomUpChartParser(
+            self._grammar(self.ACC), max_time=FAST
+        )
         with pytest.raises(TimeoutError):
             list(p.parse(["a"] * 120))
 
