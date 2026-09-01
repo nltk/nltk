@@ -27,9 +27,15 @@ import re
 import regex
 from defusedxml.ElementTree import fromstring as safe_fromstring
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tokenize import *
+
+# ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
+# instance block; the later _fixXML subs were hardened but this one was left on
+# plain ``re``. redos.compile bounds match time (CWE-1333).
+_LONE_AMP_RE = redos.compile(r"(\s+)&(\s+)")
 
 
 class SensevalInstance:
@@ -167,7 +173,7 @@ def _fixXML(text):
     # <~> or <^> => ~ or ^
     text = re.sub(r"<([~\^])>", r"\1", text)
     # fix lone &
-    text = re.sub(r"(\s+)\&(\s+)", r"\1&amp;\2", text)
+    text = _LONE_AMP_RE.sub(r"\1&amp;\2", text)
     # fix """
     text = re.sub(r'"""', "'\"'", text)
     # fix <s snum=dd> => <s snum="dd"/>

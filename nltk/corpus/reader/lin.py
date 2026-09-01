@@ -9,6 +9,7 @@ import re
 from collections import defaultdict
 from functools import reduce
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
 from nltk.pathsec import open as pathsec_open
 
@@ -16,9 +17,12 @@ from nltk.pathsec import open as pathsec_open
 class LinThesaurusCorpusReader(CorpusReader):
     """Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin."""
 
-    # Compiled regular expression for extracting the key from the first line of each
-    # thesaurus entry
-    _key_re = re.compile(r'\("?([^"]+)"? \(desc [0-9.]+\).+')
+    # Compiled regular expression for extracting the key from the first line of
+    # each thesaurus entry. ``[^"]+`` does not exclude ``(``, so on a paren-heavy
+    # line the greedy group spans the remainder, the required `` (desc ..)`` is
+    # absent, and ``sub`` retries at every position -- O(n**2) over corpus data.
+    # redos.compile bounds match time with a wall-clock timeout (CWE-1333).
+    _key_re = redos.compile(r'\("?([^"]+)"? \(desc [0-9.]+\).+')
 
     @staticmethod
     def __defaultdict_factory():

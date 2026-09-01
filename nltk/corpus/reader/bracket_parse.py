@@ -32,7 +32,10 @@ EMPTY_BRACKETS = re.compile(r"\s*\(\s*\(")
 ALPINO_NODE = re.compile(
     r"^[ \t]*<node (?P<body>[^>\n]*?)(?P<selfclose>/?)>", re.MULTILINE
 )
-ALPINO_ATTR = re.compile(r'(\w+)="([^"]*)"')
+# ALPINO_NODE (above) was hardened, but ALPINO_ATTR.findall over the node body
+# is itself O(n**2): the leading greedy ``\w+`` is retried by findall at every
+# position of a long attribute-less body. redos.compile bounds it (CWE-1333).
+ALPINO_ATTR = redos.compile(r'(\w+)="([^"]*)"')
 # The old substitutions captured ``begin="(\d+)"``, ``pos="(\w+)"``,
 # ``cat="(\w+)"`` and ``word="([^"]+)"``, i.e. they only converted a node when
 # these fields had the expected shape (else the tag was left untouched). Keep

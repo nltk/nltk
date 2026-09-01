@@ -12,6 +12,7 @@ import warnings
 from collections.abc import Iterator
 from typing import List, Tuple
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import align_tokens
 
@@ -82,7 +83,12 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Punctuation.
     PUNCTUATION = [
-        (re.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U), r"\1 \2 \3 "),
+        # The class ends with a space directly before ``\s*$``, so ``[..space..]*``
+        # and ``\s*`` both match a trailing space run and backtrack O(n**2) when
+        # the text ends in a non-space, non-class char (~32 KB pins a core). The
+        # ``regex`` engine does not collapse this, so redos.compile's wall-clock
+        # bound is required; behaviour is otherwise identical (CWE-1333).
+        (redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U), r"\1 \2 \3 "),
         (re.compile(r"([:,])([^\d])"), r" \1 \2"),
         (re.compile(r"([:,])$"), r" \1 "),
         (

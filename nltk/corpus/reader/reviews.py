@@ -63,19 +63,18 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
 
 import re
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
 TITLE = re.compile(r"^\[t\](.*)$")  # [t] Title
 # find 'feature' in feature[+3].
 # The feature label is "a word, then up to 50 single-whitespace-separated
-# words". The label length is *bounded* so that re.findall() cannot rescan a
-# long, bracket-less line quadratically: with the previous unbounded label
-# (``(?:(?:\w+\s)+)?\w+``) a crafted corpus line such as ``"word " * 100000``
-# makes each search position consume the rest of the line, hanging the reader
-# (ReDoS, CWE-1333). Real feature labels are short noun phrases, so the bound
-# does not affect normal corpora.
-FEATURES = re.compile(r"(\w+(?:\s\w+){0,50})\[((?:\+|\-)\d)\]")
+# words". The ``{0,50}`` bound only stops the *space-separated* attack; a long
+# bracket-less run with no spaces (``"a" * 100000``) never enters that group and
+# the leading greedy ``\w+``, retried by findall at every position, is still
+# O(n**2). redos.compile bounds compile and match time regardless (CWE-1333).
+FEATURES = redos.compile(r"(\w+(?:\s\w+){0,50})\[((?:\+|\-)\d)\]")
 NOTES = re.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
 SENT = re.compile(r"##(.*)$")  # find tokenized sentence
 
@@ -285,7 +284,7 @@ class ReviewsCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return features
-            features.extend(re.findall(FEATURES, line))
+            features.extend(FEATURES.findall(line))
         return features
 
     def _read_review_block(self, stream):
@@ -313,7 +312,7 @@ class ReviewsCorpusReader(CorpusReader):
                 stream.seek(oldpos)
                 return [review]
             # Anything else is part of the review line.
-            feats = re.findall(FEATURES, line)
+            feats = FEATURES.findall(line)
             notes = re.findall(NOTES, line)
             sent = re.findall(SENT, line)
             if sent:
