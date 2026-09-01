@@ -41,6 +41,7 @@ itself an allowed root on macOS) via the conftest ``sandbox`` / ``pathsec_sandbo
 fixtures.
 """
 
+import gzip
 import os
 import stat
 import tempfile
@@ -536,3 +537,76 @@ class TestEnforceTeeth:
         monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
         # validate_tool_path returns the checked string (no raise) under ENFORCE off.
         assert validate_tool_path(outside_file) == outside_file
+
+
+# ==========================================================================
+# 9. Public-API gzip bomb, aggregate bomb via the open/read path, and the
+#    POSIX benign-literal over-block guard (net-new read paths)
+# ==========================================================================
+# Section 6 isolates the single-member read cutoff. Here the gzip bomb is driven
+# through the public GzipFileSystemPathPointer.open (not _BoundedGzipFile
+# directly) and the aggregate bomb through ZipFile.open().read() (not
+# extraction), so both public read paths are proven to fail closed, and an
+# honest gzip is proven to still round-trip.
+
+
+def _gzip_bomb(root, name="pointer_bomb.gz", size=200 * 1024 * 1024):
+    archive = os.path.join(str(root), name)
+    with gzip.open(archive, "wb") as handle:
+        handle.write(b"\0" * size)
+    return archive
+
+
+class TestGzipAndAggregateThroughPublicReadPaths:
+    def test_gzip_bomb_refused_through_public_pointer_open(self, restricted_sandbox):
+        archive = _gzip_bomb(restricted_sandbox)
+        pointer = nltk.data.GzipFileSystemPathPointer(archive)
+        with pytest.raises(REFUSALS):
+            with pointer.open() as stream:
+                while stream.read(1024 * 1024):
+                    pass
+
+    def test_benign_gzip_roundtrips_through_public_pointer(self, restricted_sandbox):
+        # Over-block control: an honest gzip reads back byte for byte.
+        archive = os.path.join(str(restricted_sandbox), "honest.gz")
+        payload = b"corpus line\n" * 2000
+        with gzip.open(archive, "wb") as handle:
+            handle.write(payload)
+        with nltk.data.GzipFileSystemPathPointer(archive).open() as stream:
+            assert stream.read() == payload
+
+    def test_aggregate_bomb_refused_through_the_open_read_path(
+        self, restricted_sandbox
+    ):
+        # Many members each below the single-member floor but together over the
+        # aggregate cap: constructing or reading them through the hardened
+        # ZipFile.open().read() path must fail closed, not only through extract.
+        archive = os.path.join(str(restricted_sandbox), "aggregate.zip")
+        with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as handle:
+            for i in range(40):
+                handle.writestr(f"m{i}.bin", b"\0" * (6 * 1024 * 1024))
+        with pytest.raises(REFUSALS):
+            with pathsec.ZipFile(archive) as zf:
+                for name in zf.namelist():
+                    with zf.open(name) as stream:
+                        while stream.read(1024 * 1024):
+                            pass
+
+
+@POSIX_ONLY
+class TestBackslashAndColonAreLiteralInRootOnPosix:
+    def test_backslash_and_colon_members_are_accepted_as_in_root_literals(
+        self, restricted_sandbox
+    ):
+        # Over-block control: a backslash or a leading drive-letter colon is a
+        # legal filename character on POSIX, not a separator, so such members are
+        # literal in-root names and must NOT be refused as traversal. The Windows
+        # unsafe-member rule is proved separately with a faked altsep.
+        extract = os.path.join(str(restricted_sandbox), "ex")
+        os.makedirs(extract)
+        archive = os.path.join(str(restricted_sandbox), "literal.zip")
+        with zipfile.ZipFile(archive, "w") as handle:
+            handle.writestr("weird\\name.txt", b"x")
+            handle.writestr("C:literal.txt", b"y")
+        # No raise: these resolve to in-root literal names on POSIX.
+        pathsec.validate_zip_archive(archive, extract)
