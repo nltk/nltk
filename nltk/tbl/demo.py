@@ -16,7 +16,7 @@ from nltk import redos
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
-from nltk.picklesec import AllowlistUnpickler, allowlisted_pickle_load
+from nltk.picklesec import allowlisted_pickle_load, pickle_dump
 from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
@@ -39,18 +39,11 @@ _TBL_MODEL_ALLOWED_GLOBALS = (
     # a compiled ``regex`` object, rebuilt from its source by regex._regex.compile.
     ("nltk.redos", "TimedPattern"),
     ("regex._regex", "compile"),
+    # The inert default-timeout sentinel a pickled RegexpTagger's TimedPattern
+    # carries; an audited safe primitive in picklesec (a bare object() exposes no
+    # attribute surface and no callable that runs code).
+    ("builtins", "object"),
 )
-
-
-class _TblModelUnpickler(AllowlistUnpickler):
-    """Allowlisting unpickler for the tbl demo's baseline / Brill tagger files.
-    Permits :data:`_TBL_MODEL_ALLOWED_GLOBALS` plus the inert ``builtins.object``
-    sentinel a pickled ``RegexpTagger`` reconstructs for its default timeout."""
-
-    def find_class(self, module, name):
-        if (module, name) == ("builtins", "object"):
-            return object
-        return super().find_class(module, name)
 
 
 def _tbl_visit(obj):
@@ -75,7 +68,6 @@ def _load_tbl_model(file):
         file,
         allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS,
         sanitize=_tbl_visit,
-        unpickler_cls=_TblModelUnpickler,
     )
 
 
@@ -311,7 +303,7 @@ def postag(
             with pathsec_open(
                 cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
             ) as print_rules:
-                pickle.dump(baseline_tagger, print_rules)
+                pickle_dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {}".format(
                     cache_baseline_tagger
@@ -393,7 +385,7 @@ def postag(
         with pathsec_open(
             serialize_output, "wb", context="tbl.demo.serialize_output"
         ) as print_rules:
-            pickle.dump(brill_tagger, print_rules)
+            pickle_dump(brill_tagger, print_rules)
         print(f"Wrote pickled tagger to {serialize_output}")
         with pathsec_open(
             serialize_output, "rb", context="tbl.demo.serialize_output"
