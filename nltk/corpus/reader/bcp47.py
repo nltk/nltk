@@ -5,9 +5,9 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 from warnings import warn
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
 from nltk.xmlsec import parse as safe_parse
 
@@ -70,12 +70,12 @@ class BCP47CorpusReader(CorpusReader):
         up = "[A-Z]"
         alnum = "[a-zA-Z0-9]"
         self.format = {
-            "language": re.compile(f"{low*3}?"),
-            "extlang": re.compile(f"{low*3}"),
-            "script": re.compile(f"{up}{low*3}"),
-            "region": re.compile(f"({up*2})|({dig*3})"),
-            "variant": re.compile(f"{alnum*4}{(alnum+'?')*4}"),
-            "singleton": re.compile(f"{low}"),
+            "language": redos.compile(f"{low*3}?"),
+            "extlang": redos.compile(f"{low*3}"),
+            "script": redos.compile(f"{up}{low*3}"),
+            "region": redos.compile(f"({up*2})|({dig*3})"),
+            "variant": redos.compile(f"{alnum*4}{(alnum+'?')*4}"),
+            "singleton": redos.compile(f"{low}"),
         }
 
     def data_dict(self, records):

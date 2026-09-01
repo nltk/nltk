@@ -11,7 +11,6 @@ API for corpus readers.
 """
 
 import os
-import re
 from collections import defaultdict
 from itertools import chain
 
@@ -86,7 +85,7 @@ class CorpusReader:
 
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):
-            m = re.match(r"(.*\.zip)/?(.*)$|", root)
+            m = redos.match(r"(.*\.zip)/?(.*)$|", root)
             zipfile, zipentry = m.groups()
             if zipfile:
                 root = ZipFilePathPointer(zipfile, zipentry)

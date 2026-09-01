@@ -51,6 +51,7 @@ from io import BytesIO, TextIOWrapper
 from urllib.parse import unquote
 from urllib.request import url2pathname
 
+from nltk import redos
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
@@ -59,7 +60,7 @@ from nltk.pathsec import validate_path as _validate_path
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
 # backslashes, Windows drive letters. Use a raw-string pattern and do not anchor only
 # at the start — we'll use search() for safety checks.
-_UNSAFE_NO_PROTOCOL_RE = re.compile(r"(?:\.\./|\.\.$|^/|\\|[A-Za-z]:[/\\])")
+_UNSAFE_NO_PROTOCOL_RE = redos.compile(r"(?:\.\./|\.\.$|^/|\\|[A-Za-z]:[/\\])")
 
 
 def _assert_no_encoded_bypass(name, error_label=None):
@@ -97,7 +98,7 @@ def _assert_no_encoded_bypass(name, error_label=None):
 
 # Python 3.14's url2pathname follows the WHATWG URL rules, so it silently strips
 # ASCII tab / LF / CR and truncates at "#" or "?". Earlier versions keep them.
-_URL_REWRITTEN_CHARS_RE = re.compile(r"[\t\n\r#?]")
+_URL_REWRITTEN_CHARS_RE = redos.compile(r"[\t\n\r#?]")
 
 
 def _assert_no_normalized_bypass(name, error_label=None):
@@ -463,7 +464,7 @@ def split_resource_url(resource_url):
         if path_.startswith("/"):
             path_ = "/" + path_.lstrip("/")
     else:
-        path_ = re.sub(r"^/{0,2}", "", path_)
+        path_ = redos.sub(r"^/{0,2}", "", path_)
 
     return protocol, path_
 
@@ -534,7 +535,7 @@ def normalize_resource_url(resource_url):
         # Reject Windows drive-letter paths even when explicitly using the
         # nltk: protocol. This prevents smuggling filesystem paths through
         # nltk: URLs.
-        if re.match(r"^[A-Za-z]:[/\\]", name):
+        if redos.match(r"^[A-Za-z]:[/\\]", name):
             raise ValueError(f"Unsafe resource path: {resource_url!r}")
         # If "nltk:" is used with an absolute path, treat it as "file://"
         if os.path.isabs(name):
@@ -583,13 +584,13 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
+    is_dir = bool(redos.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
         os.path.sep
     )
     if _is_windows():
         resource_name = resource_name.lstrip("/")
     else:
-        resource_name = re.sub(r"^/+", "/", resource_name)
+        resource_name = redos.sub(r"^/+", "/", resource_name)
     if allow_relative:
         resource_name = os.path.normpath(resource_name)
     else:
@@ -1138,7 +1139,7 @@ def find(resource_name, paths=None):
     # DOTALL matters for termination, not just matching: without it a name
     # containing a newline never looks like a zip, so the ".zip/" fallback below
     # recurses on an ever-growing name instead of stopping (CWE-407 / CWE-1333).
-    m = re.match(r"(.*?\.zip)/?(.*)$", resource_name, re.DOTALL)
+    m = redos.match(r"(.*?\.zip)/?(.*)$", resource_name, re.DOTALL)
     if m:
         zipfile, zipentry = m.groups()
     else:
@@ -1280,7 +1281,7 @@ def retrieve(resource_url, filename=None, verbose=True):
         if resource_url.startswith("file:"):
             filename = os.path.split(resource_url)[-1]
         else:
-            filename = re.sub(r"(^\w+:)?.*/", "", resource_url)
+            filename = redos.sub(r"(^\w+:)?.*/", "", resource_url)
     if os.path.exists(filename):
         filename = os.path.abspath(filename)
         raise ValueError("File %r already exists!" % filename)
@@ -1623,7 +1624,7 @@ def show_cfg(resource_url, escape="##"):
     for l in lines:
         if l.startswith(escape):
             continue
-        if re.match("^$", l):
+        if redos.match("^$", l):
             continue
         print(l)
 
@@ -2195,7 +2196,7 @@ class SeekableUnicodeStreamReader:
 
     def _check_bom(self):
         # Normalize our encoding name
-        enc = re.sub("[ -]", "", self.encoding.lower())
+        enc = redos.sub("[ -]", "", self.encoding.lower())
 
         # Look up our encoding in the BOM table.
         bom_info = self._BOM_TABLE.get(enc)

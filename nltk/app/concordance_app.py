@@ -697,8 +697,8 @@ class ConcordanceSearchModel:
         def processed_query(self):
             new = []
             for term in self.model.query.split():
-                term = re.sub(r"\.", r"[^/ ]", term)
-                if re.match("[A-Z]+$", term):
+                term = redos.sub(r"\.", r"[^/ ]", term)
+                if redos.match("[A-Z]+$", term):
                     new.append(BOUNDARY + WORD_OR_TAG + "/" + term + BOUNDARY)
                 elif "/" in term:
                     new.append(BOUNDARY + term + BOUNDARY)

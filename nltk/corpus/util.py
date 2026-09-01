@@ -10,10 +10,10 @@
 ######################################################################
 
 import gc
-import re
 import types
 
 import nltk
+from nltk import redos
 
 TRY_ZIPFILE_FIRST = False
 
@@ -68,7 +68,7 @@ class LazyCorpusLoader:
 
     def __load(self):
         # Find the corpus root directory.
-        zip_name = re.sub(r"(([^/]+)(/.*)?)", r"\2.zip/\1/", self.__name)
+        zip_name = redos.sub(r"(([^/]+)(/.*)?)", r"\2.zip/\1/", self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
                 root = nltk.data.find(f"{self.subdir}/{zip_name}")

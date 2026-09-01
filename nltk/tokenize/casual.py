@@ -213,17 +213,17 @@ REGEXPS_PHONE = (REGEXPS[0], PHONE_REGEX, *REGEXPS[1:])
 # the core tokenizing regexes. They are compiled lazily.
 
 # WORD_RE performs poorly on these patterns:
-HANG_RE = regex.compile(r"([^\p{L}\p{N}])\1{3,}")
+HANG_RE = redos.compile(r"([^\p{L}\p{N}])\1{3,}")
 
 # The emoticon string gets its own regex so that we can preserve case for
 # them as needed:
-EMOTICON_RE = regex.compile(EMOTICONS, regex.VERBOSE | regex.I | regex.UNICODE)
+EMOTICON_RE = redos.compile(EMOTICONS, regex.VERBOSE | regex.I | regex.UNICODE)
 
 # These are for regularizing HTML entities to Unicode:
-ENT_RE = regex.compile(r"&(#?(x?))([^&;\s]+);")
+ENT_RE = redos.compile(r"&(#?(x?))([^&;\s]+);")
 
 # For stripping away handles from a tweet:
-HANDLES_RE = regex.compile(
+HANDLES_RE = redos.compile(
     r"(?<![A-Za-z0-9_!@#\$%&*])@"
     r"(([A-Za-z0-9_]){15}(?!@)|([A-Za-z0-9_]){1,14}(?![A-Za-z0-9_]*@))"
 )
@@ -404,7 +404,7 @@ class TweetTokenizer(TokenizerI):
         """Core TweetTokenizer regex"""
         # Compiles the regex for this and all future instantiations of TweetTokenizer.
         if not type(self)._WORD_RE:
-            type(self)._WORD_RE = regex.compile(
+            type(self)._WORD_RE = redos.compile(
                 f"({'|'.join(REGEXPS)})",
                 regex.VERBOSE | regex.I | regex.UNICODE,
             )
@@ -415,7 +415,7 @@ class TweetTokenizer(TokenizerI):
         """Secondary core TweetTokenizer regex"""
         # Compiles the regex for this and all future instantiations of TweetTokenizer.
         if not type(self)._PHONE_WORD_RE:
-            type(self)._PHONE_WORD_RE = regex.compile(
+            type(self)._PHONE_WORD_RE = redos.compile(
                 f"({'|'.join(REGEXPS_PHONE)})",
                 regex.VERBOSE | regex.I | regex.UNICODE,
             )
@@ -432,7 +432,7 @@ def reduce_lengthening(text):
     Replace repeated character sequences of length 3 or greater with sequences
     of length 3.
     """
-    pattern = regex.compile(r"(.)\1{2,}")
+    pattern = redos.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1\1", text)
 
 

@@ -20,8 +20,8 @@ in many languages.
 
 __docformat__ = "plaintext"
 
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -727,11 +727,11 @@ def demo():
 
     # Convert the results to a string, and word-wrap them.
     results = " ".join(stemmed)
-    results = re.sub(r"(.{,70})\s", r"\1\n", results + " ").rstrip()
+    results = redos.sub(r"(.{,70})\s", r"\1\n", results + " ").rstrip()
 
     # Convert the original to a string, and word wrap it.
     original = " ".join(orig)
-    original = re.sub(r"(.{,70})\s", r"\1\n", original + " ").rstrip()
+    original = redos.sub(r"(.{,70})\s", r"\1\n", original + " ").rstrip()
 
     # Print the results.
     print("-Original-".center(70).replace(" ", "*").replace("-", " "))

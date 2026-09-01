@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 
+from nltk import redos
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir
 from nltk.tokenize.api import TokenizerI
@@ -126,7 +127,7 @@ class ReppTokenizer(TokenizerI):
         :return: an iterable of the tokenized sentences as tuples of strings
         :rtype: iter(tuple)
         """
-        line_regex = re.compile(r"^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+        line_regex = redos.compile(r"^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
         for section in repp_output.split("\n\n"):
             words_with_positions = [
                 (token, int(start), int(end))

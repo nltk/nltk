@@ -548,7 +548,7 @@ def read_alignedsent_block(stream):
         # Other line:
         else:
             s += line
-            if re.match(r"^\d+-\d+", line) is not None:
+            if redos.match(r"^\d+-\d+", line) is not None:
                 return [s]
 
 
@@ -648,7 +648,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             # Read the block.
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
-            offset = re.compile(r"\s*").search(block, offset).end()
+            offset = redos.compile(r"\s*").search(block, offset).end()
 
             # Move to the end position.
             if encoding is None:
@@ -683,7 +683,7 @@ def _parse_sexpr_block(block):
     start = end = 0
 
     while end < len(block):
-        m = re.compile(r"\S").search(block, end)
+        m = redos.compile(r"\S").search(block, end)
         if not m:
             return tokens, end
 
@@ -691,7 +691,7 @@ def _parse_sexpr_block(block):
 
         # Case 1: sexpr is not parenthesized.
         if m.group() != "(":
-            m2 = re.compile(r"[\s(]").search(block, start)
+            m2 = redos.compile(r"[\s(]").search(block, start)
             if m2:
                 end = m2.start()
             else:
@@ -702,7 +702,7 @@ def _parse_sexpr_block(block):
         # Case 2: parenthesized sexpr.
         else:
             nesting = 0
-            for m in re.compile(r"[()]").finditer(block, start):
+            for m in redos.compile(r"[()]").finditer(block, start):
                 if m.group() == "(":
                     nesting += 1
                 else:
@@ -826,7 +826,7 @@ def tagged_treebank_para_block_reader(stream):
     while True:
         line = stream.readline()
         # End of paragraph:
-        if re.match(r"======+\s*$", line):
+        if redos.match(r"======+\s*$", line):
             if para.strip():
                 return [para]
         # End of file:

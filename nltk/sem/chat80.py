@@ -537,7 +537,7 @@ def _str2records(filename, rel):
     for line in contents.splitlines():
         if line.startswith(rel):
             line = rel_rx.sub("", line)
-            line = re.sub(r"\)\.$", "", line)
+            line = redos.sub(r"\)\.$", "", line)
             record = line.split(",")
             recs.append(record)
     return recs

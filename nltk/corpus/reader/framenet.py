@@ -2819,7 +2819,7 @@ warnings(True) to display corpus consistency warnings when loading data
 
             data = data.replace("<t>", "")
             data = data.replace("</t>", "")
-            data = re.sub('<fex name="[^"]+">', "", data)
+            data = redos.sub('<fex name="[^"]+">', "", data)
             data = data.replace("</fex>", "")
             data = data.replace("<fen>", "")
             data = data.replace("</fen>", "")

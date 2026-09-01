@@ -52,24 +52,24 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Starting quotes.
     STARTING_QUOTES = [
-        (re.compile("([«“‘„]|[`]+)", re.U), r" \1 "),
-        (re.compile(r"^\""), r"``"),
-        (re.compile(r"(``)"), r" \1 "),
-        (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
+        (redos.compile("([«“‘„]|[`]+)", re.U), r" \1 "),
+        (redos.compile(r"^\""), r"``"),
+        (redos.compile(r"(``)"), r" \1 "),
+        (redos.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
         (
-            re.compile(r"(?i)(?<!\w)(\')(?!(?:re|ve|ll|m|t|s|d|n)\b)(?=\w)", re.U),
+            redos.compile(r"(?i)(?<!\w)(\')(?!(?:re|ve|ll|m|t|s|d|n)\b)(?=\w)", re.U),
             r"\1 ",
         ),
     ]
 
     # Ending quotes.
     ENDING_QUOTES = [
-        (re.compile("([»”’])", re.U), r" \1 "),
-        (re.compile(r"''"), " '' "),
-        (re.compile(r'"'), " '' "),
-        (re.compile(r"\s+"), " "),
-        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
-        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
+        (redos.compile("([»”’])", re.U), r" \1 "),
+        (redos.compile(r"''"), " '' "),
+        (redos.compile(r'"'), " '' "),
+        (redos.compile(r"\s+"), " "),
+        (redos.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
+        (redos.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
 
     # For improvements for starting/closing quotes from TreebankWordTokenizer,
@@ -92,43 +92,43 @@ class NLTKWordTokenizer(TokenizerI):
             redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U),
             r"\1 \2 \3 ",
         ),
-        (re.compile(r"([:,])([^\d])"), r" \1 \2"),
-        (re.compile(r"([:,])$"), r" \1 "),
+        (redos.compile(r"([:,])([^\d])"), r" \1 \2"),
+        (redos.compile(r"([:,])$"), r" \1 "),
         (
-            re.compile(r"\.{2,}", re.U),
+            redos.compile(r"\.{2,}", re.U),
             r" \g<0> ",
         ),  # See https://github.com/nltk/nltk/pull/2322
-        (re.compile(r"[;@#$%&]"), r" \g<0> "),
+        (redos.compile(r"[;@#$%&]"), r" \g<0> "),
         (
-            re.compile(r"[\u2012-\u2015]", re.UNICODE),
+            redos.compile(r"[\u2012-\u2015]", re.UNICODE),
             r" \g<0> ",
         ),  # Handles figure dash, en dashes, em dashes and horizontal bars
         (
-            re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
+            redos.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
             r"\1 \2\3 ",
         ),  # Handles the final period.
-        (re.compile(r"[?!]"), r" \g<0> "),
-        (re.compile(r"([^'])' "), r"\1 ' "),
+        (redos.compile(r"[?!]"), r" \g<0> "),
+        (redos.compile(r"([^'])' "), r"\1 ' "),
         (
-            re.compile(r"[*]", re.U),
+            redos.compile(r"[*]", re.U),
             r" \g<0> ",
         ),  # See https://github.com/nltk/nltk/pull/2322
     ]
 
     # Pads parentheses
-    PARENS_BRACKETS = (re.compile(r"[\]\[\(\)\{\}\<\>]"), r" \g<0> ")
+    PARENS_BRACKETS = (redos.compile(r"[\]\[\(\)\{\}\<\>]"), r" \g<0> ")
 
     # Optionally: Convert parentheses, brackets and converts them to PTB symbols.
     CONVERT_PARENTHESES = [
-        (re.compile(r"\("), "-LRB-"),
-        (re.compile(r"\)"), "-RRB-"),
-        (re.compile(r"\["), "-LSB-"),
-        (re.compile(r"\]"), "-RSB-"),
-        (re.compile(r"\{"), "-LCB-"),
-        (re.compile(r"\}"), "-RCB-"),
+        (redos.compile(r"\("), "-LRB-"),
+        (redos.compile(r"\)"), "-RRB-"),
+        (redos.compile(r"\["), "-LSB-"),
+        (redos.compile(r"\]"), "-RSB-"),
+        (redos.compile(r"\{"), "-LCB-"),
+        (redos.compile(r"\}"), "-RCB-"),
     ]
 
-    DOUBLE_DASHES = (re.compile(r"--"), r" -- ")
+    DOUBLE_DASHES = (redos.compile(r"--"), r" -- ")
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
     _contractions = MacIntyreContractions()
@@ -238,7 +238,7 @@ class NLTKWordTokenizer(TokenizerI):
         # treated as starting quotes).
         if ('"' in text) or ("''" in text):
             # Find double quotes and converted quotes
-            matched = [m.group() for m in re.finditer(r"``|'{2}|\"", text)]
+            matched = [m.group() for m in redos.finditer(r"``|'{2}|\"", text)]
 
             # Replace converted quotes back to double quotes
             tokens = [

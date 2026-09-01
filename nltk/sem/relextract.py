@@ -26,6 +26,7 @@ import html
 import re
 from collections import defaultdict
 
+from nltk import redos
 from nltk.redos import reharden
 
 # Dictionary that associates corpora with NE classes
@@ -126,7 +127,7 @@ def list2sym(lst):
     """
     sym = _join(lst, "_", untag=True)
     sym = sym.lower()
-    ENT = re.compile(r"&(\w+?);")
+    ENT = redos.compile(r"&(\w+?);")
     sym = ENT.sub(descape_entity, sym)
     sym = sym.replace(".", "")
     return sym
@@ -337,7 +338,7 @@ def in_demo(trace=0, sql=True):
 
             warnings.warn("Cannot import sqlite; sql flag will be ignored.")
 
-    IN = re.compile(r".*\bin\b(?!\b.+ing)")
+    IN = redos.compile(r".*\bin\b(?!\b.+ing)")
 
     print()
     print("IEER: in(ORG, LOC) -- just the clauses:")
@@ -411,7 +412,7 @@ def roles_demo(trace=0):
     writer|
     ,\sof\sthe?\s*  # "X, of (the) Y"
     """
-    ROLES = re.compile(roles, re.VERBOSE)
+    ROLES = redos.compile(roles, re.VERBOSE)
 
     print()
     print("IEER: has_role(PER, ORG) -- raw rtuples:")
@@ -473,7 +474,7 @@ def conllned(trace=1):
     .*       # followed by anything
     van/Prep # followed by van ('of')
     """
-    VAN = re.compile(vnv, re.VERBOSE)
+    VAN = redos.compile(vnv, re.VERBOSE)
 
     print()
     print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
@@ -504,7 +505,7 @@ def conllesp():
     del/SP
     )
     """
-    DE = re.compile(de, re.VERBOSE)
+    DE = redos.compile(de, re.VERBOSE)
 
     print()
     print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
@@ -523,7 +524,7 @@ def ne_chunked():
     print()
     print("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker")
     print("=" * 45)
-    ROLE = re.compile(
+    ROLE = redos.compile(
         r".*(chairman|president|trader|scientist|economist|analyst|partner).*"
     )
     rels = []

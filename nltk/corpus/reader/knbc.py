@@ -7,8 +7,8 @@
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
 
-import re
 
+from nltk import redos
 from nltk.corpus.reader.api import CorpusReader, SyntaxCorpusReader
 from nltk.corpus.reader.util import (
     FileSystemPathPointer,
@@ -69,7 +69,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         res = []
         for line in t.splitlines():
             # ignore the Bunsets headers
-            if not re.match(r"EOS|\*|\#|\+", line):
+            if not redos.match(r"EOS|\*|\#|\+", line):
                 cells = line.strip().split(" ")
                 res.append(cells[0])
 
@@ -80,7 +80,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         res = []
         for line in t.splitlines():
             # ignore the Bunsets headers
-            if not re.match(r"EOS|\*|\#|\+", line):
+            if not redos.match(r"EOS|\*|\#|\+", line):
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
                 res.append((cells[0], " ".join(cells[1:])))
@@ -95,7 +95,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 # start of bunsetsu or tag
 
                 cells = line.strip().split(" ", 3)
-                m = re.match(r"([\-0-9]*)([ADIP])", cells[1])
+                m = redos.match(r"([\-0-9]*)([ADIP])", cells[1])
 
                 assert m is not None
 
@@ -137,7 +137,7 @@ def demo():
     fileids = [
         f
         for f in find_corpus_fileids(FileSystemPathPointer(root), ".*")
-        if re.search(r"\d\-\d\-[\d]+\-[\d]+", f)
+        if redos.search(r"\d\-\d\-[\d]+\-[\d]+", f)
     ]
 
     def _knbc_fileids_sort(x):

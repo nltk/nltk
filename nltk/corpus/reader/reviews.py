@@ -61,13 +61,12 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     consideration.
 """
 
-import re
 
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
-TITLE = re.compile(r"^\[t\](.*)$")  # [t] Title
+TITLE = redos.compile(r"^\[t\](.*)$")  # [t] Title
 # find 'feature' in feature[+3].
 # The feature label is "a word, then up to 50 single-whitespace-separated
 # words". The ``{0,50}`` bound only stops the *space-separated* attack; a long
@@ -75,8 +74,8 @@ TITLE = re.compile(r"^\[t\](.*)$")  # [t] Title
 # the leading greedy ``\w+``, retried by findall at every position, is still
 # O(n**2). redos.compile bounds compile and match time regardless (CWE-1333).
 FEATURES = redos.compile(r"(\w+(?:\s\w+){0,50})\[((?:\+|\-)\d)\]")
-NOTES = re.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
-SENT = re.compile(r"##(.*)$")  # find tokenized sentence
+NOTES = redos.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
+SENT = redos.compile(r"##(.*)$")  # find tokenized sentence
 
 
 class Review:
@@ -292,7 +291,7 @@ class ReviewsCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return []  # end of file.
-            title_match = re.match(TITLE, line)
+            title_match = redos.match(TITLE, line)
             if title_match:
                 review = Review(
                     title=title_match.group(1).strip()
@@ -308,13 +307,13 @@ class ReviewsCorpusReader(CorpusReader):
                 return [review]
             # Start of a new review: backup to just before it starts, and
             # return the review we've already collected.
-            if re.match(TITLE, line):
+            if redos.match(TITLE, line):
                 stream.seek(oldpos)
                 return [review]
             # Anything else is part of the review line.
             feats = FEATURES.findall(line)
-            notes = re.findall(NOTES, line)
-            sent = re.findall(SENT, line)
+            notes = redos.findall(NOTES, line)
+            sent = redos.findall(SENT, line)
             if sent:
                 sent = self._word_tokenizer.tokenize(sent[0])
             review_line = ReviewLine(sent=sent, features=feats, notes=notes)
@@ -330,7 +329,7 @@ class ReviewsCorpusReader(CorpusReader):
         words = []
         for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
-            sent = re.findall(SENT, line)
+            sent = redos.findall(SENT, line)
             if sent:
                 words.extend(self._word_tokenizer.tokenize(sent[0]))
         return words

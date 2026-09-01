@@ -650,7 +650,7 @@ class Tree(list):
         """
         if not isinstance(brackets, str) or len(brackets) != 2:
             raise TypeError("brackets must be a length-2 string")
-        if re.search(r"\s", brackets):
+        if redos.search(r"\s", brackets):
             raise TypeError("whitespace brackets not allowed")
         # Construct a regexp that will tokenize the string.
         open_b, close_b = brackets
@@ -898,10 +898,10 @@ class Tree(list):
         :return: A latex qtree representation of this tree.
         :rtype: str
         """
-        reserved_chars = re.compile(r"([#\$%&~_\{\}])")
+        reserved_chars = redos.compile(r"([#\$%&~_\{\}])")
 
         pformat = self.pformat(indent=6, nodesep="", parens=("[.", " ]"))
-        return r"\Tree " + re.sub(reserved_chars, r"\\\1", pformat)
+        return r"\Tree " + redos.sub(reserved_chars, r"\\\1", pformat)
 
     def pformat_latex_forest(self):
         r"""
@@ -921,10 +921,10 @@ class Tree(list):
         :return: A latex forest representation of this tree.
         :rtype: str
         """
-        reserved_chars = re.compile(r"([#\$%&~_\{\}])")
+        reserved_chars = redos.compile(r"([#\$%&~_\{\}])")
 
         pformat = self.pformat(indent=2, parens=("[", " ]"), quotes=("[", "]"))
-        pformat = re.sub(reserved_chars, r"\\\1", pformat)
+        pformat = redos.sub(reserved_chars, r"\\\1", pformat)
         return "\\begin{forest}\n  " + pformat + "\n\\end{forest}"
 
     def _pformat_flat(self, nodesep, parens, quotes):

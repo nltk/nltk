@@ -121,6 +121,7 @@ The 4 functions are as follows.
 import sys
 import time
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.internals import import_from_stdlib
 from nltk.tree import Tree
@@ -233,7 +234,7 @@ class TimitCorpusReader(CorpusReader):
             for line in fp:
                 if not line.strip() or line[0] == ";":
                     continue
-                m = re.match(r"\s*(\S+)\s+/(.*)/\s*$", line)
+                m = redos.match(r"\s*(\S+)\s+/(.*)/\s*$", line)
                 if not m:
                     raise ValueError("Bad line: %r" % line)
                 _transcriptions[m.group(1)] = m.group(2).split()

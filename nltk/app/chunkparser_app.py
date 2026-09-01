@@ -16,7 +16,6 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # and what part of the data is being used as the development set.
 
 import random
-import re
 import textwrap
 import time
 from tkinter import (
@@ -34,6 +33,7 @@ from tkinter import (
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter.font import Font
 
+from nltk import redos
 from nltk.chunk import ChunkScore, RegexpChunkParser
 from nltk.chunk.regexp import RegexpChunkRule
 from nltk.corpus import conll2000, treebank_chunk
@@ -307,13 +307,13 @@ class RegexpChunkApp:
 
     def normalize_grammar(self, grammar):
         # Strip comments
-        grammar = re.sub(r"((\\.|[^#])*)(#.*)?", r"\1", grammar)
+        grammar = redos.sub(r"((\\.|[^#])*)(#.*)?", r"\1", grammar)
         # Normalize whitespace
-        grammar = re.sub(" +", " ", grammar)
-        grammar = re.sub(r"\n\s+", r"\n", grammar)
+        grammar = redos.sub(" +", " ", grammar)
+        grammar = redos.sub(r"\n\s+", r"\n", grammar)
         grammar = grammar.strip()
         # [xx] Hack: automatically backslash $!
-        grammar = re.sub(r"([^\\])\$", r"\1\\$", grammar)
+        grammar = redos.sub(r"([^\\])\$", r"\1\\$", grammar)
         return grammar
 
     def __init__(
@@ -1055,7 +1055,7 @@ class RegexpChunkApp:
                         "\t%s\t%s" % item
                         for item in sorted(
                             list(self.tagset.items()),
-                            key=lambda t_w: re.match(r"\w+", t_w[0])
+                            key=lambda t_w: redos.match(r"\w+", t_w[0])
                             and (0, t_w[0])
                             or (1, t_w[0]),
                         )
@@ -1068,7 +1068,7 @@ class RegexpChunkApp:
                 C = "1.0 + %d chars"
                 for tag, params in self.HELP_AUTOTAG:
                     pattern = f"(?s)(<{tag}>)(.*?)(</{tag}>)"
-                    for m in re.finditer(pattern, text):
+                    for m in redos.finditer(pattern, text):
                         self.helpbox.tag_add("elide", C % m.start(1), C % m.end(1))
                         self.helpbox.tag_add(
                             "tag-%s" % tag, C % m.start(2), C % m.end(2)
@@ -1222,14 +1222,14 @@ class RegexpChunkApp:
         for lineno, line in enumerate(grammar.split("\n")):
             if not line.strip():
                 continue
-            m = re.match(r"(\\.|[^#])*(#.*)?", line)
+            m = redos.match(r"(\\.|[^#])*(#.*)?", line)
             comment_start = None
             if m.group(2):
                 comment_start = m.start(2)
                 s = "%d.%d" % (lineno + 1, m.start(2))
                 e = "%d.%d" % (lineno + 1, m.end(2))
                 self.grammarbox.tag_add("comment", s, e)
-            for m in re.finditer("[<>{}]", line):
+            for m in redos.finditer("[<>{}]", line):
                 if comment_start is not None and m.start() >= comment_start:
                     break
                 s = "%d.%d" % (lineno + 1, m.start())
@@ -1245,7 +1245,7 @@ class RegexpChunkApp:
         self.grammarbox.tag_remove("error", "1.0", "end")
         self._grammarcheck_errs = []
         for lineno, line in enumerate(grammar.split("\n")):
-            line = re.sub(r"((\\.|[^#])*)(#.*)?", r"\1", line)
+            line = redos.sub(r"((\\.|[^#])*)(#.*)?", r"\1", line)
             line = line.strip()
             if line:
                 try:
@@ -1418,7 +1418,7 @@ class RegexpChunkApp:
             filename
         ) as infile:  # sandboxed-open ok: operator-chosen GUI file path
             grammar = infile.read()
-        grammar = re.sub(
+        grammar = redos.sub(
             r"^\# Regexp Chunk Parsing Grammar[\s\S]*" "F-score:.*\n", "", grammar
         ).lstrip()
         self.grammarbox.insert("1.0", grammar)

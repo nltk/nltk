@@ -190,10 +190,10 @@ class XMLCorpusView(StreamBackedCorpusView):
             return "utf-32-le"
         if s.startswith(codecs.BOM_UTF8):
             return "utf-8"
-        m = re.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
+        m = redos.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
         if m:
             return m.group(1).decode()
-        m = re.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
+        m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
         if m:
             return m.group(1).decode()
         # No encoding found -- what should the default be?
@@ -236,7 +236,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     # to its first terminator keeps validation linear while matching the same
     # well-formed fragments. (The CDATA brackets are also escaped so they match
     # a literal ``<![CDATA[`` rather than being read as a character class.)
-    _VALID_XML_RE = re.compile(
+    _VALID_XML_RE = redos.compile(
         r"""
         [^<]*
         (
@@ -251,13 +251,13 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     #: A regular expression used to extract the tag name from a start tag,
     #: end tag, or empty-elt tag string.
-    _XML_TAG_NAME = re.compile(r"<\s*(?:/\s*)?([^\s>]+)")
+    _XML_TAG_NAME = redos.compile(r"<\s*(?:/\s*)?([^\s>]+)")
 
     #: A regular expression used to find all start-tags, end-tags, and
     #: empty-elt tags in an XML file.  This regexp is more lenient than
     #: the XML spec -- e.g., it allows spaces in some places where the
     #: spec does not.
-    _XML_PIECE = re.compile(
+    _XML_PIECE = redos.compile(
         r"""
         # Include these so we can skip them:
         (?P<COMMENT>        <!--.*?-->                          )|
@@ -310,9 +310,9 @@ class XMLCorpusView(StreamBackedCorpusView):
                 return fragment
 
             # Do we have a fragment that will never be well-formed?
-            if re.search("[<>]", fragment).group(0) == ">":
+            if redos.search("[<>]", fragment).group(0) == ">":
                 pos = stream.tell() - (
-                    len(fragment) - re.search("[<>]", fragment).end()
+                    len(fragment) - redos.search("[<>]", fragment).end()
                 )
                 raise ValueError('Unexpected ">" near char %s' % pos)
 
