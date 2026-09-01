@@ -5,22 +5,24 @@
 # For license information, see LICENSE.TXT
 
 r"""
-A wall-clock backstop for NLTK code paths that compile *caller-supplied*
-regular expressions or tag patterns.
+The single point every regular expression in NLTK routes through, so that a
+catastrophically backtracking or oversized pattern cannot become a denial of
+service (CWE-1333 / CWE-400).
 
-Several public APIs accept a pattern from the caller and run it over
-(possibly attacker-controlled) text:
-
-* :class:`nltk.tokenize.RegexpTokenizer` / ``regexp_tokenize`` -- ``pattern``
-* :class:`nltk.tag.RegexpTagger` -- the ``regexp`` of each ``(regexp, tag)`` pair
-* :func:`nltk.tgrep.tgrep_compile` -- the ``/regex/`` node literal in a query
-* :class:`nltk.chunk.regexp.RegexpChunkRule` and its ``ChunkRule`` / ``StripRule``
-  / ``UnChunkRule`` / ``MergeRule`` / ``SplitRule`` subclasses -- the tag pattern
+Every regex in the library is applied to input that can be attacker controlled
+-- a corpus file, a caller-supplied pattern, a token stream -- so ``re`` is used
+nowhere directly. Instead code calls :func:`compile` for a reusable pattern, or
+the ``re``-compatible module helpers (:func:`match`, :func:`search`, :func:`sub`,
+:func:`split`, :func:`findall`, :func:`finditer`, :func:`fullmatch`,
+:func:`subn`) for an inline call. The guard ``tools/check_all_regex_through_redos.py``
+enforces that policy in CI. Historically only a handful of *caller-supplied*
+sinks routed through here (``RegexpTokenizer``, ``RegexpTagger``,
+``tgrep_compile``, the ``RegexpChunkRule`` family); making it universal means one
+audited defence covers the whole surface.
 
 A crafted pattern (e.g. ``(a+)+$`` or ``(a|a)*$``) can trigger catastrophic
-backtracking and pin a CPU core indefinitely -- a denial of service
-(CWE-1333). This module centralises a single, tested defence used by all of
-those sinks, in two layers:
+backtracking and pin a CPU core indefinitely. This module centralises a single,
+tested defence in two layers:
 
 1. **Compile with the third-party ``regex`` engine** instead of the stdlib
    ``re``. Its optimiser collapses a large class of catastrophic patterns
@@ -54,6 +56,9 @@ Usage::
 so it is a drop-in replacement for a compiled pattern at those call sites.
 """
 
+import functools
+import re as _re
+
 import regex
 
 __all__ = [
@@ -62,10 +67,20 @@ __all__ = [
     "MAX_NESTING_DEPTH",
     "MAX_REPEAT_PRODUCT",
     "TimedPattern",
+    "error",
     "check_pattern",
     "compile",
     "source_of",
     "reharden",
+    # re-compatible module-level helpers (route every inline call through redos)
+    "match",
+    "fullmatch",
+    "search",
+    "findall",
+    "finditer",
+    "split",
+    "sub",
+    "subn",
 ]
 
 #: Wall-clock seconds any single caller-supplied-pattern match may run before it
@@ -83,6 +98,17 @@ DEFAULT_TIMEOUT = 5.0
 #: takes effect for calls that did not pass an explicit timeout.
 _UNSET = object()
 
+
+class error(_re.error):
+    """Raised for a pattern redos refuses or the engine rejects.
+
+    A subclass of :class:`re.error` so that call sites which move from ``re`` to
+    redos and still ``except re.error:`` keep working -- the ``regex`` engine
+    redos wraps raises its own ``regex.error`` that is *not* a ``re.error``, so
+    :func:`compile` normalises an engine compile failure to this type.
+    """
+
+
 #: Max length of a regex SOURCE :func:`compile` hands to the engine. Compile time
 #: scales with length and no match-time cap can help (compilation runs first), so
 #: an oversized source is refused as a compile-time DoS (CWE-1333 / CWE-400).
@@ -97,6 +123,22 @@ MAX_NESTING_DEPTH = 100
 #: n copies at compile time and nested counts multiply, so an unbounded product
 #: blows up compile; a legitimate pattern's counts multiply to a small number.
 MAX_REPEAT_PRODUCT = 100_000
+
+#: How far :func:`check_pattern` looks for the ``}`` closing a ``{`` when deciding
+#: whether it opens a quantifier. A real ``{m,n}`` body is a few digits and a
+#: comma; scanning to the end of the source for every ``{`` was itself O(n**2) on
+#: a run of unclosed braces (a DoS in the guard). A brace with no ``}`` within
+#: this window is treated as a literal ``{`` -- and any count long enough to fall
+#: outside it is astronomically larger than MAX_REPEAT_PRODUCT, so nothing real is
+#: missed. This also avoids ``int()``-ing a giant digit run (CPython's
+#: 4300-digit limit) out of an attacker-supplied body.
+_MAX_QUANTIFIER_SPAN = 64
+
+#: Longest pattern the module-level helpers cache. The cache mirrors ``re``'s
+#: pattern cache for NLTK's own (small, constant) patterns; bounding the cached
+#: length keeps an attacker who funnels many distinct large patterns through the
+#: helpers from pinning ~MAX_PATTERN_LENGTH * cache-size bytes of memory.
+_MAX_CACHE_PATTERN_LEN = 2_000
 
 
 class TimedPattern:
@@ -245,8 +287,78 @@ def compile(pattern, flags=0, timeout=_UNSET):
     # Accept a pre-compiled ``re``/``regex`` pattern by re-compiling its source.
     src = getattr(pattern, "pattern", pattern)
     check_pattern(src)
-    compiled = regex.compile(src, flags)
+    try:
+        compiled = regex.compile(src, flags)
+    except regex.error as exc:
+        # Normalise the engine's error to a re.error subclass so callers that
+        # catch re.error still work after moving off the stdlib module.
+        raise error(str(exc)) from exc
     return TimedPattern(compiled, timeout)
+
+
+@functools.lru_cache(maxsize=1024)
+def _cached_compile(src, flags):
+    """Compile-and-wrap with a cache, mirroring :mod:`re`'s internal pattern
+    cache so the module-level helpers below do not re-check and re-compile a
+    constant pattern on every call. The returned :class:`TimedPattern` uses the
+    default (unset) timeout, so it still honours a later change to
+    :data:`DEFAULT_TIMEOUT` at match time."""
+    return compile(src, flags)
+
+
+def _coerce(pattern, flags):
+    """Return a :class:`TimedPattern` for the ``re``-style helpers below.
+
+    A string is compiled (and cached); an already-compiled ``TimedPattern`` is
+    used as-is; any other pre-compiled pattern is re-hardened via
+    :func:`compile`. This makes ``redos.match(p, s)`` a drop-in for
+    ``re.match(p, s)`` while forcing every pattern through the DoS guards.
+    """
+    if isinstance(pattern, TimedPattern):
+        return pattern
+    if isinstance(pattern, str) and len(pattern) <= _MAX_CACHE_PATTERN_LEN:
+        return _cached_compile(pattern, flags)
+    return compile(pattern, flags)
+
+
+# ---------------------------------------------------------------------------
+# ``re``-compatible module-level helpers. Every regex in NLTK routes through one
+# of these (or :func:`compile`) instead of ``re``/``regex`` directly, so both
+# the compile-time refusal (:func:`check_pattern`) and the wall-clock match
+# timeout apply everywhere (CWE-1333 / CWE-400). Signatures mirror :mod:`re`.
+# ---------------------------------------------------------------------------
+
+
+def match(pattern, string, flags=0):
+    return _coerce(pattern, flags).match(string)
+
+
+def fullmatch(pattern, string, flags=0):
+    return _coerce(pattern, flags).fullmatch(string)
+
+
+def search(pattern, string, flags=0):
+    return _coerce(pattern, flags).search(string)
+
+
+def findall(pattern, string, flags=0):
+    return _coerce(pattern, flags).findall(string)
+
+
+def finditer(pattern, string, flags=0):
+    return _coerce(pattern, flags).finditer(string)
+
+
+def split(pattern, string, maxsplit=0, flags=0):
+    return _coerce(pattern, flags).split(string, maxsplit)
+
+
+def sub(pattern, repl, string, count=0, flags=0):
+    return _coerce(pattern, flags).sub(repl, string, count)
+
+
+def subn(pattern, repl, string, count=0, flags=0):
+    return _coerce(pattern, flags).subn(repl, string, count)
 
 
 def _repeat_min(spec):
@@ -333,8 +445,20 @@ def check_pattern(src):
                 cost[-1] += c
                 last = c
         elif ch == "{":
-            j = scan.find("}", i + 1)
-            m = _repeat_min(scan[i + 1 : j]) if j != -1 else None
+            # Only scan a small window for the closing ``}``: a real quantifier
+            # body is short, and scanning to end-of-source per ``{`` was O(n**2)
+            # (see ``_MAX_QUANTIFIER_SPAN``).
+            j = scan.find("}", i + 1, i + 1 + _MAX_QUANTIFIER_SPAN)
+            if j == -1:
+                # No ``}`` in the window. If a digit follows, this is a count too
+                # long to be anything but a giant repetition -- refuse it (rather
+                # than let the engine int() a huge digit run); otherwise it is a
+                # literal ``{``.
+                if i + 1 < n and scan[i + 1].isdigit():
+                    raise ValueError(repeat_msg)
+                m = None
+            else:
+                m = _repeat_min(scan[i + 1 : j])
             if m is None:  # a literal brace, not a quantifier
                 cost[-1] += 1
                 last = 1
