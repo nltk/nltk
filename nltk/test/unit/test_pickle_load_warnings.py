@@ -65,10 +65,14 @@ markets    NNS      6       PC
     assert len(result) == 1
 
 
-def test_chartparser_app_uses_pickle_load_not_pickle_load_standard():
-    # Headless CI can't instantiate Tk-based UI classes, so do a static check:
-    # - no calls to pickle.load(...)
-    # - references pickle_load(...)
+def test_chartparser_app_uses_allowlisting_loader():
+    # The chart / grammar File-menu loads were hardened from the warn-only
+    # ``pickle_load`` (which warns and then EXECUTES a reduce gadget: RCE on opening
+    # a malicious file) to an allowlisting unpickler. Headless CI can't instantiate
+    # Tk-based UI classes, so assert the invariant statically:
+    #   - no bare pickle.load(...) / pickle.loads(...) calls,
+    #   - no call to the warn-only pickle_load(...),
+    #   - the module references AllowlistUnpickler and its _load_chart_pickle helper.
     import nltk.app.chartparser_app as chartparser_app
 
     src = inspect.getsource(chartparser_app)
@@ -76,13 +80,26 @@ def test_chartparser_app_uses_pickle_load_not_pickle_load_standard():
 
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-            if isinstance(node.func.value, ast.Name) and node.func.value.id == "pickle":
-                if node.func.attr == "load":
-                    raise AssertionError(
-                        "Found a call to pickle.load(...) in nltk.app.chartparser_app; expected pickle_load(...)"
-                    )
+            if (
+                isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "pickle"
+                and node.func.attr in ("load", "loads")
+            ):
+                raise AssertionError(
+                    "Found a bare pickle.load(...) in nltk.app.chartparser_app; "
+                    "expected the allowlisting _load_chart_pickle(...)"
+                )
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            if node.func.id == "pickle_load":
+                raise AssertionError(
+                    "nltk.app.chartparser_app calls the warn-only pickle_load(...); "
+                    "expected the allowlisting _load_chart_pickle(...)"
+                )
 
     names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
     assert (
-        "pickle_load" in names
-    ), "Expected nltk.app.chartparser_app to reference pickle_load"
+        "AllowlistUnpickler" in names
+    ), "Expected nltk.app.chartparser_app to route loads through AllowlistUnpickler"
+    assert (
+        "_load_chart_pickle" in names
+    ), "Expected nltk.app.chartparser_app to define/use _load_chart_pickle"

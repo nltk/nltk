@@ -6,6 +6,7 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import pickle
 import tempfile
 from copy import deepcopy
 from operator import itemgetter
@@ -47,6 +48,49 @@ _MODEL_ALLOWED_GLOBALS = (
     ("builtins", "int"),
     ("builtins", "float"),
 )
+
+# The numpy ``scalar`` reconstructor that ``_MODEL_ALLOWED_GLOBALS`` permits is a
+# nested-unpickle sink for an object-bearing dtype (CWE-502). picklesec wraps it
+# (``_GUARDED_GLOBALS``) for EVERY caller automatically, so no per-model unpickler
+# subclass is needed here; only the allowlist above and the object-dtype refusal
+# below.
+
+
+def _load_transitionparser_model(file):
+    """Load a transition parser model through the allowlisting unpickler, refusing
+    any object dtype numpy array / scalar via ``sanitize=`` (the ``scalar`` wrapper
+    already blocks the reconstruction-time nested unpickle) (CWE-502)."""
+    try:
+        import numpy as _np
+    except ImportError:  # numpy absent -> no numpy array in the graph to inspect
+        sanitize = None
+    else:
+
+        def sanitize(obj):
+            # A fitted SVC carries only numeric numpy arrays / scipy sparse; an
+            # object dtype array or scalar is never legitimate, so refuse it.
+            if isinstance(obj, _np.ndarray):
+                if obj.dtype.hasobject:
+                    raise pickle.UnpicklingError(
+                        "transition parser model holds an object dtype numpy array, "
+                        "which no fitted SVC produces; refusing (CWE-502)"
+                    )
+                return True  # numeric array leaf: do not descend into its elements
+            if isinstance(obj, _np.generic):
+                if obj.dtype.hasobject:
+                    raise pickle.UnpicklingError(
+                        "transition parser model holds an object dtype numpy scalar; "
+                        "refusing (CWE-502)"
+                    )
+                return True
+            return False
+
+    return allowlisted_pickle_load(
+        file,
+        allowed_globals=_MODEL_ALLOWED_GLOBALS,
+        allowed_modules=_MODEL_ALLOWED_MODULES,
+        sanitize=sanitize,
+    )
 
 
 class Configuration:
@@ -598,11 +642,7 @@ class TransitionParser(ParserI):
         # is opened (GHSA-8mgp-746c-j5xp), and the resulting handle is still
         # unpickled through the allowlisting unpickler.
         with pathsec_open(modelFile, "rb", context="TransitionParser.parse") as f:
-            model = allowlisted_pickle_load(
-                f,
-                allowed_modules=_MODEL_ALLOWED_MODULES,
-                allowed_globals=_MODEL_ALLOWED_GLOBALS,
-            )
+            model = _load_transitionparser_model(f)
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
