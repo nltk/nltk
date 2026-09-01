@@ -47,6 +47,8 @@ import pytest
 from nltk.picklesec import (
     _SAFE_DENIED_GLOBALS,
     AllowlistUnpickler,
+    RestrictedUnpickler,
+    WarningUnpickler,
     allowlisted_pickle_load,
     pickle_dump,
     pickle_dumps,
@@ -95,6 +97,81 @@ def test_no_stray_unpickler_subclasses_in_consolidated_callers():
     from nltk.tbl import demo
 
     assert not hasattr(demo, "_TblModelUnpickler")
+
+
+# ===========================================================================
+# 1b) no OTHER way to substitute the unpickler or bypass find_class
+# ===========================================================================
+
+
+# The unpickler classes pin the base ``pickle.Unpickler`` config: there is no
+# ``**kwargs`` passthrough, so a caller cannot hand it ``fix_imports`` /
+# ``encoding`` / ``errors`` / ``buffers`` (the residual "configure the base
+# unpickler" surface once the ``unpickler_cls`` hook is gone).
+@pytest.mark.parametrize(
+    "ctor",
+    [
+        lambda **kw: AllowlistUnpickler(io.BytesIO(b""), **kw),
+        lambda **kw: RestrictedUnpickler(io.BytesIO(b""), **kw),
+        lambda **kw: WarningUnpickler(io.BytesIO(b""), **kw),
+    ],
+    ids=["Allowlist", "Restricted", "Warning"],
+)
+@pytest.mark.parametrize(
+    "kw",
+    [
+        {"fix_imports": False},
+        {"encoding": "latin1"},
+        {"errors": "ignore"},
+        {"buffers": None},
+    ],
+)
+def test_unpicklers_reject_base_pickle_kwargs(ctor, kw):
+    with pytest.raises(TypeError):
+        ctor(**kw)
+
+
+def test_fix_imports_py2_alias_does_not_bypass_find_class():
+    """The py2 -> py3 name remapping (``__builtin__`` -> ``builtins``,
+    ``copy_reg`` -> ``copyreg``) must not smuggle a global past the allowlist:
+    our find_class override sees the RAW requested name and refuses it."""
+    payloads = [
+        b"c__builtin__\neval\n(S'1+1'\ntR.",  # __builtin__.eval REDUCE
+        b"ccopy_reg\n_reconstructor\n.",  # copy_reg._reconstructor
+        b"c__builtin__\ngetattr\n.",  # __builtin__.getattr
+    ]
+    for raw in payloads:
+        with pytest.raises(pickle.UnpicklingError):
+            allowlisted_pickle_load(
+                io.BytesIO(raw), allowed_globals=[("builtins", "int")]
+            )
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        b"\x82\x01.",  # EXT1
+        b"\x83\x01\x00.",  # EXT2
+        b"\x84\x01\x00\x00\x00.",  # EXT4
+    ],
+    ids=["EXT1", "EXT2", "EXT4"],
+)
+def test_extension_registry_opcodes_are_refused(raw):
+    """EXT1/EXT2/EXT4 resolve through copyreg's process-wide registry WITHOUT
+    calling find_class, so they are refused up front on every unpickler."""
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(io.BytesIO(raw), allowed_globals=[("builtins", "int")])
+    with pytest.raises(pickle.UnpicklingError):
+        RestrictedUnpickler(io.BytesIO(raw)).load()
+
+
+def test_persistent_id_is_refused_and_not_injectable():
+    """A PERSID opcode has no ``persistent_load`` to call (the base default
+    raises), and there is no API to inject one."""
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(io.BytesIO(b"P1\n."), allowed_globals=())
+    u = AllowlistUnpickler(io.BytesIO(b""), allowed_globals=())
+    assert type(u).persistent_load is pickle.Unpickler.persistent_load
 
 
 # ===========================================================================

@@ -88,8 +88,10 @@ class RestrictedUnpickler(pickle.Unpickler):
     Unpickler that prevents any class or function from being used during loading.
     """
 
-    def __init__(self, file: BinaryIO, **kwargs: Any):
-        super().__init__(_guarded_stream(file), **kwargs)
+    def __init__(self, file: BinaryIO):
+        # No ``**kwargs`` passthrough: the base unpickler's config is pinned so a
+        # caller cannot tune ``fix_imports`` / ``encoding`` / ``buffers`` etc.
+        super().__init__(_guarded_stream(file))
 
     def find_class(self, module: str, name: str) -> Any:
         # Forbid every function/class global.
@@ -99,8 +101,9 @@ class RestrictedUnpickler(pickle.Unpickler):
 class WarningUnpickler(pickle.Unpickler):
     """Unpickler that emits PICKLE_WARNING once per instance."""
 
-    def __init__(self, file: BinaryIO, *, context: str | None = None, **kwargs: Any):
-        super().__init__(file, **kwargs)
+    def __init__(self, file: BinaryIO, *, context: str | None = None):
+        # No ``**kwargs`` passthrough: base-unpickler config is pinned.
+        super().__init__(file)
         self._context = context
         self._warned = False
 
@@ -442,11 +445,15 @@ class AllowlistUnpickler(pickle.Unpickler):
         *,
         allowed_globals: Iterable[tuple[str, str]] = (),
         allowed_modules: Iterable[str] = (),
-        **kwargs: Any,
     ):
+        # No ``**kwargs`` passthrough to ``pickle.Unpickler``: a caller has no
+        # business tuning the base unpickler (``fix_imports`` / ``encoding`` /
+        # ``errors`` / ``buffers``), and forwarding arbitrary kwargs is exactly the
+        # "caller substitutes unpickler behaviour" surface the removed
+        # ``unpickler_cls`` hook was. The safe defaults are pinned here.
         data = file.read()
         _reject_extension_opcodes(data)
-        super().__init__(io.BytesIO(data), **kwargs)
+        super().__init__(io.BytesIO(data))
         if isinstance(allowed_modules, str):
             allowed_modules = (allowed_modules,)
         self._allowed_globals = set(allowed_globals)
