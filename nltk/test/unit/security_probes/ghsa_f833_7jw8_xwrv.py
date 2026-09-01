@@ -12,7 +12,6 @@ from ._base import (
     guard_rejects,
     is_security_rejection,
     probe,
-    register_data_root,
 )
 from .ghsa_xh95_f55m_82fw import CANARY, seeded_reader
 

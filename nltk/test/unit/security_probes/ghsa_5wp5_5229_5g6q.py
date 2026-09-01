@@ -4,7 +4,7 @@ import hashlib
 import os
 import shutil
 import tempfile
-import zipfile
+from pathlib import Path
 
 from nltk import pathsec
 
@@ -41,7 +41,7 @@ def _downloader_integrity():
         def run(digest):
             pkg = Package(
                 id="evil",
-                url="file://" + pkgzip,
+                url=Path(pkgzip).as_uri(),
                 subdir="corpora",
                 size=size,
                 unzipped_size=64,
