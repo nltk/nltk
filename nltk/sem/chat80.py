@@ -130,6 +130,7 @@ import shelve
 import sys
 
 import nltk.data
+from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
@@ -529,11 +530,14 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """
     recs = []
+    # ``rel`` (caller relation name) is spliced into a regex run over each line;
+    # redos.compile bounds compile + match time.
+    rel_rx = redos.compile(re.escape(rel) + r"\(")  # rel is a literal relation name
     contents = nltk.data.load("corpora/chat80/%s" % filename, format="text")
     for line in contents.splitlines():
         if line.startswith(rel):
-            line = re.sub(rel + r"\(", "", line)
-            line = re.sub(r"\)\.$", "", line)
+            line = rel_rx.sub("", line)
+            line = redos.sub(r"\)\.$", "", line)
             record = line.split(",")
             recs.append(record)
     return recs
