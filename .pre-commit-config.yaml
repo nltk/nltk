@@ -38,3 +38,14 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: all-regex-through-redos
+      name: every regex routes through nltk.redos
+      description: >-
+        Every regex runs over attacker-influenceable input, so a bare
+        re/regex compile or match is a potential ReDoS / compile-time DoS
+        (CWE-1333 / CWE-400). Fails on any re/regex pattern call outside
+        nltk.redos itself; use redos.compile or the redos re-compatible helpers.
+      entry: python tools/check_all_regex_through_redos.py
+      language: system
+      pass_filenames: false
+      always_run: true
