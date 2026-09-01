@@ -52,7 +52,8 @@ _MODEL_ALLOWED_GLOBALS = (
 # The numpy ``scalar`` reconstructor that ``_MODEL_ALLOWED_GLOBALS`` permits is a
 # nested-unpickle sink for an object-bearing dtype (CWE-502). picklesec wraps it
 # (``_GUARDED_GLOBALS``) for EVERY caller automatically, so no per-model unpickler
-# subclass is needed here; only the allowlist below.
+# subclass is needed here; only the allowlist above and the object-dtype refusal
+# below.
 
 
 def _load_transitionparser_model(file):
