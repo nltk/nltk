@@ -17,7 +17,6 @@ Graph Algorithms and Applications, 10(2) 141--157 (2006)149.
 https://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
-import re
 
 try:
     from html import escape
@@ -27,6 +26,7 @@ except ImportError:
 from collections import defaultdict
 from operator import itemgetter
 
+from nltk import redos
 from nltk.tree.tree import Tree
 from nltk.util import OrderedDict
 
@@ -390,7 +390,7 @@ class TreePrettyPrinter:
         maxchildcol = {}
         childcols = defaultdict(set)
         labels = {}
-        wrapre = re.compile(
+        wrapre = redos.compile(
             "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
         )
         # collect labels and coordinates
