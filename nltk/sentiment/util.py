@@ -19,6 +19,7 @@ import time
 from copy import deepcopy
 
 import nltk
+from nltk import redos
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.pathsec import open as pathsec_open
@@ -40,10 +41,10 @@ NEGATION = r"""
     |
     n't"""
 
-NEGATION_RE = re.compile(NEGATION, re.VERBOSE)
+NEGATION_RE = redos.compile(NEGATION, re.VERBOSE)
 
 CLAUSE_PUNCT = r"^[.:;!?]$"
-CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
+CLAUSE_PUNCT_RE = redos.compile(CLAUSE_PUNCT)
 
 # Happy and sad emoticons
 
@@ -394,11 +395,11 @@ def json2csv_preprocess(
                 text = row[fields.index("text")]
                 # Remove retweets
                 if skip_retweets:
-                    if re.search(r"\bRT\b", text):
+                    if redos.search(r"\bRT\b", text):
                         continue
                 # Remove tweets containing ":P" and ":-P" emoticons
                 if skip_tongue_tweets:
-                    if re.search(r"\:\-?P\b", text):
+                    if redos.search(r"\:\-?P\b", text):
                         continue
                 # Remove tweets containing both happy and sad emoticons
                 if skip_ambiguous_tweets:
@@ -408,7 +409,7 @@ def json2csv_preprocess(
                             continue
                 # Strip off emoticons from all tweets
                 if strip_off_emoticons:
-                    row[fields.index("text")] = re.sub(
+                    row[fields.index("text")] = redos.sub(
                         r"(?!\n)\s+", " ", EMOTICON_RE.sub("", text)
                     )
                 # Remove duplicate tweets
