@@ -38,7 +38,6 @@ edge you wish to apply a rule to.
 
 
 import os.path
-import pickle
 from tkinter import (
     Button,
     Canvas,
@@ -77,7 +76,7 @@ from nltk.parse.chart import (
     TopDownPredictRule,
     TreeEdge,
 )
-from nltk.picklesec import pickle_load
+from nltk.picklesec import pickle_dump, pickle_load
 from nltk.tree import Tree
 from nltk.util import in_idle
 
@@ -796,7 +795,7 @@ class ChartComparer:
             return
         try:
             with open(filename, "wb") as outfile:
-                pickle.dump(self._out_chart, outfile)
+                pickle_dump(self._out_chart, outfile)
         except Exception as e:
             showerror("Error Saving Chart", f"Unable to open file: {filename!r}\n{e}")
 
@@ -2293,7 +2292,7 @@ class ChartParserApp:
             return
         try:
             with open(filename, "wb") as outfile:
-                pickle.dump(self._chart, outfile)
+                pickle_dump(self._chart, outfile)
         except Exception as e:
             raise
             showerror("Error Saving Chart", "Unable to open file: %r" % filename)
@@ -2325,7 +2324,7 @@ class ChartParserApp:
         try:
             if filename.endswith(".pickle"):
                 with open(filename, "wb") as outfile:
-                    pickle.dump((self._chart, self._tokens), outfile)
+                    pickle_dump((self._chart, self._tokens), outfile)
             else:
                 with open(filename, "w") as outfile:
                     prods = self._grammar.productions()

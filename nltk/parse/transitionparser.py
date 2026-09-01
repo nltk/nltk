@@ -6,7 +6,6 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import pickle
 import tempfile
 from copy import deepcopy
 from operator import itemgetter
@@ -22,7 +21,7 @@ except ImportError:
 
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
-from nltk.picklesec import allowlisted_pickle_load
+from nltk.picklesec import allowlisted_pickle_load, pickle_dump
 
 # A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
 # namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
@@ -573,7 +572,7 @@ class TransitionParser(ParserI):
             # are written, closing the arbitrary-path pickle write
             # (GHSA-8mgp-746c-j5xp).
             with pathsec_open(modelfile, "wb", context="TransitionParser.train") as f:
-                pickle.dump(model, f)
+                pickle_dump(model, f)
         finally:
             remove(input_file.name)
 
