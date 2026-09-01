@@ -29,6 +29,7 @@ https://borel.slu.edu/crubadan/index.html
 
 from sys import maxsize
 
+from nltk import redos
 from nltk.util import trigrams
 
 # Note: this is NOT "re" you're likely used to. The regex module
@@ -70,7 +71,7 @@ class TextCat:
 
     def remove_punctuation(self, text):
         """Get rid of punctuation except apostrophes"""
-        return re.sub(r"[^\P{P}\']+", "", text)
+        return redos.sub(r"[^\P{P}\']+", "", text)
 
     def profile(self, text):
         """Create FreqDist of trigrams within text"""
