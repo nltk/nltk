@@ -8,8 +8,8 @@
 Helper functions for CCG semantics computation
 """
 import copy
-import re
 
+from nltk import redos
 from nltk.sem.logic import *
 
 
@@ -28,7 +28,7 @@ def barendregt_normalize(expr, counters=None):
 
     if isinstance(expr, VariableBinderExpression):
         # Extract the alphabetic prefix
-        match = re.match(r"^([A-Za-z_]+)", expr.variable.name)
+        match = redos.match(r"^([A-Za-z_]+)", expr.variable.name)
         base = match.group(1) if match else "v"
 
         # Group into pedagogical type pools to satisfy NLTK's type constraints
