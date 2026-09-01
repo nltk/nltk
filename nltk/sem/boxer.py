@@ -30,13 +30,13 @@ For example::
 
 import operator
 import os
-import re
 import shutil
 import subprocess
 import tempfile
 from functools import reduce
 from optparse import OptionParser
 
+from nltk import redos
 from nltk.internals import find_binary_iter
 from nltk.sem.drt import (
     DRS,
@@ -806,7 +806,7 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse_variable(self):
         var = self.token()
-        assert re.match(r"^[exps]\d+$", var), var
+        assert redos.match(r"^[exps]\d+$", var), var
         return var
 
     def parse_index(self):

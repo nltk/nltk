@@ -70,13 +70,13 @@ which includes extensive demonstration code.
 """
 
 import itertools
-import re
 
 try:
     import numpy as np
 except ImportError:
     pass
 
+from nltk import redos
 from nltk.metrics import accuracy
 from nltk.probability import (
     ConditionalFreqDist,
@@ -1221,7 +1221,7 @@ def load_pos(num_sents):
 
     sentences = brown.tagged_sents(categories="news")[:num_sents]
 
-    tag_re = re.compile(r"[*]|--|[^+*-]+")
+    tag_re = redos.compile(r"[*]|--|[^+*-]+")
     tag_set = set()
     symbols = set()
 

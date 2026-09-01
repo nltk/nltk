@@ -35,12 +35,12 @@ are also available:
 
 """
 
-import re
 from warnings import warn
 
+from nltk import redos
 from nltk.corpus import bcp47
 
-codepattern = re.compile("[a-z][a-z][a-z]?")
+codepattern = redos.compile("[a-z][a-z][a-z]?")
 
 
 def langname(tag, typ="full", strict=False):

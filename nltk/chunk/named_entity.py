@@ -13,6 +13,7 @@ Named entity chunker
 import os
 import re
 
+from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_tool_dir
 from nltk.tag import ClassifierBasedTagger, pos_tag
@@ -182,11 +183,11 @@ class NEChunkParser(ChunkParserI):
 
 
 def shape(word):
-    if re.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
+    if redos.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
         return "number"
-    elif re.match(r"\W+$", word, re.UNICODE):
+    elif redos.match(r"\W+$", word, re.UNICODE):
         return "punct"
-    elif re.match(r"\w+$", word, re.UNICODE):
+    elif redos.match(r"\w+$", word, re.UNICODE):
         if word.istitle():
             return "upcase"
         elif word.islower():
@@ -253,18 +254,18 @@ def load_ace_file(textfile, fmt):
         text = infile.read()
 
     # Strip XML tags, since they don't count towards the indices
-    text = re.sub("<(?!/?TEXT)[^>]+>", "", text)
+    text = redos.sub("<(?!/?TEXT)[^>]+>", "", text)
 
     # Blank out anything before/after <TEXT>
     def subfunc(m):
         return " " * (m.end() - m.start() - 6)
 
-    text = re.sub(r"[\s\S]*<TEXT>", subfunc, text)
-    text = re.sub(r"</TEXT>[\s\S]*", "", text)
+    text = redos.sub(r"[\s\S]*<TEXT>", subfunc, text)
+    text = redos.sub(r"</TEXT>[\s\S]*", "", text)
 
     # Simplify quotes
-    text = re.sub("``", ' "', text)
-    text = re.sub("''", '" ', text)
+    text = redos.sub("``", ' "', text)
+    text = redos.sub("''", '" ', text)
 
     entity_types = {typ for (s, e, typ) in entities}
 
