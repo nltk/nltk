@@ -7,15 +7,13 @@
 # For license information, see LICENSE.TXT
 
 import math
-import re
-
-import regex
 
 try:
     import numpy
 except ImportError:
     pass
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 
 BLOCK_COMPARISON = "block_comparison"
@@ -107,7 +105,7 @@ class TextTilingTokenizer(TokenizerI):
 
         # Remove punctuation
         nopunct_text = "".join(
-            c for c in lowercase_text if re.match(r"[a-z\-' \n\t]", c)
+            c for c in lowercase_text if redos.match(r"[a-z\-' \n\t]", c)
         )
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
@@ -302,7 +300,7 @@ class TextTilingTokenizer(TokenizerI):
         # a long horizontal-whitespace run with no blank line quadratically. The
         # whitespace class does not overlap "\n", so making each run possessive is
         # match-for-match identical while making the scan linear.
-        pattern = regex.compile(r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+")
+        pattern = redos.compile(r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+")
         matches = pattern.finditer(text)
 
         last_break = 0
@@ -320,7 +318,7 @@ class TextTilingTokenizer(TokenizerI):
         "Divides the text into pseudosentences of fixed size"
         w = self.w
         wrdindex_list = []
-        matches = re.finditer(r"\w+", text)
+        matches = redos.finditer(r"\w+", text)
         for match in matches:
             wrdindex_list.append((match.group(), match.start()))
         return [

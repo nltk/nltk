@@ -21,8 +21,8 @@ Jon Dehdari. 2014. A Neurophysiologically-Inspired Statistical Language
 Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 """
 
-import re
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 
 
@@ -46,44 +46,44 @@ class ToktokTokenizer(TokenizerI):
     """
 
     # Replace non-breaking spaces with normal spaces.
-    NON_BREAKING = re.compile("\u00a0"), " "
+    NON_BREAKING = redos.compile("\u00a0"), " "
 
     # Pad some funky punctuation.
-    FUNKY_PUNCT_1 = re.compile(r'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
+    FUNKY_PUNCT_1 = redos.compile(r'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
     # Pad more funky punctuation.
-    FUNKY_PUNCT_2 = re.compile(r"([({\[“‘„‚«‹「『])"), r" \1 "
+    FUNKY_PUNCT_2 = redos.compile(r"([({\[“‘„‚«‹「『])"), r" \1 "
     # Pad En dash and em dash
-    EN_EM_DASHES = re.compile("([–—])"), r" \1 "
+    EN_EM_DASHES = redos.compile("([–—])"), r" \1 "
 
     # Replace problematic character with numeric character reference.
-    AMPERCENT = re.compile("& "), "&amp; "
-    TAB = re.compile("\t"), " &#9; "
-    PIPE = re.compile(r"\|"), " &#124; "
+    AMPERCENT = redos.compile("& "), "&amp; "
+    TAB = redos.compile("\t"), " &#9; "
+    PIPE = redos.compile(r"\|"), " &#124; "
 
     # Pad numbers with commas to keep them from further tokenization.
-    COMMA_IN_NUM = re.compile(r"(?<!,)([,،])(?![,\d])"), r" \1 "
+    COMMA_IN_NUM = redos.compile(r"(?<!,)([,،])(?![,\d])"), r" \1 "
 
     # Just pad problematic (often neurotic) hyphen/single quote, etc.
-    PROB_SINGLE_QUOTES = re.compile(r"(['’`])"), r" \1 "
+    PROB_SINGLE_QUOTES = redos.compile(r"(['’`])"), r" \1 "
     # Group ` ` stupid quotes ' ' into a single token.
-    STUPID_QUOTES_1 = re.compile(r" ` ` "), r" `` "
-    STUPID_QUOTES_2 = re.compile(r" ' ' "), r" '' "
+    STUPID_QUOTES_1 = redos.compile(r" ` ` "), r" `` "
+    STUPID_QUOTES_2 = redos.compile(r" ' ' "), r" '' "
 
     # Don't tokenize period unless it ends the line and that it isn't
     # preceded by another period, e.g.
     # "something ..." -> "something ..."
     # "something." -> "something ."
-    FINAL_PERIOD_1 = re.compile(r"(?<!\.)\.$"), r" ."
+    FINAL_PERIOD_1 = redos.compile(r"(?<!\.)\.$"), r" ."
     # Don't tokenize period unless it ends the line eg.
     # " ... stuff." ->  "... stuff ."
-    FINAL_PERIOD_2 = re.compile(r"""(?<!\.)\.\s*(["'’»›”]) *$"""), r" . \1"
+    FINAL_PERIOD_2 = redos.compile(r"""(?<!\.)\.\s*(["'’»›”]) *$"""), r" . \1"
 
     # Treat continuous commas as fake German,Czech, etc.: „
-    MULTI_COMMAS = re.compile(r"(,{2,})"), r" \1 "
+    MULTI_COMMAS = redos.compile(r"(,{2,})"), r" \1 "
     # Treat continuous dashes as fake en-dash, etc.
-    MULTI_DASHES = re.compile(r"(-{2,})"), r" \1 "
+    MULTI_DASHES = redos.compile(r"(-{2,})"), r" \1 "
     # Treat multiple periods as a thing (eg. ellipsis)
-    MULTI_DOTS = re.compile(r"(\.{2,})"), r" \1 "
+    MULTI_DOTS = redos.compile(r"(\.{2,})"), r" \1 "
 
     # This is the \p{Open_Punctuation} from Perl's perluniprops
     # see https://perldoc.perl.org/perluniprops.html
@@ -121,27 +121,27 @@ class ToktokTokenizer(TokenizerI):
     )
 
     # Pad spaces after opening punctuations.
-    OPEN_PUNCT_RE = re.compile(f"([{OPEN_PUNCT}])"), r"\1 "
+    OPEN_PUNCT_RE = redos.compile(f"([{OPEN_PUNCT}])"), r"\1 "
     # Pad spaces before closing punctuations.
-    CLOSE_PUNCT_RE = re.compile(f"([{CLOSE_PUNCT}])"), r"\1 "
+    CLOSE_PUNCT_RE = redos.compile(f"([{CLOSE_PUNCT}])"), r"\1 "
     # Pad spaces after currency symbols.
-    CURRENCY_SYM_RE = re.compile(f"([{CURRENCY_SYM}])"), r"\1 "
+    CURRENCY_SYM_RE = redos.compile(f"([{CURRENCY_SYM}])"), r"\1 "
 
     # Use for tokenizing URL-unfriendly characters: [:/?#]
-    URL_FOE_1 = re.compile(r":(?!//)"), r" : "  # in perl s{:(?!//)}{ : }g;
-    URL_FOE_2 = re.compile(r"\?(?!\S)"), r" ? "  # in perl s{\?(?!\S)}{ ? }g;
+    URL_FOE_1 = redos.compile(r":(?!//)"), r" : "  # in perl s{:(?!//)}{ : }g;
+    URL_FOE_2 = redos.compile(r"\?(?!\S)"), r" ? "  # in perl s{\?(?!\S)}{ ? }g;
     # in perl: m{://} or m{\S+\.\S+/\S+} or s{/}{ / }g;
-    URL_FOE_3 = re.compile(r"(:\/\/)[\S+\.\S+\/\S+][\/]"), " / "
-    URL_FOE_4 = re.compile(r" /"), r" / "  # s{ /}{ / }g;
+    URL_FOE_3 = redos.compile(r"(:\/\/)[\S+\.\S+\/\S+][\/]"), " / "
+    URL_FOE_4 = redos.compile(r" /"), r" / "  # s{ /}{ / }g;
 
     # Left/Right strip, i.e. remove heading/trailing spaces.
     # These strip regexes should NOT be used,
     # instead use str.lstrip(), str.rstrip() or str.strip()
     # (They are kept for reference purposes to the original toktok.pl code)
-    LSTRIP = re.compile(r"^ +"), ""
-    RSTRIP = re.compile(r"\s+$"), "\n"
+    LSTRIP = redos.compile(r"^ +"), ""
+    RSTRIP = redos.compile(r"\s+$"), "\n"
     # Merge multiple spaces.
-    ONE_SPACE = re.compile(r" {2,}"), " "
+    ONE_SPACE = redos.compile(r" {2,}"), " "
 
     TOKTOK_REGEXES = [
         NON_BREAKING,
