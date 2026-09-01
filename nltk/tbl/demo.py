@@ -16,7 +16,7 @@ from nltk import redos
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
-from nltk.picklesec import AllowlistUnpickler, harden_object_graph
+from nltk.picklesec import AllowlistUnpickler, allowlisted_pickle_load
 from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
@@ -69,11 +69,14 @@ def _tbl_visit(obj):
 
 
 def _load_tbl_model(file):
-    """Unpickle a tbl demo model file through the allowlisting unpickler, then walk
-    it with :func:`nltk.picklesec.harden_object_graph` to re-cap every regex the
-    name allowlist cannot bound (CWE-502 + CWE-1333)."""
-    model = _TblModelUnpickler(file, allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS).load()
-    return harden_object_graph(model, _tbl_visit)
+    """Load a tbl demo model file through the allowlisting unpickler, then re-cap via
+    ``sanitize=`` every regex the name allowlist cannot bound (CWE-502 + CWE-1333)."""
+    return allowlisted_pickle_load(
+        file,
+        allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS,
+        sanitize=_tbl_visit,
+        unpickler_cls=_TblModelUnpickler,
+    )
 
 
 def demo():
