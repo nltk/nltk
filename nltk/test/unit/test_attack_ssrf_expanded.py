@@ -672,3 +672,122 @@ def test_internal_numeric_targets_refused_on_windows_path(
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
     assert _verdict(url) == "blocked", f"{url} leaked past the numeric guard"
     assert no_real_egress == [], f"{url} produced egress"
+
+
+# =========================================================================== #
+# 16. The proxy avenue does not let the IP-literal check be bypassed, and the
+#     literal check is not weakened by opting into proxied fetches
+# =========================================================================== #
+
+# A configured proxy performs the egress, so a proxied fetch NLTK cannot pin is
+# refused by the proxy guard (GHSA-6ww7). Independently, the resolver-independent
+# IP-literal / numeric address check runs first, so an internal target is refused
+# by that check even when a proxy is configured, AND even when the operator opts
+# into proxied fetches (ALLOW_PROXIED_FETCH): the opt-in only permits a proxied
+# fetch of a target that passes the address check, never an internal literal.
+_PROXY_INTERNAL_TARGETS = [
+    "http://169.254.169.254/latest/meta-data/",  # cloud metadata literal
+    "http://127.0.0.1/admin",  # loopback literal
+    "http://[::1]/x",  # IPv6 loopback literal
+    "http://[::ffff:127.0.0.1]/x",  # IPv4-mapped loopback literal
+    "http://2130706433/",  # decimal loopback
+    "http://0x7f000001/",  # hex loopback
+    "http://10.0.0.1/internal",  # private literal
+]
+_PROXY_PUBLIC_TARGETS = ["http://1.1.1.1/", "http://93.184.216.34/"]
+
+
+def _configure_proxy(monkeypatch, allow):
+    monkeypatch.setattr(
+        urllib.request,
+        "getproxies",
+        lambda: {"http": "http://proxy.local:8080", "https": "http://proxy.local:8080"},
+    )
+    monkeypatch.setattr(urllib.request, "proxy_bypass", lambda host: False)
+    monkeypatch.setattr(urllib.request, "_opener", None)
+    monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", allow)
+
+
+def _proxy_verdict(url):
+    """Which guard refuses ``pathsec.urlopen(url)`` under a configured proxy."""
+    try:
+        pathsec.urlopen(url, timeout=1)
+        return "allowed"
+    except PermissionError as exc:
+        return "proxy-guard" if "proxied fetch" in str(exc) else "address-guard"
+    except (ValueError, OSError):
+        return "address-guard"
+    except Exception:
+        return "reached-egress"
+
+
+@pytest.mark.parametrize("url", _PROXY_INTERNAL_TARGETS)
+def test_proxied_internal_target_refused_by_address_guard(
+    url, monkeypatch, no_real_egress
+):
+    _configure_proxy(monkeypatch, allow=False)
+    assert _proxy_verdict(url) == "address-guard", f"{url} was not address-refused"
+    assert no_real_egress == [], f"{url} produced egress"
+
+
+@pytest.mark.parametrize("url", _PROXY_INTERNAL_TARGETS)
+def test_proxied_internal_literal_still_refused_when_proxied_fetch_opted_in(
+    url, monkeypatch, no_real_egress
+):
+    # The operator trusts the proxy (ALLOW_PROXIED_FETCH); the address check must
+    # STILL refuse an internal literal/numeric target before the proxy carries it.
+    _configure_proxy(monkeypatch, allow=True)
+    assert _proxy_verdict(url) == "address-guard", f"{url} leaked through opt-in"
+    assert no_real_egress == [], f"{url} produced egress"
+
+
+@pytest.mark.parametrize("url", _PROXY_PUBLIC_TARGETS)
+def test_proxied_public_target_refused_by_proxy_guard(url, monkeypatch, no_real_egress):
+    # A public target passes the address check, so the proxy guard is the one that
+    # must refuse it (unpinnable through a proxy). Over-block control for section.
+    _configure_proxy(monkeypatch, allow=False)
+    assert _proxy_verdict(url) == "proxy-guard", f"{url} was not proxy-refused"
+    assert no_real_egress == [], f"{url} produced egress"
+
+
+# =========================================================================== #
+# 17. IP-literal edge spellings the direct classifier must still fold and refuse
+# =========================================================================== #
+
+# ``ipaddress.ip_address`` folds full-form, zero-padded, mixed-case, compressed,
+# zone-scoped and NAT64 dotted-quad spellings to the same address, so none can
+# smuggle an internal target past the resolver-independent literal check.
+_IP_LITERAL_EDGE_URLS = [
+    "http://[0:0:0:0:0:0:0:1]/",  # full-form loopback
+    "http://[0000:0000:0000:0000:0000:0000:0000:0001]/",  # zero-padded loopback
+    "http://[::FFFF:127.0.0.1]/",  # mixed-case IPv4-mapped loopback
+    "http://[::ffff:7f00:0001]/",  # IPv4-mapped loopback, hex tail
+    "http://[::1]:8080/",  # IPv6 loopback with an explicit port
+    "http://[fe80::1%25eth0]/",  # link-local with a URL-encoded zone id
+    "http://[64:ff9b::127.0.0.1]/",  # NAT64 with a dotted-quad loopback suffix
+    "http://[64:ff9b:0:0:0:0:7f00:1]/",  # NAT64 full-form loopback
+    "http://[2002:7f00:1::]/",  # 6to4 loopback, compressed
+    "http://[0::0]/",  # unspecified, compressed
+    "http://[::ffff:a9fe:a9fe]/",  # IPv4-mapped cloud metadata, hex
+    "http://[fc00::1]/",  # unique-local fc00::/8
+    "http://[ff02::fb]/",  # link-local mDNS multicast
+]
+
+
+@pytest.mark.parametrize("url", _IP_LITERAL_EDGE_URLS)
+def test_ip_literal_edge_spellings_refused(url, monkeypatch, no_real_egress):
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    assert _verdict(url) == "blocked", f"{url} bypassed the literal classifier"
+    assert no_real_egress == [], f"{url} produced egress"
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://[2606:4700:4700::1111]/",  # public IPv6 literal (Cloudflare)
+        "http://[2001:4860:4860::8888]/",  # public IPv6 literal (Google)
+    ],
+)
+def test_public_ip_literal_edge_spellings_allowed(url, monkeypatch):
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    assert _verdict(url) == "allowed", f"{url} was wrongly blocked"
