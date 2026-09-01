@@ -7,9 +7,9 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 from typing import Tuple
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -42,9 +42,9 @@ class Cistem(StemmerI):
     :type case_insensitive: bool
     """
 
-    strip_ge = re.compile(r"^ge(.{4,})")
-    repl_xx = re.compile(r"(.)\1")
-    repl_xx_back = re.compile(r"(.)\*")
+    strip_ge = redos.compile(r"^ge(.{4,})")
+    repl_xx = redos.compile(r"(.)\1")
+    repl_xx_back = redos.compile(r"(.)\*")
     # The end-anchored suffix patterns (e[mr]$, nd$, t$, [esn]$) are applied by
     # direct end-of-string character checks in ``_segment_inner`` (see there),
     # not via ``re``, so that stemming is linear rather than quadratic in the

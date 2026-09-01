@@ -23,8 +23,8 @@ There is also a demo function: `snowball.demo()`.
 
 """
 
-import re
 
+from nltk import redos
 from nltk.corpus import stopwords
 from nltk.stem import porter
 from nltk.stem.api import StemmerI
@@ -317,25 +317,25 @@ class ArabicStemmer(_StandardStemmer):
     """
 
     # Normalize_pre stes
-    __vocalization = re.compile(
+    __vocalization = redos.compile(
         r"[\u064b-\u064c-\u064d-\u064e-\u064f-\u0650-\u0651-\u0652]"
     )  # ً، ٌ، ٍ، َ، ُ، ِ، ّ، ْ
 
-    __kasheeda = re.compile(r"[\u0640]")  # ـ tatweel/kasheeda
+    __kasheeda = redos.compile(r"[\u0640]")  # ـ tatweel/kasheeda
 
-    __arabic_punctuation_marks = re.compile(r"[\u060C-\u061B-\u061F]")  #  ؛ ، ؟
+    __arabic_punctuation_marks = redos.compile(r"[\u060C-\u061B-\u061F]")  #  ؛ ، ؟
 
     # Normalize_post
     __last_hamzat = ("\u0623", "\u0625", "\u0622", "\u0624", "\u0626")  # أ، إ، آ، ؤ، ئ
 
     # normalize other hamza's
-    __initial_hamzat = re.compile(r"^[\u0622\u0623\u0625]")  #  أ، إ، آ
+    __initial_hamzat = redos.compile(r"^[\u0622\u0623\u0625]")  #  أ، إ، آ
 
-    __waw_hamza = re.compile(r"[\u0624]")  # ؤ
+    __waw_hamza = redos.compile(r"[\u0624]")  # ؤ
 
-    __yeh_hamza = re.compile(r"[\u0626]")  # ئ
+    __yeh_hamza = redos.compile(r"[\u0626]")  # ئ
 
-    __alefat = re.compile(r"[\u0623\u0622\u0625]")  #  أ، إ، آ
+    __alefat = redos.compile(r"[\u0623\u0622\u0625]")  #  أ، إ، آ
 
     # Checks
     __checks1 = (
@@ -5936,9 +5936,9 @@ def demo():
         excerpt = udhr.words(udhr_corpus[language])[:300]
 
         stemmed = " ".join(stemmer.stem(word) for word in excerpt)
-        stemmed = re.sub(r"(.{,70})\s", r"\1\n", stemmed + " ").rstrip()
+        stemmed = redos.sub(r"(.{,70})\s", r"\1\n", stemmed + " ").rstrip()
         excerpt = " ".join(excerpt)
-        excerpt = re.sub(r"(.{,70})\s", r"\1\n", excerpt + " ").rstrip()
+        excerpt = redos.sub(r"(.{,70})\s", r"\1\n", excerpt + " ").rstrip()
 
         print("\n")
         print("-" * 70)
