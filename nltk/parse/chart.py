@@ -36,11 +36,11 @@ defines three chart parsers:
 """
 
 import itertools
-import re
 import time
 import warnings
 from functools import total_ordering
 
+from nltk import redos
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.internals import raise_unorderable_types
 from nltk.parse.api import ParserI
@@ -1069,7 +1069,7 @@ class AbstractChartRule(ChartRuleI):
     # Default: return a name based on the class name.
     def __str__(self):
         # Add spaces between InitialCapsWords.
-        return re.sub("([a-z])([A-Z])", r"\1 \2", self.__class__.__name__)
+        return redos.sub("([a-z])([A-Z])", r"\1 \2", self.__class__.__name__)
 
 
 # ////////////////////////////////////////////////////////////
