@@ -32,13 +32,13 @@ https://omwn.org/
 
 import math
 import os
-import re
 import warnings
 from collections import defaultdict, deque
 from functools import total_ordering
 from itertools import chain, islice
 from operator import itemgetter
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
@@ -119,7 +119,7 @@ VERB_FRAME_STRINGS = (
     "Somebody %s out of somebody",
 )
 
-SENSENUM_RE = re.compile(r"\.[\d]+\.")
+SENSENUM_RE = redos.compile(r"\.[\d]+\.")
 
 
 ######################################################################
@@ -1500,7 +1500,7 @@ class WordNetCorpusReader(CorpusReader):
         fh = self._data_file(ADJ)
         fh.seek(0)
         for line in fh:
-            match = re.search(r"Word[nN]et (\d+\+?|\d+\.\d+) Copyright", line)
+            match = redos.search(r"Word[nN]et (\d+\+?|\d+\.\d+) Copyright", line)
             if match is not None:
                 version = match.group(1)
                 fh.seek(0)
@@ -1645,8 +1645,8 @@ class WordNetCorpusReader(CorpusReader):
         try:
             # parse out the definitions and examples from the gloss
             columns_str, gloss = data_file_line.strip().split("|")
-            definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()
-            examples = re.findall(r'"([^"]*)"', gloss)
+            definition = redos.sub(r"[\"].*?[\"]", "", gloss).strip()
+            examples = redos.findall(r'"([^"]*)"', gloss)
             for example in examples:
                 synset._examples.append(example)
 
@@ -1676,7 +1676,7 @@ class WordNetCorpusReader(CorpusReader):
                 # get the lex_id (used for sense_keys)
                 lex_id = int(_next_token(), 16)
                 # If the lemma has a syntactic marker, extract it.
-                m = re.match(r"(.*?)(\(.*\))?$", lemma_name)
+                m = redos.match(r"(.*?)(\(.*\))?$", lemma_name)
                 lemma_name, syn_mark = m.groups()
                 # create the lemma object
                 lemma = Lemma(self, synset, lemma_name, lexname_index, lex_id, syn_mark)

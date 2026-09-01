@@ -12,10 +12,10 @@ For details about VerbNet see:
 https://verbs.colorado.edu/~mpalmer/projects/verbnet.html
 """
 
-import re
 import textwrap
 from collections import defaultdict
 
+from nltk import redos
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 
@@ -80,13 +80,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """The VerbNet version string for this corpus instance."""
         return self._version
 
-    _LONGID_RE = re.compile(r"([A-Za-z_]+)-([\d.-]+)$")
+    _LONGID_RE = redos.compile(r"([A-Za-z_]+)-([\d.-]+)$")
     """Regular expression that matches (and decomposes) longids"""
 
-    _SHORTID_RE = re.compile(r"[\d.\-]+$")
+    _SHORTID_RE = redos.compile(r"[\d.\-]+$")
     """Regular expression that matches shortids"""
 
-    _INDEX_RE = re.compile(
+    _INDEX_RE = redos.compile(
         r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]+>|' r'<VNSUBCLASS ID="([^"]+)"/?>'
     )
     """Regular expression used by ``_index()`` to quickly scan the corpus
