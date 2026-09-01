@@ -11,10 +11,10 @@ Toolbox databases and settings files.
 """
 
 import codecs
-import re
 from io import StringIO
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
+from nltk import redos
 from nltk.data import PathPointer, find
 from nltk.pathsec import open as pathsec_open
 
@@ -67,8 +67,8 @@ class StandardFormat:
         join_string = "\n"
         line_regexp = r"^%s(?:\\(\S+)\s*)?(.*)$"
         # discard a BOM in the first line
-        first_line_pat = re.compile(line_regexp % "(?:\xef\xbb\xbf)?")
-        line_pat = re.compile(line_regexp % "")
+        first_line_pat = redos.compile(line_regexp % "(?:\xef\xbb\xbf)?")
+        line_pat = redos.compile(line_regexp % "")
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
@@ -78,13 +78,13 @@ class StandardFormat:
         except StopIteration:
             # no more data is available, terminate the generator
             return
-        mobj = re.match(first_line_pat, line)
+        mobj = redos.match(first_line_pat, line)
         mkr, line_value = mobj.groups()
         value_lines = [line_value]
         self.line_num = 0
         for line in file_iter:
             self.line_num += 1
-            mobj = re.match(line_pat, line)
+            mobj = redos.match(line_pat, line)
             line_mkr, line_value = mobj.groups()
             if line_mkr:
                 yield (mkr, join_string.join(value_lines))
@@ -128,7 +128,7 @@ class StandardFormat:
         """
         if encoding is None and unicode_fields is not None:
             raise ValueError("unicode_fields is set but not encoding.")
-        unwrap_pat = re.compile(r"\n+")
+        unwrap_pat = redos.compile(r"\n+")
         for mkr, val in self.raw_fields():
             if unwrap:
                 val = unwrap_pat.sub(" ", val)
@@ -149,9 +149,9 @@ def _sanitize_marker(mkr):
     if not mkr:
         return "empty"
     # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots
-    safe = re.sub(r"[^\w\-.]", "_", mkr)
+    safe = redos.sub(r"[^\w\-.]", "_", mkr)
     # XML element names cannot start with a digit, hyphen, or dot
-    if re.match(r"^[\d\-.]", safe):
+    if redos.match(r"^[\d\-.]", safe):
         safe = "_" + safe
     # Mitigate HTML element injection for web viewers / XSS
     if safe.lower() in {"script", "style", "iframe", "object", "embed", "link", "meta"}:
@@ -294,7 +294,7 @@ class ToolboxData(StandardFormat):
         return tb_etree
 
 
-_is_value = re.compile(r"\S")
+_is_value = redos.compile(r"\S")
 
 
 def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
@@ -335,12 +335,12 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                     cur_encoding = "utf8"
                 else:
                     cur_encoding = encoding
-                if re.search(_is_value, value):
+                if redos.search(_is_value, value):
                     l.append((f"\\{mkr} {value}\n").encode(cur_encoding, errors))
                 else:
                     l.append((f"\\{mkr}{value}\n").encode(cur_encoding, errors))
             else:
-                if re.search(_is_value, value):
+                if redos.search(_is_value, value):
                     l.append(f"\\{mkr} {value}\n")
                 else:
                     l.append(f"\\{mkr}{value}\n")

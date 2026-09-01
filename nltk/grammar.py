@@ -72,6 +72,7 @@ import re
 from collections import deque
 from functools import total_ordering
 
+from nltk import redos
 from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
 from nltk.internals import raise_unorderable_types
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -1365,10 +1366,10 @@ def _read_fcfg_production(input, fstruct_reader):
 
 # Parsing generic grammars
 
-_ARROW_RE = re.compile(r"\s* -> \s*", re.VERBOSE)
-_PROBABILITY_RE = re.compile(r"( \[ [\d\.]+ \] ) \s*", re.VERBOSE)
-_TERMINAL_RE = re.compile(r'( "[^"]*" | \'[^\']*\' ) \s*', re.VERBOSE)
-_DISJUNCTION_RE = re.compile(r"\| \s*", re.VERBOSE)
+_ARROW_RE = redos.compile(r"\s* -> \s*", re.VERBOSE)
+_PROBABILITY_RE = redos.compile(r"( \[ [\d\.]+ \] ) \s*", re.VERBOSE)
+_TERMINAL_RE = redos.compile(r'( "[^"]*" | \'[^\']*\' ) \s*', re.VERBOSE)
+_DISJUNCTION_RE = redos.compile(r"\| \s*", re.VERBOSE)
 
 
 def _read_production(line, nonterm_parser, probabilistic=False):
@@ -1491,7 +1492,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     return (start, productions)
 
 
-_STANDARD_NONTERM_RE = re.compile(r"( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+_STANDARD_NONTERM_RE = redos.compile(r"( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
 
 
 def standard_nonterm_parser(string, pos):
@@ -1505,7 +1506,7 @@ def standard_nonterm_parser(string, pos):
 # Reading Dependency Grammars
 #################################################################
 
-_READ_DG_RE = re.compile(
+_READ_DG_RE = redos.compile(
     r"""^\s*                # leading whitespace
                               ('[^']+')\s*        # single-quoted lhs
                               (?:[-=]+>)\s*        # arrow
@@ -1518,7 +1519,7 @@ _READ_DG_RE = re.compile(
                                  *$""",  # zero or more copies
     re.VERBOSE,
 )
-_SPLIT_DG_RE = re.compile(r"""('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)""")
+_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)""")
 
 
 def _read_dependency_production(s):
