@@ -17,12 +17,14 @@ from nltk.corpus.reader.reviews import FEATURES, ReviewsCorpusReader
 
 from . import _mp_ctx
 
-# A long, bracket-less word run: ~250 KB. Linear with the bounded regex
-# (milliseconds); ~quadratic and ~50 s with the old unbounded one.
-_CRAFTED_LINE = "word " * 50_000
-# Generous vs. the linear cost (which is ~ms after process startup), but far
-# below the quadratic regression cost, so a regression fails fast and cleanly.
-_TIMEOUT = 15
+# A long, bracket-less word run: ~1 MB. Linear with the bounded regex
+# (milliseconds); ~quadratic and many minutes with the old unbounded one. Sized
+# so the quadratic cost stays far above _TIMEOUT even as _TIMEOUT is generous.
+_CRAFTED_LINE = "word " * 200_000
+# Generous vs. the linear cost (~ms after process startup), so a loaded CI host
+# slow to spawn a process and import nltk does not trip it, yet far below the
+# quadratic regression cost at this size, so a regression still fails fast.
+_TIMEOUT = 60
 
 
 def _features_worker(result_q):

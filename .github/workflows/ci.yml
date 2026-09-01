@@ -68,7 +68,11 @@ jobs:
 
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    needs: [pre-commit, minimal_download_test]
+    # Gate on pre-commit only. Depending on minimal_download_test blocked the
+    # whole matrix whenever its macos-latest leg could not acquire a hosted
+    # runner (it sits queued ~26m then errors), so the full suite never ran.
+    # minimal_download_test still runs and reports on its own.
+    needs: [pre-commit]
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.14t']
