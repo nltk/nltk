@@ -118,3 +118,56 @@ def test_the_bounded_modules_route_through_redos():
         assert module.__name__ == name, f"{name} resolved to {module.__name__}"
         source = inspect.getsource(module)
         assert "redos.compile" in source, f"{name} no longer bounds its regex"
+
+
+def test_concordance_query_all_hostile_classes_are_catchable():
+    """The Concordance GUI compiles the USER's query per sentence via
+    redos.search. Each hostile query class must raise a catchable exception
+    (re.error / ValueError / TimeoutError), never hang or crash the thread."""
+    code = (
+        "import re, nltk.redos as R; R.DEFAULT_TIMEOUT = 0.4\n"
+        "from nltk import redos\n"
+        "bad = comp = timo = False\n"
+        "try: redos.search('(', 'x')\n"
+        "except re.error: bad = True\n"
+        "try: redos.search('(a{500}){500}{500}', 'x')\n"
+        "except ValueError: comp = True\n"
+        "try: redos.search(r'(a|a)*$', 'a' * 60 + '!')\n"
+        "except TimeoutError: timo = True\n"
+        "assert bad and comp and timo, (bad, comp, timo)\n"
+        "print('OK')\n"
+    )
+    proc = _run(code)
+    assert proc.returncode == 0 and "OK" in proc.stdout, proc.stderr
+
+
+def test_concordance_app_search_catches_every_redos_failure_mode():
+    """Pin the concordance fix: the per-sentence search routes through redos and
+    catches all three failure modes, so a hostile query is a bounded SEARCH_ERROR
+    rather than a crashed GUI thread. Read the file (no Tk import needed)."""
+    import nltk
+
+    path = os.path.join(os.path.dirname(nltk.__file__), "app", "concordance_app.py")
+    with open(path, encoding="utf-8") as fh:
+        source = fh.read()
+    assert (
+        "redos.search(q, sent)" in source
+    ), "concordance search no longer routes through redos"
+    assert (
+        "except (re.error, ValueError, TimeoutError)" in source
+    ), "concordance must catch re.error (bad), ValueError (compile DoS) and TimeoutError (ReDoS)"
+
+
+def test_nemo_app_refresh_catches_every_redos_failure_mode():
+    """The nemo GUI compiles the user's field regex and runs .sub over the buffer;
+    refresh() must catch all three redos failure modes (bad / compile DoS / ReDoS)
+    so a hostile field dims the image rather than crashing the widget."""
+    import nltk
+
+    path = os.path.join(os.path.dirname(nltk.__file__), "app", "nemo_app.py")
+    with open(path, encoding="utf-8") as fh:
+        source = fh.read()
+    assert "redos.compile(" in source, "nemo no longer compiles its field through redos"
+    assert (
+        "except (re.error, ValueError, TimeoutError)" in source
+    ), "nemo refresh() must catch re.error, ValueError (compile DoS) and TimeoutError"
