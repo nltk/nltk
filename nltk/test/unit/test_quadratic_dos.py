@@ -591,24 +591,38 @@ class TestPaiceQuadratic:  # nltk.metrics.paice
         assert (p.gumt, p.gdmt, p.gwmt, p.gdnt) == (4.0, 5.0, 2.0, 16.0)
         assert round(p.ui, 3) == 0.8 and round(p.oi, 3) == 0.125
 
-    def test_large_vocab_is_linear(self):
+    def test_large_vocab_is_linear(self, monkeypatch):
         # `_calculate` rescanned every stem for every lemma => O(|lemmas|*|stems|)
         # plus a per-stem `set(lemmawords)` rebuild. A word->stem index makes it
         # linear (correctness-preserving, so no cap needed on legit large evals).
-        from nltk.metrics.paice import Paice
+        #
+        # Assert on a DETERMINISTIC operation count -- the number of candidate
+        # stems `_calculate` examines -- not wall-clock time: a sub-second timing
+        # ratio is a flaky gate on a loaded CI runner. With the word->stem index a
+        # disjoint vocabulary examines O(n) candidates (~4x on 4x input); the
+        # pre-fix per-lemma full-stems scan examined O(n**2) (~16x).
+        from nltk.metrics import paice
 
-        def build(n):
-            return (
-                {f"l{i}": [f"w{i}"] for i in range(n)},
-                {f"s{i}": [f"w{i}"] for i in range(n)},
-            )
+        counter = {"n": 0}
+        real_cut = paice._calculate_cut
 
-        def el(n):
-            lem, stm = build(n)
-            return _elapsed(lambda: Paice(lem, stm))
+        def counting_cut(lemmawords, word_to_stems, stem_sizes):
+            for word in set(lemmawords):
+                counter["n"] += len(word_to_stems.get(word, ()))
+            return real_cut(lemmawords, word_to_stems, stem_sizes)
 
-        t1, t4 = el(400), el(1600)  # 4x input
-        assert t4 < 8 * t1 + 0.5  # linear ~4x, pre-fix O(n^2) ~16x
+        monkeypatch.setattr(paice, "_calculate_cut", counting_cut)
+
+        def visits(n):
+            counter["n"] = 0
+            lem = {f"l{i}": [f"w{i}"] for i in range(n)}
+            stm = {f"s{i}": [f"w{i}"] for i in range(n)}
+            paice.Paice(lem, stm)
+            return counter["n"]
+
+        v1 = visits(400)
+        v4 = visits(1600)  # 4x input
+        assert v4 < 8 * v1  # linear ~4x candidate visits; pre-fix full scan ~16x
 
 
 class TestConfusionMatrixEvaluateQuadratic:  # residual to CVE-2026-12839
@@ -621,19 +635,36 @@ class TestConfusionMatrixEvaluateQuadratic:  # residual to CVE-2026-12839
         assert cm.precision("NN") == 0.75 and cm.recall("NN") == 0.75
         assert cm.evaluate().splitlines()[0].startswith("Tag | Prec.")
 
-    def test_evaluate_all_distinct_is_linear(self):
+    def test_evaluate_all_distinct_is_linear(self, monkeypatch):
         # The constructor is O(n) (CVE-2026-12839), but evaluate() scanned all V
         # columns per row -> O(V**2) on an all-distinct matrix. Caching column
         # totals like the existing row-total cache makes it linear.
+        #
+        # Assert on a DETERMINISTIC count of matrix-cell reads (__getitem__), not
+        # wall-clock time, which is a flaky gate on a loaded CI runner: a linear
+        # evaluate does O(V) reads (~4x on 4x input); the pre-fix per-label column
+        # scan did O(V**2) (~16x).
         from nltk.metrics import ConfusionMatrix
 
-        def el(n):
+        counter = {"n": 0}
+        real_getitem = ConfusionMatrix.__getitem__
+
+        def counting_getitem(self, key):
+            counter["n"] += 1
+            return real_getitem(self, key)
+
+        monkeypatch.setattr(ConfusionMatrix, "__getitem__", counting_getitem)
+
+        def reads(n):
             r = [f"r{i}" for i in range(n)]
             cm = ConfusionMatrix(r, r)
-            return _elapsed(cm.evaluate)
+            counter["n"] = 0  # count only evaluate()'s cell reads
+            cm.evaluate()
+            return counter["n"]
 
-        t1, t4 = el(300), el(1200)  # 4x input
-        assert t4 < 8 * t1 + 0.5  # linear ~4x, pre-fix O(V^2) ~16x
+        g1 = reads(300)
+        g4 = reads(1200)  # 4x input
+        assert g4 < 8 * g1  # linear ~4x cell reads; pre-fix O(V^2) ~16x
 
 
 class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebuild
