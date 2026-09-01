@@ -51,6 +51,36 @@ _IDENTITY_TABLE = bytes(range(256))
 _NON_STRUCTURAL = bytes(i for i in range(256) if i not in _STRUCTURAL_BYTES)
 
 
+_POS_INF = float("inf")
+
+
+def _reject_non_finite(token):
+    """``parse_constant`` hook: refuse ``NaN`` / ``Infinity`` / ``-Infinity``.
+
+    These three are a CPython ``json`` extension, not RFC 8259, so a standards
+    conformant document never contains them and no shipped NLTK resource does.
+    An attacker-supplied model weight or tweet field could, though, and a NaN
+    weight silently poisons every downstream score while an Infinity can turn a
+    comparison into a hang, so untrusted input is held to strict JSON.
+    """
+    raise ValueError(f"non-finite JSON constant {token!r} is not allowed")
+
+
+def _finite_float(token):
+    """``parse_float`` hook: refuse a numeric literal that overflows to infinity.
+
+    ``parse_constant`` only catches the ``Infinity`` word; a plain numeric token
+    with a huge exponent (``1e400``) is valid JSON syntax but overflows an IEEE
+    double to ``inf`` without going through it. Rejecting the overflow too keeps
+    the non-finite guarantee complete. The check runs only on tokens the parser
+    already treats as floats, so integers and small floats are unaffected.
+    """
+    value = float(token)
+    if value == _POS_INF or value == -_POS_INF:
+        raise ValueError(f"non-finite JSON number {token!r} overflows to infinity")
+    return value
+
+
 def _scan_json_depth(data, limit):
     """Return the maximum structural nesting depth of *data*, stopping early.
 
@@ -123,7 +153,12 @@ def safe_json_loads(
             f"{context}: JSON nesting depth exceeds the maximum allowed "
             f"({max_depth})"
         )
-    return json.loads(data)
+    # Reject every non-finite value: the NaN/Infinity/-Infinity words via
+    # parse_constant, and a numeric literal that overflows to inf via
+    # parse_float, so no non-finite value reaches a model weight or a tweet.
+    return json.loads(
+        data, parse_constant=_reject_non_finite, parse_float=_finite_float
+    )
 
 
 def safe_json_load(
@@ -170,10 +205,27 @@ class JSONTaggedDecoder(json.JSONDecoder):
     #: Prevents denial of service from deeply nested payloads.
     MAX_DECODE_DEPTH = 200
 
+    #: Upper bound (bytes) on a document handed to the tagged decoder, matching
+    #: ``safe_json_loads`` so this path is size-bounded as well as depth-bounded.
+    MAX_DECODE_BYTES = JSON_MAX_BYTES
+
+    def __init__(self, **kwargs):
+        # Reject non-finite values by default (NaN/Infinity words and numeric
+        # overflow to inf), matching safe_json_loads; a caller may still override
+        # parse_constant / parse_float explicitly.
+        kwargs.setdefault("parse_constant", _reject_non_finite)
+        kwargs.setdefault("parse_float", _finite_float)
+        super().__init__(**kwargs)
+
     def decode(self, s):
-        # Bound nesting BEFORE ``super().decode`` runs the recursive C accelerator,
-        # which can overflow the C stack (an uncatchable segfault, not a
-        # ``RecursionError``) before ``decode_obj``'s Python check is reached.
+        # Bound size, then nesting, BEFORE ``super().decode`` runs the recursive
+        # C accelerator, which can overflow the C stack (an uncatchable segfault,
+        # not a ``RecursionError``) before ``decode_obj``'s Python check runs.
+        if len(s) > self.MAX_DECODE_BYTES:
+            raise ValueError(
+                f"JSON document is {len(s)} bytes, over the "
+                f"{self.MAX_DECODE_BYTES}-byte limit"
+            )
         if _scan_json_depth(s, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
             raise ValueError(
                 f"JSON nesting depth exceeds maximum allowed ({self.MAX_DECODE_DEPTH})"

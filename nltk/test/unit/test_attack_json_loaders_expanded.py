@@ -777,3 +777,71 @@ def test_sentiment_preprocess_deep_tweet_line_no_crash():
         timeout=60,
     )
     assert_no_crash_and_rejected(proc)
+
+
+# Non-finite values: NaN / Infinity / -Infinity are a CPython json extension,
+# not RFC 8259, and a numeric literal can also overflow an IEEE double to inf.
+# safe_json_loads and JSONTaggedDecoder refuse every non-finite value so an
+# attacker cannot smuggle one into a model weight or a tweet field, while finite
+# values (including the largest representable double) still parse.
+
+
+def test_helper_rejects_nan_infinity_constants():
+    from nltk.jsontags import safe_json_loads
+
+    for token in ("NaN", "Infinity", "-Infinity", '{"w": NaN}', "[1, 2, Infinity]"):
+        with pytest.raises(ValueError, match="non-finite"):
+            safe_json_loads(token)
+
+
+def test_helper_rejects_numeric_overflow_to_infinity():
+    from nltk.jsontags import safe_json_loads
+
+    # Valid JSON number syntax whose value overflows a double to inf; caught by
+    # parse_float rather than parse_constant.
+    for token in ("1e400", "1e999999", "-1e999999", "1.8e308", '{"w": 1e400}'):
+        with pytest.raises(ValueError, match="non-finite"):
+            safe_json_loads(token)
+
+
+def test_helper_finite_edge_floats_still_parse():
+    from nltk.jsontags import safe_json_loads
+
+    # The largest finite double parses; a tiny exponent underflows to 0.0
+    # (finite); ordinary floats are unaffected.
+    assert safe_json_loads("1.5e308") == 1.5e308
+    assert safe_json_loads("1e-999999") == 0.0
+    assert safe_json_loads('{"w": [0.5, -1.25, 1e10]}') == {"w": [0.5, -1.25, 1e10]}
+
+
+def test_tagged_decoder_rejects_non_finite():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    for token in ("NaN", "Infinity", '{"x": -Infinity}', "1e400", '{"x": 1e999999}'):
+        with pytest.raises(ValueError, match="non-finite"):
+            JSONTaggedDecoder().decode(token)
+    # Finite control still decodes.
+    assert JSONTaggedDecoder().decode('{"x": 1.5}') == {"x": 1.5}
+
+
+def test_tagged_decoder_rejects_oversize_document():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    decoder = JSONTaggedDecoder()
+    decoder.MAX_DECODE_BYTES = 100  # shrink the cap so the test stays cheap
+    with pytest.raises(ValueError, match="over the"):
+        decoder.decode('"' + "a" * 1000 + '"')
+    # A document under the cap still decodes.
+    assert decoder.decode('{"a": 1}') == {"a": 1}
+
+
+def test_averaged_perceptron_load_rejects_non_finite_weight(tmp_path):
+    # End-to-end: a model file carrying a non-finite weight is refused by the
+    # loader (which funnels through safe_json_load), so a poisoned weight never
+    # reaches the tagger's scoring.
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    path = tmp_path / "weights.json"
+    path.write_text('{"the": {"NN": Infinity, "DT": 0.5}}', encoding="utf-8")
+    with pytest.raises(ValueError, match="non-finite"):
+        AveragedPerceptron().load(str(path))
