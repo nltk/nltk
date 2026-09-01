@@ -663,19 +663,12 @@ class ConcordanceSearchModel:
 
         def run(self):
             q = self.processed_query()
-            try:
-                # GUI regex searched over every sentence: redos.compile bounds the
-                # compile and the per-sentence match (wall-clock) time.
-                rx = redos.compile(q)
-            except (re.error, ValueError):
-                self.model.reset_results()
-                self.model.queue.put(SEARCH_ERROR_EVENT)
-                return
             sent_pos, i, sent_count = [], 0, 0
             for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:
-                    m = rx.search(sent)
-                except TimeoutError:
+                    # redos.search bounds the compile and match (wall-clock) time.
+                    m = redos.search(q, sent)
+                except (re.error, TimeoutError):
                     self.model.reset_results()
                     self.model.queue.put(SEARCH_ERROR_EVENT)
                     return
