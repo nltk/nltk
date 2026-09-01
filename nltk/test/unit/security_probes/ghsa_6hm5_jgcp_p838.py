@@ -26,10 +26,6 @@ def _nkjp_traversal():
     """
     from nltk.corpus.reader.nkjp import NKJPCorpusReader
 
-    # the symlinked-dir escape below needs os.symlink, which is POSIX-only
-    if os.name != "posix":
-        return STATIC, "symlink escape is POSIX-only"
-
     box = tempfile.mkdtemp()
     try:
         root = os.path.join(box, "nkjp")

@@ -52,10 +52,6 @@ def _framenet_frame_traversal():
     import nltk.data
     from nltk.corpus.reader.framenet import _validate_in_root
 
-    # the symlink attempt below needs os.symlink, which is POSIX-only
-    if os.name != "posix":
-        return STATIC, "symlink escape is POSIX-only"
-
     _saved_path = list(nltk.data.path)
     box = tempfile.mkdtemp()
     try:

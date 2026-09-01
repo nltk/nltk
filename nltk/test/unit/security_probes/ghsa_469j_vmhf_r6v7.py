@@ -41,12 +41,7 @@ def _downloader_index_traversal():
                 # a pre-planted symlink inside dest pointing at the outside file;
                 # a member written "through" it would overwrite the canary.
                 link = os.path.join(dest, "CANARY")
-                try:
-                    os.symlink(outside, link)
-                except OSError:
-                    # symlink unsupported (e.g. Windows without privilege); the
-                    # other zip-slip vectors still exercise the guard
-                    continue
+                os.symlink(outside, link)
                 member = "CANARY"
             else:
                 member = make(dest)

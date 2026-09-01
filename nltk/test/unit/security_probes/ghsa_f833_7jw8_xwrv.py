@@ -33,10 +33,6 @@ def _framenet_symlink_bypass():
     import nltk.data
     from nltk.corpus.reader.framenet import _validate_in_root
 
-    # the symlink chain and symlinked directory need os.symlink, which is POSIX-only
-    if os.name != "posix":
-        return STATIC, "symlink escape is POSIX-only"
-
     _saved_path = list(nltk.data.path)
     box = tempfile.mkdtemp()
     try:
