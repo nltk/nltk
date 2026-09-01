@@ -41,6 +41,9 @@ from nltk.parse.generate import generate
 
 FAST = 0.5
 
+# CCG + feature-chart recognition DoS fixtures (imported lazily in the classes
+# below to keep the module import cheap for the CFG-only tests above).
+
 
 # ==========================================================================
 # EXPLOITABLE (fixed) -- hung pre-patch, must be bounded now
@@ -155,10 +158,84 @@ class TestGenerateDoS:
 # ==========================================================================
 
 
+class TestCCGChartRecognitionDoS:
+    # CCG recognition terminates (finite category space) but an ordinary
+    # composable lexicon + a few dozen tokens is ~O(n**4), pinning a core for
+    # seconds (CWE-407). MAX_PARSE_TREES only guards tree extraction, which the
+    # recognition loop never reaches for large n, so a wall-clock bound is added.
+    def _parser(self, **kw):
+        from nltk.ccg import lexicon as ccglex
+        from nltk.ccg.chart import CCGChartParser, DefaultRuleSet
+
+        lex = ccglex.fromstring(":- S\na => S\na => S/S\na => S\\S\n")
+        return CCGChartParser(lex, DefaultRuleSet, **kw)
+
+    def test_benign_parse_unaffected(self):
+        assert any(True for _ in self._parser().parse(["a", "a"]))
+
+    def test_default_is_bounded(self):
+        from nltk.ccg.chart import DEFAULT_MAX_TIME
+
+        assert 0 < DEFAULT_MAX_TIME <= 30
+        assert self._parser()._max_time == DEFAULT_MAX_TIME
+
+    def test_composable_lexicon_recognition_is_bounded(self):
+        with pytest.raises(TimeoutError):
+            list(self._parser(max_time=FAST).parse(["a"] * 60))
+
+
+class TestFeatureChartRecognitionDoS:
+    # The constructor is polynomial for plain CFG, but bottom-up recognition over
+    # a feature grammar whose features accumulate with structure is ~O(n**4) with
+    # no natural bound: n>=100 tokens hang inside chart_parse (CWE-407). A
+    # wall-clock deadline in the recognition loop caps it; top-down/Earley
+    # feature parsers key on TYPE and stay O(n) edges (benign).
+    ACC = (
+        "% start S\nS[f=?x] -> N[f=?x]\n"
+        "N[f=[g=?x]] -> N[f=?x] 'a'\nN[f=z] -> 'a'\n"
+    )
+
+    def _grammar(self, src):
+        from nltk.grammar import FeatureGrammar
+
+        return FeatureGrammar.fromstring(src)
+
+    def test_benign_feature_parse_unaffected(self):
+        from nltk.parse.featurechart import FeatureChartParser
+
+        g = self._grammar("% start S\nS -> 'a'\n")
+        assert len(list(FeatureChartParser(g).parse(["a"]))) == 1
+
+    def test_accumulating_feature_recognition_is_bounded(self):
+        from nltk.parse.featurechart import FeatureChartParser
+
+        p = FeatureChartParser(self._grammar(self.ACC), max_time=FAST)
+        with pytest.raises(TimeoutError):
+            list(p.parse(["a"] * 120))
+
+    def test_incremental_bottom_up_feature_is_bounded(self):
+        from nltk.parse.earleychart import FeatureIncrementalBottomUpChartParser
+
+        p = FeatureIncrementalBottomUpChartParser(self._grammar(self.ACC), max_time=FAST)
+        with pytest.raises(TimeoutError):
+            list(p.parse(["a"] * 120))
+
+    def test_topdown_and_earley_feature_are_bounded_by_construction(self):
+        # BENIGN guard: TYPE-keyed prediction keeps edges O(n) on the same grammar.
+        from nltk.parse.earleychart import FeatureEarleyChartParser
+        from nltk.parse.featurechart import FeatureTopDownChartParser
+
+        g = self._grammar(self.ACC)
+        for cls in (FeatureTopDownChartParser, FeatureEarleyChartParser):
+            assert cls(g).chart_parse(["a"] * 80).num_edges() < 2000
+
+
 class TestAlreadyBoundedParsers:
     def test_chart_parser_is_bounded(self, monkeypatch):
-        # Recognition is polynomial (agenda/chart); tree extraction is capped by
-        # MAX_PARSE_TREES. Benign: an ambiguous grammar raises rather than hangs.
+        # Recognition is polynomial for PLAIN CFG (agenda/chart); tree extraction
+        # is capped by MAX_PARSE_TREES. Benign: an ambiguous grammar raises rather
+        # than hangs. (Feature-grammar recognition is the exception -- see
+        # TestFeatureChartRecognitionDoS.)
         monkeypatch.setattr(_chartmod, "MAX_PARSE_TREES", 5000)
         with pytest.raises(ValueError):
             list(ChartParser(CFG.fromstring("S -> S S | 'a'")).parse(["a"] * 12))

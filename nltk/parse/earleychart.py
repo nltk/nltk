@@ -28,6 +28,7 @@ algorithm, originally formulated by Jay Earley (1970).
 from time import perf_counter
 
 from nltk.parse.chart import (
+    DEFAULT_MAX_TIME,
     BottomUpPredictCombineRule,
     BottomUpPredictRule,
     CachedTopDownPredictRule,
@@ -307,6 +308,7 @@ class IncrementalChartParser(ChartParser):
         trace=0,
         trace_chart_width=50,
         chart_class=IncrementalChart,
+        max_time=DEFAULT_MAX_TIME,
     ):
         """
         Create a new Earley chart parser, that uses ``grammar`` to
@@ -325,11 +327,18 @@ class IncrementalChartParser(ChartParser):
             be used to display edges.
         :param chart_class: The class that should be used to create
             the charts used by this parser.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single
+            ``chart_parse``; an accumulating feature grammar can make bottom-up
+            recognition super-polynomial (CWE-407), so exceeding the limit
+            raises ``TimeoutError``.  Defaults to ``DEFAULT_MAX_TIME``; ``None``
+            disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
         self._trace_chart_width = trace_chart_width
         self._chart_class = chart_class
+        self._max_time = max_time
 
         self._axioms = []
         self._inference_rules = []
@@ -362,12 +371,25 @@ class IncrementalChartParser(ChartParser):
             new_edges = list(axiom.apply(chart, grammar))
             trace_new_edges(chart, axiom, new_edges, trace, trace_edge_width)
 
+        # Wall-clock bound on recognition; an accumulating feature grammar makes
+        # this super-polynomial with no natural limit (CWE-407). max_time=None
+        # disables it.
+        deadline = (
+            None if self._max_time is None else perf_counter() + self._max_time
+        )
+
         inference_rules = self._inference_rules
         for end in range(chart.num_leaves() + 1):
             if trace > 1:
                 print("\n* Processing queue:", end, "\n")
             agenda = list(chart.select(end=end))
             while agenda:
+                if deadline is not None and perf_counter() > deadline:
+                    raise TimeoutError(
+                        f"IncrementalChartParser exceeded its {self._max_time}s "
+                        "time limit; the grammar may be too ambiguous for this "
+                        "many tokens. Pass max_time=None to disable the limit."
+                    )
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))

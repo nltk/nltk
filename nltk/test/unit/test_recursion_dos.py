@@ -79,6 +79,36 @@ class TestFeatStructReaderRecursion:
     def test_max_depth_constant_present(self):
         assert 0 < FeatStructReader.MAX_DEPTH <= 500
 
+    def test_deep_unify_raises_fast_not_hangs(self):
+        # BENIGN guard: the data entry points (FeatStruct("..."), FeatureGrammar)
+        # cap depth at MAX_DEPTH=100 (< CPython's recursion limit), so a string
+        # attacker cannot reach unify() with a pathological depth. A structure
+        # deep enough to matter can only be built programmatically, and unify()
+        # then raises RecursionError essentially instantly rather than hanging --
+        # bounded either way. This pins that so a future change can't turn it
+        # into a silent hang.
+        import time
+
+        from nltk.featstruct import unify
+
+        a = FeatStruct()
+        node = a
+        for _ in range(2000):
+            child = FeatStruct()
+            node["f"] = child
+            node = child
+        b = FeatStruct()
+        node = b
+        for _ in range(2000):
+            child = FeatStruct()
+            node["f"] = child
+            node = child
+
+        start = time.perf_counter()
+        with pytest.raises(RecursionError):
+            unify(a, b)
+        assert time.perf_counter() - start < 2.0
+
 
 class TestLogicParserOperatorChain:
     def test_benign_parse(self):
