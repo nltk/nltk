@@ -36,7 +36,9 @@ import sys
 # open or an unpinned temp file anywhere else went unnoticed; nltk/parse,
 # nltk/sem, nltk/twitter and nltk/app all had violations that nothing flagged.
 # Guarding everything and annotating the few genuine exceptions is the only way
-# the rule holds as the codebase changes.
+# the rule holds as the codebase changes. This subsumes the model-artifact
+# loaders (named_entity, maxent, transitionparser, tabdata, perceptron,
+# tbl/demo, punkt) that GHSA-8mgp-746c-j5xp was filed against.
 GUARDED_PATHS = ["nltk"]
 
 # The test tree is exempt for one specific reason: a security test has to stage
