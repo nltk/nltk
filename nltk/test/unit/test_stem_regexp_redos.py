@@ -77,3 +77,42 @@ def test_the_stemmer_routes_through_redos():
 
     source = inspect.getsource(nltk.stem.regexp)
     assert "redos.compile" in source, "RegexpStemmer no longer bounds its regex"
+
+
+def test_a_catastrophic_PRECOMPILED_pattern_does_not_hang():
+    """A pre-compiled ``re.Pattern`` (documented "str or regexp") must be
+    re-hardened too. The old ``hasattr(...,'pattern')`` guard let a raw stdlib
+    pattern through unbounded, so a caller handing in
+    ``re.compile('(a+)+$')`` re-opened the ReDoS the string path had closed
+    (CWE-1333 bypass; raw ``re`` ran ~24s on this bait).
+    """
+    code = (
+        "import re;from nltk.stem.regexp import RegexpStemmer;"
+        f"RegexpStemmer(re.compile({_EVIL!r})).stem({_BAIT!r})"
+    )
+    try:
+        _run(code)
+    except subprocess.TimeoutExpired:
+        pytest.fail("RegexpStemmer hung on a pre-compiled catastrophic pattern")
+
+
+def test_precompiled_pattern_flags_are_preserved():
+    """Re-hardening a pre-compiled pattern must keep its flags (e.g. re.I)."""
+    code = (
+        "import re;from nltk.stem.regexp import RegexpStemmer;"
+        "print(RegexpStemmer(re.compile('ING$', re.I)).stem('runnING'))"
+    )
+    result = _run(code)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "runn", result.stdout
+
+
+def test_precompiled_pattern_is_wrapped_as_timedpattern():
+    """Both the string and the pre-compiled path must yield a bounded pattern."""
+    import re
+
+    from nltk.redos import TimedPattern
+    from nltk.stem.regexp import RegexpStemmer
+
+    assert isinstance(RegexpStemmer(re.compile(r"(a|a)*z"))._regexp, TimedPattern)
+    assert isinstance(RegexpStemmer(r"(a|a)*z")._regexp, TimedPattern)

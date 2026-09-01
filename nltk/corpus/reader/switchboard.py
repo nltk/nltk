@@ -4,8 +4,8 @@
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-import re
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tag import map_tag, str2tuple
@@ -109,7 +109,7 @@ class SwitchboardCorpusReader(CorpusReader):
     def _tagged_words_block_reader(self, stream, tagset=None):
         return sum(self._tagged_discourses_block_reader(stream, tagset)[0], [])
 
-    _UTTERANCE_RE = re.compile(r"(\w+)\.(\d+)\:\s*(.*)")
+    _UTTERANCE_RE = redos.compile(r"(\w+)\.(\d+)\:\s*(.*)")
     _SEP = "/"
 
     def _parse_utterance(self, utterance, include_tag, tagset=None):

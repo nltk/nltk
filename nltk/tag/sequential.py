@@ -18,7 +18,6 @@ consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
 import ast
-import re
 from abc import abstractmethod
 from typing import List, Optional, Tuple
 
@@ -727,15 +726,15 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             prevtag = history[index - 1]
             prevprevtag = history[index - 2]
 
-        if re.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
+        if redos.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
             shape = "number"
-        elif re.match(r"\W+$", word):
+        elif redos.match(r"\W+$", word):
             shape = "punct"
-        elif re.match("[A-Z][a-z]+$", word):
+        elif redos.match("[A-Z][a-z]+$", word):
             shape = "upcase"
-        elif re.match("[a-z]+$", word):
+        elif redos.match("[a-z]+$", word):
             shape = "downcase"
-        elif re.match(r"\w+$", word):
+        elif redos.match(r"\w+$", word):
             shape = "mixedcase"
         else:
             shape = "other"

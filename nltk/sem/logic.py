@@ -12,10 +12,10 @@ top of the typed lambda calculus.
 """
 
 import operator
-import re
 from collections import defaultdict
 from functools import reduce, total_ordering
 
+from nltk import redos
 from nltk.internals import Counter
 from nltk.util import Trie
 
@@ -66,7 +66,7 @@ class Tokens:
     TOKENS = BINOPS + EQ_LIST + NEQ_LIST + QUANTS + LAMBDA_LIST + PUNCT + NOT_LIST
 
     # Special
-    SYMBOLS = [x for x in TOKENS if re.match(r"^[-\\.(),!&^|>=<]*$", x)]
+    SYMBOLS = [x for x in TOKENS if redos.match(r"^[-\\.(),!&^|>=<]*$", x)]
 
 
 def boolean_ops():
@@ -1191,7 +1191,9 @@ class Expression(SubstituteBindingsI):
         :return: set of ``Variable`` objects
         """
         return self.free() | {
-            p for p in self.predicates() | self.constants() if re.match("^[?@]", p.name)
+            p
+            for p in self.predicates() | self.constants()
+            if redos.match("^[?@]", p.name)
         }
 
     def free(self):
@@ -2030,7 +2032,7 @@ def is_indvar(expr):
     :return: bool True if expr is of the correct form
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r"^[a-df-z]\d*$", expr) is not None
+    return redos.match(r"^[a-df-z]\d*$", expr) is not None
 
 
 def is_funcvar(expr):
@@ -2042,7 +2044,7 @@ def is_funcvar(expr):
     :return: bool True if expr is of the correct form
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r"^[A-Z]\d*$", expr) is not None
+    return redos.match(r"^[A-Z]\d*$", expr) is not None
 
 
 def is_eventvar(expr):
@@ -2054,7 +2056,7 @@ def is_eventvar(expr):
     :return: bool True if expr is of the correct form
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r"^e\d*$", expr) is not None
+    return redos.match(r"^e\d*$", expr) is not None
 
 
 def demo():

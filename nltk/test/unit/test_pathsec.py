@@ -590,6 +590,10 @@ def test_proxied_fetch_refused_for_every_target_even_with_no_proxy_present(
     monkeypatch.setattr(urllib.request, "_opener", None)
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
     monkeypatch.setattr(pathsec, "_numeric_ipv4", lambda h: None)
+    # Neuter the address classifier too, so an IP-literal target is not refused
+    # by the resolver-independent literal check before the proxy guard (the
+    # subject of this test) gets to fail closed.
+    monkeypatch.setattr(pathsec, "_ip_is_forbidden", lambda ip: False)
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
 

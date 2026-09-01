@@ -11,16 +11,17 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 
 import sys
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tag import map_tag
 from nltk.tree import Tree
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
-SORTTAGWRD = re.compile(r"\((\d+) ([^\s()]+) ([^\s()]+)\)")
-TAGWORD = re.compile(r"\(([^\s()]+) ([^\s()]+)\)")
-WORD = re.compile(r"\([^\s()]+ ([^\s()]+)\)")
-EMPTY_BRACKETS = re.compile(r"\s*\(\s*\(")
+SORTTAGWRD = redos.compile(r"\((\d+) ([^\s()]+) ([^\s()]+)\)")
+TAGWORD = redos.compile(r"\(([^\s()]+) ([^\s()]+)\)")
+WORD = redos.compile(r"\([^\s()]+ ([^\s()]+)\)")
+EMPTY_BRACKETS = redos.compile(r"\s*\(\s*\(")
 
 # Alpino word/category nodes are one-per-line XML elements. ``AlpinoCorpusReader``
 # parses each one by pulling its attributes out with a single linear scan instead
@@ -28,18 +29,21 @@ EMPTY_BRACKETS = re.compile(r"\s*\(\s*\(")
 # patterns backtracked quadratically on a long, malformed ``<node ...`` line
 # (CWE-1333). ``^`` (with re.MULTILINE) plus the ``[^>\n]`` class keep every match
 # inside a single tag on a single line, so each line is scanned at most once.
-ALPINO_NODE = re.compile(
+ALPINO_NODE = redos.compile(
     r"^[ \t]*<node (?P<body>[^>\n]*?)(?P<selfclose>/?)>", re.MULTILINE
 )
-ALPINO_ATTR = re.compile(r'(\w+)="([^"]*)"')
+# ALPINO_NODE (above) was hardened, but ALPINO_ATTR.findall over the node body
+# is itself O(n**2): the leading greedy ``\w+`` is retried by findall at every
+# position of a long attribute-less body. redos.compile bounds it (CWE-1333).
+ALPINO_ATTR = redos.compile(r'(\w+)="([^"]*)"')
 # The old substitutions captured ``begin="(\d+)"``, ``pos="(\w+)"``,
 # ``cat="(\w+)"`` and ``word="([^"]+)"``, i.e. they only converted a node when
 # these fields had the expected shape (else the tag was left untouched). Keep
 # those constraints so behaviour is byte-for-byte identical on malformed input --
 # in particular, ``ordered`` output must not emit a non-numeric ``begin`` that
 # would then fail to match ``SORTTAGWRD`` and skew the tagging/ordering.
-ALPINO_DIGITS = re.compile(r"\d+")
-ALPINO_WORD = re.compile(r"\w+")
+ALPINO_DIGITS = redos.compile(r"\d+")
+ALPINO_WORD = redos.compile(r"\w+")
 
 
 def _alpino_node_to_sexpr(match, ordered):
@@ -113,19 +117,18 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             toks = read_regexp_block(stream, start_re=r"^\(")
             # Strip any comments out of the tokens.
             if self._comment_char:
-                toks = [
-                    re.sub("(?m)^%s.*" % re.escape(self._comment_char), "", tok)
-                    for tok in toks
-                ]
+                comment_src = "(?m)^%s.*" % re.escape(self._comment_char)
+                comment_rx = redos.compile(comment_src)  # bound compile + match time
+                toks = [comment_rx.sub("", tok) for tok in toks]
             return toks
         else:
             assert 0, "bad block type"
 
     def _normalize(self, t):
         # Replace leaves of the form (!), (,), with (! !), (, ,)
-        t = re.sub(r"\((.)\)", r"(\1 \1)", t)
+        t = redos.sub(r"\((.)\)", r"(\1 \1)", t)
         # Replace leaves of the form (tag word root) with (tag word)
-        t = re.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
+        t = redos.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
         return t
 
     def _parse(self, t):
@@ -249,9 +252,9 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
             return ""
         # convert XML to sexpr notation
         t = ALPINO_NODE.sub(lambda m: _alpino_node_to_sexpr(m, ordered), t)
-        t = re.sub(r"  </node>", r")", t)
-        t = re.sub(r"<sentence>.*</sentence>", r"", t)
-        t = re.sub(r"</?alpino_ds.*>", r"", t)
+        t = redos.sub(r"  </node>", r")", t)
+        t = redos.sub(r"<sentence>.*</sentence>", r"", t)
+        t = redos.sub(r"</?alpino_ds.*>", r"", t)
         return t
 
     def _tag(self, t, tagset=None):

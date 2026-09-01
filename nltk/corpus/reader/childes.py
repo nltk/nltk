@@ -12,11 +12,11 @@ Corpus reader for the XML version of the CHILDES corpus.
 
 __docformat__ = "epytext en"
 
-import re
 from collections import defaultdict
 
 from defusedxml.ElementTree import parse as safe_parse
 
+from nltk import redos
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 from nltk.util import LazyConcatenation, LazyMap, flatten
@@ -282,7 +282,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def convert_age(self, age_year):
         "Calculate age in months from a string in CHILDES format"
-        m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        m = redos.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
         if m is None:
             # A string that does not fit the CHILDES age shape would otherwise
             # make ``m.group(1)`` raise a cryptic ``AttributeError`` out of this
@@ -565,12 +565,12 @@ class CHILDESCorpusReader(XMLCorpusReader):
             path = urlbase + "/" + fileid
         else:
             full = self.root + "/" + fileid
-            full = re.sub(r"\\", "/", full)
+            full = redos.sub(r"\\", "/", full)
             if "/childes/" in full.lower():
                 # Discard /data-xml/ if present
-                path = re.findall(r"(?i)/childes(?:/data-xml)?/(.*)\.xml", full)[0]
+                path = redos.findall(r"(?i)/childes(?:/data-xml)?/(.*)\.xml", full)[0]
             elif "eng-usa" in full.lower():
-                path = "Eng-USA/" + re.findall(r"/(?i)Eng-USA/(.*)\.xml", full)[0]
+                path = "Eng-USA/" + redos.findall(r"/(?i)Eng-USA/(.*)\.xml", full)[0]
             else:
                 path = fileid
 

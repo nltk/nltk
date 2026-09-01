@@ -24,8 +24,8 @@ index, over-stemming index and stemming weight), and the results showed that
 ARLSTem is promising and producing high performances. This stemmer is not
 based on any dictionary and can be used on-line effectively.
 """
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -41,9 +41,9 @@ class ARLSTem(StemmerI):
 
     def __init__(self):
         # different Alif with hamza
-        self.re_hamzated_alif = re.compile(r"[\u0622\u0623\u0625]")
-        self.re_alifMaqsura = re.compile(r"[\u0649]")
-        self.re_diacritics = re.compile(r"[\u064B-\u065F]")
+        self.re_hamzated_alif = redos.compile(r"[\u0622\u0623\u0625]")
+        self.re_alifMaqsura = redos.compile(r"[\u0649]")
+        self.re_diacritics = redos.compile(r"[\u064B-\u065F]")
 
         # Alif Laam, Laam Laam, Fa Laam, Fa Ba
         self.pr2 = ["\u0627\u0644", "\u0644\u0644", "\u0641\u0644", "\u0641\u0628"]

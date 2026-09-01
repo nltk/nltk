@@ -41,12 +41,15 @@ class RegexpStemmer(StemmerI):
     """
 
     def __init__(self, regexp, min=0):
-        if not hasattr(regexp, "pattern"):
-            # The pattern is caller-supplied and applied to caller text, so a
-            # catastrophically backtracking one hangs the process (CWE-1333).
-            # redos.compile gives it a wall-clock bound. See ``nltk/redos.py``.
-            regexp = redos.compile(regexp)
-        self._regexp = regexp
+        # ``regexp`` is documented "str or regexp" and is applied to caller
+        # text, so a catastrophically backtracking one hangs the process
+        # (CWE-1333). Route BOTH a string and a pre-compiled pattern through
+        # redos.compile: a raw stdlib pattern has no wall-clock bound, and the
+        # old ``hasattr(...,'pattern')`` guard let it through unhardened. This
+        # mirrors RegexpTokenizer/RegexpTagger. See ``nltk/redos.py``.
+        flags = getattr(regexp, "flags", 0)
+        pattern = getattr(regexp, "pattern", regexp)
+        self._regexp = redos.compile(pattern, flags)
         self._min = min
 
     def stem(self, word):

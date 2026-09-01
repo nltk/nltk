@@ -25,8 +25,8 @@ results showed that the new version considerably improves the under-stemming
 errors that are common to light stemmers. Both ARLSTem and ARLSTem2 can be run
 online and do not use any dictionary.
 """
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -49,9 +49,9 @@ class ARLSTem2(StemmerI):
 
     def __init__(self):
         # different Alif with hamza
-        self.re_hamzated_alif = re.compile(r"[\u0622\u0623\u0625]")
-        self.re_alifMaqsura = re.compile(r"[\u0649]")
-        self.re_diacritics = re.compile(r"[\u064B-\u065F]")
+        self.re_hamzated_alif = redos.compile(r"[\u0622\u0623\u0625]")
+        self.re_alifMaqsura = redos.compile(r"[\u0649]")
+        self.re_diacritics = redos.compile(r"[\u064B-\u065F]")
 
         # Alif Laam, Laam Laam, Fa Laam, Fa Ba
         self.pr2 = ["\u0627\u0644", "\u0644\u0644", "\u0641\u0644", "\u0641\u0628"]

@@ -7,9 +7,9 @@
 
 import functools
 import os
-import re
 import tempfile
 
+from nltk import redos
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 
@@ -298,15 +298,15 @@ class XML_Tool:
             line = " "
             while len(line):
                 line = fr.readline()
-                x = re.split(r"nkjp:[^ ]* ", line)  # in all files
+                x = redos.split(r"nkjp:[^ ]* ", line)  # in all files
                 ret = " ".join(x)
-                x = re.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
+                x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
                 ret = " ".join(x)
-                x = re.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
+                x = redos.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
                 ret = " ".join(x)
-                x = re.split("<choice>", ret)  # in ann_segmentation.xml
+                x = redos.split("<choice>", ret)  # in ann_segmentation.xml
                 ret = " ".join(x)
-                x = re.split("</choice>", ret)  # in ann_segmentation.xml
+                x = redos.split("</choice>", ret)  # in ann_segmentation.xml
                 ret = " ".join(x)
                 fw.write(ret)
             fr.close()
