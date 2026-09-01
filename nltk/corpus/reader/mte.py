@@ -6,6 +6,7 @@ import os
 import re
 from functools import reduce
 
+from nltk import redos
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.pathsec import validate_path
@@ -76,7 +77,13 @@ class MTEFileReader:
         elif self._tags == "" and self._tagset == "universal":
             return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
         else:
-            tags = re.compile("^" + re.sub("-", ".", self._tags) + ".*$")
+            # ``self._tags`` is a caller MSD tag filter where ``-`` means "any
+            # position"; escape every other char so a metacharacter cannot inject
+            # a different pattern (or an unbalanced ``(`` crash the whole corpus
+            # read), while keeping the intended ``-`` -> ``.`` wildcard.
+            tag_body = "".join("." if c == "-" else re.escape(c) for c in self._tags)
+            tag_src = r"\A" + tag_body + r".*\Z"
+            tags = redos.compile(tag_src)  # caller tags filter: bound compile + match
             if tags.match(elt.attrib["ana"]):
                 if self._tagset == "msd":
                     return (elt.text, elt.attrib["ana"])

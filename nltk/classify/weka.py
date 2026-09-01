@@ -10,13 +10,13 @@ Classifiers that make use of the external 'Weka' package.
 """
 
 import os
-import re
 import subprocess
 import tempfile
 import time
 import warnings
 from sys import stdin
 
+from nltk import redos
 from nltk.classify.api import ClassifierI
 from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
@@ -163,7 +163,7 @@ class WekaClassifier(ClassifierI):
             os.rmdir(temp_dir)
 
     def parse_weka_distribution(self, s):
-        probs = [float(v) for v in re.split("[*,]+", s) if v.strip()]
+        probs = [float(v) for v in redos.split("[*,]+", s) if v.strip()]
         probs = dict(zip(self._formatter.labels(), probs))
         return DictionaryProbDist(probs)
 
@@ -190,7 +190,7 @@ class WekaClassifier(ClassifierI):
             ]
 
         # is this safe:?
-        elif re.match(r"^0 \w+ [01]\.[0-9]* \?\s*$", lines[0]):
+        elif redos.match(r"^0 \w+ [01]\.[0-9]* \?\s*$", lines[0]):
             return [line.split()[1] for line in lines if line.strip()]
 
         else:
@@ -413,7 +413,7 @@ class ARFF_Formatter:
         label = str(label)
         for ch in ("\n", "\r", "\t"):
             label = label.replace(ch, " ")
-        sanitized = re.sub(r"[^a-zA-Z0-9_\- ']", "", label)
+        sanitized = redos.sub(r"[^a-zA-Z0-9_\- ']", "", label)
         sanitized = sanitized.replace("'", "''")
         return sanitized
 

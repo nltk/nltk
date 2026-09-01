@@ -20,6 +20,7 @@ import sys
 import textwrap
 from pprint import pformat
 
+from nltk import redos
 from nltk.decorators import decorator  # this used in code that is commented out
 from nltk.sem.logic import (
     AbstractVariableExpression,
@@ -184,10 +185,13 @@ class Valuation(dict):
 # in the run length and lets a single valuation string pin a CPU core
 # (CWE-1333; CVE-2026-12890). The lookbehind only lets ``=+`` start at the
 # beginning of a run, so interior positions fail in O(1); the split result is
-# unchanged.
-_VAL_SPLIT_RE = re.compile(r"\s*(?<!=)=+>\s*")
-_ELEMENT_SPLIT_RE = re.compile(r"\s*,\s*")
-_TUPLES_RE = re.compile(
+# unchanged. The CVE fix closed the ``=``-run direction, but the leading ``\s*``
+# of each pattern is still retried by split/findall over an internal whitespace
+# run (``line.strip()`` only trims the ends), so route all three through
+# redos.compile for a wall-clock bound on that residual (CWE-1333).
+_VAL_SPLIT_RE = redos.compile(r"\s*(?<!=)=+>\s*")
+_ELEMENT_SPLIT_RE = redos.compile(r"\s*,\s*")
+_TUPLES_RE = redos.compile(
     r"""\s*
                                 (\([^)]+\))  # tuple-expression
                                 \s*""",

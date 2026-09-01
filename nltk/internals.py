@@ -19,6 +19,7 @@ import types
 import warnings
 from xml.etree import ElementTree
 
+from nltk import redos
 from nltk.pathsec import validate_path
 
 ##########################################################################
@@ -51,10 +52,12 @@ _java_options = []
 # ``trusted_raw_options`` escape hatch (see ``java()``), taking responsibility.
 # Heap/stack sizing (-Xmx512m / -mx2g / -Xms128m / -Xss4m; no-X aliases are what
 # Stanford/CoreNLP pass). Anchored to number+unit so no suffix rides a bare prefix.
-_SAFE_SIZING_RE = re.compile(r"\A-(xmx|mx|xms|ms|xss|ss)\d+[kmgt]?\Z", re.IGNORECASE)
+_SAFE_SIZING_RE = redos.compile(r"\A-(xmx|mx|xms|ms|xss|ss)\d+[kmgt]?\Z", re.IGNORECASE)
 
 # -verbose diagnostic output: bare or one standard category (-verbose:gc etc.).
-_SAFE_VERBOSE_RE = re.compile(r"\A-verbose(:(class|gc|jni|module))?\Z", re.IGNORECASE)
+_SAFE_VERBOSE_RE = redos.compile(
+    r"\A-verbose(:(class|gc|jni|module))?\Z", re.IGNORECASE
+)
 
 # Exact no-argument flags (mode / VM selectors); no suffix may ride these.
 _SAFE_JVM_EXACT = frozenset(
@@ -66,7 +69,7 @@ _SAFE_JVM_EXACT = frozenset(
 # comma-separated list of module names -- it names JDK modules, and because
 # ``--module-path`` / ``-p`` is NOT allowlisted it cannot point at attacker code.
 # Restrict the value to a plain module-list shape so nothing else rides through.
-_MODULE_LIST_RE = re.compile(r"\A[A-Za-z0-9_.,-]+\Z")
+_MODULE_LIST_RE = redos.compile(r"\A[A-Za-z0-9_.,-]+\Z")
 
 # Every flag the allowlist accepts (heap/stack sizing, -verbose, -server/-client,
 # --add-modules) is a single simple token; none contains whitespace or a shell
@@ -469,7 +472,7 @@ class ReadError(ValueError):
         return f"Expected {self.expected} at {self.position}"
 
 
-_STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
+_STRING_START_RE = redos.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
 
 
 def read_str(s, start_position):
@@ -512,7 +515,7 @@ def read_str(s, start_position):
     quotemark = m.group(1)
 
     # Find the close quote.
-    _STRING_END_RE = re.compile(r"\\|%s" % quotemark)
+    _STRING_END_RE = redos.compile(r"\\|%s" % quotemark)
     position = m.end()
     while True:
         match = _STRING_END_RE.search(s, position)
@@ -531,7 +534,7 @@ def read_str(s, start_position):
         raise ReadError("valid escape sequence", start_position) from e
 
 
-_READ_INT_RE = re.compile(r"-?\d+")
+_READ_INT_RE = redos.compile(r"-?\d+")
 
 
 def read_int(s, start_position):
@@ -569,7 +572,7 @@ def read_int(s, start_position):
     return int(m.group()), m.end()
 
 
-_READ_NUMBER_VALUE = re.compile(r"-?(\d*)([.]?\d*)?")
+_READ_NUMBER_VALUE = redos.compile(r"-?(\d*)([.]?\d*)?")
 
 
 def read_number(s, start_position):
@@ -676,7 +679,7 @@ def _add_epytext_field(obj, field, message):
     # it from the new field, and check its indentation.
     if obj.__doc__:
         obj.__doc__ = obj.__doc__.rstrip() + "\n\n"
-        indents = re.findall(r"(?<=\n)[ ]+(?!\s)", obj.__doc__.expandtabs())
+        indents = redos.findall(r"(?<=\n)[ ]+(?!\s)", obj.__doc__.expandtabs())
         if indents:
             indent = min(indents)
     # If we don't have a docstring, add an empty one.
@@ -750,9 +753,9 @@ class Deprecated:
         # Construct an appropriate warning.
         doc = dep_cls.__doc__ or "".strip()
         # If there's a @deprecated field, strip off the field marker.
-        doc = re.sub(r"\A\s*@deprecated:", r"", doc)
+        doc = redos.sub(r"\A\s*@deprecated:", r"", doc)
         # Strip off any indentation.
-        doc = re.sub(r"(?m)^\s*", "", doc)
+        doc = redos.sub(r"(?m)^\s*", "", doc)
         # Construct a 'name' string.
         name = "Class %s" % dep_cls.__name__
         if cls != dep_cls:
@@ -1081,6 +1084,8 @@ def find_jar_iter(
     """
 
     assert isinstance(name_pattern, str)
+    # caller regex (when is_regex): bound compile + match time
+    name_rx = redos.compile(name_pattern) if is_regex else None
     assert not isinstance(searchpath, str)
     if isinstance(env_vars, str):
         env_vars = env_vars.split()
@@ -1111,7 +1116,7 @@ def find_jar_iter(
                         filename = os.path.basename(cp)
                         if (
                             is_regex
-                            and re.match(name_pattern, filename)
+                            and name_rx.match(filename)
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
@@ -1129,7 +1134,7 @@ def find_jar_iter(
                         else:
                             # Look for file using regular expression
                             for file_name in os.listdir(cp):
-                                if re.match(name_pattern, file_name):
+                                if name_rx.match(file_name):
                                     if verbose:
                                         print(
                                             "[Found %s: %s]"
@@ -1156,7 +1161,7 @@ def find_jar_iter(
                         filename = os.path.basename(path_to_jar)
                         if (
                             is_regex
-                            and re.match(name_pattern, filename)
+                            and name_rx.match(filename)
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
@@ -1172,7 +1177,7 @@ def find_jar_iter(
                 # Only yield an actual file whose name matches the pattern; the
                 # yield was previously outside both guards, returning every dir
                 # entry (subdirs / unrelated files) as if it were the jar.
-                if os.path.isfile(path_to_jar) and re.match(name_pattern, filename):
+                if os.path.isfile(path_to_jar) and name_rx.match(filename):
                     if verbose:
                         print(f"[Found {filename}: {path_to_jar}]")
                     yielded = True

@@ -8,8 +8,8 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 
+from nltk import redos
 from nltk.tree.tree import Tree
 
 ######################################################################
@@ -35,7 +35,7 @@ def sinica_parse(s):
     :param s: The string to be converted
     :type s: str
     """
-    tokens = re.split(r"([()| ])", s)
+    tokens = redos.split(r"([()| ])", s)
     for i in range(len(tokens)):
         if tokens[i] == "(":
             tokens[i - 1], tokens[i] = (

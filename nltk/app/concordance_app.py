@@ -26,6 +26,7 @@ from tkinter import (
 )
 from tkinter.font import Font
 
+from nltk import redos
 from nltk.corpus import (
     alpino,
     brown,
@@ -665,8 +666,11 @@ class ConcordanceSearchModel:
             sent_pos, i, sent_count = [], 0, 0
             for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:
-                    m = re.search(q, sent)
-                except re.error:
+                    # redos.search bounds compile and match (wall-clock) time; a
+                    # hostile query raises re.error (bad), ValueError (compile-time
+                    # DoS) or TimeoutError (match ReDoS), all shown as SEARCH_ERROR.
+                    m = redos.search(q, sent)
+                except (re.error, ValueError, TimeoutError):
                     self.model.reset_results()
                     self.model.queue.put(SEARCH_ERROR_EVENT)
                     return
@@ -688,8 +692,8 @@ class ConcordanceSearchModel:
         def processed_query(self):
             new = []
             for term in self.model.query.split():
-                term = re.sub(r"\.", r"[^/ ]", term)
-                if re.match("[A-Z]+$", term):
+                term = redos.sub(r"\.", r"[^/ ]", term)
+                if redos.match("[A-Z]+$", term):
                     new.append(BOUNDARY + WORD_OR_TAG + "/" + term + BOUNDARY)
                 elif "/" in term:
                     new.append(BOUNDARY + term + BOUNDARY)

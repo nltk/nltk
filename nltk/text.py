@@ -14,15 +14,13 @@ regular expression search over tokenized strings, and
 distributional similarity.
 """
 
-import re
 import sys
 import unicodedata
 from collections import Counter, defaultdict, namedtuple
 from functools import reduce
 from math import log
 
-import regex
-
+from nltk import redos
 from nltk.collocations import BigramCollocationFinder
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
@@ -319,10 +317,10 @@ class TokenSearcher:
             timeout = TOKENSEARCH_TIMEOUT
 
         # preprocess the regular expression
-        regexp = re.sub(r"\s", "", regexp)
-        regexp = re.sub(r"<", "(?:<(?:", regexp)
-        regexp = re.sub(r">", ")>)", regexp)
-        regexp = re.sub(r"(?<!\\)\.", "[^>]", regexp)
+        regexp = redos.sub(r"\s", "", regexp)
+        regexp = redos.sub(r"<", "(?:<(?:", regexp)
+        regexp = redos.sub(r">", ")>)", regexp)
+        regexp = redos.sub(r"(?<!\\)\.", "[^>]", regexp)
 
         # Perform the search with the third-party ``regex`` engine: unlike the
         # stdlib ``re`` it does not re-scan a long run of a quantified token from
@@ -331,7 +329,9 @@ class TokenSearcher:
         # indefinitely (CWE-1333). The output is identical to ``re.findall`` for
         # these patterns.
         try:
-            hits = regex.findall(regexp, self._raw, timeout=timeout)
+            # redos.compile refuses a compile-time DoS and wraps the pattern; its
+            # findall takes the per-call wall-clock timeout.
+            hits = redos.compile(regexp).findall(self._raw, timeout=timeout)
         except TimeoutError:
             raise TimeoutError(
                 f"TokenSearcher.findall exceeded its {timeout}s time limit; the "
@@ -706,7 +706,7 @@ class Text:
     # Helper Methods
     # ////////////////////////////////////////////////////////////
 
-    _CONTEXT_RE = re.compile(r"\w+|[\.\!\?]")
+    _CONTEXT_RE = redos.compile(r"\w+|[\.\!\?]")
 
     def _context(self, tokens, i):
         """

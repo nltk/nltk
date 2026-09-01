@@ -9,8 +9,8 @@
 A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 #: Longest token the stemmer will process. The rule loop scans the word once per
@@ -194,7 +194,7 @@ class LancasterStemmer(StemmerI):
         """
         # If there is no argument for the function, use class' own rule tuple.
         rule_tuple = rule_tuple if rule_tuple else self._rule_tuple
-        valid_rule = re.compile(r"^[a-z]+\*?\d[a-z]*[>\.]?$")
+        valid_rule = redos.compile(r"^[a-z]+\*?\d[a-z]*[>\.]?$")
         # Empty any old rules from the rule set before adding new ones
         self.rule_dictionary = {}
 
@@ -229,7 +229,7 @@ class LancasterStemmer(StemmerI):
     def __doStemming(self, word, intact_word):
         """Perform the actual word stemming"""
 
-        valid_rule = re.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+        valid_rule = redos.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
 
         proceed = True
 

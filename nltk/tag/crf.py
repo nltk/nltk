@@ -10,10 +10,10 @@
 A module for POS tagging using CRFSuite
 """
 
-import re
 import unicodedata
 import warnings
 
+from nltk import redos
 from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
 
@@ -114,7 +114,7 @@ class CRFTagger(TaggerI):
         self._verbose = verbose
         # Avoid mutable default; copy so caller mutations don't leak in.
         self._training_options = {} if training_opt is None else dict(training_opt)
-        self._pattern = re.compile(r"\d")
+        self._pattern = redos.compile(r"\d")
         # Avoid the module-level ``re.search`` dispatch in the feature loop.
         self._pattern_search = self._pattern.search
         # Token-keyed cache; default features are token-local. A custom

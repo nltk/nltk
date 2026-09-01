@@ -8,11 +8,11 @@
 
 import json
 import os
-import re
 import socket
 import time
 from typing import List, Tuple
 
+from nltk import redos
 from nltk.internals import _java_options, config_java, find_jar_iter, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
@@ -66,7 +66,9 @@ class CoreNLPServer:
         )
 
         # find the most recent code and model jar
-        stanford_jar = max(jars, key=lambda model_name: re.match(self._JAR, model_name))
+        stanford_jar = max(
+            jars, key=lambda model_name: redos.match(self._JAR, model_name)
+        )
 
         if port is None:
             try:
@@ -90,7 +92,7 @@ class CoreNLPServer:
                 verbose=verbose,
                 is_regex=True,
             ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name),
+            key=lambda model_name: redos.match(self._MODEL_JAR_PATTERN, model_name),
         )
 
         self.verbose = verbose

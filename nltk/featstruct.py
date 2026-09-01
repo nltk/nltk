@@ -93,6 +93,7 @@ import copy
 import re
 from functools import total_ordering
 
+from nltk import redos
 from nltk.internals import raise_unorderable_types, read_str
 from nltk.sem.logic import (
     Expression,
@@ -1293,7 +1294,7 @@ def _rename_variable(var, used_vars):
     # (CWE-1333; CVE-2026-12919). The lookbehind only lets ``\d+`` start at the
     # beginning of a run, so interior positions fail in O(1); the result is
     # unchanged.
-    name, n = re.sub(r"(?<!\d)\d+$", "", var.name), 2
+    name, n = redos.sub(r"(?<!\d)\d+$", "", var.name), 2
     if not name:
         name = "?"
     while Variable(f"{name}{n}") in used_vars:
@@ -2079,7 +2080,7 @@ class SlashFeature(Feature):
 
 
 class RangeFeature(Feature):
-    RANGE_RE = re.compile(r"(-?\d+):(-?\d+)")
+    RANGE_RE = redos.compile(r"(-?\d+):(-?\d+)")
 
     def read_value(self, s, position, reentrances, parser):
         m = self.RANGE_RE.match(s, position)
@@ -2206,17 +2207,17 @@ class FeatStructReader:
             self._error(s, "end of string", position)
         return value
 
-    _START_FSTRUCT_RE = re.compile(r"\s*(?:\((\d+)\)\s*)?(\??[\w-]+)?(\[)")
-    _END_FSTRUCT_RE = re.compile(r"\s*]\s*")
-    _SLASH_RE = re.compile(r"/")
-    _FEATURE_NAME_RE = re.compile(r'\s*([+-]?)([^\s\(\)<>"\'\-=\[\],]+)\s*')
-    _REENTRANCE_RE = re.compile(r"\s*->\s*")
-    _TARGET_RE = re.compile(r"\s*\((\d+)\)\s*")
-    _ASSIGN_RE = re.compile(r"\s*=\s*")
-    _COMMA_RE = re.compile(r"\s*,\s*")
-    _BARE_PREFIX_RE = re.compile(r"\s*(?:\((\d+)\)\s*)?(\??[\w-]+\s*)()")
+    _START_FSTRUCT_RE = redos.compile(r"\s*(?:\((\d+)\)\s*)?(\??[\w-]+)?(\[)")
+    _END_FSTRUCT_RE = redos.compile(r"\s*]\s*")
+    _SLASH_RE = redos.compile(r"/")
+    _FEATURE_NAME_RE = redos.compile(r'\s*([+-]?)([^\s\(\)<>"\'\-=\[\],]+)\s*')
+    _REENTRANCE_RE = redos.compile(r"\s*->\s*")
+    _TARGET_RE = redos.compile(r"\s*\((\d+)\)\s*")
+    _ASSIGN_RE = redos.compile(r"\s*=\s*")
+    _COMMA_RE = redos.compile(r"\s*,\s*")
+    _BARE_PREFIX_RE = redos.compile(r"\s*(?:\((\d+)\)\s*)?(\??[\w-]+\s*)()")
     # This one is used to distinguish fdicts from flists:
-    _START_FDICT_RE = re.compile(
+    _START_FDICT_RE = redos.compile(
         r"(%s)|(%s\s*(%s\s*(=|->)|[+-]%s|\]))"
         % (
             _BARE_PREFIX_RE.pattern,
@@ -2504,19 +2505,19 @@ class FeatStructReader:
     #: important here!)
     VALUE_HANDLERS = [
         ("read_fstruct_value", _START_FSTRUCT_RE),
-        ("read_var_value", re.compile(r"\?[a-zA-Z_][a-zA-Z0-9_]*")),
-        ("read_str_value", re.compile("[uU]?[rR]?(['\"])")),
-        ("read_int_value", re.compile(r"-?\d+")),
-        ("read_sym_value", re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")),
+        ("read_var_value", redos.compile(r"\?[a-zA-Z_][a-zA-Z0-9_]*")),
+        ("read_str_value", redos.compile("[uU]?[rR]?(['\"])")),
+        ("read_int_value", redos.compile(r"-?\d+")),
+        ("read_sym_value", redos.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")),
         (
             "read_app_value",
-            re.compile(r"<(app)\((\?[a-z][a-z]*)\s*," r"\s*(\?[a-z][a-z]*)\)>"),
+            redos.compile(r"<(app)\((\?[a-z][a-z]*)\s*," r"\s*(\?[a-z][a-z]*)\)>"),
         ),
         #       ('read_logic_value', re.compile(r'<([^>]*)>')),
         # lazily match any character after '<' until we hit a '>' not preceded by '-'
-        ("read_logic_value", re.compile(r"<(.*?)(?<!-)>")),
-        ("read_set_value", re.compile(r"{")),
-        ("read_tuple_value", re.compile(r"\(")),
+        ("read_logic_value", redos.compile(r"<(.*?)(?<!-)>")),
+        ("read_set_value", redos.compile(r"{")),
+        ("read_tuple_value", redos.compile(r"\(")),
     ]
 
     def read_fstruct_value(self, s, position, reentrances, match):
@@ -2571,7 +2572,7 @@ class FeatStructReader:
         cp = re.escape(close_paren)
         position = match.end()
         # Special syntax of empty tuples:
-        m = re.compile(r"\s*/?\s*%s" % cp).match(s, position)
+        m = redos.compile(r"\s*/?\s*%s" % cp).match(s, position)
         if m:
             return seq_class(), m.end()
         # Read values:
@@ -2579,7 +2580,7 @@ class FeatStructReader:
         seen_plus = False
         while True:
             # Close paren: return value.
-            m = re.compile(r"\s*%s" % cp).match(s, position)
+            m = redos.compile(r"\s*%s" % cp).match(s, position)
             if m:
                 if seen_plus:
                     return plus_class(values), m.end()
@@ -2591,7 +2592,7 @@ class FeatStructReader:
             values.append(val)
 
             # Comma or looking at close paren
-            m = re.compile(r"\s*(,|\+|(?=%s))\s*" % cp).match(s, position)
+            m = redos.compile(r"\s*(,|\+|(?=%s))\s*" % cp).match(s, position)
             if not m:
                 raise ValueError("',' or '+' or '%s'" % cp, position)
             if m.group(1) == "+":

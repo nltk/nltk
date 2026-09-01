@@ -1,4 +1,4 @@
-"""
+r"""
 Living-audit regression tests for the algorithmic-complexity DoS cluster
 (GHSA-ww6m-cw3f-q94g umbrella -- PorterStemmer; siblings GHSA-vp2x-qp44-57v7
 XMLCorpusView, GHSA-8mpw-7fpc-4gqj TEICorpusView, and the newly-found
@@ -44,6 +44,17 @@ Three groups:
    "mark interior y/i/u as a consonant" step rebuilt the whole string on each
    match inside a per-position loop = O(n^2) on a crafted token; now an in-place
    list mutation joined once (byte-for-byte identical output).
+
+7. The greedy-token-over-data ReDoS batch: a constant pattern with a greedy
+   leading token (\w+, \s*, [^"]+) and an optionally-absent suffix, applied with
+   findall/sub/split over attacker data, is O(n^2). ``destructive.py`` (the
+   default word_tokenize final-period rule -- a space inside the class abuts
+   \s*$), ``reviews.py`` FEATURES (the {0,50} bound missed a spaceless run),
+   ``lin.py`` _key_re, ``bracket_parse.py`` ALPINO_ATTR (residual after
+   ALPINO_NODE was hardened), ``senseval.py`` lone-& sub, and ``sem/evaluate.py``
+   _VAL_SPLIT_RE + siblings (residual after CVE-2026-12890). All routed through
+   redos.compile; the regex engine linearizes four, destructive/lin are bounded
+   by the wall-clock timeout.
 
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
@@ -171,11 +182,19 @@ class TestReadSexprBlockQuadratic:
             "(a b)"
         ]
 
-    def test_unclosed_sexpr_is_subquadratic(self):
+    def test_unclosed_sexpr_is_subquadratic(self, monkeypatch):
         # Pre-patch: an oversized single s-expression is re-parsed from position
         # 0 on every fixed-size grow -> O(n^2). Exponential read growth makes it
         # O(n). A ratio test is robust to the (high) linear constant: 4x input
         # should cost ~4x (linear), not ~16x (quadratic).
+        #
+        # Raise the redos wall-clock bound far above the linear cost so a loaded
+        # host cannot trip it on the (legitimate) big linear parse and turn this
+        # scaling test into a spurious TimeoutError. A quadratic regression still
+        # fails: it either blows the ratio or blows this larger bound.
+        import nltk.redos as redos_mod
+
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 30)
         t1 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 200_000)))
         t4 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 800_000)))
         assert t4 < 10 * t1 + 0.5
@@ -710,6 +729,111 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
         for lang in ("spanish", "portuguese"):
             st = SnowballStemmer(lang).stem
             assert _elapsed(lambda: st("aei" * 40000)) < 2.0
+
+
+# ==========================================================================
+# GREEDY-TOKEN-OVER-DATA ReDoS (fixed): constant pattern, attacker data
+# ==========================================================================
+# Shape: a greedy leading token (\w+, \s*, [^"]+) plus a required suffix that may
+# be absent, applied with findall/sub/split over attacker-controlled corpus/text
+# data (which retries at every start position) -> O(n^2). Routed through
+# redos.compile: four are linearized by the regex engine, one (lin) still
+# backtracks and is bounded by the wall-clock TimeoutError.
+
+
+class TestNLTKWordTokenizerFinalPeriodDoS:  # destructive.py PUNCTUATION[0]
+    def test_benign_tokenize_unchanged(self):
+        from nltk.tokenize import NLTKWordTokenizer
+
+        s = (
+            "Good muffins cost $3.88 (roughly 3,36 euros)\n"
+            "in New York.  Please buy me\ntwo of them.\nThanks."
+        )
+        assert NLTKWordTokenizer().tokenize(s) == [
+            "Good", "muffins", "cost", "$", "3.88", "(", "roughly", "3,36",
+            "euros", ")", "in", "New", "York.", "Please", "buy", "me", "two",
+            "of", "them.", "Thanks", ".",
+        ]  # fmt: skip
+
+    def test_final_period_space_run_is_bounded(self, monkeypatch):
+        # The class ends with a space directly before \s*$, so [..space..]* and
+        # \s* both match the trailing space run and backtrack O(n^2) when the
+        # text ends in a non-space, non-class char (~32 KB -> 8s). The regex
+        # engine is also quadratic here, so only the timeout bounds it.
+        import nltk.redos as redos_mod
+
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        from nltk.tokenize import NLTKWordTokenizer
+
+        with pytest.raises(TimeoutError):
+            NLTKWordTokenizer().tokenize("a." + " " * 80000 + "!")
+
+    def test_treebank_no_space_class_stays_linear(self):  # BENIGN guard
+        # Treebank's twin rule has no space in the class -> disjoint quantifiers.
+        from nltk.tokenize import TreebankWordTokenizer
+
+        assert (
+            _elapsed(lambda: TreebankWordTokenizer().tokenize("a." + " " * 80000 + "!"))
+            < 2.0
+        )
+
+
+class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
+    def test_benign_features_unchanged(self):
+        from nltk.corpus.reader.reviews import FEATURES
+
+        assert FEATURES.findall("great camera[+3] but heavy[-2]") == [
+            ("great camera", "+3"),
+            ("but heavy", "-2"),
+        ]
+
+    def test_spaceless_run_is_linear(self):
+        # The {0,50} bound only stopped the space-separated attack; a spaceless
+        # bracket-less run stayed O(n^2) via the leading \w+ retried per position.
+        import io
+
+        from nltk.corpus.reader.reviews import ReviewsCorpusReader
+
+        rr = ReviewsCorpusReader.__new__(ReviewsCorpusReader)
+        assert (
+            _elapsed(lambda: rr._read_features(io.StringIO("a" * 200000 + "\n"))) < 5.0
+        )
+
+
+class TestLinThesaurusKeyQuadratic:  # lin.py _key_re: engine still backtracks
+    def test_key_line_is_bounded(self, monkeypatch):
+        import nltk.redos as redos_mod
+
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        from nltk.corpus.reader.lin import LinThesaurusCorpusReader
+
+        with pytest.raises(TimeoutError):
+            LinThesaurusCorpusReader._key_re.sub(r"\1", "(" * 200000)
+
+
+class TestAlpinoAttrQuadratic:  # bracket_parse.py ALPINO_ATTR
+    def test_long_node_body_is_linear(self):
+        import nltk.corpus.reader.bracket_parse as bp
+
+        r = bp.AlpinoCorpusReader.__new__(bp.AlpinoCorpusReader)
+        doc = '<alpino_ds version="1.3">\n<node ' + "a" * 200000 + ">\n</alpino_ds>\n"
+        assert _elapsed(lambda: bp.AlpinoCorpusReader._normalize(r, doc)) < 5.0
+
+
+class TestSensevalFixXMLQuadratic:  # senseval.py lone-& sub
+    def test_lone_amp_whitespace_run_is_linear(self):
+        from nltk.corpus.reader.senseval import _fixXML
+
+        assert _elapsed(lambda: _fixXML(" " * 200000)) < 5.0
+        assert _fixXML("a & b") == "a &amp; b"  # correctness preserved
+
+
+class TestEvaluateValSplitQuadratic:  # sem/evaluate.py _VAL_SPLIT_RE + siblings
+    def test_internal_whitespace_run_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        assert _elapsed(lambda: read_valuation("a => {" + " " * 200000 + "}")) < 5.0
+        assert dict(read_valuation("boy => b1")) == {"boy": "b1"}  # correctness
 
 
 # ==========================================================================

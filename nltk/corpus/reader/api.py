@@ -11,11 +11,10 @@ API for corpus readers.
 """
 
 import os
-import re
 from collections import defaultdict
 from itertools import chain
 
-from nltk import pathsec
+from nltk import pathsec, redos
 from nltk.corpus.reader.util import *
 from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
 from nltk.pathsec import validate_path
@@ -86,7 +85,7 @@ class CorpusReader:
 
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):
-            m = re.match(r"(.*\.zip)/?(.*)$|", root)
+            m = redos.match(r"(.*\.zip)/?(.*)$|", root)
             zipfile, zipentry = m.groups()
             if zipfile:
                 root = ZipFilePathPointer(zipfile, zipentry)
@@ -113,11 +112,12 @@ class CorpusReader:
         # If encoding was specified as a list of regexps, then convert
         # it to a dictionary.
         if isinstance(encoding, list):
+            # caller regexps matched against fileids: bound compile + match time
+            compiled_encoding = [(redos.compile(rx), enc) for rx, enc in encoding]
             encoding_dict = {}
             for fileid in self._fileids:
-                for x in encoding:
-                    (regexp, enc) = x
-                    if re.match(regexp, fileid):
+                for rx, enc in compiled_encoding:
+                    if rx.match(fileid):
                         encoding_dict[fileid] = enc
                         break
             encoding = encoding_dict
@@ -372,8 +372,9 @@ class CategorizedCorpusReader:
         self._c2f = defaultdict(set)
 
         if self._pattern is not None:
+            pattern_rx = redos.compile(self._pattern)  # caller cat_pattern: bound both
             for file_id in self._fileids:
-                category = re.match(self._pattern, file_id).group(1)
+                category = pattern_rx.match(file_id).group(1)
                 self._add(file_id, category)
 
         elif self._map is not None:

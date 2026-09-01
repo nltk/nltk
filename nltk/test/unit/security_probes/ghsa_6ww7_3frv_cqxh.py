@@ -24,6 +24,7 @@ def _proxy_ssrf_bypass():
         pathsec.ALLOW_PROXIED_FETCH,
         getattr(pathsec, "_resolve_hostname", None),
         getattr(pathsec, "_numeric_ipv4", None),
+        getattr(pathsec, "_ip_is_forbidden", None),
     )
     try:
         urllib.request.getproxies = lambda: {"http": "http://attacker-proxy:8080"}
@@ -42,6 +43,10 @@ def _proxy_ssrf_bypass():
         # direct-IP guard that would otherwise refuse the link-local literal
         # first, hiding whether the proxy-specific guard fires.
         pathsec._numeric_ipv4 = lambda host: None
+        # And the address classifier, which now also backs the resolver-
+        # independent IP-literal check: it would refuse the link-local literal
+        # first too, again hiding whether the proxy-specific guard fires.
+        pathsec._ip_is_forbidden = lambda ip: False
         try:
             pathsec.urlopen("http://169.254.169.254/latest/meta-data/", timeout=2)
         except PermissionError as exc:
@@ -67,4 +72,5 @@ def _proxy_ssrf_bypass():
             pathsec.ALLOW_PROXIED_FETCH,
             pathsec._resolve_hostname,
             pathsec._numeric_ipv4,
+            pathsec._ip_is_forbidden,
         ) = saved

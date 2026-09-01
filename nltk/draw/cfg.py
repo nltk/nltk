@@ -46,7 +46,6 @@ Visualization tools for CFGs.
 #   - disconnect top & bottom -- right click
 #     - if connected to top & bottom, then disconnect
 
-import re
 from tkinter import (
     Button,
     Canvas,
@@ -60,6 +59,7 @@ from tkinter import (
     Toplevel,
 )
 
+from nltk import redos
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
 from nltk.draw.util import (
     CanvasFrame,
@@ -160,16 +160,16 @@ class CFGEditor:
     # Regular expressions used by _analyze_line.  Precompile them, so
     # we can process the text faster.
     ARROW = SymbolWidget.SYMBOLS["rightarrow"]
-    _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|(" + ARROW + "))")
-    _ARROW_RE = re.compile(r"\s*(->|(" + ARROW + r"))\s*")
-    _PRODUCTION_RE = re.compile(
+    _LHS_RE = redos.compile(r"(^\s*\w+\s*)(->|(" + ARROW + "))")
+    _ARROW_RE = redos.compile(r"\s*(->|(" + ARROW + r"))\s*")
+    _PRODUCTION_RE = redos.compile(
         r"(^\s*\w+\s*)"
         + "(->|("  # LHS
         + ARROW
         + r"))\s*"
         + r"((\w+|'[\w ]*'|\"[\w ]*\"|\|)\s*)*$"  # arrow
     )  # RHS
-    _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|(" + ARROW + ")")
+    _TOKEN_RE = redos.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|(" + ARROW + ")")
     _BOLD = ("helvetica", -12, "bold")
 
     def __init__(self, parent, cfg=None, set_cfg_callback=None):
@@ -479,8 +479,8 @@ class CFGEditor:
 
         # Get the text, normalize it, and split it into lines.
         text = self._textwidget.get("1.0", "end")
-        text = re.sub(self.ARROW, "->", text)
-        text = re.sub("\t", " ", text)
+        text = redos.sub(self.ARROW, "->", text)
+        text = redos.sub("\t", " ", text)
         lines = text.split("\n")
 
         # Convert each line to a CFG production

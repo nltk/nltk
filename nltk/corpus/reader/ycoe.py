@@ -18,8 +18,8 @@ to the YCOE standard: https://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 """
 
 import os
-import re
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
@@ -136,8 +136,8 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
     that strips out (CODE ...) and (ID ...) nodes."""
 
     def _parse(self, t):
-        t = re.sub(r"(?u)\((CODE|ID)[^\)]*\)", "", t)
-        if re.match(r"\s*\(\s*\)\s*$", t):
+        t = redos.sub(r"(?u)\((CODE|ID)[^\)]*\)", "", t)
+        if redos.match(r"\s*\(\s*\)\s*$", t):
             return None
         return BracketParseCorpusReader._parse(self, t)
 
