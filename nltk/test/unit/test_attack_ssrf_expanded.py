@@ -791,3 +791,86 @@ def test_ip_literal_edge_spellings_refused(url, monkeypatch, no_real_egress):
 def test_public_ip_literal_edge_spellings_allowed(url, monkeypatch):
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
     assert _verdict(url) == "allowed", f"{url} was wrongly blocked"
+
+
+# =========================================================================== #
+# 18. Hosts that fold to an internal address by resolution or by host-confusion
+#     parsing are refused, and NLTK validates the same host it would connect to
+# =========================================================================== #
+
+# A homograph host (circled or fullwidth digits) that a folding resolver maps to
+# loopback is caught by the resolve loop, exactly as a plain rebinding name is.
+_FOLDING_TO_LOOPBACK = {
+    "①②⑦.0.0.1": "127.0.0.1",  # circled digits U+2460.. == 127
+    "１２７.0.0.1": "127.0.0.1",  # fullwidth digits == 127
+    "rebind.internal.example": "127.0.0.1",  # a plain name resolving to loopback
+}
+
+
+@pytest.mark.parametrize("host", list(_FOLDING_TO_LOOPBACK))
+def test_host_resolving_to_loopback_is_refused(host, monkeypatch, no_real_egress):
+    _stub_resolver(monkeypatch, _FOLDING_TO_LOOPBACK)
+    assert _verdict(f"http://{host}/") == "blocked", f"{host!r} reached the network"
+    assert no_real_egress == [], f"{host!r} produced egress"
+
+
+def _userinfo_url(userinfo, host):
+    """Build http://<userinfo>@<host>/ without a literal user@domain source."""
+    return "http://" + userinfo + chr(64) + host + "/"
+
+
+# (userinfo, the host urllib parses AFTER the last '@' and NLTK both validates
+# and would connect to). A host hidden behind userinfo is not a split between
+# what is validated and what is reached: urllib uses the post-'@' host for both.
+_USERINFO_THEN_INTERNAL = [
+    ("evil.example", "127.0.0.1"),
+    ("user:pass", "127.0.0.1"),
+    ("a" + chr(64) + "b", "127.0.0.1"),  # an extra '@' in the userinfo
+    ("evil.example", "169.254.169.254"),
+    ("evil.example", "2130706433"),  # decimal loopback after the userinfo
+    ("evil.example", "[::1]"),  # ipv6 loopback literal after the userinfo
+]
+
+
+@pytest.mark.parametrize("userinfo,host", _USERINFO_THEN_INTERNAL)
+def test_userinfo_before_internal_host_is_refused(
+    userinfo, host, monkeypatch, no_real_egress
+):
+    url = _userinfo_url(userinfo, host)
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    # The host urllib parses is the internal one, so the address check refuses it.
+    parsed = urllib.parse.urlparse(url).hostname
+    assert parsed == host.strip(
+        "[]"
+    ), f"{url} parsed host {parsed!r}, expected {host!r}"
+    assert _verdict(url) == "blocked", f"{url} bypassed the address check"
+    assert no_real_egress == [], f"{url} produced egress"
+
+
+# =========================================================================== #
+# 19. Documentation, special-use and transition-tunnel wrapper ranges refused
+# =========================================================================== #
+
+# None of these are a legitimate download source; each is either non-global or a
+# wrapper of an internal IPv4, so the classifier refuses it. 2001:20::/28
+# (ORCHIDv2) is intentionally NOT listed: CPython's ipaddress classifies it as
+# is_global, so it is allowed here, but it is a non-routable cryptographic
+# identifier prefix, so it cannot reach an internal host and is not an SSRF
+# vector; documenting the gap rather than special-casing the stdlib.
+_SPECIAL_RANGE_URLS = [
+    "http://192.0.2.1/",  # IPv4 TEST-NET-1 (documentation)
+    "http://198.51.100.1/",  # IPv4 TEST-NET-2
+    "http://203.0.113.1/",  # IPv4 TEST-NET-3
+    "http://[2001:db8::1]/",  # IPv6 documentation 2001:db8::/32
+    "http://[2001:10::1]/",  # ORCHID (deprecated), non-global
+    "http://[2001:db8:122:344::7f00:1]/",  # network-specific NAT64 wrapper (doc range)
+    "http://[100::7f00:1]/",  # discard-only 100::/64
+    "http://0x0.0x0.0x0.0x0/",  # hex spelling of 0.0.0.0
+]
+
+
+@pytest.mark.parametrize("url", _SPECIAL_RANGE_URLS)
+def test_special_and_documentation_ranges_refused(url, monkeypatch, no_real_egress):
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    assert _verdict(url) == "blocked", f"{url} was allowed"
+    assert no_real_egress == [], f"{url} produced egress"
