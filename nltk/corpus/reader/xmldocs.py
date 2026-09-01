@@ -21,6 +21,7 @@ import codecs
 from defusedxml.ElementTree import fromstring as safe_fromstring
 from defusedxml.ElementTree import parse as safe_parse
 
+from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
 from nltk.data import SeekableUnicodeStreamReader
@@ -146,7 +147,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         if elt_handler:
             self.handle_elt = elt_handler
 
-        self._tagspec = re.compile(tagspec + r"\Z")
+        self._tagspec = redos.compile(tagspec + r"\Z")  # bound compile + match time
         """The tag specification for this corpus view."""
 
         self._tag_context = {0: ()}
@@ -189,10 +190,10 @@ class XMLCorpusView(StreamBackedCorpusView):
             return "utf-32-le"
         if s.startswith(codecs.BOM_UTF8):
             return "utf-8"
-        m = re.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
+        m = redos.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
         if m:
             return m.group(1).decode()
-        m = re.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
+        m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
         if m:
             return m.group(1).decode()
         # No encoding found -- what should the default be?
@@ -235,7 +236,7 @@ class XMLCorpusView(StreamBackedCorpusView):
     # to its first terminator keeps validation linear while matching the same
     # well-formed fragments. (The CDATA brackets are also escaped so they match
     # a literal ``<![CDATA[`` rather than being read as a character class.)
-    _VALID_XML_RE = re.compile(
+    _VALID_XML_RE = redos.compile(
         r"""
         [^<]*
         (
@@ -250,13 +251,13 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     #: A regular expression used to extract the tag name from a start tag,
     #: end tag, or empty-elt tag string.
-    _XML_TAG_NAME = re.compile(r"<\s*(?:/\s*)?([^\s>]+)")
+    _XML_TAG_NAME = redos.compile(r"<\s*(?:/\s*)?([^\s>]+)")
 
     #: A regular expression used to find all start-tags, end-tags, and
     #: empty-elt tags in an XML file.  This regexp is more lenient than
     #: the XML spec -- e.g., it allows spaces in some places where the
     #: spec does not.
-    _XML_PIECE = re.compile(
+    _XML_PIECE = redos.compile(
         r"""
         # Include these so we can skip them:
         (?P<COMMENT>        <!--.*?-->                          )|
@@ -309,9 +310,9 @@ class XMLCorpusView(StreamBackedCorpusView):
                 return fragment
 
             # Do we have a fragment that will never be well-formed?
-            if re.search("[<>]", fragment).group(0) == ">":
+            if redos.search("[<>]", fragment).group(0) == ">":
                 pos = stream.tell() - (
-                    len(fragment) - re.search("[<>]", fragment).end()
+                    len(fragment) - redos.search("[<>]", fragment).end()
                 )
                 raise ValueError('Unexpected ">" near char %s' % pos)
 
@@ -345,6 +346,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         if tagspec is None:
             tagspec = self._tagspec
+        if isinstance(tagspec, str):
+            tagspec = redos.compile(tagspec)  # caller-passed raw tagspec: bound both
         if elt_handler is None:
             elt_handler = self.handle_elt
 
@@ -381,7 +384,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     context.append(name)
                     # Is this one of the elts we're looking for?
                     if elt_start is None:
-                        if re.match(tagspec, "/".join(context)):
+                        if tagspec.match("/".join(context)):
                             elt_start = piece.start()
                             elt_depth = len(context)
 
@@ -404,7 +407,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                 elif piece.group("EMPTY_ELT_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
-                        if re.match(tagspec, "/".join(context) + "/" + name):
+                        if tagspec.match("/".join(context) + "/" + name):
                             elts.append((piece.group(), "/".join(context) + "/" + name))
 
             if elt_start is not None:

@@ -22,14 +22,18 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
 
-import re
 
-import regex
 from defusedxml.ElementTree import fromstring as safe_fromstring
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tokenize import *
+
+# ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
+# instance block; the later _fixXML subs were hardened but this one was left on
+# plain ``re``. redos.compile bounds match time (CWE-1333).
+_LONE_AMP_RE = redos.compile(r"(\s+)&(\s+)")
 
 
 class SensevalInstance:
@@ -91,7 +95,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             # Start of a lexical element?
             if line.lstrip().startswith("<lexelt"):
                 lexelt_num += 1
-                m = re.search("item=(\"[^\"]+\"|'[^']+')", line)
+                m = redos.search("item=(\"[^\"]+\"|'[^']+')", line)
                 assert m is not None  # <lexelt> has no 'item=...'
                 lexelt = m.group(1)[1:-1]
                 if lexelt_num < len(self._lexelts):
@@ -165,31 +169,31 @@ def _fixXML(text):
     Fix the various issues with Senseval pseudo-XML.
     """
     # <~> or <^> => ~ or ^
-    text = re.sub(r"<([~\^])>", r"\1", text)
+    text = redos.sub(r"<([~\^])>", r"\1", text)
     # fix lone &
-    text = re.sub(r"(\s+)\&(\s+)", r"\1&amp;\2", text)
+    text = _LONE_AMP_RE.sub(r"\1&amp;\2", text)
     # fix """
-    text = re.sub(r'"""', "'\"'", text)
+    text = redos.sub(r'"""', "'\"'", text)
     # fix <s snum=dd> => <s snum="dd"/>
-    text = re.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
+    text = redos.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
     # fix foreign word tag
-    text = re.sub(r"<\&frasl>\s*<p[^>]*>", "FRASL", text)
+    text = redos.sub(r"<\&frasl>\s*<p[^>]*>", "FRASL", text)
     # remove <&I .>
-    text = re.sub(r"<\&I[^>]*>", "", text)
+    text = redos.sub(r"<\&I[^>]*>", "", text)
     # fix <{word}>
-    text = re.sub(r"<{([^}]+)}>", r"\1", text)
+    text = redos.sub(r"<{([^}]+)}>", r"\1", text)
     # remove <@>, <p>, </p>
-    text = re.sub(r"<(@|/?p)>", r"", text)
+    text = redos.sub(r"<(@|/?p)>", r"", text)
     # remove <&M .> and <&T .> and <&Ms .>
-    text = re.sub(r"<&\w+ \.>", r"", text)
+    text = redos.sub(r"<&\w+ \.>", r"", text)
     # remove <!DOCTYPE... > lines
-    text = re.sub(r"<!DOCTYPE[^>]*>", r"", text)
+    text = redos.sub(r"<!DOCTYPE[^>]*>", r"", text)
     # remove <[hi]> and <[/p]> etc
-    text = re.sub(r"<\[\/?[^>]+\]*>", r"", text)
+    text = redos.sub(r"<\[\/?[^>]+\]*>", r"", text)
     # take the thing out of the brackets: <&hellip;>
-    text = re.sub(r"<(\&\w+;)>", r"\1", text)
+    text = redos.sub(r"<(\&\w+;)>", r"\1", text)
     # and remove the & for those patterns that aren't regular XML
-    text = re.sub(r"&(?!amp|gt|lt|apos|quot)", r"", text)
+    text = redos.sub(r"&(?!amp|gt|lt|apos|quot)", r"", text)
     # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
     #
     # Possessive quantifiers (regex module) prevent catastrophic backtracking
@@ -198,8 +202,8 @@ def _fixXML(text):
     # <p="..."/> tag quadratically. The token class [^<>\s] cannot cross the
     # surrounding separators and \s cannot cross the literal '"', so making each
     # run possessive is match-for-match identical while making the scan linear.
-    text = regex.sub(
+    text = redos.sub(
         r'[ \t]*+([^<>\s]++)[ \t]*+<p="([^"]*+"?)"/>', r' <wf pos="\2">\1</wf>', text
     )
-    text = regex.sub(r"\s*+\"\s*+<p='\"'/>", " <wf pos='\"'>\"</wf>", text)
+    text = redos.sub(r"\s*+\"\s*+<p='\"'/>", " <wf pos='\"'>\"</wf>", text)
     return text
