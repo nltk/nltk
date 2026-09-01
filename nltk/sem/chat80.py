@@ -532,7 +532,7 @@ def _str2records(filename, rel):
     recs = []
     # ``rel`` (caller relation name) is spliced into a regex run over each line;
     # redos.compile bounds compile + match time.
-    rel_rx = redos.compile(rel + r"\(")
+    rel_rx = redos.compile(re.escape(rel) + r"\(")  # rel is a literal relation name
     contents = nltk.data.load("corpora/chat80/%s" % filename, format="text")
     for line in contents.splitlines():
         if line.startswith(rel):

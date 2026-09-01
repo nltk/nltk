@@ -141,6 +141,10 @@ def _reject_unsafe_no_protocol(resource_url):
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_url):
         raise ValueError(f"Unsafe resource path: {resource_url!r}")
     _assert_no_encoded_bypass(resource_url)
+    # The deny-list above requires the two traversal dots to be adjacent; a
+    # control char that url2pathname later strips could split them. Re-check the
+    # normalized form (as find() does) so the no-protocol path can't diverge.
+    _assert_no_normalized_bypass(resource_url)
 
 
 try:
