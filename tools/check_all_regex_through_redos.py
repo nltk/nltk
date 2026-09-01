@@ -88,9 +88,7 @@ class _RegexCallVisitor(ast.NodeVisitor):
         if isinstance(func, ast.Attribute) and func.attr in _GUARDED_FUNCS:
             recv = func.value
             if isinstance(recv, ast.Name) and recv.id in _GUARDED_MODULES:
-                self.violations.append(
-                    (node.lineno, f"{recv.id}.{func.attr}(...)")
-                )
+                self.violations.append((node.lineno, f"{recv.id}.{func.attr}(...)"))
         self.generic_visit(node)
 
 
@@ -106,9 +104,7 @@ def _is_exempt(path):
     norm = os.path.normpath(path)
     if norm in {os.path.normpath(f) for f in _EXEMPT_FILES}:
         return True
-    return any(
-        norm == p or norm.startswith(p + os.sep) for p in _EXEMPT_PREFIXES
-    )
+    return any(norm == p or norm.startswith(p + os.sep) for p in _EXEMPT_PREFIXES)
 
 
 def main():

@@ -1,4 +1,4 @@
-"""
+r"""
 Living-audit regression tests for the algorithmic-complexity DoS cluster
 (GHSA-ww6m-cw3f-q94g umbrella -- PorterStemmer; siblings GHSA-vp2x-qp44-57v7
 XMLCorpusView, GHSA-8mpw-7fpc-4gqj TEICorpusView, and the newly-found
