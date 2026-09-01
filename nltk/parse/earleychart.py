@@ -374,9 +374,7 @@ class IncrementalChartParser(ChartParser):
         # Wall-clock bound on recognition; an accumulating feature grammar makes
         # this super-polynomial with no natural limit (CWE-407). max_time=None
         # disables it.
-        deadline = (
-            None if self._max_time is None else perf_counter() + self._max_time
-        )
+        deadline = None if self._max_time is None else perf_counter() + self._max_time
 
         inference_rules = self._inference_rules
         for end in range(chart.num_leaves() + 1):
@@ -477,7 +475,7 @@ class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
         strategy=BU_LC_INCREMENTAL_FEATURE_STRATEGY,
         trace_chart_width=20,
         chart_class=FeatureIncrementalChart,
-        **parser_args
+        **parser_args,
     ):
         IncrementalChartParser.__init__(
             self,
@@ -485,7 +483,7 @@ class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
             strategy=strategy,
             trace_chart_width=trace_chart_width,
             chart_class=chart_class,
-            **parser_args
+            **parser_args,
         )
 
 
