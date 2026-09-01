@@ -27,6 +27,7 @@ import string
 from itertools import product
 
 import nltk.data
+from nltk import redos
 from nltk.util import pairwise
 
 
@@ -192,7 +193,7 @@ class VaderConstants:
     }
 
     # for removing punctuation
-    REGEX_REMOVE_PUNCTUATION = re.compile(f"[{re.escape(string.punctuation)}]")
+    REGEX_REMOVE_PUNCTUATION = redos.compile(f"[{re.escape(string.punctuation)}]")
 
     PUNC_LIST = [
         ".",
