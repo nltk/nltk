@@ -724,7 +724,7 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 
 
 # ==========================================================================
-# GREEDY-TOKEN-OVER-DATA ReDoS (fixed) -- constant pattern, attacker data
+# GREEDY-TOKEN-OVER-DATA ReDoS (fixed): constant pattern, attacker data
 # ==========================================================================
 # Shape: a greedy leading token (\w+, \s*, [^"]+) plus a required suffix that may
 # be absent, applied with findall/sub/split over attacker-controlled corpus/text
@@ -792,7 +792,7 @@ class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
         )
 
 
-class TestLinThesaurusKeyQuadratic:  # lin.py _key_re -- engine still backtracks
+class TestLinThesaurusKeyQuadratic:  # lin.py _key_re: engine still backtracks
     def test_key_line_is_bounded(self, monkeypatch):
         import nltk.redos as redos_mod
 
