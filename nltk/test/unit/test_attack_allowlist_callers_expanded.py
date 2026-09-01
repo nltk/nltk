@@ -36,10 +36,11 @@ Caller 2: ``nltk.parse.transitionparser.TransitionParser.parse``
     size validation. The one real gadget is numpy's object dtype nested unpickle:
     ``numpy.*.multiarray.scalar(dtype('O'), payload)`` deserializes ``payload``
     with numpy's own unrestricted unpickler, AT REDUCE time inside the call, so a
-    post load check cannot undo it. The caller now wraps ``scalar`` to refuse an
-    object bearing dtype before numpy runs, and walks the reconstructed graph to
-    refuse any residual object dtype array. A genuinely trained model still loads
-    and parses.
+    post load check cannot undo it. picklesec's base ``AllowlistUnpickler`` now
+    wraps ``scalar`` (``_GUARDED_GLOBALS``) for EVERY caller to refuse an object
+    bearing dtype before numpy runs, so no per-model unpickler subclass is needed;
+    the loader additionally walks the reconstructed graph to refuse any residual
+    object dtype array. A genuinely trained model still loads and parses.
 
 Cross-platform notes: the hang proof uses a subprocess wall-clock timeout
 (``subprocess.run(timeout=...)``), never a Unix signal; pickle fixtures under the
@@ -348,47 +349,45 @@ def _object_ndarray_payload():
     return pickle.dumps(ObjArr(), protocol=5)
 
 
-def test_tp_scalar_object_dtype_gadget_passes_the_bare_name_allowlist():
-    """Teeth. The name allowlist is NOT what stops the object dtype ``scalar``
-    gadget: ``find_class`` accepts both ``scalar`` and ``numpy.dtype``, so the
-    gadget is assembled from only allowlisted names and reaches numpy's own object
-    dtype scalar handler. What numpy does then is version dependent (numpy < 1.25
-    deserializes the attacker bytes with its own unrestricted unpickler = RCE;
-    numpy >= ~2.4 hard-refuses), which is exactly why the fix must intercept BEFORE
-    numpy rather than rely on name-checking."""
+def test_tp_scalar_object_dtype_gadget_refused_by_base_allowlist_unpickler():
+    """Teeth, and the reason the per-caller unpickler subclass is gone. The object
+    dtype ``scalar`` gadget is assembled from only allowlisted names, so
+    ``find_class`` ACCEPTS both ``scalar`` and ``numpy.dtype`` by name. It used to
+    reach numpy's own object dtype handler (numpy < 1.25 deserializes the attacker
+    bytes with its own unrestricted unpickler = RCE) UNLESS a per-caller hardened
+    loader wrapped ``scalar``. picklesec now wraps ``scalar`` inside the BASE
+    :class:`~nltk.picklesec.AllowlistUnpickler` (``_GUARDED_GLOBALS``) for EVERY
+    caller, so ``find_class`` hands back the guarded wrapper (not raw numpy scalar)
+    and the plain ``allowlisted_pickle_load`` (with NO per-model unpickler
+    subclass) already refuses the gadget at REDUCE time, before numpy runs."""
     tp = _tp()
-    import warnings
+
+    import numpy.core.multiarray as ma
 
     from nltk.picklesec import AllowlistUnpickler, allowlisted_pickle_load
 
-    # 1) Both building blocks resolve through the bare allowlist (not refused).
+    # 1) ``find_class`` still accepts both building-block names (they are
+    # allowlisted), but for ``scalar`` it returns the GUARDED WRAPPER, never the
+    # raw numpy ``scalar`` the gadget needs to reach.
     resolver = AllowlistUnpickler(
         io.BytesIO(b""),
         allowed_globals=tp._MODEL_ALLOWED_GLOBALS,
         allowed_modules=tp._MODEL_ALLOWED_MODULES,
     )
-    assert callable(resolver.find_class("numpy._core.multiarray", "scalar"))
+    resolved_scalar = resolver.find_class("numpy._core.multiarray", "scalar")
+    assert callable(resolved_scalar)
+    assert resolved_scalar is not ma.scalar, "scalar must resolve to the wrapper"
     assert resolver.find_class("numpy", "dtype") is numpy.dtype
 
-    # 2) Loading the assembled gadget through the bare allowlist is NOT stopped by
-    # the allowlist's own name refusal: it reaches numpy, which then handles it in
-    # a version-dependent way (returns on old numpy, raises its own error on new).
-    name_refusal = None
-    try:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            allowlisted_pickle_load(
-                io.BytesIO(_scalar_object_payload()),
-                allowed_globals=tp._MODEL_ALLOWED_GLOBALS,
-                allowed_modules=tp._MODEL_ALLOWED_MODULES,
-            )
-    except pickle.UnpicklingError as exc:
-        name_refusal = exc
-    except Exception:
-        pass  # numpy's own version-dependent handling; the gadget reached numpy
-    assert (
-        name_refusal is None
-    ), f"name allowlist unexpectedly stopped it: {name_refusal}"
+    # 2) The base ``allowlisted_pickle_load`` (no per-caller hardening at all) now
+    # refuses the object-dtype scalar gadget itself: the built-in wrapper fires at
+    # reconstruction time, before numpy deserializes anything.
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(
+            io.BytesIO(_scalar_object_payload()),
+            allowed_globals=tp._MODEL_ALLOWED_GLOBALS,
+            allowed_modules=tp._MODEL_ALLOWED_MODULES,
+        )
 
 
 def test_tp_scalar_object_dtype_gadget_refused_by_hardened_loader():

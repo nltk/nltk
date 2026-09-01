@@ -111,10 +111,17 @@ _FORBIDDEN_IN_ALLOWLIST = {
 
 
 def test_allowlist_contains_no_exec_primitive():
+    from nltk.picklesec import _SAFE_DENIED_GLOBALS
+
     allow = set(demo._TBL_MODEL_ALLOWED_GLOBALS)
     leaked = allow & _FORBIDDEN_IN_ALLOWLIST
     assert not leaked, f"execution primitive present in tbl allowlist: {leaked}"
-    # No entry may live in a code exec / subprocess / import / os module either.
+    # No entry may live in a code exec / subprocess / import / os module either,
+    # EXCEPT the proven-inert primitives picklesec vouches for in
+    # ``_SAFE_DENIED_GLOBALS`` (e.g. a bare ``builtins.object()`` sentinel: no
+    # __dict__ / __setstate__, no arg surface, no callable that runs code). Those
+    # are guarded by the base unpickler regardless, so naming one is safe; anything
+    # else in a dangerous module (``builtins.eval`` ...) still trips this.
     banned_modules = {
         "os",
         "posix",
@@ -128,6 +135,8 @@ def test_allowlist_contains_no_exec_primitive():
         "sys",
     }
     for module, name in allow:
+        if (module, name) in _SAFE_DENIED_GLOBALS:
+            continue
         assert (
             module.split(".")[0] not in banned_modules
         ), f"tbl allowlist names a dangerous module: {module}.{name}"

@@ -16,6 +16,7 @@ import re
 from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_tool_dir
+from nltk.picklesec import pickle_dump
 from nltk.tag import ClassifierBasedTagger, pos_tag
 from nltk.xmlsec import parse as safe_parse
 
@@ -439,7 +440,7 @@ def build_model(fmt="binary"):
     print(f"Saving chunker to {outfilename}...")
 
     with pathsec_open(outfilename, "wb", context="build_model") as outfile:
-        pickle.dump(cp, outfile, -1)
+        pickle_dump(cp, outfile, -1)
 
     return cp
 """

@@ -22,7 +22,7 @@ except ImportError:
 
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
-from nltk.picklesec import AllowlistUnpickler, allowlisted_pickle_load
+from nltk.picklesec import allowlisted_pickle_load, pickle_dump
 
 # A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
 # namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
@@ -49,64 +49,10 @@ _MODEL_ALLOWED_GLOBALS = (
     ("builtins", "float"),
 )
 
-# The numpy scalar spellings that ``_MODEL_ALLOWED_GLOBALS`` permits so a fitted
-# SVC's numpy scalar attributes reconstruct across numpy versions. ``scalar`` is
-# safe for the numeric dtypes a real model carries, but it is ALSO a nested
-# unpickle sink: ``numpy.*.multiarray.scalar(dtype('O'), payload)`` interprets an
-# object dtype by deserializing ``payload`` with numpy's own (unrestricted)
-# unpickler, which runs at REDUCE time, inside the call, before any post load
-# check could see the result (CWE-502). Name allowlisting alone cannot stop it,
-# because ``scalar`` and ``numpy.dtype`` are both legitimately needed. The guard
-# below wraps the reconstructed ``scalar`` so an object bearing dtype is refused
-# before numpy deserializes anything; numeric scalars pass through unchanged. On
-# numpy >= 1.25 the object dtype path is already deprecated to an inert best
-# effort, so this is defense in depth that also covers the older numpy versions
-# nltk still supports.
-_SCALAR_GLOBALS = frozenset(
-    {
-        ("numpy.core.multiarray", "scalar"),
-        ("numpy._core.multiarray", "scalar"),
-    }
-)
-
-
-def _guarded_scalar(real_scalar):
-    """Wrap ``numpy.*.multiarray.scalar`` to refuse an object bearing dtype.
-
-    A genuine fitted SVC only ever reconstructs numeric scalars (float / int), so
-    ``dtype.hasobject`` is always ``False`` for a legitimate model and the call is
-    delegated verbatim. An object (or object bearing structured) dtype is the
-    nested unpickle vector, so it is refused here, before ``real_scalar`` runs.
-    """
-
-    def scalar(dtype, *rest):
-        if getattr(dtype, "hasobject", False):
-            raise pickle.UnpicklingError(
-                "transition parser model reconstructs a numpy scalar with an "
-                "object bearing dtype; refusing the numpy nested unpickle sink "
-                "(CWE-502)"
-            )
-        return real_scalar(dtype, *rest)
-
-    return scalar
-
-
-class _TransitionParserModelUnpickler(AllowlistUnpickler):
-    """AllowlistUnpickler for a fitted SVC transition parser model.
-
-    It permits exactly :data:`_MODEL_ALLOWED_GLOBALS` (the base guards for denied
-    modules, dotted / dunder names, extension opcodes and scientific stack I/O
-    sinks still apply), and additionally wraps the ``numpy.*.multiarray.scalar``
-    reconstructor so an object bearing dtype cannot ride it into numpy's own
-    nested unpickler. Numeric scalars, arrays and sparse matrices reconstruct
-    exactly as before.
-    """
-
-    def find_class(self, module, name):
-        obj = super().find_class(module, name)
-        if (module, name) in _SCALAR_GLOBALS:
-            return _guarded_scalar(obj)
-        return obj
+# The numpy ``scalar`` reconstructor that ``_MODEL_ALLOWED_GLOBALS`` permits is a
+# nested-unpickle sink for an object-bearing dtype (CWE-502). picklesec wraps it
+# (``_GUARDED_GLOBALS``) for EVERY caller automatically, so no per-model unpickler
+# subclass is needed here; only the allowlist below.
 
 
 def _load_transitionparser_model(file):
@@ -143,7 +89,6 @@ def _load_transitionparser_model(file):
         allowed_globals=_MODEL_ALLOWED_GLOBALS,
         allowed_modules=_MODEL_ALLOWED_MODULES,
         sanitize=sanitize,
-        unpickler_cls=_TransitionParserModelUnpickler,
     )
 
 
@@ -674,7 +619,7 @@ class TransitionParser(ParserI):
             # are written, closing the arbitrary-path pickle write
             # (GHSA-8mgp-746c-j5xp).
             with pathsec_open(modelfile, "wb", context="TransitionParser.train") as f:
-                pickle.dump(model, f)
+                pickle_dump(model, f)
         finally:
             remove(input_file.name)
 

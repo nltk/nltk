@@ -130,6 +130,22 @@ def pickle_load(
     return WarningUnpickler(file, context=context).load()
 
 
+def pickle_dump(obj: Any, file: BinaryIO, protocol: int | None = None) -> None:
+    """Serialise ``obj`` to ``file``: the single serialisation choke point.
+
+    Serialisation runs no untrusted code, so this is not itself a defence; it
+    exists so ALL pickle writing in NLTK routes through picklesec (enforced by
+    ``tools/check_all_pickle_through_picklesec.py``), giving one audited place to
+    reason about what NLTK emits. Mirrors ``pickle.dump``.
+    """
+    pickle.dump(obj, file, protocol=protocol)
+
+
+def pickle_dumps(obj: Any, protocol: int | None = None) -> bytes:
+    """Serialise ``obj`` to a ``bytes`` object. See :func:`pickle_dump`."""
+    return pickle.dumps(obj, protocol=protocol)
+
+
 # Modules whose globals are never safe to reconstruct from an untrusted pickle,
 # even when a broad parent namespace is allowlisted. This denylist is a
 # defense-in-depth backstop: if a caller (now or in the future) allows a wide
@@ -494,7 +510,11 @@ class AllowlistUnpickler(pickle.Unpickler):
                 f"global '{module}.{name}' ({true_module}.{true_qualname}) is a "
                 "scientific-stack file/module I/O sink and cannot be reconstructed"
             )
-        return obj
+        # A resolved-but-dangerous-for-crafted-args callable (numpy scalar) is
+        # replaced with a guarded wrapper for every caller, not opted into per
+        # model type. Keyed on the requested (module, name).
+        guard = _GUARDED_GLOBALS.get((module, name))
+        return guard(obj) if guard is not None else obj
 
     def find_class(self, module: str, name: str) -> Any:
         # Guard 1: reject dotted names -- find_class would getattr-chain them
@@ -559,8 +579,48 @@ _SAFE_DENIED_GLOBALS = frozenset(
         ("builtins", "dict"),
         ("builtins", "set"),
         ("builtins", "frozenset"),
+        # A bare ``object()`` sentinel (e.g. the default-timeout marker a pickled
+        # RegexpTagger's TimedPattern carries). Reconstructing it yields an inert
+        # instance with no ``__dict__`` / ``__setstate__`` and no arg surface:
+        # REDUCE-with-args is a TypeError, BUILD-with-state an AttributeError,
+        # so it exposes nothing to poison and no callable that runs code. A caller
+        # must still list it explicitly in ``allowed_globals`` to permit it.
+        ("builtins", "object"),
     }
 )
+
+
+def _guarded_scalar(real_scalar: Any) -> Any:
+    """Wrap ``numpy.*.multiarray.scalar`` so it refuses an object-bearing dtype.
+
+    ``scalar`` is a nested-unpickle sink: ``scalar(dtype('O'), payload)`` hands
+    ``payload`` to numpy's own (unrestricted) unpickler at REDUCE time, before any
+    post-load check could see the result (CWE-502). A genuine fitted model only
+    ever reconstructs numeric scalars (``dtype.hasobject`` is False), so those are
+    delegated verbatim; an object/structured dtype is refused before numpy
+    deserializes anything.
+    """
+
+    def scalar(dtype: Any, *rest: Any) -> Any:
+        if getattr(dtype, "hasobject", False):
+            raise pickle.UnpicklingError(
+                "pickle reconstructs a numpy scalar with an object-bearing dtype; "
+                "refusing the numpy nested-unpickle sink (CWE-502)"
+            )
+        return real_scalar(dtype, *rest)
+
+    return scalar
+
+
+#: Allowlisted globals that are safe for their numeric use but are ALSO a nested
+#: unpickle / code sink for a crafted argument, so :meth:`AllowlistUnpickler._resolve`
+#: replaces the resolved callable with a guarded wrapper for EVERY caller that
+#: permits them; the protection is built in, not opt-in per model type. Keyed by
+#: the exact ``(module, name)`` the pickle requests (each numpy spelling listed).
+_GUARDED_GLOBALS = {
+    ("numpy.core.multiarray", "scalar"): _guarded_scalar,
+    ("numpy._core.multiarray", "scalar"): _guarded_scalar,
+}
 
 
 def allowlisted_pickle_load(
@@ -569,20 +629,28 @@ def allowlisted_pickle_load(
     allowed_globals: Iterable[tuple[str, str]] = (),
     allowed_modules: Iterable[str] = (),
     sanitize: Any = None,
-    unpickler_cls: Any = AllowlistUnpickler,
 ) -> Any:
     """
     Load a pickle while only permitting an explicit allowlist of globals.
 
-    See :class:`AllowlistUnpickler` for ``allowed_globals`` / ``allowed_modules``.
-    ``unpickler_cls`` may be an :class:`AllowlistUnpickler` subclass (e.g. to permit
-    an inert sentinel). ``sanitize`` is an optional :func:`harden_object_graph` visit
-    run over the result to neutralise hostile STATE the name allowlist cannot gate (a
-    compiled regex, an object dtype array, ...), since the allowlist decides only
-    which classes are built, not the state they are handed. Prefer this over the
+    Always uses :class:`AllowlistUnpickler`; there is deliberately no
+    ``unpickler_cls`` hook, so a caller cannot substitute an unpickler that
+    weakens ``find_class``. Everything a model needs is expressible through the
+    allowlists and the built-in guards: the inert ``builtins.object`` sentinel is
+    a :data:`_SAFE_DENIED_GLOBALS` primitive, and dangerous-for-crafted-args
+    callables (the numpy ``scalar`` reconstructor) are wrapped by
+    :data:`_GUARDED_GLOBALS` for every caller automatically.
+
+    See :class:`AllowlistUnpickler` for ``allowed_globals`` / ``allowed_modules``;
+    the base hard guards (denied modules / dotted / dunder / denied globals) bound
+    whatever a caller allows, so a bad ``allowed_globals`` still cannot reach
+    ``os.system`` or ``builtins.eval``. ``sanitize`` is an optional
+    :func:`harden_object_graph` visit run over the result to neutralise hostile
+    STATE the name allowlist cannot gate (a compiled regex, an object dtype
+    array, ...); it can only refuse or harden, never widen. Prefer this over the
     warn-only :func:`pickle_load`, which still executes arbitrary code.
     """
-    obj = unpickler_cls(
+    obj = AllowlistUnpickler(
         file, allowed_globals=allowed_globals, allowed_modules=allowed_modules
     ).load()
     if sanitize is not None:
