@@ -45,6 +45,11 @@ try:
 except ImportError:
     pass
 
+#: Longest segmentation ``ghd`` accepts. Its DP is O(n_ref_boundaries *
+#: n_hyp_boundaries); an all-boundary input makes both O(len), i.e. O(len**2)
+#: time and memory (CWE-770). ``windowdiff``/``pk`` scan once so need no cap.
+MAX_GHD_INPUT_LEN = 10_000
+
 
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     """
@@ -189,6 +194,12 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"
     :type boundary: str or int or bool
     :rtype: float
     """
+
+    if len(ref) > MAX_GHD_INPUT_LEN or len(hyp) > MAX_GHD_INPUT_LEN:
+        raise ValueError(
+            f"Segmentation longer than {MAX_GHD_INPUT_LEN} is rejected: ghd is "
+            "quadratic in the number of boundaries (CWE-770)."
+        )
 
     ref_idx = [i for (i, val) in enumerate(ref) if val == boundary]
     hyp_idx = [i for (i, val) in enumerate(hyp) if val == boundary]

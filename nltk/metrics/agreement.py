@@ -81,6 +81,14 @@ from nltk.probability import ConditionalFreqDist, FreqDist
 
 log = logging.getLogger(__name__)
 
+#: Most distinct labels an ``AnnotationTask`` accepts. ``Disagreement``/``alpha``/
+#: ``weighted_kappa`` run a double loop over the distinct label set K, so a
+#: task with one unique label per item is O(|K|**2) (CWE-407); |K| is
+#: attacker-controlled. A real study has a tiny fixed label set, so this is a
+#: distinct-count bound (like ``NgramCounter.MAX_NGRAMS``), not a data-length
+#: cap -- large low-cardinality data stays linear.
+MAX_AGREEMENT_LABELS = 10_000
+
 
 class AnnotationTask:
     """Represents an annotation task, i.e. people assign labels to items.
@@ -153,6 +161,12 @@ class AnnotationTask:
             self.K.add(labels)
             self.I.add(item)
             self.data.append({"coder": coder, "labels": labels, "item": item})
+        if len(self.K) > MAX_AGREEMENT_LABELS:
+            raise ValueError(
+                f"AnnotationTask has more than {MAX_AGREEMENT_LABELS} distinct "
+                "labels: agreement coefficients are quadratic in the label set "
+                "(CWE-407). A real study has a small fixed label set."
+            )
 
     def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item"""

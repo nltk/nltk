@@ -37,6 +37,7 @@ defines three chart parsers:
 
 import itertools
 import re
+import time
 import warnings
 from functools import total_ordering
 
@@ -45,6 +46,14 @@ from nltk.internals import raise_unorderable_types
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
 from nltk.util import OrderedDict
+
+#: Default wall-clock limit, in seconds, for a single ``chart_parse``. Bottom-up
+#: recognition over a FEATURE grammar whose features accumulate with structure
+#: is super-polynomial (~O(n**4)) with no natural bound, so an accumulating FCFG
+#: plus ~50-100 tokens pins a core (CWE-407). Plain CFG recognition is polynomial
+#: and unaffected; the bound is harmless defense-in-depth there. ``max_time=None``
+#: disables it.
+DEFAULT_MAX_TIME = 5.0
 
 ########################################################################
 ##  Edges
@@ -1417,6 +1426,7 @@ class ChartParser(ParserI):
         trace_chart_width=50,
         use_agenda=True,
         chart_class=Chart,
+        max_time=DEFAULT_MAX_TIME,
     ):
         """
         Create a new chart parser, that uses ``grammar`` to parse
@@ -1441,11 +1451,18 @@ class ChartParser(ParserI):
             if possible.
         :param chart_class: The class that should be used to create
             the parse charts.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single
+            ``chart_parse``.  A crafted feature grammar can make bottom-up
+            recognition super-polynomial (CWE-407); when the limit is exceeded
+            ``chart_parse`` raises ``TimeoutError``.  Defaults to
+            ``DEFAULT_MAX_TIME``; ``None`` disables the bound.
         """
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
         self._trace_chart_width = trace_chart_width
+        self._max_time = max_time
         # If the strategy only consists of axioms (NUM_EDGES==0) and
         # inference rules (NUM_EDGES==1), we can use an agenda-based algorithm:
         self._use_agenda = use_agenda
@@ -1497,6 +1514,21 @@ class ChartParser(ParserI):
         if trace:
             print(chart.pretty_format_leaves(trace_edge_width))
 
+        # Bottom-up recognition over an accumulating feature grammar is
+        # super-polynomial with no natural bound (CWE-407); a wall-clock deadline
+        # inside the recognition loops caps it. ``max_time=None`` disables it.
+        deadline = (
+            None if self._max_time is None else time.perf_counter() + self._max_time
+        )
+
+        def _check_deadline():
+            if deadline is not None and time.perf_counter() > deadline:
+                raise TimeoutError(
+                    f"ChartParser exceeded its {self._max_time}s time limit; the "
+                    "grammar may be too ambiguous for this many tokens. Pass "
+                    "max_time=None to disable the limit."
+                )
+
         if self._use_agenda:
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
@@ -1509,6 +1541,7 @@ class ChartParser(ParserI):
             # but chart.edges() functions as a queue.
             agenda.reverse()
             while agenda:
+                _check_deadline()
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
@@ -1520,6 +1553,7 @@ class ChartParser(ParserI):
             # Do not use an agenda-based algorithm.
             edges_added = True
             while edges_added:
+                _check_deadline()
                 edges_added = False
                 for rule in self._strategy:
                     new_edges = list(rule.apply_everywhere(chart, grammar))
