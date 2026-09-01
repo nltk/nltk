@@ -1,3 +1,38 @@
+Version 3.10.4 2026-09-01
+
+* Fix develop CI: register data roots for benign save/IO tests broken by pathsec hardening (PR #3822)
+* Add tests covering already-merged pathsec/security guards (PR #3818)
+* Harden nltk.tbl.demo model load/save through picklesec and pathsec (PR #3817)
+* Harden malt and stanford parser wrappers: validate binary/model/IO paths and argv (PR #3816)
+* Route corpus-reader scratch tempfiles through a data root and label framenet path refusals (PR #3815)
+* Stage weka scratch files in a data root and validate the WEKAHOME jar path (PR #3814)
+* Harden tagger model loads and tool paths (perceptron/crf/hunpos/stanford) (PR #3813)
+* Harden stanford tokenizer/segmenter wrappers: validate jar/model paths and argv (PR #3812)
+* Harden the VERSION read in nltk package init with pathsec.open_package_resource (PR #3803)
+* Canonicalize obfuscated numeric IPv4 in the SSRF guard (CWE-918) (PR #3810)
+* Stage boxer scratch input inside an nltk.data root (PR #3809)
+* Add staging_tempdir and tighten data.py zip/staging guards (PR #3808)
+* Pin maxent scratch files to a data root and validate scratch IO (PR #3807)
+* Validate the NE chunker save_params destination through the tool-directory guard (PR #3806)
+* Harden nltk.xmlsec.parse: read filename sources through pathsec.open (PR #3805)
+* Harden downloader Package attributes and extraction against traversal/Zip-Slip (PR #3804)
+* Harden path/resource/tool validation in nltk.pathsec (PR #3797)
+* Deserialize chat80 shelve values through the restricted unpickler (RCE fix) (PR #3802)
+* Bound RegexpStemmer's caller-supplied pattern against ReDoS (PR #3801)
+* Refuse CWD-relative matches for bare names in find_file/find_dir (CWE-427) (PR #3798)
+* Bound re_show's caller-supplied regex against ReDoS (CWE-1333) (PR #3796)
+* Fix internals.doctest to match the hardened _validate_java_options allowlist (PR #3795)
+* Harden pickle deserialization (picklesec) against arbitrary-code-execution gadgets (PR #3794)
+* Bound decompression entry points in nltk (zip/gzip layers + pathsec.ZipFile + weka), CWE-409 (PR #3778)
+* Harden internals.java() (CWE-88): options, classpath, env, discovery; route MaltParser through it (PR #3772)
+* Fix shared defaults in chat80 Concept (PR #3773)
+* Fix Java wrappers decoding str output from java() (universal_newlines) (PR #3777)
+* Stabilize multiprocessing test timeouts and context handling (PR #3776)
+* Fix ARFF label injection in Weka classifier (PR #3768)
+* Prevent infinite loop from cyclic collection indices (PR #3767)
+
+Thanks to the following contributors to 3.10.4: Liling Tan, Zhewen Tan, Eric Kafe, Yanhaoxi, Yazan Balawneh (Cystack.ps).
+
 Version 3.10.3 2026-08-12
 
 * docs: wrap Chat-80 HOWTO output
