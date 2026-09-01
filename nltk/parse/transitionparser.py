@@ -474,6 +474,10 @@ class TransitionParser(ParserI):
                 if parentIdx is not None:
                     arc_list.append((parentIdx, childIdx))
 
+        # Membership test against a set is O(1); testing the list was O(V) inside
+        # the triple loop below, making the whole check O(V**4) (CWE-770).
+        arc_set = set(arc_list)
+
         for parentIdx, childIdx in arc_list:
             # Ensure that childIdx < parentIdx
             if childIdx > parentIdx:
@@ -483,9 +487,9 @@ class TransitionParser(ParserI):
             for k in range(childIdx + 1, parentIdx):
                 for m in range(len(depgraph.nodes)):
                     if (m < childIdx) or (m > parentIdx):
-                        if (k, m) in arc_list:
+                        if (k, m) in arc_set:
                             return False
-                        if (m, k) in arc_list:
+                        if (m, k) in arc_set:
                             return False
         return True
 
