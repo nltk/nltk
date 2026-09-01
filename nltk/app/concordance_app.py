@@ -666,9 +666,11 @@ class ConcordanceSearchModel:
             sent_pos, i, sent_count = [], 0, 0
             for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:
-                    # redos.search bounds the compile and match (wall-clock) time.
+                    # redos.search bounds compile and match (wall-clock) time; a
+                    # hostile query raises re.error (bad), ValueError (compile-time
+                    # DoS) or TimeoutError (match ReDoS), all shown as SEARCH_ERROR.
                     m = redos.search(q, sent)
-                except (re.error, TimeoutError):
+                except (re.error, ValueError, TimeoutError):
                     self.model.reset_results()
                     self.model.queue.put(SEARCH_ERROR_EVENT)
                     return

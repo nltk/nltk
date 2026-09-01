@@ -82,7 +82,9 @@ class Zone:
         try:
             self.substitute()
             self.img.config(image=self.image)
-        except re.error:
+        except (re.error, ValueError, TimeoutError):
+            # A hostile field regex: bad pattern (re.error), a compile-time DoS
+            # bomb (ValueError) or a match-time ReDoS (TimeoutError from the sub).
             self.img.config(image=self.imageDimmed)
 
 
