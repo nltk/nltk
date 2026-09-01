@@ -11,6 +11,7 @@ CCG Lexicons
 import re
 from collections import defaultdict
 
+from nltk import redos
 from nltk.ccg.api import CCGVar, Direction, FunctionalCategory, PrimitiveCategory
 from nltk.internals import deprecated
 from nltk.sem.logic import Expression
@@ -20,16 +21,16 @@ from nltk.sem.logic import Expression
 # ------------
 
 # Parses a primitive category and subscripts
-PRIM_RE = re.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
+PRIM_RE = redos.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 
 # Separates the next primitive category from the remainder of the
 # string
-NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
 
 # Separates the next application operator from the remainder.
 # The modifier slot also accepts `_`, marking a variable direction
 # (e.g. `(S\_NP)/(S\_NP)` for a polymorphic adverb).
-APP_RE = re.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family.
 # The identifier and the arrow alternative ``[-=]+>`` both match ``-``/``=``, so the
@@ -40,16 +41,16 @@ APP_RE = re.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
 # so the arrow is tried once: the parse is linear, the usual whitespace-separated
 # ``ident <sep> rhs`` form is unchanged, and the compact ``ident<sep>rhs`` form is
 # still accepted (and now splits sensibly, e.g. ``a-->b`` -> ``a``/``-->``/``b``).
-LEX_RE = re.compile(r"""([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
+LEX_RE = redos.compile(r"""([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
 
 # Parses the right hand side that contains category and maybe semantic predicate
-RHS_RE = re.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
+RHS_RE = redos.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
 
 # Parses the semantic predicate
-SEMANTICS_RE = re.compile(r"""\{([^}]+)\}""", re.UNICODE)
+SEMANTICS_RE = redos.compile(r"""\{([^}]+)\}""", re.UNICODE)
 
 # Strips comments from a line
-COMMENTS_RE = re.compile("""([^#]*)(?:#.*)?""")
+COMMENTS_RE = redos.compile("""([^#]*)(?:#.*)?""")
 
 
 class Token:
