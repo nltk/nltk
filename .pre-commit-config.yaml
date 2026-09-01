@@ -61,3 +61,15 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: all-json-through-jsontags
+      name: every JSON deserialization routes through nltk.jsontags
+      description: >-
+        json.load/loads build an unbounded object graph, so a deeply nested or
+        oversized document is a DoS (uncontrolled recursion CWE-674 / resource
+        exhaustion CWE-400). Fails on any json.load/loads/JSONDecoder call
+        outside nltk.jsontags itself; read through jsontags.safe_json_load /
+        safe_json_loads, which bound nesting depth and size.
+      entry: python tools/check_all_json_through_jsontags.py
+      language: system
+      pass_filenames: false
+      always_run: true

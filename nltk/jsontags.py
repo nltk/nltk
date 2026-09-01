@@ -163,6 +163,13 @@ class JSONTaggedDecoder(json.JSONDecoder):
     MAX_DECODE_DEPTH = 200
 
     def decode(self, s):
+        # Bound nesting BEFORE ``super().decode`` runs the recursive C accelerator,
+        # which can overflow the C stack (an uncatchable segfault, not a
+        # ``RecursionError``) before ``decode_obj``'s Python check is reached.
+        if _scan_json_depth(s, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
+            raise ValueError(
+                f"JSON nesting depth exceeds maximum allowed ({self.MAX_DECODE_DEPTH})"
+            )
         try:
             return self.decode_obj(super().decode(s))
         except RecursionError:
