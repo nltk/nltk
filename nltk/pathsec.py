@@ -999,6 +999,23 @@ def validate_network_url(url_input, context="NetworkIO"):
                 warnings.warn(msg, RuntimeWarning, stacklevel=3)
             return
 
+        # Classify an IP-literal host (chiefly a bracketed IPv6 literal such as
+        # [::1] or [::ffff:127.0.0.1]) directly, independent of the resolver:
+        # getaddrinfo returns nothing for a literal whose address family the
+        # host lacks, so relying on the resolve loop below would fail open there
+        # (CWE-918). This mirrors the numeric-IPv4 canonicalization above.
+        try:
+            literal = ipaddress.ip_address(host)
+        except ValueError:
+            literal = None
+        if literal is not None and _ip_is_forbidden(literal):
+            msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {literal}"
+            if ENFORCE:
+                raise PermissionError(msg)
+            else:
+                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+
         for result in _resolve_hostname(host):
             ip = ipaddress.ip_address(result[4][0])
             if _ip_is_forbidden(ip):
