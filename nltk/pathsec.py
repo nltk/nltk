@@ -886,6 +886,14 @@ def _ip_is_forbidden(ip):
     for tunneled in _tunneled_ipv4s(ip):
         if tunneled.is_multicast or not tunneled.is_global:
             return True
+    if isinstance(ip, ipaddress.IPv6Address) and (
+        ip.sixtofour is not None or ip.teredo is not None
+    ):
+        # 6to4 (2002::/16) and Teredo (2001::/32) are transition tunnels whose
+        # is_global classification varies across CPython patch levels, so refuse
+        # them outright rather than depend on the stdlib. NLTK never fetches over
+        # one, and refusing more is safe.
+        return True
     return ip.is_multicast or not ip.is_global
 
 
@@ -985,6 +993,23 @@ def validate_network_url(url_input, context="NetworkIO"):
         numeric = _numeric_ipv4(host)
         if numeric is not None and _ip_is_forbidden(numeric):
             msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {numeric}"
+            if ENFORCE:
+                raise PermissionError(msg)
+            else:
+                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+
+        # Classify an IP-literal host (chiefly a bracketed IPv6 literal such as
+        # [::1] or [::ffff:127.0.0.1]) directly, independent of the resolver:
+        # getaddrinfo returns nothing for a literal whose address family the
+        # host lacks, so relying on the resolve loop below would fail open there
+        # (CWE-918). This mirrors the numeric-IPv4 canonicalization above.
+        try:
+            literal = ipaddress.ip_address(host)
+        except ValueError:
+            literal = None
+        if literal is not None and _ip_is_forbidden(literal):
+            msg = f"Security Violation [{context}]: SSRF attempt to restricted IP {literal}"
             if ENFORCE:
                 raise PermissionError(msg)
             else:
