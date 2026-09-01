@@ -6,7 +6,6 @@ import os
 import re
 from functools import reduce
 
-from nltk import redos
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.pathsec import validate_path
@@ -77,8 +76,7 @@ class MTEFileReader:
         elif self._tags == "" and self._tagset == "universal":
             return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
         else:
-            tag_src = "^" + re.sub("-", ".", self._tags) + ".*$"
-            tags = redos.compile(tag_src)  # caller tags filter: bound compile + match
+            tags = re.compile("^" + re.sub("-", ".", self._tags) + ".*$")
             if tags.match(elt.attrib["ana"]):
                 if self._tagset == "msd":
                     return (elt.text, elt.attrib["ana"])

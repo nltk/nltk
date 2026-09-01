@@ -11,7 +11,6 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 
 import sys
 
-from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.tag import map_tag
@@ -114,9 +113,10 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             toks = read_regexp_block(stream, start_re=r"^\(")
             # Strip any comments out of the tokens.
             if self._comment_char:
-                comment_src = "(?m)^%s.*" % re.escape(self._comment_char)
-                comment_rx = redos.compile(comment_src)  # bound compile + match time
-                toks = [comment_rx.sub("", tok) for tok in toks]
+                toks = [
+                    re.sub("(?m)^%s.*" % re.escape(self._comment_char), "", tok)
+                    for tok in toks
+                ]
             return toks
         else:
             assert 0, "bad block type"

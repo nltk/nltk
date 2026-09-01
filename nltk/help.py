@@ -10,9 +10,9 @@ Provide structured access to documentation.
 """
 
 import json
+import re
 from textwrap import wrap
 
-from nltk import redos
 from nltk.data import find, open_datafile
 
 
@@ -53,7 +53,7 @@ def _format_tagset(tagset, tagpattern=None):
     elif tagpattern in tagdict:
         _print_entries([tagpattern], tagdict)
     else:
-        tagpattern = redos.compile(tagpattern)  # bounds compile + match time
+        tagpattern = re.compile(tagpattern)
         tags = [tag for tag in sorted(tagdict) if tagpattern.match(tag)]
         if tags:
             _print_entries(tags, tagdict)

@@ -11,8 +11,6 @@ import itertools
 import re
 from tkinter import SEL_FIRST, SEL_LAST, Frame, Label, PhotoImage, Scrollbar, Text, Tk
 
-from nltk import redos
-
 windowTitle = "Finding (and Replacing) Nemo"
 initialFind = r"n(.*?)e(.*?)m(.*?)o"
 initialRepl = r"M\1A\2K\3I"
@@ -101,13 +99,11 @@ class FindZone(Zone):
         for color in colors:
             self.txt.tag_remove(color, "1.0", "end")
             self.txt.tag_remove("emph" + color, "1.0", "end")
-        self.rex = redos.compile("")  # default value in case of malformed regexp
-        # GUI field regexes run .sub over the whole buffer; redos.compile refuses a
-        # compile-time DoS and returns a match-time (wall-clock) bounded pattern.
-        self.rex = redos.compile(self.fld.get("1.0", "end")[:-1], re.MULTILINE)
+        self.rex = re.compile("")  # default value in case of malformed regexp
+        self.rex = re.compile(self.fld.get("1.0", "end")[:-1], re.MULTILINE)
         try:
-            redos.compile("(?P<emph>%s)" % self.fld.get(SEL_FIRST, SEL_LAST))
-            self.rexSel = redos.compile(
+            re.compile("(?P<emph>%s)" % self.fld.get(SEL_FIRST, SEL_LAST))
+            self.rexSel = re.compile(
                 "%s(?P<emph>%s)%s"
                 % (
                     self.fld.get("1.0", SEL_FIRST),

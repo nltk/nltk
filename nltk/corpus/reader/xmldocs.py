@@ -21,7 +21,6 @@ import codecs
 from defusedxml.ElementTree import fromstring as safe_fromstring
 from defusedxml.ElementTree import parse as safe_parse
 
-from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
 from nltk.data import SeekableUnicodeStreamReader
@@ -147,7 +146,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         if elt_handler:
             self.handle_elt = elt_handler
 
-        self._tagspec = redos.compile(tagspec + r"\Z")  # bound compile + match time
+        self._tagspec = re.compile(tagspec + r"\Z")
         """The tag specification for this corpus view."""
 
         self._tag_context = {0: ()}
@@ -346,8 +345,6 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         if tagspec is None:
             tagspec = self._tagspec
-        if isinstance(tagspec, str):
-            tagspec = redos.compile(tagspec)  # caller-passed raw tagspec: bound both
         if elt_handler is None:
             elt_handler = self.handle_elt
 
@@ -384,7 +381,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     context.append(name)
                     # Is this one of the elts we're looking for?
                     if elt_start is None:
-                        if tagspec.match("/".join(context)):
+                        if re.match(tagspec, "/".join(context)):
                             elt_start = piece.start()
                             elt_depth = len(context)
 
@@ -407,7 +404,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                 elif piece.group("EMPTY_ELT_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
-                        if tagspec.match("/".join(context) + "/" + name):
+                        if re.match(tagspec, "/".join(context) + "/" + name):
                             elts.append((piece.group(), "/".join(context) + "/" + name))
 
             if elt_start is not None:

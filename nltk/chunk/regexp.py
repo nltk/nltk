@@ -955,10 +955,6 @@ def tag_pattern2re_pattern(tag_pattern):
     :return: A regular expression pattern corresponding to
         ``tag_pattern``.
     """
-    # A caller tag pattern is arbitrary; refuse an over-long one up front so the
-    # regex-based validity check and expansion below run on a bounded input.
-    redos.check_pattern(tag_pattern)
-
     # Clean up the regular expression
     tag_pattern = re.sub(r"\s", "", tag_pattern)
     tag_pattern = re.sub(r"<", "(<(", tag_pattern)
@@ -984,9 +980,6 @@ def tag_pattern2re_pattern(tag_pattern):
     reversed = re.sub(r"\.(?!\\(\\\\)*($|[^\\]))", tc_rev, reversed)
     tag_pattern = reverse_str(reversed)
 
-    # Every chunk rule compiles this expansion (with raw ``re.compile``), so refuse
-    # a caller tag pattern whose expansion is a compile-time DoS (CWE-1333) here.
-    redos.check_pattern(tag_pattern)
     return tag_pattern
 
 
