@@ -115,6 +115,43 @@ _SECURITY_MARKERS = (
 )
 
 
+def _restore_data_path(saved):
+    """Undo any register_data_root() calls by restoring a saved nltk.data.path."""
+    import nltk.data
+    from nltk import pathsec
+
+    nltk.data.path[:] = saved
+    pathsec._ALLOWED_ROOTS_CACHE = None
+    pathsec._LAST_DATA_PATHS = None
+
+
+def register_data_root(root):
+    """Register *root* as an nltk.data root and return an undo callable.
+
+    A CorpusReader validates its root at __init__ against the pathsec data roots.
+    On Linux tempfile.mkdtemp() lands in /tmp, which is NOT a data root (it is
+    world-writable), so a probe that builds its corpus fixture there cannot even
+    construct the reader and errors before exercising the escape guard. On macOS
+    the private temp dir IS a root, which hid this. Registering the fixture root
+    reflects how a real corpus lives -- inside a data root -- so the reader
+    constructs and the traversal/symlink escapes are what actually get tested.
+    """
+    import nltk.data
+    from nltk import pathsec
+
+    saved = list(nltk.data.path)
+    nltk.data.path.insert(0, root)
+    pathsec._ALLOWED_ROOTS_CACHE = None
+    pathsec._LAST_DATA_PATHS = None
+
+    def _undo():
+        nltk.data.path[:] = saved
+        pathsec._ALLOWED_ROOTS_CACHE = None
+        pathsec._LAST_DATA_PATHS = None
+
+    return _undo
+
+
 def is_security_rejection(exc):
     return any(marker in str(exc).lower() for marker in _SECURITY_MARKERS)
 

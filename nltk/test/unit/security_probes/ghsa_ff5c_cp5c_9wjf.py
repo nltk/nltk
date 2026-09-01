@@ -9,9 +9,11 @@ def _recursivedescent_unbounded():
     from nltk import CFG
     from nltk.parse import RecursiveDescentParser
 
-    grammar = CFG.fromstring("S -> S S | 'a'")
+    # A left-recursive 'S -> S S' blows the stack (RecursionError) before max_time is
+    # consulted; this right-branching ambiguous form stresses wall-clock so the fix runs.
+    grammar = CFG.fromstring("S -> 'a' S S | 'a'")
     try:
-        seconds = timed(lambda: list(RecursiveDescentParser(grammar).parse(["a"] * 12)))
+        seconds = timed(lambda: list(RecursiveDescentParser(grammar).parse(["a"] * 18)))
     except Exception as exc:
         return FIXED, "bounded (%s)" % type(exc).__name__
     if seconds > DOS_BUDGET:
