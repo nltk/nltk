@@ -23,6 +23,7 @@ from nltk.metrics import f_measure as eval_f_measure
 from nltk.metrics import precision as eval_precision
 from nltk.metrics import recall as eval_recall
 from nltk.pathsec import open as pathsec_open
+from nltk.picklesec import pickle_dump
 from nltk.probability import FreqDist
 
 
@@ -194,10 +195,8 @@ class SentimentAnalyzer:
         with pathsec_open(
             filename, "wb", context="SentimentAnalyzer.save_file"
         ) as storage_file:
-            import pickle
-
             # The protocol=2 parameter is for python2 compatibility
-            pickle.dump(content, storage_file, protocol=2)
+            pickle_dump(content, storage_file, protocol=2)
 
     def evaluate(
         self,

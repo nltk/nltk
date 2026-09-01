@@ -38,3 +38,15 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: all-pickle-through-picklesec
+      name: every pickle routes through nltk.picklesec
+      description: >-
+        Unpickling runs arbitrary code, so a bare pickle.load/loads on
+        attacker-controlled bytes is RCE (CWE-502). Fails on any
+        pickle.load/loads/dump/dumps/Unpickler/Pickler call outside
+        nltk.picklesec itself; load through a picklesec unpickler and write
+        through picklesec.pickle_dump / pickle_dumps.
+      entry: python tools/check_all_pickle_through_picklesec.py
+      language: system
+      pass_filenames: false
+      always_run: true

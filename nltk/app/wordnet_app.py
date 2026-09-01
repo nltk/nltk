@@ -52,7 +52,6 @@ import hmac
 import html
 import io
 import os
-import pickle
 import secrets
 import sys
 import threading
@@ -67,7 +66,7 @@ from urllib.parse import parse_qs, unquote_plus
 
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
-from nltk.picklesec import RestrictedUnpickler
+from nltk.picklesec import RestrictedUnpickler, pickle_dumps
 
 firstClient = True
 
@@ -718,7 +717,7 @@ class Reference:
         # This uses a tuple rather than an object since the python
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
-        string = pickle.dumps((self.word, self.synset_relations), -1)
+        string = pickle_dumps((self.word, self.synset_relations), -1)
         return base64.urlsafe_b64encode(string).decode()
 
     @staticmethod

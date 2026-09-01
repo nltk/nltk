@@ -88,8 +88,10 @@ class RestrictedUnpickler(pickle.Unpickler):
     Unpickler that prevents any class or function from being used during loading.
     """
 
-    def __init__(self, file: BinaryIO, **kwargs: Any):
-        super().__init__(_guarded_stream(file), **kwargs)
+    def __init__(self, file: BinaryIO):
+        # No ``**kwargs`` passthrough: the base unpickler's config is pinned so a
+        # caller cannot tune ``fix_imports`` / ``encoding`` / ``buffers`` etc.
+        super().__init__(_guarded_stream(file))
 
     def find_class(self, module: str, name: str) -> Any:
         # Forbid every function/class global.
@@ -99,8 +101,9 @@ class RestrictedUnpickler(pickle.Unpickler):
 class WarningUnpickler(pickle.Unpickler):
     """Unpickler that emits PICKLE_WARNING once per instance."""
 
-    def __init__(self, file: BinaryIO, *, context: str | None = None, **kwargs: Any):
-        super().__init__(file, **kwargs)
+    def __init__(self, file: BinaryIO, *, context: str | None = None):
+        # No ``**kwargs`` passthrough: base-unpickler config is pinned.
+        super().__init__(file)
         self._context = context
         self._warned = False
 
@@ -128,6 +131,22 @@ def pickle_load(
     if restricted:
         return RestrictedUnpickler(file).load()
     return WarningUnpickler(file, context=context).load()
+
+
+def pickle_dump(obj: Any, file: BinaryIO, protocol: int | None = None) -> None:
+    """Serialise ``obj`` to ``file``: the single serialisation choke point.
+
+    Serialisation runs no untrusted code, so this is not itself a defence; it
+    exists so ALL pickle writing in NLTK routes through picklesec (enforced by
+    ``tools/check_all_pickle_through_picklesec.py``), giving one audited place to
+    reason about what NLTK emits. Mirrors ``pickle.dump``.
+    """
+    pickle.dump(obj, file, protocol=protocol)
+
+
+def pickle_dumps(obj: Any, protocol: int | None = None) -> bytes:
+    """Serialise ``obj`` to a ``bytes`` object. See :func:`pickle_dump`."""
+    return pickle.dumps(obj, protocol=protocol)
 
 
 # Modules whose globals are never safe to reconstruct from an untrusted pickle,
@@ -426,15 +445,26 @@ class AllowlistUnpickler(pickle.Unpickler):
         *,
         allowed_globals: Iterable[tuple[str, str]] = (),
         allowed_modules: Iterable[str] = (),
-        **kwargs: Any,
     ):
+        # No ``**kwargs`` passthrough to ``pickle.Unpickler``: a caller has no
+        # business tuning the base unpickler (``fix_imports`` / ``encoding`` /
+        # ``errors`` / ``buffers``), and forwarding arbitrary kwargs is exactly the
+        # "caller substitutes unpickler behaviour" surface the removed
+        # ``unpickler_cls`` hook was. The safe defaults are pinned here.
         data = file.read()
         _reject_extension_opcodes(data)
-        super().__init__(io.BytesIO(data), **kwargs)
+        super().__init__(io.BytesIO(data))
         if isinstance(allowed_modules, str):
             allowed_modules = (allowed_modules,)
         self._allowed_globals = set(allowed_globals)
         self._allowed_modules = tuple(allowed_modules)
+        # ``allowed_globals`` / ``allowed_modules`` are caller-controlled, so a
+        # caller (or a future refactor) could name a dangerous global. Validate
+        # them here, at construction, so a bad allowlist is refused before a byte
+        # is read, instead of only when a hostile pickle happens to request the
+        # entry. This runs for every construction path, allowlisted_pickle_load
+        # included. The per-``find_class`` guards still apply as defense in depth.
+        _validate_caller_allowlists(self._allowed_globals, self._allowed_modules)
 
     @staticmethod
     def _module_denied(module: str) -> bool:
@@ -494,7 +524,11 @@ class AllowlistUnpickler(pickle.Unpickler):
                 f"global '{module}.{name}' ({true_module}.{true_qualname}) is a "
                 "scientific-stack file/module I/O sink and cannot be reconstructed"
             )
-        return obj
+        # A resolved-but-dangerous-for-crafted-args callable (numpy scalar) is
+        # replaced with a guarded wrapper for every caller, not opted into per
+        # model type. Keyed on the requested (module, name).
+        guard = _GUARDED_GLOBALS.get((module, name))
+        return guard(obj) if guard is not None else obj
 
     def find_class(self, module: str, name: str) -> Any:
         # Guard 1: reject dotted names -- find_class would getattr-chain them
@@ -559,8 +593,113 @@ _SAFE_DENIED_GLOBALS = frozenset(
         ("builtins", "dict"),
         ("builtins", "set"),
         ("builtins", "frozenset"),
+        # A bare ``object()`` sentinel (e.g. the default-timeout marker a pickled
+        # RegexpTagger's TimedPattern carries). Reconstructing it yields an inert
+        # instance with no ``__dict__`` / ``__setstate__`` and no arg surface:
+        # REDUCE-with-args is a TypeError, BUILD-with-state an AttributeError,
+        # so it exposes nothing to poison and no callable that runs code. A caller
+        # must still list it explicitly in ``allowed_globals`` to permit it.
+        ("builtins", "object"),
     }
 )
+
+
+def _guarded_scalar(real_scalar: Any) -> Any:
+    """Wrap ``numpy.*.multiarray.scalar`` so it refuses an object-bearing dtype.
+
+    ``scalar`` is a nested-unpickle sink: ``scalar(dtype('O'), payload)`` hands
+    ``payload`` to numpy's own (unrestricted) unpickler at REDUCE time, before any
+    post-load check could see the result (CWE-502). A genuine fitted model only
+    ever reconstructs numeric scalars (``dtype.hasobject`` is False), so those are
+    delegated verbatim; an object/structured dtype is refused before numpy
+    deserializes anything.
+    """
+
+    def scalar(dtype: Any, *rest: Any) -> Any:
+        if getattr(dtype, "hasobject", False):
+            raise pickle.UnpicklingError(
+                "pickle reconstructs a numpy scalar with an object-bearing dtype; "
+                "refusing the numpy nested-unpickle sink (CWE-502)"
+            )
+        return real_scalar(dtype, *rest)
+
+    return scalar
+
+
+#: Allowlisted globals that are safe for their numeric use but are ALSO a nested
+#: unpickle / code sink for a crafted argument, so :meth:`AllowlistUnpickler._resolve`
+#: replaces the resolved callable with a guarded wrapper for EVERY caller that
+#: permits them; the protection is built in, not opt-in per model type. Keyed by
+#: the exact ``(module, name)`` the pickle requests (each numpy spelling listed).
+_GUARDED_GLOBALS = {
+    ("numpy.core.multiarray", "scalar"): _guarded_scalar,
+    ("numpy._core.multiarray", "scalar"): _guarded_scalar,
+}
+
+# The scientific-stack top-level packages whose file/module I/O sink qualnames
+# (:data:`_DENIED_SCISTACK_QUALNAMES`) are refused wherever they resolve.
+_SCISTACK_ROOTS = ("numpy", "scipy", "sklearn", "pandas")
+
+
+def _validate_allowlist_entry(module: str, name: str) -> None:
+    """Refuse a caller-supplied ``(module, name)`` allowlist entry that the base
+    guards would reject anyway, at CONFIGURATION time. This is the static mirror
+    of :meth:`AllowlistUnpickler.find_class`'s pre-resolution guards: it decides
+    from the requested strings alone (it never imports the module), so a caller
+    cannot even build a loader whose allowlist names a dotted / dunder global, a
+    denied global, a global in a denied module, or a scientific-stack I/O sink.
+    An audited safe primitive (:data:`_SAFE_DENIED_GLOBALS`, e.g. ``builtins.int``
+    / ``builtins.object``) keeps its exemption. Raises :class:`UnpicklingError`.
+    """
+    if "." in name:
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' has a dotted name, which is "
+            "forbidden (attribute-traversal pickle RCE, GHSA-4489)"
+        )
+    if name.startswith("__") and name.endswith("__"):
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' has a dunder name, which is "
+            "forbidden"
+        )
+    if (module, name) in _SAFE_DENIED_GLOBALS:
+        return  # an audited safe primitive keeps its exemption
+    if (module, name) in _DENIED_GLOBALS:
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' is a denied callable and cannot "
+            "be allowlisted from caller-supplied allowed_globals"
+        )
+    if AllowlistUnpickler._module_denied(module):
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' is from a denied module and "
+            "cannot be allowlisted (defense-in-depth, GHSA-x99w)"
+        )
+    if name in _DENIED_SCISTACK_QUALNAMES and module.split(".")[0] in _SCISTACK_ROOTS:
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' is a scientific-stack file/module "
+            "I/O sink and cannot be allowlisted (CWE-502)"
+        )
+
+
+def _validate_allowed_module(module: str) -> None:
+    """Refuse an ``allowed_modules`` entry that names (or lives under) a denied
+    module: a caller cannot re-open a denied namespace wholesale."""
+    if AllowlistUnpickler._module_denied(module):
+        raise pickle.UnpicklingError(
+            f"allowed_modules entry '{module}' is a denied module and cannot be "
+            "allowlisted (defense-in-depth, GHSA-x99w)"
+        )
+
+
+def _validate_caller_allowlists(
+    allowed_globals: Iterable[tuple[str, str]],
+    allowed_modules: Iterable[str],
+) -> None:
+    """Validate every caller-supplied allowlist entry (see
+    :func:`_validate_allowlist_entry` / :func:`_validate_allowed_module`)."""
+    for module, name in allowed_globals:
+        _validate_allowlist_entry(module, name)
+    for module in allowed_modules:
+        _validate_allowed_module(module)
 
 
 def allowlisted_pickle_load(
@@ -568,18 +707,38 @@ def allowlisted_pickle_load(
     *,
     allowed_globals: Iterable[tuple[str, str]] = (),
     allowed_modules: Iterable[str] = (),
+    sanitize: Any = None,
 ) -> Any:
     """
     Load a pickle while only permitting an explicit allowlist of globals.
 
-    See :class:`AllowlistUnpickler` for the meaning of ``allowed_globals`` and
-    ``allowed_modules``. Prefer this over the warn-only :func:`pickle_load` when
-    the set of legitimate classes in the file is known (e.g. a trained model),
-    because :func:`pickle_load` still executes arbitrary code.
+    Always uses :class:`AllowlistUnpickler`; there is deliberately no
+    ``unpickler_cls`` hook, so a caller cannot substitute an unpickler that
+    weakens ``find_class``. Everything a model needs is expressible through the
+    allowlists and the built-in guards: the inert ``builtins.object`` sentinel is
+    a :data:`_SAFE_DENIED_GLOBALS` primitive, and dangerous-for-crafted-args
+    callables (the numpy ``scalar`` reconstructor) are wrapped by
+    :data:`_GUARDED_GLOBALS` for every caller automatically.
+
+    See :class:`AllowlistUnpickler` for ``allowed_globals`` / ``allowed_modules``.
+    Those allowlists are caller-supplied, so they are validated UP FRONT (in the
+    unpickler's constructor, via :func:`_validate_caller_allowlists`): a bad entry
+    (a denied global / module, a dotted or dunder name, a scientific-stack I/O
+    sink) is refused before a byte is read, not merely when a hostile pickle names
+    it. So a caller cannot configure a loader that reaches ``os.system`` or
+    ``builtins.eval``, and the per-``find_class`` guards still run as defense in
+    depth. ``sanitize`` is an optional
+    :func:`harden_object_graph` visit run over the result to neutralise hostile
+    STATE the name allowlist cannot gate (a compiled regex, an object dtype
+    array, ...); it can only refuse or harden, never widen. Prefer this over the
+    warn-only :func:`pickle_load`, which still executes arbitrary code.
     """
-    return AllowlistUnpickler(
+    obj = AllowlistUnpickler(
         file, allowed_globals=allowed_globals, allowed_modules=allowed_modules
     ).load()
+    if sanitize is not None:
+        return harden_object_graph(obj, sanitize)
+    return obj
 
 
 def harden_object_graph(root: Any, visit: Any, *, max_nodes: int = 5_000_000) -> Any:
