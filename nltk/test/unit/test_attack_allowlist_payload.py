@@ -19,6 +19,7 @@ import time
 import pytest
 import regex
 
+import nltk
 from nltk import redos
 from nltk.redos import _UNSET, TimedPattern
 from nltk.tag import DefaultTagger, RegexpTagger, UnigramTagger
@@ -48,6 +49,26 @@ def _su(s):
     if len(raw) < 256:
         return pickle.SHORT_BINUNICODE + bytes([len(raw)]) + raw
     return pickle.BINUNICODE + len(raw).to_bytes(4, "little") + raw
+
+
+def _child_env():
+    """Environment for the attack-payload subprocess children.
+
+    Forward ONLY the checkout under test on ``PYTHONPATH`` (derived from the
+    already-imported ``nltk``, so the child loads THIS tree) rather than the whole
+    runtime ``sys.path``. A naive ``os.pathsep.join(sys.path)`` would also forward
+    pytest's rootdir (an absolute cwd), the user-site and site-packages dirs, and
+    any empty entry. A stray ``nltk.py`` / ``pickle.py`` on an earlier entry would
+    then shadow the real module, so a security assertion could pass against the
+    wrong code; and an absolute cwd on the path lets a planted ``sitecustomize.py``
+    run at child startup. ``PYTHONSAFEPATH`` (3.11+) additionally drops the implicit
+    cwd (``''``) a ``python -c`` child prepends, so the checkout wins regardless of
+    the directory the suite was invoked from. Any caller-set ``PYTHONPATH`` (a venv,
+    say) is kept after the checkout root, at the same trust as this parent process."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
+    existing = os.environ.get("PYTHONPATH", "")
+    pythonpath = root + os.pathsep + existing if existing else root
+    return dict(os.environ, PYTHONPATH=pythonpath, PYTHONSAFEPATH="1")
 
 
 # ===========================================================================
@@ -153,10 +174,9 @@ _CHILD = textwrap.dedent(
 
 def _run_child(pickle_path, mode, cap, bait, wall_timeout):
     """Run the child on ``pickle_path``; return (timed_out, stdout)."""
-    # Import the CURRENT checkout in the child: forward this process's sys.path
-    # (the established pattern in this suite) rather than deriving a package root
-    # from demo.__file__ with brittle dirname arithmetic.
-    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    # Import the CURRENT checkout in the child without splicing the whole runtime
+    # sys.path (cwd / user-site / site-packages) into PYTHONPATH; see _child_env.
+    env = _child_env()
     try:
         proc = subprocess.run(
             [sys.executable, "-c", _CHILD, str(pickle_path), mode, str(cap), bait],
@@ -343,10 +363,9 @@ def test_deeply_nested_graph_is_bounded(pathsec_sandbox):
         print("LOADED", depth)
         """
     )
-    # Import the CURRENT checkout in the child: forward this process's sys.path
-    # (the established pattern in this suite) rather than deriving a package root
-    # from demo.__file__ with brittle dirname arithmetic.
-    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    # Import the CURRENT checkout in the child without splicing the whole runtime
+    # sys.path (cwd / user-site / site-packages) into PYTHONPATH; see _child_env.
+    env = _child_env()
     proc = subprocess.run(
         [sys.executable, "-c", child, str(path)],
         capture_output=True,
@@ -386,10 +405,9 @@ def test_huge_flat_graph_is_linear(pathsec_sandbox):
         print("LOADED", len(obj))
         """
     )
-    # Import the CURRENT checkout in the child: forward this process's sys.path
-    # (the established pattern in this suite) rather than deriving a package root
-    # from demo.__file__ with brittle dirname arithmetic.
-    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    # Import the CURRENT checkout in the child without splicing the whole runtime
+    # sys.path (cwd / user-site / site-packages) into PYTHONPATH; see _child_env.
+    env = _child_env()
     proc = subprocess.run(
         [sys.executable, "-c", child, str(path)],
         capture_output=True,
@@ -630,3 +648,77 @@ def test_trained_brill_roundtrip_tags_correctly(pathsec_sandbox):
     assert isinstance(reg, RegexpTagger)
     for pattern, _tag in reg._regexps:
         assert isinstance(pattern, TimedPattern) and pattern._timeout is _UNSET
+
+
+# ===========================================================================
+# Guard: the subprocess child env forwards ONLY the checkout, never the cwd.
+# A naive ``os.pathsep.join(sys.path)`` forwards pytest's rootdir (an absolute
+# cwd) plus user-site / site-packages, so a stray or hostile same-named module
+# (``nltk.py``, ``pickle.py``) or a planted ``sitecustomize.py`` in that cwd
+# could hijack the child and make a security assertion pass vacuously. These
+# pin _child_env's safe invariant and prove the naive construction was exploitable.
+# ===========================================================================
+
+
+def test_child_env_forwards_only_the_checkout_root():
+    """``_child_env`` puts the checkout root (the dir holding the ``nltk`` package)
+    first on PYTHONPATH, carries no empty component, and sets ``PYTHONSAFEPATH``; it
+    does not splice the whole runtime ``sys.path`` (cwd / user-site / site-packages)
+    into the child."""
+    env = _child_env()
+    root = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
+    parts = env["PYTHONPATH"].split(os.pathsep)
+    assert parts[0] == root
+    assert "" not in parts  # no empty entry -> child never adds its cwd via PYTHONPATH
+    assert env["PYTHONSAFEPATH"] == "1"  # -c child does not prepend its cwd either
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 11),
+    reason="PYTHONSAFEPATH (drops the -c child's implicit cwd) needs Python 3.11+",
+)
+def test_child_env_pins_nltk_to_checkout_from_a_hostile_cwd(tmp_path):
+    """Reproduction: run a ``-c`` child from a cwd seeded with a hostile ``nltk.py``
+    and ``sitecustomize.py``. With ``_child_env`` the child still imports ``nltk``
+    from the checkout and the planted ``sitecustomize`` never runs, so the security
+    subprocesses exercise the real tree, not attacker code in the cwd."""
+    (tmp_path / "nltk.py").write_text("raise SystemExit('HOSTILE_NLTK_SHADOW')\n")
+    (tmp_path / "sitecustomize.py").write_text(
+        "import sys\n\nsys.stderr.write('HOSTILE_SITECUSTOMIZE\\n')\n"
+    )
+    root = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
+    proc = subprocess.run(
+        [sys.executable, "-c", "import nltk\n\nprint(nltk.__file__)"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        env=_child_env(),
+    )
+    assert proc.returncode == 0, f"child failed: {proc.stderr!r}"
+    assert proc.stdout.strip().startswith(root), proc.stdout
+    assert "HOSTILE" not in proc.stderr  # sitecustomize never executed
+
+
+def test_naive_abs_cwd_on_pythonpath_shadows_nltk(tmp_path):
+    """Teeth: forwarding the cwd as an absolute PYTHONPATH entry (as the discarded
+    ``os.pathsep.join(sys.path)`` did, since pytest inserts the rootdir at
+    ``sys.path[0]``) lets a hostile ``nltk.py`` in that dir shadow the checkout, so
+    the child tests the wrong code. ``_child_env`` omits the cwd, so it is immune;
+    this proves the fix is load-bearing, not cosmetic."""
+    (tmp_path / "nltk.py").write_text("print('HOSTILE_NLTK_SHADOW')\n")
+    root = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
+    naive = dict(
+        os.environ,
+        PYTHONPATH=os.pathsep.join([str(tmp_path), root]),
+        PYTHONSAFEPATH="1",  # isolate the effect to the forwarded PYTHONPATH entry
+    )
+    proc = subprocess.run(
+        [sys.executable, "-c", "import nltk"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        env=naive,
+    )
+    assert "HOSTILE_NLTK_SHADOW" in proc.stdout  # naive env imported the wrong nltk
