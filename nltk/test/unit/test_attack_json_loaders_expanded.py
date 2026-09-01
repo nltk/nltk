@@ -233,6 +233,135 @@ def test_helper_stream_size_cap_bounds_memory():
         safe_json_load(huge, max_bytes=100)
 
 
+# JSONTaggedDecoder (NLTK model-artifact tag decoder): its ``super().decode``
+# runs the recursive C accelerator, so it must bound nesting BEFORE that call,
+# not only in the later Python ``decode_obj`` walk (GHSA-rf74-v2fm-23pw).
+
+
+def test_tagged_decoder_deep_nesting_prescanned_not_crashed():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    payload = "[" * DEEP + "]" * DEEP
+    with pytest.raises(ValueError, match="nesting depth"):
+        JSONTaggedDecoder().decode(payload)
+
+
+def test_tagged_decoder_deep_via_json_loads_cls_refused():
+    # The stdlib entry point (json.loads(..., cls=JSONTaggedDecoder)) routes
+    # through the same decode(), so it is bounded too.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    payload = '{"a":' * DEEP + "1" + "}" * DEEP
+    with pytest.raises(ValueError, match="nesting depth"):
+        json.loads(payload, cls=JSONTaggedDecoder)
+
+
+def test_tagged_decoder_benign_tagged_roundtrip():
+    from nltk.jsontags import JSONTaggedDecoder, JSONTaggedEncoder, register_tag
+
+    @register_tag
+    class _Point:
+        json_tag = "test_attack_json._Point"
+
+        def __init__(self, n):
+            self.n = n
+
+        def encode_json_obj(self):
+            return self.n
+
+        @classmethod
+        def decode_json_obj(cls, obj):
+            return cls(obj)
+
+    encoded = json.dumps(_Point(7), cls=JSONTaggedEncoder)
+    restored = JSONTaggedDecoder().decode(encoded)
+    assert isinstance(restored, _Point) and restored.n == 7
+
+
+def test_tagged_decoder_unknown_tag_refused():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    with pytest.raises(ValueError, match="Unknown tag"):
+        JSONTaggedDecoder().decode('{"!nltk.not.a.real.tag": 1}')
+
+
+def test_tagged_decoder_depth_at_limit_still_decodes():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    # A document exactly at the decode-depth limit is legitimate and still loads.
+    ok = JSONTaggedDecoder().decode("[" * 200 + "]" * 200)
+    assert isinstance(ok, list)
+
+
+# The structural-depth scan is the whole guarantee, so it must never UNDERCOUNT
+# real nesting (which would let a deep payload slip past): brackets inside string
+# literals must not count; real brackets outside them always must.
+
+
+def test_scan_ignores_brackets_inside_strings():
+    from nltk.jsontags import _scan_json_depth
+
+    # An array holding one string full of brackets nests exactly one level.
+    assert _scan_json_depth('["' + "[{" * 5000 + '"]', 10**9) == 1
+
+
+def test_scan_honors_escaped_quotes_and_backslashes():
+    from nltk.jsontags import _scan_json_depth
+
+    # \" does not close the string (brackets after it are still in-string);
+    # \\ then " does close it (the following bracket is real, depth 2).
+    assert _scan_json_depth('["a\\"[[[b"]', 10**9) == 1
+    assert _scan_json_depth('["a\\\\"[]', 10**9) == 2
+
+
+def test_scan_does_not_undercount_deep_nesting_after_strings():
+    from nltk.jsontags import _scan_json_depth
+
+    # Real deep nesting hidden after a closed string with escape trickery is
+    # still fully counted, so safe_json_loads cannot be tricked into accepting it.
+    payload = '"a\\"]}[b"' + "[" * 4000 + "]" * 4000
+    assert _scan_json_depth(payload, 10**9) == 4000
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        '["' + "[" * 500 + '"]',  # brackets buried in a string
+        '"\\""' + "[{" * 300,  # escaped quote then real mixed nesting
+        "{" + '"k":' * 150 + "1" + "}" * 150,  # deep via object values
+        "[{" * 150 + "1" + "}]" * 150,  # deep via mixed brackets
+    ],
+)
+def test_scan_soundness_accepted_inputs_do_not_out_nest_the_scan(payload):
+    from nltk.jsontags import _scan_json_depth
+
+    # For each adversarial input, the scan's depth must be >= the depth the real
+    # parser reaches, so an accepted document can never recurse past the bound.
+    scanned = _scan_json_depth(payload, 10**9)
+    try:
+        parsed = json.loads(payload)
+    except ValueError:
+        return  # malformed: no object graph, nothing to out-nest
+    assert scanned >= _actual_depth(parsed)
+
+
+def _actual_depth(obj):
+    if isinstance(obj, dict):
+        return 1 + max((_actual_depth(v) for v in obj.values()), default=0)
+    if isinstance(obj, list):
+        return 1 + max((_actual_depth(v) for v in obj), default=0)
+    return 0
+
+
+def test_giant_shallow_array_bounded_by_size_not_depth():
+    from nltk.jsontags import safe_json_loads
+
+    # A huge but shallow array is not a depth attack; the size cap bounds it.
+    payload = "[" + ",".join("0" for _ in range(5000)) + "]"
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads(payload, max_bytes=100)
+
+
 # Teeth: the stock decoder hard-crashes on the same payload, proving the guard
 # above is non-vacuous, and the guard survives that payload with the recursion
 # limit lifted.
