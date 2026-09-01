@@ -265,3 +265,38 @@ def test_short_catastrophic_pattern_compiles_but_match_is_capped():
     assert result.stdout.strip() in ("BOUNDED", "RETURNED"), (
         result.stdout + result.stderr
     )
+
+
+# ---------------------------------------------------------------------------
+# Canonical catastrophic-backtracking regexes from the ReDoS literature. The
+# regex engine collapses most of them to linear, and the few it still backtracks
+# on are cut off by the wall-clock cap - so redos.compile NEVER hangs on any.
+# (In-process is safe: the cap fires within ``timeout`` if the engine backtracks.)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "pattern,bait",
+    [
+        (r"(a+)+$", "a" * 45 + "!"),
+        (r"(a*)*$", "a" * 45 + "!"),
+        (r"(a|a)*$", "a" * 45 + "!"),
+        (r"(a|ab)*$", "a" * 45 + "!"),
+        (r"([a-zA-Z]+)*$", "a" * 40 + "1"),
+        (r"(\w+\s?)*$", "a" * 40 + "!"),
+        (r"(x+x+)+y", "x" * 40),
+        (r"(\d+)*$", "1" * 40 + "x"),
+        (r"^(([a-z])+.)+[A-Z]([a-z])+$", "a" * 28),
+        (r"(a?){30}a{30}", "a" * 30),
+        (r"([^\s]+ )+$", "a " * 30 + "b"),
+        (r"(([a-z])+)+$", "a" * 35 + "1"),
+        (r"(a+)+b", "a" * 45),
+        (r"(0*)*1", "0" * 45),
+    ],
+)
+def test_canonical_evil_regex_never_hangs_match(pattern, bait):
+    tp = redos.compile(pattern)  # compiles fine (short + shallow)
+    try:
+        tp.search(bait, timeout=1.0)
+    except TimeoutError:
+        pass  # the wall-clock cap fired: bounded, not hung - exactly the defence
