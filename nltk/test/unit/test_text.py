@@ -46,14 +46,17 @@ def test_default_timeout_resolved_at_call_time(monkeypatch):
     earlier (a literal default would have bound the value at definition time).
     """
     import nltk.text as text_mod
+    from nltk.redos import TimedPattern
 
     captured = {}
 
-    def fake_findall(pattern, string, timeout=None):
+    def fake_findall(self, string, *args, timeout=None, **kwargs):
         captured["timeout"] = timeout
         return []
 
-    monkeypatch.setattr(text_mod.regex, "findall", fake_findall)
+    # findall now routes through redos.compile(regexp).findall(..., timeout=...);
+    # intercept the wrapped pattern's method to observe the resolved timeout.
+    monkeypatch.setattr(TimedPattern, "findall", fake_findall)
 
     # TokenSearcher.findall resolves the module constant at call time.
     monkeypatch.setattr(text_mod, "TOKENSEARCH_TIMEOUT", 12.5)
