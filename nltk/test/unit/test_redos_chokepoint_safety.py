@@ -71,7 +71,10 @@ class TestCheckPatternSelfDoS:
         assert redos.compile("a{b}c").match("a{b}c") is not None
 
     def test_real_counted_repeat_bomb_still_refused(self):
-        for bomb in ["(aaa){50000}", "(?:xy){40000}", "a{50000}{50000}"]:
+        # ``(?:xyz){40000}`` (body 3 * 39999 = 119997) is a real bomb; ``(?:xy)``
+        # would be 79998 < the limit and must NOT be refused (see the
+        # group-introducer tests) -- only the BODY drives the product.
+        for bomb in ["(aaa){50000}", "(?:xyz){40000}", "a{50000}{50000}"]:
             with pytest.raises(ValueError):
                 redos.compile(bomb)
 
@@ -82,6 +85,69 @@ class TestCheckPatternSelfDoS:
             redos.check_pattern("[" * (redos.MAX_NESTING_DEPTH + 5))
         with pytest.raises(ValueError):
             redos.check_pattern("a" * (redos.MAX_PATTERN_LENGTH + 1))
+
+
+# ==========================================================================
+# check_pattern must count a group's BODY, not its introducer syntax
+# ==========================================================================
+
+
+class TestCheckPatternGroupIntroducer:
+    # A group introducer -- ``(?:``, ``(?P<name>``, ``(?=``/``(?!``, ``(?<=``/
+    # ``(?<!``, ``(?>``, ``(?#comment)``, inline ``(?flags:`` -- is syntax, not
+    # repeatable atoms. Counting it (the pre-fix behaviour) inflated the
+    # repetition product and FALSELY refused legitimate patterns whose real
+    # expansion is under the limit; only the group BODY may drive the product.
+    @pytest.mark.parametrize(
+        "pattern",
+        [
+            "(?:a){99999}",  # real product 99998 < 100000
+            "(?:ab){40000}",  # 2 * 39999 = 79998
+            "(?P<g>a){60000}",  # named group body is one atom
+            "(?<name>a){60000}",  # regex-style named group
+            "(?=abc)(?:x){50000}",  # lookahead (zero-width) + group
+            "(?!no)(?:y){70000}",  # negative lookahead
+            "(?<=ab)x{90000}",  # lookbehind + atom
+            "(?i:abc){30000}",  # inline scoped flags
+            "(?#a comment)(a){99999}",  # comment group is inert
+            "(?:a){50001}",  # just over half the limit, still fine
+        ],
+    )
+    def test_legit_introducer_patterns_accepted(self, pattern):
+        # Accepted by the guard AND genuinely compilable by the engine (so these
+        # are real, valid patterns the guard must not reject).
+        import regex
+
+        redos.check_pattern(pattern)  # must not raise
+        assert regex.compile(pattern) is not None
+        assert isinstance(redos.compile(pattern), redos.TimedPattern)
+
+    @pytest.mark.parametrize(
+        "pattern",
+        [
+            "(?:aaa){50000}",  # body 3 * 49999 = 149997 -> real bomb
+            "(?:aa){60000}",  # 2 * 59999 = 119998
+            "(?:a){200000}",  # huge count
+            "(?P<g>aaaa){40000}",  # named group, body 4 * 39999
+            "(?=x)(?:aaa){50000}",  # lookahead + bomb body
+            "(?:(?:a){400}){400}",  # nested: 400 * 400 = 160000
+            "(?:x){" + "9" * 20000 + "}",  # giant count digits
+        ],
+    )
+    def test_bombs_with_introducers_still_refused(self, pattern):
+        # The fix excludes only introducer SYNTAX; the body atoms are still
+        # counted, so a genuine counted-repetition bomb wrapped in any group form
+        # must STILL be refused -- no exploit leaks through.
+        with pytest.raises(ValueError):
+            redos.check_pattern(pattern)
+
+    def test_many_introducers_is_linear_and_accepted(self):
+        # Many sequential non-capturing groups: the introducer skip must be
+        # linear (a windowed scan, not O(n**2)), and 15000 single-atom groups are
+        # well under the repetition limit, so the pattern must be accepted.
+        pat = "(?:a)" * 15000
+        assert _elapsed(lambda: redos.check_pattern(pat)) < 1.0
+        redos.check_pattern(pat)  # accepted -- no false bomb
 
 
 # ==========================================================================
