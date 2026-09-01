@@ -76,6 +76,11 @@ jobs:
         exclude:
           - os: windows-latest
             python-version: '3.14t'  # scikit-learn issue on Py3.14t on Windows
+          - os: macos-latest
+            python-version: '3.14t'  # free-threaded macOS hosted runner is not
+                                      # acquirable (job hangs ~26m then errors:
+                                      # "not acquired by Runner of type hosted");
+                                      # 3.14t is still covered on ubuntu-latest
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
