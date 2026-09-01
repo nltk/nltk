@@ -40,6 +40,11 @@ Three groups:
    full column/row = O(V^2) reporting residual to CVE-2026-12839's O(n)
    constructor, now O(1) via a cached column total beside the row total).
 
+6. The Snowball stemmers (dutch/english/french/german/italian/romanian): the
+   "mark interior y/i/u as a consonant" step rebuilt the whole string on each
+   match inside a per-position loop = O(n^2) on a crafted token; now an in-place
+   list mutation joined once (byte-for-byte identical output).
+
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
 sweep also *cleared* several look-alikes as linear or by-design; those are kept
@@ -618,6 +623,62 @@ class TestConfusionMatrixEvaluateQuadratic:  # residual to CVE-2026-12839
 
         t1, t4 = el(300), el(1200)  # 4x input
         assert t4 < 8 * t1 + 0.5  # linear ~4x, pre-fix O(V^2) ~16x
+
+
+class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebuild
+    # Six stem() methods upper-cased interior y/i/u via
+    # ``word = "".join((word[:i], X, word[i+1:]))`` inside a per-position loop,
+    # i.e. O(n) rebuild * O(n) matches = O(n**2) on a crafted token (``"aei"*n``
+    # makes every 'i' sit between vowels; a ~0.5 MB token hung ~15s). In-place
+    # list mutation makes it linear and is byte-for-byte identical output.
+    ANCHORS = {
+        "dutch": ("installatie", "installatie"),
+        "english": ("generously", "generous"),
+        "french": ("quelconque", "quelconqu"),
+        "german": ("quellwasser", "quellwass"),
+        "italian": ("nazionale", "nazional"),
+        "romanian": ("continuare", "continu"),
+    }
+    TRIGGERS = [
+        ("dutch", "aei"),
+        ("english", "ay"),
+        ("french", "qu"),
+        ("german", "aua"),
+        ("italian", "aei"),
+        ("romanian", "aei"),
+    ]
+
+    @pytest.mark.parametrize("lang", list(ANCHORS))
+    def test_correctness_preserved(self, lang):
+        from nltk.stem.snowball import SnowballStemmer
+
+        w, expected = self.ANCHORS[lang]
+        assert SnowballStemmer(lang).stem(w) == expected
+
+    @pytest.mark.parametrize("lang,unit", TRIGGERS)
+    def test_upcase_loop_is_linear(self, lang, unit):
+        import statistics
+
+        from nltk.stem.snowball import SnowballStemmer
+
+        st = SnowballStemmer(lang).stem
+
+        def med(n):
+            return statistics.median(_elapsed(lambda: st(unit * n)) for _ in range(3))
+
+        t1 = med(8000)
+        t4 = med(32000)  # 4x input: linear ~4x, pre-fix O(n^2) ~16x
+        assert t4 < 8 * t1 + 0.5
+
+    def test_negative_control_langs_stay_linear(self):
+        # spanish/portuguese have no rebuild loop; german upcases only u/y (not
+        # i). ``"aei"*n`` must stay linear -- a guard against a future change that
+        # reintroduces the vulnerable idiom into these.
+        from nltk.stem.snowball import SnowballStemmer
+
+        for lang in ("spanish", "portuguese"):
+            st = SnowballStemmer(lang).stem
+            assert _elapsed(lambda: st("aei" * 40000)) < 2.0
 
 
 # ==========================================================================

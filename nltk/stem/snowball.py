@@ -1123,17 +1123,22 @@ class DutchStemmer(_StandardStemmer):
         if word.startswith("y"):
             word = "".join(("Y", word[1:]))
 
-        for i in range(1, len(word)):
-            if word[i - 1] in self.__vowels and word[i] == "y":
-                word = "".join((word[:i], "Y", word[i + 1 :]))
+        # Mutate a list in place and join once: rebuilding the whole string on
+        # each match is O(n) per match, so a crafted token was O(n**2) (CWE-407).
+        # Reads see earlier upper-casings just as the rebuilt string did.
+        chars = list(word)
+        for i in range(1, len(chars)):
+            if chars[i - 1] in self.__vowels and chars[i] == "y":
+                chars[i] = "Y"
 
-        for i in range(1, len(word) - 1):
+        for i in range(1, len(chars) - 1):
             if (
-                word[i - 1] in self.__vowels
-                and word[i] == "i"
-                and word[i + 1] in self.__vowels
+                chars[i - 1] in self.__vowels
+                and chars[i] == "i"
+                and chars[i + 1] in self.__vowels
             ):
-                word = "".join((word[:i], "I", word[i + 1 :]))
+                chars[i] = "I"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
 
@@ -1427,9 +1432,13 @@ class EnglishStemmer(_StandardStemmer):
         if word.startswith("y"):
             word = "".join(("Y", word[1:]))
 
-        for i in range(1, len(word)):
-            if word[i - 1] in self.__vowels and word[i] == "y":
-                word = "".join((word[:i], "Y", word[i + 1 :]))
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
+        for i in range(1, len(chars)):
+            if chars[i - 1] in self.__vowels and chars[i] == "y":
+                chars[i] = "Y"
+        word = "".join(chars)
 
         step1a_vowel_found = False
         step1b_vowel_found = False
@@ -2279,26 +2288,30 @@ class FrenchStemmer(_StandardStemmer):
         step2a_success = False
         step2b_success = False
 
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407). Reads see earlier upper-casings as before.
+        chars = list(word)
         # Every occurrence of 'u' after 'q' is put into upper case.
-        for i in range(1, len(word)):
-            if word[i - 1] == "q" and word[i] == "u":
-                word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars)):
+            if chars[i - 1] == "q" and chars[i] == "u":
+                chars[i] = "U"
 
         # Every occurrence of 'u' and 'i'
         # between vowels is put into upper case.
         # Every occurrence of 'y' preceded or
         # followed by a vowel is also put into upper case.
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "i":
-                    word = "".join((word[:i], "I", word[i + 1 :]))
+                elif chars[i] == "i":
+                    chars[i] = "I"
 
-            if word[i - 1] in self.__vowels or word[i + 1] in self.__vowels:
-                if word[i] == "y":
-                    word = "".join((word[:i], "Y", word[i + 1 :]))
+            if chars[i - 1] in self.__vowels or chars[i + 1] in self.__vowels:
+                if chars[i] == "y":
+                    chars[i] = "Y"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self.__rv_french(word, self.__vowels)
@@ -2657,13 +2670,17 @@ class GermanStemmer(_StandardStemmer):
 
         # Every occurrence of 'u' and 'y'
         # between vowels is put into upper case.
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "y":
-                    word = "".join((word[:i], "Y", word[i + 1 :]))
+                elif chars[i] == "y":
+                    chars[i] = "Y"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
 
@@ -3406,21 +3423,25 @@ class ItalianStemmer(_StandardStemmer):
             .replace("\xfa", "\xf9")
         )
 
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
         # Every occurrence of 'u' after 'q'
         # is put into upper case.
-        for i in range(1, len(word)):
-            if word[i - 1] == "q" and word[i] == "u":
-                word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars)):
+            if chars[i - 1] == "q" and chars[i] == "u":
+                chars[i] = "U"
 
         # Every occurrence of 'u' and 'i'
         # between vowels is put into upper case.
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "i":
-                    word = "".join((word[:i], "I", word[i + 1 :]))
+                elif chars[i] == "i":
+                    chars[i] = "I"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -4286,13 +4307,17 @@ class RomanianStemmer(_StandardStemmer):
         step1_success = False
         step2_success = False
 
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "i":
-                    word = "".join((word[:i], "I", word[i + 1 :]))
+                elif chars[i] == "i":
+                    chars[i] = "I"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
