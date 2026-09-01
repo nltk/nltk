@@ -26,7 +26,12 @@ import pytest
 
 _EVIL = r"(a+)+$"
 _BAIT = "a" * 34 + "!"
-_LIMIT = 20
+# Hang-detection ceiling for the subprocess, NOT the ReDoS bound (that is
+# redos's own wall-clock limit, a few seconds, applied inside the child). A
+# bounded pattern returns almost immediately; this only has to be long enough
+# that a fresh interpreter's ``import nltk`` under a fully loaded CI/test host
+# never trips it, while still catching a genuine unbounded hang.
+_LIMIT = 90
 
 
 def _run(code):
