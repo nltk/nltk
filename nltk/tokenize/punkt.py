@@ -1427,18 +1427,18 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
             >>> pst = PunktSentenceTokenizer()
             >>> text = "Very bad acting!!! I promise."
-            >>> list(pst._lang_vars.period_context_re().finditer(text)) # doctest: +NORMALIZE_WHITESPACE
-            [<re.Match object; span=(15, 16), match='!'>,
-            <re.Match object; span=(16, 17), match='!'>,
-            <re.Match object; span=(17, 18), match='!'>]
+            >>> list(pst._lang_vars.period_context_re().finditer(text)) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+            [<...Match object; span=(15, 16), match='!'>,
+            <...Match object; span=(16, 17), match='!'>,
+            <...Match object; span=(17, 18), match='!'>]
 
         So, we need to find the word before the match from right to left, and then manually remove
         the overlaps. That is what this method does::
 
             >>> pst = PunktSentenceTokenizer()
             >>> text = "Very bad acting!!! I promise."
-            >>> list(pst._match_potential_end_contexts(text))
-            [(<re.Match object; span=(17, 18), match='!'>, 'acting!!! I')]
+            >>> list(pst._match_potential_end_contexts(text)) # doctest: +ELLIPSIS
+            [(<...Match object; span=(17, 18), match='!'>, 'acting!!! I')]
 
         :param text: String of one or more sentences
         :type text: str
