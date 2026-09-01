@@ -36,6 +36,20 @@ CATASTROPHIC = r"(a|a)*$"
 BAIT = "a" * 40 + "!"
 
 
+def _su(s):
+    """A protocol-4 unicode-string opcode for ``s``, valid at ANY length.
+
+    ``SHORT_BINUNICODE`` carries a 1-byte length, so ``bytes([len(raw)])`` raises
+    ``ValueError`` once the string exceeds 255 bytes. Fall back to ``BINUNICODE``
+    (4-byte little-endian length) so a long hostile string -- a class name padded
+    to smuggle past a length check, an oversized regex, a huge tag -- still encodes
+    and the attack it drives is exercised rather than silently un-buildable."""
+    raw = s.encode()
+    if len(raw) < 256:
+        return pickle.SHORT_BINUNICODE + bytes([len(raw)]) + raw
+    return pickle.BINUNICODE + len(raw).to_bytes(4, "little") + raw
+
+
 # ===========================================================================
 # Builders: malicious taggers from allowlisted names; NEWOBJ+BUILD skips __init__.
 # ===========================================================================
@@ -139,13 +153,10 @@ _CHILD = textwrap.dedent(
 
 def _run_child(pickle_path, mode, cap, bait, wall_timeout):
     """Run the child on ``pickle_path``; return (timed_out, stdout)."""
-    env = os.environ.copy()
-    pkg_root = os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.abspath(demo.__file__)))
-        )
-    )
-    env["PYTHONPATH"] = pkg_root + os.pathsep + env.get("PYTHONPATH", "")
+    # Import the CURRENT checkout in the child: forward this process's sys.path
+    # (the established pattern in this suite) rather than deriving a package root
+    # from demo.__file__ with brittle dirname arithmetic.
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
     try:
         proc = subprocess.run(
             [sys.executable, "-c", _CHILD, str(pickle_path), mode, str(cap), bait],
@@ -273,9 +284,7 @@ def test_reduce_constructor_args_no_exec():
     import pickletools
 
     # Protocol-4 pickle equivalent to REDUCE(DefaultTagger, ('PWNED',)).
-    def su(s):
-        raw = s.encode()
-        return pickle.SHORT_BINUNICODE + bytes([len(raw)]) + raw
+    su = _su
 
     payload = (
         pickle.PROTO
@@ -334,13 +343,10 @@ def test_deeply_nested_graph_is_bounded(pathsec_sandbox):
         print("LOADED", depth)
         """
     )
-    env = os.environ.copy()
-    pkg_root = os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.abspath(demo.__file__)))
-        )
-    )
-    env["PYTHONPATH"] = pkg_root + os.pathsep + env.get("PYTHONPATH", "")
+    # Import the CURRENT checkout in the child: forward this process's sys.path
+    # (the established pattern in this suite) rather than deriving a package root
+    # from demo.__file__ with brittle dirname arithmetic.
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
     proc = subprocess.run(
         [sys.executable, "-c", child, str(path)],
         capture_output=True,
@@ -380,13 +386,10 @@ def test_huge_flat_graph_is_linear(pathsec_sandbox):
         print("LOADED", len(obj))
         """
     )
-    env = os.environ.copy()
-    pkg_root = os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.abspath(demo.__file__)))
-        )
-    )
-    env["PYTHONPATH"] = pkg_root + os.pathsep + env.get("PYTHONPATH", "")
+    # Import the CURRENT checkout in the child: forward this process's sys.path
+    # (the established pattern in this suite) rather than deriving a package root
+    # from demo.__file__ with brittle dirname arithmetic.
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
     proc = subprocess.run(
         [sys.executable, "-c", child, str(path)],
         capture_output=True,
@@ -424,9 +427,7 @@ def test_gadget_hidden_in_build_state_is_refused():
     """A gadget global placed inside a class's BUILD state (not as the top-level
     reduce callable) is still routed through ``find_class`` and refused."""
 
-    def su(s):
-        raw = s.encode()
-        return pickle.SHORT_BINUNICODE + bytes([len(raw)]) + raw
+    su = _su
 
     payload = (
         pickle.PROTO
@@ -475,9 +476,7 @@ def test_object_sentinel_is_inert():
     ``__reduce__`` override and no ``__setstate__``/``__setattr__`` hook that a
     BUILD could ride, so it cannot be leveraged into a gadget."""
 
-    def su(s):
-        raw = s.encode()
-        return pickle.SHORT_BINUNICODE + bytes([len(raw)]) + raw
+    su = _su
 
     payload = (
         pickle.PROTO
@@ -501,9 +500,7 @@ def test_object_sentinel_cannot_take_build_state():
     """A bare ``object()`` has no ``__dict__`` and no ``__setstate__``, so a BUILD
     that tries to give it attacker state fails; it is not a state sink."""
 
-    def su(s):
-        raw = s.encode()
-        return pickle.SHORT_BINUNICODE + bytes([len(raw)]) + raw
+    su = _su
 
     payload = (
         pickle.PROTO
@@ -522,6 +519,64 @@ def test_object_sentinel_cannot_take_build_state():
     )
     with pytest.raises((AttributeError, pickle.UnpicklingError, TypeError)):
         demo._load_tbl_model(io.BytesIO(payload))
+
+
+# ===========================================================================
+# Payload class 7: oversize (> 255-byte) strings the 1-byte-length helper could
+# not encode -- now reachable, so the guards are actually exercised on them.
+# ===========================================================================
+
+
+def test_reduce_oversize_string_arg_is_inert():
+    """A REDUCE whose string arg exceeds 255 bytes -- unencodable with the old
+    1-byte-length helper -- still builds an inert ``DefaultTagger``: the loader
+    runs no code, the long hostile string just becomes the returned tag."""
+    big = "P" * 5000  # forces BINUNICODE (SHORT_BINUNICODE cannot carry this)
+    payload = (
+        pickle.PROTO
+        + bytes([4])
+        + _su("nltk.tag.sequential")
+        + _su("DefaultTagger")
+        + pickle.STACK_GLOBAL
+        + _su(big)
+        + pickle.TUPLE1
+        + pickle.REDUCE
+        + pickle.STOP
+    )
+    obj = demo._load_tbl_model(io.BytesIO(payload))
+    assert isinstance(obj, DefaultTagger)
+    assert obj.tag(["w"]) == [("w", big)]  # inert: no side effect beyond tagging
+
+
+def test_oversize_nonallowlisted_global_name_is_refused():
+    """A ``STACK_GLOBAL`` naming a > 255-byte module the allowlist does not list is
+    refused by ``find_class``. A padded name cannot smuggle past the guard, and the
+    long name is encodable now, so the refusal is actually exercised rather than
+    impossible to express."""
+    payload = (
+        pickle.PROTO
+        + bytes([4])
+        + _su("os" + "X" * 5000)  # long, non-allowlisted module
+        + _su("system")
+        + pickle.STACK_GLOBAL
+        + pickle.STOP
+    )
+    with pytest.raises(pickle.UnpicklingError):
+        demo._load_tbl_model(io.BytesIO(payload))
+
+
+def test_oversize_hostile_regexp_tagger_pattern_is_capped():
+    """A RegexpTagger carrying a > 255-byte catastrophic pattern (a long chain of
+    identical alternations) is still re-derived to a capped TimedPattern by the
+    demo loader, so tagging on the bait is bounded, not a hang."""
+    big_evil = "(" + "a|" * 300 + "a)*$"  # > 255 bytes, still catastrophic
+    raw = regex.compile(big_evil)
+    payload = pickle.dumps(_regexp_tagger_with(raw), protocol=4)
+    obj = demo._load_tbl_model(io.BytesIO(payload))
+    pat = obj._regexps[0][0]
+    assert isinstance(pat, TimedPattern)  # re-derived to a capped pattern
+    with pytest.raises(TimeoutError):
+        pat.search(BAIT, timeout=0.3)  # the wall-clock cap trips -> bounded
 
 
 # ===========================================================================
