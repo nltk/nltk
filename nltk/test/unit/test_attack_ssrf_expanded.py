@@ -450,6 +450,10 @@ def _force_proxied(monkeypatch, no_bypass_for=None):
     monkeypatch.setattr(urllib.request, "_opener", None)
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
     monkeypatch.setattr(pathsec, "_numeric_ipv4", lambda h: None)
+    # Neuter the address classifier too: it now also backs the resolver-
+    # independent IP-literal check, and an IP-literal target would otherwise be
+    # refused there first, before the proxy guard under test.
+    monkeypatch.setattr(pathsec, "_ip_is_forbidden", lambda ip: False)
     monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", False)
     proxies = {"http": "http://proxy.local:3128", "https": "http://proxy.local:3128"}
     if no_bypass_for is not None:
@@ -536,3 +540,135 @@ def test_live_public_hostname_allowed():
     except (OSError, socket.gaierror):
         pytest.skip("no network / DNS available for the live benign control")
     assert _verdict(f"https://{host}/nltk/nltk_data/gh-pages/index.xml") == "allowed"
+
+
+# =========================================================================== #
+# 13. IPv6 wrappers / tunnels wrapping an internal IPv4, and plain internal
+#     IPv6, asserted at the classification layer (platform-independent)
+# =========================================================================== #
+
+# Each wrapper (NAT64 64:ff9b::/96, 6to4 2002::/16, Teredo 2001:0::/32, the
+# IPv4-mapped ::ffff:0:0/96 and IPv4-compatible ::/96 prefixes) can smuggle a
+# forbidden internal IPv4 past a naive is_global check on the wrapper. 6to4 and
+# Teredo are refused outright regardless of the embedded address because their
+# is_global classification varies across CPython patch levels.
+_INTERNAL_IPV6_LITERALS = [
+    "64:ff9b::7f00:1",  # NAT64 wrapping 127.0.0.1
+    "64:ff9b::a9fe:a9fe",  # NAT64 wrapping 169.254.169.254 (cloud metadata)
+    "64:ff9b::a00:1",  # NAT64 wrapping 10.0.0.1
+    "64:ff9b::6440:1",  # NAT64 wrapping 100.64.0.1 (CGNAT)
+    "2002:7f00:0001::",  # 6to4 wrapping 127.0.0.1
+    "2002:a9fe:a9fe::",  # 6to4 wrapping 169.254.169.254
+    "2002:0a00:0001::",  # 6to4 wrapping 10.0.0.1
+    "2002:0808:0808::",  # 6to4 wrapping public 8.8.8.8 (over-block)
+    "2001:0:808:808:0:0:80ff:fffe",  # Teredo folding to loopback client
+    "::ffff:127.0.0.1",  # IPv4-mapped loopback
+    "::ffff:7f00:1",  # IPv4-mapped loopback, hex tail
+    "::ffff:169.254.169.254",  # IPv4-mapped cloud metadata
+    "::ffff:10.0.0.1",  # IPv4-mapped private
+    "::127.0.0.1",  # IPv4-compatible loopback
+    "::169.254.169.254",  # IPv4-compatible cloud metadata
+    "::1",  # IPv6 loopback
+    "::",  # IPv6 unspecified
+    "fe80::1",  # IPv6 link-local
+    "fd00::1",  # IPv6 unique-local (private)
+    "ff02::1",  # IPv6 link-local all-nodes multicast
+]
+
+
+@pytest.mark.parametrize("literal", _INTERNAL_IPV6_LITERALS)
+def test_internal_ipv6_forms_forbidden_at_classifier(literal):
+    """Platform-independent: every internal or internal-embedding IPv6 form is
+    refused by the address classifier itself, so the verdict never depends on
+    the host's IPv6 connectivity or resolver behavior."""
+    assert pathsec._ip_is_forbidden(ipaddress.ip_address(literal))
+
+
+@pytest.mark.parametrize(
+    "literal",
+    [
+        "::ffff:8.8.8.8",  # IPv4-mapped PUBLIC v4 => routes to 8.8.8.8, allowed
+        "64:ff9b::808:808",  # NAT64 PUBLIC v4 => routes to 8.8.8.8, allowed
+        "2606:4700:4700::1111",  # genuinely public IPv6 (Cloudflare)
+        "2001:4860:4860::8888",  # genuinely public IPv6 (Google)
+    ],
+)
+def test_public_ipv6_forms_allowed_at_classifier(literal):
+    """The wrapper over-block must not swallow genuinely public destinations:
+    an IPv4-mapped or NAT64 wrapper of a public v4, and plain public IPv6, stay
+    allowed."""
+    assert not pathsec._ip_is_forbidden(ipaddress.ip_address(literal))
+
+
+# =========================================================================== #
+# 14. IP-literal hosts fail CLOSED through validate_network_url even when the
+#     resolver returns nothing (regression for the resolver-independent check)
+# =========================================================================== #
+
+# getaddrinfo returns nothing for a literal whose address family the host lacks
+# (an IPv6 literal on an IPv4-only box, or a stubbed/empty resolver). Before the
+# direct-literal classification these forms fell through the resolve loop and
+# were ALLOWED. Each must now be blocked with no egress.
+_INTERNAL_LITERAL_URLS = [
+    "http://[::1]/",  # IPv6 loopback
+    "http://[::ffff:127.0.0.1]/",  # IPv4-mapped loopback
+    "http://[64:ff9b::7f00:1]/",  # NAT64 loopback
+    "http://[2002:7f00:0001::]/",  # 6to4 loopback
+    "http://[2002:0808:0808::]/",  # 6to4 public over-block
+    "http://[fd00::1]/",  # unique-local
+    "http://[fe80::1]/",  # link-local
+    "http://[64:ff9b::a9fe:a9fe]/",  # NAT64 cloud metadata
+    "http://127.0.0.1/",  # plain IPv4 loopback literal
+    "http://169.254.169.254/",  # plain IPv4 cloud metadata literal
+]
+
+
+@pytest.mark.parametrize("url", _INTERNAL_LITERAL_URLS)
+def test_ip_literal_hosts_fail_closed_with_empty_resolver(
+    url, monkeypatch, no_real_egress
+):
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    assert _verdict(url) == "blocked", f"{url} leaked past validation"
+    assert no_real_egress == [], f"{url} produced egress"
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://[2606:4700:4700::1111]/",  # public IPv6 literal (Cloudflare)
+        "http://[2001:4860:4860::8888]/",  # public IPv6 literal (Google)
+    ],
+)
+def test_public_ip_literal_hosts_allowed(url, monkeypatch):
+    """The resolver-independent literal check must not over-block a genuinely
+    public IPv6 literal."""
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    assert _verdict(url) == "allowed", f"{url} was wrongly blocked"
+
+
+# =========================================================================== #
+# 15. Numeric encodings of non-loopback internal targets on the Windows path
+# =========================================================================== #
+
+# The existing section 1 covers numeric loopback; these extend it to the cloud
+# metadata address, private and unspecified ranges, asserted with the resolver
+# stubbed empty so the numeric guard alone is what blocks them.
+_INTERNAL_NUMERIC_URLS = [
+    "http://2852039166/",  # decimal 169.254.169.254 (cloud metadata)
+    "http://0xA9FEA9FE/",  # hex cloud metadata
+    "http://0251.0376.0251.0376/",  # octal cloud metadata
+    "http://167772161/",  # decimal 10.0.0.1 (private)
+    "http://0x0A000001/",  # hex 10.0.0.1
+    "http://3232235777/",  # decimal 192.168.0.1 (private)
+    "http://0/",  # 0 => 0.0.0.0 (unspecified, routes to localhost on Linux)
+    "http://0.0.0.0/",  # unspecified literal
+]
+
+
+@pytest.mark.parametrize("url", _INTERNAL_NUMERIC_URLS)
+def test_internal_numeric_targets_refused_on_windows_path(
+    url, monkeypatch, no_real_egress
+):
+    monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
+    assert _verdict(url) == "blocked", f"{url} leaked past the numeric guard"
+    assert no_real_egress == [], f"{url} produced egress"
