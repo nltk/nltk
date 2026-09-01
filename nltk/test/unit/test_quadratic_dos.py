@@ -23,6 +23,15 @@ Three groups:
    is now length-capped. jaro's earlier CVE-2026-12926 fix cut the inner loop
    O(n^3)->O(n^2) but left the length unbounded; the cap closes that residual.
 
+4. The second sweep, targeting stem/metric/parse sinks the first pass missed:
+   LancasterStemmer (per-token rule loop rescans the word each pass, O(len^2)),
+   ``metrics.segmentation.ghd`` (O(boundaries^2) DP, unlike its capped
+   ``edit_distance`` cousin and its linear ``windowdiff``/``pk`` siblings),
+   ``translate.lepor.alignment`` (an earlier CVE cut per-token lookup to O(1)
+   but left the repeated-token matching O(n^2)), and
+   ``TransitionParser._is_projective`` (list-membership inside a triple loop =
+   O(V^4), now a set = O(V^3)).
+
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
 sweep also *cleared* several look-alikes as linear or by-design; those are kept
@@ -377,6 +386,116 @@ class TestChildesReplaceDoS:
         reader = CHILDESCorpusReader(str(tmp_path), name)
         assert _elapsed(lambda: reader.words(name, replace=True)) < 5.0
         assert len(reader.words(name, replace=True)) == 8000
+
+
+class TestLancasterStemmerQuadratic:
+    def test_correctness_preserved(self):
+        from nltk.stem.lancaster import LancasterStemmer
+
+        st = LancasterStemmer()
+        assert [
+            st.stem(w)
+            for w in ["maximum", "presumably", "multiply", "provision", "saying"]
+        ] == ["maxim", "presum", "multiply", "provid", "say"]
+        assert LancasterStemmer(strip_prefix_flag=True).stem("kilometer") == "met"
+        assert LancasterStemmer(rule_tuple=("ssen4>", "s1t.")).stem("ness") == "nest"
+
+    def test_over_long_token_returned_unstemmed(self):
+        # Pre-patch: `__getLastLetter` rescans the word from 0 each pass and a
+        # chainable '>' rule runs one pass per two chars, so an all-alpha token
+        # is O(len^2) (16k chars ~ 6s, cleanly quadratic). A real word never
+        # nears the cap, so an over-long token is returned unstemmed, not hung.
+        from nltk.stem.lancaster import MAX_WORD_LEN, LancasterStemmer
+
+        bomb = "a" * 50000
+        assert _elapsed(lambda: LancasterStemmer().stem(bomb)) < 1.0
+        assert LancasterStemmer().stem(bomb) == bomb
+        assert len("a" * MAX_WORD_LEN)  # cap constant is importable
+
+
+class TestGhdQuadratic:  # nltk.metrics.segmentation.ghd
+    def test_correctness_preserved(self):
+        from nltk.metrics.segmentation import ghd
+
+        assert ghd("1100100000", "1100010000", 1.0, 1.0, 0.5) == 0.5
+        assert ghd("011", "110", 1.0, 1.0, 0.5) == 1.0
+        assert ghd("1", "0", 1.0, 1.0, 0.5) == 1.0
+
+    def test_length_is_bounded(self):
+        # O(n_ref_boundaries * n_hyp_boundaries) DP over two segmentations; an
+        # all-boundary pair makes both O(len) -> O(len^2) time+memory. Capped.
+        from nltk.metrics.segmentation import MAX_GHD_INPUT_LEN, ghd
+
+        n = MAX_GHD_INPUT_LEN + 1
+        with pytest.raises(ValueError):
+            ghd("1" * n, "1" * n)
+
+
+class TestLeporAlignmentQuadratic:  # nltk.translate.lepor.alignment
+    def test_correctness_preserved(self):
+        from nltk.translate.lepor import alignment, sentence_lepor
+
+        ref = "the cat sat on the mat".split()
+        hyp = "the cat sat on a mat".split()
+        assert alignment(ref, hyp) == alignment(ref, hyp)  # deterministic
+        assert len(alignment(ref, hyp)) > 0
+        score = sentence_lepor([" ".join(ref)], " ".join(hyp))
+        assert isinstance(score, list) and 0.0 < score[0] <= 1.0
+
+    def test_repeated_token_bomb_is_bounded(self):
+        # An earlier CVE made per-token lookup O(1) but a token repeated R times
+        # still yields R candidate positions inspected R times, so a same-token
+        # sentence stayed O(len^2) (`"a "*5000` timed out). Work-budgeted now.
+        from nltk.translate.lepor import alignment
+
+        bomb = ["a"] * 5000  # 5000*5000 = 25M candidates >> the 4M budget
+        with pytest.raises(ValueError):
+            alignment(bomb, bomb)
+
+    def test_large_distinct_input_stays_linear(self):
+        # Regression guard for the work-budget (not raw-length) choice: many
+        # *distinct* tokens have <=1 candidate each, so the aligner is linear and
+        # must NOT be rejected -- a blanket length cap would wrongly kill this.
+        from nltk.translate.lepor import alignment
+
+        ref = [f"r{i}" for i in range(50000)]
+        hyp = [f"h{i}" for i in range(50000)]  # disjoint => 0 candidates
+        assert _elapsed(lambda: alignment(ref, hyp)) < 5.0
+        assert alignment(ref[:3], ref[:3]) == [1, 2, 3]  # correctness on distinct
+
+
+class TestTransitionParserProjectivity:  # _is_projective list->set
+    def _tp(self):
+        from nltk.parse.transitionparser import TransitionParser
+
+        return TransitionParser("arc-standard")
+
+    def _graph(self, lines):
+        from nltk.parse.dependencygraph import DependencyGraph
+
+        return DependencyGraph("\n".join(lines), top_relation_label="ROOT")
+
+    def test_correctness_preserved(self):
+        tp = self._tp()
+        projective = self._graph(
+            ["John\tN\t2\tSUBJ", "loves\tV\t0\tROOT", "Mary\tN\t2\tOBJ"]
+        )
+        assert tp._is_projective(projective) is True
+        # crossing arcs 1->3 and 2->4 => non-projective
+        crossing = self._graph(
+            ["a\tX\t3\tdep", "b\tX\t4\tdep", "c\tX\t0\tROOT", "d\tX\t3\tdep"]
+        )
+        assert tp._is_projective(crossing) is False
+
+    def test_large_projective_graph_is_bounded(self):
+        # Pre-patch: `(k, m) in arc_list` is an O(V) scan inside a triple loop =>
+        # O(V^4). A set makes membership O(1) => O(V^3). Nested arcs (all words
+        # attach to the last) never early-return, so the full loop runs.
+        v = 200
+        lines = [f"w{i}\tX\t{v}\tdep" for i in range(1, v)] + [f"w{v}\tX\t0\tROOT"]
+        dg = self._graph(lines)
+        assert self._tp()._is_projective(dg) is True
+        assert _elapsed(lambda: self._tp()._is_projective(dg)) < 10.0
 
 
 # ==========================================================================
