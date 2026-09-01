@@ -451,6 +451,13 @@ class AllowlistUnpickler(pickle.Unpickler):
             allowed_modules = (allowed_modules,)
         self._allowed_globals = set(allowed_globals)
         self._allowed_modules = tuple(allowed_modules)
+        # ``allowed_globals`` / ``allowed_modules`` are caller-controlled, so a
+        # caller (or a future refactor) could name a dangerous global. Validate
+        # them here, at construction, so a bad allowlist is refused before a byte
+        # is read, instead of only when a hostile pickle happens to request the
+        # entry. This runs for every construction path, allowlisted_pickle_load
+        # included. The per-``find_class`` guards still apply as defense in depth.
+        _validate_caller_allowlists(self._allowed_globals, self._allowed_modules)
 
     @staticmethod
     def _module_denied(module: str) -> bool:
@@ -622,6 +629,71 @@ _GUARDED_GLOBALS = {
     ("numpy._core.multiarray", "scalar"): _guarded_scalar,
 }
 
+# The scientific-stack top-level packages whose file/module I/O sink qualnames
+# (:data:`_DENIED_SCISTACK_QUALNAMES`) are refused wherever they resolve.
+_SCISTACK_ROOTS = ("numpy", "scipy", "sklearn", "pandas")
+
+
+def _validate_allowlist_entry(module: str, name: str) -> None:
+    """Refuse a caller-supplied ``(module, name)`` allowlist entry that the base
+    guards would reject anyway, at CONFIGURATION time. This is the static mirror
+    of :meth:`AllowlistUnpickler.find_class`'s pre-resolution guards: it decides
+    from the requested strings alone (it never imports the module), so a caller
+    cannot even build a loader whose allowlist names a dotted / dunder global, a
+    denied global, a global in a denied module, or a scientific-stack I/O sink.
+    An audited safe primitive (:data:`_SAFE_DENIED_GLOBALS`, e.g. ``builtins.int``
+    / ``builtins.object``) keeps its exemption. Raises :class:`UnpicklingError`.
+    """
+    if "." in name:
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' has a dotted name, which is "
+            "forbidden (attribute-traversal pickle RCE, GHSA-4489)"
+        )
+    if name.startswith("__") and name.endswith("__"):
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' has a dunder name, which is "
+            "forbidden"
+        )
+    if (module, name) in _SAFE_DENIED_GLOBALS:
+        return  # an audited safe primitive keeps its exemption
+    if (module, name) in _DENIED_GLOBALS:
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' is a denied callable and cannot "
+            "be allowlisted from caller-supplied allowed_globals"
+        )
+    if AllowlistUnpickler._module_denied(module):
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' is from a denied module and "
+            "cannot be allowlisted (defense-in-depth, GHSA-x99w)"
+        )
+    if name in _DENIED_SCISTACK_QUALNAMES and module.split(".")[0] in _SCISTACK_ROOTS:
+        raise pickle.UnpicklingError(
+            f"allowlist entry '{module}.{name}' is a scientific-stack file/module "
+            "I/O sink and cannot be allowlisted (CWE-502)"
+        )
+
+
+def _validate_allowed_module(module: str) -> None:
+    """Refuse an ``allowed_modules`` entry that names (or lives under) a denied
+    module: a caller cannot re-open a denied namespace wholesale."""
+    if AllowlistUnpickler._module_denied(module):
+        raise pickle.UnpicklingError(
+            f"allowed_modules entry '{module}' is a denied module and cannot be "
+            "allowlisted (defense-in-depth, GHSA-x99w)"
+        )
+
+
+def _validate_caller_allowlists(
+    allowed_globals: Iterable[tuple[str, str]],
+    allowed_modules: Iterable[str],
+) -> None:
+    """Validate every caller-supplied allowlist entry (see
+    :func:`_validate_allowlist_entry` / :func:`_validate_allowed_module`)."""
+    for module, name in allowed_globals:
+        _validate_allowlist_entry(module, name)
+    for module in allowed_modules:
+        _validate_allowed_module(module)
+
 
 def allowlisted_pickle_load(
     file: BinaryIO,
@@ -641,10 +713,14 @@ def allowlisted_pickle_load(
     callables (the numpy ``scalar`` reconstructor) are wrapped by
     :data:`_GUARDED_GLOBALS` for every caller automatically.
 
-    See :class:`AllowlistUnpickler` for ``allowed_globals`` / ``allowed_modules``;
-    the base hard guards (denied modules / dotted / dunder / denied globals) bound
-    whatever a caller allows, so a bad ``allowed_globals`` still cannot reach
-    ``os.system`` or ``builtins.eval``. ``sanitize`` is an optional
+    See :class:`AllowlistUnpickler` for ``allowed_globals`` / ``allowed_modules``.
+    Those allowlists are caller-supplied, so they are validated UP FRONT (in the
+    unpickler's constructor, via :func:`_validate_caller_allowlists`): a bad entry
+    (a denied global / module, a dotted or dunder name, a scientific-stack I/O
+    sink) is refused before a byte is read, not merely when a hostile pickle names
+    it. So a caller cannot configure a loader that reaches ``os.system`` or
+    ``builtins.eval``, and the per-``find_class`` guards still run as defense in
+    depth. ``sanitize`` is an optional
     :func:`harden_object_graph` visit run over the result to neutralise hostile
     STATE the name allowlist cannot gate (a compiled regex, an object dtype
     array, ...); it can only refuse or harden, never widen. Prefer this over the

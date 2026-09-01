@@ -144,27 +144,140 @@ def test_allowlist_cannot_widen_to_numpy_denied_sink():
 
 
 def test_allowlist_cannot_admit_a_dunder_name():
-    """A dunder global name is refused by Guard 2 even if the caller allowlists it
-    (dunders reach module internals like ``__builtins__``)."""
-    resolver = AllowlistUnpickler(
-        io.BytesIO(b""),
-        allowed_globals=[("os", "__loader__")],
-        allowed_modules=["os"],
-    )
+    """A dunder global name is refused at the BOUNDARY (constructing a loader that
+    allowlists it raises), and find_class refuses one at runtime too (dunders
+    reach module internals like ``__builtins__``)."""
     with pytest.raises(pickle.UnpicklingError):
-        resolver.find_class("os", "__class__")
+        AllowlistUnpickler(io.BytesIO(b""), allowed_globals=[("os", "__loader__")])
+    benign = AllowlistUnpickler(io.BytesIO(b""), allowed_modules=["nltk"])
+    with pytest.raises(pickle.UnpicklingError):
+        benign.find_class("nltk", "__class__")
 
 
 def test_allowlist_cannot_admit_a_dotted_name():
-    """A dotted global name is refused by Guard 1 even if the caller allowlists it
+    """A dotted global name is refused at the BOUNDARY and at find_class time
     (attribute-traversal RCE, GHSA-4489)."""
-    resolver = AllowlistUnpickler(
-        io.BytesIO(b""),
-        allowed_globals=[("os", "path.join")],
-        allowed_modules=["os"],
-    )
     with pytest.raises(pickle.UnpicklingError):
-        resolver.find_class("os", "path.join")
+        AllowlistUnpickler(io.BytesIO(b""), allowed_globals=[("os", "path.join")])
+    benign = AllowlistUnpickler(io.BytesIO(b""), allowed_modules=["nltk"])
+    with pytest.raises(pickle.UnpicklingError):
+        benign.find_class("nltk", "path.join")
+
+
+# ===========================================================================
+# 2b) the caller allowlists are validated UP FRONT, at construction
+# ===========================================================================
+
+# A dangerous allowed_globals entry is refused when the loader is BUILT, before a
+# byte is read, so a caller "randomly defining stuff" cannot even configure a
+# permissive loader (it does not depend on a hostile pickle naming the entry).
+_BAD_ALLOWED_GLOBALS = [
+    ("os.system", ("posix", "system")),
+    ("os.system (os spelling)", ("os", "system")),
+    ("builtins.eval", ("builtins", "eval")),
+    ("builtins.exec", ("builtins", "exec")),
+    ("subprocess.Popen", ("subprocess", "Popen")),
+    ("marshal.loads", ("marshal", "loads")),
+    ("pickle.Unpickler", ("pickle", "Unpickler")),
+    ("operator.attrgetter", ("operator", "attrgetter")),
+    ("functools.partial", ("functools", "partial")),
+    ("importlib.import_module", ("importlib", "import_module")),
+    ("numpy.load (denied global)", ("numpy", "load")),
+    ("numpy.lib npyio sink", ("numpy.lib.npyio", "load")),
+    ("pandas read_csv sink", ("pandas", "read_csv")),
+    ("scipy.io loadmat sink", ("scipy.io.matlab", "loadmat")),
+    ("dotted name", ("nltk.x", "os.system")),
+    ("dunder name", ("nltk.x", "__reduce_ex__")),
+]
+
+
+@pytest.mark.parametrize(
+    "label,entry", _BAD_ALLOWED_GLOBALS, ids=[c[0] for c in _BAD_ALLOWED_GLOBALS]
+)
+def test_dangerous_allowed_globals_refused_at_construction(label, entry):
+    # Empty bytes: proves the refusal is at construction, not at load of a payload.
+    with pytest.raises(pickle.UnpicklingError):
+        AllowlistUnpickler(io.BytesIO(b""), allowed_globals=[entry])
+    # ...and allowlisted_pickle_load refuses the same config before reading.
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(io.BytesIO(b""), allowed_globals=[entry])
+
+
+_BAD_ALLOWED_MODULES = [
+    "os",
+    "posix",
+    "posixpath",
+    "ntpath",
+    "genericpath",
+    "subprocess",
+    "builtins",
+    "importlib",
+    "marshal",
+    "pickle",
+    "operator",
+    "functools",
+    "ctypes",
+    "socket",
+    "numpy.lib",
+    "numpy.rec",
+    "scipy.io",
+    "pandas.io",
+]
+
+
+@pytest.mark.parametrize("module", _BAD_ALLOWED_MODULES)
+def test_dangerous_allowed_modules_refused_at_construction(module):
+    with pytest.raises(pickle.UnpicklingError):
+        AllowlistUnpickler(io.BytesIO(b""), allowed_modules=[module])
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(io.BytesIO(b""), allowed_modules=[module])
+
+
+def test_every_real_allowlist_still_constructs():
+    """The boundary validator must not reject any allowlist a real caller uses.
+    Every allowlist that ships in this tree (tbl, punkt, transition parser, and
+    the chart parser where it uses AllowlistUnpickler) must construct cleanly.
+    Each is gathered defensively so the test is portable across branches that
+    wire a different set of callers through the allowlisting loader."""
+    reals = []
+
+    def _add(import_path, *names):
+        import importlib
+
+        try:
+            mod = importlib.import_module(import_path)
+            reals.append(tuple(getattr(mod, n) for n in names))
+        except (ImportError, AttributeError):
+            pass  # this caller does not exist / does not use an allowlist here
+
+    _add("nltk.tbl.demo", "_TBL_MODEL_ALLOWED_GLOBALS")
+    _add("nltk.tokenize.punkt", "_PUNKT_ALLOWED_GLOBALS")
+    _add(
+        "nltk.parse.transitionparser",
+        "_MODEL_ALLOWED_GLOBALS",
+        "_MODEL_ALLOWED_MODULES",
+    )
+    _add("nltk.app.chartparser_app", "_CHART_GRAMMAR_ALLOWED_GLOBALS")
+
+    assert reals, "no real allowlists were found to validate"
+    for entry in reals:
+        allowed_globals = entry[0]
+        allowed_modules = entry[1] if len(entry) > 1 else ()
+        # Must NOT raise.
+        AllowlistUnpickler(
+            io.BytesIO(b""),
+            allowed_globals=allowed_globals,
+            allowed_modules=allowed_modules,
+        )
+
+
+@pytest.mark.parametrize(
+    "entry", [("builtins", "int"), ("builtins", "float"), ("builtins", "object")]
+)
+def test_audited_safe_primitives_are_still_allowlistable(entry):
+    """The audited ``_SAFE_DENIED_GLOBALS`` primitives live in denied ``builtins``
+    but keep their exemption, so a legitimate model can still name them."""
+    AllowlistUnpickler(io.BytesIO(b""), allowed_globals=[entry])
 
 
 # ===========================================================================
