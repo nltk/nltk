@@ -61,7 +61,7 @@ class Chat:
 
     def _compile_reflections(self):
         sorted_refl = sorted(self._reflections, key=len, reverse=True)
-        return re.compile(
+        return redos.compile(
             r"\b({})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
         )
 
