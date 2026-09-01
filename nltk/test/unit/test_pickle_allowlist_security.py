@@ -193,14 +193,20 @@ def test_in_namespace_gadget_repp_blocked():
 
 
 def test_denied_module_backstop_even_if_allowlisted():
-    """Defense in depth: os.system / builtins.eval cannot be reconstructed even
-    if a future caller mistakenly allowlists their module or the exact global."""
-    up = AllowlistUnpickler(BytesIO(b""), allowed_modules=("os",))
+    """Defense in depth at two layers. First the boundary: a caller cannot even
+    CONFIGURE a loader that allowlists ``os`` or ``builtins.eval``: the
+    constructor validates the allowlist and refuses it before a byte is read."""
     with pytest.raises(pickle.UnpicklingError):
-        up.find_class("os", "system")
-    up2 = AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "eval"),))
+        AllowlistUnpickler(BytesIO(b""), allowed_modules=("os",))
     with pytest.raises(pickle.UnpicklingError):
-        up2.find_class("builtins", "eval")
+        AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "eval"),))
+    # And even if that boundary were bypassed, find_class still refuses os.system /
+    # builtins.eval on an unrelated (benign) allowlist: the runtime guard stands.
+    benign = AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "int"),))
+    with pytest.raises(pickle.UnpicklingError):
+        benign.find_class("os", "system")
+    with pytest.raises(pickle.UnpicklingError):
+        benign.find_class("builtins", "eval")
 
 
 @pytest.mark.parametrize("module", ["posixpath", "ntpath", "genericpath"])
@@ -208,10 +214,15 @@ def test_os_path_backing_modules_are_denied(module, tmp_path):
     """GHSA-x99w: os.path is denied, but so must be the concrete modules it *is*
     on each platform; else a broad allow of posixpath/ntpath/genericpath would
     reach path/stat/expandvars gadgets (an env-var and filesystem oracle)."""
-    up = AllowlistUnpickler(BytesIO(b""), allowed_modules=(module,))
+    # Boundary: allowlisting the backing module is refused at construction.
     with pytest.raises(pickle.UnpicklingError, match="denied module"):
-        up.find_class(module, "exists")
-    # end-to-end: an expandvars REDUCE must not read the environment
+        AllowlistUnpickler(BytesIO(b""), allowed_modules=(module,))
+    # Runtime backstop: find_class on a benign loader still refuses it.
+    benign = AllowlistUnpickler(BytesIO(b""), allowed_globals=(("builtins", "int"),))
+    with pytest.raises(pickle.UnpicklingError, match="denied module"):
+        benign.find_class(module, "exists")
+    # end-to-end: an expandvars REDUCE must not read the environment. The load is
+    # now refused at configuration time (allowed_modules names a denied module).
     marker = "nltk-env-oracle-9ffx"
     os.environ["NLTK_PICKLE_CANARY"] = marker
     try:

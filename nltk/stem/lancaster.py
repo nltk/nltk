@@ -13,6 +13,12 @@ import re
 
 from nltk.stem.api import StemmerI
 
+#: Longest token the stemmer will process. The rule loop scans the word once per
+#: pass (``__getLastLetter``) and a chainable ``>`` rule can run one pass per two
+#: characters, so a crafted token is O(len**2) (CWE-770). No real word approaches
+#: this, so an over-long token is returned unstemmed rather than pinning a CPU.
+MAX_WORD_LEN = 1000
+
 
 class LancasterStemmer(StemmerI):
     """
@@ -206,6 +212,10 @@ class LancasterStemmer(StemmerI):
         # Lower-case the word, since all the rules are lower-cased
         word = word.lower()
         word = self.__stripPrefix(word) if self._strip_prefix else word
+
+        # An over-long token makes __doStemming O(len**2); leave it unstemmed.
+        if len(word) > MAX_WORD_LEN:
+            return word
 
         # Save a copy of the original word
         intact_word = word

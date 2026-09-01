@@ -12,13 +12,63 @@ import pickle
 import random
 import time
 
+from nltk import redos
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
-from nltk.picklesec import pickle_load
+from nltk.picklesec import allowlisted_pickle_load, pickle_dump
+from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
 from nltk.tbl import Template, error_list
+
+# Exact ``(module, qualname)`` allowlist for the two model files this demo reads
+# back (cached baseline + round-tripped Brill tagger). Loaded from a caller path,
+# so unpickled through an allowlist (CWE-502) instead of executing any global.
+_TBL_MODEL_ALLOWED_GLOBALS = (
+    # The trained tagger itself and its transformation rules / features.
+    ("nltk.tag.brill", "BrillTagger"),
+    ("nltk.tag.brill", "Word"),
+    ("nltk.tag.brill", "Pos"),
+    ("nltk.tbl.rule", "Rule"),
+    # The baseline tagger and the backoff taggers it wraps.
+    ("nltk.tag.sequential", "UnigramTagger"),
+    ("nltk.tag.sequential", "RegexpTagger"),
+    ("nltk.tag.sequential", "DefaultTagger"),
+    # A RegexpTagger stores each pattern as a ReDoS-bounded TimedPattern wrapping
+    # a compiled ``regex`` object, rebuilt from its source by regex._regex.compile.
+    ("nltk.redos", "TimedPattern"),
+    ("regex._regex", "compile"),
+    # The inert default-timeout sentinel a pickled RegexpTagger's TimedPattern
+    # carries; an audited safe primitive in picklesec (a bare object() exposes no
+    # attribute surface and no callable that runs code).
+    ("builtins", "object"),
+)
+
+
+def _tbl_visit(obj):
+    """Re-cap the ReDoS surface the name allowlist cannot: reset every TimedPattern
+    timeout and re-derive each RegexpTagger pattern from its source under a fresh
+    cap, so a raw / uncapped / cap-disabled pattern from an untrusted file dies."""
+    if isinstance(obj, TimedPattern):
+        obj._timeout = redos._UNSET
+        return True
+    if isinstance(obj, RegexpTagger):
+        try:
+            obj._regexps = [(redos.reharden(p), tag) for p, tag in obj._regexps]
+        except ValueError as exc:
+            raise pickle.UnpicklingError(str(exc)) from None
+    return False
+
+
+def _load_tbl_model(file):
+    """Load a tbl demo model file through the allowlisting unpickler, then re-cap via
+    ``sanitize=`` every regex the name allowlist cannot bound (CWE-502 + CWE-1333)."""
+    return allowlisted_pickle_load(
+        file,
+        allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS,
+        sanitize=_tbl_visit,
+    )
 
 
 def demo():
@@ -253,7 +303,7 @@ def postag(
             with pathsec_open(
                 cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
             ) as print_rules:
-                pickle.dump(baseline_tagger, print_rules)
+                pickle_dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {}".format(
                     cache_baseline_tagger
@@ -262,7 +312,7 @@ def postag(
         with pathsec_open(
             cache_baseline_tagger, "rb", context="tbl.demo.cache_baseline_tagger"
         ) as print_rules:
-            baseline_tagger = pickle_load(print_rules)
+            baseline_tagger = _load_tbl_model(print_rules)
             print(f"Reloaded pickled tagger from {cache_baseline_tagger}")
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
@@ -335,12 +385,12 @@ def postag(
         with pathsec_open(
             serialize_output, "wb", context="tbl.demo.serialize_output"
         ) as print_rules:
-            pickle.dump(brill_tagger, print_rules)
+            pickle_dump(brill_tagger, print_rules)
         print(f"Wrote pickled tagger to {serialize_output}")
         with pathsec_open(
             serialize_output, "rb", context="tbl.demo.serialize_output"
         ) as print_rules:
-            brill_tagger_reloaded = pickle_load(print_rules)
+            brill_tagger_reloaded = _load_tbl_model(print_rules)
         print(f"Reloaded pickled tagger from {serialize_output}")
         taggedtest_reloaded = brill_tagger_reloaded.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:
@@ -391,11 +441,8 @@ def _demo_prepare_data(
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     """Write the learning-curve plot to ``learning_curve_output``.
-
-    The destination is caller-supplied and matplotlib writes it itself, so the
-    path is checked against the NLTK data sandbox before any work is done
-    (GHSA-8mgp-746c-j5xp); ``pathsec.open`` cannot wrap a ``savefig``.
-    """
+    matplotlib writes the caller-supplied path itself, so it is validated against the
+    NLTK data sandbox first (GHSA-8mgp-746c-j5xp); ``pathsec.open`` can't wrap it."""
     validate_path(learning_curve_output, context="tbl.demo.learning_curve_output")
     testcurve = [teststats["initialerrors"]]
     for rulescore in teststats["rulescores"]:

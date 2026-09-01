@@ -43,6 +43,21 @@ class OrderedDict(dict):
             raise KeyError()
         return self._default_factory()
 
+    def __reduce__(self):
+        # Reconstruct through __init__ from an ordered list of items so the
+        # subclass invariant (``_keys`` established before any ``__setitem__``)
+        # holds while unpickling. The stock dict-subclass reduce restores the
+        # items via ``__setitem__`` BEFORE the BUILD step that would create
+        # ``_keys``, so a non-empty instance fails to unpickle with
+        # ``AttributeError: 'OrderedDict' object has no attribute '_keys'``.
+        # Passing the ordered items to ``__init__`` sets ``_keys`` up front and
+        # preserves insertion order. ``_default_factory`` (if any) is carried as
+        # BUILD state applied after construction.
+        items = [(key, dict.__getitem__(self, key)) for key in self._keys]
+        if self._default_factory is None:
+            return (self.__class__, (items,))
+        return (self.__class__, (items,), {"_default_factory": self._default_factory})
+
     def __setitem__(self, key, item):
         dict.__setitem__(self, key, item)
         if key not in self._keys:

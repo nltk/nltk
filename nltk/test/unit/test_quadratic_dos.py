@@ -23,6 +23,28 @@ Three groups:
    is now length-capped. jaro's earlier CVE-2026-12926 fix cut the inner loop
    O(n^3)->O(n^2) but left the length unbounded; the cap closes that residual.
 
+4. The second sweep, targeting stem/metric/parse sinks the first pass missed:
+   LancasterStemmer (per-token rule loop rescans the word each pass, O(len^2)),
+   ``metrics.segmentation.ghd`` (O(boundaries^2) DP, unlike its capped
+   ``edit_distance`` cousin and its linear ``windowdiff``/``pk`` siblings),
+   ``translate.lepor.alignment`` (an earlier CVE cut per-token lookup to O(1)
+   but left the repeated-token matching O(n^2)), and
+   ``TransitionParser._is_projective`` (list-membership inside a triple loop =
+   O(V^4), now a set = O(V^3)).
+
+5. The metrics cluster: ``agreement.AnnotationTask`` (Disagreement/alpha/
+   weighted_kappa loop over the distinct label set = O(|K|^2), now a
+   distinct-label cap), ``paice.Paice`` (``_calculate`` rescanned every stem
+   for every lemma = O(|lemmas|*|stems|), now a word->stem index = linear), and
+   ``confusionmatrix.ConfusionMatrix.evaluate`` (precision/recall each scanned a
+   full column/row = O(V^2) reporting residual to CVE-2026-12839's O(n)
+   constructor, now O(1) via a cached column total beside the row total).
+
+6. The Snowball stemmers (dutch/english/french/german/italian/romanian): the
+   "mark interior y/i/u as a consonant" step rebuilt the whole string on each
+   match inside a per-position loop = O(n^2) on a crafted token; now an in-place
+   list mutation joined once (byte-for-byte identical output).
+
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
 sweep also *cleared* several look-alikes as linear or by-design; those are kept
@@ -377,6 +399,317 @@ class TestChildesReplaceDoS:
         reader = CHILDESCorpusReader(str(tmp_path), name)
         assert _elapsed(lambda: reader.words(name, replace=True)) < 5.0
         assert len(reader.words(name, replace=True)) == 8000
+
+
+class TestLancasterStemmerQuadratic:
+    def test_correctness_preserved(self):
+        from nltk.stem.lancaster import LancasterStemmer
+
+        st = LancasterStemmer()
+        assert [
+            st.stem(w)
+            for w in ["maximum", "presumably", "multiply", "provision", "saying"]
+        ] == ["maxim", "presum", "multiply", "provid", "say"]
+        assert LancasterStemmer(strip_prefix_flag=True).stem("kilometer") == "met"
+        assert LancasterStemmer(rule_tuple=("ssen4>", "s1t.")).stem("ness") == "nest"
+
+    def test_over_long_token_returned_unstemmed(self):
+        # Pre-patch: `__getLastLetter` rescans the word from 0 each pass and a
+        # chainable '>' rule runs one pass per two chars, so an all-alpha token
+        # is O(len^2) (16k chars ~ 6s, cleanly quadratic). A real word never
+        # nears the cap, so an over-long token is returned unstemmed, not hung.
+        from nltk.stem.lancaster import MAX_WORD_LEN, LancasterStemmer
+
+        bomb = "a" * 50000
+        assert _elapsed(lambda: LancasterStemmer().stem(bomb)) < 1.0
+        assert LancasterStemmer().stem(bomb) == bomb
+        assert len("a" * MAX_WORD_LEN)  # cap constant is importable
+
+
+class TestGhdQuadratic:  # nltk.metrics.segmentation.ghd
+    def test_correctness_preserved(self):
+        from nltk.metrics.segmentation import ghd
+
+        assert ghd("1100100000", "1100010000", 1.0, 1.0, 0.5) == 0.5
+        assert ghd("011", "110", 1.0, 1.0, 0.5) == 1.0
+        assert ghd("1", "0", 1.0, 1.0, 0.5) == 1.0
+
+    def test_length_is_bounded(self):
+        # O(n_ref_boundaries * n_hyp_boundaries) DP over two segmentations; an
+        # all-boundary pair makes both O(len) -> O(len^2) time+memory. Capped.
+        from nltk.metrics.segmentation import MAX_GHD_INPUT_LEN, ghd
+
+        n = MAX_GHD_INPUT_LEN + 1
+        with pytest.raises(ValueError):
+            ghd("1" * n, "1" * n)
+
+
+class TestLeporAlignmentQuadratic:  # nltk.translate.lepor.alignment
+    def test_correctness_preserved(self):
+        from nltk.translate.lepor import alignment, sentence_lepor
+
+        ref = "the cat sat on the mat".split()
+        hyp = "the cat sat on a mat".split()
+        assert alignment(ref, hyp) == alignment(ref, hyp)  # deterministic
+        assert len(alignment(ref, hyp)) > 0
+        score = sentence_lepor([" ".join(ref)], " ".join(hyp))
+        assert isinstance(score, list) and 0.0 < score[0] <= 1.0
+
+    def test_repeated_token_bomb_is_bounded(self):
+        # An earlier CVE made per-token lookup O(1) but a token repeated R times
+        # still yields R candidate positions inspected R times, so a same-token
+        # sentence stayed O(len^2) (`"a "*5000` timed out). Work-budgeted now.
+        from nltk.translate.lepor import alignment
+
+        bomb = ["a"] * 5000  # 5000*5000 = 25M candidates >> the 4M budget
+        with pytest.raises(ValueError):
+            alignment(bomb, bomb)
+
+    def test_large_distinct_input_stays_linear(self):
+        # Regression guard for the work-budget (not raw-length) choice: many
+        # *distinct* tokens have <=1 candidate each, so the aligner is linear and
+        # must NOT be rejected -- a blanket length cap would wrongly kill this.
+        from nltk.translate.lepor import alignment
+
+        ref = [f"r{i}" for i in range(50000)]
+        hyp = [f"h{i}" for i in range(50000)]  # disjoint => 0 candidates
+        assert _elapsed(lambda: alignment(ref, hyp)) < 5.0
+        assert alignment(ref[:3], ref[:3]) == [1, 2, 3]  # correctness on distinct
+
+
+class TestTransitionParserProjectivity:  # _is_projective list->set
+    def _tp(self):
+        from nltk.parse.transitionparser import TransitionParser
+
+        return TransitionParser("arc-standard")
+
+    def _graph(self, lines):
+        from nltk.parse.dependencygraph import DependencyGraph
+
+        return DependencyGraph("\n".join(lines), top_relation_label="ROOT")
+
+    def test_correctness_preserved(self):
+        tp = self._tp()
+        projective = self._graph(
+            ["John\tN\t2\tSUBJ", "loves\tV\t0\tROOT", "Mary\tN\t2\tOBJ"]
+        )
+        assert tp._is_projective(projective) is True
+        # crossing arcs 1->3 and 2->4 => non-projective
+        crossing = self._graph(
+            ["a\tX\t3\tdep", "b\tX\t4\tdep", "c\tX\t0\tROOT", "d\tX\t3\tdep"]
+        )
+        assert tp._is_projective(crossing) is False
+
+    def test_large_projective_graph_is_bounded(self):
+        # Pre-patch: `(k, m) in arc_list` is an O(V) scan inside a triple loop =>
+        # O(V^4). A set makes membership O(1) => O(V^3). Nested arcs (all words
+        # attach to the last) never early-return, so the full loop runs.
+        v = 200
+        lines = [f"w{i}\tX\t{v}\tdep" for i in range(1, v)] + [f"w{v}\tX\t0\tROOT"]
+        dg = self._graph(lines)
+        assert self._tp()._is_projective(dg) is True
+        assert _elapsed(lambda: self._tp()._is_projective(dg)) < 10.0
+
+
+class TestAnnotationTaskLabelQuadratic:  # nltk.metrics.agreement
+    def _task(self, n_labels, coders=("c1", "c2")):
+        from nltk.metrics.agreement import AnnotationTask
+
+        data = []
+        for i in range(n_labels):
+            for c in coders:
+                data.append((c, f"i{i}", f"L{i}"))  # unique label per item
+        return AnnotationTask(data=data)
+
+    def test_correctness_preserved(self):
+        from nltk.metrics.agreement import AnnotationTask
+
+        t = AnnotationTask(
+            data=[
+                ("c1", "i1", "a"),
+                ("c2", "i1", "a"),
+                ("c1", "i2", "b"),
+                ("c2", "i2", "a"),
+                ("c1", "i3", "b"),
+                ("c2", "i3", "b"),
+            ]
+        )
+        assert round(t.alpha(), 4) == 0.4444
+        assert round(t.avg_Ao(), 4) == 0.6667
+        assert round(t.weighted_kappa(), 4) == 0.4
+
+    def test_many_distinct_labels_is_bounded(self):
+        # Disagreement()/weighted_kappa loop over the distinct label set K, so a
+        # task with one unique label per item is O(|K|**2) (CWE-407); |K| is
+        # attacker-controlled. Capped on the distinct-label count.
+        from nltk.metrics.agreement import MAX_AGREEMENT_LABELS
+
+        with pytest.raises(ValueError):
+            self._task(MAX_AGREEMENT_LABELS + 1).alpha()
+
+    def test_large_data_few_labels_stays_linear(self):
+        # Regression guard for the distinct-count (not raw-length) choice: 40k
+        # items over 2 labels must NOT be rejected (a len(data) cap would kill
+        # it) and must stay fast.
+        from nltk.metrics.agreement import AnnotationTask
+
+        data = []
+        for i in range(40000):
+            lab = "yes" if i % 2 else "no"
+            data += [("c1", f"i{i}", lab), ("c2", f"i{i}", lab)]
+        assert _elapsed(lambda: AnnotationTask(data=data).alpha()) < 5.0
+
+
+class TestPaiceQuadratic:  # nltk.metrics.paice
+    def test_correctness_preserved(self):
+        from nltk.metrics.paice import Paice
+
+        lemmas = {
+            "kneel": ["kneel", "knelt"],
+            "range": ["range", "ranged"],
+            "ring": ["ring", "rang", "rung"],
+        }
+        stems = {
+            "kneel": ["kneel"],
+            "knelt": ["knelt"],
+            "rang": ["rang", "range", "ranged"],
+            "ring": ["ring"],
+            "rung": ["rung"],
+        }
+        p = Paice(lemmas, stems)
+        assert (p.gumt, p.gdmt, p.gwmt, p.gdnt) == (4.0, 5.0, 2.0, 16.0)
+        assert round(p.ui, 3) == 0.8 and round(p.oi, 3) == 0.125
+
+    def test_large_vocab_is_linear(self, monkeypatch):
+        # `_calculate` rescanned every stem for every lemma => O(|lemmas|*|stems|)
+        # plus a per-stem `set(lemmawords)` rebuild. A word->stem index makes it
+        # linear (correctness-preserving, so no cap needed on legit large evals).
+        #
+        # Assert on a DETERMINISTIC operation count -- the number of candidate
+        # stems `_calculate` examines -- not wall-clock time: a sub-second timing
+        # ratio is a flaky gate on a loaded CI runner. With the word->stem index a
+        # disjoint vocabulary examines O(n) candidates (~4x on 4x input); the
+        # pre-fix per-lemma full-stems scan examined O(n**2) (~16x).
+        from nltk.metrics import paice
+
+        counter = {"n": 0}
+        real_cut = paice._calculate_cut
+
+        def counting_cut(lemmawords, word_to_stems, stem_sizes):
+            for word in set(lemmawords):
+                counter["n"] += len(word_to_stems.get(word, ()))
+            return real_cut(lemmawords, word_to_stems, stem_sizes)
+
+        monkeypatch.setattr(paice, "_calculate_cut", counting_cut)
+
+        def visits(n):
+            counter["n"] = 0
+            lem = {f"l{i}": [f"w{i}"] for i in range(n)}
+            stm = {f"s{i}": [f"w{i}"] for i in range(n)}
+            paice.Paice(lem, stm)
+            return counter["n"]
+
+        v1 = visits(400)
+        v4 = visits(1600)  # 4x input
+        assert v4 < 8 * v1  # linear ~4x candidate visits; pre-fix full scan ~16x
+
+
+class TestConfusionMatrixEvaluateQuadratic:  # residual to CVE-2026-12839
+    def test_correctness_preserved(self):
+        from nltk.metrics import ConfusionMatrix
+
+        ref = "DET NN VB DET JJ NN NN IN DET NN".split()
+        test = "DET VB VB DET NN NN NN IN DET NN".split()
+        cm = ConfusionMatrix(ref, test)
+        assert cm.precision("NN") == 0.75 and cm.recall("NN") == 0.75
+        assert cm.evaluate().splitlines()[0].startswith("Tag | Prec.")
+
+    def test_evaluate_all_distinct_is_linear(self, monkeypatch):
+        # The constructor is O(n) (CVE-2026-12839), but evaluate() scanned all V
+        # columns per row -> O(V**2) on an all-distinct matrix. Caching column
+        # totals like the existing row-total cache makes it linear.
+        #
+        # Assert on a DETERMINISTIC count of matrix-cell reads (__getitem__), not
+        # wall-clock time, which is a flaky gate on a loaded CI runner: a linear
+        # evaluate does O(V) reads (~4x on 4x input); the pre-fix per-label column
+        # scan did O(V**2) (~16x).
+        from nltk.metrics import ConfusionMatrix
+
+        counter = {"n": 0}
+        real_getitem = ConfusionMatrix.__getitem__
+
+        def counting_getitem(self, key):
+            counter["n"] += 1
+            return real_getitem(self, key)
+
+        monkeypatch.setattr(ConfusionMatrix, "__getitem__", counting_getitem)
+
+        def reads(n):
+            r = [f"r{i}" for i in range(n)]
+            cm = ConfusionMatrix(r, r)
+            counter["n"] = 0  # count only evaluate()'s cell reads
+            cm.evaluate()
+            return counter["n"]
+
+        g1 = reads(300)
+        g4 = reads(1200)  # 4x input
+        assert g4 < 8 * g1  # linear ~4x cell reads; pre-fix O(V^2) ~16x
+
+
+class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebuild
+    # Six stem() methods upper-cased interior y/i/u via
+    # ``word = "".join((word[:i], X, word[i+1:]))`` inside a per-position loop,
+    # i.e. O(n) rebuild * O(n) matches = O(n**2) on a crafted token (``"aei"*n``
+    # makes every 'i' sit between vowels; a ~0.5 MB token hung ~15s). In-place
+    # list mutation makes it linear and is byte-for-byte identical output.
+    ANCHORS = {
+        "dutch": ("installatie", "installatie"),
+        "english": ("generously", "generous"),
+        "french": ("quelconque", "quelconqu"),
+        "german": ("quellwasser", "quellwass"),
+        "italian": ("nazionale", "nazional"),
+        "romanian": ("continuare", "continu"),
+    }
+    TRIGGERS = [
+        ("dutch", "aei"),
+        ("english", "ay"),
+        ("french", "qu"),
+        ("german", "aua"),
+        ("italian", "aei"),
+        ("romanian", "aei"),
+    ]
+
+    @pytest.mark.parametrize("lang", list(ANCHORS))
+    def test_correctness_preserved(self, lang):
+        from nltk.stem.snowball import SnowballStemmer
+
+        w, expected = self.ANCHORS[lang]
+        assert SnowballStemmer(lang).stem(w) == expected
+
+    @pytest.mark.parametrize("lang,unit", TRIGGERS)
+    def test_upcase_loop_is_linear(self, lang, unit):
+        import statistics
+
+        from nltk.stem.snowball import SnowballStemmer
+
+        st = SnowballStemmer(lang).stem
+
+        def med(n):
+            return statistics.median(_elapsed(lambda: st(unit * n)) for _ in range(3))
+
+        t1 = med(8000)
+        t4 = med(32000)  # 4x input: linear ~4x, pre-fix O(n^2) ~16x
+        assert t4 < 8 * t1 + 0.5
+
+    def test_negative_control_langs_stay_linear(self):
+        # spanish/portuguese have no rebuild loop; german upcases only u/y (not
+        # i). ``"aei"*n`` must stay linear -- a guard against a future change that
+        # reintroduces the vulnerable idiom into these.
+        from nltk.stem.snowball import SnowballStemmer
+
+        for lang in ("spanish", "portuguese"):
+            st = SnowballStemmer(lang).stem
+            assert _elapsed(lambda: st("aei" * 40000)) < 2.0
 
 
 # ==========================================================================

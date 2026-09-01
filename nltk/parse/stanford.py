@@ -71,8 +71,19 @@ class GenericStanfordParser(ParserI):
         # self._classpath = (stanford_jar, model_jar)
 
         # Adding logging jar files to classpath
-        stanford_dir = os.path.split(stanford_jar)[0]
-        self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
+        stanford_dir = os.path.dirname(stanford_jar)
+
+        # Place trusted parser and supporting library jars first,
+        # and append the data-only model_jar last to prevent class shadowing (CVE-2026-14582).
+        classpath_jars = [
+            j
+            for j in find_jars_within_path(stanford_dir)
+            if j not in (stanford_jar, model_jar)
+        ]
+        classpath = [stanford_jar] + classpath_jars
+        if model_jar != stanford_jar:
+            classpath.append(model_jar)
+        self._classpath = tuple(classpath)
 
         self.model_path = model_path
         self._encoding = encoding
@@ -115,6 +126,14 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
+        # Prevent generator exhaustion
+        sentences = list(sentences)
+
+        # Security check: Validate individual tokens before joining
+        for sentence in sentences:
+            for token in sentence:
+                if "\n" in token or "\r" in token:
+                    raise ValueError("Tokens cannot contain newline characters.")
         cmd = [
             self._MAIN_CLASS,
             "-model",
@@ -155,6 +174,12 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(str)
         :rtype: iter(iter(Tree))
         """
+        # Prevent generator exhaustion
+        sentences = list(sentences)
+        # Security check: Validate raw sentence strings
+        for sentence in sentences:
+            if "\n" in sentence or "\r" in sentence:
+                raise ValueError("Sentences cannot contain newline characters.")
         cmd = [
             self._MAIN_CLASS,
             "-model",
@@ -190,6 +215,17 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(tuple(str, str)))
         :rtype: iter(iter(Tree))
         """
+        # 1. Prevent generator exhaustion
+        sentences = list(sentences)
+
+        # 2. Security check: Validate both words and tags for newline characters
+        for sentence in sentences:
+            for word, tag in sentence:
+                if "\n" in word or "\r" in word or "\n" in tag or "\r" in tag:
+                    raise ValueError(
+                        "Tokens and tags cannot contain newline characters."
+                    )
+
         tag_separator = "/"
         cmd = [
             self._MAIN_CLASS,

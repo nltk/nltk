@@ -56,7 +56,7 @@ so it is a drop-in replacement for a compiled pattern at those call sites.
 
 import regex
 
-__all__ = ["DEFAULT_TIMEOUT", "TimedPattern", "compile"]
+__all__ = ["DEFAULT_TIMEOUT", "TimedPattern", "compile", "source_of", "reharden"]
 
 #: Wall-clock seconds any single caller-supplied-pattern match may run before it
 #: is abandoned with :class:`TimeoutError`. Legitimate tokenizing / tagging /
@@ -221,3 +221,27 @@ def compile(pattern, flags=0, timeout=_UNSET):
     src = getattr(pattern, "pattern", pattern)
     compiled = regex.compile(src, flags)
     return TimedPattern(compiled, timeout)
+
+
+def source_of(pattern):
+    """The trusted source string of a ``str`` / compiled ``re`` / ``regex`` /
+    :class:`TimedPattern`. Raises :class:`ValueError` for a pattern object that
+    exposes no string source, so an unbounded one cannot be rebuilt from it."""
+    if isinstance(pattern, str):
+        return pattern
+    src = getattr(pattern, "pattern", None)
+    if isinstance(src, (bytes, bytearray)):
+        src = bytes(src).decode("latin-1")
+    if isinstance(src, str):
+        return src
+    raise ValueError(
+        "regex pattern object exposes no string source; refusing to rebuild an "
+        "unbounded pattern from it"
+    )
+
+
+def reharden(pattern, flags=0):
+    """Re-derive a fresh, wall-clock-capped :class:`TimedPattern` from ``pattern``'s
+    SOURCE, discarding any existing wrapper. Unlike :func:`compile`, an incoming
+    ``TimedPattern`` is never returned as-is, so a disabled cap cannot survive."""
+    return compile(source_of(pattern), flags)
