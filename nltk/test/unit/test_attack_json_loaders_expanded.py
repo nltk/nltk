@@ -1007,7 +1007,7 @@ def test_hash_collision_object_is_linear_not_quadratic():
 def test_mixed_array_object_deep_nesting_refused():
     # CVE-2021-45958 class (ujson deep-nesting stack overflow): the scanner
     # counts both '[' and '{', so an alternating [{ tower is bounded too.
-    from nltk.jsontags import safe_json_loads, JSON_MAX_DEPTH
+    from nltk.jsontags import JSON_MAX_DEPTH, safe_json_loads
 
     d = JSON_MAX_DEPTH + 50
     payload = '{"a":[' * (d // 2) + "1" + "]}" * (d // 2)
