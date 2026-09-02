@@ -1529,14 +1529,12 @@ def load(
     elif format == "json":
         import json
 
-        from nltk.jsontags import json_tags
+        from nltk.jsontags import JSONTaggedDecoder
 
-        resource_val = json.load(opened_resource)
-        tag = None
-        if len(resource_val) != 1:
-            tag = next(resource_val.keys())
-        if tag not in json_tags:
-            raise ValueError("Unknown json tag.")
+        # Decode through JSONTaggedDecoder so the nesting-depth cap and the tag
+        # allowlist both apply; stdlib json.load would bypass both (CWE-400) and
+        # the previous inline tag probe raised TypeError on a dict/list anyway.
+        resource_val = json.load(opened_resource, cls=JSONTaggedDecoder)
     elif format == "yaml":
         import yaml
 
