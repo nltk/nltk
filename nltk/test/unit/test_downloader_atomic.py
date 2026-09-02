@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 import nltk.data
 import nltk.pathsec
+from nltk import pathsec
 from nltk.downloader import Downloader, Package
 
 from . import _mp_ctx
@@ -21,13 +22,13 @@ BIG_PAYLOAD = b"x" * (1024 * 1024)
 def _build_source_zip(source_dir):
     os.makedirs(source_dir, exist_ok=True)
     zip_path = os.path.join(source_dir, "abc.zip")
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_STORED) as zf:
+    with pathsec.ZipFile(zip_path, "w", zipfile.ZIP_STORED) as zf:
         zf.writestr("abc/dummy.txt", BIG_PAYLOAD)
     return zip_path
 
 
 def _zip_metadata(zip_path):
-    with open(zip_path, "rb") as f:
+    with pathsec.open(zip_path, "rb", context="test-fixture") as f:
         data = f.read()
     with zipfile.ZipFile(zip_path, "r") as zf:
         unzipped_size = sum(info.file_size for info in zf.infolist())
@@ -94,7 +95,7 @@ def _collect_debug(download_dir, pkg):
     }
 
     if os.path.exists(zip_path):
-        with open(zip_path, "rb") as f:
+        with pathsec.open(zip_path, "rb", context="test-fixture") as f:
             content = f.read()
         data["zip_md5"] = hashlib.md5(content).hexdigest()
         data["zip_sha256"] = hashlib.sha256(content).hexdigest()
@@ -207,7 +208,7 @@ class TestDownloaderAtomic(unittest.TestCase):
             self.assertTrue(os.path.exists(zip_path), msg=f"debug={debug}")
             self.assertTrue(os.path.exists(extracted_file), msg=f"debug={debug}")
 
-            with open(extracted_file, "rb") as f:
+            with pathsec.open(extracted_file, "rb", context="test-fixture") as f:
                 self.assertEqual(f.read(), BIG_PAYLOAD, msg=f"debug={debug}")
 
             dl = Downloader(download_dir=self.test_dir)
@@ -249,14 +250,17 @@ class TestDownloaderAtomic(unittest.TestCase):
 
     def _make_zip_with_members(self, members):
         """Build a ZIP in srv_dir with given {member_path: content} dict."""
-        srv_dir = tempfile.mkdtemp()
+        # Nest under source_dir, an already-registered pathsec data root, so the
+        # fixture write is allowed on Linux/Windows where /tmp is not a root.
+        srv_dir = tempfile.mkdtemp(dir=self.source_dir)
         buf = __import__("io").BytesIO()
         with zipfile.ZipFile(buf, "w", zipfile.ZIP_STORED) as zf:
             for path, content in members.items():
                 zf.writestr(path, content)
         zb = buf.getvalue()
         zip_path = os.path.join(srv_dir, "evil.zip")
-        open(zip_path, "wb").write(zb)
+        with pathsec.open(zip_path, "wb", context="test-fixture") as _fh:
+            _fh.write(zb)
         return srv_dir, zip_path, zb
 
     def _make_pkg(self, zip_path, zb, pkg_id, subdir, members):
