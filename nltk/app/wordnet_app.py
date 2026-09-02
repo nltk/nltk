@@ -255,7 +255,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         try:
             logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
         except OSError as e:
-            sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
+            sys.stderr.write(f"Couldn't open {logfilename} for writing: {e}")
             sys.exit(1)
     else:
         logfile = None
@@ -651,7 +651,9 @@ def _synset_relations(word, synset, synset_relations):
 
     def relation_html(r):
         if isinstance(r, Synset):
-            return make_lookup_link(Reference(r.lemma_names()[0]), r.lemma_names()[0])
+            return make_lookup_link(
+                Reference(r.lemma_names()[0]), html.escape(r.lemma_names()[0])
+            )
         elif isinstance(r, Lemma):
             return relation_html(r.synset())
         elif isinstance(r, tuple):

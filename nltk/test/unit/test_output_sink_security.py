@@ -60,11 +60,9 @@ class TestWordnetAppXss:
         assert "&lt;script&gt;" in out and "&quot;" in out
 
 
-svgling = pytest.importorskip("svgling", reason="svgling not installed")
-
-
 class TestTreeSvgXss:
     def test_repr_svg_escapes_hostile_labels(self):
+        pytest.importorskip("svgling", reason="svgling not installed")
         from nltk.tree import Tree
 
         t = Tree(

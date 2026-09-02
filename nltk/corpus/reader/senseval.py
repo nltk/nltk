@@ -28,6 +28,7 @@ from defusedxml.ElementTree import fromstring as safe_fromstring
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize import *
 
 # ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
@@ -155,7 +156,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         pass  # Sentence boundary marker.
 
                     else:
-                        print("ACK", cword.tag)
+                        print("ACK", sanitize_terminal(cword.tag))
                         assert False, "expected CDATA or <wf> or <head>"
                     if cword.tail:
                         context += self._word_tokenizer.tokenize(cword.tail)

@@ -40,6 +40,14 @@ GUARDED_PATHS = [
     "nltk/downloader.py",
     "nltk/twitter/twitterclient.py",
     "nltk/text.py",
+    "nltk/chat/util.py",
+    "nltk/chunk/named_entity.py",
+    "nltk/tokenize/sonority_sequencing.py",
+    "nltk/corpus/reader/bcp47.py",
+    "nltk/corpus/reader/senseval.py",
+    # wordnet.py / framenet.py are intentionally NOT listed: their remaining
+    # print sites are __main__/demo output over trusted bundled corpora. Their
+    # public-API warn sinks are sanitised directly.
 ]
 
 SUPPRESS_MARKER = "# unsafe-print ok"
@@ -108,6 +116,9 @@ def _safe_expr(node):
         return True
     if isinstance(node, ast.JoinedStr):
         return all(_is_safe_formatted_value(v) for v in node.values)
+    # A comprehension whose element is sanitised: [sanitize_terminal(x) for x ...].
+    if isinstance(node, (ast.GeneratorExp, ast.ListComp, ast.SetComp)):
+        return _safe_expr(node.elt)
     if isinstance(node, ast.BinOp):
         # A repeated literal ("=" * n): the literal operand fixes the content, so
         # the count operand is irrelevant to control-byte safety.
@@ -139,6 +150,9 @@ def _safe_expr(node):
 
 
 def _is_safe_arg(node):
+    # print(*(sanitize_terminal(m) for m in xs)) -> vet the unpacked iterable.
+    if isinstance(node, ast.Starred):
+        return _safe_expr(node.value)
     return _safe_expr(node)
 
 
@@ -152,14 +166,22 @@ def _terminal_write_args(node):
     if not isinstance(node, ast.Call):
         return None
     func = node.func
-    if isinstance(func, ast.Name) and func.id == "print":
-        return node.args
-    if isinstance(func, ast.Attribute) and func.attr == "write":
-        recv = func.value
-        if isinstance(recv, ast.Attribute) and recv.attr in ("stdout", "stderr"):
+    if isinstance(func, ast.Name):
+        if func.id == "print":
             return node.args
-        if isinstance(recv, ast.Name) and recv.id in ("stdout", "stderr"):
-            return node.args
+        # `from warnings import warn`; only the message (first arg) is data.
+        if func.id == "warn":
+            return node.args[:1]
+    if isinstance(func, ast.Attribute):
+        if func.attr == "write":
+            recv = func.value
+            if isinstance(recv, ast.Attribute) and recv.attr in ("stdout", "stderr"):
+                return node.args
+            if isinstance(recv, ast.Name) and recv.id in ("stdout", "stderr"):
+                return node.args
+        # warnings.warn(message, ...) also reaches stderr.
+        if func.attr == "warn":
+            return node.args[:1]
     return None
 
 
