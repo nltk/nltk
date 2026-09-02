@@ -141,6 +141,11 @@ def safe_json_loads(
     still bounded by the interpreter's ``sys.get_int_max_str_digits()`` default
     during :func:`json.loads`.
     """
+    if not isinstance(data, (str, bytes, bytearray)):
+        # Fail with a clear type error at the chokepoint rather than deep inside
+        # the size/scan path (where a list of small ints, say, would otherwise
+        # slip through ``len`` and ``bytes()`` before ``json.loads`` rejects it).
+        raise TypeError(f"{context}: expected str or bytes, got {type(data).__name__}")
     size = len(data)
     if size > max_bytes:
         raise ValueError(
