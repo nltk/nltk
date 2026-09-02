@@ -11,7 +11,6 @@ Authentication utilities to accompany `twitterclient`.
 """
 
 import os
-import pprint
 
 from twython import Twython
 
@@ -108,8 +107,11 @@ class Authenticate:
             oauth2 = True
 
         if not (oauth1 or oauth2):
+            # Report only the key names present, never the secret values: this
+            # message can reach stderr/logs, so pretty-printing the creds dict
+            # would leak app_secret/access_token (CWE-532/CWE-209).
             msg = f"Missing or incorrect entries in {self.creds_file}\n"
-            msg += pprint.pformat(self.oauth)
+            msg += f"found keys: {sorted(self.oauth)}"
             raise ValueError(msg)
         elif verbose:
             print(f'Credentials file "{self.creds_file}" looks good')
