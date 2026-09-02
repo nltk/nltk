@@ -87,38 +87,54 @@ class AlignedSent:
         """
         Dot representation of the aligned sentence
         """
+
+        # Neutralise words interpolated into Graphviz double-quoted node ids and
+        # labels so a word carrying a quote or newline cannot break out and
+        # corrupt the graph (CWE-116; graphviz has no code execution).
+        def _dot_escape(text):
+            return (
+                str(text)
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+            )
+
+        words = [_dot_escape(w) for w in self._words]
+        mots = [_dot_escape(w) for w in self._mots]
+
         s = "graph align {\n"
         s += "node[shape=plaintext]\n"
 
         # Declare node
-        s += "".join([f'"{w}_source" [label="{w}"] \n' for w in self._words])
-        s += "".join([f'"{w}_target" [label="{w}"] \n' for w in self._mots])
+        s += "".join([f'"{w}_source" [label="{w}"] \n' for w in words])
+        s += "".join([f'"{w}_target" [label="{w}"] \n' for w in mots])
 
         # Alignment
         s += "".join(
             [
-                f'"{self._words[u]}_source" -- "{self._mots[v]}_target" \n'
+                f'"{words[u]}_source" -- "{mots[v]}_target" \n'
                 for u, v in self._alignment
             ]
         )
 
         # Connect the source words
-        for i in range(len(self._words) - 1):
+        for i in range(len(words) - 1):
             s += '"{}_source" -- "{}_source" [style=invis]\n'.format(
-                self._words[i],
-                self._words[i + 1],
+                words[i],
+                words[i + 1],
             )
 
         # Connect the target words
-        for i in range(len(self._mots) - 1):
+        for i in range(len(mots) - 1):
             s += '"{}_target" -- "{}_target" [style=invis]\n'.format(
-                self._mots[i],
-                self._mots[i + 1],
+                mots[i],
+                mots[i + 1],
             )
 
         # Put it in the same rank
-        s += "{rank = same; %s}\n" % (" ".join('"%s_source"' % w for w in self._words))
-        s += "{rank = same; %s}\n" % (" ".join('"%s_target"' % w for w in self._mots))
+        s += "{rank = same; %s}\n" % (" ".join('"%s_source"' % w for w in words))
+        s += "{rank = same; %s}\n" % (" ".join('"%s_target"' % w for w in mots))
 
         s += "}"
 

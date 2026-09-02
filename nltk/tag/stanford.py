@@ -24,6 +24,7 @@ from subprocess import PIPE
 
 from nltk.data import staging_tempdir
 from nltk.internals import find_file, find_jar, java
+from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
 
@@ -97,6 +98,13 @@ class StanfordTagger(TaggerI):
     def tag_sents(self, sentences):
         encoding = self._encoding
 
+        # A newline/CR in a token would inject an extra input line and silently
+        # mislabel output (parse_output re-aligns tags by sentence). Build the
+        # input once and require exactly one separator per sentence gap.
+        _input = "\n".join(" ".join(x) for x in sentences)
+        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
+            raise ValueError("Tokens cannot contain newline characters.")
+
         input_file_path = None
         java_succeeded = False
         try:
@@ -109,11 +117,15 @@ class StanfordTagger(TaggerI):
             cmd = list(self._cmd)
             cmd.extend(["-encoding", encoding])
 
-            # Write the actual sentences to the temporary input file
-            with os.fdopen(_input_fh, "wb") as input_fh:
-                _input = "\n".join(" ".join(x) for x in sentences)
-                if isinstance(_input, str) and encoding:
-                    _input = _input.encode(encoding)
+            # mkstemp gives a race-free path inside the pathsec-validated 0700
+            # staging dir; reopen it through pathsec_open (the same chokepoint the
+            # rest of nltk stages tool input through) rather than the raw fd.
+            os.close(_input_fh)
+            if isinstance(_input, str) and encoding:
+                _input = _input.encode(encoding)
+            with pathsec_open(
+                input_file_path, "wb", context="StanfordTagger.tag_sents"
+            ) as input_fh:
                 input_fh.write(_input)
 
             # ``self._stanford_model`` (from find_file) is handed to the JVM subprocess

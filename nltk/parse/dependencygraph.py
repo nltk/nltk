@@ -165,6 +165,19 @@ class DependencyGraph:
         }
 
         """
+
+        # Neutralise values interpolated into a Graphviz double-quoted string so
+        # a word/relation carrying a quote or newline cannot break out of a label
+        # and corrupt the graph (CWE-116; graphviz has no code execution).
+        def _dot_escape(text):
+            return (
+                str(text)
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+            )
+
         # Start the digraph specification
         s = "digraph G{\n"
         s += "edge [dir=forward]\n"
@@ -175,12 +188,14 @@ class DependencyGraph:
             s += '\n{} [label="{} ({})"]'.format(
                 node["address"],
                 node["address"],
-                node["word"],
+                _dot_escape(node["word"]),
             )
             for rel, deps in node["deps"].items():
                 for dep in deps:
                     if rel is not None:
-                        s += '\n{} -> {} [label="{}"]'.format(node["address"], dep, rel)
+                        s += '\n{} -> {} [label="{}"]'.format(
+                            node["address"], dep, _dot_escape(rel)
+                        )
                     else:
                         s += "\n{} -> {} ".format(node["address"], dep)
         s += "\n}"

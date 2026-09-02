@@ -127,6 +127,14 @@ class Senna(TaggerI):
         """
         encoding = self._encoding
 
+        # A newline/CR in a token would inject an extra stdin line and
+        # desynchronise the returned tags. Build the body once and require
+        # exactly one separator per sentence gap.
+        _input = "\n".join(" ".join(x) for x in sentences)
+        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
+            raise ValueError("Tokens cannot contain newline characters.")
+        _input += "\n"
+
         if not path.isfile(self.executable(self._path)):
             raise LookupError(
                 "Senna executable expected at %s but not found"
@@ -143,8 +151,7 @@ class Senna(TaggerI):
         ]
         _senna_cmd.extend(["-" + op for op in self.operations])
 
-        # Serialize the actual sentences to a temporary string
-        _input = "\n".join(" ".join(x) for x in sentences) + "\n"
+        # _input was built and validated above
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 
