@@ -155,7 +155,9 @@ def new_wrapper(wrapper, model):
     ), '"_wrapper_" is a reserved argument name!'
     _assert_safe_signature(infodict["signature"])
     src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
-    funcopy = eval(src, dict(_wrapper_=wrapper))
+    funcopy = eval(
+        src, dict(_wrapper_=wrapper)
+    )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
     return update_wrapper(funcopy, model, infodict)
 
 
@@ -224,7 +226,9 @@ def decorator(caller):
         _assert_safe_signature(infodict["signature"])
         src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
         # import sys; print >> sys.stderr, src # for debugging purposes
-        dec_func = eval(src, dict(_func_=func, _call_=caller))
+        dec_func = eval(
+            src, dict(_func_=func, _call_=caller)
+        )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
         return update_wrapper(dec_func, func, infodict)
 
     return update_wrapper(_decorator, caller)
