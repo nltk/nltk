@@ -39,6 +39,7 @@ import sys
 GUARDED_PATHS = [
     "nltk/downloader.py",
     "nltk/twitter/twitterclient.py",
+    "nltk/text.py",
 ]
 
 SUPPRESS_MARKER = "# unsafe-print ok"
@@ -117,6 +118,14 @@ def _safe_expr(node):
         # A concatenation of safe parts.
         if isinstance(node.op, ast.Add):
             return _safe_expr(node.left) and _safe_expr(node.right)
+        # "...%s..." % X: safe if the interpolated value(s) are sanitised, even
+        # when the format string uses %s (a %r/%d-only format is already caught
+        # by _percent_format_is_safe above).
+        if isinstance(node.op, ast.Mod):
+            right = node.right
+            if isinstance(right, ast.Tuple):
+                return all(_safe_expr(e) for e in right.elts)
+            return _safe_expr(right)
     if isinstance(node, ast.Call):
         # A numeric builtin returns a number, not a control-bearing string.
         if isinstance(node.func, ast.Name) and node.func.id in _NUMERIC_BUILTINS:
@@ -133,6 +142,27 @@ def _is_safe_arg(node):
     return _safe_expr(node)
 
 
+def _terminal_write_args(node):
+    """Return the args to vet if *node* emits to the terminal, else None.
+
+    Covers ``print(...)`` and ``sys.stdout.write(...)`` / ``sys.stderr.write(...)``
+    (both the ``sys.stdout`` attribute and a ``from sys import stdout`` name), so a
+    raw ``write`` cannot slip past the ``print`` chokepoint.
+    """
+    if not isinstance(node, ast.Call):
+        return None
+    func = node.func
+    if isinstance(func, ast.Name) and func.id == "print":
+        return node.args
+    if isinstance(func, ast.Attribute) and func.attr == "write":
+        recv = func.value
+        if isinstance(recv, ast.Attribute) and recv.attr in ("stdout", "stderr"):
+            return node.args
+        if isinstance(recv, ast.Name) and recv.id in ("stdout", "stderr"):
+            return node.args
+    return None
+
+
 def find_violations(paths):
     violations = []
     for py in paths:
@@ -144,11 +174,10 @@ def find_violations(paths):
             continue
         lines = source.splitlines()
         for node in ast.walk(tree):
-            if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)):
+            args = _terminal_write_args(node)
+            if args is None:
                 continue
-            if node.func.id != "print":
-                continue
-            if all(_is_safe_arg(a) for a in node.args):
+            if all(_is_safe_arg(a) for a in args):
                 continue
             end = getattr(node, "end_lineno", node.lineno) or node.lineno
             span = lines[node.lineno - 1 : end]

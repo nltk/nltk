@@ -2743,7 +2743,9 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
     """
 
     if verbose:
-        sys.stdout.write("Unzipping %s" % os.path.split(filename)[1])
+        # The basename derives from the server-supplied package id/URL; sanitize
+        # it before it reaches the terminal (CWE-150).
+        sys.stdout.write("Unzipping %s" % sanitize_terminal(os.path.split(filename)[1]))
         sys.stdout.flush()
 
     try:

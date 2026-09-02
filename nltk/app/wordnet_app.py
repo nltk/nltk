@@ -604,16 +604,18 @@ def _collect_one_synset(word, synset, synset_relations):
     def format_lemma(w):
         w = w.replace("_", " ")
         if w.lower() == word:
-            return _bold(w)
+            return _bold(html.escape(w))
         else:
             ref = Reference(w)
-            return make_lookup_link(ref, w)
+            return make_lookup_link(ref, html.escape(w))
 
     s += ", ".join(format_lemma(l.name()) for l in synset.lemmas())
 
+    # Corpus-derived text served as HTML; escape it so a crafted WordNet gloss
+    # cannot inject markup into the browser (CWE-79).
     gl = " ({}) <i>{}</i> ".format(
-        synset.definition(),
-        "; ".join('"%s"' % e for e in synset.examples()),
+        html.escape(synset.definition()),
+        "; ".join('"%s"' % html.escape(e) for e in synset.examples()),
     )
     return s + gl + _synset_relations(word, synset, synset_relations) + "</li>\n"
 
@@ -779,7 +781,10 @@ class Reference:
 
 
 def make_lookup_link(ref, label):
-    return f'<a href="lookup_{ref.encode()}">{label}</a>'
+    # Escape the corpus-derived href param (attribute context); callers pass an
+    # already-escaped or trusted label for the link text (CWE-79).
+    href = html.escape(str(ref.encode()), quote=True)
+    return f'<a href="lookup_{href}">{label}</a>'
 
 
 def page_from_word(word):

@@ -28,6 +28,7 @@ from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
 from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize import sent_tokenize
 from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
@@ -250,9 +251,11 @@ class ConcordanceIndex:
             print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print(f"Displaying {lines} of {len(concordance_list)} matches:")
+            print(
+                f"Displaying {lines} of {len(concordance_list)} matches:"
+            )  # unsafe-print ok: match counts are ints
             for i, concordance_line in enumerate(concordance_list[:lines]):
-                print(concordance_line.line)
+                print(sanitize_terminal(concordance_line.line))
 
 
 #: Default wall-clock limit, in seconds, for :meth:`TokenSearcher.findall` (and
@@ -506,7 +509,7 @@ class Text:
         collocation_strings = [
             w1 + " " + w2 for w1, w2 in self.collocation_list(num, window_size)
         ]
-        print(tokenwrap(collocation_strings, separator="; "))
+        print(sanitize_terminal(tokenwrap(collocation_strings, separator="; ")))
 
     def count(self, word):
         """
@@ -554,7 +557,7 @@ class Text:
                 if c in contexts and not w == word
             )
             words = [w for w, _ in fd.most_common(num)]
-            print(tokenwrap(words))
+            print(sanitize_terminal(tokenwrap(words)))
         else:
             print("No matches")
 
@@ -581,10 +584,14 @@ class Text:
                 print("No common contexts were found")
             else:
                 ranked_contexts = [w for w, _ in fd.most_common(num)]
-                print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
+                print(
+                    sanitize_terminal(
+                        tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts)
+                    )
+                )
 
         except ValueError as e:
-            print(e)
+            print(sanitize_terminal(e))
 
     def dispersion_plot(self, words):
         """
@@ -648,7 +655,7 @@ class Text:
 
         prefix = " ".join(text_seed) + " " if text_seed else ""
         output_str = prefix + tokenwrap(generated_tokens[:length])
-        print(output_str)
+        print(sanitize_terminal(output_str))
         return output_str
 
     def plot(self, *args):
@@ -700,7 +707,7 @@ class Text:
 
         hits = self._token_searcher.findall(regexp, timeout=timeout)
         hits = [" ".join(h) for h in hits]
-        print(tokenwrap(hits, "; "))
+        print(sanitize_terminal(tokenwrap(hits, "; ")))
 
     # ////////////////////////////////////////////////////////////
     # Helper Methods
@@ -790,7 +797,7 @@ def demo():
     from nltk.corpus import brown
 
     text = Text(brown.words(categories="news"))
-    print(text)
+    print(text)  # unsafe-print ok: demo over the trusted Brown corpus
     print()
     print("Concordance:")
     text.concordance("news")
@@ -811,9 +818,13 @@ def demo():
     text.plot(50)
     print()
     print("Indexing:")
-    print("text[3]:", text[3])
-    print("text[3:5]:", text[3:5])
-    print("text.vocab()['news']:", text.vocab()["news"])
+    print("text[3]:", text[3])  # unsafe-print ok: demo over the trusted Brown corpus
+    print(
+        "text[3:5]:", text[3:5]
+    )  # unsafe-print ok: demo over the trusted Brown corpus
+    print(
+        "text.vocab()['news']:", text.vocab()["news"]
+    )  # unsafe-print ok: demo over the trusted Brown corpus
 
 
 if __name__ == "__main__":
