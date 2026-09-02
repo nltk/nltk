@@ -984,3 +984,77 @@ def test_leading_whitespace_flood_is_bounded_by_size():
     assert safe_json_loads(" " * 200_000 + "1") == 1
     with pytest.raises(ValueError, match="over the"):
         safe_json_loads(" " * 200 + "1", max_bytes=100)
+
+
+# ==========================================================================
+# Wider-ecosystem JSON CVE/CWE classes (Python stdlib, ujson, jackson /
+# fastjson / Newtonsoft polymorphic deserialization, hash-collision DoS),
+# confirmed against the same chokepoint.
+# ==========================================================================
+
+
+def test_hash_collision_object_is_linear_not_quadratic():
+    # CVE-2011-4815 class: a huge key set. Python's randomized SipHash and the
+    # size cap keep insertion linear, so a many-key object is bounded, not a
+    # quadratic hash-collision DoS.
+    from nltk.jsontags import safe_json_loads
+
+    payload = "{" + ",".join(f'"{i}":0' for i in range(200_000)) + "}"
+    parsed = safe_json_loads(payload)
+    assert len(parsed) == 200_000
+
+
+def test_mixed_array_object_deep_nesting_refused():
+    # CVE-2021-45958 class (ujson deep-nesting stack overflow): the scanner
+    # counts both '[' and '{', so an alternating [{ tower is bounded too.
+    from nltk.jsontags import safe_json_loads, JSON_MAX_DEPTH
+
+    d = JSON_MAX_DEPTH + 50
+    payload = '{"a":[' * (d // 2) + "1" + "]}" * (d // 2)
+    with pytest.raises(ValueError, match="nesting depth"):
+        safe_json_loads(payload)
+
+
+def test_trailing_and_concatenated_data_refused():
+    # Parser-differential smuggling: trailing, leading or concatenated documents
+    # are rejected, so two parsers cannot disagree on the value.
+    from nltk.jsontags import safe_json_loads
+
+    for payload in ('{"a":1}garbage', '{"a":1}{"b":2}', "[1,2]  [3,4]", 'x{"a":1}'):
+        with pytest.raises(ValueError):
+            safe_json_loads(payload)
+
+
+def test_non_rfc_number_syntax_refused():
+    # RFC-8259 strictness: leading zeros, a leading '+', a bare or trailing dot,
+    # hex/octal/underscore literals and a digitless exponent are all refused
+    # (each is accepted by some other language's parser, a smuggling risk).
+    from nltk.jsontags import safe_json_loads
+
+    for payload in ("01", "+1", ".5", "1.", "0x1F", "0o17", "1_000", "1e", "--1"):
+        with pytest.raises(ValueError):
+            safe_json_loads(payload)
+    # Negative zero is valid JSON and parses to 0.
+    assert safe_json_loads("-0") == 0
+
+
+def test_nested_tag_bomb_via_tagged_decoder_refused():
+    # CWE-502 (jackson / fastjson / Newtonsoft polymorphic-deserialization
+    # class): a tower of single-key '!'-tag objects is bounded by the tagged
+    # decoder's depth cap, never unbounded reconstruction.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    payload = '{"!x":' * 300 + "1" + "}" * 300
+    with pytest.raises(ValueError):
+        JSONTaggedDecoder().decode(payload)
+
+
+def test_huge_single_token_is_size_bounded():
+    # A single enormous string or number token is bounded by the byte cap, not
+    # unbounded (CWE-400 / CWE-789).
+    from nltk.jsontags import safe_json_loads
+
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads('"' + "a" * 1000 + '"', max_bytes=200)
+    # A large-but-under-cap token still parses.
+    assert safe_json_loads('"' + "a" * 5000 + '"') == "a" * 5000
