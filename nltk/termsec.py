@@ -23,7 +23,7 @@ text -- including tabs, newlines and non-ASCII/emoji -- untouched. Route every
 untrusted-string terminal write through it.
 """
 
-__all__ = ["sanitize_terminal", "safe_print"]
+__all__ = ["sanitize_terminal", "safe_print", "sanitize_csv_field"]
 
 # Bytes a terminal interprets as commands: the C0 controls (U+0000-U+001F) minus
 # TAB and LF, the DEL (U+007F), and the C1 controls (U+0080-U+009F, which include
@@ -58,3 +58,38 @@ def safe_print(*values, sep=" ", **kwargs):
     A drop-in for ``print`` when the arguments may contain untrusted text.
     """
     print(*(sanitize_terminal(v) for v in values), sep=sep, **kwargs)
+
+
+# A leading one of these makes a spreadsheet evaluate a CSV cell as a formula, so
+# crafted cell text can run a formula when the file is opened (CWE-1236). Leading
+# whitespace is stripped before the test because a spreadsheet ignores it too.
+_CSV_FORMULA_LEADS = ("=", "+", "-", "@")
+
+
+def _looks_numeric(text):
+    try:
+        float(text)
+        return True
+    except ValueError:
+        return False
+
+
+def sanitize_csv_field(value):
+    """Return *value* neutralised for writing as a CSV/TSV cell.
+
+    Closes two hazards a later reader/opener would otherwise execute: control
+    sequences that drive the terminal when the file is displayed (CWE-150, via
+    :func:`sanitize_terminal`), and a leading ``= + - @`` that a spreadsheet runs
+    as a formula (CWE-1236). A genuine number keeps its sign; any other value
+    with a formula lead is prefixed with an apostrophe so the spreadsheet treats
+    it as text. A non-string value (``None``, an int, a bool) is returned
+    unchanged: the csv writer renders it safely (``None`` as an empty cell) and
+    only a string can carry a control sequence or a formula lead.
+    """
+    if not isinstance(value, str):
+        return value
+    text = sanitize_terminal(value)
+    lead = text.lstrip(" \t")
+    if lead[:1] in _CSV_FORMULA_LEADS and not _looks_numeric(lead):
+        text = "'" + text
+    return text

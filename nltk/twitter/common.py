@@ -15,6 +15,7 @@ import gzip
 import json
 
 from nltk.internals import deprecated
+from nltk.termsec import sanitize_csv_field
 
 HIER_SEPARATOR = "."
 
@@ -120,12 +121,12 @@ def json2csv(
     """
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
-    writer.writerow(fields)
+    writer.writerow([sanitize_csv_field(c) for c in fields])
     # process the file
     for line in fp:
         tweet = json.loads(line)
         row = extract_fields(tweet, fields)
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
     outf.close()
 
 
@@ -196,7 +197,7 @@ def json2csv_entities(
 
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
-    writer.writerow(header)
+    writer.writerow([sanitize_csv_field(c) for c in header])
     for line in tweets_file:
         tweet = json.loads(line)
         if _is_composed_key(entity_type):
@@ -262,9 +263,9 @@ def _write_to_file(object_fields, items, entity_fields, writer):
                     )
                 )
             row += [json_dict[vd]]
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
         return
     # in general it is a list
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])

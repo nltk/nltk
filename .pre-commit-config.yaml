@@ -74,3 +74,15 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: no-unsafe-csv-write
+      name: no untrusted data written to a CSV cell raw
+      description: >-
+        A CSV opened in a spreadsheet runs a cell that starts with = + - @ as a
+        formula (CWE-1236), and displayed in a terminal it fires embedded control
+        sequences (CWE-150). Modules that export externally sourced rows (tweets)
+        must route every cell through nltk.termsec.sanitize_csv_field. Fails on a
+        writerow/writerows of un-sanitised data in the guarded modules.
+      entry: python tools/check_no_unsafe_csv_write.py
+      language: system
+      pass_filenames: false
+      always_run: true
