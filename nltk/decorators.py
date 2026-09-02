@@ -15,8 +15,9 @@ __docformat__ = "restructuredtext en"
 
 __all__ = ["decorator", "new_wrapper", "getinfo"]
 
-import re
 import sys
+
+from nltk import redos
 
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
@@ -31,11 +32,11 @@ sys.path = OLD_SYS_PATH
 # true signature on every supported Python (older versions ignore a wrapper's
 # ``__signature__``/``__wrapped__``). To keep that eval from ever being a
 # code-execution primitive, the interpolated signature is first checked to be a
-# comma-separated list of plain parameter names, each optionally prefixed by
-# ``*``/``**`` and nothing else (no ``=`` default, ``(``, ``.`` or other
-# expression syntax). inspect already constrains real parameter names to
-# identifiers, so a genuine function is never rejected (CVE-2026-14727).
-_SAFE_SIGNATURE_RE = re.compile(r"^\s*(\*{0,2}[A-Za-z_]\w*\s*(,\s*)?)*$")
+# comma-and-space separated list of plain parameter names, each optionally
+# prefixed by * or ** and nothing else (no =default, (, ., newline or other
+# expression syntax). inspect constrains real names to identifiers, so a genuine
+# function is never rejected (CVE-2026-14727).
+_SAFE_SIGNATURE_RE = redos.compile(r"^ *(\*{0,2}[A-Za-z_]\w* *(, *)?)*$")
 
 
 def _assert_safe_signature(signature):

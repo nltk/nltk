@@ -16,7 +16,12 @@ import inspect
 
 import pytest
 
-from nltk.decorators import _assert_safe_signature, decorator, getinfo, new_wrapper
+from nltk.decorators import (
+    _assert_safe_signature,
+    decorator,
+    getinfo,
+    new_wrapper,
+)
 
 
 def test_legit_decoration_preserves_signature_and_calls():
@@ -45,6 +50,13 @@ def test_legit_decoration_preserves_signature_and_calls():
         "x)+__import__('os').system('id')+(",
         "a; b",
         "a=(lambda: 1)()",
+        "a=1",  # any default at all
+        "a.b",  # attribute access
+        "a[0]",  # subscript
+        "a+b",  # operator
+        "a\nb",  # newline (would make eval src a SyntaxError, refused cleanly)
+        "a\tb",  # tab is not an allowed separator
+        "lambda: 1",
     ],
 )
 def test_hostile_signatures_are_refused(hostile):
