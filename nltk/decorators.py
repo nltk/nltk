@@ -15,6 +15,7 @@ __docformat__ = "restructuredtext en"
 
 __all__ = ["decorator", "new_wrapper", "getinfo"]
 
+import re
 import sys
 
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
@@ -24,6 +25,25 @@ sys.path = [p for p in sys.path if p and "nltk" not in str(p)]
 import inspect
 
 sys.path = OLD_SYS_PATH
+
+# The eval below is required: building the wrapper as a real function with the
+# original parameter list is what makes ``inspect.getfullargspec`` report the
+# true signature on every supported Python (older versions ignore a wrapper's
+# ``__signature__``/``__wrapped__``). To keep that eval from ever being a
+# code-execution primitive, the interpolated signature is first checked to be a
+# comma-separated list of plain parameter names, each optionally prefixed by
+# ``*``/``**`` and nothing else (no ``=`` default, ``(``, ``.`` or other
+# expression syntax). inspect already constrains real parameter names to
+# identifiers, so a genuine function is never rejected (CVE-2026-14727).
+_SAFE_SIGNATURE_RE = re.compile(r"^\s*(\*{0,2}[A-Za-z_]\w*\s*(,\s*)?)*$")
+
+
+def _assert_safe_signature(signature):
+    if not _SAFE_SIGNATURE_RE.fullmatch(signature):
+        raise ValueError(
+            f"refusing to build a wrapper from a non-identifier signature: "
+            f"{signature!r}"
+        )
 
 
 def __legacysignature(signature):
@@ -132,6 +152,7 @@ def new_wrapper(wrapper, model):
     assert (
         "_wrapper_" not in infodict["argnames"]
     ), '"_wrapper_" is a reserved argument name!'
+    _assert_safe_signature(infodict["signature"])
     src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
     funcopy = eval(src, dict(_wrapper_=wrapper))
     return update_wrapper(funcopy, model, infodict)
@@ -199,6 +220,7 @@ def decorator(caller):
         assert not (
             "_call_" in argnames or "_func_" in argnames
         ), "You cannot use _call_ or _func_ as argument names!"
+        _assert_safe_signature(infodict["signature"])
         src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(src, dict(_func_=func, _call_=caller))

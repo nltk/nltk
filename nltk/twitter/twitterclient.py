@@ -33,6 +33,7 @@ import requests
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonError, TwythonRateLimitError
 
+from nltk.termsec import sanitize_terminal
 from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
 
@@ -427,8 +428,10 @@ class TweetViewer(TweetHandlerI):
         :rtype: bool
         :param data: Tweet object returned by Twitter API
         """
+        # Tweet text is untrusted network data; neutralise any terminal control
+        # sequences before writing it to the terminal (CWE-150).
         text = data["text"]
-        print(text)
+        print(sanitize_terminal(text))
 
         self.check_date_limit(data)
         if self.do_stop:

@@ -180,6 +180,7 @@ from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
+from nltk.termsec import sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
 
@@ -621,7 +622,14 @@ class Downloader:
                 name = textwrap.fill(
                     "-" * 27 + (info.name or info.id), 75, subsequent_indent=27 * " "
                 )[27:]
-                print("  [{}] {} {}".format(prefix, info.id.ljust(20, "."), name))
+                # info.id and name are server-supplied; sanitize before display.
+                print(
+                    "  [{}] {} {}".format(
+                        prefix,
+                        sanitize_terminal(info.id).ljust(20, "."),
+                        sanitize_terminal(name),
+                    )
+                )
                 lines += len(name.split("\n"))  # for more_prompt
                 if more_prompt and lines > 20:
                     user_input = input("Hit Enter to continue: ")
@@ -1082,9 +1090,12 @@ class Downloader:
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
+                # s may embed server-supplied names (package id / filename /
+                # collection id) or a server error message; neutralise any
+                # terminal control sequences before writing to the terminal.
                 print_to(
                     textwrap.fill(
-                        s,
+                        sanitize_terminal(s),
                         initial_indent=prefix + prefix2,
                         subsequent_indent=prefix + prefix2 + " " * 4,
                     )
@@ -1309,7 +1320,7 @@ class Downloader:
                 else:
                     print(
                         "removing collection member with no package: {}".format(
-                            child_id
+                            sanitize_terminal(child_id)  # server-supplied ref
                         )
                     )
                     del collection.children[i]
