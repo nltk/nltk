@@ -146,13 +146,17 @@ def safe_json_loads(
         # the size/scan path (where a list of small ints, say, would otherwise
         # slip through ``len`` and ``bytes()`` before ``json.loads`` rejects it).
         raise TypeError(f"{context}: expected str or bytes, got {type(data).__name__}")
-    size = len(data)
+    # Measure size and scan depth on the UTF-8 byte view so the cap is a true
+    # byte cap: a non-ASCII str has more UTF-8 bytes than code points, and
+    # counting code points would let an oversized payload slip past the limit.
+    raw = data.encode("utf-8", "surrogatepass") if isinstance(data, str) else data
+    size = len(raw)
     if size > max_bytes:
         raise ValueError(
             f"{context}: JSON document is {size} bytes, over the "
             f"{max_bytes}-byte limit"
         )
-    depth = _scan_json_depth(data, max_depth)
+    depth = _scan_json_depth(raw, max_depth)
     if depth > max_depth:
         raise ValueError(
             f"{context}: JSON nesting depth exceeds the maximum allowed "
@@ -177,9 +181,16 @@ def safe_json_load(
 
     Reads at most ``max_bytes`` (plus one probe byte) so a gigantic file cannot
     be slurped into memory before it is rejected, then defers to
-    :func:`safe_json_loads`. Works with both text and binary streams.
+    :func:`safe_json_loads`. When the stream exposes a binary ``buffer`` the read
+    is taken from it so the cap bounds bytes rather than characters (a text
+    stream's ``read(n)`` counts code points, and one non-ASCII code point is
+    several UTF-8 bytes); a text stream without a buffer falls back to a
+    character read and :func:`safe_json_loads` still enforces the cap on the
+    encoded byte length. Works with both text and binary streams.
     """
-    data = fp.read(max_bytes + 1)
+    # Prefer the binary buffer so the byte cap bounds the read itself.
+    reader = getattr(fp, "buffer", fp)
+    data = reader.read(max_bytes + 1)
     if len(data) > max_bytes:
         raise ValueError(f"{context}: JSON resource exceeds the {max_bytes}-byte limit")
     return safe_json_loads(
@@ -226,12 +237,15 @@ class JSONTaggedDecoder(json.JSONDecoder):
         # Bound size, then nesting, BEFORE ``super().decode`` runs the recursive
         # C accelerator, which can overflow the C stack (an uncatchable segfault,
         # not a ``RecursionError``) before ``decode_obj``'s Python check runs.
-        if len(s) > self.MAX_DECODE_BYTES:
+        # Measure on the UTF-8 byte view so the cap counts bytes, not code points.
+        raw = s.encode("utf-8", "surrogatepass") if isinstance(s, str) else s
+        size = len(raw)
+        if size > self.MAX_DECODE_BYTES:
             raise ValueError(
-                f"JSON document is {len(s)} bytes, over the "
+                f"JSON document is {size} bytes, over the "
                 f"{self.MAX_DECODE_BYTES}-byte limit"
             )
-        if _scan_json_depth(s, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
+        if _scan_json_depth(raw, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
             raise ValueError(
                 f"JSON nesting depth exceeds maximum allowed ({self.MAX_DECODE_DEPTH})"
             )

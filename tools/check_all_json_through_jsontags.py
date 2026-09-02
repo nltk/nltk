@@ -73,7 +73,21 @@ _JSON_MODULES = frozenset({"json", "simplejson", "ujson", "orjson", "_json"})
 # excluded; ``JSONDecoder`` is a deserializer constructor and is guarded.
 _GUARDED_FUNCS = frozenset({"load", "loads", "JSONDecoder"})
 
+# Deserialization-relevant json submodules. ``json.decoder`` holds
+# ``JSONDecoder``; ``from json import decoder`` / ``import json.decoder`` route a
+# call through it, so those bindings are tracked as module aliases too.
+_JSON_SUBMODULES = frozenset({"decoder", "scanner"})
+
 SUPPRESS_MARKER = "# json-load ok"
+
+
+def _attr_root_name(node):
+    # Walk an attribute chain (``json.decoder`` down to ``json``) to its root
+    # Name, so a guarded call reached through a submodule attribute is still
+    # attributed to the json module at the root of the chain.
+    while isinstance(node, ast.Attribute):
+        node = node.value
+    return node.id if isinstance(node, ast.Name) else None
 
 
 class _JsonCallVisitor(ast.NodeVisitor):
@@ -95,28 +109,40 @@ class _JsonCallVisitor(ast.NodeVisitor):
 
     def visit_Import(self, node):
         for alias in node.names:
-            if alias.name in _JSON_MODULES:
-                self._module_aliases.add(alias.asname or alias.name)
+            # ``import json`` / ``import json as j`` / ``import json.decoder`` /
+            # ``import json.decoder as jd``: bind whatever name lands in scope.
+            root = alias.name.split(".", 1)[0]
+            if root in _JSON_MODULES:
+                self._module_aliases.add(alias.asname or root)
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node):
-        if node.module in _JSON_MODULES:
+        module = node.module or ""
+        # ``from json.decoder import JSONDecoder`` roots at ``json`` too, so key
+        # off the top package, not the exact submodule name.
+        if module.split(".", 1)[0] in _JSON_MODULES:
             for alias in node.names:
                 if alias.name == "*":
                     # ``from json import *`` pulls the guarded callables in
                     # untracked; refuse it outright.
-                    self._flag(node, f"from {node.module} import *")
+                    self._flag(node, f"from {module} import *")
                 elif alias.name in _GUARDED_FUNCS:
+                    # ``from json import loads`` / ``from json.decoder import JSONDecoder``.
                     self._func_aliases[alias.asname or alias.name] = alias.name
+                elif module in _JSON_MODULES and alias.name in _JSON_SUBMODULES:
+                    # ``from json import decoder`` binds a submodule; track it so
+                    # ``decoder.JSONDecoder(...)`` is still caught.
+                    self._module_aliases.add(alias.asname or alias.name)
         self.generic_visit(node)
 
     def visit_Call(self, node):
         func = node.func
-        # ``json.loads(...)`` / ``j.load(...)``: attribute on a json module.
+        # ``json.loads(...)`` / ``jd.JSONDecoder(...)`` / a guarded attribute on
+        # a json submodule chain (``json.decoder.JSONDecoder(...)``).
         if isinstance(func, ast.Attribute) and func.attr in _GUARDED_FUNCS:
-            recv = func.value
-            if isinstance(recv, ast.Name) and recv.id in self._module_aliases:
-                self._flag(node, f"{recv.id}.{func.attr}(...)")
+            root = _attr_root_name(func.value)
+            if root is not None and root in self._module_aliases:
+                self._flag(node, f"{root}.{func.attr}(...)")
         # ``loads(...)``: a guarded func imported bare from a json module.
         elif isinstance(func, ast.Name) and func.id in self._func_aliases:
             self._flag(node, f"{func.id}(...)  [from json]")

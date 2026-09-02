@@ -34,6 +34,9 @@ wall-clock timeout, and the fatal-signal teeth are guarded with a POSIX-only
 ``skipif``.
 """
 
+import ast
+import gzip
+import importlib.util
 import io
 import json
 import os
@@ -1058,3 +1061,165 @@ def test_huge_single_token_is_size_bounded():
         safe_json_loads('"' + "a" * 1000 + '"', max_bytes=200)
     # A large-but-under-cap token still parses.
     assert safe_json_loads('"' + "a" * 5000 + '"') == "a" * 5000
+
+
+# ==========================================================================
+# The byte cap is a BYTE cap, not a code-point cap. A non-ASCII str has more
+# UTF-8 bytes than code points, so counting len() on a str would let an
+# oversized multibyte payload slip past (a memory-exhaustion bypass). Every
+# entry point measures the encoded byte length.
+# ==========================================================================
+
+
+def test_byte_cap_counts_utf8_bytes_not_code_points_loads():
+    # 40 '€' code points are 120 UTF-8 bytes: under a 60-code-point count but
+    # over a 60-byte cap, so it must be refused, and the reported size is bytes.
+    from nltk.jsontags import safe_json_loads
+
+    payload = '"' + "€" * 40 + '"'
+    assert len(payload) < 60 < len(payload.encode("utf-8"))
+    with pytest.raises(ValueError, match="122 bytes, over the 60-byte"):
+        safe_json_loads(payload, max_bytes=60)
+    # bytes input is already byte-measured, and a small non-ASCII doc still loads.
+    assert safe_json_loads('{"c": "€"}') == {"c": "€"}
+    assert safe_json_loads('{"c": "€"}'.encode()) == {"c": "€"}
+
+
+def test_byte_cap_counts_utf8_bytes_not_code_points_decoder():
+    # Same for JSONTaggedDecoder.decode: the argument is a str, so len() would
+    # undercount a multibyte document handed to the recursive C accelerator.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    decoder = JSONTaggedDecoder()
+    decoder.MAX_DECODE_BYTES = 60
+    payload = '"' + "€" * 40 + '"'
+    with pytest.raises(ValueError, match="122 bytes, over the 60-byte"):
+        decoder.decode(payload)
+
+
+def test_byte_cap_counts_utf8_bytes_not_code_points_stream():
+    # And for safe_json_load: a text stream's read(n) counts characters, so the
+    # cap is enforced on the encoded byte length (via the binary buffer when the
+    # stream exposes one). A multibyte doc over the byte cap is refused.
+    from nltk.jsontags import safe_json_load
+
+    payload = '"' + "€" * 40 + '"'
+    raw = payload.encode("utf-8")
+    text_stream = io.TextIOWrapper(io.BytesIO(raw), encoding="utf-8")
+    with pytest.raises(ValueError, match="exceeds the|over the"):
+        safe_json_load(text_stream, max_bytes=60)
+    # A binary stream is byte-measured directly, and an under-cap doc still loads.
+    assert safe_json_load(io.BytesIO('{"c": "€"}'.encode())) == {"c": "€"}
+
+
+def test_decompression_bomb_feeding_json_is_size_bounded():
+    # CWE-409: a small gzip blob inflates to a huge JSON document. Whatever
+    # decompresses it hands the inflated bytes to the chokepoint, where the byte
+    # cap refuses them before the recursive parse runs. (nltk.data's gz path also
+    # bounds the inflate itself; this proves the chokepoint is a second wall.)
+    from nltk.jsontags import safe_json_load, safe_json_loads
+
+    inflated = '"' + "a" * 2_000_000 + '"'
+    compressed = gzip.compress(inflated.encode("utf-8"))
+    assert len(compressed) < len(inflated) // 10  # genuinely a bomb
+    decompressed = gzip.decompress(compressed)
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads(decompressed, max_bytes=1000)
+    with pytest.raises(ValueError, match="exceeds the|over the"):
+        safe_json_load(io.BytesIO(decompressed), max_bytes=1000)
+
+
+def test_jsonpickle_style_py_object_tag_is_inert_not_resolved():
+    # CWE-502 (jsonpickle / jackson polymorphic-typing class): a document that
+    # mimics another framework's type hints (``py/object``, ``py/reduce``,
+    # ``__reduce__``) carries no nltk '!' tag, so the tagged decoder returns it
+    # as a plain dict of inert data. No class is named, resolved or constructed.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    for payload in (
+        '{"py/object": "os.system", "args": ["id"]}',
+        '{"py/reduce": [{"py/type": "os.system"}, ["id"]]}',
+        '{"__reduce__": ["subprocess.Popen", ["sh"]]}',
+    ):
+        result = JSONTaggedDecoder().decode(payload)
+        assert isinstance(result, dict)
+    # And a single-key object whose key merely LOOKS tag-like but is unregistered
+    # is refused, never resolved to an arbitrary class.
+    with pytest.raises(ValueError, match="Unknown tag"):
+        JSONTaggedDecoder().decode('{"!os.system": ["id"]}')
+
+
+# ==========================================================================
+# CI guard (tools/check_all_json_through_jsontags.py): it is the structural
+# enforcement that keeps every future JSON read on the chokepoint, so its
+# bypasses are part of the attack surface. Load the real guard module and drive
+# its AST visitor over each import/call shape that must (or must not) be flagged.
+# ==========================================================================
+
+
+def _load_json_guard():
+    path = os.path.join(REPO_ROOT, "tools", "check_all_json_through_jsontags.py")
+    if not os.path.exists(path):
+        pytest.skip("guard script is only present in a source checkout")
+    spec = importlib.util.spec_from_file_location("_nltk_json_guard", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _guard_flags(guard, source):
+    visitor = guard._JsonCallVisitor("<test>", set())
+    visitor.visit(ast.parse(source))
+    return visitor.violations
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "import json\njson.loads(x)",
+        "import json as j\nj.load(x)",
+        "from json import loads\nloads(x)",
+        "from json import loads as L\nL(x)",
+        # Bypasses the reviewer flagged: submodule import-from, import-as, a
+        # dotted attribute chain, and a bare submodule import.
+        "from json.decoder import JSONDecoder\nJSONDecoder().decode(x)",
+        "from json.decoder import JSONDecoder as JD\nJD().decode(x)",
+        "import json.decoder as jd\njd.JSONDecoder().decode(x)",
+        "import json.decoder\njson.decoder.JSONDecoder().decode(x)",
+        "from json import decoder\ndecoder.JSONDecoder().decode(x)",
+        "from json import *\nloads(x)",
+        # Drop-in accelerators are guarded the same way.
+        "import ujson\nujson.loads(x)",
+        "import simplejson as json\njson.load(x)",
+    ],
+)
+def test_json_guard_flags_every_bare_deserialization_shape(source):
+    guard = _load_json_guard()
+    assert _guard_flags(guard, source), f"guard missed a bypass:\n{source}"
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "obj.load(x)",  # a load() method on some unrelated object
+        "import pickle\npickle.load(x)",  # a different (separately guarded) module
+        "import yaml\nyaml.safe_load(x)",
+        "import json\njson.dumps(x)",  # serialization is not guarded
+        "import json\njson.dump(x, fp)",
+        "self.json.loads(x)",  # attribute named json on some object, not the module
+        "from nltk.jsontags import safe_json_loads\nsafe_json_loads(x)",  # the wrapper
+    ],
+)
+def test_json_guard_ignores_legitimate_shapes(source):
+    guard = _load_json_guard()
+    assert not _guard_flags(guard, source), f"guard false-positived:\n{source}"
+
+
+def test_json_guard_passes_clean_on_the_shipped_tree(monkeypatch):
+    # The guard must still report zero violations on the real package after being
+    # strengthened, so the new bypass coverage did not introduce a false positive.
+    # Run it in-process (no subprocess) with cwd at the repo root so its relative
+    # GUARDED_PATHS resolve.
+    guard = _load_json_guard()
+    monkeypatch.chdir(REPO_ROOT)
+    assert guard.main() == 0
