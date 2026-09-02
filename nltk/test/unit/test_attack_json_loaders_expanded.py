@@ -151,11 +151,9 @@ def assert_no_crash_and_rejected(proc):
     )
 
 
-# ===========================================================================
-# In-process unit checks on the shared chokepoint (safe_json_load / _loads).
-# Every caller funnels through these, so a bounded rejection here is inherited
-# everywhere. None of these can crash the interpreter, so no subprocess needed.
-# ===========================================================================
+# In-process unit checks on the shared chokepoint (safe_json_load / _loads):
+# every caller funnels through these, so a bounded rejection here is inherited
+# everywhere, and none of these can crash the interpreter (no subprocess).
 
 
 def test_helper_parses_benign_control():
@@ -235,11 +233,9 @@ def test_helper_stream_size_cap_bounds_memory():
         safe_json_load(huge, max_bytes=100)
 
 
-# ===========================================================================
 # JSONTaggedDecoder (NLTK model-artifact tag decoder): its ``super().decode``
 # runs the recursive C accelerator, so it must bound nesting BEFORE that call,
 # not only in the later Python ``decode_obj`` walk (GHSA-rf74-v2fm-23pw).
-# ===========================================================================
 
 
 def test_tagged_decoder_deep_nesting_prescanned_not_crashed():
@@ -297,11 +293,9 @@ def test_tagged_decoder_depth_at_limit_still_decodes():
     assert isinstance(ok, list)
 
 
-# ===========================================================================
 # The structural-depth scan is the whole guarantee, so it must never UNDERCOUNT
 # real nesting (which would let a deep payload slip past): brackets inside string
 # literals must not count; real brackets outside them always must.
-# ===========================================================================
 
 
 def test_scan_ignores_brackets_inside_strings():
@@ -368,11 +362,9 @@ def test_giant_shallow_array_bounded_by_size_not_depth():
         safe_json_loads(payload, max_bytes=100)
 
 
-# ===========================================================================
 # Teeth: the stock decoder hard-crashes on the same payload, proving the guard
-# above is non-vacuous. And the guard survives that payload with the recursion
+# above is non-vacuous, and the guard survives that payload with the recursion
 # limit lifted.
-# ===========================================================================
 
 
 @POSIX_ONLY
@@ -386,11 +378,9 @@ def test_teeth_raw_json_deep_array_hard_crashes():
         reclimit=RECLIMIT,
         timeout=60,
     )
-    # Without the depth guard the raw parse never completes cleanly. On Python
-    # < 3.12 with a raised recursion limit the C recursion overflows into a fatal
-    # SIGSEGV; on 3.12+ the new C-stack check turns the same input into a
-    # RecursionError. Either way it is not safely parsable, which is exactly what
-    # the bounded loader closes by rejecting it before parsing.
+    # Without the depth guard this payload is not safely parsable: a raised
+    # recursion limit overflows the C stack into a fatal SIGSEGV pre-3.12, or a
+    # RecursionError on 3.12+. The bounded loader rejects it before parsing.
     fatal = {-signal.SIGSEGV, -signal.SIGABRT, -signal.SIGBUS}
     crashed = proc.returncode in fatal
     recursion_error = proc.returncode != 0 and "RecursionError" in (proc.stderr or "")
@@ -438,11 +428,9 @@ def test_guard_survives_deep_array_with_raised_recursion_limit():
     assert_no_crash_and_rejected(proc)
 
 
-# ===========================================================================
 # Real caller paths, each with the recursion limit lifted so a leak would
-# surface as a crash. Each site: hostile -> bounded rejection, no crash; and a
+# surface as a crash. Each site: hostile -> bounded rejection, no crash; plus a
 # benign control that loads and works.
-# ===========================================================================
 
 
 @POSIX_ONLY
@@ -590,10 +578,12 @@ def test_data_load_json_deep_resource_no_crash():
 
 
 def test_data_load_json_benign_reaches_tag_gate_unchanged():
-    # The format="json" tag gate is pre-existing and rejects every plain object;
-    # the point here is that the guarded parse SUCCEEDS (the object is fully
-    # parsed) and behavior is unchanged: the same tag-gate error is raised, not
-    # a JSON parse failure.
+    """Guarded parse SUCCEEDS on a benign object; behavior is unchanged.
+
+    The format="json" tag gate is pre-existing and rejects every plain object;
+    the point here is that the object is fully parsed and the same tag-gate
+    error is raised, not a JSON parse failure.
+    """
     proc = run_child(
         """
         import nltk.data
@@ -787,3 +777,284 @@ def test_sentiment_preprocess_deep_tweet_line_no_crash():
         timeout=60,
     )
     assert_no_crash_and_rejected(proc)
+
+
+# Non-finite values: NaN / Infinity / -Infinity are a CPython json extension,
+# not RFC 8259, and a numeric literal can also overflow an IEEE double to inf.
+# safe_json_loads and JSONTaggedDecoder refuse every non-finite value so an
+# attacker cannot smuggle one into a model weight or a tweet field, while finite
+# values (including the largest representable double) still parse.
+
+
+def test_helper_rejects_nan_infinity_constants():
+    from nltk.jsontags import safe_json_loads
+
+    for token in ("NaN", "Infinity", "-Infinity", '{"w": NaN}', "[1, 2, Infinity]"):
+        with pytest.raises(ValueError, match="non-finite"):
+            safe_json_loads(token)
+
+
+def test_helper_rejects_numeric_overflow_to_infinity():
+    from nltk.jsontags import safe_json_loads
+
+    # Valid JSON number syntax whose value overflows a double to inf; caught by
+    # parse_float rather than parse_constant.
+    for token in ("1e400", "1e999999", "-1e999999", "1.8e308", '{"w": 1e400}'):
+        with pytest.raises(ValueError, match="non-finite"):
+            safe_json_loads(token)
+
+
+def test_helper_finite_edge_floats_still_parse():
+    from nltk.jsontags import safe_json_loads
+
+    # The largest finite double parses; a tiny exponent underflows to 0.0
+    # (finite); ordinary floats are unaffected.
+    assert safe_json_loads("1.5e308") == 1.5e308
+    assert safe_json_loads("1e-999999") == 0.0
+    assert safe_json_loads('{"w": [0.5, -1.25, 1e10]}') == {"w": [0.5, -1.25, 1e10]}
+
+
+def test_tagged_decoder_rejects_non_finite():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    for token in ("NaN", "Infinity", '{"x": -Infinity}', "1e400", '{"x": 1e999999}'):
+        with pytest.raises(ValueError, match="non-finite"):
+            JSONTaggedDecoder().decode(token)
+    # Finite control still decodes.
+    assert JSONTaggedDecoder().decode('{"x": 1.5}') == {"x": 1.5}
+
+
+def test_tagged_decoder_rejects_oversize_document():
+    from nltk.jsontags import JSONTaggedDecoder
+
+    decoder = JSONTaggedDecoder()
+    decoder.MAX_DECODE_BYTES = 100  # shrink the cap so the test stays cheap
+    with pytest.raises(ValueError, match="over the"):
+        decoder.decode('"' + "a" * 1000 + '"')
+    # A document under the cap still decodes.
+    assert decoder.decode('{"a": 1}') == {"a": 1}
+
+
+def test_averaged_perceptron_load_rejects_non_finite_weight(tmp_path):
+    # End-to-end: a model file carrying a non-finite weight is refused by the
+    # loader (which funnels through safe_json_load), so a poisoned weight never
+    # reaches the tagger's scoring.
+    from nltk.tag.perceptron import AveragedPerceptron
+
+    path = tmp_path / "weights.json"
+    path.write_text('{"the": {"NN": Infinity, "DT": 0.5}}', encoding="utf-8")
+    with pytest.raises(ValueError, match="non-finite"):
+        AveragedPerceptron().load(str(path))
+
+
+# ==========================================================================
+# Advisory / CWE coverage map and net-new edge vectors on the chokepoint.
+#
+# jsontags is the single place all JSON deserialization funnels through, so a
+# defence proven here is inherited by every caller. The cases below name the
+# reported advisory or weakness class each one guards against.
+# ==========================================================================
+
+
+def test_ghsa_rf74_tagged_decoder_recursion_bounded():
+    # GHSA-rf74-v2fm-23pw / CWE-674: unbounded recursion in decode_obj. The deep
+    # document is refused with a bounded ValueError, never a RecursionError.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    with pytest.raises(ValueError):
+        JSONTaggedDecoder().decode("[" * 5000 + "]" * 5000)
+
+
+def test_cwe400_resource_exhaustion_size_and_int_bounded():
+    # CWE-400 / CWE-770 / CVE-2020-10735: a large document is refused by the byte
+    # cap and a giant integer by the interpreter's int/str conversion limit.
+    from nltk.jsontags import safe_json_loads
+
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads('"' + "a" * 1000 + '"', max_bytes=100)
+    with pytest.raises(ValueError):
+        safe_json_loads("1" + "0" * 5000)
+
+
+def test_cwe502_tag_reconstruction_only_from_allowlist():
+    # CWE-502: the tag path reconstructs only pre-registered classes; an unknown
+    # tag is refused, so an attacker cannot name an arbitrary class or module.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    with pytest.raises(ValueError, match="Unknown tag"):
+        JSONTaggedDecoder().decode('{"!nltk.evil.RCE": {"cmd": "x"}}')
+
+
+def test_cwe20_input_type_validation_is_a_clean_type_error():
+    # CWE-20: a non str/bytes input fails at the chokepoint with a clear
+    # TypeError rather than slipping into the size/scan path.
+    from nltk.jsontags import safe_json_loads
+
+    for bad in (None, 123, [1, 2], {"a": 1}, memoryview(b'{"a":1}')):
+        with pytest.raises(TypeError, match="expected str or bytes"):
+            safe_json_loads(bad)
+    # bytes and bytearray are valid and parse.
+    assert safe_json_loads(b'{"a": 1}') == {"a": 1}
+    assert safe_json_loads(bytearray(b'{"a": 1}')) == {"a": 1}
+
+
+def test_unicode_forms_parse_or_reject_but_never_crash():
+    from nltk.jsontags import safe_json_loads
+
+    # Standard json: lone surrogates, escaped null and bidi controls parse to a
+    # str (inert data); an invalid \x escape, a \U escape and a byte-order mark
+    # are rejected. None crash.
+    assert isinstance(safe_json_loads(r'"\ud800"'), str)  # lone high surrogate
+    assert isinstance(safe_json_loads(r'"\udc00"'), str)  # lone low surrogate
+    assert safe_json_loads('"a\\u0000b"') == "a\x00b"
+    assert safe_json_loads('"x\\u202ey"') == "x‮y"  # RTL override
+    for bad in (r'"\x41"', r'"\U0001F600"', '﻿{"a":1}'):
+        with pytest.raises(ValueError):
+            safe_json_loads(bad)
+
+
+def test_scanner_hidden_brackets_never_undercount_or_bypass():
+    from nltk.jsontags import _scan_json_depth, safe_json_loads
+
+    # Brackets buried in a CLOSED string are correctly counted (real brackets
+    # after it are not lost), and an UNTERMINATED string that hides brackets is
+    # invalid json and rejected by json.loads, so neither bypasses the guard.
+    escaped = '"\\""' + "[" * 5000 + "]" * 5000
+    assert _scan_json_depth(escaped, 10**9) == 5000
+    with pytest.raises(ValueError):
+        safe_json_loads(escaped)
+    unterminated = '"' + "[" * 5000  # never closed
+    assert _scan_json_depth(unterminated, 10**9) == 0
+    with pytest.raises(ValueError):
+        safe_json_loads(unterminated)
+    # Brackets entirely inside a valid string are a depth-0 string value.
+    assert safe_json_loads('"' + "[" * 500 + "]" * 500 + '"') == "[" * 500 + "]" * 500
+
+
+def test_extreme_bound_parameters_fail_closed():
+    from nltk.jsontags import safe_json_loads
+
+    assert safe_json_loads("1", max_depth=0) == 1  # flat is within depth 0
+    with pytest.raises(ValueError, match="nesting depth"):
+        safe_json_loads("[1]", max_depth=0)
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads("1", max_bytes=-1)
+    with pytest.raises(ValueError, match="nesting depth"):
+        safe_json_loads("[1]", max_depth=-5)
+
+
+def test_encoder_circular_reference_is_refused_not_infinite():
+    # The encode side must not spin forever on a self-referential object; json's
+    # circular-reference check turns it into a bounded ValueError.
+    import json as _json
+
+    from nltk.jsontags import JSONTaggedEncoder
+
+    cyclic = {}
+    cyclic["self"] = cyclic
+    with pytest.raises(ValueError):
+        _json.dumps(cyclic, cls=JSONTaggedEncoder)
+
+
+def test_stream_partial_reads_fail_closed_not_bypass():
+    # A stream that returns short partial reads truncates the document; the
+    # single bounded read then hands json.loads an incomplete document, which is
+    # refused. It cannot be used to smuggle more than max_bytes past the cap.
+    from nltk.jsontags import safe_json_load
+
+    class PartialStream:
+        def __init__(self, data):
+            self.data = data
+            self.pos = 0
+
+        def read(self, n=-1):
+            chunk = self.data[self.pos : self.pos + 3]
+            self.pos += 3
+            return chunk
+
+    with pytest.raises(ValueError):
+        safe_json_load(PartialStream('{"abcdefgh": 1}'))
+
+
+def test_leading_whitespace_flood_is_bounded_by_size():
+    # A flood of insignificant whitespace is O(n) to skip and bounded by the byte
+    # cap, so it neither hangs nor slips past the guard.
+    from nltk.jsontags import safe_json_loads
+
+    assert safe_json_loads(" " * 200_000 + "1") == 1
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads(" " * 200 + "1", max_bytes=100)
+
+
+# ==========================================================================
+# Wider-ecosystem JSON CVE/CWE classes (Python stdlib, ujson, jackson /
+# fastjson / Newtonsoft polymorphic deserialization, hash-collision DoS),
+# confirmed against the same chokepoint.
+# ==========================================================================
+
+
+def test_hash_collision_object_is_linear_not_quadratic():
+    # CVE-2011-4815 class: a huge key set. Python's randomized SipHash and the
+    # size cap keep insertion linear, so a many-key object is bounded, not a
+    # quadratic hash-collision DoS.
+    from nltk.jsontags import safe_json_loads
+
+    payload = "{" + ",".join(f'"{i}":0' for i in range(200_000)) + "}"
+    parsed = safe_json_loads(payload)
+    assert len(parsed) == 200_000
+
+
+def test_mixed_array_object_deep_nesting_refused():
+    # CVE-2021-45958 class (ujson deep-nesting stack overflow): the scanner
+    # counts both '[' and '{', so an alternating [{ tower is bounded too.
+    from nltk.jsontags import JSON_MAX_DEPTH, safe_json_loads
+
+    d = JSON_MAX_DEPTH + 50
+    payload = '{"a":[' * (d // 2) + "1" + "]}" * (d // 2)
+    with pytest.raises(ValueError, match="nesting depth"):
+        safe_json_loads(payload)
+
+
+def test_trailing_and_concatenated_data_refused():
+    # Parser-differential smuggling: trailing, leading or concatenated documents
+    # are rejected, so two parsers cannot disagree on the value.
+    from nltk.jsontags import safe_json_loads
+
+    for payload in ('{"a":1}garbage', '{"a":1}{"b":2}', "[1,2]  [3,4]", 'x{"a":1}'):
+        with pytest.raises(ValueError):
+            safe_json_loads(payload)
+
+
+def test_non_rfc_number_syntax_refused():
+    # RFC-8259 strictness: leading zeros, a leading '+', a bare or trailing dot,
+    # hex/octal/underscore literals and a digitless exponent are all refused
+    # (each is accepted by some other language's parser, a smuggling risk).
+    from nltk.jsontags import safe_json_loads
+
+    for payload in ("01", "+1", ".5", "1.", "0x1F", "0o17", "1_000", "1e", "--1"):
+        with pytest.raises(ValueError):
+            safe_json_loads(payload)
+    # Negative zero is valid JSON and parses to 0.
+    assert safe_json_loads("-0") == 0
+
+
+def test_nested_tag_bomb_via_tagged_decoder_refused():
+    # CWE-502 (jackson / fastjson / Newtonsoft polymorphic-deserialization
+    # class): a tower of single-key '!'-tag objects is bounded by the tagged
+    # decoder's depth cap, never unbounded reconstruction.
+    from nltk.jsontags import JSONTaggedDecoder
+
+    payload = '{"!x":' * 300 + "1" + "}" * 300
+    with pytest.raises(ValueError):
+        JSONTaggedDecoder().decode(payload)
+
+
+def test_huge_single_token_is_size_bounded():
+    # A single enormous string or number token is bounded by the byte cap, not
+    # unbounded (CWE-400 / CWE-789).
+    from nltk.jsontags import safe_json_loads
+
+    with pytest.raises(ValueError, match="over the"):
+        safe_json_loads('"' + "a" * 1000 + '"', max_bytes=200)
+    # A large-but-under-cap token still parses.
+    assert safe_json_loads('"' + "a" * 5000 + '"') == "a" * 5000

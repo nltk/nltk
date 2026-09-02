@@ -20,32 +20,65 @@ json_tags = {}
 
 TAG_PREFIX = "!"
 
-#: Hard cap on the *structural* nesting depth we will hand to the C JSON
-#: decoder. CPython's C accelerator recurses in C, so when a process has
-#: raised its recursion limit a deeply nested document overflows the C stack
-#: and segfaults the interpreter (an uncatchable crash) instead of raising a
-#: bounded ``RecursionError``. We therefore reject over-deep input *before*
-#: parsing. 2000 sits far above any real NLTK artifact (model weights nest 2
-#: deep, tagsets 2, tweets a handful) and far below the C-stack limit at which
-#: the accelerator crashes.
 JSON_MAX_DEPTH = 2000
+"""Hard cap on the structural nesting depth handed to the C JSON decoder.
 
-#: Upper bound (in bytes) on a JSON document loaded from an NLTK resource.
-#: 200 MiB clears the largest shipped model (the Russian perceptron weights are
-#: about 30 MB) with headroom while refusing an unbounded-memory payload. It is
-#: deliberately generous: the depth guard above, not this size guard, is what
-#: neutralises the crash primitive; this one only bounds memory and, together
-#: with the interpreter's ``int_max_str_digits`` default, the giant-integer
-#: conversion cost.
+CPython's C accelerator recurses in C, so when a process has raised its
+recursion limit a deeply nested document overflows the C stack and segfaults
+the interpreter (an uncatchable crash) instead of raising a bounded
+``RecursionError``. Over-deep input is therefore rejected before parsing. 2000
+sits far above any real NLTK artifact (model weights nest 2 deep, tagsets 2,
+tweets a handful) and far below the C-stack limit at which the accelerator
+crashes.
+"""
+
 JSON_MAX_BYTES = 200 * 1024 * 1024
+"""Upper bound (in bytes) on a JSON document loaded from an NLTK resource.
+
+200 MiB clears the largest shipped model (the Russian perceptron weights are
+about 30 MB) with headroom while refusing an unbounded-memory payload. It is
+deliberately generous: the depth guard, not this size guard, is what
+neutralises the crash primitive; this one only bounds memory and, together with
+the interpreter's ``int_max_str_digits`` default, the giant-integer conversion
+cost.
+"""
 
 # Keep only the six bytes that can change structural nesting depth or open and
-# close a string literal; everything else is deleted at C speed before the
-# Python-level scan, so a legit multi-megabyte model is scanned in well under a
-# second while brackets buried in string values are still counted correctly.
+# close a string literal; ``_scan_json_depth`` deletes everything else at C
+# speed before its Python-level scan (see that function's docstring).
 _STRUCTURAL_BYTES = b'"\\[]{}'
 _IDENTITY_TABLE = bytes(range(256))
 _NON_STRUCTURAL = bytes(i for i in range(256) if i not in _STRUCTURAL_BYTES)
+
+
+_POS_INF = float("inf")
+
+
+def _reject_non_finite(token):
+    """``parse_constant`` hook: refuse ``NaN`` / ``Infinity`` / ``-Infinity``.
+
+    These three are a CPython ``json`` extension, not RFC 8259, so a standards
+    conformant document never contains them and no shipped NLTK resource does.
+    An attacker-supplied model weight or tweet field could, though, and a NaN
+    weight silently poisons every downstream score while an Infinity can turn a
+    comparison into a hang, so untrusted input is held to strict JSON.
+    """
+    raise ValueError(f"non-finite JSON constant {token!r} is not allowed")
+
+
+def _finite_float(token):
+    """``parse_float`` hook: refuse a numeric literal that overflows to infinity.
+
+    ``parse_constant`` only catches the ``Infinity`` word; a plain numeric token
+    with a huge exponent (``1e400``) is valid JSON syntax but overflows an IEEE
+    double to ``inf`` without going through it. Rejecting the overflow too keeps
+    the non-finite guarantee complete. The check runs only on tokens the parser
+    already treats as floats, so integers and small floats are unaffected.
+    """
+    value = float(token)
+    if value == _POS_INF or value == -_POS_INF:
+        raise ValueError(f"non-finite JSON number {token!r} overflows to infinity")
+    return value
 
 
 def _scan_json_depth(data, limit):
@@ -56,6 +89,11 @@ def _scan_json_depth(data, limit):
     scan returns as soon as the depth exceeds ``limit`` (so a hostile payload
     is rejected after only a few thousand bytes), and it never recurses, so it
     cannot itself be the crash it is guarding against.
+
+    Every byte that cannot change nesting depth or open/close a string literal
+    is deleted at C speed by :meth:`bytes.translate` before the Python-level
+    loop runs, so a legit multi-megabyte model is scanned in well under a
+    second while brackets buried in string values are still counted correctly.
     """
     if isinstance(data, str):
         data = data.encode("utf-8", "surrogatepass")
@@ -103,6 +141,11 @@ def safe_json_loads(
     still bounded by the interpreter's ``sys.get_int_max_str_digits()`` default
     during :func:`json.loads`.
     """
+    if not isinstance(data, (str, bytes, bytearray)):
+        # Fail with a clear type error at the chokepoint rather than deep inside
+        # the size/scan path (where a list of small ints, say, would otherwise
+        # slip through ``len`` and ``bytes()`` before ``json.loads`` rejects it).
+        raise TypeError(f"{context}: expected str or bytes, got {type(data).__name__}")
     size = len(data)
     if size > max_bytes:
         raise ValueError(
@@ -115,7 +158,12 @@ def safe_json_loads(
             f"{context}: JSON nesting depth exceeds the maximum allowed "
             f"({max_depth})"
         )
-    return json.loads(data)
+    # Reject every non-finite value: the NaN/Infinity/-Infinity words via
+    # parse_constant, and a numeric literal that overflows to inf via
+    # parse_float, so no non-finite value reaches a model weight or a tweet.
+    return json.loads(
+        data, parse_constant=_reject_non_finite, parse_float=_finite_float
+    )
 
 
 def safe_json_load(
@@ -162,10 +210,27 @@ class JSONTaggedDecoder(json.JSONDecoder):
     #: Prevents denial of service from deeply nested payloads.
     MAX_DECODE_DEPTH = 200
 
+    #: Upper bound (bytes) on a document handed to the tagged decoder, matching
+    #: ``safe_json_loads`` so this path is size-bounded as well as depth-bounded.
+    MAX_DECODE_BYTES = JSON_MAX_BYTES
+
+    def __init__(self, **kwargs):
+        # Reject non-finite values by default (NaN/Infinity words and numeric
+        # overflow to inf), matching safe_json_loads; a caller may still override
+        # parse_constant / parse_float explicitly.
+        kwargs.setdefault("parse_constant", _reject_non_finite)
+        kwargs.setdefault("parse_float", _finite_float)
+        super().__init__(**kwargs)
+
     def decode(self, s):
-        # Bound nesting BEFORE ``super().decode`` runs the recursive C accelerator,
-        # which can overflow the C stack (an uncatchable segfault, not a
-        # ``RecursionError``) before ``decode_obj``'s Python check is reached.
+        # Bound size, then nesting, BEFORE ``super().decode`` runs the recursive
+        # C accelerator, which can overflow the C stack (an uncatchable segfault,
+        # not a ``RecursionError``) before ``decode_obj``'s Python check runs.
+        if len(s) > self.MAX_DECODE_BYTES:
+            raise ValueError(
+                f"JSON document is {len(s)} bytes, over the "
+                f"{self.MAX_DECODE_BYTES}-byte limit"
+            )
         if _scan_json_depth(s, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
             raise ValueError(
                 f"JSON nesting depth exceeds maximum allowed ({self.MAX_DECODE_DEPTH})"
