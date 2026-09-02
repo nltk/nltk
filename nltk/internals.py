@@ -21,7 +21,6 @@ import warnings
 from xml.etree import ElementTree
 
 from nltk import redos
-from nltk.pathsec import validate_path
 
 ##########################################################################
 # Java Via Command-Line
