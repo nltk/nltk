@@ -956,9 +956,20 @@ class Downloader:
                         required_root=download_dir,
                     ) as outfile:
                         num_blocks = max(1, info.size / (1024 * 16))
+                        # Bound the response body. A hostile or broken server
+                        # must not stream past the manifest-declared size and
+                        # exhaust the disk before the post-download integrity
+                        # check runs (CWE-400). We stop once the body exceeds the
+                        # declared size by a small slack, leaving the temp file
+                        # oversized so the size check below rejects and cleans up.
+                        max_download_bytes = int(info.size) + 1024 * 1024
+                        bytes_read = 0
                         for block in itertools.count():
                             s = infile.read(1024 * 16)
                             if not s:
+                                break
+                            bytes_read += len(s)
+                            if bytes_read > max_download_bytes:
                                 break
                             outfile.write(s)
                             if block % 2 == 0:
