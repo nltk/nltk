@@ -55,7 +55,7 @@ def _format_tagset(tagset, tagpattern=None):
     elif tagpattern in tagdict:
         _print_entries([tagpattern], tagdict)
     else:
-        tagpattern = redos.compile(tagpattern)  # bounds compile + match time
+        tagpattern = redos.compile(tagpattern)
         tags = [tag for tag in sorted(tagdict) if tagpattern.match(tag)]
         if tags:
             _print_entries(tags, tagdict)
