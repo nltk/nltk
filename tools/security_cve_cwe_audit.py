@@ -526,6 +526,7 @@ GUARD_TESTS = [
             "test_boxer_*.py",
             "test_*_stanford_pathsec.py",
             "test_attack_tool_injection_*.py",
+            "test_corenlp_options_security.py",
         ],
     ),
     (
@@ -534,6 +535,7 @@ GUARD_TESTS = [
             "test_java_*.py",
             "test_attack_java_tool_*.py",
             "test_attack_tool_injection_*.py",
+            "test_corenlp_options_security.py",
         ],
     ),
     (
