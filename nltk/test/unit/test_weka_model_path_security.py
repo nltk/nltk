@@ -6,8 +6,8 @@
 
 """GHSA-j456-xh4h-cpf2: WekaClassifier passed a caller-controlled model path to
 the weka JVM (``-d`` write on train, ``-l`` read on classify) with no pathsec
-validation, a variant of the GHSA-8mgp-746c-j5xp model-artifact containment class
-weka.py was left out of. These tests drive the real code paths: the validation
+validation, a variant of the GHSA-8mgp-746c-j5xp / CVE-2026-81726 model-artifact
+containment class weka.py was left out of. These tests drive the real code paths: the validation
 runs before any weka/config lookup, so an out-of-root path is refused with
 PermissionError even without weka installed, while a legitimate in-root staged
 path still passes. Nothing is mocked."""
