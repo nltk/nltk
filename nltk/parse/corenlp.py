@@ -13,7 +13,13 @@ import time
 from typing import List, Tuple
 
 from nltk import redos
-from nltk.internals import _java_options, config_java, find_jar_iter, java
+from nltk.internals import (
+    _UNSAFE_OPTION_CHARS,
+    _java_options,
+    config_java,
+    find_jar_iter,
+    java,
+)
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tag.api import TaggerI
@@ -99,10 +105,6 @@ _CORENLP_VALUE_FLAGS = (
     | _CORENLP_URI_FLAGS
 )
 
-# No legitimate flag or value contains whitespace, a control character or a shell
-# metacharacter (defense in depth; the argv is never handed to a shell).
-_CORENLP_UNSAFE_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
-
 _CORENLP_REFUSAL = (
     "corenlp_options %s: %r. Only a minimal allowlist of operational "
     "StanfordCoreNLPServer flags with validated values is accepted; path-bearing "
@@ -118,15 +120,25 @@ def _corenlp_reject(entry, why):
 
 
 def _corenlp_check_scalar(entry):
-    """Reject a non-string, an empty string, or one carrying whitespace, a control
-    character, a shell metacharacter or a Java argument-file prefix."""
+    """Reject a non-string, an empty string, or one carrying anything outside
+    printable ASCII (whitespace, a C0/C1 control, DEL, or any non-ASCII byte such
+    as a fullwidth digit, homoglyph, bidi override or zero-width character), a
+    shell metacharacter, or a leading Java argument-file prefix.
+
+    Every allowlisted flag and value is plain printable ASCII, so restricting to
+    that here is a name-agnostic gate that closes unicode-confusable and control
+    character bypasses before any per-flag value shape is even consulted."""
     if not isinstance(entry, str) or not entry:
         _corenlp_reject(entry, "contains a non-string or empty entry")
     if any(
-        c.isspace() or ord(c) < 0x20 or ord(c) == 0x7F or c in _CORENLP_UNSAFE_CHARS
+        c.isspace() or ord(c) < 0x20 or ord(c) > 0x7E or c in _UNSAFE_OPTION_CHARS
         for c in entry
     ):
-        _corenlp_reject(entry, "contains whitespace, a control char or a metacharacter")
+        _corenlp_reject(
+            entry,
+            "contains whitespace, a control character, a non-ASCII or a shell "
+            "metacharacter",
+        )
     if entry.startswith("@"):
         _corenlp_reject(entry, "is a Java argument-file reference")
 

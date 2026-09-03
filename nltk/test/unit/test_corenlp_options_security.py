@@ -22,6 +22,46 @@ import pytest
 
 from nltk.parse.corenlp import CoreNLPServer, _validate_corenlp_options
 
+# Reuse the adversarial JVM / external-tool payload corpora already written for the
+# java() and tool-wrapper guards. None of these is an allowlisted CoreNLP server
+# flag, so corenlp_options must refuse every one of them too. This piggybacks the
+# corenlp allowlist onto ~115 existing hostile vectors (JVM agents, @argfile,
+# -XX:OnError, bootclasspath / module-path / class-path, codebase, metacharacter /
+# NUL / unicode-whitespace / DEL smuggling, concatenated flags, tool program flags
+# and hostile model paths) rather than re-authoring them.
+from nltk.test.unit.test_attack_java_tool_expanded import (
+    _HOSTILE_HUNPOS_MODELS,
+    _TOOL_FLAGS,
+)
+from nltk.test.unit.test_java_injection_exploit import INJECTION_VECTORS
+from nltk.test.unit.test_java_per_call_options_security import (
+    DANGEROUS,
+    DANGEROUS_CMD,
+    UNICODE_WS_CMD,
+)
+
+
+def _as_options(payload):
+    """A corenlp_options value is a list; wrap a bare payload as a single option."""
+    return payload if isinstance(payload, list) else [payload]
+
+
+# Every reused payload normalised to an options list, dropping the one benign
+# member (an empty list, i.e. no options at all).
+_REUSED_HOSTILE = [
+    opts
+    for corpus in (
+        DANGEROUS,
+        DANGEROUS_CMD,
+        UNICODE_WS_CMD,
+        INJECTION_VECTORS,
+        _TOOL_FLAGS,
+        _HOSTILE_HUNPOS_MODELS,
+    )
+    for opts in (_as_options(p) for p in corpus)
+    if opts
+]
+
 # --- BENIGN: normal operational usage that MUST keep working ------------------
 BENIGN = [
     ["-preload", "tokenize,ssplit,pos,lemma,parse,depparse"],  # the NLTK default
@@ -217,6 +257,17 @@ class TestValidatorMalicious:
     @pytest.mark.parametrize("opts", ALL_MALICIOUS)
     def test_malicious_options_refused(self, opts):
         with pytest.raises(ValueError):
+            _validate_corenlp_options(opts)
+
+
+class TestReusedAdversarialCorpora:
+    # ~115 hostile vectors reused from the java()/tool-wrapper attack suites; the
+    # corenlp_options allowlist must refuse every one (none is an allowlisted
+    # server flag). Proves the guard piggybacks the existing corpus, not just the
+    # cases written by hand for it.
+    @pytest.mark.parametrize("opts", _REUSED_HOSTILE)
+    def test_reused_jvm_and_tool_payloads_are_refused(self, opts):
+        with pytest.raises((ValueError, TypeError)):
             _validate_corenlp_options(opts)
 
 
