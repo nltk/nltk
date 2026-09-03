@@ -71,6 +71,20 @@ class TestTokenize:
         ]
         assert tokens == expected
 
+    def test_tweet_tokenizer_ellipsis_newline(self):
+        """
+        Ellipsis tokens must not span newlines (#1954).
+        """
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("hello...\n...world") == [
+            "hello",
+            "...",
+            "...",
+            "world",
+        ]
+        # spaces between ellipsis dots are still allowed
+        assert tokenizer.tokenize("a.. .b") == ["a", ".. .", "b"]
+
     @pytest.mark.parametrize(
         "test_input, expecteds",
         [
