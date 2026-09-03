@@ -138,7 +138,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         page = infile.read()
                 else:
                     page = (
-                        (html_header % word) + "<p>The database info file:"
+                        (html_header % html.escape(word)) + "<p>The database info file:"
                         "<p><b>"
                         + usp
                         + "</b>"
@@ -193,7 +193,15 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
     def send_head(self, type=None):
         self.send_response(200)
+        # Pin the charset so a browser cannot sniff an HTML response as UTF-7, which
+        # would let a payload such as "+ADw-script+AD4-" (which html.escape passes
+        # through untouched, as it has none of <>"'&) decode to "<script>" in the
+        # browser. Also send X-Content-Type-Options: nosniff so a text/plain body
+        # cannot be MIME-sniffed into active HTML (CWE-79 / CWE-116).
+        if type and type.startswith("text/") and "charset=" not in type.lower():
+            type = type + "; charset=UTF-8"
         self.send_header("Content-type", type)
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
 
     def log_message(self, format, *args):
@@ -483,7 +491,7 @@ html_header = """
 <meta name='generator' content=
 'HTML Tidy for Windows (vers 14 February 2006), see www.w3.org'>
 <meta http-equiv='Content-Type' content=
-'text/html; charset=us-ascii'>
+'text/html; charset=UTF-8'>
 <title>NLTK Wordnet Browser display of: %s</title></head>
 <body bgcolor='#F5F5F5' text='#000000'>
 """
@@ -548,7 +556,9 @@ def pg(word, body):
     :return: a HTML page for the word-body combination
     :rtype: str
     """
-    return (html_header % word) + body + html_trailer
+    # word is reflected into the <title>; escape it so it cannot inject markup
+    # into the page head (CWE-79).
+    return (html_header % html.escape(word)) + body + html_trailer
 
 
 def _ul(txt):
@@ -682,7 +692,12 @@ def _synset_relations(word, synset, synset_relations):
 
         return synset_html
 
-    html = (
+    # Do not name this local ``html``: that would shadow the module-level
+    # ``import html`` and, because the nested ``relation_html`` closes over the
+    # name, its ``html.escape(...)`` would resolve to this still-unassigned
+    # enclosing local (it runs while this value is being built) and raise
+    # NameError, so the escaping sink would never run (CWE-79).
+    relations_html = (
         "<ul>"
         + "\n".join(
             "<li>%s</li>" % make_synset_html(*rel_data)
@@ -692,7 +707,7 @@ def _synset_relations(word, synset, synset_relations):
         + "</ul>"
     )
 
-    return html
+    return relations_html
 
 
 class Reference:
@@ -900,7 +915,7 @@ def get_static_web_help_page():
             URL: <https://www.nltk.org/>
             For license information, see LICENSE.TXT -->
      <head>
-          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
+          <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
           <title>NLTK Wordnet Browser display of: * Help *</title>
      </head>
 <body bgcolor='#F5F5F5' text='#000000'>
@@ -1003,7 +1018,7 @@ def get_static_upper_page(with_shutdown):
         URL: <https://www.nltk.org/>
         For license information, see LICENSE.TXT -->
     <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Untitled Document</title>
     </head>
     <body>

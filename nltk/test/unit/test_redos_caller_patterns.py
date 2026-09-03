@@ -125,6 +125,51 @@ def test_the_bounded_modules_route_through_redos():
         assert "redos.compile" in source, f"{name} no longer bounds its regex"
 
 
+def test_redos_search_broad_hostile_classes_all_catchable():
+    """Broaden the three hostile classes fed to ``redos.search`` (the entry the
+    Concordance GUI uses per sentence): several shapes of each must resolve to a
+    catchable exception -- ``re.error`` (malformed), ``ValueError`` (compile-time
+    DoS refused up front), or ``TimeoutError`` (match-time backtracking) -- and
+    NONE may hang or escape uncaught, so the GUI thread never wedges."""
+    code = (
+        "import re, nltk.redos as R; R.DEFAULT_TIMEOUT = 0.4\n"
+        "from nltk import redos\n"
+        "def malformed(p):\n"
+        "    try: redos.search(p, 'x'); return False\n"
+        "    except re.error: return True\n"
+        "def compbomb(p):\n"
+        "    try: redos.search(p, 'x'); return False\n"
+        "    except ValueError: return True\n"
+        "def backtrack(p, s):\n"
+        "    try: redos.search(p, s); return False\n"
+        "    except TimeoutError: return True\n"
+        "assert malformed('('), 'unbalanced ('\n"
+        "assert malformed('(?P<>x)'), 'empty group name'\n"
+        "assert malformed('a{2,1}'), 'bad range'\n"
+        "assert compbomb('(a){999999}'), 'counted bomb'\n"
+        "assert compbomb('(a{500}){500}{500}'), 'nested count bomb'\n"
+        "assert compbomb('a' * (R.MAX_PATTERN_LENGTH + 1)), 'over length'\n"
+        "assert backtrack(r'(a|a)*$', 'a'*70+'!'), 'identical-branch'\n"
+        "assert backtrack(r'(aa|aa)*$', 'a'*70+'!'), 'two-char branch'\n"
+        "assert backtrack(r'(.*a){25}z', 'a'*400), 'dotstar count'\n"
+        "print('OK')\n"
+    )
+    proc = _run(code)
+    assert proc.returncode == 0 and "OK" in proc.stdout, proc.stderr
+
+
+def test_redos_search_benign_large_input_is_correct_and_fast():
+    """The over-block control for ``redos.search``: an ordinary pattern over a
+    large benign input still returns the right match and does not hang."""
+    code = (
+        "from nltk import redos\n"
+        "m = redos.search(r'needle', 'hay ' * 100000 + 'needle')\n"
+        "print('FOUND' if m and m.group() == 'needle' else 'MISS')\n"
+    )
+    proc = _run(code)
+    assert proc.returncode == 0 and "FOUND" in proc.stdout, proc.stderr
+
+
 def test_concordance_query_all_hostile_classes_are_catchable():
     """The Concordance GUI compiles the USER's query per sentence via
     redos.search. Each hostile query class must raise a catchable exception

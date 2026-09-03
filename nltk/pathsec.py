@@ -170,6 +170,19 @@ def validate_path(path_input, context="NLTK", required_root=None):
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
 
+        # A NUL byte truncates a path in every C filesystem API and can never be
+        # legitimate; refuse it explicitly (Path.resolve() surfaces it only on some
+        # platforms/versions, so the except-branch check below could be skipped).
+        if "\x00" in raw:
+            msg = (
+                f"Security Violation [{context}]: NUL byte in path is not "
+                f"allowed: {raw!r}"
+            )
+            if ENFORCE:
+                raise PermissionError(msg)
+            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+
         # Reject a URL outright: no caller validates a network URL here, and
         # "http://../.." is a kernel traversal, not a host (GHSA-8mgp-746c-j5xp).
         if _URL_SCHEME_RE.match(raw):

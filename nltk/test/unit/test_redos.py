@@ -130,6 +130,66 @@ class TestRedosModule:
         assert redos.compile(r"\w+").search("hello", timeout=None).group() == "hello"
 
 
+# Extra identical/overlapping-branch shapes (with the specific bait that drives
+# each one's backtracking). These broaden BACKSTOP_FAMILY: every one MUST hit the
+# wall-clock cap, so a removed timeout surfaces as a failed ``raises`` here.
+EXTRA_BACKSTOP = [
+    (r"(a|a|a|a)*$", "a" * 80 + "!"),
+    (r"(aa|aa)*$", "a" * 80 + "!"),
+    (r"(ab|ab)*$", "ab" * 40 + "!"),
+    (r"(a|a)+b", "a" * 80),
+    (r"(a|a){10,}$", "a" * 80 + "!"),
+    (r"(\d|\d)*$", "1" * 80 + "!"),
+]
+
+# Nested-quantifier / backreference / lookahead shapes the ``regex`` optimiser
+# linearises: these must finish FAST and must NOT raise.
+EXTRA_DEFUSED = [
+    r"(a?){30}a{30}",
+    r"^(([a-z])+.)+[A-Z]([a-z])+$",
+    r"(a+)+\1$",
+    r"(?=(a+))\1a",
+    r"(a|a|b)*$",
+]
+
+
+class TestExpandedBackstopFamily:
+    @pytest.mark.parametrize("pattern,bait", EXTRA_BACKSTOP)
+    def test_extra_identical_branch_patterns_fire_timeout(self, pattern, bait):
+        # Only the wall-clock cap stops these, so each must raise TimeoutError.
+        with pytest.raises(TimeoutError):
+            redos.compile(pattern).search(bait, timeout=0.4)
+
+    @pytest.mark.parametrize("pattern", EXTRA_DEFUSED)
+    def test_extra_defused_patterns_finish_fast(self, pattern):
+        start = time.perf_counter()
+        redos.compile(pattern).search("a" * 80 + "!", timeout=0.4)
+        assert time.perf_counter() - start < 2.0
+
+    def test_innocent_pattern_bounded_only_on_hostile_input(self):
+        # The SAME anchored pattern returns instantly on a valid all-``a`` string
+        # but must be timeout-bounded once a trailing byte forces backtracking.
+        rx = redos.compile(r"(a|a)*$")
+        assert rx.search("a" * 80).group() == "a" * 80  # benign: fast, correct
+        with pytest.raises(TimeoutError):
+            rx.search("a" * 80 + "!", timeout=0.4)  # hostile input: cap fires
+
+    def test_compile_time_bombs_refused(self):
+        for bomb in (
+            "a" * (redos.MAX_PATTERN_LENGTH + 1),  # over length
+            "(" * (redos.MAX_NESTING_DEPTH + 5),  # over nesting
+            "(abc){9999999}",  # counted-repetition blow-up
+            "|".join("a%d" % i for i in range(200000)),  # huge alternation
+        ):
+            with pytest.raises(ValueError):
+                redos.compile(bomb)
+
+    def test_benign_large_input_still_processes_fast(self):
+        start = time.perf_counter()
+        assert len(redos.compile(r"\w+").findall("word " * 100000)) == 100000
+        assert time.perf_counter() - start < 3.0
+
+
 # --------------------------------------------------------------------------
 # Sink: RegexpTokenizer / regexp_tokenize / regexp_span_tokenize
 # --------------------------------------------------------------------------

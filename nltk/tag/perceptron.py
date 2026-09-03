@@ -25,6 +25,7 @@ from nltk.data import (
     make_staging_dir,
     open_datafile,
 )
+from nltk.jsontags import safe_json_load
 from nltk.pathsec import _fd_realpath
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
@@ -214,7 +215,10 @@ class AveragedPerceptron:
         # Refuse a planted FIFO/socket/device before pathsec.open blocks on it.
         validate_tool_path(path, context="AveragedPerceptron.load")
         with pathsec_open(path, context="AveragedPerceptron.load") as fin:
-            self.weights = json.load(fin)
+            # Bound size and nesting depth before the recursive C decoder runs:
+            # a model file with a raised recursion limit could otherwise
+            # segfault the interpreter (uncatchable) on deeply nested JSON.
+            self.weights = safe_json_load(fin, context="AveragedPerceptron.load")
 
     def encode_json_obj(self):
         return self.weights
@@ -483,7 +487,10 @@ class PerceptronTagger(TaggerI):
         # the application, since trusting a caller path would disarm pathsec.
         def load_param(json_file):
             with open_datafile(loc, json_file) as fin:
-                return json.load(fin)
+                # Same bounded parse as AveragedPerceptron.load: reject an
+                # over-deep or over-large param file before the C decoder can
+                # crash on it, without touching legit (shallow) model shapes.
+                return safe_json_load(fin, context="PerceptronTagger.load_from_json")
 
         self.decode_json_params(
             load_param(js_file) for js_file in self.param_files(lang)

@@ -283,3 +283,61 @@ class TestTimeoutIsTheGuarantee:
 
     def test_bytes_pattern_works(self):
         assert redos.compile(rb"\d+").findall(b"a1b22") == [b"1", b"22"]
+
+    @pytest.mark.parametrize(
+        "pattern,bait",
+        [
+            (r"(a|a)*$", "a" * 80 + "!"),
+            (r"(a|a|a|a)*$", "a" * 80 + "!"),
+            (r"(aa|aa)*$", "a" * 80 + "!"),
+            (r"([ab]|[ab])*$", "a" * 80 + "!"),
+            (r"(a|a)+b", "a" * 80),
+            (r"(a|a){10,}$", "a" * 80 + "!"),
+            (
+                r"(\d|\d)*$",
+                "1" * 80 + "!",
+            ),  # digit bait, not 'a', or it can't backtrack
+        ],
+    )
+    def test_identical_branch_alternations_fire_the_timeout(self, pattern, bait):
+        # The alternation-of-identical-branches family the ``regex`` optimiser
+        # cannot linearise: only the wall-clock cap stops the exponential
+        # backtracking, so every one MUST raise TimeoutError (not merely "finish
+        # eventually"). A short per-call timeout keeps the assertion fast; each
+        # bait is chosen so the pattern actually has something to backtrack over.
+        tp = redos.compile(pattern)
+        with pytest.raises(TimeoutError):
+            tp.search(bait, timeout=0.4)
+
+
+# ==========================================================================
+# every module-level helper puts a caller pattern through BOTH guards
+# ==========================================================================
+
+
+class TestHelpersRouteThroughGuards:
+    # A compile-time bomb must be refused, and a match-time bomb wall-clock
+    # bounded, through EACH re-compatible helper (not just ``search``/``match``),
+    # since any of them can be the inline entry point a caller reaches for.
+    @pytest.mark.parametrize(
+        "call",
+        [
+            lambda: redos.match("(x){999999}", "x"),
+            lambda: redos.fullmatch("(x){999999}", "x"),
+            lambda: redos.search("(x){999999}", "x"),
+            lambda: redos.findall("(x){999999}", "x"),
+            lambda: list(redos.finditer("(x){999999}", "x")),
+            lambda: redos.split("(x){999999}", "x"),
+            lambda: redos.sub("(x){999999}", "y", "x"),
+            lambda: redos.subn("(x){999999}", "y", "x"),
+        ],
+    )
+    def test_helper_refuses_compile_bomb(self, call):
+        with pytest.raises(ValueError):
+            call()
+
+    def test_helper_bounds_match_bomb(self):
+        # The identical-branch bomb is not linearised, so the helper's match-time
+        # timeout is what stops it; a short call bound keeps this quick.
+        with pytest.raises(TimeoutError):
+            redos.compile(r"(a|a)*$").search("a" * 80 + "!", timeout=0.4)
