@@ -58,9 +58,14 @@ from nltk.pathsec import urlopen as _secure_urlopen
 from nltk.pathsec import validate_path as _validate_path
 
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
-# backslashes, Windows drive letters. Use a raw-string pattern and do not anchor only
-# at the start — we'll use search() for safety checks.
-_UNSAFE_NO_PROTOCOL_RE = redos.compile(r"(?:\.\./|\.\.$|^/|\\|[A-Za-z]:[/\\])")
+# backslashes, and any ':' or '|'. On Windows url2pathname turns ':' or '|' in the first
+# component into a drive ("a:b" -> "A:b", drive-relative, so os.path.isabs is blind to
+# it) or an alternate data stream, either of which escapes the data root; neither
+# character ever belongs in a legitimate no-protocol resource name (the scheme ':' is
+# stripped upstream by split_resource_url), so refusing them on every platform is both
+# safe and deterministic across the OS test matrix. Use a raw-string pattern and do not
+# anchor only at the start — we'll use search() for safety checks.
+_UNSAFE_NO_PROTOCOL_RE = redos.compile(r"(?:\.\./|\.\.$|^/|\\|[:|])")
 
 
 def _assert_no_encoded_bypass(name, error_label=None):
@@ -97,31 +102,102 @@ def _assert_no_encoded_bypass(name, error_label=None):
 
 
 # Python 3.14's url2pathname follows the WHATWG URL rules, so it silently strips
-# ASCII tab / LF / CR and truncates at "#" or "?". Earlier versions keep them.
-_URL_REWRITTEN_CHARS_RE = redos.compile(r"[\t\n\r#?]")
+# ASCII tab / LF / CR and truncates at "#" or "?". Refuse the whole control-char
+# range (C0 0x00-0x1f, DEL 0x7f) plus the Unicode newline-likes (NEL 0x85, line
+# and paragraph separators 0x2028/0x2029) and #/?, not just the three characters
+# stripped today: none belongs in a resource name, and refusing them all means a
+# FUTURE url2pathname that strips a different control cannot splice a "../" the
+# raw-form check never saw. Truncation only ever happens at "#"/"?".
+_URL_REWRITTEN_CHARS_RE = redos.compile(r"[\x00-\x1f\x7f\x85\u2028\u2029#?]")
+
+# A fixed, absolute reference root used only to containment-test what url2pathname
+# produces (never touched on disk, never joined with anything but our own constant).
+# It is a hardcoded literal (no attacker input and no cwd/abspath call reaches it, so
+# it cannot itself become a vector) and is already absolute on its platform: a drive
+# on Windows, a leading separator on POSIX.
+_NO_PROTOCOL_REF_ROOT = (
+    "C:\\nltk-no-protocol-ref-root"
+    if os.name == "nt"
+    else os.sep + "nltk-no-protocol-ref-root"
+)
+# url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
+_PATH_COMPONENT_RE = redos.compile(r"[\\/]")
+
+
+def _normalized_path_escapes(name):
+    """
+    Return True if :func:`url2pathname` would rewrite *name* into a path that
+    escapes a data root on the running platform.
+
+    Containment test, the approach path libraries use (Werkzeug ``safe_join``,
+    Django, Flask ``send_from_directory``) rather than enumerating patterns:
+    ``os.path.join`` lets an absolute / drive / drive-relative / UNC result
+    override the reference root, ``normpath`` collapses ``..``, so any escape from
+    the join is an escape from the real data root too. It runs with the
+    interpreter's own ``url2pathname`` + ``os.path``, i.e. the exact sink ``find()``
+    will use, so it is correct on whatever platform it executes on (the Windows
+    drive/``|``/``:`` rewrites are handled ahead of it by :data:`_UNSAFE_NO_PROTOCOL_RE`
+    on every platform). A path component made only of dots and spaces is also
+    refused: Windows strips trailing dots/spaces per component at open time, so
+    ``.. `` (or ``..%20``) opens ``..`` (a traversal ``normpath`` does not model),
+    and no legitimate resource component is dots-and-spaces only.
+    """
+    try:
+        rewritten = url2pathname(name)
+    except Exception:
+        # Fail closed: if the sink cannot even parse the name (url2pathname can
+        # raise ValueError/OSError and, on some versions, IndexError), we cannot
+        # reason about where it points, so refuse it rather than let it through.
+        return True
+    resolved = os.path.normpath(os.path.join(_NO_PROTOCOL_REF_ROOT, rewritten))
+    if resolved != _NO_PROTOCOL_REF_ROOT and not resolved.startswith(
+        _NO_PROTOCOL_REF_ROOT + os.sep
+    ):
+        return True
+    for component in _PATH_COMPONENT_RE.split(rewritten):
+        if component and not component.strip(". "):
+            return True
+    return False
 
 
 def _assert_no_normalized_bypass(name, error_label=None):
     """
-    Reject *name* if :func:`url2pathname` would silently rewrite it.
+    Reject *name* if :func:`url2pathname` would rewrite it into an escaping path.
 
-    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that
-    was validated must be the name that is used" rule but a different rewriting
-    step. Python 3.14 made ``url2pathname`` follow the WHATWG URL rules: it
-    strips ASCII tab, LF and CR and truncates at ``#`` or ``?``. Stripping can
-    *create* a traversal that the raw-form check never saw, because ``".\\n./x"``
-    contains no ``../`` yet becomes ``"../x"`` once converted, which then joins
-    onto the data root and escapes it (CWE-22).
+    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that was
+    validated must be the name that is used" rule. url2pathname does more than one
+    rewrite and its exact behaviour changes across Python versions (3.14 follows
+    the WHATWG rules: it strips ASCII tab/LF/CR and truncates at ``#``/``?``), so
+    two independent layers guard it rather than one enumerated character list:
 
-    None of these characters belongs in an NLTK resource name, so refusing them
-    outright keeps the validated and the used name identical on every Python
-    version, rather than tracking what the standard library normalises next.
+    1. Refuse EVERY control character (C0, DEL, NEL and the Unicode line and
+       paragraph separators) plus ``#``/``?`` outright. None belongs in a resource
+       name, and any of them could be stripped or truncated by some url2pathname,
+       splicing a ``../`` or a leading ``/`` the raw-form check never saw
+       (``".\\n./x"`` has no ``../`` yet becomes ``"../x"``) (CWE-22). This layer
+       is version- and platform-agnostic.
+
+    2. Apply the SINK's own transform, then CONTAINMENT-test the result against a
+       fixed reference root, the approach path libraries use (Werkzeug
+       ``safe_join``, Django, Flask ``send_from_directory``) instead of enumerating
+       dangerous patterns. ``os.path.join`` lets an absolute / drive / ``..`` result
+       override the root and ``normpath`` collapses ``..``, so any escape from the
+       join escapes the real data root too. Also reject any path component made only
+       of dots and spaces: Windows strips trailing dots/spaces per component at open
+       time, so ``.. `` (or ``..%20``) opens ``..``, a traversal ``normpath`` does
+       not model, and no legitimate resource component is dots-and-spaces only.
+       (Both live in :func:`_normalized_path_escapes`.) The Windows drive / ``|`` /
+       ``:`` / UNC rewrites are handled ahead of this by :data:`_UNSAFE_NO_PROTOCOL_RE`
+       (which refuses every ``:`` and ``|``) on every platform, so this containment
+       test does not depend on the deprecated ``nturl2path`` to be correct on Windows.
 
     :param name: The resource string to validate.
     :param error_label: Optional alternative string for the error message.
     """
+    label = name if error_label is None else error_label
     if _URL_REWRITTEN_CHARS_RE.search(name):
-        label = name if error_label is None else error_label
+        raise ValueError(f"Unsafe resource path: {label!r}")
+    if _normalized_path_escapes(name):
         raise ValueError(f"Unsafe resource path: {label!r}")
 
 
@@ -142,6 +218,10 @@ def _reject_unsafe_no_protocol(resource_url):
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_url):
         raise ValueError(f"Unsafe resource path: {resource_url!r}")
     _assert_no_encoded_bypass(resource_url)
+    # The deny-list above requires the two traversal dots to be adjacent; a
+    # control char that url2pathname later strips could split them. Re-check the
+    # normalized form (as find() does) so the no-protocol path can't diverge.
+    _assert_no_normalized_bypass(resource_url)
 
 
 try:
@@ -1529,9 +1609,9 @@ def load(
     elif format == "json":
         from nltk.jsontags import json_tags, safe_json_load
 
-        # Bound size and structural depth before the recursive C JSON decoder
-        # runs: a data-root resource is only as trusted as its contents, so
-        # safe_json_load rejects over-deep/over-large JSON with a ValueError.
+        # Bound size and structural depth before the recursive C JSON decoder:
+        # a data-root resource is only as trusted as its contents, and deeply
+        # nested JSON can segfault the interpreter (safe_json_load rejects it).
         resource_val = safe_json_load(
             opened_resource, context=f"nltk.data.load({resource_url})"
         )
