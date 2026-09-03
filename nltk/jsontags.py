@@ -15,6 +15,7 @@ using it.
 """
 
 import json
+import math
 
 json_tags = {}
 
@@ -30,6 +31,12 @@ the interpreter (an uncatchable crash) instead of raising a bounded
 sits far above any real NLTK artifact (model weights nest 2 deep, tagsets 2,
 tweets a handful) and far below the C-stack limit at which the accelerator
 crashes.
+
+The C accelerator parses a document up to this depth cheaply, so a value within
+the cap loads on every supported interpreter; ``safe_json_loads`` keeps it on the
+C scanner (see there) rather than the pure-Python scanner, which recurses in
+Python and would ``RecursionError`` a few hundred levels deep under the default
+recursion limit.
 """
 
 JSON_MAX_BYTES = 200 * 1024 * 1024
@@ -79,6 +86,32 @@ def _finite_float(token):
     if value == _POS_INF or value == -_POS_INF:
         raise ValueError(f"non-finite JSON number {token!r} overflows to infinity")
     return value
+
+
+def _reject_non_finite_walk(obj, context="NLTK JSON"):
+    """Refuse any non-finite float anywhere in an already-parsed JSON value.
+
+    ``safe_json_loads`` parses on the C scanner (no ``parse_constant`` /
+    ``parse_float`` hooks, which would force the recursive pure-Python scanner),
+    so the NaN/Infinity/-Infinity words and any numeric literal that overflowed an
+    IEEE double to ``inf`` are caught here instead. The walk is ITERATIVE (an
+    explicit stack, never recursion), so a document nested up to JSON_MAX_DEPTH
+    cannot make this check itself overflow the stack (CWE-674). Returns ``obj`` so
+    it can wrap the parse in one expression.
+    """
+    stack = [obj]
+    while stack:
+        cur = stack.pop()
+        if isinstance(cur, float):
+            if not math.isfinite(cur):
+                raise ValueError(
+                    f"{context}: non-finite JSON number (NaN/Infinity) is not allowed"
+                )
+        elif isinstance(cur, dict):
+            stack.extend(cur.values())
+        elif isinstance(cur, list):
+            stack.extend(cur)
+    return obj
 
 
 def _scan_json_depth(data, limit):
@@ -162,12 +195,22 @@ def safe_json_loads(
             f"{context}: JSON nesting depth exceeds the maximum allowed "
             f"({max_depth})"
         )
-    # Reject every non-finite value: the NaN/Infinity/-Infinity words via
-    # parse_constant, and a numeric literal that overflows to inf via
-    # parse_float, so no non-finite value reaches a model weight or a tweet.
-    return json.loads(
-        data, parse_constant=_reject_non_finite, parse_float=_finite_float
-    )
+    # Parse with the DEFAULT (C accelerator) scanner: it handles nesting up to
+    # JSON_MAX_DEPTH cheaply on every interpreter. Supplying parse_constant /
+    # parse_float, as this function used to, forces json.loads onto the
+    # pure-Python scanner on CPython <= 3.11 (the C scanner gained hook support
+    # in 3.12), and that scanner recurses in Python and raises RecursionError
+    # only a few hundred levels deep under the default recursion limit -- so a
+    # document within the cap crashed instead of loading. Non-finite values are
+    # instead rejected AFTER the parse by an ITERATIVE walk (``_reject_non_finite``)
+    # that cannot itself recurse. A RecursionError from a caller already near the
+    # limit is still converted to a clean ValueError so uncontrolled recursion can
+    # never escape (CWE-674), mirroring JSONTaggedDecoder.decode.
+    try:
+        parsed = json.loads(data)
+    except RecursionError:
+        raise ValueError(f"{context}: JSON nesting too deep to parse safely") from None
+    return _reject_non_finite_walk(parsed, context)
 
 
 def safe_json_load(
