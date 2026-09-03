@@ -170,6 +170,23 @@ def validate_path(path_input, context="NLTK", required_root=None):
     try:
         raw = path_input.path if hasattr(path_input, "path") else str(path_input)
 
+        # A NUL byte truncates a path in every C filesystem API, so it can never
+        # belong to a legitimate path. Its handling by Path.resolve() is platform
+        # and version dependent (some Windows/CPython combinations do NOT raise on
+        # it, so the NUL check buried in the resolve() except-branch below was
+        # skipped and a "root/ok.zip/a\x00b" style path could slip through the
+        # containment check). Refuse it explicitly and unconditionally here rather
+        # than rely on resolve() surfacing it (NUL-truncation bypass, CWE-158).
+        if "\x00" in raw:
+            msg = (
+                f"Security Violation [{context}]: NUL byte in path is not "
+                f"allowed: {raw!r}"
+            )
+            if ENFORCE:
+                raise PermissionError(msg)
+            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            return
+
         # Reject a URL outright: no caller validates a network URL here, and
         # "http://../.." is a kernel traversal, not a host (GHSA-8mgp-746c-j5xp).
         if _URL_SCHEME_RE.match(raw):
