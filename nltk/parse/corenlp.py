@@ -119,6 +119,11 @@ class CoreNLPServer:
 
         cmd = ["edu.stanford.nlp.pipeline.StanfordCoreNLPServer"]
 
+        # corenlp_options (like java_options) is a free-form list of server flags
+        # supplied by the trusting programmer, not a named file-path argument, so
+        # it is not pathsec-validatable the way a model path is. Do NOT forward
+        # untrusted input into it: a path-bearing flag would let the server read
+        # or write outside the data roots (CWE-88 argument injection).
         if self.corenlp_options:
             cmd.extend(self.corenlp_options)
 
