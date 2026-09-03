@@ -9,12 +9,13 @@
 
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 
 from nltk import redos
-from nltk.data import ZipFilePathPointer
+from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import find_dir
 from nltk.tokenize.api import TokenizerI
 
@@ -54,8 +55,6 @@ class ReppTokenizer(TokenizerI):
 
     def __init__(self, repp_dir, encoding="utf8"):
         self.repp_dir = self.find_repptokenizer(repp_dir)
-        # Set a directory to store the temporary files.
-        self.working_dir = tempfile.gettempdir()
         # Set an encoding for the input strings.
         self.encoding = encoding
 
@@ -79,22 +78,30 @@ class ReppTokenizer(TokenizerI):
         :return: A list of tuples of tokens
         :rtype: iter(tuple(str))
         """
-        with tempfile.NamedTemporaryFile(
-            prefix="repp_input.", dir=self.working_dir, mode="w", delete=False
-        ) as input_file:
-            # Write sentences to temporary input file.
-            for sent in sentences:
-                input_file.write(str(sent) + "\n")
-            input_file.close()
-            # Generate command to run REPP.
-            cmd = self.generate_repp_command(input_file.name)
-            # Decode the stdout and strips the ending newline.
-            repp_output = self._execute(cmd).decode(self.encoding).strip()
-            for tokenized_sent in self.parse_repp_outputs(repp_output):
-                if not keep_token_positions:
-                    # Removes token position information.
-                    tokenized_sent, starts, ends = zip(*tokenized_sent)
-                yield tokenized_sent
+        # Stage the scratch input inside an allowed nltk.data root, never the
+        # shared system temp dir (world writable, not a pathsec root; CWE-377/378),
+        # and remove it afterwards so the file does not leak (CWE-459). Mirrors
+        # the make_staging_dir migration already applied to boxer/megam/tadm.
+        staging_dir = make_staging_dir(prefix="repp-")
+        try:
+            with tempfile.NamedTemporaryFile(
+                prefix="repp_input.", dir=staging_dir, mode="w", delete=False
+            ) as input_file:
+                # Write sentences to temporary input file.
+                for sent in sentences:
+                    input_file.write(str(sent) + "\n")
+                input_file.close()
+                # Generate command to run REPP.
+                cmd = self.generate_repp_command(input_file.name)
+                # Decode the stdout and strips the ending newline.
+                repp_output = self._execute(cmd).decode(self.encoding).strip()
+        finally:
+            shutil.rmtree(staging_dir, ignore_errors=True)
+        for tokenized_sent in self.parse_repp_outputs(repp_output):
+            if not keep_token_positions:
+                # Removes token position information.
+                tokenized_sent, starts, ends = zip(*tokenized_sent)
+            yield tokenized_sent
 
     def generate_repp_command(self, inputfilename):
         """

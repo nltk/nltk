@@ -67,3 +67,39 @@ def test_absolute_path_still_accepted(tmp_path, monkeypatch):
     assert os.path.realpath(
         ReppTokenizer(pathlib.Path(abs_dir)).repp_dir
     ) == os.path.realpath(str(abs_dir))
+
+
+def test_scratch_input_is_staged_in_a_data_root_and_cleaned_up(monkeypatch):
+    """The temp input must land inside a pathsec data root, not shared /tmp
+    (CWE-377, CWE-378), and be removed afterwards (CWE-459), mirroring the
+    boxer/megam/tadm make_staging_dir migration."""
+    import tempfile
+
+    from nltk import pathsec
+
+    assert not hasattr(ReppTokenizer, "working_dir")  # shared-temp attr is gone
+
+    tok = object.__new__(ReppTokenizer)
+    tok.repp_dir = "/x"
+    tok.encoding = "utf8"
+
+    captured = {}
+
+    def fake_execute(cmd):
+        path = cmd[-1]
+        roots = [os.path.realpath(str(r)) for r in pathsec._get_allowed_roots()]
+        captured["path"] = path
+        captured["existed"] = os.path.exists(path)
+        captured["in_root"] = any(os.path.realpath(path).startswith(r) for r in roots)
+        captured["in_shared_tmp"] = path.startswith(tempfile.gettempdir() + os.sep)
+        return b""  # empty output; we only assert on staging, not parsing
+
+    monkeypatch.setattr(ReppTokenizer, "_execute", staticmethod(fake_execute))
+    try:
+        list(tok.tokenize_sents(["hello world"]))
+    except ValueError:
+        pass  # empty fake output yields no triples; irrelevant to staging
+
+    assert captured["existed"] and captured["in_root"]
+    assert not captured["in_shared_tmp"]
+    assert not os.path.exists(captured["path"])  # cleaned up in the finally
