@@ -87,6 +87,32 @@ def test_legitimate_resource_passes(name):
     _reject_unsafe_no_protocol(name)  # must not raise
 
 
+# --- Every control char / newline-like refused (future-strip proof) -----------
+# The guard refuses ALL control characters and Unicode newline-likes, not only the
+# tab/LF/CR that today's url2pathname strips, so a future url2pathname that strips
+# a different one cannot rejoin ".." or expose a leading "/" past the raw check.
+_ALL_CONTROLS = [chr(i) for i in range(0x00, 0x20)] + [
+    "\x7f",
+    "\x85",
+    "\u2028",
+    "\u2029",
+]
+
+
+@pytest.mark.parametrize("ctrl", _ALL_CONTROLS)
+def test_control_char_split_traversal_is_refused(ctrl):
+    # A control between the two dots would rejoin them into ".." if stripped.
+    with pytest.raises(ValueError):
+        _reject_unsafe_no_protocol("foo/." + ctrl + "./x")
+
+
+@pytest.mark.parametrize("ctrl", _ALL_CONTROLS)
+def test_control_char_before_absolute_is_refused(ctrl):
+    # A leading control that url2pathname might strip would expose a leading "/".
+    with pytest.raises(ValueError):
+        _reject_unsafe_no_protocol(ctrl + "/etc/passwd")
+
+
 # --- Core property: accepted => the real sink stays inside the root -----------
 _ROOT = os.path.realpath(os.path.join(os.sep, "data", "nltk_root"))
 
@@ -105,24 +131,12 @@ def _sink_escapes(payload):
 def _fuzz_candidates():
     dots = [".", "%2e", "%2E", "%252e"]
     seps = ["/", "\\", "%2f", "%5c"]
-    ctrl = [
-        "",
-        "\t",
-        "\n",
-        "\r",
-        "\v",
-        "\f",
-        "\x00",
-        " ",
-        "%09",
-        "%0a",
-        "%0d",
-        "%00",
-        "#",
-        "?",
-        "%23",
-        "%3f",
-    ]
+    ctrl = (
+        [""]
+        + [chr(i) for i in range(0x20)]  # every C0 control
+        + ["\x7f", "\x85", "\u2028", "\u2029", " "]  # DEL, NEL, separators, space
+        + ["%09", "%0a", "%0d", "%00", "%0b", "%0c", "#", "?", "%23", "%3f"]  # encoded
+    )
     pre = ["", "foo/", "\t", " "]
     suf = ["", "/x", "#z", "?z"]
     for d1, c, d2, s, p, x in itertools.product(dots, ctrl, dots, seps, pre, suf):

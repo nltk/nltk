@@ -97,31 +97,50 @@ def _assert_no_encoded_bypass(name, error_label=None):
 
 
 # Python 3.14's url2pathname follows the WHATWG URL rules, so it silently strips
-# ASCII tab / LF / CR and truncates at "#" or "?". Earlier versions keep them.
-_URL_REWRITTEN_CHARS_RE = redos.compile(r"[\t\n\r#?]")
+# ASCII tab / LF / CR and truncates at "#" or "?". Refuse the whole control-char
+# range (C0 0x00-0x1f, DEL 0x7f) plus the Unicode newline-likes (NEL 0x85, line
+# and paragraph separators 0x2028/0x2029) and #/?, not just the three characters
+# stripped today: none belongs in a resource name, and refusing them all means a
+# FUTURE url2pathname that strips a different control cannot splice a "../" the
+# raw-form check never saw. Truncation only ever happens at "#"/"?".
+_URL_REWRITTEN_CHARS_RE = redos.compile(r"[\x00-\x1f\x7f\x85\u2028\u2029#?]")
 
 
 def _assert_no_normalized_bypass(name, error_label=None):
     """
-    Reject *name* if :func:`url2pathname` would silently rewrite it.
+    Reject *name* if :func:`url2pathname` would rewrite it into an escaping path.
 
-    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that
-    was validated must be the name that is used" rule but a different rewriting
-    step. Python 3.14 made ``url2pathname`` follow the WHATWG URL rules: it
-    strips ASCII tab, LF and CR and truncates at ``#`` or ``?``. Stripping can
-    *create* a traversal that the raw-form check never saw, because ``".\\n./x"``
-    contains no ``../`` yet becomes ``"../x"`` once converted, which then joins
-    onto the data root and escapes it (CWE-22).
+    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that was
+    validated must be the name that is used" rule. url2pathname does more than one
+    rewrite and its exact behaviour changes across Python versions (3.14 follows
+    the WHATWG rules: it strips ASCII tab/LF/CR and truncates at ``#``/``?``), so
+    two independent layers guard it rather than one enumerated character list:
 
-    None of these characters belongs in an NLTK resource name, so refusing them
-    outright keeps the validated and the used name identical on every Python
-    version, rather than tracking what the standard library normalises next.
+    1. Refuse EVERY control character (C0, DEL, NEL and the Unicode line and
+       paragraph separators) plus ``#``/``?`` outright. None belongs in a resource
+       name, and any of them could be stripped or truncated by some url2pathname,
+       splicing a ``../`` or a leading ``/`` the raw-form check never saw
+       (``".\\n./x"`` has no ``../`` yet becomes ``"../x"``) (CWE-22). This layer
+       is version- and platform-agnostic.
+
+    2. Apply the SINK's own transform and reject if the RESULT is absolute or
+       contains a ``..`` path component, checked PLATFORM-AWARELY (``os.path``
+       handles drive letters, UNC and the ``|``->``:`` / ``/``->``\\`` rewrites on
+       Windows). This catches any normalization -- a newly stripped character, a
+       drive splice, a separator swap -- that turns an innocent-looking name into
+       an escape, without enumerating the transforms in advance.
 
     :param name: The resource string to validate.
     :param error_label: Optional alternative string for the error message.
     """
+    label = name if error_label is None else error_label
     if _URL_REWRITTEN_CHARS_RE.search(name):
-        label = name if error_label is None else error_label
+        raise ValueError(f"Unsafe resource path: {label!r}")
+    try:
+        rewritten = url2pathname(name)
+    except (ValueError, OSError):
+        raise ValueError(f"Unsafe resource path: {label!r}")
+    if os.path.isabs(rewritten) or ".." in rewritten.replace("\\", "/").split("/"):
         raise ValueError(f"Unsafe resource path: {label!r}")
 
 
