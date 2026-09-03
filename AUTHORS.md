@@ -319,6 +319,7 @@
 - Nicola <https://github.com/trinik15>
 - medisean <https://github.com/medisean>
 - tandede <https://github.com/tandede>
+- Dylan Pulver <https://github.com/dylanpulver>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
