@@ -1533,11 +1533,9 @@ def load(
     elif format == "json":
         from nltk.jsontags import json_tags, safe_json_load
 
-        # Bound size and structural depth before the recursive C JSON decoder
-        # runs: a resource resolved through the data roots is only as trusted as
-        # its contents, and deeply nested JSON can segfault the interpreter when
-        # the recursion limit has been raised. safe_json_load rejects such input
-        # with a bounded ValueError instead.
+        # Bound size and structural depth before the recursive C JSON decoder:
+        # a data-root resource is only as trusted as its contents, and deeply
+        # nested JSON can segfault the interpreter (safe_json_load rejects it).
         resource_val = safe_json_load(
             opened_resource, context=f"nltk.data.load({resource_url})"
         )

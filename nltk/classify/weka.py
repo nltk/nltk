@@ -109,8 +109,7 @@ class WekaClassifier(ClassifierI):
         self._formatter = formatter
         # Bound the caller-controlled model path to the pathsec data roots before
         # it reaches the weka JVM as a -l read target, closing the model-artifact
-        # containment gap (GHSA-j456-xh4h-cpf2, the same class as
-        # GHSA-8mgp-746c-j5xp / CVE-2026-81726 that weka.py was left out of).
+        # containment gap weka.py was left out of (GHSA-j456-xh4h-cpf2).
         validate_tool_path(model_filename, context="WekaClassifier", must_exist=False)
         self._model = model_filename
 
@@ -121,10 +120,9 @@ class WekaClassifier(ClassifierI):
         return self._classify_many(featuresets, ["-p", "0"])
 
     def _classify_many(self, featuresets, options):
-        # Re-bound the model path in case _model was reassigned after
-        # construction; weka reads it via -l (GHSA-j456-xh4h-cpf2). Containment,
-        # not existence, is the security property (a missing in-root model is
-        # weka's error to raise), so must_exist stays False.
+        # Re-bound the model path in case _model was reassigned after construction;
+        # weka reads it via -l (GHSA-j456-xh4h-cpf2). Containment, not existence, is
+        # the security property, so must_exist stays False.
         validate_tool_path(
             self._model, context="WekaClassifier._classify_many", must_exist=False
         )
@@ -246,9 +244,8 @@ class WekaClassifier(ClassifierI):
         quiet=True,
     ):
         # Bound the caller-controlled model path before weka writes to it via -d
-        # (GHSA-j456-xh4h-cpf2). It normally does not exist yet, so existence is
-        # not required; validate before any weka lookup so an out-of-root path is
-        # refused early.
+        # (GHSA-j456-xh4h-cpf2); it need not exist yet, and validating before any
+        # weka lookup refuses an out-of-root path early.
         validate_tool_path(
             model_filename,
             context="WekaClassifier.train",
