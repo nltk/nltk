@@ -1225,6 +1225,24 @@ class WordNetCorpusReader(CorpusReader):
         # Language data attributes
         self.lg_attrs = ["lemma", "of", "def", "exe"]
 
+    def __del__(self):
+        """Close open file handles to avoid ResourceWarning."""
+        # Close the key_synset_file if open
+        if self._key_synset_file is not None:
+            self._key_synset_file.close()
+            self._key_synset_file = None
+
+        # Close the key_count_file if open
+        if self._key_count_file is not None:
+            self._key_count_file.close()
+            self._key_count_file = None
+
+        # Close all data files in the data_file_map
+        for pos in self._data_file_map:
+            if self._data_file_map[pos] is not None:
+                self._data_file_map[pos].close()
+        self._data_file_map.clear()
+
     def index_sense(self, version=None):
         """Read sense key to synset id mapping from index.sense file in corpus directory"""
         fn = "index.sense"
