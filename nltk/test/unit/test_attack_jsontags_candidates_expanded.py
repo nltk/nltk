@@ -40,7 +40,7 @@ from nltk.jsontags import (
 )
 
 # Depths comfortably past each cap while staying tiny (a few thousand bytes):
-# past the loader's 2000-deep default, and past the tagged decoder's 200.
+# past the loader's JSON_MAX_DEPTH default, and past the tagged decoder's 200.
 OVER_LOADER_DEPTH = JSON_MAX_DEPTH + 500
 OVER_DECODER_DEPTH = JSONTaggedDecoder.MAX_DECODE_DEPTH + 300
 
@@ -383,3 +383,78 @@ def test_bytes_and_bytearray_inputs_parse():
     assert len(payload) < 60 < len(payload.encode("utf-8"))
     with pytest.raises(ValueError, match="over the"):
         safe_json_loads(payload, max_bytes=60)
+
+
+# ===========================================================================
+# Uncontrolled-recursion leak (CWE-674). safe_json_loads used to pass
+# parse_constant / parse_float, which forces json.loads onto the PURE-PYTHON
+# scanner on CPython <= 3.11 (the C scanner gained hook support in 3.12); that
+# scanner recurses in Python and raises RecursionError only a few hundred levels
+# deep under the default recursion limit (measured ~450), so a document WITHIN the
+# 2000 cap crashed json.loads with a RecursionError that escaped to the caller
+# instead of loading. The strengthened guard parses on the C scanner (which
+# handles the full cap cheaply on every interpreter), rejects non-finite values
+# afterwards with an ITERATIVE walk, and converts any residual RecursionError to a
+# clean ValueError. pytest.raises(ValueError) is used deliberately: a
+# RecursionError is a RuntimeError, NOT a ValueError, so a leak fails the test
+# rather than passing it.
+# ===========================================================================
+
+DEEP_OVER_CAP = [JSON_MAX_DEPTH + 1, JSON_MAX_DEPTH + 500, 5000, 20000, 100000]
+
+
+class TestNoRecursionErrorLeak:
+    def test_full_depth_document_at_the_cap_still_parses(self):
+        # The previously-crashing case: a document nested to EXACTLY the 2000 cap
+        # must load on this interpreter under its default recursion limit, on both
+        # entry points. This is the regression the patch had to catch up to.
+        at = "[" * JSON_MAX_DEPTH + "]" * JSON_MAX_DEPTH
+        assert isinstance(safe_json_loads(at), list)
+        dec = "[" * JSONTaggedDecoder.MAX_DECODE_DEPTH + "]" * (
+            JSONTaggedDecoder.MAX_DECODE_DEPTH
+        )
+        assert isinstance(JSONTaggedDecoder().decode(dec), list)
+
+    @pytest.mark.parametrize("depth", DEEP_OVER_CAP)
+    def test_over_cap_is_valueerror_not_recursionerror(self, depth):
+        doc = "[" * depth + "]" * depth
+        with pytest.raises(ValueError):
+            safe_json_loads(doc)
+        with pytest.raises(ValueError):
+            json.loads(doc, cls=JSONTaggedDecoder)
+
+    def test_recursionerror_type_never_escapes(self):
+        # An explicit type check: a very deep tower must not surface as a
+        # RecursionError from either the loader or the tagged decoder.
+        doc = "[" * (JSON_MAX_DEPTH * 30) + "]" * (JSON_MAX_DEPTH * 30)
+        for call in (
+            lambda: safe_json_loads(doc),
+            lambda: json.loads(doc, cls=JSONTaggedDecoder),
+            lambda: JSONTaggedDecoder().decode(doc),
+        ):
+            try:
+                call()
+            except RecursionError:
+                pytest.fail("deep JSON leaked a RecursionError (CWE-674)")
+            except ValueError:
+                pass
+            else:
+                pytest.fail("over-deep document was not rejected")
+
+    def test_recursionerror_from_the_parser_is_caught_as_valueerror(self, monkeypatch):
+        # The C scanner parses the full cap without ever recursing to the limit,
+        # so a RecursionError does not arise in normal operation and cannot be
+        # provoked by lowering sys.setrecursionlimit. Inject one at the parser
+        # boundary (json.loads) to prove the guard's CWE-674 conversion still
+        # fires: safe_json_loads MUST turn a RecursionError from the parser into a
+        # clean ValueError and never let it escape (belt-and-suspenders for a
+        # caller already near the limit or a stack-heavier scanner). This
+        # fault-injects the failure at the boundary; it does not mock the guard.
+        import nltk.jsontags as jt
+
+        def _raise_recursion(*args, **kwargs):
+            raise RecursionError("simulated deep parse")
+
+        monkeypatch.setattr(jt.json, "loads", _raise_recursion)
+        with pytest.raises(ValueError):
+            jt.safe_json_loads("[1]")  # depth 1 passes the scan; the parse raises
