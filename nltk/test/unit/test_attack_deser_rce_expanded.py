@@ -286,7 +286,11 @@ class TestPersistentIdOpcodesRefused:
 # AllowlistUnpickler with no allowlist refuses them as denied or unlisted.
 _ALIASED_GLOBALS = [
     ("os.path", "system"),  # os.path is a module alias under the os subtree
+    ("os", "popen"),
+    ("nt", "system"),  # the Windows os backing module; refused before import
+    ("nt", "popen"),
     ("importlib", "import_module"),
+    ("pty", "spawn"),
     ("operator", "attrgetter"),
     ("operator", "itemgetter"),
     ("functools", "partial"),
@@ -297,13 +301,16 @@ _ALIASED_GLOBALS = [
     ("builtins", "__import__"),
     ("builtins", "exec"),
     ("builtins", "eval"),
+    ("builtins", "compile"),
     ("subprocess", "Popen"),
+    ("subprocess", "getoutput"),
     ("marshal", "loads"),
     ("_pickle", "loads"),
 ]
 
 _POSIX_ALIASED_GLOBALS = [
     ("posix", "system"),
+    ("posix", "popen"),
     ("_posixsubprocess", "fork_exec"),
 ]
 

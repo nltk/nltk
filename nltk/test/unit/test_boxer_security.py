@@ -20,7 +20,9 @@ a ``$PATH`` lookup) keeps working.
 
 import os
 import shutil
+import subprocess
 import tempfile
+from types import SimpleNamespace
 
 import pytest
 
@@ -93,6 +95,37 @@ def test_absolute_bin_dir_is_accepted(tmp_path, monkeypatch):
     assert os.path.realpath(boxer._candc_bin) == os.path.realpath(
         os.path.join(abs_dir, "candc")
     )
+
+
+def test_boxer_call_uses_argv_list_never_shell(monkeypatch, tmp_path):
+    """``Boxer._call`` builds ``[binary] + args`` and spawns with an argv list and
+    NO shell, so a metacharacter argument reaches the process as a single literal
+    element, never a shell token. The candc/boxer binaries need not exist: Popen
+    is trapped and its argv inspected."""
+    binary = str(tmp_path / "candc")
+    hostile_args = ["--models", "; touch /tmp/pwned", "$(id)", "a\nb"]
+    captured = {}
+
+    class _FakeProc:
+        returncode = 0
+
+        def communicate(self, *a, **k):
+            return b"", b""
+
+    def _fake_popen(cmd, *a, **k):
+        captured["argv"] = list(cmd)
+        captured["shell"] = k.get("shell", False)
+        return _FakeProc()
+
+    monkeypatch.setattr(subprocess, "Popen", _fake_popen)
+
+    boxer = Boxer.__new__(Boxer)
+    boxer._call("some stdin input", binary, args=hostile_args)
+
+    assert captured["shell"] is False
+    assert captured["argv"][0] == binary
+    for tok in hostile_args:
+        assert tok in captured["argv"]  # literal, not shell-interpreted
 
 
 def test_boxer_scratch_file_staged_in_data_root(monkeypatch):

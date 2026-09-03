@@ -86,6 +86,24 @@ def test_counted_repetition_expansion_refused(pattern):
 @pytest.mark.parametrize(
     "pattern",
     [
+        "(?:abc){40000}",  # non-capturing group body still counts
+        "(?P<g>ab){60000}",  # named group body (introducer excluded, body counted)
+        "(?=x)(?:aaa){50000}",  # zero-width lookahead + real bomb body
+        "(?:(?:ab){400}){400}",  # nested non-capturing counts multiply
+        "[abc]{200000}",  # a character class is one atom, counted x200000
+        "a{0}{999999}",  # a{0} is 0 copies, but the trailing {999999} on the group
+        "(a{300}){400}",  # 300 * 400 = 120000 over the limit
+        "x{99999}y{99999}z{99999}",  # sum across sequential counts exceeds the cap
+    ],
+)
+def test_more_counted_repetition_bombs_refused(pattern):
+    with pytest.raises(ValueError):
+        redos.compile(pattern)
+
+
+@pytest.mark.parametrize(
+    "pattern",
+    [
         "(a){0,1000000}",  # range from 0 does NOT expand -> must be allowed
         "(abc){0,1000000}",
         "[a-z]{0,1000000}",
