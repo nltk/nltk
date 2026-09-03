@@ -166,11 +166,13 @@ def test_no_payload_reads_a_sentinel_outside_the_data_root():
 
 
 def test_double_encoded_stays_literal_in_root():
-    """``..%252f`` / overlong ``..%c0%af`` pass the string guard but url2pathname
-    single-decodes, so they are a *literal in-root filename*, never a separator.
-    This is the exact spot a future double-decode bug would regress, so assert
-    the behaviour explicitly: not-found (LookupError) or a path inside the root,
-    never a ValueError-worthy escape and never a leak."""
+    """``..%252f`` / overlong ``..%c0%af`` never become a separator. url2pathname
+    single-decodes ``%252f`` to the literal ``%2f`` and surrogate-escapes the overlong
+    bytes, so on POSIX they are a *literal in-root filename*. This is the exact spot a
+    future double-decode bug would regress, so assert the behaviour explicitly: the
+    name is not-found (LookupError), or, where url2pathname cannot parse the bytes
+    (Windows 3.14+ raises), rejected by the normalization guard (ValueError). Every
+    branch is a rejection: never a separator/traversal, never a leak."""
     base = tempfile.mkdtemp()
     dataroot = os.path.join(base, "nltk_data")
     os.makedirs(dataroot)
@@ -183,11 +185,24 @@ def test_double_encoded_stays_literal_in_root():
         for p in ("..%252fsecret.txt", "..%252f..%252fsecret.txt"):
             with pytest.raises(LookupError):
                 D.find(p)
-        # Overlong-UTF-8 ``%c0%af`` never decodes to "/". On Python <3.14 unquote
-        # replaces the bytes (-> literal in-root -> LookupError); on 3.14+ unquote
-        # raises UnicodeDecodeError. Either way it is rejected, never a leak.
-        with pytest.raises((LookupError, UnicodeDecodeError)):
-            D.find("..%c0%afsecret.txt")
+        # Overlong-UTF-8 ``%c0%af`` never decodes to "/". On POSIX url2pathname
+        # surrogate-escapes the bytes (-> literal in-root -> LookupError). On Windows
+        # 3.14+ url2pathname raises on the invalid bytes and the normalization guard
+        # fail-closes that into a ValueError ("Unsafe resource path"). Assert BOTH that
+        # it is rejected AND (the real security invariant, not the exact exception
+        # type) that it never resolves to the readable sentinel, so a future
+        # double-decode regression that returned a pointer instead of raising would
+        # still fail here.
+        payload = "..%c0%afsecret.txt"
+        with pytest.raises((LookupError, UnicodeDecodeError, ValueError)):
+            D.find(payload)
+        try:
+            leaked = D.find(payload).open().read()
+        except (LookupError, UnicodeDecodeError, ValueError):
+            leaked = b""
+        if isinstance(leaked, bytes):
+            leaked = leaked.decode("latin-1", "replace")
+        assert "SENTINEL" not in leaked, "overlong-UTF-8 traversal leaked the secret"
     finally:
         D.path[:] = saved
 
