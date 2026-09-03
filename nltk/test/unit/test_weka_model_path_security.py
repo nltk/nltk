@@ -106,6 +106,31 @@ class TestWekaSyntacticallyHostileModel:
             WekaClassifier.train(path, FEATS)
 
 
+def _escapes_all_data_roots(path):
+    """True if ``path`` resolves outside every pathsec-allowed data root.
+
+    The symlink-escape vector only exists when the link genuinely resolves outside
+    the sandbox; on a platform/layout where the chosen "outside" location happens
+    to sit inside a data root (some Windows temp setups place pytest's tmp under a
+    directory that is also a data root), there is nothing for the guard to refuse.
+    Verifying the escape here keeps the assertion honest: where the link truly
+    escapes the refusal is still required, so a real gap cannot hide behind a
+    platform skip; where it does not escape the test skips instead of asserting a
+    refusal that cannot apply.
+    """
+    resolved = os.path.realpath(path)
+    for root in ps._get_allowed_roots():
+        try:
+            root_resolved = os.path.realpath(str(root))
+            # commonpath raises ValueError on different Windows drives / mixed
+            # absoluteness, i.e. genuinely not contained -> treat as "outside".
+            if os.path.commonpath([resolved, root_resolved]) == root_resolved:
+                return False
+        except (OSError, ValueError):
+            continue
+    return True
+
+
 class TestWekaWriteSymlinkEscape:
     def test_train_refuses_symlink_write_target_escaping_the_root(self, tmp_path):
         # A -d WRITE target that is an in-root symlink to an outside file must be
@@ -119,6 +144,8 @@ class TestWekaWriteSymlinkEscape:
             os.symlink(str(outside), link)
         except (OSError, NotImplementedError):
             pytest.skip("symlinks unavailable")
+        if not _escapes_all_data_roots(link):
+            pytest.skip("symlink target does not resolve outside a data root here")
         with pytest.raises((PermissionError, ValueError)):
             WekaClassifier.train(link, FEATS)
 
