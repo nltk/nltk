@@ -25,6 +25,7 @@ No mocking: the actual decoder / parser runs on each input.
 """
 
 import json
+import sys
 
 import pytest
 
@@ -77,27 +78,22 @@ def test_deep_nesting_refused_by_tagged_decoder():
         json.loads(over, cls=JSONTaggedDecoder)
 
 
-def test_depth_exactly_at_limit_is_handled_without_crashing():
-    # A document nested to exactly the depth cap must be handled SAFELY on every
-    # interpreter, never crashing: the C accelerator parses it where it can reach
-    # that depth under the default recursion limit (CPython 3.12+), and where it
-    # cannot (CPython <= 3.11 raises RecursionError a few hundred levels in) the
-    # guard rejects it with a bounded ValueError instead. Either outcome is
-    # acceptable; a RecursionError escaping to the caller is NOT (CWE-674). Forcing
-    # a parse everywhere would mean raising the interpreter recursion limit, which
-    # risks a C-stack segfault (a worse, uncatchable failure) on a constrained
-    # stack, so a clean rejection is the correct behaviour there.
+def test_depth_exactly_at_limit_is_handled_per_interpreter():
+    # A document nested to exactly the depth cap has a DETERMINISTIC, asserted
+    # outcome on each interpreter, never a RecursionError or crash:
+    #   * CPython 3.12+: the C accelerator reaches the full cap depth under the
+    #     default recursion limit, so it PARSES.
+    #   * CPython <= 3.11: the accelerator recursion-limits a few hundred levels
+    #     in, so the guard REJECTS it with a bounded ValueError. Raising the
+    #     recursion limit to force a parse would risk an uncatchable C-stack
+    #     segfault, so a clean rejection is the correct behaviour there.
     at = "[" * JSON_MAX_DEPTH + "]" * JSON_MAX_DEPTH
-    try:
-        result = safe_json_loads(at)
-    except RecursionError:
-        pytest.fail(
-            "safe_json_loads leaked a RecursionError at the depth cap (CWE-674)"
-        )
-    except ValueError:
-        pass  # cleanly rejected on an interpreter that cannot parse this depth
+    if sys.version_info >= (3, 12):
+        assert isinstance(safe_json_loads(at), list)
     else:
-        assert isinstance(result, list)  # parsed where the interpreter can
+        # A RecursionError is not a ValueError, so a leak fails this assertion.
+        with pytest.raises(ValueError):
+            safe_json_loads(at)
     # The 200-deep tagged decoder is well under any recursion limit, so it parses
     # on every supported interpreter.
     dec = (
@@ -422,22 +418,19 @@ DEEP_OVER_CAP = [JSON_MAX_DEPTH + 1, JSON_MAX_DEPTH + 500, 5000, 20000, 100000]
 
 
 class TestNoRecursionErrorLeak:
-    def test_full_depth_document_at_the_cap_is_handled_without_crashing(self):
-        # The previously-CRASHING case (RecursionError leaked to the caller): a
-        # document nested to EXACTLY the 2000 cap must now be handled safely on
-        # every interpreter -- parsed by the C accelerator where it can reach that
+    def test_full_depth_document_at_the_cap_is_handled_per_interpreter(self):
+        # The previously-CRASHING case (RecursionError leaked to the caller), now
+        # with a DETERMINISTIC asserted outcome per interpreter and NEVER a
+        # RecursionError: parsed by the C accelerator where it reaches the cap
         # depth (CPython 3.12+), rejected with a bounded ValueError where the
-        # parser cannot (CPython <= 3.11), and NEVER a RecursionError. This is the
-        # regression the patch caught up to: no crash, on any interpreter.
+        # accelerator recursion-limits first (CPython <= 3.11).
         at = "[" * JSON_MAX_DEPTH + "]" * JSON_MAX_DEPTH
-        try:
-            result = safe_json_loads(at)
-        except RecursionError:
-            pytest.fail("RecursionError leaked at the depth cap (CWE-674)")
-        except ValueError:
-            pass
+        if sys.version_info >= (3, 12):
+            assert isinstance(safe_json_loads(at), list)
         else:
-            assert isinstance(result, list)
+            # A RecursionError is not a ValueError, so a leak fails this assertion.
+            with pytest.raises(ValueError):
+                safe_json_loads(at)
         dec = "[" * JSONTaggedDecoder.MAX_DECODE_DEPTH + "]" * (
             JSONTaggedDecoder.MAX_DECODE_DEPTH
         )
