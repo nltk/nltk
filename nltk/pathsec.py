@@ -17,6 +17,7 @@ import os
 import re
 import socket
 import stat
+import subprocess
 import sys
 import tempfile
 import urllib.request
@@ -57,23 +58,74 @@ _WINDOWS_DEVICE_NAMES = frozenset(
 )
 
 
+_MAX_LINK_HOPS = 40  # ELOOP-style bound on symlink chains
+
+# The child PATH. A trusted binary is executed by ABSOLUTE path and needs no PATH
+# to run, so the child is handed one that resolves NOTHING: a single absolute,
+# root-domain directory containing no executables (an unprivileged user cannot
+# create a sibling of it under /). This denies bare-name command resolution, so
+# a rich /usr/bin:/bin, which would let the child reach sh/python/any tool by
+# name, is deliberately NOT granted. It is also deliberately NOT empty: POSIX
+# execvp / subprocess search an EMPTY PATH element as the current directory, so
+# "" or an unset PATH would let a planted ./tool run instead (CWE-426).
+_LOCKED_PATH = "/nonexistent"
+
+# Only these variables reach a spawn_trusted child. Anything that can redirect a
+# dynamic linker, loader or interpreter (LD_*, DYLD_*, PYTHON*, PERL5LIB, ...) is
+# deliberately absent, so a trusted binary cannot be subverted through its env.
+_ENV_KEEP = frozenset(
+    {
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "TERM",
+        "TZ",
+        "LANG",
+        "LANGUAGE",
+        "LC_ALL",
+        "LC_CTYPE",
+        "LC_COLLATE",
+        "LC_MESSAGES",
+        "LC_NUMERIC",
+        "LC_TIME",
+    }
+)
+
+
+class TrustError(OSError):
+    """Raised by :func:`spawn_trusted` when the target fails verification."""
+
+
+def _private_stat(st):
+    """POSIX: owner is the effective user or root, and no group/world write bit."""
+    if st.st_uid not in (os.geteuid(), 0):
+        return False
+    return not (st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+
+
 def is_private_dir(path):
     """Return True if *path* is a directory safe to trust as a data root: another
     *unprivileged local user* cannot plant files in it.
 
     This is the test that distinguishes a shared, world-writable temp directory
-    (Linux ``/tmp``, mode ``1777``) -- which a local attacker could use to plant
-    trusted-looking data (CWE-377/CWE-378) -- from a *private* per-user temp
+    (Linux ``/tmp``, mode ``1777``), which a local attacker could use to plant
+    trusted-looking data (CWE-377/CWE-378), from a *private* per-user temp
     directory (macOS ``$TMPDIR`` ``/var/folders/...`` mode ``0700``, Windows
     ``%TEMP%`` under the ACL-protected user profile), which is safe.
 
     Cross-platform:
-      * POSIX: the directory must be owned by the current user (or root) and be
-        neither group- nor world-writable (unless the writable group/other bit
-        is paired with the sticky bit *and* the dir is user-owned -- but we keep
-        it strict and simply reject any group/other-writable dir).
-      * Windows: ``st_uid``/mode are not meaningful; the per-user temp/profile is
-        ACL-protected, so a plain "exists and is a directory" check is used.
+      * POSIX: the directory must be owned by the effective user (or by root) and
+        be neither group- nor world-writable. A sticky world-writable directory
+        (``/tmp``) is rejected too: other users can still pre-create entries in it
+        and a pre-created entry wins any race.
+      * Windows: ``st_uid``/mode are not meaningful without pywin32; the per-user
+        temp/profile is ACL-protected, so a plain "exists and is a directory"
+        check is used (a heuristic, not a DACL check).
+
+    Owner/mode can also lie on NFS with uid squashing, some FUSE mounts, and
+    unprivileged user namespaces; POSIX ACLs surface in the group bits on Linux
+    ext4/xfs but not universally.
     """
     try:
         st = os.stat(path)
@@ -85,13 +137,162 @@ def is_private_dir(path):
         # Windows / other: rely on the per-user profile ACLs (no POSIX mode).
         return True
     # Must be owned by us (or by root, e.g. a system-wide /usr/share dir).
-    if st.st_uid not in (os.getuid(), 0):
+    if st.st_uid not in (os.geteuid(), 0):
         return False
     # Reject group- or world-writable directories: those let another account
     # write into (or, without the sticky bit, replace) the directory.
     if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
         return False
     return True
+
+
+def _resolve_private(path, _hops=0):
+    """Resolve *path* one component at a time, following each symlink hop and
+    applying :func:`is_private_dir` to every directory encountered (including
+    each intermediate link's holding directory and its target's ancestors).
+
+    Returns the fully resolved path, or None if the input is unusable or any
+    directory on the way is not private. Unlike ``os.path.realpath``, every
+    intermediate symlink hop is checked, so a link that passes through an
+    attacker-writable directory is refused. The check is strict: a shared,
+    world-writable directory is rejected even with the sticky bit (Linux
+    ``/tmp``), so a trusted binary must live under a private root. NLTK's own
+    scratch output goes through :func:`nltk.data.make_staging_dir`, which stages
+    inside a private data root, never in ``/tmp``.
+    """
+    if _hops > _MAX_LINK_HOPS:
+        return None
+    try:
+        text = os.fspath(path)
+    except TypeError:
+        return None  # not a path-like at all (int, None, list, ...)
+    # Only an absolute, NUL-free path is resolvable here. A relative path would
+    # be taken against the attacker-controllable CWD; a '..' component is refused
+    # rather than folded, because os.path.abspath/normpath collapse it LEXICALLY,
+    # before symlinks resolve, which would skip a link this walk must inspect.
+    if not isinstance(text, str) or "\x00" in text or not os.path.isabs(text):
+        return None
+    cur = os.sep
+    for part in text.split(os.sep):
+        if not part or part == os.curdir:  # '' and '.' are inert
+            continue
+        if part == os.pardir:  # '..' is never folded here; refuse it
+            return None
+        if not is_private_dir(cur):  # the directory that holds `part`
+            return None
+        nxt = os.path.join(cur, part)
+        try:
+            st = os.lstat(nxt)
+        except OSError:
+            return None
+        if stat.S_ISLNK(st.st_mode):
+            try:
+                link = os.readlink(nxt)
+            except OSError:
+                return None
+            # Re-resolve the target from the root (an absolute link replaces the
+            # base; a relative one joins onto its holding dir), so every ancestor
+            # of the target is checked too. Hop-bounded against symlink loops.
+            nxt = _resolve_private(os.path.join(cur, link), _hops + 1)
+            if nxt is None:
+                return None
+        cur = nxt
+    return cur
+
+
+def resolve_trusted_executable(target):
+    """Return the resolved path of *target* if no other unprivileged local user
+    can substitute it before it runs, else None (CWE-426/CWE-427/CWE-732).
+
+    POSIX: every directory from the root down to the target (following each
+    symlink hop) must be private (:func:`is_private_dir`), and the final target
+    must be a REGULAR file owned by us or root with no group/world write bit
+    (:func:`_private_stat`). The returned path is fully resolved, so callers
+    should execute THAT, not the original name. A same-UID attacker and root are
+    out of scope (they already control the process).
+
+    Non-POSIX (Windows): fails CLOSED and returns None. POSIX owner/mode bits do
+    not describe who can write a path there, and a real answer needs the object's
+    DACL (win32security), which is not a dependency NLTK can assume. Guessing
+    from environment-derived roots is not a trust boundary, so the safe answer is
+    to refuse: :func:`spawn_trusted` then raises, and a Windows caller must
+    supply the executable through a channel it has verified itself.
+    """
+    if os.name != "posix":
+        return None
+    real = _resolve_private(target)
+    if real is None:
+        return None
+    try:
+        st = os.stat(real)
+    except OSError:
+        return None
+    if not stat.S_ISREG(st.st_mode) or not _private_stat(st):
+        return None
+    return real
+
+
+def is_trusted_executable(target):
+    """Boolean form of :func:`resolve_trusted_executable`."""
+    return resolve_trusted_executable(target) is not None
+
+
+def safe_env():
+    """A minimal child environment for a trusted binary: the _ENV_KEEP names plus
+    a PATH that resolves no command.
+
+    Deny-by-default WHITELIST: everything outside _ENV_KEEP is dropped, so a
+    loader/interpreter variable (LD_*, DYLD_*, PYTHON*, PERL5LIB, GCONV_PATH,
+    LOCPATH, NLSPATH, TERMINFO, IFS, ...) is removed even if no denylist named it.
+    PATH is replaced with :data:`_LOCKED_PATH` so the child cannot resolve
+    ``sh``/``python``/any helper by bare name (a rich PATH is exactly what turns
+    one leaked writable directory, or a shell-out on attacker input, into full
+    command execution), while never being empty (an empty/unset PATH is searched
+    as the current directory, so a planted ``./tool`` would run, CWE-426). There
+    is no ``extra`` parameter, so nothing dropped here can be reintroduced.
+
+    This scrubs the ENVIRONMENT only; it is one layer, not the whole defense. The
+    binary's own trust (that it cannot be swapped) is :func:`resolve_trusted_
+    executable`'s job, and a child that loads a plugin or config from the current
+    working directory is the caller's concern (pass ``cwd=``). The kept identity
+    variables (HOME, SHELL, TZ) can still steer a tool's OWN config lookups; they
+    are retained because they are not loader-injection vectors and dropping them
+    breaks ordinary tools. A caller whose tool genuinely must find system
+    utilities by name should pass its own ``env`` with a PATH of validated,
+    non-writable directories.
+    """
+    env = {k: v for k, v in os.environ.items() if k in _ENV_KEEP}
+    env["PATH"] = _LOCKED_PATH
+    return env
+
+
+def spawn_trusted(target, args=(), **popen_kw):
+    """Verify *target* with :func:`resolve_trusted_executable` and start it with
+    :class:`subprocess.Popen`, raising :class:`TrustError` if it is untrusted.
+
+    ``shell`` may not be set (a shell would re-interpret the command); ``env``
+    defaults to :func:`safe_env` and ``close_fds`` to True. The resolved path is
+    what gets executed, and argv[0] is that same resolved path.
+
+    Executing the resolved path is race-free against the in-scope attacker
+    (another unprivileged local user). :func:`resolve_trusted_executable` has
+    already proved that every directory from the root down to the target is
+    owned by us or root and is not writable by anyone else, so no such user can
+    substitute the binary, or any component of its path, between the check and
+    the exec. A same-uid process and root are out of scope: they already control
+    this process, so no exec-time trick would contain them. This is why no
+    ``/proc/self/fd`` fexecve dance is used; it would only harden that
+    out-of-scope race while adding a Linux-only, magic-symlink exec path.
+    """
+    if popen_kw.get("shell"):
+        raise ValueError("spawn_trusted refuses shell=True")
+    popen_kw.setdefault("env", safe_env())
+    popen_kw.setdefault("close_fds", True)
+
+    real = resolve_trusted_executable(target)
+    if real is None:
+        raise TrustError(f"refusing to execute untrusted path: {target!r}")
+    return subprocess.Popen([real, *args], executable=real, **popen_kw)
 
 
 def _get_allowed_roots():

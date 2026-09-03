@@ -39,8 +39,9 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
 
 from os import environ, path, sep
 from platform import architecture, system
-from subprocess import PIPE, Popen
+from subprocess import PIPE
 
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.tag.api import TaggerI
 
 
@@ -50,15 +51,9 @@ class Senna(TaggerI):
     def __init__(self, senna_path, operations, encoding="utf-8"):
         self._encoding = encoding
 
-        # Only accept an explicit *absolute* senna_path as the location of the
-        # senna executable. A relative path (e.g. ".") must NOT be resolved
-        # against the current working directory: executable() returns a path
-        # that contains a separator (e.g. "./senna-osx"), and subprocess.Popen()
-        # runs such a path directly from the CWD without consulting $PATH, so an
-        # attacker who can write a "senna-<platform>" file there would have it
-        # executed -- running code loaded from an untrusted location (CWE-829;
-        # an untrusted search path, CWE-426/CWE-427). A relative path falls
-        # through to the trusted SENNA environment variable instead.
+        # Only an ABSOLUTE senna_path is accepted; a relative one (e.g. ".") would
+        # make executable() a separator path Popen runs from the CWD without $PATH,
+        # executing a planted senna-<platform> file (CWE-426/CWE-427). Else use SENNA.
         self._path = None
         if path.isabs(senna_path):
             self._path = path.normpath(senna_path) + sep
@@ -127,29 +122,59 @@ class Senna(TaggerI):
         """
         encoding = self._encoding
 
-        if not path.isfile(self.executable(self._path)):
+        # self._path is a plain mutable attribute; a non-absolute (or non-str)
+        # reassignment makes executable() a CWD-relative path Popen runs without
+        # $PATH, executing a planted senna-<platform> binary (CWE-426/CWE-427).
+        if not (isinstance(self._path, str) and path.isabs(self._path)):
             raise LookupError(
-                "Senna executable expected at %s but not found"
-                % self.executable(self._path)
+                "Senna path %r is not an absolute string; a relative path would be "
+                "run from the current working directory. Construct Senna(...) with an "
+                "absolute senna_path or set the SENNA environment variable."
+                % (self._path,)
             )
+        executable = self.executable(self._path)
+        if not path.isfile(executable):
+            raise LookupError(
+                "Senna executable expected at %s but not found" % executable
+            )
+        # self.operations is a plain mutable attribute turned into '-<op>' flags;
+        # an arbitrary string would be an injected senna option (e.g. '-path'
+        # redirecting the data dir), so bound it to SUPPORTED_OPERATIONS (CWE-88).
+        invalid = [op for op in self.operations if op not in self.SUPPORTED_OPERATIONS]
+        if invalid:
+            raise ValueError(
+                f"Unsupported Senna operation(s) {invalid!r}; choose from "
+                f"{self.SUPPORTED_OPERATIONS!r}."
+            )
+        # spawn_trusted() (below) verifies executable is on a trusted path, refuses
+        # a shell, and scrubs the loader environment before exec (CWE-426/427/732).
+        _args = ["-path", self._path, "-usrtokens", "-iobtags"]
+        _args.extend(["-" + op for op in self.operations])
 
-        # Build the senna command to run the tagger
-        _senna_cmd = [
-            self.executable(self._path),
-            "-path",
-            self._path,
-            "-usrtokens",
-            "-iobtags",
-        ]
-        _senna_cmd.extend(["-" + op for op in self.operations])
+        # A CR/LF in a token adds an input line and breaks the 1:1 sentence->output
+        # mapping senna relies on, smuggling a spurious sentence or corrupting the
+        # alignment (CWE-93). Reject it, as the tokenizer/repp guards do.
+        for sentence in sentences:
+            for token in sentence:
+                if "\n" in token or "\r" in token:
+                    raise ValueError(
+                        "Senna input tokens must not contain newline or carriage "
+                        "return characters (CWE-93)."
+                    )
 
         # Serialize the actual sentences to a temporary string
         _input = "\n".join(" ".join(x) for x in sentences) + "\n"
         if isinstance(_input, str) and encoding:
             _input = _input.encode(encoding)
 
-        # Run the tagger and get the output
-        p = Popen(_senna_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        # Run the tagger and get the output.
+        try:
+            p = spawn_trusted(executable, _args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        except TrustError as e:
+            raise LookupError(
+                "Senna executable %r is not on a trusted path; install senna where "
+                "only you (or root) can write. (%s)" % (executable, e)
+            ) from e
         (stdout, stderr) = p.communicate(input=_input)
         senna_output = stdout
 
