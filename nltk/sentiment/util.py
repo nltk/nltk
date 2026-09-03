@@ -11,7 +11,6 @@ Utility methods for Sentiment Analysis.
 """
 
 import csv
-import json
 import random
 import re
 import sys
@@ -22,6 +21,7 @@ import nltk
 from nltk import redos
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
+from nltk.jsontags import safe_json_loads
 from nltk.pathsec import open as pathsec_open
 from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
@@ -389,7 +389,8 @@ def json2csv_preprocess(
             tweets_cache = []
         i = 0
         for line in fp:
-            tweet = json.loads(line)
+            # Untrusted tweet line: bound size and nesting depth before parsing.
+            tweet = safe_json_loads(line, context="sentiment.json2csv_preprocess")
             row = extract_fields(tweet, fields)
             try:
                 text = row[fields.index("text")]

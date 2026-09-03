@@ -12,9 +12,9 @@ the `twython` library to have been installed.
 """
 import csv
 import gzip
-import json
 
 from nltk.internals import deprecated
+from nltk.jsontags import safe_json_loads
 
 HIER_SEPARATOR = "."
 
@@ -123,7 +123,8 @@ def json2csv(
     writer.writerow(fields)
     # process the file
     for line in fp:
-        tweet = json.loads(line)
+        # Untrusted tweet line: bound size and nesting depth before parsing.
+        tweet = safe_json_loads(line, context="twitter.json2csv")
         row = extract_fields(tweet, fields)
         writer.writerow(row)
     outf.close()
@@ -198,7 +199,8 @@ def json2csv_entities(
     header = get_header_field_list(main_fields, entity_type, entity_fields)
     writer.writerow(header)
     for line in tweets_file:
-        tweet = json.loads(line)
+        # Untrusted tweet line: bound size and nesting depth before parsing.
+        tweet = safe_json_loads(line, context="twitter.json2csv_entities")
         if _is_composed_key(entity_type):
             key, value = _get_key_value_composed(entity_type)
             object_json = _get_entity_recursive(tweet, key)
