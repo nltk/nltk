@@ -31,22 +31,66 @@ __all__ = ["sanitize_terminal", "safe_print", "sanitize_csv_field"]
 # range, so ANSI/OSC sequences are neutralised at their introducer.
 _ALLOWED_CONTROLS = frozenset("\t\n")
 
+# Unicode explicit directional formatting characters (UAX #9). The override pair
+# (LRO/RLO) forces a deceptive visual order regardless of the text, and any of
+# them left unbalanced reorders the text that follows -- the "Trojan Source"
+# spoof (CVE-2021-42574 / CWE-1007). Legitimate bidi text (Arabic/Hebrew) is
+# reordered implicitly by the bidi algorithm and uses these only balanced and
+# never uses the overrides, so overrides are neutralised always and the rest only
+# when the string's directional nesting does not balance; balanced
+# embeddings/isolates and the (harmless) direction marks pass through unchanged.
+_BIDI_OVERRIDES = frozenset("\u202d\u202e")  # LRO, RLO
+_BIDI_EMB_OPEN = frozenset("\u202a\u202b\u202d\u202e")  # LRE, RLE, LRO, RLO
+_BIDI_ISO_OPEN = frozenset("\u2066\u2067\u2068")  # LRI, RLI, FSI
+_BIDI_EMB_CLOSE = "\u202c"  # PDF
+_BIDI_ISO_CLOSE = "\u2069"  # PDI
+_BIDI_MARKS = frozenset("\u200e\u200f\u061c")  # LRM, RLM, ALM
+_BIDI_ALL = (
+    _BIDI_EMB_OPEN | _BIDI_ISO_OPEN | {_BIDI_EMB_CLOSE, _BIDI_ISO_CLOSE} | _BIDI_MARKS
+)
+
+
+def _bidi_is_balanced(text):
+    """True if every embedding/override/isolate opener has a matching closer."""
+    emb = iso = 0
+    for char in text:
+        if char in _BIDI_EMB_OPEN:
+            emb += 1
+        elif char == _BIDI_EMB_CLOSE:
+            emb -= 1
+            if emb < 0:
+                return False
+        elif char in _BIDI_ISO_OPEN:
+            iso += 1
+        elif char == _BIDI_ISO_CLOSE:
+            iso -= 1
+            if iso < 0:
+                return False
+    return emb == 0 and iso == 0
+
 
 def sanitize_terminal(text):
     """Return *text* with terminal control characters replaced by visible escapes.
 
     Tabs and newlines are preserved; every other C0 control, DEL and C1 control
     is rendered as its ``\\xNN`` escape so it can never reach the terminal as a
-    live control sequence. Ordinary printable text (including non-ASCII) is
-    unchanged. Accepts any object; it is coerced with ``str`` first.
+    live control sequence. Bidirectional override characters, and any unbalanced
+    directional formatting, are rendered as ``\\uNNNN`` to defeat Trojan-Source
+    visual reordering while balanced Arabic/Hebrew bidi passes through unchanged.
+    Ordinary printable text (including non-ASCII) is unchanged. Accepts any
+    object; it is coerced with ``str`` first.
     """
+    text = str(text)
+    bidi_ok = _bidi_is_balanced(text)
     result = []
-    for char in str(text):
+    for char in text:
         codepoint = ord(char)
         if char in _ALLOWED_CONTROLS:
             result.append(char)
         elif codepoint < 0x20 or codepoint == 0x7F or 0x80 <= codepoint <= 0x9F:
             result.append(f"\\x{codepoint:02x}")
+        elif char in _BIDI_OVERRIDES or (char in _BIDI_ALL and not bidi_ok):
+            result.append(f"\\u{codepoint:04x}")
         else:
             result.append(char)
     return "".join(result)
