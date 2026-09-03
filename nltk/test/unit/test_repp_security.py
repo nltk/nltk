@@ -70,8 +70,9 @@ def test_absolute_path_still_accepted(tmp_path, monkeypatch):
 
 
 def test_scratch_input_is_staged_in_a_data_root_and_cleaned_up(monkeypatch):
-    """The temp input must land inside a pathsec data root, not shared /tmp, and
-    be removed afterwards (CWE-377/378/459), mirroring boxer/megam/tadm."""
+    """The temp input must land inside a pathsec data root, not shared /tmp
+    (CWE-377, CWE-378), and be removed afterwards (CWE-459), mirroring the
+    boxer/megam/tadm make_staging_dir migration."""
     import tempfile
 
     from nltk import pathsec
