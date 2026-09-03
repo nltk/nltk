@@ -516,6 +516,54 @@ def test_redos_caller_patterns_group_b():
     )
 
 
+_CHILD_REDOS_C = (
+    _CHILD_PREAMBLE
+    + r"""
+import nltk.redos as _R
+_R.DEFAULT_TIMEOUT = 0.5
+
+TO = %(to)r
+S = %(s)r
+
+# Additional sinks fed the identical-branch backstop pattern the engine cannot
+# linearise, so the wall-clock timeout is what must bound each.
+from nltk.tokenize import RegexpTokenizer
+guarded("span_tokenize_gaps",
+        lambda: list(RegexpTokenizer(TO, gaps=True).span_tokenize(S)))
+
+from nltk.chunk.regexp import ChunkRule, RegexpChunkParser
+guarded("chunk_parser_overlap",
+        lambda: RegexpChunkParser([ChunkRule("<a|a>*<b>", "x")],
+                                  chunk_label="NP").parse([("a", "a")] * 80))
+
+# A benign large tokenize must still return the right count, quickly (over-block
+# control): a legitimate corpus-sized input is not collateral damage.
+def _benign():
+    toks = RegexpTokenizer(r"\w+").tokenize("word " * 50000)
+    report("benign_large_tokenize", "BOUNDED" if len(toks) == 50000 else "ERROR",
+           str(len(toks)))
+try:
+    _benign()
+except Exception as e:  # noqa
+    report("benign_large_tokenize", "ERROR", type(e).__name__)
+"""
+    % {"to": _EVIL_TIMEOUT, "s": _EVIL_S}
+)
+
+
+def test_redos_caller_patterns_group_c():
+    res = _run_child(_CHILD_REDOS_C, GUARDED_BUDGET)
+    _assert_no_hang(res, "ReDoS group C")
+    _assert_cases(
+        res,
+        {
+            "span_tokenize_gaps": {"BOUNDED", "REFUSED"},
+            "chunk_parser_overlap": {"BOUNDED", "REFUSED"},
+            "benign_large_tokenize": {"BOUNDED"},
+        },
+    )
+
+
 # ==========================================================================
 # Family 3: algorithmic blow-ups (CWE-407 / CWE-400 / CWE-674)
 # ==========================================================================
