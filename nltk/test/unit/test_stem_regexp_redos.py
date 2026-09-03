@@ -116,3 +116,52 @@ def test_precompiled_pattern_is_wrapped_as_timedpattern():
 
     assert isinstance(RegexpStemmer(re.compile(r"(a|a)*z"))._regexp, TimedPattern)
     assert isinstance(RegexpStemmer(r"(a|a)*z")._regexp, TimedPattern)
+
+
+@pytest.fixture
+def fast_default_timeout(monkeypatch):
+    # Shorten the shared cap so the in-process hostile cases resolve quickly; the
+    # monkeypatch is reverted after the test, so no module state leaks.
+    from nltk import redos
+
+    monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", 0.4)
+
+
+@pytest.mark.parametrize(
+    "pattern,text",
+    [
+        (r"(a|a)*$", "a" * 80 + "!"),  # identical-branch alternation
+        (r"(a|a)+b", "a" * 80),  # ``+`` variant
+        (r"(.*a){25}z", "a" * 300),  # ``.*``-driven counted group
+    ],
+)
+def test_hostile_pattern_over_single_long_token_is_bounded(
+    pattern, text, fast_default_timeout
+):
+    # The stemmer applies its caller regex with ``.sub`` over the (single) token;
+    # a hostile pattern against a long token must be wall-clock bounded, never
+    # hang. Completing fast (engine collapse) or raising TimeoutError are both
+    # bounded; a genuine hang would wedge here and the in-process short cap makes
+    # the TimeoutError branch quick.
+    import time
+
+    from nltk.stem.regexp import RegexpStemmer
+
+    start = time.perf_counter()
+    try:
+        RegexpStemmer(pattern).stem(text)
+    except TimeoutError:
+        pass
+    assert time.perf_counter() - start < 2.0
+
+
+def test_benign_large_token_still_stems_fast():
+    import time
+
+    from nltk.stem.regexp import RegexpStemmer
+
+    stemmer = RegexpStemmer(r"ing$", min=4)
+    start = time.perf_counter()
+    # A long benign token: the suffix strip is linear and correct.
+    assert stemmer.stem("a" * 100000 + "ing") == "a" * 100000
+    assert time.perf_counter() - start < 2.0

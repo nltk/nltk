@@ -39,6 +39,7 @@ This is dev-only maintenance tooling; it is not shipped in the wheel or sdist.
 """
 
 import argparse
+import fnmatch
 import gzip
 import io
 import json
@@ -480,6 +481,191 @@ KEYWORD_RULES = [
     ),
 ]
 
+# Guard-note substring -> the attack-test file globs that PROVE that guard by
+# running the exploit through the real code path. Resolved against nltk/test/unit/
+# at generate() time, so tests added later appear automatically. Ordered
+# most-specific first; first match wins. This is what ties every APPLICABLE /
+# IN-SCOPE row to the concrete test that proves it. A row whose verdict matches
+# NO entry here (or matches one that resolves to zero files on disk) is flagged a
+# COVERAGE GAP in the ledger, NOT silently assumed covered.
+GUARD_TESTS = [
+    (
+        "getattr/import",
+        ["test_pickle_allowlist_security.py", "test_attack_allowlist_*.py"],
+    ),
+    (
+        "picklesec",
+        [
+            "test_pickle_*.py",
+            "test_picklesec_*.py",
+            "test_attack_deser_*.py",
+            "test_attack_allowlist_*.py",
+            "test_attack_warnonly_*.py",
+            "test_attack_pickle_*.py",
+        ],
+    ),
+    ("ssrf", ["test_ssrf_*.py", "test_attack_ssrf_*.py"]),
+    (
+        "decompression-bomb",
+        ["test_zip*.py", "test_aggregate_zip_bomb.py", "test_downloader_unzip.py"],
+    ),
+    ("tarfile", ["test_zip*.py", "test_downloader_unzip.py"]),
+    (
+        "make_staging_dir",
+        ["test_staging_tempdir_security.py", "test_maxent_scratch_staging_security.py"],
+    ),
+    ("staging_tempdir", ["test_staging_tempdir_security.py"]),
+    ("weka", ["test_weka_*.py"]),
+    (
+        "find_binary",
+        [
+            "test_java_*.py",
+            "test_attack_java_tool_*.py",
+            "test_malt_*.py",
+            "test_senna_*.py",
+            "test_boxer_*.py",
+            "test_*_stanford_pathsec.py",
+            "test_attack_tool_injection_*.py",
+        ],
+    ),
+    (
+        "argv",  # matches "argv list" and "argv-list Popen ..."
+        [
+            "test_java_*.py",
+            "test_attack_java_tool_*.py",
+            "test_attack_tool_injection_*.py",
+        ],
+    ),
+    (
+        "os.system",
+        [
+            "test_java_*.py",
+            "test_attack_java_tool_*.py",
+            "test_attack_tool_injection_*.py",
+        ],
+    ),
+    (
+        "validate_tool_path",
+        [
+            "test_java_*.py",
+            "test_malt_*.py",
+            "test_senna_*.py",
+            "test_weka_*.py",
+            "test_pathsec_tool_resources.py",
+            "test_model_artifact_pathsec.py",
+        ],
+    ),
+    ("megam", ["test_attack_java_tool_expanded.py", "test_attack_tool_injection_*.py"]),
+    (
+        "jsontags",
+        [
+            "test_attack_json_*.py",
+            "test_json_serialization.py",
+            "test_attack_jsontags_*.py",
+        ],
+    ),
+    (
+        "xmlsec",
+        [
+            "test_xml*.py",
+            "test_xmlsec.py",
+            "test_attack_xml_*.py",
+            "test_attack_xmlsec_*.py",
+        ],
+    ),
+    ("defusedxml", ["test_xml*.py", "test_xmlsec.py", "test_attack_xml_*.py"]),
+    (
+        "redos",
+        [
+            "test_redos*.py",
+            "test_*redos*.py",
+            "test_attack_dos_*.py",
+            "test_recursion_dos.py",
+        ],
+    ),
+    (
+        "depth/time bounds",
+        ["test_redos*.py", "test_recursion_dos.py", "test_attack_dos_*.py"],
+    ),
+    ("shiftreduce", ["test_recursion_dos.py", "test_redos*.py"]),
+    ("parser cap", ["test_recursion_dos.py", "test_redos*.py"]),
+    ("html.escape", ["test_output_exposure_security.py", "test_attack_wordnet_*.py"]),
+    (
+        "hmac shutdown token",
+        ["test_output_exposure_security.py", "test_attack_wordnet_*.py"],
+    ),
+    ("creds report key-names", ["test_output_exposure_security.py"]),
+    ("no secrets logged", ["test_output_exposure_security.py"]),
+    ("parameterized sqlite", ["test_chat80_pathsec.py", "test_attack_sqli_*.py"]),
+    (
+        "pathsec",
+        [
+            "test_pathsec*.py",
+            "test_path_traversal_security.py",
+            "test_corpus_reader_pathsec.py",
+            "test_attack_path_sandbox_*.py",
+            "test_*_pathsec.py",
+            "test_data_security.py",
+        ],
+    ),
+    (
+        "improper-neutralization pillar",
+        [
+            "test_pathsec_io_attack_matrix.py",
+            "test_redos.py",
+            "test_xml_attack_matrix.py",
+            "test_attack_java_tool_expanded.py",
+        ],
+    ),
+    (
+        "resource-lifetime pillar",
+        [
+            "test_pathsec_io_attack_matrix.py",
+            "test_pickle_allowlist_security.py",
+            "test_attack_json_loaders_expanded.py",
+            "test_xmlsec.py",
+            "test_staging_tempdir_security.py",
+        ],
+    ),
+    ("control-flow pillar", ["test_recursion_dos.py", "test_redos.py"]),
+    (
+        "exceptional-conditions pillar",
+        [
+            "test_childes_security.py",
+            "test_framenet_security.py",
+            "test_nkjp_security.py",
+            "test_conll_cmudict_security.py",
+            "test_dependencygraph_security.py",
+            "test_xmldocs_security.py",
+        ],
+    ),
+    (
+        "parse/reader",
+        [
+            "test_childes_security.py",
+            "test_framenet_security.py",
+            "test_nkjp_security.py",
+            "test_conll_cmudict_security.py",
+        ],
+    ),
+    ("cpython", []),  # inherited from Python upstream; no NLTK-level attack test
+]
+
+# Guards whose implementation + attack tests live on the sibling PR #3850 (terminal
+# CWE-150 / bidi Trojan-Source CWE-1007 via termsec.sanitize_terminal, CSV formula
+# CWE-1236 via termsec.sanitize_csv_field, and the decorators-eval fence
+# _assert_safe_signature). They are absent from THIS branch's checkout, so a row
+# pointing at one is covered-on-#3850, not a #3753-local gap and NOT to be resolved
+# to some unrelated local test. Substring -> the proving artefact on #3850.
+CROSS_PR_GUARDS = [
+    (
+        "sanitize_terminal",
+        "PR #3850: test_terminal_output_attack_matrix.py + test_trojan_source_security.py",
+    ),
+    ("sanitize_csv_field", "PR #3850: test_terminal_output_attack_matrix.py"),
+    ("_assert_safe_signature", "PR #3850: decorators-eval fence tests"),
+]
+
 PILLARS = {
     284: "Access Control",
     435: "Entity Interaction",
@@ -861,6 +1047,45 @@ def classify_ecosystem_cve(cwe, desc, classes, surfaces):
     return "N/A", "%s: %s surface absent in NLTK" % (primary, surface)
 
 
+def _unit_test_files():
+    d = os.path.join("nltk", "test", "unit")
+    return sorted(
+        f for f in os.listdir(d) if f.startswith("test_") and f.endswith(".py")
+    )
+
+
+def resolve_proving_tests(note, test_files, cap=3):
+    """Resolve a guard note to concrete proving-test basenames on disk.
+
+    Returns (display_str, covered_bool). covered is False when the note matches no
+    GUARD_TESTS entry, or matches one whose globs resolve to zero files present:
+    those are the rows the ledger must flag as a COVERAGE GAP rather than assume.
+    The ``cpython`` inherited case is covered-by-design (fixed upstream in Python),
+    so it returns covered=True with an explicit inherited label.
+    """
+    low = note.lower()
+    for sub, label in CROSS_PR_GUARDS:  # #3850-only guards: attribute, do not flag
+        if sub in low:
+            return label, True
+    for sub, globs in GUARD_TESTS:
+        if sub in low:
+            if not globs:  # cpython inherited: no NLTK-level test by design
+                return "inherited (Python upstream)", True
+            found = []
+            for g in globs:
+                for f in test_files:
+                    if fnmatch.fnmatch(f, g) and f not in found:
+                        found.append(f)
+            found.sort()
+            if not found:
+                return "GAP: no test on disk", False
+            shown = found[:cap]
+            extra = len(found) - len(shown)
+            disp = ", ".join(shown) + (" (+%d)" % extra if extra else "")
+            return disp, True
+    return "GAP: unmapped guard", False
+
+
 def generate(offline=False, out_path="SECURITY_LEDGER.md"):
     cwes = fetch_cwe(offline)
     cves = fetch_nvd_cves("nltk", offline)
@@ -876,6 +1101,25 @@ def generate(offline=False, out_path="SECURITY_LEDGER.md"):
                 _sh("git log --format=%%h -1 -S'%s' -- nltk/" % idv) or ""
             )
         return commit_cache[idv]
+
+    test_files = _unit_test_files()
+    tag_test_cache = {}
+
+    def tests_for_tag(tag, cap=3):
+        """Proving-test basenames that literally reference this CWE/CVE tag."""
+        if tag not in tag_test_cache:
+            out = _sh("grep -rlE '%s' nltk/test/ --include='*.py'" % tag)
+            names = sorted({os.path.basename(p) for p in out.split()})
+            shown = names[:cap]
+            extra = len(names) - len(shown)
+            tag_test_cache[tag] = (
+                ", ".join(shown) + (" (+%d)" % extra if extra else "") if names else ""
+            )
+        return tag_test_cache[tag]
+
+    # APPLICABLE / IN-SCOPE rows whose guard note resolves to NO proving test on
+    # disk: the methodical worklist, surfaced instead of assumed covered.
+    gaps = []
 
     stats = {}
     cwe_rows = []
@@ -911,35 +1155,55 @@ def generate(offline=False, out_path="SECURITY_LEDGER.md"):
     lines.append(
         "\n## Every MITRE CWE (complete cwec dictionary: weaknesses + categories + views)\n"
     )
-    lines.append("| CWE | Name | Abstraction | Verdict | Evidence / guard | Commit |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append(
+        "| CWE | Name | Abstraction | Verdict | Evidence / guard | Commit | Proving tests |"
+    )
+    lines.append("|---|---|---|---|---|---|---|")
     for tag, name, ab, st, verdict, cm in cwe_rows:
+        if st == "PATCHED+TESTED":
+            pt = tests_for_tag(tag) or "(tagged in code)"
+        elif st == "APPLICABLE":
+            pt, covered = resolve_proving_tests(verdict, test_files)
+            if not covered:
+                gaps.append(("CWE", tag, verdict))
+        else:
+            pt = "-"
         lines.append(
-            "| {} | {} | {} | {} | {} | {} |".format(
+            "| {} | {} | {} | {} | {} | {} | {} |".format(
                 tag,
                 name.replace("|", "\\|")[:58],
                 ab,
                 st,
                 verdict.replace("|", "\\|"),
                 "`%s`" % cm if cm else "",
+                pt.replace("|", "\\|"),
             )
         )
     lines.append("\n## Every NVD CVE attributed to the nltk product\n")
-    lines.append("| CVE | CWE | NLTK status | Commit |")
-    lines.append("|---|---|---|---|")
+    lines.append("| CVE | CWE | NLTK status | Commit | Proving tests |")
+    lines.append("|---|---|---|---|---|")
     for cid, cwe, desc in cves:
         if "llama" in desc.lower():
-            status, cm = "N/A: dependency (llama_index), not NLTK", ""
+            status, cm, pt = "N/A: dependency (llama_index), not NLTK", "", "-"
         elif _sh("grep -rlE '%s' nltk/ --include='*.py'" % cid):
             has_t = bool(_sh("grep -rlE '%s' nltk/test/ --include='*.py'" % cid))
             status, cm = ("PATCHED+TESTED" if has_t else "PATCHED"), commit(cid)
+            pt = tests_for_tag(cid) or "(tagged in code)"
         elif cwe and (cwe in addressed):
             status, cm = "COVERED by %s class (chokepoint)" % cwe, commit(cwe)
+            pt = tests_for_tag(cwe)
+            if not pt:
+                pt = "GAP: no test references %s" % cwe
+                gaps.append(("CVE", cid, status))
         else:
-            status, cm = "advisory-only / older-version fix", ""
+            status, cm, pt = "advisory-only / older-version fix", "", "-"
         lines.append(
-            "| {} | {} | {} | {} |".format(
-                cid, cwe or "-", status, "`%s`" % cm if cm else ""
+            "| {} | {} | {} | {} | {} |".format(
+                cid,
+                cwe or "-",
+                status,
+                "`%s`" % cm if cm else "",
+                pt.replace("|", "\\|"),
             )
         )
 
@@ -987,24 +1251,58 @@ def generate(offline=False, out_path="SECURITY_LEDGER.md"):
         )
     )
     lines.append(
-        "| CVE | CWE | Surface class(es) | NLTK verdict | Guard / evidence | Commit |"
+        "| CVE | CWE | Surface class(es) | NLTK verdict | Guard / evidence | Commit "
+        "| Proving tests |"
     )
-    lines.append("|---|---|---|---|---|---|")
+    lines.append("|---|---|---|---|---|---|---|")
     for cid, cwe, classes, st, verdict, cm in eco_render:
+        if st == "PATCHED+TESTED":
+            pt = tests_for_tag(cid) or "(tagged in code)"
+        elif st in ("APPLICABLE", "IN-SCOPE (guarded)"):
+            pt, covered = resolve_proving_tests(verdict, test_files)
+            if not covered:
+                gaps.append(("ECO-CVE", cid, verdict))
+        else:  # INHERITED (dep) / N/A
+            pt = "-"
         lines.append(
-            "| {} | {} | {} | {} | {} | {} |".format(
+            "| {} | {} | {} | {} | {} | {} | {} |".format(
                 cid,
                 cwe or "-",
                 ", ".join(classes),
                 st,
                 verdict.replace("|", "\\|"),
                 "`%s`" % cm if cm else "",
+                pt.replace("|", "\\|"),
             )
         )
 
+    # ---- Coverage gaps: APPLICABLE/IN-SCOPE rows with no proving test -----------
+    gap_section = [
+        "\n## Coverage gaps (APPLICABLE / IN-SCOPE rows lacking a proving test)\n"
+    ]
+    if gaps:
+        gap_section.append(
+            "These %d rows are classified guarded but their guard note did not resolve "
+            "to an attack test on disk. Each is a worklist item: add the exploit test, "
+            "then re-run.\n" % len(gaps)
+        )
+        gap_section.append("| kind | id | verdict / guard |\n|---|---|---|")
+        for kind, idv, verdict in gaps:
+            gap_section.append(
+                "| %s | %s | %s |" % (kind, idv, verdict.replace("|", "\\|")[:90])
+            )
+    else:
+        gap_section.append(
+            "**None.** Every APPLICABLE / IN-SCOPE CWE and CVE row resolves to at least "
+            "one attack test that runs its exploit through the real code path.\n"
+        )
+    # Surface the gap section right after the totals line (index 3) so it is the
+    # first thing a reader sees.
+    lines[4:4] = gap_section
+
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
-    return stats, len(cwe_rows), len(cves), len(eco_render), eco_stats
+    return stats, len(cwe_rows), len(cves), len(eco_render), eco_stats, len(gaps)
 
 
 def main(argv=None):
@@ -1016,9 +1314,10 @@ def main(argv=None):
     )
     ap.add_argument("-o", "--out", default="SECURITY_LEDGER.md")
     args = ap.parse_args(argv)
-    stats, ncwe, ncve, neco, eco_stats = generate(args.offline, args.out)
+    stats, ncwe, ncve, neco, eco_stats, ngaps = generate(args.offline, args.out)
     print(
-        "wrote %s: %d CWEs (%s), %d nltk-product CVEs, %d ecosystem CVEs (%s)"
+        "wrote %s: %d CWEs (%s), %d nltk-product CVEs, %d ecosystem CVEs (%s); "
+        "%d coverage gaps"
         % (
             args.out,
             ncwe,
@@ -1026,6 +1325,7 @@ def main(argv=None):
             ncve,
             neco,
             ", ".join("%d %s" % (v, k) for k, v in sorted(eco_stats.items())),
+            ngaps,
         )
     )
     return 0

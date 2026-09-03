@@ -127,15 +127,30 @@ class Senna(TaggerI):
         """
         encoding = self._encoding
 
-        if not path.isfile(self.executable(self._path)):
+        executable = self.executable(self._path)
+        # Re-validate the resolved executable at invocation, not only at
+        # construction: self._path may have been reassigned to a relative value
+        # after __init__, which makes executable() a path with a separator that
+        # subprocess.Popen runs directly from the current working directory
+        # without consulting $PATH, so an attacker who can write a
+        # senna-<platform> file there would have it executed (CWE-426/CWE-427).
+        # __init__ enforces an absolute senna_path; re-assert that invariant
+        # here so the reassignment cannot slip a CWD-relative binary to Popen.
+        if not path.isabs(executable):
             raise LookupError(
-                "Senna executable expected at %s but not found"
-                % self.executable(self._path)
+                "Senna executable path %r is not absolute; a relative path "
+                "would be run from the current working directory. Construct "
+                "Senna(...) with an absolute senna_path or set the SENNA "
+                "environment variable to an absolute directory." % executable
+            )
+        if not path.isfile(executable):
+            raise LookupError(
+                "Senna executable expected at %s but not found" % executable
             )
 
         # Build the senna command to run the tagger
         _senna_cmd = [
-            self.executable(self._path),
+            executable,
             "-path",
             self._path,
             "-usrtokens",

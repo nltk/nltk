@@ -686,7 +686,12 @@ def _synset_relations(word, synset, synset_relations):
 
         return synset_html
 
-    html = (
+    # Do not name this local ``html``: that would shadow the module-level
+    # ``import html`` and, because the nested ``relation_html`` closes over the
+    # name, its ``html.escape(...)`` would resolve to this still-unassigned
+    # enclosing local (it runs while this value is being built) and raise
+    # NameError, so the escaping sink would never run (CWE-79).
+    relations_html = (
         "<ul>"
         + "\n".join(
             "<li>%s</li>" % make_synset_html(*rel_data)
@@ -696,7 +701,7 @@ def _synset_relations(word, synset, synset_relations):
         + "</ul>"
     )
 
-    return html
+    return relations_html
 
 
 class Reference:

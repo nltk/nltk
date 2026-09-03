@@ -82,10 +82,59 @@ class TestWekaSymlinkEscape:
             WekaClassifier(None, link)
 
 
+SYNTACTICALLY_HOSTILE = [
+    "model\x00.bin",  # NUL truncates the path in the JVM's native layer
+    "-loadModel",  # option-shaped: would smuggle a second weka flag
+    "--outputFormat",  # option-shaped (long form)
+    "http://evil.example/model",  # URL, not a local path
+    "file:///etc/passwd",  # file URL
+]
+
+
+class TestWekaSyntacticallyHostileModel:
+    @pytest.mark.parametrize("path", SYNTACTICALLY_HOSTILE)
+    def test_construct_refuses_syntactically_hostile_model(self, path):
+        # A NUL/option-shaped/URL model is refused at construction (-l read), by
+        # the shared name checks, before any weka/config lookup.
+        with pytest.raises((PermissionError, ValueError)):
+            WekaClassifier(None, path)
+
+    @pytest.mark.parametrize("path", SYNTACTICALLY_HOSTILE)
+    def test_train_refuses_syntactically_hostile_model(self, path):
+        # Same value as a -d write target: refused before config_weka()/java().
+        with pytest.raises((PermissionError, ValueError)):
+            WekaClassifier.train(path, FEATS)
+
+
+class TestWekaWriteSymlinkEscape:
+    def test_train_refuses_symlink_write_target_escaping_the_root(self, tmp_path):
+        # A -d WRITE target that is an in-root symlink to an outside file must be
+        # refused: for_write hardening resolves the link before the containment
+        # check, so weka cannot be steered into overwriting an outside file.
+        root = make_staging_dir(prefix="nltk_weka_wsym_")
+        outside = tmp_path / "outside.model"
+        outside.write_bytes(b"")
+        link = os.path.join(root, "out.model")
+        try:
+            os.symlink(str(outside), link)
+        except (OSError, NotImplementedError):
+            pytest.skip("symlinks unavailable")
+        with pytest.raises((PermissionError, ValueError)):
+            WekaClassifier.train(link, FEATS)
+
+
 class TestWekaLegitimatePathsPass:
     def test_in_root_model_passes_at_construction(self):
         model = os.path.join(make_staging_dir(prefix="nltk_weka_ok_"), "name.model")
         clf = WekaClassifier(None, model)  # in-root -> validation passes
+        assert clf._model == model
+
+    def test_in_root_model_that_does_not_exist_yet_is_accepted(self):
+        # must_exist=False: a not-yet-written in-root model validates (containment,
+        # not existence, is the property), so a fresh train destination is allowed.
+        model = os.path.join(make_staging_dir(prefix="nltk_weka_new_"), "fresh.model")
+        assert not os.path.exists(model)
+        clf = WekaClassifier(None, model)
         assert clf._model == model
 
     def test_in_root_train_path_is_not_refused_by_containment(self):

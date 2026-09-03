@@ -77,3 +77,43 @@ def test_reharden_preserves_matching_behaviour():
 def test_reharden_sourceless_raises():
     with pytest.raises(ValueError):
         redos.reharden(object())
+
+
+def test_source_of_bytearray_is_decoded():
+    # A pattern object whose ``.pattern`` is a bytearray (not just bytes) must
+    # still decode to its string source, exercising that branch of source_of.
+    class _P:
+        pattern = bytearray(b"cd+")
+
+    assert redos.source_of(_P()) == "cd+"
+
+
+def test_reharden_bytes_source_is_capped():
+    tp = redos.reharden(regex.compile(rb"\d+"))
+    assert isinstance(tp, TimedPattern)
+    assert tp.findall("a1b22") == ["1", "22"]
+
+
+def test_reharden_preserves_flags():
+    # Re-deriving from source must still honour explicitly passed flags.
+    tp = redos.reharden("abc", re.I)
+    assert tp.match("ABC") is not None
+
+
+def test_reharden_refuses_compile_bomb_in_source():
+    # A counted-repetition bomb planted in a reconstructed pattern's SOURCE is
+    # refused by reharden (which routes through compile -> check_pattern), so a
+    # disabled cap cannot be paired with an unbounded compile.
+    hostile = TimedPattern(regex.compile("a"), timeout=None)
+    hostile._rx = regex.compile("(abcdefghij){9999999}")
+    with pytest.raises(ValueError):
+        redos.reharden(hostile)
+
+
+def test_reharden_result_is_actually_capped_at_match_time():
+    # The whole point: reharden strips a disabled cap, so a catastrophic pattern
+    # rebuilt through it is bounded again by the wall-clock timeout.
+    hostile = TimedPattern(regex.compile(CATASTROPHIC), timeout=None)
+    fresh = redos.reharden(hostile)
+    with pytest.raises(TimeoutError):
+        fresh.search("a" * 80 + "!", timeout=0.4)
