@@ -10,8 +10,10 @@
 
 import fractions
 import math
+import warnings
 from collections import Counter
 
+from nltk.translate.bleu_score import SmoothingFunction
 from nltk.util import ngrams
 
 
@@ -160,12 +162,34 @@ def corpus_nist(list_of_references, hypotheses, n=5):
 
     # Final NIST micro-average mean aggregation.
     nist_precision = 0
-    for i in nist_precision_numerator_per_ngram:
-        precision = (
-            nist_precision_numerator_per_ngram[i]
-            / nist_precision_denominator_per_ngram[i]
-        )
-        nist_precision += precision
+    try:
+        for i in nist_precision_numerator_per_ngram:
+            precision = (
+                nist_precision_numerator_per_ngram[i]
+                / nist_precision_denominator_per_ngram[i]
+            )
+            nist_precision += precision
+    except ZeroDivisionError:
+        _msg = str(
+            "The highest n-gram order of {} is too high for the hypotheses.\n"
+            "Default smoothing function will be applied to avoid zero division "
+            "error, but the NIST score may not be accurate.\n"
+            "Consider using lower n-gram order."
+        ).format(n)
+        warnings.warn(_msg)
+        # construct list[Fraction] like what corpus_bleu does for smoothing function
+        p_n = [
+            fractions.Fraction(
+                nist_precision_numerator_per_ngram[i]
+                / nist_precision_denominator_per_ngram[i]
+                if nist_precision_denominator_per_ngram[i] != 0
+                else 0.0
+            )
+            for i in nist_precision_numerator_per_ngram
+        ]
+        # do the smoothing with method0, which is the default smoothing function used in corpus_bleu.
+        p_n = SmoothingFunction().method0(p_n, hypothesis, len(hypothesis))
+        nist_precision = sum(p_n)
     # Eqn 3 in Doddington(2002)
     return nist_precision * nist_length_penalty(l_ref, l_sys)
 
