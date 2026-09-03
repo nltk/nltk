@@ -862,7 +862,7 @@ def fetch_nvd_cves(keyword="nltk", offline=False):
     if offline and _cache_has(name):
         raw = _cache_read(name)
     else:
-        url = "{}?keywordSearch={}&resultsPerPage=200".format(NVD_API, keyword)
+        url = f"{NVD_API}?keywordSearch={keyword}&resultsPerPage=200"
         with urllib.request.urlopen(url, timeout=60) as r:
             raw = r.read()
         _cache_write(name, raw)
@@ -996,7 +996,7 @@ def fetch_ecosystem_cves(offline=False, delay=7, page=200, max_pages=25):
         try:
             d = _get(label, 0)
         except Exception as e:  # transient NVD outage: keep going, note gap
-            sys.stderr.write("  %s: fetch failed (%s)\n" % (label, e))
+            sys.stderr.write(f"  {label}: fetch failed ({e})\n")
             continue
         total = d.get("totalResults", 0)
         class_counts[label] = total
@@ -1046,7 +1046,7 @@ def classify_ecosystem_cve(cwe, desc, classes, surfaces):
         return "N/A", note
     if surfaces.get(surface, 0) > 0:
         return "IN-SCOPE (guarded)", note
-    return "N/A", "%s: %s surface absent in NLTK" % (primary, surface)
+    return "N/A", f"{primary}: {surface} surface absent in NLTK"
 
 
 def _unit_test_files():
@@ -1236,7 +1236,9 @@ def generate(offline=False, out_path="SECURITY_LEDGER.md"):
     )
     lines.append("| class | NVD query | results |\n|---|---|---|")
     for label, kw in ECOSYSTEM_KEYWORDS.items():
-        lines.append("| %s | `%s` | %s |" % (label, kw, eco_counts.get(label, "n/a")))
+        lines.append(
+            "| {} | `{}` | {} |".format(label, kw, eco_counts.get(label, "n/a"))
+        )
     if eco_capped:
         lines.append(
             "\n> **Truncation disclosed (no silent cap):** these classes exceeded the "
@@ -1291,7 +1293,7 @@ def generate(offline=False, out_path="SECURITY_LEDGER.md"):
         gap_section.append("| kind | id | verdict / guard |\n|---|---|---|")
         for kind, idv, verdict in gaps:
             gap_section.append(
-                "| %s | %s | %s |" % (kind, idv, verdict.replace("|", "\\|")[:90])
+                "| {} | {} | {} |".format(kind, idv, verdict.replace("|", "\\|")[:90])
             )
     else:
         gap_section.append(
