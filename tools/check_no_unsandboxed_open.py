@@ -45,6 +45,12 @@ GUARDED_PATHS = [
     "nltk/tag/perceptron.py",
     "nltk/tbl/demo.py",
     "nltk/tokenize/punkt.py",
+    # nltk/app, nltk/draw and nltk/twitter take an operator-chosen filename (a Tk
+    # dialog, a config path, an output name); each open now routes through
+    # pathsec.open, and guarding the subtree stops a new bare open slipping back.
+    "nltk/app",
+    "nltk/draw",
+    "nltk/twitter",
 ]
 
 SUPPRESS_MARKER = "# sandboxed-open ok"

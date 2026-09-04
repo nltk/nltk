@@ -14,6 +14,8 @@ import os
 
 from twython import Twython
 
+from nltk.pathsec import open as pathsec_open
+
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
@@ -82,7 +84,12 @@ class Authenticate:
         if not os.path.isfile(self.creds_fullpath):
             raise OSError(f"Cannot find file {self.creds_fullpath}")
 
-        with open(self.creds_fullpath) as infile:
+        # The credentials file is the operator's own (the TWITTER env var or a
+        # subdir they pick); pathsec.open validates the path (traversal / NUL /
+        # symlink) without bounding an operator path to the data roots.
+        with pathsec_open(
+            self.creds_fullpath, encoding="utf8", context="twitter.Authenticate"
+        ) as infile:
             if verbose:
                 print(f"Reading credentials file {self.creds_fullpath}")
 
@@ -109,7 +116,7 @@ class Authenticate:
         if not (oauth1 or oauth2):
             # Report only the key names present, never the secret values: this
             # message can reach stderr/logs, so pretty-printing the creds dict
-            # would leak app_secret/access_token (CWE-532/CWE-209).
+            # would leak app_secret/access_token (CWE-532/CWE-209/CWE-200).
             msg = f"Missing or incorrect entries in {self.creds_file}\n"
             msg += f"found keys: {sorted(self.oauth)}"
             raise ValueError(msg)
@@ -132,7 +139,9 @@ def add_access_token(creds_file=None):
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
     tok = f"access_token={access_token}\n"
-    with open(creds_file, "a") as infile:
+    with pathsec_open(
+        creds_file, "a", encoding="utf8", context="twitter.add_access_token"
+    ) as infile:
         print(tok, file=infile)
 
 
