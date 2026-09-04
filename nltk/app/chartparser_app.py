@@ -76,34 +76,14 @@ from nltk.parse.chart import (
     TopDownPredictRule,
     TreeEdge,
 )
+from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import AllowlistUnpickler, pickle_dump
 from nltk.tree import Tree
 from nltk.util import in_idle
 
-# Exact ``(module, qualname)`` allowlist for the pickled chart / grammar files
-# the File menu loads (``load_chart`` and ``load_grammar``). The file path comes
-# from a Tk "Open" dialog, i.e. it is chosen by whoever runs the app. Even so, a
-# ``.pickle`` chart a user was emailed and opens is a realistic phishing-style
-# RCE, and every other model loader in the tree was hardened, so these loads are
-# routed through an allowlisting unpickler (CWE-502) rather than the warn-only
-# ``pickle_load`` (which warns and then EXECUTES any reduce gadget). Only the
-# exact classes a legitimate chart / grammar / parse tree reconstructs may be
-# built; any other global (``os.system``, ``builtins.eval``, ``subprocess.Popen``,
-# a scientific-stack file sink, ...) raises ``UnpicklingError`` instead of
-# executing. The base :class:`~nltk.picklesec.AllowlistUnpickler` still enforces
-# its denied-module / dotted-name / dunder-name / extension-opcode guards on top.
-#
-# The set was derived empirically: a real CFG, a real chart from
-# ``ChartParser.chart_parse``, a ``(chart, tokens)`` tuple (what ``save_grammar``
-# writes to a ``.pickle``), real parse ``Tree`` objects, a ``FeatureGrammar`` and a
-# ``FeatureChart`` were each pickled and every ``(module, name)`` their pickle
-# asks ``find_class`` to resolve was recorded. The probabilistic / parented /
-# dependency-grammar siblings are added from the class hierarchy so a legitimately
-# saved PCFG, dependency grammar or probabilistic tree also loads. None of these
-# is a code-execution primitive: they are inert grammar / edge / tree / feature
-# value types with no custom ``__reduce__`` or ``__setstate__`` and no compiled
-# regex, so there is no ReDoS surface to re-derive (unlike ``nltk.tbl.demo``);
-# hostile BUILD state at worst yields a bounded ``AttributeError`` at use time.
+# Allowlist of the exact ``(module, qualname)`` globals a legitimate pickled chart
+# / grammar / parse tree rebuilds. The File menu loads these pickles through an
+# allowlisting unpickler (CWE-502); any other global raises ``UnpicklingError``.
 _CHART_GRAMMAR_ALLOWED_GLOBALS = (
     # Ordered mapping the chart stores its child-pointer lists in.
     ("nltk.collections", "OrderedDict"),
@@ -875,9 +855,9 @@ class ChartComparer:
         if not filename:
             return
         try:
-            with open(
-                filename, "wb"
-            ) as outfile:  # sandboxed-open ok: operator-chosen GUI file path
+            with pathsec_open(
+                filename, "wb", context="ChartComparer.save_chart_dialog"
+            ) as outfile:
                 pickle_dump(self._out_chart, outfile)
         except Exception as e:
             showerror("Error Saving Chart", f"Unable to open file: {filename!r}\n{e}")
@@ -894,9 +874,7 @@ class ChartComparer:
             showerror("Error Loading Chart", f"Unable to open file: {filename!r}\n{e}")
 
     def load_chart(self, filename):
-        with open(
-            filename, "rb"
-        ) as infile:  # sandboxed-open ok: operator-chosen GUI file path
+        with pathsec_open(filename, "rb", context="ChartComparer.load_chart") as infile:
             chart = _load_chart_pickle(infile)
         name = os.path.basename(filename)
         if name.endswith(".pickle"):
@@ -2353,9 +2331,9 @@ class ChartParserApp:
         if not filename:
             return
         try:
-            with open(
-                filename, "rb"
-            ) as infile:  # sandboxed-open ok: operator-chosen GUI file path
+            with pathsec_open(
+                filename, "rb", context="ChartParserApp.load_chart"
+            ) as infile:
                 chart = _load_chart_pickle(infile)
             self._chart = chart
             self._cv.update(chart)
@@ -2378,9 +2356,9 @@ class ChartParserApp:
         if not filename:
             return
         try:
-            with open(
-                filename, "wb"
-            ) as outfile:  # sandboxed-open ok: operator-chosen GUI file path
+            with pathsec_open(
+                filename, "wb", context="ChartParserApp.save_chart"
+            ) as outfile:
                 pickle_dump(self._chart, outfile)
         except Exception as e:
             raise
@@ -2395,14 +2373,14 @@ class ChartParserApp:
             return
         try:
             if filename.endswith(".pickle"):
-                with open(
-                    filename, "rb"
-                ) as infile:  # sandboxed-open ok: operator-chosen GUI file path
+                with pathsec_open(
+                    filename, "rb", context="ChartParserApp.load_grammar"
+                ) as infile:
                     grammar = _load_chart_pickle(infile)
             else:
-                with open(
-                    filename
-                ) as infile:  # sandboxed-open ok: operator-chosen GUI file path
+                with pathsec_open(
+                    filename, context="ChartParserApp.load_grammar"
+                ) as infile:
                     grammar = CFG.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
@@ -2416,14 +2394,14 @@ class ChartParserApp:
             return
         try:
             if filename.endswith(".pickle"):
-                with open(
-                    filename, "wb"
-                ) as outfile:  # sandboxed-open ok: operator-chosen GUI file path
+                with pathsec_open(
+                    filename, "wb", context="ChartParserApp.save_grammar"
+                ) as outfile:
                     pickle_dump((self._chart, self._tokens), outfile)
             else:
-                with open(
-                    filename, "w"
-                ) as outfile:  # sandboxed-open ok: operator-chosen GUI file path
+                with pathsec_open(
+                    filename, "w", context="ChartParserApp.save_grammar"
+                ) as outfile:
                     prods = self._grammar.productions()
                     start = [p for p in prods if p.lhs() == self._grammar.start()]
                     rest = [p for p in prods if p.lhs() != self._grammar.start()]

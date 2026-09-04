@@ -52,6 +52,7 @@ from tkinter import (
 )
 from tkinter.filedialog import asksaveasfilename
 
+from nltk.pathsec import open as pathsec_open
 from nltk.util import in_idle
 
 ##//////////////////////////////////////////////////////
@@ -1867,9 +1868,7 @@ class CanvasFrame:
         )
         # workaround for bug in Tk font handling
         postscript = postscript.replace(" 0 scalefont ", " 9 scalefont ")
-        with open(
-            filename, "wb"
-        ) as f:  # sandboxed-open ok: operator-chosen GUI file path
+        with pathsec_open(filename, "wb", context="CanvasFrame.print_to_file") as f:
             f.write(postscript.encode("utf8"))
 
     def scrollregion(self):
