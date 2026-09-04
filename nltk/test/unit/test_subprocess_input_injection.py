@@ -5,8 +5,8 @@
 # For license information, see LICENSE.TXT
 
 """Several external-tool wrappers write caller-supplied tokens/sentences/ids into
-a structured input (a CoNLL file, a newline-per-sentence stdin, a candc <META>
-stream, a Graphviz DOT graph) that a subprocess then reads. A token carrying a
+a structured input (a CoNLL file, a newline-per-sentence stdin, a Graphviz DOT
+graph) that a subprocess then reads. A token carrying a
 record delimiter could inject or corrupt records in that input. These tests
 drive each real guard: they reach the guarded code path on a minimally built
 instance (the guard fires before any binary is looked up or spawned, so no
@@ -43,7 +43,9 @@ class TestConllInjection:
             list(taggedsent_to_conll([pair]))
 
 
-# 3/4/5. Stanford tagger, senna, Stanford segmenter: newline-per-sentence input.
+# 3/5. Stanford tagger and Stanford segmenter: newline-per-sentence input.
+# (senna's guard moved to #3858, which routes senna through pathsec.spawn_trusted
+# and keeps a per-token CR/LF check.)
 def _min(cls, **attrs):
     obj = object.__new__(cls)
     for k, v in attrs.items():
@@ -58,13 +60,6 @@ class TestNewlinePerSentenceInjection:
         tagger = _min(StanfordPOSTagger, _encoding="utf8")
         with pytest.raises(ValueError, match="newline"):
             tagger.tag_sents([["good"], ["ev\nil"]])
-
-    def test_senna_refuses_newline_token(self):
-        from nltk.classify.senna import Senna
-
-        senna = _min(Senna, _encoding="utf8")
-        with pytest.raises(ValueError, match="newline"):
-            senna.tag_sents([["ev\nil"]])
 
     def test_stanford_segmenter_refuses_newline_token(self):
         from nltk.tokenize.stanford_segmenter import StanfordSegmenter
@@ -85,35 +80,8 @@ class TestReppInjection:
                 list(repp.tokenize_sents(["a real sentence", "ev\nil"]))
 
 
-# 2. Boxer candc <META> discourse stream.
-class TestBoxerCandcInjection:
-    def test_newline_in_discourse_id_refused(self):
-        from nltk.sem.boxer import Boxer
-
-        boxer = object.__new__(Boxer)
-        with pytest.raises(ValueError, match="discourse id"):
-            boxer._call_candc([["a sentence"]], ["ok\n<META>'evil"], question=False)
-
-    def test_quote_in_discourse_id_refused(self):
-        from nltk.sem.boxer import Boxer
-
-        boxer = object.__new__(Boxer)
-        with pytest.raises(ValueError, match="discourse id"):
-            boxer._call_candc([["a sentence"]], ["x'y"], question=False)
-
-    def test_newline_in_input_line_refused(self):
-        from nltk.sem.boxer import Boxer
-
-        boxer = object.__new__(Boxer)
-        with pytest.raises(ValueError, match="newline"):
-            boxer._call_candc([["line one\nline two"]], ["d0"], question=False)
-
-    def test_meta_marker_in_input_line_refused(self):
-        from nltk.sem.boxer import Boxer
-
-        boxer = object.__new__(Boxer)
-        with pytest.raises(ValueError, match="META"):
-            boxer._call_candc([["<META>'spoofed'"]], ["d0"], question=False)
+# (Boxer's candc <META> discourse-stream guard moved to #3858, tested in
+# test_boxer_security.py alongside its pathsec.spawn_trusted routing.)
 
 
 # 7/8. Graphviz DOT label breakout: escape, do not reject (rendering must survive
