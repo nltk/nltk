@@ -25,6 +25,7 @@ for details.
 import subprocess
 
 from nltk.internals import find_binary
+from nltk.pathsec import TrustError, spawn_trusted
 
 try:
     import numpy
@@ -167,9 +168,17 @@ def call_megam(args):
     if _megam_bin is None:
         config_megam()
 
-    # Call megam via a subprocess
+    # Route through the trusted-exec chokepoint: verify the megam binary is on a
+    # path no other local user can swap, refuse a shell, and scrub the loader
+    # environment before exec (CWE-426/427/732).
     cmd = [_megam_bin] + args
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    try:
+        p = spawn_trusted(cmd[0], cmd[1:], stdout=subprocess.PIPE)
+    except TrustError as e:
+        raise OSError(
+            f"Refusing to run megam at {cmd[0]!r}: it is not on a trusted path. "
+            f"Install megam where only you (or root) can write ({e})."
+        ) from e
     (stdout, stderr) = p.communicate()
 
     # Check the return code.

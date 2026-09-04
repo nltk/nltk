@@ -15,6 +15,7 @@ import subprocess
 
 import nltk
 from nltk.inference.api import BaseProverCommand, Prover
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.sem.logic import (
     AllExpression,
     AndExpression,
@@ -198,15 +199,27 @@ class Prover9Parent:
             print("Args:", args)
             print("Input:\n", input_str, "\n")
 
-        # Call prover9 via a subprocess
+        # Route through the trusted-exec chokepoint: verify the prover9/mace binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
         cmd = [binary] + args
         try:
             input_str = input_str.encode("utf8")
         except AttributeError:
             pass
-        p = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE
-        )
+        try:
+            p = spawn_trusted(
+                cmd[0],
+                cmd[1:],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.PIPE,
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run {cmd[0]!r}: it is not on a trusted path. Install "
+                f"Prover9/Mace where only you (or root) can write ({e})."
+            ) from e
         (stdout, stderr) = p.communicate(input=input_str)
 
         if verbose:

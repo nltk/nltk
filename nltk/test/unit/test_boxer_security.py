@@ -97,12 +97,24 @@ def test_absolute_bin_dir_is_accepted(tmp_path, monkeypatch):
     )
 
 
-def test_boxer_call_uses_argv_list_never_shell(monkeypatch, tmp_path):
-    """``Boxer._call`` builds ``[binary] + args`` and spawns with an argv list and
-    NO shell, so a metacharacter argument reaches the process as a single literal
-    element, never a shell token. The candc/boxer binaries need not exist: Popen
-    is trapped and its argv inspected."""
-    binary = str(tmp_path / "candc")
+def test_boxer_call_uses_argv_list_never_shell(monkeypatch):
+    """``Boxer._call`` routes through ``pathsec.spawn_trusted`` and builds
+    ``[binary] + args`` as an argv list with NO shell, so a metacharacter argument
+    reaches the process as a single literal element, never a shell token. Under the
+    strict trust policy the binary must be a real file on a trusted path, so it is
+    staged under a private data root (not the shared temp, which is refused)."""
+    import nltk.data as nltk_data
+    import nltk.pathsec as ps
+
+    try:
+        base = nltk_data.make_staging_dir(prefix="boxer_test_", cleanup=True)
+    except PermissionError as exc:  # pragma: no cover - env-dependent
+        pytest.skip(f"no writable in-sandbox NLTK data root: {exc}")
+    binary = os.path.join(base, "candc")
+    with open(binary, "w") as handle:
+        handle.write("#!/bin/sh\nexit 0\n")
+    os.chmod(binary, 0o755)
+
     hostile_args = ["--models", "; touch /tmp/pwned", "$(id)", "a\nb"]
     captured = {}
 
@@ -117,13 +129,13 @@ def test_boxer_call_uses_argv_list_never_shell(monkeypatch, tmp_path):
         captured["shell"] = k.get("shell", False)
         return _FakeProc()
 
-    monkeypatch.setattr(subprocess, "Popen", _fake_popen)
+    monkeypatch.setattr(ps.subprocess, "Popen", _fake_popen)
 
     boxer = Boxer.__new__(Boxer)
     boxer._call("some stdin input", binary, args=hostile_args)
 
     assert captured["shell"] is False
-    assert captured["argv"][0] == binary
+    assert captured["argv"][0] == os.path.realpath(binary)  # resolved trusted path
     for tok in hostile_args:
         assert tok in captured["argv"]  # literal, not shell-interpreted
 

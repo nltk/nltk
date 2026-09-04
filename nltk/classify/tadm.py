@@ -5,10 +5,10 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import subprocess
 import sys
 
 from nltk.internals import find_binary
+from nltk.pathsec import TrustError, spawn_trusted
 
 try:
     import numpy
@@ -80,9 +80,17 @@ def call_tadm(args):
     if _tadm_bin is None:
         config_tadm()
 
-    # Call tadm via a subprocess
+    # Route through the trusted-exec chokepoint: verify the tadm binary is on a
+    # path no other local user can swap, refuse a shell, and scrub the loader
+    # environment before exec (CWE-426/427/732).
     cmd = [_tadm_bin] + args
-    p = subprocess.Popen(cmd, stdout=sys.stdout)
+    try:
+        p = spawn_trusted(cmd[0], cmd[1:], stdout=sys.stdout)
+    except TrustError as e:
+        raise OSError(
+            f"Refusing to run tadm at {cmd[0]!r}: it is not on a trusted path. "
+            f"Install tadm where only you (or root) can write ({e})."
+        ) from e
     (stdout, stderr) = p.communicate()
 
     # Check the return code.

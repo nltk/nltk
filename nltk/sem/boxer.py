@@ -38,6 +38,7 @@ from optparse import OptionParser
 
 from nltk import redos
 from nltk.internals import find_binary_iter
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -288,20 +289,30 @@ class Boxer:
             print("Input:", input_str)
             print("Command:", binary + " " + " ".join(args))
 
-        # Call via a subprocess
-        if input_str is None:
-            cmd = [binary] + args
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-        else:
-            cmd = [binary] + args
-            p = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
+        # Route through the trusted-exec chokepoint: verify the candc/boxer binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        cmd = [binary] + args
+        try:
+            if input_str is None:
+                p = spawn_trusted(
+                    cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+                stdout, stderr = p.communicate()
+            else:
+                p = spawn_trusted(
+                    cmd[0],
+                    cmd[1:],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run {cmd[0]!r}: it is not on a trusted path. Install "
+                f"Boxer/C&C where only you (or root) can write ({e})."
+            ) from e
 
         if verbose:
             print("Return code:", p.returncode)
