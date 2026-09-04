@@ -14,8 +14,8 @@ by:
   and stanford ``-model`` / ``corenlp_options`` coercion and traversal);
 * ``test_pathsec_io_attack_matrix.py`` / ``test_pathsec_tool_resources.py`` (the
   guard-level path matrix and hostile PathLike / str-subclass objects);
-* ``test_senna_security.py`` / ``test_weka_security.py`` / ``test_malt_security.py``
-  (senna/weka/malt tool-discovery hijacks).
+* ``test_weka_security.py`` / ``test_malt_security.py`` (weka/malt tool-discovery
+  hijacks; senna's guard and tests moved to #3858).
 
 The genuinely-open surfaces this file targets are:
 
