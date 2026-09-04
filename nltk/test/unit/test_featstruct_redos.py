@@ -79,3 +79,45 @@ def test_long_digit_run_renames_in_linear_time():
             "feature-structure renaming did not finish in time -> quadratic ReDoS"
         )
     assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+
+
+# A TRAILING digit run: this one IS stripped, so it exercises the substitution's
+# replacement path (not just the non-match scan). The greedy pre-fix pattern was
+# quadratic on either shape; the lookbehind keeps both linear.
+_EVIL_TRAILING = "[a=?x" + "0" * 200_000 + "]"
+
+
+def _rename_trailing_worker():
+    try:
+        result = FeatStruct(_EVIL_TRAILING).rename_variables()
+        # The trailing run is stripped and a fresh suffix added -> "?x2"; compare
+        # against the canonical rendering of the expected structure (same spacing).
+        os._exit(0 if str(result) == str(FeatStruct("[a=?x2]")) else 4)
+    except BaseException:
+        os._exit(3)
+
+
+def test_long_trailing_digit_run_renames_in_linear_time():
+    """A long TRAILING digit run must also strip in linear time (and correctly)."""
+    ctx = _mp_ctx()
+    proc = ctx.Process(target=_rename_trailing_worker)
+    proc.start()
+    proc.join(_TIMEOUT)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        raise AssertionError(
+            "trailing-digit renaming did not finish in time -> quadratic ReDoS"
+        )
+    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+
+
+def test_rename_routes_through_redos():
+    """Pin the mechanism: the trailing-digit strip goes through the bounded
+    ``redos.sub`` (not a raw ``re.sub``), so the fixed pattern stays capped."""
+    import inspect
+
+    import nltk.featstruct
+
+    source = inspect.getsource(nltk.featstruct._rename_variable)
+    assert "redos.sub" in source, "featstruct rename no longer routes through redos"
