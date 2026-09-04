@@ -207,9 +207,8 @@ def test_relative_path_reassigned_after_construction_is_refused(
 
 @pytest.mark.skipif(
     not hasattr(os, "getuid"),
-    reason="the trust check accepts a tmp install via the POSIX ownership model; "
-    "the Windows heuristic only trusts admin-only system roots, so a user-temp "
-    "install is (correctly) refused there",
+    reason="these assertions exercise the POSIX ownership model; on Windows the "
+    "exec-trust check is best-effort (a separate path), so this is POSIX-focused",
 )
 def test_absolute_path_still_reaches_the_spawn_after_revalidation(
     tmp_path, monkeypatch, _senna_popen_spy

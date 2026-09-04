@@ -32,10 +32,16 @@ I/O.
 
 ## Trust policy: strict everywhere
 
-`spawn_trusted` **refuses** (raises `TrustError`) any binary whose path is not
-owned by us/root on a non-writable chain, and **fails closed on Windows** (POSIX
-mode bits do not describe who can write a Windows path, and NLTK does not assume
-`win32security`).
+On POSIX, `spawn_trusted` **refuses** (raises `TrustError`) any binary whose path
+is not owned by us/root on a non-writable chain.
+
+On Windows the ownership check (layer 2) cannot run — POSIX mode bits do not
+describe who can write a Windows path, and NLTK does not assume `win32security`
+for a DACL check — so it degrades to **best effort** (a regular file at the
+resolved absolute path is accepted), relying on the other layers: `find_binary`
+refuses a CWD-relative match (the main Windows vector, cf. GitPython
+CVE-2023-40590), and `spawn_trusted` still refuses a shell and scrubs the
+environment. It does **not** fail closed, so Windows wrappers keep working.
 
 Operator consequence: a tool installed in a **group/world-writable directory is
 refused**. Notably this includes Homebrew's `/usr/local/bin` (`drwxrwxr-x`) and

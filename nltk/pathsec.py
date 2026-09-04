@@ -211,15 +211,15 @@ def resolve_trusted_executable(target):
     should execute THAT, not the original name. A same-UID attacker and root are
     out of scope (they already control the process).
 
-    Non-POSIX (Windows): fails CLOSED and returns None. POSIX owner/mode bits do
-    not describe who can write a path there, and a real answer needs the object's
-    DACL (win32security), which is not a dependency NLTK can assume. Guessing
-    from environment-derived roots is not a trust boundary, so the safe answer is
-    to refuse: :func:`spawn_trusted` then raises, and a Windows caller must
-    supply the executable through a channel it has verified itself.
+    Non-POSIX (Windows): best-effort (see :func:`_resolve_trusted_nonposix`). The
+    POSIX ownership check cannot run and NLTK does not assume win32security for a
+    DACL check, so this layer degrades to the others: ``find_binary_iter`` already
+    refuses a CWD-relative match (the main CWE-426 vector on Windows, cf. GitPython
+    CVE-2023-40590) and :func:`spawn_trusted` still refuses a shell and scrubs the
+    environment. It does NOT fail closed, so Windows tool wrappers keep working.
     """
     if os.name != "posix":
-        return None
+        return _resolve_trusted_nonposix(target)
     real = _resolve_private(target)
     if real is None:
         return None
@@ -230,6 +230,25 @@ def resolve_trusted_executable(target):
     if not stat.S_ISREG(st.st_mode) or not _private_stat(st):
         return None
     return real
+
+
+def _resolve_trusted_nonposix(target):
+    """Best-effort resolution on a non-POSIX platform (Windows).
+
+    POSIX owner/mode bits do not describe who can write a path, and a real
+    exec-trust answer needs the object's DACL (win32security), which NLTK does not
+    assume as a dependency, so the ownership layer cannot be enforced here. Rather
+    than fail closed (which would break every Windows tool wrapper), accept a
+    regular file at the resolved absolute path and rely on the other layers:
+    find_binary_iter refuses a CWD-relative match and spawn_trusted refuses a
+    shell and scrubs the loader environment. No environment-derived root allowlist
+    is consulted (that is not a trust boundary)."""
+    try:
+        real = os.path.realpath(target)
+        st = os.stat(real)
+    except OSError:
+        return None
+    return real if stat.S_ISREG(st.st_mode) else None
 
 
 def is_trusted_executable(target):

@@ -278,19 +278,24 @@ def test_resolve_trusted_executable_rejects_binary_owned_by_other(staging, monke
 
 
 # --------------------------------------------------------------------------- #
-# Non-POSIX platform fails CLOSED (no Windows heuristic to fool).               #
+# Non-POSIX platform: best-effort, NOT fail-closed (keeps Windows working).      #
 # --------------------------------------------------------------------------- #
 
 
-def test_non_posix_platform_fails_closed(monkeypatch):
-    """On a non-POSIX os.name the resolver refuses everything: POSIX mode bits do
-    not answer 'who can write this path' on Windows, and NLTK does not assume
-    win32security, so the safe answer is to refuse rather than guess from env."""
+def test_non_posix_platform_is_best_effort(monkeypatch, tmp_path):
+    """On a non-POSIX os.name the POSIX ownership check cannot run, so resolve
+    degrades to best-effort: a regular file at a resolved absolute path is
+    accepted (relying on find_binary's CWD refusal + no-shell + env-scrub), while
+    a missing target is still refused. It must NOT fail closed, or every Windows
+    tool wrapper would break. No environment-derived root allowlist is used."""
+    binp = tmp_path / "tool.exe"
+    binp.write_text("stub")
     monkeypatch.setattr(ps.os, "name", "nt")
-    assert ps.resolve_trusted_executable("/bin/sh") is None
-    assert ps.is_trusted_executable("/bin/sh") is False
-    with pytest.raises(ps.TrustError):
-        ps.spawn_trusted("/bin/sh", ["-c", "true"])
+    assert ps.resolve_trusted_executable(str(binp)) == os.path.realpath(str(binp))
+    assert ps.is_trusted_executable(str(binp)) is True
+    # A missing / non-regular target is still refused.
+    assert ps.resolve_trusted_executable(str(tmp_path / "nope.exe")) is None
+    assert ps.resolve_trusted_executable(str(tmp_path)) is None  # a directory
 
 
 # --------------------------------------------------------------------------- #
