@@ -46,7 +46,7 @@ def test_mte_tags_literal_metachar_no_longer_defeats_filter():
 def test_chat80_relation_name_metachar_injection_does_not_crash():
     chat80 = pytest.importorskip("nltk.sem.chat80")
     try:
-        chat80._str2records("city.pl", "(")  # unbalanced paren: must not re.error
+        chat80._str2records("cities.pl", "(")  # unbalanced paren: must not re.error
     except LookupError:
         pytest.skip("chat80 corpus data not installed")
 
@@ -54,7 +54,7 @@ def test_chat80_relation_name_metachar_injection_does_not_crash():
 def test_chat80_legitimate_relation_still_reads():
     chat80 = pytest.importorskip("nltk.sem.chat80")
     try:
-        recs = chat80._str2records("city.pl", "city")
+        recs = chat80._str2records("cities.pl", "city")
     except LookupError:
         pytest.skip("chat80 corpus data not installed")
     assert isinstance(recs, list) and recs
