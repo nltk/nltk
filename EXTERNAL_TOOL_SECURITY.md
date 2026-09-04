@@ -56,7 +56,7 @@ a refusal as a clear error naming the untrusted path.
 | Prover9 / Mace | `inference/prover9.py` | `Prover9Parent._call` | 1,2,3,4 | Shared `_call` covers both provers |
 | Boxer / C&C | `sem/boxer.py` | `Boxer._call` | 1,2,3,4 | |
 | Graphviz `dot` | `translate/api.py` | `AlignedSent._repr_svg_` | 1,2,3,4 | Strict policy refuses a Homebrew-`/usr/local/bin` `dot`; see trust policy |
-| HunPos | `tag/hunpos.py` | `HunposTagger.__init__` | 1,3,5 | **Partial** — has `validate_tool_path` (5) + no-shell (3); routing through `spawn_trusted` (2,4) is deferred pending a rework of its shared guard-test framework |
+| HunPos | `tag/hunpos.py` | `HunposTagger.__init__` | 1,2,3,4,5 | `validate_tool_path` bounds the model argument (5); `spawn_trusted` adds 2,3,4 |
 | Stanford / Malt / CoreNLP / Weka | `parse/*`, `tag/stanford.py`, `classify/weka.py` | via `internals.java` | 1,3,4,5 | JVM tools: `find_binary` locates `java`, `_java_child_env` scrubs the environment, `validate_model_resource`/`validate_tool_path` bound the jar/model. Exec-trust (2) of the `java` binary itself is not yet routed through `resolve_trusted_executable` |
 
 Layer 1 (`find_binary_iter`'s CWD-relative refusal) already applies uniformly to

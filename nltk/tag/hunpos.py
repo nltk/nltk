@@ -12,10 +12,10 @@ A module for interfacing with the HunPos open-source POS-tagger.
 """
 
 import os
-from subprocess import PIPE, Popen
+from subprocess import PIPE
 
 from nltk.internals import find_binary, find_file
-from nltk.pathsec import validate_tool_path
+from nltk.pathsec import TrustError, spawn_trusted, validate_tool_path
 from nltk.tag.api import TaggerI
 
 _hunpos_url = "https://code.google.com/p/hunpos/"
@@ -97,13 +97,23 @@ class HunposTagger(TaggerI):
         # ``self._hunpos_model`` (from find_file) becomes argv to the hunpos-tag
         # subprocess pathsec.open cannot wrap; bound it before spawning (GHSA-8mgp-746c-j5xp).
         validate_tool_path(self._hunpos_model, context="HunposTagger.__init__")
-        self._hunpos = Popen(
-            [self._hunpos_bin, self._hunpos_model],
-            shell=False,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=PIPE,
-        )
+        # Route through the trusted-exec chokepoint: verify the hunpos-tag binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        try:
+            self._hunpos = spawn_trusted(
+                self._hunpos_bin,
+                [self._hunpos_model],
+                stdin=PIPE,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run the HunPos tagger {self._hunpos_bin!r}: it is "
+                "not on a trusted path. Install HunPos where only you (or root) "
+                f"can write ({e})."
+            ) from e
         self._closed = False
 
     def __del__(self):
