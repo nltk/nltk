@@ -303,11 +303,9 @@ def test_non_posix_platform_is_best_effort(monkeypatch, tmp_path):
 # --------------------------------------------------------------------------- #
 
 
-# Every environment variable that can redirect a dynamic linker, loader,
-# interpreter, charset/locale module, terminfo/message catalog, shell word split,
-# or temp/config lookup. None may survive safe_env(): the whitelist drops them all
-# by default. Kept deliberately broad ("benign or not") so a new attack variable
-# added here fails loudly if it ever slips into _ENV_KEEP.
+# Every variable that can redirect a linker/loader/interpreter, charset-locale
+# module, terminfo/catalog, shell split, or temp/config lookup. None may survive
+# safe_env(); kept deliberately broad ("benign or not") to catch a slip.
 _DANGEROUS_ENV = [
     "LD_PRELOAD",
     "LD_LIBRARY_PATH",

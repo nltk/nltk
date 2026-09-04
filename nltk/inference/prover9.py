@@ -233,18 +233,24 @@ class Prover9Parent:
         return (stdout.decode("utf-8"), p.returncode)
 
 
-# A formula emitted by _convert_to_prover9 is one Prover9 term of connectives and
-# identifier atoms: never a control character (which would split the input into
-# extra lines or embed a NUL) nor a bare period (prover9_input appends the
-# terminating period itself), and never leads with a list keyword. A crafted term
-# carrying one could close the enclosing formulas(...) list and inject directives
-# such as end_of_list. fromstring only yields identifier atoms, so this rejects
-# only maliciously hand-built Expressions (CVE-2026-14709).
+# A converted formula is one Prover9 term; it may not carry a control char or a
+# bare period, or lead with a list keyword, or it could break out of the enclosing
+# formulas(...) list (CVE-2026-14709). prover9_input appends the period itself.
 _PROVER9_INJECTION_RE = redos.compile(r"[.\x00-\x08\x0a-\x1f\x7f]")
 _PROVER9_LIST_KEYWORD_RE = redos.compile(r"^\s*(?:end_of_list|formulas|clauses)\b")
 
 
 def _assert_prover9_safe(formula):
+    """Return *formula* unchanged if it is safe to interpolate into Prover9 input,
+    else raise ValueError.
+
+    A term from _convert_to_prover9 is connectives and identifier atoms, so a
+    control character (which would split the input into extra lines or embed a NUL)
+    or a leading list keyword (end_of_list/formulas/clauses) could close the
+    formulas(...) list and inject directives such as ``end_of_list.``.
+    Expression.fromstring only yields identifier atoms, so this rejects only
+    maliciously hand-built Expressions (CVE-2026-14709).
+    """
     if _PROVER9_INJECTION_RE.search(formula) or _PROVER9_LIST_KEYWORD_RE.match(formula):
         raise ValueError(
             "refusing to build Prover9 input from a formula that could inject "

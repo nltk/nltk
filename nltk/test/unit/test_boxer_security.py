@@ -186,9 +186,8 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
 
 # --- candc structured-input injection guard (integrated from #3850) ------------
 # ``Boxer._call_candc`` builds a line-oriented candc input where ``<META>'id'``
-# marks a discourse boundary. A control character or quote in a discourse id, or
-# an input line that itself starts with ``<META>``, would inject or misroute those
-# boundaries. The guard runs BEFORE the spawn.
+# marks a discourse boundary; a control char/quote in an id or a ``<META>``-leading
+# input line would inject or misroute those boundaries (the guard runs pre-spawn).
 
 
 def _candc_boxer(spy):

@@ -60,14 +60,9 @@ _WINDOWS_DEVICE_NAMES = frozenset(
 
 _MAX_LINK_HOPS = 40  # ELOOP-style bound on symlink chains
 
-# The child PATH. A trusted binary is executed by ABSOLUTE path and needs no PATH
-# to run, so the child is handed one that resolves NOTHING: a single absolute,
-# root-domain directory containing no executables (an unprivileged user cannot
-# create a sibling of it under /). This denies bare-name command resolution, so
-# a rich /usr/bin:/bin, which would let the child reach sh/python/any tool by
-# name, is deliberately NOT granted. It is also deliberately NOT empty: POSIX
-# execvp / subprocess search an EMPTY PATH element as the current directory, so
-# "" or an unset PATH would let a planted ./tool run instead (CWE-426).
+# The child PATH resolves NOTHING: a single absolute, root-domain directory with
+# no executables. It denies bare-name command lookup (a trusted binary is run by
+# absolute path) and is NOT empty (an empty PATH element is the CWD; see safe_env).
 _LOCKED_PATH = "/nonexistent"
 
 # Only these variables reach a spawn_trusted child. Anything that can redirect a
@@ -166,10 +161,9 @@ def _resolve_private(path, _hops=0):
         text = os.fspath(path)
     except TypeError:
         return None  # not a path-like at all (int, None, list, ...)
-    # Only an absolute, NUL-free path is resolvable here. A relative path would
-    # be taken against the attacker-controllable CWD; a '..' component is refused
-    # rather than folded, because os.path.abspath/normpath collapse it LEXICALLY,
-    # before symlinks resolve, which would skip a link this walk must inspect.
+    # Only an absolute, NUL-free path is resolvable. A relative path resolves
+    # against the attacker-controllable CWD; a '..' is refused, not folded, since
+    # os.path.abspath collapses it lexically before symlinks resolve (skips a link).
     if not isinstance(text, str) or "\x00" in text or not os.path.isabs(text):
         return None
     cur = os.sep

@@ -151,10 +151,9 @@ def _senna_popen_spy(monkeypatch):
 
     def _fake_popen(cmd, *a, **k):
         argv = list(cmd)
-        # On Linux, Senna.executable() calls platform.architecture(), which probes
-        # with the ``file`` command through this same patched subprocess (via
-        # subprocess.run, which needs a real Popen). Run that probe for real so
-        # bit-width detection is correct, and record only the senna spawn itself.
+        # On Linux, Senna.executable() runs `file` via platform.architecture()
+        # through this same patched subprocess; delegate that probe to the real
+        # Popen so bit-width detection works, and record only the senna spawn.
         if argv[:1] == ["file"]:
             return real_popen(cmd, *a, **k)
         calls.append(
