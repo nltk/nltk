@@ -23,7 +23,7 @@ tools).
 | 3 | **No shell, absolute exec** | The command being re-interpreted by a shell | 78/88 | `pathsec.spawn_trusted` (`Popen([real, *args], executable=real)`, refuses `shell=True`) |
 | 4 | **Scrub the environment** | `LD_PRELOAD`/`DYLD_*`/`PYTHONPATH`/`GCONV_PATH`/… hijacking the child; a poisoned or empty `PATH` (empty is searched as the CWD) | 88/426 | `pathsec.safe_env` (deny-by-default whitelist; `PATH` locked to a no-command sentinel) |
 | 5 | **Bound the arguments** | An attacker-controlled value injected as a `-option` or an out-of-sandbox file path | 88/22 | `pathsec.validate_tool_path`, `pathsec.validate_model_resource`; a per-tool allowlist for option tokens (e.g. Senna's `SUPPORTED_OPERATIONS`) |
-| 6 | **Sanitize line-oriented I/O** | A CR/LF smuggling an extra input line into a line-oriented protocol | 93 | reject `\n`/`\r` in tokens fed to the tool (see Senna, REPP) |
+| 6 | **Sanitize line-oriented I/O** | Any control character (not just CR/LF) smuggling an extra field or input line into a line/field-delimited protocol | 93 | reject control characters in tokens fed to the tool, and require numeric fields be numeric (see Senna, REPP, MEGAM/TADM) |
 | 7 | **Control the CWD** | A tool that loads a plugin/config from `.` | 426 | pass a safe `cwd=` to `spawn_trusted` (only when the tool reads the CWD) |
 
 `spawn_trusted` bundles layers 1–4 (it calls `resolve_trusted_executable` and
@@ -56,13 +56,13 @@ a refusal as a clear error naming the untrusted path.
 | Wrapper | Module | Entry point | Guards | Notes |
 |---------|--------|-------------|--------|-------|
 | Senna | `classify/senna.py` | `tag_sents` | 1,2,3,4,5,6 | Reference implementation; 7 is N/A (reads only `-path` + stdin). PR #3858 |
-| REPP | `tokenize/repp.py` | `_execute` | 1,2,3,4 | Scratch input already staged via `make_staging_dir` |
-| TADM | `classify/tadm.py` | `call_tadm` | 1,2,3,4 | |
-| MEGAM | `classify/megam.py` | `call_megam` | 1,2,3,4 | Low-level escape hatch; args pass through as literal argv (5 is the caller's) |
-| Prover9 / Mace | `inference/prover9.py` | `Prover9Parent._call` + `prover9_input` | 1,2,3,4,6 | Shared `_call` covers both provers; `_assert_prover9_safe` rejects a formula that could inject list directives (CVE-2026-14709) |
+| REPP | `tokenize/repp.py` | `tokenize_sents` + `_execute` | 1,2,3,4,6 | Scratch input staged via `make_staging_dir`; `tokenize_sents` rejects a control character in a sentence (one sentence per line) |
+| TADM | `classify/tadm.py` | `call_tadm` + `write_tadm_file` | 1,2,3,4,6 | `write_tadm_file` requires each feature id/value be a finite number before the `%d` interpolation (space/newline-delimited format) |
+| MEGAM | `classify/megam.py` | `call_megam` + `write_megam_file` | 1,2,3,4,6 | Low-level escape hatch; args pass through as literal argv (5 is the caller's). `write_megam_file` requires feature ids to be non-negative ints and values/costs finite reals (space/`:`/`#`-delimited format) |
+| Prover9 / Mace | `inference/prover9.py` | `Prover9Parent._call` + `prover9_input` | 1,2,3,4,5,6 | Shared `_call` covers both provers; `_assert_prover9_safe` rejects a formula that could inject list directives (CVE-2026-14709); `_safe_seconds` bounds the `max_seconds`/`end_size` resource directive to a non-negative int (5, CWE-400) |
 | Boxer / C&C | `sem/boxer.py` | `Boxer._call` + `_call_candc` | 1,2,3,4,6 | `_call_candc` rejects a control character/quote in a discourse id or a `<META>`-leading input line; scratch write goes through `pathsec.open` |
-| Graphviz `dot` | `translate/api.py` | `AlignedSent._repr_svg_` | 1,2,3,4 | Strict policy refuses a Homebrew-`/usr/local/bin` `dot`; see trust policy |
-| HunPos | `tag/hunpos.py` | `HunposTagger.__init__` | 1,2,3,4,5 | `validate_tool_path` bounds the model argument (5); `spawn_trusted` adds 2,3,4 |
+| Graphviz `dot` | `translate/api.py` | `AlignedSent._repr_svg_` | 1,2,3,4 | Strict policy refuses a Homebrew-`/usr/local/bin` `dot`; see trust policy. DOT node labels are display-only (renderer, not interpreter) and operate on the caller's own data |
+| HunPos | `tag/hunpos.py` | `HunposTagger.__init__` + `tag` | 1,2,3,4,5,6 | `validate_tool_path` bounds the model argument (5); `spawn_trusted` adds 2,3,4; `tag` rejects a control character in a token (one token per line) |
 | Stanford / Malt / CoreNLP / Weka | `parse/*`, `tag/stanford.py`, `classify/weka.py` | via `internals.java` | 1,3,4,5 | JVM tools: `find_binary` locates `java`, `_java_child_env` scrubs the environment, `validate_model_resource`/`validate_tool_path` bound the jar/model. Exec-trust (2) of the `java` binary itself is not yet routed through `resolve_trusted_executable` |
 
 Layer 1 (`find_binary_iter`'s CWD-relative refusal) already applies uniformly to
@@ -90,8 +90,10 @@ Then add the wrapper-specific guards:
 - **Layer 5** — bound any caller-controlled option to an allowlist (see Senna's
   `SUPPORTED_OPERATIONS` check) and bound file-path arguments with
   `validate_tool_path` / `validate_model_resource`.
-- **Layer 6** — if the tool consumes a line-oriented stream, reject `\n`/`\r`
-  in the tokens.
+- **Layer 6** — if the tool consumes a line/field-delimited stream, reject any
+  control character (not just `\n`/`\r`) in the tokens, and if a field is meant
+  to be numeric (a feature id/value, a resource bound), validate it is numeric
+  before interpolating rather than trusting the encoding to produce one.
 - **Layer 7** — pass `cwd=` a trusted directory only if the tool loads anything
   from the current directory.
 

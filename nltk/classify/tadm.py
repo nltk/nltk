@@ -5,6 +5,8 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import math
+import numbers
 import sys
 
 from nltk.internals import find_binary
@@ -23,6 +25,18 @@ def config_tadm(bin=None):
     _tadm_bin = find_binary(
         "tadm", bin, env_vars=["TADM"], binary_names=["tadm"], url="http://tadm.sf.net"
     )
+
+
+def _tadm_int(value, kind):
+    # tadm's stdin is space and newline delimited. The "%d" interpolation already
+    # rejects a string feature id/value with a TypeError, but validate up front so
+    # a hostile or buggy encoding cannot inject a field or line (CWE-93) and the
+    # error is clear. Reals are truncated as "%d" would; non-finite is refused.
+    if isinstance(value, bool) or not isinstance(value, numbers.Real):
+        raise ValueError(f"TADM {kind} must be a number, got {value!r}")
+    if not math.isfinite(value):
+        raise ValueError(f"TADM {kind} must be finite, got {value!r}")
+    return int(value)
 
 
 def write_tadm_file(train_toks, encoding, stream):
@@ -51,11 +65,12 @@ def write_tadm_file(train_toks, encoding, stream):
         stream.write(length_line)
         for known_label in labels:
             v = encoding.encode(featureset, known_label)
-            line = "%d %d %s\n" % (
-                int(label == known_label),
-                len(v),
-                " ".join("%d %d" % u for u in v),
+            pairs = " ".join(
+                "%d %d"
+                % (_tadm_int(fid, "feature id"), _tadm_int(fval, "feature value"))
+                for (fid, fval) in v
             )
+            line = "%d %d %s\n" % (int(label == known_label), len(v), pairs)
             stream.write(line)
 
 

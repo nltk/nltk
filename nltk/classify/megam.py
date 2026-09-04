@@ -22,6 +22,8 @@ for details.
 
 .. _megam: http://hal3.name/megam/
 """
+import math
+import numbers
 import subprocess
 
 from nltk.internals import find_binary
@@ -102,9 +104,11 @@ def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True
     for featureset, label in train_toks:
         # First, the instance number (or, in the weighted multiclass case, the cost of each label).
         if hasattr(encoding, "cost"):
-            stream.write(
-                ":".join(str(encoding.cost(featureset, label, l)) for l in labels)
-            )
+            costs = [
+                _megam_number(encoding.cost(featureset, label, l), "label cost")
+                for l in labels
+            ]
+            stream.write(":".join(str(c) for c in costs))
         else:
             stream.write("%d" % labelnum[label])
 
@@ -142,6 +146,30 @@ def parse_megam_weights(s, features_count, explicit=True):
     return weights
 
 
+def _megam_int(value, kind="feature id"):
+    # megam stdin is space delimited, one instance per line. A feature id that is
+    # not a bare non-negative integer could carry whitespace, a newline, or a
+    # ':'/'#' separator (from a hostile or buggy encoding) and split into extra
+    # fields or inject a whole new instance line (CWE-93). str() of an Integral is
+    # always separator free, so a type/range check is the guard.
+    if isinstance(value, bool) or not isinstance(value, numbers.Integral) or value < 0:
+        raise ValueError(f"MEGAM {kind} must be a non-negative integer, got {value!r}")
+    return int(value)
+
+
+def _megam_number(value, kind="feature value"):
+    # A megam feature value / per-label cost must be a finite real number for the
+    # same reason: only a numeric str() is free of the format's delimiters and
+    # cannot inject a line (CWE-93).
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, numbers.Real)
+        or not math.isfinite(value)
+    ):
+        raise ValueError(f"MEGAM {kind} must be a finite real number, got {value!r}")
+    return value
+
+
 def _write_megam_features(vector, stream, bernoulli):
     if not vector:
         raise ValueError(
@@ -150,13 +178,13 @@ def _write_megam_features(vector, stream, bernoulli):
     for fid, fval in vector:
         if bernoulli:
             if fval == 1:
-                stream.write(" %s" % fid)
+                stream.write(" %s" % _megam_int(fid))
             elif fval != 0:
                 raise ValueError(
                     "If bernoulli=True, then all" "features must be binary."
                 )
         else:
-            stream.write(f" {fid} {fval}")
+            stream.write(f" {_megam_int(fid)} {_megam_number(fval)}")
 
 
 def call_megam(args):

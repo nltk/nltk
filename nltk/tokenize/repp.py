@@ -88,9 +88,17 @@ class ReppTokenizer(TokenizerI):
             with tempfile.NamedTemporaryFile(
                 prefix="repp_input.", dir=staging_dir, mode="w", delete=False
             ) as input_file:
-                # Write sentences to temporary input file.
+                # REPP reads one sentence per line; a control char in a sentence
+                # injects an extra input line (or a NUL truncates it), so the token
+                # stream desynchronises from the sentence list (CWE-93).
                 for sent in sentences:
-                    input_file.write(str(sent) + "\n")
+                    text = str(sent)
+                    if any(ord(c) < 0x20 and c != "\t" for c in text):
+                        raise ValueError(
+                            "REPP input sentences must not contain newline, NUL or "
+                            "other control characters."
+                        )
+                    input_file.write(text + "\n")
                 input_file.close()
                 # Generate command to run REPP.
                 cmd = self.generate_repp_command(input_file.name)

@@ -94,3 +94,51 @@ def test_hunpos_trusted_binary_reaches_spawn_with_scrubbed_env(monkeypatch):
     assert calls[0].shell is False
     assert calls[0].argv == [os.path.realpath(binp), model]
     assert "LD_PRELOAD" not in (calls[0].env or {})
+
+
+# --- Layer-6 input guard: hunpos-tag reads one token per line (CWE-93) ---------
+
+
+def _tagger_with_fake_pipe(encoding=hp._hunpos_charset):
+    """A HunposTagger wired to a recording fake pipe, no real binary spawned."""
+    writes = []
+
+    class _Stdin:
+        def write(self, chunk):
+            writes.append(chunk)
+
+        def flush(self):
+            pass
+
+    class _Stdout:
+        def readline(self):
+            return b"\n"
+
+    tagger = object.__new__(hp.HunposTagger)
+    tagger._closed = False
+    tagger._encoding = encoding
+    tagger._hunpos = SimpleNamespace(
+        stdin=_Stdin(),
+        stdout=_Stdout(),
+        communicate=lambda *a, **k: (b"", b""),
+    )
+    return tagger, writes
+
+
+def test_control_char_token_is_refused():
+    """A newline/NUL/other control char in a token injects an extra line into
+    hunpos-tag's line-oriented stdin (or truncates the token), desynchronising
+    every following tag; the token is refused before it is written."""
+    tagger, writes = _tagger_with_fake_pipe()
+    for payload in ["good\nevil", "nul\x00here", "cr\rhere", "esc\x1bhere"]:
+        with pytest.raises(ValueError, match="control characters"):
+            tagger.tag([payload])
+    assert writes == [], "a control-char token must not be written to hunpos stdin"
+
+
+def test_tab_in_token_is_allowed():
+    """hunpos uses tab as its own output column separator, but a tab inside an
+    input token is harmless on the write side (one token per line); allow it."""
+    tagger, writes = _tagger_with_fake_pipe()
+    tagger.tag(["a\tb"])
+    assert b"a\tb\n" in writes

@@ -262,6 +262,18 @@ def _assert_prover9_safe(formula):
     return formula
 
 
+def _safe_seconds(value, name="timeout"):
+    """A Prover9/Mace resource bound (assign(max_seconds, N)) must be a
+    non-negative integer: a negative or non-integer value is undefined to the
+    binary and, without the ``%d`` coercion, could inject into the input; 0 is the
+    documented "no timeout" and is the caller's own DoS choice (CWE-400)."""
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ValueError(
+            f"Prover9/Mace {name} must be a non-negative integer, got {value!r}"
+        )
+    return value
+
+
 def convert_to_prover9(input):
     """
     Convert a ``logic.Expression`` to Prover9 format.
@@ -388,12 +400,13 @@ class Prover9(Prover9Parent, Prover):
         :return: A tuple (stdout, returncode)
         :see: ``config_prover9``
         """
+        seconds = _safe_seconds(self._timeout)
         if self._prover9_bin is None:
             self._prover9_bin = self._find_binary("prover9", verbose)
 
         updated_input_str = ""
-        if self._timeout > 0:
-            updated_input_str += "assign(max_seconds, %d).\n\n" % self._timeout
+        if seconds > 0:
+            updated_input_str += "assign(max_seconds, %d).\n\n" % seconds
         updated_input_str += input_str
 
         stdout, returncode = self._call(

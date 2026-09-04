@@ -179,3 +179,43 @@ def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
     assert calls[0].shell is False
     assert os.path.isabs(calls[0].argv[0])
     assert calls[0].argv[0] == os.path.realpath(str(reppdir / "src" / "repp"))
+
+
+# --- Layer-6 input guard: REPP reads one sentence per line (CWE-93) ------------
+
+
+def _detached_tokenizer():
+    tok = object.__new__(ReppTokenizer)
+    tok.repp_dir = "/x"
+    tok.encoding = "utf8"
+    return tok
+
+
+def test_control_char_sentence_is_refused_before_spawn(monkeypatch):
+    """A newline/NUL/other control char in a sentence would inject an extra REPP
+    input line (or a NUL would truncate one), desynchronising the token stream
+    from the sentence list; such input is refused before the binary is spawned."""
+    tok = _detached_tokenizer()
+    called = []
+    monkeypatch.setattr(
+        ReppTokenizer, "_execute", staticmethod(lambda cmd: called.append(cmd) or b"")
+    )
+    for payload in ["good\nevil", "nul\x00here", "cr\rhere", "esc\x1bhere"]:
+        with pytest.raises(ValueError, match="control characters"):
+            list(tok.tokenize_sents([payload]))
+    assert not called, "REPP was spawned despite a control-char sentence"
+
+
+def test_tab_in_sentence_reaches_execute(monkeypatch):
+    """A tab is legal inside a sentence (REPP splits on newlines only), so the
+    guard must let it through to the (fake) binary."""
+    tok = _detached_tokenizer()
+    called = []
+    monkeypatch.setattr(
+        ReppTokenizer, "_execute", staticmethod(lambda cmd: called.append(1) or b"")
+    )
+    try:
+        list(tok.tokenize_sents(["a\tb c"]))
+    except ValueError:
+        pass  # empty fake output yields no triples; irrelevant to the guard
+    assert called, "a tab-containing sentence must pass the guard and reach _execute"

@@ -135,3 +135,43 @@ def test_fromstring_path_is_not_reachable_for_injection():
     # atoms, so a legitimate parse never trips the guard.
     for text in ["man(socrates)", "all x.(walk(x) -> move(x))", "-(P(a) & Q(b))"]:
         _assert_prover9_safe(convert_to_prover9(read(text)))
+
+
+# --- Resource-bound validation (max_seconds / end_size): CWE-400 + type safety --
+# The timeout/end_size are interpolated into ``assign(max_seconds, %d)``. The
+# ``%d`` blocks injection, but a negative value is undefined to the binary and a
+# non-int raises at format time; both are refused up front (0 is the documented
+# "no timeout", the caller's own DoS choice).
+
+
+@pytest.mark.parametrize(
+    "bad", [-1, -60, "60", "0). formulas(goals)", 1.5, 3.0, True, False, None, []]
+)
+def test_safe_seconds_rejects_non_nonnegative_int(bad):
+    from nltk.inference.prover9 import _safe_seconds
+
+    with pytest.raises(ValueError, match="non-negative integer"):
+        _safe_seconds(bad)
+
+
+@pytest.mark.parametrize("good", [0, 1, 60, 3600])
+def test_safe_seconds_accepts_nonnegative_int(good):
+    from nltk.inference.prover9 import _safe_seconds
+
+    assert _safe_seconds(good) == good
+
+
+def test_prover9_rejects_bad_timeout_before_spawn():
+    # A bad timeout is caught before the binary is even located, so there is no
+    # spawn and the caller gets a clear ValueError rather than a later TypeError.
+    with pytest.raises(ValueError, match="non-negative integer"):
+        Prover9(timeout=-5)._call_prover9("formulas(goals).\nend_of_list.\n")
+
+
+def test_mace_rejects_bad_end_size_before_spawn():
+    from nltk.inference.mace import Mace
+
+    builder = Mace()
+    builder._end_size = -1
+    with pytest.raises(ValueError, match="non-negative integer"):
+        builder._call_mace4("formulas(assumptions).\nend_of_list.\n")
