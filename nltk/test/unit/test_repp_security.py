@@ -103,3 +103,79 @@ def test_scratch_input_is_staged_in_a_data_root_and_cleaned_up(monkeypatch):
     assert captured["existed"] and captured["in_root"]
     assert not captured["in_shared_tmp"]
     assert not os.path.exists(captured["path"])  # cleaned up in the finally
+
+
+# --- Trusted-exec routing: _execute now goes through pathsec.spawn_trusted -----
+# (the standardized native-wrapper chokepoint; strict trust policy, like senna).
+
+requires_posix_perms = pytest.mark.skipif(
+    not hasattr(os, "getuid"), reason="POSIX ownership/permission model"
+)
+
+
+def _staging(prefix="repp_test_"):
+    """A private, in-sandbox base dir (never world-writable /tmp)."""
+    import nltk.data as nltk_data
+
+    try:
+        return nltk_data.make_staging_dir(prefix=prefix, cleanup=True)
+    except PermissionError as exc:  # pragma: no cover - env-dependent
+        pytest.skip(f"no writable in-sandbox NLTK data root: {exc}")
+
+
+def _repp_cmd(reppdir):
+    return [
+        str(reppdir / "src" / "repp"),
+        "-c",
+        str(reppdir / "erg" / "repp.set"),
+        "--format",
+        "triple",
+        "/dev/null",
+    ]
+
+
+@requires_posix_perms
+def test_execute_refuses_untrusted_repp_binary(tmp_path):
+    """Strict trust: a REPP binary whose holding directory is world-writable is
+    refused before running, since another local user could swap it (CWE-426/732)."""
+    reppdir = _make_repp_dir(tmp_path / "wwrepp")
+    os.chmod(reppdir / "src" / "repp", 0o755)
+    os.chmod(reppdir / "src", 0o777)  # world-writable: attacker can swap the binary
+    with pytest.raises(LookupError):
+        ReppTokenizer._execute(_repp_cmd(reppdir))
+
+
+def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
+    """Benign control: a REPP binary under a private staged root reaches the
+    (trapped) spawn with an absolute, fully-resolved argv[0] and no shell."""
+    from types import SimpleNamespace
+
+    import nltk.pathsec as ps
+
+    reppdir = _make_repp_dir(pathlib.Path(_staging()) / "repp")
+    os.chmod(reppdir / "src" / "repp", 0o755)
+
+    calls = []
+
+    class _FakeProc:
+        returncode = 0
+
+        def communicate(self, *a, **k):
+            return b"", b""
+
+    def _fake_popen(cmd, *a, **k):
+        calls.append(
+            SimpleNamespace(
+                argv=list(cmd),
+                shell=k.get("shell", False),
+                executable=k.get("executable"),
+            )
+        )
+        return _FakeProc()
+
+    monkeypatch.setattr(ps.subprocess, "Popen", _fake_popen)
+    ReppTokenizer._execute(_repp_cmd(reppdir))
+    assert len(calls) == 1
+    assert calls[0].shell is False
+    assert os.path.isabs(calls[0].argv[0])
+    assert calls[0].argv[0] == os.path.realpath(str(reppdir / "src" / "repp"))

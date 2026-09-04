@@ -17,6 +17,7 @@ import tempfile
 from nltk import redos
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import find_dir
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.tokenize.api import TokenizerI
 
 
@@ -118,7 +119,19 @@ class ReppTokenizer(TokenizerI):
 
     @staticmethod
     def _execute(cmd):
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Route the REPP binary through the trusted-exec chokepoint: verify it is
+        # on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        try:
+            p = spawn_trusted(
+                cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run the REPP tokenizer {cmd[0]!r}: it is not on a "
+                "trusted path. Install REPP where only you (or root) can write "
+                f"({e})."
+            ) from e
         stdout, stderr = p.communicate()
         return stdout
 
