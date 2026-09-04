@@ -341,12 +341,16 @@ def test_secure_absolute_install_reaches_spawn(tmp_path, monkeypatch, _senna_pop
     assert os.path.isabs(_senna_popen_spy[0].argv[0])
 
 
-@pytest.mark.parametrize("bad_token", ["a\nb", "a\rb", "a\r\nb", "line1\nline2"])
+@pytest.mark.parametrize(
+    "bad_token",
+    ["a\nb", "a\rb", "a\r\nb", "line1\nline2", "a\x00b", "a\x0bb", "a\x1fb"],
+)
 def test_token_with_newline_is_refused(
     tmp_path, monkeypatch, _senna_popen_spy, bad_token
 ):
-    """A CR/LF in a token would add an input line and break senna's 1:1
-    sentence->output mapping (CWE-93); it must raise before spawning."""
+    """A CR/LF/NUL or other control char in a token would add an input line, break
+    senna's 1:1 sentence->output mapping, or truncate the token (CWE-93); it must
+    raise before spawning."""
     senna, _ = _make_abs_senna(tmp_path, monkeypatch)
     with pytest.raises(ValueError):
         senna.tag_sents([[bad_token, "ok"]])

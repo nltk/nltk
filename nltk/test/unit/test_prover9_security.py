@@ -40,6 +40,8 @@ read = Expression.fromstring
         "formulasize(y)",  # 'formulas' is only a prefix here
         "clauses_of(x)",  # 'clauses' is only a prefix here
         "p(x)\tq(y)",  # a tab is ordinary whitespace, not a line break
+        "(a = b)",  # equality is legitimate Prover9 syntax
+        "all x exists y (loves(x,y) & -hates(y,x))",  # connectives, quantifiers
     ],
 )
 def test_genuine_formulas_pass(formula):
@@ -64,6 +66,10 @@ def test_genuine_formulas_pass(formula):
         "p(x)\x7fq",  # DEL (control)
         "  end_of_list",  # leading whitespace does not launder it
         "\tformulas(goals)",  # leading tab does not launder a list opener
+        "p(a) % x",  # '%' comments out the appended period, merging formulas
+        "p(a)%end_of_list",  # comment char plus a directive
+        "p(a) # answer(evil)",  # '#' injects a Prover9 answer/label attribute
+        "p(a)#label(spoof)",  # '#' label char
     ],
 )
 def test_injection_formulas_refused(formula):

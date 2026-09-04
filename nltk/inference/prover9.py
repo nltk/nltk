@@ -233,10 +233,10 @@ class Prover9Parent:
         return (stdout.decode("utf-8"), p.returncode)
 
 
-# A converted formula is one Prover9 term; it may not carry a control char or a
-# bare period, or lead with a list keyword, or it could break out of the enclosing
-# formulas(...) list (CVE-2026-14709). prover9_input appends the period itself.
-_PROVER9_INJECTION_RE = redos.compile(r"[.\x00-\x08\x0a-\x1f\x7f]")
+# A converted formula is one Prover9 term; it may not carry a control char, a bare
+# period, a '%' comment or '#' label char, or lead with a list keyword, or it could
+# break out of the enclosing formulas(...) list (CVE-2026-14709).
+_PROVER9_INJECTION_RE = redos.compile(r"[.#%\x00-\x08\x0a-\x1f\x7f]")
 _PROVER9_LIST_KEYWORD_RE = redos.compile(r"^\s*(?:end_of_list|formulas|clauses)\b")
 
 
@@ -244,10 +244,13 @@ def _assert_prover9_safe(formula):
     """Return *formula* unchanged if it is safe to interpolate into Prover9 input,
     else raise ValueError.
 
-    A term from _convert_to_prover9 is connectives and identifier atoms, so a
-    control character (which would split the input into extra lines or embed a NUL)
-    or a leading list keyword (end_of_list/formulas/clauses) could close the
-    formulas(...) list and inject directives such as ``end_of_list.``.
+    A term from _convert_to_prover9 is connectives and identifier atoms, so none of
+    these belongs in one, and each can subvert the ``    <formula>.`` line the
+    caller builds: a control character splits the input into extra lines or embeds
+    a NUL; a bare period, or a '%' that comments out the period the caller appends,
+    merges or terminates the term early; a '#' injects a Prover9 label/answer; and
+    a leading list keyword (end_of_list/formulas/clauses) closes the
+    ``formulas(...)`` list and injects directives such as ``end_of_list.``.
     Expression.fromstring only yields identifier atoms, so this rejects only
     maliciously hand-built Expressions (CVE-2026-14709).
     """

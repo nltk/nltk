@@ -152,14 +152,14 @@ class Senna(TaggerI):
         _args.extend(["-" + op for op in self.operations])
 
         # A CR/LF in a token adds an input line and breaks the 1:1 sentence->output
-        # mapping senna relies on, smuggling a spurious sentence or corrupting the
-        # alignment (CWE-93). Reject it, as the tokenizer/repp guards do.
+        # mapping (CWE-93); a NUL truncates the token in senna's C string layer.
+        # Reject any control character, as the tokenizer/repp guards do.
         for sentence in sentences:
             for token in sentence:
-                if "\n" in token or "\r" in token:
+                if any(ord(ch) < 0x20 and ch != "\t" for ch in token):
                     raise ValueError(
-                        "Senna input tokens must not contain newline or carriage "
-                        "return characters (CWE-93)."
+                        "Senna input tokens must not contain newline, carriage "
+                        "return, NUL or other control characters (CWE-93)."
                     )
 
         # Serialize the actual sentences to a temporary string
