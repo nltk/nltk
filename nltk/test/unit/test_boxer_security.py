@@ -182,3 +182,67 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
         assert captured["contents"] == "ccg(1, t)."
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+# --- candc structured-input injection guard (integrated from #3850) ------------
+# ``Boxer._call_candc`` builds a line-oriented candc input where ``<META>'id'``
+# marks a discourse boundary. A control character or quote in a discourse id, or
+# an input line that itself starts with ``<META>``, would inject or misroute those
+# boundaries. The guard runs BEFORE the spawn.
+
+
+def _candc_boxer(spy):
+    boxer = Boxer.__new__(Boxer)
+    boxer._candc_models_path = "/models"
+    boxer._candc_bin = "/nonexistent/candc"  # never reached for a refused input
+    boxer._call = spy
+    return boxer
+
+
+@pytest.mark.parametrize(
+    "discourse_id",
+    ["a\nb", "a\rb", "a\x00b", "id'quote", 'id"dquote', "a\x0bb", "tab\tid"],
+)
+def test_candc_rejects_hostile_discourse_id(discourse_id):
+    called = []
+    boxer = _candc_boxer(lambda *a, **k: called.append(a) or ("", 0))
+    with pytest.raises(ValueError):
+        boxer._call_candc([["hello"]], [discourse_id], question=False)
+    assert called == [], "a hostile discourse id reached the candc spawn"
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "line\nwith newline",
+        "line\rwith cr",
+        "line\x00nul",
+        "ctrl\x0bchar",
+        "<META>'injected-boundary'",  # a line masquerading as a discourse marker
+    ],
+)
+def test_candc_rejects_hostile_input_line(line):
+    called = []
+    boxer = _candc_boxer(lambda *a, **k: called.append(a) or ("", 0))
+    with pytest.raises(ValueError):
+        boxer._call_candc([["ok first line", line]], ["0"], question=False)
+    assert called == [], "a hostile candc input line reached the spawn"
+
+
+def test_candc_benign_input_reaches_call_with_meta_boundary():
+    """Benign control: a normal discourse reaches the (trapped) spawn, with the
+    ``<META>'id'`` boundary and the input lines present and unmodified."""
+    captured = {}
+
+    def spy(input_str, binary, args, verbose):
+        captured["input"] = input_str
+        return ""
+
+    boxer = _candc_boxer(spy)
+    boxer._call_candc([["hello world", "second line"]], ["disc1"], question=False)
+    assert "<META>'disc1'" in captured["input"]
+    assert "hello world" in captured["input"]
+    assert "second line" in captured["input"]
+    # A tab is ordinary whitespace, allowed inside an input line.
+    boxer._call_candc([["a\ttabbed\tline"]], ["0"], question=False)
+    assert "a\ttabbed\tline" in captured["input"]

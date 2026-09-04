@@ -59,8 +59,8 @@ a refusal as a clear error naming the untrusted path.
 | REPP | `tokenize/repp.py` | `_execute` | 1,2,3,4 | Scratch input already staged via `make_staging_dir` |
 | TADM | `classify/tadm.py` | `call_tadm` | 1,2,3,4 | |
 | MEGAM | `classify/megam.py` | `call_megam` | 1,2,3,4 | Low-level escape hatch; args pass through as literal argv (5 is the caller's) |
-| Prover9 / Mace | `inference/prover9.py` | `Prover9Parent._call` | 1,2,3,4 | Shared `_call` covers both provers |
-| Boxer / C&C | `sem/boxer.py` | `Boxer._call` | 1,2,3,4 | |
+| Prover9 / Mace | `inference/prover9.py` | `Prover9Parent._call` + `prover9_input` | 1,2,3,4,6 | Shared `_call` covers both provers; `_assert_prover9_safe` rejects a formula that could inject list directives (CVE-2026-14709) |
+| Boxer / C&C | `sem/boxer.py` | `Boxer._call` + `_call_candc` | 1,2,3,4,6 | `_call_candc` rejects a control character/quote in a discourse id or a `<META>`-leading input line; scratch write goes through `pathsec.open` |
 | Graphviz `dot` | `translate/api.py` | `AlignedSent._repr_svg_` | 1,2,3,4 | Strict policy refuses a Homebrew-`/usr/local/bin` `dot`; see trust policy |
 | HunPos | `tag/hunpos.py` | `HunposTagger.__init__` | 1,2,3,4,5 | `validate_tool_path` bounds the model argument (5); `spawn_trusted` adds 2,3,4 |
 | Stanford / Malt / CoreNLP / Weka | `parse/*`, `tag/stanford.py`, `classify/weka.py` | via `internals.java` | 1,3,4,5 | JVM tools: `find_binary` locates `java`, `_java_child_env` scrubs the environment, `validate_model_resource`/`validate_tool_path` bound the jar/model. Exec-trust (2) of the `java` binary itself is not yet routed through `resolve_trusted_executable` |
