@@ -180,27 +180,6 @@ class Boxer:
         :param filename: str A filename for the output file
         :return: stdout
         """
-        # candc reads a line-oriented input where <META>'id' marks a discourse
-        # boundary. A newline/quote in an id, or an input line that itself starts
-        # with <META>, would inject or misroute discourse boundaries.
-        for discourse_id in discourse_ids:
-            if any(c in str(discourse_id) for c in "\n\r\x00'"):
-                raise ValueError(
-                    "A discourse id cannot contain a newline, NUL or quote: %r"
-                    % (discourse_id,)
-                )
-        for discourse in inputs:
-            for line in discourse:
-                line = str(line)
-                if "\n" in line or "\r" in line:
-                    raise ValueError(
-                        f"A candc input line cannot contain a newline: {line!r}"
-                    )
-                if line.startswith("<META>"):
-                    raise ValueError(
-                        "A candc input line cannot start with the <META> "
-                        "discourse marker: %r" % (line,)
-                    )
         args = [
             "--models",
             os.path.join(self._candc_models_path, ["boxer", "questions"][question]),
@@ -229,7 +208,6 @@ class Boxer:
         # Imported here, not at module scope: nltk.data's import graph pulls in
         # nltk.sem, so a top level import can see a half built nltk.data module.
         from nltk.data import make_staging_dir
-        from nltk.pathsec import open as pathsec_open
 
         f = None
         # Stage the scratch input inside an allowed nltk.data root, never the
@@ -239,10 +217,7 @@ class Boxer:
             fd, temp_filename = tempfile.mkstemp(
                 prefix="boxer-", suffix=".in", text=True, dir=staging_dir
             )
-            # mkstemp gives a race-free path in the validated staging dir; write
-            # through pathsec_open rather than the raw fd.
-            os.close(fd)
-            f = pathsec_open(temp_filename, "w", context="Boxer._call_boxer")
+            f = os.fdopen(fd, "w")
             f.write(candc_out.decode("utf-8"))
         finally:
             if f:

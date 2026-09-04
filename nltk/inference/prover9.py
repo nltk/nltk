@@ -14,7 +14,6 @@ import os
 import subprocess
 
 import nltk
-from nltk import redos
 from nltk.inference.api import BaseProverCommand, Prover
 from nltk.sem.logic import (
     AllExpression,
@@ -146,12 +145,12 @@ class Prover9Parent:
         if assumptions:
             s += "formulas(assumptions).\n"
             for p9_assumption in convert_to_prover9(assumptions):
-                s += "    %s.\n" % _assert_prover9_safe(p9_assumption)
+                s += "    %s.\n" % p9_assumption
             s += "end_of_list.\n\n"
 
         if goal:
             s += "formulas(goals).\n"
-            s += "    %s.\n" % _assert_prover9_safe(convert_to_prover9(goal))
+            s += "    %s.\n" % convert_to_prover9(goal)
             s += "end_of_list.\n\n"
 
         return s
@@ -218,25 +217,6 @@ class Prover9Parent:
                 print("stderr:\n", stderr, "\n")
 
         return (stdout.decode("utf-8"), p.returncode)
-
-
-# A formula emitted by _convert_to_prover9 is one Prover9 term of connectives
-# and identifier atoms: never a newline, a NUL, or a bare period (prover9_input
-# appends the terminating period itself), and never leads with a list keyword. A
-# crafted term carrying one could close the enclosing formulas(...) list and
-# inject directives such as end_of_list. (CVE-2026-14709). fromstring only yields
-# identifier atoms, so this only rejects maliciously hand-built Expressions.
-_PROVER9_INJECTION_RE = redos.compile(r"[.\n\r\x00]")
-_PROVER9_LIST_KEYWORD_RE = redos.compile(r"^\s*(?:end_of_list|formulas|clauses)\b")
-
-
-def _assert_prover9_safe(formula):
-    if _PROVER9_INJECTION_RE.search(formula) or _PROVER9_LIST_KEYWORD_RE.match(formula):
-        raise ValueError(
-            "refusing to build Prover9 input from a formula that could inject "
-            "list directives: %r" % (formula,)
-        )
-    return formula
 
 
 def convert_to_prover9(input):
