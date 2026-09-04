@@ -22,7 +22,7 @@ from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
 from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_path, validate_tool_path
 from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
@@ -107,6 +107,10 @@ def _check_weka_version(jar):
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
+        # Bound the caller-controlled model path to the pathsec data roots before
+        # it reaches the weka JVM as a -l read target, closing the model-artifact
+        # containment gap weka.py was left out of (GHSA-j456-xh4h-cpf2).
+        validate_tool_path(model_filename, context="WekaClassifier", must_exist=False)
         self._model = model_filename
 
     def prob_classify_many(self, featuresets):
@@ -116,6 +120,12 @@ class WekaClassifier(ClassifierI):
         return self._classify_many(featuresets, ["-p", "0"])
 
     def _classify_many(self, featuresets, options):
+        # Re-bound the model path in case _model was reassigned after construction;
+        # weka reads it via -l (GHSA-j456-xh4h-cpf2). Containment, not existence, is
+        # the security property, so must_exist stays False.
+        validate_tool_path(
+            self._model, context="WekaClassifier._classify_many", must_exist=False
+        )
         # Make sure we can find java & weka.
         config_weka()
 
@@ -233,6 +243,15 @@ class WekaClassifier(ClassifierI):
         options=[],
         quiet=True,
     ):
+        # Bound the caller-controlled model path before weka writes to it via -d
+        # (GHSA-j456-xh4h-cpf2); it need not exist yet, and validating before any
+        # weka lookup refuses an out-of-root path early.
+        validate_tool_path(
+            model_filename,
+            context="WekaClassifier.train",
+            for_write=True,
+            must_exist=False,
+        )
         # Make sure we can find java & weka.
         config_weka()
 
