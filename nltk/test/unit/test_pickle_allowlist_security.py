@@ -1473,7 +1473,7 @@ def test_data_load_restricted_pickle_roundtrips_real_asset(tmp_path, monkeypatch
     assert loaded == staged_value, "staged real .pickle failed to load via data.load"
 
 
-def test_all_nltk_data_pickle_assets_load():
+def test_all_nltk_data_pickle_assets_load(tmp_path_factory):
     """Real-asset regression: EVERY ``*.pickle`` present in the installed nltk_data
     must still load through ``nltk.data.load`` after the picklesec hardening (class-
     bearing artifacts like punkt / perceptron / maxent via the pickle-free redirect;
@@ -1486,7 +1486,20 @@ def test_all_nltk_data_pickle_assets_load():
 
     import nltk
 
-    roots = [p for p in nltk.data.path if os.path.isdir(p)]
+    # conftest.py registers pytest's session basetemp as an nltk.data.path root so
+    # staging tests can write inside the pathsec sandbox. That base holds ephemeral
+    # scratch from other tests (symlinks, deliberately unloadable pickles), never
+    # real nltk_data assets, so exclude it and anything under it: this scanner
+    # validates installed assets, not per-test tmp files (a filename-based skip
+    # would be bypassed by any other extension, so exclude by location).
+    basetemp = os.path.realpath(str(tmp_path_factory.getbasetemp()))
+    roots = [
+        p
+        for p in nltk.data.path
+        if os.path.isdir(p)
+        and os.path.realpath(p) != basetemp
+        and not os.path.realpath(p).startswith(basetemp + os.sep)
+    ]
     files = []
     for root in roots:
         files += glob.glob(os.path.join(root, "**", "*.pickle"), recursive=True)
