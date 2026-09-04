@@ -369,9 +369,11 @@ class ARFF_Formatter:
         # Relation name
         s += "@RELATION rel\n\n"
 
-        # Input attribute specifications
+        # Input attribute specifications. fname is repr'd (a control char in it is
+        # escaped), but ftype is interpolated raw, so a newline in a caller-supplied
+        # type would inject a new @ATTRIBUTE/@DATA line (CWE-1236); refuse it.
         for fname, ftype in self._features:
-            s += "@ATTRIBUTE %-30r %s\n" % (fname, ftype)
+            s += "@ATTRIBUTE %-30r %s\n" % (fname, self._check_arff_ftype(ftype))
 
         # Label attribute specification – labels are already sanitized.
         # Wrap each label in single quotes and join with commas.
@@ -419,6 +421,23 @@ class ARFF_Formatter:
             return "%r" % fval
         else:
             return "%r" % fval
+
+    @staticmethod
+    def _check_arff_ftype(ftype):
+        """Refuse an ARFF attribute type carrying a control character.
+
+        ``from_train`` only ever emits the fixed enum (NUMERIC / STRING /
+        ``{True, False}``), but a caller may build an ``ARFF_Formatter`` directly;
+        a newline or other C0 control in the type would break out of the
+        ``@ATTRIBUTE`` line and inject a new attribute or ``@DATA`` section
+        (CWE-1236). Any legitimate ARFF type is control-character free.
+        """
+        text = str(ftype)
+        if any(ord(ch) < 0x20 for ch in text):
+            raise ValueError(
+                f"ARFF attribute type must not contain control characters: {ftype!r}"
+            )
+        return text
 
     @staticmethod
     def _sanitize_arff_label(label):
