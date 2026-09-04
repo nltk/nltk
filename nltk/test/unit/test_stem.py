@@ -40,6 +40,29 @@ class SnowballTest(unittest.TestCase):
         stemmer_russian = SnowballStemmer("russian")
         assert stemmer_russian.stem("авантненькая") == "авантненьк"
 
+        # Step 4 only applies inside RV, so a word with no vowel keeps its
+        # soft sign and a superlative that starts before RV is kept.
+        assert stemmer_russian.stem("ль") == "ль"
+        assert stemmer_russian.stem("сь") == "сь"
+        assert stemmer_russian.stem("злейший") == "злейш"
+
+        # ъ transliterates to "''", which must not be read as a soft sign.
+        assert stemmer_russian.stem("объем") == "объ"
+        assert stemmer_russian.stem("подъем") == "подъ"
+
+        # The same holds at the end of a word, where the two signs are easiest
+        # to confuse: Step 4 removes ь but never ъ. This is also what keeps the
+        # stemmer from corrupting Cyrillic text in which ъ is a vowel rather
+        # than a hard sign, such as Bulgarian.
+        assert stemmer_russian.stem("съ") == "съ"
+        assert stemmer_russian.stem("градъ") == "градъ"
+        assert stemmer_russian.stem("воинъ") == "воинъ"
+
+        # A suffix must not match across the transliteration of one letter:
+        # ю is "i^u", so "ует" must not match the tail of "юет".
+        assert stemmer_russian.stem("воюет") == "воюет"
+        assert stemmer_russian.stem("горюй") == "горю"
+
     def test_german(self):
         stemmer_german = SnowballStemmer("german")
         stemmer_german2 = SnowballStemmer("german", ignore_stopwords=True)
