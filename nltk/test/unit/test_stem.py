@@ -50,6 +50,14 @@ class SnowballTest(unittest.TestCase):
         assert stemmer_russian.stem("объем") == "объ"
         assert stemmer_russian.stem("подъем") == "подъ"
 
+        # The same holds at the end of a word, where the two signs are easiest
+        # to confuse: Step 4 removes ь but never ъ. This is also what keeps the
+        # stemmer from corrupting Cyrillic text in which ъ is a vowel rather
+        # than a hard sign, such as Bulgarian.
+        assert stemmer_russian.stem("съ") == "съ"
+        assert stemmer_russian.stem("градъ") == "градъ"
+        assert stemmer_russian.stem("воинъ") == "воинъ"
+
         # A suffix must not match across the transliteration of one letter:
         # ю is "i^u", so "ует" must not match the tail of "юет".
         assert stemmer_russian.stem("воюет") == "воюет"
