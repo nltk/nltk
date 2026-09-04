@@ -128,7 +128,7 @@ def test_tweetwriter_refuses_symlinked_output(tmp_path, sensitive):
 def test_chartcomparer_load_refuses_symlinked_source(tmp_path, sensitive):
     from nltk.app.chartparser_app import ChartComparer
 
-    link = tmp_path / "chart.pkl"
+    link = tmp_path / "chart.pickle"
     link.symlink_to(sensitive)
     comparer = object.__new__(ChartComparer)
     with pytest.raises(PermissionError):
@@ -141,7 +141,7 @@ def test_chartparserapp_save_refuses_symlinked_destination(
 ):
     import nltk.app.chartparser_app as cpa
 
-    link = tmp_path / "chart.pkl"
+    link = tmp_path / "chart.pickle"
     link.symlink_to(sensitive)
     monkeypatch.setattr(cpa, "asksaveasfilename", lambda *a, **k: str(link))
     app = object.__new__(cpa.ChartParserApp)
@@ -161,7 +161,7 @@ def test_real_chart_pickle_roundtrips_through_pathsec(tmp_path):
     from nltk.picklesec import pickle_dump
 
     chart = ChartParser(CFG.fromstring("S -> 'a'")).chart_parse(["a"])
-    path = tmp_path / "chart.pkl"
+    path = tmp_path / "chart.pickle"
     with pathsec_open(str(path), "wb", context="test") as handle:
         pickle_dump(chart, handle)
     with pathsec_open(str(path), "rb", context="test") as handle:
