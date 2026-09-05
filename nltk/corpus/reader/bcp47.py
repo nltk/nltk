@@ -9,6 +9,7 @@ from warnings import warn
 
 from nltk import redos
 from nltk.corpus.reader import CorpusReader
+from nltk.termsec import sanitize_terminal
 from nltk.xmlsec import parse as safe_parse
 
 
@@ -170,7 +171,7 @@ class BCP47CorpusReader(CorpusReader):
                         lang[label] = self.val2str(
                             self.db["deprecated"][label][subtag]["Description"]
                         )
-                        warn(note)
+                        warn(sanitize_terminal(note))
                         break
             if not found:
                 if subtag == "u" and subtags[0] == "sd":  # CLDR regional subdivisions
@@ -183,7 +184,7 @@ class BCP47CorpusReader(CorpusReader):
                     ext = f"{subtag}{''.join(['-'+ext for ext in subtags])}".lower()
                     if not self.format["singleton"].fullmatch(subtag):
                         ext = f"<Invalid extension: {ext}>"
-                        warn(ext)
+                        warn(sanitize_terminal(ext))
                 lang["extension"] = ext
                 subtags = []
         return lang
@@ -209,7 +210,7 @@ class BCP47CorpusReader(CorpusReader):
                     prefer = self.db["deprecated"][label][tag]["Preferred-Value"]
                     note += f", prefer {self.val2str(prefer)!r}"
             if val:
-                warn(note)
+                warn(sanitize_terminal(note))
                 return val
         try:
             return self.lang2str(self.parse_tag(tag))

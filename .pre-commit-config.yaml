@@ -61,6 +61,42 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: no-bare-execution
+      name: no bare eval/exec/compile of a code string
+      description: >-
+        eval/exec/compile turn a string into running code, so interpolating any
+        untrusted fragment is a code-injection primitive (CWE-94/CWE-95). Fails
+        on any bare builtin eval/exec/compile that is not annotated with a
+        reviewed `# bare-exec ok: <reason>` (the only such use is the fenced
+        decorators wrapper eval, CVE-2026-14727).
+      entry: python tools/check_no_bare_execution.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: no-unsafe-print
+      name: no unescaped untrusted print in sandbox-sensitive modules
+      description: >-
+        Modules that echo externally sourced text (a downloaded index id/name, a
+        tweet body, a server error) must neutralise terminal control sequences
+        first (CWE-150). Fails on a print() of un-escaped data in the guarded
+        modules; route it through nltk.termsec.sanitize_terminal, use !r, or
+        annotate a reviewed `# unsafe-print ok: <reason>`.
+      entry: python tools/check_no_unsafe_print.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: no-unsafe-csv-write
+      name: no untrusted data written to a CSV cell raw
+      description: >-
+        A CSV opened in a spreadsheet runs a cell that starts with = + - @ as a
+        formula (CWE-1236), and displayed in a terminal it fires embedded control
+        sequences (CWE-150). Modules that export externally sourced rows (tweets)
+        must route every cell through nltk.termsec.sanitize_csv_field. Fails on a
+        writerow/writerows of un-sanitised data in the guarded modules.
+      entry: python tools/check_no_unsafe_csv_write.py
+      language: system
+      pass_filenames: false
+      always_run: true
     - id: all-json-through-jsontags
       name: every JSON deserialization routes through nltk.jsontags
       description: >-

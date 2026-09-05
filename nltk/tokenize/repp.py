@@ -87,9 +87,14 @@ class ReppTokenizer(TokenizerI):
             with tempfile.NamedTemporaryFile(
                 prefix="repp_input.", dir=staging_dir, mode="w", delete=False
             ) as input_file:
-                # Write sentences to temporary input file.
+                # Write sentences to temporary input file. A newline in a sentence
+                # would add a line and break the 1:1 input->output section mapping
+                # that parse_repp_outputs relies on (CWE-93).
                 for sent in sentences:
-                    input_file.write(str(sent) + "\n")
+                    sent = str(sent)
+                    if "\n" in sent or "\r" in sent:
+                        raise ValueError("Sentences cannot contain newline characters.")
+                    input_file.write(sent + "\n")
                 input_file.close()
                 # Generate command to run REPP.
                 cmd = self.generate_repp_command(input_file.name)

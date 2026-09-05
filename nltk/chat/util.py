@@ -12,6 +12,7 @@ import random
 import re
 
 from nltk import redos
+from nltk.termsec import sanitize_terminal
 
 reflections = {
     "i am": "you are",
@@ -124,8 +125,8 @@ class Chat:
             try:
                 user_input = input(">")
             except EOFError:
-                print(user_input)
+                print(sanitize_terminal(user_input))
             if user_input:
                 while user_input[-1] in "!.":
                     user_input = user_input[:-1]
-                print(self.respond(user_input))
+                print(sanitize_terminal(self.respond(user_input)))

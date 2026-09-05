@@ -180,6 +180,7 @@ from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
+from nltk.termsec import sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
 
@@ -588,10 +589,14 @@ class Downloader:
         lines = 0  # for more_prompt
         if download_dir is None:
             download_dir = self._download_dir
-            print("Using default data directory (%s)" % download_dir)
+            print(
+                "Using default data directory (%s)" % download_dir
+            )  # unsafe-print ok: operator-configured local path
         if header:
             print("=" * (26 + len(self._url)))
-            print(" Data server index for <%s>" % self._url)
+            print(
+                " Data server index for <%s>" % self._url
+            )  # unsafe-print ok: operator-configured server URL
             print("=" * (26 + len(self._url)))
             lines += 3  # for more_prompt
         stale = partial = False
@@ -602,7 +607,7 @@ class Downloader:
         if show_collections:
             categories.append("collections")
         for category in categories:
-            print("%s:" % category.capitalize())
+            print(sanitize_terminal("%s:" % category.capitalize()))
             lines += 1  # for more_prompt
             for info in sorted(getattr(self, category)(), key=str):
                 status = self.status(info, download_dir)
@@ -621,7 +626,14 @@ class Downloader:
                 name = textwrap.fill(
                     "-" * 27 + (info.name or info.id), 75, subsequent_indent=27 * " "
                 )[27:]
-                print("  [{}] {} {}".format(prefix, info.id.ljust(20, "."), name))
+                # info.id and name are server-supplied; sanitize before display.
+                print(  # unsafe-print ok: id/name sanitized below; prefix is a fixed marker
+                    "  [{}] {} {}".format(
+                        prefix,
+                        sanitize_terminal(info.id).ljust(20, "."),
+                        sanitize_terminal(name),
+                    )
+                )
                 lines += len(name.split("\n"))  # for more_prompt
                 if more_prompt and lines > 20:
                     user_input = input("Hit Enter to continue: ")
@@ -634,7 +646,9 @@ class Downloader:
             msg += "; [-] marks out-of-date or corrupt packages"
         if partial:
             msg += "; [P] marks partially installed collections"
-        print(textwrap.fill(msg + ")", subsequent_indent=" ", width=76))
+        print(
+            textwrap.fill(msg + ")", subsequent_indent=" ", width=76)
+        )  # unsafe-print ok: msg is built from literals only
 
     def packages(self):
         self._update_index()
@@ -948,9 +962,20 @@ class Downloader:
                         required_root=download_dir,
                     ) as outfile:
                         num_blocks = max(1, info.size / (1024 * 16))
+                        # Bound the response body. A hostile or broken server
+                        # must not stream past the manifest-declared size and
+                        # exhaust the disk before the post-download integrity
+                        # check runs (CWE-400). We stop once the body exceeds the
+                        # declared size by a small slack, leaving the temp file
+                        # oversized so the size check below rejects and cleans up.
+                        max_download_bytes = int(info.size) + 1024 * 1024
+                        bytes_read = 0
                         for block in itertools.count():
                             s = infile.read(1024 * 16)
                             if not s:
+                                break
+                            bytes_read += len(s)
+                            if bytes_read > max_download_bytes:
                                 break
                             outfile.write(s)
                             if block % 2 == 0:
@@ -1082,9 +1107,12 @@ class Downloader:
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
+                # s may embed server-supplied names (package id / filename /
+                # collection id) or a server error message; neutralise any
+                # terminal control sequences before writing to the terminal.
                 print_to(
                     textwrap.fill(
-                        s,
+                        sanitize_terminal(s),
                         initial_indent=prefix + prefix2,
                         subsequent_indent=prefix + prefix2 + " " * 4,
                     )
@@ -1309,7 +1337,7 @@ class Downloader:
                 else:
                     print(
                         "removing collection member with no package: {}".format(
-                            child_id
+                            sanitize_terminal(child_id)  # server-supplied ref
                         )
                     )
                     del collection.children[i]
@@ -1475,7 +1503,9 @@ class DownloaderShell:
     def _simple_interactive_menu(self, *options):
         print("-" * 75)
         spc = (68 - sum(len(o) for o in options)) // (len(options) - 1) * " "
-        print("    " + spc.join(options))
+        print(
+            "    " + spc.join(options)
+        )  # unsafe-print ok: options are static menu labels
         print("-" * 75)
 
     def run(self):
@@ -1512,9 +1542,9 @@ class DownloaderShell:
                 else:
                     print("Command %r unrecognized" % user_input)
             except HTTPError as e:
-                print("Error reading from server: %s" % e)
+                print(sanitize_terminal("Error reading from server: %s" % e))
             except URLError as e:
-                print("Error connecting to server: %s" % e.reason)
+                print(sanitize_terminal("Error connecting to server: %s" % e.reason))
             # try checking if user_input is a package name, &
             # downloading it?
             print()
@@ -1525,7 +1555,7 @@ class DownloaderShell:
                 try:
                     self._ds.download(arg, prefix="    ")
                 except (OSError, ValueError) as e:
-                    print(e)
+                    print(sanitize_terminal(e))
         else:
             while True:
                 print()
@@ -1546,7 +1576,7 @@ class DownloaderShell:
                         try:
                             self._ds.download(id, prefix="    ")
                         except (OSError, ValueError) as e:
-                            print(e)
+                            print(sanitize_terminal(e))
                     break
 
     def _simple_interactive_update(self):
@@ -1564,7 +1594,12 @@ class DownloaderShell:
                     name = textwrap.fill(
                         "-" * 27 + (pname), 75, subsequent_indent=27 * " "
                     )[27:]
-                    print("  [ ] {} {}".format(pid.ljust(20, "."), name))
+                    print(
+                        "  [ ] {} {}".format(
+                            sanitize_terminal(pid).ljust(20, "."),
+                            sanitize_terminal(name),
+                        )
+                    )
                 print()
 
                 user_input = input("  Identifier> ")
@@ -1573,7 +1608,7 @@ class DownloaderShell:
                         try:
                             self._ds.download(pid, prefix="    ")
                         except (OSError, ValueError) as e:
-                            print(e)
+                            print(sanitize_terminal(e))
                     break
                 elif user_input.lower() in ("x", "q", ""):
                     return
@@ -1593,12 +1628,16 @@ class DownloaderShell:
     def _show_config(self):
         print()
         print("Data Server:")
-        print("  - URL: <%s>" % self._ds.url)
+        print(
+            "  - URL: <%s>" % self._ds.url
+        )  # unsafe-print ok: operator-configured server URL
         print("  - %d Package Collections Available" % len(self._ds.collections()))
         print("  - %d Individual Packages Available" % len(self._ds.packages()))
         print()
         print("Local Machine:")
-        print("  - Data directory: %s" % self._ds.download_dir)
+        print(
+            "  - Data directory: %s" % self._ds.download_dir
+        )  # unsafe-print ok: operator-configured local path
 
     def _simple_interactive_config(self):
         self._show_config()
@@ -1628,7 +1667,7 @@ class DownloaderShell:
                     try:
                         self._ds.url = new_url
                     except Exception as e:
-                        print(f"Error reading <{new_url!r}>:\n  {e}")
+                        print(sanitize_terminal(f"Error reading <{new_url!r}>:\n  {e}"))
             elif user_input == "m":
                 break
 
@@ -2059,7 +2098,7 @@ class DownloaderGUI:
         self._show_info()
 
     def _show_info(self):
-        print("showing info", self._ds.url)
+        print("showing info", sanitize_terminal(self._ds.url))
         for entry, cb in self._info.values():
             entry["state"] = "normal"
             entry.delete(0, "end")
@@ -2704,7 +2743,9 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
     """
 
     if verbose:
-        sys.stdout.write("Unzipping %s" % os.path.split(filename)[1])
+        # The basename derives from the server-supplied package id/URL; sanitize
+        # it before it reaches the terminal (CWE-150).
+        sys.stdout.write("Unzipping %s" % sanitize_terminal(os.path.split(filename)[1]))
         sys.stdout.flush()
 
     try:
@@ -3000,8 +3041,9 @@ def _find_packages(root):
                 xmlfilename = os.path.join(dirname, resourcename + ".xml")
                 if not os.path.exists(xmlfilename):
                     warnings.warn(
-                        f"{filename} exists, but {resourcename + '.xml'} cannot be found! "
-                        f"This could mean that {resourcename} can not be downloaded.",
+                        f"{sanitize_terminal(filename)} exists, but "
+                        f"{sanitize_terminal(resourcename) + '.xml'} cannot be found! "
+                        f"This could mean that {sanitize_terminal(resourcename)} can not be downloaded.",
                         stacklevel=2,
                     )
 
