@@ -38,6 +38,7 @@ from optparse import OptionParser
 
 from nltk import redos
 from nltk.internals import find_binary_iter
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -180,6 +181,28 @@ class Boxer:
         :param filename: str A filename for the output file
         :return: stdout
         """
+        # candc reads a line-oriented input where <META>'id' marks a discourse
+        # boundary. A control character or quote in an id, or an input line that
+        # itself starts with <META>, would inject or misroute those boundaries.
+        for discourse_id in discourse_ids:
+            text = str(discourse_id)
+            if any(ord(c) < 0x20 or c in "'\"" for c in text):
+                raise ValueError(
+                    "A candc discourse id cannot contain a control character or "
+                    f"quote (it is interpolated into <META>'id'): {discourse_id!r}"
+                )
+        for discourse in inputs:
+            for line in discourse:
+                text = str(line)
+                if any(ord(c) < 0x20 and c != "\t" for c in text):
+                    raise ValueError(
+                        f"A candc input line cannot contain a control character: {line!r}"
+                    )
+                if text.startswith("<META>"):
+                    raise ValueError(
+                        "A candc input line cannot start with the <META> discourse "
+                        f"marker: {line!r}"
+                    )
         args = [
             "--models",
             os.path.join(self._candc_models_path, ["boxer", "questions"][question]),
@@ -208,6 +231,7 @@ class Boxer:
         # Imported here, not at module scope: nltk.data's import graph pulls in
         # nltk.sem, so a top level import can see a half built nltk.data module.
         from nltk.data import make_staging_dir
+        from nltk.pathsec import open as pathsec_open
 
         f = None
         # Stage the scratch input inside an allowed nltk.data root, never the
@@ -217,7 +241,10 @@ class Boxer:
             fd, temp_filename = tempfile.mkstemp(
                 prefix="boxer-", suffix=".in", text=True, dir=staging_dir
             )
-            f = os.fdopen(fd, "w")
+            # mkstemp gives a race-free path in the validated staging dir; write
+            # through pathsec_open rather than the raw fd.
+            os.close(fd)
+            f = pathsec_open(temp_filename, "w", context="Boxer._call_boxer")
             f.write(candc_out.decode("utf-8"))
         finally:
             if f:
@@ -288,20 +315,30 @@ class Boxer:
             print("Input:", input_str)
             print("Command:", binary + " " + " ".join(args))
 
-        # Call via a subprocess
-        if input_str is None:
-            cmd = [binary] + args
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-        else:
-            cmd = [binary] + args
-            p = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
+        # Route through the trusted-exec chokepoint: verify the candc/boxer binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        cmd = [binary] + args
+        try:
+            if input_str is None:
+                p = spawn_trusted(
+                    cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+                stdout, stderr = p.communicate()
+            else:
+                p = spawn_trusted(
+                    cmd[0],
+                    cmd[1:],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run {cmd[0]!r}: it is not on a trusted path. Install "
+                f"Boxer/C&C where only you (or root) can write ({e})."
+            ) from e
 
         if verbose:
             print("Return code:", p.returncode)

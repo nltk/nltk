@@ -12,10 +12,10 @@ A module for interfacing with the HunPos open-source POS-tagger.
 """
 
 import os
-from subprocess import PIPE, Popen
+from subprocess import PIPE
 
 from nltk.internals import find_binary, find_file
-from nltk.pathsec import validate_tool_path
+from nltk.pathsec import TrustError, spawn_trusted, validate_tool_path
 from nltk.tag.api import TaggerI
 
 _hunpos_url = "https://code.google.com/p/hunpos/"
@@ -97,13 +97,23 @@ class HunposTagger(TaggerI):
         # ``self._hunpos_model`` (from find_file) becomes argv to the hunpos-tag
         # subprocess pathsec.open cannot wrap; bound it before spawning (GHSA-8mgp-746c-j5xp).
         validate_tool_path(self._hunpos_model, context="HunposTagger.__init__")
-        self._hunpos = Popen(
-            [self._hunpos_bin, self._hunpos_model],
-            shell=False,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=PIPE,
-        )
+        # Route through the trusted-exec chokepoint: verify the hunpos-tag binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        try:
+            self._hunpos = spawn_trusted(
+                self._hunpos_bin,
+                [self._hunpos_model],
+                stdin=PIPE,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run the HunPos tagger {self._hunpos_bin!r}: it is "
+                "not on a trusted path. Install HunPos where only you (or root) "
+                f"can write ({e})."
+            ) from e
         self._closed = False
 
     def __del__(self):
@@ -126,15 +136,16 @@ class HunposTagger(TaggerI):
         The tokens should not contain any newline characters.
         """
         for token in tokens:
-            # Not an assert: python -O strips those, and a newline inside a token
-            # injects an extra line into the tagger's line-oriented stdin, which
-            # desynchronises every tag that follows.
-            newline = b"\n" if isinstance(token, bytes) else "\n"
-            if newline in token:
-                raise ValueError("Tokens should not contain newlines")
-            if isinstance(token, str):
-                token = token.encode(self._encoding)
-            self._hunpos.stdin.write(token + b"\n")
+            raw = token if isinstance(token, bytes) else token.encode(self._encoding)
+            # Not an assert (python -O strips those): a control char in a token
+            # injects an extra line into the tagger's line-oriented stdin or
+            # truncates the token, desynchronising every tag that follows.
+            if any(b < 0x20 and b != 0x09 for b in raw):
+                raise ValueError(
+                    "hunpos tokens must not contain newline, NUL or other control "
+                    "characters"
+                )
+            self._hunpos.stdin.write(raw + b"\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
         self._hunpos.stdin.write(b"\n")
         self._hunpos.stdin.flush()

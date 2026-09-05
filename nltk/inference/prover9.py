@@ -14,7 +14,9 @@ import os
 import subprocess
 
 import nltk
+from nltk import redos
 from nltk.inference.api import BaseProverCommand, Prover
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.sem.logic import (
     AllExpression,
     AndExpression,
@@ -145,12 +147,12 @@ class Prover9Parent:
         if assumptions:
             s += "formulas(assumptions).\n"
             for p9_assumption in convert_to_prover9(assumptions):
-                s += "    %s.\n" % p9_assumption
+                s += "    %s.\n" % _assert_prover9_safe(p9_assumption)
             s += "end_of_list.\n\n"
 
         if goal:
             s += "formulas(goals).\n"
-            s += "    %s.\n" % convert_to_prover9(goal)
+            s += "    %s.\n" % _assert_prover9_safe(convert_to_prover9(goal))
             s += "end_of_list.\n\n"
 
         return s
@@ -198,15 +200,27 @@ class Prover9Parent:
             print("Args:", args)
             print("Input:\n", input_str, "\n")
 
-        # Call prover9 via a subprocess
+        # Route through the trusted-exec chokepoint: verify the prover9/mace binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
         cmd = [binary] + args
         try:
             input_str = input_str.encode("utf8")
         except AttributeError:
             pass
-        p = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE
-        )
+        try:
+            p = spawn_trusted(
+                cmd[0],
+                cmd[1:],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.PIPE,
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run {cmd[0]!r}: it is not on a trusted path. Install "
+                f"Prover9/Mace where only you (or root) can write ({e})."
+            ) from e
         (stdout, stderr) = p.communicate(input=input_str)
 
         if verbose:
@@ -217,6 +231,47 @@ class Prover9Parent:
                 print("stderr:\n", stderr, "\n")
 
         return (stdout.decode("utf-8"), p.returncode)
+
+
+# A converted formula is one Prover9 term; it may not carry a control char, a bare
+# period, a '%' comment or '#' label char, or lead with a list keyword, or it could
+# break out of the enclosing formulas(...) list (CVE-2026-14709).
+_PROVER9_INJECTION_RE = redos.compile(r"[.#%\x00-\x08\x0a-\x1f\x7f]")
+_PROVER9_LIST_KEYWORD_RE = redos.compile(r"^\s*(?:end_of_list|formulas|clauses)\b")
+
+
+def _assert_prover9_safe(formula):
+    """Return *formula* unchanged if it is safe to interpolate into Prover9 input,
+    else raise ValueError.
+
+    A term from _convert_to_prover9 is connectives and identifier atoms, so none of
+    these belongs in one, and each can subvert the ``    <formula>.`` line the
+    caller builds: a control character splits the input into extra lines or embeds
+    a NUL; a bare period, or a '%' that comments out the period the caller appends,
+    merges or terminates the term early; a '#' injects a Prover9 label/answer; and
+    a leading list keyword (end_of_list/formulas/clauses) closes the
+    ``formulas(...)`` list and injects directives such as ``end_of_list.``.
+    Expression.fromstring only yields identifier atoms, so this rejects only
+    maliciously hand-built Expressions (CVE-2026-14709).
+    """
+    if _PROVER9_INJECTION_RE.search(formula) or _PROVER9_LIST_KEYWORD_RE.match(formula):
+        raise ValueError(
+            "refusing to build Prover9 input from a formula that could inject "
+            f"list directives: {formula!r}"
+        )
+    return formula
+
+
+def _safe_seconds(value, name="timeout"):
+    """A Prover9/Mace resource bound (assign(max_seconds, N)) must be a
+    non-negative integer: a negative or non-integer value is undefined to the
+    binary and, without the ``%d`` coercion, could inject into the input; 0 is the
+    documented "no timeout" and is the caller's own DoS choice (CWE-400)."""
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ValueError(
+            f"Prover9/Mace {name} must be a non-negative integer, got {value!r}"
+        )
+    return value
 
 
 def convert_to_prover9(input):
@@ -345,12 +400,13 @@ class Prover9(Prover9Parent, Prover):
         :return: A tuple (stdout, returncode)
         :see: ``config_prover9``
         """
+        seconds = _safe_seconds(self._timeout)
         if self._prover9_bin is None:
             self._prover9_bin = self._find_binary("prover9", verbose)
 
         updated_input_str = ""
-        if self._timeout > 0:
-            updated_input_str += "assign(max_seconds, %d).\n\n" % self._timeout
+        if seconds > 0:
+            updated_input_str += "assign(max_seconds, %d).\n\n" % seconds
         updated_input_str += input_str
 
         stdout, returncode = self._call(

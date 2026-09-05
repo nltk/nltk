@@ -97,12 +97,24 @@ def test_absolute_bin_dir_is_accepted(tmp_path, monkeypatch):
     )
 
 
-def test_boxer_call_uses_argv_list_never_shell(monkeypatch, tmp_path):
-    """``Boxer._call`` builds ``[binary] + args`` and spawns with an argv list and
-    NO shell, so a metacharacter argument reaches the process as a single literal
-    element, never a shell token. The candc/boxer binaries need not exist: Popen
-    is trapped and its argv inspected."""
-    binary = str(tmp_path / "candc")
+def test_boxer_call_uses_argv_list_never_shell(monkeypatch):
+    """``Boxer._call`` routes through ``pathsec.spawn_trusted`` and builds
+    ``[binary] + args`` as an argv list with NO shell, so a metacharacter argument
+    reaches the process as a single literal element, never a shell token. Under the
+    strict trust policy the binary must be a real file on a trusted path, so it is
+    staged under a private data root (not the shared temp, which is refused)."""
+    import nltk.data as nltk_data
+    import nltk.pathsec as ps
+
+    try:
+        base = nltk_data.make_staging_dir(prefix="boxer_test_", cleanup=True)
+    except PermissionError as exc:  # pragma: no cover - env-dependent
+        pytest.skip(f"no writable in-sandbox NLTK data root: {exc}")
+    binary = os.path.join(base, "candc")
+    with open(binary, "w") as handle:
+        handle.write("#!/bin/sh\nexit 0\n")
+    os.chmod(binary, 0o755)
+
     hostile_args = ["--models", "; touch /tmp/pwned", "$(id)", "a\nb"]
     captured = {}
 
@@ -117,13 +129,13 @@ def test_boxer_call_uses_argv_list_never_shell(monkeypatch, tmp_path):
         captured["shell"] = k.get("shell", False)
         return _FakeProc()
 
-    monkeypatch.setattr(subprocess, "Popen", _fake_popen)
+    monkeypatch.setattr(ps.subprocess, "Popen", _fake_popen)
 
     boxer = Boxer.__new__(Boxer)
     boxer._call("some stdin input", binary, args=hostile_args)
 
     assert captured["shell"] is False
-    assert captured["argv"][0] == binary
+    assert captured["argv"][0] == os.path.realpath(binary)  # resolved trusted path
     for tok in hostile_args:
         assert tok in captured["argv"]  # literal, not shell-interpreted
 
@@ -170,3 +182,66 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
         assert captured["contents"] == "ccg(1, t)."
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+# --- candc structured-input injection guard (integrated from #3850) ------------
+# ``Boxer._call_candc`` builds a line-oriented candc input where ``<META>'id'``
+# marks a discourse boundary; a control char/quote in an id or a ``<META>``-leading
+# input line would inject or misroute those boundaries (the guard runs pre-spawn).
+
+
+def _candc_boxer(spy):
+    boxer = Boxer.__new__(Boxer)
+    boxer._candc_models_path = "/models"
+    boxer._candc_bin = "/nonexistent/candc"  # never reached for a refused input
+    boxer._call = spy
+    return boxer
+
+
+@pytest.mark.parametrize(
+    "discourse_id",
+    ["a\nb", "a\rb", "a\x00b", "id'quote", 'id"dquote', "a\x0bb", "tab\tid"],
+)
+def test_candc_rejects_hostile_discourse_id(discourse_id):
+    called = []
+    boxer = _candc_boxer(lambda *a, **k: called.append(a) or ("", 0))
+    with pytest.raises(ValueError):
+        boxer._call_candc([["hello"]], [discourse_id], question=False)
+    assert called == [], "a hostile discourse id reached the candc spawn"
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "line\nwith newline",
+        "line\rwith cr",
+        "line\x00nul",
+        "ctrl\x0bchar",
+        "<META>'injected-boundary'",  # a line masquerading as a discourse marker
+    ],
+)
+def test_candc_rejects_hostile_input_line(line):
+    called = []
+    boxer = _candc_boxer(lambda *a, **k: called.append(a) or ("", 0))
+    with pytest.raises(ValueError):
+        boxer._call_candc([["ok first line", line]], ["0"], question=False)
+    assert called == [], "a hostile candc input line reached the spawn"
+
+
+def test_candc_benign_input_reaches_call_with_meta_boundary():
+    """Benign control: a normal discourse reaches the (trapped) spawn, with the
+    ``<META>'id'`` boundary and the input lines present and unmodified."""
+    captured = {}
+
+    def spy(input_str, binary, args, verbose):
+        captured["input"] = input_str
+        return ""
+
+    boxer = _candc_boxer(spy)
+    boxer._call_candc([["hello world", "second line"]], ["disc1"], question=False)
+    assert "<META>'disc1'" in captured["input"]
+    assert "hello world" in captured["input"]
+    assert "second line" in captured["input"]
+    # A tab is ordinary whitespace, allowed inside an input line.
+    boxer._call_candc([["a\ttabbed\tline"]], ["0"], question=False)
+    assert "a\ttabbed\tline" in captured["input"]

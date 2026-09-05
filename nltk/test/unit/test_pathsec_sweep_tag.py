@@ -504,31 +504,63 @@ def _drive_stanford_tag(path):
     _no_jvm(lambda: tagger.tag(["What", "is"]))
 
 
+_HUNPOS_STUB_BIN = None
+
+
+def _hunpos_stub_bin():
+    """A real, absolute, TRUSTED hunpos-tag stub, reused across driver calls.
+
+    HunposTagger now spawns via ``pathsec.spawn_trusted``, whose strict trust
+    check rejects a bare name or a /tmp path. Staged under ``$HOME`` (a private
+    chain: /home/<user> is 0755, not group/world-writable) rather than the
+    pinned data-root sandbox, which the tests place under the system temp where
+    the chain is not guaranteed private. Cached and removed at interpreter exit.
+    """
+    global _HUNPOS_STUB_BIN
+    if _HUNPOS_STUB_BIN is None:
+        import atexit
+        import shutil
+        import tempfile
+
+        base = tempfile.mkdtemp(prefix=".nltk_hunpos_drv_", dir=os.path.expanduser("~"))
+        atexit.register(shutil.rmtree, base, ignore_errors=True)
+        binpath = os.path.join(base, "hunpos-tag")
+        with open(binpath, "w") as handle:
+            handle.write("#!/bin/sh\nexit 0\n")
+        os.chmod(binpath, 0o755)
+        _HUNPOS_STUB_BIN = binpath
+    return _HUNPOS_STUB_BIN
+
+
 def _drive_hunpos_init(path):
     """Drive HunposTagger.__init__ with find_file/find_binary stubbed out.
 
     The real ``find_file`` refuses anything that does not already exist, which
     would mask the guard for most vectors; stubbing it means the guard is the
-    only thing standing between the caller's string and the subprocess argv.
-    ``Popen`` is replaced so nothing is ever spawned.
+    only thing standing between the caller's string and the subprocess argv. The
+    sink (``pathsec.subprocess.Popen``, which ``spawn_trusted`` calls) is replaced
+    so nothing is ever spawned, and ``find_binary`` returns a trusted stub so the
+    exec-trust check passes and the model path reaches the argv.
     """
+    import nltk.pathsec as pathsec_module
     import nltk.tag.hunpos as hunpos_module
 
     def _boom(cmd, *args, **kwargs):
         raise _ReachedSink(list(cmd))
 
-    saved = (hunpos_module.find_file, hunpos_module.find_binary, hunpos_module.Popen)
+    stub = _hunpos_stub_bin()
+    saved_ff = hunpos_module.find_file
+    saved_fb = hunpos_module.find_binary
+    saved_popen = pathsec_module.subprocess.Popen
     hunpos_module.find_file = lambda p, **kw: p
-    hunpos_module.find_binary = lambda *a, **kw: "hunpos-tag"
-    hunpos_module.Popen = _boom
+    hunpos_module.find_binary = lambda *a, **kw: stub
+    pathsec_module.subprocess.Popen = _boom
     try:
         hunpos_module.HunposTagger(path)
     finally:
-        (
-            hunpos_module.find_file,
-            hunpos_module.find_binary,
-            hunpos_module.Popen,
-        ) = saved
+        hunpos_module.find_file = saved_ff
+        hunpos_module.find_binary = saved_fb
+        pathsec_module.subprocess.Popen = saved_popen
 
 
 class _ReachedSink(Exception):
@@ -1311,7 +1343,9 @@ def test_hunpos_env_var_model_outside_the_sandbox_is_refused(
         raise _ReachedSink(list(cmd))
 
     monkeypatch.setenv("HUNPOS_TAGGER", str(model))
-    monkeypatch.setattr(hunpos_module, "Popen", _boom)
+    # HunposTagger spawns via pathsec.spawn_trusted; trap that sink (the model
+    # guard must refuse before it is ever reached).
+    monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _boom)
     with pytest.raises(PermissionError):
         hunpos_module.HunposTagger("en_wsj.model", path_to_bin=str(stub))
 
