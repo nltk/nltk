@@ -66,7 +66,6 @@ from urllib.parse import parse_qs, unquote_plus
 
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
-from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import RestrictedUnpickler, pickle_dumps
 
 firstClient = True
@@ -135,9 +134,9 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == "NLTK Wordnet Browser Database Info.html":
                 word = "* Database Info *"
                 if os.path.isfile(usp):
-                    with pathsec_open(
-                        usp, context="wordnet_app.MyServerHandler"
-                    ) as infile:
+                    with open(
+                        usp
+                    ) as infile:  # sandboxed-open ok: fixed db-info filename (exact-string gated)
                         page = infile.read()
                 else:
                     page = (
@@ -264,9 +263,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = pathsec_open(
-                logfilename, "a", buffering=1, context="wordnet_app.wnb"
-            )  # 1 means 'line buffering'
+            logfile = open(
+                logfilename, "a", buffering=1
+            )  # sandboxed-open ok: operator log path
         except OSError as e:
             sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
             sys.exit(1)

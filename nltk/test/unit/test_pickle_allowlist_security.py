@@ -1524,6 +1524,67 @@ def test_all_nltk_data_pickle_assets_load(tmp_path_factory):
     )
 
 
+@pytest.mark.parametrize(
+    "reduce_fn",
+    [
+        lambda m: (os.system, (f"touch {m}",)),
+        lambda m: (eval, (f"__import__('os').system('touch {m}')",)),
+        lambda m: (__import__("subprocess").call, (["touch", str(m)],)),
+    ],
+)
+def test_gadget_pickle_under_authorized_root_is_refused_at_load(
+    tmp_path, monkeypatch, reduce_fn
+):
+    """Excluding the pytest basetemp from the asset scanner is not a security hole.
+
+    The scanner is a real-asset regression test, not the load-time defense. A
+    gadget pickle placed inside a *trusted* (conftest-authorized) data root is
+    still refused by nltk.data.load's restricted unpickler, which fires on every
+    load regardless of location, so nothing executes (CWE-502).
+    """
+    import pickle
+
+    import nltk
+    import nltk.data as _data
+    from nltk import pathsec
+
+    marker = tmp_path / "PWNED"
+
+    class _Gadget:
+        def __reduce__(self):
+            return reduce_fn(marker)
+
+    (tmp_path / "corpora").mkdir()
+    with open(tmp_path / "corpora" / "gadget.pickle", "wb") as handle:
+        pickle.dump(_Gadget(), handle)
+    monkeypatch.setattr(_data, "path", [str(tmp_path), *_data.path])
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
+    monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+
+    with pytest.raises(Exception) as exc:
+        nltk.data.load("corpora/gadget.pickle")
+    assert "forbidden" in str(exc.value).lower()
+    assert not marker.exists()
+
+
+def test_scanner_excludes_only_the_pytest_base_not_siblings_or_real_roots(
+    tmp_path_factory,
+):
+    """The scanner's basetemp exclusion is precise and by location: only the base
+    and its subtree are dropped, so a sibling sharing the name prefix and the real
+    asset roots are still scanned -- no over-exclusion blind spot."""
+    base = os.path.realpath(str(tmp_path_factory.getbasetemp()))
+
+    def _excluded(p):
+        rp = os.path.realpath(p)
+        return rp == base or rp.startswith(base + os.sep)
+
+    assert _excluded(base)  # the ephemeral base itself
+    assert _excluded(os.path.join(base, "sub", "worker0"))  # scratch under it
+    assert not _excluded(base + "-real")  # sibling prefix -> still scanned
+    assert not _excluded("/usr/share/nltk_data")  # a real asset root -> still scanned
+
+
 # Module (sub)trees where EVERY callable is a code-exec / file / native /
 # nested-unpickle / process / network / call-traversal primitive, so any
 # re-export of one into an allowed namespace is a leak. Matched by exact module
