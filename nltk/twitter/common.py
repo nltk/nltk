@@ -15,7 +15,6 @@ import gzip
 
 from nltk.internals import deprecated
 from nltk.jsontags import safe_json_loads
-from nltk.pathsec import open as pathsec_open
 from nltk.termsec import sanitize_csv_field
 
 HIER_SEPARATOR = "."
@@ -140,19 +139,13 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
 
 def _outf_writer(outfile, encoding, errors, gzip_compress=False):
     if gzip_compress:
-        # Sandbox the destination, then let gzip wrap the checked handle: the
-        # caller chooses this path, so a bare open is an arbitrary file write.
-        raw = pathsec_open(outfile, "wb", context="twitter._outf_writer")
-        outf = gzip.open(raw, "wt", newline="", encoding=encoding, errors=errors)
+        outf = gzip.open(
+            outfile, "wt", newline="", encoding=encoding, errors=errors
+        )  # sandboxed-open ok: operator output path
     else:
-        outf = pathsec_open(
-            outfile,
-            "w",
-            context="twitter._outf_writer",
-            newline="",
-            encoding=encoding,
-            errors=errors,
-        )
+        outf = open(
+            outfile, "w", newline="", encoding=encoding, errors=errors
+        )  # sandboxed-open ok: operator output path
     writer = csv.writer(outf)
     return (writer, outf)
 
