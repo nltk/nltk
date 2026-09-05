@@ -27,6 +27,7 @@ loading an attacker-authored in-root model safe.
 """
 
 import os
+import zipfile
 
 import pytest
 
@@ -122,6 +123,29 @@ def test_unknown_classifier_class_is_refused(trusted_weka):
     model = os.path.join(root, "m.model")
     with pytest.raises(ValueError, match="Unknown classifier"):
         WekaClassifier.train(model, FEATS, classifier="weka.evil.RuntimeExec")
+
+
+# --- decompression bomb in the jar's version.txt (CWE-409) --------------------
+
+
+def test_weka_version_txt_decompression_bomb_is_refused():
+    """A hostile weka.jar whose ``weka/core/version.txt`` expands far past its
+    compressed size must be cut off, not read into RAM: ``_check_weka_version``
+    reads it through the pathsec ``SecureZipFile``, whose streaming reader refuses
+    the bomb mid-member (CWE-409). A legitimate small version still reads back."""
+    root = _staged_root()
+    bomb = os.path.join(root, "bomb.jar")
+    with zipfile.ZipFile(bomb, "w", zipfile.ZIP_DEFLATED) as zf:
+        # ~48 MiB of zeros compresses to ~48 KiB: past MAX_UNZIP_ACTIVATION and
+        # above MAX_UNZIP_RATIO, so the read is cut off before it exhausts memory.
+        zf.writestr("weka/core/version.txt", b"0" * (48 * 1024 * 1024))
+    with pytest.raises(ValueError, match="zip bomb"):
+        weka._check_weka_version(bomb)
+
+    good = os.path.join(root, "good.jar")
+    with zipfile.ZipFile(good, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("weka/core/version.txt", b"3.8.6")
+    assert weka._check_weka_version(good) == b"3.8.6"
 
 
 # --- ARFF structural injection (CWE-1236) -------------------------------------
