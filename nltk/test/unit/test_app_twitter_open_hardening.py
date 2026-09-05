@@ -1,14 +1,17 @@
-"""Adversarial coverage for the app / draw / twitter opens routed through
-pathsec.open.
+"""pathsec.open write-side hardening, plus the twitter writer functional path.
 
-The paths these modules open are operator-chosen (a Tk Save/Open dialog, the
-``$TWITTER`` credentials dir, a tweet-output dir), so pathsec.open does not bound
-them to the data roots. It still hardens them, and these tests pin that on the
-actual wrappers: a symlink or hardlink planted at the destination is refused at
-open time (O_NOFOLLOW / st_nlink, CWE-59), a NUL byte or a URL in the path is
-refused (CWE-22), and a freshly written file is created 0600 so a saved chart or
-credentials file is never left group/world readable (CWE-377/378). Legitimate
-operator paths keep working. POSIX only (symlink / hardlink / permission model).
+The app / draw / twitter *operator* opens (a Tk Save/Open dialog, the ``$TWITTER``
+credentials/output paths) take an operator-chosen path that legitimately lives
+outside the NLTK data roots, so they use an annotated builtin ``open`` -- NOT
+``pathsec.open`` -- because confining them would reject a normal Save/credentials
+destination. Their behaviour is pinned in ``test_operator_path_opens_regression``.
+
+These tests instead cover ``pathsec.open``'s own write-side hardening, which the
+corpus/model loaders and the twitter writer's in-root paths still rely on: a
+symlink or hardlink planted at the destination is refused (O_NOFOLLOW / st_nlink,
+CWE-59), a NUL byte or a URL is refused (CWE-22), and a new file is created 0600
+(CWE-377/378); plus a legitimate write round-trips. POSIX only for the sym/hard
+link and permission cases.
 """
 
 import os
@@ -29,9 +32,6 @@ def sensitive(tmp_path):
     target = tmp_path / "sensitive"
     target.write_text("SECRET")
     return target
-
-
-# --- the shared chokepoint every app/draw/twitter open now goes through --------
 
 
 @posix_only
@@ -84,20 +84,6 @@ def test_legit_operator_path_roundtrips(tmp_path):
         assert handle.read() == "hello"
 
 
-# --- per-wrapper attacks on the actual functions -------------------------------
-
-
-@posix_only
-def test_twitter_outf_writer_refuses_symlinked_destination(tmp_path, sensitive):
-    from nltk.twitter.common import _outf_writer
-
-    link = tmp_path / "out.csv"
-    link.symlink_to(sensitive)
-    with pytest.raises(PermissionError):
-        _outf_writer(str(link), "utf-8", "strict", gzip_compress=False)
-    assert sensitive.read_text() == "SECRET"
-
-
 def test_twitter_outf_writer_legit_path_works(tmp_path):
     from nltk.twitter.common import _outf_writer
 
@@ -106,52 +92,6 @@ def test_twitter_outf_writer_legit_path_works(tmp_path):
     writer.writerow(["a", "b"])
     handle.close()
     assert path.read_text().strip() == "a,b"
-
-
-@posix_only
-def test_tweetwriter_refuses_symlinked_output(tmp_path, sensitive):
-    pytest.importorskip("twython", reason="twython not installed")
-    from nltk.twitter.twitterclient import TweetWriter
-
-    link = tmp_path / "tweets.json"
-    link.symlink_to(sensitive)
-    writer = object.__new__(TweetWriter)
-    writer.startingup = True
-    writer.gzip_compress = False
-    writer.fname = str(link)
-    with pytest.raises(PermissionError):
-        writer.handle({"id": 1})
-    assert sensitive.read_text() == "SECRET"
-
-
-@posix_only
-def test_chartcomparer_load_refuses_symlinked_source(tmp_path, sensitive):
-    from nltk.app.chartparser_app import ChartComparer
-
-    link = tmp_path / "chart.pickle"
-    link.symlink_to(sensitive)
-    comparer = object.__new__(ChartComparer)
-    with pytest.raises(PermissionError):
-        comparer.load_chart(str(link))
-
-
-@posix_only
-def test_chartparserapp_save_refuses_symlinked_destination(
-    tmp_path, sensitive, monkeypatch
-):
-    import nltk.app.chartparser_app as cpa
-
-    link = tmp_path / "chart.pickle"
-    link.symlink_to(sensitive)
-    monkeypatch.setattr(cpa, "asksaveasfilename", lambda *a, **k: str(link))
-    app = object.__new__(cpa.ChartParserApp)
-    app._chart = "unused: the open is refused before pickling"
-    with pytest.raises(PermissionError):
-        app.save_chart()
-    assert sensitive.read_text() == "SECRET"
-
-
-# --- functional: a real chart pickle still saves and loads through pathsec -----
 
 
 def test_real_chart_pickle_roundtrips_through_pathsec(tmp_path):
