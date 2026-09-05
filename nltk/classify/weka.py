@@ -22,7 +22,7 @@ from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
 from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_path, validate_tool_path
 from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
@@ -107,6 +107,10 @@ def _check_weka_version(jar):
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
+        # Bound the caller-controlled model path to the pathsec data roots before
+        # it reaches the weka JVM as a -l read target, closing the model-artifact
+        # containment gap weka.py was left out of (GHSA-j456-xh4h-cpf2).
+        validate_tool_path(model_filename, context="WekaClassifier", must_exist=False)
         self._model = model_filename
 
     def prob_classify_many(self, featuresets):
@@ -116,6 +120,12 @@ class WekaClassifier(ClassifierI):
         return self._classify_many(featuresets, ["-p", "0"])
 
     def _classify_many(self, featuresets, options):
+        # Re-bound the model path in case _model was reassigned after construction;
+        # weka reads it via -l (GHSA-j456-xh4h-cpf2). Containment, not existence, is
+        # the security property, so must_exist stays False.
+        validate_tool_path(
+            self._model, context="WekaClassifier._classify_many", must_exist=False
+        )
         # Make sure we can find java & weka.
         config_weka()
 
@@ -233,6 +243,15 @@ class WekaClassifier(ClassifierI):
         options=[],
         quiet=True,
     ):
+        # Bound the caller-controlled model path before weka writes to it via -d
+        # (GHSA-j456-xh4h-cpf2); it need not exist yet, and validating before any
+        # weka lookup refuses an out-of-root path early.
+        validate_tool_path(
+            model_filename,
+            context="WekaClassifier.train",
+            for_write=True,
+            must_exist=False,
+        )
         # Make sure we can find java & weka.
         config_weka()
 
@@ -350,9 +369,11 @@ class ARFF_Formatter:
         # Relation name
         s += "@RELATION rel\n\n"
 
-        # Input attribute specifications
+        # Input attribute specifications. fname is repr'd (a control char in it is
+        # escaped), but ftype is interpolated raw, so a newline in a caller-supplied
+        # type would inject a new @ATTRIBUTE/@DATA line (CWE-1236); refuse it.
         for fname, ftype in self._features:
-            s += "@ATTRIBUTE %-30r %s\n" % (fname, ftype)
+            s += "@ATTRIBUTE %-30r %s\n" % (fname, self._check_arff_ftype(ftype))
 
         # Label attribute specification – labels are already sanitized.
         # Wrap each label in single quotes and join with commas.
@@ -400,6 +421,23 @@ class ARFF_Formatter:
             return "%r" % fval
         else:
             return "%r" % fval
+
+    @staticmethod
+    def _check_arff_ftype(ftype):
+        """Refuse an ARFF attribute type carrying a control character.
+
+        ``from_train`` only ever emits the fixed enum (NUMERIC / STRING /
+        ``{True, False}``), but a caller may build an ``ARFF_Formatter`` directly;
+        a newline or other C0 control in the type would break out of the
+        ``@ATTRIBUTE`` line and inject a new attribute or ``@DATA`` section
+        (CWE-1236). Any legitimate ARFF type is control-character free.
+        """
+        text = str(ftype)
+        if any(ord(ch) < 0x20 for ch in text):
+            raise ValueError(
+                f"ARFF attribute type must not contain control characters: {ftype!r}"
+            )
+        return text
 
     @staticmethod
     def _sanitize_arff_label(label):
