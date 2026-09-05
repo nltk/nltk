@@ -633,18 +633,16 @@ class TransitionParser(ParserI):
         :return: list (DependencyGraph) with the 'head' and 'rel' information
         """
         result = []
-        # First load the model. The model is a trained scikit-learn classifier,
-        # so it is loaded through an allowlisting unpickler (CWE-502): only the
-        # exact globals a fitted SVC pickle needs may be reconstructed, and
-        # anything else (e.g. os.system, or scipy.io.mmwrite) raises
-        # UnpicklingError instead of executing/writing. See
-        # nltk/picklesec.py and huntr report
+        # Load the model (a fitted scikit-learn SVC) through the allowlisting
+        # unpickler (CWE-502): only the globals that pickle needs reconstruct,
+        # anything else (os.system, scipy.io.mmwrite, ...) raises UnpicklingError.
+        # Allowlisting gates WHICH classes are built, not their STATE, so
+        # _load_transitionparser_model also wraps the numpy scalar reconstructor
+        # and walks the graph to refuse object-dtype arrays (numpy's nested
+        # unpickle sink). modelFile is caller-supplied, so the read is routed
+        # through the pathsec sandbox: an out-of-sandbox path is refused before it
+        # is opened (GHSA-8mgp-746c-j5xp). See nltk/picklesec.py and huntr
         # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
-        #
-        # ``modelFile`` is a caller-supplied path, so route the read through the
-        # pathsec sandbox too: an out-of-sandbox model path is refused before it
-        # is opened (GHSA-8mgp-746c-j5xp), and the resulting handle is still
-        # unpickled through the allowlisting unpickler.
         with pathsec_open(modelFile, "rb", context="TransitionParser.parse") as f:
             model = _load_transitionparser_model(f)
         operation = Transition(self._algorithm)
