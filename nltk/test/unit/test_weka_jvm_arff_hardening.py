@@ -186,6 +186,112 @@ def test_arff_feature_type_control_char_is_refused(bad):
         fmt.header_section()
 
 
+# --- value/name type-confusion injection (CWE-1236, defence in depth) ----------
+
+
+def _real_directives(text):
+    """The @-directive lines that are actually newline-anchored (i.e. real ARFF
+    structure), so an escaped payload sitting inside a quoted field does not
+    count as an injected directive."""
+    return [ln for ln in text.split("\n") if ln.lstrip().startswith("@")]
+
+
+def test_numeric_value_subclass_cannot_inject_via_repr_or_str():
+    """A NUMERIC-typed value that is an int/float SUBCLASS whose __str__/__repr__
+    emits ARFF directives must be formatted from its numeric value, not its text,
+    so it cannot smuggle a new @ATTRIBUTE/@DATA line."""
+
+    class EvilFloat(float):
+        def __repr__(self):
+            return "1\n@ATTRIBUTE evil NUMERIC\n@DATA\n9"
+
+    class EvilInt(int):
+        def __str__(self):
+            return "1\n@DATA\n9"
+
+        __repr__ = __str__
+
+    fmt = ARFF_Formatter(["A"], [("f", "NUMERIC")])
+    assert fmt._fmt_arff_val(EvilFloat(1.5)) == "1.5"
+    assert fmt._fmt_arff_val(EvilInt(7)) == "7"
+
+
+def test_string_value_and_feature_name_subclass_cannot_inject():
+    """A str SUBCLASS overriding __repr__, whether used as a feature value or a
+    feature NAME, is escaped through the built-in str repr, so the override cannot
+    forge a directive in the data row or the header."""
+
+    class EvilStr(str):
+        def __repr__(self):
+            return "'x'\n@ATTRIBUTE injected NUMERIC\n@DATA\n9"
+
+    fmt = ARFF_Formatter(["A"], [(EvilStr("n"), "STRING")])
+    # value in the data row
+    row = fmt.data_section([({EvilStr("n"): EvilStr("v")}, "A")])
+    assert not any("injected" in d for d in _real_directives(row))
+    # name in the header
+    hdr = fmt.header_section()
+    assert not any("injected" in d for d in _real_directives(hdr))
+    assert _real_directives(hdr)[1].startswith("@ATTRIBUTE 'n'")
+
+
+def test_arbitrary_object_value_is_escaped_not_injected():
+    """A directly-built formatter handed an arbitrary object as a value (bypassing
+    from_train's type check) must escape it, never interpolate its raw __repr__."""
+
+    class Evil:
+        def __repr__(self):
+            return "0\n@ATTRIBUTE evil NUMERIC\n@DATA\n9"
+
+    fmt = ARFF_Formatter(["A"], [("f", "STRING")])
+    row = fmt.data_section([({"f": Evil()}, "A")])
+    assert _real_directives(row) == ["@DATA"]  # no injected directive
+
+
+def test_from_train_rejects_non_scalar_value_cleanly():
+    """from_train on an unsupported value type raises a clear ValueError naming the
+    type, not the opaque UnboundLocalError the old error message produced."""
+
+    class Evil:
+        def __repr__(self):
+            return "0\n@ATTRIBUTE evil NUMERIC"
+
+    with pytest.raises(ValueError, match="Unsupported value type"):
+        ARFF_Formatter.from_train([({"f": Evil()}, "A")])
+
+
+# --- untrusted JVM stdout parsing (robustness against a hostile model) ---------
+
+
+@pytest.mark.parametrize(
+    "lines",
+    [
+        ["inst# actual predicted error prediction", "x"],  # too few tokens
+        ["inst# actual predicted error prediction", "0 a b c d"],  # no ':' in col 3
+        [],  # nothing to parse
+    ],
+)
+def test_parse_weka_output_refuses_malformed_lines(lines):
+    """weka's -p stdout is only as trustworthy as the model it just loaded, so a
+    truncated or malformed line must raise a clear ValueError, not an IndexError."""
+    clf = object.__new__(WekaClassifier)
+    clf._formatter = ARFF_Formatter(["pos", "neg"], [("a", "NUMERIC")])
+    with pytest.raises(ValueError):
+        clf.parse_weka_output(list(lines))
+
+
+def test_parse_weka_output_happy_path_still_parses():
+    """A well-formed prediction block still yields the predicted classes."""
+    clf = object.__new__(WekaClassifier)
+    clf._formatter = ARFF_Formatter(["pos", "neg"], [("a", "NUMERIC")])
+    lines = [
+        "inst# actual predicted error prediction",
+        "1 1:pos 2:neg + 0.9",
+        "2 1:pos 1:pos + 0.8",
+    ]
+    assert clf.parse_weka_output(lines) == ["neg", "pos"]
+
+
 # --- functionality: a legitimate corpus still formats and round-trips ----------
 
 
