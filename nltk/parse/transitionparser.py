@@ -49,11 +49,9 @@ _MODEL_ALLOWED_GLOBALS = (
     ("builtins", "float"),
 )
 
-# The numpy ``scalar`` reconstructor that ``_MODEL_ALLOWED_GLOBALS`` permits is a
-# nested-unpickle sink for an object-bearing dtype (CWE-502). picklesec wraps it
-# (``_GUARDED_GLOBALS``) for EVERY caller automatically, so no per-model unpickler
-# subclass is needed here; only the allowlist above and the object-dtype refusal
-# below.
+# The numpy ``scalar`` reconstructor is a nested-unpickle sink for an
+# object-bearing dtype (CWE-502); picklesec wraps it globally, so only the
+# allowlist above and the object-dtype refusal below are needed here.
 
 
 def _load_transitionparser_model(file):
@@ -614,11 +612,9 @@ class TransitionParser(ParserI):
             )
 
             model.fit(x_train, y_train)
-            # Save the model to file name (as pickle). ``modelfile`` is a
-            # caller-supplied path, so route the write through the pathsec
-            # sandbox: an unauthorized destination is refused before any bytes
-            # are written, closing the arbitrary-path pickle write
-            # (GHSA-8mgp-746c-j5xp).
+            # Save the model as a pickle. modelfile is caller-supplied, so the
+            # write goes through the pathsec sandbox: an unauthorized destination
+            # is refused before any bytes are written (GHSA-8mgp-746c-j5xp).
             with pathsec_open(modelfile, "wb", context="TransitionParser.train") as f:
                 pickle_dump(model, f)
         finally:
@@ -633,18 +629,17 @@ class TransitionParser(ParserI):
         :return: list (DependencyGraph) with the 'head' and 'rel' information
         """
         result = []
-        # First load the model. The model is a trained scikit-learn classifier,
-        # so it is loaded through an allowlisting unpickler (CWE-502): only the
-        # exact globals a fitted SVC pickle needs may be reconstructed, and
-        # anything else (e.g. os.system, or scipy.io.mmwrite) raises
-        # UnpicklingError instead of executing/writing. See
-        # nltk/picklesec.py and huntr report
-        # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
+        # Load the model (a fitted scikit-learn SVC) through the allowlisting
+        # unpickler: only the globals a real SVC pickle needs may be rebuilt, so a
+        # planted os.system / scipy.io.mmwrite raises UnpicklingError (CWE-502).
         #
-        # ``modelFile`` is a caller-supplied path, so route the read through the
-        # pathsec sandbox too: an out-of-sandbox model path is refused before it
-        # is opened (GHSA-8mgp-746c-j5xp), and the resulting handle is still
-        # unpickled through the allowlisting unpickler.
+        # modelFile is caller-supplied, so the read goes through the pathsec
+        # sandbox first: an out-of-sandbox path is refused before it is opened
+        # (GHSA-8mgp-746c-j5xp).
+        #
+        # _load_transitionparser_model adds the numpy object-dtype refusal; see
+        # nltk/picklesec.py and the huntr report
+        # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
         with pathsec_open(modelFile, "rb", context="TransitionParser.parse") as f:
             model = _load_transitionparser_model(f)
         operation = Transition(self._algorithm)
