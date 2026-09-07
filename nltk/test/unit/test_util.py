@@ -136,9 +136,3 @@ def test_elementtree_indent_rejects_non_integer_level():
     root = ET.Element("root")
     with pytest.raises(ValueError):
         elementtree_indent(root, level="1")
-
-
-def test_elementtree_indent_warns_on_large_level():
-    root = ET.Element("root")
-    with pytest.warns(UserWarning):
-        elementtree_indent(root, level=1001)

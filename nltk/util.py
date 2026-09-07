@@ -1387,23 +1387,10 @@ def elementtree_indent(elem, level=0):
     :type level: nonnegative integer
     :rtype:   ElementTree._ElementInterface
     :return:  Contents of elem indented to reflect its structure
-
-    .. warning::
-        Avoid excessively large ``level`` values: indentation width grows
-        with ``level`` and this function is intended for human-readable
-        output. Very large values are meaningless and may cause significant
-        performance degradation.
     """
 
     if not isinstance(level, int) or isinstance(level, bool) or level < 0:
         raise ValueError(f"level must be a non-negative integer, got {level!r}")
-    if level > 1000:
-        warnings.warn(
-            "Large `level` values are meaningless and may degrade "
-            "performance; use a moderate level for human-readable output.",
-            UserWarning,
-            stacklevel=2,
-        )
 
     i = "\n" + level * "  "
     if len(elem):
