@@ -136,6 +136,11 @@ class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
     def hypernyms(self, include_instances=True):
+        """Return hypernyms for this lemma/synset.
+
+        If ``include_instances`` is True (default), include instance hypernyms
+        (WordNet pointer ``@i``) in addition to proper hypernyms (``@``).
+        """
         return self._hypernyms(include_instances=include_instances)
 
     def _hypernyms(self, include_instances=True):
