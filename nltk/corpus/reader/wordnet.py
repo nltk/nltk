@@ -136,13 +136,13 @@ class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
     def hypernyms(self, include_instances=True):
+        return self._hypernyms(include_instances=include_instances)
+
+    def _hypernyms(self, include_instances=True):
         hypernyms = self._related("@")
         if include_instances:
             return hypernyms + self._related("@i")
         return hypernyms
-
-    def _hypernyms(self):
-        return self._related("@")
 
     def instance_hypernyms(self):
         return self._related("@i")
@@ -754,7 +754,8 @@ class Synset(_WordNetObject):
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
-            fake_synset.hypernyms = lambda: []
+            fake_synset.hypernyms = lambda include_instances=True: []
+            fake_synset._hypernyms = lambda include_instances=True: []
             fake_synset.instance_hypernyms = lambda: []
             synsets.append(fake_synset)
 
@@ -806,7 +807,6 @@ class Synset(_WordNetObject):
 
             depth += 1
             queue.extend((hyp, depth) for hyp in s._hypernyms())
-            queue.extend((hyp, depth) for hyp in s._instance_hypernyms())
 
         if simulate_root:
             fake_synset = Synset(None)
