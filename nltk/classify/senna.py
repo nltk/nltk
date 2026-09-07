@@ -41,7 +41,7 @@ from os import environ, path, sep
 from platform import architecture, system
 from subprocess import PIPE
 
-from nltk.pathsec import TrustError, spawn_trusted
+from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.tag.api import TaggerI
 
 
@@ -152,14 +152,16 @@ class Senna(TaggerI):
         _args.extend(["-" + op for op in self.operations])
 
         # A CR/LF in a token adds an input line and breaks the 1:1 sentence->output
-        # mapping (CWE-93); a NUL truncates the token in senna's C string layer.
-        # Reject any control character, as the tokenizer/repp guards do.
+        # mapping (CWE-93); a NUL truncates the token in senna's C string layer;
+        # and a TAB splits senna's own tab-separated output line (parse_output
+        # below), mis-assigning tags. Reject any control character or line/
+        # paragraph separator, matching the other tool wrappers.
         for sentence in sentences:
             for token in sentence:
-                if any(ord(ch) < 0x20 and ch != "\t" for ch in token):
+                if has_line_unsafe_char(token):
                     raise ValueError(
-                        "Senna input tokens must not contain newline, carriage "
-                        "return, NUL or other control characters (CWE-93)."
+                        "Senna input tokens must not contain control characters "
+                        "or line separators (newline, tab, NUL, DEL, ...) (CWE-93)."
                     )
 
         # Serialize the actual sentences to a temporary string

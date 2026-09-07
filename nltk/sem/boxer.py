@@ -38,7 +38,7 @@ from optparse import OptionParser
 
 from nltk import redos
 from nltk.internals import find_binary_iter
-from nltk.pathsec import TrustError, spawn_trusted
+from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -186,17 +186,20 @@ class Boxer:
         # itself starts with <META>, would inject or misroute those boundaries.
         for discourse_id in discourse_ids:
             text = str(discourse_id)
-            if any(ord(c) < 0x20 or c in "'\"" for c in text):
+            if has_line_unsafe_char(text) or any(c in "'\"" for c in text):
                 raise ValueError(
-                    "A candc discourse id cannot contain a control character or "
-                    f"quote (it is interpolated into <META>'id'): {discourse_id!r}"
+                    "A candc discourse id cannot contain a control character, line "
+                    f"separator or quote (it is interpolated into <META>'id'): {discourse_id!r}"
                 )
         for discourse in inputs:
             for line in discourse:
                 text = str(line)
-                if any(ord(c) < 0x20 and c != "\t" for c in text):
+                # candc reads whole lines and its output is not tab-delimited, so a
+                # literal TAB is ordinary in-line whitespace here and stays allowed.
+                if has_line_unsafe_char(text, allow_tab=True):
                     raise ValueError(
-                        f"A candc input line cannot contain a control character: {line!r}"
+                        "A candc input line cannot contain a control character or "
+                        f"line separator: {line!r}"
                     )
                 if text.startswith("<META>"):
                     raise ValueError(

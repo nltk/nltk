@@ -343,18 +343,57 @@ def test_secure_absolute_install_reaches_spawn(tmp_path, monkeypatch, _senna_pop
 
 @pytest.mark.parametrize(
     "bad_token",
-    ["a\nb", "a\rb", "a\r\nb", "line1\nline2", "a\x00b", "a\x0bb", "a\x1fb"],
+    [
+        "a\nb",  # LF
+        "a\rb",  # CR
+        "a\r\nb",  # CRLF
+        "line1\nline2",
+        "a\x00b",  # NUL
+        "a\x0bb",  # vertical tab
+        "a\x0cb",  # form feed
+        "a\x1eb",  # record separator (splitlines break)
+        "a\x1fb",  # C0 control
+        "a\x7fb",  # DEL (the reviewer's gap)
+        "a\x85b",  # NEL, a C1 control and splitlines break
+        "a\x9fb",  # C1 control
+        "a\u2028b",  # Unicode line separator
+        "a\u2029b",  # Unicode paragraph separator
+        "a\ud800b",  # lone surrogate (would crash the .encode())
+        "a\tb",  # TAB splits senna's own tab-separated output line (parse_output)
+    ],
 )
 def test_token_with_newline_is_refused(
     tmp_path, monkeypatch, _senna_popen_spy, bad_token
 ):
-    """A CR/LF/NUL or other control char in a token would add an input line, break
-    senna's 1:1 sentence->output mapping, or truncate the token (CWE-93); it must
-    raise before spawning."""
+    """A control character, line/paragraph separator or lone surrogate in a token
+    would add an input line, break senna's 1:1 sentence->output mapping, split its
+    tab-separated output, or fail to encode (CWE-93); it must raise before
+    spawning."""
     senna, _ = _make_abs_senna(tmp_path, monkeypatch)
     with pytest.raises(ValueError):
         senna.tag_sents([[bad_token, "ok"]])
     assert _senna_popen_spy == []
+
+
+@pytest.mark.parametrize(
+    "token", ["café", "日本語", "नमस्ते", "العربية", "R2-D2", "£100", "🙂"]
+)
+def test_legitimate_multilingual_token_is_accepted(
+    tmp_path, monkeypatch, _senna_popen_spy, token
+):
+    """The guard must not overblock: non-ASCII letters, marks, symbols, the
+    non-breaking space and format characters are ordinary token content and must
+    reach the (spied) spawn rather than being refused."""
+    senna, _ = _make_abs_senna(tmp_path, monkeypatch)
+    # tag_sents reaches the spawn; the spy raises to stop before a real senna run,
+    # so a ValueError mentioning the token guard is the only thing that must NOT
+    # happen here.
+    try:
+        senna.tag_sents([[token]])
+    except ValueError as exc:
+        assert "control characters" not in str(exc), f"overblocked {token!r}"
+    except Exception:
+        pass
 
 
 @pytest.mark.parametrize(

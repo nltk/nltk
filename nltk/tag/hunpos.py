@@ -15,7 +15,12 @@ import os
 from subprocess import PIPE
 
 from nltk.internals import find_binary, find_file
-from nltk.pathsec import TrustError, spawn_trusted, validate_tool_path
+from nltk.pathsec import (
+    TrustError,
+    has_line_unsafe_char,
+    spawn_trusted,
+    validate_tool_path,
+)
 from nltk.tag.api import TaggerI
 
 _hunpos_url = "https://code.google.com/p/hunpos/"
@@ -133,18 +138,22 @@ class HunposTagger(TaggerI):
 
     def tag(self, tokens):
         """Tags a single sentence: a list of words.
-        The tokens should not contain any newline characters.
+
+        A token may not contain any control character or Unicode line/paragraph
+        separator: a newline adds an input line, a NUL truncates the token, and a
+        TAB splits hunpos's own tab-separated output column (see the read loop
+        below), each desynchronising every tag that follows.
         """
         for token in tokens:
-            raw = token if isinstance(token, bytes) else token.encode(self._encoding)
-            # Not an assert (python -O strips those): a control char in a token
-            # injects an extra line into the tagger's line-oriented stdin or
-            # truncates the token, desynchronising every tag that follows.
-            if any(b < 0x20 and b != 0x09 for b in raw):
+            # Not an assert (python -O strips those): check the token itself so a
+            # str token's C1/NEL/separator characters are caught, not only the raw
+            # C0/DEL bytes, before it reaches the tagger's line-oriented stdin.
+            if has_line_unsafe_char(token):
                 raise ValueError(
-                    "hunpos tokens must not contain newline, NUL or other control "
-                    "characters"
+                    "hunpos tokens must not contain control characters or line "
+                    "separators (newline, tab, NUL, DEL, ...)"
                 )
+            raw = token if isinstance(token, bytes) else token.encode(self._encoding)
             self._hunpos.stdin.write(raw + b"\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
         self._hunpos.stdin.write(b"\n")

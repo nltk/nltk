@@ -200,10 +200,41 @@ def test_control_char_sentence_is_refused_before_spawn(monkeypatch):
     monkeypatch.setattr(
         ReppTokenizer, "_execute", staticmethod(lambda cmd: called.append(cmd) or b"")
     )
-    for payload in ["good\nevil", "nul\x00here", "cr\rhere", "esc\x1bhere"]:
+    payloads = [
+        "good\nevil",  # LF
+        "nul\x00here",  # NUL
+        "cr\rhere",  # CR
+        "esc\x1bhere",  # C0 control
+        "ff\x0chere",  # form feed
+        "rs\x1ehere",  # record separator
+        "del\x7fhere",  # DEL (the reviewer's gap)
+        "nel\x85here",  # NEL / C1 control
+        "c1\x9fhere",  # C1 control
+        "ls\u2028here",  # Unicode line separator
+        "ps\u2029here",  # Unicode paragraph separator
+        "sur\ud800here",  # lone surrogate
+    ]
+    for payload in payloads:
         with pytest.raises(ValueError, match="control characters"):
             list(tok.tokenize_sents([payload]))
-    assert not called, "REPP was spawned despite a control-char sentence"
+    assert not called, "REPP was spawned despite an unsafe-char sentence"
+
+
+def test_legitimate_multilingual_sentence_reaches_execute(monkeypatch):
+    """The guard must not overblock real text: non-ASCII letters and a literal TAB
+    (REPP splits on newlines only) are ordinary sentence content and reach the
+    (fake) binary rather than being refused."""
+    tok = _detached_tokenizer()
+    called = []
+    monkeypatch.setattr(
+        ReppTokenizer, "_execute", staticmethod(lambda cmd: called.append(1) or b"")
+    )
+    for sent in ["café au lait", "日本語 の 文", "a\tb c", "naïve\u200djoin"]:
+        try:
+            list(tok.tokenize_sents([sent]))
+        except ValueError as exc:
+            assert "control characters" not in str(exc), f"overblocked {sent!r}"
+    assert len(called) == 4, "every benign sentence must reach _execute"
 
 
 def test_tab_in_sentence_reaches_execute(monkeypatch):

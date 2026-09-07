@@ -8,7 +8,8 @@ test: a world/group-writable directory or binary, a path under the shared
 attacker-writable directory, a ``..``/relative/NUL path, an owner other than us,
 a FIFO/socket/directory/device in the executable slot, symlink loops, loader
 variables in the environment, ``shell=True``, and a non-POSIX platform (which
-fails closed). Real files with real ``chmod``/``symlink``/``mkfifo`` and real
+degrades to best-effort, NOT fail-closed, so Windows tool wrappers keep working).
+Real files with real ``chmod``/``symlink``/``mkfifo`` and real
 ``subprocess`` execution are used (no mocks), so a regression actually leaks
 here rather than being papered over by a stub.
 
@@ -18,7 +19,8 @@ that is the only in-sandbox place a trusted binary may live on Linux.
 
 They also lock the minimalism decisions: no ``/proc/self/fd`` fexecve dance, no
 ``safe_env(extra=...)`` escape hatch, no sticky-``/tmp`` traversal allowance, and
-no Windows heuristic (all were attack surface without an in-scope payoff).
+no win32security DACL check on non-POSIX (the non-POSIX path stays best-effort
+rather than fail-closed; all were attack surface without an in-scope payoff).
 """
 
 import inspect
@@ -548,3 +550,78 @@ def test_removed_attack_surface_stays_removed():
         "_traversal_dir_ok",
     ):
         assert not hasattr(ps, gone), gone
+
+
+# ---------------------------------------------------------------------------- #
+# has_line_unsafe_char: the shared token guard for the line-oriented wrappers.  #
+# It must flag every control char, line/paragraph separator and lone surrogate, #
+# and never flag ordinary multilingual token content.                           #
+# ---------------------------------------------------------------------------- #
+
+# Every code point str.splitlines() treats as a line boundary, plus DEL, the C1
+# controls, and a lone surrogate. All must be flagged.
+_UNSAFE_CODEPOINTS = (
+    list(range(0x00, 0x20))  # C0 controls (incl. TAB/CR/LF/NUL/FS-GS-RS)
+    + [0x7F]  # DEL
+    + list(range(0x80, 0xA0))  # C1 controls (incl. NEL 0x85)
+    + [0x2028, 0x2029]  # Unicode line / paragraph separators
+    + [0xD800, 0xDBFF, 0xDFFF]  # lone surrogates
+)
+
+# Ordinary token content that must NEVER be flagged (letters across scripts,
+# marks, digits, punctuation, symbols, ordinary + non-breaking space, and the
+# format characters real multilingual text relies on).
+_SAFE_CODEPOINTS = [
+    0x41,
+    0x7A,
+    0x30,  # A z 0
+    0x20,
+    0xA0,  # space, non-breaking space
+    0xE9,
+    0xF1,  # é ñ
+    0x3B1,
+    0x4E2D,
+    0x65E5,  # α 中 日
+    0x905,
+    0x5D0,
+    0x627,  # Devanagari A, Hebrew alef, Arabic alef
+    0xA3,
+    0x20AC,
+    0x2764,  # £ € heart
+    0x200D,
+    0x200C,
+    0xFEFF,
+    0x200E,
+    0x200F,
+    0x2060,
+    0xAD,  # ZWJ ZWNJ BOM LRM RLM WJ SHY
+    0x1F600,  # emoji
+]
+
+
+@pytest.mark.parametrize("cp", _UNSAFE_CODEPOINTS)
+def test_has_line_unsafe_char_flags_every_control_separator_and_surrogate(cp):
+    ch = chr(cp)
+    assert ps.has_line_unsafe_char("x" + ch + "y"), f"U+{cp:04X} not flagged"
+    # allow_tab exempts ONLY 0x09, nothing else.
+    if cp == 0x09:
+        assert not ps.has_line_unsafe_char("x\ty", allow_tab=True)
+    else:
+        assert ps.has_line_unsafe_char("x" + ch + "y", allow_tab=True)
+
+
+@pytest.mark.parametrize("cp", _SAFE_CODEPOINTS)
+def test_has_line_unsafe_char_allows_ordinary_multilingual_content(cp):
+    ch = chr(cp)
+    assert not ps.has_line_unsafe_char("a" + ch + "b"), f"U+{cp:04X} wrongly flagged"
+
+
+def test_has_line_unsafe_char_bytes_flags_c0_and_del_only():
+    # On bytes only the unambiguous C0 controls and DEL are detectable; a valid
+    # UTF-8 multibyte token (whose continuation bytes are 0x80-0xBF) is not flagged.
+    assert ps.has_line_unsafe_char(b"a\x00b")  # NUL
+    assert ps.has_line_unsafe_char(b"a\x7fb")  # DEL
+    assert ps.has_line_unsafe_char(b"a\tb")  # TAB blocked by default
+    assert not ps.has_line_unsafe_char(b"a\tb", allow_tab=True)
+    assert not ps.has_line_unsafe_char("café".encode("utf-8"))
+    assert not ps.has_line_unsafe_char("日本語".encode("utf-8"))

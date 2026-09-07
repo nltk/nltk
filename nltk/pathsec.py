@@ -20,6 +20,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import urllib.request
 import warnings
 import zipfile
@@ -248,6 +249,50 @@ def _resolve_trusted_nonposix(target):
 def is_trusted_executable(target):
     """Boolean form of :func:`resolve_trusted_executable`."""
     return resolve_trusted_executable(target) is not None
+
+
+#: Unicode categories that must never appear in a token handed to a line-oriented
+#: tool: control characters (``Cc``), line/paragraph separators (``Zl``/``Zp``),
+#: and lone surrogates (``Cs``, which cannot be UTF-8 encoded and would otherwise
+#: raise UnicodeEncodeError as the token is written to the tool).
+_LINE_UNSAFE_CATEGORIES = frozenset({"Cc", "Zl", "Zp", "Cs"})
+
+
+def has_line_unsafe_char(token, allow_tab=False):
+    """Return True if *token* holds a character unsafe to hand to a line-oriented
+    external tool (CWE-93).
+
+    Unsafe means any Unicode control character (category ``Cc``, covering the C0
+    controls including TAB / CR / LF / NUL / the FS-GS-RS separators, the C1
+    controls, ``DEL`` and ``NEL``), a line or paragraph separator (``Zl`` / ``Zp``:
+    ``U+2028`` / ``U+2029``), or a lone surrogate (``Cs``). These are exactly the
+    characters that add or truncate a line on the tool's stdin, split a field in a
+    tab-separated stdout (TAB), or fail to UTF-8 encode (surrogate); the ``Cc`` +
+    ``Zl`` + ``Zp`` set matches ``str.splitlines()`` so no line break slips past.
+    Ordinary token content stays valid: letters, marks, numbers, punctuation,
+    symbols, ordinary and non-breaking spaces, and the format characters used in
+    real multilingual text (zero-width joiner / non-joiner, bidi marks) are never
+    flagged, so those tokens keep working.
+
+    ``allow_tab=True`` exempts a literal TAB, for a tool whose stdout is NOT
+    tab-delimited and that treats a tab as ordinary in-line whitespace (e.g. REPP
+    sentences, candc input lines). It stays blocked by default because a tab in a
+    token corrupts a tab-separated output line (Senna, hunpos).
+
+    Accepts ``str`` or ``bytes``. For ``bytes`` only the C0 controls and ``DEL``
+    are detected, because the C1 controls and the Unicode separators encode to
+    bytes ``0x80`` through ``0xBF`` that also serve as UTF-8 continuation bytes;
+    decode the bytes and pass the ``str`` to check those in full.
+    """
+    if isinstance(token, (bytes, bytearray)):
+        return any(
+            (b < 0x20 or b == 0x7F) and not (allow_tab and b == 0x09) for b in token
+        )
+    return any(
+        unicodedata.category(ch) in _LINE_UNSAFE_CATEGORIES
+        and not (allow_tab and ch == "\t")
+        for ch in token
+    )
 
 
 def safe_env():

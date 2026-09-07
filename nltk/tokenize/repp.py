@@ -17,7 +17,7 @@ import tempfile
 from nltk import redos
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import find_dir
-from nltk.pathsec import TrustError, spawn_trusted
+from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.tokenize.api import TokenizerI
 
 
@@ -88,15 +88,18 @@ class ReppTokenizer(TokenizerI):
             with tempfile.NamedTemporaryFile(
                 prefix="repp_input.", dir=staging_dir, mode="w", delete=False
             ) as input_file:
-                # REPP reads one sentence per line; a control char in a sentence
-                # injects an extra input line (or a NUL truncates it), so the token
-                # stream desynchronises from the sentence list (CWE-93).
+                # REPP reads one sentence per line; a control character or Unicode
+                # line/paragraph separator in a sentence injects an extra input
+                # line (or a NUL truncates it), so the token stream desynchronises
+                # from the sentence list (CWE-93).
                 for sent in sentences:
                     text = str(sent)
-                    if any(ord(c) < 0x20 and c != "\t" for c in text):
+                    # REPP splits its stdout on newlines only, so a literal TAB is
+                    # ordinary in-line whitespace here and stays allowed.
+                    if has_line_unsafe_char(text, allow_tab=True):
                         raise ValueError(
-                            "REPP input sentences must not contain newline, NUL or "
-                            "other control characters."
+                            "REPP input sentences must not contain control "
+                            "characters or line separators (newline, NUL, DEL, ...)."
                         )
                     input_file.write(text + "\n")
                 input_file.close()

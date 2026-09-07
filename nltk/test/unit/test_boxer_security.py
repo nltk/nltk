@@ -200,7 +200,22 @@ def _candc_boxer(spy):
 
 @pytest.mark.parametrize(
     "discourse_id",
-    ["a\nb", "a\rb", "a\x00b", "id'quote", 'id"dquote', "a\x0bb", "tab\tid"],
+    [
+        "a\nb",  # LF
+        "a\rb",  # CR
+        "a\x00b",  # NUL
+        "id'quote",  # single quote (breaks the <META>'id' interpolation)
+        'id"dquote',  # double quote
+        "a\x0bb",  # vertical tab
+        "tab\tid",  # TAB (an id is never tab-bearing)
+        "a\x1eb",  # record separator
+        "a\x7fb",  # DEL (the reviewer's gap)
+        "a\x85b",  # NEL / C1 control
+        "a\x9fb",  # C1 control
+        "a\u2028b",  # Unicode line separator
+        "a\u2029b",  # Unicode paragraph separator
+        "a\ud800b",  # lone surrogate
+    ],
 )
 def test_candc_rejects_hostile_discourse_id(discourse_id):
     called = []
@@ -217,6 +232,14 @@ def test_candc_rejects_hostile_discourse_id(discourse_id):
         "line\rwith cr",
         "line\x00nul",
         "ctrl\x0bchar",
+        "ff\x0cfeed",  # form feed
+        "rs\x1esep",  # record separator
+        "del\x7fchar",  # DEL (the reviewer's gap)
+        "nel\x85char",  # NEL / C1 control
+        "c1\x9fchar",  # C1 control
+        "ls\u2028break",  # Unicode line separator
+        "ps\u2029break",  # Unicode paragraph separator
+        "sur\ud800rogate",  # lone surrogate
         "<META>'injected-boundary'",  # a line masquerading as a discourse marker
     ],
 )
@@ -226,6 +249,18 @@ def test_candc_rejects_hostile_input_line(line):
     with pytest.raises(ValueError):
         boxer._call_candc([["ok first line", line]], ["0"], question=False)
     assert called == [], "a hostile candc input line reached the spawn"
+
+
+@pytest.mark.parametrize("discourse_id", ["disc-1", "doc_42", "café", "文書"])
+def test_candc_accepts_legitimate_discourse_id(discourse_id):
+    """A discourse id of ordinary characters (including non-ASCII letters) is not
+    a control character or quote, so it must reach the candc spawn."""
+    captured = {}
+    boxer = _candc_boxer(
+        lambda input_str, *a, **k: captured.update(input=input_str) or ""
+    )
+    boxer._call_candc([["hello"]], [discourse_id], question=False)
+    assert f"<META>'{discourse_id}'" in captured["input"]
 
 
 def test_candc_benign_input_reaches_call_with_meta_boundary():

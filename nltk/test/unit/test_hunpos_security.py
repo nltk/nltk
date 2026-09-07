@@ -125,20 +125,40 @@ def _tagger_with_fake_pipe(encoding=hp._hunpos_charset):
     return tagger, writes
 
 
-def test_control_char_token_is_refused():
-    """A newline/NUL/other control char in a token injects an extra line into
-    hunpos-tag's line-oriented stdin (or truncates the token), desynchronising
-    every following tag; the token is refused before it is written."""
+@pytest.mark.parametrize(
+    "payload",
+    [
+        "good\nevil",  # LF: extra input line
+        "nul\x00here",  # NUL: C-string truncation
+        "cr\rhere",  # CR
+        "esc\x1bhere",  # C0 control
+        "vt\x0bhere",  # vertical tab
+        "ff\x0chere",  # form feed
+        "rs\x1ehere",  # record separator (splitlines break)
+        "del\x7fhere",  # DEL (the reviewer's gap)
+        "nel\x85here",  # NEL, a C1 control and a splitlines break
+        "c1\x9fhere",  # C1 control
+        "ls\u2028here",  # Unicode line separator
+        "ps\u2029here",  # Unicode paragraph separator
+        "sur\ud800here",  # lone surrogate (would crash .encode())
+        "a\tb",  # TAB: splits hunpos's own tab-separated output column
+    ],
+)
+def test_control_char_token_is_refused(payload):
+    """A control character, line/paragraph separator or lone surrogate in a token
+    injects/truncates a line on hunpos-tag's stdin, splits its tab-separated
+    stdout, or fails to encode, desynchronising every following tag; the token is
+    refused before it is written."""
     tagger, writes = _tagger_with_fake_pipe()
-    for payload in ["good\nevil", "nul\x00here", "cr\rhere", "esc\x1bhere"]:
-        with pytest.raises(ValueError, match="control characters"):
-            tagger.tag([payload])
-    assert writes == [], "a control-char token must not be written to hunpos stdin"
+    with pytest.raises(ValueError, match="control characters"):
+        tagger.tag([payload])
+    assert writes == [], "an unsafe-char token must not be written to hunpos stdin"
 
 
-def test_tab_in_token_is_allowed():
-    """hunpos uses tab as its own output column separator, but a tab inside an
-    input token is harmless on the write side (one token per line); allow it."""
-    tagger, writes = _tagger_with_fake_pipe()
-    tagger.tag(["a\tb"])
-    assert b"a\tb\n" in writes
+def test_legitimate_multilingual_tokens_are_allowed():
+    """The guard must not overblock real token content: non-ASCII letters, marks,
+    symbols, non-breaking space and format characters (ZWJ/ZWNJ/bidi) all pass."""
+    tagger, writes = _tagger_with_fake_pipe(encoding="utf-8")
+    for token in ["café", "日本語", "नमस्ते", "العربية", "co op", "👨‍👩‍👧"]:
+        tagger.tag([token])  # must not raise
+        assert token.encode("utf-8") + b"\n" in writes
