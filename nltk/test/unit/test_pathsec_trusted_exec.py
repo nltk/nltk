@@ -623,5 +623,5 @@ def test_has_line_unsafe_char_bytes_flags_c0_and_del_only():
     assert ps.has_line_unsafe_char(b"a\x7fb")  # DEL
     assert ps.has_line_unsafe_char(b"a\tb")  # TAB blocked by default
     assert not ps.has_line_unsafe_char(b"a\tb", allow_tab=True)
-    assert not ps.has_line_unsafe_char("café".encode("utf-8"))
-    assert not ps.has_line_unsafe_char("日本語".encode("utf-8"))
+    assert not ps.has_line_unsafe_char("café".encode())
+    assert not ps.has_line_unsafe_char("日本語".encode())
