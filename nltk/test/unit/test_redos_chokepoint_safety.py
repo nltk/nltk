@@ -44,15 +44,6 @@ def _elapsed(fn):
     return time.perf_counter() - start
 
 
-# The regex timeout is soft: the engine checks the wall-clock deadline only
-# periodically, so a recursion/backtracking-heavy pattern can overshoot the
-# per-call timeout by several seconds on a slow or heavily contended CI runner.
-# The property under test is "bounded, not a hang", so allow a generous ceiling
-# that still catches a broken or absent timeout (which runs for minutes on these
-# catastrophic patterns), rather than a tight multiple of the per-call timeout.
-_NOT_HANGING = 10.0
-
-
 # ==========================================================================
 # check_pattern must not be a DoS itself (it runs on every pattern)
 # ==========================================================================
@@ -235,34 +226,31 @@ class TestRegexOnlySurfacesBounded:
         ],
     )
     def test_bounded_or_handled(self, pattern, bait):
-        # Completing quickly, or firing the timeout=0.5 guard, are both fine; only
-        # a broken/absent timeout (which runs for minutes on these patterns) must
-        # fail. The ceiling is _NOT_HANGING, not a tight multiple of the timeout,
-        # because the guard is soft (see _NOT_HANGING); the timeout itself is NOT
-        # relaxed, so this cannot let an exploit through.
+        # Completing quickly, or firing the timeout, are both fine; hanging past
+        # a small multiple of the timeout is not.
         tp = redos.compile(pattern)
         dt = _elapsed(lambda: tp.search(bait, timeout=0.5))
-        assert dt < _NOT_HANGING
+        assert dt < 3.0
 
     def test_deep_recursion_does_not_stack_overflow(self):
         # 100k-deep balanced nesting must not crash the native stack; possessive
         # quantifiers isolate the recursion-depth question from backtracking.
         tp = redos.compile(r"\((?:[^()]++|(?R))*+\)")
         dt = _elapsed(lambda: tp.match("(" * 100000 + ")" * 100000, timeout=1.0))
-        assert dt < _NOT_HANGING
+        assert dt < 3.0
 
     def test_timeout_bounds_runtime_independent_of_input_size(self):
         # The anti-DoS guarantee is that an attacker cannot amplify runtime by
-        # enlarging the input: under a fixed timeout, a catastrophic pattern must
-        # return in about the same wall-clock time whether the bait is small or
-        # 100x larger. A broken timeout would let the 100x input backtrack for
-        # minutes, so the large-input run staying under _NOT_HANGING proves the
-        # timeout actually bounds the work, not just that some run was fast.
+        # enlarging the input: under a fixed timeout=0.5, a catastrophic pattern
+        # must return in about the same time whether the bait is small or 100x
+        # larger. A broken timeout would let the 100x input backtrack for minutes,
+        # so the large run staying inside the same bound as the small one proves
+        # the timeout bounds the work, not just that some run happened to be fast.
         tp = redos.compile(r"\((?:[^()]|(?R))*\)")
         small = _elapsed(lambda: tp.search("(" * 20_000, timeout=0.5))
         large = _elapsed(lambda: tp.search("(" * 2_000_000, timeout=0.5))
-        assert small < _NOT_HANGING
-        assert large < _NOT_HANGING
+        assert small < 3.0
+        assert large < 3.0
 
 
 # ==========================================================================

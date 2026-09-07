@@ -7,13 +7,13 @@ blank line quadratically, so a crafted whitespace blob hangs ``tokenize()``. The
 pattern now uses possessive quantifiers (regex module), making the scan linear.
 The whitespace class does not overlap ``"\\n"``, so the matches are unchanged.
 
-The "must not hang" tests run the work in a separate process (spawn) with a
-generous hang-backstop timeout and ``terminate()`` on overrun, so a regression to
-a quadratic regex cannot burn CPU for the rest of the suite, and any exception in
-the worker is propagated back to the assertions. The linear-vs-quadratic decision
-is made on the time the worker spends in the scan itself (measured in-process), so
-process spawn and ``import nltk`` cost on a slow CI runner is never mistaken for a
-ReDoS hang.
+The "must not hang" tests run the work in a separate process (spawn) with a hard
+timeout and ``terminate()`` on overrun, so a regression to a quadratic regex
+cannot keep burning CPU for the rest of the suite, and any exception in the worker
+is propagated back to the assertions. The _mark_paragraph_breaks test also asserts
+the time spent in the scan itself (measured in-process, excluding process spawn /
+``import nltk`` cost) so the linear-vs-quadratic check does not depend on how fast
+the runner starts a subprocess.
 """
 
 import queue
@@ -28,25 +28,16 @@ from . import _mp_ctx
 # old greedy one.
 _CRAFTED_TEXT = " \t" * 128_000
 
-# _TIMEOUT is only a hang-backstop: it kills a worker that never returns so a
-# quadratic regression cannot burn CPU for the rest of the suite. It is generous
-# on purpose so a slow/contended CI runner (process spawn + ``import nltk`` can
-# take many seconds) is never mistaken for a hang. The actual linear-vs-quadratic
-# decision is a ceiling on the time the worker spends in the scan itself, measured
-# in-process so spawn/import cost is excluded.
-#
-# Two ceilings, because the two entry points have very different linear baselines
-# on the ~256 KB blob and a huge gap to the quadratic regression:
-#   * _mark_paragraph_breaks alone is a single scan: ~3 ms linear.
-#   * tokenize() also runs a per-character redos.match over the whole blob (a
-#     linear cost unrelated to the ReDoS pattern), ~5 s linear here.
-# The old greedy pattern was quadratic: measured ~58 s at 128 K chars, so ~230 s
-# on this 256 KB input. Both ceilings sit far above the load-inflated linear time
-# (seen up to ~11 s for tokenize under 3x CPU oversubscription) and far below that
-# ~230 s regression, so they tolerate a loaded runner without masking a blow-up.
-_TIMEOUT = 120
+# _TIMEOUT is the hang-backstop: a worker that never returns is terminated so a
+# quadratic regression cannot burn CPU for the rest of the suite.
+_TIMEOUT = 15
+
+# _mark_paragraph_breaks is a single scan: ~3 ms linear, versus ~230 s for the old
+# quadratic pattern on this 256 KB blob (extrapolated from ~58 s at 128 K chars).
+# Asserting the scan time itself (measured in-process, so process spawn / import
+# cost is excluded) is a much tighter ReDoS check than only "the worker returned",
+# and the 5 s ceiling still clears any load without masking a blow-up.
 _MARK_SCAN_CEILING = 5.0
-_TOKENIZE_CEILING = 60.0
 
 # stopwords are passed explicitly so constructing the tokenizer needs no corpus
 # download; the vulnerable scan is in _mark_paragraph_breaks, before any
@@ -135,10 +126,13 @@ def test_mark_paragraph_breaks_is_linear_on_whitespace_blob():
 
 
 def test_tokenize_does_not_hang_on_whitespace_blob():
-    """End-to-end: tokenizing a whitespace blob must terminate (not hang)."""
-    finished, status, payload, op_elapsed = _run_in_process(_tokenize_worker)
+    """End-to-end: tokenizing a whitespace blob must terminate (not hang).
+
+    tokenize() also runs a per-character redos.match over the blob (a linear cost
+    unrelated to the ReDoS pattern, seconds on this input), so the precise scan
+    bound is asserted by the _mark_paragraph_breaks test above; here we only
+    require the whole pipeline to terminate within the hang-backstop.
+    """
+    finished, status, payload, _op_elapsed = _run_in_process(_tokenize_worker)
     assert finished, "TextTilingTokenizer.tokenize hung on a whitespace blob (ReDoS)"
     assert status == "ok", f"tokenize raised in worker: {payload}"
-    assert (
-        op_elapsed < _TOKENIZE_CEILING
-    ), f"tokenize took {op_elapsed:.2f}s on a whitespace blob; a quadratic ReDoS regression would be ~230s"
