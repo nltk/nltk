@@ -135,8 +135,11 @@ class WordNetError(Exception):
 class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
-    def hypernyms(self):
-        return self._related("@")
+    def hypernyms(self, include_instances=True):
+        hypernyms = self._related("@")
+        if include_instances:
+            return hypernyms + self._related("@i")
+        return hypernyms
 
     def _hypernyms(self):
         return self._related("@")
@@ -147,8 +150,11 @@ class _WordNetObject:
     def _instance_hypernyms(self):
         return self._related("@i")
 
-    def hyponyms(self):
-        return self._related("~")
+    def hyponyms(self, include_instances=True):
+        hyponyms = self._related("~")
+        if include_instances:
+            return hyponyms + self._related("~i")
+        return hyponyms
 
     def instance_hyponyms(self):
         return self._related("~i")
@@ -530,9 +536,7 @@ class Synset(_WordNetObject):
             next_synset = todo.pop()
             if next_synset not in seen:
                 seen.add(next_synset)
-                next_hypernyms = (
-                    next_synset.hypernyms() + next_synset.instance_hypernyms()
-                )
+                next_hypernyms = next_synset.hypernyms()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
@@ -554,7 +558,7 @@ class Synset(_WordNetObject):
         """
 
         if "_max_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self.hypernyms()
             if not hypernyms:
                 self._max_depth = 0
             else:
@@ -568,7 +572,7 @@ class Synset(_WordNetObject):
         """
 
         if "_min_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self.hypernyms()
             if not hypernyms:
                 self._min_depth = 0
             else:
@@ -673,7 +677,7 @@ class Synset(_WordNetObject):
         """
         paths = []
 
-        hypernyms = self.hypernyms() + self.instance_hypernyms()
+        hypernyms = self.hypernyms()
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -778,7 +782,7 @@ class Synset(_WordNetObject):
            a hypernym of the first ``Synset``.
         """
         distances = {(self, distance)}
-        for hypernym in self._hypernyms() + self._instance_hypernyms():
+        for hypernym in self._hypernyms():
             distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
         if simulate_root:
             fake_synset = Synset(None)
@@ -1093,7 +1097,7 @@ class Synset(_WordNetObject):
             todo = [
                 hypernym
                 for synset in todo
-                for hypernym in (synset.hypernyms() + synset.instance_hypernyms())
+                for hypernym in synset.hypernyms()
                 if hypernym not in seen
             ]
 
