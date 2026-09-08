@@ -218,4 +218,8 @@ def corpus_chrf(
     total_scores = [sum(fscores) for n, fscores in ngram_fscores.items()]
 
     # macro-average over n-gram orders and over all sentences
+    if num_sents == 0:
+        return 0.0
+    if num_ngram_sizes == 0:
+        return 0.0
     return (sum(total_scores) / num_ngram_sizes) / num_sents
