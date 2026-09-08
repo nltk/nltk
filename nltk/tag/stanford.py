@@ -24,7 +24,7 @@ from subprocess import PIPE
 
 from nltk.data import staging_tempdir
 from nltk.internals import find_file, find_jar, java
-from nltk.pathsec import validate_tool_path
+from nltk.pathsec import MAX_TOOL_MODEL_BYTES, validate_tool_path
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -78,7 +78,12 @@ class StanfordTagger(TaggerI):
         )
         # Fail fast: the model is a JVM subprocess argument, so bound it here as
         # well as at the hand-off, and never keep an out-of-sandbox path around.
-        validate_tool_path(self._stanford_model, context=f"{type(self).__name__}")
+        validate_tool_path(
+            self._stanford_model,
+            context=f"{type(self).__name__}",
+            max_bytes=MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
 
         self._encoding = encoding
         self.java_options = java_options
@@ -118,7 +123,12 @@ class StanfordTagger(TaggerI):
 
             # ``self._stanford_model`` (from find_file) is handed to the JVM subprocess
             # pathsec.open cannot wrap; bound it before spawning (GHSA-8mgp-746c-j5xp).
-            validate_tool_path(self._stanford_model, context="StanfordTagger.tag_sents")
+            validate_tool_path(
+                self._stanford_model,
+                context="StanfordTagger.tag_sents",
+                max_bytes=MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
 
             # Run the tagger and get the output
             stanpos_output, _stderr = java(
