@@ -319,6 +319,7 @@
 - Nicola <https://github.com/trinik15>
 - medisean <https://github.com/medisean>
 - tandede <https://github.com/tandede>
+- gry67673905 <https://github.com/gry67673905>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
