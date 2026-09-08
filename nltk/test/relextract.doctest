@@ -107,12 +107,13 @@ document into a list of two-member lists, each of which consists of a
     ("...firm in", (LOCATION San Mateo))
     ("...,", (LOCATION Calif.))
 
-The function `semi_rel2reldict()` processes triples of these pairs, i.e.,
-pairs of the form ``((string1, Tree1), (string2, Tree2), (string3,
-Tree3))`` and outputs a dictionary (a `reldict`) in which ``Tree1`` is
+The function `semi_rel2reldict()` processes adjacent pairs of these entries,
+of the form ``((string1, Tree1), (string2, Tree2))``,
+and outputs a dictionary (a `reldict`) in which ``Tree1`` is
 the subject of the relation, ``string2`` is the filler
-and ``Tree3`` is the object of the relation. ``string1`` and ``string3`` are
-stored as left and right context respectively.
+and ``Tree2`` is the object of the relation. ``string1`` is stored as left
+context. If a following entry ``(string3, Tree3)`` is available, ``string3``
+provides the right context; otherwise, the right context is empty.
 
     >>> reldicts = relextract.semi_rel2reldict(pairs)
     >>> for k, v in sorted(reldicts[0].items()):
@@ -165,6 +166,7 @@ signature <ORG, LOC>.
     [ORG: 'U.N.'] 'peacekeeping operation in' [LOC: 'Somalia']
     [ORG: 'U.N.'] 'partners on a more effective role in' [LOC: 'Africa']
     [ORG: 'AP'] ') _ A bomb exploded in a mosque in central' [LOC: 'San`a']
+    [ORG: 'Red Cross'] 'hostages freed in' [LOC: 'Somalia']
     [ORG: 'Krasnoye Sormovo'] 'shipyard in the Soviet city of' [LOC: 'Gorky']
     [ORG: 'Kelab Golf Darul Ridzuan'] 'in' [LOC: 'Perak']
     [ORG: 'U.N.'] 'peacekeeping operation in' [LOC: 'Somalia']
