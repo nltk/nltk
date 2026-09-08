@@ -1,0 +1,184 @@
+name: tool-integration-ci
+
+# Real external-tool integration checks. The main ci.yml only fetches the
+# compiled tools (SENNA/PROVER9/MEGAM) on Linux, so the tool wrappers are largely
+# exercised on real I/O only there. This workflow acquires the tools on macOS and
+# Windows too and runs the wrapper tests against the real binaries/jars, so a
+# change to a wrapper (or to the shared pathsec chokepoint) is validated on every
+# OS. It is path-filtered, so it runs only when a tool wrapper, its tests, the
+# acquisition scripts, or this workflow changes, not on every push.
+on:
+  pull_request:
+    paths:
+      - "nltk/tag/senna.py"
+      - "nltk/tag/hunpos.py"
+      - "nltk/tag/stanford.py"
+      - "nltk/tag/crf.py"
+      - "nltk/classify/senna.py"
+      - "nltk/classify/megam.py"
+      - "nltk/classify/tadm.py"
+      - "nltk/tokenize/stanford_segmenter.py"
+      - "nltk/tokenize/repp.py"
+      - "nltk/parse/corenlp.py"
+      - "nltk/parse/malt.py"
+      - "nltk/parse/transitionparser.py"
+      - "nltk/sem/boxer.py"
+      - "nltk/inference/mace.py"
+      - "nltk/inference/prover9.py"
+      - "nltk/translate/api.py"
+      - "nltk/pathsec.py"
+      - "tools/github_actions/third-party.sh"
+      - "tools/github_actions/tool_integration_*.sh"
+      - ".github/workflows/tool-integration.yml"
+      - "nltk/test/unit/test_senna*.py"
+      - "nltk/test/unit/test_crf.py"
+      - "nltk/test/unit/test_corenlp.py"
+      - "nltk/test/unit/test_malt*.py"
+      - "nltk/test/unit/test_stanford*.py"
+      - "nltk/test/unit/test_repp_security.py"
+      - "nltk/test/unit/test_boxer_security.py"
+      - "nltk/test/unit/test_pathsec_sweep_tag.py"
+      - "nltk/test/unit/test_pathsec_sweep_wrappers.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  THIRD_PARTY_DIR: ${{ github.workspace }}/third
+  CORENLP: ${{ github.workspace }}/third/stanford-corenlp
+  CORENLP_MODELS: ${{ github.workspace }}/third/stanford-corenlp
+  STANFORD_PARSER: ${{ github.workspace }}/third/stanford-parser
+  STANFORD_MODELS: ${{ github.workspace }}/third/stanford-postagger
+  STANFORD_POSTAGGER: ${{ github.workspace }}/third/stanford-postagger
+  MALT_PARSER: ${{ github.workspace }}/third/maltparser
+  # SENNA and HUNPOS_TAGGER are exported per platform by the acquisition scripts,
+  # and only when a usable binary for that platform exists, so their tests skip
+  # cleanly rather than erroring when the tool is absent or not built.
+
+jobs:
+  tool-integration:
+    name: Tools py${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # Never cancel the other OS/Python legs when one tool fails to build.
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up Java (Stanford / CoreNLP / MaltParser are JVM tools)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set NLTK_DATA environment variable
+        shell: bash
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> "$GITHUB_ENV"
+
+      - name: Install NLTK, CI deps and python-crfsuite
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade --requirement requirements-ci.txt
+          # crfsuite is a compiled wheel; if it is unavailable for this Python
+          # (e.g. no wheel yet on a brand-new release), test_crf.py importorskips.
+          pip install python-crfsuite || echo "python-crfsuite unavailable; test_crf.py will skip"
+
+      - name: Cache NLTK data
+        uses: actions/cache@v6
+        id: nltk-data-cache
+        with:
+          path: ${{ github.workspace }}/nltk_data
+          key: tool_nltk_data_${{ runner.os }}_v1
+
+      - name: Download the NLTK data the tool tests need (cache miss)
+        if: steps.nltk-data-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import nltk
+          p = Path(os.environ["NLTK_DATA"]); p.mkdir(parents=True, exist_ok=True)
+          for pkg in ["punkt", "punkt_tab", "wordnet", "omw-1.4", "words",
+                      "treebank", "dependency_treebank", "conll2000",
+                      "averaged_perceptron_tagger", "averaged_perceptron_tagger_eng"]:
+              try:
+                  nltk.download(pkg, download_dir=str(p))
+              except Exception as exc:  # a missing optional corpus must not fail CI
+                  print(f"skip {pkg}: {exc}")
+          PY
+
+      - name: Ensure third-party directory exists
+        shell: bash
+        run: mkdir -p "$THIRD_PARTY_DIR"
+
+      - name: Cache third-party tools
+        uses: actions/cache@v6
+        id: third-party-cache
+        with:
+          path: ${{ env.THIRD_PARTY_DIR }}
+          key: tool_third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh', 'tools/github_actions/tool_integration_senna.sh') }}_v1
+
+      - name: Download cross-platform JVM tools (+ Linux compiled tools)
+        if: steps.third-party-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          chmod +x tools/github_actions/third-party.sh
+          tools/github_actions/third-party.sh
+
+      - name: Acquire SENNA per platform (best effort)
+        continue-on-error: true
+        shell: bash
+        run: |
+          chmod +x tools/github_actions/tool_integration_senna.sh
+          tools/github_actions/tool_integration_senna.sh
+
+      - name: Build hunpos from source (best effort, POSIX only)
+        if: runner.os != 'Windows'
+        continue-on-error: true
+        shell: bash
+        run: |
+          chmod +x tools/github_actions/tool_integration_hunpos.sh
+          tools/github_actions/tool_integration_hunpos.sh
+
+      - name: Show acquired tools
+        shell: bash
+        run: |
+          echo "SENNA=${SENNA:-<unset>}"
+          echo "HUNPOS_TAGGER=${HUNPOS_TAGGER:-<unset>}"
+          ls -l "$THIRD_PARTY_DIR" || echo "no third-party dir"
+
+      - name: Run tool wrapper tests (real tools where present, guards always)
+        shell: bash
+        run: |
+          # Serial on purpose: the real tools are not all parallel-safe (CoreNLP
+          # binds a fixed port, SENNA runs relative to its own directory), so no
+          # xdist here. Real-tool tests skip themselves when the tool/env is
+          # absent; the guard/security tests are tool-independent and always run.
+          # -rs prints the skip reasons so each platform's real coverage is visible.
+          python -m pytest -rs \
+            nltk/test/unit/test_senna.py \
+            nltk/test/unit/test_senna_security.py \
+            nltk/test/unit/test_crf.py \
+            nltk/test/unit/test_corenlp.py \
+            nltk/test/unit/test_malt.py \
+            nltk/test/unit/test_malt_security.py \
+            nltk/test/unit/test_stanford_parser.py \
+            nltk/test/unit/test_stanford_arg_injection.py \
+            nltk/test/unit/test_stanford_classpath.py \
+            nltk/test/unit/test_stanford_java_wrappers.py \
+            nltk/test/unit/test_boxer_security.py \
+            nltk/test/unit/test_repp_security.py \
+            nltk/test/unit/test_pathsec_sweep_tag.py \
+            nltk/test/unit/test_pathsec_sweep_wrappers.py
