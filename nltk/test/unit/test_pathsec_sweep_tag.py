@@ -130,24 +130,26 @@ def test_tagger_sources_route_through_pathsec():
     from nltk.chunk import named_entity
     from nltk.tag import crf, hunpos, perceptron, stanford
 
+    def _calls_validate_on(src, var):
+        # validate_tool_path is called on ``var``, tolerant of black wrapping the
+        # call across lines and of added keyword args (max_bytes/require_private).
+        return re.search(r"validate_tool_path\(\s*" + re.escape(var), src) is not None
+
     crf_set_src = inspect.getsource(crf.CRFTagger.set_model_file)
-    assert (
-        'validate_tool_path(model_file, context="CRFTagger.set_model_file")'
-        in crf_set_src
-    )
+    assert _calls_validate_on(crf_set_src, "model_file")
 
     crf_train_src = inspect.getsource(crf.CRFTagger.train)
-    assert 'validate_tool_path(model_file, context="CRFTagger.train"' in crf_train_src
+    assert _calls_validate_on(crf_train_src, "model_file")
 
     stanford_src = inspect.getsource(stanford.StanfordTagger.tag_sents)
     assert "validate_tool_path(" in stanford_src
     assert "self._stanford_model" in stanford_src
 
     stanford_init_src = inspect.getsource(stanford.StanfordTagger.__init__)
-    assert "validate_tool_path(self._stanford_model" in stanford_init_src
+    assert _calls_validate_on(stanford_init_src, "self._stanford_model")
 
     hunpos_src = inspect.getsource(hunpos.HunposTagger.__init__)
-    assert "validate_tool_path(self._hunpos_model" in hunpos_src
+    assert _calls_validate_on(hunpos_src, "self._hunpos_model")
 
     save_src = inspect.getsource(perceptron.PerceptronTagger.save_to_json)
     assert "validate_tool_dir(loc" in save_src
