@@ -608,13 +608,29 @@ _DIR_SINKS = {
 _ALL_SINKS = dict(_FILE_SINKS, **_DIR_SINKS)
 
 
+def _is_guard_refusal(exc):
+    """True only for a pathsec refusal, not any exception of the same type.
+
+    Every pathsec refusal is raised as ``Security Violation [context]: ...``, so
+    the marker distinguishes the guard from a tool that raises the same exception
+    type for its own reason. Without this, a real-tool sink that fails for a
+    reason unrelated to containment (e.g. python-crfsuite cannot create a
+    CJK-named output file on Windows, which surfaces as ValueError/OSError) would
+    be miscounted as the GUARD refusing a contained path, i.e. a false over-block.
+    """
+    return "Security Violation" in str(exc)
+
+
 def _refusal(sink, path):
-    """Run *sink* on *path*; return None if it refused, else the exception (or
-    None-as-success) that proves it got past the guard."""
+    """Run *sink* on *path*; return None if the GUARD refused it, else the
+    exception (or None-as-success) that proves it got past the guard. Only a
+    pathsec ``Security Violation`` counts as a refusal; a tool failing for its own
+    reason is past-guard, which is exactly the "allowed to fail for its own
+    unrelated reason" case the false-positive control tolerates."""
     try:
         _ALL_SINKS[sink](path)
-    except (PermissionError, ValueError):
-        return None
+    except (PermissionError, ValueError) as exc:
+        return None if _is_guard_refusal(exc) else exc
     except _ReachedSink as exc:
         return exc
     except Exception as exc:  # noqa: BLE001 - any other failure is "past the guard"
@@ -683,6 +699,71 @@ def test_file_sinks_do_not_over_block_contained_paths(pathsec_sandbox, sink, vec
         assert outcome is not None, f"{sink} unexpectedly refused {vector}"
     finally:
         _cleanup(registry)
+
+
+# Legitimate non-ASCII filenames. validate_tool_path must ACCEPT every one when it
+# is contained (a guard that refused these would break real model paths for
+# non-ASCII users, e.g. a CJK/Cyrillic/Arabic model name or an NFD spelling from a
+# macOS filesystem). These probe the GUARD directly, so they do not depend on any
+# external tool's own unicode handling (python-crfsuite, for one, cannot even
+# create a CJK-named file on Windows; that is the tool's limitation, not the
+# guard's, and is why the file-sink control above tolerates a non-Security-
+# Violation failure). validate_tool_path returns the validated input verbatim.
+_BENIGN_UNICODE_NAMES = [
+    ("nfc-precomposed", "modéle.model"),  # e-acute as one code point
+    ("nfd-decomposed", "modéle.model"),  # e + combining acute
+    ("cjk", "模型.model"),  # CJK
+    ("cyrillic", "модель.model"),
+    ("arabic-rtl", "نموذج.model"),
+    ("emoji", "robot_\U0001f916.model"),
+    ("zwj", "co‍op.model"),  # zero-width joiner inside the name
+    ("mixed-space", "my café 模型.model"),
+]
+
+
+@pytest.mark.parametrize(
+    "name",
+    [n for _, n in _BENIGN_UNICODE_NAMES],
+    ids=[i for i, _ in _BENIGN_UNICODE_NAMES],
+)
+def test_validate_tool_path_accepts_benign_unicode(restricted_sandbox, name):
+    """A contained path with any legitimate non-ASCII leaf must be accepted and
+    returned verbatim, never over-blocked."""
+    path = os.path.join(str(restricted_sandbox), name)
+    result = pathsec.validate_tool_path(
+        path, context="unicode-benign", must_exist=False
+    )
+    assert result == path  # no normalization, no over-block
+
+
+# Attacks that wear a unicode disguise but are still a real escape or a
+# Windows-ambiguous name: the guard must refuse EVERY one, with a Security
+# Violation (proving the tolerance added above does not open a hole).
+_UNICODE_ATTACKS = [
+    ("nul-after-unicode", "модель\x00.model"),
+    (
+        "traversal-through-unicode",
+        os.path.join("..", "模型", "..", "..", "etc", "passwd"),
+    ),
+    ("trailing-dot-unicode", "модель."),
+    ("trailing-space-unicode", "模型 "),
+    ("newline-in-unicode", "模型\nevil.model"),
+]
+
+
+@pytest.mark.parametrize(
+    "name", [n for _, n in _UNICODE_ATTACKS], ids=[i for i, _ in _UNICODE_ATTACKS]
+)
+def test_validate_tool_path_refuses_unicode_disguised_attacks(restricted_sandbox, name):
+    """A unicode disguise must not smuggle a NUL, a traversal, a Windows-stripped
+    trailing dot/space, or a control character past the guard."""
+    if os.path.isabs(name):
+        path = name
+    else:
+        path = os.path.join(str(restricted_sandbox), name)
+    with pytest.raises((PermissionError, ValueError)) as excinfo:
+        pathsec.validate_tool_path(path, context="unicode-attack", must_exist=False)
+    assert _is_guard_refusal(excinfo.value)
 
 
 def test_benign_vectors_are_not_expanded_or_decoded(pathsec_sandbox):
@@ -833,8 +914,10 @@ def test_each_guard_is_load_bearing(
 def _refusal_for(driver, path):
     try:
         driver(path)
-    except (PermissionError, ValueError):
-        return "refused"
+    except (PermissionError, ValueError) as exc:
+        # Only a pathsec Security Violation is a guard refusal; a tool raising the
+        # same type for its own reason is past-guard (see _is_guard_refusal).
+        return "refused" if _is_guard_refusal(exc) else "past-guard"
     except Exception:
         return "past-guard"
     return "landed"
