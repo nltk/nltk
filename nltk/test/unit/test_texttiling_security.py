@@ -28,9 +28,13 @@ from . import _mp_ctx
 # old greedy one.
 _CRAFTED_TEXT = " \t" * 128_000
 
-# _TIMEOUT is the hang-backstop: a worker that never returns is terminated so a
-# quadratic regression cannot burn CPU for the rest of the suite.
-_TIMEOUT = 15
+# _TIMEOUT is only the hang-backstop: a worker that never returns is terminated so
+# a quadratic regression cannot burn CPU for the rest of the suite. It is generous
+# on purpose (a true ReDoS regression here is ~230 s, so 120 s still catches it)
+# so that process spawn + ``import nltk`` + the legitimate O(n) tokenize work on a
+# slow/contended CI runner is never mistaken for a hang. The linear-vs-quadratic
+# decision is the in-process op-time ceilings below, which exclude spawn/import.
+_TIMEOUT = 120
 
 # _mark_paragraph_breaks is a single scan: ~3 ms linear, versus ~230 s for the old
 # quadratic pattern on this 256 KB blob (extrapolated from ~58 s at 128 K chars).
@@ -38,6 +42,14 @@ _TIMEOUT = 15
 # cost is excluded) is a much tighter ReDoS check than only "the worker returned",
 # and the 5 s ceiling still clears any load without masking a blow-up.
 _MARK_SCAN_CEILING = 5.0
+
+# tokenize() runs the full TextTiling pipeline (block comparison, smoothing, depth
+# scores) over every token, so on this 256 KB blob it does a few seconds of
+# legitimate O(n) work *after* the (now linear) mark scan. The ceiling is the
+# in-process op-time so spawn/import is excluded; it is generous enough for that
+# real work on a slow runner yet far below the ~230 s a mark-scan ReDoS regression
+# would add, so it still fails on a blow-up.
+_TOKENIZE_CEILING = 30.0
 
 # stopwords are passed explicitly so constructing the tokenizer needs no corpus
 # download; the vulnerable scan is in _mark_paragraph_breaks, before any
@@ -128,11 +140,17 @@ def test_mark_paragraph_breaks_is_linear_on_whitespace_blob():
 def test_tokenize_does_not_hang_on_whitespace_blob():
     """End-to-end: tokenizing a whitespace blob must terminate (not hang).
 
-    tokenize() also runs a per-character redos.match over the blob (a linear cost
-    unrelated to the ReDoS pattern, seconds on this input), so the precise scan
-    bound is asserted by the _mark_paragraph_breaks test above; here we only
-    require the whole pipeline to terminate within the hang-backstop.
+    tokenize() runs the full TextTiling pipeline over the blob (a linear cost
+    unrelated to the ReDoS pattern, a few seconds on this input), so the precise
+    scan bound is asserted by the _mark_paragraph_breaks test above. Here we
+    assert the in-process op-time stays under _TOKENIZE_CEILING (excluding
+    spawn/import), which fails on a mark-scan ReDoS regression (~230s) while
+    tolerating the legitimate O(n) work and any runner load.
     """
-    finished, status, payload, _op_elapsed = _run_in_process(_tokenize_worker)
+    finished, status, payload, op_elapsed = _run_in_process(_tokenize_worker)
     assert finished, "TextTilingTokenizer.tokenize hung on a whitespace blob (ReDoS)"
     assert status == "ok", f"tokenize raised in worker: {payload}"
+    assert op_elapsed < _TOKENIZE_CEILING, (
+        f"tokenize took {op_elapsed:.2f}s on a whitespace blob; the linear "
+        f"pipeline is a few seconds, a mark-scan ReDoS regression is ~230s"
+    )
