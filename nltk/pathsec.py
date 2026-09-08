@@ -61,6 +61,16 @@ _WINDOWS_DEVICE_NAMES = frozenset(
 
 _MAX_LINK_HOPS = 40  # ELOOP-style bound on symlink chains
 
+#: Ceiling for a model/data file handed to an external tool via
+#: :func:`validate_tool_path` with ``max_bytes=MAX_TOOL_MODEL_BYTES``. A file in a
+#: data root is already regular (no FIFO/device/symlink), but the tool loads its
+#: whole content into memory; an attacker who can plant a file in a root could
+#: otherwise ship a multi-gigabyte model to exhaust memory in the tool's parser
+#: (CWE-400/CWE-1333). 512 MiB is far above any real POS/NER tagger model yet well
+#: below a memory-exhaustion payload. Raise it if a legitimately larger model is
+#: needed.
+MAX_TOOL_MODEL_BYTES = 512 * 1024 * 1024
+
 # The child PATH resolves NOTHING: a single absolute, root-domain directory with
 # no executables. It denies bare-name command lookup (a trusted binary is run by
 # absolute path) and is NOT empty (an empty PATH element is the CWD; see safe_env).
@@ -816,7 +826,13 @@ def _reject_aliased_or_special(text, context, check_links=False):
 
 
 def validate_tool_path(
-    path_input, context="NLTK tool", *, for_write=False, must_exist=True
+    path_input,
+    context="NLTK tool",
+    *,
+    for_write=False,
+    must_exist=True,
+    max_bytes=None,
+    require_private=False,
 ):
     """Bound a filesystem path handed to an external tool to read or write.
 
@@ -836,7 +852,13 @@ def validate_tool_path(
       own kernel path, so a symlink or an intermediate directory swapped in after
       the name check is refused (CWE-59);
     * refuses a FIFO, socket, device or directory, whose open would block forever
-      or stream unbounded data (CWE-400).
+      or stream unbounded data (CWE-400);
+    * with ``max_bytes``, refuses an over-large regular file the tool would load
+      whole into memory (a model-size bomb, CWE-400);
+    * with ``require_private``, refuses a file that is group/world-writable or not
+      owned by the caller or root, which another local user could plant or swap
+      before the tool parses it (CWE-426/CWE-732; POSIX only, best-effort on
+      Windows like the executable-trust check).
 
     A path-taking sink can never be fully race-free, since the callee re-resolves
     the name, but every attack that does not require winning that race is
@@ -862,16 +884,47 @@ def validate_tool_path(
     _reject_url_shaped(text, context)
     validate_path(text, context=context)
     _reject_aliased_or_special(text, context, check_links=for_write)
-    _reject_unsafe_open(text, context, must_exist)
+    _reject_unsafe_open(
+        text, context, must_exist, max_bytes=max_bytes, require_private=require_private
+    )
     return text
 
 
-def _reject_unsafe_open(raw, context, must_exist):
+def _reject_oversize(st, raw, context, max_bytes):
+    """Refuse a file whose size exceeds *max_bytes* (CWE-400). ``st`` is the stat
+    of the already-validated regular file, so this reads the size that was open,
+    not a re-resolved name."""
+    if max_bytes is not None and st.st_size > max_bytes:
+        raise PermissionError(
+            f"Security Violation [{context}]: file {raw!r} is {st.st_size} bytes, "
+            f"over the {max_bytes}-byte tool-model limit; a file this large in a "
+            f"data root would exhaust memory in the tool's parser (CWE-400)."
+        )
+
+
+def _reject_tamperable(st, raw, context, require_private):
+    """POSIX: refuse a file another local user could plant or swap. ``st`` is the
+    fstat of the already-opened (O_NOFOLLOW) fd, so the owner/mode checked is the
+    file the tool will read, not a re-resolved name (CWE-426/CWE-732)."""
+    if require_private and os.name == "posix" and not _private_stat(st):
+        raise PermissionError(
+            f"Security Violation [{context}]: file {raw!r} is group/world-writable "
+            f"or not owned by you or root; another local user could plant or swap "
+            f"the model content the tool then parses (CWE-426/CWE-732)."
+        )
+
+
+def _reject_unsafe_open(
+    raw, context, must_exist, max_bytes=None, require_private=False
+):
     """Open-time hardening for a path already bounded by :func:`validate_path`.
 
     Closes the window between the name check and the tool's own open: an
     intermediate directory or the leaf itself may be swapped for a symlink in
-    between, which no name-based check can see.
+    between, which no name-based check can see. When *max_bytes* is set, also
+    refuses an over-large regular file (a model-size memory bomb, CWE-400); when
+    *require_private* is set, refuses a file another local user could tamper with
+    (CWE-426/CWE-732).
     """
     if not ENFORCE:
         return
@@ -888,6 +941,8 @@ def _reject_unsafe_open(raw, context, must_exist):
             raise PermissionError(
                 f"Security Violation [{context}]: path {raw!r} is not a " "regular file"
             )
+        _reject_oversize(st, raw, context, max_bytes)
+        _reject_tamperable(st, raw, context, require_private)
         return
 
     flags = (
@@ -929,6 +984,8 @@ def _reject_unsafe_open(raw, context, must_exist):
                 f"{raw!r} (st_nlink={st.st_nlink}); a hardlink names an inode that "
                 "may live outside the sandbox (CWE-59)"
             )
+        _reject_oversize(st, raw, context, max_bytes)
+        _reject_tamperable(st, raw, context, require_private)
         actual = _fd_realpath(fd)
         validate_path(
             actual if actual is not None else os.path.realpath(raw), context=context

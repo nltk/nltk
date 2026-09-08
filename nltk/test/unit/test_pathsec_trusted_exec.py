@@ -625,3 +625,63 @@ def test_has_line_unsafe_char_bytes_flags_c0_and_del_only():
     assert not ps.has_line_unsafe_char(b"a\tb", allow_tab=True)
     assert not ps.has_line_unsafe_char("café".encode())
     assert not ps.has_line_unsafe_char("日本語".encode())
+
+
+# ---------------------------------------------------------------------------- #
+# validate_tool_path model guards: max_bytes (size bomb) + require_private        #
+# (a model another local user could plant/swap, parsed by an external C/JVM       #
+# tool). These narrow the "malicious in-root model" residual.                     #
+# ---------------------------------------------------------------------------- #
+
+
+def _model_in_root(staging, name="m.model", size=32, mode=0o644):
+    path = os.path.join(staging, name)
+    with open(path, "wb") as fh:
+        fh.write(b"\x00\x01model" + b"x" * max(0, size - 7))
+    os.chmod(path, mode)
+    return path
+
+
+def test_validate_tool_path_max_bytes_refuses_oversize(staging):
+    """A model larger than max_bytes is refused (a model-size memory bomb the
+    external tool would load whole into RAM, CWE-400)."""
+    small = _model_in_root(staging, "small.model", size=100)
+    assert ps.validate_tool_path(small, context="t", max_bytes=100) == os.path.realpath(
+        small
+    )  # exactly at the cap passes
+    with pytest.raises(PermissionError):
+        ps.validate_tool_path(small, context="t", max_bytes=99)  # one over -> refused
+    # no cap (default) keeps accepting it
+    assert ps.validate_tool_path(small, context="t") == os.path.realpath(small)
+
+
+@POSIX
+def test_validate_tool_path_require_private_refuses_tamperable(staging):
+    """A group/world-writable model in a root is refused with require_private: any
+    local user could swap the bytes the tool then parses (CWE-426/CWE-732)."""
+    private = _model_in_root(staging, "private.model", mode=0o644)
+    assert ps.validate_tool_path(
+        private, context="t", require_private=True
+    ) == os.path.realpath(private)
+    for bad_mode in (0o666, 0o646, 0o664):  # world- or group-writable
+        ww = _model_in_root(staging, f"ww{bad_mode}.model", mode=bad_mode)
+        with pytest.raises(PermissionError):
+            ps.validate_tool_path(ww, context="t", require_private=True)
+        # without require_private the same file is accepted (guard is opt-in)
+        assert ps.validate_tool_path(ww, context="t") == os.path.realpath(ww)
+
+
+@POSIX
+def test_model_guards_still_refuse_fifo_and_symlink_escape(staging):
+    """The pre-existing shape guards remain in force under the new params: a FIFO
+    or a symlink escaping the root in the model slot is still refused."""
+    fifo = os.path.join(staging, "evil.fifo")
+    os.mkfifo(fifo)
+    with pytest.raises(PermissionError):
+        ps.validate_tool_path(
+            fifo, context="t", require_private=True, max_bytes=ps.MAX_TOOL_MODEL_BYTES
+        )
+    escape = os.path.join(staging, "escape.model")
+    os.symlink("/etc/passwd", escape)
+    with pytest.raises(PermissionError):
+        ps.validate_tool_path(escape, context="t", require_private=True)

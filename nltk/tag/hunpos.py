@@ -16,6 +16,7 @@ from subprocess import PIPE
 
 from nltk.internals import find_binary, find_file
 from nltk.pathsec import (
+    MAX_TOOL_MODEL_BYTES,
     TrustError,
     has_line_unsafe_char,
     spawn_trusted,
@@ -100,8 +101,17 @@ class HunposTagger(TaggerI):
         )
         self._encoding = encoding
         # ``self._hunpos_model`` (from find_file) becomes argv to the hunpos-tag
-        # subprocess pathsec.open cannot wrap; bound it before spawning (GHSA-8mgp-746c-j5xp).
-        validate_tool_path(self._hunpos_model, context="HunposTagger.__init__")
+        # subprocess pathsec.open cannot wrap; bound it before spawning
+        # (GHSA-8mgp-746c-j5xp). hunpos-tag (C++) reads the whole model into memory
+        # and parses it, so beyond containment also refuse a model another local
+        # user could plant/swap (require_private) or an oversized memory-bomb model
+        # (max_bytes), narrowing the "malicious in-root model" residual.
+        validate_tool_path(
+            self._hunpos_model,
+            context="HunposTagger.__init__",
+            max_bytes=MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
         # Route through the trusted-exec chokepoint: verify the hunpos-tag binary
         # is on a path no other local user can swap, refuse a shell, and scrub the
         # loader environment before exec (CWE-426/427/732).

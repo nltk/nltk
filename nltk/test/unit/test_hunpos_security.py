@@ -162,3 +162,46 @@ def test_legitimate_multilingual_tokens_are_allowed():
     for token in ["café", "日本語", "नमस्ते", "العربية", "co op", "👨‍👩‍👧"]:
         tagger.tag([token])  # must not raise
         assert token.encode("utf-8") + b"\n" in writes
+
+
+# --- model-file guards: require_private + max_bytes (CWE-426/732/400) -----------
+
+
+def _staged_binary(base):
+    """A trusted (private-dir) hunpos-tag stub so __init__ reaches the model
+    validation; the model guard, not the exec-trust, is what these exercise."""
+    binp = os.path.join(base, "hunpos-tag")
+    with open(binp, "w") as handle:
+        handle.write("#!/bin/sh\nexit 0\n")
+    os.chmod(binp, 0o755)
+    return binp
+
+
+@requires_posix_perms
+def test_group_or_world_writable_model_is_refused(monkeypatch):
+    """A model another local user could swap (group/world-writable) is refused
+    before hunpos-tag ever parses it (require_private, CWE-426/CWE-732)."""
+    base = _staging()
+    binp = _staged_binary(base)
+    model = _model_in_root(base)
+    os.chmod(model, 0o666)  # world-writable: attacker could swap the model bytes
+    monkeypatch.setattr(hp, "find_binary", lambda *a, **k: binp)
+    monkeypatch.setattr(hp, "find_file", lambda p, **k: model)
+    with pytest.raises(PermissionError):
+        hp.HunposTagger("en_wsj.model")
+
+
+def test_oversize_model_is_refused(monkeypatch):
+    """A model larger than MAX_TOOL_MODEL_BYTES is refused (a memory-bomb the C
+    tagger would load whole, CWE-400). A tiny monkeypatched cap (read from hunpos's
+    module namespace at the call) avoids needing a giant file."""
+    base = _staging()
+    binp = _staged_binary(base)
+    model = os.path.join(base, "big.model")
+    with open(model, "wb") as fh:
+        fh.write(b"x" * 4096)  # over the 1024-byte cap below
+    monkeypatch.setattr(hp, "MAX_TOOL_MODEL_BYTES", 1024)
+    monkeypatch.setattr(hp, "find_binary", lambda *a, **k: binp)
+    monkeypatch.setattr(hp, "find_file", lambda p, **k: model)
+    with pytest.raises(PermissionError):
+        hp.HunposTagger("en_wsj.model")
