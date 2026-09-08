@@ -1,12 +1,12 @@
 name: tool-integration-ci
 
-# Real external-tool integration checks. The main ci.yml only fetches the
-# compiled tools (SENNA/PROVER9/MEGAM) on Linux, so the tool wrappers are largely
-# exercised on real I/O only there. This workflow acquires the tools on macOS and
-# Windows too and runs the wrapper tests against the real binaries/jars, so a
-# change to a wrapper (or to the shared pathsec chokepoint) is validated on every
-# OS. It is path-filtered, so it runs only when a tool wrapper, its tests, the
-# acquisition scripts, or this workflow changes, not on every push.
+# Real external-tool integration checks. The main ci.yml fetches the compiled
+# tools (SENNA/PROVER9+MACE4/MEGAM) only on Linux, so the tool wrappers are
+# largely exercised on real I/O only there. This workflow acquires EVERY external
+# tool NLTK wraps on macOS and Windows too and runs the wrapper tests against the
+# real binaries/jars, so a change to a wrapper (or to the shared pathsec
+# chokepoint) is validated on every OS. It is path-filtered, so it runs only when
+# a tool wrapper, its tests, the acquisition scripts, or this workflow changes.
 on:
   pull_request:
     paths:
@@ -37,8 +37,9 @@ on:
       - "nltk/test/unit/test_stanford*.py"
       - "nltk/test/unit/test_repp_security.py"
       - "nltk/test/unit/test_boxer_security.py"
-      - "nltk/test/unit/test_pathsec_sweep_tag.py"
-      - "nltk/test/unit/test_pathsec_sweep_wrappers.py"
+      - "nltk/test/unit/test_inference_security.py"
+      - "nltk/test/unit/test_tokenize_stanford_pathsec.py"
+      - "nltk/test/*.doctest"
   workflow_dispatch:
 
 permissions:
@@ -52,9 +53,10 @@ env:
   STANFORD_MODELS: ${{ github.workspace }}/third/stanford-postagger
   STANFORD_POSTAGGER: ${{ github.workspace }}/third/stanford-postagger
   MALT_PARSER: ${{ github.workspace }}/third/maltparser
-  # SENNA and HUNPOS_TAGGER are exported per platform by the acquisition scripts,
-  # and only when a usable binary for that platform exists, so their tests skip
-  # cleanly rather than erroring when the tool is absent or not built.
+  # SENNA, HUNPOS_TAGGER, PROVER9, MEGAM, CANDC, REPP_TOKENIZER and
+  # STANFORD_SEGMENTER are exported per platform by tool_integration_setup.sh, and
+  # only when a usable binary/jar for that platform exists, so each tool's tests
+  # skip cleanly rather than erroring when the tool is absent or unbuildable.
 
 jobs:
   tool-integration:
@@ -94,6 +96,15 @@ jobs:
           # (e.g. no wheel yet on a brand-new release), test_crf.py importorskips.
           pip install python-crfsuite || echo "python-crfsuite unavailable; test_crf.py will skip"
 
+      - name: Install graphviz (dot, used by nltk.translate.api)
+        shell: bash
+        run: |
+          case "${RUNNER_OS}" in
+            Linux)   sudo apt-get update -qq && sudo apt-get install -y -qq graphviz || true ;;
+            macOS)   brew install graphviz || true ;;
+            Windows) choco install graphviz --no-progress -y || true ;;
+          esac
+
       - name: Cache NLTK data
         uses: actions/cache@v6
         id: nltk-data-cache
@@ -112,7 +123,8 @@ jobs:
           p = Path(os.environ["NLTK_DATA"]); p.mkdir(parents=True, exist_ok=True)
           for pkg in ["punkt", "punkt_tab", "wordnet", "omw-1.4", "words",
                       "treebank", "dependency_treebank", "conll2000",
-                      "averaged_perceptron_tagger", "averaged_perceptron_tagger_eng"]:
+                      "averaged_perceptron_tagger", "averaged_perceptron_tagger_eng",
+                      "book_grammars", "sample_grammars"]:
               try:
                   nltk.download(pkg, download_dir=str(p))
               except Exception as exc:  # a missing optional corpus must not fail CI
@@ -128,57 +140,77 @@ jobs:
         id: third-party-cache
         with:
           path: ${{ env.THIRD_PARTY_DIR }}
-          key: tool_third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh', 'tools/github_actions/tool_integration_senna.sh') }}_v1
+          key: tool_third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh', 'tools/github_actions/tool_integration_setup.sh') }}_v2
 
-      - name: Download cross-platform JVM tools (+ Linux compiled tools)
+      - name: Download the JVM tools + Linux compiled tools (third-party.sh)
         if: steps.third-party-cache.outputs.cache-hit != 'true'
+        # A single flaky download must not red the whole job: retry a few times
+        # (the script is idempotent, it only fetches what is missing) and, if the
+        # upstream host is down for good, continue anyway. The tools that failed to
+        # download are simply absent and their tests skip.
+        continue-on-error: true
         shell: bash
         run: |
           chmod +x tools/github_actions/third-party.sh
-          tools/github_actions/third-party.sh
+          for attempt in 1 2 3; do
+            if tools/github_actions/third-party.sh; then break; fi
+            echo "third-party.sh attempt ${attempt} failed; retrying..."
+            sleep 15
+          done
 
-      - name: Acquire SENNA per platform (best effort)
+      - name: Acquire every remaining external tool per platform (best effort)
         continue-on-error: true
         shell: bash
         run: |
-          chmod +x tools/github_actions/tool_integration_senna.sh
-          tools/github_actions/tool_integration_senna.sh
-
-      - name: Build hunpos from source (best effort, POSIX only)
-        if: runner.os != 'Windows'
-        continue-on-error: true
-        shell: bash
-        run: |
-          chmod +x tools/github_actions/tool_integration_hunpos.sh
-          tools/github_actions/tool_integration_hunpos.sh
+          chmod +x tools/github_actions/tool_integration_setup.sh
+          tools/github_actions/tool_integration_setup.sh
 
       - name: Show acquired tools
         shell: bash
         run: |
-          echo "SENNA=${SENNA:-<unset>}"
-          echo "HUNPOS_TAGGER=${HUNPOS_TAGGER:-<unset>}"
+          for v in SENNA HUNPOS_TAGGER PROVER9 MEGAM CANDC REPP_TOKENIZER \
+                   STANFORD_SEGMENTER STANFORD_POSTAGGER STANFORD_PARSER \
+                   CORENLP MALT_PARSER; do
+            eval "val=\${$v:-<unset>}"; echo "$v=$val"
+          done
           ls -l "$THIRD_PARTY_DIR" || echo "no third-party dir"
 
-      - name: Run tool wrapper tests (real tools where present, guards always)
+      - name: Run reliable wrapper tests (guards always + JVM/crf real tools)
         shell: bash
         run: |
           # Serial on purpose: the real tools are not all parallel-safe (CoreNLP
-          # binds a fixed port, SENNA runs relative to its own directory), so no
-          # xdist here. Real-tool tests skip themselves when the tool/env is
-          # absent; the guard/security tests are tool-independent and always run.
-          # -rs prints the skip reasons so each platform's real coverage is visible.
+          # binds a fixed port), so no xdist. These are the REQUIRED signal: the
+          # tool-independent guard/security tests always run, and the JVM tools +
+          # crfsuite either run (when acquired, which is reliable on every OS) or
+          # skip cleanly (importorskip / no-jar / no-server). -rs shows skip reasons.
           python -m pytest -rs \
-            nltk/test/unit/test_senna.py \
             nltk/test/unit/test_senna_security.py \
             nltk/test/unit/test_crf.py \
             nltk/test/unit/test_corenlp.py \
             nltk/test/unit/test_malt.py \
             nltk/test/unit/test_malt_security.py \
+            nltk/test/unit/test_malt_stanford_pathsec.py \
             nltk/test/unit/test_stanford_parser.py \
             nltk/test/unit/test_stanford_arg_injection.py \
             nltk/test/unit/test_stanford_classpath.py \
             nltk/test/unit/test_stanford_java_wrappers.py \
+            nltk/test/unit/test_tokenize_stanford_pathsec.py \
             nltk/test/unit/test_boxer_security.py \
             nltk/test/unit/test_repp_security.py \
-            nltk/test/unit/test_pathsec_sweep_tag.py \
-            nltk/test/unit/test_pathsec_sweep_wrappers.py
+            nltk/test/unit/test_inference_security.py
+
+      - name: Run best-effort real-tool tests (SENNA, prover9/mace4 doctests)
+        # These exercise the tools built best-effort per platform. When such a
+        # build is broken (e.g. an unrunnable shipped binary) the test may error
+        # rather than skip, which is real signal we want to SEE without redding the
+        # required check above, so this step is continue-on-error. When the tool is
+        # absent the tests skip cleanly (test_senna: skipUnless; the doctests:
+        # check_binary -> pytest.skip).
+        continue-on-error: true
+        shell: bash
+        run: |
+          python -m pytest -rs \
+            nltk/test/unit/test_senna.py
+          python -m pytest -rs --doctest-glob='*.doctest' \
+            nltk/test/inference.doctest \
+            nltk/test/nonmonotonic.doctest
