@@ -1,5 +1,6 @@
 import unittest
 
+from nltk.collocations import TrigramCollocationFinder
 from nltk.metrics import (
     BigramAssocMeasures,
     QuadgramAssocMeasures,
@@ -21,8 +22,9 @@ class TestLikelihoodRatio(unittest.TestCase):
         self.assertAlmostEqual(
             BigramAssocMeasures.likelihood_ratio(1, (1, 1), 1), 0.0, delta=_DELTA
         )
-        self.assertRaises(
+        self.assertRaisesRegex(
             ValueError,
+            "contingency table contains negative counts",
             BigramAssocMeasures.likelihood_ratio,
             *(0, (2, 2), 2),
         )
@@ -38,8 +40,9 @@ class TestLikelihoodRatio(unittest.TestCase):
             0.0,
             delta=_DELTA,
         )
-        self.assertRaises(
+        self.assertRaisesRegex(
             ValueError,
+            "contingency table contains negative counts",
             TrigramAssocMeasures.likelihood_ratio,
             *(1, (1, 1, 2), (1, 1, 2), 2),
         )
@@ -59,8 +62,17 @@ class TestLikelihoodRatio(unittest.TestCase):
             0.0,
             delta=_DELTA,
         )
-        self.assertRaises(
+        self.assertRaisesRegex(
             ValueError,
+            "contingency table contains negative counts",
             QuadgramAssocMeasures.likelihood_ratio,
             *(1, (1, 1, 1, 1), (1, 1, 1, 1, 1, 2), (1, 1, 1, 1), 1),
         )
+
+    def test_lr_trigram_small_sample(self):
+        finder = TrigramCollocationFinder.from_words(["borrower"] * 6 + ["page"])
+        finder.apply_freq_filter(3)
+        with self.assertRaisesRegex(
+            ValueError, "contingency table contains negative counts"
+        ):
+            finder.nbest(TrigramAssocMeasures.likelihood_ratio, 8)
