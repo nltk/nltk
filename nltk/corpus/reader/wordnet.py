@@ -135,11 +135,19 @@ class WordNetError(Exception):
 class _WordNetObject:
     """A common base class for lemmas and synsets."""
 
-    def hypernyms(self):
-        return self._related("@")
+    def hypernyms(self, include_instances=True):
+        """Return hypernyms for this lemma/synset.
 
-    def _hypernyms(self):
-        return self._related("@")
+        If ``include_instances`` is True (default), include instance hypernyms
+        (WordNet pointer ``@i``) in addition to proper hypernyms (``@``).
+        """
+        return self._hypernyms(include_instances=include_instances)
+
+    def _hypernyms(self, include_instances=True):
+        hypernyms = self._related("@")
+        if include_instances:
+            return hypernyms + self._related("@i")
+        return hypernyms
 
     def instance_hypernyms(self):
         return self._related("@i")
@@ -147,8 +155,11 @@ class _WordNetObject:
     def _instance_hypernyms(self):
         return self._related("@i")
 
-    def hyponyms(self):
-        return self._related("~")
+    def hyponyms(self, include_instances=True):
+        hyponyms = self._related("~")
+        if include_instances:
+            return hyponyms + self._related("~i")
+        return hyponyms
 
     def instance_hyponyms(self):
         return self._related("~i")
@@ -530,9 +541,7 @@ class Synset(_WordNetObject):
             next_synset = todo.pop()
             if next_synset not in seen:
                 seen.add(next_synset)
-                next_hypernyms = (
-                    next_synset.hypernyms() + next_synset.instance_hypernyms()
-                )
+                next_hypernyms = next_synset.hypernyms()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
@@ -554,7 +563,7 @@ class Synset(_WordNetObject):
         """
 
         if "_max_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self.hypernyms()
             if not hypernyms:
                 self._max_depth = 0
             else:
@@ -568,7 +577,7 @@ class Synset(_WordNetObject):
         """
 
         if "_min_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self.hypernyms()
             if not hypernyms:
                 self._min_depth = 0
             else:
@@ -673,7 +682,7 @@ class Synset(_WordNetObject):
         """
         paths = []
 
-        hypernyms = self.hypernyms() + self.instance_hypernyms()
+        hypernyms = self.hypernyms()
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -750,7 +759,8 @@ class Synset(_WordNetObject):
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
-            fake_synset.hypernyms = lambda: []
+            fake_synset.hypernyms = lambda include_instances=True: []
+            fake_synset._hypernyms = lambda include_instances=True: []
             fake_synset.instance_hypernyms = lambda: []
             synsets.append(fake_synset)
 
@@ -778,7 +788,7 @@ class Synset(_WordNetObject):
            a hypernym of the first ``Synset``.
         """
         distances = {(self, distance)}
-        for hypernym in self._hypernyms() + self._instance_hypernyms():
+        for hypernym in self._hypernyms():
             distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
         if simulate_root:
             fake_synset = Synset(None)
@@ -802,7 +812,6 @@ class Synset(_WordNetObject):
 
             depth += 1
             queue.extend((hyp, depth) for hyp in s._hypernyms())
-            queue.extend((hyp, depth) for hyp in s._instance_hypernyms())
 
         if simulate_root:
             fake_synset = Synset(None)
@@ -1093,7 +1102,7 @@ class Synset(_WordNetObject):
             todo = [
                 hypernym
                 for synset in todo
-                for hypernym in (synset.hypernyms() + synset.instance_hypernyms())
+                for hypernym in synset.hypernyms()
                 if hypernym not in seen
             ]
 
