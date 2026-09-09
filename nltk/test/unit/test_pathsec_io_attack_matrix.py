@@ -30,14 +30,17 @@ root on macOS).
 import os
 import socket
 import unicodedata
+import zipfile
 
 import pytest
 
+import nltk.pathsec as _pathsec
 from nltk.pathsec import (
     _reject_colliding_members,
     validate_model_resource,
     validate_tool_dir,
     validate_tool_path,
+    validate_zip_archive,
 )
 
 REFUSALS = (PermissionError, ValueError)
@@ -286,19 +289,99 @@ class TestValidateModelResource:
 # ==========================================================================
 class TestModelFileCollision:
     def test_casefold_collision_is_refused(self):
-        with pytest.raises(ValueError):
+        # Refusal carries the bracketed pathsec marker like every other refusal.
+        with pytest.raises(ValueError, match=r"Security Violation \["):
             _reject_colliding_members(["pkg/Weights.json", "pkg/weights.json"])
 
     def test_unicode_nfc_collision_is_refused(self):
         nfc = unicodedata.normalize("NFC", "café.json")
         nfd = unicodedata.normalize("NFD", "café.json")
         assert nfc != nfd
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"Security Violation \["):
             _reject_colliding_members([nfc, nfd])
 
     def test_distinct_members_are_allowed(self):
         # Benign control: a legitimate model archive never collides.
         _reject_colliding_members(["weights.json", "tagdict.json", "classes.json"])
+
+    def test_null_byte_member_is_refused_with_marker(self, tmp_path):
+        # A NUL in a member name (C-string truncation) is refused, and the refusal
+        # carries the bracketed pathsec marker like every other refusal.
+        z = tmp_path / "ok.zip"
+        with zipfile.ZipFile(z, "w") as zf:
+            zf.writestr("good.txt", "x")
+
+        class _NulNameZip(zipfile.ZipFile):
+            def namelist(self):
+                return ["good\x00evil.txt"]
+
+        with _NulNameZip(z) as fz:
+            with pytest.raises(ValueError, match=r"Security Violation \["):
+                validate_zip_archive(fz, str(tmp_path))
+
+    def test_corrupt_archive_is_refused_with_marker(self, tmp_path, monkeypatch):
+        # A non-zip / corrupt archive is refused under ENFORCE, with the marker.
+        monkeypatch.setattr(_pathsec, "ENFORCE", True)
+        bad = tmp_path / "not_a.zip"
+        bad.write_bytes(b"NOT A ZIP FILE")
+        with pytest.raises(PermissionError, match=r"Security Violation \["):
+            validate_zip_archive(str(bad), str(tmp_path))
+
+    def test_attacker_marker_in_member_name_does_not_spoof(self):
+        # A member NAME that embeds a fake "Security Violation [" is still refused,
+        # and the REAL marker leads the message (the injected one only ever appears
+        # mid-message via repr, so it cannot precede or forge the real marker).
+        with pytest.raises(ValueError) as excinfo:
+            _reject_colliding_members(
+                ["Security Violation [x].json", "security violation [x].json"]
+            )
+        assert str(excinfo.value).startswith("Security Violation [")
+
+    def test_zip_context_cannot_be_injected_by_archive_name(
+        self, tmp_path, monkeypatch
+    ):
+        # Name the archive with a FAKE marker; extracting a traversal member is still
+        # refused, and the REAL '[ZipAudit]' context leads the message: an attacker
+        # cannot inject or move the marker via the filename (the context param at the
+        # call site is a fixed literal, never attacker data).
+        monkeypatch.setattr(_pathsec, "ENFORCE", True)
+        mal = tmp_path / "Security Violation [pwn].zip"
+        with zipfile.ZipFile(mal, "w") as zf:
+            zf.writestr("../../etc/evil", "x")
+        with pytest.raises((PermissionError, ValueError)) as excinfo:
+            with _pathsec.ZipFile(mal) as zf:
+                zf.extractall(str(tmp_path))
+        msg = str(excinfo.value)
+        assert msg.startswith("Security Violation [ZipAudit]")
+        assert not msg.startswith("Security Violation [pwn")
+
+
+@POSIX_ONLY
+def test_physical_model_guard_refusals_lead_with_marker(restricted_sandbox):
+    # The physical model-file guards (oversize, group/world-writable, non-regular)
+    # also raise a refusal that LEADS with the marker, so the classifier recognizes
+    # them and none can be spoofed. (Name/containment paths are pinned separately.)
+    root = str(restricted_sandbox)
+    big = os.path.join(root, "big.model")
+    with open(big, "wb") as fh:
+        fh.write(b"x" * 4096)
+    with pytest.raises(REFUSALS) as e1:
+        validate_tool_path(big, context="p", must_exist=False, max_bytes=10)
+    assert str(e1.value).startswith("Security Violation [")
+
+    ww = os.path.join(root, "ww.model")
+    with open(ww, "wb") as fh:
+        fh.write(b"x")
+    os.chmod(ww, 0o666)
+    with pytest.raises(REFUSALS) as e2:
+        validate_tool_path(ww, context="p", require_private=True)
+    assert str(e2.value).startswith("Security Violation [")
+
+    fifo = os.path.join(root, "f.fifo")
+    os.mkfifo(fifo)
+    with pytest.raises(REFUSALS) as e3:
+        validate_tool_path(fifo, context="p")
+    assert str(e3.value).startswith("Security Violation [")
 
 
 # ==========================================================================
