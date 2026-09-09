@@ -338,6 +338,52 @@ class TestModelFileCollision:
             )
         assert str(excinfo.value).startswith("Security Violation [")
 
+    def test_zip_context_cannot_be_injected_by_archive_name(
+        self, tmp_path, monkeypatch
+    ):
+        # Name the archive with a FAKE marker; extracting a traversal member is still
+        # refused, and the REAL '[ZipAudit]' context leads the message: an attacker
+        # cannot inject or move the marker via the filename (the context param at the
+        # call site is a fixed literal, never attacker data).
+        monkeypatch.setattr(_pathsec, "ENFORCE", True)
+        mal = tmp_path / "Security Violation [pwn].zip"
+        with zipfile.ZipFile(mal, "w") as zf:
+            zf.writestr("../../etc/evil", "x")
+        with pytest.raises((PermissionError, ValueError)) as excinfo:
+            with _pathsec.ZipFile(mal) as zf:
+                zf.extractall(str(tmp_path))
+        msg = str(excinfo.value)
+        assert msg.startswith("Security Violation [ZipAudit]")
+        assert not msg.startswith("Security Violation [pwn")
+
+
+@POSIX_ONLY
+def test_physical_model_guard_refusals_lead_with_marker(restricted_sandbox):
+    # The physical model-file guards (oversize, group/world-writable, non-regular)
+    # also raise a refusal that LEADS with the marker, so the classifier recognizes
+    # them and none can be spoofed. (Name/containment paths are pinned separately.)
+    root = str(restricted_sandbox)
+    big = os.path.join(root, "big.model")
+    with open(big, "wb") as fh:
+        fh.write(b"x" * 4096)
+    with pytest.raises(REFUSALS) as e1:
+        validate_tool_path(big, context="p", must_exist=False, max_bytes=10)
+    assert str(e1.value).startswith("Security Violation [")
+
+    ww = os.path.join(root, "ww.model")
+    with open(ww, "wb") as fh:
+        fh.write(b"x")
+    os.chmod(ww, 0o666)
+    with pytest.raises(REFUSALS) as e2:
+        validate_tool_path(ww, context="p", require_private=True)
+    assert str(e2.value).startswith("Security Violation [")
+
+    fifo = os.path.join(root, "f.fifo")
+    os.mkfifo(fifo)
+    with pytest.raises(REFUSALS) as e3:
+        validate_tool_path(fifo, context="p")
+    assert str(e3.value).startswith("Security Violation [")
+
 
 # ==========================================================================
 # Frozen __fspath__ / hostile str subclass (the guard must not be fooled)
