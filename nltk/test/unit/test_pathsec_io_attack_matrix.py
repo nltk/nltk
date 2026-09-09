@@ -328,6 +328,16 @@ class TestModelFileCollision:
         with pytest.raises(PermissionError, match=r"Security Violation \["):
             validate_zip_archive(str(bad), str(tmp_path))
 
+    def test_attacker_marker_in_member_name_does_not_spoof(self):
+        # A member NAME that embeds a fake "Security Violation [" is still refused,
+        # and the REAL marker leads the message (the injected one only ever appears
+        # mid-message via repr, so it cannot precede or forge the real marker).
+        with pytest.raises(ValueError) as excinfo:
+            _reject_colliding_members(
+                ["Security Violation [x].json", "security violation [x].json"]
+            )
+        assert str(excinfo.value).startswith("Security Violation [")
+
 
 # ==========================================================================
 # Frozen __fspath__ / hostile str subclass (the guard must not be fooled)

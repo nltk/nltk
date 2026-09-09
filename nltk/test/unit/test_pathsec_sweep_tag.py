@@ -643,12 +643,13 @@ _ALL_SINKS = dict(_FILE_SINKS, **_DIR_SINKS)
 
 
 def _is_guard_refusal(exc):
-    """True only for a pathsec refusal, which is ALWAYS raised as the bracketed
-    ``Security Violation [context]: ...`` (pinned by the invariant test below), so
-    a tool raising the same exception type for its own reason is not miscounted."""
-    # Match the bracketed context form, not the bare words: a tool message that
-    # happens to say "security violation" in prose must not read as a guard refusal.
-    return "Security Violation [" in str(exc)
+    """True only for a pathsec refusal, which is ALWAYS raised with the message
+    STARTING ``Security Violation [context]: ...`` (pinned by the invariant test).
+    Anchoring at the start is spoof-proof: attacker-controlled data (a path or zip
+    member) that a tool echoes only ever lands mid-message, so it can never move
+    the leading marker, and a tool that merely mentions the phrase is not a
+    refusal."""
+    return str(exc).startswith("Security Violation [")
 
 
 def _refusal(sink, path):
@@ -815,6 +816,20 @@ def test_is_guard_refusal_distinguishes_guard_from_tool():
     # NOT read as a guard refusal (a tool could mention "security" innocently).
     assert not _is_guard_refusal(ValueError("this triggered a security violation"))
     assert not _is_guard_refusal(RuntimeError("Security Violation: no bracket here"))
+    # Spoofing: attacker data a tool echoes lands MID-message. Anchoring the marker
+    # at the START means a forged marker inside a tool error cannot pass as a guard
+    # refusal, even though the substring is present.
+    assert not _is_guard_refusal(
+        ValueError("crfsuite: cannot open 'Security Violation [x]: pwned'")
+    )
+    assert not _is_guard_refusal(
+        FileNotFoundError("No such file: /tmp/Security Violation [evil]/m.crf")
+    )
+    # But a genuine refusal that QUOTES an attacker's fake marker mid-message is
+    # still a refusal, because the REAL marker still leads.
+    assert _is_guard_refusal(
+        ValueError("Security Violation [ZipAudit]: member 'Security Violation [x]'")
+    )
 
 
 _GUARD_REFUSAL_TRIGGERS = [
