@@ -243,6 +243,37 @@ ADVERSARIAL = [
     ["-uriContext", "//evil"],
     ["-uriContext", "/a//b"],
     ["-uriContext", "/a/../b"],
+    # Empty values: an int/annotator/uri flag with no value (two-token or glued
+    # inline) has nothing valid to match, so each is refused not silently dropped.
+    ["-port", ""],
+    ["-port="],
+    ["-annotators="],
+    ["-annotators", " "],
+    ["-uriContext", ""],
+    # Oversize integers: the uint shape is length bounded, so a value far past any
+    # real port/timeout/length is refused before it reaches CoreNLP's own parser.
+    ["-maxCharLength", "999999999999"],
+    ["-timeout", "999999999999"],
+    # Non-decimal / padded integers CoreNLP's Integer.parseInt would reject anyway.
+    ["-timeout", "0x10"],
+    ["-timeout", "1_000"],
+    ["-port", "9000 "],
+    ["-port", " 9000"],
+    # A URL prefix must be a rooted safe-charset path: an absolute URL with a
+    # scheme/authority, or a backslash, is refused.
+    ["-uriContext", "http://evil/x"],
+    ["-uriContext", "/a\\b"],
+    # More line/control smuggling in a token value: CR, DEL, and the unicode
+    # NEL/LINE-SEPARATOR that a naive newline check misses (CWE-93).
+    ["-server_id", "a\rb"],
+    ["-server_id", "a\x7fb"],
+    ["-server_id", "a\x85b"],
+    ["-server_id", "a b"],
+    ["-server_id", "a\x00"],
+    # Dangerous flag smuggled after a multi token benign value, and an inline bare
+    # flag paired with an inline path flag: neither desyncs the allowlist.
+    ["-preload", "tokenize,ssplit", "-serverProperties", "/etc/passwd"],
+    ["-quiet=true", "-serverProperties=/etc/passwd"],
 ]
 
 ALL_MALICIOUS = (
@@ -361,6 +392,41 @@ def _real_corenlp_available():
         return False
 
 
+def _make_corenlp_server(corenlp_options):
+    import nltk
+
+    # The jar sandbox trusts jars under an nltk.data.path root; adding the
+    # install dir there is the documented way to trust an external tool.
+    for env_var in ("CORENLP", "CORENLP_MODELS"):
+        directory = os.environ.get(env_var)
+        if directory and directory not in nltk.data.path:
+            nltk.data.path.insert(0, directory)
+    return CoreNLPServer(corenlp_options=corenlp_options)
+
+
+@pytest.fixture(scope="module")
+def live_server():
+    # One real server shared by every wrapper-function test. The options preload
+    # the full annotator set (so parse/depparse/ner all work) and include the
+    # allowlisted -srparser and inline -maxCharLength=-1: the server coming up at
+    # all proves CoreNLP's own arg parser accepts them (a form it rejects crashes
+    # the process, not just a unit assertion).
+    pytest.importorskip("requests")
+    srv = _make_corenlp_server(
+        [
+            "-preload",
+            "tokenize,ssplit,pos,lemma,ner,parse,depparse",
+            "-srparser",
+            "-maxCharLength=-1",
+        ]
+    )
+    srv.start()
+    try:
+        yield srv
+    finally:
+        srv.stop()
+
+
 @pytest.mark.skipif(
     not _real_corenlp_available(),
     reason="No real CoreNLP install (set CORENLP / CORENLP_MODELS to the unpacked dir)",
@@ -372,36 +438,71 @@ class TestRealServerLaunch:
     the server, not just fail a unit assertion), and that a hostile java_options
     is still refused before the JVM is launched."""
 
-    def _server(self, corenlp_options):
-        import nltk
-
-        # The jar sandbox trusts jars under an nltk.data.path root; adding the
-        # install dir there is the documented way to trust an external tool.
-        for env_var in ("CORENLP", "CORENLP_MODELS"):
-            directory = os.environ.get(env_var)
-            if directory and directory not in nltk.data.path:
-                nltk.data.path.insert(0, directory)
-        return CoreNLPServer(corenlp_options=corenlp_options)
-
-    def test_benign_options_start_a_real_server_and_tokenize(self):
-        pytest.importorskip("requests")
+    def test_real_tokenize(self, live_server):
         from nltk.parse.corenlp import CoreNLPParser
 
-        # Exercises the newly allowlisted -srparser and the inline -maxCharLength
-        # negative sentinel: both are forms CoreNLP's own arg parser accepts.
-        srv = self._server(
-            ["-preload", "tokenize,ssplit,pos", "-srparser", "-maxCharLength=-1"]
+        toks = list(CoreNLPParser(url=live_server.url).tokenize("The quick brown fox."))
+        assert toks[:4] == ["The", "quick", "brown", "fox"], toks
+
+    def test_real_pos_and_ner_tag(self, live_server):
+        from nltk.parse.corenlp import CoreNLPParser
+
+        pos = CoreNLPParser(url=live_server.url, tagtype="pos")
+        assert pos.tag("What is the airspeed ?".split())[0] == ("What", "WP")
+        ner = CoreNLPParser(url=live_server.url, tagtype="ner")
+        tags = ner.tag("Barack Obama was born in Hawaii .".split())
+        assert any(t == "PERSON" for _, t in tags), tags
+
+    def test_real_tag_sents_and_raw_tag_sents(self, live_server):
+        from nltk.parse.corenlp import CoreNLPParser
+
+        pos = CoreNLPParser(url=live_server.url, tagtype="pos")
+        assert pos.tag_sents([["The", "dog", "barks"]])[0][0] == ("The", "DT")
+        assert list(next(iter(pos.raw_tag_sents(["The dog barks."]))))
+
+    def test_real_constituency_parse(self, live_server):
+        from nltk.parse.corenlp import CoreNLPParser
+
+        p = CoreNLPParser(url=live_server.url)
+        assert next(p.parse("The dog barks .".split())).label() == "ROOT"
+        assert next(p.raw_parse("The dog barks.")).label() == "ROOT"
+        assert len(list(p.raw_parse_sents(["The dog barks.", "Cats sleep."]))) == 2
+        assert p.parse_one("The dog barks .".split()).label() == "ROOT"
+        assert next(iter(next(iter(p.parse_sents([["The", "dog", "."]]))))).label()
+        assert len(list(p.parse_text("The dog barks. Cats sleep."))) >= 2
+
+    def test_real_dependency_parse(self, live_server):
+        from nltk.parse.corenlp import CoreNLPDependencyParser
+
+        d = CoreNLPDependencyParser(url=live_server.url)
+        assert list(next(d.raw_parse("The quick brown fox jumps.")).triples())
+        assert list(next(d.parse("The dog barks .".split())).triples())
+        batch = list(d.parse_sents([["The", "dog", "barks", "."]]))
+        assert list(next(iter(batch[0])).triples())
+
+    def test_real_api_call(self, live_server):
+        from nltk.parse.corenlp import CoreNLPParser
+
+        resp = CoreNLPParser(url=live_server.url).api_call(
+            "The dog barks.", properties={"annotators": "tokenize,ssplit,pos"}
         )
-        srv.start()
-        try:
-            tokens = list(CoreNLPParser(url=srv.url).tokenize("The quick brown fox."))
-            assert tokens[:4] == ["The", "quick", "brown", "fox"], tokens
-        finally:
-            srv.stop()
+        assert "sentences" in resp
+
+    def test_malicious_options_never_reach_a_real_launch(self):
+        # Even with a real install present, a path-bearing or unknown option is
+        # refused at construction, so it never reaches the launched server.
+        for evil in (
+            ["-serverProperties", "/etc/passwd"],
+            ["-parse.model", "/tmp/evil.ser.gz"],
+            ["-outputDirectory", "/tmp"],
+            ["-status_port", "-9"],
+        ):
+            with pytest.raises(ValueError):
+                _make_corenlp_server(evil)
 
     def test_hostile_java_options_refused_before_the_jvm_launches(self):
         pytest.importorskip("requests")
-        srv = self._server(["-quiet"])
+        srv = _make_corenlp_server(["-quiet"])
         srv.java_options = ["-javaagent:/tmp/evil.jar"]
         with pytest.raises(ValueError):
             srv.start()
