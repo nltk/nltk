@@ -642,13 +642,23 @@ _DIR_SINKS = {
 _ALL_SINKS = dict(_FILE_SINKS, **_DIR_SINKS)
 
 
+def _is_guard_refusal(exc):
+    """True only for a pathsec refusal, which is ALWAYS raised as the bracketed
+    ``Security Violation [context]: ...`` (pinned by the invariant test below), so
+    a tool raising the same exception type for its own reason is not miscounted."""
+    # Match the bracketed context form, not the bare words: a tool message that
+    # happens to say "security violation" in prose must not read as a guard refusal.
+    return "Security Violation [" in str(exc)
+
+
 def _refusal(sink, path):
-    """Run *sink* on *path*; return None if it refused, else the exception (or
-    None-as-success) that proves it got past the guard."""
+    """Run *sink* on *path*; return None only if the GUARD refused it (a pathsec
+    Security Violation), else the exception/None-as-success proving it got past
+    the guard. A tool failing for its own reason is past-guard, not a refusal."""
     try:
         _ALL_SINKS[sink](path)
-    except (PermissionError, ValueError):
-        return None
+    except (PermissionError, ValueError) as exc:
+        return None if _is_guard_refusal(exc) else exc
     except _ReachedSink as exc:
         return exc
     except Exception as exc:  # noqa: BLE001 - any other failure is "past the guard"
@@ -717,6 +727,133 @@ def test_file_sinks_do_not_over_block_contained_paths(pathsec_sandbox, sink, vec
         assert outcome is not None, f"{sink} unexpectedly refused {vector}"
     finally:
         _cleanup(registry)
+
+
+# Legitimate non-ASCII filenames validate_tool_path must ACCEPT (returned
+# verbatim) when contained; refusing them would break real model paths for
+# non-ASCII users. Probes the GUARD directly, not any tool's own unicode handling.
+_BENIGN_UNICODE_NAMES = [
+    ("nfc-precomposed", "modéle.model"),  # e-acute as one code point
+    ("nfd-decomposed", "modéle.model"),  # e + combining acute
+    ("cjk", "模型.model"),  # CJK
+    ("cyrillic", "модель.model"),
+    ("arabic-rtl", "نموذج.model"),
+    ("emoji", "robot_\U0001f916.model"),
+    ("zwj", "co‍op.model"),  # zero-width joiner inside the name
+    ("mixed-space", "my café 模型.model"),
+    ("bidi-rlo", "file\u202edoc.model"),  # right-to-left override, a valid char
+    ("fullwidth-solidus", "a\uff0fb.model"),  # U+FF0F is NOT a path separator
+    # DEL / C1 NEL / Unicode line separator are stdin line-injection vectors
+    # (blocked by has_line_unsafe_char) but legitimate bytes in an argv PATH, which
+    # has no line to inject into, so this guard must not over-block them.
+    ("del-0x7f", "mod\x7fel.model"),
+    ("c1-nel-0x85", "mod\x85el.model"),
+    ("line-separator-2028", "mod\u2028el.model"),
+]
+
+
+@pytest.mark.parametrize(
+    "name",
+    [n for _, n in _BENIGN_UNICODE_NAMES],
+    ids=[i for i, _ in _BENIGN_UNICODE_NAMES],
+)
+def test_validate_tool_path_accepts_benign_unicode(restricted_sandbox, name):
+    """A contained path with any legitimate non-ASCII leaf must be accepted and
+    returned verbatim, never over-blocked."""
+    path = os.path.join(str(restricted_sandbox), name)
+    result = pathsec.validate_tool_path(
+        path, context="unicode-benign", must_exist=False
+    )
+    assert result == path  # no normalization, no over-block
+
+
+# Attacks that wear a unicode disguise but are still a real escape or a
+# Windows-ambiguous name: the guard must refuse EVERY one, with a Security
+# Violation (proving the tolerance added above does not open a hole).
+_UNICODE_ATTACKS = [
+    ("nul-after-unicode", "модель\x00.model"),
+    (
+        "traversal-through-unicode",
+        os.path.join("..", "模型", "..", "..", "etc", "passwd"),
+    ),
+    ("trailing-dot-unicode", "модель."),
+    ("trailing-space-unicode", "模型 "),
+    ("newline-in-unicode", "模型\nevil.model"),
+    ("cr-in-unicode", "\u6a21\u578b\rx.model"),
+    ("vtab-in-unicode", "\u6a21\u578b\x0bx.model"),
+    ("formfeed-in-unicode", "\u6a21\u578b\x0cx.model"),
+]
+
+
+@pytest.mark.parametrize(
+    "name", [n for _, n in _UNICODE_ATTACKS], ids=[i for i, _ in _UNICODE_ATTACKS]
+)
+def test_validate_tool_path_refuses_unicode_disguised_attacks(restricted_sandbox, name):
+    """A unicode disguise must not smuggle a NUL, a traversal, a Windows-stripped
+    trailing dot/space, or a control character past the guard."""
+    if os.path.isabs(name):
+        path = name
+    else:
+        path = os.path.join(str(restricted_sandbox), name)
+    with pytest.raises((PermissionError, ValueError)) as excinfo:
+        pathsec.validate_tool_path(path, context="unicode-attack", must_exist=False)
+    assert _is_guard_refusal(excinfo.value)
+
+
+def test_is_guard_refusal_distinguishes_guard_from_tool():
+    """Lock the classifier: only pathsec's bracketed Security Violation is a guard
+    refusal, so a tool raising the same exception type for its own reason is not
+    miscounted (nor a real refusal miscounted as a tolerated tool failure)."""
+    assert _is_guard_refusal(PermissionError("Security Violation [ctx]: nope"))
+    assert _is_guard_refusal(ValueError("Security Violation [ctx]: bad name"))
+    # Tool failures with no bracketed pathsec marker are NOT guard refusals.
+    assert not _is_guard_refusal(ValueError("crfsuite: cannot open the output file"))
+    assert not _is_guard_refusal(PermissionError("[Errno 13] Permission denied: x"))
+    assert not _is_guard_refusal(FileNotFoundError("[WinError 2] cannot find m.model"))
+    assert not _is_guard_refusal(OSError("disk full"))
+    # Adversarial: the bare words in prose, or without the '[context]' bracket, must
+    # NOT read as a guard refusal (a tool could mention "security" innocently).
+    assert not _is_guard_refusal(ValueError("this triggered a security violation"))
+    assert not _is_guard_refusal(RuntimeError("Security Violation: no bracket here"))
+
+
+_GUARD_REFUSAL_TRIGGERS = [
+    ("empty", ""),
+    ("nul", "a\x00b.model"),
+    ("newline", "a\nb.model"),
+    ("option-dash", "-rf.model"),
+    ("url", "http://evil/x.model"),
+    ("tilde", "~/x.model"),
+    ("dotdot", os.path.join("..", "..", "etc", "passwd")),
+    ("absolute-outside", "/etc/passwd" if _POSIX else "C:\\Windows\\win.ini"),
+]
+
+
+@pytest.mark.parametrize(
+    "val",
+    [v for _, v in _GUARD_REFUSAL_TRIGGERS],
+    ids=[i for i, _ in _GUARD_REFUSAL_TRIGGERS],
+)
+def test_every_guard_refusal_carries_the_bracketed_marker(restricted_sandbox, val):
+    """Pin the classifier's premise: EVERY validate_tool_path refusal is raised as
+    PermissionError/ValueError carrying 'Security Violation ['. If a future pathsec
+    change drops the marker on any path, _is_guard_refusal breaks, so fail loudly."""
+    with pytest.raises((PermissionError, ValueError)) as excinfo:
+        pathsec.validate_tool_path(val, context="invariant", must_exist=False)
+    assert _is_guard_refusal(
+        excinfo.value
+    ), f"refusal without marker: {excinfo.value!r}"
+
+
+@pytest.mark.parametrize("sink", sorted(_FILE_SINKS))
+def test_file_sinks_refuse_outside_unicode_path_at_the_guard(pathsec_sandbox, sink):
+    """No-leak proof: an OUTSIDE unicode-named path must be refused by the GUARD
+    (a Security Violation before the tool runs), not merely by a tool failure.
+    _refusal returns None only for a guard refusal, so the escape is stopped here."""
+    root, outside = pathsec_sandbox
+    target = str(outside / "\u043c\u043e\u0434\u0435\u043b\u044c_\u6a21\u578b.model")
+    outcome = _refusal(sink, target)
+    assert outcome is None, f"{sink} did not refuse an outside unicode path (leak?)"
 
 
 def test_benign_vectors_are_not_expanded_or_decoded(pathsec_sandbox):
@@ -867,8 +1004,10 @@ def test_each_guard_is_load_bearing(
 def _refusal_for(driver, path):
     try:
         driver(path)
-    except (PermissionError, ValueError):
-        return "refused"
+    except (PermissionError, ValueError) as exc:
+        # Only a pathsec Security Violation is a guard refusal; a tool raising the
+        # same type for its own reason is past-guard (see _is_guard_refusal).
+        return "refused" if _is_guard_refusal(exc) else "past-guard"
     except Exception:
         return "past-guard"
     return "landed"
