@@ -33,22 +33,13 @@ class CoreNLPServerError(EnvironmentError):
     """Exceptions associated with the Core NLP server."""
 
 
-# --- corenlp_options allowlist (CWE-88 / CWE-22 / CWE-502) -------------------
+# corenlp_options allowlist (CWE-88 / CWE-22 / CWE-502): these are the CoreNLP
+# server's OWN flags (not JVM launcher flags), many taking a filesystem path or
+# loading a serialized model, so forwarding them unchecked is a read/write escape.
 #
-# corenlp_options is a list of StanfordCoreNLPServer command flags that start()
-# appends to the JVM command AFTER the server class name. Unlike java_options
-# (JVM launcher flags, guarded by internals._validate_java_options), these are the
-# server application's own flags, and CoreNLP has many that take a filesystem
-# path: -serverProperties and -props read an arbitrary file as configuration,
-# -key reads an SSL key, -outputDirectory and -file write or read arbitrary
-# locations, and any -<annotator>.model flag loads a Java-serialized model
-# (deserialization). Forwarding this list unchecked would let whoever populates
-# it read or write files outside the data roots and load an attacker model. So a
-# minimal allowlist is used rather than a denylist (mirroring java_options): only
-# operational flags whose VALUES validate to a safe shape pass; every other flag,
-# path-bearing or simply unknown, is refused without needing enumeration. An
-# application that genuinely needs an unlisted flag builds and starts the JVM
-# itself.
+# An allowlist (mirroring java_options) passes only operational flags whose values
+# validate to a safe shape; any other flag, path-bearing or unknown, is refused
+# without enumeration. A caller needing an unlisted flag runs the JVM itself.
 
 # CoreNLP annotator names permitted as an -annotators / -preload value.
 _CORENLP_ANNOTATORS = frozenset(
@@ -179,12 +170,9 @@ def _validate_corenlp_options(options):
                 _corenlp_reject(raw, "is missing its required value")
             _corenlp_check_scalar(val)
             if flag in _CORENLP_INT_FLAGS:
-                # -maxCharLength reads a non-positive value as "no limit". CoreNLP
-                # only parses a negative in the inline -maxCharLength=-1 form; as
-                # two tokens it reads the "-1" as a separate flag and dies, and a
-                # value starting with '-' is exactly the option-smuggling shape we
-                # refuse elsewhere. So a signed value is accepted inline only; the
-                # two-token form (like every other int flag) must be non-negative.
+                # -maxCharLength takes a signed int only in the inline -flag=-1 form;
+                # as two tokens the "-1" reads as a separate option (the smuggling
+                # shape we refuse), so the two-token form must be non-negative.
                 if flag == "-maxcharlength" and inline is not None:
                     if not _CORENLP_SIGNED_INT_RE.match(val):
                         _corenlp_reject(raw, "requires an integer, got %r" % val)
@@ -202,10 +190,9 @@ def _validate_corenlp_options(options):
                 if not _CORENLP_TOKEN_RE.match(val):
                     _corenlp_reject(raw, "value is not a plain token: %r" % val)
             elif flag in _CORENLP_URI_FLAGS:
-                # ".." is a path-traversal segment, and a leading "//" is a
-                # network-path reference (an empty segment the URL parser may read
-                # as a host); no real context path has either, so refuse both on
-                # top of the safe-charset shape check.
+                # ".." is a traversal segment and a leading "//" is a network-path
+                # reference (a host to the URL parser); no real context path has
+                # either, so refuse both on top of the safe-charset check.
                 if not _CORENLP_URI_RE.match(val) or ".." in val or "//" in val:
                     _corenlp_reject(raw, "value is not a safe uri path: %r" % val)
             i += step
@@ -325,12 +312,9 @@ class CoreNLPServer:
 
         cmd = ["edu.stanford.nlp.pipeline.StanfordCoreNLPServer"]
 
-        # corenlp_options are the CoreNLP server's own flags. Validate them at the
-        # sink against the allowlist (re-validated here, not only at construction,
-        # so a reassignment of self.corenlp_options cannot slip an unchecked flag
-        # past): a path-bearing or unknown flag is refused, closing the argument
-        # injection, arbitrary file read/write and model-deserialization vector
-        # (CWE-88, CWE-22, CWE-502).
+        # Re-validate corenlp_options at the sink (not only at construction), so a
+        # reassignment cannot slip an unchecked flag past: a path-bearing or unknown
+        # flag is refused (CWE-88 / CWE-22 / CWE-502).
         if self.corenlp_options:
             cmd.extend(_validate_corenlp_options(self.corenlp_options))
 

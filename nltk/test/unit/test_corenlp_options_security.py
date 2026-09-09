@@ -24,13 +24,9 @@ import pytest
 
 from nltk.parse.corenlp import CoreNLPServer, _validate_corenlp_options
 
-# Reuse the adversarial JVM / external-tool payload corpora already written for the
-# java() and tool-wrapper guards. None of these is an allowlisted CoreNLP server
-# flag, so corenlp_options must refuse every one of them too. This piggybacks the
-# corenlp allowlist onto ~115 existing hostile vectors (JVM agents, @argfile,
-# -XX:OnError, bootclasspath / module-path / class-path, codebase, metacharacter /
-# NUL / unicode-whitespace / DEL smuggling, concatenated flags, tool program flags
-# and hostile model paths) rather than re-authoring them.
+# Reuse the ~115 adversarial JVM / tool-wrapper payload corpora (agents, @argfile,
+# -XX:OnError, class/module path, NUL/unicode/DEL smuggling, hostile model paths):
+# none is an allowlisted CoreNLP server flag, so corenlp_options must refuse each.
 from nltk.test.unit.test_attack_java_tool_expanded import (
     _HOSTILE_HUNPOS_MODELS,
     _TOOL_FLAGS,
@@ -64,7 +60,7 @@ _REUSED_HOSTILE = [
     if opts
 ]
 
-# --- BENIGN: normal operational usage that MUST keep working ------------------
+# BENIGN: normal operational usage that MUST keep working.
 BENIGN = [
     ["-preload", "tokenize,ssplit,pos,lemma,parse,depparse"],  # the NLTK default
     ["-port", "9000"],
@@ -105,7 +101,7 @@ BENIGN = [
     [],
 ]
 
-# --- MALICIOUS: every candidate must be refused -------------------------------
+# MALICIOUS: every candidate must be refused.
 # Arbitrary file READ via a config/properties/key/blocklist path flag.
 FILE_READ = [
     ["-serverProperties", "/etc/passwd"],
@@ -208,10 +204,9 @@ NON_STRING = [
     [b"-port", b"9000"],
     ["-port", 9000],  # int value where a string is required
 ]
-# Adversarial sneak-through attempts found by probing the allowlist: consumption
-# desync (a bare flag must not swallow a following dangerous flag as its value),
-# double-dash spellings, glued forms, homoglyph and fullwidth digits, oversize
-# values, path/model tokens hidden in an annotator list, and uriContext traversal.
+# Adversarial sneak-through attempts probing the allowlist: consumption desync (a
+# bare flag swallowing the next as its value), double-dash/glued spellings, homoglyph
+# and fullwidth digits, oversize values, hidden path/model tokens, uriContext traversal.
 ADVERSARIAL = [
     ["-uriContext", "/../../etc/passwd"],  # traversal inside a URI context
     ["-uriContext", "/..%2f..%2fetc"],
@@ -281,9 +276,8 @@ class TestValidatorMalicious:
 
 class TestReusedAdversarialCorpora:
     # ~115 hostile vectors reused from the java()/tool-wrapper attack suites; the
-    # corenlp_options allowlist must refuse every one (none is an allowlisted
-    # server flag). Proves the guard piggybacks the existing corpus, not just the
-    # cases written by hand for it.
+    # corenlp_options allowlist must refuse every one (none is an allowlisted server
+    # flag), proving the guard piggybacks the existing corpus, not just hand cases.
     @pytest.mark.parametrize("opts", _REUSED_HOSTILE)
     def test_reused_jvm_and_tool_payloads_are_refused(self, opts):
         with pytest.raises((ValueError, TypeError)):
