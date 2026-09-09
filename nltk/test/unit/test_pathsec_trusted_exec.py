@@ -443,7 +443,9 @@ def _popen_spy(monkeypatch):
 
 
 def test_spawn_trusted_refuses_shell():
-    with pytest.raises(ValueError):
+    # The refusal carries the bracketed "Security Violation [context]:" marker like
+    # every other pathsec refusal, so a marker-based classifier reads it correctly.
+    with pytest.raises(ValueError, match=r"Security Violation \[spawn_trusted\]"):
         ps.spawn_trusted("/bin/sh", ["-c", "true"], shell=True)
 
 

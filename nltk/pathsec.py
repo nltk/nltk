@@ -353,7 +353,11 @@ def spawn_trusted(target, args=(), **popen_kw):
     out-of-scope race while adding a Linux-only, magic-symlink exec path.
     """
     if popen_kw.get("shell"):
-        raise ValueError("spawn_trusted refuses shell=True")
+        raise ValueError(
+            "Security Violation [spawn_trusted]: shell=True is refused; a shell "
+            "would re-interpret the trusted command on caller-supplied args "
+            "(CWE-78). Pass an argv list and no shell."
+        )
     popen_kw.setdefault("env", safe_env())
     popen_kw.setdefault("close_fds", True)
 
