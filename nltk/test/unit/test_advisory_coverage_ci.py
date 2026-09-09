@@ -48,14 +48,15 @@ _HEADERS = {
     "User-Agent": "nltk-advisory-coverage",
 }
 
-#: Closed/withdrawn advisories deliberately kept as regression probes. The
-#: public API lists only published advisories, so these must be named here or
-#: the reverse check would flag them as unknown.
+#: Closed, withdrawn, or still-draft advisories deliberately kept as regression
+#: probes. The unauthenticated API lists only published advisories, so these
+#: must be named here or the reverse check would flag them as unknown.
 _CLOSED_WITH_PROBE = {
     "GHSA-4489-j4f3-2g8q",
     "GHSA-9ffx-rrgx-mhgx",
     "GHSA-pcm8-fqjx-rvx8",
     "GHSA-8846-p9w9-5frf",
+    "GHSA-j456-xh4h-cpf2",
 }
 
 
