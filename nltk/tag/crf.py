@@ -14,7 +14,7 @@ import unicodedata
 import warnings
 
 from nltk import redos
-from nltk.pathsec import validate_tool_path
+from nltk.pathsec import MAX_TOOL_MODEL_BYTES, validate_tool_path
 from nltk.tag.api import TaggerI
 
 try:
@@ -131,7 +131,15 @@ class CRFTagger(TaggerI):
         C extension does its own open, so containment is the check that can be
         applied; a symlink swapped in after it is not covered.
         """
-        validate_tool_path(model_file, context="CRFTagger.set_model_file")
+        # crfsuite (C) opens and parses the whole model itself; beyond
+        # containment, refuse a model another local user could plant/swap
+        # (require_private) or an oversized memory bomb (max_bytes).
+        validate_tool_path(
+            model_file,
+            context="CRFTagger.set_model_file",
+            max_bytes=MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
         self._model_file = model_file
         self._tagger.open(self._model_file)
 
