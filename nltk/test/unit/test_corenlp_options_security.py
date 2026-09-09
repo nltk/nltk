@@ -22,7 +22,7 @@ import os
 
 import pytest
 
-from nltk.parse.corenlp import CoreNLPServer, _validate_corenlp_options
+from nltk.parse.corenlp import CoreNLPServer, _validate_corenlp_options, try_port
 
 # Reuse the ~115 adversarial JVM / tool-wrapper payload corpora (agents, @argfile,
 # -XX:OnError, class/module path, NUL/unicode/DEL smuggling, hostile model paths):
@@ -392,7 +392,7 @@ def _real_corenlp_available():
         return False
 
 
-def _make_corenlp_server(corenlp_options):
+def _make_corenlp_server(corenlp_options, port=None):
     import nltk
 
     # The jar sandbox trusts jars under an nltk.data.path root; adding the
@@ -401,16 +401,18 @@ def _make_corenlp_server(corenlp_options):
         directory = os.environ.get(env_var)
         if directory and directory not in nltk.data.path:
             nltk.data.path.insert(0, directory)
-    return CoreNLPServer(corenlp_options=corenlp_options)
+    return CoreNLPServer(corenlp_options=corenlp_options, port=port)
 
 
 @pytest.fixture(scope="module")
 def live_server():
-    # One real server shared by every wrapper-function test. The options preload
-    # the full annotator set (so parse/depparse/ner all work) and include the
-    # allowlisted -srparser and inline -maxCharLength=-1: the server coming up at
-    # all proves CoreNLP's own arg parser accepts them (a form it rejects crashes
-    # the process, not just a unit assertion).
+    # One real server shared by every wrapper-function test. Bind an ephemeral
+    # free port, never the default 9000: the mock suite in test_corenlp.py starts
+    # its own server on 9000, and under xdist two modules both binding 9000 race
+    # to "Address already in use", so this module stays off that port entirely.
+    # The options preload the full annotator set (so parse/depparse/ner all work)
+    # and include the allowlisted -srparser and inline -maxCharLength=-1: the
+    # server coming up at all proves CoreNLP's own arg parser accepts them.
     pytest.importorskip("requests")
     srv = _make_corenlp_server(
         [
@@ -418,7 +420,8 @@ def live_server():
             "tokenize,ssplit,pos,lemma,ner,parse,depparse",
             "-srparser",
             "-maxCharLength=-1",
-        ]
+        ],
+        port=try_port(),
     )
     srv.start()
     try:
@@ -502,7 +505,7 @@ class TestRealServerLaunch:
 
     def test_hostile_java_options_refused_before_the_jvm_launches(self):
         pytest.importorskip("requests")
-        srv = _make_corenlp_server(["-quiet"])
+        srv = _make_corenlp_server(["-quiet"], port=try_port())
         srv.java_options = ["-javaagent:/tmp/evil.jar"]
         with pytest.raises(ValueError):
             srv.start()
