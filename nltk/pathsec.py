@@ -353,7 +353,11 @@ def spawn_trusted(target, args=(), **popen_kw):
     out-of-scope race while adding a Linux-only, magic-symlink exec path.
     """
     if popen_kw.get("shell"):
-        raise ValueError("spawn_trusted refuses shell=True")
+        raise ValueError(
+            "Security Violation [spawn_trusted]: shell=True is refused; a shell "
+            "would re-interpret the trusted command on caller-supplied args "
+            "(CWE-78). Pass an argv list and no shell."
+        )
     popen_kw.setdefault("env", safe_env())
     popen_kw.setdefault("close_fds", True)
 
@@ -596,7 +600,7 @@ def _is_windows_device_name(raw):
     return leaf.split(".", 1)[0].strip().upper() in _WINDOWS_RESERVED_NAMES
 
 
-def _reject_colliding_members(members):
+def _reject_colliding_members(members, context="zip member"):
     """Refuse an archive with two members that collide on a case-insensitive or
     unicode-normalizing filesystem.
 
@@ -615,9 +619,9 @@ def _reject_colliding_members(members):
         key = unicodedata.normalize("NFC", text).casefold()
         if key in seen and seen[key] != text:
             raise ValueError(
-                "Refusing zip: members %r and %r collide on a case-insensitive "
-                "or normalizing filesystem, so one would silently overwrite the "
-                "other (resource poisoning)." % (seen[key], text)
+                f"Security Violation [{context}]: members {seen[key]!r} and "
+                f"{text!r} collide on a case-insensitive or normalizing filesystem, "
+                f"so one would silently overwrite the other (resource poisoning)."
             )
         seen[key] = text
 
@@ -1105,11 +1109,14 @@ def validate_zip_archive(
                 _member_count_guard()(
                     len(members), getattr(zf, "filename", None) or "<archive>"
                 )
-                _reject_colliding_members(members)
+                _reject_colliding_members(members, context)
             for name in members:
                 name_str = name.filename if hasattr(name, "filename") else str(name)
                 if "\0" in name_str:
-                    raise ValueError(f"Null byte in ZIP member: {name_str}")
+                    raise ValueError(
+                        f"Security Violation [{context}]: NUL byte in ZIP member "
+                        f"{name_str!r}"
+                    )
 
                 # ``resolve()`` follows symlinks, catching escapes through a
                 # pre-existing symlinked subpath. The extra component check
@@ -1138,7 +1145,9 @@ def validate_zip_archive(
         raise
     except (OSError, zipfile.BadZipFile):
         if ENFORCE:
-            raise PermissionError("Zip validation failed")
+            raise PermissionError(
+                f"Security Violation [{context}]: Zip validation failed"
+            )
 
 
 @lru_cache(maxsize=256)
