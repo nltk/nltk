@@ -752,6 +752,15 @@ _BENIGN_UNICODE_NAMES = [
     ("emoji", "robot_\U0001f916.model"),
     ("zwj", "co‍op.model"),  # zero-width joiner inside the name
     ("mixed-space", "my café 模型.model"),
+    ("bidi-rlo", "file\u202edoc.model"),  # right-to-left override, a valid char
+    ("fullwidth-solidus", "a\uff0fb.model"),  # U+FF0F is NOT a path separator
+    # DEL, the C1 control NEL and the Unicode line separator are line-injection
+    # vectors on a tool's STDIN (blocked by has_line_unsafe_char), but this guard
+    # bounds a PATH argument in argv, where there is no line to inject into, so
+    # they are legitimate filename bytes here and must not be over-blocked.
+    ("del-0x7f", "mod\x7fel.model"),
+    ("c1-nel-0x85", "mod\x85el.model"),
+    ("line-separator-2028", "mod\u2028el.model"),
 ]
 
 
@@ -782,6 +791,9 @@ _UNICODE_ATTACKS = [
     ("trailing-dot-unicode", "модель."),
     ("trailing-space-unicode", "模型 "),
     ("newline-in-unicode", "模型\nevil.model"),
+    ("cr-in-unicode", "\u6a21\u578b\rx.model"),
+    ("vtab-in-unicode", "\u6a21\u578b\x0bx.model"),
+    ("formfeed-in-unicode", "\u6a21\u578b\x0cx.model"),
 ]
 
 
@@ -798,6 +810,31 @@ def test_validate_tool_path_refuses_unicode_disguised_attacks(restricted_sandbox
     with pytest.raises((PermissionError, ValueError)) as excinfo:
         pathsec.validate_tool_path(path, context="unicode-attack", must_exist=False)
     assert _is_guard_refusal(excinfo.value)
+
+
+def test_is_guard_refusal_distinguishes_guard_from_tool():
+    """Lock the refusal classifier: only a pathsec Security Violation is a guard
+    refusal. A tool raising the same exception type for its OWN reason must not be
+    miscounted as an over-block, and a real guard refusal must not be miscounted as
+    a tolerated tool failure (which would let a real escape leak)."""
+    assert _is_guard_refusal(PermissionError("Security Violation [ctx]: nope"))
+    assert _is_guard_refusal(ValueError("Security Violation [ctx]: bad name"))
+    assert not _is_guard_refusal(ValueError("crfsuite: cannot open the output file"))
+    assert not _is_guard_refusal(PermissionError("[Errno 13] Permission denied: x"))
+    assert not _is_guard_refusal(FileNotFoundError("[WinError 2] cannot find m.model"))
+    assert not _is_guard_refusal(OSError("disk full"))
+
+
+@pytest.mark.parametrize("sink", sorted(_FILE_SINKS))
+def test_file_sinks_refuse_outside_unicode_path_at_the_guard(pathsec_sandbox, sink):
+    """No-leak proof for the tolerance: an OUTSIDE path with a unicode name must be
+    refused by the GUARD (a Security Violation raised before the tool ever runs),
+    never merely by a downstream tool failure. _refusal returns None only for a
+    guard refusal, so this asserts the escape is stopped by containment itself."""
+    root, outside = pathsec_sandbox
+    target = str(outside / "\u043c\u043e\u0434\u0435\u043b\u044c_\u6a21\u578b.model")
+    outcome = _refusal(sink, target)
+    assert outcome is None, f"{sink} did not refuse an outside unicode path (leak?)"
 
 
 def test_benign_vectors_are_not_expanded_or_decoded(pathsec_sandbox):
