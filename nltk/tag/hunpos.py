@@ -12,10 +12,16 @@ A module for interfacing with the HunPos open-source POS-tagger.
 """
 
 import os
-from subprocess import PIPE, Popen
+from subprocess import PIPE
 
 from nltk.internals import find_binary, find_file
-from nltk.pathsec import validate_tool_path
+from nltk.pathsec import (
+    MAX_TOOL_MODEL_BYTES,
+    TrustError,
+    has_line_unsafe_char,
+    spawn_trusted,
+    validate_tool_path,
+)
 from nltk.tag.api import TaggerI
 
 _hunpos_url = "https://code.google.com/p/hunpos/"
@@ -95,15 +101,34 @@ class HunposTagger(TaggerI):
         )
         self._encoding = encoding
         # ``self._hunpos_model`` (from find_file) becomes argv to the hunpos-tag
-        # subprocess pathsec.open cannot wrap; bound it before spawning (GHSA-8mgp-746c-j5xp).
-        validate_tool_path(self._hunpos_model, context="HunposTagger.__init__")
-        self._hunpos = Popen(
-            [self._hunpos_bin, self._hunpos_model],
-            shell=False,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=PIPE,
+        # subprocess pathsec.open cannot wrap; bound it before spawning
+        # (GHSA-8mgp-746c-j5xp). hunpos-tag (C++) reads the whole model into memory
+        # and parses it, so beyond containment also refuse a model another local
+        # user could plant/swap (require_private) or an oversized memory-bomb model
+        # (max_bytes), narrowing the "malicious in-root model" residual.
+        validate_tool_path(
+            self._hunpos_model,
+            context="HunposTagger.__init__",
+            max_bytes=MAX_TOOL_MODEL_BYTES,
+            require_private=True,
         )
+        # Route through the trusted-exec chokepoint: verify the hunpos-tag binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        try:
+            self._hunpos = spawn_trusted(
+                self._hunpos_bin,
+                [self._hunpos_model],
+                stdin=PIPE,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run the HunPos tagger {self._hunpos_bin!r}: it is "
+                "not on a trusted path. Install HunPos where only you (or root) "
+                f"can write ({e})."
+            ) from e
         self._closed = False
 
     def __del__(self):
@@ -123,18 +148,23 @@ class HunposTagger(TaggerI):
 
     def tag(self, tokens):
         """Tags a single sentence: a list of words.
-        The tokens should not contain any newline characters.
+
+        A token may not contain any control character or Unicode line/paragraph
+        separator: a newline adds an input line, a NUL truncates the token, and a
+        TAB splits hunpos's own tab-separated output column (see the read loop
+        below), each desynchronising every tag that follows.
         """
         for token in tokens:
-            # Not an assert: python -O strips those, and a newline inside a token
-            # injects an extra line into the tagger's line-oriented stdin, which
-            # desynchronises every tag that follows.
-            newline = b"\n" if isinstance(token, bytes) else "\n"
-            if newline in token:
-                raise ValueError("Tokens should not contain newlines")
-            if isinstance(token, str):
-                token = token.encode(self._encoding)
-            self._hunpos.stdin.write(token + b"\n")
+            # Not an assert (python -O strips those): check the token itself so a
+            # str token's C1/NEL/separator characters are caught, not only the raw
+            # C0/DEL bytes, before it reaches the tagger's line-oriented stdin.
+            if has_line_unsafe_char(token):
+                raise ValueError(
+                    "hunpos tokens must not contain control characters or line "
+                    "separators (newline, tab, NUL, DEL, ...)"
+                )
+            raw = token if isinstance(token, bytes) else token.encode(self._encoding)
+            self._hunpos.stdin.write(raw + b"\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
         self._hunpos.stdin.write(b"\n")
         self._hunpos.stdin.flush()

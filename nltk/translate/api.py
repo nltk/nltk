@@ -12,6 +12,7 @@ import subprocess
 from collections import namedtuple
 
 from nltk.internals import find_binary
+from nltk.pathsec import TrustError, spawn_trusted
 
 
 class AlignedSent:
@@ -138,14 +139,22 @@ class AlignedSent:
         except LookupError as e:
             raise Exception("Cannot find the dot binary from Graphviz package") from e
         try:
-            process = subprocess.Popen(
-                [dot_binary, "-T%s" % output_format],
+            # Route through the trusted-exec chokepoint: verify the dot binary is
+            # on a path no other local user can swap, refuse a shell, and scrub the
+            # loader environment before exec (CWE-426/427/732).
+            process = spawn_trusted(
+                dot_binary,
+                [f"-T{output_format}"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-        except OSError as e:
-            raise Exception("Cannot find the dot binary from Graphviz package") from e
+        except (OSError, TrustError) as e:
+            raise Exception(
+                f"Refusing to run the Graphviz dot binary {dot_binary!r}: it is "
+                "not on a trusted path (install it where only you or root can "
+                f"write), or it could not be executed ({e})."
+            ) from e
         out, err = process.communicate(dot_string)
 
         return out.decode("utf8")
