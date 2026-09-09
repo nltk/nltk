@@ -98,12 +98,10 @@ def spy(monkeypatch):
         calls.append(SimpleNamespace(argv=list(cmd), shell=k.get("shell", False)))
         return _FakeProc()
 
-    # Every owned wrapper reaches Popen through the ``subprocess`` module object,
-    # except senna which does ``from subprocess import Popen``; patch both spellings.
+    # Every owned wrapper reaches Popen through the shared ``subprocess`` module;
+    # senna now spawns via ``pathsec.spawn_trusted`` (which calls subprocess.Popen
+    # on that same module), so this one patch covers it too.
     monkeypatch.setattr(subprocess, "Popen", _fake_popen)
-    from nltk.classify import senna as _senna
-
-    monkeypatch.setattr(_senna, "Popen", _fake_popen)
     monkeypatch.setattr(internals, "_java_bin", "java")
     monkeypatch.setattr(internals, "_java_options", [])
     return calls
