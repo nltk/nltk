@@ -281,7 +281,7 @@ class XML_Tool:
         from nltk.data import staging_tempdir
 
         self.write_file = tempfile.NamedTemporaryFile(
-            delete=False, dir=staging_tempdir()
+            mode="w", encoding="utf-8", delete=False, dir=staging_tempdir()
         )
 
     def build_preprocessed_file(self):
@@ -292,7 +292,10 @@ class XML_Tool:
             from nltk.pathsec import open as pathsec_open
 
             fr = pathsec_open(
-                self.read_file, context="NKJPCorpusReader", required_root=self._root
+                self.read_file,
+                encoding="utf-8",
+                context="NKJPCorpusReader",
+                required_root=self._root,
             )
             fw = self.write_file
             line = " "
