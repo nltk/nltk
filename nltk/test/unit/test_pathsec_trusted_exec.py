@@ -646,13 +646,17 @@ def test_validate_tool_path_max_bytes_refuses_oversize(staging):
     """A model larger than max_bytes is refused (a model-size memory bomb the
     external tool would load whole into RAM, CWE-400)."""
     small = _model_in_root(staging, "small.model", size=100)
-    assert ps.validate_tool_path(small, context="t", max_bytes=100) == os.path.realpath(
-        small
+    # validate_tool_path returns the validated input string verbatim (it resolves
+    # __fspath__ exactly once, it does NOT realpath), so compare to the input, not
+    # to os.path.realpath: on Windows CI the staging path is an 8.3 short name /
+    # junction whose realpath differs, which is not what this guard is about.
+    assert (
+        ps.validate_tool_path(small, context="t", max_bytes=100) == small
     )  # exactly at the cap passes
     with pytest.raises(PermissionError):
         ps.validate_tool_path(small, context="t", max_bytes=99)  # one over -> refused
     # no cap (default) keeps accepting it
-    assert ps.validate_tool_path(small, context="t") == os.path.realpath(small)
+    assert ps.validate_tool_path(small, context="t") == small
 
 
 @POSIX
@@ -660,15 +664,15 @@ def test_validate_tool_path_require_private_refuses_tamperable(staging):
     """A group/world-writable model in a root is refused with require_private: any
     local user could swap the bytes the tool then parses (CWE-426/CWE-732)."""
     private = _model_in_root(staging, "private.model", mode=0o644)
-    assert ps.validate_tool_path(
-        private, context="t", require_private=True
-    ) == os.path.realpath(private)
+    # validated input is returned verbatim (see the max_bytes test) -> compare to
+    # the input, not os.path.realpath.
+    assert ps.validate_tool_path(private, context="t", require_private=True) == private
     for bad_mode in (0o666, 0o646, 0o664):  # world- or group-writable
         ww = _model_in_root(staging, f"ww{bad_mode}.model", mode=bad_mode)
         with pytest.raises(PermissionError):
             ps.validate_tool_path(ww, context="t", require_private=True)
         # without require_private the same file is accepted (guard is opt-in)
-        assert ps.validate_tool_path(ww, context="t") == os.path.realpath(ww)
+        assert ps.validate_tool_path(ww, context="t") == ww
 
 
 @POSIX

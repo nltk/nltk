@@ -239,6 +239,19 @@ class TestRegexOnlySurfacesBounded:
         dt = _elapsed(lambda: tp.match("(" * 100000 + ")" * 100000, timeout=1.0))
         assert dt < 3.0
 
+    def test_timeout_bounds_runtime_independent_of_input_size(self):
+        # The anti-DoS guarantee is that an attacker cannot amplify runtime by
+        # enlarging the input: under a fixed timeout=0.5, a catastrophic pattern
+        # must return in about the same time whether the bait is small or 100x
+        # larger. A broken timeout would let the 100x input backtrack for minutes,
+        # so the large run staying inside the same bound as the small one proves
+        # the timeout bounds the work, not just that some run happened to be fast.
+        tp = redos.compile(r"\((?:[^()]|(?R))*\)")
+        small = _elapsed(lambda: tp.search("(" * 20_000, timeout=0.5))
+        large = _elapsed(lambda: tp.search("(" * 2_000_000, timeout=0.5))
+        assert small < 3.0
+        assert large < 3.0
+
 
 # ==========================================================================
 # the wall-clock timeout is the guarantee: it fires on every match method
