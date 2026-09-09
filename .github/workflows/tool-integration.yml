@@ -38,6 +38,10 @@ on:
       - "nltk/test/unit/test_repp_security.py"
       - "nltk/test/unit/test_boxer_security.py"
       - "nltk/test/unit/test_inference_security.py"
+      - "nltk/test/unit/test_hunpos_security.py"
+      - "nltk/test/unit/test_prover9_security.py"
+      - "nltk/test/unit/test_tadm_security.py"
+      - "nltk/test/unit/test_megam_tadm_injection_security.py"
       - "nltk/test/unit/test_tokenize_stanford_pathsec.py"
       - "nltk/test/*.doctest"
   workflow_dispatch:
@@ -197,7 +201,11 @@ jobs:
             nltk/test/unit/test_tokenize_stanford_pathsec.py \
             nltk/test/unit/test_boxer_security.py \
             nltk/test/unit/test_repp_security.py \
-            nltk/test/unit/test_inference_security.py
+            nltk/test/unit/test_inference_security.py \
+            nltk/test/unit/test_hunpos_security.py \
+            nltk/test/unit/test_prover9_security.py \
+            nltk/test/unit/test_tadm_security.py \
+            nltk/test/unit/test_megam_tadm_injection_security.py
 
       - name: Run best-effort real-tool tests (SENNA, prover9/mace4 doctests)
         # These exercise the tools built best-effort per platform. When such a
