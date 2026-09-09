@@ -29,7 +29,6 @@ root on macOS).
 
 import os
 import socket
-import tempfile
 import unicodedata
 import zipfile
 

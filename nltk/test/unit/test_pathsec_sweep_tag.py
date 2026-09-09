@@ -807,8 +807,20 @@ def test_is_guard_refusal_distinguishes_guard_from_tool():
     miscounted (nor a real refusal miscounted as a tolerated tool failure)."""
     assert _is_guard_refusal(PermissionError("Security Violation [ctx]: nope"))
     assert _is_guard_refusal(ValueError("Security Violation [ctx]: bad name"))
-    # Tool failures with no bracketed pathsec marker are NOT guard refusals.
+    # Real sinks run past the guard for MANY tools, not just crfsuite: the
+    # pure-Python perceptron / maxent save-load sinks and an AttributeError from
+    # CRFTagger.set_model_file all reach real code. None of their error shapes may
+    # read as a refusal (only Stanford/Hunpos are mocked with _ReachedSink).
     assert not _is_guard_refusal(ValueError("crfsuite: cannot open the output file"))
+    assert not _is_guard_refusal(  # perceptron json load
+        ValueError("Expecting value: line 1 column 1 (char 0)")
+    )
+    assert not _is_guard_refusal(ValueError("invalid load key, 'x'."))  # pickle
+    assert not _is_guard_refusal(  # CRFTagger.set_model_file on object.__new__
+        AttributeError("'CRFTagger' object has no attribute '_tagger'")
+    )
+    assert not _is_guard_refusal(OSError("[Errno 2] No such file or directory: 'java'"))
+    assert not _is_guard_refusal(ValueError("MaltParser: could not open the model"))
     assert not _is_guard_refusal(PermissionError("[Errno 13] Permission denied: x"))
     assert not _is_guard_refusal(FileNotFoundError("[WinError 2] cannot find m.model"))
     assert not _is_guard_refusal(OSError("disk full"))
