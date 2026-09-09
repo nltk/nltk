@@ -539,6 +539,29 @@ def _unify_terms(a, b, bindings=None, used=None):
 
 def _complete_unify_path(first, second, bindings, used, skipped, debug):
     if used[0] or used[1]:  # if bindings were made along the path
+        # Resolution may remove several literals only if they factor to the
+        # same literal. Removing distinct complementary pairs is unsound:
+        # {P, Q} and {-P, -Q} do not imply the empty clause.
+        # Equality literals are consumed by demodulation, not resolution.
+        resolved = [
+            atom for atom in used[0] if not isinstance(atom, EqualityExpression)
+        ]
+        if resolved:
+            pivot = resolved[0]
+            for atom in resolved[1:]:
+                if isinstance(pivot, NegatedExpression) != isinstance(
+                    atom, NegatedExpression
+                ):
+                    return []
+                left = pivot.term if isinstance(pivot, NegatedExpression) else pivot
+                right = atom.term if isinstance(atom, NegatedExpression) else atom
+                try:
+                    bindings = bindings + most_general_unification(
+                        left.substitute_bindings(bindings),
+                        right.substitute_bindings(bindings),
+                    )
+                except BindingException:
+                    return []
         newclause = Clause(skipped[0] + skipped[1] + first + second)
         debug.line("  -> New Clause: %s" % newclause)
         return [newclause.substitute_bindings(bindings)]
