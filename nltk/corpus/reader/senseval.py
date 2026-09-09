@@ -32,9 +32,12 @@ from nltk.termsec import sanitize_terminal
 from nltk.tokenize import *
 
 # ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
-# instance block; the later _fixXML subs were hardened but this one was left on
-# plain ``re``. redos.compile bounds match time (CWE-1333).
-_LONE_AMP_RE = redos.compile(r"(\s+)&(\s+)")
+# instance block: a run of N spaces followed by ``&`` (with no trailing space)
+# fails the second ``\s+`` and re-scans the leading run at every offset. The
+# ``(?<!\s)`` anchors each attempt to the start of a whitespace run, so a failed
+# offset is rejected in O(1) instead of re-consuming the run: the match is now
+# linear (CWE-1333). ``redos.compile`` still bounds match time as a backstop.
+_LONE_AMP_RE = redos.compile(r"(?<!\s)(\s+)&(\s+)")
 
 
 class SensevalInstance:
@@ -198,13 +201,20 @@ def _fixXML(text):
     # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
     #
     # Possessive quantifiers (regex module) prevent catastrophic backtracking
-    # (ReDoS, CWE-1333): with the plain re patterns, the lazy/greedy whitespace
-    # and token runs rescan a long token / whitespace run that lacks the trailing
-    # <p="..."/> tag quadratically. The token class [^<>\s] cannot cross the
-    # surrounding separators and \s cannot cross the literal '"', so making each
-    # run possessive is match-for-match identical while making the scan linear.
+    # *within* a single match attempt (ReDoS, CWE-1333). They are not enough on
+    # their own: when the trailing <p="..."/> tag is absent, ``sub`` retries the
+    # match at every start offset, and a leading run of spaces/tabs is re-scanned
+    # from each offset -> O(n**2) (a run of N leading spaces before a lone tag
+    # burns the redos time budget). The ``(?<![ \t])`` anchors each attempt to the
+    # start of a whitespace run, so a mid-run offset is rejected in O(1) instead of
+    # re-consuming the run; combined with the possessive token/whitespace classes
+    # (which cannot cross the separators or the literal '"'), the scan is linear
+    # and match-for-match identical to the original. ``redos.sub`` still bounds
+    # match time as a backstop for any residual pathology.
     text = redos.sub(
-        r'[ \t]*+([^<>\s]++)[ \t]*+<p="([^"]*+"?)"/>', r' <wf pos="\2">\1</wf>', text
+        r'(?<![ \t])[ \t]*+([^<>\s]++)[ \t]*+<p="([^"]*+"?)"/>',
+        r' <wf pos="\2">\1</wf>',
+        text,
     )
-    text = redos.sub(r"\s*+\"\s*+<p='\"'/>", " <wf pos='\"'>\"</wf>", text)
+    text = redos.sub(r"(?<!\s)\s*+\"\s*+<p='\"'/>", " <wf pos='\"'>\"</wf>", text)
     return text

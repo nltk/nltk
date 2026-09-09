@@ -17,6 +17,7 @@ import tempfile
 from nltk import redos
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import find_dir
+from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.tokenize.api import TokenizerI
 
 
@@ -87,14 +88,20 @@ class ReppTokenizer(TokenizerI):
             with tempfile.NamedTemporaryFile(
                 prefix="repp_input.", dir=staging_dir, mode="w", delete=False
             ) as input_file:
-                # Write sentences to temporary input file. A newline in a sentence
-                # would add a line and break the 1:1 input->output section mapping
-                # that parse_repp_outputs relies on (CWE-93).
+                # REPP reads one sentence per line; a control character or Unicode
+                # line/paragraph separator in a sentence injects an extra input
+                # line (or a NUL truncates it), so the token stream desynchronises
+                # from the sentence list (CWE-93).
                 for sent in sentences:
-                    sent = str(sent)
-                    if "\n" in sent or "\r" in sent:
-                        raise ValueError("Sentences cannot contain newline characters.")
-                    input_file.write(sent + "\n")
+                    text = str(sent)
+                    # REPP splits its stdout on newlines only, so a literal TAB is
+                    # ordinary in-line whitespace here and stays allowed.
+                    if has_line_unsafe_char(text, allow_tab=True):
+                        raise ValueError(
+                            "REPP input sentences must not contain control "
+                            "characters or line separators (newline, NUL, DEL, ...)."
+                        )
+                    input_file.write(text + "\n")
                 input_file.close()
                 # Generate command to run REPP.
                 cmd = self.generate_repp_command(input_file.name)
@@ -123,7 +130,19 @@ class ReppTokenizer(TokenizerI):
 
     @staticmethod
     def _execute(cmd):
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Route the REPP binary through the trusted-exec chokepoint: verify it is
+        # on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        try:
+            p = spawn_trusted(
+                cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run the REPP tokenizer {cmd[0]!r}: it is not on a "
+                "trusted path. Install REPP where only you (or root) can write "
+                f"({e})."
+            ) from e
         stdout, stderr = p.communicate()
         return stdout
 

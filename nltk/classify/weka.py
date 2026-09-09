@@ -9,6 +9,7 @@
 Classifiers that make use of the external 'Weka' package.
 """
 
+import numbers
 import os
 import subprocess
 import tempfile
@@ -22,7 +23,7 @@ from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
 from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_path, validate_tool_path
 from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
@@ -107,6 +108,10 @@ def _check_weka_version(jar):
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
+        # Bound the caller-controlled model path to the pathsec data roots before
+        # it reaches the weka JVM as a -l read target, closing the model-artifact
+        # containment gap weka.py was left out of (GHSA-j456-xh4h-cpf2).
+        validate_tool_path(model_filename, context="WekaClassifier", must_exist=False)
         self._model = model_filename
 
     def prob_classify_many(self, featuresets):
@@ -116,6 +121,12 @@ class WekaClassifier(ClassifierI):
         return self._classify_many(featuresets, ["-p", "0"])
 
     def _classify_many(self, featuresets, options):
+        # Re-bound the model path in case _model was reassigned after construction;
+        # weka reads it via -l (GHSA-j456-xh4h-cpf2). Containment, not existence, is
+        # the security property, so must_exist stays False.
+        validate_tool_path(
+            self._model, context="WekaClassifier._classify_many", must_exist=False
+        )
         # Make sure we can find java & weka.
         config_weka()
 
@@ -167,6 +178,17 @@ class WekaClassifier(ClassifierI):
         probs = dict(zip(self._formatter.labels(), probs))
         return DictionaryProbDist(probs)
 
+    @staticmethod
+    def _weka_predicted_class(line):
+        # A weka -p line is "<inst> <actual> <idx>:<class> <error> <prob>". The
+        # stdout is only as trustworthy as the model weka just loaded, so guard the
+        # shape and raise a clear error instead of an opaque IndexError on a
+        # truncated or malformed line.
+        toks = line.split()
+        if len(toks) < 3 or ":" not in toks[2]:
+            raise ValueError("Malformed weka prediction line: %r" % line)
+        return toks[2].split(":", 1)[1]
+
     def parse_weka_output(self, lines):
         # Strip unwanted text from stdout
         for i, line in enumerate(lines):
@@ -174,8 +196,13 @@ class WekaClassifier(ClassifierI):
                 lines = lines[i:]
                 break
 
+        if not lines:
+            raise ValueError("No weka output to parse")
+
         if lines[0].split() == ["inst#", "actual", "predicted", "error", "prediction"]:
-            return [line.split()[2].split(":")[1] for line in lines[1:] if line.strip()]
+            return [
+                self._weka_predicted_class(line) for line in lines[1:] if line.strip()
+            ]
         elif lines[0].split() == [
             "inst#",
             "actual",
@@ -233,6 +260,15 @@ class WekaClassifier(ClassifierI):
         options=[],
         quiet=True,
     ):
+        # Bound the caller-controlled model path before weka writes to it via -d
+        # (GHSA-j456-xh4h-cpf2); it need not exist yet, and validating before any
+        # weka lookup refuses an out-of-root path early.
+        validate_tool_path(
+            model_filename,
+            context="WekaClassifier.train",
+            for_write=True,
+            must_exist=False,
+        )
         # Make sure we can find java & weka.
         config_weka()
 
@@ -331,7 +367,10 @@ class ARFF_Formatter:
                 elif fval is None:
                     continue  # can't tell the type.
                 else:
-                    raise ValueError("Unsupported value type %r" % ftype)
+                    # Report the offending type, not the undefined ftype (which
+                    # raised an opaque UnboundLocalError here). type() is safe to
+                    # format; a hostile __repr__ on the value never runs.
+                    raise ValueError("Unsupported value type %r" % type(fval))
                 if features.get(fname, ftype) != ftype:
                     raise ValueError("Inconsistent type for %s" % fname)
                 features[fname] = ftype
@@ -350,9 +389,16 @@ class ARFF_Formatter:
         # Relation name
         s += "@RELATION rel\n\n"
 
-        # Input attribute specifications
+        # Input attribute specifications. fname goes through _safe_str_repr (the
+        # built-in str repr of its characters, so a str subclass overriding
+        # __repr__ cannot smuggle a newline), and ftype is refused if it carries a
+        # control char; either would otherwise inject a new @ATTRIBUTE/@DATA line
+        # (CWE-1236).
         for fname, ftype in self._features:
-            s += "@ATTRIBUTE %-30r %s\n" % (fname, ftype)
+            s += "@ATTRIBUTE %-30s %s\n" % (
+                self._safe_str_repr(fname),
+                self._check_arff_ftype(ftype),
+            )
 
         # Label attribute specification – labels are already sanitized.
         # Wrap each label in single quotes and join with commas.
@@ -391,15 +437,48 @@ class ARFF_Formatter:
                 s += "%s\n" % self._fmt_arff_val(safe_label)
         return s
 
+    @staticmethod
+    def _safe_str_repr(value):
+        # Return the built-in str repr of value's characters. str.__repr__ always
+        # escapes control chars (a newline becomes a literal \n), so routing every
+        # string-like ARFF token through it means a str subclass overriding
+        # __repr__/__str__, or any object with a hostile __str__, cannot break out
+        # of its field to forge an @ATTRIBUTE/@DATA line (CWE-1236).
+        s = value if isinstance(value, str) else str(value)
+        return str.__repr__(s)
+
     def _fmt_arff_val(self, fval):
+        # Numerics are formatted from their numeric VALUE, not str()/repr(): int()
+        # and float() strip any subclass whose __str__/__repr__ could otherwise
+        # inject a newline, and the resulting text is digits/./e/+/-/inf/nan only.
+        # Everything else is escaped through _safe_str_repr. So no feature value,
+        # whatever its type, can smuggle an ARFF directive into the data section.
         if fval is None:
             return "?"
-        elif isinstance(fval, (bool, int)):
-            return "%s" % fval
-        elif isinstance(fval, float):
-            return "%r" % fval
-        else:
-            return "%r" % fval
+        if isinstance(fval, bool):
+            return "True" if fval else "False"
+        if isinstance(fval, numbers.Integral):
+            return "%d" % int(fval)
+        if isinstance(fval, numbers.Real):
+            return repr(float(fval))
+        return self._safe_str_repr(fval)
+
+    @staticmethod
+    def _check_arff_ftype(ftype):
+        """Refuse an ARFF attribute type carrying a control character.
+
+        ``from_train`` only ever emits the fixed enum (NUMERIC / STRING /
+        ``{True, False}``), but a caller may build an ``ARFF_Formatter`` directly;
+        a newline or other C0 control in the type would break out of the
+        ``@ATTRIBUTE`` line and inject a new attribute or ``@DATA`` section
+        (CWE-1236). Any legitimate ARFF type is control-character free.
+        """
+        text = str(ftype)
+        if any(ord(ch) < 0x20 for ch in text):
+            raise ValueError(
+                f"ARFF attribute type must not contain control characters: {ftype!r}"
+            )
+        return text
 
     @staticmethod
     def _sanitize_arff_label(label):

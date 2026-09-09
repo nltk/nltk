@@ -130,24 +130,26 @@ def test_tagger_sources_route_through_pathsec():
     from nltk.chunk import named_entity
     from nltk.tag import crf, hunpos, perceptron, stanford
 
+    def _calls_validate_on(src, var):
+        # validate_tool_path is called on ``var``, tolerant of black wrapping the
+        # call across lines and of added keyword args (max_bytes/require_private).
+        return re.search(r"validate_tool_path\(\s*" + re.escape(var), src) is not None
+
     crf_set_src = inspect.getsource(crf.CRFTagger.set_model_file)
-    assert (
-        'validate_tool_path(model_file, context="CRFTagger.set_model_file")'
-        in crf_set_src
-    )
+    assert _calls_validate_on(crf_set_src, "model_file")
 
     crf_train_src = inspect.getsource(crf.CRFTagger.train)
-    assert 'validate_tool_path(model_file, context="CRFTagger.train"' in crf_train_src
+    assert _calls_validate_on(crf_train_src, "model_file")
 
     stanford_src = inspect.getsource(stanford.StanfordTagger.tag_sents)
     assert "validate_tool_path(" in stanford_src
     assert "self._stanford_model" in stanford_src
 
     stanford_init_src = inspect.getsource(stanford.StanfordTagger.__init__)
-    assert "validate_tool_path(self._stanford_model" in stanford_init_src
+    assert _calls_validate_on(stanford_init_src, "self._stanford_model")
 
     hunpos_src = inspect.getsource(hunpos.HunposTagger.__init__)
-    assert "validate_tool_path(self._hunpos_model" in hunpos_src
+    assert _calls_validate_on(hunpos_src, "self._hunpos_model")
 
     save_src = inspect.getsource(perceptron.PerceptronTagger.save_to_json)
     assert "validate_tool_dir(loc" in save_src
@@ -504,31 +506,63 @@ def _drive_stanford_tag(path):
     _no_jvm(lambda: tagger.tag(["What", "is"]))
 
 
+_HUNPOS_STUB_BIN = None
+
+
+def _hunpos_stub_bin():
+    """A real, absolute, TRUSTED hunpos-tag stub, reused across driver calls.
+
+    HunposTagger now spawns via ``pathsec.spawn_trusted``, whose strict trust
+    check rejects a bare name or a /tmp path. Staged under ``$HOME`` (a private
+    chain: /home/<user> is 0755, not group/world-writable) rather than the
+    pinned data-root sandbox, which the tests place under the system temp where
+    the chain is not guaranteed private. Cached and removed at interpreter exit.
+    """
+    global _HUNPOS_STUB_BIN
+    if _HUNPOS_STUB_BIN is None:
+        import atexit
+        import shutil
+        import tempfile
+
+        base = tempfile.mkdtemp(prefix=".nltk_hunpos_drv_", dir=os.path.expanduser("~"))
+        atexit.register(shutil.rmtree, base, ignore_errors=True)
+        binpath = os.path.join(base, "hunpos-tag")
+        with open(binpath, "w") as handle:
+            handle.write("#!/bin/sh\nexit 0\n")
+        os.chmod(binpath, 0o755)
+        _HUNPOS_STUB_BIN = binpath
+    return _HUNPOS_STUB_BIN
+
+
 def _drive_hunpos_init(path):
     """Drive HunposTagger.__init__ with find_file/find_binary stubbed out.
 
     The real ``find_file`` refuses anything that does not already exist, which
     would mask the guard for most vectors; stubbing it means the guard is the
-    only thing standing between the caller's string and the subprocess argv.
-    ``Popen`` is replaced so nothing is ever spawned.
+    only thing standing between the caller's string and the subprocess argv. The
+    sink (``pathsec.subprocess.Popen``, which ``spawn_trusted`` calls) is replaced
+    so nothing is ever spawned, and ``find_binary`` returns a trusted stub so the
+    exec-trust check passes and the model path reaches the argv.
     """
+    import nltk.pathsec as pathsec_module
     import nltk.tag.hunpos as hunpos_module
 
     def _boom(cmd, *args, **kwargs):
         raise _ReachedSink(list(cmd))
 
-    saved = (hunpos_module.find_file, hunpos_module.find_binary, hunpos_module.Popen)
+    stub = _hunpos_stub_bin()
+    saved_ff = hunpos_module.find_file
+    saved_fb = hunpos_module.find_binary
+    saved_popen = pathsec_module.subprocess.Popen
     hunpos_module.find_file = lambda p, **kw: p
-    hunpos_module.find_binary = lambda *a, **kw: "hunpos-tag"
-    hunpos_module.Popen = _boom
+    hunpos_module.find_binary = lambda *a, **kw: stub
+    pathsec_module.subprocess.Popen = _boom
     try:
         hunpos_module.HunposTagger(path)
     finally:
-        (
-            hunpos_module.find_file,
-            hunpos_module.find_binary,
-            hunpos_module.Popen,
-        ) = saved
+        hunpos_module.find_file = saved_ff
+        hunpos_module.find_binary = saved_fb
+        pathsec_module.subprocess.Popen = saved_popen
 
 
 class _ReachedSink(Exception):
@@ -608,13 +642,24 @@ _DIR_SINKS = {
 _ALL_SINKS = dict(_FILE_SINKS, **_DIR_SINKS)
 
 
+def _is_guard_refusal(exc):
+    """True only for a pathsec refusal, which is ALWAYS raised with the message
+    STARTING ``Security Violation [context]: ...`` (pinned by the invariant test).
+    Anchoring at the start is spoof-proof: attacker-controlled data (a path or zip
+    member) that a tool echoes only ever lands mid-message, so it can never move
+    the leading marker, and a tool that merely mentions the phrase is not a
+    refusal."""
+    return str(exc).startswith("Security Violation [")
+
+
 def _refusal(sink, path):
-    """Run *sink* on *path*; return None if it refused, else the exception (or
-    None-as-success) that proves it got past the guard."""
+    """Run *sink* on *path*; return None only if the GUARD refused it (a pathsec
+    Security Violation), else the exception/None-as-success proving it got past
+    the guard. A tool failing for its own reason is past-guard, not a refusal."""
     try:
         _ALL_SINKS[sink](path)
-    except (PermissionError, ValueError):
-        return None
+    except (PermissionError, ValueError) as exc:
+        return None if _is_guard_refusal(exc) else exc
     except _ReachedSink as exc:
         return exc
     except Exception as exc:  # noqa: BLE001 - any other failure is "past the guard"
@@ -683,6 +728,159 @@ def test_file_sinks_do_not_over_block_contained_paths(pathsec_sandbox, sink, vec
         assert outcome is not None, f"{sink} unexpectedly refused {vector}"
     finally:
         _cleanup(registry)
+
+
+# Legitimate non-ASCII filenames validate_tool_path must ACCEPT (returned
+# verbatim) when contained; refusing them would break real model paths for
+# non-ASCII users. Probes the GUARD directly, not any tool's own unicode handling.
+_BENIGN_UNICODE_NAMES = [
+    ("nfc-precomposed", "modéle.model"),  # e-acute as one code point
+    ("nfd-decomposed", "modéle.model"),  # e + combining acute
+    ("cjk", "模型.model"),  # CJK
+    ("cyrillic", "модель.model"),
+    ("arabic-rtl", "نموذج.model"),
+    ("emoji", "robot_\U0001f916.model"),
+    ("zwj", "co‍op.model"),  # zero-width joiner inside the name
+    ("mixed-space", "my café 模型.model"),
+    ("bidi-rlo", "file\u202edoc.model"),  # right-to-left override, a valid char
+    ("fullwidth-solidus", "a\uff0fb.model"),  # U+FF0F is NOT a path separator
+    # DEL / C1 NEL / Unicode line separator are stdin line-injection vectors
+    # (blocked by has_line_unsafe_char) but legitimate bytes in an argv PATH, which
+    # has no line to inject into, so this guard must not over-block them.
+    ("del-0x7f", "mod\x7fel.model"),
+    ("c1-nel-0x85", "mod\x85el.model"),
+    ("line-separator-2028", "mod\u2028el.model"),
+]
+
+
+@pytest.mark.parametrize(
+    "name",
+    [n for _, n in _BENIGN_UNICODE_NAMES],
+    ids=[i for i, _ in _BENIGN_UNICODE_NAMES],
+)
+def test_validate_tool_path_accepts_benign_unicode(restricted_sandbox, name):
+    """A contained path with any legitimate non-ASCII leaf must be accepted and
+    returned verbatim, never over-blocked."""
+    path = os.path.join(str(restricted_sandbox), name)
+    result = pathsec.validate_tool_path(
+        path, context="unicode-benign", must_exist=False
+    )
+    assert result == path  # no normalization, no over-block
+
+
+# Attacks that wear a unicode disguise but are still a real escape or a
+# Windows-ambiguous name: the guard must refuse EVERY one, with a Security
+# Violation (proving the tolerance added above does not open a hole).
+_UNICODE_ATTACKS = [
+    ("nul-after-unicode", "модель\x00.model"),
+    (
+        "traversal-through-unicode",
+        os.path.join("..", "模型", "..", "..", "etc", "passwd"),
+    ),
+    ("trailing-dot-unicode", "модель."),
+    ("trailing-space-unicode", "模型 "),
+    ("newline-in-unicode", "模型\nevil.model"),
+    ("cr-in-unicode", "\u6a21\u578b\rx.model"),
+    ("vtab-in-unicode", "\u6a21\u578b\x0bx.model"),
+    ("formfeed-in-unicode", "\u6a21\u578b\x0cx.model"),
+]
+
+
+@pytest.mark.parametrize(
+    "name", [n for _, n in _UNICODE_ATTACKS], ids=[i for i, _ in _UNICODE_ATTACKS]
+)
+def test_validate_tool_path_refuses_unicode_disguised_attacks(restricted_sandbox, name):
+    """A unicode disguise must not smuggle a NUL, a traversal, a Windows-stripped
+    trailing dot/space, or a control character past the guard."""
+    if os.path.isabs(name):
+        path = name
+    else:
+        path = os.path.join(str(restricted_sandbox), name)
+    with pytest.raises((PermissionError, ValueError)) as excinfo:
+        pathsec.validate_tool_path(path, context="unicode-attack", must_exist=False)
+    assert _is_guard_refusal(excinfo.value)
+
+
+def test_is_guard_refusal_distinguishes_guard_from_tool():
+    """Lock the classifier: only pathsec's bracketed Security Violation is a guard
+    refusal, so a tool raising the same exception type for its own reason is not
+    miscounted (nor a real refusal miscounted as a tolerated tool failure)."""
+    assert _is_guard_refusal(PermissionError("Security Violation [ctx]: nope"))
+    assert _is_guard_refusal(ValueError("Security Violation [ctx]: bad name"))
+    # Real sinks run past the guard for MANY tools, not just crfsuite: the
+    # pure-Python perceptron / maxent save-load sinks and an AttributeError from
+    # CRFTagger.set_model_file all reach real code. None of their error shapes may
+    # read as a refusal (only Stanford/Hunpos are mocked with _ReachedSink).
+    assert not _is_guard_refusal(ValueError("crfsuite: cannot open the output file"))
+    assert not _is_guard_refusal(  # perceptron json load
+        ValueError("Expecting value: line 1 column 1 (char 0)")
+    )
+    assert not _is_guard_refusal(ValueError("invalid load key, 'x'."))  # pickle
+    assert not _is_guard_refusal(  # CRFTagger.set_model_file on object.__new__
+        AttributeError("'CRFTagger' object has no attribute '_tagger'")
+    )
+    assert not _is_guard_refusal(OSError("[Errno 2] No such file or directory: 'java'"))
+    assert not _is_guard_refusal(ValueError("MaltParser: could not open the model"))
+    assert not _is_guard_refusal(PermissionError("[Errno 13] Permission denied: x"))
+    assert not _is_guard_refusal(FileNotFoundError("[WinError 2] cannot find m.model"))
+    assert not _is_guard_refusal(OSError("disk full"))
+    # Adversarial: the bare words in prose, or without the '[context]' bracket, must
+    # NOT read as a guard refusal (a tool could mention "security" innocently).
+    assert not _is_guard_refusal(ValueError("this triggered a security violation"))
+    assert not _is_guard_refusal(RuntimeError("Security Violation: no bracket here"))
+    # Spoofing: attacker data a tool echoes lands MID-message. Anchoring the marker
+    # at the START means a forged marker inside a tool error cannot pass as a guard
+    # refusal, even though the substring is present.
+    assert not _is_guard_refusal(
+        ValueError("crfsuite: cannot open 'Security Violation [x]: pwned'")
+    )
+    assert not _is_guard_refusal(
+        FileNotFoundError("No such file: /tmp/Security Violation [evil]/m.crf")
+    )
+    # But a genuine refusal that QUOTES an attacker's fake marker mid-message is
+    # still a refusal, because the REAL marker still leads.
+    assert _is_guard_refusal(
+        ValueError("Security Violation [ZipAudit]: member 'Security Violation [x]'")
+    )
+
+
+_GUARD_REFUSAL_TRIGGERS = [
+    ("empty", ""),
+    ("nul", "a\x00b.model"),
+    ("newline", "a\nb.model"),
+    ("option-dash", "-rf.model"),
+    ("url", "http://evil/x.model"),
+    ("tilde", "~/x.model"),
+    ("dotdot", os.path.join("..", "..", "etc", "passwd")),
+    ("absolute-outside", "/etc/passwd" if _POSIX else "C:\\Windows\\win.ini"),
+]
+
+
+@pytest.mark.parametrize(
+    "val",
+    [v for _, v in _GUARD_REFUSAL_TRIGGERS],
+    ids=[i for i, _ in _GUARD_REFUSAL_TRIGGERS],
+)
+def test_every_guard_refusal_carries_the_bracketed_marker(restricted_sandbox, val):
+    """Pin the classifier's premise: EVERY validate_tool_path refusal is raised as
+    PermissionError/ValueError carrying 'Security Violation ['. If a future pathsec
+    change drops the marker on any path, _is_guard_refusal breaks, so fail loudly."""
+    with pytest.raises((PermissionError, ValueError)) as excinfo:
+        pathsec.validate_tool_path(val, context="invariant", must_exist=False)
+    assert _is_guard_refusal(
+        excinfo.value
+    ), f"refusal without marker: {excinfo.value!r}"
+
+
+@pytest.mark.parametrize("sink", sorted(_FILE_SINKS))
+def test_file_sinks_refuse_outside_unicode_path_at_the_guard(pathsec_sandbox, sink):
+    """No-leak proof: an OUTSIDE unicode-named path must be refused by the GUARD
+    (a Security Violation before the tool runs), not merely by a tool failure.
+    _refusal returns None only for a guard refusal, so the escape is stopped here."""
+    root, outside = pathsec_sandbox
+    target = str(outside / "\u043c\u043e\u0434\u0435\u043b\u044c_\u6a21\u578b.model")
+    outcome = _refusal(sink, target)
+    assert outcome is None, f"{sink} did not refuse an outside unicode path (leak?)"
 
 
 def test_benign_vectors_are_not_expanded_or_decoded(pathsec_sandbox):
@@ -833,8 +1031,10 @@ def test_each_guard_is_load_bearing(
 def _refusal_for(driver, path):
     try:
         driver(path)
-    except (PermissionError, ValueError):
-        return "refused"
+    except (PermissionError, ValueError) as exc:
+        # Only a pathsec Security Violation is a guard refusal; a tool raising the
+        # same type for its own reason is past-guard (see _is_guard_refusal).
+        return "refused" if _is_guard_refusal(exc) else "past-guard"
     except Exception:
         return "past-guard"
     return "landed"
@@ -1311,7 +1511,9 @@ def test_hunpos_env_var_model_outside_the_sandbox_is_refused(
         raise _ReachedSink(list(cmd))
 
     monkeypatch.setenv("HUNPOS_TAGGER", str(model))
-    monkeypatch.setattr(hunpos_module, "Popen", _boom)
+    # HunposTagger spawns via pathsec.spawn_trusted; trap that sink (the model
+    # guard must refuse before it is ever reached).
+    monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _boom)
     with pytest.raises(PermissionError):
         hunpos_module.HunposTagger("en_wsj.model", path_to_bin=str(stub))
 
