@@ -643,24 +643,18 @@ _ALL_SINKS = dict(_FILE_SINKS, **_DIR_SINKS)
 
 
 def _is_guard_refusal(exc):
-    """True only for a pathsec refusal, not any exception of the same type.
-
-    Every pathsec refusal is raised as ``Security Violation [context]: ...``, so
-    the marker distinguishes the guard from a tool that raises the same exception
-    type for its own reason. Without this, a real-tool sink that fails for a
-    reason unrelated to containment (e.g. python-crfsuite cannot create a
-    CJK-named output file on Windows, which surfaces as ValueError/OSError) would
-    be miscounted as the GUARD refusing a contained path, i.e. a false over-block.
-    """
-    return "Security Violation" in str(exc)
+    """True only for a pathsec refusal, which is ALWAYS raised as the bracketed
+    ``Security Violation [context]: ...`` (pinned by the invariant test below), so
+    a tool raising the same exception type for its own reason is not miscounted."""
+    # Match the bracketed context form, not the bare words: a tool message that
+    # happens to say "security violation" in prose must not read as a guard refusal.
+    return "Security Violation [" in str(exc)
 
 
 def _refusal(sink, path):
-    """Run *sink* on *path*; return None if the GUARD refused it, else the
-    exception (or None-as-success) that proves it got past the guard. Only a
-    pathsec ``Security Violation`` counts as a refusal; a tool failing for its own
-    reason is past-guard, which is exactly the "allowed to fail for its own
-    unrelated reason" case the false-positive control tolerates."""
+    """Run *sink* on *path*; return None only if the GUARD refused it (a pathsec
+    Security Violation), else the exception/None-as-success proving it got past
+    the guard. A tool failing for its own reason is past-guard, not a refusal."""
     try:
         _ALL_SINKS[sink](path)
     except (PermissionError, ValueError) as exc:
@@ -735,14 +729,9 @@ def test_file_sinks_do_not_over_block_contained_paths(pathsec_sandbox, sink, vec
         _cleanup(registry)
 
 
-# Legitimate non-ASCII filenames. validate_tool_path must ACCEPT every one when it
-# is contained (a guard that refused these would break real model paths for
-# non-ASCII users, e.g. a CJK/Cyrillic/Arabic model name or an NFD spelling from a
-# macOS filesystem). These probe the GUARD directly, so they do not depend on any
-# external tool's own unicode handling (python-crfsuite, for one, cannot even
-# create a CJK-named file on Windows; that is the tool's limitation, not the
-# guard's, and is why the file-sink control above tolerates a non-Security-
-# Violation failure). validate_tool_path returns the validated input verbatim.
+# Legitimate non-ASCII filenames validate_tool_path must ACCEPT (returned
+# verbatim) when contained; refusing them would break real model paths for
+# non-ASCII users. Probes the GUARD directly, not any tool's own unicode handling.
 _BENIGN_UNICODE_NAMES = [
     ("nfc-precomposed", "modéle.model"),  # e-acute as one code point
     ("nfd-decomposed", "modéle.model"),  # e + combining acute
@@ -754,10 +743,9 @@ _BENIGN_UNICODE_NAMES = [
     ("mixed-space", "my café 模型.model"),
     ("bidi-rlo", "file\u202edoc.model"),  # right-to-left override, a valid char
     ("fullwidth-solidus", "a\uff0fb.model"),  # U+FF0F is NOT a path separator
-    # DEL, the C1 control NEL and the Unicode line separator are line-injection
-    # vectors on a tool's STDIN (blocked by has_line_unsafe_char), but this guard
-    # bounds a PATH argument in argv, where there is no line to inject into, so
-    # they are legitimate filename bytes here and must not be over-blocked.
+    # DEL / C1 NEL / Unicode line separator are stdin line-injection vectors
+    # (blocked by has_line_unsafe_char) but legitimate bytes in an argv PATH, which
+    # has no line to inject into, so this guard must not over-block them.
     ("del-0x7f", "mod\x7fel.model"),
     ("c1-nel-0x85", "mod\x85el.model"),
     ("line-separator-2028", "mod\u2028el.model"),
@@ -813,24 +801,55 @@ def test_validate_tool_path_refuses_unicode_disguised_attacks(restricted_sandbox
 
 
 def test_is_guard_refusal_distinguishes_guard_from_tool():
-    """Lock the refusal classifier: only a pathsec Security Violation is a guard
-    refusal. A tool raising the same exception type for its OWN reason must not be
-    miscounted as an over-block, and a real guard refusal must not be miscounted as
-    a tolerated tool failure (which would let a real escape leak)."""
+    """Lock the classifier: only pathsec's bracketed Security Violation is a guard
+    refusal, so a tool raising the same exception type for its own reason is not
+    miscounted (nor a real refusal miscounted as a tolerated tool failure)."""
     assert _is_guard_refusal(PermissionError("Security Violation [ctx]: nope"))
     assert _is_guard_refusal(ValueError("Security Violation [ctx]: bad name"))
+    # Tool failures with no bracketed pathsec marker are NOT guard refusals.
     assert not _is_guard_refusal(ValueError("crfsuite: cannot open the output file"))
     assert not _is_guard_refusal(PermissionError("[Errno 13] Permission denied: x"))
     assert not _is_guard_refusal(FileNotFoundError("[WinError 2] cannot find m.model"))
     assert not _is_guard_refusal(OSError("disk full"))
+    # Adversarial: the bare words in prose, or without the '[context]' bracket, must
+    # NOT read as a guard refusal (a tool could mention "security" innocently).
+    assert not _is_guard_refusal(ValueError("this triggered a security violation"))
+    assert not _is_guard_refusal(RuntimeError("Security Violation: no bracket here"))
+
+
+_GUARD_REFUSAL_TRIGGERS = [
+    ("empty", ""),
+    ("nul", "a\x00b.model"),
+    ("newline", "a\nb.model"),
+    ("option-dash", "-rf.model"),
+    ("url", "http://evil/x.model"),
+    ("tilde", "~/x.model"),
+    ("dotdot", os.path.join("..", "..", "etc", "passwd")),
+    ("absolute-outside", "/etc/passwd" if _POSIX else "C:\\Windows\\win.ini"),
+]
+
+
+@pytest.mark.parametrize(
+    "val",
+    [v for _, v in _GUARD_REFUSAL_TRIGGERS],
+    ids=[i for i, _ in _GUARD_REFUSAL_TRIGGERS],
+)
+def test_every_guard_refusal_carries_the_bracketed_marker(restricted_sandbox, val):
+    """Pin the classifier's premise: EVERY validate_tool_path refusal is raised as
+    PermissionError/ValueError carrying 'Security Violation ['. If a future pathsec
+    change drops the marker on any path, _is_guard_refusal breaks, so fail loudly."""
+    with pytest.raises((PermissionError, ValueError)) as excinfo:
+        pathsec.validate_tool_path(val, context="invariant", must_exist=False)
+    assert _is_guard_refusal(
+        excinfo.value
+    ), f"refusal without marker: {excinfo.value!r}"
 
 
 @pytest.mark.parametrize("sink", sorted(_FILE_SINKS))
 def test_file_sinks_refuse_outside_unicode_path_at_the_guard(pathsec_sandbox, sink):
-    """No-leak proof for the tolerance: an OUTSIDE path with a unicode name must be
-    refused by the GUARD (a Security Violation raised before the tool ever runs),
-    never merely by a downstream tool failure. _refusal returns None only for a
-    guard refusal, so this asserts the escape is stopped by containment itself."""
+    """No-leak proof: an OUTSIDE unicode-named path must be refused by the GUARD
+    (a Security Violation before the tool runs), not merely by a tool failure.
+    _refusal returns None only for a guard refusal, so the escape is stopped here."""
     root, outside = pathsec_sandbox
     target = str(outside / "\u043c\u043e\u0434\u0435\u043b\u044c_\u6a21\u578b.model")
     outcome = _refusal(sink, target)
