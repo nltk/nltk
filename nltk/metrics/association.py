@@ -141,8 +141,17 @@ class NgramAssocMeasures(metaclass=ABCMeta):
 
     @classmethod
     def likelihood_ratio(cls, *marginals):
-        """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4."""
+        """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
+
+        :raises ValueError: If the contingency table contains negative counts.
+        """
         cont = cls._contingency(*marginals)
+        if any(count < 0 for count in cont):
+            raise ValueError(
+                "The contingency table contains negative counts. "
+                "Check the marginal counts; very small samples can make "
+                "collocation approximations invalid."
+            )
         return 2 * sum(
             obs * _ln(obs / (exp + _SMALL) + _SMALL)
             for obs, exp in zip(cont, cls._expected_values(cont))
