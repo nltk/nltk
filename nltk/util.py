@@ -1389,6 +1389,9 @@ def elementtree_indent(elem, level=0):
     :return:  Contents of elem indented to reflect its structure
     """
 
+    if not isinstance(level, int) or isinstance(level, bool) or level < 0:
+        raise ValueError(f"level must be a non-negative integer, got {level!r}")
+
     i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():

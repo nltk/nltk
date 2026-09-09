@@ -1,6 +1,8 @@
+from xml.etree import ElementTree as ET
+
 import pytest
 
-from nltk.util import everygrams, transitive_closure
+from nltk.util import elementtree_indent, everygrams, transitive_closure
 
 
 @pytest.fixture
@@ -115,3 +117,22 @@ def test_transitive_closure_does_not_mutate_input():
     assert set(graph) == set(snapshot)
     # the same set objects, not new-but-equal ones
     assert all(graph[k] is original_sets[k] for k in snapshot)
+
+
+def test_elementtree_indent_basic():
+    root = ET.Element("root")
+    ET.SubElement(root, "child")
+    elementtree_indent(root)
+    assert root.text.startswith("\n  ")
+
+
+def test_elementtree_indent_rejects_negative_level():
+    root = ET.Element("root")
+    with pytest.raises(ValueError):
+        elementtree_indent(root, level=-1)
+
+
+def test_elementtree_indent_rejects_non_integer_level():
+    root = ET.Element("root")
+    with pytest.raises(ValueError):
+        elementtree_indent(root, level="1")
