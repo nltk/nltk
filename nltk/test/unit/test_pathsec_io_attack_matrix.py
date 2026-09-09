@@ -29,15 +29,19 @@ root on macOS).
 
 import os
 import socket
+import tempfile
 import unicodedata
+import zipfile
 
 import pytest
 
+import nltk.pathsec as _pathsec
 from nltk.pathsec import (
     _reject_colliding_members,
     validate_model_resource,
     validate_tool_dir,
     validate_tool_path,
+    validate_zip_archive,
 )
 
 REFUSALS = (PermissionError, ValueError)
@@ -286,19 +290,43 @@ class TestValidateModelResource:
 # ==========================================================================
 class TestModelFileCollision:
     def test_casefold_collision_is_refused(self):
-        with pytest.raises(ValueError):
+        # Refusal carries the bracketed pathsec marker like every other refusal.
+        with pytest.raises(ValueError, match=r"Security Violation \["):
             _reject_colliding_members(["pkg/Weights.json", "pkg/weights.json"])
 
     def test_unicode_nfc_collision_is_refused(self):
         nfc = unicodedata.normalize("NFC", "café.json")
         nfd = unicodedata.normalize("NFD", "café.json")
         assert nfc != nfd
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"Security Violation \["):
             _reject_colliding_members([nfc, nfd])
 
     def test_distinct_members_are_allowed(self):
         # Benign control: a legitimate model archive never collides.
         _reject_colliding_members(["weights.json", "tagdict.json", "classes.json"])
+
+    def test_null_byte_member_is_refused_with_marker(self, tmp_path):
+        # A NUL in a member name (C-string truncation) is refused, and the refusal
+        # carries the bracketed pathsec marker like every other refusal.
+        z = tmp_path / "ok.zip"
+        with zipfile.ZipFile(z, "w") as zf:
+            zf.writestr("good.txt", "x")
+
+        class _NulNameZip(zipfile.ZipFile):
+            def namelist(self):
+                return ["good\x00evil.txt"]
+
+        with _NulNameZip(z) as fz:
+            with pytest.raises(ValueError, match=r"Security Violation \["):
+                validate_zip_archive(fz, str(tmp_path))
+
+    def test_corrupt_archive_is_refused_with_marker(self, tmp_path, monkeypatch):
+        # A non-zip / corrupt archive is refused under ENFORCE, with the marker.
+        monkeypatch.setattr(_pathsec, "ENFORCE", True)
+        bad = tmp_path / "not_a.zip"
+        bad.write_bytes(b"NOT A ZIP FILE")
+        with pytest.raises(PermissionError, match=r"Security Violation \["):
+            validate_zip_archive(str(bad), str(tmp_path))
 
 
 # ==========================================================================
