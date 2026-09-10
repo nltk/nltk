@@ -181,8 +181,8 @@ def test_nkjp_rejects_control_char_fileid(tmp_path, bad):
     """A NUL or newline in a fileid must be refused (CWE-22 / line injection)."""
     root = _build_corpus(tmp_path)
     reader = _reader(root)
-    with pytest.raises((ValueError, OSError)):
-        reader.header(fileids=[bad])
+    with pytest.raises(PermissionError, match="control character"):
+        reader.add_root(bad)
 
 
 def test_nkjp_header_rejects_inroot_symlink_escape(tmp_path):
@@ -329,9 +329,7 @@ def test_teardown_is_idempotent_and_safe_before_build(tmp_path):
 
 
 def test_teardown_does_not_delete_through_a_symlink(tmp_path):
-    """Even if write_file were a symlink to a victim, os.remove unlinks the link,
-    never the target's contents (defence-in-depth: write_file is never
-    caller-derived, but the teardown primitive must still be safe)."""
+    """Cleanup must leave an unowned symlink and its target untouched."""
     victim = tmp_path / "victim.txt"
     victim.write_text("KEEP")
     link = tmp_path / "scratch_link"
@@ -342,12 +340,12 @@ def test_teardown_does_not_delete_through_a_symlink(tmp_path):
     tool = _xml_tool(_build_corpus(tmp_path))
     tool.write_file = str(link)
     tool.remove_preprocessed_file()
+    assert link.is_symlink()
     assert victim.exists() and victim.read_text() == "KEEP"
 
 
 def test_teardown_refuses_to_delete_a_directory(tmp_path):
-    """If write_file pointed at a directory, os.remove raises (swallowed) rather
-    than nuking a tree, so no rmtree-style mass deletion is reachable."""
+    """Cleanup must leave an unowned directory and its contents untouched."""
     victim_dir = tmp_path / "victim_dir"
     victim_dir.mkdir()
     (victim_dir / "keep.txt").write_text("KEEP")
@@ -355,3 +353,58 @@ def test_teardown_refuses_to_delete_a_directory(tmp_path):
     tool.write_file = str(victim_dir)
     tool.remove_preprocessed_file()
     assert victim_dir.exists() and (victim_dir / "keep.txt").exists()
+
+
+@pytest.mark.parametrize("failure", ["decode", "write", "destination"])
+def test_preprocessing_closes_streams_before_cleanup(tmp_path, monkeypatch, failure):
+    from nltk import pathsec
+
+    root = _build_corpus(tmp_path)
+    if failure == "decode":
+        (root / "sample" / "text.xml").write_bytes(b"\xff")
+    tool = _xml_tool(root)
+    streams = []
+    real_open = pathsec.open
+    real_remove = os.remove
+
+    def tracked_open(path, mode, **kwargs):
+        if mode == "xb" and failure == "destination":
+            raise PermissionError("destination refused")
+        stream = real_open(path, mode, **kwargs)
+        streams.append(stream)
+        if mode == "xb" and failure == "write":
+
+            def fail_write(data):
+                raise OSError("write failed")
+
+            monkeypatch.setattr(stream, "write", fail_write)
+        return stream
+
+    def checked_remove(path):
+        assert all(stream.closed for stream in streams)
+        return real_remove(path)
+
+    monkeypatch.setattr(pathsec, "open", tracked_open)
+    monkeypatch.setattr(os, "remove", checked_remove)
+    error = UnicodeDecodeError if failure == "decode" else OSError
+    with pytest.raises(error):
+        tool.build_preprocessed_file()
+    assert streams and all(stream.closed for stream in streams)
+    assert not os.path.exists(tool.write_file)
+
+
+@pytest.mark.parametrize("cleanup_before_build", [False, True])
+def test_preprocessing_preserves_existing_scratch_file(tmp_path, cleanup_before_build):
+    tool = _xml_tool(_build_corpus(tmp_path))
+    with open(tool.write_file, "wb") as stream:
+        stream.write(b"another reader's data")
+    try:
+        if cleanup_before_build:
+            tool.remove_preprocessed_file()
+        with pytest.raises(FileExistsError):
+            tool.build_preprocessed_file()
+        tool.remove_preprocessed_file()
+        with open(tool.write_file, "rb") as stream:
+            assert stream.read() == b"another reader's data"
+    finally:
+        os.remove(tool.write_file)

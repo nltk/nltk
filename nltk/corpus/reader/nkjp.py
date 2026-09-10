@@ -114,6 +114,8 @@ class NKJPCorpusReader(XMLCorpusReader):
         # expects (the old substring logic duplicated the root on Windows).
         root = os.path.abspath(str(self.root))
         fileid = str(fileid)
+        if any(char in fileid for char in "\x00\n\r"):
+            raise PermissionError("NKJPCorpusReader: control character in fileid")
         if os.path.isabs(fileid):
             result = fileid
         else:
@@ -281,6 +283,7 @@ class XML_Tool:
         # root, never world-writable temp (CWE-377/378).
         name = f"nkjp-{os.getpid()}-{os.urandom(8).hex()}.xml"
         self.write_file = os.path.join(staging_tempdir(), name)
+        self._owns_scratch = False
 
     def build_preprocessed_file(self):
         try:
@@ -289,37 +292,35 @@ class XML_Tool:
             # (CWE-22/59), and "xb" is O_CREAT|O_EXCL so it cannot clobber a plant.
             from nltk.pathsec import open as pathsec_open
 
-            fr = pathsec_open(
+            with pathsec_open(
                 self.read_file,
                 "rb",
                 context="NKJPCorpusReader",
                 required_root=self._root,
-            )
-            fw = pathsec_open(
+            ) as fr, pathsec_open(
                 self.write_file,
                 "xb",
                 context="NKJPCorpusReader",
                 required_root=os.path.dirname(self.write_file),
-            )
-            # Decode/encode UTF-8 explicitly to match the NKJP TEI examples, stay
-            # locale-independent, and keep the XML bytes exact.
-            line = b" "
-            while len(line):
-                line = fr.readline()
-                text = line.decode("utf-8")
-                x = redos.split(r"nkjp:[^ ]* ", text)  # in all files
-                ret = " ".join(x)
-                x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                x = redos.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                x = redos.split("<choice>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                x = redos.split("</choice>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                fw.write(ret.encode("utf-8"))
-            fr.close()
-            fw.close()
+            ) as fw:
+                self._owns_scratch = True
+                # Decode/encode UTF-8 explicitly to match the NKJP TEI examples, stay
+                # locale-independent, and keep the XML bytes exact.
+                line = b" "
+                while len(line):
+                    line = fr.readline()
+                    text = line.decode("utf-8")
+                    x = redos.split(r"nkjp:[^ ]* ", text)  # in all files
+                    ret = " ".join(x)
+                    x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    x = redos.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    x = redos.split("<choice>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    x = redos.split("</choice>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    fw.write(ret.encode("utf-8"))
             return self.write_file
         except BaseException:
             # Re-raise the real error (a pathsec refusal, UnicodeDecodeError, ...)
@@ -331,10 +332,16 @@ class XML_Tool:
         # Remove only our own scratch file (never a directory tree); tolerate a
         # missing or never-created file so cleanup is idempotent and never masks
         # the real error.
+        if not self._owns_scratch:
+            return
         try:
             os.remove(self.write_file)
+        except FileNotFoundError:
+            self._owns_scratch = False
         except OSError:
             pass
+        else:
+            self._owns_scratch = False
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):
