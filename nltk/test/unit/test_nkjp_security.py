@@ -30,6 +30,13 @@ import pytest
 
 from nltk.corpus.reader.nkjp import NKJPCorpusReader
 
+# The st_nlink hardlink guard lives in pathsec's POSIX-only hardened open, so a
+# hardlink to an out-of-root inode is only refused on POSIX (a symlink is refused
+# everywhere: validate_path resolves it and rejects by containment).
+posix_only = pytest.mark.skipif(
+    os.name != "posix", reason="st_nlink hardlink guard is POSIX-only (pathsec)"
+)
+
 # A valid NKJP sample modelled on the TEI4NKJP examples: a TEI with the nkjp:
 # namespace, pretty-printed one element per line (as the real files are, and as
 # XML_Tool's line-based stripper expects). Text = pangram "Zażółć gęślą jaźń."
@@ -231,9 +238,11 @@ def test_nkjp_refuses_symlinked_corpus_file(tmp_path, victim, method):
     assert "SECRET" not in str(exc.value)
 
 
+@posix_only
 def test_nkjp_refuses_hardlinked_corpus_file(tmp_path):
     """A corpus file that is a hardlink to an out-of-root inode has no symlink to
-    resolve, so only the st_nlink>1 check in the hardened open catches it."""
+    resolve, so only the st_nlink>1 check in the POSIX hardened open catches it;
+    on Windows pathsec falls back to a plain open with no such check."""
     root = _build_corpus(tmp_path)
     secret = tmp_path / "secret.xml"
     secret.write_text(
