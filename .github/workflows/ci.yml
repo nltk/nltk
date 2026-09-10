@@ -1,10 +1,15 @@
 name: ci-workflow
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+  merge_group:
 
 # Automatically cancel in-progress jobs when new commits are pushed to the same PR
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -26,6 +31,7 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
@@ -293,6 +299,8 @@ jobs:
     # already runs the PR's code. It fails only on a real coverage gap and
     # skips if the fetch cannot be made. `permissions: {}` is intentional and
     # sufficient: checking out a public repo needs no token scope.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     permissions: {}
     steps:
