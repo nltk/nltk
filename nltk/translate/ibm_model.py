@@ -344,6 +344,9 @@ class IBMModel:
 
     def maximize_lexical_translation_probabilities(self, counts):
         for t, src_words in counts.t_given_s.items():
+            # Unobserved pairs must not retain the previous uniform prior or
+            # explicit values. Keep the row sparse, with the usual zero floor.
+            self.translation_table[t] = defaultdict(lambda: IBMModel.MIN_PROB)
             for s in src_words:
                 estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
                 self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
