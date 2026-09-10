@@ -632,3 +632,103 @@ class TestCoreNLPServerError:
         srv = self._bare_server(["-serverProperties", "/etc/passwd"])
         with pytest.raises(ValueError):
             srv.start()
+
+
+class TestTransform:
+    """The module-level transform() maps a CoreNLP sentence dict to the CoNLL-10
+    tuples CoreNLPDependencyParser.make_tree feeds to DependencyGraph."""
+
+    def test_maps_basic_dependencies_to_conll_tuples(self):
+        from nltk.parse.corenlp import transform
+
+        sentence = {
+            "basicDependencies": [
+                {"dependent": 2, "governor": 0, "dep": "ROOT"},
+                {"dependent": 1, "governor": 2, "dep": "nsubj"},
+            ],
+            "tokens": [
+                {"word": "Dogs", "lemma": "dog", "pos": "NNS"},
+                {"word": "bark", "lemma": "bark", "pos": "VBP"},
+            ],
+        }
+        assert list(transform(sentence)) == [
+            (2, "_", "bark", "bark", "VBP", "VBP", "_", "0", "ROOT", "_", "_"),
+            (1, "_", "Dogs", "dog", "NNS", "NNS", "_", "2", "nsubj", "_", "_"),
+        ]
+
+    def test_feeds_a_valid_dependencygraph(self):
+        # sorted(transform(...)) must be consumable by make_tree -> DependencyGraph.
+        from nltk.parse.corenlp import CoreNLPDependencyParser, transform
+
+        sentence = {
+            "basicDependencies": [
+                {"dependent": 1, "governor": 2, "dep": "nsubj"},
+                {"dependent": 2, "governor": 0, "dep": "ROOT"},
+            ],
+            "tokens": [
+                {"word": "Dogs", "lemma": "dog", "pos": "NNS"},
+                {"word": "bark", "lemma": "bark", "pos": "VBP"},
+            ],
+        }
+        graph = CoreNLPDependencyParser(url="http://localhost:0").make_tree(sentence)
+        assert ("bark", "VBP") in [g for g, _, _ in graph.triples()]
+
+
+class TestScalarGate:
+    """_corenlp_check_scalar is the name-agnostic first gate: every value and flag
+    passes it before any per-flag shape check, so its rejections are exercised
+    directly (control / DEL / unicode-confusable / metachar / @argfile / non-str)."""
+
+    @pytest.mark.parametrize(
+        "bad",
+        [
+            "",
+            " ",
+            "a b",
+            "a\tb",
+            "a\nb",
+            "a\rb",
+            "a\x00b",
+            "a\x1bb",
+            "a\x7fb",
+            "a b",  # unicode LINE SEPARATOR
+            "ｆｕ",  # fullwidth
+            "ро",  # cyrillic homoglyph of "po"
+            "@/tmp/argfile",
+            "a;b",
+            "a|b",
+            "a$b",
+            "a`b",
+            "a&b",
+            "a>b",
+            "a\\b",
+        ],
+    )
+    def test_rejects_unsafe_scalar(self, bad):
+        from nltk.parse.corenlp import _corenlp_check_scalar
+
+        with pytest.raises(ValueError):
+            _corenlp_check_scalar(bad)
+
+    @pytest.mark.parametrize("bad", [None, 123, b"bytes", 3.14, ["x"]])
+    def test_rejects_non_string(self, bad):
+        from nltk.parse.corenlp import _corenlp_check_scalar
+
+        with pytest.raises(ValueError):
+            _corenlp_check_scalar(bad)
+
+    @pytest.mark.parametrize(
+        "ok",
+        [
+            "-port",
+            "9000",
+            "tokenize,ssplit",
+            "/corenlp/api",
+            "srv-1",
+            "-maxCharLength=-1",
+        ],
+    )
+    def test_accepts_plain_ascii(self, ok):
+        from nltk.parse.corenlp import _corenlp_check_scalar
+
+        _corenlp_check_scalar(ok)  # must not raise
