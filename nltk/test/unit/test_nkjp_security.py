@@ -267,3 +267,83 @@ def test_nkjp_non_utf8_source_fails_closed(tmp_path):
     reader = _reader(root)
     with pytest.raises(UnicodeDecodeError):
         reader.raw()
+
+
+# =========================================================================== #
+# Security: XML_Tool scratch teardown cannot become arbitrary deletion.
+# =========================================================================== #
+def _xml_tool(root, filename="text.xml"):
+    from nltk.corpus.reader.nkjp import XML_Tool
+
+    return XML_Tool(str(root / "sample") + os.sep, filename)
+
+
+def test_nkjp_reads_do_not_delete_corpus_files(tmp_path):
+    """Reading (and its teardown) must leave every source file on disk."""
+    root = _build_corpus(tmp_path)
+    reader = _reader(root)
+    reader.header()
+    reader.raw()
+    reader.words()
+    reader.sents()
+    for name in (
+        "header.xml",
+        "text.xml",
+        "ann_segmentation.xml",
+        "ann_morphosyntax.xml",
+    ):
+        assert (root / "sample" / name).exists()
+
+
+def test_teardown_removes_only_its_own_scratch_file(tmp_path):
+    """Cleanup deletes the one scratch file, not the shared staging dir or any
+    sibling in it (the single-file os.remove, not a directory-tree rmtree)."""
+    tool = _xml_tool(_build_corpus(tmp_path))
+    scratch = tool.build_preprocessed_file()
+    assert os.path.exists(scratch)
+    sibling = os.path.join(os.path.dirname(scratch), "other-reader.keep")
+    open(sibling, "w").close()
+    try:
+        tool.remove_preprocessed_file()
+        assert not os.path.exists(scratch)  # our file is gone
+        assert os.path.exists(sibling)  # a co-tenant file is untouched
+    finally:
+        os.remove(sibling)
+
+
+def test_teardown_is_idempotent_and_safe_before_build(tmp_path):
+    """Removing twice, and removing before any file was written, must not raise."""
+    tool = _xml_tool(_build_corpus(tmp_path))
+    tool.remove_preprocessed_file()  # nothing written yet
+    tool.build_preprocessed_file()
+    tool.remove_preprocessed_file()
+    tool.remove_preprocessed_file()  # already gone
+
+
+def test_teardown_does_not_delete_through_a_symlink(tmp_path):
+    """Even if write_file were a symlink to a victim, os.remove unlinks the link,
+    never the target's contents (defence-in-depth: write_file is never
+    caller-derived, but the teardown primitive must still be safe)."""
+    victim = tmp_path / "victim.txt"
+    victim.write_text("KEEP")
+    link = tmp_path / "scratch_link"
+    try:
+        os.symlink(victim, link)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks not supported on this platform")
+    tool = _xml_tool(_build_corpus(tmp_path))
+    tool.write_file = str(link)
+    tool.remove_preprocessed_file()
+    assert victim.exists() and victim.read_text() == "KEEP"
+
+
+def test_teardown_refuses_to_delete_a_directory(tmp_path):
+    """If write_file pointed at a directory, os.remove raises (swallowed) rather
+    than nuking a tree, so no rmtree-style mass deletion is reachable."""
+    victim_dir = tmp_path / "victim_dir"
+    victim_dir.mkdir()
+    (victim_dir / "keep.txt").write_text("KEEP")
+    tool = _xml_tool(_build_corpus(tmp_path))
+    tool.write_file = str(victim_dir)
+    tool.remove_preprocessed_file()
+    assert victim_dir.exists() and (victim_dir / "keep.txt").exists()

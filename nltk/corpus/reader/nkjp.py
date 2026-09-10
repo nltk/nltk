@@ -7,7 +7,6 @@
 
 import functools
 import os
-import shutil
 
 from nltk import redos
 from nltk.corpus.reader.util import concat
@@ -278,23 +277,21 @@ class XML_Tool:
         self._root = root
         self.read_file = os.path.join(root, filename)
         # Imported here: nltk.data imports the corpus package.
-        from nltk.data import make_staging_dir
+        from nltk.data import staging_tempdir
 
-        # A private (0700) per-instance staging dir: a fixed name inside it is
-        # unique, so the scratch copy needs no world-writable shared temp dir
-        # (CWE-377/378) and no bare tempfile (CWE-59). Removed after parsing.
-        self._staging_dir = make_staging_dir(prefix="nkjp-")
-        self.write_file = os.path.join(self._staging_dir, "preprocessed.xml")
+        # A unique, unpredictable file in the shared per-process staging dir, so
+        # concurrent readers never collide and the scratch stays inside a data
+        # root, never world-writable temp (CWE-377/378).
+        name = f"nkjp-{os.getpid()}-{os.urandom(8).hex()}.xml"
+        self.write_file = os.path.join(staging_tempdir(), name)
 
     def build_preprocessed_file(self):
         try:
-            # Read the source and write the namespace-stripped copy in BINARY
-            # through pathsec: both opens get containment + O_NOFOLLOW / hardlink
-            # / fd-realpath guards (CWE-22/59), and the scratch write is
-            # O_CREAT|O_EXCL in the private dir, never a bare or text-mode
-            # tempfile. Decode/encode UTF-8 explicitly to match the NKJP TEI
-            # examples and stay independent of the platform locale, and keep the
-            # bytes exact (no text-mode newline translation of the XML).
+            # Read the source and write the namespace-stripped copy in binary
+            # through pathsec: both get containment + O_NOFOLLOW / hardlink guards
+            # (CWE-22/59), and "xb" is O_CREAT|O_EXCL so it cannot clobber or
+            # follow a planted path. Decode/encode UTF-8 explicitly to match the
+            # NKJP TEI examples, stay locale-independent and keep the bytes exact.
             from nltk.pathsec import open as pathsec_open
 
             fr = pathsec_open(
@@ -307,7 +304,7 @@ class XML_Tool:
                 self.write_file,
                 "xb",
                 context="NKJPCorpusReader",
-                required_root=self._staging_dir,
+                required_root=os.path.dirname(self.write_file),
             )
             line = b" "
             while len(line):
@@ -328,14 +325,19 @@ class XML_Tool:
             fw.close()
             return self.write_file
         except BaseException:
-            # Re-raise the real error (e.g. a pathsec PermissionError/ValueError
-            # or a UnicodeDecodeError) instead of masking it as a bare Exception,
-            # and clean up on any exit including KeyboardInterrupt.
+            # Re-raise the real error (a pathsec refusal, UnicodeDecodeError, ...)
+            # instead of masking it as a bare Exception, and clean up on any exit.
             self.remove_preprocessed_file()
             raise
 
     def remove_preprocessed_file(self):
-        shutil.rmtree(self._staging_dir, ignore_errors=True)
+        # Remove only our own scratch file (never a directory tree); tolerate a
+        # missing or never-created file so cleanup is idempotent and never masks
+        # the real error.
+        try:
+            os.remove(self.write_file)
+        except OSError:
+            pass
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):

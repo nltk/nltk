@@ -15,9 +15,8 @@ what those readers changed:
   exercised too as an over-block control).
 * ``nkjp`` and ``timit``: their scratch files used to default to the system
   temp dir, which on Linux is the shared, world-writable ``/tmp`` and is
-  deliberately not a pathsec data root. They are now pinned inside a data root
-  (``nkjp`` in a private ``make_staging_dir`` directory, ``timit`` via
-  ``staging_tempdir()``) so the scratch file never lands in world-writable temp.
+  deliberately not a pathsec data root. They are now pinned to
+  ``nltk.data.staging_tempdir()`` so the scratch file lands inside a data root.
 
 The ``restricted_sandbox`` / ``pathsec_sandbox`` fixtures (see the shared
 ``conftest.py``) enforce pathsec against one throwaway data root registered on
@@ -114,11 +113,10 @@ def test_nkjp_xml_tool_scratch_dir_is_pinned_to_a_data_root(restricted_sandbox):
     root = restricted_sandbox
     tool = XML_Tool(root, "header.xml")
     try:
-        # write_file is now a path string inside a private per-instance staging
-        # dir that make_staging_dir allocates under a registered data root, never
-        # the world-writable system temp (CWE-377/378).
+        # write_file is a unique scratch path inside the shared staging_tempdir,
+        # which lives under a registered data root, never world-writable temp.
         scratch_dir = os.path.realpath(os.path.dirname(tool.write_file))
-        assert scratch_dir == os.path.realpath(tool._staging_dir)
+        assert scratch_dir == os.path.realpath(staging_tempdir())
         assert scratch_dir.startswith(os.path.realpath(root))
     finally:
         tool.remove_preprocessed_file()
