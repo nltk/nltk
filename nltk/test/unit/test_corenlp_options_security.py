@@ -83,6 +83,9 @@ BENIGN = [
     ["-srparser", "true"],
     ["-srparser=false"],
     ["-server_id", "my_server-1"],
+    ["-username", "corenlp"],  # basic-auth token flags: plain-token shape
+    ["-password", "s3cr3t.pass_ok"],
+    ["-username=corenlp"],
     ["-uriContext", "/corenlp"],
     ["-uriContext", "/corenlp/api/"],  # multi-segment context still valid
     ["-uriContext", "/"],
@@ -116,6 +119,14 @@ FILE_READ = [
     ["-fileList", "/etc/shadow"],
     ["-filelist", "/etc/shadow"],
     ["-inputDirectory", "/root"],
+    ["-keystore", "/etc/ssl/keystore.jks"],
+    ["-whitelist", "/etc/passwd"],
+    ["-inputFiles", "/etc/passwd"],
+    ["-textFile", "/etc/passwd"],
+    ["-loadClassifier", "/tmp/evil.ser.gz"],
+    ["-regexner.mapping", "/tmp/evil.tab"],
+    ["-tokensregex.rules", "/tmp/evil.rules"],
+    ["-sutime.rules", "/tmp/evil.rules"],
     ["-ServerProperties", "/etc/passwd"],  # case variant of a dangerous flag
     ["-SERVERPROPERTIES", "/etc/passwd"],
 ]
@@ -134,6 +145,9 @@ MODEL_DESER = [
     ["-sentiment.model", "/tmp/evil.ser.gz"],
     ["-truecase.model", "/tmp/evil.ser.gz"],
     ["-tokenize.model", "/tmp/evil.ser.gz"],
+    ["-kbp.model", "/tmp/evil.ser.gz"],
+    ["-lemma.model", "/tmp/evil.ser.gz"],
+    ["-ner.additional.regexner.mapping", "/tmp/evil.tab"],
 ]
 # JVM/launcher flags that do not belong on the server command at all.
 JVM_SMUGGLE = [
@@ -144,6 +158,8 @@ JVM_SMUGGLE = [
     ["-javaagent:/tmp/evil.jar"],
     ["-cp", "/tmp/evil.jar"],
     ["-classpath", "/tmp/evil.jar"],
+    ["-agentlib:jdwp=transport=dt_socket"],
+    ["-Xmx4g"],
     ["@/tmp/argfile"],
     ["-preload", "@/tmp/argfile"],
 ]
@@ -406,13 +422,9 @@ def _make_corenlp_server(corenlp_options, port=None):
 
 @pytest.fixture(scope="module")
 def live_server():
-    # One real server shared by every wrapper-function test. Bind an ephemeral
-    # free port, never the default 9000: the mock suite in test_corenlp.py starts
-    # its own server on 9000, and under xdist two modules both binding 9000 race
-    # to "Address already in use", so this module stays off that port entirely.
-    # The options preload the full annotator set (so parse/depparse/ner all work)
-    # and include the allowlisted -srparser and inline -maxCharLength=-1: the
-    # server coming up at all proves CoreNLP's own arg parser accepts them.
+    # One real server for every wrapper-function test, on an ephemeral port (never
+    # the default 9000, which test_corenlp.py binds and races under xdist); the
+    # preloaded annotators + allowlisted -srparser/-maxCharLength=-1 must start clean.
     pytest.importorskip("requests")
     srv = _make_corenlp_server(
         [
@@ -482,6 +494,9 @@ class TestRealServerLaunch:
         assert list(next(d.parse("The dog barks .".split())).triples())
         batch = list(d.parse_sents([["The", "dog", "barks", "."]]))
         assert list(next(iter(batch[0])).triples())
+        # ParserI wrappers over parse() on the dependency parser.
+        assert list(d.parse_one("The dog barks .".split()).triples())
+        assert d.parse_all("The dog barks .".split())
 
     def test_real_api_call(self, live_server):
         from nltk.parse.corenlp import CoreNLPParser
@@ -490,6 +505,41 @@ class TestRealServerLaunch:
             "The dog barks.", properties={"annotators": "tokenize,ssplit,pos"}
         )
         assert "sentences" in resp
+
+    def test_real_parse_all_and_make_tree(self, live_server):
+        from nltk.parse.corenlp import CoreNLPParser
+
+        p = CoreNLPParser(url=live_server.url)
+        # parse_all (ParserI) returns every parse for the sentence.
+        trees = list(p.parse_all("The dog barks .".split()))
+        assert trees and all(t.label() == "ROOT" for t in trees)
+        # make_tree is the transformer parse() feeds; drive it directly here.
+        resp = p.api_call(
+            "The dog barks.", properties={"annotators": "tokenize,ssplit,pos,parse"}
+        )
+        assert p.make_tree(resp["sentences"][0]).label() == "ROOT"
+
+    def test_real_dependency_make_tree(self, live_server):
+        from nltk.parse.corenlp import CoreNLPDependencyParser
+
+        d = CoreNLPDependencyParser(url=live_server.url)
+        # The dependency make_tree needs the lemma field the depparse run adds.
+        resp = d.api_call(
+            "The dog barks.",
+            properties={"annotators": "tokenize,ssplit,pos,lemma,depparse"},
+        )
+        assert list(d.make_tree(resp["sentences"][0]).triples())
+
+    def test_real_server_context_manager(self):
+        # The documented "with CoreNLPServer(...) as server" form starts the server
+        # on __enter__ and stops it on __exit__ (its own ephemeral port).
+        pytest.importorskip("requests")
+        from nltk.parse.corenlp import CoreNLPParser
+
+        srv = _make_corenlp_server(["-preload", "tokenize,ssplit"], port=try_port())
+        with srv as server:
+            toks = list(CoreNLPParser(url=server.url).tokenize("The dog barks."))
+            assert toks[:3] == ["The", "dog", "barks"], toks
 
     def test_malicious_options_never_reach_a_real_launch(self):
         # Even with a real install present, a path-bearing or unknown option is
