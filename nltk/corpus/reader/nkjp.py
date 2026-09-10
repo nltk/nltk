@@ -7,7 +7,7 @@
 
 import functools
 import os
-import tempfile
+import shutil
 
 from nltk import redos
 from nltk.corpus.reader.util import concat
@@ -278,30 +278,42 @@ class XML_Tool:
         self._root = root
         self.read_file = os.path.join(root, filename)
         # Imported here: nltk.data imports the corpus package.
-        from nltk.data import staging_tempdir
+        from nltk.data import make_staging_dir
 
-        self.write_file = tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", delete=False, dir=staging_tempdir()
-        )
+        # A private (0700) per-instance staging dir: a fixed name inside it is
+        # unique, so the scratch copy needs no world-writable shared temp dir
+        # (CWE-377/378) and no bare tempfile (CWE-59). Removed after parsing.
+        self._staging_dir = make_staging_dir(prefix="nkjp-")
+        self.write_file = os.path.join(self._staging_dir, "preprocessed.xml")
 
     def build_preprocessed_file(self):
         try:
-            # Open through pathsec (containment + O_NOFOLLOW / hardlink guards)
-            # so the root-derived source file cannot escape the corpus root
-            # (CWE-59, GHSA-p4rw class).
+            # Read the source and write the namespace-stripped copy in BINARY
+            # through pathsec: both opens get containment + O_NOFOLLOW / hardlink
+            # / fd-realpath guards (CWE-22/59), and the scratch write is
+            # O_CREAT|O_EXCL in the private dir, never a bare or text-mode
+            # tempfile. Decode/encode UTF-8 explicitly to match the NKJP TEI
+            # examples and stay independent of the platform locale, and keep the
+            # bytes exact (no text-mode newline translation of the XML).
             from nltk.pathsec import open as pathsec_open
 
             fr = pathsec_open(
                 self.read_file,
-                encoding="utf-8",
+                "rb",
                 context="NKJPCorpusReader",
                 required_root=self._root,
             )
-            fw = self.write_file
-            line = " "
+            fw = pathsec_open(
+                self.write_file,
+                "xb",
+                context="NKJPCorpusReader",
+                required_root=self._staging_dir,
+            )
+            line = b" "
             while len(line):
                 line = fr.readline()
-                x = redos.split(r"nkjp:[^ ]* ", line)  # in all files
+                text = line.decode("utf-8")
+                x = redos.split(r"nkjp:[^ ]* ", text)  # in all files
                 ret = " ".join(x)
                 x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
                 ret = " ".join(x)
@@ -311,16 +323,19 @@ class XML_Tool:
                 ret = " ".join(x)
                 x = redos.split("</choice>", ret)  # in ann_segmentation.xml
                 ret = " ".join(x)
-                fw.write(ret)
+                fw.write(ret.encode("utf-8"))
             fr.close()
             fw.close()
-            return self.write_file.name
-        except Exception as e:
+            return self.write_file
+        except BaseException:
+            # Re-raise the real error (e.g. a pathsec PermissionError/ValueError
+            # or a UnicodeDecodeError) instead of masking it as a bare Exception,
+            # and clean up on any exit including KeyboardInterrupt.
             self.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def remove_preprocessed_file(self):
-        os.remove(self.write_file.name)
+        shutil.rmtree(self._staging_dir, ignore_errors=True)
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):

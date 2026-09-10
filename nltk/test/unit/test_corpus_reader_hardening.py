@@ -13,10 +13,11 @@ what those readers changed:
   "Security violation" so a containment decision is distinguishable from an
   incidental lookup miss (the resolving choke point ``_validate_in_root`` is
   exercised too as an over-block control).
-* ``nkjp`` and ``timit``: their scratch tempfiles used to default to the system
+* ``nkjp`` and ``timit``: their scratch files used to default to the system
   temp dir, which on Linux is the shared, world-writable ``/tmp`` and is
-  deliberately not a pathsec data root. They are now pinned to
-  ``nltk.data.staging_tempdir()`` so the scratch file lands inside a data root.
+  deliberately not a pathsec data root. They are now pinned inside a data root
+  (``nkjp`` in a private ``make_staging_dir`` directory, ``timit`` via
+  ``staging_tempdir()``) so the scratch file never lands in world-writable temp.
 
 The ``restricted_sandbox`` / ``pathsec_sandbox`` fixtures (see the shared
 ``conftest.py``) enforce pathsec against one throwaway data root registered on
@@ -103,23 +104,24 @@ def test_framenet_validate_in_root_accepts_an_in_root_path(pathsec_sandbox):
 
 
 # ----------------------------------------------------------------------------
-# nkjp: XML_Tool's scratch tempfile is pinned inside a data root
+# nkjp: XML_Tool's scratch dir is pinned inside a data root
 # ----------------------------------------------------------------------------
 
 
-def test_nkjp_xml_tool_tempfile_is_pinned_to_a_data_root(restricted_sandbox):
+def test_nkjp_xml_tool_scratch_dir_is_pinned_to_a_data_root(restricted_sandbox):
     from nltk.corpus.reader.nkjp import XML_Tool
 
     root = restricted_sandbox
     tool = XML_Tool(root, "header.xml")
     try:
-        scratch_dir = os.path.realpath(os.path.dirname(tool.write_file.name))
-        assert scratch_dir == os.path.realpath(staging_tempdir())
+        # write_file is now a path string inside a private per-instance staging
+        # dir that make_staging_dir allocates under a registered data root, never
+        # the world-writable system temp (CWE-377/378).
+        scratch_dir = os.path.realpath(os.path.dirname(tool.write_file))
+        assert scratch_dir == os.path.realpath(tool._staging_dir)
         assert scratch_dir.startswith(os.path.realpath(root))
     finally:
-        tool.write_file.close()
-        if os.path.exists(tool.write_file.name):
-            os.remove(tool.write_file.name)
+        tool.remove_preprocessed_file()
 
 
 # ----------------------------------------------------------------------------
