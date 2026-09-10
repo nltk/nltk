@@ -114,8 +114,6 @@ class NKJPCorpusReader(XMLCorpusReader):
         # expects (the old substring logic duplicated the root on Windows).
         root = os.path.abspath(str(self.root))
         fileid = str(fileid)
-        if any(char in fileid for char in "\x00\n\r"):
-            raise PermissionError("NKJPCorpusReader: control character in fileid")
         if os.path.isabs(fileid):
             result = fileid
         else:

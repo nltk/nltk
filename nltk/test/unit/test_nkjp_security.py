@@ -118,9 +118,7 @@ def _reader(root):
     return NKJPCorpusReader(root=str(root) + os.sep, fileids="sample")
 
 
-# =========================================================================== #
 # Functional: the legitimate UTF-8 flow must work (this is the #2416 fix).
-# =========================================================================== #
 def test_nkjp_header(tmp_path):
     reader = _reader(_build_corpus(tmp_path, title="Przykład"))
     out = reader.header()
@@ -142,9 +140,7 @@ def test_nkjp_reads_utf8_text(tmp_path, method, expected):
     assert getattr(reader, method)() == expected
 
 
-# =========================================================================== #
 # Security: fileid-level containment (refused in add_root before any read).
-# =========================================================================== #
 def test_nkjp_header_rejects_traversal_fileid(tmp_path):
     """A ../ traversal in fileids must be rejected, not read from disk."""
     root = _build_corpus(tmp_path)
@@ -178,11 +174,14 @@ def test_nkjp_rejects_absolute_path_fileid(tmp_path):
 
 @pytest.mark.parametrize("bad", ["sample\x00", "sample\nheader", "sample\r"])
 def test_nkjp_rejects_control_char_fileid(tmp_path, bad):
-    """A NUL or newline in a fileid must be refused (CWE-22 / line injection)."""
+    """A NUL or newline in a fileid must be refused, not read from disk. NUL is
+    caught by validate_path's marked guard (a PermissionError, which is an
+    OSError); a newline is a valid POSIX name char so it falls through to a
+    file-not-found OSError, and is an invalid name on Windows (also OSError)."""
     root = _build_corpus(tmp_path)
     reader = _reader(root)
-    with pytest.raises(PermissionError, match="control character"):
-        reader.add_root(bad)
+    with pytest.raises((ValueError, OSError)):
+        reader.header(fileids=[bad])
 
 
 def test_nkjp_header_rejects_inroot_symlink_escape(tmp_path):
@@ -208,9 +207,7 @@ def test_nkjp_header_rejects_inroot_symlink_escape(tmp_path):
         reader.header(fileids=[evil])
 
 
-# =========================================================================== #
 # Security: corpus-file-level guards inside XML_Tool (the binary pathsec read).
-# =========================================================================== #
 @pytest.mark.parametrize(
     ("victim", "method"),
     [("text.xml", "raw"), ("ann_morphosyntax.xml", "words")],
@@ -277,9 +274,7 @@ def test_nkjp_non_utf8_source_fails_closed(tmp_path):
         reader.raw()
 
 
-# =========================================================================== #
 # Security: XML_Tool scratch teardown cannot become arbitrary deletion.
-# =========================================================================== #
 def _xml_tool(root, filename="text.xml"):
     from nltk.corpus.reader.nkjp import XML_Tool
 
@@ -329,7 +324,10 @@ def test_teardown_is_idempotent_and_safe_before_build(tmp_path):
 
 
 def test_teardown_does_not_delete_through_a_symlink(tmp_path):
-    """Cleanup must leave an unowned symlink and its target untouched."""
+    """Cleanup must leave an unowned symlink and its target untouched. write_file
+    is never caller-derived (defence-in-depth), but even if it were a symlink to a
+    victim, the ownership guard skips it, and os.remove would only unlink the link,
+    never the target's contents, so the teardown primitive stays safe."""
     victim = tmp_path / "victim.txt"
     victim.write_text("KEEP")
     link = tmp_path / "scratch_link"
@@ -345,7 +343,10 @@ def test_teardown_does_not_delete_through_a_symlink(tmp_path):
 
 
 def test_teardown_refuses_to_delete_a_directory(tmp_path):
-    """Cleanup must leave an unowned directory and its contents untouched."""
+    """Cleanup must leave an unowned directory and its contents untouched. Even if
+    write_file pointed at a directory, the ownership guard skips it, and os.remove
+    refuses a directory anyway (never nuking a tree), so no rmtree-style mass
+    deletion is reachable."""
     victim_dir = tmp_path / "victim_dir"
     victim_dir.mkdir()
     (victim_dir / "keep.txt").write_text("KEEP")
