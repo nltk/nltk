@@ -100,8 +100,9 @@ jobs:
       python_versions: ${{ steps.set-matrix.outputs.python_versions }}
     steps:
       - id: set-matrix
+        shell: bash
         run: |
-          if [[ "${{ github.event_name }}" == "merge_group" || contains(github.event.pull_request.labels.*.name, 'full-matrix') || "${{ github.ref }}" == "refs/heads/develop" ]]; then
+          if [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "${{ contains(github.event.pull_request.labels.*.name, 'full-matrix') }}" == "true" ]] || [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
             echo 'python_versions=["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]' >> $GITHUB_OUTPUT
           else
             echo 'python_versions=["3.14", "3.14t"]' >> $GITHUB_OUTPUT
