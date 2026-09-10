@@ -53,9 +53,13 @@ class TestJsonLoaderDepthGuard:
     def test_data_load_json_uses_the_guarded_decoder(self, tmp_path):
         import nltk.data
 
+        # Unlike JSONTaggedDecoder used directly (which passes a plain object
+        # through), nltk.data.load(format="json") applies a tag gate that refuses
+        # an untagged object rather than deserialize it blindly (CWE-502).
         p = tmp_path / "x.json"
         p.write_text('{"hello": "world"}', encoding="utf-8")
-        assert nltk.data.load("file://" + str(p), format="json") == {"hello": "world"}
+        with pytest.raises(ValueError):
+            nltk.data.load("file://" + str(p), format="json", cache=False)
 
 
 class TestCorpusWarnSanitisation:
