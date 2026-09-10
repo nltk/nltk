@@ -22,7 +22,12 @@ import os
 
 import pytest
 
-from nltk.parse.corenlp import CoreNLPServer, _validate_corenlp_options, try_port
+from nltk.parse.corenlp import (
+    CoreNLPServer,
+    CoreNLPServerError,
+    _validate_corenlp_options,
+    try_port,
+)
 
 # Reuse the ~115 adversarial JVM / tool-wrapper payload corpora (agents, @argfile,
 # -XX:OnError, class/module path, NUL/unicode/DEL smuggling, hostile model paths):
@@ -557,5 +562,73 @@ class TestRealServerLaunch:
         pytest.importorskip("requests")
         srv = _make_corenlp_server(["-quiet"], port=try_port())
         srv.java_options = ["-javaagent:/tmp/evil.jar"]
+        with pytest.raises(ValueError):
+            srv.start()
+
+
+class TestCoreNLPServerError:
+    """start() raises CoreNLPServerError on both failure branches. A real server
+    cannot be made to fail on demand cheaply, so the subprocess/HTTP boundary is
+    fault-injected to drive the real error-construction code (no CoreNLP or JVM
+    needed, so these run everywhere including CI)."""
+
+    def _bare_server(self, corenlp_options):
+        # Bypass __init__ (no jar lookup); start() re-validates options at the sink.
+        srv = object.__new__(CoreNLPServer)
+        srv.corenlp_options = corenlp_options
+        srv._classpath = ("a.jar", "b.jar")
+        srv.java_options = ["-mx512m"]
+        srv.verbose = False
+        srv.url = "http://localhost:9999"
+        return srv
+
+    def test_raises_when_the_launched_process_exits_immediately(self, monkeypatch):
+        pytest.importorskip("requests")
+        import nltk.parse.corenlp as m
+
+        class _DeadPopen:
+            def poll(self):
+                return 1
+
+            def communicate(self):
+                return ("", "Error: could not find or load main class")
+
+        monkeypatch.setattr(m, "config_java", lambda *a, **k: None)
+        monkeypatch.setattr(m, "java", lambda *a, **k: _DeadPopen())
+        srv = self._bare_server(["-quiet"])
+        with pytest.raises(CoreNLPServerError, match="Could not start the server"):
+            srv.start()
+
+    def test_raises_when_the_server_never_becomes_reachable(self, monkeypatch):
+        import requests
+
+        import nltk.parse.corenlp as m
+
+        class _LivePopen:
+            def poll(self):
+                return None
+
+        def _refuse(*a, **k):
+            raise requests.exceptions.ConnectionError("connection refused")
+
+        monkeypatch.setattr(m, "config_java", lambda *a, **k: None)
+        monkeypatch.setattr(m, "java", lambda *a, **k: _LivePopen())
+        monkeypatch.setattr(m.time, "sleep", lambda *_: None)
+        monkeypatch.setattr(requests, "get", _refuse)
+        srv = self._bare_server(["-quiet"])
+        with pytest.raises(CoreNLPServerError, match="Could not connect to the server"):
+            srv.start()
+
+    def test_sink_guard_refuses_a_hostile_option_before_any_launch(self, monkeypatch):
+        # The option guard runs at the top of start(), so a reassigned path-bearing
+        # flag is refused before the launcher is ever reached (java must not run).
+        import nltk.parse.corenlp as m
+
+        def _boom(*a, **k):
+            raise AssertionError("java() must not be called when the guard refuses")
+
+        monkeypatch.setattr(m, "config_java", lambda *a, **k: None)
+        monkeypatch.setattr(m, "java", _boom)
+        srv = self._bare_server(["-serverProperties", "/etc/passwd"])
         with pytest.raises(ValueError):
             srv.start()
