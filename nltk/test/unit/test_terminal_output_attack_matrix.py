@@ -141,6 +141,21 @@ class TestSanitizeCsvMatrix:
     def test_numbers_preserved(self, number):
         assert sanitize_csv_field(number) == number
 
+    @pytest.mark.parametrize("delimiter", [",", "\t"])
+    def test_structural_injection_is_quoted_not_split(self, delimiter):
+        # sanitize_csv_field keeps \t and \n as legitimate content and relies on
+        # csv.writer to quote the delimiter/newline, so a crafted field cannot
+        # inject an extra column or row (CSV structural injection).
+        hostile = f'a{delimiter}b\n=EVIL()\t"q"'
+        buf = io.StringIO()
+        csv.writer(buf, delimiter=delimiter).writerow(
+            ["id", sanitize_csv_field(hostile)]
+        )
+        rows = list(csv.reader(io.StringIO(buf.getvalue()), delimiter=delimiter))
+        assert len(rows) == 1, "row injection: crafted field split the record"
+        assert len(rows[0]) == 2 and rows[0][0] == "id"
+        assert rows[0][1] == sanitize_csv_field(hostile)  # one intact, guarded cell
+
 
 class TestEndToEndRealSinks:
     def test_concordance_over_hostile_corpus_does_not_leak(self, capsys):
