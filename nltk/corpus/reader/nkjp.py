@@ -109,21 +109,18 @@ class NKJPCorpusReader(XMLCorpusReader):
         """
         from nltk.pathsec import validate_path
 
-        # ``str(self.root)`` is the original (un-normalised) constructor
-        # argument; abspath() gives the platform-native absolute root that
-        # ``os.path.join`` expects (the old substring/concatenation logic
-        # duplicated the root on Windows, where the separators differ).
+        # ``str(self.root)`` is the original (un-normalised) constructor argument;
+        # abspath() gives the platform-native absolute root ``os.path.join``
+        # expects (the old substring logic duplicated the root on Windows).
         root = os.path.abspath(str(self.root))
         fileid = str(fileid)
         if os.path.isabs(fileid):
             result = fileid
         else:
             result = os.path.join(root, fileid)
-        # Symlink-aware containment: validate_path() resolves both the
-        # candidate path and the root (``Path(...).resolve()``) before
-        # comparing, and raises ValueError if the resolved path leaves the
-        # corpus root -- unlike os.path.abspath(), which does not follow
-        # symlinks, so an in-root symlink could otherwise point outside.
+        # Symlink-aware containment: validate_path() resolves the candidate path
+        # and the root before comparing and raises ValueError if it leaves the
+        # corpus root, so an in-root symlink pointing outside is refused.
         validate_path(result, context="NKJPCorpusReader", required_root=self.root)
         return result
 
@@ -289,9 +286,7 @@ class XML_Tool:
         try:
             # Read the source and write the namespace-stripped copy in binary
             # through pathsec: both get containment + O_NOFOLLOW / hardlink guards
-            # (CWE-22/59), and "xb" is O_CREAT|O_EXCL so it cannot clobber or
-            # follow a planted path. Decode/encode UTF-8 explicitly to match the
-            # NKJP TEI examples, stay locale-independent and keep the bytes exact.
+            # (CWE-22/59), and "xb" is O_CREAT|O_EXCL so it cannot clobber a plant.
             from nltk.pathsec import open as pathsec_open
 
             fr = pathsec_open(
@@ -306,6 +301,8 @@ class XML_Tool:
                 context="NKJPCorpusReader",
                 required_root=os.path.dirname(self.write_file),
             )
+            # Decode/encode UTF-8 explicitly to match the NKJP TEI examples, stay
+            # locale-independent, and keep the XML bytes exact.
             line = b" "
             while len(line):
                 line = fr.readline()

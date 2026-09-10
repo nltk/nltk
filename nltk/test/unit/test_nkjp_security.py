@@ -30,19 +30,15 @@ import pytest
 
 from nltk.corpus.reader.nkjp import NKJPCorpusReader
 
-# A valid, reasonable NKJP sample modelled on the TEI4NKJP examples: a teiCorpus
-# TEI with the nkjp: namespace, pretty-printed one element per line (as the real
-# files are, and as XML_Tool's line-based stripper expects).  ann_segmentation
-# carries a real <choice> of <nkjp:paren> variants (an ambiguous segmentation);
-# XML_Tool strips <choice>/<nkjp:paren> and remove_choice keeps the first
-# alternative, so the over-segmentation (7,2) of "gęślą" is dropped for (7,5).
-# The text is the Polish pangram "Zażółć gęślą jaźń." (offsets: 0-5 / 7-11 / 13-16
-# / 17 for the full stop), so every read mode has a deterministic expected value.
+# A valid NKJP sample modelled on the TEI4NKJP examples: a TEI with the nkjp:
+# namespace, pretty-printed one element per line (as the real files are, and as
+# XML_Tool's line-based stripper expects). Text = pangram "Zażółć gęślą jaźń."
 _HEADER = """<?xml version="1.0" encoding="UTF-8"?>
 <teiHeader xmlns:nkjp="http://www.nkjp.pl/ns/1.0">
  <fileDesc><sourceDesc><bibl><title>{title}</title></bibl></sourceDesc></fileDesc>
 </teiHeader>
 """
+# Token offsets into the pangram: Zażółć 0-5, gęślą 7-11, jaźń 13-16, "." 17.
 _TEXT = """<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns:nkjp="http://www.nkjp.pl/ns/1.0">
  <text>
@@ -54,6 +50,9 @@ _TEXT = """<?xml version="1.0" encoding="UTF-8"?>
  </text>
 </TEI>
 """
+# ann_segmentation carries a real <choice> of <nkjp:paren> variants (an ambiguous
+# segmentation): XML_Tool strips <choice>/<nkjp:paren> and remove_choice keeps the
+# first, so the over-segmentation (7,2) of "gęślą" is dropped for the whole (7,5).
 _SEGMENTATION = """<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns:nkjp="http://www.nkjp.pl/ns/1.0">
  <text>

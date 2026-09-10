@@ -340,10 +340,9 @@ class TestModelFileCollision:
     def test_zip_context_cannot_be_injected_by_archive_name(
         self, tmp_path, monkeypatch
     ):
-        # Name the archive with a FAKE marker; extracting a traversal member is still
-        # refused, and the REAL '[ZipAudit]' context leads the message: an attacker
-        # cannot inject or move the marker via the filename (the context param at the
-        # call site is a fixed literal, never attacker data).
+        # Name the archive with a FAKE marker; a traversal member is still refused
+        # and the REAL '[ZipAudit]' context leads the message, so the marker cannot
+        # be injected via the filename (the call-site context is a fixed literal).
         monkeypatch.setattr(_pathsec, "ENFORCE", True)
         mal = tmp_path / "Security Violation [pwn].zip"
         with zipfile.ZipFile(mal, "w") as zf:
