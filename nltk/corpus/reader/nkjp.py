@@ -276,9 +276,9 @@ class XML_Tool:
         # Imported here: nltk.data imports the corpus package.
         from nltk.data import staging_tempdir
 
-        # A unique, unpredictable file in the shared per-process staging dir, so
-        # concurrent readers never collide and the scratch stays inside a data
-        # root, never world-writable temp (CWE-377/378).
+        # A unique temp file created inside staging_tempdir() (the shared
+        # per-process scratch dir under a data root), so concurrent readers never
+        # collide and the tempfile never lands in world-writable temp (CWE-377/378).
         name = f"nkjp-{os.getpid()}-{os.urandom(8).hex()}.xml"
         self.write_file = os.path.join(staging_tempdir(), name)
         self._owns_scratch = False

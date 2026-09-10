@@ -299,7 +299,7 @@ def test_nkjp_reads_do_not_delete_corpus_files(tmp_path):
 
 
 def test_teardown_removes_only_its_own_scratch_file(tmp_path):
-    """Cleanup deletes the one scratch file, not the shared staging dir or any
+    """Cleanup deletes the one temp file, not staging_tempdir() itself or any
     sibling in it (the single-file os.remove, not a directory-tree rmtree)."""
     tool = _xml_tool(_build_corpus(tmp_path))
     scratch = tool.build_preprocessed_file()
