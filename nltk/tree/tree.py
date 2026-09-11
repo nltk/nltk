@@ -764,23 +764,36 @@ class Tree(list):
         raise ValueError(msg)
 
     @classmethod
-    def fromlist(cls, l):
+    def fromlist(cls, l, _depth=0, max_depth=None):
         """
         :type l: list
         :param l: a tree represented as nested lists
-
+        :param int _depth: current recursion depth (internal)
+        :param int max_depth: maximum nesting depth; defaults to ``MAX_TREE_DEPTH``
         :return: A tree corresponding to the list representation ``l``.
         :rtype: Tree
 
-        Convert nested lists to a NLTK Tree
+        Convert nested lists to an NLTK Tree
         """
+        if max_depth is None:
+            max_depth = MAX_TREE_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"Tree nesting depth exceeds MAX_TREE_DEPTH "
+                f"({MAX_TREE_DEPTH}); the input may be adversarially "
+                "deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+            )
         if type(l) == list and len(l) > 0:
             label = repr(l[0])
             if len(l) > 1:
-                return Tree(label, [cls.fromlist(child) for child in l[1:]])
+                children = []
+                for child in l[1:]:
+                    children.append(cls.fromlist(child, _depth + 1, max_depth))
+                return Tree(label, children)
             else:
                 return label
 
+    # ... other existing methods ...
     # ////////////////////////////////////////////////////////////
     # Visualization & String Representation
     # ////////////////////////////////////////////////////////////
