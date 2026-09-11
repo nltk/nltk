@@ -30,6 +30,11 @@ from nltk.tree import Tree
 # DependencyGraph Class
 #################################################################
 
+#: Maximum depth the recursive dependency-graph traversal helpers will
+#: descend to.  Beyond this they raise ValueError instead of letting
+#: Python raise an uncaught RecursionError (CWE-674).  Configurable.
+MAX_DEPTH = 200
+
 
 class DependencyGraph:
     """
@@ -390,46 +395,68 @@ class DependencyGraph:
                 return w
         return w
 
-    def _tree(self, i):
+    def _tree(self, i, _depth=0, max_depth=None):
         """Turn dependency graphs into NLTK trees.
 
         :param int i: index of a node
+        :param int _depth: current recursion depth (internal)
+        :param int max_depth: maximum depth; defaults to ``MAX_DEPTH``
         :return: either a word (if the indexed node is a leaf) or a ``Tree``.
         """
+        if max_depth is None:
+            max_depth = MAX_DEPTH
+        if _depth > max_depth:
+            raise ValueError(f"DependencyGraph._tree() exceeded MAX_DEPTH={max_depth}.")
         node = self.get_by_address(i)
         word = node["word"]
         deps = sorted(chain.from_iterable(node["deps"].values()))
-
         if deps:
-            return Tree(word, [self._tree(dep) for dep in deps])
+            return Tree(
+                word,
+                [self._tree(dep, _depth + 1, max_depth) for dep in deps],
+            )
         else:
             return word
 
-    def tree(self):
-        """
-        Starting with the ``root`` node, build a dependency tree using the NLTK
-        ``Tree`` constructor. Dependency labels are omitted.
-        """
-        node = self.root
+    def tree(self, max_depth=None):
+        """Starting with the ``root`` node, build a dependency tree using the
+        NLTK ``Tree`` constructor.  Dependency labels are omitted.
 
+        :param int max_depth: maximum recursion depth; defaults to ``MAX_DEPTH``
+        """
+        if max_depth is None:
+            max_depth = MAX_DEPTH
+        node = self.root
         word = node["word"]
         deps = sorted(chain.from_iterable(node["deps"].values()))
-        return Tree(word, [self._tree(dep) for dep in deps])
+        return Tree(
+            word,
+            [self._tree(dep, 1, max_depth) for dep in deps],
+        )
 
-    def triples(self, node=None):
-        """
-        Extract dependency triples of the form:
+    def triples(self, node=None, max_depth=None):
+        """Extract dependency triples of the form:
         ((head word, head tag), rel, (dep word, dep tag))
-        """
 
+        :param int max_depth: maximum recursion depth; defaults to ``MAX_DEPTH``
+        """
+        if max_depth is None:
+            max_depth = MAX_DEPTH
         if not node:
             node = self.root
 
-        head = (node["word"], node["ctag"])
-        for i in sorted(chain.from_iterable(node["deps"].values())):
-            dep = self.get_by_address(i)
-            yield (head, dep["rel"], (dep["word"], dep["ctag"]))
-            yield from self.triples(node=dep)
+        def _triples(node, _depth):
+            if _depth > max_depth:
+                raise ValueError(
+                    f"DependencyGraph.triples() exceeded " f"MAX_DEPTH={max_depth}."
+                )
+            head = (node["word"], node["ctag"])
+            for i in sorted(chain.from_iterable(node["deps"].values())):
+                dep = self.get_by_address(i)
+                yield (head, dep["rel"], (dep["word"], dep["ctag"]))
+                yield from _triples(dep, _depth + 1)
+
+        yield from _triples(node, 0)
 
     def _hd(self, i):
         try:
