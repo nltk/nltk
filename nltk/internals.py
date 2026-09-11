@@ -7,6 +7,7 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import ast
 import fnmatch
 import locale
 import os
@@ -20,7 +21,6 @@ import warnings
 from xml.etree import ElementTree
 
 from nltk import redos
-from nltk.pathsec import validate_path
 
 ##########################################################################
 # Java Via Command-Line
@@ -526,11 +526,14 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueError.
+    # Process the quoted literal with ast.literal_eval, NOT eval: the substring
+    # is a caller-supplied string literal, and literal_eval evaluates only a
+    # literal (str/bytes/number/...) and refuses any expression, so a crafted
+    # input (e.g. an f-string) cannot execute code. Malformed input raises
+    # ValueError or SyntaxError.
     try:
-        return eval(s[start_position : match.end()]), match.end()
-    except ValueError as e:
+        return ast.literal_eval(s[start_position : match.end()]), match.end()
+    except (ValueError, SyntaxError) as e:
         raise ReadError("valid escape sequence", start_position) from e
 
 
