@@ -876,7 +876,7 @@ def read_type(type_string, _depth=0, max_depth=None):
     :rtype: Type
     """
     if max_depth is None:
-        max_depth = MAX_PARSE_DEPTH
+        max_depth = LogicParser.MAX_PARSE_DEPTH
     if _depth > max_depth:
         raise LogicalExpressionException(
             None,
