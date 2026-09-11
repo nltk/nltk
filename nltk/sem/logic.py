@@ -863,8 +863,24 @@ EVENT_TYPE = EventType()
 ANY_TYPE = AnyType()
 
 
-def read_type(type_string):
+#: Maximum nesting depth for a type string parsed by :func:`read_type`. A type
+#: like ``<e,<e,<e,t>>>`` recurses once per ``<``; unbounded nesting would raise
+#: an uncaught ``RecursionError`` (CWE-674), so past this depth a normal
+#: ``LogicalExpressionException`` is raised instead. Configurable.
+MAX_TYPE_DEPTH = 200
+
+
+def read_type(type_string, _depth=0):
     assert isinstance(type_string, str)
+    # Bound nesting depth: read_type recurses once per ``<`` level, so an
+    # arbitrarily deep type string would otherwise crash with RecursionError
+    # (CWE-674). ``_depth`` is internal (callers never pass it).
+    if _depth > MAX_TYPE_DEPTH:
+        raise LogicalExpressionException(
+            None,
+            "Type nesting depth exceeds MAX_TYPE_DEPTH (%d); the input may be "
+            "adversarially deep." % MAX_TYPE_DEPTH,
+        )
     type_string = type_string.replace(" ", "")  # remove spaces
 
     if type_string[0] == "<":
@@ -880,7 +896,8 @@ def read_type(type_string):
                 if paren_count == 1:
                     break
         return ComplexType(
-            read_type(type_string[1:i]), read_type(type_string[i + 1 : -1])
+            read_type(type_string[1:i], _depth + 1),
+            read_type(type_string[i + 1 : -1], _depth + 1),
         )
     elif type_string[0] == "%s" % ENTITY_TYPE:
         return ENTITY_TYPE

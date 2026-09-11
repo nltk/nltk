@@ -955,6 +955,34 @@ def _build_tgrep_parser(set_parse_actions=True):
     return tgrep_exprs.ignore("#" + pyparsing.restOfLine)
 
 
+#: Maximum bracket/paren nesting depth accepted in a TGrep pattern. The
+#: pyparsing grammar parses ``(`` and ``[`` groups with recursive rules, so a
+#: deeply nested pattern makes pyparsing recurse until Python raises an uncaught
+#: RecursionError (CWE-674). Real patterns are shallow; a crafted deep pattern is
+#: rejected up front with a clear ValueError. Kept well below the depth at which
+#: pyparsing itself overflows the stack. Configurable.
+MAX_TGREP_DEPTH = 50
+
+
+def _check_tgrep_nesting(tgrep_string):
+    """Reject a pattern whose ``(``/``[`` nesting exceeds MAX_TGREP_DEPTH.
+
+    The scan is iterative, so it always runs before the recursive parser and is
+    unaffected by the ambient recursion limit.
+    """
+    depth = 0
+    for char in tgrep_string:
+        if char in "([":
+            depth += 1
+            if depth > MAX_TGREP_DEPTH:
+                raise ValueError(
+                    "TGrep pattern bracket nesting exceeds MAX_TGREP_DEPTH "
+                    "(%d); the pattern may be adversarially deep." % MAX_TGREP_DEPTH
+                )
+        elif char in ")]" and depth > 0:
+            depth -= 1
+
+
 def tgrep_tokenize(tgrep_string):
     """
     Tokenizes a TGrep search string into separate tokens.
@@ -962,6 +990,7 @@ def tgrep_tokenize(tgrep_string):
     parser = _build_tgrep_parser(False)
     if isinstance(tgrep_string, bytes):
         tgrep_string = tgrep_string.decode()
+    _check_tgrep_nesting(tgrep_string)
     return list(parser.parseString(tgrep_string))
 
 
@@ -973,6 +1002,7 @@ def tgrep_compile(tgrep_string):
     parser = _build_tgrep_parser(True)
     if isinstance(tgrep_string, bytes):
         tgrep_string = tgrep_string.decode()
+    _check_tgrep_nesting(tgrep_string)
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
 

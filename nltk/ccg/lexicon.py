@@ -140,18 +140,30 @@ class CCGLexicon:
 # Parsing lexicons
 # -----------
 
+#: Maximum bracket-nesting depth accepted when parsing a CCG category string.
+#: matchBrackets and augParseCategory recurse once per ``(`` level, so an
+#: arbitrarily deep category would raise an uncaught ``RecursionError``
+#: (CWE-674); past this depth a clear ``ValueError`` is raised instead.
+MAX_CATEGORY_DEPTH = 200
 
-def matchBrackets(string):
+
+def matchBrackets(string, _depth=0):
     """
     Separate the contents matching the first set of brackets from the rest of
     the input.
     """
+    # Bound nesting depth (CWE-674); ``_depth`` is internal (callers never pass it).
+    if _depth > MAX_CATEGORY_DEPTH:
+        raise ValueError(
+            "Category bracket nesting exceeds MAX_CATEGORY_DEPTH (%d); the input "
+            "may be adversarially deep." % MAX_CATEGORY_DEPTH
+        )
     rest = string[1:]
     inside = "("
 
     while rest != "" and not rest.startswith(")"):
         if rest.startswith("("):
-            (part, rest) = matchBrackets(rest)
+            (part, rest) = matchBrackets(rest, _depth + 1)
             inside = inside + part
         else:
             inside = inside + rest[0]
@@ -217,15 +229,23 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
     )
 
 
-def augParseCategory(line, primitives, families, var=None):
+def augParseCategory(line, primitives, families, var=None, _depth=0):
     """
     Parse a string representing a category, and returns a tuple with
     (possibly) the CCG variable for the category
     """
+    # Bound nesting depth (CWE-674); ``_depth`` is internal (callers never pass it).
+    if _depth > MAX_CATEGORY_DEPTH:
+        raise ValueError(
+            "Category nesting exceeds MAX_CATEGORY_DEPTH (%d); the input may be "
+            "adversarially deep." % MAX_CATEGORY_DEPTH
+        )
     (cat_string, rest) = nextCategory(line)
 
     if cat_string.startswith("("):
-        (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+        (res, var) = augParseCategory(
+            cat_string[1:-1], primitives, families, var, _depth + 1
+        )
 
     else:
         (res, var) = parsePrimitiveCategory(
@@ -239,7 +259,9 @@ def augParseCategory(line, primitives, families, var=None):
 
         (cat_string, rest) = nextCategory(rest)
         if cat_string.startswith("("):
-            (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+            (arg, var) = augParseCategory(
+                cat_string[1:-1], primitives, families, var, _depth + 1
+            )
         else:
             (arg, var) = parsePrimitiveCategory(
                 PRIM_RE.match(cat_string).groups(), primitives, families, var

@@ -18,6 +18,14 @@ from nltk import redos
 from nltk.data import PathPointer, find
 from nltk.pathsec import open as pathsec_open
 
+#: Maximum ``\+field`` / ``\-field`` nesting depth accepted when parsing a
+#: Toolbox settings file. Each ``\+`` opens a level that the resulting element
+#: tree is later walked by recursive helpers (remove_blanks, add_default_fields,
+#: _sort_fields, add_blank_lines, _to_settings_string), so unbounded nesting
+#: would raise an uncaught ``RecursionError`` (CWE-674); past this depth a clear
+#: ``ValueError`` is raised at parse time. Configurable.
+MAX_TOOLBOX_DEPTH = 500
+
 
 class StandardFormat:
     """
@@ -366,6 +374,7 @@ class ToolboxSettings(StandardFormat):
         :rtype: ElementTree._ElementInterface
         """
         builder = TreeBuilder()
+        depth = 0
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
             block = mkr[0] if mkr else None
             if block in ("+", "-"):
@@ -376,9 +385,16 @@ class ToolboxSettings(StandardFormat):
             safe_mkr = _sanitize_marker(mkr)
 
             if block == "+":
+                depth += 1
+                if depth > MAX_TOOLBOX_DEPTH:
+                    raise ValueError(
+                        "Toolbox settings nesting exceeds MAX_TOOLBOX_DEPTH "
+                        "(%d); the input may be adversarially deep." % MAX_TOOLBOX_DEPTH
+                    )
                 builder.start(safe_mkr, {})
                 builder.data(value)
             elif block == "-":
+                depth -= 1
                 builder.end(safe_mkr)
             else:
                 builder.start(safe_mkr, {})

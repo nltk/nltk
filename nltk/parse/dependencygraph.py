@@ -26,6 +26,13 @@ from nltk.internals import find_binary
 from nltk.pathsec import open as _secure_open
 from nltk.tree import Tree
 
+#: Maximum dependency-chain depth walked by the recursive graph traversals
+#: (_tree, triples, get_cycle_path). A crafted graph with a long chain of
+#: dependents would otherwise recurse until Python raises an uncaught
+#: ``RecursionError`` (CWE-674); past this depth a clear ``ValueError`` is
+#: raised instead. Configurable.
+MAX_GRAPH_DEPTH = 500
+
 #################################################################
 # DependencyGraph Class
 #################################################################
@@ -390,18 +397,25 @@ class DependencyGraph:
                 return w
         return w
 
-    def _tree(self, i):
+    def _tree(self, i, _depth=0):
         """Turn dependency graphs into NLTK trees.
 
         :param int i: index of a node
         :return: either a word (if the indexed node is a leaf) or a ``Tree``.
         """
+        # Bound recursion over the dependency chain (CWE-674); ``_depth`` is
+        # internal (callers never pass it).
+        if _depth > MAX_GRAPH_DEPTH:
+            raise ValueError(
+                "Dependency nesting exceeds MAX_GRAPH_DEPTH (%d); the graph may "
+                "be adversarially deep." % MAX_GRAPH_DEPTH
+            )
         node = self.get_by_address(i)
         word = node["word"]
         deps = sorted(chain.from_iterable(node["deps"].values()))
 
         if deps:
-            return Tree(word, [self._tree(dep) for dep in deps])
+            return Tree(word, [self._tree(dep, _depth + 1) for dep in deps])
         else:
             return word
 
@@ -416,11 +430,18 @@ class DependencyGraph:
         deps = sorted(chain.from_iterable(node["deps"].values()))
         return Tree(word, [self._tree(dep) for dep in deps])
 
-    def triples(self, node=None):
+    def triples(self, node=None, _depth=0):
         """
         Extract dependency triples of the form:
         ((head word, head tag), rel, (dep word, dep tag))
         """
+        # Bound recursion over the dependency chain (CWE-674); ``_depth`` is
+        # internal (callers never pass it).
+        if _depth > MAX_GRAPH_DEPTH:
+            raise ValueError(
+                "Dependency nesting exceeds MAX_GRAPH_DEPTH (%d); the graph may "
+                "be adversarially deep." % MAX_GRAPH_DEPTH
+            )
 
         if not node:
             node = self.root
@@ -429,7 +450,7 @@ class DependencyGraph:
         for i in sorted(chain.from_iterable(node["deps"].values())):
             dep = self.get_by_address(i)
             yield (head, dep["rel"], (dep["word"], dep["ctag"]))
-            yield from self.triples(node=dep)
+            yield from self.triples(node=dep, _depth=_depth + 1)
 
     def _hd(self, i):
         try:
@@ -512,12 +533,21 @@ class DependencyGraph:
 
         return False
 
-    def get_cycle_path(self, curr_node, goal_node_index):
+    def get_cycle_path(self, curr_node, goal_node_index, _depth=0):
+        # Bound recursion over the dependency chain (CWE-674); ``_depth`` is
+        # internal (callers never pass it).
+        if _depth > MAX_GRAPH_DEPTH:
+            raise ValueError(
+                "Dependency nesting exceeds MAX_GRAPH_DEPTH (%d); the graph may "
+                "be adversarially deep." % MAX_GRAPH_DEPTH
+            )
         for dep in curr_node["deps"]:
             if dep == goal_node_index:
                 return [curr_node["address"]]
         for dep in curr_node["deps"]:
-            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
+            path = self.get_cycle_path(
+                self.get_by_address(dep), goal_node_index, _depth + 1
+            )
             if len(path) > 0:
                 path.insert(0, curr_node["address"])
                 return path
