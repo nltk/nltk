@@ -793,15 +793,69 @@ class Tree(list):
 
         draw_trees(self)
 
-    def pretty_print(self, sentence=None, highlight=(), stream=None, **kwargs):
+    def pretty_print(self, sentence=None, highlight=(), stream=None, rtl=False, **kwargs):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
         `nltk.tree.prettyprinter.TreePrettyPrinter`.
+
+        :param rtl: If True, display tree right-to-left for RTL languages (Arabic, Hebrew, etc.)
+        :type rtl: bool
         """
         from nltk.tree.prettyprinter import TreePrettyPrinter
 
-        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
+        # Mirror the tree if RTL is requested
+        if rtl:
+            # First, collect the original leaf order
+            original_leaves = self.leaves()
+            # Mirror the tree structure
+            tree_to_print = self._mirror_structure_for_rtl()
+            # Restore the original leaf order
+            tree_to_print = self._restore_leaf_order(tree_to_print, original_leaves)
+        else:
+            tree_to_print = self
+
+        print(TreePrettyPrinter(tree_to_print, sentence, highlight).text(**kwargs), file=stream)
+
+    def _mirror_structure_for_rtl(self):
+        """
+        Mirror only the tree structure (non-terminals), keeping leaves in place.
+
+        :return: A new tree with reversed structure but original leaf order
+        :rtype: Tree
+        """
+        # Recursively mirror all children
+        mirrored_children = [
+            child._mirror_structure_for_rtl() if isinstance(child, Tree) else child
+            for child in reversed(self)
+        ]
+
+        # Create new tree with same label but reversed children
+        return type(self)(self._label, mirrored_children)
+
+    @staticmethod
+    def _restore_leaf_order(tree, original_leaves):
+        """
+        Replace leaves in the mirrored tree with original leaf order.
+
+        :param tree: The mirrored tree
+        :param original_leaves: List of leaves in original order
+        :return: Tree with structure mirrored but leaves in original order
+        :rtype: Tree
+        """
+        leaf_iter = iter(original_leaves)
+
+        def replace_leaves(subtree):
+            if isinstance(subtree, Tree):
+                new_children = []
+                for child in subtree:
+                    new_children.append(replace_leaves(child))
+                return type(subtree)(subtree.label(), new_children)
+            else:
+                # This is a leaf - replace with next original leaf
+                return next(leaf_iter)
+
+        return replace_leaves(tree)
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
