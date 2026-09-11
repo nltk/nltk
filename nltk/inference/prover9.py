@@ -126,7 +126,11 @@ class Prover9Parent:
             self._prover9_bin = None
         else:
             name = "prover9"
-            self._prover9_bin = nltk.internals.find_binary(
+            # Accept only an absolute binary: a relative binary_location yields a
+            # CWD-relative path that _call()'s Popen would execute without
+            # consulting $PATH, so a planted "prover9" there would run (untrusted
+            # search path, CWE-426/CWE-427). Boxer/Malt/REPP refuse it the same way.
+            self._prover9_bin = nltk.internals.find_binary_absolute(
                 name,
                 path_to_bin=binary_location,
                 env_vars=["PROVER9"],
