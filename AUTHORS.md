@@ -37,6 +37,7 @@
 - Graham Christensen
 - Trevor Cohn
 - David Coles
+- Con-Benksl
 - Tom Conroy <https://github.com/tconroy>
 - Claude Coulombe
 - Lucas Cooper
