@@ -539,12 +539,20 @@ class DependencyGraph:
 
         return False
 
-    def get_cycle_path(self, curr_node, goal_node_index):
+    def get_cycle_path(self, curr_node, goal_node_index, _depth=0, max_depth=None):
+        if max_depth is None:
+            max_depth = MAX_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"DependencyGraph.get_cycle_path() exceeded MAX_DEPTH={max_depth}."
+            )
         for dep in curr_node["deps"]:
             if dep == goal_node_index:
                 return [curr_node["address"]]
         for dep in curr_node["deps"]:
-            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
+            path = self.get_cycle_path(
+                self.get_by_address(dep), goal_node_index, _depth + 1, max_depth
+            )
             if len(path) > 0:
                 path.insert(0, curr_node["address"])
                 return path
