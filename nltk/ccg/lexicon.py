@@ -314,7 +314,7 @@ def fromstring(lex_str, include_semantics=False, max_depth=None):
                             SEMANTICS_RE.match(semantics_str).groups()[0]
                         )
                 # Word definition
-                # ie, which => (N\\N)/(S/NP)
+                # ie, which => (N\N)/(S/NP)
                 entries[ident].append(Token(ident, cat, semantics))
     return CCGLexicon(primitives[0], primitives, families, entries)
 

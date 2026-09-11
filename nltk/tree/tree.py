@@ -793,7 +793,6 @@ class Tree(list):
             else:
                 return label
 
-    # ... other existing methods ...
     # ////////////////////////////////////////////////////////////
     # Visualization & String Representation
     # ////////////////////////////////////////////////////////////
