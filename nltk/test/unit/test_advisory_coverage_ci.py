@@ -48,19 +48,21 @@ _HEADERS = {
     "User-Agent": "nltk-advisory-coverage",
 }
 
-#: Closed/withdrawn advisories deliberately kept as regression probes. The
-#: public API lists only published advisories, so these must be named here or
-#: the reverse check would flag them as unknown.
+# Closed/withdrawn advisories deliberately kept as regression probes. The
+# public API lists only published advisories, so these must be named here or
+# the reverse check would flag them as unknown.
+# NB: Canonical GHSA IDs use hyphens, while probe filenames use underscores because
+# Python module names cannot contain hyphens; do not copy filenames here.
 _CLOSED_WITH_PROBE = {
     "GHSA-4489-j4f3-2g8q",
     "GHSA-9ffx-rrgx-mhgx",
     "GHSA-pcm8-fqjx-rvx8",
     "GHSA-8846-p9w9-5frf",
-    "GHSA-3h95_x772_4765",
-    "GHSA-63wh_5r5m_wxr7",
-    "GHSA-f2h2_f4fc_p978",
-    "GHSA-w3pv_xfw4_ghr7",
-    "GHSA-xfcv_m889_fmqg",
+    "GHSA-3h95-x772-4765",
+    "GHSA-63wh-5r5m-wxr7",
+    "GHSA-f2h2-f4fc-p978",
+    "GHSA-w3pv-xfw4-ghr7",
+    "GHSA-xfcv-m889-fmqg",
 }
 
 
