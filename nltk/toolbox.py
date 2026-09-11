@@ -18,6 +18,11 @@ from nltk import redos
 from nltk.data import PathPointer, find
 from nltk.pathsec import open as pathsec_open
 
+#: Maximum depth the recursive Toolbox settings helpers will descend to.
+#: Beyond this they raise ValueError instead of letting Python raise an
+#: uncaught RecursionError (CWE-674).  Configurable.
+MAX_TOOLBOX_DEPTH = 500
+
 
 class StandardFormat:
     """
@@ -359,27 +364,36 @@ class ToolboxSettings(StandardFormat):
 
         :param encoding: encoding used by settings file
         :type encoding: str
-        :param errors: Error handling scheme for codec. Same as ``decode()`` builtin method.
+        :param errors: Error handling scheme for codec. Same as ``decode()``
+            builtin method.
         :type errors: str
         :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
         :type kwargs: dict
         :rtype: ElementTree._ElementInterface
         """
         builder = TreeBuilder()
+        depth = 0
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
             block = mkr[0] if mkr else None
             if block in ("+", "-"):
                 mkr = mkr[1:]
             else:
                 block = None
-
             safe_mkr = _sanitize_marker(mkr)
-
             if block == "+":
+                depth += 1
+                if depth > MAX_TOOLBOX_DEPTH:
+                    raise ValueError(
+                        f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+                        f"({MAX_TOOLBOX_DEPTH}); the input may be "
+                        "adversarially deep. Raise "
+                        "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+                    )
                 builder.start(safe_mkr, {})
                 builder.data(value)
             elif block == "-":
                 builder.end(safe_mkr)
+                depth -= 1
             else:
                 builder.start(safe_mkr, {})
                 builder.data(value)
@@ -400,8 +414,17 @@ def to_settings_string(tree, encoding=None, errors="strict", unicode_fields=None
     return "".join(l)
 
 
-def _to_settings_string(node, l, **kwargs):
+def _to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
     # write XML to file
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     tag = node.tag
     text = node.text
     if len(node) == 0:
@@ -414,28 +437,37 @@ def _to_settings_string(node, l, **kwargs):
             l.append(f"\\+{tag} {text}\n")
         else:
             l.append("\\+%s\n" % tag)
-        for n in node:
-            _to_settings_string(n, l, **kwargs)
-        l.append("\\-%s\n" % tag)
+    for n in node:
+        _to_settings_string(n, l, _depth + 1, max_depth, **kwargs)
+    l.append("\\-%s\n" % tag)
     return
 
 
-def remove_blanks(elem):
+def remove_blanks(elem, _depth=0, max_depth=None):
     """
     Remove all elements and subelements with no text and no child elements.
 
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     """
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     out = list()
     for child in elem:
-        remove_blanks(child)
+        remove_blanks(child, _depth + 1, max_depth)
         if child.text or len(child) > 0:
             out.append(child)
     elem[:] = out
 
 
-def add_default_fields(elem, default_fields):
+def add_default_fields(elem, default_fields, _depth=0, max_depth=None):
     """
     Add blank elements and subelements specified in default_fields.
 
@@ -444,11 +476,20 @@ def add_default_fields(elem, default_fields):
     :param default_fields: fields to add to each type of element and subelement
     :type default_fields: dict(tuple)
     """
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     for field in default_fields.get(elem.tag, []):
         if elem.find(field) is None:
             SubElement(elem, field)
     for child in elem:
-        add_default_fields(child, default_fields)
+        add_default_fields(child, default_fields, _depth + 1, max_depth)
 
 
 def sort_fields(elem, field_orders):
@@ -468,8 +509,17 @@ def sort_fields(elem, field_orders):
     _sort_fields(elem, order_dicts)
 
 
-def _sort_fields(elem, orders_dicts):
+def _sort_fields(elem, orders_dicts, _depth=0, max_depth=None):
     """sort the children of elem"""
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     try:
         order = orders_dicts[elem.tag]
     except KeyError:
@@ -481,40 +531,45 @@ def _sort_fields(elem, orders_dicts):
         elem[:] = [child for key, child in tmp]
     for child in elem:
         if len(child):
-            _sort_fields(child, orders_dicts)
+            _sort_fields(child, orders_dicts, _depth + 1, max_depth)
 
 
-def add_blank_lines(tree, blanks_before, blanks_between):
-    """
-    Add blank lines before all elements and subelements specified in blank_before.
-
-    :param elem: toolbox data in an elementtree structure
-    :type elem: ElementTree._ElementInterface
-    :param blank_before: elements and subelements to add blank lines before
-    :type blank_before: dict(tuple)
-    """
+def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=None):
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     try:
         before = blanks_before[tree.tag]
         between = blanks_between[tree.tag]
     except KeyError:
         for elem in tree:
             if len(elem):
-                add_blank_lines(elem, blanks_before, blanks_between)
-    else:
-        last_elem = None
-        for elem in tree:
-            tag = elem.tag
-            if last_elem is not None and last_elem.tag != tag:
-                if tag in before and last_elem is not None:
-                    e = last_elem.getiterator()[-1]
-                    e.text = (e.text or "") + "\n"
+                add_blank_lines(
+                    elem, blanks_before, blanks_between, _depth + 1, max_depth
+                )
             else:
-                if tag in between:
-                    e = last_elem.getiterator()[-1]
-                    e.text = (e.text or "") + "\n"
-            if len(elem):
-                add_blank_lines(elem, blanks_before, blanks_between)
-            last_elem = elem
+                last_elem = None
+                for elem in tree:
+                    tag = elem.tag
+                    if last_elem is not None and last_elem.tag != tag:
+                        if tag in before and last_elem is not None:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    else:
+                        if tag in between:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    if len(elem):
+                        add_blank_lines(
+                            elem, blanks_before, blanks_between, _depth + 1, max_depth
+                        )
+                    last_elem = elem
 
 
 def demo():
