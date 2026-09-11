@@ -150,6 +150,43 @@ def _attack_semcor_xmlwords():
     _all_xmlwords_in(_deep_xml(DEEP, "wf"))
 
 
+def _attack_elementtree_indent():
+    from nltk.util import elementtree_indent
+
+    elementtree_indent(_deep_xml(DEEP, "x"))
+
+
+def _attack_downloader_indent_xml():
+    from nltk.downloader import _indent_xml
+
+    _indent_xml(_deep_xml(DEEP, "x"))
+
+
+def _deep_verbnet_reader_and_tree():
+    from collections import defaultdict
+
+    from nltk.corpus.reader.verbnet import VerbnetCorpusReader
+
+    reader = VerbnetCorpusReader.__new__(VerbnetCorpusReader)
+    reader._class_to_fileid = {}
+    reader._shortid_to_longid = {}
+    reader._lemma_to_class = defaultdict(list)
+    reader._wordnet_to_class = defaultdict(list)
+    root = Element("VNCLASS")
+    root.set("ID", "give-13.1")
+    cur = root
+    for i in range(DEEP):
+        vs = SubElement(SubElement(cur, "SUBCLASSES"), "VNSUBCLASS")
+        vs.set("ID", "give-13.1-%d" % i)
+        cur = vs
+    return reader, root
+
+
+def _attack_verbnet_index_helper():
+    reader, root = _deep_verbnet_reader_and_tree()
+    reader._index_helper(root, "give-13.1.xml")
+
+
 #: name -> (attack callable, the bounded exception it must raise)
 ATTACKS = {
     "tree.fromlist": (_attack_tree_fromlist, ValueError),
@@ -165,6 +202,9 @@ ATTACKS = {
     "tgrep.brackets": (_attack_tgrep_brackets, ValueError),
     "bnc._all_xmlwords_in": (_attack_bnc_xmlwords, ValueError),
     "semcor._all_xmlwords_in": (_attack_semcor_xmlwords, ValueError),
+    "util.elementtree_indent": (_attack_elementtree_indent, ValueError),
+    "downloader._indent_xml": (_attack_downloader_indent_xml, ValueError),
+    "verbnet._index_helper": (_attack_verbnet_index_helper, ValueError),
 }
 
 
@@ -290,3 +330,33 @@ def test_benign_xmlwords():
     SubElement(s, "wf").text = "hi"
     SubElement(s, "punc").text = "."
     assert len(sem_words(s)) == 2
+
+
+def test_benign_xml_indenters():
+    from nltk.downloader import _indent_xml
+    from nltk.util import elementtree_indent
+
+    a = Element("a")
+    SubElement(a, "b").text = "x"
+    elementtree_indent(a)
+    assert a.find("b").tail is not None
+    c = Element("c")
+    SubElement(c, "d").text = "y"
+    _indent_xml(c)
+    assert c.text is not None
+
+
+def test_benign_verbnet_index_helper():
+    from collections import defaultdict
+
+    from nltk.corpus.reader.verbnet import VerbnetCorpusReader
+
+    reader = VerbnetCorpusReader.__new__(VerbnetCorpusReader)
+    reader._class_to_fileid = {}
+    reader._shortid_to_longid = {}
+    reader._lemma_to_class = defaultdict(list)
+    reader._wordnet_to_class = defaultdict(list)
+    root = Element("VNCLASS")
+    root.set("ID", "give-13.1")
+    reader._index_helper(root, "give-13.1.xml")
+    assert reader._class_to_fileid["give-13.1"] == "give-13.1.xml"
