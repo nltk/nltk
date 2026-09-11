@@ -231,7 +231,7 @@ def test_guard_fires_even_with_a_raised_recursion_limit(key):
         sys.setrecursionlimit(saved)
 
 
-# --- already-bounded parsers: pin the coverage so it cannot regress ----------
+# Already-bounded parsers: pin the coverage so it cannot regress.
 
 
 def _bounded_featstruct():
@@ -266,7 +266,7 @@ def test_already_bounded_parsers_stay_bounded(attack, exc_type):
     assert not isinstance(caught.value, RecursionError)
 
 
-# --- benign inputs must still work -------------------------------------------
+# Benign inputs must still work.
 
 
 def test_benign_tree():
