@@ -522,22 +522,14 @@ class Synset(_WordNetObject):
 
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
-
-        result = []
+        roots = []
         seen = set()
-        todo = [self]
-        while todo:
-            next_synset = todo.pop()
-            if next_synset not in seen:
-                seen.add(next_synset)
-                next_hypernyms = (
-                    next_synset.hypernyms() + next_synset.instance_hypernyms()
-                )
-                if not next_hypernyms:
-                    result.append(next_synset)
-                else:
-                    todo.extend(next_hypernyms)
-        return result
+        for path in self._get_hypernym_paths():
+            root = path[0]
+            if root not in seen:
+                seen.add(root)
+                roots.append(root)
+        return roots
 
     # Simpler implementation which makes incorrect assumption that
     # hypernym hierarchy is acyclic:
@@ -554,11 +546,9 @@ class Synset(_WordNetObject):
         """
 
         if "_max_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
-            if not hypernyms:
-                self._max_depth = 0
-            else:
-                self._max_depth = 1 + max(h.max_depth() for h in hypernyms)
+            self._max_depth = max(
+                len(path) for path in self._get_hypernym_paths()
+            ) - 1
         return self._max_depth
 
     def min_depth(self):
@@ -568,11 +558,9 @@ class Synset(_WordNetObject):
         """
 
         if "_min_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
-            if not hypernyms:
-                self._min_depth = 0
-            else:
-                self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
+            self._min_depth = min(
+                len(path) for path in self._get_hypernym_paths()
+            ) - 1
         return self._min_depth
 
     def closure(self, rel, depth=-1):
@@ -663,6 +651,19 @@ class Synset(_WordNetObject):
 
         return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
+    def _get_hypernym_paths(self):
+        if "_hypernym_paths" not in self.__dict__:
+            paths = []
+            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            if len(hypernyms) == 0:
+                paths = [[self]]
+
+            for hypernym in hypernyms:
+                for ancestor_list in hypernym._get_hypernym_paths():
+                    paths.append(ancestor_list + [self])
+            self._hypernym_paths = paths
+        return self._hypernym_paths
+
     def hypernym_paths(self):
         """
         Get the path(s) from this synset to the root, where each path is a
@@ -671,17 +672,7 @@ class Synset(_WordNetObject):
         :return: A list of lists, where each list gives the node sequence
            connecting the initial ``Synset`` node and a root node.
         """
-        paths = []
-
-        hypernyms = self.hypernyms() + self.instance_hypernyms()
-        if len(hypernyms) == 0:
-            paths = [[self]]
-
-        for hypernym in hypernyms:
-            for ancestor_list in hypernym.hypernym_paths():
-                ancestor_list.append(self)
-                paths.append(ancestor_list)
-        return paths
+        return [path.copy() for path in self._get_hypernym_paths()]
 
     def common_hypernyms(self, other):
         """
