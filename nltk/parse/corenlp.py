@@ -114,7 +114,8 @@ def _corenlp_reject(entry, why):
 
 
 def _corenlp_check_scalar(entry):
-    """Reject a non-string, an empty string, or one carrying anything outside
+    """Reject a non-string (including a str subclass, whose methods could lie),
+    an empty string, or one carrying anything outside
     printable ASCII (whitespace, a C0/C1 control, DEL, or any non-ASCII byte such
     as a fullwidth digit, homoglyph, bidi override or zero-width character), a
     shell metacharacter, or a leading Java argument-file prefix.
@@ -122,7 +123,7 @@ def _corenlp_check_scalar(entry):
     Every allowlisted flag and value is plain printable ASCII, so restricting to
     that here is a name-agnostic gate that closes unicode-confusable and control
     character bypasses before any per-flag value shape is even consulted."""
-    if not isinstance(entry, str) or not entry:
+    if type(entry) is not str or not entry:
         _corenlp_reject(entry, "contains a non-string or empty entry")
     if any(
         c.isspace() or ord(c) < 0x20 or ord(c) > 0x7E or c in _UNSAFE_OPTION_CHARS
@@ -148,7 +149,13 @@ def _validate_corenlp_options(options):
     optional true/false for the bare flags. A value that itself looks like a flag
     (option smuggling, e.g. ``-port -serverProperties``) fails its value check.
     """
+    # Hard-reject str subclasses (and non-str): a subclass could override
+    # startswith/split/lower/__iter__ to validate benign while its real chars
+    # smuggle a hostile flag into the JVM argv (CWE-88). Refuse, do not coerce.
     opts = list(options)
+    for entry in opts:
+        if type(entry) is not str:
+            _corenlp_reject(entry, "is not a plain str (str subclasses are refused)")
     i, n = 0, len(opts)
     while i < n:
         raw = opts[i]

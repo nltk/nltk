@@ -397,17 +397,23 @@ def _real_corenlp_available():
         from nltk.internals import find_jar_iter
         from nltk.parse.corenlp import _stanford_url
 
-        list(
-            find_jar_iter(
-                CoreNLPServer._JAR,
-                None,
-                env_vars=("CORENLP",),
-                searchpath=(),
-                url=_stanford_url,
-                verbose=False,
-                is_regex=True,
+        # Both jars must be discoverable, or CoreNLPServer's model-jar lookup
+        # fails at start() and the real tests error instead of skipping.
+        for pattern, env in (
+            (CoreNLPServer._JAR, "CORENLP"),
+            (CoreNLPServer._MODEL_JAR_PATTERN, "CORENLP_MODELS"),
+        ):
+            list(
+                find_jar_iter(
+                    pattern,
+                    None,
+                    env_vars=(env,),
+                    searchpath=(),
+                    url=_stanford_url,
+                    verbose=False,
+                    is_regex=True,
+                )
             )
-        )
         return True
     except Exception:
         return False
@@ -440,11 +446,14 @@ def live_server():
         ],
         port=try_port(),
     )
-    srv.start()
+    # start() inside the try: a readiness failure raises but leaves the JVM
+    # running, so stop() must run if the process was ever launched.
     try:
+        srv.start()
         yield srv
     finally:
-        srv.stop()
+        if getattr(srv, "popen", None) is not None:
+            srv.stop()
 
 
 @pytest.mark.skipif(
@@ -717,6 +726,16 @@ class TestScalarGate:
         with pytest.raises(ValueError):
             _corenlp_check_scalar(bad)
 
+    def test_rejects_str_subclass(self):
+        from nltk.parse.corenlp import _corenlp_check_scalar
+
+        class Sneaky(str):
+            def lower(self):
+                return "-port"
+
+        with pytest.raises(ValueError):
+            _corenlp_check_scalar(Sneaky("-serverProperties"))
+
     @pytest.mark.parametrize(
         "ok",
         [
@@ -732,3 +751,56 @@ class TestScalarGate:
         from nltk.parse.corenlp import _corenlp_check_scalar
 
         _corenlp_check_scalar(ok)  # must not raise
+
+
+class TestLyingStrSubclassBypass:
+    """A str subclass can override startswith/split/lower/__iter__ to validate as
+    a benign flag while its real characters (what reaches the JVM argv) smuggle a
+    hostile one. The guard hard-rejects any entry that is not an exact str, at the
+    validator's entry, so a lying subclass never reaches a method call (CWE-88)."""
+
+    def test_split_lower_lying_subclass_is_refused(self):
+        class Lying(str):
+            def startswith(self, p, *a):
+                return p != "@"
+
+            def __contains__(self, x):
+                return x == "="
+
+            def split(self, sep=None, maxsplit=-1):
+                return ["-port", "9000"]
+
+            def lower(self):
+                return "-port"
+
+        with pytest.raises(ValueError):
+            _validate_corenlp_options([Lying("-serverProperties=/etc/passwd")])
+
+    def test_iter_lying_subclass_is_refused(self):
+        class IterLiar(str):
+            def __iter__(self):
+                return iter("-port=9000")
+
+            def startswith(self, p, *a):
+                return p != "@"
+
+            def __contains__(self, x):
+                return x == "="
+
+            def split(self, sep=None, maxsplit=-1):
+                return ["-port", "9000"]
+
+            def lower(self):
+                return "-port"
+
+        with pytest.raises(ValueError):
+            _validate_corenlp_options([IterLiar("-serverProperties=/etc/passwd")])
+
+    def test_even_a_benign_str_subclass_is_refused(self):
+        # No option is a legitimate str subclass, so the guard refuses one
+        # outright (hard reject) rather than coercing it, benign value or not.
+        class Plain(str):
+            pass
+
+        with pytest.raises(ValueError):
+            _validate_corenlp_options([Plain("-port"), Plain("9000")])
