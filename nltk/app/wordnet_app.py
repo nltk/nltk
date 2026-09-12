@@ -267,7 +267,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
                 logfilename, "a", buffering=1
             )  # sandboxed-open ok: operator log path
         except OSError as e:
-            sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
+            sys.stderr.write(f"Couldn't open {logfilename} for writing: {e}")
             sys.exit(1)
     else:
         logfile = None

@@ -278,6 +278,13 @@ class StanfordSegmenter(TokenizerI):
     def segment_sents(self, sentences):
         """ """
         encoding = self._encoding
+
+        # A newline/CR in a token would inject an extra segmenter input line.
+        # Build the input once and require one separator per sentence gap.
+        _input = "\n".join(" ".join(x) for x in sentences)
+        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
+            raise ValueError("Tokens cannot contain newline characters.")
+
         input_file_path = None
         java_succeeded = False
         try:
@@ -287,11 +294,14 @@ class StanfordSegmenter(TokenizerI):
             )
             self._input_file_path = input_file_path
 
-            # Write the actual sentences to the temporary input file
-            with os.fdopen(_input_fh, "wb") as input_fh:
-                _input = "\n".join(" ".join(x) for x in sentences)
-                if isinstance(_input, str) and encoding:
-                    _input = _input.encode(encoding)
+            # mkstemp gives a race-free path inside the pathsec-validated 0700
+            # staging dir; reopen it through pathsec_open rather than the raw fd.
+            os.close(_input_fh)
+            if isinstance(_input, str) and encoding:
+                _input = _input.encode(encoding)
+            with pathsec_open(
+                input_file_path, "wb", context="StanfordSegmenter.segment_sents"
+            ) as input_fh:
                 input_fh.write(_input)
 
             # Validate BEFORE building the command, and build it from the

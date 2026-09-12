@@ -367,6 +367,7 @@ def json2csv_preprocess(
     ) as fp:
         import gzip
 
+        from nltk.termsec import sanitize_csv_field
         from nltk.twitter.common import extract_fields
 
         if gzip_compress:
@@ -383,7 +384,7 @@ def json2csv_preprocess(
             )
         writer = csv.writer(outf)
         # write the list of fields as header
-        writer.writerow(fields)
+        writer.writerow([sanitize_csv_field(c) for c in fields])
 
         if remove_duplicates:
             tweets_cache = []
@@ -421,7 +422,7 @@ def json2csv_preprocess(
                         tweets_cache.append(row[fields.index("text")])
             except ValueError:
                 pass
-            writer.writerow(row)
+            writer.writerow([sanitize_csv_field(c) for c in row])
             i += 1
             if limit and i >= limit:
                 break
