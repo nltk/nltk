@@ -65,6 +65,14 @@ _CLOSED_WITH_PROBE = {
     "GHSA-xfcv-m889-fmqg",
 }
 
+#: Draft advisories we have already fixed and probe ahead of publication. The
+#: public API lists only *published* advisories, so a probe for a still-draft id
+#: would otherwise trip the reverse check below. Once published it appears in the
+#: fetched list and its entry here becomes a harmless no-op.
+_DRAFT_WITH_PROBE = {
+    "GHSA-cc5r-64rf-75hg",
+}
+
 
 def _next_url(link_header):
     """The *on-origin* rel="next" URL from a GitHub ``Link`` header, else None.
@@ -127,6 +135,6 @@ def test_no_probe_targets_an_unknown_advisory():
     advisories = _fetch_advisories()
     if advisories is None:
         pytest.skip("could not fetch advisories from GitHub")
-    known = {a["ghsa_id"] for a in advisories} | _CLOSED_WITH_PROBE
+    known = {a["ghsa_id"] for a in advisories} | _CLOSED_WITH_PROBE | _DRAFT_WITH_PROBE
     unknown = sorted(set(probes.PROBES) - known)
     assert not unknown, "probes for ids GitHub does not list: %s" % unknown
