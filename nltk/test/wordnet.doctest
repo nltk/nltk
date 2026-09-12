@@ -19,7 +19,9 @@ Look up a word using ``synsets()``; this function has an optional ``pos``
 argument which lets you constrain the part of speech of the word:
 
     >>> wn.synsets('dog')
-    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), Synset('frank.n.02'), Synset('pawl.n.01'), Synset('andiron.n.01'), Synset('chase.v.01')]
+    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'),
+    Synset('cad.n.01'), Synset('frank.n.02'), Synset('pawl.n.01'),
+    Synset('andiron.n.01'), Synset('chase.v.01')]
 
     >>> wn.synsets('dog', pos=wn.VERB)
     [Synset('chase.v.01')]
@@ -32,7 +34,9 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
     Synset('dog.n.01')
 
     >>> print(wn.synset('dog.n.01').definition())
-    a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds
+    a member of the genus Canis (probably descended from the common wolf)
+    that has been domesticated by man since prehistoric times; occurs in
+    many breeds
 
     >>> len(wn.synset('dog.n.01').examples())
     1
@@ -41,7 +45,8 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
     the dog barked all night
 
     >>> wn.synset('dog.n.01').lemmas()
-    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
+    [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'),
+    Lemma('dog.n.01.Canis_familiaris')]
 
     >>> [str(lemma.name()) for lemma in wn.synset('dog.n.01').lemmas()]
     ['dog', 'domestic_dog', 'Canis_familiaris']
@@ -60,7 +65,9 @@ loaded by default, but only lazily, when needed.
     [Synset('dog.n.01'), Synset('spy.n.01')]
 
     >>> wn.synset('spy.n.01').lemma_names('jpn')
-    ['いぬ', 'スパイ', 'まわし者', '回し者', '回者', '密偵', '工作員', '廻し者', '廻者', '探', '探り', '犬', '秘密捜査員', '諜報員', '諜者', '間者', '間諜', '隠密']
+    ['いぬ', 'スパイ', 'まわし者', '回し者', '回者', '密偵',
+    '工作員', '廻し者', '廻者', '探', '探り', '犬',
+    '秘密捜査員', '諜報員', '諜者', '間者', '間諜', '隠密']
 
     >>> sorted(wn.langs())
     ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus',
@@ -72,15 +79,20 @@ loaded by default, but only lazily, when needed.
     ['cane', 'Canis_familiaris']
 
     >>> wn.lemmas('cane', lang='ita')
-    [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'), Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'), Lemma('incompetent.n.01.cane')]
+    [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'),
+    Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'),
+    Lemma('incompetent.n.01.cane')]
 
     >>> sorted(wn.synset('dog.n.01').lemmas('dan'))
-    [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'), Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
+    [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
+    Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
 
     >>> sorted(wn.synset('dog.n.01').lemmas('por'))
-    [Lemma('dog.n.01.cachorra'), Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cadela'), Lemma('dog.n.01.c\xe3o')]
+    [Lemma('dog.n.01.cachorra'), Lemma('dog.n.01.cachorro'),
+    Lemma('dog.n.01.cadela'), Lemma('dog.n.01.c\xe3o')]
 
-    >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'), lang='por')
+    >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'),
+    ...                      lang='por')
     >>> dog_lemma
     Lemma('dog.n.01.c\xe3o')
     >>> dog_lemma.lang()
@@ -94,10 +106,15 @@ different senses of the input word in the given language, since these
 different senses are not mutual synonyms:
 
     >>> wn.synonyms('car')
-    [['auto', 'automobile', 'machine', 'motorcar'], ['railcar', 'railroad_car', 'railway_car'], ['gondola'], ['elevator_car'], ['cable_car']]
+    [['auto', 'automobile', 'machine', 'motorcar'],
+    ['railcar', 'railroad_car', 'railway_car'], ['gondola'],
+    ['elevator_car'], ['cable_car']]
 
     >>> wn.synonyms('coche', lang='spa')
-    [['auto', 'automóvil', 'carro', 'máquina', 'turismo', 'vehículo'], ['automotor', 'tren', 'vagón'], ['carruaje', 'coche_de_caballos', 'vagón'], ['coche_de_pasajeros', 'vagón', 'vagón_de_pasajeros']]
+    [['auto', 'automóvil', 'carro', 'máquina', 'turismo', 'vehículo'],
+    ['automotor', 'tren', 'vagón'],
+    ['carruaje', 'coche_de_caballos', 'vagón'],
+    ['coche_de_pasajeros', 'vagón', 'vagón_de_pasajeros']]
 
 ------- Synsets -------
 
@@ -109,7 +126,8 @@ different senses are not mutual synonyms:
     [Synset('canine.n.02'), Synset('domestic_animal.n.01')]
 
     >>> sorted(dog.hyponyms())
-    [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'), Synset('dalmatian.n.02'), ...]
+    [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'),
+    Synset('dalmatian.n.02'), ...]
 
     >>> sorted(dog.member_holonyms())
     [Synset('canis.n.01'), Synset('pack.n.06')]
@@ -371,7 +389,8 @@ Iterate over all the noun synsets:
 Get all synsets for this word, possibly restricted by POS:
 
     >>> wn.synsets('dog')
-    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'), Synset('cad.n.01'), ...]
+    [Synset('dog.n.01'), Synset('frump.n.01'), Synset('dog.n.03'),
+    Synset('cad.n.01'), ...]
     >>> wn.synsets('dog', pos='v')
     [Synset('chase.v.01')]
 
@@ -419,7 +438,9 @@ Look up forms not in WordNet, with the help of Morphy:
     >>> wn.synsets('denied', wn.NOUN)
     []
     >>> wn.synsets('denied', wn.VERB)
-    [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'), Synset('deny.v.04'), Synset('deny.v.05'), Synset('traverse.v.03'), Synset('deny.v.07')]
+    [Synset('deny.v.01'), Synset('deny.v.02'), Synset('deny.v.03'),
+    Synset('deny.v.04'), Synset('deny.v.05'), Synset('traverse.v.03'),
+    Synset('deny.v.07')]
 
 Morphy uses a combination of inflectional ending rules and exception
 lists to handle a variety of different possibilities:
@@ -451,9 +472,15 @@ Compute transitive closures of synsets
     >>> sorted(dog.closure(hyper, depth=1)) == sorted(dog.hypernyms())
     True
     >>> sorted(dog.closure(hypo))
-    [Synset('affenpinscher.n.01'), Synset('afghan_hound.n.01'), Synset('airedale.n.01'), Synset('american_foxhound.n.01'), ...]
+    [Synset('affenpinscher.n.01'), Synset('afghan_hound.n.01'),
+    Synset('airedale.n.01'), Synset('american_foxhound.n.01'), ...]
     >>> sorted(dog.closure(hyper))
-    [Synset('animal.n.01'), Synset('canine.n.02'), Synset('carnivore.n.01'), Synset('chordate.n.01'), Synset('domestic_animal.n.01'), Synset('entity.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('object.n.01'), Synset('organism.n.01'), Synset('physical_entity.n.01'), Synset('placental.n.01'), Synset('vertebrate.n.01'), Synset('whole.n.02')]
+    [Synset('animal.n.01'), Synset('canine.n.02'), Synset('carnivore.n.01'),
+    Synset('chordate.n.01'), Synset('domestic_animal.n.01'),
+    Synset('entity.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'),
+    Synset('object.n.01'), Synset('organism.n.01'),
+    Synset('physical_entity.n.01'), Synset('placental.n.01'),
+    Synset('vertebrate.n.01'), Synset('whole.n.02')]
 
 ---------------- Regression Tests ----------------
 
@@ -461,7 +488,10 @@ Bug 85: morphy returns the base form of a word, if it's input is given
 as a base form for a POS for which that word is not defined:
 
     >>> wn.synsets('book', wn.NOUN)
-    [Synset('book.n.01'), Synset('book.n.02'), Synset('record.n.05'), Synset('script.n.01'), Synset('ledger.n.01'), Synset('book.n.06'), Synset('book.n.07'), Synset('koran.n.01'), Synset('bible.n.01'), Synset('book.n.10'), Synset('book.n.11')]
+    [Synset('book.n.01'), Synset('book.n.02'), Synset('record.n.05'),
+    Synset('script.n.01'), Synset('ledger.n.01'), Synset('book.n.06'),
+    Synset('book.n.07'), Synset('koran.n.01'), Synset('bible.n.01'),
+    Synset('book.n.10'), Synset('book.n.11')]
     >>> wn.synsets('book', wn.ADJ)
     []
     >>> wn.morphy('book', wn.NOUN)
@@ -565,7 +595,8 @@ Bug 427: "pants" does not return all the senses it should
 
     >>> from nltk.corpus import wordnet
     >>> wordnet.synsets("pants",'n')
-    [Synset('bloomers.n.01'), Synset('pant.n.01'), Synset('trouser.n.01'), Synset('gasp.n.01')]
+    [Synset('bloomers.n.01'), Synset('pant.n.01'), Synset('trouser.n.01'),
+    Synset('gasp.n.01')]
 
 Bug 482: Some nouns not being lemmatised by WordNetLemmatizer().lemmatize
 
@@ -607,7 +638,8 @@ Issue 629: wordnet failures when python run with -O optimizations
 
 Issue 395: wordnet returns incorrect result for lowest_common_hypernyms of chef and policeman
 
-    >>> wn.synset('policeman.n.01').lowest_common_hypernyms(wn.synset('chef.n.01'))
+    >>> wn.synset('policeman.n.01').lowest_common_hypernyms(
+    ...     wn.synset('chef.n.01'))
     [Synset('person.n.01')]
 
 Bug https://github.com/nltk/nltk/issues/1641:
@@ -615,19 +647,24 @@ Non-English lemmas containing capital letters cannot be looked up using
 wordnet.lemmas() or wordnet.synsets()
 
     >>> wn.lemmas('Londres', lang='fra')
-    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
+    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'),
+    Lemma('london.n.02.Londres')]
     >>> wn.lemmas('londres', lang='fra')
-    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
+    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'),
+    Lemma('london.n.02.Londres')]
 
 Patch-1 https://github.com/nltk/nltk/pull/2065
 Adding 3 functions (relations) to WordNet class
 
     >>> sorted(sorted(wn.synsets("computer_science"))[0].in_topic_domains())
-    [Synset('access.n.05'), Synset('access.v.01'), Synset('access_time.n.01'), Synset('accumulator.n.03'), ...]
+    [Synset('access.n.05'), Synset('access.v.01'),
+    Synset('access_time.n.01'), Synset('accumulator.n.03'), ...]
     >>> sorted(sorted(wn.synsets("France"))[0].in_region_domains())
-    [Synset('agincourt.n.01'), Synset('ancien_regime.n.01'), Synset('apache_dance.n.01'), Synset('bastille.n.01'), ...]
+    [Synset('agincourt.n.01'), Synset('ancien_regime.n.01'),
+    Synset('apache_dance.n.01'), Synset('bastille.n.01'), ...]
     >>> sorted(sorted(wn.synsets("slang"))[2].in_usage_domains())
-    [Synset(''hood.n.01'), Synset('airhead.n.01'), Synset('arse.n.02'), Synset('baby.n.05'), Synset('bad_egg.n.01'), ...]
+    [Synset(''hood.n.01'), Synset('airhead.n.01'), Synset('arse.n.02'),
+    Synset('baby.n.05'), Synset('bad_egg.n.01'), ...]
 
 Issue 2721: WordNetCorpusReader.ic() does not add smoothing to N
 
@@ -683,7 +720,9 @@ Until NLTK v. 3.5, the ``tree()`` function looped forever on symmetric relations
 Specifying the "cut_mark" parameter increases verbosity, so that the cycles
 are mentioned in the output, together with the level where they occur:
 
-    >>> pprint(wn.synset('bound.a.01').tree(lambda s:sorted(s.also_sees()),cut_mark='...'))  # doctest: +ELLIPSIS
+    >>> pprint(wn.synset('bound.a.01').tree(
+    ...     lambda s:sorted(s.also_sees()),
+    ...     cut_mark='...'))  # doctest: +ELLIPSIS
     [Synset('bound.a.01'),
      [Synset('unfree.a.02'),
       "Cycle(Synset('bound.a.01'),...,...)",
@@ -717,7 +756,8 @@ its ``also_sees()`` tree is intractable, and can normally only be handled by
 limiting the ``depth`` parameter to display a small number of levels:
 
     >>> from pprint import pprint
-    >>> pprint(wn.synset('concrete.a.01').tree(lambda s:sorted(s.also_sees()),cut_mark='...',depth=2))
+    >>> pprint(wn.synset('concrete.a.01').tree(
+    ...     lambda s:sorted(s.also_sees()), cut_mark='...', depth=2))
     [Synset('concrete.a.01'),
      [Synset('practical.a.01'),
       "Cycle(Synset('concrete.a.01'),0,...)",
@@ -748,7 +788,8 @@ but it is not necessarily a **Minimum Spanning Tree** (MST), because the
 Depth-first search strategy does not guarantee that nodes are reached through
 the lowest number of links (as Breadth-first search would).
 
-    >>> pprint(wn.synset('bound.a.01').acyclic_tree(lambda s:sorted(s.also_sees())))
+    >>> pprint(wn.synset('bound.a.01').acyclic_tree(
+    ...     lambda s:sorted(s.also_sees())))
     [Synset('bound.a.01'),
      [Synset('unfree.a.02'),
       [Synset('confined.a.02'),
@@ -759,7 +800,9 @@ the lowest number of links (as Breadth-first search would).
 Again, specifying the ``cut_mark`` parameter increases verbosity, so that the
 cycles are mentioned in the output, together with the level where they occur:
 
-    >>> pprint(wn.synset('bound.a.01').acyclic_tree(lambda s:sorted(s.also_sees()),cut_mark='...'))  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> pprint(wn.synset('bound.a.01').acyclic_tree(
+    ...     lambda s:sorted(s.also_sees()),
+    ...     cut_mark='...'))  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [Synset('bound.a.01'),
      [Synset('unfree.a.02'),
       "Cycle(Synset('bound.a.01'),498,...)",
@@ -809,12 +852,17 @@ Loading alternative Wordnet versions
     Wordnet 3.1
 
     >>> print(sorted(wn.synset('restrain.v.01').hyponyms()))
-    [Synset('confine.v.03'), Synset('control.v.02'), Synset('hold.v.36'), Synset('inhibit.v.04')]
+    [Synset('confine.v.03'), Synset('control.v.02'), Synset('hold.v.36'),
+    Synset('inhibit.v.04')]
     >>> print(sorted(wn31.synset('restrain.v.01').hyponyms()))
-    [Synset('enchain.v.01'), Synset('fetter.v.01'), Synset('ground.v.02'), Synset('impound.v.02'), Synset('pen_up.v.01'), Synset('pinion.v.01'), Synset('pound.v.06'), Synset('tie_down.v.01')]
+    [Synset('enchain.v.01'), Synset('fetter.v.01'), Synset('ground.v.02'),
+    Synset('impound.v.02'), Synset('pen_up.v.01'), Synset('pinion.v.01'),
+    Synset('pound.v.06'), Synset('tie_down.v.01')]
 
     >>> print(sorted(wn31.synset('restrain.v.04').hyponyms()))
-    [Synset('baffle.v.03'), Synset('confine.v.02'), Synset('control.v.02'), Synset('hold.v.36'), Synset('rule.v.07'), Synset('swallow.v.06'), Synset('wink.v.04')]
+    [Synset('baffle.v.03'), Synset('confine.v.02'), Synset('control.v.02'),
+    Synset('hold.v.36'), Synset('rule.v.07'), Synset('swallow.v.06'),
+    Synset('wink.v.04')]
 
 -------------------------------------------
 Reproduce old Wordnet results (issue #3377)
