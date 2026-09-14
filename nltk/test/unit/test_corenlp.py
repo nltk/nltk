@@ -3,7 +3,7 @@ Mock test for Stanford CoreNLP wrappers.
 """
 
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -1438,3 +1438,26 @@ class TestParserAPI(TestCase):
             properties={"ssplit.eolonly": "true"},
         )
         self.assertEqual(expected_output, parsed_data.tree())
+
+
+class TestServerAPI(TestCase):
+    @patch("nltk.parse.corenlp.time.sleep")
+    @patch("requests.get")
+    @patch("nltk.parse.corenlp.java")
+    def test_start_retry_ordering(self, mock_java, mock_get, mock_sleep):
+        # 1. Setup HTTP responses: /live fails once, then /live and /ready succeed
+        mock_get.side_effect = [
+            MagicMock(ok=False),
+            MagicMock(ok=True),
+            MagicMock(ok=True),
+        ]
+
+        # 2. Prevent a real JVM from launching
+        mock_java.return_value.poll.return_value = None
+
+        # 3. Instantiate normally on an unused port
+        test_server = corenlp.CoreNLPServer(port=9999)
+        test_server.start()
+
+        # 4. Verify the single non-OK response triggered exactly one sleep
+        mock_sleep.assert_called_once_with(1)

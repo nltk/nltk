@@ -355,26 +355,32 @@ class CoreNLPServer:
             )
 
         for i in range(30):
+            # Sleep before retrying, but fire immediately on the first attempt
+            if i > 0:
+                time.sleep(1)
+
             try:
                 response = requests.get(requests.compat.urljoin(self.url, "live"))
-                if response.ok:
-                    break
             except requests.exceptions.ConnectionError:
                 pass
-            # Always sleep between attempts, regardless of connection state
-            time.sleep(1)
+            else:
+                if response.ok:
+                    break
         else:
             raise CoreNLPServerError("Could not connect to the server.")
 
         for i in range(60):
+            # Sleep before retrying, but fire immediately on the first attempt
+            if i > 0:
+                time.sleep(1)
+
             try:
                 response = requests.get(requests.compat.urljoin(self.url, "ready"))
-                if response.ok:
-                    break
             except requests.exceptions.ConnectionError:
                 pass
-            # Always sleep between attempts, regardless of connection state
-            time.sleep(1)
+            else:
+                if response.ok:
+                    break
         else:
             raise CoreNLPServerError("The server is not ready.")
 
