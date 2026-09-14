@@ -1445,11 +1445,13 @@ class TestServerAPI(TestCase):
     @patch("requests.get")
     @patch("nltk.parse.corenlp.java")
     def test_start_retry_ordering(self, mock_java, mock_get, mock_sleep):
-        # 1. Setup HTTP responses: /live fails once, then /live and /ready succeed
+        # 1. Setup HTTP sequence:
+        #    /live fails once then succeeds, followed by /ready failing once then succeeding.
         mock_get.side_effect = [
-            MagicMock(ok=False),
-            MagicMock(ok=True),
-            MagicMock(ok=True),
+            MagicMock(ok=False),  # /live attempt 1 (fails)
+            MagicMock(ok=True),  # /live attempt 2 (succeeds)
+            MagicMock(ok=False),  # /ready attempt 1 (fails)
+            MagicMock(ok=True),  # /ready attempt 2 (succeeds)
         ]
 
         # 2. Prevent a real JVM from launching
@@ -1459,5 +1461,5 @@ class TestServerAPI(TestCase):
         test_server = corenlp.CoreNLPServer(port=9999)
         test_server.start()
 
-        # 4. Verify the single non-OK response triggered exactly one sleep
-        mock_sleep.assert_called_once_with(1)
+        # 4. Verify sleep was called exactly twice (once in the /live loop, once in the /ready loop)
+        self.assertEqual(mock_sleep.call_count, 2)
