@@ -9,7 +9,7 @@ import math
 import numbers
 import sys
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
 
 try:
@@ -22,7 +22,9 @@ _tadm_bin = None
 
 def config_tadm(bin=None):
     global _tadm_bin
-    _tadm_bin = find_binary(
+    # Accept only an absolute binary: a relative ``bin`` resolves against the CWD
+    # and would be executed from there (untrusted search path, CWE-426/CWE-427).
+    _tadm_bin = find_binary_absolute(
         "tadm", bin, env_vars=["TADM"], binary_names=["tadm"], url="http://tadm.sf.net"
     )
 

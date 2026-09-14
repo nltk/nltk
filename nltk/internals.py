@@ -1062,6 +1062,41 @@ def find_binary(
     )
 
 
+def find_binary_absolute(
+    name,
+    path_to_bin=None,
+    env_vars=(),
+    searchpath=(),
+    binary_names=None,
+    url=None,
+    verbose=False,
+):
+    """Like :func:`find_binary`, but return only an *absolute* match.
+
+    A relative match resolves against the current working directory, so a
+    wrapper that runs the result through ``subprocess.Popen`` would execute a
+    binary planted in an attacker-writable directory (an untrusted search path,
+    CWE-426 / CWE-427). ``find_binary_iter`` already refuses a bare name that
+    resolves only in the CWD, but an explicit *relative* ``path_to_bin`` (e.g.
+    ``"tools/prover9"``) is honored there as the caller's choice, which is unsafe
+    for something about to be executed. Tool wrappers (prover9/mace, megam, tadm;
+    cf. Boxer/Malt/REPP) therefore accept only an absolute location: an absolute
+    ``path_to_bin``, an env var, or a ``$PATH`` lookup, none of which resolve
+    against the CWD.
+    """
+    for path in find_binary_iter(
+        name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
+    ):
+        if os.path.isabs(path):
+            return path
+    raise LookupError(
+        f"No absolute {name!r} binary found; a binary found relative to the "
+        "current working directory is refused (untrusted search path). Pass an "
+        "absolute path_to_bin, or set the tool's env var / searchpath to an "
+        "absolute location."
+    )
+
+
 def find_jar_iter(
     name_pattern,
     path_to_jar=None,
