@@ -7,7 +7,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from nltk.internals import UntrustedJarError
 from nltk.parse import corenlp
 from nltk.tree import Tree
 
@@ -28,10 +27,6 @@ def setup_module(module):
             "Make sure that the 9000 port is free. "
             "{}".format(e.strerror)
         )
-    except UntrustedJarError as e:
-        # The jars are outside the jar sandbox (not under nltk_data or the repo
-        # 'third/' dir); skip rather than error, without widening the sandbox.
-        pytest.skip(f"Skipping CoreNLP tests: jars outside the sandbox. {e}")
 
 
 def teardown_module(module):
