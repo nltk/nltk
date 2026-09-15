@@ -29,6 +29,11 @@ from nltk.internals import ElementWrapper
 from nltk.pathsec import open as pathsec_open
 from nltk.tokenize import WordPunctTokenizer
 
+#: Max XML element nesting depth accepted by XMLCorpusView.read_block. It rebuilds
+#: the root-to-node path with "/".join(context) per start tag, which is O(depth),
+#: so unbounded nesting is O(n**2) CPU (CWE-400/407); real corpora are shallow.
+MAX_XML_DEPTH = 500
+
 
 class XMLCorpusReader(CorpusReader):
     """
@@ -382,6 +387,11 @@ class XMLCorpusView(StreamBackedCorpusView):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     # Keep context up-to-date.
                     context.append(name)
+                    if len(context) > MAX_XML_DEPTH:
+                        raise ValueError(
+                            f"XML nesting depth exceeds MAX_XML_DEPTH "
+                            f"({MAX_XML_DEPTH}); the input may be adversarially deep."
+                        )
                     # Is this one of the elts we're looking for?
                     if elt_start is None:
                         if tagspec.match("/".join(context)):
