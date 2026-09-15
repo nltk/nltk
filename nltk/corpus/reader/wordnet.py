@@ -87,6 +87,7 @@ def _check_hypernym_visit(synset, visited):
             "the graph may be adversarially deep (CWE-400)"
         )
 
+
 # { Part-of-speech constants
 ADJ, ADJ_SAT, ADV, NOUN, VERB = "a", "s", "r", "n", "v"
 # }

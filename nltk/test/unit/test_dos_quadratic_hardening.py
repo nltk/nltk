@@ -24,7 +24,6 @@ import tempfile
 
 import pytest
 
-
 # --- #32p6: redos capturing-group compile bound ------------------------------
 
 
@@ -61,15 +60,20 @@ class TestRedosCompileDoSMatrix:
 
         return {
             "capturing-groups": "()" * (MAX_GROUP_COUNT + 1),
-            "named-groups-P": "".join("(?P<g%d>x)" % i for i in range(MAX_GROUP_COUNT + 1)),
+            "named-groups-P": "".join(
+                "(?P<g%d>x)" % i for i in range(MAX_GROUP_COUNT + 1)
+            ),
             "named-groups-regexstyle": "".join(
                 "(?<n%d>x)" % i for i in range(MAX_GROUP_COUNT + 1)
             ),
-            "group-nesting": "(" * (MAX_NESTING_DEPTH + 5) + "a" + ")" * (MAX_NESTING_DEPTH + 5),
+            "group-nesting": "(" * (MAX_NESTING_DEPTH + 5)
+            + "a"
+            + ")" * (MAX_NESTING_DEPTH + 5),
             "class-nesting": "[" * (MAX_NESTING_DEPTH + 5),
             "over-length": "a" * (MAX_PATTERN_LENGTH + 1),
             "huge-count": "a{" + "9" * 20000 + "}",
-            "nested-count-product": "(?:a){%d}{%d}" % (MAX_REPEAT_PRODUCT, MAX_REPEAT_PRODUCT),
+            "nested-count-product": "(?:a){%d}{%d}"
+            % (MAX_REPEAT_PRODUCT, MAX_REPEAT_PRODUCT),
         }
 
     @pytest.mark.parametrize(
@@ -130,7 +134,7 @@ class TestReadlineLinear:
 
     def test_unicode_line_separator_still_splits(self):
         # U+2028 is a str.splitlines break; a line ending only in it must split.
-        r = self._reader("a\u2028b".encode("utf-8"))
+        r = self._reader("a\u2028b".encode())
         first = r.readline()
         assert first == "a\u2028"
 
@@ -204,8 +208,15 @@ class TestWordNetHypernymCycle:
         Synset = type(a)
         # Both public and private hypernym accessors: the walkers use one or the
         # other. Inject an a<->b cycle and clear any memoized depth.
-        saved = {n: getattr(Synset, n) for n in
-                 ("hypernyms", "instance_hypernyms", "_hypernyms", "_instance_hypernyms")}
+        saved = {
+            n: getattr(Synset, n)
+            for n in (
+                "hypernyms",
+                "instance_hypernyms",
+                "_hypernyms",
+                "_instance_hypernyms",
+            )
+        }
         try:
             Synset.hypernyms = lambda self: [b if self._name == "dog.n.01" else a]
             Synset._hypernyms = Synset.hypernyms
