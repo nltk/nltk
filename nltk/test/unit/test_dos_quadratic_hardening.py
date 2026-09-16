@@ -406,3 +406,43 @@ class TestReanchoringGuard:
         good.write_text('import redos\nredos.sub(r"<[^>]{1,400}>", "", t)\n')
         assert g.check_file(str(bad), "nltk/bad.py")
         assert not g.check_file(str(good), "nltk/good.py")
+
+    def test_guard_catches_compiled_pattern_use(self, tmp_path):
+        # The AST blind spot: PAT = redos.compile(...); PAT.findall(...) - the
+        # re-anchoring op is a method on the compiled object, not redos.<op>.
+        g = self._guard()
+        bad = tmp_path / "c.py"
+        bad.write_text(
+            'import redos\nPAT = redos.compile(r"<[^>]+>")\nPAT.findall(s)\n'
+        )
+        assert g.check_file(str(bad), "nltk/c.py")
+
+
+class TestCompiledPatternReanchoringBounded:
+    """The 6 compiled-pattern re-anchoring quadratics found by the compiled-method
+    rescan (lin/evaluate/grammar/reviews/bracket_parse/pl196x) are now {0,N}-bounded:
+    linear on a crafted trigger, was O(n**2) under the regex engine."""
+
+    def test_bounded_patterns_are_linear(self):
+        import time
+
+        from nltk.corpus.reader.bracket_parse import ALPINO_ATTR
+        from nltk.corpus.reader.pl196x import PARA
+        from nltk.corpus.reader.reviews import FEATURES
+        from nltk.grammar import _SPLIT_DG_RE
+        from nltk.sem.evaluate import _TUPLES_RE
+
+        start = time.perf_counter()
+        FEATURES.findall("a" * 40000 + "[")
+        _TUPLES_RE.findall("(" * 40000)
+        PARA.findall("<p>" * 40000)
+        ALPINO_ATTR.findall("a" * 40000 + '="')
+        _SPLIT_DG_RE.split("-" * 40000)
+        assert time.perf_counter() - start < 4.0
+
+    def test_bounds_are_faithful_on_real_input(self):
+        from nltk.corpus.reader.reviews import FEATURES
+        from nltk.sem.evaluate import _TUPLES_RE
+
+        assert FEATURES.findall("great battery[+2]") == [("great battery", "+2")]
+        assert _TUPLES_RE.findall("(a, b) (c, d)") == ["(a, b)", "(c, d)"]

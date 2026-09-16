@@ -17,11 +17,14 @@ from nltk.pathsec import open as pathsec_open
 # stdlib nor the ``regex`` optimiser linearises findall's multi-start scan, so
 # compile them through ``redos`` for a wall-clock backstop that bounds the CPU a
 # crafted block can burn instead of letting it grow without limit.
-PARA = redos.compile(r"<p(?: [^>]*){0,1}>(.*?)</p>")
-SENT = redos.compile(r"<s(?: [^>]*){0,1}>(.*?)</s>")
+# Bound the lazy bodies: a repeated `<p>`/`<s>`/`<w|c>` open with no close makes the
+# `.*?` re-scan the rest of the document at every open -> O(n**2) under findall
+# (CWE-407); a real paragraph/sentence/word body is well under 8 KB.
+PARA = redos.compile(r"<p(?: [^>]*){0,1}>(.{0,8192}?)</p>")
+SENT = redos.compile(r"<s(?: [^>]*){0,1}>(.{0,8192}?)</s>")
 
-TAGGEDWORD = redos.compile(r"<([wc](?: [^>]*){0,1}>)(.*?)</[wc]>")
-WORD = redos.compile(r"<[wc](?: [^>]*){0,1}>(.*?)</[wc]>")
+TAGGEDWORD = redos.compile(r"<([wc](?: [^>]*){0,1}>)(.{0,8192}?)</[wc]>")
+WORD = redos.compile(r"<[wc](?: [^>]*){0,1}>(.{0,8192}?)</[wc]>")
 
 TYPE = redos.compile(r'type="(.*?)"')
 ANA = redos.compile(r'ana="(.*?)"')

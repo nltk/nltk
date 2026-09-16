@@ -35,7 +35,9 @@ ALPINO_NODE = redos.compile(
 # ALPINO_NODE (above) was hardened, but ALPINO_ATTR.findall over the node body
 # is itself O(n**2): the leading greedy ``\w+`` is retried by findall at every
 # position of a long attribute-less body. redos.compile bounds it (CWE-1333).
-ALPINO_ATTR = redos.compile(r'(\w+)="([^"]*)"')
+# Bound the attribute name: the unbounded `\w+` before `="` is O(n**2) under findall
+# on a crafted Alpino line (CWE-407); XML attribute names are short.
+ALPINO_ATTR = redos.compile(r'(\w{1,64})="([^"]*)"')
 # The old substitutions captured ``begin="(\d+)"``, ``pos="(\w+)"``,
 # ``cat="(\w+)"`` and ``word="([^"]+)"``, i.e. they only converted a node when
 # these fields had the expected shape (else the tag was left untouched). Keep

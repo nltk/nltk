@@ -1519,7 +1519,10 @@ _READ_DG_RE = redos.compile(
                                  *$""",  # zero or more copies
     re.VERBOSE,
 )
-_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)""")
+# Bound each alternation run: an alternation defeats the regex terminator prefilter,
+# so an unbounded run under .split is O(n**2) on a crafted grammar line (CWE-407);
+# arrows are ->/-->/==> and quoted tokens are short.
+_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]{1,8}>|"[^"]{1,512}"|'[^']{1,512}'|\|)""")
 
 
 def _read_dependency_production(s):

@@ -109,6 +109,69 @@ _REVIEWED: dict[tuple[str, str], str] = {
     ("nltk/data.py", "(^\\w+:)?.*/"): (
         "runs on a short code-supplied resource URL, not attacker-sized input"
     ),
+    # --- compiled-pattern method uses (PAT.findall/.sub/...), empirically linear ---
+    ("nltk/corpus/reader/bracket_parse.py", '(\\w{1,64})="([^"]*)"'): (
+        'name run bounded; [^"]* has its " terminator supplied by the =" anchor'
+    ),
+    (
+        "nltk/corpus/reader/bracket_parse.py",
+        "\\(([^\\s()]+) ([^\\s()]+)\\)",
+    ): "inner [^\\s()]+ excludes the ( anchor, a scan cannot cross an anchor",
+    (
+        "nltk/corpus/reader/bracket_parse.py",
+        "\\((\\d+) ([^\\s()]+) ([^\\s()]+)\\)",
+    ): "inner [^\\s()]+ excludes the ( anchor, a scan cannot cross an anchor",
+    (
+        "nltk/corpus/reader/bracket_parse.py",
+        "\\([^\\s()]+ ([^\\s()]+)\\)",
+    ): "inner [^\\s()]+ excludes the ( anchor, a scan cannot cross an anchor",
+    (
+        "nltk/corpus/reader/bracket_parse.py",
+        "^[ \\t]*<node (?P<body>[^>\\n]*?)(?P<selfclose>/?)>",
+    ): "^-anchored to line start, one match attempt per line",
+    ("nltk/corpus/reader/comparative_sents.py", "\\(([^\\(]*)\\)$"): (
+        "[^\\(]* excludes the ( anchor and is $-anchored; one bounded scan"
+    ),
+    (
+        "nltk/corpus/reader/pl196x.py",
+        "<([wc](?: [^>]*){0,1}>)(.{0,8192}?)</[wc]>",
+    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
+    (
+        "nltk/corpus/reader/pl196x.py",
+        "<[wc](?: [^>]*){0,1}>(.{0,8192}?)</[wc]>",
+    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
+    (
+        "nltk/corpus/reader/pl196x.py",
+        "<p(?: [^>]*){0,1}>(.{0,8192}?)</p>",
+    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
+    (
+        "nltk/corpus/reader/pl196x.py",
+        "<s(?: [^>]*){0,1}>(.{0,8192}?)</s>",
+    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
+    ("nltk/corpus/reader/pl196x.py", 'ana="(.*?)"'): (
+        'search on a short tag; anchor ends in the " terminator'
+    ),
+    ("nltk/corpus/reader/pl196x.py", 'type="(.*?)"'): (
+        'search on a short tag; anchor ends in the " terminator'
+    ),
+    ("nltk/corpus/reader/sinica_treebank.py", "(?<=\\))#.*$"): (
+        "$-anchored comment strip, one match per line"
+    ),
+    ("nltk/corpus/reader/sinica_treebank.py", ":([^:()|]+):([^:()|]+)"): (
+        "inner [^:()|]+ excludes the : anchor, a scan cannot cross an anchor"
+    ),
+    ("nltk/corpus/reader/sinica_treebank.py", ":[^:()|]+:([^:()|]+)"): (
+        "inner [^:()|]+ excludes the : anchor, a scan cannot cross an anchor"
+    ),
+    ("nltk/corpus/reader/sinica_treebank.py", "^#\\S+\\s"): (
+        "^-anchored, one match attempt per line"
+    ),
+    ("nltk/tokenize/casual.py", "&(#?(x?))([^&;\\s]+);"): (
+        "inner [^&;\\s]+ excludes the & anchor, a scan cannot cross an anchor"
+    ),
+    ("nltk/tokenize/repp.py", "^\\((\\d+), (\\d+), (.+)\\)$"): (
+        "^...$ under MULTILINE; .+ is anchored per line, one bounded attempt"
+    ),
 }
 
 
@@ -135,18 +198,12 @@ def _const_str(node):
     return None
 
 
-def _iter_reanchor_calls(tree):
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.Call):
-            continue
-        func = node.func
-        if (
-            isinstance(func, ast.Attribute)
-            and func.attr in _REANCHOR_OPS
-            and isinstance(func.value, ast.Name)
-            and func.value.id == "redos"
-        ):
-            yield node
+def _target_name(node):
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
+        return f"{node.value.id}.{node.attr}"
+    return None
 
 
 def check_file(path, relpath):
@@ -155,16 +212,45 @@ def check_file(path, relpath):
             tree = ast.parse(fh.read(), filename=path)
         except SyntaxError:
             return []
+
+    # Pass 1: map a variable to the literal it was redos.compile()d from, so that
+    # ``PAT = redos.compile(...); PAT.finditer(...)`` is checked too (the op is a
+    # method on the compiled TimedPattern, not an inline redos.<op> call).
+    compiled = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call):
+            c = node.value
+            if (
+                isinstance(c.func, ast.Attribute)
+                and c.func.attr == "compile"
+                and isinstance(c.func.value, ast.Name)
+                and c.func.value.id == "redos"
+            ):
+                for t in node.targets:
+                    nm = _target_name(t)
+                    if nm:
+                        compiled[nm] = _pattern_literal(c)
+
+    # Pass 2: every re-anchoring op, inline (redos.op) or on a compiled var.
     violations = []
-    for call in _iter_reanchor_calls(tree):
-        pattern = _pattern_literal(call)
-        if pattern is None:
-            continue  # dynamic pattern: cannot statically bound; relies on redos
-        if not _WIDE_RUN.search(pattern):
-            continue  # bounded / narrow run -> not this class
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)):
+            continue
+        op = node.func.attr
+        if op not in _REANCHOR_OPS:
+            continue
+        recv = _target_name(node.func.value)
+        if recv == "redos":
+            pattern = _pattern_literal(node)
+        elif recv in compiled:
+            pattern = compiled[recv]
+        else:
+            continue
+        if pattern is None or not _WIDE_RUN.search(pattern):
+            continue
         if (relpath, pattern) in _REVIEWED:
             continue
-        violations.append((call.lineno, call.func.attr, pattern))
+        violations.append((node.lineno, op, pattern))
     return violations
 
 
