@@ -18,6 +18,10 @@ from collections import defaultdict
 from nltk import redos
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
+#: Bound recursion over nested VNSUBCLASS elements so a deeply nested class file
+#: raises ValueError instead of an uncaught RecursionError (CWE-674).
+MAX_XML_DEPTH = 500
+
 
 class VerbnetCorpusReader(XMLCorpusReader):
     """
@@ -289,8 +293,15 @@ class VerbnetCorpusReader(XMLCorpusReader):
         for fileid in self._fileids:
             self._index_helper(self.xml(fileid), fileid)
 
-    def _index_helper(self, xmltree, fileid):
+    def _index_helper(self, xmltree, fileid, _depth=0, max_depth=None):
         """Helper for ``_index()``"""
+        if max_depth is None:
+            max_depth = MAX_XML_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"VNSUBCLASS nesting exceeds MAX_XML_DEPTH ({max_depth}); "
+                "the input may be adversarially deep."
+            )
         vnclass = xmltree.get("ID")
         self._class_to_fileid[vnclass] = fileid
         self._shortid_to_longid[self.shortid(vnclass)] = vnclass
@@ -299,7 +310,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             for wn in member.get("wn", "").split():
                 self._wordnet_to_class[wn].append(vnclass)
         for subclass in xmltree.findall("SUBCLASSES/VNSUBCLASS"):
-            self._index_helper(subclass, fileid)
+            self._index_helper(subclass, fileid, _depth + 1, max_depth)
 
     def _quick_index(self):
         """
