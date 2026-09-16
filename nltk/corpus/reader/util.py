@@ -23,6 +23,7 @@ from nltk.data import (
 )
 from nltk.internals import slice_bounds
 from nltk.pathsec import open as _secure_open
+from nltk.pathsec import validate_path
 from nltk.tokenize import wordpunct_tokenize
 from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
 
@@ -174,6 +175,10 @@ class StreamBackedCorpusView(AbstractLazySequence):
             if isinstance(self._fileid, PathPointer):
                 self._eofpos = self._fileid.file_size()
             else:
+                # A bare os.stat on a raw fileid follows a symlink and leaks the
+                # existence/size/mtime of an out-of-root path (CWE-59/22); enforce
+                # containment before the stat.
+                validate_path(self._fileid, context="StreamBackedCorpusView")
                 self._eofpos = os.stat(self._fileid).st_size
         except Exception as exc:
             raise ValueError(f"Unable to open or access {fileid!r} -- {exc}") from exc

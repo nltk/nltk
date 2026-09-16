@@ -511,6 +511,10 @@ def sql_query(dbname, query):
     """
     import sqlite3
 
+    # ``dbname`` names a persistent store opened by sqlite3; validate it stays
+    # inside a trusted data root with no symlink/traversal escape before opening
+    # (CWE-59), matching cities2table / val_dump / val_load.
+    validate_path(dbname, context="chat80.sql_query")
     try:
         path = nltk.data.find(dbname)
         connection = sqlite3.connect(str(path))
