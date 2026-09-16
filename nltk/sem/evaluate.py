@@ -57,7 +57,7 @@ def trace(f, *args, **kw):
     if d.pop("trace", None):
         print()
         for item in d.items():
-            print("%s => %s" % item)
+            safe_print("%s => %s" % item)
     return f(*args, **kw)
 
 
@@ -718,13 +718,13 @@ def propdemo(trace=None):
     g1 = Assignment(dom1)
 
     print()
-    print("*" * mult)
+    safe_print("*" * mult)
     print("Propositional Formulas Demo")
-    print("*" * mult)
+    safe_print("*" * mult)
     print("(Propositional constants treated as nullary predicates)")
     print()
-    print("Model m1:\n", m1)
-    print("*" * mult)
+    safe_print("Model m1:\n", m1)
+    safe_print("*" * mult)
     sentences = [
         "(P & Q)",
         "(P & R)",
@@ -750,7 +750,7 @@ def propdemo(trace=None):
             print()
             m1.evaluate(sent, g1, trace)
         else:
-            print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
+            safe_print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
 
 
 # Demo 2: FOL Model
@@ -778,11 +778,11 @@ def folmodel(quiet=False, trace=None):
 
     if not quiet:
         print()
-        print("*" * mult)
+        safe_print("*" * mult)
         print("Models Demo")
-        print("*" * mult)
-        print("Model m2:\n", "-" * 14, "\n", m2)
-        print("Variable assignment = ", g2)
+        safe_print("*" * mult)
+        safe_print("Model m2:\n", "-" * 14, "\n", m2)
+        safe_print("Variable assignment = ", g2)
 
         exprs = ["adam", "boy", "love", "walks", "x", "y", "z"]
         parsed_exprs = [Expression.fromstring(e) for e in exprs]
@@ -790,12 +790,12 @@ def folmodel(quiet=False, trace=None):
         print()
         for parsed in parsed_exprs:
             try:
-                print(
+                safe_print(
                     "The interpretation of '%s' in m2 is %s"
                     % (parsed, m2.i(parsed, g2))
                 )
             except Undefined:
-                print("The interpretation of '%s' in m2 is Undefined" % parsed)
+                safe_print("The interpretation of '%s' in m2 is Undefined" % parsed)
 
         applications = [
             ("boy", ("adam")),
@@ -808,9 +808,9 @@ def folmodel(quiet=False, trace=None):
             try:
                 funval = m2.i(Expression.fromstring(fun), g2)
                 argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)
-                print(f"{fun}({args}) evaluates to {argsval in funval}")
+                safe_print(f"{fun}({args}) evaluates to {argsval in funval}")
             except Undefined:
-                print(f"{fun}({args}) evaluates to Undefined")
+                safe_print(f"{fun}({args}) evaluates to Undefined")
 
 
 # Demo 3: FOL
@@ -824,9 +824,9 @@ def foldemo(trace=None):
     folmodel(quiet=True)
 
     print()
-    print("*" * mult)
+    safe_print("*" * mult)
     print("FOL Formulas Demo")
-    print("*" * mult)
+    safe_print("*" * mult)
 
     formulas = [
         "love (adam, betty)",
@@ -854,7 +854,7 @@ def foldemo(trace=None):
         if trace:
             m2.evaluate(fmla, g2, trace)
         else:
-            print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
+            safe_print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
 
 
 # Demo 3: Satisfaction
@@ -865,9 +865,9 @@ def satdemo(trace=None):
     """Satisfiers of an open formula in a first order model."""
 
     print()
-    print("*" * mult)
+    safe_print("*" * mult)
     print("Satisfiers Demo")
-    print("*" * mult)
+    safe_print("*" * mult)
 
     folmodel(quiet=True)
 
@@ -894,17 +894,17 @@ def satdemo(trace=None):
     ]
 
     if trace:
-        print(m2)
+        safe_print(m2)
 
     for fmla in formulas:
-        print(fmla)
+        safe_print(fmla)
         Expression.fromstring(fmla)
 
     parsed = [Expression.fromstring(fmla) for fmla in formulas]
 
     for p in parsed:
         g2.purge()
-        print(
+        safe_print(
             "The satisfiers of '{}' are: {}".format(p, m2.satisfiers(p, "x", g2, trace))
         )
 

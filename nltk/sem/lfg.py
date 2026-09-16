@@ -9,6 +9,7 @@
 from itertools import chain
 
 from nltk.internals import Counter
+from nltk.termsec import safe_print
 
 
 class FStructure(dict):
@@ -254,7 +255,7 @@ dog     NN      3       OBJ
 
     depgraphs = [dg1, dg2, dg3, dg4]
     for dg in depgraphs:
-        print(FStructure.read_depgraph(dg))
+        safe_print(FStructure.read_depgraph(dg))
 
 
 if __name__ == "__main__":

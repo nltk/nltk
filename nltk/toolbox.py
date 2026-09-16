@@ -599,7 +599,7 @@ def demo():
     tree = settings.parse(unwrap=False, encoding="cp1252")
     safe_print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
     settings_tree = ElementTree(tree)
-    print(to_settings_string(settings_tree).encode("utf8"))
+    safe_print(to_settings_string(settings_tree).encode("utf8"))
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ K. Abainia, S. Ouamour and H. Sayoud, A Novel Robust Arabic Light Stemmer ,
 Journal of Experimental & Theoretical Artificial Intelligence (JETAI'17),
 Vol. 29, No. 3, 2017, pp. 557-573.
 The ARLSTem is a light Arabic stemmer that is based on removing the affixes
+from nltk.termsec import safe_print
 from the word (i.e. prefixes, suffixes and infixes). It was evaluated and
 compared to several other stemmers using Paice's parameters (under-stemming
 index, over-stemming index and stemming weight), and the results showed that
@@ -130,7 +131,7 @@ class ARLSTem(StemmerI):
                 return ps
             return token
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def norm(self, token):
         """

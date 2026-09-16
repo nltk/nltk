@@ -76,6 +76,7 @@ from nltk import redos
 from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
 from nltk.internals import raise_unorderable_types
 from nltk.probability import ImmutableProbabilisticMixIn
+from nltk.termsec import safe_print
 from nltk.util import invert_graph, transitive_closure
 
 #################################################################
@@ -1554,11 +1555,11 @@ def cfg_demo():
     N, V, P, Det = nonterminals("N, V, P, Det")
     VP_slash_NP = VP / NP
 
-    print("Some nonterminals:", [S, NP, VP, PP, N, V, P, Det, VP / NP])
+    safe_print("Some nonterminals:", [S, NP, VP, PP, N, V, P, Det, VP / NP])
     print("    S.symbol() =>", repr(S.symbol()))
     print()
 
-    print(Production(S, [NP]))
+    safe_print(Production(S, [NP]))
 
     # Create some Grammar Productions
     grammar = CFG.fromstring(
@@ -1578,7 +1579,7 @@ def cfg_demo():
     print("    grammar.start()       =>", repr(grammar.start()))
     print("    grammar.productions() =>", end=" ")
     # Use string.replace(...) is to line-wrap the output.
-    print(repr(grammar.productions()).replace(",", ",\n" + " " * 25))
+    safe_print(repr(grammar.productions()).replace(",", ",\n" + " " * 25))
     print()
 
 
@@ -1646,7 +1647,7 @@ def pcfg_demo():
     print("    grammar.start()       =>", repr(grammar.start()))
     print("    grammar.productions() =>", end=" ")
     # Use .replace(...) is to line-wrap the output.
-    print(repr(grammar.productions()).replace(",", ",\n" + " " * 26))
+    safe_print(repr(grammar.productions()).replace(",", ",\n" + " " * 26))
     print()
 
     # extract productions from three trees and induce the PCFG
@@ -1663,7 +1664,7 @@ def pcfg_demo():
 
     S = Nonterminal("S")
     grammar = induce_pcfg(S, productions)
-    print(grammar)
+    safe_print(grammar)
     print()
 
     print("Parse sentence using induced grammar:")
@@ -1675,16 +1676,16 @@ def pcfg_demo():
     # sent = treebank.tokenized('wsj_0001.mrg')[0]
 
     sent = treebank.parsed_sents(item)[0].leaves()
-    print(sent)
+    safe_print(sent)
     for parse in parser.parse(sent):
-        print(parse)
+        safe_print(parse)
 
 
 def fcfg_demo():
     import nltk.data
 
     g = nltk.data.load("grammars/book_grammars/feat0.fcfg")
-    print(g)
+    safe_print(g)
     print()
 
 
@@ -1700,7 +1701,7 @@ def dg_demo():
     'cats' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
 
 def sdg_demo():
@@ -1728,7 +1729,7 @@ def sdg_demo():
     """
     )
     tree = dg.tree()
-    print(tree.pprint())
+    safe_print(tree.pprint())
 
 
 def demo():

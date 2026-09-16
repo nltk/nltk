@@ -453,7 +453,7 @@ class FreqDist(Counter):
         :type maxlen: int
         :param stream: The stream to print to. stdout by default
         """
-        print(self.pformat(maxlen=maxlen), file=stream)
+        safe_print(self.pformat(maxlen=maxlen), file=stream)
 
     def pformat(self, maxlen=10):
         """
@@ -1553,7 +1553,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         prob_sum = 0.0
         for i in range(0, len(self._Nr)):
             prob_sum += self._Nr[i] * self._prob_measure(i) / self._renormal
-        print("Probability Sum:", prob_sum)
+        safe_print("Probability Sum:", prob_sum)
         # assert prob_sum != 1.0, "probability sum should be one!"
 
     def discount(self):
@@ -2042,7 +2042,7 @@ class ConditionalFreqDist(defaultdict):
             width = max(width, max(len("%d" % f) for f in freqs[c]))
 
         condition_size = max(len("%s" % c) for c in conditions)
-        print(" " * condition_size, end=" ")
+        safe_print(" " * condition_size, end=" ")
         for s in samples:
             safe_print("%*s" % (width, s), end=" ")
         print()
@@ -2502,33 +2502,35 @@ def demo(numsamples=6, numoutcomes=500):
         "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
         % (numsamples, numsamples, numoutcomes)
     )
-    print("=" * 9 * (len(pdists) + 2))
+    safe_print("=" * 9 * (len(pdists) + 2))
     FORMATSTR = "      FreqDist " + "%8s " * (len(pdists) - 1) + "|  Actual"
-    print(FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1]))
-    print("-" * 9 * (len(pdists) + 2))
+    safe_print(FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1]))
+    safe_print("-" * 9 * (len(pdists) + 2))
     FORMATSTR = "%3d   %8.6f " + "%8.6f " * (len(pdists) - 1) + "| %8.6f"
     for val in vals:
-        print(FORMATSTR % val)
+        safe_print(FORMATSTR % val)
 
     # Print the totals for each column (should all be 1.0)
     zvals = list(zip(*vals))
     sums = [sum(val) for val in zvals[1:]]
-    print("-" * 9 * (len(pdists) + 2))
+    safe_print("-" * 9 * (len(pdists) + 2))
     FORMATSTR = "Total " + "%8.6f " * (len(pdists)) + "| %8.6f"
-    print(FORMATSTR % tuple(sums))
-    print("=" * 9 * (len(pdists) + 2))
+    safe_print(FORMATSTR % tuple(sums))
+    safe_print("=" * 9 * (len(pdists) + 2))
 
     # Display the distributions themselves, if they're short enough.
     if len("%s" % fdist1) < 70:
-        print("  fdist1: %s" % fdist1)
-        print("  fdist2: %s" % fdist2)
-        print("  fdist3: %s" % fdist3)
+        safe_print("  fdist1: %s" % fdist1)
+        safe_print("  fdist2: %s" % fdist2)
+        safe_print("  fdist3: %s" % fdist3)
     print()
 
     print("Generating:")
     for pdist in pdists:
         fdist = FreqDist(pdist.generate() for i in range(5000))
-        print("{:>20} {}".format(pdist.__class__.__name__[:20], ("%s" % fdist)[:55]))
+        safe_print(
+            "{:>20} {}".format(pdist.__class__.__name__[:20], ("%s" % fdist)[:55])
+        )
     print()
 
 
@@ -2538,7 +2540,7 @@ def gt_demo():
     emma_words = corpus.gutenberg.words("austen-emma.txt")
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    print("{:>18} {:>8}  {:>14}".format("word", "frequency", "SimpleGoodTuring"))
+    safe_print("{:>18} {:>8}  {:>14}".format("word", "frequency", "SimpleGoodTuring"))
     fd_keys_sorted = (
         key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True)
     )

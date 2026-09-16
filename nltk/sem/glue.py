@@ -826,9 +826,9 @@ def demo(show_example=-1):
 
     for i, sentence in enumerate(examples):
         if i == show_example or show_example == -1:
-            print(f"[[[Example {i}]]]  {sentence}")
+            safe_print(f"[[[Example {i}]]]  {sentence}")
             for reading in glue.parse_to_meaning(sentence.split()):
-                print(reading.simplify())
+                safe_print(reading.simplify())
             print("")
 
 

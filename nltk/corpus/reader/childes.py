@@ -611,31 +611,35 @@ def demo(corpus_root=None):
                     corpus = value
                 if key == "Id":
                     corpus_id = value
-            print("Reading", corpus, corpus_id, " .....")
-            print("words:", childes.words(file)[:7], "...")
-            print(
+            safe_print("Reading", corpus, corpus_id, " .....")
+            safe_print("words:", childes.words(file)[:7], "...")
+            safe_print(
                 "words with replaced words:",
                 childes.words(file, replace=True)[:7],
                 " ...",
             )
-            print("words with pos tags:", childes.tagged_words(file)[:7], " ...")
-            print("words (only MOT):", childes.words(file, speaker="MOT")[:7], "...")
-            print("words (only CHI):", childes.words(file, speaker="CHI")[:7], "...")
-            print("stemmed words:", childes.words(file, stem=True)[:7], " ...")
-            print(
+            safe_print("words with pos tags:", childes.tagged_words(file)[:7], " ...")
+            safe_print(
+                "words (only MOT):", childes.words(file, speaker="MOT")[:7], "..."
+            )
+            safe_print(
+                "words (only CHI):", childes.words(file, speaker="CHI")[:7], "..."
+            )
+            safe_print("stemmed words:", childes.words(file, stem=True)[:7], " ...")
+            safe_print(
                 "words with relations and pos-tag:",
                 childes.words(file, relation=True)[:5],
                 " ...",
             )
-            print("sentence:", childes.sents(file)[:2], " ...")
+            safe_print("sentence:", childes.sents(file)[:2], " ...")
             for participant, values in childes.participants(file)[0].items():
                 for key, value in values.items():
-                    print("\tparticipant", participant, key, ":", value)
-            print("num of sent:", len(childes.sents(file)))
-            print("num of morphemes:", len(childes.words(file, stem=True)))
-            print("age:", childes.age(file))
-            print("age in month:", childes.age(file, month=True))
-            print("MLU:", childes.MLU(file))
+                    safe_print("\tparticipant", participant, key, ":", value)
+            safe_print("num of sent:", len(childes.sents(file)))
+            safe_print("num of morphemes:", len(childes.words(file, stem=True)))
+            safe_print("age:", childes.age(file))
+            safe_print("age in month:", childes.age(file, month=True))
+            safe_print("MLU:", childes.MLU(file))
             print()
 
     except LookupError as e:

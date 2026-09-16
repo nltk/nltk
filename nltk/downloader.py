@@ -180,7 +180,7 @@ from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
-from nltk.termsec import sanitize_terminal
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
 
@@ -593,11 +593,11 @@ class Downloader:
                 "Using default data directory (%s)" % download_dir
             )  # unsafe-print ok: operator-configured local path
         if header:
-            print("=" * (26 + len(self._url)))
+            safe_print("=" * (26 + len(self._url)))
             print(
                 " Data server index for <%s>" % self._url
             )  # unsafe-print ok: operator-configured server URL
-            print("=" * (26 + len(self._url)))
+            safe_print("=" * (26 + len(self._url)))
             lines += 3  # for more_prompt
         stale = partial = False
 
@@ -1335,7 +1335,7 @@ class Downloader:
                 elif child_id in self._collections:
                     collection.children[i] = self._collections[child_id]
                 else:
-                    print(
+                    safe_print(
                         "removing collection member with no package: {}".format(
                             sanitize_terminal(child_id)  # server-supplied ref
                         )
@@ -1501,12 +1501,12 @@ class DownloaderShell:
         self._ds = dataserver
 
     def _simple_interactive_menu(self, *options):
-        print("-" * 75)
+        safe_print("-" * 75)
         spc = (68 - sum(len(o) for o in options)) // (len(options) - 1) * " "
         print(
             "    " + spc.join(options)
         )  # unsafe-print ok: options are static menu labels
-        print("-" * 75)
+        safe_print("-" * 75)
 
     def run(self):
         print("NLTK Downloader")
@@ -1594,7 +1594,7 @@ class DownloaderShell:
                     name = textwrap.fill(
                         "-" * 27 + (pname), 75, subsequent_indent=27 * " "
                     )[27:]
-                    print(
+                    safe_print(
                         "  [ ] {} {}".format(
                             sanitize_terminal(pid).ljust(20, "."),
                             sanitize_terminal(name),
@@ -2745,7 +2745,9 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
     if verbose:
         # The basename derives from the server-supplied package id/URL; sanitize
         # it before it reaches the terminal (CWE-150).
-        sys.stdout.write("Unzipping %s" % sanitize_terminal(os.path.split(filename)[1]))
+        sys.stdout.write(
+            "Unzipping %s" % sanitize_terminal(os.path.split(filename)[1])
+        )  # unsafe-print ok: literal/numeric status line, no untrusted value
         sys.stdout.flush()
 
     try:

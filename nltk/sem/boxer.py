@@ -314,10 +314,10 @@ class Boxer:
         :return: stdout
         """
         if verbose:
-            print("Calling:", binary)
-            print("Args:", args)
+            safe_print("Calling:", binary)
+            safe_print("Args:", args)
             safe_print("Input:", input_str)
-            print("Command:", binary + " " + " ".join(args))
+            safe_print("Command:", binary + " " + " ".join(args))
 
         # Route through the trusted-exec chokepoint: verify the candc/boxer binary
         # is on a path no other local user can swap, refuse a shell, and scrub the
@@ -345,11 +345,11 @@ class Boxer:
             ) from e
 
         if verbose:
-            print("Return code:", p.returncode)
+            safe_print("Return code:", p.returncode)
             if stdout:
-                print("stdout:\n", stdout, "\n")
+                safe_print("stdout:\n", stdout, "\n")
             if stderr:
-                print("stderr:\n", stderr, "\n")
+                safe_print("stderr:\n", stderr, "\n")
         if p.returncode != 0:
             raise Exception(
                 "ERROR CALLING: {} {}\nReturncode: {}\n{}".format(

@@ -639,7 +639,7 @@ better JJR I-ADJP
 
     # Demonstrate CoNLL output
     print("CoNLL output:")
-    print(nltk.chunk.tree2conllstr(conll_tree))
+    safe_print(nltk.chunk.tree2conllstr(conll_tree))
     print()
 
 

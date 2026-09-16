@@ -54,9 +54,9 @@ def verbose(func):
     @wraps(func)
     def with_formatting(*args, **kwargs):
         print()
-        print(SPACER)
-        print("Using %s" % (func.__name__))
-        print(SPACER)
+        safe_print(SPACER)
+        safe_print("Using %s" % (func.__name__))
+        safe_print(SPACER)
         return func(*args, **kwargs)
 
     return with_formatting
@@ -92,11 +92,11 @@ def twitterclass_demo():
     tw = Twitter()
     print("Track from the public stream\n")
     tw.tweets(keywords="love, hate", limit=10)  # public stream
-    print(SPACER)
+    safe_print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
     tw.tweets(keywords="love, hate", stream=False, limit=10)  # search past tweets
-    print(SPACER)
+    safe_print(SPACER)
     print(
         "Follow two accounts in the public stream"
         + " -- be prepared to wait a few minutes\n"
@@ -205,7 +205,7 @@ def limit_by_time_demo(keywords="nltk"):
     client = Query(**oauth)
     client.register(TweetViewer(limit=100, lower_date_limit=date))
 
-    print(f"Cutoff date: {dt_date}\n")
+    safe_print(f"Cutoff date: {dt_date}\n")
 
     for tweet in client.search_tweets(keywords=keywords):
         safe_print("{} ".format(tweet["created_at"]), end="")
@@ -226,19 +226,19 @@ def corpusreader_demo():
 
     print()
     print("Complete tweet documents")
-    print(SPACER)
+    safe_print(SPACER)
     for tweet in tweets.docs("tweets.20150430-223406.json")[:1]:
         safe_print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
-    print(SPACER)
+    safe_print(SPACER)
     for text in tweets.strings("tweets.20150430-223406.json")[:15]:
         safe_print(text)
 
     print()
     print("Tokenized tweet strings:")
-    print(SPACER)
+    safe_print(SPACER)
     for toks in tweets.tokenized("tweets.20150430-223406.json")[:15]:
         safe_print(toks)
 
@@ -302,6 +302,6 @@ if __name__ == "__main__":
     for demo in DEMOS:
         demo()
 
-    print("\n" + SPACER)
+    safe_print("\n" + SPACER)
     print("All demos completed")
-    print(SPACER)
+    safe_print(SPACER)

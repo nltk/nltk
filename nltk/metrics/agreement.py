@@ -78,6 +78,7 @@ from nltk.internals import deprecated
 from nltk.metrics.distance import binary_distance
 from nltk.pathsec import open as pathsec_open
 from nltk.probability import ConditionalFreqDist, FreqDist
+from nltk.termsec import safe_print
 
 log = logging.getLogger(__name__)
 
@@ -516,6 +517,6 @@ if __name__ == "__main__":
     if options.thorough:
         pass
     else:
-        print(getattr(task, options.agreement)())
+        safe_print(getattr(task, options.agreement)())
 
     logging.shutdown()

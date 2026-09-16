@@ -62,7 +62,7 @@ class CooperStore:
         """
         for perm, store_perm in enumerate(self._permute(self.store)):
             if trace:
-                print("Permutation %s" % (perm + 1))
+                safe_print("Permutation %s" % (perm + 1))
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
@@ -96,29 +96,29 @@ def demo():
     sentence = "every girl chases a dog"
     # sentence = "a man gives a bone to every dog"
     print()
-    print("Analysis of sentence '%s'" % sentence)
-    print("=" * 50)
+    safe_print("Analysis of sentence '%s'" % sentence)
+    safe_print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
         semrep = cs.CooperStore(tree.label()["SEM"])
         print()
         print("Binding operators:")
-        print("-" * 15)
+        safe_print("-" * 15)
         for s in semrep.store:
-            print(s)
+            safe_print(s)
         print()
         print("Core:")
-        print("-" * 15)
-        print(semrep.core)
+        safe_print("-" * 15)
+        safe_print(semrep.core)
         print()
         print("S-Retrieval:")
-        print("-" * 15)
+        safe_print("-" * 15)
         semrep.s_retrieve(trace=True)
         print("Readings:")
-        print("-" * 15)
+        safe_print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print(f"{i + 1}: {reading}")
+            safe_print(f"{i + 1}: {reading}")
 
 
 if __name__ == "__main__":

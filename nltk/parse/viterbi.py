@@ -428,7 +428,7 @@ def demo():
     # Ask the user which demo they want to use.
     print()
     for i in range(len(demos)):
-        print(f"{i + 1:>3}: {demos[i][0]}")
+        safe_print(f"{i + 1:>3}: {demos[i][0]}")
         print("     %r" % demos[i][1])
         print()
     print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
@@ -445,7 +445,7 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
+    safe_print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
     parser.trace(3)
     t = time.time()
     parses = parser.parse_all(tokens)
@@ -468,7 +468,7 @@ def demo():
     else:
         p = 0
     print("------------------------------------------")
-    print("%11s%11d%19.14f" % ("n/a", len(parses), p))
+    safe_print("%11s%11d%19.14f" % ("n/a", len(parses), p))
 
     # Ask the user if we should draw the parses.
     print()
@@ -484,7 +484,7 @@ def demo():
     print("Print parses (y/n)? ", end=" ")
     if sys.stdin.readline().strip().lower().startswith("y"):
         for parse in parses:
-            print(parse)
+            safe_print(parse)
 
 
 if __name__ == "__main__":

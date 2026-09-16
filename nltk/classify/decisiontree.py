@@ -342,8 +342,8 @@ def demo():
     classifier = names_demo(
         f, binary_names_demo_features  # DecisionTreeClassifier.train,
     )
-    print(classifier.pretty_format(depth=7))
-    print(classifier.pseudocode(depth=7))
+    safe_print(classifier.pretty_format(depth=7))
+    safe_print(classifier.pseudocode(depth=7))
 
 
 if __name__ == "__main__":

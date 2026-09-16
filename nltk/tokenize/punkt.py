@@ -1651,7 +1651,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         outfilename = os.path.join(
             make_staging_dir(prefix="nltk_punkt_dump_"), "punkt.new"
         )
-        print(f"writing to {outfilename}...")
+        safe_print(f"writing to {outfilename}...")
         with pathsec_open(
             outfilename, "w", context="PunktSentenceTokenizer.dump"
         ) as outfile:
@@ -1947,4 +1947,4 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     trainer.train(text)
     sbd = tok_cls(trainer.get_params())
     for sentence in sbd.sentences_from_text(text):
-        print(cleanup(sentence))
+        safe_print(cleanup(sentence))

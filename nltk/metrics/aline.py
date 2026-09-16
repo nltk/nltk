@@ -1586,7 +1586,7 @@ def demo():
         alignment = align(pair[0], pair[1])[0]
         alignment = [f"({a[0]}, {a[1]})" for a in alignment]
         alignment = " ".join(alignment)
-        print(f"{pair[0]} ~ {pair[1]} : {alignment}")
+        safe_print(f"{pair[0]} ~ {pair[1]} : {alignment}")
 
 
 cognate_data = """jo,ʒə

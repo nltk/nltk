@@ -33,6 +33,7 @@ from nltk.sem.logic import (
     operator,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 
 class ProverParseError(Exception):
@@ -349,51 +350,51 @@ def closed_domain_demo():
     p2 = lexpr(r"man(Socrates)")
     c = lexpr(r"walk(Socrates)")
     prover = Prover9Command(c, [p1, p2])
-    print(prover.prove())
+    safe_print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print("assumptions:")
     for a in cdp.assumptions():
-        print("   ", a)
-    print("goal:", cdp.goal())
-    print(cdp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cdp.goal())
+    safe_print(cdp.prove())
 
     p1 = lexpr(r"exists x.walk(x)")
     p2 = lexpr(r"man(Socrates)")
     p3 = lexpr(r"-walk(Bill)")
     c = lexpr(r"walk(Socrates)")
     prover = Prover9Command(c, [p1, p2, p3])
-    print(prover.prove())
+    safe_print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print("assumptions:")
     for a in cdp.assumptions():
-        print("   ", a)
-    print("goal:", cdp.goal())
-    print(cdp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cdp.goal())
+    safe_print(cdp.prove())
 
     p1 = lexpr(r"exists x.walk(x)")
     p2 = lexpr(r"man(Socrates)")
     p3 = lexpr(r"-walk(Bill)")
     c = lexpr(r"walk(Socrates)")
     prover = Prover9Command(c, [p1, p2, p3])
-    print(prover.prove())
+    safe_print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print("assumptions:")
     for a in cdp.assumptions():
-        print("   ", a)
-    print("goal:", cdp.goal())
-    print(cdp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cdp.goal())
+    safe_print(cdp.prove())
 
     p1 = lexpr(r"walk(Socrates)")
     p2 = lexpr(r"walk(Bill)")
     c = lexpr(r"all x.walk(x)")
     prover = Prover9Command(c, [p1, p2])
-    print(prover.prove())
+    safe_print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print("assumptions:")
     for a in cdp.assumptions():
-        print("   ", a)
-    print("goal:", cdp.goal())
-    print(cdp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cdp.goal())
+    safe_print(cdp.prove())
 
     p1 = lexpr(r"girl(mary)")
     p2 = lexpr(r"dog(rover)")
@@ -402,13 +403,13 @@ def closed_domain_demo():
     p5 = lexpr(r"chase(mary, rover)")
     c = lexpr(r"exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))")
     prover = Prover9Command(c, [p1, p2, p3, p4, p5])
-    print(prover.prove())
+    safe_print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print("assumptions:")
     for a in cdp.assumptions():
-        print("   ", a)
-    print("goal:", cdp.goal())
-    print(cdp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cdp.goal())
+    safe_print(cdp.prove())
 
 
 def unique_names_demo():
@@ -418,26 +419,26 @@ def unique_names_demo():
     p2 = lexpr(r"man(Bill)")
     c = lexpr(r"exists x.exists y.(x != y)")
     prover = Prover9Command(c, [p1, p2])
-    print(prover.prove())
+    safe_print(prover.prove())
     unp = UniqueNamesProver(prover)
     print("assumptions:")
     for a in unp.assumptions():
-        print("   ", a)
-    print("goal:", unp.goal())
-    print(unp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", unp.goal())
+    safe_print(unp.prove())
 
     p1 = lexpr(r"all x.(walk(x) -> (x = Socrates))")
     p2 = lexpr(r"Bill = William")
     p3 = lexpr(r"Bill = Billy")
     c = lexpr(r"-walk(William)")
     prover = Prover9Command(c, [p1, p2, p3])
-    print(prover.prove())
+    safe_print(prover.prove())
     unp = UniqueNamesProver(prover)
     print("assumptions:")
     for a in unp.assumptions():
-        print("   ", a)
-    print("goal:", unp.goal())
-    print(unp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", unp.goal())
+    safe_print(unp.prove())
 
 
 def closed_world_demo():
@@ -447,13 +448,13 @@ def closed_world_demo():
     p2 = lexpr(r"(Socrates != Bill)")
     c = lexpr(r"-walk(Bill)")
     prover = Prover9Command(c, [p1, p2])
-    print(prover.prove())
+    safe_print(prover.prove())
     cwp = ClosedWorldProver(prover)
     print("assumptions:")
     for a in cwp.assumptions():
-        print("   ", a)
-    print("goal:", cwp.goal())
-    print(cwp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cwp.goal())
+    safe_print(cwp.prove())
 
     p1 = lexpr(r"see(Socrates, John)")
     p2 = lexpr(r"see(John, Mary)")
@@ -461,13 +462,13 @@ def closed_world_demo():
     p4 = lexpr(r"(John != Mary)")
     c = lexpr(r"-see(Socrates, Mary)")
     prover = Prover9Command(c, [p1, p2, p3, p4])
-    print(prover.prove())
+    safe_print(prover.prove())
     cwp = ClosedWorldProver(prover)
     print("assumptions:")
     for a in cwp.assumptions():
-        print("   ", a)
-    print("goal:", cwp.goal())
-    print(cwp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cwp.goal())
+    safe_print(cwp.prove())
 
     p1 = lexpr(r"all x.(ostrich(x) -> bird(x))")
     p2 = lexpr(r"bird(Tweety)")
@@ -475,13 +476,13 @@ def closed_world_demo():
     p4 = lexpr(r"Sam != Tweety")
     c = lexpr(r"-bird(Sam)")
     prover = Prover9Command(c, [p1, p2, p3, p4])
-    print(prover.prove())
+    safe_print(prover.prove())
     cwp = ClosedWorldProver(prover)
     print("assumptions:")
     for a in cwp.assumptions():
-        print("   ", a)
-    print("goal:", cwp.goal())
-    print(cwp.prove())
+        safe_print("   ", a)
+    safe_print("goal:", cwp.goal())
+    safe_print(cwp.prove())
 
 
 def combination_prover_demo():
@@ -491,11 +492,11 @@ def combination_prover_demo():
     p2 = lexpr(r"see(John, Mary)")
     c = lexpr(r"-see(Socrates, Mary)")
     prover = Prover9Command(c, [p1, p2])
-    print(prover.prove())
+    safe_print(prover.prove())
     command = ClosedDomainProver(UniqueNamesProver(ClosedWorldProver(prover)))
     for a in command.assumptions():
-        print(a)
-    print(command.prove())
+        safe_print(a)
+    safe_print(command.prove())
 
 
 def default_reasoning_demo():
@@ -535,7 +536,7 @@ def default_reasoning_demo():
     prover = Prover9Command(None, premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     for a in command.assumptions():
-        print(a)
+        safe_print(a)
 
     print_proof("-fly(E)", premises)
     print_proof("fly(D)", premises)
@@ -546,7 +547,7 @@ def print_proof(goal, premises):
     lexpr = Expression.fromstring
     prover = Prover9Command(lexpr(goal), premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
-    print(goal, prover.prove(), command.prove())
+    safe_print(goal, prover.prove(), command.prove())
 
 
 def demo():

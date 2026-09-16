@@ -815,12 +815,12 @@ class HiddenMarkovModelTagger(TaggerI):
                     " ".join(f"{token}/{tag}" for (token, tag) in predicted_sent),
                 )
                 print()
-                print(
+                safe_print(
                     "Entropy:",
                     self.entropy([(token, None) for (token, tag) in predicted_sent]),
                 )
                 print()
-                print("-" * 60)
+                safe_print("-" * 60)
 
         test_tags = flatten(map(tags, test_sequence))
         predicted_tags = flatten(map(tags, predicted_sequence))
@@ -1064,7 +1064,7 @@ class HiddenMarkovModelTrainer:
             if iteration > 0 and abs(logprob - last_logprob) < epsilon:
                 converged = True
 
-            print("iteration", iteration, "logprob", logprob)
+            safe_print("iteration", iteration, "logprob", logprob)
             iteration += 1
             last_logprob = logprob
 
@@ -1198,7 +1198,7 @@ def demo():
 
     model, states, symbols = _market_hmm_example()
 
-    print("Testing", model)
+    safe_print("Testing", model)
 
     for test in [
         ["up", "up"],
@@ -1208,14 +1208,14 @@ def demo():
     ]:
         sequence = [(t, None) for t in test]
 
-        print("Testing with state sequence", test)
-        print("probability =", model.probability(sequence))
-        print("tagging =    ", model.tag([word for (word, tag) in sequence]))
-        print("p(tagged) =  ", model.probability(sequence))
-        print("H =          ", model.entropy(sequence))
-        print("H_exh =      ", model._exhaustive_entropy(sequence))
-        print("H(point) =   ", model.point_entropy(sequence))
-        print("H_exh(point)=", model._exhaustive_point_entropy(sequence))
+        safe_print("Testing with state sequence", test)
+        safe_print("probability =", model.probability(sequence))
+        safe_print("tagging =    ", model.tag([word for (word, tag) in sequence]))
+        safe_print("p(tagged) =  ", model.probability(sequence))
+        safe_print("H =          ", model.entropy(sequence))
+        safe_print("H_exh =      ", model._exhaustive_entropy(sequence))
+        safe_print("H(point) =   ", model.point_entropy(sequence))
+        safe_print("H_exh(point)=", model._exhaustive_point_entropy(sequence))
         print()
 
 

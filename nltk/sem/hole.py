@@ -328,7 +328,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         grammar_filename = "grammars/sample_grammars/hole.fcfg"
 
     if verbose:
-        print("Reading grammar file", grammar_filename)
+        safe_print("Reading grammar file", grammar_filename)
 
     parser = load_parser(grammar_filename)
 
@@ -390,7 +390,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
 if __name__ == "__main__":
     for r in hole_readings("a dog barks"):
-        print(r)
+        safe_print(r)
     print()
     for r in hole_readings("every girl chases a dog"):
-        print(r)
+        safe_print(r)

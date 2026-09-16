@@ -494,7 +494,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         # Ask the user which demo they want to use.
         print()
         for i in range(len(demos)):
-            print(f"{i + 1:>3}: {demos[i][0]}")
+            safe_print(f"{i + 1:>3}: {demos[i][0]}")
             print("     %r" % demos[i][1])
             print()
         print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
@@ -523,7 +523,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     num_parses = []
     all_parses = {}
     for parser in parsers:
-        print(f"\ns: {sent}\nparser: {parser}\ngrammar: {grammar}")
+        safe_print(f"\ns: {sent}\nparser: {parser}\ngrammar: {grammar}")
         parser.trace(3)
         t = time.time()
         parses = list(parser.parse(tokens))
@@ -539,7 +539,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     print("       Parser      Beam | Time (secs)   # Parses   Average P(parse)")
     print("------------------------+------------------------------------------")
     for i in range(len(parsers)):
-        print(
+        safe_print(
             "%18s %4d |%11.4f%11d%19.14f"
             % (
                 parsers[i].__class__.__name__,
@@ -555,7 +555,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     else:
         p = 0
     print("------------------------+------------------------------------------")
-    print("%18s      |%11s%11d%19.14f" % ("(All Parses)", "n/a", len(parses), p))
+    safe_print("%18s      |%11s%11d%19.14f" % ("(All Parses)", "n/a", len(parses), p))
 
     if draw_parses is None:
         # Ask the user if we should draw the parses.
@@ -575,7 +575,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         print_parses = sys.stdin.readline().strip().lower().startswith("y")
     if print_parses:
         for parse in parses:
-            print(parse)
+            safe_print(parse)
 
 
 if __name__ == "__main__":

@@ -76,7 +76,7 @@ def config_weka(classpath=None):
                 if version:
                     safe_print(f"[Found Weka: {_weka_classpath} (version {version})]")
                 else:
-                    print("[Found Weka: %s]" % _weka_classpath)
+                    safe_print("[Found Weka: %s]" % _weka_classpath)
                 _check_weka_version(_weka_classpath)
 
     if _weka_classpath is None:

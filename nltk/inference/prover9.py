@@ -197,8 +197,8 @@ class Prover9Parent:
         :see: ``config_prover9``
         """
         if verbose:
-            print("Calling:", binary)
-            print("Args:", args)
+            safe_print("Calling:", binary)
+            safe_print("Args:", args)
             safe_print("Input:\n", input_str, "\n")
 
         # Route through the trusted-exec chokepoint: verify the prover9/mace binary
@@ -225,11 +225,11 @@ class Prover9Parent:
         (stdout, stderr) = p.communicate(input=input_str)
 
         if verbose:
-            print("Return code:", p.returncode)
+            safe_print("Return code:", p.returncode)
             if stdout:
-                print("stdout:\n", stdout, "\n")
+                safe_print("stdout:\n", stdout, "\n")
             if stderr:
-                print("stderr:\n", stderr, "\n")
+                safe_print("stderr:\n", stderr, "\n")
 
         return (stdout.decode("utf-8"), p.returncode)
 
@@ -474,8 +474,8 @@ def test_config():
     p.prover9_search = []
     p.prove()
     # config_prover9('/usr/local/bin')
-    print(p.prove())
-    print(p.proof())
+    safe_print(p.prove())
+    safe_print(p.proof())
 
 
 def test_convert_to_prover9(expr):
@@ -484,7 +484,7 @@ def test_convert_to_prover9(expr):
     """
     for t in expr:
         e = Expression.fromstring(t)
-        print(convert_to_prover9(e))
+        safe_print(convert_to_prover9(e))
 
 
 def test_prove(arguments):
@@ -496,8 +496,8 @@ def test_prove(arguments):
         alist = [Expression.fromstring(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
-            print("   %s" % a)
-        print(f"|- {g}: {p}\n")
+            safe_print("   %s" % a)
+        safe_print(f"|- {g}: {p}\n")
 
 
 arguments = [
@@ -545,7 +545,7 @@ expressions = [
 
 
 def spacer(num=45):
-    print("-" * num)
+    safe_print("-" * num)
 
 
 def demo():

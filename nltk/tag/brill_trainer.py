@@ -265,7 +265,7 @@ class BrillTaggerTrainer:
             1 - trainstats["initialerrors"] / trainstats["tokencount"]
         )
         if self._trace > 0:
-            print(
+            safe_print(
                 "TBL train (fast) (seqs: {sequencecount}; tokens: {tokencount}; "
                 "tpls: {templatecount}; min score: {min_score}; min acc: {min_acc})".format(
                     **trainstats
@@ -279,7 +279,7 @@ class BrillTaggerTrainer:
             print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
         if self._trace:
-            print(f"    Found {len(self._rule_scores)} useful rules.")
+            safe_print(f"    Found {len(self._rule_scores)} useful rules.")
 
         # Let the user know what we're up to.
         if self._trace > 2:
@@ -317,7 +317,7 @@ class BrillTaggerTrainer:
 
         # The user can cancel training manually:
         except KeyboardInterrupt:
-            print(f"Training stopped manually -- {len(rules)} rules found")
+            safe_print(f"Training stopped manually -- {len(rules)} rules found")
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
@@ -573,7 +573,7 @@ class BrillTaggerTrainer:
     # Tracing
 
     def _trace_header(self):
-        print(
+        safe_print(
             """
            B      |
    S   F   r   O  |        Score = Fixed - Broken
@@ -596,7 +596,7 @@ class BrillTaggerTrainer:
 
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
-            print(
+            safe_print(
                 "{:4d}{:4d}{:4d}{:4d}  |".format(
                     score, num_fixed, num_broken, num_other
                 ),
@@ -615,15 +615,15 @@ class BrillTaggerTrainer:
 
     def _trace_apply(self, num_updates):
         prefix = " " * 18 + "|"
-        print(prefix)
-        print(prefix, f"Applying rule to {num_updates} positions.")
+        safe_print(prefix)
+        safe_print(prefix, f"Applying rule to {num_updates} positions.")
 
     def _trace_update_rules(self, num_obsolete, num_new, num_unseen):
         prefix = " " * 18 + "|"
-        print(prefix, "Updated rule tables:")
-        print(prefix, (f"  - {num_obsolete} rule applications removed"))
-        print(
+        safe_print(prefix, "Updated rule tables:")
+        safe_print(prefix, (f"  - {num_obsolete} rule applications removed"))
+        safe_print(
             prefix,
             (f"  - {num_new} rule applications added ({num_unseen} novel)"),
         )
-        print(prefix)
+        safe_print(prefix)

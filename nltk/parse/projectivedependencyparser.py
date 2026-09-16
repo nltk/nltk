@@ -662,11 +662,11 @@ def projective_rule_parse_demo():
     'cats' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "cats", "scratch", "the", "walls"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
 
 def arity_parse_demo():
@@ -688,7 +688,7 @@ def arity_parse_demo():
     'stock' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
     print()
     print("For the sentence 'The price of the stock fell', this grammar")
@@ -696,7 +696,7 @@ def arity_parse_demo():
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "price", "of", "the", "stock", "fell"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
     print()
     print("By contrast, the following grammar contains a ")
@@ -711,7 +711,7 @@ def arity_parse_demo():
     'stock' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
     print()
     print(
@@ -720,7 +720,7 @@ def arity_parse_demo():
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "price", "of", "the", "stock", "fell"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
 
 def projective_prob_parse_demo():
@@ -736,10 +736,10 @@ def projective_prob_parse_demo():
     ppdp.train(graphs)
 
     sent = ["Cathy", "zag", "hen", "wild", "zwaaien", "."]
-    print("Parsing '", " ".join(sent), "'...")
+    safe_print("Parsing '", " ".join(sent), "'...")
     print("Parse:")
     for tree in ppdp.parse(sent):
-        print(tree)
+        safe_print(tree)
 
 
 if __name__ == "__main__":

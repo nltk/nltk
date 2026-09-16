@@ -53,6 +53,7 @@ from nltk.parse.featurechart import (
     FeatureTopDownInitRule,
     FeatureTopDownPredictRule,
 )
+from nltk.termsec import safe_print
 
 # ////////////////////////////////////////////////////////////
 # Incremental Chart
@@ -379,7 +380,7 @@ class IncrementalChartParser(ChartParser):
         inference_rules = self._inference_rules
         for end in range(chart.num_leaves() + 1):
             if trace > 1:
-                print("\n* Processing queue:", end, "\n")
+                safe_print("\n* Processing queue:", end, "\n")
             agenda = list(chart.select(end=end))
             while agenda:
                 if deadline is not None and perf_counter() > deadline:
@@ -540,13 +541,13 @@ def demo(
     grammar = demo_grammar()
     if print_grammar:
         print("* Grammar")
-        print(grammar)
+        safe_print(grammar)
 
     # Tokenize the sample sentence.
     print("* Sentence:")
-    print(sent)
+    safe_print(sent)
     tokens = sent.split()
-    print(tokens)
+    safe_print(tokens)
     print()
 
     # Do the parsing.
@@ -561,11 +562,11 @@ def demo(
         assert len(parses) == numparses, "Not all parses found"
     if print_trees:
         for tree in parses:
-            print(tree)
+            safe_print(tree)
     else:
-        print("Nr trees:", len(parses))
+        safe_print("Nr trees:", len(parses))
     if print_times:
-        print("Time:", t)
+        safe_print("Time:", t)
 
 
 if __name__ == "__main__":

@@ -427,7 +427,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # take back the last start-tag, and return what
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
-                        print(" " * 36 + "(backtrack)")
+                        safe_print(" " * 36 + "(backtrack)")
                     if isinstance(stream, SeekableUnicodeStreamReader):
                         stream.seek(startpos)
                         stream.char_seek_forward(elt_start)

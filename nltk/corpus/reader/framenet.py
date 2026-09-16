@@ -1257,7 +1257,7 @@ buildindexes() loads metadata about all frames, LUs, etc. into memory to avoid
 readme() gives the text of the FrameNet README file
 warnings(True) to display corpus consistency warnings when loading data
         """
-        print(msg)
+        safe_print(msg)
 
     def _buildframeindex(self):
         # The total number of Frames in Framenet is fairly small (~1200) so
@@ -3405,9 +3405,9 @@ def demo():
     #
     # Get some statistics about the corpus
     #
-    print("Number of Frames:", len(fn.frames()))
-    print("Number of Lexical Units:", len(fn.lus()))
-    print("Number of annotated documents:", len(fn.docs()))
+    safe_print("Number of Frames:", len(fn.frames()))
+    safe_print("Number of Lexical Units:", len(fn.lus()))
+    safe_print("Number of annotated documents:", len(fn.docs()))
     print()
 
     #
@@ -3417,8 +3417,8 @@ def demo():
         'getting frames whose name matches the (case insensitive) regex: "(?i)medical"'
     )
     medframes = fn.frames(r"(?i)medical")
-    print(f'Found {len(medframes)} Frames whose name matches "(?i)medical":')
-    print([(f.name, f.ID) for f in medframes])
+    safe_print(f'Found {len(medframes)} Frames whose name matches "(?i)medical":')
+    safe_print([(f.name, f.ID) for f in medframes])
 
     #
     # store the first frame in the list of frames
@@ -3429,29 +3429,29 @@ def demo():
     #
     # get the frame relations
     #
-    print(
+    safe_print(
         '\nNumber of frame relations for the "{}" ({}) frame:'.format(
             m_frame.name, m_frame.ID
         ),
         len(m_frame.frameRelations),
     )
     for fr in m_frame.frameRelations:
-        print("   ", fr)
+        safe_print("   ", fr)
 
     #
     # get the names of the Frame Elements
     #
-    print(
+    safe_print(
         f'\nNumber of Frame Elements in the "{m_frame.name}" frame:',
         len(m_frame.FE),
     )
-    print("   ", [x for x in m_frame.FE])
+    safe_print("   ", [x for x in m_frame.FE])
 
     #
     # get the names of the "Core" Frame Elements
     #
-    print(f'\nThe "core" Frame Elements in the "{m_frame.name}" frame:')
-    print("   ", [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
+    safe_print(f'\nThe "core" Frame Elements in the "{m_frame.name}" frame:')
+    safe_print("   ", [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
 
     #
     # get all of the Lexical Units that are incorporated in the
@@ -3464,23 +3464,23 @@ def demo():
         for x in m_frame.lexUnit.values()
         if "incorporatedFE" in x and x.incorporatedFE == "Ailment"
     ]
-    print("   ", [x.name for x in ailment_lus])
+    safe_print("   ", [x.name for x in ailment_lus])
 
     #
     # get all of the Lexical Units for the frame
     #
-    print(
+    safe_print(
         f'\nNumber of Lexical Units in the "{m_frame.name}" frame:',
         len(m_frame.lexUnit),
     )
-    print("  ", [x.name for x in m_frame.lexUnit.values()][:5], "...")
+    safe_print("  ", [x.name for x in m_frame.lexUnit.values()][:5], "...")
 
     #
     # get basic info on the second LU in the frame
     #
     tmp_id = m_frame.lexUnit["ailment.n"].ID  # grab the id of the specified LU
     luinfo = fn.lu_basic(tmp_id)  # get basic info on the LU
-    print(f"\nInformation on the LU: {luinfo.name}")
+    safe_print(f"\nInformation on the LU: {luinfo.name}")
     pprint(luinfo)
 
     #
@@ -3495,7 +3495,7 @@ def demo():
     #
     firstcorp = list(allcorpora)[0]
     firstcorp_docs = fn.docs(firstcorp)
-    print(f'\nNames of the annotated documents in the "{firstcorp}" corpus:')
+    safe_print(f'\nNames of the annotated documents in the "{firstcorp}" corpus:')
     pprint([x.filename for x in firstcorp_docs])
 
     #

@@ -498,7 +498,7 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
             safe_print("inserting values into %s: " % table_name, t)
     connection.commit()
     if verbose:
-        print("Committing update to %s" % dbname)
+        safe_print("Committing update to %s" % dbname)
     cur.close()
 
 
@@ -875,7 +875,7 @@ Valuation object for use in the NLTK semantics package.
         # write the valuation to a persistent database
         if options.verbose:
             outdb = options.outdb + ".db"
-            print("Dumping a valuation to %s" % outdb)
+            safe_print("Dumping a valuation to %s" % outdb)
         val_dump(rels, options.outdb)
         sys.exit(0)
     else:
@@ -895,15 +895,15 @@ Valuation object for use in the NLTK semantics package.
             if options.vocab:
                 items = sorted((c.arity, c.prefLabel) for c in concepts)
                 for arity, label in items:
-                    print(label, arity)
+                    safe_print(label, arity)
                 sys.exit(0)
             # show all the concepts
             if options.concepts:
                 for c in concepts:
-                    print(c)
+                    safe_print(c)
                     print()
             if options.label:
-                print(concept_map[options.label])
+                safe_print(concept_map[options.label])
                 sys.exit(0)
             else:
                 # turn the concepts into a Valuation
@@ -913,7 +913,7 @@ Valuation object for use in the NLTK semantics package.
                     make_valuation(concepts, lexicon=True)
                 else:
                     valuation = make_valuation(concepts, read=True)
-                    print(valuation)
+                    safe_print(valuation)
 
 
 def sql_demo():

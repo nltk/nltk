@@ -23,6 +23,8 @@ In Proceedings of SIGIR, 42--50.
 from collections import defaultdict
 from math import sqrt
 
+from nltk.termsec import safe_print
+
 
 def get_words_from_dictionary(lemmas):
     """
@@ -388,14 +390,14 @@ def demo():
     }
     print("Words grouped by their lemmas:")
     for lemma in sorted(lemmas):
-        print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
+        safe_print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
     print()
     print("Same words grouped by a stemming algorithm:")
     for stem in sorted(stems):
-        print("{} => {}".format(stem, " ".join(stems[stem])))
+        safe_print("{} => {}".format(stem, " ".join(stems[stem])))
     print()
     p = Paice(lemmas, stems)
-    print(p)
+    safe_print(p)
     print()
     # Let's "change" results from a stemming algorithm
     stems = {
@@ -408,11 +410,11 @@ def demo():
     }
     print("Counting stats after changing stemming results:")
     for stem in sorted(stems):
-        print("{} => {}".format(stem, " ".join(stems[stem])))
+        safe_print("{} => {}".format(stem, " ".join(stems[stem])))
     print()
     p.stems = stems
     p.update()
-    print(p)
+    safe_print(p)
 
 
 if __name__ == "__main__":

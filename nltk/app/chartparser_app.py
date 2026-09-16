@@ -77,6 +77,7 @@ from nltk.parse.chart import (
     TreeEdge,
 )
 from nltk.picklesec import AllowlistUnpickler, pickle_dump
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 from nltk.util import in_idle
 
@@ -2619,7 +2620,7 @@ def app():
 
     print("grammar= (")
     for rule in grammar.productions():
-        print(("    ", repr(rule) + ","))
+        safe_print(("    ", repr(rule) + ","))
     print(")")
     print("tokens = %r" % tokens)
     print('Calling "ChartParserApp(grammar, tokens)"...')

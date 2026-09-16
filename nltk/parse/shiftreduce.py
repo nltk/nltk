@@ -502,7 +502,7 @@ def demo():
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
     for p in parser.parse(sent):
-        print(p)
+        safe_print(p)
 
 
 if __name__ == "__main__":

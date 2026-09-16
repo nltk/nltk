@@ -234,7 +234,7 @@ class DiscourseTester:
                             "Sentence '%s' under reading '%s':"
                             % (sentence, str(sent_reading))
                         )
-                        print("Not informative relative to thread '%s'" % tid)
+                        safe_print("Not informative relative to thread '%s'" % tid)
 
         self._input.append(sentence)
         self._sentences = {"s%s" % i: sent for i, sent in enumerate(self._input)}
@@ -328,7 +328,7 @@ class DiscourseTester:
         else:
             for sid in sorted(self._readings):
                 print()
-                print("%s readings:" % sid)
+                safe_print("%s readings:" % sid)
                 print()  #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
@@ -432,7 +432,7 @@ class DiscourseTester:
             results.append((tid, modelfound))
             if show:
                 spacer(80)
-                print("Model for Discourse Thread %s" % tid)
+                safe_print("Model for Discourse Thread %s" % tid)
                 spacer(80)
                 if verbose:
                     for a in assumptions:
@@ -462,12 +462,12 @@ class DiscourseTester:
             idlist = [rid for rid in threads[tid]]
 
             if not modelfound:
-                print(f"Inconsistent discourse: {tid} {idlist}:")
+                safe_print(f"Inconsistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
                     safe_print(f"    {rid}: {reading.normalize()}")
                 print()
             else:
-                print(f"Consistent discourse: {tid} {idlist}:")
+                safe_print(f"Consistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
                     safe_print(f"    {rid}: {reading.normalize()}")
                 print()
@@ -485,7 +485,7 @@ class DiscourseTester:
         for count, e in enumerate(background):
             assert isinstance(e, Expression)
             if verbose:
-                print("Adding assumption %s to background" % count)
+                safe_print("Adding assumption %s to background" % count)
             self._background.append(e)
 
         # update the state
@@ -627,7 +627,7 @@ def drt_discourse_demo(reading_command=None):
 
 
 def spacer(num=30):
-    print("-" * num)
+    safe_print("-" * num)
 
 
 def demo():

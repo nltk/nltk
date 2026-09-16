@@ -1488,7 +1488,7 @@ class ChartParser(ParserI):
         print_rule_header = trace > 1
         for edge in new_edges:
             if print_rule_header:
-                print("%s:" % rule)
+                safe_print("%s:" % rule)
                 print_rule_header = False
             safe_print(chart.pretty_format_edge(edge, edge_width))
 
@@ -1680,7 +1680,7 @@ class SteppingChartParser(ChartParser):
 
             for e in self._parse():
                 if self._trace > 1:
-                    print(self._current_chartrule)
+                    safe_print(self._current_chartrule)
                 if self._trace > 0:
                     safe_print(self._chart.pretty_format_edge(e, w))
                 yield e
@@ -1835,13 +1835,13 @@ def demo(
     grammar = demo_grammar()
     if print_grammar:
         print("* Grammar")
-        print(grammar)
+        safe_print(grammar)
 
     # Tokenize the sample sentence.
     print("* Sentence:")
-    print(sent)
+    safe_print(sent)
     tokens = sent.split()
-    print(tokens)
+    safe_print(tokens)
     print()
 
     # Ask the user which parser to test,
@@ -1879,7 +1879,7 @@ def demo(
 
     # Run the requested chart parser(s), except the stepping parser.
     for strategy in choices:
-        print("* Strategy: " + strategies[strategy][0])
+        safe_print("* Strategy: " + strategies[strategy][0])
         print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
@@ -1887,14 +1887,14 @@ def demo(
         parses = list(chart.parses(grammar.start()))
 
         times[strategies[strategy][0]] = time.time() - t
-        print("Nr edges in chart:", len(chart.edges()))
+        safe_print("Nr edges in chart:", len(chart.edges()))
         if numparses:
             assert len(parses) == numparses, "Not all parses found"
         if print_trees:
             for tree in parses:
-                print(tree)
+                safe_print(tree)
         else:
-            print("Nr trees:", len(parses))
+            safe_print("Nr trees:", len(parses))
         print()
 
     # Run the stepping parser, if requested.
@@ -1916,14 +1916,14 @@ def demo(
                 if j > 20 or e is None:
                     break
         times["Stepping"] = time.time() - t
-        print("Nr edges in chart:", len(cp.chart().edges()))
+        safe_print("Nr edges in chart:", len(cp.chart().edges()))
         if numparses:
             assert len(list(cp.parses())) == numparses, "Not all parses found"
         if print_trees:
             for tree in cp.parses():
-                print(tree)
+                safe_print(tree)
         else:
-            print("Nr trees:", len(list(cp.parses())))
+            safe_print("Nr trees:", len(list(cp.parses())))
         print()
 
     # Print the times of all parsers:
@@ -1935,7 +1935,7 @@ def demo(
     format = "%" + repr(maxlen) + "s parser: %6.3fsec"
     times_items = times.items()
     for parser, t in sorted(times_items, key=lambda a: a[1]):
-        print(format % (parser, t))
+        safe_print(format % (parser, t))
 
 
 if __name__ == "__main__":

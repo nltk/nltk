@@ -314,7 +314,7 @@ def cmp_chunks(correct, guessed):
         if ct == gt == "O":
             if not ellipsis:
                 safe_print(f"  {ct:15} {gt:15} {w}")
-                print("  {:15} {:15} {}".format("...", "...", "..."))
+                safe_print("  {:15} {:15} {}".format("...", "...", "..."))
                 ellipsis = True
         else:
             ellipsis = False

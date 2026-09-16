@@ -343,13 +343,13 @@ def in_demo(trace=0, sql=True):
 
     print()
     print("IEER: in(ORG, LOC) -- just the clauses:")
-    print("=" * 45)
+    safe_print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             if trace:
                 safe_print(doc.docno)
-                print("=" * 15)
+                safe_print("=" * 15)
             for rel in extract_rels("ORG", "LOC", doc, corpus="ieer", pattern=IN):
                 safe_print(clause(rel, relsym="IN"))
                 if sql:
@@ -372,7 +372,7 @@ def in_demo(trace=0, sql=True):
             )
             print()
             print("Extract data from SQL table: ORGs in Atlanta")
-            print("-" * 15)
+            safe_print("-" * 15)
             for row in cur:
                 safe_print(row)
         except NameError:
@@ -417,14 +417,14 @@ def roles_demo(trace=0):
 
     print()
     print("IEER: has_role(PER, ORG) -- raw rtuples:")
-    print("=" * 45)
+    safe_print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
                 safe_print(doc.docno)
-                print("=" * 15)
+                safe_print("=" * 15)
                 lcon = rcon = True
             for rel in extract_rels("PER", "ORG", doc, corpus="ieer", pattern=ROLES):
                 safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
@@ -440,7 +440,7 @@ def ieer_headlines():
     from nltk.tree import Tree
 
     print("IEER: First 20 Headlines")
-    print("=" * 45)
+    safe_print("=" * 45)
 
     trees = [
         (doc.docno, doc.headline)
@@ -479,7 +479,7 @@ def conllned(trace=1):
 
     print()
     print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
-    print("=" * 45)
+    safe_print("=" * 45)
 
     for doc in conll2002.chunked_sents("ned.train"):
         lcon = rcon = False
@@ -510,7 +510,7 @@ def conllesp():
 
     print()
     print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
-    print("=" * 45)
+    safe_print("=" * 45)
     rels = [
         rel
         for doc in conll2002.chunked_sents("esp.train")
@@ -524,7 +524,7 @@ def conllesp():
 def ne_chunked():
     print()
     print("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker")
-    print("=" * 45)
+    safe_print("=" * 45)
     ROLE = redos.compile(
         r".*(chairman|president|trader|scientist|economist|analyst|partner).*"
     )

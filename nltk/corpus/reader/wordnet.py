@@ -2526,7 +2526,7 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
         subsumer_ic = max(information_content(s, ic) for s in subsumers)
 
     if verbose:
-        print("> LCS Subsumer by content:", subsumer_ic)
+        safe_print("> LCS Subsumer by content:", subsumer_ic)
 
     return ic1, ic2, subsumer_ic
 

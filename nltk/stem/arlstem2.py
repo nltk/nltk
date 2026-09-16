@@ -28,6 +28,7 @@ online and do not use any dictionary.
 
 from nltk import redos
 from nltk.stem.api import StemmerI
+from nltk.termsec import safe_print
 
 
 class ARLSTem2(StemmerI):
@@ -145,7 +146,7 @@ class ARLSTem2(StemmerI):
                 return ps
             return token
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def stem(self, token):
         # stem the input word
@@ -177,7 +178,7 @@ class ARLSTem2(StemmerI):
                     return token[1:]
             return token
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def norm(self, token):
         """

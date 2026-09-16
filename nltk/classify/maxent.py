@@ -181,7 +181,7 @@ class MaxentClassifier(ClassifierI):
             "  Feature".ljust(descr_width)
             + "".join("%8s" % (("%s" % l)[:7]) for l in labels)
         )
-        print("  " + "-" * (descr_width - 2 + 8 * len(labels)))
+        safe_print("  " + "-" * (descr_width - 2 + 8 * len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
@@ -200,11 +200,11 @@ class MaxentClassifier(ClassifierI):
                     descr = descr[:44] + "..."
                 safe_print(TEMPLATE % (descr, i * 8 * " ", score))
                 sums[label] += score
-        print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
-        print(
+        safe_print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
+        safe_print(
             "  TOTAL:".ljust(descr_width) + "".join("%8.3f" % sums[l] for l in labels)
         )
-        print(
+        safe_print(
             "  PROBS:".ljust(descr_width)
             + "".join("%8.3f" % pdist.prob(l) for l in labels)
         )
@@ -1489,7 +1489,7 @@ def train_maxent_classifier_with_megam(
     try:
         os.remove(trainfile_name)
     except OSError as e:
-        print(f"Warning: unable to delete {trainfile_name}: {e}")
+        safe_print(f"Warning: unable to delete {trainfile_name}: {e}")
     # Remove the private staging directory so it does not leak per call.
     shutil.rmtree(stagedir, ignore_errors=True)
 
@@ -1627,7 +1627,7 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
         # matching the private default staging dir.
         os.mkdir(tab_dir, 0o700)
 
-    print(f"Saving Maxent parameters in {tab_dir}")
+    safe_print(f"Saving Maxent parameters in {tab_dir}")
 
     # newline="" writes LF, not the platform default, so the tab files reload
     # cleanly on Windows (a default text write there emits CRLF, leaving a stray
