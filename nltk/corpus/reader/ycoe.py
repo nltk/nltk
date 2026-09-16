@@ -37,6 +37,19 @@ class YCOECorpusReader(CorpusReader):
     def __init__(self, root, encoding="utf8"):
         CorpusReader.__init__(self, root, [], encoding)
 
+        # A psd/pos directory symlink escapes the corpus root: join() does a
+        # string-prefix check only, not symlink resolution, so files outside the
+        # YCOE corpus would be enumerated and read (CWE-59). Enforce realpath
+        # containment against the corpus root before handing the dir to a reader.
+        from nltk.pathsec import validate_path
+
+        for sub in ("psd", "pos"):
+            validate_path(
+                self.root.join(sub),
+                context="YCOECorpusReader",
+                required_root=self.root,
+            )
+
         self._psd_reader = YCOEParseCorpusReader(
             self.root.join("psd"), ".*", ".psd", encoding=encoding
         )
