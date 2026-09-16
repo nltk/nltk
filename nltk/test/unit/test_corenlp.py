@@ -14,19 +14,23 @@ from nltk.tree import Tree
 def setup_module(module):
     global server
 
+    # Bind an ephemeral port, never the default 9000 which races under xdist
+    # (CI runs pytest --numprocesses auto). The tests mock api_call, so nothing
+    # connects to this server; it only proves CoreNLP can start.
+    port = corenlp.try_port()
+
     try:
-        server = corenlp.CoreNLPServer(port=9000)
+        server = corenlp.CoreNLPServer(port=port)
     except LookupError:
-        pytest.skip("Could not instantiate CoreNLPServer.")
+        pytest.fail(
+            "CoreNLP is required for these tests but its jars were not found; "
+            "install it under nltk_data or the repo 'third/' dir."
+        )
 
     try:
         server.start()
     except corenlp.CoreNLPServerError as e:
-        pytest.skip(
-            "Skipping CoreNLP tests because the server could not be started. "
-            "Make sure that the 9000 port is free. "
-            "{}".format(e.strerror)
-        )
+        pytest.fail(f"CoreNLP server failed to start: {e}")
 
 
 def teardown_module(module):
