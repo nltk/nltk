@@ -65,6 +65,29 @@ from nltk.util import binary_search_file as _binary_search_file
 #: Positive infinity (for similarity functions)
 _INF = 1e300
 
+#: Max hypernym-chain depth walked by the directly-recursive Synset walkers
+#: (max_depth/min_depth/hypernym_paths/hypernym_distances). The hypernym graph is
+#: untrusted corpus content; a cycle or an over-deep chain would otherwise recurse
+#: without bound (CWE-400/674). Real chains are ~20 deep; a crafted graph is
+#: refused with a clear ValueError well before the interpreter recursion limit.
+_MAX_HYPERNYM_DEPTH = 256
+
+
+def _check_hypernym_visit(synset, visited):
+    # Guard the directly-recursive hypernym walkers against a cyclic or over-deep
+    # untrusted graph: revisiting a node on the current path is a cycle.
+    if synset in visited:
+        raise ValueError(
+            f"hypernym graph has a cycle at {synset._name!r}; refusing to recurse "
+            "without bound (CWE-674)"
+        )
+    if len(visited) > _MAX_HYPERNYM_DEPTH:
+        raise ValueError(
+            f"hypernym chain exceeds _MAX_HYPERNYM_DEPTH ({_MAX_HYPERNYM_DEPTH}); "
+            "the graph may be adversarially deep (CWE-400)"
+        )
+
+
 # { Part-of-speech constants
 ADJ, ADJ_SAT, ADV, NOUN, VERB = "a", "s", "r", "n", "v"
 # }
@@ -547,32 +570,38 @@ class Synset(_WordNetObject):
     #        else:
     #            return list(set(root for h in self.hypernyms()
     #                            for root in h.root_hypernyms()))
-    def max_depth(self):
+    def max_depth(self, _visited=None):
         """
         :return: The length of the longest hypernym path from this
             synset to the root.
         """
-
+        if _visited is None:
+            _visited = frozenset()
+        _check_hypernym_visit(self, _visited)
         if "_max_depth" not in self.__dict__:
             hypernyms = self.hypernyms() + self.instance_hypernyms()
             if not hypernyms:
                 self._max_depth = 0
             else:
-                self._max_depth = 1 + max(h.max_depth() for h in hypernyms)
+                _visited = _visited | {self}
+                self._max_depth = 1 + max(h.max_depth(_visited) for h in hypernyms)
         return self._max_depth
 
-    def min_depth(self):
+    def min_depth(self, _visited=None):
         """
         :return: The length of the shortest hypernym path from this
             synset to the root.
         """
-
+        if _visited is None:
+            _visited = frozenset()
+        _check_hypernym_visit(self, _visited)
         if "_min_depth" not in self.__dict__:
             hypernyms = self.hypernyms() + self.instance_hypernyms()
             if not hypernyms:
                 self._min_depth = 0
             else:
-                self._min_depth = 1 + min(h.min_depth() for h in hypernyms)
+                _visited = _visited | {self}
+                self._min_depth = 1 + min(h.min_depth(_visited) for h in hypernyms)
         return self._min_depth
 
     def closure(self, rel, depth=-1):
@@ -663,7 +692,7 @@ class Synset(_WordNetObject):
 
         return acyclic_branches_depth_first(self, rel, depth, cut_mark)
 
-    def hypernym_paths(self):
+    def hypernym_paths(self, _visited=None):
         """
         Get the path(s) from this synset to the root, where each path is a
         list of the synset nodes traversed on the way to the root.
@@ -671,14 +700,18 @@ class Synset(_WordNetObject):
         :return: A list of lists, where each list gives the node sequence
            connecting the initial ``Synset`` node and a root node.
         """
+        if _visited is None:
+            _visited = frozenset()
+        _check_hypernym_visit(self, _visited)
         paths = []
 
         hypernyms = self.hypernyms() + self.instance_hypernyms()
         if len(hypernyms) == 0:
             paths = [[self]]
 
+        _visited = _visited | {self}
         for hypernym in hypernyms:
-            for ancestor_list in hypernym.hypernym_paths():
+            for ancestor_list in hypernym.hypernym_paths(_visited):
                 ancestor_list.append(self)
                 paths.append(ancestor_list)
         return paths
@@ -765,7 +798,7 @@ class Synset(_WordNetObject):
         except ValueError:
             return []
 
-    def hypernym_distances(self, distance=0, simulate_root=False):
+    def hypernym_distances(self, distance=0, simulate_root=False, _visited=None):
         """
         Get the path(s) from this synset to the root, counting the distance
         of each node from the initial node on the way. A set of
@@ -777,9 +810,15 @@ class Synset(_WordNetObject):
         :return: A set of ``(Synset, int)`` tuples where each ``Synset`` is
            a hypernym of the first ``Synset``.
         """
+        if _visited is None:
+            _visited = frozenset()
+        _check_hypernym_visit(self, _visited)
         distances = {(self, distance)}
+        _visited = _visited | {self}
         for hypernym in self._hypernyms() + self._instance_hypernyms():
-            distances |= hypernym.hypernym_distances(distance + 1, simulate_root=False)
+            distances |= hypernym.hypernym_distances(
+                distance + 1, simulate_root=False, _visited=_visited
+            )
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
@@ -1675,8 +1714,10 @@ class WordNetCorpusReader(CorpusReader):
                 lemma_name = _next_token()
                 # get the lex_id (used for sense_keys)
                 lex_id = int(_next_token(), 16)
-                # If the lemma has a syntactic marker, extract it.
-                m = redos.match(r"(.*?)(\(.*\))?$", lemma_name)
+                # If the lemma has a syntactic marker, extract it. The marker
+                # holds no nested parens, so ``[^()]*`` (not ``.*``) keeps this
+                # linear instead of catastrophic on adversarial corpus content.
+                m = redos.match(r"(.*?)(\([^()]*\))?$", lemma_name)
                 lemma_name, syn_mark = m.groups()
                 # create the lemma object
                 lemma = Lemma(self, synset, lemma_name, lexname_index, lex_id, syn_mark)

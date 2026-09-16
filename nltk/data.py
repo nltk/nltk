@@ -1939,6 +1939,10 @@ class SeekableUnicodeStreamReader:
         else:
             self.stream.readline()
 
+    #: Characters at which ``str.splitlines`` breaks; used to detect a line end
+    #: in the newly read block without rescanning the whole growing buffer.
+    _LINEBREAK_CHARS = frozenset("\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029")
+
     def readline(self, size=None):
         """
         Read a line of text, decode it using this reader's encoding,
@@ -1960,10 +1964,14 @@ class SeekableUnicodeStreamReader:
         readsize = size or 72
         chars = ""
 
-        # If there's a remaining incomplete line in the buffer, add it.
+        # If there's a remaining incomplete line in the buffer, add it. It may
+        # itself carry a line break (a complete buffered line), so remember that
+        # so the first pass re-splits even if the new block has no break.
+        buffered_break = False
         if self.linebuffer:
             chars += self.linebuffer.pop()
             self.linebuffer = None
+            buffered_break = not self._LINEBREAK_CHARS.isdisjoint(chars)
 
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
@@ -1975,19 +1983,24 @@ class SeekableUnicodeStreamReader:
                 new_chars += self._read(1)
 
             chars += new_chars
-            lines = chars.splitlines(True)
-            if len(lines) > 1:
-                line = lines[0]
-                self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
-                self._rewind_checkpoint = startpos
-                break
-            elif len(lines) == 1:
-                line0withend = lines[0]
-                line0withoutend = lines[0].splitlines(False)[0]
-                if line0withend != line0withoutend:  # complete line
-                    line = line0withend
+            # Only re-split when a line break is present in the new block (or was
+            # carried in by the buffered prefix); an unterminated line has none, so
+            # re-splitting the whole growing buffer every pass would be O(N**2).
+            if buffered_break or not self._LINEBREAK_CHARS.isdisjoint(new_chars):
+                buffered_break = False
+                lines = chars.splitlines(True)
+                if len(lines) > 1:
+                    line = lines[0]
+                    self.linebuffer = lines[1:]
+                    self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                    self._rewind_checkpoint = startpos
                     break
+                elif len(lines) == 1:
+                    line0withend = lines[0]
+                    line0withoutend = lines[0].splitlines(False)[0]
+                    if line0withend != line0withoutend:  # complete line
+                        line = line0withend
+                        break
 
             if not new_chars or size is not None:
                 line = chars

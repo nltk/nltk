@@ -65,6 +65,7 @@ __all__ = [
     "DEFAULT_TIMEOUT",
     "MAX_PATTERN_LENGTH",
     "MAX_NESTING_DEPTH",
+    "MAX_GROUP_COUNT",
     "MAX_REPEAT_PRODUCT",
     "TimedPattern",
     "error",
@@ -118,6 +119,12 @@ MAX_PATTERN_LENGTH = 100_000
 #: nested character-class set), so a deeply nested source raises RecursionError (a
 #: crash, a native stack overflow on some builds); a legitimate pattern is shallow.
 MAX_NESTING_DEPTH = 100
+
+#: Max number of capturing groups. The engine's compile cost is roughly quadratic
+#: in the capturing-group count, so a source like ``"()" * 25000`` burns tens of
+#: seconds of pure compile before any match (the match-time timeout never fires);
+#: a legitimate pattern has few. Non-capturing ``(?:...)`` groups are not counted.
+MAX_GROUP_COUNT = 1000
 
 #: Max expansion of a counted repetition. The engine expands ``(group){n}`` into
 #: n copies at compile time and nested counts multiply, so an unbounded product
@@ -449,7 +456,12 @@ def check_pattern(src):
         f"regex counted repetition expands beyond {MAX_REPEAT_PRODUCT} copies; "
         "refusing to compile (CWE-1333 compile-time blow-up)"
     )
+    group_msg = (
+        f"regex opens more than {MAX_GROUP_COUNT} capturing groups; refusing to "
+        "compile (CWE-1333 compile-time DoS quadratic in the capturing-group count)"
+    )
     depth = 0  # combined group ``(`` + character-class ``[`` nesting
+    group_count = 0  # capturing groups opened; the engine's compile is ~O(count**2)
     class_depth = 0  # > 0 while inside a character class
     cost = [0]  # per-group accumulated expansion; cost[-1] is the current group
     last = 0  # expansion of the most recent atom / group, for a trailing ``{m,n}``
@@ -486,6 +498,17 @@ def check_pattern(src):
             depth += 1
             if depth > MAX_NESTING_DEPTH:
                 raise ValueError(depth_msg)
+            # Count only capturing groups (the compile cost is quadratic in those):
+            # a plain "(" captures; "(?P<n>" and "(?<n>" are named captures; every
+            # other "(?..." (non-capture, lookaround, flags, comment) does not.
+            if (
+                scan[i + 1 : i + 2] != "?"
+                or scan[i + 1 : i + 4] == "?P<"
+                or (scan[i + 1 : i + 3] == "?<" and scan[i + 3 : i + 4].isalnum())
+            ):
+                group_count += 1
+                if group_count > MAX_GROUP_COUNT:
+                    raise ValueError(group_msg)
             cost.append(0)
             if i + 1 < n and scan[i + 1] == "?":
                 # Skip a group introducer ((?:, (?P<name>, (?=, (?<!, (?#..., ...)
