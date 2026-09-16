@@ -1,35 +1,65 @@
-# AGENTS.md
+# CLAUDE.md
 
-This file outlines the strict operational parameters for AI coding agents and automated contributors to NLTK. NLTK is in maintenance mode. Maintainers prioritize focused, highly reviewable changes that do not create unnecessary administrative overhead.
+Companion to [AGENTS.md](AGENTS.md) for Claude Code and other Claude-based agents. AGENTS.md is the baseline for every automated contributor — read it first. This file does not replace it; it adds the Claude Code workflow and the reasoning behind each rule. Where the two overlap, AGENTS.md governs scope and this file governs how to execute a change safely.
 
-## The main thing: reduce maintainer burden
-Maintainers review voluntarily. The best contributions are focused, well-explained, and easy to review. When unsure, asking a clarifying question in an issue is strictly preferred over opening a speculative pull request.
+NLTK is a mature, educational library in maintenance mode. Optimize for a reviewer's time, not your own throughput.
 
-## Vetting is required before implementation
-To all agents: Do not open a pull request directly in the NLTK repo for an issue that has not been vetted by maintainers or established contributors. Unvetted PRs create unnecessary review effort and will be rejected.
+## 1. Vet before you build (never work in silos)
 
-* Do NOT assume a singleton issue report (without maintainer engagement) means a fix is requested or desired.
-* If you believe an unvetted issue is critical, comment on the issue with your proposed approach and wait for explicit maintainer consensus before writing code.
-* Read ALL comments and discussion on an issue, and cross-reference related issues before considering any fix.
-* There are no exceptions to this vetting process.
+A GitHub issue is a report, not a mandate.
 
-## Faithful before optimized
-NLTK is an educational library. Correct, functional, and safe code matters, but implementation must remain simple and human-readable.
+* A singleton issue with no maintainer or contributor engagement is not a signal to fix. It may be unpatched on purpose.
+* Read every comment on the issue and cross-reference related issues before forming a plan.
+* If you believe an unvetted issue is worth doing, audit the relevant modules and their tests, propose your approach on the issue, and wait for maintainer consensus. Do not open a speculative PR.
+* A human must be in the loop before any PR is opened.
 
-* **Faithful before optimized:** Keeping an implementation faithful to a reference paper or original algorithm is strictly more important than optimizing for computational speed. If you create a non-canonical performance fix, do NOT override the existing faithful implementation; instead, provide an option for users to toggle it.
-* **Targeted Testing:** Write exactly one simple, focused test per bug fix. Do not generate massive, combinatorial test suites for minor fixes, as this needlessly inflates CI runtime.
-* **Scoped CI/CD Checks:** Ensure local checks (pre-commit, pytest) pass strictly for the modified modules. Do not attempt to test, mock, or rewrite the entire NLTK suite for a localized fix.
+## 2. Faithful before optimized
 
-## Security boundaries
-Anything that touches file opening, writing, loading, saving, or printing MUST route through the relevant security layer (`pathsec` for filesystem/network, `picklesec` for pickle loading, `jsontags` for JSON parsing, and `termsec` for terminal output/CSV fields).
+* Correct, human-readable, canonical code beats clever or fast code. NLTK exists to teach.
+* Keep an implementation faithful to its cited paper or reference algorithm. If you have a non-canonical improvement, put it behind a user-facing toggle; never silently replace the faithful (even if flawed) implementation.
+* Verify your change actually matches the cited algorithm and the surrounding conventions, not just what looks plausible to an LLM.
 
-* Limit your security review and patches exclusively to the scope of your specific change.
-* Do not autonomously expand the attack surface audit or attempt to refactor unrelated security modules across the codebase.
+## 3. Security is a chokepoint, not an afterthought
 
-## Transparency
-When an agentic coding tool is used, include a concise summary—the prompt/task and the model used—in the PR description so the implementation can be traced back. Redact private context; do NOT include raw internal reasoning or chain-of-thought logs in the PR description.
+Anything that opens, reads, writes, loads, saves, prints, parses, or spawns MUST route through the library's guards:
 
-## Pull Requests & Communication
-* **Scope:** Limit to one logical change per PR. Avoid mass, speculative, cosmetic, or reformatting-only PRs.
-* **Finality:** Maintainer decisions are final. If a maintainer rejects an approach or a PR, do not argue, debate, or generate lengthy defenses in an attempt to persuade them. Accept the rejection and close the loop.
-* **AI Behavior:** Check whether your change actually matches the cited algorithm or the surrounding code's conventions, rather than just implementing what looks plausible to an LLM.
+* `pathsec` — filesystem and network paths (containment, symlink/traversal, zip members).
+* `picklesec` — pickle loading (allowlist unpickler).
+* `jsontags` — JSON parsing (tagged, depth-bounded loader).
+* `termsec` — terminal and CSV output (control, ANSI, bidi, and formula neutralisation).
+* `redos` — every regular expression (compile and match time bounded).
+
+Never call a bare `open` / `pickle.load` / `json.load` / `print` / `re` on untrusted data.
+
+When your change touches that surface, the bar rises. Run this audit on the paths you touch:
+
+> Read the security modules and their tests. Make sure no CWE/CVE exploit leaks through after your change. Expand the attack corpus for the surface you touched, add every plausible candidate (benign or not) to the harness, fix, and retest so no advisory exploit leaks. Then confirm the affected functionality still works: do not just mock it — load the modules, and for a third-party tool compile or run the real tool and cross-check its output.
+
+Scope discipline (per AGENTS.md): attack the surface your change touches thoroughly, but do not refactor unrelated security modules or expand the audit across the whole codebase.
+
+Three rules this project has paid for in real bugs:
+
+* **Reject a threat vector; do not coerce it.** A lying `str` subclass can override `startswith`/`split`/`lower`/`__iter__` to validate as a benign flag while its real characters reach an argv or JVM sink. Hard-reject anything that is not an exact `str` (`type(x) is not str`) rather than normalising it, because a caller may discard the validated return and forward the original.
+* **Bound recursion on untrusted input.** A deeply nested parser or traversal input (tree, logic, CCG, toolbox, dependency graph, tgrep, XML) must raise a controlled `ValueError` or domain exception at a documented `MAX_*_DEPTH`, never an uncaught `RecursionError`.
+* **Do not run a bare executable.** A tool wrapper must accept only an absolute binary path; an explicit relative path resolves against the current working directory and can execute a planted binary.
+
+## 4. Testing and CI
+
+* Ordinary fixes get one focused test (see AGENTS.md). A security fix additionally gets a regression test that runs the real attack and asserts the *specific* bounded exception — a broad `except Exception` hides real bugs (a `NameError` can masquerade as "handled").
+* Do not mock what you can run. For a third-party tool (CoreNLP, Stanford, Malt, Prover9, and so on) start the real binary and cross-check its output; a mock only proves the wrapper's plumbing, not that the tool works.
+* Run the suite for the modules you touched locally, then watch CI after opening the PR. NLTK CI is cross-platform (Linux, macOS, Windows; Python 3.10 to 3.14) — a change can pass on one leg and fail on another.
+* Never relax a test's criteria to make CI green. If a timing or DoS test flakes, fix the *measurement* (for example, take the minimum of several runs to remove scheduler noise); do not loosen the threshold, because the loosened bound is exactly what lets a real regression through. A transient single-runner flake is re-run, not edited.
+* Use `python3.13` (not a bare `python3`) and the repo's pinned formatters; a newer local formatter reformats differently and reds pre-commit.
+
+## 5. Git and pull requests
+
+* One logical change per PR. No mass, cosmetic, or reformatting-only PRs.
+* Stage explicit paths; never `git add -A` (it sweeps scratch files into the PR).
+* Iterate with follow-up commits and a plain push; do not force-push a branch that is under review.
+* Compare branches with `git worktree`, not a bare `git stash`.
+* Do not open or push a PR without a human in the loop. Maintainer decisions are final — accept a rejection and close the loop; do not argue or generate a lengthy defense.
+* Do not post PR or issue comments on the human's behalf unless they have asked for that specific comment.
+
+## 6. Transparency
+
+When an agentic tool produced the change, note the tool, the task, and the model in the PR description so it can be traced. Redact private context and raw chain-of-thought — a concise summary, not the reasoning log.
