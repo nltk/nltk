@@ -53,9 +53,7 @@ _NUMERIC_SPEC_END = set("bcdoxXneEfFgG%")
 def _spec_is_numeric(fmtspec):
     if not isinstance(fmtspec, ast.JoinedStr):
         return False
-    text = "".join(
-        v.value for v in fmtspec.values if isinstance(v, ast.Constant)
-    )
+    text = "".join(v.value for v in fmtspec.values if isinstance(v, ast.Constant))
     return bool(text) and text[-1] in _NUMERIC_SPEC_END and "s" not in text[-1]
 
 
