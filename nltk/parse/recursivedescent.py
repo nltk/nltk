@@ -407,8 +407,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     :see: ``nltk.grammar``
     """
 
-    def __init__(self, grammar, trace=0):
-        super().__init__(grammar, trace)
+    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
+        super().__init__(grammar, trace, max_time)
         self._rtext = None
         self._tree = None
         self._frontier = [()]
@@ -428,8 +428,19 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     def parse(self, tokens):
         tokens = list(tokens)
         self.initialize(tokens)
+        # step() bypasses the base _parse deadline, so bound the stepping loop
+        # directly: a left-recursive or ambiguous grammar loops unbounded
+        # otherwise (CWE-407/674). max_time=None disables the bound.
+        deadline = None
+        if self._max_time is not None:
+            deadline = time.perf_counter() + self._max_time
         while self.step() is not None:
-            pass
+            if deadline is not None and time.perf_counter() > deadline:
+                raise TimeoutError(
+                    f"SteppingRecursiveDescentParser exceeded its {self._max_time}s "
+                    "time limit; the grammar may be ambiguous or left-recursive. "
+                    "Pass max_time=None to disable the limit."
+                )
         return self.parses()
 
     def initialize(self, tokens):

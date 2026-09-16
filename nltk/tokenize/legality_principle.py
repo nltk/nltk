@@ -62,6 +62,8 @@ class LegalitySyllableTokenizer(TokenizerI):
         [['This'], ['is'], ['a'], ['won', 'der', 'ful'], ['sen', 'ten', 'ce'], ['.']]
     """
 
+    MAX_TOKEN_LEN = 4096
+
     def __init__(
         self, tokenized_source_text, vowels="aeiouy", legal_frequency_threshold=0.001
     ):
@@ -121,6 +123,15 @@ class LegalitySyllableTokenizer(TokenizerI):
         :return syllable_list: Single word or token broken up into syllables.
         :rtype: list(str)
         """
+        # current_onset grows to O(len) and is reversed each iteration, so the
+        # loop is O(n**2) on a long token (CWE-407). A real word is short; reject
+        # the oversized ones (mirrors SyllableTokenizer.MAX_TOKEN_LEN).
+        if len(token) > self.MAX_TOKEN_LEN:
+            raise ValueError(
+                f"LegalitySyllableTokenizer: token length exceeds MAX_TOKEN_LEN "
+                f"({self.MAX_TOKEN_LEN}); syllabification is quadratic in the token "
+                "length (CWE-407). Raise MAX_TOKEN_LEN for longer tokens."
+            )
         syllables = []
         syllable, current_onset = "", ""
         vowel, onset = False, False

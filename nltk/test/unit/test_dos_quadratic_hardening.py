@@ -281,3 +281,71 @@ class TestWordNetLemmaMarkerRegex:
         except LookupError:
             pytest.skip("wordnet corpus not downloaded")
         assert [l.name() for l in wn.synset("dog.n.01").lemmas()][0] == "dog"
+
+
+# --- ffr9 / gpwc / 8fx7: tokenizer & parser algorithmic DoS ------------------
+
+
+class TestSpanTokenizeLinear:
+    """span_tokenize restored converted quotes with list.pop(0) in a
+    comprehension (O(n**2) on many quotes); a deque keeps it linear and the
+    spans identical. Both the treebank and destructive engines had the bug."""
+
+    def _tokenizers(self):
+        from nltk.tokenize.destructive import NLTKWordTokenizer
+        from nltk.tokenize.treebank import TreebankWordTokenizer
+
+        return (NLTKWordTokenizer(), TreebankWordTokenizer())
+
+    def test_quotes_restored_faithfully(self):
+        text = 'She said "hi" and "bye" to "all".'
+        for tk in self._tokenizers():
+            spans = list(tk.span_tokenize(text))
+            assert spans and all(0 <= a <= b <= len(text) for a, b in spans)
+            assert all(text[a:b] for a, b in spans)
+
+    def test_many_quotes_is_not_quadratic(self):
+        import time
+
+        from nltk.tokenize.destructive import NLTKWordTokenizer
+
+        start = time.perf_counter()
+        list(NLTKWordTokenizer().span_tokenize('"' * 40000))
+        assert time.perf_counter() - start < 4.0
+
+
+class TestLegalitySyllableTokenLen:
+    def _lp(self):
+        from nltk.tokenize import LegalitySyllableTokenizer
+
+        return LegalitySyllableTokenizer(["wonderful", "sentence", "this", "is"])
+
+    def test_normal_token_syllabifies(self):
+        assert self._lp().tokenize("wonderful")
+
+    def test_oversized_token_is_refused(self):
+        from nltk.tokenize import LegalitySyllableTokenizer
+
+        with pytest.raises(ValueError):
+            self._lp().tokenize("a" * (LegalitySyllableTokenizer.MAX_TOKEN_LEN + 1))
+
+
+class TestSteppingParserDeadline:
+    def _grammar(self, s):
+        from nltk import CFG
+
+        return CFG.fromstring(s)
+
+    def test_normal_grammar_parses(self):
+        from nltk.parse.recursivedescent import SteppingRecursiveDescentParser
+
+        g = self._grammar("S -> NP VP\nNP -> 'the' 'dog'\nVP -> 'runs'")
+        assert list(SteppingRecursiveDescentParser(g).parse(["the", "dog", "runs"]))
+
+    def test_left_recursive_grammar_times_out(self):
+        from nltk.parse.recursivedescent import SteppingRecursiveDescentParser
+
+        g = self._grammar("S -> S 'a'\nS -> 'a'")
+        p = SteppingRecursiveDescentParser(g, max_time=1)
+        with pytest.raises((TimeoutError, RecursionError)):
+            list(p.parse(["a", "a", "a", "a"]))
