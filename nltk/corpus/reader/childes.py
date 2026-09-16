@@ -19,6 +19,7 @@ from defusedxml.ElementTree import parse as safe_parse
 from nltk import redos
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
+from nltk.termsec import safe_print
 from nltk.util import LazyConcatenation, LazyMap, flatten
 
 # to resolve the namespace issue
@@ -584,7 +585,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         url = self.childes_url_base + path
 
         webbrowser.open_new_tab(url)
-        print("Opening in browser:", url)
+        safe_print("Opening in browser:", url)
         # Pausing is a good idea, but it's up to the user...
         # raw_input("Hit Return to continue")
 

@@ -12,6 +12,7 @@ import textwrap
 from collections import defaultdict
 
 from nltk.tag import BrillTagger, untag
+from nltk.termsec import safe_print
 
 ######################################################################
 #  Brill Tagger Trainer
@@ -601,7 +602,7 @@ class BrillTaggerTrainer:
                 ),
                 end=" ",
             )
-            print(
+            safe_print(
                 textwrap.fill(
                     rulestr,
                     initial_indent=" " * 20,
@@ -610,7 +611,7 @@ class BrillTaggerTrainer:
                 ).strip()
             )
         else:
-            print(rulestr)
+            safe_print(rulestr)
 
     def _trace_apply(self, num_updates):
         prefix = " " * 18 + "|"

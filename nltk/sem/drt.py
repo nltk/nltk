@@ -37,6 +37,7 @@ from nltk.sem.logic import (
     is_indvar,
     unique_variable,
 )
+from nltk.termsec import safe_print
 from nltk.util import in_idle
 
 
@@ -282,7 +283,7 @@ class DrtExpression:
         return "\n".join(self._pretty())
 
     def pretty_print(self):
-        print(self.pretty_format())
+        safe_print(self.pretty_format())
 
     def draw(self):
         DrsDrawer(self).draw()

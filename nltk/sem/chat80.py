@@ -134,6 +134,7 @@ from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
+from nltk.termsec import safe_print
 
 
 def _restricted_shelve_open(db, flag="r"):
@@ -494,7 +495,7 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     for t in records:
         cur.execute("insert into %s values (?,?,?)" % table_name, t)
         if verbose:
-            print("inserting values into %s: " % table_name, t)
+            safe_print("inserting values into %s: " % table_name, t)
     connection.commit()
     if verbose:
         print("Committing update to %s" % dbname)
@@ -922,7 +923,7 @@ def sql_demo():
     print()
     print("Using SQL to extract rows from 'city.db' RDB.")
     for row in sql_query("corpora/city_database/city.db", "SELECT * FROM city_table"):
-        print(row)
+        safe_print(row)
 
 
 if __name__ == "__main__":

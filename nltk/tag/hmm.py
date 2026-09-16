@@ -90,6 +90,7 @@ from nltk.probability import (
     RandomProbDist,
 )
 from nltk.tag.api import TaggerI
+from nltk.termsec import safe_print
 from nltk.util import LazyMap, unique_list
 
 _TEXT = 0  # index of text in a tuple
@@ -800,14 +801,16 @@ class HiddenMarkovModelTagger(TaggerI):
 
         if verbose:
             for test_sent, predicted_sent in zip(test_sequence, predicted_sequence):
-                print(
+                safe_print(
                     "Test:",
                     " ".join(f"{token}/{tag}" for (token, tag) in test_sent),
                 )
                 print()
-                print("Untagged:", " ".join("%s" % token for (token, tag) in test_sent))
+                safe_print(
+                    "Untagged:", " ".join("%s" % token for (token, tag) in test_sent)
+                )
                 print()
-                print(
+                safe_print(
                     "HMM-tagged:",
                     " ".join(f"{token}/{tag}" for (token, tag) in predicted_sent),
                 )

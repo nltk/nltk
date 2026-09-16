@@ -35,6 +35,7 @@ import json
 from functools import wraps
 from io import StringIO
 
+from nltk.termsec import safe_print
 from nltk.twitter import (
     Query,
     Streamer,
@@ -134,7 +135,7 @@ def search_demo(keywords="nltk"):
     oauth = credsfromfile()
     client = Query(**oauth)
     for tweet in client.search_tweets(keywords=keywords, limit=10):
-        print(tweet["text"])
+        safe_print(tweet["text"])
 
 
 @verbose
@@ -160,7 +161,7 @@ def lookup_by_userid_demo():
         name = info["screen_name"]
         followers = info["followers_count"]
         following = info["friends_count"]
-        print(f"{name}, followers: {followers}, following: {following}")
+        safe_print(f"{name}, followers: {followers}, following: {following}")
 
 
 @verbose
@@ -207,7 +208,7 @@ def limit_by_time_demo(keywords="nltk"):
     print(f"Cutoff date: {dt_date}\n")
 
     for tweet in client.search_tweets(keywords=keywords):
-        print("{} ".format(tweet["created_at"]), end="")
+        safe_print("{} ".format(tweet["created_at"]), end="")
         client.handler.handle(tweet)
 
 
@@ -227,19 +228,19 @@ def corpusreader_demo():
     print("Complete tweet documents")
     print(SPACER)
     for tweet in tweets.docs("tweets.20150430-223406.json")[:1]:
-        print(json.dumps(tweet, indent=1, sort_keys=True))
+        safe_print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
     print(SPACER)
     for text in tweets.strings("tweets.20150430-223406.json")[:15]:
-        print(text)
+        safe_print(text)
 
     print()
     print("Tokenized tweet strings:")
     print(SPACER)
     for toks in tweets.tokenized("tweets.20150430-223406.json")[:15]:
-        print(toks)
+        safe_print(toks)
 
 
 @verbose
@@ -268,11 +269,11 @@ def expand_tweetids_demo():
 
     for tweet in hydrated:
         id_str = tweet["id_str"]
-        print(f"id: {id_str}")
+        safe_print(f"id: {id_str}")
         text = tweet["text"]
         if text.startswith("@null"):
             text = "[Tweet not available]"
-        print(text + "\n")
+        safe_print(text + "\n")
 
 
 ALL = [

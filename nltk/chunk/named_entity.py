@@ -28,6 +28,7 @@ except ImportError:
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
 from nltk.data import find, make_staging_dir
+from nltk.termsec import safe_print
 from nltk.tokenize import word_tokenize
 from nltk.tree import Tree
 
@@ -231,7 +232,7 @@ def load_ace_data(roots, fmt="binary", skip_bnews=True):
 
 
 def load_ace_file(textfile, fmt):
-    print(f"  - {os.path.split(textfile)[1]}")
+    safe_print(f"  - {os.path.split(textfile)[1]}")
     annfile = textfile + ".tmx.rdc.xml"
 
     # Read the xml file, and get a list of entities. These ACE paths are walked
@@ -312,12 +313,12 @@ def cmp_chunks(correct, guessed):
     for (w, ct), (w, gt) in zip(correct, guessed):
         if ct == gt == "O":
             if not ellipsis:
-                print(f"  {ct:15} {gt:15} {w}")
+                safe_print(f"  {ct:15} {gt:15} {w}")
                 print("  {:15} {:15} {}".format("...", "...", "..."))
                 ellipsis = True
         else:
             ellipsis = False
-            print(f"  {ct:15} {gt:15} {w}")
+            safe_print(f"  {ct:15} {gt:15} {w}")
 
 
 # ======================================================================================

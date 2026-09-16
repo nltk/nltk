@@ -28,6 +28,7 @@ from collections import defaultdict
 
 from nltk import redos
 from nltk.redos import reharden
+from nltk.termsec import safe_print
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -189,7 +190,7 @@ def semi_rel2reldict(pairs, window=5, trace=False):
         reldict["objsym"] = list2sym(pairs[1][1].leaves())
         reldict["rcon"] = _join(pairs[2][0][:window])
         if trace:
-            print(
+            safe_print(
                 "(%s(%s, %s)"
                 % (
                     reldict["untagged_filler"],
@@ -347,10 +348,10 @@ def in_demo(trace=0, sql=True):
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             if trace:
-                print(doc.docno)
+                safe_print(doc.docno)
                 print("=" * 15)
             for rel in extract_rels("ORG", "LOC", doc, corpus="ieer", pattern=IN):
-                print(clause(rel, relsym="IN"))
+                safe_print(clause(rel, relsym="IN"))
                 if sql:
                     try:
                         rtuple = (rel["subjtext"], rel["objtext"], doc.docno)
@@ -373,7 +374,7 @@ def in_demo(trace=0, sql=True):
             print("Extract data from SQL table: ORGs in Atlanta")
             print("-" * 15)
             for row in cur:
-                print(row)
+                safe_print(row)
         except NameError:
             pass
 
@@ -422,11 +423,11 @@ def roles_demo(trace=0):
         for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
-                print(doc.docno)
+                safe_print(doc.docno)
                 print("=" * 15)
                 lcon = rcon = True
             for rel in extract_rels("PER", "ORG", doc, corpus="ieer", pattern=ROLES):
-                print(rtuple(rel, lcon=lcon, rcon=rcon))
+                safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 ##############################################
@@ -448,7 +449,7 @@ def ieer_headlines():
     ]
     for tree in trees[:20]:
         print()
-        print("%s:\n%s" % tree)
+        safe_print("%s:\n%s" % tree)
 
 
 #############################################
@@ -487,7 +488,7 @@ def conllned(trace=1):
         for rel in extract_rels(
             "PER", "ORG", doc, corpus="conll2002", pattern=VAN, window=10
         ):
-            print(rtuple(rel, lcon=lcon, rcon=rcon))
+            safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 #############################################
@@ -516,7 +517,7 @@ def conllesp():
         for rel in extract_rels("ORG", "LOC", doc, corpus="conll2002", pattern=DE)
     ]
     for r in rels[:10]:
-        print(clause(r, relsym="DE"))
+        safe_print(clause(r, relsym="DE"))
     print()
 
 
@@ -532,7 +533,7 @@ def ne_chunked():
         sent = nltk.ne_chunk(sent)
         rels = extract_rels("PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7)
         for rel in rels:
-            print(f"{i:<5}{rtuple(rel)}")
+            safe_print(f"{i:<5}{rtuple(rel)}")
 
 
 if __name__ == "__main__":

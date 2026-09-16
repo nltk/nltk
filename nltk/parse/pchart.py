@@ -43,6 +43,7 @@ from functools import reduce
 from nltk.grammar import PCFG, Nonterminal
 from nltk.parse.api import ParserI
 from nltk.parse.chart import AbstractChartRule, Chart, LeafEdge, TreeEdge
+from nltk.termsec import safe_print
 from nltk.tree import ProbabilisticTree, Tree
 
 
@@ -234,7 +235,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         # Initialize the chart.
         for edge in bu_init.apply(chart, grammar):
             if self._trace > 1:
-                print(
+                safe_print(
                     "  %-50s [%s]"
                     % (chart.pretty_format_edge(edge, width=2), edge.prob())
                 )
@@ -251,7 +252,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             # Get the best edge.
             edge = queue.pop()
             if self._trace > 0:
-                print(
+                safe_print(
                     "  %-50s [%s]"
                     % (chart.pretty_format_edge(edge, width=2), edge.prob())
                 )
@@ -321,7 +322,9 @@ class BottomUpProbabilisticChartParser(ParserI):
             split = len(queue) - self.beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print("  %-50s [DISCARDED]" % chart.pretty_format_edge(edge, 2))
+                    safe_print(
+                        "  %-50s [DISCARDED]" % chart.pretty_format_edge(edge, 2)
+                    )
             del queue[:split]
 
 

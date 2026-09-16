@@ -28,6 +28,7 @@ from nltk.sem.logic import (
     NegatedExpression,
     OrExpression,
 )
+from nltk.termsec import safe_print
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
@@ -59,10 +60,10 @@ class Prover9CommandParent:
         """
         if output_format.lower() == "nltk":
             for a in self.assumptions():
-                print(a)
+                safe_print(a)
         elif output_format.lower() == "prover9":
             for a in convert_to_prover9(self.assumptions()):
-                print(a)
+                safe_print(a)
         else:
             raise NameError(
                 "Unrecognized value for 'output_format': %s" % output_format
@@ -198,7 +199,7 @@ class Prover9Parent:
         if verbose:
             print("Calling:", binary)
             print("Args:", args)
-            print("Input:\n", input_str, "\n")
+            safe_print("Input:\n", input_str, "\n")
 
         # Route through the trusted-exec chokepoint: verify the prover9/mace binary
         # is on a path no other local user can swap, refuse a shell, and scrub the
@@ -284,14 +285,16 @@ def convert_to_prover9(input):
             try:
                 result.append(_convert_to_prover9(s.simplify()))
             except Exception:
-                print("input %s cannot be converted to Prover9 input syntax" % input)
+                safe_print(
+                    "input %s cannot be converted to Prover9 input syntax" % input
+                )
                 raise
         return result
     else:
         try:
             return _convert_to_prover9(input.simplify())
         except Exception:
-            print("input %s cannot be converted to Prover9 input syntax" % input)
+            safe_print("input %s cannot be converted to Prover9 input syntax" % input)
             raise
 
 

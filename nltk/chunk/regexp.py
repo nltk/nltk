@@ -10,6 +10,7 @@ import re
 
 from nltk import redos
 from nltk.chunk.api import ChunkParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 # //////////////////////////////////////////////////////
@@ -1057,14 +1058,14 @@ class RegexpChunkParser(ChunkParserI):
         :rtype: None
         """
         print("# Input:")
-        print(chunkstr)
+        safe_print(chunkstr)
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
                 print("#", rule.descr() + " (" + repr(rule) + "):")
             else:
                 print("#", rule.descr() + ":")
-            print(chunkstr)
+            safe_print(chunkstr)
 
     def _notrace_apply(self, chunkstr):
         """

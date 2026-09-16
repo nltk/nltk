@@ -33,6 +33,7 @@ import requests
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonError, TwythonRateLimitError
 
+from nltk.termsec import safe_print
 from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
 
@@ -253,11 +254,11 @@ class Query(Twython):
                     result_type="recent",
                 )
             except TwythonRateLimitError as e:
-                print(f"Waiting for 15 minutes -{e}")
+                safe_print(f"Waiting for 15 minutes -{e}")
                 time.sleep(15 * 60)  # wait 15 minutes
                 continue
             except TwythonError as e:
-                print(f"Fatal error in Twython request -{e}")
+                safe_print(f"Fatal error in Twython request -{e}")
                 if retries_after_twython_exception == retries:
                     raise e
                 retries += 1
@@ -428,7 +429,7 @@ class TweetViewer(TweetHandlerI):
         :param data: Tweet object returned by Twitter API
         """
         text = data["text"]
-        print(text)
+        safe_print(text)
 
         self.check_date_limit(data)
         if self.do_stop:

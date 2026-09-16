@@ -10,6 +10,8 @@
 
 import random
 
+from nltk.termsec import safe_print
+
 
 # reverse a word with probability 0.5
 def revword(word):
@@ -127,12 +129,12 @@ def word_finder():
     print("Word Finder\n")
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            print(grid[i][j], end=" ")
+            safe_print(grid[i][j], end=" ")
         print()
     print()
 
     for i in range(len(used)):
-        print("%d:" % (i + 1), used[i])
+        safe_print("%d:" % (i + 1), used[i])
 
 
 if __name__ == "__main__":

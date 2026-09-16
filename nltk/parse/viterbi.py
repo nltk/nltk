@@ -10,6 +10,7 @@ import time
 from functools import reduce
 
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import ProbabilisticTree, Tree
 
 #: Default wall-clock limit, in seconds, for a single :meth:`ViterbiParser.parse`
@@ -347,12 +348,12 @@ class ViterbiParser(ParserI):
         if self._trace > 2:
             str = f"{str:<40} {p:12.10f} "
 
-        print(str)
+        safe_print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
         str = "   Insert: |" + "." * index + "=" + "." * (width - index - 1) + "| "
         str += f"{token}"
-        print(str)
+        safe_print(str)
 
     def __repr__(self):
         return "<ViterbiParser for %r>" % self._grammar

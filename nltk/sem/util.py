@@ -15,6 +15,7 @@ a first-order model.
 
 from nltk.pathsec import open as _secure_open
 from nltk.sem import evaluate
+from nltk.termsec import safe_print
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -64,7 +65,7 @@ def root_semrep(syntree, semkey="SEM"):
     try:
         return node[semkey]
     except KeyError:
-        print(node, end=" ")
+        safe_print(node, end=" ")
         print("has no specification for the feature %s" % semkey)
     raise
 

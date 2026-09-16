@@ -43,6 +43,7 @@ from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
+from nltk.termsec import safe_print
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -1488,7 +1489,7 @@ class WordNetCorpusReader(CorpusReader):
             try:
                 depth = max(depth, ss.max_depth())
             except RuntimeError:
-                print(ss)
+                safe_print(ss)
 
         if simulate_root:
             depth += 1

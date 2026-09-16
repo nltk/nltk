@@ -44,6 +44,7 @@ from nltk import redos
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.internals import raise_unorderable_types
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 from nltk.util import OrderedDict
 
@@ -1489,7 +1490,7 @@ class ChartParser(ParserI):
             if print_rule_header:
                 print("%s:" % rule)
                 print_rule_header = False
-            print(chart.pretty_format_edge(edge, edge_width))
+            safe_print(chart.pretty_format_edge(edge, edge_width))
 
     def chart_parse(self, tokens, trace=None):
         """
@@ -1512,7 +1513,7 @@ class ChartParser(ParserI):
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace:
-            print(chart.pretty_format_leaves(trace_edge_width))
+            safe_print(chart.pretty_format_leaves(trace_edge_width))
 
         # Bottom-up recognition over an accumulating feature grammar is
         # super-polynomial with no natural bound (CWE-407); a wall-clock deadline
@@ -1681,7 +1682,7 @@ class SteppingChartParser(ChartParser):
                 if self._trace > 1:
                     print(self._current_chartrule)
                 if self._trace > 0:
-                    print(self._chart.pretty_format_edge(e, w))
+                    safe_print(self._chart.pretty_format_edge(e, w))
                 yield e
                 if self._restart:
                     break

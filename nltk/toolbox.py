@@ -17,6 +17,7 @@ from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 from nltk import redos
 from nltk.data import PathPointer, find
 from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
 
 #: Maximum depth the recursive Toolbox settings helpers will descend to.
 #: Beyond this they raise ValueError instead of letting Python raise an
@@ -580,23 +581,23 @@ def demo():
     file_path = find("corpora/toolbox/rotokas.dic")
     lexicon = ToolboxData(file_path).parse()
     print("first field in fourth record:")
-    print(lexicon[3][0].tag)
-    print(lexicon[3][0].text)
+    safe_print(lexicon[3][0].tag)
+    safe_print(lexicon[3][0].text)
 
     print("\nfields in sequential order:")
     for field in islice(lexicon.find("record"), 10):
-        print(field.tag, field.text)
+        safe_print(field.tag, field.text)
 
     print("\nlx fields:")
     for field in islice(lexicon.findall("record/lx"), 10):
-        print(field.text)
+        safe_print(field.text)
 
     settings = ToolboxSettings()
     file_path = find("corpora/toolbox/MDF/MDF_AltH.typ")
     settings.open(file_path)
     #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding="cp1252")
-    print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
+    safe_print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
     settings_tree = ElementTree(tree)
     print(to_settings_string(settings_tree).encode("utf8"))
 

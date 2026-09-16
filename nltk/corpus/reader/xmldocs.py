@@ -27,6 +27,7 @@ from nltk.corpus.reader.util import *
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import ElementWrapper
 from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
 from nltk.tokenize import WordPunctTokenizer
 
 
@@ -376,7 +377,9 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
                 if self._DEBUG:
-                    print("{:>25} {}".format("/".join(context)[-20:], piece.group()))
+                    safe_print(
+                        "{:>25} {}".format("/".join(context)[-20:], piece.group())
+                    )
 
                 if piece.group("START_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)

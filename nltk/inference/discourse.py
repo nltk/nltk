@@ -57,6 +57,7 @@ from nltk.sem.drt import AnaphoraResolutionException, resolve_anaphora
 from nltk.sem.glue import DrtGlue
 from nltk.sem.logic import Expression
 from nltk.tag import RegexpTagger
+from nltk.termsec import safe_print
 
 
 class ReadingCommand(metaclass=ABCMeta):
@@ -207,7 +208,7 @@ class DiscourseTester:
         Display the list of sentences in the current discourse.
         """
         for id in sorted(self._sentences):
-            print(f"{id}: {self._sentences[id]}")
+            safe_print(f"{id}: {self._sentences[id]}")
 
     def add_sentence(self, sentence, informchk=False, consistchk=False):
         """
@@ -229,7 +230,7 @@ class DiscourseTester:
                 for sent_reading in self._get_readings(sentence):
                     tp = Prover9Command(goal=sent_reading, assumptions=assumptions)
                     if tp.prove():
-                        print(
+                        safe_print(
                             "Sentence '%s' under reading '%s':"
                             % (sentence, str(sent_reading))
                         )
@@ -255,7 +256,7 @@ class DiscourseTester:
         try:
             self._input.remove(sentence)
         except ValueError:
-            print(
+            safe_print(
                 "Retraction failed. The sentence '%s' is not part of the current discourse:"
                 % sentence
             )
@@ -321,9 +322,9 @@ class DiscourseTester:
         Print out the readings for  the discourse (or a single sentence).
         """
         if sentence is not None:
-            print("The sentence '%s' has these readings:" % sentence)
+            safe_print("The sentence '%s' has these readings:" % sentence)
             for r in [str(reading) for reading in (self._get_readings(sentence))]:
-                print("    %s" % r)
+                safe_print("    %s" % r)
         else:
             for sid in sorted(self._readings):
                 print()
@@ -331,7 +332,7 @@ class DiscourseTester:
                 print()  #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
-                    print(f"{rid}: {lf.normalize()}")
+                    safe_print(f"{rid}: {lf.normalize()}")
 
     def _show_threads(self, filter=False, show_thread_readings=False):
         """
@@ -353,7 +354,7 @@ class DiscourseTester:
             else:
                 thread_reading = ""
 
-            print("%s:" % tid, self._threads[tid], thread_reading)
+            safe_print("%s:" % tid, self._threads[tid], thread_reading)
 
     def readings(
         self,
@@ -435,10 +436,10 @@ class DiscourseTester:
                 spacer(80)
                 if verbose:
                     for a in assumptions:
-                        print(a)
+                        safe_print(a)
                     spacer(80)
                 if modelfound:
-                    print(mb.model(format="cooked"))
+                    safe_print(mb.model(format="cooked"))
                 else:
                     print("No model found!\n")
         return results
@@ -463,12 +464,12 @@ class DiscourseTester:
             if not modelfound:
                 print(f"Inconsistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
-                    print(f"    {rid}: {reading.normalize()}")
+                    safe_print(f"    {rid}: {reading.normalize()}")
                 print()
             else:
                 print(f"Consistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
-                    print(f"    {rid}: {reading.normalize()}")
+                    safe_print(f"    {rid}: {reading.normalize()}")
                 print()
 
     def add_background(self, background, verbose=False):
@@ -496,7 +497,7 @@ class DiscourseTester:
         Show the current background assumptions.
         """
         for e in self._background:
-            print(str(e))
+            safe_print(str(e))
 
     ###############################
     # Misc

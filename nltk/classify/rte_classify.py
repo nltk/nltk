@@ -19,6 +19,7 @@ TO DO: add lemmatization
 
 from nltk.classify.maxent import MaxentClassifier
 from nltk.classify.util import accuracy
+from nltk.termsec import safe_print
 from nltk.tokenize import RegexpTokenizer
 
 
@@ -86,11 +87,11 @@ class RTEFeatureExtractor:
         ne_overlap = {token for token in self._overlap if self._ne(token)}
         if toktype == "ne":
             if debug:
-                print("ne overlap", ne_overlap)
+                safe_print("ne overlap", ne_overlap)
             return ne_overlap
         elif toktype == "word":
             if debug:
-                print("word overlap", self._overlap - ne_overlap)
+                safe_print("word overlap", self._overlap - ne_overlap)
             return self._overlap - ne_overlap
         else:
             raise ValueError("Type not recognized:'%s'" % toktype)

@@ -120,6 +120,7 @@ from nltk.pathsec import validate_path
 from nltk.picklesec import allowlisted_pickle_load
 from nltk.probability import FreqDist
 from nltk.tabdata import TabEncoder
+from nltk.termsec import safe_print
 from nltk.tokenize.api import TokenizerI
 
 # Exact ``(module, qualname)`` allowlist -- no namespace prefix. A prefix allow
@@ -826,12 +827,12 @@ class PunktTrainer(PunktBaseClass):
                 if is_add:
                     self._params.abbrev_types.add(abbr)
                     if verbose:
-                        print(f"  Abbreviation: [{score:6.4f}] {abbr}")
+                        safe_print(f"  Abbreviation: [{score:6.4f}] {abbr}")
             else:
                 if not is_add:
                     self._params.abbrev_types.remove(abbr)
                     if verbose:
-                        print(f"  Removed abbreviation: [{score:6.4f}] {abbr}")
+                        safe_print(f"  Removed abbreviation: [{score:6.4f}] {abbr}")
 
         # Make a preliminary pass through the document, marking likely
         # sentence breaks, abbreviations, and ellipsis tokens.
@@ -854,7 +855,7 @@ class PunktTrainer(PunktBaseClass):
             if self._is_rare_abbrev_type(aug_tok1, aug_tok2):
                 self._params.abbrev_types.add(aug_tok1.type_no_period)
                 if verbose:
-                    print("  Rare Abbrev: %s" % aug_tok1.type)
+                    safe_print("  Rare Abbrev: %s" % aug_tok1.type)
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):

@@ -30,6 +30,7 @@ from nltk.sem.logic import (
     is_indvar,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 
 class ProverParseError(Exception):
@@ -67,7 +68,7 @@ class ResolutionProver(Prover):
                 clauses.extend(clausify(a))
             result, clauses = self._attempt_proof(clauses)
             if verbose:
-                print(ResolutionProverCommand._decorate_clauses(clauses))
+                safe_print(ResolutionProverCommand._decorate_clauses(clauses))
         except RuntimeError as e:
             if self._assume_false and str(e).startswith(
                 "maximum recursion depth exceeded"
@@ -750,7 +751,7 @@ class DebugObject:
 
     def line(self, line):
         if self.enabled:
-            print("    " * self.indent + line)
+            safe_print("    " * self.indent + line)
 
 
 def testResolutionProver():

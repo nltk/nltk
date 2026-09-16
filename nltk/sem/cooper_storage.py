@@ -8,6 +8,7 @@
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 from nltk.sem.logic import ApplicationExpression, LambdaExpression, Variable
+from nltk.termsec import safe_print
 
 
 class CooperStore:
@@ -28,7 +29,7 @@ class CooperStore:
             self.core = featstruct["CORE"]
             self.store = featstruct["STORE"]
         except KeyError:
-            print("%s is not a Cooper storage structure" % featstruct)
+            safe_print("%s is not a Cooper storage structure" % featstruct)
 
     def _permute(self, lst):
         """
@@ -72,7 +73,7 @@ class CooperStore:
                     quant, LambdaExpression(varex.variable, term)
                 )
                 if trace:
-                    print("  ", term)
+                    safe_print("  ", term)
                 term = term.simplify()
             self.readings.append(term)
 

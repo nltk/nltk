@@ -40,6 +40,7 @@ from nltk.sem.logic import (
     Variable,
     is_indvar,
 )
+from nltk.termsec import safe_print
 
 
 class Error(Exception):
@@ -487,12 +488,12 @@ class Model:
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
                 print()
-                print(f"'{expr}' evaluates to {value} under M, {g}")
+                safe_print(f"'{expr}' evaluates to {value} under M, {g}")
             return value
         except Undefined:
             if trace:
                 print()
-                print(f"'{expr}' is undefined under M, {g}")
+                safe_print(f"'{expr}' is undefined under M, {g}")
             return "Undefined"
 
     def satisfy(self, parsed, g, trace=None):
@@ -659,7 +660,7 @@ class Model:
         if var in parsed.free():
             if trace:
                 print()
-                print(
+                safe_print(
                     (spacer * nesting)
                     + f"Open formula is '{parsed}' with assignment {g}"
                 )
@@ -673,18 +674,22 @@ class Model:
                 value = self.satisfy(parsed, new_g, lowtrace)
 
                 if trace:
-                    print(indent + "(trying assignment %s)" % new_g)
+                    safe_print(indent + "(trying assignment %s)" % new_g)
 
                 # parsed == False under g[u/var]?
                 if not value:
                     if trace:
-                        print(indent + f"value of '{parsed}' under {new_g} is False")
+                        safe_print(
+                            indent + f"value of '{parsed}' under {new_g} is False"
+                        )
 
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print(indent + f"value of '{parsed}' under {new_g} is {value}")
+                        safe_print(
+                            indent + f"value of '{parsed}' under {new_g} is {value}"
+                        )
 
             result = {c for c in candidates}
         # var isn't free in parsed

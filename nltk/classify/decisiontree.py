@@ -15,6 +15,7 @@ from collections import defaultdict
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import FreqDist, MLEProbDist, entropy
+from nltk.termsec import safe_print
 
 
 class DecisionTreeClassifier(ClassifierI):
@@ -266,7 +267,7 @@ class DecisionTreeClassifier(ClassifierI):
                 best_error = stump_error
                 best_stump = stump
         if verbose:
-            print(
+            safe_print(
                 "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
                     len(labeled_featuresets), best_stump._fname, best_error
                 )
@@ -318,7 +319,7 @@ class DecisionTreeClassifier(ClassifierI):
                 )
             else:
                 descr = "(default)"
-            print(
+            safe_print(
                 "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
                     len(labeled_featuresets), descr, best_error
                 )

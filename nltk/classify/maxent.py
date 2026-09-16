@@ -71,6 +71,7 @@ from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
 from nltk.tabdata import MaxentEncoder
+from nltk.termsec import safe_print
 from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
@@ -176,7 +177,7 @@ class MaxentClassifier(ClassifierI):
         pdist = self.prob_classify(featureset)
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
-        print(
+        safe_print(
             "  Feature".ljust(descr_width)
             + "".join("%8s" % (("%s" % l)[:7]) for l in labels)
         )
@@ -197,7 +198,7 @@ class MaxentClassifier(ClassifierI):
                 descr += " (%s)" % f_val  # hack
                 if len(descr) > 47:
                     descr = descr[:44] + "..."
-                print(TEMPLATE % (descr, i * 8 * " ", score))
+                safe_print(TEMPLATE % (descr, i * 8 * " ", score))
                 sums[label] += score
         print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
         print(
@@ -236,7 +237,7 @@ class MaxentClassifier(ClassifierI):
         elif show == "neg":
             fids = [fid for fid in fids if self._weights[fid] < 0]
         for fid in fids[:n]:
-            print(f"{self._weights[fid]:8.3f} {self._encoding.describe(fid)}")
+            safe_print(f"{self._weights[fid]:8.3f} {self._encoding.describe(fid)}")
 
     def __repr__(self):
         return "<ConditionalExponentialClassifier: %d labels, %d features>" % (

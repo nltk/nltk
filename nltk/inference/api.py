@@ -22,6 +22,8 @@ import threading
 import time
 from abc import ABCMeta, abstractmethod
 
+from nltk.termsec import safe_print
+
 
 class Prover(metaclass=ABCMeta):
     """
@@ -254,7 +256,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Print the list of the current assumptions.
         """
         for a in self.assumptions():
-            print(a)
+            safe_print(a)
 
 
 class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
@@ -606,7 +608,7 @@ class TheoremToolThread(threading.Thread):
                     % (self._name, self._result, time.localtime(time.time()))
                 )
         except Exception as e:
-            print(e)
+            safe_print(e)
             print("Thread %s completed abnormally" % (self._name))
 
     @property

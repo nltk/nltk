@@ -56,6 +56,7 @@ from nltk.sem.logic import (
     UnexpectedTokenException,
     Variable,
 )
+from nltk.termsec import safe_print
 
 
 class Boxer:
@@ -315,7 +316,7 @@ class Boxer:
         if verbose:
             print("Calling:", binary)
             print("Args:", args)
-            print("Input:", input_str)
+            safe_print("Input:", input_str)
             print("Command:", binary + " " + " ".join(args))
 
         # Route through the trusted-exec chokepoint: verify the candc/boxer binary
@@ -1675,6 +1676,6 @@ if __name__ == "__main__":
     else:
         drs = drs.simplify().eliminate_equality()
         if options.fol:
-            print(drs.fol().normalize())
+            safe_print(drs.fol().normalize())
         else:
             drs.pretty_print()

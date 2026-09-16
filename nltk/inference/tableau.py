@@ -32,6 +32,7 @@ from nltk.sem.logic import (
     VariableExpression,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 _counter = Counter()
 
@@ -634,7 +635,7 @@ class Debug:
         self.lines.append(newline)
 
         if self.verbose:
-            print(newline)
+            safe_print(newline)
 
 
 class Categories:

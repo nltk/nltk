@@ -46,6 +46,7 @@ from collections import Counter, defaultdict
 from functools import reduce
 
 from nltk.internals import raise_unorderable_types
+from nltk.termsec import safe_print
 
 _NINF = float("-1e300")
 
@@ -337,7 +338,7 @@ class FreqDist(Counter):
         width = max(width, max(len("%d" % f) for f in freqs))
 
         for i in range(len(samples)):
-            print("%*s" % (width, samples[i]), end=" ")
+            safe_print("%*s" % (width, samples[i]), end=" ")
         print()
         for i in range(len(samples)):
             print("%*d" % (width, freqs[i]), end=" ")
@@ -2043,10 +2044,10 @@ class ConditionalFreqDist(defaultdict):
         condition_size = max(len("%s" % c) for c in conditions)
         print(" " * condition_size, end=" ")
         for s in samples:
-            print("%*s" % (width, s), end=" ")
+            safe_print("%*s" % (width, s), end=" ")
         print()
         for c in conditions:
-            print("%*s" % (condition_size, c), end=" ")
+            safe_print("%*s" % (condition_size, c), end=" ")
             for f in freqs[c]:
                 print("%*d" % (width, f), end=" ")
             print()
@@ -2542,7 +2543,7 @@ def gt_demo():
         key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True)
     )
     for key in fd_keys_sorted:
-        print("%18s %8d  %14e" % (key, fd[key], sgt.prob(key)))
+        safe_print("%18s %8d  %14e" % (key, fd[key], sgt.prob(key)))
 
 
 if __name__ == "__main__":

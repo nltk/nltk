@@ -18,6 +18,7 @@ from nltk.grammar import (
 )
 from nltk.internals import raise_unorderable_types
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.termsec import safe_print
 
 #################################################################
 # Dependency Span
@@ -367,7 +368,7 @@ class ProbabilisticProjectiveDependencyParser:
                                 DependencySpan(i - 1, i, i - 1, [-1], [tag])
                             )
                     else:
-                        print(
+                        safe_print(
                             "No tag found for input token '%s', parse is impossible."
                             % tokens[i - 1]
                         )
