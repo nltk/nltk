@@ -253,8 +253,10 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         # convert XML to sexpr notation
         t = ALPINO_NODE.sub(lambda m: _alpino_node_to_sexpr(m, ordered), t)
         t = redos.sub(r"  </node>", r")", t)
-        t = redos.sub(r"<sentence>.*</sentence>", r"", t)
-        t = redos.sub(r"</?alpino_ds.*>", r"", t)
+        # Bound the greedy runs: a repeated `<sentence>`/`<alpino_ds` anchor whose
+        # `.*` has no closing tag re-scans a crafted giant line -> O(n**2) (CWE-407).
+        t = redos.sub(r"<sentence>.{0,8192}</sentence>", r"", t)
+        t = redos.sub(r"</?alpino_ds.{0,1024}>", r"", t)
         return t
 
     def _tag(self, t, tagset=None):

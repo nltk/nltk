@@ -349,3 +349,60 @@ class TestSteppingParserDeadline:
         p = SteppingRecursiveDescentParser(g, max_time=1)
         with pytest.raises((TimeoutError, RecursionError)):
             list(p.parse(["a", "a", "a", "a"]))
+
+
+# --- re-anchoring quadratic regex class (ycoe #3896 + the whole family) -------
+
+
+class TestSensevalFixXMLLinear:
+    """senseval._fixXML strips XML tags with re-anchoring subs; the tag bodies are
+    now {0,N}-bounded, so a crafted block is linear rather than O(n**2)."""
+
+    def test_crafted_block_is_linear(self):
+        import time
+
+        from nltk.corpus.reader.senseval import _fixXML
+
+        start = time.perf_counter()
+        _fixXML("<snum=" * 40000)
+        _fixXML("<!DOCTYPE" + "a" * 40000)
+        assert time.perf_counter() - start < 3.0
+
+    def test_doctype_still_stripped(self):
+        from nltk.corpus.reader.senseval import _fixXML
+
+        assert "DOCTYPE" not in _fixXML('<!DOCTYPE corpus SYSTEM "x.dtd">tail')
+
+
+class TestReanchoringGuard:
+    """The CI guard flags an unbounded re-anchoring op and accepts a bounded one."""
+
+    def _guard(self):
+        import importlib.util
+        import os
+
+        path = os.path.normpath(
+            os.path.join(
+                os.path.dirname(__file__),
+                "..",
+                "..",
+                "..",
+                "tools",
+                "check_reanchoring_quadratic.py",
+            )
+        )
+        if not os.path.exists(path):
+            pytest.skip("re-anchoring guard script not present")
+        spec = importlib.util.spec_from_file_location("reanchor_guard", path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_flags_unbounded_and_accepts_bounded(self, tmp_path):
+        g = self._guard()
+        bad = tmp_path / "bad.py"
+        bad.write_text('import redos\nredos.sub(r"<[^>]+>", "", t)\n')
+        good = tmp_path / "good.py"
+        good.write_text('import redos\nredos.sub(r"<[^>]{1,400}>", "", t)\n')
+        assert g.check_file(str(bad), "nltk/bad.py")
+        assert not g.check_file(str(good), "nltk/good.py")

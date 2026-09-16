@@ -49,6 +49,18 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: no-reanchoring-quadratic
+      name: no unbounded re-anchoring regex (O(n**2))
+      description: >-
+        A re-anchoring op (redos.sub/subn/finditer/findall/split/search) with an
+        unbounded wide run ([^X]*, .*, \S*) that scans to an absent terminator is
+        O(n**2) on crafted corpus input (CWE-400/407); the redos timeout is only a
+        backstop, not a fix. Bound the run with {0,N}, or add the site to _REVIEWED
+        in tools/check_reanchoring_quadratic.py with a reason.
+      entry: python tools/check_reanchoring_quadratic.py
+      language: system
+      pass_filenames: false
+      always_run: true
     - id: all-pickle-through-picklesec
       name: every pickle routes through nltk.picklesec
       description: >-
