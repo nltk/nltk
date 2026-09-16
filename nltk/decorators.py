@@ -189,7 +189,7 @@ def new_wrapper(wrapper, model):
     # The def-params come from the (validated) signature string; the CALL args are
     # built from parameter names so a bare * / / marker never reaches call syntax.
     callargs = _call_arguments(infodict["fullsignature"])
-    src = "lambda %s: _wrapper_(%s)" % (infodict["signature"], callargs)
+    src = "lambda {}: _wrapper_({})".format(infodict["signature"], callargs)
     funcopy = eval(
         src, dict(_wrapper_=wrapper)
     )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
@@ -262,7 +262,7 @@ def decorator(caller):
         # def-params from the validated signature; CALL args from parameter names,
         # so a bare * / / marker never reaches call syntax.
         callargs = _call_arguments(infodict["fullsignature"])
-        src = "lambda %s: _call_(_func_, %s)" % (infodict["signature"], callargs)
+        src = "lambda {}: _call_(_func_, {})".format(infodict["signature"], callargs)
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(
             src, dict(_func_=func, _call_=caller)
