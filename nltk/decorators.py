@@ -36,7 +36,13 @@ sys.path = OLD_SYS_PATH
 # prefixed by * or ** and nothing else (no =default, (, ., newline or other
 # expression syntax). inspect constrains real names to identifiers, so a genuine
 # function is never rejected (CVE-2026-14727).
-_SAFE_SIGNATURE_RE = redos.compile(r"^ *(\*{0,2}[A-Za-z_]\w* *(, *)?)*$")
+# A parameter list is safe to interpolate into the wrapper source iff every token
+# is a plain name, a *args/**kwargs name, or a bare * / / marker (keyword-only and
+# positional-only separators) -- nothing that can carry an annotation (":"), a
+# default ("="), a call ("("), an attribute (".") or any other expression syntax.
+# inspect constrains real names to identifiers, so a genuine function is never
+# rejected (CVE-2026-14727).
+_SAFE_SIGNATURE_RE = redos.compile(r"^ *(?:(?:\*{0,2}[A-Za-z_]\w*|\*|/) *(?:, *)?)*$")
 
 
 def _assert_safe_signature(signature):
@@ -55,11 +61,37 @@ def __legacysignature(signature):
     """
     listsignature = str(signature)[1:-1].split(",")
     for counter, param in enumerate(listsignature):
-        if param.count("=") > 0:
-            listsignature[counter] = param[0 : param.index("=")].strip()
-        else:
-            listsignature[counter] = param.strip()
+        param = param.strip()
+        # Drop a default ("= value") and/or an annotation (": type") so only the
+        # parameter name (or a bare * / / marker) is kept. Strip "=" first so a
+        # default that itself contains ":" (e.g. a dict) is removed cleanly.
+        for sep in ("=", ":"):
+            if sep in param:
+                param = param[: param.index(sep)].strip()
+        listsignature[counter] = param
     return ", ".join(listsignature)
+
+
+def _call_arguments(fullsignature):
+    """The argument list to forward to the wrapped callable, built ONLY from
+    parameter names (never interpolated text): a positional/positional-only or
+    keyword-only parameter is forwarded by name (keyword-only as ``name=name``),
+    ``*args``/``**kwargs`` are splatted, and the bare ``*`` / ``/`` markers (which
+    are not call syntax) are dropped. This lets the wrapper support keyword-only
+    and positional-only signatures, which reusing the def-signature for the call
+    (a bare ``*``/``/`` is a SyntaxError there) never could.
+    """
+    parts = []
+    for p in fullsignature.parameters.values():
+        if p.kind is inspect.Parameter.VAR_POSITIONAL:
+            parts.append("*" + p.name)
+        elif p.kind is inspect.Parameter.VAR_KEYWORD:
+            parts.append("**" + p.name)
+        elif p.kind is inspect.Parameter.KEYWORD_ONLY:
+            parts.append(f"{p.name}={p.name}")
+        else:
+            parts.append(p.name)
+    return ", ".join(parts)
 
 
 def getinfo(func):
@@ -154,7 +186,10 @@ def new_wrapper(wrapper, model):
         "_wrapper_" not in infodict["argnames"]
     ), '"_wrapper_" is a reserved argument name!'
     _assert_safe_signature(infodict["signature"])
-    src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
+    # The def-params come from the (validated) signature string; the CALL args are
+    # built from parameter names so a bare * / / marker never reaches call syntax.
+    callargs = _call_arguments(infodict["fullsignature"])
+    src = "lambda %s: _wrapper_(%s)" % (infodict["signature"], callargs)
     funcopy = eval(
         src, dict(_wrapper_=wrapper)
     )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
@@ -224,7 +259,10 @@ def decorator(caller):
             "_call_" in argnames or "_func_" in argnames
         ), "You cannot use _call_ or _func_ as argument names!"
         _assert_safe_signature(infodict["signature"])
-        src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
+        # def-params from the validated signature; CALL args from parameter names,
+        # so a bare * / / marker never reaches call syntax.
+        callargs = _call_arguments(infodict["fullsignature"])
+        src = "lambda %s: _call_(_func_, %s)" % (infodict["signature"], callargs)
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(
             src, dict(_func_=func, _call_=caller)

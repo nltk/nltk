@@ -23,6 +23,7 @@ from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.jsontags import safe_json_loads
 from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print, sanitize_csv_field
 from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
@@ -142,9 +143,9 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
+            safe_print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
         else:
-            print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
+            safe_print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
         return result
 
     return timed
@@ -383,7 +384,7 @@ def json2csv_preprocess(
             )
         writer = csv.writer(outf)
         # write the list of fields as header
-        writer.writerow(fields)
+        writer.writerow([sanitize_csv_field(c) for c in fields])
 
         if remove_duplicates:
             tweets_cache = []
@@ -421,7 +422,7 @@ def json2csv_preprocess(
                         tweets_cache.append(row[fields.index("text")])
             except ValueError:
                 pass
-            writer.writerow(row)
+            writer.writerow([sanitize_csv_field(c) for c in row])
             i += 1
             if limit and i >= limit:
                 break
@@ -458,7 +459,9 @@ def parse_tweets_set(
         for tweet_id, text in reader:
             # text = text[1]
             i += 1
-            sys.stdout.write(f"Loaded {i} tweets\r")
+            sys.stdout.write(
+                f"Loaded {i} tweets\r"
+            )  # unsafe-print ok: literal/numeric status line, no untrusted value
             # Apply sentence and word tokenizer to text
             if word_tokenizer:
                 tweet = [
@@ -470,7 +473,7 @@ def parse_tweets_set(
                 tweet = text
             tweets.append((tweet, label))
 
-    print(f"Loaded {i} tweets")
+    safe_print(f"Loaded {i} tweets")
     return tweets
 
 
@@ -733,7 +736,7 @@ def demo_sent_subjectivity(text):
 
     # Tokenize and convert to lower case
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    print(sentim_analyzer.classify(tokenized_text))
+    safe_print(sentim_analyzer.classify(tokenized_text))
 
 
 def demo_liu_hu_lexicon(sentence, plot=False):
@@ -789,7 +792,7 @@ def demo_vader_instance(text):
     from nltk.sentiment import SentimentIntensityAnalyzer
 
     vader_analyzer = SentimentIntensityAnalyzer()
-    print(vader_analyzer.polarity_scores(text))
+    safe_print(vader_analyzer.polarity_scores(text))
 
 
 def demo_vader_tweets(n_instances=None, output=None):
@@ -875,7 +878,7 @@ def demo_vader_tweets(n_instances=None, output=None):
         metrics_results[f"F-measure [{label}]"] = f_measure_score
 
     for result in sorted(metrics_results):
-        print(f"{result}: {metrics_results[result]}")
+        safe_print(f"{result}: {metrics_results[result]}")
 
     if output:
         output_markdown(

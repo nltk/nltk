@@ -50,35 +50,79 @@ _BIDI_ALL = (
 )
 
 
+# Format/structural characters with no legitimate role in a printed value that can
+# hide, reorder, or inject line structure at a terminal (Trojan-Source family,
+# invisible smuggling, line-break injection). Neutralised ALWAYS, like the bidi
+# overrides -- independent of bidi balance. The joiners U+200C/U+200D (ZWNJ/ZWJ)
+# are deliberately NOT here: they are required for legitimate scripts and emoji.
+_DANGEROUS_FORMAT = frozenset(
+    chr(cp)
+    for cp in (
+        0x2028,
+        0x2029,  # LINE / PARAGRAPH SEPARATOR: injects a visual line break
+        0x200B,
+        0x2060,
+        0xFEFF,  # ZERO WIDTH SPACE / WORD JOINER / ZWNBSP: invisible
+        0xFFF9,
+        0xFFFA,
+        0xFFFB,  # INTERLINEAR ANNOTATION anchor/separator/terminator
+        *range(0x206A, 0x2070),  # deprecated format chars (symmetric swap, digit shape)
+    )
+)
+
+
+def _is_dangerous(char, codepoint):
+    return (
+        char in _BIDI_OVERRIDES
+        or char in _DANGEROUS_FORMAT
+        or 0xE0000 <= codepoint <= 0xE007F  # Unicode Tags block (invisible smuggling)
+    )
+
+
+def _escape(codepoint):
+    if codepoint <= 0xFF:
+        return f"\\x{codepoint:02x}"
+    if codepoint <= 0xFFFF:
+        return f"\\u{codepoint:04x}"
+    return f"\\U{codepoint:08x}"
+
+
 def _bidi_is_balanced(text):
-    """True if every embedding/override/isolate opener has a matching closer."""
-    emb = iso = 0
+    """True only if embeddings/overrides and isolates are STRICTLY nested (LIFO).
+
+    Two independent counters would accept a *crossed* sequence like
+    ``LRE LRI PDF PDI`` as balanced (each net-zero), letting a crafted reorder pass
+    unsanitised. A single stack requires each PDF/PDI to close the most-recent
+    opener of its own kind, so any crossing is rejected (and then neutralised).
+    """
+    stack = []
     for char in text:
         if char in _BIDI_EMB_OPEN:
-            emb += 1
-        elif char == _BIDI_EMB_CLOSE:
-            emb -= 1
-            if emb < 0:
-                return False
+            stack.append(_BIDI_EMB_CLOSE)
         elif char in _BIDI_ISO_OPEN:
-            iso += 1
-        elif char == _BIDI_ISO_CLOSE:
-            iso -= 1
-            if iso < 0:
+            stack.append(_BIDI_ISO_CLOSE)
+        elif char in (_BIDI_EMB_CLOSE, _BIDI_ISO_CLOSE):
+            if not stack or stack[-1] != char:
                 return False
-    return emb == 0 and iso == 0
+            stack.pop()
+    return not stack
 
 
 def sanitize_terminal(text):
     """Return *text* with terminal control characters replaced by visible escapes.
 
     Tabs and newlines are preserved; every other C0 control, DEL and C1 control
-    is rendered as its ``\\xNN`` escape so it can never reach the terminal as a
-    live control sequence. Bidirectional override characters, and any unbalanced
-    directional formatting, are rendered as ``\\uNNNN`` to defeat Trojan-Source
-    visual reordering while balanced Arabic/Hebrew bidi passes through unchanged.
-    Ordinary printable text (including non-ASCII) is unchanged. Accepts any
-    object; it is coerced with ``str`` first.
+    (the 8-bit ANSI/OSC/CSI/DCS introducers) is rendered as a visible ``\\xNN``
+    escape so it can never reach the terminal as a live control sequence -- this
+    covers the whole ESC/CSI/OSC family (cursor moves, screen clears, OSC-8
+    hyperlinks, OSC-52 clipboard writes, and terminal query/answerback sequences
+    that would otherwise inject a reply into stdin). Bidi overrides and any
+    unbalanced OR crossed directional nesting are escaped to defeat Trojan-Source
+    reordering (CVE-2021-42574); balanced Arabic/Hebrew bidi passes through. Line
+    and paragraph separators, deprecated/interlinear format controls, the invisible
+    zero-width smuggling characters, and the Unicode Tags block are escaped too.
+    Ordinary printable text (including non-ASCII and the ZWNJ/ZWJ joiners needed by
+    real scripts) is unchanged. Accepts any object; it is coerced with ``str``.
     """
     text = str(text)
     bidi_ok = _bidi_is_balanced(text)
@@ -88,9 +132,11 @@ def sanitize_terminal(text):
         if char in _ALLOWED_CONTROLS:
             result.append(char)
         elif codepoint < 0x20 or codepoint == 0x7F or 0x80 <= codepoint <= 0x9F:
-            result.append(f"\\x{codepoint:02x}")
-        elif char in _BIDI_OVERRIDES or (char in _BIDI_ALL and not bidi_ok):
-            result.append(f"\\u{codepoint:04x}")
+            result.append(_escape(codepoint))
+        elif _is_dangerous(char, codepoint):
+            result.append(_escape(codepoint))
+        elif char in _BIDI_ALL and not bidi_ok:
+            result.append(_escape(codepoint))
         else:
             result.append(char)
     return "".join(result)
