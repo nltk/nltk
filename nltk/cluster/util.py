@@ -39,6 +39,7 @@ class VectorSpaceClusterer(ClusterI):
 
     def cluster(self, vectors, assign_clusters=False, trace=False):
         assert len(vectors) > 0
+        original_vectors = vectors
 
         # normalise the vectors
         if self._should_normalise:
@@ -60,7 +61,8 @@ class VectorSpaceClusterer(ClusterI):
 
         # assign the vectors to clusters
         if assign_clusters:
-            return [self.classify(vector) for vector in vectors]
+            # classify() applies normalisation and dimensionality reduction.
+            return [self.classify(vector) for vector in original_vectors]
 
     @abstractmethod
     def cluster_vectorspace(self, vectors, trace):
