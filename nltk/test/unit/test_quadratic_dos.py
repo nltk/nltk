@@ -81,23 +81,12 @@ def _elapsed(fn):
 
 
 def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
-    """Assert ``op`` scales sub-quadratically: time at ``big`` (== 4*small) stays
-    under ``factor`` times the time at ``small``, floored at a timer-noise epsilon.
+    """Assert ``op(big)`` (big == 4*small) runs under ``factor`` times ``op(small)``.
 
-    A ratio, not an absolute wall-clock ceiling, so where ``small`` is a real
-    measurement (the slower languages here) it tracks the algorithm not the
-    machine: a linear op is ~4x on a 4x input, the pre-patch O(n**2) ~16x, so
-    factor=8 separates them on any box. Where ``small`` runs near timer noise the
-    floor caps the bound (a plain absolute check), which still bites because these
-    quadratics are dramatic (seconds vs milliseconds). The multiplicative floor is
-    deliberate: an additive ``+ c`` slack would let a small-but-quadratic time
-    slip through. Each side is the min of ``reps`` runs, so a transient stall only
-    ADDS time and the min of a quadratic is still quadratic (teeth kept).
-
-    A timing test necessarily EXECUTES ``op``; on a regressed (quadratic) build it
-    runs slowly and then fails. That is the point of a CI regression detector (the
-    in-place fix is what prevents the DoS at runtime); the moderate ``big`` bounds
-    how long a regressed build spins before the assertion trips.
+    A load-invariant ratio, not an absolute ceiling: a linear op is ~4x, the
+    pre-patch O(n**2) ~16x, so factor=8 separates them on any machine. The floor
+    is multiplicative (an additive slack would hide a small quadratic); each side
+    is the min of ``reps`` runs to shed a transient stall.
     """
     t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
     t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
