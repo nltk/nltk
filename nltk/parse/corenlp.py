@@ -8,6 +8,7 @@
 
 import json
 import os
+import random
 import socket
 import time
 from typing import List, Tuple
@@ -355,10 +356,20 @@ class CoreNLPServer:
             )
 
         for i in range(30):
+            # Jittered backoff so retries don't all land on the same tick; the
+            # first attempt fires immediately.
+            if i > 0:
+                time.sleep(1 + random.uniform(0, 0.5))
+
             try:
-                response = requests.get(requests.compat.urljoin(self.url, "live"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "live"), timeout=5
+                )
+            except (
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ):
+                pass
             else:
                 if response.ok:
                     break
@@ -366,10 +377,20 @@ class CoreNLPServer:
             raise CoreNLPServerError("Could not connect to the server.")
 
         for i in range(60):
+            # Jittered backoff so retries don't all land on the same tick; the
+            # first attempt fires immediately.
+            if i > 0:
+                time.sleep(1 + random.uniform(0, 0.5))
+
             try:
-                response = requests.get(requests.compat.urljoin(self.url, "ready"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "ready"), timeout=5
+                )
+            except (
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ):
+                pass
             else:
                 if response.ok:
                     break
