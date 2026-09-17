@@ -1375,7 +1375,12 @@ def set_proxy(proxy, user=None, password=""):
 ######################################################################
 
 
-def elementtree_indent(elem, level=0):
+#: Bound recursion over nested XML so a deeply nested element raises ValueError
+#: instead of an uncaught RecursionError (CWE-674).
+MAX_XML_INDENT_DEPTH = 500
+
+
+def elementtree_indent(elem, level=0, max_depth=None):
     """
     Recursive function to indent an ElementTree._ElementInterface
     used for pretty printing. Run indent on elem and then output
@@ -1388,13 +1393,19 @@ def elementtree_indent(elem, level=0):
     :rtype:   ElementTree._ElementInterface
     :return:  Contents of elem indented to reflect its structure
     """
-
+    if max_depth is None:
+        max_depth = MAX_XML_INDENT_DEPTH
+    if level > max_depth:
+        raise ValueError(
+            f"XML nesting depth exceeds MAX_XML_INDENT_DEPTH ({max_depth}); "
+            "the input may be adversarially deep."
+        )
     i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         for elem in elem:
-            elementtree_indent(elem, level + 1)
+            elementtree_indent(elem, level + 1, max_depth)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:

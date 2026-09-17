@@ -2875,17 +2875,27 @@ def build_index(root, base_url):
     return top_elt
 
 
-def _indent_xml(xml, prefix=""):
+#: Bound recursion over nested XML so a deeply nested index raises ValueError
+#: instead of an uncaught RecursionError (CWE-674).
+MAX_INDENT_DEPTH = 500
+
+
+def _indent_xml(xml, prefix="", _depth=0):
     """
     Helper for ``build_index()``: Given an XML ``ElementTree``, modify it
     (and its descendents) ``text`` and ``tail`` attributes to generate
     an indented tree, where each nested element is indented by 2
     spaces with respect to its parent.
     """
+    if _depth > MAX_INDENT_DEPTH:
+        raise ValueError(
+            f"XML nesting depth exceeds MAX_INDENT_DEPTH ({MAX_INDENT_DEPTH}); "
+            "the input may be adversarially deep."
+        )
     if len(xml) > 0:
         xml.text = (xml.text or "").strip() + "\n" + prefix + "  "
         for child in xml:
-            _indent_xml(child, prefix + "  ")
+            _indent_xml(child, prefix + "  ", _depth + 1)
         for child in xml[:-1]:
             child.tail = (child.tail or "").strip() + "\n" + prefix + "  "
         xml[-1].tail = (xml[-1].tail or "").strip() + "\n" + prefix
