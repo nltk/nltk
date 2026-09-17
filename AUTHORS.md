@@ -320,6 +320,7 @@
 - medisean <https://github.com/medisean>
 - tandede <https://github.com/tandede>
 - vzer200 <https://github.com/vzer200>
+- Louis Deconinck <https://github.com/LouisDeconinck>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
