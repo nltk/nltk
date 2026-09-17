@@ -707,18 +707,13 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 
     @pytest.mark.parametrize("lang,unit", TRIGGERS)
     def test_upcase_loop_is_linear(self, lang, unit):
-        import statistics
-
+        # Generous absolute ceiling, not ``t4 < 8*t1 + 0.5``: the ratio's additive
+        # floor let a real reintroduced O(n**2) pass (measured). At this size the
+        # per-match rebuild is >13s every lang while the fix stays <0.5s (>6x room).
         from nltk.stem.snowball import SnowballStemmer
 
         st = SnowballStemmer(lang).stem
-
-        def med(n):
-            return statistics.median(_elapsed(lambda: st(unit * n)) for _ in range(3))
-
-        t1 = med(8000)
-        t4 = med(32000)  # 4x input: linear ~4x, pre-fix O(n^2) ~16x
-        assert t4 < 8 * t1 + 0.5
+        assert _elapsed(lambda: st(unit * 200_000)) < 4.0
 
     def test_negative_control_langs_stay_linear(self):
         # spanish/portuguese have no rebuild loop; german upcases only u/y (not
