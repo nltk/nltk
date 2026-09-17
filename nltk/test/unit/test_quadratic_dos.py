@@ -80,6 +80,30 @@ def _elapsed(fn):
     return time.perf_counter() - start
 
 
+def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
+    """Assert ``op`` scales sub-quadratically: time at ``big`` (== 4*small) stays
+    under ``factor`` times the time at ``small``, floored at a timer-noise epsilon.
+
+    A ratio, not an absolute wall-clock ceiling, so where ``small`` is a real
+    measurement (the slower languages here) it tracks the algorithm not the
+    machine: a linear op is ~4x on a 4x input, the pre-patch O(n**2) ~16x, so
+    factor=8 separates them on any box. Where ``small`` runs near timer noise the
+    floor caps the bound (a plain absolute check), which still bites because these
+    quadratics are dramatic (seconds vs milliseconds). The multiplicative floor is
+    deliberate: an additive ``+ c`` slack would let a small-but-quadratic time
+    slip through. Each side is the min of ``reps`` runs, so a transient stall only
+    ADDS time and the min of a quadratic is still quadratic (teeth kept).
+
+    A timing test necessarily EXECUTES ``op``; on a regressed (quadratic) build it
+    runs slowly and then fails. That is the point of a CI regression detector (the
+    in-place fix is what prevents the DoS at runtime); the moderate ``big`` bounds
+    how long a regressed build spins before the assertion trips.
+    """
+    t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
+    t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
+    assert t_big < factor * max(t_small, noise_floor), (small, big, t_small, t_big)
+
+
 # ==========================================================================
 # EXPLOITABLE (fixed) -- quadratic pre-patch, linear now
 # ==========================================================================
@@ -707,13 +731,13 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 
     @pytest.mark.parametrize("lang,unit", TRIGGERS)
     def test_upcase_loop_is_linear(self, lang, unit):
-        # Generous absolute ceiling, not ``t4 < 8*t1 + 0.5``: the ratio's additive
-        # floor let a real reintroduced O(n**2) pass (measured). At this size the
-        # per-match rebuild is >13s every lang while the fix stays <0.5s (>6x room).
+        # Scaling assertion: t(200k) < 8 * t(50k). The linear fix is ~4x, the
+        # pre-patch per-match rebuild ~16x (and >20s at 200k); for the slower langs
+        # 50k is a real measurement, so this is a machine-independent ratio.
         from nltk.stem.snowball import SnowballStemmer
 
         st = SnowballStemmer(lang).stem
-        assert _elapsed(lambda: st(unit * 200_000)) < 4.0
+        _assert_subquadratic(lambda n: st(unit * n), 50_000, 200_000)
 
     def test_negative_control_langs_stay_linear(self):
         # spanish/portuguese have no rebuild loop; german upcases only u/y (not
