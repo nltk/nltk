@@ -138,21 +138,13 @@ def fast_default_timeout(monkeypatch):
 def test_hostile_pattern_over_single_long_token_is_bounded(
     pattern, text, fast_default_timeout
 ):
-    # The stemmer applies its caller regex with ``.sub`` over the (single) token;
-    # a hostile pattern against a long token must be wall-clock bounded, never
-    # hang. Completing fast (engine collapse) or raising TimeoutError are both
-    # bounded; a genuine hang would wedge here and the in-process short cap makes
-    # the TimeoutError branch quick.
-    import time
-
+    # These patterns backtrack catastrophically and the regex engine does not
+    # linearize identical-branch alternation, so ``stem`` must fire the wall-clock
+    # cap. Deterministic ``pytest.raises``, not a load-sensitive ``< 2.0`` bound.
     from nltk.stem.regexp import RegexpStemmer
 
-    start = time.perf_counter()
-    try:
+    with pytest.raises(TimeoutError):
         RegexpStemmer(pattern).stem(text)
-    except TimeoutError:
-        pass
-    assert time.perf_counter() - start < 2.0
 
 
 def test_benign_large_token_still_stems_fast():
