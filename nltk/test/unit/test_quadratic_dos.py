@@ -196,21 +196,19 @@ class TestReadSexprBlockQuadratic:
         ]
 
     def test_unclosed_sexpr_is_subquadratic(self, monkeypatch):
-        # Pre-patch: an oversized single s-expression is re-parsed from position
-        # 0 on every fixed-size grow -> O(n^2). Exponential read growth makes it
-        # O(n). A ratio test is robust to the (high) linear constant: 4x input
-        # should cost ~4x (linear), not ~16x (quadratic).
-        #
-        # Raise the redos wall-clock bound far above the linear cost so a loaded
-        # host cannot trip it on the (legitimate) big linear parse and turn this
-        # scaling test into a spurious TimeoutError. A quadratic regression still
-        # fails: it either blows the ratio or blows this larger bound.
+        # Pre-patch: an oversized single s-expression is re-parsed from position 0
+        # on every fixed-size grow -> O(n^2); exponential read growth makes it O(n).
+        # Raise the redos cap so a loaded host cannot trip it on the big linear parse
+        # (kept small enough here that even 10x CI slowdown stays well under it).
         import nltk.redos as redos_mod
 
         monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 30)
-        t1 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 200_000)))
-        t4 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 800_000)))
-        assert t4 < 10 * t1 + 0.5
+        _assert_subquadratic(
+            lambda n: read_sexpr_block(io.StringIO("(" * n)),
+            50_000,
+            200_000,
+            factor=10.0,
+        )
 
 
 # ==========================================================================
