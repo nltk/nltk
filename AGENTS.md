@@ -1,6 +1,4 @@
-# CLAUDE.md
-
-Companion to [AGENTS.md](AGENTS.md) for Claude Code and other Claude-based agents. AGENTS.md is the baseline for every automated contributor — read it first. This file does not replace it; it adds the Claude Code workflow and the reasoning behind each rule. Where the two overlap, AGENTS.md governs scope and this file governs how to execute a change safely.
+# AGENTS.md
 
 NLTK is a mature, educational library in maintenance mode. Optimize for a reviewer's time, not your own throughput.
 
