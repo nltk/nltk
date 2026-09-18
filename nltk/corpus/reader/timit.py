@@ -124,6 +124,7 @@ import time
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.internals import import_from_stdlib
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 
@@ -454,7 +455,7 @@ class TimitCorpusReader(CorpusReader):
                     ),
                     file=sys.stderr,
                 )
-                print("system error message:", str(e), file=sys.stderr)
+                safe_print("system error message:", str(e), file=sys.stderr)
             return
         except ImportError:
             pass

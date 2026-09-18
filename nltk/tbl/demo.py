@@ -21,6 +21,7 @@ from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 from nltk.tag.brill import Pos, Word
 from nltk.tbl import Template, error_list
+from nltk.termsec import safe_print
 
 # Exact ``(module, qualname)`` allowlist for the two model files this demo reads
 # back (cached baseline + round-tripped Brill tagger). Loaded from a caller path,
@@ -146,7 +147,7 @@ def demo_generated_templates():
     wordtpls = Word.expand([-1, 0, 1], [1, 2], excludezero=False)
     tagtpls = Pos.expand([-2, -1, 0, 1], [1, 2], excludezero=True)
     templates = list(Template.expand([wordtpls, tagtpls], combinations=(1, 3)))
-    print(
+    safe_print(
         "Generated {} templates for transformation-based learning".format(
             len(templates)
         )
@@ -304,7 +305,7 @@ def postag(
                 cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
             ) as print_rules:
                 pickle_dump(baseline_tagger, print_rules)
-            print(
+            safe_print(
                 "Trained baseline tagger, pickled it to {}".format(
                     cache_baseline_tagger
                 )
@@ -313,12 +314,12 @@ def postag(
             cache_baseline_tagger, "rb", context="tbl.demo.cache_baseline_tagger"
         ) as print_rules:
             baseline_tagger = _load_tbl_model(print_rules)
-            print(f"Reloaded pickled tagger from {cache_baseline_tagger}")
+            safe_print(f"Reloaded pickled tagger from {cache_baseline_tagger}")
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
         print("Trained baseline tagger")
     if gold_data:
-        print(
+        safe_print(
             "    Accuracy on test set: {:0.4f}".format(
                 baseline_tagger.accuracy(gold_data)
             )
@@ -339,7 +340,7 @@ def postag(
     if trace == 1:
         print("\nLearned rules: ")
         for ruleno, rule in enumerate(brill_tagger.rules(), 1):
-            print(f"{ruleno:4d} {rule.format(ruleformat):s}")
+            safe_print(f"{ruleno:4d} {rule.format(ruleformat):s}")
 
     # printing template statistics (optionally including comparison with the training data)
     # note: if not separate_baseline_data, then baseline accuracy will be artificially high
@@ -363,7 +364,7 @@ def postag(
             _demo_plot(
                 learning_curve_output, teststats, trainstats, take=learning_curve_take
             )
-            print(f"Wrote plot of learning curve to {learning_curve_output}")
+            safe_print(f"Wrote plot of learning curve to {learning_curve_output}")
     else:
         print("Tagging the test data")
         taggedtest = brill_tagger.tag_sents(testing_data)
@@ -377,7 +378,7 @@ def postag(
         ) as f:
             f.write("Errors for Brill Tagger %r\n\n" % serialize_output)
             f.write("\n".join(error_list(gold_data, taggedtest)) + "\n")
-        print(f"Wrote tagger errors including context to {error_output}")
+        safe_print(f"Wrote tagger errors including context to {error_output}")
 
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
@@ -386,12 +387,12 @@ def postag(
             serialize_output, "wb", context="tbl.demo.serialize_output"
         ) as print_rules:
             pickle_dump(brill_tagger, print_rules)
-        print(f"Wrote pickled tagger to {serialize_output}")
+        safe_print(f"Wrote pickled tagger to {serialize_output}")
         with pathsec_open(
             serialize_output, "rb", context="tbl.demo.serialize_output"
         ) as print_rules:
             brill_tagger_reloaded = _load_tbl_model(print_rules)
-        print(f"Reloaded pickled tagger from {serialize_output}")
+        safe_print(f"Reloaded pickled tagger from {serialize_output}")
         taggedtest_reloaded = brill_tagger_reloaded.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:
             print("Reloaded tagger tried on test set, results identical")
@@ -429,7 +430,7 @@ def _demo_prepare_data(
     (bltrainseqs, bltraintokens) = corpus_size(baseline_data)
     print(f"Read testing data ({testseqs:d} sents/{testtokens:d} wds)")
     print(f"Read training data ({trainseqs:d} sents/{traintokens:d} wds)")
-    print(
+    safe_print(
         "Read baseline data ({:d} sents/{:d} wds) {:s}".format(
             bltrainseqs,
             bltraintokens,

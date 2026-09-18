@@ -11,6 +11,7 @@ import sys
 
 from nltk.internals import find_binary
 from nltk.pathsec import TrustError, spawn_trusted
+from nltk.termsec import safe_print
 
 try:
     import numpy
@@ -111,7 +112,7 @@ def call_tadm(args):
     # Check the return code.
     if p.returncode != 0:
         print()
-        print(stderr)
+        safe_print(stderr)
         raise OSError("tadm command failed!")
 
 
@@ -136,7 +137,7 @@ def encoding_demo():
     write_tadm_file(tokens, encoding, sys.stdout)
     print()
     for i in range(encoding.length()):
-        print("%s --> %d" % (encoding.describe(i), i))
+        safe_print("%s --> %d" % (encoding.describe(i), i))
     print()
 
 

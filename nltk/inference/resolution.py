@@ -30,6 +30,7 @@ from nltk.sem.logic import (
     is_indvar,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 
 class ProverParseError(Exception):
@@ -67,7 +68,7 @@ class ResolutionProver(Prover):
                 clauses.extend(clausify(a))
             result, clauses = self._attempt_proof(clauses)
             if verbose:
-                print(ResolutionProverCommand._decorate_clauses(clauses))
+                safe_print(ResolutionProverCommand._decorate_clauses(clauses))
         except RuntimeError as e:
             if self._assume_false and str(e).startswith(
                 "maximum recursion depth exceeded"
@@ -76,7 +77,7 @@ class ResolutionProver(Prover):
                 clauses = []
             else:
                 if verbose:
-                    print(e)
+                    safe_print(e)
                 else:
                     raise e
         return (result, clauses)
@@ -750,7 +751,7 @@ class DebugObject:
 
     def line(self, line):
         if self.enabled:
-            print("    " * self.indent + line)
+            safe_print("    " * self.indent + line)
 
 
 def testResolutionProver():
@@ -772,48 +773,48 @@ def testResolutionProver():
     p1 = Expression.fromstring(r"all x.(man(x) -> mortal(x))")
     p2 = Expression.fromstring(r"man(Socrates)")
     c = Expression.fromstring(r"mortal(Socrates)")
-    print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
+    safe_print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
 
     p1 = Expression.fromstring(r"all x.(man(x) -> walks(x))")
     p2 = Expression.fromstring(r"man(John)")
     c = Expression.fromstring(r"some y.walks(y)")
-    print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
+    safe_print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
 
     p = Expression.fromstring(r"some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))")
     c = Expression.fromstring(r"some e0.walk(e0,mary)")
-    print(f"{p} |- {c}: {ResolutionProver().prove(c, [p])}")
+    safe_print(f"{p} |- {c}: {ResolutionProver().prove(c, [p])}")
 
 
 def resolution_test(e):
     f = Expression.fromstring(e)
     t = ResolutionProver().prove(f)
-    print(f"|- {f}: {t}")
+    safe_print(f"|- {f}: {t}")
 
 
 def test_clausify():
     lexpr = Expression.fromstring
 
-    print(clausify(lexpr("P(x) | Q(x)")))
-    print(clausify(lexpr("(P(x) & Q(x)) | R(x)")))
-    print(clausify(lexpr("P(x) | (Q(x) & R(x))")))
-    print(clausify(lexpr("(P(x) & Q(x)) | (R(x) & S(x))")))
+    safe_print(clausify(lexpr("P(x) | Q(x)")))
+    safe_print(clausify(lexpr("(P(x) & Q(x)) | R(x)")))
+    safe_print(clausify(lexpr("P(x) | (Q(x) & R(x))")))
+    safe_print(clausify(lexpr("(P(x) & Q(x)) | (R(x) & S(x))")))
 
-    print(clausify(lexpr("P(x) | Q(x) | R(x)")))
-    print(clausify(lexpr("P(x) | (Q(x) & R(x)) | S(x)")))
+    safe_print(clausify(lexpr("P(x) | Q(x) | R(x)")))
+    safe_print(clausify(lexpr("P(x) | (Q(x) & R(x)) | S(x)")))
 
-    print(clausify(lexpr("exists x.P(x) | Q(x)")))
+    safe_print(clausify(lexpr("exists x.P(x) | Q(x)")))
 
-    print(clausify(lexpr("-(-P(x) & Q(x))")))
-    print(clausify(lexpr("P(x) <-> Q(x)")))
-    print(clausify(lexpr("-(P(x) <-> Q(x))")))
-    print(clausify(lexpr("-(all x.P(x))")))
-    print(clausify(lexpr("-(some x.P(x))")))
+    safe_print(clausify(lexpr("-(-P(x) & Q(x))")))
+    safe_print(clausify(lexpr("P(x) <-> Q(x)")))
+    safe_print(clausify(lexpr("-(P(x) <-> Q(x))")))
+    safe_print(clausify(lexpr("-(all x.P(x))")))
+    safe_print(clausify(lexpr("-(some x.P(x))")))
 
-    print(clausify(lexpr("some x.P(x)")))
-    print(clausify(lexpr("some x.all y.P(x,y)")))
-    print(clausify(lexpr("all y.some x.P(x,y)")))
-    print(clausify(lexpr("all z.all y.some x.P(x,y,z)")))
-    print(clausify(lexpr("all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))")))
+    safe_print(clausify(lexpr("some x.P(x)")))
+    safe_print(clausify(lexpr("some x.all y.P(x,y)")))
+    safe_print(clausify(lexpr("all y.some x.P(x,y)")))
+    safe_print(clausify(lexpr("all z.all y.some x.P(x,y,z)")))
+    safe_print(clausify(lexpr("all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))")))
 
 
 def demo():
@@ -823,7 +824,7 @@ def demo():
     print()
 
     p = Expression.fromstring("man(x)")
-    print(ResolutionProverCommand(p, [p]).prove())
+    safe_print(ResolutionProverCommand(p, [p]).prove())
 
 
 if __name__ == "__main__":

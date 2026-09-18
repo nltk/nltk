@@ -12,6 +12,7 @@ import itertools
 import sys
 
 from nltk.grammar import Nonterminal
+from nltk.termsec import safe_print
 
 #: Upper bound on the number of derivation-expansion steps a single
 #: ``generate`` call may perform. A recursive grammar can derive an exponential
@@ -128,10 +129,10 @@ def demo(N=23):
     from nltk.grammar import CFG
 
     print("Generating the first %d sentences for demo grammar:" % (N,))
-    print(demo_grammar)
+    safe_print(demo_grammar)
     grammar = CFG.fromstring(demo_grammar)
     for n, sent in enumerate(generate(grammar, n=N), 1):
-        print("%3d. %s" % (n, " ".join(sent)))
+        safe_print("%3d. %s" % (n, " ".join(sent)))
 
 
 if __name__ == "__main__":

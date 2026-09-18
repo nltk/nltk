@@ -56,6 +56,7 @@ from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
 from nltk.pathsec import validate_path as _validate_path
+from nltk.termsec import safe_print
 
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
 # backslashes, and any ':' or '|'. On Windows url2pathname turns ':' or '|' in the first
@@ -1577,14 +1578,14 @@ def load(
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                print(f"<<Using cached copy of {resource_url}>>")
+                safe_print(f"<<Using cached copy of {resource_url}>>")
             return resource_val
 
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
         if verbose:
-            print(f"<<Loading pickle-free alternative to {resource_url}>>")
+            safe_print(f"<<Loading pickle-free alternative to {resource_url}>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
@@ -1597,7 +1598,7 @@ def load(
 
     # Let the user know what's going on.
     if verbose:
-        print(f"<<Loading {resource_url}>>")
+        safe_print(f"<<Loading {resource_url}>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
@@ -1700,7 +1701,7 @@ def show_cfg(resource_url, escape="##"):
             continue
         if redos.match("^$", l):
             continue
-        print(l)
+        safe_print(l)
 
 
 def clear_cache():

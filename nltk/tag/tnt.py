@@ -30,6 +30,7 @@ from math import log2
 
 from nltk.probability import ConditionalFreqDist, FreqDist
 from nltk.tag.api import TaggerI
+from nltk.termsec import safe_print
 
 # Used in place of log2(p) when p underflows; log2(1e-300) ~= -996.58
 # is still well above the negative-inf result of log2(0).
@@ -1078,10 +1079,10 @@ def demo(test_size=1000):
         tagger.train(train_sents)
         scores = _score_tagger(tagger, test_sents, train_vocab)
 
-        print(f"Capitalization: {use_capitalization}")
+        safe_print(f"Capitalization: {use_capitalization}")
         print(f"Accuracy:       {scores['accuracy']:.4f}")
-        print(f"Seen accuracy:  {_format_score(scores['seen_accuracy'])}")
-        print(f"OOV accuracy:   {_format_score(scores['oov_accuracy'])}")
+        safe_print(f"Seen accuracy:  {_format_score(scores['seen_accuracy'])}")
+        safe_print(f"OOV accuracy:   {_format_score(scores['oov_accuracy'])}")
         print(f"OOV rate:       {scores['oov_rate']:.4f}")
         print()
 
@@ -1110,7 +1111,7 @@ def demo_errors(limit=25, test_size=1000):
                 continue
 
             status = "seen" if word in train_vocab else "OOV"
-            print(f"{word!r} ({status}): guessed {guess!r}, gold {truth!r}")
+            safe_print(f"{word!r} ({status}): guessed {guess!r}, gold {truth!r}")
             shown += 1
             if shown >= limit:
                 return

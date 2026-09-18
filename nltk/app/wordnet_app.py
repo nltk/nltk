@@ -67,6 +67,7 @@ from urllib.parse import parse_qs, unquote_plus
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
 from nltk.picklesec import RestrictedUnpickler, pickle_dumps
+from nltk.termsec import safe_print
 
 firstClient = True
 
@@ -267,7 +268,13 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
                 logfilename, "a", buffering=1
             )  # sandboxed-open ok: operator log path
         except OSError as e:
-            sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
+            # logfilename and e are caller-influenced (a crafted path can carry
+            # terminal escapes), so route through safe_print; the old 3-arg
+            # sys.stderr.write also raised TypeError before it could report.
+            safe_print(
+                f"Couldn't open {logfilename} for writing: {e}",
+                file=sys.stderr,
+            )
             sys.exit(1)
     else:
         logfile = None
@@ -1053,7 +1060,7 @@ def usage():
     """
     Display the command line help message.
     """
-    print(__doc__)
+    safe_print(__doc__)
 
 
 def app():

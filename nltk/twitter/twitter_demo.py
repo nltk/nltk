@@ -35,6 +35,7 @@ import json
 from functools import wraps
 from io import StringIO
 
+from nltk.termsec import safe_print
 from nltk.twitter import (
     Query,
     Streamer,
@@ -53,9 +54,9 @@ def verbose(func):
     @wraps(func)
     def with_formatting(*args, **kwargs):
         print()
-        print(SPACER)
-        print("Using %s" % (func.__name__))
-        print(SPACER)
+        safe_print(SPACER)
+        safe_print("Using %s" % (func.__name__))
+        safe_print(SPACER)
         return func(*args, **kwargs)
 
     return with_formatting
@@ -91,11 +92,11 @@ def twitterclass_demo():
     tw = Twitter()
     print("Track from the public stream\n")
     tw.tweets(keywords="love, hate", limit=10)  # public stream
-    print(SPACER)
+    safe_print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
     tw.tweets(keywords="love, hate", stream=False, limit=10)  # search past tweets
-    print(SPACER)
+    safe_print(SPACER)
     print(
         "Follow two accounts in the public stream"
         + " -- be prepared to wait a few minutes\n"
@@ -134,7 +135,7 @@ def search_demo(keywords="nltk"):
     oauth = credsfromfile()
     client = Query(**oauth)
     for tweet in client.search_tweets(keywords=keywords, limit=10):
-        print(tweet["text"])
+        safe_print(tweet["text"])
 
 
 @verbose
@@ -160,7 +161,7 @@ def lookup_by_userid_demo():
         name = info["screen_name"]
         followers = info["followers_count"]
         following = info["friends_count"]
-        print(f"{name}, followers: {followers}, following: {following}")
+        safe_print(f"{name}, followers: {followers}, following: {following}")
 
 
 @verbose
@@ -204,10 +205,10 @@ def limit_by_time_demo(keywords="nltk"):
     client = Query(**oauth)
     client.register(TweetViewer(limit=100, lower_date_limit=date))
 
-    print(f"Cutoff date: {dt_date}\n")
+    safe_print(f"Cutoff date: {dt_date}\n")
 
     for tweet in client.search_tweets(keywords=keywords):
-        print("{} ".format(tweet["created_at"]), end="")
+        safe_print("{} ".format(tweet["created_at"]), end="")
         client.handler.handle(tweet)
 
 
@@ -225,21 +226,21 @@ def corpusreader_demo():
 
     print()
     print("Complete tweet documents")
-    print(SPACER)
+    safe_print(SPACER)
     for tweet in tweets.docs("tweets.20150430-223406.json")[:1]:
-        print(json.dumps(tweet, indent=1, sort_keys=True))
+        safe_print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
-    print(SPACER)
+    safe_print(SPACER)
     for text in tweets.strings("tweets.20150430-223406.json")[:15]:
-        print(text)
+        safe_print(text)
 
     print()
     print("Tokenized tweet strings:")
-    print(SPACER)
+    safe_print(SPACER)
     for toks in tweets.tokenized("tweets.20150430-223406.json")[:15]:
-        print(toks)
+        safe_print(toks)
 
 
 @verbose
@@ -268,11 +269,11 @@ def expand_tweetids_demo():
 
     for tweet in hydrated:
         id_str = tweet["id_str"]
-        print(f"id: {id_str}")
+        safe_print(f"id: {id_str}")
         text = tweet["text"]
         if text.startswith("@null"):
             text = "[Tweet not available]"
-        print(text + "\n")
+        safe_print(text + "\n")
 
 
 ALL = [
@@ -301,6 +302,6 @@ if __name__ == "__main__":
     for demo in DEMOS:
         demo()
 
-    print("\n" + SPACER)
+    safe_print("\n" + SPACER)
     print("All demos completed")
-    print(SPACER)
+    safe_print(SPACER)

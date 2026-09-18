@@ -102,6 +102,7 @@ from nltk.sem.logic import (
     SubstituteBindingsI,
     Variable,
 )
+from nltk.termsec import safe_print
 
 ######################################################################
 # Feature Structure
@@ -1763,17 +1764,17 @@ def _trace_unify_start(path, fval1, fval2):
         print("\nUnification trace:")
     else:
         fullname = ".".join("%s" % n for n in path)
-        print("  " + "|   " * (len(path) - 1) + "|")
-        print("  " + "|   " * (len(path) - 1) + "| Unify feature: %s" % fullname)
-    print("  " + "|   " * len(path) + " / " + _trace_valrepr(fval1))
-    print("  " + "|   " * len(path) + "|\\ " + _trace_valrepr(fval2))
+        safe_print("  " + "|   " * (len(path) - 1) + "|")
+        safe_print("  " + "|   " * (len(path) - 1) + "| Unify feature: %s" % fullname)
+    safe_print("  " + "|   " * len(path) + " / " + _trace_valrepr(fval1))
+    safe_print("  " + "|   " * len(path) + "|\\ " + _trace_valrepr(fval2))
 
 
 def _trace_unify_identity(path, fval1):
-    print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "| (identical objects)")
-    print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "+-->" + repr(fval1))
+    safe_print("  " + "|   " * len(path) + "|")
+    safe_print("  " + "|   " * len(path) + "| (identical objects)")
+    safe_print("  " + "|   " * len(path) + "|")
+    safe_print("  " + "|   " * len(path) + "+-->" + repr(fval1))
 
 
 def _trace_unify_fail(path, result):
@@ -1781,14 +1782,14 @@ def _trace_unify_fail(path, result):
         resume = ""
     else:
         resume = " (nonfatal)"
-    print("  " + "|   " * len(path) + "|   |")
-    print("  " + "X   " * len(path) + "X   X <-- FAIL" + resume)
+    safe_print("  " + "|   " * len(path) + "|   |")
+    safe_print("  " + "X   " * len(path) + "X   X <-- FAIL" + resume)
 
 
 def _trace_unify_succeed(path, fval1):
     # Print the result.
-    print("  " + "|   " * len(path) + "|")
-    print("  " + "|   " * len(path) + "+-->" + repr(fval1))
+    safe_print("  " + "|   " * len(path) + "|")
+    safe_print("  " + "|   " * len(path) + "+-->" + repr(fval1))
 
 
 def _trace_bindings(path, bindings):
@@ -1798,7 +1799,7 @@ def _trace_bindings(path, bindings):
         bindstr = "{%s}" % ", ".join(
             f"{var}: {_trace_valrepr(val)}" for (var, val) in binditems
         )
-        print("  " + "|   " * len(path) + "    Bindings: " + bindstr)
+        safe_print("  " + "|   " * len(path) + "    Bindings: " + bindstr)
 
 
 def _trace_valrepr(val):
@@ -2616,26 +2617,26 @@ def display_unification(fs1, fs2, indent="  "):
         blankline = "[" + " " * (len(fs1_lines[0]) - 2) + "]"
         fs1_lines += [blankline] * len(fs2_lines)
     for fs1_line, fs2_line in zip(fs1_lines, fs2_lines):
-        print(indent + fs1_line + "   " + fs2_line)
-    print(indent + "-" * len(fs1_lines[0]) + "   " + "-" * len(fs2_lines[0]))
+        safe_print(indent + fs1_line + "   " + fs2_line)
+    safe_print(indent + "-" * len(fs1_lines[0]) + "   " + "-" * len(fs2_lines[0]))
 
     linelen = len(fs1_lines[0]) * 2 + 3
-    print(indent + "|               |".center(linelen))
-    print(indent + "+-----UNIFY-----+".center(linelen))
-    print(indent + "|".center(linelen))
-    print(indent + "V".center(linelen))
+    safe_print(indent + "|               |".center(linelen))
+    safe_print(indent + "+-----UNIFY-----+".center(linelen))
+    safe_print(indent + "|".center(linelen))
+    safe_print(indent + "V".center(linelen))
 
     bindings = {}
 
     result = fs1.unify(fs2, bindings)
     if result is None:
-        print(indent + "(FAILED)".center(linelen))
+        safe_print(indent + "(FAILED)".center(linelen))
     else:
-        print(
+        safe_print(
             "\n".join(indent + l.center(linelen) for l in ("%s" % result).split("\n"))
         )
         if bindings and len(bindings.bound_variables()) > 0:
-            print(repr(bindings).center(linelen))
+            safe_print(repr(bindings).center(linelen))
     return result
 
 
@@ -2691,9 +2692,9 @@ def interactive_demo(trace=False):
         for i, fstruct in fstructs:
             print()
             lines = ("%s" % fstruct).split("\n")
-            print("%3d: %s" % (i + 1, lines[0]))
+            safe_print("%3d: %s" % (i + 1, lines[0]))
             for line in lines[1:]:
-                print("     " + line)
+                safe_print("     " + line)
         print()
 
     while True:
@@ -2704,7 +2705,7 @@ def interactive_demo(trace=False):
         else:
             fstructs = all_fstructs
 
-        print("_" * 75)
+        safe_print("_" * 75)
 
         print("Choose two feature structures to unify:")
         list_fstructs(fstructs)
@@ -2712,7 +2713,7 @@ def interactive_demo(trace=False):
         selected = [None, None]
         for nth, i in (("First", 0), ("Second", 1)):
             while selected[i] is None:
-                print(
+                safe_print(
                     (
                         "%s feature structure (1-%d,q,t,l,?): "
                         % (nth, len(all_fstructs))
@@ -2725,10 +2726,10 @@ def interactive_demo(trace=False):
                         return
                     if input in ("t", "T"):
                         trace = not trace
-                        print("   Trace = %s" % trace)
+                        safe_print("   Trace = %s" % trace)
                         continue
                     if input in ("h", "H", "?"):
-                        print(HELP % len(fstructs))
+                        safe_print(HELP % len(fstructs))
                         continue
                     if input in ("l", "L"):
                         list_fstructs(all_fstructs)
@@ -2790,7 +2791,7 @@ def demo(trace=False):
 
     for fs1 in all_fstructs:
         for fs2 in all_fstructs:
-            print(
+            safe_print(
                 "\n*******************\nfs1 is:\n%s\n\nfs2 is:\n%s\n\nresult is:\n%s"
                 % (fs1, fs2, unify(fs1, fs2))
             )

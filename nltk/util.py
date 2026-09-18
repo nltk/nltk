@@ -32,6 +32,7 @@ from nltk import redos
 from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print
 
 # Maximum recursion depth for graph traversal functions.
 # 500 is well above the longest legitimate WordNet chain (~20 edges)
@@ -50,7 +51,7 @@ def usage(obj):
     if not isinstance(obj, type):
         obj = obj.__class__
 
-    print(f"{obj.__name__} supports the following operations:")
+    safe_print(f"{obj.__name__} supports the following operations:")
     for name, method in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
@@ -73,7 +74,7 @@ def usage(obj):
         elif args and args[0] == "self":
             name = f"self.{name}"
             args.pop(0)
-        print(
+        safe_print(
             textwrap.fill(
                 f"{name}({', '.join(args)})",
                 initial_indent="  - ",
@@ -131,7 +132,7 @@ def print_string(s, width=70):
     :param width: the display width
     :type width: int
     """
-    print("\n".join(textwrap.wrap(s, width=width)))
+    safe_print("\n".join(textwrap.wrap(s, width=width)))
 
 
 def tokenwrap(tokens, separator=" ", width=70):
@@ -218,7 +219,9 @@ def re_show(regexp, string, left="{", right="}"):
     """
     # regexp and string are both caller-supplied, so a catastrophically
     # backtracking pattern hangs the process (CWE-1333). redos.compile bounds it.
-    print(redos.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
+    safe_print(
+        redos.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
+    )
 
 
 ##########################################################################

@@ -24,6 +24,7 @@ from pprint import pformat
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 #################################################################
@@ -702,7 +703,7 @@ Nov.    NNP     9       VMOD
         # A private staging dir under a data root, not "tree.png" in the CWD.
         outfile = os.path.join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
         pylab.savefig(outfile)
-        print(f"saved dependency tree to {outfile}")
+        safe_print(f"saved dependency tree to {outfile}")
         pylab.show()
 
 
@@ -714,8 +715,8 @@ def conll_demo():
     dg = DependencyGraph(conll_data1)
     tree = dg.tree()
     tree.pprint()
-    print(dg)
-    print(dg.to_conll(4))
+    safe_print(dg)
+    safe_print(dg.to_conll(4))
 
 
 def conll_file_demo():
@@ -729,14 +730,14 @@ def conll_file_demo():
 
 def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
-    print(dg.contains_cycle())
+    safe_print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "TOP", "address": 0})
     cyclic_dg.add_node({"word": None, "deps": [2], "rel": "NTOP", "address": 1})
     cyclic_dg.add_node({"word": None, "deps": [4], "rel": "NTOP", "address": 2})
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "NTOP", "address": 3})
     cyclic_dg.add_node({"word": None, "deps": [3], "rel": "NTOP", "address": 4})
-    print(cyclic_dg.contains_cycle())
+    safe_print(cyclic_dg.contains_cycle())
 
 
 treebank_data = """Pierre  NNP     2       NMOD

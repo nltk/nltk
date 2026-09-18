@@ -25,6 +25,7 @@ from nltk.pathsec import ZipFile as SecureZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path, validate_tool_path
 from nltk.probability import DictionaryProbDist
+from nltk.termsec import safe_print
 
 _weka_classpath = None
 # NB: the current working directory (".") is deliberately NOT searched. Picking
@@ -73,9 +74,9 @@ def config_weka(classpath=None):
                 _weka_classpath = os.path.join(path, "weka.jar")
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print(f"[Found Weka: {_weka_classpath} (version {version})]")
+                    safe_print(f"[Found Weka: {_weka_classpath} (version {version})]")
                 else:
-                    print("[Found Weka: %s]" % _weka_classpath)
+                    safe_print("[Found Weka: %s]" % _weka_classpath)
                 _check_weka_version(_weka_classpath)
 
     if _weka_classpath is None:
@@ -222,7 +223,7 @@ class WekaClassifier(ClassifierI):
 
         else:
             for line in lines[:10]:
-                print(line)
+                safe_print(line)
             raise ValueError(
                 "Unhandled output format -- your version "
                 "of weka may not be supported.\n"

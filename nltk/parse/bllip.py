@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 """
@@ -277,26 +278,26 @@ def demo():
         print("Sentence: %r" % " ".join(sentence))
         try:
             tree = next(bllip.parse(sentence))
-            print(tree)
+            safe_print(tree)
         except StopIteration:
             print("(parse failed)")
 
     # n-best parsing demo
     for i, parse in enumerate(bllip.parse(sentence1)):
-        print("parse %d:\n%s" % (i, parse))
+        safe_print("parse %d:\n%s" % (i, parse))
 
     # using external POS tag constraints
-    print(
+    safe_print(
         "forcing 'tree' to be 'NN':",
         next(bllip.tagged_parse([("A", None), ("tree", "NN")])),
     )
-    print(
+    safe_print(
         "forcing 'A' to be 'DT' and 'tree' to be 'NNP':",
         next(bllip.tagged_parse([("A", "DT"), ("tree", "NNP")])),
     )
     # constraints don't have to make sense... (though on more complicated
     # sentences, they may cause the parse to fail)
-    print(
+    safe_print(
         "forcing 'A' to be 'NNP':",
         next(bllip.tagged_parse([("A", "NNP"), ("tree", None)])),
     )
