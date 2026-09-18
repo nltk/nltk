@@ -265,18 +265,21 @@ class TestTimeoutIsTheGuarantee:
     BAIT = "a" * 400
 
     def test_every_match_method_is_bounded(self):
-        # No method may hang; each either fires the timeout or fails fast.
+        # Deterministic, not a wall-clock ``< 2.0`` (which flakes under CI load):
+        # every scanning method fires the timeout (raises), and anchored match
+        # fails fast (returns None). Asserting the cap ENGAGES is stronger.
         tp = redos.compile(self.EVIL)
         for call in (
             lambda: tp.search(self.BAIT, timeout=0.3),
-            lambda: tp.match(self.BAIT, timeout=0.3),
             lambda: tp.findall(self.BAIT, timeout=0.3),
             lambda: tp.sub("x", self.BAIT, timeout=0.3),
             lambda: tp.subn("x", self.BAIT, timeout=0.3),
             lambda: tp.split(self.BAIT, timeout=0.3),
             lambda: list(tp.finditer(self.BAIT, timeout=0.3)),
         ):
-            assert _elapsed(call) < 2.0
+            with pytest.raises(TimeoutError):
+                call()
+        assert tp.match(self.BAIT, timeout=0.3) is None
 
     def test_backtracking_methods_fire_the_timeout(self):
         # The methods that scan the whole input (all but anchored ``match``,

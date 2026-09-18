@@ -80,6 +80,23 @@ def _elapsed(fn):
     return time.perf_counter() - start
 
 
+def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
+    """Assert ``op(big)`` (big == 4*small) runs under ``factor`` times ``op(small)``.
+
+    A load-invariant ratio, not an absolute ceiling: a linear op is ~4x, the
+    pre-patch O(n**2) ~16x, so factor=8 separates them on any machine. The floor
+    is multiplicative (an additive slack would hide a small quadratic); each side
+    is the min of ``reps`` runs to shed a transient stall.
+    """
+    t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
+    t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
+    # Explicit ratio (equivalent to ``t_big < factor * max(t_small, noise_floor)``;
+    # the floor already rules out division-by-zero) so the measured scaling factor
+    # is right there in the failure output.
+    ratio = t_big / max(t_small, noise_floor)
+    assert ratio < factor, (small, big, t_small, t_big, ratio)
+
+
 # ==========================================================================
 # EXPLOITABLE (fixed) -- quadratic pre-patch, linear now
 # ==========================================================================
@@ -183,21 +200,19 @@ class TestReadSexprBlockQuadratic:
         ]
 
     def test_unclosed_sexpr_is_subquadratic(self, monkeypatch):
-        # Pre-patch: an oversized single s-expression is re-parsed from position
-        # 0 on every fixed-size grow -> O(n^2). Exponential read growth makes it
-        # O(n). A ratio test is robust to the (high) linear constant: 4x input
-        # should cost ~4x (linear), not ~16x (quadratic).
-        #
-        # Raise the redos wall-clock bound far above the linear cost so a loaded
-        # host cannot trip it on the (legitimate) big linear parse and turn this
-        # scaling test into a spurious TimeoutError. A quadratic regression still
-        # fails: it either blows the ratio or blows this larger bound.
+        # Pre-patch: an oversized single s-expression is re-parsed from position 0
+        # on every fixed-size grow -> O(n^2); exponential read growth makes it O(n).
+        # Raise the redos cap so a loaded host cannot trip it on the big linear parse
+        # (kept small enough here that even 10x CI slowdown stays well under it).
         import nltk.redos as redos_mod
 
         monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 30)
-        t1 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 200_000)))
-        t4 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 800_000)))
-        assert t4 < 10 * t1 + 0.5
+        _assert_subquadratic(
+            lambda n: read_sexpr_block(io.StringIO("(" * n)),
+            50_000,
+            200_000,
+            factor=10.0,
+        )
 
 
 # ==========================================================================
@@ -274,28 +289,15 @@ class TestSyllableTokenizerDoS:  # SyllableTokenizer -- has MULTIPLE directions
         # (`valid_syllables[:-1] + [...]`) for every vowelless syllable, so a
         # token like 'aebcd'*n cost O(n^2). In-place merge makes it linear.
         #
-        # This is a wall-clock ratio test, so it must be robust to CI timing
-        # noise: (1) a base size large enough that a single tokenize is well
-        # above timer resolution (a 4000-rep base measured ~0.01s -- noise
-        # dominated -- and made the ratio explode on a free-threaded runner); and
-        # (2) the MEDIAN of a few runs, robust to both a fast and a slow outlier.
-        # Linear -> t4 ~ 4*t1; the pre-fix O(n^2) -> t4 ~ 16*t1, so an 8x
-        # threshold separates them with wide margin.
-        import statistics
-
+        # Wall-clock scaling ratio (tokenize's per-token cost has a high enough
+        # constant that 8000 is a real measurement, not timer noise). Multiplicative
+        # floor, not the old ``+ 0.5`` additive slack, so the bound is tighter here.
         from nltk.tokenize import SyllableTokenizer
 
         monkeypatch.setattr(SyllableTokenizer, "MAX_TOKEN_LEN", 10**9)
-
-        def _median(n):
-            return statistics.median(
-                _elapsed(lambda: SyllableTokenizer().tokenize("aebcd" * n))
-                for _ in range(3)
-            )
-
-        t1 = _median(8000)
-        t4 = _median(32000)  # 4x the input
-        assert t4 < 8 * t1 + 0.5
+        _assert_subquadratic(
+            lambda n: SyllableTokenizer().tokenize("aebcd" * n), 8000, 32000
+        )
 
     def test_direction2_giant_multivowel_token_is_bounded(self):
         # A multi-vowel token passes the early return and reaches the O(n)
@@ -707,18 +709,13 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 
     @pytest.mark.parametrize("lang,unit", TRIGGERS)
     def test_upcase_loop_is_linear(self, lang, unit):
-        import statistics
-
+        # Scaling assertion: t(200k) < 8 * t(50k). The linear fix is ~4x, the
+        # pre-patch per-match rebuild ~16x (and >20s at 200k); for the slower langs
+        # 50k is a real measurement, so this is a machine-independent ratio.
         from nltk.stem.snowball import SnowballStemmer
 
         st = SnowballStemmer(lang).stem
-
-        def med(n):
-            return statistics.median(_elapsed(lambda: st(unit * n)) for _ in range(3))
-
-        t1 = med(8000)
-        t4 = med(32000)  # 4x input: linear ~4x, pre-fix O(n^2) ~16x
-        assert t4 < 8 * t1 + 0.5
+        _assert_subquadratic(lambda n: st(unit * n), 50_000, 200_000)
 
     def test_negative_control_langs_stay_linear(self):
         # spanish/portuguese have no rebuild loop; german upcases only u/y (not
