@@ -1584,7 +1584,7 @@ def load(
 
     if path_[-7:] == ".pickle":
         if verbose:
-            print(f"<<Loading pickle-free alternative (protocol={protocol}, format={format})>>")
+            print("<<Loading pickle-free alternative>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
@@ -1597,7 +1597,7 @@ def load(
 
     # Let the user know what's going on.
     if verbose:
-        print(f"<<Loading resource (protocol={protocol}, format={format})>>")
+        print("<<Loading resource>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
