@@ -90,7 +90,11 @@ def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
     """
     t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
     t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
-    assert t_big < factor * max(t_small, noise_floor), (small, big, t_small, t_big)
+    # Explicit ratio (equivalent to ``t_big < factor * max(t_small, noise_floor)``;
+    # the floor already rules out division-by-zero) so the measured scaling factor
+    # is right there in the failure output.
+    ratio = t_big / max(t_small, noise_floor)
+    assert ratio < factor, (small, big, t_small, t_big, ratio)
 
 
 # ==========================================================================
