@@ -105,3 +105,88 @@ def test_memoize_decorator_still_works():
 
     assert slow(4) == 16 and slow(4) == 16
     assert calls == [4]
+
+
+def test_str_subclass_signature_cannot_inject_via_format():
+    # A str subclass can pass the regex on its underlying characters yet override
+    # __format__ to emit arbitrary source when interpolated into the eval. The
+    # exact-str check refuses it before the eval runs (CVE-2026-14727).
+    import os
+
+    class EvilSig(str):
+        def __format__(self, spec):
+            return "a=__import__('os').environ.setdefault('NLTK_DEC_PWNED', '1')"
+
+    os.environ.pop("NLTK_DEC_PWNED", None)
+    info = getinfo(lambda a: None)
+    info["signature"] = EvilSig("a")
+    with pytest.raises(ValueError, match="non-str signature"):
+        new_wrapper(lambda *a, **k: None, info)
+    assert os.environ.get("NLTK_DEC_PWNED") is None  # no injected code ran
+
+
+def test_crafted_fullsignature_parameter_name_cannot_inject():
+    # The call args are built from parameter names; a duck-typed Signature whose
+    # "parameter" is not a real inspect.Parameter (name is an expression) must be
+    # refused before it reaches the eval body.
+    class FakeParam:
+        def __init__(self, name):
+            self.name = name
+            self.kind = inspect.Parameter.POSITIONAL_OR_KEYWORD
+
+    class FakeSig:
+        def __init__(self, names):
+            self._p = {n: FakeParam(n) for n in names}
+
+        @property
+        def parameters(self):
+            return self._p
+
+    info = getinfo(lambda a: None)
+    info["fullsignature"] = FakeSig(["a, __import__('os').system('echo pwned')"])
+    with pytest.raises(ValueError, match="non-identifier parameter name"):
+        new_wrapper(lambda *a, **k: None, info)
+
+
+def test_keyword_only_and_positional_only_signatures_work():
+    @decorator
+    def trace(f, *a, **k):
+        return f(*a, **k)
+
+    @trace
+    def f(a, *, b=5):  # keyword-only with a default
+        return (a, b)
+
+    @trace
+    def g(a, /, b, *, c):  # positional-only + keyword-only
+        return (a, b, c)
+
+    assert f(1) == (1, 5) and f(1, b=9) == (1, 9)  # kw-only default preserved
+    assert g(1, 2, c=3) == (1, 2, 3)
+
+
+def test_unicode_parameter_name_is_accepted():
+    # A valid Python identifier with non-ASCII letters must still decorate.
+    @decorator
+    def trace(f, *a, **k):
+        return f(*a, **k)
+
+    ns = {}
+    exec("def h(é): return é", ns)  # def h(e-acute): ...
+    assert trace(ns["h"])(42) == 42
+
+
+def test_legacy_model_dict_without_fullsignature_still_works():
+    wrapped = new_wrapper(
+        lambda *a, **k: "ok",
+        {
+            "signature": "a, b",
+            "argnames": ["a", "b"],
+            "name": "f",
+            "doc": None,
+            "module": "m",
+            "dict": {},
+            "defaults": None,
+        },
+    )
+    assert wrapped(1, 2) == "ok"

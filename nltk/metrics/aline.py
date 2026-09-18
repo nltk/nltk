@@ -37,6 +37,8 @@ Example usage
 University of Toronto.
 """
 
+from nltk.termsec import safe_print
+
 try:
     import numpy as np
 except ImportError:
