@@ -1393,6 +1393,8 @@ def elementtree_indent(elem, level=0, max_depth=None):
     :rtype:   ElementTree._ElementInterface
     :return:  Contents of elem indented to reflect its structure
     """
+    if not isinstance(level, int) or isinstance(level, bool) or level < 0:
+        raise ValueError(f"level must be a non-negative integer, got {level!r}")
     if max_depth is None:
         max_depth = MAX_XML_INDENT_DEPTH
     if level > max_depth:
