@@ -10,6 +10,19 @@ from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel2(unittest.TestCase):
+    def test_training_uses_model1_translation_probabilities(self):
+        corpus = [
+            AlignedSent(["X", "."], ["a", "."]),
+            AlignedSent(["Z", "."], ["b", "b", "."]),
+        ]
+
+        model2 = IBMModel2(corpus, 1)
+
+        # Two Model 1 iterations initialize the lexical table before Model 2.
+        # Starting Model 2 from uniform lexical probabilities gives 0.5 instead.
+        self.assertAlmostEqual(model2.translation_table["X"]["a"], 0.665)
+        self.assertAlmostEqual(model2.translation_table["Z"]["b"], 0.65625)
+
     def test_set_uniform_alignment_probabilities(self):
         # arrange
         corpus = [
