@@ -141,14 +141,26 @@ class BNCCorpusReader(XMLCorpusReader):
         return result
 
 
-def _all_xmlwords_in(elt, result=None):
+#: Bound recursion over nested XML so an adversarially deep corpus file raises
+#: ValueError instead of an uncaught RecursionError (CWE-674).
+MAX_XML_DEPTH = 500
+
+
+def _all_xmlwords_in(elt, result=None, _depth=0, max_depth=None):
+    if max_depth is None:
+        max_depth = MAX_XML_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"XML nesting depth exceeds MAX_XML_DEPTH ({max_depth}); "
+            "the input may be adversarially deep."
+        )
     if result is None:
         result = []
     for child in elt:
         if child.tag in ("c", "w"):
             result.append(child)
         else:
-            _all_xmlwords_in(child, result)
+            _all_xmlwords_in(child, result, _depth + 1, max_depth)
     return result
 
 
