@@ -52,6 +52,10 @@ def _enforce_single_root(monkeypatch):
     monkeypatch.setattr(nltk.data, "path", [data_root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
     monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+    # staging_tempdir() memoises a process-global scratch dir; clear it so a dir
+    # an earlier test allocated under the ambient root (still "valid" there) does
+    # not leak in, and it is re-allocated under this enforced single root.
+    monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None, raising=False)
     return data_root
 
 
