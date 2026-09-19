@@ -463,9 +463,6 @@ class FeatStruct(SubstituteBindingsI):
         :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
-        raise NotImplementedError()  # Implemented by subclasses.
-
-    def _walk(self, visited):
         if id(self) in visited:
             return
         visited.add(id(self))
