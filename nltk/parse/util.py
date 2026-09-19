@@ -106,8 +106,8 @@ def taggedsents_to_conll(sentences):
     """
     A module to convert the a POS tagged document stream
     (i.e. list of list of tuples, a list of sentences) and yield lines
-    in CONLL format. This module yields one line per word and two newlines
-    for end of sentence.
+    in CONLL format. This module yields one line per word and one blank line
+    at the end of each sentence.
 
     >>> from nltk import word_tokenize, sent_tokenize, pos_tag
     >>> text = "This is a foobar sentence. Is that right?"
@@ -122,12 +122,10 @@ def taggedsents_to_conll(sentences):
     5	sentence	_	NN	NN	_	0	a	_	_
     6	.		_	.	.	_	0	a	_	_
     <BLANKLINE>
-    <BLANKLINE>
     1	Is	_	VBZ	VBZ	_	0	a	_	_
     2	that	_	IN	IN	_	0	a	_	_
     3	right	_	NN	NN	_	0	a	_	_
     4	?	_	.	.	_	0	a	_	_
-    <BLANKLINE>
     <BLANKLINE>
 
     :param sentences: Input sentences to parse
@@ -137,7 +135,7 @@ def taggedsents_to_conll(sentences):
     """
     for sentence in sentences:
         yield from taggedsent_to_conll(sentence)
-        yield "\n\n"
+        yield "\n"
 
 
 ######################################################################
