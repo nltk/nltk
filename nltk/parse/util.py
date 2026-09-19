@@ -97,6 +97,14 @@ def taggedsent_to_conll(sentence):
     :return: a generator yielding a single sentence in CONLL format.
     """
     for i, (word, tag) in enumerate(sentence, start=1):
+        # A tab, newline or NUL in a field would add columns or inject an extra
+        # CoNLL row in the file handed to the parser (e.g. MaltParser).
+        for field in (word, tag):
+            if any(c in field for c in "\t\n\r\x00"):
+                raise ValueError(
+                    "CoNLL word/tag fields cannot contain tab, newline or NUL "
+                    "characters: %r" % (field,)
+                )
         input_str = [str(i), word, "_", tag, tag, "_", "0", "a", "_", "_"]
         input_str = "\t".join(input_str) + "\n"
         yield input_str

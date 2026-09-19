@@ -8,7 +8,11 @@ include MANIFEST.in
 
 
 graft nltk
-graft tools
 graft web
+
+# tools/ holds dev-only CI guards and maintenance scripts (no __init__.py, so it
+# is never a wheel package). Do NOT graft it: shipping executable scripts in the
+# sdist would put maintenance tooling on end-user machines for no runtime need.
+prune tools
 
 global-exclude *~

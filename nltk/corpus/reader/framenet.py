@@ -25,6 +25,7 @@ from pprint import pprint
 
 from nltk import redos
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
+from nltk.termsec import sanitize_terminal
 from nltk.util import LazyConcatenation, LazyIteratorList, LazyMap
 
 __docformat__ = "epytext en"
@@ -1338,7 +1339,7 @@ warnings(True) to display corpus consistency warnings when loading data
     def _warn(self, *message, **kwargs):
         if self._warnings:
             kwargs.setdefault("file", sys.stderr)
-            print(*message, **kwargs)
+            print(*(sanitize_terminal(m) for m in message), **kwargs)
 
     def buildindexes(self):
         """

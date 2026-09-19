@@ -27,26 +27,41 @@ _PAYLOADS = {
     "doctype": "<!DOCTYPE d>" * _N + "<!DOCTYPE " + "a" * 10,
     "cdata": "<![CDATA[x]]>" * _N + "<![CDATA[" + "a" * 10,
 }
-_TIMEOUT = 15
+# Generous process-level backstop: a true exponential regex runs for minutes, so
+# 60s catches a regression while absorbing slow child spawn + nltk import on CI
+# (the Windows spawn start method re-imports everything in the child).
+_TIMEOUT = 60
+# The match/read is linear and sub-millisecond; measured in-child (so it excludes
+# spawn and import) it must stay well under this ceiling, which a ReDoS blows past.
+_OP_CEILING = 2.0
 
 
 def _regex_worker(result_q, payload):
+    import time
+
     try:
-        result_q.put(("ok", XMLCorpusView._VALID_XML_RE.match(payload) is not None))
+        # Time only the match, not the child's spawn/import, so a slow CI runner
+        # cannot masquerade as a ReDoS.
+        start = time.perf_counter()
+        XMLCorpusView._VALID_XML_RE.match(payload)
+        result_q.put(("ok", time.perf_counter() - start))
     except BaseException as exc:  # surface to the parent process
         result_q.put(("error", repr(exc)))
 
 
 def _view_worker(result_q, path):
+    import time
+
     try:
         view = XMLCorpusView(FileSystemPathPointer(path), ".*")
         # Reading drives _read_xml_fragment / _VALID_XML_RE. A malformed file may
-        # raise ValueError; the point is that it must *terminate*, not hang.
+        # raise ValueError; the point is that it must terminate quickly, not hang.
+        start = time.perf_counter()
         try:
             list(view)
-            result_q.put(("ok", "read"))
         except ValueError:
-            result_q.put(("ok", "raised"))
+            pass
+        result_q.put(("ok", time.perf_counter() - start))
     except BaseException as exc:
         result_q.put(("error", repr(exc)))
 
@@ -72,9 +87,13 @@ def _run_in_process(target, args=()):
 def test_valid_xml_re_does_not_hang():
     """_VALID_XML_RE must validate crafted fragments in linear time (no ReDoS)."""
     for name, payload in _PAYLOADS.items():
-        finished, status, value = _run_in_process(_regex_worker, (payload,))
+        finished, status, elapsed = _run_in_process(_regex_worker, (payload,))
         assert finished, f"_VALID_XML_RE hung on a crafted {name} fragment (ReDoS)"
-        assert status == "ok", f"worker raised on {name}: {value}"
+        assert status == "ok", f"worker raised on {name}: {elapsed}"
+        assert elapsed < _OP_CEILING, (
+            f"_VALID_XML_RE took {elapsed:.3f}s on a crafted {name} fragment "
+            f"(ceiling {_OP_CEILING}s); a linear match is sub-millisecond (ReDoS?)"
+        )
 
 
 def test_xmlcorpusview_does_not_hang_on_crafted_file(tmp_path):
@@ -82,6 +101,10 @@ def test_xmlcorpusview_does_not_hang_on_crafted_file(tmp_path):
     malicious = tmp_path / "evil.xml"
     malicious.write_text(_PAYLOADS["comment"], encoding="utf-8")
 
-    finished, status, value = _run_in_process(_view_worker, (str(malicious),))
+    finished, status, elapsed = _run_in_process(_view_worker, (str(malicious),))
     assert finished, "XMLCorpusView hung on a crafted corpus file (ReDoS)"
-    assert status == "ok", f"reader raised unexpectedly: {value}"
+    assert status == "ok", f"reader raised unexpectedly: {elapsed}"
+    assert elapsed < _OP_CEILING, (
+        f"XMLCorpusView took {elapsed:.3f}s reading a crafted file "
+        f"(ceiling {_OP_CEILING}s); a linear read is sub-millisecond (ReDoS?)"
+    )
