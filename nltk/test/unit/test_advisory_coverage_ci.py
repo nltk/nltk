@@ -58,12 +58,12 @@ _CLOSED_WITH_PROBE = {
     "GHSA-9ffx-rrgx-mhgx",
     "GHSA-pcm8-fqjx-rvx8",
     "GHSA-8846-p9w9-5frf",
-    "GHSA-j456-xh4h-cpf2",
     "GHSA-3h95-x772-4765",
     "GHSA-63wh-5r5m-wxr7",
     "GHSA-f2h2-f4fc-p978",
     "GHSA-w3pv-xfw4-ghr7",
     "GHSA-xfcv-m889-fmqg",
+    "GHSA-j456-xh4h-cpf2",
 }
 
 
