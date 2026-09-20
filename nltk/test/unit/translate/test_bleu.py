@@ -536,3 +536,22 @@ class TestBLEUCorpusSmoothing(unittest.TestCase):
             return p_n
 
         assert self.corpus_score(no_smoothing) == self.corpus_score(None)
+
+    def test_smoothing_function_with_one_corpus_keyword(self):
+        received = {}
+
+        def only_hypotheses(p_n, references, hypothesis, hyp_len, hypotheses=None):
+            received["hypotheses"] = hypotheses
+            return p_n
+
+        def only_references(
+            p_n, references, hypothesis, hyp_len, list_of_references=None
+        ):
+            received["list_of_references"] = list_of_references
+            return p_n
+
+        expected = self.corpus_score(None)
+        assert self.corpus_score(only_hypotheses) == expected
+        assert self.corpus_score(only_references) == expected
+        assert received["hypotheses"] == [self.hyp1, self.hyp2]
+        assert received["list_of_references"] == [[self.ref1], [self.ref2]]
