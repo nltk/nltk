@@ -30,32 +30,21 @@ import ast
 import os
 import sys
 
-# Sandbox-sensitive modules that must never open a file with the builtin. These
-# are currently clean; the guard keeps them that way.
-# The WHOLE package. This list used to name a dozen modules, which meant a bare
-# open or an unpinned temp file anywhere else went unnoticed; nltk/parse,
-# nltk/sem, nltk/twitter and nltk/app all had violations that nothing flagged.
-# Guarding everything and annotating the few genuine exceptions is the only way
-# the rule holds as the codebase changes. This subsumes the model-artifact
-# loaders (named_entity, maxent, transitionparser, tabdata, perceptron,
-# tbl/demo, punkt) that GHSA-8mgp-746c-j5xp was filed against.
+# Guard the WHOLE package, not a shortlist: a bare open or unpinned temp file
+# anywhere (parse, sem, twitter, app all had some) must be caught. Subsumes the
+# model-artifact loaders GHSA-8mgp-746c-j5xp was filed against.
 GUARDED_PATHS = ["nltk"]
 
-# The test tree is exempt for one specific reason: a security test has to stage
-# its attack target OUTSIDE the sandbox, and the secured helpers refuse exactly
-# that, which is the point of them. Tests that write INSIDE the sandbox were
-# converted to pathsec separately; this exemption is not a licence for the rest.
+# The test tree is exempt: a security test must stage its attack target OUTSIDE
+# the sandbox, which the secured helpers refuse (the point of them). Not a licence
+# for shipped code, which was converted to pathsec separately.
 _EXEMPT_PREFIXES = (os.path.join("nltk", "test"),)
 
 SUPPRESS_MARKER = "# sandboxed-open ok"
 
-# Opening a path through a compression or archive helper bypasses the sentinel
-# just as a builtin open() does. These are only safe when handed an ALREADY
-# secured file object, so a call whose first argument is a path is a violation.
-# Creating a temp file without dir= puts it in the system temp directory, which
-# on Linux is the shared, world-writable /tmp and is deliberately NOT a pathsec
-# root. Callers must pass dir=nltk.data.staging_tempdir() (or another in-root
-# directory) so scratch output stays inside the sandbox.
+# A temp file created without dir= lands in the system temp dir (on Linux the
+# shared, world-writable /tmp), which is NOT a pathsec root. Callers must pass
+# dir=nltk.data.staging_tempdir() (or another in-root dir) to stay sandboxed.
 _TEMPFILE_FACTORIES = {"mkstemp", "NamedTemporaryFile", "TemporaryFile"}
 
 _PATH_TAKING = {
@@ -137,10 +126,9 @@ def find_violations(paths):
                 bare_builtin = (
                     isinstance(node.func, ast.Name) and node.func.id == "open"
                 )
-                # A compression/archive helper handed a PATH bypasses the
-                # sentinel too. Handed an already-secured file object it is
-                # fine, so only a call whose first argument is not itself a
-                # pathsec call (or a name bound from one) is reported.
+                # A compression/archive helper handed a PATH bypasses the sentinel
+                # too (an already-secured file object is fine), so report only a
+                # call whose first arg is not itself a pathsec call / name from one.
                 path_taking = (
                     isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
