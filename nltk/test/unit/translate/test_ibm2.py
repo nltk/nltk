@@ -16,12 +16,14 @@ class TestIBMModel2(unittest.TestCase):
             AlignedSent(["Z", "."], ["b", "b", "."]),
         ]
 
-        model2 = IBMModel2(corpus, 1)
+        for floor in (None, 0.0, 1e-7):
+            with self.subTest(lexical_floor=floor):
+                model2 = IBMModel2(corpus, 1, lexical_floor=floor)
 
-        # Two Model 1 iterations initialize the lexical table before Model 2.
-        # Starting Model 2 from uniform lexical probabilities gives 0.5 instead.
-        self.assertAlmostEqual(model2.translation_table["X"]["a"], 0.665)
-        self.assertAlmostEqual(model2.translation_table["Z"]["b"], 0.65625)
+                # Two Model 1 iterations initialize the lexical table before
+                # Model 2. Starting from uniform probabilities gives 0.5 instead.
+                self.assertAlmostEqual(model2.translation_table["X"]["a"], 0.665)
+                self.assertAlmostEqual(model2.translation_table["Z"]["b"], 0.65625)
 
     def test_set_uniform_alignment_probabilities(self):
         # arrange
