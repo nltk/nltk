@@ -267,16 +267,20 @@ def corpus_bleu(
     #       smoothing method allows.
     # The smoothing methods that count ngrams need the whole corpus and not
     # only the last pair of the loop above, so they also receive
-    # *list_of_references* and *hypotheses*. Smoothing functions that do not
-    # accept these keyword arguments are called as before.
+    # *list_of_references* and *hypotheses*. Each of these keyword arguments
+    # is only passed to a smoothing function that accepts it, so smoothing
+    # functions with the old signature are called as before.
     smoothing_kwargs = {
         "references": references,
         "hypothesis": hypothesis,
         "hyp_len": hyp_lengths,
     }
-    if _accepts_keyword_argument(smoothing_function, "hypotheses"):
-        smoothing_kwargs["list_of_references"] = list_of_references
-        smoothing_kwargs["hypotheses"] = hypotheses
+    for name, value in (
+        ("list_of_references", list_of_references),
+        ("hypotheses", hypotheses),
+    ):
+        if _accepts_keyword_argument(smoothing_function, name):
+            smoothing_kwargs[name] = value
     p_n = smoothing_function(p_n, **smoothing_kwargs)
 
     bleu_scores = []
