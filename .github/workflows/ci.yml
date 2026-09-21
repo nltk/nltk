@@ -284,8 +284,16 @@ jobs:
         shell: bash
         env:
           PYTHONSAFEPATH: "1"
+          # Windows multiprocessing uses spawn, so each worker re-bootstraps pytest;
+          # the plugin-autoload entry-point scan there costs seconds per spawn and
+          # flaked timing-sensitive tests. Skip it on Windows, load needed plugins.
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: ${{ matrix.os == 'windows-latest' && '1' || '' }}
         run: |
-          pytest --numprocesses auto -rsx --doctest-modules nltk
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
+          else
+            pytest --numprocesses auto -rsx --doctest-modules nltk
+          fi
 
   advisory-coverage:
     name: Advisory coverage (GitHub)
