@@ -2,9 +2,9 @@
 
 ``_format_tagset`` compiles a caller-supplied tag pattern through ``nltk.redos``,
 which refuses a source larger than ``MAX_PATTERN_LENGTH`` as a compile-time DoS
-guard. An oversized pattern must degrade with a clear message rather than
-surfacing the raw refusal as an uncaught exception; ordinary patterns are
-unaffected.
+guard. An oversized pattern must fail closed with a clear ``ValueError`` (the
+same contract every other caller-controlled compile site follows) rather than a
+raw refusal or a silent print; ordinary patterns are unaffected.
 """
 
 import pytest
@@ -32,9 +32,8 @@ def test_ordinary_tagpattern_prints_matches(capsys):
 
 
 @pytest.mark.skipif(not _tagset_available(), reason="upenn_tagset data unavailable")
-def test_oversized_tagpattern_degrades_gracefully(capsys):
+def test_oversized_tagpattern_raises_value_error():
     oversized = "N" * (redos.MAX_PATTERN_LENGTH + 10)
-    # Must not raise: the redos refusal is caught and reported.
-    help_module._format_tagset("upenn_tagset", oversized)
-    out = capsys.readouterr().out
-    assert "Invalid or oversized tag pattern" in out
+    # Fail closed: the redos refusal is re-raised as a clear ValueError.
+    with pytest.raises(ValueError, match="Invalid or oversized tag pattern"):
+        help_module._format_tagset("upenn_tagset", oversized)
