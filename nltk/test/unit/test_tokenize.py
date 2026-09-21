@@ -468,6 +468,12 @@ class TestTokenize:
         result = tokenizer.tokenize(test3)
         assert result == expected
 
+    def test_tweet_tokenizer_zwj_does_not_capture_whitespace(self):
+        """Whitespace next to a ZWJ remains a token boundary."""
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("a\t\u200db") == ["a", "\u200db"]
+        assert tokenizer.tokenize("a\u200d\tb") == ["a\u200d", "b"]
+
         # emoji flag sequences, including enclosed letter pairs
         # Expected behavior from #3034
         test4 = "🇦🇵🇵🇱🇪"
