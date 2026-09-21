@@ -215,6 +215,31 @@ class TestReadSexprBlockQuadratic:
         )
 
 
+class TestChomskyNormalFormFrontMutation:  # GHSA-r53h: tree.transforms
+    def test_correctness_preserved(self):
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        t = Tree.fromstring("(S (NP I) (VP (V saw) (NP (Det the) (N cat))))")
+        chomsky_normal_form(t)
+        assert t.label() == "S"
+        # Binarisation leaves every production at most binary branching.
+        assert all(len(p.rhs()) <= 2 for p in t.productions())
+
+    def test_flat_node_is_linear(self):
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # Pre-patch: the right-factoring loop did nodeCopy.pop(0) per child, an
+        # O(1)-should-be front removal that is O(n^2) over a wide flat node. The
+        # deque + popleft rewrite is linear and byte-for-byte identical.
+        _assert_subquadratic(
+            lambda n: chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)])),
+            1_500,
+            6_000,
+        )
+
+
 # ==========================================================================
 # GENERAL ALGORITHMIC-DoS BATCH (fixed) -- single-untrusted-input O(n^2)
 # ==========================================================================
