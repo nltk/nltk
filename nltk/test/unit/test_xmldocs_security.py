@@ -24,8 +24,7 @@ from nltk.data import FileSystemPathPointer
 from . import _mp_ctx
 
 # A handful of closed pieces followed by an unterminated tail so ``\Z`` fails.
-# With the old spanning regex even ~30 of these took minutes (exponential); about
-# 0.1 ms now (linear).
+# Old spanning regex: ~30 of these took minutes (exponential); ~0.1 ms now (linear).
 _N = 60
 _PAYLOADS = {
     "comment": "<!--c-->" * _N + "<!--" + "a" * 10,
@@ -33,18 +32,14 @@ _PAYLOADS = {
     "cdata": "<![CDATA[x]]>" * _N + "<![CDATA[" + "a" * 10,
 }
 
-# _TIMEOUT is only the hang backstop, not the ReDoS guard: it terminates a worker
-# that never returns (the pathological case where redos's own match timeout is
-# broken) so it cannot burn CPU for the rest of the suite. Sized to clear worst
-# case spawn + ``import nltk`` + redos's 5 s match timeout on a loaded runner with
-# margin, so a slow start is never mistaken for a hang. The ReDoS decision is the
-# in-process op-time ceiling below plus a worker ``error`` when redos raises.
+# Hang backstop only, not the ReDoS guard: terminates a worker that never returns
+# (a broken redos timeout) so it cannot burn CPU. Sized to clear worst-case spawn,
+# ``import nltk`` and redos's 5 s timeout with margin, so a slow start is no hang.
 _TIMEOUT = 60
 
-# The fixed match is ~0.1 ms; the pre-fix exponential form does not finish (redos
-# raises). Asserting the in-process match time keeps the ReDoS check load
-# invariant; 1 s is a ~7000x margin over the linear match yet far below any
-# blow-up, so it never flakes and never masks a slow regression.
+# Fixed match is ~0.1 ms, so 1 s is a ~7000x margin (load invariant, never flakes)
+# yet far below any blow-up. The ReDoS guard proper is status == ok (redos raises
+# on the exponential form); this op-time ceiling also catches a slow regression.
 _MATCH_CEILING = 1.0
 
 
