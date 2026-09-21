@@ -64,6 +64,16 @@ _CLOSED_WITH_PROBE = {
     "GHSA-w3pv-xfw4-ghr7",
     "GHSA-xfcv-m889-fmqg",
     "GHSA-j456-xh4h-cpf2",
+    # Draft advisories carrying a regression probe ahead of publication. The
+    # unauthenticated API does not list a draft, so each is named here until it
+    # is published (at which point the forward check needs no change).
+    "GHSA-89p3-fcch-88ph",
+    "GHSA-r53h-rw34-8h97",
+    "GHSA-v8f3-6phw-6mh9",
+    "GHSA-j8g8-j4j7-8j54",
+    "GHSA-7j4p-88wx-5jrc",
+    "GHSA-7mxv-7h3q-9324",
+    "GHSA-wr3g-j6qj-xpgh",
 }
 
 

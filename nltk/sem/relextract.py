@@ -176,18 +176,18 @@ def semi_rel2reldict(pairs, window=5, trace=False):
     :rtype: list(defaultdict)
     """
     result = []
-    while len(pairs) > 2:
+    for k in range(len(pairs) - 2):
         reldict = defaultdict(str)
-        reldict["lcon"] = _join(pairs[0][0][-window:])
-        reldict["subjclass"] = pairs[0][1].label()
-        reldict["subjtext"] = _join(pairs[0][1].leaves())
-        reldict["subjsym"] = list2sym(pairs[0][1].leaves())
-        reldict["filler"] = _join(pairs[1][0])
-        reldict["untagged_filler"] = _join(pairs[1][0], untag=True)
-        reldict["objclass"] = pairs[1][1].label()
-        reldict["objtext"] = _join(pairs[1][1].leaves())
-        reldict["objsym"] = list2sym(pairs[1][1].leaves())
-        reldict["rcon"] = _join(pairs[2][0][:window])
+        reldict["lcon"] = _join(pairs[k][0][-window:])
+        reldict["subjclass"] = pairs[k][1].label()
+        reldict["subjtext"] = _join(pairs[k][1].leaves())
+        reldict["subjsym"] = list2sym(pairs[k][1].leaves())
+        reldict["filler"] = _join(pairs[k + 1][0])
+        reldict["untagged_filler"] = _join(pairs[k + 1][0], untag=True)
+        reldict["objclass"] = pairs[k + 1][1].label()
+        reldict["objtext"] = _join(pairs[k + 1][1].leaves())
+        reldict["objsym"] = list2sym(pairs[k + 1][1].leaves())
+        reldict["rcon"] = _join(pairs[k + 2][0][:window])
         if trace:
             print(
                 "(%s(%s, %s)"
@@ -198,7 +198,6 @@ def semi_rel2reldict(pairs, window=5, trace=False):
                 )
             )
         result.append(reldict)
-        pairs = pairs[1:]
     return result
 
 

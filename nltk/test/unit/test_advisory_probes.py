@@ -713,3 +713,114 @@ def test_jvm_option_filter_probe_has_teeth(monkeypatch):
 
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED
+
+
+# Teeth for the seven newly-swept GHSA classes (PR #3753).
+
+
+def test_r53h_front_mutation_probe_has_teeth():
+    """Reintroduce the O(n) front removal (deque -> list.pop(0)-style reslice); the
+    chomsky_normal_form scaling must go quadratic and flip the probe VULNERABLE."""
+    import nltk.tree.transforms as transforms
+
+    probe = probes.PROBES["GHSA-r53h-rw34-8h97"]
+    assert probe()[0] == probes.FIXED
+
+    class _FrontPopList(list):
+        def popleft(self):
+            # A Python-level reslice so the O(n) front removal is visible at test
+            # sizes (list.pop(0) is a C memmove and hides the constant).
+            head = self[0]
+            rest = []
+            for item in self[1:]:
+                rest.append(item)
+            self[:] = rest
+            return head
+
+    real = transforms.deque
+    try:
+        transforms.deque = _FrontPopList
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        transforms.deque = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_j8g8_reparse_probe_has_teeth():
+    """Force the line-boundary search to match every block; readline then re-splits
+    the whole growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+    import nltk.data as data
+    from nltk import redos
+
+    probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
+    assert probe()[0] == probes.FIXED
+
+    real = data._LINE_BOUNDARY_RE
+    try:
+        data._LINE_BOUNDARY_RE = redos.compile("x?")  # matches empty everywhere
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        data._LINE_BOUNDARY_RE = real
+    assert probe()[0] == probes.FIXED
+
+
+def _skip_if_static(probe):
+    import pytest
+
+    status = probe()[0]
+    if status == probes.STATIC:
+        pytest.skip("probe is STATIC on this platform (guard inactive)")
+    return status
+
+
+def test_7j4p_chat80_store_link_probe_has_teeth():
+    """Disable the derived-name store guard; the planted symlink is followed past
+    it and the probe must flip VULNERABLE."""
+    import nltk.sem.chat80 as chat80
+
+    probe = probes.PROBES["GHSA-7j4p-88wx-5jrc"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real = chat80._refuse_symlinked_store
+    try:
+        chat80._refuse_symlinked_store = lambda *args, **kwargs: None
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        chat80._refuse_symlinked_store = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_7mxv_java_untrusted_exec_probe_has_teeth():
+    """Make the trusted-exec check accept any binary; java() then runs the planted
+    untrusted binary instead of refusing it, flipping the probe VULNERABLE."""
+    import nltk.internals as internals
+
+    probe = probes.PROBES["GHSA-7mxv-7h3q-9324"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real = internals.resolve_trusted_executable
+    try:
+        internals.resolve_trusted_executable = lambda target: target
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        internals.resolve_trusted_executable = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_wr3g_zip_hardlink_probe_has_teeth():
+    """Swap the hardened extractor for the stdlib one (which follows hardlinks); the
+    member write escapes through the planted hardlink and the probe flips."""
+    import zipfile
+
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-wr3g-j6qj-xpgh"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real = pathsec.ZipFile._extract_member
+    try:
+        pathsec.ZipFile._extract_member = zipfile.ZipFile._extract_member
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        pathsec.ZipFile._extract_member = real
+    assert probe()[0] == probes.FIXED

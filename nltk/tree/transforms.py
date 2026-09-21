@@ -107,6 +107,8 @@ The following is a short tutorial on the available transformations.
 
 """
 
+from collections import deque
+
 from nltk.tree.tree import Tree
 
 
@@ -149,7 +151,9 @@ def chomsky_normal_form(
                     str(child.label()) if isinstance(child, Tree) else str(child)
                     for child in node
                 ]
-                nodeCopy = node.copy()
+                # Consume children from the front in O(1) via a deque so the
+                # right-factoring loop stays linear (CWE-407).
+                nodeCopy = deque(node)
                 node[0:] = []  # delete the children
 
                 curNode = node
@@ -165,7 +169,7 @@ def chomsky_normal_form(
                             parentString,
                         )  # create new head
                         newNode = Tree(newHead, [])
-                        curNode[0:] = [nodeCopy.pop(0), newNode]
+                        curNode[0:] = [nodeCopy.popleft(), newNode]
                     else:
                         newHead = "{}{}<{}>{}".format(
                             originalNode,

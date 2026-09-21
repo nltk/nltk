@@ -164,6 +164,7 @@ import itertools
 import ntpath
 import os
 import posixpath
+import stat
 import subprocess
 import sys
 import textwrap
@@ -2779,6 +2780,21 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
             error = _validate_member(member, root_abs)
             if error is not None:
                 yield ErrorMessage(filename, f"{error} (during extraction)")
+                return
+            # Defense in depth if a stdlib extractor is used: a pre-existing
+            # multiply-linked target would let the write follow the hardlink
+            # and alias an outside-root inode (CWE-59), so refuse it.
+            target_abs = os.path.normpath(os.path.join(root_abs, member))
+            try:
+                tstat = os.lstat(target_abs)
+            except OSError:
+                tstat = None
+            if tstat is not None and stat.S_ISREG(tstat.st_mode) and tstat.st_nlink > 1:
+                yield ErrorMessage(
+                    filename,
+                    f"Multiply-linked target blocked: {member!r} "
+                    "(hardlink may alias outside-root inode, CWE-59)",
+                )
                 return
             try:
                 zf.extract(member, root_abs)

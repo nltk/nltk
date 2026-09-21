@@ -23,7 +23,9 @@ from pprint import pformat
 
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary
+from nltk.pathsec import TrustError
 from nltk.pathsec import open as _secure_open
+from nltk.pathsec import spawn_trusted
 from nltk.tree import Tree
 
 #################################################################
@@ -621,25 +623,32 @@ def dot2img(dot_string, t="svg"):
     try:
         # Run the absolute path find_binary returns, not the bare name: it
         # refuses a CWD-relative match, so a planted ./dot cannot be executed
-        # in place of the real Graphviz binary (CWE-426 / CWE-427). The bare
-        # ["dot", ...] used before discarded this validation entirely.
+        # in place of the real Graphviz binary (CWE-426 / CWE-427).
         dot_binary = find_binary("dot")
     except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
+
+    # Route the dot binary through the trusted-exec chokepoint (GHSA-7mxv): it
+    # verifies the binary sits where no other local user can swap it, refuses a
+    # shell, and scrubs the loader env before exec (CWE-426/427/732).
+    text_format = t in ["dot", "dot_json", "json", "svg"]
+    # Text formats feed and return str (text=True); binary formats feed utf8
+    # bytes and, as before, let dot write the image to stdout (return stays None).
+    spawn_kw = {"stdin": subprocess.PIPE}
+    if text_format:
+        spawn_kw.update(stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
-        if t in ["dot", "dot_json", "json", "svg"]:
-            proc = subprocess.run(
-                [dot_binary, "-T%s" % t],
-                capture_output=True,
-                input=dot_string,
-                text=True,
-            )
-        else:
-            proc = subprocess.run(
-                [dot_binary, "-T%s" % t],
-                input=bytes(dot_string, encoding="utf8"),
-            )
-        return proc.stdout
+        proc = spawn_trusted(dot_binary, [f"-T{t}"], **spawn_kw)
+    except (OSError, TrustError) as e:
+        raise Exception(
+            f"Refusing to run untrusted dot binary {dot_binary!r}: it is not on a "
+            "trusted path (install Graphviz where only you or root can write), or "
+            f"it could not be executed ({e})."
+        ) from e
+    try:
+        payload = dot_string if text_format else bytes(dot_string, encoding="utf8")
+        out, _ = proc.communicate(payload)
+        return out
     except Exception:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"

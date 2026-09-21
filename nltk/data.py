@@ -123,6 +123,11 @@ _NO_PROTOCOL_REF_ROOT = (
 # url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
 _PATH_COMPONENT_RE = redos.compile(r"[\\/]")
 
+# The exact line boundaries ``str.splitlines`` recognises (LF/CR/CRLF, vertical
+# and form feeds, the file/group/record separators, NEL, and the line/paragraph
+# separators); readline probes fresh input for one, ``splitlines`` still splits.
+_LINE_BOUNDARY_RE = redos.compile(r"[\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029]")
+
 
 def _normalized_path_escapes(name):
     """
@@ -1965,6 +1970,11 @@ class SeekableUnicodeStreamReader:
             chars += self.linebuffer.pop()
             self.linebuffer = None
 
+        # Scan only the freshly read span for a line break each pass so one long
+        # unterminated line does not re-split the whole growing buffer (CWE-407);
+        # ``searched`` marks that point, the overlap keeps a split CR LF intact.
+        searched = 0
+
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
             new_chars = self._read(readsize)
@@ -1975,19 +1985,23 @@ class SeekableUnicodeStreamReader:
                 new_chars += self._read(1)
 
             chars += new_chars
-            lines = chars.splitlines(True)
-            if len(lines) > 1:
-                line = lines[0]
-                self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
-                self._rewind_checkpoint = startpos
-                break
-            elif len(lines) == 1:
-                line0withend = lines[0]
-                line0withoutend = lines[0].splitlines(False)[0]
-                if line0withend != line0withoutend:  # complete line
-                    line = line0withend
+            # Only split once a break shows up in the new span; ``splitlines``
+            # still does the split, so the returned lines are byte identical.
+            if _LINE_BOUNDARY_RE.search(chars, max(searched - 1, 0)):
+                lines = chars.splitlines(True)
+                if len(lines) > 1:
+                    line = lines[0]
+                    self.linebuffer = lines[1:]
+                    self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                    self._rewind_checkpoint = startpos
                     break
+                else:
+                    line0withend = lines[0]
+                    line0withoutend = lines[0].splitlines(False)[0]
+                    if line0withend != line0withoutend:  # complete line
+                        line = line0withend
+                        break
+            searched = len(chars)
 
             if not new_chars or size is not None:
                 line = chars
