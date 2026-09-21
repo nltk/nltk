@@ -33,18 +33,19 @@ _PAYLOADS = {
     "cdata": "<![CDATA[x]]>" * _N + "<![CDATA[" + "a" * 10,
 }
 
-# _TIMEOUT is only the hang backstop: a worker that never returns is terminated so
-# an exponential regression cannot burn CPU for the rest of the suite. It is
-# generous on purpose so process spawn + ``import nltk`` on a slow/contended runner
-# is never mistaken for a hang. The ReDoS decision is the in-process op-time
-# ceiling below (spawn/import excluded) plus redos's own match timeout, which a
-# regression trips and which surfaces here as a worker ``error``.
-_TIMEOUT = 120
+# _TIMEOUT is only the hang backstop, not the ReDoS guard: it terminates a worker
+# that never returns (the pathological case where redos's own match timeout is
+# broken) so it cannot burn CPU for the rest of the suite. Sized to clear worst
+# case spawn + ``import nltk`` + redos's 5 s match timeout on a loaded runner with
+# margin, so a slow start is never mistaken for a hang. The ReDoS decision is the
+# in-process op-time ceiling below plus a worker ``error`` when redos raises.
+_TIMEOUT = 60
 
 # The fixed match is ~0.1 ms; the pre-fix exponential form does not finish (redos
 # raises). Asserting the in-process match time keeps the ReDoS check load
-# invariant; 2 s clears any runner load without masking a blow-up.
-_MATCH_CEILING = 2.0
+# invariant; 1 s is a ~7000x margin over the linear match yet far below any
+# blow-up, so it never flakes and never masks a slow regression.
+_MATCH_CEILING = 1.0
 
 
 def _regex_worker(result_q, payload):
@@ -95,6 +96,15 @@ def _run_in_process(target, args=()):
     except queue.Empty:
         return True, "error", "worker produced no result", None
     return True, status, payload, op_elapsed
+
+
+def test_valid_xml_re_matches_well_formed_fragments():
+    """The terminator-pinned alternatives must still accept valid XML: pinning the
+    comment / CDATA / doctype ends must not start refusing well-formed fragments."""
+    for frag in ("<!--hi-->", "<![CDATA[x]]>", "<!DOCTYPE html>", "<a>x</a>"):
+        assert XMLCorpusView._VALID_XML_RE.match(
+            frag
+        ), f"valid fragment refused: {frag!r}"
 
 
 def test_valid_xml_re_does_not_hang():
