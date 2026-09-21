@@ -55,8 +55,14 @@ def _format_tagset(tagset, tagpattern=None):
     elif tagpattern in tagdict:
         _print_entries([tagpattern], tagdict)
     else:
-        tagpattern = redos.compile(tagpattern)
-        tags = [tag for tag in sorted(tagdict) if tagpattern.match(tag)]
+        try:
+            compiled = redos.compile(tagpattern)
+        except (ValueError, redos.error) as exc:
+            # redos refuses an oversized/over-nested pattern; degrade gracefully
+            # instead of letting the refusal escape this help utility.
+            print(f"Invalid or oversized tag pattern {tagpattern!r}: {exc}")
+            return
+        tags = [tag for tag in sorted(tagdict) if compiled.match(tag)]
         if tags:
             _print_entries(tags, tagdict)
         else:
