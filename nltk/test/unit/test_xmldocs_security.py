@@ -37,10 +37,10 @@ _PAYLOADS = {
 # ``import nltk`` and redos's 5 s timeout with margin, so a slow start is no hang.
 _TIMEOUT = 60
 
-# Fixed match is ~0.1 ms, so 1 s is a ~7000x margin (load invariant, never flakes)
-# yet far below any blow-up. The ReDoS guard proper is status == ok (redos raises
-# on the exponential form); this op-time ceiling also catches a slow regression.
-_MATCH_CEILING = 1.0
+# op_elapsed is wall-clock in the worker; under xdist a descheduled child can fold
+# scheduler pause into it, so 2 s (not a tighter bound) removes flake risk. The
+# ReDoS guard proper is status == ok (redos raises), so this ceiling costs nothing.
+_MATCH_CEILING = 2.0
 
 
 def _regex_worker(result_q, payload):
@@ -48,8 +48,10 @@ def _regex_worker(result_q, payload):
         start = time.perf_counter()
         matched = XMLCorpusView._VALID_XML_RE.match(payload) is not None
         result_q.put(("ok", matched, time.perf_counter() - start))
-    except BaseException as exc:  # a redos TimeoutError (regression) lands here too
-        result_q.put(("error", repr(exc), 0.0))
+    except BaseException as exc:
+        # A redos TimeoutError (regression) lands here too; op_elapsed is None (not
+        # measured), never 0.0, so it cannot be misread as an instant match.
+        result_q.put(("error", repr(exc), None))
 
 
 def _view_worker(result_q, path):
@@ -65,7 +67,7 @@ def _view_worker(result_q, path):
             outcome = "raised"
         result_q.put(("ok", outcome, time.perf_counter() - start))
     except BaseException as exc:
-        result_q.put(("error", repr(exc), 0.0))
+        result_q.put(("error", repr(exc), None))
 
 
 def _run_in_process(target, args=()):
@@ -147,7 +149,7 @@ def _pre_fix_worker(result_q):
         old.match(_PAYLOADS["comment"])
         result_q.put(("ok", None, time.perf_counter() - start))
     except BaseException as exc:
-        result_q.put(("error", repr(exc), 0.0))
+        result_q.put(("error", repr(exc), None))
 
 
 def test_pre_fix_spanning_comment_trips_the_guard():
