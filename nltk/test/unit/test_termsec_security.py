@@ -95,3 +95,40 @@ def test_safe_print_does_not_crash_on_lone_surrogate(capsys):
     out = capsys.readouterr().out
     assert chr(0xD800) not in out
     assert "\\ud800" in out
+
+
+class TestSingleLineMode:
+    """single_line=True is for a value that must occupy one line (a filename, id,
+    VCS ref): TAB and newline are escaped too, matching ls/git. The default must
+    stay unchanged (TAB/newline kept) so nothing is relaxed."""
+
+    def test_default_keeps_tab_and_newline(self):
+        assert sanitize_terminal("a\tb\nc") == "a\tb\nc"
+
+    def test_single_line_escapes_tab_and_newline(self):
+        assert sanitize_terminal("a\tb\nc", single_line=True) == "a\\x09b\\x0ac"
+
+    def test_single_line_defuses_newline_injection(self):
+        # a crafted filename must not forge a second line
+        out = sanitize_terminal(
+            "safe.txt\nInstalling malware... done", single_line=True
+        )
+        assert "\n" not in out and "safe.txt" in out
+
+    def test_single_line_still_escapes_controls_and_keeps_text(self):
+        out = sanitize_terminal("café\n\x1b[2J😀", single_line=True)
+        assert out == "café\\x0a\\x1b[2J😀"
+        assert "\x1b" not in out
+
+    @pytest.mark.parametrize(
+        "payload", ["\r", "\t", "\n", "\x1b[2J", "\x9b31m", chr(0x202E) + "evil"]
+    )
+    def test_single_line_output_has_no_raw_control(self, payload):
+        # single_line allows NO control, so its output is a strict superset of the
+        # default neutralisation: not one C0/DEL/C1 byte survives.
+        strict = sanitize_terminal("x" + payload + "y", single_line=True)
+        assert not any(
+            ord(ch) < 0x20 or ord(ch) == 0x7F or 0x80 <= ord(ch) <= 0x9F
+            for ch in strict
+        )
+        assert "\x1b" not in strict

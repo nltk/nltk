@@ -122,7 +122,7 @@ def _bidi_is_balanced(text):
     return not stack
 
 
-def sanitize_terminal(text):
+def sanitize_terminal(text, *, single_line=False):
     """Return *text* with terminal control characters replaced by visible escapes.
 
     Tabs and newlines are preserved; every other C0 control, DEL and C1 control
@@ -139,13 +139,19 @@ def sanitize_terminal(text):
     Unicode noncharacters are escaped too. Ordinary printable text (including
     non-ASCII and the ZWNJ/ZWJ joiners needed by real scripts) is unchanged.
     Accepts any object; it is coerced with ``str``.
+
+    Set *single_line* for a value that must occupy one line (a filename, an id, a
+    VCS ref): TAB and newline are then escaped too, so an embedded newline cannot
+    forge a line and a tab cannot jump a column (the neutralisation GNU ls and git
+    apply to such values). The default keeps TAB/newline for multi-line output.
     """
     text = str(text)
+    allowed = frozenset() if single_line else _ALLOWED_CONTROLS
     bidi_ok = _bidi_is_balanced(text)
     result = []
     for char in text:
         codepoint = ord(char)
-        if char in _ALLOWED_CONTROLS:
+        if char in allowed:
             result.append(char)
         elif codepoint < 0x20 or codepoint == 0x7F or 0x80 <= codepoint <= 0x9F:
             result.append(_escape(codepoint))
