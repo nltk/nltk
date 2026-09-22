@@ -62,6 +62,7 @@ def _dangerous_cp(cp):
         or 0x80 <= cp <= 0x9F
         or cp in _ALWAYS_FORMAT
         or 0xE0000 <= cp <= 0xE01EF
+        or 0x1D173 <= cp <= 0x1D17A
         or 0xD800 <= cp <= 0xDFFF
         or 0xFDD0 <= cp <= 0xFDEF
         or (cp & 0xFFFE) == 0xFFFE
@@ -89,6 +90,7 @@ INJECTIONS = [
     "hi" + chr(0xE0041) + chr(0xE0042),  # tags-block smuggle
     "a" + chr(0xE0100) + "b",  # variation-selector supplement
     "a" + chr(0xFFFE) + "b",  # noncharacter
+    "note" + chr(0x1D173) + "hidden",  # musical-symbol format control (invisible)
     "pkg" + chr(0xD800) + "evil",  # lone surrogate (would crash a naive print)
 ]
 

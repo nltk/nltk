@@ -86,6 +86,7 @@ def _is_dangerous(char, codepoint):
         char in _BIDI_OVERRIDES
         or char in _DANGEROUS_FORMAT
         or 0xE0000 <= codepoint <= 0xE01EF  # Tags block + variation-selector supplement
+        or 0x1D173 <= codepoint <= 0x1D17A  # musical-symbol format controls (invisible)
         or 0xD800 <= codepoint <= 0xDFFF  # lone surrogate: crashes a terminal write
         or 0xFDD0 <= codepoint <= 0xFDEF  # noncharacters, never valid in interchange
         or (codepoint & 0xFFFE) == 0xFFFE  # plane noncharacters U+FFFE/U+FFFF/...

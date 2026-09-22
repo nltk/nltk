@@ -39,6 +39,7 @@ VS_SUP = chr(0xE0100)  # variation selector supplement (steganography channel)
 VS16 = chr(0xFE0F)  # emoji-presentation selector (legit, must pass)
 SURR = chr(0xD800)  # lone surrogate (crashes a naive write)
 NONCHAR = chr(0xFFFE)  # a Unicode noncharacter
+MUS = chr(0x1D173)  # musical-symbol format control (invisible)
 
 # The codepoints that MUST NOT survive sanitisation, re-derived here independently
 # of nltk.termsec so this detector is a real cross-check, not a mirror. Bidi
@@ -88,6 +89,7 @@ def _dangerous_cp(cp):
         or cp in _BIDI_CONTROLS
         or cp in _ALWAYS_FORMAT
         or 0xE0000 <= cp <= 0xE01EF
+        or 0x1D173 <= cp <= 0x1D17A
         or 0xD800 <= cp <= 0xDFFF
         or 0xFDD0 <= cp <= 0xFDEF
         or (cp & 0xFFFE) == 0xFFFE
@@ -146,6 +148,7 @@ ATTACKS = {
     "mongolian-vowel-sep": "ev" + MVS + "il",
     "tag-smuggling": "hi" + TAG_A + TAG_B,
     "vs-supplement-smuggle": "a" + VS_SUP + "b",
+    "musical-format-smuggle": "note" + MUS + "hidden",
     "interlinear": "a" + IAA + "b" + IAT + "c",
     "deprecated-format": "a" + DEPR + "b",
     "lone-surrogate": "pkg" + SURR + "evil",
@@ -196,6 +199,7 @@ class TestDetectorHasTeeth:
             SURR,
             NONCHAR,
             TAG_A,
+            MUS,
             chr(0xFDD0),
         ],
     )
