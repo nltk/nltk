@@ -213,12 +213,22 @@ def sanitize_csv_field(value):
     :func:`sanitize_terminal`), and a leading ``= + - @`` that a spreadsheet runs
     as a formula (CWE-1236). A genuine number keeps its sign; any other value
     with a formula lead is prefixed with an apostrophe so the spreadsheet treats
-    it as text. A non-string value (``None``, an int, a bool) is returned
-    unchanged: the csv writer renders it safely (``None`` as an empty cell) and
-    only a string can carry a control sequence or a formula lead.
+    it as text.
+
+    An EXACT ``int``, ``float``, ``bool`` or ``None`` is returned unchanged:
+    ``str()`` of those cannot carry a control sequence or a formula payload (a
+    negative number's minus sign is a genuine sign, exactly as in the string
+    path), so the csv writer renders them safely and their type is preserved.
+    Every other object, including a lying ``int``/``str`` SUBCLASS with a
+    crafted ``__str__``, is materialised with ``str()`` HERE and sanitised as
+    text, so the conversion the csv writer would otherwise perform later can
+    never surface an unsanitised formula or control sequence (and a raising
+    ``__str__`` fails closed in this helper rather than at the writer).
     """
-    if not isinstance(value, str):
+    if value is None or type(value) in (int, float, bool):
         return value
+    if not isinstance(value, str):
+        value = str(value)
     text = sanitize_terminal(value)
     # Strip every leading whitespace (space, tab, and any Unicode space such as a
     # no-break space) a spreadsheet skips before finding the formula lead.

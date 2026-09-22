@@ -288,10 +288,61 @@ class TestCsvInjection:
     def test_genuine_number_kept(self, num):
         assert sanitize_csv_field(num) == num
 
-    def test_non_string_passed_through(self):
+    def test_exact_safe_primitives_pass_with_type_preserved(self):
+        # str() of an EXACT int/float/bool/None cannot carry a payload, so the
+        # value and its type are preserved (no munging of numeric cells)
         assert sanitize_csv_field(None) is None
-        assert sanitize_csv_field(42) == 42
+        assert sanitize_csv_field(42) == 42 and type(sanitize_csv_field(42)) is int
+        assert sanitize_csv_field(-5) == -5
+        assert sanitize_csv_field(3.14) == 3.14
         assert sanitize_csv_field(True) is True
+        inf = sanitize_csv_field(float("inf"))
+        assert type(inf) is float
+
+    def test_object_with_formula_str_is_defused(self):
+        # csv.writer stringifies non-strings AFTER this helper, so a crafted
+        # __str__ must be materialised and sanitised HERE, not passed through
+        class EvilObj:
+            def __str__(self):
+                return "=cmd|'/c calc'!A1"
+
+        out = sanitize_csv_field(EvilObj())
+        assert isinstance(out, str) and out.startswith("'=")
+
+    def test_lying_int_subclass_is_defused(self):
+        # isinstance(int) is True for a subclass, so the fast path must use
+        # EXACT types or a lying __str__ smuggles a formula to the writer
+        class EvilInt(int):
+            def __str__(self):
+                return "=2+5+cmd|' /C calc'!A0"
+
+        out = sanitize_csv_field(EvilInt(7))
+        assert isinstance(out, str) and out.startswith("'=")
+
+    def test_object_with_control_str_is_neutralised(self):
+        class EscObj:
+            def __str__(self):
+                return "\x1b]0;pwned\x07"
+
+        out = sanitize_csv_field(EscObj())
+        assert isinstance(out, str) and not _has_live_control(out)
+
+    def test_raising_str_fails_closed_here(self):
+        class Boom:
+            def __str__(self):
+                raise RuntimeError("no str for you")
+
+        with pytest.raises(RuntimeError):
+            sanitize_csv_field(Boom())
+
+    def test_str_subclass_output_is_exactly_str(self):
+        # a str subclass is laundered to a plain str by the char-by-char
+        # rebuild, so a subclass cannot ride through to the writer
+        class Sub(str):
+            pass
+
+        assert type(sanitize_csv_field(Sub("=x"))) is str
+        assert type(sanitize_terminal(Sub("plain"))) is str
 
 
 class TestSanitizeIsIdempotent:

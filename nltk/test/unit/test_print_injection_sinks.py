@@ -120,6 +120,16 @@ class TestSafePrintNeutralisesInjection:
         out = capsys.readouterr().out
         assert not _has_live_control(out), f"live control emitted for {payload!r}"
 
+    def test_object_value_with_crafted_str_is_neutralised(self, capsys):
+        # non-string values are coerced with str() INSIDE the sink, so a
+        # crafted __str__ cannot smuggle a live sequence past it
+        class EscObj:
+            def __str__(self):
+                return "\x1b[2J" + chr(0x202E) + "evil"
+
+        safe_print(EscObj())
+        assert not _has_live_control(capsys.readouterr().out)
+
 
 class TestSafePrintTerminatorsSanitised:
     def test_sep_and_end_are_sanitised(self, capsys):
