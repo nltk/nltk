@@ -58,11 +58,21 @@ _BIDI_ALL = (
 _DANGEROUS_FORMAT = frozenset(
     chr(cp)
     for cp in (
+        0x00AD,  # SOFT HYPHEN: invisible except at a rendered line break
+        0x115F,
+        0x1160,
+        0x3164,
+        0xFFA0,  # HANGUL FILLER family: zero-width, no role in a plain value
+        0x180E,  # MONGOLIAN VOWEL SEPARATOR: zero-width (default-ignorable)
         0x2028,
         0x2029,  # LINE / PARAGRAPH SEPARATOR: injects a visual line break
         0x200B,
         0x2060,
         0xFEFF,  # ZERO WIDTH SPACE / WORD JOINER / ZWNBSP: invisible
+        0x2061,
+        0x2062,
+        0x2063,
+        0x2064,  # invisible math operators (function/times/separator/plus)
         0xFFF9,
         0xFFFA,
         0xFFFB,  # INTERLINEAR ANNOTATION anchor/separator/terminator
@@ -75,7 +85,10 @@ def _is_dangerous(char, codepoint):
     return (
         char in _BIDI_OVERRIDES
         or char in _DANGEROUS_FORMAT
-        or 0xE0000 <= codepoint <= 0xE007F  # Unicode Tags block (invisible smuggling)
+        or 0xE0000 <= codepoint <= 0xE01EF  # Tags block + variation-selector supplement
+        or 0xD800 <= codepoint <= 0xDFFF  # lone surrogate: crashes a terminal write
+        or 0xFDD0 <= codepoint <= 0xFDEF  # noncharacters, never valid in interchange
+        or (codepoint & 0xFFFE) == 0xFFFE  # plane noncharacters U+FFFE/U+FFFF/...
     )
 
 
@@ -120,9 +133,11 @@ def sanitize_terminal(text):
     unbalanced OR crossed directional nesting are escaped to defeat Trojan-Source
     reordering (CVE-2021-42574); balanced Arabic/Hebrew bidi passes through. Line
     and paragraph separators, deprecated/interlinear format controls, the invisible
-    zero-width smuggling characters, and the Unicode Tags block are escaped too.
-    Ordinary printable text (including non-ASCII and the ZWNJ/ZWJ joiners needed by
-    real scripts) is unchanged. Accepts any object; it is coerced with ``str``.
+    zero-width smuggling characters (soft hyphen, invisible math operators), the
+    Unicode Tags block, lone surrogates (which would otherwise crash the write) and
+    Unicode noncharacters are escaped too. Ordinary printable text (including
+    non-ASCII and the ZWNJ/ZWJ joiners needed by real scripts) is unchanged.
+    Accepts any object; it is coerced with ``str``.
     """
     text = str(text)
     bidi_ok = _bidi_is_balanced(text)
@@ -142,12 +157,17 @@ def sanitize_terminal(text):
     return "".join(result)
 
 
-def safe_print(*values, sep=" ", **kwargs):
+def safe_print(*values, sep=" ", end="\n", **kwargs):
     """``print`` wrapper that sanitises each value with :func:`sanitize_terminal`.
 
-    A drop-in for ``print`` when the arguments may contain untrusted text.
+    A drop-in for ``print`` when the arguments may contain untrusted text. The
+    ``sep`` and ``end`` strings are sanitised too, so a caller-supplied separator
+    cannot smuggle a control sequence; a ``sep``/``end`` of ``None`` keeps print's
+    own default.
     """
-    print(*(sanitize_terminal(v) for v in values), sep=sep, **kwargs)
+    sep = sanitize_terminal(sep) if isinstance(sep, str) else sep
+    end = sanitize_terminal(end) if isinstance(end, str) else end
+    print(*(sanitize_terminal(v) for v in values), sep=sep, end=end, **kwargs)
 
 
 # A leading one of these makes a spreadsheet evaluate a CSV cell as a formula, so
@@ -157,6 +177,12 @@ _CSV_FORMULA_LEADS = ("=", "+", "-", "@")
 
 
 def _looks_numeric(text):
+    # float() also accepts inf/nan and digit-group underscores (1_0), which a
+    # spreadsheet would NOT treat as a plain number, so the leading + / - is not a
+    # genuine number sign there; reject them so the formula lead is still defused.
+    lowered = text.lower()
+    if "inf" in lowered or "nan" in lowered or "_" in text:
+        return False
     try:
         float(text)
         return True
@@ -179,7 +205,9 @@ def sanitize_csv_field(value):
     if not isinstance(value, str):
         return value
     text = sanitize_terminal(value)
-    lead = text.lstrip(" \t")
+    # Strip every leading whitespace (space, tab, and any Unicode space such as a
+    # no-break space) a spreadsheet skips before finding the formula lead.
+    lead = text.lstrip()
     if lead[:1] in _CSV_FORMULA_LEADS and not _looks_numeric(lead):
         text = "'" + text
     return text

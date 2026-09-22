@@ -74,3 +74,24 @@ def test_safe_print_sanitises(capsys):
     safe_print("evil\x1b[2Jtitle")
     out = capsys.readouterr().out
     assert "\x1b" not in out and "evil" in out
+
+
+def test_safe_print_sanitises_sep_and_end(capsys):
+    # a caller-supplied separator or terminator must not smuggle a live sequence
+    safe_print("a", "b", sep="\x1b[31m", end="\x1b]0;pwn\x07\n")
+    out = capsys.readouterr().out
+    assert "\x1b" not in out
+    assert "a" in out and "b" in out
+
+
+def test_safe_print_sep_none_keeps_default(capsys):
+    safe_print("a", "b", sep=None)
+    assert capsys.readouterr().out == "a b\n"
+
+
+def test_safe_print_does_not_crash_on_lone_surrogate(capsys):
+    # a lone surrogate would raise UnicodeEncodeError on a naive print
+    safe_print("pkg" + chr(0xD800) + "evil")
+    out = capsys.readouterr().out
+    assert chr(0xD800) not in out
+    assert "\\ud800" in out
