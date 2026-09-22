@@ -59,26 +59,34 @@ _BIDI_CONTROLS = {
     0x200F,
     0x061C,
 }
-_ALWAYS_FORMAT = {
-    0x00AD,
-    0x115F,
-    0x1160,
-    0x3164,
-    0xFFA0,
-    0x180E,
-    0x2028,
-    0x2029,
-    0x200B,
-    0x2060,
-    0xFEFF,
-    0x2061,
-    0x2062,
-    0x2063,
-    0x2064,
-    0xFFF9,
-    0xFFFA,
-    0xFFFB,
-} | set(range(0x206A, 0x2070))
+_ALWAYS_FORMAT = (
+    {
+        0x00AD,
+        0x115F,
+        0x1160,
+        0x3164,
+        0xFFA0,
+        0x17B4,
+        0x17B5,
+        0x180E,
+        0x2028,
+        0x2029,
+        0x200B,
+        0x2060,
+        0xFEFF,
+        0x2061,
+        0x2062,
+        0x2063,
+        0x2064,
+        0x2065,
+        0xFFF9,
+        0xFFFA,
+        0xFFFB,
+    }
+    | set(range(0xFFF0, 0xFFF9))
+    | set(range(0x1BCA0, 0x1BCA4))
+    | set(range(0x206A, 0x2070))
+)
 
 
 def _dangerous_cp(cp):
@@ -88,7 +96,7 @@ def _dangerous_cp(cp):
         or 0x80 <= cp <= 0x9F
         or cp in _BIDI_CONTROLS
         or cp in _ALWAYS_FORMAT
-        or 0xE0000 <= cp <= 0xE01EF
+        or 0xE0000 <= cp <= 0xE0FFF
         or 0x1D173 <= cp <= 0x1D17A
         or 0xD800 <= cp <= 0xDFFF
         or 0xFDD0 <= cp <= 0xFDEF
@@ -149,6 +157,11 @@ ATTACKS = {
     "tag-smuggling": "hi" + TAG_A + TAG_B,
     "vs-supplement-smuggle": "a" + VS_SUP + "b",
     "musical-format-smuggle": "note" + MUS + "hidden",
+    "khmer-inherent-vowel": "ev" + chr(0x17B4) + "il",
+    "reserved-di-2065": "a" + chr(0x2065) + "b",
+    "reserved-di-fff0": "a" + chr(0xFFF0) + "b",
+    "shorthand-format": "a" + chr(0x1BCA0) + "b",
+    "reserved-di-plane14": "a" + chr(0xE01F0) + "b",
     "interlinear": "a" + IAA + "b" + IAT + "c",
     "deprecated-format": "a" + DEPR + "b",
     "lone-surrogate": "pkg" + SURR + "evil",
@@ -176,6 +189,9 @@ LEGIT = {
     "skin-tone": "\U0001f44d\U0001f3fd",
     "bidi-marks": LRM + "a" + RLM + "b" + ALM + "c",
     "balanced-rli-embedded": RLI + LRE + "x" + PDF + PDI,
+    "khmer": "ភាសាខ្មែរ",
+    "cgj-kept": "a" + chr(0x034F) + "b",
+    "mongolian-fvs": chr(0x1820) + chr(0x180B),
 }
 
 
@@ -201,6 +217,11 @@ class TestDetectorHasTeeth:
             TAG_A,
             MUS,
             chr(0xFDD0),
+            chr(0x2065),
+            chr(0xFFF0),
+            chr(0x17B4),
+            chr(0x1BCA0),
+            chr(0xE01F0),
         ],
     )
     def test_flags_raw_dangerous(self, raw):
@@ -271,3 +292,15 @@ class TestCsvInjection:
         assert sanitize_csv_field(None) is None
         assert sanitize_csv_field(42) == 42
         assert sanitize_csv_field(True) is True
+
+
+class TestSanitizeIsIdempotent:
+    """Escapes are plain printable ASCII, so a second pass must be the identity.
+    If it ever is not, an escape is being re-escaped or something dangerous
+    survived the first pass and got caught only on the second."""
+
+    @pytest.mark.parametrize("name", list(ATTACKS) + list(LEGIT))
+    def test_sanitize_is_idempotent(self, name):
+        payload = ATTACKS.get(name, LEGIT.get(name))
+        once = sanitize_terminal(payload)
+        assert sanitize_terminal(once) == once

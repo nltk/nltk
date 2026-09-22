@@ -24,35 +24,43 @@ RLO = chr(0x202E)
 # Codepoints a terminal would act on / that would corrupt or crash the write; a
 # neutralised sink must leave NONE of them in the emitted bytes. Derived here so
 # the check does not just mirror nltk.termsec.
-_ALWAYS_FORMAT = {
-    0x00AD,
-    0x115F,
-    0x1160,
-    0x3164,
-    0xFFA0,
-    0x180E,
-    0x2028,
-    0x2029,
-    0x200B,
-    0x2060,
-    0xFEFF,
-    0x2061,
-    0x2062,
-    0x2063,
-    0x2064,
-    0xFFF9,
-    0xFFFA,
-    0xFFFB,
-    0x202A,
-    0x202B,
-    0x202C,
-    0x202D,
-    0x202E,
-    0x2066,
-    0x2067,
-    0x2068,
-    0x2069,
-} | set(range(0x206A, 0x2070))
+_ALWAYS_FORMAT = (
+    {
+        0x00AD,
+        0x115F,
+        0x1160,
+        0x3164,
+        0xFFA0,
+        0x17B4,
+        0x17B5,
+        0x180E,
+        0x2028,
+        0x2029,
+        0x200B,
+        0x2060,
+        0xFEFF,
+        0x2061,
+        0x2062,
+        0x2063,
+        0x2064,
+        0x2065,
+        0xFFF9,
+        0xFFFA,
+        0xFFFB,
+        0x202A,
+        0x202B,
+        0x202C,
+        0x202D,
+        0x202E,
+        0x2066,
+        0x2067,
+        0x2068,
+        0x2069,
+    }
+    | set(range(0xFFF0, 0xFFF9))
+    | set(range(0x1BCA0, 0x1BCA4))
+    | set(range(0x206A, 0x2070))
+)
 
 
 def _dangerous_cp(cp):
@@ -61,7 +69,7 @@ def _dangerous_cp(cp):
         or cp == 0x7F
         or 0x80 <= cp <= 0x9F
         or cp in _ALWAYS_FORMAT
-        or 0xE0000 <= cp <= 0xE01EF
+        or 0xE0000 <= cp <= 0xE0FFF
         or 0x1D173 <= cp <= 0x1D17A
         or 0xD800 <= cp <= 0xDFFF
         or 0xFDD0 <= cp <= 0xFDEF
@@ -91,6 +99,7 @@ INJECTIONS = [
     "a" + chr(0xE0100) + "b",  # variation-selector supplement
     "a" + chr(0xFFFE) + "b",  # noncharacter
     "note" + chr(0x1D173) + "hidden",  # musical-symbol format control (invisible)
+    "a" + chr(0xE01F0) + "b",  # reserved plane-14 default-ignorable
     "pkg" + chr(0xD800) + "evil",  # lone surrogate (would crash a naive print)
 ]
 

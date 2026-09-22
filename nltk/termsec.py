@@ -55,6 +55,9 @@ _BIDI_ALL = (
 # invisible smuggling, line-break injection). Neutralised ALWAYS, like the bidi
 # overrides - independent of bidi balance. The joiners U+200C/U+200D (ZWNJ/ZWJ)
 # are deliberately NOT here: they are required for legitimate scripts and emoji.
+# Other default-ignorables deliberately kept: variation selectors U+FE00-FE0F
+# (emoji/CJK sequences), Mongolian FVS U+180B-180D/180F (legitimate Mongolian),
+# and CGJ U+034F (Hebrew mark ordering, collation).
 _DANGEROUS_FORMAT = frozenset(
     chr(cp)
     for cp in (
@@ -63,6 +66,8 @@ _DANGEROUS_FORMAT = frozenset(
         0x1160,
         0x3164,
         0xFFA0,  # HANGUL FILLER family: zero-width, no role in a plain value
+        0x17B4,
+        0x17B5,  # KHMER VOWEL INHERENT AQ/AA: deprecated, invisible
         0x180E,  # MONGOLIAN VOWEL SEPARATOR: zero-width (default-ignorable)
         0x2028,
         0x2029,  # LINE / PARAGRAPH SEPARATOR: injects a visual line break
@@ -73,9 +78,12 @@ _DANGEROUS_FORMAT = frozenset(
         0x2062,
         0x2063,
         0x2064,  # invisible math operators (function/times/separator/plus)
+        0x2065,  # reserved default-ignorable between the operators and isolates
         0xFFF9,
         0xFFFA,
         0xFFFB,  # INTERLINEAR ANNOTATION anchor/separator/terminator
+        *range(0xFFF0, 0xFFF9),  # reserved default-ignorables below the interlinear
+        *range(0x1BCA0, 0x1BCA4),  # SHORTHAND FORMAT controls: invisible
         *range(0x206A, 0x2070),  # deprecated format chars (symmetric swap, digit shape)
     )
 )
@@ -85,7 +93,7 @@ def _is_dangerous(char, codepoint):
     return (
         char in _BIDI_OVERRIDES
         or char in _DANGEROUS_FORMAT
-        or 0xE0000 <= codepoint <= 0xE01EF  # Tags block + variation-selector supplement
+        or 0xE0000 <= codepoint <= 0xE0FFF  # plane-14 DI: tags, VS supplement, reserved
         or 0x1D173 <= codepoint <= 0x1D17A  # musical-symbol format controls (invisible)
         or 0xD800 <= codepoint <= 0xDFFF  # lone surrogate: crashes a terminal write
         or 0xFDD0 <= codepoint <= 0xFDEF  # noncharacters, never valid in interchange
