@@ -355,3 +355,116 @@ class TestSanitizeIsIdempotent:
         payload = ATTACKS.get(name, LEGIT.get(name))
         once = sanitize_terminal(payload)
         assert sanitize_terminal(once) == once
+
+
+class TestNumericBombs:
+    """A crafted huge integer must never burn conversion time at the writer:
+    CPython's own digit limit (CVE-2020-10735) covers the default config, and
+    the chokepoint's ~100,000-digit backstop covers interpreters where that
+    limit was disabled. Floats can never bomb (their text is always short)."""
+
+    # bit_length 400_001, far past the backstop; construction is instant
+    _BOMB = 1 << 400_000
+
+    def test_bomb_refused_by_every_entry_point(self):
+        from nltk.termsec import safe_print
+
+        with pytest.raises(ValueError):
+            sanitize_csv_field(self._BOMB)
+        with pytest.raises(ValueError):
+            sanitize_terminal(self._BOMB)
+        with pytest.raises(ValueError):
+            safe_print(self._BOMB)
+
+    def test_bomb_refused_even_with_interpreter_guard_disabled(self):
+        import sys
+
+        saved = sys.get_int_max_str_digits()
+        sys.set_int_max_str_digits(0)
+        try:
+            with pytest.raises(ValueError):
+                sanitize_csv_field(self._BOMB)
+            with pytest.raises(ValueError):
+                sanitize_terminal(self._BOMB)
+        finally:
+            sys.set_int_max_str_digits(saved)
+
+    def test_int_subclass_bomb_refused(self):
+        class SubInt(int):
+            pass
+
+        with pytest.raises(ValueError):
+            sanitize_csv_field(SubInt(self._BOMB))
+
+    def test_midsize_int_fails_closed_under_default_guard(self):
+        # between the interpreter's 4300-digit limit and our backstop: the
+        # exact int passes through and the interpreter guard raises at the
+        # conversion, promptly, on every path that stringifies it
+        import csv
+        import io
+        import sys
+
+        saved = sys.get_int_max_str_digits()
+        sys.set_int_max_str_digits(4300)
+        try:
+            big = 10**5000
+            out = sanitize_csv_field(big)
+            assert out is big  # exact type preserved by the fast path
+            with pytest.raises(ValueError):
+                csv.writer(io.StringIO()).writerow([out])
+            with pytest.raises(ValueError):
+                sanitize_terminal(big)
+        finally:
+            sys.set_int_max_str_digits(saved)
+
+    def test_legit_large_ints_unaffected(self):
+        import csv
+        import io
+
+        n = 10**100
+        assert sanitize_csv_field(n) is n
+        buf = io.StringIO()
+        csv.writer(buf).writerow([n])
+        assert str(n) in buf.getvalue()
+        digits = sanitize_terminal(10**4000)
+        assert digits == str(10**4000)
+
+    @pytest.mark.parametrize(
+        "f", [1e308, 5e-324, -0.0, float("inf"), float("nan"), 3.14, -2.5]
+    )
+    def test_float_can_never_bomb(self, f):
+        out = sanitize_csv_field(f)
+        assert type(out) is float
+        assert len(str(out)) < 32  # a float's text is bounded, no bomb possible
+
+    def test_long_digit_string_kept_verbatim(self):
+        # float() overflows to inf when PARSING, instantly and linearly, so a
+        # pure digit run with a sign is accepted as numeric and kept unchanged
+        text = "-" + "9" * 5000
+        assert sanitize_csv_field(text) == text
+
+    @pytest.mark.parametrize("bad", ["-1.2.3", "+1..2", "+.", "-."])
+    def test_many_decimal_points_with_formula_lead_defused(self, bad):
+        assert sanitize_csv_field(bad).startswith("'")
+
+    def test_many_decimal_points_without_lead_unchanged(self):
+        assert sanitize_csv_field("1.2.3") == "1.2.3"
+
+    def test_decimal_coerced_linearly(self):
+        from decimal import Decimal
+
+        out = sanitize_csv_field(Decimal("9" * 10_000))
+        assert isinstance(out, str) and len(out) == 10_000
+        assert not _has_live_control(out)
+
+    def test_fraction_with_huge_terms_fails_closed(self):
+        import sys
+        from fractions import Fraction
+
+        saved = sys.get_int_max_str_digits()
+        sys.set_int_max_str_digits(4300)
+        try:
+            with pytest.raises(ValueError):
+                sanitize_csv_field(Fraction(10**5000, 3))
+        finally:
+            sys.set_int_max_str_digits(saved)

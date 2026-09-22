@@ -130,6 +130,22 @@ def _bidi_is_balanced(text):
     return not stack
 
 
+# CPython refuses int-to-str conversion beyond sys.get_int_max_str_digits()
+# digits (the CVE-2020-10735 mitigation), but big-integer applications disable
+# that cap globally, and int-to-str is superlinear, so a crafted huge integer
+# could then burn CPU at the write. The chokepoint keeps its own backstop: no
+# printed value or CSV cell legitimately holds a >100,000-digit integer.
+_INT_RENDER_BIT_LIMIT = 333_000  # about 100,000 decimal digits
+
+
+def _refuse_int_bomb(value):
+    if isinstance(value, int) and value.bit_length() > _INT_RENDER_BIT_LIMIT:
+        raise ValueError(
+            f"integer of {value.bit_length()} bits refused: too large to render "
+            "as terminal or CSV output"
+        )
+
+
 def sanitize_terminal(text, *, single_line=False):
     """Return *text* with terminal control characters replaced by visible escapes.
 
@@ -146,13 +162,16 @@ def sanitize_terminal(text, *, single_line=False):
     Unicode Tags block, lone surrogates (which would otherwise crash the write) and
     Unicode noncharacters are escaped too. Ordinary printable text (including
     non-ASCII and the ZWNJ/ZWJ joiners needed by real scripts) is unchanged.
-    Accepts any object; it is coerced with ``str``.
+    Accepts any object; it is coerced with ``str``, except an integer beyond
+    the ~100,000-digit render backstop, which raises ``ValueError`` even when
+    the interpreter's own int-to-str digit limit has been disabled.
 
     Set *single_line* for a value that must occupy one line (a filename, an id, a
     VCS ref): TAB and newline are then escaped too, so an embedded newline cannot
     forge a line and a tab cannot jump a column (the neutralisation GNU ls and git
     apply to such values). The default keeps TAB/newline for multi-line output.
     """
+    _refuse_int_bomb(text)
     text = str(text)
     allowed = frozenset() if single_line else _ALLOWED_CONTROLS
     bidi_ok = _bidi_is_balanced(text)
@@ -224,7 +243,14 @@ def sanitize_csv_field(value):
     text, so the conversion the csv writer would otherwise perform later can
     never surface an unsanitised formula or control sequence (and a raising
     ``__str__`` fails closed in this helper rather than at the writer).
+
+    An integer beyond the ~100,000-digit render backstop raises ``ValueError``
+    here, even when the interpreter's own int-to-str digit limit has been
+    disabled, so a crafted number cannot burn superlinear conversion time at
+    the writer. A float can never bomb: its text is at most a couple of dozen
+    characters.
     """
+    _refuse_int_bomb(value)
     if value is None or type(value) in (int, float, bool):
         return value
     if not isinstance(value, str):
