@@ -28,6 +28,7 @@ import subprocess
 
 from nltk.internals import find_binary
 from nltk.pathsec import TrustError, spawn_trusted
+from nltk.termsec import safe_print
 
 try:
     import numpy
@@ -211,8 +212,8 @@ def call_megam(args):
 
     # Check the return code.
     if p.returncode != 0:
-        print()
-        print(stderr)
+        safe_print()
+        safe_print(stderr)
         raise OSError("megam command failed!")
 
     if isinstance(stdout, str):

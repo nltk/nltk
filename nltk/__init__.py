@@ -208,8 +208,9 @@ from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
 from nltk import tag, tbl, text, tokenize, translate, tree, util
+from nltk.termsec import safe_print
 
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
 def demo():
-    print("To run the demo code for a module, type nltk.module.demo()")
+    safe_print("To run the demo code for a module, type nltk.module.demo()")

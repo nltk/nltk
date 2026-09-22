@@ -107,6 +107,7 @@ The following is a short tutorial on the available transformations.
 
 """
 
+from nltk.termsec import safe_print
 from nltk.tree.tree import Tree
 
 
@@ -331,9 +332,9 @@ def demo():
 
     # convert tree back to bracketed text
     sentence2 = original.pprint()
-    print(sentence)
-    print(sentence2)
-    print("Sentences the same? ", sentence == sentence2)
+    safe_print(sentence)
+    safe_print(sentence2)
+    safe_print("Sentences the same? ", sentence == sentence2)
 
     draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 

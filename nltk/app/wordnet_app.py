@@ -67,6 +67,7 @@ from urllib.parse import parse_qs, unquote_plus
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
 from nltk.picklesec import RestrictedUnpickler, pickle_dumps
+from nltk.termsec import safe_print
 
 firstClient = True
 
@@ -106,7 +107,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
             elif self._shutdown_authorized():
-                print("Server shutting down!")
+                safe_print("Server shutting down!")
                 os._exit(0)
             else:
                 # Refuse a token-less / cross-site shutdown request (CWE-352).
@@ -1053,7 +1054,7 @@ def usage():
     """
     Display the command line help message.
     """
-    print(__doc__)
+    safe_print(__doc__)
 
 
 def app():

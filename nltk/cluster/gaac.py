@@ -11,6 +11,7 @@ except ImportError:
     pass
 
 from nltk.cluster.util import Dendrogram, VectorSpaceClusterer, cosine_distance
+from nltk.termsec import safe_print
 
 
 class GAAClusterer(VectorSpaceClusterer):
@@ -56,7 +57,7 @@ class GAAClusterer(VectorSpaceClusterer):
         while cluster_count > max(self._num_clusters, 1):
             i, j = numpy.unravel_index(dist.argmin(), dims)
             if trace:
-                print("merging %d and %d" % (i, j))
+                safe_print("merging %d and %d" % (i, j))
 
             # update similarities for merging i and j
             self._merge_similarities(dist, cluster_len, i, j)
@@ -151,19 +152,19 @@ def demo():
     clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
-    print("Clusterer:", clusterer)
-    print("Clustered:", vectors)
-    print("As:", clusters)
-    print()
+    safe_print("Clusterer:", clusterer)
+    safe_print("Clustered:", vectors)
+    safe_print("As:", clusters)
+    safe_print()
 
     # show the dendrogram
     clusterer.dendrogram().show()
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print("classify(%s):" % vector, end=" ")
-    print(clusterer.classify(vector))
-    print()
+    safe_print("classify(%s):" % vector, end=" ")
+    safe_print(clusterer.classify(vector))
+    safe_print()
 
 
 if __name__ == "__main__":

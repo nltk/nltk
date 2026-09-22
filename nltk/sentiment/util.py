@@ -23,6 +23,7 @@ from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.jsontags import safe_json_loads
 from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
 from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
@@ -142,9 +143,9 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
+            safe_print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
         else:
-            print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
+            safe_print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
         return result
 
     return timed
@@ -470,7 +471,7 @@ def parse_tweets_set(
                 tweet = text
             tweets.append((tweet, label))
 
-    print(f"Loaded {i} tweets")
+    safe_print(f"Loaded {i} tweets")
     return tweets
 
 
@@ -551,7 +552,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
+        safe_print(
             "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
@@ -620,7 +621,7 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
+        safe_print(
             "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
@@ -690,7 +691,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
+        safe_print(
             "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
@@ -727,13 +728,13 @@ def demo_sent_subjectivity(text):
     try:
         sentim_analyzer = load("sa_subjectivity.pickle")
     except LookupError:
-        print("Cannot find the sentiment analyzer you want to load.")
-        print("Training a new one using NaiveBayesClassifier.")
+        safe_print("Cannot find the sentiment analyzer you want to load.")
+        safe_print("Training a new one using NaiveBayesClassifier.")
         sentim_analyzer = demo_subjectivity(NaiveBayesClassifier.train, True)
 
     # Tokenize and convert to lower case
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    print(sentim_analyzer.classify(tokenized_text))
+    safe_print(sentim_analyzer.classify(tokenized_text))
 
 
 def demo_liu_hu_lexicon(sentence, plot=False):
@@ -768,11 +769,11 @@ def demo_liu_hu_lexicon(sentence, plot=False):
             y.append(0)  # neutral
 
     if pos_words > neg_words:
-        print("Positive")
+        safe_print("Positive")
     elif pos_words < neg_words:
-        print("Negative")
+        safe_print("Negative")
     elif pos_words == neg_words:
-        print("Neutral")
+        safe_print("Neutral")
 
     if plot:
         _show_plot(
@@ -789,7 +790,7 @@ def demo_vader_instance(text):
     from nltk.sentiment import SentimentIntensityAnalyzer
 
     vader_analyzer = SentimentIntensityAnalyzer()
-    print(vader_analyzer.polarity_scores(text))
+    safe_print(vader_analyzer.polarity_scores(text))
 
 
 def demo_vader_tweets(n_instances=None, output=None):
@@ -875,7 +876,7 @@ def demo_vader_tweets(n_instances=None, output=None):
         metrics_results[f"F-measure [{label}]"] = f_measure_score
 
     for result in sorted(metrics_results):
-        print(f"{result}: {metrics_results[result]}")
+        safe_print(f"{result}: {metrics_results[result]}")
 
     if output:
         output_markdown(

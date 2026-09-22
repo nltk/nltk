@@ -19,6 +19,7 @@ TO DO: add lemmatization
 
 from nltk.classify.maxent import MaxentClassifier
 from nltk.classify.util import accuracy
+from nltk.termsec import safe_print
 from nltk.tokenize import RegexpTokenizer
 
 
@@ -86,11 +87,11 @@ class RTEFeatureExtractor:
         ne_overlap = {token for token in self._overlap if self._ne(token)}
         if toktype == "ne":
             if debug:
-                print("ne overlap", ne_overlap)
+                safe_print("ne overlap", ne_overlap)
             return ne_overlap
         elif toktype == "word":
             if debug:
-                print("word overlap", self._overlap - ne_overlap)
+                safe_print("word overlap", self._overlap - ne_overlap)
             return self._overlap - ne_overlap
         else:
             raise ValueError("Type not recognized:'%s'" % toktype)
@@ -166,7 +167,7 @@ def rte_classifier(algorithm, sample_N=None):
     featurized_test_set = rte_featurize(test_set)
 
     # Train the classifier
-    print("Training classifier...")
+    safe_print("Training classifier...")
     if algorithm in ["megam"]:  # MEGAM based algorithms.
         clf = MaxentClassifier.train(featurized_train_set, algorithm)
     elif algorithm in ["GIS", "IIS"]:  # Use default GIS/IIS MaxEnt algorithm
@@ -177,7 +178,7 @@ def rte_classifier(algorithm, sample_N=None):
             "'megam', 'GIS', 'IIS'.\n"
         )
         raise Exception(err_msg)
-    print("Testing classifier...")
+    safe_print("Testing classifier...")
     acc = accuracy(clf, featurized_test_set)
-    print("Accuracy: %6.4f" % acc)
+    safe_print("Accuracy: %6.4f" % acc)
     return clf

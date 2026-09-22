@@ -15,6 +15,7 @@ https://www.gutenberg.org/
 """
 
 from nltk.chat.util import Chat, reflections
+from nltk.termsec import safe_print
 
 pairs = (
     (r"quit", ("Good-bye.", "Plan well", "May victory be your future")),
@@ -124,10 +125,10 @@ suntsu_chatbot = Chat(pairs, reflections)
 
 
 def suntsu_chat():
-    print("Talk to the program by typing in plain English, using normal upper-")
-    print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print("=" * 72)
-    print("You seek enlightenment?")
+    safe_print("Talk to the program by typing in plain English, using normal upper-")
+    safe_print('and lower-case letters and punctuation.  Enter "quit" when done.')
+    safe_print("=" * 72)
+    safe_print("You seek enlightenment?")
 
     suntsu_chatbot.converse()
 

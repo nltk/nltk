@@ -52,6 +52,7 @@ from tkinter import (
 )
 from tkinter.filedialog import asksaveasfilename
 
+from nltk.termsec import safe_print
 from nltk.util import in_idle
 
 ##//////////////////////////////////////////////////////
@@ -641,7 +642,7 @@ class CanvasWidget(metaclass=ABCMeta):
                 try:
                     cb(self)
                 except Exception:
-                    print("Error in drag callback for %r" % self)
+                    safe_print("Error in drag callback for %r" % self)
         elif self.__parent is not None:
             self.__parent.__drag()
 

@@ -23,6 +23,7 @@ __docformat__ = "plaintext"
 
 from nltk import redos
 from nltk.stem.api import StemmerI
+from nltk.termsec import safe_print
 
 
 class PorterStemmer(StemmerI):
@@ -734,8 +735,8 @@ def demo():
     original = redos.sub(r"(.{,70})\s", r"\1\n", original + " ").rstrip()
 
     # Print the results.
-    print("-Original-".center(70).replace(" ", "*").replace("-", " "))
-    print(original)
-    print("-Results-".center(70).replace(" ", "*").replace("-", " "))
-    print(results)
-    print("*" * 70)
+    safe_print("-Original-".center(70).replace(" ", "*").replace("-", " "))
+    safe_print(original)
+    safe_print("-Results-".center(70).replace(" ", "*").replace("-", " "))
+    safe_print(results)
+    safe_print("*" * 70)

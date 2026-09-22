@@ -23,6 +23,7 @@ except ImportError:
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import allowlisted_pickle_load, pickle_dump
+from nltk.termsec import safe_print
 
 # A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
 # namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
@@ -505,8 +506,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print(" Number of training examples : " + str(len(depgraphs)))
-        print(" Number of valid (projective) examples : " + str(count_proj))
+        safe_print(" Number of training examples : " + str(len(depgraphs)))
+        safe_print(" Number of valid (projective) examples : " + str(count_proj))
         return training_seq
 
     def _create_training_examples_arc_eager(self, depgraphs, input_file):
@@ -569,8 +570,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print(" Number of training examples : " + str(len(depgraphs)))
-        print(" Number of valid (projective) examples : " + str(countProj))
+        safe_print(" Number of training examples : " + str(len(depgraphs)))
+        safe_print(" Number of valid (projective) examples : " + str(countProj))
         return training_seq
 
     def train(self, depgraphs, modelfile, verbose=True):
