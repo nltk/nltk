@@ -88,6 +88,20 @@ class TestSafeCsvWriterEndToEnd:
         csv.writer(buf_manual).writerow([sanitize_csv_field(c) for c in cells])
         assert buf_safe.getvalue() == buf_manual.getvalue()
 
+    def test_row_iterable_raising_midway_writes_nothing(self):
+        # the row is materialised (and every cell sanitised) BEFORE the
+        # underlying writerow, so a poisoned iterable cannot leave a partial
+        # row in the stream
+        def poison():
+            yield "a"
+            yield "=b"
+            raise RuntimeError("mid-row")
+
+        buf = io.StringIO()
+        with pytest.raises(RuntimeError):
+            SafeCsvWriter(buf).writerow(poison())
+        assert buf.getvalue() == ""
+
 
 class TestNumericLeadLengthCap:
     def test_million_digit_lead_defused_promptly(self):
@@ -158,6 +172,14 @@ class TestTypeSweepOnePipelineNoBranches:
 
         assert sanitize_csv_field(Fraction(1, 3)) == "1/3"
         assert sanitize_csv_field(complex(1, 2)) == "(1+2j)"
+
+    def test_negative_fraction_lead_fails_closed(self):
+        # "-1/2" begins with a lead char and is not a number, so the pipeline
+        # defuses it: a cosmetic apostrophe, never a live minus-lead cell
+        from fractions import Fraction
+
+        assert sanitize_csv_field(Fraction(-1, 2)) == "'-1/2"
+        assert sanitize_csv_field(complex(-1, 2)) == "(-1+2j)"
 
 
 class TestResearchDrivenLeads:
