@@ -23,7 +23,9 @@ text - including tabs, newlines and non-ASCII/emoji - untouched. Route every
 untrusted-string terminal write through it.
 """
 
-__all__ = ["sanitize_terminal", "safe_print", "sanitize_csv_field"]
+# sanitize_csv_field is provided dynamically by __getattr__ below (it lives in
+# nltk.csvsec); keeping it in __all__ preserves the historical star-import.
+__all__ = ["sanitize_terminal", "safe_print", "sanitize_csv_field"]  # noqa: F822
 
 # Bytes a terminal interprets as commands: the C0 controls (U+0000-U+001F) minus
 # TAB and LF, the DEL (U+007F), and the C1 controls (U+0080-U+009F, which include
@@ -220,61 +222,12 @@ def safe_print(*values, sep=" ", end="\n", **kwargs):
     print(*(sanitize_terminal(v) for v in values), sep=sep, end=end, **kwargs)
 
 
-# A leading one of these makes a spreadsheet evaluate a CSV cell as a formula, so
-# crafted cell text can run a formula when the file is opened (CWE-1236). Leading
-# whitespace is stripped before the test because a spreadsheet ignores it too.
-_CSV_FORMULA_LEADS = ("=", "+", "-", "@")
+def __getattr__(name):
+    # CSV/TSV cell sanitisation lives in nltk.csvsec (whose SafeCsvWriter is
+    # the intended API); this lazy re-export keeps the historical import
+    # `from nltk.termsec import sanitize_csv_field` working without a cycle.
+    if name == "sanitize_csv_field":
+        from nltk.csvsec import sanitize_csv_field
 
-
-def _looks_numeric(text):
-    # float() also accepts inf/nan and digit-group underscores (1_0), which a
-    # spreadsheet would NOT treat as a plain number, so the leading + / - is not a
-    # genuine number sign there; reject them so the formula lead is still defused.
-    lowered = text.lower()
-    if "inf" in lowered or "nan" in lowered or "_" in text:
-        return False
-    try:
-        float(text)
-        return True
-    except ValueError:
-        return False
-
-
-def sanitize_csv_field(value):
-    """Return *value* neutralised for writing as a CSV/TSV cell.
-
-    Closes two hazards a later reader/opener would otherwise execute: control
-    sequences that drive the terminal when the file is displayed (CWE-150, via
-    :func:`sanitize_terminal`), and a leading ``= + - @`` that a spreadsheet runs
-    as a formula (CWE-1236). A genuine number keeps its sign; any other value
-    with a formula lead is prefixed with an apostrophe so the spreadsheet treats
-    it as text.
-
-    An EXACT ``int``, ``float``, ``bool`` or ``None`` is returned unchanged:
-    ``str()`` of those cannot carry a control sequence or a formula payload (a
-    negative number's minus sign is a genuine sign, exactly as in the string
-    path), so the csv writer renders them safely and their type is preserved.
-    Every other object, including a lying ``int``/``str`` SUBCLASS with a
-    crafted ``__str__``, is materialised with ``str()`` HERE and sanitised as
-    text, so the conversion the csv writer would otherwise perform later can
-    never surface an unsanitised formula or control sequence (and a raising
-    ``__str__`` fails closed in this helper rather than at the writer).
-
-    An integer beyond the ~100,000-digit render backstop raises ``ValueError``
-    here, even when the interpreter's own int-to-str digit limit has been
-    disabled, so a crafted number cannot burn superlinear conversion time at
-    the writer. A float can never bomb: its text is at most a couple of dozen
-    characters.
-    """
-    _refuse_int_bomb(value)
-    if value is None or type(value) in (int, float, bool):
-        return value
-    if not isinstance(value, str):
-        value = str(value)
-    text = sanitize_terminal(value)
-    # Strip every leading whitespace (space, tab, and any Unicode space such as a
-    # no-break space) a spreadsheet skips before finding the formula lead.
-    lead = text.lstrip()
-    if lead[:1] in _CSV_FORMULA_LEADS and not _looks_numeric(lead):
-        text = "'" + text
-    return text
+        return sanitize_csv_field
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
