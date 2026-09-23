@@ -763,7 +763,8 @@ def test_j8g8_reparse_probe_has_teeth():
     real = data._LINE_BOUNDARY_RE
     try:
         data._LINE_BOUNDARY_RE = redos.compile("x?")  # matches empty everywhere
-        assert probe()[0] == probes.VULNERABLE
+        status, detail = probe()
+        assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
     finally:
         data._LINE_BOUNDARY_RE = real
     assert probe()[0] == probes.FIXED

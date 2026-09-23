@@ -25,7 +25,11 @@ def _readline_grow_and_reparse():
         reader = SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8")
         reader.readline()
 
-    small, big = 1_000_000, 4_000_000
+    # 2 MB and 8 MB rather than 1 and 4: the fixed reader is linear and still
+    # takes about 0.1 s, while the pre-fix re-parse has four times the work,
+    # so its t_small clears scaling_ratio's 0.1 s noise floor with margin on a
+    # fast interpreter (at 1 MB the CPython 3.14.7 runners read it as FIXED).
+    small, big = 2_000_000, 8_000_000
     ratio = scaling_ratio(op, small, big)
     if ratio >= QUADRATIC_RATIO:
         return (
