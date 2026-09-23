@@ -5,7 +5,14 @@ import shutil
 import tempfile
 import zipfile
 
-from ._base import FIXED, STATIC, VULNERABLE, is_security_rejection, probe, register_data_root
+from ._base import (
+    FIXED,
+    STATIC,
+    VULNERABLE,
+    is_security_rejection,
+    probe,
+    register_data_root,
+)
 
 
 @probe("GHSA-wr3g-j6qj-xpgh")
