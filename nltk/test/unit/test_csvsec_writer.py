@@ -533,6 +533,44 @@ class TestUnsafeDialectRefused:
         (row,) = list(csv.reader(buf, **fmtparams))
         assert row == ["'=x", "plain"]
 
+    def test_registered_dialect_name_is_validated_too(self):
+        # csv resolves a registered name into the merged dialect the guard
+        # reads, so a hostile registration is refused like a class or kwargs
+        csv.register_dialect("csvsec_test_unquoted", quoting=csv.QUOTE_NONE)
+        csv.register_dialect("csvsec_test_lead_quote", quotechar="=")
+        csv.register_dialect("csvsec_test_lead_term", lineterminator="\n+")
+        try:
+            with pytest.raises(ValueError, match="QUOTE_NONE"):
+                safe_csv_writer(io.StringIO(), "csvsec_test_unquoted")
+            with pytest.raises(ValueError, match="quotechar"):
+                safe_csv_dict_writer(
+                    io.StringIO(), ["a"], dialect="csvsec_test_lead_quote"
+                )
+            with pytest.raises(ValueError, match="lineterminator"):
+                safe_csv_writer(io.StringIO(), "csvsec_test_lead_term")
+        finally:
+            for name in (
+                "csvsec_test_unquoted",
+                "csvsec_test_lead_quote",
+                "csvsec_test_lead_term",
+            ):
+                csv.unregister_dialect(name)
+
+    def test_single_line_unlocks_only_the_structural_rule(self):
+        # single_line makes QUOTE_NONE safe, but a lead-character quotechar or
+        # escapechar is emitted by the writer regardless of cell escaping
+        with pytest.raises(ValueError, match="quotechar"):
+            safe_csv_writer(io.StringIO(), single_line=True, quotechar="@")
+        with pytest.raises(ValueError, match="escapechar"):
+            safe_csv_writer(
+                io.StringIO(), single_line=True, doublequote=False, escapechar="%"
+            )
+
+    def test_dialect_none_falls_back_to_safe_defaults(self):
+        writer = safe_csv_writer(io.StringIO(), None)
+        assert writer.dialect.quoting == csv.QUOTE_MINIMAL
+        assert writer.dialect.quotechar == '"'
+
     def test_apostrophe_quotechar_keeps_defusal_for_standard_reader(self):
         # our defusal prefix IS the quotechar here: the cell is quoted and
         # doubled, and a '"'-qualifier reader still sees text, not a formula
