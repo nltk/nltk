@@ -170,3 +170,50 @@ class TestDetectorHasTeeth:
 
     def test_clean_passes(self):
         assert _bidi_neutralised("plain ascii and café")
+
+
+class TestSanitiserSourcesAreTrojanSourceClean:
+    """The sanitiser and its harness spell every bidi control and invisible
+    character as an escape. A literal one in these sources would trip the
+    very class they defend against (CVE-2021-42574) inside the security
+    code itself, and tooling that decodes escapes has produced exactly that
+    once; so the sources are scanned, with the detector's teeth checked."""
+
+    _SUSPECT = frozenset(
+        set(range(0x202A, 0x202F))
+        | set(range(0x2066, 0x206A))
+        | set(range(0x200B, 0x2010))
+        | set(range(0x2060, 0x2065))
+        | {0xFEFF, 0x00A0, 0x3000, 0x00AD, 0x2028, 0x2029, 0x061C, 0x180E}
+    )
+
+    @classmethod
+    def _literal_suspects(cls, text):
+        return sorted({f"U+{ord(ch):04X}" for ch in text if ord(ch) in cls._SUSPECT})
+
+    def test_detector_has_teeth(self):
+        assert self._literal_suspects("x" + chr(0x202E) + chr(0xFEFF)) == [
+            "U+202E",
+            "U+FEFF",
+        ]
+        assert self._literal_suspects("plain \\u202e escape text") == []
+
+    @pytest.mark.parametrize(
+        "relative",
+        [
+            "termsec.py",
+            "csvsec.py",
+            "test/unit/test_termsec_security.py",
+            "test/unit/test_termsec_attack_matrix.py",
+            "test/unit/test_trojan_source_security.py",
+            "test/unit/test_print_injection_sinks.py",
+            "test/unit/test_csvsec_writer.py",
+        ],
+    )
+    def test_source_has_no_literal_bidi_or_invisible_characters(self, relative):
+        from pathlib import Path
+
+        source = (Path(__file__).resolve().parents[2] / relative).read_text(
+            encoding="utf-8"
+        )
+        assert self._literal_suspects(source) == [], relative
