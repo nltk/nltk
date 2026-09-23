@@ -19,6 +19,8 @@ the runner starts a subprocess.
 import queue
 import time
 
+import pytest
+
 from nltk.tokenize.texttiling import TextTilingTokenizer
 
 from . import _mp_ctx
@@ -154,3 +156,43 @@ def test_tokenize_does_not_hang_on_whitespace_blob():
         f"tokenize took {op_elapsed:.2f}s on a whitespace blob; the linear "
         f"pipeline is a few seconds, a mark-scan ReDoS regression is ~230s"
     )
+
+
+class TestSmoothWindowIsNeverCode:
+    """``smooth(window=...)`` once built ``"numpy." + window + "(...)"`` for
+    eval behind an allowlist; the sweep of every eval in the package found it.
+    The allowlist already refused injection (pinned here with a canary), and
+    the lookup is now ``getattr`` so no string can become code even if the
+    allowlist ever changes."""
+
+    def test_injection_payload_refused_and_never_executed(self, tmp_path):
+        import numpy
+
+        from nltk.tokenize.texttiling import smooth
+
+        canary = tmp_path / "canary"
+        payload = (
+            "hanning(3) if __import__('os').system('touch %s') else numpy.hanning"
+            % canary
+        )
+        with pytest.raises(ValueError):
+            smooth(numpy.arange(30, dtype=float), window_len=5, window=payload)
+        assert not canary.exists()
+
+    @pytest.mark.parametrize(
+        "window", ["flat", "hanning", "hamming", "bartlett", "blackman"]
+    )
+    def test_documented_windows_unchanged(self, window):
+        import numpy
+
+        from nltk.tokenize.texttiling import smooth
+
+        x = numpy.arange(30, dtype=float)
+        assert len(smooth(x, window_len=5, window=window)) == 30
+
+    def test_no_eval_left_in_smooth(self):
+        import inspect
+
+        from nltk.tokenize import texttiling
+
+        assert "eval(" not in inspect.getsource(texttiling.smooth)

@@ -69,3 +69,4 @@ venv.bak/
 
 # macOS
 .DS_Store
+tools/.security_audit_cache/

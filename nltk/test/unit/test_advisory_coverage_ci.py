@@ -48,11 +48,11 @@ _HEADERS = {
     "User-Agent": "nltk-advisory-coverage",
 }
 
-# Closed/withdrawn advisories deliberately kept as regression probes. The
-# public API lists only published advisories, so these must be named here or
-# the reverse check would flag them as unknown.
-# NB: Canonical GHSA IDs use hyphens, while probe filenames use underscores because
-# Python module names cannot contain hyphens; do not copy filenames here.
+#: Closed, withdrawn, or still-draft advisories deliberately kept as regression
+#: probes. The unauthenticated API lists only published advisories, so these
+#: must be named here or the reverse check would flag them as unknown.
+#: NB: Canonical GHSA IDs use hyphens, while probe filenames use underscores
+#: because Python module names cannot contain hyphens; do not copy filenames here.
 _CLOSED_WITH_PROBE = {
     "GHSA-4489-j4f3-2g8q",
     "GHSA-9ffx-rrgx-mhgx",
@@ -64,6 +64,19 @@ _CLOSED_WITH_PROBE = {
     "GHSA-w3pv-xfw4-ghr7",
     "GHSA-xfcv-m889-fmqg",
     "GHSA-j456-xh4h-cpf2",
+    # Draft advisories carrying a regression probe ahead of publication. The
+    # unauthenticated API does not list a draft, so each is named here until it
+    # is published (at which point the forward check needs no change).
+    "GHSA-89p3-fcch-88ph",
+    "GHSA-r53h-rw34-8h97",
+    "GHSA-v8f3-6phw-6mh9",
+    "GHSA-j8g8-j4j7-8j54",
+    "GHSA-7j4p-88wx-5jrc",
+    "GHSA-7mxv-7h3q-9324",
+    "GHSA-wr3g-j6qj-xpgh",
+    # Triage: the GitHub transfer of Huntr CVE-2026-15367 (maxent tab_dir);
+    # already fixed on develop, probe added so the coverage is provable.
+    "GHSA-59f9-gqg8-mqpj",
 }
 
 

@@ -293,10 +293,11 @@ class XMLCorpusView(StreamBackedCorpusView):
 
         if isinstance(stream, SeekableUnicodeStreamReader):
             startpos = stream.tell()
+        read_size = self._BLOCK_SIZE
         while True:
             # Read a block and add it to the fragment.
             block_start = len(fragment)
-            xml_block = stream.read(self._BLOCK_SIZE)
+            xml_block = stream.read(read_size)
             fragment += xml_block
             for offset, ch in enumerate(xml_block):
                 if ch == "<":
@@ -335,8 +336,10 @@ class XMLCorpusView(StreamBackedCorpusView):
                         stream.seek(-(len(fragment) - last_open_bracket), 1)
                     return fragment[:last_open_bracket]
 
-            # Otherwise, read another block. (i.e., return to the
-            # top of the loop.)
+            # Grow the read window exponentially before the next block so the
+            # whole-buffer match/search re-scans stay O(log n) passes, as in
+            # read_sexpr_block; return paths seek back so the over-read is safe.
+            read_size *= 2
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         """

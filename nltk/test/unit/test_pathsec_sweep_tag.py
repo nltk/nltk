@@ -2506,8 +2506,8 @@ def _unicode_vectors(root, outside):
     return {
         "fullwidth-slash": "..／..／etc/passwd",
         "fullwidth-dot": "．．/etc/passwd",
-        "rtl-override": "‮" + secret,
-        "zero-width": secret[:5] + "​" + secret[5:],
+        "rtl-override": "\u202e" + secret,
+        "zero-width": secret[:5] + "\u200b" + secret[5:],
         "nfd-outside": unicodedata.normalize("NFD", secret),
         "nfc-outside": unicodedata.normalize("NFC", secret),
         "surrogate": secret + "\udcff",
@@ -2553,7 +2553,7 @@ def test_unicode_names_inside_the_root_still_work(pathsec_sandbox):
     from nltk.tag.perceptron import PerceptronTagger
 
     root, outside = pathsec_sandbox
-    for name in ("modél.json", "‮model.json", "模型.json"):
+    for name in ("modél.json", "\u202emodel.json", "模型.json"):
         target = root / name
         with pathsec.open(str(target), "w", context="probe") as handle:
             handle.write("{}")

@@ -362,20 +362,30 @@ class TimitCorpusReader(CorpusReader):
             phone_times = self.phone_times(utterance)
             sent_times = self.sent_times(utterance)
 
-            while sent_times:
-                (sent, sent_start, sent_end) = sent_times.pop(0)
+            # Walk each list with an integer cursor so the nested loops consume
+            # from the front in O(1) instead of quadratic pop(0) calls (CWE-407).
+            si = wi = pi = 0
+            while si < len(sent_times):
+                (sent, sent_start, sent_end) = sent_times[si]
+                si += 1
                 trees.append(Tree("S", []))
                 while (
-                    word_times and phone_times and phone_times[0][2] <= word_times[0][1]
+                    wi < len(word_times)
+                    and pi < len(phone_times)
+                    and phone_times[pi][2] <= word_times[wi][1]
                 ):
-                    trees[-1].append(phone_times.pop(0)[0])
-                while word_times and word_times[0][2] <= sent_end:
-                    (word, word_start, word_end) = word_times.pop(0)
+                    trees[-1].append(phone_times[pi][0])
+                    pi += 1
+                while wi < len(word_times) and word_times[wi][2] <= sent_end:
+                    (word, word_start, word_end) = word_times[wi]
+                    wi += 1
                     trees[-1].append(Tree(word, []))
-                    while phone_times and phone_times[0][2] <= word_end:
-                        trees[-1][-1].append(phone_times.pop(0)[0])
-                while phone_times and phone_times[0][2] <= sent_end:
-                    trees[-1].append(phone_times.pop(0)[0])
+                    while pi < len(phone_times) and phone_times[pi][2] <= word_end:
+                        trees[-1][-1].append(phone_times[pi][0])
+                        pi += 1
+                while pi < len(phone_times) and phone_times[pi][2] <= sent_end:
+                    trees[-1].append(phone_times[pi][0])
+                    pi += 1
         return trees
 
     # [xx] NOTE: This is currently broken -- we're assuming that the

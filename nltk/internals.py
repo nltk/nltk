@@ -20,7 +20,12 @@ import warnings
 from xml.etree import ElementTree
 
 from nltk import redos
-from nltk.pathsec import validate_path
+from nltk.pathsec import (
+    TrustError,
+    resolve_trusted_executable,
+    safe_env,
+    validate_path,
+)
 
 ##########################################################################
 # Java Via Command-Line
@@ -93,14 +98,36 @@ _JVM_INJECTING_ENV_VARS = frozenset(
 )
 
 
+# Loader / interpreter env vars that redirect the child's dynamic linker or
+# locale machinery (LD_PRELOAD, DYLD_INSERT_LIBRARIES, GCONV_PATH, ...). Prefix
+# families plus exact names; stripped from the child JVM env (CWE-426, GHSA-7mxv).
+_LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
+_LOADER_ENV_EXACT = frozenset({"GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"})
+
+
+def _is_loader_env_var(name):
+    """True if *name* can steer the child's loader/locale and must be dropped."""
+    up = name.upper()
+    return up in _LOADER_ENV_EXACT or up.startswith(_LOADER_ENV_PREFIXES)
+
+
 def _java_child_env():
-    """Return os.environ minus the JVM-injecting variables, so the child JVM that
-    java() launches cannot pick up flags/classpath from JAVA_TOOL_OPTIONS et al.
-    (CWE-88). Every NLTK JVM launch is routed through java(), so this is the single
-    place the child environment is sanitised."""
-    return {
-        k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
+    """Return a sanitised environment for the child JVM that java() launches.
+
+    Drops the JVM-injecting vars (JAVA_TOOL_OPTIONS et al., CWE-88) AND the loader
+    family (LD_*, DYLD_*, GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect
+    the dynamic linker or locale loader, then locks PATH to pathsec's non-writable
+    value so the child cannot resolve a planted helper by bare name (the JVM
+    itself is launched by absolute path). Benign identity vars (HOME, JAVA_HOME,
+    ...) are kept so the tools keep working. Every NLTK JVM launch routes through
+    java(), so this is the single place the child environment is scrubbed."""
+    env = {
+        k: v
+        for k, v in os.environ.items()
+        if k.upper() not in _JVM_INJECTING_ENV_VARS and not _is_loader_env_var(k)
     }
+    env["PATH"] = safe_env()["PATH"]
+    return env
 
 
 def _validate_java_options(options):
@@ -419,6 +446,26 @@ def java(
                 "launcher would expand it, injecting arguments (CWE-88)"
             )
 
+    # Route the configured java binary through the trusted-exec chokepoint before
+    # launch (GHSA-7mxv): an ABSOLUTE bin (what config_java stores) must sit where
+    # no local user can swap it, else refuse it (CWE-426/427/732).
+    # A bare name is never a find_binary result, so it is left to the launcher as
+    # before and existing callers keep working.
+    if isinstance(_java_bin, str):
+        java_bin_token = _java_bin
+    elif _java_bin:
+        java_bin_token = _java_bin[0]
+    else:
+        java_bin_token = "java"
+    if isinstance(java_bin_token, str) and os.path.isabs(java_bin_token):
+        if resolve_trusted_executable(java_bin_token) is None:
+            raise TrustError(
+                f"refusing to run untrusted java binary {java_bin_token!r}: it is "
+                "not on a path only you or root can write, so a local attacker "
+                "could swap it before it runs (CWE-426/427/732). Install the JDK "
+                "in a system location or set JAVA_HOME to a trusted one."
+            )
+
     final_cmd = []
     if isinstance(_java_bin, str):
         final_cmd.append(_java_bin)
@@ -530,12 +577,15 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueError.
+    # Process it, using eval on exactly the one string literal the regexes
+    # delimited (no prefix that could make it an f-string is admitted by
+    # _STRING_START_RE). An invalid escape raises ValueError and a literal that
+    # is not valid Python (a raw newline inside the quotes, a ``ur`` prefix)
+    # raises SyntaxError; both are the caller's malformed input, not ours.
     try:
         return eval(s[start_position : match.end()]), match.end()
-    except ValueError as e:
-        raise ReadError("valid escape sequence", start_position) from e
+    except (ValueError, SyntaxError) as e:
+        raise ReadError("valid string literal", start_position) from e
 
 
 _READ_INT_RE = redos.compile(r"-?\d+")

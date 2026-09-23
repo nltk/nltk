@@ -910,8 +910,8 @@ def test_unicode_forms_parse_or_reject_but_never_crash():
     assert isinstance(safe_json_loads(r'"\ud800"'), str)  # lone high surrogate
     assert isinstance(safe_json_loads(r'"\udc00"'), str)  # lone low surrogate
     assert safe_json_loads('"a\\u0000b"') == "a\x00b"
-    assert safe_json_loads('"x\\u202ey"') == "x‮y"  # RTL override
-    for bad in (r'"\x41"', r'"\U0001F600"', '﻿{"a":1}'):
+    assert safe_json_loads('"x\\u202ey"') == "x\u202ey"  # RTL override
+    for bad in (r'"\x41"', r'"\U0001F600"', '\ufeff{"a":1}'):
         with pytest.raises(ValueError):
             safe_json_loads(bad)
 

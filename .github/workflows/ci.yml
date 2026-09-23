@@ -207,6 +207,15 @@ jobs:
         shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
 
+      - name: Trust the third-party tools tree (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint refuses tools on paths others can write; a
+          # tree unzipped on a cache miss keeps the archive's group-write bits (a
+          # cache restore does not), so normalise it rather than weaken the guard.
+          chmod -R go-w "${{ env.THIRD_PARTY_DIR }}"
+
       - name: Print NLTK data search paths
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
@@ -268,6 +277,16 @@ jobs:
           # early step so a change to the main pytest invocation can't silently
           # drop it; also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_path_traversal_security.py
+
+      - name: Trust the runner JDK (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint (CWE-426/427/732) refuses a java
+          # binary on a path another local user can write. The runner image
+          # ships its Temurin tree with group-write bits, so normalise it to
+          # a real system install instead of weakening the guard.
+          sudo chmod -R go-w /usr/lib/jvm
 
       - name: Run advisory-verification probes
         shell: bash

@@ -124,16 +124,48 @@ current directory.
 """
 
 import io
-import os
 import re
 import shelve
-import sys
 
 import nltk.data
 from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
+
+# shelve picks a dbm backend at runtime (gnu/ndbm/dumb/sqlite3) and sqlite writes
+# rollback/WAL sidecars, so a store path spawns several derived backing files;
+# every candidate name is checked, not just the base the caller passed.
+_STORE_SIDECAR_SUFFIXES = (
+    "",
+    ".db",
+    ".dir",
+    ".dat",
+    ".bak",
+    "-journal",
+    "-wal",
+    "-shm",
+)
+
+
+def _refuse_symlinked_store(base, context):
+    """Refuse a symlink or hardlink planted at any backing name of a store.
+
+    ``validate_path`` checks where the store PATH resolves, but shelve/dbm and
+    sqlite reopen derived sidecar names by path, so a symlink pre-planted at one
+    of those redirects the real open outside the sandbox (CWE-59, GHSA-7j4p).
+    Each name that already exists is opened through :func:`nltk.pathsec.open`,
+    which adds ``O_NOFOLLOW`` (refusing a symlink at the final component) and
+    rejects a multiply-linked file, then closed; a name that does not yet exist
+    is left for shelve/sqlite to create. Nothing is created here, so the dbm
+    backend that ``shelve`` selects on reload is never confused by a stray file.
+    """
+    for suffix in _STORE_SIDECAR_SUFFIXES:
+        try:
+            handle = pathsec_open(base + suffix, "rb", context=context)
+        except FileNotFoundError:
+            continue
+        handle.close()
 
 
 def _restricted_shelve_open(db, flag="r"):
@@ -148,6 +180,9 @@ def _restricted_shelve_open(db, flag="r"):
     global while allowing plain containers) loads legitimate data and refuses
     the gadget.
     """
+    # Reject a symlink/hardlink at any derived backing name before shelve reopens
+    # it by path, so O_NOFOLLOW guards the open validate_path alone cannot.
+    _refuse_symlinked_store(db, context="chat80._restricted_shelve_open")
     inner = shelve.open(db, flag)
 
     class _RestrictedShelf:
@@ -481,6 +516,9 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     # which creates/opens it. Validate it before any file is created so an
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(dbname, context="chat80.cities2table")
+    # Reject a symlink/hardlink at the db or its journal/WAL sidecars before
+    # sqlite reopens them by path (O_NOFOLLOW, GHSA-7j4p).
+    _refuse_symlinked_store(dbname, context="chat80.cities2table")
     records = _str2records(filename, rel_name)
     connection = sqlite3.connect(dbname)
     cur = connection.cursor()
@@ -677,6 +715,9 @@ def val_dump(rels, db):
     # backing files. Validate before any work so an out-of-sandbox target is
     # refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_dump")
+    # Reject a symlink/hardlink at any derived backing name before shelve creates
+    # the store by path (O_NOFOLLOW, GHSA-7j4p).
+    _refuse_symlinked_store(db, context="chat80.val_dump")
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
     db_out = shelve.open(db, "n")
@@ -698,17 +739,15 @@ def val_load(db):
     # backing files. Validate before touching the filesystem so an
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_load")
-    dbname = db + ".db"
+    # No os.access() gate: it follows a symlink at the derived .db name and its
+    # suffix assumes one dbm backend. _restricted_shelve_open now opens each
+    # backing name with O_NOFOLLOW (GHSA-7j4p) and shelve reports a missing store.
+    db_in = _restricted_shelve_open(db)
+    from nltk.sem import Valuation
 
-    if not os.access(dbname, os.R_OK):
-        sys.exit("Cannot read file: %s" % dbname)
-    else:
-        db_in = _restricted_shelve_open(db)
-        from nltk.sem import Valuation
-
-        val = Valuation(db_in.items())
-        #        val.read(db_in.items())
-        return val
+    val = Valuation(db_in.items())
+    #        val.read(db_in.items())
+    return val
 
 
 # def alpha(str):
@@ -880,11 +919,9 @@ Valuation object for use in the NLTK semantics package.
     else:
         # try to read in a valuation from a database
         if options.indb is not None:
-            dbname = options.indb + ".db"
-            if not os.access(dbname, os.R_OK):
-                sys.exit("Cannot read file: %s" % dbname)
-            else:
-                valuation = val_load(options.indb)
+            # No os.access() gate: it follows a symlink at the derived .db name.
+            # val_load validates the path and opens each backing name O_NOFOLLOW.
+            valuation = val_load(options.indb)
         # we need to create the valuation from scratch
         else:
             # build some concepts

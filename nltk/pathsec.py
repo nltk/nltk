@@ -1903,6 +1903,15 @@ class ZipFile(zipfile.ZipFile):
         """
         import shutil as _shutil
 
+        # extract()/extractall() pass member NAMES (strings); resolve to a
+        # ZipInfo so the hardened walk below (and its hardlink guard) engages
+        # instead of silently falling back to the stdlib extractor (CWE-59).
+        if not isinstance(member, zipfile.ZipInfo):
+            try:
+                member = self.getinfo(member)
+            except KeyError:
+                return super()._extract_member(member, targetpath, pwd)
+
         if (
             getattr(member, "filename", None) is None
             or member.is_dir()
@@ -1911,18 +1920,28 @@ class ZipFile(zipfile.ZipFile):
         ):
             return super()._extract_member(member, targetpath, pwd)
 
-        # _extract_root is set by extract()/extractall(); when _extract_member is
-        # called directly, anchor at the target's parent.
-        root = getattr(self, "_extract_root", None) or os.path.dirname(targetpath)
-        rel = os.path.relpath(os.path.normpath(targetpath), os.path.normpath(root))
-        parts = [p for p in rel.split(os.sep) if p not in ("", os.curdir)]
+        # extract()/extractall() pass the extraction BASE dir as targetpath and
+        # set _extract_root; the member's own arcname is the archive-relative
+        # path to write. When called directly, targetpath is the full path.
+        root = getattr(self, "_extract_root", None)
+        if root is not None:
+            name = member.filename.replace("\\", "/")
+            parts = [p for p in name.split("/") if p not in ("", os.curdir)]
+        else:
+            root = os.path.dirname(os.path.abspath(targetpath))
+            rel = os.path.relpath(os.path.abspath(targetpath), root)
+            parts = [p for p in rel.split(os.sep) if p not in ("", os.curdir)]
         if not parts or os.pardir in parts:
             raise PermissionError(
                 f"Security Violation [pathsec.ZipFile]: refusing member path "
-                f"{rel!r}"
+                f"{member.filename!r}"
             )
         *dirs, leaf = parts
+        written = os.path.join(root, *parts)
 
+        # The extraction base (the trusted destination) may not exist yet; the
+        # stdlib extractor makedirs it, so create it before anchoring dir_fd.
+        os.makedirs(root, exist_ok=True)
         dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
         try:
             for component in dirs:
@@ -1947,14 +1966,23 @@ class ZipFile(zipfile.ZipFile):
                         f"Security Violation [pathsec.ZipFile]: refusing to "
                         f"extract onto non-regular file {leaf!r}"
                     )
-                leaf_fd = os.open(
-                    leaf, os.O_WRONLY | os.O_TRUNC | os.O_NOFOLLOW, dir_fd=dir_fd
-                )
+                if info.st_nlink > 1:
+                    raise PermissionError(
+                        f"Security Violation [pathsec.ZipFile]: refusing "
+                        f"multiply-linked file {leaf!r} (st_nlink="
+                        f"{info.st_nlink}); a hardlink may alias an "
+                        "outside-root inode (CWE-59)"
+                    )
+                # Confirmed regular and single-linked: unlink then re-create
+                # with O_EXCL so re-extraction replaces the entry instead of
+                # truncating through a swapped-in alias.
+                os.unlink(leaf, dir_fd=dir_fd)
+                leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
         finally:
             os.close(dir_fd)
         with os.fdopen(leaf_fd, "wb") as sink, self.open(member, pwd=pwd) as source:
             _shutil.copyfileobj(source, sink)
-        return targetpath
+        return written
 
     def read(self, name, pwd=None):
         # Not the raw one-shot super().read() (bounded only by the attacker-declared

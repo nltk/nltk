@@ -216,6 +216,142 @@ class TestReadSexprBlockQuadratic:
 
 
 # ==========================================================================
+# GROW-AND-REPARSE / FRONT-OF-SEQUENCE cluster (fixed): newly swept O(n^2)
+# ==========================================================================
+
+
+class TestCCGLexiconTailReslice:  # GHSA-89p3: ccg.lexicon augParseCategory
+    def test_correctness_preserved(self):
+        from nltk.ccg.lexicon import fromstring
+
+        lex = fromstring(":- S, N\nDet :: N/N\nthe => Det\n")
+        assert str(lex.start()) == "S"
+        assert [str(c) for c in lex.categories("the")] == ["(N/N)"]
+
+    def test_long_application_chain_is_linear(self):
+        from nltk.ccg.lexicon import fromstring
+
+        # Pre-patch: APP_RE/NEXTPRIM_RE carried a trailing (.*) capture and the
+        # parser did rest=rest[1:], rescanning the remainder per operator, so a
+        # flat application chain parsed in O(n^2). The cursor rewrite is linear.
+        _assert_subquadratic(
+            lambda n: fromstring(":- S\nw => S" + "/S" * n + "\n"),
+            5_000,
+            20_000,
+        )
+
+    def test_over_length_category_is_rejected(self):
+        from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
+
+        # Defense in depth beside the linear-time fix: a category longer than
+        # MAX_PARSE_LEN is refused up front rather than parsed.
+        huge = "S" + "/S" * MAX_PARSE_LEN
+        with pytest.raises(ValueError):
+            fromstring(":- S\nw => " + huge + "\n")
+
+
+class TestChomskyNormalFormFrontMutation:  # GHSA-r53h: tree.transforms
+    def test_correctness_preserved(self):
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        t = Tree.fromstring("(S (NP I) (VP (V saw) (NP (Det the) (N cat))))")
+        chomsky_normal_form(t)
+        assert t.label() == "S"
+        # Binarisation leaves every production at most binary branching.
+        assert all(len(p.rhs()) <= 2 for p in t.productions())
+
+    def test_flat_node_is_linear(self):
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # Pre-patch: the right-factoring loop did nodeCopy.pop(0) per child, an
+        # O(1)-should-be front removal that is O(n^2) over a wide flat node. The
+        # deque + popleft rewrite is linear and byte-for-byte identical.
+        _assert_subquadratic(
+            lambda n: chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)])),
+            1_500,
+            6_000,
+        )
+
+    def test_transition_parser_buffer_is_deque(self):
+        from collections import deque
+
+        from nltk.parse.dependencygraph import DependencyGraph
+        from nltk.parse.transitionparser import Configuration
+
+        # The sibling fix: the parser buffer became a deque so shift/right-arc
+        # consume the front in O(1); __str__ still renders it as a plain list.
+        dg = DependencyGraph("the DT 2 det\ncat NN 0 root\n", top_relation_label="root")
+        conf = Configuration(dg)
+        assert isinstance(conf.buffer, deque)
+        assert "Buffer : [1, 2]" in str(conf)
+
+
+class TestSeekableReaderReadlineReparse:  # GHSA-j8g8: data.SeekableUnicodeStreamReader
+    def test_correctness_preserved(self):
+        from nltk.data import SeekableUnicodeStreamReader
+
+        r = SeekableUnicodeStreamReader(io.BytesIO(b"line1\nline2\nline3\n"), "utf-8")
+        assert [r.readline(), r.readline(), r.readline()] == [
+            "line1\n",
+            "line2\n",
+            "line3\n",
+        ]
+        crlf = SeekableUnicodeStreamReader(io.BytesIO(b"a\r\nb\r\n"), "utf-8")
+        assert crlf.readlines() == ["a\r\n", "b\r\n"]
+
+    def test_unterminated_line_is_linear(self):
+        from nltk.data import SeekableUnicodeStreamReader
+
+        # Pre-patch: readline re-ran chars.splitlines() over the whole growing
+        # buffer every block, so a single oversized unterminated line was
+        # O(n^2). Now a break is sought only in the freshly read span.
+        def op(n):
+            SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
+
+        _assert_subquadratic(op, 200_000, 800_000)
+
+
+class TestConllSRLPredicateRescan:  # GHSA-v8f3: conll _get_srl_instances
+    @staticmethod
+    def _reader(tmp_path):
+        from nltk.corpus.reader.conll import ConllCorpusReader
+
+        root = str(tmp_path)
+        (tmp_path / "srl.conll").write_text("")
+        return ConllCorpusReader(root, ["srl.conll"], ("words", "pos", "tree", "srl"))
+
+    @staticmethod
+    def _grid(n):
+        # One sentence, n predicates: column j carries the '(V*)' verb for
+        # predicate j on its diagonal row and a decoy '(A1*)' elsewhere, so each
+        # spanlist holds n spans and predicate j's verb sits in spanlist j.
+        grid = []
+        for i in range(n):
+            row = ["w", "NN", "*", "verb.01", "p"]
+            row += ["(V*)" if i == j else "(A1*)" for j in range(n)]
+            grid.append(row)
+        return grid
+
+    def test_correctness_preserved(self, tmp_path):
+        reader = self._reader(tmp_path)
+        instances = reader._get_srl_instances(self._grid(3), False)
+        assert len(instances) == 3
+        assert all(type(x).__name__ == "ConllSRLInstance" for x in instances)
+
+    def test_many_predicates_is_linear(self, tmp_path):
+        # Pre-patch: each predicate rescanned every spanlist to find its verb
+        # span, so a sentence with P predicates over R spans was O(P^2*R). The
+        # one-pass wordnum->spanlist index makes selection O(P*R).
+        reader = self._reader(tmp_path)
+        grids = {70: self._grid(70), 280: self._grid(280)}
+        _assert_subquadratic(
+            lambda n: reader._get_srl_instances(grids[n], False), 70, 280
+        )
+
+
+# ==========================================================================
 # GENERAL ALGORITHMIC-DoS BATCH (fixed) -- single-untrusted-input O(n^2)
 # ==========================================================================
 

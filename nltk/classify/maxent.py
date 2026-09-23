@@ -1580,10 +1580,21 @@ class TadmMaxentClassifier(MaxentClassifier):
 
 
 def load_maxent_params(tab_dir):
+    """Read maxent classifier parameters from the tab files in *tab_dir*.
+
+    *tab_dir* is a ``PathPointer`` (what ``nltk.data.find`` returns) or a
+    filesystem path; a path is wrapped in a ``FileSystemPathPointer`` so the
+    reads go through the pathsec sandbox and a directory outside every data
+    root is refused with ``PermissionError`` rather than read
+    (GHSA-59f9-gqg8-mqpj, CVE-2026-15367).
+    """
     import numpy
 
-    from nltk.data import open_datafile
+    from nltk.data import FileSystemPathPointer, PathPointer, open_datafile
     from nltk.tabdata import MaxentDecoder
+
+    if not isinstance(tab_dir, PathPointer):
+        tab_dir = FileSystemPathPointer(os.fspath(tab_dir))
 
     mdec = MaxentDecoder()
     # Use .join() to reach the files regardless of zip/real FS.
