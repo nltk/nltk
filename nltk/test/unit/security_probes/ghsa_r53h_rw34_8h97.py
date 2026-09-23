@@ -19,10 +19,18 @@ def _chomsky_front_pop_quadratic():
     super-linearly and trip the quadratic ratio.
     """
     from nltk.tree import Tree
+    from nltk.tree import tree as treemod
     from nltk.tree.transforms import chomsky_normal_form
 
     def op(n):
-        chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)]))
+        # the width-to-depth guard would refuse these widths; the probe measures
+        # the factoring loop itself, so the depth bound is lifted for the call
+        limit = treemod.MAX_TREE_DEPTH
+        treemod.MAX_TREE_DEPTH = max(limit, n)
+        try:
+            chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)]))
+        finally:
+            treemod.MAX_TREE_DEPTH = limit
 
     small, big = 2000, 8000  # big == 4 * small
     ratio = scaling_ratio(op, small, big)
