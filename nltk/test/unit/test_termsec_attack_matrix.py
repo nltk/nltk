@@ -468,3 +468,61 @@ class TestNumericBombs:
                 sanitize_csv_field(Fraction(10**5000, 3))
         finally:
             sys.set_int_max_str_digits(saved)
+
+    def test_int_subclass_cannot_lie_its_way_past_the_guard(self):
+        # the size is read with the unbound builtin int.bit_length, so a
+        # subclass overriding bit_length to underreport is still refused:
+        # the payload is real even though the object lies
+        import sys
+
+        class EvasiveInt(int):
+            def bit_length(self):
+                return 1
+
+        bomb = EvasiveInt(1 << 400_000)
+        assert bomb.bit_length() == 1  # the lie is in place
+        with pytest.raises(ValueError):
+            sanitize_csv_field(bomb)
+        saved = sys.get_int_max_str_digits()
+        sys.set_int_max_str_digits(0)
+        try:
+            with pytest.raises(ValueError):
+                sanitize_terminal(bomb)
+        finally:
+            sys.set_int_max_str_digits(saved)
+
+    def test_guard_consults_no_attacker_attributes(self):
+        # the guard must not look anything up on a non-int object, so a
+        # crafted bit_length can neither steer it nor become a new crash
+        # or code path: the object just takes the ordinary string path
+        class Trap:
+            def bit_length(self):
+                raise RuntimeError("guard should never call this")
+
+            def __str__(self):
+                return "harmless"
+
+        assert sanitize_csv_field(Trap()) == "harmless"
+        assert sanitize_terminal(Trap()) == "harmless"
+
+    def test_foreign_bignum_takes_linear_string_path(self):
+        # a non-int big-number type is not probed; the sanitiser's work is
+        # linear in whatever text its own __str__ produces, so there is no
+        # superlinear amplification without a real integer
+        class Mpz:
+            def bit_length(self):
+                return 400_001
+
+            def __str__(self):
+                return "9" * 50_000
+
+        out = sanitize_csv_field(Mpz())
+        assert isinstance(out, str) and len(out) == 50_000
+
+    def test_non_string_sep_still_rejected_by_print(self, capsys):
+        # sep/end cannot smuggle an int past the backstop: print itself
+        # refuses a non-string sep, so that path fails closed too
+        from nltk.termsec import safe_print
+
+        with pytest.raises(TypeError):
+            safe_print("a", "b", sep=12345)

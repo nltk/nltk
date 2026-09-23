@@ -139,11 +139,27 @@ _INT_RENDER_BIT_LIMIT = 333_000  # about 100,000 decimal digits
 
 
 def _refuse_int_bomb(value):
-    if isinstance(value, int) and value.bit_length() > _INT_RENDER_BIT_LIMIT:
-        raise ValueError(
-            f"integer of {value.bit_length()} bits refused: too large to render "
-            "as terminal or CSV output"
-        )
+    """Refuse an integer too large to render.
+
+    Only the real ``int`` tree can make the sanitiser itself perform the
+    superlinear int-to-str conversion, so that is exactly what is checked:
+    ``isinstance`` is the C-level type test, and the size is read with the
+    UNBOUND builtin ``int.bit_length``, so a subclass overriding
+    ``bit_length`` (or anything else) cannot underreport it: the payload is
+    real even when the object lies. The guard looks up NOTHING on the object
+    itself, so no attacker-defined attribute can steer or exploit it. A
+    foreign big-integer type (a gmpy2 ``mpz``) is deliberately not probed:
+    its text comes from its own ``__str__``, the same pre-existing exposure
+    as any other object argument, and the sanitiser's own work stays linear
+    in whatever text that produces.
+    """
+    if isinstance(value, int):
+        bits = int.bit_length(value)
+        if bits > _INT_RENDER_BIT_LIMIT:
+            raise ValueError(
+                f"integer of {bits} bits refused: too large to render "
+                "as terminal or CSV output"
+            )
 
 
 def sanitize_terminal(text, *, single_line=False):
