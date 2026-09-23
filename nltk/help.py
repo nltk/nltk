@@ -58,10 +58,12 @@ def _format_tagset(tagset, tagpattern=None):
         try:
             compiled = redos.compile(tagpattern)
         except (ValueError, redos.error) as exc:
-            # redos refuses an oversized/over-nested pattern; degrade gracefully
-            # instead of letting the refusal escape this help utility.
-            print(f"Invalid or oversized tag pattern {tagpattern!r}: {exc}")
-            return
+            # redos refuses an oversized/over-nested pattern; fail closed with a
+            # clear message (a ValueError, matching every other caller-controlled
+            # compile site) rather than silently degrading.
+            raise ValueError(
+                f"Invalid or oversized tag pattern {tagpattern!r}: {exc}"
+            ) from None
         tags = [tag for tag in sorted(tagdict) if compiled.match(tag)]
         if tags:
             _print_entries(tags, tagdict)
