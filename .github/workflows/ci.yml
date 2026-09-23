@@ -269,6 +269,16 @@ jobs:
           # drop it; also collected by "Run pytest".
           pytest -rsx nltk/test/unit/test_path_traversal_security.py
 
+      - name: Trust the runner JDK (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint (CWE-426/427/732) refuses a java
+          # binary on a path another local user can write. The runner image
+          # ships its Temurin tree with group-write bits, so normalise it to
+          # a real system install instead of weakening the guard.
+          sudo chmod -R go-w /usr/lib/jvm
+
       - name: Run advisory-verification probes
         shell: bash
         env:
