@@ -479,6 +479,26 @@ class TestSyllableTokenizerDoS:  # SyllableTokenizer -- has MULTIPLE directions
         with pytest.raises(ValueError):
             SyllableTokenizer().tokenize("a" * 5000)
 
+    def test_direction3_cross_token_vowel_accumulation_is_bounded(self):
+        # Each token stays within MAX_TOKEN_LEN, but assign_values remembers every
+        # distinct unknown char as a vowel on the instance, so a reused tokenizer
+        # fed many distinct codepoints grew self.vowels without bound until the
+        # joined pattern tripped redos's cap. _MAX_VOWEL_CHARS caps the set.
+        import warnings
+
+        from nltk.tokenize import SyllableTokenizer
+        from nltk.tokenize.sonority_sequencing import _MAX_VOWEL_CHARS
+
+        ssp = SyllableTokenizer()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for k in range(30):
+                base = 0x4E00 + k * 4000
+                ssp.tokenize("ae" + "".join(chr(base + i) for i in range(4000)))
+        assert len(ssp.vowels) <= _MAX_VOWEL_CHARS
+        # Still syllabifies correctly after the flood.
+        assert ssp.tokenize("justification") == ["jus", "ti", "fi", "ca", "tion"]
+
 
 class TestDistanceQuadraticDoS:  # nltk.metrics.distance -- edit_distance + jaro
     def test_benign_results_unchanged(self):
