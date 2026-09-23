@@ -74,6 +74,9 @@ _CLOSED_WITH_PROBE = {
     "GHSA-7j4p-88wx-5jrc",
     "GHSA-7mxv-7h3q-9324",
     "GHSA-wr3g-j6qj-xpgh",
+    # Triage: the GitHub transfer of Huntr CVE-2026-15367 (maxent tab_dir);
+    # already fixed on develop, probe added so the coverage is provable.
+    "GHSA-59f9-gqg8-mqpj",
 }
 
 
