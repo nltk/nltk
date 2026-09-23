@@ -134,6 +134,26 @@ def sanitize_csv_field(value, *, single_line=False):
     return text
 
 
+def _refuse_unquoted_structure(dialect, single_line):
+    """Fail closed when the writer configuration disables structural quoting.
+
+    The default pipeline keeps embedded newlines because the csv module's
+    quoting owns cell structure; with ``quoting=QUOTE_NONE`` that quoting is
+    gone and an embedded newline in a cell starts a forged physical row whose
+    first cell can carry a formula lead (verified against csv.writer with an
+    escapechar: the backslash precedes the newline, but the newline is still
+    written). ``single_line=True`` escapes embedded newlines inside the cell,
+    so cell data can never emit a physical newline and QUOTE_NONE is safe.
+    """
+    if dialect.quoting == _csv.QUOTE_NONE and not single_line:
+        raise ValueError(
+            "Security Violation [csvsec]: quoting=QUOTE_NONE removes the csv "
+            "module's structural quoting, so an embedded newline in a cell "
+            "would begin a forged row; pass single_line=True (escapes embedded "
+            "newlines) or use a quoting mode"
+        )
+
+
 class SafeCsvWriter:
     """Drop-in ``csv.writer`` whose every cell runs the sanitising pipeline.
 
@@ -141,11 +161,17 @@ class SafeCsvWriter:
     underlying writer performs all quoting, so structural characters inside a
     sanitised cell (an embedded newline, a quote, the delimiter) are handled
     by the csv module exactly as for any other value.
+
+    Because that containment IS the quoting, an effective
+    ``quoting=csv.QUOTE_NONE`` (from fmtparams or the dialect) is refused
+    with :exc:`ValueError` unless ``single_line=True``, whose escaping stops
+    cell data from ever emitting a physical newline.
     """
 
     def __init__(self, fileobj, dialect="excel", *, single_line=False, **fmtparams):
         self._writer = _csv.writer(fileobj, dialect, **fmtparams)
         self._single_line = single_line
+        _refuse_unquoted_structure(self._writer.dialect, single_line)
 
     def writerow(self, row):
         return self._writer.writerow(
@@ -173,6 +199,8 @@ class SafeCsvDictWriter:
     first-row cell), so ``writeheader`` sanitises the field names it writes,
     while row dicts keep their ORIGINAL keys for lookup. ``restval`` is
     sanitised once at construction since it is emitted verbatim as a cell.
+    Effective ``quoting=csv.QUOTE_NONE`` is refused exactly as in
+    :class:`SafeCsvWriter` unless ``single_line=True``.
     """
 
     def __init__(
@@ -196,6 +224,7 @@ class SafeCsvDictWriter:
             dialect=dialect,
             **fmtparams,
         )
+        _refuse_unquoted_structure(self._writer.writer.dialect, single_line)
 
     def writeheader(self):
         return self._writer.writer.writerow(

@@ -314,6 +314,90 @@ class TestSingleLineForwarding:
         assert "\n" not in raw.replace("\r\n", "")
 
 
+class TestQuoteNoneStructuralGuard:
+    """quoting=QUOTE_NONE removes the csv module's structural quoting, which
+    the default pipeline relies on to contain embedded newlines. Verified
+    empirically: with an escapechar, csv.writer writes the physical newline of
+    a sanitized default-mode cell into the stream (backslash first, newline
+    after), so the next physical line is a forged row whose first cell can be
+    a live formula lead. Both writers refuse the combination fail-closed at
+    construction unless single_line=True, where embedded newlines are escaped
+    to visible text and cell data can never emit a physical newline."""
+
+    def test_confirmed_bypass_chain_is_refused(self):
+        # the confirmed chain: cell "x\n=SUM(A1)" + QUOTE_NONE + escapechar
+        # produced 'x\\' newline '=SUM(A1)' before the guard existed
+        with pytest.raises(ValueError, match="QUOTE_NONE"):
+            safe_csv_writer(io.StringIO(), quoting=csv.QUOTE_NONE, escapechar="\\")
+
+    def test_quote_none_refused_even_without_escapechar(self):
+        # without escapechar csv.writer raises only on the FIRST hostile cell;
+        # the guard refuses at construction, before any attacker data arrives
+        with pytest.raises(ValueError, match="QUOTE_NONE"):
+            safe_csv_writer(io.StringIO(), quoting=csv.QUOTE_NONE)
+
+    def test_dict_writer_refuses_quote_none(self):
+        with pytest.raises(ValueError, match="QUOTE_NONE"):
+            safe_csv_dict_writer(
+                io.StringIO(), ["a"], quoting=csv.QUOTE_NONE, escapechar="\\"
+            )
+
+    def test_dialect_object_cannot_smuggle_quote_none(self):
+        # the guard checks the MERGED dialect, not the fmtparams alone
+        class Unquoted(csv.excel):
+            quoting = csv.QUOTE_NONE
+            escapechar = "\\"
+
+        with pytest.raises(ValueError, match="QUOTE_NONE"):
+            safe_csv_writer(io.StringIO(), dialect=Unquoted)
+        with pytest.raises(ValueError, match="QUOTE_NONE"):
+            safe_csv_dict_writer(io.StringIO(), ["a"], dialect=Unquoted)
+
+    def test_fmtparams_restoring_quoting_over_unquoted_dialect_allowed(self):
+        # fmtparams override the dialect, so the EFFECTIVE quoting is safe here
+        class Unquoted(csv.excel):
+            quoting = csv.QUOTE_NONE
+            escapechar = "\\"
+
+        buf = io.StringIO()
+        safe_csv_writer(buf, dialect=Unquoted, quoting=csv.QUOTE_MINIMAL).writerow(
+            ["a\nb"]
+        )
+        assert buf.getvalue() == '"a\nb"\r\n'
+
+    def test_single_line_legitimises_quote_none(self):
+        buf = io.StringIO()
+        writer = safe_csv_writer(
+            buf, single_line=True, quoting=csv.QUOTE_NONE, escapechar="\\"
+        )
+        writer.writerow(["x\n=SUM(A1)", "=2+5"])
+        raw = buf.getvalue()
+        # exactly one physical line: no forged row can begin with a lead
+        assert raw.endswith("\r\n")
+        body = raw[:-2]
+        assert "\n" not in body and "\r" not in body
+        assert "\\x0a" in body  # the embedded newline survives as visible text
+        assert "'=2+5" in raw  # ordinary leads stay apostrophe-defused
+
+    def test_single_line_quote_none_dict_writer(self):
+        buf = io.StringIO()
+        writer = safe_csv_dict_writer(
+            buf, ["a", "b"], single_line=True, quoting=csv.QUOTE_NONE, escapechar="\\"
+        )
+        writer.writeheader()
+        writer.writerow({"a": "x\n=SUM(A1)", "b": "@cmd"})
+        raw = buf.getvalue()
+        assert raw.count("\n") == 2 and raw.count("\r\n") == 2
+        assert "\\x0a" in raw and "'@cmd" in raw
+
+    def test_other_quoting_modes_unaffected(self):
+        for quoting in (csv.QUOTE_MINIMAL, csv.QUOTE_ALL, csv.QUOTE_NONNUMERIC):
+            buf = io.StringIO()
+            safe_csv_writer(buf, quoting=quoting).writerow(["=cmd", 12, 3.5])
+            (row,) = list(csv.reader(io.StringIO(buf.getvalue())))
+            assert row == ["'=cmd", "12", "3.5"]
+
+
 def test_termsec_reexport_is_the_same_function():
     import nltk.termsec as termsec
 
