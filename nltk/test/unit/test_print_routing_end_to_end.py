@@ -14,6 +14,7 @@ resource names and user input; each test below feeds one such channel."""
 
 import contextlib
 import io
+import os
 import subprocess
 import sys
 import warnings
@@ -143,12 +144,17 @@ class TestUtilityAndCliSinks:
         # the console entry point (nltk=nltk.cli:cli) as a real process, since
         # the command closes its stdout stream, which click's in-process runner
         # cannot survive
+        root = Path(__file__).resolve().parents[3]
+        # CI runs with safe path enabled, so the child's cwd is not on sys.path;
+        # PYTHONPATH is honoured there and makes this checkout importable
+        env = dict(os.environ, PYTHONPATH=str(root))
         proc = subprocess.run(
             [sys.executable, "-c", "from nltk.cli import cli; cli()", "tokenize"],
             input="hello " + ESC + "[2Jworld\nplain line\n",
             capture_output=True,
             text=True,
-            cwd=Path(__file__).resolve().parents[3],
+            cwd=root,
+            env=env,
         )
         assert proc.returncode == 0, proc.stderr
         assert not _live(proc.stdout)
