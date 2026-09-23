@@ -17,6 +17,8 @@ __all__ = ["decorator", "new_wrapper", "getinfo"]
 
 import sys
 
+from nltk import redos
+
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
 OLD_SYS_PATH = sys.path[:]
@@ -24,6 +26,41 @@ sys.path = [p for p in sys.path if p and "nltk" not in str(p)]
 import inspect
 
 sys.path = OLD_SYS_PATH
+
+# The eval below is required: building the wrapper as a real function with the
+# original parameter list is what makes ``inspect.getfullargspec`` report the
+# true signature on every supported Python (older versions ignore a wrapper's
+# ``__signature__``/``__wrapped__``). To keep that eval from ever being a
+# code-execution primitive, the interpolated signature is first checked to be a
+# comma-and-space separated list of plain parameter names, each optionally
+# prefixed by * or ** and nothing else (no =default, (, ., newline or other
+# expression syntax). inspect constrains real names to identifiers, so a genuine
+# function is never rejected (CVE-2026-14727).
+# A parameter list is safe to interpolate into the wrapper source iff every token
+# is a plain name, a *args/**kwargs name, or a bare * / / marker (keyword-only and
+# positional-only separators) -- nothing that can carry an annotation (":"), a
+# default ("="), a call ("("), an attribute (".") or any other expression syntax.
+# inspect constrains real names to identifiers, so a genuine function is never
+# rejected (CVE-2026-14727).
+# ``[^\W\d]\w*`` is a Unicode-aware identifier (letter/underscore then word chars),
+# so a legitimate ``def f(é): ...`` is accepted while an injection string (which
+# always carries a non-identifier char) is still refused.
+_SAFE_SIGNATURE_RE = redos.compile(r"^ *(?:(?:\*{0,2}[^\W\d]\w*|\*|/) *(?:, *)?)*$")
+
+
+def _assert_safe_signature(signature):
+    # Require an EXACT str: a str subclass can pass the regex on its underlying
+    # characters yet override __format__/__str__ to inject arbitrary source when the
+    # value is interpolated into the eval below (CVE-2026-14727).
+    if type(signature) is not str:
+        raise ValueError(
+            f"refusing to build a wrapper from a non-str signature: {signature!r}"
+        )
+    if not _SAFE_SIGNATURE_RE.fullmatch(signature):
+        raise ValueError(
+            f"refusing to build a wrapper from a non-identifier signature: "
+            f"{signature!r}"
+        )
 
 
 def __legacysignature(signature):
@@ -34,11 +71,44 @@ def __legacysignature(signature):
     """
     listsignature = str(signature)[1:-1].split(",")
     for counter, param in enumerate(listsignature):
-        if param.count("=") > 0:
-            listsignature[counter] = param[0 : param.index("=")].strip()
-        else:
-            listsignature[counter] = param.strip()
+        param = param.strip()
+        # Drop a default ("= value") and/or an annotation (": type") so only the
+        # parameter name (or a bare * / / marker) is kept. Strip "=" first so a
+        # default that itself contains ":" (e.g. a dict) is removed cleanly.
+        for sep in ("=", ":"):
+            if sep in param:
+                param = param[: param.index(sep)].strip()
+        listsignature[counter] = param
     return ", ".join(listsignature)
+
+
+def _call_arguments(fullsignature):
+    """The argument list to forward to the wrapped callable, built ONLY from
+    parameter names (never interpolated text): a positional/positional-only or
+    keyword-only parameter is forwarded by name (keyword-only as ``name=name``),
+    ``*args``/``**kwargs`` are splatted, and the bare ``*`` / ``/`` markers (which
+    are not call syntax) are dropped. This lets the wrapper support keyword-only
+    and positional-only signatures, which reusing the def-signature for the call
+    (a bare ``*``/``/`` is a SyntaxError there) never could.
+    """
+    parts = []
+    for p in fullsignature.parameters.values():
+        # These names land in the eval body unchecked by _assert_safe_signature, so
+        # each must be a genuine inspect.Parameter with an identifier name: a crafted
+        # (duck-typed) Signature could otherwise smuggle an expression as a "name".
+        if not isinstance(p, inspect.Parameter) or not p.name.isidentifier():
+            raise ValueError(
+                f"refusing a non-identifier parameter name: {getattr(p, 'name', p)!r}"
+            )
+        if p.kind is inspect.Parameter.VAR_POSITIONAL:
+            parts.append("*" + p.name)
+        elif p.kind is inspect.Parameter.VAR_KEYWORD:
+            parts.append("**" + p.name)
+        elif p.kind is inspect.Parameter.KEYWORD_ONLY:
+            parts.append(f"{p.name}={p.name}")
+        else:
+            parts.append(p.name)
+    return ", ".join(parts)
 
 
 def getinfo(func):
@@ -97,6 +167,7 @@ def getinfo(func):
         signature=signature,
         fullsignature=fullsignature,
         defaults=func.__defaults__,
+        kwdefaults=getattr(func, "__kwdefaults__", None),
         doc=func.__doc__,
         module=func.__module__,
         dict=func.__dict__,
@@ -113,6 +184,10 @@ def update_wrapper(wrapper, model, infodict=None):
     wrapper.__module__ = infodict["module"]
     wrapper.__dict__.update(infodict["dict"])
     wrapper.__defaults__ = infodict["defaults"]
+    # Carry keyword-only defaults too: the rebuilt lambda strips them from its
+    # signature, so without this a ``def f(*, b=5)`` loses its default (.get keeps
+    # legacy model dicts that predate this key working).
+    wrapper.__kwdefaults__ = infodict.get("kwdefaults")
     wrapper.undecorated = model
     return wrapper
 
@@ -132,8 +207,19 @@ def new_wrapper(wrapper, model):
     assert (
         "_wrapper_" not in infodict["argnames"]
     ), '"_wrapper_" is a reserved argument name!'
-    src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
-    funcopy = eval(src, dict(_wrapper_=wrapper))
+    _assert_safe_signature(infodict["signature"])
+    # The def-params come from the (validated) signature string; the CALL args are
+    # built from parameter names so a bare * / / marker never reaches call syntax.
+    # A legacy model dict without ``fullsignature`` (predating this key) reuses the
+    # already-validated signature string, which never carries * / / markers.
+    if "fullsignature" in infodict:
+        callargs = _call_arguments(infodict["fullsignature"])
+    else:
+        callargs = infodict["signature"]
+    src = "lambda {}: _wrapper_({})".format(infodict["signature"], callargs)
+    funcopy = eval(
+        src, dict(_wrapper_=wrapper)
+    )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
     return update_wrapper(funcopy, model, infodict)
 
 
@@ -199,9 +285,15 @@ def decorator(caller):
         assert not (
             "_call_" in argnames or "_func_" in argnames
         ), "You cannot use _call_ or _func_ as argument names!"
-        src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
+        _assert_safe_signature(infodict["signature"])
+        # def-params from the validated signature; CALL args from parameter names,
+        # so a bare * / / marker never reaches call syntax.
+        callargs = _call_arguments(infodict["fullsignature"])
+        src = "lambda {}: _call_(_func_, {})".format(infodict["signature"], callargs)
         # import sys; print >> sys.stderr, src # for debugging purposes
-        dec_func = eval(src, dict(_func_=func, _call_=caller))
+        dec_func = eval(
+            src, dict(_func_=func, _call_=caller)
+        )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
         return update_wrapper(dec_func, func, infodict)
 
     return update_wrapper(_decorator, caller)

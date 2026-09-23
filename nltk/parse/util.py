@@ -17,6 +17,7 @@ from nltk.grammar import CFG, PCFG, FeatureGrammar
 from nltk.parse.chart import Chart, ChartParser
 from nltk.parse.featurechart import FeatureChart, FeatureChartParser
 from nltk.parse.pchart import InsideChartParser
+from nltk.termsec import safe_print
 
 
 def load_parser(
@@ -170,16 +171,16 @@ class TestGrammar:
         according to the grammar, then the value of ``trees`` will be None.
         """
         for test in self.suite:
-            print(test["doc"] + ":", end=" ")
+            safe_print(test["doc"] + ":", end=" ")
             for key in ["accept", "reject"]:
                 for sent in test[key]:
                     tokens = sent.split()
                     trees = list(self.cp.parse(tokens))
                     if show_trees and trees:
                         print()
-                        print(sent)
+                        safe_print(sent)
                         for tree in trees:
-                            print(tree)
+                            safe_print(tree)
                     if key == "accept":
                         if trees == []:
                             raise ValueError("Sentence '%s' failed to parse'" % sent)

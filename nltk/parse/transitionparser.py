@@ -12,6 +12,8 @@ from copy import deepcopy
 from operator import itemgetter
 from os import remove
 
+from nltk.termsec import safe_print
+
 try:
     from numpy import array
     from scipy import sparse
@@ -505,8 +507,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print(" Number of training examples : " + str(len(depgraphs)))
-        print(" Number of valid (projective) examples : " + str(count_proj))
+        safe_print(" Number of training examples : " + str(len(depgraphs)))
+        safe_print(" Number of valid (projective) examples : " + str(count_proj))
         return training_seq
 
     def _create_training_examples_arc_eager(self, depgraphs, input_file):
@@ -569,8 +571,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print(" Number of training examples : " + str(len(depgraphs)))
-        print(" Number of valid (projective) examples : " + str(countProj))
+        safe_print(" Number of training examples : " + str(len(depgraphs)))
+        safe_print(" Number of valid (projective) examples : " + str(countProj))
         return training_seq
 
     def train(self, depgraphs, modelfile, verbose=True):

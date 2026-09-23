@@ -34,6 +34,7 @@ from collections import defaultdict
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist, ELEProbDist, FreqDist, sum_logs
+from nltk.termsec import safe_print
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -146,7 +147,7 @@ class NaiveBayesClassifier(ClassifierI):
                 ratio = "%8.1f" % (
                     cpdist[l1, fname].prob(fval) / cpdist[l0, fname].prob(fval)
                 )
-            print(
+            safe_print(
                 "%24s = %-14r %6s : %-6s = %s : 1.0"
                 % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
             )

@@ -27,6 +27,7 @@ from collections import defaultdict
 from operator import itemgetter
 
 from nltk import redos
+from nltk.termsec import safe_print
 from nltk.tree.tree import Tree
 from nltk.util import OrderedDict
 
@@ -590,14 +591,14 @@ def test():
 
     def print_tree(n, tree, sentence=None, ansi=True, **xargs):
         print()
-        print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
-        print(tree)
+        safe_print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
+        safe_print(tree)
         print()
         drawtree = TreePrettyPrinter(tree, sentence)
         try:
-            print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
+            safe_print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
         except (UnicodeDecodeError, UnicodeEncodeError):
-            print(drawtree.text(unicodelines=False, ansi=False, **xargs))
+            safe_print(drawtree.text(unicodelines=False, ansi=False, **xargs))
 
     from nltk.corpus import treebank
 
@@ -606,7 +607,7 @@ def test():
         print_tree(n, tree, nodedist=2, maxwidth=8)
     print()
     print("ASCII version:")
-    print(TreePrettyPrinter(tree).text(nodedist=2))
+    safe_print(TreePrettyPrinter(tree).text(nodedist=2))
 
     tree = Tree.fromstring(
         "(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) "

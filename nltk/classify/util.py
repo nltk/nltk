@@ -14,6 +14,7 @@ import math
 
 # from nltk.util import Deprecated
 import nltk.classify.util  # for accuracy & log_likelihood
+from nltk.termsec import safe_print
 from nltk.util import LazyMap
 
 ######################################################################
@@ -214,13 +215,13 @@ def names_demo(trainer, features=names_demo_features):
         ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
         print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
         print()
-        print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
+        safe_print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
         for (name, gender), pdist in list(zip(test, pdists))[:5]:
             if gender == "male":
                 fmt = "  %-15s *%6.4f   %6.4f"
             else:
                 fmt = "  %-15s  %6.4f  *%6.4f"
-            print(fmt % (name, pdist.prob("male"), pdist.prob("female")))
+            safe_print(fmt % (name, pdist.prob("male"), pdist.prob("female")))
     except NotImplementedError:
         pass
 
@@ -270,13 +271,13 @@ def partial_names_demo(trainer, features=names_demo_features):
         ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
         print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
         print()
-        print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
+        safe_print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
         for (name, is_male), pdist in zip(test, pdists)[:5]:
             if is_male:
                 fmt = "  %-15s *%6.4f   %6.4f"
             else:
                 fmt = "  %-15s  %6.4f  *%6.4f"
-            print(fmt % (name, pdist.prob(True), pdist.prob(False)))
+            safe_print(fmt % (name, pdist.prob(True), pdist.prob(False)))
     except NotImplementedError:
         pass
 
@@ -301,7 +302,7 @@ def wsd_demo(trainer, word, features, n=1000):
     if n > len(instances):
         n = len(instances)
     senses = list({l for (i, l) in instances})
-    print("  Senses: " + " ".join(senses))
+    safe_print("  Senses: " + " ".join(senses))
 
     # Randomly split the names into a test & train set.
     print("Splitting into test & train...")

@@ -29,6 +29,7 @@ from nltk.corpus import stopwords
 from nltk.stem import porter
 from nltk.stem.api import StemmerI
 from nltk.stem.util import prefix_replace, suffix_replace
+from nltk.termsec import safe_print
 
 
 class SnowballStemmer(StemmerI):
@@ -5941,11 +5942,11 @@ def demo():
         excerpt = redos.sub(r"(.{,70})\s", r"\1\n", excerpt + " ").rstrip()
 
         print("\n")
-        print("-" * 70)
-        print("ORIGINAL".center(70))
-        print(excerpt)
+        safe_print("-" * 70)
+        safe_print("ORIGINAL".center(70))
+        safe_print(excerpt)
         print("\n\n")
-        print("STEMMED RESULTS".center(70))
-        print(stemmed)
-        print("-" * 70)
+        safe_print("STEMMED RESULTS".center(70))
+        safe_print(stemmed)
+        safe_print("-" * 70)
         print("\n")

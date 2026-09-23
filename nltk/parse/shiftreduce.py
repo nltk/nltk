@@ -10,6 +10,7 @@ import time
 
 from nltk.grammar import Nonterminal
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 #: Default wall-clock limit, in seconds, for a single :meth:`ShiftReduceParser.parse`
@@ -103,7 +104,7 @@ class ShiftReduceParser(ParserI):
 
         # Trace output.
         if self._trace:
-            print("Parsing %r" % " ".join(tokens))
+            safe_print("Parsing %r" % " ".join(tokens))
             self._trace_stack(stack, remaining_text)
 
         # Bound total wall-clock time: a cyclic unary production (e.g. NP -> NP)
@@ -259,7 +260,7 @@ class ShiftReduceParser(ParserI):
             else:
                 s += repr(elt) + " "
         s += "* " + " ".join(remaining_text) + "]"
-        print(s)
+        safe_print(s)
 
     def _trace_shift(self, stack, remaining_text):
         """
@@ -268,7 +269,7 @@ class ShiftReduceParser(ParserI):
         :rtype: None
         """
         if self._trace > 2:
-            print("Shift %r:" % stack[-1])
+            safe_print("Shift %r:" % stack[-1])
         if self._trace == 2:
             self._trace_stack(stack, remaining_text, "S")
         elif self._trace > 0:
@@ -283,7 +284,7 @@ class ShiftReduceParser(ParserI):
         """
         if self._trace > 2:
             rhs = " ".join(production.rhs())
-            print(f"Reduce {production.lhs()!r} <- {rhs}")
+            safe_print(f"Reduce {production.lhs()!r} <- {rhs}")
         if self._trace == 2:
             self._trace_stack(stack, remaining_text, "R")
         elif self._trace > 1:
@@ -306,7 +307,7 @@ class ShiftReduceParser(ParserI):
                 rhs1 = productions[i].rhs()
                 rhs2 = productions[j].rhs()
                 if rhs1[: len(rhs2)] == rhs2:
-                    print("Warning: %r will never be used" % productions[i])
+                    safe_print("Warning: %r will never be used" % productions[i])
 
 
 ##//////////////////////////////////////////////////////
@@ -501,7 +502,7 @@ def demo():
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
     for p in parser.parse(sent):
-        print(p)
+        safe_print(p)
 
 
 if __name__ == "__main__":

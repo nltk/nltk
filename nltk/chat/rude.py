@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.chat.util import Chat, reflections
+from nltk.termsec import safe_print
 
 pairs = (
     (
@@ -111,7 +112,7 @@ rude_chatbot = Chat(pairs, reflections)
 def rude_chat():
     print("Talk to the program by typing in plain English, using normal upper-")
     print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print("=" * 72)
+    safe_print("=" * 72)
     print("I suppose I should say hello.")
 
     rude_chatbot.converse()

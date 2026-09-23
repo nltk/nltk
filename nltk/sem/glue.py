@@ -20,6 +20,7 @@ from nltk.sem.logic import (
     VariableExpression,
 )
 from nltk.tag import BigramTagger, RegexpTagger, TrigramTagger, UnigramTagger
+from nltk.termsec import safe_print
 
 SPEC_SEMTYPES = {
     "a": "ex_quant",
@@ -652,7 +653,7 @@ class Glue:
                     # if there is an exception, the syntax of the formula
                     # may not be understandable by the prover, so don't
                     # throw out the reading.
-                    print("Error when checking logical equality of statements", e)
+                    safe_print("Error when checking logical equality of statements", e)
 
         if add_reading:
             reading_list.append(glueformula.meaning)
@@ -694,7 +695,7 @@ class Glue:
         if self.verbose:
             print("Compiled Glue Premises:")
             for cgf in return_list:
-                print(cgf)
+                safe_print(cgf)
 
         return return_list
 
@@ -825,9 +826,9 @@ def demo(show_example=-1):
 
     for i, sentence in enumerate(examples):
         if i == show_example or show_example == -1:
-            print(f"[[[Example {i}]]]  {sentence}")
+            safe_print(f"[[[Example {i}]]]  {sentence}")
             for reading in glue.parse_to_meaning(sentence.split()):
-                print(reading.simplify())
+                safe_print(reading.simplify())
             print("")
 
 

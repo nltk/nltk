@@ -11,6 +11,7 @@ except ImportError:
     pass
 
 from nltk.cluster.util import Dendrogram, VectorSpaceClusterer, cosine_distance
+from nltk.termsec import safe_print
 
 
 class GAAClusterer(VectorSpaceClusterer):
@@ -151,9 +152,9 @@ def demo():
     clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
-    print("Clusterer:", clusterer)
-    print("Clustered:", vectors)
-    print("As:", clusters)
+    safe_print("Clusterer:", clusterer)
+    safe_print("Clustered:", vectors)
+    safe_print("As:", clusters)
     print()
 
     # show the dendrogram
@@ -161,8 +162,8 @@ def demo():
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print("classify(%s):" % vector, end=" ")
-    print(clusterer.classify(vector))
+    safe_print("classify(%s):" % vector, end=" ")
+    safe_print(clusterer.classify(vector))
     print()
 
 

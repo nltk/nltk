@@ -12,6 +12,7 @@ import math
 import time
 
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.termsec import safe_print
 
 #: Default wall-clock limit, in seconds, for a single
 #: :meth:`NonprojectiveDependencyParser.parse` call. The parser enumerates every
@@ -746,7 +747,7 @@ def hall_demo():
     npp = ProbabilisticNonprojectiveParser()
     npp.train([], DemoScorer())
     for parse_graph in npp.parse(["v1", "v2", "v3"], [None, None, None]):
-        print(parse_graph)
+        safe_print(parse_graph)
 
 
 def nonprojective_conll_parse_demo():
@@ -758,7 +759,7 @@ def nonprojective_conll_parse_demo():
     for parse_graph in npp.parse(
         ["Cathy", "zag", "hen", "zwaaien", "."], ["N", "V", "Pron", "Adj", "N", "Punc"]
     ):
-        print(parse_graph)
+        safe_print(parse_graph)
 
 
 def rule_based_demo():
@@ -774,7 +775,7 @@ def rule_based_demo():
     'dachshund' -> 'his'
     """
     )
-    print(grammar)
+    safe_print(grammar)
     ndp = NonprojectiveDependencyParser(grammar)
     graphs = ndp.parse(
         [
@@ -793,7 +794,7 @@ def rule_based_demo():
     )
     print("Graphs:")
     for graph in graphs:
-        print(graph)
+        safe_print(graph)
 
 
 if __name__ == "__main__":

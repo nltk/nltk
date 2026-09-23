@@ -15,6 +15,7 @@ a first-order model.
 
 from nltk.pathsec import open as _secure_open
 from nltk.sem import evaluate
+from nltk.termsec import safe_print
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -64,8 +65,8 @@ def root_semrep(syntree, semkey="SEM"):
     try:
         return node[semkey]
     except KeyError:
-        print(node, end=" ")
-        print("has no specification for the feature %s" % semkey)
+        safe_print(node, end=" ")
+        safe_print("has no specification for the feature %s" % semkey)
     raise
 
 
@@ -169,12 +170,12 @@ def demo_legacy_grammar():
     S[sem=<hello>] -> 'hello'
     """
     )
-    print("Reading grammar: %s" % g)
-    print("*" * 20)
+    safe_print("Reading grammar: %s" % g)
+    safe_print("*" * 20)
     for reading in interpret_sents(["hello"], g, semkey="sem"):
         syn, sem = reading[0]
         print()
-        print("output: ", sem)
+        safe_print("output: ", sem)
 
 
 def demo():
@@ -291,18 +292,18 @@ def demo():
 
     for i, sent in enumerate(sents):
         n = 1
-        print("\nSentence: %s" % sent)
-        print(SPACER)
+        safe_print("\nSentence: %s" % sent)
+        safe_print(SPACER)
         if options.evaluate:
             for syntree, semrep, value in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
-                print("%d:  %s" % (n, semrep))
-                print(value)
+                safe_print("%d:  %s" % (n, semrep))
+                safe_print(value)
                 n += 1
         else:
             for syntree, semrep in semreps[i]:
-                print("%d:  %s" % (n, semrep))
+                safe_print("%d:  %s" % (n, semrep))
                 n += 1
 
 

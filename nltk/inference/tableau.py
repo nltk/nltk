@@ -32,6 +32,7 @@ from nltk.sem.logic import (
     VariableExpression,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 _counter = Counter()
 
@@ -82,7 +83,7 @@ class TableauProver(Prover):
                 result = False
             else:
                 if verbose:
-                    print(e)
+                    safe_print(e)
                 else:
                     raise e
         return (result, "\n".join(debugger.lines))
@@ -634,7 +635,7 @@ class Debug:
         self.lines.append(newline)
 
         if self.verbose:
-            print(newline)
+            safe_print(newline)
 
 
 class Categories:
@@ -734,7 +735,7 @@ def tableau_test(c, ps=None, verbose=False):
     pps = [Expression.fromstring(p) for p in ps] if ps else []
     if not ps:
         ps = []
-    print(
+    safe_print(
         "%s |- %s: %s"
         % (", ".join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
     )

@@ -25,6 +25,7 @@ from nltk import jsontags, redos
 from nltk.classify import NaiveBayesClassifier
 from nltk.probability import ConditionalFreqDist
 from nltk.tag.api import FeaturesetTaggerI, TaggerI
+from nltk.termsec import safe_print
 
 
 ######################################################################
@@ -205,7 +206,7 @@ class ContextTagger(SequentialBackoffTagger):
             backoff = 100 - (hit_count * 100.0) / token_count
             pruning = 100 - (size * 100.0) / len(fd.conditions())
             print("[Trained Unigram tagger:", end=" ")
-            print(
+            safe_print(
                 "size={}, backoff={:.2f}%, pruning={:.2f}%]".format(
                     size, backoff, pruning
                 )
@@ -677,7 +678,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
                 history.append(tags[index])
 
         if verbose:
-            print(f"Training classifier ({len(classifier_corpus)} instances)")
+            safe_print(f"Training classifier ({len(classifier_corpus)} instances)")
         self._classifier = classifier_builder(classifier_corpus)
 
     def __repr__(self):

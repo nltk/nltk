@@ -33,6 +33,7 @@ import requests
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonError, TwythonRateLimitError
 
+from nltk.termsec import safe_print
 from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
 
@@ -82,7 +83,7 @@ class Streamer(TwythonStreamer):
         :param data: The response from Twitter API
 
         """
-        print(status_code)
+        safe_print(status_code)
 
     def sample(self):
         """
@@ -97,7 +98,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print(f"Error (stream will continue): {e}")
+                    safe_print(f"Error (stream will continue): {e}")
                 continue
 
     def filter(self, track="", follow="", lang="en"):
@@ -114,7 +115,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.filter(track=track, follow=follow, lang=lang)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print(f"Error (stream will continue): {e}")
+                    safe_print(f"Error (stream will continue): {e}")
                 continue
 
 
@@ -161,7 +162,7 @@ class Query(Twython):
         ids = [line.strip() for line in ids_f if line]
 
         if verbose:
-            print(f"Counted {len(ids)} Tweet IDs in {ids_f}.")
+            safe_print(f"Counted {len(ids)} Tweet IDs in {ids_f}.")
 
         # The Twitter endpoint takes lists of up to 100 ids, so we chunk the
         # ids.
@@ -253,11 +254,11 @@ class Query(Twython):
                     result_type="recent",
                 )
             except TwythonRateLimitError as e:
-                print(f"Waiting for 15 minutes -{e}")
+                safe_print(f"Waiting for 15 minutes -{e}")
                 time.sleep(15 * 60)  # wait 15 minutes
                 continue
             except TwythonError as e:
-                print(f"Fatal error in Twython request -{e}")
+                safe_print(f"Fatal error in Twython request -{e}")
                 if retries_after_twython_exception == retries:
                     raise e
                 retries += 1
@@ -428,14 +429,14 @@ class TweetViewer(TweetHandlerI):
         :param data: Tweet object returned by Twitter API
         """
         text = data["text"]
-        print(text)
+        safe_print(text)
 
         self.check_date_limit(data)
         if self.do_stop:
             return
 
     def on_finish(self):
-        print(f"Written {self.counter} Tweets")
+        safe_print(f"Written {self.counter} Tweets")
 
 
 class TweetWriter(TweetHandlerI):
@@ -526,7 +527,7 @@ class TweetWriter(TweetHandlerI):
                 self.output = open(
                     self.fname, "w"
                 )  # sandboxed-open ok: operator output path
-            print(f"Writing to {self.fname}")
+            safe_print(f"Writing to {self.fname}")
 
         json_data = json.dumps(data)
         if self.gzip_compress:
@@ -541,7 +542,7 @@ class TweetWriter(TweetHandlerI):
         self.startingup = False
 
     def on_finish(self):
-        print(f"Written {self.counter} Tweets")
+        safe_print(f"Written {self.counter} Tweets")
         if self.output:
             self.output.close()
 

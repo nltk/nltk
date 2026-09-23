@@ -37,6 +37,7 @@ as Eliza.
 """
 
 from nltk.chat.util import Chat, reflections
+from nltk.termsec import safe_print
 
 # responses are matched top to bottom, so non-specific matches occur later
 # for each match, a list of possible responses is provided
@@ -309,13 +310,13 @@ zen_chatbot = Chat(responses, reflections)
 
 
 def zen_chat():
-    print("*" * 75)
-    print("Zen Chatbot!".center(75))
-    print("*" * 75)
-    print('"Look beyond mere words and letters - look into your mind"'.center(75))
+    safe_print("*" * 75)
+    safe_print("Zen Chatbot!".center(75))
+    safe_print("*" * 75)
+    safe_print('"Look beyond mere words and letters - look into your mind"'.center(75))
     print("* Talk your way to truth with Zen Chatbot.")
     print("* Type 'quit' when you have had enough.")
-    print("*" * 75)
+    safe_print("*" * 75)
     print("Welcome, my child.")
 
     zen_chatbot.converse()

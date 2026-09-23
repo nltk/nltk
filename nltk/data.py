@@ -56,6 +56,7 @@ from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
 from nltk.pathsec import validate_path as _validate_path
+from nltk.termsec import safe_print
 
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
 # backslashes, and any ':' or '|'. On Windows url2pathname turns ':' or '|' in the first
@@ -1577,7 +1578,7 @@ def load(
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                print(f"<<Using cached copy of resource (format={format})>>")
+                safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
 
     protocol, path_ = split_resource_url(resource_url)
@@ -1700,7 +1701,7 @@ def show_cfg(resource_url, escape="##"):
             continue
         if redos.match("^$", l):
             continue
-        print(l)
+        safe_print(l)
 
 
 def clear_cache():

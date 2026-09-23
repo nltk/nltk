@@ -10,6 +10,7 @@ import time
 from functools import reduce
 
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import ProbabilisticTree, Tree
 
 #: Default wall-clock limit, in seconds, for a single :meth:`ViterbiParser.parse`
@@ -347,12 +348,12 @@ class ViterbiParser(ParserI):
         if self._trace > 2:
             str = f"{str:<40} {p:12.10f} "
 
-        print(str)
+        safe_print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
         str = "   Insert: |" + "." * index + "=" + "." * (width - index - 1) + "| "
         str += f"{token}"
-        print(str)
+        safe_print(str)
 
     def __repr__(self):
         return "<ViterbiParser for %r>" % self._grammar
@@ -427,7 +428,7 @@ def demo():
     # Ask the user which demo they want to use.
     print()
     for i in range(len(demos)):
-        print(f"{i + 1:>3}: {demos[i][0]}")
+        safe_print(f"{i + 1:>3}: {demos[i][0]}")
         print("     %r" % demos[i][1])
         print()
     print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
@@ -444,7 +445,7 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
+    safe_print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
     parser.trace(3)
     t = time.time()
     parses = parser.parse_all(tokens)
@@ -467,7 +468,7 @@ def demo():
     else:
         p = 0
     print("------------------------------------------")
-    print("%11s%11d%19.14f" % ("n/a", len(parses), p))
+    safe_print("%11s%11d%19.14f" % ("n/a", len(parses), p))
 
     # Ask the user if we should draw the parses.
     print()
@@ -483,7 +484,7 @@ def demo():
     print("Print parses (y/n)? ", end=" ")
     if sys.stdin.readline().strip().lower().startswith("y"):
         for parse in parses:
-            print(parse)
+            safe_print(parse)
 
 
 if __name__ == "__main__":

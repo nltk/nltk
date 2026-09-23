@@ -9,6 +9,8 @@ import copy
 import random
 import sys
 
+from nltk.termsec import safe_print
+
 try:
     import numpy
 except ImportError:
@@ -84,7 +86,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         meanss = []
         for trial in range(self._repeats):
             if trace:
-                print("k-means trial", trial)
+                safe_print("k-means trial", trial)
             if not self._means or trial > 1:
                 self._means = self._rng.sample(list(vectors), self._num_means)
             self._cluster_vectorspace(vectors, trace)
@@ -202,9 +204,9 @@ def demo():
     clusterer = KMeansClusterer(2, euclidean_distance, initial_means=means)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
-    print("Clustered:", vectors)
-    print("As:", clusters)
-    print("Means:", clusterer.means())
+    safe_print("Clustered:", vectors)
+    safe_print("As:", clusters)
+    safe_print("Means:", clusterer.means())
     print()
 
     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
@@ -214,15 +216,15 @@ def demo():
 
     clusterer = KMeansClusterer(2, euclidean_distance, repeats=10)
     clusters = clusterer.cluster(vectors, True)
-    print("Clustered:", vectors)
-    print("As:", clusters)
-    print("Means:", clusterer.means())
+    safe_print("Clustered:", vectors)
+    safe_print("As:", clusters)
+    safe_print("Means:", clusterer.means())
     print()
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print("classify(%s):" % vector, end=" ")
-    print(clusterer.classify(vector))
+    safe_print("classify(%s):" % vector, end=" ")
+    safe_print(clusterer.classify(vector))
     print()
 
 
