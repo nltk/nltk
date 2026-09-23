@@ -6,6 +6,14 @@ parameter channel of every print/write entry point introduced by the
 (PR #3915 and the remaining #3889 slices), checked methodically for known and
 unknown exploit classes.
 
+**Automatic re-verification:** `python tools/security_output_audit.py` runs
+both passes on demand: an AST inventory of every output sink in the package
+(bare vs routed) and a live exploit battery that fires every attack class
+below at the real sanitisers (skipped with a notice while the modules are
+absent). Its leak detectors are independently derived and self-tested, and
+the battery is mutation-verified: neutering either sanitiser in memory makes
+probes report LEAK.
+
 Audit method (2026-09-23 sweep): enumerate every parameter channel of every
 entry point; for each, name the exploit candidate, probe it EMPIRICALLY
 (exploit first, then fix), and record the pinning test. Statuses:
