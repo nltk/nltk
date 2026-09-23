@@ -209,17 +209,24 @@ def sanitize_terminal(text, *, single_line=False):
     return "".join(result)
 
 
-def safe_print(*values, sep=" ", end="\n", **kwargs):
+def safe_print(*values, sep=" ", end="\n", single_line=False, **kwargs):
     """``print`` wrapper that sanitises each value with :func:`sanitize_terminal`.
 
     A drop-in for ``print`` when the arguments may contain untrusted text. The
     ``sep`` and ``end`` strings are sanitised too, so a caller-supplied separator
     cannot smuggle a control sequence; a ``sep``/``end`` of ``None`` keeps print's
-    own default.
+    own default. Set *single_line* to escape TAB and newline inside each VALUE
+    as well (a filename, an id cannot then forge an extra line); ``sep`` and
+    ``end`` keep default-mode sanitisation, so the trailing newline stays real.
     """
     sep = sanitize_terminal(sep) if isinstance(sep, str) else sep
     end = sanitize_terminal(end) if isinstance(end, str) else end
-    print(*(sanitize_terminal(v) for v in values), sep=sep, end=end, **kwargs)
+    print(
+        *(sanitize_terminal(v, single_line=single_line) for v in values),
+        sep=sep,
+        end=end,
+        **kwargs,
+    )
 
 
 def __getattr__(name):

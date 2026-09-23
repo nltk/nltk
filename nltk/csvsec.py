@@ -22,7 +22,9 @@ so no caller ever needs a per-type special case:
 3. materialise EVERY other object with ``str()`` here, never later at the
    writer, so a crafted ``__str__`` cannot smuggle a payload past the guard;
 4. escape terminal control sequences, bidi overrides and invisible
-   characters; and
+   characters (tabs and embedded newlines pass through by default, since the
+   csv module's quoting owns cell structure; ``single_line=True`` escapes
+   them too); and
 5. defuse a spreadsheet formula lead, keeping a genuine number's sign.
 
 :func:`sanitize_csv_field` runs that same pipeline for a single cell and is
@@ -62,7 +64,7 @@ def _looks_numeric(text):
         return False
 
 
-def sanitize_csv_field(value):
+def sanitize_csv_field(value, *, single_line=False):
     """Return *value* neutralised for writing as a CSV/TSV cell.
 
     Runs the module's fixed cell pipeline (see the module docstring): the
@@ -74,13 +76,18 @@ def sanitize_csv_field(value):
     is prefixed with an apostrophe so the spreadsheet treats it as text, and a
     formula-led string longer than any legitimate number is defused without
     being parsed at all.
+
+    Tabs and embedded newlines are preserved by default: the csv module's
+    quoting owns cell structure, and a newline inside a quoted cell is
+    legitimate CSV. Set *single_line* to escape them too, for a consumer that
+    treats the file as one record per physical line without csv quoting.
     """
     _refuse_int_bomb(value)
     if value is None or type(value) in (int, float, bool):
         return value
     if not isinstance(value, str):
         value = str(value)
-    text = sanitize_terminal(value)
+    text = sanitize_terminal(value, single_line=single_line)
     # Strip every leading whitespace (space, tab, and any Unicode space such as a
     # no-break space) a spreadsheet skips before finding the formula lead.
     lead = text.lstrip()
@@ -98,11 +105,14 @@ class SafeCsvWriter:
     by the csv module exactly as for any other value.
     """
 
-    def __init__(self, fileobj, dialect="excel", **fmtparams):
+    def __init__(self, fileobj, dialect="excel", *, single_line=False, **fmtparams):
         self._writer = _csv.writer(fileobj, dialect, **fmtparams)
+        self._single_line = single_line
 
     def writerow(self, row):
-        return self._writer.writerow([sanitize_csv_field(v) for v in row])
+        return self._writer.writerow(
+            [sanitize_csv_field(v, single_line=self._single_line) for v in row]
+        )
 
     def writerows(self, rows):
         for row in rows:
@@ -113,6 +123,6 @@ class SafeCsvWriter:
         return self._writer.dialect
 
 
-def safe_csv_writer(fileobj, dialect="excel", **fmtparams):
+def safe_csv_writer(fileobj, dialect="excel", *, single_line=False, **fmtparams):
     """Return a :class:`SafeCsvWriter` over *fileobj*, like ``csv.writer``."""
-    return SafeCsvWriter(fileobj, dialect, **fmtparams)
+    return SafeCsvWriter(fileobj, dialect, single_line=single_line, **fmtparams)

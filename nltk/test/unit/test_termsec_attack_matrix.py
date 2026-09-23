@@ -44,7 +44,9 @@ MUS = chr(0x1D173)  # musical-symbol format control (invisible)
 # The codepoints that MUST NOT survive sanitisation, re-derived here independently
 # of nltk.termsec so this detector is a real cross-check, not a mirror. Bidi
 # embeddings/isolates/marks are included because every ATTACK payload below is
-# unbalanced or an override, so the sanitiser escapes them all.
+# unbalanced or an override, so the sanitiser escapes them all. This is
+# deliberately STRICTER than the sanitiser's spec, which passes balanced
+# embeddings/isolates and lone direction marks through for legitimate bidi.
 _BIDI_CONTROLS = {
     0x202A,
     0x202B,

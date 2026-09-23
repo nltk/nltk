@@ -57,7 +57,9 @@ _ALWAYS_FORMAT = (
         0x2068,
         0x2069,
         # direction marks: flagged here like the attack-matrix detector, since
-        # every injection payload below uses bidi only in unbalanced form
+        # every injection payload below uses bidi only in unbalanced form.
+        # Deliberately stricter than the sanitiser's spec, which passes lone
+        # or balanced marks through for legitimate bidi text.
         0x200E,
         0x200F,
         0x061C,

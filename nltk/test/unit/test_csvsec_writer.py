@@ -158,6 +158,44 @@ class TestTypeSweepOnePipelineNoBranches:
         assert sanitize_csv_field(complex(1, 2)) == "(1+2j)"
 
 
+class TestSingleLineForwarding:
+    """single_line reaches every sink as a strict, opt-in superset: embedded
+    TAB/newline in a VALUE are escaped, defaults stay byte-identical."""
+
+    def test_field_single_line_escapes_tab_and_newline(self):
+        assert sanitize_csv_field("a\nb\tc", single_line=True) == "a\\x0ab\\x09c"
+        assert sanitize_csv_field("a\nb\tc") == "a\nb\tc"  # default unchanged
+
+    def test_newline_led_formula_both_modes_defused(self):
+        # default: the spreadsheet skips leading whitespace, so the lead is
+        # found and apostrophe-prefixed
+        assert sanitize_csv_field("\n=x") == "'" + "\n=x"
+        # single_line: the newline is escaped FIRST, so the cell begins with a
+        # literal backslash, which no spreadsheet treats as a formula lead;
+        # the escape itself is the defusal
+        out = sanitize_csv_field("\n=x", single_line=True)
+        assert out == "\\x0a=x"
+        assert not out.lstrip().startswith(("=", "+", "@"))
+
+    def test_writer_forwards_single_line(self):
+        buf = io.StringIO()
+        safe_csv_writer(buf, single_line=True).writerow(["x\ny", "=a", ESC + "[2J"])
+        raw = buf.getvalue()
+        # no real newline survives inside any cell; only the row terminator
+        assert "\n" not in raw.replace("\r\n", "")
+        (row,) = list(csv.reader(io.StringIO(raw)))
+        assert row == ["x\\x0ay", "'=a", "\\x1b[2J"]
+
+    def test_writer_single_line_hostile_mix(self):
+        buf = io.StringIO()
+        safe_csv_writer(buf, single_line=True).writerow(
+            ["name" + ESC + "]0;p\x07\n2nd" + chr(0x202E)]
+        )
+        raw = buf.getvalue()
+        assert ESC not in raw and chr(0x202E) not in raw
+        assert "\n" not in raw.replace("\r\n", "")
+
+
 def test_termsec_reexport_is_the_same_function():
     import nltk.termsec as termsec
 

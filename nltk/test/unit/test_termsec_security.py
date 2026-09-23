@@ -97,6 +97,29 @@ def test_safe_print_does_not_crash_on_lone_surrogate(capsys):
     assert "\\ud800" in out
 
 
+class TestSafePrintSingleLine:
+    """single_line applies to the VALUES only; sep and end keep default-mode
+    sanitisation so the trailing newline stays a real newline."""
+
+    def test_value_newline_escaped_trailing_newline_real(self, capsys):
+        safe_print("a\nb", single_line=True)
+        assert capsys.readouterr().out == "a\\x0ab\n"
+
+    def test_multiple_values_with_sep(self, capsys):
+        safe_print("f1\nx", "f2", sep=" | ", single_line=True)
+        assert capsys.readouterr().out == "f1\\x0ax | f2\n"
+
+    def test_default_still_multiline(self, capsys):
+        safe_print("a\nb")
+        assert capsys.readouterr().out == "a\nb\n"
+
+    def test_hostile_value_single_line(self, capsys):
+        safe_print("name\x1b[2J\n2nd" + chr(0x202E), single_line=True)
+        out = capsys.readouterr().out
+        assert "\x1b" not in out and chr(0x202E) not in out
+        assert out.endswith("\n") and "\n" not in out[:-1]
+
+
 class TestSingleLineMode:
     """single_line=True is for a value that must occupy one line (a filename, id,
     VCS ref): TAB and newline are escaped too, matching ls/git. The default must
