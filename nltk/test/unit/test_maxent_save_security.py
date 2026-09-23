@@ -115,3 +115,63 @@ def test_maxent_save_sink_routes_through_pathsec():
     assert "pathsec_open(" in mx_src
     assert "validate_path(" in mx_src
     assert '"/tmp' not in mx_src and "'/tmp" not in mx_src
+
+
+class TestLoadMaxentParamsPathTypes:
+    """GHSA-59f9-gqg8-mqpj (CVE-2026-15367): the loader takes a PathPointer,
+    a str or an os.PathLike. A plain path is wrapped in FileSystemPathPointer
+    so the reads go through pathsec: an outside-root directory is refused
+    with PermissionError (it used to crash with AttributeError before any
+    read, which is not a refusal), and an in-root directory loads."""
+
+    @staticmethod
+    def _plant(directory):
+        directory.mkdir(parents=True, exist_ok=True)
+        for name, body in (
+            ("weights.txt", "0.5\n-1.25\n"),
+            ("mapping.tab", "word\tcat\tL1\t0\n"),
+            ("labels.txt", "L1\nL2\n"),
+            ("alwayson.tab", ""),
+        ):
+            (directory / name).write_text(body, encoding="utf-8")
+
+    @pytest.mark.parametrize("kind", ["str", "path", "pointer"])
+    def test_outside_root_refused_for_every_path_type(self, restricted_sandbox, kind):
+        pytest.importorskip("numpy")
+        from nltk.classify.maxent import load_maxent_params
+        from nltk.data import FileSystemPathPointer
+
+        outside = _outside_dir()
+        try:
+            self._plant(outside)
+            target = {
+                "str": str(outside),
+                "path": outside,
+                "pointer": FileSystemPathPointer(str(outside)),
+            }[kind]
+            with pytest.raises(PermissionError):
+                load_maxent_params(target)
+        finally:
+            shutil.rmtree(outside, ignore_errors=True)
+
+    def test_in_root_str_path_loads(self, restricted_sandbox):
+        numpy = pytest.importorskip("numpy")
+        from nltk.classify.maxent import load_maxent_params, save_maxent_params
+
+        out = save_maxent_params(
+            numpy.array([0.5, -1.25]), {("w", "c", "L1"): 0}, ["L1"], {}
+        )
+        try:
+            wgt, mpg, lab, aon = load_maxent_params(str(out))
+            assert list(lab) == ["L1"] and mpg == {("w", "c", "L1"): 0}
+            wgt2 = load_maxent_params(Path(out))[0]
+            assert numpy.allclose(wgt, wgt2)
+        finally:
+            shutil.rmtree(out, ignore_errors=True)
+
+    def test_missing_directory_is_a_plain_os_error(self, restricted_sandbox):
+        pytest.importorskip("numpy")
+        from nltk.classify.maxent import load_maxent_params
+
+        with pytest.raises(OSError):
+            load_maxent_params(str(_outside_dir() / "does-not-exist"))
