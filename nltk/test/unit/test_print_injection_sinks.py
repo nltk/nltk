@@ -56,6 +56,11 @@ _ALWAYS_FORMAT = (
         0x2067,
         0x2068,
         0x2069,
+        # direction marks: flagged here like the attack-matrix detector, since
+        # every injection payload below uses bidi only in unbalanced form
+        0x200E,
+        0x200F,
+        0x061C,
     }
     | set(range(0xFFF0, 0xFFF9))
     | set(range(0x1BCA0, 0x1BCA4))
