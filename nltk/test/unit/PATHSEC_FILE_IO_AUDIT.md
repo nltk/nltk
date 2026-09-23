@@ -147,3 +147,38 @@ tokenize,sentiment_util,misc}.py` · plus (in flight) `…_tag`, `…_classify_e
 Every attack test uses a genuinely-outside `$HOME` target (never a temp dir — the
 private system temp is an allowed root on macOS) with a negative control, and
 exercises **ENFORCE on** (refused) vs **off** (baseline) where relevant.
+
+### line sweep 2026-09-23 (every open / read / write / print / exec line: `SINK_LEDGER.md`, `tools/security_sink_sweep.py`)
+
+Verdicts for the residue the per-line sweep listed as unguarded and not yet in
+this document. Every ATTACKED row was run against the real code path first.
+
+| File | Sink | Verdict | Test |
+|---|---|---|---|
+| classify/maxent.py | `load_maxent_params` given a plain `str` / `os.PathLike` (GHSA-59f9-gqg8-mqpj, CVE-2026-15367) | GAP-FIXED (wrapped in `FileSystemPathPointer`, so outside-root is a `PermissionError` instead of an `AttributeError` crash; pointer path unchanged) | test_maxent_save_security (TestLoadMaxentParamsPathTypes), security_probes/ghsa_59f9_gqg8_mqpj |
+| downloader.py | `urlopen(info.url)` with a poisoned index entry: `file://` outside root, `/dev/zero`, `ftp:`, `data:`, HTTP 302 to `file://` | ATTACKED, CONTAINED (`pathsec.validate_network_url` scheme allowlist + in-root `file://` branch + validating redirect handler); in-root `file://` mirror still works by design | test_downloader_url_scheme_security |
+| downloader.py | `os.remove/rmdir/makedirs/utime` on `download_dir` + validated `info.subdir`; `zf.extract` after `_validate_member` phase-1 validation and hardlink check | GUARDED (see GHSA-f794 / GHSA-wr3g probes; member traversal pinned) | test_attack_pathsec_candidates_expanded, security_probes/ghsa_wr3g_j6qj_xpgh |
+| downloader.py | `_svn_revision` `Popen(["svn", ...])` | EXEMPT (build_index developer helper, argv list, no shell; filename is the index builder's own tree) | — |
+| internals.py | `read_str` `eval` of the regex-delimited literal | ATTACKED, CONTAINED: no prefix that makes code (`f`/`F`/`rf`/`fr`/`b`/`t`) is admitted; GAP-FIXED for robustness: `SyntaxError` (raw newline, `ur`) now surfaces as `ReadError` | test_read_str_security |
+| internals.py | `java()` `Popen` | GUARDED (trusted-executable chokepoint, `resolve_trusted_executable`) | test_pathsec_trusted_exec, test_java_per_call_options_security |
+| internals.py | `find_file_iter` `Popen(["which", name])` | EXEMPT (locator, argv list, no shell; the found binary is validated by the trusted-exec chokepoint before any execution) | — |
+| tokenize/texttiling.py | `smooth(window=...)` `eval("numpy." + window + ...)` | ATTACKED, CONTAINED by the existing allowlist (injection payload refused, canary never created); GAP-FIXED as defense in depth: `getattr(numpy, window)` replaces `eval` | test_texttiling_security (TestSmoothWindowIsNeverCode) |
+| decorators.py | `eval(src, ...)` of source built from the decorated function's own signature | PENDING (code-derived, not data; eval-avoidance rewrite is the remaining #3889 slice, CWE-95) | — |
+| corpus/reader/*.py (api, util, timit, wordnet, markdown, xmldocs, bcp47, cmudict, ieer, indian, ipipan, nombank, opinion_lexicon, pl196x, plaintext, ppattach, propbank, reviews, senseval, sinica_treebank, string_category, verbnet, wordlist, categorized_sents, comparative_sents, crubadan, nkjp) | `stream.read()/readline()` on streams already opened through `CorpusReader.open` -> `PathPointer.open` -> `pathsec.open`; `self.open(...)` definitions | GUARDED by construction (the open is the sandboxed one; reads consume its stream) | test_pathsec_sweep_dataset_loading, test_corpus_reader_pathsec |
+| corpus/reader/timit.py | `ossaudiodev.open("w")` + `dsp.write` | EXEMPT (audio device, no path) | — |
+| huggingface/dataset.py | `HFDatasetPathPointer.open` | EXEMPT (in-memory `StringIO`/`BytesIO` over the datasets cache; no caller path) | — |
+| sem/relextract.py | `sqlite3.connect(":memory:")` | EXEMPT (in-memory database) | — |
+| app/*.py, draw/util.py | `open(...)` / `outfile.write` | EXEMPT (Tk file dialogs, human in loop; re-checked) | — |
+| cli.py, cluster/*.py, parse/{chart,pchart,viterbi}.py, featstruct.py | `fin.readlines()`, `sys.stdin.readline()`, `sys.stderr.write` | EXEMPT (operator CLI input / interactive demos / constant diagnostics) | — |
+| twitter/*.py | `gzip.open` / `open` / `writerow` / `output.write` | EXEMPT for paths (operator ctor params); PENDING for cell content: `json2csv` writers route through `nltk.csvsec` once #3914 lands (CWE-1236) | — |
+| picklesec.py, redos.py, jsontags.py, pathsec.py | `pickle.dump`, `regex.compile`, `json.loads`, `os.open/stat` | SECURITY MODULE INTERNALS (the guards themselves) | test_pickle_allowlist_security, test_redos_*, test_pathsec |
+| lazyimport.py, internals.py `__import__` | dynamic import of module names from code | EXEMPT (names are literals in the tree) | — |
+| __init__.py | `VERSION` read | EXEMPT (fixed `__file__`-relative resource) | — |
+| every `print(...)` / `sys.stdout.write` of untrusted values (1406 sites) | terminal control / bidi injection (CWE-150 / CVE-2021-42574) | PENDING here: routed through `nltk.termsec.safe_print` by #3915 (depends on #3914) | tools/security_output_audit.py |
+| parse/corenlp.py | `requests.get(self.url ...)` | EXEMPT (the operator's own CoreNLP server URL from the constructor; not a data-controlled fetch) | test_corenlp_options_security |
+| parse/stanford.py, tokenize/stanford.py, tokenize/stanford_segmenter.py, tag/stanford.py, parse/malt.py | `input_file.write` / `os.unlink` on a `NamedTemporaryFile(dir=staging_tempdir())` handed to the JVM | EXEMPT (internal staged temp input, pinned under a data root; tool path through the trusted-exec chokepoint) | test_malt_stanford_pathsec, test_tokenize_stanford_pathsec |
+| tokenize/repp.py, sem/boxer.py | `shutil.rmtree(staging_dir)` | EXEMPT (removes the private staging dir the module itself created) | test_repp_security, test_boxer_security |
+| toolbox.py | `StandardFormat.open(sfm_file)` | GUARDED (PathPointer open, or `pathsec_open` for a bare string) | test_pathsec_sweep_infra |
+| corpus/reader/bracket_parse.py, cluster/kmeans.py, cluster/util.py | `sys.stderr.write` / `stdout.write` of constant diagnostics | EXEMPT (no untrusted value in the message; routed with the rest of the prints by #3915) | — |
+| translate/phrase_based.py `extract`, parse/evaluate.py `eval`, sem/glue.py `compile`, tree/parsing.py and tree/tree.py `read()` in messages | name collisions with sink names | BENIGN (not sinks: phrase extraction, evaluation method, glue-formula compiler, error strings) | — |
+| util.py `readline` helper | line reads on a stream the caller already opened | GUARDED by construction (the open is the caller's sandboxed one) | — |
