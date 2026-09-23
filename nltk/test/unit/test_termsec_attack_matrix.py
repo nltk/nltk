@@ -445,12 +445,17 @@ class TestNumericBombs:
         text = "-" + "9" * 5000
         assert sanitize_csv_field(text) == text
 
-    @pytest.mark.parametrize("bad", ["-1.2.3", "+1..2", "+.", "-."])
-    def test_many_decimal_points_with_formula_lead_defused(self, bad):
+    @pytest.mark.parametrize("bad", ["-1.2.3x", "+1..2)", "+.", "-.", "-,"])
+    def test_leads_with_non_numeric_tails_defused(self, bad):
+        # anything beyond the digits/comma/period grouping charset keeps the
+        # defusal; the pure-grouping forms are numbers (see TestGroupedNumbers)
         assert sanitize_csv_field(bad).startswith("'")
 
-    def test_many_decimal_points_without_lead_unchanged(self):
-        assert sanitize_csv_field("1.2.3") == "1.2.3"
+    @pytest.mark.parametrize("num", ["-1.2.3", "+1..2", "1.2.3"])
+    def test_grouping_only_forms_are_numbers(self, num):
+        # sign + digits with , . grouping cannot name a function or a DDE
+        # server, so these stay untouched (defusedcsv-parity exemption)
+        assert sanitize_csv_field(num) == num
 
     def test_decimal_coerced_linearly(self):
         from decimal import Decimal

