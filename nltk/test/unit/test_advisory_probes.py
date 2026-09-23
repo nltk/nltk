@@ -865,13 +865,19 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     real = pathsec.ZipFile._extract_member
     try:
         pathsec.ZipFile._extract_member = zipfile.ZipFile._extract_member
-        status = probe()[0]
+        status, detail = probe()[:2]
         if status != probes.VULNERABLE and not _stdlib_zipfile_follows_hardlink():
             pytest.skip(
                 "stdlib zipfile itself refuses the hardlink write on this "
                 "interpreter; no vulnerable extractor to regress to"
             )
-        assert status == probes.VULNERABLE
+        # the probe's own detail string names which branch produced the verdict,
+        # which is the forensic difference between a broken swap, a refusal from
+        # an unswapped pathsec layer, and a write that silently did not escape
+        assert status == probes.VULNERABLE, (
+            f"swapped-in stdlib extractor did not flip the probe: "
+            f"status={status!r} detail={detail!r}"
+        )
     finally:
         pathsec.ZipFile._extract_member = real
     assert probe()[0] == probes.FIXED
