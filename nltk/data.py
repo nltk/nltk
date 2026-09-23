@@ -1578,14 +1578,14 @@ def load(
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                safe_print(f"<<Using cached copy of {resource_url}>>")
+                safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
 
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
         if verbose:
-            safe_print(f"<<Loading pickle-free alternative to {resource_url}>>")
+            print("<<Loading pickle-free alternative>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
@@ -1598,7 +1598,7 @@ def load(
 
     # Let the user know what's going on.
     if verbose:
-        safe_print(f"<<Loading {resource_url}>>")
+        print("<<Loading resource>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
