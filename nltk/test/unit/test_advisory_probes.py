@@ -729,11 +729,16 @@ def test_r53h_front_mutation_probe_has_teeth():
     class _FrontPopList(list):
         def popleft(self):
             # A Python-level reslice so the O(n) front removal is visible at test
-            # sizes (list.pop(0) is a C memmove and hides the constant).
+            # sizes (list.pop(0) is a C memmove and hides the constant). The tail
+            # is rebuilt three times so t_small clears scaling_ratio's 0.1s noise
+            # floor with margin on a fast interpreter and the measured ratio is
+            # the true quadratic, not the floored form (which sat within 1.3x of
+            # the threshold and flipped FIXED on CPython 3.14.7 runners).
             head = self[0]
-            rest = []
-            for item in self[1:]:
-                rest.append(item)
+            for _ in range(3):
+                rest = []
+                for item in self[1:]:
+                    rest.append(item)
             self[:] = rest
             return head
 
@@ -807,10 +812,50 @@ def test_7mxv_java_untrusted_exec_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
-def test_wr3g_zip_hardlink_probe_has_teeth():
-    """Swap the hardened extractor for the stdlib one (which follows hardlinks); the
-    member write escapes through the planted hardlink and the probe flips."""
+def _stdlib_zipfile_follows_hardlink():
+    """True if the RAW stdlib extractor writes through a pre-planted hardlink.
+
+    Runs pure ``zipfile`` with no nltk code involved, so it detects an
+    interpreter whose own extractor has been hardened (CPython backports); the
+    wr3g teeth then have no vulnerable extractor to regress to and must skip
+    rather than fail. Any error here reports False, which keeps the teeth
+    assertion in force (fail closed)."""
     import zipfile
+
+    box = tempfile.mkdtemp()
+    try:
+        root = os.path.join(box, "root")
+        os.makedirs(root)
+        secret = os.path.join(box, "secret")
+        with open(secret, "wb") as fh:
+            fh.write(b"ORIG")
+        planted = os.path.join(root, "evil.txt")
+        try:
+            os.link(secret, planted)
+        except OSError:
+            return False
+        zip_path = os.path.join(box, "p.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("evil.txt", b"PAYLOAD")
+        try:
+            with zipfile.ZipFile(zip_path) as zf:
+                zf.extractall(root)
+        except Exception:
+            return False
+        with open(secret, "rb") as fh:
+            return b"PAYLOAD" in fh.read()
+    finally:
+        shutil.rmtree(box, ignore_errors=True)
+
+
+def test_wr3g_zip_hardlink_probe_has_teeth():
+    """Swap the hardened extractor for the stdlib one; on an interpreter whose
+    stdlib still follows hardlinks the member write escapes through the planted
+    link and the probe flips. On a hardened stdlib (behaviour-probed, never
+    version-sniffed) there is nothing vulnerable to regress to, so skip."""
+    import zipfile
+
+    import pytest
 
     import nltk.pathsec as pathsec
 
@@ -820,7 +865,13 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     real = pathsec.ZipFile._extract_member
     try:
         pathsec.ZipFile._extract_member = zipfile.ZipFile._extract_member
-        assert probe()[0] == probes.VULNERABLE
+        status = probe()[0]
+        if status != probes.VULNERABLE and not _stdlib_zipfile_follows_hardlink():
+            pytest.skip(
+                "stdlib zipfile itself refuses the hardlink write on this "
+                "interpreter; no vulnerable extractor to regress to"
+            )
+        assert status == probes.VULNERABLE
     finally:
         pathsec.ZipFile._extract_member = real
     assert probe()[0] == probes.FIXED

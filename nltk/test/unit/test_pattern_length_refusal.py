@@ -85,12 +85,14 @@ class TestTgrepNodeLiteralRefusal:
 
 
 class TestHelpTagpatternRefusal:
-    def test_oversized_tagpattern_degrades(self, capsys):
+    def test_oversized_tagpattern_fails_closed(self, capsys):
+        # The refusal is the library-wide fail-closed contract (PR 3910): an
+        # oversized pattern must RAISE, never degrade to a printed warning.
         import nltk.help as help_module
 
-        try:
-            help_module._format_tagset("upenn_tagset", "N" * (BIG + 10))
-        except LookupError:
-            pytest.skip("upenn_tagset data unavailable")
-        out = capsys.readouterr().out
-        assert "Invalid or oversized tag pattern" in out
+        with pytest.raises(ValueError, match="Invalid or oversized tag pattern"):
+            try:
+                help_module._format_tagset("upenn_tagset", "N" * (BIG + 10))
+            except LookupError:
+                pytest.skip("upenn_tagset data unavailable")
+        assert "Invalid or oversized tag pattern" not in capsys.readouterr().out
