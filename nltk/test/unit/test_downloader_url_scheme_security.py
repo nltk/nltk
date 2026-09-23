@@ -12,7 +12,9 @@ the data directory. The one permitted ``file://`` form, a package mirrored
 inside a data root, stays working.
 
 The outside target lives under ``$HOME``: the private per-user temp root is a
-trusted pathsec root on macOS, so a temp dir would be a false "outside"."""
+trusted pathsec root on macOS, so a temp dir would be a false "outside". File
+URLs are built with ``Path.as_uri()`` so they are well formed on Windows too
+(``file:///C:/...``, never the drive letter followed by a backslash path)."""
 
 import hashlib
 import http.server
@@ -83,7 +85,7 @@ def test_negative_control_outside_is_really_outside(dirs):
 
 def test_file_url_outside_root_is_not_read(dirs):
     root, outside = dirs
-    errors, written = _run(root, "file://" + str(outside / "secret.txt"))
+    errors, written = _run(root, (outside / "secret.txt").as_uri())
     assert not written
     assert errors and "Security Violation" in errors[0]
 
@@ -99,7 +101,7 @@ def test_non_http_schemes_and_devices_refused(dirs, url):
 
 def test_http_redirect_to_file_url_is_refused(dirs):
     root, outside = dirs
-    target = "file://" + str(outside / "secret.txt")
+    target = (outside / "secret.txt").as_uri()
 
     class Redirect(http.server.BaseHTTPRequestHandler):
         def do_GET(self):
@@ -126,6 +128,6 @@ def test_file_url_inside_root_mirror_still_works(dirs):
     root, _ = dirs
     mirror = root / "mirror.txt"
     mirror.write_bytes(_BODY)
-    errors, written = _run(root, "file://" + str(mirror))
+    errors, written = _run(root, mirror.as_uri())
     assert written and not errors
     assert (root / "corpora" / "evil.txt").read_bytes() == _BODY
