@@ -148,7 +148,7 @@ def scan_sinks(package_dir):
 # ---------------------------------------------------------------------------
 
 _ESC = "\x1b"
-_RLO = "‮"
+_RLO = "\u202e"
 
 
 def _live_control(text):
@@ -232,9 +232,9 @@ class _Probes:
 
     def probe_bidi_overrides(self):
         sanitize = self.termsec.sanitize_terminal
-        for payload in [_RLO + "evil", "‭ flip", "⁦iso"]:
+        for payload in [_RLO + "evil", "\u202d flip", "\u2066iso"]:
             out = sanitize(payload)
-            if any(ch in out for ch in (_RLO, "‭", "⁦")):
+            if any(ch in out for ch in (_RLO, "\u202d", "\u2066")):
                 return "LEAK", f"bidi control survived from {payload!r}"
         return "PASS", "overrides and unbalanced isolates escaped"
 
@@ -301,16 +301,27 @@ class _Probes:
             "@SUM(A1)",
             "%0A=x",
             "|calc",
-            "＝SUM(A1)",
-            "＋x",
+            "\uff1dSUM(A1)",
+            "\uff0bx",
             "==SUM(A1)",
             "\t=padded",
-            " =padded",
-            "　=padded",
-            "﻿=bom",
+            "\u00a0=padded",
+            "\u3000=padded",
+            "\ufeff=bom",
             "=cmd|' /C calc'!A1",
         ]
-        lead_chars = ("=", "+", "-", "@", "%", "|", "＝", "＋", "－", "＠")
+        lead_chars = (
+            "=",
+            "+",
+            "-",
+            "@",
+            "%",
+            "|",
+            "\uff1d",
+            "\uff0b",
+            "\uff0d",
+            "\uff20",
+        )
         for payload in leads:
             out = sanitize(payload)
             if out.lstrip().startswith(lead_chars):
