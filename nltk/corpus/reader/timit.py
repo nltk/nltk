@@ -120,6 +120,7 @@ The 4 functions are as follows.
 """
 import sys
 import time
+from io import BytesIO
 
 from nltk import redos
 from nltk.corpus.reader.api import *
@@ -461,12 +462,10 @@ class TimitCorpusReader(CorpusReader):
 
         # Method 2: pygame
         try:
-            # FIXME: this won't work under python 3
             import pygame.mixer
-            import StringIO
 
             pygame.mixer.init(16000)
-            f = StringIO.StringIO(self.wav(utterance, start, end))
+            f = BytesIO(self.wav(utterance, start, end))
             pygame.mixer.Sound(f).play()
             while pygame.mixer.get_busy():
                 time.sleep(0.01)
