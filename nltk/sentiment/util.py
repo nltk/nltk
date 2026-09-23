@@ -459,7 +459,9 @@ def parse_tweets_set(
         for tweet_id, text in reader:
             # text = text[1]
             i += 1
-            sys.stdout.write(f"Loaded {i} tweets\r")
+            sys.stdout.write(
+                f"Loaded {i} tweets\r"
+            )  # unsafe-print ok: literal/numeric status line, no untrusted value
             # Apply sentence and word tokenizer to text
             if word_tokenizer:
                 tweet = [

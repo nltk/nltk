@@ -2705,8 +2705,9 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
     """
 
     if verbose:
-        sys.stdout.write("Unzipping %s" % os.path.split(filename)[1])
-        sys.stdout.flush()
+        # the archive name comes from the server index; keep the progress line
+        # unterminated so the trailing status still lands on it
+        safe_print("Unzipping %s" % os.path.split(filename)[1], end="", flush=True)
 
     try:
         zf = ZipFile(filename)
