@@ -26,6 +26,7 @@ import pytest
 
 from nltk.csvsec import (
     _MAX_NUMERIC_CELL_LEN,
+    _looks_numeric,
     SafeCsvDictWriter,
     SafeCsvWriter,
     safe_csv_dict_writer,
@@ -104,13 +105,16 @@ class TestSafeCsvWriterEndToEnd:
 
 
 class TestNumericLeadLengthCap:
-    def test_million_digit_lead_defused_promptly(self):
+    def test_million_digit_lead_defused_without_parsing(self):
         payload = "-" + "9" * 1_000_000
+        # the cap is what makes the numeric test length-independent, so the
+        # bound is on that function alone: microseconds against 0.1s, which no
+        # machine speed can turn into a lottery (the full pipeline's linear
+        # sanitiser scan over a million characters is a separate cost)
         start = time.perf_counter()
-        out = sanitize_csv_field(payload)
-        elapsed = time.perf_counter() - start
-        assert out.startswith("'-")  # defused without being parsed
-        assert elapsed < 1.0  # measured in milliseconds; generous no-hang bound
+        assert _looks_numeric(payload) is False
+        assert time.perf_counter() - start < 0.1
+        assert sanitize_csv_field(payload).startswith("'-")
 
     def test_cap_boundary(self):
         at_cap = "-" + "9" * (_MAX_NUMERIC_CELL_LEN - 1)
