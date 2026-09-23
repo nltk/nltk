@@ -81,7 +81,8 @@ def _zip_hardlink_extract():
                 )
             return (
                 FIXED,
-                "hardlinked member target security-refused; secret bytes intact",
+                "hardlinked member target security-refused by %s: %.160s; "
+                "secret bytes intact" % (type(exc).__name__, exc),
             )
 
         # No exception: only FIXED if the write did not reach the outside inode.
