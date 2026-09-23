@@ -26,9 +26,9 @@ import pytest
 
 from nltk.csvsec import (
     _MAX_NUMERIC_CELL_LEN,
-    _looks_numeric,
     SafeCsvDictWriter,
     SafeCsvWriter,
+    _looks_numeric,
     safe_csv_dict_writer,
     safe_csv_writer,
     sanitize_csv_field,
