@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import zipfile
 
-from ._base import FIXED, STATIC, VULNERABLE, is_security_rejection, probe
+from ._base import FIXED, STATIC, VULNERABLE, is_security_rejection, probe, register_data_root
 
 
 @probe("GHSA-wr3g-j6qj-xpgh")
@@ -36,6 +36,10 @@ def _zip_hardlink_extract():
     member_payload = b"EVIL_ZIP_MEMBER_PAYLOAD"
 
     box = tempfile.mkdtemp()
+    # The box must be a legitimate data root: on Linux a raw mkdtemp() lands
+    # in world-writable /tmp, which pathsec rightly refuses, and the refusal
+    # short-circuits BEFORE the guard under test (vacuous on that platform).
+    _undo_root = register_data_root(box)
     try:
         root = os.path.join(box, "corpus")
         os.makedirs(root)
@@ -94,4 +98,5 @@ def _zip_hardlink_extract():
             )
         return FIXED, "extraction did not follow the hardlink; secret bytes intact"
     finally:
+        _undo_root()
         shutil.rmtree(box, ignore_errors=True)
