@@ -378,6 +378,36 @@ class _Probes:
             return "LEAK", f"single_line QUOTE_NONE forged a row: {raw!r}"
         return "PASS", "refused unless single_line; no physical newline leaks"
 
+    def probe_dialect_characters(self):
+        make_writer = self.csvsec.SafeCsvWriter
+        hostile = [
+            (
+                "escapechar",
+                dict(single_line=True, quoting=csv.QUOTE_NONE, escapechar="="),
+            ),
+            ("escapechar", dict(doublequote=False, escapechar="=")),
+            ("quotechar", dict(quotechar="=")),
+            ("delimiter", dict(delimiter="=")),
+            ("lineterminator", dict(lineterminator="\n=")),
+        ]
+        for name, fmtparams in hostile:
+            try:
+                make_writer(io.StringIO(), **fmtparams)
+            except ValueError:
+                continue
+            return "LEAK", f"{name} in the lead set accepted: {fmtparams!r}"
+        try:
+            make_writer(io.StringIO(), quotechar=None, escapechar="\\")
+            return "LEAK", "quotechar=None accepted without single_line"
+        except (ValueError, TypeError):
+            pass
+        buf = io.StringIO()
+        make_writer(buf, delimiter="|").writerow(["", "=SUM(A1)"])
+        (row,) = list(csv.reader(io.StringIO(buf.getvalue()), delimiter="|"))
+        if row[1].lstrip().startswith("="):
+            return "LEAK", f"pipe-delimited cell not defused: {row!r}"
+        return "PASS", "lead-character dialects refused; pipe delimiter still defuses"
+
     def probe_midrow_atomicity(self):
         def poison():
             yield "a"

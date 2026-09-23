@@ -47,6 +47,28 @@ harm; pinned where practical), **BY DESIGN** (documented, deliberate),
    funnels every value through `sanitize_terminal`). Pins:
    `TestLyingStrSubclassLaundering` (test_termsec_attack_matrix.py).
 
+3. **Dialect-character family** (second sweep, same day): the writer's own
+   dialect characters are emitted at positions the cell pipeline never sees.
+   Confirmed against csv.writer: an `escapechar` in the lead set precedes a
+   cell-initial delimiter under the permitted `single_line` + QUOTE_NONE
+   combination (`,x` written as `=,x`) or a cell-initial quote with
+   `doublequote=False` (`="x`); a `quotechar` in the lead set wraps every
+   quoted cell (`=x,y=`); a `delimiter` in the lead set follows an empty first
+   cell (`=cmd|' /C calc'!A1` at line start); a `lineterminator` holding
+   printable characters plants them before every following line (`\n=`);
+   and `quotechar=None` is CPython's silent spelling of QUOTE_NONE when no
+   dialect is named (the earlier ledger row claiming a TypeError was an
+   untested assumption, now corrected). Fix: the QUOTE_NONE guard became
+   `_refuse_unsafe_dialect`, one validation of the MERGED dialect at
+   construction: quoting disabled (QUOTE_NONE or quotechar None) needs
+   `single_line`; quotechar/escapechar may not be leads; delimiter may not be
+   a lead except `|` (pipe-delimited files are a standard format, and the pipe
+   is the legacy csv-safe lead rather than an OWASP core one); lineterminator
+   may hold only CR/LF. Pins: `TestUnsafeDialectRefused` (test_csvsec_writer.py),
+   including benign configurations (TSV, `;`, space, `'` quotechar, unix and
+   excel-tab dialects) proven unaffected. Mutation-verified: guard neutered
+   in-memory reproduces all four leads.
+
 ## A. `sanitize_terminal(text, *, single_line=False)`
 
 | Channel | Exploit candidate | Status | Pin |
@@ -102,7 +124,12 @@ harm; pinned where practical), **BY DESIGN** (documented, deliberate),
 | QUOTE_NONE + single_line=True | none: \n escaped in-cell | ALLOWED | test_single_line_legitimises_quote_none |
 | QUOTE_MINIMAL/ALL/NONNUMERIC/NOTNULL/STRINGS | newline containment | SAFE | strings always quoted; test_other_quoting_modes_unaffected |
 | doublequote=False, no escapechar | quote breakout | FAIL-CLOSED | csv module raises on first quotechar |
-| quotechar=None with quoting on | structural off | FAIL-CLOSED | csv module TypeError |
+| quotechar=None (keyword or dialect class) | structural off by another door: CPython 3.13 coerces the bare keyword form to QUOTE_NONE and writes the raw newline with an escapechar; the dialect forms raise TypeError; version-dependent | DEFENDED | guard refuses unless single_line; test_quotechar_none_refused_version_independently |
+| escapechar in lead set (single_line QUOTE_NONE, or doublequote=False) | writer emits the escape BEFORE a cell-initial delimiter/quote: `,x` became `=,x`, `"x` became `="x` | DEFENDED | test_escapechar_lead_under_single_line_quote_none, test_escapechar_lead_with_doublequote_off |
+| quotechar in lead set | writer wraps every quoted cell: `x,y` became `=x,y=` for a standard-qualifier reader | DEFENDED | test_quotechar_lead_refused |
+| delimiter in lead set (pipe exempt) | empty first cell put `=cmd\|' /C calc'!A1` at the line start | DEFENDED | test_delimiter_lead_refused, test_pipe_delimiter_permitted_and_cells_still_defused |
+| lineterminator with non-CR/LF | `\n=` planted a lead before every following line | DEFENDED | test_lineterminator_payload_refused |
+| dialect class carrying any of the above | smuggle past fmtparams | DEFENDED | merged-dialect check; test_dialect_class_cannot_smuggle_lead_characters |
 | exotic lineterminator/delimiter | containment change | SAFE | QUOTE_MINIMAL quotes on \r\n regardless |
 | writerow(generator) raising mid-row | partial poisoned row | DEFENDED | test_row_iterable_raising_midway_writes_nothing |
 | fileobj | caller's sink | BY DESIGN | cells sanitized regardless of destination |
