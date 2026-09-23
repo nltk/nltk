@@ -195,6 +195,17 @@ class TestResearchDrivenLeads:
         out = sanitize_csv_field("=" + fn + '("http://evil/",A1)')
         assert out.startswith("'=")
 
+    def test_double_equals_stays_defused(self):
+        # the strip-one-lead approach (django-import-export) turns ==SUM(A1)
+        # into a live =SUM(A1); prefixing is immune to the class
+        assert sanitize_csv_field("==SUM(A1)") == "'==SUM(A1)"
+
+    @pytest.mark.parametrize("pad", ["\t", " \t ", "\u00a0", "\u3000"])
+    def test_whitespace_padded_lead_defused(self, pad):
+        # Excel strips a leading tab/space before evaluating; defusedcsv keeps
+        # these forms, this pipeline defuses them via the whitespace-aware lead
+        assert sanitize_csv_field(pad + "=x").startswith("'")
+
     def test_prefix_is_apostrophe_never_tab(self):
         out = sanitize_csv_field("=x")
         assert out[0] == "'" and "\t" not in out
