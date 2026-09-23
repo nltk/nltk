@@ -134,23 +134,65 @@ def sanitize_csv_field(value, *, single_line=False):
     return text
 
 
-def _refuse_unquoted_structure(dialect, single_line):
-    """Fail closed when the writer configuration disables structural quoting.
+# A delimiter in the lead set would put a formula lead at the start of a line
+# whenever the first cell is empty; the pipe is the one exception because
+# pipe-delimited files are a standard format and its lead role is a legacy one.
+_DELIMITER_LEAD_EXEMPT = frozenset("|")
 
-    The default pipeline keeps embedded newlines because the csv module's
-    quoting owns cell structure; with ``quoting=QUOTE_NONE`` that quoting is
-    gone and an embedded newline in a cell starts a forged physical row whose
-    first cell can carry a formula lead (verified against csv.writer with an
-    escapechar: the backslash precedes the newline, but the newline is still
-    written). ``single_line=True`` escapes embedded newlines inside the cell,
-    so cell data can never emit a physical newline and QUOTE_NONE is safe.
+
+def _refuse_unsafe_dialect(dialect, single_line):
+    """Fail closed when the EFFECTIVE dialect would void the cell defusal.
+
+    Checked on the merged dialect (fmtparams over a dialect name or class), so
+    a dialect object cannot smuggle a setting past the keyword arguments. Each
+    rule was confirmed against csv.writer before being added:
+
+    * ``quoting=QUOTE_NONE``, or a ``quotechar`` of ``None`` (which CPython
+      turns into QUOTE_NONE when no dialect is named), removes the structural
+      quoting the default pipeline relies on: with an escapechar the physical
+      newline of a cell is still written, so the next line is a forged row
+      whose first cell can be a live formula lead. ``single_line=True``
+      escapes embedded newlines inside the cell, so it stays permitted.
+    * a ``quotechar`` or ``escapechar`` in the formula-lead set is emitted by
+      the writer itself at the START of a cell (the quote wraps the cell; the
+      escape precedes a cell-initial delimiter or quote), so a consumer using
+      the standard qualifier reads a formula the sanitiser never saw.
+    * a ``delimiter`` in the lead set (pipe excepted) begins a line with a
+      lead whenever the first cell is empty, ahead of the next, attacker
+      supplied cell.
+    * a ``lineterminator`` holding anything but CR/LF plants those characters
+      at the start of every following line.
     """
-    if dialect.quoting == _csv.QUOTE_NONE and not single_line:
+    if not single_line and (
+        dialect.quoting == _csv.QUOTE_NONE or dialect.quotechar is None
+    ):
         raise ValueError(
-            "Security Violation [csvsec]: quoting=QUOTE_NONE removes the csv "
-            "module's structural quoting, so an embedded newline in a cell "
-            "would begin a forged row; pass single_line=True (escapes embedded "
-            "newlines) or use a quoting mode"
+            "Security Violation [csvsec]: quoting=QUOTE_NONE (or quotechar=None) "
+            "removes the csv module's structural quoting, so an embedded newline "
+            "in a cell would begin a forged row; pass single_line=True (escapes "
+            "embedded newlines) or use a quoting mode with a quotechar"
+        )
+    for name in ("quotechar", "escapechar"):
+        char = getattr(dialect, name)
+        if char and char in _CSV_FORMULA_LEADS:
+            raise ValueError(
+                f"Security Violation [csvsec]: {name}={char!r} is a spreadsheet "
+                "formula lead, which the writer would emit at the start of a cell"
+            )
+    if (
+        dialect.delimiter in _CSV_FORMULA_LEADS
+        and dialect.delimiter not in _DELIMITER_LEAD_EXEMPT
+    ):
+        raise ValueError(
+            f"Security Violation [csvsec]: delimiter={dialect.delimiter!r} is a "
+            "spreadsheet formula lead, which would begin a line after an empty "
+            "first cell"
+        )
+    if dialect.lineterminator.strip("\r\n"):
+        raise ValueError(
+            f"Security Violation [csvsec]: lineterminator="
+            f"{dialect.lineterminator!r} contains characters other than CR/LF, "
+            "which would begin every following line"
         )
 
 
@@ -162,16 +204,20 @@ class SafeCsvWriter:
     sanitised cell (an embedded newline, a quote, the delimiter) are handled
     by the csv module exactly as for any other value.
 
-    Because that containment IS the quoting, an effective
-    ``quoting=csv.QUOTE_NONE`` (from fmtparams or the dialect) is refused
-    with :exc:`ValueError` unless ``single_line=True``, whose escaping stops
-    cell data from ever emitting a physical newline.
+    Because that containment IS the quoting, the effective dialect is
+    validated at construction (see :func:`_refuse_unsafe_dialect`): quoting
+    disabled (``QUOTE_NONE`` or ``quotechar=None``) is refused with
+    :exc:`ValueError` unless ``single_line=True``, whose escaping stops cell
+    data from ever emitting a physical newline; and a quotechar, escapechar
+    or delimiter that is itself a formula lead, or a line terminator holding
+    anything but CR/LF, is refused always, since the writer would then emit
+    a lead at a cell or line start that the cell pipeline never saw.
     """
 
     def __init__(self, fileobj, dialect="excel", *, single_line=False, **fmtparams):
         self._writer = _csv.writer(fileobj, dialect, **fmtparams)
         self._single_line = single_line
-        _refuse_unquoted_structure(self._writer.dialect, single_line)
+        _refuse_unsafe_dialect(self._writer.dialect, single_line)
 
     def writerow(self, row):
         return self._writer.writerow(
@@ -199,8 +245,9 @@ class SafeCsvDictWriter:
     first-row cell), so ``writeheader`` sanitises the field names it writes,
     while row dicts keep their ORIGINAL keys for lookup. ``restval`` is
     sanitised once at construction since it is emitted verbatim as a cell.
-    Effective ``quoting=csv.QUOTE_NONE`` is refused exactly as in
-    :class:`SafeCsvWriter` unless ``single_line=True``.
+    The effective dialect is validated exactly as in :class:`SafeCsvWriter`
+    (quoting disabled needs ``single_line=True``; lead-character quote,
+    escape or delimiter characters and non-CR/LF terminators are refused).
     """
 
     def __init__(
@@ -224,7 +271,7 @@ class SafeCsvDictWriter:
             dialect=dialect,
             **fmtparams,
         )
-        _refuse_unquoted_structure(self._writer.writer.dialect, single_line)
+        _refuse_unsafe_dialect(self._writer.writer.dialect, single_line)
 
     def writeheader(self):
         return self._writer.writer.writerow(

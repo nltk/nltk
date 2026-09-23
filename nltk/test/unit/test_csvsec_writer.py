@@ -424,6 +424,126 @@ class TestQuoteNoneStructuralGuard:
             assert row == ["'=cmd", "12", "3.5"]
 
 
+class TestUnsafeDialectRefused:
+    """The writer's own dialect characters are emitted at cell and line starts
+    the cell pipeline never sees. Every chain below was confirmed against
+    csv.writer before the guard existed: the escapechar precedes a
+    cell-initial delimiter or quote, the quotechar wraps the cell, the
+    delimiter follows an empty first cell, and the line terminator precedes
+    the next line; a lead character in any of those positions is a formula
+    for a consumer using the standard qualifier. quotechar=None is CPython's
+    silent spelling of QUOTE_NONE when no dialect is named."""
+
+    def test_escapechar_lead_under_single_line_quote_none(self):
+        # the permitted QUOTE_NONE combination must not reopen the hole: a
+        # cell beginning with the delimiter was written as '=,x'
+        with pytest.raises(ValueError, match="escapechar"):
+            safe_csv_writer(
+                io.StringIO(),
+                single_line=True,
+                quoting=csv.QUOTE_NONE,
+                escapechar="=",
+            )
+
+    def test_escapechar_lead_with_doublequote_off(self):
+        # a quote-led cell was written as '="x' (escaped, not quoted)
+        with pytest.raises(ValueError, match="escapechar"):
+            safe_csv_writer(io.StringIO(), doublequote=False, escapechar="=")
+
+    @pytest.mark.parametrize("quoting", [csv.QUOTE_ALL, csv.QUOTE_MINIMAL])
+    def test_quotechar_lead_refused(self, quoting):
+        # every quoted cell was written as '=x,y=' for a '"'-qualifier reader
+        with pytest.raises(ValueError, match="quotechar"):
+            safe_csv_writer(io.StringIO(), quoting=quoting, quotechar="=")
+
+    @pytest.mark.parametrize("delimiter", ["=", "+", "-", "@", "%", "\uff1d"])
+    def test_delimiter_lead_refused(self, delimiter):
+        # an empty first cell put "=cmd|' /C calc'!A1" at the line start
+        with pytest.raises(ValueError, match="delimiter"):
+            safe_csv_writer(io.StringIO(), delimiter=delimiter)
+        with pytest.raises(ValueError, match="delimiter"):
+            safe_csv_dict_writer(io.StringIO(), ["a"], delimiter=delimiter)
+
+    def test_pipe_delimiter_permitted_and_cells_still_defused(self):
+        # pipe-delimited output is a standard format: the one documented
+        # exception, with the cell pipeline untouched
+        buf = io.StringIO()
+        safe_csv_writer(buf, delimiter="|").writerow(["", "=SUM(A1)", "a|b"])
+        buf.seek(0)
+        (row,) = list(csv.reader(buf, delimiter="|"))
+        assert row == ["", "'=SUM(A1)", "a|b"]
+
+    def test_lineterminator_payload_refused(self):
+        # "\n=" made every following line begin with a formula lead
+        with pytest.raises(ValueError, match="lineterminator"):
+            safe_csv_writer(io.StringIO(), lineterminator="\n=")
+        with pytest.raises(ValueError, match="lineterminator"):
+            safe_csv_dict_writer(io.StringIO(), ["a"], lineterminator="\r\n ")
+
+    @pytest.mark.parametrize("terminator", ["\r\n", "\n", "\r"])
+    def test_crlf_terminators_permitted(self, terminator):
+        buf = io.StringIO()
+        safe_csv_writer(buf, lineterminator=terminator).writerow(["=x"])
+        assert buf.getvalue() == "'=x" + terminator
+
+    def test_quotechar_none_refused_version_independently(self):
+        # CPython 3.13 coerces the bare keyword form to QUOTE_NONE and
+        # raises TypeError for the dialect forms; whichever the version does,
+        # nothing constructs without single_line
+        class NoQuote(csv.excel):
+            quotechar = None
+
+        with pytest.raises((ValueError, TypeError)):
+            safe_csv_writer(io.StringIO(), dialect=NoQuote, escapechar="\\")
+        with pytest.raises((ValueError, TypeError)):
+            safe_csv_writer(io.StringIO(), quotechar=None, escapechar="\\")
+
+    def test_dialect_class_cannot_smuggle_lead_characters(self):
+        class Hostile(csv.excel):
+            quotechar = "="
+
+        with pytest.raises(ValueError, match="quotechar"):
+            safe_csv_writer(io.StringIO(), dialect=Hostile)
+
+        class HostileEsc(csv.excel):
+            escapechar = "@"
+            doublequote = False
+
+        with pytest.raises(ValueError, match="escapechar"):
+            safe_csv_dict_writer(io.StringIO(), ["a"], dialect=HostileEsc)
+
+    @pytest.mark.parametrize(
+        "fmtparams",
+        [
+            {"delimiter": "\t"},
+            {"delimiter": ";"},
+            {"delimiter": " "},
+            {"quotechar": "'"},
+            {"escapechar": "\\", "doublequote": False},
+            {"quoting": csv.QUOTE_NONNUMERIC},
+            {"dialect": "unix"},
+            {"dialect": "excel-tab"},
+        ],
+    )
+    def test_ordinary_dialects_unaffected(self, fmtparams):
+        # benign configurations construct and still defuse a lead cell
+        buf = io.StringIO()
+        safe_csv_writer(buf, **fmtparams).writerow(["=x", "plain"])
+        buf.seek(0)
+        (row,) = list(csv.reader(buf, **fmtparams))
+        assert row == ["'=x", "plain"]
+
+    def test_apostrophe_quotechar_keeps_defusal_for_standard_reader(self):
+        # our defusal prefix IS the quotechar here: the cell is quoted and
+        # doubled, and a '"'-qualifier reader still sees text, not a formula
+        buf = io.StringIO()
+        safe_csv_writer(buf, quotechar="'").writerow(["=x"])
+        raw = buf.getvalue()
+        assert raw.startswith("'")
+        (row,) = list(csv.reader(io.StringIO(raw)))
+        assert not row[0].lstrip().startswith("=")
+
+
 def test_termsec_reexport_is_the_same_function():
     import nltk.termsec as termsec
 
