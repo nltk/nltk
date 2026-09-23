@@ -207,6 +207,17 @@ jobs:
         shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
 
+      - name: Trust the third-party tools tree (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint (CWE-426/427/732) refuses a tool on a
+          # path another local user can write. A tree freshly unzipped on a
+          # cache miss keeps the archive's group-write bits (a cache restore
+          # does not), so normalise it to a private install instead of
+          # weakening the guard.
+          chmod -R go-w "${{ env.THIRD_PARTY_DIR }}"
+
       - name: Print NLTK data search paths
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
