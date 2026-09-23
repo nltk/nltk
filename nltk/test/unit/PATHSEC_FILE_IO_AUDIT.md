@@ -171,7 +171,7 @@ this document. Every ATTACKED row was run against the real code path first.
 | app/*.py, draw/util.py | `open(...)` / `outfile.write` | EXEMPT (Tk file dialogs, human in loop; re-checked) | — |
 | cli.py, cluster/*.py, parse/{chart,pchart,viterbi}.py, featstruct.py | `fin.readlines()`, `sys.stdin.readline()`, `sys.stderr.write` | EXEMPT (operator CLI input / interactive demos / constant diagnostics) | — |
 | twitter/*.py | `gzip.open` / `open` / `writerow` / `output.write` | EXEMPT for paths (operator ctor params); PENDING for cell content: `json2csv` writers route through `nltk.csvsec` once #3914 lands (CWE-1236) | — |
-| picklesec.py, redos.py, jsontags.py, pathsec.py | `pickle.dump`, `regex.compile`, `json.loads`, `os.open/stat` | SECURITY MODULE INTERNALS (the guards themselves) | test_pickle_allowlist_security, test_redos_*, test_pathsec |
+| picklesec.py, redos.py, jsontags.py, pathsec.py, termsec.py, csvsec.py | `pickle.dump`, `regex.compile`, `json.loads`, `os.open/stat`, `print` inside `safe_print`, `writerow` inside the safe csv writers | SECURITY MODULE INTERNALS (the guards themselves) | test_pickle_allowlist_security, test_redos_*, test_pathsec |
 | lazyimport.py, internals.py `__import__` | dynamic import of module names from code | EXEMPT (names are literals in the tree) | — |
 | __init__.py | `VERSION` read | EXEMPT (fixed `__file__`-relative resource) | — |
 | every `print(...)` / `sys.stdout.write` of untrusted values (1406 sites) | terminal control / bidi injection (CWE-150 / CVE-2021-42574) | PENDING here: routed through `nltk.termsec.safe_print` by #3915 (depends on #3914) | tools/security_output_audit.py |
