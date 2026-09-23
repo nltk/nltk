@@ -715,7 +715,9 @@ def deprecated(message):
         msg = "\n" + textwrap.fill(msg, initial_indent="  ", subsequent_indent="  ")
 
         def newFunc(*args, **kwargs):
-            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                msg, category=DeprecationWarning, stacklevel=2
+            )  # unsafe-print ok: deprecation text from the decorated object's own name and docstring
             return func(*args, **kwargs)
 
         # Copy the old function's name, docstring, & dict
@@ -769,7 +771,9 @@ class Deprecated:
         msg = f"{name} has been deprecated.  {doc}"
         # Wrap it.
         msg = "\n" + textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
-        warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            msg, category=DeprecationWarning, stacklevel=2
+        )  # unsafe-print ok: deprecation text from the class's own name and docstring
         # Do the actual work of __new__.
         return object.__new__(cls)
 

@@ -180,7 +180,7 @@ from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
 
@@ -3012,8 +3012,9 @@ def _find_packages(root):
                 xmlfilename = os.path.join(dirname, resourcename + ".xml")
                 if not os.path.exists(xmlfilename):
                     warnings.warn(
-                        f"{filename} exists, but {resourcename + '.xml'} cannot be found! "
-                        f"This could mean that {resourcename} can not be downloaded.",
+                        f"{sanitize_terminal(filename)} exists, but "
+                        f"{sanitize_terminal(resourcename) + '.xml'} cannot be found! "
+                        f"This could mean that {sanitize_terminal(resourcename)} can not be downloaded.",
                         stacklevel=2,
                     )
 

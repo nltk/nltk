@@ -43,7 +43,7 @@ from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -1625,7 +1625,10 @@ class WordNetCorpusReader(CorpusReader):
             self._synset_offset_cache[pos][offset] = synset
         else:
             synset = None
-            warnings.warn(f"No WordNet synset found for pos={pos} at offset={offset}.")
+            warnings.warn(
+                f"No WordNet synset found for pos={sanitize_terminal(pos)} "
+                f"at offset={sanitize_terminal(offset)}."
+            )
         data_file.seek(0)
         return synset
 
@@ -2292,7 +2295,7 @@ class WordNetCorpusReader(CorpusReader):
                             not in self.nomap["wordnet"]
                         ):
                             warnings.warn(
-                                f"{lang}: invalid offset {offset_pos} in '{line}'"
+                                f"{sanitize_terminal(lang)}: invalid offset {sanitize_terminal(offset_pos)} in '{sanitize_terminal(line)}'"
                             )
                         continue
                 elif offset_pos[-1] == "a":

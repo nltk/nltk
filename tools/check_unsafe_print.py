@@ -26,6 +26,9 @@ EVERY ``print`` in the shipped tree must be one of --
 
 Anything else -- a bare ``print(value)``, ``print(f"{value}")``, ``print("%s" % v)``
 -- is a violation: route it through ``safe_print`` or justify it with the marker.
+``warnings.warn(message)`` is held to the same rule for its message: the default
+``showwarning`` prints it to stderr, so an interpolated untrusted value must be
+wrapped in ``sanitize_terminal``.
 
 Usage: ``python tools/check_unsafe_print.py`` (exit 1 on any violation).
 """
@@ -58,10 +61,11 @@ def _spec_is_numeric(fmtspec):
 
 
 def _fvalue_is_safe(node):
-    # An f-string ``{expr}`` field is harmless iff repr-converted or numeric-spec'd.
+    # An f-string ``{expr}`` field is harmless iff repr-converted, numeric-spec'd,
+    # or itself a sanitised / repr'd expression.
     if node.conversion in (114, 97):  # !r , !a
         return True
-    return _spec_is_numeric(node.format_spec)
+    return _spec_is_numeric(node.format_spec) or _is_safe_arg(node.value)
 
 
 def _percent_is_safe(fmt):
@@ -78,16 +82,36 @@ def _is_safe_arg(arg):
         )
     if isinstance(arg, ast.BinOp):
         if isinstance(arg.op, ast.Mod):
-            # "...%r..." % value -> safe iff the format conversions are all safe
+            # "...%r..." % value -> safe iff the format conversions are all safe,
+            # or every interpolated value is itself sanitised / repr'd / literal
             if isinstance(arg.left, ast.Constant) and isinstance(arg.left.value, str):
-                return _percent_is_safe(arg.left.value)
+                if _percent_is_safe(arg.left.value):
+                    return True
+                values = (
+                    arg.right.elts if isinstance(arg.right, ast.Tuple) else [arg.right]
+                )
+                return all(_is_safe_arg(v) for v in values)
             return False
         if isinstance(arg.op, ast.Add):  # concatenation: safe iff both sides are
             return _is_safe_arg(arg.left) and _is_safe_arg(arg.right)
         return False
     if isinstance(arg, ast.Call) and isinstance(arg.func, ast.Name):
-        # repr()/ascii() escape control bytes; the sanitisers neutralise them.
+        # repr()/ascii() escape control bytes; the sanitisers neutralise them;
+        # str() of an already-safe expression adds nothing unsafe.
+        if arg.func.id == "str" and len(arg.args) == 1 and not arg.keywords:
+            return _is_safe_arg(arg.args[0])
         return arg.func.id in _SANITIZERS or arg.func.id in ("repr", "ascii")
+    if (
+        isinstance(arg, ast.Call)
+        and isinstance(arg.func, ast.Attribute)
+        and arg.func.attr == "format"
+        and isinstance(arg.func.value, ast.Constant)
+        and isinstance(arg.func.value.value, str)
+    ):
+        # "...{}...".format(values): safe iff every interpolated value is
+        return all(_is_safe_arg(a) for a in arg.args) and all(
+            _is_safe_arg(k.value) for k in arg.keywords
+        )
     return False
 
 
@@ -95,6 +119,14 @@ def _is_print_call(node):
     f = node.func
     if isinstance(f, ast.Name) and f.id == "print":
         return "print"
+    # warnings.warn(message) prints the message to stderr through the default
+    # showwarning, so an untrusted value in it is a terminal sink like print.
+    if (
+        isinstance(f, ast.Attribute)
+        and f.attr == "warn"
+        and getattr(f.value, "id", "") == "warnings"
+    ):
+        return "warn"
     if (
         isinstance(f, ast.Attribute)
         and f.attr == "write"
@@ -120,6 +152,8 @@ def check_file(path, relpath, source_lines):
         if kind is None:
             continue
         args = [a for a in node.args if not isinstance(a, ast.Starred)]
+        if kind == "warn":
+            args = args[:1]  # only the message reaches the terminal
         if all(_is_safe_arg(a) for a in args):
             continue  # empty print() / literal / repr / numeric / already-sanitised
         # a marker on the first OR last physical line of the statement clears it

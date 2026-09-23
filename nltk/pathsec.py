@@ -29,6 +29,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from nltk import redos
+from nltk.termsec import sanitize_terminal
 
 # A URL is not a filesystem path: to the kernel "http://.." is the dir "http:"
 # then a ".." traversal. Anchored, whitespace-tolerant, case-insensitive match.
@@ -453,7 +454,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
             )
             if ENFORCE:
                 raise PermissionError(msg)
-            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
 
         # Reject a URL outright: no caller validates a network URL here, and
@@ -466,7 +467,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
             )
             if ENFORCE:
                 raise PermissionError(msg)
-            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
         if _FILE_SCHEME_RE.match(raw):
             parsed = urlparse(raw)
@@ -505,7 +506,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
                 )
                 if ENFORCE:
                     raise PermissionError(msg)
-                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
                 return
             lower_raw = raw.lower()
             if ".zip" in lower_raw:
@@ -548,7 +549,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
                     raise PermissionError(msg)
                 else:
                     warnings.warn(
-                        f"Security Warning [{context}]: Path {target} allowed via CWD.",
+                        f"Security Warning [{sanitize_terminal(context)}]: Path {sanitize_terminal(target)} allowed via CWD.",
                         RuntimeWarning,
                         stacklevel=3,
                     )
@@ -560,7 +561,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
         if ENFORCE:
             raise PermissionError(msg)
         else:
-            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
     except (PermissionError, ValueError):
         raise
     except Exception:
@@ -1130,7 +1131,9 @@ def validate_zip_archive(
                     if ENFORCE:
                         raise PermissionError(msg)
                     else:
-                        warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                        warnings.warn(
+                            sanitize_terminal(msg), RuntimeWarning, stacklevel=3
+                        )
 
         if isinstance(zip_obj_or_path, zipfile.ZipFile):
             _audit(zip_obj_or_path)
@@ -1319,7 +1322,7 @@ def validate_network_url(url_input, context="NetworkIO"):
             if ENFORCE:
                 raise PermissionError(msg)
             else:
-                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
 
         host = parsed.hostname or ""
@@ -1334,7 +1337,7 @@ def validate_network_url(url_input, context="NetworkIO"):
             if ENFORCE:
                 raise PermissionError(msg)
             else:
-                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
 
         # Classify an IP-literal host (chiefly a bracketed IPv6 literal such as
@@ -1351,7 +1354,7 @@ def validate_network_url(url_input, context="NetworkIO"):
             if ENFORCE:
                 raise PermissionError(msg)
             else:
-                warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
 
         for result in _resolve_hostname(host):
@@ -1361,7 +1364,7 @@ def validate_network_url(url_input, context="NetworkIO"):
                 if ENFORCE:
                     raise PermissionError(msg)
                 else:
-                    warnings.warn(msg, RuntimeWarning, stacklevel=3)
+                    warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
     except (PermissionError, ValueError):
         raise
     except Exception:
@@ -1401,7 +1404,7 @@ def _resolve_and_validate_host(host, port):
             msg = f"Security Violation [pathsec.urlopen]: SSRF attempt to restricted IP {ip}"
             if ENFORCE:
                 raise PermissionError(msg)
-            warnings.warn(msg, RuntimeWarning, stacklevel=2)
+            warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=2)
     return addrinfo
 
 
@@ -1511,7 +1514,7 @@ def _reject_unpinnable_proxied_fetch(url_str):
     )
     if ENFORCE:
         raise PermissionError(msg)
-    warnings.warn(msg, RuntimeWarning, stacklevel=3)
+    warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
 
 
 def _env_proxy_carries(url_str):

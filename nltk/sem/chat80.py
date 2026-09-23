@@ -134,7 +134,7 @@ from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 
 
 def _restricted_shelve_open(db, flag="r"):
@@ -521,7 +521,8 @@ def sql_query(dbname, query):
         import warnings
 
         warnings.warn(
-            "Make sure the database file %s is installed and uncompressed." % dbname
+            "Make sure the database file %s is installed and uncompressed."
+            % sanitize_terminal(dbname)
         )
         raise
 
