@@ -577,12 +577,15 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueError.
+    # Process it, using eval on exactly the one string literal the regexes
+    # delimited (no prefix that could make it an f-string is admitted by
+    # _STRING_START_RE). An invalid escape raises ValueError and a literal that
+    # is not valid Python (a raw newline inside the quotes, a ``ur`` prefix)
+    # raises SyntaxError; both are the caller's malformed input, not ours.
     try:
         return eval(s[start_position : match.end()]), match.end()
-    except ValueError as e:
-        raise ReadError("valid escape sequence", start_position) from e
+    except (ValueError, SyntaxError) as e:
+        raise ReadError("valid string literal", start_position) from e
 
 
 _READ_INT_RE = redos.compile(r"-?\d+")
