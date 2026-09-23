@@ -726,11 +726,16 @@ def test_r53h_front_mutation_probe_has_teeth():
     class _FrontPopList(list):
         def popleft(self):
             # A Python-level reslice so the O(n) front removal is visible at test
-            # sizes (list.pop(0) is a C memmove and hides the constant).
+            # sizes (list.pop(0) is a C memmove and hides the constant). The tail
+            # is rebuilt three times so t_small clears scaling_ratio's 0.1s noise
+            # floor with margin on a fast interpreter and the measured ratio is
+            # the true quadratic, not the floored form (which sat within 1.3x of
+            # the threshold and flipped FIXED on CPython 3.14.7 runners).
             head = self[0]
-            rest = []
-            for item in self[1:]:
-                rest.append(item)
+            for _ in range(3):
+                rest = []
+                for item in self[1:]:
+                    rest.append(item)
             self[:] = rest
             return head
 
