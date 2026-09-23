@@ -191,6 +191,11 @@ def sanitize_terminal(text, *, single_line=False):
     """
     _refuse_int_bomb(text)
     text = str(text)
+    if type(text) is not str:
+        # A subclass __str__ may return the subclass itself, whose __iter__,
+        # __hash__ and __eq__ the scan below would consult. The unbound C slot
+        # copies the REAL buffer into an exact str the subclass cannot lie to.
+        text = str.__str__(text)
     allowed = frozenset() if single_line else _ALLOWED_CONTROLS
     bidi_ok = _bidi_is_balanced(text)
     result = []

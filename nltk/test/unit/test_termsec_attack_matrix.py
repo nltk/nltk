@@ -347,6 +347,73 @@ class TestCsvInjection:
         assert type(sanitize_terminal(Sub("plain"))) is str
 
 
+class TestLyingStrSubclassLaundering:
+    """str(text) is not a materialisation guarantee: a subclass __str__ that
+    returns self hands the scan an attacker-defined object, and membership
+    tests like ``char in allowed`` consult the yielded object's __hash__ and
+    reflected __eq__. Before the unbound str.__str__ copy this was a CONFIRMED
+    bypass: a 1-char subclass whose buffer is ESC but which claims to equal
+    TAB was kept, and the join copied the real ESC into the output."""
+
+    @staticmethod
+    def _lying_text(buffer):
+        class LyingChar(str):
+            def __hash__(self):
+                return hash("\t")
+
+            def __eq__(self, other):
+                return other == "\t" if type(other) is str else NotImplemented
+
+        class LyingText(str):
+            def __str__(self):
+                return self
+
+            def __iter__(self):
+                yield LyingChar(buffer[0])
+                yield from iter(buffer[1:])
+
+        return LyingText(buffer)
+
+    def test_lying_char_membership_cannot_keep_esc(self):
+        out = sanitize_terminal(self._lying_text("\x1b[2Jpwn"))
+        assert "\x1b" not in out
+        assert out == "\\x1b[2Jpwn"
+
+    def test_fake_clean_iterator_cannot_hide_the_buffer(self):
+        # __iter__ yields harmless text while the real buffer is an OSC attack;
+        # the scan must see the buffer, not the performance
+        class FakeClean(str):
+            def __str__(self):
+                return self
+
+            def __iter__(self):
+                yield from iter("innocent")
+
+        out = sanitize_terminal(FakeClean("\x1b]0;pwn\x07"))
+        assert "\x1b" not in out and "\x07" not in out
+        assert "innocent" not in out
+
+    def test_csv_cell_inherits_the_laundering(self):
+        lying = self._lying_text("=cmd|' /C calc'!A1\x1b[2J")
+
+        class EvilCell:
+            def __str__(self):
+                return lying
+
+        out = sanitize_csv_field(EvilCell())
+        assert out.startswith("'=") and "\x1b" not in out
+
+    def test_plain_subclass_benign_text_unchanged(self):
+        class Sub(str):
+            pass
+
+        assert sanitize_terminal(Sub("café\t\nok")) == "café\t\nok"
+
+    def test_single_line_lying_subclass_also_laundered(self):
+        out = sanitize_terminal(self._lying_text("a\nb\x1b[2J"), single_line=True)
+        assert "\n" not in out and "\x1b" not in out
+
+
 class TestSanitizeIsIdempotent:
     """Escapes are plain printable ASCII, so a second pass must be the identity.
     If it ever is not, an escape is being re-escaped or something dangerous
