@@ -25,7 +25,9 @@ def canary():
     fd, path = tempfile.mkstemp(prefix="nltk_read_str_")
     os.close(fd)
     os.remove(path)
-    yield path
+    # forward slashes: a Windows path's backslashes would themselves be escape
+    # sequences inside the literal (see test_windows_path_inside_literal_fails_closed)
+    yield path.replace("\\", "/")
     if os.path.exists(path):
         os.remove(path)
 
@@ -73,6 +75,14 @@ def test_malformed_literals_fail_closed_with_read_error(malformed):
     # invalid escape a ValueError; both must surface as the parser's ReadError
     with pytest.raises(ReadError):
         read_str(malformed, 0)
+
+
+def test_windows_path_inside_literal_fails_closed():
+    # a backslash path such as C:\\Users\\x inside the literal is a malformed
+    # \\U escape to eval; it must surface as ReadError, never as SyntaxError
+    # (the Windows CI runner found exactly this with a temp-dir canary)
+    with pytest.raises(ReadError):
+        read_str('"touch C:\\Users\\runner\\canary"', 0)
 
 
 def test_benign_escapes_still_decode():
