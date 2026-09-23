@@ -28,8 +28,15 @@ instead of trusted:
    self-tested first: if a detector loses its teeth the scan aborts instead
    of reporting a clean result.
 
-Exit status: 0 clean, 1 if any exploit LEAK (or, in strict-sinks mode, any
-bare sink), 2 if a detector fails its own teeth test. The battery is skipped
+3. **Source hygiene.** Every source file in the package is scanned for a
+   LITERAL bidi control or invisible format character (the Trojan Source
+   class, CVE-2021-42574, inside the repository itself). Security sources
+   spell these as escapes; a literal one is reported with its file, line
+   and code point and fails the scan. Escapes in text are never flagged.
+
+Exit status: 0 clean, 1 if any exploit LEAK or literal Trojan Source
+character (or, in strict-sinks mode, any bare sink), 2 if a detector fails
+its own teeth test. The battery is skipped
 with a notice when the sanitiser modules are absent, so the scanner is safe
 to run on branches that predate them.
 """
@@ -464,6 +471,46 @@ def run_battery():
 
 
 # ---------------------------------------------------------------------------
+# Pass 3: source hygiene (literal Trojan Source characters in the repository)
+# ---------------------------------------------------------------------------
+
+# Bidi formatting characters, zero-width smuggling characters, the invisible
+# math operators, line/paragraph separators and a mid-file BOM: none belongs
+# LITERALLY in a source file, where a reviewer cannot see it. The joiners
+# ZWNJ/ZWJ are excluded (legitimate emoji and script test data, the same
+# allowlist nltk.termsec keeps) as are the lone bidi marks and the visible
+# spaces, which reorder or hide nothing.
+_SOURCE_SUSPECTS = frozenset(
+    set(range(0x202A, 0x202F))
+    | set(range(0x2066, 0x206A))
+    | set(range(0x2060, 0x2065))
+    | {0x200B, 0xFEFF, 0x00AD, 0x2028, 0x2029, 0x180E}
+)
+
+
+def scan_source_hygiene(package_dir):
+    """Return [(relative path, line, U+XXXX)] for every literal suspect."""
+    hits = []
+    for path in sorted(Path(package_dir).rglob("*.py")):
+        rel = str(path.relative_to(package_dir))
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if text.startswith("\ufeff"):
+            # a leading BOM is an encoding signature, not a hidden character
+            text = text[1:]
+        for number, line in enumerate(text.splitlines(), 1):
+            for ch in line:
+                if ord(ch) in _SOURCE_SUSPECTS:
+                    hits.append((rel, number, f"U+{ord(ch):04X}"))
+    return hits
+
+
+def _hygiene_teeth():
+    return any(
+        ord(ch) in _SOURCE_SUSPECTS for ch in "a" + chr(0x202E) + "b"
+    ) and not any(ord(ch) in _SOURCE_SUSPECTS for ch in "plain \\u202e text")
+
+
+# ---------------------------------------------------------------------------
 # Report
 # ---------------------------------------------------------------------------
 
@@ -485,8 +532,8 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
 
-    if not _detector_teeth():
-        print("FATAL: a leak detector failed its own teeth test; aborting.")
+    if not (_detector_teeth() and _hygiene_teeth()):
+        print("FATAL: a detector failed its own teeth test; aborting.")
         return 2
 
     totals, per_file, shadowed = scan_sinks(args.package_dir)
@@ -512,7 +559,16 @@ def main(argv=None):
                 leaks += 1
         print(f"  {len(battery)} probes, {leaks} leaks")
 
-    if leaks:
+    hygiene = scan_source_hygiene(args.package_dir)
+    print("== Source hygiene ==")
+    if hygiene:
+        for rel, number, cp in hygiene[:40]:
+            print(f"  LITERAL {cp} at {rel}:{number}")
+        print(f"  {len(hygiene)} literal Trojan Source characters")
+    else:
+        print("  no literal bidi or invisible characters in any source")
+
+    if leaks or hygiene:
         return 1
     if args.strict_sinks and bare:
         print(f"strict-sinks: {bare} bare sinks remain")
