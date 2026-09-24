@@ -64,6 +64,8 @@ _CLOSED_WITH_PROBE = {
     "GHSA-w3pv-xfw4-ghr7",
     "GHSA-xfcv-m889-fmqg",
     "GHSA-j456-xh4h-cpf2",
+    # Draft advisory carrying a regression probe ahead of publication.
+    "GHSA-r53h-rw34-8h97",
 }
 
 

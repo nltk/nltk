@@ -551,7 +551,12 @@ class Tree(list):
         :return: The new Tree.
         """
         if isinstance(tree, Tree):
-            children = [cls.convert(child) for child in tree]
+            # a loop, not a comprehension: before Python 3.12 a comprehension is
+            # its own frame, which halved the depth deepcopy could reach
+            # (inlined since https://peps.python.org/pep-0709/)
+            children = []
+            for child in tree:
+                children.append(cls.convert(child))
             return cls(tree._label, children)
         else:
             return tree
