@@ -1963,17 +1963,15 @@ class SeekableUnicodeStreamReader:
             return line
 
         readsize = size or 72
-        chars = ""
+        # Collect the spans in a list and join only when a line break shows up
+        # or at end of stream: growing a str in place copied it on every pass
+        # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
+        parts = []
 
         # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
-            chars += self.linebuffer.pop()
+            parts.append(self.linebuffer.pop())
             self.linebuffer = None
-
-        # Scan only the freshly read span for a line break each pass so one long
-        # unterminated line does not re-split the whole growing buffer (CWE-407);
-        # ``searched`` marks that point, the overlap keeps a split CR LF intact.
-        searched = 0
 
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
@@ -1984,10 +1982,13 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            chars += new_chars
-            # Only split once a break shows up in the new span; ``splitlines``
-            # still does the split, so the returned lines are byte identical.
-            if _LINE_BOUNDARY_RE.search(chars, max(searched - 1, 0)):
+            # Scan only the freshly read span (plus the previous span's last
+            # character, so a split CR LF stays intact) for a line break;
+            # ``splitlines`` still does the split, so lines stay byte identical.
+            tail = parts[-1][-1:] if parts else ""
+            parts.append(new_chars)
+            if _LINE_BOUNDARY_RE.search(tail + new_chars):
+                chars = "".join(parts)
                 lines = chars.splitlines(True)
                 if len(lines) > 1:
                     line = lines[0]
@@ -2001,10 +2002,9 @@ class SeekableUnicodeStreamReader:
                     if line0withend != line0withoutend:  # complete line
                         line = line0withend
                         break
-            searched = len(chars)
 
             if not new_chars or size is not None:
-                line = chars
+                line = "".join(parts)
                 break
 
             # Read successively larger blocks of text.

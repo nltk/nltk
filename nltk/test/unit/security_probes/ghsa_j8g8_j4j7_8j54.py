@@ -29,6 +29,8 @@ def _readline_grow_and_reparse():
     # takes about 0.1 s, while the pre-fix re-parse has four times the work,
     # so its t_small clears scaling_ratio's 0.1 s noise floor with margin on a
     # fast interpreter (at 1 MB the CPython 3.14.7 runners read it as FIXED).
+    # The larger sizes also exposed a residual in-place str growth that copied
+    # on every pass on Windows (9.6x there); readline now joins spans once.
     small, big = 2_000_000, 8_000_000
     ratio = scaling_ratio(op, small, big)
     if ratio >= QUADRATIC_RATIO:
