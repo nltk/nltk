@@ -19,9 +19,10 @@ import pytest
 
 from nltk.data import SeekableUnicodeStreamReader
 
-_BOUNDARIES = ["\n", "\r", "\r\n", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x85", "
-", "
-"]
+_BOUNDARIES = ["\n", "\r", "\r\n", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x85"] + [
+    chr(0x2028),
+    chr(0x2029),
+]
 
 
 def _lines(text, **kwargs):
