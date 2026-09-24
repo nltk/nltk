@@ -289,14 +289,9 @@ jobs:
             # Windows spawn re-bootstraps pytest per subprocess; skip the plugin
             # autoload scan (seconds per spawn) only here and load needed plugins
             # explicitly. Set on this command alone so other OSes keep autoload.
-            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto --dist loadgroup -rsx --doctest-modules nltk
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            # Leave one core free: the tests' own subprocesses and JVMs starved a
-            # fully subscribed macOS runner. Same tests, fewer parallel workers.
-            workers=$(( $(sysctl -n hw.logicalcpu) - 1 )); [ "$workers" -ge 1 ] || workers=1
-            pytest --numprocesses "$workers" --dist loadgroup -rsx --doctest-modules nltk
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
           else
-            pytest --numprocesses auto --dist loadgroup -rsx --doctest-modules nltk
+            pytest --numprocesses auto -rsx --doctest-modules nltk
           fi
 
   advisory-coverage:
