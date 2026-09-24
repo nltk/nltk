@@ -118,30 +118,10 @@ class Tree(list):
     # ////////////////////////////////////////////////////////////
 
     def __eq__(self, other):
-        # Explicit stack: the recursive form overflowed at depth ~250 on Python
-        # 3.10/3.11, below fromstring's MAX_TREE_DEPTH (CWE-674). Same result as
-        # comparing (label, children) tuples, identity shortcut included.
-        if self.__class__ is not other.__class__:
-            return False
-        stack = [(self, other)]
-        while stack:
-            a, b = stack.pop()
-            if not (a._label is b._label or a._label == b._label):
-                return False
-            if len(a) != len(b):
-                return False
-            for x, y in zip(a, b):
-                if x is y:
-                    continue
-                if (
-                    isinstance(x, Tree)
-                    and x.__class__ is y.__class__
-                    and type(x).__eq__ is Tree.__eq__
-                ):
-                    stack.append((x, y))
-                elif not (x == y):
-                    return False
-        return True
+        return self.__class__ is other.__class__ and (self._label, list(self)) == (
+            other._label,
+            list(other),
+        )
 
     def __lt__(self, other):
         if not isinstance(other, Tree):
@@ -569,29 +549,15 @@ class Tree(list):
         :param tree: The tree that should be converted.
         :return: The new Tree.
         """
-        if not isinstance(tree, Tree):
+        if isinstance(tree, Tree):
+            # a loop, not a comprehension: before Python 3.12 a comprehension is
+            # its own frame, which halved the depth deepcopy could reach
+            children = []
+            for child in tree:
+                children.append(cls.convert(child))
+            return cls(tree._label, children)
+        else:
             return tree
-        if getattr(cls.convert, "__func__", None) is not Tree.convert.__func__:
-            # a subclass that overrides convert and calls up keeps the original
-            # per-child dispatch to its own convert
-            return cls(tree._label, [cls.convert(child) for child in tree])
-        # Post-order with an explicit stack: deepcopy goes through here, and the
-        # recursive form overflowed at depth ~500 on Python 3.10 and 3.11, at
-        # the very MAX_TREE_DEPTH fromstring accepts (CWE-674).
-        stack = [(tree, iter(tree), [])]
-        while True:
-            node, children, built = stack[-1]
-            for child in children:
-                if isinstance(child, Tree):
-                    stack.append((child, iter(child), []))
-                    break
-                built.append(child)
-            else:
-                stack.pop()
-                converted = cls(node._label, built)
-                if not stack:
-                    return converted
-                stack[-1][2].append(converted)
 
     def __copy__(self):
         return self.copy()
