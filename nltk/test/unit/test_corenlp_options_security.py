@@ -433,14 +433,14 @@ def _make_corenlp_server(corenlp_options, port=None):
 
 @pytest.fixture(scope="module")
 def live_server():
-    # One real server on an ephemeral port (never 9000, which test_corenlp.py
-    # binds under xdist); heavy models load on first use, since preloading them
-    # all before the port opens outran start()'s ~40s wait on slow runners.
+    # One real server for every wrapper-function test, on an ephemeral port (never
+    # the default 9000, which test_corenlp.py binds and races under xdist); the
+    # preloaded annotators + allowlisted -srparser/-maxCharLength=-1 must start clean.
     pytest.importorskip("requests")
     srv = _make_corenlp_server(
         [
             "-preload",
-            "tokenize,ssplit",
+            "tokenize,ssplit,pos,lemma,ner,parse,depparse",
             "-srparser",
             "-maxCharLength=-1",
         ],
