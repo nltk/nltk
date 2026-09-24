@@ -151,7 +151,7 @@ class IBMModel2(IBMModel):
                         "A source sentence is too long ("
                         + str(l)
                         + " words). Results may be less accurate."
-                    )
+                    )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):

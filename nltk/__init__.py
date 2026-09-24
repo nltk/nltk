@@ -197,7 +197,7 @@ if importlib.util.find_spec("tkinter"):
 
         warnings.warn(
             "Corpus downloader GUI not loaded "
-            "(RuntimeError during import: %s)" % str(e)
+            "(RuntimeError during import: %s)" % sanitize_terminal(e)
         )
 
 # explicitly import all top-level modules (ensuring
@@ -208,8 +208,9 @@ from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
 from nltk import tag, tbl, text, tokenize, translate, tree, util
+from nltk.termsec import safe_print, sanitize_terminal
 
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
 def demo():
-    print("To run the demo code for a module, type nltk.module.demo()")
+    safe_print("To run the demo code for a module, type nltk.module.demo()")

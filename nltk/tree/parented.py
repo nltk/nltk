@@ -315,7 +315,7 @@ class ParentedTree(AbstractParentedTree):
         if not deep:
             warnings.warn(
                 f"{self.__class__.__name__} objects do not support shallow copies. Defaulting to a deep copy."
-            )
+            )  # unsafe-print ok: the class's own name
         return super().copy(deep=True)
 
     # /////////////////////////////////////////////////////////////////

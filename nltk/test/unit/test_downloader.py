@@ -54,7 +54,9 @@ def test_downloader_redownload(tmp_path):
 
     download_dir = str(tmp_path.joinpath("test_repeat_download"))
     for i in range(first_download, second_download + 1):
-        with unittest.mock.patch("builtins.print") as print_mock:
+        # the downloader routes output through the early-bound safe_print name,
+        # so intercept that module attribute, not the builtins.print name
+        with unittest.mock.patch("nltk.downloader.safe_print") as print_mock:
             with unittest.mock.patch.dict(
                 os.environ, {"NLTK_ALLOW_PROXIED_URLOPEN": "1"}
             ):

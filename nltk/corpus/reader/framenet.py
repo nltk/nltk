@@ -25,6 +25,7 @@ from pprint import pprint
 
 from nltk import redos
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
+from nltk.termsec import safe_print
 from nltk.util import LazyConcatenation, LazyIteratorList, LazyMap
 
 __docformat__ = "epytext en"
@@ -1256,7 +1257,7 @@ buildindexes() loads metadata about all frames, LUs, etc. into memory to avoid
 readme() gives the text of the FrameNet README file
 warnings(True) to display corpus consistency warnings when loading data
         """
-        print(msg)
+        safe_print(msg)
 
     def _buildframeindex(self):
         # The total number of Frames in Framenet is fairly small (~1200) so
@@ -1338,7 +1339,7 @@ warnings(True) to display corpus consistency warnings when loading data
     def _warn(self, *message, **kwargs):
         if self._warnings:
             kwargs.setdefault("file", sys.stderr)
-            print(*message, **kwargs)
+            safe_print(*message, **kwargs)
 
     def buildindexes(self):
         """
@@ -3398,26 +3399,26 @@ def demo():
     # buildindexes(). We do this here just for demo purposes. If the
     # indexes are not built explicitly, they will be built as needed.
     #
-    print("Building the indexes...")
+    safe_print("Building the indexes...")
     fn.buildindexes()
 
     #
     # Get some statistics about the corpus
     #
-    print("Number of Frames:", len(fn.frames()))
-    print("Number of Lexical Units:", len(fn.lus()))
-    print("Number of annotated documents:", len(fn.docs()))
-    print()
+    safe_print("Number of Frames:", len(fn.frames()))
+    safe_print("Number of Lexical Units:", len(fn.lus()))
+    safe_print("Number of annotated documents:", len(fn.docs()))
+    safe_print()
 
     #
     # Frames
     #
-    print(
+    safe_print(
         'getting frames whose name matches the (case insensitive) regex: "(?i)medical"'
     )
     medframes = fn.frames(r"(?i)medical")
-    print(f'Found {len(medframes)} Frames whose name matches "(?i)medical":')
-    print([(f.name, f.ID) for f in medframes])
+    safe_print(f'Found {len(medframes)} Frames whose name matches "(?i)medical":')
+    safe_print([(f.name, f.ID) for f in medframes])
 
     #
     # store the first frame in the list of frames
@@ -3428,64 +3429,64 @@ def demo():
     #
     # get the frame relations
     #
-    print(
+    safe_print(
         '\nNumber of frame relations for the "{}" ({}) frame:'.format(
             m_frame.name, m_frame.ID
         ),
         len(m_frame.frameRelations),
     )
     for fr in m_frame.frameRelations:
-        print("   ", fr)
+        safe_print("   ", fr)
 
     #
     # get the names of the Frame Elements
     #
-    print(
+    safe_print(
         f'\nNumber of Frame Elements in the "{m_frame.name}" frame:',
         len(m_frame.FE),
     )
-    print("   ", [x for x in m_frame.FE])
+    safe_print("   ", [x for x in m_frame.FE])
 
     #
     # get the names of the "Core" Frame Elements
     #
-    print(f'\nThe "core" Frame Elements in the "{m_frame.name}" frame:')
-    print("   ", [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
+    safe_print(f'\nThe "core" Frame Elements in the "{m_frame.name}" frame:')
+    safe_print("   ", [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
 
     #
     # get all of the Lexical Units that are incorporated in the
     # 'Ailment' FE of the 'Medical_conditions' frame (id=239)
     #
-    print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
+    safe_print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
     m_frame = fn.frame(239)
     ailment_lus = [
         x
         for x in m_frame.lexUnit.values()
         if "incorporatedFE" in x and x.incorporatedFE == "Ailment"
     ]
-    print("   ", [x.name for x in ailment_lus])
+    safe_print("   ", [x.name for x in ailment_lus])
 
     #
     # get all of the Lexical Units for the frame
     #
-    print(
+    safe_print(
         f'\nNumber of Lexical Units in the "{m_frame.name}" frame:',
         len(m_frame.lexUnit),
     )
-    print("  ", [x.name for x in m_frame.lexUnit.values()][:5], "...")
+    safe_print("  ", [x.name for x in m_frame.lexUnit.values()][:5], "...")
 
     #
     # get basic info on the second LU in the frame
     #
     tmp_id = m_frame.lexUnit["ailment.n"].ID  # grab the id of the specified LU
     luinfo = fn.lu_basic(tmp_id)  # get basic info on the LU
-    print(f"\nInformation on the LU: {luinfo.name}")
+    safe_print(f"\nInformation on the LU: {luinfo.name}")
     pprint(luinfo)
 
     #
     # Get a list of all of the corpora used for fulltext annotation
     #
-    print("\nNames of all of the corpora used for fulltext annotation:")
+    safe_print("\nNames of all of the corpora used for fulltext annotation:")
     allcorpora = {x.corpname for x in fn.docs_metadata()}
     pprint(list(allcorpora))
 
@@ -3494,7 +3495,7 @@ def demo():
     #
     firstcorp = list(allcorpora)[0]
     firstcorp_docs = fn.docs(firstcorp)
-    print(f'\nNames of the annotated documents in the "{firstcorp}" corpus:')
+    safe_print(f'\nNames of the annotated documents in the "{firstcorp}" corpus:')
     pprint([x.filename for x in firstcorp_docs])
 
     #
@@ -3506,7 +3507,7 @@ def demo():
     #       lemmas to frames because each time frames_by_lemma() is
     #       called, it has to search through ALL of the frame XML files
     #       in the db.
-    print(
+    safe_print(
         '\nSearching for all Frames that have a lemma that matches the regexp: "^run.v$":'
     )
     pprint(fn.frames_by_lemma(r"^run.v$"))

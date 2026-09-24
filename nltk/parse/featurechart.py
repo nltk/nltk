@@ -38,6 +38,7 @@ from nltk.parse.chart import (
     TreeEdge,
 )
 from nltk.sem import logic
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 # ////////////////////////////////////////////////////////////
@@ -629,26 +630,26 @@ def demo(
     import sys
     import time
 
-    print()
+    safe_print()
     grammar = demo_grammar()
     if print_grammar:
-        print(grammar)
-        print()
-    print("*", parser.__name__)
+        safe_print(grammar)
+        safe_print()
+    safe_print("*", parser.__name__)
     if print_sentence:
-        print("Sentence:", sent)
+        safe_print("Sentence:", sent)
     tokens = sent.split()
     t = perf_counter()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
     trees = list(chart.parses(grammar.start()))
     if print_times:
-        print("Time: %s" % (perf_counter() - t))
+        safe_print("Time: %s" % (perf_counter() - t))
     if print_trees:
         for tree in trees:
-            print(tree)
+            safe_print(tree)
     else:
-        print("Nr trees:", len(trees))
+        safe_print("Nr trees:", len(trees))
 
 
 def run_profile():
@@ -667,11 +668,11 @@ if __name__ == "__main__":
     from nltk.data import load
 
     demo()
-    print()
+    safe_print()
     grammar = load("grammars/book_grammars/feat0.fcfg")
     cp = FeatureChartParser(grammar, trace=2)
     sent = "Kim likes children"
     tokens = sent.split()
     trees = cp.parse(tokens)
     for tree in trees:
-        print(tree)
+        safe_print(tree)

@@ -114,11 +114,12 @@ import functools
 try:
     import pyparsing
 except ImportError:
-    print("Warning: nltk.tgrep will not work without the `pyparsing` package")
-    print("installed.")
+    safe_print("Warning: nltk.tgrep will not work without the `pyparsing` package")
+    safe_print("installed.")
 
 import nltk.tree
 from nltk import redos
+from nltk.termsec import safe_print
 
 
 class TgrepException(Exception):

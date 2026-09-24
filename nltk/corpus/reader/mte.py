@@ -10,6 +10,7 @@ from nltk import redos
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.pathsec import validate_path
+from nltk.termsec import safe_print
 
 
 def xpath(root, path, ns):
@@ -235,7 +236,7 @@ class MTECorpusReader(TaggedCorpusReader):
         # filter multext-east sourcefiles that are not compatible to the teip5 specification
         fileids = filter(lambda x: x not in ["oana-bg.xml", "oana-mk.xml"], fileids)
         if not fileids:
-            print("No valid multext-east file specified")
+            safe_print("No valid multext-east file specified")
         return fileids
 
     def words(self, fileids=None):
@@ -322,7 +323,7 @@ class MTECorpusReader(TaggedCorpusReader):
                 ]
             )
         else:
-            print("Unknown tagset specified.")
+            safe_print("Unknown tagset specified.")
 
     def lemma_sents(self, fileids=None):
         """
@@ -362,7 +363,7 @@ class MTECorpusReader(TaggedCorpusReader):
                 ]
             )
         else:
-            print("Unknown tagset specified.")
+            safe_print("Unknown tagset specified.")
 
     def lemma_paras(self, fileids=None):
         """
@@ -403,4 +404,4 @@ class MTECorpusReader(TaggedCorpusReader):
                 ]
             )
         else:
-            print("Unknown tagset specified.")
+            safe_print("Unknown tagset specified.")

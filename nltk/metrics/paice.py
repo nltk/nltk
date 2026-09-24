@@ -23,6 +23,8 @@ In Proceedings of SIGIR, 42--50.
 from collections import defaultdict
 from math import sqrt
 
+from nltk.termsec import safe_print
+
 
 def get_words_from_dictionary(lemmas):
     """
@@ -386,17 +388,17 @@ def demo():
         "ring": ["ring"],
         "rung": ["rung"],
     }
-    print("Words grouped by their lemmas:")
+    safe_print("Words grouped by their lemmas:")
     for lemma in sorted(lemmas):
-        print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
-    print()
-    print("Same words grouped by a stemming algorithm:")
+        safe_print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
+    safe_print()
+    safe_print("Same words grouped by a stemming algorithm:")
     for stem in sorted(stems):
-        print("{} => {}".format(stem, " ".join(stems[stem])))
-    print()
+        safe_print("{} => {}".format(stem, " ".join(stems[stem])))
+    safe_print()
     p = Paice(lemmas, stems)
-    print(p)
-    print()
+    safe_print(p)
+    safe_print()
     # Let's "change" results from a stemming algorithm
     stems = {
         "kneel": ["kneel"],
@@ -406,13 +408,13 @@ def demo():
         "ring": ["ring"],
         "rung": ["rung"],
     }
-    print("Counting stats after changing stemming results:")
+    safe_print("Counting stats after changing stemming results:")
     for stem in sorted(stems):
-        print("{} => {}".format(stem, " ".join(stems[stem])))
-    print()
+        safe_print("{} => {}".format(stem, " ".join(stems[stem])))
+    safe_print()
     p.stems = stems
     p.update()
-    print(p)
+    safe_print(p)
 
 
 if __name__ == "__main__":

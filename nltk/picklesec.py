@@ -29,6 +29,8 @@ import warnings
 from collections.abc import Iterable
 from typing import Any, BinaryIO
 
+from nltk.termsec import sanitize_terminal
+
 PICKLE_WARNING = (
     "Security warning: loading pickles can execute arbitrary code. "
     "Only load pickle files from trusted sources and never from untrusted "
@@ -114,7 +116,7 @@ class WarningUnpickler(pickle.Unpickler):
                 if self._context is None
                 else f"{PICKLE_WARNING} ({self._context})"
             )
-            warnings.warn(msg, RuntimeWarning, stacklevel=3)
+            warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             self._warned = True
         return super().load()
 

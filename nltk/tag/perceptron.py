@@ -30,6 +30,7 @@ from nltk.pathsec import _fd_realpath
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tag.api import TaggerI
+from nltk.termsec import safe_print
 
 
 def _validate_name_component(value, kind="language code"):
@@ -593,12 +594,12 @@ def _train_and_test(lang="sv"):
     tagger = PerceptronTagger(load=False, lang=lang)
     training = utb.tagged_sents(f"ch/{lang}/{lang}-universal-ch-train.conll")
     testing = utb.tagged_sents(f"ch/{lang}/{lang}-universal-ch-test.conll")
-    print(
+    safe_print(
         f"(Lang = {lang}) training on {len(training)} and testing on {len(testing)} sentences"
     )
     # Train and save the model
     tagger.train(training, save_loc=tagger.save_dir)
-    print("Accuracy : ", tagger.accuracy(testing))
+    safe_print("Accuracy : ", tagger.accuracy(testing))
 
 
 if __name__ == "__main__":
