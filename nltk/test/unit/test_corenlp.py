@@ -10,10 +10,6 @@ import pytest
 from nltk.parse import corenlp
 from nltk.tree import Tree
 
-# setup_module starts a real CoreNLP JVM; the group runs it on the same worker as
-# TestRealServerLaunch's (CI uses --dist loadgroup), so the two never overlap.
-pytestmark = pytest.mark.xdist_group("corenlp")
-
 
 def setup_module(module):
     global server
