@@ -21,7 +21,9 @@ class LinThesaurusCorpusReader(CorpusReader):
     # line the greedy group spans the remainder, the required `` (desc ..)`` is
     # absent, and ``sub`` retries at every position -- O(n**2) over corpus data.
     # redos.compile bounds match time with a wall-clock timeout (CWE-1333).
-    _key_re = redos.compile(r'\("?([^"]+)"? \(desc [0-9.]+\).+')
+    # Bound the key run: a repeated `(` anchor with an unbounded `[^"]+` (whose
+    # terminator the attacker omits) is O(n**2) under .sub (CWE-407); keys are short.
+    _key_re = redos.compile(r'\("?([^"]{1,512})"? \(desc [0-9.]+\).+')
 
     @staticmethod
     def __defaultdict_factory():
