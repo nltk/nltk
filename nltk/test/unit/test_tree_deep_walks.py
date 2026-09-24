@@ -42,3 +42,52 @@ def test_convert_output_unchanged():
     assert parented[0][0].parent() is parented[0]
     prob = ProbabilisticTree("S", [ProbabilisticTree("A", ["x"], prob=0.5)], prob=0.25)
     assert copy.deepcopy(prob)[0].prob() == 0.5
+
+
+_PROBE = """
+import copy, sys
+from nltk.tree import Tree
+kind = sys.argv[1]
+if kind == "chain":
+    t = Tree("L", ["w"])
+    for _ in range(5000):
+        t = Tree("N", [t])
+elif kind == "cycle":
+    t = Tree("N", ["w"])
+    t.append(t)
+try:
+    copy.deepcopy(t)
+    print("ok")
+except RecursionError:
+    print("RecursionError")
+"""
+
+
+@pytest.mark.parametrize("kind", ["chain", "cycle"])
+def test_over_limit_and_cyclic_trees_fail_cleanly(kind):
+    # at the default recursion limit a tree too deep to copy, or one that
+    # contains itself, must raise RecursionError, never crash the interpreter
+    import os
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = str(Path(__file__).resolve().parents[3])
+    proc = subprocess.run(
+        [sys.executable, "-c", _PROBE, kind],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        env=dict(os.environ, PYTHONPATH=root),
+    )
+    assert proc.returncode == 0, (proc.returncode, proc.stderr[-300:])
+    assert proc.stdout.strip() == "RecursionError"
+
+
+def test_shared_subtrees_copy_every_occurrence():
+    # deepcopy ignores the memo, as before: a subtree referenced twice is
+    # copied twice (cost grows with paths, not nodes; unchanged by this fix)
+    shared = Tree("A", ["x"])
+    tree = Tree("S", [shared, shared])
+    twin = copy.deepcopy(tree)
+    assert twin[0] == twin[1] and twin[0] is not twin[1]
