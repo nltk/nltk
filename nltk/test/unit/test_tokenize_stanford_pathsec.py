@@ -253,3 +253,49 @@ def test_stanford_tokenizer_input_file_staged_in_data_root(
 
     staged = os.path.realpath(sink["cmd"][-1])
     assert staged.startswith(os.path.realpath(str(root)) + os.sep)
+
+
+# --- StanfordSegmenter model-file guards: require_private + max_bytes -----------
+# The primary model/dict are files the JVM loads whole and parses, so they get the
+# same tamper/size guards as any tool model (parity with the POS tagger).
+
+_requires_posix = pytest.mark.skipif(
+    not hasattr(os, "getuid"), reason="POSIX ownership/permission model"
+)
+
+
+@_requires_posix
+def test_segmenter_model_refuses_group_or_world_writable(pathsec_sandbox, monkeypatch):
+    """A group/world-writable model another local user could swap is refused
+    before the JVM parses it (require_private, CWE-426/CWE-732)."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _ = pathsec_sandbox
+    _trap_java(monkeypatch, seg, {})
+    model = root / "pku.gz"
+    model.write_bytes(b"\x1f\x8bmodel")
+    os.chmod(model, 0o666)
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("中文")
+    tool = _segmenter(monkeypatch, str(root), model=str(model))
+    with pytest.raises(PermissionError):
+        tool.segment_file(inside)
+
+
+def test_segmenter_model_refuses_oversize(pathsec_sandbox, monkeypatch):
+    """A model over MAX_TOOL_MODEL_BYTES is refused (a memory bomb the JVM would
+    load whole, CWE-400); a tiny monkeypatched cap avoids needing a giant file."""
+    import nltk.tokenize.stanford_segmenter as seg
+
+    root, _ = pathsec_sandbox
+    _trap_java(monkeypatch, seg, {})
+    model = root / "pku.gz"
+    model.write_bytes(b"\x1f\x8b" + b"x" * 4096)
+    monkeypatch.setattr(seg, "MAX_TOOL_MODEL_BYTES", 1024)
+    inside = str(root / "in.txt")
+    with pathsec.open(inside, "w", encoding="utf-8") as handle:
+        handle.write("中文")
+    tool = _segmenter(monkeypatch, str(root), model=str(model))
+    with pytest.raises(PermissionError):
+        tool.segment_file(inside)

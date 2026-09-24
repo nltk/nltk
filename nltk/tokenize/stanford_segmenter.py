@@ -24,8 +24,15 @@ from nltk.internals import (
     find_jar,
     java,
 )
+from nltk.pathsec import (
+    MAX_TOOL_MODEL_BYTES,
+)
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
+from nltk.pathsec import (
+    validate_path,
+    validate_tool_dir,
+    validate_tool_path,
+)
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -60,8 +67,13 @@ def _validated_options(options):
         if isinstance(value, str) and (
             os.path.isabs(value) or "/" in value or "\\" in value
         ):
+            # A path-valued segmenter option is a model/dictionary/classifier
+            # the JVM reads; refuse a tamperable or oversized one too.
             value = validate_tool_path(
-                value, context=f"StanfordSegmenter options[{name}]"
+                value,
+                context=f"StanfordSegmenter options[{name}]",
+                max_bytes=MAX_TOOL_MODEL_BYTES,
+                require_private=True,
             )
         validated[name] = value
     return validated
@@ -404,17 +416,22 @@ class StanfordSegmenter(TokenizerI):
         :return: the validated (model, dictionary, sihan corpora dict) strings,
             each None when it was unset
         """
+        # The model and dictionary are files the JVM loads whole and parses, so
+        # they get the same guards as any tool model: refuse one another local
+        # user could plant/swap (require_private) or an oversized memory bomb
+        # (max_bytes). The Sihan corpora dict is a DIRECTORY, so it uses the
+        # directory guard (validate_tool_path requires a regular file) and those
+        # file-only kwargs do not apply.
+        _model_kw = {"max_bytes": MAX_TOOL_MODEL_BYTES, "require_private": True}
         validated = []
-        for attribute, label, guard in (
-            ("_model", "model", validate_tool_path),
-            ("_dict", "dictionary", validate_tool_path),
-            # The Sihan corpora dict is a DIRECTORY, so it needs the directory
-            # guard: validate_tool_path requires a regular file.
-            ("_sihan_corpora_dict", "sihan corpora dict", validate_tool_dir),
+        for attribute, label, guard, guard_kw in (
+            ("_model", "model", validate_tool_path, _model_kw),
+            ("_dict", "dictionary", validate_tool_path, _model_kw),
+            ("_sihan_corpora_dict", "sihan corpora dict", validate_tool_dir, {}),
         ):
             value = getattr(self, attribute)
             if value:
-                value = guard(value, context=f"StanfordSegmenter {label}")
+                value = guard(value, context=f"StanfordSegmenter {label}", **guard_kw)
                 setattr(self, attribute, value)
             validated.append(value)
         return tuple(validated)
