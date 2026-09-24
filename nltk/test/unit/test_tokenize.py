@@ -485,6 +485,12 @@ class TestTokenize:
         result = tokenizer.tokenize(test6)
         assert result == expected
 
+    def test_tweet_tokenizer_zwj_does_not_capture_whitespace(self):
+        """Whitespace next to a ZWJ remains a token boundary."""
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("a\t\u200db") == ["a", "\u200db"]
+        assert tokenizer.tokenize("a\u200d\tb") == ["a\u200d", "b"]
+
     def test_pad_asterisk(self):
         """
         Test padding of asterisk for word tokenization.
