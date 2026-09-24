@@ -456,6 +456,8 @@ def live_server():
             srv.stop()
 
 
+# Shares the "corenlp" xdist group with test_corenlp.py: one JVM at a time.
+@pytest.mark.xdist_group("corenlp")
 @pytest.mark.skipif(
     not _real_corenlp_available(),
     reason="No real CoreNLP install (set CORENLP / CORENLP_MODELS to the unpacked dir)",
