@@ -17,6 +17,9 @@ what those readers changed:
   temp dir, which on Linux is the shared, world-writable ``/tmp`` and is
   deliberately not a pathsec data root. They are now pinned to
   ``nltk.data.staging_tempdir()`` so the scratch file lands inside a data root.
+  ``timit.play()``'s pygame branch now runs on Python 3, so it is pinned to
+  receive only the bytes ``wav()`` read through pathsec and re-encoded, and
+  one test plays the installed TIMIT sample when that corpus is present.
 
 The ``restricted_sandbox`` / ``pathsec_sandbox`` fixtures (see the shared
 ``conftest.py``) enforce pathsec against one throwaway data root registered on
@@ -25,6 +28,7 @@ Windows, where a bare temp dir is not a data root, as well as on macOS.
 """
 
 import os
+import sys
 
 import pytest
 
@@ -163,3 +167,156 @@ def test_timit_wav_tempfile_is_pinned_to_a_data_root(restricted_sandbox, monkeyp
 
     assert recorded["dir"] == staging_tempdir()
     assert os.path.realpath(recorded["dir"]).startswith(os.path.realpath(root))
+
+
+# ----------------------------------------------------------------------------
+# timit: play() hands pygame only the bytes wav() already read and re-encoded
+# ----------------------------------------------------------------------------
+
+
+def _timit_reader(root, wav_bytes=None):
+    from nltk.corpus.reader.timit import TimitCorpusReader
+    from nltk.data import FileSystemPathPointer
+
+    speaker_dir = os.path.join(root, "dr1-fabc0")
+    os.makedirs(speaker_dir, exist_ok=True)
+    wav_path = os.path.join(speaker_dir, "sa1.wav")
+    if wav_bytes is None:
+        _write_minimal_wav(wav_path)
+    else:
+        with open(wav_path, "wb") as handle:
+            handle.write(wav_bytes)
+    return TimitCorpusReader(FileSystemPathPointer(root))
+
+
+@pytest.fixture
+def pygame_dummy_driver(monkeypatch):
+    """The real pygame mixer on SDL's dummy audio driver, with ossaudiodev made
+    unimportable so play() takes its pygame branch."""
+    monkeypatch.setenv("SDL_AUDIODRIVER", "dummy")
+    mixer = pytest.importorskip("pygame.mixer")
+    monkeypatch.setitem(sys.modules, "ossaudiodev", None)
+    yield mixer
+    mixer.quit()
+
+
+@pytest.fixture
+def pygame_mixer(pygame_dummy_driver, monkeypatch):
+    """``pygame_dummy_driver``, recording each Sound() input."""
+    mixer = pygame_dummy_driver
+    played = []
+    real_sound = mixer.Sound
+
+    def recording_sound(buffer):
+        played.append(buffer.getvalue())
+        return real_sound(buffer)
+
+    monkeypatch.setattr(mixer, "Sound", recording_sound)
+    return played
+
+
+def test_timit_play_reaches_pygame_on_python3(restricted_sandbox, pygame_mixer, capsys):
+    # The pygame branch used to import the Python 2 ``StringIO`` module; the
+    # ImportError was swallowed and play() always fell through to the
+    # "install pygame" message, even with pygame installed.
+    reader = _timit_reader(restricted_sandbox)
+    reader.play("dr1-fabc0/sa1")
+
+    assert "install pygame" not in capsys.readouterr().err
+    assert pygame_mixer == [reader.wav("dr1-fabc0/sa1")]
+
+
+def test_timit_play_refuses_escaping_utterance_before_pygame(
+    pathsec_sandbox, pygame_mixer
+):
+    reader = _timit_reader(str(pathsec_sandbox.root))
+    _write_minimal_wav(os.path.join(str(pathsec_sandbox.outside), "sa1.wav"))
+    escaping = os.path.relpath(
+        os.path.join(str(pathsec_sandbox.outside), "sa1"), str(pathsec_sandbox.root)
+    )
+
+    with pytest.raises((PermissionError, ValueError)):
+        reader.play(escaping)
+    assert pygame_mixer == []
+
+
+def test_timit_play_rejects_non_wav_bytes_before_pygame(
+    restricted_sandbox, pygame_mixer
+):
+    # wav() parses the file with the stdlib ``wave`` module and re-encodes it,
+    # so bytes that are not a WAV never reach pygame's decoder.
+    import wave
+
+    reader = _timit_reader(restricted_sandbox, wav_bytes=b"RIFF\x00\x00\x00\x00junk")
+
+    with pytest.raises((wave.Error, EOFError)):
+        reader.play("dr1-fabc0/sa1")
+    assert pygame_mixer == []
+
+
+@POSIX_ONLY
+def test_timit_play_refuses_symlink_escape_before_pygame(pathsec_sandbox, pygame_mixer):
+    reader = _timit_reader(str(pathsec_sandbox.root))
+    outside_wav = os.path.join(str(pathsec_sandbox.outside), "sa2.wav")
+    _write_minimal_wav(outside_wav)
+    os.symlink(
+        outside_wav, os.path.join(str(pathsec_sandbox.root), "dr1-fabc0", "sa2.wav")
+    )
+
+    with pytest.raises((PermissionError, ValueError)):
+        reader.play("dr1-fabc0/sa2")
+    assert pygame_mixer == []
+
+
+def test_timit_play_rejects_non_pcm_wav_before_pygame(restricted_sandbox, pygame_mixer):
+    # A WAV header with the IEEE float format tag (3): the stdlib ``wave`` module
+    # reads PCM only, so it is refused before pygame's decoder sees it.
+    import wave
+
+    reader = _timit_reader(restricted_sandbox)
+    wav_path = os.path.join(restricted_sandbox, "dr1-fabc0", "sa1.wav")
+    with open(wav_path, "rb") as handle:
+        data = handle.read()
+    with open(wav_path, "wb") as handle:
+        handle.write(data[:20] + b"\x03\x00" + data[22:])
+
+    with pytest.raises(wave.Error, match="unknown format: 3"):
+        reader.play("dr1-fabc0/sa1")
+    assert pygame_mixer == []
+
+
+def test_timit_play_rewrites_a_header_that_overstates_its_length(
+    restricted_sandbox, pygame_mixer
+):
+    # The header claims 100 frames but only 10 follow. wav() re-encodes what
+    # was actually read, so pygame gets a header that matches its data.
+    import io
+    import wave
+
+    reader = _timit_reader(restricted_sandbox)
+    wav_path = os.path.join(restricted_sandbox, "dr1-fabc0", "sa1.wav")
+    with open(wav_path, "rb") as handle:
+        data = handle.read()
+    with open(wav_path, "wb") as handle:
+        handle.write(data[: 44 + 20])
+
+    reader.play("dr1-fabc0/sa1")
+    (played,) = pygame_mixer
+    with wave.open(io.BytesIO(played)) as handle:
+        assert handle.getnframes() == 10
+        assert len(handle.readframes(handle.getnframes())) == 20
+
+
+def test_timit_play_on_the_real_corpus(pygame_dummy_driver, capsys):
+    # The distributed TIMIT sample, played through the real pygame mixer with
+    # nothing recorded: play() must finish on the pygame branch.
+    import nltk
+
+    try:
+        nltk.data.find("corpora/timit")
+    except LookupError:
+        pytest.skip("the timit corpus is not installed")
+    from nltk.corpus import timit
+
+    timit.play(timit.utteranceids()[0], end=1600)
+    assert "install pygame" not in capsys.readouterr().err
