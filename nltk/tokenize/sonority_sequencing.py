@@ -39,6 +39,13 @@ from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.util import ngrams
 
+# Upper bound on distinct fallback "vowel" characters accumulated across tokens.
+# assign_values() treats every unknown char as a vowel and remembers it on the
+# instance; without a cap an attacker-controlled stream of distinct codepoints
+# grows self.vowels without limit until the joined pattern trips redos's
+# MAX_PATTERN_LENGTH refusal. Far above any real phoneme inventory (< 100).
+_MAX_VOWEL_CHARS = 1024
+
 
 class SyllableTokenizer(TokenizerI):
     """
@@ -104,7 +111,10 @@ class SyllableTokenizer(TokenizerI):
                         " assigning as vowel: '{}'".format(c)
                     )
                     syllables_values.append((c, max(self.phoneme_map.values())))
-                    if c not in self.vowels:
+                    # Remember the char as a vowel, but stop growing the set past
+                    # the cap so the pattern built from it in validate_syllables
+                    # stays bounded (CWE-400 / CWE-407).
+                    if c not in self.vowels and len(self.vowels) < _MAX_VOWEL_CHARS:
                         self.vowels += c
                 else:  # If it's a punctuation or numbers, assign -1.
                     syllables_values.append((c, -1))
