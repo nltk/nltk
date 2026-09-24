@@ -32,10 +32,9 @@ _PAYLOADS = {
     "cdata": "<![CDATA[x]]>" * _N + "<![CDATA[" + "a" * 10,
 }
 
-# Hang backstop only, not the ReDoS guard: terminates a worker that never returns
-# (a broken redos timeout) so it cannot burn CPU. Sized to clear worst-case spawn,
-# ``import nltk`` and redos's 5 s timeout with margin, so a slow start is no hang.
-_TIMEOUT = 60
+# Hang backstop: terminates a worker that never returns (a broken redos timeout)
+# so it cannot burn CPU; develop's original 15 s bound, kept unrelaxed.
+_TIMEOUT = 15
 
 # op_elapsed is wall-clock in the worker; under xdist a descheduled child can fold
 # scheduler pause into it, so 2 s (not a tighter bound) removes flake risk. The
