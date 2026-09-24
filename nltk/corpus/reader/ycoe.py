@@ -136,7 +136,16 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
     that strips out (CODE ...) and (ID ...) nodes."""
 
     def _parse(self, t):
-        t = redos.sub(r"(?u)\((CODE|ID)[^\)]*\)", "", t)
+        # ``\((CODE|ID)[^\)]*\)`` is O(n**2) on a crafted block: the literal
+        # ``(CODE``/``(ID`` anchor recurs O(n) times and ``[^\)]*`` rescans to
+        # end-of-line for a ``)`` the attacker omits at every anchor position
+        # (CWE-400, same class as CVE-2021-3828). The ``regex`` engine and the
+        # redos wall-clock timeout are a backstop, not a fix -- this re-anchoring
+        # quadratic is not collapsed by either, so a crafted ``.psd`` block still
+        # burns a full timeout window of CPU per call. Bounding the inter-node
+        # run makes the substitution linear; real ``(CODE ...)``/``(ID ...)``
+        # nodes are short reference tags, so the bound is non-lossy.
+        t = redos.sub(r"(?u)\((CODE|ID)[^\)]{0,400}\)", "", t)
         if redos.match(r"\s*\(\s*\)\s*$", t):
             return None
         return BracketParseCorpusReader._parse(self, t)
