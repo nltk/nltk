@@ -552,6 +552,7 @@ class Tree(list):
         if isinstance(tree, Tree):
             # a loop, not a comprehension: before Python 3.12 a comprehension is
             # its own frame, which halved the depth deepcopy could reach
+            # (inlined since https://peps.python.org/pep-0709/)
             children = []
             for child in tree:
                 children.append(cls.convert(child))
