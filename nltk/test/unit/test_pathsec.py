@@ -1283,3 +1283,59 @@ class TestStagingUnderDataRoot:
         with pytest.raises(PermissionError):
             _data.make_staging_dir(prefix="nltk_probe_")
         assert list(outside.iterdir()) == [], "nothing may be staged out of sandbox"
+
+
+class TestInPlaceDataPathRestoreRevokesTrust:
+    """Test fixtures trust a directory by prepending it to nltk.data.path and
+    later restore the path IN PLACE (``nltk.data.path[:] = saved``), keeping the
+    same list object. pathsec must notice that and stop trusting the directory:
+    its allowed-roots cache compares a copy of the path by value, and an identity
+    comparison would leave the restored-away directory trusted."""
+
+    @pytest.fixture
+    def outside_file(self):
+        import shutil
+        import tempfile
+        from pathlib import Path
+
+        # $HOME, never a temp dir: the private per-user temp root is trusted
+        d = Path(tempfile.mkdtemp(prefix=".nltk_restore_probe_", dir=Path.home()))
+        (d / "f.txt").write_text("x", encoding="utf-8")
+        try:
+            yield d, str(d / "f.txt")
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+    def _trusted(self, path):
+        try:
+            pathsec.validate_path(path, context="restore-probe")
+            return True
+        except PermissionError:
+            return False
+
+    def test_in_place_restore_revokes_trust(self, outside_file, monkeypatch):
+        directory, target = outside_file
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        saved = list(nltk.data.path)
+        try:
+            assert not self._trusted(target)  # negative control
+            nltk.data.path.insert(0, str(directory))
+            assert self._trusted(target)  # the fixture's temporary trust
+            same_list = nltk.data.path
+            nltk.data.path[:] = saved
+            assert nltk.data.path is same_list  # truly in place
+            assert not self._trusted(target)  # trust gone with the entry
+        finally:
+            nltk.data.path[:] = saved
+
+    def test_in_place_append_then_remove_revokes_trust(self, outside_file, monkeypatch):
+        directory, target = outside_file
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        saved = list(nltk.data.path)
+        try:
+            nltk.data.path.append(str(directory))
+            assert self._trusted(target)
+            nltk.data.path.remove(str(directory))
+            assert not self._trusted(target)
+        finally:
+            nltk.data.path[:] = saved

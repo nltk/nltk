@@ -342,24 +342,14 @@ class CoreNLPServer:
             # Return java configurations to their default values.
             config_java(options=default_options, verbose=self.verbose)
 
-        # Check that the server is istill running.
-        returncode = self.popen.poll()
-        if returncode is not None:
-            _, stderrdata = self.popen.communicate()
-            # java() runs Popen with universal_newlines=True, so communicate()
-            # already returns text; only decode a bytes-returning path.
-            if isinstance(stderrdata, bytes):
-                stderrdata = stderrdata.decode("ascii")
-            raise CoreNLPServerError(
-                returncode,
-                f"Could not start the server. The error was: {stderrdata}",
-            )
+        self._raise_if_exited()
 
         for i in range(30):
             # Jittered backoff so retries don't all land on the same tick; the
             # first attempt fires immediately.
             if i > 0:
                 time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
 
             try:
                 response = requests.get(
@@ -381,6 +371,7 @@ class CoreNLPServer:
             # first attempt fires immediately.
             if i > 0:
                 time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
 
             try:
                 response = requests.get(
@@ -396,6 +387,22 @@ class CoreNLPServer:
                     break
         else:
             raise CoreNLPServerError("The server is not ready.")
+
+    def _raise_if_exited(self):
+        # A JVM that died after launch (no runtime, out of memory, a crash
+        # loading models) is reported with its exit code at once, not after the
+        # readiness loops time out on a port nothing will ever answer.
+        returncode = self.popen.poll()
+        if returncode is not None:
+            _, stderrdata = self.popen.communicate()
+            # java() runs Popen with universal_newlines=True, so communicate()
+            # already returns text; only decode a bytes-returning path.
+            if isinstance(stderrdata, bytes):
+                stderrdata = stderrdata.decode("ascii")
+            raise CoreNLPServerError(
+                returncode,
+                f"Could not start the server. The error was: {stderrdata}",
+            )
 
     def stop(self):
         self.popen.terminate()
