@@ -19,7 +19,7 @@ from nltk.tokenize import (
     sent_tokenize,
     word_tokenize,
 )
-from nltk.tokenize.simple import CharTokenizer
+from nltk.tokenize.simple import CharTokenizer, LineTokenizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 
 from . import _mp_ctx
@@ -1071,6 +1071,13 @@ class TestTokenize:
             (9, 10),
             (10, 11),
         ]
+
+    @pytest.mark.parametrize("blanklines", ["keep", "discard"])
+    def test_line_tokenizer_span_tokenize(self, blanklines: str) -> None:
+        text = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+        tokenizer = LineTokenizer(blanklines=blanklines)
+        spans = list(tokenizer.span_tokenize(text))
+        assert [text[start:end] for start, end in spans] == tokenizer.tokenize(text)
 
 
 class TestStanfordSegmenterClasspathValidation:

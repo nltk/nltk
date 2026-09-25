@@ -124,7 +124,7 @@ class LineTokenizer(TokenizerI):
     # discard-eof not implemented
     def span_tokenize(self, s):
         if self._blanklines == "keep":
-            yield from string_span_tokenize(s, r"\n")
+            yield from string_span_tokenize(s, "\n")
         else:
             yield from regexp_span_tokenize(s, r"\n(\s+\n)*")
 
