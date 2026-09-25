@@ -291,16 +291,51 @@ jobs:
             # explicitly. Set on this command alone so other OSes keep autoload.
             PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
           elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            # Tests that start child processes (SERIAL_STAGE_FILES) starved the other
-            # workers here, so they run serially after the rest; the gate proves the
-            # two stages together collect exactly the full suite.
-            count() { pytest --collect-only -q --doctest-modules "$@" nltk | grep -c '::' || true; }
-            all=$(count); parallel=$(count -m "not serial"); serial=$(count -m serial)
-            echo "collected: all=$all parallel=$parallel serial=$serial"
-            [ $((parallel + serial)) -eq "$all" ] || { echo "stages do not cover the suite"; exit 1; }
+            # Files with wall-clock deadlines (proc.join backstops, "< N s" asserts,
+            # the 40 s CoreNLP start) were starved by the parallel workers here, so
+            # they run on their own afterwards; every other test runs as before.
+            quiet=(
+              nltk/test/unit/test_alpino.py
+              nltk/test/unit/test_ccg_lexicon_security.py
+              nltk/test/unit/test_chart_parser.py
+              nltk/test/unit/test_chunk_redos_security.py
+              nltk/test/unit/test_cistem.py
+              nltk/test/unit/test_confusionmatrix.py
+              nltk/test/unit/test_corenlp.py
+              nltk/test/unit/test_corenlp_options_security.py
+              nltk/test/unit/test_distance.py
+              nltk/test/unit/test_everygrams_alloc.py
+              nltk/test/unit/test_featstruct_redos.py
+              nltk/test/unit/test_generate.py
+              nltk/test/unit/test_inference_security.py
+              nltk/test/unit/test_logic.py
+              nltk/test/unit/test_markdown.py
+              nltk/test/unit/test_pathsec_sweep_tag.py
+              nltk/test/unit/test_quadratic_dos.py
+              nltk/test/unit/test_redos_chokepoint_safety.py
+              nltk/test/unit/test_reviews_security.py
+              nltk/test/unit/test_segmentation.py
+              nltk/test/unit/test_sem_evaluate.py
+              nltk/test/unit/test_senseval_security.py
+              nltk/test/unit/test_text.py
+              nltk/test/unit/test_texttiling_security.py
+              nltk/test/unit/test_treetransforms.py
+              nltk/test/unit/test_valuation_redos.py
+              nltk/test/unit/test_xmldocs_security.py
+              nltk/test/unit/translate/test_alignment.py
+              nltk/test/unit/translate/test_gdfa.py
+              nltk/test/unit/translate/test_lepor.py
+              nltk/test/unit/translate/test_meteor.py
+              nltk/test/unit/translate/test_phrase_based_security.py
+            )
+            ignores=()
+            for f in "${quiet[@]}"; do
+              [ -f "$f" ] || { echo "quiet-stage file missing: $f"; exit 1; }
+              ignores+=("--ignore=$f")
+            done
             rc=0
-            pytest --numprocesses auto -m "not serial" -rsx --doctest-modules nltk || rc=1
-            pytest -m serial -rsx --doctest-modules nltk || rc=1
+            pytest --numprocesses auto "${ignores[@]}" -rsx --doctest-modules nltk || rc=1
+            pytest -rsx "${quiet[@]}" || rc=1
             exit $rc
           else
             pytest --numprocesses auto -rsx --doctest-modules nltk
