@@ -290,6 +290,18 @@ jobs:
             # autoload scan (seconds per spawn) only here and load needed plugins
             # explicitly. Set on this command alone so other OSes keep autoload.
             PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            # Tests that start child processes (SERIAL_STAGE_FILES) starved the other
+            # workers here, so they run serially after the rest; the gate proves the
+            # two stages together collect exactly the full suite.
+            count() { pytest --collect-only -q --doctest-modules "$@" nltk | grep -c '::' || true; }
+            all=$(count); parallel=$(count -m "not serial"); serial=$(count -m serial)
+            echo "collected: all=$all parallel=$parallel serial=$serial"
+            [ $((parallel + serial)) -eq "$all" ] || { echo "stages do not cover the suite"; exit 1; }
+            rc=0
+            pytest --numprocesses auto -m "not serial" -rsx --doctest-modules nltk || rc=1
+            pytest -m serial -rsx --doctest-modules nltk || rc=1
+            exit $rc
           else
             pytest --numprocesses auto -rsx --doctest-modules nltk
           fi
