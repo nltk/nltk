@@ -136,10 +136,9 @@ def test_xmlcorpusview_does_not_hang_on_crafted_file(tmp_path):
 # test recompiles it so the guard is proven to catch a real regression.
 _PRE_FIX_SPANNING_COMMENT_RE = r"[^<]*((<!--.*?-->)[^<]*)*\Z"
 
-# The teeth probe's own redos timeout: a tenth of DEFAULT_TIMEOUT, so the guard
-# must stop the exponential pattern within 0.5 s of CPU. redos's timeout counts
-# CPU time, which a starved runner stretches in wall time (the default firing is
-# pinned in test_redos_chokepoint_safety).
+# The teeth probe's redos timeout, a tenth of DEFAULT_TIMEOUT: the guard must stop
+# the exponential pattern within 0.5 s of CPU (a starved runner stretches CPU time
+# in wall time; the default firing is pinned in test_redos_chokepoint_safety).
 _TEETH_TIMEOUT = 0.5
 
 
