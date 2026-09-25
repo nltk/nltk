@@ -11,13 +11,13 @@ Bugs fixed:
 
 All four functions now return 0.0 for degenerate inputs instead of crashing.
 """
+
 import pytest
 
 from nltk.translate.chrf_score import corpus_chrf
 from nltk.translate.ribes_score import corpus_ribes, sentence_ribes
 
-
-# ── corpus_chrf ────────────────────────────────────────────────────────────────
+# corpus_chrf
 
 
 def test_corpus_chrf_empty_corpus_returns_zero():
@@ -39,7 +39,7 @@ def test_corpus_chrf_identical_sentences_returns_one():
     assert result == pytest.approx(1.0)
 
 
-# ── sentence_ribes ─────────────────────────────────────────────────────────────
+# sentence_ribes
 
 
 def test_sentence_ribes_empty_hypothesis_returns_zero():
@@ -54,7 +54,7 @@ def test_sentence_ribes_identical_returns_one():
     assert result == pytest.approx(1.0)
 
 
-# ── corpus_ribes ───────────────────────────────────────────────────────────────
+# corpus_ribes
 
 
 def test_corpus_ribes_empty_corpus_returns_zero():
