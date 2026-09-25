@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """BLEU score implementation."""
+import inspect
 import math
 import sys
 import warnings
@@ -264,9 +265,23 @@ def corpus_bleu(
     # Note: smoothing_function() may convert values into floats;
     #       it tries to retain the Fraction object as much as the
     #       smoothing method allows.
-    p_n = smoothing_function(
-        p_n, references=references, hypothesis=hypothesis, hyp_len=hyp_lengths
-    )
+    # The smoothing methods that count ngrams need the whole corpus and not
+    # only the last pair of the loop above, so they also receive
+    # *list_of_references* and *hypotheses*. Each of these keyword arguments
+    # is only passed to a smoothing function that accepts it, so smoothing
+    # functions with the old signature are called as before.
+    smoothing_kwargs = {
+        "references": references,
+        "hypothesis": hypothesis,
+        "hyp_len": hyp_lengths,
+    }
+    for name, value in (
+        ("list_of_references", list_of_references),
+        ("hypotheses", hypotheses),
+    ):
+        if _accepts_keyword_argument(smoothing_function, name):
+            smoothing_kwargs[name] = value
+    p_n = smoothing_function(p_n, **smoothing_kwargs)
 
     bleu_scores = []
     for weight in weights:
@@ -393,6 +408,37 @@ def modified_precision(references, hypothesis, n):
     return Fraction(numerator, denominator, _normalize=False)
 
 
+def _accepts_keyword_argument(function, name):
+    """
+    Check whether *function* can be called with the keyword argument *name*.
+    """
+    try:
+        parameters = inspect.signature(function).parameters
+    except (TypeError, ValueError):
+        return False
+    if name in parameters:
+        return parameters[name].kind != inspect.Parameter.POSITIONAL_ONLY
+    return any(
+        parameter.kind == inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters.values()
+    )
+
+
+def _corpus_modified_precision(list_of_references, hypotheses, n):
+    """
+    Calculate the corpus-level modified ngram precision, i.e. the sum of the
+    clipped ngram counts divided by the sum of the hypothesis ngram counts over
+    all the hypothesis-reference(s) pairs. This is the same micro-average that
+    ``corpus_bleu`` computes for the ngram orders it scores.
+    """
+    numerator, denominator = 0, 0
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        p_i = modified_precision(references, hypothesis, n)
+        numerator += p_i.numerator
+        denominator += p_i.denominator
+    return Fraction(numerator, denominator, _normalize=False)
+
+
 def closest_ref_length(references, hyp_len):
     """
     This function finds the reference that is the closest length to the
@@ -512,6 +558,10 @@ class SmoothingFunction:
     Boxing Chen and Collin Cherry (2014) A Systematic Comparison of
     Smoothing Techniques for Sentence-Level BLEU. In WMT14.
     http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
+
+    ``corpus_bleu`` applies the methods to the corpus-level precisions, so the
+    methods that count ngrams, 5 and 6, count them over all the hypotheses of
+    the corpus.
     """
 
     def __init__(self, epsilon=0.1, alpha=5, k=5):
@@ -557,6 +607,20 @@ class SmoothingFunction:
         self.epsilon = epsilon
         self.alpha = alpha
         self.k = k
+
+    @staticmethod
+    def _corpus(references, hypothesis, kwargs):
+        """
+        Return the list of references and the list of hypotheses that a
+        smoothing method counts ngrams over. ``corpus_bleu`` passes them as the
+        *list_of_references* and *hypotheses* keyword arguments. A direct call
+        with a single *references* and *hypothesis* pair is a corpus of one.
+        """
+        list_of_references = kwargs.get("list_of_references")
+        hypotheses = kwargs.get("hypotheses")
+        if list_of_references is None or hypotheses is None:
+            return [references], [hypothesis]
+        return list_of_references, hypotheses
 
     def method0(self, p_n, *args, **kwargs):
         """
@@ -667,9 +731,13 @@ class SmoothingFunction:
         matched counts.
         """
         hyp_len = hyp_len if hyp_len else len(hypothesis)
+        list_of_references, hypotheses = self._corpus(references, hypothesis, kwargs)
         m = {}
-        # Requires an precision value for an addition ngram order.
-        p_n_plus1 = p_n + [modified_precision(references, hypothesis, 5)]
+        # Requires a precision value for one more ngram order. Like the other
+        # orders it is computed over the whole corpus.
+        p_n_plus1 = p_n + [
+            _corpus_modified_precision(list_of_references, hypotheses, len(p_n) + 1)
+        ]
         m[-1] = p_n[0] + 1
         for i, p_i in enumerate(p_n):
             p_n[i] = (m[i - 1] + p_i + p_n_plus1[i + 1]) / 3
@@ -686,6 +754,7 @@ class SmoothingFunction:
         Gradient Ascent. In NAACL.
         """
         hyp_len = hyp_len if hyp_len else len(hypothesis)
+        list_of_references, hypotheses = self._corpus(references, hypothesis, kwargs)
         # This smoothing only works when p_1 and p_2 is non-zero.
         # Raise an error with an appropriate message when the input is too short
         # to use this smoothing technique.
@@ -697,8 +766,8 @@ class SmoothingFunction:
                 pi0 = 0 if p_n[i - 2] == 0 else p_n[i - 1] ** 2 / p_n[i - 2]
                 # No. of ngrams in translation that matches the reference.
                 m = p_i.numerator
-                # No. of ngrams in translation.
-                l = sum(1 for _ in ngrams(hypothesis, i + 1))
+                # No. of ngrams in the translations of the whole corpus.
+                l = sum(1 for hyp in hypotheses for _ in ngrams(hyp, i + 1))
                 # Calculates the interpolated precision.
                 p_n[i] = (m + self.alpha * pi0) / (l + self.alpha)
         return p_n
@@ -709,6 +778,6 @@ class SmoothingFunction:
         Interpolates methods 4 and 5.
         """
         hyp_len = hyp_len if hyp_len else len(hypothesis)
-        p_n = self.method4(p_n, references, hypothesis, hyp_len)
-        p_n = self.method5(p_n, references, hypothesis, hyp_len)
+        p_n = self.method4(p_n, references, hypothesis, hyp_len, *args, **kwargs)
+        p_n = self.method5(p_n, references, hypothesis, hyp_len, *args, **kwargs)
         return p_n
