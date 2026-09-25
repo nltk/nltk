@@ -136,6 +136,12 @@ def test_xmlcorpusview_does_not_hang_on_crafted_file(tmp_path):
 # test recompiles it so the guard is proven to catch a real regression.
 _PRE_FIX_SPANNING_COMMENT_RE = r"[^<]*((<!--.*?-->)[^<]*)*\Z"
 
+# The teeth probe's own redos timeout: a tenth of DEFAULT_TIMEOUT, so the guard
+# must stop the exponential pattern within 0.5 s of CPU. redos's timeout counts
+# CPU time, which a starved runner stretches in wall time (the default firing is
+# pinned in test_redos_chokepoint_safety).
+_TEETH_TIMEOUT = 0.5
+
 
 def _pre_fix_worker(result_q):
     import re
@@ -143,7 +149,11 @@ def _pre_fix_worker(result_q):
     from nltk import redos
 
     try:
-        old = redos.compile(_PRE_FIX_SPANNING_COMMENT_RE, flags=re.DOTALL | re.VERBOSE)
+        old = redos.compile(
+            _PRE_FIX_SPANNING_COMMENT_RE,
+            flags=re.DOTALL | re.VERBOSE,
+            timeout=_TEETH_TIMEOUT,
+        )
         start = time.perf_counter()
         old.match(_PAYLOADS["comment"])
         result_q.put(("ok", None, time.perf_counter() - start))
@@ -158,9 +168,85 @@ def test_pre_fix_spanning_comment_trips_the_guard():
     broken timeout cannot hang the suite."""
     finished, status, value, op_elapsed = _run_in_process(_pre_fix_worker)
     assert finished, "the pre-fix pattern hung (redos timeout did not fire)"
-    caught = status == "error" or (
+    # only the guard's own TimeoutError counts: any other worker error (an import
+    # failure, a typo) would otherwise pass as "caught"
+    caught = (status == "error" and "TimeoutError" in value) or (
         op_elapsed is not None and op_elapsed >= _MATCH_CEILING
     )
     assert (
         caught
     ), f"guard missed the exponential pre-fix pattern: {status} {op_elapsed}"
+
+
+# The pre-fix regex (#3646) in full: every alternative, not only the comment one.
+_PRE_FIX_VALID_XML_RE = r"""
+        [^<]*
+        (
+          ((<!--.*?-->)                         |  # comment
+           (<![CDATA[.*?]])                     |  # raw character data
+           (<!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>) |  # doctype decl
+           (<[^!>][^>]*>))                         # tag or PI
+          [^<]*)*
+        \Z"""
+
+_FUZZ_UNITS = [
+    "<!DOCTYPE d>",
+    "<!DOCTYPE d >",
+    "<!DOCTYPE d[x]>",
+    "<!DOCTYPE >",
+    "<!DOCTYPE d><a>",
+    "<![CDATA[x]]>",
+    "<!C>",
+    "<![x]]>",
+    "<!Cx>",
+    "<![CDATA[x]]><a>",
+    "<!D>",
+    "<a>",
+    "<a b='c'>",
+    "<?pi?>",
+]
+_FUZZ_TAILS = ["", "<", "<!", "<!DOCTYPE ", "<!DOCTYPE a", "<![CDATA[", "<![CDATA[a"]
+_FUZZ_TAILS += ["<!-", "x<", "<a", "<!D", "<!C"]
+
+
+def test_doctype_cdata_and_tag_families_stay_linear():
+    """Every doctype / CDATA / tag unit repeated 40 times before each unterminated
+    tail (168 inputs). None was exponential even under the pre-fix regex, and the
+    current one must keep each inside the CPU ceiling: it runs under redos's own
+    timeout in-process, so an exponential regression raises instead of hanging."""
+    import itertools
+
+    slow = []
+    for unit, tail in itertools.product(_FUZZ_UNITS, _FUZZ_TAILS):
+        text = unit * 40 + tail + "a" * 5
+        start = time.process_time()
+        XMLCorpusView._VALID_XML_RE.match(text)
+        if time.process_time() - start >= _MATCH_CEILING:
+            slow.append((unit, tail))
+    assert not slow, f"_VALID_XML_RE is super-linear on: {slow[:5]}"
+
+
+def _pre_fix_full_worker(result_q, name):
+    import re
+
+    from nltk import redos
+
+    try:
+        old = redos.compile(
+            _PRE_FIX_VALID_XML_RE, flags=re.DOTALL | re.VERBOSE, timeout=_TEETH_TIMEOUT
+        )
+        start = time.perf_counter()
+        old.match(_PAYLOADS[name])
+        result_q.put(("ok", None, time.perf_counter() - start))
+    except BaseException as exc:
+        result_q.put(("error", repr(exc), None))
+
+
+def test_full_pre_fix_regex_trips_the_guard_on_the_comment_payload():
+    """Teeth on the whole pre-fix regex, not just its comment alternative: the
+    comment payload must still be caught by the guard's TimeoutError."""
+    finished, status, value, op_elapsed = _run_in_process(
+        _pre_fix_full_worker, ("comment",)
+    )
+    assert finished, "the full pre-fix regex hung (redos timeout did not fire)"
+    assert status == "error" and "TimeoutError" in value, (status, value, op_elapsed)
