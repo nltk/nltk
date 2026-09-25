@@ -1,15 +1,8 @@
 """
-Regression tests for ZeroDivisionError in NLTK translate metrics
-when called with empty sequences.
+Regression tests for empty-input handling in NLTK translation metrics.
 
-Bugs fixed:
-  1. corpus_chrf([], [])                    -> ZeroDivisionError (num_sents == 0)
-  2. corpus_chrf(refs, hyps, min_len=N, max_len=M) where N > M
-                                            -> ZeroDivisionError (num_ngram_sizes == 0)
-  3. sentence_ribes(refs, [])               -> ZeroDivisionError (len(hypothesis) == 0)
-  4. corpus_ribes([], [])                   -> ZeroDivisionError (len(hypotheses) == 0)
-
-All four functions now return 0.0 for degenerate inputs instead of crashing.
+The score functions return 0.0 for empty corpora or hypotheses. Invalid CHRF
+n-gram ranges raise ValueError instead of causing ZeroDivisionError.
 """
 
 import pytest
@@ -25,11 +18,14 @@ def test_corpus_chrf_empty_corpus_returns_zero():
     assert corpus_chrf([], []) == 0.0
 
 
-def test_corpus_chrf_min_len_greater_than_max_len_returns_zero():
-    """corpus_chrf with min_len > max_len produces no n-gram orders; must not crash."""
+def test_corpus_chrf_min_len_greater_than_max_len_raises_value_error():
+    """An invalid n-gram range should raise a clear error, not ZeroDivisionError."""
     ref = ["hello", "world"]
     hyp = ["hello", "world"]
-    assert corpus_chrf([ref], [hyp], min_len=4, max_len=3) == 0.0
+    with pytest.raises(
+        ValueError, match="min_len must be less than or equal to max_len"
+    ):
+        corpus_chrf([ref], [hyp], min_len=4, max_len=3)
 
 
 def test_corpus_chrf_identical_sentences_returns_one():

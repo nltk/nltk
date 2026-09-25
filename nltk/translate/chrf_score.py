@@ -191,6 +191,9 @@ def corpus_chrf(
     assert len(references) == len(
         hypotheses
     ), "The number of hypotheses and their references should be the same"
+    if min_len > max_len:
+        raise ValueError("min_len must be less than or equal to max_len")
+
     num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate
