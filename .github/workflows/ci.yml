@@ -44,7 +44,8 @@ jobs:
             code:
               - '**/*.py'
               - 'requirements*.txt'
-              - 'setup.py'
+              - 'pyproject.toml'
+              - 'MANIFEST.in'
               - '.github/workflows/**'
               - 'tools/github_actions/**'
 
