@@ -67,7 +67,7 @@ def test_the_secret_is_not_readable_through_any_root(outside_secret):
     [
         "/etc/passwd",
         os.path.join(str(_PACKAGE), "..", "..", "etc", "passwd"),
-        os.path.join(str(_PACKAGE), "..", "setup.py"),
+        os.path.join(str(_PACKAGE), "..", "pyproject.toml"),
     ],
     ids=["absolute", "traversal", "parent-file"],
 )

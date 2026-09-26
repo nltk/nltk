@@ -283,7 +283,7 @@ tox -e py313  # for Python 3.13
 ## Supported Python Versions
 
 NLTK supports Python `3.10`, `3.11`, `3.12`, `3.13`, and `3.14`.
-See `python_requires` in [setup.py](https://github.com/nltk/nltk/blob/develop/setup.py).
+See `requires-python` in [pyproject.toml](https://github.com/nltk/nltk/blob/develop/pyproject.toml).
 
 
 # Discussion

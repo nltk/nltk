@@ -21,7 +21,7 @@ Building an NLTK distribution
    - Update version number
      edit nltk/VERSION and web/conf.py (version and release)
    - Check web/install.rst mentions latest version of Python
-   - Check setup.py lists correct range of Python versions
+   - Check pyproject.toml lists the correct range of Python versions
    - Add a new entry to the news page in nltk/web/news.rst
    - Update the ChangeLog (for nltk, nltk_data)
      git log "$(git describe --tags --abbrev=0)..HEAD" --oneline
@@ -33,7 +33,7 @@ Building an NLTK distribution
      check web/conf.py copyright line
    - Check that installation instructions are up-to-date
      (including the range of Python versions that are supported)
-     edit web/install.rst setup.py
+     edit web/install.rst pyproject.toml
    - Ensure that nltk_theme is installed and updated
      pip install -U nltk_theme
    - Rebuild the API docs

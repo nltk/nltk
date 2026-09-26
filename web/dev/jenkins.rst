@@ -21,7 +21,7 @@ Base tasks
 The base tasks of the c-i instance is as follows:
 
 * Check out the NLTK project when VCS changes occur
-* Build the project using setup.py
+* Build the project using ``python -m build``
 * Run our test suite
 * Make packages for all platforms
 * Build these web pages
@@ -56,8 +56,8 @@ To build the project, the following tasks are run:
   A VERSION file is created using
   ``git describe --tags --match '*.*.*' > nltk/VERSION``.
   This makes the most recent VCS tag available in nltk.__version__ etc.
-2. ``python setup.py build``
-  This essentially copies the files that are required to run NLTK into build/
+2. ``python -m build``
+  This creates a source distribution and wheel in dist/.
 
 
 The test suite

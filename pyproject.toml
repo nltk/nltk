@@ -1,0 +1,118 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nltk"
+description = "Natural Language Toolkit"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE.txt", "AUTHORS.md", "README.md"]
+authors = [{ name = "NLTK Team", email = "nltk.team@gmail.com" }]
+maintainers = [{ name = "NLTK Team", email = "nltk.team@gmail.com" }]
+keywords = [
+    "NLP",
+    "CL",
+    "natural language processing",
+    "computational linguistics",
+    "parsing",
+    "tagging",
+    "tokenizing",
+    "syntax",
+    "linguistics",
+    "language",
+    "natural language",
+    "text analytics",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Filters",
+    "Topic :: Text Processing :: General",
+    "Topic :: Text Processing :: Indexing",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "defusedxml",
+    "click",
+    "joblib",
+    "regex>=2021.8.3",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+machine_learning = ["numpy", "python-crfsuite", "scikit-learn", "scipy"]
+plot = ["matplotlib"]
+tgrep = ["pyparsing"]
+twitter = ["twython"]
+corenlp = ["requests"]
+all = [
+    "numpy",
+    "python-crfsuite",
+    "scikit-learn",
+    "scipy",
+    "matplotlib",
+    "pyparsing",
+    "twython",
+    "requests",
+]
+
+[project.scripts]
+nltk = "nltk.cli:cli"
+
+[project.urls]
+Homepage = "https://www.nltk.org/"
+Documentation = "https://www.nltk.org/"
+"Source Code" = "https://github.com/nltk/nltk"
+"Issue Tracker" = "https://github.com/nltk/nltk/issues"
+
+[tool.setuptools]
+include-package-data = false
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+namespaces = false
+
+[tool.setuptools.package-data]
+nltk = ["test/*.doctest", "VERSION"]
+
+[tool.setuptools.dynamic]
+version = { file = "nltk/VERSION" }
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+# Default rules (E, F) with project-specific ignores.
+ignore = [
+    "E402",   # module-level import not at top (NLTK uses conditional/lazy imports)
+    "E721",   # type comparison using == (some intentional in NLTK)
+    "E731",   # lambda assignment (pervasive in NLTK, safe to keep)
+    "E741",   # ambiguous variable name (l, I, O are common in NLP code)
+    "F401",   # unused import (many intentional re-exports and interactive imports)
+    "F403",   # star import used (NLTK __init__.py pattern)
+    "F405",   # name may be undefined from star import (consequence of F403)
+    "F821",   # undefined name (pre-existing issues in legacy code)
+    "F841",   # local variable assigned but never used (many intentional)
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Test files may have additional patterns
+"nltk/test/**" = ["F811"]

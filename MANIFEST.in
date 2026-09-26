@@ -1,7 +1,7 @@
 include *.md
 include *.txt
 include *.ini
-include setup.*
+include pyproject.toml
 include ChangeLog
 include Makefile
 include MANIFEST.in
