@@ -221,7 +221,13 @@ class TestSanitiserSourcesAreTrojanSourceClean:
 
 # The attack payloads this branch added (kept alongside develop's suite; bidi
 # characters spelled with chr() so no literal control character sits in the source).
-RLO, LRO, RLE, LRE, PDF = chr(0x202E), chr(0x202D), chr(0x202B), chr(0x202A), chr(0x202C)
+RLO, LRO, RLE, LRE, PDF = (
+    chr(0x202E),
+    chr(0x202D),
+    chr(0x202B),
+    chr(0x202A),
+    chr(0x202C),
+)
 RLI, LRI, PDI, RLM = chr(0x2067), chr(0x2066), chr(0x2069), chr(0x200F)
 
 
@@ -245,7 +251,6 @@ class TestTrojanSourceNeutralised:
             assert ch not in out
         # the escaped form is present for whatever was neutralised
         assert "\\u20" in out or "\\u2066" in out or "\\u2069" in out
-
 
 
 def test_control_sequences_still_neutralised():

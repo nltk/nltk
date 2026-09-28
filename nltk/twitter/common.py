@@ -13,9 +13,9 @@ the `twython` library to have been installed.
 import csv
 import gzip
 
+from nltk.csvsec import sanitize_csv_field
 from nltk.internals import deprecated
 from nltk.jsontags import safe_json_loads
-from nltk.csvsec import sanitize_csv_field
 
 HIER_SEPARATOR = "."
 
