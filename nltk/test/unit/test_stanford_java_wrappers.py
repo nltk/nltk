@@ -8,10 +8,22 @@ import nltk.internals
 from nltk.internals import UntrustedJarError, _verify_jar_sandbox, java
 
 
-def test_java_call_options_do_not_mutate_global_java_options(tmp_path):
+def _launched(captured_cmd, trusted_java_stub):
+    """The argv java() handed to Popen: argv[0] must be the trusted stub (a bare
+    "java" is refused before Popen), the rest is what the test compares."""
+    cmd = captured_cmd[0]
+    assert os.path.realpath(cmd[0]) == os.path.realpath(trusted_java_stub)
+    return cmd[1:]
+
+
+def test_java_call_options_do_not_mutate_global_java_options(
+    tmp_path, trusted_java_stub
+):
     with mock.patch.dict(os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}), mock.patch(
         "nltk.data.path", [str(tmp_path)]
-    ), mock.patch.object(nltk.internals, "_java_bin", ["java"]), mock.patch.object(
+    ), mock.patch.object(
+        nltk.internals, "_java_bin", trusted_java_stub
+    ), mock.patch.object(
         nltk.internals, "_java_options", ["-Xmx111m"]
     ):
 
@@ -33,8 +45,8 @@ def test_java_call_options_do_not_mutate_global_java_options(tmp_path):
                 options="-Xmx222m -verbose:gc",
             )
 
-        expected = ["java", "-Xmx222m", "-verbose:gc", "-cp", "example.jar", "Main"]
-        assert captured_cmd[0] == expected
+        expected = ["-Xmx222m", "-verbose:gc", "-cp", "example.jar", "Main"]
+        assert _launched(captured_cmd, trusted_java_stub) == expected
         assert nltk.internals._java_options == ["-Xmx111m"]
 
 
@@ -107,14 +119,14 @@ def test_cwe94_jar_sandbox_escape_hatch_must_be_exact_one():
             _verify_jar_sandbox("/tmp/evil.jar")
 
 
-def test_java_classpath_sandbox_integration(tmp_path):
+def test_java_classpath_sandbox_integration(tmp_path, trusted_java_stub):
     data_dir = tmp_path / "nltk_data"
     data_dir.mkdir()
     safe_jar = data_dir / "safe.jar"
     safe_jar.touch()
     with mock.patch("nltk.data.path", [str(data_dir)]), mock.patch.object(
-        nltk.internals, "_java_bin", ["java"]
-    ):
+        nltk.internals, "_java_bin", trusted_java_stub
+    ), mock.patch.object(nltk.internals, "_java_options", []):
 
         captured_cmd = []
 
@@ -128,14 +140,18 @@ def test_java_classpath_sandbox_integration(tmp_path):
         with mock.patch.object(subprocess, "Popen", side_effect=fake_popen):
             java(["Main"], classpath=str(safe_jar))
 
-        expected = ["java", "-cp", str(safe_jar), "Main"]
-        assert captured_cmd[0] == expected
+        expected = ["-cp", str(safe_jar), "Main"]
+        assert _launched(captured_cmd, trusted_java_stub) == expected
 
 
-def test_java_classpath_with_relative_path_and_escape_hatch():
+def test_java_classpath_with_relative_path_and_escape_hatch(trusted_java_stub):
     with mock.patch.dict(
         os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}
-    ), mock.patch.object(nltk.internals, "_java_bin", ["java"]):
+    ), mock.patch.object(
+        nltk.internals, "_java_bin", trusted_java_stub
+    ), mock.patch.object(
+        nltk.internals, "_java_options", []
+    ):
 
         captured_cmd = []
 
@@ -149,8 +165,8 @@ def test_java_classpath_with_relative_path_and_escape_hatch():
         with mock.patch.object(subprocess, "Popen", side_effect=fake_popen):
             java(["Main"], classpath="relative.jar")
 
-        expected = ["java", "-cp", "relative.jar", "Main"]
-        assert captured_cmd[0] == expected
+        expected = ["-cp", "relative.jar", "Main"]
+        assert _launched(captured_cmd, trusted_java_stub) == expected
 
 
 def test_java_command_string_raises_type_error():

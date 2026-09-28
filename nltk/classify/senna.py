@@ -41,6 +41,7 @@ from os import environ, path, sep
 from platform import architecture, system
 from subprocess import PIPE
 
+from nltk.internals import absolute_tool_dir
 from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.tag.api import TaggerI
 
@@ -55,16 +56,15 @@ class Senna(TaggerI):
         # make executable() a separator path Popen runs from the CWD without $PATH,
         # executing a planted senna-<platform> file (CWE-426/CWE-427). Else use SENNA.
         self._path = None
-        if path.isabs(senna_path):
-            self._path = path.normpath(senna_path) + sep
-
+        if senna_path is not None:
+            self._path = self._tool_dir(senna_path)
         # If the explicit (absolute) senna_path does not contain the executable,
         # fall back to the SENNA environment variable, which must also be
         # absolute for the same reason.
         if self._path is None or not path.isfile(self.executable(self._path)):
             senna_env = environ.get("SENNA")
-            if senna_env and path.isabs(senna_env):
-                self._path = path.normpath(senna_env) + sep
+            if senna_env:
+                self._path = self._tool_dir(senna_env)
 
         # The executable must exist at this point; fail fast so construction is
         # consistent (the path is verified here, not deferred to tag_sents()).
@@ -76,6 +76,15 @@ class Senna(TaggerI):
             )
 
         self.operations = operations
+
+    @staticmethod
+    def _tool_dir(location):
+        # absolute, no '..', no NUL, copied to a plain str: anything else is not
+        # a SENNA directory and falls through to the next source
+        try:
+            return absolute_tool_dir(location, "SENNA") + sep
+        except LookupError:
+            return None
 
     def executable(self, base_path):
         """
