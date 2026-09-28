@@ -97,7 +97,7 @@ def atk_root(monkeypatch):
 
 
 @pytest.fixture
-def java_spy(monkeypatch):
+def java_spy(monkeypatch, trusted_java_stub):
     """Replace ``subprocess.Popen`` with a spy that records every argv (and the
     child ``env``) and never launches a real process. A blocked exploit must
     leave the recorded call list empty, proving the injected token never reached
@@ -114,7 +114,7 @@ def java_spy(monkeypatch):
         calls.append(SimpleNamespace(argv=list(cmd), env=k.get("env")))
         return _FakeProc()
 
-    monkeypatch.setattr(internals, "_java_bin", "java")
+    monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
     monkeypatch.setattr(internals, "_java_options", [])
     monkeypatch.setattr(subprocess, "Popen", _fake_popen)
     monkeypatch.setattr(internals.subprocess, "Popen", _fake_popen)
@@ -337,7 +337,7 @@ class TestClasspathShadowing:
         internals.java(["Main"], classpath=[a, b])
         assert len(java_spy) == 1
         argv = java_spy[0].argv
-        assert argv[0] == "java" and "-cp" in argv and "Main" in argv
+        assert os.path.realpath(argv[0]) == os.path.realpath(internals._java_bin) and "-cp" in argv and "Main" in argv
         cp_value = argv[argv.index("-cp") + 1]
         assert cp_value == os.pathsep.join([a, b])
         assert "" not in cp_value.split(os.pathsep)

@@ -122,3 +122,18 @@ def pathsec_sandbox(monkeypatch):
         os.chdir(saved_cwd)
         shutil.rmtree(outside, ignore_errors=True)
         shutil.rmtree(data_root, ignore_errors=True)
+
+
+@pytest.fixture
+def trusted_java_stub():
+    """A stub 'java' under $HOME, a private directory chain on every CI runner
+    (a shared temp dir is not), so the trusted spawn accepts it as the JVM and a
+    Popen spy can see what java() would have launched."""
+    root = pathlib.Path(tempfile.mkdtemp(prefix=".nltk_java_stub_", dir=pathlib.Path.home()))
+    stub = root / ("java.exe" if os.name == "nt" else "java")
+    stub.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    stub.chmod(0o755)
+    try:
+        yield str(stub)
+    finally:
+        shutil.rmtree(root, ignore_errors=True)

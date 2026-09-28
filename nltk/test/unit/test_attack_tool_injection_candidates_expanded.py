@@ -88,7 +88,7 @@ class _FakeProc:
 
 
 @pytest.fixture
-def spy(monkeypatch):
+def spy(monkeypatch, trusted_java_stub):
     """Record every ``subprocess.Popen`` argv without launching a process. A
     refused exploit leaves the list empty; an escape-hatch API leaves the injected
     token as a single literal argv element (no shell splitting)."""
@@ -102,7 +102,7 @@ def spy(monkeypatch):
     # senna now spawns via ``pathsec.spawn_trusted`` (which calls subprocess.Popen
     # on that same module), so this one patch covers it too.
     monkeypatch.setattr(subprocess, "Popen", _fake_popen)
-    monkeypatch.setattr(internals, "_java_bin", "java")
+    monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
     monkeypatch.setattr(internals, "_java_options", [])
     return calls
 
@@ -390,7 +390,7 @@ class TestCoreNLPChokepoint:
         )
         assert len(spy) == 1 and spy[0].shell is False
         argv = spy[0].argv
-        assert argv[0] == "java" and "-cp" in argv and _CORENLP_MAIN in argv
+        assert os.path.realpath(argv[0]) == os.path.realpath(internals._java_bin) and "-cp" in argv and _CORENLP_MAIN in argv
         assert "-mx2g" in argv and argv.index("-mx2g") < argv.index(_CORENLP_MAIN)
         cp = argv[argv.index("-cp") + 1]
         assert cp == os.pathsep.join([code, models])
