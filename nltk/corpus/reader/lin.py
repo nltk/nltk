@@ -11,6 +11,7 @@ from functools import reduce
 from nltk import redos
 from nltk.corpus.reader import CorpusReader
 from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
 
 
 class LinThesaurusCorpusReader(CorpusReader):
@@ -172,20 +173,20 @@ def demo():
 
     word1 = "business"
     word2 = "enterprise"
-    print("Getting synonyms for " + word1)
-    print(thes.synonyms(word1))
+    safe_print("Getting synonyms for " + word1)
+    safe_print(thes.synonyms(word1))
 
-    print("Getting scored synonyms for " + word1)
-    print(thes.scored_synonyms(word1))
+    safe_print("Getting scored synonyms for " + word1)
+    safe_print(thes.scored_synonyms(word1))
 
-    print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
-    print(thes.synonyms(word1, fileid="simN.lsp"))
+    safe_print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
+    safe_print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
-    print(thes.synonyms(word1, fileid="simN.lsp"))
+    safe_print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
+    safe_print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print(f"Similarity score for {word1} and {word2}:")
-    print(thes.similarity(word1, word2))
+    safe_print(f"Similarity score for {word1} and {word2}:")
+    safe_print(thes.similarity(word1, word2))
 
 
 if __name__ == "__main__":

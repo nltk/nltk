@@ -231,6 +231,7 @@ except ImportError:
 
 from nltk import grammar, sem
 from nltk.internals import deprecated
+from nltk.termsec import safe_print
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
@@ -1363,7 +1364,7 @@ def retrieve(resource_url, filename=None, verbose=True):
         raise ValueError("File %r already exists!" % filename)
 
     if verbose:
-        print(f"Retrieving {resource_url!r}, saving to {filename!r}")
+        safe_print(f"Retrieving {resource_url!r}, saving to {filename!r}")
 
     # Open the input & output streams.
     infile = _open(resource_url)
@@ -1577,14 +1578,14 @@ def load(
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                print(f"<<Using cached copy of resource (format={format})>>")
+                safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
 
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
         if verbose:
-            print("<<Loading pickle-free alternative>>")
+            safe_print("<<Loading pickle-free alternative>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
@@ -1597,7 +1598,7 @@ def load(
 
     # Let the user know what's going on.
     if verbose:
-        print("<<Loading resource>>")
+        safe_print("<<Loading resource>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
@@ -1700,7 +1701,7 @@ def show_cfg(resource_url, escape="##"):
             continue
         if redos.match("^$", l):
             continue
-        print(l)
+        safe_print(l)
 
 
 def clear_cache():

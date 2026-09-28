@@ -29,6 +29,7 @@ from nltk.sem.logic import (
     NegatedExpression,
     OrExpression,
 )
+from nltk.termsec import safe_print
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
@@ -60,10 +61,10 @@ class Prover9CommandParent:
         """
         if output_format.lower() == "nltk":
             for a in self.assumptions():
-                print(a)
+                safe_print(a)
         elif output_format.lower() == "prover9":
             for a in convert_to_prover9(self.assumptions()):
-                print(a)
+                safe_print(a)
         else:
             raise NameError(
                 "Unrecognized value for 'output_format': %s" % output_format
@@ -201,9 +202,9 @@ class Prover9Parent:
         :see: ``config_prover9``
         """
         if verbose:
-            print("Calling:", binary)
-            print("Args:", args)
-            print("Input:\n", input_str, "\n")
+            safe_print("Calling:", binary)
+            safe_print("Args:", args)
+            safe_print("Input:\n", input_str, "\n")
 
         # Route through the trusted-exec chokepoint: verify the prover9/mace binary
         # is on a path no other local user can swap, refuse a shell, and scrub the
@@ -229,11 +230,11 @@ class Prover9Parent:
         (stdout, stderr) = p.communicate(input=input_str)
 
         if verbose:
-            print("Return code:", p.returncode)
+            safe_print("Return code:", p.returncode)
             if stdout:
-                print("stdout:\n", stdout, "\n")
+                safe_print("stdout:\n", stdout, "\n")
             if stderr:
-                print("stderr:\n", stderr, "\n")
+                safe_print("stderr:\n", stderr, "\n")
 
         return (stdout.decode("utf-8"), p.returncode)
 
@@ -289,14 +290,16 @@ def convert_to_prover9(input):
             try:
                 result.append(_convert_to_prover9(s.simplify()))
             except Exception:
-                print("input %s cannot be converted to Prover9 input syntax" % input)
+                safe_print(
+                    "input %s cannot be converted to Prover9 input syntax" % input
+                )
                 raise
         return result
     else:
         try:
             return _convert_to_prover9(input.simplify())
         except Exception:
-            print("input %s cannot be converted to Prover9 input syntax" % input)
+            safe_print("input %s cannot be converted to Prover9 input syntax" % input)
             raise
 
 
@@ -476,8 +479,8 @@ def test_config():
     p.prover9_search = []
     p.prove()
     # config_prover9('/usr/local/bin')
-    print(p.prove())
-    print(p.proof())
+    safe_print(p.prove())
+    safe_print(p.proof())
 
 
 def test_convert_to_prover9(expr):
@@ -486,7 +489,7 @@ def test_convert_to_prover9(expr):
     """
     for t in expr:
         e = Expression.fromstring(t)
-        print(convert_to_prover9(e))
+        safe_print(convert_to_prover9(e))
 
 
 def test_prove(arguments):
@@ -498,8 +501,8 @@ def test_prove(arguments):
         alist = [Expression.fromstring(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
-            print("   %s" % a)
-        print(f"|- {g}: {p}\n")
+            safe_print("   %s" % a)
+        safe_print(f"|- {g}: {p}\n")
 
 
 arguments = [
@@ -547,19 +550,19 @@ expressions = [
 
 
 def spacer(num=45):
-    print("-" * num)
+    safe_print("-" * num)
 
 
 def demo():
-    print("Testing configuration")
+    safe_print("Testing configuration")
     spacer()
     test_config()
-    print()
-    print("Testing conversion to Prover9 format")
+    safe_print()
+    safe_print("Testing conversion to Prover9 format")
     spacer()
     test_convert_to_prover9(expressions)
-    print()
-    print("Testing proofs")
+    safe_print()
+    safe_print("Testing proofs")
     spacer()
     test_prove(arguments)
 

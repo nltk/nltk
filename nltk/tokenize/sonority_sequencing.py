@@ -36,6 +36,7 @@ import warnings
 from string import punctuation
 
 from nltk import redos
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize.api import TokenizerI
 from nltk.util import ngrams
 
@@ -108,7 +109,7 @@ class SyllableTokenizer(TokenizerI):
                 if c not in "0123456789" and c not in punctuation:
                     warnings.warn(
                         "Character not defined in sonority_hierarchy,"
-                        " assigning as vowel: '{}'".format(c)
+                        " assigning as vowel: '{}'".format(sanitize_terminal(c))
                     )
                     syllables_values.append((c, max(self.phoneme_map.values())))
                     # Remember the char as a vowel, but stop growing the set past

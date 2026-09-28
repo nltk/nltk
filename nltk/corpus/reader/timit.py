@@ -124,6 +124,7 @@ import time
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.internals import import_from_stdlib
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 
@@ -447,14 +448,14 @@ class TimitCorpusReader(CorpusReader):
                 dsp.write(self.audiodata(utterance, start, end))
                 dsp.close()
             except OSError as e:
-                print(
+                safe_print(
                     (
                         "can't acquire the audio device; please "
                         "activate your audio device."
                     ),
                     file=sys.stderr,
                 )
-                print("system error message:", str(e), file=sys.stderr)
+                safe_print("system error message:", str(e), file=sys.stderr)
             return
         except ImportError:
             pass
@@ -475,7 +476,7 @@ class TimitCorpusReader(CorpusReader):
             pass
 
         # Method 3: complain. :)
-        print(
+        safe_print(
             ("you must install pygame or ossaudiodev " "for audio playback."),
             file=sys.stderr,
         )
