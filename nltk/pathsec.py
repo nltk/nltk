@@ -690,9 +690,12 @@ def _as_path_text(value, context, error=ValueError):
         ) from exc
     if isinstance(text, bytes):
         # A bytes path is a legal spelling on POSIX, so decode it rather than
-        # refusing; every check below then runs on the decoded characters.
+        # refusing. os.fsdecode would call the value's own decode(), which a bytes
+        # subclass can override; the unbound bytes.decode reads the real bytes.
         try:
-            text = os.fsdecode(text)
+            text = bytes.decode(
+                text, sys.getfilesystemencoding(), sys.getfilesystemencodeerrors()
+            )
         except (UnicodeDecodeError, ValueError) as exc:
             raise error(
                 f"Security Violation [{context}]: {text!r} is not decodable as a "

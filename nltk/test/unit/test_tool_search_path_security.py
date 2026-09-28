@@ -68,6 +68,24 @@ class _LyingStr(str):
         return False
 
 
+class _Flipping(os.PathLike):
+    """A location whose ``__fspath__`` answers differently on each call: what a
+    guard checks must be what the spawn runs, so it may be read only once."""
+
+    def __init__(self, *answers):
+        self.answers, self.calls = list(answers), 0
+
+    def __fspath__(self):
+        self.calls += 1
+        return self.answers[min(self.calls, len(self.answers)) - 1]
+
+
+def _bytes_whose_decode_answers(real, answer):
+    """A ``bytes`` location whose ``decode()`` answers *answer* instead of its
+    real bytes; ``os.fsdecode`` would have taken that answer."""
+    return type("_LyingBytes", (bytes,), {"decode": lambda self, *a, **k: answer})(real)
+
+
 def _exec_file(directory, name, marker="PWNED"):
     path = Path(directory) / name
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1733,3 +1751,292 @@ class TestAlignedSentDot:
         with pytest.raises(Exception, match="Cannot find the dot binary"):
             sent._repr_svg_()
         assert seen == {}
+
+
+def _resolve(location=None, env_vars=("PROVER9",)):
+    return internals.find_binary_absolute(
+        "prover9", location, env_vars=list(env_vars), binary_names=["prover9"]
+    )
+
+
+class TestBeyondTheReview:
+    """Attacks past the adversarial review's list, each judged by which binary
+    resolved or reached the spawn: a bytes location whose decode() lies, a
+    flipping __fspath__ at the spawn layer, PATHEXT shaped like a path, a
+    directory named like the binary, hard links, a hostile entry ahead of the
+    install in the tool's env var, a '..' hidden in a symlink target, PATH
+    entry spellings, overlong and undecodable names, and Windows-shaped forms."""
+
+    def test_a_bytes_location_is_judged_by_its_real_bytes_not_its_decode(
+        self, box, tmp_path
+    ):
+        good = _exec_file(tmp_path / "bin", "prover9")
+        # the real bytes name the CWD decoy; decode() claims the install: refused
+        with pytest.raises(LookupError):
+            _resolve(_bytes_whose_decode_answers(b"./prover9", good))
+        with pytest.raises(LookupError):
+            internals.absolute_tool_dir(
+                _bytes_whose_decode_answers(b"./", str(tmp_path / "bin")), "X"
+            )
+        # the real bytes name the install; decode() claims the decoy: the install
+        got = _resolve(_bytes_whose_decode_answers(os.fsencode(good), "./prover9"))
+        assert _same(got, good) and not _inside(got, box)
+        # decode() answering something that is not text is a clean refusal in
+        # every guard that shares the materialisation, never a TypeError
+        for guard, real, error in (
+            (_resolve, b"./prover9", LookupError),
+            (lambda v: internals.absolute_tool_dir(v, "X"), b"./", LookupError),
+            (pathsec.validate_tool_dir, b"-prover9", PermissionError),
+            (
+                lambda v: pathsec.validate_tool_path(v, must_exist=False),
+                b"-prover9",
+                PermissionError,
+            ),
+            (pathsec.validate_model_resource, b"-prover9", ValueError),
+        ):
+            with pytest.raises(error):
+                guard(_bytes_whose_decode_answers(real, 42))
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    def test_fspath_is_read_once_at_the_spawn_layer(self, private_dir):
+        trusted = _exec_file(private_dir / "trusted", "prover9", marker="LEGIT")
+        world = private_dir / "world"
+        planted = _exec_file(world, "prover9")
+        os.chmod(world, 0o777)
+        try:
+            # trusted on the first read, the world-writable decoy on every
+            # later one: the one read is what runs
+            flip = _Flipping(trusted, planted)
+            proc = pathsec.spawn_trusted(
+                flip, [], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            out = proc.communicate()[0].decode()
+            assert flip.calls == 1 and _same(proc.args[0], trusted), proc.args
+            assert "LEGIT" in out and "PWNED" not in out
+            # the decoy on the first read is refused, whatever comes later
+            flip = _Flipping(planted, trusted)
+            with pytest.raises(pathsec.TrustError):
+                pathsec.spawn_trusted(flip, [])
+            assert flip.calls == 1
+        finally:
+            os.chmod(world, 0o700)
+
+    def test_pathext_shaped_like_a_path_cannot_climb_into_the_cwd(
+        self, box, tmp_path, monkeypatch
+    ):
+        # a PATHEXT suffix is appended to the bare name; one shaped like a path
+        # climbs out of a PATH directory that holds a DIRECTORY of that name
+        # (prover9's own default search list has /usr/local/bin/prover9)
+        pathdir = tmp_path / "pathdir"
+        (pathdir / "prover9").mkdir(parents=True)
+        good = _exec_file(pathdir, "prover9.exe")
+        escape = "/../../" + box.name + "/prover9"
+        monkeypatch.setenv("PATH", str(pathdir))
+        monkeypatch.setenv("PATHEXT", os.pathsep.join([escape, "\t", ".exe"]))
+        raw = list(internals._path_dirs_iter(["prover9"]))
+        assert any(_inside(r, box) for r in raw), raw  # the walk does surface it
+        got = _resolve()
+        assert _same(got, good) and not _inside(got, box)  # the '..' gate skips it
+        monkeypatch.setenv("PATHEXT", escape)
+        with pytest.raises(LookupError):
+            _resolve()
+
+    def test_a_directory_named_like_the_binary_is_never_taken(
+        self, box, tmp_path, monkeypatch
+    ):
+        for holder in ("p9", "prover9dir"):
+            _exec_file(box / holder, "prover9")
+        for form in ("p9", "./p9", "p9/", "./p9/", "prover9dir", "prover9dir/"):
+            with pytest.raises(LookupError):
+                _resolve(form)
+        # a directory named prover9 on PATH or in the env-var directory is not
+        # a hit, and the binary nested inside it is not reached through it
+        for holder in (tmp_path / "pathdir", tmp_path / "envdir"):
+            _exec_file(holder / "prover9", "prover9", marker="NESTED")
+        monkeypatch.setenv("PATH", str(tmp_path / "pathdir"))
+        with pytest.raises(LookupError):
+            _resolve()
+        monkeypatch.setenv("PROVER9", str(tmp_path / "envdir"))
+        with pytest.raises(LookupError):
+            _resolve()
+        # naming that directory explicitly is the caller's choice and reaches it
+        got = _resolve(str(tmp_path / "envdir" / "prover9"))
+        assert _same(got, tmp_path / "envdir" / "prover9" / "prover9")
+        # and config_java given a directory whose "java" is itself a directory
+        _exec_file(tmp_path / "jdk" / "java", "java")
+        with pytest.raises(LookupError):
+            internals.config_java(str(tmp_path / "jdk"))
+        assert internals._java_bin is None
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    def test_hard_links_do_not_bypass_the_spawn_trust(
+        self, box, private_dir, monkeypatch
+    ):
+        real = _exec_file(private_dir / "trusted", "prover9", marker="LEGIT")
+        scrubbed = os.environ["PATH"]
+        world = private_dir / "world"
+        world.mkdir()
+        os.link(real, world / "prover9")
+        os.chmod(world, 0o777)
+        try:
+            # the operator's PATH entry is taken at config time and refused at
+            # the spawn: the holding directory is what another user can write
+            monkeypatch.setenv("PATH", str(world))
+            got = _resolve()
+            assert _same(got, world / "prover9")
+            assert pathsec.resolve_trusted_executable(got) is None
+            with pytest.raises(pathsec.TrustError):
+                pathsec.spawn_trusted(got, [])
+        finally:
+            os.chmod(world, 0o700)
+        # a hard link planted in the CWD is a relative form like any other
+        monkeypatch.setenv("PATH", scrubbed)
+        home_box = private_dir / "box"
+        home_box.mkdir()
+        os.link(real, home_box / "hl")
+        monkeypatch.chdir(home_box)
+        for form in ("hl", "./hl", f"../{home_box.name}/hl"):
+            with pytest.raises(LookupError):
+                _resolve(form)
+        # the extra links do not taint the trusted binary itself
+        assert os.stat(real).st_nlink >= 3
+        assert _same(pathsec.resolve_trusted_executable(real), real)
+
+    def test_a_hostile_entry_ahead_of_the_install_in_the_env_var_is_skipped(
+        self, box, install, monkeypatch
+    ):
+        trusted = str(install)
+        hostile = [
+            "./sub",
+            f"{trusted}/../{box.name}",
+            "",
+            ".",
+            f" {box}",
+            f"{box}\n",
+            f"~/{box.name}",
+            "C:",
+        ]
+        for entry in hostile:
+            monkeypatch.setenv("PROVER9", os.pathsep.join([entry, trusted]))
+            got = _resolve()
+            assert _same(got, install / "prover9") and not _inside(got, box), entry
+            monkeypatch.setenv("PROVER9", entry)
+            with pytest.raises(LookupError):
+                _resolve()
+        # the CWD's own absolute path after the install: the install still wins
+        monkeypatch.setenv("PROVER9", os.pathsep.join([trusted, str(box)]))
+        assert _same(_resolve(), install / "prover9")
+
+    @pytest.mark.skipif(os.name != "posix", reason="symlinks and POSIX ownership")
+    def test_a_parent_component_hidden_in_a_symlink_target_is_refused_at_spawn(
+        self, box, private_dir, monkeypatch
+    ):
+        planted = _exec_file(private_dir / "box", "prover9")
+        world = private_dir / "world"
+        _exec_file(world, "prover9")
+        os.chmod(world, 0o777)
+        try:
+            links = {
+                "relative": os.path.join(os.pardir, "box", "prover9"),
+                "absolute_into_writable": str(world / "prover9"),
+                "two_hop": os.path.join("mid", "prover9"),
+            }
+            for label, target in links.items():
+                holder = private_dir / label
+                holder.mkdir()
+                if label == "two_hop":
+                    os.symlink(os.path.join(os.pardir, "box"), holder / "mid")
+                os.symlink(target, holder / "prover9")
+                monkeypatch.setenv("PROVER9", str(holder))
+                # no lexical '..': the config gate passes the link itself
+                got = _resolve()
+                assert _same(got, holder / "prover9"), (label, got)
+                # the spawn follows every hop and refuses the '..' or the
+                # writable directory the target lives in
+                assert pathsec.resolve_trusted_executable(got) is None, label
+                with pytest.raises(pathsec.TrustError):
+                    pathsec.spawn_trusted(got, [])
+        finally:
+            os.chmod(world, 0o700)
+        # the honest link, to an absolute private file, resolves to that file
+        honest = private_dir / "honest"
+        honest.mkdir()
+        os.symlink(planted, honest / "prover9")
+        assert _same(pathsec.resolve_trusted_executable(honest / "prover9"), planted)
+
+    def test_path_entry_spellings_never_reach_the_cwd(self, box, tmp_path, monkeypatch):
+        good = _exec_file(tmp_path / "bin", "prover9")
+        entries = [
+            ".",
+            "",
+            '"."',
+            f" {tmp_path / 'bin'}",
+            "./",
+            f"~/{box.name}",
+            "C:",
+            f"{tmp_path / 'bin'}/../{box.name}",
+        ]
+        for entry in entries:
+            monkeypatch.setenv("PATH", entry)
+            with pytest.raises(LookupError):
+                _resolve()
+            monkeypatch.setenv("PATH", os.pathsep.join([entry, str(tmp_path / "bin")]))
+            got = _resolve()
+            assert _same(got, good) and not _inside(got, box), entry
+
+    def test_overlong_locations_are_refused_not_raised(self, box, tmp_path):
+        for form in (
+            str(tmp_path / ("a" * 5000) / "prover9"),
+            str(tmp_path / ("b" * 300) / "prover9"),
+        ):
+            with pytest.raises(LookupError):
+                _resolve(form)
+            assert pathsec.resolve_trusted_executable(form) is None
+            with pytest.raises(pathsec.TrustError):
+                pathsec.spawn_trusted(form, [])
+        with pytest.raises(LookupError):
+            _resolve("./" + "a" * 4090 + "/prover9")
+
+    @pytest.mark.skipif(os.name != "posix", reason="bytes paths are a POSIX spelling")
+    def test_undecodable_bytes_and_surrogates_are_refused_not_raised(
+        self, box, monkeypatch
+    ):
+        high = bytes([0xFF, 0xFE])
+        for raw in (
+            b"./" + high + b"/prover9",
+            b"/" + high + b"/prover9",
+            os.fsencode(str(box)) + b"/" + high + b"/prover9",
+        ):
+            with pytest.raises(LookupError):
+                _resolve(raw)
+            assert pathsec.resolve_trusted_executable(raw) is None
+        surrogate = "/" + chr(0xDCFF) + "/prover9"
+        monkeypatch.setenv("PROVER9", surrogate)
+        with pytest.raises(LookupError):
+            _resolve()
+        monkeypatch.delenv("PROVER9")
+        monkeypatch.setenv("PATH", surrogate)
+        with pytest.raises(LookupError):
+            _resolve()
+        assert pathsec.resolve_trusted_executable(surrogate) is None
+
+    def test_windows_shaped_and_whitespace_forms(self, box):
+        decoy = str(box / "prover9")
+        for form in (
+            "C:prover9",
+            "//" + decoy.lstrip("/"),
+            f"..\\{box.name}\\prover9",
+            ".\\prover9",
+            decoy + ".",
+            decoy + " ",
+            " " + decoy,
+        ):
+            with pytest.raises(LookupError):
+                _resolve(form)
+        # an explicit absolute file the user owns, spelled with a '.' segment
+        # or a doubled separator, is honoured and comes back normalised
+        for form in (
+            os.path.join(str(box), os.curdir, "prover9"),
+            str(box) + os.sep + os.sep + "prover9",
+        ):
+            assert _resolve(form) == os.path.normpath(form)
