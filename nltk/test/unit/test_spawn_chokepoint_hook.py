@@ -99,6 +99,86 @@ def test_a_spawn_reached_through_a_module_alias_is_caught(tmp_path):
         assert any(spawner in p for p in problems), spawner
 
 
+SMUGGLED = {
+    "from subprocess import *\nPopen(['x'])\n": "subprocess.Popen",
+    "import subprocess\ngetattr(subprocess, 'Popen')(['x'])\n": "subprocess.Popen",
+    "import subprocess\nlaunch = getattr(subprocess, 'run')\nlaunch(['x'])\n": (
+        "subprocess.run"
+    ),
+    "import subprocess as sp\ngetattr(sp, 'call')(['x'])\n": "subprocess.call",
+    "import importlib\nimportlib.import_module('subprocess').Popen(['x'])\n": (
+        "subprocess.Popen"
+    ),
+    "from importlib import import_module\nm = import_module('os')\nm.system('x')\n": (
+        "os.system"
+    ),
+    "__import__('subprocess').Popen(['x'])\n": "subprocess.Popen",
+    "import importlib\nm = importlib.import_module('subprocess')\n": (
+        "dynamic import of subprocess"
+    ),
+    "from importlib import import_module as load\nload('os.path')\n": (
+        "dynamic import of os"
+    ),
+    "exec('import subprocess; subprocess.Popen([\"x\"])')\n": "exec of source",
+    'eval(\'__import__("os").system("x")\')\n': "eval of source",
+    "compile('from shutil import which', 'p', 'exec')\n": "compile of source",
+    "import nltk.pathsec\nnltk.pathsec.subprocess.Popen(['x'])\n": "subprocess.Popen",
+    "import subprocess\nlaunch = subprocess.Popen\nlaunch(['x'])\n": "subprocess.Popen",
+    "from subprocess import Popen\nlaunch = Popen\nstart = launch\nstart(['x'])\n": (
+        "subprocess.Popen"
+    ),
+    "import subprocess\nsp = subprocess\nsp.run(['x'])\n": "subprocess.run",
+    "import asyncio\nasyncio.create_subprocess_exec('x')\n": (
+        "asyncio.create_subprocess_exec"
+    ),
+    "import asyncio\nasyncio.create_subprocess_shell('x')\n": (
+        "asyncio.create_subprocess_shell"
+    ),
+    "import pty\npty.spawn(['x'])\n": "pty.spawn",
+    "import os\nif os.fork() == 0:\n    os.execv('/x', ['x'])\n": "os.execv",
+}
+
+
+@pytest.mark.parametrize("source, spawner", sorted(SMUGGLED.items()))
+def test_a_smuggled_spawn_is_caught(tmp_path, source, spawner):
+    # every way of reaching a spawner without spelling module.spawner that a
+    # static walk can still see: star import, getattr with a literal name, a
+    # module loaded by name, source run through exec/eval/compile, an
+    # attribute chain ending in the module, a rebound name (to a fixpoint)
+    checker = _load_checker()
+    planted = tmp_path / "planted.py"
+    planted.write_text(source, encoding="utf-8")
+    problems = checker._violations(str(planted))
+    assert problems and any(spawner in p for p in problems), (source, problems)
+
+
+CLEAN = [
+    "import os.path as p\np.join('a', 'b')\n",
+    "import os\nflags = getattr(os, 'O_NOFOLLOW', 0)\n",
+    "import importlib\nimportlib.import_module('nltk.internals')\n",
+    "import importlib\nname = 'x'\nimportlib.import_module(name)\n",
+    "def load(module):\n    return __import__(module)\n",
+    "src = 'x'\neval(src)\n",
+    "window = 'hanning'\neval('numpy.' + window + '(n)')\n",
+    "eval('cos(1)')\n",
+    "eval('os.path.join(a, b)')\n",
+    "import subprocess\nPIPE = subprocess.PIPE\n",
+    "from os import path\npath.join('a')\n",
+    "class Job:\n    def run(self):\n        return self.call()\n\n"
+    "    def call(self):\n        return 1\n\n\nJob().run()\n",
+]
+
+
+@pytest.mark.parametrize("source", CLEAN)
+def test_a_reference_that_reaches_no_spawner_is_not_flagged(tmp_path, source):
+    # the forms the library itself uses (a getattr for an os flag, a module
+    # loaded from a variable, eval of a numpy window name) stay clean
+    checker = _load_checker()
+    clean = tmp_path / "clean.py"
+    clean.write_text(source, encoding="utf-8")
+    assert checker._violations(str(clean)) == [], source
+
+
 def test_unrelated_attributes_and_the_reviewed_marker_are_not_flagged(tmp_path):
     checker = _load_checker()
     clean = tmp_path / "clean.py"
