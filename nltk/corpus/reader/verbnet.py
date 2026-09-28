@@ -90,8 +90,12 @@ class VerbnetCorpusReader(XMLCorpusReader):
     _SHORTID_RE = redos.compile(r"[\d.\-]+$")
     """Regular expression that matches shortids"""
 
+    # Bound the tag tail: a crafted file repeating `<MEMBER name=".." wn=".."` with
+    # no `>` re-scans to end of file at every anchor, O(n**2) under finditer
+    # (CWE-407). The longest real MEMBER tag is 145 chars.
     _INDEX_RE = redos.compile(
-        r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]+>|' r'<VNSUBCLASS ID="([^"]+)"/?>'
+        r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]{1,1024}>|'
+        r'<VNSUBCLASS ID="([^"]+)"/?>'
     )
     """Regular expression used by ``_index()`` to quickly scan the corpus
        for basic information."""

@@ -172,6 +172,40 @@ _REVIEWED: dict[tuple[str, str], str] = {
     ("nltk/tokenize/repp.py", "^\\((\\d+), (\\d+), (.+)\\)$"): (
         "^...$ under MULTILINE; .+ is anchored per line, one bounded attempt"
     ),
+    # --- compiled class attributes (self.X / Cls.X receivers), reviewed ---
+    ("nltk/chunk/regexp.py", "[^\\{\\}]+"): (
+        "the run IS the whole pattern: each match consumes a maximal run and "
+        "advances past it, O(n) total"
+    ),
+    ("nltk/corpus/reader/lin.py", '\\A\\("?([^"]{1,512})"? \\(desc [0-9.]+\\).+'): (
+        "\\A-pinned to the entry's first line, one attempt per line; key run "
+        "bounded; the trailing .+ runs only after a full (desc N) match succeeds"
+    ),
+    (
+        "nltk/corpus/reader/verbnet.py",
+        '<MEMBER name="\\??([^"]+)" wn="([^"]*)"[^>]{1,1024}>|'
+        '<VNSUBCLASS ID="([^"]+)"/?>',
+    ): (
+        'every [^"] run has its " terminator supplied by the name=/wn=/ID= anchor; '
+        "the [^>] tail, the only run with an omittable terminator, is bounded"
+    ),
+    (
+        "nltk/corpus/reader/xmldocs.py",
+        r"""
+        # Include these so we can skip them:
+        (?P<COMMENT>        <!--.*?-->                          )|
+        (?P<CDATA>          <!\[CDATA\[.*?\]\]>                 )|
+        (?P<PI>             <\?.*?\?>                           )|
+        (?P<DOCTYPE>        <!DOCTYPE\s+[^\[^>]*(\[[^\]]*])?\s*>)|
+        # These are the ones we actually care about:
+        (?P<EMPTY_ELT_TAG>  <\s*[^>/\?!\s][^>]*/\s*>            )|
+        (?P<START_TAG>      <\s*[^>/\?!\s][^>]*>                )|
+        (?P<END_TAG>        <\s*/[^>/\?!\s][^>]*>               )""",
+    ): (
+        "read_block only sees fragments _read_xml_fragment already accepted with "
+        "_VALID_XML_RE (every comment/CDATA/PI/tag closed), so no lazy run can "
+        "re-scan to an absent terminator; the validator's own cost is GHSA-j8g8"
+    ),
 }
 
 
@@ -215,7 +249,9 @@ def check_file(path, relpath):
 
     # Pass 1: map a variable to the literal it was redos.compile()d from, so that
     # ``PAT = redos.compile(...); PAT.finditer(...)`` is checked too (the op is a
-    # method on the compiled TimedPattern, not an inline redos.<op> call).
+    # method on the compiled TimedPattern, not an inline redos.<op> call). A class
+    # attribute (``_KEY_RE = redos.compile(...)`` in a class body, used later as
+    # ``self._KEY_RE.sub`` or ``Cls._KEY_RE.sub``) is keyed by its bare name too.
     compiled = {}
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call):
@@ -230,6 +266,7 @@ def check_file(path, relpath):
                     nm = _target_name(t)
                     if nm:
                         compiled[nm] = _pattern_literal(c)
+                        compiled[nm.rsplit(".", 1)[-1]] = _pattern_literal(c)
 
     # Pass 2: every re-anchoring op, inline (redos.op) or on a compiled var.
     violations = []
@@ -244,6 +281,12 @@ def check_file(path, relpath):
             pattern = _pattern_literal(node)
         elif recv in compiled:
             pattern = compiled[recv]
+        elif isinstance(node.func.value, ast.Attribute) and (
+            node.func.value.attr in compiled
+        ):
+            # ``self.X.op`` / ``Cls.X.op`` / ``a.b.X.op``: resolve through the
+            # attribute tail so a compiled class attribute is not a blind spot.
+            pattern = compiled[node.func.value.attr]
         else:
             continue
         if pattern is None or not _WIDE_RUN.search(pattern):
