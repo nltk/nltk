@@ -17,6 +17,8 @@ import tempfile
 import warnings
 from collections import Counter
 
+import pytest
+
 from nltk.test.unit import security_probes as probes
 from nltk.test.unit import test_advisory_coverage_ci as covci
 from nltk.test.unit.security_probes import _base
@@ -746,3 +748,47 @@ def test_r53h_front_mutation_probe_has_teeth():
     finally:
         transforms.deque = real
     assert probe()[0] == probes.FIXED
+
+
+def _neuter_relative_binary_guard(monkeypatch, modules):
+    # put the pre-fix resolver back (plain find_binary honours an explicit
+    # relative path) behind the given entry-point modules only
+    from nltk import internals
+
+    for module in modules:
+        monkeypatch.setattr(module, "find_binary_absolute", internals.find_binary)
+
+
+def test_relative_binary_location_probe_has_teeth(monkeypatch):
+    """Neuter the absolute-only resolver behind every entry point the probe
+    covers: the probe must flip to VULNERABLE naming the tool and the CWD decoy
+    it took, and recover on undo."""
+    from nltk import internals
+    from nltk.classify import megam, tadm
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    _neuter_relative_binary_guard(monkeypatch, (internals, megam, tadm))
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "took the CWD-relative binary" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.parametrize(
+    "modname, label",
+    [("nltk.classify.megam", "config_megam"), ("nltk.classify.tadm", "config_tadm")],
+)
+def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
+    # neuter one tool's resolver only: prover9 and mace stay fixed, so the
+    # evidence must name exactly the neutered tool
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    _neuter_relative_binary_guard(monkeypatch, (importlib.import_module(modname),))
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith(label + "("), evidence

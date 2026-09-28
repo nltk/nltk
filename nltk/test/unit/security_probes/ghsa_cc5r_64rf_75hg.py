@@ -1,44 +1,206 @@
-"""GHSA-cc5r-64rf-75hg [high] -- Untrusted search path in prover9/mace4 config allows local code execution via relative binary_location (CWE-426, CWE-427)"""
+"""GHSA-cc5r-64rf-75hg [high] : Untrusted search path in the tool config entry
+points (prover9/mace4, megam, tadm, java, hunpos) allows local code execution
+via a relative binary location (CWE-426, CWE-427)"""
 
 import os
 import shutil
 import stat
 import tempfile
 
-from ._base import FIXED, VULNERABLE, probe
+from ._base import FIXED, VULNERABLE, probe, register_data_root
+
+_TOOL_ENV = ("PROVER9", "MEGAM", "TADM", "JAVAHOME", "JAVA_HOME", "HUNPOS_TAGGER")
+
+
+class _Spawned(Exception):
+    """Raised in place of the hunpos spawn, carrying the binary it was given."""
+
+
+def _plant(directory, relpath):
+    path = os.path.join(directory, relpath)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("#!/bin/sh\necho PWNED\n")
+    os.chmod(path, os.stat(path).st_mode | stat.S_IEXEC)
+    return path
+
+
+def _relative_forms(name, box):
+    forms = [
+        ".",
+        "./" + name,
+        "sub/" + name,
+        "sub",
+        "sub/",
+        "./sub/../" + name,
+        "../" + os.path.basename(box) + "/" + name,
+    ]
+    if os.name == "nt":
+        forms += [".\\" + name, "sub\\" + name]
+    return forms
+
+
+def _inside(path, box):
+    return os.path.realpath(path).startswith(os.path.realpath(box) + os.sep)
+
+
+def _scrubbed_path(directory):
+    """A PATH holding nothing but ``which``, which find_file_iter shells out to."""
+    real_which = shutil.which("which")
+    if os.name == "posix" and real_which:
+        os.symlink(real_which, os.path.join(directory, "which"))
+    return directory
+
+
+def _entry_points(legit):
+    """(label, binary name, configure(location) -> resolved binary path)."""
+    import nltk.tag.hunpos as hunpos_module
+    from nltk import internals
+    from nltk.classify import megam, tadm
+    from nltk.inference.mace import Mace
+    from nltk.inference.prover9 import Prover9
+
+    def prover9(location):
+        tool = Prover9()
+        tool.config_prover9(location)
+        return tool._prover9_bin
+
+    def mace(location):
+        tool = Mace()
+        tool.config_prover9(location)
+        return tool._prover9_bin
+
+    def megam_config(location):
+        megam.config_megam(location)
+        return megam._megam_bin
+
+    def tadm_config(location):
+        tadm.config_tadm(location)
+        return tadm._tadm_bin
+
+    def java_config(location):
+        internals.config_java(location)
+        return internals._java_bin
+
+    model = os.path.join(legit, "en_wsj.model")
+
+    def hunpos_tagger(location):
+        # the constructor spawns the binary it resolved; capture that instead
+        def _record(target, *args, **kwargs):
+            raise _Spawned(target)
+
+        saved = hunpos_module.spawn_trusted
+        hunpos_module.spawn_trusted = _record
+        try:
+            hunpos_module.HunposTagger(model, path_to_bin=location)
+        except _Spawned as spawned:
+            return spawned.args[0]
+        finally:
+            hunpos_module.spawn_trusted = saved
+        raise AssertionError("HunposTagger returned without spawning")
+
+    return [
+        ("config_prover9", "prover9", prover9),
+        ("Mace.config_prover9", "prover9", mace),
+        ("config_megam", "megam", megam_config),
+        ("config_tadm", "tadm", tadm_config),
+        ("config_java", "java", java_config),
+        ("HunposTagger", "hunpos-tag", hunpos_tagger),
+    ]
 
 
 @probe("GHSA-cc5r-64rf-75hg")
-def _prover9_relative_binary_location():
-    """Plant ``./prover9`` and ``./sub/prover9`` in the CWD, then configure the
-    prover with relative locations.
+def _relative_binary_location():
+    """Plant decoy binaries in a temporary CWD and configure each tool with every
+    relative location form, first with no tool reachable through the environment
+    (only the decoys can match: each form must be refused), then with a trusted
+    absolute install configured through the tool's env var (each form must either
+    be refused or resolve to that install, never to a decoy).
 
-    ``config_prover9`` forwarded ``binary_location`` straight to ``find_binary``,
-    which honors an explicit relative path, so a planted CWD binary would be run
-    by ``_call``'s ``Popen`` (an untrusted search path). It now resolves through
-    ``find_binary_absolute`` and accepts only an absolute location, like
-    Boxer/Malt/REPP; every relative form must be refused. Mace4 inherits the
-    same ``config_prover9``.
+    Before the fix these entry points forwarded the location to ``find_binary``,
+    which honours an explicit relative path, so the tool's spawn would have run
+    the planted file. They now resolve through ``find_binary_absolute``. The
+    probe checks WHICH binary was chosen, not merely whether the call raised: on
+    a machine with a real install configured, a relative form resolving to that
+    install is the correct outcome, not a leak.
     """
-    from nltk.inference.prover9 import Prover9
+    from nltk import internals
+    from nltk.classify import megam, tadm
 
-    box = tempfile.mkdtemp()
-    for rel in ("prover9", "sub/prover9"):
-        target = os.path.join(box, rel)
-        os.makedirs(os.path.dirname(target), exist_ok=True)
-        with open(target, "w", encoding="utf-8") as fh:
-            fh.write("#!/bin/sh\necho PWNED\n")
-        os.chmod(target, os.stat(target).st_mode | stat.S_IEXEC)
-    old = os.getcwd()
+    box = tempfile.mkdtemp(prefix="nltk_cc5r_")
+    # under $HOME and registered as a data root: hunpos validates its model as
+    # private and inside the sandbox, which a shared temp dir is not
+    legit = tempfile.mkdtemp(prefix=".nltk_cc5r_legit_", dir=os.path.expanduser("~"))
+    empty = os.path.join(legit, "empty")
+    os.makedirs(empty)
+    scrubbed = _scrubbed_path(empty)
+    tools = _entry_points(legit)
+    for name in {name for _, name, _ in tools}:
+        _plant(box, name)
+        _plant(box, os.path.join("sub", name))
+        _plant(legit, name)
+    with open(os.path.join(legit, "en_wsj.model"), "w", encoding="utf-8") as fh:
+        fh.write("stub\n")
+    saved_env = {var: os.environ.get(var) for var in _TOOL_ENV + ("PATH",)}
+    saved_bins = (megam._megam_bin, tadm._tadm_bin, internals._java_bin)
+    undo_root = register_data_root(legit)
+    old_cwd = os.getcwd()
+    refused = 0
     try:
         os.chdir(box)
-        for loc in (".", "./prover9", "sub/prover9"):
-            try:
-                Prover9().config_prover9(loc)
-            except LookupError:
-                continue
-            return VULNERABLE, "config_prover9(%r) took a CWD-relative binary" % loc
-        return FIXED, "every relative binary_location refused (absolute-only)"
+        # phase 1: nothing but the CWD decoys can match
+        for var in _TOOL_ENV:
+            os.environ.pop(var, None)
+        os.environ["PATH"] = scrubbed
+        for label, name, configure in tools:
+            for form in _relative_forms(name, box):
+                try:
+                    resolved = configure(form)
+                except LookupError:
+                    refused += 1
+                    continue
+                if _inside(resolved, box):
+                    return (
+                        VULNERABLE,
+                        f"{label}({form!r}) took the CWD-relative binary {resolved!r}",
+                    )
+                return (
+                    VULNERABLE,
+                    f"{label}({form!r}) resolved {resolved!r} with no trusted "
+                    "location configured",
+                )
+        # phase 2: a trusted absolute install is configured; the decoys must
+        # never shadow it
+        for var in _TOOL_ENV:
+            os.environ[var] = legit
+        for label, name, configure in tools:
+            expected = os.path.realpath(os.path.join(legit, name))
+            for form in _relative_forms(name, box):
+                try:
+                    resolved = configure(form)
+                except LookupError:
+                    refused += 1
+                    continue
+                if _inside(resolved, box) or os.path.realpath(resolved) != expected:
+                    return (
+                        VULNERABLE,
+                        f"{label}({form!r}) resolved {resolved!r} instead of the "
+                        f"configured install {expected!r}",
+                    )
+        return (
+            FIXED,
+            f"{refused} relative locations refused across {len(tools)} entry "
+            "points; with an install configured every form resolved to it and "
+            "never to a CWD decoy",
+        )
     finally:
-        os.chdir(old)
+        os.chdir(old_cwd)
+        for var, value in saved_env.items():
+            if value is None:
+                os.environ.pop(var, None)
+            else:
+                os.environ[var] = value
+        megam._megam_bin, tadm._tadm_bin, internals._java_bin = saved_bins
+        undo_root()
         shutil.rmtree(box, ignore_errors=True)
+        shutil.rmtree(legit, ignore_errors=True)
