@@ -1963,16 +1963,19 @@ class SeekableUnicodeStreamReader:
             return line
 
         readsize = size or 72
-        chars = ""
+        # Collect the blocks in a list and join only when a line break shows up
+        # or at end of stream: growing one str in place copies it on every pass
+        # on allocators that cannot extend in place (Windows), another O(N**2).
+        parts = []
 
         # If there's a remaining incomplete line in the buffer, add it. It may
         # itself carry a line break (a complete buffered line), so remember that
         # so the first pass re-splits even if the new block has no break.
         buffered_break = False
         if self.linebuffer:
-            chars += self.linebuffer.pop()
+            parts.append(self.linebuffer.pop())
             self.linebuffer = None
-            buffered_break = not self._LINEBREAK_CHARS.isdisjoint(chars)
+            buffered_break = not self._LINEBREAK_CHARS.isdisjoint(parts[0])
 
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
@@ -1983,12 +1986,13 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            chars += new_chars
+            parts.append(new_chars)
             # Only re-split when a line break is present in the new block (or was
             # carried in by the buffered prefix); an unterminated line has none, so
             # re-splitting the whole growing buffer every pass would be O(N**2).
             if buffered_break or not self._LINEBREAK_CHARS.isdisjoint(new_chars):
                 buffered_break = False
+                chars = "".join(parts)
                 lines = chars.splitlines(True)
                 if len(lines) > 1:
                     line = lines[0]
@@ -2004,7 +2008,7 @@ class SeekableUnicodeStreamReader:
                         break
 
             if not new_chars or size is not None:
-                line = chars
+                line = "".join(parts)
                 break
 
             # Read successively larger blocks of text.
