@@ -121,14 +121,32 @@ def _refused_by_the_option_filter(exc):
 @probe("GHSA-m4rf-3fr8-xwx3")
 def _jvm_argument_injection():
     """Per-call options bypassed the CVE-2026-12841 JVM argument filter."""
-    from nltk import internals
+    import os
+    import shutil
+    import stat
+    import tempfile
+
+    from nltk import internals, pathsec
 
     # A plausible main class, so the cmd guard can never fire and the only thing
     # that may reject these calls is the filter under test.
     main_class = "edu.stanford.nlp.pipeline.StanfordCoreNLPServer"
 
+    # java() spawns through pathsec.spawn_trusted, which checks the JVM binary's
+    # ownership before Popen: give it a stub under $HOME (a private chain on
+    # every runner) so the trap below, not the host's Java, decides the outcome
+    stub_dir = tempfile.mkdtemp(prefix=".nltk_m4rf_java_", dir=os.path.expanduser("~"))
+    stub = os.path.join(stub_dir, "java.exe" if os.name == "nt" else "java")
+    with open(stub, "w", encoding="utf-8") as fh:
+        fh.write("#!/bin/sh\nexit 0\n")
+    os.chmod(stub, os.stat(stub).st_mode | stat.S_IEXEC)
     original = internals.subprocess
+    original_pathsec = pathsec.subprocess
+    saved_bin, saved_opts = internals._java_bin, list(internals._java_options)
     internals.subprocess = _NoLaunch
+    pathsec.subprocess = _NoLaunch
+    internals._java_bin = stub
+    internals._java_options[:] = []
     try:
         leaked, unreached = [], []
         for case in HOSTILE_OPTIONS:
@@ -147,6 +165,10 @@ def _jvm_argument_injection():
                 leaked.append((label, "no launch attempted"))
     finally:
         internals.subprocess = original
+        pathsec.subprocess = original_pathsec
+        internals._java_bin = saved_bin
+        internals._java_options[:] = saved_opts
+        shutil.rmtree(stub_dir, ignore_errors=True)
 
     if leaked:
         label, argv = leaked[0]

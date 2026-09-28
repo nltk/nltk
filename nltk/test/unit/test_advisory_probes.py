@@ -17,6 +17,8 @@ import tempfile
 import warnings
 from collections import Counter
 
+import pytest
+
 from nltk.test.unit import security_probes as probes
 from nltk.test.unit import test_advisory_coverage_ci as covci
 from nltk.test.unit.security_probes import _base
@@ -746,3 +748,76 @@ def test_r53h_front_mutation_probe_has_teeth():
     finally:
         transforms.deque = real
     assert probe()[0] == probes.FIXED
+
+
+def _neuter_relative_binary_guard(monkeypatch, modules):
+    # put the pre-fix resolver back (plain find_binary honours an explicit
+    # relative path) behind the given entry-point modules only
+    from nltk import internals
+
+    for module in modules:
+        monkeypatch.setattr(module, "find_binary_absolute", internals.find_binary)
+
+
+_RELATIVE_BINARY_MODULES = [
+    ("nltk.inference.prover9", "config_prover9"),
+    ("nltk.classify.megam", "config_megam"),
+    ("nltk.classify.tadm", "config_tadm"),
+    ("nltk.internals", "config_java"),
+    ("nltk.tag.hunpos", "HunposTagger"),
+]
+
+
+def test_relative_binary_location_probe_has_teeth(monkeypatch):
+    """Neuter the absolute-only resolver behind every entry point the probe
+    covers: the probe must flip to VULNERABLE naming the tool and the CWD decoy
+    it took, and recover on undo."""
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    modules = [importlib.import_module(m) for m, _ in _RELATIVE_BINARY_MODULES]
+    _neuter_relative_binary_guard(monkeypatch, modules)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "took the CWD-relative binary" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypatch):
+    """Neuter the spawn-time ownership check only: the finder still refuses
+    every relative form, so the probe must flip to VULNERABLE on its last
+    phase, the launch of a JVM out of a world-writable directory."""
+    from nltk import pathsec
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    def permissive(target):
+        real = os.path.realpath(target)
+        return real if os.path.isfile(real) else None
+
+    monkeypatch.setattr(pathsec, "resolve_trusted_executable", permissive)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "world-writable directory" in evidence and "PWNED" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.parametrize("modname, label", _RELATIVE_BINARY_MODULES)
+def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
+    # neuter one tool's resolver only (each module binds it by name): the
+    # evidence must name exactly that tool, so the probe scores every entry point
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    _neuter_relative_binary_guard(monkeypatch, (importlib.import_module(modname),))
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith(label + "("), evidence

@@ -2930,8 +2930,17 @@ def _svn_revision(filename):
     Helper for ``build_index()``: Calculate the subversion revision
     number for a given file (by using ``subprocess`` to run ``svn``).
     """
-    p = subprocess.Popen(
-        ["svn", "status", "-v", filename],
+    from nltk.internals import find_binary_absolute
+    from nltk.pathsec import spawn_trusted
+
+    # a bare "svn" would be found by the OS search (which on Windows begins in
+    # the CWD); resolve it absolute-only and spawn it through the trusted path
+    svn = find_binary_absolute("svn", binary_names=["svn", "svn.exe"])
+    # "--" ends option parsing so a file name starting with "-" cannot become
+    # an svn option (CWE-88)
+    p = spawn_trusted(
+        svn,
+        ["status", "-v", "--", filename],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )

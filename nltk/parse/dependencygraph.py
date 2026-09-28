@@ -22,8 +22,9 @@ from itertools import chain
 from pprint import pformat
 
 from nltk.data import make_staging_dir
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import open as _secure_open
+from nltk.pathsec import spawn_trusted
 from nltk.termsec import safe_print
 from nltk.tree import Tree
 
@@ -620,27 +621,29 @@ def dot2img(dot_string, t="svg"):
     """
 
     try:
-        # Run the absolute path find_binary returns, not the bare name: it
-        # refuses a CWD-relative match, so a planted ./dot cannot be executed
-        # in place of the real Graphviz binary (CWE-426 / CWE-427). The bare
-        # ["dot", ...] used before discarded this validation entirely.
-        dot_binary = find_binary("dot")
+        # Run the absolute path the finder returns, not the bare name: a
+        # CWD-relative match and a '..' component are refused, so a planted
+        # ./dot cannot be executed in place of Graphviz (CWE-426 / CWE-427).
+        dot_binary = find_binary_absolute("dot")
     except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
     try:
-        if t in ["dot", "dot_json", "json", "svg"]:
-            proc = subprocess.run(
-                [dot_binary, "-T%s" % t],
-                capture_output=True,
-                input=dot_string,
-                text=True,
-            )
-        else:
-            proc = subprocess.run(
-                [dot_binary, "-T%s" % t],
-                input=bytes(dot_string, encoding="utf8"),
-            )
-        return proc.stdout
+        # Route through the trusted-exec chokepoint like translate.api: verify
+        # the dot binary is on a path no other local user can swap, refuse a
+        # shell, and scrub the loader environment before exec (CWE-426/427/732).
+        text = t in ["dot", "dot_json", "json", "svg"]
+        proc = spawn_trusted(
+            dot_binary,
+            ["-T%s" % t],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=text,
+        )
+        stdout, _stderr = proc.communicate(
+            dot_string if text else bytes(dot_string, encoding="utf8")
+        )
+        return stdout
     except Exception:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"
