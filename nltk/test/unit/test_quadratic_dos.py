@@ -433,13 +433,18 @@ class TestChomskyNormalFormFrontMutation:  # GHSA-r53h: tree.transforms
         # Binarisation leaves every production at most binary branching.
         assert all(len(p.rhs()) <= 2 for p in t.productions())
 
-    def test_flat_node_is_linear(self):
+    def test_flat_node_is_linear(self, monkeypatch):
         from nltk.tree import Tree
+        from nltk.tree import tree as treemod
         from nltk.tree.transforms import chomsky_normal_form
 
         # Pre-patch: the right-factoring loop did nodeCopy.pop(0) per child, an
         # O(1)-should-be front removal that is O(n^2) over a wide flat node. The
-        # deque + popleft rewrite is linear and byte-for-byte identical.
+        # deque + popleft rewrite is linear and byte-for-byte identical. The
+        # width-to-depth guard (a wide node binarises into a chain as deep as it
+        # is wide) would refuse these widths; it is lifted here, as the r53h
+        # probe does, because this measures the factoring loop itself.
+        monkeypatch.setattr(treemod, "MAX_TREE_DEPTH", 10_000)
         _assert_subquadratic(
             lambda n: chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)])),
             1_500,
