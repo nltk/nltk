@@ -5,6 +5,8 @@ module is kept in NLTK source code in order to provide better error
 messages for people following the NLTK Book 2.0.
 """
 
+from nltk.termsec import safe_print
+
 
 def babelize_shell():
-    print("Babelfish online translation service is no longer available.")
+    safe_print("Babelfish online translation service is no longer available.")

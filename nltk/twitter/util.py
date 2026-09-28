@@ -14,6 +14,8 @@ import os
 
 from twython import Twython
 
+from nltk.termsec import safe_print
+
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
@@ -86,7 +88,7 @@ class Authenticate:
             self.creds_fullpath, encoding="utf8"
         ) as infile:  # sandboxed-open ok: operator credentials path, not attacker input
             if verbose:
-                print(f"Reading credentials file {self.creds_fullpath}")
+                safe_print(f"Reading credentials file {self.creds_fullpath}")
 
             for line in infile:
                 if "=" in line:
@@ -116,7 +118,7 @@ class Authenticate:
             msg += f"found keys: {sorted(self.oauth)}"
             raise ValueError(msg)
         elif verbose:
-            print(f'Credentials file "{self.creds_file}" looks good')
+            safe_print(f'Credentials file "{self.creds_file}" looks good')
 
 
 def add_access_token(creds_file=None):
@@ -137,7 +139,7 @@ def add_access_token(creds_file=None):
     with open(
         creds_file, "a", encoding="utf8"
     ) as infile:  # sandboxed-open ok: operator credentials path, not attacker input
-        print(tok, file=infile)
+        safe_print(tok, file=infile)
 
 
 def guess_path(pth):

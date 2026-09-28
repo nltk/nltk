@@ -26,6 +26,7 @@ from nltk.pathsec import (
     safe_env,
     validate_path,
 )
+from nltk.termsec import safe_print
 
 ##########################################################################
 # Java Via Command-Line
@@ -764,7 +765,9 @@ def deprecated(message):
         msg = "\n" + textwrap.fill(msg, initial_indent="  ", subsequent_indent="  ")
 
         def newFunc(*args, **kwargs):
-            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                msg, category=DeprecationWarning, stacklevel=2
+            )  # unsafe-print ok: deprecation text from the decorated object's own name and docstring
             return func(*args, **kwargs)
 
         # Copy the old function's name, docstring, & dict
@@ -818,7 +821,9 @@ class Deprecated:
         msg = f"{name} has been deprecated.  {doc}"
         # Wrap it.
         msg = "\n" + textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
-        warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            msg, category=DeprecationWarning, stacklevel=2
+        )  # unsafe-print ok: deprecation text from the class's own name and docstring
         # Do the actual work of __new__.
         return object.__new__(cls)
 
@@ -878,20 +883,20 @@ def find_file_iter(
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print(f"[Found {filename}: {path_to_file}]")
+                safe_print(f"[Found {filename}: {path_to_file}]")
             yielded = True
             yield path_to_file
         # Check the bare alternatives
         if os.path.isfile(alternative):
             if verbose:
-                print(f"[Found {filename}: {alternative}]")
+                safe_print(f"[Found {filename}: {alternative}]")
             yielded = True
             yield alternative
         # Check if the alternative is inside a 'file' directory
         path_to_file = os.path.join(filename, "file", alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print(f"[Found {filename}: {path_to_file}]")
+                safe_print(f"[Found {filename}: {path_to_file}]")
             yielded = True
             yield path_to_file
 
@@ -910,7 +915,7 @@ def find_file_iter(
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
                     if verbose:
-                        print(f"[Found {filename}: {env_dir}]")
+                        safe_print(f"[Found {filename}: {env_dir}]")
                     yielded = True
                     yield env_dir
                 # Check if the possible bin names exist inside the environment variable directories
@@ -918,7 +923,7 @@ def find_file_iter(
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print(f"[Found {filename}: {path_to_file}]")
+                            safe_print(f"[Found {filename}: {path_to_file}]")
                         yielded = True
                         yield path_to_file
                     # Check if the alternative is inside a 'file' directory
@@ -929,7 +934,7 @@ def find_file_iter(
 
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print(f"[Found {filename}: {path_to_file}]")
+                            safe_print(f"[Found {filename}: {path_to_file}]")
                         yielded = True
                         yield path_to_file
 
@@ -955,7 +960,7 @@ def find_file_iter(
                 path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose:
-                        print(f"[Found {filename}: {path}]")
+                        safe_print(f"[Found {filename}: {path}]")
                     yielded = True
                     yield path
             except (KeyboardInterrupt, SystemExit, OSError):
@@ -1174,7 +1179,7 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print(f"[Found {name_pattern}: {cp}]")
+                                safe_print(f"[Found {name_pattern}: {cp}]")
                             yielded = True
                             yield cp
                     # The case where user put directory containing the jar file in the classpath
@@ -1182,7 +1187,7 @@ def find_jar_iter(
                         if not is_regex:
                             if os.path.isfile(os.path.join(cp, name_pattern)):
                                 if verbose:
-                                    print(f"[Found {name_pattern}: {cp}]")
+                                    safe_print(f"[Found {name_pattern}: {cp}]")
                                 yielded = True
                                 yield os.path.join(cp, name_pattern)
                         else:
@@ -1190,7 +1195,7 @@ def find_jar_iter(
                             for file_name in os.listdir(cp):
                                 if name_rx.match(file_name):
                                     if verbose:
-                                        print(
+                                        safe_print(
                                             "[Found %s: %s]"
                                             % (
                                                 name_pattern,
@@ -1219,7 +1224,7 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print(f"[Found {name_pattern}: {path_to_jar}]")
+                                safe_print(f"[Found {name_pattern}: {path_to_jar}]")
                             yielded = True
                             yield path_to_jar
 
@@ -1233,14 +1238,14 @@ def find_jar_iter(
                 # entry (subdirs / unrelated files) as if it were the jar.
                 if os.path.isfile(path_to_jar) and name_rx.match(filename):
                     if verbose:
-                        print(f"[Found {filename}: {path_to_jar}]")
+                        safe_print(f"[Found {filename}: {path_to_jar}]")
                     yielded = True
                     yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
                 if verbose:
-                    print(f"[Found {name_pattern}: {path_to_jar}]")
+                    safe_print(f"[Found {name_pattern}: {path_to_jar}]")
                 yielded = True
                 yield path_to_jar
 

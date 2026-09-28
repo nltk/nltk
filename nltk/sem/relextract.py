@@ -28,6 +28,7 @@ from collections import defaultdict
 
 from nltk import redos
 from nltk.redos import reharden
+from nltk.termsec import safe_print
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -189,7 +190,7 @@ def semi_rel2reldict(pairs, window=5, trace=False):
         reldict["objsym"] = list2sym(pairs[k + 1][1].leaves())
         reldict["rcon"] = _join(pairs[k + 2][0][:window])
         if trace:
-            print(
+            safe_print(
                 "(%s(%s, %s)"
                 % (
                     reldict["untagged_filler"],
@@ -339,17 +340,17 @@ def in_demo(trace=0, sql=True):
 
     IN = redos.compile(r".*\bin\b(?!\b.+ing)")
 
-    print()
-    print("IEER: in(ORG, LOC) -- just the clauses:")
-    print("=" * 45)
+    safe_print()
+    safe_print("IEER: in(ORG, LOC) -- just the clauses:")
+    safe_print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             if trace:
-                print(doc.docno)
-                print("=" * 15)
+                safe_print(doc.docno)
+                safe_print("=" * 15)
             for rel in extract_rels("ORG", "LOC", doc, corpus="ieer", pattern=IN):
-                print(clause(rel, relsym="IN"))
+                safe_print(clause(rel, relsym="IN"))
                 if sql:
                     try:
                         rtuple = (rel["subjtext"], rel["objtext"], doc.docno)
@@ -368,11 +369,11 @@ def in_demo(trace=0, sql=True):
                 """select OrgName from Locations
                         where LocationName = 'Atlanta'"""
             )
-            print()
-            print("Extract data from SQL table: ORGs in Atlanta")
-            print("-" * 15)
+            safe_print()
+            safe_print("Extract data from SQL table: ORGs in Atlanta")
+            safe_print("-" * 15)
             for row in cur:
-                print(row)
+                safe_print(row)
         except NameError:
             pass
 
@@ -413,19 +414,19 @@ def roles_demo(trace=0):
     """
     ROLES = redos.compile(roles, re.VERBOSE)
 
-    print()
-    print("IEER: has_role(PER, ORG) -- raw rtuples:")
-    print("=" * 45)
+    safe_print()
+    safe_print("IEER: has_role(PER, ORG) -- raw rtuples:")
+    safe_print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
-                print(doc.docno)
-                print("=" * 15)
+                safe_print(doc.docno)
+                safe_print("=" * 15)
                 lcon = rcon = True
             for rel in extract_rels("PER", "ORG", doc, corpus="ieer", pattern=ROLES):
-                print(rtuple(rel, lcon=lcon, rcon=rcon))
+                safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 ##############################################
@@ -437,8 +438,8 @@ def ieer_headlines():
     from nltk.corpus import ieer
     from nltk.tree import Tree
 
-    print("IEER: First 20 Headlines")
-    print("=" * 45)
+    safe_print("IEER: First 20 Headlines")
+    safe_print("=" * 45)
 
     trees = [
         (doc.docno, doc.headline)
@@ -446,8 +447,8 @@ def ieer_headlines():
         for doc in ieer.parsed_docs(file)
     ]
     for tree in trees[:20]:
-        print()
-        print("%s:\n%s" % tree)
+        safe_print()
+        safe_print("%s:\n%s" % tree)
 
 
 #############################################
@@ -475,9 +476,9 @@ def conllned(trace=1):
     """
     VAN = redos.compile(vnv, re.VERBOSE)
 
-    print()
-    print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
-    print("=" * 45)
+    safe_print()
+    safe_print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
+    safe_print("=" * 45)
 
     for doc in conll2002.chunked_sents("ned.train"):
         lcon = rcon = False
@@ -486,7 +487,7 @@ def conllned(trace=1):
         for rel in extract_rels(
             "PER", "ORG", doc, corpus="conll2002", pattern=VAN, window=10
         ):
-            print(rtuple(rel, lcon=lcon, rcon=rcon))
+            safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 #############################################
@@ -506,23 +507,23 @@ def conllesp():
     """
     DE = redos.compile(de, re.VERBOSE)
 
-    print()
-    print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
-    print("=" * 45)
+    safe_print()
+    safe_print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
+    safe_print("=" * 45)
     rels = [
         rel
         for doc in conll2002.chunked_sents("esp.train")
         for rel in extract_rels("ORG", "LOC", doc, corpus="conll2002", pattern=DE)
     ]
     for r in rels[:10]:
-        print(clause(r, relsym="DE"))
-    print()
+        safe_print(clause(r, relsym="DE"))
+    safe_print()
 
 
 def ne_chunked():
-    print()
-    print("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker")
-    print("=" * 45)
+    safe_print()
+    safe_print("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker")
+    safe_print("=" * 45)
     ROLE = redos.compile(
         r".*(chairman|president|trader|scientist|economist|analyst|partner).*"
     )
@@ -531,7 +532,7 @@ def ne_chunked():
         sent = nltk.ne_chunk(sent)
         rels = extract_rels("PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7)
         for rel in rels:
-            print(f"{i:<5}{rtuple(rel)}")
+            safe_print(f"{i:<5}{rtuple(rel)}")
 
 
 if __name__ == "__main__":

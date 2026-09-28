@@ -22,6 +22,8 @@ import threading
 import time
 from abc import ABCMeta, abstractmethod
 
+from nltk.termsec import safe_print
+
 
 class Prover(metaclass=ABCMeta):
     """
@@ -226,7 +228,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         retracted = set(retracted)
         result_list = list(filter(lambda a: a not in retracted, self._assumptions))
         if debug and result_list == self._assumptions:
-            print(Warning("Assumptions list has not been changed:"))
+            safe_print(Warning("Assumptions list has not been changed:"))
             self.print_assumptions()
 
         self._assumptions = result_list
@@ -254,7 +256,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Print the list of the current assumptions.
         """
         for a in self.assumptions():
-            print(a)
+            safe_print(a)
 
 
 class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
@@ -601,13 +603,13 @@ class TheoremToolThread(threading.Thread):
         try:
             self._result = self._command()
             if self._verbose:
-                print(
+                safe_print(
                     "Thread %s finished with result %s at %s"
                     % (self._name, self._result, time.localtime(time.time()))
                 )
         except Exception as e:
-            print(e)
-            print("Thread %s completed abnormally" % (self._name))
+            safe_print(e)
+            safe_print("Thread %s completed abnormally" % (self._name))
 
     @property
     def result(self):

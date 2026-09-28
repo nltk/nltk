@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 """
@@ -264,39 +265,39 @@ def demo():
 
     model_dir = find("models/bllip_wsj_no_aux").path
 
-    print("Loading BLLIP Parsing models...")
+    safe_print("Loading BLLIP Parsing models...")
     # the easiest way to get started is to use a unified model
     bllip = BllipParser.from_unified_model_dir(model_dir)
-    print("Done.")
+    safe_print("Done.")
 
     sentence1 = "British left waffles on Falklands .".split()
     sentence2 = "I saw the man with the telescope .".split()
     # this sentence is known to fail under the WSJ parsing model
     fail1 = "# ! ? : -".split()
     for sentence in (sentence1, sentence2, fail1):
-        print("Sentence: %r" % " ".join(sentence))
+        safe_print("Sentence: %r" % " ".join(sentence))
         try:
             tree = next(bllip.parse(sentence))
-            print(tree)
+            safe_print(tree)
         except StopIteration:
-            print("(parse failed)")
+            safe_print("(parse failed)")
 
     # n-best parsing demo
     for i, parse in enumerate(bllip.parse(sentence1)):
-        print("parse %d:\n%s" % (i, parse))
+        safe_print("parse %d:\n%s" % (i, parse))
 
     # using external POS tag constraints
-    print(
+    safe_print(
         "forcing 'tree' to be 'NN':",
         next(bllip.tagged_parse([("A", None), ("tree", "NN")])),
     )
-    print(
+    safe_print(
         "forcing 'A' to be 'DT' and 'tree' to be 'NNP':",
         next(bllip.tagged_parse([("A", "DT"), ("tree", "NNP")])),
     )
     # constraints don't have to make sense... (though on more complicated
     # sentences, they may cause the parse to fail)
-    print(
+    safe_print(
         "forcing 'A' to be 'NNP':",
         next(bllip.tagged_parse([("A", "NNP"), ("tree", None)])),
     )

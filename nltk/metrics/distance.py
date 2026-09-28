@@ -23,6 +23,7 @@ import operator
 import warnings
 
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print
 
 #: Maximum input length accepted by the super-linear two-string distance
 #: functions in this module: the O(n*m) time-and-memory :func:`edit_distance` /
@@ -304,7 +305,7 @@ def interval_distance(label1, label2):
         return pow(label1 - label2, 2)
     #        return pow(list(label1)[0]-list(label2)[0],2)
     except Exception:
-        print("non-numeric labels not supported with interval distance")
+        safe_print("non-numeric labels not supported with interval distance")
 
 
 def presence(label):
@@ -560,27 +561,27 @@ def demo():
         ("language", "lngauage"),
     ]
     for s1, s2 in string_distance_examples:
-        print(f"Edit distance btwn '{s1}' and '{s2}':", edit_distance(s1, s2))
-        print(
+        safe_print(f"Edit distance btwn '{s1}' and '{s2}':", edit_distance(s1, s2))
+        safe_print(
             f"Edit dist with transpositions btwn '{s1}' and '{s2}':",
             edit_distance(s1, s2, transpositions=True),
         )
-        print(f"Jaro similarity btwn '{s1}' and '{s2}':", jaro_similarity(s1, s2))
-        print(
+        safe_print(f"Jaro similarity btwn '{s1}' and '{s2}':", jaro_similarity(s1, s2))
+        safe_print(
             f"Jaro-Winkler similarity btwn '{s1}' and '{s2}':",
             jaro_winkler_similarity(s1, s2),
         )
-        print(
+        safe_print(
             f"Jaro-Winkler distance btwn '{s1}' and '{s2}':",
             1 - jaro_winkler_similarity(s1, s2),
         )
     s1 = {1, 2, 3, 4}
     s2 = {3, 4, 5}
-    print("s1:", s1)
-    print("s2:", s2)
-    print("Binary distance:", binary_distance(s1, s2))
-    print("Jaccard distance:", jaccard_distance(s1, s2))
-    print("MASI distance:", masi_distance(s1, s2))
+    safe_print("s1:", s1)
+    safe_print("s2:", s2)
+    safe_print("Binary distance:", binary_distance(s1, s2))
+    safe_print("Jaccard distance:", jaccard_distance(s1, s2))
+    safe_print("MASI distance:", masi_distance(s1, s2))
 
 
 if __name__ == "__main__":

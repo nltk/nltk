@@ -10,6 +10,7 @@ import time
 from functools import reduce
 
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import ProbabilisticTree, Tree
 
 #: Default wall-clock limit, in seconds, for a single :meth:`ViterbiParser.parse`
@@ -145,7 +146,9 @@ class ViterbiParser(ParserI):
         # Initialize the constituents dictionary with the words from
         # the text.
         if self._trace:
-            print("Inserting tokens into the most likely" + " constituents table...")
+            safe_print(
+                "Inserting tokens into the most likely" + " constituents table..."
+            )
         for index in range(len(tokens)):
             token = tokens[index]
             constituents[index, index + 1, token] = token
@@ -156,7 +159,7 @@ class ViterbiParser(ParserI):
         # that might cover that span to the constituents dictionary.
         for length in range(1, len(tokens) + 1):
             if self._trace:
-                print(
+                safe_print(
                     "Finding the most likely constituents"
                     + " spanning %d text elements..." % length
                 )
@@ -229,9 +232,9 @@ class ViterbiParser(ParserI):
                 if self._trace > 1:
                     if c is None or c != tree:
                         if c is None or c.prob() < tree.prob():
-                            print("   Insert:", end=" ")
+                            safe_print("   Insert:", end=" ")
                         else:
-                            print("  Discard:", end=" ")
+                            safe_print("  Discard:", end=" ")
                         self._trace_production(production, p, span, len(tokens))
                 if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
@@ -347,12 +350,12 @@ class ViterbiParser(ParserI):
         if self._trace > 2:
             str = f"{str:<40} {p:12.10f} "
 
-        print(str)
+        safe_print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
         str = "   Insert: |" + "." * index + "=" + "." * (width - index - 1) + "| "
         str += f"{token}"
-        print(str)
+        safe_print(str)
 
     def __repr__(self):
         return "<ViterbiParser for %r>" % self._grammar
@@ -425,17 +428,17 @@ def demo():
     ]
 
     # Ask the user which demo they want to use.
-    print()
+    safe_print()
     for i in range(len(demos)):
-        print(f"{i + 1:>3}: {demos[i][0]}")
-        print("     %r" % demos[i][1])
-        print()
-    print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
+        safe_print(f"{i + 1:>3}: {demos[i][0]}")
+        safe_print("     %r" % demos[i][1])
+        safe_print()
+    safe_print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
     try:
         snum = int(sys.stdin.readline().strip()) - 1
         sent, grammar = demos[snum]
     except Exception:
-        print("Bad sentence number")
+        safe_print("Bad sentence number")
         return
 
     # Tokenize the sentence.
@@ -444,7 +447,7 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
+    safe_print(f"\nsent: {sent}\nparser: {parser}\ngrammar: {grammar}")
     parser.trace(3)
     t = time.time()
     parses = parser.parse_all(tokens)
@@ -457,33 +460,33 @@ def demo():
         all_parses[p.freeze()] = 1
 
     # Print some summary statistics
-    print()
-    print("Time (secs)   # Parses   Average P(parse)")
-    print("-----------------------------------------")
-    print("%11.4f%11d%19.14f" % (time, num_parses, average))
+    safe_print()
+    safe_print("Time (secs)   # Parses   Average P(parse)")
+    safe_print("-----------------------------------------")
+    safe_print("%11.4f%11d%19.14f" % (time, num_parses, average))
     parses = all_parses.keys()
     if parses:
         p = reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
     else:
         p = 0
-    print("------------------------------------------")
-    print("%11s%11d%19.14f" % ("n/a", len(parses), p))
+    safe_print("------------------------------------------")
+    safe_print("%11s%11d%19.14f" % ("n/a", len(parses), p))
 
     # Ask the user if we should draw the parses.
-    print()
-    print("Draw parses (y/n)? ", end=" ")
+    safe_print()
+    safe_print("Draw parses (y/n)? ", end=" ")
     if sys.stdin.readline().strip().lower().startswith("y"):
         from nltk.draw.tree import draw_trees
 
-        print("  please wait...")
+        safe_print("  please wait...")
         draw_trees(*parses)
 
     # Ask the user if we should print the parses.
-    print()
-    print("Print parses (y/n)? ", end=" ")
+    safe_print()
+    safe_print("Print parses (y/n)? ", end=" ")
     if sys.stdin.readline().strip().lower().startswith("y"):
         for parse in parses:
-            print(parse)
+            safe_print(parse)
 
 
 if __name__ == "__main__":

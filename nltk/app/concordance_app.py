@@ -40,6 +40,7 @@ from nltk.corpus import (
     treebank,
 )
 from nltk.draw.util import ShowText
+from nltk.termsec import safe_print
 from nltk.util import in_idle
 
 WORD_OR_TAG = "[^/ ]+"
@@ -653,7 +654,7 @@ class ConcordanceSearchModel:
                 ]
                 self.model.queue.put(CORPUS_LOADED_EVENT)
             except Exception as e:
-                print(e)
+                safe_print(e)
                 self.model.queue.put(ERROR_LOADING_CORPUS_EVENT)
 
     class SearchCorpus(threading.Thread):

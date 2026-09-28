@@ -148,7 +148,7 @@ class IBMModel1(IBMModel):
                 + str(len(self.trg_vocab))
                 + " words). "
                 "Results may be less accurate."
-            )
+            )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
 
         for t in self.trg_vocab:
             self.translation_table[t] = defaultdict(lambda: initial_prob)
