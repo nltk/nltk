@@ -1776,11 +1776,14 @@ class TestAdvisoryProofOfConcept:
     """GHSA-cc5r-64rf-75hg, literally: an executable ./prover9 (and ./mace4) in
     the current directory, ``p = Prover9(); p.config_prover9(binary_location='.')``,
     then a later ``prove()`` (``build_model()`` for Mace) would Popen it from the
-    CWD. The planted files record when they run. Verdict: the marker is never
-    written and no spawn ever receives a CWD path; the raw finder still yields
-    ``./prover9`` for ``path_to_bin='.'`` (the truthy relative path_to_bin that
-    disables the bare-name guard), so the fix is the absolute-only gate, and
-    with that gate neutered the advisory's state is reproduced end to end."""
+    CWD. The sink itself (configure, then run, judged by a marker the decoys
+    write) is phase 6 of the advisory probe ``ghsa_cc5r_64rf_75hg``, with its
+    teeth in ``test_advisory_probes``. Pinned here: the root cause the advisory
+    states (the raw finder still yields ``./prover9`` for a truthy relative
+    ``path_to_bin``, so the fix is the absolute-only gate in front of every
+    wrapper), the helpers and siblings it names, and that with an install
+    configured every form yields only the install. The planted files record
+    when they run: the marker is never written and no spawn receives a CWD path."""
 
     NAMES = ("prover9", "mace4", "prooftrans", "interpformat", "megam", "tadm")
     FORMS = (".", "./", "./prover9", "sub/prover9")
@@ -1875,44 +1878,6 @@ class TestAdvisoryProofOfConcept:
             assert raw and not any(os.path.isabs(m) for m in raw), (form, raw)
         self._judge(poc)
 
-    def test_prover9_poc_is_refused_end_to_end(self, poc):
-        from nltk.inference.prover9 import Prover9, Prover9Command
-
-        goal, assumptions = self._theorem()
-        for form in self.FORMS:
-            p = Prover9()
-            with pytest.raises(LookupError):
-                p.config_prover9(binary_location=form)  # the advisory's line
-            assert p._prover9_bin is None and p._binary_location is None
-            # the "subsequent prove()": nothing to run but the decoys, refused;
-            # on a host with a real install on its default search list the
-            # install runs instead, which the judge below accepts
-            try:
-                Prover9Command(goal, assumptions, prover=p).prove()
-            except LookupError:
-                pass
-            assert getattr(p, "_prover9_bin", None) is None or os.path.isabs(
-                p._prover9_bin
-            )
-        self._judge(poc)
-
-    def test_mace_poc_is_refused_end_to_end(self, poc):
-        from nltk.inference.mace import Mace, MaceCommand
-
-        goal, assumptions = self._theorem()
-        for form in self.FORMS:
-            m = Mace()
-            with pytest.raises(LookupError):
-                m.config_prover9(binary_location=form)  # inherited, the same line
-            assert getattr(m, "_prover9_bin", None) is None
-            assert m._binary_location is None
-            try:
-                MaceCommand(goal, assumptions, model_builder=m).build_model()
-            except LookupError:
-                pass
-            assert m._mace4_bin is None or os.path.isabs(m._mace4_bin)
-        self._judge(poc)
-
     def test_helpers_and_siblings_named_by_the_advisory_are_refused(self, poc):
         from nltk.classify import megam, tadm
         from nltk.inference.mace import Mace, MaceCommand
@@ -1983,40 +1948,6 @@ class TestAdvisoryProofOfConcept:
             assert (private_dir / "legit_ran").read_text().split() == ["prover9"] * len(
                 self.FORMS
             )
-
-    @pytest.mark.skipif(os.name != "posix", reason="the planted binary is a script")
-    def test_with_the_gate_neutered_the_advisory_state_is_reproduced(
-        self, poc, monkeypatch
-    ):
-        # teeth: put the pre-fix resolver back behind config_prover9 and the
-        # advisory's observation returns for the truthy spelling './' (develop
-        # refuses the literal '.' as bare): ./prover9 is configured verbatim and
-        # handed to the spawn; the POSIX spawn layer still refuses the relative
-        # spelling, and the same file as a normalised absolute CWD path, which
-        # is what a caller's abspath() would make of it, runs (the marker)
-        from nltk.inference import prover9 as prover9_module
-        from nltk.inference.mace import Mace
-        from nltk.inference.prover9 import Prover9, Prover9Command
-
-        monkeypatch.setattr(
-            prover9_module, "find_binary_absolute", internals.find_binary
-        )
-        goal, assumptions = self._theorem()
-        p = Prover9()
-        p.config_prover9(binary_location="./")
-        assert p._prover9_bin == os.path.join(os.curdir, "prover9")
-        with pytest.raises(LookupError, match="not on a trusted path"):
-            Prover9Command(goal, assumptions, prover=p).prove()
-        assert poc.handed and not os.path.isabs(poc.handed[-1])  # the judge flips
-        m = Mace()
-        m.config_prover9(binary_location="./")
-        assert m._prover9_bin == os.path.join(os.curdir, "prover9")
-        assert m._binary_location == os.curdir
-        assert not poc.marker.exists()
-        p._prover9_bin = os.path.abspath(p._prover9_bin)
-        assert Prover9Command(goal, assumptions, prover=p).prove() is True
-        assert poc.marker.read_text().split() == ["prover9"]
-        assert _inside(poc.launched[-1], poc.box)
 
 
 class TestBeyondTheReview:
