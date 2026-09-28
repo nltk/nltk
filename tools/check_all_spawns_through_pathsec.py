@@ -79,24 +79,31 @@ _SPAWNING = {
 
 
 def _imported_spawners(tree):
-    """Local names bound by ``from <module> import <spawner> [as name]``."""
-    names = {}
+    """Local names bound by ``from <module> import <spawner> [as name]``, and
+    module aliases bound by ``import <module> [as name]``."""
+    names, modules = {}, {}
     for node in ast.walk(tree):
         if isinstance(node, ast.ImportFrom) and node.module in _SPAWNING:
             for alias in node.names:
                 if alias.name in _SPAWNING[node.module]:
                     names[alias.asname or alias.name] = f"{node.module}.{alias.name}"
-    return names
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name in _SPAWNING:
+                    modules[alias.asname or alias.name] = alias.name
+    return names, modules
 
 
 def _spawn_name(node, imported):
     """The dotted spawner a call node reaches, or None."""
+    names, modules = imported
     func = node.func
     if isinstance(func, ast.Attribute) and isinstance(func.value, ast.Name):
-        if func.attr in _SPAWNING.get(func.value.id, ()):
-            return f"{func.value.id}.{func.attr}"
-    if isinstance(func, ast.Name) and func.id in imported:
-        return imported[func.id]
+        module = modules.get(func.value.id, func.value.id)
+        if func.attr in _SPAWNING.get(module, ()):
+            return f"{module}.{func.attr}"
+    if isinstance(func, ast.Name) and func.id in names:
+        return names[func.id]
     return None
 
 

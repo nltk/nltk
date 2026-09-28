@@ -81,6 +81,24 @@ def test_a_spawn_reached_through_an_imported_name_is_caught(tmp_path):
     assert any("shutil.which" in p for p in problems)
 
 
+def test_a_spawn_reached_through_a_module_alias_is_caught(tmp_path):
+    # the adversarial review found these slipped past: the module bound under
+    # another name, in a plain import or a multi-name one
+    checker = _load_checker()
+    planted = tmp_path / "planted.py"
+    planted.write_text(
+        "import subprocess as sp\n"
+        "import os as o, shutil as sh\n"
+        "import subprocess\n\n"
+        "sp.Popen(['x'])\no.system('x')\nsh.which('x')\nsubprocess.run(['x'])\n",
+        encoding="utf-8",
+    )
+    problems = checker._violations(str(planted))
+    assert len(problems) == 4, problems
+    for spawner in ("subprocess.Popen", "os.system", "shutil.which", "subprocess.run"):
+        assert any(spawner in p for p in problems), spawner
+
+
 def test_unrelated_attributes_and_the_reviewed_marker_are_not_flagged(tmp_path):
     checker = _load_checker()
     clean = tmp_path / "clean.py"
