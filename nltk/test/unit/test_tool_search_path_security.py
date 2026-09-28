@@ -614,6 +614,34 @@ class TestToolEntryPoints:
         with pytest.raises(LookupError):
             Prover9()._find_binary("prooftrans")
 
+    def test_mace_helper_uses_the_configured_prover9_directory(self, box, tmp_path):
+        # config_prover9 stored the rsplit list as the directory, so the mace4,
+        # prooftrans and interpformat lookups crashed with a TypeError afterwards
+        from nltk.inference.mace import Mace
+        from nltk.inference.prover9 import Prover9
+
+        trusted = tmp_path / "trusted"
+        for name in ("prover9", "mace4", "prooftrans", "interpformat"):
+            _exec_file(trusted, name)
+        tool = Mace()
+        tool.config_prover9(str(trusted))
+        assert tool._binary_location == os.path.normpath(str(trusted))
+        assert _same(tool._find_binary("mace4"), str(trusted / "mace4"))
+        assert _same(tool._find_binary("interpformat"), str(trusted / "interpformat"))
+        prover = Prover9()
+        prover.config_prover9(str(trusted / "prover9"))
+        assert _same(prover._find_binary("prooftrans"), str(trusted / "prooftrans"))
+
+    def test_resolved_path_is_normalised(self, box, install):
+        # "./prover9" joined onto the env var directory must not come back as
+        # "<install>/./prover9": no "." components, no doubled separators
+        for name, vars_ in TOOL_ENV.items():
+            got = internals.find_binary_absolute(
+                name, path_to_bin=f"./{name}", env_vars=vars_, binary_names=[name]
+            )
+            assert got == os.path.normpath(got), got
+            assert os.curdir not in internals._path_components(got), got
+
 
 class TestConfigJava:
     def test_every_relative_form_is_refused(self, box):
