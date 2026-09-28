@@ -407,7 +407,16 @@ class TestSignatureFence:
     def test_every_legal_name_passes_including_non_ascii(self):
         from nltk.decorators import _assert_safe_signature, decorator
 
-        for sig in ("caf" + chr(0xE9), chr(0xDF) + ", x", "_", "x1, *a, **k", "", "  "):
+        for sig in (
+            "caf" + chr(0xE9),
+            chr(0xDF) + ", x",
+            "_",
+            "x1, *a, **k",
+            "a, *, b",
+            "a, /, b",
+            "",
+            "  ",
+        ):
             _assert_safe_signature(sig)
 
         def caller(func, *a, **k):
@@ -437,9 +446,10 @@ class TestSignatureFence:
             "None",
             "a, ,b",
             ",",
-            "*",
             "**",
             "***a",
+            "* a",
+            "/ a",
             "a" + NUL,
             "a" + chr(0x2028) + "b",
             "a, b, " + "x, " * 5000 + "!",
