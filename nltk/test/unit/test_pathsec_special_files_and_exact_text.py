@@ -150,6 +150,50 @@ def _finishes_within(seconds, fn):
     return finished, out.get("e"), time.monotonic() - started
 
 
+class TestByNameLinkCheckForNonPosixOpens:
+    """The inode policy applied by name where O_NOFOLLOW is unavailable. It is
+    exercised directly here so its verdicts are proven on every platform; the
+    non-POSIX open branch calls it before builtins.open."""
+
+    def test_symlink_hardlink_and_missing_names(self, pathsec_sandbox):
+        root, outside = pathsec_sandbox
+        real = str(root / "real.txt")
+        with open(real, "w", encoding="utf8") as f:
+            f.write("x")
+        pathsec._reject_link_or_special_by_name(real, "test")  # plain file passes
+        pathsec._reject_link_or_special_by_name(str(root / "absent"), "test")
+        link = str(root / "link.txt")
+        os.symlink(real, link)
+        with pytest.raises(PermissionError, match="symlink"):
+            pathsec._reject_link_or_special_by_name(link, "test")
+        hard = str(root / "hard.txt")
+        os.link(real, hard)
+        with pytest.raises(PermissionError, match="multiply-linked"):
+            pathsec._reject_link_or_special_by_name(hard, "test")
+
+    @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="no FIFOs here")
+    def test_fifo_by_name(self, pathsec_sandbox):
+        root, _ = pathsec_sandbox
+        fifo = str(root / "planted.fifo")
+        os.mkfifo(fifo)
+        with pytest.raises(PermissionError, match="FIFO"):
+            pathsec._reject_link_or_special_by_name(fifo, "test")
+
+    def test_non_posix_open_branch_is_wired_to_it(self):
+        """The fallback branch cannot be forced on a POSIX interpreter (pathlib
+        refuses a foreign flavour), so the wiring is pinned from the source: the
+        by-name check runs in the non-POSIX enforcing branch of pathsec.open,
+        before builtins.open. Windows CI exercises it through the store harness."""
+        import inspect
+
+        source = inspect.getsource(pathsec.open)
+        branch = source.index("if ENFORCE:\n")
+        assert "_reject_link_or_special_by_name(raw_path, context)" in source[branch:]
+        assert source.index("_reject_link_or_special_by_name") < source.rindex(
+            "builtins.open("
+        )
+
+
 @pytest.mark.skipif(os.name != "posix", reason="hardened open is POSIX-only")
 class TestHardenedOpenRefusesSpecialFiles:
     @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="no FIFOs here")

@@ -197,8 +197,12 @@ def test_val_dump_link_planted_after_validation_is_still_refused(staged, monkeyp
 def test_relative_and_traversal_names_are_refused(staged, fn):
     root, outside, _ = staged
     _write_cities(root)
-    # climbs from the root to / and back down into the outside dir
-    traversal = os.path.join(root, "../" * 12 + outside.lstrip(os.sep), "pwn")
+    # climbs from the root back down into the outside dir with '..' components
+    try:
+        traversal = os.path.join(root, os.path.relpath(outside, root), "pwn")
+    except ValueError:
+        pytest.skip("root and outside dir are on different drives")
+    assert ".." in traversal.replace("\\", "/").split("/")
     assert os.path.realpath(traversal).startswith(os.path.realpath(outside))
     for name in ("relative_store", "../pwn", traversal):
         with pytest.raises(REFUSED) as info:
@@ -224,8 +228,10 @@ def test_relative_name_is_allowed_only_from_inside_the_root(staged):
     ["pwn" + chr(0) + "x", "pwn\n", "pw\rn", "\tpwn", "CON", "NUL", "COM1", "aux.db"],
 )
 def test_nul_control_and_device_names_create_nothing_outside(staged, name):
-    """NUL is refused outright; a control character or (on POSIX) a Windows
-    device name is just an odd in-root file name. Nothing may leave the root."""
+    """NUL is refused outright; a control character is an odd in-root file name
+    on POSIX and an invalid one on Windows (OSError, nothing created); a Windows
+    device name is an in-root name on POSIX and a refused device on Windows.
+    Whatever the platform does, nothing may leave the root."""
     root, outside, _ = staged
     try:
         chat80.val_dump([], os.path.join(root, name))
@@ -233,6 +239,8 @@ def test_nul_control_and_device_names_create_nothing_outside(staged, name):
         assert "Security Violation" in str(exc)
         if chr(0) in name:
             assert "NUL" in str(exc)
+    except OSError as exc:
+        assert os.name != "posix", f"POSIX refused an ordinary name: {exc}"
     assert sorted(os.listdir(outside)) == ["victim.txt"]
 
 

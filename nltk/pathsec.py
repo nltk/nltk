@@ -1709,6 +1709,37 @@ def _is_special_file(st):
     )
 
 
+def _reject_link_or_special_by_name(raw_path, context):
+    """The hardened open's inode policy, checked by name for non-POSIX opens.
+
+    Without ``O_NOFOLLOW`` the fallback open would follow a symlink planted at
+    the final component, read or write through a hardlink to an outside inode,
+    or open a device such as ``NUL``. ``lstat`` sees the link itself, so each of
+    those is refused before the open; a name that does not exist yet (an output
+    file about to be created) has nothing to check.
+    """
+    try:
+        st = os.lstat(raw_path)
+    except OSError:
+        return
+    if stat.S_ISLNK(st.st_mode):
+        raise PermissionError(
+            f"Security Violation [{context}]: refusing to follow a symlink at "
+            f"{raw_path!r} (CWE-59)"
+        )
+    if _is_special_file(st):
+        raise PermissionError(
+            f"Security Violation [{context}]: {raw_path!r} is a FIFO, socket or "
+            "device, not data; refusing to open it"
+        )
+    if stat.S_ISREG(st.st_mode) and st.st_nlink > 1:
+        raise PermissionError(
+            f"Security Violation [{context}]: refusing multiply-linked file "
+            f"{raw_path!r} (st_nlink={st.st_nlink}); a hardlink can point at an "
+            "outside-root inode (CWE-59)"
+        )
+
+
 def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     """Open ``raw_path`` for read *or* write, closing the symlink-swap TOCTOU and
     the hardlink escape that a path-only ``validate_path`` cannot.
@@ -1855,6 +1886,11 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
         # builtins.open on OSError -- retrying the raw path would follow a symlink
         # the hardened open deliberately refused, reopening the TOCTOU leak.
         return _hardened_open(raw_path, mode, context, required_root, **kwargs)
+    if ENFORCE:
+        # No O_NOFOLLOW off POSIX: apply the same inode policy by name, so a
+        # planted link or device is refused there too (not race-free, but never
+        # weaker than a plain open that follows it).
+        _reject_link_or_special_by_name(raw_path, context)
     return builtins.open(raw_path, mode=mode, **kwargs)
 
 
