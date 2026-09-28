@@ -12,6 +12,7 @@ All spelling mistakes and flawed grammar are intentional.
 """
 
 from nltk.chat.util import Chat
+from nltk.termsec import safe_print
 
 reflections = {
     "am": "r",
@@ -143,11 +144,11 @@ iesha_chatbot = Chat(pairs, reflections)
 
 
 def iesha_chat():
-    print("Iesha the TeenBoT\n---------")
-    print("Talk to the program by typing in plain English, using normal upper-")
-    print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print("=" * 72)
-    print("hi!! i'm iesha! who r u??!")
+    safe_print("Iesha the TeenBoT\n---------")
+    safe_print("Talk to the program by typing in plain English, using normal upper-")
+    safe_print('and lower-case letters and punctuation.  Enter "quit" when done.')
+    safe_print("=" * 72)
+    safe_print("hi!! i'm iesha! who r u??!")
 
     iesha_chatbot.converse()
 

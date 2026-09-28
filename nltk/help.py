@@ -14,6 +14,7 @@ from textwrap import wrap
 from nltk import redos
 from nltk.data import find, open_datafile
 from nltk.jsontags import safe_json_load
+from nltk.termsec import safe_print
 
 
 def brown_tagset(tagpattern=None):
@@ -40,7 +41,7 @@ def _print_entries(tags, tagdict):
         examples = wrap(
             entry[1], width=75, initial_indent="    ", subsequent_indent="    "
         )
-        print("\n".join(defn + examples))
+        safe_print("\n".join(defn + examples))
 
 
 def _format_tagset(tagset, tagpattern=None):
@@ -68,7 +69,7 @@ def _format_tagset(tagset, tagpattern=None):
         if tags:
             _print_entries(tags, tagdict)
         else:
-            print("No matching tags found.")
+            safe_print("No matching tags found.")
 
 
 if __name__ == "__main__":

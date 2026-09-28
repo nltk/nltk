@@ -16,6 +16,7 @@ try:
 except ImportError:
     betai = None
 
+from nltk.termsec import safe_print
 from nltk.util import LazyConcatenation, LazyMap
 
 
@@ -164,13 +165,13 @@ def approxrand(a, b, **kwargs):
     verbose = kwargs.get("verbose", False)
 
     if verbose:
-        print("shuffles: %d" % shuffles)
+        safe_print("shuffles: %d" % shuffles)
 
     actual_stat = fabs(stat(a) - stat(b))
 
     if verbose:
-        print("actual statistic: %f" % actual_stat)
-        print("-" * 60)
+        safe_print("actual statistic: %f" % actual_stat)
+        safe_print("-" * 60)
 
     c = 1e-100
     lst = LazyConcatenation([a, b])
@@ -178,7 +179,7 @@ def approxrand(a, b, **kwargs):
 
     for i in range(shuffles):
         if verbose and i % 10 == 0:
-            print("shuffle: %d" % i)
+            safe_print("shuffle: %d" % i)
 
         shuffle(indices)
 
@@ -190,38 +191,38 @@ def approxrand(a, b, **kwargs):
             c += 1
 
         if verbose and i % 10 == 0:
-            print("pseudo-statistic: %f" % pseudo_stat)
-            print("significance: %f" % ((c + 1) / (i + 1)))
-            print("-" * 60)
+            safe_print("pseudo-statistic: %f" % pseudo_stat)
+            safe_print("significance: %f" % ((c + 1) / (i + 1)))
+            safe_print("-" * 60)
 
     significance = (c + 1) / (shuffles + 1)
 
     if verbose:
-        print("significance: %f" % significance)
+        safe_print("significance: %f" % significance)
         if betai:
             for phi in [0.01, 0.05, 0.10, 0.15, 0.25, 0.50]:
-                print(f"prob(phi<={phi:f}): {betai(c, shuffles, phi):f}")
+                safe_print(f"prob(phi<={phi:f}): {betai(c, shuffles, phi):f}")
 
     return (significance, c, shuffles)
 
 
 def demo():
-    print("-" * 75)
+    safe_print("-" * 75)
     reference = "DET NN VB DET JJ NN NN IN DET NN".split()
     test = "DET VB VB DET NN NN NN IN DET NN".split()
-    print("Reference =", reference)
-    print("Test    =", test)
-    print("Accuracy:", accuracy(reference, test))
+    safe_print("Reference =", reference)
+    safe_print("Test    =", test)
+    safe_print("Accuracy:", accuracy(reference, test))
 
-    print("-" * 75)
+    safe_print("-" * 75)
     reference_set = set(reference)
     test_set = set(test)
-    print("Reference =", reference_set)
-    print("Test =   ", test_set)
-    print("Precision:", precision(reference_set, test_set))
-    print("   Recall:", recall(reference_set, test_set))
-    print("F-Measure:", f_measure(reference_set, test_set))
-    print("-" * 75)
+    safe_print("Reference =", reference_set)
+    safe_print("Test =   ", test_set)
+    safe_print("Precision:", precision(reference_set, test_set))
+    safe_print("   Recall:", recall(reference_set, test_set))
+    safe_print("F-Measure:", f_measure(reference_set, test_set))
+    safe_print("-" * 75)
 
 
 if __name__ == "__main__":
