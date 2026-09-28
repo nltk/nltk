@@ -37,10 +37,18 @@ TOOL_ENV = {
     "hunpos-tag": ["HUNPOS_TAGGER"],
 }
 ALL_ENV_VARS = [var for vars_ in TOOL_ENV.values() for var in vars_]
+NUL = chr(0)
 
 
 class _Spawned(Exception):
     """Raised in place of the hunpos spawn, carrying the binary it was given."""
+
+
+class _LyingStr(str):
+    """A location whose string methods lie: ``os.path.isabs`` asks ``startswith``."""
+
+    def startswith(self, *args, **kwargs):
+        return True
 
 
 def _exec_file(directory, name, marker="PWNED"):
@@ -54,6 +62,7 @@ def _exec_file(directory, name, marker="PWNED"):
 def _relative_forms(name, box):
     forms = [
         ".",
+        "./",
         f"./{name}",
         f"sub/{name}",
         "sub",
@@ -62,8 +71,18 @@ def _relative_forms(name, box):
         f"../{os.path.basename(box)}/{name}",
     ]
     if os.name == "nt":
-        forms += [f".\\{name}", f"sub\\{name}"]
+        forms += [
+            f".\\{name}",
+            f"sub\\{name}",
+            f"..\\{os.path.basename(box)}\\{name}",
+        ]
     return forms
+
+
+def _odd_forms(name):
+    """Relative locations that are not plain strings, or carry a NUL byte."""
+    relative = f"./{name}"
+    return [_LyingStr(relative), Path(relative), relative.encode(), relative + NUL]
 
 
 def _escape_form(name, box):
@@ -81,11 +100,13 @@ def _scrubbed_path(directory):
 
 
 def _same(a, b):
-    return os.path.realpath(a) == os.path.realpath(b)
+    return os.path.realpath(str(a)) == os.path.realpath(str(b))
 
 
 def _inside(path, directory):
-    return os.path.realpath(path).startswith(os.path.realpath(str(directory)) + os.sep)
+    return os.path.realpath(str(path)).startswith(
+        os.path.realpath(str(directory)) + os.sep
+    )
 
 
 def _entry_points():
@@ -212,7 +233,7 @@ def home_install(monkeypatch):
 class TestFindBinaryAbsolute:
     def test_every_relative_form_is_refused(self, box):
         for name, vars_ in TOOL_ENV.items():
-            for form in _relative_forms(name, box):
+            for form in _relative_forms(name, box) + _odd_forms(name):
                 with pytest.raises(LookupError):
                     internals.find_binary_absolute(
                         name, path_to_bin=form, env_vars=vars_, binary_names=[name]
@@ -286,6 +307,28 @@ class TestFindBinaryAbsolute:
                 "prover9", path_to_bin=dotted, binary_names=["prover9"]
             )
 
+    def test_env_var_climbing_through_parent_into_the_cwd_is_refused(
+        self, box, install, monkeypatch
+    ):
+        # the env var itself points through ".." at the decoy directory
+        through = os.path.join(str(install), os.pardir, os.path.basename(str(box)))
+        assert os.path.isfile(os.path.join(through, "prover9"))
+        for name, vars_ in TOOL_ENV.items():
+            for var in vars_:  # every variable of the tool, or java falls back
+                monkeypatch.setenv(var, through)
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    name, env_vars=vars_, binary_names=[name]
+                )
+            for form in _relative_forms(name, box):
+                try:
+                    got = internals.find_binary_absolute(
+                        name, path_to_bin=form, env_vars=vars_, binary_names=[name]
+                    )
+                except LookupError:
+                    continue
+                assert not _inside(got, box), (name, form, got)
+
     def test_relative_forms_never_win_once_an_install_is_configured(self, box, install):
         for name, vars_ in TOOL_ENV.items():
             outcomes = set()
@@ -303,6 +346,54 @@ class TestFindBinaryAbsolute:
             assert _same(configure(f"./{name}"), str(install / name)), name
             assert "install" in outcomes, name
 
+    def test_nul_byte_is_refused_cleanly(self, box, tmp_path):
+        # NUL truncates the path in native calls; a LookupError, never a
+        # ValueError from the filesystem layer, and never a resolution
+        good = _exec_file(tmp_path / "trusted", "prover9")
+        for location in ("./prover9" + NUL, good + NUL, NUL + good):
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", path_to_bin=location, binary_names=["prover9"]
+                )
+
+    def test_pathlike_and_bytes_locations(self, box, tmp_path):
+        # a path-like or bytes location is honoured when absolute and refused
+        # when relative, exactly like a str, and the result is a plain str
+        good = _exec_file(tmp_path / "trusted", "prover9")
+        for location in (Path(good), os.fsencode(good)):
+            found = internals.find_binary_absolute(
+                "prover9", path_to_bin=location, binary_names=["prover9"]
+            )
+            assert type(found) is str and _same(found, good), location
+        for location in (Path("./prover9"), b"./prover9", Path("sub/prover9")):
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", path_to_bin=location, binary_names=["prover9"]
+                )
+
+    def test_non_path_location_is_a_clean_refusal(self, box):
+        for location in (3.14, ["./prover9"], object()):
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", path_to_bin=location, binary_names=["prover9"]
+                )
+
+    def test_lying_str_subclass_cannot_fake_an_absolute_path(self, box, tmp_path):
+        # teeth: os.path.isabs believes the object; the guard must not
+        lying = _LyingStr("./prover9")
+        assert os.path.isabs(lying)
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute(
+                "prover9", path_to_bin=lying, binary_names=["prover9"]
+            )
+        # and an honest absolute location wrapped in the subclass is honoured
+        # as a plain str, so nothing downstream consults the subclass either
+        good = _exec_file(tmp_path / "trusted", "prover9")
+        found = internals.find_binary_absolute(
+            "prover9", path_to_bin=_LyingStr(good), binary_names=["prover9"]
+        )
+        assert type(found) is str and _same(found, good)
+
     def test_absolute_file_and_directory_locations_are_honoured(self, box, tmp_path):
         good = _exec_file(tmp_path / "trusted", "prover9")
         found = internals.find_binary_absolute(
@@ -314,6 +405,18 @@ class TestFindBinaryAbsolute:
         )
         assert _same(found, good)
 
+    def test_absolute_symlink_in_the_cwd_to_the_install_resolves_to_the_install(
+        self, box, install
+    ):
+        # an absolute link is the caller's explicit choice; the spawn layer
+        # follows every hop and judges each directory on the way
+        link = box / "link"
+        os.symlink(str(install / "prover9"), str(link))
+        found = internals.find_binary_absolute(
+            "prover9", path_to_bin=str(link), binary_names=["prover9"]
+        )
+        assert _same(found, str(install / "prover9"))
+
     def test_absolute_env_var_alone_is_honoured(self, box, install):
         for name, vars_ in TOOL_ENV.items():
             got = internals.find_binary_absolute(
@@ -321,14 +424,37 @@ class TestFindBinaryAbsolute:
             )
             assert _same(got, str(install / name)), name
 
+    def test_mixed_env_entries_resolve_to_the_absolute_one(
+        self, box, install, monkeypatch
+    ):
+        for name, vars_ in TOOL_ENV.items():
+            for value in (f".{os.pathsep}{install}", f"{install}{os.pathsep}."):
+                monkeypatch.setenv(vars_[0], value)
+                got = internals.find_binary_absolute(
+                    name, env_vars=vars_, binary_names=[name]
+                )
+                assert _same(got, str(install / name)), (name, value)
+
     def test_relative_env_var_is_refused(self, box, monkeypatch):
         for name, vars_ in TOOL_ENV.items():
-            for value in (".", "sub", "./sub", f"sub{os.pathsep}."):
+            for value in (".", "sub", "./sub", f"sub{os.pathsep}.", f"./{name}"):
                 monkeypatch.setenv(vars_[0], value)
                 with pytest.raises(LookupError):
                     internals.find_binary_absolute(
                         name, env_vars=vars_, binary_names=[name]
                     )
+
+    def test_relative_and_escaping_searchpath_entries_are_refused(self, box, install):
+        through = os.path.join(str(install), os.pardir, os.path.basename(str(box)))
+        for entry in (".", "sub", "./", through):
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", searchpath=[entry], binary_names=["prover9"]
+                )
+        found = internals.find_binary_absolute(
+            "prover9", searchpath=[".", str(install)], binary_names=["prover9"]
+        )
+        assert _same(found, str(install / "prover9"))
 
     def test_cwd_entries_on_path_are_refused(self, box, tmp_path, monkeypatch):
         # "." or an empty entry makes which() answer with a CWD-relative hit;
@@ -360,8 +486,8 @@ class TestFindBinaryAbsolute:
     def test_no_which_on_path_is_not_found_rather_than_a_crash(
         self, box, tmp_path, monkeypatch
     ):
-        # a PATH without which (minimal containers) must end in the not-found
-        # error, never a FileNotFoundError for which itself
+        # a PATH without which (minimal containers), or with a which that cannot
+        # run, must end in the not-found error, never an OSError for which itself
         bare = tmp_path / "bare"
         bare.mkdir()
         monkeypatch.setenv("PATH", str(bare))
@@ -369,12 +495,41 @@ class TestFindBinaryAbsolute:
             internals.find_binary_absolute("prover9", binary_names=["prover9"])
         with pytest.raises(LookupError):
             internals.find_binary("prover9", binary_names=["prover9"])
+        broken = tmp_path / "broken"
+        broken.mkdir()
+        (broken / "which").write_text("not executable\n", encoding="utf-8")
+        monkeypatch.setenv("PATH", str(broken))
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute("prover9", binary_names=["prover9"])
+
+    def test_parent_detection_uses_only_the_platform_separators(self):
+        # a backslash is a file-name character on POSIX and a separator on
+        # Windows; ".." must be recognised exactly where the OS would honour it
+        parts = internals._path_components
+        assert os.pardir in parts(os.path.join(os.sep, "a", "..", "b"))
+        assert os.pardir not in parts(os.path.join(os.sep, "a", "..x", "b"))
+        if os.name == "posix":
+            assert os.pardir not in parts("/a/..\\b")  # one component, "..\\b"
+        else:
+            assert os.pardir in parts("C:\\a\\..\\b")
+            assert os.pardir in parts("C:/a/../b")
+            assert os.pardir in parts("C:\\a/..\\b")
+
+    def test_posix_backslash_in_a_component_is_not_a_separator(self, box, tmp_path):
+        if os.name != "posix":
+            return  # a backslash cannot be part of a file name on Windows
+        odd_dir = tmp_path / "..\\odd"
+        good = _exec_file(odd_dir, "prover9")
+        found = internals.find_binary_absolute(
+            "prover9", path_to_bin=good, binary_names=["prover9"]
+        )
+        assert _same(found, good)
 
 
 class TestToolEntryPoints:
     def test_every_relative_form_is_refused(self, box):
         for label, name, configure in ENTRY_POINTS:
-            for form in _relative_forms(name, box):
+            for form in _relative_forms(name, box) + _odd_forms(name):
                 with pytest.raises(LookupError):
                     configure(form)
 
@@ -398,6 +553,7 @@ class TestToolEntryPoints:
         for label, name, configure in ENTRY_POINTS:
             good = _exec_file(trusted, name)
             assert _same(configure(good), good), label
+            assert _same(configure(Path(good)), good), label
 
     def test_no_prior_state_leaks_between_calls(self, box, tmp_path, monkeypatch):
         # a refused relative location must not leave the previous binary configured
@@ -416,8 +572,9 @@ class TestToolEntryPoints:
             megam.config_megam("sub/megam")
         assert _same(megam._megam_bin, good_megam)
 
-    def test_prover9_helper_binaries_never_come_from_the_cwd(self, box):
-        # prooftrans, mace4 and interpformat resolve through the same helper
+    def test_prover9_helper_binaries_never_come_from_the_cwd(self, box, monkeypatch):
+        # prooftrans, mace4 and interpformat resolve through the same helper,
+        # and a relative entry in its search path is refused like any other
         from nltk.inference.mace import Mace
         from nltk.inference.prover9 import Prover9
 
@@ -429,11 +586,14 @@ class TestToolEntryPoints:
             Mace()._find_binary("mace4")
         with pytest.raises(LookupError):
             Mace()._find_binary("interpformat")
+        monkeypatch.setattr(Prover9, "binary_locations", lambda self: [".", "sub"])
+        with pytest.raises(LookupError):
+            Prover9()._find_binary("prooftrans")
 
 
 class TestConfigJava:
     def test_every_relative_form_is_refused(self, box):
-        for form in _relative_forms("java", box):
+        for form in _relative_forms("java", box) + _odd_forms("java"):
             with pytest.raises(LookupError):
                 internals.config_java(form)
             assert internals._java_bin is None
@@ -444,6 +604,9 @@ class TestConfigJava:
         good = _exec_file(tmp_path / "jdk", "java")
         internals.config_java(good)
         assert _same(internals._java_bin, good)
+        internals._java_bin = None
+        internals.config_java(Path(good))
+        assert type(internals._java_bin) is str and _same(internals._java_bin, good)
         internals._java_bin = None
         monkeypatch.setenv("JAVA_HOME", str(tmp_path / "jdk"))
         internals.config_java()
@@ -468,7 +631,7 @@ class TestConfigJava:
 
     def test_relative_java_home_is_refused(self, box, monkeypatch):
         for var in ("JAVAHOME", "JAVA_HOME"):
-            for value in (".", "sub", "./sub"):
+            for value in (".", "sub", "./sub", "./java"):
                 monkeypatch.setenv(var, value)
                 with pytest.raises(LookupError):
                     internals.config_java()
@@ -480,7 +643,7 @@ class TestHunposTagger:
         self, box, home_install, monkeypatch
     ):
         model = str(home_install / "en_wsj.model")
-        for form in _relative_forms("hunpos-tag", box):
+        for form in _relative_forms("hunpos-tag", box) + _odd_forms("hunpos-tag"):
             with pytest.raises(LookupError):
                 _hunpos(monkeypatch, model, form)
 
@@ -488,6 +651,7 @@ class TestHunposTagger:
         model = str(home_install / "en_wsj.model")
         good = str(home_install / "hunpos-tag")
         assert _same(_hunpos(monkeypatch, model, good), good)
+        assert _same(_hunpos(monkeypatch, model, Path(good)), good)
 
     def test_relative_forms_never_win_once_the_env_var_is_set(
         self, box, home_install, monkeypatch
@@ -506,17 +670,15 @@ class TestHunposTagger:
             configure(_escape_form("hunpos-tag", box))
 
 
-@pytest.mark.skipif(
-    os.name != "posix",
-    reason="the decoy is a POSIX shell script; the proof concerns the POSIX trust check",
-)
-def test_trusted_spawn_runs_any_normalised_same_user_file(monkeypatch):
-    """What the spawn layer does and does not stop, staged under $HOME because a
-    shared temp directory would be refused for its permissions. The trust check
-    refuses a relative target and a ".." target outright, but it trusts a
-    normalised absolute file we own in a private chain and _call() then runs
-    it. So the resolver must never turn a relative location into such a path:
-    that is what find_binary_absolute's refusals guarantee."""
+def test_spawn_layer_relative_target_per_platform(monkeypatch):
+    """What the spawn layer does and does not stop, on each platform, staged
+    under $HOME because a shared temp directory would be refused for its
+    permissions. POSIX: the trust check refuses a relative target and a ".."
+    target outright but trusts a normalised absolute file we own in a private
+    chain, and _call() then runs it, so the resolver must never turn a relative
+    location into such a path. Windows: the best-effort resolver accepts even
+    the relative target, so the config-time refusal is the only layer there.
+    Either way, with an install configured no relative form reaches the spawn."""
     from nltk.inference.prover9 import Prover9
 
     home_box = Path(tempfile.mkdtemp(prefix=".nltk_cc5r_", dir=Path.home()))
@@ -527,15 +689,17 @@ def test_trusted_spawn_runs_any_normalised_same_user_file(monkeypatch):
         escaped = os.path.join(str(trusted), "..", home_box.name, "prover9")
         assert os.path.isfile(escaped)
         monkeypatch.chdir(home_box)
-        assert pathsec.resolve_trusted_executable("./prover9") is None
-        assert pathsec.resolve_trusted_executable(escaped) is None
-        assert pathsec.resolve_trusted_executable(planted)
-        tool = Prover9()
-        tool._prover9_bin = planted  # a normalised absolute path into the CWD
-        stdout, returncode = tool._call("", tool._prover9_bin)
-        assert returncode == 0 and "PWNED" in stdout
-        # and with the install configured, neither the escape nor the relative
-        # form can hand that path to the spawn: every one lands on the install
+        if os.name == "posix":
+            assert pathsec.resolve_trusted_executable("./prover9") is None
+            assert pathsec.resolve_trusted_executable(escaped) is None
+            assert pathsec.resolve_trusted_executable(planted)
+            tool = Prover9()
+            tool._prover9_bin = planted  # a normalised absolute path into the CWD
+            stdout, returncode = tool._call("", tool._prover9_bin)
+            assert returncode == 0 and "PWNED" in stdout
+        else:
+            accepted = pathsec.resolve_trusted_executable("./prover9")
+            assert accepted and _inside(accepted, home_box)
         monkeypatch.setenv("PROVER9", str(trusted))
         for form in ("./prover9", escaped, f"../{home_box.name}/prover9"):
             tool = Prover9()
