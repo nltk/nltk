@@ -1107,7 +1107,8 @@ def find_binary_absolute(
         if type(path) is not str:
             path = str.__str__(path)
         if os.path.isabs(path) and os.pardir not in _path_components(path):
-            return path
+            # normalised only now: with no '..' left, normpath is purely lexical
+            return os.path.normpath(path)
     raise LookupError(
         f"No absolute {name!r} binary found; a binary found relative to the "
         "current working directory, or through a '..' component, is refused "
