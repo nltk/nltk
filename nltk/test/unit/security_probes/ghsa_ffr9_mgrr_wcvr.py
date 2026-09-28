@@ -20,14 +20,16 @@ def _span_tokenize_quote_restore():
     from nltk.tokenize.destructive import NLTKWordTokenizer
     from nltk.tokenize.treebank import TreebankWordTokenizer
 
-    small, big = 5_000, 20_000  # big == 4 * small
+    # Sized so a quadratic small side clears the (lowered) noise floor even on
+    # a fast runner; the linear restore at 16000 quotes is ~0.25 s.
+    small, big = 4_000, 16_000  # big == 4 * small
     findings = []
     for tokenizer in (TreebankWordTokenizer(), NLTKWordTokenizer()):
 
         def op(n, tokenizer=tokenizer):
             list(tokenizer.span_tokenize('"' * n))
 
-        ratio = scaling_ratio(op, small, big)
+        ratio = scaling_ratio(op, small, big, reps=2, noise_floor=0.02)
         findings.append(f"{type(tokenizer).__name__} {ratio:.1f}x")
         if ratio >= QUADRATIC_RATIO:
             return (

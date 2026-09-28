@@ -36,8 +36,12 @@ def _legality_onset_reversal():
             cap_note = "oversized token accepted, no cap"
 
     tokenizer.MAX_TOKEN_LEN = 10**9  # this instance only
+    # Sized so a quadratic small side clears the (lowered) noise floor even on
+    # a fast runner; the linear loop at 40000 chars is ~0.05 s.
     small, big = 10_000, 40_000  # big == 4 * small
-    ratio = scaling_ratio(lambda n: tokenizer.tokenize("a" * n), small, big)
+    ratio = scaling_ratio(
+        lambda n: tokenizer.tokenize("a" * n), small, big, reps=2, noise_floor=0.02
+    )
     detail = "%s; loop scales %.1fx over 4x input (%d->%d chars)" % (
         cap_note,
         ratio,

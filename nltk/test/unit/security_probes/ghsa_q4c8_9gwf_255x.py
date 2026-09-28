@@ -24,8 +24,10 @@ def _readline_unterminated_line():
     def op(n):
         SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
 
-    small, big = 500_000, 2_000_000  # big == 4 * small
-    ratio = scaling_ratio(op, small, big)
+    # Sized so a quadratic small side clears the (lowered) noise floor even on
+    # a fast runner, while a linear 3 MB read stays well under 0.2 s.
+    small, big = 750_000, 3_000_000  # big == 4 * small
+    ratio = scaling_ratio(op, small, big, reps=2, noise_floor=0.02)
     detail = "readline scales %.1fx over 4x input (%d->%d chars)" % (ratio, small, big)
     if ratio >= QUADRATIC_RATIO:
         return VULNERABLE, "whole-buffer re-split per block: " + detail

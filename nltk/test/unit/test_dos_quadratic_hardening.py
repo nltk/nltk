@@ -60,10 +60,17 @@ def _assert_subquadratic(op, small, big, reps=3):
     assert ratio < QUADRATIC_RATIO, (small, big, t_small, t_big, ratio)
 
 
-def _assert_quadratic(op, small, big, reps=3):
-    """Negative control: with a guard neutered the sink must scale super-linearly."""
-    ratio, t_small, t_big = _scaling_ratio(op, small, big, reps=reps)
-    assert ratio >= QUADRATIC_RATIO, (small, big, t_small, t_big, ratio)
+def _assert_quadratic(op, small, big, reps=3, factor=QUADRATIC_RATIO, noise_floor=0.02):
+    """Negative control: with a guard neutered the sink must scale super-linearly.
+
+    The floor is lower than the positive check's: the neutered small side is
+    sized to clear 20 ms even on a fast runner, and a floor of 0.1 s would
+    hide a real 16x as 5x there.
+    """
+    ratio, t_small, t_big = _scaling_ratio(
+        op, small, big, reps=reps, noise_floor=noise_floor
+    )
+    assert ratio >= factor, (small, big, t_small, t_big, ratio)
 
 
 # --- #32p6: redos capturing-group compile bound ------------------------------
@@ -265,7 +272,7 @@ class TestReadlineLinear:
             SeekableUnicodeStreamReader, "_LINEBREAK_CHARS", frozenset("a")
         )
         _assert_quadratic(
-            lambda n: self._reader(b"a" * n).readline(), 500_000, 2_000_000
+            lambda n: self._reader(b"a" * n).readline(), 750_000, 3_000_000, reps=1
         )
         # and the output is still the whole line, only slower
         assert len(self._reader(b"a" * 100_000).readline()) == 100_000
@@ -326,10 +333,10 @@ class TestXMLCorpusViewDepth:
 
         monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
         assert self._nested(6000) == []  # accepted once the bound is gone
-        # The per-tag regex match is a linear floor under the quadratic path
-        # rebuild (profiled: str.join is over half the time at depth 6000), so
-        # the sizes are large enough for the rebuild to dominate.
-        _assert_quadratic(self._descend, 3000, 12000, reps=1)
+        # The per-tag piece scan and tagspec match are a linear floor under the
+        # quadratic path rebuild (profiled: str.join is over half the time at
+        # depth 6000), so the mixed scaling is 8x to 10x, against 4x if linear.
+        _assert_quadratic(self._descend, 4000, 16000, reps=1, factor=6.0)
 
 
 # --- #53pg: WordNet hypernym walkers refuse a cyclic graph -------------------
@@ -558,10 +565,12 @@ class TestSpanTokenizeLinear:
             assert len(spans) == len(tk.tokenize(text))
 
     def test_many_quotes_is_not_quadratic(self):
-        # 200k quotes ran past 45 s pre-fix; the linear restore scales ~4x.
+        # 200k quotes ran past 45 s pre-fix; the linear restore scales ~4x. The
+        # sizes are large enough that the pre-fix C-level list.pop(0) memmove
+        # (40 GB at 100k) is visible, not only a Python-level regression.
         for tk in self._tokenizers():
             _assert_subquadratic(
-                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 10_000, 40_000
+                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 25_000, 100_000
             )
 
     def test_linear_restore_has_teeth(self, monkeypatch):
@@ -580,7 +589,7 @@ class TestSpanTokenizeLinear:
         monkeypatch.setattr(treebank, "deque", _FrontPopList)
         for tk in self._tokenizers():
             _assert_quadratic(
-                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 5_000, 20_000, reps=2
+                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 4_000, 16_000, reps=2
             )
 
 

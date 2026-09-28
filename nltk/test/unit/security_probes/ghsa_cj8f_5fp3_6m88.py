@@ -11,14 +11,12 @@ import pathlib
 import shutil
 import tempfile
 
-from ._base import (
-    FIXED,
-    QUADRATIC_RATIO,
-    VULNERABLE,
-    probe,
-    register_data_root,
-    scaling_ratio,
-)
+from ._base import FIXED, VULNERABLE, probe, register_data_root, scaling_ratio
+
+#: A linear descent scales ~4x over 4x depth; the pre-fix per-tag path rebuild
+#: is quadratic but sits under a linear per-tag floor (piece scan, tagspec
+#: match), so at 4000->16000 it measures 8x to 10x rather than 16x.
+_SUPERLINEAR_RATIO = 6.0
 
 
 def _read_nested(depth):
@@ -44,16 +42,16 @@ def _read_nested(depth):
 @probe("GHSA-cj8f-5fp3-6m88")
 def _deep_xml_nesting():
     try:
-        _read_nested(12000)
+        _read_nested(16000)
     except ValueError as exc:
         if "MAX_XML_DEPTH" in str(exc):
-            return FIXED, "depth 12000 refused: %s" % str(exc)[:70]
+            return FIXED, "depth 16000 refused: %s" % str(exc)[:70]
         return VULNERABLE, "rejected for another reason, guard not reached: %s" % exc
     # No depth bound: the advisory is only closed if the walk itself is linear.
-    # The per-tag regex match is a linear floor under the quadratic path
-    # rebuild, so the sizes are large enough for the rebuild to dominate.
-    ratio = scaling_ratio(_read_nested, 3000, 12000, reps=2)
-    detail = "read_block scales %.1fx over 4x depth (3000->12000)" % ratio
-    if ratio >= QUADRATIC_RATIO:
+    # The per-tag piece scan and tagspec match are a linear floor under the
+    # quadratic path rebuild, so the mixed scaling sits between 4x and 16x.
+    ratio = scaling_ratio(_read_nested, 4000, 16000, reps=2)
+    detail = "read_block scales %.1fx over 4x depth (4000->16000)" % ratio
+    if ratio >= _SUPERLINEAR_RATIO:
         return VULNERABLE, "no depth bound and per-tag path rebuild: " + detail
     return FIXED, "no depth bound but the descent is linear: " + detail
