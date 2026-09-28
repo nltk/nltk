@@ -67,9 +67,9 @@ _REVIEWED: dict[tuple[str, str], str] = {
         "nltk/app/chunkparser_app.py",
         "^\\# Regexp Chunk Parsing Grammar[\\s\\S]*F-score:.*\n",
     ): "GUI status text, one greedy match, not attacker corpus input",
-    ("nltk/chunk/util.py", "<[^>]{1,400}>|[^\\s<]+"): (
-        "tag body is bounded; the [^\\s<]+ alt matches one token per pass with no "
-        "terminator to re-scan"
+    ("nltk/chunk/util.py", "<[^<>]{1,400}>|[^\\s<]+"): (
+        "tag body is bounded and excludes the < anchor; the [^\\s<]+ alt matches "
+        "one token per pass with no terminator to re-scan"
     ),
     ("nltk/classify/textcat.py", "[^\\P{P}\\']+"): (
         "matches punctuation runs; each match advances, O(n) total"

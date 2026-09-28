@@ -527,8 +527,10 @@ def _ieer_read_text(s, root_label):
     # return the empty list in place of a Tree
     if s is None:
         return []
-    # Bound the tag body: `<`*N with no `>` is O(n**2) re-anchoring (CWE-407).
-    for piece_m in redos.finditer(r"<[^>]{1,400}>|[^\s<]+", s):
+    # Bound the tag body and keep `<` out of it: `<`*N with no `>` was O(n**2)
+    # re-anchoring (CWE-407); excluding the anchor makes the scan stop at the
+    # next tag, so the pass is O(n) rather than O(n*bound).
+    for piece_m in redos.finditer(r"<[^<>]{1,400}>|[^\s<]+", s):
         piece = piece_m.group()
         try:
             if piece.startswith("<b_"):

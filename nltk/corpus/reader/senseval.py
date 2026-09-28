@@ -179,24 +179,24 @@ def _fixXML(text):
     # fix """
     text = redos.sub(r'"""', "'\"'", text)
     # fix <s snum=dd> => <s snum="dd"/>
-    # Bound the tag bodies below: a repeated `<...` anchor whose `[^>]`/`[^<]`
-    # run has no terminator is O(n**2) re-anchoring on a crafted block (CWE-407);
-    # real senseval tags are short, so the bounds are non-lossy.
-    text = redos.sub(r'(<[^<]{0,256}snum=)([^">]{1,256})>', r'\1"\2"/>', text)
+    # Bound the tag bodies below and keep `<` out of every run: a repeated `<...`
+    # anchor whose run has no terminator then stops at the next anchor, so a
+    # crafted block is O(n) rather than O(n*bound) or O(n**2) (CWE-407).
+    text = redos.sub(r'(<[^<]{0,256}snum=)([^"<>]{1,256})>', r'\1"\2"/>', text)
     # fix foreign word tag
     text = redos.sub(r"<\&frasl>\s*<p[^>]*>", "FRASL", text)
     # remove <&I .>
-    text = redos.sub(r"<\&I[^>]{0,256}>", "", text)
+    text = redos.sub(r"<\&I[^<>]{0,256}>", "", text)
     # fix <{word}>
-    text = redos.sub(r"<{([^}]{1,256})}>", r"\1", text)
+    text = redos.sub(r"<{([^<}]{1,256})}>", r"\1", text)
     # remove <@>, <p>, </p>
     text = redos.sub(r"<(@|/?p)>", r"", text)
     # remove <&M .> and <&T .> and <&Ms .>
     text = redos.sub(r"<&\w+ \.>", r"", text)
     # remove <!DOCTYPE... > lines
-    text = redos.sub(r"<!DOCTYPE[^>]{0,1024}>", r"", text)
+    text = redos.sub(r"<!DOCTYPE[^<>]{0,1024}>", r"", text)
     # remove <[hi]> and <[/p]> etc
-    text = redos.sub(r"<\[\/?[^>]{1,256}\]*>", r"", text)
+    text = redos.sub(r"<\[\/?[^<>]{1,256}\]*>", r"", text)
     # take the thing out of the brackets: <&hellip;>
     text = redos.sub(r"<(\&\w+;)>", r"\1", text)
     # and remove the & for those patterns that aren't regular XML

@@ -136,9 +136,10 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
     that strips out (CODE ...) and (ID ...) nodes."""
 
     def _parse(self, t):
-        # Bound the node body: `(CODE`*N with no `)` is O(n**2) re-anchoring
-        # (CWE-407; see PR #3896). Real (CODE ...)/(ID ...) tags are short.
-        t = redos.sub(r"(?u)\((CODE|ID)[^\)]{0,400}\)", "", t)
+        # Bound the node body and keep `(` out of it: `(CODE`*N with no `)` was
+        # O(n**2) re-anchoring (CWE-407; see PR #3896), and excluding the anchor
+        # stops each scan at the next node. Real (CODE ...)/(ID ...) tags are short.
+        t = redos.sub(r"(?u)\((CODE|ID)[^()]{0,400}\)", "", t)
         if redos.match(r"\s*\(\s*\)\s*$", t):
             return None
         return BracketParseCorpusReader._parse(self, t)
