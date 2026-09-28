@@ -18,10 +18,21 @@ class _Spawned(Exception):
 
 
 class _LyingStr(str):
-    """A location whose string methods lie: ``os.path.isabs`` asks ``startswith``."""
+    """A location whose string methods lie. ``posixpath.isabs`` asks
+    ``startswith``; ``ntpath.isabs`` slices and replaces first; a NUL check asks
+    ``in``. Every one of them is answered with a lie."""
 
     def startswith(self, *args, **kwargs):
         return True
+
+    def replace(self, *args, **kwargs):
+        return self
+
+    def __getitem__(self, key):
+        return self
+
+    def __contains__(self, item):
+        return False
 
 
 def _plant(directory, relpath):
@@ -58,6 +69,7 @@ def _odd_forms(name):
     relative = "./" + name
     return [
         _LyingStr(relative),
+        _LyingStr(relative + chr(0)),
         pathlib.Path(relative),
         relative.encode(),
         relative + chr(0),

@@ -45,10 +45,21 @@ class _Spawned(Exception):
 
 
 class _LyingStr(str):
-    """A location whose string methods lie: ``os.path.isabs`` asks ``startswith``."""
+    """A location whose string methods lie. ``posixpath.isabs`` asks
+    ``startswith``; ``ntpath.isabs`` slices and replaces first; a NUL check asks
+    ``in``. Every one of them is answered with a lie."""
 
     def startswith(self, *args, **kwargs):
         return True
+
+    def replace(self, *args, **kwargs):
+        return self
+
+    def __getitem__(self, key):
+        return self
+
+    def __contains__(self, item):
+        return False
 
 
 def _exec_file(directory, name, marker="PWNED"):
@@ -82,7 +93,13 @@ def _relative_forms(name, box):
 def _odd_forms(name):
     """Relative locations that are not plain strings, or carry a NUL byte."""
     relative = f"./{name}"
-    return [_LyingStr(relative), Path(relative), relative.encode(), relative + NUL]
+    return [
+        _LyingStr(relative),
+        _LyingStr(relative + NUL),
+        Path(relative),
+        relative.encode(),
+        relative + NUL,
+    ]
 
 
 def _escape_form(name, box):
@@ -379,12 +396,19 @@ class TestFindBinaryAbsolute:
                 )
 
     def test_lying_str_subclass_cannot_fake_an_absolute_path(self, box, tmp_path):
-        # teeth: os.path.isabs believes the object; the guard must not
+        # teeth: os.path.isabs believes the object on every platform, and a
+        # naive NUL check would too; the guard must consult only a plain copy
         lying = _LyingStr("./prover9")
         assert os.path.isabs(lying)
         with pytest.raises(LookupError):
             internals.find_binary_absolute(
                 "prover9", path_to_bin=lying, binary_names=["prover9"]
+            )
+        hidden_nul = _LyingStr("./prover9" + NUL)
+        assert NUL not in hidden_nul and NUL in str.__str__(hidden_nul)
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute(
+                "prover9", path_to_bin=hidden_nul, binary_names=["prover9"]
             )
         # and an honest absolute location wrapped in the subclass is honoured
         # as a plain str, so nothing downstream consults the subclass either
