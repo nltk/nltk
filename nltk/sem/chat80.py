@@ -750,7 +750,9 @@ def val_load(db):
     try:
         db_in = _restricted_shelve_open(db)
     except (OSError, *dbm.error) as e:
-        sys.exit("Cannot read file: {} ({})".format(sanitize_terminal(db + ".db"), e))
+        # the whole line is neutralised: the backend's message can quote the
+        # caller's name too, and both reach the terminal
+        sys.exit(sanitize_terminal("Cannot read file: {} ({})".format(db + ".db", e)))
     from nltk.sem import Valuation
 
     val = Valuation(db_in.items())
