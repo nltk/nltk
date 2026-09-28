@@ -175,17 +175,24 @@ class TestTEICorpusViewQuadratic:  # GHSA-8mpw -- has MULTIPLE quadratic directi
 
     @pytest.mark.parametrize("tag", ["<p>", "<w>"])
     def test_direction3_lazy_regex_is_bounded(self, tag, monkeypatch):
-        # PARA/SENT/WORD `.*?` findall over many unclosed tags is O(k*n) and is
-        # not linearised by the regex engine, so it is bounded by the redos
-        # wall-clock backstop instead of hanging.
+        # PARA/SENT/WORD `.*?` findall over many unclosed tags was O(k*n) and is
+        # not linearised by the regex engine. The shipped patterns now bound the
+        # lazy body to {0,8192}, so the scan is linear and completes well inside
+        # the redos backstop; the same pattern with the bound removed still runs
+        # into the backstop, which pins that the bound (not the timeout) is the fix.
         import nltk.redos as redos_mod
-
-        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        from nltk import redos
         from nltk.corpus.reader.pl196x import PARA, WORD
 
         pat = PARA if tag == "<p>" else WORD
+        assert "{0,8192}?" in pat.pattern
+        pat.findall(tag * 60000)  # completes, no TimeoutError
+        _assert_subquadratic(lambda n: pat.findall(tag * n), 15000, 60000)
+
+        unbounded = redos.compile(pat.pattern.replace("{0,8192}?", "*?"))
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
         with pytest.raises(TimeoutError):
-            pat.findall(tag * 60000)
+            unbounded.findall(tag * 60000)
 
 
 class TestReadSexprBlockQuadratic:
@@ -991,13 +998,23 @@ class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
 
 class TestLinThesaurusKeyQuadratic:  # lin.py _key_re: engine still backtracks
     def test_key_line_is_bounded(self, monkeypatch):
+        # The key is extracted from the start of an entry's first line, so the
+        # shipped pattern is \A-pinned: one attempt per line, linear, no backstop
+        # needed. The same pattern without the pin re-anchors at every `(` and
+        # still runs into the backstop, which pins that the pin is the fix.
         import nltk.redos as redos_mod
-
-        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        from nltk import redos
         from nltk.corpus.reader.lin import LinThesaurusCorpusReader
 
+        pinned = LinThesaurusCorpusReader._key_re
+        assert pinned.pattern.startswith(r"\A")
+        assert pinned.sub(r"\1", "(" * 200000) == "(" * 200000
+        _assert_subquadratic(lambda n: pinned.sub(r"\1", "(" * n), 50000, 200000)
+
+        unpinned = redos.compile(pinned.pattern[len(r"\A") :])
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
         with pytest.raises(TimeoutError):
-            LinThesaurusCorpusReader._key_re.sub(r"\1", "(" * 200000)
+            unpinned.sub(r"\1", "(" * 200000)
 
 
 class TestAlpinoAttrQuadratic:  # bracket_parse.py ALPINO_ATTR
