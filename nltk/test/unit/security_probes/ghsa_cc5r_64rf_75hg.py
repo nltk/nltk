@@ -177,16 +177,60 @@ def _entry_points(legit):
             hunpos_module.spawn_trusted = saved
         raise AssertionError("HunposTagger returned without spawning")
 
+    # (label, name, configure, plant, search): search() is the lookup a tool
+    # makes with NO location given (env var, searchpath and PATH only)
     return [
-        ("config_prover9", "prover9", prover9, plant_binary("prover9")),
-        ("Mace.config_prover9", "prover9", mace, plant_binary("prover9")),
-        ("config_megam", "megam", megam_config, plant_binary("megam")),
-        ("config_tadm", "tadm", tadm_config, plant_binary("tadm")),
-        ("config_java", "java", java_config, plant_binary("java")),
-        ("HunposTagger", "hunpos-tag", hunpos_tagger, plant_binary("hunpos-tag")),
-        ("Senna", senna_name, senna_config, plant_binary(senna_name)),
-        ("Boxer", "candc", boxer_config, plant_boxer),
-        ("ReppTokenizer", "repp", repp_config, plant_repp),
+        (
+            "config_prover9",
+            "prover9",
+            prover9,
+            plant_binary("prover9"),
+            lambda: Prover9()._find_binary("prover9"),
+        ),
+        (
+            "Mace.config_prover9",
+            "prover9",
+            mace,
+            plant_binary("prover9"),
+            lambda: Mace()._find_binary("prover9"),
+        ),
+        (
+            "config_megam",
+            "megam",
+            megam_config,
+            plant_binary("megam"),
+            lambda: megam_config(None),
+        ),
+        (
+            "config_tadm",
+            "tadm",
+            tadm_config,
+            plant_binary("tadm"),
+            lambda: tadm_config(None),
+        ),
+        (
+            "config_java",
+            "java",
+            java_config,
+            plant_binary("java"),
+            lambda: java_config(None),
+        ),
+        (
+            "HunposTagger",
+            "hunpos-tag",
+            hunpos_tagger,
+            plant_binary("hunpos-tag"),
+            lambda: hunpos_tagger(None),
+        ),
+        (
+            "Senna",
+            senna_name,
+            senna_config,
+            plant_binary(senna_name),
+            lambda: senna_config(None),
+        ),
+        ("Boxer", "candc", boxer_config, plant_boxer, lambda: boxer_config(None)),
+        ("ReppTokenizer", "repp", repp_config, plant_repp, lambda: repp_config(None)),
     ]
 
 
@@ -216,8 +260,10 @@ def _relative_binary_location():
     install configured through the tool's env var (each form must either be
     refused or resolve to that install, never to a decoy), then with the env
     var itself pointing through ``..`` at the decoy directory (the same rule),
-    and finally (POSIX) with the install made world-writable: java() must
-    refuse to launch it even though config_java() accepted its location.
+    then with PATH pointing through ``..`` at the decoy directory and no
+    location given (a PATH walk must not take the decoy either), and finally
+    (POSIX) with the install made world-writable: java() must refuse to launch
+    it even though config_java() accepted its location.
 
     Before the fix these entry points forwarded the location to ``find_binary``,
     which honours an explicit relative path, so the tool's spawn would have run
@@ -239,7 +285,7 @@ def _relative_binary_location():
     os.makedirs(empty)
     scrubbed = _scrubbed_path(empty)
     tools = _entry_points(legit)
-    for _, _, _, plant in tools:
+    for _, _, _, plant, _ in tools:
         plant(box)
         plant(os.path.join(box, "sub"))
         plant(legit)
@@ -256,7 +302,7 @@ def _relative_binary_location():
         for var in _TOOL_ENV:
             os.environ.pop(var, None)
         os.environ["PATH"] = scrubbed
-        for label, name, configure, _ in tools:
+        for label, name, configure, _, _ in tools:
             for form in _relative_forms(name, box) + _odd_forms(name):
                 try:
                     resolved = configure(form)
@@ -268,7 +314,7 @@ def _relative_binary_location():
         # never shadow it
         for var in _TOOL_ENV:
             os.environ[var] = legit
-        for label, name, configure, _ in tools:
+        for label, name, configure, _, _ in tools:
             expected = os.path.realpath(
                 os.path.join(legit, "src", "repp")
                 if name == "repp"
@@ -288,7 +334,7 @@ def _relative_binary_location():
         through = os.path.join(legit, os.pardir, os.path.basename(box))
         for var in _TOOL_ENV:
             os.environ[var] = through
-        for label, name, configure, _ in tools:
+        for label, name, configure, _, _ in tools:
             for form in _relative_forms(name, box):
                 try:
                     resolved = configure(form)
@@ -301,7 +347,27 @@ def _relative_binary_location():
                         f"{label}({form!r}) with the env var set to {through!r} "
                         f"took the decoy {resolved!r}",
                     )
-        # phase 4 (POSIX): an install that is absolute but that any local user
+        # phase 4: PATH itself climbs through '..' into the decoy directory; a
+        # lookup with no location given walks PATH and must refuse the decoy
+        # behind that absolute prefix (never resolve inside the box)
+        for var in _TOOL_ENV:
+            os.environ.pop(var, None)
+        os.environ["PATH"] = through
+        internals._java_bin = None
+        for label, _, _, _, search in tools:
+            try:
+                resolved = search()
+            except LookupError:
+                refused += 1
+                continue
+            if resolved is None or _inside(resolved, box):
+                return (
+                    VULNERABLE,
+                    f"{label} with PATH set to {through!r} took the decoy "
+                    f"{resolved!r}",
+                )
+        os.environ["PATH"] = scrubbed
+        # phase 5 (POSIX): an install that is absolute but that any local user
         # can rewrite (the GitHub Ubuntu image's chmod 777 JVM tree) is refused
         # when java() launches it, whatever config_java() accepted
         if os.name == "posix":
@@ -328,7 +394,8 @@ def _relative_binary_location():
             FIXED,
             f"{refused} relative locations refused across {len(tools)} entry "
             "points; with an install configured every form resolved to it and "
-            "never to a CWD decoy; a world-writable install was refused at launch",
+            "never to a CWD decoy, a PATH climbing into the decoy directory was "
+            "refused, and a world-writable install was refused at launch",
         )
     finally:
         os.chdir(old_cwd)

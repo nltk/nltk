@@ -22,7 +22,7 @@ from itertools import chain
 from pprint import pformat
 
 from nltk.data import make_staging_dir
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import spawn_trusted
 from nltk.tree import Tree
@@ -620,11 +620,10 @@ def dot2img(dot_string, t="svg"):
     """
 
     try:
-        # Run the absolute path find_binary returns, not the bare name: it
-        # refuses a CWD-relative match, so a planted ./dot cannot be executed
-        # in place of the real Graphviz binary (CWE-426 / CWE-427). The bare
-        # ["dot", ...] used before discarded this validation entirely.
-        dot_binary = find_binary("dot")
+        # Run the absolute path the finder returns, not the bare name: a
+        # CWD-relative match and a '..' component are refused, so a planted
+        # ./dot cannot be executed in place of Graphviz (CWE-426 / CWE-427).
+        dot_binary = find_binary_absolute("dot")
     except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
     try:

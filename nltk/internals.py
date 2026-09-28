@@ -20,7 +20,7 @@ import warnings
 from xml.etree import ElementTree
 
 from nltk import redos
-from nltk.pathsec import validate_path
+from nltk.pathsec import _as_path_text, _reject_bad_name_syntax, validate_path
 
 ##########################################################################
 # Java Via Command-Line
@@ -823,19 +823,20 @@ class Counter:
 
 
 def _path_dirs_iter(file_names):
-    """Yield every regular file named by *file_names* found in the PATH
-    directories, in PATH order, with the PATHEXT suffixes the OS search would
-    try for a name without an extension.
+    """Yield every executable regular file named by *file_names* found in the
+    PATH directories, in PATH order, with the PATHEXT suffixes the Windows
+    search would try for a name without an extension.
 
-    This is the PATH lookup ``find_file_iter`` makes where it cannot shell out
-    to ``which``. Unlike the Windows search and ``shutil.which`` it never
-    consults the current directory unless PATH names it, and it does not stop
-    at the first hit: a planted binary in the CWD must neither be chosen nor
-    hide the real installs behind it (CWE-427). A relative PATH entry (``.``)
-    still yields a relative path, which ``find_binary_iter`` refuses. A name
-    with a directory part is not a PATH lookup (the OS search and ``which``
-    take it as given), so it is never joined onto a PATH entry: that join
-    would rebase a ``../<cwd>/<name>`` form through a trusted directory.
+    This is the PATH lookup ``find_file_iter`` makes on every platform, in
+    place of a ``which`` subprocess. Unlike the Windows search and
+    ``shutil.which`` it never consults the current directory unless PATH names
+    it, and it does not stop at the first hit: a planted binary in the CWD must
+    neither be chosen nor hide the real installs behind it (CWE-427). A
+    relative PATH entry (``.``) still yields a relative path, which
+    ``find_binary_iter`` refuses. A name with a directory part is not a PATH
+    lookup (the OS search and ``which`` take it as given), so it is never
+    joined onto a PATH entry: that join would rebase a ``../<cwd>/<name>``
+    form through a trusted directory.
     """
     suffixes = [ext for ext in os.environ.get("PATHEXT", "").split(os.pathsep) if ext]
     bare_names = [name for name in file_names if not os.path.dirname(name)]
@@ -849,7 +850,7 @@ def _path_dirs_iter(file_names):
                 names += [alternative + ext for ext in suffixes]
             for name in names:
                 path = os.path.join(directory, name)
-                if os.path.isfile(path):
+                if os.path.isfile(path) and os.access(path, os.X_OK):
                     yield path
 
 
@@ -948,36 +949,14 @@ def find_file_iter(
                 yielded = True
                 yield path_to_file
 
-    # If we're on a POSIX system, then try using the 'which' command
-    # to find the file.
-    if os.name == "posix":
-        for alternative in file_names:
-            try:
-                p = subprocess.Popen(
-                    ["which", alternative],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-            except OSError:
-                # ``which`` missing from PATH or not runnable: there is no PATH
-                # lookup to make, so fall through to the not-found error
-                break
-            stdout, stderr = p.communicate()
-            path = _decode_stdoutdata(stdout).strip()
-            if path.endswith(alternative) and os.path.exists(path):
-                if verbose:
-                    print(f"[Found {filename}: {path}]")
-                yielded = True
-                yield path
-    else:
-        # No ``which``: walk PATH ourselves, without the implicit CWD entry the
-        # Windows search (and shutil.which) put first; a hit there is refused
-        # by the callers and would otherwise hide every real install (CWE-427).
-        for path in _path_dirs_iter(file_names):
-            if verbose:
-                print(f"[Found {filename}: {path}]")
-            yielded = True
-            yield path
+    # Walk PATH ourselves on every platform: no ``which`` subprocess, and no
+    # implicit CWD entry as the Windows search has; a CWD hit is refused by the
+    # callers and must not hide the real installs behind it (CWE-427).
+    for path in _path_dirs_iter(file_names):
+        if verbose:
+            print(f"[Found {filename}: {path}]")
+        yielded = True
+        yield path
 
     if not yielded:
         msg = (
@@ -1157,21 +1136,29 @@ def find_binary_absolute(
     therefore accept only an absolute location: an absolute ``path_to_bin``, an
     env var, or a ``$PATH`` lookup, none of which resolve against the CWD.
 
-    ``path_to_bin`` may be a str, bytes or path-like object; it is copied to a
-    plain str before anything inspects it, so an object that overrides string
-    methods cannot make a relative location look absolute, and a NUL byte is
-    refused rather than raised from the filesystem.
+    ``path_to_bin`` (str, bytes or path-like) and every candidate the finder
+    yields go through :func:`_tool_location`: the same materialisation and name
+    checks pathsec applies to every model and tool path, so a lying ``str``
+    subclass, a NUL or control character, a ``..`` component, a URL, a UNC
+    share or a ``~`` never reaches the filesystem or the spawn. A hostile
+    candidate is skipped; a hostile ``path_to_bin`` is refused outright.
     """
     if path_to_bin is not None:
-        path_to_bin = _plain_location(path_to_bin)
+        path_to_bin = _tool_location(path_to_bin, "binary location") or None
     for path in find_binary_iter(
         name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
     ):
-        if type(path) is not str:
-            path = str.__str__(path)
-        if os.path.isabs(path) and os.pardir not in _path_components(path):
-            # normalised only now: with no '..' left, normpath is purely lexical
-            return os.path.normpath(path)
+        try:
+            path = _tool_location(path, "binary location")
+            if not path or not os.path.isabs(path):
+                continue
+            # the name checks every model and tool path gets: no '..', control
+            # character, URL, UNC share, Windows device or trailing dot/space
+            _reject_bad_name_syntax(path, "binary location", error=LookupError)
+        except LookupError:
+            continue  # a hostile candidate is skipped, not the whole search
+        # normalised only now: with no '..' left, normpath is purely lexical
+        return os.path.normpath(path)
     raise LookupError(
         f"No absolute {name!r} binary found; a binary found relative to the "
         "current working directory, or through a '..' component, is refused "
@@ -1185,43 +1172,43 @@ def absolute_tool_dir(location, what="tool"):
     :class:`LookupError`. A relative location resolves against the CWD and a
     ``..`` component can climb out of a trusted directory, so a wrapper that
     spawns ``<location>/<binary>`` accepts neither (CWE-426 / CWE-427); the
-    location is copied to a plain str first (see :func:`_plain_location`) and
-    must exist as a directory.
+    location goes through :func:`_tool_location` first and must exist as a
+    directory.
     """
-    text = _plain_location(location)
-    if not os.path.isabs(text) or os.pardir in _path_components(text):
+    text = _tool_location(location, f"{what} directory")
+    if not text or not os.path.isabs(text):
         raise LookupError(
             f"A {what} directory must be an absolute path without '..', not "
             f"{text!r} (untrusted search path)."
         )
+    # the name checks every model and tool path gets: no '..', control
+    # character, URL, UNC share, Windows device or trailing dot/space
+    _reject_bad_name_syntax(text, f"{what} directory", error=LookupError)
     text = os.path.normpath(text)
     if not os.path.isdir(text):
         raise LookupError(f"{what} directory not found: {text!r}")
     return text
 
 
-def _plain_location(location):
-    """A plain ``str`` copy of a path-like *location* (str, bytes or
-    ``os.PathLike``): the guards must not consult methods the object defines."""
-    try:
-        text = os.fsdecode(location)
-    except TypeError:
-        raise LookupError(
-            f"A binary location must be a path, not {type(location).__name__}"
-        ) from None
-    if type(text) is not str:
-        text = str.__str__(text)
+def _tool_location(location, what):
+    """A plain ``str`` copy of a tool *location* (str, bytes or path-like),
+    raising :class:`LookupError` for a value that cannot be one; a blank
+    location comes back as ``""`` (the finder's "not given").
+
+    The real characters are copied out of a ``str`` subclass so its methods are
+    never consulted (:func:`nltk.pathsec._as_path_text`, the same step every
+    model and tool path gets), and a NUL is refused here rather than raised as
+    a ValueError from the filesystem. Nothing else is judged at this point: a
+    location is only ever a search key, and it is each absolute candidate the
+    search yields that must pass :func:`nltk.pathsec._reject_bad_name_syntax`
+    before it is returned (a relative one is never returned at all).
+    """
+    text = _as_path_text(location, what, error=LookupError)
+    if not text.strip():
+        return ""
     if "\x00" in text:
-        raise LookupError("A binary location may not contain a NUL byte")
+        raise LookupError(f"Security Violation [{what}]: {text!r} contains a NUL byte.")
     return text
-
-
-def _path_components(path):
-    # only the platform's own separators split a path: a backslash in a POSIX
-    # file name is just a character there, and a separator on Windows
-    if os.altsep:
-        path = path.replace(os.altsep, os.sep)
-    return path.split(os.sep)
 
 
 def find_jar_iter(

@@ -123,7 +123,9 @@ def _exe(name):
 
 
 def _scrubbed_path(directory):
-    """A PATH holding nothing but ``which``, which find_file_iter shells out to."""
+    """A PATH holding no tool at all (the finder walks PATH itself and needs no
+    ``which``); ``which`` is linked in only so a test that shells out to it
+    for a control comparison still can."""
     real_which = shutil.which("which")
     if os.name == "posix" and real_which:
         os.symlink(real_which, os.path.join(directory, "which"))
@@ -526,43 +528,87 @@ class TestFindBinaryAbsolute:
         found = internals.find_binary_absolute("megam", binary_names=["megam"])
         assert _same(found, good)
 
-    def test_no_which_on_path_is_not_found_rather_than_a_crash(
+    def test_an_unusable_path_is_not_found_rather_than_a_crash(
         self, box, tmp_path, monkeypatch
     ):
-        # a PATH without which (minimal containers), or with a which that cannot
-        # run, must end in the not-found error, never an OSError for which itself
+        # a PATH holding no tool, one whose entries do not exist or are files,
+        # and an empty PATH must all end in the not-found error, never an OSError
         bare = tmp_path / "bare"
         bare.mkdir()
-        monkeypatch.setenv("PATH", str(bare))
-        with pytest.raises(LookupError):
-            internals.find_binary_absolute("prover9", binary_names=["prover9"])
-        with pytest.raises(LookupError):
-            internals.find_binary("prover9", binary_names=["prover9"])
-        broken = tmp_path / "broken"
-        broken.mkdir()
-        (broken / "which").write_text("not executable\n", encoding="utf-8")
-        monkeypatch.setenv("PATH", str(broken))
+        (tmp_path / "afile").write_text("not a directory\n", encoding="utf-8")
+        for path in (
+            str(bare),
+            str(tmp_path / "nowhere"),
+            str(tmp_path / "afile"),
+            os.pathsep.join([str(bare), "", str(tmp_path / "nowhere")]),
+            "",
+        ):
+            monkeypatch.setenv("PATH", path)
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute("prover9", binary_names=["prover9"])
+            with pytest.raises(LookupError):
+                internals.find_binary("prover9", binary_names=["prover9"])
+        monkeypatch.delenv("PATH")
         with pytest.raises(LookupError):
             internals.find_binary_absolute("prover9", binary_names=["prover9"])
 
-    def test_parent_detection_uses_only_the_platform_separators(self):
-        # a backslash is a file-name character on POSIX and a separator on
-        # Windows; ".." must be recognised exactly where the OS would honour it
-        parts = internals._path_components
-        assert os.pardir in parts(os.path.join(os.sep, "a", "..", "b"))
-        assert os.pardir not in parts(os.path.join(os.sep, "a", "..x", "b"))
-        if os.name == "posix":
-            assert os.pardir not in parts("/a/..\\b")  # one component, "..\\b"
-        else:
-            assert os.pardir in parts("C:\\a\\..\\b")
-            assert os.pardir in parts("C:/a/../b")
-            assert os.pardir in parts("C:\\a/..\\b")
+    def test_the_finder_spawns_no_process(self, box, tmp_path, monkeypatch):
+        # the PATH lookup is a directory walk: with Popen made to blow up, an
+        # install on PATH is still found and an absent one still reported
+        good = _exec_file(tmp_path / "bin", "prover9")
+        monkeypatch.setenv("PATH", str(tmp_path / "bin"))
 
-    def test_posix_backslash_in_a_component_is_not_a_separator(self, box, tmp_path):
-        if os.name != "posix":
-            return  # a backslash cannot be part of a file name on Windows
-        odd_dir = tmp_path / "..\\odd"
-        good = _exec_file(odd_dir, "prover9")
+        def _boom(*args, **kwargs):
+            raise AssertionError("the finder spawned a process")
+
+        monkeypatch.setattr(subprocess, "Popen", _boom)
+        found = internals.find_binary_absolute("prover9", binary_names=["prover9"])
+        assert _same(found, good)
+        monkeypatch.setenv("PATH", str(tmp_path / "empty"))
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute("prover9", binary_names=["prover9"])
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX executable bit")
+    def test_a_non_executable_file_on_path_is_not_a_hit(
+        self, box, tmp_path, monkeypatch
+    ):
+        plain = tmp_path / "bin" / "prover9"
+        plain.parent.mkdir()
+        plain.write_text("#!/bin/sh\necho PWNED\n", encoding="utf-8")
+        plain.chmod(0o644)
+        monkeypatch.setenv("PATH", str(tmp_path / "bin"))
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute("prover9", binary_names=["prover9"])
+        plain.chmod(0o755)
+        found = internals.find_binary_absolute("prover9", binary_names=["prover9"])
+        assert _same(found, plain)
+
+    def test_a_path_entry_climbing_into_the_cwd_is_refused(
+        self, box, tmp_path, monkeypatch
+    ):
+        # PATH=<trusted>/../cwd: the walk yields the decoy behind an absolute
+        # prefix (teeth), and the absolute-only resolver refuses the '..' in it
+        (tmp_path / "trusted").mkdir()
+        through = os.path.join(
+            str(tmp_path / "trusted"), os.pardir, os.path.basename(str(box))
+        )
+        monkeypatch.setenv("PATH", through)
+        hits = list(internals._path_dirs_iter(["prover9"]))
+        assert hits and all(_inside(h, box) for h in hits), hits
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute("prover9", binary_names=["prover9"])
+
+    def test_parent_component_is_refused_in_either_separator_style(self, box, tmp_path):
+        # pathsec's shared rule: '..' is checked after folding backslashes, so
+        # a location that would climb on Windows is refused on POSIX too (a
+        # directory literally named "..\\odd" is not a tool install), while a
+        # component that merely starts with ".." is an ordinary name
+        for form in ("/a/../b", "/a/..\\b", "C:\\a\\..\\b", "C:/a/../b", "C:\\a/..\\b"):
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", path_to_bin=form, binary_names=["prover9"]
+                )
+        good = _exec_file(tmp_path / "..x", "prover9")
         found = internals.find_binary_absolute(
             "prover9", path_to_bin=good, binary_names=["prover9"]
         )
@@ -659,7 +705,9 @@ class TestToolEntryPoints:
                 name, path_to_bin=f"./{name}", env_vars=vars_, binary_names=[name]
             )
             assert got == os.path.normpath(got), got
-            assert os.curdir not in internals._path_components(got), got
+            assert os.curdir not in got.replace(os.altsep or os.sep, os.sep).split(
+                os.sep
+            ), got
 
 
 class TestConfigJava:
@@ -1467,8 +1515,6 @@ class TestPathDirsWalk:
             os.path.join(os.curdir, "svn.exe"),
             str(tmp_path / "bin" / "svn.exe"),
         ]
-        if os.name != "nt":  # take the no-``which`` branch on POSIX too
-            monkeypatch.setattr(os, "name", "nt")
         # the finder skips the relative hit and returns the install behind it,
         # instead of stopping at the CWD hit the way the OS search does
         found = internals.find_binary_absolute("svn", binary_names=["svn.exe"])
@@ -1492,7 +1538,198 @@ class TestPathDirsWalk:
         forms = [escape, os.path.join("sub", "svn.exe"), os.path.join(os.curdir, "svn")]
         assert list(internals._path_dirs_iter(forms)) == []
         # the raw finder surfaces such a form only as the relative decoy it names
-        if os.name != "nt":
-            monkeypatch.setattr(os, "name", "nt")
         hits = list(internals.find_file_iter(escape, (), (), ["svn.exe"]))
         assert hits and all(not os.path.isabs(h) for h in hits), hits
+
+
+class TestLocationSyntax:
+    """Every absolute candidate the finder yields gets the name checks every
+    model and tool path gets (pathsec's shared gate), and a tool directory is
+    gated the same way. A location is only a search key: a hostile one never
+    resolves by itself, it is refused with nothing reachable, and with an
+    install configured it can only yield to that install, never to a decoy."""
+
+    @staticmethod
+    def _forms(name):
+        forms = [
+            f"-{name}",
+            f"-/opt/{name}",
+            f"http://evil.example/{name}",
+            f"file:/opt/{name}",
+            f"jar:/opt/{name}.jar!/x",
+            f"~/{name}",
+            f"sub\n/{name}",
+            f"{name}\t",
+            f"{os.sep}opt{os.sep}{name} ",
+            f"{os.sep}opt{os.sep}{name}.",
+            f"{os.sep}opt{os.sep}a\t{os.sep}{name}",
+            f"{os.sep}opt{os.sep}a\n{os.sep}{name}",
+            f"{os.sep}opt{os.sep}a\r{os.sep}{name}",
+            f"{os.sep}opt{os.sep}a\x0b{os.sep}{name}",
+            f"{os.sep}opt{os.sep}..{os.sep}{name}",
+        ]
+        if os.name == "posix":
+            forms.append(f"//evil.example/share/{name}")
+        else:
+            forms += [
+                f"\\\\evil.example\\share\\{name}",
+                f"C:\\CON\\{name}",
+                f"C:\\PROGRA~1\\{name}",
+                f"C:{name}",
+            ]
+        return forms
+
+    @staticmethod
+    def _without(vars_):
+        """Unset every one of a tool's variables (java has two; one left set
+        would still resolve the install) and return an undo callable."""
+        saved = {var: os.environ.pop(var, None) for var in vars_}
+
+        def undo():
+            for var, value in saved.items():
+                if value is not None:
+                    os.environ[var] = value
+
+        return undo
+
+    def test_hostile_forms_never_resolve_by_themselves(self, box, install):
+        for name, vars_ in TOOL_ENV.items():
+            for form in self._forms(name):
+                with pytest.raises(LookupError):
+                    internals.absolute_tool_dir(form, "X")
+                undo = self._without(vars_)
+                try:  # nothing but the CWD decoys reachable: refused
+                    with pytest.raises(LookupError):
+                        internals.find_binary_absolute(
+                            name, path_to_bin=form, env_vars=vars_, binary_names=[name]
+                        )
+                finally:
+                    undo()
+                # the install configured: refused or the install, never a decoy
+                _refused_or_install(
+                    lambda location: internals.find_binary_absolute(
+                        name, path_to_bin=location, env_vars=vars_, binary_names=[name]
+                    ),
+                    form,
+                    str(install / name),
+                    box,
+                )
+
+    def test_a_hostile_absolute_candidate_is_skipped_by_the_gate(
+        self, box, tmp_path, monkeypatch
+    ):
+        # the raw finder yields the file an absolute hostile form names (teeth);
+        # the gate skips it, so the search ends unresolved rather than with it
+        good = _exec_file(tmp_path / "bin", "prover9")
+        forms = [os.path.join(str(tmp_path), "bin", os.curdir, "..", "bin", "prover9")]
+        if os.name == "posix":  # a name that really exists with a line break
+            forms.append(_exec_file(tmp_path / "bad\ndir", "prover9"))
+        for form in forms:
+            raw = list(internals.find_file_iter(form, (), (), ["prover9"]))
+            assert raw and any(os.path.isabs(r) for r in raw), (form, raw)
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", path_to_bin=form, binary_names=["prover9"]
+                )
+        found = internals.find_binary_absolute(
+            "prover9", path_to_bin=good, binary_names=["prover9"]
+        )
+        assert _same(found, good)
+
+    def test_a_blank_location_means_not_given(self, box, install):
+        for name, vars_ in TOOL_ENV.items():
+            for blank in ("", "   ", _LyingStr(""), b"", Path("")):
+                got = internals.find_binary_absolute(
+                    name, path_to_bin=blank, env_vars=vars_, binary_names=[name]
+                )
+                assert _same(got, install / name) and not _inside(got, box)
+
+    @pytest.mark.skipif(os.name != "posix", reason="a newline in a POSIX name")
+    def test_a_hostile_candidate_from_the_environment_is_skipped(
+        self, box, tmp_path, monkeypatch
+    ):
+        # a directory whose name carries a line break exists on POSIX; the raw
+        # finder yields the binary in it (teeth), the gate refuses it, and a
+        # clean install later in the same variable is still taken
+        bad = tmp_path / "bad\ndir"
+        clean = tmp_path / "clean"
+        _exec_file(bad, "prover9")
+        good = _exec_file(clean, "prover9")
+        monkeypatch.setenv("PROVER9", str(bad))
+        raw = list(internals.find_binary_iter("prover9", env_vars=["PROVER9"]))
+        assert raw and any(_inside(r, bad) for r in raw), raw
+        with pytest.raises(LookupError):
+            internals.find_binary_absolute("prover9", env_vars=["PROVER9"])
+        monkeypatch.setenv("PROVER9", os.pathsep.join([str(bad), str(clean)]))
+        got = internals.find_binary_absolute("prover9", env_vars=["PROVER9"])
+        assert _same(got, good)
+
+    def test_non_path_locations_are_refused_not_raised(self, box):
+        for name, vars_ in TOOL_ENV.items():
+            for value in (7, 1.5, [name], (name,), {"p": name}, object()):
+                with pytest.raises(LookupError):
+                    internals.find_binary_absolute(
+                        name, path_to_bin=value, env_vars=vars_, binary_names=[name]
+                    )
+                with pytest.raises(LookupError):
+                    internals.absolute_tool_dir(value, "X")
+
+
+class TestTrustedResolverInputs:
+    """The spawn-time resolver answers a hostile target with a refusal, never
+    with an exception another layer would not expect (a lying str hiding a
+    NUL used to surface as a ValueError from lstat)."""
+
+    def test_hostile_targets_are_refused_not_raised(self, private_dir):
+        real = _exec_file(private_dir, "java")
+        hostile = [
+            _LyingStr(real + NUL),
+            real + NUL,
+            os.fsencode(real),  # bytes: the finder decodes, the spawn refuses
+            None,
+            7,
+            [real],
+            str(private_dir),  # a directory is not an executable file
+        ]
+        if os.name == "posix":
+            hostile.append(_LyingStr("./java"))  # relative, whatever it claims
+        for target in hostile:
+            assert pathsec.resolve_trusted_executable(target) is None, target
+            with pytest.raises(pathsec.TrustError):
+                pathsec.spawn_trusted(target, [])
+        # the same file spelled honestly, as a Path, or as a lying str holding
+        # the real characters, resolves to its real path
+        for target in (real, Path(real), _LyingStr(real)):
+            assert _same(pathsec.resolve_trusted_executable(target), real), target
+
+
+class TestAlignedSentDot:
+    def test_repr_svg_resolves_dot_absolute_and_spawns_trusted(
+        self, box, tmp_path, monkeypatch
+    ):
+        from nltk.translate import api as translate_api
+        from nltk.translate.api import AlignedSent, Alignment
+
+        _exec_file(box, _exe("dot"))  # CWD decoy
+        good = _exec_file(tmp_path / "bin", _exe("dot"))
+        monkeypatch.setenv(
+            "PATH", f"{tmp_path / 'bin'}{os.pathsep}{tmp_path / 'empty'}"
+        )
+        seen = {}
+
+        def _record(target, args, **kwargs):
+            seen["target"], seen["args"], seen["kwargs"] = target, list(args), kwargs
+            raise _Spawned(target)
+
+        monkeypatch.setattr(translate_api, "spawn_trusted", _record)
+        sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
+        with pytest.raises(_Spawned):
+            sent._repr_svg_()
+        assert _same(seen["target"], good) and not _inside(seen["target"], box)
+        assert seen["args"] == ["-Tsvg"] and not seen["kwargs"].get("shell")
+        # with only the CWD decoy reachable it is refused, never run
+        monkeypatch.setenv("PATH", str(tmp_path / "empty"))
+        seen.clear()
+        with pytest.raises(Exception, match="Cannot find the dot binary"):
+            sent._repr_svg_()
+        assert seen == {}

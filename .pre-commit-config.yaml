@@ -61,6 +61,20 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: all-spawns-through-pathsec
+      name: every process spawn routes through nltk.pathsec.spawn_trusted
+      description: >-
+        Every external tool NLTK runs is resolved absolute-only and launched
+        through pathsec.spawn_trusted, which checks the binary's directory
+        chain for ownership, refuses a shell and scrubs the child environment
+        (CWE-426 / CWE-427 / CWE-78). Fails on any subprocess.Popen/run/call/
+        check_*, os.system/popen/exec*/spawn* or shutil.which call outside
+        nltk.pathsec itself; resolve with internals.find_binary_absolute and
+        launch with pathsec.spawn_trusted.
+      entry: python tools/check_all_spawns_through_pathsec.py
+      language: system
+      pass_filenames: false
+      always_run: true
     - id: all-json-through-jsontags
       name: every JSON deserialization routes through nltk.jsontags
       description: >-

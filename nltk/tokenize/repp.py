@@ -16,7 +16,7 @@ import tempfile
 
 from nltk import redos
 from nltk.data import ZipFilePathPointer, make_staging_dir
-from nltk.internals import _plain_location, absolute_tool_dir, find_dir
+from nltk.internals import _tool_location, absolute_tool_dir, find_dir
 from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.tokenize.api import TokenizerI
 
@@ -171,8 +171,9 @@ class ReppTokenizer(TokenizerI):
         """
         A module to find REPP tokenizer binary and its *repp.set* config file.
         """
-        # Accept str or os.PathLike uniformly (find_dir() requires a str).
-        repp_dirname = _plain_location(repp_dirname)
+        # A plain str (find_dir() requires one) that passes pathsec's shared
+        # name checks: no NUL, control character, '..', URL, UNC or '~'.
+        repp_dirname = _tool_location(repp_dirname, "REPP directory")
         # Only accept an explicit *absolute* directory as-is. A relative name must
         # not be resolved against the current working directory: an attacker able
         # to write there could plant a ``<name>/src/repp`` executable and have it
