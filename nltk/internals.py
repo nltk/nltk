@@ -1081,18 +1081,15 @@ def find_binary_absolute(
     This is for wrappers whose caller-supplied install location must not be
     interpreted relative to the current working directory.
     """
-    found_relative = False
-    try:
-        for path in find_binary_iter(
+    candidates = list(
+        find_binary_iter(
             name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
-        ):
-            if os.path.isabs(path):
-                return path
-            found_relative = True
-    except LookupError:
-        if not found_relative:
-            raise
-    if found_relative:
+        )
+    )
+    for path in candidates:
+        if os.path.isabs(path):
+            return path
+    if candidates:
         raise LookupError(
             f"No absolute {name!r} binary found. Pass an absolute path_to_bin, "
             "set a configured environment variable to an absolute install "
