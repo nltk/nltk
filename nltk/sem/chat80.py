@@ -123,9 +123,11 @@ current directory.
 
 """
 
+import dbm
 import io
 import re
 import shelve
+import sys
 
 import nltk.data
 from nltk import redos
@@ -742,9 +744,13 @@ def val_load(db):
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_load")
     # No os.access() gate: it follows a symlink at the derived .db name and its
-    # suffix assumes one dbm backend. _restricted_shelve_open now opens each
-    # backing name with O_NOFOLLOW (GHSA-7j4p) and shelve reports a missing store.
-    db_in = _restricted_shelve_open(db)
+    # suffix assumes one dbm backend. _restricted_shelve_open opens each backing
+    # name with O_NOFOLLOW (GHSA-7j4p); a store it cannot open is reported the
+    # way the gate used to, with the caller's name neutralised for the terminal.
+    try:
+        db_in = _restricted_shelve_open(db)
+    except (OSError, *dbm.error) as e:
+        sys.exit("Cannot read file: {} ({})".format(sanitize_terminal(db + ".db"), e))
     from nltk.sem import Valuation
 
     val = Valuation(db_in.items())
