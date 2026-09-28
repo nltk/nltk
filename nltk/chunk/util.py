@@ -12,6 +12,7 @@ from nltk import redos
 from nltk.metrics import accuracy as _accuracy
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 ##//////////////////////////////////////////////////////
@@ -532,7 +533,7 @@ def _ieer_read_text(s, root_label):
             if piece.startswith("<b_"):
                 m = _IEER_TYPE_RE.match(piece)
                 if m is None:
-                    print("XXXX", piece)
+                    safe_print("XXXX", piece)
                 chunk = Tree(m.group("type"), [])
                 stack[-1].append(chunk)
                 stack.append(chunk)
@@ -601,7 +602,7 @@ def demo():
 
     t = nltk.chunk.tagstr2tree(s, chunk_label="NP")
     t.pprint()
-    print()
+    safe_print()
 
     s = """
 These DT B-NP
@@ -637,9 +638,9 @@ better JJR I-ADJP
     conll_tree.pprint()
 
     # Demonstrate CoNLL output
-    print("CoNLL output:")
-    print(nltk.chunk.tree2conllstr(conll_tree))
-    print()
+    safe_print("CoNLL output:")
+    safe_print(nltk.chunk.tree2conllstr(conll_tree))
+    safe_print()
 
 
 if __name__ == "__main__":

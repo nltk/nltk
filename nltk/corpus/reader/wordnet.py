@@ -43,7 +43,7 @@ from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
-from nltk.termsec import sanitize_terminal
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -1489,7 +1489,7 @@ class WordNetCorpusReader(CorpusReader):
             try:
                 depth = max(depth, ss.max_depth())
             except RuntimeError:
-                print(sanitize_terminal(ss))
+                safe_print(ss)
 
         if simulate_root:
             depth += 1
@@ -2529,7 +2529,7 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
         subsumer_ic = max(information_content(s, ic) for s in subsumers)
 
     if verbose:
-        print("> LCS Subsumer by content:", sanitize_terminal(subsumer_ic))
+        safe_print("> LCS Subsumer by content:", subsumer_ic)
 
     return ic1, ic2, subsumer_ic
 

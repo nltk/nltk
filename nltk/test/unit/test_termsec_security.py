@@ -165,5 +165,6 @@ def test_downloader_show_and_tweetviewer_route_through_termsec():
 
     dsrc = inspect.getsource(dl)
     assert "sanitize_terminal(s)" in dsrc  # the show() chokepoint
-    assert "sanitize_terminal(info.id)" in dsrc  # list()
+    # list() writes the server-supplied id and name through safe_print
+    assert 'safe_print("  [{}] {} {}".format(prefix, info.id' in dsrc
     assert "sanitize_terminal(child_id)" in dsrc  # _update_index()

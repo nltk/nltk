@@ -33,7 +33,7 @@ import requests
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonError, TwythonRateLimitError
 
-from nltk.termsec import sanitize_terminal
+from nltk.termsec import safe_print
 from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
 from nltk.twitter.util import credsfromfile, guess_path
 
@@ -83,7 +83,7 @@ class Streamer(TwythonStreamer):
         :param data: The response from Twitter API
 
         """
-        print(status_code)  # unsafe-print ok: HTTP status code (int)
+        safe_print(status_code)
 
     def sample(self):
         """
@@ -98,7 +98,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print(sanitize_terminal(f"Error (stream will continue): {e}"))
+                    safe_print(f"Error (stream will continue): {e}")
                 continue
 
     def filter(self, track="", follow="", lang="en"):
@@ -115,7 +115,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.filter(track=track, follow=follow, lang=lang)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print(sanitize_terminal(f"Error (stream will continue): {e}"))
+                    safe_print(f"Error (stream will continue): {e}")
                 continue
 
 
@@ -162,7 +162,7 @@ class Query(Twython):
         ids = [line.strip() for line in ids_f if line]
 
         if verbose:
-            print(f"Counted {len(ids)} Tweet IDs in {ids_f!r}.")
+            safe_print(f"Counted {len(ids)} Tweet IDs in {ids_f}.")
 
         # The Twitter endpoint takes lists of up to 100 ids, so we chunk the
         # ids.
@@ -229,7 +229,7 @@ class Query(Twython):
             )
             count = len(results["statuses"])
             if count == 0:
-                print("No Tweets available through REST API for those keywords")
+                safe_print("No Tweets available through REST API for those keywords")
                 return
             count_from_query = count
             self.handler.max_id = results["statuses"][count - 1]["id"] - 1
@@ -254,18 +254,18 @@ class Query(Twython):
                     result_type="recent",
                 )
             except TwythonRateLimitError as e:
-                print(sanitize_terminal(f"Waiting for 15 minutes -{e}"))
+                safe_print(f"Waiting for 15 minutes -{e}")
                 time.sleep(15 * 60)  # wait 15 minutes
                 continue
             except TwythonError as e:
-                print(sanitize_terminal(f"Fatal error in Twython request -{e}"))
+                safe_print(f"Fatal error in Twython request -{e}")
                 if retries_after_twython_exception == retries:
                     raise e
                 retries += 1
 
             count = len(results["statuses"])
             if count == 0:
-                print("No more Tweets available through rest api")
+                safe_print("No more Tweets available through rest api")
                 return
             count_from_query += count
             # the max_id is also present in the Tweet metadata
@@ -431,14 +431,14 @@ class TweetViewer(TweetHandlerI):
         # Tweet text is untrusted network data; neutralise any terminal control
         # sequences before writing it to the terminal (CWE-150).
         text = data["text"]
-        print(sanitize_terminal(text))
+        safe_print(text)
 
         self.check_date_limit(data)
         if self.do_stop:
             return
 
     def on_finish(self):
-        print(f"Written {self.counter!r} Tweets")
+        safe_print(f"Written {self.counter} Tweets")
 
 
 class TweetWriter(TweetHandlerI):
@@ -529,7 +529,7 @@ class TweetWriter(TweetHandlerI):
                 self.output = open(
                     self.fname, "w"
                 )  # sandboxed-open ok: operator output path
-            print(f"Writing to {self.fname!r}")
+            safe_print(f"Writing to {self.fname}")
 
         json_data = json.dumps(data)
         if self.gzip_compress:
@@ -544,7 +544,7 @@ class TweetWriter(TweetHandlerI):
         self.startingup = False
 
     def on_finish(self):
-        print(f"Written {self.counter!r} Tweets")
+        safe_print(f"Written {self.counter} Tweets")
         if self.output:
             self.output.close()
 

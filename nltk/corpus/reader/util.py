@@ -23,6 +23,7 @@ from nltk.data import (
 )
 from nltk.internals import slice_bounds
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize import wordpunct_tokenize
 from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
 
@@ -620,7 +621,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 
         warnings.warn(
             "Parsing may fail, depending on the properties "
-            "of the %s encoding!" % encoding
+            "of the %s encoding!" % sanitize_terminal(encoding)
         )
         # (e.g., the utf-16 encoding does not work because it insists
         # on adding BOMs to the beginning of encoded strings.)

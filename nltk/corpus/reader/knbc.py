@@ -16,6 +16,7 @@ from nltk.corpus.reader.util import (
     read_blankline_block,
 )
 from nltk.parse import DependencyGraph
+from nltk.termsec import safe_print
 
 # default function to convert morphlist to str for tree representation
 _morphs2str_default = lambda morphs: "/".join(m[0] for m in morphs if m[0] != "EOS")
@@ -151,18 +152,18 @@ def demo():
         encoding="euc-jp",
     )
 
-    print(knbc.fileids()[:10])
-    print("".join(knbc.words()[:100]))
+    safe_print(knbc.fileids()[:10])
+    safe_print("".join(knbc.words()[:100]))
 
-    print("\n\n".join(str(tree) for tree in knbc.parsed_sents()[:2]))
+    safe_print("\n\n".join(str(tree) for tree in knbc.parsed_sents()[:2]))
 
     knbc.morphs2str = lambda morphs: "/".join(
         "{}({})".format(m[0], m[1].split(" ")[2]) for m in morphs if m[0] != "EOS"
     ).encode("utf-8")
 
-    print("\n\n".join("%s" % tree for tree in knbc.parsed_sents()[:2]))
+    safe_print("\n\n".join("%s" % tree for tree in knbc.parsed_sents()[:2]))
 
-    print(
+    safe_print(
         "\n".join(
             " ".join("{}/{}".format(w[0], w[1].split(" ")[2]) for w in sent)
             for sent in knbc.tagged_sents()[0:2]

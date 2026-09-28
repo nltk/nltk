@@ -111,6 +111,46 @@ def _escape(codepoint):
     return f"\\U{codepoint:08x}"
 
 
+def _printable_but_dangerous():
+    """The escaped characters that ``str.isprintable`` nevertheless accepts.
+
+    Computed from the same tables the scan uses, so the fast path in
+    :func:`sanitize_terminal` can never drift from it: every other escaped
+    character (C0/C1, DEL, the bidi and format controls, surrogates and
+    noncharacters) already fails ``isprintable``.
+    """
+    codepoints = {ord(c) for c in _DANGEROUS_FORMAT | _BIDI_ALL}
+    codepoints.update(range(0xE0000, 0xE1000))
+    codepoints.update(range(0x1D173, 0x1D17B))
+    codepoints.update(range(0xD800, 0xE000))
+    codepoints.update(range(0xFDD0, 0xFDF0))
+    codepoints.update(
+        plane + tail
+        for plane in range(0, 0x110000, 0x10000)
+        for tail in (0xFFFE, 0xFFFF)
+    )
+    return frozenset(chr(cp) for cp in codepoints if chr(cp).isprintable())
+
+
+_PRINTABLE_BUT_DANGEROUS = _printable_but_dangerous()
+
+
+def _is_clean(text, single_line):
+    """C-speed proof that the scan would return *text* unchanged: nothing that
+    ``str.isprintable`` rejects (TAB/newline excused unless *single_line*) and
+    none of the printable-but-invisible characters. A pure-Python scan costs
+    about a microsecond per character, four hundred times ``print`` itself, so
+    a large clean value would otherwise turn the sink into a CPU amplifier.
+    ``replace`` and single-character ``in`` are memchr-fast on any text;
+    ``str.translate`` is not on non-ASCII text, so it is avoided here."""
+    probe = text if single_line else text.replace("\t", "").replace("\n", "")
+    if not probe.isprintable():
+        return False
+    if text.isascii():
+        return True  # every printable-but-dangerous character is non-ASCII
+    return not any(c in text for c in _PRINTABLE_BUT_DANGEROUS)
+
+
 def _bidi_is_balanced(text):
     """True only if embeddings/overrides and isolates are STRICTLY nested (LIFO).
 
@@ -188,6 +228,10 @@ def sanitize_terminal(text, *, single_line=False):
     VCS ref): TAB and newline are then escaped too, so an embedded newline cannot
     forge a line and a tab cannot jump a column (the neutralisation GNU ls and git
     apply to such values). The default keeps TAB/newline for multi-line output.
+
+    Clean text is recognised at C speed and returned as the same object, so the
+    common case costs no more than the ``str`` coercion; only a value that
+    holds something to escape takes the per-character scan.
     """
     _refuse_int_bomb(text)
     text = str(text)
@@ -196,6 +240,17 @@ def sanitize_terminal(text, *, single_line=False):
         # __hash__ and __eq__ the scan below would consult. The unbound C slot
         # copies the REAL buffer into an exact str the subclass cannot lie to.
         text = str.__str__(text)
+    if _is_clean(text, single_line):
+        return text
+    return _escape_scan(text, single_line)
+
+
+def _escape_scan(text, single_line):
+    """The per-character escaping pass behind :func:`sanitize_terminal`.
+
+    *text* must be an exact ``str``. Exposed separately so the fast path can
+    be proven equivalent to it, code point by code point.
+    """
     allowed = frozenset() if single_line else _ALLOWED_CONTROLS
     bidi_ok = _bidi_is_balanced(text)
     result = []

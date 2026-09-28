@@ -27,6 +27,7 @@ based on any dictionary and can be used on-line effectively.
 
 from nltk import redos
 from nltk.stem.api import StemmerI
+from nltk.termsec import safe_print
 
 
 class ARLSTem(StemmerI):
@@ -130,7 +131,7 @@ class ARLSTem(StemmerI):
                 return ps
             return token
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def norm(self, token):
         """
