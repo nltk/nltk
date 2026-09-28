@@ -115,10 +115,18 @@ class TestStanfordInputMatrix:
         with pytest.raises(ValueError):
             _bare_segmenter().segment_sents([["ok", "a" + bad + "b"]])
 
-    def test_an_empty_sentence_list_and_empty_sentences_pass_the_guard(self):
+    def test_an_empty_sentence_list_and_empty_sentences_pass_the_guard(
+        self, restricted_sandbox, monkeypatch
+    ):
         # nothing to refuse: the guard lets these through to the (absent) tool,
         # which is the pre-existing behaviour; the LookupError comes from the
-        # jar lookup, not from the input check
+        # jar lookup, not from the input check. Reaching the tool stage creates
+        # the process-wide staging directory, so it is staged inside this
+        # test's own data root and the cache is restored afterwards, or later
+        # sandboxed tests would inherit a scratch directory outside their root
+        import nltk.data
+
+        monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None)
         for sentences in ([], [[]], [["a"], []]):
             with pytest.raises((LookupError, AttributeError, TypeError, OSError)):
                 _bare_stanford_tagger().tag_sents(sentences)
