@@ -37,7 +37,7 @@ from functools import reduce
 from optparse import OptionParser
 
 from nltk import redos
-from nltk.internals import find_binary_iter
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.sem.drt import (
     DRS,
@@ -286,16 +286,17 @@ class Boxer:
         # candidate and use the first absolute one (an absolute bin_dir, the
         # CANDC environment variable, or a $PATH lookup), none of which resolve
         # against the CWD.
-        for binary in find_binary_iter(
-            name,
-            path_to_bin=bin_dir,
-            env_vars=["CANDC"],
-            url="http://svn.ask.it.usyd.edu.au/trac/candc/",
-            binary_names=[name, name + ".exe"],
-            verbose=verbose,
-        ):
-            if os.path.isabs(binary):
-                return binary
+        try:
+            return find_binary_absolute(
+                name,
+                path_to_bin=bin_dir,
+                env_vars=["CANDC"],
+                url="http://svn.ask.it.usyd.edu.au/trac/candc/",
+                binary_names=[name, name + ".exe"],
+                verbose=verbose,
+            )
+        except LookupError:
+            pass
         raise LookupError(
             "No absolute %r binary found. Pass an absolute bin_dir to Boxer(...) "
             "or set the CANDC environment variable to an absolute directory that "
