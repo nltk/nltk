@@ -746,3 +746,142 @@ def test_r53h_front_mutation_probe_has_teeth():
     finally:
         transforms.deque = real
     assert probe()[0] == probes.FIXED
+
+
+def test_32p6_group_bomb_probe_has_teeth(monkeypatch):
+    """Lift the capturing-group bound; the bomb must reach the engine and compile."""
+    from nltk import redos
+
+    probe = probes.PROBES["GHSA-32p6-cwhc-8r78"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(redos, "MAX_GROUP_COUNT", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "compiled" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_q4c8_readline_probe_has_teeth(monkeypatch):
+    """Make every block look like it carries a line break, so readline joins and
+    re-splits the whole growing buffer on each pass as it did before the fix."""
+    from nltk.data import SeekableUnicodeStreamReader
+
+    probe = probes.PROBES["GHSA-q4c8-9gwf-255x"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(SeekableUnicodeStreamReader, "_LINEBREAK_CHARS", frozenset("a"))
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_cj8f_xml_depth_probe_has_teeth(monkeypatch):
+    """Lift the nesting bound; the per-tag path rebuild must scale quadratically."""
+    import nltk.corpus.reader.xmldocs as xmldocs
+
+    probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no depth bound" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_53pg_hypernym_walker_probe_has_teeth(monkeypatch):
+    """Neuter the visit check; the cycle and the deep chain must recurse until
+    RecursionError in every walker."""
+    import nltk.corpus.reader.wordnet as wordnet
+
+    probe = probes.PROBES["GHSA-53pg-5qp8-mhvr"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(wordnet, "_check_hypernym_visit", lambda synset, visited: None)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "RecursionError" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_ffr9_span_tokenize_probe_has_teeth(monkeypatch):
+    """Reintroduce the O(n) front removal in both tokenizer engines; the quote
+    restore must go quadratic and flip the probe."""
+    import nltk.tokenize.destructive as destructive
+    import nltk.tokenize.treebank as treebank
+
+    probe = probes.PROBES["GHSA-ffr9-mgrr-wcvr"]
+    assert probe()[0] == probes.FIXED
+
+    class _FrontPopList(list):
+        def popleft(self):
+            # Two whole-list copies per pop (slice + reassign) so the O(n) front
+            # removal is visible at probe sizes; list.pop(0) alone is a C memmove
+            # that hides the constant.
+            head = self[0]
+            self[:] = self[1:]
+            return head
+
+    monkeypatch.setattr(destructive, "deque", _FrontPopList)
+    monkeypatch.setattr(treebank, "deque", _FrontPopList)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_gpwc_legality_probe_has_teeth(monkeypatch):
+    """A legal onset longer than any token defeats the saturation cut-off, so the
+    onset is reversed on every iteration again (the pre-fix loop)."""
+    from nltk.tokenize import LegalitySyllableTokenizer
+
+    probe = probes.PROBES["GHSA-gpwc-27cw-rh9r"]
+    assert probe()[0] == probes.FIXED
+
+    real = LegalitySyllableTokenizer.find_legal_onsets
+
+    def with_giant_onset(self, words):
+        return real(self, words) | {"x" * 10**6}
+
+    monkeypatch.setattr(
+        LegalitySyllableTokenizer, "find_legal_onsets", with_giant_onset
+    )
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_8fx7_stepping_parser_probe_has_teeth(monkeypatch):
+    """Put back the pre-fix loop that drives step() with no deadline; the parse
+    must run to completion past max_time and flip the probe."""
+    from nltk.parse.recursivedescent import SteppingRecursiveDescentParser
+
+    probe = probes.PROBES["GHSA-8fx7-8jr8-84rv"]
+    assert probe()[0] == probes.FIXED
+
+    def unbounded_parse(self, tokens):
+        tokens = list(tokens)
+        self.initialize(tokens)
+        while self.step() is not None:
+            pass
+        return self.parses()
+
+    monkeypatch.setattr(SteppingRecursiveDescentParser, "parse", unbounded_parse)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no TimeoutError" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
