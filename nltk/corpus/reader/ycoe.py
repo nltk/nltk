@@ -24,6 +24,7 @@ from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 from nltk.corpus.reader.util import *
+from nltk.pathsec import validate_path
 from nltk.tokenize import RegexpTokenizer
 
 
@@ -39,10 +40,7 @@ class YCOECorpusReader(CorpusReader):
 
         # A psd/pos directory symlink escapes the corpus root: join() does a
         # string-prefix check only, not symlink resolution, so files outside the
-        # YCOE corpus would be enumerated and read (CWE-59). Enforce realpath
-        # containment against the corpus root before handing the dir to a reader.
-        from nltk.pathsec import validate_path
-
+        # YCOE corpus would be enumerated and read (CWE-59).
         for sub in ("psd", "pos"):
             validate_path(
                 self.root.join(sub),

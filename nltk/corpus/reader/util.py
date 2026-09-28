@@ -171,16 +171,16 @@ class StreamBackedCorpusView(AbstractLazySequence):
            reader, which under rare circumstances may need to know
            the current block number."""
 
-        # Find the length of the file.
+        # Find the length of the file. A bare stat follows a symlink and leaks
+        # the existence/size of an out-of-root path (CWE-59), so a fileid that
+        # fails containment is not stat'ed; its refusal surfaces at _open().
         try:
-            if isinstance(self._fileid, PathPointer):
-                self._eofpos = self._fileid.file_size()
-            else:
-                # A bare os.stat on a raw fileid follows a symlink and leaks the
-                # existence/size/mtime of an out-of-root path (CWE-59/22); enforce
-                # containment before the stat.
+            try:
                 validate_path(self._fileid, context="StreamBackedCorpusView")
-                self._eofpos = os.stat(self._fileid).st_size
+            except (PermissionError, ValueError):
+                self._eofpos = None
+            else:
+                self._eofpos = self._file_size()
         except Exception as exc:
             raise ValueError(f"Unable to open or access {fileid!r} -- {exc}") from exc
 
@@ -221,6 +221,16 @@ class StreamBackedCorpusView(AbstractLazySequence):
             )
         else:
             self._stream = _secure_open(self._fileid, "rb")
+        # A fileid refused at construction was never stat'ed; the secure open
+        # above has now vouched for it, so its size can be taken.
+        if self._eofpos is None:
+            self._eofpos = self._file_size()
+
+    def _file_size(self):
+        """The size in bytes of the file behind this view's fileid."""
+        if isinstance(self._fileid, PathPointer):
+            return self._fileid.file_size()
+        return os.stat(self._fileid).st_size
 
     def close(self):
         """
