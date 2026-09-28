@@ -1082,19 +1082,22 @@ def find_binary_absolute(
     interpreted relative to the current working directory.
     """
     found_relative = False
-    for path in find_binary_iter(
-        name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
-    ):
-        if os.path.isabs(path):
-            return path
-        found_relative = True
+    try:
+        for path in find_binary_iter(
+            name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
+        ):
+            if os.path.isabs(path):
+                return path
+            found_relative = True
+    except LookupError:
+        if not found_relative:
+            raise
     if found_relative:
         raise LookupError(
             f"No absolute {name!r} binary found. Pass an absolute path_to_bin, "
             "set a configured environment variable to an absolute install "
             "location, or install the binary on PATH."
         )
-    raise LookupError(f"Could not find {name} binary")
 
 
 def find_jar_iter(

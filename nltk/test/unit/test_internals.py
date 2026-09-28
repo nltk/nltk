@@ -146,6 +146,13 @@ def test_find_binary_absolute_prefers_absolute_env_over_relative_path_to_bin(
     assert os.path.realpath(result) == os.path.realpath(str(trusted / _NAME))
 
 
+def test_find_binary_absolute_preserves_missing_binary_diagnostics(tmp_path):
+    """A genuine miss should keep find_file_iter's detailed LookupError text."""
+    missing = tmp_path / "missing"
+    with pytest.raises(LookupError, match=str(missing)):
+        find_binary_absolute(_NAME, searchpath=[str(missing)], binary_names=[_NAME])
+
+
 def test_find_jar_regex_searchpath_only_yields_matching_files(tmp_path):
     """find_jar_iter(is_regex=True) over a searchpath must yield only actual files
     whose name matches the pattern, never a subdirectory or an unrelated file that
