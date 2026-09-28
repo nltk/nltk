@@ -14,7 +14,7 @@ A module for interfacing with the HunPos open-source POS-tagger.
 import os
 from subprocess import PIPE
 
-from nltk.internals import find_binary, find_file
+from nltk.internals import find_binary_absolute, find_file
 from nltk.pathsec import (
     MAX_TOOL_MODEL_BYTES,
     TrustError,
@@ -87,7 +87,9 @@ class HunposTagger(TaggerI):
         ]
         hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
 
-        self._hunpos_bin = find_binary(
+        # Absolute only: a relative path_to_bin resolves against the CWD and is
+        # spawned below (untrusted search path, CWE-426/427).
+        self._hunpos_bin = find_binary_absolute(
             "hunpos-tag",
             path_to_bin,
             env_vars=("HUNPOS_TAGGER",),

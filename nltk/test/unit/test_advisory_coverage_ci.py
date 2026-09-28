@@ -77,6 +77,7 @@ _DRAFT_WITH_PROBE = {
     "GHSA-xmfg-f9cm-w86q",
     "GHSA-7j4p-88wx-5jrc",
     "GHSA-j456-xh4h-cpf2",
+    "GHSA-cc5r-64rf-75hg",
 }
 
 
