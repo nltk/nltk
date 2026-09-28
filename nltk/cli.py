@@ -9,6 +9,7 @@ import click
 from tqdm import tqdm
 
 from nltk import word_tokenize
+from nltk.termsec import safe_print
 from nltk.util import parallelize_preprocess
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -47,9 +48,9 @@ def tokenize_file(language, preserve_line, processes, encoding, delimiter):
             # so just process line by line normally.
             if processes == 1:
                 for line in tqdm(fin.readlines()):
-                    print(delimiter.join(word_tokenize(line)), end="\n", file=fout)
+                    safe_print(delimiter.join(word_tokenize(line)), end="\n", file=fout)
             else:
                 for outline in parallelize_preprocess(
                     word_tokenize, fin.readlines(), processes, progress_bar=True
                 ):
-                    print(delimiter.join(outline), end="\n", file=fout)
+                    safe_print(delimiter.join(outline), end="\n", file=fout)

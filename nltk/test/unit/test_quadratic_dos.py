@@ -80,6 +80,23 @@ def _elapsed(fn):
     return time.perf_counter() - start
 
 
+def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
+    """Assert ``op(big)`` (big == 4*small) runs under ``factor`` times ``op(small)``.
+
+    A load-invariant ratio, not an absolute ceiling: a linear op is ~4x, the
+    pre-patch O(n**2) ~16x, so factor=8 separates them on any machine. The floor
+    is multiplicative (an additive slack would hide a small quadratic); each side
+    is the min of ``reps`` runs to shed a transient stall.
+    """
+    t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
+    t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
+    # Explicit ratio (equivalent to ``t_big < factor * max(t_small, noise_floor)``;
+    # the floor already rules out division-by-zero) so the measured scaling factor
+    # is right there in the failure output.
+    ratio = t_big / max(t_small, noise_floor)
+    assert ratio < factor, (small, big, t_small, t_big, ratio)
+
+
 # ==========================================================================
 # EXPLOITABLE (fixed) -- quadratic pre-patch, linear now
 # ==========================================================================
@@ -183,21 +200,191 @@ class TestReadSexprBlockQuadratic:
         ]
 
     def test_unclosed_sexpr_is_subquadratic(self, monkeypatch):
-        # Pre-patch: an oversized single s-expression is re-parsed from position
-        # 0 on every fixed-size grow -> O(n^2). Exponential read growth makes it
-        # O(n). A ratio test is robust to the (high) linear constant: 4x input
-        # should cost ~4x (linear), not ~16x (quadratic).
-        #
-        # Raise the redos wall-clock bound far above the linear cost so a loaded
-        # host cannot trip it on the (legitimate) big linear parse and turn this
-        # scaling test into a spurious TimeoutError. A quadratic regression still
-        # fails: it either blows the ratio or blows this larger bound.
+        # Pre-patch: an oversized single s-expression is re-parsed from position 0
+        # on every fixed-size grow -> O(n^2); exponential read growth makes it O(n).
+        # Raise the redos cap so a loaded host cannot trip it on the big linear parse
+        # (kept small enough here that even 10x CI slowdown stays well under it).
         import nltk.redos as redos_mod
 
         monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 30)
-        t1 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 200_000)))
-        t4 = _elapsed(lambda: read_sexpr_block(io.StringIO("(" * 800_000)))
-        assert t4 < 10 * t1 + 0.5
+        _assert_subquadratic(
+            lambda n: read_sexpr_block(io.StringIO("(" * n)),
+            50_000,
+            200_000,
+            factor=10.0,
+        )
+
+
+class TestChomskyNormalFormFrontMutation:  # GHSA-r53h: tree.transforms
+    """The deque rewrite of the right-factoring loop, plus the width-to-depth
+    guard found while expanding it: binarisation turns a node's width into
+    depth, so a tree that satisfies Tree.fromstring's MAX_TREE_DEPTH bound
+    could still come out as a chain the recursive Tree methods cannot walk
+    (CWE-674). The transform refuses that up front, on the exact
+    post-transform depth, before mutating anything."""
+
+    @staticmethod
+    def _flat(n):
+        from nltk.tree import Tree
+
+        return Tree("S", ["w%d" % i for i in range(n)])
+
+    @staticmethod
+    def _same(a, b):
+        # iterative structural equality: Tree.__eq__ recurses over depth
+        from nltk.tree import Tree
+
+        stack = [(a, b)]
+        while stack:
+            x, y = stack.pop()
+            if isinstance(x, Tree) != isinstance(y, Tree):
+                return False
+            if not isinstance(x, Tree):
+                if x != y:
+                    return False
+                continue
+            if x.label() != y.label() or len(x) != len(y):
+                return False
+            stack.extend(zip(x, y))
+        return True
+
+    def test_correctness_preserved(self):
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        t = Tree.fromstring("(S (NP I) (VP (V saw) (NP (Det the) (N cat))))")
+        chomsky_normal_form(t)
+        assert t.label() == "S"
+        # Binarisation leaves every production at most binary branching.
+        assert all(len(p.rhs()) <= 2 for p in t.productions())
+
+    @pytest.mark.parametrize("factor", ["right", "left"])
+    def test_flat_node_is_linear(self, factor, monkeypatch):
+        from nltk.tree import tree as treemod
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # Pre-patch: the right-factoring loop did nodeCopy.pop(0) per child, an
+        # O(1)-should-be front removal that is O(n^2) over a wide flat node. The
+        # deque + popleft rewrite is linear and byte-for-byte identical; the
+        # left branch pops from the end and must stay linear too. The depth
+        # guard is lifted here because these widths exist to measure the loop.
+        monkeypatch.setattr(treemod, "MAX_TREE_DEPTH", 10_000)
+        _assert_subquadratic(
+            lambda n: chomsky_normal_form(self._flat(n), factor=factor),
+            1_500,
+            6_000,
+        )
+
+    @pytest.mark.parametrize("factor", ["right", "left"])
+    @pytest.mark.parametrize("horz_markov", [None, 0, 1, 2])
+    @pytest.mark.parametrize("vert_markov", [0, 1, 2])
+    def test_round_trip_restores_the_tree(self, factor, horz_markov, vert_markov):
+        import copy
+
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form, un_chomsky_normal_form
+
+        shapes = [self._flat(n) for n in (1, 2, 3, 5, 12, 300)] + [
+            Tree.fromstring(
+                "(S (NP I) (VP (V saw) (NP (Det the) (N cat)) (PP (P with) (NP (Det a) (N scope)))))"
+            )
+        ]
+        for original in shapes:
+            work = copy.deepcopy(original)
+            chomsky_normal_form(
+                work, factor=factor, horzMarkov=horz_markov, vertMarkov=vert_markov
+            )
+            assert all(len(node) <= 2 for node in work.subtrees())
+            un_chomsky_normal_form(work, expandUnary=False)
+            assert self._same(work, original)
+
+    def test_transform_itself_is_iterative(self):
+        import sys
+
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # a 400-wide node binarises to a 399-deep spine; the transform must
+        # not recurse to build it (the agenda is an explicit stack)
+        limit = sys.getrecursionlimit()
+        sys.setrecursionlimit(120)
+        try:
+            t = self._flat(400)
+            chomsky_normal_form(t)
+        finally:
+            sys.setrecursionlimit(limit)
+        assert len(t) == 2
+
+    def test_width_to_depth_amplification_refused_atomically(self):
+        from nltk.tree import tree as treemod
+        from nltk.tree.transforms import chomsky_normal_form
+
+        t = self._flat(3000)
+        with pytest.raises(ValueError, match="MAX_TREE_DEPTH"):
+            chomsky_normal_form(t)
+        # refused before any mutation: still flat, still 3000 wide
+        assert len(t) == 3000 and t.height() == 2
+        assert treemod.MAX_TREE_DEPTH == 500  # the bound the guard reads
+
+    @pytest.mark.parametrize("factor", ["right", "left"])
+    def test_exact_boundary_both_factors(self, factor):
+        import copy
+
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # a flat node of n children binarises to n - 1 Tree levels (the last
+        # child hangs off the end of the chain), so 501 is the last width
+        # allowed; Tree.height() counts the leaf as one more level
+        allowed = self._flat(501)
+        chomsky_normal_form(allowed, factor=factor)
+        for walk in (str, lambda t: t.leaves(), lambda t: t.height(), copy.deepcopy):
+            walk(allowed)  # every recursive method still works at the bound
+        assert allowed.height() == 501
+        with pytest.raises(ValueError, match="502 levels deep"):
+            chomsky_normal_form(self._flat(503), factor=factor)
+
+    @pytest.mark.parametrize("factor", ["right", "left"])
+    def test_nested_widths_compound_by_position(self, factor):
+        from nltk.tree import Tree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # every node is well under the bound on its own: the depths add up
+        # only where the factoring puts the wide subtree at the deep end of
+        # the chain (last child on the right, first child on the left), which
+        # is what an exact pre-pass, unlike a per-node width cap, tells apart
+        def layered(deep_end_first):
+            layer = self._flat(200)
+            for name in ("M", "O"):
+                filler = ["%s%d" % (name, i) for i in range(199)]
+                layer = Tree(
+                    name, [layer] + filler if deep_end_first else filler + [layer]
+                )
+            return layer
+
+        compounding = layered(deep_end_first=(factor == "left"))
+        with pytest.raises(ValueError, match="597 levels deep"):
+            chomsky_normal_form(compounding, factor=factor)
+        shallow_side = layered(deep_end_first=(factor == "right"))
+        chomsky_normal_form(shallow_side, factor=factor)  # 201 levels: allowed
+        assert all(len(node) <= 2 for node in shallow_side.subtrees())
+
+    def test_bound_override_is_honoured(self, monkeypatch):
+        from nltk.tree import tree as treemod
+        from nltk.tree.transforms import chomsky_normal_form
+
+        monkeypatch.setattr(treemod, "MAX_TREE_DEPTH", 2_000)
+        t = self._flat(1_500)
+        chomsky_normal_form(t)
+        assert len(t) == 2
+
+    def test_parented_trees_keep_their_existing_type_error(self):
+        from nltk.tree import MultiParentedTree, ParentedTree
+        from nltk.tree.transforms import chomsky_normal_form
+
+        # pre-existing behaviour, unchanged by the deque rewrite: the loop
+        # inserts plain Tree nodes, which a parented tree refuses
+        for cls in (ParentedTree, MultiParentedTree):
+            with pytest.raises(TypeError, match="Can not insert"):
+                chomsky_normal_form(cls.fromstring("(S (A a) (B b) (C c) (D d))"))
 
 
 # ==========================================================================
@@ -274,28 +461,15 @@ class TestSyllableTokenizerDoS:  # SyllableTokenizer -- has MULTIPLE directions
         # (`valid_syllables[:-1] + [...]`) for every vowelless syllable, so a
         # token like 'aebcd'*n cost O(n^2). In-place merge makes it linear.
         #
-        # This is a wall-clock ratio test, so it must be robust to CI timing
-        # noise: (1) a base size large enough that a single tokenize is well
-        # above timer resolution (a 4000-rep base measured ~0.01s -- noise
-        # dominated -- and made the ratio explode on a free-threaded runner); and
-        # (2) the MEDIAN of a few runs, robust to both a fast and a slow outlier.
-        # Linear -> t4 ~ 4*t1; the pre-fix O(n^2) -> t4 ~ 16*t1, so an 8x
-        # threshold separates them with wide margin.
-        import statistics
-
+        # Wall-clock scaling ratio (tokenize's per-token cost has a high enough
+        # constant that 8000 is a real measurement, not timer noise). Multiplicative
+        # floor, not the old ``+ 0.5`` additive slack, so the bound is tighter here.
         from nltk.tokenize import SyllableTokenizer
 
         monkeypatch.setattr(SyllableTokenizer, "MAX_TOKEN_LEN", 10**9)
-
-        def _median(n):
-            return statistics.median(
-                _elapsed(lambda: SyllableTokenizer().tokenize("aebcd" * n))
-                for _ in range(3)
-            )
-
-        t1 = _median(8000)
-        t4 = _median(32000)  # 4x the input
-        assert t4 < 8 * t1 + 0.5
+        _assert_subquadratic(
+            lambda n: SyllableTokenizer().tokenize("aebcd" * n), 8000, 32000
+        )
 
     def test_direction2_giant_multivowel_token_is_bounded(self):
         # A multi-vowel token passes the early return and reaches the O(n)
@@ -304,6 +478,26 @@ class TestSyllableTokenizerDoS:  # SyllableTokenizer -- has MULTIPLE directions
 
         with pytest.raises(ValueError):
             SyllableTokenizer().tokenize("a" * 5000)
+
+    def test_direction3_cross_token_vowel_accumulation_is_bounded(self):
+        # Each token stays within MAX_TOKEN_LEN, but assign_values remembers every
+        # distinct unknown char as a vowel on the instance, so a reused tokenizer
+        # fed many distinct codepoints grew self.vowels without bound until the
+        # joined pattern tripped redos's cap. _MAX_VOWEL_CHARS caps the set.
+        import warnings
+
+        from nltk.tokenize import SyllableTokenizer
+        from nltk.tokenize.sonority_sequencing import _MAX_VOWEL_CHARS
+
+        ssp = SyllableTokenizer()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for k in range(30):
+                base = 0x4E00 + k * 4000
+                ssp.tokenize("ae" + "".join(chr(base + i) for i in range(4000)))
+        assert len(ssp.vowels) <= _MAX_VOWEL_CHARS
+        # Still syllabifies correctly after the flood.
+        assert ssp.tokenize("justification") == ["jus", "ti", "fi", "ca", "tion"]
 
 
 class TestDistanceQuadraticDoS:  # nltk.metrics.distance -- edit_distance + jaro
@@ -707,18 +901,13 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 
     @pytest.mark.parametrize("lang,unit", TRIGGERS)
     def test_upcase_loop_is_linear(self, lang, unit):
-        import statistics
-
+        # Scaling assertion: t(200k) < 8 * t(50k). The linear fix is ~4x, the
+        # pre-patch per-match rebuild ~16x (and >20s at 200k); for the slower langs
+        # 50k is a real measurement, so this is a machine-independent ratio.
         from nltk.stem.snowball import SnowballStemmer
 
         st = SnowballStemmer(lang).stem
-
-        def med(n):
-            return statistics.median(_elapsed(lambda: st(unit * n)) for _ in range(3))
-
-        t1 = med(8000)
-        t4 = med(32000)  # 4x input: linear ~4x, pre-fix O(n^2) ~16x
-        assert t4 < 8 * t1 + 0.5
+        _assert_subquadratic(lambda n: st(unit * n), 50_000, 200_000)
 
     def test_negative_control_langs_stay_linear(self):
         # spanish/portuguese have no rebuild loop; german upcases only u/y (not

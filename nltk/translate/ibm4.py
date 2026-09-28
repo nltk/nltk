@@ -276,7 +276,7 @@ class IBMModel4(IBMModel):
                 "A target sentence is too long ("
                 + str(max_m)
                 + " words). Results may be less accurate."
-            )
+            )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
 
         for dj in range(1, max_m):
             self.head_distortion_table[dj] = defaultdict(

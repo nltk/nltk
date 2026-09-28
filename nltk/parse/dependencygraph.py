@@ -24,11 +24,17 @@ from pprint import pformat
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 #################################################################
 # DependencyGraph Class
 #################################################################
+
+#: Maximum depth the recursive dependency-graph traversal helpers will
+#: descend to.  Beyond this they raise ValueError instead of letting
+#: Python raise an uncaught RecursionError (CWE-674).  Configurable.
+MAX_DEPTH = 200
 
 
 class DependencyGraph:
@@ -390,46 +396,68 @@ class DependencyGraph:
                 return w
         return w
 
-    def _tree(self, i):
+    def _tree(self, i, _depth=0, max_depth=None):
         """Turn dependency graphs into NLTK trees.
 
         :param int i: index of a node
+        :param int _depth: current recursion depth (internal)
+        :param int max_depth: maximum depth; defaults to ``MAX_DEPTH``
         :return: either a word (if the indexed node is a leaf) or a ``Tree``.
         """
+        if max_depth is None:
+            max_depth = MAX_DEPTH
+        if _depth > max_depth:
+            raise ValueError(f"DependencyGraph._tree() exceeded MAX_DEPTH={max_depth}.")
         node = self.get_by_address(i)
         word = node["word"]
         deps = sorted(chain.from_iterable(node["deps"].values()))
-
         if deps:
-            return Tree(word, [self._tree(dep) for dep in deps])
+            return Tree(
+                word,
+                [self._tree(dep, _depth + 1, max_depth) for dep in deps],
+            )
         else:
             return word
 
-    def tree(self):
-        """
-        Starting with the ``root`` node, build a dependency tree using the NLTK
-        ``Tree`` constructor. Dependency labels are omitted.
-        """
-        node = self.root
+    def tree(self, max_depth=None):
+        """Starting with the ``root`` node, build a dependency tree using the
+        NLTK ``Tree`` constructor.  Dependency labels are omitted.
 
+        :param int max_depth: maximum recursion depth; defaults to ``MAX_DEPTH``
+        """
+        if max_depth is None:
+            max_depth = MAX_DEPTH
+        node = self.root
         word = node["word"]
         deps = sorted(chain.from_iterable(node["deps"].values()))
-        return Tree(word, [self._tree(dep) for dep in deps])
+        return Tree(
+            word,
+            [self._tree(dep, 1, max_depth) for dep in deps],
+        )
 
-    def triples(self, node=None):
-        """
-        Extract dependency triples of the form:
+    def triples(self, node=None, max_depth=None):
+        """Extract dependency triples of the form:
         ((head word, head tag), rel, (dep word, dep tag))
-        """
 
+        :param int max_depth: maximum recursion depth; defaults to ``MAX_DEPTH``
+        """
+        if max_depth is None:
+            max_depth = MAX_DEPTH
         if not node:
             node = self.root
 
-        head = (node["word"], node["ctag"])
-        for i in sorted(chain.from_iterable(node["deps"].values())):
-            dep = self.get_by_address(i)
-            yield (head, dep["rel"], (dep["word"], dep["ctag"]))
-            yield from self.triples(node=dep)
+        def _triples(node, _depth):
+            if _depth > max_depth:
+                raise ValueError(
+                    f"DependencyGraph.triples() exceeded " f"MAX_DEPTH={max_depth}."
+                )
+            head = (node["word"], node["ctag"])
+            for i in sorted(chain.from_iterable(node["deps"].values())):
+                dep = self.get_by_address(i)
+                yield (head, dep["rel"], (dep["word"], dep["ctag"]))
+                yield from _triples(dep, _depth + 1)
+
+        yield from _triples(node, 0)
 
     def _hd(self, i):
         try:
@@ -512,12 +540,20 @@ class DependencyGraph:
 
         return False
 
-    def get_cycle_path(self, curr_node, goal_node_index):
+    def get_cycle_path(self, curr_node, goal_node_index, _depth=0, max_depth=None):
+        if max_depth is None:
+            max_depth = MAX_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"DependencyGraph.get_cycle_path() exceeded MAX_DEPTH={max_depth}."
+            )
         for dep in curr_node["deps"]:
             if dep == goal_node_index:
                 return [curr_node["address"]]
         for dep in curr_node["deps"]:
-            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
+            path = self.get_cycle_path(
+                self.get_by_address(dep), goal_node_index, _depth + 1, max_depth
+            )
             if len(path) > 0:
                 path.insert(0, curr_node["address"])
                 return path
@@ -667,7 +703,7 @@ Nov.    NNP     9       VMOD
         # A private staging dir under a data root, not "tree.png" in the CWD.
         outfile = os.path.join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
         pylab.savefig(outfile)
-        print(f"saved dependency tree to {outfile}")
+        safe_print(f"saved dependency tree to {outfile}")
         pylab.show()
 
 
@@ -679,29 +715,29 @@ def conll_demo():
     dg = DependencyGraph(conll_data1)
     tree = dg.tree()
     tree.pprint()
-    print(dg)
-    print(dg.to_conll(4))
+    safe_print(dg)
+    safe_print(dg.to_conll(4))
 
 
 def conll_file_demo():
-    print("Mass conll_read demo...")
+    safe_print("Mass conll_read demo...")
     graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
     for graph in graphs:
         tree = graph.tree()
-        print("\n")
+        safe_print("\n")
         tree.pprint()
 
 
 def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
-    print(dg.contains_cycle())
+    safe_print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "TOP", "address": 0})
     cyclic_dg.add_node({"word": None, "deps": [2], "rel": "NTOP", "address": 1})
     cyclic_dg.add_node({"word": None, "deps": [4], "rel": "NTOP", "address": 2})
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "NTOP", "address": 3})
     cyclic_dg.add_node({"word": None, "deps": [3], "rel": "NTOP", "address": 4})
-    print(cyclic_dg.contains_cycle())
+    safe_print(cyclic_dg.contains_cycle())
 
 
 treebank_data = """Pierre  NNP     2       NMOD
