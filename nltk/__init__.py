@@ -22,6 +22,10 @@ import os
 import importlib
 import sys
 
+# The terminal-output chokepoint has no nltk imports of its own, so it is bound
+# first: every import-time fallback below (the downloader GUI warning) uses it.
+from nltk.termsec import safe_print, sanitize_terminal
+
 
 # //////////////////////////////////////////////////////
 # Metadata
@@ -197,7 +201,7 @@ if importlib.util.find_spec("tkinter"):
 
         warnings.warn(
             "Corpus downloader GUI not loaded "
-            "(RuntimeError during import: %s)" % str(e)
+            "(RuntimeError during import: %s)" % sanitize_terminal(e)
         )
 
 # explicitly import all top-level modules (ensuring
@@ -212,4 +216,4 @@ from nltk import tag, tbl, text, tokenize, translate, tree, util
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
 def demo():
-    print("To run the demo code for a module, type nltk.module.demo()")
+    safe_print("To run the demo code for a module, type nltk.module.demo()")

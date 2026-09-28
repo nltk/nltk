@@ -178,6 +178,7 @@
 - Louis Tiao
 - Steven Tomcavage
 - Tiago Tresoldi
+- UnbearableFate
 - Marcus Uneson
 - Yu Usami
 - Petro Verkhogliad
@@ -320,6 +321,7 @@
 - medisean <https://github.com/medisean>
 - tandede <https://github.com/tandede>
 - vzer200 <https://github.com/vzer200>
+- 区梓灏 <https://github.com/Nicholas022400701>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

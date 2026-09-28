@@ -38,6 +38,19 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: no-unsafe-print
+      name: no un-sanitised print of untrusted values
+      description: >-
+        A print of attacker-influenceable text (corpus token, tool stdout, tweet,
+        user expression) can carry ANSI/OSC escapes or Unicode bidi/invisibles that
+        hijack or spoof the terminal (CWE-150/1007/1236). Every print must be
+        safe_print, a provably-harmless literal/repr/numeric print, or carry a
+        trailing '# unsafe-print ok: <why>' marker. Route untrusted output through
+        nltk.termsec.safe_print.
+      entry: python tools/check_unsafe_print.py
+      language: system
+      pass_filenames: false
+      always_run: true
     - id: all-regex-through-redos
       name: every regex routes through nltk.redos
       description: >-

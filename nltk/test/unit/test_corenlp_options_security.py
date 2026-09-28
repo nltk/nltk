@@ -419,6 +419,18 @@ def _real_corenlp_available():
         return False
 
 
+@pytest.fixture(scope="module", autouse=True)
+def _restore_nltk_data_path():
+    # _make_corenlp_server trusts the CoreNLP dirs by prepending them to
+    # nltk.data.path; restoring it in place also revokes that trust (pathsec
+    # compares the path by value; pinned in test_pathsec).
+    import nltk
+
+    saved = list(nltk.data.path)
+    yield
+    nltk.data.path[:] = saved
+
+
 def _make_corenlp_server(corenlp_options, port=None):
     import nltk
 

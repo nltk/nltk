@@ -111,11 +111,14 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 
 import functools
 
+# Bound before the optional-dependency check below, whose fallback prints.
+from nltk.termsec import safe_print
+
 try:
     import pyparsing
 except ImportError:
-    print("Warning: nltk.tgrep will not work without the `pyparsing` package")
-    print("installed.")
+    safe_print("Warning: nltk.tgrep will not work without the `pyparsing` package")
+    safe_print("installed.")
 
 import nltk.tree
 from nltk import redos
@@ -355,11 +358,19 @@ def _tgrep_node_action(_s, _l, tokens):
             # through ``redos`` so a crafted literal (e.g. ``/(a|a)*$/``) is
             # bounded by a wall-clock timeout instead of hanging the search
             # (CWE-1333). See ``nltk/redos.py``.
+            try:
+                node_rx = redos.compile(node_lit)
+            except (ValueError, redos.error) as exc:
+                # redos refuses an oversized/over-nested /regex/ literal; surface
+                # it as a query error rather than an uncaught refusal.
+                raise TgrepException(
+                    f"invalid or oversized /regex/ node literal {node_lit!r}: {exc}"
+                ) from None
             return (
                 lambda r: lambda n, m=None, l=None: r.search(
                     _tgrep_node_literal_value(n)
                 )
-            )(redos.compile(node_lit))
+            )(node_rx)
         elif tokens[0].startswith("i@"):
             node_func = _tgrep_node_action(_s, _l, [tokens[0][2:].lower()])
             return (

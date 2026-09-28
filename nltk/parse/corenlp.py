@@ -8,6 +8,7 @@
 
 import json
 import os
+import random
 import socket
 import time
 from typing import List, Tuple
@@ -341,7 +342,56 @@ class CoreNLPServer:
             # Return java configurations to their default values.
             config_java(options=default_options, verbose=self.verbose)
 
-        # Check that the server is istill running.
+        self._raise_if_exited()
+
+        for i in range(30):
+            # Jittered backoff so retries don't all land on the same tick; the
+            # first attempt fires immediately.
+            if i > 0:
+                time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
+
+            try:
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "live"), timeout=5
+                )
+            except (
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ):
+                pass
+            else:
+                if response.ok:
+                    break
+        else:
+            raise CoreNLPServerError("Could not connect to the server.")
+
+        for i in range(60):
+            # Jittered backoff so retries don't all land on the same tick; the
+            # first attempt fires immediately.
+            if i > 0:
+                time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
+
+            try:
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "ready"), timeout=5
+                )
+            except (
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ):
+                pass
+            else:
+                if response.ok:
+                    break
+        else:
+            raise CoreNLPServerError("The server is not ready.")
+
+    def _raise_if_exited(self):
+        # A JVM that died after launch (no runtime, out of memory, a crash
+        # loading models) is reported with its exit code at once, not after the
+        # readiness loops time out on a port nothing will ever answer.
         returncode = self.popen.poll()
         if returncode is not None:
             _, stderrdata = self.popen.communicate()
@@ -353,28 +403,6 @@ class CoreNLPServer:
                 returncode,
                 f"Could not start the server. The error was: {stderrdata}",
             )
-
-        for i in range(30):
-            try:
-                response = requests.get(requests.compat.urljoin(self.url, "live"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
-            else:
-                if response.ok:
-                    break
-        else:
-            raise CoreNLPServerError("Could not connect to the server.")
-
-        for i in range(60):
-            try:
-                response = requests.get(requests.compat.urljoin(self.url, "ready"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
-            else:
-                if response.ok:
-                    break
-        else:
-            raise CoreNLPServerError("The server is not ready.")
 
     def stop(self):
         self.popen.terminate()

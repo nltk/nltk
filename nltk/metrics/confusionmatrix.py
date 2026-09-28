@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 
 
 class ConfusionMatrix:
@@ -387,13 +388,13 @@ class ConfusionMatrix:
 def demo():
     reference = "DET NN VB DET JJ NN NN IN DET NN".split()
     test = "DET VB VB DET NN NN NN IN DET NN".split()
-    print("Reference =", reference)
-    print("Test    =", test)
-    print("Confusion matrix:")
-    print(ConfusionMatrix(reference, test))
-    print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
+    safe_print("Reference =", reference)
+    safe_print("Test    =", test)
+    safe_print("Confusion matrix:")
+    safe_print(ConfusionMatrix(reference, test))
+    safe_print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
 
-    print(ConfusionMatrix(reference, test).recall("VB"))
+    safe_print(ConfusionMatrix(reference, test).recall("VB"))
 
 
 if __name__ == "__main__":

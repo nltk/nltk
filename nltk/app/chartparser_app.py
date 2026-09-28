@@ -77,6 +77,7 @@ from nltk.parse.chart import (
     TreeEdge,
 )
 from nltk.picklesec import AllowlistUnpickler, pickle_dump
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 from nltk.util import in_idle
 
@@ -1876,7 +1877,7 @@ class ChartParserApp:
             self._init_bindings()
 
         except Exception:
-            print("Error creating Tree View")
+            safe_print("Error creating Tree View")
             self.destroy()
             raise
 
@@ -2617,12 +2618,12 @@ def app():
     sent = "John ate the cake on the table"
     tokens = list(sent.split())
 
-    print("grammar= (")
+    safe_print("grammar= (")
     for rule in grammar.productions():
-        print(("    ", repr(rule) + ","))
-    print(")")
-    print("tokens = %r" % tokens)
-    print('Calling "ChartParserApp(grammar, tokens)"...')
+        safe_print(("    ", repr(rule) + ","))
+    safe_print(")")
+    safe_print("tokens = %r" % tokens)
+    safe_print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 
 
