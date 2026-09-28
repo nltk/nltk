@@ -422,6 +422,23 @@ def _get_allowed_roots():
     return roots
 
 
+def _exact_path_text(value):
+    """The characters a native open would see for ``value``, as an exact str.
+
+    A ``str`` subclass can override ``__str__`` (or carry a ``path`` attribute)
+    to show one path while ``shelve``, ``sqlite3`` or ``os.open`` use its real
+    characters, so a check that trusted ``str(value)`` validated one file and
+    let another be opened. ``str.__str__`` ignores every override. A non-str
+    value with a ``path`` attribute (a zip or dataset pointer) is taken from
+    that attribute, as :func:`open` does before opening it.
+    """
+    if isinstance(value, str):
+        return str.__str__(value)
+    if isinstance(getattr(value, "path", None), str):
+        return str.__str__(value.path)
+    return str(value)
+
+
 def validate_path(path_input, context="NLTK", required_root=None):
     """
     Ensures file access is restricted to allowed data directories.
@@ -442,7 +459,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
     if isinstance(path_input, int) or not path_input:
         return
     try:
-        raw = path_input.path if hasattr(path_input, "path") else str(path_input)
+        raw = _exact_path_text(path_input)
 
         # A NUL byte truncates a path in every C filesystem API and can never be
         # legitimate; refuse it explicitly (Path.resolve() surfaces it only on some
@@ -518,11 +535,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
         # LAYER 1: Scoped Sandbox (PR #3528 Integration)
         # This resolves both target and root to block symlink-based escapes.
         if required_root:
-            root_raw = (
-                required_root.path
-                if hasattr(required_root, "path")
-                else str(required_root)
-            )
+            root_raw = _exact_path_text(required_root)
             scoped_root = Path(root_raw).resolve()
             if not (target == scoped_root or target.is_relative_to(scoped_root)):
                 # Raise ValueError to match NLTK's historical CorpusReader error type
@@ -1660,6 +1673,17 @@ def _os_open_flags(mode):
     return access | creat
 
 
+def _is_special_file(st):
+    """True for a FIFO, socket or device inode: never data, and a FIFO blocks."""
+    mode = st.st_mode
+    return (
+        stat.S_ISFIFO(mode)
+        or stat.S_ISSOCK(mode)
+        or stat.S_ISCHR(mode)
+        or stat.S_ISBLK(mode)
+    )
+
+
 def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     """Open ``raw_path`` for read *or* write, closing the symlink-swap TOCTOU and
     the hardlink escape that a path-only ``validate_path`` cannot.
@@ -1689,6 +1713,7 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
         _os_open_flags(mode)
         | getattr(os, "O_NOFOLLOW", 0)
         | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_NONBLOCK", 0)
     )
     # Defer O_TRUNC until after the hardlink/realpath checks: truncating at open
     # time would zero a hardlinked outside-root target before st_nlink refuses it.
@@ -1696,6 +1721,8 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     flags &= ~os.O_TRUNC
     try:
         # 0o600 is only consulted when O_CREAT is in flags (write/append/x modes).
+        # O_NONBLOCK keeps a planted FIFO from blocking the open until a peer
+        # appears; it is cleared again below once the inode is known to be a file.
         fd = os.open(raw_path, flags, 0o600)
     except OSError as e:
         if e.errno in (errno.ELOOP, errno.EMLINK):
@@ -1703,9 +1730,26 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
                 f"Security Violation [pathsec.open]: refusing to follow a symlink "
                 f"at open time for {raw_path!r} (TOCTOU guard, CWE-59)"
             ) from e
+        if e.errno in _REFUSING_ERRNOS:
+            raise PermissionError(
+                f"Security Violation [pathsec.open]: {raw_path!r} is a socket or "
+                "other special file, not data; refusing to open it"
+            ) from e
         raise
     try:
         st = os.fstat(fd)
+        if _is_special_file(st):
+            raise PermissionError(
+                f"Security Violation [pathsec.open]: {raw_path!r} is a FIFO, socket "
+                "or device, not data; reading it could block forever or reach a "
+                "device (CWE-59)"
+            )
+        if hasattr(os, "O_NONBLOCK"):
+            import fcntl
+
+            fcntl.fcntl(
+                fd, fcntl.F_SETFL, fcntl.fcntl(fd, fcntl.F_GETFL) & ~os.O_NONBLOCK
+            )
         if st.st_nlink > 1:
             raise PermissionError(
                 f"Security Violation [pathsec.open]: refusing multiply-linked file "
