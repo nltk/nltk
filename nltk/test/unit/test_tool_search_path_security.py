@@ -21,6 +21,7 @@ working: an absolute argument, an absolute env var, and a PATH lookup.
 import os
 import shutil
 import stat
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -99,6 +100,9 @@ def _odd_forms(name):
         Path(relative),
         relative.encode(),
         relative + NUL,
+        relative + "\n",
+        relative + "\r",
+        "./" + "a" * 5000 + "/" + name,
     ]
 
 
@@ -106,6 +110,11 @@ def _escape_form(name, box):
     """The relative form that, rebased onto a trusted directory, climbs back
     out of it into the CWD decoy."""
     return f"../{os.path.basename(box)}/{name}"
+
+
+def _exe(name):
+    """The file name a PATH lookup finds on this platform (PATHEXT on Windows)."""
+    return name + ".exe" if os.name == "nt" else name
 
 
 def _scrubbed_path(directory):
@@ -121,9 +130,8 @@ def _same(a, b):
 
 
 def _inside(path, directory):
-    return os.path.realpath(str(path)).startswith(
-        os.path.realpath(str(directory)) + os.sep
-    )
+    real, root = os.path.realpath(str(path)), os.path.realpath(str(directory))
+    return real == root or real.startswith(root + os.sep)
 
 
 def _entry_points():
@@ -493,19 +501,14 @@ class TestFindBinaryAbsolute:
     def test_absolute_path_entry_is_the_operators_choice(
         self, box, tmp_path, monkeypatch
     ):
-        # PATH is where the operator installs tools: on POSIX an absolute hit is
-        # honoured and the spawn layer then judges who can write it; the finder
-        # has no PATH lookup on Windows, so there the CWD decoy is all it sees
-        good = _exec_file(tmp_path / "bin", "megam")
+        # PATH is where the operator installs tools: an absolute hit is honoured
+        # on every platform and the spawn layer then judges who can write it
+        good = _exec_file(tmp_path / "bin", _exe("megam"))
         monkeypatch.setenv(
             "PATH", f"{tmp_path / 'bin'}{os.pathsep}{tmp_path / 'empty'}"
         )
-        if os.name == "posix":
-            found = internals.find_binary_absolute("megam", binary_names=["megam"])
-            assert _same(found, good)
-        else:
-            with pytest.raises(LookupError):
-                internals.find_binary_absolute("megam", binary_names=["megam"])
+        found = internals.find_binary_absolute("megam", binary_names=["megam"])
+        assert _same(found, good)
 
     def test_no_which_on_path_is_not_found_rather_than_a_crash(
         self, box, tmp_path, monkeypatch
@@ -681,9 +684,11 @@ class TestConfigJava:
         with pytest.raises(LookupError):
             configure(_escape_form("java", box))
 
-    def test_relative_java_home_is_refused(self, box, monkeypatch):
+    def test_relative_java_home_is_refused(self, box, tmp_path, monkeypatch):
+        _exec_file(tmp_path / "jdk", "java")
+        escape = os.path.join(str(tmp_path / "jdk"), os.pardir, "cwd")
         for var in ("JAVAHOME", "JAVA_HOME"):
-            for value in (".", "sub", "./sub", "./java"):
+            for value in (".", "sub", "./sub", "./java", escape):
                 monkeypatch.setenv(var, value)
                 with pytest.raises(LookupError):
                     internals.config_java()
@@ -768,3 +773,368 @@ def test_spawn_layer_relative_target_per_platform(monkeypatch):
     finally:
         shutil.rmtree(home_box, ignore_errors=True)
         shutil.rmtree(trusted, ignore_errors=True)
+
+
+def _senna_binary_name():
+    from nltk.classify.senna import Senna
+
+    return os.path.basename(Senna.executable(None, "x"))
+
+
+class TestSenna:
+    """Senna / SennaTagger take a directory and spawn <dir>/senna-<platform>."""
+
+    def _decoys(self, box):
+        name = _senna_binary_name()
+        _exec_file(box, name)
+        _exec_file(box / "sub", name)
+        return name
+
+    def test_relative_and_odd_forms_are_refused(self, box, monkeypatch):
+        from nltk.classify.senna import Senna
+
+        name = self._decoys(box)
+        forms = _relative_forms(name, box) + _odd_forms(name)
+        forms += [Path("."), _LyingStr("."), _LyingStr("./"), "." + NUL]
+        for form in forms:
+            with pytest.raises(LookupError):
+                Senna(form, ["pos"])
+
+    def test_parent_component_escape_is_refused(self, box, tmp_path, monkeypatch):
+        from nltk.classify.senna import Senna
+
+        name = self._decoys(box)
+        trusted = tmp_path / "trusted"
+        _exec_file(trusted, name)
+        escape = os.path.join(str(trusted), os.pardir, os.path.basename(str(box)))
+        assert os.path.isfile(os.path.join(escape, name))
+        with pytest.raises(LookupError):
+            Senna(escape, ["pos"])
+        for value in (escape, ".", "./", "sub", "./" + name):
+            monkeypatch.setenv("SENNA", value)
+            with pytest.raises(LookupError):
+                Senna(value, ["pos"])
+
+    def test_absolute_install_and_env_var_are_honoured(
+        self, box, tmp_path, monkeypatch
+    ):
+        from nltk.classify.senna import Senna
+
+        name = self._decoys(box)
+        trusted = tmp_path / "trusted"
+        good = _exec_file(trusted, name)
+        for location in (str(trusted), Path(trusted), _LyingStr(str(trusted))):
+            tagger = Senna(location, ["pos"])
+            assert type(tagger._path) is str and os.path.isabs(tagger._path)
+            assert _same(tagger.executable(tagger._path), good), location
+        monkeypatch.setenv("SENNA", str(trusted))
+        tagger = Senna("./", ["pos"])  # a relative argument yields to the env var
+        assert _same(tagger.executable(tagger._path), good)
+        assert not _inside(tagger._path, box)
+
+
+class TestBoxer:
+    def _install(self, directory):
+        for name in ("candc", "boxer"):
+            _exec_file(directory, name)
+        return directory
+
+    def test_relative_and_odd_forms_are_refused(self, box, monkeypatch):
+        from nltk.sem.boxer import Boxer
+
+        monkeypatch.delenv("CANDC", raising=False)
+        self._install(box)
+        self._install(box / "sub")
+        forms = [".", "./", "sub", "sub/", "./sub/../", Path("."), b".", _LyingStr(".")]
+        forms += ["." + NUL, _LyingStr("." + NUL)]
+        for form in forms:
+            with pytest.raises(LookupError):
+                Boxer(bin_dir=form)
+
+    def test_parent_component_escape_is_refused(self, box, tmp_path, monkeypatch):
+        from nltk.sem.boxer import Boxer
+
+        monkeypatch.delenv("CANDC", raising=False)
+        self._install(box)
+        trusted = self._install(tmp_path / "trusted")
+        escape = os.path.join(str(trusted), os.pardir, os.path.basename(str(box)))
+        with pytest.raises(LookupError):
+            Boxer(bin_dir=escape)
+        monkeypatch.setenv("CANDC", escape)
+        with pytest.raises(LookupError):
+            Boxer()
+        # with a trusted install in the env var, the escape argument yields to it
+        monkeypatch.setenv("CANDC", str(trusted))
+        tool = Boxer(bin_dir=escape)
+        assert _same(tool._candc_bin, str(trusted / "candc"))
+        assert _same(tool._boxer_bin, str(trusted / "boxer"))
+
+    def test_absolute_install_is_honoured(self, box, tmp_path, monkeypatch):
+        from nltk.sem.boxer import Boxer
+
+        monkeypatch.delenv("CANDC", raising=False)
+        trusted = self._install(tmp_path / "trusted")
+        for location in (str(trusted), Path(trusted)):
+            tool = Boxer(bin_dir=location)
+            assert _same(tool._candc_bin, str(trusted / "candc"))
+            assert _same(tool._boxer_bin, str(trusted / "boxer"))
+
+
+class TestRepp:
+    def _install(self, directory):
+        _exec_file(directory / "src", "repp")
+        (directory / "erg").mkdir(parents=True, exist_ok=True)
+        (directory / "erg" / "repp.set").write_text("", encoding="utf-8")
+        return directory
+
+    def test_relative_odd_and_escape_forms_are_refused(
+        self, box, tmp_path, monkeypatch
+    ):
+        from nltk.tokenize.repp import ReppTokenizer
+
+        monkeypatch.delenv("REPP_TOKENIZER", raising=False)
+        self._install(box)
+        self._install(box / "sub")
+        trusted = self._install(tmp_path / "trusted")
+        escape = os.path.join(str(trusted), os.pardir, os.path.basename(str(box)))
+        forms = [".", "./", "sub", "sub/", escape, Path("."), b".", _LyingStr(".")]
+        forms += [str(trusted) + NUL, _LyingStr(str(trusted) + NUL)]
+        for form in forms:
+            with pytest.raises(LookupError):
+                ReppTokenizer(form)
+        for value in (escape, ".", "sub"):
+            monkeypatch.setenv("REPP_TOKENIZER", value)
+            with pytest.raises(LookupError):
+                ReppTokenizer("repp")
+
+    def test_missing_binary_is_a_lookup_error_not_an_assertion(
+        self, box, tmp_path, monkeypatch
+    ):
+        # the checks used to be assert statements, which python -O strips
+        from nltk.tokenize.repp import ReppTokenizer
+
+        monkeypatch.delenv("REPP_TOKENIZER", raising=False)
+        empty = tmp_path / "trusted"
+        empty.mkdir()
+        with pytest.raises(LookupError):
+            ReppTokenizer(str(empty))
+        _exec_file(empty / "src", "repp")  # binary but no erg/repp.set
+        with pytest.raises(LookupError):
+            ReppTokenizer(str(empty))
+
+    def test_absolute_install_and_env_var_are_honoured(
+        self, box, tmp_path, monkeypatch
+    ):
+        from nltk.tokenize.repp import ReppTokenizer
+
+        monkeypatch.delenv("REPP_TOKENIZER", raising=False)
+        trusted = self._install(tmp_path / "trusted")
+        for location in (str(trusted), Path(trusted), _LyingStr(str(trusted))):
+            tokenizer = ReppTokenizer(location)
+            assert type(tokenizer.repp_dir) is str and _same(
+                tokenizer.repp_dir, str(trusted)
+            )
+        monkeypatch.setenv("REPP_TOKENIZER", str(trusted))
+        assert _same(ReppTokenizer("repp").repp_dir, str(trusted))
+
+
+class TestDot:
+    def test_dependencygraph_dot_goes_through_the_trusted_spawn(
+        self, box, tmp_path, monkeypatch
+    ):
+        import nltk.parse.dependencygraph as dg
+
+        _exec_file(box, _exe("dot"))  # CWD decoy
+        good = _exec_file(tmp_path / "bin", _exe("dot"))
+        monkeypatch.setenv(
+            "PATH", f"{tmp_path / 'bin'}{os.pathsep}{tmp_path / 'empty'}"
+        )
+        seen = {}
+
+        def _record(target, args, **kwargs):
+            seen["target"], seen["args"], seen["kwargs"] = target, list(args), kwargs
+            raise _Spawned(target)
+
+        monkeypatch.setattr(dg, "spawn_trusted", _record)
+        with pytest.raises(Exception):
+            dg.dot2img("digraph { a -> b }", "svg")
+        assert _same(seen["target"], good) and not _inside(seen["target"], box)
+        assert seen["args"] == ["-Tsvg"] and not seen["kwargs"].get("shell")
+        # a format string with shell metacharacters stays one argv item, no shell
+        hostile = "svg; touch " + str(tmp_path / "pwned")
+        with pytest.raises(Exception):
+            dg.dot2img("digraph { a -> b }", hostile)
+        assert seen["args"] == ["-T" + hostile] and not seen["kwargs"].get("shell")
+        assert not (tmp_path / "pwned").exists()
+
+    @pytest.mark.skipif(not shutil.which("dot"), reason="needs a real Graphviz dot")
+    def test_real_dot_renders_through_the_trusted_spawn(self, tmp_path):
+        import nltk.parse.dependencygraph as dg
+
+        svg = dg.dot2img("digraph { a -> b }", "svg")
+        assert "<svg" in svg and "</svg>" in svg
+        png = dg.dot2img("digraph { a -> b }", "png")
+        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+class TestSvnRevision:
+    def test_a_bare_svn_is_never_taken_from_the_cwd(self, box, tmp_path, monkeypatch):
+        import nltk.downloader as downloader
+
+        _exec_file(box, "svn")
+        with pytest.raises(LookupError):
+            downloader._svn_revision("index.xml")
+
+    def test_an_absolute_svn_on_path_is_spawned_trusted(
+        self, box, tmp_path, monkeypatch
+    ):
+        import nltk.downloader as downloader
+        from nltk import pathsec
+
+        _exec_file(box, _exe("svn"))
+        good = _exec_file(tmp_path / "bin", _exe("svn"))
+        monkeypatch.setenv(
+            "PATH", f"{tmp_path / 'bin'}{os.pathsep}{tmp_path / 'empty'}"
+        )
+        seen = {}
+
+        def _record(target, args, **kwargs):
+            seen["target"], seen["args"] = target, list(args)
+            raise _Spawned(target)
+
+        monkeypatch.setattr(pathsec, "spawn_trusted", _record)
+        with pytest.raises(_Spawned):
+            downloader._svn_revision("index.xml")
+        assert _same(seen["target"], good) and not _inside(seen["target"], box)
+        assert seen["args"] == ["status", "-v", "--", "index.xml"]
+
+    def test_a_dash_prefixed_file_name_cannot_become_an_svn_option(
+        self, box, tmp_path, monkeypatch
+    ):
+        import nltk.downloader as downloader
+        from nltk import pathsec
+
+        _exec_file(tmp_path / "bin", _exe("svn"))
+        monkeypatch.setenv(
+            "PATH", f"{tmp_path / 'bin'}{os.pathsep}{tmp_path / 'empty'}"
+        )
+        seen = {}
+
+        def _record(target, args, **kwargs):
+            seen["args"] = list(args)
+            raise _Spawned(target)
+
+        monkeypatch.setattr(pathsec, "spawn_trusted", _record)
+        hostile = "--config-option=servers:global:http-proxy-host=evil"
+        with pytest.raises(_Spawned):
+            downloader._svn_revision(hostile)
+        assert seen["args"].index("--") < seen["args"].index(hostile)
+
+
+class TestJavaSpawn:
+    def test_trusted_java_is_executed_by_its_resolved_path(
+        self, trusted_java_stub, monkeypatch
+    ):
+        monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
+        monkeypatch.setattr(internals, "_java_options", [])
+        seen = {}
+
+        class _Proc:
+            returncode = 0
+
+            def communicate(self):
+                return "", ""
+
+        def _spy(cmd, *args, **kwargs):
+            seen["cmd"], seen["kwargs"] = list(cmd), kwargs
+            return _Proc()
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+        internals.java(["Main"])
+        assert _same(seen["cmd"][0], trusted_java_stub)
+        assert seen["kwargs"]["executable"] == seen["cmd"][0]
+        assert not seen["kwargs"].get("shell") and "env" in seen["kwargs"]
+        assert "JAVA_TOOL_OPTIONS" not in seen["kwargs"]["env"]
+
+    def test_untrusted_java_binary_is_refused_at_spawn(self, box, monkeypatch):
+        # set directly, bypassing config_java: the spawn-time check still stands
+        _exec_file(box, "java")
+        monkeypatch.setattr(internals, "_java_bin", "./java")
+        monkeypatch.setattr(internals, "_java_options", [])
+        if os.name == "posix":
+            with pytest.raises(LookupError):
+                internals.java(["Main"])
+        else:  # the best-effort resolver accepts it; config_java is the guard there
+            seen = {}
+
+            def _spy(cmd, *args, **kwargs):
+                seen["cmd"] = list(cmd)
+                raise _Spawned(cmd[0])
+
+            monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+            with pytest.raises((LookupError, _Spawned, OSError)):
+                internals.java(["Main"])
+
+    def test_unconfigured_java_is_resolved_absolute_before_spawn(
+        self, box, tmp_path, monkeypatch
+    ):
+        # nobody called config_java(): the JVM must still be resolved through
+        # the absolute-only finder, never spawned as the bare name "java"
+        _exec_file(box, _exe("java"))
+        good = _exec_file(tmp_path / "jdk", _exe("java"))
+        monkeypatch.setenv("JAVA_HOME", str(tmp_path / "jdk"))
+        monkeypatch.setattr(internals, "_java_bin", None)
+        monkeypatch.setattr(internals, "_java_options", [])
+        seen = {}
+
+        class _Proc:
+            returncode = 0
+
+            def communicate(self):
+                return "", ""
+
+        real_popen = subprocess.Popen
+
+        def _spy(cmd, *args, **kwargs):
+            if cmd[0] == "which":  # the finder's own PATH lookup, not the JVM
+                return real_popen(cmd, *args, **kwargs)
+            seen["cmd"] = list(cmd)
+            return _Proc()
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+        internals.java(["Main"])
+        assert seen["cmd"][0] != "java" and _same(seen["cmd"][0], good)
+        assert not _inside(seen["cmd"][0], box)
+
+    def test_unconfigured_java_with_nothing_reachable_is_refused(
+        self, box, monkeypatch
+    ):
+        _exec_file(box, _exe("java"))
+        monkeypatch.setattr(internals, "_java_bin", None)
+        monkeypatch.setattr(internals, "_java_options", [])
+        spawned = []
+        real_popen = subprocess.Popen
+
+        def _spy(cmd, *args, **kwargs):
+            if cmd[0] == "which":
+                return real_popen(cmd, *args, **kwargs)
+            spawned.append(list(cmd))
+            raise _Spawned(cmd[0])
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+        with pytest.raises(LookupError):
+            internals.java(["Main"])
+        assert spawned == []
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    def test_java_in_a_group_writable_directory_is_refused(self, monkeypatch):
+        root = Path(tempfile.mkdtemp(prefix=".nltk_java_gw_", dir=Path.home()))
+        try:
+            stub = _exec_file(root, "java")
+            os.chmod(root, 0o775)
+            monkeypatch.setattr(internals, "_java_bin", stub)
+            monkeypatch.setattr(internals, "_java_options", [])
+            with pytest.raises(LookupError):
+                internals.java(["Main"])
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
