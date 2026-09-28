@@ -904,9 +904,9 @@ def find_file_iter(
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-            except FileNotFoundError:
-                # no ``which`` on this PATH: there is no PATH lookup to make, so
-                # fall through to the not-found error rather than crash here
+            except OSError:
+                # ``which`` missing from PATH or not runnable: there is no PATH
+                # lookup to make, so fall through to the not-found error
                 break
             stdout, stderr = p.communicate()
             path = _decode_stdoutdata(stdout).strip()
@@ -1078,7 +1078,8 @@ def find_binary_absolute(
     url=None,
     verbose=False,
 ):
-    """Like :func:`find_binary`, but return only an *absolute* match.
+    """Like :func:`find_binary`, but return only an *absolute* match with no
+    parent-directory component.
 
     A relative match resolves against the current working directory, so a
     wrapper that runs the result through ``subprocess.Popen`` would execute a
@@ -1086,17 +1087,25 @@ def find_binary_absolute(
     CWE-426 / CWE-427). ``find_binary_iter`` already refuses a bare name that
     resolves only in the CWD, but an explicit *relative* ``path_to_bin`` (e.g.
     ``"tools/prover9"``) is honored there as the caller's choice, which is unsafe
-    for something about to be executed. Tool wrappers (prover9/mace, megam, tadm;
-    cf. Boxer/Malt/REPP) therefore accept only an absolute location: an absolute
-    ``path_to_bin``, an env var, or a ``$PATH`` lookup, none of which resolve
-    against the CWD.
+    for something about to be executed; and a relative location joined onto a
+    trusted directory can climb back out of it (``"/trusted/../cwd/prover9"`` is
+    absolute and is the CWD file), so a ``..`` component is refused as well.
+    Tool wrappers (prover9/mace, megam, tadm, java, hunpos; cf. Boxer/Malt/REPP)
+    therefore accept only an absolute location: an absolute ``path_to_bin``, an
+    env var, or a ``$PATH`` lookup, none of which resolve against the CWD.
+
+    ``path_to_bin`` may be a str, bytes or path-like object; it is copied to a
+    plain str before anything inspects it, so an object that overrides string
+    methods cannot make a relative location look absolute, and a NUL byte is
+    refused rather than raised from the filesystem.
     """
+    if path_to_bin is not None:
+        path_to_bin = _plain_location(path_to_bin)
     for path in find_binary_iter(
         name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
     ):
-        # a relative location joined onto a trusted directory can climb back out
-        # of it ("/trusted/../cwd/prover9" is absolute and IS the CWD decoy), so a
-        # parent-directory component is refused as well as a relative match
+        if type(path) is not str:
+            path = str.__str__(path)
         if os.path.isabs(path) and os.pardir not in _path_components(path):
             return path
     raise LookupError(
@@ -1107,8 +1116,28 @@ def find_binary_absolute(
     )
 
 
+def _plain_location(location):
+    """A plain ``str`` copy of a path-like *location* (str, bytes or
+    ``os.PathLike``): the guards must not consult methods the object defines."""
+    try:
+        text = os.fsdecode(location)
+    except TypeError:
+        raise LookupError(
+            f"A binary location must be a path, not {type(location).__name__}"
+        ) from None
+    if type(text) is not str:
+        text = str.__str__(text)
+    if "\x00" in text:
+        raise LookupError("A binary location may not contain a NUL byte")
+    return text
+
+
 def _path_components(path):
-    return [part for part in path.replace(os.sep, "/").replace("\\", "/").split("/")]
+    # only the platform's own separators split a path: a backslash in a POSIX
+    # file name is just a character there, and a separator on Windows
+    if os.altsep:
+        path = path.replace(os.altsep, os.sep)
+    return path.split(os.sep)
 
 
 def find_jar_iter(
