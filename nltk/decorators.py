@@ -31,19 +31,14 @@ sys.path = OLD_SYS_PATH
 # original parameter list is what makes ``inspect.getfullargspec`` report the
 # true signature on every supported Python (older versions ignore a wrapper's
 # ``__signature__``/``__wrapped__``). To keep that eval from ever being a
-# code-execution primitive, the interpolated signature is first checked to be a
-# comma-and-space separated list of plain parameter names, each optionally
-# prefixed by * or ** and nothing else (no =default, (, ., newline or other
-# expression syntax). inspect constrains real names to identifiers, so a genuine
-# function is never rejected (CVE-2026-14727).
-# A parameter list is safe to interpolate into the wrapper source only if every
-# comma-separated token is a plain name, a *args/**kwargs name, or a bare * or /
-# marker (the keyword-only and positional-only separators): nothing that can
-# carry an annotation, a default, a call, an attribute or any other expression
-# syntax. Each name is judged by str.isidentifier, the language's own rule, so
-# every legal name passes (non-ASCII included) and nothing that is not a name
-# does; a keyword is refused too, and so is a str subclass, whose __str__ could
-# inject source at the interpolation however honest its characters look
+# code-execution primitive, the interpolated signature must be a comma-separated
+# list of plain names, *args/**kwargs names and bare * or / markers (the
+# keyword-only and positional-only separators): nothing that can carry an
+# annotation, a default, a call, an attribute or any other expression syntax.
+# Each name is judged by str.isidentifier, the language's own rule, so every
+# legal name passes (non-ASCII included) and nothing that is not a name does; a
+# keyword is refused too, and so is a str subclass, whose __str__ could inject
+# source at the interpolation however honest its characters look
 # (CVE-2026-14727).
 def _assert_safe_signature(signature):
     def _refuse(why):
