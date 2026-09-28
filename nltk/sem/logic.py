@@ -863,10 +863,27 @@ EVENT_TYPE = EventType()
 ANY_TYPE = AnyType()
 
 
-def read_type(type_string):
+def read_type(type_string, _depth=0, max_depth=None):
+    """Parse a type string into a ``Type``.
+
+    Recursion is bounded by ``MAX_PARSE_DEPTH`` so that adversarially
+    nested type strings raise ``LogicalExpressionException`` instead of an
+    uncaught ``RecursionError`` (CWE-674).
+
+    :param str type_string: the type string to parse
+    :param int _depth: current recursion depth (internal)
+    :param int max_depth: maximum nesting depth; defaults to ``MAX_PARSE_DEPTH``
+    :rtype: Type
+    """
+    if max_depth is None:
+        max_depth = LogicParser.MAX_PARSE_DEPTH
+    if _depth > max_depth:
+        raise LogicalExpressionException(
+            None,
+            f"Type nesting exceeds the maximum depth ({max_depth}).",
+        )
     assert isinstance(type_string, str)
     type_string = type_string.replace(" ", "")  # remove spaces
-
     if type_string[0] == "<":
         assert type_string[-1] == ">"
         paren_count = 0
@@ -880,7 +897,8 @@ def read_type(type_string):
                 if paren_count == 1:
                     break
         return ComplexType(
-            read_type(type_string[1:i]), read_type(type_string[i + 1 : -1])
+            read_type(type_string[1:i], _depth + 1, max_depth),
+            read_type(type_string[i + 1 : -1], _depth + 1, max_depth),
         )
     elif type_string[0] == "%s" % ENTITY_TYPE:
         return ENTITY_TYPE

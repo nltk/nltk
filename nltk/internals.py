@@ -259,7 +259,11 @@ def _verify_jar_sandbox(classpath_entries):
         repo_root = os.path.realpath(os.path.join(nltk_package_dir, ".."))
         git_marker = os.path.join(repo_root, ".git")
         if os.path.isdir(git_marker) or os.path.isfile(git_marker):
-            trusted_roots.append(os.path.normcase(repo_root))
+            # In a source checkout, trust only the third-party jar dir, never the
+            # whole tree: a stray or committed jar elsewhere must not run.
+            third_dir = os.path.realpath(os.path.join(repo_root, "third"))
+            if os.path.isdir(third_dir):
+                trusted_roots.append(os.path.normcase(third_dir))
     except Exception:
         pass
 
