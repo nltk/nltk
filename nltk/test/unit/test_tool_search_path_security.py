@@ -1477,3 +1477,22 @@ class TestPathDirsWalk:
         monkeypatch.setenv("PATH", os.curdir)
         with pytest.raises(LookupError, match="only in the current working"):
             internals.find_binary_absolute("svn", binary_names=["svn.exe"])
+
+    def test_a_name_with_a_directory_part_is_never_joined_onto_path(
+        self, box, tmp_path, monkeypatch
+    ):
+        # "../cwd/svn.exe" joined onto a PATH entry next to the CWD would land
+        # on the decoy as an absolute-looking path; a name with a directory
+        # part is not a PATH lookup, so the walk yields nothing for it
+        _exec_file(box, "svn.exe")
+        monkeypatch.setenv("PATHEXT", ".exe")
+        monkeypatch.setenv("PATH", str(tmp_path / "empty"))
+        escape = _escape_form("svn.exe", box)
+        assert os.path.isfile(os.path.join(str(tmp_path / "empty"), escape))
+        forms = [escape, os.path.join("sub", "svn.exe"), os.path.join(os.curdir, "svn")]
+        assert list(internals._path_dirs_iter(forms)) == []
+        # the raw finder surfaces such a form only as the relative decoy it names
+        if os.name != "nt":
+            monkeypatch.setattr(os, "name", "nt")
+        hits = list(internals.find_file_iter(escape, (), (), ["svn.exe"]))
+        assert hits and all(not os.path.isabs(h) for h in hits), hits

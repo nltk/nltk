@@ -832,14 +832,18 @@ def _path_dirs_iter(file_names):
     consults the current directory unless PATH names it, and it does not stop
     at the first hit: a planted binary in the CWD must neither be chosen nor
     hide the real installs behind it (CWE-427). A relative PATH entry (``.``)
-    still yields a relative path, which ``find_binary_iter`` refuses.
+    still yields a relative path, which ``find_binary_iter`` refuses. A name
+    with a directory part is not a PATH lookup (the OS search and ``which``
+    take it as given), so it is never joined onto a PATH entry: that join
+    would rebase a ``../<cwd>/<name>`` form through a trusted directory.
     """
     suffixes = [ext for ext in os.environ.get("PATHEXT", "").split(os.pathsep) if ext]
+    bare_names = [name for name in file_names if not os.path.dirname(name)]
     for directory in os.environ.get("PATH", "").split(os.pathsep):
         directory = directory.strip('"')
         if not directory:
             continue
-        for alternative in file_names:
+        for alternative in bare_names:
             names = [alternative]
             if not os.path.splitext(alternative)[1]:
                 names += [alternative + ext for ext in suffixes]
