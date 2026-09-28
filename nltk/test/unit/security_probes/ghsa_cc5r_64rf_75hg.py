@@ -3,6 +3,7 @@ points (prover9/mace4, megam, tadm, java, hunpos) allows local code execution
 via a relative binary location (CWE-426, CWE-427)"""
 
 import os
+import pathlib
 import shutil
 import stat
 import tempfile
@@ -14,6 +15,13 @@ _TOOL_ENV = ("PROVER9", "MEGAM", "TADM", "JAVAHOME", "JAVA_HOME", "HUNPOS_TAGGER
 
 class _Spawned(Exception):
     """Raised in place of the hunpos spawn, carrying the binary it was given."""
+
+
+class _LyingStr(str):
+    """A location whose string methods lie: ``os.path.isabs`` asks ``startswith``."""
+
+    def startswith(self, *args, **kwargs):
+        return True
 
 
 def _plant(directory, relpath):
@@ -28,6 +36,7 @@ def _plant(directory, relpath):
 def _relative_forms(name, box):
     forms = [
         ".",
+        "./",
         "./" + name,
         "sub/" + name,
         "sub",
@@ -36,12 +45,27 @@ def _relative_forms(name, box):
         "../" + os.path.basename(box) + "/" + name,
     ]
     if os.name == "nt":
-        forms += [".\\" + name, "sub\\" + name]
+        forms += [
+            ".\\" + name,
+            "sub\\" + name,
+            "..\\" + os.path.basename(box) + "\\" + name,
+        ]
     return forms
 
 
+def _odd_forms(name):
+    """Relative locations that are not plain strings, or carry a NUL byte."""
+    relative = "./" + name
+    return [
+        _LyingStr(relative),
+        pathlib.Path(relative),
+        relative.encode(),
+        relative + chr(0),
+    ]
+
+
 def _inside(path, box):
-    return os.path.realpath(path).startswith(os.path.realpath(box) + os.sep)
+    return os.path.realpath(str(path)).startswith(os.path.realpath(box) + os.sep)
 
 
 def _scrubbed_path(directory):
@@ -109,13 +133,32 @@ def _entry_points(legit):
     ]
 
 
+def _leak(label, form, resolved, box, expected=None):
+    """The VULNERABLE verdict for a resolution, or None if it is acceptable."""
+    if _inside(resolved, box):
+        return f"{label}({form!r}) took the CWD-relative binary {resolved!r}"
+    if expected is None:
+        return (
+            f"{label}({form!r}) resolved {resolved!r} with no trusted location "
+            "configured"
+        )
+    if os.path.realpath(str(resolved)) != expected:
+        return (
+            f"{label}({form!r}) resolved {resolved!r} instead of the configured "
+            f"install {expected!r}"
+        )
+    return None
+
+
 @probe("GHSA-cc5r-64rf-75hg")
 def _relative_binary_location():
     """Plant decoy binaries in a temporary CWD and configure each tool with every
-    relative location form, first with no tool reachable through the environment
-    (only the decoys can match: each form must be refused), then with a trusted
-    absolute install configured through the tool's env var (each form must either
-    be refused or resolve to that install, never to a decoy).
+    relative location form (including non-str, NUL-bearing and lying-string
+    forms), first with no tool reachable through the environment (only the
+    decoys can match: each form must be refused), then with a trusted absolute
+    install configured through the tool's env var (each form must either be
+    refused or resolve to that install, never to a decoy), then with the env
+    var itself pointing through ``..`` at the decoy directory (the same rule).
 
     Before the fix these entry points forwarded the location to ``find_binary``,
     which honours an explicit relative path, so the tool's spawn would have run
@@ -127,10 +170,12 @@ def _relative_binary_location():
     from nltk import internals
     from nltk.classify import megam, tadm
 
-    box = tempfile.mkdtemp(prefix="nltk_cc5r_")
-    # under $HOME and registered as a data root: hunpos validates its model as
-    # private and inside the sandbox, which a shared temp dir is not
-    legit = tempfile.mkdtemp(prefix=".nltk_cc5r_legit_", dir=os.path.expanduser("~"))
+    # both under $HOME: hunpos validates its model as private and in-sandbox
+    # (a shared temp dir is neither), and the '..' env-var phase needs the decoy
+    # directory to be a sibling of the install
+    home = os.path.expanduser("~")
+    box = tempfile.mkdtemp(prefix=".nltk_cc5r_box_", dir=home)
+    legit = tempfile.mkdtemp(prefix=".nltk_cc5r_legit_", dir=home)
     empty = os.path.join(legit, "empty")
     os.makedirs(empty)
     scrubbed = _scrubbed_path(empty)
@@ -153,22 +198,13 @@ def _relative_binary_location():
             os.environ.pop(var, None)
         os.environ["PATH"] = scrubbed
         for label, name, configure in tools:
-            for form in _relative_forms(name, box):
+            for form in _relative_forms(name, box) + _odd_forms(name):
                 try:
                     resolved = configure(form)
                 except LookupError:
                     refused += 1
                     continue
-                if _inside(resolved, box):
-                    return (
-                        VULNERABLE,
-                        f"{label}({form!r}) took the CWD-relative binary {resolved!r}",
-                    )
-                return (
-                    VULNERABLE,
-                    f"{label}({form!r}) resolved {resolved!r} with no trusted "
-                    "location configured",
-                )
+                return VULNERABLE, _leak(label, form, resolved, box)
         # phase 2: a trusted absolute install is configured; the decoys must
         # never shadow it
         for var in _TOOL_ENV:
@@ -181,11 +217,26 @@ def _relative_binary_location():
                 except LookupError:
                     refused += 1
                     continue
-                if _inside(resolved, box) or os.path.realpath(resolved) != expected:
+                verdict = _leak(label, form, resolved, box, expected)
+                if verdict:
+                    return VULNERABLE, verdict
+        # phase 3: the env var itself climbs through '..' into the decoy
+        # directory; a location joined onto it must not land there either
+        through = os.path.join(legit, os.pardir, os.path.basename(box))
+        for var in _TOOL_ENV:
+            os.environ[var] = through
+        for label, name, configure in tools:
+            for form in _relative_forms(name, box):
+                try:
+                    resolved = configure(form)
+                except LookupError:
+                    refused += 1
+                    continue
+                if _inside(resolved, box):
                     return (
                         VULNERABLE,
-                        f"{label}({form!r}) resolved {resolved!r} instead of the "
-                        f"configured install {expected!r}",
+                        f"{label}({form!r}) with the env var set to {through!r} "
+                        f"took the decoy {resolved!r}",
                     )
         return (
             FIXED,

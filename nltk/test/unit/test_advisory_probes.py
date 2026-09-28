@@ -759,17 +759,26 @@ def _neuter_relative_binary_guard(monkeypatch, modules):
         monkeypatch.setattr(module, "find_binary_absolute", internals.find_binary)
 
 
+_RELATIVE_BINARY_MODULES = [
+    ("nltk.inference.prover9", "config_prover9"),
+    ("nltk.classify.megam", "config_megam"),
+    ("nltk.classify.tadm", "config_tadm"),
+    ("nltk.internals", "config_java"),
+    ("nltk.tag.hunpos", "HunposTagger"),
+]
+
+
 def test_relative_binary_location_probe_has_teeth(monkeypatch):
     """Neuter the absolute-only resolver behind every entry point the probe
     covers: the probe must flip to VULNERABLE naming the tool and the CWD decoy
     it took, and recover on undo."""
-    from nltk import internals
-    from nltk.classify import megam, tadm
+    import importlib
 
     probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
     assert probe()[0] == probes.FIXED
 
-    _neuter_relative_binary_guard(monkeypatch, (internals, megam, tadm))
+    modules = [importlib.import_module(m) for m, _ in _RELATIVE_BINARY_MODULES]
+    _neuter_relative_binary_guard(monkeypatch, modules)
     status, evidence = probe()
     assert status == probes.VULNERABLE, evidence
     assert "took the CWD-relative binary" in evidence
@@ -778,13 +787,10 @@ def test_relative_binary_location_probe_has_teeth(monkeypatch):
     assert probe()[0] == probes.FIXED
 
 
-@pytest.mark.parametrize(
-    "modname, label",
-    [("nltk.classify.megam", "config_megam"), ("nltk.classify.tadm", "config_tadm")],
-)
+@pytest.mark.parametrize("modname, label", _RELATIVE_BINARY_MODULES)
 def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
-    # neuter one tool's resolver only: prover9 and mace stay fixed, so the
-    # evidence must name exactly the neutered tool
+    # neuter one tool's resolver only (each module binds it by name): the
+    # evidence must name exactly that tool, so the probe scores every entry point
     import importlib
 
     probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
