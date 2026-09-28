@@ -123,27 +123,47 @@ class TestStanfordInputMatrix:
             with pytest.raises((LookupError, AttributeError, TypeError, OSError)):
                 _bare_stanford_tagger().tag_sents(sentences)
 
-    @pytest.mark.skipif(
-        not (os.environ.get("STANFORD_MODELS") and os.environ.get("STANFORD_POSTAGGER"))
-        and not os.path.isdir("/Users/alvas/nltk_tools/stanford-postagger"),
-        reason="needs a real Stanford POS tagger install",
-    )
+    @staticmethod
+    def _real_tagger_install():
+        """(jar, model) of a Stanford POS tagger inside a data root or named by
+        the STANFORD_POSTAGGER / STANFORD_MODELS variables, else None."""
+        import glob
+
+        import nltk.data
+
+        homes = [
+            os.environ.get("STANFORD_POSTAGGER"),
+            os.environ.get("STANFORD_MODELS"),
+        ]
+        for root in nltk.data.path:
+            homes += glob.glob(os.path.join(root, "stanford-postagger*"))
+        for home in [h for h in homes if h and os.path.isdir(h)]:
+            jars = [
+                j
+                for j in glob.glob(os.path.join(home, "stanford-postagger*.jar"))
+                if not j.endswith(("-sources.jar", "-javadoc.jar"))
+            ]
+            model = os.path.join(home, "models", "english-bidirectional-distsim.tagger")
+            if jars and os.path.isfile(model):
+                return jars[0], model
+        return None
+
     def test_real_tagger_refuses_the_injection_and_still_tags(self, monkeypatch):
         # executed for real: the refusal is the guard, the tagging is the tool
         from nltk.tag.stanford import StanfordPOSTagger
 
-        if not os.environ.get("STANFORD_POSTAGGER"):
-            home = "/Users/alvas/nltk_tools/stanford-postagger"
-            monkeypatch.setenv("STANFORD_POSTAGGER", home)
-            monkeypatch.setenv("STANFORD_MODELS", os.path.join(home, "models"))
-            jdk = "/Users/alvas/nltk_tools/jdk/jdk-21.0.12.1+1/Contents/Home"
-            if os.path.isdir(jdk):
-                monkeypatch.setenv("JAVA_HOME", jdk)
+        install = self._real_tagger_install()
+        if install is None:
+            pytest.skip("no Stanford POS tagger install inside a data root")
+        jar, model = install
+        jdk = "/Users/alvas/nltk_tools/jdk/jdk-21.0.12.1+1/Contents/Home"
+        if not os.environ.get("JAVA_HOME") and os.path.isdir(jdk):
+            monkeypatch.setenv("JAVA_HOME", jdk)
         import nltk.internals as internals
 
         monkeypatch.setattr(internals, "_java_bin", None)
         try:
-            tagger = StanfordPOSTagger("english-bidirectional-distsim.tagger")
+            tagger = StanfordPOSTagger(model, jar, java_options="-mx1g")
         except LookupError as e:
             pytest.skip(f"Stanford POS tagger not resolvable here: {e}")
         with pytest.raises(ValueError):
