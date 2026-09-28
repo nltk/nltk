@@ -59,6 +59,12 @@ def _attempts(box, outside, extra_dirs):
     if _plant_hardlink(secret, os.path.join(box, "xv54", "hard.db"), extra_dirs):
         attempts.append(("hardlink", "xv54/hard.db", "SELECT v FROM t", None))
 
+    # a symlinked DIRECTORY inside the root whose entries live outside it
+    os.symlink(
+        str(outside), os.path.join(box, "xv54", "dirlink"), target_is_directory=True
+    )
+    attempts.append(("dirlink", "xv54/dirlink/secret.db", "SELECT v FROM t", None))
+
     # a benign in-root store whose QUERY text names an outside file itself
     _canary_store(os.path.join(box, "xv54"), "good.db")
     attached = os.path.join(str(outside), "attached.db")
@@ -78,12 +84,13 @@ def _chat80_sql_query_store_escape():
 
     ``sql_query`` resolves ``dbname`` with ``nltk.data.find``, which bounds the
     resource NAME to a data root but not the file behind it, then hands that
-    path to ``sqlite3.connect``, which follows a symlink (or a hardlink alias)
-    planted inside the root. The query text can also name an outside file by
-    itself (``ATTACH``, ``VACUUM INTO``). Each attack is staged in a registered
-    data root and driven through the real ``sql_query``: VULNERABLE when the
-    outside canary comes back or an outside file is created, FIXED only when
-    every link attack is security-refused and no query created a file.
+    path to ``sqlite3.connect``, which follows a symlink (or a hardlink alias,
+    or a symlinked parent directory) planted inside the root. The query text
+    can also name an outside file by itself (``ATTACH``, ``VACUUM INTO``). Each
+    attack is staged in a registered data root and driven through the real
+    ``sql_query``: VULNERABLE when the outside canary comes back or an outside
+    file is created, FIXED only when every link attack is security-refused and
+    no query created a file. On develop every link case returns the canary.
     """
     import nltk.sem.chat80 as chat80
 
