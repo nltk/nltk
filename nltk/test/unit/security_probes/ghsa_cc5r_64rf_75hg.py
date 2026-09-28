@@ -10,7 +10,17 @@ import tempfile
 
 from ._base import FIXED, VULNERABLE, probe, register_data_root
 
-_TOOL_ENV = ("PROVER9", "MEGAM", "TADM", "JAVAHOME", "JAVA_HOME", "HUNPOS_TAGGER")
+_TOOL_ENV = (
+    "PROVER9",
+    "MEGAM",
+    "TADM",
+    "JAVAHOME",
+    "JAVA_HOME",
+    "HUNPOS_TAGGER",
+    "SENNA",
+    "CANDC",
+    "REPP_TOKENIZER",
+)
 
 
 class _Spawned(Exception):
@@ -77,7 +87,8 @@ def _odd_forms(name):
 
 
 def _inside(path, box):
-    return os.path.realpath(str(path)).startswith(os.path.realpath(box) + os.sep)
+    real, root = os.path.realpath(str(path)), os.path.realpath(box)
+    return real == root or real.startswith(root + os.sep)
 
 
 def _scrubbed_path(directory):
@@ -89,12 +100,41 @@ def _scrubbed_path(directory):
 
 
 def _entry_points(legit):
-    """(label, binary name, configure(location) -> resolved binary path)."""
+    """(label, binary name, configure(location) -> resolved binary path, plant)
+    where plant(directory) puts that tool's files into a directory."""
     import nltk.tag.hunpos as hunpos_module
     from nltk import internals
     from nltk.classify import megam, tadm
+    from nltk.classify.senna import Senna
     from nltk.inference.mace import Mace
     from nltk.inference.prover9 import Prover9
+    from nltk.sem.boxer import Boxer
+    from nltk.tokenize.repp import ReppTokenizer
+
+    def plant_binary(name):
+        return lambda directory: _plant(directory, name)
+
+    senna_name = os.path.basename(Senna.executable(None, "x"))
+
+    def senna_config(location):
+        tool = Senna(location, ["pos"])
+        return tool.executable(tool._path)
+
+    def boxer_config(location):
+        return Boxer(bin_dir=location)._candc_bin
+
+    def plant_boxer(directory):
+        _plant(directory, "candc")
+        _plant(directory, "boxer")
+
+    def repp_config(location):
+        return os.path.join(ReppTokenizer(location).repp_dir, "src", "repp")
+
+    def plant_repp(directory):
+        _plant(directory, os.path.join("src", "repp"))
+        os.makedirs(os.path.join(directory, "erg"), exist_ok=True)
+        with open(os.path.join(directory, "erg", "repp.set"), "w", encoding="utf-8") as fh:
+            fh.write("")
 
     def prover9(location):
         tool = Prover9()
@@ -136,12 +176,15 @@ def _entry_points(legit):
         raise AssertionError("HunposTagger returned without spawning")
 
     return [
-        ("config_prover9", "prover9", prover9),
-        ("Mace.config_prover9", "prover9", mace),
-        ("config_megam", "megam", megam_config),
-        ("config_tadm", "tadm", tadm_config),
-        ("config_java", "java", java_config),
-        ("HunposTagger", "hunpos-tag", hunpos_tagger),
+        ("config_prover9", "prover9", prover9, plant_binary("prover9")),
+        ("Mace.config_prover9", "prover9", mace, plant_binary("prover9")),
+        ("config_megam", "megam", megam_config, plant_binary("megam")),
+        ("config_tadm", "tadm", tadm_config, plant_binary("tadm")),
+        ("config_java", "java", java_config, plant_binary("java")),
+        ("HunposTagger", "hunpos-tag", hunpos_tagger, plant_binary("hunpos-tag")),
+        ("Senna", senna_name, senna_config, plant_binary(senna_name)),
+        ("Boxer", "candc", boxer_config, plant_boxer),
+        ("ReppTokenizer", "repp", repp_config, plant_repp),
     ]
 
 
@@ -192,10 +235,10 @@ def _relative_binary_location():
     os.makedirs(empty)
     scrubbed = _scrubbed_path(empty)
     tools = _entry_points(legit)
-    for name in {name for _, name, _ in tools}:
-        _plant(box, name)
-        _plant(box, os.path.join("sub", name))
-        _plant(legit, name)
+    for _, _, _, plant in tools:
+        plant(box)
+        plant(os.path.join(box, "sub"))
+        plant(legit)
     with open(os.path.join(legit, "en_wsj.model"), "w", encoding="utf-8") as fh:
         fh.write("stub\n")
     saved_env = {var: os.environ.get(var) for var in _TOOL_ENV + ("PATH",)}
@@ -209,7 +252,7 @@ def _relative_binary_location():
         for var in _TOOL_ENV:
             os.environ.pop(var, None)
         os.environ["PATH"] = scrubbed
-        for label, name, configure in tools:
+        for label, name, configure, _ in tools:
             for form in _relative_forms(name, box) + _odd_forms(name):
                 try:
                     resolved = configure(form)
@@ -221,8 +264,10 @@ def _relative_binary_location():
         # never shadow it
         for var in _TOOL_ENV:
             os.environ[var] = legit
-        for label, name, configure in tools:
-            expected = os.path.realpath(os.path.join(legit, name))
+        for label, name, configure, _ in tools:
+            expected = os.path.realpath(
+                os.path.join(legit, "src", "repp") if name == "repp" else os.path.join(legit, name)
+            )
             for form in _relative_forms(name, box):
                 try:
                     resolved = configure(form)
@@ -237,7 +282,7 @@ def _relative_binary_location():
         through = os.path.join(legit, os.pardir, os.path.basename(box))
         for var in _TOOL_ENV:
             os.environ[var] = through
-        for label, name, configure in tools:
+        for label, name, configure, _ in tools:
             for form in _relative_forms(name, box):
                 try:
                     resolved = configure(form)
