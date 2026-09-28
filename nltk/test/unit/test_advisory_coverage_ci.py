@@ -66,14 +66,6 @@ _CLOSED_WITH_PROBE = {
     "GHSA-j456-xh4h-cpf2",
     # Draft advisory carrying a regression probe ahead of publication.
     "GHSA-r53h-rw34-8h97",
-    # Draft algorithmic-DoS advisories carrying regression probes (#3895).
-    "GHSA-32p6-cwhc-8r78",
-    "GHSA-q4c8-9gwf-255x",
-    "GHSA-cj8f-5fp3-6m88",
-    "GHSA-53pg-5qp8-mhvr",
-    "GHSA-ffr9-mgrr-wcvr",
-    "GHSA-gpwc-27cw-rh9r",
-    "GHSA-8fx7-8jr8-84rv",
 }
 
 #: Draft advisories we have already fixed and probe ahead of publication. The
@@ -82,6 +74,14 @@ _CLOSED_WITH_PROBE = {
 #: fetched list and its entry here becomes a harmless no-op.
 _DRAFT_WITH_PROBE = {
     "GHSA-cc5r-64rf-75hg",
+    # Draft algorithmic-DoS advisories fixed and probed in #3895.
+    "GHSA-32p6-cwhc-8r78",
+    "GHSA-q4c8-9gwf-255x",
+    "GHSA-cj8f-5fp3-6m88",
+    "GHSA-53pg-5qp8-mhvr",
+    "GHSA-ffr9-mgrr-wcvr",
+    "GHSA-gpwc-27cw-rh9r",
+    "GHSA-8fx7-8jr8-84rv",
 }
 
 
