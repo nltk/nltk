@@ -231,23 +231,54 @@ class TestLoggingSinks:
         assert "evil" in log and not _live(log)
 
     def test_perceptron_training_progress_line_is_numeric_only(self):
+        # captured on the module's own logger, like the parser and agreement
+        # records above: the root logger belongs to the application, and on a
+        # shared test worker its handlers and level are whatever the tests that
+        # ran before left there (the line was seen going to stdout on one CI
+        # cell while a handler added to the root logger for this test got nothing)
         from nltk.tag.perceptron import PerceptronTagger
 
-        buf = io.StringIO()
-        handler = logging.StreamHandler(buf)
-        root = logging.getLogger()
-        old_level = root.level
-        root.addHandler(handler)
-        root.setLevel(logging.INFO)
-        try:
-            PerceptronTagger(load=False).train(
+        log = self._debug_log_of(
+            "nltk.tag.perceptron",
+            lambda: PerceptronTagger(load=False).train(
                 [[(HOSTILE, "X"), ("b", "Y")]], nr_iter=1
-            )
-        finally:
-            root.removeHandler(handler)
-            root.setLevel(old_level)
-        line = buf.getvalue().strip()
+            ),
+        )
+        line = log.strip()
         assert re.fullmatch(r"Iter 0: \d+/\d+=[0-9.]+", line), line
+        assert "evil" not in log and not _live(log)
+
+    def test_perceptron_progress_line_stays_out_of_the_root_logger_sinks(self):
+        # the record still propagates to the root logger, so an application
+        # handler sees it, but nothing is written to stdout or stderr by the
+        # library itself while training
+        from nltk.tag.perceptron import PerceptronTagger
+
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            PerceptronTagger(load=False).train([[("a", "X"), ("b", "Y")]], nr_iter=1)
+        assert out.getvalue() == "" and err.getvalue() == ""
+        # and the record still reaches whatever the application put on the root
+        # logger: the module logger propagates and the library attaches no
+        # handler of its own (the pre-existing contract of logging.info)
+        logger = logging.getLogger("nltk.tag.perceptron")
+        assert logger.propagate and logger.handlers == []
+        seen = []
+
+        class _Catch(logging.Handler):
+            def emit(self, record):
+                seen.append(record.getMessage())
+
+        catcher = _Catch(level=logging.INFO)
+        old_level = logger.level
+        logger.addHandler(catcher)
+        logger.setLevel(logging.INFO)
+        try:
+            PerceptronTagger(load=False).train([[("a", "X"), ("b", "Y")]], nr_iter=1)
+        finally:
+            logger.removeHandler(catcher)
+            logger.setLevel(old_level)
+        assert seen and re.fullmatch(r"Iter 0: \d+/\d+=[0-9.]+", seen[0]), seen
 
 
 class TestWarnExitAndExceptionSinks:
