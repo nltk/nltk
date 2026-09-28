@@ -62,9 +62,9 @@ def staged(pathsec_sandbox):
     return root, outside, secret
 
 
-# ---------------------------------------------------------------------------
+# =========================================================================
 # The name itself: absolute, traversal, URL, UNC, ~, NUL, control characters
-# ---------------------------------------------------------------------------
+# =========================================================================
 @pytest.mark.parametrize(
     "name",
     [
@@ -127,9 +127,9 @@ def test_windows_device_names_are_not_opened(staged, name):
         chat80.sql_query(name, "SELECT 1")
 
 
-# ---------------------------------------------------------------------------
+# =========================================================================
 # The file behind an in-root name: links, special files, parent-dir links
-# ---------------------------------------------------------------------------
+# =========================================================================
 def test_symlink_at_store_to_outside_is_refused(staged):
     root, outside, secret = staged
     os.symlink(secret, str(root / "att" / "link.db"))
@@ -245,9 +245,9 @@ def test_directory_at_store_name_is_refused(staged):
         chat80.sql_query("att", "SELECT 1")
 
 
-# ---------------------------------------------------------------------------
+# =========================================================================
 # Names that are not plain strings
-# ---------------------------------------------------------------------------
+# =========================================================================
 class _LyingName(str):
     """A str subclass whose every Python-level method hides the traversal."""
 
@@ -319,9 +319,9 @@ def test_bytes_name_is_not_a_resource_name(staged):
         chat80.sql_query(b"att/good.db", "SELECT v FROM t")
 
 
-# ---------------------------------------------------------------------------
+# =========================================================================
 # The query text naming a file of its own
-# ---------------------------------------------------------------------------
+# =========================================================================
 def test_attach_of_an_existing_outside_store_is_denied(staged):
     root, outside, secret = staged
     with pytest.raises(sqlite3.DatabaseError, match="not authorized"):
@@ -375,9 +375,9 @@ def test_file_functions_are_unavailable_or_denied(staged, query):
     assert not os.path.exists(target)
 
 
-# ---------------------------------------------------------------------------
+# =========================================================================
 # Other pointer kinds nltk.data.find can hand back
-# ---------------------------------------------------------------------------
+# =========================================================================
 def test_zipped_store_is_not_handed_to_sqlite(staged):
     """A store found only inside a .zip is a ZipFilePathPointer; sqlite would
     take its string form as a fresh path. It is refused with the documented
@@ -407,9 +407,9 @@ def test_gzip_store_is_opened_in_root_but_is_not_a_database(staged):
         chat80.sql_query("att/packed.db.gz", "SELECT 1")
 
 
-# ---------------------------------------------------------------------------
+# =========================================================================
 # BENIGN: the documented usage still works end to end
-# ---------------------------------------------------------------------------
+# =========================================================================
 def test_benign_in_root_store_answers(staged):
     rows = chat80.sql_query("att/good.db", "SELECT v FROM t").fetchall()
     assert rows == [("in_root",)]

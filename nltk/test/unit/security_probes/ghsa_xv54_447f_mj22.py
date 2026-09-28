@@ -1,4 +1,4 @@
-"""GHSA-xv54-447f-mj22 [low] -- Symlink-follow sandbox bypass in chat80.sql_query allows out-of-root SQLite file read (CWE-59, CWE-73)"""
+"""GHSA-xv54-447f-mj22 [low]: Symlink-follow sandbox bypass in chat80.sql_query allows out-of-root SQLite file read (CWE-59, CWE-73)"""
 
 import os
 import shutil
