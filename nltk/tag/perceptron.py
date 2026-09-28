@@ -380,7 +380,7 @@ class PerceptronTagger(TaggerI):
                     c += guess == tags[i]
                     n += 1
             random.shuffle(self._sentences)
-            logging.info(f"Iter {iter_}: {c}/{n}={_pc(c, n)}")
+            logging.info("Iter %r: %r/%r=%r", iter_, c, n, _pc(c, n))
 
         # We don't need the training sentences anymore, and we don't want to
         # waste space on them when we the trained tagger.

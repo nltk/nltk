@@ -39,7 +39,7 @@ def chatbots():
     for i in range(botcount):
         safe_print("  %d: %s" % (i + 1, bots[i][1]))
     while True:
-        choice = input(f"\nEnter a number in the range 1-{botcount}: ").strip()
+        choice = input(f"\nEnter a number in the range 1-{botcount:d}: ").strip()
         if choice.isdigit() and (int(choice) - 1) in range(botcount):
             break
         else:

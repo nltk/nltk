@@ -5921,7 +5921,7 @@ def demo():
             + "/".join(SnowballStemmer.languages)
             + "\n"
             + "(enter 'exit' in order to leave): "
-        )
+        )  # unsafe-print ok: prompt is literal text plus the fixed language tuple
 
         if language == "exit":
             break

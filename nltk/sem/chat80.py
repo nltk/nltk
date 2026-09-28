@@ -703,7 +703,7 @@ def val_load(db):
     dbname = db + ".db"
 
     if not os.access(dbname, os.R_OK):
-        sys.exit("Cannot read file: %s" % dbname)
+        sys.exit("Cannot read file: %s" % sanitize_terminal(dbname))
     else:
         db_in = _restricted_shelve_open(db)
         from nltk.sem import Valuation
@@ -884,7 +884,7 @@ Valuation object for use in the NLTK semantics package.
         if options.indb is not None:
             dbname = options.indb + ".db"
             if not os.access(dbname, os.R_OK):
-                sys.exit("Cannot read file: %s" % dbname)
+                sys.exit("Cannot read file: %s" % sanitize_terminal(dbname))
             else:
                 valuation = val_load(options.indb)
         # we need to create the valuation from scratch

@@ -14,10 +14,14 @@ resource names and user input; each test below feeds one such channel."""
 
 import contextlib
 import io
+import logging
 import os
+import re
 import subprocess
 import sys
+import time
 import warnings
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -160,6 +164,243 @@ class TestUtilityAndCliSinks:
         assert not _live(proc.stdout)
         assert "hello" in proc.stdout and "world" in proc.stdout
         assert "plain line" in proc.stdout
+
+
+class TestLoggingSinks:
+    """A logging handler writes to stderr like print does; the values NLTK
+    interpolates into its log records are neutralised at the call."""
+
+    @staticmethod
+    def _debug_log_of(logger_name, fn):
+        buf = io.StringIO()
+        logger = logging.getLogger(logger_name)
+        handler = logging.StreamHandler(buf)
+        old_level = logger.level
+        logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+        try:
+            fn()
+        finally:
+            logger.removeHandler(handler)
+            logger.setLevel(old_level)
+        return buf.getvalue()
+
+    def test_nonprojective_parser_debug_log_neutralises_hostile_word(self):
+        from nltk.parse.nonprojectivedependencyparser import (
+            DemoScorer,
+            ProbabilisticNonprojectiveParser,
+        )
+
+        parser = ProbabilisticNonprojectiveParser()
+        parser.train([], DemoScorer())
+        log = self._debug_log_of(
+            "nltk.parse.nonprojectivedependencyparser",
+            lambda: list(
+                parser.parse(["v1", "v2", "v3", HOSTILE], ["a", "b", "c", "d"])
+            ),
+        )
+        assert "evil" in log and not _live(log)
+        assert "g_graph:" in log  # the guarded graph dump did run at DEBUG
+
+    def test_nonprojective_parser_pays_nothing_for_graph_dumps_when_quiet(self):
+        from nltk.parse.nonprojectivedependencyparser import (
+            DemoScorer,
+            ProbabilisticNonprojectiveParser,
+        )
+
+        parser = ProbabilisticNonprojectiveParser()
+        parser.train([], DemoScorer())
+        logger = logging.getLogger("nltk.parse.nonprojectivedependencyparser")
+        assert not logger.isEnabledFor(logging.DEBUG)
+        parses = list(parser.parse(["v1", "v2", "v3"], ["a", "b", "c"]))
+        assert len(parses) == 1
+
+    def test_agreement_debug_log_neutralises_hostile_coder(self):
+        from nltk.metrics.agreement import AnnotationTask
+
+        data = [
+            (HOSTILE, "1", "a"),
+            ("c2", "1", "a"),
+            (HOSTILE, "2", "b"),
+            ("c2", "2", "a"),
+        ]
+        task = AnnotationTask(data=data)
+        log = self._debug_log_of(
+            "nltk.metrics.agreement", lambda: (task.kappa(), task.alpha())
+        )
+        assert "evil" in log and not _live(log)
+
+    def test_perceptron_training_progress_line_is_numeric_only(self):
+        from nltk.tag.perceptron import PerceptronTagger
+
+        buf = io.StringIO()
+        handler = logging.StreamHandler(buf)
+        root = logging.getLogger()
+        old_level = root.level
+        root.addHandler(handler)
+        root.setLevel(logging.INFO)
+        try:
+            PerceptronTagger(load=False).train(
+                [[(HOSTILE, "X"), ("b", "Y")]], nr_iter=1
+            )
+        finally:
+            root.removeHandler(handler)
+            root.setLevel(old_level)
+        line = buf.getvalue().strip()
+        assert re.fullmatch(r"Iter 0: \d+/\d+=[0-9.]+", line), line
+
+
+class TestWarnExitAndExceptionSinks:
+    """warnings.warn, sys.exit and a security refusal's exception text all end
+    on stderr through the interpreter, not through print."""
+
+    def test_langnames_unknown_tag_warning_is_clean(self):
+        from nltk.langnames import langname
+
+        try:
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter("always")
+                langname("zz-" + HOSTILE)
+        except LookupError:
+            pytest.skip("bcp47 corpus not installed")
+        messages = [str(w.message) for w in caught]
+        assert messages and all(not _live(m) for m in messages)
+        assert any("evil" in m for m in messages)
+
+    def test_bcp47_invalid_extension_warning_is_clean(self):
+        from nltk.corpus import bcp47
+
+        try:
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter("always")
+                bcp47.name("x-" + HOSTILE)
+        except LookupError:
+            pytest.skip("bcp47 corpus not installed")
+        messages = [str(w.message) for w in caught]
+        assert messages and all(not _live(m) for m in messages)
+        assert any("evil" in m for m in messages)
+
+    def test_chat80_unreadable_database_message_is_clean(self, tmp_path):
+        from nltk.sem import chat80
+
+        # inside the sandbox the missing file reaches sys.exit; outside it
+        # pathsec refuses first. Both messages quote the name and both are clean.
+        with pytest.raises((SystemExit, PermissionError)) as info:
+            chat80.val_load(str(tmp_path / ("nonexistent_" + HOSTILE)))
+        exc = info.value
+        text = str(exc.code) if isinstance(exc, SystemExit) else str(exc)
+        assert "evil" in text and not _live(text)
+
+    def test_pathsec_unauthorized_path_exception_text_is_clean(self):
+        from nltk.pathsec import validate_path
+
+        with pytest.raises(PermissionError) as info:
+            validate_path("nonexistent_" + HOSTILE, context="probe" + ESC + "[31m")
+        assert "evil" in str(info.value) and not _live(str(info.value))
+
+    def test_pathsec_zip_traversal_member_exception_text_is_clean(self, tmp_path):
+        from nltk.pathsec import validate_zip_archive
+
+        archive = tmp_path / "hostile.zip"
+        with zipfile.ZipFile(archive, "w") as zf:
+            zf.writestr("../" + HOSTILE + ".txt", "x")
+        with pytest.raises(PermissionError) as info:
+            validate_zip_archive(str(archive), str(tmp_path), context="probe")
+        assert "evil" in str(info.value) and not _live(str(info.value))
+
+
+class TestParserAndChunkerTraceSinks:
+    @staticmethod
+    def _grammar():
+        from nltk.grammar import CFG, Nonterminal, Production
+
+        S, NP = Nonterminal("S"), Nonterminal("NP")
+        return CFG(S, [Production(S, [NP, "sat"]), Production(NP, [HOSTILE])])
+
+    def test_recursive_descent_trace_neutralises_hostile_token(self):
+        from nltk.parse import RecursiveDescentParser
+
+        parser = RecursiveDescentParser(self._grammar(), trace=2)
+        out = _stdout_of(lambda: list(parser.parse([HOSTILE, "sat"])))
+        assert "evil" in out and not _live(out)
+
+    def test_shift_reduce_trace_neutralises_hostile_token(self):
+        from nltk.parse import ShiftReduceParser
+
+        parser = ShiftReduceParser(self._grammar(), trace=2)
+        out = _stdout_of(lambda: list(parser.parse([HOSTILE, "sat"])))
+        assert "evil" in out and not _live(out)
+
+    def test_chart_parser_trace_neutralises_hostile_token(self):
+        from nltk.parse import ChartParser
+
+        parser = ChartParser(self._grammar(), trace=2)
+        out = _stdout_of(lambda: list(parser.parse([HOSTILE, "sat"])))
+        assert "evil" in out and not _live(out)
+
+    def test_regexp_chunk_parser_trace_neutralises_hostile_tag(self):
+        from nltk.chunk import RegexpParser
+
+        # the chunk trace prints the tag string, not the tokens: a tag is
+        # tagger output over untrusted text, so it is the hostile channel here
+        chunker = RegexpParser("NP: {<DT>?<NN>}", trace=2)
+        out = _stdout_of(
+            lambda: chunker.parse([("the", "DT"), ("cat", "NN"), ("x", HOSTILE)])
+        )
+        assert "# Input:" in out and "evil" in out and not _live(out)
+
+
+class TestClusterSinks:
+    def test_dendrogram_show_neutralises_hostile_leaf_label(self):
+        from nltk.cluster.util import Dendrogram
+
+        dendrogram = Dendrogram([1, 2, 3])
+        dendrogram.merge(0, 1)
+        out = _stdout_of(lambda: dendrogram.show(leaf_labels=["a", HOSTILE, "c"]))
+        assert "evil" in out and not _live(out)
+        assert "+" in out  # the ASCII art itself still renders
+
+
+class TestDownloaderSinks:
+    """The downloader index is network data: a package id or name from it is
+    printed by list() and quoted in the error path of download()."""
+
+    @staticmethod
+    def _offline_downloader(tmp_path, packages):
+        from nltk.downloader import Downloader
+
+        downloader = Downloader(download_dir=str(tmp_path))
+        downloader._index = object()  # an already-loaded index: no network
+        downloader._index_timestamp = time.time()
+        downloader._packages = {package.id: package for package in packages}
+        downloader._collections = {}
+        return downloader
+
+    def test_list_renders_hostile_package_id_and_name_escaped(self, tmp_path):
+        from nltk.downloader import Package
+
+        package = Package(
+            id="pkg_" + HOSTILE,
+            url="http://example.invalid/pkg.zip",
+            name="Name " + HOSTILE,
+            subdir="corpora",
+            size=100,
+            unzipped_size=100,
+            checksum="0",
+        )
+        downloader = self._offline_downloader(tmp_path, [package])
+        out = _stdout_of(lambda: downloader.list(download_dir=str(tmp_path)))
+        assert out.count("evil") >= 2 and not _live(out)
+        assert "Packages:" in out
+
+    def test_download_error_path_prints_hostile_id_escaped(self, tmp_path):
+        downloader = self._offline_downloader(tmp_path, [])
+        err = io.StringIO()
+        result = downloader.download(
+            "missing_" + HOSTILE, download_dir=str(tmp_path), print_error_to=err
+        )
+        assert result is False
+        assert "evil" in err.getvalue() and not _live(err.getvalue())
 
 
 def test_unsafe_print_guard_passes_on_the_tree():

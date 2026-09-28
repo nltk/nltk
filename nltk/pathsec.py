@@ -557,7 +557,13 @@ def validate_path(path_input, context="NLTK", required_root=None):
         except (OSError, ValueError):
             pass
 
-        msg = f"Security Violation [{context}]: Unauthorized path {target}"
+        # The refused path is attacker-controlled and the exception text is
+        # shown on a terminal by the default excepthook, so it is sanitised
+        # for the raise as well as for the warning.
+        msg = (
+            f"Security Violation [{sanitize_terminal(context)}]: "
+            f"Unauthorized path {sanitize_terminal(target)}"
+        )
         if ENFORCE:
             raise PermissionError(msg)
         else:
@@ -1127,7 +1133,12 @@ def validate_zip_archive(
                 if _zip_member_is_unsafe(name_str) or not (
                     member_path == target or member_path.is_relative_to(target)
                 ):
-                    msg = f"Security Violation [{context}]: Traversal member '{name_str}' detected."
+                    # the member name comes from the archive, so the exception
+                    # text is sanitised for the raise as well as the warning
+                    msg = (
+                        f"Security Violation [{sanitize_terminal(context)}]: "
+                        f"Traversal member '{sanitize_terminal(name_str)}' detected."
+                    )
                     if ENFORCE:
                         raise PermissionError(msg)
                     else:
