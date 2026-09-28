@@ -139,7 +139,7 @@ class Prover9Parent:
                 binary_names=[name, name + ".exe"],
                 verbose=verbose,
             )
-            self._binary_location = self._prover9_bin.rsplit(os.path.sep, 1)
+            self._binary_location = os.path.dirname(self._prover9_bin)
 
     def prover9_input(self, goal, assumptions):
         """
