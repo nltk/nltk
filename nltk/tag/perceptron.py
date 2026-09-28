@@ -32,6 +32,11 @@ from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tag.api import TaggerI
 from nltk.termsec import safe_print
 
+# The training progress line goes to this module's own logger, as the other
+# NLTK modules that log do, not to the root logger through logging.info():
+# a library must not configure or write straight into the root logger.
+_logger = logging.getLogger(__name__)
+
 
 def _validate_name_component(value, kind="language code"):
     """Refuse a value that is really a path where a filename fragment is meant.
@@ -380,7 +385,7 @@ class PerceptronTagger(TaggerI):
                     c += guess == tags[i]
                     n += 1
             random.shuffle(self._sentences)
-            logging.info("Iter %r: %r/%r=%r", iter_, c, n, _pc(c, n))
+            _logger.info("Iter %r: %r/%r=%r", iter_, c, n, _pc(c, n))
 
         # We don't need the training sentences anymore, and we don't want to
         # waste space on them when we the trained tagger.
