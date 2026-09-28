@@ -157,6 +157,18 @@ class TestMegamToolInjection:
         assert os.path.isabs(megam._megam_bin)
         assert os.path.realpath(megam._megam_bin) == os.path.realpath(good)
 
+    def test_relative_megam_bin_arg_is_refused(self, monkeypatch, tmp_path):
+        """A relative ``bin='.'`` must not authorize a CWD executable."""
+        from nltk.classify import megam
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.delenv("MEGAM", raising=False)
+        for n in self._BIN_NAMES:
+            _exec_file(str(tmp_path), n)
+        monkeypatch.setattr(megam, "_megam_bin", None)
+        with pytest.raises(LookupError):
+            megam.config_megam(".")
+
     _HOSTILE_MEGAM_ARGS = [
         ["-writeModel", "/etc/cron.d/evil"],  # option-shaped file write
         ["; touch /tmp/pwned"],  # shell metacharacters
@@ -252,6 +264,32 @@ class TestProver9MaceToolInjection:
         resolved = p._find_binary("prover9")
         assert os.path.isabs(resolved)
         assert os.path.realpath(resolved) == os.path.realpath(good)
+
+    def test_config_prover9_rejects_relative_binary_location(
+        self, monkeypatch, tmp_path
+    ):
+        from nltk.inference.prover9 import Prover9
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.delenv("PROVER9", raising=False)
+        _exec_file(str(tmp_path), "prover9")
+        p = Prover9()
+        with pytest.raises(LookupError):
+            p.config_prover9(".")
+
+    def test_config_prover9_sets_directory_for_companion_binaries(self, tmp_path):
+        """An absolute prover9 install dir remains usable for prooftrans lookups."""
+        from nltk.inference.prover9 import Prover9
+
+        bindir = tmp_path / "trusted"
+        bindir.mkdir()
+        _exec_file(str(bindir), "prover9")
+        prooftrans = _exec_file(str(bindir), "prooftrans")
+        p = Prover9()
+        p.config_prover9(str(bindir))
+        resolved = p._find_binary("prooftrans")
+        assert os.path.isabs(resolved)
+        assert os.path.realpath(resolved) == os.path.realpath(prooftrans)
 
     _HOSTILE_CALL_ARGS = [
         ["-f", "/etc/passwd"],

@@ -26,7 +26,7 @@ import math
 import numbers
 import subprocess
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
 
 try:
@@ -52,7 +52,7 @@ def config_megam(bin=None):
     :type bin: str
     """
     global _megam_bin
-    _megam_bin = find_binary(
+    _megam_bin = find_binary_absolute(
         "megam",
         bin,
         env_vars=["MEGAM"],

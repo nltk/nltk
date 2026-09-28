@@ -12,7 +12,7 @@ import stat
 
 import pytest
 
-from nltk.internals import find_binary, find_jar, find_jar_iter
+from nltk.internals import find_binary, find_binary_absolute, find_jar, find_jar_iter
 
 _NAME = "nltktestbin"  # unlikely to exist on PATH
 
@@ -111,6 +111,39 @@ def test_find_binary_bare_path_to_bin_refuses_cwd_relative(tmp_path, monkeypatch
     )
     assert os.path.isabs(result)
     assert os.path.realpath(result) == os.path.realpath(str(realdir / _NAME))
+
+
+def test_find_binary_absolute_refuses_explicit_relative_path_to_bin(
+    tmp_path, monkeypatch
+):
+    """Absolute-only lookup refuses a caller-supplied relative install dir."""
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    _make_exec(cwd / _NAME)
+    monkeypatch.chdir(cwd)
+
+    with pytest.raises(LookupError):
+        find_binary_absolute(_NAME, path_to_bin=".", binary_names=[_NAME])
+
+
+def test_find_binary_absolute_prefers_absolute_env_over_relative_path_to_bin(
+    tmp_path, monkeypatch
+):
+    """A relative install dir is skipped, but a trusted absolute env-var hit still
+    works for absolute-only wrappers."""
+    cwd = tmp_path / "cwd"
+    cwd.mkdir()
+    _make_exec(cwd / _NAME)
+    trusted = tmp_path / "trusted"
+    _make_exec(trusted / _NAME)
+    monkeypatch.chdir(cwd)
+    monkeypatch.setenv("NLTK_TEST_BIN", str(trusted))
+
+    result = find_binary_absolute(
+        _NAME, path_to_bin=".", env_vars=["NLTK_TEST_BIN"], binary_names=[_NAME]
+    )
+    assert os.path.isabs(result)
+    assert os.path.realpath(result) == os.path.realpath(str(trusted / _NAME))
 
 
 def test_find_jar_regex_searchpath_only_yields_matching_files(tmp_path):

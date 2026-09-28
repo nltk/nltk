@@ -76,3 +76,13 @@ def test_call_tadm_reaches_spawn_for_a_trusted_binary(monkeypatch):
     assert os.path.isabs(calls[0].argv[0])
     assert calls[0].argv[0] == os.path.realpath(binp)
     assert calls[0].argv[1:] == ["-monitor", "/dev/null"]
+
+
+def test_config_tadm_rejects_relative_bin_dir(tmp_path, monkeypatch):
+    """A relative ``bin='.'`` must not authorize a CWD tadm executable."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("TADM", raising=False)
+    _mkbin(str(tmp_path))
+    monkeypatch.setattr(tadm, "_tadm_bin", None)
+    with pytest.raises(LookupError):
+        tadm.config_tadm(".")
