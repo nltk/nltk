@@ -17,34 +17,46 @@ __all__ = ["decorator", "new_wrapper", "getinfo"]
 
 import sys
 
-from nltk import redos
-
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
 OLD_SYS_PATH = sys.path[:]
 sys.path = [p for p in sys.path if p and "nltk" not in str(p)]
 import inspect
+import keyword
 
 sys.path = OLD_SYS_PATH
+
 
 # The eval below is required: building the wrapper as a real function with the
 # original parameter list is what makes ``inspect.getfullargspec`` report the
 # true signature on every supported Python (older versions ignore a wrapper's
 # ``__signature__``/``__wrapped__``). To keep that eval from ever being a
 # code-execution primitive, the interpolated signature is first checked to be a
-# comma-and-space separated list of plain parameter names, each optionally
-# prefixed by * or ** and nothing else (no =default, (, ., newline or other
-# expression syntax). inspect constrains real names to identifiers, so a genuine
-# function is never rejected (CVE-2026-14727).
-_SAFE_SIGNATURE_RE = redos.compile(r"^ *(\*{0,2}[A-Za-z_]\w* *(, *)?)*$")
-
-
+# comma-separated list of plain parameter names, each optionally prefixed by *
+# or ** and nothing else: no =default, annotation, call, newline or other
+# expression syntax. Each name is judged by str.isidentifier, the language's
+# own rule, so every legal name passes (non-ASCII included) and nothing that
+# is not a name does; a keyword is refused too. Identifiers alone cannot
+# express a call, an attribute access or an import (CVE-2026-14727).
 def _assert_safe_signature(signature):
-    if not _SAFE_SIGNATURE_RE.fullmatch(signature):
+    def _refuse():
         raise ValueError(
             f"refusing to build a wrapper from a non-identifier signature: "
             f"{signature!r}"
         )
+
+    if not isinstance(signature, str):
+        _refuse()
+    if not signature.strip():
+        return
+    for token in signature.split(","):
+        name = token.strip()
+        for prefix in ("**", "*"):
+            if name.startswith(prefix):
+                name = name[len(prefix) :]
+                break
+        if not name.isidentifier() or keyword.iskeyword(name):
+            _refuse()
 
 
 def __legacysignature(signature):

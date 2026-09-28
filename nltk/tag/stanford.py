@@ -24,6 +24,7 @@ from subprocess import PIPE
 
 from nltk.data import staging_tempdir
 from nltk.internals import find_file, find_jar, java
+from nltk.pathsec import has_line_unsafe_char
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
@@ -98,9 +99,18 @@ class StanfordTagger(TaggerI):
     def tag_sents(self, sentences):
         encoding = self._encoding
 
-        # A newline/CR in a token would inject an extra input line and silently
-        # mislabel output (parse_output re-aligns tags by sentence). Build the
+        # A line break in a token would inject an extra input line and silently
+        # mislabel output (parse_output re-aligns tags by sentence); a tab, NUL
+        # or other control character would be re-split or truncated by the
+        # tool. Refuse them by the shared line-safety rule, then build the
         # input once and require exactly one separator per sentence gap.
+        for sentence in sentences:
+            for token in sentence:
+                if has_line_unsafe_char(token):
+                    raise ValueError(
+                        "Tokens cannot contain newline characters, nor a tab, "
+                        "another line break, a control character or NUL: %r" % (token,)
+                    )
         _input = "\n".join(" ".join(x) for x in sentences)
         if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
             raise ValueError("Tokens cannot contain newline characters.")

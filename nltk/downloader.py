@@ -184,6 +184,40 @@ from nltk.termsec import sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
 
+# Ceilings on what the data server may hand us (CWE-400). A package body is
+# bounded at its declared size plus a small slack, but the declared size comes
+# from the same server, so it is itself capped: the largest package in the
+# real index is under 100 MB. The index document is read whole before parsing
+# and is under 100 KB in reality.
+MAX_PACKAGE_BYTES = 1024 * 1024 * 1024
+MAX_INDEX_BYTES = 64 * 1024 * 1024
+
+
+def _bounded_body(stream, limit, what):
+    """Read *stream* in full, refusing (ValueError) once it exceeds *limit*
+    bytes, and return the bytes read as a file object for a parser."""
+    import io
+
+    chunks, total = [], 0
+    try:
+        while True:
+            block = stream.read(1024 * 64)
+            if not block:
+                break
+            total += len(block)
+            if total > limit:
+                raise ValueError(
+                    f"The {what} is larger than {limit} bytes; refusing to read "
+                    "an unbounded response (CWE-400)"
+                )
+            chunks.append(block)
+    finally:
+        close = getattr(stream, "close", None)
+        if close is not None:
+            close()
+    return io.BytesIO(b"".join(chunks))
+
+
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
 
@@ -953,6 +987,18 @@ class Downloader:
                 yield StartDownloadMessage(info)
                 yield ProgressMessage(5)
 
+                # The declared size bounds the body below, and it comes from the
+                # same server, so cap it too: nothing is fetched for a package
+                # that claims more than MAX_PACKAGE_BYTES.
+                if not 0 <= int(info.size) <= MAX_PACKAGE_BYTES:
+                    yield ErrorMessage(
+                        info,
+                        f"Refusing to download {info.id!r}: the index declares "
+                        f"{info.size} bytes, outside the 0 to {MAX_PACKAGE_BYTES} "
+                        "byte range a package may have (CWE-400)",
+                    )
+                    return
+
                 try:
                     infile = urlopen(info.url)
                     with pathsec_open(
@@ -1311,9 +1357,12 @@ class Downloader:
         # If a URL was specified, then update our URL.
         self._url = url or self._url
 
-        # Download the index file.
+        # Download the index file, bounded: a server streaming an endless
+        # index would otherwise be read whole into memory before parsing.
         self._index = nltk.internals.ElementWrapper(
-            safe_parse(urlopen(self._url)).getroot()
+            safe_parse(
+                _bounded_body(urlopen(self._url), MAX_INDEX_BYTES, "data index")
+            ).getroot()
         )
         self._index_timestamp = time.time()
 

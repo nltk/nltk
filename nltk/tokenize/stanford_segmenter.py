@@ -24,6 +24,7 @@ from nltk.internals import (
     find_jar,
     java,
 )
+from nltk.pathsec import has_line_unsafe_char
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tokenize.api import TokenizerI
@@ -279,8 +280,17 @@ class StanfordSegmenter(TokenizerI):
         """ """
         encoding = self._encoding
 
-        # A newline/CR in a token would inject an extra segmenter input line.
-        # Build the input once and require one separator per sentence gap.
+        # A line break in a token would inject an extra segmenter input line; a
+        # tab, NUL or other control character would be re-split or truncated by
+        # the tool. Refuse them by the shared line-safety rule, then build the
+        # input once and require one separator per sentence gap.
+        for sentence in sentences:
+            for token in sentence:
+                if has_line_unsafe_char(token):
+                    raise ValueError(
+                        "Tokens cannot contain newline characters, nor a tab, "
+                        "another line break, a control character or NUL: %r" % (token,)
+                    )
         _input = "\n".join(" ".join(x) for x in sentences)
         if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
             raise ValueError("Tokens cannot contain newline characters.")
