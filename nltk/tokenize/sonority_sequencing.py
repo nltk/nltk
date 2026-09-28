@@ -113,7 +113,7 @@ class SyllableTokenizer(TokenizerI):
                     syllables_values.append((c, max(self.phoneme_map.values())))
                     # Remember the char as a vowel, but stop growing the set past
                     # the cap so the pattern built from it in validate_syllables
-                    # stays bounded (CWE-400).
+                    # stays bounded (CWE-400 / CWE-407).
                     if c not in self.vowels and len(self.vowels) < _MAX_VOWEL_CHARS:
                         self.vowels += c
                 else:  # If it's a punctuation or numbers, assign -1.

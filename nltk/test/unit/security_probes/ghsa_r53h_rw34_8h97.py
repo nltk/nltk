@@ -1,5 +1,5 @@
-"""GHSA-r53h-rw34-8h97 [moderate] : Algorithmic DoS (CWE-407) from front-of-sequence
-mutation (list.pop(0) / reslice) in a loop, giving quadratic time on wide input.
+"""GHSA-r53h-rw34-8h97 [high] : Quadratic-time CPU DoS (CWE-400 / CWE-407) from
+front-of-sequence mutation (list.pop(0)) in a loop, giving O(n**2) on wide input.
 
 The fix routes the right-factoring loop of ``chomsky_normal_form`` through a
 ``deque`` and ``popleft`` (O(1) front consume) instead of ``nodeCopy.pop(0)`` on
@@ -19,10 +19,18 @@ def _chomsky_front_pop_quadratic():
     super-linearly and trip the quadratic ratio.
     """
     from nltk.tree import Tree
+    from nltk.tree import tree as treemod
     from nltk.tree.transforms import chomsky_normal_form
 
     def op(n):
-        chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)]))
+        # the width-to-depth guard would refuse these widths; the probe measures
+        # the factoring loop itself, so the depth bound is lifted for the call
+        limit = treemod.MAX_TREE_DEPTH
+        treemod.MAX_TREE_DEPTH = max(limit, n)
+        try:
+            chomsky_normal_form(Tree("S", ["w%d" % i for i in range(n)]))
+        finally:
+            treemod.MAX_TREE_DEPTH = limit
 
     small, big = 2000, 8000  # big == 4 * small
     ratio = scaling_ratio(op, small, big)
