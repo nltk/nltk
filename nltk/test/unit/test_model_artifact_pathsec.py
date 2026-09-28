@@ -1183,7 +1183,9 @@ class TestNegativeControls:
         pytest.importorskip("pycrfsuite")
         import nltk.tag.crf as crf
 
-        monkeypatch.setattr(crf, "validate_tool_path", lambda *a, **k: None)
+        # A pass-through, not None: the wrapper writes the string the guard
+        # returns, so "guard removed" means the caller's value goes straight in.
+        monkeypatch.setattr(crf, "validate_tool_path", lambda path, *a, **k: path)
         target = str(sandbox / "unguarded.crf")
         crf.CRFTagger().train(
             [[("the", "DT"), ("dog", "NN")], [("a", "DT"), ("cat", "NN")]], target
