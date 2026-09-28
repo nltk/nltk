@@ -180,7 +180,7 @@ class Prover9Parent:
         binary_locations = self.binary_locations()
         if self._binary_location is not None:
             binary_locations += [self._binary_location]
-        return nltk.internals.find_binary(
+        return nltk.internals.find_binary_absolute(
             name,
             searchpath=binary_locations,
             env_vars=["PROVER9"],

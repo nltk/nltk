@@ -205,7 +205,10 @@ def config_java(bin=None, options=None, verbose=False):
     :type options: list(str)
     """
     global _java_bin, _java_options
-    _java_bin = find_binary(
+    # Absolute only: a relative ``bin`` would resolve against the CWD and java()
+    # executes the result (untrusted search path, CWE-426/427), the same guard
+    # as the prover9/megam/tadm entry points.
+    _java_bin = find_binary_absolute(
         "java",
         bin,
         env_vars=["JAVAHOME", "JAVA_HOME"],
@@ -901,17 +904,17 @@ def find_file_iter(
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-                stdout, stderr = p.communicate()
-                path = _decode_stdoutdata(stdout).strip()
-                if path.endswith(alternative) and os.path.exists(path):
-                    if verbose:
-                        print(f"[Found {filename}: {path}]")
-                    yielded = True
-                    yield path
-            except (KeyboardInterrupt, SystemExit, OSError):
-                raise
-            finally:
-                pass
+            except FileNotFoundError:
+                # no ``which`` on this PATH: there is no PATH lookup to make, so
+                # fall through to the not-found error rather than crash here
+                break
+            stdout, stderr = p.communicate()
+            path = _decode_stdoutdata(stdout).strip()
+            if path.endswith(alternative) and os.path.exists(path):
+                if verbose:
+                    print(f"[Found {filename}: {path}]")
+                yielded = True
+                yield path
 
     if not yielded:
         msg = (
@@ -1091,14 +1094,21 @@ def find_binary_absolute(
     for path in find_binary_iter(
         name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
     ):
-        if os.path.isabs(path):
+        # a relative location joined onto a trusted directory can climb back out
+        # of it ("/trusted/../cwd/prover9" is absolute and IS the CWD decoy), so a
+        # parent-directory component is refused as well as a relative match
+        if os.path.isabs(path) and os.pardir not in _path_components(path):
             return path
     raise LookupError(
         f"No absolute {name!r} binary found; a binary found relative to the "
-        "current working directory is refused (untrusted search path). Pass an "
-        "absolute path_to_bin, or set the tool's env var / searchpath to an "
-        "absolute location."
+        "current working directory, or through a '..' component, is refused "
+        "(untrusted search path). Pass an absolute path_to_bin without '..', or "
+        "set the tool's env var / searchpath to an absolute location."
     )
+
+
+def _path_components(path):
+    return [part for part in path.replace(os.sep, "/").replace("\\", "/").split("/")]
 
 
 def find_jar_iter(

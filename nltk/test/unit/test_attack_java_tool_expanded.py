@@ -417,7 +417,7 @@ def hunpos_env(monkeypatch, atk_root):
         captured["argv"] = list(cmd)
         raise _HunposSentinel
 
-    monkeypatch.setattr(hp, "find_binary", fake_find_binary)
+    monkeypatch.setattr(hp, "find_binary_absolute", fake_find_binary)
     monkeypatch.setattr(hp, "find_file", fake_find_file)
     # HunposTagger spawns via pathsec.spawn_trusted; trap that shared sink (fake_bin
     # is a real file under the private atk_root, so the trust check accepts it).
