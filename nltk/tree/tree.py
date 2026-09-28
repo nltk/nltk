@@ -20,6 +20,7 @@ import re
 from nltk import redos
 from nltk.grammar import Nonterminal, Production
 from nltk.internals import deprecated
+from nltk.termsec import safe_print
 
 #: Maximum bracket-nesting depth accepted by :meth:`Tree.fromstring`. The parse
 #: itself is iterative, but the resulting tree is walked by recursive methods
@@ -550,7 +551,12 @@ class Tree(list):
         :return: The new Tree.
         """
         if isinstance(tree, Tree):
-            children = [cls.convert(child) for child in tree]
+            # a loop, not a comprehension: before Python 3.12 a comprehension is
+            # its own frame, which halved the depth deepcopy could reach
+            # (inlined since https://peps.python.org/pep-0709/)
+            children = []
+            for child in tree:
+                children.append(cls.convert(child))
             return cls(tree._label, children)
         else:
             return tree
@@ -764,20 +770,32 @@ class Tree(list):
         raise ValueError(msg)
 
     @classmethod
-    def fromlist(cls, l):
+    def fromlist(cls, l, _depth=0, max_depth=None):
         """
         :type l: list
         :param l: a tree represented as nested lists
-
+        :param int _depth: current recursion depth (internal)
+        :param int max_depth: maximum nesting depth; defaults to ``MAX_TREE_DEPTH``
         :return: A tree corresponding to the list representation ``l``.
         :rtype: Tree
 
-        Convert nested lists to a NLTK Tree
+        Convert nested lists to an NLTK Tree
         """
+        if max_depth is None:
+            max_depth = MAX_TREE_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"Tree nesting depth exceeds MAX_TREE_DEPTH "
+                f"({MAX_TREE_DEPTH}); the input may be adversarially "
+                "deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+            )
         if type(l) == list and len(l) > 0:
             label = repr(l[0])
             if len(l) > 1:
-                return Tree(label, [cls.fromlist(child) for child in l[1:]])
+                children = []
+                for child in l[1:]:
+                    children.append(cls.fromlist(child, _depth + 1, max_depth))
+                return Tree(label, children)
             else:
                 return label
 
@@ -801,7 +819,9 @@ class Tree(list):
         """
         from nltk.tree.prettyprinter import TreePrettyPrinter
 
-        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
+        safe_print(
+            TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream
+        )
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
@@ -829,7 +849,7 @@ class Tree(list):
             del kwargs["stream"]
         else:
             stream = None
-        print(self.pformat(**kwargs), file=stream)
+        safe_print(self.pformat(**kwargs), file=stream)
 
     def pformat(self, margin=70, indent=0, nodesep="", parens="()", quotes=("", "")):
         """
@@ -975,63 +995,63 @@ def demo():
     # Demonstrate tree parsing.
     s = "(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))"
     t = Tree.fromstring(s)
-    print("Convert bracketed string into tree:")
-    print(t)
-    print(t.__repr__())
+    safe_print("Convert bracketed string into tree:")
+    safe_print(t)
+    safe_print(t.__repr__())
 
-    print("Display tree properties:")
-    print(t.label())  # tree's constituent type
-    print(t[0])  # tree's first child
-    print(t[1])  # tree's second child
-    print(t.height())
-    print(t.leaves())
-    print(t[1])
-    print(t[1, 1])
-    print(t[1, 1, 0])
+    safe_print("Display tree properties:")
+    safe_print(t.label())  # tree's constituent type
+    safe_print(t[0])  # tree's first child
+    safe_print(t[1])  # tree's second child
+    safe_print(t.height())
+    safe_print(t.leaves())
+    safe_print(t[1])
+    safe_print(t[1, 1])
+    safe_print(t[1, 1, 0])
 
     # Demonstrate tree modification.
     the_cat = t[0]
     the_cat.insert(1, Tree.fromstring("(JJ big)"))
-    print("Tree modification:")
-    print(t)
+    safe_print("Tree modification:")
+    safe_print(t)
     t[1, 1, 1] = Tree.fromstring("(NN cake)")
-    print(t)
-    print()
+    safe_print(t)
+    safe_print()
 
     # Tree transforms
-    print("Collapse unary:")
+    safe_print("Collapse unary:")
     t.collapse_unary()
-    print(t)
-    print("Chomsky normal form:")
+    safe_print(t)
+    safe_print("Chomsky normal form:")
     t.chomsky_normal_form()
-    print(t)
-    print()
+    safe_print(t)
+    safe_print()
 
     # Demonstrate probabilistic trees.
     pt = ProbabilisticTree("x", ["y", "z"], prob=0.5)
-    print("Probabilistic Tree:")
-    print(pt)
-    print()
+    safe_print("Probabilistic Tree:")
+    safe_print(pt)
+    safe_print()
 
     # Demonstrate parsing of treebank output format.
     t = Tree.fromstring(t.pformat())
-    print("Convert tree to bracketed string and back again:")
-    print(t)
-    print()
+    safe_print("Convert tree to bracketed string and back again:")
+    safe_print(t)
+    safe_print()
 
     # Demonstrate LaTeX output
-    print("LaTeX output:")
-    print(t.pformat_latex_qtree())
-    print()
+    safe_print("LaTeX output:")
+    safe_print(t.pformat_latex_qtree())
+    safe_print()
 
     # Demonstrate Productions
-    print("Production output:")
-    print(t.productions())
-    print()
+    safe_print("Production output:")
+    safe_print(t.productions())
+    safe_print()
 
     # Demonstrate tree nodes containing objects other than strings
     t.set_label(("test", 3))
-    print(t)
+    safe_print(t)
 
 
 __all__ = [
