@@ -111,6 +111,9 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 
 import functools
 
+# Bound before the optional-dependency check below, whose fallback prints.
+from nltk.termsec import safe_print
+
 try:
     import pyparsing
 except ImportError:
@@ -119,7 +122,6 @@ except ImportError:
 
 import nltk.tree
 from nltk import redos
-from nltk.termsec import safe_print
 
 
 class TgrepException(Exception):

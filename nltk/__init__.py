@@ -22,6 +22,10 @@ import os
 import importlib
 import sys
 
+# The terminal-output chokepoint has no nltk imports of its own, so it is bound
+# first: every import-time fallback below (the downloader GUI warning) uses it.
+from nltk.termsec import safe_print, sanitize_terminal
+
 
 # //////////////////////////////////////////////////////
 # Metadata
@@ -208,7 +212,6 @@ from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
 from nltk import tag, tbl, text, tokenize, translate, tree, util
-from nltk.termsec import safe_print, sanitize_terminal
 
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
