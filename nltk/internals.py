@@ -11,6 +11,7 @@ import fnmatch
 import locale
 import os
 import re
+import shutil
 import stat
 import subprocess
 import sys
@@ -422,11 +423,12 @@ def java(
                 "launcher would expand it, injecting arguments (CWE-88)"
             )
 
-    final_cmd = []
-    if isinstance(_java_bin, str):
-        final_cmd.append(_java_bin)
-    else:
-        final_cmd.extend(_java_bin if _java_bin else ["java"])
+    # Resolve the JVM absolute-only before spawning: a bare "java" handed to
+    # Popen is found by the OS search, which on Windows begins in the CWD
+    # (CWE-427), so java() never launches an unresolved name.
+    if _java_bin is None:
+        config_java()
+    final_cmd = [_java_bin] if isinstance(_java_bin, str) else list(_java_bin)
 
     final_cmd.extend(opt_list)
     if classpath_arg is not None:
@@ -434,15 +436,27 @@ def java(
     final_cmd.extend(cmd_list)
 
     child_env = _java_child_env()
+    # The JVM binary itself goes through the trusted-exec chokepoint like every
+    # other tool binary: no other local user may be able to swap it (CWE-427/732)
+    from nltk.pathsec import TrustError, spawn_trusted
+
     try:
-        p = subprocess.Popen(
-            final_cmd,
+        p = spawn_trusted(
+            final_cmd[0],
+            final_cmd[1:],
             stdin=stdin,
             stdout=stdout,
             stderr=stderr,
             universal_newlines=True,
             env=child_env,
         )
+    except TrustError as e:
+        raise LookupError(
+            f"Refusing to run the Java binary {final_cmd[0]!r}: it is not on a "
+            f"trusted path. Install Java where only you (or root) can write, or "
+            f"point config_java() at such an install ({e})."
+        ) from e
+    try:
         if blocking:
             stdout_data, stderr_data = p.communicate()
             if p.returncode != 0:
@@ -915,6 +929,17 @@ def find_file_iter(
                     print(f"[Found {filename}: {path}]")
                 yielded = True
                 yield path
+    else:
+        # Windows: the same PATH lookup through shutil.which (PATHEXT-aware).
+        # A CWD hit, which older Pythons prepend, is relative and refused by
+        # the executable resolvers upstream.
+        for alternative in file_names:
+            path = shutil.which(alternative)
+            if path and os.path.exists(path):
+                if verbose:
+                    print(f"[Found {filename}: {path}]")
+                yielded = True
+                yield path
 
     if not yielded:
         msg = (
@@ -1115,6 +1140,26 @@ def find_binary_absolute(
         "(untrusted search path). Pass an absolute path_to_bin without '..', or "
         "set the tool's env var / searchpath to an absolute location."
     )
+
+
+def absolute_tool_dir(location, what="tool"):
+    """Return *location* as a normalised absolute directory, or raise
+    :class:`LookupError`. A relative location resolves against the CWD and a
+    ``..`` component can climb out of a trusted directory, so a wrapper that
+    spawns ``<location>/<binary>`` accepts neither (CWE-426 / CWE-427); the
+    location is copied to a plain str first (see :func:`_plain_location`) and
+    must exist as a directory.
+    """
+    text = _plain_location(location)
+    if not os.path.isabs(text) or os.pardir in _path_components(text):
+        raise LookupError(
+            f"A {what} directory must be an absolute path without '..', not "
+            f"{text!r} (untrusted search path)."
+        )
+    text = os.path.normpath(text)
+    if not os.path.isdir(text):
+        raise LookupError(f"{what} directory not found: {text!r}")
+    return text
 
 
 def _plain_location(location):
