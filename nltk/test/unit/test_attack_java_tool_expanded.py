@@ -337,7 +337,11 @@ class TestClasspathShadowing:
         internals.java(["Main"], classpath=[a, b])
         assert len(java_spy) == 1
         argv = java_spy[0].argv
-        assert os.path.realpath(argv[0]) == os.path.realpath(internals._java_bin) and "-cp" in argv and "Main" in argv
+        assert (
+            os.path.realpath(argv[0]) == os.path.realpath(internals._java_bin)
+            and "-cp" in argv
+            and "Main" in argv
+        )
         cp_value = argv[argv.index("-cp") + 1]
         assert cp_value == os.pathsep.join([a, b])
         assert "" not in cp_value.split(os.pathsep)

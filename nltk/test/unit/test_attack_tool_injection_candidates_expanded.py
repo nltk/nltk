@@ -390,7 +390,11 @@ class TestCoreNLPChokepoint:
         )
         assert len(spy) == 1 and spy[0].shell is False
         argv = spy[0].argv
-        assert os.path.realpath(argv[0]) == os.path.realpath(internals._java_bin) and "-cp" in argv and _CORENLP_MAIN in argv
+        assert (
+            os.path.realpath(argv[0]) == os.path.realpath(internals._java_bin)
+            and "-cp" in argv
+            and _CORENLP_MAIN in argv
+        )
         assert "-mx2g" in argv and argv.index("-mx2g") < argv.index(_CORENLP_MAIN)
         cp = argv[argv.index("-cp") + 1]
         assert cp == os.pathsep.join([code, models])

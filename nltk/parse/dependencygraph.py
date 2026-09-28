@@ -23,8 +23,8 @@ from pprint import pformat
 
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary
-from nltk.pathsec import spawn_trusted
 from nltk.pathsec import open as _secure_open
+from nltk.pathsec import spawn_trusted
 from nltk.tree import Tree
 
 #################################################################

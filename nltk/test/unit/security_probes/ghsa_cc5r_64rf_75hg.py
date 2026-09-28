@@ -133,7 +133,9 @@ def _entry_points(legit):
     def plant_repp(directory):
         _plant(directory, os.path.join("src", "repp"))
         os.makedirs(os.path.join(directory, "erg"), exist_ok=True)
-        with open(os.path.join(directory, "erg", "repp.set"), "w", encoding="utf-8") as fh:
+        with open(
+            os.path.join(directory, "erg", "repp.set"), "w", encoding="utf-8"
+        ) as fh:
             fh.write("")
 
     def prover9(location):
@@ -266,7 +268,9 @@ def _relative_binary_location():
             os.environ[var] = legit
         for label, name, configure, _ in tools:
             expected = os.path.realpath(
-                os.path.join(legit, "src", "repp") if name == "repp" else os.path.join(legit, name)
+                os.path.join(legit, "src", "repp")
+                if name == "repp"
+                else os.path.join(legit, name)
             )
             for form in _relative_forms(name, box):
                 try:
