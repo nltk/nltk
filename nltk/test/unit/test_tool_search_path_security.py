@@ -22,6 +22,7 @@ import os
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -37,7 +38,11 @@ TOOL_ENV = {
     "java": ["JAVAHOME", "JAVA_HOME"],
     "hunpos-tag": ["HUNPOS_TAGGER"],
 }
-ALL_ENV_VARS = [var for vars_ in TOOL_ENV.values() for var in vars_]
+# the wrappers that take a directory (Senna, Boxer); the CI sets SENNA to a real
+# Linux install, so the box clears these too, or a relative form would be
+# rescued by the env fallback instead of being judged on its own
+DIR_TOOL_ENV = ["SENNA", "CANDC"]
+ALL_ENV_VARS = [var for vars_ in TOOL_ENV.values() for var in vars_] + DIR_TOOL_ENV
 NUL = chr(0)
 
 
@@ -252,6 +257,17 @@ def home_install(monkeypatch):
         yield root
     finally:
         undo()
+        shutil.rmtree(root, ignore_errors=True)
+
+
+@pytest.fixture
+def private_dir():
+    """A directory under $HOME for a binary the trusted spawn must accept: a
+    private chain on every CI runner, which a shared /tmp (mode 1777) is not."""
+    root = Path(tempfile.mkdtemp(prefix=".nltk_cc5r_private_", dir=Path.home()))
+    try:
+        yield root
+    finally:
         shutil.rmtree(root, ignore_errors=True)
 
 
@@ -956,13 +972,15 @@ class TestDot:
             raise _Spawned(target)
 
         monkeypatch.setattr(dg, "spawn_trusted", _record)
-        with pytest.raises(Exception):
+        # dot2img wraps the recorder's exception; the message pins that the
+        # spawn was reached, not that the binary went unfound
+        with pytest.raises(Exception, match="Cannot create image representation"):
             dg.dot2img("digraph { a -> b }", "svg")
         assert _same(seen["target"], good) and not _inside(seen["target"], box)
         assert seen["args"] == ["-Tsvg"] and not seen["kwargs"].get("shell")
         # a format string with shell metacharacters stays one argv item, no shell
         hostile = "svg; touch " + str(tmp_path / "pwned")
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="Cannot create image representation"):
             dg.dot2img("digraph { a -> b }", hostile)
         assert seen["args"] == ["-T" + hostile] and not seen["kwargs"].get("shell")
         assert not (tmp_path / "pwned").exists()
@@ -1076,13 +1094,16 @@ class TestJavaSpawn:
                 internals.java(["Main"])
 
     def test_unconfigured_java_is_resolved_absolute_before_spawn(
-        self, box, tmp_path, monkeypatch
+        self, box, private_dir, monkeypatch
     ):
         # nobody called config_java(): the JVM must still be resolved through
-        # the absolute-only finder, never spawned as the bare name "java"
+        # the absolute-only finder, never spawned as the bare name "java"; the
+        # install lives under $HOME because the spawn then really runs the check
         _exec_file(box, _exe("java"))
-        good = _exec_file(tmp_path / "jdk", _exe("java"))
-        monkeypatch.setenv("JAVA_HOME", str(tmp_path / "jdk"))
+        jdk = private_dir / "jdk"
+        good = _exec_file(jdk, _exe("java"))
+        os.chmod(jdk, 0o755)
+        monkeypatch.setenv("JAVA_HOME", str(jdk))
         monkeypatch.setattr(internals, "_java_bin", None)
         monkeypatch.setattr(internals, "_java_options", [])
         seen = {}
@@ -1138,3 +1159,321 @@ class TestJavaSpawn:
                 internals.java(["Main"])
         finally:
             shutil.rmtree(root, ignore_errors=True)
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    def test_java_in_a_world_writable_tree_is_refused_however_configured(
+        self, box, private_dir, monkeypatch
+    ):
+        # the GitHub Ubuntu image's JVM: every directory and the binary itself
+        # are mode 777, so any local user can swap it; config_java() accepts
+        # the absolute location, the launch is what must refuse it
+        jdk = private_dir / "jdk"
+        stub = _exec_file(jdk / "bin", "java")
+        for path in (jdk, jdk / "bin", stub):
+            os.chmod(path, 0o777)
+        monkeypatch.setenv("JAVA_HOME", str(jdk))
+        internals.config_java()
+        assert _same(internals._java_bin, stub)
+        monkeypatch.setattr(internals, "_java_options", [])
+        seen = {}
+
+        class _Proc:
+            returncode = 0
+
+            def communicate(self):
+                return "", ""
+
+        def _spy(cmd, *args, **kwargs):
+            seen["cmd"] = list(cmd)
+            return _Proc()
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+
+        def refused():
+            with pytest.raises(LookupError, match="not on a trusted path"):
+                internals.java(["Main"])
+            assert seen == {}
+
+        refused()
+        # a private leaf below a world-writable ancestor is no better
+        os.chmod(jdk / "bin", 0o755)
+        os.chmod(stub, 0o755)
+        refused()
+        # nor a private chain ending in a group- or world-writable binary
+        os.chmod(jdk, 0o755)
+        for mode in (0o775, 0o757, 0o777):
+            os.chmod(stub, mode)
+            refused()
+        # private again, the same chain is accepted: the refusals above were
+        # the ownership check, not a broken configuration
+        os.chmod(stub, 0o755)
+        internals.java(["Main"])
+        assert _same(seen["cmd"][0], stub)
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX symlink chain check")
+    def test_java_reached_through_a_writable_directory_link_is_refused(
+        self, private_dir, monkeypatch
+    ):
+        # a link held in a world-writable directory, and a private link out into
+        # a world-writable directory: either hop lets another user swap what
+        # runs, so both are refused; a private-to-private link is accepted
+        real = _exec_file(private_dir / "priv", "java")
+        shared = private_dir / "shared"
+        shared.mkdir()
+        planted = _exec_file(shared, "java")
+        os.chmod(shared, 0o777)
+        links = private_dir / "links"
+        links.mkdir()
+        os.symlink(real, shared / "java_link")
+        os.symlink(planted, links / "java_out")
+        os.symlink(real, links / "java_in")
+        monkeypatch.setattr(internals, "_java_options", [])
+        seen = {}
+
+        def _spy(cmd, *args, **kwargs):
+            seen["cmd"], seen["kwargs"] = list(cmd), kwargs
+            raise _Spawned(cmd[0])
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+        for target in (shared / "java_link", links / "java_out", planted):
+            monkeypatch.setattr(internals, "_java_bin", str(target))
+            with pytest.raises(LookupError, match="not on a trusted path"):
+                internals.java(["Main"])
+            assert seen == {}, target
+        monkeypatch.setattr(internals, "_java_bin", str(links / "java_in"))
+        with pytest.raises(_Spawned):
+            internals.java(["Main"])
+        # the resolved binary is what runs, by its real path, not the link
+        assert _same(seen["cmd"][0], real) and not os.path.islink(seen["cmd"][0])
+        assert seen["kwargs"]["executable"] == seen["cmd"][0]
+
+
+class TestTrustedJavaStubFixture:
+    """The conftest ``trusted_java_stub`` fixture plants an executable under
+    $HOME so the trusted spawn accepts it in place of a JVM. That must not be a
+    way of getting a binary trusted: the acceptance rests on the private chain
+    the fixture builds and on nothing else, the stub is reachable only through
+    an explicit pointer, it runs under the sanitised launcher environment, and
+    nothing of it survives the test that used it."""
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    def test_stub_is_a_regular_file_we_own_in_a_private_directory(
+        self, trusted_java_stub
+    ):
+        stub = Path(trusted_java_stub)
+        dir_st, st = stub.parent.stat(), stub.lstat()
+        assert stat.S_ISDIR(dir_st.st_mode) and stat.S_IMODE(dir_st.st_mode) == 0o700
+        assert dir_st.st_uid == os.geteuid() == st.st_uid
+        assert stat.S_ISREG(st.st_mode)
+        assert not st.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+        assert _same(pathsec.resolve_trusted_executable(trusted_java_stub), stub)
+
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    def test_every_weakening_of_the_stub_chain_is_refused(
+        self, trusted_java_stub, monkeypatch
+    ):
+        stub = Path(trusted_java_stub)
+        root = stub.parent
+        monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
+        monkeypatch.setattr(internals, "_java_options", [])
+        spawned = []
+
+        def _spy(cmd, *args, **kwargs):
+            spawned.append(list(cmd))
+            raise _Spawned(cmd[0])
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+
+        def refused(what):
+            assert pathsec.resolve_trusted_executable(trusted_java_stub) is None, what
+            with pytest.raises(LookupError, match="not on a trusted path"):
+                internals.java(["Main"])
+            assert spawned == [], what
+
+        for mode in (0o775, 0o757, 0o777):  # the stub writable by others
+            os.chmod(stub, mode)
+            refused(f"stub mode {mode:o}")
+        os.chmod(stub, 0o755)
+        for mode in (0o770, 0o707, 0o777):  # its directory writable by others
+            os.chmod(root, mode)
+            refused(f"directory mode {mode:o}")
+        os.chmod(root, 0o700)
+        # not a regular file: a directory, a FIFO, a link out into a directory
+        # that another user could write
+        stub.unlink()
+        stub.mkdir()
+        refused("a directory")
+        stub.rmdir()
+        os.mkfifo(stub)
+        refused("a FIFO")
+        stub.unlink()
+        shared = root / "shared"
+        shared.mkdir()
+        planted = _exec_file(shared, "java")
+        os.chmod(shared, 0o777)
+        os.symlink(planted, stub)
+        refused("a link into a world-writable directory")
+        stub.unlink()
+        # restored, the same stub is accepted again: the refusals above were
+        # the chain checks and nothing else
+        stub.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+        stub.chmod(0o755)
+        assert _same(pathsec.resolve_trusted_executable(trusted_java_stub), stub)
+        with pytest.raises(_Spawned):
+            internals.java(["Main"])
+
+    def test_stub_is_unreachable_without_an_explicit_pointer(
+        self, box, trusted_java_stub, monkeypatch
+    ):
+        # it exists under $HOME, yet with no env var or PATH entry naming it the
+        # finder cannot see it: a binary gets no trust from merely being there
+        assert os.path.isfile(trusted_java_stub)
+        with pytest.raises(LookupError):
+            internals.config_java()
+        assert internals._java_bin is None
+        spawned = []
+        real_popen = subprocess.Popen
+
+        def _spy(cmd, *args, **kwargs):
+            if cmd[0] == "which":  # the finder's own PATH lookup, not a launch
+                return real_popen(cmd, *args, **kwargs)
+            spawned.append(list(cmd))
+            raise _Spawned(cmd[0])
+
+        monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _spy)
+        with pytest.raises(LookupError):
+            internals.java(["Main"])
+        assert spawned == []
+        # and its own location spelled relative to the CWD is refused as well
+        try:
+            relative = os.path.relpath(trusted_java_stub)
+        except ValueError:  # Windows: the CWD and $HOME on different drives
+            relative = None
+        if relative is not None:
+            with pytest.raises(LookupError):
+                internals.config_java(relative)
+            assert internals._java_bin is None
+
+    @pytest.mark.skipif(os.name != "posix", reason="runs the stub as a script")
+    def test_stub_runs_under_the_sanitised_launcher_environment(
+        self, trusted_java_stub, monkeypatch
+    ):
+        # executed for real: what the stub sees is what a JVM would see
+        report = Path(trusted_java_stub).parent / "env.txt"
+        Path(trusted_java_stub).write_text(
+            "#!/bin/sh\n"
+            '{ echo "LD_PRELOAD=[$LD_PRELOAD]"; echo "DYLD=[$DYLD_INSERT_LIBRARIES]"; '
+            'echo "JTO=[$JAVA_TOOL_OPTIONS]"; echo "CLASSPATH=[$CLASSPATH]"; '
+            'echo "LANG=[$LANG]"; echo "KEEP=[$NLTK_KEEP]"; } > "$1"\n',
+            encoding="utf-8",
+        )
+        planted = {
+            "LD_PRELOAD": "/evil.so",
+            "DYLD_INSERT_LIBRARIES": "/evil.dylib",
+            "JAVA_TOOL_OPTIONS": "-XX:OnError=id",
+            "CLASSPATH": "/evil",
+            "LANG": "C.UTF-8",
+            "NLTK_KEEP": "1",
+        }
+        for var, value in planted.items():
+            monkeypatch.setenv(var, value)
+        monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
+        monkeypatch.setattr(internals, "_java_options", [])
+        internals.java([str(report)])
+        reported = report.read_text(encoding="utf-8")
+        for line in ("LD_PRELOAD=[]", "DYLD=[]", "JTO=[]", "CLASSPATH=[]"):
+            assert line in reported, reported
+        assert "LANG=[C.UTF-8]" in reported and "KEEP=[1]" in reported, reported
+
+    def test_fixture_leaves_nothing_behind(self, tmp_path):
+        # a fresh pytest runs one test through the fixture and records the stub
+        # it was handed; afterwards neither the stub nor its directory exists,
+        # so no planted executable outlives its test under $HOME
+        import nltk
+
+        marker = tmp_path / "stub_path.txt"
+        (tmp_path / "test_uses_the_stub.py").write_text(
+            "import os\n\n\n"
+            "def test_it(trusted_java_stub):\n"
+            "    assert os.path.isfile(trusted_java_stub)\n"
+            f"    with open({str(marker)!r}, 'w') as fh:\n"
+            "        fh.write(trusted_java_stub)\n",
+            encoding="utf-8",
+        )
+        repo = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "-p",
+                "nltk.test.unit.conftest",
+                str(tmp_path / "test_uses_the_stub.py"),
+            ],
+            cwd=str(tmp_path),
+            env=dict(os.environ, PYTHONPATH=repo),
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+        assert proc.returncode == 0, proc.stdout + proc.stderr
+        stub = marker.read_text(encoding="utf-8").strip()
+        assert _inside(stub, Path.home())
+        assert not os.path.lexists(stub)
+        assert not os.path.lexists(os.path.dirname(stub))
+
+
+class TestPathDirsWalk:
+    """The PATH lookup find_file_iter makes where it cannot shell out to
+    ``which`` (Windows): every PATH directory in order, never the implicit
+    current directory, and never stopping at a planted hit."""
+
+    def test_cwd_is_not_consulted_and_every_path_hit_is_yielded(
+        self, box, tmp_path, monkeypatch
+    ):
+        _exec_file(box, "svn.exe")  # the planted decoy in the CWD
+        first, second = tmp_path / "first", tmp_path / "second"
+        _exec_file(first, "svn.exe")
+        _exec_file(second, "svn")
+        _exec_file(second, "svn.exe")
+        monkeypatch.setenv("PATHEXT", os.pathsep.join([".com", ".exe"]))
+        monkeypatch.setenv(
+            "PATH", os.pathsep.join([str(tmp_path / "empty"), str(first), str(second)])
+        )
+        got = list(internals._path_dirs_iter(["svn"]))
+        assert [os.path.realpath(p) for p in got] == [
+            os.path.realpath(p)
+            for p in (first / "svn.exe", second / "svn", second / "svn.exe")
+        ]
+        assert all(os.path.isabs(p) and not _inside(p, box) for p in got)
+        # a name with an extension is looked up as given, without PATHEXT
+        assert list(internals._path_dirs_iter(["svn.exe"])) == [
+            str(first / "svn.exe"),
+            str(second / "svn.exe"),
+        ]
+
+    def test_a_relative_path_entry_is_yielded_relative_and_refused_upstream(
+        self, box, tmp_path, monkeypatch
+    ):
+        _exec_file(box, "svn.exe")
+        good = _exec_file(tmp_path / "bin", "svn.exe")
+        monkeypatch.setenv("PATHEXT", ".exe")
+        # a literal '.', an empty entry and a quoted entry
+        monkeypatch.setenv("PATH", os.pathsep.join([".", "", f'"{tmp_path / "bin"}"']))
+        assert list(internals._path_dirs_iter(["svn"])) == [
+            os.path.join(os.curdir, "svn.exe"),
+            str(tmp_path / "bin" / "svn.exe"),
+        ]
+        if os.name != "nt":  # take the no-``which`` branch on POSIX too
+            monkeypatch.setattr(os, "name", "nt")
+        # the finder skips the relative hit and returns the install behind it,
+        # instead of stopping at the CWD hit the way the OS search does
+        found = internals.find_binary_absolute("svn", binary_names=["svn.exe"])
+        assert _same(found, good) and not _inside(found, box)
+        # with only the CWD hit reachable, the refusal names it
+        monkeypatch.setenv("PATH", os.curdir)
+        with pytest.raises(LookupError, match="only in the current working"):
+            internals.find_binary_absolute("svn", binary_names=["svn.exe"])

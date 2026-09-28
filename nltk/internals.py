@@ -11,7 +11,6 @@ import fnmatch
 import locale
 import os
 import re
-import shutil
 import stat
 import subprocess
 import sys
@@ -93,14 +92,24 @@ _JVM_INJECTING_ENV_VARS = frozenset(
     }
 )
 
+# Variables that redirect the dynamic loader of the child JVM (LD_PRELOAD,
+# LD_LIBRARY_PATH, LD_AUDIT on ELF; DYLD_INSERT_LIBRARIES et al. on macOS): an
+# uncontrolled library search path, CWE-427; stripped by name prefix.
+_LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
+
 
 def _java_child_env():
     """Return os.environ minus the JVM-injecting variables, so the child JVM that
     java() launches cannot pick up flags/classpath from JAVA_TOOL_OPTIONS et al.
-    (CWE-88). Every NLTK JVM launch is routed through java(), so this is the single
-    place the child environment is sanitised."""
+    (CWE-88), and minus the loader-redirect variables (LD_* / DYLD_*), so it
+    cannot be made to load a planted library either (CWE-427). Every NLTK JVM
+    launch is routed through java(), so this is the single place the child
+    environment is sanitised; everything else passes through unchanged."""
     return {
-        k: v for k, v in os.environ.items() if k.upper() not in _JVM_INJECTING_ENV_VARS
+        k: v
+        for k, v in os.environ.items()
+        if k.upper() not in _JVM_INJECTING_ENV_VARS
+        and not k.upper().startswith(_LOADER_ENV_PREFIXES)
     }
 
 
@@ -813,6 +822,33 @@ class Counter:
 ##########################################################################
 
 
+def _path_dirs_iter(file_names):
+    """Yield every regular file named by *file_names* found in the PATH
+    directories, in PATH order, with the PATHEXT suffixes the OS search would
+    try for a name without an extension.
+
+    This is the PATH lookup ``find_file_iter`` makes where it cannot shell out
+    to ``which``. Unlike the Windows search and ``shutil.which`` it never
+    consults the current directory unless PATH names it, and it does not stop
+    at the first hit: a planted binary in the CWD must neither be chosen nor
+    hide the real installs behind it (CWE-427). A relative PATH entry (``.``)
+    still yields a relative path, which ``find_binary_iter`` refuses.
+    """
+    suffixes = [ext for ext in os.environ.get("PATHEXT", "").split(os.pathsep) if ext]
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        directory = directory.strip('"')
+        if not directory:
+            continue
+        for alternative in file_names:
+            names = [alternative]
+            if not os.path.splitext(alternative)[1]:
+                names += [alternative + ext for ext in suffixes]
+            for name in names:
+                path = os.path.join(directory, name)
+                if os.path.isfile(path):
+                    yield path
+
+
 def find_file_iter(
     filename,
     env_vars=(),
@@ -930,16 +966,14 @@ def find_file_iter(
                 yielded = True
                 yield path
     else:
-        # Windows: the same PATH lookup through shutil.which (PATHEXT-aware).
-        # A CWD hit, which older Pythons prepend, is relative and refused by
-        # the executable resolvers upstream.
-        for alternative in file_names:
-            path = shutil.which(alternative)
-            if path and os.path.exists(path):
-                if verbose:
-                    print(f"[Found {filename}: {path}]")
-                yielded = True
-                yield path
+        # No ``which``: walk PATH ourselves, without the implicit CWD entry the
+        # Windows search (and shutil.which) put first; a hit there is refused
+        # by the callers and would otherwise hide every real install (CWE-427).
+        for path in _path_dirs_iter(file_names):
+            if verbose:
+                print(f"[Found {filename}: {path}]")
+            yielded = True
+            yield path
 
     if not yielded:
         msg = (

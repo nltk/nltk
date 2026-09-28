@@ -787,6 +787,29 @@ def test_relative_binary_location_probe_has_teeth(monkeypatch):
     assert probe()[0] == probes.FIXED
 
 
+@pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypatch):
+    """Neuter the spawn-time ownership check only: the finder still refuses
+    every relative form, so the probe must flip to VULNERABLE on its last
+    phase, the launch of a JVM out of a world-writable directory."""
+    from nltk import pathsec
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    def permissive(target):
+        real = os.path.realpath(target)
+        return real if os.path.isfile(real) else None
+
+    monkeypatch.setattr(pathsec, "resolve_trusted_executable", permissive)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "world-writable directory" in evidence and "PWNED" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
 @pytest.mark.parametrize("modname, label", _RELATIVE_BINARY_MODULES)
 def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
     # neuter one tool's resolver only (each module binds it by name): the

@@ -479,6 +479,29 @@ class TestJavaEnvironmentSanitization:
         assert captured["env"].get("NLTK_TEST_MARKER") == "keepme"
         assert "PATH" in captured["env"]
 
+    def test_loader_redirect_vars_stripped(self, stub_java_bin, monkeypatch):
+        """LD_* / DYLD_* redirect the child's dynamic loader (CWE-427): none of
+        them reaches the JVM, in any letter case, while unrelated names do."""
+        hostile = {
+            "LD_PRELOAD": "/evil.so",
+            "LD_LIBRARY_PATH": "/evil/lib",
+            "LD_AUDIT": "/evil/audit.so",
+            "DYLD_INSERT_LIBRARIES": "/evil.dylib",
+            "DYLD_LIBRARY_PATH": "/evil/dylib",
+            "ld_preload": "/evil/lower.so",
+        }
+        for var, value in hostile.items():
+            monkeypatch.setenv(var, value)
+        monkeypatch.setenv("NLTK_TEST_MARKER", "keepme")
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        env = captured["env"]
+        for var in hostile:
+            assert var not in env, f"{var} reached the child JVM environment"
+        assert not any(value in env.values() for value in hostile.values())
+        assert env.get("NLTK_TEST_MARKER") == "keepme"
+
     def test_env_strip_is_load_bearing(self, stub_java_bin, monkeypatch):
         """Mutation: empty the strip set and the injecting var reaches the child."""
         monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-XX:OnError=x")
@@ -487,6 +510,15 @@ class TestJavaEnvironmentSanitization:
         with pytest.raises(_PopenIntercept):
             internals.java(["Main"])
         assert "JAVA_TOOL_OPTIONS" in captured["env"]
+
+    def test_loader_strip_is_load_bearing(self, stub_java_bin, monkeypatch):
+        """Mutation: empty the loader prefixes and LD_PRELOAD reaches the child."""
+        monkeypatch.setenv("LD_PRELOAD", "/evil.so")
+        monkeypatch.setattr(internals, "_LOADER_ENV_PREFIXES", ())
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        assert "LD_PRELOAD" in captured["env"]
 
     def test_helper_strips_and_preserves(self, monkeypatch):
         """The shared _java_child_env() helper (used by java() and the MaltParser

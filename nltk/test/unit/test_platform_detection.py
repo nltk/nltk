@@ -41,7 +41,7 @@ def test_windows_data_paths_include_appdata(monkeypatch):
     assert expected in nltk.data._windows_data_paths()
 
 
-def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
+def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path, trusted_java_stub):
     monkeypatch.setattr(os, "pathsep", ";")
 
     # Trusted in-nltk_data jars, so the JAR sandbox permits them and we test the
@@ -53,7 +53,10 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     jar_b = data_root / "b.jar"
     jar_b.touch()
     monkeypatch.setattr("nltk.data.path", [str(data_root)])
-    monkeypatch.setattr("nltk.internals._java_bin", "java")
+    # java() launches only a JVM on a trusted path (a bare "java" is refused
+    # before Popen), so point it at the trusted stub and check that is argv[0]
+    monkeypatch.setattr("nltk.internals._java_bin", trusted_java_stub)
+    monkeypatch.setattr("nltk.internals._java_options", [])
 
     parser = MaltParser.__new__(MaltParser)
     parser.additional_java_args = []
@@ -87,4 +90,5 @@ def test_maltparser_command_uses_os_pathsep(monkeypatch, tmp_path):
     argv = parser.generate_malt_command(str(input_conll), mode="learn")
     parser._execute(argv)
     cmd = captured["cmd"]
+    assert os.path.realpath(cmd[0]) == os.path.realpath(trusted_java_stub)
     assert cmd[cmd.index("-cp") + 1] == f"{jar_a};{jar_b}"

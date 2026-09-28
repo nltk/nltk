@@ -215,7 +215,9 @@ def _relative_binary_location():
     decoys can match: each form must be refused), then with a trusted absolute
     install configured through the tool's env var (each form must either be
     refused or resolve to that install, never to a decoy), then with the env
-    var itself pointing through ``..`` at the decoy directory (the same rule).
+    var itself pointing through ``..`` at the decoy directory (the same rule),
+    and finally (POSIX) with the install made world-writable: java() must
+    refuse to launch it even though config_java() accepted its location.
 
     Before the fix these entry points forwarded the location to ``find_binary``,
     which honours an explicit relative path, so the tool's spawn would have run
@@ -299,11 +301,34 @@ def _relative_binary_location():
                         f"{label}({form!r}) with the env var set to {through!r} "
                         f"took the decoy {resolved!r}",
                     )
+        # phase 4 (POSIX): an install that is absolute but that any local user
+        # can rewrite (the GitHub Ubuntu image's chmod 777 JVM tree) is refused
+        # when java() launches it, whatever config_java() accepted
+        if os.name == "posix":
+            for var in _TOOL_ENV:
+                os.environ.pop(var, None)
+            os.environ["JAVA_HOME"] = legit
+            internals._java_bin = None
+            internals.config_java()
+            os.chmod(legit, 0o777)
+            try:
+                launched = internals.java(["Main"], stdout="pipe", stderr="pipe")
+            except LookupError:
+                launched = None
+                refused += 1
+            finally:
+                os.chmod(legit, 0o700)
+            if launched is not None:
+                return (
+                    VULNERABLE,
+                    f"java() launched {internals._java_bin!r} out of the "
+                    f"world-writable directory {legit!r}: {launched[0]!r}",
+                )
         return (
             FIXED,
             f"{refused} relative locations refused across {len(tools)} entry "
             "points; with an install configured every form resolved to it and "
-            "never to a CWD decoy",
+            "never to a CWD decoy; a world-writable install was refused at launch",
         )
     finally:
         os.chdir(old_cwd)
