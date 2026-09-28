@@ -258,6 +258,27 @@ class TestLoggingSinks:
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             PerceptronTagger(load=False).train([[("a", "X"), ("b", "Y")]], nr_iter=1)
         assert out.getvalue() == "" and err.getvalue() == ""
+        # and the record still reaches whatever the application put on the root
+        # logger: the module logger propagates and the library attaches no
+        # handler of its own (the pre-existing contract of logging.info)
+        logger = logging.getLogger("nltk.tag.perceptron")
+        assert logger.propagate and logger.handlers == []
+        seen = []
+
+        class _Catch(logging.Handler):
+            def emit(self, record):
+                seen.append(record.getMessage())
+
+        catcher = _Catch(level=logging.INFO)
+        old_level = logger.level
+        logger.addHandler(catcher)
+        logger.setLevel(logging.INFO)
+        try:
+            PerceptronTagger(load=False).train([[("a", "X"), ("b", "Y")]], nr_iter=1)
+        finally:
+            logger.removeHandler(catcher)
+            logger.setLevel(old_level)
+        assert seen and re.fullmatch(r"Iter 0: \d+/\d+=[0-9.]+", seen[0]), seen
 
 
 class TestWarnExitAndExceptionSinks:
