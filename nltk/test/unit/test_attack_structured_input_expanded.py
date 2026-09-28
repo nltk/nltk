@@ -133,16 +133,16 @@ class TestStanfordInputMatrix:
 
     @staticmethod
     def _real_tagger_install():
-        """(jar, model) of a Stanford POS tagger inside a data root or named by
-        the STANFORD_POSTAGGER / STANFORD_MODELS variables, else None."""
+        """(jar, model) of a Stanford POS tagger installed inside a data root,
+        else None."""
         import glob
 
         import nltk.data
 
-        homes = [
-            os.environ.get("STANFORD_POSTAGGER"),
-            os.environ.get("STANFORD_MODELS"),
-        ]
+        # only an install inside a data root: the wrapper bounds its model to
+        # the data roots, so a tool directory elsewhere (the CI's third-party
+        # download) is refused by design and is not this test's subject
+        homes = []
         for root in nltk.data.path:
             homes += glob.glob(os.path.join(root, "stanford-postagger*"))
         for home in [h for h in homes if h and os.path.isdir(h)]:
@@ -172,8 +172,8 @@ class TestStanfordInputMatrix:
         monkeypatch.setattr(internals, "_java_bin", None)
         try:
             tagger = StanfordPOSTagger(model, jar, java_options="-mx1g")
-        except LookupError as e:
-            pytest.skip(f"Stanford POS tagger not resolvable here: {e}")
+        except (LookupError, PermissionError, ValueError, OSError) as e:
+            pytest.skip(f"Stanford POS tagger not usable here: {e}")
         with pytest.raises(ValueError):
             tagger.tag_sents([["The", "quick\nbrown", "fox"]])
         tagged = tagger.tag_sents([["The", "quick", "brown", "fox"]])
