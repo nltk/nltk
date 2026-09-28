@@ -341,6 +341,12 @@ class TokenSearcher:
                 "query may be too expensive for this corpus (pass timeout=None "
                 "to disable the limit)."
             ) from None
+        except (ValueError, redos.error) as exc:
+            # redos refuses an oversized/over-nested query at compile time; report
+            # it as a bad query rather than letting the raw refusal escape.
+            raise ValueError(
+                f"TokenSearcher.findall could not compile the query: {exc}"
+            ) from None
 
         # Sanity check
         for h in hits:

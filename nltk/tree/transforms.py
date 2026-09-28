@@ -107,7 +107,44 @@ The following is a short tutorial on the available transformations.
 
 """
 
+from collections import deque
+
+from nltk.tree import tree as _tree
 from nltk.tree.tree import Tree
+
+
+def _binarised_depth(tree, factor):
+    """Nesting depth *tree* will have after binarisation, computed iteratively.
+
+    Binarising a node with n > 2 children hangs them off a chain of n - 2 new
+    nodes, so the transform turns WIDTH into DEPTH: a flat 3000-child node
+    becomes a 3000-deep spine, and the widths of nested nodes compound. The
+    depth is counted exactly as ``Tree.fromstring`` counts bracket nesting
+    (Tree levels on the deepest root-to-leaf path), with the child positions
+    the right- or left-factoring loop will produce.
+    """
+    depth = {}
+    stack = [(tree, False)]
+    while stack:
+        node, visited = stack.pop()
+        if not isinstance(node, Tree):
+            continue
+        if not visited:
+            stack.append((node, True))
+            stack.extend((child, False) for child in node)
+            continue
+        width = len(node)
+        deepest = 1
+        for position, child in enumerate(node):
+            if width > 2 and factor == "right":
+                levels = min(position + 1, width - 1)
+            elif width > 2:
+                levels = min(width - position, width - 1)
+            else:
+                levels = 1
+            deepest = max(deepest, levels + depth.get(id(child), 0))
+        depth[id(node)] = deepest
+    return depth.get(id(tree), 0)
 
 
 def chomsky_normal_form(
@@ -120,6 +157,19 @@ def chomsky_normal_form(
     # any subtree with a branching factor greater than 999 will be incorrectly truncated.
     if horzMarkov is None:
         horzMarkov = 999
+
+    # The recursive Tree methods (__str__, leaves, productions, deepcopy ...)
+    # rely on Tree.fromstring's MAX_TREE_DEPTH bound, which binarisation would
+    # silently break by turning width into depth (CWE-674); refuse up front,
+    # before the tree is mutated, on the exact post-transform depth.
+    binarised_depth = _binarised_depth(tree, factor)
+    if binarised_depth > _tree.MAX_TREE_DEPTH:
+        raise ValueError(
+            f"Binarising this tree would nest it {binarised_depth} levels deep, "
+            f"beyond MAX_TREE_DEPTH ({_tree.MAX_TREE_DEPTH}): a wide node becomes "
+            "a chain as deep as it is wide, which the recursive Tree methods "
+            "cannot walk. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+        )
 
     # Traverse the tree depth-first keeping a list of ancestor nodes to the root.
     # I chose not to use the tree.treepositions() method since it requires
@@ -149,7 +199,10 @@ def chomsky_normal_form(
                     str(child.label()) if isinstance(child, Tree) else str(child)
                     for child in node
                 ]
-                nodeCopy = node.copy()
+                # Consume children from the front in O(1) via a deque so the
+                # right-factoring loop stays linear (CWE-407 / CWE-400,
+                # GHSA-r53h-rw34-8h97).
+                nodeCopy = deque(node)
                 node[0:] = []  # delete the children
 
                 curNode = node
@@ -165,7 +218,7 @@ def chomsky_normal_form(
                             parentString,
                         )  # create new head
                         newNode = Tree(newHead, [])
-                        curNode[0:] = [nodeCopy.pop(0), newNode]
+                        curNode[0:] = [nodeCopy.popleft(), newNode]
                     else:
                         newHead = "{}{}<{}>{}".format(
                             originalNode,

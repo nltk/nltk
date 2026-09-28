@@ -15,7 +15,7 @@ import gzip
 
 from nltk.internals import deprecated
 from nltk.jsontags import safe_json_loads
-from nltk.termsec import sanitize_csv_field
+from nltk.csvsec import sanitize_csv_field
 
 HIER_SEPARATOR = "."
 

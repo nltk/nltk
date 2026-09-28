@@ -384,6 +384,15 @@ def test_help_tagset_refuses_bomb_pattern():
         pytest.skip("brown tagset help data not installed")
 
 
+def test_tgrep_node_literal_refuses_bomb_regex():
+    from nltk import tgrep
+
+    # A tgrep /regex/ node literal fails closed as a query error (TgrepException),
+    # tgrep's own error type, rather than a raw redos refusal.
+    with pytest.raises(tgrep.TgrepException):
+        tgrep.tgrep_compile("/" + _BIG + "/")
+
+
 # ---------------------------------------------------------------------------
 # Library-wide coverage: the rest of the caller-controlled compile sites found
 # by auditing the whole tree now route their source through redos.check_pattern.

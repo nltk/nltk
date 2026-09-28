@@ -713,3 +713,36 @@ def test_jvm_option_filter_probe_has_teeth(monkeypatch):
 
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED
+
+
+def test_r53h_front_mutation_probe_has_teeth():
+    """Reintroduce the O(n) front removal (deque -> list.pop(0)-style reslice); the
+    chomsky_normal_form scaling must go quadratic and flip the probe VULNERABLE."""
+    import nltk.tree.transforms as transforms
+
+    probe = probes.PROBES["GHSA-r53h-rw34-8h97"]
+    assert probe()[0] == probes.FIXED
+
+    class _FrontPopList(list):
+        def popleft(self):
+            # A Python-level reslice so the O(n) front removal is visible at test
+            # sizes (list.pop(0) is a C memmove and hides the constant). The tail
+            # is rebuilt three times so t_small clears scaling_ratio's 0.1s noise
+            # floor with margin on a fast interpreter and the measured ratio is
+            # the true quadratic, not the floored form (which sat within 1.3x of
+            # the threshold and flipped FIXED on CPython 3.14.7 runners).
+            head = self[0]
+            for _ in range(3):
+                rest = []
+                for item in self[1:]:
+                    rest.append(item)
+            self[:] = rest
+            return head
+
+    real = transforms.deque
+    try:
+        transforms.deque = _FrontPopList
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        transforms.deque = real
+    assert probe()[0] == probes.FIXED

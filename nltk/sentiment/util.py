@@ -367,7 +367,7 @@ def json2csv_preprocess(
     ) as fp:
         import gzip
 
-        from nltk.termsec import sanitize_csv_field
+        from nltk.csvsec import sanitize_csv_field
         from nltk.twitter.common import extract_fields
 
         if gzip_compress:
