@@ -292,7 +292,7 @@ def test_segmenter_model_refuses_oversize(pathsec_sandbox, monkeypatch):
     _trap_java(monkeypatch, seg, {})
     model = root / "pku.gz"
     model.write_bytes(b"\x1f\x8b" + b"x" * 4096)
-    monkeypatch.setattr(seg, "MAX_TOOL_MODEL_BYTES", 1024)
+    monkeypatch.setattr(pathsec, "MAX_TOOL_MODEL_BYTES", 1024)
     inside = str(root / "in.txt")
     with pathsec.open(inside, "w", encoding="utf-8") as handle:
         handle.write("中文")

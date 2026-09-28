@@ -72,6 +72,12 @@ _MAX_LINK_HOPS = 40  # ELOOP-style bound on symlink chains
 #: needed.
 MAX_TOOL_MODEL_BYTES = 512 * 1024 * 1024
 
+#: Ceiling on the entries :func:`validate_tool_dir` audits when asked for a
+#: private directory. A model directory a tool reads (the segmenter's Sihan
+#: corpora dir) holds a few dozen files, so a tree far beyond that is not one and
+#: is refused rather than walked without bound (CWE-400).
+MAX_TOOL_DIR_ENTRIES = 10000
+
 # The child PATH resolves NOTHING: a single absolute, root-domain directory with
 # no executables. It denies bare-name command lookup (a trusted binary is run by
 # absolute path) and is NOT empty (an empty PATH element is the CWD; see safe_env).
@@ -921,7 +927,8 @@ def _reject_tamperable(st, raw, context, require_private):
         raise PermissionError(
             f"Security Violation [{context}]: file {raw!r} is group/world-writable "
             f"or not owned by you or root; another local user could plant or swap "
-            f"the model content the tool then parses (CWE-426/CWE-732)."
+            f"the model content the tool then parses (CWE-426/CWE-732). Remove the "
+            f"group/world write bits (chmod go-w) or copy it somewhere private."
         )
 
 
@@ -1005,7 +1012,7 @@ def _reject_unsafe_open(
         os.close(fd)
 
 
-def validate_tool_dir(path_input, context="NLTK tool"):
+def validate_tool_dir(path_input, context="NLTK tool", *, require_private=False):
     """Validate a *directory* a tool or NLTK itself will write model files into.
 
     The file-shaped physical checks in :func:`validate_tool_path` do not apply
@@ -1015,14 +1022,72 @@ def validate_tool_dir(path_input, context="NLTK tool"):
     frozen ``__fspath__``, never a re-read one) and the same name refusals (blank,
     NUL, option-shaped, URL, ``..``, NTFS stream, drive-relative, Windows device)
     run before containment.
+
+    With ``require_private`` the directory is one a tool READS model data from
+    (the segmenter's Sihan corpora dir), so it must exist and be a real
+    directory rather than a symlink, and on POSIX it and everything beneath it
+    must be private: owned by the caller or root with no group/world write bit,
+    holding only regular files and subdirectories. Otherwise another local user
+    could plant or swap the files the tool then parses (CWE-426/CWE-732, and
+    CWE-59 for a symlink). The audit is bounded by :data:`MAX_TOOL_DIR_ENTRIES`.
     """
     text = _as_path_text(path_input, context, error=PermissionError)
     _reject_bad_name_syntax(text, context, error=PermissionError)
     _reject_url_shaped(text, context)
     validate_path(text, context=context)
+    if require_private:
+        _reject_tamperable_dir(text, context)
     # Returned for the same reason as validate_tool_path: the caller must build
     # from the checked string, not re-read a value that can resolve differently.
     return text
+
+
+def _reject_tamperable_dir(raw, context):
+    """Refuse a directory a tool reads model data from unless it is a real,
+    private directory tree (see :func:`validate_tool_dir`). ``raw`` has already
+    passed containment; this adds the physical and ownership checks."""
+    if not ENFORCE:
+        return
+
+    def _refuse(path, why):
+        raise PermissionError(
+            f"Security Violation [{context}]: {path!r} {why}; another local user "
+            "could plant or swap the model data the tool then parses "
+            "(CWE-426/CWE-732)."
+        )
+
+    leaf = raw.rstrip("/\\") or raw
+    try:
+        top = os.lstat(leaf)
+    except FileNotFoundError:
+        _refuse(raw, "does not exist")
+    if stat.S_ISLNK(top.st_mode):
+        _refuse(raw, "is a symlink, not the directory it names")
+    if not stat.S_ISDIR(top.st_mode):
+        _refuse(raw, "is not a directory")
+    if os.name != "posix":
+        # Owner/mode bits do not say who can write here and NLTK does not assume
+        # a DACL check, so like the executable-trust layer this stops at shape.
+        return
+    if not _private_stat(top):
+        _refuse(raw, "is group/world-writable or not owned by you or root")
+    seen = 0
+    for dirpath, dirnames, filenames in os.walk(leaf, followlinks=False):
+        for name in dirnames + filenames:
+            seen += 1
+            if seen > MAX_TOOL_DIR_ENTRIES:
+                _refuse(raw, f"holds over {MAX_TOOL_DIR_ENTRIES} entries, too many")
+            entry = os.path.join(dirpath, name)
+            try:
+                st = os.lstat(entry)
+            except FileNotFoundError:
+                _refuse(entry, "vanished while the directory was being audited")
+            if stat.S_ISLNK(st.st_mode):
+                _refuse(entry, "is a symlink inside the tool directory")
+            if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
+                _refuse(entry, "is not a regular file or directory")
+            if not _private_stat(st):
+                _refuse(entry, "is group/world-writable or not owned by you or root")
 
 
 def open_package_resource(
