@@ -22,20 +22,19 @@ taken from what was actually stat'ed or read, not merely from what raised.
 import importlib
 import os
 import shutil
-import tempfile
 import zipfile
 
 import pytest
 
 import nltk.corpus.reader.ycoe as ycoe_module
 from nltk.corpus.reader.util import StreamBackedCorpusView, read_whitespace_block
+from nltk.corpus.reader.ycoe import YCOECorpusReader
+from nltk.data import FileSystemPathPointer, ZipFilePathPointer
+from nltk.pathsec import validate_path
 
 # ``import nltk.corpus.reader.util as x`` would hand back the package attribute
 # ``util``, which a star import in the package shadows with nltk.tokenize.util.
 view_util = importlib.import_module("nltk.corpus.reader.util")
-from nltk.corpus.reader.ycoe import YCOECorpusReader
-from nltk.data import FileSystemPathPointer, ZipFilePathPointer
-from nltk.pathsec import validate_path
 
 # A real file outside every data root; its content is never asserted, only
 # whether it was stat'ed. Windows runners have no /etc, so they skip.
@@ -68,7 +67,11 @@ class TestYCOEDirSymlinkContainment:
         # replace the real pos/ with a symlink to a pos/ OUTSIDE every root
         _write_ycoe(str(outside / "elsewhere"), token=CANARY)
         shutil.rmtree(os.path.join(corpus, "pos"))
-        os.symlink(str(outside / "elsewhere" / "pos"), os.path.join(corpus, "pos"))
+        os.symlink(
+            str(outside / "elsewhere" / "pos"),
+            os.path.join(corpus, "pos"),
+            target_is_directory=True,
+        )
         with pytest.raises(REFUSED, match="Security Violation"):
             YCOECorpusReader(corpus)
 
@@ -83,7 +86,11 @@ class TestYCOEDirSymlinkContainment:
         corpus = _write_ycoe(str(root / "ycoe"))
         sibling = _write_ycoe(str(root / "other"), token=CANARY)
         shutil.rmtree(os.path.join(corpus, "pos"))
-        os.symlink(os.path.join(sibling, "pos"), os.path.join(corpus, "pos"))
+        os.symlink(
+            os.path.join(sibling, "pos"),
+            os.path.join(corpus, "pos"),
+            target_is_directory=True,
+        )
 
         with pytest.raises(ValueError, match="escapes root"):
             YCOECorpusReader(corpus)
@@ -97,14 +104,19 @@ class TestYCOEDirSymlinkContainment:
         corpus = _write_ycoe(str(root / "ycoe"))
         sibling = _write_ycoe(str(root / "other"), token=CANARY)
         shutil.rmtree(os.path.join(corpus, "psd"))
-        os.symlink(os.path.join(sibling, "psd"), os.path.join(corpus, "psd"))
+        os.symlink(
+            os.path.join(sibling, "psd"),
+            os.path.join(corpus, "psd"),
+            target_is_directory=True,
+        )
         with pytest.raises(ValueError, match="escapes root"):
             YCOECorpusReader(corpus)
 
-    def test_legit_subdir_is_accepted(self):
+    def test_legit_subdir_is_accepted(self, pathsec_sandbox):
         # The fix's building block: a real psd/pos under the root passes the
         # realpath-containment check (kept separate from full-corpus construction).
-        root = tempfile.mkdtemp()
+        # The root is a registered data root: a bare temp dir is not one on Linux.
+        root = str(pathsec_sandbox.root / "ycoe")
         os.makedirs(os.path.join(root, "psd"))
         validate_path(
             os.path.join(root, "psd"), context="YCOECorpusReader", required_root=root
