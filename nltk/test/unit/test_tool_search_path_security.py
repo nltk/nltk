@@ -343,14 +343,19 @@ class TestFindBinaryAbsolute:
     def test_absolute_path_entry_is_the_operators_choice(
         self, box, tmp_path, monkeypatch
     ):
-        # PATH is where the operator installs tools: an absolute hit is honoured
-        # and the spawn layer then judges who can write it
+        # PATH is where the operator installs tools: on POSIX an absolute hit is
+        # honoured and the spawn layer then judges who can write it; the finder
+        # has no PATH lookup on Windows, so there the CWD decoy is all it sees
         good = _exec_file(tmp_path / "bin", "megam")
         monkeypatch.setenv(
             "PATH", f"{tmp_path / 'bin'}{os.pathsep}{tmp_path / 'empty'}"
         )
-        found = internals.find_binary_absolute("megam", binary_names=["megam"])
-        assert _same(found, good)
+        if os.name == "posix":
+            found = internals.find_binary_absolute("megam", binary_names=["megam"])
+            assert _same(found, good)
+        else:
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute("megam", binary_names=["megam"])
 
     def test_no_which_on_path_is_not_found_rather_than_a_crash(
         self, box, tmp_path, monkeypatch
