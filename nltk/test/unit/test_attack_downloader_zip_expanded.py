@@ -1787,3 +1787,213 @@ class TestStatusRefusesPlantedEntries:
         tree, _outside = self._tiny(box)
         (tree / "empty").mkdir()
         assert self._status(box) == downloader.Downloader.INSTALLED
+
+
+# ===========================================================================
+# 7. Residual vectors: the index through the xmlsec chokepoint, a drip-fed
+#    package body, and extraction past the declared unzipped size
+# ===========================================================================
+def slow_body(server, path, data, chunk, delay):
+    """Serve *data* with a Content-Length, *chunk* bytes every *delay* s."""
+
+    def route(h):
+        h.send_response(200)
+        h.send_header("Content-Length", str(len(data)))
+        h.send_header("Connection", "close")
+        h.end_headers()
+        for i in range(0, len(data), chunk):
+            if server.stop.wait(delay):
+                return
+            h.wfile.write(data[i : i + chunk])
+            h.wfile.flush()
+
+    server.routes[path] = route
+
+
+def dtd_default_index(defaults=200, elements=2000):
+    declared = " ".join(f'a{i} CDATA "v"' for i in range(defaults))
+    return (
+        f'<?xml version="1.0"?><!DOCTYPE nltk_data [<!ATTLIST p {declared}>]>'
+        "<nltk_data><packages>" + "<p/>" * elements + "</packages>"
+        "<collections/></nltk_data>"
+    ).encode()
+
+
+def namespace_index(uri_len=20000, names=5000):
+    # 5,001 elements, no attributes and a 20 KB token pass the index's own
+    # structure scan; only the xmlsec chokepoint stands before 200 MB of tags
+    return (
+        f'<nltk_data xmlns="{"u" * uri_len}"><packages>'
+        + "".join(f"<p{i}/>" for i in range(names))
+        + "</packages><collections/></nltk_data>"
+    ).encode()
+
+
+class TestIndexThroughXmlsec:
+    def _load(self, url, dl):
+        d = downloader.Downloader(server_index_url=url, download_dir=str(dl))
+        d._update_index()
+        return d
+
+    def test_a_namespace_expanded_index_is_refused_small(self, box):
+        root, outside, dl, server = box
+        body = namespace_index()
+        downloader._check_index_structure(body)  # the first layer lets it by
+        server.body("/index.xml", body)
+        outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
+        assert isinstance(outcome, ValueError), outcome
+        assert "expanded names" in str(outcome)
+        assert peak < 8 * 1024 * 1024, f"peak {peak} for a {len(body)} byte index"
+
+    def test_dtd_defaults_are_refused_by_xmlsec_when_the_index_scan_is_blind(
+        self, box, monkeypatch
+    ):
+        # negative control on the first layer: with the index's own structure
+        # scan removed in-process, the chokepoint alone must hold the line
+        root, outside, dl, server = box
+        monkeypatch.setattr(downloader, "_check_index_structure", lambda data: None)
+        body = dtd_default_index()
+        server.body("/index.xml", body)
+        outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
+        assert isinstance(outcome, ValueError), outcome
+        assert type(outcome).__name__ == "StructureForbidden"
+        assert peak < 2 * 1024 * 1024, f"peak {peak} for a {len(body)} byte index"
+
+    def test_a_real_shaped_index_passes_both_layers(self, box):
+        root, outside, dl, server = box
+        packages = [
+            package_attrs(f"pkg{i:03d}", b"x" * 10, f"https://example.invalid/p{i}.zip")
+            for i in range(122)
+        ]
+        server.body("/index.xml", make_index(packages, [("col", ["pkg000", "pkg001"])]))
+        d = self._load(server.url("/index.xml"), dl)
+        assert len(d._packages) == 122 and len(d._collections) == 1
+
+
+class TestDripFedPackage:
+    def test_a_drip_fed_body_is_refused_by_its_deadline(self, box, monkeypatch):
+        root, outside, dl, server = box
+        monkeypatch.setattr(downloader, "PACKAGE_DEADLINE_FLOOR", 1.0)
+        blob = tiny_package()
+        attrs = package_attrs("tiny", blob, server.url("/pkgs/tiny.zip"))
+        server.body("/index.xml", make_index([attrs]))
+        server.drip("/pkgs/tiny.zip", blob, delay=0.05)  # over 10 s at this drip
+        started = time.monotonic()
+        result, output = run_download(server.url("/index.xml"), dl, "tiny")
+        elapsed = time.monotonic() - started
+        assert result is False, output
+        assert elapsed < 8, f"the drip ran {elapsed:.1f} s: no total deadline"
+        assert "time budget" in output
+        assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip"))
+        assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip.tmp"))
+        assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip.lock"))
+
+    def test_a_slow_but_steady_body_inside_its_budget_installs(self, box, monkeypatch):
+        root, outside, dl, server = box
+        monkeypatch.setattr(downloader, "PACKAGE_DEADLINE_FLOOR", 6.0)
+        blob = make_zip([("tiny/", b""), ("tiny/pad.bin", os.urandom(6000))])
+        attrs = package_attrs("tiny", blob, server.url("/pkgs/tiny.zip"))
+        server.body("/index.xml", make_index([attrs]))
+        slow_body(server, "/pkgs/tiny.zip", blob, chunk=1024, delay=0.2)
+        result, output = run_download(server.url("/index.xml"), dl, "tiny")
+        assert result is True, output
+        d = downloader.Downloader(server_index_url=server.url("/index.xml"))
+        assert d.status("tiny", str(dl)) == d.INSTALLED
+
+    @pytest.mark.parametrize(
+        "declared, expected",
+        [
+            (0, 300),
+            (1, 300),
+            (300 * 16 * 1024, 300),
+            (1200 * 16 * 1024, 1200),
+            (99_207_152, 99_207_152 / (16 * 1024)),  # framenet_v17, the largest
+            (downloader.MAX_PACKAGE_BYTES, 7200),
+            (10**12, 7200),
+        ],
+    )
+    def test_the_deadline_is_proportional_floored_and_capped(self, declared, expected):
+        assert downloader._package_deadline(declared) == expected
+        assert downloader.PACKAGE_DEADLINE_FLOOR == 300
+        assert downloader.PACKAGE_DEADLINE_CEILING == 7200
+        assert downloader.PACKAGE_MIN_BYTES_PER_SECOND == 16 * 1024
+
+
+def bloated_package(members=8, member_size=8 * 1024 * 1024):
+    """A zip whose members expand about 340x in aggregate, inside the ratio
+    policy (1000x) and the per-member activation floor, to 64 MiB."""
+    zeros = bytes(member_size)
+    entries = [("tiny/", b""), ("tiny/seed.bin", os.urandom(128 * 1024))]
+    entries += [(f"tiny/z{i}.bin", zeros) for i in range(members)]
+    blob = make_zip(entries)
+    return blob, members * member_size + 128 * 1024
+
+
+def bytes_on_disk(path):
+    return sum(size for kind, size in tree(path).values() if kind == stat.S_IFREG)
+
+
+class TestDeclaredUnzippedSize:
+    def test_members_past_the_declared_unzipped_size_never_reach_disk(self, box):
+        root, outside, dl, server = box
+        blob, actual = bloated_package()
+        assert len(blob) < 512 * 1024 and actual == 64 * 1024 * 1024 + 128 * 1024
+        index_url = serve_packages(server, [("tiny", blob, {"unzipped_size": "1000"})])
+        result, output = run_download(index_url, dl, "tiny")
+        assert result is False, output
+        written = bytes_on_disk(str(dl / "corpora" / "tiny"))
+        assert (
+            written <= 1000 + downloader.UNZIPPED_SIZE_SLACK
+        ), f"{written} bytes reached disk for a package declaring 1000"
+        assert written == 0 and "Unzipped size blocked" in output
+        # the zip itself was fetched and verified; only extraction refused
+        assert os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip"))
+
+    def test_a_package_declaring_its_true_size_installs(self, box):
+        root, outside, dl, server = box
+        blob, actual = bloated_package(members=2)
+        index_url = serve_packages(server, [("tiny", blob, {})])
+        result, output = run_download(index_url, dl, "tiny")
+        assert result is True, output
+        assert bytes_on_disk(str(dl / "corpora" / "tiny")) == actual
+
+    @pytest.mark.parametrize(
+        "size", ["-1", str(downloader.MAX_UNZIPPED_BYTES + 1), str(2**63), "9" * 30]
+    )
+    def test_an_out_of_range_declared_unzipped_size_requests_nothing(self, box, size):
+        root, outside, dl, server = box
+        blob = tiny_package()
+        attrs = package_attrs(
+            "tiny", blob, server.url("/pkgs/tiny.zip"), unzipped_size=size
+        )
+        server.body("/index.xml", make_index([attrs]))
+        server.body("/pkgs/tiny.zip", blob)
+        result, output = run_download(server.url("/index.xml"), dl, "tiny")
+        assert result is False and "Refusing to install" in output
+        assert "/pkgs/tiny.zip" not in server.hits
+        assert tree(str(dl / "corpora")) == {}
+
+    def test_the_ceiling_clears_the_largest_real_package(self):
+        assert downloader.MAX_UNZIPPED_BYTES == 8 * 1024**3 >= 9 * 855_026_962
+        assert downloader.UNZIPPED_SIZE_SLACK == 1024 * 1024
+
+    def test_extraction_stops_when_written_bytes_pass_the_declared_size(self, box):
+        # Phase 2 accounting, driven directly: members whose headers understate
+        # what they hold are cut by zipfile, so the running total is fed from
+        # an archive that is honest and a declared size just under it.
+        root, outside, dl, server = box
+        blob, actual = bloated_package(members=2)
+        zip_path = dl / "corpora" / "tiny.zip"
+        zip_path.parent.mkdir(parents=True)
+        zip_path.write_bytes(blob)
+        messages = list(
+            downloader._unzip_iter(
+                str(zip_path),
+                str(dl / "corpora"),
+                verbose=False,
+                expected_root="tiny",
+                expected_size=actual - downloader.UNZIPPED_SIZE_SLACK - 1,
+            )
+        )
+        assert any(isinstance(m, downloader.ErrorMessage) for m in messages)
+        assert bytes_on_disk(str(dl / "corpora" / "tiny")) == 0

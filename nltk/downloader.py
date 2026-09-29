@@ -161,6 +161,7 @@ default: unzip or not?
 """
 import functools
 import http.client
+import io
 import itertools
 import ntpath
 import os
@@ -205,16 +206,35 @@ MAX_INDEX_TOKEN_BYTES = 1024 * 1024
 NETWORK_TIMEOUT = 120
 INDEX_DEADLINE = 300
 
+# A package body gets a total time budget too: its declared size at a slow
+# link rate, floored and capped (the largest real package, 99 MB, needs 6,055
+# seconds at this rate). A server dripping a byte every few seconds never
+# trips the per-read timeout, and a full read block never arrives to be timed.
+PACKAGE_MIN_BYTES_PER_SECOND = 16 * 1024
+PACKAGE_DEADLINE_FLOOR = 300
+PACKAGE_DEADLINE_CEILING = 2 * 60 * 60
+
+# What an archive may expand to on disk is the index's unzipped_size plus a
+# little slack, and that declared size is capped too since it comes from the
+# same server (the largest real package, framenet_v17, unzips to 855 MB).
+MAX_UNZIPPED_BYTES = 8 * 1024 * 1024 * 1024
+UNZIPPED_SIZE_SLACK = 1024 * 1024
+
+
+def _package_deadline(declared):
+    """Seconds a package body of *declared* bytes may take to arrive."""
+    budget = declared / PACKAGE_MIN_BYTES_PER_SECOND
+    return max(PACKAGE_DEADLINE_FLOOR, min(PACKAGE_DEADLINE_CEILING, budget))
+
 
 def _bounded_body(stream, limit, what, deadline=None):
     """Read *stream* in full, refusing (ValueError) once it exceeds *limit*
     bytes, or once the monotonic clock passes *deadline* when one is given,
     and return the bytes read as a file object for a parser."""
-    import io
-
     # read1 hands back whatever one socket read produced, so the deadline is
-    # checked while a server drip feeds bytes instead of after a full block.
-    read = getattr(stream, "read1", None) or stream.read
+    # checked while a server drip feeds bytes instead of after a full block;
+    # only a real buffered stream (an HTTP response is one) offers it.
+    read = stream.read1 if isinstance(stream, io.BufferedIOBase) else stream.read
     chunks, total = [], 0
     try:
         while True:
@@ -1112,6 +1132,25 @@ class Downloader:
                     _safe_rmtree(unzipdir)
                 self._status_cache.pop(info.id, None)
 
+            # The declared unzipped size bounds extraction below and comes
+            # from the same server, so cap it before anything is fetched. A
+            # Package always carries one; only a bare stand-in has none.
+            declared_unzipped = getattr(info, "unzipped_size", None)
+            if declared_unzipped is not None or hasattr(info, "unzipped_size"):
+                try:
+                    declared_unzipped = int(declared_unzipped)
+                except (TypeError, ValueError, OverflowError):
+                    declared_unzipped = -1
+                if not 0 <= declared_unzipped <= MAX_UNZIPPED_BYTES:
+                    yield ErrorMessage(
+                        info,
+                        f"Refusing to install {info.id!r}: the index declares "
+                        f"an unzipped size of {info.unzipped_size!r} bytes, "
+                        f"outside the 0 to {MAX_UNZIPPED_BYTES} byte range a "
+                        "package may expand to (CWE-400)",
+                    )
+                    return
+
             # Download if needed.
             if force or not os.path.exists(filepath):
                 yield StartDownloadMessage(info)
@@ -1137,6 +1176,16 @@ class Downloader:
                 infile = None
                 try:
                     infile = urlopen(info.url, timeout=NETWORK_TIMEOUT)
+                    budget = _package_deadline(declared)
+                    deadline = time.monotonic() + budget
+                    # read1 hands back what one socket read produced, so a
+                    # dripping server meets the deadline per trickle instead
+                    # of after a full block; only a real buffered stream has it.
+                    read = (
+                        infile.read1
+                        if isinstance(infile, io.BufferedIOBase)
+                        else infile.read
+                    )
                     with pathsec_open(
                         tmp_filepath,
                         "wb",
@@ -1150,7 +1199,7 @@ class Downloader:
                         bytes_read = 0
                         overflow = False
                         for block in itertools.count():
-                            s = infile.read(min(1024 * 16, declared + 1 - bytes_read))
+                            s = read(min(1024 * 16, declared + 1 - bytes_read))
                             if not s:
                                 break
                             bytes_read += len(s)
@@ -1158,6 +1207,12 @@ class Downloader:
                                 overflow = True
                                 break
                             outfile.write(s)
+                            if time.monotonic() > deadline:
+                                raise ValueError(
+                                    f"the body took longer than its {budget:.0f} "
+                                    "second time budget to arrive; refusing a "
+                                    "drip-fed package (CWE-400)"
+                                )
                             if block % 2 == 0:
                                 _touch_lock()
                                 yield ProgressMessage(
@@ -1246,7 +1301,11 @@ class Downloader:
                     # zipdir itself stays as download_dir/subdir/ to preserve
                     # the layout expected by _pkg_status and NLTK data loaders.
                     for msg in _unzip_iter(
-                        filepath, zipdir, verbose=False, expected_root=info.id
+                        filepath,
+                        zipdir,
+                        verbose=False,
+                        expected_root=info.id,
+                        expected_size=declared_unzipped,
                     ):
                         _touch_lock()
                         msg.package = info
@@ -2960,7 +3019,7 @@ def _member_shape_error(member, root_abs):
     return f"{error} (as the extractor splits {member!r})"
 
 
-def _unzip_iter(filename, root, verbose=True, expected_root=None):
+def _unzip_iter(filename, root, verbose=True, expected_root=None, expected_size=None):
     """
     Secure ZIP extraction using validate-then-extract.
 
@@ -2972,6 +3031,11 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
     - Null-byte rejection (platform path-truncation vector)
     - Zip-Slip (.., absolute paths, drive letters)
     - Symlink-escape (writes through pre-existing symlinks)
+
+    ``expected_size`` is the unzipped size the index declares for the
+    package: members declaring more than that plus ``UNZIPPED_SIZE_SLACK``
+    are refused before anything is written, and the bytes actually written
+    are counted against it as well (CWE-400).
 
     All path comparisons use ``os.path.normcase`` so that the checks
     are case-insensitive on Windows (no-op on POSIX).
@@ -3015,6 +3079,18 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
         except ValueError as e:
             yield ErrorMessage(filename, str(e))
             return
+        # The ratio policy alone lets a package expand a thousandfold; what
+        # it may put on disk is what the index declared for it.
+        if expected_size is not None:
+            declared_total = sum(zf_info.file_size for zf_info in zf.infolist())
+            if declared_total > expected_size + UNZIPPED_SIZE_SLACK:
+                yield ErrorMessage(
+                    filename,
+                    f"Unzipped size blocked: the archive's members declare "
+                    f"{declared_total} bytes but the index declares "
+                    f"{expected_size} unzipped bytes for this package (CWE-400)",
+                )
+                return
         has_violations = False
         for member in members:
             # --- CVE-2026-12261 fix (cross-package ownership check) ---
@@ -3063,6 +3139,7 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
 
         # Each name once: a duplicate was refused above, and extracting a name
         # twice would only rewrite the entry that getinfo() resolves it to.
+        extracted = 0
         for member in dict.fromkeys(members):
             if expected_root is not None:
                 top = member.replace("\\", "/").lstrip("/").split("/")[0]
@@ -3100,10 +3177,28 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
                     )
                     return
             try:
-                zf.extract(member, root_abs)
+                written = zf.extract(member, root_abs)
             except Exception as e:
                 yield ErrorMessage(filename, f"Extraction error for {member!r}: {e}")
                 return
+            # zipfile stops a member at its declared size, so this only backs
+            # up the declared total above with the bytes really written.
+            if expected_size is not None and not zf.getinfo(member).is_dir():
+                try:
+                    placed = os.lstat(written)
+                except OSError:
+                    placed = None
+                if placed is not None and stat.S_ISREG(placed.st_mode):
+                    extracted += placed.st_size
+                if extracted > expected_size + UNZIPPED_SIZE_SLACK:
+                    if placed is not None and stat.S_ISREG(placed.st_mode):
+                        os.remove(written)
+                    yield ErrorMessage(
+                        filename,
+                        f"Unzipped size blocked: extraction passed the "
+                        f"{expected_size} bytes the index declares (CWE-400)",
+                    )
+                    return
     except Exception as e:
         yield ErrorMessage(filename, f"Validation error: {e}")
     finally:
