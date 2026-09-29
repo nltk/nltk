@@ -27,9 +27,15 @@ import unicodedata
 
 sys.path = OLD_SYS_PATH
 
+# The globals the generated lambdas call through (``_wrapper_`` in new_wrapper,
+# ``_call_``/``_func_`` in decorator). A parameter of any kind named like one
+# would shadow it inside the lambda, so every sink refuses the whole set.
+_RESERVED_NAMES = frozenset({"_call_", "_func_", "_wrapper_"})
 
-def _assert_safe_signature(signature):
-    """Fence the signature string the wrapper eval interpolates (CVE-2026-14727).
+
+def _fenced_parameters(signature):
+    """Parse a signature string into ``(name, kind)`` pairs, refusing anything
+    the wrapper eval must never see (CVE-2026-14727).
 
     The eval is what makes ``inspect.getfullargspec`` report the true signature
     on every supported Python (older ones ignore ``__signature__``), so it stays,
@@ -39,7 +45,10 @@ def _assert_safe_signature(signature):
     Each name is judged by ``str.isidentifier`` (every legal name, non-ASCII
     included), must not be a keyword and must already be NFKC-normalised, as
     the parser would make it; a ``str`` subclass is refused, since its
-    ``__str__`` could inject source at the interpolation.
+    ``__str__`` could inject source at the interpolation. The marker structure
+    is checked as the parser would (one ``/`` before any ``*``, one ``*``, a
+    keyword-only name after a bare ``*``, ``**name`` last, no duplicate), so
+    the eval can only ever compile a well-formed parameter list.
     """
 
     def _refuse(why):
@@ -50,11 +59,14 @@ def _assert_safe_signature(signature):
     if type(signature) is not str:
         _refuse("non-str")
     if not signature.strip():
-        return
+        return []
+    tokens = []
     for token in signature.split(","):
-        name = token.strip()
-        if name in ("*", "/"):
+        token = token.strip()
+        if token in ("*", "/"):
+            tokens.append((token, None))
             continue
+        name = token
         for prefix in ("**", "*"):
             if name.startswith(prefix):
                 name = name[len(prefix) :]
@@ -65,6 +77,51 @@ def _assert_safe_signature(signature):
         # form would become a different name (a reserved global, say) in the eval.
         if unicodedata.normalize("NFKC", name) != name:
             _refuse("non-NFKC-normalised")
+        tokens.append((token, name))
+
+    params, seen = [], set()
+    slash_at, star_seen, bare_star_open, var_keyword_seen = None, False, False, False
+    for token, name in tokens:
+        if var_keyword_seen:
+            _refuse("malformed (parameter after **name)")
+        if token == "/":
+            if slash_at is not None or star_seen or not params:
+                _refuse("malformed (misplaced /)")
+            slash_at = len(params)
+            continue
+        if token == "*":
+            if star_seen:
+                _refuse("malformed (second *)")
+            star_seen, bare_star_open = True, True
+            continue
+        if token.startswith("**"):
+            if bare_star_open:
+                _refuse("malformed (bare * without a keyword-only name)")
+            kind, var_keyword_seen = inspect.Parameter.VAR_KEYWORD, True
+        elif token.startswith("*"):
+            if star_seen:
+                _refuse("malformed (second *)")
+            kind, star_seen = inspect.Parameter.VAR_POSITIONAL, True
+        elif star_seen:
+            kind, bare_star_open = inspect.Parameter.KEYWORD_ONLY, False
+        else:
+            kind = inspect.Parameter.POSITIONAL_OR_KEYWORD
+        if name in seen:
+            _refuse("malformed (duplicate name)")
+        seen.add(name)
+        params.append((name, kind))
+    if bare_star_open:
+        _refuse("malformed (bare * without a keyword-only name)")
+    if slash_at is not None:
+        params[:slash_at] = [
+            (name, inspect.Parameter.POSITIONAL_ONLY) for name, _ in params[:slash_at]
+        ]
+    return params
+
+
+def _assert_safe_signature(signature):
+    """Refuse a signature string :func:`_fenced_parameters` cannot fence."""
+    _fenced_parameters(signature)
 
 
 def __legacysignature(signature):
@@ -102,49 +159,51 @@ def __legacysignature(signature):
     return ", ".join(parts)
 
 
-def _signature_names(signature):
-    """The parameter names of a signature string that already passed
-    :func:`_assert_safe_signature`, in order, without ``*``/``**`` prefixes and
-    without the bare ``*`` and ``/`` markers."""
-    names = []
-    for token in signature.split(","):
-        name = token.strip()
-        if name not in ("", "*", "/"):
-            names.append(name.lstrip("*"))
-    return names
-
-
-def _refuse_reserved(signature, reserved):
+def _refuse_reserved(signature):
     """Refuse a parameter of ANY kind named like a wrapper global: inside the
     generated lambda it would shadow that global, so a caller could hand in the
     callable the wrapper then invokes. A real check, not an assert (``-O``)."""
-    clash = sorted(set(_signature_names(signature)) & set(reserved))
+    names = {name for name, _ in _fenced_parameters(signature)}
+    clash = sorted(names & _RESERVED_NAMES)
     if clash:
         raise ValueError(f"{', '.join(clash)} is a reserved argument name")
 
 
-def _call_arguments(fullsignature, signature):
+def _call_arguments_from_signature(signature):
     """The argument list to forward to the wrapped callable, built ONLY from
-    names of the already fenced ``signature`` string, never from text a
-    Signature object produces: a positional or positional-only parameter is
-    forwarded by name, a keyword-only one as ``name=name``, ``*args`` and
-    ``**kwargs`` are splatted, and the bare ``*`` and ``/`` markers are dropped.
+    the fenced ``signature`` string: a positional or positional-only parameter
+    is forwarded by name, a keyword-only one as ``name=name``, ``*args`` and
+    ``**kwargs`` are splatted, and the bare ``*`` and ``/`` markers are dropped."""
+    parts = []
+    for name, kind in _fenced_parameters(signature):
+        if kind is inspect.Parameter.VAR_POSITIONAL:
+            parts.append("*" + name)
+        elif kind is inspect.Parameter.VAR_KEYWORD:
+            parts.append("**" + name)
+        elif kind is inspect.Parameter.KEYWORD_ONLY:
+            parts.append(name + "=" + name)
+        else:
+            parts.append(name)
+    return ", ".join(parts)
 
-    ``fullsignature`` only says which KIND each parameter is. Its parameters
+
+def _call_arguments(fullsignature, signature):
+    """:func:`_call_arguments_from_signature` for a model that also carries a
+    Signature object, which is cross-checked and never trusted: its parameters
     must be genuine :class:`inspect.Parameter` objects with plain ``str`` names
-    that match the fenced names one for one, in order: a forged ``__signature__``
-    whose names are ``str`` subclasses (lying ``isidentifier`` or ``__format__``)
-    or disagree with the fenced string is refused, so no text of its own ever
-    reaches the eval.
+    that match the fenced names one for one, in order, each of the kind the
+    fenced string says. A forged ``__signature__`` whose names are ``str``
+    subclasses (lying ``isidentifier`` or ``__format__``), or whose names or
+    kinds disagree with the fenced string, is refused, so no text of its own
+    ever reaches the eval and the eval only sees a call the parser accepts.
     """
-    fenced = _signature_names(signature)
+    fenced = _fenced_parameters(signature)
     params = list(fullsignature.parameters.values())
     if len(params) != len(fenced):
         raise ValueError(
             "refusing a signature object that does not match the fenced signature"
         )
-    parts = []
-    for p, name in zip(params, fenced):
+    for p, (name, kind) in zip(params, fenced):
         if type(p) is not inspect.Parameter or type(p.name) is not str:
             raise ValueError(
                 "refusing a non-standard or non-identifier parameter name: "
@@ -154,36 +213,12 @@ def _call_arguments(fullsignature, signature):
             raise ValueError(
                 f"refusing parameter {p.name!r}: the fenced signature names {name!r}"
             )
-        if p.kind is inspect.Parameter.VAR_POSITIONAL:
-            parts.append("*" + name)
-        elif p.kind is inspect.Parameter.VAR_KEYWORD:
-            parts.append("**" + name)
-        elif p.kind is inspect.Parameter.KEYWORD_ONLY:
-            parts.append(name + "=" + name)
-        else:
-            parts.append(name)
-    return ", ".join(parts)
-
-
-def _call_arguments_from_signature(signature):
-    """The call arguments for a legacy model dict that carries no Signature,
-    built from the fenced string alone: names after a bare ``*`` or ``*args``
-    are keyword-only and forwarded as ``name=name``."""
-    parts, keyword_only = [], False
-    for token in signature.split(","):
-        token = token.strip()
-        if token in ("", "/"):
-            continue
-        if token == "*":
-            keyword_only = True
-        elif token.startswith("**"):
-            parts.append(token)
-        elif token.startswith("*"):
-            parts.append(token)
-            keyword_only = True
-        else:
-            parts.append(token + "=" + token if keyword_only else token)
-    return ", ".join(parts)
+        if p.kind is not kind:
+            raise ValueError(
+                f"refusing parameter {name!r}: its kind {p.kind!s} disagrees "
+                f"with the fenced signature ({kind!s})"
+            )
+    return _call_arguments_from_signature(signature)
 
 
 def getinfo(func):
@@ -281,9 +316,9 @@ def new_wrapper(wrapper, model):
         infodict = getinfo(model)
     signature = infodict["signature"]
     _assert_safe_signature(signature)
-    _refuse_reserved(signature, ("_wrapper_",))
+    _refuse_reserved(signature)
     # Def params and call args both come from the fenced signature string; a
-    # Signature object, when present, only says which kind each parameter is.
+    # Signature object, when present, is only cross-checked against it.
     if infodict.get("fullsignature") is not None:
         callargs = _call_arguments(infodict["fullsignature"], signature)
     else:
@@ -355,7 +390,7 @@ def decorator(caller):
         infodict = getinfo(func)
         signature = infodict["signature"]
         _assert_safe_signature(signature)
-        _refuse_reserved(signature, ("_call_", "_func_"))
+        _refuse_reserved(signature)
         # Def params and call args both come from the fenced signature string.
         callargs = _call_arguments(infodict["fullsignature"], signature)
         src = f"lambda {signature}: _call_(_func_, {callargs})"

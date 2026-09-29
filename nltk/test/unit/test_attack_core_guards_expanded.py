@@ -233,12 +233,14 @@ class TestSignatureFence:
         with pytest.raises(ValueError, match="non-identifier signature"):
             decorators.new_wrapper(lambda *a, **k: None, infodict)
         assert not marker.exists()
-        real = decorators._assert_safe_signature
-        decorators._assert_safe_signature = lambda signature: None
+        # _fenced_parameters is the one fence every layer (the assert, the
+        # reserved-name check, the call-argument builder) parses through
+        real = decorators._fenced_parameters
+        decorators._fenced_parameters = lambda signature: []
         try:
             decorators.new_wrapper(lambda *a, **k: None, infodict)
         finally:
-            decorators._assert_safe_signature = real
+            decorators._fenced_parameters = real
         assert marker.exists(), "without the fence the crafted default ran"
 
 
