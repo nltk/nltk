@@ -1058,6 +1058,12 @@ class ZipFilePathPointer(PathPointer):
         if entry:
             # Normalize the entry string, it should be relative:
             entry = normalize_resource_name(entry, True, "/").lstrip("/")
+            # A member named with '..' is never part of an NLTK package; find()
+            # already refuses such a name, so a direct pointer refuses it too.
+            if any(part == os.pardir for part in entry.split("/")):
+                raise ValueError(
+                    f"Zip entry names cannot contain {os.pardir!r}: {entry!r}"
+                )
 
             try:
                 zipfile.getinfo(entry)

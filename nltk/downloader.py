@@ -1583,7 +1583,9 @@ class Downloader:
 
         # A link, junction or special entry planted in the tree is never
         # part of an install, so it is stale outright (on Windows a link's
-        # lstat size is 0, so the size sum alone would not see it).
+        # lstat size is 0, so the size sum alone would not see it). A regular
+        # file with a second name (a hardlink to another file) is stale too:
+        # its size can match the package while its bytes are someone else's.
         unzipped_size = 0
         for d, dirs, files in os.walk(unzipdir):
             for name in dirs + files:
@@ -1595,6 +1597,7 @@ class Downloader:
                     stat.S_ISLNK(st.st_mode)
                     or getattr(st, "st_reparse_tag", 0)
                     or not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode))
+                    or (stat.S_ISREG(st.st_mode) and st.st_nlink > 1)
                 ):
                     return self.STALE
                 if stat.S_ISREG(st.st_mode):

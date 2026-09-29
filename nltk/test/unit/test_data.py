@@ -163,3 +163,123 @@ def test_find_refuses_a_data_root_another_account_can_write_to(tmp_path, monkeyp
         assert str(found.path).startswith(str(root))
     finally:
         os.chmod(root, 0o755)
+
+
+# ===========================================================================
+# Rogue files in a data root: what nltk's loaders do with them
+# ===========================================================================
+NUL = chr(0)
+MiB = 1024 * 1024
+BILLION_LAUGHS = (
+    '<?xml version="1.0"?><!DOCTYPE lolz [<!ENTITY lol "lol">'
+    + "".join(
+        '<!ENTITY lol%d "%s">'
+        % (i, "&lol%d;" % (i - 1) * 10 if i > 1 else "&lol;" * 10)
+        for i in range(1, 7)
+    )
+    + "]><lolz>&lol6;</lolz>"
+)
+
+
+class _Callable:
+    """A pickle whose reduce names a callable global: the shape of every
+    code-executing pickle payload."""
+
+    def __reduce__(self):
+        return (dict, ([("PWNED", 1)],))
+
+
+@pytest.fixture
+def rogue_root(tmp_path, monkeypatch):
+    import pickle
+
+    root = tmp_path / "nltk_data"
+    (root / "corpora").mkdir(parents=True)
+    members = [
+        ("rogue/", b""),
+        ("rogue/evil.pickle", pickle.dumps(_Callable(), protocol=4)),
+        ("rogue/evil.json", b'{"!rogue.Trojan": {"cmd": "x"}}'),
+        ("rogue/deep.json", ("[" * 200000 + "]" * 200000).encode()),
+        ("rogue/evil.xml", BILLION_LAUGHS.encode()),
+        ("rogue/evil.yaml", b"!!python/object/apply:os.getcwd []\n"),
+        ("../escape.txt", b"escaped"),
+        ("rogue/words.txt", b"alpha\nbeta\n"),
+    ]
+    with zipfile.ZipFile(root / "corpora" / "rogue.zip", "w") as zf:
+        for name, data in members:
+            zf.writestr(name, data)
+    with zipfile.ZipFile(
+        root / "corpora" / "bomb.zip", "w", zipfile.ZIP_DEFLATED
+    ) as zf:
+        zf.writestr("bomb/", b"")
+        zf.writestr("bomb/bomb.txt", b"\0" * (64 * MiB))
+        zf.writestr("bomb/words.txt", b"alpha\n")
+    (root / "corpora" / "loose.pickle").write_bytes(
+        pickle.dumps(_Callable(), protocol=4)
+    )
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
+    return root
+
+
+class TestRogueFilesInADataRoot:
+    def test_a_callable_pickle_is_refused_inside_and_outside_an_archive(
+        self, rogue_root
+    ):
+        import pickle
+
+        for name in ("corpora/rogue/evil.pickle", "corpora/loose.pickle"):
+            with pytest.raises(pickle.UnpicklingError, match="forbidden"):
+                nltk.data.load(name)
+        # raw bytes are handed over as bytes only, never unpickled
+        raw = nltk.data.load("corpora/rogue/evil.pickle", format="raw")
+        assert isinstance(raw, bytes) and b"PWNED" in raw
+
+    def test_tagged_and_deep_json_are_refused(self, rogue_root):
+        with pytest.raises(ValueError, match="json tag"):
+            nltk.data.load("corpora/rogue/evil.json")
+        with pytest.raises(ValueError, match="nesting"):
+            nltk.data.load("corpora/rogue/deep.json")
+
+    def test_a_yaml_python_tag_is_refused(self, rogue_root):
+        yaml = pytest.importorskip("yaml")
+        with pytest.raises(yaml.constructor.ConstructorError):
+            nltk.data.load("corpora/rogue/evil.yaml")
+
+    def test_an_xml_entity_bomb_is_refused_through_the_corpus_reader(self, rogue_root):
+        from nltk.corpus.reader import XMLCorpusReader
+
+        reader = XMLCorpusReader(
+            nltk.data.find("corpora/rogue.zip/rogue/"), r"evil\.xml"
+        )
+        with pytest.raises(Exception) as exc:
+            reader.xml()
+        assert type(exc.value).__name__ == "EntitiesForbidden"
+
+    def test_a_zip_bomb_member_makes_the_whole_archive_unusable(self, rogue_root):
+        from nltk.corpus.reader import WordListCorpusReader
+
+        with pytest.raises(ValueError, match="zip bomb"):
+            nltk.data.find("corpora/bomb/bomb.txt").open().read()
+        with pytest.raises(ValueError, match="zip bomb"):
+            WordListCorpusReader(
+                nltk.data.find("corpora/bomb.zip/bomb/"), ["words.txt"]
+            ).words()
+        # the archive without the bomb serves its plain member
+        reader = WordListCorpusReader(
+            nltk.data.find("corpora/rogue.zip/rogue/"), ["words.txt"]
+        )
+        assert reader.words() == ["alpha", "beta"]
+
+    def test_escaping_member_names_are_refused(self, rogue_root):
+        archive = str(rogue_root / "corpora" / "rogue.zip")
+        with pytest.raises(ValueError, match=r"\.\."):
+            nltk.data.ZipFilePathPointer(archive, "../escape.txt")
+        with pytest.raises(OSError):
+            nltk.data.ZipFilePathPointer(archive, "/abs.txt")
+        with pytest.raises((ValueError, LookupError)):
+            nltk.data.find("corpora/rogue.zip/../escape.txt")
+        assert (
+            nltk.data.ZipFilePathPointer(archive, "rogue/words.txt").open().read()
+            == b"alpha\nbeta\n"
+        )
