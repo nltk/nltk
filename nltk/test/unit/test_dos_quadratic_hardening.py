@@ -282,31 +282,38 @@ class TestReadlineLinear:
 
 
 class TestXMLCorpusViewDepth:
-    def _view(self, xml, tagspec):
+    def _view(self, xml, tagspec, count_only=False):
+        # The corpus file must live inside a registered data root: on Linux
+        # mkdtemp() lands in /tmp, which pathsec does not trust (on macOS the
+        # private temp dir is a root, which hides the difference).
+        import shutil
+
         from nltk.corpus.reader.xmldocs import XMLCorpusView
         from nltk.data import FileSystemPathPointer
+        from nltk.test.unit.security_probes._base import register_data_root
 
         d = tempfile.mkdtemp()
-        path = os.path.join(d, "corpus.xml")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(xml)
-        return list(XMLCorpusView(FileSystemPathPointer(path), tagspec))
+        undo = register_data_root(d)
+        try:
+            path = os.path.join(d, "corpus.xml")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(xml)
+            view = XMLCorpusView(FileSystemPathPointer(path), tagspec)
+            if count_only:
+                # timing path: iterate rather than list(), whose len() walks
+                # the file a second time
+                return sum(1 for _ in view)
+            return list(view)
+        finally:
+            undo()
+            shutil.rmtree(d, ignore_errors=True)
 
     def _nested(self, depth):
         # non-matching tagspec forces the full descent
         return self._view("<a>" * depth + "x" + "</a>" * depth, "zzz")
 
     def _descend(self, depth):
-        # timing helper: iterate rather than list(), whose len() walks the file
-        # a second time
-        from nltk.corpus.reader.xmldocs import XMLCorpusView
-        from nltk.data import FileSystemPathPointer
-
-        d = tempfile.mkdtemp()
-        path = os.path.join(d, "corpus.xml")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write("<a>" * depth + "x" + "</a>" * depth)
-        return sum(1 for _ in XMLCorpusView(FileSystemPathPointer(path), "zzz"))
+        return self._view("<a>" * depth + "x" + "</a>" * depth, "zzz", count_only=True)
 
     def test_deeply_nested_xml_is_refused(self):
         from nltk.corpus.reader.xmldocs import MAX_XML_DEPTH
