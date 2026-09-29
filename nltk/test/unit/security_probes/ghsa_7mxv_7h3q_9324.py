@@ -34,6 +34,8 @@ def _java_untrusted_binary_and_loader_env():
         "DYLD_INSERT_LIBRARIES",
         "JAVA_TOOL_OPTIONS",
         "GCONV_PATH",
+        "JAVA_LIBRARY_PATH",
+        "_JAVA_LAUNCHER_DEBUG",
     )
     box = tempfile.mkdtemp()
     saved_bin = internals._java_bin
