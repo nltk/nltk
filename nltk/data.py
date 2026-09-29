@@ -1436,7 +1436,9 @@ def find(resource_name, paths=None):
             "\n  (mode 0600), so an install made by another account (for example"
             "\n  as root while building a container image) must be extracted: the"
             "\n  extracted files are readable by every account and are found"
-            "\n  before the archive. Re-run the download with extraction, e.g.:"
+            "\n  before the archive (an install made as root or outside the"
+            "\n  installing account's home extracts automatically). Re-run the"
+            "\n  download with extraction, e.g.:"
             + "".join(
                 "\n    python -m nltk.downloader --extract -d %r %s"
                 % (root, resource_zipname)

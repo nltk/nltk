@@ -161,13 +161,13 @@ jobs:
 
       - name: Data installed by root must serve the runner through extraction (Linux, #3928)
         # Root installs the packages (docker build, sudo python -m nltk.downloader)
-        # and the unprivileged runner reads them: the archive stays private to
-        # root (0600), the extracted files are what the runner is served.
+        # with the reporter's unchanged command: a root install extracts on its
+        # own, the archive stays private to root (0600), the runner reads files.
         if: runner.os == 'Linux'
         shell: bash
         run: |
           set -euo pipefail
-          sudo "$(which python)" -m nltk.downloader --extract -d /usr/local/share/nltk_data wordnet stopwords
+          sudo "$(which python)" -m nltk.downloader -d /usr/local/share/nltk_data wordnet stopwords
           ls -la /usr/local/share/nltk_data/corpora
           test ! -r /usr/local/share/nltk_data/corpora/wordnet.zip
           test -r /usr/local/share/nltk_data/corpora/wordnet/data.noun

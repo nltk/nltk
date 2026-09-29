@@ -2091,14 +2091,14 @@ class TestExtractOption:
             os.chmod(archive, 0o600)
 
     @POSIX_NON_ROOT
-    def test_without_extract_the_index_decides_and_the_other_account_is_told(
+    def test_no_extract_keeps_the_index_choice_and_the_other_account_is_told(
         self, box, monkeypatch
     ):
         root, outside, dl, server = box
         index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
         monkeypatch.setattr(nltk.data, "path", [str(dl)])
         with _umask(0o022):
-            result, text = run_download(index, dl, "tiny", quiet=True)
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
         assert result is True, text
         archive = dl / "corpora" / "tiny.zip"
         assert _mode(archive) == 0o600 and not (dl / "corpora" / "tiny").exists()
@@ -2131,6 +2131,37 @@ class TestExtractOption:
         assert not (dl / "corpora" / "other").exists()
         assert not (dl / "corpora" / "tiny" / "escape.txt").exists()
 
+    @POSIX_NON_ROOT
+    def test_extraction_is_automatic_for_a_shared_install(self, box, monkeypatch):
+        """Made as root, or into a directory outside the installing account's
+        home, a download is evidently for other accounts too and is extracted
+        without being asked; inside the home the index's choice stands."""
+        root, outside, dl, server = box
+        shared = downloader._shared_install
+        monkeypatch.setenv("HOME", str(root))
+        assert shared(str(dl)) is False  # under this account's home
+        assert shared(str(root)) is False
+        monkeypatch.setenv("HOME", str(outside))
+        assert shared(str(dl)) is True  # a system or image location
+        real_geteuid = os.geteuid
+        monkeypatch.setattr(os, "geteuid", lambda: 0)
+        monkeypatch.setenv("HOME", str(root))
+        assert shared(str(dl)) is True  # root installs for everyone
+        monkeypatch.setattr(os, "geteuid", real_geteuid)
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        monkeypatch.setenv("HOME", str(root))
+        result, text = run_download(index, dl, "tiny", quiet=True)
+        assert result is True, text
+        assert not (dl / "corpora" / "tiny").exists()  # the index's choice
+        result, text = run_download(index, dl, "tiny", quiet=True, force=True)
+        monkeypatch.setenv("HOME", str(outside))
+        result, text = run_download(index, dl, "tiny", quiet=True, force=True)
+        assert result is True, text
+        assert (dl / "corpora" / "tiny" / "words.txt").is_file()  # extracted
+        assert _mode(dl / "corpora" / "tiny.zip") == 0o600
+
     def test_the_cli_exposes_extract(self):
         completed = subprocess.run(
             [sys.executable, "-m", "nltk.downloader", "--help"],
@@ -2143,4 +2174,6 @@ class TestExtractOption:
             },
         )
         assert completed.returncode == 0, completed.stderr
-        assert "-x, --extract" in completed.stdout
+        assert (
+            "-x, --extract" in completed.stdout and "--no-extract" in completed.stdout
+        )

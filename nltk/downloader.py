@@ -668,6 +668,22 @@ class SelectDownloadDirMessage(DownloaderMessage):
 ######################################################################
 
 
+def _shared_install(download_dir):
+    """True when a download is evidently for other accounts too: made as root,
+    or into a directory outside the installing account's home (a system or
+    image location). A downloaded archive is private to its installer (0600),
+    so such an install is extracted for the accounts that will read it. POSIX
+    only: elsewhere builtins.open leaves the archive readable per the profile.
+    """
+    if os.name != "posix":
+        return False
+    if os.geteuid() == 0:
+        return True
+    home = os.path.realpath(os.path.expanduser("~"))
+    target = os.path.realpath(download_dir)
+    return not (target == home or target.startswith(home + os.sep))
+
+
 class Downloader:
     """
     A class used to access the NLTK data server, which can be used to
@@ -849,7 +865,7 @@ class Downloader:
     # it wants.
 
     def incr_download(
-        self, info_or_id, download_dir=None, force=False, _expanding=(), extract=False
+        self, info_or_id, download_dir=None, force=False, _expanding=(), extract=None
     ):
         # If they didn't specify a download_dir, then use the default one.
         if download_dir is None:
@@ -897,7 +913,7 @@ class Downloader:
         else:
             return len(item.packages)
 
-    def _download_list(self, items, download_dir, force, _expanding=(), extract=False):
+    def _download_list(self, items, download_dir, force, _expanding=(), extract=None):
         # Look up the requested items.
         for i in range(len(items)):
             try:
@@ -925,7 +941,9 @@ class Downloader:
 
             progress += 100 * delta
 
-    def _download_package(self, info, download_dir, force, extract=False):
+    def _download_package(self, info, download_dir, force, extract=None):
+        if extract is None:
+            extract = _shared_install(download_dir)
         yield StartPackageMessage(info)
         yield ProgressMessage(0)
 
@@ -1299,9 +1317,9 @@ class Downloader:
             # Unzip while still holding the same install lock.
             if info.filename.endswith(".zip"):
                 zipdir = os.path.join(download_dir, info.subdir)
-                # extract=True unpacks a package the index leaves zipped: the
-                # archive stays private to the installing account (0600), the
-                # extracted files are readable by others and found before it.
+                # extract unpacks a package the index leaves zipped: the archive
+                # stays private to the installing account (0600), the extracted
+                # files are readable by other accounts and are found before it.
                 if (
                     info.unzip
                     or extract
@@ -1353,11 +1371,11 @@ class Downloader:
         raise_on_error=False,
         print_error_to=sys.stderr,
         hf=False,
-        extract=False,
+        extract=None,
     ):
         # extract=True also unpacks packages the index leaves zipped (wordnet,
-        # omw-1.4 ...), so an install made by one account (root building an
-        # image) is readable by the account that runs NLTK; see find().
+        # omw-1.4 ...) so other accounts can read them; None does so for a
+        # shared install (made as root or outside this account's home).
         # Delegate to HuggingFace downloader when hf=True.
         if hf and info_or_id is not None:
             from nltk.huggingface.dataset import download as hf_download
@@ -3551,13 +3569,22 @@ if __name__ == "__main__":
         "-x",
         "--extract",
         dest="extract",
-        action="store_true",
-        default=False,
+        action="store_const",
+        const=True,
+        default=None,
         help=(
             "also extract packages the index leaves zipped (wordnet, omw-1.4 ...): "
             "the archive stays private to the installing account, the extracted "
-            "files are readable by every account and are found before the archive"
+            "files are readable by every account and are found before the archive. "
+            "Automatic for an install made as root or outside your home directory"
         ),
+    )
+    parser.add_option(
+        "--no-extract",
+        dest="extract",
+        action="store_const",
+        const=False,
+        help="never extract a package the index leaves zipped, even as root",
     )
 
     options, args = parser.parse_args()

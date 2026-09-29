@@ -1,6 +1,6 @@
 Version 3.10.4 (unreleased)
 
-* Downloaded package archives stay private to the installing account (0600). An install another account must read is extracted: `nltk.download(..., extract=True)` and `python -m nltk.downloader --extract` also unpack the packages the index leaves zipped (wordnet, omw-1.4 ...), the extracted files are readable by every account and are found before the archive, and `nltk.download()` called by that account reports the package installed. `find()` now names an archive it cannot read and says how to extract it instead of reporting it "not found" (#3928)
+* Downloaded package archives stay private to the installing account (0600). An install another account must read is extracted: a download made as root or outside the installing account's home extracts on its own, and `nltk.download(..., extract=True)` / `python -m nltk.downloader --extract` (or `--no-extract`) decide explicitly. This also unpacks the packages the index leaves zipped (wordnet, omw-1.4 ...); the extracted files are readable by every account and are found before the archive, and `nltk.download()` called by that account reports the package installed. `find()` now names an archive it cannot read and says how to extract it instead of reporting it "not found" (#3928)
 * `nltk.data.find()` refuses a data root, or a directory on the way to a resource, that another account can write to: a file planted there would be loaded as trusted data. It warns, names the directory and the remedy, and keeps searching later roots
 
 Version 3.10.3 2026-08-12
