@@ -110,7 +110,7 @@ def test_hunpos_init_refuses_outside_model(sandbox):
     hunpos-tag subprocess is spawned.
 
     ``find_file`` returns the outside model only if it exists on disk, so the
-    model file is created under ``~``; a dummy binary satisfies ``find_binary``
+    model file is created under ``~``; a dummy binary satisfies ``find_binary_absolute``
     without being executed (validation raises before ``Popen``).
     """
     from nltk.tag.hunpos import HunposTagger
@@ -535,13 +535,13 @@ def _hunpos_stub_bin():
 
 
 def _drive_hunpos_init(path):
-    """Drive HunposTagger.__init__ with find_file/find_binary stubbed out.
+    """Drive HunposTagger.__init__ with find_file/find_binary_absolute stubbed out.
 
     The real ``find_file`` refuses anything that does not already exist, which
     would mask the guard for most vectors; stubbing it means the guard is the
     only thing standing between the caller's string and the subprocess argv. The
     sink (``pathsec.subprocess.Popen``, which ``spawn_trusted`` calls) is replaced
-    so nothing is ever spawned, and ``find_binary`` returns a trusted stub so the
+    so nothing is ever spawned, and ``find_binary_absolute`` returns a trusted stub so the
     exec-trust check passes and the model path reaches the argv.
     """
     import nltk.pathsec as pathsec_module
@@ -552,16 +552,16 @@ def _drive_hunpos_init(path):
 
     stub = _hunpos_stub_bin()
     saved_ff = hunpos_module.find_file
-    saved_fb = hunpos_module.find_binary
+    saved_fb = hunpos_module.find_binary_absolute
     saved_popen = pathsec_module.subprocess.Popen
     hunpos_module.find_file = lambda p, **kw: p
-    hunpos_module.find_binary = lambda *a, **kw: stub
+    hunpos_module.find_binary_absolute = lambda *a, **kw: stub
     pathsec_module.subprocess.Popen = _boom
     try:
         hunpos_module.HunposTagger(path)
     finally:
         hunpos_module.find_file = saved_ff
-        hunpos_module.find_binary = saved_fb
+        hunpos_module.find_binary_absolute = saved_fb
         pathsec_module.subprocess.Popen = saved_popen
 
 

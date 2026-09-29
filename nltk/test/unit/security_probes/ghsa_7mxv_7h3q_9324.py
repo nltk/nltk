@@ -59,6 +59,15 @@ def _java_untrusted_binary_and_loader_env():
             internals.java(["ProbeMain"], stdout="devnull", stderr="devnull")
         except pathsec.TrustError:
             pass
+        except LookupError as exc:
+            # java() spawns through pathsec.spawn_trusted and reports its
+            # TrustError as a LookupError; anything else is not the trust guard
+            if not isinstance(exc.__cause__, pathsec.TrustError):
+                return (
+                    STATIC,
+                    "planted java failed before the trust guard (LookupError: %s)"
+                    % exc,
+                )
         except Exception as exc:
             return (
                 STATIC,

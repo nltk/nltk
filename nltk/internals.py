@@ -21,8 +21,8 @@ from xml.etree import ElementTree
 
 from nltk import redos
 from nltk.pathsec import (
-    TrustError,
-    resolve_trusted_executable,
+    _as_path_text,
+    _reject_bad_name_syntax,
     safe_env,
     validate_path,
 )
@@ -98,6 +98,11 @@ _JVM_INJECTING_ENV_VARS = frozenset(
     }
 )
 
+# Variables that redirect the dynamic loader of the child JVM (LD_PRELOAD,
+# LD_LIBRARY_PATH, LD_AUDIT on ELF; DYLD_INSERT_LIBRARIES et al. on macOS): an
+# uncontrolled library search path, CWE-427; stripped by name prefix.
+_LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
+
 
 # Loader / interpreter env vars that redirect the child's dynamic linker or
 # locale machinery (LD_PRELOAD, DYLD_INSERT_LIBRARIES, GCONV_PATH, ...). Prefix
@@ -117,10 +122,11 @@ def _java_child_env():
 
     Drops the JVM-injecting vars (JAVA_TOOL_OPTIONS et al., CWE-88) AND the loader
     family (LD_*, DYLD_*, GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect
-    the dynamic linker or locale loader, then locks PATH to pathsec's non-writable
-    value so the child cannot resolve a planted helper by bare name (the JVM
-    itself is launched by absolute path). Benign identity vars (HOME, JAVA_HOME,
-    ...) are kept so the tools keep working. Every NLTK JVM launch routes through
+    the dynamic linker or locale loader so it cannot be made to load a planted
+    library (CWE-427), then locks PATH to pathsec's non-writable value so the
+    child cannot resolve a planted helper by bare name (the JVM itself is
+    launched by absolute path). Benign identity vars (HOME, JAVA_HOME, ...) are
+    kept so the tools keep working. Every NLTK JVM launch routes through
     java(), so this is the single place the child environment is scrubbed."""
     env = {
         k: v
@@ -233,7 +239,10 @@ def config_java(bin=None, options=None, verbose=False):
     :type options: list(str)
     """
     global _java_bin, _java_options
-    _java_bin = find_binary(
+    # Absolute only: a relative ``bin`` would resolve against the CWD and java()
+    # executes the result (untrusted search path, CWE-426/427), the same guard
+    # as the prover9/megam/tadm entry points.
+    _java_bin = find_binary_absolute(
         "java",
         bin,
         env_vars=["JAVAHOME", "JAVA_HOME"],
@@ -447,31 +456,13 @@ def java(
                 "launcher would expand it, injecting arguments (CWE-88)"
             )
 
-    # Route the configured java binary through the trusted-exec chokepoint before
-    # launch (GHSA-7mxv): an ABSOLUTE bin (what config_java stores) must sit where
-    # no local user can swap it, else refuse it (CWE-426/427/732).
-    # A bare name is never a find_binary result, so it is left to the launcher as
-    # before and existing callers keep working.
-    if isinstance(_java_bin, str):
-        java_bin_token = _java_bin
-    elif _java_bin:
-        java_bin_token = _java_bin[0]
-    else:
-        java_bin_token = "java"
-    if isinstance(java_bin_token, str) and os.path.isabs(java_bin_token):
-        if resolve_trusted_executable(java_bin_token) is None:
-            raise TrustError(
-                f"refusing to run untrusted java binary {java_bin_token!r}: it is "
-                "not on a path only you or root can write, so a local attacker "
-                "could swap it before it runs (CWE-426/427/732). Install the JDK "
-                "in a system location or set JAVA_HOME to a trusted one."
-            )
-
-    final_cmd = []
-    if isinstance(_java_bin, str):
-        final_cmd.append(_java_bin)
-    else:
-        final_cmd.extend(_java_bin if _java_bin else ["java"])
+    # Resolve the JVM absolute-only before spawning: a bare "java" handed to
+    # Popen is found by the OS search, which on Windows begins in the CWD
+    # (CWE-427), so java() never launches an unresolved name. The trust check
+    # on the resolved binary (GHSA-7mxv, CWE-426/427/732) is spawn_trusted's.
+    if _java_bin is None:
+        config_java()
+    final_cmd = [_java_bin] if isinstance(_java_bin, str) else list(_java_bin)
 
     final_cmd.extend(opt_list)
     if classpath_arg is not None:
@@ -479,15 +470,27 @@ def java(
     final_cmd.extend(cmd_list)
 
     child_env = _java_child_env()
+    # The JVM binary itself goes through the trusted-exec chokepoint like every
+    # other tool binary: no other local user may be able to swap it (CWE-427/732)
+    from nltk.pathsec import TrustError, spawn_trusted
+
     try:
-        p = subprocess.Popen(
-            final_cmd,
+        p = spawn_trusted(
+            final_cmd[0],
+            final_cmd[1:],
             stdin=stdin,
             stdout=stdout,
             stderr=stderr,
             universal_newlines=True,
             env=child_env,
         )
+    except TrustError as e:
+        raise LookupError(
+            f"Refusing to run the Java binary {final_cmd[0]!r}: it is not on a "
+            f"trusted path. Install Java where only you (or root) can write, or "
+            f"point config_java() at such an install ({e})."
+        ) from e
+    try:
         if blocking:
             stdout_data, stderr_data = p.communicate()
             if p.returncode != 0:
@@ -851,6 +854,38 @@ class Counter:
 ##########################################################################
 
 
+def _path_dirs_iter(file_names):
+    """Yield every executable regular file named by *file_names* found in the
+    PATH directories, in PATH order, with the PATHEXT suffixes the Windows
+    search would try for a name without an extension.
+
+    This is the PATH lookup ``find_file_iter`` makes on every platform, in
+    place of a ``which`` subprocess. Unlike the Windows search and
+    ``shutil.which`` it never consults the current directory unless PATH names
+    it, and it does not stop at the first hit: a planted binary in the CWD must
+    neither be chosen nor hide the real installs behind it (CWE-427). A
+    relative PATH entry (``.``) still yields a relative path, which
+    ``find_binary_iter`` refuses. A name with a directory part is not a PATH
+    lookup (the OS search and ``which`` take it as given), so it is never
+    joined onto a PATH entry: that join would rebase a ``../<cwd>/<name>``
+    form through a trusted directory.
+    """
+    suffixes = [ext for ext in os.environ.get("PATHEXT", "").split(os.pathsep) if ext]
+    bare_names = [name for name in file_names if not os.path.dirname(name)]
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        directory = directory.strip('"')
+        if not directory:
+            continue
+        for alternative in bare_names:
+            names = [alternative]
+            if not os.path.splitext(alternative)[1]:
+                names += [alternative + ext for ext in suffixes]
+            for name in names:
+                path = os.path.join(directory, name)
+                if os.path.isfile(path) and os.access(path, os.X_OK):
+                    yield path
+
+
 def find_file_iter(
     filename,
     env_vars=(),
@@ -946,27 +981,14 @@ def find_file_iter(
                 yielded = True
                 yield path_to_file
 
-    # If we're on a POSIX system, then try using the 'which' command
-    # to find the file.
-    if os.name == "posix":
-        for alternative in file_names:
-            try:
-                p = subprocess.Popen(
-                    ["which", alternative],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-                stdout, stderr = p.communicate()
-                path = _decode_stdoutdata(stdout).strip()
-                if path.endswith(alternative) and os.path.exists(path):
-                    if verbose:
-                        safe_print(f"[Found {filename}: {path}]")
-                    yielded = True
-                    yield path
-            except (KeyboardInterrupt, SystemExit, OSError):
-                raise
-            finally:
-                pass
+    # Walk PATH ourselves on every platform: no ``which`` subprocess, and no
+    # implicit CWD entry as the Windows search has; a CWD hit is refused by the
+    # callers and must not hide the real installs behind it (CWE-427).
+    for path in _path_dirs_iter(file_names):
+        if verbose:
+            safe_print(f"[Found {filename}: {path}]")
+        yielded = True
+        yield path
 
     if not yielded:
         msg = (
@@ -1119,6 +1141,106 @@ def find_binary(
             name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
         )
     )
+
+
+def find_binary_absolute(
+    name,
+    path_to_bin=None,
+    env_vars=(),
+    searchpath=(),
+    binary_names=None,
+    url=None,
+    verbose=False,
+):
+    """Like :func:`find_binary`, but return only an *absolute* match with no
+    parent-directory component.
+
+    A relative match resolves against the current working directory, so a
+    wrapper that runs the result through ``subprocess.Popen`` would execute a
+    binary planted in an attacker-writable directory (an untrusted search path,
+    CWE-426 / CWE-427). ``find_binary_iter`` already refuses a bare name that
+    resolves only in the CWD, but an explicit *relative* ``path_to_bin`` (e.g.
+    ``"tools/prover9"``) is honored there as the caller's choice, which is unsafe
+    for something about to be executed; and a relative location joined onto a
+    trusted directory can climb back out of it (``"/trusted/../cwd/prover9"`` is
+    absolute and is the CWD file), so a ``..`` component is refused as well.
+    Tool wrappers (prover9/mace, megam, tadm, java, hunpos; cf. Boxer/Malt/REPP)
+    therefore accept only an absolute location: an absolute ``path_to_bin``, an
+    env var, or a ``$PATH`` lookup, none of which resolve against the CWD.
+
+    ``path_to_bin`` (str, bytes or path-like) and every candidate the finder
+    yields go through :func:`_tool_location`: the same materialisation and name
+    checks pathsec applies to every model and tool path, so a lying ``str``
+    subclass, a NUL or control character, a ``..`` component, a URL, a UNC
+    share or a ``~`` never reaches the filesystem or the spawn. A hostile
+    candidate is skipped; a hostile ``path_to_bin`` is refused outright.
+    """
+    if path_to_bin is not None:
+        path_to_bin = _tool_location(path_to_bin, "binary location") or None
+    for path in find_binary_iter(
+        name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
+    ):
+        try:
+            path = _tool_location(path, "binary location")
+            if not path or not os.path.isabs(path):
+                continue
+            # the name checks every model and tool path gets: no '..', control
+            # character, URL, UNC share, Windows device or trailing dot/space
+            _reject_bad_name_syntax(path, "binary location", error=LookupError)
+        except LookupError:
+            continue  # a hostile candidate is skipped, not the whole search
+        # normalised only now: with no '..' left, normpath is purely lexical
+        return os.path.normpath(path)
+    raise LookupError(
+        f"No absolute {name!r} binary found; a binary found relative to the "
+        "current working directory, or through a '..' component, is refused "
+        "(untrusted search path). Pass an absolute path_to_bin without '..', or "
+        "set the tool's env var / searchpath to an absolute location."
+    )
+
+
+def absolute_tool_dir(location, what="tool"):
+    """Return *location* as a normalised absolute directory, or raise
+    :class:`LookupError`. A relative location resolves against the CWD and a
+    ``..`` component can climb out of a trusted directory, so a wrapper that
+    spawns ``<location>/<binary>`` accepts neither (CWE-426 / CWE-427); the
+    location goes through :func:`_tool_location` first and must exist as a
+    directory.
+    """
+    text = _tool_location(location, f"{what} directory")
+    if not text or not os.path.isabs(text):
+        raise LookupError(
+            f"A {what} directory must be an absolute path without '..', not "
+            f"{text!r} (untrusted search path)."
+        )
+    # the name checks every model and tool path gets: no '..', control
+    # character, URL, UNC share, Windows device or trailing dot/space
+    _reject_bad_name_syntax(text, f"{what} directory", error=LookupError)
+    text = os.path.normpath(text)
+    if not os.path.isdir(text):
+        raise LookupError(f"{what} directory not found: {text!r}")
+    return text
+
+
+def _tool_location(location, what):
+    """A plain ``str`` copy of a tool *location* (str, bytes or path-like),
+    raising :class:`LookupError` for a value that cannot be one; a blank
+    location comes back as ``""`` (the finder's "not given").
+
+    The real characters are copied out of a ``str`` subclass so its methods are
+    never consulted (:func:`nltk.pathsec._as_path_text`, the same step every
+    model and tool path gets), and a NUL is refused here rather than raised as
+    a ValueError from the filesystem. Nothing else is judged at this point: a
+    location is only ever a search key, and it is each absolute candidate the
+    search yields that must pass :func:`nltk.pathsec._reject_bad_name_syntax`
+    before it is returned (a relative one is never returned at all).
+    """
+    text = _as_path_text(location, what, error=LookupError)
+    if not text.strip():
+        return ""
+    if "\x00" in text:
+        raise LookupError(f"Security Violation [{what}]: {text!r} contains a NUL byte.")
+    return text
 
 
 def find_jar_iter(

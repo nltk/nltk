@@ -25,14 +25,14 @@ from nltk import internals
 
 
 @pytest.fixture
-def stub_java_bin(monkeypatch):
+def stub_java_bin(monkeypatch, trusted_java_stub):
     # Avoid config_java()'s binary search so the call reaches option validation.
-    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
+    monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
     monkeypatch.setattr(internals, "_java_options", [])
     # Binary trust is a separate chokepoint with its own suite
-    # (test_pathsec_trusted_exec); stub it here so these option/env/classpath
-    # validations run identically on any runner filesystem.
-    monkeypatch.setattr(internals, "resolve_trusted_executable", lambda p: p)
+    # (test_pathsec_trusted_exec); the stub sits on a private path we own, so
+    # the real check in pathsec.spawn_trusted passes on any runner filesystem
+    # and these option/env/classpath validations run against it unstubbed.
 
 
 DANGEROUS = [
@@ -226,21 +226,31 @@ def test_java_cmd_channel_rejects_launcher_tokens(stub_java_bin, cmd):
         internals.java(cmd)
 
 
-def test_java_cmd_channel_allows_legitimate_main_class(stub_java_bin):
+def test_java_cmd_channel_allows_legitimate_main_class(stub_java_bin, monkeypatch):
     """A real main class followed by "-" program args (Stanford wrappers pass
     -loadClassifier / -textFile) is not a violation: it clears the cmd guard and
-    only fails later at the (stub) java binary, never with ValueError."""
-    with pytest.raises(Exception) as exc:
+    reaches the spawn with the argv intact, never raising ValueError."""
+    seen = {}
+
+    def _intercept(cmd, *args, **kwargs):
+        seen["argv"] = list(cmd)
+        raise _PopenIntercept
+
+    monkeypatch.setattr("nltk.pathsec.subprocess.Popen", _intercept)
+    with pytest.raises(_PopenIntercept):
         internals.java(
             [
                 "edu.stanford.nlp.ie.crf.CRFClassifier",
                 "-loadClassifier",
                 "model.ser.gz",
                 "-textFile",
-                "/input.txt",
+                "input.txt",
             ]
         )
-    assert not isinstance(exc.value, ValueError)
+    assert "edu.stanford.nlp.ie.crf.CRFClassifier" in seen["argv"]
+    assert seen["argv"].index("-loadClassifier") > seen["argv"].index(
+        "edu.stanford.nlp.ie.crf.CRFClassifier"
+    )
 
 
 class _PopenIntercept(Exception):
@@ -473,6 +483,29 @@ class TestJavaEnvironmentSanitization:
         assert captured["env"].get("NLTK_TEST_MARKER") == "keepme"
         assert "PATH" in captured["env"]
 
+    def test_loader_redirect_vars_stripped(self, stub_java_bin, monkeypatch):
+        """LD_* / DYLD_* redirect the child's dynamic loader (CWE-427): none of
+        them reaches the JVM, in any letter case, while unrelated names do."""
+        hostile = {
+            "LD_PRELOAD": "/evil.so",
+            "LD_LIBRARY_PATH": "/evil/lib",
+            "LD_AUDIT": "/evil/audit.so",
+            "DYLD_INSERT_LIBRARIES": "/evil.dylib",
+            "DYLD_LIBRARY_PATH": "/evil/dylib",
+            "ld_preload": "/evil/lower.so",
+        }
+        for var, value in hostile.items():
+            monkeypatch.setenv(var, value)
+        monkeypatch.setenv("NLTK_TEST_MARKER", "keepme")
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        env = captured["env"]
+        for var in hostile:
+            assert var not in env, f"{var} reached the child JVM environment"
+        assert not any(value in env.values() for value in hostile.values())
+        assert env.get("NLTK_TEST_MARKER") == "keepme"
+
     def test_env_strip_is_load_bearing(self, stub_java_bin, monkeypatch):
         """Mutation: empty the strip set and the injecting var reaches the child."""
         monkeypatch.setenv("JAVA_TOOL_OPTIONS", "-XX:OnError=x")
@@ -481,6 +514,15 @@ class TestJavaEnvironmentSanitization:
         with pytest.raises(_PopenIntercept):
             internals.java(["Main"])
         assert "JAVA_TOOL_OPTIONS" in captured["env"]
+
+    def test_loader_strip_is_load_bearing(self, stub_java_bin, monkeypatch):
+        """Mutation: empty the loader prefixes and LD_PRELOAD reaches the child."""
+        monkeypatch.setenv("LD_PRELOAD", "/evil.so")
+        monkeypatch.setattr(internals, "_LOADER_ENV_PREFIXES", ())
+        captured = self._capture_env(monkeypatch)
+        with pytest.raises(_PopenIntercept):
+            internals.java(["Main"])
+        assert "LD_PRELOAD" in captured["env"]
 
     def test_helper_strips_and_preserves(self, monkeypatch):
         """The shared _java_child_env() helper (used by java() and the MaltParser
@@ -498,7 +540,7 @@ class TestJavaEnvironmentSanitization:
 
 
 def test_maltparser_execute_routes_through_java_with_sanitized_env(
-    monkeypatch, tmp_path
+    monkeypatch, tmp_path, trusted_java_stub
 ):
     import nltk.data
     from nltk.parse import malt
@@ -510,7 +552,7 @@ def test_maltparser_execute_routes_through_java_with_sanitized_env(
     )  # trusted (on nltk.data.path) so sandbox admits it
     jar.write_bytes(b"PK\x03\x04")
     monkeypatch.setattr(nltk.data, "path", [str(root)])
-    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
+    monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
 
     captured = {}
 
@@ -551,7 +593,9 @@ def _should_not_run(*a, **k):
     raise AssertionError("subprocess.Popen must not run: the call should be rejected")
 
 
-def test_maltparser_dangerous_java_option_rejected_by_java(tmp_path, monkeypatch):
+def test_maltparser_dangerous_java_option_rejected_by_java(
+    tmp_path, monkeypatch, trusted_java_stub
+):
     """Now that MaltParser routes through java(), a dangerous additional_java_args
     flag is refused by java()'s option allowlist; malt no longer has to (and does
     not) validate options itself."""
@@ -562,7 +606,7 @@ def test_maltparser_dangerous_java_option_rejected_by_java(tmp_path, monkeypatch
     jar = root / "maltparser-1.9.2.jar"
     jar.write_bytes(b"PK\x03\x04")
     monkeypatch.setattr(nltk.data, "path", [str(root)])
-    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
+    monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
     monkeypatch.setattr(internals.subprocess, "Popen", _should_not_run)
 
     parser = _bare_malt_parser([str(jar)], ["-XX:OnError=touch /tmp/pwned"])
@@ -570,7 +614,9 @@ def test_maltparser_dangerous_java_option_rejected_by_java(tmp_path, monkeypatch
         parser._execute(["org.maltparser.Malt", "-m", "parse"])
 
 
-def test_maltparser_untrusted_classpath_rejected_by_java(tmp_path, monkeypatch):
+def test_maltparser_untrusted_classpath_rejected_by_java(
+    tmp_path, monkeypatch, trusted_java_stub
+):
     """A malt jar outside every trusted root is refused by java()'s classpath
     sandbox, inherited now that malt routes through java()."""
     import nltk.data
@@ -578,7 +624,7 @@ def test_maltparser_untrusted_classpath_rejected_by_java(tmp_path, monkeypatch):
     root = tmp_path / "nltk_data"
     root.mkdir()  # trusted root, but the jar lives OUTSIDE it
     monkeypatch.setattr(nltk.data, "path", [str(root)])
-    monkeypatch.setattr(internals, "_java_bin", "/usr/bin/java")
+    monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
     monkeypatch.setattr(internals.subprocess, "Popen", _should_not_run)
 
     evil_dir = tmp_path / "evil"
@@ -590,14 +636,17 @@ def test_maltparser_untrusted_classpath_rejected_by_java(tmp_path, monkeypatch):
         parser._execute(["org.maltparser.Malt", "-m", "parse"])
 
 
-def test_config_java_validates_global_options(monkeypatch):
+def test_config_java_validates_global_options(monkeypatch, trusted_java_stub):
     """config_java() stores global options used when java(options=None); a
     dangerous global flag must be rejected there too, not just per-call."""
+    # config_java sets module globals; restore them, or the stub path (deleted
+    # at teardown) leaks into every later real java() call in the session
+    monkeypatch.setattr(internals, "_java_bin", None)
     monkeypatch.setattr(internals, "_java_options", [])
     with pytest.raises(ValueError):
-        internals.config_java(bin="/usr/bin/java", options=["-XX:OnError=id"])
+        internals.config_java(bin=trusted_java_stub, options=["-XX:OnError=id"])
     # a safe global set is accepted and stored
-    internals.config_java(bin="/usr/bin/java", options=["-Xmx512m"])
+    internals.config_java(bin=trusted_java_stub, options=["-Xmx512m"])
     assert internals._java_options == ["-Xmx512m"]
 
 

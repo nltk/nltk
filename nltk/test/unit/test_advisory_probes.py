@@ -17,6 +17,8 @@ import tempfile
 import warnings
 from collections import Counter
 
+import pytest
+
 from nltk.test.unit import security_probes as probes
 from nltk.test.unit import test_advisory_coverage_ci as covci
 from nltk.test.unit.security_probes import _base
@@ -798,18 +800,22 @@ def test_7j4p_chat80_store_link_probe_has_teeth():
 
 def test_7mxv_java_untrusted_exec_probe_has_teeth():
     """Make the trusted-exec check accept any binary; java() then runs the planted
-    untrusted binary instead of refusing it, flipping the probe VULNERABLE."""
-    import nltk.internals as internals
+    untrusted binary instead of refusing it, flipping the probe VULNERABLE. The
+    check is pathsec's own, reached through spawn_trusted, so that is where it
+    is neutered."""
+    import nltk.pathsec as pathsec
 
     probe = probes.PROBES["GHSA-7mxv-7h3q-9324"]
     assert _skip_if_static(probe) == probes.FIXED
 
-    real = internals.resolve_trusted_executable
+    real = pathsec.resolve_trusted_executable
     try:
-        internals.resolve_trusted_executable = lambda target: target
-        assert probe()[0] == probes.VULNERABLE
+        pathsec.resolve_trusted_executable = lambda target: target
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "executed the planted untrusted binary" in evidence, evidence
     finally:
-        internals.resolve_trusted_executable = real
+        pathsec.resolve_trusted_executable = real
     assert probe()[0] == probes.FIXED
 
 
@@ -882,3 +888,118 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     finally:
         pathsec.ZipFile._extract_member = real
     assert probe()[0] == probes.FIXED
+
+
+def _neuter_relative_binary_guard(monkeypatch, modules):
+    # put the pre-fix resolver back (plain find_binary honours an explicit
+    # relative path) behind the given entry-point modules only
+    from nltk import internals
+
+    for module in modules:
+        monkeypatch.setattr(module, "find_binary_absolute", internals.find_binary)
+
+
+_RELATIVE_BINARY_MODULES = [
+    ("nltk.inference.prover9", "config_prover9"),
+    ("nltk.classify.megam", "config_megam"),
+    ("nltk.classify.tadm", "config_tadm"),
+    ("nltk.internals", "config_java"),
+    ("nltk.tag.hunpos", "HunposTagger"),
+]
+
+
+def test_relative_binary_location_probe_has_teeth(monkeypatch):
+    """Neuter the absolute-only resolver behind every entry point the probe
+    covers: the probe must flip to VULNERABLE naming the tool and the CWD decoy
+    it took, and recover on undo."""
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    modules = [importlib.import_module(m) for m, _ in _RELATIVE_BINARY_MODULES]
+    _neuter_relative_binary_guard(monkeypatch, modules)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "took the CWD-relative binary" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypatch):
+    """Neuter the spawn-time ownership check only: the finder still refuses
+    every relative form, so the probe must flip to VULNERABLE on its last
+    phase, the launch of a JVM out of a world-writable directory."""
+    from nltk import pathsec
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    def permissive(target):
+        real = os.path.realpath(target)
+        return real if os.path.isfile(real) else None
+
+    monkeypatch.setattr(pathsec, "resolve_trusted_executable", permissive)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "world-writable directory" in evidence and "PWNED" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.skipif(os.name != "posix", reason="the planted decoys are shell scripts")
+def test_relative_binary_location_probe_sink_phase_has_teeth(monkeypatch):
+    """The advisory's sink (phase 6), run on its own because the probe's earlier
+    phases would flip first under the same neutering. With the pre-fix resolver
+    behind config_prover9 the advisory's line configures ./prover9 verbatim:
+    the phase must report the decoy HELD, and nothing may have run, because
+    the POSIX spawn layer still refuses that relative spelling. With the same
+    pre-fix resolver handing back the normalised absolute CWD path instead
+    (what a caller's abspath() would make of it) the real spawn layer runs the
+    same-user file: the phase must report it EXECUTED, from the marker the
+    decoy writes. So the config-time gate is load-bearing. Recovers on undo."""
+    from nltk import internals
+    from nltk.inference import prover9 as prover9_module
+    from nltk.test.unit.security_probes import ghsa_cc5r_64rf_75hg as cc5r
+
+    assert cc5r._sink_alone()[0] == probes.FIXED
+
+    _neuter_relative_binary_guard(monkeypatch, (prover9_module,))
+    status, evidence = cc5r._sink_alone()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith("Prover9.prove() after config_prover9('./')"), evidence
+    assert "held the CWD decoy './prover9'" in evidence, evidence
+    assert "executed" not in evidence, evidence
+
+    def absolutised(name, path_to_bin=None, **kwargs):
+        return os.path.abspath(internals.find_binary(name, path_to_bin, **kwargs))
+
+    monkeypatch.setattr(prover9_module, "find_binary_absolute", absolutised)
+    status, evidence = cc5r._sink_alone()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith("Prover9.prove() after config_prover9('./')"), evidence
+    assert "executed the CWD decoy" in evidence, evidence
+    assert evidence.rstrip("'").endswith(os.sep + "prover9"), evidence
+
+    monkeypatch.undo()
+    assert cc5r._sink_alone()[0] == probes.FIXED
+    assert (
+        "sinks never held or executed a decoy"
+        in probes.PROBES["GHSA-cc5r-64rf-75hg"]()[1]
+    )
+
+
+@pytest.mark.parametrize("modname, label", _RELATIVE_BINARY_MODULES)
+def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
+    # neuter one tool's resolver only (each module binds it by name): the
+    # evidence must name exactly that tool, so the probe scores every entry point
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    _neuter_relative_binary_guard(monkeypatch, (importlib.import_module(modname),))
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith(label + "("), evidence
