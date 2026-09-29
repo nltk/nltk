@@ -157,11 +157,29 @@ class TestStreamBackedViewStatContainment:
 
     @staticmethod
     def _stat_spy(monkeypatch):
+        """Record the paths the VIEW (or a pointer's file_size) hands to os.stat.
+
+        Only calls made directly from nltk.corpus.reader.util or nltk.data are
+        recorded: on Python 3.12 and older, Path.resolve() inside validate_path
+        stats the resolved path itself to detect symlink loops, which is the
+        guard's own bookkeeping (its result never reaches the caller), not the
+        size lookup this test forbids.
+        """
+        import sys
+
+        import nltk.data
+
         seen = []
         real = os.stat
+        own = {
+            os.path.realpath(view_util.__file__),
+            os.path.realpath(nltk.data.__file__),
+        }
 
         def spy(path, *args, **kwargs):
-            seen.append(os.fspath(path) if not isinstance(path, int) else path)
+            caller = os.path.realpath(sys._getframe(1).f_code.co_filename)
+            if caller in own:
+                seen.append(os.fspath(path) if not isinstance(path, int) else path)
             return real(path, *args, **kwargs)
 
         monkeypatch.setattr(os, "stat", spy)
