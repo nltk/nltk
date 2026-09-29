@@ -194,7 +194,13 @@ def pygame_dummy_driver(monkeypatch):
     """The real pygame mixer on SDL's dummy audio driver, with ossaudiodev made
     unimportable so play() takes its pygame branch."""
     monkeypatch.setenv("SDL_AUDIODRIVER", "dummy")
-    mixer = pytest.importorskip("pygame.mixer")
+    # The dedicated CI job requires pygame instead of allowing these tests to skip.
+    if os.environ.get("NLTK_REQUIRE_PYGAME"):
+        import pygame.mixer
+
+        mixer = pygame.mixer
+    else:
+        mixer = pytest.importorskip("pygame.mixer")
     monkeypatch.setitem(sys.modules, "ossaudiodev", None)
     yield mixer
     mixer.quit()
@@ -305,6 +311,92 @@ def test_timit_play_rewrites_a_header_that_overstates_its_length(
     with wave.open(io.BytesIO(played)) as handle:
         assert handle.getnframes() == 10
         assert len(handle.readframes(handle.getnframes())) == 20
+
+
+def _write_one_hertz_wav(root, *, nframes=5000, nchannels=1, sampwidth=2):
+    # By default, 5000 frames at 1 Hz declare 5000 s in a 10 KB mono file.
+    import wave
+
+    wav_path = os.path.join(root, "dr1-fabc0", "sa1.wav")
+    with wave.open(wav_path, "wb") as handle:
+        handle.setparams((nchannels, sampwidth, 1, nframes, "NONE", "not compressed"))
+        handle.writeframes(b"\x00" * (nframes * nchannels * sampwidth))
+
+
+def test_timit_wav_rejects_excessive_duration(restricted_sandbox):
+    # A tiny 1 Hz file declares hours of audio and would balloon when resampled.
+    reader = _timit_reader(restricted_sandbox)
+    _write_one_hertz_wav(restricted_sandbox)
+
+    with pytest.raises(ValueError, match="MAX_WAV_SECONDS"):
+        reader.wav("dr1-fabc0/sa1")
+
+
+def test_timit_play_rejects_excessive_duration_before_pygame(
+    restricted_sandbox, pygame_mixer
+):
+    # The duration guard must refuse the clip before pygame Sound sees it.
+    reader = _timit_reader(restricted_sandbox)
+    _write_one_hertz_wav(restricted_sandbox)
+
+    with pytest.raises(ValueError, match="MAX_WAV_SECONDS"):
+        reader.play("dr1-fabc0/sa1")
+    assert pygame_mixer == []
+
+
+def test_timit_wav_rejects_zero_frame_rate(restricted_sandbox):
+    # The stdlib wave reader accepts a header rate of 0; wav() refuses it with
+    # a ValueError instead of dividing by it.
+    import struct
+
+    reader = _timit_reader(restricted_sandbox)
+    wav_path = os.path.join(restricted_sandbox, "dr1-fabc0", "sa1.wav")
+    with open(wav_path, "rb") as handle:
+        data = handle.read()
+    with open(wav_path, "wb") as handle:
+        handle.write(data[:24] + struct.pack("<I", 0) + data[28:])
+
+    with pytest.raises(ValueError, match="bad frame rate 0"):
+        reader.wav("dr1-fabc0/sa1")
+
+
+def test_timit_wav_allows_bounded_slice_of_long_recording(restricted_sandbox):
+    # The limit applies to frames returned, so a safe slice remains available.
+    import io
+    import wave
+
+    reader = _timit_reader(restricted_sandbox)
+    _write_one_hertz_wav(restricted_sandbox)
+
+    wav_bytes = reader.wav("dr1-fabc0/sa1", end=10)
+    with wave.open(io.BytesIO(wav_bytes)) as handle:
+        assert handle.getnframes() == 10
+
+
+@pytest.mark.parametrize("nchannels, sampwidth", [(1, 2), (2, 1)])
+def test_timit_wav_duration_boundary_uses_frame_size(
+    restricted_sandbox, nchannels, sampwidth
+):
+    # Pin the exact duration edge and each factor in the frame-size maths.
+    from nltk.corpus.reader.timit import MAX_WAV_SECONDS
+
+    reader = _timit_reader(restricted_sandbox)
+    _write_one_hertz_wav(
+        restricted_sandbox,
+        nframes=MAX_WAV_SECONDS,
+        nchannels=nchannels,
+        sampwidth=sampwidth,
+    )
+    reader.wav("dr1-fabc0/sa1")
+
+    _write_one_hertz_wav(
+        restricted_sandbox,
+        nframes=MAX_WAV_SECONDS + 1,
+        nchannels=nchannels,
+        sampwidth=sampwidth,
+    )
+    with pytest.raises(ValueError, match="MAX_WAV_SECONDS"):
+        reader.wav("dr1-fabc0/sa1")
 
 
 def test_timit_play_on_the_real_corpus(pygame_dummy_driver, capsys):

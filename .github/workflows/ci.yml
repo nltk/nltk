@@ -35,6 +35,7 @@ jobs:
       pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
+      timit: ${{ steps.filter.outputs.timit }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v3
@@ -47,6 +48,12 @@ jobs:
               - 'setup.py'
               - '.github/workflows/**'
               - 'tools/github_actions/**'
+            timit:
+              - 'nltk/corpus/reader/timit.py'
+              - 'nltk/test/unit/test_corpus_reader_hardening.py'
+              - 'nltk/test/unit/conftest.py'
+              - 'nltk/test/conftest.py'
+              - '.github/workflows/ci.yml'
 
   pre-commit:
     name: pre-commit
@@ -97,6 +104,33 @@ jobs:
         shell: bash
         run: |
           python -c "import os, nltk; d = os.environ['NLTK_DATA']; import pathlib; pathlib.Path(d).mkdir(parents=True, exist_ok=True); nltk.download('wordnet', download_dir=d)"
+
+  timit_playback:
+    name: TIMIT pygame playback
+    needs: [changes]
+    if: needs.changes.outputs.timit == 'true'
+    runs-on: ubuntu-latest
+    env:
+      SDL_AUDIODRIVER: dummy
+      NLTK_REQUIRE_PYGAME: "1"
+      NLTK_DATA: ${{ github.workspace }}/nltk_data
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -e . pytest pytest-mock pygame
+
+      - name: Download TIMIT corpus
+        run: |
+          python -c "import os, nltk; nltk.download('timit', download_dir=os.environ['NLTK_DATA'], raise_on_error=True)"
+
+      - name: Run TIMIT playback tests
+        run: pytest nltk/test/unit/test_corpus_reader_hardening.py -k timit -v
 
   setup-matrix:
     runs-on: ubuntu-latest
