@@ -48,14 +48,36 @@ _HEADERS = {
     "User-Agent": "nltk-advisory-coverage",
 }
 
-#: Closed/withdrawn advisories deliberately kept as regression probes. The
-#: public API lists only published advisories, so these must be named here or
-#: the reverse check would flag them as unknown.
+# Closed/withdrawn advisories deliberately kept as regression probes. The
+# public API lists only published advisories, so these must be named here or
+# the reverse check would flag them as unknown.
+# NB: Canonical GHSA IDs use hyphens, while probe filenames use underscores because
+# Python module names cannot contain hyphens; do not copy filenames here.
 _CLOSED_WITH_PROBE = {
     "GHSA-4489-j4f3-2g8q",
     "GHSA-9ffx-rrgx-mhgx",
     "GHSA-pcm8-fqjx-rvx8",
     "GHSA-8846-p9w9-5frf",
+    "GHSA-3h95-x772-4765",
+    "GHSA-63wh-5r5m-wxr7",
+    "GHSA-f2h2-f4fc-p978",
+    "GHSA-w3pv-xfw4-ghr7",
+    "GHSA-xfcv-m889-fmqg",
+    "GHSA-j456-xh4h-cpf2",
+    # Draft advisory carrying a regression probe ahead of publication.
+    "GHSA-r53h-rw34-8h97",
+}
+
+#: Draft advisories we have already fixed and probe ahead of publication. The
+#: public API lists only *published* advisories, so a probe for a still-draft id
+#: would otherwise trip the reverse check below. Once published it appears in the
+#: fetched list and its entry here becomes a harmless no-op.
+_DRAFT_WITH_PROBE = {
+    "GHSA-xv54-447f-mj22",
+    "GHSA-xmfg-f9cm-w86q",
+    "GHSA-7j4p-88wx-5jrc",
+    "GHSA-j456-xh4h-cpf2",
+    "GHSA-cc5r-64rf-75hg",
 }
 
 
@@ -120,6 +142,6 @@ def test_no_probe_targets_an_unknown_advisory():
     advisories = _fetch_advisories()
     if advisories is None:
         pytest.skip("could not fetch advisories from GitHub")
-    known = {a["ghsa_id"] for a in advisories} | _CLOSED_WITH_PROBE
+    known = {a["ghsa_id"] for a in advisories} | _CLOSED_WITH_PROBE | _DRAFT_WITH_PROBE
     unknown = sorted(set(probes.PROBES) - known)
     assert not unknown, "probes for ids GitHub does not list: %s" % unknown

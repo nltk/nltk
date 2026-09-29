@@ -68,6 +68,24 @@ def within_budget(func, budget=DOS_BUDGET, repeats=3):
     return best < budget, best
 
 
+def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
+    """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (``big`` == 4*``small``).
+
+    A load-invariant scaling factor, mirroring the DoS regression harness: a
+    linear sink is ~4x, a pre-patch O(n**2) sink ~16x. The floor is
+    multiplicative so a sub-second quadratic is not hidden by additive slack,
+    and each side is a min-of-``reps`` to shed a transient scheduler stall.
+    """
+    t_small = min(timed(op, small) for _ in range(reps))
+    t_big = min(timed(op, big) for _ in range(reps))
+    return t_big / max(t_small, noise_floor)
+
+
+#: A scaling factor at or above this reads as super-linear (quadratic ~16x);
+#: a linear sink stays near 4x, so the gap is wide on any machine.
+QUADRATIC_RATIO = 8.0
+
+
 def read_source(dotted_module):
     """Source of an importable NLTK module, via its own ``__file__``.
 
