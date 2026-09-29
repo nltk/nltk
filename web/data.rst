@@ -40,7 +40,7 @@ Command line installation
 
 The downloader will search for an existing ``nltk_data`` directory to install NLTK data.  If one does not exist it will attempt to create one in a central location (when using an administrator account) or otherwise in the user's filespace.  If necessary, run the download command from an administrator account, or using sudo.  The recommended system location is ``C:\nltk_data`` (Windows); ``/usr/local/share/nltk_data`` (Mac); and ``/usr/share/nltk_data`` (Unix).  You can use the ``-d`` flag to specify a different location (but if you do this, be sure to set the ``NLTK_DATA`` environment variable accordingly).
 
-Run the command ``python -m nltk.downloader all``.  To ensure central installation, run the command ``sudo python -m nltk.downloader -d /usr/local/share/nltk_data all``.
+Run the command ``python -m nltk.downloader all``.  To ensure central installation, run the command ``sudo python -m nltk.downloader -d /usr/local/share/nltk_data all``.  If the data was installed with NLTK 3.10.3, run ``sudo chmod -R a+rX /usr/local/share/nltk_data`` once: that release left the downloaded archives readable only by the installing account, so packages that are read straight from their archive (``wordnet``, ``omw-1.4``) were reported as not found to every other user.
 
 Windows: Use the "Run..." option on the Start menu.  Windows Vista users need to first turn on this option, using ``Start -> Properties -> Customize`` to check the box to activate the "Run..." option.
 

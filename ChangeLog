@@ -1,3 +1,7 @@
+Version 3.10.4 (unreleased)
+
+* Write downloaded package archives readable by other accounts again (0644, umask applied); 3.10.3 left them owner-only, so data installed by root (for example while building a container image) could not be read by an unprivileged runtime user and never-unzipped packages such as wordnet and omw-1.4 were reported as "not found" (#3928)
+
 Version 3.10.3 2026-08-12
 
 * docs: wrap Chat-80 HOWTO output
