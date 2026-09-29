@@ -2060,9 +2060,12 @@ def open(
         # FileNotFoundError) on a genuine open failure. We must NOT fall back to
         # builtins.open on OSError -- retrying the raw path would follow a symlink
         # the hardened open deliberately refused, reopening the TOCTOU leak.
-        return _hardened_open(
-            raw_path, mode, context, required_root, perm=perm, **kwargs
-        )
+        # The default perm is not forwarded, so every caller that does not set
+        # it keeps the exact call shape it had, including the teeth test that
+        # stands a bare opener in for _hardened_open to prove the probe bites.
+        if perm != 0o600:
+            kwargs["perm"] = perm
+        return _hardened_open(raw_path, mode, context, required_root, **kwargs)
     if ENFORCE:
         # No O_NOFOLLOW off POSIX: apply the same inode policy by name, so a
         # planted link or device is refused there too (not race-free, but never
