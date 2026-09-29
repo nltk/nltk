@@ -291,6 +291,12 @@ class TestDotMatrix:
 # --------------------------------------------------------------------------- #
 # 4. Downloader: the declared size is capped, the index body is bounded
 # --------------------------------------------------------------------------- #
+# A safety net above every bound under test (the 64 MiB index ceiling included):
+# with a guard broken, the endless reader stops here, so the test fails on its
+# served-bytes assertion instead of filling the disk.
+_HARD_STOP = 128 * 1024 * 1024
+
+
 class _Counting:
     """A server stand-in that records how much was asked of it."""
 
@@ -300,6 +306,8 @@ class _Counting:
     def read(self, n=-1):
         self.reads += 1
         if self.endless:
+            if self.served >= _HARD_STOP:
+                return b""  # reaching this means the guard under test FAILED
             chunk = b"<x>" * 1024
         else:
             chunk, self.body = self.body[:n], self.body[n:]
@@ -499,12 +507,14 @@ class TestSignatureFence:
         with pytest.raises(ValueError, match="non-identifier signature"):
             decorators.new_wrapper(lambda *a, **k: None, infodict)
         assert not marker.exists()
-        real = decorators._assert_safe_signature
-        decorators._assert_safe_signature = lambda signature: None
+        # _fenced_parameters is the one fence every layer (the assert, the
+        # reserved-name check, the call-argument builder) parses through
+        real = decorators._fenced_parameters
+        decorators._fenced_parameters = lambda signature: []
         try:
             decorators.new_wrapper(lambda *a, **k: None, infodict)
         finally:
-            decorators._assert_safe_signature = real
+            decorators._fenced_parameters = real
         assert marker.exists(), "without the fence the crafted default ran"
 
 

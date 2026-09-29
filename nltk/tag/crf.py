@@ -14,7 +14,7 @@ import unicodedata
 import warnings
 
 from nltk import redos
-from nltk.pathsec import validate_tool_path
+from nltk.pathsec import MAX_TOOL_MODEL_BYTES, validate_tool_path
 from nltk.tag.api import TaggerI
 
 try:
@@ -128,10 +128,21 @@ class CRFTagger(TaggerI):
         the path is validated against the NLTK data sandbox first: an
         outside-root model is refused rather than handed to the native loader
         (GHSA-8mgp-746c-j5xp). ``pathsec.open`` cannot be used here because the
-        C extension does its own open, so containment is the check that can be
-        applied; a symlink swapped in after it is not covered.
+        C extension does its own open, so the guard opens the file itself
+        (O_NOFOLLOW, regular, single-linked) and the string it returns is what
+        the loader gets: pycrfsuite calls ``__fspath__`` again, and a PathLike
+        may answer differently each time. A swap after the check is the
+        remaining race.
         """
-        validate_tool_path(model_file, context="CRFTagger.set_model_file")
+        # crfsuite (C) opens and parses the whole model itself; beyond
+        # containment, refuse a model another local user could plant/swap
+        # (require_private) or an oversized memory bomb (max_bytes).
+        model_file = validate_tool_path(
+            model_file,
+            context="CRFTagger.set_model_file",
+            max_bytes=MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
         self._model_file = model_file
         self._tagger.open(self._model_file)
 
@@ -294,10 +305,12 @@ class CRFTagger(TaggerI):
         if pycrfsuite is None:
             raise ImportError("CRFTagger requires python-crfsuite to be installed.")
 
-        # Caller-supplied destination that pycrfsuite writes natively, so refuse
-        # an outside-root path up front rather than after the model is built.
-        # It normally does not exist yet, so existence is not required.
-        validate_tool_path(model_file, context="CRFTagger.train", must_exist=False)
+        # Caller-supplied destination that pycrfsuite writes natively: refuse an
+        # outside-root or hardlinked target up front (for_write) and hand the
+        # trainer the checked string, not an object that may resolve elsewhere.
+        model_file = validate_tool_path(
+            model_file, context="CRFTagger.train", must_exist=False, for_write=True
+        )
 
         trainer = pycrfsuite.Trainer(verbose=self._verbose)
         trainer.set_params(self._training_options)

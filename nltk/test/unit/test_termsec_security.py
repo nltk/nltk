@@ -157,14 +157,14 @@ class TestSingleLineMode:
         assert "\x1b" not in strict
 
 
-def test_downloader_show_and_tweetviewer_route_through_termsec():
-    # Source-pin: the fixed sinks call sanitize_terminal.
+def test_downloader_show_and_index_messages_route_through_termsec():
+    # Source pin: the downloader's server-supplied names reach the terminal
+    # only through the sanitisers (show(), list() and _update_index()).
     import inspect
 
     import nltk.downloader as dl
 
     dsrc = inspect.getsource(dl)
-    assert "sanitize_terminal(s)" in dsrc  # the show() chokepoint
-    # list() writes the server-supplied id and name through safe_print
+    assert "sanitize_terminal(s)" in dsrc
     assert 'safe_print("  [{}] {} {}".format(prefix, info.id' in dsrc
-    assert "sanitize_terminal(child_id)" in dsrc  # _update_index()
+    assert "sanitize_terminal(child_id)" in dsrc

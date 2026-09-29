@@ -17,6 +17,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
+from nltk import pathsec
 from nltk.data import staging_tempdir
 from nltk.internals import (
     find_dir,
@@ -58,12 +59,25 @@ def _validated_options(options):
                 f"{name!r} contains a separator, so it would inject extra "
                 "option pairs into the argument list."
             )
-        if isinstance(value, str) and (
-            os.path.isabs(value) or "/" in value or "\\" in value
-        ):
-            value = validate_tool_path(
-                value, context=f"StanfordSegmenter options[{name}]"
-            )
+        if isinstance(value, (str, bytes, os.PathLike)):
+            # Materialise the real characters first: a str subclass can lie to
+            # the separator test below, and a PathLike is a path however spelt.
+            try:
+                value = str.__str__(os.fsdecode(value))
+            except TypeError as exc:
+                raise ValueError(
+                    f"Security Violation [StanfordSegmenter options[{name}]]: "
+                    f"{value!r} is not a filesystem path."
+                ) from exc
+            if os.path.isabs(value) or "/" in value or "\\" in value:
+                # A path-valued segmenter option is a model/dictionary/classifier
+                # the JVM reads; refuse a tamperable or oversized one too.
+                value = validate_tool_path(
+                    value,
+                    context=f"StanfordSegmenter options[{name}]",
+                    max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
+                    require_private=True,
+                )
         validated[name] = value
     return validated
 
@@ -424,17 +438,20 @@ class StanfordSegmenter(TokenizerI):
         :return: the validated (model, dictionary, sihan corpora dict) strings,
             each None when it was unset
         """
+        # Files the JVM loads whole get the tool-model guards (a tamperable or
+        # oversized one refused); the Sihan corpora dict is a DIRECTORY the JVM
+        # reads files from, so it gets the directory guard's private-tree check.
+        _model_kw = {"max_bytes": pathsec.MAX_TOOL_MODEL_BYTES, "require_private": True}
+        _dir_kw = {"require_private": True}
         validated = []
-        for attribute, label, guard in (
-            ("_model", "model", validate_tool_path),
-            ("_dict", "dictionary", validate_tool_path),
-            # The Sihan corpora dict is a DIRECTORY, so it needs the directory
-            # guard: validate_tool_path requires a regular file.
-            ("_sihan_corpora_dict", "sihan corpora dict", validate_tool_dir),
+        for attribute, label, guard, guard_kw in (
+            ("_model", "model", validate_tool_path, _model_kw),
+            ("_dict", "dictionary", validate_tool_path, _model_kw),
+            ("_sihan_corpora_dict", "sihan corpora dict", validate_tool_dir, _dir_kw),
         ):
             value = getattr(self, attribute)
             if value:
-                value = guard(value, context=f"StanfordSegmenter {label}")
+                value = guard(value, context=f"StanfordSegmenter {label}", **guard_kw)
                 setattr(self, attribute, value)
             validated.append(value)
         return tuple(validated)

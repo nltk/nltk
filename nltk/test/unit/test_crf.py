@@ -2,6 +2,8 @@
 Regression tests for ``nltk.tag.crf.CRFTagger``.
 """
 
+import os
+
 import pytest
 
 pytest.importorskip("pycrfsuite")
@@ -123,3 +125,39 @@ def test_train_tag_round_trip(tmp_path):
     reloaded = CRFTagger()
     reloaded.set_model_file(str(model_file))
     assert reloaded.tag(_SAMPLE_SENT) == tagged
+
+
+@pytest.mark.skipif(not hasattr(os, "getuid"), reason="POSIX ownership model")
+def test_set_model_file_refuses_group_or_world_writable_model(tmp_path):
+    """A group/world-writable model another local user could swap is refused
+    before crfsuite (C) parses it (require_private, CWE-426/CWE-732)."""
+    model = tmp_path / "model.crf.tagger"
+    CRFTagger().train(_TRAIN, str(model))
+    os.chmod(model, 0o666)
+    with pytest.raises(PermissionError):
+        CRFTagger().set_model_file(str(model))
+
+
+def test_set_model_file_refuses_oversize_model(tmp_path, monkeypatch):
+    """A model over MAX_TOOL_MODEL_BYTES is refused (a memory bomb crfsuite would
+    load whole, CWE-400); a tiny monkeypatched cap avoids needing a giant file."""
+    import nltk.tag.crf as crf_mod
+
+    model = tmp_path / "model.crf.tagger"
+    CRFTagger().train(_TRAIN, str(model))
+    assert model.stat().st_size > 8
+    monkeypatch.setattr(crf_mod, "MAX_TOOL_MODEL_BYTES", 8)
+    with pytest.raises(PermissionError):
+        CRFTagger().set_model_file(str(model))
+
+
+def test_legit_private_model_still_loads_and_tags(tmp_path):
+    """Control: a normal (private, in-size) trained model still loads through the
+    guard and tags, so the new checks do not over-block real usage."""
+    model = tmp_path / "model.crf.tagger"
+    CRFTagger().train(_TRAIN, str(model))
+    ct = CRFTagger()
+    ct.set_model_file(str(model))
+    tagged = ct.tag_sents([_SAMPLE_SENT])[0]
+    assert [w for w, _ in tagged] == _SAMPLE_SENT
+    assert all(t in _TAGS for _, t in tagged)
