@@ -182,8 +182,10 @@ def backend(request, monkeypatch):
 
 def write_in(root, name, document):
     path = os.path.join(str(root), name)
+    # newline="" keeps the LF the documents are written with: Windows would
+    # otherwise write CRLF, which the line-oriented readers do not expect
     mode = "wb" if isinstance(document, bytes) else "w"
-    kwargs = {} if isinstance(document, bytes) else {"encoding": "utf-8"}
+    kwargs = {} if isinstance(document, bytes) else {"encoding": "utf-8", "newline": ""}
     with pathsec.open(path, mode, context="test", **kwargs) as handle:
         handle.write(document)
     return path
