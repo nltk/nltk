@@ -172,24 +172,52 @@ class DependencyGraph:
         }
 
         """
+
+        # Neutralise values interpolated into a Graphviz double-quoted string so
+        # a word/relation carrying a quote or newline cannot break out of a label
+        # and corrupt the graph (CWE-116; graphviz has no code execution).
+        def _dot_escape(text):
+            return (
+                str(text)
+                .replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+            )
+
         # Start the digraph specification
         s = "digraph G{\n"
         s += "edge [dir=forward]\n"
         s += "node [shape=plaintext]\n"
 
+        # An address or dependency index is interpolated bare (a DOT node id),
+        # so only a real integer may stand there: a string would be a
+        # different node id, or DOT syntax of its own (CWE-116).
+        def _dot_address(value):
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise ValueError(
+                    "DependencyGraph addresses must be integers to render as "
+                    "DOT node ids, not %r" % (value,)
+                )
+            return value
+
         # Draw the remaining nodes
         for node in sorted(self.nodes.values(), key=lambda v: v["address"]):
+            address = _dot_address(node["address"])
             s += '\n{} [label="{} ({})"]'.format(
-                node["address"],
-                node["address"],
-                node["word"],
+                address,
+                address,
+                _dot_escape(node["word"]),
             )
             for rel, deps in node["deps"].items():
                 for dep in deps:
+                    dep = _dot_address(dep)
                     if rel is not None:
-                        s += '\n{} -> {} [label="{}"]'.format(node["address"], dep, rel)
+                        s += '\n{} -> {} [label="{}"]'.format(
+                            address, dep, _dot_escape(rel)
+                        )
                     else:
-                        s += "\n{} -> {} ".format(node["address"], dep)
+                        s += f"\n{address} -> {dep} "
         s += "\n}"
 
         return s
@@ -627,6 +655,7 @@ def dot2img(dot_string, t="svg"):
         dot_binary = find_binary_absolute("dot")
     except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
+
     try:
         # Route through the trusted-exec chokepoint like translate.api: verify
         # the dot binary is on a path no other local user can swap, refuse a
