@@ -293,3 +293,35 @@ class TestRogueFilesInADataRoot:
             nltk.data.ZipFilePathPointer(archive, "rogue/words.txt").open().read()
             == b"alpha\nbeta\n"
         )
+
+
+@pytest.mark.skipif(
+    os.name != "posix" or os.geteuid() == 0,
+    reason="needs POSIX permission bits, symlinks and an account the mode bits stop",
+)
+def test_find_judges_a_symlinked_root_by_its_target(tmp_path, monkeypatch):
+    """A search-path entry that is a symlink is judged by the directory it
+    resolves to: a link into a directory other accounts can write to is refused,
+    a link into a private one serves. A root cannot impersonate a private
+    directory through a link."""
+    target = tmp_path / "real_root"
+    (target / "corpora" / "x").mkdir(parents=True)
+    (target / "corpora" / "x" / "a.txt").write_text("hello")
+    link = tmp_path / "linked_root"
+    os.symlink(str(target), str(link))
+    monkeypatch.setattr(nltk.data, "path", [str(link)])
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
+    assert isinstance(
+        nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
+    )
+    os.chmod(target, 0o777)
+    try:
+        with pytest.warns(RuntimeWarning, match="writable by other accounts"):
+            with pytest.raises(LookupError) as exc:
+                nltk.data.find("corpora/x/a.txt")
+        assert "Refused, writable by other accounts" in str(exc.value)
+    finally:
+        os.chmod(target, 0o755)
+    assert isinstance(
+        nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
+    )

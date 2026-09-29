@@ -2350,6 +2350,27 @@ class TestExtractRouteAttackMatrix:
             assert not (outside / "ok.txt").exists()
             assert not _links_under(str(dl))
 
+    @pytest.mark.skipif(os.name != "posix", reason="hardlinks as on POSIX")
+    def test_a_same_size_hardlink_between_two_package_files_is_stale(self, box):
+        """Two package files of the same size where one is replaced by a second
+        name for the other keep the size sum intact; the install is stale all
+        the same and re-extraction restores two distinct files."""
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b""), ("h/a.txt", b"AAAAAA"), ("h/b.txt", b"BBBBBB")])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        a, b = dl / "corpora" / "h" / "a.txt", dl / "corpora" / "h" / "b.txt"
+        b.unlink()
+        os.link(str(a), str(b))
+        assert b.read_bytes() == b"AAAAAA"
+        d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+        assert d.status("h") == downloader.Downloader.STALE
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        assert b.read_bytes() == b"BBBBBB" and a.read_bytes() == b"AAAAAA"
+        assert a.stat().st_nlink == 1 and b.stat().st_nlink == 1
+
     def test_a_rogue_extra_file_at_the_target_is_never_deleted_but_reported(
         self, box, monkeypatch
     ):
