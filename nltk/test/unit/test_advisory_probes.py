@@ -677,6 +677,44 @@ def test_pickle_denylist_fires_under_broad_allow():
         allowlisted_pickle_load(io.BytesIO(payload), allowed_modules=("os",))
 
 
+def test_cyclic_index_probe_deadline_scales_with_the_control():
+    """A loaded host that is slow to start a child must not be mistaken for the
+    advisory's infinite loop: every cyclic run gets twenty times the wall time the
+    acyclic control needed, never under the default, and a real loop still hangs
+    at any deadline."""
+    module = importlib.import_module(
+        "nltk.test.unit.security_probes.ghsa_pcm8_fqjx_rvx8"
+    )
+    probe = probes.PROBES["GHSA-pcm8-fqjx-rvx8"]
+    real_resolve, real_clock = module._resolve, module._clock
+    seen = {}
+    try:
+        module._clock = iter([100.0, 107.0]).__next__  # the control took 7 s
+        module._resolve = lambda shape, timeout=30: (
+            seen.setdefault(shape, timeout),
+            ("ok", "p1"),
+        )[1]
+        assert probe()[0] == probes.FIXED
+        assert seen == {
+            "acyclic": 30,
+            "self": 140.0,
+            "mutual": 140.0,
+            "chain": 140.0,
+            "diamond": 140.0,
+        }, seen
+        # a fast control keeps the default deadline
+        seen.clear()
+        module._clock = iter([0.0, 0.5]).__next__
+        assert probe()[0] == probes.FIXED
+        assert seen["self"] == 30.0
+        # a control that cannot resolve makes the run inconclusive, never FIXED
+        module._clock = iter([0.0, 1.0]).__next__
+        module._resolve = lambda shape, timeout=30: ("error", "boom")
+        assert probe()[0] == probes.STATIC
+    finally:
+        module._resolve, module._clock = real_resolve, real_clock
+
+
 def test_cyclic_index_probe_reports_a_hang_as_vulnerable():
     """The advisory's regression manifests as an infinite loop, i.e. a subprocess
     that never returns. Simulate that: a hanging cyclic run with a healthy acyclic

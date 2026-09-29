@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import nltk
@@ -36,6 +37,10 @@ _GRAPHS = {
     ),
     "acyclic": '<collection id="a" name="C"><item ref="p1"/></collection>',
 }
+
+#: each cyclic run may take this many times what the acyclic control took
+_DEADLINE_FACTOR = 20
+_clock = time.perf_counter
 
 
 def _resolve(shape, timeout=30):
@@ -91,14 +96,30 @@ def _cyclic_collection_index():
     package. A hang IS the advisory's infinite loop, so it is reported VULNERABLE
     rather than inconclusive whenever an acyclic control run shows the host is
     healthy; only a control that also times out downgrades the result to STATIC.
+
+    The acyclic control runs first and its wall time sets the deadline of every
+    cyclic run (twenty times what the control needed, never under the default),
+    so a loaded host that is slow to start a child is not mistaken for the loop:
+    a real loop never finishes, whatever the deadline.
     """
+    started = _clock()
+    control, detail = _resolve("acyclic")
+    control_seconds = _clock() - started
+    if control == "hang":
+        return STATIC, "the acyclic control timed out"
+    if control != "ok" or detail != "p1":
+        return STATIC, f"the acyclic control did not resolve: {detail}"
+    timeout = max(30.0, _DEADLINE_FACTOR * control_seconds)
     resolved = []
     for shape in ("self", "mutual", "chain", "diamond"):
-        kind, detail = _resolve(shape)
+        kind, detail = _resolve(shape, timeout=timeout)
         if kind == "hang":
-            control, _ = _resolve("acyclic")
+            control, _ = _resolve("acyclic", timeout=timeout)
             if control == "ok":
-                return VULNERABLE, f"{shape}-referencing index never terminated"
+                return VULNERABLE, (
+                    f"{shape}-referencing index never terminated within "
+                    f"{timeout:.0f}s while the acyclic control resolved"
+                )
             return STATIC, "cyclic run and the acyclic control both timed out"
         if kind == "error":
             return VULNERABLE, f"{shape} index failed: {detail}"
