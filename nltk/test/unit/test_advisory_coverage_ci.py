@@ -84,6 +84,10 @@ _CLOSED_WITH_PROBE = {
 #: would otherwise trip the reverse check below. Once published it appears in the
 #: fetched list and its entry here becomes a harmless no-op.
 _DRAFT_WITH_PROBE = {
+    "GHSA-xv54-447f-mj22",
+    "GHSA-xmfg-f9cm-w86q",
+    "GHSA-7j4p-88wx-5jrc",
+    "GHSA-j456-xh4h-cpf2",
     "GHSA-cc5r-64rf-75hg",
 }
 

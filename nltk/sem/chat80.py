@@ -542,6 +542,28 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     cur.close()
 
 
+# PRAGMAs that move sqlite's temporary files to a caller-named directory.
+_DIRECTORY_PRAGMAS = frozenset({"temp_store_directory", "data_store_directory"})
+
+
+def _sql_query_authorizer(action, arg1, arg2, db_name, trigger):
+    """sqlite authorizer for :func:`sql_query`: refuse statements naming a file.
+
+    ``ATTACH`` (which ``VACUUM INTO`` is also routed through) opens or creates
+    whatever path the SQL text names, and the directory pragmas redirect
+    sqlite's temporary files, so a query text could reach a file outside the
+    one store that was validated (CWE-73). Every other statement is left to
+    sqlite, so the query surface is otherwise unchanged.
+    """
+    import sqlite3
+
+    if action in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH):
+        return sqlite3.SQLITE_DENY
+    if action == sqlite3.SQLITE_PRAGMA and str(arg1).lower() in _DIRECTORY_PRAGMAS:
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK
+
+
 def sql_query(dbname, query):
     """
     Execute an SQL query over a database.
@@ -550,11 +572,29 @@ def sql_query(dbname, query):
     :param query: SQL query
     :type rel_name: str
     """
+    import os
     import sqlite3
 
     try:
         path = nltk.data.find(dbname)
-        connection = sqlite3.connect(str(path))
+        # find() bounds the resource NAME to a data root; only a plain file on
+        # disk can be handed to sqlite, never a zip entry or dataset pointer
+        # whose string form sqlite would create or open as a fresh path.
+        if not isinstance(path, nltk.data.FileSystemPathPointer) or os.path.isdir(
+            path.path
+        ):
+            raise ValueError(
+                "%s is not an uncompressed database file on disk"
+                % sanitize_terminal(str(path))
+            )
+        db_path = path.path
+        # The file BEHIND the name is validated here: the resolved target must
+        # sit in a data root, and neither the store nor a sqlite sidecar may be
+        # a link or special file that the by-path open would follow (GHSA-xv54).
+        validate_path(db_path, context="chat80.sql_query")
+        _refuse_symlinked_store(db_path, context="chat80.sql_query")
+        connection = sqlite3.connect(db_path)
+        connection.set_authorizer(_sql_query_authorizer)
         cur = connection.cursor()
         return cur.execute(query)
     except (ValueError, sqlite3.OperationalError):
