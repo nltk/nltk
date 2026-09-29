@@ -23,6 +23,7 @@ OLD_SYS_PATH = sys.path[:]
 sys.path = [p for p in sys.path if p and "nltk" not in str(p)]
 import inspect
 import keyword
+import unicodedata
 
 sys.path = OLD_SYS_PATH
 
@@ -36,8 +37,9 @@ def _assert_safe_signature(signature):
     and bare ``*`` or ``/`` markers may reach it: nothing that can carry an
     annotation, a default, a call, an attribute or other expression syntax.
     Each name is judged by ``str.isidentifier`` (every legal name, non-ASCII
-    included) and must not be a keyword; a ``str`` subclass is refused, since
-    its ``__str__`` could inject source at the interpolation.
+    included), must not be a keyword and must already be NFKC-normalised, as
+    the parser would make it; a ``str`` subclass is refused, since its
+    ``__str__`` could inject source at the interpolation.
     """
 
     def _refuse(why):
@@ -59,6 +61,10 @@ def _assert_safe_signature(signature):
                 break
         if not name.isidentifier() or keyword.iskeyword(name):
             _refuse("non-identifier")
+        # The parser NFKC-normalises identifiers, so a name not already in that
+        # form would become a different name (a reserved global, say) in the eval.
+        if unicodedata.normalize("NFKC", name) != name:
+            _refuse("non-NFKC-normalised")
 
 
 def __legacysignature(signature):
@@ -96,32 +102,87 @@ def __legacysignature(signature):
     return ", ".join(parts)
 
 
-def _call_arguments(fullsignature):
+def _signature_names(signature):
+    """The parameter names of a signature string that already passed
+    :func:`_assert_safe_signature`, in order, without ``*``/``**`` prefixes and
+    without the bare ``*`` and ``/`` markers."""
+    names = []
+    for token in signature.split(","):
+        name = token.strip()
+        if name not in ("", "*", "/"):
+            names.append(name.lstrip("*"))
+    return names
+
+
+def _refuse_reserved(signature, reserved):
+    """Refuse a parameter of ANY kind named like a wrapper global: inside the
+    generated lambda it would shadow that global, so a caller could hand in the
+    callable the wrapper then invokes. A real check, not an assert (``-O``)."""
+    clash = sorted(set(_signature_names(signature)) & set(reserved))
+    if clash:
+        raise ValueError(f"{', '.join(clash)} is a reserved argument name")
+
+
+def _call_arguments(fullsignature, signature):
     """The argument list to forward to the wrapped callable, built ONLY from
-    parameter names (never interpolated text): a positional/positional-only or
-    keyword-only parameter is forwarded by name (keyword-only as ``name=name``),
-    ``*args``/``**kwargs`` are splatted, and the bare ``*`` / ``/`` markers (which
-    are not call syntax) are dropped. This lets the wrapper support keyword-only
-    and positional-only signatures, which reusing the def-signature for the call
-    (a bare ``*``/``/`` is a SyntaxError there) never could.
+    names of the already fenced ``signature`` string, never from text a
+    Signature object produces: a positional or positional-only parameter is
+    forwarded by name, a keyword-only one as ``name=name``, ``*args`` and
+    ``**kwargs`` are splatted, and the bare ``*`` and ``/`` markers are dropped.
+
+    ``fullsignature`` only says which KIND each parameter is. Its parameters
+    must be genuine :class:`inspect.Parameter` objects with plain ``str`` names
+    that match the fenced names one for one, in order: a forged ``__signature__``
+    whose names are ``str`` subclasses (lying ``isidentifier`` or ``__format__``)
+    or disagree with the fenced string is refused, so no text of its own ever
+    reaches the eval.
     """
+    fenced = _signature_names(signature)
+    params = list(fullsignature.parameters.values())
+    if len(params) != len(fenced):
+        raise ValueError(
+            "refusing a signature object that does not match the fenced signature"
+        )
     parts = []
-    for p in fullsignature.parameters.values():
-        # These names land in the eval body unchecked by _assert_safe_signature, so
-        # each must be a genuine inspect.Parameter with an identifier name: a crafted
-        # (duck-typed) Signature could otherwise smuggle an expression as a "name".
-        if not isinstance(p, inspect.Parameter) or not p.name.isidentifier():
+    for p, name in zip(params, fenced):
+        if type(p) is not inspect.Parameter or type(p.name) is not str:
             raise ValueError(
-                f"refusing a non-identifier parameter name: {getattr(p, 'name', p)!r}"
+                "refusing a non-standard or non-identifier parameter name: "
+                f"{getattr(p, 'name', p)!r}"
+            )
+        if p.name != name:
+            raise ValueError(
+                f"refusing parameter {p.name!r}: the fenced signature names {name!r}"
             )
         if p.kind is inspect.Parameter.VAR_POSITIONAL:
-            parts.append("*" + p.name)
+            parts.append("*" + name)
         elif p.kind is inspect.Parameter.VAR_KEYWORD:
-            parts.append("**" + p.name)
+            parts.append("**" + name)
         elif p.kind is inspect.Parameter.KEYWORD_ONLY:
-            parts.append(f"{p.name}={p.name}")
+            parts.append(name + "=" + name)
         else:
-            parts.append(p.name)
+            parts.append(name)
+    return ", ".join(parts)
+
+
+def _call_arguments_from_signature(signature):
+    """The call arguments for a legacy model dict that carries no Signature,
+    built from the fenced string alone: names after a bare ``*`` or ``*args``
+    are keyword-only and forwarded as ``name=name``."""
+    parts, keyword_only = [], False
+    for token in signature.split(","):
+        token = token.strip()
+        if token in ("", "/"):
+            continue
+        if token == "*":
+            keyword_only = True
+        elif token.startswith("**"):
+            parts.append(token)
+        elif token.startswith("*"):
+            parts.append(token)
+            keyword_only = True
+        else:
+            parts.append(token + "=" + token if keyword_only else token)
     return ", ".join(parts)
 
 
@@ -218,22 +279,16 @@ def new_wrapper(wrapper, model):
         infodict = model
     else:  # assume model is a function
         infodict = getinfo(model)
-    assert (
-        "_wrapper_" not in infodict["argnames"]
-    ), '"_wrapper_" is a reserved argument name!'
-    _assert_safe_signature(infodict["signature"])
-    # Def params come from the validated signature; call args are built from the
-    # parameter names so a bare * or / never reaches call syntax (a legacy dict
-    # with no Signature reuses the validated string minus its bare markers).
+    signature = infodict["signature"]
+    _assert_safe_signature(signature)
+    _refuse_reserved(signature, ("_wrapper_",))
+    # Def params and call args both come from the fenced signature string; a
+    # Signature object, when present, only says which kind each parameter is.
     if infodict.get("fullsignature") is not None:
-        callargs = _call_arguments(infodict["fullsignature"])
+        callargs = _call_arguments(infodict["fullsignature"], signature)
     else:
-        callargs = ", ".join(
-            token.strip()
-            for token in infodict["signature"].split(",")
-            if token.strip() not in ("*", "/")
-        )
-    src = "lambda {}: _wrapper_({})".format(infodict["signature"], callargs)
+        callargs = _call_arguments_from_signature(signature)
+    src = f"lambda {signature}: _wrapper_({callargs})"
     funcopy = eval(
         src, dict(_wrapper_=wrapper)
     )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
@@ -298,15 +353,12 @@ def decorator(caller):
 
     def _decorator(func):  # the real meat is here
         infodict = getinfo(func)
-        argnames = infodict["argnames"]
-        assert not (
-            "_call_" in argnames or "_func_" in argnames
-        ), "You cannot use _call_ or _func_ as argument names!"
-        _assert_safe_signature(infodict["signature"])
-        # def-params from the validated signature; CALL args from parameter names,
-        # so a bare * / / marker never reaches call syntax.
-        callargs = _call_arguments(infodict["fullsignature"])
-        src = "lambda {}: _call_(_func_, {})".format(infodict["signature"], callargs)
+        signature = infodict["signature"]
+        _assert_safe_signature(signature)
+        _refuse_reserved(signature, ("_call_", "_func_"))
+        # Def params and call args both come from the fenced signature string.
+        callargs = _call_arguments(infodict["fullsignature"], signature)
+        src = f"lambda {signature}: _call_(_func_, {callargs})"
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(
             src, dict(_func_=func, _call_=caller)
